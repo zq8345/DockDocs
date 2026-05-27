@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { dockBrands } from "@dock/shared/config";
 
+export const dynamic = "force-static";
+
 const baseUrl = "https://dockdocs.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
