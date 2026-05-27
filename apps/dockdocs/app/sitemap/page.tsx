@@ -12,6 +12,7 @@ export default function SitemapPage() {
     { name: "Compress PDF", href: "/compress-pdf" },
     { name: "Merge PDF", href: "/merge-pdf" },
     { name: "Split PDF", href: "/split-pdf" },
+    { name: "PDF to Word", href: "/pdf-to-word" },
     ...dockBrands.map((brand) => ({ name: brand.name, href: brand.url })),
     { name: "Privacy Policy", href: "/privacy-policy" },
     { name: "Terms", href: "/terms" },

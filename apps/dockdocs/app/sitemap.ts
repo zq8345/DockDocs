@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/compress-pdf",
     "/merge-pdf",
     "/split-pdf",
+    "/pdf-to-word",
     "/privacy-policy",
     "/terms",
     "/sitemap",
