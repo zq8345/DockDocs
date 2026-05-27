@@ -1,0 +1,32 @@
+{
+  "name": "dock-ai-ecosystem",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@11.13.0",
+  "workspaces": [
+    "apps/*",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "dev:dockdocs": "npm --workspace @dock/dockdocs run dev",
+    "dev:dockimg": "npm --workspace @dock/dockimg run dev",
+    "dev:dockseo": "npm --workspace @dock/dockseo run dev",
+    "dev:docktext": "npm --workspace @dock/docktext run dev",
+    "build:dockdocs": "npm --workspace @dock/dockdocs run build",
+    "build:dockimg": "npm --workspace @dock/dockimg run build",
+    "build:dockseo": "npm --workspace @dock/dockseo run build",
+    "build:docktext": "npm --workspace @dock/docktext run build"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.7",
+    "@types/node": "22.15.21",
+    "@types/react": "19.0.12",
+    "@types/react-dom": "19.0.4",
+    "tailwindcss": "4.1.7",
+    "turbo": "^2.6.3",
+    "typescript": "5.8.3"
+  }
+}
