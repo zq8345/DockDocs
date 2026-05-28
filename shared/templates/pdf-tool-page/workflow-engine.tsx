@@ -409,6 +409,8 @@ export function PdfWorkflowEngine({
             progress={progress}
             statusText={zh ? "处理中" : "Processing"}
             animated
+            onCancel={resetWorkflow}
+            cancelLabel={zh ? "取消处理" : "Cancel processing"}
           />
         ) : null}
 
@@ -604,12 +606,16 @@ function WorkflowProgress({
   progress,
   statusText,
   animated = false,
+  onCancel,
+  cancelLabel,
 }: {
   title: string;
   description: string;
   progress: number;
   statusText: string;
   animated?: boolean;
+  onCancel?: () => void;
+  cancelLabel?: string;
 }) {
   return (
     <div className="rounded-xl border border-[#cbd5e1] bg-white p-4 shadow-sm">
@@ -639,6 +645,16 @@ function WorkflowProgress({
           />
         </div>
       </div>
+      {onCancel ? (
+        <WorkflowActionButton
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          className="mt-5 w-full"
+        >
+          {cancelLabel ?? "Cancel"}
+        </WorkflowActionButton>
+      ) : null}
     </div>
   );
 }
@@ -1195,9 +1211,30 @@ function getWorkflowResult(
           ? "文件体积已减小，适合下载和共享。"
           : "The file size is reduced and ready for download or sharing.",
         rows: [
-          [zh ? "原始大小" : "Original size", formatBytes(totalSize)],
-          [zh ? "压缩后" : "Compressed size", formatBytes(Math.max(totalSize * 0.52, 1))],
-          [zh ? "节省" : "Saved", "48%"],
+          [
+            zh ? "原始大小" : "Original size",
+            artifact?.originalSize ? formatBytes(artifact.originalSize) : formatBytes(totalSize),
+          ],
+          [
+            zh ? "优化后" : "Optimized size",
+            artifact?.compressedSize
+              ? formatBytes(artifact.compressedSize)
+              : formatBytes(Math.max(totalSize * 0.52, 1)),
+          ],
+          [
+            zh ? "结构优化" : "Structural optimization",
+            artifact
+              ? artifact.savedPercent && artifact.savedPercent > 0
+                ? `${artifact.savedPercent}%`
+                : zh
+                  ? "已重写"
+                  : "Rewritten"
+              : "48%",
+          ],
+          [
+            zh ? "页面数" : "Pages",
+            artifact?.pageCount ? String(artifact.pageCount) : zh ? "已保留" : "Preserved",
+          ],
           [zh ? "格式" : "Format", "PDF"],
         ],
       };

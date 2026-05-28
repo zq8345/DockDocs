@@ -1,6 +1,10 @@
 import { PDFDocument } from "pdf-lib";
 
-export type PdfRuntimeSlug = "merge-pdf" | "split-pdf" | "jpg-to-pdf";
+export type PdfRuntimeSlug =
+  | "compress-pdf"
+  | "merge-pdf"
+  | "split-pdf"
+  | "jpg-to-pdf";
 
 export type PdfRuntimeProgress = {
   progress: number;
@@ -15,6 +19,9 @@ export type PdfRuntimeArtifact = {
   fileCount?: number;
   rangeCount?: number;
   imageCount?: number;
+  originalSize?: number;
+  compressedSize?: number;
+  savedPercent?: number;
 };
 
 type PdfRuntimeInput = {
@@ -33,7 +40,12 @@ type SplitRange = {
 };
 
 export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
-  return slug === "merge-pdf" || slug === "split-pdf" || slug === "jpg-to-pdf";
+  return (
+    slug === "compress-pdf" ||
+    slug === "merge-pdf" ||
+    slug === "split-pdf" ||
+    slug === "jpg-to-pdf"
+  );
 }
 
 export async function runPdfRuntime({
@@ -47,6 +59,10 @@ export async function runPdfRuntime({
 }: PdfRuntimeInput): Promise<PdfRuntimeArtifact> {
   if (!isRealPdfRuntimeSlug(slug)) {
     throw new Error("Unsupported runtime workflow.");
+  }
+
+  if (slug === "compress-pdf") {
+    return compressPdfFile(files[0], outputFileName, signal, onProgress);
   }
 
   if (slug === "merge-pdf") {
@@ -89,6 +105,58 @@ export function getPdfRuntimeErrorMessage(error: unknown, locale: "en" | "zh") {
   return zh
     ? "处理文件时出现问题。请检查文件后重试。"
     : "Something went wrong while processing the file. Review the files and try again.";
+}
+
+async function compressPdfFile(
+  file: File,
+  outputFileName: string,
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const sourceBytes = await file.arrayBuffer();
+  const source = await PDFDocument.load(sourceBytes, {
+    updateMetadata: false,
+  });
+  const output = await PDFDocument.create();
+  const pages = await output.copyPages(source, source.getPageIndices());
+
+  emitProgress(onProgress, 34, 1);
+  for (let index = 0; index < pages.length; index += 1) {
+    throwIfAborted(signal);
+    output.addPage(pages[index]);
+    emitProgress(onProgress, 38 + ((index + 1) / pages.length) * 42, 2);
+    await yieldToBrowser();
+  }
+
+  throwIfAborted(signal);
+  emitProgress(onProgress, 90, 3);
+  const optimizedBytes = await output.save({
+    useObjectStreams: true,
+    addDefaultPage: false,
+    objectsPerTick: 24,
+  });
+  const blob = new Blob([optimizedBytes], { type: "application/pdf" });
+  const originalSize = file.size;
+  const compressedSize = blob.size;
+  const savedPercent = Math.max(
+    0,
+    Math.round(((originalSize - compressedSize) / Math.max(originalSize, 1)) * 100),
+  );
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount: source.getPageCount(),
+    fileCount: 1,
+    originalSize,
+    compressedSize,
+    savedPercent,
+  };
 }
 
 async function mergePdfFiles(
