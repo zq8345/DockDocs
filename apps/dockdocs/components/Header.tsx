@@ -6,6 +6,7 @@ const productLinks = [
   { name: "Merge", href: "/merge-pdf" },
   { name: "Split", href: "/split-pdf" },
   { name: "OCR", href: "/ocr-pdf" },
+  { name: "JPG to PDF", href: "/jpg-to-pdf" },
   { name: "AI Workspace", href: "/ai-workspace" },
 ];
 
