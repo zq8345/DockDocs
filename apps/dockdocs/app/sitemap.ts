@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { locales, localizedPath, routeSlugs } from "@/lib/i18n";
 
 export const dynamic = "force-static";
 
@@ -23,10 +24,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/terms/",
     "/sitemap/",
   ];
+  const localizedPages = locales.flatMap((locale) =>
+    routeSlugs.map((slug) => localizedPath(locale, slug)),
+  );
   const now = new Date();
 
   return [
-    ...localPages.map((path) => ({
+    ...[...localPages, ...localizedPages].map((path) => ({
       url: `${baseUrl}${path}`,
       lastModified: now,
       changeFrequency: "monthly" as const,

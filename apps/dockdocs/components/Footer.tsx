@@ -1,18 +1,30 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { RelatedTools } from "@/components/RelatedTools";
+import {
+  footerCopy,
+  localizedHref,
+  splitPathname,
+} from "@/lib/i18n";
 
 const footerLinks = [
-  { name: "Related Tools", href: "#related-tools" },
-  { name: "AI Office Workspace", href: "/ai-workspace" },
-  { name: "About", href: "/about" },
-  { name: "Help", href: "/help" },
-  { name: "FAQ", href: "/faq" },
-  { name: "Contact", href: "/contact" },
-  { name: "Privacy Policy", href: "/privacy-policy" },
-  { name: "Terms", href: "/terms" },
-  { name: "Sitemap", href: "/sitemap" },
-];
+  { key: "relatedTools", href: "#related-tools" },
+  { key: "aiWorkspace", href: "/ai-workspace" },
+  { key: "about", href: "/about" },
+  { key: "help", href: "/help" },
+  { key: "faq", href: "/faq" },
+  { key: "contact", href: "/contact" },
+  { key: "privacy", href: "/privacy-policy" },
+  { key: "terms", href: "/terms" },
+  { key: "sitemap", href: "/sitemap" },
+] as const;
 
 export function Footer() {
+  const pathname = usePathname() || "/";
+  const path = splitPathname(pathname);
+  const copy = footerCopy[path.locale];
+
   return (
     <footer className="border-t border-[color:var(--line)]">
       <RelatedTools compact />
@@ -25,10 +37,10 @@ export function Footer() {
             {footerLinks.map((link) => (
               <li key={link.href}>
                 <a
-                  href={link.href}
+                  href={localizedHref(link.href, path.locale, path.hasLocalePrefix)}
                   className="text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
                 >
-                  {link.name}
+                  {copy[link.key]}
                 </a>
               </li>
             ))}

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "@/lib/i18n";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 
 export const metadata: Metadata = {
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
   ],
   alternates: {
     canonical: "/ai-workspace/",
+    languages: languageAlternates("ai-workspace"),
   },
   openGraph: {
     title: "AI Document Workspace | DockDocs",
@@ -67,7 +69,7 @@ export default function AiWorkspacePage() {
             <div className="inline-flex rounded-full border border-[#cbd5e1] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#334155] shadow-sm">
               AI Workspace layer
             </div>
-            <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.04] sm:text-6xl">
+            <h1 className="mt-6 max-w-4xl text-3xl font-semibold leading-tight sm:text-6xl sm:leading-[1.04]">
               AI enhances the DockDocs PDF tools platform.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-[#334155] sm:text-lg">

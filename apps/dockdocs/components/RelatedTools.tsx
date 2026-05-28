@@ -1,10 +1,21 @@
-import { tools } from "@/lib/tools";
+"use client";
+
+import { usePathname } from "next/navigation";
+import {
+  localizedHref,
+  relatedToolsCopy,
+  splitPathname,
+} from "@/lib/i18n";
 
 type RelatedToolsProps = {
   compact?: boolean;
 };
 
 export function RelatedTools({ compact = false }: RelatedToolsProps) {
+  const pathname = usePathname() || "/";
+  const path = splitPathname(pathname);
+  const copy = relatedToolsCopy[path.locale];
+
   return (
     <section
       id="related-tools"
@@ -18,12 +29,11 @@ export function RelatedTools({ compact = false }: RelatedToolsProps) {
               id={compact ? "footer-related-tools" : "related-tools-title"}
               className={compact ? "text-lg font-semibold" : "text-2xl font-semibold"}
             >
-              Related Tools
+              {copy.title}
             </h2>
             {!compact && (
               <p className="mt-3 max-w-2xl leading-7 text-[color:var(--muted)]">
-                Move between the four Dock products with one consistent
-                navigation pattern across desktop and mobile.
+                {copy.description}
               </p>
             )}
           </div>
@@ -35,10 +45,10 @@ export function RelatedTools({ compact = false }: RelatedToolsProps) {
               : "mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
           }
         >
-          {tools.map((tool) => (
+          {copy.tools.map((tool) => (
             <a
               key={tool.href}
-              href={tool.href}
+              href={localizedHref(tool.href, path.locale, path.hasLocalePrefix)}
               className="group rounded-lg border border-[color:var(--line)] p-5 transition hover:border-[color:var(--foreground)]"
             >
               <div className="flex items-center justify-between gap-4">

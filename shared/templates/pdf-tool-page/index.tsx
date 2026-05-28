@@ -31,6 +31,9 @@ export type PdfToolUpload = {
 
 export type PdfToolPageConfig = {
   slug: string;
+  locale?: "en" | "zh";
+  canonicalPath?: string;
+  alternateLanguages?: Record<string, string>;
   title: string;
   description: string;
   keywords: string[];
@@ -68,7 +71,8 @@ type WorkflowState = {
 
 const siteUrl = "https://dockdocs.app";
 
-const pdfTools = [
+const pdfTools = {
+  en: [
   {
     name: "JPG to PDF",
     slug: "jpg-to-pdf",
@@ -105,17 +109,92 @@ const pdfTools = [
     href: "/ocr-pdf",
     description: "Extract text from scanned and image-based PDFs.",
   },
-];
+  ],
+  zh: [
+    {
+      name: "JPG 转 PDF",
+      slug: "jpg-to-pdf",
+      href: "/jpg-to-pdf",
+      description: "将图片、照片和扫描图转换为 PDF 文档。",
+    },
+    {
+      name: "压缩 PDF",
+      slug: "compress-pdf",
+      href: "/compress-pdf",
+      description: "减小 PDF 体积，便于邮件、上传和共享。",
+    },
+    {
+      name: "合并 PDF",
+      slug: "merge-pdf",
+      href: "/merge-pdf",
+      description: "将多个 PDF 合并为一个清晰文档包。",
+    },
+    {
+      name: "拆分 PDF",
+      slug: "split-pdf",
+      href: "/split-pdf",
+      description: "提取页面或按范围拆分 PDF 文件。",
+    },
+    {
+      name: "PDF 转 Word",
+      slug: "pdf-to-word",
+      href: "/pdf-to-word",
+      description: "将 PDF 准备为可编辑文档工作流。",
+    },
+    {
+      name: "OCR PDF",
+      slug: "ocr-pdf",
+      href: "/ocr-pdf",
+      description: "从扫描件和图片型 PDF 中提取文字。",
+    },
+  ],
+} as const;
+
+const templateCopy = {
+  en: {
+    toolEyebrow: "DockDocs PDF Tools",
+    previewWorkflow: "Preview workflow",
+    workflowEyebrow: "Tool workflow",
+    workflowTitle: "A realistic flow from upload to output.",
+    workflowDescription:
+      "These tool pages present the real product workflow states users expect before the processing engine is connected.",
+    benefits: "Benefits",
+    features: "Features",
+    workflow: "Workflow",
+    faq: "FAQ",
+    relatedTools: "Related Tools",
+    relatedTitle: "Continue with another PDF workflow.",
+    relatedDescription:
+      "Move between DockDocs PDF tools without leaving the product platform.",
+  },
+  zh: {
+    toolEyebrow: "DockDocs PDF 工具",
+    previewWorkflow: "预览流程",
+    workflowEyebrow: "工具流程",
+    workflowTitle: "从上传到导出的真实流程。",
+    workflowDescription:
+      "工具页展示用户期望看到的上传、处理、结果和下载状态。",
+    benefits: "优势",
+    features: "功能",
+    workflow: "工作流",
+    faq: "常见问题",
+    relatedTools: "相关工具",
+    relatedTitle: "继续使用其它 PDF 工作流。",
+    relatedDescription: "在 DockDocs PDF 工具之间继续处理文档。",
+  },
+} as const;
 
 export function createPdfToolMetadata(config: PdfToolPageConfig): Metadata {
-  const pageUrl = `${siteUrl}/${config.slug}/`;
+  const canonicalPath = config.canonicalPath ?? `/${config.slug}/`;
+  const pageUrl = `${siteUrl}${canonicalPath}`;
 
   return {
     title: config.title,
     description: config.description,
     keywords: config.keywords,
     alternates: {
-      canonical: `/${config.slug}/`,
+      canonical: canonicalPath,
+      languages: config.alternateLanguages,
     },
     openGraph: {
       title: config.title,
@@ -137,7 +216,8 @@ export function createPdfToolMetadata(config: PdfToolPageConfig): Metadata {
 }
 
 export function createPdfToolSchema(config: PdfToolPageConfig) {
-  const pageUrl = `${siteUrl}/${config.slug}/`;
+  const canonicalPath = config.canonicalPath ?? `/${config.slug}/`;
+  const pageUrl = `${siteUrl}${canonicalPath}`;
 
   return {
     "@context": "https://schema.org",
@@ -241,7 +321,11 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       <HowItWorksSection config={config} />
       <FaqSection config={config} />
       {config.relatedTools === false ? null : config.relatedTools ?? (
-        <RelatedPdfTools currentSlug={config.slug} />
+        <RelatedPdfTools
+          currentSlug={config.slug}
+          locale={config.locale ?? "en"}
+          useLocalePrefix={Boolean(config.locale)}
+        />
       )}
       <CtaSection config={config} />
     </main>
@@ -249,14 +333,16 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
 }
 
 function HeroSection({ config }: { config: PdfToolPageConfig }) {
+  const copy = templateCopy[config.locale ?? "en"];
+
   return (
     <Section className="border-b border-[#cbd5e1] bg-white py-0">
       <Container className="grid min-h-[72vh] items-center gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
         <div>
           <div className="inline-flex rounded-full border border-[#cbd5e1] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#334155] shadow-sm">
-            DockDocs PDF Tools
+            {copy.toolEyebrow}
           </div>
-          <h1 className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.04] sm:text-6xl">
+          <h1 className="mt-6 max-w-4xl break-all text-2xl font-semibold leading-[1.08] sm:text-6xl sm:leading-[1.04]">
             {config.heroTitle}
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-[#334155] sm:text-lg">
@@ -270,7 +356,7 @@ function HeroSection({ config }: { config: PdfToolPageConfig }) {
               {config.primaryActionLabel}
             </ButtonLink>
             <ButtonLink href="#workflow-preview" variant="outline" className="bg-white">
-              Preview workflow
+              {copy.previewWorkflow}
             </ButtonLink>
           </div>
           <dl className="mt-10 grid max-w-2xl gap-3 sm:grid-cols-3">
@@ -342,6 +428,7 @@ function UploadCard({
 
 function WorkflowSimulator({ config }: { config: PdfToolPageConfig }) {
   const states = getWorkflowStates(config);
+  const copy = templateCopy[config.locale ?? "en"];
 
   return (
     <Section id="workflow-preview" className="border-b border-[#cbd5e1] bg-[#f8fafc]">
@@ -349,15 +436,14 @@ function WorkflowSimulator({ config }: { config: PdfToolPageConfig }) {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
-              Tool workflow
+              {copy.workflowEyebrow}
             </p>
             <h2 className="mt-4 text-3xl font-semibold leading-tight">
-              A realistic flow from upload to output.
+              {copy.workflowTitle}
             </h2>
           </div>
           <p className="max-w-xl leading-7 text-[#334155]">
-            These tool pages now present the real product workflow states users
-            expect before the processing engine is connected.
+            {copy.workflowDescription}
           </p>
         </div>
         <div className="mt-8 grid gap-4 lg:grid-cols-3">
@@ -410,11 +496,13 @@ function WorkflowSimulator({ config }: { config: PdfToolPageConfig }) {
 }
 
 function BenefitsSection({ config }: { config: PdfToolPageConfig }) {
+  const copy = templateCopy[config.locale ?? "en"];
+
   return (
     <Section className="border-b border-[#cbd5e1] bg-white">
       <Container>
         <SectionIntro
-          eyebrow="Benefits"
+          eyebrow={copy.benefits}
           title={config.benefitsTitle}
           description={config.benefitsDescription}
         />
@@ -429,11 +517,13 @@ function BenefitsSection({ config }: { config: PdfToolPageConfig }) {
 }
 
 function FeaturesSection({ config }: { config: PdfToolPageConfig }) {
+  const copy = templateCopy[config.locale ?? "en"];
+
   return (
     <Section id="features" className="border-b border-[#cbd5e1] bg-[#f8fafc]">
       <Container>
         <SectionIntro
-          eyebrow="Features"
+          eyebrow={copy.features}
           title={config.featuresTitle}
           description={config.featuresDescription}
         />
@@ -448,11 +538,13 @@ function FeaturesSection({ config }: { config: PdfToolPageConfig }) {
 }
 
 function HowItWorksSection({ config }: { config: PdfToolPageConfig }) {
+  const copy = templateCopy[config.locale ?? "en"];
+
   return (
     <Section className="border-b border-[#cbd5e1] bg-white">
       <Container className="grid gap-10 lg:grid-cols-[0.8fr_1fr]">
         <SectionIntro
-          eyebrow="Workflow"
+          eyebrow={copy.workflow}
           title={config.workflowTitle}
           description={config.workflowDescription}
         />
@@ -474,10 +566,12 @@ function HowItWorksSection({ config }: { config: PdfToolPageConfig }) {
 }
 
 function FaqSection({ config }: { config: PdfToolPageConfig }) {
+  const copy = templateCopy[config.locale ?? "en"];
+
   return (
     <Section id="faq" className="border-b border-[#cbd5e1] bg-white">
       <Container className="max-w-4xl">
-        <SectionIntro eyebrow="FAQ" title={config.faqTitle} />
+        <SectionIntro eyebrow={copy.faq} title={config.faqTitle} />
         <div className="mt-8 divide-y divide-[#cbd5e1] border-y border-[#cbd5e1]">
           {config.faq.map((faq) => (
             <details key={faq.question} className="group py-5">
@@ -496,22 +590,32 @@ function FaqSection({ config }: { config: PdfToolPageConfig }) {
   );
 }
 
-function RelatedPdfTools({ currentSlug }: { currentSlug: string }) {
-  const related = pdfTools.filter((tool) => tool.slug !== currentSlug);
+function RelatedPdfTools({
+  currentSlug,
+  locale = "en",
+  useLocalePrefix = false,
+}: {
+  currentSlug: string;
+  locale?: "en" | "zh";
+  useLocalePrefix?: boolean;
+}) {
+  const copy = templateCopy[locale];
+  const prefix = locale === "en" ? "/en" : "/zh";
+  const related = pdfTools[locale].filter((tool) => tool.slug !== currentSlug);
 
   return (
     <Section id="related-tools" className="border-b border-[#cbd5e1] bg-[#f8fafc]">
       <Container>
         <SectionIntro
-          eyebrow="Related Tools"
-          title="Continue with another PDF workflow."
-          description="Move between DockDocs PDF tools without leaving the product platform."
+          eyebrow={copy.relatedTools}
+          title={copy.relatedTitle}
+          description={copy.relatedDescription}
         />
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {related.map((tool) => (
             <a
               key={tool.href}
-              href={tool.href}
+              href={useLocalePrefix ? `${prefix}${tool.href}` : tool.href}
               className="group rounded-xl border border-[#cbd5e1] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0f172a] hover:shadow-[0_16px_32px_rgba(24,24,20,0.08)]"
             >
               <div className="flex items-center justify-between gap-4">
@@ -677,41 +781,44 @@ function ImageOrderPreview() {
 }
 
 function getWorkflowStates(config: PdfToolPageConfig): WorkflowState[] {
+  const locale = config.locale ?? "en";
+  const zh = locale === "zh";
+
   switch (config.slug) {
     case "compress-pdf":
       return [
         {
-          status: "Upload",
-          title: "Upload PDF",
-          description: "Choose a PDF and review file size before compression.",
+          status: zh ? "上传" : "Upload",
+          title: zh ? "上传 PDF" : "Upload PDF",
+          description: zh ? "选择 PDF，并在压缩前查看文件大小。" : "Choose a PDF and review file size before compression.",
           preview: "quarterly-report.pdf - 12.4 MB",
         },
         {
-          status: "Compressing",
-          title: "Optimization running",
-          description: "The workflow simulates image cleanup and file-size reduction.",
-          preview: <ProgressPreview label="Compressing" value="68%" />,
+          status: zh ? "压缩中" : "Compressing",
+          title: zh ? "正在优化" : "Optimization running",
+          description: zh ? "流程展示文件体积优化和处理进度。" : "The workflow simulates image cleanup and file-size reduction.",
+          preview: <ProgressPreview label={zh ? "正在压缩" : "Compressing"} value="68%" />,
         },
         {
-          status: "Result",
-          title: "Download compressed PDF",
-          description: "A clear result state prepares the user for a download CTA.",
+          status: zh ? "结果" : "Result",
+          title: zh ? "下载压缩后的 PDF" : "Download compressed PDF",
+          description: zh ? "结果状态提供明确下载按钮。" : "A clear result state prepares the user for a download CTA.",
           preview: "quarterly-report-compressed.pdf - 6.4 MB",
-          actionLabel: "Download compressed PDF",
+          actionLabel: zh ? "下载压缩 PDF" : "Download compressed PDF",
         },
       ];
     case "merge-pdf":
       return [
         {
-          status: "Multi-file",
-          title: "Upload multiple PDFs",
-          description: "Add several files and prepare them for one merged packet.",
+          status: zh ? "多文件" : "Multi-file",
+          title: zh ? "上传多个 PDF" : "Upload multiple PDFs",
+          description: zh ? "添加多个文件，准备合并为一个文档包。" : "Add several files and prepare them for one merged packet.",
           preview: "proposal.pdf + invoice.pdf + appendix.pdf",
         },
         {
-          status: "Reorder",
-          title: "Arrange document order",
-          description: "A simulated reorder list shows how final packets are assembled.",
+          status: zh ? "排序" : "Reorder",
+          title: zh ? "调整文档顺序" : "Arrange document order",
+          description: zh ? "排序列表展示最终合并顺序。" : "A simulated reorder list shows how final packets are assembled.",
           preview: (
             <FileListPreview
               files={["proposal.pdf", "invoice.pdf", "appendix.pdf"]}
@@ -719,100 +826,100 @@ function getWorkflowStates(config: PdfToolPageConfig): WorkflowState[] {
           ),
         },
         {
-          status: "Result",
-          title: "Download merged PDF",
-          description: "The final state points users to one organized output file.",
+          status: zh ? "结果" : "Result",
+          title: zh ? "下载合并后的 PDF" : "Download merged PDF",
+          description: zh ? "最终状态指向一个有序输出文件。" : "The final state points users to one organized output file.",
           preview: "client-packet-merged.pdf",
-          actionLabel: "Download merged PDF",
+          actionLabel: zh ? "下载合并 PDF" : "Download merged PDF",
         },
       ];
     case "split-pdf":
       return [
         {
-          status: "Upload",
-          title: "Upload PDF",
-          description: "Choose a file and review the pages available for splitting.",
+          status: zh ? "上传" : "Upload",
+          title: zh ? "上传 PDF" : "Upload PDF",
+          description: zh ? "选择文件并查看可拆分页数。" : "Choose a file and review the pages available for splitting.",
           preview: "handbook.pdf - 42 pages",
         },
         {
-          status: "Range",
-          title: "Enter page ranges",
-          description: "A clear range field helps users extract focused sections.",
+          status: zh ? "范围" : "Range",
+          title: zh ? "输入页面范围" : "Enter page ranges",
+          description: zh ? "清晰的范围输入帮助用户提取特定页面。" : "A clear range field helps users extract focused sections.",
           preview: <RangePreview />,
         },
         {
-          status: "Export",
-          title: "Download split ZIP",
-          description: "Split outputs are grouped as a ZIP-ready export.",
+          status: zh ? "导出" : "Export",
+          title: zh ? "下载拆分 ZIP" : "Download split ZIP",
+          description: zh ? "拆分结果以 ZIP 形式导出。" : "Split outputs are grouped as a ZIP-ready export.",
           preview: "handbook-split-pages.zip",
-          actionLabel: "Export ZIP",
+          actionLabel: zh ? "导出 ZIP" : "Export ZIP",
         },
       ];
     case "pdf-to-word":
       return [
         {
-          status: "Upload",
-          title: "Upload PDF",
-          description: "Choose a PDF and prepare it for editable document conversion.",
+          status: zh ? "上传" : "Upload",
+          title: zh ? "上传 PDF" : "Upload PDF",
+          description: zh ? "选择 PDF 并准备转换为可编辑文档。" : "Choose a PDF and prepare it for editable document conversion.",
           preview: "contract.pdf",
         },
         {
-          status: "Converting",
-          title: "Build Word structure",
-          description: "The flow simulates text, headings, and layout conversion.",
-          preview: <ProgressPreview label="Converting to DOCX" value="72%" />,
+          status: zh ? "转换中" : "Converting",
+          title: zh ? "生成 Word 结构" : "Build Word structure",
+          description: zh ? "流程展示文本、标题和布局转换。" : "The flow simulates text, headings, and layout conversion.",
+          preview: <ProgressPreview label={zh ? "正在转换 DOCX" : "Converting to DOCX"} value="72%" />,
         },
         {
-          status: "Preview",
-          title: "Editable document output",
-          description: "A Word-ready preview gives users confidence before download.",
+          status: zh ? "预览" : "Preview",
+          title: zh ? "可编辑文档输出" : "Editable document output",
+          description: zh ? "Word 风格预览让用户在下载前理解结果。" : "A Word-ready preview gives users confidence before download.",
           preview: <DocumentPreview />,
-          actionLabel: "Download DOCX",
+          actionLabel: zh ? "下载 DOCX" : "Download DOCX",
         },
       ];
     case "ocr-pdf":
       return [
         {
-          status: "Upload",
-          title: "Upload scanned PDF",
-          description: "Choose a scanned file or image-based PDF for text extraction.",
+          status: zh ? "上传" : "Upload",
+          title: zh ? "上传扫描 PDF" : "Upload scanned PDF",
+          description: zh ? "选择扫描件或图片型 PDF 进行文字提取。" : "Choose a scanned file or image-based PDF for text extraction.",
           preview: "scanned-receipts.pdf",
         },
         {
           status: "OCR",
-          title: "Extract text",
-          description: "The workflow simulates OCR detection and clean text output.",
-          preview: <ProgressPreview label="Recognizing text" value="81%" />,
+          title: zh ? "提取文字" : "Extract text",
+          description: zh ? "流程展示 OCR 识别和文本输出。" : "The workflow simulates OCR detection and clean text output.",
+          preview: <ProgressPreview label={zh ? "正在识别文字" : "Recognizing text"} value="81%" />,
         },
         {
-          status: "Text",
-          title: "Copy or download text",
-          description: "The result state includes copy text and download text actions.",
+          status: zh ? "文本" : "Text",
+          title: zh ? "复制或下载文本" : "Copy or download text",
+          description: zh ? "结果状态提供复制文本和下载文本操作。" : "The result state includes copy text and download text actions.",
           preview: <TextOutputPreview />,
-          actionLabel: "Copy text",
-          secondaryActionLabel: "Download .txt",
+          actionLabel: zh ? "复制文本" : "Copy text",
+          secondaryActionLabel: zh ? "下载 .txt" : "Download .txt",
         },
       ];
     case "jpg-to-pdf":
       return [
         {
-          status: "Images",
-          title: "Upload JPG, PNG, or WebP",
-          description: "Add photos, scans, or image files for document creation.",
+          status: zh ? "图片" : "Images",
+          title: zh ? "上传 JPG、PNG 或 WebP" : "Upload JPG, PNG, or WebP",
+          description: zh ? "添加照片、扫描图或图片文件用于创建 PDF。" : "Add photos, scans, or image files for document creation.",
           preview: "receipt-1.jpg + receipt-2.png + notes.webp",
         },
         {
-          status: "Order",
-          title: "Arrange page order",
-          description: "A simulated preview shows image pages before PDF export.",
+          status: zh ? "排序" : "Order",
+          title: zh ? "调整页面顺序" : "Arrange page order",
+          description: zh ? "图片页面预览展示导出前的顺序。" : "A simulated preview shows image pages before PDF export.",
           preview: <ImageOrderPreview />,
         },
         {
-          status: "Export",
-          title: "Download PDF",
-          description: "The final state prepares a single PDF export CTA.",
+          status: zh ? "导出" : "Export",
+          title: zh ? "下载 PDF" : "Download PDF",
+          description: zh ? "最终状态提供单个 PDF 导出按钮。" : "The final state prepares a single PDF export CTA.",
           preview: "photos-to-document.pdf",
-          actionLabel: "Export PDF",
+          actionLabel: zh ? "导出 PDF" : "Export PDF",
         },
       ];
     default:
