@@ -33,8 +33,8 @@ export function Header() {
   const copy = navCopy[locale];
   const usePrefix = path.hasLocalePrefix;
   const currentSlug = isRouteSlug(path.slug) ? path.slug : "";
-  const enHref = localizedPath("en", currentSlug);
-  const zhHref = localizedPath("zh", currentSlug);
+  const enHref = languageHref("en", path.slug);
+  const zhHref = languageHref("zh", path.slug);
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#cbd5e1] bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.04)] backdrop-blur">
@@ -106,4 +106,9 @@ export function Header() {
       </div>
     </header>
   );
+}
+
+function languageHref(locale: Locale, slug: string) {
+  const clean = slug.replace(/^\/+|\/+$/g, "");
+  return clean ? `/${locale}/${clean}/` : localizedPath(locale, "");
 }

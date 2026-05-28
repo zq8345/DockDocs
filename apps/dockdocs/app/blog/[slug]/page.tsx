@@ -1,0 +1,79 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { BlogArticlePage } from "@/components/BlogPages";
+import {
+  blogArticleAlternates,
+  blogArticlePath,
+  blogArticleSlugs,
+  getBlogArticle,
+  getBlogArticleContent,
+} from "@/lib/blog";
+
+export const dynamicParams = false;
+
+type PageParams = {
+  slug: string;
+};
+
+export function generateStaticParams() {
+  return blogArticleSlugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<PageParams>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const article = getBlogArticle(slug);
+
+  if (!article) {
+    return {};
+  }
+
+  const content = getBlogArticleContent(article, "en");
+  const canonical = blogArticlePath(article.slug);
+
+  return {
+    title: content.title,
+    description: content.description,
+    keywords: article.keywords,
+    alternates: {
+      canonical,
+      languages: blogArticleAlternates(article.slug),
+    },
+    openGraph: {
+      title: content.title,
+      description: content.description,
+      url: `https://dockdocs.app${canonical}`,
+      siteName: "DockDocs",
+      type: "article",
+      publishedTime: article.publishedAt,
+      modifiedTime: article.updatedAt,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: content.title,
+      description: content.description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
+
+export default async function BlogArticleRoute({
+  params,
+}: {
+  params: Promise<PageParams>;
+}) {
+  const { slug } = await params;
+  const article = getBlogArticle(slug);
+
+  if (!article) {
+    notFound();
+  }
+
+  return <BlogArticlePage article={article} />;
+}

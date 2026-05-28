@@ -4,8 +4,18 @@ import {
   createPdfToolMetadata,
   PdfToolPage,
 } from "../../../../../shared/templates/pdf-tool-page";
+import { BlogArticlePage, BlogIndexPage } from "@/components/BlogPages";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
+import {
+  blogArticleAlternates,
+  blogArticlePath,
+  blogArticles,
+  blogArticleSlugs,
+  blogIndexCopy,
+  getBlogArticle,
+  getBlogArticleContent,
+} from "@/lib/blog";
 import {
   getInfoPage,
   infoPageSlugs,
@@ -31,12 +41,21 @@ type PageParams = {
 };
 
 export function generateStaticParams() {
-  return locales.flatMap((locale) =>
+  const standardRoutes = locales.flatMap((locale) =>
     routeSlugs.map((slug) => ({
       locale,
       slug: slug ? slug.split("/") : [],
     })),
   );
+
+  const blogRoutes = locales.flatMap((locale) =>
+    blogArticleSlugs.map((slug) => ({
+      locale,
+      slug: ["blog", slug],
+    })),
+  );
+
+  return [...standardRoutes, ...blogRoutes];
 }
 
 export async function generateMetadata({
@@ -47,6 +66,45 @@ export async function generateMetadata({
   const { locale: rawLocale, slug: rawSlug } = await params;
   if (!isLocale(rawLocale)) {
     return {};
+  }
+
+  const blogSlug = getLocalizedBlogArticleSlug(rawSlug);
+  if (blogSlug) {
+    const article = getBlogArticle(blogSlug);
+    if (!article) {
+      return {};
+    }
+
+    const content = getBlogArticleContent(article, rawLocale);
+    const canonical = blogArticlePath(article.slug, rawLocale);
+
+    return {
+      title: content.title,
+      description: content.description,
+      keywords: article.keywords,
+      alternates: {
+        canonical,
+        languages: blogArticleAlternates(article.slug),
+      },
+      openGraph: {
+        title: content.title,
+        description: content.description,
+        url: `https://dockdocs.app${canonical}`,
+        siteName: "DockDocs",
+        type: "article",
+        publishedTime: article.publishedAt,
+        modifiedTime: article.updatedAt,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: content.title,
+        description: content.description,
+      },
+      robots: {
+        index: true,
+        follow: true,
+      },
+    };
   }
 
   const slug = normalizeSlug(rawSlug);
@@ -61,6 +119,18 @@ export async function generateMetadata({
   }
 
   if ((infoPageSlugs as readonly string[]).includes(slug)) {
+    if (slug === "blog") {
+      const page = blogIndexCopy[rawLocale];
+      return {
+        title: page.title,
+        description: page.description,
+        alternates: {
+          canonical: localizedPath(rawLocale, "blog"),
+          languages: languageAlternates("blog"),
+        },
+      };
+    }
+
     const page = getInfoPage(rawLocale, slug as InfoPageSlug);
     return {
       title: page.title,
@@ -117,6 +187,23 @@ export default async function LocalizedRoute({
     notFound();
   }
 
+  const blogSlug = getLocalizedBlogArticleSlug(rawSlug);
+  if (blogSlug) {
+    const article = getBlogArticle(blogSlug);
+
+    if (!article) {
+      notFound();
+    }
+
+    return (
+      <BlogArticlePage
+        article={article}
+        locale={rawLocale}
+        useLocalePrefix
+      />
+    );
+  }
+
   const slug = normalizeSlug(rawSlug);
   if (slug === null) {
     notFound();
@@ -129,6 +216,10 @@ export default async function LocalizedRoute({
   }
 
   if ((infoPageSlugs as readonly string[]).includes(slug)) {
+    if (slug === "blog") {
+      return <BlogIndexPage locale={rawLocale} useLocalePrefix />;
+    }
+
     return (
       <SaasInfoPage
         page={getInfoPage(rawLocale, slug as InfoPageSlug)}
@@ -147,6 +238,14 @@ export default async function LocalizedRoute({
   }
 
   return <LocalizedHome locale={rawLocale} />;
+}
+
+function getLocalizedBlogArticleSlug(rawSlug?: string[]) {
+  if (rawSlug?.length === 2 && rawSlug[0] === "blog") {
+    return rawSlug[1];
+  }
+
+  return null;
 }
 
 const homeCopy = {
@@ -410,6 +509,13 @@ function LocalizedSitemap({ locale }: { locale: Locale }) {
                 terms: "Terms",
               }[slug],
         href: localizedPath(locale, slug as RouteSlug),
+      })),
+    },
+    {
+      title: locale === "zh" ? "博客指南" : "Blog Guides",
+      links: blogArticles.map((article) => ({
+        name: getBlogArticleContent(article, locale).title,
+        href: blogArticlePath(article.slug, locale),
       })),
     },
   ];

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Container, Section } from "@dock/shared/ui";
+import { blogArticlePath, blogArticles, getBlogArticleContent } from "@/lib/blog";
 import { languageAlternates } from "@/lib/i18n";
 
 export const metadata: Metadata = {
@@ -29,6 +30,14 @@ const groups = [
     title: "AI Workspace",
     description: "AI enhancement pages for document understanding and workflow support.",
     links: [{ name: "AI Document Workspace", href: "/ai-workspace" }],
+  },
+  {
+    title: "Blog Guides",
+    description: "Search-focused PDF workflow resources and evergreen guides.",
+    links: blogArticles.map((article) => ({
+      name: getBlogArticleContent(article, "en").title,
+      href: blogArticlePath(article.slug),
+    })),
   },
   {
     title: "Support and Trust",

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { blogArticlePath, blogArticleSlugs } from "@/lib/blog";
 import { locales, localizedPath, routeSlugs } from "@/lib/i18n";
 
 export const dynamic = "force-static";
@@ -27,14 +28,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const localizedPages = locales.flatMap((locale) =>
     routeSlugs.map((slug) => localizedPath(locale, slug)),
   );
+  const blogPages = blogArticleSlugs.map((slug) => blogArticlePath(slug));
+  const localizedBlogPages = locales.flatMap((locale) =>
+    blogArticleSlugs.map((slug) => blogArticlePath(slug, locale)),
+  );
   const now = new Date();
 
   return [
-    ...[...localPages, ...localizedPages].map((path) => ({
+    ...[...localPages, ...localizedPages, ...blogPages, ...localizedBlogPages].map((path) => ({
       url: `${baseUrl}${path}`,
       lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: path === "/" ? 1 : 0.6,
+      changeFrequency: path.includes("/blog/") ? ("weekly" as const) : ("monthly" as const),
+      priority: path === "/" ? 1 : path.includes("/blog/") ? 0.7 : 0.6,
     })),
   ];
 }
