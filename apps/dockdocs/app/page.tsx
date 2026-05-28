@@ -87,6 +87,25 @@ const discoveryGroups = [
   },
 ];
 
+const aiWorkspaceFeatures = [
+  {
+    title: "OCR",
+    description: "Extract reusable text from scanned PDFs and image-based documents.",
+  },
+  {
+    title: "AI Summary",
+    description: "Turn long documents into concise notes, briefs, and next steps.",
+  },
+  {
+    title: "Chat with PDF",
+    description: "Ask questions across document content without losing file context.",
+  },
+  {
+    title: "Workflow",
+    description: "Connect upload, convert, OCR, summarize, and reuse actions.",
+  },
+];
+
 export default function Home() {
   return (
     <main className="bg-[#fbfbf8] text-[#171717] dark:bg-[color:var(--background)] dark:text-[color:var(--foreground)]">
@@ -245,30 +264,40 @@ export default function Home() {
         </Container>
       </Section>
 
-      <section className="bg-[#10100f] text-[#f7f7f2]">
-        <Container className="grid gap-8 py-16 lg:grid-cols-[1fr_0.8fr] lg:items-center">
+      <section className="bg-white py-6 dark:bg-[color:var(--background)]">
+        <Container>
+          <div className="rounded-lg bg-[#10100f] p-6 text-[#f7f7f2] sm:p-8 lg:p-10">
+            <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           <div>
             <p className="text-sm font-medium uppercase tracking-[0.16em] text-[#aaa99f]">
-              AI Document Workspace
+              AI Workspace layer
             </p>
             <h2 className="mt-4 text-3xl font-semibold leading-tight">
-              DockDocs is growing beyond single PDF actions.
+              More than PDF tools, without replacing the PDF tools.
             </h2>
             <p className="mt-5 max-w-2xl leading-7 text-[#c9c8bd]">
-              The same product will evolve into a workspace where users can
-              organize, convert, summarize, OCR, and work with documents in one
-              connected flow.
+              The main DockDocs experience stays focused on clear PDF tool
+              discovery. AI Workspace features extend that workflow when users
+              need OCR, summaries, document chat, or multi-step automation.
             </p>
-          </div>
-          <div className="rounded-lg border border-white/15 bg-white/[0.04] p-5">
-            <div className="grid gap-3 text-sm text-[#d9d8ce]">
-              <div className="rounded-md border border-white/10 p-4">Organize document workflows</div>
-              <div className="rounded-md border border-white/10 p-4">Convert and OCR PDF files</div>
-              <div className="rounded-md border border-white/10 p-4">Summarize and reuse document text</div>
-            </div>
-            <ButtonLink href="/ai-workspace" variant="inverse" className="mt-5">
+            <ButtonLink href="/ai-workspace" variant="inverse" className="mt-6">
               Explore AI Workspace
             </ButtonLink>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {aiWorkspaceFeatures.map((feature) => (
+              <div
+                key={feature.title}
+                className="rounded-md border border-white/10 bg-white/[0.04] p-4"
+              >
+                <h3 className="text-sm font-semibold">{feature.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-[#c9c8bd]">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+            </div>
           </div>
         </Container>
       </section>

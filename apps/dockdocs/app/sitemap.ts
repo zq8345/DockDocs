@@ -8,15 +8,15 @@ const baseUrl = "https://dockdocs.app";
 export default function sitemap(): MetadataRoute.Sitemap {
   const localPages = [
     "/",
-    "/compress-pdf",
-    "/merge-pdf",
-    "/split-pdf",
-    "/pdf-to-word",
-    "/ocr-pdf",
-    "/ai-workspace",
-    "/privacy-policy",
-    "/terms",
-    "/sitemap",
+    "/compress-pdf/",
+    "/merge-pdf/",
+    "/split-pdf/",
+    "/pdf-to-word/",
+    "/ocr-pdf/",
+    "/ai-workspace/",
+    "/privacy-policy/",
+    "/terms/",
+    "/sitemap/",
   ];
   const now = new Date();
 
@@ -27,7 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: path === "/" ? 1 : 0.6,
     })),
-    ...dockBrands.map((tool) => ({
+    ...dockBrands.filter((tool) => tool.url !== baseUrl).map((tool) => ({
       url: tool.url,
       lastModified: now,
       changeFrequency: "weekly" as const,
