@@ -5,6 +5,7 @@ import {
   PdfToolPage,
 } from "../../../../../shared/templates/pdf-tool-page";
 import { BlogArticlePage, BlogIndexPage } from "@/components/BlogPages";
+import { GeoHubPage } from "@/components/GeoHubPage";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 import {
@@ -16,8 +17,10 @@ import {
   getBlogArticle,
   getBlogArticleContent,
 } from "@/lib/blog";
+import { createGeoHubMetadata, getGeoHub } from "@/lib/geo";
 import {
   getInfoPage,
+  geoPageSlugs,
   infoPageSlugs,
   isLocale,
   languageAlternates,
@@ -26,6 +29,7 @@ import {
   normalizeSlug,
   routeSlugs,
   toolSlugs,
+  type GeoPageSlug,
   type InfoPageSlug,
   type Locale,
   type RouteSlug,
@@ -116,6 +120,11 @@ export async function generateMetadata({
     return createPdfToolMetadata(
       getLocalizedToolConfig(rawLocale, slug as ToolSlug),
     );
+  }
+
+  if ((geoPageSlugs as readonly string[]).includes(slug)) {
+    const hub = getGeoHub(rawLocale, slug as GeoPageSlug);
+    return createGeoHubMetadata(hub, localizedPath(rawLocale, slug));
   }
 
   if ((infoPageSlugs as readonly string[]).includes(slug)) {
@@ -212,6 +221,16 @@ export default async function LocalizedRoute({
   if ((toolSlugs as readonly string[]).includes(slug)) {
     return (
       <PdfToolPage config={getLocalizedToolConfig(rawLocale, slug as ToolSlug)} />
+    );
+  }
+
+  if ((geoPageSlugs as readonly string[]).includes(slug)) {
+    return (
+      <GeoHubPage
+        hub={getGeoHub(rawLocale, slug as GeoPageSlug)}
+        locale={rawLocale}
+        useLocalePrefix
+      />
     );
   }
 
@@ -517,6 +536,16 @@ function LocalizedSitemap({ locale }: { locale: Locale }) {
         name: getBlogArticleContent(article, locale).title,
         href: blogArticlePath(article.slug, locale),
       })),
+    },
+    {
+      title: locale === "zh" ? "GEO 资源中心" : "GEO Hubs",
+      links: (geoPageSlugs as readonly GeoPageSlug[]).map((geoSlug) => {
+        const hub = getGeoHub(locale, geoSlug);
+        return {
+          name: hub.eyebrow,
+          href: localizedPath(locale, geoSlug),
+        };
+      }),
     },
   ];
 

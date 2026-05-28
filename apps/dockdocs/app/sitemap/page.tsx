@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Container, Section } from "@dock/shared/ui";
 import { blogArticlePath, blogArticles, getBlogArticleContent } from "@/lib/blog";
-import { languageAlternates } from "@/lib/i18n";
+import { getGeoHub } from "@/lib/geo";
+import { geoPageSlugs, languageAlternates } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Sitemap | DockDocs",
@@ -30,6 +31,14 @@ const groups = [
     title: "AI Workspace",
     description: "AI enhancement pages for document understanding and workflow support.",
     links: [{ name: "AI Document Workspace", href: "/ai-workspace" }],
+  },
+  {
+    title: "GEO Hubs",
+    description: "AI-answer-friendly resource hubs for guides, workflows, and AI PDF content.",
+    links: geoPageSlugs.map((slug) => ({
+      name: getGeoHub("en", slug).eyebrow,
+      href: `/${slug}`,
+    })),
   },
   {
     title: "Blog Guides",

@@ -10,6 +10,9 @@ import {
 
 const footerLinks = [
   { key: "relatedTools", href: "#related-tools" },
+  { key: "resources", href: "/resources" },
+  { key: "guides", href: "/guides" },
+  { key: "aiPdfGuides", href: "/ai-pdf-guides" },
   { key: "aiWorkspace", href: "/ai-workspace" },
   { key: "about", href: "/about" },
   { key: "help", href: "/help" },

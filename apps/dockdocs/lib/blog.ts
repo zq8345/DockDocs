@@ -5,6 +5,7 @@ import {
   siteUrl,
   type Locale,
 } from "@/lib/i18n";
+import { batch2Articles } from "@/lib/blog-batch2";
 
 export const blogArticleSlugs = [
   "how-to-compress-pdf-for-email",
@@ -12,6 +13,14 @@ export const blogArticleSlugs = [
   "how-to-ocr-scanned-pdf-files",
   "merge-pdf-without-losing-quality",
   "convert-pdf-to-word-editable-document",
+  "how-to-reduce-pdf-file-size",
+  "compress-pdf-without-losing-quality",
+  "how-to-merge-pdf-files-online",
+  "how-to-split-pdf-pages",
+  "jpg-to-pdf-on-iphone",
+  "convert-image-to-pdf-online",
+  "ocr-pdf-to-text-online",
+  "pdf-to-word-for-editing",
 ] as const;
 
 export type BlogArticleSlug = (typeof blogArticleSlugs)[number];
@@ -1072,6 +1081,7 @@ export const blogArticles: BlogArticle[] = [
       },
     },
   },
+  ...batch2Articles,
 ];
 
 const articleMap = new Map(blogArticles.map((article) => [article.slug, article]));

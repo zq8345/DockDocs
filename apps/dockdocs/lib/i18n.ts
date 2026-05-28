@@ -14,6 +14,9 @@ export const routeSlugs = [
   "ocr-pdf",
   "jpg-to-pdf",
   "ai-workspace",
+  "resources",
+  "guides",
+  "ai-pdf-guides",
   "about",
   "blog",
   "help",
@@ -36,6 +39,10 @@ export const toolSlugs = [
 ] as const;
 
 export type ToolSlug = (typeof toolSlugs)[number];
+
+export const geoPageSlugs = ["resources", "guides", "ai-pdf-guides"] as const;
+
+export type GeoPageSlug = (typeof geoPageSlugs)[number];
 
 export const infoPageSlugs = [
   "about",
@@ -196,6 +203,9 @@ export const relatedToolsCopy = {
 export const footerCopy = {
   en: {
     relatedTools: "Related Tools",
+    resources: "Resources",
+    guides: "Guides",
+    aiPdfGuides: "AI PDF Guides",
     aiWorkspace: "AI Office Workspace",
     about: "About",
     help: "Help",
@@ -207,6 +217,9 @@ export const footerCopy = {
   },
   zh: {
     relatedTools: "相关工具",
+    resources: "资源",
+    guides: "指南",
+    aiPdfGuides: "AI PDF 指南",
     aiWorkspace: "AI 办公工作区",
     about: "关于",
     help: "帮助",
