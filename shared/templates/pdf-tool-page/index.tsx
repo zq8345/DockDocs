@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { ButtonLink, Container, Section } from "../../ui";
+import { PdfWorkflowEngine } from "./workflow-engine";
 
 export type PdfToolItem = {
   title: string;
@@ -332,7 +333,6 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       <HeroSection config={config} />
-      <WorkflowSimulator config={config} />
       <BenefitsSection config={config} />
       <FeaturesSection config={config} />
       <HowItWorksSection config={config} />
@@ -393,54 +393,9 @@ function HeroSection({ config }: { config: PdfToolPageConfig }) {
             ))}
           </dl>
         </div>
-        <UploadCard upload={config.upload} slug={config.slug} />
+        <PdfWorkflowEngine config={config} />
       </Container>
     </Section>
-  );
-}
-
-function UploadCard({
-  upload,
-  slug,
-}: {
-  upload: PdfToolUpload;
-  slug: string;
-}) {
-  const accept = upload.accept ?? "application/pdf";
-  const badge = upload.fileBadge ?? (slug === "jpg-to-pdf" ? "IMG" : "PDF");
-
-  return (
-    <div
-      id="upload"
-      aria-labelledby="upload-title"
-      className="rounded-2xl border border-[#cbd5e1] bg-white p-4 shadow-[0_32px_90px_rgba(24,24,20,0.10)]"
-    >
-      <div className="rounded-xl border border-dashed border-[#94a3b8] bg-[#f8fafc] p-8 text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-[#0f172a] text-lg font-semibold text-white">
-          {badge}
-        </div>
-        <h2 id="upload-title" className="mt-6 text-2xl font-semibold">
-          {upload.title}
-        </h2>
-        <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-[#334155]">
-          {upload.description}
-        </p>
-        <label className="mt-6 inline-flex cursor-pointer rounded-full bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white shadow-[0_10px_24px_rgba(23,23,23,0.16)] transition hover:bg-[#111827]">
-          {upload.buttonLabel}
-          <input
-            type="file"
-            accept={accept}
-            multiple={upload.multiple}
-            className="sr-only"
-          />
-        </label>
-        {upload.note ? (
-          <p className="mt-4 text-xs font-medium text-[#475569]">
-            {upload.note}
-          </p>
-        ) : null}
-      </div>
-    </div>
   );
 }
 
