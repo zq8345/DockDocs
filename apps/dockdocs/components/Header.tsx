@@ -110,5 +110,14 @@ export function Header() {
 
 function languageHref(locale: Locale, slug: string) {
   const clean = slug.replace(/^\/+|\/+$/g, "");
-  return clean ? `/${locale}/${clean}/` : localizedPath(locale, "");
+  const isDynamicContentRoute =
+    clean.startsWith("blog/") ||
+    clean.startsWith("guides/") ||
+    clean.startsWith("resources/");
+
+  if (!clean || (!isRouteSlug(clean) && !isDynamicContentRoute)) {
+    return localizedPath(locale, "");
+  }
+
+  return `/${locale}/${clean}/`;
 }
