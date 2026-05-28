@@ -105,6 +105,12 @@ export async function runPdfToWordBackend({
     zh ? "DOCX 文件已准备好。" : "DOCX file is ready.",
   );
 
+  const provider =
+    response.headers.get("x-dockdocs-conversion-provider") ??
+    response.headers.get("x-dockdocs-conversion-backend") ??
+    "pdf-to-word-backend";
+  const profile = response.headers.get("x-dockdocs-conversion-profile");
+
   return {
     fileName: responseFileName(response) ?? outputFileName,
     blob,
@@ -112,9 +118,7 @@ export async function runPdfToWordBackend({
     fileCount: 1,
     originalSize: file.size,
     convertedSize: blob.size,
-    backend:
-      response.headers.get("x-dockdocs-conversion-backend") ??
-      "pdf-to-word-backend",
+    backend: profile ? `${provider} (${profile})` : provider,
   };
 }
 
@@ -137,9 +141,9 @@ async function readBackendError(response: Response, locale: "en" | "zh") {
     };
 
     if (payload.code === "PDF_TO_WORD_BACKEND_NOT_CONFIGURED") {
-      return zh
+      return payload.message || (zh
         ? "PDF 转 Word 后端尚未配置。文件没有被转换或存储。"
-        : "The PDF to Word backend is not configured yet. No file was converted or stored.";
+        : "The PDF to Word backend is not configured yet. No file was converted or stored.");
     }
 
     return payload.message || payload.details || fallback;
