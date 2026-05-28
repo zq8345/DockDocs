@@ -6,6 +6,7 @@ import {
 } from "../../../../../shared/templates/pdf-tool-page";
 import { BlogArticlePage, BlogIndexPage } from "@/components/BlogPages";
 import { GeoHubPage } from "@/components/GeoHubPage";
+import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 import {
@@ -36,6 +37,13 @@ import {
   type ToolSlug,
 } from "@/lib/i18n";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
+import {
+  createProgrammaticGeoMetadata,
+  getProgrammaticGeoPage,
+  getProgrammaticGeoPageSeeds,
+  programmaticGeoPath,
+  type ProgrammaticGeoSurface,
+} from "@/lib/programmatic-geo";
 
 export const dynamicParams = false;
 
@@ -59,7 +67,14 @@ export function generateStaticParams() {
     })),
   );
 
-  return [...standardRoutes, ...blogRoutes];
+  const programmaticGeoRoutes = locales.flatMap((locale) =>
+    getProgrammaticGeoPageSeeds().map((page) => ({
+      locale,
+      slug: [page.surface, page.slug],
+    })),
+  );
+
+  return [...standardRoutes, ...blogRoutes, ...programmaticGeoRoutes];
 }
 
 export async function generateMetadata({
@@ -70,6 +85,21 @@ export async function generateMetadata({
   const { locale: rawLocale, slug: rawSlug } = await params;
   if (!isLocale(rawLocale)) {
     return {};
+  }
+
+  const programmaticGeoRoute = getLocalizedProgrammaticGeoRoute(rawSlug);
+  if (programmaticGeoRoute) {
+    const page = getProgrammaticGeoPage(
+      rawLocale,
+      programmaticGeoRoute.surface,
+      programmaticGeoRoute.slug,
+    );
+
+    if (!page) {
+      return {};
+    }
+
+    return createProgrammaticGeoMetadata(page, rawLocale, true);
   }
 
   const blogSlug = getLocalizedBlogArticleSlug(rawSlug);
@@ -196,6 +226,27 @@ export default async function LocalizedRoute({
     notFound();
   }
 
+  const programmaticGeoRoute = getLocalizedProgrammaticGeoRoute(rawSlug);
+  if (programmaticGeoRoute) {
+    const page = getProgrammaticGeoPage(
+      rawLocale,
+      programmaticGeoRoute.surface,
+      programmaticGeoRoute.slug,
+    );
+
+    if (!page) {
+      notFound();
+    }
+
+    return (
+      <ProgrammaticGeoPage
+        page={page}
+        locale={rawLocale}
+        useLocalePrefix
+      />
+    );
+  }
+
   const blogSlug = getLocalizedBlogArticleSlug(rawSlug);
   if (blogSlug) {
     const article = getBlogArticle(blogSlug);
@@ -262,6 +313,20 @@ export default async function LocalizedRoute({
 function getLocalizedBlogArticleSlug(rawSlug?: string[]) {
   if (rawSlug?.length === 2 && rawSlug[0] === "blog") {
     return rawSlug[1];
+  }
+
+  return null;
+}
+
+function getLocalizedProgrammaticGeoRoute(rawSlug?: string[]) {
+  if (
+    rawSlug?.length === 2 &&
+    (rawSlug[0] === "guides" || rawSlug[0] === "resources")
+  ) {
+    return {
+      surface: rawSlug[0] as ProgrammaticGeoSurface,
+      slug: rawSlug[1],
+    };
   }
 
   return null;
@@ -536,6 +601,26 @@ function LocalizedSitemap({ locale }: { locale: Locale }) {
         name: getBlogArticleContent(article, locale).title,
         href: blogArticlePath(article.slug, locale),
       })),
+    },
+    {
+      title: locale === "zh" ? "GEO 指南页" : "Programmatic GEO Guides",
+      links: getProgrammaticGeoPageSeeds("guides").map((seed) => {
+        const page = getProgrammaticGeoPage(locale, seed.surface, seed.slug);
+        return {
+          name: page?.title ?? seed.slug,
+          href: programmaticGeoPath(seed.surface, seed.slug, locale),
+        };
+      }),
+    },
+    {
+      title: locale === "zh" ? "GEO 资源页" : "Programmatic GEO Resources",
+      links: getProgrammaticGeoPageSeeds("resources").map((seed) => {
+        const page = getProgrammaticGeoPage(locale, seed.surface, seed.slug);
+        return {
+          name: page?.title ?? seed.slug,
+          href: programmaticGeoPath(seed.surface, seed.slug, locale),
+        };
+      }),
     },
     {
       title: locale === "zh" ? "GEO 资源中心" : "GEO Hubs",

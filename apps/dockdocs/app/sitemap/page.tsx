@@ -3,6 +3,11 @@ import { Container, Section } from "@dock/shared/ui";
 import { blogArticlePath, blogArticles, getBlogArticleContent } from "@/lib/blog";
 import { getGeoHub } from "@/lib/geo";
 import { geoPageSlugs, languageAlternates } from "@/lib/i18n";
+import {
+  getProgrammaticGeoPage,
+  getProgrammaticGeoPageSeeds,
+  programmaticGeoPath,
+} from "@/lib/programmatic-geo";
 
 export const metadata: Metadata = {
   title: "Sitemap | DockDocs",
@@ -38,6 +43,26 @@ const groups = [
     links: geoPageSlugs.map((slug) => ({
       name: getGeoHub("en", slug).eyebrow,
       href: `/${slug}`,
+    })),
+  },
+  {
+    title: "Programmatic GEO Guides",
+    description: "Question-led guide pages generated from high-value PDF workflow clusters.",
+    links: getProgrammaticGeoPageSeeds("guides").map((seed) => ({
+      name:
+        getProgrammaticGeoPage("en", seed.surface, seed.slug)?.title ??
+        seed.slug,
+      href: programmaticGeoPath(seed.surface, seed.slug),
+    })),
+  },
+  {
+    title: "Programmatic GEO Resources",
+    description: "AI-readable resource pages for workflow questions and semantic clusters.",
+    links: getProgrammaticGeoPageSeeds("resources").map((seed) => ({
+      name:
+        getProgrammaticGeoPage("en", seed.surface, seed.slug)?.title ??
+        seed.slug,
+      href: programmaticGeoPath(seed.surface, seed.slug),
     })),
   },
   {

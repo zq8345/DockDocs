@@ -8,6 +8,14 @@ import {
   siteUrl,
   type Locale,
 } from "@/lib/i18n";
+import {
+  getClusterPages,
+  getProgrammaticGeoPage,
+  getProgrammaticGeoPageSeeds,
+  localizedProgrammaticHref,
+  programmaticGeoPath,
+  type GeoSemanticCluster,
+} from "@/lib/programmatic-geo";
 
 type GeoHubPageProps = {
   hub: GeoHubData;
@@ -134,6 +142,62 @@ export function GeoHubPage({
         </Container>
       </Section>
 
+      <Section className="bg-white">
+        <Container>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
+                {locale === "zh" ? "GEO 页面集群" : "GEO semantic clusters"}
+              </p>
+              <h2 className="mt-4 text-3xl font-semibold leading-tight">
+                {locale === "zh"
+                  ? "从真实问题进入相关工具和工作流。"
+                  : "Move from real questions into related tools and workflows."}
+              </h2>
+            </div>
+            <p className="max-w-xl leading-7 text-[#334155]">
+              {locale === "zh"
+                ? "这些页面围绕 PDF 压缩、OCR、转换和 AI PDF 工作流组织，帮助 Google 与 AI answer engines 更好理解 DockDocs。"
+                : "These pages are grouped around PDF compression, OCR, conversion, and AI PDF workflows so Google and AI answer engines can understand DockDocs more clearly."}
+            </p>
+          </div>
+          <div className="mt-8 grid gap-4 lg:grid-cols-3">
+            {getHubProgrammaticPages(hub.slug).map((seed) => {
+              const page = getProgrammaticGeoPage(locale, seed.surface, seed.slug);
+
+              if (!page) {
+                return null;
+              }
+
+              return (
+                <a
+                  key={`${seed.surface}-${seed.slug}`}
+                  href={localizedProgrammaticHref(
+                    programmaticGeoPath(seed.surface, seed.slug),
+                    locale,
+                    useLocalePrefix,
+                  )}
+                  className="group rounded-xl border border-[#cbd5e1] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0f172a] hover:shadow-[0_18px_40px_rgba(24,24,20,0.08)]"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#475569]">
+                    {seed.cluster}
+                  </p>
+                  <h3 className="mt-4 text-xl font-semibold leading-tight">
+                    {page.title}
+                  </h3>
+                  <p className="mt-4 text-sm leading-6 text-[#334155]">
+                    {page.description}
+                  </p>
+                  <span className="mt-5 inline-block text-sm font-semibold text-[#0f172a] transition group-hover:translate-x-0.5">
+                    {locale === "zh" ? "打开工作流" : "Open workflow"} -&gt;
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </Container>
+      </Section>
+
       <Section bordered={false} className="bg-white">
         <Container>
           <div className="rounded-2xl border border-[#cbd5e1] bg-[#0f172a] p-6 text-white shadow-[0_24px_60px_rgba(24,24,20,0.10)] sm:p-8">
@@ -164,6 +228,19 @@ export function GeoHubPage({
       </Section>
     </main>
   );
+}
+
+function getHubProgrammaticPages(slug: GeoHubData["slug"]) {
+  if (slug === "guides") {
+    return getProgrammaticGeoPageSeeds("guides");
+  }
+
+  if (slug === "ai-pdf-guides") {
+    const aiClusters: GeoSemanticCluster[] = ["ai-pdf", "ocr-pdf"];
+    return aiClusters.flatMap((cluster) => getClusterPages(cluster));
+  }
+
+  return getProgrammaticGeoPageSeeds("resources");
 }
 
 function createGeoHubSchema(

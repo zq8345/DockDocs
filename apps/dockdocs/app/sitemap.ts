@@ -11,6 +11,11 @@ import {
   pathForSlug,
   routeSlugs,
 } from "@/lib/i18n";
+import {
+  getProgrammaticGeoPageSeeds,
+  programmaticGeoAlternates,
+  programmaticGeoPath,
+} from "@/lib/programmatic-geo";
 
 export const dynamic = "force-static";
 
@@ -44,6 +49,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
         ),
       ),
     ),
+    ...getProgrammaticGeoPageSeeds().map((page) =>
+      createSitemapEntry(
+        programmaticGeoPath(page.surface, page.slug),
+        now,
+        programmaticGeoAlternates(page.surface, page.slug),
+      ),
+    ),
+    ...locales.flatMap((locale) =>
+      getProgrammaticGeoPageSeeds().map((page) =>
+        createSitemapEntry(
+          programmaticGeoPath(page.surface, page.slug, locale),
+          now,
+          programmaticGeoAlternates(page.surface, page.slug),
+        ),
+      ),
+    ),
   ];
 }
 
@@ -55,12 +76,19 @@ function createSitemapEntry(
   return {
     url: `${baseUrl}${path}`,
     lastModified,
-    changeFrequency: path.includes("/blog/")
+    changeFrequency: path.includes("/blog/") || path.includes("/guides/")
       ? "weekly"
       : path === "/"
         ? "weekly"
         : "monthly",
-    priority: path === "/" ? 1 : path.includes("/blog/") ? 0.7 : 0.6,
+    priority:
+      path === "/"
+        ? 1
+        : path.includes("/blog/") ||
+            path.includes("/guides/") ||
+            path.includes("/resources/")
+          ? 0.7
+          : 0.6,
     alternates: {
       languages,
     },
