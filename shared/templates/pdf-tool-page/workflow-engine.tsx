@@ -3,6 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ButtonHTMLAttributes } from "react";
 import type { PdfToolPageConfig } from "./index";
+import {
+  createZipArchive,
+  getPdfRuntimeErrorMessage,
+  isRealPdfRuntimeSlug,
+  runPdfRuntime,
+  type PdfRuntimeArtifact,
+} from "./pdf-runtime";
 
 type WorkflowStatus =
   | "idle"
@@ -35,6 +42,7 @@ type WorkflowResult = {
   description: string;
   rows: Array<[string, string]>;
   preview?: "text" | "document" | "image-order" | "ranges";
+  previewText?: string;
 };
 
 const mb = 1024 * 1024;
@@ -51,20 +59,24 @@ export function PdfWorkflowEngine({
   const zh = locale === "zh";
   const spec = useMemo(() => getWorkflowSpec(config), [config]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const processingRunRef = useRef(0);
   const [status, setStatus] = useState<WorkflowStatus>("idle");
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [progress, setProgress] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
-  const [pageRanges, setPageRanges] = useState("1-4, 12-18");
+  const [pageRanges, setPageRanges] = useState("1");
   const [ocrConfirmed, setOcrConfirmed] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [runtimeArtifact, setRuntimeArtifact] =
+    useState<PdfRuntimeArtifact | null>(null);
 
   const totalSize = files.reduce((sum, item) => sum + item.file.size, 0);
   const result = useMemo(
-    () => getWorkflowResult(config, files, pageRanges),
-    [config, files, pageRanges],
+    () => getWorkflowResult(config, files, pageRanges, runtimeArtifact),
+    [config, files, pageRanges, runtimeArtifact],
   );
 
   useEffect(() => {
@@ -91,37 +103,6 @@ export function PdfWorkflowEngine({
     return () => window.clearInterval(interval);
   }, [status]);
 
-  useEffect(() => {
-    if (status !== "processing") {
-      return;
-    }
-
-    setProgress(0);
-    setStepIndex(0);
-    const interval = window.setInterval(() => {
-      setProgress((current) => {
-        const next = Math.min(100, current + 7);
-        const nextStep = Math.min(
-          spec.steps.length - 1,
-          Math.floor((next / 100) * spec.steps.length),
-        );
-        setStepIndex(nextStep);
-
-        if (next === 100) {
-          window.clearInterval(interval);
-          window.setTimeout(() => {
-            setStatus("result");
-            setProgress(100);
-          }, 260);
-        }
-
-        return next;
-      });
-    }, 180);
-
-    return () => window.clearInterval(interval);
-  }, [spec.steps.length, status]);
-
   function chooseFiles(fileList: FileList | File[]) {
     const selected = Array.from(fileList);
     const validation = validateFiles(selected, files, config, spec);
@@ -134,11 +115,12 @@ export function PdfWorkflowEngine({
 
     setError("");
     setCopied(false);
+    setRuntimeArtifact(null);
     setFiles(validation.files);
     setStatus("uploading");
   }
 
-  function startProcessing() {
+  async function startProcessing() {
     if (files.length < spec.minFiles) {
       setError(
         zh
@@ -170,13 +152,85 @@ export function PdfWorkflowEngine({
     }
 
     setError("");
+    setRuntimeArtifact(null);
+    setProgress(0);
+    setStepIndex(0);
     setStatus("processing");
+
+    const runId = processingRunRef.current + 1;
+    processingRunRef.current = runId;
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    const applyProgress = (nextProgress: number, nextStepIndex?: number) => {
+      if (processingRunRef.current !== runId) {
+        return;
+      }
+
+      const safeProgress = Math.max(0, Math.min(100, nextProgress));
+      setProgress(safeProgress);
+      setStepIndex(
+        nextStepIndex ??
+          Math.min(
+            spec.steps.length - 1,
+            Math.floor((safeProgress / 100) * spec.steps.length),
+          ),
+      );
+    };
+
+    try {
+      if (isRealPdfRuntimeSlug(config.slug)) {
+        const artifact = await runPdfRuntime({
+          slug: config.slug,
+          files: files.map((item) => item.file),
+          pageRanges,
+          outputFileName: spec.outputFileName,
+          locale,
+          signal: controller.signal,
+          onProgress: ({ progress: nextProgress, stepIndex: nextStepIndex }) =>
+            applyProgress(nextProgress, nextStepIndex),
+        });
+
+        if (processingRunRef.current !== runId || controller.signal.aborted) {
+          return;
+        }
+
+        setRuntimeArtifact(artifact);
+      } else {
+        await runSimulatedProcessing({
+          steps: spec.steps,
+          signal: controller.signal,
+          onProgress: applyProgress,
+        });
+      }
+
+      if (processingRunRef.current !== runId || controller.signal.aborted) {
+        return;
+      }
+
+      setProgress(100);
+      setStepIndex(spec.steps.length - 1);
+      setStatus("result");
+    } catch (processingError) {
+      if (processingRunRef.current !== runId || controller.signal.aborted) {
+        return;
+      }
+
+      setError(getPdfRuntimeErrorMessage(processingError, locale));
+      setStatus("error");
+    } finally {
+      if (processingRunRef.current === runId) {
+        abortControllerRef.current = null;
+      }
+    }
   }
 
   function removeFile(id: string) {
     const nextFiles = files.filter((item) => item.id !== id);
     setFiles(nextFiles);
     setCopied(false);
+    setRuntimeArtifact(null);
     if (!nextFiles.length) {
       setStatus("idle");
       setProgress(0);
@@ -195,12 +249,16 @@ export function PdfWorkflowEngine({
     const [item] = nextFiles.splice(index, 1);
     nextFiles.splice(nextIndex, 0, item);
     setFiles(nextFiles);
+    setRuntimeArtifact(null);
     if (status === "result") {
       setStatus("ready");
     }
   }
 
   function resetWorkflow() {
+    processingRunRef.current += 1;
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
     setStatus("idle");
     setFiles([]);
     setProgress(0);
@@ -208,8 +266,9 @@ export function PdfWorkflowEngine({
     setError("");
     setIsDragging(false);
     setCopied(false);
+    setRuntimeArtifact(null);
     setOcrConfirmed(false);
-    setPageRanges("1-4, 12-18");
+    setPageRanges("1");
     if (inputRef.current) {
       inputRef.current.value = "";
     }
@@ -221,7 +280,8 @@ export function PdfWorkflowEngine({
   }
 
   function downloadPrimaryResult() {
-    const artifact = createWorkflowArtifact(config, files, pageRanges);
+    const artifact =
+      runtimeArtifact ?? createWorkflowArtifact(config, files, pageRanges);
     downloadBlob(artifact.blob, artifact.fileName);
   }
 
@@ -230,6 +290,7 @@ export function PdfWorkflowEngine({
       id="upload"
       data-workflow-engine={config.slug}
       data-workflow-status={status}
+      data-real-runtime={isRealPdfRuntimeSlug(config.slug)}
       aria-labelledby="workflow-upload-title"
       className="rounded-2xl border border-[#cbd5e1] bg-white p-4 shadow-[0_32px_90px_rgba(24,24,20,0.10)]"
     >
@@ -632,7 +693,7 @@ function WorkflowResultState({
         ))}
       </dl>
       {result.preview ? (
-        <ResultPreview type={result.preview} />
+        <ResultPreview type={result.preview} text={result.previewText} />
       ) : null}
       <div className="mt-5 grid gap-2 sm:grid-cols-2">
         {onCopy ? (
@@ -672,7 +733,13 @@ function WorkflowResultState({
   );
 }
 
-function ResultPreview({ type }: { type: WorkflowResult["preview"] }) {
+function ResultPreview({
+  type,
+  text,
+}: {
+  type: WorkflowResult["preview"];
+  text?: string;
+}) {
   if (type === "text") {
     return (
       <textarea
@@ -714,7 +781,7 @@ function ResultPreview({ type }: { type: WorkflowResult["preview"] }) {
   if (type === "ranges") {
     return (
       <div className="mt-4 rounded-lg border border-[#bbf7d0] bg-white p-3 text-sm font-semibold text-[#0f172a]">
-        pages-1-4.pdf / pages-12-18.pdf
+        {text ?? "page-1.pdf"}
       </div>
     );
   }
@@ -1026,10 +1093,14 @@ function getWorkflowResult(
   config: PdfToolPageConfig,
   files: UploadedFile[],
   pageRanges: string,
+  artifact?: PdfRuntimeArtifact | null,
 ): WorkflowResult {
   const zh = (config.locale ?? "en") === "zh";
   const totalSize = files.reduce((sum, item) => sum + item.file.size, 0);
   const fileCount = files.length;
+  const outputSize = artifact
+    ? formatBytes(artifact.blob.size)
+    : formatBytes(Math.max(totalSize * 0.96, 1));
 
   switch (config.slug) {
     case "merge-pdf":
@@ -1040,9 +1111,12 @@ function getWorkflowResult(
           : "Multiple PDFs are ready as one ordered output document.",
         rows: [
           [zh ? "文件数" : "Files", String(fileCount)],
-          [zh ? "输出大小" : "Output size", formatBytes(Math.max(totalSize * 0.96, 1))],
+          [zh ? "输出大小" : "Output size", outputSize],
+          [
+            zh ? "页面数" : "Pages",
+            artifact?.pageCount ? String(artifact.pageCount) : zh ? "已合并" : "Merged",
+          ],
           [zh ? "顺序" : "Order", zh ? "已应用" : "Applied"],
-          [zh ? "格式" : "Format", "PDF"],
         ],
       };
     case "split-pdf":
@@ -1054,10 +1128,15 @@ function getWorkflowResult(
         rows: [
           [zh ? "页面范围" : "Ranges", pageRanges],
           [zh ? "输出" : "Output", "ZIP"],
+          [
+            zh ? "拆分文件" : "Split files",
+            artifact?.rangeCount ? String(artifact.rangeCount) : zh ? "按范围" : "By range",
+          ],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "ZIP"],
           [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "状态" : "Status", zh ? "可下载" : "Ready"],
         ],
         preview: "ranges",
+        previewText: formatRangePreview(pageRanges),
       };
     case "pdf-to-word":
       return {
@@ -1096,7 +1175,14 @@ function getWorkflowResult(
         rows: [
           [zh ? "图片数" : "Images", String(fileCount)],
           [zh ? "输出" : "Output", "PDF"],
-          [zh ? "估算大小" : "Estimated size", formatBytes(Math.max(totalSize * 0.72, 1))],
+          [
+            zh ? "PDF 页面" : "PDF pages",
+            artifact?.pageCount ? String(artifact.pageCount) : String(fileCount),
+          ],
+          [
+            zh ? "输出大小" : "Output size",
+            artifact ? formatBytes(artifact.blob.size) : formatBytes(Math.max(totalSize * 0.72, 1)),
+          ],
           [zh ? "顺序" : "Order", zh ? "已应用" : "Applied"],
         ],
         preview: "image-order",
@@ -1139,9 +1225,9 @@ function createWorkflowArtifact(
   if (config.slug === "split-pdf") {
     return {
       fileName: spec.outputFileName,
-      blob: new Blob(
+          blob: new Blob(
         [
-          createZip([
+          createZipArchive([
             {
               name: "split-summary.txt",
               data: `DockDocs split workflow\nSource: ${source}\nRanges: ${pageRanges}\n`,
@@ -1208,7 +1294,7 @@ function createDocx(title: string, source: string) {
   </w:body>
 </w:document>`;
 
-  return createZip([
+  return createZipArchive([
     {
       name: "[Content_Types].xml",
       data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -1229,100 +1315,30 @@ function createDocx(title: string, source: string) {
   ]);
 }
 
-function createZip(files: Array<{ name: string; data: string | Uint8Array }>) {
-  const encoder = new TextEncoder();
-  const localParts: Uint8Array[] = [];
-  const centralParts: Uint8Array[] = [];
-  let offset = 0;
+async function runSimulatedProcessing({
+  steps,
+  signal,
+  onProgress,
+}: {
+  steps: string[];
+  signal: AbortSignal;
+  onProgress: (progress: number, stepIndex?: number) => void;
+}) {
+  for (let current = 7; current <= 100; current += 7) {
+    if (signal.aborted) {
+      throw new Error("aborted");
+    }
 
-  files.forEach((file) => {
-    const nameBytes = encoder.encode(file.name);
-    const dataBytes =
-      typeof file.data === "string" ? encoder.encode(file.data) : file.data;
-    const crc = crc32(dataBytes);
-    const local = new Uint8Array(30 + nameBytes.length + dataBytes.length);
-    const localView = new DataView(local.buffer);
-    localView.setUint32(0, 0x04034b50, true);
-    localView.setUint16(4, 20, true);
-    localView.setUint16(6, 0, true);
-    localView.setUint16(8, 0, true);
-    localView.setUint16(10, 0, true);
-    localView.setUint16(12, 0, true);
-    localView.setUint32(14, crc, true);
-    localView.setUint32(18, dataBytes.length, true);
-    localView.setUint32(22, dataBytes.length, true);
-    localView.setUint16(26, nameBytes.length, true);
-    localView.setUint16(28, 0, true);
-    local.set(nameBytes, 30);
-    local.set(dataBytes, 30 + nameBytes.length);
-    localParts.push(local);
+    const progress = Math.min(100, current);
+    const stepIndex = Math.min(
+      steps.length - 1,
+      Math.floor((progress / 100) * steps.length),
+    );
 
-    const central = new Uint8Array(46 + nameBytes.length);
-    const centralView = new DataView(central.buffer);
-    centralView.setUint32(0, 0x02014b50, true);
-    centralView.setUint16(4, 20, true);
-    centralView.setUint16(6, 20, true);
-    centralView.setUint16(8, 0, true);
-    centralView.setUint16(10, 0, true);
-    centralView.setUint16(12, 0, true);
-    centralView.setUint16(14, 0, true);
-    centralView.setUint32(16, crc, true);
-    centralView.setUint32(20, dataBytes.length, true);
-    centralView.setUint32(24, dataBytes.length, true);
-    centralView.setUint16(28, nameBytes.length, true);
-    centralView.setUint16(30, 0, true);
-    centralView.setUint16(32, 0, true);
-    centralView.setUint16(34, 0, true);
-    centralView.setUint16(36, 0, true);
-    centralView.setUint32(38, 0, true);
-    centralView.setUint32(42, offset, true);
-    central.set(nameBytes, 46);
-    centralParts.push(central);
-    offset += local.length;
-  });
-
-  const centralOffset = offset;
-  const centralSize = centralParts.reduce((sum, part) => sum + part.length, 0);
-  const end = new Uint8Array(22);
-  const endView = new DataView(end.buffer);
-  endView.setUint32(0, 0x06054b50, true);
-  endView.setUint16(4, 0, true);
-  endView.setUint16(6, 0, true);
-  endView.setUint16(8, files.length, true);
-  endView.setUint16(10, files.length, true);
-  endView.setUint32(12, centralSize, true);
-  endView.setUint32(16, centralOffset, true);
-  endView.setUint16(20, 0, true);
-
-  return concatUint8Arrays([...localParts, ...centralParts, end]);
-}
-
-function concatUint8Arrays(parts: Uint8Array[]) {
-  const total = parts.reduce((sum, part) => sum + part.length, 0);
-  const output = new Uint8Array(total);
-  let offset = 0;
-  parts.forEach((part) => {
-    output.set(part, offset);
-    offset += part.length;
-  });
-  return output;
-}
-
-function crc32(bytes: Uint8Array) {
-  let crc = -1;
-  for (let index = 0; index < bytes.length; index += 1) {
-    crc = (crc >>> 8) ^ crcTable[(crc ^ bytes[index]) & 0xff];
+    onProgress(progress, stepIndex);
+    await new Promise((resolve) => window.setTimeout(resolve, 180));
   }
-  return (crc ^ -1) >>> 0;
 }
-
-const crcTable = Array.from({ length: 256 }, (_, tableIndex) => {
-  let c = tableIndex;
-  for (let k = 0; k < 8; k += 1) {
-    c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-  }
-  return c >>> 0;
-});
 
 function downloadBlob(blob: Blob, fileName: string) {
   const url = URL.createObjectURL(blob);
@@ -1341,6 +1357,22 @@ function downloadTextFile(fileName: string, text: string) {
 
 function isValidPageRange(value: string) {
   return /^\s*\d+(\s*-\s*\d+)?(\s*,\s*\d+(\s*-\s*\d+)?)*\s*$/.test(value);
+}
+
+function formatRangePreview(value: string) {
+  const previews = value
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .slice(0, 3)
+    .map((part) => {
+      const normalized = part.replace(/\s+/g, "");
+      return normalized.includes("-")
+        ? `pages-${normalized}.pdf`
+        : `page-${normalized}.pdf`;
+    });
+
+  return previews.length ? previews.join(" / ") : "page-1.pdf";
 }
 
 function formatBytes(bytes: number) {
