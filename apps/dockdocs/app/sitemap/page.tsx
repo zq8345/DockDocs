@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 export default function SitemapPage() {
   const pages = [
     { name: "Home", href: "/" },
+    { name: "JPG to PDF", href: "/jpg-to-pdf" },
     { name: "Compress PDF", href: "/compress-pdf" },
     { name: "Merge PDF", href: "/merge-pdf" },
     { name: "Split PDF", href: "/split-pdf" },

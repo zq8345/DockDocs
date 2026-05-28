@@ -8,6 +8,7 @@ const baseUrl = "https://dockdocs.app";
 export default function sitemap(): MetadataRoute.Sitemap {
   const localPages = [
     "/",
+    "/jpg-to-pdf/",
     "/compress-pdf/",
     "/merge-pdf/",
     "/split-pdf/",
