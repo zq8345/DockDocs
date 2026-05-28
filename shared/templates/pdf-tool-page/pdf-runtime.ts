@@ -1,12 +1,14 @@
 import { PDFDocument } from "pdf-lib";
 import { runOcrPdfFirstPage } from "./ocr-runtime";
+import { runPdfToWordBackend } from "./pdf-to-word-runtime";
 
 export type PdfRuntimeSlug =
   | "compress-pdf"
   | "merge-pdf"
   | "split-pdf"
   | "ocr-pdf"
-  | "jpg-to-pdf";
+  | "jpg-to-pdf"
+  | "pdf-to-word";
 
 export type PdfRuntimeProgress = {
   progress: number;
@@ -17,18 +19,20 @@ export type PdfRuntimeProgress = {
 export type PdfRuntimeArtifact = {
   fileName: string;
   blob: Blob;
-  outputType: "pdf" | "zip" | "text";
+  outputType: "pdf" | "zip" | "text" | "docx";
   pageCount?: number;
   fileCount?: number;
   rangeCount?: number;
   imageCount?: number;
   originalSize?: number;
   compressedSize?: number;
+  convertedSize?: number;
   savedPercent?: number;
   text?: string;
   confidence?: number;
   processedPages?: number;
   ocrLanguage?: string;
+  backend?: string;
 };
 
 type PdfRuntimeInput = {
@@ -53,7 +57,8 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "merge-pdf" ||
     slug === "split-pdf" ||
     slug === "ocr-pdf" ||
-    slug === "jpg-to-pdf"
+    slug === "jpg-to-pdf" ||
+    slug === "pdf-to-word"
   );
 }
 
@@ -95,6 +100,16 @@ export async function runPdfRuntime({
     });
   }
 
+  if (slug === "pdf-to-word") {
+    return runPdfToWordBackend({
+      file: files[0],
+      outputFileName,
+      locale,
+      signal,
+      onProgress,
+    });
+  }
+
   return imagesToPdf(files, outputFileName, signal, onProgress);
 }
 
@@ -125,6 +140,10 @@ export function getPdfRuntimeErrorMessage(error: unknown, locale: "en" | "zh") {
   }
 
   if (/ocr|canvas|recognized|pages|PDF/i.test(message)) {
+    return message;
+  }
+
+  if (/Word|DOCX|backend|conversion/i.test(message)) {
     return message;
   }
 

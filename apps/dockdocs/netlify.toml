@@ -4,3 +4,7 @@
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
