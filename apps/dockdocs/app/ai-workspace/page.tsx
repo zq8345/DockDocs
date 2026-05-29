@@ -72,7 +72,7 @@ export default function AiWorkspacePage() {
               AI Workspace layer
             </div>
             <h1 className="mt-6 max-w-4xl text-3xl font-semibold leading-tight sm:text-6xl sm:leading-[1.04]">
-              AI enhances the DockDocs PDF tools platform.
+              AI PDF workspace for OCR, summaries, and Chat with PDF.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-[#334155] sm:text-lg">
               DockDocs stays PDF tools first. The AI Workspace layer helps when

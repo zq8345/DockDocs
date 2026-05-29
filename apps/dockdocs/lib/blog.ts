@@ -68,7 +68,7 @@ export type BlogArticle = {
 
 export const blogIndexCopy = {
   en: {
-    title: "PDF Workflow Resources | DockDocs",
+    title: "PDF Workflow Blog | DockDocs",
     description:
       "Practical DockDocs guides for compressing, merging, converting, OCR, JPG to PDF, and AI-ready document workflows.",
     eyebrow: "DockDocs Resources",
@@ -85,7 +85,7 @@ export const blogIndexCopy = {
       "Each guide connects a user problem to the right PDF tool, related articles, help content, and FAQ answers.",
   },
   zh: {
-    title: "PDF 工作流资源 | DockDocs",
+    title: "PDF 工作流博客 | DockDocs",
     description:
       "DockDocs 关于 PDF 压缩、合并、转换、OCR、JPG 转 PDF 和 AI 文档工作流的实用指南。",
     eyebrow: "DockDocs 资源",

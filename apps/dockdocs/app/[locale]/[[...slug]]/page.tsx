@@ -475,7 +475,7 @@ const aiCopy = {
     description:
       "Organize, convert, OCR, and work with PDF documents inside the DockDocs AI Document Workspace.",
     eyebrow: "AI Workspace Layer",
-    heroTitle: "AI enhances the DockDocs PDF tools platform.",
+    heroTitle: "AI PDF workspace for OCR, summaries, and Chat with PDF.",
     heroDescription:
       "DockDocs stays PDF tools first. AI helps with OCR, summaries, Chat with PDF, and multi-step document workflows.",
     cards: ["OCR", "AI Summary", "Chat with PDF", "Workflow"],
@@ -484,7 +484,7 @@ const aiCopy = {
     title: "AI 文档工作区 | DockDocs",
     description: "在 DockDocs AI 文档工作区中整理、转换、OCR 并处理 PDF 文档。",
     eyebrow: "AI 工作区层",
-    heroTitle: "AI 增强 DockDocs PDF 工具平台。",
+    heroTitle: "AI PDF 工作区，支持 OCR、摘要与 Chat with PDF。",
     heroDescription:
       "DockDocs 以 PDF 工具为主。AI 用于 OCR、摘要、PDF 问答和多步骤文档工作流。",
     cards: ["OCR", "AI 摘要", "PDF 问答", "工作流"],

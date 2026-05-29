@@ -20,7 +20,7 @@ const ocrPdfConfig = {
   appName: "DockDocs OCR PDF",
   schemaName: "DockDocs OCR PDF",
   breadcrumbName: "OCR PDF",
-  heroTitle: "Extract text from scanned PDFs with AI-ready OCR workflows.",
+  heroTitle: "OCR PDF online for scanned documents and AI-ready text.",
   heroDescription:
     "Turn scanned PDF files into searchable, reusable text workflows inside DockDocs. This OCR PDF page is designed as an AI-first document workspace for scans, forms, and office files.",
   primaryActionLabel: "OCR PDF",

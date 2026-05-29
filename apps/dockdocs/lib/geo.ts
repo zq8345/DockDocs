@@ -186,7 +186,7 @@ export const geoHubCopy: Record<Locale, Record<GeoPageSlug, GeoHubData>> = {
     },
     guides: {
       slug: "guides",
-      title: "PDF Guides | DockDocs",
+      title: "PDF Guides and Tutorials | DockDocs",
       description:
         "Practical DockDocs PDF guides for reducing file size, merging files, splitting pages, OCR, JPG to PDF, and PDF to Word.",
       eyebrow: "Guides",
@@ -271,7 +271,7 @@ export const geoHubCopy: Record<Locale, Record<GeoPageSlug, GeoHubData>> = {
     },
     guides: {
       slug: "guides",
-      title: "PDF 指南 | DockDocs",
+      title: "PDF 指南与教程 | DockDocs",
       description:
         "DockDocs 关于减小 PDF、合并文件、拆分页面、OCR、JPG 转 PDF 和 PDF 转 Word 的实用指南。",
       eyebrow: "指南",
