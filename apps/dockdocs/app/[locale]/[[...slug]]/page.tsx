@@ -5,6 +5,7 @@ import {
   PdfToolPage,
 } from "../../../../../shared/templates/pdf-tool-page";
 import { BlogArticlePage, BlogIndexPage } from "@/components/BlogPages";
+import { AiSummaryWorkflow } from "@/components/AiSummaryWorkflow";
 import { GeoHubPage } from "@/components/GeoHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
@@ -534,6 +535,7 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale }) {
           </div>
         </Container>
       </Section>
+      <AiSummaryWorkflow locale={locale} />
     </main>
   );
 }
