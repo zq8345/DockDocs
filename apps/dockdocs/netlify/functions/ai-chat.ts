@@ -232,7 +232,7 @@ async function generateProviderAnswer({
 
   const firstResult = parseProviderAnswer(first.responseText);
   if (firstResult) {
-    if (isUnsupportedRefusal(firstResult.answer) && firstResult.references.length > 0) {
+    if (shouldRepairResult(firstResult, context)) {
       const repair = await callProvider({
         provider,
         body: createRepairProviderRequest(
@@ -247,6 +247,10 @@ async function generateProviderAnswer({
 
       const repairedResult = parseProviderAnswer(repair.responseText);
       if (repairedResult) {
+        if (hasUnsupportedEvidence(repairedResult, context)) {
+          return null;
+        }
+
         return {
           result: repairedResult,
           usage: repair.usage ?? first.usage,
@@ -275,7 +279,7 @@ async function generateProviderAnswer({
   });
 
   const repairedResult = parseProviderAnswer(repair.responseText);
-  if (!repairedResult) {
+  if (!repairedResult || hasUnsupportedEvidence(repairedResult, context)) {
     return null;
   }
 
@@ -297,7 +301,7 @@ function createProviderRequest(
 
   return {
     model,
-    temperature: 0.2,
+    temperature: 0,
     max_tokens: aiChatMaxTokens,
     response_format: { type: "json_object" },
     messages: [
@@ -311,8 +315,12 @@ function createProviderRequest(
           "For OCR text, treat noisy mixed-language lines, labels, dates, amounts, invoice numbers, contract IDs, party names, and table-like key-value pairs as valid evidence when they appear in the context.",
           "If any relevant evidence appears in the context or in your references, answer from that evidence instead of refusing.",
           "Do not require the context language to match the question language; translate the evidence into the requested answer language when needed.",
+          "Never invent, rename, normalize, or substitute organizations, people, invoice numbers, contract IDs, amounts, dates, or payment terms.",
+          "Copy named entities, numbers, dates, and IDs exactly as they appear in the context.",
+          "When answering in another language, translate only ordinary prose. Keep company names, party names, IDs, invoice numbers, amounts, and dates verbatim.",
           "Always include exactly these keys: answer, references.",
-          "references must be an array of short strings naming the relevant page, section, or quote from the context.",
+          "references must be an array of short exact quotes copied from the context.",
+          "Each reference must appear verbatim in the provided context.",
           "Example json output:",
           JSON.stringify({
             answer:
@@ -382,6 +390,10 @@ function createRepairProviderRequest(
           "The previous provider output was empty, non-json, or missing keys.",
           "If the previous output refused to answer but included references with relevant evidence, correct the refusal and answer from those references and the source text.",
           "For OCR and mixed-language text, use visible key-value evidence such as dates, amounts, invoice numbers, contract IDs, parties, service scope, and payment terms.",
+          "Never invent, rename, normalize, or substitute organizations, people, invoice numbers, contract IDs, amounts, dates, or payment terms.",
+          "Copy named entities, numbers, dates, and IDs exactly as they appear in the source text.",
+          "When answering in another language, translate only ordinary prose. Keep company names, party names, IDs, invoice numbers, amounts, and dates verbatim.",
+          "Every reference must be an exact quote copied from the source text.",
           "Create a valid json answer from the source text below.",
           "Use only the source text.",
           "",
@@ -457,8 +469,29 @@ function normalizeAnswer(value: unknown): AiChatAnswer | null {
     return null;
   }
 
-  const answer = asString(value.answer);
-  const references = asStringArray(value.references);
+  const answer = firstString(value, [
+    "answer",
+    "答案",
+    "回答",
+    "结论",
+    "response",
+    "result",
+  ]);
+  const references = firstStringArray(value, [
+    "references",
+    "reference",
+    "引用",
+    "参考",
+    "依据",
+    "证据",
+    "引用原文",
+    "相关原文",
+    "evidence",
+    "citations",
+    "citation",
+    "sources",
+    "source",
+  ]);
   if (!answer || references.length === 0) {
     return null;
   }
@@ -467,6 +500,20 @@ function normalizeAnswer(value: unknown): AiChatAnswer | null {
     answer,
     references,
   };
+}
+
+function shouldRepairResult(result: AiChatAnswer, context: string) {
+  return (
+    (isUnsupportedRefusal(result.answer) && result.references.length > 0) ||
+    hasUnsupportedEvidence(result, context)
+  );
+}
+
+function hasUnsupportedEvidence(result: AiChatAnswer, context: string) {
+  return (
+    hasUnsupportedReferences(result.references, context) ||
+    hasUnsupportedAnswerEntities(result.answer, context)
+  );
 }
 
 function isUnsupportedRefusal(answer: string) {
@@ -482,6 +529,63 @@ function isUnsupportedRefusal(answer: string) {
     "不包含足够",
     "不足够证据",
   ].some((phrase) => normalized.includes(phrase));
+}
+
+function hasUnsupportedReferences(references: string[], context: string) {
+  const normalizedContext = normalizeForReferenceCheck(context);
+  return references.some((reference) => {
+    const normalizedReference = normalizeForReferenceCheck(reference);
+    return (
+      normalizedReference.length > 0 &&
+      !normalizedContext.includes(normalizedReference)
+    );
+  });
+}
+
+function normalizeForReferenceCheck(value: string) {
+  return value.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function hasUnsupportedAnswerEntities(answer: string, context: string) {
+  const normalizedContext = normalizeForEntityCheck(context);
+  return extractProtectedEntities(answer).some(
+    (entity) => !normalizedContext.includes(normalizeForEntityCheck(entity)),
+  );
+}
+
+function extractProtectedEntities(value: string) {
+  return [
+    ...value.matchAll(/[\u4e00-\u9fffA-Za-z0-9（）()·&.\-\s]{2,48}(?:有限公司|公司|集团|实验室|Labs|Studio|Analytics|Ops)/g),
+    ...value.matchAll(/[A-Z]{2,}(?:-[A-Z0-9]{2,}){1,}/g),
+    ...value.matchAll(/\b[A-Z]{2,}[-_]\d{2,}[-_\dA-Z]*\b/g),
+    ...value.matchAll(/\b(?:USD|RMB|CNY)\s?[\d,]+(?:\.\d+)?\b/gi),
+    ...value.matchAll(/人民币\s?[\d,]+(?:\.\d+)?\s?元/g),
+  ]
+    .map((match) => cleanProtectedEntity(match[0]))
+    .filter((entity, index, entities) => entity.length > 1 && entities.indexOf(entity) === index);
+}
+
+function cleanProtectedEntity(value: string) {
+  const trimmed = value.trim();
+  const chineseOrganization = trimmed.match(
+    /[\u4e00-\u9fff]{2,32}(?:有限公司|公司|集团|实验室)$/,
+  );
+  if (chineseOrganization) {
+    return chineseOrganization[0];
+  }
+
+  const englishOrganization = trimmed.match(
+    /[A-Z][A-Za-z0-9&.'-]*(?:\s+[A-Z][A-Za-z0-9&.'-]*){0,6}\s(?:Labs|Studio|Analytics|Ops)$/,
+  );
+  if (englishOrganization) {
+    return englishOrganization[0];
+  }
+
+  return trimmed;
+}
+
+function normalizeForEntityCheck(value: string) {
+  return value.toLowerCase().replace(/[\s"'“”‘’]+/g, "");
 }
 
 function selectRelevantContext(text: string, question: string, maxCharacters: number) {
@@ -614,6 +718,17 @@ function asString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function firstString(value: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const text = asString(value[key]);
+    if (text) {
+      return text;
+    }
+  }
+
+  return "";
+}
+
 function asStringArray(value: unknown) {
   if (typeof value === "string") {
     return value
@@ -628,9 +743,38 @@ function asStringArray(value: unknown) {
   }
 
   return value
-    .map((item) => (typeof item === "string" ? item.trim() : ""))
+    .map((item) => {
+      if (typeof item === "string") {
+        return item.trim();
+      }
+
+      if (isRecord(item)) {
+        return firstString(item, [
+          "quote",
+          "text",
+          "reference",
+          "source",
+          "引用",
+          "原文",
+          "依据",
+        ]);
+      }
+
+      return "";
+    })
     .filter(Boolean)
     .slice(0, 8);
+}
+
+function firstStringArray(value: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const items = asStringArray(value[key]);
+    if (items.length > 0) {
+      return items;
+    }
+  }
+
+  return [];
 }
 
 function readUsage(value: unknown): ProviderUsage | undefined {
