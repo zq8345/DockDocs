@@ -206,6 +206,12 @@ const resourceLinks = [
       "AI-readable guidance for OCR, scanned PDF text extraction, summaries, and document review.",
   },
   {
+    title: "PDF workflow blog",
+    href: "/blog/",
+    description:
+      "Evergreen blog guides for PDF compression, conversion, OCR, and AI document workflows.",
+  },
+  {
     title: "Help and FAQ",
     href: "/help/",
     description:

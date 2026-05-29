@@ -175,6 +175,10 @@ export function BlogIndexPage({
                   label: locale === "zh" ? "JPG 转 PDF" : "JPG to PDF",
                   href: "/jpg-to-pdf",
                 },
+                {
+                  label: locale === "zh" ? "PDF 转 Word" : "PDF to Word",
+                  href: "/pdf-to-word",
+                },
                 { label: "OCR PDF", href: "/ocr-pdf" },
                 {
                   label: locale === "zh" ? "帮助与 FAQ" : "Help and FAQ",
