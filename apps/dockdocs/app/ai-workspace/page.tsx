@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AiChatWorkflow } from "@/components/AiChatWorkflow";
 import { AiSummaryWorkflow } from "@/components/AiSummaryWorkflow";
 import { languageAlternates } from "@/lib/i18n";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -132,6 +133,8 @@ export default function AiWorkspacePage() {
       </Section>
 
       <AiSummaryWorkflow />
+
+      <AiChatWorkflow />
 
       <Section className="bg-white">
         <Container className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">

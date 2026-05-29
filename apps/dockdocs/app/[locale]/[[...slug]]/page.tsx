@@ -4,6 +4,7 @@ import {
   createPdfToolMetadata,
   PdfToolPage,
 } from "../../../../../shared/templates/pdf-tool-page";
+import { AiChatWorkflow } from "@/components/AiChatWorkflow";
 import { BlogArticlePage, BlogIndexPage } from "@/components/BlogPages";
 import { AiSummaryWorkflow } from "@/components/AiSummaryWorkflow";
 import { GeoHubPage } from "@/components/GeoHubPage";
@@ -536,6 +537,7 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale }) {
         </Container>
       </Section>
       <AiSummaryWorkflow locale={locale} />
+      <AiChatWorkflow locale={locale} />
     </main>
   );
 }
