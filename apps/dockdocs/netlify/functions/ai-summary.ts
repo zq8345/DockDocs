@@ -21,7 +21,26 @@ type AiSummary = {
   model?: string;
 };
 
+type ProviderUsage = {
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  total_tokens?: number;
+};
+
+type ProviderConfig = {
+  apiUrl: string;
+  apiKey: string;
+  model: string;
+};
+
+type ProviderSummaryResult = {
+  summary: AiSummary;
+  usage?: ProviderUsage;
+  attempts: number;
+};
+
 const maxSummaryCharacters = 24_000;
+const aiSummaryMaxTokens = 1600;
 
 export default async (req: Request, _context: Context) => {
   if (req.method !== "POST") {
@@ -50,6 +69,11 @@ export default async (req: Request, _context: Context) => {
       200,
     );
   }
+  const resolvedProvider: ProviderConfig = {
+    apiUrl: provider.apiUrl,
+    apiKey: provider.apiKey,
+    model: provider.model,
+  };
 
   let payload: AiSummaryPayload;
   try {
@@ -103,31 +127,14 @@ export default async (req: Request, _context: Context) => {
   const timeout = setTimeout(() => controller.abort(), 55_000);
 
   try {
-    const providerResponse = await fetch(provider.apiUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${provider.apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(createProviderRequest(provider.model, text, locale)),
+    const result = await generateProviderSummary({
+      provider: resolvedProvider,
+      text,
+      locale,
       signal: controller.signal,
     });
 
-    const responseText = await providerResponse.text();
-    if (!providerResponse.ok) {
-      return json(
-        {
-          ok: false,
-          code: "AI_SUMMARY_PROVIDER_ERROR",
-          message: `AI Summary provider failed with status ${providerResponse.status}. ${redact(responseText)}`,
-          httpStatus: 502,
-        },
-        200,
-      );
-    }
-
-    const summary = parseProviderSummary(responseText);
-    if (!summary) {
+    if (!result) {
       return json(
         {
           ok: false,
@@ -144,9 +151,14 @@ export default async (req: Request, _context: Context) => {
       {
         ok: true,
         summary: {
-          ...summary,
+          ...result.summary,
           provider: "configured-ai-provider",
           model: provider.model,
+        },
+        usage: result.usage,
+        diagnostics: {
+          attempts: result.attempts,
+          maxTokens: aiSummaryMaxTokens,
         },
       },
       200,
@@ -196,24 +208,193 @@ function createProviderRequest(model: string, text: string, locale: "en" | "zh")
   return {
     model,
     temperature: 0.2,
+    max_tokens: aiSummaryMaxTokens,
     response_format: { type: "json_object" },
     messages: [
       {
         role: "system",
-        content:
-          "You summarize business documents. Return strict JSON only with keys: executiveSummary, keyPoints, actionItems, nextSteps. keyPoints, actionItems, and nextSteps must be arrays of short strings.",
+        content: [
+          "You summarize business documents.",
+          "Return only valid json.",
+          "Do not use markdown, code fences, prose, or comments before or after the json.",
+          "Always include exactly these four keys: executiveSummary, keyPoints, actionItems, suggestedNextSteps.",
+          "keyPoints, actionItems, and suggestedNextSteps must be arrays of useful short strings.",
+          "If the input is short, still produce useful content based only on the provided text.",
+          "Do not invent facts that are not in the source text.",
+          "Example json output:",
+          JSON.stringify({
+            executiveSummary:
+              "This document explains the main purpose, important context, and practical outcome.",
+            keyPoints: [
+              "The document contains a clear workflow or decision.",
+              "Important constraints and risks are identified.",
+            ],
+            actionItems: [
+              "Review the key requirements.",
+              "Confirm the next owner and timeline.",
+            ],
+            suggestedNextSteps: [
+              "Share the summary with stakeholders.",
+              "Use the extracted details in the next document workflow.",
+            ],
+          }),
+        ].join("\n"),
       },
       {
         role: "user",
         content: [
           `Write the summary in ${outputLanguage}.`,
-          "Summarize the following extracted PDF text.",
-          "Do not invent facts that are not in the text.",
+          "Summarize the following extracted PDF text as strict json only.",
+          "The json must match this exact shape:",
+          JSON.stringify({
+            executiveSummary: "string",
+            keyPoints: ["string"],
+            actionItems: ["string"],
+            suggestedNextSteps: ["string"],
+          }),
           "",
+          "Extracted PDF text:",
           text,
         ].join("\n"),
       },
     ],
+  };
+}
+
+function createRepairProviderRequest(
+  model: string,
+  text: string,
+  locale: "en" | "zh",
+  previousContent: string,
+) {
+  const outputLanguage =
+    locale === "zh" ? "Simplified Chinese" : "English";
+
+  return {
+    model,
+    temperature: 0,
+    max_tokens: aiSummaryMaxTokens,
+    response_format: { type: "json_object" },
+    messages: [
+      {
+        role: "system",
+        content: [
+          "You repair invalid json summary output.",
+          "Return only valid json with no markdown, no code fences, and no prose.",
+          "Required keys: executiveSummary, keyPoints, actionItems, suggestedNextSteps.",
+          "Array keys must be arrays of strings.",
+          "Use this exact json shape:",
+          JSON.stringify({
+            executiveSummary: "string",
+            keyPoints: ["string"],
+            actionItems: ["string"],
+            suggestedNextSteps: ["string"],
+          }),
+        ].join("\n"),
+      },
+      {
+        role: "user",
+        content: [
+          `Language: ${outputLanguage}.`,
+          "The previous provider output was empty, non-json, or missing keys.",
+          "Create a valid json summary from the source text below.",
+          "Do not invent facts.",
+          "",
+          "Previous invalid output:",
+          previousContent.slice(0, 2000) || "[empty]",
+          "",
+          "Source text:",
+          text,
+        ].join("\n"),
+      },
+    ],
+  };
+}
+
+async function generateProviderSummary({
+  provider,
+  text,
+  locale,
+  signal,
+}: {
+  provider: ProviderConfig;
+  text: string;
+  locale: "en" | "zh";
+  signal: AbortSignal;
+}): Promise<ProviderSummaryResult | null> {
+  const first = await callProvider({
+    provider,
+    body: createProviderRequest(provider.model, text, locale),
+    signal,
+  });
+
+  const firstSummary = parseProviderSummary(first.responseText);
+  if (firstSummary) {
+    return {
+      summary: firstSummary,
+      usage: first.usage,
+      attempts: 1,
+    };
+  }
+
+  const repair = await callProvider({
+    provider,
+    body: createRepairProviderRequest(
+      provider.model,
+      text,
+      locale,
+      first.providerContent,
+    ),
+    signal,
+  });
+
+  const repairedSummary = parseProviderSummary(repair.responseText);
+  if (!repairedSummary) {
+    return null;
+  }
+
+  return {
+    summary: repairedSummary,
+    usage: repair.usage ?? first.usage,
+    attempts: 2,
+  };
+}
+
+async function callProvider({
+  provider,
+  body,
+  signal,
+}: {
+  provider: ProviderConfig;
+  body: Record<string, unknown>;
+  signal: AbortSignal;
+}) {
+  const providerResponse = await fetch(provider.apiUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${provider.apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+    signal,
+  });
+
+  const responseText = await providerResponse.text();
+  if (!providerResponse.ok) {
+    throw new Error(
+      `AI Summary provider failed with status ${providerResponse.status}. ${redact(responseText)}`,
+    );
+  }
+
+  const payload = safeJson(responseText);
+
+  return {
+    responseText,
+    providerContent:
+      typeof payload?.choices?.[0]?.message?.content === "string"
+        ? payload.choices[0].message.content
+        : responseText,
+    usage: readUsage(payload?.usage),
   };
 }
 
@@ -229,7 +410,7 @@ function parseProviderSummary(responseText: string): AiSummary | null {
     return null;
   }
 
-  return normalizeSummary(safeJson(stripJsonFence(content)));
+  return normalizeSummary(parseJsonLikeContent(content));
 }
 
 function normalizeSummary(value: unknown): AiSummary | null {
@@ -240,7 +421,7 @@ function normalizeSummary(value: unknown): AiSummary | null {
   const executiveSummary = asString(value.executiveSummary);
   const keyPoints = asStringArray(value.keyPoints);
   const actionItems = asStringArray(value.actionItems);
-  const nextSteps = asStringArray(value.nextSteps);
+  const nextSteps = asStringArray(value.suggestedNextSteps ?? value.nextSteps);
 
   if (
     !executiveSummary ||
@@ -282,6 +463,22 @@ function safeJson(value: string) {
   }
 }
 
+function parseJsonLikeContent(value: string) {
+  const stripped = stripJsonFence(value);
+  const parsed = safeJson(stripped);
+  if (parsed) {
+    return parsed;
+  }
+
+  const firstBrace = stripped.indexOf("{");
+  const lastBrace = stripped.lastIndexOf("}");
+  if (firstBrace === -1 || lastBrace <= firstBrace) {
+    return null;
+  }
+
+  return safeJson(stripped.slice(firstBrace, lastBrace + 1));
+}
+
 function stripJsonFence(value: string) {
   return value
     .trim()
@@ -306,6 +503,14 @@ function asString(value: unknown) {
 }
 
 function asStringArray(value: unknown) {
+  if (typeof value === "string") {
+    return value
+      .split(/\n|;/)
+      .map((item) => item.replace(/^[-*\d.)\s]+/, "").trim())
+      .filter(Boolean)
+      .slice(0, 8);
+  }
+
   if (!Array.isArray(value)) {
     return [];
   }
@@ -320,4 +525,24 @@ function redact(value: string) {
   return value
     .replace(/Bearer\s+[A-Za-z0-9._-]+/g, "Bearer [redacted]")
     .slice(0, 500);
+}
+
+function readUsage(value: unknown): ProviderUsage | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+
+  const usage: ProviderUsage = {};
+  for (const key of [
+    "prompt_tokens",
+    "completion_tokens",
+    "total_tokens",
+  ] as const) {
+    const count = value[key];
+    if (typeof count === "number" && Number.isFinite(count)) {
+      usage[key] = count;
+    }
+  }
+
+  return Object.keys(usage).length > 0 ? usage : undefined;
 }

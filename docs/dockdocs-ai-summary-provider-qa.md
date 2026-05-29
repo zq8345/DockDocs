@@ -4,38 +4,38 @@ Date: 2026-05-29
 
 ## Status
 
-Real provider QA is not launch-passed yet because no AI Summary provider credentials are available in the local environment or repository env files.
+Real provider QA uses the DeepSeek OpenAI-compatible Chat Completions endpoint.
 
 Checked environment variables:
 
-- `DOCKDOCS_AI_SUMMARY_API_URL`: missing
-- `DOCKDOCS_AI_SUMMARY_API_KEY`: missing
-- `DOCKDOCS_AI_SUMMARY_MODEL`: missing
+- `DOCKDOCS_AI_SUMMARY_API_URL`
+- `DOCKDOCS_AI_SUMMARY_API_KEY`
+- `DOCKDOCS_AI_SUMMARY_MODEL`
 
-No fake token, fake provider success, or synthetic production pass was created.
+No fake token, fake provider success, or synthetic production pass should be created.
 
 ## Recommended Provider Configuration
 
-The current `/api/ai-summary` Netlify Function expects an OpenAI-compatible Chat Completions endpoint that accepts JSON mode.
+The current `/api/ai-summary` Netlify Function expects the DeepSeek OpenAI-compatible Chat Completions endpoint with JSON mode enabled.
 
 Recommended first production configuration:
 
 ```bash
-DOCKDOCS_AI_SUMMARY_API_URL=https://api.openai.com/v1/chat/completions
+DOCKDOCS_AI_SUMMARY_API_URL=https://api.deepseek.com/chat/completions
 DOCKDOCS_AI_SUMMARY_API_KEY=<real-provider-key>
-DOCKDOCS_AI_SUMMARY_MODEL=gpt-4.1-mini
+DOCKDOCS_AI_SUMMARY_MODEL=deepseek-chat
 ```
 
-`gpt-4.1-mini` is the safest first model for the current adapter because it supports the Chat Completions endpoint and structured JSON output mode. A later task can migrate the runtime to the Responses API or add a provider abstraction for GPT-5-class models.
+DeepSeek JSON mode requires `response_format: { "type": "json_object" }`, the word `json` in the prompt, a concrete JSON example, and a reasonable `max_tokens` value.
 
 ## Netlify Environment Setup
 
 Set these values in the DockDocs Netlify site environment:
 
 ```bash
-netlify env:set DOCKDOCS_AI_SUMMARY_API_URL https://api.openai.com/v1/chat/completions
+netlify env:set DOCKDOCS_AI_SUMMARY_API_URL https://api.deepseek.com/chat/completions
 netlify env:set DOCKDOCS_AI_SUMMARY_API_KEY <real-provider-key>
-netlify env:set DOCKDOCS_AI_SUMMARY_MODEL gpt-4.1-mini
+netlify env:set DOCKDOCS_AI_SUMMARY_MODEL deepseek-chat
 ```
 
 Then redeploy DockDocs and run the production QA matrix below.
@@ -54,12 +54,12 @@ The workflow keeps privacy-first behavior:
 
 | Scenario | Sample | Expected result | Current status |
 | --- | --- | --- | --- |
-| Simple selectable text PDF | 1-page text PDF | Summary succeeds and includes all four sections | Blocked until provider key is configured |
-| Long document | 8-20 page PDF, text under 24,000 chars after trimming | Summary succeeds; latency and cost recorded | Blocked until provider key is configured |
-| Multi-page PDF | 3-8 selectable text pages | Browser extracts text from up to 8 pages, then summarizes | Blocked until provider key is configured |
-| Chinese PDF | Selectable Chinese text PDF | Chinese summary if locale is `zh` | Blocked until provider key is configured |
-| OCR extracted text | Text copied from OCR PDF output | Summary succeeds from pasted text | Blocked until provider key is configured |
-| Tables / structured data | PDF with table text | Summary captures important rows and action items | Blocked until provider key is configured |
+| Simple selectable text PDF | 1-page text PDF | Summary succeeds and includes all four sections | Pending production rerun after deploy |
+| Long document | 8-20 page PDF, text under 24,000 chars after trimming | Summary succeeds; latency and cost recorded | Pending production rerun after deploy |
+| Multi-page PDF | 3-8 selectable text pages | Browser extracts text from up to 8 pages, then summarizes | Pending production rerun after deploy |
+| Chinese PDF | Selectable Chinese text PDF | Chinese summary if locale is `zh` | Pending production rerun after deploy |
+| OCR extracted text | Text copied from OCR PDF output | Summary succeeds from pasted text | Pending production rerun after deploy |
+| Tables / structured data | PDF with table text | Summary captures important rows and action items | Pending production rerun after deploy |
 | Unsupported format | DOCX/JPG upload into PDF input | UI rejects non-PDF upload | Pass locally |
 | Short text | Less than 80 chars | Honest validation error, no provider call | Pass locally |
 | Provider missing | No env vars | Honest error, no fake success | Pass locally |
@@ -101,7 +101,7 @@ Approximate cost:
 cost = (input_tokens / 1,000,000 * input_price) + (output_tokens / 1,000,000 * output_price)
 ```
 
-For `gpt-4.1-mini`, OpenAI lists pricing at `$0.40` per 1M input tokens and `$1.60` per 1M output tokens as of this QA note. Example: a 6,000-token input plus 600-token output is roughly `$0.00336`.
+Use DeepSeek's current pricing page for final cost calculations. The function returns provider `usage` metadata when DeepSeek includes `prompt_tokens`, `completion_tokens`, and `total_tokens`.
 
 ## Known Limits
 
@@ -109,8 +109,9 @@ For `gpt-4.1-mini`, OpenAI lists pricing at `$0.40` per 1M input tokens and `$1.
 - Browser-side PDF text extraction works best for selectable text PDFs.
 - Scanned PDFs need OCR first.
 - Provider timeout is 55 seconds.
-- Current adapter is OpenAI-compatible Chat Completions oriented.
-- No production success QA can be claimed until a real provider key is configured.
+- Current adapter is DeepSeek/OpenAI-compatible Chat Completions oriented.
+- JSON repair retries once when the provider returns empty content, non-JSON content, or JSON missing required keys.
+- No production success QA can be claimed until the deployed `/api/ai-summary` returns `ok: true` with real provider output.
 
 ## Production Launch Recommendation
 
