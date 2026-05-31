@@ -39,6 +39,13 @@ type ProviderChatResult = {
   attempts: number;
 };
 
+type ProviderChatFailure = {
+  failureReason: string;
+  attempts: number;
+};
+
+type ProviderChatResponse = ProviderChatResult | ProviderChatFailure;
+
 const maxContextCharacters = 24_000;
 const minContextCharacters = 80;
 const aiChatMaxTokens = 1400;
@@ -144,7 +151,7 @@ export default async (req: Request, _context: Context) => {
       signal: controller.signal,
     });
 
-    if (!providerResult) {
+    if (isProviderFailure(providerResult)) {
       return json(
         {
           ok: false,
@@ -152,6 +159,13 @@ export default async (req: Request, _context: Context) => {
           message:
             "Chat with PDF provider did not return the expected structured answer JSON.",
           httpStatus: 502,
+          diagnostics: {
+            attempts: providerResult.attempts,
+            maxTokens: aiChatMaxTokens,
+            contextCharacters: selectedContext.context.length,
+            truncated: Boolean(payload.truncated || selectedContext.truncated),
+            failureReason: providerResult.failureReason,
+          },
         },
         200,
       );
@@ -190,6 +204,13 @@ export default async (req: Request, _context: Context) => {
           ? "The Chat with PDF provider timed out or could not be reached."
           : message,
         httpStatus: timedOut ? 504 : 502,
+        diagnostics: {
+          attempts: 0,
+          maxTokens: aiChatMaxTokens,
+          contextCharacters: selectedContext.context.length,
+          truncated: Boolean(payload.truncated || selectedContext.truncated),
+          failureReason: timedOut ? "provider_timeout" : "provider_error",
+        },
       },
       200,
     );
@@ -211,6 +232,12 @@ function getProvider() {
   };
 }
 
+function isProviderFailure(
+  value: ProviderChatResponse,
+): value is ProviderChatFailure {
+  return "failureReason" in value;
+}
+
 async function generateProviderAnswer({
   provider,
   context,
@@ -223,7 +250,7 @@ async function generateProviderAnswer({
   question: string;
   locale: "en" | "zh";
   signal: AbortSignal;
-}): Promise<ProviderChatResult | null> {
+}): Promise<ProviderChatResponse> {
   const first = await callProvider({
     provider,
     body: createProviderRequest(provider.model, context, question, locale),
@@ -248,7 +275,10 @@ async function generateProviderAnswer({
       const repairedResult = parseProviderAnswer(repair.responseText);
       if (repairedResult) {
         if (hasUnsupportedEvidence(repairedResult, context)) {
-          return null;
+          return {
+            failureReason: "repair_output_not_supported_by_context",
+            attempts: 2,
+          };
         }
 
         return {
@@ -257,6 +287,11 @@ async function generateProviderAnswer({
           attempts: 2,
         };
       }
+
+      return {
+        failureReason: "repair_output_unparseable",
+        attempts: 2,
+      };
     }
 
     return {
@@ -280,7 +315,12 @@ async function generateProviderAnswer({
 
   const repairedResult = parseProviderAnswer(repair.responseText);
   if (!repairedResult || hasUnsupportedEvidence(repairedResult, context)) {
-    return null;
+    return {
+      failureReason: repairedResult
+        ? "repair_output_not_supported_by_context"
+        : "repair_output_unparseable",
+      attempts: 2,
+    };
   }
 
   return {
@@ -461,7 +501,8 @@ function parseProviderAnswer(responseText: string): AiChatAnswer | null {
     return null;
   }
 
-  return normalizeAnswer(parseJsonLikeContent(content));
+  const contentPayload = parseJsonLikeContent(content);
+  return normalizeAnswer(contentPayload) ?? normalizeAnswer(contentPayload?.result);
 }
 
 function normalizeAnswer(value: unknown): AiChatAnswer | null {
@@ -532,18 +573,46 @@ function isUnsupportedRefusal(answer: string) {
 }
 
 function hasUnsupportedReferences(references: string[], context: string) {
-  const normalizedContext = normalizeForReferenceCheck(context);
-  return references.some((reference) => {
-    const normalizedReference = normalizeForReferenceCheck(reference);
-    return (
-      normalizedReference.length > 0 &&
-      !normalizedContext.includes(normalizedReference)
-    );
-  });
+  return references.some((reference) => !isSupportedReference(reference, context));
 }
 
 function normalizeForReferenceCheck(value: string) {
   return value.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function isSupportedReference(reference: string, context: string) {
+  const normalizedReference = normalizeForReferenceCheck(reference);
+  if (!normalizedReference) {
+    return false;
+  }
+
+  const normalizedContext = normalizeForReferenceCheck(context);
+  if (normalizedContext.includes(normalizedReference)) {
+    return true;
+  }
+
+  if (hasUnsupportedAnswerEntities(reference, context)) {
+    return false;
+  }
+
+  const referenceTerms = getEvidenceTerms(reference);
+  if (referenceTerms.length === 0) {
+    return false;
+  }
+
+  const matchedTerms = referenceTerms.filter((term) =>
+    normalizedContext.includes(term),
+  );
+  return matchedTerms.length / referenceTerms.length >= 0.55;
+}
+
+function getEvidenceTerms(value: string) {
+  return value
+    .toLowerCase()
+    .split(/[^a-z0-9\u4e00-\u9fff]+/i)
+    .map((term) => term.trim())
+    .filter((term) => term.length > 2)
+    .slice(0, 24);
 }
 
 function hasUnsupportedAnswerEntities(answer: string, context: string) {
@@ -560,6 +629,9 @@ function extractProtectedEntities(value: string) {
     ...value.matchAll(/\b[A-Z]{2,}[-_]\d{2,}[-_\dA-Z]*\b/g),
     ...value.matchAll(/\b(?:USD|RMB|CNY)\s?[\d,]+(?:\.\d+)?\b/gi),
     ...value.matchAll(/人民币\s?[\d,]+(?:\.\d+)?\s?元/g),
+    ...value.matchAll(/\b\d{4}-\d{1,2}-\d{1,2}\b/g),
+    ...value.matchAll(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b/gi),
+    ...value.matchAll(/\d{4}年\d{1,2}月\d{1,2}日/g),
   ]
     .map((match) => cleanProtectedEntity(match[0]))
     .filter((entity, index, entities) => entity.length > 1 && entities.indexOf(entity) === index);
@@ -605,7 +677,7 @@ function selectRelevantContext(text: string, question: string, maxCharacters: nu
   );
 
   const sections = text
-    .split(/\n{2,}|(?=Page\s+\d+:)/)
+    .split(/\n{2,}|(?=Page\s+\d+:)|(?=OCR\s+Page\s+\d+:)|(?=Section\s+\d+:)|(?=TARGET\s+CLAUSE\s+)/i)
     .map((section, index) => ({
       index,
       text: normalizeText(section),
