@@ -1,11 +1,13 @@
 import { BrandNav } from "@/components/BrandNav";
 import { BrandMark } from "@/components/BrandMark";
+import { UserAccountControls } from "@/components/UserAccountControls";
 
 const platformLinks = [
   { name: "AI", href: "/#ai" },
   { name: "Convert", href: "/pdf-to-word" },
   { name: "Optimize", href: "/compress-pdf" },
   { name: "Dashboard", href: "/dashboard" },
+  { name: "My Chats", href: "/my-chats" },
 ];
 
 export function Header() {
@@ -29,7 +31,10 @@ export function Header() {
             ))}
           </ul>
         </nav>
-        <BrandNav />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+          <BrandNav />
+          <UserAccountControls />
+        </div>
       </div>
     </header>
   );

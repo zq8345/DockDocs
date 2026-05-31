@@ -7,6 +7,7 @@ import {
   type AiChatLocale,
   type AiChatResult,
 } from "@/lib/ai-chat-runtime";
+import { saveChatForCurrentUser } from "@/lib/account-runtime";
 
 type WorkflowStatus =
   | "idle"
@@ -216,6 +217,10 @@ export function AiChatWorkflow({
 
       setResult(answer);
       setStreamingAnswer("");
+      await saveChatForCurrentUser({
+        question: question.trim(),
+        result: answer,
+      });
       setHistory((currentHistory) =>
         [
           ...currentHistory,
