@@ -1,0 +1,114 @@
+import fs from "node:fs";
+import path from "node:path";
+import { expect, test } from "@playwright/test";
+import { ensurePdfFixtures } from "./fixtures/pdf";
+
+const workerPath = path.join(
+  "pdfjs-dist",
+  "build",
+  "pdf.worker.min.mjs",
+);
+const resolvedWorkerPath = require.resolve(workerPath);
+
+test.beforeEach(async ({ page }) => {
+  await page.route("https://unpkg.com/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs", async (route) => {
+    await route.fulfill({
+      body: fs.readFileSync(resolvedWorkerPath, "utf8"),
+      contentType: "text/javascript",
+    });
+  });
+});
+
+test("loads Chat with PDF workspace and shows three-column UI", async ({ page }) => {
+  await page.goto("/chat-with-pdf");
+
+  await expect(page.getByRole("heading", { name: "Ask grounded questions about a PDF." })).toBeVisible();
+  await expect(page.getByTestId("document-sidebar")).toBeVisible();
+  await expect(page.getByTestId("conversation-workspace")).toBeVisible();
+  await expect(page.getByTestId("source-intelligence-panel")).toBeVisible();
+  await expect(page.getByTestId("upload-panel")).toBeVisible();
+  await expect(page.getByTestId("provider-reference")).toContainText("Waiting for AI response");
+});
+
+test("uploads a real small PDF and shows selected, processing, and success state", async ({ page }) => {
+  const { small } = ensurePdfFixtures();
+
+  await page.goto("/chat-with-pdf");
+  await page.getByTestId("upload-input").setInputFiles(small.filePath);
+
+  await expect(page.getByTestId("document-status")).toContainText(small.name);
+  await expect(page.getByTestId("document-status")).toContainText(/Reading PDF text|Ready: extracted/);
+  await expect(page.getByTestId("document-status")).toContainText("Ready: extracted");
+  await expect(page.getByTestId("result-state")).toContainText("Selectable text extracted");
+  await expect(page.getByTestId("source-intelligence-panel")).toContainText("1 page indexed");
+});
+
+test("knowledge cards fill the chat question", async ({ page }) => {
+  await page.goto("/chat-with-pdf");
+
+  await page.getByTestId("knowledge-card-summary").click();
+  await expect(page.getByTestId("chat-input")).toHaveValue("Create an executive summary of this PDF.");
+
+  await page.getByTestId("knowledge-card-risks").click();
+  await expect(page.getByTestId("chat-input")).toHaveValue(
+    "Identify risks, blockers, and obligations in this PDF.",
+  );
+
+  await page.getByTestId("knowledge-card-actions").click();
+  await expect(page.getByTestId("chat-input")).toHaveValue(
+    "List action items, owners, and dates from this PDF.",
+  );
+});
+
+test("large PDF over 25 MB shows error state", async ({ page }) => {
+  const { large } = ensurePdfFixtures();
+
+  await page.goto("/chat-with-pdf");
+  await page.getByTestId("upload-input").setInputFiles(large.filePath);
+
+  await expect(page.getByTestId("document-error-state")).toContainText("File size limit exceeded.");
+  await expect(page.getByTestId("document-error-state")).toContainText("Please choose a PDF up to 25 MB.");
+});
+
+test("provider not configured displays expected error state", async ({ page }) => {
+  const { small } = ensurePdfFixtures();
+
+  await page.route("**/.netlify/functions/chat-with-pdf", async (route) => {
+    await route.fulfill({
+      body: JSON.stringify({
+        error:
+          "AI provider is not configured. Set DEEPSEEK_API_KEY or DOCKDOCS_AI_SUMMARY_API_KEY before using Chat with PDF.",
+      }),
+      contentType: "application/json",
+      status: 503,
+    });
+  });
+
+  await page.goto("/chat-with-pdf");
+  await page.getByTestId("upload-input").setInputFiles(small.filePath);
+  await expect(page.getByTestId("document-status")).toContainText("Ready: extracted");
+
+  await page.getByTestId("chat-input").fill("Who is the owner?");
+  await page.getByTestId("ask-button").click();
+
+  await expect(page.getByTestId("chat-error-state")).toContainText("AI provider is not configured.");
+  await expect(page.getByTestId("conversation-workspace")).toContainText("Unable to answer");
+});
+
+for (const viewport of [
+  { height: 720, name: "Desktop 1280", width: 1280 },
+  { height: 1024, name: "Tablet 768", width: 768 },
+  { height: 844, name: "Mobile 390", width: 390 },
+]) {
+  test(`${viewport.name} has no horizontal overflow`, async ({ page }) => {
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.goto("/chat-with-pdf");
+
+    const metrics = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }));
+
+    expect(metrics.scrollWidth).toBe(metrics.clientWidth);
+  });
+}

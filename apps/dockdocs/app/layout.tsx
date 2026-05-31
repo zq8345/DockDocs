@@ -2,70 +2,47 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { absoluteUrl, googleSiteVerification, siteUrl } from "@/shared/seo/routes";
 import "./globals.css";
 
-const googleSiteVerification =
-  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
-
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dockdocs.app"),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "Free Online PDF Tools | DockDocs",
-    template: "%s",
+    default: "DockDocs AI Document Workspace",
+    template: "%s | DockDocs",
   },
   description:
-    "Privacy-first PDF tools for compressing, merging, splitting, converting, and OCR workflows inside DockDocs.",
+    "DockDocs is an AI document workspace for PDF tools, office files, writing cleanup, and practical document workflows.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Free Online PDF Tools | DockDocs",
+    title: "DockDocs AI Document Workspace",
     description:
-      "Privacy-first PDF tools for compressing, merging, splitting, converting, and OCR workflows inside DockDocs.",
-    url: "https://dockdocs.app",
+      "AI document tools for PDFs, office files, writing cleanup, and document workflows.",
+    url: absoluteUrl("/"),
     siteName: "DockDocs",
     type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Free Online PDF Tools | DockDocs",
-    description:
-      "Privacy-first PDF tools for compressing, merging, splitting, converting, and OCR workflows inside DockDocs.",
   },
   robots: {
     index: true,
     follow: true,
   },
   icons: {
-    icon: "/icon.svg",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-16.svg", type: "image/svg+xml", sizes: "16x16" },
+      { url: "/app-icon.svg", type: "image/svg+xml", sizes: "any" },
+    ],
+    shortcut: "/favicon.svg",
+    apple: "/apple-touch-icon.svg",
   },
-  ...(googleSiteVerification
+  manifest: "/site.webmanifest",
+  verification: googleSiteVerification
     ? {
-        verification: {
-          google: googleSiteVerification,
-        },
+        google: googleSiteVerification,
       }
-    : {}),
-};
-
-const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "DockDocs",
-  url: "https://dockdocs.app",
-  slogan: "Privacy-first PDF tools with AI document workflows",
-};
-
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "DockDocs",
-  url: "https://dockdocs.app",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: "https://dockdocs.app/?q={search_term_string}",
-    "query-input": "required name=search_term_string",
-  },
+    : undefined,
 };
 
 export default function RootLayout({
@@ -76,14 +53,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-        />
         <Header />
         {children}
         <Footer />

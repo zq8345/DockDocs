@@ -1,4 +1,4 @@
-import { tools } from "@/lib/tools";
+import { dockBrands } from "../config";
 
 type RelatedToolsProps = {
   compact?: boolean;
@@ -22,8 +22,7 @@ export function RelatedTools({ compact = false }: RelatedToolsProps) {
             </h2>
             {!compact && (
               <p className="mt-3 max-w-2xl leading-7 text-[color:var(--muted)]">
-                Move between the four Dock products with one consistent
-                navigation pattern across desktop and mobile.
+                Move between Dock tools with one consistent navigation system.
               </p>
             )}
           </div>
@@ -35,14 +34,14 @@ export function RelatedTools({ compact = false }: RelatedToolsProps) {
               : "mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
           }
         >
-          {tools.map((tool) => (
+          {dockBrands.map((brand) => (
             <a
-              key={tool.href}
-              href={tool.href}
-              className="group rounded-xl border border-[color:var(--line)] p-5 transition hover:border-[color:var(--foreground)]"
+              key={brand.url}
+              href={brand.url}
+              className="group rounded-lg border border-[color:var(--line)] p-5 transition hover:border-[color:var(--foreground)]"
             >
               <div className="flex items-center justify-between gap-4">
-                <h3 className="font-semibold">{tool.name}</h3>
+                <h3 className="font-semibold">{brand.name}</h3>
                 <span
                   aria-hidden="true"
                   className="text-[color:var(--muted)] transition group-hover:translate-x-0.5 group-hover:text-[color:var(--foreground)]"
@@ -51,7 +50,7 @@ export function RelatedTools({ compact = false }: RelatedToolsProps) {
                 </span>
               </div>
               <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
-                {tool.description}
+                {brand.description}
               </p>
             </a>
           ))}

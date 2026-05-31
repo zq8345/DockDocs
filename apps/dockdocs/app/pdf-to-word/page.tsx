@@ -1,133 +1,73 @@
-import {
-  createPdfToolMetadata,
-  PdfToolPage,
-  type PdfToolPageConfig,
-} from "../../../../shared/templates/pdf-tool-page";
-import { languageAlternates } from "@/lib/i18n";
-
-const pdfToWordConfig = {
-  slug: "pdf-to-word",
-  alternateLanguages: languageAlternates("pdf-to-word"),
-  title: "PDF to Word Converter Online Free | DockDocs",
-  description:
-    "Convert PDF files to editable Word documents online. Fast, secure, and AI-ready PDF conversion workflow.",
-  keywords: [
-    "pdf to word",
-    "convert pdf to word",
-    "pdf word converter",
-    "pdf to docx",
-  ],
-  appName: "DockDocs PDF to Word",
-  schemaName: "DockDocs PDF to Word Converter",
-  breadcrumbName: "PDF to Word",
-  heroTitle: "Convert PDF to Word online for editable documents.",
-  heroDescription:
-    "Turn PDF files into editable Word documents for revisions, collaboration, and office workflows. DockDocs keeps PDF conversion inside a clean AI Document Workspace.",
-  primaryActionLabel: "Convert PDF to Word",
-  stats: [
-    ["Price", "Free"],
-    ["Input", "PDF files"],
-    ["Output", "Word documents"],
-  ],
-  upload: {
-    title: "Upload a PDF to convert",
-    description:
-      "Drag and drop a PDF file here, or choose a file from your device.",
-    buttonLabel: "Choose PDF",
-    note: "PDF only. Fast, secure, and built for editable document workflows.",
-  },
-  benefitsTitle: "Create editable Word files without a heavy interface",
-  benefitsDescription:
-    "DockDocs keeps conversion focused: upload a PDF, prepare it for conversion, and move into an editable Word workflow.",
-  benefits: [
-    {
-      title: "Editable document output",
-      description:
-        "Convert static PDFs into Word-ready files for edits, updates, and collaboration.",
-    },
-    {
-      title: "Cleaner office workflow",
-      description:
-        "Move from locked PDF content to a document format that is easier to revise.",
-    },
-    {
-      title: "AI-ready conversion flow",
-      description:
-        "Prepare documents for future AI editing, summarization, extraction, and review workflows.",
-    },
-  ],
-  featuresTitle: "Built for modern PDF to Word workflows",
-  featuresDescription:
-    "A minimal Vercel, Linear, and Notion-inspired page structure for PDF conversion inside the DockDocs AI Document Workspace.",
-  features: [
-    {
-      title: "Convert PDF to Word",
-      description:
-        "Prepare PDF files for editable Word document workflows and revisions.",
-    },
-    {
-      title: "PDF to DOCX workflow",
-      description:
-        "Position static PDF content for Word-style editing, formatting, and reuse.",
-    },
-    {
-      title: "Office-ready structure",
-      description:
-        "Designed for reports, contracts, forms, proposals, and business documents.",
-    },
-    {
-      title: "Responsive DockDocs UI",
-      description:
-        "The same clean DockDocs interface works across desktop, tablet, and mobile screens.",
-    },
-  ],
-  workflowTitle: "How PDF to Word fits into document work",
-  workflowDescription:
-    "PDF to Word is designed for common office moments: a PDF needs revisions, a form needs updating, or a static document needs to become editable again.",
-  steps: [
-    "Select a PDF file from your device.",
-    "Let DockDocs prepare the file for Word conversion.",
-    "Convert the PDF into an editable Word document workflow.",
-  ],
-  faqTitle: "PDF to Word questions",
-  faq: [
-    {
-      question: "How do I convert PDF to Word online?",
-      answer:
-        "Choose a PDF file, upload it to DockDocs, and use the conversion workflow to prepare an editable Word document.",
-    },
-    {
-      question: "Can I convert PDF to DOCX?",
-      answer:
-        "Yes. The PDF to Word page is designed around converting PDF files into Word-style editable document workflows.",
-    },
-    {
-      question: "Is this PDF to Word converter free?",
-      answer:
-        "The PDF to Word page is designed as a free online conversion workflow for everyday document tasks.",
-    },
-    {
-      question: "Can I use PDF to Word on mobile?",
-      answer:
-        "Yes. The page is responsive and works on desktop, tablet, and mobile screens.",
-    },
-    {
-      question: "What types of PDFs can I convert?",
-      answer:
-        "The workflow is focused on PDF files such as reports, forms, contracts, proposals, and office documents.",
-    },
-  ],
-  cta: {
-    eyebrow: "PDF to Word",
-    title: "Turn PDFs into editable Word documents.",
-    description:
-      "Use DockDocs to convert PDF files for easier editing, collaboration, and document handoff.",
-    buttonLabel: "Convert PDF now",
-  },
-} satisfies PdfToolPageConfig;
-
-export const metadata = createPdfToolMetadata(pdfToWordConfig);
+import { RelatedTools } from "@/components/RelatedTools";
+import { UploadPanel } from "@/components/UploadPanel";
+import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 
 export default function PdfToWordPage() {
-  return <PdfToolPage config={pdfToWordConfig} />;
+  return (
+    <main>
+      <section className="border-b border-[color:var(--line)]">
+        <div className="mx-auto grid min-h-[calc(100vh-92px)] max-w-7xl items-center gap-8 px-5 py-10 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:px-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
+              Convert
+            </p>
+            <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl xl:text-6xl">
+              Convert PDFs into editable Word-ready documents.
+            </h1>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-[color:var(--muted)] sm:text-lg">
+              Keep conversion inside the same AI document platform, with upload
+              limits, output status, and next actions in one place.
+            </p>
+          </div>
+          <UploadPanel
+            title="Upload PDF to convert"
+            description="Drop a PDF here to prepare a Word conversion workflow without changing the backend provider logic."
+            formats="PDF"
+            limit="Up to 25 MB"
+            cta="Select PDF"
+            interactive={false}
+          />
+        </div>
+      </section>
+
+      <section className="border-b border-[color:var(--line)] px-5 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
+              Output
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
+              Conversion output should explain what happened.
+            </h2>
+            <p className="mt-5 leading-7 text-[color:var(--muted)]">
+              The UI sets expectations around editable content, layout review,
+              and follow-up document actions.
+            </p>
+          </div>
+          <div className="mt-8">
+            <ToolRuntimeClient
+              uploadTitle="Runtime-bound conversion upload"
+              uploadDescription="Select a PDF to verify conversion upload, processing, success, and error UI states without changing provider logic."
+              formats="PDF"
+              limit="Up to 25 MB"
+              cta="Select PDF"
+              accept="application/pdf,.pdf"
+              allowedExtensions={[".pdf"]}
+              outputEyebrow="Word Output"
+              outputTitle="Editable document ready"
+              outputSummary="The converted document is ready for review, with layout notes and follow-up actions surfaced next to the result."
+              keyPoints={[
+                "Text content is prepared for editing.",
+                "Layout review remains visible before handoff.",
+                "Users can continue with summary or chat workflows.",
+              ]}
+              actions={["Download DOCX", "Review layout notes", "Run AI Summary"]}
+              emptyMessage="Select a PDF to generate a Word output preview."
+            />
+          </div>
+        </div>
+      </section>
+      <RelatedTools />
+    </main>
+  );
 }
