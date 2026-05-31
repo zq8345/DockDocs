@@ -305,7 +305,14 @@ async function generateProviderAnswer({
 
   const firstResult = parseProviderAnswer(first.responseText);
   if (firstResult) {
-    if (shouldRepairResult(firstResult, context)) {
+    const normalizedFirstResult = completeOcrFieldAnswer(
+      firstResult,
+      question,
+      context,
+      locale,
+    );
+
+    if (shouldRepairResult(normalizedFirstResult, context)) {
       const repair = await callProvider({
         provider,
         body: createRepairProviderRequest(
@@ -321,7 +328,16 @@ async function generateProviderAnswer({
 
       const repairedResult = parseProviderAnswer(repair.responseText);
       if (repairedResult) {
-        const unsupportedEvidence = getUnsupportedEvidence(repairedResult, context);
+        const normalizedRepairedResult = completeOcrFieldAnswer(
+          repairedResult,
+          question,
+          context,
+          locale,
+        );
+        const unsupportedEvidence = getUnsupportedEvidence(
+          normalizedRepairedResult,
+          context,
+        );
         if (unsupportedEvidence) {
           return {
             failureReason: "repair_output_not_supported_by_context",
@@ -332,7 +348,7 @@ async function generateProviderAnswer({
         }
 
         return {
-          result: repairedResult,
+          result: normalizedRepairedResult,
           usage: repair.usage ?? first.usage,
           attempts: 2,
         };
@@ -345,7 +361,7 @@ async function generateProviderAnswer({
     }
 
     return {
-      result: firstResult,
+      result: normalizedFirstResult,
       usage: first.usage,
       attempts: 1,
     };
@@ -365,12 +381,15 @@ async function generateProviderAnswer({
   });
 
   const repairedResult = parseProviderAnswer(repair.responseText);
-  const unsupportedEvidence = repairedResult
-    ? getUnsupportedEvidence(repairedResult, context)
+  const normalizedRepairedResult = repairedResult
+    ? completeOcrFieldAnswer(repairedResult, question, context, locale)
     : null;
-  if (!repairedResult || unsupportedEvidence) {
+  const unsupportedEvidence = normalizedRepairedResult
+    ? getUnsupportedEvidence(normalizedRepairedResult, context)
+    : null;
+  if (!normalizedRepairedResult || unsupportedEvidence) {
     return {
-      failureReason: repairedResult
+      failureReason: normalizedRepairedResult
         ? "repair_output_not_supported_by_context"
         : "repair_output_unparseable",
       attempts: 2,
@@ -380,7 +399,7 @@ async function generateProviderAnswer({
   }
 
   return {
-    result: repairedResult,
+    result: normalizedRepairedResult,
     usage: repair.usage ?? first.usage,
     attempts: 2,
   };
@@ -412,6 +431,7 @@ function createProviderRequest(
           "Conversation history is only for follow-up intent and wording. Do not treat history as document evidence.",
           "Resolve follow-up phrases such as it, this amount, that date, 上一个问题, 它, 这个金额, or 该日期 using the recent conversation when possible.",
           "For OCR text, treat noisy mixed-language lines, labels, dates, amounts, invoice numbers, contract IDs, party names, and table-like key-value pairs as valid evidence when they appear in the context.",
+          "If the question asks for multiple fields, answer every requested field that appears in the context. Do not stop after the first matching field.",
           "If any relevant evidence appears in the context or in your references, answer from that evidence instead of refusing.",
           "Do not require the context language to match the question language; translate the evidence into the requested answer language when needed.",
           "Never invent, rename, normalize, or substitute organizations, people, invoice numbers, contract IDs, amounts, dates, or payment terms.",
@@ -493,6 +513,7 @@ function createRepairProviderRequest(
           "The previous provider output was empty, non-json, or missing keys.",
           "If the previous output refused to answer but included references with relevant evidence, correct the refusal and answer from those references and the source text.",
           "For OCR and mixed-language text, use visible key-value evidence such as dates, amounts, invoice numbers, contract IDs, parties, service scope, and payment terms.",
+          "If the question asks for multiple fields, answer every requested field that appears in the source text. Do not return only the first field.",
           "Never invent, rename, normalize, or substitute organizations, people, invoice numbers, contract IDs, amounts, dates, or payment terms.",
           "Copy named entities, numbers, dates, and IDs exactly as they appear in the source text.",
           "When answering in another language, translate only ordinary prose. Keep company names, party names, IDs, invoice numbers, amounts, and dates verbatim.",
@@ -610,6 +631,174 @@ function normalizeAnswer(value: unknown): AiChatAnswer | null {
   };
 }
 
+type OcrFieldDefinition = {
+  key: string;
+  labelEn: string;
+  labelZh: string;
+};
+
+type OcrFieldEvidence = OcrFieldDefinition & {
+  value: string;
+  reference: string;
+};
+
+const ocrFieldDefinitions: OcrFieldDefinition[] = [
+  { key: "invoice_no", labelEn: "Invoice No", labelZh: "发票号码" },
+  { key: "contract_no", labelEn: "Contract No", labelZh: "合同编号" },
+  { key: "supplier", labelEn: "Supplier", labelZh: "供应商" },
+  { key: "party_a", labelEn: "Party A", labelZh: "甲方" },
+  { key: "party_b", labelEn: "Party B", labelZh: "乙方" },
+  { key: "amount", labelEn: "Amount", labelZh: "金额" },
+  { key: "payment", labelEn: "Payment Terms", labelZh: "付款方式" },
+  { key: "due_date", labelEn: "Due Date", labelZh: "到期日" },
+];
+
+function completeOcrFieldAnswer(
+  result: AiChatAnswer,
+  question: string,
+  context: string,
+  locale: "en" | "zh",
+): AiChatAnswer {
+  const requestedFields = getRequestedOcrFields(question);
+  if (requestedFields.length < 2) {
+    return result;
+  }
+
+  const fieldEvidence = requestedFields
+    .map((field) => extractOcrFieldEvidence(field, context))
+    .filter((field): field is OcrFieldEvidence => Boolean(field));
+  if (fieldEvidence.length < 2) {
+    return result;
+  }
+
+  const missingFields = fieldEvidence.filter(
+    (field) => !answerContainsOcrValue(result.answer, field.value),
+  );
+  if (missingFields.length === 0) {
+    return result;
+  }
+
+  return {
+    answer: formatOcrFieldAnswer(fieldEvidence, locale),
+    references: fieldEvidence
+      .map((field) => field.reference)
+      .filter(
+        (reference, index, references) => references.indexOf(reference) === index,
+      ),
+  };
+}
+
+function getRequestedOcrFields(question: string) {
+  const normalizedQuestion = normalizeOcrEvidence(question);
+  return ocrFieldDefinitions.filter((field) =>
+    isRequestedOcrField(field.key, question, normalizedQuestion),
+  );
+}
+
+function isRequestedOcrField(
+  fieldKey: string,
+  question: string,
+  normalizedQuestion: string,
+) {
+  if (!normalizedQuestion.includes(fieldKey)) {
+    return false;
+  }
+
+  if (fieldKey === "payment") {
+    return (
+      /payment\s*(?:terms?|method)|付款方式|支付方式|付款条款|支付条款/i.test(
+        question,
+      ) || (/付款|支付|payment/i.test(question) && !/到期|due|deadline/i.test(question))
+    );
+  }
+
+  if (fieldKey === "due_date") {
+    return /due\s*date|deadline|到期日|付款到期|支付到期|截止/i.test(question);
+  }
+
+  return true;
+}
+
+function extractOcrFieldEvidence(
+  field: OcrFieldDefinition,
+  context: string,
+): OcrFieldEvidence | null {
+  const lines = context
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  for (const line of lines) {
+    const separator = line.search(/[:：]/);
+    if (separator === -1) {
+      continue;
+    }
+
+    const label = line.slice(0, separator);
+    if (!matchesOcrFieldLabel(field.key, label)) {
+      continue;
+    }
+
+    const value = cleanOcrFieldValue(line.slice(separator + 1));
+    if (!value) {
+      continue;
+    }
+
+    return {
+      ...field,
+      value,
+      reference: line,
+    };
+  }
+
+  return null;
+}
+
+function matchesOcrFieldLabel(fieldKey: string, label: string) {
+  const normalizedLabel = normalizeOcrEvidence(label);
+  if (!normalizedLabel.includes(fieldKey)) {
+    return false;
+  }
+
+  if (fieldKey === "payment") {
+    return !/due\s*date|deadline|到期日|付款到期|支付到期|截止/i.test(label);
+  }
+
+  if (fieldKey === "due_date") {
+    return /due\s*date|deadline|到期日|付款到期|支付到期|截止/i.test(label);
+  }
+
+  return true;
+}
+
+function cleanOcrFieldValue(value: string) {
+  return value
+    .replace(/\s+/g, " ")
+    .replace(/[。；;，,]+$/g, "")
+    .trim();
+}
+
+function answerContainsOcrValue(answer: string, value: string) {
+  const normalizedAnswer = normalizeForEntityCheck(answer);
+  const normalizedValue = normalizeForEntityCheck(value);
+  return normalizedValue.length > 0 && normalizedAnswer.includes(normalizedValue);
+}
+
+function formatOcrFieldAnswer(
+  fields: OcrFieldEvidence[],
+  locale: "en" | "zh",
+) {
+  if (locale === "zh") {
+    return fields
+      .map((field) => `${field.labelZh}：${field.value}`)
+      .join("；");
+  }
+
+  return fields
+    .map((field) => `${field.labelEn}: ${field.value}`)
+    .join("; ");
+}
+
 function shouldRepairResult(result: AiChatAnswer, context: string) {
   return (
     (isUnsupportedRefusal(result.answer) && result.references.length > 0) ||
@@ -714,12 +903,16 @@ function normalizeOcrEvidence(value: string) {
     .replace(/\bparty\s*a\b/gi, "party_a")
     .replace(/\bparty\s*b\b/gi, "party_b")
     .replace(/\bamount\b/gi, "amount")
-    .replace(/\bpayment\b/gi, "payment")
+    .replace(/\bpayment\s*(?:terms?)?\b/gi, "payment")
+    .replace(/\bsupplier\b|\bvendor\b/gi, "supplier")
+    .replace(/\binvoice\s*(?:no|number|id)\b/gi, "invoice_no")
     .replace(/\bcontract\s*(?:no|number|id)\b/gi, "contract_no")
     .replace(/\bdue\s*date\b/gi, "due_date")
     .replace(/甲方/g, "party_a")
     .replace(/乙方/g, "party_b")
     .replace(/金额/g, "amount")
+    .replace(/供应商|销售方|卖方/g, "supplier")
+    .replace(/发票号码|发票号/g, "invoice_no")
     .replace(/付款方式|付款|支付方式|支付/g, "payment")
     .replace(/合同编号|合同号|合同id/g, "contract_no")
     .replace(/到期日|交付日期|日期/g, "due_date")
