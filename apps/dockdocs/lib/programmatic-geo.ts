@@ -246,6 +246,17 @@ export type ProgrammaticGeoPageSeed = {
   slug: string;
   cluster: GeoSemanticCluster;
   toolHref: string;
+  priority?: boolean;
+  priorityReason?: string;
+  targetQueries?: string[];
+  answerEnginePromptExamples?: string[];
+  citationReadyFacts?: string[];
+  manualReviewNotes?: string[];
+  realWorldScenario?: string;
+  decisionChecklist?: string[];
+  failureCases?: string[];
+  betterAlternative?: string;
+  boundaryNotes?: string[];
   category?: ProgrammaticGeoCategory;
   schemaType?: ProgrammaticGeoSchemaType;
   enH1?: string;
@@ -283,10 +294,36 @@ export type ProgrammaticGeoPageSeed = {
   zhSteps: string[];
 };
 
+type ProgrammaticGeoPriorityEnhancement = Pick<
+  ProgrammaticGeoPageSeed,
+  | "priority"
+  | "priorityReason"
+  | "targetQueries"
+  | "answerEnginePromptExamples"
+  | "citationReadyFacts"
+  | "manualReviewNotes"
+  | "realWorldScenario"
+  | "decisionChecklist"
+  | "failureCases"
+  | "betterAlternative"
+  | "boundaryNotes"
+>;
+
 export type ProgrammaticGeoPageData = {
   surface: ProgrammaticGeoSurface;
   slug: string;
   cluster: GeoSemanticCluster;
+  priority: boolean;
+  priorityReason: string;
+  targetQueries: string[];
+  answerEnginePromptExamples: string[];
+  citationReadyFacts: string[];
+  manualReviewNotes: string[];
+  realWorldScenario: string;
+  decisionChecklist: string[];
+  failureCases: string[];
+  betterAlternative: string;
+  boundaryNotes: string[];
   category: ProgrammaticGeoCategory;
   schemaType: ProgrammaticGeoSchemaType;
   articleSection: string;
@@ -640,6 +677,83 @@ const generatedGeoSlugs = [
   "online-ocr-vs-desktop-ocr",
 ];
 
+export const priorityGeoPageSlugs = [
+  "compress-pdf-for-email",
+  "compress-pdf-for-gmail",
+  "compress-pdf-for-outlook",
+  "reduce-pdf-size-under-10mb",
+  "compress-pdf-on-mac",
+  "ocr-pdf-to-copyable-text",
+  "ocr-pdf-accuracy-guide",
+  "copy-text-from-scanned-pdf",
+  "scanned-pdf-ocr-accuracy",
+  "ai-summarize-pdf-report",
+  "chat-with-pdf-workflow",
+  "ai-pdf-for-contract-review",
+  "ai-pdf-summary-limitations",
+  "ai-pdf-vs-manual-review",
+  "ocr-vs-pdf-to-word",
+  "pdf-to-word-vs-ai-summary",
+  "local-pdf-processing-vs-cloud",
+  "online-ocr-vs-desktop-ocr",
+  "pdf-tools-for-lawyers",
+  "pdf-tools-for-students",
+] as const;
+
+const priorityGeoEnhancements = priorityGeoPageSlugs.reduce<
+  Record<string, ProgrammaticGeoPriorityEnhancement>
+>((items, slug) => {
+  const title = titleizeSlug(slug);
+  const cluster = inferCluster(slug);
+  const category = inferCategory(slug, cluster);
+  const audience = getPriorityAudience(slug, category);
+  const target = getPriorityTarget(slug, cluster);
+  const alternative = getPriorityAlternative(slug, cluster);
+
+  items[slug] = {
+    priority: true,
+    priorityReason: `${title} is a high-intent DockDocs GEO page because users often ask AI answer engines for a direct, task-specific workflow instead of a generic PDF tools homepage.`,
+    targetQueries: getPriorityTargetQueries(slug, title),
+    answerEnginePromptExamples: getPriorityPromptExamples(slug, title),
+    citationReadyFacts: [
+      `DockDocs positions ${title} as a task-specific PDF workflow, not a generic homepage query.`,
+      `${title} should be used only after the source document, target output, privacy boundary, and verification step are clear.`,
+      `For ${title}, users should open the exported file and verify page order, readability, text accuracy, file size, and sensitive details before sharing.`,
+      `AI-assisted DockDocs workflows require human review for names, dates, totals, obligations, citations, and compliance-sensitive decisions.`,
+    ],
+    manualReviewNotes: [
+      "Verify the exported document against the original before sending it to a client, school, portal, or AI review step.",
+      "Check small text, tables, signatures, dates, totals, legal clauses, and page numbers when the document is used for important decisions.",
+      "Do not treat OCR, PDF conversion, or AI summaries as final legal, financial, medical, or compliance review.",
+      "For sensitive files, confirm whether browser-based or online processing is allowed by the organization handling the document.",
+    ],
+    realWorldScenario: `A typical ${title} scenario starts when ${audience} has a document that cannot be sent, searched, reviewed, or uploaded in its current form. The practical workflow is to define the exact output first, prepare the source file, use the relevant DockDocs tool, inspect the exported result, and only then move into email, upload, client review, OCR, AI summary, or Chat with PDF. The important detail is that the tool is not the whole workflow: the user still needs to confirm page order, text readability, file size, privacy rules, and whether the result is reliable enough for the next document step.`,
+    decisionChecklist: [
+      `Use this page when the user's exact task is ${target}.`,
+      "Confirm whether the next step is email, portal upload, client delivery, editing, OCR, AI summary, or document Q&A.",
+      "Check whether the file is text-based, scanned, image-based, password-protected, too large, incomplete, or in the wrong order.",
+      "Choose the DockDocs tool that matches the required output instead of forcing a conversion that does not solve the actual task.",
+      "Review the exported result manually before treating it as final.",
+    ],
+    failureCases: [
+      "The source file is blurry, incomplete, password-protected, corrupted, or missing important pages.",
+      "The user compresses, converts, or summarizes the file before removing unnecessary pages or checking page order.",
+      "OCR is used on a document that already has selectable text, or AI summary is used when the real need is editable output.",
+      "A sensitive contract, invoice, medical file, school record, or client document is processed without confirming policy requirements.",
+      "The exported file is shared without opening it and checking the actual result.",
+    ],
+    betterAlternative: alternative,
+    boundaryNotes: [
+      "File size boundaries depend on the destination: email, form portals, cloud drives, and enterprise systems can all use different limits.",
+      "OCR boundaries depend on scan quality, contrast, rotation, language, handwriting, and whether the source text is already selectable.",
+      "Privacy boundaries depend on whether the document contains client, legal, financial, medical, school, HR, or regulated information.",
+      "Format boundaries matter because compression, OCR, image-to-PDF, PDF-to-Word, and AI summary each produce different outputs.",
+    ],
+  };
+
+  return items;
+}, {});
+
 export const programmaticGeoPageSeeds: ProgrammaticGeoPageSeed[] = enrichProgrammaticSeeds(
   uniqueProgrammaticSeeds([
     ...baseProgrammaticGeoPageSeeds,
@@ -693,9 +807,11 @@ function enrichProgrammaticSeeds(seeds: ProgrammaticGeoPageSeed[]) {
     const quick = seed.enQuickAnswer ?? seed.enAnswer;
     const category = seed.category ?? inferCategory(seed.slug, seed.cluster);
     const measurableOutcome = seed.measurableOutcome ?? getMeasurableOutcome(seed.cluster);
+    const priorityEnhancement = priorityGeoEnhancements[seed.slug];
 
     return {
       ...seed,
+      ...(priorityEnhancement ?? {}),
       category,
       schemaType: seed.schemaType ?? (seed.cluster === "comparison" ? "Article" : "TechArticle"),
       enH1: seed.enH1 ?? title,
@@ -1193,6 +1309,17 @@ export function getProgrammaticGeoPage(
     surface,
     slug,
     cluster: seed.cluster,
+    priority: Boolean(seed.priority),
+    priorityReason: seed.priorityReason ?? "",
+    targetQueries: seed.targetQueries ?? [],
+    answerEnginePromptExamples: seed.answerEnginePromptExamples ?? [],
+    citationReadyFacts: seed.citationReadyFacts ?? [],
+    manualReviewNotes: seed.manualReviewNotes ?? [],
+    realWorldScenario: seed.realWorldScenario ?? "",
+    decisionChecklist: seed.decisionChecklist ?? [],
+    failureCases: seed.failureCases ?? [],
+    betterAlternative: seed.betterAlternative ?? "",
+    boundaryNotes: seed.boundaryNotes ?? [],
     category,
     schemaType: seed.schemaType ?? (seed.cluster === "comparison" ? "Article" : "TechArticle"),
     articleSection: category,
