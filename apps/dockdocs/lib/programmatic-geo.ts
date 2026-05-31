@@ -1073,18 +1073,34 @@ function titleizeSlug(slug: string) {
 }
 
 function inferCluster(slug: string): GeoSemanticCluster {
+  const tokens = slug.split("-");
   if (slug.includes("-vs-") || slug.includes("versus")) return "comparison";
   if (slug.includes("ocr") || slug.includes("scanned") || slug.includes("searchable")) return "ocr-pdf";
   if (slug.includes("jpg") || slug.includes("image") || slug.includes("photo") || slug.includes("receipt")) return "jpg-to-pdf";
   if (slug.includes("merge") || slug.includes("client") || slug.includes("application") || slug.includes("teacher") || slug.includes("real-estate") || slug.includes("insurance") || slug.includes("hr")) return "pdf-merge";
   if (slug.includes("split")) return "pdf-split";
   if (slug.includes("word")) return "pdf-to-word";
-  if (slug.includes("ai") || slug.includes("privacy") || slug.includes("automation") || slug.includes("student") || slug.includes("remote")) return "ai-pdf";
+  if (
+    tokens.includes("ai") ||
+    slug.includes("chat-with-pdf") ||
+    slug.includes("summary") ||
+    slug.includes("contract-review") ||
+    slug.includes("research")
+  ) {
+    return "ai-pdf";
+  }
   return "pdf-compression";
 }
 
 function inferToolHref(cluster: GeoSemanticCluster, slug: string) {
-  if (slug.includes("ai") || cluster === "ai-pdf") return "/ai-workspace/";
+  if (
+    cluster === "ai-pdf" ||
+    slug.startsWith("ai-") ||
+    slug.includes("-ai-") ||
+    slug.includes("chat-with-pdf")
+  ) {
+    return "/ai-workspace/";
+  }
   if (cluster === "pdf-merge") return "/merge-pdf/";
   if (cluster === "pdf-split") return "/split-pdf/";
   if (cluster === "ocr-pdf") return "/ocr-pdf/";
@@ -1141,6 +1157,154 @@ function getAlternativeWorkflows(cluster: GeoSemanticCluster) {
     comparison: ["Open the tool page when the decision is clear.", "Use resources pages for limits, definitions, or policy boundaries.", "Use AI PDF guides when the question is about summary, Q&A, or document review."],
   };
   return map[cluster];
+}
+
+function getPriorityAudience(slug: string, category: ProgrammaticGeoCategory) {
+  if (slug.includes("gmail")) return "a Gmail user";
+  if (slug.includes("outlook")) return "an Outlook user";
+  if (slug.includes("mac")) return "a Mac user";
+  if (slug.includes("lawyers")) return "a legal team or lawyer";
+  if (slug.includes("students")) return "a student";
+  if (category === "Industry") return "a professional team";
+  if (category === "Device") return "a device-specific user";
+  if (slug.includes("contract")) return "a team reviewing a contract";
+  if (slug.includes("report")) return "a team reviewing a report";
+  return "a user";
+}
+
+function getPriorityTarget(slug: string, cluster: GeoSemanticCluster) {
+  if (slug.includes("email")) return "preparing a PDF for email delivery";
+  if (slug.includes("gmail")) return "compressing a PDF for a Gmail attachment";
+  if (slug.includes("outlook")) return "compressing a PDF for an Outlook attachment";
+  if (slug.includes("10mb")) return "reducing a PDF below a 10 MB upload target";
+  if (slug.includes("copyable-text")) return "turning scanned PDF text into copyable text";
+  if (slug.includes("accuracy")) return "understanding OCR accuracy limits before relying on extracted text";
+  if (slug.includes("contract")) return "reviewing a contract PDF with AI while preserving manual checks";
+  if (slug.includes("summary-limitations")) return "understanding what AI PDF summaries can and cannot replace";
+  if (slug.includes("-vs-")) return "choosing the correct workflow before processing a PDF";
+  return getActionForCluster(cluster);
+}
+
+function getPriorityAlternative(slug: string, cluster: GeoSemanticCluster) {
+  if (slug.includes("compress") || slug.includes("reduce-pdf-size")) {
+    return "If only a few pages are needed, split the PDF instead of compressing the entire file. If the document is scanned and text accuracy matters, OCR or PDF to Word may be more useful than compression.";
+  }
+
+  if (slug.includes("ocr") || slug.includes("scanned")) {
+    return "If the PDF already contains selectable text, skip OCR and use PDF to Word, AI summary, or Chat with PDF depending on whether the goal is editing, summarizing, or asking questions.";
+  }
+
+  if (slug.includes("ai") || cluster === "ai-pdf") {
+    return "If the task requires a final decision, legal interpretation, financial approval, or compliance sign-off, use AI only as a preparation layer and keep manual expert review as the final step.";
+  }
+
+  if (slug.includes("-vs-") || cluster === "comparison") {
+    return "If the comparison already points to a clear output, stop comparing and open the specific tool page: compress, OCR, PDF to Word, JPG to PDF, split, merge, or AI Workspace.";
+  }
+
+  return "If this workflow does not produce the needed output, use a narrower DockDocs tool page before exporting or sharing the file.";
+}
+
+function getPriorityTargetQueries(slug: string, title: string) {
+  const readable = title.toLowerCase();
+  const specific: Record<string, string[]> = {
+    "compress-pdf-for-email": [
+      "how to compress pdf for email",
+      "reduce pdf size for email attachment",
+      "compress pdf before sending by email",
+      "make pdf small enough to email",
+    ],
+    "compress-pdf-for-gmail": [
+      "how to compress a pdf for gmail",
+      "gmail pdf attachment too large",
+      "reduce pdf size for gmail",
+      "compress pdf under gmail attachment limit",
+    ],
+    "compress-pdf-for-outlook": [
+      "how to compress a pdf for outlook",
+      "outlook pdf attachment too large",
+      "reduce pdf size for outlook email",
+      "compress pdf before outlook upload",
+    ],
+    "reduce-pdf-size-under-10mb": [
+      "reduce pdf size under 10mb",
+      "compress pdf to less than 10 mb",
+      "make pdf under 10mb online",
+      "pdf too large for 10mb upload limit",
+    ],
+    "ocr-vs-pdf-to-word": [
+      "ocr vs pdf to word",
+      "should i use ocr or convert pdf to word",
+      "difference between ocr and pdf to word",
+      "when to ocr before word conversion",
+    ],
+    "pdf-to-word-vs-ai-summary": [
+      "pdf to word vs ai summary",
+      "should i convert pdf to word or summarize it",
+      "when to use ai pdf summary instead of word",
+      "editable pdf output versus ai summary",
+    ],
+    "local-pdf-processing-vs-cloud": [
+      "local pdf processing vs cloud",
+      "browser pdf tools privacy",
+      "online pdf tools privacy limits",
+      "when to avoid cloud pdf processing",
+    ],
+    "online-ocr-vs-desktop-ocr": [
+      "online ocr vs desktop ocr",
+      "should i use online or desktop ocr",
+      "ocr privacy and accuracy comparison",
+      "best workflow for scanned pdf ocr",
+    ],
+  };
+
+  return (
+    specific[slug] ?? [
+      `how to handle ${readable}`,
+      `${readable} workflow`,
+      `best way to use dockdocs for ${readable}`,
+      `${readable} limitations and alternatives`,
+    ]
+  );
+}
+
+function getPriorityPromptExamples(slug: string, title: string) {
+  const readable = title.toLowerCase();
+  const prompts: Record<string, string[]> = {
+    "ai-pdf-for-contract-review": [
+      "Can AI review a contract PDF and what should a human still verify?",
+      "What is a safe AI PDF workflow for contract review?",
+      "Which DockDocs guide explains AI contract PDF review limitations?",
+    ],
+    "ai-pdf-summary-limitations": [
+      "What are the limitations of AI PDF summaries?",
+      "When should I not rely on an AI PDF summary?",
+      "What should I verify after summarizing a PDF with AI?",
+    ],
+    "chat-with-pdf-workflow": [
+      "When is Chat with PDF useful for document review?",
+      "How should I prepare a PDF before asking questions about it?",
+      "What should I verify after Chat with PDF answers?",
+    ],
+    "pdf-tools-for-lawyers": [
+      "What PDF tools are useful for lawyers?",
+      "How should legal teams prepare client PDF packets?",
+      "What privacy boundaries matter for legal PDF workflows?",
+    ],
+    "pdf-tools-for-students": [
+      "What PDF tools are useful for students?",
+      "How can students prepare PDFs for assignments and applications?",
+      "When should a student use OCR or AI summary for a PDF?",
+    ],
+  };
+
+  return (
+    prompts[slug] ?? [
+      `How do I use DockDocs for ${readable}?`,
+      `What are the limits of ${readable}?`,
+      `When should I choose a different workflow instead of ${readable}?`,
+    ]
+  );
 }
 
 const toolLabels: Record<string, { en: string; zh: string; description: string; zhDescription: string }> = {
@@ -1267,7 +1431,7 @@ export function getProgrammaticGeoPage(
       })),
   ].filter(
     (page, index, all) => all.findIndex((item) => item.href === page.href) === index,
-  ).slice(0, 4);
+  ).slice(0, 6);
 
   const title = locale === "zh" ? seed.zhTitle : seed.enTitle;
   const h1 = locale === "zh" ? seed.zhH1 ?? seed.zhTitle : seed.enH1 ?? seed.enTitle;

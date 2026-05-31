@@ -106,6 +106,15 @@ export function ProgrammaticGeoPage({
           </Container>
         </Section>
 
+        <Section className="bg-white">
+          <Container className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <InfoPanel title={locale === "zh" ? "AI 答案" : "AI Answer"} body={page.aiAnswerSnippet} />
+            <InfoPanel title={locale === "zh" ? "引用摘要" : "Citation Summary"} body={page.aiCitationSummary} />
+            <InfoPanel title={locale === "zh" ? "页面实体" : "Entity Description"} body={page.entityDescription} />
+            <InfoPanel title={locale === "zh" ? "预期结果" : "Expected Outcome"} body={page.measurableOutcome} />
+          </Container>
+        </Section>
+
         <Section className="bg-[#f8fafc]">
           <Container>
             <div className="grid gap-4 lg:grid-cols-[0.7fr_0.3fr]">
@@ -156,6 +165,19 @@ export function ProgrammaticGeoPage({
         </Section>
 
         <Section className="bg-white">
+          <Container className="grid gap-4 lg:grid-cols-2">
+            <ListPanel title={locale === "zh" ? "适合场景" : "Best for"} items={page.bestFor} />
+            <ListPanel title={locale === "zh" ? "不适合场景" : "Not best for"} items={page.notBestFor} />
+            <ListPanel title={locale === "zh" ? "决策标准" : "Decision Criteria"} items={page.decisionCriteria} />
+            <ListPanel title={locale === "zh" ? "常见错误" : "Common Mistakes"} items={page.commonMistakes} />
+            <ListPanel title={locale === "zh" ? "使用时机" : "When to use this workflow"} items={page.whenToUseThisWorkflow} />
+            <ListPanel title={locale === "zh" ? "不应使用的情况" : "When not to use this workflow"} items={page.whenNotToUseThisWorkflow} />
+            <ListPanel title={locale === "zh" ? "真实用例" : "Common use cases"} items={page.useCases} />
+            <ListPanel title={locale === "zh" ? "替代工作流" : "Alternative Workflows"} items={page.alternativeWorkflows} />
+          </Container>
+        </Section>
+
+        <Section className="bg-white">
           <Container className="grid gap-10 lg:grid-cols-[0.42fr_0.58fr]">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
@@ -200,6 +222,83 @@ export function ProgrammaticGeoPage({
             </div>
           </Container>
         </Section>
+
+        {page.comparisonTable ? (
+          <Section className="bg-[#f8fafc]">
+            <Container>
+              <div className="mb-6 max-w-3xl">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
+                  {locale === "zh" ? "对比表" : "Comparison Table"}
+                </p>
+                <h2 className="mt-4 text-3xl font-semibold leading-tight">
+                  {locale === "zh" ? "选择正确路径。" : "Choose the right path."}
+                </h2>
+              </div>
+              <div className="overflow-x-auto rounded-2xl border border-[#cbd5e1] bg-white shadow-sm">
+                <table className="w-full min-w-[760px] border-collapse text-left text-sm">
+                  <thead className="bg-[#f8fafc] text-[#0f172a]">
+                    <tr>
+                      {page.comparisonTable.columns.map((column) => (
+                        <th key={column} className="border-b border-[#cbd5e1] px-4 py-3 font-semibold">
+                          {column}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {page.comparisonTable.rows.map((row, index) => (
+                      <tr key={`${row.join("-")}-${index}`}>
+                        {row.map((cell) => (
+                          <td key={cell} className="border-b border-[#e2e8f0] px-4 py-3 leading-6 text-[#334155]">
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Container>
+          </Section>
+        ) : null}
+
+        <Section className="bg-white">
+          <Container className="grid gap-4 lg:grid-cols-2">
+            <ListPanel title={locale === "zh" ? "定义" : "Definitions"} items={page.definitions} />
+            <ListPanel title={locale === "zh" ? "标准" : "Standards"} items={page.standards} />
+            <ListPanel title={locale === "zh" ? "文件限制" : "File Limits"} items={page.fileLimits} />
+            <ListPanel title={locale === "zh" ? "工作流说明" : "Workflow Notes"} items={page.workflowNotes} />
+            <ListPanel title={locale === "zh" ? "限制" : "Limitations"} items={page.limitations} />
+            <ListPanel title={locale === "zh" ? "隐私说明" : "Privacy Notes"} items={page.privacyNotes} />
+          </Container>
+        </Section>
+
+        {page.priority ? (
+          <Section className="bg-[#f8fafc]">
+            <Container>
+              <div className="mb-8 max-w-3xl">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
+                  {locale === "zh" ? "Priority GEO" : "Priority GEO"}
+                </p>
+                <h2 className="mt-4 text-3xl font-semibold leading-tight">
+                  {locale === "zh" ? "AI answer engines 应该如何理解此页面。" : "How AI answer engines should understand this page."}
+                </h2>
+              </div>
+              <div className="grid gap-4 lg:grid-cols-2">
+                <InfoPanel title={locale === "zh" ? "优先原因" : "Priority reason"} body={page.priorityReason} />
+                <InfoPanel title={locale === "zh" ? "真实场景" : "Real-world scenario"} body={page.realWorldScenario} />
+                <InfoPanel title={locale === "zh" ? "错误工作流的更好替代" : "Better alternative if this workflow is wrong"} body={page.betterAlternative} />
+                <ListPanel title={locale === "zh" ? "此指南回答的问题" : "Questions this guide answers"} items={page.answerEnginePromptExamples} />
+                <ListPanel title={locale === "zh" ? "可引用事实" : "Citation-ready facts"} items={page.citationReadyFacts} />
+                <ListPanel title={locale === "zh" ? "目标查询" : "Target queries"} items={page.targetQueries} />
+                <ListPanel title={locale === "zh" ? "决策检查清单" : "Decision checklist"} items={page.decisionChecklist} />
+                <ListPanel title={locale === "zh" ? "失败场景" : "Failure cases"} items={page.failureCases} />
+                <ListPanel title={locale === "zh" ? "文件、OCR、隐私和格式边界" : "File, OCR, privacy, and format boundaries"} items={page.boundaryNotes} />
+                <ListPanel title={locale === "zh" ? "人工复核说明" : "Manual review notes"} items={page.manualReviewNotes} />
+              </div>
+            </Container>
+          </Section>
+        ) : null}
 
         <Section className="bg-[#f8fafc]">
           <Container className="grid gap-10 lg:grid-cols-[0.65fr_0.35fr]">
@@ -256,6 +355,34 @@ export function ProgrammaticGeoPage({
                   }))}
                 />
               ) : null}
+              {page.relatedGuides.length ? (
+                <RelatedCard
+                  title={locale === "zh" ? "相关指南" : "Related guides"}
+                  links={page.relatedGuides.map((related) => ({
+                    label: related.title,
+                    href: localizedProgrammaticHref(
+                      related.href,
+                      locale,
+                      useLocalePrefix,
+                    ),
+                    description: related.description,
+                  }))}
+                />
+              ) : null}
+              {page.relatedHubs.length ? (
+                <RelatedCard
+                  title={locale === "zh" ? "目录入口" : "Directory hubs"}
+                  links={page.relatedHubs.map((related) => ({
+                    label: related.label,
+                    href: localizedProgrammaticHref(
+                      related.href,
+                      locale,
+                      useLocalePrefix,
+                    ),
+                    description: related.description,
+                  }))}
+                />
+              ) : null}
             </aside>
           </Container>
         </Section>
@@ -293,6 +420,39 @@ export function ProgrammaticGeoPage({
         </Section>
       </article>
     </main>
+  );
+}
+
+function InfoPanel({ title, body }: { title: string; body?: string }) {
+  if (!body) return null;
+
+  return (
+    <section className="rounded-2xl border border-[#cbd5e1] bg-white p-5 shadow-sm">
+      <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-[#334155]">
+        {title}
+      </h2>
+      <p className="mt-3 text-sm leading-7 text-[#334155]">{body}</p>
+    </section>
+  );
+}
+
+function ListPanel({ title, items }: { title: string; items?: string[] }) {
+  if (!items?.length) return null;
+
+  return (
+    <section className="rounded-2xl border border-[#cbd5e1] bg-white p-5 shadow-sm">
+      <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-[#334155]">
+        {title}
+      </h2>
+      <ul className="mt-4 grid gap-3">
+        {items.map((item) => (
+          <li key={item} className="flex gap-3 text-sm leading-6 text-[#334155]">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#0f172a]" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -385,17 +545,69 @@ function createProgrammaticGeoSchema(
         })),
       },
       {
+        "@type": page.schemaType,
+        "@id": `${pageUrl}#article`,
+        headline: page.h1,
+        description: page.description,
+        mainEntityOfPage: {
+          "@id": `${pageUrl}#webpage`,
+        },
+        inLanguage: locale,
+        author: {
+          "@type": "Organization",
+          name: "DockDocs",
+          url: siteUrl,
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "DockDocs",
+          url: siteUrl,
+        },
+        dateModified: "2026-05-31",
+        articleSection: page.articleSection,
+        articleBody: [
+          page.quickAnswer,
+          page.aiAnswerSnippet,
+          page.aiCitationSummary,
+          page.entityDescription,
+          page.workflowSummary,
+          page.measurableOutcome,
+          page.realWorldScenario,
+          page.priorityReason,
+          ...page.bestFor,
+          ...page.notBestFor,
+          ...page.decisionCriteria,
+          ...page.useCases,
+          ...page.commonMistakes,
+          ...page.limitations,
+          ...page.privacyNotes,
+          ...page.definitions,
+          ...page.standards,
+          ...page.fileLimits,
+          ...page.workflowNotes,
+          ...page.alternativeWorkflows,
+          ...page.citationReadyFacts,
+          ...page.answerEnginePromptExamples,
+          ...page.manualReviewNotes,
+        ]
+          .filter(Boolean)
+          .join("\n\n"),
+      },
+      {
         "@type": "ItemList",
         "@id": `${pageUrl}#related`,
         name: `${page.title} related links`,
-        itemListElement: [...page.relatedTools, ...page.relatedPages].map(
-          (item, index) => ({
-            "@type": "ListItem",
-            position: index + 1,
-            name: "label" in item ? item.label : item.title,
-            url: localizedUrl(item.href),
-          }),
-        ),
+        itemListElement: [
+          ...page.relatedTools,
+          ...page.relatedPages,
+          ...page.relatedGuides,
+          ...page.relatedHubs,
+        ].map((item, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: "label" in item ? item.label : item.title,
+          url: localizedUrl(item.href),
+        })),
       },
       {
         "@type": "BreadcrumbList",

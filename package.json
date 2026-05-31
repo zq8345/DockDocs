@@ -16,6 +16,7 @@
     "dev:dockseo": "npm --workspace @dock/dockseo run dev",
     "dev:docktext": "npm --workspace @dock/docktext run dev",
     "build:dockdocs": "npm --workspace @dock/dockdocs run build",
+    "geo:qa": "npm --workspace @dock/dockdocs run geo:qa",
     "build:dockimg": "npm --workspace @dock/dockimg run build",
     "build:dockseo": "npm --workspace @dock/dockseo run build",
     "build:docktext": "npm --workspace @dock/docktext run build"
