@@ -99,6 +99,7 @@ export function AiChatWorkflow({
   const [progressStep, setProgressStep] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState<AiChatResult | null>(null);
+  const [streamingAnswer, setStreamingAnswer] = useState("");
   const [history, setHistory] = useState<AiChatHistoryTurn[]>([]);
 
   const hasDocument = Boolean(file) || pastedText.trim().length > 0;
@@ -139,6 +140,7 @@ export function AiChatWorkflow({
     abortRef.current = controller;
     setError("");
     setResult(null);
+    setStreamingAnswer("");
     setProgress(0);
     setProgressStep("");
     setStatus("extracting");
@@ -156,6 +158,15 @@ export function AiChatWorkflow({
           setProgressStep(step);
           setStatus(nextProgress >= 70 ? "asking" : "extracting");
         },
+        onAnswerDelta: (text) => {
+          if (!text) {
+            return;
+          }
+
+          setStreamingAnswer((current) => `${current}${text}`);
+          setProgress((current) => Math.max(current, 85));
+          setStatus("asking");
+        },
       });
 
       if (controller.signal.aborted) {
@@ -163,6 +174,7 @@ export function AiChatWorkflow({
       }
 
       setResult(answer);
+      setStreamingAnswer("");
       setHistory((currentHistory) =>
         [
           ...currentHistory,
@@ -214,6 +226,7 @@ export function AiChatWorkflow({
     setProgressStep("");
     setError("");
     setResult(null);
+    setStreamingAnswer("");
     setHistory([]);
     if (inputRef.current) {
       inputRef.current.value = "";
@@ -225,6 +238,7 @@ export function AiChatWorkflow({
     setQuestion("");
     setHistory([]);
     setResult(null);
+    setStreamingAnswer("");
     setError("");
     setProgress(0);
     setProgressStep("");
@@ -307,6 +321,7 @@ export function AiChatWorkflow({
                 updateReadyState(question, event.target.value);
                 setError("");
                 setResult(null);
+                setStreamingAnswer("");
               }}
               disabled={isWorking}
               placeholder={t.pastePlaceholder}
@@ -322,6 +337,7 @@ export function AiChatWorkflow({
                 updateReadyState(event.target.value, pastedText);
                 setError("");
                 setResult(null);
+                setStreamingAnswer("");
               }}
               disabled={isWorking}
               placeholder={t.questionPlaceholder}
@@ -408,31 +424,33 @@ export function AiChatWorkflow({
             </section>
           ) : null}
 
-          {result ? (
+          {result || streamingAnswer ? (
             <div className="mt-4 rounded-xl border border-[#cbd5e1] bg-white p-5">
-              <dl className="grid gap-3 text-sm sm:grid-cols-3">
-                <div>
-                  <dt className="font-semibold text-[#475569]">{t.source}</dt>
-                  <dd className="mt-1 break-words font-semibold text-[#0f172a]">
-                    {result.sourceName}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="font-semibold text-[#475569]">{t.context}</dt>
-                  <dd className="mt-1 font-semibold text-[#0f172a]">
-                    {result.contextCharacters}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="font-semibold text-[#475569]">{t.provider}</dt>
-                  <dd className="mt-1 break-words font-semibold text-[#0f172a]">
-                    {[result.provider, result.model].filter(Boolean).join(" / ") ||
-                      "AI"}
-                  </dd>
-                </div>
-              </dl>
+              {result ? (
+                <dl className="grid gap-3 text-sm sm:grid-cols-3">
+                  <div>
+                    <dt className="font-semibold text-[#475569]">{t.source}</dt>
+                    <dd className="mt-1 break-words font-semibold text-[#0f172a]">
+                      {result.sourceName}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold text-[#475569]">{t.context}</dt>
+                    <dd className="mt-1 font-semibold text-[#0f172a]">
+                      {result.contextCharacters}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold text-[#475569]">{t.provider}</dt>
+                    <dd className="mt-1 break-words font-semibold text-[#0f172a]">
+                      {[result.provider, result.model].filter(Boolean).join(" / ") ||
+                        "AI"}
+                    </dd>
+                  </div>
+                </dl>
+              ) : null}
 
-              {result.truncated ? (
+              {result?.truncated ? (
                 <p className="mt-4 rounded-lg border border-[#fed7aa] bg-[#fff7ed] p-3 text-sm leading-6 text-[#9a3412]">
                   {t.truncated}
                 </p>
@@ -441,25 +459,27 @@ export function AiChatWorkflow({
               <section className="mt-6 border-t border-[#cbd5e1] pt-5">
                 <h3 className="text-lg font-semibold text-[#0f172a]">{t.answer}</h3>
                 <p className="mt-3 text-sm leading-7 text-[#334155]">
-                  {result.answer}
+                  {result?.answer ?? streamingAnswer}
                 </p>
               </section>
-              <section className="mt-6 border-t border-[#cbd5e1] pt-5">
-                <h3 className="text-lg font-semibold text-[#0f172a]">
-                  {t.references}
-                </h3>
-                <ul className="mt-3 grid gap-2 text-sm leading-6 text-[#334155]">
-                  {result.references.map((reference) => (
-                    <li
-                      key={reference}
-                      className="rounded-lg border border-[#cbd5e1] bg-[#f8fafc] p-3"
-                    >
-                      {reference}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-              {result.usage ? (
+              {result ? (
+                <section className="mt-6 border-t border-[#cbd5e1] pt-5">
+                  <h3 className="text-lg font-semibold text-[#0f172a]">
+                    {t.references}
+                  </h3>
+                  <ul className="mt-3 grid gap-2 text-sm leading-6 text-[#334155]">
+                    {result.references.map((reference) => (
+                      <li
+                        key={reference}
+                        className="rounded-lg border border-[#cbd5e1] bg-[#f8fafc] p-3"
+                      >
+                        {reference}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null}
+              {result?.usage ? (
                 <p className="mt-5 text-xs font-semibold uppercase tracking-[0.14em] text-[#64748b]">
                   {t.usage}:{" "}
                   {[

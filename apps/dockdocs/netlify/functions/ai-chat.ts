@@ -13,6 +13,7 @@ type AiChatPayload = {
   locale?: "en" | "zh";
   sourceName?: string;
   truncated?: boolean;
+  stream?: boolean;
 };
 
 type AiChatHistoryTurn = {
@@ -153,6 +154,17 @@ export default async (req: Request, _context: Context) => {
     maxContextCharacters,
   );
 
+  if (payload.stream) {
+    return streamAiChatResponse({
+      provider: resolvedProvider,
+      context: selectedContext.context,
+      question,
+      history,
+      locale,
+      truncated: Boolean(payload.truncated || selectedContext.truncated),
+    });
+  }
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 55_000);
 
@@ -282,6 +294,120 @@ function isProviderFailure(
   return "failureReason" in value;
 }
 
+function streamAiChatResponse({
+  provider,
+  context,
+  question,
+  history,
+  locale,
+  truncated,
+}: {
+  provider: ProviderConfig;
+  context: string;
+  question: string;
+  history: NormalizedHistoryTurn[];
+  locale: "en" | "zh";
+  truncated: boolean;
+}) {
+  const encoder = new TextEncoder();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 55_000);
+
+  const stream = new ReadableStream<Uint8Array>({
+    async start(streamController) {
+      const send = (payload: Record<string, unknown>) => {
+        streamController.enqueue(encoder.encode(`${JSON.stringify(payload)}\n`));
+      };
+
+      try {
+        const providerResult = await generateProviderAnswerStream({
+          provider,
+          context,
+          question,
+          history,
+          locale,
+          signal: controller.signal,
+          onAnswerDelta: (text) => send({ type: "delta", text }),
+        });
+
+        if (isProviderFailure(providerResult)) {
+          send({
+            type: "error",
+            ok: false,
+            code: "AI_CHAT_INVALID_PROVIDER_OUTPUT",
+            message:
+              "Chat with PDF provider did not return the expected structured answer JSON.",
+            diagnostics: {
+              attempts: providerResult.attempts,
+              maxTokens: aiChatMaxTokens,
+              contextCharacters: context.length,
+              truncated,
+              failureReason: providerResult.failureReason,
+              rejectedReferences: providerResult.rejectedReferences,
+              rejectedEntities: providerResult.rejectedEntities,
+            },
+          });
+          return;
+        }
+
+        send({
+          type: "result",
+          ok: true,
+          result: {
+            ...providerResult.result,
+            provider: "configured-ai-provider",
+            model: provider.model,
+          },
+          usage: providerResult.usage,
+          diagnostics: {
+            attempts: providerResult.attempts,
+            maxTokens: aiChatMaxTokens,
+            contextCharacters: context.length,
+            truncated,
+          },
+        });
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "The Chat with PDF provider timed out or could not be reached.";
+        const timedOut = /abort|timeout|timed out/i.test(message);
+        send({
+          type: "error",
+          ok: false,
+          code: timedOut ? "AI_CHAT_PROVIDER_TIMEOUT" : "AI_CHAT_PROVIDER_ERROR",
+          message: timedOut
+            ? "The Chat with PDF provider timed out or could not be reached."
+            : message,
+          diagnostics: {
+            attempts: 0,
+            maxTokens: aiChatMaxTokens,
+            contextCharacters: context.length,
+            truncated,
+            failureReason: timedOut ? "provider_timeout" : "provider_error",
+          },
+        });
+      } finally {
+        clearTimeout(timeout);
+        streamController.close();
+      }
+    },
+    cancel() {
+      controller.abort();
+      clearTimeout(timeout);
+    },
+  });
+
+  return new Response(stream, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/x-ndjson; charset=utf-8",
+      "Cache-Control": "no-store",
+      "X-Accel-Buffering": "no",
+    },
+  });
+}
+
 async function generateProviderAnswer({
   provider,
   context,
@@ -304,6 +430,138 @@ async function generateProviderAnswer({
   });
 
   const firstResult = parseProviderAnswer(first.responseText);
+  if (firstResult) {
+    const normalizedFirstResult = completeOcrFieldAnswer(
+      firstResult,
+      question,
+      context,
+      locale,
+    );
+
+    if (shouldRepairResult(normalizedFirstResult, context)) {
+      const repair = await callProvider({
+        provider,
+        body: createRepairProviderRequest(
+          provider.model,
+          context,
+          question,
+          history,
+          locale,
+          first.providerContent,
+        ),
+        signal,
+      });
+
+      const repairedResult = parseProviderAnswer(repair.responseText);
+      if (repairedResult) {
+        const normalizedRepairedResult = completeOcrFieldAnswer(
+          repairedResult,
+          question,
+          context,
+          locale,
+        );
+        const unsupportedEvidence = getUnsupportedEvidence(
+          normalizedRepairedResult,
+          context,
+        );
+        if (unsupportedEvidence) {
+          return {
+            failureReason: "repair_output_not_supported_by_context",
+            attempts: 2,
+            rejectedReferences: unsupportedEvidence.references,
+            rejectedEntities: unsupportedEvidence.entities,
+          };
+        }
+
+        return {
+          result: normalizedRepairedResult,
+          usage: repair.usage ?? first.usage,
+          attempts: 2,
+        };
+      }
+
+      return {
+        failureReason: "repair_output_unparseable",
+        attempts: 2,
+      };
+    }
+
+    return {
+      result: normalizedFirstResult,
+      usage: first.usage,
+      attempts: 1,
+    };
+  }
+
+  const repair = await callProvider({
+    provider,
+    body: createRepairProviderRequest(
+      provider.model,
+      context,
+      question,
+      history,
+      locale,
+      first.providerContent,
+    ),
+    signal,
+  });
+
+  const repairedResult = parseProviderAnswer(repair.responseText);
+  const normalizedRepairedResult = repairedResult
+    ? completeOcrFieldAnswer(repairedResult, question, context, locale)
+    : null;
+  const unsupportedEvidence = normalizedRepairedResult
+    ? getUnsupportedEvidence(normalizedRepairedResult, context)
+    : null;
+  if (!normalizedRepairedResult || unsupportedEvidence) {
+    return {
+      failureReason: normalizedRepairedResult
+        ? "repair_output_not_supported_by_context"
+        : "repair_output_unparseable",
+      attempts: 2,
+      rejectedReferences: unsupportedEvidence?.references,
+      rejectedEntities: unsupportedEvidence?.entities,
+    };
+  }
+
+  return {
+    result: normalizedRepairedResult,
+    usage: repair.usage ?? first.usage,
+    attempts: 2,
+  };
+}
+
+async function generateProviderAnswerStream({
+  provider,
+  context,
+  question,
+  history,
+  locale,
+  signal,
+  onAnswerDelta,
+}: {
+  provider: ProviderConfig;
+  context: string;
+  question: string;
+  history: NormalizedHistoryTurn[];
+  locale: "en" | "zh";
+  signal: AbortSignal;
+  onAnswerDelta: (text: string) => void;
+}): Promise<ProviderChatResponse> {
+  const first = await callProviderStream({
+    provider,
+    body: createStreamingProviderRequest(
+      provider.model,
+      context,
+      question,
+      history,
+      locale,
+    ),
+    signal,
+    onAnswerDelta,
+  });
+
+  const firstResult = parseProviderContentAnswer(first.providerContent);
   if (firstResult) {
     const normalizedFirstResult = completeOcrFieldAnswer(
       firstResult,
@@ -475,6 +733,22 @@ function createProviderRequest(
   };
 }
 
+function createStreamingProviderRequest(
+  model: string,
+  context: string,
+  question: string,
+  history: NormalizedHistoryTurn[],
+  locale: "en" | "zh",
+) {
+  return {
+    ...createProviderRequest(model, context, question, history, locale),
+    stream: true,
+    stream_options: {
+      include_usage: true,
+    },
+  };
+}
+
 function createRepairProviderRequest(
   model: string,
   context: string,
@@ -577,6 +851,108 @@ async function callProvider({
   };
 }
 
+async function callProviderStream({
+  provider,
+  body,
+  signal,
+  onAnswerDelta,
+}: {
+  provider: ProviderConfig;
+  body: Record<string, unknown>;
+  signal: AbortSignal;
+  onAnswerDelta: (text: string) => void;
+}) {
+  const providerResponse = await fetch(provider.apiUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${provider.apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+    signal,
+  });
+
+  if (!providerResponse.ok) {
+    const responseText = await providerResponse.text();
+    throw new Error(
+      `Chat with PDF provider failed with status ${providerResponse.status}. ${redact(responseText)}`,
+    );
+  }
+
+  if (!providerResponse.body) {
+    const responseText = await providerResponse.text();
+    const payload = safeJson(responseText);
+    return {
+      providerContent:
+        typeof payload?.choices?.[0]?.message?.content === "string"
+          ? payload.choices[0].message.content
+          : responseText,
+      usage: readUsage(payload?.usage),
+    };
+  }
+
+  const reader = providerResponse.body.getReader();
+  const decoder = new TextDecoder();
+  const answerDelta = createAnswerDeltaExtractor();
+  let buffer = "";
+  let providerContent = "";
+  let usage: ProviderUsage | undefined;
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) {
+      break;
+    }
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split(/\r?\n/);
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || !trimmed.startsWith("data:")) {
+        continue;
+      }
+
+      const data = trimmed.slice(5).trim();
+      if (!data || data === "[DONE]") {
+        continue;
+      }
+
+      const payload = safeJson(data);
+      if (!payload) {
+        continue;
+      }
+
+      const nextUsage = readUsage(payload?.usage);
+      if (nextUsage) {
+        usage = nextUsage;
+      }
+
+      const content = payload?.choices?.[0]?.delta?.content;
+      if (typeof content !== "string") {
+        continue;
+      }
+
+      providerContent += content;
+      const delta = answerDelta(providerContent);
+      if (delta) {
+        onAnswerDelta(delta);
+      }
+    }
+  }
+
+  const remainder = decoder.decode();
+  if (remainder) {
+    providerContent += remainder;
+  }
+
+  return {
+    providerContent,
+    usage,
+  };
+}
+
 function parseProviderAnswer(responseText: string): AiChatAnswer | null {
   const providerPayload = safeJson(responseText);
   const directResult = normalizeAnswer(providerPayload?.result);
@@ -591,6 +967,99 @@ function parseProviderAnswer(responseText: string): AiChatAnswer | null {
 
   const contentPayload = parseJsonLikeContent(content);
   return normalizeAnswer(contentPayload) ?? normalizeAnswer(contentPayload?.result);
+}
+
+function parseProviderContentAnswer(content: string): AiChatAnswer | null {
+  const contentPayload = parseJsonLikeContent(content);
+  return normalizeAnswer(contentPayload) ?? normalizeAnswer(contentPayload?.result);
+}
+
+function createAnswerDeltaExtractor() {
+  let emitted = "";
+
+  return (content: string) => {
+    const answer = readJsonStringPrefix(content, "answer");
+    if (!answer || answer.length <= emitted.length) {
+      return "";
+    }
+
+    const delta = answer.slice(emitted.length);
+    emitted = answer;
+    return delta;
+  };
+}
+
+function readJsonStringPrefix(content: string, key: string) {
+  const keyIndex = content.search(new RegExp(`"${key}"\\s*:`));
+  if (keyIndex === -1) {
+    return "";
+  }
+
+  const colonIndex = content.indexOf(":", keyIndex);
+  if (colonIndex === -1) {
+    return "";
+  }
+
+  let index = colonIndex + 1;
+  while (/\s/.test(content[index] ?? "")) {
+    index += 1;
+  }
+
+  if (content[index] !== "\"") {
+    return "";
+  }
+
+  index += 1;
+  let value = "";
+  let escaped = false;
+  for (; index < content.length; index += 1) {
+    const char = content[index];
+    if (escaped) {
+      if (char === "u" && index + 4 < content.length) {
+        const hex = content.slice(index + 1, index + 5);
+        if (/^[0-9a-f]{4}$/i.test(hex)) {
+          value += String.fromCharCode(Number.parseInt(hex, 16));
+          index += 4;
+        } else {
+          value += "u";
+        }
+      } else {
+        value += decodeJsonEscape(char);
+      }
+      escaped = false;
+      continue;
+    }
+
+    if (char === "\\") {
+      escaped = true;
+      continue;
+    }
+
+    if (char === "\"") {
+      break;
+    }
+
+    value += char;
+  }
+
+  return value;
+}
+
+function decodeJsonEscape(char: string) {
+  switch (char) {
+    case "n":
+      return "\n";
+    case "r":
+      return "\r";
+    case "t":
+      return "\t";
+    case "b":
+      return "\b";
+    case "f":
+      return "\f";
+    default:
+      return char;
+  }
 }
 
 function normalizeAnswer(value: unknown): AiChatAnswer | null {

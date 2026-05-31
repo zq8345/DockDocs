@@ -34,6 +34,7 @@ type GenerateAiChatInput = {
   locale: AiChatLocale;
   signal?: AbortSignal;
   onProgress?: (progress: AiChatProgress) => void;
+  onAnswerDelta?: (text: string) => void;
 };
 
 type PdfJsDocument = {
@@ -63,6 +64,7 @@ export async function askAiAboutPdf({
   locale,
   signal,
   onProgress,
+  onAnswerDelta,
 }: GenerateAiChatInput): Promise<AiChatResult> {
   const normalizedQuestion = normalizeText(question);
   if (normalizedQuestion.length < 3) {
@@ -124,50 +126,21 @@ export async function askAiAboutPdf({
     locale === "zh" ? "正在发送提取文本和问题..." : "Sending extracted text and question...",
   );
 
-  const response = await fetch("/api/ai-chat", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      context: selectedContext.context,
-      question: normalizedQuestion,
-      history: normalizeHistory(history),
-      locale,
-      sourceName,
-      truncated: selectedContext.truncated,
-    }),
+  const requestBody = {
+    context: selectedContext.context,
+    question: normalizedQuestion,
+    history: normalizeHistory(history),
+    locale,
+    sourceName,
+    truncated: selectedContext.truncated,
+  };
+
+  const payload = await requestAiChat({
+    body: requestBody,
+    locale,
     signal,
+    onAnswerDelta,
   });
-
-  throwIfAborted(signal);
-
-  const payload = (await response.json().catch(() => null)) as
-    | {
-        ok?: boolean;
-        message?: string;
-        result?: {
-          answer?: string;
-          references?: string[];
-          provider?: string;
-          model?: string;
-        };
-        usage?: AiChatResult["usage"];
-        diagnostics?: {
-          contextCharacters?: number;
-          truncated?: boolean;
-        };
-      }
-    | null;
-
-  if (!response.ok || !payload?.ok || !payload.result?.answer) {
-    throw new Error(
-      payload?.message ||
-        (locale === "zh"
-          ? "Chat with PDF 接口当前不可用。"
-          : "The Chat with PDF provider is currently unavailable."),
-    );
-  }
 
   emitProgress(
     onProgress,
@@ -186,6 +159,193 @@ export async function askAiAboutPdf({
     contextCharacters:
       payload.diagnostics?.contextCharacters ?? selectedContext.context.length,
     truncated: payload.diagnostics?.truncated ?? selectedContext.truncated,
+  };
+}
+
+type AiChatPayload = {
+  ok?: boolean;
+  message?: string;
+  result?: {
+    answer?: string;
+    references?: string[];
+    provider?: string;
+    model?: string;
+  };
+  usage?: AiChatResult["usage"];
+  diagnostics?: {
+    contextCharacters?: number;
+    truncated?: boolean;
+  };
+};
+
+async function requestAiChat({
+  body,
+  locale,
+  signal,
+  onAnswerDelta,
+}: {
+  body: Record<string, unknown>;
+  locale: AiChatLocale;
+  signal?: AbortSignal;
+  onAnswerDelta?: (text: string) => void;
+}) {
+  try {
+    return await requestAiChatStream({
+      body,
+      locale,
+      signal,
+      onAnswerDelta,
+    });
+  } catch (error) {
+    throwIfAborted(signal);
+    if (onAnswerDelta) {
+      onAnswerDelta("");
+    }
+    return requestAiChatJson({ body, locale, signal });
+  }
+}
+
+async function requestAiChatJson({
+  body,
+  locale,
+  signal,
+}: {
+  body: Record<string, unknown>;
+  locale: AiChatLocale;
+  signal?: AbortSignal;
+}) {
+  const response = await fetch("/api/ai-chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+    signal,
+  });
+
+  throwIfAborted(signal);
+  const payload = (await response.json().catch(() => null)) as AiChatPayload | null;
+  return assertAiChatPayload(response, payload, locale);
+}
+
+async function requestAiChatStream({
+  body,
+  locale,
+  signal,
+  onAnswerDelta,
+}: {
+  body: Record<string, unknown>;
+  locale: AiChatLocale;
+  signal?: AbortSignal;
+  onAnswerDelta?: (text: string) => void;
+}) {
+  const response = await fetch("/api/ai-chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/x-ndjson",
+    },
+    body: JSON.stringify({
+      ...body,
+      stream: true,
+    }),
+    signal,
+  });
+
+  throwIfAborted(signal);
+  const contentType = response.headers.get("Content-Type") ?? "";
+  if (!response.body || !contentType.includes("application/x-ndjson")) {
+    const payload = (await response.json().catch(() => null)) as
+      | AiChatPayload
+      | null;
+    return assertAiChatPayload(response, payload, locale);
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let finalPayload: AiChatPayload | null = null;
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) {
+      break;
+    }
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split(/\r?\n/);
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      const event = parseStreamEvent(line);
+      if (!event) {
+        continue;
+      }
+
+      if (event.type === "delta" && typeof event.text === "string") {
+        onAnswerDelta?.(event.text);
+      }
+
+      if (event.type === "result") {
+        finalPayload = event as AiChatPayload;
+      }
+
+      if (event.type === "error") {
+        throw new Error(
+          typeof event.message === "string"
+            ? event.message
+            : locale === "zh"
+              ? "Chat with PDF 接口当前不可用。"
+              : "The Chat with PDF provider is currently unavailable.",
+        );
+      }
+    }
+  }
+
+  const remainder = decoder.decode();
+  const event = parseStreamEvent(`${buffer}${remainder}`);
+  if (event?.type === "result") {
+    finalPayload = event as AiChatPayload;
+  }
+
+  return assertAiChatPayload(response, finalPayload, locale);
+}
+
+function parseStreamEvent(line: string) {
+  const trimmed = line.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(trimmed) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+function assertAiChatPayload(
+  response: Response,
+  payload: AiChatPayload | null,
+  locale: AiChatLocale,
+) {
+  if (!response.ok || !payload?.ok || !payload.result?.answer) {
+    throw new Error(
+      payload?.message ||
+        (locale === "zh"
+          ? "Chat with PDF 接口当前不可用。"
+          : "The Chat with PDF provider is currently unavailable."),
+    );
+  }
+
+  return {
+    ...payload,
+    result: {
+      answer: payload.result.answer,
+      references: payload.result.references ?? [],
+      provider: payload.result.provider,
+      model: payload.result.model,
+    },
   };
 }
 
