@@ -164,13 +164,13 @@ export default function Home() {
             <div className="mt-7 flex flex-wrap gap-3">
               <a
                 href="/chat-with-pdf"
-                className="inline-flex min-h-11 items-center justify-center rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90"
+                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-[color:var(--background)] transition hover:opacity-90"
               >
                 Chat with a PDF
               </a>
               <a
                 href="#workspace"
-                className="inline-flex min-h-11 items-center justify-center rounded-md border border-[color:var(--line)] px-5 text-sm font-semibold transition hover:border-[color:var(--foreground)]"
+                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-5 text-sm font-semibold transition hover:border-[color:var(--foreground)]"
               >
                 View workspace
               </a>
@@ -208,9 +208,9 @@ export default function Home() {
               {workflows.map((item, index) => (
                 <div
                   key={item}
-                  className="grid gap-3 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:grid-cols-[44px_1fr]"
+                  className="grid gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:grid-cols-[44px_1fr]"
                 >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[color:var(--soft-accent)] text-sm font-semibold text-[color:var(--accent-strong)]">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-[var(--radius)] bg-[color:var(--soft-accent)] text-sm font-semibold text-[color:var(--accent-strong)]">
                     {index + 1}
                   </span>
                   <p className="text-sm leading-6 text-[color:var(--muted)]">{item}</p>
@@ -250,7 +250,7 @@ export default function Home() {
               <a
                 key={tool.name}
                 href={tool.href}
-                className="group rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-5 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
+                className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>

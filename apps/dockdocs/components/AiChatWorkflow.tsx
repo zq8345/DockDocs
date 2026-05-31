@@ -303,33 +303,33 @@ export function AiChatWorkflow({
     <section
       id="chat-with-pdf"
       data-ai-chat-status={status}
-      className="border-b border-[#cbd5e1] bg-[#f8fafc] py-16"
+      className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)] py-16"
     >
       <div className="mx-auto grid max-w-6xl gap-8 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
             {t.eyebrow}
           </p>
-          <h2 className="mt-4 break-words text-2xl font-semibold leading-tight text-[#0f172a] sm:text-4xl">
+          <h2 className="mt-4 break-words text-2xl font-semibold leading-tight text-[color:var(--foreground)] sm:text-4xl">
             {t.title}
           </h2>
-          <p className="mt-4 text-sm leading-7 text-[#334155] sm:text-base">
+          <p className="mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
             {t.description}
           </p>
-          <div className="mt-6 rounded-xl border border-[#cbd5e1] bg-white p-5">
-            <h3 className="font-semibold text-[#0f172a]">{t.privacyTitle}</h3>
-            <p className="mt-3 text-sm leading-6 text-[#334155]">{t.privacy}</p>
+          <div className="mt-6 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+            <h3 className="font-semibold text-[color:var(--foreground)]">{t.privacyTitle}</h3>
+            <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{t.privacy}</p>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#cbd5e1] bg-white p-4 shadow-[0_24px_60px_rgba(24,24,20,0.08)]">
-          <div className="rounded-xl border border-dashed border-[#94a3b8] bg-[#f8fafc] p-5">
+        <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_24px_60px_rgba(24,24,20,0.08)]">
+          <div className="rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
                 disabled={isWorking}
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[#111827] disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[color:var(--foreground)] px-5 py-3 text-sm font-semibold text-[color:var(--background)] shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t.upload}
               </button>
@@ -337,7 +337,7 @@ export function AiChatWorkflow({
                 type="button"
                 onClick={reset}
                 disabled={isWorking}
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#cbd5e1] bg-white px-5 py-3 text-sm font-semibold text-[#0f172a] shadow-sm transition hover:border-[#0f172a] disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:border-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t.reset}
               </button>
@@ -345,7 +345,7 @@ export function AiChatWorkflow({
                 type="button"
                 onClick={newChat}
                 disabled={isWorking || history.length === 0}
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#cbd5e1] bg-white px-5 py-3 text-sm font-semibold text-[#0f172a] shadow-sm transition hover:border-[#0f172a] disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:border-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t.newChat}
               </button>
@@ -358,10 +358,10 @@ export function AiChatWorkflow({
               className="sr-only"
               onChange={(event) => chooseFile(event.target.files)}
             />
-            <p className="mt-4 break-words text-sm font-semibold text-[#0f172a]">
+            <p className="mt-4 break-words text-sm font-semibold text-[color:var(--foreground)]">
               {file?.name ?? t.idle}
             </p>
-            <label className="mt-5 block text-sm font-semibold text-[#0f172a]">
+            <label className="mt-5 block text-sm font-semibold text-[color:var(--foreground)]">
               {t.pasteLabel}
             </label>
             <textarea
@@ -375,9 +375,9 @@ export function AiChatWorkflow({
               }}
               disabled={isWorking}
               placeholder={t.pastePlaceholder}
-              className="mt-3 min-h-28 w-full resize-y rounded-xl border border-[#cbd5e1] bg-white p-4 text-sm leading-6 text-[#0f172a] outline-none transition placeholder:text-[#64748b] focus:border-[#0f172a] disabled:opacity-60"
+              className="mt-3 min-h-28 w-full resize-y rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-sm leading-6 text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--foreground)] disabled:opacity-60"
             />
-            <label className="mt-5 block text-sm font-semibold text-[#0f172a]">
+            <label className="mt-5 block text-sm font-semibold text-[color:var(--foreground)]">
               {t.questionLabel}
             </label>
             <input
@@ -391,17 +391,17 @@ export function AiChatWorkflow({
               }}
               disabled={isWorking}
               placeholder={t.questionPlaceholder}
-              className="mt-3 min-h-11 w-full rounded-xl border border-[#cbd5e1] bg-white px-4 py-3 text-sm text-[#0f172a] outline-none transition placeholder:text-[#64748b] focus:border-[#0f172a] disabled:opacity-60"
+              className="mt-3 min-h-11 w-full rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--foreground)] disabled:opacity-60"
             />
           </div>
 
-          <div className="mt-4 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] p-4">
+          <div className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
                 onClick={startChat}
                 disabled={!hasDocument || !hasQuestion || isWorking}
-                className="inline-flex min-h-11 flex-1 items-center justify-center rounded-full bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[#111827] disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex min-h-11 flex-1 items-center justify-center rounded-full bg-[color:var(--foreground)] px-5 py-3 text-sm font-semibold text-[color:var(--background)] shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isWorking ? t.working : t.ask}
               </button>
@@ -409,7 +409,7 @@ export function AiChatWorkflow({
                 <button
                   type="button"
                   onClick={cancel}
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#cbd5e1] bg-white px-5 py-3 text-sm font-semibold text-[#0f172a] shadow-sm transition hover:border-[#0f172a]"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:border-[color:var(--foreground)]"
                 >
                   {t.cancel}
                 </button>
@@ -418,13 +418,13 @@ export function AiChatWorkflow({
 
             {isWorking ? (
               <div className="mt-4">
-                <div className="h-2 overflow-hidden rounded-full bg-[#e2e8f0]">
+                <div className="h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
                   <div
-                    className="h-full rounded-full bg-[#0f172a] transition-all"
+                    className="h-full rounded-full bg-[color:var(--foreground)] transition-all"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
-                <p className="mt-3 text-sm font-medium text-[#334155]">
+                <p className="mt-3 text-sm font-medium text-[color:var(--muted)]">
                   {progressStep}
                 </p>
               </div>
@@ -433,14 +433,14 @@ export function AiChatWorkflow({
             {error ? (
               <div
                 role="alert"
-                className="mt-4 rounded-xl border border-[#fecaca] bg-[#fef2f2] p-4 text-sm leading-6 text-[#991b1b]"
+                className="mt-4 rounded-[var(--radius)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-4 text-sm leading-6 text-[color:var(--error)]"
               >
                 {error}
                 {status === "error" && hasDocument && hasQuestion ? (
                   <button
                     type="button"
                     onClick={startChat}
-                    className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full bg-[#991b1b] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#7f1d1d]"
+                    className="mt-3 inline-flex min-h-10 items-center justify-center rounded-full bg-[color:var(--error)] px-4 py-2 text-sm font-semibold text-[color:var(--background)] transition hover:opacity-90"
                   >
                     {t.retry}
                   </button>
@@ -449,31 +449,31 @@ export function AiChatWorkflow({
             ) : null}
 
             {status === "ready" && !error ? (
-              <p className="mt-4 text-sm font-medium text-[#334155]">{t.ready}</p>
+              <p className="mt-4 text-sm font-medium text-[color:var(--muted)]">{t.ready}</p>
             ) : null}
           </div>
 
           {history.length > 0 ? (
-            <section className="mt-4 rounded-xl border border-[#cbd5e1] bg-white p-5">
-              <h3 className="text-lg font-semibold text-[#0f172a]">
+            <section className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+              <h3 className="text-lg font-semibold text-[color:var(--foreground)]">
                 {t.conversation}
               </h3>
               <div className="mt-4 grid gap-3">
                 {history.map((turn, index) => (
                   <div key={`${index}-${turn.question}`} className="grid gap-2">
-                    <div className="rounded-xl border border-[#cbd5e1] bg-[#f8fafc] p-3">
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#64748b]">
+                    <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
                         {t.user}
                       </p>
-                      <p className="mt-2 text-sm leading-6 text-[#0f172a]">
+                      <p className="mt-2 text-sm leading-6 text-[color:var(--foreground)]">
                         {turn.question}
                       </p>
                     </div>
-                    <div className="rounded-xl border border-[#dbeafe] bg-[#eff6ff] p-3">
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#1d4ed8]">
+                    <div className="rounded-[var(--radius)] border border-[color:var(--soft-accent)] bg-[color:var(--soft-accent)] p-3">
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">
                         {t.assistant}
                       </p>
-                      <p className="mt-2 text-sm leading-6 text-[#1e3a8a]">
+                      <p className="mt-2 text-sm leading-6 text-[color:var(--accent-strong)]">
                         {turn.answer}
                       </p>
                     </div>
@@ -484,24 +484,24 @@ export function AiChatWorkflow({
           ) : null}
 
           {result || streamingAnswer ? (
-            <div className="mt-4 rounded-xl border border-[#cbd5e1] bg-white p-5">
+            <div className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
               {result ? (
                 <dl className="grid gap-3 text-sm sm:grid-cols-3">
                   <div>
-                    <dt className="font-semibold text-[#475569]">{t.source}</dt>
-                    <dd className="mt-1 break-words font-semibold text-[#0f172a]">
+                    <dt className="font-semibold text-[color:var(--muted)]">{t.source}</dt>
+                    <dd className="mt-1 break-words font-semibold text-[color:var(--foreground)]">
                       {result.sourceName}
                     </dd>
                   </div>
                   <div>
-                    <dt className="font-semibold text-[#475569]">{t.context}</dt>
-                    <dd className="mt-1 font-semibold text-[#0f172a]">
+                    <dt className="font-semibold text-[color:var(--muted)]">{t.context}</dt>
+                    <dd className="mt-1 font-semibold text-[color:var(--foreground)]">
                       {result.contextCharacters}
                     </dd>
                   </div>
                   <div>
-                    <dt className="font-semibold text-[#475569]">{t.provider}</dt>
-                    <dd className="mt-1 break-words font-semibold text-[#0f172a]">
+                    <dt className="font-semibold text-[color:var(--muted)]">{t.provider}</dt>
+                    <dd className="mt-1 break-words font-semibold text-[color:var(--foreground)]">
                       {[result.provider, result.model].filter(Boolean).join(" / ") ||
                         "AI"}
                     </dd>
@@ -510,27 +510,27 @@ export function AiChatWorkflow({
               ) : null}
 
               {result?.truncated ? (
-                <p className="mt-4 rounded-lg border border-[#fed7aa] bg-[#fff7ed] p-3 text-sm leading-6 text-[#9a3412]">
+                <p className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--warning-line)] bg-[color:var(--warning-surface)] p-3 text-sm leading-6 text-[color:var(--warning)]">
                   {t.truncated}
                 </p>
               ) : null}
 
-              <section className="mt-6 border-t border-[#cbd5e1] pt-5">
-                <h3 className="text-lg font-semibold text-[#0f172a]">{t.answer}</h3>
-                <p className="mt-3 text-sm leading-7 text-[#334155]">
+              <section className="mt-6 border-t border-[color:var(--line)] pt-5">
+                <h3 className="text-lg font-semibold text-[color:var(--foreground)]">{t.answer}</h3>
+                <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
                   {result?.answer ?? streamingAnswer}
                 </p>
               </section>
               {result ? (
-                <section className="mt-6 border-t border-[#cbd5e1] pt-5">
-                  <h3 className="text-lg font-semibold text-[#0f172a]">
+                <section className="mt-6 border-t border-[color:var(--line)] pt-5">
+                  <h3 className="text-lg font-semibold text-[color:var(--foreground)]">
                     {t.references}
                   </h3>
-                  <ul className="mt-3 grid gap-2 text-sm leading-6 text-[#334155]">
+                  <ul className="mt-3 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
                     {result.references.map((reference) => (
                       <li
                         key={reference}
-                        className="rounded-lg border border-[#cbd5e1] bg-[#f8fafc] p-3"
+                        className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
                       >
                         {reference}
                       </li>
@@ -539,7 +539,7 @@ export function AiChatWorkflow({
                 </section>
               ) : null}
               {result?.usage ? (
-                <p className="mt-5 text-xs font-semibold uppercase tracking-[0.14em] text-[#64748b]">
+                <p className="mt-5 text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
                   {t.usage}:{" "}
                   {[
                     result.usage.prompt_tokens

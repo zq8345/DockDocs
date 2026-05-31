@@ -189,33 +189,33 @@ export function AiSummaryWorkflow({
     <section
       id="ai-summary"
       data-ai-summary-status={status}
-      className="border-b border-[#cbd5e1] bg-white py-16"
+      className="border-b border-[color:var(--line)] bg-[color:var(--surface)] py-16"
     >
       <div className="mx-auto grid max-w-6xl gap-8 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
             {t.eyebrow}
           </p>
-          <h2 className="mt-4 break-words text-2xl font-semibold leading-tight text-[#0f172a] sm:text-4xl">
+          <h2 className="mt-4 break-words text-2xl font-semibold leading-tight text-[color:var(--foreground)] sm:text-4xl">
             {t.title}
           </h2>
-          <p className="mt-4 text-sm leading-7 text-[#334155] sm:text-base">
+          <p className="mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
             {t.description}
           </p>
-          <div className="mt-6 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] p-5">
-            <h3 className="font-semibold text-[#0f172a]">{t.privacyTitle}</h3>
-            <p className="mt-3 text-sm leading-6 text-[#334155]">{t.privacy}</p>
+          <div className="mt-6 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
+            <h3 className="font-semibold text-[color:var(--foreground)]">{t.privacyTitle}</h3>
+            <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{t.privacy}</p>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#cbd5e1] bg-white p-4 shadow-[0_24px_60px_rgba(24,24,20,0.08)]">
-          <div className="rounded-xl border border-dashed border-[#94a3b8] bg-[#f8fafc] p-5">
+        <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_24px_60px_rgba(24,24,20,0.08)]">
+          <div className="rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
                 disabled={isWorking}
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[#111827] disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[color:var(--foreground)] px-5 py-3 text-sm font-semibold text-[color:var(--background)] shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t.upload}
               </button>
@@ -223,7 +223,7 @@ export function AiSummaryWorkflow({
                 type="button"
                 onClick={reset}
                 disabled={isWorking}
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#cbd5e1] bg-white px-5 py-3 text-sm font-semibold text-[#0f172a] shadow-sm transition hover:border-[#0f172a] disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:border-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t.reset}
               </button>
@@ -236,10 +236,10 @@ export function AiSummaryWorkflow({
               className="sr-only"
               onChange={(event) => chooseFile(event.target.files)}
             />
-            <p className="mt-4 break-words text-sm font-semibold text-[#0f172a]">
+            <p className="mt-4 break-words text-sm font-semibold text-[color:var(--foreground)]">
               {file?.name ?? t.idle}
             </p>
-            <label className="mt-5 block text-sm font-semibold text-[#0f172a]">
+            <label className="mt-5 block text-sm font-semibold text-[color:var(--foreground)]">
               {t.pasteLabel}
             </label>
             <textarea
@@ -252,17 +252,17 @@ export function AiSummaryWorkflow({
               }}
               disabled={isWorking}
               placeholder={t.pastePlaceholder}
-              className="mt-3 min-h-32 w-full resize-y rounded-xl border border-[#cbd5e1] bg-white p-4 text-sm leading-6 text-[#0f172a] outline-none transition placeholder:text-[#64748b] focus:border-[#0f172a] disabled:opacity-60"
+              className="mt-3 min-h-32 w-full resize-y rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-sm leading-6 text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--foreground)] disabled:opacity-60"
             />
           </div>
 
-          <div className="mt-4 rounded-xl border border-[#cbd5e1] bg-[#f8fafc] p-4">
+          <div className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
                 onClick={startSummary}
                 disabled={!hasInput || isWorking}
-                className="inline-flex min-h-11 flex-1 items-center justify-center rounded-full bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[#111827] disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex min-h-11 flex-1 items-center justify-center rounded-full bg-[color:var(--foreground)] px-5 py-3 text-sm font-semibold text-[color:var(--background)] shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isWorking ? t.working : t.summarize}
               </button>
@@ -270,7 +270,7 @@ export function AiSummaryWorkflow({
                 <button
                   type="button"
                   onClick={cancel}
-                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#cbd5e1] bg-white px-5 py-3 text-sm font-semibold text-[#0f172a] shadow-sm transition hover:border-[#0f172a]"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:border-[color:var(--foreground)]"
                 >
                   {t.cancel}
                 </button>
@@ -279,13 +279,13 @@ export function AiSummaryWorkflow({
 
             {isWorking ? (
               <div className="mt-4">
-                <div className="h-2 overflow-hidden rounded-full bg-[#e2e8f0]">
+                <div className="h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
                   <div
-                    className="h-full rounded-full bg-[#0f172a] transition-all"
+                    className="h-full rounded-full bg-[color:var(--foreground)] transition-all"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
-                <p className="mt-3 text-sm font-medium text-[#334155]">
+                <p className="mt-3 text-sm font-medium text-[color:var(--muted)]">
                   {progressStep}
                 </p>
               </div>
@@ -294,35 +294,35 @@ export function AiSummaryWorkflow({
             {error ? (
               <div
                 role="alert"
-                className="mt-4 rounded-xl border border-[#fecaca] bg-[#fef2f2] p-4 text-sm leading-6 text-[#991b1b]"
+                className="mt-4 rounded-[var(--radius)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-4 text-sm leading-6 text-[color:var(--error)]"
               >
                 {error}
               </div>
             ) : null}
 
             {status === "ready" && !error ? (
-              <p className="mt-4 text-sm font-medium text-[#334155]">{t.ready}</p>
+              <p className="mt-4 text-sm font-medium text-[color:var(--muted)]">{t.ready}</p>
             ) : null}
           </div>
 
           {result ? (
-            <div className="mt-4 rounded-xl border border-[#cbd5e1] bg-white p-5">
+            <div className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
               <dl className="grid gap-3 text-sm sm:grid-cols-3">
                 <div>
-                  <dt className="font-semibold text-[#475569]">{t.source}</dt>
-                  <dd className="mt-1 break-words font-semibold text-[#0f172a]">
+                  <dt className="font-semibold text-[color:var(--muted)]">{t.source}</dt>
+                  <dd className="mt-1 break-words font-semibold text-[color:var(--foreground)]">
                     {result.sourceName}
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-semibold text-[#475569]">{t.characters}</dt>
-                  <dd className="mt-1 font-semibold text-[#0f172a]">
+                  <dt className="font-semibold text-[color:var(--muted)]">{t.characters}</dt>
+                  <dd className="mt-1 font-semibold text-[color:var(--foreground)]">
                     {result.characterCount}
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-semibold text-[#475569]">{t.provider}</dt>
-                  <dd className="mt-1 break-words font-semibold text-[#0f172a]">
+                  <dt className="font-semibold text-[color:var(--muted)]">{t.provider}</dt>
+                  <dd className="mt-1 break-words font-semibold text-[color:var(--foreground)]">
                     {[result.provider, result.model].filter(Boolean).join(" / ") ||
                       "AI"}
                   </dd>
@@ -332,7 +332,7 @@ export function AiSummaryWorkflow({
               <button
                 type="button"
                 onClick={() => downloadSummary(result, locale)}
-                className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[#111827]"
+                className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-[color:var(--foreground)] px-5 py-3 text-sm font-semibold text-[color:var(--background)] shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[color:var(--foreground)]"
               >
                 {t.download}
               </button>
@@ -390,20 +390,20 @@ function downloadSummary(result: AiSummaryResult, locale: AiSummaryLocale) {
 
 function SummaryBlock({ title, body }: { title: string; body: string }) {
   return (
-    <section className="mt-6 border-t border-[#cbd5e1] pt-5">
-      <h3 className="text-lg font-semibold text-[#0f172a]">{title}</h3>
-      <p className="mt-3 text-sm leading-7 text-[#334155]">{body}</p>
+    <section className="mt-6 border-t border-[color:var(--line)] pt-5">
+      <h3 className="text-lg font-semibold text-[color:var(--foreground)]">{title}</h3>
+      <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">{body}</p>
     </section>
   );
 }
 
 function SummaryList({ title, items }: { title: string; items: string[] }) {
   return (
-    <section className="mt-6 border-t border-[#cbd5e1] pt-5">
-      <h3 className="text-lg font-semibold text-[#0f172a]">{title}</h3>
-      <ul className="mt-3 grid gap-2 text-sm leading-6 text-[#334155]">
+    <section className="mt-6 border-t border-[color:var(--line)] pt-5">
+      <h3 className="text-lg font-semibold text-[color:var(--foreground)]">{title}</h3>
+      <ul className="mt-3 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
         {items.map((item) => (
-          <li key={item} className="rounded-lg border border-[#cbd5e1] bg-[#f8fafc] p-3">
+          <li key={item} className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
             {item}
           </li>
         ))}

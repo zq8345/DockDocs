@@ -332,9 +332,7 @@ export function createGeoHubMetadata(
   hub: GeoHubData,
   canonicalPath: string,
 ): Metadata {
-  const title = /[\u4e00-\u9fff]/u.test(hub.title)
-    ? hub.title.replace(/\s*\|\s*DockDocs\s*$/u, "")
-    : hub.title;
+  const title = hub.title.replace(/\s*\|\s*DockDocs\s*$/u, "");
 
   return {
     title,

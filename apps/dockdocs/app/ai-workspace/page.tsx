@@ -5,7 +5,7 @@ import { languageAlternates, siteUrl } from "@/lib/i18n";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 
 export const metadata: Metadata = {
-  title: "AI Document Workspace | DockDocs",
+  title: "AI Document Workspace",
   description:
     "Organize, convert, OCR, and work with PDF documents inside the DockDocs AI Document Workspace.",
   keywords: [
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     languages: languageAlternates("ai-workspace"),
   },
   openGraph: {
-    title: "AI Document Workspace | DockDocs",
+    title: "AI Document Workspace",
     description:
       "Organize, convert, OCR, and work with PDF documents inside the DockDocs AI Document Workspace.",
     url: "https://dockdocs.app/ai-workspace/",
@@ -130,42 +130,42 @@ const aiWorkspaceSchema = {
 
 export default function AiWorkspacePage() {
   return (
-    <main className="bg-white text-[#0f172a]">
+    <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aiWorkspaceSchema) }}
       />
-      <Section className="border-b border-[#cbd5e1] bg-white">
+      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <Container className="grid min-h-[66vh] items-center gap-12 py-16 lg:grid-cols-[1fr_0.9fr] lg:py-20">
           <div>
-            <div className="inline-flex rounded-full border border-[#cbd5e1] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#334155] shadow-sm">
+            <div className="inline-flex rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)] shadow-sm">
               AI Workspace layer
             </div>
             <h1 className="mt-6 max-w-4xl text-3xl font-semibold leading-tight sm:text-6xl sm:leading-[1.04]">
               AI PDF workspace for OCR, summaries, and Chat with PDF.
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-[#334155] sm:text-lg">
+            <p className="mt-6 max-w-2xl text-base leading-8 text-[color:var(--muted)] sm:text-lg">
               DockDocs stays PDF tools first. The AI Workspace layer helps when
               documents need OCR, summaries, Chat with PDF, or multi-step
               workflow support.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href="/">Browse PDF tools</ButtonLink>
-              <ButtonLink href="/ocr-pdf" variant="outline" className="bg-white">
+              <ButtonLink href="/ocr-pdf" variant="outline" className="bg-[color:var(--surface)]">
                 Try OCR PDF
               </ButtonLink>
             </div>
           </div>
-          <div className="rounded-2xl border border-[#cbd5e1] bg-[#f8fafc] p-4 shadow-[0_24px_60px_rgba(24,24,20,0.08)]">
-            <div className="rounded-xl border border-[#cbd5e1] bg-white p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#334155]">
+          <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 shadow-[0_24px_60px_rgba(24,24,20,0.08)]">
+            <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
                 Workspace flow
               </p>
               <div className="mt-5 grid gap-3">
                 {["Upload", "Convert", "OCR", "Summarize", "Reuse"].map((step) => (
                   <div
                     key={step}
-                    className="rounded-lg border border-[#cbd5e1] bg-white px-4 py-3 text-sm font-semibold text-[#0f172a]"
+                    className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 text-sm font-semibold text-[color:var(--foreground)]"
                   >
                     {step}
                   </div>
@@ -176,10 +176,10 @@ export default function AiWorkspacePage() {
         </Container>
       </Section>
 
-      <Section className="border-b border-[#cbd5e1] bg-[#f8fafc]">
+      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
         <Container>
           <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
               Workspace capabilities
             </p>
             <h2 className="mt-4 text-3xl font-semibold leading-tight">
@@ -190,10 +190,10 @@ export default function AiWorkspacePage() {
             {workspaceFlows.map((flow) => (
               <div
                 key={flow.title}
-                className="h-full rounded-xl border border-[#cbd5e1] bg-white p-5 shadow-sm"
+                className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm"
               >
                 <h3 className="text-lg font-semibold">{flow.title}</h3>
-                <p className="mt-4 text-sm leading-6 text-[#334155]">
+                <p className="mt-4 text-sm leading-6 text-[color:var(--muted)]">
                   {flow.description}
                 </p>
               </div>
@@ -206,10 +206,10 @@ export default function AiWorkspacePage() {
 
       <AiChatWorkflow />
 
-      <Section className="bg-white">
+      <Section className="bg-[color:var(--surface)]">
         <Container className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
               Start with PDF tools
             </p>
             <h2 className="mt-4 text-3xl font-semibold leading-tight">
@@ -221,11 +221,11 @@ export default function AiWorkspacePage() {
               <a
                 key={tool.href}
                 href={tool.href}
-                className="group rounded-xl border border-[#cbd5e1] bg-white p-5 shadow-sm transition hover:border-[#0f172a]"
+                className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:border-[color:var(--foreground)]"
               >
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="font-semibold">{tool.name}</h3>
-                  <span className="text-[#334155] transition group-hover:translate-x-0.5 group-hover:text-[#0f172a]">
+                  <span className="text-[color:var(--muted)] transition group-hover:translate-x-0.5 group-hover:text-[color:var(--foreground)]">
                     -&gt;
                   </span>
                 </div>

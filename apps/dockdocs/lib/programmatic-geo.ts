@@ -1569,10 +1569,7 @@ export function createProgrammaticGeoMetadata(
     page.slug,
     useLocalePrefix ? locale : undefined,
   );
-  const title =
-    locale === "zh"
-      ? page.title.replace(/\s*\|\s*DockDocs\s*$/u, "")
-      : page.title;
+  const title = page.title.replace(/\s*\|\s*DockDocs\s*$/u, "");
 
   return {
     title,

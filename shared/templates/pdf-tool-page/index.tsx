@@ -202,10 +202,7 @@ const templateCopy = {
 export function createPdfToolMetadata(config: PdfToolPageConfig): Metadata {
   const canonicalPath = config.canonicalPath ?? `/${config.slug}/`;
   const pageUrl = `${siteUrl}${canonicalPath}`;
-  const title =
-    config.locale === "zh"
-      ? config.title.replace(/\s*\|\s*DockDocs\s*$/u, "")
-      : config.title;
+  const title = config.title.replace(/\s*\|\s*DockDocs\s*$/u, "");
 
   return {
     title,
@@ -337,7 +334,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
   const schema = createPdfToolSchema(config);
 
   return (
-    <main className="bg-white text-[#0f172a]">
+    <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
@@ -364,16 +361,16 @@ function HeroSection({ config }: { config: PdfToolPageConfig }) {
   const copy = templateCopy[config.locale ?? "en"];
 
   return (
-    <Section className="border-b border-[#cbd5e1] bg-white py-0">
+    <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)] py-0">
       <Container className="grid min-h-[72vh] items-center gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
         <div>
-          <div className="inline-flex rounded-full border border-[#cbd5e1] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#334155] shadow-sm">
+          <div className="inline-flex rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)] shadow-sm">
             {copy.toolEyebrow}
           </div>
           <h1 className="mt-6 max-w-4xl break-words text-2xl font-semibold leading-[1.08] sm:text-6xl sm:leading-[1.04]">
             {config.heroTitle}
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-8 text-[#334155] sm:text-lg">
+          <p className="mt-6 max-w-2xl text-base leading-8 text-[color:var(--muted)] sm:text-lg">
             {config.heroDescription}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -383,7 +380,7 @@ function HeroSection({ config }: { config: PdfToolPageConfig }) {
             >
               {config.primaryActionLabel}
             </ButtonLink>
-            <ButtonLink href="#workflow-preview" variant="outline" className="bg-white">
+            <ButtonLink href="#workflow-preview" variant="outline" className="bg-[color:var(--surface)]">
               {copy.previewWorkflow}
             </ButtonLink>
           </div>
@@ -391,12 +388,12 @@ function HeroSection({ config }: { config: PdfToolPageConfig }) {
             {config.stats.map(([label, value]) => (
               <div
                 key={label}
-                className="rounded-lg border border-[#cbd5e1] bg-white px-4 py-3 shadow-sm"
+                className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 shadow-sm"
               >
-                <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-[#475569]">
+                <dt className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
                   {label}
                 </dt>
-                <dd className="mt-2 text-sm font-semibold text-[#0f172a]">
+                <dd className="mt-2 text-sm font-semibold text-[color:var(--foreground)]">
                   {value}
                 </dd>
               </div>
@@ -414,18 +411,18 @@ function WorkflowSimulator({ config }: { config: PdfToolPageConfig }) {
   const copy = templateCopy[config.locale ?? "en"];
 
   return (
-    <Section id="workflow-preview" className="border-b border-[#cbd5e1] bg-[#f8fafc]">
+    <Section id="workflow-preview" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
       <Container>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
               {copy.workflowEyebrow}
             </p>
             <h2 className="mt-4 break-words text-2xl font-semibold leading-tight sm:text-3xl">
               {copy.workflowTitle}
             </h2>
           </div>
-          <p className="max-w-xl leading-7 text-[#334155]">
+          <p className="max-w-xl leading-7 text-[color:var(--muted)]">
             {copy.workflowDescription}
           </p>
         </div>
@@ -433,22 +430,22 @@ function WorkflowSimulator({ config }: { config: PdfToolPageConfig }) {
           {states.map((state, index) => (
             <div
               key={state.title}
-              className="rounded-xl border border-[#cbd5e1] bg-white p-5 shadow-sm"
+              className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm"
             >
               <div className="flex items-center justify-between gap-4">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0f172a] text-sm font-semibold text-white">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--foreground)] text-sm font-semibold text-[color:var(--background)]">
                   {index + 1}
                 </span>
-                <span className="rounded-full border border-[#cbd5e1] px-3 py-1 text-xs font-semibold text-[#334155]">
+                <span className="rounded-full border border-[color:var(--line)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
                   {state.status}
                 </span>
               </div>
               <h3 className="mt-5 break-words text-lg font-semibold">{state.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-[#334155]">
+              <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
                 {state.description}
               </p>
               {state.preview ? (
-                <div className="mt-5 overflow-hidden rounded-lg border border-[#cbd5e1] bg-[#f8fafc] p-4 text-sm text-[#334155]">
+                <div className="mt-5 overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 text-sm text-[color:var(--muted)]">
                   {state.preview}
                 </div>
               ) : null}
@@ -456,14 +453,14 @@ function WorkflowSimulator({ config }: { config: PdfToolPageConfig }) {
                 <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                   <button
                     type="button"
-                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#0f172a] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[#111827] sm:w-auto"
+                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[color:var(--foreground)] px-5 py-3 text-sm font-semibold text-[color:var(--background)] shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[color:var(--foreground)] sm:w-auto"
                   >
                     {state.actionLabel}
                   </button>
                   {state.secondaryActionLabel ? (
                     <button
                       type="button"
-                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#cbd5e1] bg-white px-5 py-3 text-sm font-semibold text-[#0f172a] shadow-sm transition hover:border-[#0f172a] sm:w-auto"
+                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:border-[color:var(--foreground)] sm:w-auto"
                     >
                       {state.secondaryActionLabel}
                     </button>
@@ -482,7 +479,7 @@ function BenefitsSection({ config }: { config: PdfToolPageConfig }) {
   const copy = templateCopy[config.locale ?? "en"];
 
   return (
-    <Section className="border-b border-[#cbd5e1] bg-white">
+    <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
       <Container>
         <SectionIntro
           eyebrow={copy.benefits}
@@ -503,7 +500,7 @@ function FeaturesSection({ config }: { config: PdfToolPageConfig }) {
   const copy = templateCopy[config.locale ?? "en"];
 
   return (
-    <Section id="features" className="border-b border-[#cbd5e1] bg-[#f8fafc]">
+    <Section id="features" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
       <Container>
         <SectionIntro
           eyebrow={copy.features}
@@ -524,7 +521,7 @@ function HowItWorksSection({ config }: { config: PdfToolPageConfig }) {
   const copy = templateCopy[config.locale ?? "en"];
 
   return (
-    <Section className="border-b border-[#cbd5e1] bg-white">
+    <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
       <Container className="grid gap-10 lg:grid-cols-[0.8fr_1fr]">
         <SectionIntro
           eyebrow={copy.workflow}
@@ -534,11 +531,11 @@ function HowItWorksSection({ config }: { config: PdfToolPageConfig }) {
         <ol className="grid gap-4 sm:grid-cols-2">
           {config.steps.map((step, index) => (
             <li key={step}>
-              <div className="h-full rounded-xl border border-[#cbd5e1] bg-white p-5 shadow-sm">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0f172a] text-sm font-semibold text-white">
+              <div className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--foreground)] text-sm font-semibold text-[color:var(--background)]">
                   {index + 1}
                 </span>
-                <p className="mt-4 font-semibold text-[#0f172a]">{step}</p>
+                <p className="mt-4 font-semibold text-[color:var(--foreground)]">{step}</p>
               </div>
             </li>
           ))}
@@ -552,19 +549,19 @@ function FaqSection({ config }: { config: PdfToolPageConfig }) {
   const copy = templateCopy[config.locale ?? "en"];
 
   return (
-    <Section id="faq" className="border-b border-[#cbd5e1] bg-white">
+    <Section id="faq" className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
       <Container className="max-w-4xl">
         <SectionIntro eyebrow={copy.faq} title={config.faqTitle} />
-        <div className="mt-8 divide-y divide-[#cbd5e1] border-y border-[#cbd5e1]">
+        <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
           {config.faq.map((faq) => (
             <details key={faq.question} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold text-[#0f172a]">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold text-[color:var(--foreground)]">
                 {faq.question}
-                <span className="text-[#334155] transition group-open:rotate-45">
+                <span className="text-[color:var(--muted)] transition group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <p className="mt-4 leading-7 text-[#334155]">{faq.answer}</p>
+              <p className="mt-4 leading-7 text-[color:var(--muted)]">{faq.answer}</p>
             </details>
           ))}
         </div>
@@ -587,7 +584,7 @@ function RelatedPdfTools({
   const related = pdfTools[locale].filter((tool) => tool.slug !== currentSlug);
 
   return (
-    <Section id="related-tools" className="border-b border-[#cbd5e1] bg-[#f8fafc]">
+    <Section id="related-tools" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
       <Container>
         <SectionIntro
           eyebrow={copy.relatedTools}
@@ -599,15 +596,15 @@ function RelatedPdfTools({
             <a
               key={tool.href}
               href={useLocalePrefix ? `${prefix}${tool.href}` : tool.href}
-              className="group rounded-xl border border-[#cbd5e1] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0f172a] hover:shadow-[0_16px_32px_rgba(24,24,20,0.08)]"
+              className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:shadow-[0_16px_32px_rgba(24,24,20,0.08)]"
             >
               <div className="flex items-center justify-between gap-4">
-                <h3 className="font-semibold text-[#0f172a]">{tool.name}</h3>
-                <span className="text-[#334155] transition group-hover:translate-x-0.5 group-hover:text-[#0f172a]">
+                <h3 className="font-semibold text-[color:var(--foreground)]">{tool.name}</h3>
+                <span className="text-[color:var(--muted)] transition group-hover:translate-x-0.5 group-hover:text-[color:var(--foreground)]">
                   -&gt;
                 </span>
               </div>
-              <p className="mt-3 text-sm leading-6 text-[#334155]">
+              <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
                 {tool.description}
               </p>
             </a>
@@ -624,7 +621,7 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
   const links = getIndexingLinks(config);
 
   return (
-    <Section className="border-b border-[#cbd5e1] bg-white">
+    <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
       <Container>
         <SectionIntro
           eyebrow={copy.indexingEyebrow}
@@ -636,13 +633,13 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
             <a
               key={link.href}
               href={localizeTemplateHref(link.href, config.locale)}
-              className="group rounded-xl border border-[#cbd5e1] bg-[#f8fafc] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[#0f172a] hover:bg-white hover:shadow-[0_16px_32px_rgba(24,24,20,0.08)]"
+              className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] hover:shadow-[0_16px_32px_rgba(24,24,20,0.08)]"
             >
-              <h3 className="font-semibold text-[#0f172a]">{link.label}</h3>
-              <p className="mt-3 text-sm leading-6 text-[#334155]">
+              <h3 className="font-semibold text-[color:var(--foreground)]">{link.label}</h3>
+              <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
                 {link.description}
               </p>
-              <span className="mt-5 inline-block text-sm font-semibold text-[#0f172a] transition group-hover:translate-x-0.5">
+              <span className="mt-5 inline-block text-sm font-semibold text-[color:var(--foreground)] transition group-hover:translate-x-0.5">
                 {locale === "zh" ? "继续阅读" : "Continue"} -&gt;
               </span>
             </a>
@@ -655,15 +652,15 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
 
 function CtaSection({ config }: { config: PdfToolPageConfig }) {
   return (
-    <Section bordered={false} className="bg-white">
+    <Section bordered={false} className="bg-[color:var(--surface)]">
       <Container>
-        <div className="flex flex-col gap-6 rounded-2xl border border-[#cbd5e1] bg-[#0f172a] p-6 text-white shadow-[0_24px_60px_rgba(24,24,20,0.10)] sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <div className="flex flex-col gap-6 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--foreground)] p-6 text-[color:var(--background)] shadow-[0_24px_60px_rgba(24,24,20,0.10)] sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-white/70">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--background)]/70">
               {config.cta.eyebrow}
             </p>
             <h2 className="mt-3 text-2xl font-semibold">{config.cta.title}</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/75">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-[color:var(--background)]/75">
               {config.cta.description}
             </p>
           </div>
@@ -873,14 +870,14 @@ function SectionIntro({
 }) {
   return (
     <div className="max-w-2xl">
-      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#334155]">
+      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
         {eyebrow}
       </p>
-      <h2 className="mt-4 text-2xl font-semibold leading-tight text-[#0f172a] sm:text-3xl">
+      <h2 className="mt-4 text-2xl font-semibold leading-tight text-[color:var(--foreground)] sm:text-3xl">
         <span className="break-words">{title}</span>
       </h2>
       {description ? (
-        <p className="mt-4 leading-7 text-[#334155]">{description}</p>
+        <p className="mt-4 leading-7 text-[color:var(--muted)]">{description}</p>
       ) : null}
     </div>
   );
@@ -888,9 +885,9 @@ function SectionIntro({
 
 function InfoCard({ item }: { item: PdfToolItem }) {
   return (
-    <div className="h-full rounded-xl border border-[#cbd5e1] bg-white p-5 shadow-sm transition hover:border-[#0f172a]">
-      <h3 className="break-words text-lg font-semibold text-[#0f172a]">{item.title}</h3>
-      <p className="mt-3 text-sm leading-6 text-[#334155]">
+    <div className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:border-[color:var(--foreground)]">
+      <h3 className="break-words text-lg font-semibold text-[color:var(--foreground)]">{item.title}</h3>
+      <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
         {item.description}
       </p>
     </div>
@@ -901,11 +898,11 @@ function ProgressPreview({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <div className="flex items-center justify-between gap-4">
-        <span className="font-medium text-[#0f172a]">{label}</span>
+        <span className="font-medium text-[color:var(--foreground)]">{label}</span>
         <span>{value}</span>
       </div>
-      <div className="mt-3 h-2 rounded-full bg-white">
-        <div className="h-2 w-2/3 rounded-full bg-[#0f172a]" />
+      <div className="mt-3 h-2 rounded-full bg-[color:var(--surface)]">
+        <div className="h-2 w-2/3 rounded-full bg-[color:var(--foreground)]" />
       </div>
     </div>
   );
@@ -917,10 +914,10 @@ function FileListPreview({ files }: { files: string[] }) {
       {files.map((file, index) => (
         <li
           key={file}
-          className="flex items-center justify-between gap-3 rounded-md border border-[#cbd5e1] bg-white px-3 py-2"
+          className="flex items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2"
         >
-          <span className="font-medium text-[#0f172a]">{file}</span>
-          <span className="text-xs text-[#475569]">#{index + 1}</span>
+          <span className="font-medium text-[color:var(--foreground)]">{file}</span>
+          <span className="text-xs text-[color:var(--muted)]">#{index + 1}</span>
         </li>
       ))}
     </ol>
@@ -930,13 +927,13 @@ function FileListPreview({ files }: { files: string[] }) {
 function RangePreview() {
   return (
     <label className="block">
-      <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#475569]">
+      <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
         Page ranges
       </span>
       <input
         readOnly
         value="1-4, 12-18, 30"
-        className="mt-2 w-full rounded-md border border-[#cbd5e1] bg-white px-3 py-2 font-medium text-[#0f172a]"
+        className="mt-2 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 font-medium text-[color:var(--foreground)]"
       />
     </label>
   );
@@ -950,16 +947,16 @@ function TextOutputPreview() {
       value={
         "Invoice total: $248.00\nDue date: May 31, 2026\nVendor: DockDocs sample scan"
       }
-      className="w-full resize-none rounded-md border border-[#cbd5e1] bg-white p-3 leading-6 text-[#0f172a]"
+      className="w-full resize-none rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 leading-6 text-[color:var(--foreground)]"
     />
   );
 }
 
 function DocumentPreview() {
   return (
-    <div className="rounded-md border border-[#cbd5e1] bg-white p-3 text-[#0f172a]">
+    <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 text-[color:var(--foreground)]">
       <p className="font-semibold">Editable contract draft</p>
-      <p className="mt-2 text-xs leading-5 text-[#334155]">
+      <p className="mt-2 text-xs leading-5 text-[color:var(--muted)]">
         Heading, paragraphs, and table structure detected for DOCX export.
       </p>
     </div>
@@ -972,9 +969,9 @@ function ImageOrderPreview() {
       {["receipt-1.jpg", "receipt-2.png", "notes.webp"].map((file, index) => (
         <div
           key={file}
-          className="rounded-md border border-[#cbd5e1] bg-white p-2 text-center"
+          className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2 text-center"
         >
-          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-md bg-[#0f172a] text-xs font-semibold text-white">
+          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--foreground)] text-xs font-semibold text-[color:var(--background)]">
             {index + 1}
           </div>
           <p className="mt-2 break-all text-xs leading-4">{file}</p>

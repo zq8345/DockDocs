@@ -352,6 +352,29 @@ Rules:
 7. Do not rely only on icons for critical actions unless the icon has an accessible name.
 8. Maintain keyboard flow from upload to result to next action.
 
+## Pre-Production UI Audit Rules
+
+### Token Consolidation
+
+- Content, tool, and workspace surfaces should use semantic tokens from `app/globals.css`.
+- Avoid raw hex values in component classes except inside token definitions, brand SVG fills, canvas drawing code, or shadows.
+- Use one card radius rhythm: `--radius` for cards and panels, `--radius-sm` for compact controls and inputs.
+- Metadata helpers should pass a clean page title to the root layout. Do not ship duplicate `| DockDocs | DockDocs` suffixes.
+
+### Interactive Components
+
+- Hover states must be subtle: border color, opacity, or surface shift rather than heavy animation.
+- Focus states must be visible for buttons, links, inputs, upload zones, cards used as buttons, and language controls.
+- Disabled and loading states must keep the same dimensions as the active state.
+- Mobile tap targets should be at least `44px` tall for primary actions, upload controls, nav controls, and dashboard actions.
+
+### Mobile Workspace QA
+
+- At `390px`, the task path order is upload or document status, primary input, result or conversation, then sources or references.
+- Header and footer may wrap, but must not force horizontal scroll.
+- Content cards, dashboard cards, and tool panels collapse to one column before text becomes cramped.
+- Result previews and next actions should remain close to the upload or processing area on mobile.
+
 ## Future Product Rules
 
 ### DockDocs

@@ -68,7 +68,7 @@ export type BlogArticle = {
 
 export const blogIndexCopy = {
   en: {
-    title: "PDF Workflow Blog | DockDocs",
+    title: "PDF Workflow Blog",
     description:
       "Practical DockDocs guides for compressing, merging, converting, OCR, JPG to PDF, and AI-ready document workflows.",
     eyebrow: "DockDocs Resources",

@@ -9,6 +9,30 @@ const workerPath = path.join(
   "pdf.worker.min.mjs",
 );
 const resolvedWorkerPath = require.resolve(workerPath);
+const smokeRoutes = [
+  "/",
+  "/chat-with-pdf",
+  "/dashboard",
+  "/ai-summary",
+  "/ocr",
+  "/compress-pdf",
+  "/pdf-to-word",
+  "/blog",
+  "/guides",
+  "/resources",
+  "/ai-pdf-guides",
+  "/zh",
+  "/zh/chat-with-pdf",
+  "/zh/dashboard",
+  "/zh/ai-summary",
+  "/zh/ocr",
+  "/zh/compress-pdf",
+  "/zh/pdf-to-word",
+  "/zh/blog",
+  "/zh/guides",
+  "/zh/resources",
+  "/zh/ai-pdf-guides",
+];
 
 test.beforeEach(async ({ page }) => {
   await page.route("https://unpkg.com/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs", async (route) => {
@@ -130,22 +154,45 @@ test("dashboard IA is visible in English and Chinese", async ({ page }) => {
 test("primary routes load and mobile 390 has no horizontal overflow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
 
-  for (const route of [
-    "/",
-    "/chat-with-pdf",
-    "/dashboard",
-    "/zh",
-    "/zh/chat-with-pdf",
-    "/zh/dashboard",
-  ]) {
+  for (const route of smokeRoutes) {
     const response = await page.goto(route);
     expect(response?.status()).toBe(200);
 
     const metrics = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,
+      lang: document.documentElement.lang,
+      title: document.title,
     }));
 
     expect(metrics.scrollWidth).toBe(metrics.clientWidth);
+    expect(metrics.title).not.toContain("| DockDocs | DockDocs");
+
+    if (route.startsWith("/zh")) {
+      expect(metrics.lang).toBe("zh");
+    }
+  }
+});
+
+test("localized shell, content routes, and workspace landmarks stay visible", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  await page.goto("/zh");
+  await expect(page.getByRole("link", { name: "中文" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "面向真实文件的 ChatGPT for documents。" })).toBeVisible();
+
+  await page.goto("/zh/chat-with-pdf");
+  await expect(page.getByTestId("document-sidebar")).toBeVisible();
+  await expect(page.getByTestId("conversation-workspace")).toBeVisible();
+  await expect(page.getByTestId("source-intelligence-panel")).toBeVisible();
+
+  await page.goto("/zh/dashboard");
+  await expect(page.getByRole("heading", { name: "文档工作区概览。" })).toBeVisible();
+  await expect(page.getByText("AI 操作", { exact: true })).toBeVisible();
+
+  for (const route of ["/blog", "/guides", "/resources", "/ai-pdf-guides", "/zh/blog", "/zh/guides", "/zh/resources", "/zh/ai-pdf-guides"]) {
+    const response = await page.goto(route);
+    expect(response?.status()).toBe(200);
+    await expect(page.locator("main")).toBeVisible();
   }
 });

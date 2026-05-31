@@ -325,7 +325,7 @@ export function PdfWorkflowEngine({
       data-workflow-status={status}
       data-real-runtime={isRealPdfRuntimeSlug(config.slug)}
       aria-labelledby="workflow-upload-title"
-      className="rounded-2xl border border-[#cbd5e1] bg-white p-4 shadow-[0_32px_90px_rgba(24,24,20,0.10)]"
+      className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_32px_90px_rgba(24,24,20,0.10)]"
     >
       <div
         onDragOver={(event) => {
@@ -338,16 +338,16 @@ export function PdfWorkflowEngine({
           setIsDragging(false);
           chooseFiles(event.dataTransfer.files);
         }}
-        className={`rounded-xl border border-dashed p-5 transition sm:p-6 ${
+        className={`rounded-[var(--radius)] border border-dashed p-5 transition sm:p-6 ${
           isDragging
-            ? "border-[#0f172a] bg-white"
-            : "border-[#94a3b8] bg-[#f8fafc]"
+            ? "border-[color:var(--foreground)] bg-[color:var(--surface)]"
+            : "border-[color:var(--line)] bg-[color:var(--surface-subtle)]"
         }`}
       >
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0f172a] text-sm font-semibold text-white">
+              <div className="flex h-12 w-12 items-center justify-center rounded-[var(--radius)] bg-[color:var(--foreground)] text-sm font-semibold text-[color:var(--background)]">
                 {config.upload.fileBadge ??
                   (config.slug === "jpg-to-pdf" ? "IMG" : "PDF")}
               </div>
@@ -357,11 +357,11 @@ export function PdfWorkflowEngine({
               >
                 {config.upload.title}
               </h2>
-              <p className="mt-3 max-w-md text-sm leading-6 text-[#334155]">
+              <p className="mt-3 max-w-md text-sm leading-6 text-[color:var(--muted)]">
                 {config.upload.description}
               </p>
             </div>
-            <span className="inline-flex w-fit rounded-full border border-[#cbd5e1] bg-white px-3 py-1 text-xs font-semibold text-[#334155]">
+            <span className="inline-flex w-fit rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
               {spec.acceptedLabel}
             </span>
           </div>
@@ -395,7 +395,7 @@ export function PdfWorkflowEngine({
             }}
           />
           {config.upload.note ? (
-            <p className="text-xs font-medium text-[#475569]">
+            <p className="text-xs font-medium text-[color:var(--muted)]">
               {config.upload.note}
             </p>
           ) : null}
@@ -493,14 +493,14 @@ function EmptyWorkflowState({
   const zh = (config.locale ?? "en") === "zh";
 
   return (
-    <div className="rounded-xl border border-[#cbd5e1] bg-[#f8fafc] p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#475569]">
+    <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
         {zh ? "等待上传" : "Waiting for upload"}
       </p>
-      <h3 className="mt-3 text-lg font-semibold text-[#0f172a]">
+      <h3 className="mt-3 text-lg font-semibold text-[color:var(--foreground)]">
         {zh ? "拖放文件或点击上传。" : "Drop files here or click upload."}
       </h3>
-      <ul className="mt-4 grid gap-2 text-sm leading-6 text-[#334155]">
+      <ul className="mt-4 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
         <li>
           {zh ? "文件类型" : "Accepted files"}: {spec.acceptedLabel}
         </li>
@@ -548,17 +548,17 @@ function ReadyWorkflowState({
   const reorderable = config.slug === "merge-pdf" || config.slug === "jpg-to-pdf";
 
   return (
-    <div className="rounded-xl border border-[#cbd5e1] bg-white p-4 shadow-sm">
+    <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-sm">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#475569]">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
             {zh ? "文件已准备" : "Files ready"}
           </p>
-          <h3 className="mt-2 text-lg font-semibold text-[#0f172a]">
+          <h3 className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
             {zh ? "检查文件并开始处理。" : "Review files and start processing."}
           </h3>
         </div>
-        <span className="rounded-full border border-[#cbd5e1] bg-[#f8fafc] px-3 py-1 text-xs font-semibold text-[#334155]">
+        <span className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
           {formatBytes(totalSize)}
         </span>
       </div>
@@ -567,13 +567,13 @@ function ReadyWorkflowState({
         {files.map((item, index) => (
           <li
             key={item.id}
-            className="flex min-w-0 flex-col gap-3 rounded-lg border border-[#d9dee7] bg-[#f8fafc] p-3 sm:flex-row sm:items-center sm:justify-between"
+            className="flex min-w-0 flex-col gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="min-w-0">
-              <p className="break-all text-sm font-semibold text-[#0f172a]">
+              <p className="break-all text-sm font-semibold text-[color:var(--foreground)]">
                 {item.file.name}
               </p>
-              <p className="mt-1 text-xs text-[#475569]">
+              <p className="mt-1 text-xs text-[color:var(--muted)]">
                 #{index + 1} - {formatBytes(item.file.size)}
               </p>
             </div>
@@ -604,7 +604,7 @@ function ReadyWorkflowState({
 
       {config.slug === "split-pdf" || config.slug === "ocr-pdf" ? (
         <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#475569]">
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
             {config.slug === "ocr-pdf"
               ? zh
                 ? "OCR 页面范围"
@@ -617,10 +617,10 @@ function ReadyWorkflowState({
             value={pageRanges}
             onChange={(event) => onPageRangesChange(event.target.value)}
             placeholder={config.slug === "ocr-pdf" ? "1, 1-3, 1,3" : "1-4, 12-18"}
-            className="mt-2 min-h-11 w-full rounded-lg border border-[#cbd5e1] bg-white px-3 py-2 text-sm font-medium text-[#0f172a] outline-none transition focus:border-[#0f172a]"
+            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
           />
           {config.slug === "ocr-pdf" ? (
-            <p className="mt-2 text-xs font-medium text-[#475569]">
+            <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
               {zh
                 ? "当前浏览器端 OCR 一次最多处理 3 页。"
                 : "Browser-side OCR currently processes up to 3 pages at a time."}
@@ -632,7 +632,7 @@ function ReadyWorkflowState({
       {config.slug === "ocr-pdf" ? (
         <>
           <label className="mt-4 block">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#475569]">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
               {zh ? "OCR 语言" : "OCR language"}
             </span>
             <select
@@ -640,18 +640,18 @@ function ReadyWorkflowState({
               onChange={(event) =>
                 onOcrLanguageChange(event.target.value as OcrLanguage)
               }
-              className="mt-2 min-h-11 w-full rounded-lg border border-[#cbd5e1] bg-white px-3 py-2 text-sm font-medium text-[#0f172a] outline-none transition focus:border-[#0f172a]"
+              className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
             >
               <option value="eng">{zh ? "英语" : "English"}</option>
               <option value="chi_sim">{zh ? "中文（简体）" : "Chinese (Simplified)"}</option>
             </select>
           </label>
-          <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-lg border border-[#cbd5e1] bg-[#f8fafc] p-3 text-sm leading-6 text-[#334155]">
+          <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]">
             <input
               type="checkbox"
               checked={ocrConfirmed}
               onChange={(event) => onOcrConfirmedChange(event.target.checked)}
-              className="mt-1 h-4 w-4 accent-[#0f172a]"
+              className="mt-1 h-4 w-4 accent-[color:var(--accent)]"
             />
             <span>
               {zh
@@ -687,29 +687,29 @@ function WorkflowProgress({
   cancelLabel?: string;
 }) {
   return (
-    <div className="rounded-xl border border-[#cbd5e1] bg-white p-4 shadow-sm">
+    <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#475569]">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
             {statusText}
           </p>
-          <h3 className="mt-2 break-words text-lg font-semibold text-[#0f172a]">
+          <h3 className="mt-2 break-words text-lg font-semibold text-[color:var(--foreground)]">
             {title}
           </h3>
-          <p className="mt-2 text-sm leading-6 text-[#334155]">{description}</p>
+          <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{description}</p>
         </div>
         {animated ? (
-          <span className="mt-1 h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-[#cbd5e1] border-t-[#0f172a]" />
+          <span className="mt-1 h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-[color:var(--line)] border-t-[color:var(--foreground)]" />
         ) : null}
       </div>
       <div className="mt-5">
-        <div className="flex items-center justify-between gap-4 text-xs font-semibold text-[#334155]">
+        <div className="flex items-center justify-between gap-4 text-xs font-semibold text-[color:var(--muted)]">
           <span>{statusText}</span>
           <span>{Math.round(progress)}%</span>
         </div>
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#e2e8f0]">
+        <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
           <div
-            className="h-full rounded-full bg-[#0f172a] transition-all duration-200"
+            className="h-full rounded-full bg-[color:var(--foreground)] transition-all duration-200"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -752,26 +752,26 @@ function WorkflowResultState({
   const zh = (config.locale ?? "en") === "zh";
 
   return (
-    <div className="rounded-xl border border-[#86efac] bg-[#f0fdf4] p-4 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#166534]">
+    <div className="rounded-[var(--radius)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] p-4 shadow-sm">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--success)]">
         {zh ? "处理完成" : "Workflow complete"}
       </p>
-      <h3 className="mt-2 text-lg font-semibold text-[#0f172a]">
+      <h3 className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
         {result.title}
       </h3>
-      <p className="mt-2 text-sm leading-6 text-[#334155]">
+      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
         {result.description}
       </p>
       <dl className="mt-4 grid gap-2 sm:grid-cols-2">
         {result.rows.map(([label, value]) => (
           <div
             key={label}
-            className="rounded-lg border border-[#bbf7d0] bg-white px-3 py-2"
+            className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] px-3 py-2"
           >
-            <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[#166534]">
+            <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--success)]">
               {label}
             </dt>
-            <dd className="mt-1 break-words text-sm font-semibold text-[#0f172a]">
+            <dd className="mt-1 break-words text-sm font-semibold text-[color:var(--foreground)]">
               {value}
             </dd>
           </div>
@@ -831,15 +831,15 @@ function ResultPreview({
         readOnly
         rows={4}
         value={text ?? ocrSampleText}
-        className="mt-4 w-full resize-none rounded-lg border border-[#bbf7d0] bg-white p-3 text-sm leading-6 text-[#0f172a]"
+        className="mt-4 w-full resize-none rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-sm leading-6 text-[color:var(--foreground)]"
       />
     );
   }
 
   if (type === "document") {
     return (
-      <div className="mt-4 rounded-lg border border-[#bbf7d0] bg-white p-4 text-sm text-[#334155]">
-        <p className="font-semibold text-[#0f172a]">Editable document preview</p>
+      <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-4 text-sm text-[color:var(--muted)]">
+        <p className="font-semibold text-[color:var(--foreground)]">Editable document preview</p>
         <p className="mt-2">
           Heading structure, paragraphs, and table-like regions are ready for a
           Word document workflow.
@@ -854,7 +854,7 @@ function ResultPreview({
         {[1, 2, 3].map((item) => (
           <div
             key={item}
-            className="rounded-lg border border-[#bbf7d0] bg-white p-3 text-center text-xs font-semibold text-[#0f172a]"
+            className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-center text-xs font-semibold text-[color:var(--foreground)]"
           >
             Page {item}
           </div>
@@ -865,7 +865,7 @@ function ResultPreview({
 
   if (type === "ranges") {
     return (
-      <div className="mt-4 rounded-lg border border-[#bbf7d0] bg-white p-3 text-sm font-semibold text-[#0f172a]">
+      <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-sm font-semibold text-[color:var(--foreground)]">
         {text ?? "page-1.pdf"}
       </div>
     );
@@ -888,14 +888,14 @@ function WorkflowErrorState({
   const zh = locale === "zh";
 
   return (
-    <div className="rounded-xl border border-[#fecaca] bg-[#fef2f2] p-4 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#991b1b]">
+    <div className="rounded-[var(--radius)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-4 shadow-sm">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--error)]">
         {zh ? "需要处理" : "Needs attention"}
       </p>
-      <h3 className="mt-2 text-lg font-semibold text-[#0f172a]">
+      <h3 className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
         {zh ? "无法继续当前工作流。" : "The workflow cannot continue yet."}
       </h3>
-      <p className="mt-2 text-sm leading-6 text-[#7f1d1d]">{message}</p>
+      <p className="mt-2 text-sm leading-6 text-[color:var(--error)]">{message}</p>
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
         <WorkflowActionButton type="button" onClick={onRetry}>
           {zh ? "返回检查" : "Review files"}
@@ -918,8 +918,8 @@ function WorkflowActionButton({
 }) {
   const styles =
     variant === "solid"
-      ? "bg-[#0f172a] text-white shadow-[0_12px_26px_rgba(15,23,42,0.16)] hover:bg-[#111827]"
-      : "border border-[#cbd5e1] bg-white text-[#0f172a] shadow-sm hover:border-[#0f172a]";
+      ? "bg-[color:var(--foreground)] text-[color:var(--background)] shadow-[0_12px_26px_rgba(15,23,42,0.16)] hover:bg-[color:var(--foreground)]"
+      : "border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--foreground)] shadow-sm hover:border-[color:var(--foreground)]";
 
   return (
     <button
@@ -938,7 +938,7 @@ function SmallButton({
   return (
     <button
       type="button"
-      className="rounded-full border border-[#cbd5e1] bg-white px-3 py-1.5 text-xs font-semibold text-[#0f172a] transition hover:border-[#0f172a] disabled:cursor-not-allowed disabled:opacity-40"
+      className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-40"
       {...props}
     >
       {children}

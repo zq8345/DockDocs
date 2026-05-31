@@ -119,13 +119,13 @@ function CompressPdfPageContent({ locale = "en" }: { locale?: RuntimeLocale }) {
             <div className="mt-7 flex flex-wrap gap-3">
               <a
                 href="#upload"
-                className="inline-flex min-h-11 items-center justify-center rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90"
+                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-[color:var(--background)] transition hover:opacity-90"
               >
                 {page.primaryCta}
               </a>
               <a
                 href="/chat-with-pdf"
-                className="inline-flex min-h-11 items-center justify-center rounded-md border border-[color:var(--line)] px-5 text-sm font-semibold transition hover:border-[color:var(--foreground)]"
+                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-5 text-sm font-semibold transition hover:border-[color:var(--foreground)]"
               >
                 {page.secondaryCta}
               </a>

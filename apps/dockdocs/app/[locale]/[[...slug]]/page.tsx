@@ -92,8 +92,7 @@ function createLocalizedMetadata(
   description: string,
 ): Metadata {
   const canonical = localizedPath(locale, slug);
-  const pageTitle =
-    locale === "zh" ? title.replace(/\s*\|\s*DockDocs\s*$/u, "") : title;
+  const pageTitle = title.replace(/\s*\|\s*DockDocs\s*$/u, "");
 
   return {
     title: pageTitle,
