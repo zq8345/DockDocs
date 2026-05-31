@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { RelatedTools } from "@/components/RelatedTools";
+import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { ChatWithPdfClient } from "./ChatWithPdfClient";
 
 const pageUrl = "https://dockdocs.app/chat-with-pdf";
@@ -92,7 +93,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ChatWithPdfPage() {
+function ChatWithPdfPageContent({ locale = "en" }: { locale?: RuntimeLocale }) {
+  const copy = getRuntimeCopy(locale).chat;
+
   return (
     <main>
       <script
@@ -104,38 +107,37 @@ export default function ChatWithPdfPage() {
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-                Chat with PDF MVP
+                {copy.heroEyebrow}
               </p>
               <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight sm:text-5xl xl:text-6xl">
-                Ask grounded questions about a PDF.
+                {copy.heroTitle}
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-7 text-[color:var(--muted)] sm:text-lg">
-                Upload a text-based PDF, review the extracted source status, and
-                ask focused questions inside a document-first AI workspace.
+                {copy.heroDescription}
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <a
                   href="#workspace"
                   className="inline-flex min-h-11 items-center justify-center rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90"
                 >
-                  Open chat
+                  {copy.primaryCta}
                 </a>
                 <a
                   href="/compress-pdf"
                   className="inline-flex min-h-11 items-center justify-center rounded-md border border-[color:var(--line)] px-5 text-sm font-semibold transition hover:border-[color:var(--foreground)]"
                 >
-                  Compress PDF
+                  {copy.secondaryCta}
                 </a>
               </div>
             </div>
             <div className="grid w-full max-w-xl grid-cols-3 gap-4 border-y border-[color:var(--line)] py-5 lg:w-[420px]">
-              <Metric value="12" label="Page cap" />
-              <Metric value="40k" label="Text cap" />
-              <Metric value="Live" label="AI call" />
+              {copy.metrics.map((metric) => (
+                <Metric key={metric.label} value={metric.value} label={metric.label} />
+              ))}
             </div>
           </div>
           <div className="mt-10">
-            <ChatWithPdfClient />
+            <ChatWithPdfClient locale={locale} />
           </div>
         </div>
       </section>
@@ -150,10 +152,10 @@ export default function ChatWithPdfPage() {
             FAQ
           </p>
           <h2 id="faq-title" className="mt-4 text-3xl font-semibold">
-            Chat with PDF questions
+            {copy.faqTitle}
           </h2>
           <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
-            {faqs.map((faq) => (
+            {copy.faqs.map((faq) => (
               <details key={faq.question} className="group py-5">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold">
                   {faq.question}
@@ -173,6 +175,10 @@ export default function ChatWithPdfPage() {
       <RelatedTools />
     </main>
   );
+}
+
+export default function ChatWithPdfPage() {
+  return <ChatWithPdfPageContent />;
 }
 
 function Metric({ value, label }: { value: string; label: string }) {

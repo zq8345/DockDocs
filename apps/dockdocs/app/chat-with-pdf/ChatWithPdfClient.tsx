@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -17,45 +18,14 @@ type ProviderReference = {
 const maxPages = 12;
 const maxCharacters = 40000;
 const maxFileBytes = 25 * 1024 * 1024;
-const suggestedQuestions = [
-  "Summarize the main decision points",
-  "What risks or blockers are mentioned?",
-  "List dates, owners, and action items",
-];
-const workspaceCollections = [
-  { name: "Board materials", count: "4 docs" },
-  { name: "Contracts", count: "9 docs" },
-  { name: "Research notes", count: "6 docs" },
-];
-const defaultHistory = [
-  "Review renewal risks",
-  "Extract follow-up actions",
-  "Compare policy clauses",
-];
-const knowledgeCards = [
-  {
-    title: "Summary",
-    description: "Generate an executive brief from extracted document text.",
-    prompt: "Create an executive summary of this PDF.",
-  },
-  {
-    title: "Risks",
-    description: "Surface unclear clauses, blockers, obligations, and dates.",
-    prompt: "Identify risks, blockers, and obligations in this PDF.",
-  },
-  {
-    title: "Actions",
-    description: "Convert document content into owners, deadlines, and next steps.",
-    prompt: "List action items, owners, and dates from this PDF.",
-  },
-];
 
-export function ChatWithPdfClient() {
+export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale }) {
+  const copy = getRuntimeCopy(locale).chat;
   const [fileName, setFileName] = useState("");
   const [documentText, setDocumentText] = useState("");
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [status, setStatus] = useState("Upload a PDF to start.");
+  const [status, setStatus] = useState<string>(copy.initialStatus);
   const [pageCount, setPageCount] = useState(0);
   const [providerReference, setProviderReference] = useState<ProviderReference>({
     citations: [],
@@ -70,11 +40,11 @@ export function ChatWithPdfClient() {
   );
   const sourceStats = useMemo(() => {
     if (!documentText) {
-      return "Waiting for source text";
+      return copy.sourceWaiting;
     }
 
-    return `${documentText.length.toLocaleString()} characters ready`;
-  }, [documentText]);
+    return copy.sourceReady.replace("{characters}", documentText.length.toLocaleString());
+  }, [copy.sourceReady, copy.sourceWaiting, documentText]);
   const documentState: RuntimeState = useMemo(() => {
     if (error) {
       return "error";
@@ -96,7 +66,7 @@ export function ChatWithPdfClient() {
   }, [documentText, error, fileName, isExtracting]);
   const resultGenerated = messages.some((message) => message.role === "assistant");
   const userQuestions = messages.filter((message) => message.role === "user");
-  const activeDocumentName = fileName || "Untitled document";
+  const activeDocumentName = fileName || copy.untitled;
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -109,27 +79,27 @@ export function ChatWithPdfClient() {
 
     if (!file) {
       setFileName("");
-      setStatus("Upload a PDF to start.");
+      setStatus(copy.initialStatus);
       return;
     }
 
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
       setFileName(file.name);
-      setStatus("PDF required.");
-      setError("Please choose a PDF file.");
+      setStatus(copy.pdfRequiredStatus);
+      setError(copy.pdfRequiredError);
       return;
     }
 
     if (file.size > maxFileBytes) {
       setFileName(file.name);
-      setStatus("File size limit exceeded.");
-      setError("Please choose a PDF up to 25 MB.");
+      setStatus(copy.fileLimitStatus);
+      setError(copy.fileLimitError);
       return;
     }
 
     setFileName(file.name);
     setIsExtracting(true);
-    setStatus("Reading PDF text in your browser.");
+    setStatus(copy.readingStatus);
 
     try {
       const pdfjs = await import("pdfjs-dist");
@@ -158,22 +128,23 @@ export function ChatWithPdfClient() {
       const extracted = pages.join("\n\n").slice(0, maxCharacters);
 
       if (!extracted.trim()) {
-        setStatus("No selectable text found.");
-        setError("This PDF does not expose readable text. OCR is required before chat can run.");
+        setStatus(copy.noTextStatus);
+        setError(copy.noTextError);
         return;
       }
 
       setDocumentText(extracted);
       setPageCount(pageCount);
       setStatus(
-        `Ready: extracted ${extracted.length.toLocaleString()} characters from ${pageCount} page${
-          pageCount === 1 ? "" : "s"
-        }.`,
+        copy.readyStatus
+          .replace("{characters}", extracted.length.toLocaleString())
+          .replace("{pages}", String(pageCount))
+          .replace("{plural}", pageCount === 1 ? "" : "s"),
       );
     } catch (caughtError) {
       const message =
-        caughtError instanceof Error ? caughtError.message : "Unable to read this PDF.";
-      setStatus("PDF text extraction failed.");
+        caughtError instanceof Error ? caughtError.message : copy.extractionFailedError;
+      setStatus(copy.extractionFailedStatus);
       setError(message);
     } finally {
       setIsExtracting(false);
@@ -215,11 +186,11 @@ export function ChatWithPdfClient() {
       } | null;
 
       if (!response.ok) {
-        throw new Error(payload?.error ?? "Chat provider request failed.");
+        throw new Error(payload?.error ?? copy.providerFailed);
       }
 
       if (!payload?.answer) {
-        throw new Error("Chat provider returned no answer.");
+        throw new Error(copy.providerEmpty);
       }
 
       setMessages((current) => [
@@ -235,14 +206,14 @@ export function ChatWithPdfClient() {
       const message =
         caughtError instanceof Error
           ? caughtError.message
-          : "Chat provider endpoint is unavailable.";
+          : copy.providerUnavailable;
       setError(message);
       setProviderReference({ citations: [] });
       setMessages((current) => [
         ...current,
         {
           role: "assistant",
-          content: `Unable to answer: ${message}`,
+          content: `${copy.unableToAnswer} ${message}`,
         },
       ]);
     } finally {
@@ -260,12 +231,12 @@ export function ChatWithPdfClient() {
       <div className="flex items-center justify-between border-b border-[color:var(--line)] px-4 py-3 sm:px-5">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            DockDocs Workspace
+            {copy.workspaceLabel}
           </p>
-          <p className="mt-1 text-sm font-semibold">Chat with PDF</p>
+          <p className="mt-1 text-sm font-semibold">{copy.workspaceTitle}</p>
         </div>
         <span className="rounded-md border border-[color:var(--line)] px-2.5 py-1 text-xs font-semibold text-[color:var(--muted)]">
-          MVP
+          {copy.mvp}
         </span>
       </div>
 
@@ -276,7 +247,7 @@ export function ChatWithPdfClient() {
         >
           <div className="flex items-center justify-between gap-3">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              Document
+              {copy.document}
             </p>
             <StatePill state={documentState} label={sourceStats} />
           </div>
@@ -287,9 +258,9 @@ export function ChatWithPdfClient() {
             <span className="flex h-12 w-12 items-center justify-center rounded-md bg-[color:var(--soft-accent)] text-sm font-semibold text-[color:var(--accent-strong)]">
               PDF
             </span>
-            <span className="mt-4 text-sm font-semibold">Choose PDF</span>
+            <span className="mt-4 text-sm font-semibold">{copy.choosePdf}</span>
             <span className="mt-2 max-w-48 text-xs leading-5 text-[color:var(--muted)]">
-              Text is extracted locally before a provider request is made.
+              {copy.uploadHelp}
             </span>
             <input
               data-testid="upload-input"
@@ -305,7 +276,7 @@ export function ChatWithPdfClient() {
             className="mt-5 rounded-lg border border-[color:var(--line)] bg-[color:var(--surface)] p-4"
           >
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              Document status
+              {copy.documentStatus}
             </p>
             <p className="mt-3 break-words text-sm font-semibold">{activeDocumentName}</p>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{status}</p>
@@ -323,17 +294,17 @@ export function ChatWithPdfClient() {
             data-testid="result-state"
             className="mt-5 grid gap-3 rounded-lg border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-sm"
           >
-            <CheckLine label="Selectable text extracted" active={documentText.length > 0} />
-            <CheckLine label="Provider reference received" active={Boolean(providerReference.provider)} />
-            <CheckLine label="Result generated" active={resultGenerated} />
+            <CheckLine label={copy.checks[0]} active={documentText.length > 0} />
+            <CheckLine label={copy.checks[1]} active={Boolean(providerReference.provider)} />
+            <CheckLine label={copy.checks[2]} active={resultGenerated} />
           </div>
 
           <div className="mt-5 rounded-lg border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              Collections
+              {copy.collectionsLabel}
             </p>
             <div className="mt-3 grid gap-2">
-              {workspaceCollections.map((collection, index) => (
+              {copy.collections.map((collection, index) => (
                 <button
                   key={collection.name}
                   className={
@@ -351,10 +322,10 @@ export function ChatWithPdfClient() {
 
           <div className="mt-5 rounded-lg border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              Conversation history
+              {copy.historyLabel}
             </p>
             <div className="mt-3 grid gap-2">
-              {(userQuestions.length > 0 ? userQuestions.map((item) => item.content) : defaultHistory).map(
+              {(userQuestions.length > 0 ? userQuestions.map((item) => item.content) : copy.defaultHistory).map(
                 (item, index) => (
                   <button
                     key={`${item}-${index}`}
@@ -378,18 +349,18 @@ export function ChatWithPdfClient() {
             <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-start 2xl:justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-                  AI Chat
+                  {copy.aiChat}
                 </p>
                 <h2 className="mt-2 text-xl font-semibold sm:text-2xl">
-                  Ask a question about the PDF
+                  {copy.conversationTitle}
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-[color:var(--muted)]">
-                  A grounded AI workspace for document questions, summaries, references, and next actions.
+                  {copy.conversationDescription}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-2 text-xs sm:max-w-64 2xl:min-w-48">
-                <MiniStat label="Messages" value={String(messages.length)} />
-                <MiniStat label="Runtime" value={isAsking ? "Asking" : documentState} />
+                <MiniStat label={copy.messages} value={String(messages.length)} />
+                <MiniStat label={copy.runtime} value={isAsking ? copy.asking : documentState} />
               </div>
             </div>
           </div>
@@ -398,13 +369,12 @@ export function ChatWithPdfClient() {
             {messages.length === 0 ? (
               <div className="grid gap-4">
                 <div className="rounded-lg border border-[color:var(--line)] bg-[color:var(--background)] p-5">
-                  <p className="font-semibold">Start from a grounded question</p>
+                  <p className="font-semibold">{copy.starterTitle}</p>
                   <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                    Upload a PDF with selectable text, then ask for facts, dates, clauses, risks,
-                    or action items grounded in the file.
+                    {copy.starterDescription}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {suggestedQuestions.map((suggestion) => (
+                    {copy.suggestedQuestions.map((suggestion) => (
                       <button
                         key={suggestion}
                         type="button"
@@ -417,10 +387,10 @@ export function ChatWithPdfClient() {
                   </div>
                 </div>
                 <div className="grid gap-3 md:grid-cols-3">
-                  {knowledgeCards.map((card) => (
+                  {copy.knowledgeCards.map((card, index) => (
                     <KnowledgeCard
                       key={card.title}
-                      testId={`knowledge-card-${card.title.toLowerCase()}`}
+                      testId={`knowledge-card-${["summary", "risks", "actions"][index]}`}
                       title={card.title}
                       description={card.description}
                       onClick={() => setQuestion(card.prompt)}
@@ -439,7 +409,7 @@ export function ChatWithPdfClient() {
                   }
                 >
                   <p className="text-xs font-semibold uppercase tracking-[0.12em] opacity-75">
-                    {message.role === "user" ? "You" : "DockDocs"}
+                    {message.role === "user" ? copy.you : copy.assistant}
                   </p>
                   <p className="mt-2 whitespace-pre-wrap text-sm leading-6">{message.content}</p>
                 </article>
@@ -461,12 +431,12 @@ export function ChatWithPdfClient() {
           >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
               <label className="flex-1">
-                <span className="sr-only">Question</span>
+                <span className="sr-only">{copy.questionLabel}</span>
                 <textarea
                   data-testid="chat-input"
                   value={question}
                   onChange={(event) => setQuestion(event.target.value)}
-                  placeholder="Ask about this PDF"
+                  placeholder={copy.placeholder}
                   rows={2}
                   className="min-h-20 w-full resize-none rounded-md border border-[color:var(--line)] bg-[color:var(--background)] px-4 py-3 text-sm leading-6 outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--foreground)] sm:min-h-11"
                 />
@@ -477,7 +447,7 @@ export function ChatWithPdfClient() {
                 disabled={!canAsk}
                 className="min-h-11 rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 sm:min-w-28"
               >
-                {isAsking ? "Asking" : "Ask"}
+                {isAsking ? copy.asking : copy.ask}
               </button>
             </div>
           </form>
@@ -488,46 +458,60 @@ export function ChatWithPdfClient() {
           className="border-t border-[color:var(--line)] bg-[color:var(--background)] p-4 sm:p-5 xl:border-l xl:border-t-0"
         >
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            Source references
+            {copy.sourceReferences}
           </p>
           <div className="mt-4 grid gap-3">
             <SourceCard
-              title="Document text"
-              value={documentText ? `${documentText.length.toLocaleString()} chars` : "Not extracted"}
-            />
-            <SourceCard
-              title="Page context"
-              value={pageCount ? `${pageCount} page${pageCount === 1 ? "" : "s"} indexed` : `First ${maxPages} pages`}
-            />
-            <SourceCard
-              title="References"
+              title={copy.documentText}
               value={
-                providerReference.citations.length > 0
-                  ? `${providerReference.citations.length} citation${providerReference.citations.length === 1 ? "" : "s"}`
-                  : resultGenerated
-                    ? "Provider response received"
-                    : "Provider citations when available"
+                documentText
+                  ? locale === "zh"
+                    ? `${documentText.length.toLocaleString()} 个字符`
+                    : `${documentText.length.toLocaleString()} chars`
+                  : copy.notExtracted
               }
             />
             <SourceCard
-              title="Provider"
+              title={copy.pageContext}
+              value={
+                pageCount
+                  ? copy.pageIndexed
+                      .replace("{pages}", String(pageCount))
+                      .replace("{plural}", pageCount === 1 ? "" : "s")
+                  : copy.firstPages.replace("{pages}", String(maxPages))
+              }
+            />
+            <SourceCard
+              title={copy.references}
+              value={
+                providerReference.citations.length > 0
+                  ? copy.citationCount
+                      .replace("{count}", String(providerReference.citations.length))
+                      .replace("{plural}", providerReference.citations.length === 1 ? "" : "s")
+                  : resultGenerated
+                    ? copy.providerResponseReceived
+                    : copy.providerCitations
+              }
+            />
+            <SourceCard
+              title={copy.provider}
               testId="provider-reference"
               value={
                 providerReference.provider
                   ? `${providerReference.provider}${providerReference.model ? ` / ${providerReference.model}` : ""}`
-                  : "Waiting for AI response"
+                  : copy.waitingForAi
               }
             />
           </div>
           <div className="mt-5 rounded-lg border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              Knowledge cards
+              {copy.knowledgeCardsLabel}
             </p>
             <div className="mt-3 grid gap-2">
-              {knowledgeCards.map((card) => (
+              {copy.knowledgeCards.map((card, index) => (
                 <button
                   key={card.title}
-                  data-testid={`knowledge-card-${card.title.toLowerCase()}-side`}
+                  data-testid={`knowledge-card-${["summary", "risks", "actions"][index]}-side`}
                   type="button"
                   onClick={() => setQuestion(card.prompt)}
                   className="rounded-md border border-[color:var(--line)] bg-[color:var(--background)] p-3 text-left transition hover:border-[color:var(--foreground)]"
@@ -542,14 +526,14 @@ export function ChatWithPdfClient() {
           </div>
           <div className="mt-5 rounded-lg border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              Suggested actions
+              {copy.suggestedActions}
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {["Summarize", "Find risks", "Create actions"].map((action, index) => (
+              {copy.sideActions.map((action, index) => (
                 <button
                   key={action}
                   type="button"
-                  onClick={() => setQuestion(knowledgeCards[index]?.prompt ?? action)}
+                  onClick={() => setQuestion(copy.knowledgeCards[index]?.prompt ?? action)}
                   className="rounded-md border border-[color:var(--line)] px-3 py-2 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--foreground)] hover:text-[color:var(--foreground)]"
                 >
                   {action}
@@ -558,10 +542,9 @@ export function ChatWithPdfClient() {
             </div>
           </div>
           <div className="mt-5 rounded-lg border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-            <p className="text-sm font-semibold">Grounded answers only</p>
+            <p className="text-sm font-semibold">{copy.groundedTitle}</p>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-              The chat request uses extracted document text as context. If the PDF
-              does not contain the answer, the provider should say so.
+              {copy.groundedDescription}
             </p>
           </div>
         </aside>

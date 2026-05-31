@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { absoluteUrl, googleSiteVerification, siteUrl } from "@/shared/seo/routes";
 import "./globals.css";
 
@@ -53,6 +54,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <HtmlLangSync />
         <Header />
         {children}
         <Footer />

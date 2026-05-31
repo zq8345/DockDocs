@@ -1,3 +1,18 @@
+import { runtimeCopy } from "@/lib/copy";
+
+type ResultLabels = {
+  states: Record<"empty" | "processing" | "success" | "error", string>;
+  resultUnavailable: string;
+  waitingForOutput: string;
+  runtimeError: string;
+  processingMessage: string;
+  keyPoints: string;
+  nextActions: string;
+  copy: string;
+  download: string;
+  startChat: string;
+};
+
 type ResultPreviewProps = {
   eyebrow: string;
   title: string;
@@ -8,13 +23,7 @@ type ResultPreviewProps = {
   state?: "empty" | "processing" | "success" | "error";
   emptyMessage?: string;
   errorMessage?: string;
-};
-
-const resultStateCopy = {
-  empty: "No result",
-  processing: "Generating",
-  success: "Ready",
-  error: "Error",
+  labels?: ResultLabels;
 };
 
 export function ResultPreview({
@@ -27,6 +36,7 @@ export function ResultPreview({
   state = "success",
   emptyMessage = "Upload a document to generate this output.",
   errorMessage,
+  labels = runtimeCopy.en.common.result,
 }: ResultPreviewProps) {
   const isEmpty = state === "empty";
   const isProcessing = state === "processing";
@@ -50,21 +60,23 @@ export function ResultPreview({
                 : "rounded-md bg-[#dcfce7] px-2.5 py-1 text-xs font-semibold text-[#166534]"
           }
         >
-          {resultStateCopy[state]}
+          {labels.states[state]}
         </span>
       </div>
 
       {isEmpty || isError ? (
         <div className="mt-5 rounded-xl border border-dashed border-[color:var(--line)] bg-[color:var(--background)] p-6">
-          <p className="font-semibold">{isError ? "Result unavailable" : "Waiting for output"}</p>
+          <p className="font-semibold">
+            {isError ? labels.resultUnavailable : labels.waitingForOutput}
+          </p>
           <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-            {isError ? errorMessage ?? "The runtime returned an error state." : emptyMessage}
+            {isError ? errorMessage ?? labels.runtimeError : emptyMessage}
           </p>
         </div>
       ) : (
         <>
           <p className="mt-5 text-sm leading-6 text-[color:var(--muted)]">
-            {isProcessing ? "The runtime is processing this document. Output will appear here when ready." : summary}
+            {isProcessing ? labels.processingMessage : summary}
           </p>
 
           {isProcessing && (
@@ -77,7 +89,7 @@ export function ResultPreview({
             <>
               <div className="mt-5 grid gap-4 md:grid-cols-2">
                 <div>
-                  <h3 className="text-sm font-semibold">Key points</h3>
+                  <h3 className="text-sm font-semibold">{labels.keyPoints}</h3>
                   <ul className="mt-3 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
                     {keyPoints.map((point) => (
                       <li key={point} className="flex gap-2">
@@ -88,7 +100,7 @@ export function ResultPreview({
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold">Next actions</h3>
+                  <h3 className="text-sm font-semibold">{labels.nextActions}</h3>
                   <ul className="mt-3 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
                     {actions.map((action) => (
                       <li key={action} className="flex gap-2">
@@ -102,10 +114,10 @@ export function ResultPreview({
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <button className="min-h-10 rounded-md bg-[color:var(--foreground)] px-4 text-sm font-semibold text-[color:var(--background)]">
-                  Copy
+                  {labels.copy}
                 </button>
                 <button className="min-h-10 rounded-md border border-[color:var(--line)] px-4 text-sm font-semibold">
-                  Download
+                  {labels.download}
                 </button>
                 <a
                   href="/chat-with-pdf"

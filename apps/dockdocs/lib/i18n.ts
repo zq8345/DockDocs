@@ -7,6 +7,9 @@ export const defaultLocale: Locale = "en";
 
 export const routeSlugs = [
   "",
+  "chat-with-pdf",
+  "ai-summary",
+  "ocr",
   "compress-pdf",
   "merge-pdf",
   "split-pdf",
@@ -14,6 +17,7 @@ export const routeSlugs = [
   "ocr-pdf",
   "jpg-to-pdf",
   "ai-workspace",
+  "dashboard",
   "resources",
   "guides",
   "ai-pdf-guides",

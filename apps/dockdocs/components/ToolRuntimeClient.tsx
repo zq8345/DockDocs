@@ -4,6 +4,7 @@ import type { ChangeEvent } from "react";
 import { useMemo, useState } from "react";
 import { ResultPreview } from "@/components/ResultPreview";
 import { UploadPanel } from "@/components/UploadPanel";
+import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 
 type ToolRuntimeState = "empty" | "selected" | "processing" | "success" | "error";
 
@@ -21,6 +22,7 @@ type ToolRuntimeClientProps = {
   keyPoints: string[];
   actions: string[];
   emptyMessage: string;
+  locale?: RuntimeLocale;
 };
 
 const maxFileSize = 25 * 1024 * 1024;
@@ -39,7 +41,9 @@ export function ToolRuntimeClient({
   keyPoints,
   actions,
   emptyMessage,
+  locale = "en",
 }: ToolRuntimeClientProps) {
+  const copy = getRuntimeCopy(locale);
   const [state, setState] = useState<ToolRuntimeState>("empty");
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");
@@ -71,13 +75,13 @@ export function ToolRuntimeClient({
 
     if (!extensionAllowed) {
       setState("error");
-      setError(`Unsupported file type. Supported formats: ${formats}.`);
+      setError(`${copy.common.errors.unsupportedFile} ${formats}.`);
       return;
     }
 
     if (file.size > maxFileSize) {
       setState("error");
-      setError("File is larger than the 25 MB UI limit.");
+      setError(copy.common.errors.fileTooLarge);
       return;
     }
 
@@ -103,6 +107,7 @@ export function ToolRuntimeClient({
         state={uploadState}
         errorMessage={error}
         onFileChange={handleFileChange}
+        labels={copy.common.upload}
       />
       <ResultPreview
         eyebrow={outputEyebrow}
@@ -113,6 +118,7 @@ export function ToolRuntimeClient({
         state={state === "selected" ? "empty" : state}
         emptyMessage={emptyMessage}
         errorMessage={error}
+        labels={copy.common.result}
       />
     </div>
   );

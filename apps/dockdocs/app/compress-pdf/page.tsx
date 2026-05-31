@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { RelatedTools } from "@/components/RelatedTools";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
+import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 
 const pageUrl = "https://dockdocs.app/compress-pdf";
 
@@ -93,7 +94,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CompressPdfPage() {
+function CompressPdfPageContent({ locale = "en" }: { locale?: RuntimeLocale }) {
+  const copy = getRuntimeCopy(locale);
+  const page = copy.compress;
+
   return (
     <main>
       <script
@@ -104,37 +108,37 @@ export default function CompressPdfPage() {
         <div className="mx-auto grid min-h-[calc(100vh-92px)] max-w-7xl items-center gap-8 px-5 py-10 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:px-8">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              Optimize
+              {page.eyebrow}
             </p>
             <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl xl:text-6xl">
-              Compress PDFs without leaving the document workspace.
+              {page.title}
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-[color:var(--muted)] sm:text-lg">
-              Reduce file size for email, portals, and office handoff while
-              keeping the next document action visible.
+              {page.description}
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <a
                 href="#upload"
                 className="inline-flex min-h-11 items-center justify-center rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90"
               >
-                Upload PDF
+                {page.primaryCta}
               </a>
               <a
                 href="/chat-with-pdf"
                 className="inline-flex min-h-11 items-center justify-center rounded-md border border-[color:var(--line)] px-5 text-sm font-semibold transition hover:border-[color:var(--foreground)]"
               >
-                Chat with PDF
+                {page.secondaryCta}
               </a>
             </div>
           </div>
           <UploadPanel
-            title="Upload PDF to compress"
-            description="Drop a PDF here or select a file from your device. The UI keeps limits, status, and output expectations visible."
-            formats="PDF"
-            limit="Up to 25 MB"
-            cta="Select PDF"
+            title={page.uploadTitle}
+            description={page.uploadDescription}
+            formats={page.formats}
+            limit={page.limit}
+            cta={page.cta}
             interactive={false}
+            labels={copy.common.upload}
           />
         </div>
       </section>
@@ -146,47 +150,49 @@ export default function CompressPdfPage() {
         <div className="mx-auto max-w-7xl">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              Output
+              {page.outputEyebrow}
             </p>
             <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
-              Compression results should be reviewable, not just downloadable.
+              {page.outputHeading}
             </h2>
             <p className="mt-5 max-w-2xl leading-7 text-[color:var(--muted)]">
-              The result area sets up a consistent DockDocs pattern for file
-              savings, quality checks, and next-step AI document actions.
+              {page.outputDescription}
             </p>
           </div>
           <div className="mt-8">
             <ToolRuntimeClient
-              uploadTitle="Runtime-bound compression upload"
-              uploadDescription="Select a PDF to verify upload, selected, processing, success, and error UI states without changing compression runtime logic."
-              formats="PDF"
-              limit="Up to 25 MB"
-              cta="Select PDF"
+              uploadTitle={page.runtimeUploadTitle}
+              uploadDescription={page.runtimeUploadDescription}
+              formats={page.formats}
+              limit={page.limit}
+              cta={page.cta}
               accept="application/pdf,.pdf"
               allowedExtensions={[".pdf"]}
-              outputEyebrow="Compressed PDF"
-              outputTitle="Ready for office handoff"
-              outputSummary="The UI is bound to the selected file state and shows compression output only after the local runtime state reaches success."
-              keyPoints={[
-                "File is smaller and ready for upload portals.",
-                "Document readability remains the primary quality signal.",
-                "Follow-up AI actions stay close to the result.",
-              ]}
-              actions={["Download compressed PDF", "Send to Chat with PDF", "Run AI Summary next"]}
-              emptyMessage="Select a PDF to generate a compression result preview."
+              outputEyebrow={page.resultEyebrow}
+              outputTitle={page.resultTitle}
+              outputSummary={page.resultSummary}
+              keyPoints={[...page.keyPoints]}
+              actions={[...page.actions]}
+              emptyMessage={page.emptyMessage}
+              locale={locale}
             />
           </div>
         </div>
       </section>
 
-      <FaqSection />
+      <FaqSection locale={locale} />
       <RelatedTools />
     </main>
   );
 }
 
-function FaqSection() {
+export default function CompressPdfPage() {
+  return <CompressPdfPageContent />;
+}
+
+function FaqSection({ locale = "en" }: { locale?: RuntimeLocale }) {
+  const page = getRuntimeCopy(locale).compress;
+
   return (
     <section
       id="faq"
@@ -198,10 +204,10 @@ function FaqSection() {
           FAQ
         </p>
         <h2 id="faq-title" className="mt-4 text-3xl font-semibold">
-          PDF compression questions
+          {page.faqTitle}
         </h2>
         <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
-          {faqs.map((faq) => (
+          {page.faqs.map((faq) => (
             <details key={faq.question} className="group py-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold">
                 {faq.question}

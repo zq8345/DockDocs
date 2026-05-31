@@ -1,4 +1,16 @@
 import type { ChangeEvent } from "react";
+import { runtimeCopy } from "@/lib/copy";
+
+type UploadLabels = {
+  label: string;
+  dragDrop: string;
+  selectedDescription: string;
+  supported: string;
+  limit: string;
+  processing: string;
+  successMessage: string;
+  states: Record<"empty" | "idle" | "selected" | "processing" | "success" | "error", string>;
+};
 
 type UploadPanelProps = {
   title: string;
@@ -12,15 +24,7 @@ type UploadPanelProps = {
   errorMessage?: string;
   onFileChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   interactive?: boolean;
-};
-
-const stateCopy = {
-  empty: "Waiting for file",
-  idle: "Ready for upload",
-  selected: "File selected",
-  processing: "Processing document",
-  success: "Document ready",
-  error: "Needs attention",
+  labels?: UploadLabels;
 };
 
 export function UploadPanel({
@@ -35,6 +39,7 @@ export function UploadPanel({
   errorMessage,
   onFileChange,
   interactive = true,
+  labels = runtimeCopy.en.common.upload,
 }: UploadPanelProps) {
   const isBusy = state === "processing";
   const hasFile = Boolean(fileName);
@@ -47,12 +52,12 @@ export function UploadPanel({
       <div className="flex items-center justify-between gap-4 border-b border-[color:var(--line)] pb-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            Upload
+            {labels.label}
           </p>
           <h2 className="mt-1 text-lg font-semibold">{title}</h2>
         </div>
         <span className="rounded-md border border-[color:var(--line)] px-2.5 py-1 text-xs font-semibold text-[color:var(--muted)]">
-          {stateCopy[state]}
+          {labels.states[state]}
         </span>
       </div>
 
@@ -61,13 +66,13 @@ export function UploadPanel({
           PDF
         </span>
         <span className="mt-4 text-xl font-semibold">
-          {hasFile ? fileName : "Drag & drop document"}
+          {hasFile ? fileName : labels.dragDrop}
         </span>
         <span className="mt-2 max-w-md text-sm leading-6 text-[color:var(--muted)]">
-          {hasFile ? "File is selected and ready for the next runtime step." : description}
+          {hasFile ? labels.selectedDescription : description}
         </span>
         <span className="mt-5 inline-flex min-h-11 items-center justify-center rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90">
-          {isBusy ? "Processing" : cta}
+          {isBusy ? labels.processing : cta}
         </span>
         {interactive && (
           <input
@@ -81,8 +86,8 @@ export function UploadPanel({
       </label>
 
       <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-        <InfoRow label="Supported" value={formats} />
-        <InfoRow label="Limit" value={limit} />
+        <InfoRow label={labels.supported} value={formats} />
+        <InfoRow label={labels.limit} value={limit} />
       </div>
 
       {state === "processing" && (
@@ -93,7 +98,7 @@ export function UploadPanel({
 
       {state === "success" && (
         <p className="mt-4 rounded-md border border-[#bbf7d0] bg-[#f0fdf4] px-3 py-2 text-sm text-[#166534]">
-          Runtime UI state is ready and output is available below.
+          {labels.successMessage}
         </p>
       )}
 
