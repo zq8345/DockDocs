@@ -42,6 +42,8 @@ type ProviderChatResult = {
 type ProviderChatFailure = {
   failureReason: string;
   attempts: number;
+  rejectedReferences?: string[];
+  rejectedEntities?: string[];
 };
 
 type ProviderChatResponse = ProviderChatResult | ProviderChatFailure;
@@ -165,6 +167,8 @@ export default async (req: Request, _context: Context) => {
             contextCharacters: selectedContext.context.length,
             truncated: Boolean(payload.truncated || selectedContext.truncated),
             failureReason: providerResult.failureReason,
+            rejectedReferences: providerResult.rejectedReferences,
+            rejectedEntities: providerResult.rejectedEntities,
           },
         },
         200,
@@ -274,10 +278,13 @@ async function generateProviderAnswer({
 
       const repairedResult = parseProviderAnswer(repair.responseText);
       if (repairedResult) {
-        if (hasUnsupportedEvidence(repairedResult, context)) {
+        const unsupportedEvidence = getUnsupportedEvidence(repairedResult, context);
+        if (unsupportedEvidence) {
           return {
             failureReason: "repair_output_not_supported_by_context",
             attempts: 2,
+            rejectedReferences: unsupportedEvidence.references,
+            rejectedEntities: unsupportedEvidence.entities,
           };
         }
 
@@ -314,12 +321,17 @@ async function generateProviderAnswer({
   });
 
   const repairedResult = parseProviderAnswer(repair.responseText);
-  if (!repairedResult || hasUnsupportedEvidence(repairedResult, context)) {
+  const unsupportedEvidence = repairedResult
+    ? getUnsupportedEvidence(repairedResult, context)
+    : null;
+  if (!repairedResult || unsupportedEvidence) {
     return {
       failureReason: repairedResult
         ? "repair_output_not_supported_by_context"
         : "repair_output_unparseable",
       attempts: 2,
+      rejectedReferences: unsupportedEvidence?.references,
+      rejectedEntities: unsupportedEvidence?.entities,
     };
   }
 
@@ -546,15 +558,25 @@ function normalizeAnswer(value: unknown): AiChatAnswer | null {
 function shouldRepairResult(result: AiChatAnswer, context: string) {
   return (
     (isUnsupportedRefusal(result.answer) && result.references.length > 0) ||
-    hasUnsupportedEvidence(result, context)
+    Boolean(getUnsupportedEvidence(result, context))
   );
 }
 
 function hasUnsupportedEvidence(result: AiChatAnswer, context: string) {
-  return (
-    hasUnsupportedReferences(result.references, context) ||
-    hasUnsupportedAnswerEntities(result.answer, context)
-  );
+  return Boolean(getUnsupportedEvidence(result, context));
+}
+
+function getUnsupportedEvidence(result: AiChatAnswer, context: string) {
+  const references = getUnsupportedReferences(result.references, context);
+  const entities = getUnsupportedAnswerEntities(result.answer, context);
+  if (references.length === 0 && entities.length === 0) {
+    return null;
+  }
+
+  return {
+    references,
+    entities,
+  };
 }
 
 function isUnsupportedRefusal(answer: string) {
@@ -573,11 +595,15 @@ function isUnsupportedRefusal(answer: string) {
 }
 
 function hasUnsupportedReferences(references: string[], context: string) {
-  return references.some((reference) => !isSupportedReference(reference, context));
+  return getUnsupportedReferences(references, context).length > 0;
+}
+
+function getUnsupportedReferences(references: string[], context: string) {
+  return references.filter((reference) => !isSupportedReference(reference, context));
 }
 
 function normalizeForReferenceCheck(value: string) {
-  return value.toLowerCase().replace(/\s+/g, " ").trim();
+  return normalizeOcrEvidence(value).replace(/\s+/g, " ").trim();
 }
 
 function isSupportedReference(reference: string, context: string) {
@@ -607,8 +633,7 @@ function isSupportedReference(reference: string, context: string) {
 }
 
 function getEvidenceTerms(value: string) {
-  return value
-    .toLowerCase()
+  return normalizeOcrEvidence(value)
     .split(/[^a-z0-9\u4e00-\u9fff]+/i)
     .map((term) => term.trim())
     .filter((term) => term.length > 2)
@@ -616,10 +641,34 @@ function getEvidenceTerms(value: string) {
 }
 
 function hasUnsupportedAnswerEntities(answer: string, context: string) {
+  return getUnsupportedAnswerEntities(answer, context).length > 0;
+}
+
+function getUnsupportedAnswerEntities(answer: string, context: string) {
   const normalizedContext = normalizeForEntityCheck(context);
-  return extractProtectedEntities(answer).some(
+  return extractProtectedEntities(answer).filter(
     (entity) => !normalizedContext.includes(normalizeForEntityCheck(entity)),
   );
+}
+
+function normalizeOcrEvidence(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/\bocr\s+page\s+\d+\s*:\s*/gi, "")
+    .replace(/\bpage\s+\d+\s*:\s*/gi, "")
+    .replace(/\bparty\s*a\b/gi, "party_a")
+    .replace(/\bparty\s*b\b/gi, "party_b")
+    .replace(/\bamount\b/gi, "amount")
+    .replace(/\bpayment\b/gi, "payment")
+    .replace(/\bcontract\s*(?:no|number|id)\b/gi, "contract_no")
+    .replace(/\bdue\s*date\b/gi, "due_date")
+    .replace(/甲方/g, "party_a")
+    .replace(/乙方/g, "party_b")
+    .replace(/金额/g, "amount")
+    .replace(/付款方式|付款|支付方式|支付/g, "payment")
+    .replace(/合同编号|合同号|合同id/g, "contract_no")
+    .replace(/到期日|交付日期|日期/g, "due_date")
+    .replace(/[：:，,。；;、“”"'‘’（）()[\]{}]/g, " ");
 }
 
 function extractProtectedEntities(value: string) {
@@ -629,6 +678,7 @@ function extractProtectedEntities(value: string) {
     ...value.matchAll(/\b[A-Z]{2,}[-_]\d{2,}[-_\dA-Z]*\b/g),
     ...value.matchAll(/\b(?:USD|RMB|CNY)\s?[\d,]+(?:\.\d+)?\b/gi),
     ...value.matchAll(/人民币\s?[\d,]+(?:\.\d+)?\s?元/g),
+    ...value.matchAll(/[\d,]+(?:\.\d+)?\s?美元/g),
     ...value.matchAll(/\b\d{4}-\d{1,2}-\d{1,2}\b/g),
     ...value.matchAll(/\b(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b/gi),
     ...value.matchAll(/\d{4}年\d{1,2}月\d{1,2}日/g),
@@ -638,7 +688,11 @@ function extractProtectedEntities(value: string) {
 }
 
 function cleanProtectedEntity(value: string) {
-  const trimmed = value.trim();
+  const trimmed = value
+    .trim()
+    .replace(/^(?:合同主体为|合同主体|主体为|甲方为|乙方为|供应商为|客户为|公司为|甲方|乙方|供应商|客户|为)+/g, "")
+    .replace(/^(?:party\s*a|party\s*b|supplier|vendor|client|customer)\s*[:：-]?\s*/i, "")
+    .trim();
   const chineseOrganization = trimmed.match(
     /[\u4e00-\u9fff]{2,32}(?:有限公司|公司|集团|实验室)$/,
   );
