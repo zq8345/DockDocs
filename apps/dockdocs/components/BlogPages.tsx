@@ -34,9 +34,17 @@ export function BlogIndexPage({
   useLocalePrefix = false,
 }: BlogPageProps) {
   const copy = blogIndexCopy[locale];
+  const canonicalPath = useLocalePrefix
+    ? localizedPath(locale, "blog")
+    : "/blog/";
+  const schema = createBlogIndexSchema(locale, canonicalPath);
 
   return (
     <main className="bg-white text-[#0f172a]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
       <Section className="border-b border-[#cbd5e1] bg-white py-0">
         <Container className="grid min-h-[64vh] items-center gap-12 py-16 lg:grid-cols-[0.95fr_1.05fr] lg:py-24">
           <div>
@@ -919,6 +927,69 @@ function createBlogArticleSchema({
             position: 3,
             name: content.title,
             item: articleUrl,
+          },
+        ],
+      },
+    ],
+  };
+}
+
+function createBlogIndexSchema(locale: Locale, canonicalPath: string) {
+  const copy = blogIndexCopy[locale];
+  const pageUrl = absoluteUrl(canonicalPath);
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${pageUrl}#webpage`,
+        url: pageUrl,
+        name: copy.title,
+        description: copy.description,
+        inLanguage: locale,
+        isPartOf: {
+          "@type": "WebSite",
+          name: "DockDocs",
+          url: siteUrl,
+        },
+        mainEntity: {
+          "@id": `${pageUrl}#itemlist`,
+        },
+        breadcrumb: {
+          "@id": `${pageUrl}#breadcrumb`,
+        },
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${pageUrl}#itemlist`,
+        name: copy.featuredTitle,
+        itemListElement: blogArticles.map((article, index) => {
+          const content = getBlogArticleContent(article, locale);
+
+          return {
+            "@type": "ListItem",
+            position: index + 1,
+            name: content.title,
+            url: absoluteUrl(blogArticlePath(article.slug, locale)),
+          };
+        }),
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "DockDocs",
+            item: siteUrl,
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Blog",
+            item: pageUrl,
           },
         ],
       },

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { AiChatWorkflow } from "@/components/AiChatWorkflow";
 import { AiSummaryWorkflow } from "@/components/AiSummaryWorkflow";
-import { languageAlternates } from "@/lib/i18n";
+import { languageAlternates, siteUrl } from "@/lib/i18n";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 
 export const metadata: Metadata = {
@@ -62,9 +62,79 @@ const linkedTools = [
   { name: "OCR PDF", href: "/ocr-pdf" },
 ];
 
+const aiWorkspaceUrl = `${siteUrl}/ai-workspace/`;
+
+const aiWorkspaceSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${aiWorkspaceUrl}#webpage`,
+      url: aiWorkspaceUrl,
+      name: "AI Document Workspace | DockDocs",
+      description:
+        "Organize, convert, OCR, and work with PDF documents inside the DockDocs AI Document Workspace.",
+      inLanguage: "en",
+      isPartOf: {
+        "@type": "WebSite",
+        name: "DockDocs",
+        url: siteUrl,
+      },
+      about: {
+        "@id": `${aiWorkspaceUrl}#software`,
+      },
+      breadcrumb: {
+        "@id": `${aiWorkspaceUrl}#breadcrumb`,
+      },
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": `${aiWorkspaceUrl}#software`,
+      name: "DockDocs AI Document Workspace",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      url: aiWorkspaceUrl,
+      description:
+        "AI PDF workspace for OCR, summaries, Chat with PDF, and multi-step document workflows.",
+      featureList: workspaceFlows.map((flow) => flow.title),
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
+      brand: {
+        "@type": "Brand",
+        name: "DockDocs",
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${aiWorkspaceUrl}#breadcrumb`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "DockDocs",
+          item: siteUrl,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "AI Workspace",
+          item: aiWorkspaceUrl,
+        },
+      ],
+    },
+  ],
+};
+
 export default function AiWorkspacePage() {
   return (
     <main className="bg-white text-[#0f172a]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aiWorkspaceSchema) }}
+      />
       <Section className="border-b border-[#cbd5e1] bg-white">
         <Container className="grid min-h-[66vh] items-center gap-12 py-16 lg:grid-cols-[1fr_0.9fr] lg:py-20">
           <div>
