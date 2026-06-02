@@ -1,5 +1,8 @@
 const deepSeekApiKey = process.env.DEEPSEEK_API_KEY || process.env.DOCKDOCS_AI_SUMMARY_API_KEY;
 const openAiApiKey = process.env.OPENAI_API_KEY;
+const aiProviderTimeoutMs = 55_000;
+const maxDocumentTextChars = 40_000;
+const maxOutputTokens = 900;
 
 const provider = deepSeekApiKey
   ? {
@@ -72,17 +75,21 @@ exports.handler = async function handler(event) {
     return json(400, { error: "Extracted PDF text is required." });
   }
 
-  const clippedDocumentText = documentText.slice(0, 40000);
+  const clippedDocumentText = documentText.slice(0, maxDocumentTextChars);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), aiProviderTimeoutMs);
 
   try {
     const response = await fetch(provider.endpoint, {
       method: "POST",
+      signal: controller.signal,
       headers: {
         Authorization: `Bearer ${provider.apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: provider.model,
+        max_tokens: maxOutputTokens,
         temperature: 0.1,
         response_format: { type: "json_object" },
         messages: [
@@ -133,9 +140,16 @@ exports.handler = async function handler(event) {
       citations: Array.isArray(parsed.citations) ? parsed.citations : [],
     });
   } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    const timedOut = /abort|timeout|timed out/i.test(message);
+
     return json(502, {
-      error: error instanceof Error ? error.message : "AI provider request failed.",
+      error: timedOut
+        ? `${provider.name} provider request timed out.`
+        : `${provider.name} provider request failed.`,
     });
+  } finally {
+    clearTimeout(timeout);
   }
 };
 
