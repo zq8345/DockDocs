@@ -368,6 +368,18 @@ Rules:
 - Disabled and loading states must keep the same dimensions as the active state.
 - Mobile tap targets should be at least `44px` tall for primary actions, upload controls, nav controls, and dashboard actions.
 
+### Header Navigation
+
+- Header uses a three-part shell: brand on the left, product feature navigation in the center, and a utility menu on the right.
+- DockDocs feature navigation is grouped by phase-one capability families: AI Workspace, Convert, Edit, Compress, OCR, and Security.
+- Dropdown menus group tools by subcategory and show a tier badge (`FREE` or `PLUS`) for every feature.
+- Tools without a shipped route must render as disabled `Coming soon` rows and must not link to a 404 route.
+- The utility menu owns account controls, language switching, About, and Blog so the main nav stays focused on document workflows.
+- At desktop width, feature categories are visible as horizontal nav items with hover and click dropdowns.
+- At tablet width, feature categories may scroll horizontally but must stay inside the viewport.
+- At mobile width, feature categories collapse into a `Tools` / `工具` button, while the utility menu remains visible.
+- Localized routes with `/en` or `/zh` prefixes should keep that prefix when opening shipped feature pages.
+
 ### Mobile Workspace QA
 
 - At `390px`, the task path order is upload or document status, primary input, result or conversation, then sources or references.

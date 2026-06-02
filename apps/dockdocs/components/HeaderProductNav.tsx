@@ -1,59 +1,391 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { getRuntimeCopy } from "@/lib/copy";
-import { defaultLocale, isLocale, localizedPath, type RouteSlug } from "@/lib/i18n";
+import {
+  defaultLocale,
+  isLocale,
+  localizedPath,
+  normalizeSlug,
+  pathForSlug,
+  type Locale,
+  type RouteSlug,
+} from "@/lib/i18n";
+
+type FeatureTier = "FREE" | "PLUS";
+
+type HeaderFeatureCategory = {
+  id: string;
+  label: string;
+  groups: Array<{
+    label: string;
+    items: Array<{
+      label: string;
+      tier: FeatureTier;
+      href?: string;
+    }>;
+  }>;
+};
+
+type FeatureDefinition = {
+  id: string;
+  labels: Record<Locale, string>;
+  groups: Array<{
+    labels: Record<Locale, string>;
+    items: Array<{
+      labels: Record<Locale, string>;
+      tier: FeatureTier;
+      slug?: RouteSlug;
+    }>;
+  }>;
+};
+
+const featureDefinitions: FeatureDefinition[] = [
+  {
+    id: "ai-workspace",
+    labels: { en: "AI Workspace", zh: "AI 工作区" },
+    groups: [
+      {
+        labels: { en: "AI Reading", zh: "AI 阅读" },
+        items: [
+          { labels: { en: "AI Summary", zh: "AI 摘要" }, tier: "FREE", slug: "ai-summary" },
+          { labels: { en: "Key Points", zh: "关键要点" }, tier: "PLUS", slug: "ai-summary" },
+          { labels: { en: "Knowledge Card", zh: "知识卡片" }, tier: "PLUS", slug: "ai-summary" },
+        ],
+      },
+      {
+        labels: { en: "Chat PDF", zh: "PDF 问答" },
+        items: [
+          { labels: { en: "Chat with PDF", zh: "Chat with PDF" }, tier: "FREE", slug: "chat-with-pdf" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "convert",
+    labels: { en: "Convert", zh: "转换" },
+    groups: [
+      {
+        labels: { en: "To PDF", zh: "转为 PDF" },
+        items: [
+          { labels: { en: "JPG to PDF", zh: "JPG 转 PDF" }, tier: "FREE", slug: "jpg-to-pdf" },
+          { labels: { en: "PNG to PDF", zh: "PNG 转 PDF" }, tier: "PLUS" },
+          { labels: { en: "Word to PDF", zh: "Word 转 PDF" }, tier: "PLUS" },
+          { labels: { en: "PPT to PDF", zh: "PPT 转 PDF" }, tier: "PLUS" },
+          { labels: { en: "Excel to PDF", zh: "Excel 转 PDF" }, tier: "PLUS" },
+          { labels: { en: "Text to PDF", zh: "文本转 PDF" }, tier: "PLUS" },
+        ],
+      },
+      {
+        labels: { en: "From PDF", zh: "从 PDF 转出" },
+        items: [
+          { labels: { en: "PDF to JPG", zh: "PDF 转 JPG" }, tier: "PLUS" },
+          { labels: { en: "PDF to PNG", zh: "PDF 转 PNG" }, tier: "PLUS" },
+        ],
+      },
+      {
+        labels: { en: "Office Conversion", zh: "Office 转换" },
+        items: [
+          { labels: { en: "PDF to Word", zh: "PDF 转 Word" }, tier: "FREE", slug: "pdf-to-word" },
+          { labels: { en: "PDF to Excel", zh: "PDF 转 Excel" }, tier: "PLUS" },
+        ],
+      },
+      {
+        labels: { en: "Developer Conversion", zh: "开发者转换" },
+        items: [
+          { labels: { en: "PDF to Markdown", zh: "PDF 转 Markdown" }, tier: "PLUS" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "edit",
+    labels: { en: "Edit", zh: "编辑" },
+    groups: [
+      {
+        labels: { en: "Page Operations", zh: "页面操作" },
+        items: [
+          { labels: { en: "Delete Page", zh: "删除页面" }, tier: "PLUS" },
+          { labels: { en: "Add Page", zh: "添加页面" }, tier: "PLUS" },
+          { labels: { en: "Rotate Page", zh: "旋转页面" }, tier: "PLUS" },
+          { labels: { en: "Reorder Pages", zh: "页面排序" }, tier: "PLUS" },
+          { labels: { en: "Merge PDF", zh: "合并 PDF" }, tier: "FREE", slug: "merge-pdf" },
+          { labels: { en: "Split PDF", zh: "拆分 PDF" }, tier: "FREE", slug: "split-pdf" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "compress",
+    labels: { en: "Compress", zh: "压缩" },
+    groups: [
+      {
+        labels: { en: "Basic Compression", zh: "基础压缩" },
+        items: [
+          { labels: { en: "Compress PDF", zh: "压缩 PDF" }, tier: "FREE", slug: "compress-pdf" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ocr",
+    labels: { en: "OCR", zh: "OCR 提取" },
+    groups: [
+      {
+        labels: { en: "Basic OCR", zh: "基础 OCR" },
+        items: [
+          { labels: { en: "PDF to Text", zh: "PDF 转文本" }, tier: "FREE", slug: "ocr" },
+        ],
+      },
+      {
+        labels: { en: "Enhanced OCR", zh: "增强 OCR" },
+        items: [
+          { labels: { en: "PDF to Excel", zh: "PDF 转 Excel" }, tier: "PLUS" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "security",
+    labels: { en: "Security", zh: "安全" },
+    groups: [
+      {
+        labels: { en: "Basic", zh: "基础" },
+        items: [
+          { labels: { en: "Password Protection", zh: "密码保护" }, tier: "PLUS" },
+        ],
+      },
+    ],
+  },
+];
 
 function currentRoute(pathname: string | null) {
   const segments = (pathname ?? "/").split("/").filter(Boolean);
   const firstSegment = segments[0];
   const hasLocalePrefix = isLocale(firstSegment);
-  const slug = hasLocalePrefix ? segments[1] ?? "" : firstSegment ?? "";
+  const slugSegments = hasLocalePrefix ? segments.slice(1) : segments;
 
   return {
     locale: hasLocalePrefix ? firstSegment : defaultLocale,
     hasLocalePrefix,
-    slug,
+    slug: normalizeSlug(slugSegments.join("/")) ?? "",
   };
 }
 
-export function HeaderProductNav() {
-  const { locale, hasLocalePrefix, slug: activeSlug } = currentRoute(usePathname());
+function getHeaderFeatureNav(
+  locale: Locale,
+  useLocalePrefix: boolean,
+): HeaderFeatureCategory[] {
+  return featureDefinitions.map((category) => ({
+    id: category.id,
+    label: category.labels[locale],
+    groups: category.groups.map((group) => ({
+      label: group.labels[locale],
+      items: group.items.map((item) => ({
+        label: item.labels[locale],
+        tier: item.tier,
+        href: item.slug
+          ? useLocalePrefix
+            ? localizedPath(locale, item.slug)
+            : pathForSlug(item.slug)
+          : undefined,
+      })),
+    })),
+  }));
+}
+
+function categoryIsActive(category: HeaderFeatureCategory, pathname: string) {
+  return category.groups.some((group) =>
+    group.items.some((item) => {
+      if (!item.href) {
+        return false;
+      }
+
+      const itemPath = item.href.replace(/^\/(en|zh)/u, "").replace(/\/$/u, "");
+      const activePath = pathname.replace(/^\/(en|zh)/u, "").replace(/\/$/u, "");
+      return itemPath === activePath;
+    }),
+  );
+}
+
+export function HeaderProductNav({
+  mobileOpen: controlledMobileOpen,
+  onMobileOpenChange,
+}: {
+  mobileOpen?: boolean;
+  onMobileOpenChange?: (open: boolean) => void;
+} = {}) {
+  const pathname = usePathname();
+  const { locale, hasLocalePrefix } = currentRoute(pathname);
   const copy = getRuntimeCopy(locale).shell;
-  const links = copy.nav;
+  const categories = useMemo(
+    () => getHeaderFeatureNav(locale, hasLocalePrefix),
+    [locale, hasLocalePrefix],
+  );
+  const [openCategoryId, setOpenCategoryId] = useState<string | null>(null);
+  const [uncontrolledMobileOpen, setUncontrolledMobileOpen] = useState(false);
+  const mobileOpen = controlledMobileOpen ?? uncontrolledMobileOpen;
+  const setMobileOpen = onMobileOpenChange ?? setUncontrolledMobileOpen;
+  const openCategory =
+    categories.find((category) => category.id === openCategoryId) ?? null;
 
   return (
-    <nav aria-label={copy.header.aria} className="w-full lg:w-auto">
-      <ul className="flex flex-wrap gap-1 text-xs font-semibold text-[color:var(--muted)] sm:text-sm">
-        {links.map((link) => {
-          const slug = "slug" in link ? link.slug : undefined;
-          const href = slug
-            ? hasLocalePrefix
-              ? localizedPath(locale, slug as RouteSlug)
-              : link.href
-            : link.name === "AI" && hasLocalePrefix
-              ? `${localizedPath(locale, "")}#tools`
-              : link.href;
-          const isActive = Boolean(slug && slug === activeSlug);
+    <nav aria-label={copy.header.aria} className="min-w-0 flex-1">
+      <div className="sm:hidden">
+        <button
+          type="button"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-expanded={mobileOpen}
+          className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:bg-[color:var(--surface-subtle)]"
+        >
+          {copy.header.tools}
+        </button>
+        {mobileOpen ? (
+          <div className="absolute left-3 right-3 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-y-auto rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 shadow-[0_24px_70px_rgba(15,23,42,0.16)]">
+            <FeaturePanel categories={categories} copy={copy.header} compact />
+          </div>
+        ) : null}
+      </div>
 
-          return (
-            <li key={`${locale}-${link.name}`}>
-              <a
-                href={href}
-                aria-current={isActive ? "page" : undefined}
-                className={
-                  isActive
-                    ? "block rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-2.5 py-1.5 text-[color:var(--accent-strong)] transition"
-                    : "block rounded-[var(--radius-sm)] px-2.5 py-1.5 transition hover:bg-black/5 hover:text-[color:var(--foreground)] dark:hover:bg-white/10"
-                }
-              >
-                {link.name}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
+      <div
+        className="relative hidden min-w-0 sm:block"
+        onMouseLeave={() => setOpenCategoryId(null)}
+      >
+        <ul className="flex min-w-0 gap-1 overflow-x-auto pb-1 text-sm font-semibold text-[color:var(--muted)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {categories.map((category) => {
+            const isActive = categoryIsActive(category, pathname ?? "/");
+            const isOpen = openCategoryId === category.id;
+
+            return (
+              <li key={category.id} className="shrink-0">
+                <button
+                  type="button"
+                  aria-expanded={isOpen}
+                  onClick={() =>
+                    setOpenCategoryId((current) =>
+                      current === category.id ? null : category.id,
+                    )
+                  }
+                  onMouseEnter={() => setOpenCategoryId(category.id)}
+                  onFocus={() => setOpenCategoryId(category.id)}
+                  className={
+                    isActive || isOpen
+                      ? "min-h-10 rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-3 text-[color:var(--accent-strong)] transition"
+                      : "min-h-10 rounded-[var(--radius-sm)] px-3 transition hover:bg-black/5 hover:text-[color:var(--foreground)] dark:hover:bg-white/10"
+                  }
+                >
+                  {category.label}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        {openCategory ? (
+          <div
+            className="absolute left-1/2 top-full z-50 mt-2 w-[min(760px,calc(100vw-2rem))] -translate-x-1/2 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_24px_70px_rgba(15,23,42,0.16)]"
+            onMouseEnter={() => setOpenCategoryId(openCategory.id)}
+          >
+            <FeaturePanel
+              categories={[openCategory]}
+              copy={copy.header}
+            />
+          </div>
+        ) : null}
+      </div>
     </nav>
+  );
+}
+
+function FeaturePanel({
+  categories,
+  copy,
+  compact = false,
+}: {
+  categories: HeaderFeatureCategory[];
+  copy: ReturnType<typeof getRuntimeCopy>["shell"]["header"];
+  compact?: boolean;
+}) {
+  return (
+    <div className="grid gap-4">
+      {categories.map((category) => (
+        <section key={category.id}>
+          {compact ? (
+            <h2 className="text-sm font-semibold text-[color:var(--foreground)]">
+              {category.label}
+            </h2>
+          ) : null}
+          <div
+            className={
+              compact
+                ? "mt-2 grid gap-3"
+                : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            }
+          >
+            {category.groups.map((group) => (
+              <div key={`${category.id}-${group.label}`}>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+                  {group.label}
+                </p>
+                <div className="mt-2 grid gap-1">
+                  {group.items.map((item) =>
+                    item.href ? (
+                      <a
+                        key={`${group.label}-${item.label}`}
+                        href={item.href}
+                        className="grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-sm transition hover:bg-[color:var(--surface-subtle)] focus:bg-[color:var(--surface-subtle)]"
+                      >
+                        <span className="truncate font-semibold text-[color:var(--foreground)]">
+                          {item.label}
+                        </span>
+                        <TierBadge tier={item.tier} copy={copy} />
+                      </a>
+                    ) : (
+                      <div
+                        key={`${group.label}-${item.label}`}
+                        aria-disabled="true"
+                        className="grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-sm opacity-75"
+                      >
+                        <span className="min-w-0">
+                          <span className="block truncate font-semibold text-[color:var(--foreground)]">
+                            {item.label}
+                          </span>
+                          <span className="text-xs font-semibold text-[color:var(--muted)]">
+                            {copy.comingSoon}
+                          </span>
+                        </span>
+                        <TierBadge tier={item.tier} copy={copy} />
+                      </div>
+                    ),
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function TierBadge({
+  tier,
+  copy,
+}: {
+  tier: FeatureTier;
+  copy: ReturnType<typeof getRuntimeCopy>["shell"]["header"];
+}) {
+  return (
+    <span
+      className={
+        tier === "FREE"
+          ? "rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] px-2 py-1 text-[10px] font-semibold text-[color:var(--success)]"
+          : "rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 py-1 text-[10px] font-semibold text-[color:var(--muted)]"
+      }
+    >
+      {tier === "FREE" ? copy.free : copy.plus}
+    </span>
   );
 }

@@ -182,6 +182,10 @@ test("localized shell, content routes, and workspace landmarks stay visible", as
   await page.setViewportSize({ width: 390, height: 844 });
 
   await page.goto("/zh");
+  await page.getByRole("button", { name: "工具" }).click();
+  await expect(page.getByRole("heading", { name: "AI 工作区" })).toBeVisible();
+  await page.getByRole("button", { name: "工具" }).click();
+  await page.getByRole("button", { name: "功能" }).click();
   await expect(page.getByRole("link", { name: "中文" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "面向真实文件的 ChatGPT for documents。" })).toBeVisible();
 

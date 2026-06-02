@@ -28,9 +28,10 @@ function currentRoute(pathname: string | null) {
 export function LanguageSwitcher() {
   const pathname = usePathname();
   const { locale: activeLocale, slug } = currentRoute(pathname);
+  const ariaLabel = activeLocale === "zh" ? "语言" : "Language";
 
   return (
-    <nav aria-label="Language" className="flex items-center">
+    <nav aria-label={ariaLabel} className="flex items-center">
       <div className="inline-flex items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-1 text-xs font-semibold text-[color:var(--muted)] shadow-sm">
         {languageOptions.map((option) => {
           const isActive = option.locale === activeLocale;
