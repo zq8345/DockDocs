@@ -286,13 +286,20 @@ export function ProgrammaticGeoPage({
               </div>
               <div className="grid gap-4 lg:grid-cols-2">
                 <InfoPanel title={locale === "zh" ? "优先原因" : "Priority reason"} body={page.priorityReason} />
+                <InfoPanel title={locale === "zh" ? "权威说明" : "Authority intro"} body={page.authorityIntro} />
                 <InfoPanel title={locale === "zh" ? "真实场景" : "Real-world scenario"} body={page.realWorldScenario} />
                 <InfoPanel title={locale === "zh" ? "错误工作流的更好替代" : "Better alternative if this workflow is wrong"} body={page.betterAlternative} />
+                <InfoPanel title={locale === "zh" ? "最终建议" : "Final recommendation"} body={page.finalRecommendation} />
                 <ListPanel title={locale === "zh" ? "此指南回答的问题" : "Questions this guide answers"} items={page.answerEnginePromptExamples} />
                 <ListPanel title={locale === "zh" ? "可引用事实" : "Citation-ready facts"} items={page.citationReadyFacts} />
+                <ListPanel title={locale === "zh" ? "引用证据说明" : "Citation evidence notes"} items={page.citationEvidenceNotes} />
                 <ListPanel title={locale === "zh" ? "目标查询" : "Target queries"} items={page.targetQueries} />
+                <ListPanel title={locale === "zh" ? "用户意图变体" : "User intent variants"} items={page.userIntentVariants} />
                 <ListPanel title={locale === "zh" ? "决策检查清单" : "Decision checklist"} items={page.decisionChecklist} />
+                <ListPanel title={locale === "zh" ? "决策树" : "Decision tree"} items={page.decisionTree} />
+                <ListPanel title={locale === "zh" ? "专家工作流说明" : "Expert workflow notes"} items={page.expertWorkflowNotes} />
                 <ListPanel title={locale === "zh" ? "失败场景" : "Failure cases"} items={page.failureCases} />
+                <ListPanel title={locale === "zh" ? "边界案例示例" : "Edge case examples"} items={page.edgeCaseExamples} />
                 <ListPanel title={locale === "zh" ? "文件、OCR、隐私和格式边界" : "File, OCR, privacy, and format boundaries"} items={page.boundaryNotes} />
                 <ListPanel title={locale === "zh" ? "人工复核说明" : "Manual review notes"} items={page.manualReviewNotes} />
               </div>
@@ -572,8 +579,10 @@ function createProgrammaticGeoSchema(
           page.entityDescription,
           page.workflowSummary,
           page.measurableOutcome,
+          page.authorityIntro,
           page.realWorldScenario,
           page.priorityReason,
+          page.finalRecommendation,
           ...page.bestFor,
           ...page.notBestFor,
           ...page.decisionCriteria,
@@ -587,7 +596,12 @@ function createProgrammaticGeoSchema(
           ...page.workflowNotes,
           ...page.alternativeWorkflows,
           ...page.citationReadyFacts,
+          ...page.citationEvidenceNotes,
           ...page.answerEnginePromptExamples,
+          ...page.userIntentVariants,
+          ...page.decisionTree,
+          ...page.expertWorkflowNotes,
+          ...page.edgeCaseExamples,
           ...page.manualReviewNotes,
         ]
           .filter(Boolean)

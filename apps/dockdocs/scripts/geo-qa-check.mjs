@@ -106,8 +106,8 @@ if (seeds.length !== uniqueKeys.size) {
   fail(`Programmatic GEO slugs are not unique: ${seeds.length} seeds, ${uniqueKeys.size} unique routes.`);
 }
 
-if (seeds.length < 82) {
-  fail(`Expected at least 82 Programmatic GEO pages, found ${seeds.length}.`);
+if (seeds.length < 160) {
+  fail(`Expected at least 160 Programmatic GEO pages, found ${seeds.length}.`);
 }
 
 if (prioritySlugs.length !== 20) {
@@ -176,25 +176,45 @@ for (const seed of seeds) {
 
   if (page.priority) {
     if (!page.priorityReason) fail(`${label} missing priorityReason.`);
-    if ((page.targetQueries?.length ?? 0) < 3) fail(`${label} needs at least 3 targetQueries.`);
-    if ((page.citationReadyFacts?.length ?? 0) < 3) fail(`${label} needs at least 3 citationReadyFacts.`);
+    if ((page.targetQueries?.length ?? 0) < 5) fail(`${label} needs at least 5 targetQueries.`);
+    if ((page.citationReadyFacts?.length ?? 0) < 5) fail(`${label} needs at least 5 citationReadyFacts.`);
     if ((page.answerEnginePromptExamples?.length ?? 0) < 3) fail(`${label} needs at least 3 answerEnginePromptExamples.`);
     if (!page.manualReviewNotes?.length) fail(`${label} missing manualReviewNotes.`);
+    if (!page.authorityIntro) fail(`${label} missing authorityIntro.`);
+    if ((page.expertWorkflowNotes?.length ?? 0) < 5) fail(`${label} needs at least 5 expertWorkflowNotes.`);
+    if ((page.edgeCaseExamples?.length ?? 0) < 5) fail(`${label} needs at least 5 edgeCaseExamples.`);
+    if ((page.citationEvidenceNotes?.length ?? 0) < 5) fail(`${label} needs at least 5 citationEvidenceNotes.`);
+    if ((page.userIntentVariants?.length ?? 0) < 5) fail(`${label} needs at least 5 userIntentVariants.`);
+    if ((page.decisionTree?.length ?? 0) < 5) fail(`${label} needs at least 5 decisionTree entries.`);
+    if (!page.finalRecommendation) fail(`${label} missing finalRecommendation.`);
+
+    for (const fact of page.citationReadyFacts ?? []) {
+      if (/#1|guaranteed/i.test(fact)) {
+        fail(`${label} citationReadyFacts contains unsupported absolute claim: ${fact}`);
+      }
+    }
 
     const priorityContentWords = wordCount([
       page.priorityReason,
+      page.authorityIntro,
       page.realWorldScenario,
       page.betterAlternative,
+      page.finalRecommendation,
       ...(page.targetQueries ?? []),
       ...(page.answerEnginePromptExamples ?? []),
       ...(page.citationReadyFacts ?? []),
+      ...(page.citationEvidenceNotes ?? []),
       ...(page.manualReviewNotes ?? []),
       ...(page.decisionChecklist ?? []),
+      ...(page.decisionTree ?? []),
+      ...(page.expertWorkflowNotes ?? []),
       ...(page.failureCases ?? []),
+      ...(page.edgeCaseExamples ?? []),
       ...(page.boundaryNotes ?? []),
+      ...(page.userIntentVariants ?? []),
     ].join(" "));
 
-    if (priorityContentWords < 260) {
+    if (priorityContentWords < 520) {
       fail(`${label} priority content is not substantially expanded, found ${priorityContentWords} words.`);
     }
   }
@@ -231,7 +251,7 @@ if (!fs.existsSync(outSitemapPath)) {
     if (!seed) continue;
     const url = `${siteUrl}${routeFor(seed)}`;
     if (!sitemap.includes(url)) {
-      fail(`out/sitemap.xml missing priority URL: ${url}`);
+      warn(`out/sitemap.xml missing priority URL before rebuild: ${url}`);
     }
   }
 }
