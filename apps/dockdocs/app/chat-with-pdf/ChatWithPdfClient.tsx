@@ -223,7 +223,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
   return (
     <section
       id="workspace"
-      aria-label="Chat with PDF workspace"
+      aria-label={copy.workspaceTitle}
       data-testid="chat-workspace"
       className="overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[0_24px_80px_rgba(15,23,42,0.10)]"
     >
@@ -252,7 +252,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
           </div>
           <label
             data-testid="upload-panel"
-            className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-7 text-center transition hover:border-[color:var(--foreground)]"
+            className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]/30 focus-within:border-[color:var(--accent)] focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[color:var(--accent)] sm:py-7"
           >
             <span className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-sm font-semibold text-[color:var(--accent-strong)]">
               PDF
@@ -306,14 +306,15 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
               {copy.collections.map((collection, index) => (
                 <button
                   key={collection.name}
+                  type="button"
                   className={
                     index === 0
-                      ? "flex items-center justify-between rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-3 py-2 text-left text-sm font-semibold text-[color:var(--accent-strong)]"
-                      : "flex items-center justify-between rounded-[var(--radius-sm)] px-3 py-2 text-left text-sm text-[color:var(--muted)] transition hover:bg-black/5 dark:hover:bg-white/10"
+                      ? "flex min-h-11 items-center justify-between gap-3 rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-3 py-2 text-left text-sm font-semibold text-[color:var(--accent-strong)] transition active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
+                      : "flex min-h-11 items-center justify-between gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-left text-sm text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] dark:hover:bg-white/10"
                   }
                 >
-                  <span>{collection.name}</span>
-                  <span className="text-xs">{collection.count}</span>
+                  <span className="min-w-0 break-words">{collection.name}</span>
+                  <span className="shrink-0 text-xs">{collection.count}</span>
                 </button>
               ))}
             </div>
@@ -330,7 +331,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
                     key={`${item}-${index}`}
                     type="button"
                     onClick={() => setQuestion(item)}
-                    className="rounded-[var(--radius-sm)] px-3 py-2 text-left text-sm leading-5 text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)] dark:hover:bg-white/10"
+                    className="min-h-11 rounded-[var(--radius-sm)] px-3 py-2 text-left text-sm leading-5 text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] dark:hover:bg-white/10"
                   >
                     {item}
                   </button>
@@ -378,7 +379,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
                         key={suggestion}
                         type="button"
                         onClick={() => setQuestion(suggestion)}
-                        className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-left text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--foreground)] hover:text-[color:var(--foreground)]"
+                        className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-left text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--foreground)] hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
                       >
                         {suggestion}
                       </button>
@@ -444,7 +445,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
                 data-testid="ask-button"
                 type="submit"
                 disabled={!canAsk}
-                className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-45 sm:min-w-28"
+                className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45 disabled:active:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] sm:min-w-28"
               >
                 {isAsking ? copy.asking : copy.ask}
               </button>
@@ -469,6 +470,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
                     : `${documentText.length.toLocaleString()} chars`
                   : copy.notExtracted
               }
+              tone={documentText ? "success" : documentState === "error" ? "error" : "neutral"}
             />
             <SourceCard
               title={copy.pageContext}
@@ -479,6 +481,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
                       .replace("{plural}", pageCount === 1 ? "" : "s")
                   : copy.firstPages.replace("{pages}", String(maxPages))
               }
+              tone={pageCount ? "success" : "neutral"}
             />
             <SourceCard
               title={copy.references}
@@ -491,6 +494,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
                     ? copy.providerResponseReceived
                     : copy.providerCitations
               }
+              tone={resultGenerated ? "success" : "neutral"}
             />
             <SourceCard
               title={copy.provider}
@@ -500,6 +504,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
                   ? `${providerReference.provider}${providerReference.model ? ` / ${providerReference.model}` : ""}`
                   : copy.waitingForAi
               }
+              tone={providerReference.provider ? "success" : "neutral"}
             />
           </div>
           <div className="mt-5 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
@@ -513,7 +518,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
                   data-testid={`knowledge-card-${["summary", "risks", "actions"][index]}-side`}
                   type="button"
                   onClick={() => setQuestion(card.prompt)}
-                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-left transition hover:border-[color:var(--foreground)]"
+                  className="min-h-24 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-left transition hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
                 >
                   <span className="text-sm font-semibold">{card.title}</span>
                   <span className="mt-1 block text-xs leading-5 text-[color:var(--muted)]">
@@ -533,7 +538,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
                   key={action}
                   type="button"
                   onClick={() => setQuestion(copy.knowledgeCards[index]?.prompt ?? action)}
-                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--foreground)] hover:text-[color:var(--foreground)]"
+                  className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 text-left text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--foreground)] hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
                 >
                   {action}
                 </button>
@@ -568,9 +573,14 @@ function KnowledgeCard({
       data-testid={testId}
       type="button"
       onClick={onClick}
-      className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-left transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
+      className="group min-h-36 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-left transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
     >
-      <span className="text-sm font-semibold">{title}</span>
+      <span className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-xs font-semibold text-[color:var(--accent-strong)]">
+        {title.slice(0, 1)}
+      </span>
+      <span className="mt-3 block text-base font-semibold text-[color:var(--foreground)] transition group-hover:text-[color:var(--accent-strong)]">
+        {title}
+      </span>
       <span className="mt-2 block text-sm leading-6 text-[color:var(--muted)]">
         {description}
       </span>
@@ -595,18 +605,30 @@ function SourceCard({
   title,
   value,
   testId,
+  tone = "neutral",
 }: {
   title: string;
   value: string;
   testId?: string;
+  tone?: "neutral" | "success" | "error";
 }) {
+  const dotClass =
+    tone === "success"
+      ? "bg-[color:var(--success)]"
+      : tone === "error"
+        ? "bg-[color:var(--error)]"
+        : "bg-[color:var(--muted)]";
+
   return (
     <div
       data-testid={testId}
       className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4"
     >
-      <p className="text-sm font-semibold">{title}</p>
-      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{value}</p>
+      <div className="flex items-center gap-2">
+        <span className={`h-2 w-2 shrink-0 rounded-full ${dotClass}`} />
+        <p className="min-w-0 break-words text-sm font-semibold">{title}</p>
+      </div>
+      <p className="mt-2 break-words text-sm leading-6 text-[color:var(--muted)]">{value}</p>
     </div>
   );
 }

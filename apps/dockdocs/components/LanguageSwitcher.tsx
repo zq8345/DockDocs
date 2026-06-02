@@ -41,7 +41,7 @@ export function LanguageSwitcher() {
               key={option.locale}
               href={localizedPath(option.locale, slug)}
               aria-current={isActive ? "page" : undefined}
-              className={`rounded-[var(--radius-sm)] px-2.5 py-1 transition ${
+              className={`inline-flex min-h-9 items-center rounded-[var(--radius-sm)] px-2.5 py-1 transition active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] ${
                 isActive
                   ? "bg-[color:var(--foreground)] text-[color:var(--background)]"
                   : "hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"

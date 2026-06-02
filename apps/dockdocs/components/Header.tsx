@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { BrandMark } from "@/components/BrandMark";
@@ -30,9 +30,42 @@ export function Header() {
   const copy = getRuntimeCopy(locale).shell;
   const [toolsOpen, setToolsOpen] = useState(false);
   const [utilityOpen, setUtilityOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    setToolsOpen(false);
+    setUtilityOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    function closeMenus(event: MouseEvent) {
+      if (!headerRef.current?.contains(event.target as Node)) {
+        setToolsOpen(false);
+        setUtilityOpen(false);
+      }
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setToolsOpen(false);
+        setUtilityOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", closeMenus);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", closeMenus);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[color:var(--line)] bg-[color:var(--background)]/90 backdrop-blur">
+    <header
+      ref={headerRef}
+      className="sticky top-0 z-50 border-b border-[color:var(--line)] bg-[color:var(--background)]/90 backdrop-blur"
+    >
       <div className="relative mx-auto flex max-w-7xl items-center gap-3 px-3 py-3 sm:px-6 lg:px-8">
         <div className="flex min-w-0 shrink-0 items-center">
           <a href="/" className="min-w-0 shrink-0" aria-label="DockDocs home">
@@ -60,13 +93,20 @@ export function Header() {
               }
             }}
             aria-expanded={utilityOpen}
-            className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:bg-[color:var(--surface-subtle)]"
+            aria-haspopup="menu"
+            aria-controls="dockdocs-utility-menu"
+            className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:bg-[color:var(--surface-subtle)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           >
             {copy.header.menu}
           </button>
 
           {utilityOpen ? (
-            <div className="absolute right-0 top-[calc(100%+8px)] z-50 w-[min(340px,calc(100vw-1.5rem))] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_24px_70px_rgba(15,23,42,0.16)]">
+            <div
+              id="dockdocs-utility-menu"
+              role="menu"
+              aria-label={copy.header.utilityMenu}
+              className="absolute right-0 top-[calc(100%+8px)] z-50 max-h-[min(78vh,680px)] w-[min(360px,calc(100vw-1.5rem))] overflow-y-auto rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_24px_70px_rgba(15,23,42,0.16)]"
+            >
               <div className="grid gap-4">
                 <section>
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
@@ -91,13 +131,15 @@ export function Header() {
                   <div className="mt-3 grid gap-1">
                     <a
                       href={shellHref("about", locale, usePrefix)}
-                      className="min-h-11 rounded-[var(--radius-sm)] px-3 py-2 text-sm font-semibold transition hover:bg-[color:var(--surface-subtle)]"
+                      role="menuitem"
+                      className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] px-3 py-2 text-sm font-semibold transition hover:bg-[color:var(--surface-subtle)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
                     >
                       {copy.utility.about}
                     </a>
                     <a
                       href={shellHref("blog", locale, usePrefix)}
-                      className="min-h-11 rounded-[var(--radius-sm)] px-3 py-2 text-sm font-semibold transition hover:bg-[color:var(--surface-subtle)]"
+                      role="menuitem"
+                      className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] px-3 py-2 text-sm font-semibold transition hover:bg-[color:var(--surface-subtle)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
                     >
                       {copy.utility.blog}
                     </a>

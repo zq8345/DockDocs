@@ -442,6 +442,11 @@ export const runtimeCopy = {
       comparisonTitle: "Compare workspace availability.",
       billingNote:
         "UI only: Stripe, billing API, quota enforcement, and subscription checks are not connected in this design pass.",
+      flowEyebrow: "Upgrade path",
+      flowTitle: "Move from first upload to a wider document workspace.",
+      flowDescription:
+        "The pricing flow stays presentational here: choose a plan, review feature availability, then continue through the account entry point.",
+      flowSteps: ["Start with a real file", "Compare AI workspace access", "Upgrade from the account menu"],
       plans: [
         {
           tier: "FREE",
@@ -524,6 +529,9 @@ export const runtimeCopy = {
         "Start by uploading a PDF, scan, report, or office document. DockDocs will keep the file, AI output, and next action visible.",
       continueWork: "Continue work",
       openChat: "Open AI chat",
+      upgradeCta: "View pricing",
+      upgradeDescription:
+        "Need more document workspace capacity? Review Plus and Pro options without changing billing state in this UI pass.",
       analyticsLabel: "Analytics",
       usageLabel: "Usage placeholder",
       activityLabel: "Recent activity",
@@ -931,6 +939,10 @@ export const runtimeCopy = {
       comparisonEyebrow: "功能对比",
       comparisonTitle: "比较工作区可用能力。",
       billingNote: "仅 UI：本次设计不接 Stripe、Billing API、额度校验或订阅检查。",
+      flowEyebrow: "升级路径",
+      flowTitle: "从首次上传扩展到更完整的文档工作区。",
+      flowDescription: "这里的价格流程只做前端展示：选择方案、查看功能可用性，然后从账户入口继续。",
+      flowSteps: ["从真实文件开始", "比较 AI 工作区能力", "从账户菜单升级"],
       plans: [
         {
           tier: "FREE",
@@ -1013,6 +1025,8 @@ export const runtimeCopy = {
         "先上传 PDF、扫描件、报告或办公文档。DockDocs 会把文件、AI 输出和下一步操作放在同一个工作区中。",
       continueWork: "继续处理",
       openChat: "打开 AI 对话",
+      upgradeCta: "查看价格",
+      upgradeDescription: "需要更高文档工作区容量时，可以查看 Plus 和 Pro。本次 UI 不改变 billing 状态。",
       analyticsLabel: "分析",
       usageLabel: "用量占位",
       activityLabel: "最近活动",

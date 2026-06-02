@@ -113,20 +113,20 @@ export function UserAccountControls() {
         <div className="flex flex-wrap items-center gap-2">
         <a
           href="/my-chats"
-          className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--foreground)] transition hover:bg-black/5"
+          className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--foreground)] transition hover:bg-black/5 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
         >
           {copy.myChats}
         </a>
         <a
           href={pricingHref}
-          className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-2 font-semibold text-white transition hover:opacity-90"
+          className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-2 font-semibold text-white transition hover:opacity-90 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
         >
           {copy.upgrade}
         </a>
         <button
           type="button"
           onClick={handleLogout}
-          className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)]"
+          className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
         >
           {copy.logout}
         </button>
@@ -151,7 +151,7 @@ export function UserAccountControls() {
         </div>
         <a
           href={pricingHref}
-          className="mt-3 inline-flex min-h-10 w-full items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-2 font-semibold text-white transition hover:opacity-90"
+          className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-2 font-semibold text-white transition hover:opacity-90 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
         >
           {copy.upgrade}
         </a>
@@ -160,7 +160,7 @@ export function UserAccountControls() {
       <button
         type="button"
         onClick={() => oauthLogin("google")}
-        className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] bg-[color:var(--foreground)] px-3 py-2 font-semibold text-[color:var(--background)] transition hover:opacity-90"
+        className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] bg-[color:var(--foreground)] px-3 py-2 font-semibold text-[color:var(--background)] transition hover:opacity-90 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
       >
         {copy.continueGoogle}
       </button>
@@ -169,7 +169,7 @@ export function UserAccountControls() {
         onClick={() =>
           setState((current) => ({ ...current, emailOpen: !current.emailOpen }))
         }
-        className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)]"
+        className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
       >
         {copy.email}
       </button>
@@ -183,7 +183,7 @@ export function UserAccountControls() {
             }
             placeholder={copy.email}
             type="email"
-            className="min-h-10 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none focus:border-[color:var(--accent)]"
+            className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none focus:border-[color:var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           />
           <input
             value={state.password}
@@ -195,13 +195,13 @@ export function UserAccountControls() {
             }
             placeholder={copy.password}
             type="password"
-            className="min-h-10 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none focus:border-[color:var(--accent)]"
+            className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none focus:border-[color:var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           />
           <button
             type="button"
             onClick={handleEmailLogin}
             disabled={!state.email || !state.password}
-            className="min-h-10 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 text-sm font-semibold text-white transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           >
             {copy.login}
           </button>
