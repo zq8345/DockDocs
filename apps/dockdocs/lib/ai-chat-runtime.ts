@@ -14,6 +14,7 @@ export type AiChatResult = {
   truncated: boolean;
   provider?: string;
   model?: string;
+  contextText?: string;
   usage?: {
     prompt_tokens?: number;
     completion_tokens?: number;
@@ -36,6 +37,20 @@ type GenerateAiChatInput = {
   onProgress?: (progress: AiChatProgress) => void;
   onAnswerDelta?: (text: string) => void;
   onStreamStatus?: (status: "streaming" | "validating" | "fallback") => void;
+};
+
+export type ExtractAiDocumentTextInput = {
+  file?: File | null;
+  pastedText?: string;
+  locale: AiChatLocale;
+  signal?: AbortSignal;
+  onProgress?: (progress: AiChatProgress) => void;
+};
+
+export type ExtractedAiDocumentText = {
+  text: string;
+  source: AiChatResult["source"];
+  sourceName: string;
 };
 
 type PdfJsDocument = {
@@ -77,6 +92,74 @@ export async function askAiAboutPdf({
     );
   }
 
+  throwIfAborted(signal);
+
+  const extractedDocument = await extractAiDocumentText({
+    file,
+    pastedText,
+    locale,
+    signal,
+    onProgress,
+  });
+  const sourceText = extractedDocument.text;
+
+  const selectedContext = selectRelevantContext(
+    sourceText,
+    normalizedQuestion,
+    maxContextCharacters,
+  );
+
+  emitProgress(
+    onProgress,
+    70,
+    locale === "zh" ? "正在发送提取文本和问题..." : "Sending extracted text and question...",
+  );
+
+  const requestBody = {
+    context: selectedContext.context,
+    question: normalizedQuestion,
+    history: normalizeHistory(history),
+    locale,
+    sourceName: extractedDocument.sourceName,
+    truncated: selectedContext.truncated,
+  };
+
+  const payload = await requestAiChat({
+    body: requestBody,
+    locale,
+    signal,
+    onAnswerDelta,
+    onStreamStatus,
+  });
+
+  emitProgress(
+    onProgress,
+    100,
+    locale === "zh" ? "回答已准备好。" : "Answer is ready.",
+  );
+
+  return {
+    answer: payload.result.answer,
+    references: payload.result.references ?? [],
+    provider: payload.result.provider,
+    model: payload.result.model,
+    usage: payload.usage,
+    source: extractedDocument.source,
+    sourceName: extractedDocument.sourceName,
+    contextCharacters:
+      payload.diagnostics?.contextCharacters ?? selectedContext.context.length,
+    truncated: payload.diagnostics?.truncated ?? selectedContext.truncated,
+    contextText: selectedContext.context,
+  };
+}
+
+export async function extractAiDocumentText({
+  file,
+  pastedText,
+  locale,
+  signal,
+  onProgress,
+}: ExtractAiDocumentTextInput): Promise<ExtractedAiDocumentText> {
   const normalizedPastedText = normalizeText(pastedText ?? "");
   let sourceText = normalizedPastedText;
   let source: AiChatResult["source"] = "pasted-text";
@@ -116,52 +199,10 @@ export async function askAiAboutPdf({
     );
   }
 
-  const selectedContext = selectRelevantContext(
-    sourceText,
-    normalizedQuestion,
-    maxContextCharacters,
-  );
-
-  emitProgress(
-    onProgress,
-    70,
-    locale === "zh" ? "正在发送提取文本和问题..." : "Sending extracted text and question...",
-  );
-
-  const requestBody = {
-    context: selectedContext.context,
-    question: normalizedQuestion,
-    history: normalizeHistory(history),
-    locale,
-    sourceName,
-    truncated: selectedContext.truncated,
-  };
-
-  const payload = await requestAiChat({
-    body: requestBody,
-    locale,
-    signal,
-    onAnswerDelta,
-    onStreamStatus,
-  });
-
-  emitProgress(
-    onProgress,
-    100,
-    locale === "zh" ? "回答已准备好。" : "Answer is ready.",
-  );
-
   return {
-    answer: payload.result.answer,
-    references: payload.result.references ?? [],
-    provider: payload.result.provider,
-    model: payload.result.model,
-    usage: payload.usage,
+    text: sourceText,
     source,
     sourceName,
-    contextCharacters:
-      payload.diagnostics?.contextCharacters ?? selectedContext.context.length,
-    truncated: payload.diagnostics?.truncated ?? selectedContext.truncated,
   };
 }
 

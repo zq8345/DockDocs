@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   askAiAboutPdf,
   type AiChatHistoryTurn,
@@ -8,6 +8,16 @@ import {
   type AiChatResult,
 } from "@/lib/ai-chat-runtime";
 import { saveChatForCurrentUser } from "@/lib/account-runtime";
+import {
+  canStartAiChat,
+  consumeQueuedSessionRestore,
+  getUsageQuota,
+  promptTemplates,
+  readFeatureFlags,
+  recordChatCompletion,
+  type UsageQuota,
+  type WorkspaceFeatureFlags,
+} from "@/lib/workspace-runtime";
 
 type WorkflowStatus =
   | "idle"
@@ -46,6 +56,14 @@ const copy = {
     user: "User",
     assistant: "Assistant",
     references: "References",
+    copyReference: "Copy",
+    showReference: "Show",
+    hideReference: "Hide",
+    templates: "Prompt templates",
+    quota: "Today",
+    quotaRemaining: "remaining",
+    quotaExceeded:
+      "Daily AI Chat limit reached for this browser. Sign in for a higher local quota or try again tomorrow.",
     privacyTitle: "Privacy behavior",
     privacy:
       "The original PDF file is not sent to the AI provider. This MVP sends extracted text plus your question only after you start the chat request.",
@@ -84,6 +102,14 @@ const copy = {
     user: "用户",
     assistant: "助手",
     references: "引用依据",
+    copyReference: "复制",
+    showReference: "展开",
+    hideReference: "收起",
+    templates: "提示词模板",
+    quota: "今日额度",
+    quotaRemaining: "剩余",
+    quotaExceeded:
+      "今天的 AI Chat 本地额度已用完。登录后可使用更高额度，或明天再试。",
     privacyTitle: "隐私处理方式",
     privacy:
       "原始 PDF 文件不会发送给 AI provider。本 MVP 只会在你开始提问后发送提取文本和问题。",
@@ -118,6 +144,13 @@ export function AiChatWorkflow({
   const [result, setResult] = useState<AiChatResult | null>(null);
   const [streamingAnswer, setStreamingAnswer] = useState("");
   const [history, setHistory] = useState<AiChatHistoryTurn[]>([]);
+  const [quota, setQuota] = useState<UsageQuota | null>(null);
+  const [featureFlags, setFeatureFlags] = useState<WorkspaceFeatureFlags>(() =>
+    readFeatureFlags(),
+  );
+  const [expandedReferences, setExpandedReferences] = useState<Record<string, boolean>>(
+    {},
+  );
 
   const hasDocument = Boolean(file) || pastedText.trim().length > 0;
   const hasQuestion = question.trim().length > 0;
@@ -126,6 +159,35 @@ export function AiChatWorkflow({
     status === "asking" ||
     status === "streaming" ||
     status === "validating";
+
+  useEffect(() => {
+    if (status === "idle" || status === "ready") {
+      setStatus(hasDocument && hasQuestion ? "ready" : "idle");
+    }
+  }, [hasDocument, hasQuestion, status]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    getUsageQuota().then((nextQuota) => {
+      if (mounted) {
+        setQuota(nextQuota);
+      }
+    });
+    setFeatureFlags(readFeatureFlags());
+
+    const restoredSession = consumeQueuedSessionRestore();
+    if (restoredSession?.contextText) {
+      setPastedText(restoredSession.contextText);
+      setHistory(restoredSession.turns.slice(-8));
+      setResult(null);
+      setStatus("ready");
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   function chooseFile(fileList: FileList | null) {
     const selected = fileList?.[0] ?? null;
@@ -146,12 +208,20 @@ export function AiChatWorkflow({
     }
 
     setFile(selected);
-    setStatus(hasQuestion ? "ready" : "idle");
+    setStatus(question.trim() ? "ready" : "idle");
   }
 
   async function startChat() {
     if (!hasDocument || !hasQuestion) {
       setError(t.idle);
+      setStatus("error");
+      return;
+    }
+
+    const quotaCheck = await canStartAiChat();
+    setQuota(quotaCheck.quota);
+    if (!quotaCheck.allowed) {
+      setError(t.quotaExceeded);
       setStatus("error");
       return;
     }
@@ -221,6 +291,13 @@ export function AiChatWorkflow({
         question: question.trim(),
         result: answer,
       });
+      await recordChatCompletion({
+        question: question.trim(),
+        result: answer,
+        history,
+        contextText: answer.contextText ?? pastedText,
+      });
+      setQuota(await getUsageQuota());
       setHistory((currentHistory) =>
         [
           ...currentHistory,
@@ -295,8 +372,25 @@ export function AiChatWorkflow({
     setStatus("idle");
   }
 
-  function updateReadyState(nextQuestion = question, nextText = pastedText) {
-    setStatus((file || nextText.trim()) && nextQuestion.trim() ? "ready" : "idle");
+  function updateReadyState(
+    nextQuestion = question,
+    nextText = pastedText,
+    nextFile = file,
+  ) {
+    setStatus(
+      (nextFile || nextText.trim()) && nextQuestion.trim() ? "ready" : "idle",
+    );
+  }
+
+  function toggleReference(reference: string) {
+    setExpandedReferences((current) => ({
+      ...current,
+      [reference]: !current[reference],
+    }));
+  }
+
+  async function copyReference(reference: string) {
+    await navigator.clipboard?.writeText(reference).catch(() => undefined);
   }
 
   return (
@@ -393,9 +487,45 @@ export function AiChatWorkflow({
               placeholder={t.questionPlaceholder}
               className="mt-3 min-h-11 w-full rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 text-sm text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--foreground)] disabled:opacity-60"
             />
+            {featureFlags.templates ? (
+              <div className="mt-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+                  {t.templates}
+                </p>
+                <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                  {promptTemplates.map((template) => (
+                    <button
+                      key={template.id}
+                      type="button"
+                      onClick={() => {
+                        setQuestion(template.prompt);
+                        updateReadyState(template.prompt, pastedText);
+                      }}
+                      disabled={isWorking}
+                      className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-xs font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)] disabled:opacity-50"
+                    >
+                      {template.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
 
           <div className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
+            {featureFlags.quota && quota ? (
+              <div className="mb-4 grid gap-2 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 text-sm sm:grid-cols-3">
+                <p className="font-semibold text-[color:var(--foreground)]">
+                  {t.quota}: {quota.used}/{quota.limit}
+                </p>
+                <p className="font-semibold text-[color:var(--muted)]">
+                  {quota.remaining} {t.quotaRemaining}
+                </p>
+                <p className="font-semibold text-[color:var(--muted)]">
+                  {quota.signedIn ? "Signed in" : "Anonymous"}
+                </p>
+              </div>
+            ) : null}
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
@@ -527,14 +657,41 @@ export function AiChatWorkflow({
                     {t.references}
                   </h3>
                   <ul className="mt-3 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
-                    {result.references.map((reference) => (
-                      <li
-                        key={reference}
-                        className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
-                      >
-                        {reference}
-                      </li>
-                    ))}
+                    {result.references.map((reference) => {
+                      const expanded = Boolean(expandedReferences[reference]);
+                      const canCollapse =
+                        featureFlags.citationViewer && reference.length > 180;
+                      return (
+                        <li
+                          key={reference}
+                          className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
+                        >
+                          <p className={expanded || !canCollapse ? "" : "line-clamp-3"}>
+                            {reference}
+                          </p>
+                          {featureFlags.citationViewer ? (
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <button
+                                type="button"
+                                onClick={() => copyReference(reference)}
+                                className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--foreground)]"
+                              >
+                                {t.copyReference}
+                              </button>
+                              {canCollapse ? (
+                                <button
+                                  type="button"
+                                  onClick={() => toggleReference(reference)}
+                                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--foreground)]"
+                                >
+                                  {expanded ? t.hideReference : t.showReference}
+                                </button>
+                              ) : null}
+                            </div>
+                          ) : null}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </section>
               ) : null}

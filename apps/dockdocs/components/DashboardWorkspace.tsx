@@ -1,4 +1,5 @@
 import { ButtonLink } from "@dock/shared/ui";
+import { WorkspaceDashboardClient } from "@/components/WorkspaceDashboardClient";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { defaultLocale, localizedPath, normalizeSlug } from "@/lib/i18n";
 
@@ -45,6 +46,7 @@ export function DashboardWorkspace({
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]">
           <DashboardSidebar page={page} locale={locale} />
           <div className="grid min-w-0 gap-6">
+            <WorkspaceDashboardClient />
             <OverviewCards page={page} />
             <EmptyState page={page} locale={locale} />
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(320px,0.75fr)]">

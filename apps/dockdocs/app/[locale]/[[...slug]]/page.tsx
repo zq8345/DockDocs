@@ -7,6 +7,7 @@ import {
 import { AiChatWorkflow } from "@/components/AiChatWorkflow";
 import { BlogArticlePage, BlogIndexPage } from "@/components/BlogPages";
 import { AiSummaryWorkflow } from "@/components/AiSummaryWorkflow";
+import { DocumentAnalyzerWorkflow } from "@/components/DocumentAnalyzerWorkflow";
 import { ChatWithPdfClient } from "@/app/chat-with-pdf/ChatWithPdfClient";
 import { DashboardWorkspace } from "@/components/DashboardWorkspace";
 import { GeoHubPage } from "@/components/GeoHubPage";
@@ -800,6 +801,7 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale }) {
         </Container>
       </Section>
       <AiSummaryWorkflow locale={locale} />
+      <DocumentAnalyzerWorkflow locale={locale} />
       <AiChatWorkflow locale={locale} />
     </main>
   );
