@@ -1,7 +1,22 @@
+import type { Metadata } from "next";
 import { RelatedTools } from "@/components/RelatedTools";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
+
+const ocrCopy = getRuntimeCopy("en").ocr;
+
+export const metadata: Metadata = {
+  title: "OCR Workspace",
+  description: ocrCopy.description,
+  alternates: {
+    canonical: "/ocr/",
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
+};
 
 function OcrPageContent({ locale = "en" }: { locale?: RuntimeLocale }) {
   const copy = getRuntimeCopy(locale);
