@@ -11,6 +11,7 @@ const workerPath = path.join(
 const resolvedWorkerPath = require.resolve(workerPath);
 const smokeRoutes = [
   "/",
+  "/pricing",
   "/chat-with-pdf",
   "/dashboard",
   "/ai-summary",
@@ -22,6 +23,7 @@ const smokeRoutes = [
   "/resources",
   "/ai-pdf-guides",
   "/zh",
+  "/zh/pricing",
   "/zh/chat-with-pdf",
   "/zh/dashboard",
   "/zh/ai-summary",
@@ -145,37 +147,79 @@ test("dashboard IA is visible in English and Chinese", async ({ page }) => {
   await page.goto("/dashboard");
   await expect(page.getByRole("heading", { name: "Document workspace overview." })).toBeVisible();
   await expect(page.getByText("Conversations", { exact: true })).toBeVisible();
-  await expect(page.getByText("Workspace health", { exact: true })).toBeVisible();
+  await expect(page.getByText("Workspace health", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Recommended next steps", { exact: true })).toBeVisible();
 
   await page.goto("/zh/dashboard");
   await expect(page.getByRole("heading", { name: "文档工作区概览。" })).toBeVisible();
   await expect(page.getByText("最近对话", { exact: true })).toBeVisible();
-  await expect(page.getByText("工作区健康", { exact: true })).toBeVisible();
+  await expect(page.getByText("工作区健康", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("建议下一步", { exact: true })).toBeVisible();
 });
 
-test("primary routes load and mobile 390 has no horizontal overflow", async ({ page }) => {
+test("pricing page is localized and responsive", async ({ page }) => {
+  await page.goto("/pricing");
+  await expect(page.getByRole("heading", { name: "Plans for an AI document workspace." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Free" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Plus" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Pro" })).toBeVisible();
+  await expect(page.getByText("UI only: Stripe")).toBeVisible();
+
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/zh/pricing");
+  await expect(page.getByRole("heading", { name: "面向 AI 文档工作区的方案。" })).toBeVisible();
+  await expect(page.getByText("仅 UI：本次设计不接 Stripe")).toBeVisible();
 
-  for (const route of smokeRoutes) {
-    const response = await page.goto(route);
-    expect(response?.status()).toBe(200);
+  const metrics = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+    lang: document.documentElement.lang,
+  }));
 
-    const metrics = await page.evaluate(() => ({
-      clientWidth: document.documentElement.clientWidth,
-      scrollWidth: document.documentElement.scrollWidth,
-      lang: document.documentElement.lang,
-      title: document.title,
-    }));
+  expect(metrics.scrollWidth).toBe(metrics.clientWidth);
+  expect(metrics.lang).toBe("zh");
+});
 
-    expect(metrics.scrollWidth).toBe(metrics.clientWidth);
-    expect(metrics.title).not.toContain("| DockDocs | DockDocs");
+test("primary routes load across desktop, tablet, and mobile without horizontal overflow", async ({ page }) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      consoleErrors.push(message.text());
+    }
+  });
+  page.on("pageerror", (error) => {
+    consoleErrors.push(error.message);
+  });
+  const viewports = [
+    { width: 1280, height: 720 },
+    { width: 768, height: 1024 },
+    { width: 390, height: 844 },
+  ];
 
-    if (route.startsWith("/zh")) {
-      expect(metrics.lang).toBe("zh");
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport);
+
+    for (const route of smokeRoutes) {
+      const response = await page.goto(route);
+      expect(response?.status()).toBe(200);
+
+      const metrics = await page.evaluate(() => ({
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+        lang: document.documentElement.lang,
+        title: document.title,
+      }));
+
+      expect(metrics.scrollWidth).toBe(metrics.clientWidth);
+      expect(metrics.title).not.toContain("| DockDocs | DockDocs");
+
+      if (route.startsWith("/zh")) {
+        expect(metrics.lang).toBe("zh");
+      }
     }
   }
+
+  expect(consoleErrors).toEqual([]);
 });
 
 test("localized shell, content routes, and workspace landmarks stay visible", async ({ page }) => {
@@ -196,7 +240,7 @@ test("localized shell, content routes, and workspace landmarks stay visible", as
 
   await page.goto("/zh/dashboard");
   await expect(page.getByRole("heading", { name: "文档工作区概览。" })).toBeVisible();
-  await expect(page.getByText("AI 操作", { exact: true })).toBeVisible();
+  await expect(page.locator("#actions").getByText("AI 操作", { exact: true })).toBeVisible();
 
   for (const route of ["/blog", "/guides", "/resources", "/ai-pdf-guides", "/zh/blog", "/zh/guides", "/zh/resources", "/zh/ai-pdf-guides"]) {
     const response = await page.goto(route);

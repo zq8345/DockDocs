@@ -18,6 +18,7 @@ export const routeSlugs = [
   "jpg-to-pdf",
   "ai-workspace",
   "dashboard",
+  "pricing",
   "resources",
   "guides",
   "ai-pdf-guides",

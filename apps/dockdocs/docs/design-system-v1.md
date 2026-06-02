@@ -420,3 +420,98 @@ Rules:
 - New product UI should import or mirror shared primitives before adding local ad hoc styles.
 - Raw hex colors are allowed only when introducing or revising semantic tokens.
 - Runtime, provider, deploy, SEO, and API logic are outside the Design System scope.
+
+## DOCK-UI Numbering
+
+New UI design work uses `UI-001`, `UI-002`, `UI-003`, and onward. Do not create new `TASK-XXX` IDs in the DOCK-UI design window. Historical `TASK-035` through `TASK-062` remain archived references only.
+
+UI-owned work:
+
+- Design System, Dashboard, Workspace UX, Pricing UI, Landing Page, Navigation, Header/Footer, Mobile UX, Localization UI, Branding, and Tool Discovery UX.
+
+Non-UI ownership:
+
+- Runtime, Provider, API, Netlify, DeepSeek, billing backend, account backend, quota, session restore, analytics runtime, and deploy.
+
+## Design System v2 Planning
+
+### Buttons
+
+- Primary buttons use `--accent` or `--foreground` depending on surface contrast.
+- Secondary and outline buttons use `--line` borders and no heavy fill.
+- Disabled and loading states preserve height and width.
+- Minimum tap target is `44px`.
+
+### Cards
+
+- Product cards use `--radius`, `--surface`, `--line`, and restrained shadows.
+- Compact rows, menu items, and badges use `--radius-sm`.
+- Cards that navigate should show hover through border color or subtle movement only.
+
+### Inputs
+
+- Inputs use `--surface-subtle` and `--line`.
+- Placeholder text uses `--muted`.
+- Search/filter shells can be disabled if no real search logic exists, but must visually communicate workflow discovery.
+
+### Menus And Dropdowns
+
+- Header feature menus group capabilities by category and subcategory.
+- Utility menus own account, language, About, Blog, and upgrade entry points.
+- Mobile menus are single column, scroll within the menu panel, and must not create page-level horizontal overflow.
+
+### Badges
+
+- Availability labels use exactly `FREE`, `PLUS`, or localized `Coming soon` copy.
+- `FREE` uses success tokens when it marks an available shipped feature.
+- `PLUS` uses neutral muted tokens until billing or entitlement logic is owned by the backend.
+- Coming soon rows must be disabled and must not link to 404 routes.
+
+### Tables
+
+- Desktop comparison tables may use multiple columns inside a bordered surface.
+- Mobile tables convert into stacked feature cards instead of forcing horizontal page scroll.
+- Pricing and feature tables should keep tier labels visible without requiring users to compare long paragraphs.
+
+### Pricing Cards
+
+- Pricing is UI-only until billing backend is explicitly in scope.
+- Free / Plus / Pro cards should include tier, short description, highlight list, CTA, and recommended state.
+- Upgrade CTAs may route to account/pricing entry points but must not call Stripe or Billing API from the UI task.
+
+### Dashboard Cards
+
+- Dashboard cards should communicate documents, conversations, AI actions, usage placeholders, recent activity, workspace health, and onboarding.
+- Runtime-backed widgets can exist, but UI tasks should add static placeholder surfaces rather than changing analytics runtime.
+
+### Empty States And Onboarding
+
+- Empty states identify what is missing, why it matters, and the next action.
+- First-upload onboarding should direct users to Chat with PDF or the most relevant upload-first workflow.
+- Avoid decorative empty states that do not improve task completion.
+
+### Mobile Rules
+
+- At `390px`, Header keeps brand, Tools, and Menu visible.
+- Tool pages show upload before dense explanatory content.
+- Chat workspace order is document/upload status, chat input, conversation, then sources.
+- Pricing comparison tables stack into per-feature cards.
+- Dashboard analytics and activity sections stack into one column.
+
+## Workspace IA Review
+
+Safe UI path for DockDocs:
+
+1. Home introduces the platform, uploadable files, expected output, and tool discovery by workflow outcome.
+2. Tool pages keep title, one-line description, upload area, supported formats, limits, and result preview close together.
+3. Workspace pages show document context, primary AI interaction, and sources/references.
+4. Result surfaces include copy/download/follow-up actions instead of only success messaging.
+5. Dashboard summarizes recent documents, conversations, AI actions, usage placeholders, activity, and health.
+
+Current safe fixes implemented in the UI layer:
+
+- Pricing UI is presentational and localized.
+- Header navigation keeps phase-one feature categories visible without linking unavailable tools to 404 pages.
+- Account UX exposes login and upgrade entry points without changing auth or billing backend behavior.
+- Tool discovery is framed as document workflow discovery rather than a PDF tool directory.
+- Mobile surfaces avoid page-level horizontal overflow by stacking menus, pricing rows, and dashboard cards.

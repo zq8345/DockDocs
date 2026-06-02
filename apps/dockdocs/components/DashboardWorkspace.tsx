@@ -48,6 +48,8 @@ export function DashboardWorkspace({
           <div className="grid min-w-0 gap-6">
             <WorkspaceDashboardClient />
             <OverviewCards page={page} />
+            <OnboardingState page={page} locale={locale} />
+            <AnalyticsOverview page={page} />
             <EmptyState page={page} locale={locale} />
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(320px,0.75fr)]">
               <RecentDocuments page={page} />
@@ -57,6 +59,7 @@ export function DashboardWorkspace({
               <AiActions page={page} locale={locale} />
               <WorkspaceHealth page={page} />
             </div>
+            <RecentActivity page={page} />
           </div>
         </div>
       </section>
@@ -118,6 +121,58 @@ function OverviewCards({ page }: { page: DashboardCopy }) {
   );
 }
 
+function OnboardingState({
+  page,
+  locale,
+}: {
+  page: DashboardCopy;
+  locale: RuntimeLocale;
+}) {
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--foreground)] p-4 text-[color:var(--background)] sm:p-5">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h2 className="text-xl font-semibold">{page.onboardingTitle}</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-[color:var(--background)]/75">
+            {page.onboardingDescription}
+          </p>
+        </div>
+        <ButtonLink href={localizedPath(locale, "chat-with-pdf")} variant="inverse">
+          {page.startChat}
+        </ButtonLink>
+      </div>
+    </section>
+  );
+}
+
+function AnalyticsOverview({ page }: { page: DashboardCopy }) {
+  const items = [
+    { label: page.usageLabel, value: "Local", helper: page.stats[0]?.label ?? "" },
+    { label: page.actionsLabel, value: page.stats[3]?.value ?? "0", helper: page.stats[3]?.label ?? "" },
+    { label: page.healthLabel, value: "Ready", helper: page.health[1]?.label ?? "" },
+  ];
+
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        {page.analyticsLabel}
+      </p>
+      <div className="mt-4 grid gap-3 md:grid-cols-3">
+        {items.map((item) => (
+          <article
+            key={item.label}
+            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4"
+          >
+            <p className="text-sm font-semibold text-[color:var(--muted)]">{item.label}</p>
+            <p className="mt-2 text-2xl font-semibold">{item.value}</p>
+            <p className="mt-2 text-xs leading-5 text-[color:var(--muted)]">{item.helper}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function EmptyState({
   page,
   locale,
@@ -170,6 +225,26 @@ function RecentDocuments({ page }: { page: DashboardCopy }) {
   );
 }
 
+function RecentActivity({ page }: { page: DashboardCopy }) {
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        {page.activityLabel}
+      </p>
+      <div className="mt-4 grid gap-3 md:grid-cols-3">
+        {page.activity.map((item) => (
+          <article
+            key={item}
+            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]"
+          >
+            {item}
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function RecentConversations({ page }: { page: DashboardCopy }) {
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
@@ -213,7 +288,12 @@ function AiActions({
             href={localizedDashboardHref(locale, action.href)}
             className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
           >
-            <h3 className="font-semibold">{action.title}</h3>
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="font-semibold">{action.title}</h3>
+              <span className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] px-2 py-1 text-[10px] font-semibold text-[color:var(--success)]">
+                {action.tier}
+              </span>
+            </div>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
               {action.description}
             </p>

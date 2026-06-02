@@ -12,37 +12,56 @@ const aiTools = [
     href: "/chat-with-pdf",
     description: "Ask grounded questions against extracted PDF text.",
     group: "AI",
+    tier: "FREE",
   },
   {
     name: "AI Summary",
     href: "/ai-summary",
     description: "Turn long documents into summaries, key points, and actions.",
     group: "AI",
+    tier: "FREE",
   },
   {
     name: "OCR",
     href: "/ocr",
     description: "Prepare scanned PDFs for searchable AI document work.",
     group: "AI",
+    tier: "FREE",
   },
   {
     name: "PDF to Word",
     href: "/pdf-to-word",
     description: "Convert PDF content into editable Word-ready output.",
     group: "Convert",
+    tier: "FREE",
   },
   {
     name: "Compress PDF",
     href: "/compress-pdf",
     description: "Reduce PDF size for email, portals, and office workflows.",
     group: "Optimize",
+    tier: "FREE",
   },
   {
     name: "Dashboard",
     href: "/dashboard",
     description: "Track recent files, AI runs, and document workflow status.",
     group: "Workspace",
+    tier: "PLUS",
   },
+];
+
+const discoveryCategories = [
+  { name: "AI Workspace", count: "3 workflows", description: "Read, ask, summarize, and extract decisions." },
+  { name: "Convert", count: "2 live entries", description: "Move PDFs into editable or export-ready formats." },
+  { name: "Optimize", count: "1 live entry", description: "Prepare files for portals, email, and handoff." },
+  { name: "OCR & Extraction", count: "2 workflows", description: "Make scanned content readable before AI review." },
+];
+
+const popularWorkflows = [
+  "Upload a contract, ask for risks, then create action items.",
+  "OCR a scan before AI Summary or Chat with PDF.",
+  "Compress a PDF before sending it to a portal or client.",
 ];
 
 const workflows = [
@@ -239,11 +258,55 @@ export default function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="max-w-2xl">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              Tools
+              Tool discovery
             </p>
             <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
-              AI-first document tools, organized by workflow.
+              Find the right document workflow without learning a tool grid.
             </h2>
+            <p className="mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
+              Search is a UI shell for now. The surface is designed to guide users by
+              outcome: ask, summarize, extract, convert, optimize, or review.
+            </p>
+          </div>
+          <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
+            <label className="block">
+              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+                Find a document workflow
+              </span>
+              <input
+                disabled
+                placeholder="Search by outcome: summarize, OCR, convert, compress..."
+                className="mt-3 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 text-sm text-[color:var(--muted)] outline-none"
+              />
+            </label>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {["AI", "Convert", "Optimize", "OCR", "FREE", "PLUS"].map((filter) => (
+                <span
+                  key={filter}
+                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-xs font-semibold text-[color:var(--muted)]"
+                >
+                  {filter}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {discoveryCategories.map((category) => (
+              <article
+                key={category.name}
+                className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="font-semibold">{category.name}</h3>
+                  <span className="rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-2 py-1 text-xs font-semibold text-[color:var(--accent-strong)]">
+                    {category.count}
+                  </span>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
+                  {category.description}
+                </p>
+              </article>
+            ))}
           </div>
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {aiTools.map((tool) => (
@@ -259,13 +322,30 @@ export default function Home() {
                     </p>
                     <h3 className="mt-2 text-lg font-semibold">{tool.name}</h3>
                   </div>
-                  <span className="text-sm font-semibold text-[color:var(--accent)]">Open</span>
+                  <span className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 py-1 text-xs font-semibold text-[color:var(--muted)]">
+                    {tool.tier}
+                  </span>
                 </div>
                 <p className="mt-4 text-sm leading-6 text-[color:var(--muted)]">
                   {tool.description}
                 </p>
               </a>
             ))}
+          </div>
+          <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+              Popular workflows
+            </p>
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              {popularWorkflows.map((workflow) => (
+                <p
+                  key={workflow}
+                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 text-sm leading-6 text-[color:var(--muted)]"
+                >
+                  {workflow}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       </section>

@@ -244,7 +244,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
           data-testid="document-sidebar"
           className="border-b border-[color:var(--line)] bg-[color:var(--background)] p-4 sm:p-5 lg:border-b-0 lg:border-r"
         >
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
               {copy.document}
             </p>
@@ -588,7 +588,7 @@ function StatePill({ state, label }: { state: RuntimeState; label: string }) {
           ? "rounded-[var(--radius-sm)] bg-[color:var(--success-surface)] px-2 py-1 text-xs font-semibold text-[color:var(--success)]"
           : "rounded-[var(--radius-sm)] border border-[color:var(--line)] px-2 py-1 text-xs font-semibold text-[color:var(--muted)]";
 
-  return <span className={className}>{label}</span>;
+  return <span className={`${className} max-w-full truncate`}>{label}</span>;
 }
 
 function SourceCard({

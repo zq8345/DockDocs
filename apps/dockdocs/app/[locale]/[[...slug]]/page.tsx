@@ -12,6 +12,7 @@ import { ChatWithPdfClient } from "@/app/chat-with-pdf/ChatWithPdfClient";
 import { DashboardWorkspace } from "@/components/DashboardWorkspace";
 import { GeoHubPage } from "@/components/GeoHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
+import { PricingPlans } from "@/components/PricingPlans";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { RelatedTools } from "@/components/RelatedTools";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
@@ -227,6 +228,15 @@ export async function generateMetadata({
     );
   }
 
+  if (slug === "pricing") {
+    return createLocalizedMetadata(
+      rawLocale,
+      slug,
+      runtimeCopy.pricing.metadataTitle,
+      runtimeCopy.pricing.metadataDescription,
+    );
+  }
+
   if ((toolSlugs as readonly string[]).includes(slug)) {
     return createPdfToolMetadata(
       getLocalizedToolConfig(rawLocale, slug as ToolSlug),
@@ -347,6 +357,10 @@ export default async function LocalizedRoute({
 
   if (slug === "dashboard") {
     return <LocalizedDashboard locale={rawLocale} />;
+  }
+
+  if (slug === "pricing") {
+    return <LocalizedPricing locale={rawLocale} />;
   }
 
   if ((toolSlugs as readonly string[]).includes(slug)) {
@@ -560,6 +574,39 @@ function LocalizedDashboard({ locale }: { locale: Locale }) {
   return <DashboardWorkspace locale={locale} />;
 }
 
+function LocalizedPricing({ locale }: { locale: Locale }) {
+  const copy = getRuntimeCopy(locale).pricing;
+
+  return (
+    <main>
+      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
+        <Container className="py-10">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
+            {copy.eyebrow}
+          </p>
+          <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-tight sm:text-5xl">
+            {copy.title}
+          </h1>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">
+            {copy.description}
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <ButtonLink href="#comparison">{copy.primaryCta}</ButtonLink>
+            <ButtonLink href={localizedPath(locale, "chat-with-pdf")} variant="outline">
+              {copy.secondaryCta}
+            </ButtonLink>
+          </div>
+        </Container>
+      </Section>
+      <Section className="bg-[color:var(--surface)]">
+        <Container>
+          <PricingPlans locale={locale} />
+        </Container>
+      </Section>
+    </main>
+  );
+}
+
 function LocalizedFaq({
   title,
   faqs,
@@ -609,8 +656,19 @@ const homeCopy = {
       "Upload PDFs, scans, reports, and office documents. Ask questions, summarize, extract text, convert files, or compress output without leaving the workspace.",
     primary: "Chat with a PDF",
     secondary: "View workspace",
-    categories: "Workspace tools",
-    categoryTitle: "AI-first document workflows.",
+    categories: "Tool discovery",
+    categoryTitle: "Find the right document workflow without learning a tool grid.",
+    categoryDescription:
+      "Search is a UI shell for now. The surface guides users by outcome: ask, summarize, extract, convert, optimize, or review.",
+    searchLabel: "Find a document workflow",
+    searchPlaceholder: "Search by outcome: summarize, OCR, convert, compress...",
+    filters: ["AI", "Convert", "Optimize", "OCR", "FREE", "PLUS"],
+    popular: "Popular workflows",
+    popularWorkflows: [
+      "Upload a contract, ask for risks, then create action items.",
+      "OCR a scan before AI Summary or Chat with PDF.",
+      "Compress a PDF before sending it to a portal or client.",
+    ],
     aiTitle: "Document intelligence stays visible.",
     aiDescription:
       "DockDocs keeps upload, processing, sources, summaries, and next actions in one workspace so documents feel reviewable instead of hidden behind a download-only result.",
@@ -624,8 +682,19 @@ const homeCopy = {
       "上传 PDF、扫描件、报告和办公文档。你可以提问、摘要、提取文字、转换文件或压缩输出，并保持在同一个工作区中。",
     primary: "与 PDF 对话",
     secondary: "查看工作区",
-    categories: "工作区工具",
-    categoryTitle: "AI 优先的文档工作流。",
+    categories: "工具发现",
+    categoryTitle: "不需要学习工具网格，也能找到正确文档工作流。",
+    categoryDescription:
+      "搜索目前是 UI 壳层。该区域按结果引导用户：提问、摘要、提取、转换、优化或复核。",
+    searchLabel: "查找文档工作流",
+    searchPlaceholder: "按结果搜索：摘要、OCR、转换、压缩...",
+    filters: ["AI", "转换", "优化", "OCR", "FREE", "PLUS"],
+    popular: "常用工作流",
+    popularWorkflows: [
+      "上传合同，提问风险，再生成行动项。",
+      "扫描件先 OCR，再进入 AI 摘要或 PDF 对话。",
+      "发送到门户或客户前，先压缩 PDF。",
+    ],
     aiTitle: "文档智能结果保持可见。",
     aiDescription:
       "DockDocs 将上传、处理、来源、摘要和下一步操作放在同一个工作区，让文档结果可以被检查，而不是只停留在下载成功状态。",
@@ -633,12 +702,78 @@ const homeCopy = {
 } as const;
 
 const localizedTools = [
-  { slug: "compress-pdf", icon: "CP", en: "Compress PDF", zh: "压缩 PDF" },
-  { slug: "merge-pdf", icon: "MP", en: "Merge PDF", zh: "合并 PDF" },
-  { slug: "split-pdf", icon: "SP", en: "Split PDF", zh: "拆分 PDF" },
-  { slug: "pdf-to-word", icon: "PW", en: "PDF to Word", zh: "PDF 转 Word" },
-  { slug: "ocr-pdf", icon: "OC", en: "OCR PDF", zh: "OCR PDF" },
-  { slug: "jpg-to-pdf", icon: "JP", en: "JPG to PDF", zh: "JPG 转 PDF" },
+  {
+    slug: "compress-pdf",
+    icon: "CP",
+    tier: "FREE",
+    group: { en: "Optimize", zh: "优化" },
+    en: "Compress PDF",
+    zh: "压缩 PDF",
+    description: {
+      en: "Reduce PDF size for email, portals, and handoff.",
+      zh: "减小 PDF 体积，便于邮件、门户和交付。",
+    },
+  },
+  {
+    slug: "merge-pdf",
+    icon: "MP",
+    tier: "FREE",
+    group: { en: "Edit", zh: "编辑" },
+    en: "Merge PDF",
+    zh: "合并 PDF",
+    description: {
+      en: "Combine pages into one reviewable document packet.",
+      zh: "将页面合并为可复核的文档包。",
+    },
+  },
+  {
+    slug: "split-pdf",
+    icon: "SP",
+    tier: "FREE",
+    group: { en: "Edit", zh: "编辑" },
+    en: "Split PDF",
+    zh: "拆分 PDF",
+    description: {
+      en: "Separate pages before sharing, OCR, or AI review.",
+      zh: "在分享、OCR 或 AI 审阅前拆分页面。",
+    },
+  },
+  {
+    slug: "pdf-to-word",
+    icon: "PW",
+    tier: "FREE",
+    group: { en: "Convert", zh: "转换" },
+    en: "PDF to Word",
+    zh: "PDF 转 Word",
+    description: {
+      en: "Move PDF content into an editable Word-ready workflow.",
+      zh: "将 PDF 内容转入可编辑的 Word 工作流。",
+    },
+  },
+  {
+    slug: "ocr-pdf",
+    icon: "OC",
+    tier: "FREE",
+    group: { en: "OCR", zh: "OCR" },
+    en: "OCR PDF",
+    zh: "OCR PDF",
+    description: {
+      en: "Make scanned text searchable before AI workflows.",
+      zh: "让扫描文字可搜索，再进入 AI 工作流。",
+    },
+  },
+  {
+    slug: "jpg-to-pdf",
+    icon: "JP",
+    tier: "FREE",
+    group: { en: "Convert", zh: "转换" },
+    en: "JPG to PDF",
+    zh: "JPG 转 PDF",
+    description: {
+      en: "Convert images into a clean PDF handoff.",
+      zh: "将图片转换为清晰的 PDF 交付文件。",
+    },
+  },
 ] as const;
 
 function LocalizedHome({ locale }: { locale: Locale }) {
@@ -696,19 +831,75 @@ function LocalizedHome({ locale }: { locale: Locale }) {
       </Section>
       <Section id="tools" className="bg-[color:var(--surface-subtle)]">
         <Container>
-          <div className="grid gap-4 lg:grid-cols-3">
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
+              {copy.categories}
+            </p>
+            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
+              {copy.categoryTitle}
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
+              {copy.categoryDescription}
+            </p>
+          </div>
+          <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
+            <label className="block">
+              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+                {copy.searchLabel}
+              </span>
+              <input
+                disabled
+                placeholder={copy.searchPlaceholder}
+                className="mt-3 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 text-sm text-[color:var(--muted)] outline-none"
+              />
+            </label>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {copy.filters.map((filter) => (
+                <span
+                  key={filter}
+                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-xs font-semibold text-[color:var(--muted)]"
+                >
+                  {filter}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {localizedTools.map((tool) => (
               <a
                 key={tool.slug}
                 href={localizedPath(locale, tool.slug)}
                 className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
               >
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                  {tool.icon}
-                </p>
+                <div className="flex items-start justify-between gap-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+                    {tool.group[locale]}
+                  </p>
+                  <span className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 py-1 text-xs font-semibold text-[color:var(--muted)]">
+                    {tool.tier}
+                  </span>
+                </div>
                 <h2 className="mt-4 text-xl font-semibold">{tool[locale]}</h2>
+                <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
+                  {tool.description[locale]}
+                </p>
               </a>
             ))}
+          </div>
+          <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+              {copy.popular}
+            </p>
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              {copy.popularWorkflows.map((workflow) => (
+                <p
+                  key={workflow}
+                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]"
+                >
+                  {workflow}
+                </p>
+              ))}
+            </div>
           </div>
         </Container>
       </Section>

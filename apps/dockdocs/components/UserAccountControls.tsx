@@ -12,6 +12,7 @@ import {
 } from "@netlify/identity";
 import { usePathname } from "next/navigation";
 import { getRuntimeCopy, localeFromPathname } from "@/lib/copy";
+import { defaultLocale, localizedPath } from "@/lib/i18n";
 
 type AccountState = {
   user: User | null;
@@ -23,8 +24,11 @@ type AccountState = {
 };
 
 export function UserAccountControls() {
-  const locale = localeFromPathname(usePathname());
+  const pathname = usePathname();
+  const locale = localeFromPathname(pathname);
   const copy = getRuntimeCopy(locale).shell.account;
+  const pricingHref =
+    locale === defaultLocale ? "/pricing/" : localizedPath(locale, "pricing");
   const [state, setState] = useState<AccountState>({
     user: null,
     loading: true,
@@ -97,33 +101,66 @@ export function UserAccountControls() {
 
   if (state.user) {
     return (
-      <div className="flex flex-wrap items-center justify-end gap-2 text-xs sm:text-sm">
+      <div className="grid max-w-full gap-3 text-xs sm:text-sm">
+        <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+            {copy.signedIn}
+          </p>
+          <p className="mt-1 max-w-[240px] truncate text-sm font-semibold">
+            {state.user.name || state.user.email || copy.signedIn}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
         <a
           href="/my-chats"
-        className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--foreground)] transition hover:bg-black/5"
+          className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--foreground)] transition hover:bg-black/5"
         >
           {copy.myChats}
         </a>
-        <span className="max-w-[180px] truncate rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-3 py-2 font-semibold text-[color:var(--accent-strong)]">
-          {state.user.name || state.user.email || copy.signedIn}
-        </span>
+        <a
+          href={pricingHref}
+          className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-2 font-semibold text-white transition hover:opacity-90"
+        >
+          {copy.upgrade}
+        </a>
         <button
           type="button"
           onClick={handleLogout}
-          className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)]"
+          className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)]"
         >
           {copy.logout}
         </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex max-w-full flex-wrap items-center justify-end gap-2 text-xs sm:text-sm">
+    <div className="grid max-w-full gap-3 text-xs sm:text-sm">
+      <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="font-semibold">{copy.signedOutTitle}</p>
+            <p className="mt-1 text-xs leading-5 text-[color:var(--muted)]">
+              {copy.signedOutDescription}
+            </p>
+          </div>
+          <span className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-2 py-1 text-[10px] font-semibold text-[color:var(--muted)]">
+            {copy.currentPlan}
+          </span>
+        </div>
+        <a
+          href={pricingHref}
+          className="mt-3 inline-flex min-h-10 w-full items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-2 font-semibold text-white transition hover:opacity-90"
+        >
+          {copy.upgrade}
+        </a>
+      </div>
+      <div className="flex max-w-full flex-wrap items-center gap-2">
       <button
         type="button"
         onClick={() => oauthLogin("google")}
-        className="rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-2 font-semibold text-white transition hover:opacity-90"
+        className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] bg-[color:var(--foreground)] px-3 py-2 font-semibold text-[color:var(--background)] transition hover:opacity-90"
       >
         {copy.continueGoogle}
       </button>
@@ -132,10 +169,11 @@ export function UserAccountControls() {
         onClick={() =>
           setState((current) => ({ ...current, emailOpen: !current.emailOpen }))
         }
-        className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)]"
+        className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)]"
       >
         {copy.email}
       </button>
+      </div>
       {state.emailOpen ? (
         <div className="grid w-full gap-2 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 shadow-sm sm:w-72">
           <input
