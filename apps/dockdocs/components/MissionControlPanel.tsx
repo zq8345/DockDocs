@@ -1,0 +1,299 @@
+import type {
+  MissionControlSnapshot,
+  MissionAgent,
+  MissionGate,
+  MissionLane,
+  MissionMetric,
+  MissionTask,
+  MissionTone,
+} from "@/lib/mission-control";
+
+type MissionControlPanelProps = {
+  snapshot: MissionControlSnapshot;
+};
+
+const toneStyles: Record<
+  MissionTone,
+  {
+    chip: string;
+    border: string;
+    panel: string;
+    text: string;
+    dot: string;
+  }
+> = {
+  ready: {
+    chip:
+      "border-[color:var(--success-line)] bg-[color:var(--success-surface)] text-[color:var(--success)]",
+    border: "border-[color:var(--success-line)]",
+    panel: "bg-[color:var(--success-surface)]",
+    text: "text-[color:var(--success)]",
+    dot: "bg-[color:var(--success)]",
+  },
+  watch: {
+    chip:
+      "border-[color:var(--warning-line)] bg-[color:var(--warning-surface)] text-[color:var(--warning)]",
+    border: "border-[color:var(--warning-line)]",
+    panel: "bg-[color:var(--warning-surface)]",
+    text: "text-[color:var(--warning)]",
+    dot: "bg-[color:var(--warning)]",
+  },
+  blocked: {
+    chip:
+      "border-[color:var(--error-line)] bg-[color:var(--error-surface)] text-[color:var(--error)]",
+    border: "border-[color:var(--error-line)]",
+    panel: "bg-[color:var(--error-surface)]",
+    text: "text-[color:var(--error)]",
+    dot: "bg-[color:var(--error)]",
+  },
+};
+
+export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
+  return (
+    <main className="min-h-screen bg-[color:var(--background)]">
+      <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-5 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-end">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
+              OPS-100 Mission Control
+            </p>
+            <h1 className="mt-3 max-w-4xl text-3xl font-semibold leading-tight sm:text-5xl">
+              Mission Control
+            </h1>
+            <p className="mt-4 max-w-3xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">
+              Internal Phase 1 operating board for DockDocs release readiness,
+              task ownership, next action, and agent status.
+            </p>
+          </div>
+          <div className={`rounded-[var(--radius)] border p-4 ${toneStyles[snapshot.summary.tone].border} ${toneStyles[snapshot.summary.tone].panel}`}>
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+                Current status
+              </p>
+              <StatusChip tone={snapshot.summary.tone} label={snapshot.summary.status} />
+            </div>
+            <p className="mt-4 text-2xl font-semibold">{snapshot.summary.status}</p>
+            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+              {snapshot.summary.detail}
+            </p>
+            <p className="mt-3 text-xs font-semibold text-[color:var(--muted)]">
+              Snapshot: {snapshot.generatedAt} UTC
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-6">
+          <MetricGrid metrics={snapshot.metrics} />
+
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
+            <OperationalLanes lanes={snapshot.lanes} />
+            <ReleaseGates gates={snapshot.gates} />
+          </div>
+
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(340px,0.8fr)]">
+            <WorkQueue queue={snapshot.queue} />
+            <AgentStatus agents={snapshot.agents} />
+          </div>
+
+          <EvidenceLog evidence={snapshot.evidence} />
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function MetricGrid({ metrics }: { metrics: MissionMetric[] }) {
+  return (
+    <section aria-labelledby="mission-metrics">
+      <div className="flex items-center justify-between gap-4">
+        <h2 id="mission-metrics" className="text-lg font-semibold">
+          Progress overview
+        </h2>
+      </div>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        {metrics.map((metric) => (
+          <article
+            key={metric.label}
+            className={`min-h-32 rounded-[var(--radius)] border bg-[color:var(--surface)] p-4 ${toneStyles[metric.tone].border}`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-sm font-semibold text-[color:var(--muted)]">
+                {metric.label}
+              </p>
+              <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${toneStyles[metric.tone].dot}`} />
+            </div>
+            <p className="mt-3 text-3xl font-semibold">{metric.value}</p>
+            <p className="mt-2 text-xs leading-5 text-[color:var(--muted)]">
+              {metric.helper}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function OperationalLanes({ lanes }: { lanes: MissionLane[] }) {
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+            Task lanes
+          </p>
+          <h2 className="mt-1 text-xl font-semibold">Phase 1 coverage</h2>
+        </div>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        {lanes.map((lane) => (
+          <article
+            key={lane.label}
+            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h3 className="font-semibold">{lane.label}</h3>
+                <p className="mt-1 text-xs font-semibold text-[color:var(--muted)]">
+                  Owner: {lane.owner}
+                </p>
+              </div>
+              <StatusChip tone={lane.tone} label={lane.status} />
+            </div>
+            <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
+              {lane.signal}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ReleaseGates({ gates }: { gates: MissionGate[] }) {
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        Release gates
+      </p>
+      <h2 className="mt-1 text-xl font-semibold">Ship decision inputs</h2>
+      <div className="mt-4 grid gap-3">
+        {gates.map((gate) => (
+          <article
+            key={gate.label}
+            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-semibold">{gate.label}</h3>
+              <StatusChip tone={gate.tone} label={gate.state} />
+            </div>
+            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+              {gate.detail}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function WorkQueue({ queue }: { queue: MissionTask[] }) {
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        Task summary
+      </p>
+      <h2 className="mt-1 text-xl font-semibold">Next recommended action</h2>
+      <div className="mt-4 overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)]">
+        <div className="grid grid-cols-[72px_minmax(0,1fr)_96px] border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+          <span>Pri</span>
+          <span>Task</span>
+          <span>Status</span>
+        </div>
+        {queue.map((task) => (
+          <article
+            key={task.title}
+            className="grid grid-cols-[72px_minmax(0,1fr)_96px] gap-2 border-b border-[color:var(--line)] px-3 py-3 text-sm last:border-b-0"
+          >
+            <span className="font-semibold text-[color:var(--accent)]">{task.priority}</span>
+            <div className="min-w-0">
+              <h3 className="break-words font-semibold">{task.title}</h3>
+              <p className="mt-1 text-xs text-[color:var(--muted)]">{task.area}</p>
+            </div>
+            <span className="text-xs font-semibold text-[color:var(--muted)]">
+              {task.status}
+            </span>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AgentStatus({ agents }: { agents: MissionAgent[] }) {
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        Agent status
+      </p>
+      <h2 className="mt-1 text-xl font-semibold">Execution coverage</h2>
+      <div className="mt-4 grid gap-3">
+        {agents.map((agent) => (
+          <article
+            key={agent.name}
+            className={`rounded-[var(--radius-sm)] border bg-[color:var(--surface-subtle)] p-3 ${toneStyles[agent.tone].border}`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h3 className="font-semibold">{agent.name}</h3>
+                <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+                  {agent.role}
+                </p>
+              </div>
+              <StatusChip tone={agent.tone} label={agent.status} />
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function EvidenceLog({
+  evidence,
+}: {
+  evidence: MissionControlSnapshot["evidence"];
+}) {
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        Evidence log
+      </p>
+      <h2 className="mt-1 text-xl font-semibold">Snapshot inputs</h2>
+      <div className="mt-4 grid gap-3">
+        {evidence.map((item) => (
+          <article
+            key={item.label}
+            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
+          >
+            <h3 className="text-sm font-semibold">{item.label}</h3>
+            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+              {item.detail}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function StatusChip({ tone, label }: { tone: MissionTone; label: string }) {
+  return (
+    <span
+      className={`inline-flex min-h-7 shrink-0 items-center rounded-[var(--radius-sm)] border px-2.5 text-xs font-semibold ${toneStyles[tone].chip}`}
+    >
+      {label}
+    </span>
+  );
+}
