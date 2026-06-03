@@ -18,6 +18,7 @@
     "build:dockdocs": "npm --workspace @dock/dockdocs run build",
     "geo:scope": "node apps/dockdocs/scripts/geo-scope-guard.mjs",
     "geo:qa": "npm --workspace @dock/dockdocs run geo:qa",
+    "geo:template-audit": "node apps/dockdocs/scripts/geo-template-audit.mjs",
     "build:dockimg": "npm --workspace @dock/dockimg run build",
     "build:dockseo": "npm --workspace @dock/dockseo run build",
     "build:docktext": "npm --workspace @dock/docktext run build"

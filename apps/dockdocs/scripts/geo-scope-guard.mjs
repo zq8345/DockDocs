@@ -10,6 +10,7 @@ const allowedExact = new Set([
   "apps/dockdocs/public/llms.txt",
   "apps/dockdocs/scripts/geo-qa-check.mjs",
   "apps/dockdocs/scripts/geo-scope-guard.mjs",
+  "apps/dockdocs/scripts/geo-template-audit.mjs",
   "package.json",
   "apps/dockdocs/package.json",
 ]);

@@ -35,7 +35,108 @@ const expectedPrioritySlugs = [
   "pdf-tools-for-students",
 ];
 
+const geo018HighIntentSlugs = [
+  "ai-contract-risk-summary",
+  "ai-contract-clause-extraction",
+  "ai-contract-obligation-tracker",
+  "ai-contract-renewal-date-review",
+  "ai-contract-redline-preparation",
+  "ai-research-literature-review-workflow",
+  "ai-research-methods-summary",
+  "ai-research-citation-extraction",
+  "ai-research-table-extraction",
+  "ai-research-findings-comparison",
+  "ai-due-diligence-report-summary",
+  "ai-due-diligence-red-flag-review",
+  "ai-due-diligence-checklist-pdf",
+  "ai-compliance-policy-summary",
+  "ai-compliance-evidence-review",
+  "ai-compliance-audit-preparation",
+  "ai-audit-report-summary",
+  "ai-audit-evidence-extraction",
+  "ai-audit-findings-review",
+  "ai-financial-statement-summary",
+  "ai-financial-disclosure-review",
+  "ai-financial-risk-notes",
+  "ai-knowledge-base-extraction",
+  "ai-knowledge-extraction-from-pdf",
+  "ai-sop-document-review",
+  "ai-policy-document-comparison",
+  "ai-policy-change-summary",
+  "ai-regulatory-document-review",
+  "ai-board-report-summary",
+  "ai-executive-brief-from-pdf",
+  "ai-project-report-summary",
+  "ai-technical-document-qa",
+  "ai-product-requirements-review",
+  "ai-procurement-document-review",
+  "ai-rfp-response-review",
+  "ai-vendor-document-review",
+  "ai-training-manual-summary",
+  "ai-meeting-packet-review",
+  "ai-grant-report-summary",
+  "ai-case-file-summary",
+  "pdf-workflow-for-healthcare-forms",
+  "ai-pdf-for-healthcare-medical-record-review",
+  "ocr-pdf-for-healthcare-patient-intake-forms",
+  "pdf-tools-for-healthcare-clinical-documentation",
+  "pdf-workflow-for-healthcare-compliance",
+  "pdf-tools-for-healthcare-audits",
+  "pdf-tools-for-financial-advisors",
+  "pdf-workflow-for-finance-bank-statements",
+  "ai-pdf-for-finance-investment-report-review",
+  "ocr-pdf-for-finance-statements",
+  "pdf-workflow-for-finance-tax-documents",
+  "ai-pdf-for-finance-compliance-review",
+  "pdf-workflow-for-legal-litigation-documents",
+  "ai-pdf-for-legal-contract-clause-review",
+  "ocr-pdf-for-legal-exhibits",
+  "pdf-tools-for-legal-law-firms",
+  "pdf-workflow-for-legal-discovery",
+  "ai-pdf-for-legal-brief-summary",
+  "pdf-tools-for-education-universities",
+  "pdf-workflow-for-education-student-records",
+  "ai-pdf-for-education-academic-review",
+  "ocr-pdf-for-education-classroom-materials",
+  "pdf-workflow-for-education-admissions-documents",
+  "ai-pdf-for-education-student-application-review",
+  "pdf-tools-for-construction-projects",
+  "pdf-workflow-for-construction-blueprint-documents",
+  "ai-pdf-for-construction-contract-review",
+  "ocr-pdf-for-construction-permits",
+  "pdf-workflow-for-construction-site-reporting",
+  "pdf-workflow-for-construction-bids",
+  "pdf-tools-for-logistics-shipping-documents",
+  "pdf-workflow-for-logistics-bill-of-lading",
+  "ai-pdf-for-logistics-report-review",
+  "ocr-pdf-for-logistics-delivery-receipts",
+  "pdf-workflow-for-logistics-supply-chain-documents",
+  "pdf-tools-for-manufacturing-quality-control",
+  "pdf-workflow-for-manufacturing-sops",
+  "ai-pdf-for-manufacturing-inspection-report-review",
+  "ocr-pdf-for-manufacturing-production-records",
+  "pdf-workflow-for-manufacturing-supplier-documents",
+];
+
 const allowedSchemaTypes = new Set(["Article", "TechArticle"]);
+const blockedClaimPatterns = [
+  /\bguarantee(?:d)?\b/i,
+  /\baccurate legal advice\b/i,
+  /\blegal advice\b/i,
+  /\bfinancial advice\b/i,
+  /\bmedical advice\b/i,
+  /\bdiagnose\b/i,
+  /\bcompliance guaranteed\b/i,
+  /\brisk-free\b/i,
+  /\bfully compliant\b/i,
+  /\bcourt-ready\b/i,
+  /\baudit-proof\b/i,
+  /\bHIPAA compliant\b/i,
+  /\bGDPR compliant\b/i,
+  /\breplace lawyer\b/i,
+  /\breplace accountant\b/i,
+  /\breplace doctor\b/i,
+];
 const failures = [];
 const warnings = [];
 
@@ -52,6 +153,41 @@ function wordCount(value) {
     .trim()
     .split(/\s+/)
     .filter(Boolean).length;
+}
+
+function flattenClaimText(page) {
+  return [
+    page.title,
+    page.h1,
+    page.description,
+    page.question,
+    page.quickAnswer,
+    page.aiAnswerSnippet,
+    page.aiCitationSummary,
+    page.entityDescription,
+    page.answer,
+    page.measurableOutcome,
+    page.betterAlternative,
+    page.finalRecommendation,
+    ...(page.bestFor ?? []),
+    ...(page.notBestFor ?? []),
+    ...(page.decisionCriteria ?? []),
+    ...(page.useCases ?? []),
+    ...(page.commonMistakes ?? []),
+    ...(page.limitations ?? []),
+    ...(page.privacyNotes ?? []),
+    ...(page.definitions ?? []),
+    ...(page.standards ?? []),
+    ...(page.fileLimits ?? []),
+    ...(page.workflowNotes ?? []),
+    ...(page.whenToUseThisWorkflow ?? []),
+    ...(page.whenNotToUseThisWorkflow ?? []),
+    ...(page.alternativeWorkflows ?? []),
+    ...(page.steps ?? []),
+    ...(page.faqs ?? []).flatMap((faq) => [faq.question, faq.answer]),
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function routeFor(page) {
@@ -148,6 +284,31 @@ for (const seed of seeds) {
   if (!page.limitations?.length) fail(`${label} missing limitations.`);
   if (!page.relatedTools?.length) fail(`${label} missing relatedTools.`);
   if (!page.relatedGuides?.length) fail(`${label} missing relatedGuides.`);
+
+  const isGeo018HighIntent = geo018HighIntentSlugs.includes(page.slug);
+  const isSensitivePage =
+    page.sensitiveDomain !== "general" ||
+    page.professionalReviewRequired ||
+    page.cluster === "ai-pdf";
+
+  if (isGeo018HighIntent) {
+    const claimText = flattenClaimText(page);
+    for (const pattern of blockedClaimPatterns) {
+      if (pattern.test(claimText)) {
+        fail(`${label} contains blocked claim pattern: ${pattern}`);
+      }
+    }
+  }
+
+  if (isSensitivePage) {
+    if (!page.claimSafetyNotes?.length) {
+      fail(`${label} sensitive/professional-review page missing claimSafetyNotes.`);
+    }
+
+    if (!page.privacyNotes?.some((note) => /Review boundaries:/i.test(note))) {
+      fail(`${label} sensitive/professional-review page must expose Review boundaries in visible privacy notes.`);
+    }
+  }
 
   const snippetWords = wordCount(page.aiAnswerSnippet);
   if (snippetWords < 40 || snippetWords > 70) {
