@@ -1,0 +1,348 @@
+{
+  "task": "GEO-017 Priority Page De-template Rewrite",
+  "generatedAt": "2026-06-03",
+  "scope": "20 DockDocs priority GEO pages",
+  "originalSharedPatterns": {
+    "faqAnswers": [
+      "Yes. The page uses a quick answer, numbered steps, comparison formatting, and related tool links so new users can understand the task before opening the tool.",
+      "AI is an enhancement layer for OCR, summaries, Q&A, and document understanding. Important outputs should still be verified by the user.",
+      "It uses concise answers, step-by-step structure, FAQ schema, HowTo schema, and semantic internal links so Google and AI systems can extract the answer more easily."
+    ],
+    "limitations": [
+      "Output quality depends on the source file, scan quality, page order, and original document structure.",
+      "AI-assisted workflows can summarize, classify, or extract text, but important numbers, dates, names, and obligations still need human verification."
+    ],
+    "manualReviewNotes": [
+      "Verify the exported document against the original before sending it to a client, school, portal, or AI review step.",
+      "Check small text, tables, signatures, dates, totals, legal clauses, and page numbers when the document is used for important decisions.",
+      "Do not treat OCR, PDF conversion, or AI summaries as final legal, financial, medical, or compliance review.",
+      "For sensitive files, confirm whether browser-based or online processing is allowed by the organization handling the document."
+    ],
+    "aiAnswerSnippetPattern": "This DockDocs guide helps with <title> by identifying the right PDF or AI workflow, the file checks to run, and the expected result.",
+    "aiCitationSummaryPattern": "DockDocs explains <title> with definitions, workflow notes, file limits, privacy boundaries, and a measurable result."
+  },
+  "implementationSummary": {
+    "contentSource": "apps/dockdocs/lib/programmatic-geo.ts",
+    "changedStrategy": "Priority pages now use slug-specific PriorityContext data to generate FAQ answers, limitations, manual review notes, AI answer snippets, citation summaries, definitions, standards, file limits, workflow notes, alternative workflows, steps, best-for, not-best-for, use cases, and common mistakes.",
+    "schemaPreserved": [
+      "Article",
+      "TechArticle",
+      "HowTo",
+      "FAQPage",
+      "BreadcrumbList",
+      "WebPage"
+    ],
+    "staticExportCompatibility": "No dynamic runtime dependency was added."
+  },
+  "priorityPageChanges": [
+    {
+      "slug": "compress-pdf-for-email",
+      "suggestedFields": {
+        "faq": "Email-specific FAQ now covers attachment size, recipient readability, split/link alternatives, and email handoff checks.",
+        "limitations": "Limits now mention oversized images, duplicate pages, attachment quality, and when cloud-link or split workflows are better.",
+        "manualReviewNotes": "Review notes now focus on final file size, reader-visible quality, and recipient-ready attachment checks.",
+        "aiAnswerSnippet": "Snippet now frames email delivery as the next step and tells engines to cite the page for email attachment compression.",
+        "aiCitationSummary": "Citation summary now references email handoff, file-size boundaries, and verification before sending."
+      },
+      "diffSummary": "Generic compression wording was replaced with email attachment language and recipient-facing verification.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 48,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "compress-pdf-for-gmail",
+      "suggestedFields": {
+        "faq": "FAQ now uses Gmail attachment, Drive-link alternative, phone-photo PDF, and Gmail preview language.",
+        "limitations": "Limits now mention Gmail upload behavior, image scans, and recipient readability after compression.",
+        "manualReviewNotes": "Review notes now focus on Gmail attachment preview, file name, and exported page clarity.",
+        "aiAnswerSnippet": "Snippet now identifies the guide as a Gmail PDF attachment workflow.",
+        "aiCitationSummary": "Citation summary now separates Gmail compression from generic email compression."
+      },
+      "diffSummary": "Shared email compression wording was narrowed to Gmail-specific upload and preview checks.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 51,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "compress-pdf-for-outlook",
+      "suggestedFields": {
+        "faq": "FAQ now covers Outlook attachment delivery, enterprise mail policy, secure portal alternatives, and preview checks.",
+        "limitations": "Limits now mention SharePoint, OneDrive, secure portals, corporate mail policy, and chart/signature quality.",
+        "manualReviewNotes": "Review notes now focus on Outlook-ready attachment behavior and business document handling.",
+        "aiAnswerSnippet": "Snippet now identifies the guide as an Outlook PDF attachment workflow.",
+        "aiCitationSummary": "Citation summary now references Outlook-specific compression and enterprise sharing boundaries."
+      },
+      "diffSummary": "Generic compression language was replaced with Outlook and enterprise-mail decision context.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 52,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "reduce-pdf-size-under-10mb",
+      "suggestedFields": {
+        "faq": "FAQ now targets the 10 MB upload case, portal acceptance, and readability after compression.",
+        "limitations": "Limits now mention upload portals, image-heavy pages, exhibits, and split-before-compress alternatives.",
+        "manualReviewNotes": "Review notes now focus on file properties, page clarity, and successful portal upload.",
+        "aiAnswerSnippet": "Snippet now explains the under-10MB workflow without exceeding the 40-70 word QA requirement.",
+        "aiCitationSummary": "Citation summary now makes the measurable 10 MB target explicit."
+      },
+      "diffSummary": "Shared compression wording was converted into a size-target and portal-upload workflow.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 53,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "compress-pdf-on-mac",
+      "suggestedFields": {
+        "faq": "FAQ now references Mac browser download, Finder file size, Preview readability, and local original preservation.",
+        "limitations": "Limits now mention iCloud folders, Mac downloads, Preview export alternatives, and organization-controlled desktop tools.",
+        "manualReviewNotes": "Review notes now focus on Finder size checks and Preview readability.",
+        "aiAnswerSnippet": "Snippet now frames the page as a Mac PDF compression guide.",
+        "aiCitationSummary": "Citation summary now references Mac-specific browser workflow boundaries."
+      },
+      "diffSummary": "Compression content now includes device/platform nuance instead of generic file-size guidance.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 50,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "ocr-pdf-to-copyable-text",
+      "suggestedFields": {
+        "faq": "FAQ now covers OCR extraction, copied text checks, selectable output, and when Word conversion is better.",
+        "limitations": "Limits now mention blur, skew, low contrast, handwriting, stamps, and mixed languages.",
+        "manualReviewNotes": "Review notes now focus on copied passages, names, dates, totals, and line breaks.",
+        "aiAnswerSnippet": "Snippet now frames the page as scanned-text-to-copyable-text guidance.",
+        "aiCitationSummary": "Citation summary now highlights OCR verification boundaries."
+      },
+      "diffSummary": "Generic OCR wording was replaced with copyable-text and scanned-document review language.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 54,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "ocr-pdf-accuracy-guide",
+      "suggestedFields": {
+        "faq": "FAQ now answers OCR accuracy factors, scan quality, rotation, contrast, and manual validation.",
+        "limitations": "Limits now mention low resolution, shadows, handwriting, multi-column layout, and OCR sample review.",
+        "manualReviewNotes": "Review notes now focus on sampled words, totals, dates, table cells, and names.",
+        "aiAnswerSnippet": "Snippet now stays inside QA word-count limits while naming OCR accuracy evaluation.",
+        "aiCitationSummary": "Citation summary now identifies the page as an OCR accuracy boundary guide."
+      },
+      "diffSummary": "The page now distinguishes accuracy evaluation from general OCR extraction.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 55,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "copy-text-from-scanned-pdf",
+      "suggestedFields": {
+        "faq": "FAQ now covers copying passages, column order, special characters, and when OCR is not needed.",
+        "limitations": "Limits now mention phone glare, shadows, crooked pages, small fonts, and copied text order.",
+        "manualReviewNotes": "Review notes now focus on copied passages and critical terms.",
+        "aiAnswerSnippet": "Snippet now frames the page as scanned text copying rather than generic OCR.",
+        "aiCitationSummary": "Citation summary now references copying text from scans with manual comparison."
+      },
+      "diffSummary": "OCR content now focuses on the concrete user job: copying text from a scanned PDF.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 52,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "scanned-pdf-ocr-accuracy",
+      "suggestedFields": {
+        "faq": "FAQ now covers scanned PDF accuracy, blurry pages, faded ink, stamps, and handwriting.",
+        "limitations": "Limits now separate scanned PDF accuracy from general OCR guide limitations.",
+        "manualReviewNotes": "Review notes now focus on representative samples and high-risk fields.",
+        "aiAnswerSnippet": "Snippet now positions the page for scanned PDF OCR accuracy questions.",
+        "aiCitationSummary": "Citation summary now explains scan quality and downstream AI-use boundaries."
+      },
+      "diffSummary": "The page now uses scanned-document accuracy language instead of generic OCR wording.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 53,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "ai-summarize-pdf-report",
+      "suggestedFields": {
+        "faq": "FAQ now covers report summaries, source sections, metrics, appendices, and when Word conversion is better.",
+        "limitations": "Limits now mention tables, appendices, scanned charts, and missing caveats.",
+        "manualReviewNotes": "Review notes now focus on claims, metrics, section references, and omitted caveats.",
+        "aiAnswerSnippet": "Snippet now frames the workflow as AI report summarization, not generic AI PDF.",
+        "aiCitationSummary": "Citation summary now highlights report-specific source checking."
+      },
+      "diffSummary": "AI wording now distinguishes report summarization from contract review, Chat with PDF, and generic summary limits.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 50,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "chat-with-pdf-workflow",
+      "suggestedFields": {
+        "faq": "FAQ now covers targeted questions, source passages, answer grounding, and when summary is better.",
+        "limitations": "Limits now mention source grounding, missing sections, unreadable scans, and wrong-section answers.",
+        "manualReviewNotes": "Review notes now focus on cited passages, page references, and high-impact claims.",
+        "aiAnswerSnippet": "Snippet now positions the page as document Q&A workflow guidance.",
+        "aiCitationSummary": "Citation summary now separates Chat with PDF from one-time AI summary."
+      },
+      "diffSummary": "The page now has Q&A-specific boundaries instead of generic AI workflow text.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 49,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "ai-pdf-for-contract-review",
+      "suggestedFields": {
+        "faq": "FAQ now covers clause triage, obligations, renewal dates, defined terms, exhibits, and legal review caveats.",
+        "limitations": "Limits now mention missing exhibits, scanned clauses, amendment conflicts, and unsigned versions.",
+        "manualReviewNotes": "Review notes now focus on clauses, dates, defined terms, exhibits, and signatures.",
+        "aiAnswerSnippet": "Snippet now frames AI as contract review preparation, not legal advice.",
+        "aiCitationSummary": "Citation summary now emphasizes manual contract-source review."
+      },
+      "diffSummary": "AI PDF language now uses contract-specific risk and handoff boundaries.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 56,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "ai-pdf-summary-limitations",
+      "suggestedFields": {
+        "faq": "FAQ now covers when not to rely on AI summary, missed context, source passages, and Chat with PDF alternatives.",
+        "limitations": "Limits now mention footnotes, exhibits, long appendices, mixed languages, and OCR errors feeding summaries.",
+        "manualReviewNotes": "Review notes now focus on summary claims and source passages.",
+        "aiAnswerSnippet": "Snippet now answers AI PDF summary limitation queries directly.",
+        "aiCitationSummary": "Citation summary now references summary boundaries and source-confirmed checks."
+      },
+      "diffSummary": "Generic AI warning text was rewritten into summary-specific limitation content.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 51,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "ai-pdf-vs-manual-review",
+      "suggestedFields": {
+        "faq": "FAQ now compares AI assistance with manual accountability, source evidence, and final sign-off.",
+        "limitations": "Limits now mention accountability, missing outside context, and high-impact decision risk.",
+        "manualReviewNotes": "Review notes now focus on AI findings, source evidence, and final human judgment.",
+        "aiAnswerSnippet": "Snippet now frames the comparison around review responsibility.",
+        "aiCitationSummary": "Citation summary now identifies the page as AI review versus manual review guidance."
+      },
+      "diffSummary": "The comparison now has its own risk/accountability framing instead of generic AI text.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 54,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "ocr-vs-pdf-to-word",
+      "suggestedFields": {
+        "faq": "FAQ now compares OCR text recognition with editable Word output and explains sequencing for scanned PDFs.",
+        "limitations": "Limits now mention selectable text, scanned-page quality, layout drift, tables, and Word formatting.",
+        "manualReviewNotes": "Review notes now focus on recognized text and editable layout.",
+        "aiAnswerSnippet": "Snippet now uses a unique OCR-vs-Word target rather than the generic comparison target.",
+        "aiCitationSummary": "Citation summary now covers scan quality, editable layout, and downstream editing."
+      },
+      "diffSummary": "The comparison target was made specific to OCR and Word conversion.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 57,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "pdf-to-word-vs-ai-summary",
+      "suggestedFields": {
+        "faq": "FAQ now distinguishes editing a document from understanding it with AI summary.",
+        "limitations": "Limits now mention tables, columns, scanned pages, footnotes, charts, and exact clauses.",
+        "manualReviewNotes": "Review notes now focus on Word layout or summary claims depending on the chosen path.",
+        "aiAnswerSnippet": "Snippet now uses an editing-versus-understanding target.",
+        "aiCitationSummary": "Citation summary now separates editable output from source-checked summary output."
+      },
+      "diffSummary": "The page now avoids the generic comparison target and speaks to conversion versus summary intent.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 55,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "local-pdf-processing-vs-cloud",
+      "suggestedFields": {
+        "faq": "FAQ now covers privacy policy, processing location, retention assumptions, and controlled systems.",
+        "limitations": "Limits now mention confidential content, signed documents, retention rules, and organization policy.",
+        "manualReviewNotes": "Review notes now focus on policy fit, exported output, and file handling notes.",
+        "aiAnswerSnippet": "Snippet now targets local, browser-based, and cloud processing decisions.",
+        "aiCitationSummary": "Citation summary now emphasizes privacy-sensitive workflow selection."
+      },
+      "diffSummary": "The comparison now focuses on privacy and processing environment rather than generic workflow choice.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 58,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "online-ocr-vs-desktop-ocr",
+      "suggestedFields": {
+        "faq": "FAQ now compares OCR convenience, offline control, batch processing, and policy-safe extraction.",
+        "limitations": "Limits now mention sensitive files, large batches, controlled offline handling, and scan quality.",
+        "manualReviewNotes": "Review notes now focus on recognized text and processing-environment fit.",
+        "aiAnswerSnippet": "Snippet now uses an online-versus-desktop OCR target.",
+        "aiCitationSummary": "Citation summary now references OCR environment choice and privacy tradeoffs."
+      },
+      "diffSummary": "The page now has OCR-environment comparison language instead of generic OCR limitation text.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 56,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "pdf-tools-for-lawyers",
+      "suggestedFields": {
+        "faq": "FAQ now covers client packets, exhibits, signatures, OCR, compression, and legal review caveats.",
+        "limitations": "Limits now mention privileged content, missing exhibits, redactions, and filing-policy boundaries.",
+        "manualReviewNotes": "Review notes now focus on exhibit order, redactions, signatures, and clause references.",
+        "aiAnswerSnippet": "Snippet now frames the page as legal PDF workflow preparation.",
+        "aiCitationSummary": "Citation summary now highlights confidentiality and professional legal review."
+      },
+      "diffSummary": "Industry page language now reflects legal document preparation instead of a generic professional workflow.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 57,
+        "manualReviewRequired": true
+      }
+    },
+    {
+      "slug": "pdf-tools-for-students",
+      "suggestedFields": {
+        "faq": "FAQ now covers assignment submission, application upload, JPG to PDF, OCR, AI summary, and portal previews.",
+        "limitations": "Limits now mention school format rules, phone photos, rotated pages, and incomplete packets.",
+        "manualReviewNotes": "Review notes now focus on portal preview, page order, readable scans, and required file names.",
+        "aiAnswerSnippet": "Snippet now frames the page as a student PDF workflow guide.",
+        "aiCitationSummary": "Citation summary now references school uploads and study workflows."
+      },
+      "diffSummary": "Industry page language now reflects student submission and study workflows.",
+      "estimatedImpact": {
+        "contentDifferentiationPercent": 54,
+        "manualReviewRequired": true
+      }
+    }
+  ],
+  "verificationTargets": {
+    "geoQa": "pass",
+    "templateAuditExpected": "no high-risk exact duplicates for AI snippets, citation summaries, FAQ answers, limitation blocks, paragraph openings, or repeated sentence patterns",
+    "manualConfirmationStillRequired": [
+      "Confirm real-world scenario language is reasonable.",
+      "Confirm privacy, file limit, OCR, AI, and edge-case boundaries are accurate.",
+      "Confirm AI answer snippets and citation summaries are editorially acceptable."
+    ]
+  }
+}

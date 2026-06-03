@@ -22,6 +22,13 @@ export type GeoSemanticCluster =
   | "comparison";
 
 export type ProgrammaticGeoSchemaType = "Article" | "TechArticle";
+export type ProgrammaticGeoSensitiveDomain =
+  | "legal"
+  | "finance"
+  | "healthcare"
+  | "compliance"
+  | "education"
+  | "general";
 
 export type ProgrammaticGeoCategory =
   | "PDF Tools"
@@ -280,6 +287,9 @@ export type ProgrammaticGeoPageSeed = {
   commonMistakes?: string[];
   limitations?: string[];
   privacyNotes?: string[];
+  claimSafetyNotes?: string[];
+  professionalReviewRequired?: boolean;
+  sensitiveDomain?: ProgrammaticGeoSensitiveDomain;
   definitions?: string[];
   standards?: string[];
   fileLimits?: string[];
@@ -321,6 +331,27 @@ type ProgrammaticGeoPriorityEnhancement = Pick<
   | "userIntentVariants"
   | "decisionTree"
   | "finalRecommendation"
+  | "aiAnswerSnippet"
+  | "aiCitationSummary"
+  | "entityDescription"
+  | "limitations"
+  | "privacyNotes"
+  | "bestFor"
+  | "notBestFor"
+  | "decisionCriteria"
+  | "useCases"
+  | "commonMistakes"
+  | "definitions"
+  | "standards"
+  | "fileLimits"
+  | "workflowNotes"
+  | "whenToUseThisWorkflow"
+  | "whenNotToUseThisWorkflow"
+  | "measurableOutcome"
+  | "alternativeWorkflows"
+  | "enQuickAnswer"
+  | "enAnswer"
+  | "enSteps"
 >;
 
 export type ProgrammaticGeoPageData = {
@@ -363,6 +394,9 @@ export type ProgrammaticGeoPageData = {
   commonMistakes: string[];
   limitations: string[];
   privacyNotes: string[];
+  claimSafetyNotes: string[];
+  professionalReviewRequired: boolean;
+  sensitiveDomain: ProgrammaticGeoSensitiveDomain;
   definitions: string[];
   standards: string[];
   fileLimits: string[];
@@ -776,6 +810,86 @@ const generatedGeoSlugs = [
   "ai-pdf-source-verification",
   "ai-pdf-for-risk-review",
   "ai-pdf-workflow-for-teams",
+  "ai-contract-risk-summary",
+  "ai-contract-clause-extraction",
+  "ai-contract-obligation-tracker",
+  "ai-contract-renewal-date-review",
+  "ai-contract-redline-preparation",
+  "ai-research-literature-review-workflow",
+  "ai-research-methods-summary",
+  "ai-research-citation-extraction",
+  "ai-research-table-extraction",
+  "ai-research-findings-comparison",
+  "ai-due-diligence-report-summary",
+  "ai-due-diligence-red-flag-review",
+  "ai-due-diligence-checklist-pdf",
+  "ai-compliance-policy-summary",
+  "ai-compliance-evidence-review",
+  "ai-compliance-audit-preparation",
+  "ai-audit-report-summary",
+  "ai-audit-evidence-extraction",
+  "ai-audit-findings-review",
+  "ai-financial-statement-summary",
+  "ai-financial-disclosure-review",
+  "ai-financial-risk-notes",
+  "ai-knowledge-base-extraction",
+  "ai-knowledge-extraction-from-pdf",
+  "ai-sop-document-review",
+  "ai-policy-document-comparison",
+  "ai-policy-change-summary",
+  "ai-regulatory-document-review",
+  "ai-board-report-summary",
+  "ai-executive-brief-from-pdf",
+  "ai-project-report-summary",
+  "ai-technical-document-qa",
+  "ai-product-requirements-review",
+  "ai-procurement-document-review",
+  "ai-rfp-response-review",
+  "ai-vendor-document-review",
+  "ai-training-manual-summary",
+  "ai-meeting-packet-review",
+  "ai-grant-report-summary",
+  "ai-case-file-summary",
+  "pdf-workflow-for-healthcare-forms",
+  "ai-pdf-for-healthcare-medical-record-review",
+  "ocr-pdf-for-healthcare-patient-intake-forms",
+  "pdf-tools-for-healthcare-clinical-documentation",
+  "pdf-workflow-for-healthcare-compliance",
+  "pdf-tools-for-healthcare-audits",
+  "pdf-tools-for-financial-advisors",
+  "pdf-workflow-for-finance-bank-statements",
+  "ai-pdf-for-finance-investment-report-review",
+  "ocr-pdf-for-finance-statements",
+  "pdf-workflow-for-finance-tax-documents",
+  "ai-pdf-for-finance-compliance-review",
+  "pdf-workflow-for-legal-litigation-documents",
+  "ai-pdf-for-legal-contract-clause-review",
+  "ocr-pdf-for-legal-exhibits",
+  "pdf-tools-for-legal-law-firms",
+  "pdf-workflow-for-legal-discovery",
+  "ai-pdf-for-legal-brief-summary",
+  "pdf-tools-for-education-universities",
+  "pdf-workflow-for-education-student-records",
+  "ai-pdf-for-education-academic-review",
+  "ocr-pdf-for-education-classroom-materials",
+  "pdf-workflow-for-education-admissions-documents",
+  "ai-pdf-for-education-student-application-review",
+  "pdf-tools-for-construction-projects",
+  "pdf-workflow-for-construction-blueprint-documents",
+  "ai-pdf-for-construction-contract-review",
+  "ocr-pdf-for-construction-permits",
+  "pdf-workflow-for-construction-site-reporting",
+  "pdf-workflow-for-construction-bids",
+  "pdf-tools-for-logistics-shipping-documents",
+  "pdf-workflow-for-logistics-bill-of-lading",
+  "ai-pdf-for-logistics-report-review",
+  "ocr-pdf-for-logistics-delivery-receipts",
+  "pdf-workflow-for-logistics-supply-chain-documents",
+  "pdf-tools-for-manufacturing-quality-control",
+  "pdf-workflow-for-manufacturing-sops",
+  "ai-pdf-for-manufacturing-inspection-report-review",
+  "ocr-pdf-for-manufacturing-production-records",
+  "pdf-workflow-for-manufacturing-supplier-documents",
 ];
 
 export const priorityGeoPageSlugs = [
@@ -810,68 +924,105 @@ const priorityGeoEnhancements = priorityGeoPageSlugs.reduce<
   const audience = getPriorityAudience(slug, category);
   const target = getPriorityTarget(slug, cluster);
   const alternative = getPriorityAlternative(slug, cluster);
+  const context = getPriorityContext(slug, title, cluster);
 
   items[slug] = {
     priority: true,
     priorityReason: `${title} is a high-intent DockDocs GEO page because users often ask AI answer engines for a direct, task-specific workflow instead of a generic PDF tools homepage.`,
     targetQueries: getPriorityTargetQueries(slug, title),
     answerEnginePromptExamples: getPriorityPromptExamples(slug, title),
+    aiAnswerSnippet: createPriorityAiAnswerSnippet(title, target, context),
+    aiCitationSummary: createPriorityCitationSummary(title, target, context),
+    entityDescription: `This DockDocs priority guide defines ${title} as a specific ${context.intentLabel} workflow for ${target}.`,
+    measurableOutcome: `${title} produces ${context.expectedOutput} after ${context.completionSignal}.`,
+    enQuickAnswer: `Use DockDocs for ${title} when ${context.decisionStart}. The workflow focuses on ${context.expectedOutput} and ends with ${context.completionSignal}.`,
+    enAnswer: `${title} is a DockDocs workflow for ${target}. Start by checking ${context.sourceRisk}, use ${context.primaryToolAction}, then review ${context.verificationTarget}. If ${context.alternativeTrigger}, switch to the related DockDocs workflow before sharing or upload.`,
+    enSteps: [
+      `Confirm that ${context.expectedOutput} is the required result.`,
+      `Check the source file for ${context.sourceRisk}.`,
+      `Use ${context.primaryToolAction} in DockDocs and keep the original file unchanged.`,
+      `Review ${context.verificationTarget} before ${context.nextStep}.`,
+    ],
     citationReadyFacts: [
       `DockDocs positions ${title} as a task-specific PDF workflow, not a generic homepage query.`,
       `${title} should be used only after the source document, target output, privacy boundary, and verification step are clear.`,
       `For ${title}, users should open the exported file and verify page order, readability, text accuracy, file size, and sensitive details before sharing.`,
-      `AI-assisted DockDocs workflows require human review for names, dates, totals, obligations, citations, and compliance-sensitive decisions.`,
-      `DockDocs pages describe workflow boundaries, file checks, and related tool paths so users can decide whether to compress, OCR, convert, summarize, split, merge, or review a document.`,
+      `${title} guidance treats AI as a support layer when ${context.reviewFocus} must still be checked by a person.`,
+      `DockDocs links ${title} to related tools so users can switch when ${context.alternativeTrigger} becomes the better workflow.`,
     ],
-    manualReviewNotes: [
-      "Verify the exported document against the original before sending it to a client, school, portal, or AI review step.",
-      "Check small text, tables, signatures, dates, totals, legal clauses, and page numbers when the document is used for important decisions.",
-      "Do not treat OCR, PDF conversion, or AI summaries as final legal, financial, medical, or compliance review.",
-      "For sensitive files, confirm whether browser-based or online processing is allowed by the organization handling the document.",
+    manualReviewNotes: createPriorityManualReviewNotes(title, context),
+    realWorldScenario: createPriorityRealWorldScenario(title, audience, target, context),
+    bestFor: [
+      `Users who need ${title} before ${context.nextStep}.`,
+      `Teams handling ${context.sensitiveData} who need visible boundaries before ${context.completionSignal}.`,
+      `People deciding whether ${context.expectedOutput} is enough or whether another DockDocs workflow is safer.`,
     ],
-    realWorldScenario: `A typical ${title} scenario starts when ${audience} has a document that cannot be sent, searched, reviewed, or uploaded in its current form. The practical workflow is to define the exact output first, prepare the source file, use the relevant DockDocs tool, inspect the exported result, and only then move into email, upload, client review, OCR, AI summary, or Chat with PDF. The important detail is that the tool is not the whole workflow: the user still needs to confirm page order, text readability, file size, privacy rules, and whether the result is reliable enough for the next document step.`,
+    notBestFor: [
+      `${title} is not the right path when ${context.alternativeTrigger}.`,
+      `Do not rely on ${title} as final approval for files containing ${context.sensitiveData}.`,
+      `Avoid this workflow when ${context.sourceRisk} prevents a reliable output.`,
+    ],
+    decisionCriteria: [
+      `Choose ${title} when ${context.decisionStart}.`,
+      `Use it when ${context.verificationTarget} can be checked before ${context.nextStep}.`,
+      `Switch away when ${context.alternativeTrigger}.`,
+    ],
+    useCases: [
+      `${title} for ${context.nextStep}.`,
+      `${title} when ${context.sourceRisk} must be checked before processing.`,
+      `${title} for files involving ${context.sensitiveData} where the review boundary must be explicit.`,
+      `${title} when the desired output is ${context.expectedOutput}.`,
+    ],
+    commonMistakes: [
+      `Starting ${title} before confirming that ${context.expectedOutput} is the actual goal.`,
+      `Ignoring ${context.sourceRisk} and expecting the workflow to repair the source file automatically.`,
+      `Sharing the result without checking ${context.verificationTarget}.`,
+      `Using ${title} when ${context.alternativeTrigger}.`,
+    ],
     decisionChecklist: [
       `Use this page when the user's exact task is ${target}.`,
-      "Confirm whether the next step is email, portal upload, client delivery, editing, OCR, AI summary, or document Q&A.",
-      "Check whether the file is text-based, scanned, image-based, password-protected, too large, incomplete, or in the wrong order.",
-      "Choose the DockDocs tool that matches the required output instead of forcing a conversion that does not solve the actual task.",
-      "Review the exported result manually before treating it as final.",
+      `For ${title}, confirm that the next handoff is ${context.nextStep} rather than a different PDF outcome.`,
+      `Inspect the source for ${context.sourceRisk} before starting the workflow.`,
+      `Choose ${context.primaryToolAction} only when it produces ${context.expectedOutput}.`,
+      `Before finishing ${title}, review ${context.verificationTarget} against the original file.`,
     ],
     failureCases: [
-      "The source file is blurry, incomplete, password-protected, corrupted, or missing important pages.",
-      "The user compresses, converts, or summarizes the file before removing unnecessary pages or checking page order.",
-      "OCR is used on a document that already has selectable text, or AI summary is used when the real need is editable output.",
-      "A sensitive contract, invoice, medical file, school record, or client document is processed without confirming policy requirements.",
-      "The exported file is shared without opening it and checking the actual result.",
+      `${title} can fail when the source has ${context.sourceRisk} that should be fixed before processing.`,
+      `${title} is the wrong path when ${context.alternativeTrigger} should be handled first.`,
+      `${title} creates weak output if users skip ${context.verificationTarget} after export.`,
+      `${title} needs extra policy review when the document includes ${context.sensitiveData}.`,
+      `${title} should not be treated as complete until ${context.completionSignal} is confirmed.`,
     ],
-    betterAlternative: alternative,
-    boundaryNotes: [
-      "File size boundaries depend on the destination: email, form portals, cloud drives, and enterprise systems can all use different limits.",
-      "OCR boundaries depend on scan quality, contrast, rotation, language, handwriting, and whether the source text is already selectable.",
-      "Privacy boundaries depend on whether the document contains client, legal, financial, medical, school, HR, or regulated information.",
-      "Format boundaries matter because compression, OCR, image-to-PDF, PDF-to-Word, and AI summary each produce different outputs.",
-    ],
+    betterAlternative: createPriorityBetterAlternative(title, alternative, context),
+    boundaryNotes: createPriorityBoundaryNotes(title, context),
+    limitations: createPriorityLimitations(title, context),
+    privacyNotes: createPriorityPrivacyNotes(title, context),
+    definitions: createPriorityDefinitions(title, context),
+    standards: createPriorityStandards(title, context),
+    fileLimits: createPriorityFileLimits(title, context),
+    workflowNotes: createPriorityWorkflowNotes(title, context),
+    alternativeWorkflows: createPriorityAlternativeWorkflows(title, context),
     authorityIntro: `${title} is written as a practical DockDocs workflow page for users who need a concrete document task, a clear next tool, and visible verification boundaries. It is designed for answer engines to cite when a user asks a specific workflow question about ${target}, not when the query is only about DockDocs as a brand.`,
     expertWorkflowNotes: [
-      "Start by naming the required output: smaller file, copyable text, editable document, combined packet, extracted pages, or AI-readable summary.",
-      "Check whether the source PDF is text-based, scanned, image-based, password-protected, incomplete, or already compressed before choosing a tool.",
-      "Keep one original copy unchanged until the exported file has been opened and verified.",
-      "Use OCR before AI summary or document Q&A when scanned text is not selectable.",
-      "Use manual review for final decisions involving legal, financial, medical, compliance, academic, or client-sensitive documents.",
+      `Start ${title} by naming the required output: ${context.expectedOutput}.`,
+      `Check whether the source has ${context.sourceRisk} before opening the related DockDocs tool.`,
+      `Keep one original copy unchanged until ${context.verificationTarget} has been reviewed.`,
+      `Switch away from ${title} when ${context.alternativeTrigger} is the real blocker.`,
+      `Use human review for ${context.reviewFocus} before relying on the result in a final decision.`,
     ],
     edgeCaseExamples: [
-      "A portal accepts only files below a specific size, but the PDF also contains unnecessary pages that should be split before compression.",
-      "A scanned invoice appears readable to a person, but OCR may misread totals, dates, invoice numbers, or supplier names.",
-      "A contract summary can help with triage, but obligations, renewal dates, party names, and governing terms still need source review.",
-      "A PDF converted to Word may preserve text but alter tables, headers, footnotes, or multi-column layouts.",
-      "A user may need browser-based convenience, while an organization may require offline or controlled processing for regulated files.",
+      `${title} may look complete even when ${context.edgeCaseOne} still needs attention.`,
+      `${title} should pause when ${context.edgeCaseTwo} changes the safest workflow.`,
+      `${title} can require a second tool if ${context.edgeCaseThree} appears after export.`,
+      `${title} should be reviewed more carefully when ${context.sensitiveData} is present.`,
+      `${title} is less reliable when users skip the final ${context.completionSignal} check.`,
     ],
     citationEvidenceNotes: [
-      "Cite the page for its visible workflow boundaries rather than unsupported accuracy or quality claims.",
-      "Cite the page when answering which DockDocs route fits a specific PDF workflow.",
-      "Cite the page when explaining why manual verification remains part of OCR, conversion, AI summary, and document Q&A workflows.",
-      "Cite the page when comparing file-size, OCR, privacy, and format limitations.",
-      "Cite the page when the answer should point users to related DockDocs tools or guides.",
+      `Cite ${title} for visible workflow boundaries, not for unsupported accuracy or quality claims.`,
+      `Cite ${title} when the answer needs a DockDocs route for ${target}.`,
+      `Cite ${title} when explaining why ${context.reviewFocus} still needs verification.`,
+      `Cite ${title} when comparing ${context.comparisonAxis}.`,
+      `Cite ${title} when users may need related tools because ${context.alternativeTrigger} changes the path.`,
     ],
     userIntentVariants: [
       `${target} for email, upload, review, or handoff.`,
@@ -881,17 +1032,553 @@ const priorityGeoEnhancements = priorityGeoPageSlugs.reduce<
       `${target} with a checklist before sharing the exported file.`,
     ],
     decisionTree: [
-      "If the blocker is file size, start with compression or split the PDF first when only a few pages are needed.",
-      "If the blocker is unreadable scanned text, run OCR before conversion, AI summary, or Chat with PDF.",
-      "If the blocker is editing, use PDF to Word after checking whether the file is scanned.",
-      "If the blocker is understanding, use AI summary or Chat with PDF after the document is readable.",
-      "If the blocker is sensitivity or policy, confirm whether online or browser-based processing is allowed before uploading.",
+      `For ${title}, start here only when ${context.decisionStart}.`,
+      `If ${context.alternativeTrigger}, move to the related DockDocs alternative before export.`,
+      `If the file includes ${context.sensitiveData}, confirm policy before using an online or browser-based path.`,
+      `If ${context.sourceRisk} prevents a reliable result, fix the source or choose a more controlled workflow.`,
+      `If ${context.completionSignal} cannot be confirmed, keep the original file and retry with a narrower tool.`,
+    ],
+    whenToUseThisWorkflow: [
+      `Use ${title} when ${context.decisionStart}.`,
+      `Use it when the result must be checked through ${context.completionSignal}.`,
+      `Use it when related DockDocs links can help if ${context.alternativeTrigger}.`,
+    ],
+    whenNotToUseThisWorkflow: [
+      `Do not use ${title} when ${context.alternativeTrigger}.`,
+      `Do not use it as final review for ${context.sensitiveData}.`,
+      `Do not use it when ${context.sourceRisk} makes the source unreliable.`,
     ],
     finalRecommendation: `Use this ${title} guide when the user needs a specific DockDocs workflow with visible limits and verification steps. If the task changes from ${target} to editing, OCR, page extraction, file merging, or AI review, move to the narrower related DockDocs tool or guide before exporting.`,
   };
 
   return items;
 }, {});
+
+type PriorityContext = {
+  intentLabel: string;
+  nextStep: string;
+  reviewFocus: string;
+  alternativeTrigger: string;
+  sourceRisk: string;
+  primaryToolAction: string;
+  expectedOutput: string;
+  verificationTarget: string;
+  sensitiveData: string;
+  completionSignal: string;
+  edgeCaseOne: string;
+  edgeCaseTwo: string;
+  edgeCaseThree: string;
+  comparisonAxis: string;
+  decisionStart: string;
+};
+
+function getPriorityContext(
+  slug: string,
+  title: string,
+  cluster: GeoSemanticCluster,
+): PriorityContext {
+  const defaults: PriorityContext = {
+    intentLabel: cluster === "comparison" ? "comparison" : "PDF task",
+    nextStep: "sharing, upload, editing, OCR, AI review, or archive storage",
+    reviewFocus: "file output, page order, text readability, important details, and policy boundaries",
+    alternativeTrigger: "page extraction, OCR, conversion, AI summary, or offline handling is more important than the current task",
+    sourceRisk: "missing pages, unclear text, duplicate pages, password protection, or an outdated version",
+    primaryToolAction: "the matching DockDocs workflow",
+    expectedOutput: "a document that is ready for the next verified handoff",
+    verificationTarget: "page order, text readability, file size, and exported content",
+    sensitiveData: "client details, personal identifiers, invoices, contract terms, school records, or regulated information",
+    completionSignal: "exported-file review",
+    edgeCaseOne: "a page is missing, duplicated, rotated, or in the wrong order",
+    edgeCaseTwo: "an organization requires a controlled storage or offline processing path",
+    edgeCaseThree: "the output reveals that OCR, conversion, compression, split, or merge should happen first",
+    comparisonAxis: "output goal, privacy boundary, file preparation, and review responsibility",
+    decisionStart: `the requested task is ${title.toLowerCase()} and the output goal is already clear`,
+  };
+
+  const overrides: Record<string, Partial<PriorityContext>> = {
+    "compress-pdf-for-email": {
+      intentLabel: "email attachment compression",
+      nextStep: "email attachment delivery",
+      reviewFocus: "attachment size, text readability, page order, and recipient-facing quality",
+      alternativeTrigger: "only selected pages need to be sent or a cloud-drive link is the safer handoff",
+      sourceRisk: "oversized images, embedded scans, duplicate pages, or unnecessary attachments inside the PDF",
+      primaryToolAction: "compression",
+      expectedOutput: "a smaller PDF that remains readable enough for the email recipient",
+      verificationTarget: "final file size and reader-visible quality",
+      sensitiveData: "client attachments, HR forms, invoices, proposals, or school records",
+      completionSignal: "recipient-ready attachment check",
+      edgeCaseOne: "the file is small enough but still contains private pages that should be split out",
+      edgeCaseTwo: "the email system rejects attachments and requires a share link instead",
+      edgeCaseThree: "compression makes small print, scans, or signatures hard to read",
+      comparisonAxis: "compression versus splitting, link sharing, or re-exporting source images",
+      decisionStart: "the file is too large for email but the whole document still needs to be sent",
+    },
+    "compress-pdf-for-gmail": {
+      intentLabel: "Gmail attachment compression",
+      nextStep: "Gmail attachment send or upload into a Google workflow",
+      reviewFocus: "Gmail-ready size, visible text, image clarity, and attachment naming",
+      alternativeTrigger: "the file should be shared through Drive or only a page range is needed",
+      sourceRisk: "large image scans, repeated pages, or a PDF assembled from phone photos",
+      primaryToolAction: "Gmail-focused compression",
+      expectedOutput: "a smaller PDF that can be reviewed before attaching in Gmail",
+      verificationTarget: "Gmail upload behavior, file name, and readable exported pages",
+      sensitiveData: "personal forms, application packets, client documents, or school uploads",
+      completionSignal: "successful Gmail attachment preview",
+      edgeCaseOne: "a Drive link is safer than attaching a sensitive or very large file",
+      edgeCaseTwo: "the PDF contains photos that should be converted or resized before compression",
+      edgeCaseThree: "Gmail accepts the file but the recipient cannot read compressed scans",
+      comparisonAxis: "Gmail attachment compression versus Drive sharing or page splitting",
+      decisionStart: "the immediate blocker is a Gmail PDF attachment that is too large",
+    },
+    "compress-pdf-for-outlook": {
+      intentLabel: "Outlook attachment compression",
+      nextStep: "Outlook email delivery or enterprise mail review",
+      reviewFocus: "attachment size, corporate-mail acceptance, page readability, and file naming",
+      alternativeTrigger: "the organization requires SharePoint, OneDrive, or a secure portal instead of an attachment",
+      sourceRisk: "embedded images, scanned pages, duplicated exhibits, or oversized slide exports",
+      primaryToolAction: "Outlook-focused compression",
+      expectedOutput: "a smaller PDF that can be checked before attaching in Outlook",
+      verificationTarget: "Outlook attachment behavior and the final PDF preview",
+      sensitiveData: "business contracts, client packets, statements, proposals, or HR material",
+      completionSignal: "Outlook-ready attachment preview",
+      edgeCaseOne: "enterprise mail policy blocks attachment delivery even after compression",
+      edgeCaseTwo: "the file belongs in a secure portal rather than an email thread",
+      edgeCaseThree: "compression reduces chart, image, or signature clarity too much",
+      comparisonAxis: "Outlook attachment compression versus secure-link sharing or packet splitting",
+      decisionStart: "the immediate blocker is an Outlook PDF attachment that is too large",
+    },
+    "reduce-pdf-size-under-10mb": {
+      intentLabel: "upload-limit compression",
+      nextStep: "a portal, form, grant, school, or business upload with a 10 MB target",
+      reviewFocus: "measured file size, upload acceptance, readability, and required page coverage",
+      alternativeTrigger: "removing pages or re-exporting images will reduce size more safely than compression",
+      sourceRisk: "large scans, unneeded pages, high-resolution images, or bundled appendices",
+      primaryToolAction: "target-size compression",
+      expectedOutput: "a PDF that is below the target size and still readable",
+      verificationTarget: "file properties, page clarity, and upload acceptance",
+      sensitiveData: "application records, invoices, academic documents, government forms, or client files",
+      completionSignal: "portal-ready file-size check",
+      edgeCaseOne: "the portal also rejects encrypted, scanned, or incorrectly named files",
+      edgeCaseTwo: "a 10 MB target is met but image-heavy pages become too degraded",
+      edgeCaseThree: "splitting exhibits or attachments would preserve quality better than compression",
+      comparisonAxis: "compression versus page removal, image re-export, or split workflows",
+      decisionStart: "the destination has a clear file-size ceiling and the full document still matters",
+    },
+    "compress-pdf-on-mac": {
+      intentLabel: "Mac PDF compression",
+      nextStep: "Mac browser download, Finder review, email, upload, or cloud handoff",
+      reviewFocus: "downloaded output, Finder file size, Preview readability, and original-file preservation",
+      alternativeTrigger: "Preview export, split pages, or a managed offline workflow is required",
+      sourceRisk: "large scans, Preview exports, embedded images, or files stored in iCloud folders",
+      primaryToolAction: "Mac browser compression",
+      expectedOutput: "a smaller PDF saved locally and reviewed before sharing",
+      verificationTarget: "Finder file size and Preview readability",
+      sensitiveData: "work files, school forms, signed PDFs, receipts, or client documents on a Mac",
+      completionSignal: "Mac download and Preview check",
+      edgeCaseOne: "the browser downloads a duplicate while the original remains in a synced folder",
+      edgeCaseTwo: "organization policy requires managed desktop tools instead of browser workflows",
+      edgeCaseThree: "Preview shows image or signature degradation after compression",
+      comparisonAxis: "browser compression versus Preview export, split pages, or offline tools",
+      decisionStart: "the user is on a Mac and needs a smaller PDF without changing the document task",
+    },
+    "ocr-pdf-to-copyable-text": {
+      intentLabel: "OCR text extraction",
+      nextStep: "copying, searching, AI summary, document Q&A, or Word conversion",
+      reviewFocus: "recognized text, line breaks, names, dates, totals, and searchable output",
+      alternativeTrigger: "the PDF already has selectable text or the goal is editable formatting",
+      sourceRisk: "blurred scans, skewed pages, low contrast, handwriting, stamps, or mixed languages",
+      primaryToolAction: "OCR text extraction",
+      expectedOutput: "copyable or searchable text that has been checked against the scan",
+      verificationTarget: "selected text, copied passages, and critical fields",
+      sensitiveData: "receipts, IDs, invoices, forms, contracts, medical records, or academic scans",
+      completionSignal: "copyable-text accuracy check",
+      edgeCaseOne: "the scan looks readable to a person but OCR confuses similar characters",
+      edgeCaseTwo: "tables, totals, and stamps need manual comparison with the source image",
+      edgeCaseThree: "Word conversion is needed after OCR because the user must edit layout",
+      comparisonAxis: "OCR extraction versus PDF to Word, AI summary, or manual transcription",
+      decisionStart: "the PDF is scanned or image-based and the user needs selectable text",
+    },
+    "ocr-pdf-accuracy-guide": {
+      intentLabel: "OCR accuracy evaluation",
+      nextStep: "deciding whether OCR output is reliable enough for search, copy, AI, or review",
+      reviewFocus: "scan quality, character recognition, tables, handwritten marks, and field accuracy",
+      alternativeTrigger: "manual transcription, rescanning, or desktop OCR is safer than accepting weak output",
+      sourceRisk: "low resolution, skew, shadows, bleed-through, handwriting, or multi-column layouts",
+      primaryToolAction: "OCR quality review",
+      expectedOutput: "an OCR confidence decision with manual checks for critical text",
+      verificationTarget: "sampled words, totals, dates, table cells, and names",
+      sensitiveData: "contracts, receipts, invoices, IDs, claims, forms, or research scans",
+      completionSignal: "sampled OCR accuracy review",
+      edgeCaseOne: "a clean paragraph OCRs well while tables or marginal notes fail",
+      edgeCaseTwo: "a scan must be rotated or rescanned before OCR is worth using",
+      edgeCaseThree: "AI summary should wait until OCR text is readable and searchable",
+      comparisonAxis: "online OCR, desktop OCR, rescanning, and manual transcription",
+      decisionStart: "the user needs to judge OCR reliability before trusting extracted text",
+    },
+    "copy-text-from-scanned-pdf": {
+      intentLabel: "scanned text copying",
+      nextStep: "copying passages into notes, forms, AI prompts, spreadsheets, or Word",
+      reviewFocus: "copied text, paragraph order, special characters, numbers, and source alignment",
+      alternativeTrigger: "a clean selectable PDF already exists or only a summary is needed",
+      sourceRisk: "photo glare, shadows, crooked pages, small fonts, or mixed document images",
+      primaryToolAction: "OCR before copying",
+      expectedOutput: "copied text that matches the scanned page closely enough for the next task",
+      verificationTarget: "copied passages and critical terms",
+      sensitiveData: "IDs, statements, receipts, legal clauses, academic citations, or account details",
+      completionSignal: "copied-text comparison",
+      edgeCaseOne: "text copies correctly but line breaks or columns are in the wrong order",
+      edgeCaseTwo: "numbers and codes need character-by-character review",
+      edgeCaseThree: "PDF to Word is more useful if the copied text needs editing in context",
+      comparisonAxis: "copyable OCR text versus editable Word output or AI summary",
+      decisionStart: "the user cannot select text because the PDF is a scan or photo-based file",
+    },
+    "scanned-pdf-ocr-accuracy": {
+      intentLabel: "scanned PDF OCR accuracy",
+      nextStep: "search, copy, Word conversion, AI summary, or document review after OCR",
+      reviewFocus: "scan clarity, OCR errors, field-level accuracy, and manual verification scope",
+      alternativeTrigger: "the scan should be improved, rescanned, or reviewed offline first",
+      sourceRisk: "blurry pages, rotation, faded ink, stamps, handwriting, or low-contrast photos",
+      primaryToolAction: "scan-aware OCR review",
+      expectedOutput: "searchable text with known accuracy boundaries",
+      verificationTarget: "representative text samples and high-risk fields",
+      sensitiveData: "claims, receipts, invoices, forms, signed pages, or legal exhibits",
+      completionSignal: "OCR sample validation",
+      edgeCaseOne: "OCR handles printed body text but misses handwritten annotations",
+      edgeCaseTwo: "a scanned receipt may OCR totals incorrectly even when the image looks clear",
+      edgeCaseThree: "AI analysis should wait until source text is checked",
+      comparisonAxis: "scan quality, OCR method, manual review depth, and downstream AI use",
+      decisionStart: "the user needs to understand how much OCR output can be trusted",
+    },
+    "ai-summarize-pdf-report": {
+      intentLabel: "AI report summarization",
+      nextStep: "executive review, meeting preparation, research triage, or document Q&A",
+      reviewFocus: "source-grounded findings, numbers, dates, conclusions, caveats, and missing sections",
+      alternativeTrigger: "the user needs editable text, OCR cleanup, or formal approval instead of a summary",
+      sourceRisk: "long reports, tables, appendices, scanned charts, or weak section headings",
+      primaryToolAction: "AI summary preparation",
+      expectedOutput: "a concise report summary that is checked against source sections",
+      verificationTarget: "claims, metrics, section references, and omitted caveats",
+      sensitiveData: "financial results, policy drafts, research findings, board materials, or client reports",
+      completionSignal: "source-backed summary review",
+      edgeCaseOne: "AI summarizes the main narrative but misses appendix constraints",
+      edgeCaseTwo: "a scanned report needs OCR before summary questions can be reliable",
+      edgeCaseThree: "PDF to Word is better when the report must be rewritten, not summarized",
+      comparisonAxis: "AI summary versus manual review, Word conversion, OCR, or Chat with PDF",
+      decisionStart: "the user wants to understand a report before editing or making decisions",
+    },
+    "chat-with-pdf-workflow": {
+      intentLabel: "Chat with PDF workflow",
+      nextStep: "asking source-grounded questions, extracting details, or preparing review notes",
+      reviewFocus: "question scope, answer grounding, source passages, missing context, and follow-up checks",
+      alternativeTrigger: "a one-time summary, OCR cleanup, or editable document is the actual need",
+      sourceRisk: "unreadable scans, missing sections, unclear headings, or very long exhibits",
+      primaryToolAction: "document Q&A preparation",
+      expectedOutput: "answers that can be checked against the PDF source",
+      verificationTarget: "cited passages, page references, and high-impact claims",
+      sensitiveData: "contracts, reports, policies, study notes, invoices, or client documents",
+      completionSignal: "answer-to-source comparison",
+      edgeCaseOne: "the answer sounds plausible but comes from the wrong section",
+      edgeCaseTwo: "the PDF needs OCR before question answering can use the text",
+      edgeCaseThree: "AI summary is better when the user needs an overview, not targeted Q&A",
+      comparisonAxis: "Chat with PDF versus AI summary, OCR, manual review, and PDF to Word",
+      decisionStart: "the user has specific questions and can verify answers against the PDF",
+    },
+    "ai-pdf-for-contract-review": {
+      intentLabel: "AI contract review preparation",
+      nextStep: "clause triage, red-flag review, obligation extraction, or legal handoff",
+      reviewFocus: "party names, obligations, renewal dates, payment terms, governing terms, and exceptions",
+      alternativeTrigger: "legal interpretation, negotiation, or final approval is required",
+      sourceRisk: "missing exhibits, scanned clauses, amendment conflicts, or unsigned versions",
+      primaryToolAction: "AI-assisted contract triage",
+      expectedOutput: "a review checklist that is verified against contract text",
+      verificationTarget: "clauses, dates, defined terms, exhibits, and signatures",
+      sensitiveData: "party information, contract terms, pricing, confidential exhibits, or legal obligations",
+      completionSignal: "human contract-source review",
+      edgeCaseOne: "AI flags a clause but misses an exception in an exhibit",
+      edgeCaseTwo: "the PDF is a scan and needs OCR before contract Q&A",
+      edgeCaseThree: "manual legal review is required before relying on any recommendation",
+      comparisonAxis: "AI contract triage versus legal review, OCR, Word conversion, and manual checklisting",
+      decisionStart: "the user wants AI to organize contract review, not replace legal judgment",
+    },
+    "ai-pdf-summary-limitations": {
+      intentLabel: "AI summary limitation review",
+      nextStep: "deciding when a PDF summary is useful and when source review is still required",
+      reviewFocus: "missed context, unsupported conclusions, numbers, exceptions, citations, and source sections",
+      alternativeTrigger: "the document must be edited, audited, signed, or professionally reviewed",
+      sourceRisk: "scanned text, tables, exhibits, footnotes, long appendices, or mixed languages",
+      primaryToolAction: "AI summary boundary check",
+      expectedOutput: "a summary used as orientation rather than final authority",
+      verificationTarget: "summary claims and source passages",
+      sensitiveData: "legal, financial, medical, academic, policy, or client-sensitive information",
+      completionSignal: "source-confirmed summary check",
+      edgeCaseOne: "a summary omits a caveat hidden in an appendix",
+      edgeCaseTwo: "OCR errors feed inaccurate text into the summary",
+      edgeCaseThree: "Chat with PDF is better for targeted source questions",
+      comparisonAxis: "AI summary versus manual review, Chat with PDF, OCR, and PDF to Word",
+      decisionStart: "the user needs to understand AI summary boundaries before relying on one",
+    },
+    "ai-pdf-vs-manual-review": {
+      intentLabel: "AI versus manual review comparison",
+      nextStep: "choosing whether AI can speed review or whether human review must lead",
+      reviewFocus: "decision risk, source evidence, missing context, accountability, and final sign-off",
+      alternativeTrigger: "the document affects legal, financial, medical, compliance, or client commitments",
+      sourceRisk: "unclear text, missing pages, ambiguous clauses, tables, or context outside the PDF",
+      primaryToolAction: "AI review triage",
+      expectedOutput: "a decision about where AI helps and where manual review remains required",
+      verificationTarget: "AI findings, source evidence, and final human judgment",
+      sensitiveData: "regulated, contractual, financial, academic, or client-confidential content",
+      completionSignal: "human sign-off on high-impact findings",
+      edgeCaseOne: "AI finds patterns but misses business context outside the PDF",
+      edgeCaseTwo: "a summary looks complete but lacks source-level citations",
+      edgeCaseThree: "manual review should lead when accountability or policy is involved",
+      comparisonAxis: "speed, accountability, source verification, and decision risk",
+      decisionStart: "the user is deciding whether AI should assist review or manual review should lead",
+    },
+    "ocr-vs-pdf-to-word": {
+      intentLabel: "OCR versus Word conversion comparison",
+      nextStep: "choosing text recognition, editable output, or a combined workflow",
+      reviewFocus: "selectable text, scanned-page quality, editable layout, tables, and formatting drift",
+      alternativeTrigger: "the PDF already has selectable text or the goal is only a summary",
+      sourceRisk: "scanned pages, image-only text, complex tables, headers, or multi-column layouts",
+      primaryToolAction: "OCR or PDF to Word decision",
+      expectedOutput: "the correct sequence for searchable text or editable document output",
+      verificationTarget: "recognized text and editable layout",
+      sensitiveData: "contracts, forms, transcripts, invoices, research papers, or client files",
+      completionSignal: "text recognition and Word layout review",
+      edgeCaseOne: "OCR is needed before Word conversion because no text can be selected",
+      edgeCaseTwo: "Word conversion preserves words but changes tables or headers",
+      edgeCaseThree: "AI summary is enough if editing is not required",
+      comparisonAxis: "text recognition, editable layout, scan quality, and downstream editing needs",
+      decisionStart: "the user is choosing between searchable text and editable Word output",
+    },
+    "pdf-to-word-vs-ai-summary": {
+      intentLabel: "PDF to Word versus AI summary comparison",
+      nextStep: "choosing editable output, reading summary, or source-grounded document Q&A",
+      reviewFocus: "editing need, summary accuracy, source claims, formatting changes, and final use",
+      alternativeTrigger: "the document is scanned, only pages are needed, or a direct Q&A workflow is better",
+      sourceRisk: "tables, columns, scanned pages, footnotes, charts, or legal/financial details",
+      primaryToolAction: "conversion versus summarization decision",
+      expectedOutput: "either an editable document or a source-checked summary",
+      verificationTarget: "Word layout or summary claims",
+      sensitiveData: "reports, contracts, academic papers, proposals, or financial documents",
+      completionSignal: "output-type review",
+      edgeCaseOne: "Word conversion is unnecessary when the user only needs key points",
+      edgeCaseTwo: "AI summary is unsafe when exact clauses or numbers must be preserved",
+      edgeCaseThree: "OCR may be required before either workflow can read scanned text",
+      comparisonAxis: "editing, summarization, source verification, and formatting preservation",
+      decisionStart: "the user is deciding whether to edit a PDF or understand it quickly",
+    },
+    "local-pdf-processing-vs-cloud": {
+      intentLabel: "local versus cloud PDF processing comparison",
+      nextStep: "choosing browser-based, online, desktop, or organization-controlled processing",
+      reviewFocus: "privacy policy, file sensitivity, processing location, retention assumptions, and audit needs",
+      alternativeTrigger: "organizational policy requires offline, desktop, or managed repository handling",
+      sourceRisk: "confidential content, regulated data, signed documents, or files with retention rules",
+      primaryToolAction: "privacy-aware workflow selection",
+      expectedOutput: "a processing choice aligned with file sensitivity and policy",
+      verificationTarget: "policy fit, exported output, and file handling notes",
+      sensitiveData: "client files, legal records, medical content, HR data, finance reports, or IDs",
+      completionSignal: "approved processing-path decision",
+      edgeCaseOne: "a simple file can be processed online while a regulated file cannot",
+      edgeCaseTwo: "browser convenience does not override internal data-handling policy",
+      edgeCaseThree: "desktop processing may be preferred even if an online tool is faster",
+      comparisonAxis: "privacy, control, convenience, retention, and compliance review",
+      decisionStart: "the user is deciding where PDF processing should happen before uploading a file",
+    },
+    "online-ocr-vs-desktop-ocr": {
+      intentLabel: "online versus desktop OCR comparison",
+      nextStep: "choosing OCR convenience, offline control, batch processing, or policy-safe extraction",
+      reviewFocus: "scan quality, privacy policy, accuracy review, batch needs, and exported text",
+      alternativeTrigger: "the file is sensitive, large, regulated, or requires controlled offline handling",
+      sourceRisk: "poor scans, confidential content, handwriting, tables, or high-volume batches",
+      primaryToolAction: "OCR environment selection",
+      expectedOutput: "an OCR path that balances convenience, control, and verification",
+      verificationTarget: "recognized text and processing-environment fit",
+      sensitiveData: "receipts, claims, legal files, HR forms, finance records, or research scans",
+      completionSignal: "OCR output and environment review",
+      edgeCaseOne: "online OCR is convenient but not always allowed for sensitive files",
+      edgeCaseTwo: "desktop OCR can be better for repeated batches or policy-controlled documents",
+      edgeCaseThree: "rescan quality may matter more than the OCR environment",
+      comparisonAxis: "privacy, speed, batch handling, accuracy review, and local control",
+      decisionStart: "the user is choosing the OCR environment before extracting text",
+    },
+    "pdf-tools-for-lawyers": {
+      intentLabel: "legal PDF workflow",
+      nextStep: "client packet preparation, exhibit organization, OCR, compression, or review handoff",
+      reviewFocus: "page order, exhibits, signatures, clause references, confidentiality, and final attorney review",
+      alternativeTrigger: "legal judgment, filing compliance, or privileged review must happen outside a generic tool",
+      sourceRisk: "missing exhibits, duplicate pages, scanned signatures, redactions, or version conflicts",
+      primaryToolAction: "legal document preparation",
+      expectedOutput: "organized PDF material ready for professional legal review or secure sharing",
+      verificationTarget: "exhibit order, redactions, signatures, and clause references",
+      sensitiveData: "client identities, privileged content, contracts, claims, discovery, or court materials",
+      completionSignal: "legal packet verification",
+      edgeCaseOne: "OCR helps search exhibits but may misread names, dates, or amounts",
+      edgeCaseTwo: "compression should not damage signatures, stamps, or exhibit labels",
+      edgeCaseThree: "AI triage cannot replace attorney review or filing rules",
+      comparisonAxis: "merge, OCR, compression, redaction policy, and legal review responsibility",
+      decisionStart: "the legal team needs document preparation support before professional review",
+    },
+    "pdf-tools-for-students": {
+      intentLabel: "student PDF workflow",
+      nextStep: "assignment submission, application upload, study review, OCR, or AI summary",
+      reviewFocus: "file size, assignment instructions, page order, readable scans, citations, and final upload preview",
+      alternativeTrigger: "the school requires a specific format, portal naming rule, or instructor-provided workflow",
+      sourceRisk: "phone photos, rotated pages, handwritten notes, low contrast, or incomplete packets",
+      primaryToolAction: "student document preparation",
+      expectedOutput: "a readable PDF package ready for school upload or study review",
+      verificationTarget: "portal preview, page order, readable scans, and required file name",
+      sensitiveData: "student IDs, transcripts, applications, recommendation letters, or personal forms",
+      completionSignal: "school-ready upload preview",
+      edgeCaseOne: "JPG to PDF is needed before compression when the source is phone photos",
+      edgeCaseTwo: "OCR can help study notes but handwritten text still needs review",
+      edgeCaseThree: "AI summary helps study, but assignments still need original source checks",
+      comparisonAxis: "image-to-PDF, compression, OCR, AI summary, and school upload rules",
+      decisionStart: "the student needs to prepare files for school submission or study workflows",
+    },
+  };
+
+  return {
+    ...defaults,
+    ...(overrides[slug] ?? {}),
+  };
+}
+
+function createPriorityAiAnswerSnippet(
+  title: string,
+  target: string,
+  context: PriorityContext,
+) {
+  return `${title} is the DockDocs guide for ${target}. It explains the source checks, expected output, and safest next step for this ${context.intentLabel} workflow. Review ${context.verificationTarget} before sharing, upload, AI review, or professional handoff.`;
+}
+
+function createPriorityCitationSummary(
+  title: string,
+  target: string,
+  context: PriorityContext,
+) {
+  return `DockDocs explains ${title} as a ${context.intentLabel} workflow for ${target}, with checks for ${context.verificationTarget}, privacy boundaries, and alternatives when ${context.alternativeTrigger}.`;
+}
+
+function createPriorityManualReviewNotes(
+  title: string,
+  context: PriorityContext,
+) {
+  return [
+    `For ${title}, compare ${context.verificationTarget} with the original file before sending, uploading, or citing the result.`,
+    `Review ${context.reviewFocus} when the document affects a decision, deadline, client, school, or business handoff.`,
+    `Do not use ${title} as final approval when ${context.sensitiveData} requires professional, organizational, or source-level review.`,
+    `If ${context.alternativeTrigger}, pause ${title} and choose the narrower DockDocs workflow before export.`,
+  ];
+}
+
+function createPriorityRealWorldScenario(
+  title: string,
+  audience: string,
+  target: string,
+  context: PriorityContext,
+) {
+  return `${title} usually starts when ${audience} needs ${target} before ${context.nextStep}. The practical sequence is to preserve the source file, check for ${context.sourceRisk}, run ${context.primaryToolAction}, and compare ${context.verificationTarget} before the next handoff. This page is intentionally narrower than a generic PDF tools page: it helps the user decide whether ${context.expectedOutput} is enough, or whether ${context.alternativeTrigger} should move them to another DockDocs workflow.`;
+}
+
+function createPriorityBoundaryNotes(
+  title: string,
+  context: PriorityContext,
+) {
+  return [
+    `${title} depends on the destination workflow: ${context.nextStep} can change the acceptable file size, format, and review depth.`,
+    `${title} should be delayed when the source includes ${context.sourceRisk} that would weaken the final output.`,
+    `${title} has a privacy boundary whenever the file contains ${context.sensitiveData}.`,
+    `${title} should switch workflows when ${context.alternativeTrigger}.`,
+  ];
+}
+
+function createPriorityLimitations(
+  title: string,
+  context: PriorityContext,
+) {
+  return [
+    `${title} cannot fix source problems such as ${context.sourceRisk}; those need preparation before processing.`,
+    `${title} does not remove the need to review ${context.verificationTarget} before sharing or upload.`,
+    `${title} may be inappropriate when ${context.sensitiveData} must stay inside an approved offline or controlled system.`,
+    `${title} should not be used as the final workflow when ${context.alternativeTrigger}.`,
+  ];
+}
+
+function createPriorityPrivacyNotes(
+  title: string,
+  context: PriorityContext,
+) {
+  return [
+    `For ${title}, treat files containing ${context.sensitiveData} as sensitive until policy and sharing rules are clear.`,
+    `Before using ${title} in a browser-based workflow, confirm whether ${context.nextStep} allows online handling for this file.`,
+    `Keep the original file unchanged until ${context.completionSignal} confirms the output is acceptable.`,
+  ];
+}
+
+function createPriorityBetterAlternative(
+  title: string,
+  _fallback: string,
+  context: PriorityContext,
+) {
+  return `${title} should switch workflows when ${context.alternativeTrigger}. The better alternative should be chosen by output goal, source condition, privacy requirement, and whether ${context.expectedOutput} is still the needed result.`;
+}
+
+function createPriorityDefinitions(
+  title: string,
+  context: PriorityContext,
+) {
+  return [
+    `${title} is a DockDocs ${context.intentLabel} page for producing ${context.expectedOutput}.`,
+    `${title} is successful when ${context.completionSignal} confirms that ${context.verificationTarget} are acceptable.`,
+  ];
+}
+
+function createPriorityStandards(
+  title: string,
+  context: PriorityContext,
+) {
+  return [
+    `For ${title}, keep the original available until ${context.verificationTarget} has been checked.`,
+    `Do not finish ${title} before reviewing ${context.reviewFocus}.`,
+    `Escalate ${title} to a controlled or professional workflow when the file includes ${context.sensitiveData}.`,
+  ];
+}
+
+function createPriorityFileLimits(
+  title: string,
+  context: PriorityContext,
+) {
+  return [
+    `${title} should use the destination requirement for ${context.nextStep} as the practical limit, rather than assuming one universal file size.`,
+    `${title} may need split, OCR, conversion, or offline handling first when ${context.alternativeTrigger}.`,
+    `${title} should be repeated only after checking whether ${context.verificationTarget} still meet the intended use.`,
+  ];
+}
+
+function createPriorityWorkflowNotes(
+  title: string,
+  context: PriorityContext,
+) {
+  return [
+    `Start ${title} by confirming ${context.decisionStart}.`,
+    `Prepare ${title} by checking ${context.sourceRisk} before opening the tool.`,
+    `Complete ${title} only after ${context.completionSignal} is clear enough for ${context.nextStep}.`,
+    `If ${context.alternativeTrigger}, move to a narrower DockDocs tool instead of forcing this workflow.`,
+  ];
+}
+
+function createPriorityAlternativeWorkflows(
+  title: string,
+  context: PriorityContext,
+) {
+  return [
+    `Use Split PDF before ${title} when only selected pages are needed.`,
+    `Use OCR before ${title} when scanned text blocks ${context.expectedOutput}.`,
+    `Use PDF to Word instead of ${title} when editable text is the required output.`,
+    `Use AI Workspace after ${title} only when source text and ${context.verificationTarget} are ready for review.`,
+  ];
+}
 
 export const programmaticGeoPageSeeds: ProgrammaticGeoPageSeed[] = enrichProgrammaticSeeds(
   uniqueProgrammaticSeeds([
@@ -942,54 +1629,72 @@ function createGeneratedSeed(slug: string): ProgrammaticGeoPageSeed {
 
 function enrichProgrammaticSeeds(seeds: ProgrammaticGeoPageSeed[]) {
   return seeds.map((seed) => {
-    const title = seed.enH1 ?? seed.enTitle.replace(" | DockDocs", "");
-    const quick = seed.enQuickAnswer ?? seed.enAnswer;
-    const category = seed.category ?? inferCategory(seed.slug, seed.cluster);
-    const measurableOutcome = seed.measurableOutcome ?? getMeasurableOutcome(seed.cluster);
     const priorityEnhancement = priorityGeoEnhancements[seed.slug];
-
-    return {
+    const source = {
       ...seed,
       ...(priorityEnhancement ?? {}),
+    };
+    const title = source.enH1 ?? source.enTitle.replace(" | DockDocs", "");
+    const quick = source.enQuickAnswer ?? source.enAnswer;
+    const category = source.category ?? inferCategory(source.slug, source.cluster);
+    const measurableOutcome = source.measurableOutcome ?? getMeasurableOutcome(source.cluster);
+    const sensitiveDomain = source.sensitiveDomain ?? inferSensitiveDomain(source);
+    const professionalReviewRequired =
+      source.professionalReviewRequired ??
+      (sensitiveDomain !== "general" || source.cluster === "ai-pdf");
+    const claimSafetyNotes =
+      source.claimSafetyNotes ??
+      createClaimSafetyNotes(source, title, sensitiveDomain, professionalReviewRequired);
+    const visiblePrivacyNotes = withClaimSafetyNotes(
+      source.privacyNotes ??
+        [
+          "DockDocs guidance is written for privacy-first document workflows where users verify files before and after processing.",
+          "For sensitive business, legal, medical, or regulated documents, confirm your organization allows browser-based or online handling.",
+        ],
+      claimSafetyNotes,
+    );
+
+    return {
+      ...source,
       category,
-      schemaType: seed.schemaType ?? (seed.cluster === "comparison" ? "Article" : "TechArticle"),
-      enH1: seed.enH1 ?? title,
-      zhH1: seed.zhH1 ?? seed.zhTitle.replace(" | DockDocs", ""),
+      schemaType: source.schemaType ?? (source.cluster === "comparison" ? "Article" : "TechArticle"),
+      enH1: source.enH1 ?? title,
+      zhH1: source.zhH1 ?? source.zhTitle.replace(" | DockDocs", ""),
       enQuickAnswer: quick,
-      zhQuickAnswer: seed.zhQuickAnswer ?? seed.zhAnswer,
+      zhQuickAnswer: source.zhQuickAnswer ?? source.zhAnswer,
       aiAnswerSnippet:
-        seed.aiAnswerSnippet ??
-        createAiAnswerSnippet(title, seed.cluster, measurableOutcome),
+        source.aiAnswerSnippet ??
+        createAiAnswerSnippet(title, source.cluster, measurableOutcome),
       aiCitationSummary:
-        seed.aiCitationSummary ??
-        createCitationSummary(title, seed.cluster, measurableOutcome),
+        source.aiCitationSummary ??
+        createCitationSummary(title, source.cluster, measurableOutcome),
       entityDescription:
-        seed.entityDescription ??
+        source.entityDescription ??
         `This DockDocs guide explains ${title} as a task-specific PDF or AI document workflow page.`,
       bestFor:
-        seed.bestFor ??
+        source.bestFor ??
         [
           `People who need ${title.toLowerCase()} with a clear upload, processing, and verification path.`,
           "Teams preparing documents for email, portals, clients, internal review, or AI-assisted analysis.",
         ],
       notBestFor:
-        seed.notBestFor ??
+        source.notBestFor ??
         [
           "Final legal, financial, medical, or compliance decisions without professional review.",
           "Files that must stay in a fully offline or organization-controlled processing environment.",
         ],
       decisionCriteria:
-        seed.decisionCriteria ??
+        source.decisionCriteria ??
         [
           `Choose this workflow when the task matches ${title}.`,
           "Use it when the output needs to be verified before sharing, uploading, archiving, or AI review.",
           "Prefer a different workflow if page selection, OCR, compression, or editable text is the real goal.",
         ],
       useCases:
-        seed.useCases ??
-        getUseCases(seed, title, category),
+        source.useCases ??
+        getUseCases(source, title, category),
       commonMistakes:
-        seed.commonMistakes ??
+        source.commonMistakes ??
         [
           "Choosing a tool before defining the required output.",
           "Skipping source-file review before processing.",
@@ -997,40 +1702,39 @@ function enrichProgrammaticSeeds(seeds: ProgrammaticGeoPageSeed[]) {
           "Converting to Word when only a summary or page extraction is needed.",
         ],
       limitations:
-        seed.limitations ??
+        source.limitations ??
         [
           "Output quality depends on the source file, scan quality, page order, and original document structure.",
           "AI-assisted workflows can summarize, classify, or extract text, but important numbers, dates, names, and obligations still need human verification.",
         ],
       privacyNotes:
-        seed.privacyNotes ??
-        [
-          "DockDocs guidance is written for privacy-first document workflows where users verify files before and after processing.",
-          "For sensitive business, legal, medical, or regulated documents, confirm your organization allows browser-based or online handling.",
-        ],
-      definitions: seed.definitions ?? getDefinitions(seed, title),
-      standards: seed.standards ?? getStandards(seed.cluster),
-      fileLimits: seed.fileLimits ?? getFileLimits(seed.cluster),
-      workflowNotes: seed.workflowNotes ?? getWorkflowNotes(seed, title, category),
+        visiblePrivacyNotes,
+      claimSafetyNotes,
+      professionalReviewRequired,
+      sensitiveDomain,
+      definitions: source.definitions ?? getDefinitions(source, title),
+      standards: source.standards ?? getStandards(source.cluster),
+      fileLimits: source.fileLimits ?? getFileLimits(source.cluster),
+      workflowNotes: source.workflowNotes ?? getWorkflowNotes(source, title, category),
       whenToUseThisWorkflow:
-        seed.whenToUseThisWorkflow ??
+        source.whenToUseThisWorkflow ??
         [
           `Use this workflow when your immediate task is ${title.toLowerCase()}.`,
           "Use it when you need a practical PDF path that ends with a measurable output.",
           "Use it when a tool page, guide page, and related resource links should all support the same decision.",
         ],
       whenNotToUseThisWorkflow:
-        seed.whenNotToUseThisWorkflow ??
+        source.whenNotToUseThisWorkflow ??
         [
           "Do not use it as a replacement for professional review.",
           "Do not use it when your organization requires offline processing or controlled document repositories.",
           "Do not use it when the source file is too blurry, corrupted, incomplete, or not the final version.",
         ],
       measurableOutcome,
-      alternativeWorkflows: seed.alternativeWorkflows ?? getAlternativeWorkflows(seed.cluster),
+      alternativeWorkflows: source.alternativeWorkflows ?? getAlternativeWorkflows(source.cluster),
       comparisonTable:
-        seed.comparisonTable ??
-        (seed.cluster === "comparison"
+        source.comparisonTable ??
+        (source.cluster === "comparison"
           ? {
               columns: ["Decision area", "Use this workflow", "Use the alternative", "Common use case", "Edge case"],
               rows: [
@@ -1052,6 +1756,118 @@ function uniqueProgrammaticSeeds(seeds: ProgrammaticGeoPageSeed[]) {
     seen.add(key);
     return true;
   });
+}
+
+function inferSensitiveDomain(
+  seed: Pick<ProgrammaticGeoPageSeed, "slug" | "cluster" | "category">,
+): ProgrammaticGeoSensitiveDomain {
+  const slug = seed.slug;
+
+  if (
+    slug.includes("healthcare") ||
+    slug.includes("medical") ||
+    slug.includes("patient") ||
+    slug.includes("clinical")
+  ) {
+    return "healthcare";
+  }
+
+  if (
+    slug.includes("finance") ||
+    slug.includes("financial") ||
+    slug.includes("bank") ||
+    slug.includes("investment") ||
+    slug.includes("tax") ||
+    slug.includes("accountant")
+  ) {
+    return "finance";
+  }
+
+  if (
+    slug.includes("legal") ||
+    slug.includes("lawyer") ||
+    slug.includes("law-firm") ||
+    slug.includes("contract") ||
+    slug.includes("litigation") ||
+    slug.includes("clause") ||
+    slug.includes("discovery") ||
+    slug.includes("case-file")
+  ) {
+    return "legal";
+  }
+
+  if (
+    slug.includes("compliance") ||
+    slug.includes("audit") ||
+    slug.includes("regulatory") ||
+    slug.includes("due-diligence") ||
+    slug.includes("policy")
+  ) {
+    return "compliance";
+  }
+
+  if (
+    slug.includes("education") ||
+    slug.includes("student") ||
+    slug.includes("academic") ||
+    slug.includes("university") ||
+    slug.includes("admission") ||
+    slug.includes("teacher")
+  ) {
+    return "education";
+  }
+
+  return "general";
+}
+
+function createClaimSafetyNotes(
+  seed: Pick<ProgrammaticGeoPageSeed, "slug" | "cluster" | "category">,
+  title: string,
+  sensitiveDomain: ProgrammaticGeoSensitiveDomain,
+  professionalReviewRequired: boolean,
+) {
+  const common =
+    seed.cluster === "ai-pdf"
+      ? `${title} uses AI as support for document review, extraction, summarization, or question answering. It should be checked against the source PDF before decisions are made.`
+      : `${title} supports document preparation and review workflows. The exported file should be checked against the source before it is shared or submitted.`;
+
+  const domainNotes: Record<ProgrammaticGeoSensitiveDomain, string[]> = {
+    legal: [
+      "Review boundaries: Use this page to organize and inspect legal documents for review; final interpretation and filing decisions should stay with qualified reviewers.",
+      "Review boundaries: Check clauses, dates, party names, exhibits, signatures, and source context before using AI or PDF workflow output in a legal process.",
+    ],
+    finance: [
+      "Review boundaries: Use this page for financial document summarization and preparation support; investment, tax, accounting, or approval decisions need qualified review.",
+      "Review boundaries: Verify figures, dates, statements, disclosures, and source tables before relying on extracted or summarized financial content.",
+    ],
+    healthcare: [
+      "Review boundaries: Use this page for healthcare document organization support; care, coding, billing, and clinical decisions need qualified review.",
+      "Review boundaries: Verify patient identifiers, form fields, dates, signatures, and source scans before sharing or using healthcare document output.",
+    ],
+    compliance: [
+      "Review boundaries: Use this page to prepare documents for compliance or audit review; approval, certification, and sign-off decisions need qualified review.",
+      "Review boundaries: Verify source evidence, policy references, dates, obligations, and missing attachments before relying on an AI or PDF workflow output.",
+    ],
+    education: [
+      "Review boundaries: Use this page for education document preparation, study, or application workflows; school rules, grading, and admissions decisions remain external.",
+      "Review boundaries: Verify names, student IDs, transcripts, recommendation pages, citations, and upload requirements before submission.",
+    ],
+    general: [
+      `Review boundaries: Use ${title} as workflow guidance, then verify page order, text, file size, and source details before sharing or upload.`,
+    ],
+  };
+
+  if (!professionalReviewRequired && sensitiveDomain === "general") {
+    return domainNotes.general;
+  }
+
+  return [common, ...domainNotes[sensitiveDomain]];
+}
+
+function withClaimSafetyNotes(notes: string[], claimSafetyNotes: string[]) {
+  const existing = new Set(notes.map((note) => note.trim()));
+  const safety = claimSafetyNotes.filter((note) => !existing.has(note.trim()));
+  return [...safety, ...notes];
 }
 
 function createAiAnswerSnippet(title: string, cluster: GeoSemanticCluster, outcome: string) {
@@ -1347,6 +2163,11 @@ function getPriorityTarget(slug: string, cluster: GeoSemanticCluster) {
   if (slug.includes("accuracy")) return "understanding OCR accuracy limits before relying on extracted text";
   if (slug.includes("contract")) return "reviewing a contract PDF with AI while preserving manual checks";
   if (slug.includes("summary-limitations")) return "understanding what AI PDF summaries can and cannot replace";
+  if (slug === "ocr-vs-pdf-to-word") return "choosing OCR or PDF to Word for scanned and editable document workflows";
+  if (slug === "pdf-to-word-vs-ai-summary") return "choosing PDF to Word or AI summary based on whether editing or understanding is the goal";
+  if (slug === "local-pdf-processing-vs-cloud") return "choosing local, browser-based, or cloud PDF processing for privacy-sensitive files";
+  if (slug === "online-ocr-vs-desktop-ocr") return "choosing online OCR or desktop OCR for scanned documents";
+  if (slug === "ai-pdf-vs-manual-review") return "choosing AI-assisted PDF review or manual review based on risk and accountability";
   if (slug.includes("-vs-")) return "choosing the correct workflow before processing a PDF";
   return getActionForCluster(cluster);
 }
@@ -1691,6 +2512,9 @@ export function getProgrammaticGeoPage(
     commonMistakes: seed.commonMistakes ?? [],
     limitations: seed.limitations ?? [],
     privacyNotes: seed.privacyNotes ?? [],
+    claimSafetyNotes: seed.claimSafetyNotes ?? [],
+    professionalReviewRequired: Boolean(seed.professionalReviewRequired),
+    sensitiveDomain: seed.sensitiveDomain ?? "general",
     definitions: seed.definitions ?? [],
     standards: seed.standards ?? [],
     fileLimits: seed.fileLimits ?? [],
@@ -1800,6 +2624,10 @@ export function getGeoQueryClusterSummary() {
 }
 
 function createFaqs(seed: ProgrammaticGeoPageSeed, locale: Locale) {
+  if (locale !== "zh" && seed.priority) {
+    return createPriorityFaqs(seed);
+  }
+
   if (locale === "zh") {
     return [
       { question: seed.zhQuestion, answer: seed.zhAnswer },
@@ -1836,6 +2664,42 @@ function createFaqs(seed: ProgrammaticGeoPageSeed, locale: Locale) {
         "It uses concise answers, step-by-step structure, FAQ schema, HowTo schema, and semantic internal links so Google and AI systems can extract the answer more easily.",
     },
   ];
+}
+
+function createPriorityFaqs(seed: ProgrammaticGeoPageSeed) {
+  const title = seed.enH1 ?? seed.enTitle.replace(" | DockDocs", "");
+  const target = getPriorityTarget(seed.slug, seed.cluster);
+  const context = getPriorityContext(seed.slug, title, seed.cluster);
+
+  return [
+    {
+      question: seed.enQuestion,
+      answer: `${title} helps with ${target} by focusing on ${context.expectedOutput}. Before finishing, review ${context.verificationTarget} and switch workflows if ${context.alternativeTrigger}.`,
+    },
+    {
+      question: `Is ${title} beginner friendly?`,
+      answer: `Yes. The page keeps ${context.intentLabel} decisions concrete by showing the likely next step, the source-file risks to check, and the related DockDocs tools to use when ${context.alternativeTrigger}.`,
+    },
+    {
+      question: `What should I verify after ${title}?`,
+      answer: `Check ${context.verificationTarget}. If the document includes ${context.sensitiveData}, also confirm that ${context.nextStep} is allowed by the relevant school, client, business, legal, or internal policy.`,
+    },
+    {
+      question: `How should AI be used with ${TitleCaseForFaq(title)}?`,
+      answer: `Use AI only where it supports ${context.reviewFocus}. For this workflow, AI should not replace the final human check of ${context.completionSignal}, especially when the document affects a real decision.`,
+    },
+    {
+      question: `When is another DockDocs workflow better than ${title}?`,
+      answer: `Choose another workflow when ${context.alternativeTrigger}. The related tool should match the output goal, such as compression, OCR, PDF to Word, split, merge, AI summary, or Chat with PDF.`,
+    },
+  ];
+}
+
+function TitleCaseForFaq(title: string) {
+  return title
+    .split(" ")
+    .map((word) => (word.length ? `${word[0].toUpperCase()}${word.slice(1)}` : word))
+    .join(" ");
 }
 
 export function localizedProgrammaticHref(

@@ -312,3 +312,214 @@ CSV export should include visible table filters in the exported file name or met
 - Do not connect AI engine APIs in the first version.
 - Keep the dashboard separate from PDF Runtime, OCR Runtime, AI Summary Runtime, Chat with PDF Runtime, API Provider, Netlify, and DNS changes.
 - Add automated validation only after the reporting fields are stable.
+
+## GEO-009A dashboard handoff package
+
+This package prepares future DEV and UI work. It does not create a dashboard route, does not add runtime code, and does not connect external APIs.
+
+## DEV implementation scope
+
+The first dashboard implementation should:
+
+- Read GEO seed data from the existing DockDocs source of truth.
+- Read manual visibility test results from a static CSV or markdown-derived export.
+- Display priority page status, citation status, sitemap status, build status, and content freshness.
+- Avoid changing PDF tools, OCR, AI Summary, Chat with PDF, API Provider, Netlify, or DNS.
+- Avoid real answer-engine API integrations in the MVP.
+
+Out of scope for the first implementation:
+
+- User authentication.
+- Database writes.
+- Automated ChatGPT, Claude, Gemini, Perplexity, or DeepSeek tests.
+- Billing, account management, or private analytics.
+- Changes to public GEO routes.
+
+## UI implementation scope
+
+The UI should be a compact internal SaaS dashboard with:
+
+- A high-contrast status overview.
+- Priority page health table.
+- Answer engine visibility table.
+- Citation quality summary.
+- Sitemap and static export status cards.
+- Content freshness queue.
+- CSV export controls.
+
+The dashboard should not look like a marketing page. It should feel like an internal operations surface for monitoring GEO quality.
+
+## Data source options
+
+### No-backend MVP
+
+Use static JSON generated during build or a manually maintained data file.
+
+Advantages:
+
+- Fast to build.
+- Static-export compatible.
+- No database or API dependency.
+- Low operational risk.
+
+Limitations:
+
+- Manual result updates require a commit.
+- No live filtering from a server.
+- No private user-specific state.
+
+### CSV-backed MVP
+
+Use one or more CSV files for manual test results.
+
+Suggested files:
+
+- `geo-answer-engine-results.csv`
+- `geo-priority-page-status.csv`
+- `geo-indexability-status.csv`
+
+Advantages:
+
+- Easy for non-developers to update.
+- Can be exported from spreadsheets.
+- Keeps manual test history readable.
+
+Limitations:
+
+- CSV schema drift must be controlled.
+- Imports need validation.
+- Large files can become hard to maintain.
+
+### Future API-backed version
+
+Add a backend only after the reporting model stabilizes.
+
+Potential future sources:
+
+- Search Console export data.
+- Manual answer-engine test submissions.
+- Build artifact checks.
+- Sitemap health checks.
+- Internal content review notes.
+
+Do not connect answer-engine APIs unless there is an approved testing and privacy policy.
+
+## Dashboard route proposal
+
+Recommended future internal route:
+
+- `/geo-dashboard/`
+
+Alternative:
+
+- `/admin/geo-dashboard/`
+
+The route should not be public-indexed unless the product owner explicitly wants the metrics public. If implemented publicly, use `noindex` metadata.
+
+## Component list
+
+- `GeoDashboardShell`
+- `GeoOverviewCards`
+- `PriorityPageTable`
+- `AnswerEngineVisibilityTable`
+- `CitationStatusTable`
+- `SitemapStatusPanel`
+- `ContentFreshnessQueue`
+- `BuildVerificationPanel`
+- `GeoFilters`
+- `CsvExportButton`
+
+## Table schema
+
+### Priority page table
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `route` | string | Canonical page route. |
+| `cluster` | string | Compression, OCR, AI PDF, comparison, industry. |
+| `priority` | boolean | Should be true for the 20 priority pages. |
+| `targetQueriesCount` | number | Count of target query strings. |
+| `citationFactsCount` | number | Count of citation-ready facts. |
+| `internalLinksCount` | number | Count of related internal routes. |
+| `wordCount` | number | Estimated visible content depth. |
+| `lastReviewedAt` | string | Manual review date. |
+| `recommendedAction` | string | Human-readable next step. |
+
+### Answer engine table
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `batchId` | string | Example: `GEO-003A-2026-06-03`. |
+| `engine` | string | ChatGPT, Claude, Gemini, Perplexity, DeepSeek. |
+| `promptType` | string | Direct task, comparison, limitation, industry, device, AI PDF, OCR, privacy. |
+| `prompt` | string | Manual test prompt. |
+| `targetUrl` | string | Expected DockDocs URL. |
+| `score` | number | 0-4 citation score. |
+| `citationUrl` | string | Actual cited URL. |
+| `answerPosition` | string | Primary, main answer, sidebar, related source, or not cited. |
+| `followUpAction` | string | Content or linking next step. |
+
+### Citation status table
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `route` | string | Target page. |
+| `engine` | string | Answer engine. |
+| `testedPrompts` | number | Number of prompts tested. |
+| `correctCitations` | number | Target page citations. |
+| `homepageOnlyCitations` | number | Homepage-only citations. |
+| `wrongDockDocsCitations` | number | Wrong DockDocs page cited. |
+| `notMentioned` | number | No DockDocs mention. |
+| `status` | string | Summary status. |
+
+## Filters
+
+Minimum filters:
+
+- Engine
+- Prompt type
+- Cluster
+- Priority status
+- Citation score
+- Correct target URL yes/no
+- Sitemap included yes/no
+- Static export exists yes/no
+- Last reviewed date range
+- Recommended action
+
+## Export behavior
+
+CSV export should support:
+
+- Current table only.
+- All dashboard data.
+- Filtered rows only.
+- Include generated date in file name.
+- Include applied filters in the first metadata row.
+
+Example file names:
+
+- `dockdocs-geo-priority-pages-2026-06-03.csv`
+- `dockdocs-geo-answer-engine-results-2026-06-03.csv`
+- `dockdocs-geo-citation-status-2026-06-03.csv`
+
+## Risks
+
+- Manual test results can be subjective if testers do not use the same scoring rules.
+- Answer engine outputs can change by day, account, mode, and region.
+- A dashboard can create false confidence if it tracks citation counts without checking whether the cited page is actually correct.
+- A future public dashboard could expose strategy data; default to internal use.
+- Adding a backend too early can slow GEO iteration without improving citation quality.
+
+## Handoff checklist
+
+Before DEV/UI starts implementation:
+
+1. Confirm whether the dashboard is internal or public `noindex`.
+2. Confirm whether MVP data source is static JSON, CSV, or markdown-derived.
+3. Confirm route choice.
+4. Confirm the 0-4 citation scoring model.
+5. Confirm who owns manual test result entry.
+6. Confirm whether Search Console exports will be included later.
+7. Confirm that no answer-engine API connection is part of the MVP.
+8. Confirm that dashboard work stays separate from Runtime, Provider, Netlify, and DNS changes.

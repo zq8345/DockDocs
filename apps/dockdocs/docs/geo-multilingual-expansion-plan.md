@@ -186,3 +186,87 @@ Do not implement these routes yet. This plan only defines the target shape for l
 - Run static export before launch.
 - Check sitemap URL count and sample routes.
 - Verify `llms.txt` language guidance only after routes are live.
+
+## GEO-008A multilingual launch readiness matrix
+
+This matrix is a planning artifact only. It does not create `/de/`, `/es/`, `/fr/`, `/pt/`, or `/ja/` routes.
+
+| Language | Priority | First pages | Translation risk | hreflang risk | Sitemap risk | Recommended action |
+| -------- | -------: | ----------- | ---------------- | ------------- | ------------ | ------------------ |
+| German | 1 | 20 priority GEO pages | Medium: privacy, business, and legal-adjacent language needs careful wording. | Medium: add reciprocal `de` alternates only after all first-batch pages export. | Medium: first batch adds at least 20 localized guide URLs. | Launch first as a controlled manual-review batch. |
+| Spanish | 2 | 20 priority GEO pages | Medium: broad consumer and education language must avoid generic machine-translated phrasing. | Medium: verify `/es/guides/.../` canonicals and alternates together. | Medium: broad expansion can grow quickly after first batch. | Launch second after German validation. |
+| French | 3 | 20 priority GEO pages | Medium-high: privacy and OCR limitation wording needs native review. | Medium: do not add `fr` alternates before every first-batch route exists. | Medium: keep the first batch limited. | Launch third with privacy and OCR pages reviewed first. |
+| Portuguese | 4 | 20 priority GEO pages | Medium: consumer, student, and upload workflows need localized examples. | Medium: verify `pt` alternates do not conflict with root English or `/en/`. | Medium: avoid adding all GEO pages at once. | Launch fourth after route and sitemap volume checks. |
+| Japanese | 5 | 20 priority GEO pages | High: concise, trust-heavy localization requires native review. | Medium-high: ensure Japanese titles, metadata, and visible text ship together. | Medium: first batch only until quality is proven. | Launch fifth after a smaller editorial QA pass. |
+
+## Top 20 pages to translate per language
+
+Use the same 20 priority GEO pages for every first-language batch:
+
+1. `/guides/compress-pdf-for-email/`
+2. `/guides/compress-pdf-for-gmail/`
+3. `/guides/compress-pdf-for-outlook/`
+4. `/guides/reduce-pdf-size-under-10mb/`
+5. `/guides/compress-pdf-on-mac/`
+6. `/guides/ocr-pdf-to-copyable-text/`
+7. `/guides/ocr-pdf-accuracy-guide/`
+8. `/guides/copy-text-from-scanned-pdf/`
+9. `/guides/scanned-pdf-ocr-accuracy/`
+10. `/guides/ai-summarize-pdf-report/`
+11. `/guides/chat-with-pdf-workflow/`
+12. `/guides/ai-pdf-for-contract-review/`
+13. `/guides/ai-pdf-summary-limitations/`
+14. `/guides/ai-pdf-vs-manual-review/`
+15. `/guides/ocr-vs-pdf-to-word/`
+16. `/guides/pdf-to-word-vs-ai-summary/`
+17. `/guides/local-pdf-processing-vs-cloud/`
+18. `/guides/online-ocr-vs-desktop-ocr/`
+19. `/guides/pdf-tools-for-lawyers/`
+20. `/guides/pdf-tools-for-students/`
+
+## Do not machine translate blindly
+
+Machine translation can be used as a draft aid, but it should not be the final published source for GEO pages. The highest-risk areas are:
+
+- OCR accuracy limits.
+- AI PDF summary and Chat with PDF limitations.
+- Legal, finance, education, HR, and client-document workflows.
+- Privacy-first and local-processing wording.
+- File-size and upload-limit language.
+- Comparison pages where a stronger translation can accidentally imply a guarantee.
+
+## Required native review level
+
+| Language | Native review level | Required reviewer focus |
+| --- | --- | --- |
+| German | Native or fluent business reviewer | Privacy, enterprise document language, legal-adjacent disclaimers. |
+| Spanish | Native or fluent general-market reviewer | Education, upload workflow, mobile usage, clear everyday wording. |
+| French | Native or fluent business/product reviewer | Privacy, OCR caveats, professional document workflow tone. |
+| Portuguese | Native or fluent consumer/business reviewer | Student workflows, mobile upload flows, image-to-PDF wording. |
+| Japanese | Native product/content reviewer | Concision, trust language, AI limitation wording, formal tone. |
+
+## Launch checklist
+
+Before launching any new language:
+
+1. Confirm language order and first-batch routes with the product owner.
+2. Translate visible content, metadata, FAQ, schema text, CTA labels, and navigation labels together.
+3. Confirm each localized route self-canonicalizes.
+4. Confirm every localized page has reciprocal hreflang entries.
+5. Confirm sitemap includes only live localized pages.
+6. Run `npm run geo:qa`.
+7. Run `npm run build:dockdocs`.
+8. Sample static output for five localized routes.
+9. Confirm `llms.txt` only references localized routes after they exist.
+10. Manually inspect mobile rendering for at least one priority page in the new language.
+
+## Rollback checklist
+
+If a localized batch creates route, hreflang, sitemap, or quality problems:
+
+1. Remove new-language sitemap entries in the same change that removes the routes.
+2. Remove new-language hreflang alternates from root, `/en/`, `/zh/`, and localized pages.
+3. Keep root English and existing `/en/` and `/zh/` routes unchanged.
+4. Preserve the source English priority pages.
+5. Rebuild and confirm no broken localized URLs remain in `out/sitemap.xml`.
+6. Document the failure cause before attempting the next language batch.
