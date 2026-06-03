@@ -10,6 +10,7 @@ const DEFAULT_INTERVAL_SECONDS = 30;
 const LOG_ROOT = ".codex-task-queue";
 const MAIN_LOG = path.join(LOG_ROOT, "codex-task-queue.log");
 const TASK_LOG_DIR = path.join(LOG_ROOT, "tasks");
+let activeQueuePath = "";
 
 const DANGEROUS_PATTERNS = [
   "git reset --hard",
@@ -128,8 +129,12 @@ async function readQueue(queuePath) {
   return parsed;
 }
 
-async function writeQueue(queuePath, queue) {
-  await writeFile(queuePath, `${JSON.stringify(queue, null, 2)}\n`, "utf8");
+async function saveQueue(queue) {
+  if (!activeQueuePath) {
+    throw new Error("Queue path is not initialized.");
+  }
+
+  await writeFile(activeQueuePath, `${JSON.stringify(queue, null, 2)}\n`, "utf8");
 }
 
 function validateTask(task) {
@@ -191,7 +196,7 @@ function runCommand(command, workdir) {
   });
 }
 
-async function processTask(task, queue, queuePath, options) {
+async function runTask(task, queue, options) {
   try {
     validateTask(task);
 
@@ -209,10 +214,14 @@ async function processTask(task, queue, queuePath, options) {
 
     task.status = "running";
     task.startedAt = now();
+    task.completedAt = null;
+    task.failedAt = null;
+    task.skippedAt = null;
     task.finishedAt = null;
+    task.exitCode = null;
     task.lastError = null;
     task.logs = Array.isArray(task.logs) ? task.logs : [];
-    await writeQueue(queuePath, queue);
+    await saveQueue(queue);
     await appendTaskLog(task, `Task started: ${task.title}`);
 
     for (const command of task.commands) {
@@ -229,6 +238,7 @@ async function processTask(task, queue, queuePath, options) {
       };
 
       task.logs.push(logEntry);
+      task.exitCode = result.code;
       await appendTaskLog(task, `Command exit code: ${result.code}`);
 
       if (result.stdout) {
@@ -239,7 +249,7 @@ async function processTask(task, queue, queuePath, options) {
         await appendTaskLog(task, `stderr:\n${result.stderr.trimEnd()}`);
       }
 
-      await writeQueue(queuePath, queue);
+      await saveQueue(queue);
 
       if (result.code !== 0) {
         throw new Error(`Command failed with exit code ${result.code}: ${normalized}`);
@@ -247,16 +257,20 @@ async function processTask(task, queue, queuePath, options) {
     }
 
     task.status = "completed";
-    task.finishedAt = now();
-    await writeQueue(queuePath, queue);
+    task.completedAt = now();
+    task.finishedAt = task.completedAt;
+    task.exitCode = 0;
+    await saveQueue(queue);
     await appendTaskLog(task, "Task completed.");
   } catch (error) {
     task.status = "failed";
-    task.finishedAt = now();
+    task.failedAt = now();
+    task.finishedAt = task.failedAt;
+    task.exitCode = Number.isInteger(task.exitCode) ? task.exitCode : 1;
     task.lastError = error instanceof Error ? error.message : String(error);
 
     if (!options.dryRun) {
-      await writeQueue(queuePath, queue);
+      await saveQueue(queue);
       await appendTaskLog(task, `Task failed: ${task.lastError}`);
     }
 
@@ -266,7 +280,21 @@ async function processTask(task, queue, queuePath, options) {
 
 async function runQueueOnce(options) {
   const queuePath = path.resolve(options.queue);
+  activeQueuePath = queuePath;
   const queue = await readQueue(queuePath);
+
+  if (!options.dryRun) {
+    for (const task of queue.tasks) {
+      if (task.status === "skipped" && !task.skippedAt) {
+        task.skippedAt = now();
+        task.exitCode = null;
+        task.lastError = task.lastError || "Task was marked skipped before execution.";
+        await saveQueue(queue);
+        await appendTaskLog(task, `Task skipped: ${task.lastError}`);
+      }
+    }
+  }
+
   const pendingTasks = queue.tasks.filter((task) => task.status === "pending");
 
   if (pendingTasks.length === 0) {
@@ -275,7 +303,7 @@ async function runQueueOnce(options) {
   }
 
   for (const task of pendingTasks) {
-    await processTask(task, queue, queuePath, options);
+    await runTask(task, queue, options);
   }
 }
 

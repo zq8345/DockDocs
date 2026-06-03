@@ -16,7 +16,11 @@
       ],
       "createdAt": "2026-06-03T00:00:00.000Z",
       "startedAt": null,
+      "completedAt": null,
+      "failedAt": null,
+      "skippedAt": null,
       "finishedAt": null,
+      "exitCode": null,
       "lastError": null,
       "logs": []
     },
@@ -39,7 +43,32 @@
       ],
       "createdAt": "2026-06-03T00:00:00.000Z",
       "startedAt": null,
+      "completedAt": null,
+      "failedAt": null,
+      "skippedAt": null,
       "finishedAt": null,
+      "exitCode": null,
+      "lastError": null,
+      "logs": []
+    },
+    {
+      "id": "DEV-300-E2E",
+      "title": "Verify DEV-300 E2E through DockDocs workspace config",
+      "status": "pending",
+      "workdir": "C:\\Users\\47203\\Documents\\Dock-dev-300-premium-clean",
+      "allowedCommands": [
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts"
+      ],
+      "createdAt": "2026-06-03T00:00:00.000Z",
+      "startedAt": null,
+      "completedAt": null,
+      "failedAt": null,
+      "skippedAt": null,
+      "finishedAt": null,
+      "exitCode": null,
       "lastError": null,
       "logs": []
     }
