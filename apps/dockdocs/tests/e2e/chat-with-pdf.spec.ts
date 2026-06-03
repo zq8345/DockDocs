@@ -180,6 +180,35 @@ test("pricing page is localized and responsive", async ({ page }) => {
   expect(metrics.lang).toBe("zh");
 });
 
+test("header tools and utility menus are keyboard and mobile friendly", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto("/");
+
+  const productNav = page.getByRole("navigation", { name: "DockDocs navigation" });
+  await productNav.getByRole("button", { name: "Convert" }).hover();
+  await expect(productNav.getByRole("link", { name: "PDF to Word" })).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/zh");
+
+  await page.getByRole("button", { name: "工具" }).click();
+  await expect(page.getByRole("heading", { name: "AI 工作区" })).toBeVisible();
+
+  await page.getByRole("button", { name: "功能" }).click();
+  await expect(page.getByRole("heading", { name: "AI 工作区" })).toBeHidden();
+  await expect(page.getByText("账户", { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "中文" })).toBeVisible();
+
+  await page.keyboard.press("Escape");
+
+  const metrics = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+
+  expect(metrics.scrollWidth).toBe(metrics.clientWidth);
+});
+
 test("primary routes load across desktop, tablet, and mobile without horizontal overflow", async ({ page }) => {
   const consoleErrors: string[] = [];
   page.on("console", (message) => {
