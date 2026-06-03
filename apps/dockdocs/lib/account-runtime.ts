@@ -8,7 +8,7 @@ export type DockAccountState = {
   signedIn: boolean;
   storageId: string;
   label: string;
-  plan: "Free";
+  plan: "Free" | "Pro";
 };
 
 export type SavedChatRecord = {
@@ -32,6 +32,7 @@ export type SavedChatRecord = {
 const storagePrefix = "dockdocs:account";
 export const anonymousAccountId = "anonymous";
 const maxSavedChats = 50;
+const developmentProAccountEmail = "zq8345@gmail.com";
 
 export async function getCurrentAccountUser() {
   try {
@@ -48,7 +49,7 @@ export async function getDockAccountState(): Promise<DockAccountState> {
     signedIn: Boolean(user),
     storageId: user?.id ?? anonymousAccountId,
     label: user?.name || user?.email || "Anonymous browser",
-    plan: "Free",
+    plan: isDevelopmentProAccountEmail(user?.email) ? "Pro" : "Free",
   };
 }
 
@@ -164,6 +165,10 @@ function toDockAccountUser(user: User | null | undefined): DockAccountUser | nul
     name: user.name,
     pictureUrl: user.pictureUrl,
   };
+}
+
+function isDevelopmentProAccountEmail(email: string | null | undefined) {
+  return email?.trim().toLowerCase() === developmentProAccountEmail;
 }
 
 function createChatTitle(sourceName: string, question: string) {

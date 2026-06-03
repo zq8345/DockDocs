@@ -191,9 +191,11 @@ test("account workspace binding shows anonymous state and Free placeholder", asy
   await expect(page.getByRole("button", { name: "Continue with Google" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Create account" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Free" })).toBeVisible();
-  await expect(page.getByText("Free placeholder")).toHaveCount(2);
   await expect(page.getByText("anonymous", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("No Stripe checkout")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Upgrade to Plus" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Upgrade to Pro" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Manage billing" })).toBeDisabled();
+  await expect(page.getByText("Sign in to start checkout or open the customer portal.")).toBeVisible();
 
   await page.goto("/dashboard");
   await expect(page.getByText("Sign in to save workspace records under your account.")).toBeVisible();
@@ -222,7 +224,7 @@ test("subscription placeholders and usage quota read local records", async ({ pa
 
   await page.goto("/account");
   await expect(page.getByRole("heading", { name: "Plus" })).toBeVisible();
-  await expect(page.getByText("Active placeholder")).toHaveCount(2);
+  await expect(page.getByText("Active").first()).toBeVisible();
 
   await page.evaluate(() => {
     window.localStorage.setItem(

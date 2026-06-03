@@ -1,4 +1,5 @@
 import {
+  readEffectiveSubscriptionRecord,
   readSubscriptionRecord,
   type SubscriptionPlan,
 } from "@/lib/subscription-runtime";
@@ -132,7 +133,7 @@ export async function canUseFeature(
 ): Promise<UsageCheck> {
   const normalizedFeature = requireUsageFeature(feature);
   const normalizedUserId = normalizeUserId(userId);
-  const subscription = readSubscriptionRecord(normalizedUserId);
+  const subscription = await readEffectiveSubscriptionRecord(normalizedUserId);
   const config = readFeatureLimit(subscription.plan, normalizedFeature);
   const periodKey = createPeriodKey(config.period);
   const record = readUsageRecord(

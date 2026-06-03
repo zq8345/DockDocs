@@ -13,9 +13,12 @@ import {
 } from "@netlify/identity";
 import { getDockAccountState, type DockAccountState } from "@/lib/account-runtime";
 import {
+  createBillingCheckoutSession,
+  createBillingPortalSession,
   getSubscriptionSnapshot,
   type SubscriptionSnapshot,
 } from "@/lib/subscription-runtime";
+import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 
 type FormState = {
   name: string;
@@ -38,6 +41,9 @@ export function CommercialAccountClient() {
   const [form, setForm] = useState<FormState>(initialForm);
   const [mode, setMode] = useState<"login" | "signup">("signup");
   const [loading, setLoading] = useState(true);
+  const [billingAction, setBillingAction] = useState<
+    "checkout-plus" | "checkout-pro" | "portal" | ""
+  >("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -57,6 +63,11 @@ export function CommercialAccountClient() {
         setSubscription(await getSubscriptionSnapshot());
         if (callback?.type === "oauth" || callback?.type === "confirmation") {
           setMessage("Account session is active.");
+        }
+        if (window.location.search.includes("checkout=success")) {
+          setMessage(
+            "Checkout returned. Subscription updates after Stripe webhook sync.",
+          );
         }
       } catch (loadError) {
         if (mounted) {
@@ -147,6 +158,34 @@ export function CommercialAccountClient() {
     }
   }
 
+  async function handleCheckout(plan: PaidSubscriptionPlan) {
+    setError("");
+    setMessage("");
+    setBillingAction(plan === "PLUS" ? "checkout-plus" : "checkout-pro");
+    try {
+      const url = await createBillingCheckoutSession(plan);
+      window.location.assign(url);
+    } catch (checkoutError) {
+      setError(getErrorMessage(checkoutError));
+    } finally {
+      setBillingAction("");
+    }
+  }
+
+  async function handlePortal() {
+    setError("");
+    setMessage("");
+    setBillingAction("portal");
+    try {
+      const url = await createBillingPortalSession();
+      window.location.assign(url);
+    } catch (portalError) {
+      setError(getErrorMessage(portalError));
+    } finally {
+      setBillingAction("");
+    }
+  }
+
   if (loading) {
     return (
       <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6">
@@ -179,7 +218,13 @@ export function CommercialAccountClient() {
       </div>
 
       <div className="grid gap-6">
-        <PlanCard subscription={subscription} />
+        <PlanCard
+          signedIn={Boolean(user)}
+          subscription={subscription}
+          billingAction={billingAction}
+          onCheckout={handleCheckout}
+          onPortal={handlePortal}
+        />
         <WorkspaceBindingCard account={account} />
         {message ? (
           <p className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] p-3 text-sm font-semibold text-[color:var(--success)]">
@@ -346,12 +391,21 @@ function LoginCard({
 }
 
 function PlanCard({
+  signedIn,
   subscription,
+  billingAction,
+  onCheckout,
+  onPortal,
 }: {
+  signedIn: boolean;
   subscription: SubscriptionSnapshot | null;
+  billingAction: "checkout-plus" | "checkout-pro" | "portal" | "";
+  onCheckout: (plan: PaidSubscriptionPlan) => void;
+  onPortal: () => void;
 }) {
   const plan = subscription?.displayName ?? "Free";
-  const status = subscription?.statusLabel ?? "Free placeholder";
+  const status = subscription?.statusLabel ?? "Free";
+  const source = subscription?.record.source ?? "local";
 
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
@@ -363,17 +417,26 @@ function PlanCard({
         {status}
       </p>
       <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-        DEV-100 reads the local SubscriptionRecord and shows Free, Plus, or Pro
-        as an account placeholder. No Stripe checkout, payment, or entitlement
-        enforcement is active in this task.
+        Stripe checkout is available for signed-in accounts. Subscription status
+        is trusted only after Stripe webhook sync.
       </p>
       <dl className="mt-4 grid gap-2 text-sm">
         <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
           <dt className="font-semibold text-[color:var(--muted)]">Source</dt>
           <dd className="mt-1 font-semibold">
-            {subscription?.record.source ?? "local"}
+            {source}
           </dd>
         </div>
+        {subscription?.record.currentPeriodEnd ? (
+          <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+            <dt className="font-semibold text-[color:var(--muted)]">
+              Current period ends
+            </dt>
+            <dd className="mt-1 break-words font-semibold">
+              {subscription.record.currentPeriodEnd}
+            </dd>
+          </div>
+        ) : null}
         <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
           <dt className="font-semibold text-[color:var(--muted)]">Updated</dt>
           <dd className="mt-1 break-words font-semibold">
@@ -381,6 +444,37 @@ function PlanCard({
           </dd>
         </div>
       </dl>
+      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+        <button
+          type="button"
+          onClick={() => onCheckout("PLUS")}
+          disabled={!signedIn || billingAction !== ""}
+          className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {billingAction === "checkout-plus" ? "Opening..." : "Upgrade to Plus"}
+        </button>
+        <button
+          type="button"
+          onClick={() => onCheckout("PRO")}
+          disabled={!signedIn || billingAction !== ""}
+          className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {billingAction === "checkout-pro" ? "Opening..." : "Upgrade to Pro"}
+        </button>
+        <button
+          type="button"
+          onClick={onPortal}
+          disabled={!signedIn || billingAction !== ""}
+          className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50 sm:col-span-2"
+        >
+          {billingAction === "portal" ? "Opening billing..." : "Manage billing"}
+        </button>
+      </div>
+      {!signedIn ? (
+        <p className="mt-3 text-xs font-semibold text-[color:var(--muted)]">
+          Sign in to start checkout or open the customer portal.
+        </p>
+      ) : null}
     </section>
   );
 }
