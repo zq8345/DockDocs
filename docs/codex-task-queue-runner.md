@@ -40,13 +40,46 @@ Add tasks to the top-level `tasks` array:
   "commands": ["git status --short --branch", "npm run build:dockdocs"],
   "createdAt": "2026-06-03T00:00:00.000Z",
   "startedAt": null,
+  "completedAt": null,
+  "failedAt": null,
+  "skippedAt": null,
   "finishedAt": null,
+  "exitCode": null,
   "lastError": null,
   "logs": []
 }
 ```
 
 The runner only executes tasks with `status` set to `pending`.
+
+## Task Status Fields
+
+- `startedAt`: set when a pending task begins.
+- `completedAt`: set when every command exits successfully.
+- `failedAt`: set when validation or a command fails.
+- `skippedAt`: set when a task is already marked as skipped.
+- `exitCode`: `0` for completed tasks, the failed command exit code for command
+  failures, `1` for validation failures, and `null` for skipped tasks.
+- `lastError`: the controlled error message for failed or skipped tasks.
+
+## DockDocs Playwright Commands
+
+Chat with PDF E2E checks must run through the DockDocs workspace Playwright
+configuration:
+
+```powershell
+npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts
+```
+
+Do not run Chat with PDF coverage from the repo root with a direct command such
+as:
+
+```powershell
+npx playwright test apps/dockdocs/tests/e2e/chat-with-pdf.spec.ts
+```
+
+The direct root command can miss DockDocs workspace configuration and produce
+misleading failures.
 
 ## Safety Limits
 
@@ -80,3 +113,7 @@ These logs are local runtime artifacts and should not be committed.
 This prototype should not auto-merge branches and should not run automatic
 production deploys. Keep merge, push, and production deploy decisions in the
 normal OPS review flow.
+
+Use this tool only as a local DEV/QA assistant. It should not become part of the
+production release flow, and it should not run `git reset`, `git clean`, deploy
+commands, or force pushes.
