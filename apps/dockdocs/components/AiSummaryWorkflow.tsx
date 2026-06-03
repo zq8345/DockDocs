@@ -6,10 +6,8 @@ import {
   type AiSummaryLocale,
   type AiSummaryResult,
 } from "@/lib/ai-summary-runtime";
-import {
-  canUseCommercialFeature,
-  recordCommercialFeatureUsage,
-} from "@/lib/billing-runtime";
+import { canUseFeature, recordUsage } from "@/lib/usage-runtime";
+import { getWorkspaceIdentity } from "@/lib/workspace-runtime";
 
 type WorkflowStatus =
   | "idle"
@@ -126,7 +124,8 @@ export function AiSummaryWorkflow({
       return;
     }
 
-    const quota = await canUseCommercialFeature("summary");
+    const identity = await getWorkspaceIdentity();
+    const quota = await canUseFeature(identity.id, "summary");
     if (!quota.allowed) {
       setError(t.quotaExceeded);
       setStatus("error");
@@ -160,7 +159,9 @@ export function AiSummaryWorkflow({
       }
 
       setResult(summary);
-      await recordCommercialFeatureUsage("summary");
+      await recordUsage(identity.id, "summary", {
+        source: "ai-summary",
+      });
       setProgress(100);
       setStatus("result");
     } catch (summaryError) {
