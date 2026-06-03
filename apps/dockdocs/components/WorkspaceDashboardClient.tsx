@@ -200,16 +200,16 @@ export function WorkspaceDashboardClient() {
           </div>
         </Panel>
 
-        <Panel title="Account plan" eyebrow="Subscription placeholder">
+        <Panel title="Account plan" eyebrow="Billing status">
           <article className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
             <h3 className="font-semibold">{state.subscription.displayName}</h3>
             <p className="mt-2 text-sm font-semibold text-[color:var(--muted)]">
               {state.subscription.statusLabel}
             </p>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-              DEV-100 reads the current SubscriptionRecord and displays Free,
-              Plus, or Pro as a workspace placeholder. No payment or feature
-              lock is active.
+              Paid subscription status is read from the billing API when
+              available. Stripe webhook sync is the trusted source for Plus and
+              Pro.
             </p>
             <dl className="mt-4 grid gap-2 text-xs font-semibold text-[color:var(--muted)]">
               <div className="flex justify-between gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3">

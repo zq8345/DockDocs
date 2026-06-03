@@ -1,4 +1,5 @@
 import { getCurrentAccountUser } from "@/lib/account-runtime";
+import { isPaidSubscriptionPlan, type PaidSubscriptionPlan } from "@/lib/billing-config";
 
 export type SubscriptionPlan = "FREE" | "PLUS" | "PRO";
 
@@ -9,7 +10,11 @@ export type SubscriptionStatus =
   | "past_due"
   | "canceled";
 
-export type SubscriptionSource = "local" | "stripe-checkout" | "manual";
+export type SubscriptionSource =
+  | "local"
+  | "stripe-checkout"
+  | "stripe-webhook"
+  | "manual";
 
 export type SubscriptionRecord = {
   plan: SubscriptionPlan;
@@ -18,6 +23,13 @@ export type SubscriptionRecord = {
   updatedAt: string;
   userId?: string;
   stripeSessionId?: string;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  currentPeriodStart?: string;
+  currentPeriodEnd?: string;
+  cancelAtPeriodEnd?: boolean;
+  priceId?: string;
+  lastStripeEventId?: string;
 };
 
 export type SubscriptionSnapshot = {
@@ -27,6 +39,11 @@ export type SubscriptionSnapshot = {
   displayName: "Free" | "Plus" | "Pro";
   statusLabel: string;
   isPaidPlaceholder: boolean;
+  customer?: {
+    stripeCustomerId?: string;
+    email?: string;
+  } | null;
+  serverBacked: boolean;
 };
 
 const prefix = "dockdocs:subscription";
@@ -36,7 +53,11 @@ const anonymousUserId = "anonymous";
 export async function getSubscriptionSnapshot(): Promise<SubscriptionSnapshot> {
   const user = await getCurrentAccountUser();
   const userId = user?.id ?? anonymousUserId;
-  const record = readSubscriptionRecord(userId);
+  const serverSnapshot = await readServerSubscription();
+  const record = serverSnapshot?.record ?? readSubscriptionRecord(userId);
+  if (user && serverSnapshot?.record) {
+    writeSubscriptionRecord(user.id, serverSnapshot.record);
+  }
 
   return {
     userId,
@@ -45,7 +66,52 @@ export async function getSubscriptionSnapshot(): Promise<SubscriptionSnapshot> {
     displayName: planDisplayName(record.plan),
     statusLabel: statusDisplayName(record.status),
     isPaidPlaceholder: record.plan !== "FREE",
+    customer: serverSnapshot?.customer ?? null,
+    serverBacked: Boolean(serverSnapshot),
   };
+}
+
+export async function createBillingCheckoutSession(plan: PaidSubscriptionPlan) {
+  if (!isPaidSubscriptionPlan(plan)) {
+    throw new Error("Choose Plus or Pro.");
+  }
+
+  const response = await fetch("/api/billing/create-checkout-session", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      plan,
+      origin: window.location.origin,
+    }),
+  });
+  const payload = await readBillingResponse(response);
+  if (!response.ok || !payload?.ok || !payload.url) {
+    throw new Error(payload?.message || "Checkout is not available.");
+  }
+
+  return payload.url;
+}
+
+export async function createBillingPortalSession() {
+  const response = await fetch("/api/billing/create-portal-session", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      origin: window.location.origin,
+    }),
+  });
+  const payload = await readBillingResponse(response);
+  if (!response.ok || !payload?.ok || !payload.url) {
+    throw new Error(payload?.message || "Customer portal is not available.");
+  }
+
+  return payload.url;
 }
 
 export function readSubscriptionRecord(userId: string): SubscriptionRecord {
@@ -105,11 +171,11 @@ export function planDisplayName(plan: SubscriptionPlan) {
 
 export function statusDisplayName(status: SubscriptionStatus) {
   const labels: Record<SubscriptionStatus, string> = {
-    free: "Free placeholder",
-    active: "Active placeholder",
-    trialing: "Trial placeholder",
-    past_due: "Past due placeholder",
-    canceled: "Canceled placeholder",
+    free: "Free",
+    active: "Active",
+    trialing: "Trialing",
+    past_due: "Past due",
+    canceled: "Canceled",
   };
 
   return labels[status];
@@ -130,6 +196,13 @@ function normalizeSubscriptionRecord(
     source?: unknown;
     updatedAt?: unknown;
     stripeSessionId?: unknown;
+    stripeCustomerId?: unknown;
+    stripeSubscriptionId?: unknown;
+    currentPeriodStart?: unknown;
+    currentPeriodEnd?: unknown;
+    cancelAtPeriodEnd?: unknown;
+    priceId?: unknown;
+    lastStripeEventId?: unknown;
   };
   const plan = normalizePlan(input.plan ?? input.tier);
   const status = normalizeStatus(input.status);
@@ -149,6 +222,27 @@ function normalizeSubscriptionRecord(
     userId,
     stripeSessionId:
       typeof input.stripeSessionId === "string" ? input.stripeSessionId : undefined,
+    stripeCustomerId:
+      typeof input.stripeCustomerId === "string" ? input.stripeCustomerId : undefined,
+    stripeSubscriptionId:
+      typeof input.stripeSubscriptionId === "string"
+        ? input.stripeSubscriptionId
+        : undefined,
+    currentPeriodStart:
+      typeof input.currentPeriodStart === "string"
+        ? input.currentPeriodStart
+        : undefined,
+    currentPeriodEnd:
+      typeof input.currentPeriodEnd === "string" ? input.currentPeriodEnd : undefined,
+    cancelAtPeriodEnd:
+      typeof input.cancelAtPeriodEnd === "boolean"
+        ? input.cancelAtPeriodEnd
+        : undefined,
+    priceId: typeof input.priceId === "string" ? input.priceId : undefined,
+    lastStripeEventId:
+      typeof input.lastStripeEventId === "string"
+        ? input.lastStripeEventId
+        : undefined,
   };
 }
 
@@ -167,7 +261,7 @@ function normalizeStatus(value: unknown): SubscriptionStatus | null {
 }
 
 function normalizeSource(value: unknown): SubscriptionSource {
-  if (value === "stripe-checkout" || value === "manual") {
+  if (value === "stripe-checkout" || value === "stripe-webhook" || value === "manual") {
     return value;
   }
 
@@ -200,4 +294,67 @@ function writeJson(key: string, value: unknown) {
 
 function canUseStorage() {
   return typeof window !== "undefined" && Boolean(window.localStorage);
+}
+
+async function readServerSubscription() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  if (isLocalStaticHost()) {
+    return null;
+  }
+
+  try {
+    const response = await fetch("/api/billing/subscription", {
+      method: "GET",
+      credentials: "include",
+    });
+    const payload = (await response.json().catch(() => null)) as
+      | {
+          ok?: boolean;
+          userId?: string;
+          subscription?: unknown;
+          customer?: {
+            stripeCustomerId?: string;
+            email?: string;
+          } | null;
+        }
+      | null;
+
+    if (!response.ok || !payload?.ok || !payload.subscription) {
+      return null;
+    }
+
+    const userId = payload.userId || anonymousUserId;
+    const record = normalizeSubscriptionRecord(payload.subscription, userId);
+    if (!record) {
+      return null;
+    }
+
+    return {
+      record,
+      customer: payload.customer ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function isLocalStaticHost() {
+  return (
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname === "::1"
+  );
+}
+
+async function readBillingResponse(response: Response) {
+  return (await response.json().catch(() => null)) as
+    | {
+        ok?: boolean;
+        url?: string;
+        message?: string;
+      }
+    | null;
 }
