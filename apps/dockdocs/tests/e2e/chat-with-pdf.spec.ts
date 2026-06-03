@@ -184,6 +184,26 @@ test("pricing page is localized and responsive", async ({ page }) => {
   expect(metrics.lang).toBe("zh");
 });
 
+test("account workspace binding shows anonymous state and Free placeholder", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/account");
+  await expect(page.getByRole("heading", { name: "Register, sign in, and keep workspace data scoped to your account." })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continue with Google" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Create account" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Free" })).toBeVisible();
+  await expect(page.getByText("anonymous", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Stripe Checkout")).toHaveCount(0);
+
+  await page.goto("/dashboard");
+  await expect(page.getByText("Sign in to save workspace records under your account.")).toBeVisible();
+  await expect(page.getByText("Plan: Free")).toBeVisible();
+  await expect(page.getByText("Storage: Anonymous")).toBeVisible();
+
+  await page.goto("/my-chats");
+  await expect(page.getByRole("heading", { name: "Sign in to isolate workspace data." })).toBeVisible();
+  await expect(page.getByText("Current storage: anonymous · Plan: Free")).toBeVisible();
+});
+
 test("header tools and utility menus are keyboard and mobile friendly", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");

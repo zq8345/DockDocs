@@ -4,7 +4,7 @@ import { CommercialAccountClient } from "@/components/CommercialAccountClient";
 export const metadata: Metadata = {
   title: "Account",
   description:
-    "Create a DockDocs account, manage subscription status, view usage, and upgrade billing.",
+    "Create a DockDocs account, sign in with Netlify Identity, and bind workspace records to your user.",
   alternates: {
     canonical: "/account/",
   },
@@ -19,12 +19,13 @@ export default function AccountPage() {
             Account
           </p>
           <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl">
-            Register, manage usage, and upgrade DockDocs.
+            Register, sign in, and keep workspace data scoped to your account.
           </h1>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-            Create an account with Netlify Identity, review local usage metering,
-            and start Stripe Checkout for Plus or Pro. Original PDF files are
-            not stored by the account layer.
+            DockDocs uses Netlify Identity for Google and Email login. Signed-in
+            workspace data is stored by account ID, anonymous data stays local to
+            this browser, and original PDF files are not saved by the account
+            layer.
           </p>
         </div>
       </section>

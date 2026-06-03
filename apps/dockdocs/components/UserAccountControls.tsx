@@ -12,7 +12,6 @@ import {
 } from "@netlify/identity";
 import { usePathname } from "next/navigation";
 import { getRuntimeCopy, localeFromPathname } from "@/lib/copy";
-import { defaultLocale, localizedPath } from "@/lib/i18n";
 
 type AccountState = {
   user: User | null;
@@ -27,8 +26,7 @@ export function UserAccountControls() {
   const pathname = usePathname();
   const locale = localeFromPathname(pathname);
   const copy = getRuntimeCopy(locale).shell.account;
-  const pricingHref =
-    locale === defaultLocale ? "/pricing/" : localizedPath(locale, "pricing");
+  const isZh = locale === "zh";
   const [state, setState] = useState<AccountState>({
     user: null,
     loading: true,
@@ -86,9 +84,23 @@ export function UserAccountControls() {
     }
   }
 
+  async function handleGoogleLogin() {
+    setState((current) => ({ ...current, error: "" }));
+
+    try {
+      await oauthLogin("google");
+    } catch (error) {
+      setState((current) => ({ ...current, error: getErrorMessage(error) }));
+    }
+  }
+
   async function handleLogout() {
-    await logout();
-    setState((current) => ({ ...current, user: null, password: "" }));
+    try {
+      await logout();
+      setState((current) => ({ ...current, user: null, password: "" }));
+    } catch (error) {
+      setState((current) => ({ ...current, error: getErrorMessage(error) }));
+    }
   }
 
   if (state.loading) {
@@ -117,12 +129,6 @@ export function UserAccountControls() {
         >
           {copy.myChats}
         </a>
-        <a
-          href={pricingHref}
-          className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-2 font-semibold text-white transition hover:opacity-90 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-        >
-          {copy.upgrade}
-        </a>
         <button
           type="button"
           onClick={handleLogout}
@@ -142,24 +148,20 @@ export function UserAccountControls() {
           <div>
             <p className="font-semibold">{copy.signedOutTitle}</p>
             <p className="mt-1 text-xs leading-5 text-[color:var(--muted)]">
-              {copy.signedOutDescription}
+              {isZh
+                ? "登录后可按账户隔离我的对话和工作区记录。"
+                : "Sign in to isolate My Chats and workspace records by account."}
             </p>
           </div>
           <span className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-2 py-1 text-[10px] font-semibold text-[color:var(--muted)]">
             {copy.currentPlan}
           </span>
         </div>
-        <a
-          href={pricingHref}
-          className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-2 font-semibold text-white transition hover:opacity-90 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-        >
-          {copy.upgrade}
-        </a>
       </div>
       <div className="flex max-w-full flex-wrap items-center gap-2">
       <button
         type="button"
-        onClick={() => oauthLogin("google")}
+        onClick={handleGoogleLogin}
         className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] bg-[color:var(--foreground)] px-3 py-2 font-semibold text-[color:var(--background)] transition hover:opacity-90 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
       >
         {copy.continueGoogle}

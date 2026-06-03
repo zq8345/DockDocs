@@ -109,6 +109,9 @@ export function MyChatsClient() {
               separate signed-in data by account ID. Original PDFs are not
               saved.
             </p>
+            <p className="mt-3 text-sm font-semibold text-[color:var(--muted)]">
+              Current storage: {identity?.id ?? "anonymous"} · Plan: Free
+            </p>
           </div>
           <UserAccountControls />
         </div>
@@ -150,6 +153,9 @@ export function MyChatsClient() {
             Signed in
           </p>
           <p className="mt-1 font-semibold">{user.name || user.email}</p>
+          <p className="mt-2 break-all text-sm text-[color:var(--muted)]">
+            Workspace storage: {identity?.id ?? user.id} · Plan: Free
+          </p>
         </div>
         <button
           type="button"

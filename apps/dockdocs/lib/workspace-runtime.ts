@@ -1,4 +1,4 @@
-import { getCurrentAccountUser } from "@/lib/account-runtime";
+import { getDockAccountState } from "@/lib/account-runtime";
 import {
   canUseCommercialFeature,
   isMeteredFeature,
@@ -87,7 +87,6 @@ export type AnalysisPersistenceInput = {
 };
 
 const prefix = "dockdocs:workspace";
-const anonymousId = "anonymous";
 const maxDocuments = 50;
 const maxSessions = 50;
 const maxStoredContextCharacters = 24_000;
@@ -135,19 +134,11 @@ export const promptTemplates = [
 ] as const;
 
 export async function getWorkspaceIdentity(): Promise<WorkspaceIdentity> {
-  const user = await getCurrentAccountUser().catch(() => null);
-  if (user?.id) {
-    return {
-      id: user.id,
-      label: user.name || user.email || "Signed-in user",
-      signedIn: true,
-    };
-  }
-
+  const account = await getDockAccountState();
   return {
-    id: anonymousId,
-    label: "Anonymous browser",
-    signedIn: false,
+    id: account.storageId,
+    label: account.label,
+    signedIn: account.signedIn,
   };
 }
 

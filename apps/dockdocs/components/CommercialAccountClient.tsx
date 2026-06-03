@@ -11,14 +11,7 @@ import {
   signup,
   type User,
 } from "@netlify/identity";
-import {
-  billingPlans,
-  createCheckoutSession,
-  markCheckoutSuccess,
-  readBillingSnapshot,
-  type BillingSnapshot,
-  type BillingTier,
-} from "@/lib/billing-runtime";
+import { getDockAccountState, type DockAccountState } from "@/lib/account-runtime";
 
 type FormState = {
   name: string;
@@ -34,7 +27,7 @@ const initialForm: FormState = {
 
 export function CommercialAccountClient() {
   const [user, setUser] = useState<User | null>(null);
-  const [snapshot, setSnapshot] = useState<BillingSnapshot | null>(null);
+  const [account, setAccount] = useState<DockAccountState | null>(null);
   const [form, setForm] = useState<FormState>(initialForm);
   const [mode, setMode] = useState<"login" | "signup">("signup");
   const [loading, setLoading] = useState(true);
@@ -46,31 +39,23 @@ export function CommercialAccountClient() {
 
     async function load() {
       try {
-        await handleAuthCallback();
+        const callback = await handleAuthCallback();
         const currentUser = await getUser();
-        const search = new URLSearchParams(window.location.search);
-        const checkout = search.get("checkout");
-        const tier = search.get("tier") as BillingTier | null;
-        const sessionId = search.get("session_id");
-
-        if (
-          checkout === "success" &&
-          (tier === "PLUS" || tier === "PRO") &&
-          sessionId
-        ) {
-          await markCheckoutSuccess({ tier, sessionId });
-          window.history.replaceState({}, "", "/account/");
-          setMessage("Payment received. Your local subscription status is active.");
+        if (!mounted) {
+          return;
         }
 
-        if (mounted) {
-          setUser(currentUser);
-          setSnapshot(await readBillingSnapshot());
-          setLoading(false);
+        setUser(currentUser);
+        setAccount(await getDockAccountState());
+        if (callback?.type === "oauth" || callback?.type === "confirmation") {
+          setMessage("Account session is active.");
         }
       } catch (loadError) {
         if (mounted) {
           setError(getErrorMessage(loadError));
+        }
+      } finally {
+        if (mounted) {
           setLoading(false);
         }
       }
@@ -79,7 +64,8 @@ export function CommercialAccountClient() {
     load();
     const unsubscribe = onAuthChange(async (_event, nextUser) => {
       setUser(nextUser);
-      setSnapshot(await readBillingSnapshot());
+      setAccount(await getDockAccountState());
+      setError("");
     });
 
     return () => {
@@ -88,8 +74,8 @@ export function CommercialAccountClient() {
     };
   }, []);
 
-  async function refreshSnapshot() {
-    setSnapshot(await readBillingSnapshot());
+  async function refreshAccount() {
+    setAccount(await getDockAccountState());
   }
 
   async function handleSignup() {
@@ -109,7 +95,7 @@ export function CommercialAccountClient() {
           ? "Account created. You are signed in."
           : "Account created. Check your email to confirm access.",
       );
-      await refreshSnapshot();
+      await refreshAccount();
     } catch (signupError) {
       setError(getErrorMessage(signupError));
     }
@@ -123,39 +109,31 @@ export function CommercialAccountClient() {
       setUser(nextUser);
       setForm(initialForm);
       setMessage("Signed in.");
-      await refreshSnapshot();
+      await refreshAccount();
     } catch (loginError) {
       setError(getErrorMessage(loginError));
     }
   }
 
-  async function handleLogout() {
-    await logout();
-    setUser(null);
-    setSnapshot(await readBillingSnapshot());
-  }
-
-  async function handleUpgrade(tier: BillingTier) {
+  async function handleGoogleLogin() {
     setError("");
     setMessage("");
-    if (tier === "FREE") {
-      return;
-    }
-
-    if (!user) {
-      setError("Create an account or sign in before upgrading.");
-      return;
-    }
-
     try {
-      const url = await createCheckoutSession({
-        tier,
-        userId: user.id,
-        email: user.email,
-      });
-      window.location.href = url;
-    } catch (checkoutError) {
-      setError(getErrorMessage(checkoutError));
+      await oauthLogin("google");
+    } catch (oauthError) {
+      setError(getErrorMessage(oauthError));
+    }
+  }
+
+  async function handleLogout() {
+    setError("");
+    setMessage("");
+    try {
+      await logout();
+      setUser(null);
+      await refreshAccount();
+    } catch (logoutError) {
+      setError(getErrorMessage(logoutError));
     }
   }
 
@@ -172,213 +150,210 @@ export function CommercialAccountClient() {
   return (
     <section className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
       <div className="grid gap-6">
-        <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            Account
-          </p>
-          {user ? (
-            <div className="mt-4 grid gap-4">
-              <div>
-                <h2 className="break-words text-2xl font-semibold">
-                  {user.name || user.email}
-                </h2>
-                <p className="mt-2 text-sm text-[color:var(--muted)]">
-                  User ID: {user.id}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-4 text-sm font-semibold text-[color:var(--foreground)]"
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <div className="mt-4 grid gap-4">
-              <div className="grid grid-cols-2 gap-2 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-1">
-                {(["signup", "login"] as const).map((item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => setMode(item)}
-                    className={
-                      mode === item
-                        ? "min-h-10 rounded-[var(--radius-sm)] bg-[color:var(--foreground)] px-3 text-sm font-semibold text-[color:var(--background)]"
-                        : "min-h-10 rounded-[var(--radius-sm)] px-3 text-sm font-semibold text-[color:var(--muted)]"
-                    }
-                  >
-                    {item === "signup" ? "Sign up" : "Login"}
-                  </button>
-                ))}
-              </div>
-
-              {mode === "signup" ? (
-                <input
-                  value={form.name}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, name: event.target.value }))
-                  }
-                  placeholder="Name"
-                  className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none"
-                />
-              ) : null}
-              <input
-                value={form.email}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, email: event.target.value }))
-                }
-                placeholder="Email"
-                type="email"
-                className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none"
-              />
-              <input
-                value={form.password}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    password: event.target.value,
-                  }))
-                }
-                placeholder="Password"
-                type="password"
-                className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none"
-              />
-              <button
-                type="button"
-                onClick={mode === "signup" ? handleSignup : handleLogin}
-                disabled={!form.email || !form.password}
-                className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {mode === "signup" ? "Create account" : "Login"}
-              </button>
-              <button
-                type="button"
-                onClick={() => oauthLogin("google")}
-                className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-4 text-sm font-semibold text-[color:var(--foreground)]"
-              >
-                Continue with Google
-              </button>
-            </div>
-          )}
-
-          {message ? (
-            <p className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] p-3 text-sm font-semibold text-[color:var(--success)]">
-              {message}
-            </p>
-          ) : null}
-          {error ? (
-            <p className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-3 text-sm font-semibold text-[color:var(--error)]">
-              {error}
-            </p>
-          ) : null}
-        </div>
-
-        <SubscriptionCard snapshot={snapshot} />
+        <AccountStatusCard
+          user={user}
+          account={account}
+          onLogout={handleLogout}
+        />
+        {user ? null : (
+          <LoginCard
+            form={form}
+            mode={mode}
+            onFormChange={setForm}
+            onGoogleLogin={handleGoogleLogin}
+            onModeChange={setMode}
+            onSubmit={mode === "signup" ? handleSignup : handleLogin}
+          />
+        )}
       </div>
 
       <div className="grid gap-6">
-        <PlanCards
-          activeTier={snapshot?.subscription.tier ?? "FREE"}
-          onUpgrade={handleUpgrade}
-        />
-        <UsageTable snapshot={snapshot} />
+        <FreePlanCard />
+        <WorkspaceBindingCard account={account} />
+        {message ? (
+          <p className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] p-3 text-sm font-semibold text-[color:var(--success)]">
+            {message}
+          </p>
+        ) : null}
+        {error ? (
+          <p role="alert" className="rounded-[var(--radius-sm)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-3 text-sm font-semibold text-[color:var(--error)]">
+            {error}
+          </p>
+        ) : null}
       </div>
     </section>
   );
 }
 
-function SubscriptionCard({ snapshot }: { snapshot: BillingSnapshot | null }) {
-  const subscription = snapshot?.subscription;
+function AccountStatusCard({
+  user,
+  account,
+  onLogout,
+}: {
+  user: User | null;
+  account: DockAccountState | null;
+  onLogout: () => void;
+}) {
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        Subscription
+        Current user
       </p>
-      <h2 className="mt-2 text-3xl font-semibold">
-        {subscription?.tier ?? "FREE"}
+      <h2 className="mt-2 break-words text-2xl font-semibold">
+        {user ? user.name || user.email || "Signed-in user" : "Anonymous browser"}
       </h2>
-      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-        Status: {subscription?.status ?? "free"} · Source:{" "}
-        {subscription?.source ?? "local"}
-      </p>
-      {subscription?.stripeSessionId ? (
-        <p className="mt-2 break-words text-xs text-[color:var(--muted)]">
-          Stripe checkout session: {subscription.stripeSessionId}
-        </p>
+      <dl className="mt-4 grid gap-3 text-sm">
+        <div>
+          <dt className="font-semibold text-[color:var(--muted)]">Status</dt>
+          <dd className="mt-1 font-semibold">
+            {account?.signedIn ? "Signed in" : "Not signed in"}
+          </dd>
+        </div>
+        <div>
+          <dt className="font-semibold text-[color:var(--muted)]">
+            Workspace storage
+          </dt>
+          <dd className="mt-1 break-all font-semibold">
+            {account?.storageId ?? "anonymous"}
+          </dd>
+        </div>
+      </dl>
+      {user ? (
+        <button
+          type="button"
+          onClick={onLogout}
+          className="mt-5 min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-4 text-sm font-semibold text-[color:var(--foreground)]"
+        >
+          Logout
+        </button>
       ) : null}
     </section>
   );
 }
 
-function PlanCards({
-  activeTier,
-  onUpgrade,
+function LoginCard({
+  form,
+  mode,
+  onFormChange,
+  onGoogleLogin,
+  onModeChange,
+  onSubmit,
 }: {
-  activeTier: BillingTier;
-  onUpgrade: (tier: BillingTier) => void;
+  form: FormState;
+  mode: "login" | "signup";
+  onFormChange: (form: FormState) => void;
+  onGoogleLogin: () => void;
+  onModeChange: (mode: "login" | "signup") => void;
+  onSubmit: () => void;
 }) {
-  return (
-    <section className="grid gap-4 md:grid-cols-3">
-      {billingPlans.map((plan) => (
-        <article
-          key={plan.tier}
-          className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5"
-        >
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            {plan.name}
-          </p>
-          <h3 className="mt-2 text-3xl font-semibold">{plan.price}</h3>
-          <p className="mt-3 min-h-16 text-sm leading-6 text-[color:var(--muted)]">
-            {plan.description}
-          </p>
-          <ul className="mt-4 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
-            {plan.highlights.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-          <button
-            type="button"
-            onClick={() => onUpgrade(plan.tier)}
-            disabled={plan.tier === "FREE" || plan.tier === activeTier}
-            className="mt-5 min-h-11 w-full rounded-[var(--radius-sm)] bg-[color:var(--foreground)] px-4 text-sm font-semibold text-[color:var(--background)] disabled:cursor-not-allowed disabled:opacity-45"
-          >
-            {plan.tier === activeTier ? "Current plan" : plan.cta}
-          </button>
-        </article>
-      ))}
-    </section>
-  );
-}
-
-function UsageTable({ snapshot }: { snapshot: BillingSnapshot | null }) {
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        Usage metering
+        Sign in
       </p>
-      <div className="mt-4 grid gap-3">
-        {(snapshot?.usage ?? []).map((item) => (
-          <div
-            key={item.feature}
-            className="grid gap-2 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm sm:grid-cols-[minmax(0,1fr)_120px_120px]"
+      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+        Sign in to keep saved chats and workspace metadata scoped to your
+        account. Anonymous workspace data remains local to this browser.
+      </p>
+      <button
+        type="button"
+        onClick={onGoogleLogin}
+        className="mt-4 min-h-11 w-full rounded-[var(--radius-sm)] bg-[color:var(--foreground)] px-4 text-sm font-semibold text-[color:var(--background)]"
+      >
+        Continue with Google
+      </button>
+      <div className="mt-4 grid grid-cols-2 gap-2 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-1">
+        {(["signup", "login"] as const).map((item) => (
+          <button
+            key={item}
+            type="button"
+            onClick={() => onModeChange(item)}
+            className={
+              mode === item
+                ? "min-h-10 rounded-[var(--radius-sm)] bg-[color:var(--foreground)] px-3 text-sm font-semibold text-[color:var(--background)]"
+                : "min-h-10 rounded-[var(--radius-sm)] px-3 text-sm font-semibold text-[color:var(--muted)]"
+            }
           >
-            <p className="font-semibold">{featureLabel(item.feature)}</p>
-            <p className="text-[color:var(--muted)]">
-              {item.used}/{item.limit}
-            </p>
-            <p className="text-[color:var(--muted)]">{item.period}</p>
-          </div>
+            {item === "signup" ? "Sign up" : "Login"}
+          </button>
         ))}
+      </div>
+      <div className="mt-3 grid gap-3">
+        {mode === "signup" ? (
+          <input
+            value={form.name}
+            onChange={(event) =>
+              onFormChange({ ...form, name: event.target.value })
+            }
+            placeholder="Name"
+            className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none"
+          />
+        ) : null}
+        <input
+          value={form.email}
+          onChange={(event) =>
+            onFormChange({ ...form, email: event.target.value })
+          }
+          placeholder="Email"
+          type="email"
+          className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none"
+        />
+        <input
+          value={form.password}
+          onChange={(event) =>
+            onFormChange({ ...form, password: event.target.value })
+          }
+          placeholder="Password"
+          type="password"
+          className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none"
+        />
+        <button
+          type="button"
+          onClick={onSubmit}
+          disabled={!form.email || !form.password}
+          className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {mode === "signup" ? "Create account" : "Login"}
+        </button>
       </div>
     </section>
   );
 }
 
-function featureLabel(feature: string) {
-  return feature
-    .replace(/([A-Z])/g, " $1")
-    .replace(/^./u, (letter) => letter.toUpperCase());
+function FreePlanCard() {
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        Plan
+      </p>
+      <h2 className="mt-2 text-3xl font-semibold">Free</h2>
+      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+        Account production enablement only. No payment, subscription check, or
+        billing enforcement is active in DEV-001.
+      </p>
+    </section>
+  );
+}
+
+function WorkspaceBindingCard({
+  account,
+}: {
+  account: DockAccountState | null;
+}) {
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        Workspace binding
+      </p>
+      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+        Workspace records use the current account storage ID. Original PDFs are
+        not stored.
+      </p>
+      <p className="mt-4 break-all rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm font-semibold">
+        {account?.storageId ?? "anonymous"}
+      </p>
+    </section>
+  );
 }
 
 function getErrorMessage(error: unknown) {

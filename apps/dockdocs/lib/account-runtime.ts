@@ -3,6 +3,14 @@ import type { AiChatHistoryTurn, AiChatResult } from "@/lib/ai-chat-runtime";
 
 export type DockAccountUser = Pick<User, "id" | "email" | "name" | "pictureUrl">;
 
+export type DockAccountState = {
+  user: DockAccountUser | null;
+  signedIn: boolean;
+  storageId: string;
+  label: string;
+  plan: "Free";
+};
+
 export type SavedChatRecord = {
   id: string;
   createdAt: string;
@@ -22,10 +30,26 @@ export type SavedChatRecord = {
 };
 
 const storagePrefix = "dockdocs:account";
+export const anonymousAccountId = "anonymous";
 const maxSavedChats = 50;
 
 export async function getCurrentAccountUser() {
-  return toDockAccountUser(await getUser());
+  try {
+    return toDockAccountUser(await getUser());
+  } catch {
+    return null;
+  }
+}
+
+export async function getDockAccountState(): Promise<DockAccountState> {
+  const user = await getCurrentAccountUser();
+  return {
+    user,
+    signedIn: Boolean(user),
+    storageId: user?.id ?? anonymousAccountId,
+    label: user?.name || user?.email || "Anonymous browser",
+    plan: "Free",
+  };
 }
 
 export async function saveChatForCurrentUser({
@@ -129,8 +153,8 @@ function storageKey(userId: string) {
   return `${storagePrefix}:${userId}:chats`;
 }
 
-function toDockAccountUser(user: User | null): DockAccountUser | null {
-  if (!user) {
+function toDockAccountUser(user: User | null | undefined): DockAccountUser | null {
+  if (!user?.id) {
     return null;
   }
 
