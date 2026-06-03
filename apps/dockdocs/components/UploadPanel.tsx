@@ -69,11 +69,11 @@ export function UploadPanel({
         </span>
       </div>
 
-      <label className="mt-5 flex min-h-52 cursor-pointer flex-col items-center justify-center rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-7 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]/40 sm:min-h-56 sm:py-8">
+      <label className="mt-5 flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]/40 focus-within:border-[color:var(--accent)] focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[color:var(--accent)] sm:min-h-52 sm:py-8">
         <span className="flex h-12 w-12 items-center justify-center rounded-[var(--radius)] bg-[color:var(--soft-accent)] text-sm font-semibold text-[color:var(--accent-strong)]">
           PDF
         </span>
-        <span className="mt-4 text-xl font-semibold">
+        <span className="mt-4 max-w-full break-words text-lg font-semibold sm:text-xl">
           {hasFile ? fileName : labels.dragDrop}
         </span>
         <span className="mt-2 max-w-md text-sm leading-6 text-[color:var(--muted)]">

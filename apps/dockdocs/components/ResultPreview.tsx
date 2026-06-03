@@ -53,14 +53,14 @@ export function ResultPreview({
 
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
-      <div className="flex items-center justify-between gap-4 border-b border-[color:var(--line)] pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[color:var(--line)] pb-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
             {eyebrow}
           </p>
           <h2 className="mt-1 text-xl font-semibold">{title}</h2>
         </div>
-        <span className={`rounded-[var(--radius-sm)] px-2.5 py-1 text-xs font-semibold ${stateTone}`}>
+        <span className={`shrink-0 whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1 text-xs font-semibold ${stateTone}`}>
           {labels.states[state]}
         </span>
       </div>
@@ -113,7 +113,7 @@ export function ResultPreview({
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
                 <Button type="button" variant="primary">
                   {labels.copy}
                 </Button>

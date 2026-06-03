@@ -37,6 +37,9 @@ export function DashboardWorkspace({
               <ButtonLink href="#actions" variant="secondary">
                 {page.newDocument}
               </ButtonLink>
+              <ButtonLink href={localizedPath(locale, "pricing")} variant="secondary">
+                {page.upgradeCta}
+              </ButtonLink>
             </div>
           </div>
         </div>
@@ -52,8 +55,8 @@ export function DashboardWorkspace({
             <AnalyticsOverview page={page} />
             <EmptyState page={page} locale={locale} />
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(320px,0.75fr)]">
-              <RecentDocuments page={page} />
-              <RecentConversations page={page} />
+              <RecentDocuments page={page} locale={locale} />
+              <RecentConversations page={page} locale={locale} />
             </div>
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
               <AiActions page={page} locale={locale} />
@@ -110,7 +113,7 @@ function OverviewCards({ page }: { page: DashboardCopy }) {
         {page.stats.map((stat) => (
           <article
             key={stat.label}
-            className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4"
+            className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 transition hover:border-[color:var(--foreground)]"
           >
             <p className="text-3xl font-semibold">{stat.value}</p>
             <p className="mt-2 text-sm text-[color:var(--muted)]">{stat.label}</p>
@@ -137,9 +140,18 @@ function OnboardingState({
             {page.onboardingDescription}
           </p>
         </div>
-        <ButtonLink href={localizedPath(locale, "chat-with-pdf")} variant="inverse">
-          {page.startChat}
-        </ButtonLink>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <ButtonLink href={localizedPath(locale, "chat-with-pdf")} variant="inverse">
+            {page.startChat}
+          </ButtonLink>
+          <ButtonLink
+            href={localizedPath(locale, "pricing")}
+            variant="inverse"
+            className="bg-white/10"
+          >
+            {page.upgradeCta}
+          </ButtonLink>
+        </div>
       </div>
     </section>
   );
@@ -197,7 +209,15 @@ function EmptyState({
   );
 }
 
-function RecentDocuments({ page }: { page: DashboardCopy }) {
+function RecentDocuments({
+  page,
+  locale,
+}: {
+  page: DashboardCopy;
+  locale: RuntimeLocale;
+}) {
+  const documentHrefs = ["/ai-summary", "/chat-with-pdf", "/ocr"];
+
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -209,16 +229,17 @@ function RecentDocuments({ page }: { page: DashboardCopy }) {
         </div>
       </div>
       <div className="mt-5 grid gap-3">
-        {page.documents.map((doc) => (
-          <article
+        {page.documents.map((doc, index) => (
+          <a
             key={doc.name}
-            className="grid gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm sm:grid-cols-[minmax(0,1fr)_80px_110px_110px] sm:items-center"
+            href={localizedDashboardHref(locale, documentHrefs[index] ?? "/dashboard")}
+            className="grid min-h-16 gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm transition hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] sm:grid-cols-[minmax(0,1fr)_80px_110px_110px] sm:items-center"
           >
             <p className="break-words font-semibold">{doc.name}</p>
             <p className="text-[color:var(--muted)]">{doc.type}</p>
             <p className="text-[color:var(--muted)]">{doc.status}</p>
             <p className="font-semibold text-[color:var(--accent)]">{doc.action}</p>
-          </article>
+          </a>
         ))}
       </div>
     </section>
@@ -245,24 +266,33 @@ function RecentActivity({ page }: { page: DashboardCopy }) {
   );
 }
 
-function RecentConversations({ page }: { page: DashboardCopy }) {
+function RecentConversations({
+  page,
+  locale,
+}: {
+  page: DashboardCopy;
+  locale: RuntimeLocale;
+}) {
+  const conversationHrefs = ["/chat-with-pdf", "/chat-with-pdf", "/ocr"];
+
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
         {page.conversationsLabel}
       </p>
       <div className="mt-4 grid gap-3">
-        {page.conversations.map((conversation) => (
-          <article
+        {page.conversations.map((conversation, index) => (
+          <a
             key={conversation.title}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
+            href={localizedDashboardHref(locale, conversationHrefs[index] ?? "/chat-with-pdf")}
+            className="min-h-16 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 transition hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           >
             <h3 className="text-sm font-semibold leading-5">{conversation.title}</h3>
             <div className="mt-2 flex flex-wrap gap-2 text-xs text-[color:var(--muted)]">
               <span>{conversation.meta}</span>
               <span>{conversation.status}</span>
             </div>
-          </article>
+          </a>
         ))}
       </div>
     </section>
@@ -286,7 +316,7 @@ function AiActions({
           <a
             key={action.title}
             href={localizedDashboardHref(locale, action.href)}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
+            className="min-h-36 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           >
             <div className="flex items-start justify-between gap-3">
               <h3 className="font-semibold">{action.title}</h3>

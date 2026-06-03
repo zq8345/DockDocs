@@ -146,12 +146,14 @@ for (const viewport of [
 test("dashboard IA is visible in English and Chinese", async ({ page }) => {
   await page.goto("/dashboard");
   await expect(page.getByRole("heading", { name: "Document workspace overview." })).toBeVisible();
+  await expect(page.getByRole("link", { name: "View pricing" }).first()).toBeVisible();
   await expect(page.getByText("Conversations", { exact: true })).toBeVisible();
   await expect(page.getByText("Workspace health", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("Recommended next steps", { exact: true })).toBeVisible();
 
   await page.goto("/zh/dashboard");
   await expect(page.getByRole("heading", { name: "文档工作区概览。" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "查看价格" }).first()).toBeVisible();
   await expect(page.getByText("最近对话", { exact: true })).toBeVisible();
   await expect(page.getByText("工作区健康", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("建议下一步", { exact: true })).toBeVisible();
@@ -163,11 +165,13 @@ test("pricing page is localized and responsive", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Free" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Plus" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Pro" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Move from first upload to a wider document workspace." })).toBeVisible();
   await expect(page.getByText("UI only: Stripe")).toBeVisible();
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/zh/pricing");
   await expect(page.getByRole("heading", { name: "面向 AI 文档工作区的方案。" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "从首次上传扩展到更完整的文档工作区。" })).toBeVisible();
   await expect(page.getByText("仅 UI：本次设计不接 Stripe")).toBeVisible();
 
   const metrics = await page.evaluate(() => ({
@@ -178,6 +182,38 @@ test("pricing page is localized and responsive", async ({ page }) => {
 
   expect(metrics.scrollWidth).toBe(metrics.clientWidth);
   expect(metrics.lang).toBe("zh");
+});
+
+test("header tools and utility menus are keyboard and mobile friendly", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto("/");
+
+  const productNav = page.getByRole("navigation", { name: "DockDocs navigation" });
+  await productNav.getByRole("button", { name: "Convert" }).hover();
+  await expect(page.locator("#dockdocs-feature-menu-convert")).toContainText("PDF to Word");
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#dockdocs-feature-menu-convert")).toBeHidden();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/zh");
+
+  await page.getByRole("button", { name: "工具" }).click();
+  await expect(page.locator("#dockdocs-tools-menu").getByRole("heading", { name: "AI 工作区" })).toBeVisible();
+
+  await page.getByRole("button", { name: "功能" }).click();
+  await expect(page.locator("#dockdocs-tools-menu")).toBeHidden();
+  await expect(page.locator("#dockdocs-utility-menu")).toBeVisible();
+  await expect(page.getByRole("link", { name: "中文" })).toBeVisible();
+
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#dockdocs-utility-menu")).toBeHidden();
+
+  const metrics = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+
+  expect(metrics.scrollWidth).toBe(metrics.clientWidth);
 });
 
 test("primary routes load across desktop, tablet, and mobile without horizontal overflow", async ({ page }) => {

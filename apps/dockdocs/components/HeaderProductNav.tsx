@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { getRuntimeCopy } from "@/lib/copy";
@@ -218,6 +218,7 @@ export function HeaderProductNav({
   onMobileOpenChange?: (open: boolean) => void;
 } = {}) {
   const pathname = usePathname();
+  const navRef = useRef<HTMLElement>(null);
   const { locale, hasLocalePrefix } = currentRoute(pathname);
   const copy = getRuntimeCopy(locale).shell;
   const categories = useMemo(
@@ -231,20 +232,59 @@ export function HeaderProductNav({
   const openCategory =
     categories.find((category) => category.id === openCategoryId) ?? null;
 
+  useEffect(() => {
+    setOpenCategoryId(null);
+  }, [pathname]);
+
+  useEffect(() => {
+    function closeDesktopMenu(event: MouseEvent) {
+      if (!navRef.current?.contains(event.target as Node)) {
+        setOpenCategoryId(null);
+      }
+    }
+
+    function closeWithEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpenCategoryId(null);
+        setMobileOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", closeDesktopMenu);
+    document.addEventListener("keydown", closeWithEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", closeDesktopMenu);
+      document.removeEventListener("keydown", closeWithEscape);
+    };
+  }, [setMobileOpen]);
+
   return (
-    <nav aria-label={copy.header.aria} className="min-w-0 flex-1">
+    <nav ref={navRef} aria-label={copy.header.aria} className="min-w-0 flex-1">
       <div className="sm:hidden">
         <button
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-expanded={mobileOpen}
-          className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:bg-[color:var(--surface-subtle)]"
+          aria-haspopup="menu"
+          aria-controls="dockdocs-tools-menu"
+          className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:bg-[color:var(--surface-subtle)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
         >
           {copy.header.tools}
         </button>
         {mobileOpen ? (
-          <div className="absolute left-3 right-3 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-y-auto rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 shadow-[0_24px_70px_rgba(15,23,42,0.16)]">
-            <FeaturePanel categories={categories} copy={copy.header} compact />
+          <div
+            id="dockdocs-tools-menu"
+            role="menu"
+            aria-label={copy.header.featureMenu}
+            className="absolute left-3 right-3 top-[calc(100%+8px)] z-50 max-h-[min(74vh,680px)] overflow-y-auto rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 shadow-[0_24px_70px_rgba(15,23,42,0.16)]"
+          >
+            <FeaturePanel
+              categories={categories}
+              copy={copy.header}
+              compact
+              onNavigate={() => setMobileOpen(false)}
+            />
           </div>
         ) : null}
       </div>
@@ -263,6 +303,8 @@ export function HeaderProductNav({
                 <button
                   type="button"
                   aria-expanded={isOpen}
+                  aria-haspopup="menu"
+                  aria-controls={`dockdocs-feature-menu-${category.id}`}
                   onClick={() =>
                     setOpenCategoryId((current) =>
                       current === category.id ? null : category.id,
@@ -272,8 +314,8 @@ export function HeaderProductNav({
                   onFocus={() => setOpenCategoryId(category.id)}
                   className={
                     isActive || isOpen
-                      ? "min-h-10 rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-3 text-[color:var(--accent-strong)] transition"
-                      : "min-h-10 rounded-[var(--radius-sm)] px-3 transition hover:bg-black/5 hover:text-[color:var(--foreground)] dark:hover:bg-white/10"
+                      ? "min-h-10 rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-3 text-[color:var(--accent-strong)] transition active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
+                      : "min-h-10 rounded-[var(--radius-sm)] px-3 transition hover:bg-black/5 hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] dark:hover:bg-white/10"
                   }
                 >
                   {category.label}
@@ -285,12 +327,16 @@ export function HeaderProductNav({
 
         {openCategory ? (
           <div
+            id={`dockdocs-feature-menu-${openCategory.id}`}
+            role="menu"
+            aria-label={`${openCategory.label} ${copy.header.featureMenu}`}
             className="absolute left-1/2 top-full z-50 mt-2 w-[min(760px,calc(100vw-2rem))] -translate-x-1/2 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_24px_70px_rgba(15,23,42,0.16)]"
             onMouseEnter={() => setOpenCategoryId(openCategory.id)}
           >
             <FeaturePanel
               categories={[openCategory]}
               copy={copy.header}
+              onNavigate={() => setOpenCategoryId(null)}
             />
           </div>
         ) : null}
@@ -303,10 +349,12 @@ function FeaturePanel({
   categories,
   copy,
   compact = false,
+  onNavigate,
 }: {
   categories: HeaderFeatureCategory[];
   copy: ReturnType<typeof getRuntimeCopy>["shell"]["header"];
   compact?: boolean;
+  onNavigate?: () => void;
 }) {
   return (
     <div className="grid gap-4">
@@ -335,9 +383,11 @@ function FeaturePanel({
                       <a
                         key={`${group.label}-${item.label}`}
                         href={item.href}
-                        className="grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-sm transition hover:bg-[color:var(--surface-subtle)] focus:bg-[color:var(--surface-subtle)]"
+                        role="menuitem"
+                        onClick={onNavigate}
+                        className="grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-sm transition hover:bg-[color:var(--surface-subtle)] active:scale-[0.99] focus:bg-[color:var(--surface-subtle)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
                       >
-                        <span className="truncate font-semibold text-[color:var(--foreground)]">
+                        <span className="min-w-0 break-words font-semibold text-[color:var(--foreground)]">
                           {item.label}
                         </span>
                         <TierBadge tier={item.tier} copy={copy} />
@@ -345,11 +395,12 @@ function FeaturePanel({
                     ) : (
                       <div
                         key={`${group.label}-${item.label}`}
+                        role="menuitem"
                         aria-disabled="true"
-                        className="grid min-h-11 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-sm opacity-75"
+                        className="grid min-h-11 cursor-not-allowed grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-sm opacity-75"
                       >
                         <span className="min-w-0">
-                          <span className="block truncate font-semibold text-[color:var(--foreground)]">
+                          <span className="block break-words font-semibold text-[color:var(--foreground)]">
                             {item.label}
                           </span>
                           <span className="text-xs font-semibold text-[color:var(--muted)]">
@@ -379,11 +430,10 @@ function TierBadge({
 }) {
   return (
     <span
-      className={
-        tier === "FREE"
-          ? "rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] px-2 py-1 text-[10px] font-semibold text-[color:var(--success)]"
-          : "rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 py-1 text-[10px] font-semibold text-[color:var(--muted)]"
-      }
+      className={`${tier === "FREE"
+        ? "border-[color:var(--success-line)] bg-[color:var(--success-surface)] text-[color:var(--success)]"
+        : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-[color:var(--muted)]"
+      } shrink-0 whitespace-nowrap rounded-[var(--radius-sm)] border px-2 py-1 text-[10px] font-semibold`}
     >
       {tier === "FREE" ? copy.free : copy.plus}
     </span>

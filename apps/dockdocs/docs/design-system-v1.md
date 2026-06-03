@@ -324,6 +324,44 @@ Rules:
 - Success must reveal the generated output, not just say `Done`.
 - Pair success with next actions: copy, download, start chat, summarize, export, or open dashboard.
 
+## UI-011 To UI-015 Interaction Rules
+
+### Header And Utility Menus
+
+- Header feature menus must support hover, click, outside-click close, and `Esc` close.
+- Mobile `Tools` and utility `Menu` are mutually exclusive; opening one closes the other.
+- Dropdown panels use `role="menu"` and feature links use visible focus rings.
+- Mobile menu panels scroll inside the panel, not the page, and must fit within `390px`.
+- FREE, PLUS, and Coming soon labels must remain readable when Chinese labels wrap.
+
+### Dashboard And Workspace Cards
+
+- Cards that navigate should be real links, not clickable-looking static articles.
+- Interactive cards need hover, active, and focus-visible states with stable card dimensions.
+- Dashboard action, recent document, and recent conversation cards use at least `44px` tap height.
+- Static health and activity cards can remain non-focusable, but their status labels must stay readable without color alone.
+
+### Mobile IA
+
+- At `390px`, the Header keeps Brand, Tools, and Menu visible in one row when possible.
+- Upload zones should avoid excessive height so the first CTA and runtime state stay near the first viewport.
+- Chat with PDF mobile order remains: document/upload status, chat input, conversation, sources/references.
+- Pricing comparison switches to feature cards on mobile; do not force a wide comparison table.
+
+### Pricing And Upgrade CTA
+
+- Pricing is presentational until billing backend is explicitly in scope.
+- Free / Plus / Pro cards include tier badge, price, highlights, and a single plan CTA.
+- Upgrade path surfaces explain the flow without calling Stripe or billing APIs.
+- Header account menu and Dashboard may link to Pricing as an upgrade entry point.
+
+### Knowledge Cards And Source Panels
+
+- Knowledge cards should show a clear title hierarchy, concise description, and visible focus ring.
+- Suggested actions should be buttons with at least `44px` tap target.
+- Source cards may use a small status dot, but must keep text labels explicit.
+- Provider and citation status can be neutral placeholders until real provider output exists.
+
 ## Responsive Rules
 
 Breakpoints:
