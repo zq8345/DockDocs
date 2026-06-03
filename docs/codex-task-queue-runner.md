@@ -117,3 +117,13 @@ normal OPS review flow.
 Use this tool only as a local DEV/QA assistant. It should not become part of the
 production release flow, and it should not run `git reset`, `git clean`, deploy
 commands, or force pushes.
+
+## Mission Control Snapshot
+
+OPS-103 connects task queue status to the internal DockDocs Mission Control page.
+The page shows a static queue snapshot for local DEV/QA coordination only. It
+does not read the live queue file, does not execute Codex, and does not make
+production automation available from the website.
+
+The Mission Control snapshot is for visibility only. It does not represent a
+live API, an auto-refreshing queue, or permission to auto-merge or auto-deploy.
