@@ -1,0 +1,47 @@
+{
+  "tasks": [
+    {
+      "id": "OPS-102-SMOKE",
+      "title": "Smoke check repository",
+      "status": "pending",
+      "workdir": "C:\\Users\\47203\\Documents\\Dock",
+      "allowedCommands": [
+        "git status",
+        "git branch",
+        "git log"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "git log --oneline -5"
+      ],
+      "createdAt": "2026-06-03T00:00:00.000Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "lastError": null,
+      "logs": []
+    },
+    {
+      "id": "DEV-300-VERIFY",
+      "title": "Verify DEV-300 branch build status",
+      "status": "pending",
+      "workdir": "C:\\Users\\47203\\Documents\\Dock-dev-300-premium-clean",
+      "allowedCommands": [
+        "git status",
+        "npm install",
+        "npx tsc",
+        "npm run build:dockdocs"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs"
+      ],
+      "createdAt": "2026-06-03T00:00:00.000Z",
+      "startedAt": null,
+      "finishedAt": null,
+      "lastError": null,
+      "logs": []
+    }
+  ]
+}
