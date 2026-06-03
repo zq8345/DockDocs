@@ -249,10 +249,24 @@ test("header tools and utility menus are keyboard and mobile friendly", async ({
   await page.goto("/");
 
   const productNav = page.getByRole("navigation", { name: "DockDocs navigation" });
-  await productNav.getByRole("button", { name: "Convert" }).hover();
-  await expect(page.locator("#dockdocs-feature-menu-convert")).toContainText("PDF to Word");
+  const convertButton = productNav.getByRole("button", { name: "Convert" });
+  await convertButton.hover();
+  const convertMenu = page.locator("#dockdocs-feature-menu-convert");
+  await expect(convertMenu).toContainText("PDF to Word");
+
+  const buttonBox = await convertButton.boundingBox();
+  const menuBox = await convertMenu.boundingBox();
+  expect(buttonBox).not.toBeNull();
+  expect(menuBox).not.toBeNull();
+
+  if (buttonBox && menuBox) {
+    await page.mouse.move(buttonBox.x + buttonBox.width / 2, buttonBox.y + buttonBox.height + 6);
+    await page.mouse.move(menuBox.x + 24, menuBox.y + 24);
+    await expect(convertMenu).toBeVisible();
+  }
+
   await page.keyboard.press("Escape");
-  await expect(page.locator("#dockdocs-feature-menu-convert")).toBeHidden();
+  await expect(convertMenu).toBeHidden();
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/zh");

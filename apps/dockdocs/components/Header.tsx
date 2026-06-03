@@ -66,13 +66,17 @@ export function Header() {
       ref={headerRef}
       className="sticky top-0 z-50 border-b border-[color:var(--line)] bg-[color:var(--background)]/90 backdrop-blur"
     >
-      <div className="relative mx-auto flex max-w-7xl items-center gap-3 px-3 py-3 sm:px-6 lg:px-8">
-        <div className="flex min-w-0 shrink-0 items-center">
-          <a href="/" className="min-w-0 shrink-0" aria-label="DockDocs home">
+      <div className="relative mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-2 px-3 py-3 sm:grid-cols-[210px_minmax(0,1fr)_210px] sm:gap-3 sm:px-6 lg:grid-cols-[240px_minmax(0,1fr)_240px] lg:px-8">
+        <div className="flex min-w-0 items-center justify-start">
+          <a
+            href={usePrefix ? localizedPath(locale, "") : "/"}
+            className="min-w-0 shrink-0"
+            aria-label={copy.header.homeAria}
+          >
             <BrandMark />
           </a>
         </div>
-        <div className="flex min-w-0 flex-1 items-center justify-center">
+        <div className="flex min-w-0 items-center justify-center">
           <HeaderProductNav
             mobileOpen={toolsOpen}
             onMobileOpenChange={(open) => {
@@ -83,7 +87,7 @@ export function Header() {
             }}
           />
         </div>
-        <div className="relative shrink-0">
+        <div className="relative flex min-w-0 justify-end">
           <button
             type="button"
             onClick={() => {

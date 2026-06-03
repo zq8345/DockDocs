@@ -497,6 +497,22 @@ Non-UI ownership:
 - Header feature menus group capabilities by category and subcategory.
 - Utility menus own account, language, About, Blog, and upgrade entry points.
 - Mobile menus are single column, scroll within the menu panel, and must not create page-level horizontal overflow.
+- Header inner width should match the primary page container rhythm (`max-w-7xl`).
+- Desktop header layout should use balanced left and right control zones so the
+  feature navigation reads visually centered.
+- Desktop feature dropdowns need a hover bridge or close delay so users can move
+  from a navigation item into its submenu without the menu collapsing.
+
+### Logo Rules
+
+- DockDocs keeps a recognizable `D` silhouette.
+- The internal symbol should communicate documents and AI workspace behavior:
+  page shape, fold, readable lines, and one restrained AI signal.
+- Use the DockDocs blue accent direction without relying on heavy gradients.
+- The mark must remain recognizable in Header, small mobile sizes, and future
+  favicon/app icon usage.
+- The wordmark may emphasize `Docs` with the accent token while keeping `Dock`
+  neutral.
 
 ### Badges
 

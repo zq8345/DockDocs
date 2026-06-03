@@ -227,24 +227,48 @@ export function HeaderProductNav({
   );
   const [openCategoryId, setOpenCategoryId] = useState<string | null>(null);
   const [uncontrolledMobileOpen, setUncontrolledMobileOpen] = useState(false);
+  const closeTimerRef = useRef<number | null>(null);
   const mobileOpen = controlledMobileOpen ?? uncontrolledMobileOpen;
   const setMobileOpen = onMobileOpenChange ?? setUncontrolledMobileOpen;
   const openCategory =
     categories.find((category) => category.id === openCategoryId) ?? null;
 
+  function cancelCloseTimer() {
+    if (closeTimerRef.current) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  }
+
+  function openDesktopCategory(categoryId: string) {
+    cancelCloseTimer();
+    setOpenCategoryId(categoryId);
+  }
+
+  function scheduleDesktopClose() {
+    cancelCloseTimer();
+    closeTimerRef.current = window.setTimeout(() => {
+      setOpenCategoryId(null);
+      closeTimerRef.current = null;
+    }, 180);
+  }
+
   useEffect(() => {
+    cancelCloseTimer();
     setOpenCategoryId(null);
   }, [pathname]);
 
   useEffect(() => {
     function closeDesktopMenu(event: MouseEvent) {
       if (!navRef.current?.contains(event.target as Node)) {
+        cancelCloseTimer();
         setOpenCategoryId(null);
       }
     }
 
     function closeWithEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
+        cancelCloseTimer();
         setOpenCategoryId(null);
         setMobileOpen(false);
       }
@@ -254,6 +278,7 @@ export function HeaderProductNav({
     document.addEventListener("keydown", closeWithEscape);
 
     return () => {
+      cancelCloseTimer();
       document.removeEventListener("mousedown", closeDesktopMenu);
       document.removeEventListener("keydown", closeWithEscape);
     };
@@ -291,7 +316,8 @@ export function HeaderProductNav({
 
       <div
         className="relative hidden min-w-0 sm:block"
-        onMouseLeave={() => setOpenCategoryId(null)}
+        onMouseEnter={cancelCloseTimer}
+        onMouseLeave={scheduleDesktopClose}
       >
         <ul className="flex min-w-0 gap-1 overflow-x-auto pb-1 text-sm font-semibold text-[color:var(--muted)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {categories.map((category) => {
@@ -305,13 +331,14 @@ export function HeaderProductNav({
                   aria-expanded={isOpen}
                   aria-haspopup="menu"
                   aria-controls={`dockdocs-feature-menu-${category.id}`}
-                  onClick={() =>
+                  onClick={() => {
+                    cancelCloseTimer();
                     setOpenCategoryId((current) =>
                       current === category.id ? null : category.id,
-                    )
-                  }
-                  onMouseEnter={() => setOpenCategoryId(category.id)}
-                  onFocus={() => setOpenCategoryId(category.id)}
+                    );
+                  }}
+                  onMouseEnter={() => openDesktopCategory(category.id)}
+                  onFocus={() => openDesktopCategory(category.id)}
                   className={
                     isActive || isOpen
                       ? "min-h-10 rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-3 text-[color:var(--accent-strong)] transition active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
@@ -330,14 +357,17 @@ export function HeaderProductNav({
             id={`dockdocs-feature-menu-${openCategory.id}`}
             role="menu"
             aria-label={`${openCategory.label} ${copy.header.featureMenu}`}
-            className="absolute left-1/2 top-full z-50 mt-2 w-[min(760px,calc(100vw-2rem))] -translate-x-1/2 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_24px_70px_rgba(15,23,42,0.16)]"
-            onMouseEnter={() => setOpenCategoryId(openCategory.id)}
+            className="absolute left-1/2 top-full z-50 w-[min(760px,calc(100vw-2rem))] -translate-x-1/2 pt-2"
+            onMouseEnter={cancelCloseTimer}
+            onMouseLeave={scheduleDesktopClose}
           >
-            <FeaturePanel
-              categories={[openCategory]}
-              copy={copy.header}
-              onNavigate={() => setOpenCategoryId(null)}
-            />
+            <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_24px_70px_rgba(15,23,42,0.16)]">
+              <FeaturePanel
+                categories={[openCategory]}
+                copy={copy.header}
+                onNavigate={() => setOpenCategoryId(null)}
+              />
+            </div>
           </div>
         ) : null}
       </div>
