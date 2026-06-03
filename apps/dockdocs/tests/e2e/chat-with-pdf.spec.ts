@@ -187,12 +187,13 @@ test("pricing page is localized and responsive", async ({ page }) => {
 test("account workspace binding shows anonymous state and Free placeholder", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/account");
-  await expect(page.getByRole("heading", { name: "Register, sign in, and keep workspace data scoped to your account." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Register, sign in, and view your current workspace plan." })).toBeVisible();
   await expect(page.getByRole("button", { name: "Continue with Google" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Create account" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Free" })).toBeVisible();
+  await expect(page.getByText("Free placeholder")).toHaveCount(2);
   await expect(page.getByText("anonymous", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Stripe Checkout")).toHaveCount(0);
+  await expect(page.getByText("No Stripe checkout")).toBeVisible();
 
   await page.goto("/dashboard");
   await expect(page.getByText("Sign in to save workspace records under your account.")).toBeVisible();
@@ -202,6 +203,43 @@ test("account workspace binding shows anonymous state and Free placeholder", asy
   await page.goto("/my-chats");
   await expect(page.getByRole("heading", { name: "Sign in to isolate workspace data." })).toBeVisible();
   await expect(page.getByText("Current storage: anonymous · Plan: Free")).toBeVisible();
+});
+
+test("subscription placeholders and usage quota read local records", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => {
+    window.localStorage.setItem(
+      "dockdocs:subscription:anonymous:record",
+      JSON.stringify({
+        plan: "PLUS",
+        status: "active",
+        source: "manual",
+        updatedAt: "2026-06-03T00:00:00.000Z",
+        userId: "anonymous",
+      }),
+    );
+  });
+
+  await page.goto("/account");
+  await expect(page.getByRole("heading", { name: "Plus" })).toBeVisible();
+  await expect(page.getByText("Active placeholder")).toHaveCount(2);
+
+  await page.evaluate(() => {
+    window.localStorage.setItem(
+      "dockdocs:subscription:anonymous:record",
+      JSON.stringify({
+        plan: "PRO",
+        status: "active",
+        source: "manual",
+        updatedAt: "2026-06-03T00:00:00.000Z",
+        userId: "anonymous",
+      }),
+    );
+  });
+
+  await page.goto("/dashboard");
+  await expect(page.getByText("Plan: Pro")).toBeVisible();
+  await expect(page.getByText("0/5000")).toBeVisible();
 });
 
 test("header tools and utility menus are keyboard and mobile friendly", async ({ page }) => {

@@ -12,9 +12,14 @@ import {
 } from "@netlify/identity";
 import { usePathname } from "next/navigation";
 import { getRuntimeCopy, localeFromPathname } from "@/lib/copy";
+import {
+  getSubscriptionSnapshot,
+  type SubscriptionSnapshot,
+} from "@/lib/subscription-runtime";
 
 type AccountState = {
   user: User | null;
+  subscription: SubscriptionSnapshot | null;
   loading: boolean;
   error: string;
   email: string;
@@ -29,6 +34,7 @@ export function UserAccountControls() {
   const isZh = locale === "zh";
   const [state, setState] = useState<AccountState>({
     user: null,
+    subscription: null,
     loading: true,
     error: "",
     email: "",
@@ -43,8 +49,14 @@ export function UserAccountControls() {
       try {
         await handleAuthCallback();
         const user = await getUser();
+        const subscription = await getSubscriptionSnapshot();
         if (mounted) {
-          setState((current) => ({ ...current, user, loading: false }));
+          setState((current) => ({
+            ...current,
+            user,
+            subscription,
+            loading: false,
+          }));
         }
       } catch (error) {
         if (mounted) {
@@ -58,8 +70,15 @@ export function UserAccountControls() {
     }
 
     loadUser();
-    const unsubscribe = onAuthChange((_event, user) => {
-      setState((current) => ({ ...current, user, loading: false, error: "" }));
+    const unsubscribe = onAuthChange(async (_event, user) => {
+      const subscription = await getSubscriptionSnapshot();
+      setState((current) => ({
+        ...current,
+        user,
+        subscription,
+        loading: false,
+        error: "",
+      }));
     });
 
     return () => {
@@ -73,9 +92,11 @@ export function UserAccountControls() {
 
     try {
       const user = await login(state.email, state.password);
+      const subscription = await getSubscriptionSnapshot();
       setState((current) => ({
         ...current,
         user,
+        subscription,
         password: "",
         emailOpen: false,
       }));
@@ -97,7 +118,13 @@ export function UserAccountControls() {
   async function handleLogout() {
     try {
       await logout();
-      setState((current) => ({ ...current, user: null, password: "" }));
+      const subscription = await getSubscriptionSnapshot();
+      setState((current) => ({
+        ...current,
+        user: null,
+        subscription,
+        password: "",
+      }));
     } catch (error) {
       setState((current) => ({ ...current, error: getErrorMessage(error) }));
     }
@@ -120,6 +147,9 @@ export function UserAccountControls() {
           </p>
           <p className="mt-1 max-w-[240px] truncate text-sm font-semibold">
             {state.user.name || state.user.email || copy.signedIn}
+          </p>
+          <p className="mt-2 text-xs font-semibold text-[color:var(--muted)]">
+            Plan: {state.subscription?.displayName ?? "Free"}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -154,7 +184,7 @@ export function UserAccountControls() {
             </p>
           </div>
           <span className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-2 py-1 text-[10px] font-semibold text-[color:var(--muted)]">
-            {copy.currentPlan}
+            {state.subscription?.displayName ?? copy.currentPlan}
           </span>
         </div>
       </div>

@@ -12,6 +12,10 @@ import {
   type User,
 } from "@netlify/identity";
 import { getDockAccountState, type DockAccountState } from "@/lib/account-runtime";
+import {
+  getSubscriptionSnapshot,
+  type SubscriptionSnapshot,
+} from "@/lib/subscription-runtime";
 
 type FormState = {
   name: string;
@@ -28,6 +32,9 @@ const initialForm: FormState = {
 export function CommercialAccountClient() {
   const [user, setUser] = useState<User | null>(null);
   const [account, setAccount] = useState<DockAccountState | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(
+    null,
+  );
   const [form, setForm] = useState<FormState>(initialForm);
   const [mode, setMode] = useState<"login" | "signup">("signup");
   const [loading, setLoading] = useState(true);
@@ -47,6 +54,7 @@ export function CommercialAccountClient() {
 
         setUser(currentUser);
         setAccount(await getDockAccountState());
+        setSubscription(await getSubscriptionSnapshot());
         if (callback?.type === "oauth" || callback?.type === "confirmation") {
           setMessage("Account session is active.");
         }
@@ -65,6 +73,7 @@ export function CommercialAccountClient() {
     const unsubscribe = onAuthChange(async (_event, nextUser) => {
       setUser(nextUser);
       setAccount(await getDockAccountState());
+      setSubscription(await getSubscriptionSnapshot());
       setError("");
     });
 
@@ -76,6 +85,7 @@ export function CommercialAccountClient() {
 
   async function refreshAccount() {
     setAccount(await getDockAccountState());
+    setSubscription(await getSubscriptionSnapshot());
   }
 
   async function handleSignup() {
@@ -153,6 +163,7 @@ export function CommercialAccountClient() {
         <AccountStatusCard
           user={user}
           account={account}
+          subscription={subscription}
           onLogout={handleLogout}
         />
         {user ? null : (
@@ -168,7 +179,7 @@ export function CommercialAccountClient() {
       </div>
 
       <div className="grid gap-6">
-        <FreePlanCard />
+        <PlanCard subscription={subscription} />
         <WorkspaceBindingCard account={account} />
         {message ? (
           <p className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] p-3 text-sm font-semibold text-[color:var(--success)]">
@@ -188,10 +199,12 @@ export function CommercialAccountClient() {
 function AccountStatusCard({
   user,
   account,
+  subscription,
   onLogout,
 }: {
   user: User | null;
   account: DockAccountState | null;
+  subscription: SubscriptionSnapshot | null;
   onLogout: () => void;
 }) {
   return (
@@ -207,6 +220,18 @@ function AccountStatusCard({
           <dt className="font-semibold text-[color:var(--muted)]">Status</dt>
           <dd className="mt-1 font-semibold">
             {account?.signedIn ? "Signed in" : "Not signed in"}
+          </dd>
+        </div>
+        <div>
+          <dt className="font-semibold text-[color:var(--muted)]">Plan</dt>
+          <dd className="mt-1 font-semibold">
+            {subscription?.displayName ?? "Free"}
+          </dd>
+        </div>
+        <div>
+          <dt className="font-semibold text-[color:var(--muted)]">Plan status</dt>
+          <dd className="mt-1 font-semibold">
+            {subscription?.statusLabel ?? "Free placeholder"}
           </dd>
         </div>
         <div>
@@ -320,17 +345,42 @@ function LoginCard({
   );
 }
 
-function FreePlanCard() {
+function PlanCard({
+  subscription,
+}: {
+  subscription: SubscriptionSnapshot | null;
+}) {
+  const plan = subscription?.displayName ?? "Free";
+  const status = subscription?.statusLabel ?? "Free placeholder";
+
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
         Plan
       </p>
-      <h2 className="mt-2 text-3xl font-semibold">Free</h2>
-      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-        Account production enablement only. No payment, subscription check, or
-        billing enforcement is active in DEV-001.
+      <h2 className="mt-2 text-3xl font-semibold">{plan}</h2>
+      <p className="mt-2 text-sm font-semibold text-[color:var(--muted)]">
+        {status}
       </p>
+      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+        DEV-100 reads the local SubscriptionRecord and shows Free, Plus, or Pro
+        as an account placeholder. No Stripe checkout, payment, or entitlement
+        enforcement is active in this task.
+      </p>
+      <dl className="mt-4 grid gap-2 text-sm">
+        <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+          <dt className="font-semibold text-[color:var(--muted)]">Source</dt>
+          <dd className="mt-1 font-semibold">
+            {subscription?.record.source ?? "local"}
+          </dd>
+        </div>
+        <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+          <dt className="font-semibold text-[color:var(--muted)]">Updated</dt>
+          <dd className="mt-1 break-words font-semibold">
+            {subscription?.record.updatedAt ?? "Not set"}
+          </dd>
+        </div>
+      </dl>
     </section>
   );
 }

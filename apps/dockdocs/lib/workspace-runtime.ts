@@ -1,9 +1,9 @@
 import { getDockAccountState } from "@/lib/account-runtime";
 import {
-  canUseCommercialFeature,
-  isMeteredFeature,
-  recordCommercialFeatureUsage,
-} from "@/lib/billing-runtime";
+  canUseFeature,
+  isUsageMeteredFeature,
+  recordUsage as recordMeteredUsage,
+} from "@/lib/usage-runtime";
 import type { AiChatHistoryTurn, AiChatResult } from "@/lib/ai-chat-runtime";
 
 export type WorkspaceIdentity = {
@@ -144,12 +144,12 @@ export async function getWorkspaceIdentity(): Promise<WorkspaceIdentity> {
 
 export async function getUsageQuota() {
   const identity = await getWorkspaceIdentity();
-  const chatLimit = await canUseCommercialFeature("chat");
+  const chatLimit = await canUseFeature(identity.id, "chat");
   return {
     limit: chatLimit.limit,
     used: chatLimit.used,
     remaining: chatLimit.remaining,
-    date: readTodayUsage(identity.id).date,
+    date: chatLimit.periodKey,
     signedIn: identity.signedIn,
   } satisfies UsageQuota;
 }
@@ -174,7 +174,7 @@ export async function recordChatCompletion(input: ChatPersistenceInput) {
   const identity = await getWorkspaceIdentity();
   const flags = readFeatureFlags();
 
-  recordUsage(identity.id, "chat", input.result.usage);
+  recordWorkspaceUsage(identity.id, "chat", input.result.usage);
   if (flags.savedChats) {
     upsertDocument(identity.id, input.result);
     upsertSession(identity.id, input);
@@ -185,7 +185,7 @@ export async function recordDocumentAnalysisCompletion(
   input: AnalysisPersistenceInput,
 ) {
   const identity = await getWorkspaceIdentity();
-  recordUsage(identity.id, "analyzer", input.usage);
+  recordWorkspaceUsage(identity.id, "analyzer", input.usage);
   upsertAnalyzedDocument(identity.id, input);
 }
 
@@ -281,7 +281,7 @@ export function readAnalytics(identityId: string): WorkspaceAnalytics {
   });
 }
 
-function recordUsage(
+function recordWorkspaceUsage(
   identityId: string,
   feature: string,
   usage: AiChatResult["usage"],
@@ -318,8 +318,13 @@ function recordUsage(
 
   writeJson(usageKey(identityId, today), nextDaily);
   writeJson(analyticsKey(identityId), nextAnalytics);
-  if (isMeteredFeature(feature)) {
-    void recordCommercialFeatureUsage(feature);
+  if (isUsageMeteredFeature(feature)) {
+    void recordMeteredUsage(identityId, feature, {
+      source: "workspace",
+      promptTokens,
+      completionTokens,
+      totalTokens,
+    });
   }
 }
 
