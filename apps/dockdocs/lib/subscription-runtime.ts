@@ -49,10 +49,25 @@ export type SubscriptionSnapshot = {
 const prefix = "dockdocs:subscription";
 const legacyBillingPrefix = "dockdocs:billing";
 const anonymousUserId = "anonymous";
+const developmentProAccountEmail = "zq8345@gmail.com";
 
 export async function getSubscriptionSnapshot(): Promise<SubscriptionSnapshot> {
   const user = await getCurrentAccountUser();
   const userId = user?.id ?? anonymousUserId;
+  if (isDevelopmentProAccountEmail(user?.email)) {
+    const record = createDevelopmentProSubscription(userId);
+    return {
+      userId,
+      signedIn: Boolean(user),
+      record,
+      displayName: planDisplayName(record.plan),
+      statusLabel: statusDisplayName(record.status),
+      isPaidPlaceholder: true,
+      customer: null,
+      serverBacked: false,
+    };
+  }
+
   const serverSnapshot = await readServerSubscription();
   const record = serverSnapshot?.record ?? readSubscriptionRecord(userId);
   if (user && serverSnapshot?.record) {
@@ -129,6 +144,21 @@ export function readSubscriptionRecord(userId: string): SubscriptionRecord {
   return record ?? createFreeSubscription(normalizedUserId);
 }
 
+export async function readEffectiveSubscriptionRecord(
+  userId: string,
+): Promise<SubscriptionRecord> {
+  const normalizedUserId = userId || anonymousUserId;
+  const user = await getCurrentAccountUser();
+  if (
+    user?.id === normalizedUserId &&
+    isDevelopmentProAccountEmail(user.email)
+  ) {
+    return createDevelopmentProSubscription(normalizedUserId);
+  }
+
+  return readSubscriptionRecord(normalizedUserId);
+}
+
 export function writeSubscriptionRecord(
   userId: string,
   record: SubscriptionRecord,
@@ -155,6 +185,22 @@ export function createFreeSubscription(
     updatedAt: new Date().toISOString(),
     userId,
   };
+}
+
+export function createDevelopmentProSubscription(
+  userId = anonymousUserId,
+): SubscriptionRecord {
+  return {
+    plan: "PRO",
+    status: "active",
+    source: "manual",
+    updatedAt: new Date().toISOString(),
+    userId,
+  };
+}
+
+export function isDevelopmentProAccountEmail(email: string | null | undefined) {
+  return email?.trim().toLowerCase() === developmentProAccountEmail;
 }
 
 export function planDisplayName(plan: SubscriptionPlan) {
