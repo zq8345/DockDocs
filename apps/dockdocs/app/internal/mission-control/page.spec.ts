@@ -25,6 +25,11 @@ test("internal Mission Control route loads required Phase 1 sections", async ({
   await expect(page.getByText("Branch inventory", { exact: true })).toBeVisible();
   await expect(page.getByText("PR inventory", { exact: true })).toBeVisible();
   await expect(page.getByText("Queue summary", { exact: true })).toBeVisible();
+  await expect(page.getByText("数据来源：")).toBeVisible();
+  await expect(page.getByText("构建时自动生成")).toBeVisible();
+  await expect(page.getByText("最后生成时间：")).toBeVisible();
+  await expect(page.getByText("同步提醒", { exact: true })).toBeVisible();
+  await expect(page.getByText("无同步提醒", { exact: true })).toBeVisible();
 
   for (const label of ["DEV", "UI", "OPS", "SEO", "GEO"]) {
     await expect(page.getByRole("heading", { name: label, exact: true })).toBeVisible();
@@ -51,10 +56,12 @@ test("internal Mission Control route loads required Phase 1 sections", async ({
     "DEV-100",
     "DEV-200",
     "DEV-300",
+    "DEV-301",
     "OPS-100",
     "OPS-102",
     "OPS-103",
     "OPS-104A",
+    "OPS-106",
     "Codex OPS",
     "Codex DEV",
   ]) {

@@ -388,6 +388,21 @@ function ProjectInventory() {
             Project Inventory
           </p>
           <h2 className="mt-1 text-xl font-semibold">Static project snapshot</h2>
+          <div className="mt-4 grid gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 text-sm leading-6 text-[color:var(--muted)]">
+            <p>
+              <span className="font-semibold text-[color:var(--foreground)]">数据来源：</span>
+              {summary.dataSource}
+            </p>
+            <p>
+              <span className="font-semibold text-[color:var(--foreground)]">最后生成时间：</span>
+              {summary.generatedAt}
+            </p>
+            <p>
+              <span className="font-semibold text-[color:var(--foreground)]">Git 摘要：</span>
+              {projectInventory.git.currentBranch} · {projectInventory.git.workingTreeStatus} ·{" "}
+              {projectInventory.git.changedFileCount} changed
+            </p>
+          </div>
           <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
               Project status
@@ -414,12 +429,14 @@ function ProjectInventory() {
             </p>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
               Pending {projectInventory.queue.pending} · Running {projectInventory.queue.running} ·
-              Completed {projectInventory.queue.completed} · Failed {projectInventory.queue.failed}
+              Completed {projectInventory.queue.completed} · Failed {projectInventory.queue.failed} ·
+              Skipped {projectInventory.queue.skipped}
             </p>
             <p className="mt-2 text-sm font-semibold text-[color:var(--foreground)]">
               Next: {projectInventory.queue.next}
             </p>
           </div>
+          <SyncWarnings />
         </div>
 
         <div className="grid gap-4">
@@ -427,9 +444,36 @@ function ProjectInventory() {
           <InventoryList title="Branch inventory" items={projectInventory.branches} compact />
           <InventoryList title="PR inventory" items={projectInventory.prs} compact />
           <InventoryList title="Agent inventory" items={projectInventory.agents} compact />
+          <InventoryList title="Sample queue tasks" items={projectInventory.queue.sampleTasks} compact />
           <RecommendationsList />
         </div>
       </div>
+    </section>
+  );
+}
+
+function SyncWarnings() {
+  return (
+    <section className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+        同步提醒
+      </p>
+      {projectInventory.warnings.length > 0 ? (
+        <div className="mt-3 grid gap-2">
+          {projectInventory.warnings.map((warning) => (
+            <p
+              key={warning}
+              className="rounded-[var(--radius-sm)] border border-[color:var(--warning-line)] bg-[color:var(--warning-surface)] p-3 text-sm leading-6 text-[color:var(--muted)]"
+            >
+              {warning}
+            </p>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
+          无同步提醒
+        </p>
+      )}
     </section>
   );
 }

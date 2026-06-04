@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "mission-control:generate": "node scripts/generate-mission-control-data.mjs",
     "geo:qa": "node scripts/geo-qa-check.mjs",
     "lint": "next lint",
     "test:e2e": "playwright test",
