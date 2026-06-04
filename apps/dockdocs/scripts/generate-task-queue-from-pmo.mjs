@@ -11,20 +11,16 @@ const queueOutputPath = path.join(repoRoot, "scripts", "codex-task-queue.generat
 
 const allowedCommands = [
   "git status --short --branch",
-  "npm install",
   "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
   "npm run build:dockdocs",
   "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
-  "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts",
 ];
 
 const verificationCommands = [
   "git status --short --branch",
-  "npm install",
   "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
   "npm run build:dockdocs",
   "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
-  "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts",
 ];
 
 const forbiddenPatterns = [

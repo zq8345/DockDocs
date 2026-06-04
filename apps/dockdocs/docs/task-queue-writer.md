@@ -50,12 +50,15 @@ Allowed generated commands are limited to:
 
 ```text
 git status --short --branch
-npm install
 npx tsc --noEmit -p apps/dockdocs/tsconfig.json
 npm run build:dockdocs
 npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts
-npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts
 ```
+
+Chat with PDF E2E remains a release QA command, but it is not part of the
+default generated Auto Pickup queue. That test starts its own local server and
+can conflict with other Playwright web server checks on port 3100 when several
+queue commands run in one pickup pass.
 
 ## Generate
 

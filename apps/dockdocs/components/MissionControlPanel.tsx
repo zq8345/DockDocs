@@ -7,7 +7,11 @@ import type {
   MissionTask,
   MissionTone,
 } from "@/lib/mission-control";
-import type { CodexQueueTask, TaskStatus } from "@/lib/mission-control-queue";
+import type {
+  CodexQueueTask,
+  MissionControlQueueTask,
+  TaskStatus,
+} from "@/lib/mission-control-queue";
 import { summarizeQueue } from "@/lib/mission-control-queue";
 import { missionControlGeneratedData } from "@/lib/mission-control-generated-data";
 import { missionControlQueueTasks } from "@/lib/mission-control-queue-data";
@@ -560,7 +564,12 @@ function ProjectInventory() {
           <InventoryList title="分支清单" items={projectInventory.branches} compact />
           <InventoryList title="PR 清单" items={projectInventory.prs} compact />
           <InventoryList title="代理清单" items={projectInventory.agents} compact />
-          <InventoryList title="PMO generated queue" items={generatedQueue.pendingTasks} compact />
+          <InventoryList
+            title="PMO generated queue"
+            items={generatedQueue.pendingTasks}
+            compact
+            emptyLabel="暂无等待任务"
+          />
           <InventoryList title="队列样例" items={projectInventory.queue.sampleTasks} compact />
         </div>
       </div>
@@ -570,7 +579,8 @@ function ProjectInventory() {
 
 function getGeneratedQueueSummary() {
   const queue = missionControlGeneratedData.queue;
-  const pendingTasks = (queue.pendingGeneratedTasks || []).map((task) => ({
+  const pendingGeneratedTasks = (queue.pendingGeneratedTasks || []) as readonly MissionControlQueueTask[];
+  const pendingTasks = pendingGeneratedTasks.map((task) => ({
     id: task.id,
     label: task.title,
     status: task.status,
@@ -733,15 +743,22 @@ function InventoryList({
   title,
   items,
   compact = false,
+  emptyLabel = "暂无数据",
 }: {
   title: string;
   items: InventoryItem[];
   compact?: boolean;
+  emptyLabel?: string;
 }) {
   return (
     <section className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
       <h3 className="font-semibold">{title}</h3>
       <div className={`mt-3 grid gap-2 ${compact ? "md:grid-cols-2" : ""}`}>
+        {items.length === 0 ? (
+          <p className="rounded-[var(--radius-sm)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-3 text-sm text-[color:var(--muted)]">
+            {emptyLabel}
+          </p>
+        ) : null}
         {items.map((item) => (
           <article
             key={`${title}-${item.id}`}

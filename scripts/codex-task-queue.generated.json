@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-04T04:37:17.140Z",
+  "generatedAt": "2026-06-04T07:01:14.301Z",
   "source": "PMO generated",
   "mode": "verification-only",
   "taskCount": 2,
@@ -14,56 +14,122 @@
     {
       "id": "PMO-VERIFY-001",
       "title": "Verify Keep Mission Control as the single source of truth.",
-      "status": "pending",
+      "status": "completed",
       "workdir": ".",
       "allowedCommands": [
         "git status --short --branch",
-        "npm install",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
         "npm run build:dockdocs",
-        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
-        "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts"
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts"
       ],
       "commands": [
         "git status --short --branch",
-        "npm install",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
         "npm run build:dockdocs",
-        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
-        "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts"
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts"
       ],
-      "createdAt": "2026-06-04T04:37:17.140Z",
+      "createdAt": "2026-06-04T07:01:14.300Z",
       "source": "PMO generated",
       "owner": "Hermes PMO",
       "priority": "P2",
-      "notes": "Generated from PMO next recommended task."
+      "notes": "Generated from PMO next recommended task.",
+      "startedAt": "2026-06-04T07:01:30.313Z",
+      "completedAt": "2026-06-04T07:01:58.702Z",
+      "failedAt": null,
+      "skippedAt": null,
+      "finishedAt": "2026-06-04T07:01:58.702Z",
+      "exitCode": 0,
+      "lastError": null,
+      "logs": [
+        {
+          "command": "git status --short --branch",
+          "exitCode": 0,
+          "stdout": "## ops-110-auto-pickup-stability...origin/master\n M apps/dockdocs/app/internal/mission-control/page.spec.ts\n M apps/dockdocs/components/MissionControlPanel.tsx\n M apps/dockdocs/docs/task-queue-writer.md\n M apps/dockdocs/lib/mission-control-generated-data.ts\n M apps/dockdocs/lib/mission-control-queue.ts\n M apps/dockdocs/scripts/generate-task-queue-from-pmo.mjs\n M scripts/codex-task-queue.generated.json\n?? .codex-task-queue/\n?? apps/dockdocs/docs/auto-pickup-stability.md\n",
+          "stderr": "",
+          "finishedAt": "2026-06-04T07:01:30.379Z"
+        },
+        {
+          "command": "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "finishedAt": "2026-06-04T07:01:33.941Z"
+        },
+        {
+          "command": "npm run build:dockdocs",
+          "exitCode": 0,
+          "stdout": "ng static pages (0/846) ...\n   Generating static pages (211/846) \r\n   Generating static pages (422/846) \r\n   Generating static pages (634/846) \r\n ✓ Generating static pages (846/846)\n   Finalizing page optimization ...\n   Collecting build traces ...\n   Exporting (0/2) ...\n ✓ Exporting (2/2)\n\nRoute (app)                                              Size  First Load JS\n┌ ○ /                                                  1.4 kB         117 kB\n├ ○ /_not-found                                         180 B         103 kB\n├ ● /[locale]/[[...slug]]                               225 B         347 kB\n├   ├ /en\n├   ├ /en/chat-with-pdf\n├   ├ /en/ai-summary\n├   └ [+555 more paths]\n├ ○ /about                                              180 B         103 kB\n├ ○ /account                                          4.83 kB         121 kB\n├ ○ /ai-pdf-guides                                      180 B         103 kB\n├ ○ /ai-summary                                         182 B         119 kB\n├ ○ /ai-workspace                                       185 B         134 kB\n├ ○ /blog                                               180 B         103 kB\n├ ● /blog/[slug]                                        180 B         103 kB\n├   ├ /blog/how-to-compress-pdf-for-email\n├   ├ /blog/best-jpg-to-pdf-workflow\n├   ├ /blog/how-to-ocr-scanned-pdf-files\n├   └ [+10 more paths]\n├ ○ /chat-with-pdf                                      808 B         121 kB\n├ ○ /compress-pdf                                       182 B         119 kB\n├ ○ /contact                                            180 B         103 kB\n├ ○ /dashboard                                          174 B         138 kB\n├ ○ /faq                                                180 B         103 kB\n├ ○ /guides                                             180 B         103 kB\n├ ● /guides/[slug]                                      180 B         103 kB\n├   ├ /guides/compress-pdf-for-gmail\n├   ├ /guides/reduce-pdf-size-without-losing-quality\n├   ├ /guides/merge-pdfs-without-losing-quality\n├   └ [+235 more paths]\n├ ○ /help                                               180 B         103 kB\n├ ○ /icon.svg                                             0 B            0 B\n├ ○ /internal/mission-control                           180 B         103 kB\n├ ○ /jpg-to-pdf                                         174 B         292 kB\n├ ○ /merge-pdf                                          174 B         292 kB\n├ ○ /my-chats                                         4.55 kB         139 kB\n├ ○ /ocr                                                182 B         119 kB\n├ ○ /ocr-pdf                                            174 B         292 kB\n├ ○ /pdf-to-word                                        182 B         119 kB\n├ ○ /pricing                                            180 B         103 kB\n├ ○ /privacy-policy                                     180 B         103 kB\n├ ○ /resources                                          180 B         103 kB\n├ ● /resources/[slug]                                   180 B         103 kB\n├   ├ /resources/pdf-compression-workflow-questions\n├   ├ /resources/ocr-pdf-workflow-questions\n├   ├ /resources/ai-pdf-workflow-questions\n├   └ /resources/image-to-pdf-conversion-questions\n├ ○ /robots.txt                                         180 B         103 kB\n├ ○ /sitemap                                            180 B         103 kB\n├ ○ /sitemap.xml                                        180 B         103 kB\n├ ○ /split-pdf                                          174 B         292 kB\n└ ○ /terms                                              180 B         103 kB\n+ First Load JS shared by all                          103 kB\n  ├ chunks/18-1e25b5692ec1d26d.js                     46.4 kB\n  ├ chunks/87c73c54-24122e7b92478d00.js               54.2 kB\n  └ other shared chunks (total)                       2.12 kB\n\n\n○  (Static)  prerendered as static content\n●  (SSG)     prerendered as static HTML (uses generateStaticParams)\n\n",
+          "stderr": "",
+          "finishedAt": "2026-06-04T07:01:56.636Z"
+        },
+        {
+          "command": "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+          "exitCode": 0,
+          "stdout": "\nRunning 1 test using 1 worker\n\n  ok 1 apps\\dockdocs\\app\\internal\\mission-control\\page.spec.ts:5:5 › internal Mission Control route renders Chinese PMO dashboard with auto sync data (345ms)\n\n  1 passed (977ms)\n",
+          "stderr": "",
+          "finishedAt": "2026-06-04T07:01:58.700Z"
+        }
+      ]
     },
     {
       "id": "PMO-VERIFY-002",
       "title": "Verify Start the next PMO-approved production task.",
-      "status": "pending",
+      "status": "completed",
       "workdir": ".",
       "allowedCommands": [
         "git status --short --branch",
-        "npm install",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
         "npm run build:dockdocs",
-        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
-        "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts"
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts"
       ],
       "commands": [
         "git status --short --branch",
-        "npm install",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
         "npm run build:dockdocs",
-        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
-        "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts"
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts"
       ],
-      "createdAt": "2026-06-04T04:37:17.140Z",
+      "createdAt": "2026-06-04T07:01:14.300Z",
       "source": "PMO generated",
       "owner": "Hermes PMO",
       "priority": "P2",
-      "notes": "Generated from PMO next recommended task."
+      "notes": "Generated from PMO next recommended task.",
+      "startedAt": "2026-06-04T07:01:58.704Z",
+      "completedAt": "2026-06-04T07:02:25.411Z",
+      "failedAt": null,
+      "skippedAt": null,
+      "finishedAt": "2026-06-04T07:02:25.411Z",
+      "exitCode": 0,
+      "lastError": null,
+      "logs": [
+        {
+          "command": "git status --short --branch",
+          "exitCode": 0,
+          "stdout": "## ops-110-auto-pickup-stability...origin/master\n M apps/dockdocs/app/internal/mission-control/page.spec.ts\n M apps/dockdocs/components/MissionControlPanel.tsx\n M apps/dockdocs/docs/task-queue-writer.md\n M apps/dockdocs/lib/mission-control-generated-data.ts\n M apps/dockdocs/lib/mission-control-queue.ts\n M apps/dockdocs/scripts/generate-task-queue-from-pmo.mjs\n M scripts/codex-task-queue.generated.json\n?? .codex-task-queue/\n?? apps/dockdocs/docs/auto-pickup-stability.md\n?? apps/dockdocs/tsconfig.tsbuildinfo\n?? test-results/\n",
+          "stderr": "",
+          "finishedAt": "2026-06-04T07:01:58.771Z"
+        },
+        {
+          "command": "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "finishedAt": "2026-06-04T07:02:02.653Z"
+        },
+        {
+          "command": "npm run build:dockdocs",
+          "exitCode": 0,
+          "stdout": "ng static pages (0/846) ...\n   Generating static pages (211/846) \r\n   Generating static pages (422/846) \r\n   Generating static pages (634/846) \r\n ✓ Generating static pages (846/846)\n   Finalizing page optimization ...\n   Collecting build traces ...\n   Exporting (0/2) ...\n ✓ Exporting (2/2)\n\nRoute (app)                                              Size  First Load JS\n┌ ○ /                                                  1.4 kB         117 kB\n├ ○ /_not-found                                         180 B         103 kB\n├ ● /[locale]/[[...slug]]                               225 B         347 kB\n├   ├ /en\n├   ├ /en/chat-with-pdf\n├   ├ /en/ai-summary\n├   └ [+555 more paths]\n├ ○ /about                                              180 B         103 kB\n├ ○ /account                                          4.83 kB         121 kB\n├ ○ /ai-pdf-guides                                      180 B         103 kB\n├ ○ /ai-summary                                         182 B         119 kB\n├ ○ /ai-workspace                                       185 B         134 kB\n├ ○ /blog                                               180 B         103 kB\n├ ● /blog/[slug]                                        180 B         103 kB\n├   ├ /blog/how-to-compress-pdf-for-email\n├   ├ /blog/best-jpg-to-pdf-workflow\n├   ├ /blog/how-to-ocr-scanned-pdf-files\n├   └ [+10 more paths]\n├ ○ /chat-with-pdf                                      808 B         121 kB\n├ ○ /compress-pdf                                       182 B         119 kB\n├ ○ /contact                                            180 B         103 kB\n├ ○ /dashboard                                          174 B         138 kB\n├ ○ /faq                                                180 B         103 kB\n├ ○ /guides                                             180 B         103 kB\n├ ● /guides/[slug]                                      180 B         103 kB\n├   ├ /guides/compress-pdf-for-gmail\n├   ├ /guides/reduce-pdf-size-without-losing-quality\n├   ├ /guides/merge-pdfs-without-losing-quality\n├   └ [+235 more paths]\n├ ○ /help                                               180 B         103 kB\n├ ○ /icon.svg                                             0 B            0 B\n├ ○ /internal/mission-control                           180 B         103 kB\n├ ○ /jpg-to-pdf                                         174 B         292 kB\n├ ○ /merge-pdf                                          174 B         292 kB\n├ ○ /my-chats                                         4.55 kB         139 kB\n├ ○ /ocr                                                182 B         119 kB\n├ ○ /ocr-pdf                                            174 B         292 kB\n├ ○ /pdf-to-word                                        182 B         119 kB\n├ ○ /pricing                                            180 B         103 kB\n├ ○ /privacy-policy                                     180 B         103 kB\n├ ○ /resources                                          180 B         103 kB\n├ ● /resources/[slug]                                   180 B         103 kB\n├   ├ /resources/pdf-compression-workflow-questions\n├   ├ /resources/ocr-pdf-workflow-questions\n├   ├ /resources/ai-pdf-workflow-questions\n├   └ /resources/image-to-pdf-conversion-questions\n├ ○ /robots.txt                                         180 B         103 kB\n├ ○ /sitemap                                            180 B         103 kB\n├ ○ /sitemap.xml                                        180 B         103 kB\n├ ○ /split-pdf                                          174 B         292 kB\n└ ○ /terms                                              180 B         103 kB\n+ First Load JS shared by all                          103 kB\n  ├ chunks/18-1e25b5692ec1d26d.js                     46.4 kB\n  ├ chunks/87c73c54-24122e7b92478d00.js               54.2 kB\n  └ other shared chunks (total)                       2.12 kB\n\n\n○  (Static)  prerendered as static content\n●  (SSG)     prerendered as static HTML (uses generateStaticParams)\n\n",
+          "stderr": "",
+          "finishedAt": "2026-06-04T07:02:23.450Z"
+        },
+        {
+          "command": "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+          "exitCode": 0,
+          "stdout": "\nRunning 1 test using 1 worker\n\n  ok 1 apps\\dockdocs\\app\\internal\\mission-control\\page.spec.ts:5:5 › internal Mission Control route renders Chinese PMO dashboard with auto sync data (330ms)\n\n  1 passed (847ms)\n",
+          "stderr": "",
+          "finishedAt": "2026-06-04T07:02:25.409Z"
+        }
+      ]
     }
   ]
 }

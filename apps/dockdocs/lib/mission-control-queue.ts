@@ -22,6 +22,12 @@ export type CodexQueueTask = {
   logs: CodexQueueTaskLog[];
 };
 
+export type MissionControlQueueTask = {
+  id: string;
+  title: string;
+  status: string;
+};
+
 export type QueueSummary = {
   pendingCount: number;
   runningCount: number;
