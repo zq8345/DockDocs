@@ -1,4 +1,5 @@
 import type { ChangeEvent } from "react";
+import { StatusBadge } from "@/components/ui/Status";
 import { runtimeCopy } from "@/lib/copy";
 
 type UploadLabels = {
@@ -43,14 +44,14 @@ export function UploadPanel({
 }: UploadPanelProps) {
   const isBusy = state === "processing";
   const hasFile = Boolean(fileName);
-  const stateTone =
-    state === "error"
-      ? "border-[color:var(--error-line)] bg-[color:var(--error-surface)] text-[color:var(--error)]"
-      : state === "success"
-        ? "border-[color:var(--success-line)] bg-[color:var(--success-surface)] text-[color:var(--success)]"
-        : state === "processing" || state === "selected"
-          ? "border-[color:var(--soft-accent)] bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]"
-          : "border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--muted)]";
+  const statusByState = {
+    empty: "Backlog",
+    idle: "Idle",
+    selected: "Uploaded",
+    processing: "Active",
+    success: "Parsed",
+    error: "Blocked",
+  } as const;
 
   return (
     <section
@@ -64,15 +65,11 @@ export function UploadPanel({
           </p>
           <h2 className="mt-1 text-lg font-semibold">{title}</h2>
         </div>
-        <span className={`rounded-[var(--radius-sm)] border px-2.5 py-1 text-xs font-semibold ${stateTone}`}>
-          {labels.states[state]}
-        </span>
+        <StatusBadge label={labels.states[state]} status={statusByState[state]} />
       </div>
 
       <label className="mt-5 flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]/40 focus-within:border-[color:var(--accent)] focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[color:var(--accent)] sm:min-h-52 sm:py-8">
-        <span className="flex h-12 w-12 items-center justify-center rounded-[var(--radius)] bg-[color:var(--soft-accent)] text-sm font-semibold text-[color:var(--accent-strong)]">
-          PDF
-        </span>
+        <StatusBadge label="PDF" status="PDF" variant="solid" className="h-12 rounded-[var(--radius)] px-4 text-sm" />
         <span className="mt-4 max-w-full break-words text-lg font-semibold sm:text-xl">
           {hasFile ? fileName : labels.dragDrop}
         </span>

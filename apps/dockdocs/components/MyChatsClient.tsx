@@ -14,6 +14,7 @@ import {
   getSubscriptionSnapshot,
   type SubscriptionSnapshot,
 } from "@/lib/subscription-runtime";
+import { StatusBadge } from "@/components/ui/Status";
 import {
   deleteSavedSession,
   queueSessionRestore,
@@ -101,9 +102,7 @@ export function MyChatsClient() {
   if (loading) {
     return (
       <section className="rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-6">
-        <p className="text-sm font-semibold text-[color:var(--muted)]">
-          Loading account...
-        </p>
+        <StatusBadge label="Loading account..." status="Idle" />
       </section>
     );
   }
@@ -127,6 +126,10 @@ export function MyChatsClient() {
             >
               Current storage: {identity?.id ?? "anonymous"} · Plan: {planName}
             </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <StatusBadge label="Session-only" status="Session-only" />
+              <StatusBadge label={`Plan: ${planName}`} status="Local" />
+            </div>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
               {getWorkspaceUpgradeMessage(subscription?.record.plan ?? "FREE")}
             </p>
@@ -179,6 +182,10 @@ export function MyChatsClient() {
           >
             Workspace storage: {identity?.id ?? user.id} · Plan: {planName}
           </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <StatusBadge label="Saved" status="Saved" />
+            <StatusBadge label={`Plan: ${planName}`} status="Active" />
+          </div>
           <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
             {getWorkspaceUpgradeMessage(subscription?.record.plan ?? "FREE")}
           </p>
@@ -225,9 +232,7 @@ export function MyChatsClient() {
                     {chat.turns.length === 1 ? "" : "s"}
                   </p>
                 </div>
-                <span className="rounded-full bg-[color:var(--soft-accent)] px-3 py-1 text-xs font-semibold text-[color:var(--accent-strong)]">
-                  {chat.document.source}
-                </span>
+                <StatusBadge label={chat.document.source} status="Source" />
               </div>
 
               <div className="mt-4 grid gap-3">

@@ -1141,6 +1141,11 @@ function missionToneToDockTone(tone: MissionTone) {
 
 function StatusChip({ tone, label }: { tone: MissionTone; label: string }) {
   return (
-    <Status data-testid="dock-status" tone={missionToneToDockTone(tone)} label={label} />
+    <Status
+      data-testid="dock-status"
+      label={label}
+      status={label}
+      tone={missionToneToDockTone(tone)}
+    />
   );
 }

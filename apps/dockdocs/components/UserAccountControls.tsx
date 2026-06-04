@@ -12,6 +12,7 @@ import {
 } from "@netlify/identity";
 import { usePathname } from "next/navigation";
 import { getRuntimeCopy, localeFromPathname } from "@/lib/copy";
+import { StatusBadge } from "@/components/ui/Status";
 import {
   getSubscriptionSnapshot,
   type SubscriptionSnapshot,
@@ -132,9 +133,7 @@ export function UserAccountControls() {
 
   if (state.loading) {
     return (
-      <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 text-xs font-semibold text-[color:var(--muted)]">
-        {copy.account}
-      </div>
+      <StatusBadge label={copy.account} status="Idle" />
     );
   }
 
@@ -148,9 +147,12 @@ export function UserAccountControls() {
           <p className="mt-1 max-w-[240px] truncate text-sm font-semibold">
             {state.user.name || state.user.email || copy.signedIn}
           </p>
-          <p className="mt-2 text-xs font-semibold text-[color:var(--muted)]">
-            Plan: {state.subscription?.displayName ?? "Free"}
-          </p>
+          <div className="mt-2">
+            <StatusBadge
+              label={`Plan: ${state.subscription?.displayName ?? "Free"}`}
+              status="Saved"
+            />
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
         <a
@@ -183,9 +185,11 @@ export function UserAccountControls() {
                 : "Sign in to isolate My Chats and workspace records by account."}
             </p>
           </div>
-          <span className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-2 py-1 text-[10px] font-semibold text-[color:var(--muted)]">
-            {state.subscription?.displayName ?? copy.currentPlan}
-          </span>
+          <StatusBadge
+            className="shrink-0 text-[10px]"
+            label={state.subscription?.displayName ?? copy.currentPlan}
+            status="Session-only"
+          />
         </div>
       </div>
       <div className="flex max-w-full flex-wrap items-center gap-2">

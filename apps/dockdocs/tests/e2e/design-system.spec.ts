@@ -13,9 +13,22 @@ import {
   SourceCard,
   StatusCard,
 } from "../../components/ui/cards";
+import {
+  dockStatusGroups,
+  getStatusTone,
+  normalizeStatusLabel,
+  StatusBadge,
+  type DockStatusLabel,
+} from "../../components/ui/Status";
 
 const typedTokens: DockTokens = dockTokens;
 const supportedTones: DockTone[] = ["neutral", "accent", "success", "warning", "error"];
+const requiredStatuses: DockStatusLabel[] = [
+  ...dockStatusGroups.core,
+  ...dockStatusGroups.data,
+  ...dockStatusGroups.document,
+  ...dockStatusGroups.agent,
+];
 const cardPrimitives = [
   MetricCard,
   DocumentCard,
@@ -35,6 +48,15 @@ test("design tokens expose typed foundations", async () => {
   for (const Primitive of cardPrimitives) {
     expect(typeof Primitive).toBe("function");
   }
+  expect(typeof StatusBadge).toBe("function");
+  expect(requiredStatuses).toContain("Production");
+  expect(requiredStatuses).toContain("Session-only");
+  expect(requiredStatuses).toContain("Citation");
+  expect(requiredStatuses).toContain("Needs Review");
+  expect(getStatusTone("Production")).toBe("success");
+  expect(getStatusTone("Blocked")).toBe("error");
+  expect(getStatusTone("PDF")).toBe("accent");
+  expect(normalizeStatusLabel("已完成")).toBe("Completed");
 });
 
 test("Card, Status, SourceCard, StatusCard, and ActionCard render in Mission Control", async ({
@@ -66,4 +88,32 @@ test("MetricCard, DocumentCard, ChatCard, AccountCard, and ActionCard render in 
   await expect(page.getByText("Example").first()).toBeVisible();
   await expect(page.getByText("Local").first()).toBeVisible();
   await expect(page.getByRole("heading", { name: "Document workspace overview." })).toBeVisible();
+});
+
+test("unified status badges render across AI workspace and Chat PDF", async ({ page }) => {
+  await page.goto("/ai-workspace");
+
+  await expect(page.getByText("AI Workspace layer").first()).toBeVisible();
+  await expect(page.getByText("Uploaded").first()).toBeVisible();
+  await expect(page.getByText("Parsed").first()).toBeVisible();
+  await expect(page.getByText("Exported").first()).toBeVisible();
+
+  await page.goto("/chat-with-pdf");
+
+  await expect(page.getByTestId("dock-status").first()).toBeVisible();
+  await expect(page.getByText("PDF").first()).toBeVisible();
+  await expect(page.getByText("Source").first()).toBeVisible();
+});
+
+test("account and saved chat surfaces use unified data status badges", async ({
+  page,
+}) => {
+  await page.goto("/account");
+
+  await expect(page.getByTestId("dock-status").first()).toBeVisible();
+
+  await page.goto("/my-chats");
+
+  await expect(page.getByTestId("dock-status").first()).toBeVisible();
+  await expect(page.getByText(/Session-only|Saved|Local/).first()).toBeVisible();
 });

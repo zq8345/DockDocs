@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
+import { StatusBadge } from "@/components/ui/Status";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -234,9 +235,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
           </p>
           <p className="mt-1 text-sm font-semibold">{copy.workspaceTitle}</p>
         </div>
-        <span className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-2.5 py-1 text-xs font-semibold text-[color:var(--muted)]">
-          {copy.mvp}
-        </span>
+        <StatusBadge label={copy.mvp} status="QA" />
       </div>
 
       <div className="grid lg:min-h-[680px] lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[310px_minmax(0,1fr)_300px] 2xl:grid-cols-[330px_minmax(0,1fr)_320px]">
@@ -254,9 +253,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
             data-testid="upload-panel"
             className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]/30 focus-within:border-[color:var(--accent)] focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[color:var(--accent)] sm:py-7"
           >
-            <span className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-sm font-semibold text-[color:var(--accent-strong)]">
-              PDF
-            </span>
+            <StatusBadge label="PDF" status="PDF" variant="solid" className="h-12 rounded-[var(--radius-sm)] px-4 text-sm" />
             <span className="mt-4 text-sm font-semibold">{copy.choosePdf}</span>
             <span className="mt-2 max-w-48 text-xs leading-5 text-[color:var(--muted)]">
               {copy.uploadHelp}
@@ -589,16 +586,21 @@ function KnowledgeCard({
 }
 
 function StatePill({ state, label }: { state: RuntimeState; label: string }) {
-  const className =
-    state === "error"
-      ? "rounded-[var(--radius-sm)] bg-[color:var(--error-surface)] px-2 py-1 text-xs font-semibold text-[color:var(--error)]"
-      : state === "processing"
-        ? "rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-2 py-1 text-xs font-semibold text-[color:var(--accent-strong)]"
-        : state === "success"
-          ? "rounded-[var(--radius-sm)] bg-[color:var(--success-surface)] px-2 py-1 text-xs font-semibold text-[color:var(--success)]"
-          : "rounded-[var(--radius-sm)] border border-[color:var(--line)] px-2 py-1 text-xs font-semibold text-[color:var(--muted)]";
+  const statusByState = {
+    empty: "Backlog",
+    selected: "Uploaded",
+    processing: "Active",
+    success: "Parsed",
+    error: "Blocked",
+  } as const;
 
-  return <span className={`${className} max-w-full truncate`}>{label}</span>;
+  return (
+    <StatusBadge
+      className="max-w-full truncate"
+      label={label}
+      status={statusByState[state]}
+    />
+  );
 }
 
 function SourceCard({
@@ -627,6 +629,10 @@ function SourceCard({
       <div className="flex items-center gap-2">
         <span className={`h-2 w-2 shrink-0 rounded-full ${dotClass}`} />
         <p className="min-w-0 break-words text-sm font-semibold">{title}</p>
+        <StatusBadge
+          label={tone === "success" ? "Parsed" : tone === "error" ? "Blocked" : "Source"}
+          status={tone === "success" ? "Parsed" : tone === "error" ? "Blocked" : "Source"}
+        />
       </div>
       <p className="mt-2 break-words text-sm leading-6 text-[color:var(--muted)]">{value}</p>
     </div>
