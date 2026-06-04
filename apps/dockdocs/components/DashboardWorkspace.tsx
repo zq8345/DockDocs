@@ -1,4 +1,5 @@
 import { ButtonLink } from "@dock/shared/ui";
+import { Card } from "@/components/ui/Card";
 import { WorkspaceDashboardClient } from "@/components/WorkspaceDashboardClient";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { defaultLocale, localizedPath, normalizeSlug } from "@/lib/i18n";
@@ -78,7 +79,11 @@ function DashboardSidebar({
   locale: RuntimeLocale;
 }) {
   return (
-    <aside className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 lg:sticky lg:top-28 lg:self-start">
+    <Card
+      as="aside"
+      data-testid="dock-card"
+      className="p-4 lg:sticky lg:top-28 lg:self-start"
+    >
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
         {page.workspace}
       </p>
@@ -97,7 +102,7 @@ function DashboardSidebar({
           </a>
         ))}
       </nav>
-    </aside>
+    </Card>
   );
 }
 
@@ -111,13 +116,16 @@ function OverviewCards({ page }: { page: DashboardCopy }) {
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {page.stats.map((stat) => (
-          <article
+          <Card
+            as="article"
             key={stat.label}
-            className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 transition hover:border-[color:var(--foreground)]"
+            data-testid="dock-card"
+            variant="interactive"
+            className="p-4"
           >
             <p className="text-3xl font-semibold">{stat.value}</p>
             <p className="mt-2 text-sm text-[color:var(--muted)]">{stat.label}</p>
-          </article>
+          </Card>
         ))}
       </div>
     </section>

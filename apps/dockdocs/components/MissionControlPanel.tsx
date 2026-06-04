@@ -15,6 +15,8 @@ import type {
 import { summarizeQueue } from "@/lib/mission-control-queue";
 import { missionControlGeneratedData } from "@/lib/mission-control-generated-data";
 import { missionControlQueueTasks } from "@/lib/mission-control-queue-data";
+import { Card } from "@/components/ui/Card";
+import { Status } from "@/components/ui/Status";
 import {
   getInventorySummary,
   projectInventory,
@@ -115,8 +117,11 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
                 </p>
               </div>
             </div>
-            <div
-              className={`rounded-[var(--radius)] border p-4 ${toneStyles[snapshot.summary.tone].border} ${toneStyles[snapshot.summary.tone].panel}`}
+            <Card
+              as="aside"
+              data-testid="dock-card"
+              tone={missionToneToDockTone(snapshot.summary.tone)}
+              className={`p-4 ${toneStyles[snapshot.summary.tone].panel}`}
             >
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
@@ -131,7 +136,7 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
               <p className="mt-3 text-xs font-semibold text-[color:var(--muted)]">
                 静态项目快照：{snapshot.generatedAt}
               </p>
-            </div>
+            </Card>
           </div>
         </section>
 
@@ -190,9 +195,11 @@ function OwnerBriefing({ snapshot }: { snapshot: MissionControlSnapshot }) {
     "等待 PMO 确认下一项生产任务。";
 
   return (
-    <section
+    <Card
+      as="section"
       aria-labelledby="owner-briefing"
-      className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5"
+      data-testid="dock-card"
+      className="p-4 sm:p-5"
     >
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -243,7 +250,7 @@ function OwnerBriefing({ snapshot }: { snapshot: MissionControlSnapshot }) {
           tone={snapshot.summary.tone}
         />
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -261,7 +268,13 @@ function OwnerSignalCard({
   progress?: number;
 }) {
   return (
-    <article className={`rounded-[var(--radius-sm)] border bg-[color:var(--surface-subtle)] p-4 ${toneStyles[tone].border}`}>
+    <Card
+      as="article"
+      data-testid="dock-card"
+      tone={missionToneToDockTone(tone)}
+      variant="muted"
+      className="rounded-[var(--radius-sm)] p-4"
+    >
       <div className="flex items-start justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
           {label}
@@ -278,7 +291,7 @@ function OwnerSignalCard({
         </div>
       ) : null}
       <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{helper}</p>
-    </article>
+    </Card>
   );
 }
 
@@ -1086,12 +1099,20 @@ function formatWorkdir(workdir: string) {
   return workdir;
 }
 
+function missionToneToDockTone(tone: MissionTone) {
+  if (tone === "ready") {
+    return "success";
+  }
+
+  if (tone === "blocked") {
+    return "error";
+  }
+
+  return "warning";
+}
+
 function StatusChip({ tone, label }: { tone: MissionTone; label: string }) {
   return (
-    <span
-      className={`inline-flex min-h-7 shrink-0 items-center rounded-[var(--radius-sm)] border px-2.5 text-xs font-semibold ${toneStyles[tone].chip}`}
-    >
-      {label}
-    </span>
+    <Status data-testid="dock-status" tone={missionToneToDockTone(tone)} label={label} />
   );
 }
