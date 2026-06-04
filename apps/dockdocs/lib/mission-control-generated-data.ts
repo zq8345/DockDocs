@@ -2,7 +2,7 @@
 // Do not add secrets, local paths, or raw command logs to this file.
 
 export const missionControlGeneratedData = {
-  "generatedAt": "2026-06-04T04:15:59.247Z",
+  "generatedAt": "2026-06-04T04:37:17.480Z",
   "source": "build-time",
   "projectBoard": {
     "syncStatus": "PMO同步正常",
@@ -37,38 +37,48 @@ export const missionControlGeneratedData = {
     ]
   },
   "git": {
-    "currentBranch": "ops-107-pmo-sync",
-    "latestCommit": "21460aa UI-301A: merge Chinese Mission Control into master",
+    "currentBranch": "ops-108-task-queue-writer",
+    "latestCommit": "7dfc4aa OPS-107: merge PMO Sync into master",
     "latestMasterCommits": [
+      "7dfc4aa OPS-107: merge PMO Sync into master",
+      "7c184a9 OPS-107: sync Mission Control from PMO board",
       "21460aa UI-301A: merge Chinese Mission Control into master",
       "6ee9312 UI-301A: localize Mission Control with auto sync preserved",
-      "8bfd32c OPS-106: merge Mission Control auto sync into master",
-      "bcaac11 OPS-106: add build-time Mission Control auto sync",
-      "9da49ef PMO: update DEV-301 QA completed, DEV-300 marked Production"
+      "8bfd32c OPS-106: merge Mission Control auto sync into master"
     ],
     "workingTreeStatus": "dirty",
     "changedFileCount": 9
   },
   "queue": {
-    "pending": 3,
+    "source": "PMO generated",
+    "generatedAt": "2026-06-04T04:37:17.140Z",
+    "pending": 2,
     "running": 0,
     "completed": 0,
     "failed": 0,
     "skipped": 0,
+    "generatedTaskCount": 2,
+    "pendingGeneratedTasks": [
+      {
+        "id": "PMO-VERIFY-001",
+        "title": "Verify Keep Mission Control as the single source of truth.",
+        "status": "pending"
+      },
+      {
+        "id": "PMO-VERIFY-002",
+        "title": "Verify Start the next PMO-approved production task.",
+        "status": "pending"
+      }
+    ],
     "sampleTasks": [
       {
-        "id": "OPS-102-SMOKE",
-        "title": "Smoke check repository",
+        "id": "PMO-VERIFY-001",
+        "title": "Verify Keep Mission Control as the single source of truth.",
         "status": "pending"
       },
       {
-        "id": "DEV-300-VERIFY",
-        "title": "Verify DEV-300 branch build status",
-        "status": "pending"
-      },
-      {
-        "id": "DEV-300-E2E",
-        "title": "Verify DEV-300 E2E through DockDocs workspace config",
+        "id": "PMO-VERIFY-002",
+        "title": "Verify Start the next PMO-approved production task.",
         "status": "pending"
       }
     ]

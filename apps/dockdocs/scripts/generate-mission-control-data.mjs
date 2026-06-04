@@ -8,6 +8,7 @@ const appRoot = path.resolve(path.dirname(scriptPath), "..");
 const repoRoot = path.resolve(appRoot, "../..");
 const boardPath = path.join(appRoot, "docs", "dockdocs-project-board.md");
 const queuePath = path.join(repoRoot, "scripts", "codex-task-queue.sample.json");
+const generatedQueuePath = path.join(repoRoot, "scripts", "codex-task-queue.generated.json");
 const pmoGeneratedPath = path.join(appRoot, "lib", "project-board-generated.ts");
 const outputPath = path.join(appRoot, "lib", "mission-control-generated-data.ts");
 
@@ -144,27 +145,44 @@ function parseBoardTasks(board) {
 }
 
 function parseQueue() {
-  if (!existsSync(queuePath)) {
+  const queueSourcePath = existsSync(generatedQueuePath) ? generatedQueuePath : queuePath;
+  const isGeneratedQueue = queueSourcePath === generatedQueuePath;
+
+  if (!existsSync(queueSourcePath)) {
     warnings.push("Sample task queue file is missing.");
     return {
+      source: "missing",
+      generatedAt: null,
       pending: 0,
       running: 0,
       completed: 0,
       failed: 0,
       skipped: 0,
+      generatedTaskCount: 0,
+      pendingGeneratedTasks: [],
       sampleTasks: [],
     };
   }
 
   try {
-    const parsed = JSON.parse(readFileSync(queuePath, "utf8"));
+    const parsed = JSON.parse(readFileSync(queueSourcePath, "utf8"));
     const tasks = Array.isArray(parsed.tasks) ? parsed.tasks : [];
     return {
+      source: isGeneratedQueue ? "PMO generated" : "sample",
+      generatedAt: parsed.generatedAt || null,
       pending: tasks.filter((task) => task.status === "pending").length,
       running: tasks.filter((task) => task.status === "running").length,
       completed: tasks.filter((task) => task.status === "completed").length,
       failed: tasks.filter((task) => task.status === "failed").length,
       skipped: tasks.filter((task) => task.status === "skipped").length,
+      generatedTaskCount: isGeneratedQueue ? tasks.length : 0,
+      pendingGeneratedTasks: isGeneratedQueue
+        ? tasks.filter((task) => task.status === "pending").slice(0, 6).map((task) => ({
+            id: String(task.id || "UNKNOWN"),
+            title: String(task.title || "Untitled task"),
+            status: String(task.status || "unknown"),
+          }))
+        : [],
       sampleTasks: tasks.slice(0, 6).map((task) => ({
         id: String(task.id || "UNKNOWN"),
         title: String(task.title || "Untitled task"),
@@ -174,11 +192,15 @@ function parseQueue() {
   } catch {
     warnings.push("Sample task queue JSON could not be parsed.");
     return {
+      source: "parse-error",
+      generatedAt: null,
       pending: 0,
       running: 0,
       completed: 0,
       failed: 0,
       skipped: 0,
+      generatedTaskCount: 0,
+      pendingGeneratedTasks: [],
       sampleTasks: [],
     };
   }

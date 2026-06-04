@@ -9,6 +9,7 @@ import type {
 } from "@/lib/mission-control";
 import type { CodexQueueTask, TaskStatus } from "@/lib/mission-control-queue";
 import { summarizeQueue } from "@/lib/mission-control-queue";
+import { missionControlGeneratedData } from "@/lib/mission-control-generated-data";
 import { missionControlQueueTasks } from "@/lib/mission-control-queue-data";
 import {
   getInventorySummary,
@@ -485,6 +486,7 @@ function QueueTaskCard({
 
 function ProjectInventory() {
   const summary = getInventorySummary();
+  const generatedQueue = getGeneratedQueueSummary();
 
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
@@ -529,6 +531,14 @@ function ProjectInventory() {
               队列摘要
             </p>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+              Queue source: {generatedQueue.source} · Queue generatedAt:{" "}
+              {generatedQueue.generatedAt || "未生成"}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+              Generated task count: {generatedQueue.taskCount} · Pending generated tasks:{" "}
+              {generatedQueue.pendingTasks.length}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
               模式：{projectInventory.queue.mode} · Runner：{projectInventory.queue.runner} ·
               加固：{projectInventory.queue.hardened} · 控制台队列：
               {projectInventory.queue.missionControlQueue}
@@ -550,11 +560,29 @@ function ProjectInventory() {
           <InventoryList title="分支清单" items={projectInventory.branches} compact />
           <InventoryList title="PR 清单" items={projectInventory.prs} compact />
           <InventoryList title="代理清单" items={projectInventory.agents} compact />
+          <InventoryList title="PMO generated queue" items={generatedQueue.pendingTasks} compact />
           <InventoryList title="队列样例" items={projectInventory.queue.sampleTasks} compact />
         </div>
       </div>
     </section>
   );
+}
+
+function getGeneratedQueueSummary() {
+  const queue = missionControlGeneratedData.queue;
+  const pendingTasks = (queue.pendingGeneratedTasks || []).map((task) => ({
+    id: task.id,
+    label: task.title,
+    status: task.status,
+    detail: "PMO generated verification task.",
+  }));
+
+  return {
+    source: queue.source || "sample",
+    generatedAt: queue.generatedAt || null,
+    taskCount: queue.generatedTaskCount || pendingTasks.length,
+    pendingTasks,
+  };
 }
 
 function SyncWarnings() {

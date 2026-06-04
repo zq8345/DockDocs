@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-06-04T04:37:17.140Z",
+  "source": "PMO generated",
+  "mode": "verification-only",
+  "taskCount": 2,
+  "pending": 2,
+  "safety": {
+    "merge": false,
+    "deploy": false,
+    "push": false,
+    "destructiveCommands": false
+  },
+  "tasks": [
+    {
+      "id": "PMO-VERIFY-001",
+      "title": "Verify Keep Mission Control as the single source of truth.",
+      "status": "pending",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts"
+      ],
+      "createdAt": "2026-06-04T04:37:17.140Z",
+      "source": "PMO generated",
+      "owner": "Hermes PMO",
+      "priority": "P2",
+      "notes": "Generated from PMO next recommended task."
+    },
+    {
+      "id": "PMO-VERIFY-002",
+      "title": "Verify Start the next PMO-approved production task.",
+      "status": "pending",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e -- chat-with-pdf.spec.ts"
+      ],
+      "createdAt": "2026-06-04T04:37:17.140Z",
+      "source": "PMO generated",
+      "owner": "Hermes PMO",
+      "priority": "P2",
+      "notes": "Generated from PMO next recommended task."
+    }
+  ]
+}

@@ -21,6 +21,11 @@ test("internal Mission Control route renders Chinese PMO dashboard with auto syn
   await expect(page.getByText("最后生成时间：").first()).toBeVisible();
   await expect(page.getByText("同步状态", { exact: true })).toBeVisible();
   await expect(page.getByText("PMO同步正常", { exact: true })).toBeVisible();
+  await expect(page.getByText("PMO generated queue", { exact: true })).toBeVisible();
+  await expect(page.getByText("Queue source: PMO generated")).toBeVisible();
+  await expect(page.getByText("Generated task count:")).toBeVisible();
+  await expect(page.getByText("Queue generatedAt:")).toBeVisible();
+  await expect(page.getByText("Pending generated tasks:")).toBeVisible();
 
   for (const label of ["DEV", "UI", "OPS", "SEO", "GEO"]) {
     await expect(page.getByText(label, { exact: true }).first()).toBeVisible();

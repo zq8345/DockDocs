@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "mission-control:generate": "node scripts/generate-mission-control-data.mjs",
+    "task-queue:generate": "node scripts/generate-task-queue-from-pmo.mjs",
     "geo:qa": "node scripts/geo-qa-check.mjs",
     "lint": "next lint",
     "test:e2e": "playwright test",
