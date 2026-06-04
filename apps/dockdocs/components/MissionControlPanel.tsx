@@ -22,6 +22,7 @@ import {
   projectInventory,
   type InventoryItem,
 } from "@/lib/mission-control-inventory";
+import observerReport from "@/docs/observer-report.json";
 
 type MissionControlPanelProps = {
   snapshot: MissionControlSnapshot;
@@ -143,6 +144,7 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
         <section className="px-5 py-6 sm:px-6 lg:px-8">
           <div className="mx-auto grid max-w-7xl gap-6">
             <OwnerBriefing snapshot={snapshot} />
+            <ObserverReportSummary />
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)]">
               <div className="grid gap-6">
@@ -163,6 +165,45 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
         </section>
       </main>
     </>
+  );
+}
+
+function ObserverReportSummary() {
+  const counts = [
+    { label: "New Tasks Count", value: observerReport.newTasks.length },
+    { label: "Completed Tasks Count", value: observerReport.completedTasks.length },
+    { label: "Blocked Tasks Count", value: observerReport.blockedTasks.length },
+    { label: "Production Changes Count", value: observerReport.productionChanges.length },
+    { label: "Queue Changes Count", value: observerReport.queueChanges.length },
+  ];
+
+  return (
+    <Card
+      as="section"
+      aria-labelledby="observer-report-summary"
+      data-testid="dock-card"
+      className="p-4 sm:p-5"
+    >
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">
+            Hermes Observer
+          </p>
+          <h2 id="observer-report-summary" className="mt-1 text-xl font-semibold">
+            Observer Report Summary
+          </h2>
+        </div>
+        <StatusChip tone="ready" label="Read-only" />
+      </div>
+      <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
+        HERMES-001A 只读报告，汇总 PMO Board、Mission Control、Task Queue 和生产监控基线。
+      </p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        {counts.map((item) => (
+          <QueueCount key={item.label} label={item.label} value={item.value} />
+        ))}
+      </div>
+    </Card>
   );
 }
 

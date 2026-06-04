@@ -1,0 +1,418 @@
+{
+  "generatedAt": "2026-06-04T09:00:27.814Z",
+  "source": "observer-report-generator",
+  "observer": {
+    "id": "HERMES-001A",
+    "mode": "read-only",
+    "description": "Hermes PMO Observer report generated from approved build-time sources."
+  },
+  "currentProductionVersion": {
+    "commit": "3fa5bac",
+    "message": "UI-302: merge Mission Control owner dashboard into master",
+    "productionUrl": "https://dockdocs.app",
+    "netlifyDeployId": "6a212fe82419fd178a14128e",
+    "evidence": [
+      "production-monitoring-baseline.json"
+    ],
+    "confidence": "high"
+  },
+  "newTasks": [],
+  "activeTasks": [],
+  "completedTasks": [
+    {
+      "id": "DEV-100",
+      "title": "DEV-100 (DEV)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    },
+    {
+      "id": "DEV-200",
+      "title": "DEV-200 (DEV)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    },
+    {
+      "id": "DEV-300",
+      "title": "DEV-300 AI Workspace Premium Phase 1 (DEV)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    },
+    {
+      "id": "DEV-301",
+      "title": "DEV-301 Production Pro Session QA (DEV)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    },
+    {
+      "id": "OPS-010",
+      "title": "OPS-010 (OPS)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    },
+    {
+      "id": "OPS-011",
+      "title": "OPS-011 (OPS)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    },
+    {
+      "id": "OPS-100",
+      "title": "OPS-100 Mission Control Phase 1 (OPS)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    },
+    {
+      "id": "OPS-102",
+      "title": "OPS-102 Codex Task Queue Runner (OPS)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    },
+    {
+      "id": "OPS-102A",
+      "title": "OPS-102A Hardened Task Queue Runner (OPS)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    },
+    {
+      "id": "OPS-103",
+      "title": "OPS-103 Mission Control x Task Queue (OPS)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    },
+    {
+      "id": "OPS-104A",
+      "title": "OPS-104A Project Inventory (OPS)",
+      "status": "observed",
+      "evidence": [
+        "project-board-generated.ts"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No immediate action unless PMO changes this task state."
+    }
+  ],
+  "blockedTasks": [],
+  "productionChanges": [
+    {
+      "id": "PROD-VERSION",
+      "title": "3fa5bac UI-302: merge Mission Control owner dashboard into master",
+      "status": "current",
+      "evidence": [
+        "production-monitoring-baseline.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "Use this as the current production baseline until the next deploy."
+    },
+    {
+      "id": "PROD-URLS",
+      "title": "6/6 monitored production URLs passing",
+      "status": "pass",
+      "evidence": [
+        "production-monitoring-baseline.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "Continue normal monitoring."
+    },
+    {
+      "id": "CHAT-ENDPOINT",
+      "title": "/api/ai-chat POST 200 model deepseek-chat",
+      "status": "PASS",
+      "evidence": [
+        "production-monitoring-baseline.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "Monitor the actual API path used by production."
+    }
+  ],
+  "queueChanges": [
+    {
+      "id": "PMO-VERIFY-001",
+      "title": "Verify Keep Mission Control as the single source of truth.",
+      "status": "completed",
+      "exitCode": 0,
+      "evidence": [
+        "codex-task-queue.generated.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No action required for completed verification task."
+    },
+    {
+      "id": "PMO-VERIFY-002",
+      "title": "Verify Start the next PMO-approved production task.",
+      "status": "completed",
+      "exitCode": 0,
+      "evidence": [
+        "codex-task-queue.generated.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "No action required for completed verification task."
+    }
+  ],
+  "queueStatus": {
+    "source": "PMO generated",
+    "mode": "verification-only",
+    "generatedAt": "2026-06-04T07:27:22.406Z",
+    "taskCount": 2,
+    "pending": 0,
+    "running": 0,
+    "completed": 2,
+    "failed": 0,
+    "skipped": 0,
+    "containsDangerousCommands": false,
+    "containsChatE2E": false
+  },
+  "missionControlHealth": {
+    "result": "PASS",
+    "source": "build-time",
+    "generatedAt": "2026-06-04T07:29:11.438Z",
+    "pmoSyncStatus": "PMO同步正常",
+    "queueSource": "PMO generated",
+    "generatedTaskCount": 2,
+    "warningsCount": 2,
+    "warnings": [
+      "UI-301A is missing from the PMO board; using current release fallback.",
+      "OPS-106 is missing from the PMO board; using current release fallback."
+    ],
+    "evidence": [
+      "mission-control-generated-data.ts",
+      "production-monitoring-baseline.json"
+    ],
+    "confidence": "high",
+    "recommendedAction": "Review Mission Control sync warnings before the next release."
+  },
+  "productionHealth": {
+    "result": "PASS",
+    "urlCount": 6,
+    "passingUrlCount": 6,
+    "productionUrl": "https://dockdocs.app",
+    "netlifyDeployId": "6a212fe82419fd178a14128e",
+    "chatFunction": {
+      "requestedEndpoint": {
+        "path": "/.netlify/functions/ai-chat",
+        "get": 404,
+        "options": 404,
+        "post": 404,
+        "result": "LEGACY_PATH_NOT_EXPOSED"
+      },
+      "actualEndpoint": {
+        "path": "/api/ai-chat",
+        "get": 404,
+        "options": 405,
+        "post": 200,
+        "ok": true,
+        "provider": "configured-ai-provider",
+        "model": "deepseek-chat",
+        "hasAnswer": true,
+        "result": "PASS"
+      }
+    },
+    "changes": [
+      {
+        "id": "PROD-VERSION",
+        "title": "3fa5bac UI-302: merge Mission Control owner dashboard into master",
+        "status": "current",
+        "evidence": [
+          "production-monitoring-baseline.json"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Use this as the current production baseline until the next deploy."
+      },
+      {
+        "id": "PROD-URLS",
+        "title": "6/6 monitored production URLs passing",
+        "status": "pass",
+        "evidence": [
+          "production-monitoring-baseline.json"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Continue normal monitoring."
+      },
+      {
+        "id": "CHAT-ENDPOINT",
+        "title": "/api/ai-chat POST 200 model deepseek-chat",
+        "status": "PASS",
+        "evidence": [
+          "production-monitoring-baseline.json"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Monitor the actual API path used by production."
+      }
+    ]
+  },
+  "knownRisks": [
+    {
+      "title": "npm install reports 2 moderate audit issues; no audit fix was run.",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "Track in the next PMO review."
+    },
+    {
+      "title": "The original Dock directory should not be used for deploy if dirty.",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "Track in the next PMO review."
+    },
+    {
+      "title": "ai-chat is configured at /api/ai-chat, not at /.netlify/functions/ai-chat.",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "Track in the next PMO review."
+    },
+    {
+      "title": "ai-chat returns provider as configured-ai-provider; model confirms deepseek-chat.",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "Track in the next PMO review."
+    },
+    {
+      "title": "UI-301A is missing from the PMO board; using current release fallback.",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "Track in the next PMO review."
+    },
+    {
+      "title": "OPS-106 is missing from the PMO board; using current release fallback.",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "Track in the next PMO review."
+    },
+    {
+      "title": "Queue top-level pending=2 differs from task status pending=0.",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "confidence": "high",
+      "recommendedAction": "Track in the next PMO review."
+    }
+  ],
+  "recommendedActions": [
+    {
+      "title": "Keep Mission Control as the single source of truth.",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "confidence": "medium",
+      "recommendedAction": "Keep Mission Control as the single source of truth."
+    },
+    {
+      "title": "Start the next PMO-approved production task.",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "confidence": "medium",
+      "recommendedAction": "Start the next PMO-approved production task."
+    },
+    {
+      "title": "Use apps/dockdocs/docs/observer-report.json as the Hermes-readable Observer source.",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "confidence": "medium",
+      "recommendedAction": "Use apps/dockdocs/docs/observer-report.json as the Hermes-readable Observer source."
+    },
+    {
+      "title": "Review Known Risks before approving the next deploy.",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "confidence": "medium",
+      "recommendedAction": "Review Known Risks before approving the next deploy."
+    }
+  ],
+  "sourceStatus": {
+    "pmoBoard": {
+      "path": "apps/dockdocs/docs/dockdocs-project-board.md",
+      "exists": true,
+      "loaded": true
+    },
+    "projectBoardGenerated": {
+      "path": "apps/dockdocs/lib/project-board-generated.ts",
+      "exists": true,
+      "loaded": true
+    },
+    "missionControlGenerated": {
+      "path": "apps/dockdocs/lib/mission-control-generated-data.ts",
+      "exists": true,
+      "loaded": true
+    },
+    "queueGenerated": {
+      "path": "scripts/codex-task-queue.generated.json",
+      "exists": true,
+      "loaded": true
+    },
+    "productionBaseline": {
+      "path": "apps/dockdocs/docs/production-monitoring-baseline.json",
+      "exists": true,
+      "loaded": true
+    }
+  }
+}
