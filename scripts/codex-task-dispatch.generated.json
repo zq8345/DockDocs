@@ -1,0 +1,275 @@
+{
+  "source": "HERMES-002B Dispatcher Queue Writer",
+  "mode": "verification-only",
+  "generatedAt": "2026-06-04T12:03:16.897Z",
+  "writesQueue": true,
+  "executesRunner": false,
+  "deploysProduction": false,
+  "safety": {
+    "merge": false,
+    "push": false,
+    "deploy": false,
+    "destructive": false
+  },
+  "summary": {
+    "taskCount": 11,
+    "pending": 7,
+    "blocked": 0,
+    "skipped": 4
+  },
+  "tasks": [
+    {
+      "id": "DISPATCH-RISK-1",
+      "title": "npm install reports 2 moderate audit issues; no audit fix was run.",
+      "status": "pending",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Hermes PMO",
+      "priority": "P2",
+      "notes": "Generated from high-confidence dispatcher action."
+    },
+    {
+      "id": "DISPATCH-RISK-2",
+      "title": "The original Dock directory should not be used for deploy if dirty.",
+      "status": "pending",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Hermes PMO",
+      "priority": "P1",
+      "notes": "Generated from high-confidence dispatcher action."
+    },
+    {
+      "id": "DISPATCH-RISK-3",
+      "title": "ai-chat is configured at /api/ai-chat, not at /.netlify/functions/ai-chat.",
+      "status": "pending",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Hermes PMO",
+      "priority": "P2",
+      "notes": "Generated from high-confidence dispatcher action."
+    },
+    {
+      "id": "DISPATCH-RISK-4",
+      "title": "ai-chat returns provider as configured-ai-provider; model confirms deepseek-chat.",
+      "status": "pending",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Hermes PMO",
+      "priority": "P1",
+      "notes": "Generated from high-confidence dispatcher action."
+    },
+    {
+      "id": "DISPATCH-RISK-5",
+      "title": "UI-301A is missing from the PMO board; using current release fallback.",
+      "status": "pending",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Hermes UI / Codex UI",
+      "priority": "P2",
+      "notes": "Generated from high-confidence dispatcher action."
+    },
+    {
+      "id": "DISPATCH-RISK-6",
+      "title": "OPS-106 is missing from the PMO board; using current release fallback.",
+      "status": "pending",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Codex OPS",
+      "priority": "P2",
+      "notes": "Generated from high-confidence dispatcher action."
+    },
+    {
+      "id": "DISPATCH-RISK-7",
+      "title": "Queue top-level pending=2 differs from task status pending=0.",
+      "status": "pending",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Hermes PMO",
+      "priority": "P2",
+      "notes": "Generated from high-confidence dispatcher action."
+    },
+    {
+      "id": "DISPATCH-RECOMMENDATION-1",
+      "title": "Keep Mission Control as the single source of truth.",
+      "status": "skipped",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Hermes PMO",
+      "priority": "P3",
+      "notes": "Skipped: needs human review before queue execution."
+    },
+    {
+      "id": "DISPATCH-RECOMMENDATION-2",
+      "title": "Start the next PMO-approved production task.",
+      "status": "skipped",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Hermes PMO",
+      "priority": "P1",
+      "notes": "Skipped: needs human review before queue execution."
+    },
+    {
+      "id": "DISPATCH-RECOMMENDATION-3",
+      "title": "Use apps/dockdocs/docs/observer-report.json as the Hermes-readable Observer source.",
+      "status": "skipped",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Hermes PMO / Codex OPS",
+      "priority": "P3",
+      "notes": "Skipped: needs human review before queue execution."
+    },
+    {
+      "id": "DISPATCH-RECOMMENDATION-4",
+      "title": "Review Known Risks before approving the next deploy.",
+      "status": "skipped",
+      "workdir": ".",
+      "allowedCommands": [
+        "git status --short --branch",
+        "npm install",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+        "npm run build:dockdocs",
+        "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts",
+        "npm --workspace @dock/dockdocs run test:e2e"
+      ],
+      "commands": [
+        "git status --short --branch",
+        "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
+      ],
+      "createdAt": "2026-06-04T12:03:16.897Z",
+      "source": "HERMES-002B Dispatcher Queue Writer",
+      "owner": "Hermes PMO",
+      "priority": "P1",
+      "notes": "Skipped: needs human review before queue execution."
+    }
+  ]
+}
