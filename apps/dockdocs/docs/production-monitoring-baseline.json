@@ -1,0 +1,90 @@
+{
+  "baselineDate": "2026-06-04",
+  "productionVersion": {
+    "commit": "3fa5bac",
+    "message": "UI-302: merge Mission Control owner dashboard into master"
+  },
+  "production": {
+    "url": "https://dockdocs.app",
+    "netlifyDeployId": "6a212fe82419fd178a14128e",
+    "buildLogs": "https://app.netlify.com/projects/keen-custard-94a9a5/deploys/6a212fe82419fd178a14128e"
+  },
+  "urls": [
+    { "url": "https://dockdocs.app/", "status": 200, "result": "PASS" },
+    { "url": "https://dockdocs.app/internal/mission-control/", "status": 200, "result": "PASS" },
+    { "url": "https://dockdocs.app/dashboard/", "status": 200, "result": "PASS" },
+    { "url": "https://dockdocs.app/my-chats/", "status": 200, "result": "PASS" },
+    { "url": "https://dockdocs.app/ai-workspace/", "status": 200, "result": "PASS" },
+    { "url": "https://dockdocs.app/chat-with-pdf/", "status": 200, "result": "PASS" }
+  ],
+  "missionControl": {
+    "result": "PASS",
+    "visibleText": [
+      "任务控制中心",
+      "老板驾驶舱",
+      "当前任务",
+      "自动化进度",
+      "PMO同步正常",
+      "数据来源：构建时自动生成",
+      "任务队列",
+      "项目资产清单"
+    ]
+  },
+  "chatFunction": {
+    "requestedEndpoint": {
+      "path": "/.netlify/functions/ai-chat",
+      "get": 404,
+      "options": 404,
+      "post": 404,
+      "result": "LEGACY_PATH_NOT_EXPOSED"
+    },
+    "actualEndpoint": {
+      "path": "/api/ai-chat",
+      "get": 404,
+      "options": 405,
+      "post": 200,
+      "ok": true,
+      "provider": "configured-ai-provider",
+      "model": "deepseek-chat",
+      "hasAnswer": true,
+      "result": "PASS"
+    }
+  },
+  "queue": {
+    "source": "PMO generated",
+    "mode": "verification-only",
+    "taskCount": 2,
+    "pending": 2,
+    "completed": 0,
+    "failed": 0,
+    "containsChatE2E": false,
+    "containsDangerousCommands": false
+  },
+  "generatedData": {
+    "source": "build-time",
+    "generatedAt": "2026-06-04T08:10:51.861Z",
+    "pmoSyncStatus": "PMO同步正常",
+    "queueSource": "PMO generated",
+    "generatedTaskCount": 2,
+    "warningsCount": 2,
+    "warnings": [
+      "UI-301A is missing from the PMO board; using current release fallback.",
+      "OPS-106 is missing from the PMO board; using current release fallback."
+    ]
+  },
+  "localValidation": {
+    "npmInstall": "PASS_WITH_2_MODERATE_AUDIT_ISSUES",
+    "taskQueueGenerate": "PASS",
+    "missionControlGenerate": "PASS",
+    "typescript": "PASS",
+    "buildDockdocs": "PASS_846_STATIC_PAGES",
+    "missionControlPlaywright": "PASS",
+    "chatPdfE2E": "PASS_15_OF_15"
+  },
+  "knownRisks": [
+    "npm install reports 2 moderate audit issues; no audit fix was run.",
+    "The original Dock directory should not be used for deploy if dirty.",
+    "ai-chat is configured at /api/ai-chat, not at /.netlify/functions/ai-chat.",
+    "ai-chat returns provider as configured-ai-provider; model confirms deepseek-chat."
+  ]
+}
