@@ -1,5 +1,12 @@
 import { ButtonLink } from "@dock/shared/ui";
 import { Card } from "@/components/ui/Card";
+import {
+  AccountCard,
+  ActionCard,
+  ChatCard,
+  DocumentCard,
+  MetricCard,
+} from "@/components/ui/cards";
 import { WorkspaceDashboardClient } from "@/components/WorkspaceDashboardClient";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { defaultLocale, localizedPath, normalizeSlug } from "@/lib/i18n";
@@ -116,16 +123,13 @@ function OverviewCards({ page }: { page: DashboardCopy }) {
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {page.stats.map((stat) => (
-          <Card
-            as="article"
+          <MetricCard
             key={stat.label}
-            data-testid="dock-card"
-            variant="interactive"
-            className="p-4"
-          >
-            <p className="text-3xl font-semibold">{stat.value}</p>
-            <p className="mt-2 text-sm text-[color:var(--muted)]">{stat.label}</p>
-          </Card>
+            badge="Local"
+            helper={page.analyticsLabel}
+            label={stat.label}
+            value={stat.value}
+          />
         ))}
       </div>
     </section>
@@ -179,14 +183,12 @@ function AnalyticsOverview({ page }: { page: DashboardCopy }) {
       </p>
       <div className="mt-4 grid gap-3 md:grid-cols-3">
         {items.map((item) => (
-          <article
+          <AccountCard
             key={item.label}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4"
-          >
-            <p className="text-sm font-semibold text-[color:var(--muted)]">{item.label}</p>
-            <p className="mt-2 text-2xl font-semibold">{item.value}</p>
-            <p className="mt-2 text-xs leading-5 text-[color:var(--muted)]">{item.helper}</p>
-          </article>
+            label={item.label}
+            plan={item.value}
+            usage={item.helper}
+          />
         ))}
       </div>
     </section>
@@ -241,12 +243,15 @@ function RecentDocuments({
           <a
             key={doc.name}
             href={localizedDashboardHref(locale, documentHrefs[index] ?? "/dashboard")}
-            className="grid min-h-16 gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm transition hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] sm:grid-cols-[minmax(0,1fr)_80px_110px_110px] sm:items-center"
+            className="block rounded-[var(--radius-sm)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           >
-            <p className="break-words font-semibold">{doc.name}</p>
-            <p className="text-[color:var(--muted)]">{doc.type}</p>
-            <p className="text-[color:var(--muted)]">{doc.status}</p>
-            <p className="font-semibold text-[color:var(--accent)]">{doc.action}</p>
+            <DocumentCard
+              action={doc.action}
+              className="min-h-16"
+              meta={doc.type}
+              status={`${doc.status} · Example`}
+              title={doc.name}
+            />
           </a>
         ))}
       </div>
@@ -293,13 +298,14 @@ function RecentConversations({
           <a
             key={conversation.title}
             href={localizedDashboardHref(locale, conversationHrefs[index] ?? "/chat-with-pdf")}
-            className="min-h-16 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 transition hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
+            className="block rounded-[var(--radius-sm)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           >
-            <h3 className="text-sm font-semibold leading-5">{conversation.title}</h3>
-            <div className="mt-2 flex flex-wrap gap-2 text-xs text-[color:var(--muted)]">
-              <span>{conversation.meta}</span>
-              <span>{conversation.status}</span>
-            </div>
+            <ChatCard
+              className="min-h-16"
+              document={conversation.meta}
+              savedState={`${conversation.status} · Example`}
+              title={conversation.title}
+            />
           </a>
         ))}
       </div>
@@ -324,17 +330,15 @@ function AiActions({
           <a
             key={action.title}
             href={localizedDashboardHref(locale, action.href)}
-            className="min-h-36 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
+            className="block rounded-[var(--radius-sm)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
           >
-            <div className="flex items-start justify-between gap-3">
-              <h3 className="font-semibold">{action.title}</h3>
-              <span className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] px-2 py-1 text-[10px] font-semibold text-[color:var(--success)]">
-                {action.tier}
-              </span>
-            </div>
-            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-              {action.description}
-            </p>
+            <ActionCard
+              actionLabel={action.tier}
+              className="min-h-36 transition hover:-translate-y-0.5"
+              description={action.description}
+              priority="Example"
+              title={action.title}
+            />
           </a>
         ))}
       </div>

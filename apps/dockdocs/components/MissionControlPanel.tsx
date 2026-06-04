@@ -17,6 +17,7 @@ import { missionControlGeneratedData } from "@/lib/mission-control-generated-dat
 import { missionControlQueueTasks } from "@/lib/mission-control-queue-data";
 import { Card } from "@/components/ui/Card";
 import { Status } from "@/components/ui/Status";
+import { ActionCard, SourceCard, StatusCard } from "@/components/ui/cards";
 import {
   getInventorySummary,
   projectInventory,
@@ -523,23 +524,14 @@ function FocusCard({
           </p>
         ) : (
           items.map((task) => (
-            <article
+            <StatusCard
               key={`${title}-${task.title}`}
-              className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="break-words font-semibold">{task.title}</h3>
-                  <p className="mt-1 text-xs text-[color:var(--muted)]">{task.area}</p>
-                </div>
-                <span className="shrink-0 text-xs font-semibold text-[color:var(--accent)]">
-                  {task.priority}
-                </span>
-              </div>
-              <p className="mt-2 text-xs font-semibold text-[color:var(--muted)]">
-                {task.status}
-              </p>
-            </article>
+              description={`Priority ${task.priority}`}
+              meta={task.area}
+              status={task.status}
+              title={task.title}
+              tone={missionToneToDockTone(toneForDisplayStatus(task.status))}
+            />
           ))
         )}
       </div>
@@ -622,20 +614,13 @@ function AgentStatus({ agents }: { agents: MissionAgent[] }) {
       <h2 className="mt-1 text-xl font-semibold">执行覆盖</h2>
       <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {agents.map((agent) => (
-          <article
+          <StatusCard
             key={agent.name}
-            className={`rounded-[var(--radius-sm)] border bg-[color:var(--surface-subtle)] p-3 ${toneStyles[agent.tone].border}`}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h3 className="font-semibold">{agent.name}</h3>
-                <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
-                  {agent.role}
-                </p>
-              </div>
-              <StatusChip tone={agent.tone} label={agent.status} />
-            </div>
-          </article>
+            description={agent.role}
+            status={agent.status}
+            title={agent.name}
+            tone={missionToneToDockTone(agent.tone)}
+          />
         ))}
       </div>
     </section>
@@ -772,21 +757,22 @@ function ProjectInventory() {
             项目资产清单
           </p>
           <h2 className="mt-1 text-xl font-semibold">静态项目快照</h2>
-          <div className="mt-4 grid gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 text-sm leading-6 text-[color:var(--muted)]">
-            <p>
-              <span className="font-semibold text-[color:var(--foreground)]">数据来源：</span>
-              {summary.dataSource}
-            </p>
-            <p>
-              <span className="font-semibold text-[color:var(--foreground)]">最后生成时间：</span>
-              {summary.generatedAt}
-            </p>
-            <p>
-              <span className="font-semibold text-[color:var(--foreground)]">Git 摘要：</span>
-              {projectInventory.git.currentBranch} · {projectInventory.git.workingTreeStatus} ·{" "}
-              {projectInventory.git.changedFileCount} changed
-            </p>
-          </div>
+          <SourceCard
+            citation={`Git 摘要：${projectInventory.git.currentBranch} · ${projectInventory.git.workingTreeStatus} · ${projectInventory.git.changedFileCount} changed`}
+            className="mt-4"
+            confidence="Synced"
+            excerpt={
+              <>
+                <span className="font-semibold text-[color:var(--foreground)]">数据来源：</span>
+                {summary.dataSource}
+                <br />
+                <span className="font-semibold text-[color:var(--foreground)]">最后生成时间：</span>
+                {summary.generatedAt}
+              </>
+            }
+            note="Local"
+            source="PMO Board / build-time snapshot"
+          />
           <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
               项目状态
@@ -1066,13 +1052,14 @@ function RecommendationsList() {
         下一步建议
       </p>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
-        {projectInventory.recommendations.map((recommendation) => (
-          <p
+        {projectInventory.recommendations.map((recommendation, index) => (
+          <ActionCard
             key={recommendation}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]"
-          >
-            {recommendation}
-          </p>
+            actionLabel="Synced"
+            description={recommendation}
+            priority={index === 0 ? "P1" : "P2"}
+            title={`下一步 ${index + 1}`}
+          />
         ))}
       </div>
     </section>
