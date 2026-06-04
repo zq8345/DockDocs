@@ -1,0 +1,210 @@
+{
+  "source": "HERMES-004 Runner Integration",
+  "mode": "verification-only",
+  "safetyMode": "Enabled",
+  "lastRun": "2026-06-04T12:33:40.887Z",
+  "executionDurationMs": 16201,
+  "taskCount": 11,
+  "completed": 7,
+  "failed": 0,
+  "skipped": 4,
+  "pending": 0,
+  "safety": {
+    "merge": false,
+    "push": false,
+    "deploy": false,
+    "destructive": false
+  },
+  "tasks": [
+    {
+      "id": "DISPATCH-RISK-1",
+      "title": "npm install reports 2 moderate audit issues; no audit fix was run.",
+      "owner": "Hermes PMO",
+      "priority": "P2",
+      "status": "completed",
+      "commandResults": [
+        {
+          "command": "git status --short --branch",
+          "startedAt": "2026-06-04T12:33:24.687Z",
+          "finishedAt": "2026-06-04T12:33:24.743Z",
+          "exitCode": 0
+        },
+        {
+          "command": "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+          "startedAt": "2026-06-04T12:33:24.743Z",
+          "finishedAt": "2026-06-04T12:33:28.671Z",
+          "exitCode": 0
+        }
+      ],
+      "lastError": null
+    },
+    {
+      "id": "DISPATCH-RISK-2",
+      "title": "The original Dock directory should not be used for deploy if dirty.",
+      "owner": "Hermes PMO",
+      "priority": "P1",
+      "status": "completed",
+      "commandResults": [
+        {
+          "command": "git status --short --branch",
+          "startedAt": "2026-06-04T12:33:28.672Z",
+          "finishedAt": "2026-06-04T12:33:28.726Z",
+          "exitCode": 0
+        },
+        {
+          "command": "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+          "startedAt": "2026-06-04T12:33:28.726Z",
+          "finishedAt": "2026-06-04T12:33:30.741Z",
+          "exitCode": 0
+        }
+      ],
+      "lastError": null
+    },
+    {
+      "id": "DISPATCH-RISK-3",
+      "title": "ai-chat is configured at /api/ai-chat, not at /.netlify/functions/ai-chat.",
+      "owner": "Hermes PMO",
+      "priority": "P2",
+      "status": "completed",
+      "commandResults": [
+        {
+          "command": "git status --short --branch",
+          "startedAt": "2026-06-04T12:33:30.742Z",
+          "finishedAt": "2026-06-04T12:33:30.794Z",
+          "exitCode": 0
+        },
+        {
+          "command": "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+          "startedAt": "2026-06-04T12:33:30.794Z",
+          "finishedAt": "2026-06-04T12:33:32.803Z",
+          "exitCode": 0
+        }
+      ],
+      "lastError": null
+    },
+    {
+      "id": "DISPATCH-RISK-4",
+      "title": "ai-chat returns provider as configured-ai-provider; model confirms deepseek-chat.",
+      "owner": "Hermes PMO",
+      "priority": "P1",
+      "status": "completed",
+      "commandResults": [
+        {
+          "command": "git status --short --branch",
+          "startedAt": "2026-06-04T12:33:32.803Z",
+          "finishedAt": "2026-06-04T12:33:32.853Z",
+          "exitCode": 0
+        },
+        {
+          "command": "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+          "startedAt": "2026-06-04T12:33:32.853Z",
+          "finishedAt": "2026-06-04T12:33:34.834Z",
+          "exitCode": 0
+        }
+      ],
+      "lastError": null
+    },
+    {
+      "id": "DISPATCH-RISK-5",
+      "title": "UI-301A is missing from the PMO board; using current release fallback.",
+      "owner": "Hermes UI / Codex UI",
+      "priority": "P2",
+      "status": "completed",
+      "commandResults": [
+        {
+          "command": "git status --short --branch",
+          "startedAt": "2026-06-04T12:33:34.834Z",
+          "finishedAt": "2026-06-04T12:33:34.884Z",
+          "exitCode": 0
+        },
+        {
+          "command": "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+          "startedAt": "2026-06-04T12:33:34.885Z",
+          "finishedAt": "2026-06-04T12:33:36.845Z",
+          "exitCode": 0
+        }
+      ],
+      "lastError": null
+    },
+    {
+      "id": "DISPATCH-RISK-6",
+      "title": "OPS-106 is missing from the PMO board; using current release fallback.",
+      "owner": "Codex OPS",
+      "priority": "P2",
+      "status": "completed",
+      "commandResults": [
+        {
+          "command": "git status --short --branch",
+          "startedAt": "2026-06-04T12:33:36.846Z",
+          "finishedAt": "2026-06-04T12:33:36.896Z",
+          "exitCode": 0
+        },
+        {
+          "command": "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+          "startedAt": "2026-06-04T12:33:36.896Z",
+          "finishedAt": "2026-06-04T12:33:38.883Z",
+          "exitCode": 0
+        }
+      ],
+      "lastError": null
+    },
+    {
+      "id": "DISPATCH-RISK-7",
+      "title": "Queue top-level pending=2 differs from task status pending=0.",
+      "owner": "Hermes PMO",
+      "priority": "P2",
+      "status": "completed",
+      "commandResults": [
+        {
+          "command": "git status --short --branch",
+          "startedAt": "2026-06-04T12:33:38.883Z",
+          "finishedAt": "2026-06-04T12:33:38.933Z",
+          "exitCode": 0
+        },
+        {
+          "command": "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+          "startedAt": "2026-06-04T12:33:38.933Z",
+          "finishedAt": "2026-06-04T12:33:40.886Z",
+          "exitCode": 0
+        }
+      ],
+      "lastError": null
+    },
+    {
+      "id": "DISPATCH-RECOMMENDATION-1",
+      "title": "Keep Mission Control as the single source of truth.",
+      "owner": "Hermes PMO",
+      "priority": "P3",
+      "status": "skipped",
+      "commandResults": [],
+      "lastError": null
+    },
+    {
+      "id": "DISPATCH-RECOMMENDATION-2",
+      "title": "Start the next PMO-approved production task.",
+      "owner": "Hermes PMO",
+      "priority": "P1",
+      "status": "skipped",
+      "commandResults": [],
+      "lastError": null
+    },
+    {
+      "id": "DISPATCH-RECOMMENDATION-3",
+      "title": "Use apps/dockdocs/docs/observer-report.json as the Hermes-readable Observer source.",
+      "owner": "Hermes PMO / Codex OPS",
+      "priority": "P3",
+      "status": "skipped",
+      "commandResults": [],
+      "lastError": null
+    },
+    {
+      "id": "DISPATCH-RECOMMENDATION-4",
+      "title": "Review Known Risks before approving the next deploy.",
+      "owner": "Hermes PMO",
+      "priority": "P1",
+      "status": "skipped",
+      "commandResults": [],
+      "lastError": null
+    }
+  ]
+}

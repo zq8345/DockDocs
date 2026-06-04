@@ -25,6 +25,7 @@ import {
 } from "@/lib/mission-control-inventory";
 import observerReport from "@/docs/observer-report.json";
 import dispatcherReport from "@/docs/dispatcher-report.json";
+import runnerExecutionReport from "@/docs/runner-execution-report.json";
 
 type MissionControlPanelProps = {
   snapshot: MissionControlSnapshot;
@@ -148,6 +149,7 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
             <OwnerBriefing snapshot={snapshot} />
             <ObserverReportSummary />
             <DispatcherSummary />
+            <RunnerSummary />
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)]">
               <div className="grid gap-6">
@@ -252,6 +254,73 @@ function ObserverReportSummary() {
           <QueueCount key={item.label} label={item.label} value={item.value} />
         ))}
       </div>
+    </Card>
+  );
+}
+
+function RunnerSummary() {
+  const generatedRunner = (
+    missionControlGeneratedData as unknown as {
+      runnerSummary?: typeof runnerExecutionReport;
+    }
+  ).runnerSummary;
+  const runnerSummary = {
+    source: generatedRunner?.source || runnerExecutionReport.source,
+    mode: generatedRunner?.mode || runnerExecutionReport.mode,
+    safetyMode: generatedRunner?.safetyMode || runnerExecutionReport.safetyMode,
+    taskCount: generatedRunner?.taskCount ?? runnerExecutionReport.taskCount,
+    completed: generatedRunner?.completed ?? runnerExecutionReport.completed,
+    failed: generatedRunner?.failed ?? runnerExecutionReport.failed,
+    skipped: generatedRunner?.skipped ?? runnerExecutionReport.skipped,
+    lastRun: generatedRunner?.lastRun || runnerExecutionReport.lastRun || "not run",
+    executionDurationMs:
+      generatedRunner?.executionDurationMs ?? runnerExecutionReport.executionDurationMs,
+    safety: generatedRunner?.safety || runnerExecutionReport.safety,
+  };
+
+  return (
+    <Card
+      as="section"
+      aria-labelledby="runner-summary"
+      data-testid="dock-card"
+      className="p-4 sm:p-5"
+    >
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">
+            Hermes Runner
+          </p>
+          <h2 id="runner-summary" className="mt-1 text-xl font-semibold">
+            Runner Summary
+          </h2>
+        </div>
+        <StatusChip tone={runnerSummary.failed > 0 ? "blocked" : "ready"} label={runnerSummary.safetyMode} />
+      </div>
+
+      <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
+        Source: {runnerSummary.source} · Mode: {runnerSummary.mode}
+      </p>
+      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+        Last Run: {runnerSummary.lastRun} · Execution Duration:{" "}
+        {runnerSummary.executionDurationMs} ms
+      </p>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-4">
+        <QueueCount label="Task Count" value={runnerSummary.taskCount} />
+        <QueueCount label="Completed" value={runnerSummary.completed} />
+        <QueueCount label="Failed" value={runnerSummary.failed} />
+        <QueueCount label="Skipped" value={runnerSummary.skipped} />
+      </div>
+
+      <section className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+        <h3 className="font-semibold">Safety Mode</h3>
+        <div className="mt-3 grid gap-2 text-sm leading-6 text-[color:var(--muted)] sm:grid-cols-2">
+          <p>merge disabled: {String(!runnerSummary.safety.merge)}</p>
+          <p>push disabled: {String(!runnerSummary.safety.push)}</p>
+          <p>deploy disabled: {String(!runnerSummary.safety.deploy)}</p>
+          <p>destructive disabled: {String(!runnerSummary.safety.destructive)}</p>
+        </div>
+      </section>
     </Card>
   );
 }

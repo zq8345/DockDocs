@@ -10,6 +10,7 @@ const boardPath = path.join(appRoot, "docs", "dockdocs-project-board.md");
 const queuePath = path.join(repoRoot, "scripts", "codex-task-queue.sample.json");
 const generatedQueuePath = path.join(repoRoot, "scripts", "codex-task-queue.generated.json");
 const pmoGeneratedPath = path.join(appRoot, "lib", "project-board-generated.ts");
+const runnerReportPath = path.join(appRoot, "docs", "runner-execution-report.json");
 const outputPath = path.join(appRoot, "lib", "mission-control-generated-data.ts");
 
 const warnings = [];
@@ -206,6 +207,69 @@ function parseQueue() {
   }
 }
 
+function parseRunnerSummary() {
+  if (!existsSync(runnerReportPath)) {
+    warnings.push("Runner execution report is missing.");
+    return {
+      source: "missing",
+      mode: "verification-only",
+      safetyMode: "Enabled",
+      taskCount: 0,
+      completed: 0,
+      failed: 0,
+      skipped: 0,
+      lastRun: null,
+      executionDurationMs: 0,
+      safety: {
+        merge: false,
+        push: false,
+        deploy: false,
+        destructive: false,
+      },
+    };
+  }
+
+  try {
+    const parsed = JSON.parse(readFileSync(runnerReportPath, "utf8"));
+    return {
+      source: String(parsed.source || "HERMES-004 Runner Integration"),
+      mode: String(parsed.mode || "verification-only"),
+      safetyMode: String(parsed.safetyMode || "Enabled"),
+      taskCount: Number(parsed.taskCount || 0),
+      completed: Number(parsed.completed || 0),
+      failed: Number(parsed.failed || 0),
+      skipped: Number(parsed.skipped || 0),
+      lastRun: parsed.lastRun || null,
+      executionDurationMs: Number(parsed.executionDurationMs || 0),
+      safety: {
+        merge: parsed.safety?.merge === true,
+        push: parsed.safety?.push === true,
+        deploy: parsed.safety?.deploy === true,
+        destructive: parsed.safety?.destructive === true,
+      },
+    };
+  } catch {
+    warnings.push("Runner execution report JSON could not be parsed.");
+    return {
+      source: "parse-error",
+      mode: "verification-only",
+      safetyMode: "Enabled",
+      taskCount: 0,
+      completed: 0,
+      failed: 0,
+      skipped: 0,
+      lastRun: null,
+      executionDurationMs: 0,
+      safety: {
+        merge: false,
+        push: false,
+        deploy: false,
+        destructive: false,
+      },
+    };
+  }
+}
+
 function getGitSummary() {
   const currentBranch = safeGit(["branch", "--show-current"], "unknown") || "unknown";
   const latestCommit = safeGit(["log", "-1", "--pretty=format:%h %s"], "unknown");
@@ -265,6 +329,7 @@ const board = readText(boardPath, "Project board");
 const pmoBoard = readGeneratedProjectBoard();
 const boardTasks = pmoBoard?.tasks?.length > 0 ? pmoBoard.tasks : parseBoardTasks(board);
 const queue = parseQueue();
+const runnerSummary = parseRunnerSummary();
 const nextRecommended = readBoardList(board, "### Recommended next task");
 const data = {
   generatedAt: new Date().toISOString(),
@@ -279,6 +344,7 @@ const data = {
   },
   git: getGitSummary(),
   queue,
+  runnerSummary,
   inventory: getInventory(boardTasks, pmoBoard),
   warnings: [...warnings, ...(pmoBoard?.warnings || [])],
 };
