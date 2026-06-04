@@ -137,26 +137,148 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
 
         <section className="px-5 py-6 sm:px-6 lg:px-8">
           <div className="mx-auto grid max-w-7xl gap-6">
-            <MetricGrid metrics={snapshot.metrics} />
+            <OwnerBriefing snapshot={snapshot} />
 
-            <ProjectFocus queue={snapshot.queue} />
+            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)]">
+              <div className="grid gap-6">
+                <ProjectFocus queue={snapshot.queue} />
+                <AutomationProgress />
+              </div>
 
-            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
-              <OperationalLanes lanes={snapshot.lanes} />
-              <ReleaseGates gates={snapshot.gates} />
+              <div className="grid gap-6">
+                <AgentStatus agents={snapshot.agents} />
+                <MilestoneList />
+              </div>
             </div>
-
-            <TaskQueueStatus />
-
-            <AgentStatus agents={snapshot.agents} />
 
             <RecommendationsList />
 
-            <ProjectInventory />
+            <AdvancedInfo snapshot={snapshot} />
           </div>
         </section>
       </main>
     </>
+  );
+}
+
+function OwnerBriefing({ snapshot }: { snapshot: MissionControlSnapshot }) {
+  const summary = summarizeQueue(missionControlQueueTasks);
+  const generatedQueue = getGeneratedQueueSummary();
+  const totalQueueCount =
+    summary.pendingCount +
+    summary.runningCount +
+    summary.completedCount +
+    summary.failedCount +
+    summary.skippedCount;
+  const automationTotal = Math.max(totalQueueCount, generatedQueue.taskCount, 1);
+  const automationDone = Math.min(
+    automationTotal,
+    Math.max(summary.completedCount + summary.skippedCount, projectInventory.queue.completed),
+  );
+  const automationPercent = Math.round((automationDone / automationTotal) * 100);
+  const blockedTasks = projectInventory.projectBoard.blockedTasks.filter((task) =>
+    !/^none/i.test(task),
+  );
+  const activeTasks = projectInventory.projectBoard.activeTasks.filter((task) =>
+    !/^none/i.test(task),
+  );
+  const currentWork =
+    activeTasks[0] || "UI-302 Mission Control Owner Dashboard：把控制台改成老板驾驶舱";
+  const nextAction =
+    projectInventory.recommendations[0] ||
+    projectInventory.queue.next ||
+    "等待 PMO 确认下一项生产任务。";
+
+  return (
+    <section
+      aria-labelledby="owner-briefing"
+      className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5"
+    >
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">
+            今日状态
+          </p>
+          <h2 id="owner-briefing" className="mt-1 text-2xl font-semibold">
+            老板驾驶舱
+          </h2>
+        </div>
+        <StatusChip tone={snapshot.summary.tone} label={snapshot.summary.status} />
+      </div>
+
+      <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+        <OwnerSignalCard
+          label="现在在干什么"
+          value={currentWork}
+          helper="当前页面优先显示进行中的工作，而不是工程库存。"
+          tone="watch"
+        />
+        <OwnerSignalCard
+          label="有没有阻塞"
+          value={blockedTasks.length > 0 ? blockedTasks[0] : "没有确认阻塞"}
+          helper={
+            blockedTasks.length > 0
+              ? `${blockedTasks.length} 项需要处理。`
+              : "可以继续推进下一步。"
+          }
+          tone={blockedTasks.length > 0 ? "blocked" : "ready"}
+        />
+        <OwnerSignalCard
+          label="下一步是什么"
+          value={nextAction}
+          helper="来自 PMO 下一步建议。"
+          tone="watch"
+        />
+        <OwnerSignalCard
+          label="自动化进度"
+          value={`${automationPercent}%`}
+          helper={`已完成 ${automationDone}/${automationTotal}，队列 ${projectInventory.projectBoard.syncStatus}。`}
+          tone={automationPercent >= 90 ? "ready" : "watch"}
+          progress={automationPercent}
+        />
+        <OwnerSignalCard
+          label="系统是否正常"
+          value={snapshot.summary.status}
+          helper={snapshot.summary.detail}
+          tone={snapshot.summary.tone}
+        />
+      </div>
+    </section>
+  );
+}
+
+function OwnerSignalCard({
+  label,
+  value,
+  helper,
+  tone,
+  progress,
+}: {
+  label: string;
+  value: string;
+  helper: string;
+  tone: MissionTone;
+  progress?: number;
+}) {
+  return (
+    <article className={`rounded-[var(--radius-sm)] border bg-[color:var(--surface-subtle)] p-4 ${toneStyles[tone].border}`}>
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+          {label}
+        </p>
+        <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${toneStyles[tone].dot}`} />
+      </div>
+      <p className="mt-3 text-base font-semibold leading-6 sm:text-lg">{value}</p>
+      {typeof progress === "number" ? (
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
+          <div
+            className="h-full rounded-full bg-[color:var(--accent)]"
+            style={{ width: `${Math.max(0, Math.min(progress, 100))}%` }}
+          />
+        </div>
+      ) : null}
+      <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{helper}</p>
+    </article>
   );
 }
 
@@ -199,6 +321,17 @@ function MetricGrid({ metrics }: { metrics: MissionMetric[] }) {
 function ProjectFocus({ queue }: { queue: MissionTask[] }) {
   const displayQueue = queue.map(getPmoQueueTask);
   const currentTasks = displayQueue.filter((task) => !isDoneStatus(task.status));
+  const ownerCurrentTasks =
+    currentTasks.length > 0
+      ? currentTasks
+      : [
+          {
+            title: "UI-302 Mission Control Owner Dashboard",
+            area: "UI",
+            priority: "P1" as const,
+            status: "进行中",
+          },
+        ];
   const blockedTasks = displayQueue.filter((task) => task.status === "失败");
   const completedTasks = projectInventory.tasks.filter((task) =>
     task.status.includes("已完成") || task.status.includes("生产中"),
@@ -206,7 +339,7 @@ function ProjectFocus({ queue }: { queue: MissionTask[] }) {
 
   return (
     <section className="grid gap-4 lg:grid-cols-3">
-      <FocusCard title="当前任务" items={currentTasks} emptyLabel="暂无进行中的任务" />
+      <FocusCard title="当前任务" items={ownerCurrentTasks} emptyLabel="暂无进行中的任务" />
       <FocusCard title="阻塞任务" items={blockedTasks} emptyLabel="当前没有阻塞任务" />
       <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
@@ -226,6 +359,132 @@ function ProjectFocus({ queue }: { queue: MissionTask[] }) {
           ))}
         </div>
       </section>
+    </section>
+  );
+}
+
+function AutomationProgress() {
+  const summary = summarizeQueue(missionControlQueueTasks);
+  const generatedQueue = getGeneratedQueueSummary();
+  const total =
+    summary.pendingCount +
+    summary.runningCount +
+    summary.completedCount +
+    summary.failedCount +
+    summary.skippedCount;
+  const automationTotal = Math.max(total, generatedQueue.taskCount, 1);
+  const automationDone = Math.min(
+    automationTotal,
+    Math.max(summary.completedCount + summary.skippedCount, projectInventory.queue.completed),
+  );
+  const automationPercent = Math.round((automationDone / automationTotal) * 100);
+
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+            自动化进度
+          </p>
+          <h2 className="mt-1 text-xl font-semibold">队列与同步</h2>
+        </div>
+        <StatusChip
+          tone={automationPercent >= 90 ? "ready" : "watch"}
+          label={`${automationPercent}%`}
+        />
+      </div>
+
+      <div className="mt-4 h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
+        <div
+          className="h-full rounded-full bg-[color:var(--accent)]"
+          style={{ width: `${Math.max(0, Math.min(automationPercent, 100))}%` }}
+        />
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
+        <QueueCount label="等待中" value={projectInventory.queue.pending} />
+        <QueueCount label="执行中" value={projectInventory.queue.running} />
+        <QueueCount label="已完成" value={projectInventory.queue.completed} />
+        <QueueCount label="失败" value={projectInventory.queue.failed} />
+        <QueueCount label="已跳过" value={projectInventory.queue.skipped} />
+      </div>
+
+      <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]">
+        <p>
+          <span className="font-semibold text-[color:var(--foreground)]">PMO 同步：</span>
+          {projectInventory.projectBoard.syncStatus}
+        </p>
+        <p className="mt-1">
+          <span className="font-semibold text-[color:var(--foreground)]">队列来源：</span>
+          {generatedQueue.source} · 生成任务数：{generatedQueue.taskCount}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function MilestoneList() {
+  const completedTasks = projectInventory.tasks.filter((task) =>
+    isDoneStatus(task.status),
+  );
+
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        已完成里程碑
+      </p>
+      <h2 className="mt-1 text-xl font-semibold">生产基线</h2>
+      <div className="mt-4 grid gap-3">
+        {completedTasks.slice(-6).map((task) => (
+          <article
+            key={`milestone-${task.id}`}
+            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <h3 className="break-words font-semibold">{task.id}</h3>
+                <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+                  {task.label}
+                </p>
+              </div>
+              <StatusChip tone={toneForDisplayStatus(task.status)} label={task.status} />
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function AdvancedInfo({ snapshot }: { snapshot: MissionControlSnapshot }) {
+  return (
+    <section
+      aria-labelledby="advanced-info"
+      className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5"
+    >
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+            高级信息
+          </p>
+          <h2 id="advanced-info" className="mt-1 text-xl font-semibold">
+            工程细节与项目库存
+          </h2>
+        </div>
+        <p className="max-w-2xl text-sm leading-6 text-[color:var(--muted)]">
+          这里保留任务清单、分支清单、发布检查和队列明细，供需要排查时查看；它们不再占据首页决策区。
+        </p>
+      </div>
+
+      <div className="mt-5 grid gap-6">
+        <MetricGrid metrics={snapshot.metrics} />
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
+          <OperationalLanes lanes={snapshot.lanes} />
+          <ReleaseGates gates={snapshot.gates} />
+        </div>
+        <TaskQueueStatus />
+        <ProjectInventory />
+      </div>
     </section>
   );
 }

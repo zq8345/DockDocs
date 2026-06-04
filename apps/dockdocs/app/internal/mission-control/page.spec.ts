@@ -2,18 +2,30 @@ import { expect, test, type Page } from "@playwright/test";
 
 const missionControlUrl = "http://127.0.0.1:3100/internal/mission-control/";
 
-test("internal Mission Control route renders Chinese PMO dashboard with auto sync data", async ({
+test("internal Mission Control route renders Chinese owner dashboard with auto sync data", async ({
   page,
 }) => {
   await page.goto(missionControlUrl);
 
   await expect(page.getByRole("heading", { name: "任务控制中心" })).toBeVisible();
+  await expect(page.getByText("今日状态", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "老板驾驶舱" })).toBeVisible();
+  await expect(page.getByText("现在在干什么", { exact: true })).toBeVisible();
+  await expect(page.getByText("有没有阻塞", { exact: true })).toBeVisible();
+  await expect(page.getByText("下一步是什么", { exact: true })).toBeVisible();
+  await expect(page.getByText("自动化进度", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("系统是否正常", { exact: true })).toBeVisible();
+  await expect(page.getByText("UI-302 Mission Control Owner Dashboard").first()).toBeVisible();
+  await expect(page.getByText("没有确认阻塞", { exact: true })).toBeVisible();
+  await expect(page.getByText("当前任务", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("代理状态", { exact: true })).toBeVisible();
+  await expect(page.getByText("已完成里程碑", { exact: true })).toBeVisible();
+  await expect(page.getByText("下一步建议", { exact: true })).toBeVisible();
+  await expect(page.getByText("高级信息", { exact: true })).toBeVisible();
   await expect(page.getByText("项目总览")).toBeVisible();
   await expect(page.getByText("任务泳道")).toBeVisible();
   await expect(page.getByText("任务队列", { exact: true })).toBeVisible();
   await expect(page.getByText("项目资产清单", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("代理状态", { exact: true })).toBeVisible();
-  await expect(page.getByText("下一步建议", { exact: true })).toBeVisible();
   await expect(page.getByText("静态项目快照", { exact: true })).toBeVisible();
 
   await expect(page.getByText("数据来源：").first()).toBeVisible();
@@ -58,6 +70,7 @@ test("internal Mission Control route renders Chinese PMO dashboard with auto syn
   await expect(page.getByText("仅允许白名单命令")).toBeVisible();
 
   await expect(page.getByText("Related Workspaces").first()).toBeHidden();
+  await expect(page.getByRole("link", { name: "AI Workspace" }).first()).toBeHidden();
   await expect(page.getByRole("link", { name: "Convert" }).first()).toBeHidden();
   await expect(page.getByRole("link", { name: "Edit" }).first()).toBeHidden();
   await expect(page.getByRole("link", { name: "Compress" }).first()).toBeHidden();
@@ -65,6 +78,9 @@ test("internal Mission Control route renders Chinese PMO dashboard with auto syn
   await expect(page.getByRole("link", { name: "Security" }).first()).toBeHidden();
   await expect(page.getByText("Pricing").first()).toBeHidden();
   await expect(page.getByText("Blog").first()).toBeHidden();
+  await expect(page.getByText("Route Inventory").first()).toBeHidden();
+  await expect(page.getByText("Knowledge Base").first()).toBeHidden();
+  await expect(page.getByText("Runtime Modules").first()).toBeHidden();
 });
 
 function taskCard(page: Page, id: string, status: string) {
