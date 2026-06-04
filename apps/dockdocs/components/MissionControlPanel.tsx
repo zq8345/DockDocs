@@ -24,6 +24,7 @@ import {
   type InventoryItem,
 } from "@/lib/mission-control-inventory";
 import observerReport from "@/docs/observer-report.json";
+import statusReconciliationReport from "@/docs/status-reconciliation-report.json";
 
 type MissionControlPanelProps = {
   snapshot: MissionControlSnapshot;
@@ -146,6 +147,7 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
           <div className="mx-auto grid max-w-7xl gap-6">
             <OwnerBriefing snapshot={snapshot} />
             <ObserverReportSummary />
+            <StatusReconciliationSummary />
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)]">
               <div className="grid gap-6">
@@ -166,6 +168,44 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
         </section>
       </main>
     </>
+  );
+}
+
+function StatusReconciliationSummary() {
+  const summary = statusReconciliationReport.summary;
+  const counts = [
+    { label: "Auto Reconciled Tasks", value: summary.autoReconciledTasks },
+    { label: "Manual Review Tasks", value: summary.manualReviewTasks },
+    { label: "Status Mismatches", value: summary.statusMismatches },
+  ];
+
+  return (
+    <Card
+      as="section"
+      aria-labelledby="status-reconciliation-summary"
+      data-testid="dock-card"
+      className="p-4 sm:p-5"
+    >
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">
+            Hermes Reconciliation
+          </p>
+          <h2 id="status-reconciliation-summary" className="mt-1 text-xl font-semibold">
+            Status Reconciliation Summary
+          </h2>
+        </div>
+        <StatusChip tone={summary.statusMismatches > 0 ? "watch" : "ready"} label="Read-only" />
+      </div>
+      <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
+        HERMES-001B 只输出状态建议，不写回 PMO Board，也不自动修正 Mission Control。
+      </p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        {counts.map((item) => (
+          <QueueCount key={item.label} label={item.label} value={item.value} />
+        ))}
+      </div>
+    </Card>
   );
 }
 

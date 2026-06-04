@@ -1,0 +1,320 @@
+{
+  "generatedAt": "2026-06-04T10:04:20.204Z",
+  "source": "status-reconciliation-engine",
+  "mode": "read-only",
+  "rules": {
+    "priority": [
+      "Production Evidence",
+      "Mission Control",
+      "Queue",
+      "PMO Board"
+    ],
+    "note": "This report recommends status changes only. It does not write back to PMO Board or generated data."
+  },
+  "summary": {
+    "autoReconciledTasks": 7,
+    "manualReviewTasks": 1,
+    "statusMismatches": 1,
+    "productionTasks": 11,
+    "blockedTasks": 0,
+    "totalTasks": 16
+  },
+  "tasks": [
+    {
+      "taskId": "DEV-100",
+      "title": "Commercialization MVP",
+      "boardStatus": "Production",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Production",
+      "productionStatus": "Unknown",
+      "reconciledStatus": "Production",
+      "confidence": "Medium",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board lane Production",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control projectBoard.completedTasks"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "DEV-200",
+      "title": "Billing MVP",
+      "boardStatus": "Production",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Production",
+      "productionStatus": "Unknown",
+      "reconciledStatus": "Production",
+      "confidence": "Medium",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board lane Production",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control projectBoard.completedTasks"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "DEV-300",
+      "title": "AI Workspace Premium",
+      "boardStatus": "Production",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Production",
+      "productionStatus": "Production",
+      "reconciledStatus": "Production",
+      "confidence": "High",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board heading DEV-300",
+        "PMO Board lane Production",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control inventory.prs",
+        "Mission Control projectBoard.completedTasks",
+        "Production Monitoring Baseline production URL PASS"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "DEV-301",
+      "title": "Production Pro Session QA",
+      "boardStatus": "Completed",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Completed",
+      "productionStatus": "Unknown",
+      "reconciledStatus": "Completed",
+      "confidence": "Medium",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board heading DEV-301",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control inventory.prs",
+        "Mission Control projectBoard.completedTasks"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "OPS-010",
+      "title": "Google OAuth enablement follow-up",
+      "boardStatus": "Production",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Production",
+      "productionStatus": "Unknown",
+      "reconciledStatus": "Production",
+      "confidence": "Medium",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board lane Production",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control projectBoard.completedTasks"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "OPS-011",
+      "title": "Production login validation follow-up",
+      "boardStatus": "Production",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Production",
+      "productionStatus": "Unknown",
+      "reconciledStatus": "Production",
+      "confidence": "Medium",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board lane Production",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control projectBoard.completedTasks"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "OPS-100",
+      "title": "Mission Control Phase 1",
+      "boardStatus": "Production",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Production",
+      "productionStatus": "Production",
+      "reconciledStatus": "Production",
+      "confidence": "High",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board heading OPS-100",
+        "PMO Board lane Production",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control inventory.prs",
+        "Mission Control projectBoard.completedTasks",
+        "Production Monitoring Baseline production URL PASS"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "OPS-102",
+      "title": "Task Queue Runner",
+      "boardStatus": "Production",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Production",
+      "productionStatus": "Production",
+      "reconciledStatus": "Production",
+      "confidence": "High",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board heading OPS-102",
+        "PMO Board lane Production",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control inventory.prs",
+        "Mission Control projectBoard.completedTasks",
+        "Production Monitoring Baseline production URL PASS"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "OPS-102A",
+      "title": "Hardened Task Queue Runner",
+      "boardStatus": "Production",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Production",
+      "productionStatus": "Production",
+      "reconciledStatus": "Production",
+      "confidence": "High",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board heading OPS-102A",
+        "PMO Board lane Production",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control projectBoard.completedTasks",
+        "Production Monitoring Baseline production URL PASS"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "OPS-103",
+      "title": "Mission Control x Task Queue",
+      "boardStatus": "Production",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Production",
+      "productionStatus": "Production",
+      "reconciledStatus": "Production",
+      "confidence": "High",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board heading OPS-103",
+        "PMO Board lane Production",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control inventory.prs",
+        "Mission Control projectBoard.completedTasks",
+        "Production Monitoring Baseline production URL PASS"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "OPS-104A",
+      "title": "Project Inventory",
+      "boardStatus": "Production",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Production",
+      "productionStatus": "Production",
+      "reconciledStatus": "Production",
+      "confidence": "High",
+      "statusMismatch": false,
+      "evidence": [
+        "PMO Board heading OPS-104A",
+        "PMO Board lane Production",
+        "Observer Report completedTasks",
+        "Mission Control inventory.tasks",
+        "Mission Control inventory.prs",
+        "Mission Control projectBoard.completedTasks",
+        "Production Monitoring Baseline production URL PASS"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "OPS-106",
+      "title": "Mission Control Auto Sync",
+      "boardStatus": "Unknown",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Completed",
+      "productionStatus": "Unknown",
+      "reconciledStatus": "Completed",
+      "confidence": "Medium",
+      "statusMismatch": false,
+      "evidence": [
+        "Mission Control inventory.tasks",
+        "Mission Control inventory.prs",
+        "Production Monitoring Baseline generatedData.warnings"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "UI-301A",
+      "title": "Chinese Mission Control",
+      "boardStatus": "Unknown",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Completed",
+      "productionStatus": "Unknown",
+      "reconciledStatus": "Completed",
+      "confidence": "Medium",
+      "statusMismatch": false,
+      "evidence": [
+        "Mission Control inventory.tasks",
+        "Mission Control inventory.prs",
+        "Production Monitoring Baseline generatedData.warnings"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "UI-302",
+      "title": "merge Mission Control owner dashboard into master",
+      "boardStatus": "Unknown",
+      "queueStatus": "Unknown",
+      "missionControlStatus": "Unknown",
+      "productionStatus": "Production",
+      "reconciledStatus": "Production",
+      "confidence": "High",
+      "statusMismatch": true,
+      "evidence": [
+        "Observer Report productionChanges",
+        "Production Monitoring Baseline productionVersion"
+      ],
+      "recommendedAction": "Review source status mismatch before changing Mission Control or PMO Board."
+    },
+    {
+      "taskId": "VERIFY-001",
+      "title": "Verify Keep Mission Control as the single source of truth.",
+      "boardStatus": "Unknown",
+      "queueStatus": "Completed",
+      "missionControlStatus": "Unknown",
+      "productionStatus": "Unknown",
+      "reconciledStatus": "Completed",
+      "confidence": "Medium",
+      "statusMismatch": false,
+      "evidence": [
+        "Task Queue generated task status"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    },
+    {
+      "taskId": "VERIFY-002",
+      "title": "Verify Start the next PMO-approved production task.",
+      "boardStatus": "Unknown",
+      "queueStatus": "Completed",
+      "missionControlStatus": "Unknown",
+      "productionStatus": "Unknown",
+      "reconciledStatus": "Completed",
+      "confidence": "Medium",
+      "statusMismatch": false,
+      "evidence": [
+        "Task Queue generated task status"
+      ],
+      "recommendedAction": "No automatic write-back. Keep as observed unless PMO approves a source update."
+    }
+  ]
+}

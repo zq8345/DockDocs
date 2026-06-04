@@ -28,6 +28,11 @@ test("internal Mission Control route renders Chinese owner dashboard with auto s
   await expect(page.getByText("Blocked Tasks Count", { exact: true })).toBeVisible();
   await expect(page.getByText("Production Changes Count", { exact: true })).toBeVisible();
   await expect(page.getByText("Queue Changes Count", { exact: true })).toBeVisible();
+  await expect(page.getByText("Status Reconciliation Summary", { exact: true })).toBeVisible();
+  await expect(page.getByText("Hermes Reconciliation", { exact: true })).toBeVisible();
+  await expect(page.getByText("Auto Reconciled Tasks", { exact: true })).toBeVisible();
+  await expect(page.getByText("Manual Review Tasks", { exact: true })).toBeVisible();
+  await expect(page.getByText("Status Mismatches", { exact: true })).toBeVisible();
   await expect(page.getByText("高级信息", { exact: true })).toBeVisible();
   await expect(page.getByText("项目总览")).toBeVisible();
   await expect(page.getByText("任务泳道")).toBeVisible();
