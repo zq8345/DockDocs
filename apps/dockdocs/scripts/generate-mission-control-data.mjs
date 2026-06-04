@@ -8,6 +8,7 @@ const appRoot = path.resolve(path.dirname(scriptPath), "..");
 const repoRoot = path.resolve(appRoot, "../..");
 const boardPath = path.join(appRoot, "docs", "dockdocs-project-board.md");
 const queuePath = path.join(repoRoot, "scripts", "codex-task-queue.sample.json");
+const pmoGeneratedPath = path.join(appRoot, "lib", "project-board-generated.ts");
 const outputPath = path.join(appRoot, "lib", "mission-control-generated-data.ts");
 
 const warnings = [];
@@ -32,6 +33,27 @@ function readText(filePath, label) {
   }
 
   return readFileSync(filePath, "utf8");
+}
+
+function readGeneratedProjectBoard() {
+  if (!existsSync(pmoGeneratedPath)) {
+    warnings.push("PMO generated board data is missing; using inline board parser.");
+    return null;
+  }
+
+  const source = readFileSync(pmoGeneratedPath, "utf8");
+  const match = source.match(/export const projectBoardGenerated = ([\s\S]+?) as const;/);
+  if (!match) {
+    warnings.push("PMO generated board data could not be parsed; using inline board parser.");
+    return null;
+  }
+
+  try {
+    return JSON.parse(match[1]);
+  } catch {
+    warnings.push("PMO generated board JSON is invalid; using inline board parser.");
+    return null;
+  }
 }
 
 function cleanLine(line) {
@@ -185,7 +207,7 @@ function getGitSummary() {
   };
 }
 
-function getInventory(boardTasks) {
+function getInventory(boardTasks, pmo) {
   return {
     tasks: boardTasks,
     branches: [
@@ -193,7 +215,7 @@ function getInventory(boardTasks) {
       {
         id: "ops-106-mission-control-auto-sync",
         label: "OPS-106 build-time auto sync",
-        status: "In Progress",
+        status: "Completed",
       },
     ],
     prs: [
@@ -203,7 +225,8 @@ function getInventory(boardTasks) {
       { id: "OPS-104A", label: "Project Inventory", status: "Merged" },
       { id: "DEV-300", label: "AI Workspace Premium", status: "Production" },
       { id: "DEV-301", label: "Production Pro Session QA", status: "Completed" },
-      { id: "OPS-106", label: "Mission Control Auto Sync", status: "In Progress" },
+      { id: "UI-301A", label: "Chinese Mission Control", status: "Completed" },
+      { id: "OPS-106", label: "Mission Control Auto Sync", status: "Completed" },
     ],
     agents: [
       { id: "GPT", label: "Strategy / product direction", status: "Active" },
@@ -217,23 +240,25 @@ function getInventory(boardTasks) {
 }
 
 const board = readText(boardPath, "Project board");
-const boardTasks = parseBoardTasks(board);
+const pmoBoard = readGeneratedProjectBoard();
+const boardTasks = pmoBoard?.tasks?.length > 0 ? pmoBoard.tasks : parseBoardTasks(board);
 const queue = parseQueue();
 const nextRecommended = readBoardList(board, "### Recommended next task");
 const data = {
   generatedAt: new Date().toISOString(),
   source: "build-time",
   projectBoard: {
-    activeTasks: readBoardList(board, "### Active tasks"),
-    blockedTasks: readBoardList(board, "### Blocked tasks"),
-    completedTasks: readBoardList(board, "### Recently completed tasks"),
-    productionStatus: parseProductionStatus(board),
-    nextRecommended,
+    syncStatus: pmoBoard?.syncStatus || "PMO数据缺失",
+    activeTasks: pmoBoard?.activeTasks || readBoardList(board, "### Active tasks"),
+    blockedTasks: pmoBoard?.blockedTasks || readBoardList(board, "### Blocked tasks"),
+    completedTasks: pmoBoard?.completedTasks || readBoardList(board, "### Recently completed tasks"),
+    productionStatus: pmoBoard?.productionStatus || parseProductionStatus(board),
+    nextRecommended: pmoBoard?.nextRecommended || nextRecommended,
   },
   git: getGitSummary(),
   queue,
-  inventory: getInventory(boardTasks),
-  warnings,
+  inventory: getInventory(boardTasks, pmoBoard),
+  warnings: [...warnings, ...(pmoBoard?.warnings || [])],
 };
 
 mkdirSync(path.dirname(outputPath), { recursive: true });

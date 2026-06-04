@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 const missionControlUrl = "http://127.0.0.1:3100/internal/mission-control/";
 
@@ -19,16 +19,26 @@ test("internal Mission Control route renders Chinese PMO dashboard with auto syn
   await expect(page.getByText("数据来源：").first()).toBeVisible();
   await expect(page.getByText("构建时自动生成").first()).toBeVisible();
   await expect(page.getByText("最后生成时间：").first()).toBeVisible();
-  await expect(page.getByText("同步提醒", { exact: true })).toBeVisible();
-  await expect(page.getByText("无同步提醒", { exact: true })).toBeVisible();
+  await expect(page.getByText("同步状态", { exact: true })).toBeVisible();
+  await expect(page.getByText("PMO同步正常", { exact: true })).toBeVisible();
 
   for (const label of ["DEV", "UI", "OPS", "SEO", "GEO"]) {
     await expect(page.getByText(label, { exact: true }).first()).toBeVisible();
   }
 
-  for (const task of ["DEV-300", "OPS-100", "OPS-102", "OPS-103", "OPS-104A", "OPS-106"]) {
+  for (const task of ["DEV-300", "DEV-301", "UI-301A", "OPS-100", "OPS-102", "OPS-103", "OPS-104A", "OPS-106"]) {
     await expect(page.getByText(task, { exact: true }).first()).toBeVisible();
   }
+
+  await expect(taskCard(page, "DEV-300", "生产中")).toBeVisible();
+  await expect(taskCard(page, "DEV-301", "已完成")).toBeVisible();
+  await expect(taskCard(page, "UI-301A", "已完成")).toBeVisible();
+  await expect(taskCard(page, "OPS-106", "已完成")).toBeVisible();
+  await expect(
+    page.locator("article").filter({ hasText: "UI-301A 中文内部项目驾驶舱" }).filter({
+      hasText: "进行中",
+    }),
+  ).toHaveCount(0);
 
   for (const agent of ["GPT 超级大脑", "Hermes 项目管理", "Codex 执行器"]) {
     await expect(page.getByRole("heading", { name: agent, exact: true }).first()).toBeVisible();
@@ -51,3 +61,7 @@ test("internal Mission Control route renders Chinese PMO dashboard with auto syn
   await expect(page.getByText("Pricing").first()).toBeHidden();
   await expect(page.getByText("Blog").first()).toBeHidden();
 });
+
+function taskCard(page: Page, id: string, status: string) {
+  return page.locator("article").filter({ hasText: id }).filter({ hasText: status }).first();
+}
