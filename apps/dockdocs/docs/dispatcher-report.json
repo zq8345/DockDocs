@@ -1,0 +1,683 @@
+{
+  "generatedAt": "2026-06-04T10:34:19.682Z",
+  "source": "HERMES-002A Dispatcher Data Model",
+  "mode": "read-only",
+  "writesQueue": false,
+  "executesRunner": false,
+  "deploysProduction": false,
+  "sourceObserverReport": "apps/dockdocs/docs/observer-report.json",
+  "dispatcherArchitecture": {
+    "input": "HERMES-001A Observer Report",
+    "decisionLayer": "HERMES-002A Dispatcher Data Model",
+    "output": "Read-only dispatcher report",
+    "executionLayer": "Not enabled in HERMES-002A",
+    "missionControl": "Existing mission-control:generate remains unchanged"
+  },
+  "summary": {
+    "currentProductionVersion": {
+      "commit": "3fa5bac",
+      "message": "UI-302: merge Mission Control owner dashboard into master",
+      "productionUrl": "https://dockdocs.app",
+      "netlifyDeployId": "6a212fe82419fd178a14128e",
+      "evidence": [
+        "production-monitoring-baseline.json"
+      ],
+      "confidence": "high"
+    },
+    "newTasks": 0,
+    "completedTasks": 11,
+    "blockedTasks": 0,
+    "queueFailed": 0,
+    "missionControlWarnings": 2,
+    "proposedActions": 11,
+    "blockedActions": 0,
+    "verificationOnlyActions": 0
+  },
+  "proposedActions": [
+    {
+      "id": "RISK-1",
+      "title": "npm install reports 2 moderate audit issues; no audit fix was run.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P2",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-2",
+      "title": "The original Dock directory should not be used for deploy if dirty.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P1",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-3",
+      "title": "ai-chat is configured at /api/ai-chat, not at /.netlify/functions/ai-chat.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P2",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-4",
+      "title": "ai-chat returns provider as configured-ai-provider; model confirms deepseek-chat.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P1",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-5",
+      "title": "UI-301A is missing from the PMO board; using current release fallback.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes UI / Codex UI",
+      "window": "UI",
+      "priority": "P2",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-6",
+      "title": "OPS-106 is missing from the PMO board; using current release fallback.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Codex OPS",
+      "window": "OPS",
+      "priority": "P2",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-7",
+      "title": "Queue top-level pending=2 differs from task status pending=0.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P2",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RECOMMENDATION-1",
+      "title": "Keep Mission Control as the single source of truth.",
+      "source": "observer-report.json",
+      "category": "recommendation",
+      "type": "docs",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P3",
+      "confidence": "medium",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "recommendedAction": "Keep Mission Control as the single source of truth.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RECOMMENDATION-2",
+      "title": "Start the next PMO-approved production task.",
+      "source": "observer-report.json",
+      "category": "recommendation",
+      "type": "docs",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P1",
+      "confidence": "medium",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "recommendedAction": "Start the next PMO-approved production task.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RECOMMENDATION-3",
+      "title": "Use apps/dockdocs/docs/observer-report.json as the Hermes-readable Observer source.",
+      "source": "observer-report.json",
+      "category": "recommendation",
+      "type": "docs",
+      "status": "proposed",
+      "owner": "Hermes PMO / Codex OPS",
+      "window": "HERMES",
+      "priority": "P3",
+      "confidence": "medium",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "recommendedAction": "Use apps/dockdocs/docs/observer-report.json as the Hermes-readable Observer source.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RECOMMENDATION-4",
+      "title": "Review Known Risks before approving the next deploy.",
+      "source": "observer-report.json",
+      "category": "recommendation",
+      "type": "docs",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P1",
+      "confidence": "medium",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "recommendedAction": "Review Known Risks before approving the next deploy.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    }
+  ],
+  "blockedActions": [],
+  "verificationOnlyActions": [],
+  "ownerSummary": {
+    "Hermes PMO": 8,
+    "Hermes UI / Codex UI": 1,
+    "Codex OPS": 1,
+    "Hermes PMO / Codex OPS": 1
+  },
+  "prioritySummary": {
+    "P2": 5,
+    "P1": 4,
+    "P3": 2
+  },
+  "safetySummary": {
+    "merge": false,
+    "push": false,
+    "deploy": false,
+    "destructive": false,
+    "writesQueue": false,
+    "executesRunner": false,
+    "deploysProduction": false
+  },
+  "recommendedNextActions": [
+    "Keep Mission Control as the single source of truth.",
+    "Start the next PMO-approved production task.",
+    "Use apps/dockdocs/docs/observer-report.json as the Hermes-readable Observer source.",
+    "Review Known Risks before approving the next deploy."
+  ],
+  "actionModel": {
+    "allowedTypes": [
+      "audit",
+      "verify",
+      "docs"
+    ],
+    "disabledTypes": [
+      "merge",
+      "push",
+      "deploy",
+      "destructive"
+    ],
+    "defaultStatus": "proposed",
+    "queueWriting": false,
+    "runnerExecution": false
+  },
+  "taskCreationRules": [
+    "Create proposed actions from Observer newTasks, knownRisks, and recommendedActions.",
+    "High-confidence verification recommendations may become proposed verify actions.",
+    "Medium-confidence items remain proposed and require PMO approval.",
+    "Any action implying merge, push, deploy, reset, clean, or deletion is blocked.",
+    "HERMES-002A does not write codex-task-queue.generated.json."
+  ],
+  "taskAssignmentRules": {
+    "OPS": "Codex OPS",
+    "DEV": "Codex DEV",
+    "UI": "Hermes UI / Codex UI",
+    "SEO": "SEO window",
+    "GEO": "GEO window",
+    "HERMES": "Hermes PMO / Codex OPS",
+    "DEFAULT": "Hermes PMO"
+  },
+  "codexIntegrationRules": {
+    "enabled": false,
+    "reason": "HERMES-002A is a read-only dispatcher data model.",
+    "allowedFutureCommands": [
+      "git status --short --branch",
+      "npm install",
+      "npx tsc --noEmit -p apps/dockdocs/tsconfig.json",
+      "npm run build:dockdocs",
+      "npx playwright test apps/dockdocs/app/internal/mission-control/page.spec.ts"
+    ]
+  },
+  "missionControlIntegrationRules": {
+    "currentPhase": "No UI integration in HERMES-002A",
+    "futureSummaryFields": [
+      "Dispatcher Status",
+      "Proposed Actions Count",
+      "Blocked Actions Count",
+      "Owner Summary",
+      "Safety Mode"
+    ]
+  },
+  "safetyBoundaries": {
+    "readOnly": true,
+    "writesQueue": false,
+    "executesRunner": false,
+    "deploysProduction": false,
+    "mergesBranches": false,
+    "pushesBranches": false,
+    "dangerousCommandsBlocked": true,
+    "secretsAllowed": false
+  },
+  "sourceSummary": {
+    "observerGeneratedAt": "2026-06-04T09:00:27.814Z",
+    "observerSource": "observer-report-generator",
+    "productionCommit": "3fa5bac",
+    "productionDeployId": "6a212fe82419fd178a14128e",
+    "queueSource": "PMO generated",
+    "queueMode": "verification-only",
+    "productionHealth": "PASS",
+    "missionControlHealth": "PASS"
+  },
+  "actions": [
+    {
+      "id": "RISK-1",
+      "title": "npm install reports 2 moderate audit issues; no audit fix was run.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P2",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-2",
+      "title": "The original Dock directory should not be used for deploy if dirty.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P1",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-3",
+      "title": "ai-chat is configured at /api/ai-chat, not at /.netlify/functions/ai-chat.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P2",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-4",
+      "title": "ai-chat returns provider as configured-ai-provider; model confirms deepseek-chat.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P1",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-5",
+      "title": "UI-301A is missing from the PMO board; using current release fallback.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes UI / Codex UI",
+      "window": "UI",
+      "priority": "P2",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-6",
+      "title": "OPS-106 is missing from the PMO board; using current release fallback.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Codex OPS",
+      "window": "OPS",
+      "priority": "P2",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RISK-7",
+      "title": "Queue top-level pending=2 differs from task status pending=0.",
+      "source": "observer-report.json",
+      "category": "risk",
+      "type": "audit",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P2",
+      "confidence": "high",
+      "evidence": [
+        "production-monitoring-baseline.json",
+        "mission-control-generated-data.ts",
+        "codex-task-queue.generated.json"
+      ],
+      "recommendedAction": "Track in the next PMO review.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RECOMMENDATION-1",
+      "title": "Keep Mission Control as the single source of truth.",
+      "source": "observer-report.json",
+      "category": "recommendation",
+      "type": "docs",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P3",
+      "confidence": "medium",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "recommendedAction": "Keep Mission Control as the single source of truth.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RECOMMENDATION-2",
+      "title": "Start the next PMO-approved production task.",
+      "source": "observer-report.json",
+      "category": "recommendation",
+      "type": "docs",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P1",
+      "confidence": "medium",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "recommendedAction": "Start the next PMO-approved production task.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RECOMMENDATION-3",
+      "title": "Use apps/dockdocs/docs/observer-report.json as the Hermes-readable Observer source.",
+      "source": "observer-report.json",
+      "category": "recommendation",
+      "type": "docs",
+      "status": "proposed",
+      "owner": "Hermes PMO / Codex OPS",
+      "window": "HERMES",
+      "priority": "P3",
+      "confidence": "medium",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "recommendedAction": "Use apps/dockdocs/docs/observer-report.json as the Hermes-readable Observer source.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    },
+    {
+      "id": "RECOMMENDATION-4",
+      "title": "Review Known Risks before approving the next deploy.",
+      "source": "observer-report.json",
+      "category": "recommendation",
+      "type": "docs",
+      "status": "proposed",
+      "owner": "Hermes PMO",
+      "window": "DEFAULT",
+      "priority": "P1",
+      "confidence": "medium",
+      "evidence": [
+        "dockdocs-project-board.md",
+        "observer-report.json"
+      ],
+      "recommendedAction": "Review Known Risks before approving the next deploy.",
+      "safety": {
+        "merge": false,
+        "push": false,
+        "deploy": false,
+        "destructive": false,
+        "executable": false
+      }
+    }
+  ]
+}

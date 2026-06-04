@@ -28,6 +28,14 @@ test("internal Mission Control route renders Chinese owner dashboard with auto s
   await expect(page.getByText("Blocked Tasks Count", { exact: true })).toBeVisible();
   await expect(page.getByText("Production Changes Count", { exact: true })).toBeVisible();
   await expect(page.getByText("Queue Changes Count", { exact: true })).toBeVisible();
+  await expect(page.getByText("Dispatcher Summary", { exact: true })).toBeVisible();
+  await expect(page.getByText("Hermes Dispatcher", { exact: true })).toBeVisible();
+  await expect(page.getByText("Proposed Actions", { exact: true })).toBeVisible();
+  await expect(page.getByText("Blocked Actions", { exact: true })).toBeVisible();
+  await expect(page.getByText("Verification-only Actions", { exact: true })).toBeVisible();
+  await expect(page.getByText("Assigned Owners:")).toBeVisible();
+  await expect(page.getByText("Source: Observer Report")).toBeVisible();
+  await expect(page.getByText("Safety: merge / push / deploy disabled")).toBeVisible();
   await expect(page.getByText("高级信息", { exact: true })).toBeVisible();
   await expect(page.getByText("项目总览")).toBeVisible();
   await expect(page.getByText("任务泳道")).toBeVisible();

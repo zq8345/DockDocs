@@ -24,6 +24,7 @@ import {
   type InventoryItem,
 } from "@/lib/mission-control-inventory";
 import observerReport from "@/docs/observer-report.json";
+import dispatcherReport from "@/docs/dispatcher-report.json";
 
 type MissionControlPanelProps = {
   snapshot: MissionControlSnapshot;
@@ -146,6 +147,7 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
           <div className="mx-auto grid max-w-7xl gap-6">
             <OwnerBriefing snapshot={snapshot} />
             <ObserverReportSummary />
+            <DispatcherSummary />
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(340px,0.95fr)]">
               <div className="grid gap-6">
@@ -166,6 +168,52 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
         </section>
       </main>
     </>
+  );
+}
+
+function DispatcherSummary() {
+  const counts = [
+    { label: "Proposed Actions", value: dispatcherReport.summary.proposedActions },
+    { label: "Blocked Actions", value: dispatcherReport.summary.blockedActions },
+    {
+      label: "Verification-only Actions",
+      value: dispatcherReport.summary.verificationOnlyActions,
+    },
+  ];
+  const owners = Object.entries(dispatcherReport.ownerSummary || {})
+    .map(([owner, count]) => `${owner}: ${count}`)
+    .join(" · ");
+
+  return (
+    <Card
+      as="section"
+      aria-labelledby="dispatcher-summary"
+      data-testid="dock-card"
+      className="p-4 sm:p-5"
+    >
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">
+            Hermes Dispatcher
+          </p>
+          <h2 id="dispatcher-summary" className="mt-1 text-xl font-semibold">
+            Dispatcher Summary
+          </h2>
+        </div>
+        <StatusChip tone="ready" label="Read-only" />
+      </div>
+      <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
+        Source: Observer Report · Safety: merge / push / deploy disabled
+      </p>
+      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+        Assigned Owners: {owners || "No assigned owners"}
+      </p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        {counts.map((item) => (
+          <QueueCount key={item.label} label={item.label} value={item.value} />
+        ))}
+      </div>
+    </Card>
   );
 }
 
