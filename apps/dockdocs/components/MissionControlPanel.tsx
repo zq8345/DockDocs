@@ -10,6 +10,7 @@ import type {
 import type { CodexQueueTask, TaskStatus } from "@/lib/mission-control-queue";
 import { getQueueStatusLabel, summarizeQueue } from "@/lib/mission-control-queue";
 import { missionControlQueueTasks } from "@/lib/mission-control-queue-data";
+import { getInventorySummary, projectInventory } from "@/lib/mission-control-inventory";
 
 type MissionControlPanelProps = {
   snapshot: MissionControlSnapshot;
@@ -101,6 +102,8 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
           </div>
 
           <TaskQueueStatus />
+
+          <ProjectInventory />
 
           <EvidenceLog evidence={snapshot.evidence} />
         </div>
@@ -371,6 +374,133 @@ function QueueTaskCard({
         {task ? <StatusChip tone={toneForQueueStatus(task.status)} label={getQueueStatusLabel(task.status)} /> : null}
       </div>
     </article>
+  );
+}
+
+function ProjectInventory() {
+  const summary = getInventorySummary();
+
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+            Project Inventory
+          </p>
+          <h2 className="mt-1 text-xl font-semibold">Static project snapshot</h2>
+          <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+              Project status
+            </p>
+            <h3 className="mt-2 text-2xl font-semibold">{projectInventory.project.name}</h3>
+            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+              {projectInventory.project.phase} · {projectInventory.project.status}
+            </p>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <InventoryMetric label="Tasks" value={summary.taskCount} />
+            <InventoryMetric label="Branches" value={summary.branchCount} />
+            <InventoryMetric label="PRs" value={summary.prCount} />
+            <InventoryMetric label="Agents" value={summary.agentCount} />
+          </div>
+          <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+              Queue summary
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+              Mode: {projectInventory.queue.mode} · Runner: {projectInventory.queue.runner} ·
+              Hardened: {projectInventory.queue.hardened} · Mission Control Queue:{" "}
+              {projectInventory.queue.missionControlQueue}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+              Pending {projectInventory.queue.pending} · Running {projectInventory.queue.running} ·
+              Completed {projectInventory.queue.completed} · Failed {projectInventory.queue.failed}
+            </p>
+            <p className="mt-2 text-sm font-semibold text-[color:var(--foreground)]">
+              Next: {projectInventory.queue.next}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-4">
+          <InventoryList title="Task inventory" items={projectInventory.tasks} />
+          <InventoryList title="Branch inventory" items={projectInventory.branches} compact />
+          <InventoryList title="PR inventory" items={projectInventory.prs} compact />
+          <InventoryList title="Agent inventory" items={projectInventory.agents} compact />
+          <RecommendationsList />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function InventoryMetric({ label, value }: { label: string; value: number }) {
+  return (
+    <article className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+        {label}
+      </p>
+      <p className="mt-2 text-2xl font-semibold">{value}</p>
+    </article>
+  );
+}
+
+function InventoryList({
+  title,
+  items,
+  compact = false,
+}: {
+  title: string;
+  items: typeof projectInventory.tasks;
+  compact?: boolean;
+}) {
+  return (
+    <section className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+      <h3 className="font-semibold">{title}</h3>
+      <div className={`mt-3 grid gap-2 ${compact ? "md:grid-cols-2" : ""}`}>
+        {items.map((item) => (
+          <article
+            key={`${title}-${item.id}`}
+            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <h4 className="break-words font-semibold">{item.id}</h4>
+                <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+                  {item.label}
+                </p>
+              </div>
+              <span className="shrink-0 text-xs font-semibold text-[color:var(--muted)]">
+                {item.status}
+              </span>
+            </div>
+            {!compact ? (
+              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                {item.detail}
+              </p>
+            ) : null}
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function RecommendationsList() {
+  return (
+    <section className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+      <h3 className="font-semibold">Next recommendations</h3>
+      <div className="mt-3 grid gap-2">
+        {projectInventory.recommendations.map((recommendation) => (
+          <p
+            key={recommendation}
+            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 text-sm leading-6 text-[color:var(--muted)]"
+          >
+            {recommendation}
+          </p>
+        ))}
+      </div>
+    </section>
   );
 }
 
