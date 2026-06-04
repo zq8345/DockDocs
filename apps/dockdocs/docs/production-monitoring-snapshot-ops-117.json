@@ -1,0 +1,114 @@
+{
+  "snapshotId": "OPS-117",
+  "snapshotDate": "2026-06-04",
+  "deploy": {
+    "id": "6a21623690964f2393f2ed06",
+    "productionUrl": "https://dockdocs.app",
+    "latestMaster": {
+      "commit": "873fef9",
+      "message": "UI-DS-03: merge unified status badge system into master"
+    }
+  },
+  "included": [
+    "UI-DS-03",
+    "HERMES-002A",
+    "OPS-111",
+    "OPS-113"
+  ],
+  "localValidation": {
+    "typescript": "PASS",
+    "build": "PASS",
+    "e2e": {
+      "status": "PASS",
+      "passed": 20,
+      "total": 20
+    },
+    "staticPages": 846,
+    "missionControlStaticExport": "PASS"
+  },
+  "productionUrlQa": [
+    {
+      "path": "/internal/mission-control/",
+      "status": 200,
+      "result": "PASS"
+    },
+    {
+      "path": "/dashboard/",
+      "status": 200,
+      "result": "PASS"
+    },
+    {
+      "path": "/my-chats/",
+      "status": 200,
+      "result": "PASS"
+    },
+    {
+      "path": "/ai-workspace/",
+      "status": 200,
+      "result": "PASS"
+    },
+    {
+      "path": "/chat-with-pdf/",
+      "status": 200,
+      "result": "PASS"
+    },
+    {
+      "path": "/account/",
+      "status": 200,
+      "result": "PASS"
+    }
+  ],
+  "missionControlVisible": {
+    "任务控制中心": true,
+    "老板驾驶舱": true,
+    "Observer Report Summary": true,
+    "Dispatcher Summary": true,
+    "PMO同步正常": true,
+    "自动化进度": true,
+    "任务队列": true,
+    "项目资产清单": true
+  },
+  "statusBadgeQa": {
+    "visible": [
+      "Production",
+      "Synced",
+      "Session-only",
+      "Saved",
+      "Local",
+      "PDF",
+      "Source",
+      "Ready"
+    ],
+    "notVisibleInAnonymousQa": [
+      "Needs Review"
+    ],
+    "result": "PASS_WITH_ANONYMOUS_STATE_LIMITATION"
+  },
+  "chatFunction": {
+    "endpoint": "https://dockdocs.app/.netlify/functions/chat-with-pdf",
+    "get": {
+      "expected": 405,
+      "actual": 405,
+      "result": "PASS"
+    },
+    "options": {
+      "expected": 204,
+      "actual": 204,
+      "result": "PASS"
+    },
+    "post": {
+      "expected": 200,
+      "actual": 200,
+      "result": "PASS"
+    },
+    "provider": "DeepSeek",
+    "model": "deepseek-chat"
+  },
+  "remainingRisks": [
+    "2 moderate npm audit issues remain; no audit fix was run.",
+    "Anonymous QA cannot cover login-only badges or Pro account states.",
+    "HERMES-001B is not yet in master, so Status Reconciliation Summary is absent.",
+    "The original C:\\Users\\47203\\Documents\\Dock directory should not be used for deploy if it is dirty or behind."
+  ],
+  "recommendation": "Use this snapshot as the DockOS v1.1 production monitoring reference for follow-up OPS tasks."
+}
