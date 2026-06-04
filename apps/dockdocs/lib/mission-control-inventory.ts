@@ -17,6 +17,7 @@ export type ProjectInventory = {
     status: string;
   };
   projectBoard: {
+    syncStatus: string;
     activeTasks: string[];
     blockedTasks: string[];
     completedTasks: string[];
@@ -60,6 +61,7 @@ const staticProjectInventory: ProjectInventory = {
     status: "运行正常",
   },
   projectBoard: {
+    syncStatus: "PMO数据缺失",
     activeTasks: [],
     blockedTasks: [],
     completedTasks: [],
@@ -368,6 +370,7 @@ function getGeneratedInventory(): ProjectInventory | null {
       status: "运行正常",
     },
     projectBoard: {
+      syncStatus: generated.projectBoard?.syncStatus || "PMO数据缺失",
       activeTasks: [...(generated.projectBoard?.activeTasks || [])],
       blockedTasks: [...(generated.projectBoard?.blockedTasks || [])],
       completedTasks: [...(generated.projectBoard?.completedTasks || [])],

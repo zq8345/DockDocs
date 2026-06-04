@@ -164,33 +164,37 @@ function MetricGrid({ metrics }: { metrics: MissionMetric[] }) {
         </h2>
       </div>
       <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {metrics.map((metric) => (
+        {metrics.map((metric) => {
+          const displayMetric = getPmoMetric(metric);
+
+          return (
           <article
             key={metric.label}
-            className={`min-h-32 rounded-[var(--radius)] border bg-[color:var(--surface)] p-4 ${toneStyles[metric.tone].border}`}
+            className={`min-h-32 rounded-[var(--radius)] border bg-[color:var(--surface)] p-4 ${toneStyles[displayMetric.tone].border}`}
           >
             <div className="flex items-start justify-between gap-3">
               <p className="text-sm font-semibold text-[color:var(--muted)]">
-                {metric.label}
+                {displayMetric.label}
               </p>
               <span
-                className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${toneStyles[metric.tone].dot}`}
+                className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${toneStyles[displayMetric.tone].dot}`}
               />
             </div>
-            <p className="mt-3 text-3xl font-semibold">{metric.value}</p>
+            <p className="mt-3 text-3xl font-semibold">{displayMetric.value}</p>
             <p className="mt-2 text-xs leading-5 text-[color:var(--muted)]">
-              {metric.helper}
+              {displayMetric.helper}
             </p>
           </article>
-        ))}
+        )})}
       </div>
     </section>
   );
 }
 
 function ProjectFocus({ queue }: { queue: MissionTask[] }) {
-  const currentTasks = queue.filter((task) => task.status !== "已完成");
-  const blockedTasks = queue.filter((task) => task.status === "失败");
+  const displayQueue = queue.map(getPmoQueueTask);
+  const currentTasks = displayQueue.filter((task) => !isDoneStatus(task.status));
+  const blockedTasks = displayQueue.filter((task) => task.status === "失败");
   const completedTasks = projectInventory.tasks.filter((task) =>
     task.status.includes("已完成") || task.status.includes("生产中"),
   );
@@ -278,7 +282,10 @@ function OperationalLanes({ lanes }: { lanes: MissionLane[] }) {
         </div>
       </div>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
-        {lanes.map((lane) => (
+        {lanes.map((lane) => {
+          const displayLane = getPmoLane(lane);
+
+          return (
           <article
             key={lane.label}
             className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4"
@@ -287,16 +294,16 @@ function OperationalLanes({ lanes }: { lanes: MissionLane[] }) {
               <div>
                 <h3 className="font-semibold">{lane.label}</h3>
                 <p className="mt-1 text-xs font-semibold text-[color:var(--muted)]">
-                  负责人：{lane.owner}
+                  负责人：{displayLane.owner}
                 </p>
               </div>
-              <StatusChip tone={lane.tone} label={lane.status} />
+              <StatusChip tone={displayLane.tone} label={displayLane.status} />
             </div>
             <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
-              {lane.signal}
+              {displayLane.signal}
             </p>
           </article>
-        ))}
+        )})}
       </div>
     </section>
   );
@@ -554,7 +561,10 @@ function SyncWarnings() {
   return (
     <section className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
       <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
-        同步提醒
+        同步状态
+      </p>
+      <p className="mt-3 text-sm font-semibold text-[color:var(--foreground)]">
+        {projectInventory.projectBoard.syncStatus}
       </p>
       {projectInventory.warnings.length > 0 ? (
         <div className="mt-3 grid gap-2">
@@ -574,6 +584,110 @@ function SyncWarnings() {
       )}
     </section>
   );
+}
+
+function getInventoryStatus(taskId: string) {
+  return projectInventory.tasks.find((task) => task.id === taskId)?.status || "";
+}
+
+function isDoneStatus(status: string) {
+  return status.includes("已完成") || status.includes("已合并") || status.includes("生产中");
+}
+
+function toneForDisplayStatus(status: string): MissionTone {
+  if (status.includes("已阻塞") || status.includes("失败")) {
+    return "blocked";
+  }
+
+  if (isDoneStatus(status)) {
+    return "ready";
+  }
+
+  return "watch";
+}
+
+function getPmoMetric(metric: MissionMetric): MissionMetric {
+  if (metric.label === "DEV") {
+    const status = getInventoryStatus("DEV-300") || "生产中";
+    return {
+      ...metric,
+      value: status,
+      helper: "DEV-300 生产中，DEV-301 已完成。",
+      tone: toneForDisplayStatus(status),
+    };
+  }
+
+  if (metric.label === "UI") {
+    const status = getInventoryStatus("UI-301A") || "已完成";
+    return {
+      ...metric,
+      value: status,
+      helper: "UI-301A 中文内部项目驾驶舱已完成、已合并、已部署。",
+      tone: toneForDisplayStatus(status),
+    };
+  }
+
+  if (metric.label === "OPS") {
+    const status = getInventoryStatus("OPS-106") || "已完成";
+    return {
+      ...metric,
+      value: status,
+      helper: "OPS-106 已接入 PMO Board 构建时同步。",
+      tone: toneForDisplayStatus(status),
+    };
+  }
+
+  return metric;
+}
+
+function getPmoLane(lane: MissionLane): MissionLane {
+  if (lane.label === "DEV") {
+    const status = getInventoryStatus("DEV-300") || lane.status;
+    return {
+      ...lane,
+      status,
+      tone: toneForDisplayStatus(status),
+      signal: "DEV-300 AI Workspace Premium 生产中，DEV-301 Production Pro Session QA 已完成。",
+    };
+  }
+
+  if (lane.label === "UI") {
+    const status = getInventoryStatus("UI-301A") || "已完成";
+    return {
+      ...lane,
+      status,
+      tone: toneForDisplayStatus(status),
+      signal: "UI-301A 中文内部项目驾驶舱已完成、已合并，并随最新生产部署上线。",
+    };
+  }
+
+  if (lane.label === "OPS") {
+    const status = getInventoryStatus("OPS-106") || lane.status;
+    return {
+      ...lane,
+      status,
+      tone: toneForDisplayStatus(status),
+      signal: "OPS-106 Mission Control PMO Sync 保留 OPS-106 Auto Sync，并以 PMO Board 为项目状态来源。",
+    };
+  }
+
+  return lane;
+}
+
+function getPmoQueueTask(task: MissionTask): MissionTask {
+  if (task.title.includes("DEV-300")) {
+    return { ...task, status: getInventoryStatus("DEV-300") || task.status };
+  }
+
+  if (task.title.includes("UI-301A")) {
+    return { ...task, status: getInventoryStatus("UI-301A") || "已完成" };
+  }
+
+  if (task.title.includes("OPS-106")) {
+    return { ...task, status: getInventoryStatus("OPS-106") || task.status };
+  }
+
+  return task;
 }
 
 function InventoryMetric({ label, value }: { label: string; value: number }) {

@@ -2,9 +2,10 @@
 // Do not add secrets, local paths, or raw command logs to this file.
 
 export const missionControlGeneratedData = {
-  "generatedAt": "2026-06-04T03:17:17.569Z",
+  "generatedAt": "2026-06-04T04:15:59.247Z",
   "source": "build-time",
   "projectBoard": {
+    "syncStatus": "PMO同步正常",
     "activeTasks": [
       "None"
     ],
@@ -36,17 +37,17 @@ export const missionControlGeneratedData = {
     ]
   },
   "git": {
-    "currentBranch": "ui-301a-mission-control-cn-layout",
-    "latestCommit": "8bfd32c OPS-106: merge Mission Control auto sync into master",
+    "currentBranch": "ops-107-pmo-sync",
+    "latestCommit": "21460aa UI-301A: merge Chinese Mission Control into master",
     "latestMasterCommits": [
+      "21460aa UI-301A: merge Chinese Mission Control into master",
+      "6ee9312 UI-301A: localize Mission Control with auto sync preserved",
       "8bfd32c OPS-106: merge Mission Control auto sync into master",
       "bcaac11 OPS-106: add build-time Mission Control auto sync",
-      "9da49ef PMO: update DEV-301 QA completed, DEV-300 marked Production",
-      "9e1c1d5 DEV-300: merge AI Workspace Premium into master",
-      "ce5495b OPS-104A: merge Mission Control project inventory into master"
+      "9da49ef PMO: update DEV-301 QA completed, DEV-300 marked Production"
     ],
     "workingTreeStatus": "dirty",
-    "changedFileCount": 6
+    "changedFileCount": 9
   },
   "queue": {
     "pending": 3,
@@ -78,92 +79,79 @@ export const missionControlGeneratedData = {
         "id": "DEV-100",
         "label": "Commercialization MVP",
         "area": "DEV",
-        "status": "Production",
-        "detail": "DEV-100 is present in the PMO board completed or production record."
+        "status": "Production"
       },
       {
         "id": "DEV-200",
         "label": "Billing MVP",
         "area": "DEV",
-        "status": "Production",
-        "detail": "DEV-200 is present in the PMO board completed or production record."
+        "status": "Production"
       },
       {
         "id": "DEV-300",
         "label": "AI Workspace Premium Phase 1",
         "area": "DEV",
-        "status": "Production",
-        "detail": "DEV-300 is present in the PMO board completed or production record."
+        "status": "Production"
       },
       {
         "id": "DEV-301",
         "label": "Production Pro Session QA",
         "area": "DEV",
-        "status": "Production",
-        "detail": "DEV-301 is present in the PMO board completed or production record."
+        "status": "Completed"
       },
       {
-        "id": "UI-300",
-        "label": "Workspace UX acceptance",
+        "id": "UI-301A",
+        "label": "中文内部项目驾驶舱",
         "area": "UI",
-        "status": "Watch",
-        "detail": "UI-300 is tracked for Mission Control visibility."
+        "status": "Completed"
       },
       {
         "id": "OPS-010",
         "label": "Google OAuth enablement follow-up",
         "area": "OPS",
-        "status": "Production",
-        "detail": "OPS-010 is present in the PMO board completed or production record."
+        "status": "Production"
       },
       {
         "id": "OPS-011",
         "label": "Production login validation follow-up",
         "area": "OPS",
-        "status": "Production",
-        "detail": "OPS-011 is present in the PMO board completed or production record."
+        "status": "Production"
       },
       {
         "id": "OPS-100",
         "label": "Mission Control Phase 1",
         "area": "OPS",
-        "status": "Production",
-        "detail": "OPS-100 is present in the PMO board completed or production record."
+        "status": "Production"
       },
       {
         "id": "OPS-102",
         "label": "Codex Task Queue Runner",
         "area": "OPS",
-        "status": "Production",
-        "detail": "OPS-102 is present in the PMO board completed or production record."
+        "status": "Production"
       },
       {
         "id": "OPS-102A",
         "label": "Hardened Task Queue Runner",
         "area": "OPS",
-        "status": "Production",
-        "detail": "OPS-102A is present in the PMO board completed or production record."
+        "status": "Production"
       },
       {
         "id": "OPS-103",
         "label": "Mission Control x Task Queue",
         "area": "OPS",
-        "status": "Production",
-        "detail": "OPS-103 is present in the PMO board completed or production record."
+        "status": "Production"
       },
       {
         "id": "OPS-104A",
         "label": "Project Inventory",
         "area": "OPS",
-        "status": "Production",
-        "detail": "OPS-104A is present in the PMO board completed or production record."
+        "status": "Production"
       },
       {
         "id": "OPS-106",
         "label": "Mission Control Auto Sync",
         "area": "OPS",
-        "status": "In Progress",
-        "detail": "OPS-106 is tracked for Mission Control visibility."
+        "status": "Completed"
       }
     ],
     "branches": [
@@ -175,7 +163,7 @@ export const missionControlGeneratedData = {
       {
         "id": "ops-106-mission-control-auto-sync",
         "label": "OPS-106 build-time auto sync",
-        "status": "In Progress"
+        "status": "Completed"
       }
     ],
     "prs": [
@@ -210,9 +198,14 @@ export const missionControlGeneratedData = {
         "status": "Completed"
       },
       {
+        "id": "UI-301A",
+        "label": "Chinese Mission Control",
+        "status": "Completed"
+      },
+      {
         "id": "OPS-106",
         "label": "Mission Control Auto Sync",
-        "status": "In Progress"
+        "status": "Completed"
       }
     ],
     "agents": [
@@ -248,5 +241,8 @@ export const missionControlGeneratedData = {
       }
     ]
   },
-  "warnings": []
+  "warnings": [
+    "UI-301A is missing from the PMO board; using current release fallback.",
+    "OPS-106 is missing from the PMO board; using current release fallback."
+  ]
 } as const;
