@@ -18,6 +18,7 @@ import {
   getSubscriptionSnapshot,
   type SubscriptionSnapshot,
 } from "@/lib/subscription-runtime";
+import { StatusBadge } from "@/components/ui/Status";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 
 type FormState = {
@@ -189,9 +190,7 @@ export function CommercialAccountClient() {
   if (loading) {
     return (
       <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6">
-        <p className="text-sm font-semibold text-[color:var(--muted)]">
-          Loading account...
-        </p>
+        <StatusBadge label="Loading account..." status="Idle" />
       </section>
     );
   }
@@ -227,14 +226,15 @@ export function CommercialAccountClient() {
         />
         <WorkspaceBindingCard account={account} />
         {message ? (
-          <p className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] p-3 text-sm font-semibold text-[color:var(--success)]">
-            {message}
-          </p>
+          <StatusBadge className="justify-start p-3 text-sm" label={message} status="Completed" />
         ) : null}
         {error ? (
-          <p role="alert" className="rounded-[var(--radius-sm)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-3 text-sm font-semibold text-[color:var(--error)]">
-            {error}
-          </p>
+          <StatusBadge
+            role="alert"
+            className="justify-start p-3 text-sm"
+            label={error}
+            status="Blocked"
+          />
         ) : null}
       </div>
     </section>
@@ -263,8 +263,11 @@ function AccountStatusCard({
       <dl className="mt-4 grid gap-3 text-sm">
         <div>
           <dt className="font-semibold text-[color:var(--muted)]">Status</dt>
-          <dd className="mt-1 font-semibold">
-            {account?.signedIn ? "Signed in" : "Not signed in"}
+          <dd className="mt-1">
+            <StatusBadge
+              label={account?.signedIn ? "Signed in" : "Not signed in"}
+              status={account?.signedIn ? "Active" : "Session-only"}
+            />
           </dd>
         </div>
         <div>
@@ -275,8 +278,11 @@ function AccountStatusCard({
         </div>
         <div>
           <dt className="font-semibold text-[color:var(--muted)]">Plan status</dt>
-          <dd className="mt-1 font-semibold">
-            {subscription?.statusLabel ?? "Free placeholder"}
+          <dd className="mt-1">
+            <StatusBadge
+              label={subscription?.statusLabel ?? "Free placeholder"}
+              status={subscription?.record.status === "active" ? "Active" : "Backlog"}
+            />
           </dd>
         </div>
         <div>
@@ -413,9 +419,12 @@ function PlanCard({
         Plan
       </p>
       <h2 className="mt-2 text-3xl font-semibold">{plan}</h2>
-      <p className="mt-2 text-sm font-semibold text-[color:var(--muted)]">
-        {status}
-      </p>
+      <div className="mt-2">
+        <StatusBadge
+          label={status}
+          status={subscription?.record.status === "active" ? "Active" : "Backlog"}
+        />
+      </div>
       <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
         Stripe checkout is available for signed-in accounts. Subscription status
         is trusted only after Stripe webhook sync.
@@ -423,8 +432,8 @@ function PlanCard({
       <dl className="mt-4 grid gap-2 text-sm">
         <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
           <dt className="font-semibold text-[color:var(--muted)]">Source</dt>
-          <dd className="mt-1 font-semibold">
-            {source}
+          <dd className="mt-1">
+            <StatusBadge label={source} status={source === "manual" ? "Local" : "Synced"} />
           </dd>
         </div>
         {subscription?.record.currentPeriodEnd ? (

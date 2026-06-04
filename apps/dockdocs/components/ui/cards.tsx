@@ -1,6 +1,6 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { Card } from "@/components/ui/Card";
-import { Status } from "@/components/ui/Status";
+import { getStatusTone, StatusBadge } from "@/components/ui/Status";
 import type { DockTone } from "@/components/ui/tokens";
 
 type PrimitiveCardProps = HTMLAttributes<HTMLElement> & {
@@ -13,52 +13,15 @@ type CardBadge = {
   tone?: DockTone;
 };
 
-function toneFromLabel(label?: string): DockTone {
-  const normalized = (label || "").toLowerCase();
-
-  if (
-    normalized.includes("ready") ||
-    normalized.includes("synced") ||
-    normalized.includes("saved") ||
-    normalized.includes("live") ||
-    normalized.includes("正常") ||
-    normalized.includes("已完成") ||
-    normalized.includes("生产")
-  ) {
-    return "success";
-  }
-
-  if (
-    normalized.includes("blocked") ||
-    normalized.includes("failed") ||
-    normalized.includes("error") ||
-    normalized.includes("阻塞") ||
-    normalized.includes("失败")
-  ) {
-    return "error";
-  }
-
-  if (
-    normalized.includes("local") ||
-    normalized.includes("session") ||
-    normalized.includes("example") ||
-    normalized.includes("观察")
-  ) {
-    return "warning";
-  }
-
-  return "neutral";
-}
-
 function CardHeaderBadge({ badge }: { badge?: CardBadge | string }) {
   if (!badge) {
     return null;
   }
 
   const label = typeof badge === "string" ? badge : badge.label;
-  const tone = typeof badge === "string" ? toneFromLabel(badge) : badge.tone || toneFromLabel(badge.label);
+  const tone = typeof badge === "string" ? getStatusTone(badge) : badge.tone || getStatusTone(badge.label);
 
-  return <Status label={label} tone={tone} />;
+  return <StatusBadge label={label} status={label} tone={tone} />;
 }
 
 export function MetricCard({
@@ -234,7 +197,7 @@ export function StatusCard({
     <Card
       as="article"
       data-testid="dock-status-card"
-      tone={tone || toneFromLabel(status)}
+      tone={tone || getStatusTone(status)}
       variant="muted"
       className={`rounded-[var(--radius-sm)] p-3 ${className}`}
       {...props}
@@ -244,7 +207,7 @@ export function StatusCard({
           <h3 className="break-words font-semibold">{title}</h3>
           {meta ? <p className="mt-1 text-xs font-semibold text-[color:var(--muted)]">{meta}</p> : null}
         </div>
-        <Status label={status} tone={tone || toneFromLabel(status)} />
+        <StatusBadge label={status} status={status} tone={tone || getStatusTone(status)} />
       </div>
       {description ? (
         <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{description}</p>

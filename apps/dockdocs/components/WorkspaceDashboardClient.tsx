@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { UserAccountControls } from "@/components/UserAccountControls";
+import { StatusBadge } from "@/components/ui/Status";
 import {
   getWorkspacePlanCapabilities,
   getWorkspaceUpgradeMessage,
@@ -112,12 +113,14 @@ export function WorkspaceDashboardClient() {
                   : "Sign in to save workspace records under your account. Anonymous data is kept separate in this browser."}
               </p>
               <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
-                <span className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-2 py-1 text-[color:var(--muted)]">
-                  Plan: {state.subscription.displayName}
-                </span>
-                <span className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-2 py-1 text-[color:var(--muted)]">
-                  Storage: {state.identity.signedIn ? "Account" : "Anonymous"}
-                </span>
+                <StatusBadge
+                  label={`Plan: ${state.subscription.displayName}`}
+                  status={state.identity.signedIn ? "Saved" : "Session-only"}
+                />
+                <StatusBadge
+                  label={`Storage: ${state.identity.signedIn ? "Account" : "Anonymous"}`}
+                  status={state.identity.signedIn ? "Saved" : "Local"}
+                />
               </div>
             </div>
             <UserAccountControls />
@@ -160,12 +163,12 @@ export function WorkspaceDashboardClient() {
               {planCapabilities.summary}
             </p>
           </div>
-          <p
+          <StatusBadge
             data-testid="workspace-premium-status"
-            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-sm font-semibold text-[color:var(--foreground)]"
-          >
-            {hasPremiumWorkspace ? "Premium workspace active" : workspaceUpgradeMessage}
-          </p>
+            className="text-sm"
+            label={hasPremiumWorkspace ? "Premium workspace active" : workspaceUpgradeMessage}
+            status={hasPremiumWorkspace ? "Active" : "Needs Review"}
+          />
         </div>
         <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {planCapabilities.capabilities.map((capability) => (
@@ -235,9 +238,7 @@ export function WorkspaceDashboardClient() {
                 className="flex items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-sm"
               >
                 <span className="font-semibold">{key}</span>
-                <span className="text-[color:var(--muted)]">
-                  {enabled ? "On" : "Off"}
-                </span>
+                <StatusBadge label={enabled ? "On" : "Off"} status={enabled ? "Active" : "Idle"} />
               </button>
             ))}
           </div>
@@ -246,9 +247,9 @@ export function WorkspaceDashboardClient() {
         <Panel title="Account plan" eyebrow="Billing status">
           <article className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
             <h3 className="font-semibold">{state.subscription.displayName}</h3>
-            <p className="mt-2 text-sm font-semibold text-[color:var(--muted)]">
-              {state.subscription.statusLabel}
-            </p>
+            <div className="mt-2">
+              <StatusBadge label={state.subscription.statusLabel} status="Active" />
+            </div>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
               Workspace access follows the current account plan. DockDocs keeps
               document records as metadata and never stores original PDF files.

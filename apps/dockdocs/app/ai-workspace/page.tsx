@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { AiChatWorkflow } from "@/components/AiChatWorkflow";
 import { AiSummaryWorkflow } from "@/components/AiSummaryWorkflow";
 import { DocumentAnalyzerWorkflow } from "@/components/DocumentAnalyzerWorkflow";
+import { StatusBadge } from "@/components/ui/Status";
 import { languageAlternates, siteUrl } from "@/lib/i18n";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 
@@ -61,6 +62,14 @@ const linkedTools = [
   { name: "Split PDF", href: "/split-pdf" },
   { name: "PDF to Word", href: "/pdf-to-word" },
   { name: "OCR PDF", href: "/ocr-pdf" },
+];
+
+const workspaceSteps = [
+  { label: "Upload", status: "Uploaded" },
+  { label: "Convert", status: "Backlog" },
+  { label: "OCR", status: "Parsed" },
+  { label: "Summarize", status: "Active" },
+  { label: "Reuse", status: "Exported" },
 ];
 
 const aiWorkspaceUrl = `${siteUrl}/ai-workspace/`;
@@ -139,9 +148,11 @@ export default function AiWorkspacePage() {
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <Container className="grid min-h-[66vh] items-center gap-12 py-16 lg:grid-cols-[1fr_0.9fr] lg:py-20">
           <div>
-            <div className="inline-flex rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)] shadow-sm">
-              AI Workspace layer
-            </div>
+            <StatusBadge
+              className="shadow-sm"
+              label="AI Workspace layer"
+              status="Live"
+            />
             <h1 className="mt-6 max-w-4xl text-3xl font-semibold leading-tight sm:text-6xl sm:leading-[1.04]">
               AI PDF workspace for OCR, summaries, and Chat with PDF.
             </h1>
@@ -163,12 +174,13 @@ export default function AiWorkspacePage() {
                 Workspace flow
               </p>
               <div className="mt-5 grid gap-3">
-                {["Upload", "Convert", "OCR", "Summarize", "Reuse"].map((step) => (
+                {workspaceSteps.map((step) => (
                   <div
-                    key={step}
-                    className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 text-sm font-semibold text-[color:var(--foreground)]"
+                    key={step.label}
+                    className="flex items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 text-sm font-semibold text-[color:var(--foreground)]"
                   >
-                    {step}
+                    <span>{step.label}</span>
+                    <StatusBadge label={step.status} status={step.status} />
                   </div>
                 ))}
               </div>
