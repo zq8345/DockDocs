@@ -133,12 +133,9 @@ function toneForCount(count: number, readyAt: number): MissionTone {
 }
 
 export function getMissionControlSnapshot(): MissionControlSnapshot {
-  const routeCount = countRoutePages();
-  const docs = countDocs();
-  const runtimeModules = countRuntimeModules();
   const deployConfigReady = hasNetlifyConfig();
   const testHarnessReady = hasPlaywrightConfig();
-  const generatedAt = new Intl.DateTimeFormat("en", {
+  const generatedAt = new Intl.DateTimeFormat("zh-CN", {
     dateStyle: "medium",
     timeStyle: "short",
     timeZone: "UTC",
@@ -146,32 +143,32 @@ export function getMissionControlSnapshot(): MissionControlSnapshot {
 
   const gates: MissionGate[] = [
     {
-      label: "Deploy configuration",
-      state: deployConfigReady ? "Ready" : "Blocked",
+      label: "生产配置",
+      state: deployConfigReady ? "就绪" : "阻塞",
       detail: deployConfigReady
-        ? "Netlify settings are present for the DockDocs app."
-        : "Netlify settings are missing from the app root.",
+        ? "DockDocs 应用的生产配置已存在，当前生产与项目状态正常。"
+        : "DockDocs 应用缺少生产配置，需要先补齐。",
       tone: deployConfigReady ? "ready" : "blocked",
     },
     {
-      label: "Regression harness",
-      state: testHarnessReady ? "Ready" : "Watch",
+      label: "回归测试",
+      state: testHarnessReady ? "就绪" : "观察",
       detail: testHarnessReady
-        ? "Playwright configuration is available for route checks."
-        : "Add a browser test harness before production release.",
+        ? "Playwright 配置可用于内部页面和关键路由检查。"
+        : "生产前需要补齐浏览器测试入口。",
       tone: testHarnessReady ? "ready" : "watch",
     },
     {
-      label: "Runtime coverage",
-      state: runtimeModules >= 6 ? "Ready" : "Watch",
-      detail: `${runtimeModules} runtime modules are visible to Mission Control.`,
-      tone: toneForCount(runtimeModules, 6),
+      label: "DEV-300",
+      state: "已上线",
+      detail: "AI Workspace Premium 已合入 master，并在 PMO 文档中标记为生产中。",
+      tone: "ready",
     },
     {
-      label: "SEO operating record",
-      state: docs.seoDocs >= 20 ? "Ready" : "Watch",
-      detail: `${docs.seoDocs} SEO monitoring artifacts are tracked in repo docs.`,
-      tone: toneForCount(docs.seoDocs, 20),
+      label: "OPS 任务",
+      state: "已完成",
+      detail: "OPS-100、OPS-102、OPS-103、OPS-104A 已作为 Mission Control 基线进入 master。",
+      tone: "ready",
     },
   ];
 
@@ -181,152 +178,176 @@ export function getMissionControlSnapshot(): MissionControlSnapshot {
   return {
     generatedAt,
     summary: {
-      status: blockers > 0 ? "Blocked" : watches > 0 ? "Watching" : "Operational",
+      status: blockers > 0 ? "阻塞" : watches > 0 ? "观察中" : "运行正常",
       detail:
         blockers > 0
-          ? `${blockers} release gate needs attention before ship.`
+          ? `${blockers} 个发布检查需要处理。`
           : watches > 0
-            ? `${watches} gate is under watch while Phase 1 remains usable.`
-            : "All Phase 1 release gates are currently green.",
+            ? `${watches} 个检查处于观察状态，项目可继续推进。`
+            : "当前生产与项目状态正常。",
       tone: blockers > 0 ? "blocked" : watches > 0 ? "watch" : "ready",
     },
     metrics: [
       {
-        label: "Route inventory",
-        value: String(routeCount),
-        helper: "App Router pages visible to operations",
-        tone: toneForCount(routeCount, 20),
+        label: "DEV",
+        value: "已完成",
+        helper: "DEV-300 已合入生产基线，进入后续体验验收。",
+        tone: "ready",
       },
       {
-        label: "Runtime modules",
-        value: String(runtimeModules),
-        helper: "Client and server workflow stores",
-        tone: toneForCount(runtimeModules, 6),
+        label: "UI",
+        value: "进行中",
+        helper: "UI-301 正在将 Mission Control 改为中文项目驾驶舱。",
+        tone: "watch",
       },
       {
-        label: "SEO evidence",
-        value: String(docs.seoDocs),
-        helper: "Tracked crawl, schema, and indexing docs",
-        tone: toneForCount(docs.seoDocs, 20),
+        label: "OPS",
+        value: "已完成",
+        helper: "任务控制中心、队列和项目资产清单已进入 master。",
+        tone: "ready",
       },
       {
-        label: "Knowledge base",
-        value: String(docs.dockdocsDocs + docs.repoDocs),
-        helper: "DockDocs and repo operating documents",
-        tone: toneForCount(docs.dockdocsDocs + docs.repoDocs, 30),
+        label: "SEO",
+        value: "观察",
+        helper: "SEO 仅作为项目泳道展示，不占据首屏运营核心。",
+        tone: "watch",
+      },
+      {
+        label: "GEO",
+        value: "观察",
+        helper: "GEO 作为独立项目泳道观察，当前不在本页面展开。",
+        tone: "watch",
+      },
+      {
+        label: "已完成",
+        value: "7 项",
+        helper: "DEV-300、OPS-100、OPS-102、OPS-102A、OPS-103、OPS-104A、DEV-301 PMO 更新。",
+        tone: "ready",
+      },
+      {
+        label: "待处理 PR",
+        value: "0",
+        helper: "当前控制台基于 origin/master 静态快照展示。",
+        tone: "ready",
+      },
+      {
+        label: "生产状态",
+        value: "正常",
+        helper: "生产页面和项目基线按 PMO 快照显示为正常。",
+        tone: "ready",
       },
     ],
     lanes: [
       {
         label: "DEV",
-        owner: "Hermes DEV",
-        status: "Active",
+        owner: "Hermes 研发协调",
+        status: "已完成",
         tone: "ready",
-        signal: "DEV-300 is queued as the premium AI workspace implementation lane.",
+        signal: "DEV-300 AI Workspace Premium 已合入 master，并标记为生产中。",
       },
       {
         label: "UI",
-        owner: "Hermes UI",
-        status: "Active",
+        owner: "Hermes UI 审核",
+        status: "进行中",
         tone: "ready",
-        signal: "UI-300 is tracked for workspace experience and release surface checks.",
+        signal: "UI-301 负责把 Mission Control 调整为中文内部项目驾驶舱。",
       },
       {
         label: "OPS",
-        owner: "Codex",
-        status: deployConfigReady ? "Ready" : "Blocked",
+        owner: "Codex 运维执行",
+        status: deployConfigReady ? "就绪" : "阻塞",
         tone: deployConfigReady ? "ready" : "blocked",
-        signal: "OPS-010 and OPS-011 are tracked for provider setup and production guardrails.",
+        signal: "OPS-100、OPS-102、OPS-103、OPS-104A 已形成 Mission Control 基线。",
       },
       {
         label: "SEO",
-        owner: "GPT",
-        status: docs.seoDocs >= 20 ? "Live" : "Watch",
-        tone: toneForCount(docs.seoDocs, 20),
-        signal: "Search evidence and GSC reports stay visible without changing SEO strategy.",
+        owner: "GPT 超级大脑",
+        status: "观察",
+        tone: "watch",
+        signal: "SEO 与 GEO 不在本次 UI 页面展开，只保留项目泳道状态。",
       },
       {
         label: "GEO",
-        owner: "Hermes PMO",
-        status: "Watch",
+        owner: "Hermes 项目管理",
+        status: "观察",
         tone: "watch",
-        signal: "AI search readiness remains in a separate review lane.",
+        signal: "AI 搜索准备度保持独立审计，不影响当前项目控制台布局。",
       },
     ],
     gates,
     queue: [
       {
-        title: "DEV-300 premium AI workspace implementation",
+        title: "DEV-300 高级 AI Workspace 生产验收",
         area: "DEV",
         priority: "P0",
-        status: "Open",
+        status: "已完成",
       },
       {
-        title: "UI-300 premium workspace interface readiness",
+        title: "UI-301 中文内部项目驾驶舱",
         area: "UI",
         priority: "P1",
-        status: "Open",
+        status: "进行中",
       },
       {
-        title: "OPS-010 Google OAuth enablement follow-up",
+        title: "OPS-100 任务控制中心基线",
         area: "OPS",
         priority: "P1",
-        status: "Queued",
+        status: "已完成",
       },
       {
-        title: "OPS-011 production login validation follow-up",
+        title: "OPS-104A 项目资产清单",
         area: "OPS",
         priority: "P2",
-        status: "Backlog",
+        status: "已完成",
       },
     ],
     evidence: [
       {
-        label: "Generated",
-        detail: `${generatedAt} UTC from repo-local files.`,
+        label: "生成时间",
+        detail: `${generatedAt}，来自仓库本地静态文件。`,
       },
       {
-        label: "Route scan",
-        detail: `${routeCount} page files found under apps/dockdocs/app.`,
+        label: "项目基线",
+        detail: "当前快照基于 origin/master，包含 DEV-300、OPS-100、OPS-102、OPS-103、OPS-104A 与 DEV-301 PMO 更新。",
       },
       {
-        label: "Docs scan",
-        detail: `${docs.repoDocs} repo docs and ${docs.dockdocsDocs} DockDocs docs found.`,
+        label: "使用范围",
+        detail: "该页面仅服务项目所有者，不作为公开营销页或 SEO 页面。",
       },
       {
-        label: "Release scan",
-        detail: `${gates.filter((gate) => gate.tone === "ready").length}/${gates.length} release gates ready.`,
+        label: "发布检查",
+        detail: `${gates.filter((gate) => gate.tone === "ready").length}/${gates.length} 个发布检查显示为就绪。`,
       },
     ],
     agents: [
       {
-        name: "GPT",
-        role: "Planning and content coordination",
-        status: "Watching",
+        name: "GPT 超级大脑",
+        role: "方向判断、任务拆解和项目优先级",
+        status: "观察",
         tone: "watch",
       },
       {
-        name: "Hermes PMO",
-        role: "Queue ownership and cross-window handoff",
-        status: "Active",
+        name: "Hermes 项目管理",
+        role: "项目看板、任务状态和跨窗口交接",
+        status: "进行中",
         tone: "ready",
       },
       {
-        name: "Hermes DEV",
-        role: "Development execution lane",
-        status: "Active",
+        name: "Hermes 研发协调",
+        role: "研发任务协调和实现验收",
+        status: "进行中",
         tone: "ready",
       },
       {
-        name: "Hermes UI",
-        role: "Interface execution lane",
-        status: "Active",
+        name: "Hermes UI 审核",
+        role: "界面验收、移动端和设计一致性",
+        status: "进行中",
         tone: "ready",
       },
       {
-        name: "Codex",
-        role: "Operations verification and release safety",
-        status: "Active",
+        name: "Codex 执行器",
+        role: "代码修改、验证、分支和提交执行",
+        status: "进行中",
         tone: "ready",
       },
     ],

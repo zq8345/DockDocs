@@ -2,62 +2,45 @@ import { expect, test } from "@playwright/test";
 
 const missionControlUrl = "http://127.0.0.1:3100/internal/mission-control/";
 
-test("internal Mission Control route loads required Phase 1 sections", async ({
+test("internal Mission Control route renders Chinese PMO dashboard", async ({
   page,
 }) => {
   await page.goto(missionControlUrl);
 
-  await expect(page.getByRole("heading", { name: "Mission Control" })).toBeVisible();
-  await expect(page.getByText("Progress overview")).toBeVisible();
-  await expect(page.getByText("Task lanes")).toBeVisible();
-  await expect(page.getByText("Task summary")).toBeVisible();
-  await expect(page.getByText("Next recommended action")).toBeVisible();
-  await expect(page.getByText("Agent status", { exact: true })).toBeVisible();
-  await expect(page.getByText("Task Queue", { exact: true })).toBeVisible();
-  await expect(page.getByText("Pending", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Running", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Completed", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Failed", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Queue mode:")).toBeVisible();
-  await expect(page.getByText("Whitelisted commands only")).toBeVisible();
-  await expect(page.getByText("Project Inventory", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Static project snapshot", { exact: true })).toBeVisible();
-  await expect(page.getByText("Branch inventory", { exact: true })).toBeVisible();
-  await expect(page.getByText("PR inventory", { exact: true })).toBeVisible();
-  await expect(page.getByText("Queue summary", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "任务控制中心" })).toBeVisible();
+  await expect(page.getByText("项目总览")).toBeVisible();
+  await expect(page.getByText("任务泳道")).toBeVisible();
+  await expect(page.getByText("任务队列", { exact: true })).toBeVisible();
+  await expect(page.getByText("项目资产清单", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("代理状态", { exact: true })).toBeVisible();
+  await expect(page.getByText("下一步建议", { exact: true })).toBeVisible();
+  await expect(page.getByText("静态项目快照", { exact: true })).toBeVisible();
 
   for (const label of ["DEV", "UI", "OPS", "SEO", "GEO"]) {
-    await expect(page.getByRole("heading", { name: label, exact: true })).toBeVisible();
+    await expect(page.getByText(label, { exact: true }).first()).toBeVisible();
   }
 
-  for (const task of [
-    "DEV-300 premium AI workspace implementation",
-    "UI-300 premium workspace interface readiness",
-    "OPS-010 Google OAuth enablement follow-up",
-    "OPS-011 production login validation follow-up",
-  ]) {
-    await expect(page.getByRole("heading", { name: task })).toBeVisible();
+  for (const task of ["DEV-300", "OPS-100", "OPS-102", "OPS-103", "OPS-104A"]) {
+    await expect(page.getByText(task, { exact: true }).first()).toBeVisible();
   }
 
-  for (const agent of ["GPT", "Hermes PMO", "Hermes DEV", "Hermes UI", "Codex"]) {
+  for (const agent of ["GPT 超级大脑", "Hermes 项目管理", "Codex 执行器"]) {
     await expect(page.getByRole("heading", { name: agent, exact: true }).first()).toBeVisible();
   }
 
-  for (const queueTask of ["OPS-102", "OPS-102A", "DEV-300"]) {
-    await expect(page.getByRole("heading", { name: queueTask, exact: true }).first()).toBeVisible();
-  }
+  await expect(page.getByText("等待中", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("执行中", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("已完成", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("失败", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("已跳过", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("仅本地 DEV/QA 使用").first()).toBeVisible();
+  await expect(page.getByText("仅允许白名单命令")).toBeVisible();
 
-  for (const inventoryItem of [
-    "DEV-100",
-    "DEV-200",
-    "DEV-300",
-    "OPS-100",
-    "OPS-102",
-    "OPS-103",
-    "OPS-104A",
-    "Codex OPS",
-    "Codex DEV",
-  ]) {
-    await expect(page.getByRole("heading", { name: inventoryItem, exact: true }).first()).toBeVisible();
-  }
+  await expect(page.getByText("Related Workspaces").first()).toBeHidden();
+  await expect(page.getByRole("link", { name: "AI Workspace" }).first()).toBeHidden();
+  await expect(page.getByRole("link", { name: "Convert" }).first()).toBeHidden();
+  await expect(page.getByRole("link", { name: "Edit" }).first()).toBeHidden();
+  await expect(page.getByRole("link", { name: "Compress" }).first()).toBeHidden();
+  await expect(page.getByRole("link", { name: "OCR" }).first()).toBeHidden();
+  await expect(page.getByRole("link", { name: "Security" }).first()).toBeHidden();
 });

@@ -1,6 +1,6 @@
 import type {
-  MissionControlSnapshot,
   MissionAgent,
+  MissionControlSnapshot,
   MissionGate,
   MissionLane,
   MissionMetric,
@@ -8,9 +8,13 @@ import type {
   MissionTone,
 } from "@/lib/mission-control";
 import type { CodexQueueTask, TaskStatus } from "@/lib/mission-control-queue";
-import { getQueueStatusLabel, summarizeQueue } from "@/lib/mission-control-queue";
+import { summarizeQueue } from "@/lib/mission-control-queue";
 import { missionControlQueueTasks } from "@/lib/mission-control-queue-data";
-import { getInventorySummary, projectInventory } from "@/lib/mission-control-inventory";
+import {
+  getInventorySummary,
+  projectInventory,
+  type InventoryItem,
+} from "@/lib/mission-control-inventory";
 
 type MissionControlPanelProps = {
   snapshot: MissionControlSnapshot;
@@ -52,63 +56,86 @@ const toneStyles: Record<
   },
 };
 
+const queueStatusLabels: Record<TaskStatus, string> = {
+  pending: "等待中",
+  running: "执行中",
+  completed: "已完成",
+  failed: "失败",
+  skipped: "已跳过",
+};
+
 export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
   return (
-    <main className="min-h-screen bg-[color:var(--background)]">
-      <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-6 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-5 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-end">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              OPS-100 Mission Control
-            </p>
-            <h1 className="mt-3 max-w-4xl text-3xl font-semibold leading-tight sm:text-5xl">
-              Mission Control
-            </h1>
-            <p className="mt-4 max-w-3xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-              Internal Phase 1 operating board for DockDocs release readiness,
-              task ownership, next action, and agent status.
-            </p>
-          </div>
-          <div className={`rounded-[var(--radius)] border p-4 ${toneStyles[snapshot.summary.tone].border} ${toneStyles[snapshot.summary.tone].panel}`}>
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-                Current status
+    <>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            body:has(#mission-control-cn) > header,
+            body:has(#mission-control-cn) > footer {
+              display: none !important;
+            }
+          `,
+        }}
+      />
+      <main
+        id="mission-control-cn"
+        className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]"
+      >
+        <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-6 sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-5 xl:grid-cols-[minmax(0,1fr)_380px] xl:items-end">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
+                DockDocs · 内部控制台
               </p>
-              <StatusChip tone={snapshot.summary.tone} label={snapshot.summary.status} />
+              <h1 className="mt-3 max-w-4xl text-3xl font-semibold leading-tight sm:text-5xl">
+                任务控制中心
+              </h1>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">
+                DockDocs 内部项目驾驶舱，用于查看任务状态、负责人、队列和下一步行动。
+              </p>
             </div>
-            <p className="mt-4 text-2xl font-semibold">{snapshot.summary.status}</p>
-            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-              {snapshot.summary.detail}
-            </p>
-            <p className="mt-3 text-xs font-semibold text-[color:var(--muted)]">
-              Snapshot: {snapshot.generatedAt} UTC
-            </p>
+            <div
+              className={`rounded-[var(--radius)] border p-4 ${toneStyles[snapshot.summary.tone].border} ${toneStyles[snapshot.summary.tone].panel}`}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+                  当前状态
+                </p>
+                <StatusChip tone={snapshot.summary.tone} label={snapshot.summary.status} />
+              </div>
+              <p className="mt-4 text-2xl font-semibold">{snapshot.summary.status}</p>
+              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                {snapshot.summary.detail}
+              </p>
+              <p className="mt-3 text-xs font-semibold text-[color:var(--muted)]">
+                静态项目快照：{snapshot.generatedAt}
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="px-5 py-6 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-6">
-          <MetricGrid metrics={snapshot.metrics} />
+        <section className="px-5 py-6 sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-7xl gap-6">
+            <MetricGrid metrics={snapshot.metrics} />
 
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
-            <OperationalLanes lanes={snapshot.lanes} />
-            <ReleaseGates gates={snapshot.gates} />
-          </div>
+            <ProjectFocus queue={snapshot.queue} />
 
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(340px,0.8fr)]">
-            <WorkQueue queue={snapshot.queue} />
+            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]">
+              <OperationalLanes lanes={snapshot.lanes} />
+              <ReleaseGates gates={snapshot.gates} />
+            </div>
+
+            <TaskQueueStatus />
+
             <AgentStatus agents={snapshot.agents} />
+
+            <RecommendationsList />
+
+            <ProjectInventory />
           </div>
-
-          <TaskQueueStatus />
-
-          <ProjectInventory />
-
-          <EvidenceLog evidence={snapshot.evidence} />
-        </div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </>
   );
 }
 
@@ -117,7 +144,7 @@ function MetricGrid({ metrics }: { metrics: MissionMetric[] }) {
     <section aria-labelledby="mission-metrics">
       <div className="flex items-center justify-between gap-4">
         <h2 id="mission-metrics" className="text-lg font-semibold">
-          Progress overview
+          项目总览
         </h2>
       </div>
       <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -130,7 +157,9 @@ function MetricGrid({ metrics }: { metrics: MissionMetric[] }) {
               <p className="text-sm font-semibold text-[color:var(--muted)]">
                 {metric.label}
               </p>
-              <span className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${toneStyles[metric.tone].dot}`} />
+              <span
+                className={`mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${toneStyles[metric.tone].dot}`}
+              />
             </div>
             <p className="mt-3 text-3xl font-semibold">{metric.value}</p>
             <p className="mt-2 text-xs leading-5 text-[color:var(--muted)]">
@@ -143,15 +172,93 @@ function MetricGrid({ metrics }: { metrics: MissionMetric[] }) {
   );
 }
 
+function ProjectFocus({ queue }: { queue: MissionTask[] }) {
+  const currentTasks = queue.filter((task) => task.status !== "已完成");
+  const blockedTasks = queue.filter((task) => task.status === "失败");
+  const completedTasks = projectInventory.tasks.filter((task) =>
+    task.status.includes("已完成"),
+  );
+
+  return (
+    <section className="grid gap-4 lg:grid-cols-3">
+      <FocusCard title="当前任务" items={currentTasks} emptyLabel="暂无进行中的任务" />
+      <FocusCard title="阻塞任务" items={blockedTasks} emptyLabel="当前没有阻塞任务" />
+      <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+          最近完成
+        </p>
+        <div className="mt-4 grid gap-3">
+          {completedTasks.slice(-4).map((task) => (
+            <article
+              key={task.id}
+              className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
+            >
+              <h3 className="font-semibold">{task.id}</h3>
+              <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+                {task.label}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+    </section>
+  );
+}
+
+function FocusCard({
+  title,
+  items,
+  emptyLabel,
+}: {
+  title: string;
+  items: MissionTask[];
+  emptyLabel: string;
+}) {
+  return (
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        {title}
+      </p>
+      <div className="mt-4 grid gap-3">
+        {items.length === 0 ? (
+          <p className="rounded-[var(--radius-sm)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm text-[color:var(--muted)]">
+            {emptyLabel}
+          </p>
+        ) : (
+          items.map((task) => (
+            <article
+              key={`${title}-${task.title}`}
+              className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="break-words font-semibold">{task.title}</h3>
+                  <p className="mt-1 text-xs text-[color:var(--muted)]">{task.area}</p>
+                </div>
+                <span className="shrink-0 text-xs font-semibold text-[color:var(--accent)]">
+                  {task.priority}
+                </span>
+              </div>
+              <p className="mt-2 text-xs font-semibold text-[color:var(--muted)]">
+                {task.status}
+              </p>
+            </article>
+          ))
+        )}
+      </div>
+    </section>
+  );
+}
+
 function OperationalLanes({ lanes }: { lanes: MissionLane[] }) {
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            Task lanes
+            任务泳道
           </p>
-          <h2 className="mt-1 text-xl font-semibold">Phase 1 coverage</h2>
+          <h2 className="mt-1 text-xl font-semibold">项目负责人和状态</h2>
         </div>
       </div>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -164,7 +271,7 @@ function OperationalLanes({ lanes }: { lanes: MissionLane[] }) {
               <div>
                 <h3 className="font-semibold">{lane.label}</h3>
                 <p className="mt-1 text-xs font-semibold text-[color:var(--muted)]">
-                  Owner: {lane.owner}
+                  负责人：{lane.owner}
                 </p>
               </div>
               <StatusChip tone={lane.tone} label={lane.status} />
@@ -183,9 +290,9 @@ function ReleaseGates({ gates }: { gates: MissionGate[] }) {
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        Release gates
+        发布检查
       </p>
-      <h2 className="mt-1 text-xl font-semibold">Ship decision inputs</h2>
+      <h2 className="mt-1 text-xl font-semibold">生产与项目状态</h2>
       <div className="mt-4 grid gap-3">
         {gates.map((gate) => (
           <article
@@ -206,47 +313,14 @@ function ReleaseGates({ gates }: { gates: MissionGate[] }) {
   );
 }
 
-function WorkQueue({ queue }: { queue: MissionTask[] }) {
-  return (
-    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        Task summary
-      </p>
-      <h2 className="mt-1 text-xl font-semibold">Next recommended action</h2>
-      <div className="mt-4 overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)]">
-        <div className="grid grid-cols-[72px_minmax(0,1fr)_96px] border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
-          <span>Pri</span>
-          <span>Task</span>
-          <span>Status</span>
-        </div>
-        {queue.map((task) => (
-          <article
-            key={task.title}
-            className="grid grid-cols-[72px_minmax(0,1fr)_96px] gap-2 border-b border-[color:var(--line)] px-3 py-3 text-sm last:border-b-0"
-          >
-            <span className="font-semibold text-[color:var(--accent)]">{task.priority}</span>
-            <div className="min-w-0">
-              <h3 className="break-words font-semibold">{task.title}</h3>
-              <p className="mt-1 text-xs text-[color:var(--muted)]">{task.area}</p>
-            </div>
-            <span className="text-xs font-semibold text-[color:var(--muted)]">
-              {task.status}
-            </span>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function AgentStatus({ agents }: { agents: MissionAgent[] }) {
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        Agent status
+        代理状态
       </p>
-      <h2 className="mt-1 text-xl font-semibold">Execution coverage</h2>
-      <div className="mt-4 grid gap-3">
+      <h2 className="mt-1 text-xl font-semibold">执行覆盖</h2>
+      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {agents.map((agent) => (
           <article
             key={agent.name}
@@ -279,39 +353,43 @@ function TaskQueueStatus() {
       <div className="grid gap-5 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            Task Queue
+            任务队列
           </p>
-          <h2 className="mt-1 text-xl font-semibold">Codex local queue snapshot</h2>
+          <h2 className="mt-1 text-xl font-semibold">Codex 本地队列快照</h2>
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5 xl:grid-cols-2">
-            <QueueCount label="Pending" value={summary.pendingCount} />
-            <QueueCount label="Running" value={summary.runningCount} />
-            <QueueCount label="Completed" value={summary.completedCount} />
-            <QueueCount label="Failed" value={summary.failedCount} />
-            <QueueCount label="Skipped" value={summary.skippedCount} />
+            <QueueCount label="等待中" value={summary.pendingCount} />
+            <QueueCount label="执行中" value={summary.runningCount} />
+            <QueueCount label="已完成" value={summary.completedCount} />
+            <QueueCount label="失败" value={summary.failedCount} />
+            <QueueCount label="已跳过" value={summary.skippedCount} />
           </div>
           <div className="mt-4 grid gap-2 text-sm text-[color:var(--muted)]">
             <p>
-              <span className="font-semibold text-[color:var(--foreground)]">Queue mode:</span>{" "}
-              Local DEV/QA only
+              <span className="font-semibold text-[color:var(--foreground)]">
+                队列模式：
+              </span>{" "}
+              仅本地 DEV/QA 使用
             </p>
             <p>
-              <span className="font-semibold text-[color:var(--foreground)]">Safety:</span>{" "}
-              Whitelisted commands only
+              <span className="font-semibold text-[color:var(--foreground)]">
+                安全规则：
+              </span>{" "}
+              仅允许白名单命令
             </p>
           </div>
         </div>
 
         <div className="grid gap-3">
-          <QueueTaskCard label="Current task" task={currentTask} />
-          <QueueTaskCard label="Last completed" task={lastCompleted} />
-          <QueueTaskCard label="Last failed" task={lastFailed} emptyLabel="No failed tasks" />
+          <QueueTaskCard label="当前任务" task={currentTask} />
+          <QueueTaskCard label="最近完成" task={lastCompleted} />
+          <QueueTaskCard label="最近失败" task={lastFailed} emptyLabel="暂无失败任务" />
         </div>
       </div>
       <div className="mt-5 overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)]">
         <div className="grid grid-cols-[96px_minmax(0,1fr)_104px] border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
           <span>ID</span>
-          <span>Task</span>
-          <span>Status</span>
+          <span>任务</span>
+          <span>状态</span>
         </div>
         {missionControlQueueTasks.map((task) => (
           <article
@@ -321,7 +399,7 @@ function TaskQueueStatus() {
             <h3 className="font-semibold text-[color:var(--accent)]">{task.id}</h3>
             <p className="min-w-0 break-words text-[color:var(--muted)]">{task.title}</p>
             <span className="text-xs font-semibold text-[color:var(--muted)]">
-              {getQueueStatusLabel(task.status)}
+              {queueStatusLabels[task.status]}
             </span>
           </article>
         ))}
@@ -344,7 +422,7 @@ function QueueCount({ label, value }: { label: string; value: number }) {
 function QueueTaskCard({
   label,
   task,
-  emptyLabel = "None",
+  emptyLabel = "暂无",
 }: {
   label: string;
   task: CodexQueueTask | null;
@@ -364,14 +442,19 @@ function QueueTaskCard({
                 {task.title}
               </p>
               <p className="mt-1 text-xs font-semibold text-[color:var(--muted)]">
-                Worktree: {formatWorkdir(task.workdir)}
+                Worktree：{formatWorkdir(task.workdir)}
               </p>
             </>
           ) : (
             <p className="mt-2 text-sm text-[color:var(--muted)]">{emptyLabel}</p>
           )}
         </div>
-        {task ? <StatusChip tone={toneForQueueStatus(task.status)} label={getQueueStatusLabel(task.status)} /> : null}
+        {task ? (
+          <StatusChip
+            tone={toneForQueueStatus(task.status)}
+            label={queueStatusLabels[task.status]}
+          />
+        ) : null}
       </div>
     </article>
   );
@@ -385,12 +468,12 @@ function ProjectInventory() {
       <div className="grid gap-5 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            Project Inventory
+            项目资产清单
           </p>
-          <h2 className="mt-1 text-xl font-semibold">Static project snapshot</h2>
+          <h2 className="mt-1 text-xl font-semibold">静态项目快照</h2>
           <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
-              Project status
+              项目状态
             </p>
             <h3 className="mt-2 text-2xl font-semibold">{projectInventory.project.name}</h3>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
@@ -398,36 +481,36 @@ function ProjectInventory() {
             </p>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-3">
-            <InventoryMetric label="Tasks" value={summary.taskCount} />
-            <InventoryMetric label="Branches" value={summary.branchCount} />
-            <InventoryMetric label="PRs" value={summary.prCount} />
-            <InventoryMetric label="Agents" value={summary.agentCount} />
+            <InventoryMetric label="任务" value={summary.taskCount} />
+            <InventoryMetric label="分支" value={summary.branchCount} />
+            <InventoryMetric label="PR" value={summary.prCount} />
+            <InventoryMetric label="代理" value={summary.agentCount} />
           </div>
           <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
-              Queue summary
+              队列摘要
             </p>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-              Mode: {projectInventory.queue.mode} · Runner: {projectInventory.queue.runner} ·
-              Hardened: {projectInventory.queue.hardened} · Mission Control Queue:{" "}
+              模式：{projectInventory.queue.mode} · Runner：{projectInventory.queue.runner} ·
+              加固：{projectInventory.queue.hardened} · 控制台队列：
               {projectInventory.queue.missionControlQueue}
             </p>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-              Pending {projectInventory.queue.pending} · Running {projectInventory.queue.running} ·
-              Completed {projectInventory.queue.completed} · Failed {projectInventory.queue.failed}
+              等待中 {projectInventory.queue.pending} · 执行中{" "}
+              {projectInventory.queue.running} · 已完成 {projectInventory.queue.completed} ·
+              失败 {projectInventory.queue.failed}
             </p>
             <p className="mt-2 text-sm font-semibold text-[color:var(--foreground)]">
-              Next: {projectInventory.queue.next}
+              下一步：{projectInventory.queue.next}
             </p>
           </div>
         </div>
 
         <div className="grid gap-4">
-          <InventoryList title="Task inventory" items={projectInventory.tasks} />
-          <InventoryList title="Branch inventory" items={projectInventory.branches} compact />
-          <InventoryList title="PR inventory" items={projectInventory.prs} compact />
-          <InventoryList title="Agent inventory" items={projectInventory.agents} compact />
-          <RecommendationsList />
+          <InventoryList title="任务清单" items={projectInventory.tasks} />
+          <InventoryList title="分支清单" items={projectInventory.branches} compact />
+          <InventoryList title="PR 清单" items={projectInventory.prs} compact />
+          <InventoryList title="代理清单" items={projectInventory.agents} compact />
         </div>
       </div>
     </section>
@@ -451,7 +534,7 @@ function InventoryList({
   compact = false,
 }: {
   title: string;
-  items: typeof projectInventory.tasks;
+  items: InventoryItem[];
   compact?: boolean;
 }) {
   return (
@@ -488,13 +571,15 @@ function InventoryList({
 
 function RecommendationsList() {
   return (
-    <section className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
-      <h3 className="font-semibold">Next recommendations</h3>
-      <div className="mt-3 grid gap-2">
+    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+        下一步建议
+      </p>
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
         {projectInventory.recommendations.map((recommendation) => (
           <p
             key={recommendation}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 text-sm leading-6 text-[color:var(--muted)]"
+            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]"
           >
             {recommendation}
           </p>
@@ -518,38 +603,10 @@ function toneForQueueStatus(status: TaskStatus): MissionTone {
 
 function formatWorkdir(workdir: string) {
   if (!workdir || /^[a-z]:\\/i.test(workdir) || workdir.includes(":\\\\")) {
-    return "local worktree";
+    return "本地 worktree";
   }
 
   return workdir;
-}
-
-function EvidenceLog({
-  evidence,
-}: {
-  evidence: MissionControlSnapshot["evidence"];
-}) {
-  return (
-    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        Evidence log
-      </p>
-      <h2 className="mt-1 text-xl font-semibold">Snapshot inputs</h2>
-      <div className="mt-4 grid gap-3">
-        {evidence.map((item) => (
-          <article
-            key={item.label}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
-          >
-            <h3 className="text-sm font-semibold">{item.label}</h3>
-            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-              {item.detail}
-            </p>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
 }
 
 function StatusChip({ tone, label }: { tone: MissionTone; label: string }) {

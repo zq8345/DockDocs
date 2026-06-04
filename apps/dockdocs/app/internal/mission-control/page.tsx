@@ -3,9 +3,9 @@ import { MissionControlPanel } from "@/components/MissionControlPanel";
 import { getMissionControlSnapshot } from "@/lib/mission-control";
 
 export const metadata: Metadata = {
-  title: "OPS-100 Mission Control",
+  title: "任务控制中心",
   description:
-    "Internal DockDocs Phase 1 operations board for release readiness, task ownership, next actions, and agent status.",
+    "DockDocs 内部项目驾驶舱，用于查看任务状态、负责人、队列和下一步行动。",
   alternates: {
     canonical: "/internal/mission-control/",
   },

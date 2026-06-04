@@ -3,7 +3,7 @@ import type { CodexQueueTask } from "@/lib/mission-control-queue";
 export const missionControlQueueTasks: CodexQueueTask[] = [
   {
     id: "OPS-100",
-    title: "Mission Control Phase 1",
+    title: "任务控制中心 Phase 1",
     status: "completed",
     workdir: "local worktree",
     commands: ["npm run build:dockdocs", "npx playwright mission-control route test"],
@@ -18,7 +18,7 @@ export const missionControlQueueTasks: CodexQueueTask[] = [
   },
   {
     id: "OPS-102",
-    title: "Codex Task Queue Runner",
+    title: "Codex 任务队列执行器",
     status: "completed",
     workdir: "local worktree",
     commands: ["node scripts/codex-task-queue-runner.mjs --once --dry-run"],
@@ -33,7 +33,7 @@ export const missionControlQueueTasks: CodexQueueTask[] = [
   },
   {
     id: "OPS-102A",
-    title: "Harden Task Queue Runner",
+    title: "任务队列执行器加固",
     status: "completed",
     workdir: "local worktree",
     commands: ["node scripts/codex-task-queue-runner.mjs --once"],
@@ -48,7 +48,7 @@ export const missionControlQueueTasks: CodexQueueTask[] = [
   },
   {
     id: "DEV-300",
-    title: "AI Workspace Premium",
+    title: "AI Workspace Premium 生产化",
     status: "completed",
     workdir: "local worktree",
     commands: ["npm run build:dockdocs", "npm --workspace @dock/dockdocs run test:e2e"],
@@ -63,7 +63,7 @@ export const missionControlQueueTasks: CodexQueueTask[] = [
   },
   {
     id: "OPS-103",
-    title: "Mission Control x Task Queue",
+    title: "任务控制中心接入任务队列",
     status: "running",
     workdir: "local worktree",
     commands: ["npm run build:dockdocs", "mission-control route test"],
