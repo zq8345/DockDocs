@@ -201,10 +201,13 @@ test("account workspace binding shows anonymous state and Free placeholder", asy
   await expect(page.getByText("Sign in to save workspace records under your account.")).toBeVisible();
   await expect(page.getByText("Plan: Free")).toBeVisible();
   await expect(page.getByText("Storage: Anonymous")).toBeVisible();
+  await expect(page.getByTestId("workspace-plan-card")).toContainText("Free · Starter workspace");
+  await expect(page.getByTestId("workspace-plan-card")).toContainText("Upgrade to Plus or Pro");
 
   await page.goto("/my-chats");
   await expect(page.getByRole("heading", { name: "Sign in to isolate workspace data." })).toBeVisible();
   await expect(page.getByText("Current storage: anonymous · Plan: Free")).toBeVisible();
+  await expect(page.getByTestId("my-chats-plan")).toContainText("Plan: Free");
 });
 
 test("subscription placeholders and usage quota read local records", async ({ page }) => {
@@ -242,6 +245,13 @@ test("subscription placeholders and usage quota read local records", async ({ pa
   await page.goto("/dashboard");
   await expect(page.getByText("Plan: Pro")).toBeVisible();
   await expect(page.getByText("0/5000")).toBeVisible();
+  await expect(page.getByTestId("workspace-plan-card")).toContainText("Pro · Premium workspace");
+  await expect(page.getByTestId("workspace-premium-status")).toContainText("Premium workspace active");
+  await expect(page.getByTestId("workspace-capability-card").first()).toContainText("5,000 / month");
+
+  await page.goto("/my-chats");
+  await expect(page.getByTestId("my-chats-plan")).toContainText("Plan: Pro");
+  await expect(page.getByText("Current storage: anonymous · Plan: Free")).toHaveCount(0);
 });
 
 test("header tools and utility menus are keyboard and mobile friendly", async ({ page }) => {

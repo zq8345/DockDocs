@@ -9,6 +9,11 @@ import {
   type SavedChatRecord,
 } from "@/lib/account-runtime";
 import { UserAccountControls } from "@/components/UserAccountControls";
+import { getWorkspaceUpgradeMessage } from "@/lib/ai-workspace-runtime";
+import {
+  getSubscriptionSnapshot,
+  type SubscriptionSnapshot,
+} from "@/lib/subscription-runtime";
 import {
   deleteSavedSession,
   queueSessionRestore,
@@ -28,25 +33,30 @@ export function MyChatsClient() {
   const [documents, setDocuments] = useState<SavedDocumentMetadata[]>([]);
   const [quota, setQuota] = useState<UsageQuota | null>(null);
   const [analytics, setAnalytics] = useState<WorkspaceAnalytics | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
 
     async function load() {
-      const accountUser = await getCurrentAccountUser();
+      const [accountUser, snapshot, subscriptionSnapshot] = await Promise.all([
+        getCurrentAccountUser(),
+        readWorkspaceSnapshot(),
+        getSubscriptionSnapshot(),
+      ]);
       if (!mounted) {
         return;
       }
 
       setUser(accountUser);
       setChats(accountUser ? readSavedChats(accountUser.id) : []);
-      const snapshot = await readWorkspaceSnapshot();
       setIdentity(snapshot.identity);
       setSessions(snapshot.sessions);
       setDocuments(snapshot.documents);
       setQuota(snapshot.quota);
       setAnalytics(snapshot.analytics);
+      setSubscription(subscriptionSnapshot);
       setLoading(false);
     }
 
@@ -99,6 +109,8 @@ export function MyChatsClient() {
   }
 
   if (!user) {
+    const planName = subscription?.displayName ?? "Free";
+
     return (
       <section className="grid gap-5">
         <div className="grid gap-5 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-6">
@@ -109,8 +121,14 @@ export function MyChatsClient() {
               separate signed-in data by account ID. Original PDFs are not
               saved.
             </p>
-            <p className="mt-3 text-sm font-semibold text-[color:var(--muted)]">
-              Current storage: {identity?.id ?? "anonymous"} · Plan: Free
+            <p
+              data-testid="my-chats-plan"
+              className="mt-3 text-sm font-semibold text-[color:var(--muted)]"
+            >
+              Current storage: {identity?.id ?? "anonymous"} · Plan: {planName}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+              {getWorkspaceUpgradeMessage(subscription?.record.plan ?? "FREE")}
             </p>
           </div>
           <UserAccountControls />
@@ -127,6 +145,8 @@ export function MyChatsClient() {
       </section>
     );
   }
+
+  const planName = subscription?.displayName ?? "Free";
 
   return (
     <section className="grid gap-6">
@@ -153,8 +173,14 @@ export function MyChatsClient() {
             Signed in
           </p>
           <p className="mt-1 font-semibold">{user.name || user.email}</p>
-          <p className="mt-2 break-all text-sm text-[color:var(--muted)]">
-            Workspace storage: {identity?.id ?? user.id} · Plan: Free
+          <p
+            data-testid="my-chats-plan"
+            className="mt-2 break-all text-sm text-[color:var(--muted)]"
+          >
+            Workspace storage: {identity?.id ?? user.id} · Plan: {planName}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+            {getWorkspaceUpgradeMessage(subscription?.record.plan ?? "FREE")}
           </p>
         </div>
         <button

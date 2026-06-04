@@ -4,6 +4,11 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { UserAccountControls } from "@/components/UserAccountControls";
 import {
+  getWorkspacePlanCapabilities,
+  getWorkspaceUpgradeMessage,
+  type WorkspaceCapability,
+} from "@/lib/ai-workspace-runtime";
+import {
   readWorkspaceSnapshot,
   writeFeatureFlags,
   type SavedDocumentMetadata,
@@ -81,6 +86,14 @@ export function WorkspaceDashboardClient() {
     });
   }
 
+  const planCapabilities = getWorkspacePlanCapabilities(
+    state.subscription.record.plan,
+  );
+  const workspaceUpgradeMessage = getWorkspaceUpgradeMessage(
+    state.subscription.record.plan,
+  );
+  const hasPremiumWorkspace = state.subscription.record.plan === "PRO";
+
   return (
     <section className="grid gap-6">
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
@@ -130,6 +143,36 @@ export function WorkspaceDashboardClient() {
         <Metric label="AI calls" value={String(state.analytics.chatCalls)} />
         <Metric label="Total tokens" value={String(state.analytics.totalTokens)} />
       </div>
+
+      <section
+        data-testid="workspace-plan-card"
+        className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5"
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+              Workspace plan
+            </p>
+            <h2 className="mt-1 text-2xl font-semibold">
+              {planCapabilities.label} · {planCapabilities.badge}
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[color:var(--muted)]">
+              {planCapabilities.summary}
+            </p>
+          </div>
+          <p
+            data-testid="workspace-premium-status"
+            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-sm font-semibold text-[color:var(--foreground)]"
+          >
+            {hasPremiumWorkspace ? "Premium workspace active" : workspaceUpgradeMessage}
+          </p>
+        </div>
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {planCapabilities.capabilities.map((capability) => (
+            <CapabilityCard key={capability.id} capability={capability} />
+          ))}
+        </div>
+      </section>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
         <Panel title="Recent sessions" eyebrow="Saved chats">
@@ -207,9 +250,8 @@ export function WorkspaceDashboardClient() {
               {state.subscription.statusLabel}
             </p>
             <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-              Paid subscription status is read from the billing API when
-              available. Stripe webhook sync is the trusted source for Plus and
-              Pro.
+              Workspace access follows the current account plan. DockDocs keeps
+              document records as metadata and never stores original PDF files.
             </p>
             <dl className="mt-4 grid gap-2 text-xs font-semibold text-[color:var(--muted)]">
               <div className="flex justify-between gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3">
@@ -225,6 +267,27 @@ export function WorkspaceDashboardClient() {
         </Panel>
       </div>
     </section>
+  );
+}
+
+function CapabilityCard({ capability }: { capability: WorkspaceCapability }) {
+  const toneClass =
+    capability.tone === "premium"
+      ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]"
+      : capability.tone === "standard"
+        ? "border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-[color:var(--foreground)]"
+        : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-[color:var(--muted)]";
+
+  return (
+    <article
+      data-testid="workspace-capability-card"
+      className={`rounded-[var(--radius-sm)] border p-4 ${toneClass}`}
+    >
+      <h3 className="text-sm font-semibold text-[color:var(--foreground)]">
+        {capability.label}
+      </h3>
+      <p className="mt-2 text-sm font-semibold">{capability.detail}</p>
+    </article>
   );
 }
 
