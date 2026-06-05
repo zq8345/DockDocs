@@ -6,7 +6,7 @@ export type CloudConvertRoute =
   | "excel-to-pdf"
   | "pdf-to-excel";
 
-const MAX_UPLOAD_BYTES = 20 * 1024 * 1024; // 20 MB
+const MAX_UPLOAD_BYTES = 6 * 1024 * 1024; // 6 MB — Netlify buffered function body limit
 
 const ROUTE_META: Record<
   CloudConvertRoute,
@@ -47,8 +47,8 @@ export async function runCloudConvert({
   if (file.size > MAX_UPLOAD_BYTES) {
     throw new Error(
       zh
-        ? `文件大小超过限制（最大 20 MB）。当前文件：${Math.round(file.size / 1024 / 1024 * 10) / 10} MB。`
-        : `File size limit is 20 MB. Your file is ${Math.round(file.size / 1024 / 1024 * 10) / 10} MB.`,
+        ? `文件大小超过限制（最大 6 MB）。当前文件：${Math.round(file.size / 1024 / 1024 * 10) / 10} MB。`
+        : `File size limit is 6 MB. Your file is ${Math.round(file.size / 1024 / 1024 * 10) / 10} MB.`,
     );
   }
 

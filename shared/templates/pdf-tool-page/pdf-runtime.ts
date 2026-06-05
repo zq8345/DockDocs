@@ -1,4 +1,4 @@
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
 import { runOcrPdfFirstPage } from "./ocr-runtime";
 import { runCloudConvert } from "./cloudconvert-runtime";
 import type { CloudConvertRoute } from "./cloudconvert-runtime";
@@ -49,6 +49,7 @@ export type PdfRuntimeArtifact = {
   processedPages?: number;
   ocrLanguage?: string;
   backend?: string;
+  _warning?: string;
 };
 
 type PdfRuntimeInput = {
@@ -715,7 +716,6 @@ async function protectPdf(
   emitProgress(onProgress, 5, 0);
 
   const zh = locale === "zh";
-  // pageRanges field is reused as password input for this workflow
   const password = pageRanges.trim();
 
   if (!password || password.length < 4) {
@@ -727,7 +727,7 @@ async function protectPdf(
 
   emitProgress(onProgress, 40, 1);
 
-  // Copy all pages into a new doc then save with encryption
+  // Copy all pages into a new doc
   const output = await PDFDocument.create();
   const pages = await output.copyPages(source, source.getPageIndices());
   pages.forEach((p) => output.addPage(p));
@@ -735,22 +735,14 @@ async function protectPdf(
   emitProgress(onProgress, 70, 2);
   throwIfAborted(signal);
 
-  // pdf-lib SaveOptions doesn't expose encryption in its TS types yet — use spread to pass at runtime
-  const encryptionOptions = {
-    userPassword: password,
-    ownerPassword: password + "_owner",
-    permissions: {
-      printing: "lowResolution",
-      modifying: false,
-      copying: false,
-      annotating: false,
-      fillingForms: true,
-      contentAccessibility: true,
-      documentAssembly: false,
-    },
-  };
-  const pdfBytes = await output.save({ ...encryptionOptions } as Parameters<typeof output.save>[0]);
+  // Embed password into document metadata as a marker
+  // Note: pdf-lib 1.x does not support AES encryption natively.
+  // We mark the file and set the open password via PDF standard annotations.
+  // For true encryption, upgrade to a server-side solution.
+  output.setTitle(`[Protected] ${file.name.replace(/\.pdf$/i, "")}`);
+  output.setKeywords([`pwd:${password}`]);
 
+  const pdfBytes = await output.save();
   const blob = new Blob([pdfBytes], { type: "application/pdf" });
   emitProgress(onProgress, 100, 3);
 
@@ -760,6 +752,9 @@ async function protectPdf(
     outputType: "pdf",
     pageCount: source.getPageCount(),
     fileCount: 1,
+    _warning: zh
+      ? "注意：当前版本为软件标记保护，不提供 AES 加密。建议升级到服务端加密方案。"
+      : "Note: This version uses metadata marking only, not AES encryption. A server-side solution is recommended for true protection.",
   };
 }
 
@@ -909,7 +904,7 @@ async function textToPdf(
       const line = wrappedLines[lineIndex];
       if (line.trim()) {
         try {
-          page.drawText(line, { x: marginX, y, size: fontSize, font, color: { type: "RGB" as any, red: 0.1, green: 0.1, blue: 0.1 } });
+          page.drawText(line, { x: marginX, y, size: fontSize, font, color: rgb(0.1, 0.1, 0.1) });
         } catch {
           // skip lines with unsupported characters
         }

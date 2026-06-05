@@ -18,7 +18,7 @@ const SUPPORTED_CONVERSIONS = {
 
 type ConversionRoute = keyof typeof SUPPORTED_CONVERSIONS;
 
-const MAX_FILE_BYTES = 20 * 1024 * 1024; // 20 MB
+const MAX_FILE_BYTES = 6 * 1024 * 1024; // 6 MB — Netlify buffered function body limit
 const CLOUDCONVERT_API = "https://api.cloudconvert.com/v2";
 
 // ---------------------------------------------------------------------------
@@ -64,7 +64,7 @@ export default async (req: Request, _context: Context) => {
     return json({
       ok: false,
       code: "FILE_TOO_LARGE",
-      message: `File size limit is 20 MB. Uploaded file is ${Math.round(file.size / 1024 / 1024 * 10) / 10} MB.`,
+      message: `File size limit is 6 MB. Uploaded file is ${Math.round(file.size / 1024 / 1024 * 10) / 10} MB.`,
     }, 413);
   }
 
