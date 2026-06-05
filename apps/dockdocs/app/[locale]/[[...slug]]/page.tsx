@@ -468,7 +468,6 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale }) {
         </Container>
       </Section>
       <LocalizedFaq title={copy.faqTitle} faqs={[...copy.faqs]} />
-      <RelatedTools />
     </main>
   );
 }
@@ -565,7 +564,6 @@ function LocalizedRuntimeTool({
         </Container>
       </Section>
       {"faqs" in page && <LocalizedFaq title={page.faqTitle} faqs={[...page.faqs]} />}
-      <RelatedTools />
     </main>
   );
 }

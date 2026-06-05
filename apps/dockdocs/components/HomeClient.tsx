@@ -14,27 +14,18 @@ const toolIcons: Record<string, string> = {
 
 type ToolCard = { name: string; href: string; category: string; isNew?: boolean; desc: string };
 
-const allTools: ToolCard[] = [
+const highlightTools: ToolCard[] = [
   { name: "Merge PDF", href: "/merge-pdf", category: "popular", desc: "Combine PDFs in the order you want." },
   { name: "Compress PDF", href: "/compress-pdf", category: "popular", desc: "Reduce file size while optimizing quality." },
   { name: "Chat with PDF", href: "/chat-with-pdf", category: "popular", desc: "Ask questions grounded in your document.", isNew: true },
   { name: "Word to PDF", href: "/word-to-pdf", category: "convert", desc: "DOCX to high-fidelity PDF." },
   { name: "PDF to Word", href: "/pdf-to-word", category: "convert", desc: "Extract content into editable Word." },
   { name: "Split PDF", href: "/split-pdf", category: "popular", desc: "Extract pages or split by range." },
-  { name: "AI Summary", href: "/ai-summary", category: "ai", desc: "Summarize long documents." },
-  { name: "OCR PDF", href: "/ocr-pdf", category: "ai", desc: "Extract text from scanned PDFs." },
-  { name: "Excel to PDF", href: "/excel-to-pdf", category: "convert", desc: "Spreadsheets to PDF." },
-  { name: "Protect PDF", href: "/protect-pdf", category: "security", desc: "Encrypt with a password." },
-  { name: "Edit PDF", href: "/edit-pdf", category: "edit", desc: "Add text, shapes, annotations.", isNew: true },
-  { name: "Sign PDF", href: "/sign-pdf", category: "edit", desc: "Electronic signature.", isNew: true },
 ];
 
-const highlightTools = allTools.filter(t => t.category === "popular");
-const otherTools = allTools.filter(t => t.category !== "popular");
-
 const features = [
-  { icon: "⚡", title: "Fast & free", desc: "Every tool is free. No account, no watermarks, no limits on daily use." },
-  { icon: "🔒", title: "Privacy first", desc: "Files processed in your browser. Nothing stored on our servers." },
+  { icon: "⚡", title: "Fast & free", desc: "Every tool is free. No account, no watermarks, no limits." },
+  { icon: "🔒", title: "Privacy first", desc: "Files processed in your browser. Nothing stored on servers." },
   { icon: "🤖", title: "AI-powered", desc: "Chat, summarize, translate, and extract insights from documents." },
   { icon: "🌍", title: "Global", desc: "12 languages. Teams in 5 cities. 30M+ users worldwide." },
 ];
@@ -50,14 +41,13 @@ export function HomeClient() {
               PDF tools<br /><span className="text-[color:var(--accent-strong)]">built for real work.</span>
             </h1>
             <p className="mt-6 max-w-lg text-[16px] leading-relaxed text-[color:var(--muted)]">
-              Merge, compress, convert, chat with AI — every tool you need, all free. Built for teams that move fast.
+              Merge, compress, convert, chat with AI — every tool you need for PDFs, all free.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="/merge-pdf" className="inline-flex min-h-[44px] items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition hover:bg-[color:var(--accent-hover)]">Start free</a>
               <a href="#tools" className="inline-flex min-h-[44px] items-center rounded-[var(--radius)] border border-[color:var(--line)] px-5 text-[14px] font-medium transition hover:border-[color:var(--line-strong)]">Browse tools →</a>
             </div>
           </div>
-          {/* Visual placeholder */}
           <div className="hidden lg:block">
             <div className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-8">
               <div className="grid grid-cols-3 gap-3">
@@ -70,7 +60,7 @@ export function HomeClient() {
         </div>
       </section>
 
-      {/* Feature cards */}
+      {/* Features */}
       <section className="border-b border-[color:var(--line)]">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -85,7 +75,7 @@ export function HomeClient() {
         </div>
       </section>
 
-      {/* Top tools */}
+      {/* Popular tools */}
       <section id="tools" className="border-b border-[color:var(--line)]">
         <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
           <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">Most used</p>
@@ -99,23 +89,9 @@ export function HomeClient() {
               </a>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* All tools compact */}
-      <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto max-w-6xl px-5 py-16 sm:py-20">
-          <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">Everything else</p>
-          <h2 className="mt-3 text-center text-[28px] font-semibold tracking-[-0.014em]">26 tools. All free.</h2>
-          <div className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {otherTools.map((tool) => (
-              <a key={tool.href} href={tool.href} className="group relative flex items-center gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 transition hover:border-[color:var(--line-strong)]">
-                {tool.isNew && <span className="absolute -top-1 -right-1 rounded-full bg-[color:var(--accent)] px-1.5 py-0.5 text-[8px] font-bold uppercase text-white">New</span>}
-                <span className="text-[18px]">{toolIcons[tool.href.replace(/^\//, "")] || "📄"}</span>
-                <span className="text-[13px] font-medium">{tool.name}</span>
-              </a>
-            ))}
-          </div>
+          <p className="mt-8 text-center">
+            <a href="/" className="text-[13px] font-medium text-[color:var(--accent-strong)] hover:underline">View all 26 tools →</a>
+          </p>
         </div>
       </section>
 
@@ -123,7 +99,7 @@ export function HomeClient() {
       <section>
         <div className="mx-auto flex max-w-6xl flex-col items-center px-5 py-16 text-center sm:py-24">
           <h2 className="text-[30px] font-semibold tracking-[-0.016em]">Ready to work smarter with PDFs?</h2>
-          <p className="mt-3 text-[15px] leading-relaxed text-[color:var(--muted)]">All 26 tools free. No account required. Start now.</p>
+          <p className="mt-3 text-[15px] leading-relaxed text-[color:var(--muted)]">All 26 tools free. No account required.</p>
           <a href="/merge-pdf" className="mt-6 inline-flex min-h-[44px] items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:bg-[color:var(--accent-hover)]">Start free</a>
         </div>
       </section>
