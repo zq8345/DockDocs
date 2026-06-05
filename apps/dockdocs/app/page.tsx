@@ -145,7 +145,7 @@ export default function Home() {
 
       {/* ── Hero ─────────────────────────────────────────── */}
       <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto flex max-w-5xl flex-col items-center px-5 py-20 text-center sm:py-28 lg:py-36">
+        <div className="mx-auto flex max-w-6xl flex-col items-center px-5 py-20 text-center sm:py-28 lg:py-36">
           <div className="inline-flex rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--accent-strong)]">
             AI Document Platform
           </div>
@@ -192,7 +192,7 @@ export default function Home() {
 
       {/* ── Three Pillars ─────────────────────────────────── */}
       <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto max-w-5xl px-5 py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
           <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">
             Three pillars
           </p>
@@ -224,7 +224,7 @@ export default function Home() {
 
       {/* ── Tool Card Wall ────────────────────────────────── */}
       <section id="tools" className="border-b border-[color:var(--line)]">
-        <div className="mx-auto max-w-5xl px-5 py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
           <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">
             All tools
           </p>

@@ -345,13 +345,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       <HowItWorksSection config={config} />
       <FaqSection config={config} />
       <IndexingLinksSection config={config} />
-      {config.relatedTools === false ? null : config.relatedTools ?? (
-        <RelatedPdfTools
-          currentSlug={config.slug}
-          locale={config.locale ?? "en"}
-          useLocalePrefix={Boolean(config.locale)}
-        />
-      )}
+      {config.relatedTools === false ? null : config.relatedTools}
       <CtaSection config={config} />
     </main>
   );
