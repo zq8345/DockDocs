@@ -15,7 +15,7 @@ test("internal Mission Control route renders Chinese owner dashboard with auto s
   await expect(page.getByText("下一步是什么", { exact: true })).toBeVisible();
   await expect(page.getByText("自动化进度", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("系统是否正常", { exact: true })).toBeVisible();
-  await expect(page.getByText("UI-302 Mission Control Owner Dashboard").first()).toBeVisible();
+  await expect(page.getByText("生产快照显示 UI-302 与 UI-DS-03 已上线")).toBeVisible();
   await expect(page.getByText("没有确认阻塞", { exact: true })).toBeVisible();
   await expect(page.getByText("当前任务", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("代理状态", { exact: true })).toBeVisible();
@@ -33,8 +33,14 @@ test("internal Mission Control route renders Chinese owner dashboard with auto s
   await expect(page.getByText("Proposed Actions", { exact: true })).toBeVisible();
   await expect(page.getByText("Blocked Actions", { exact: true })).toBeVisible();
   await expect(page.getByText("Verification-only Actions", { exact: true })).toBeVisible();
+  await expect(
+    page.locator("article").filter({ hasText: "Verification-only Actions" }).filter({
+      hasText: "11",
+    }),
+  ).toBeVisible();
+  await expect(page.getByText("Dispatch queue: taskCount 11")).toBeVisible();
   await expect(page.getByText("Assigned Owners:")).toBeVisible();
-  await expect(page.getByText("Source: Observer Report")).toBeVisible();
+  await expect(page.getByText("Source: Observer Report + Dispatcher Queue")).toBeVisible();
   await expect(page.getByText("Safety: merge / push / deploy disabled")).toBeVisible();
   const dispatcherQueueSummary = page.getByLabel("Dispatcher Queue Summary");
   await expect(dispatcherQueueSummary.getByText("Hermes Dispatch Queue", { exact: true })).toBeVisible();
@@ -83,11 +89,16 @@ test("internal Mission Control route renders Chinese owner dashboard with auto s
   await expect(taskCard(page, "DEV-300", "生产中")).toBeVisible();
   await expect(taskCard(page, "DEV-301", "已完成")).toBeVisible();
   await expect(taskCard(page, "UI-301A", "已完成")).toBeVisible();
+  await expect(taskCard(page, "UI-302", "生产中")).toBeVisible();
+  await expect(taskCard(page, "UI-DS-03", "生产中")).toBeVisible();
   await expect(taskCard(page, "OPS-106", "已完成")).toBeVisible();
+  await expect(page.getByText("80%", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("100%", { exact: true }).first()).toBeVisible();
   await expect(
-    page.locator("article").filter({ hasText: "UI-301A 中文内部项目驾驶舱" }).filter({
-      hasText: "进行中",
-    }),
+    page
+      .locator("article")
+      .filter({ has: page.getByRole("heading", { name: "UI-302", exact: true }) })
+      .filter({ hasText: "进行中" }),
   ).toHaveCount(0);
 
   for (const agent of ["GPT 超级大脑", "Hermes 项目管理", "Codex 执行器"]) {

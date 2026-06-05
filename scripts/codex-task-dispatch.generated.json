@@ -1,7 +1,7 @@
 {
   "source": "HERMES-002B Dispatcher Queue Writer",
   "mode": "verification-only",
-  "generatedAt": "2026-06-04T12:44:57.006Z",
+  "generatedAt": "2026-06-04T12:59:13.351Z",
   "writesQueue": true,
   "executesRunner": false,
   "deploysProduction": false,
@@ -13,18 +13,15 @@
   },
   "summary": {
     "taskCount": 11,
-    "pending": 0,
+    "pending": 7,
     "blocked": 0,
-    "skipped": 4,
-    "running": 0,
-    "completed": 7,
-    "failed": 0
+    "skipped": 4
   },
   "tasks": [
     {
       "id": "DISPATCH-RISK-1",
       "title": "npm install reports 2 moderate audit issues; no audit fix was run.",
-      "status": "completed",
+      "status": "pending",
       "workdir": ".",
       "allowedCommands": [
         "git status --short --branch",
@@ -38,19 +35,16 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Hermes PMO",
       "priority": "P2",
-      "notes": "Generated from high-confidence dispatcher action.",
-      "startedAt": "2026-06-04T12:44:57.056Z",
-      "lastError": null,
-      "completedAt": "2026-06-04T12:45:01.024Z"
+      "notes": "Generated from high-confidence dispatcher action."
     },
     {
       "id": "DISPATCH-RISK-2",
       "title": "The original Dock directory should not be used for deploy if dirty.",
-      "status": "completed",
+      "status": "pending",
       "workdir": ".",
       "allowedCommands": [
         "git status --short --branch",
@@ -64,19 +58,16 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Hermes PMO",
       "priority": "P1",
-      "notes": "Generated from high-confidence dispatcher action.",
-      "startedAt": "2026-06-04T12:45:01.025Z",
-      "lastError": null,
-      "completedAt": "2026-06-04T12:45:03.109Z"
+      "notes": "Generated from high-confidence dispatcher action."
     },
     {
       "id": "DISPATCH-RISK-3",
       "title": "ai-chat is configured at /api/ai-chat, not at /.netlify/functions/ai-chat.",
-      "status": "completed",
+      "status": "pending",
       "workdir": ".",
       "allowedCommands": [
         "git status --short --branch",
@@ -90,19 +81,16 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Hermes PMO",
       "priority": "P2",
-      "notes": "Generated from high-confidence dispatcher action.",
-      "startedAt": "2026-06-04T12:45:03.109Z",
-      "lastError": null,
-      "completedAt": "2026-06-04T12:45:05.175Z"
+      "notes": "Generated from high-confidence dispatcher action."
     },
     {
       "id": "DISPATCH-RISK-4",
       "title": "ai-chat returns provider as configured-ai-provider; model confirms deepseek-chat.",
-      "status": "completed",
+      "status": "pending",
       "workdir": ".",
       "allowedCommands": [
         "git status --short --branch",
@@ -116,19 +104,16 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Hermes PMO",
       "priority": "P1",
-      "notes": "Generated from high-confidence dispatcher action.",
-      "startedAt": "2026-06-04T12:45:05.176Z",
-      "lastError": null,
-      "completedAt": "2026-06-04T12:45:07.202Z"
+      "notes": "Generated from high-confidence dispatcher action."
     },
     {
       "id": "DISPATCH-RISK-5",
       "title": "UI-301A is missing from the PMO board; using current release fallback.",
-      "status": "completed",
+      "status": "pending",
       "workdir": ".",
       "allowedCommands": [
         "git status --short --branch",
@@ -142,19 +127,16 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Hermes UI / Codex UI",
       "priority": "P2",
-      "notes": "Generated from high-confidence dispatcher action.",
-      "startedAt": "2026-06-04T12:45:07.203Z",
-      "lastError": null,
-      "completedAt": "2026-06-04T12:45:09.246Z"
+      "notes": "Generated from high-confidence dispatcher action."
     },
     {
       "id": "DISPATCH-RISK-6",
       "title": "OPS-106 is missing from the PMO board; using current release fallback.",
-      "status": "completed",
+      "status": "pending",
       "workdir": ".",
       "allowedCommands": [
         "git status --short --branch",
@@ -168,19 +150,16 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Codex OPS",
       "priority": "P2",
-      "notes": "Generated from high-confidence dispatcher action.",
-      "startedAt": "2026-06-04T12:45:09.246Z",
-      "lastError": null,
-      "completedAt": "2026-06-04T12:45:11.274Z"
+      "notes": "Generated from high-confidence dispatcher action."
     },
     {
       "id": "DISPATCH-RISK-7",
       "title": "Queue top-level pending=2 differs from task status pending=0.",
-      "status": "completed",
+      "status": "pending",
       "workdir": ".",
       "allowedCommands": [
         "git status --short --branch",
@@ -194,14 +173,11 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Hermes PMO",
       "priority": "P2",
-      "notes": "Generated from high-confidence dispatcher action.",
-      "startedAt": "2026-06-04T12:45:11.275Z",
-      "lastError": null,
-      "completedAt": "2026-06-04T12:45:13.296Z"
+      "notes": "Generated from high-confidence dispatcher action."
     },
     {
       "id": "DISPATCH-RECOMMENDATION-1",
@@ -220,12 +196,11 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Hermes PMO",
       "priority": "P3",
-      "notes": "Skipped: needs human review before queue execution.",
-      "skippedAt": "2026-06-04T12:45:13.297Z"
+      "notes": "Skipped: needs human review before queue execution."
     },
     {
       "id": "DISPATCH-RECOMMENDATION-2",
@@ -244,12 +219,11 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Hermes PMO",
       "priority": "P1",
-      "notes": "Skipped: needs human review before queue execution.",
-      "skippedAt": "2026-06-04T12:45:13.297Z"
+      "notes": "Skipped: needs human review before queue execution."
     },
     {
       "id": "DISPATCH-RECOMMENDATION-3",
@@ -268,12 +242,11 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Hermes PMO / Codex OPS",
       "priority": "P3",
-      "notes": "Skipped: needs human review before queue execution.",
-      "skippedAt": "2026-06-04T12:45:13.297Z"
+      "notes": "Skipped: needs human review before queue execution."
     },
     {
       "id": "DISPATCH-RECOMMENDATION-4",
@@ -292,12 +265,11 @@
         "git status --short --branch",
         "npx tsc --noEmit -p apps/dockdocs/tsconfig.json"
       ],
-      "createdAt": "2026-06-04T12:44:57.006Z",
+      "createdAt": "2026-06-04T12:59:13.351Z",
       "source": "HERMES-002B Dispatcher Queue Writer",
       "owner": "Hermes PMO",
       "priority": "P1",
-      "notes": "Skipped: needs human review before queue execution.",
-      "skippedAt": "2026-06-04T12:45:13.297Z"
+      "notes": "Skipped: needs human review before queue execution."
     }
   ]
 }

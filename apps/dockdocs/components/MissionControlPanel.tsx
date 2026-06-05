@@ -175,12 +175,15 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
 }
 
 function DispatcherSummary() {
+  const dispatcherQueueSummary = missionControlGeneratedData.dispatcherQueue?.summary;
+  const verificationOnlyActions =
+    dispatcherQueueSummary?.taskCount || dispatcherReport.summary.verificationOnlyActions;
   const counts = [
     { label: "Proposed Actions", value: dispatcherReport.summary.proposedActions },
     { label: "Blocked Actions", value: dispatcherReport.summary.blockedActions },
     {
       label: "Verification-only Actions",
-      value: dispatcherReport.summary.verificationOnlyActions,
+      value: verificationOnlyActions,
     },
   ];
   const owners = Object.entries(dispatcherReport.ownerSummary || {})
@@ -206,8 +209,15 @@ function DispatcherSummary() {
         <StatusChip tone="ready" label="Read-only" />
       </div>
       <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
-        Source: Observer Report · Safety: merge / push / deploy disabled
+        Source: Observer Report + Dispatcher Queue · Safety: merge / push / deploy disabled
       </p>
+      {dispatcherQueueSummary ? (
+        <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+          Dispatch queue: taskCount {dispatcherQueueSummary.taskCount} · pending{" "}
+          {dispatcherQueueSummary.pending} · skipped {dispatcherQueueSummary.skipped} ·
+          blocked {dispatcherQueueSummary.blocked}
+        </p>
+      ) : null}
       <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
         Assigned Owners: {owners || "No assigned owners"}
       </p>
@@ -465,28 +475,14 @@ function RunnerSummary() {
 }
 
 function OwnerBriefing({ snapshot }: { snapshot: MissionControlSnapshot }) {
-  const summary = summarizeQueue(missionControlQueueTasks);
-  const generatedQueue = getGeneratedQueueSummary();
-  const totalQueueCount =
-    summary.pendingCount +
-    summary.runningCount +
-    summary.completedCount +
-    summary.failedCount +
-    summary.skippedCount;
-  const automationTotal = Math.max(totalQueueCount, generatedQueue.taskCount, 1);
-  const automationDone = Math.min(
-    automationTotal,
-    Math.max(summary.completedCount + summary.skippedCount, projectInventory.queue.completed),
-  );
-  const automationPercent = Math.round((automationDone / automationTotal) * 100);
+  const automation = getAutomationProgressSummary();
   const blockedTasks = projectInventory.projectBoard.blockedTasks.filter((task) =>
     !/^none/i.test(task),
   );
   const activeTasks = projectInventory.projectBoard.activeTasks.filter((task) =>
     !/^none/i.test(task),
   );
-  const currentWork =
-    activeTasks[0] || "UI-302 Mission Control Owner Dashboard：把控制台改成老板驾驶舱";
+  const currentWork = activeTasks[0] || "暂无进行中的任务";
   const nextAction =
     projectInventory.recommendations[0] ||
     projectInventory.queue.next ||
@@ -515,8 +511,12 @@ function OwnerBriefing({ snapshot }: { snapshot: MissionControlSnapshot }) {
         <OwnerSignalCard
           label="现在在干什么"
           value={currentWork}
-          helper="当前页面优先显示进行中的工作，而不是工程库存。"
-          tone="watch"
+          helper={
+            activeTasks.length > 0
+              ? "当前页面优先显示进行中的工作，而不是工程库存。"
+              : "生产快照显示 UI-302 与 UI-DS-03 已上线，当前无确认中的 UI 任务。"
+          }
+          tone={activeTasks.length > 0 ? "watch" : "ready"}
         />
         <OwnerSignalCard
           label="有没有阻塞"
@@ -536,10 +536,10 @@ function OwnerBriefing({ snapshot }: { snapshot: MissionControlSnapshot }) {
         />
         <OwnerSignalCard
           label="自动化进度"
-          value={`${automationPercent}%`}
-          helper={`已完成 ${automationDone}/${automationTotal}，队列 ${projectInventory.projectBoard.syncStatus}。`}
-          tone={automationPercent >= 90 ? "ready" : "watch"}
-          progress={automationPercent}
+          value={`${automation.percent}%`}
+          helper={`已完成 ${automation.completed}/${automation.total}，队列 ${projectInventory.projectBoard.syncStatus}。`}
+          tone={automation.percent >= 90 ? "ready" : "watch"}
+          progress={automation.percent}
         />
         <OwnerSignalCard
           label="系统是否正常"
@@ -632,17 +632,6 @@ function MetricGrid({ metrics }: { metrics: MissionMetric[] }) {
 function ProjectFocus({ queue }: { queue: MissionTask[] }) {
   const displayQueue = queue.map(getPmoQueueTask);
   const currentTasks = displayQueue.filter((task) => !isDoneStatus(task.status));
-  const ownerCurrentTasks =
-    currentTasks.length > 0
-      ? currentTasks
-      : [
-          {
-            title: "UI-302 Mission Control Owner Dashboard",
-            area: "UI",
-            priority: "P1" as const,
-            status: "进行中",
-          },
-        ];
   const blockedTasks = displayQueue.filter((task) => task.status === "失败");
   const completedTasks = projectInventory.tasks.filter((task) =>
     task.status.includes("已完成") || task.status.includes("生产中"),
@@ -650,7 +639,7 @@ function ProjectFocus({ queue }: { queue: MissionTask[] }) {
 
   return (
     <section className="grid gap-4 lg:grid-cols-3">
-      <FocusCard title="当前任务" items={ownerCurrentTasks} emptyLabel="暂无进行中的任务" />
+      <FocusCard title="当前任务" items={currentTasks} emptyLabel="暂无进行中的任务" />
       <FocusCard title="阻塞任务" items={blockedTasks} emptyLabel="当前没有阻塞任务" />
       <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
@@ -675,20 +664,8 @@ function ProjectFocus({ queue }: { queue: MissionTask[] }) {
 }
 
 function AutomationProgress() {
-  const summary = summarizeQueue(missionControlQueueTasks);
+  const automation = getAutomationProgressSummary();
   const generatedQueue = getGeneratedQueueSummary();
-  const total =
-    summary.pendingCount +
-    summary.runningCount +
-    summary.completedCount +
-    summary.failedCount +
-    summary.skippedCount;
-  const automationTotal = Math.max(total, generatedQueue.taskCount, 1);
-  const automationDone = Math.min(
-    automationTotal,
-    Math.max(summary.completedCount + summary.skippedCount, projectInventory.queue.completed),
-  );
-  const automationPercent = Math.round((automationDone / automationTotal) * 100);
 
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
@@ -700,16 +677,16 @@ function AutomationProgress() {
           <h2 className="mt-1 text-xl font-semibold">队列与同步</h2>
         </div>
         <StatusChip
-          tone={automationPercent >= 90 ? "ready" : "watch"}
-          label={`${automationPercent}%`}
+          tone={automation.percent >= 90 ? "ready" : "watch"}
+          label={`${automation.percent}%`}
         />
       </div>
 
       <div className="mt-4 h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
-        <div
-          className="h-full rounded-full bg-[color:var(--accent)]"
-          style={{ width: `${Math.max(0, Math.min(automationPercent, 100))}%` }}
-        />
+          <div
+            className="h-full rounded-full bg-[color:var(--accent)]"
+          style={{ width: `${Math.max(0, Math.min(automation.percent, 100))}%` }}
+          />
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
@@ -719,6 +696,10 @@ function AutomationProgress() {
         <QueueCount label="失败" value={projectInventory.queue.failed} />
         <QueueCount label="已跳过" value={projectInventory.queue.skipped} />
       </div>
+      <p className="mt-4 text-sm leading-6 text-[color:var(--muted)]">
+        自动化模块完成度：{automation.completed}/{automation.total} ·{" "}
+        {automation.modules.map((item) => `${item.id}:${item.done ? "done" : "pending"}`).join(" · ")}
+      </p>
 
       <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]">
         <p>
@@ -1150,6 +1131,32 @@ function getGeneratedQueueSummary() {
   };
 }
 
+function getAutomationProgressSummary() {
+  const taskIds = new Set(projectInventory.tasks.map((task) => task.id));
+  const modules = [
+    "OPS-108",
+    "OPS-110",
+    "OPS-111",
+    "OPS-113",
+    "HERMES-001A",
+    "HERMES-002A",
+    "HERMES-002B",
+    "OPS-117",
+  ].map((id) => ({
+    id,
+    done: taskIds.has(id),
+  }));
+  const completed = modules.filter((item) => item.done).length;
+  const total = modules.length;
+
+  return {
+    modules,
+    completed,
+    total,
+    percent: Math.round((completed / total) * 100),
+  };
+}
+
 function SyncWarnings() {
   return (
     <section className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
@@ -1211,11 +1218,11 @@ function getPmoMetric(metric: MissionMetric): MissionMetric {
   }
 
   if (metric.label === "UI") {
-    const status = getInventoryStatus("UI-301A") || "已完成";
+    const status = getInventoryStatus("UI-302") || getInventoryStatus("UI-DS-03") || "生产中";
     return {
       ...metric,
       value: status,
-      helper: "UI-301A 中文内部项目驾驶舱已完成、已合并、已部署。",
+      helper: "UI-302 与 UI-DS-03 已完成、已合并、已部署，并通过生产 QA。",
       tone: toneForDisplayStatus(status),
     };
   }
@@ -1245,12 +1252,12 @@ function getPmoLane(lane: MissionLane): MissionLane {
   }
 
   if (lane.label === "UI") {
-    const status = getInventoryStatus("UI-301A") || "已完成";
+    const status = getInventoryStatus("UI-302") || getInventoryStatus("UI-DS-03") || "生产中";
     return {
       ...lane,
       status,
       tone: toneForDisplayStatus(status),
-      signal: "UI-301A 中文内部项目驾驶舱已完成、已合并，并随最新生产部署上线。",
+      signal: "UI-302 Owner Dashboard 与 UI-DS-03 Status Badge System 已完成、已合并，并随最新生产部署上线。",
     };
   }
 

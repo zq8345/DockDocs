@@ -2,7 +2,7 @@
 // Do not add secrets, local paths, or raw command logs to this file.
 
 export const missionControlGeneratedData = {
-  "generatedAt": "2026-06-04T12:45:13.685Z",
+  "generatedAt": "2026-06-04T12:59:13.705Z",
   "source": "build-time",
   "projectBoard": {
     "syncStatus": "PMO同步正常",
@@ -37,17 +37,17 @@ export const missionControlGeneratedData = {
     ]
   },
   "git": {
-    "currentBranch": "unknown",
-    "latestCommit": "4a0b78e HERMES-002C: merge dispatcher queue summary into master",
+    "currentBranch": "p0s-mission-control-data-accuracy",
+    "latestCommit": "a25ff86 HERMES-004: merge runner integration into master",
     "latestMasterCommits": [
-      "0f8de09 HERMES-002B: merge dispatcher queue writer into master",
-      "9d11604 HERMES-002B: add dispatcher queue writer",
-      "7d3fbc5 OPS-117: merge production monitoring snapshot into master",
-      "408b712 OPS-117: add production monitoring snapshot",
-      "873fef9 UI-DS-03: merge unified status badge system into master"
+      "a25ff86 HERMES-004: merge runner integration into master",
+      "4a0b78e HERMES-002C: merge dispatcher queue summary into master",
+      "0ffab6c HERMES-004: add runner integration",
+      "7825b20 HERMES-002C: add dispatcher queue summary",
+      "0f8de09 HERMES-002B: merge dispatcher queue writer into master"
     ],
     "workingTreeStatus": "dirty",
-    "changedFileCount": 8
+    "changedFileCount": 4
   },
   "queue": {
     "source": "PMO generated",
@@ -75,12 +75,15 @@ export const missionControlGeneratedData = {
   "dispatcherQueue": {
     "source": "HERMES-002B Dispatcher Queue Writer",
     "mode": "verification-only",
-    "generatedAt": "2026-06-04T12:44:57.006Z",
+    "generatedAt": "2026-06-04T12:59:13.351Z",
     "summary": {
       "taskCount": 11,
-      "pending": 0,
+      "pending": 7,
       "blocked": 0,
-      "skipped": 4
+      "skipped": 4,
+      "running": 0,
+      "completed": 0,
+      "failed": 0
     },
     "owners": [
       {
@@ -112,35 +115,35 @@ export const missionControlGeneratedData = {
         "title": "npm install reports 2 moderate audit issues; no audit fix was run.",
         "owner": "Hermes PMO",
         "priority": "P2",
-        "status": "completed"
+        "status": "pending"
       },
       {
         "id": "DISPATCH-RISK-2",
         "title": "The original Dock directory should not be used for deploy if dirty.",
         "owner": "Hermes PMO",
         "priority": "P1",
-        "status": "completed"
+        "status": "pending"
       },
       {
         "id": "DISPATCH-RISK-3",
         "title": "ai-chat is configured at /api/ai-chat, not at /.netlify/functions/ai-chat.",
         "owner": "Hermes PMO",
         "priority": "P2",
-        "status": "completed"
+        "status": "pending"
       },
       {
         "id": "DISPATCH-RISK-4",
         "title": "ai-chat returns provider as configured-ai-provider; model confirms deepseek-chat.",
         "owner": "Hermes PMO",
         "priority": "P1",
-        "status": "completed"
+        "status": "pending"
       },
       {
         "id": "DISPATCH-RISK-5",
         "title": "UI-301A is missing from the PMO board; using current release fallback.",
         "owner": "Hermes UI / Codex UI",
         "priority": "P2",
-        "status": "completed"
+        "status": "pending"
       }
     ]
   },
@@ -160,6 +163,22 @@ export const missionControlGeneratedData = {
       "deploy": false,
       "destructive": false
     }
+  },
+  "productionEvidence": {
+    "source": "OPS-117 production monitoring snapshot",
+    "deployId": "6a21623690964f2393f2ed06",
+    "latestMaster": {
+      "commit": "873fef9",
+      "message": "UI-DS-03: merge unified status badge system into master"
+    },
+    "productionUrl": "https://dockdocs.app",
+    "productionQaPassed": true,
+    "included": [
+      "UI-DS-03",
+      "HERMES-002A",
+      "OPS-111",
+      "OPS-113"
+    ]
   },
   "inventory": {
     "tasks": [
@@ -240,6 +259,76 @@ export const missionControlGeneratedData = {
         "label": "Mission Control Auto Sync",
         "area": "OPS",
         "status": "Completed"
+      },
+      {
+        "id": "UI-302",
+        "label": "Mission Control Owner Dashboard",
+        "area": "UI",
+        "status": "Production",
+        "detail": "OPS-117 production monitoring confirms UI-302 was merged, deployed, and production QA passed."
+      },
+      {
+        "id": "UI-DS-03",
+        "label": "Unified Status Badge System",
+        "area": "UI",
+        "status": "Production",
+        "detail": "OPS-117 production monitoring confirms UI-DS-03 was merged, deployed, and production QA passed."
+      },
+      {
+        "id": "HERMES-002A",
+        "label": "Dispatcher Data Model",
+        "area": "HERMES",
+        "status": "Production",
+        "detail": "Dispatcher Summary is present in the OPS-117 production monitoring snapshot."
+      },
+      {
+        "id": "HERMES-001A",
+        "label": "Observer Report Generator",
+        "area": "HERMES",
+        "status": "Production",
+        "detail": "Observer Report Summary is present in the production Mission Control baseline."
+      },
+      {
+        "id": "HERMES-002B",
+        "label": "Dispatcher Queue Writer",
+        "area": "HERMES",
+        "status": "Completed",
+        "detail": "Dispatcher queue writer is merged and generates verification-only dispatch queue data."
+      },
+      {
+        "id": "OPS-108",
+        "label": "Task Queue Writer",
+        "area": "OPS",
+        "status": "Production",
+        "detail": "PMO to task queue writer is present in the current automation baseline."
+      },
+      {
+        "id": "OPS-110",
+        "label": "Auto Pickup Stability",
+        "area": "OPS",
+        "status": "Production",
+        "detail": "Auto pickup stability fixes are present in the current automation baseline."
+      },
+      {
+        "id": "OPS-111",
+        "label": "Watch Mode",
+        "area": "OPS",
+        "status": "Production",
+        "detail": "OPS-117 production monitoring snapshot includes OPS-111 Watch Mode."
+      },
+      {
+        "id": "OPS-113",
+        "label": "Production Monitoring Baseline",
+        "area": "OPS",
+        "status": "Production",
+        "detail": "OPS-117 production monitoring snapshot includes OPS-113 Monitoring Baseline."
+      },
+      {
+        "id": "OPS-117",
+        "label": "Production Monitoring Snapshot",
+        "area": "OPS",
+        "status": "Production",
+        "detail": "OPS-117 production monitoring snapshot is the latest deploy evidence source."
       }
     ],
     "branches": [
