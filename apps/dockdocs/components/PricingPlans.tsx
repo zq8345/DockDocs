@@ -1,187 +1,70 @@
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { defaultLocale, localizedPath, type RouteSlug } from "@/lib/i18n";
 
-type PricingPlansProps = {
-  locale?: RuntimeLocale;
-};
+type PricingPlansProps = { locale?: RuntimeLocale };
+
+const plans = [
+  { name: "Free", monthly: "$0", yearly: "$0", description: "All PDF tools. Unlimited use. No account required.", highlights: ["26 free tools", "Browser-side processing", "Basic file size limits"], cta: "Get started", href: "/chat-with-pdf" as RouteSlug, recommended: false },
+  { name: "Plus", monthly: "$5", yearly: "$3", yearlyTotal: "$36", description: "Higher limits, priority processing, and advanced features for professionals.", highlights: ["50 MB per file", "Batch processing", "Priority conversion queue", "Google Drive integration"], cta: "Upgrade to Plus", href: "" as RouteSlug, recommended: true },
+  { name: "Pro", monthly: "$20", yearly: "$12", yearlyTotal: "$144", description: "Maximum limits, API access, and enterprise-grade features for teams.", highlights: ["Unlimited file size", "API access", "Bulk workflows", "Team management", "Priority support"], cta: "Upgrade to Pro", href: "" as RouteSlug, recommended: false },
+];
 
 export function PricingPlans({ locale = defaultLocale }: PricingPlansProps) {
   const page = getRuntimeCopy(locale).pricing;
 
   return (
-    <section className="grid gap-8" aria-labelledby="pricing-plans">
-      <div className="grid gap-4 lg:grid-cols-3">
-        {page.plans.map((plan) => (
-          <article
-            key={plan.name}
-            className={
-              plan.recommended
-                ? "flex h-full flex-col rounded-[var(--radius)] border border-[color:var(--accent)] bg-[color:var(--surface)] p-5 shadow-[0_22px_60px_rgba(37,99,235,0.16)] transition hover:-translate-y-0.5 sm:p-6"
-                : "flex h-full flex-col rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] sm:p-6"
-            }
+    <div className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+      <h1 id="pricing-plans" className="text-center text-[32px] font-semibold tracking-[-0.016em] sm:text-[40px]">
+        Plans for an AI document workspace
+      </h1>
+      <p className="mt-3 text-center text-[14px] leading-relaxed text-[color:var(--muted)]">
+        From free tools to unlimited workflows. Choose the plan that fits your document volume.
+      </p>
+
+      <div className="mt-12 grid gap-5 lg:grid-cols-3">
+        {plans.map((plan) => (
+          <article key={plan.name}
+            className={`flex flex-col rounded-[var(--radius-lg)] border p-6 transition hover:-translate-y-0.5 ${
+              plan.recommended ? "border-[color:var(--accent)] bg-[color:var(--surface)] shadow-[0_8px_30px_rgba(99,102,241,0.15)]" : "border-[color:var(--line)] bg-[color:var(--surface)]"
+            }`}
           >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <PlanBadge tier={plan.tier} />
-                <h2 className="mt-2 text-2xl font-semibold">{plan.name}</h2>
-              </div>
-              {plan.recommended ? (
-                <span className="rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-2 py-1 text-xs font-semibold text-[color:var(--accent-strong)]">
-                  {page.recommended}
-                </span>
-              ) : null}
+            {plan.recommended && (
+              <span className="mb-3 self-start rounded-full bg-[color:var(--soft-accent)] px-3 py-1 text-[11px] font-semibold text-[color:var(--accent-strong)]">
+                Most popular
+              </span>
+            )}
+            <h2 className="text-[20px] font-semibold">{plan.name}</h2>
+            <div className="mt-4">
+              <p className="text-[36px] font-semibold tracking-tight">
+                {plan.monthly}<span className="text-[16px] font-normal text-[color:var(--muted)]">/mo</span>
+              </p>
+              {plan.yearly !== plan.monthly && (
+                <p className="mt-1 text-[13px] text-[color:var(--muted)]">
+                  {plan.yearly}/mo billed yearly ({plan.yearlyTotal}/yr)
+                </p>
+              )}
             </div>
-            <p className="mt-5 text-4xl font-semibold">{plan.price}</p>
-            <p className="mt-4 min-h-16 text-sm leading-6 text-[color:var(--muted)]">
-              {plan.description}
-            </p>
-            <ul className="mt-5 grid gap-3 text-sm leading-6 text-[color:var(--muted)]">
+            <p className="mt-4 text-[14px] leading-relaxed text-[color:var(--muted)]">{plan.description}</p>
+            <ul className="mt-6 flex-1 space-y-3 text-[14px] text-[color:var(--muted)]">
               {plan.highlights.map((item) => (
-                <li key={item} className="flex gap-2">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                  <span>{item}</span>
+                <li key={item} className="flex items-start gap-2">
+                  <span className="mt-0.5 shrink-0 text-[color:var(--accent)]">✓</span>
+                  {item}
                 </li>
               ))}
             </ul>
-            <a
-              href={pricingHref(locale, plan.href)}
-              className={
-                plan.recommended
-                  ? "mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-                  : "mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-4 text-sm font-semibold transition hover:border-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-              }
-            >
-              {plan.cta}
-            </a>
+            <a href={pricingHref(locale, plan.href) || "/account"}
+              className={`mt-6 flex min-h-[44px] w-full items-center justify-center rounded-[var(--radius)] text-[14px] font-semibold transition ${
+                plan.recommended ? "bg-[color:var(--accent)] text-white hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line)] text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]"
+              }`}
+            >{plan.cta}</a>
           </article>
         ))}
       </div>
-
-      <section
-        aria-labelledby="pricing-upgrade-path"
-        className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--foreground)] p-5 text-[color:var(--background)] sm:p-6"
-      >
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--background)]/70">
-          {page.flowEyebrow}
-        </p>
-        <div className="mt-3 grid gap-5 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-end">
-          <div>
-            <h2 id="pricing-upgrade-path" className="text-2xl font-semibold">
-              {page.flowTitle}
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-[color:var(--background)]/75">
-              {page.flowDescription}
-            </p>
-          </div>
-          <ol className="grid gap-3 sm:grid-cols-3">
-            {page.flowSteps.map((step, index) => (
-              <li
-                key={step}
-                className="rounded-[var(--radius-sm)] border border-white/20 bg-white/10 p-3 text-sm font-semibold leading-6"
-              >
-                <span className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] bg-white text-xs font-semibold text-[color:var(--foreground)]">
-                  {index + 1}
-                </span>
-                <span className="block">{step}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <section
-        id="comparison"
-        aria-labelledby="pricing-comparison"
-        className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5"
-      >
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              {page.comparisonEyebrow}
-            </p>
-            <h2 id="pricing-comparison" className="mt-2 text-2xl font-semibold">
-              {page.comparisonTitle}
-            </h2>
-          </div>
-          <p className="max-w-xl text-sm leading-6 text-[color:var(--muted)]">
-            {page.billingNote}
-          </p>
-        </div>
-
-        <div className="mt-5 hidden overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] md:block">
-          <div className="grid grid-cols-[minmax(220px,1.4fr)_repeat(3,minmax(120px,1fr))] bg-[color:var(--surface-subtle)] text-sm font-semibold">
-            <div className="p-3">{page.featureColumn}</div>
-            {page.plans.map((plan) => (
-              <div key={plan.name} className="p-3 text-center">
-                {plan.name}
-              </div>
-            ))}
-          </div>
-          {page.comparison.map((row) => (
-            <div
-              key={row.feature}
-              className="grid grid-cols-[minmax(220px,1.4fr)_repeat(3,minmax(120px,1fr))] border-t border-[color:var(--line)] text-sm"
-            >
-              <div className="p-3 font-semibold">{row.feature}</div>
-              {row.values.map((value, index) => (
-                <div
-                  key={`${row.feature}-${index}`}
-                  className="border-l border-[color:var(--line)] p-3 text-center text-[color:var(--muted)]"
-                >
-                  {value}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-5 grid gap-3 md:hidden">
-          {page.comparison.map((row) => (
-            <article
-              key={row.feature}
-              className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4"
-            >
-              <h3 className="font-semibold">{row.feature}</h3>
-              <dl className="mt-3 grid gap-2 text-sm">
-                {page.plans.map((plan, index) => (
-                  <div key={plan.name} className="flex min-h-11 items-center justify-between gap-3">
-                    <dt className="font-semibold text-[color:var(--muted)]">{plan.name}</dt>
-                    <dd className="text-right">{row.values[index]}</dd>
-                  </div>
-                ))}
-              </dl>
-            </article>
-          ))}
-        </div>
-      </section>
-    </section>
+    </div>
   );
 }
 
-function pricingHref(locale: RuntimeLocale, href: string) {
-  if (href.startsWith("#") || href.startsWith("/account")) {
-    return href;
-  }
-
-  const slug = href.replace(/^\/+|\/+$/g, "") as RouteSlug;
-  return locale === defaultLocale ? href : localizedPath(locale, slug);
-}
-
-function PlanBadge({ tier }: { tier: string }) {
-  const isFree = tier === "FREE";
-  const isPro = tier === "PRO";
-
-  return (
-    <span
-      className={
-        isFree
-          ? "inline-flex rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] px-2 py-1 text-xs font-semibold text-[color:var(--success)]"
-          : isPro
-            ? "inline-flex rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--foreground)] px-2 py-1 text-xs font-semibold text-[color:var(--background)]"
-            : "inline-flex rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 py-1 text-xs font-semibold text-[color:var(--muted)]"
-      }
-    >
-      {tier}
-    </span>
-  );
+function pricingHref(locale: RuntimeLocale, slug: RouteSlug) {
+  return slug ? (locale === defaultLocale ? `/${slug}/` : localizedPath(locale, slug)) : undefined;
 }
