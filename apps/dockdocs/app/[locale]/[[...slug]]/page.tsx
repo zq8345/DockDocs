@@ -600,7 +600,7 @@ function LocalizedPricing({ locale }: { locale: Locale }) {
       </Section>
       <Section className="bg-[color:var(--surface)]">
         <Container>
-          <PricingPlans locale={locale} />
+          <PricingPlans />
         </Container>
       </Section>
     </main>

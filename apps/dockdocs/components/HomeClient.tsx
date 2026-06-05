@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 
-const pageUrl = "https://dockdocs.app";
-
 const toolIcons: Record<string, string> = {
   "chat-with-pdf": "💬", "ai-summary": "📋", "ocr-pdf": "🔍", "translate-pdf": "🌐",
-  "word-to-pdf": "📄→📕", "pdf-to-word": "📕→📄", "excel-to-pdf": "📊→📕", "pdf-to-excel": "📕→📊",
-  "ppt-to-pdf": "🖥→📕", "jpg-to-pdf": "🖼→📕", "png-to-pdf": "🖼→📕", "pdf-to-jpg": "📕→🖼",
-  "pdf-to-png": "📕→🖼", "text-to-pdf": "📝→📕", "pdf-to-markdown": "📕→📝",
+  "word-to-pdf": "📄", "pdf-to-word": "📕", "excel-to-pdf": "📊", "pdf-to-excel": "📕",
+  "ppt-to-pdf": "🖥", "jpg-to-pdf": "🖼", "png-to-pdf": "🖼", "pdf-to-jpg": "📕",
+  "pdf-to-png": "📕", "text-to-pdf": "📝", "pdf-to-markdown": "📕",
   "merge-pdf": "🔗", "split-pdf": "✂️", "compress-pdf": "📦",
   "delete-page": "🗑", "rotate-page": "🔄", "reorder-pages": "📑", "add-page": "➕",
   "protect-pdf": "🔒", "unlock-pdf": "🔓", "edit-pdf": "✏️", "sign-pdf": "✍️",
@@ -46,13 +44,9 @@ export function HomeClient() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({ "@context":"https://schema.org","@graph":[{ "@type":"WebApplication","@id":`${pageUrl}#app`,name:"DockDocs",applicationCategory:"BusinessApplication",operatingSystem:"Web",url:pageUrl,description:"AI document platform for PDFs.",brand:{ "@type":"Brand",name:"DockDocs" },offers:{ "@type":"Offer",price:"0",priceCurrency:"USD" }}]}) }} />
-
       <section className="border-b border-[color:var(--line)]">
         <div className="mx-auto flex max-w-6xl flex-col items-center px-5 py-16 text-center sm:py-20">
-          <h1 className="max-w-2xl text-[36px] font-semibold leading-[1.08] tracking-[-0.018em] sm:text-[48px]">
-            Every tool you need for PDFs,<br /><span className="text-[color:var(--accent-strong)]">with AI.</span>
-          </h1>
+          <h1 className="max-w-2xl text-[36px] font-semibold leading-[1.08] tracking-[-0.018em] sm:text-[48px]">Every tool you need for PDFs,<br /><span className="text-[color:var(--accent-strong)]">with AI.</span></h1>
           <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-[color:var(--muted)]">Merge, split, compress, convert, chat, summarize — all 100% free.</p>
         </div>
       </section>

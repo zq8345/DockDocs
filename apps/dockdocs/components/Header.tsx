@@ -8,9 +8,9 @@ import { defaultLocale, isLocale } from "@/lib/i18n";
 
 const toolIcons: Record<string, string> = {
   "chat-with-pdf": "💬", "ai-summary": "📋", "ocr-pdf": "🔍", "translate-pdf": "🌐",
-  "word-to-pdf": "📄→📕", "pdf-to-word": "📕→📄", "excel-to-pdf": "📊→📕", "pdf-to-excel": "📕→📊",
-  "ppt-to-pdf": "🖥→📕", "jpg-to-pdf": "🖼→📕", "png-to-pdf": "🖼→📕", "pdf-to-jpg": "📕→🖼",
-  "pdf-to-png": "📕→🖼", "text-to-pdf": "📝→📕", "pdf-to-markdown": "📕→📝",
+  "word-to-pdf": "📄", "pdf-to-word": "📕", "excel-to-pdf": "📊", "pdf-to-excel": "📕",
+  "ppt-to-pdf": "🖥", "jpg-to-pdf": "🖼", "png-to-pdf": "🖼", "pdf-to-jpg": "📕",
+  "pdf-to-png": "📕", "text-to-pdf": "📝", "pdf-to-markdown": "📕",
   "merge-pdf": "🔗", "split-pdf": "✂️", "compress-pdf": "📦",
   "delete-page": "🗑", "rotate-page": "🔄", "reorder-pages": "📑", "add-page": "➕",
   "protect-pdf": "🔒", "unlock-pdf": "🔓", "edit-pdf": "✏️", "sign-pdf": "✍️",
@@ -56,10 +56,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-[color:var(--line)] bg-[color:var(--surface)]/80 backdrop-blur-xl">
       <div className="mx-auto flex h-[52px] max-w-6xl items-center px-4 lg:px-6">
-        {/* Left: logo */}
         <a href={lh("/", locale)} className="shrink-0 mr-4"><BrandMark /></a>
-
-        {/* Center: nav */}
         <nav className="hidden flex-1 items-center justify-center gap-0.5 md:flex">
           {topTools.map((t) => (
             <button key={t} type="button" onClick={() => navTo(t)} className={nl}>{topNames[t]}</button>
@@ -75,7 +72,7 @@ export function Header() {
                     <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{g.label}</p>
                     <div className="space-y-0.5">
                       {g.items.map((item, i) => (
-                        <button key={g.slugs[i]} type="button" onClick={() => { navTo(g.slugs[i]); }} className="flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-2 py-1.5 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]">
+                        <button key={g.slugs[i]} type="button" onClick={() => navTo(g.slugs[i])} className="flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-2 py-1.5 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]">
                           <span className="shrink-0 text-[15px]">{iconFor(g.slugs[i])}</span> {item}
                         </button>
                       ))}
@@ -89,8 +86,6 @@ export function Header() {
             <button key={p.href} type="button" onClick={() => navTo(p.href)} className={nl}>{p.name}</button>
           ))}
         </nav>
-
-        {/* Right: actions */}
         <div className="ml-auto flex items-center gap-1.5">
           <LanguageSwitcher />
           <button type="button" onClick={toggleTheme} aria-label="Toggle theme" className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-sm transition hover:border-[color:var(--line-strong)]">{light ? "☾" : "☀"}</button>
@@ -113,16 +108,13 @@ export function Header() {
                 <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{g.label}</p>
                 <div className="grid grid-cols-2 gap-1">
                   {g.items.map((item, i) => (
-                    <button key={g.slugs[i]} type="button" onClick={() => { navTo(g.slugs[i]); setMobileOpen(false); }} className="flex items-center gap-2 rounded-[var(--radius-sm)] px-2 py-2 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]">
-                      <span>{iconFor(g.slugs[i])}</span> {item}
-                    </button>
+                    <button key={g.slugs[i]} type="button" onClick={() => { navTo(g.slugs[i]); setMobileOpen(false); }} className="flex items-center gap-2 rounded-[var(--radius-sm)] px-2 py-2 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]">{iconFor(g.slugs[i])} {item}</button>
                   ))}
                 </div>
               </div>
             ))}
           </div>
         </div>
-      )}
-    </header>
+      )}</header>
   );
 }
