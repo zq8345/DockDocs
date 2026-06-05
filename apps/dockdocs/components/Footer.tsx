@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
+import { RelatedTools } from "@/components/RelatedTools";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 
 function l(pathname: string | null): string {
@@ -132,6 +133,11 @@ export function Footer() {
               </ul>
             </div>
           ))}
+        </div>
+
+        {/* Related workspaces */}
+        <div className="mt-10 border-t border-[color:var(--line)] pt-8">
+          <RelatedTools compact />
         </div>
 
         {/* Bottom bar */}

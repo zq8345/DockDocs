@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { RelatedTools } from "@/components/RelatedTools";
 
 export const metadata: Metadata = {
   title: "DockDocs — AI Document Platform",
@@ -235,7 +234,6 @@ export default function Home() {
         </div>
       </section>
 
-      <RelatedTools />
     </main>
   );
 }
