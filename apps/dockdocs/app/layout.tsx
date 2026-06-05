@@ -2,72 +2,60 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
-import { SidebarNav } from "@/components/SidebarNav";
 import { absoluteUrl, googleSiteVerification, siteUrl } from "@/shared/seo/routes";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: {
-    default: "DockDocs — AI Document Workspace",
-    template: "%s — DockDocs",
-  },
-  description:
-    "DockDocs is an AI document workspace for PDF tools, office files, writing cleanup, and practical document workflows.",
-  alternates: {
-    canonical: "/",
-  },
+  title: { default: "DockDocs — Free Online PDF Tools", template: "%s — DockDocs" },
+  description: "Every tool you need for PDFs — merge, split, compress, convert, chat, summarize, OCR. All free.",
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "DockDocs — AI Document Workspace",
-    description:
-      "AI document tools for PDFs, office files, writing cleanup, and document workflows.",
-    url: absoluteUrl("/"),
-    siteName: "DockDocs",
-    type: "website",
+    title: "DockDocs — Free Online PDF Tools",
+    description: "AI document tools for PDFs, office files, and document workflows.",
+    url: absoluteUrl("/"), siteName: "DockDocs", type: "website",
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
   icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon-16.svg", type: "image/svg+xml", sizes: "16x16" },
-      { url: "/app-icon.svg", type: "image/svg+xml", sizes: "any" },
-    ],
-    shortcut: "/favicon.svg",
-    apple: "/apple-touch-icon.svg",
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }, { url: "/favicon-16.svg", type: "image/svg+xml", sizes: "16x16" }, { url: "/app-icon.svg", type: "image/svg+xml", sizes: "any" }],
+    shortcut: "/favicon.svg", apple: "/apple-touch-icon.svg",
   },
   manifest: "/site.webmanifest",
-  verification: googleSiteVerification
-    ? {
-        google: googleSiteVerification,
-      }
-    : undefined,
+  verification: googleSiteVerification ? { google: googleSiteVerification } : undefined,
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('dockdocs-theme');
-                  if (theme === 'light' || (!theme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-                    document.documentElement.classList.add('light');
-                  }
-                } catch(e) {}
-              })();
-            `,
-          }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            try {
+              var theme = localStorage.getItem('dockdocs-theme');
+              if (theme === 'light' || (!theme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                document.documentElement.classList.add('light');
+              }
+            } catch(e) {}
+
+            try {
+              var saved = localStorage.getItem('dockdocs-lang');
+              if (saved) return;
+              var lang = (navigator.language || '').toLowerCase();
+              var path = window.location.pathname;
+              var seg = path.split('/').filter(Boolean)[0];
+              var hasPrefix = ['en','zh','ja','ko','es','fr','de','pt','it','ru','ar','hi'].includes(seg);
+              if (hasPrefix) return;
+              var map = { zh:1, 'zh-cn':1, 'zh-tw':1, 'zh-hk':1, ja:1, ko:1, es:1, fr:1, de:1, pt:1, it:1, ru:1, ar:1, hi:1 };
+              var code = lang.split('-')[0];
+              if (map[lang] || map[code]) {
+                var to = map[lang] ? lang.split('-')[0] : code;
+                if (to !== 'en') {
+                  window.location.replace('/' + to + (path === '/' ? '/' : path));
+                }
+              }
+            } catch(e) {}
+          })();
+        `}} />
       </head>
       <body>
         <HtmlLangSync />

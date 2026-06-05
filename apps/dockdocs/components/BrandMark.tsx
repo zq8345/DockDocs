@@ -56,9 +56,6 @@ export function BrandMark({ className = "", showWordmark = true, iconOnly = fals
           <span className="text-[15px] font-semibold tracking-[-0.01em] text-[color:var(--foreground)]">
             Dock<span className="text-[color:var(--accent)]">Docs</span>
           </span>
-          <span className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-[color:var(--faint)]">
-            {copy.tagline}
-          </span>
         </span>
       )}
     </span>

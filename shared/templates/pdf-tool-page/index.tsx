@@ -340,12 +340,8 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       <HeroSection config={config} />
-      <BenefitsSection config={config} />
-      <FeaturesSection config={config} />
-      <HowItWorksSection config={config} />
-      <FaqSection config={config} />
-      <IndexingLinksSection config={config} />
       {config.relatedTools === false ? null : config.relatedTools}
+      <FaqSection config={config} />
       <CtaSection config={config} />
     </main>
   );
