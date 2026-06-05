@@ -1,0 +1,246 @@
+{
+  "generatedAt": "2026-06-05T00:46:48.358Z",
+  "source": "HERMES-003 PMO Board Update Proposal",
+  "mode": "proposal-only",
+  "writesBoard": false,
+  "executesRunner": false,
+  "deploysProduction": false,
+  "inputs": {
+    "boardPresent": true,
+    "observerGeneratedAt": "2026-06-04T09:00:27.814Z",
+    "dispatcherGeneratedAt": "2026-06-04T10:34:19.682Z",
+    "dispatchQueueGeneratedAt": "2026-06-04T12:59:13.351Z",
+    "missionControlGeneratedAt": "2026-06-04T12:59:13.705Z",
+    "productionSnapshotId": "OPS-117"
+  },
+  "currentProductionFacts": {
+    "latestDeployedCommit": "b1054a7",
+    "latestDeployId": "6a221743d1812977cb185a69",
+    "productionUrl": "https://dockdocs.app",
+    "qaResult": "PASS"
+  },
+  "sections": {
+    "proposedMoves": [],
+    "proposedCompletions": [
+      {
+        "id": "HERMES-002A",
+        "title": "Mark HERMES-002A as merged/completed",
+        "from": null,
+        "to": "Completed / Merged",
+        "reason": "Dispatcher Summary is visible and HERMES-002A has entered master.",
+        "evidence": [
+          "Dispatcher Summary visible",
+          "dispatcher-report.json exists",
+          "Mission Control status: Production"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Mark HERMES-002A as Completed or Merged in PMO Board."
+      },
+      {
+        "id": "HERMES-002B",
+        "title": "Mark HERMES-002B as merged/completed",
+        "from": null,
+        "to": "Completed / Merged",
+        "reason": "Dispatcher queue writer is merged and dispatch queue data exists.",
+        "evidence": [
+          "scripts/codex-task-dispatch.generated.json exists",
+          "Dispatch queue taskCount: 11",
+          "Dispatch queue pending: 7"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Mark HERMES-002B as Completed or Merged in PMO Board."
+      },
+      {
+        "id": "HERMES-002C",
+        "title": "Mark HERMES-002C as merged/completed",
+        "from": null,
+        "to": "Completed / Merged",
+        "reason": "HERMES-002C merge commit is present in current master history.",
+        "evidence": [
+          "HERMES-002C found in latest master commits",
+          "Dispatcher Queue Summary visible"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Mark HERMES-002C as Completed or Merged."
+      },
+      {
+        "id": "HERMES-004",
+        "title": "Mark HERMES-004 as merged/completed",
+        "from": null,
+        "to": "Completed / Merged",
+        "reason": "HERMES-004 merge commit is present and Runner Summary is visible.",
+        "evidence": [
+          "HERMES-004 found in latest master commits",
+          "Runner completed: 7",
+          "Runner failed: 0"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Mark HERMES-004 as Completed or Merged."
+      },
+      {
+        "id": "P0S",
+        "title": "Mark P0S as completed",
+        "from": null,
+        "to": "Completed",
+        "reason": "P0S was merged to master and deployed through OPS-118.",
+        "evidence": [
+          "P0S merge commit b1054a7",
+          "OPS-118 deploy ID: 6a221743d1812977cb185a69",
+          "Mission Control data accuracy verified in production"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Add P0S to completed PMO records."
+      }
+    ],
+    "proposedProductionMarks": [
+      {
+        "id": "UI-302",
+        "title": "Mark UI-302 as Production",
+        "from": null,
+        "to": "Production",
+        "reason": "UI-302 is deployed and production QA passed.",
+        "evidence": [
+          "Mission Control data = Production",
+          "Latest deployed commit: b1054a7",
+          "Deploy ID: 6a221743d1812977cb185a69"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Set UI-302 PMO status to Production."
+      },
+      {
+        "id": "UI-DS-03",
+        "title": "Mark UI-DS-03 as Production",
+        "from": null,
+        "to": "Production",
+        "reason": "UI-DS-03 is present in the production monitoring baseline and Mission Control generated data.",
+        "evidence": [
+          "OPS-116 deploy PASS",
+          "OPS-117 production QA PASS",
+          "Mission Control data = Production"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Set UI-DS-03 PMO status to Production."
+      },
+      {
+        "id": "OPS-118",
+        "title": "Mark OPS-118 as Production",
+        "from": null,
+        "to": "Production",
+        "reason": "OPS-118 production deploy and QA completed.",
+        "evidence": [
+          "Deploy ID: 6a221743d1812977cb185a69",
+          "Production URL: https://dockdocs.app",
+          "Mission Control production QA PASS",
+          "Chat Function production QA PASS"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Record OPS-118 as Production in PMO Board."
+      }
+    ],
+    "proposedBlockedUpdates": [],
+    "proposedNewTasks": [],
+    "proposedRemovalsFromActive": [
+      {
+        "id": "UI-302",
+        "title": "Remove UI-302 from active or in-progress PMO state",
+        "from": "Active / In Progress",
+        "to": "Production",
+        "reason": "Mission Control and production QA now mark UI-302 as Production.",
+        "evidence": [
+          "Mission Control generated data: UI-302 = Production",
+          "OPS-118 production deploy PASS: 6a221743d1812977cb185a69",
+          "Production QA PASS"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Remove UI-302 from Active tasks and add it to production/completed records."
+      }
+    ],
+    "risks": [
+      {
+        "id": "PMO-WARNING-1",
+        "title": "Mission Control still reports generated-data warnings",
+        "from": null,
+        "to": "Track",
+        "reason": "Warnings are present in dispatcher report summary.",
+        "evidence": [
+          "missionControlWarnings: 2"
+        ],
+        "confidence": "medium",
+        "recommendedAction": "Review warnings during the next PMO status update."
+      },
+      {
+        "id": "OPS-117-RISK-2",
+        "title": "2 moderate npm audit issues remain; no audit fix was run.",
+        "from": null,
+        "to": "Track",
+        "reason": "Risk is listed in production monitoring snapshot.",
+        "evidence": [
+          "production-monitoring-snapshot-ops-117.json"
+        ],
+        "confidence": "medium",
+        "recommendedAction": "Keep risk visible until a PMO owner closes it."
+      },
+      {
+        "id": "OPS-117-RISK-3",
+        "title": "Anonymous QA cannot cover login-only badges or Pro account states.",
+        "from": null,
+        "to": "Track",
+        "reason": "Risk is listed in production monitoring snapshot.",
+        "evidence": [
+          "production-monitoring-snapshot-ops-117.json"
+        ],
+        "confidence": "medium",
+        "recommendedAction": "Keep risk visible until a PMO owner closes it."
+      },
+      {
+        "id": "OPS-117-RISK-4",
+        "title": "HERMES-001B is not yet in master, so Status Reconciliation Summary is absent.",
+        "from": null,
+        "to": "Track",
+        "reason": "Risk is listed in production monitoring snapshot.",
+        "evidence": [
+          "production-monitoring-snapshot-ops-117.json"
+        ],
+        "confidence": "medium",
+        "recommendedAction": "Keep risk visible until a PMO owner closes it."
+      },
+      {
+        "id": "OPS-117-RISK-5",
+        "title": "The original [local-path] directory should not be used for deploy if it is dirty or behind.",
+        "from": null,
+        "to": "Track",
+        "reason": "Risk is listed in production monitoring snapshot.",
+        "evidence": [
+          "production-monitoring-snapshot-ops-117.json"
+        ],
+        "confidence": "medium",
+        "recommendedAction": "Keep risk visible until a PMO owner closes it."
+      }
+    ],
+    "recommendedNextActions": [
+      {
+        "id": "NEXT-1",
+        "title": "PMO review should approve or reject proposed board changes",
+        "from": null,
+        "to": "Human PMO review",
+        "reason": "HERMES-003 is proposal-only and does not write the PMO Board.",
+        "evidence": [
+          "writesBoard=false",
+          "proposal-only mode"
+        ],
+        "confidence": "high",
+        "recommendedAction": "Have Hermes PMO review this proposal before updating dockdocs-project-board.md."
+      }
+    ]
+  },
+  "summary": {
+    "proposedMoves": 0,
+    "proposedCompletions": 5,
+    "proposedProductionMarks": 3,
+    "proposedBlockedUpdates": 0,
+    "proposedNewTasks": 0,
+    "proposedRemovalsFromActive": 1,
+    "risks": 5,
+    "recommendedNextActions": 1
+  }
+}
