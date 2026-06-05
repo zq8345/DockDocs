@@ -1,95 +1,72 @@
 import type { Metadata } from "next";
-import { BrandMark } from "@/components/BrandMark";
-import { RelatedTools } from "@/components/RelatedTools";
-import { ResultPreview } from "@/components/ResultPreview";
-import { UploadPanel } from "@/components/UploadPanel";
 
 const pageUrl = "https://dockdocs.app";
 
-const aiTools = [
+const pillars = [
   {
-    name: "Chat with PDF",
+    icon: "📄",
+    title: "Convert",
+    description: "20+ tools for PDF, Word, Excel, PPT, images, and text. Convert between formats with CloudConvert precision.",
+    href: "/word-to-pdf",
+    cta: "Convert a file →",
+  },
+  {
+    icon: "🤖",
+    title: "AI Reasoning",
+    description: "Chat with PDFs, extract summaries, identify risks, and generate action items. AI that reads documents with you.",
     href: "/chat-with-pdf",
-    description: "Ask grounded questions against extracted PDF text.",
-    group: "AI",
-    tier: "FREE",
+    cta: "Chat with PDF →",
   },
   {
-    name: "AI Summary",
-    href: "/ai-summary",
-    description: "Turn long documents into summaries, key points, and actions.",
-    group: "AI",
-    tier: "FREE",
-  },
-  {
-    name: "OCR",
-    href: "/ocr",
-    description: "Prepare scanned PDFs for searchable AI document work.",
-    group: "AI",
-    tier: "FREE",
-  },
-  {
-    name: "PDF to Word",
-    href: "/pdf-to-word",
-    description: "Convert PDF content into editable Word-ready output.",
-    group: "Convert",
-    tier: "FREE",
-  },
-  {
-    name: "Compress PDF",
-    href: "/compress-pdf",
-    description: "Reduce PDF size for email, portals, and office workflows.",
-    group: "Optimize",
-    tier: "FREE",
-  },
-  {
-    name: "Dashboard",
+    icon: "📊",
+    title: "Workspace",
+    description: "Track usage, manage files, and scale from first upload to a full document workflow with Pro features.",
     href: "/dashboard",
-    description: "Track recent files, AI runs, and document workflow status.",
-    group: "Workspace",
-    tier: "PLUS",
+    cta: "Open dashboard →",
   },
 ];
 
-const discoveryCategories = [
-  { name: "AI Workspace", count: "3 workflows", description: "Read, ask, summarize, and extract decisions." },
-  { name: "Convert", count: "2 live entries", description: "Move PDFs into editable or export-ready formats." },
-  { name: "Optimize", count: "1 live entry", description: "Prepare files for portals, email, and handoff." },
-  { name: "OCR & Extraction", count: "2 workflows", description: "Make scanned content readable before AI review." },
-];
-
-const popularWorkflows = [
-  "Upload a contract, ask for risks, then create action items.",
-  "OCR a scan before AI Summary or Chat with PDF.",
-  "Compress a PDF before sending it to a portal or client.",
-];
-
-const workflows = [
-  "Upload PDFs, scans, reports, contracts, and office documents.",
-  "Run AI chat, summary, OCR, conversion, or compression in one workspace.",
-  "Review structured output, copy results, download files, or continue in chat.",
+const toolGroups = [
+  {
+    label: "Convert",
+    color: "#6366f1",
+    items: ["Word to PDF", "Excel to PDF", "PPT to PDF", "PDF to Word", "PDF to Excel", "JPG to PDF", "PNG to PDF", "Text to PDF"],
+    hrefs: ["/word-to-pdf", "/excel-to-pdf", "/ppt-to-pdf", "/pdf-to-word", "/pdf-to-excel", "/jpg-to-pdf", "/png-to-pdf", "/text-to-pdf"],
+  },
+  {
+    label: "Edit & Organize",
+    color: "#8b5cf6",
+    items: ["Merge PDF", "Split PDF", "Compress PDF", "Delete Pages", "Rotate Pages", "Reorder Pages", "Add Pages"],
+    hrefs: ["/merge-pdf", "/split-pdf", "/compress-pdf", "/delete-page", "/rotate-page", "/reorder-pages", "/add-page"],
+  },
+  {
+    label: "AI & Export",
+    color: "#06b6d4",
+    items: ["Chat with PDF", "AI Summary", "OCR PDF", "PDF to JPG", "PDF to PNG", "PDF to Markdown", "Protect PDF"],
+    hrefs: ["/chat-with-pdf", "/ai-summary", "/ocr-pdf", "/pdf-to-jpg", "/pdf-to-png", "/pdf-to-markdown", "/protect-pdf"],
+  },
 ];
 
 const faqs = [
   {
     question: "What is DockDocs?",
     answer:
-      "DockDocs is an AI document platform for working with PDFs, scanned files, office documents, summaries, conversion, and document chat.",
+      "DockDocs is an AI document platform for working with PDFs, scanned files, office documents, summaries, conversion, and document chat — all in one workspace.",
   },
   {
-    question: "Is DockDocs just a PDF tool site?",
+    question: "Is it free?",
     answer:
-      "No. PDF utilities are part of the workflow, but DockDocs is designed as an AI-first document workspace for repeat document work.",
+      "Yes. All AI and conversion tools are free. A Pro plan adds higher usage limits and premium workspace features.",
   },
   {
-    question: "What can I upload?",
+    question: "What file types are supported?",
     answer:
-      "The current UI is centered on PDFs and office documents, with focused pages for chat, summary, OCR, PDF to Word, and compression.",
+      "PDF, DOCX, XLSX, PPTX, JPG, PNG, TXT, and Markdown. Upload, convert, and process documents across formats.",
   },
   {
-    question: "Does the interface work on mobile?",
+    question: "Does it work on mobile?",
     answer:
-      "Yes. The workspace, upload areas, tool cards, and navigation are built to stack into a single-column mobile layout.",
+      "Yes. Every tool page, the workspace, and the dashboard are responsive across desktop, tablet, and mobile.",
   },
 ];
 
@@ -132,25 +109,25 @@ const jsonLd = {
 };
 
 export const metadata: Metadata = {
-  title: "DockDocs AI Document Workspace",
+  title: "DockDocs — AI Document Workspace",
   description:
-    "DockDocs is an AI document workspace for PDF tools, office files, writing cleanup, and practical document workflows.",
+    "AI-powered document tools for PDFs, office files, and real document workflows. Convert, chat, summarize, OCR, and more.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "DockDocs AI Document Workspace",
+    title: "DockDocs — AI Document Workspace",
     description:
-      "A focused document workspace for PDF tools, office files, and AI-assisted document workflows.",
+      "AI-powered document tools for PDFs, office files, and real document workflows.",
     url: pageUrl,
     siteName: "DockDocs",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DockDocs AI Document Workspace",
+    title: "DockDocs — AI Document Workspace",
     description:
-      "A focused document workspace for PDF tools, office files, and AI-assisted document workflows.",
+      "AI-powered document tools for PDFs, office files, and real document workflows.",
   },
   robots: {
     index: true,
@@ -160,243 +137,179 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main>
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+
+      {/* ── Hero ─────────────────────────────────────────── */}
       <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto grid min-h-[calc(100vh-92px)] max-w-7xl items-center gap-8 px-5 py-10 sm:px-6 lg:grid-cols-[0.86fr_1.14fr] lg:px-8">
-          <div>
-            <BrandMark className="mb-8" />
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              AI Document Platform
-            </p>
-            <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight sm:text-5xl xl:text-6xl">
-              ChatGPT for documents, built for real files.
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[color:var(--muted)] sm:text-lg">
-              Upload PDFs, scans, reports, and office documents. Ask questions,
-              summarize, extract text, convert files, or compress output without
-              leaving the workspace.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <a
-                href="/chat-with-pdf"
-                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-[color:var(--background)] transition hover:opacity-90"
-              >
-                Chat with a PDF
-              </a>
-              <a
-                href="#workspace"
-                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-5 text-sm font-semibold transition hover:border-[color:var(--foreground)]"
-              >
-                View workspace
-              </a>
-            </div>
-            <div className="mt-8 grid max-w-xl grid-cols-3 gap-4 border-y border-[color:var(--line)] py-5">
-              <Metric value="PDF" label="Upload" />
-              <Metric value="AI" label="Analyze" />
-              <Metric value="Ready" label="Output" />
-            </div>
+        <div className="mx-auto flex max-w-5xl flex-col items-center px-5 py-20 text-center sm:py-28 lg:py-36">
+          <div className="inline-flex rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--accent-strong)]">
+            AI Document Platform
           </div>
-          <UploadPanel
-            title="Start a document workflow"
-            description="Drop a PDF or office document here, then choose AI chat, summary, OCR, conversion, or compression."
-            formats="PDF, DOC, DOCX"
-            limit="Up to 25 MB"
-            cta="Upload document"
-            interactive={false}
-          />
-        </div>
-      </section>
+          <h1 className="mt-8 max-w-3xl text-[42px] font-semibold leading-[1.06] tracking-[-0.022em] sm:text-[56px] sm:leading-[1.04] sm:tracking-[-0.024em] lg:text-[64px]">
+            Documents meet AI.
+            <br />
+            <span className="text-[color:var(--muted)]">Real work begins.</span>
+          </h1>
+          <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-[color:var(--muted)] sm:text-[17px]">
+            Upload PDFs, scans, reports, and office documents. Chat, summarize,
+            convert, compress — all inside one quiet, focused workspace.
+          </p>
+          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="/chat-with-pdf"
+              className="inline-flex min-h-[42px] items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.4)] transition hover:bg-[color:var(--accent-hover)]"
+            >
+              Start free
+            </a>
+            <a
+              href="#tools"
+              className="inline-flex min-h-[42px] items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-5 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
+            >
+              Browse tools →
+            </a>
+          </div>
 
-      <section
-        id="workspace"
-        className="border-b border-[color:var(--line)] px-5 py-16 sm:px-6 lg:px-8"
-      >
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              Workspace First
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
-              One place for document input, AI reasoning, and usable output.
-            </h2>
-            <div className="mt-6 grid gap-3">
-              {workflows.map((item, index) => (
-                <div
-                  key={item}
-                  className="grid gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:grid-cols-[44px_1fr]"
-                >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-[var(--radius)] bg-[color:var(--soft-accent)] text-sm font-semibold text-[color:var(--accent-strong)]">
-                    {index + 1}
-                  </span>
-                  <p className="text-sm leading-6 text-[color:var(--muted)]">{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <ResultPreview
-            eyebrow="Output"
-            title="Document intelligence preview"
-            summary="A clean result surface makes AI output reviewable instead of hiding it behind a download-only success screen."
-            keyPoints={[
-              "Summary, decisions, entities, and next actions stay visible.",
-              "Users can copy, download, or continue into Chat with PDF.",
-              "The workspace pattern scales from MVP pages to dashboard flows.",
-            ]}
-            actions={["Review extracted insights", "Start a grounded chat", "Export final document"]}
-          />
-        </div>
-      </section>
-
-      <section
-        id="ai"
-        className="border-b border-[color:var(--line)] px-5 py-16 sm:px-6 lg:px-8"
-      >
-        <div className="mx-auto max-w-7xl">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              Tool discovery
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
-              Find the right document workflow without learning a tool grid.
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-              Search is a UI shell for now. The surface is designed to guide users by
-              outcome: ask, summarize, extract, convert, optimize, or review.
-            </p>
-          </div>
-          <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-            <label className="block">
-              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-                Find a document workflow
-              </span>
-              <input
-                disabled
-                placeholder="Search by outcome: summarize, OCR, convert, compress..."
-                className="mt-3 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 text-sm text-[color:var(--muted)] outline-none"
-              />
-            </label>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {["AI", "Convert", "Optimize", "OCR", "FREE", "PLUS"].map((filter) => (
-                <span
-                  key={filter}
-                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-xs font-semibold text-[color:var(--muted)]"
-                >
-                  {filter}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {discoveryCategories.map((category) => (
-              <article
-                key={category.name}
-                className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-semibold">{category.name}</h3>
-                  <span className="rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-2 py-1 text-xs font-semibold text-[color:var(--accent-strong)]">
-                    {category.count}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
-                  {category.description}
+          <div className="mt-12 grid w-full max-w-md grid-cols-3 gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
+            {[
+              ["20+", "Tools"],
+              ["100%", "Free"],
+              ["AI", "Ready"],
+            ].map(([value, label]) => (
+              <div key={label} className="text-center">
+                <p className="text-[22px] font-semibold tracking-tight">{value}</p>
+                <p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[color:var(--faint)]">
+                  {label}
                 </p>
-              </article>
+              </div>
             ))}
           </div>
-          <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {aiTools.map((tool) => (
+        </div>
+      </section>
+
+      {/* ── Three Pillars ─────────────────────────────────── */}
+      <section className="border-b border-[color:var(--line)]">
+        <div className="mx-auto max-w-5xl px-5 py-20 sm:py-24">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">
+            Three pillars
+          </p>
+          <h2 className="mt-4 text-center text-[32px] font-semibold tracking-[-0.018em] sm:text-[38px]">
+            Everything your documents need.
+          </h2>
+          <div className="mt-14 grid gap-5 sm:grid-cols-3">
+            {pillars.map((pillar) => (
               <a
-                key={tool.name}
-                href={tool.href}
-                className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
+                key={pillar.title}
+                href={pillar.href}
+                className="group rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-raised)]"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-                      {tool.group}
-                    </p>
-                    <h3 className="mt-2 text-lg font-semibold">{tool.name}</h3>
-                  </div>
-                  <span className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 py-1 text-xs font-semibold text-[color:var(--muted)]">
-                    {tool.tier}
-                  </span>
-                </div>
-                <p className="mt-4 text-sm leading-6 text-[color:var(--muted)]">
-                  {tool.description}
+                <span className="text-[28px]">{pillar.icon}</span>
+                <h3 className="mt-5 text-[18px] font-semibold tracking-[-0.01em]">
+                  {pillar.title}
+                </h3>
+                <p className="mt-3 text-[14px] leading-relaxed text-[color:var(--muted)]">
+                  {pillar.description}
                 </p>
+                <span className="mt-5 inline-block text-[13px] font-medium text-[color:var(--accent-strong)] group-hover:underline">
+                  {pillar.cta}
+                </span>
               </a>
             ))}
           </div>
-          <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              Popular workflows
-            </p>
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
-              {popularWorkflows.map((workflow) => (
-                <p
-                  key={workflow}
-                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 text-sm leading-6 text-[color:var(--muted)]"
-                >
-                  {workflow}
-                </p>
-              ))}
-            </div>
+        </div>
+      </section>
+
+      {/* ── Tool Card Wall ────────────────────────────────── */}
+      <section id="tools" className="border-b border-[color:var(--line)]">
+        <div className="mx-auto max-w-5xl px-5 py-20 sm:py-24">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">
+            All tools
+          </p>
+          <h2 className="mt-4 text-center text-[32px] font-semibold tracking-[-0.018em] sm:text-[38px]">
+            20+ document tools, one workspace.
+          </h2>
+
+          <div className="mt-14 grid gap-10 sm:grid-cols-3">
+            {toolGroups.map((group) => (
+              <div key={group.label}>
+                <div className="mb-4 flex items-center gap-2.5">
+                  <span
+                    className="h-2.5 w-2.5 rounded-full"
+                    style={{ backgroundColor: group.color }}
+                  />
+                  <h3 className="text-[13px] font-semibold uppercase tracking-[0.1em] text-[color:var(--faint)]">
+                    {group.label}
+                  </h3>
+                </div>
+                <ul className="space-y-1">
+                  {group.items.map((item, i) => (
+                    <li key={item}>
+                      <a
+                        href={group.hrefs[i]}
+                        className="block rounded-[var(--radius-sm)] px-2.5 py-2 text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+                      >
+                        {item}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <FaqSection />
-      <RelatedTools />
-    </main>
-  );
-}
-
-function Metric({ value, label }: { value: string; label: string }) {
-  return (
-    <div>
-      <p className="text-2xl font-semibold">{value}</p>
-      <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-[color:var(--muted)]">
-        {label}
-      </p>
-    </div>
-  );
-}
-
-function FaqSection() {
-  return (
-    <section
-      id="faq"
-      aria-labelledby="faq-title"
-      className="border-b border-[color:var(--line)] px-5 py-16 sm:px-6 lg:px-8"
-    >
-      <div className="mx-auto max-w-4xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-          FAQ
-        </p>
-        <h2 id="faq-title" className="mt-4 text-3xl font-semibold">
-          DockDocs questions
-        </h2>
-        <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
-          {faqs.map((faq) => (
-            <details key={faq.question} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold">
-                {faq.question}
-                <span className="text-[color:var(--muted)] transition group-open:rotate-45">
-                  +
-                </span>
-              </summary>
-              <p className="mt-4 leading-7 text-[color:var(--muted)]">
-                {faq.answer}
-              </p>
-            </details>
-          ))}
+      {/* ── CTA ───────────────────────────────────────────── */}
+      <section className="border-b border-[color:var(--line)]">
+        <div className="mx-auto flex max-w-2xl flex-col items-center px-5 py-20 text-center sm:py-28">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent-strong)]">
+            Get started
+          </p>
+          <h2 className="mt-5 text-[32px] font-semibold tracking-[-0.018em] sm:text-[38px]">
+            From first upload to a full document workflow.
+          </h2>
+          <p className="mt-5 text-[15px] leading-relaxed text-[color:var(--muted)]">
+            No account required. Upload a file and start working — chat, convert,
+            compress, or summarize in seconds.
+          </p>
+          <a
+            href="/chat-with-pdf"
+            className="mt-9 inline-flex min-h-[44px] items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.4)] transition hover:bg-[color:var(--accent-hover)]"
+          >
+            Try DockDocs free
+          </a>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* ── FAQ ───────────────────────────────────────────── */}
+      <section id="faq" className="px-5 py-20 sm:py-24">
+        <div className="mx-auto max-w-2xl">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">
+            FAQ
+          </p>
+          <h2 className="mt-4 text-center text-[28px] font-semibold tracking-[-0.016em]">
+            Common questions
+          </h2>
+          <div className="mt-10 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
+            {faqs.map((faq) => (
+              <details key={faq.question} className="group">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[15px] font-medium transition hover:text-[color:var(--foreground)]">
+                  {faq.question}
+                  <span className="shrink-0 text-[color:var(--faint)] transition group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="pb-5 text-[14px] leading-relaxed text-[color:var(--muted)]">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

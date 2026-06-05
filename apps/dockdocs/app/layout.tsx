@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
+import { AppShell } from "@/components/AppShell";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
+import { SidebarNav } from "@/components/SidebarNav";
 import { absoluteUrl, googleSiteVerification, siteUrl } from "@/shared/seo/routes";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "DockDocs AI Document Workspace",
-    template: "%s | DockDocs",
+    default: "DockDocs — AI Document Workspace",
+    template: "%s — DockDocs",
   },
   description:
     "DockDocs is an AI document workspace for PDF tools, office files, writing cleanup, and practical document workflows.",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "DockDocs AI Document Workspace",
+    title: "DockDocs — AI Document Workspace",
     description:
       "AI document tools for PDFs, office files, writing cleanup, and document workflows.",
     url: absoluteUrl("/"),
@@ -52,12 +52,26 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('dockdocs-theme');
+                  if (theme === 'light' || (!theme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+                    document.documentElement.classList.add('light');
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body>
         <HtmlLangSync />
-        <Header />
-        {children}
-        <Footer />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
