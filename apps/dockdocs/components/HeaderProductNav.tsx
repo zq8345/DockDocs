@@ -71,7 +71,7 @@ const featureDefinitions: FeatureDefinition[] = [
         labels: { en: "To PDF", zh: "转为 PDF" },
         items: [
           { labels: { en: "JPG to PDF", zh: "JPG 转 PDF" }, tier: "FREE", slug: "jpg-to-pdf" },
-          { labels: { en: "PNG to PDF", zh: "PNG 转 PDF" }, tier: "PLUS" },
+          { labels: { en: "PNG to PDF", zh: "PNG 转 PDF" }, tier: "PLUS", slug: "png-to-pdf" },
           { labels: { en: "Word to PDF", zh: "Word 转 PDF" }, tier: "PLUS" },
           { labels: { en: "PPT to PDF", zh: "PPT 转 PDF" }, tier: "PLUS" },
           { labels: { en: "Excel to PDF", zh: "Excel 转 PDF" }, tier: "PLUS" },
@@ -81,7 +81,7 @@ const featureDefinitions: FeatureDefinition[] = [
       {
         labels: { en: "From PDF", zh: "从 PDF 转出" },
         items: [
-          { labels: { en: "PDF to JPG", zh: "PDF 转 JPG" }, tier: "PLUS" },
+          { labels: { en: "PDF to JPG", zh: "PDF 转 JPG" }, tier: "PLUS", slug: "pdf-to-jpg" },
           { labels: { en: "PDF to PNG", zh: "PDF 转 PNG" }, tier: "PLUS" },
         ],
       },
@@ -107,10 +107,10 @@ const featureDefinitions: FeatureDefinition[] = [
       {
         labels: { en: "Page Operations", zh: "页面操作" },
         items: [
-          { labels: { en: "Delete Page", zh: "删除页面" }, tier: "PLUS" },
-          { labels: { en: "Add Page", zh: "添加页面" }, tier: "PLUS" },
-          { labels: { en: "Rotate Page", zh: "旋转页面" }, tier: "PLUS" },
-          { labels: { en: "Reorder Pages", zh: "页面排序" }, tier: "PLUS" },
+          { labels: { en: "Delete Page", zh: "删除页面" }, tier: "PLUS", slug: "delete-page" },
+          { labels: { en: "Add Page", zh: "添加页面" }, tier: "PLUS", slug: "add-page" },
+          { labels: { en: "Rotate Page", zh: "旋转页面" }, tier: "PLUS", slug: "rotate-page" },
+          { labels: { en: "Reorder Pages", zh: "页面排序" }, tier: "PLUS", slug: "reorder-pages" },
           { labels: { en: "Merge PDF", zh: "合并 PDF" }, tier: "FREE", slug: "merge-pdf" },
           { labels: { en: "Split PDF", zh: "拆分 PDF" }, tier: "FREE", slug: "split-pdf" },
         ],
@@ -154,7 +154,7 @@ const featureDefinitions: FeatureDefinition[] = [
       {
         labels: { en: "Basic", zh: "基础" },
         items: [
-          { labels: { en: "Password Protection", zh: "密码保护" }, tier: "PLUS" },
+          { labels: { en: "Password Protection", zh: "密码保护" }, tier: "PLUS", slug: "protect-pdf" },
         ],
       },
     ],

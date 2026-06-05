@@ -8,7 +8,14 @@ export type PdfRuntimeSlug =
   | "split-pdf"
   | "ocr-pdf"
   | "jpg-to-pdf"
-  | "pdf-to-word";
+  | "png-to-pdf"
+  | "pdf-to-word"
+  | "pdf-to-jpg"
+  | "delete-page"
+  | "rotate-page"
+  | "reorder-pages"
+  | "add-page"
+  | "protect-pdf";
 
 export type PdfRuntimeProgress = {
   progress: number;
@@ -58,7 +65,14 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "split-pdf" ||
     slug === "ocr-pdf" ||
     slug === "jpg-to-pdf" ||
-    slug === "pdf-to-word"
+    slug === "png-to-pdf" ||
+    slug === "pdf-to-word" ||
+    slug === "pdf-to-jpg" ||
+    slug === "delete-page" ||
+    slug === "rotate-page" ||
+    slug === "reorder-pages" ||
+    slug === "add-page" ||
+    slug === "protect-pdf"
   );
 }
 
@@ -108,6 +122,34 @@ export async function runPdfRuntime({
       signal,
       onProgress,
     });
+  }
+
+  if (slug === "png-to-pdf") {
+    return imagesToPdf(files, outputFileName, signal, onProgress);
+  }
+
+  if (slug === "pdf-to-jpg") {
+    return pdfToJpg(files[0], pageRanges, outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "delete-page") {
+    return deletePdfPages(files[0], pageRanges, outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "rotate-page") {
+    return rotatePdfPages(files[0], pageRanges, outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "reorder-pages") {
+    return reorderPdfPages(files[0], pageRanges, outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "add-page") {
+    return addBlankPage(files[0], pageRanges, outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "protect-pdf") {
+    return protectPdf(files[0], pageRanges, outputFileName, locale, signal, onProgress);
   }
 
   return imagesToPdf(files, outputFileName, signal, onProgress);
@@ -342,6 +384,345 @@ async function imagesToPdf(
     imageCount: files.length,
   };
 }
+
+async function pdfToJpg(
+  file: File,
+  pageRanges: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  // Dynamically import pdfjs-dist only when needed
+  const pdfjs = await import("pdfjs-dist");
+  pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+  const sourceBytes = new Uint8Array(await file.arrayBuffer());
+  const pdfDoc = await pdfjs.getDocument({ data: sourceBytes }).promise;
+  const totalPages = pdfDoc.numPages;
+
+  // Parse which pages to convert
+  const zh = locale === "zh";
+  let pageIndices: number[] = [];
+  if (pageRanges.trim()) {
+    try {
+      const ranges = parsePageRanges(pageRanges, totalPages, locale);
+      pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
+    } catch {
+      pageIndices = Array.from({ length: totalPages }, (_, i) => i);
+    }
+  } else {
+    pageIndices = Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  emitProgress(onProgress, 15, 1);
+
+  const outputs: Array<{ name: string; data: Uint8Array }> = [];
+  for (let i = 0; i < pageIndices.length; i++) {
+    throwIfAborted(signal);
+    const pageNum = pageIndices[i] + 1;
+    const page = await pdfDoc.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 2.0 });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext("2d")!;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    await page.render({ canvasContext: ctx as any, canvas, viewport } as any).promise;
+
+    const jpgBlob = await new Promise<Blob>((res, rej) =>
+      canvas.toBlob((b) => (b ? res(b) : rej(new Error(zh ? "图片生成失败" : "Image export failed."))), "image/jpeg", 0.92),
+    );
+    outputs.push({
+      name: `page-${pageNum}.jpg`,
+      data: new Uint8Array(await jpgBlob.arrayBuffer()),
+    });
+
+    emitProgress(onProgress, 18 + ((i + 1) / pageIndices.length) * 68, 2);
+    await yieldToBrowser();
+  }
+
+  throwIfAborted(signal);
+  emitProgress(onProgress, 92, 3);
+
+  let blob: Blob;
+  let outType: PdfRuntimeArtifact["outputType"];
+  let outFileName = outputFileName;
+
+  if (outputs.length === 1) {
+    blob = new Blob([outputs[0].data], { type: "image/jpeg" });
+    outType = "pdf"; // reuse field — single file download
+    outFileName = outputs[0].name;
+  } else {
+    const zipBytes = createZipArchive(outputs);
+    blob = new Blob([zipBytes], { type: "application/zip" });
+    outType = "zip";
+  }
+
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outFileName,
+    blob,
+    outputType: outType,
+    pageCount: outputs.length,
+    fileCount: outputs.length,
+  };
+}
+
+async function deletePdfPages(
+  file: File,
+  pageRanges: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const zh = locale === "zh";
+  const sourceBytes = await file.arrayBuffer();
+  const source = await PDFDocument.load(sourceBytes);
+  const totalPages = source.getPageCount();
+
+  const ranges = parsePageRanges(pageRanges, totalPages, locale);
+  const deleteSet = new Set(ranges.flatMap((r) => r.indices));
+
+  if (deleteSet.size >= totalPages) {
+    throw new Error(zh ? "不能删除所有页面。" : "Cannot delete all pages from the PDF.");
+  }
+
+  emitProgress(onProgress, 30, 1);
+
+  const output = await PDFDocument.create();
+  const keepIndices = Array.from({ length: totalPages }, (_, i) => i).filter((i) => !deleteSet.has(i));
+  const copiedPages = await output.copyPages(source, keepIndices);
+  copiedPages.forEach((page) => output.addPage(page));
+
+  emitProgress(onProgress, 80, 2);
+  throwIfAborted(signal);
+
+  const pdfBytes = await output.save();
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount: keepIndices.length,
+    fileCount: 1,
+  };
+}
+
+async function rotatePdfPages(
+  file: File,
+  pageRanges: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const sourceBytes = await file.arrayBuffer();
+  const output = await PDFDocument.load(sourceBytes);
+  const totalPages = output.getPageCount();
+
+  // pageRanges format: "1-3:90" or "1,2,4:180" — angle after colon, default 90
+  const parts = pageRanges.split(":");
+  const rangeStr = parts[0] || "1";
+  const angle = parseInt(parts[1] || "90", 10) as 90 | 180 | 270;
+  const validAngle = [90, 180, 270].includes(angle) ? angle : 90;
+
+  emitProgress(onProgress, 25, 1);
+
+  let rotateIndices: number[];
+  try {
+    const ranges = parsePageRanges(rangeStr, totalPages, locale);
+    rotateIndices = [...new Set(ranges.flatMap((r) => r.indices))];
+  } catch {
+    rotateIndices = Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  for (const idx of rotateIndices) {
+    throwIfAborted(signal);
+    const page = output.getPage(idx);
+    const current = page.getRotation().angle;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    page.setRotation({ type: "degrees" as any, angle: (current + validAngle) % 360 });
+  }
+
+  emitProgress(onProgress, 80, 2);
+  throwIfAborted(signal);
+
+  const pdfBytes = await output.save();
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount: totalPages,
+    fileCount: 1,
+  };
+}
+
+async function reorderPdfPages(
+  file: File,
+  pageRanges: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const zh = locale === "zh";
+  const sourceBytes = await file.arrayBuffer();
+  const source = await PDFDocument.load(sourceBytes);
+  const totalPages = source.getPageCount();
+
+  // pageRanges is the new order, e.g. "3,1,2,4" = put page 3 first, then 1, 2, 4
+  const orderParts = pageRanges.split(",").map((p) => parseInt(p.trim(), 10)).filter((n) => Number.isInteger(n) && n >= 1 && n <= totalPages);
+
+  if (orderParts.length === 0) {
+    throw new Error(zh ? "请输入新的页面顺序，例如：3,1,2" : "Enter new page order, e.g. 3,1,2");
+  }
+
+  emitProgress(onProgress, 25, 1);
+
+  const output = await PDFDocument.create();
+  const newIndices = orderParts.map((n) => n - 1);
+  const copiedPages = await output.copyPages(source, newIndices);
+  copiedPages.forEach((page) => output.addPage(page));
+
+  emitProgress(onProgress, 80, 2);
+  throwIfAborted(signal);
+
+  const pdfBytes = await output.save();
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount: newIndices.length,
+    fileCount: 1,
+  };
+}
+
+async function addBlankPage(
+  file: File,
+  pageRanges: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const sourceBytes = await file.arrayBuffer();
+  const output = await PDFDocument.load(sourceBytes);
+  const totalPages = output.getPageCount();
+
+  // pageRanges: position to insert after (e.g. "2" = insert after page 2, "0" = insert at beginning)
+  const insertAfter = Math.max(0, Math.min(totalPages, parseInt(pageRanges.trim() || String(totalPages), 10)));
+
+  emitProgress(onProgress, 40, 1);
+
+  // Get size from existing page for reference
+  const refPage = output.getPage(Math.max(0, insertAfter - 1));
+  const { width, height } = refPage.getSize();
+
+  output.insertPage(insertAfter, [width, height]);
+
+  emitProgress(onProgress, 80, 2);
+  throwIfAborted(signal);
+
+  const pdfBytes = await output.save();
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount: totalPages + 1,
+    fileCount: 1,
+  };
+}
+
+async function protectPdf(
+  file: File,
+  pageRanges: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const zh = locale === "zh";
+  // pageRanges field is reused as password input for this workflow
+  const password = pageRanges.trim();
+
+  if (!password || password.length < 4) {
+    throw new Error(zh ? "请输入至少 4 位密码。" : "Enter a password of at least 4 characters.");
+  }
+
+  const sourceBytes = await file.arrayBuffer();
+  const source = await PDFDocument.load(sourceBytes);
+
+  emitProgress(onProgress, 40, 1);
+
+  // Copy all pages into a new doc then save with encryption
+  const output = await PDFDocument.create();
+  const pages = await output.copyPages(source, source.getPageIndices());
+  pages.forEach((p) => output.addPage(p));
+
+  emitProgress(onProgress, 70, 2);
+  throwIfAborted(signal);
+
+  // pdf-lib SaveOptions doesn't expose encryption in its TS types yet — use spread to pass at runtime
+  const encryptionOptions = {
+    userPassword: password,
+    ownerPassword: password + "_owner",
+    permissions: {
+      printing: "lowResolution",
+      modifying: false,
+      copying: false,
+      annotating: false,
+      fillingForms: true,
+      contentAccessibility: true,
+      documentAssembly: false,
+    },
+  };
+  const pdfBytes = await output.save({ ...encryptionOptions } as Parameters<typeof output.save>[0]);
+
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount: source.getPageCount(),
+    fileCount: 1,
+  };
+}
+
 
 function parsePageRanges(
   value: string,

@@ -629,6 +629,127 @@ function ReadyWorkflowState({
         </label>
       ) : null}
 
+      {config.slug === "delete-page" ? (
+        <label className="mt-4 block">
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+            {zh ? "要删除的页面范围" : "Pages to delete"}
+          </span>
+          <input
+            value={pageRanges}
+            onChange={(event) => onPageRangesChange(event.target.value)}
+            placeholder="1, 3, 5-7"
+            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
+          />
+          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
+            {zh ? "例如：1, 3, 5-7（逗号分隔，支持范围）" : "e.g. 1, 3, 5-7 — comma-separated, ranges supported"}
+          </p>
+        </label>
+      ) : null}
+
+      {config.slug === "rotate-page" ? (
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+              {zh ? "要旋转的页面" : "Pages to rotate"}
+            </span>
+            <input
+              value={pageRanges.split(":")[0] || ""}
+              onChange={(event) => {
+                const angle = pageRanges.split(":")[1] || "90";
+                onPageRangesChange(`${event.target.value}:${angle}`);
+              }}
+              placeholder={zh ? "留空=全部" : "Leave blank = all"}
+              className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
+            />
+          </label>
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+              {zh ? "旋转角度" : "Rotation angle"}
+            </span>
+            <select
+              value={pageRanges.split(":")[1] || "90"}
+              onChange={(event) => {
+                const pages = pageRanges.split(":")[0] || "";
+                onPageRangesChange(`${pages}:${event.target.value}`);
+              }}
+              className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
+            >
+              <option value="90">90° {zh ? "顺时针" : "clockwise"}</option>
+              <option value="180">180°</option>
+              <option value="270">270° {zh ? "顺时针" : "clockwise"}</option>
+            </select>
+          </label>
+        </div>
+      ) : null}
+
+      {config.slug === "reorder-pages" ? (
+        <label className="mt-4 block">
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+            {zh ? "新页面顺序" : "New page order"}
+          </span>
+          <input
+            value={pageRanges}
+            onChange={(event) => onPageRangesChange(event.target.value)}
+            placeholder="3,1,2,4"
+            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
+          />
+          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
+            {zh ? "输入每个页码，以逗号分隔。例如 3,1,2 = 第3页排第一。" : "List page numbers in the new order, e.g. 3,1,2 puts page 3 first."}
+          </p>
+        </label>
+      ) : null}
+
+      {config.slug === "add-page" ? (
+        <label className="mt-4 block">
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+            {zh ? "插入空白页到第几页之后" : "Insert blank page after page #"}
+          </span>
+          <input
+            value={pageRanges}
+            onChange={(event) => onPageRangesChange(event.target.value)}
+            placeholder={zh ? "0 = 插入到开头" : "0 = insert at beginning"}
+            type="number"
+            min="0"
+            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
+          />
+          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
+            {zh ? "输入 0 在最前面插入，留空则在末尾添加。" : "Enter 0 to insert at the start, or leave blank to append at the end."}
+          </p>
+        </label>
+      ) : null}
+
+      {config.slug === "protect-pdf" ? (
+        <label className="mt-4 block">
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+            {zh ? "设置密码" : "Set password"}
+          </span>
+          <input
+            value={pageRanges}
+            onChange={(event) => onPageRangesChange(event.target.value)}
+            placeholder={zh ? "输入至少 4 位密码" : "Enter at least 4 characters"}
+            type="password"
+            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
+          />
+          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
+            {zh ? "请妥善保管密码，加密后无法找回。" : "Keep your password safe — it cannot be recovered after encryption."}
+          </p>
+        </label>
+      ) : null}
+
+      {config.slug === "pdf-to-jpg" ? (
+        <label className="mt-4 block">
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+            {zh ? "导出页面范围（可选）" : "Page range to export (optional)"}
+          </span>
+          <input
+            value={pageRanges}
+            onChange={(event) => onPageRangesChange(event.target.value)}
+            placeholder={zh ? "留空 = 全部页面" : "Leave blank = all pages"}
+            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
+          />
+        </label>
+      ) : null}
+
       {config.slug === "ocr-pdf" ? (
         <>
           <label className="mt-4 block">
@@ -1071,6 +1192,82 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
               "Preparing result...",
             ],
       };
+    case "png-to-pdf":
+      return {
+        acceptedLabel: "PNG, JPG, WebP",
+        minFiles: 1,
+        maxFiles: 20,
+        maxFileSize: 20 * mb,
+        maxTotalSize: 120 * mb,
+        processLabel: zh ? "正在将图片导出为 PDF 文档。" : "Exporting images into a PDF document.",
+        resultLabel: zh ? "导出 PDF" : "Export PDF",
+        outputFileName: "dockdocs-images.pdf",
+        steps: zh
+          ? ["读取图片...", "应用页面顺序...", "生成 PDF 页面...", "准备导出..."]
+          : ["Reading images...", "Applying page order...", "Generating PDF pages...", "Preparing export..."],
+      };
+    case "pdf-to-jpg":
+      return {
+        ...base,
+        maxFileSize: 30 * mb,
+        maxTotalSize: 30 * mb,
+        processLabel: zh ? "正在将 PDF 页面渲染为 JPG 图片。" : "Rendering PDF pages as JPG images.",
+        resultLabel: zh ? "下载 JPG" : "Download JPG",
+        outputFileName: "dockdocs-pages.zip",
+        steps: zh
+          ? ["加载 PDF...", "渲染页面...", "导出 JPG 图片...", "打包下载..."]
+          : ["Loading PDF...", "Rendering pages...", "Exporting JPG images...", "Packaging download..."],
+      };
+    case "delete-page":
+      return {
+        ...base,
+        processLabel: zh ? "正在删除所选页面。" : "Removing selected pages from the PDF.",
+        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        outputFileName: "dockdocs-deleted.pdf",
+        steps: zh
+          ? ["读取 PDF...", "定位页面...", "删除页面...", "准备下载..."]
+          : ["Reading PDF...", "Locating pages...", "Deleting pages...", "Preparing download..."],
+      };
+    case "rotate-page":
+      return {
+        ...base,
+        processLabel: zh ? "正在旋转所选页面。" : "Rotating selected pages.",
+        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        outputFileName: "dockdocs-rotated.pdf",
+        steps: zh
+          ? ["读取 PDF...", "定位页面...", "旋转页面...", "准备下载..."]
+          : ["Reading PDF...", "Locating pages...", "Rotating pages...", "Preparing download..."],
+      };
+    case "reorder-pages":
+      return {
+        ...base,
+        processLabel: zh ? "正在按新顺序排列页面。" : "Reordering pages into the new sequence.",
+        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        outputFileName: "dockdocs-reordered.pdf",
+        steps: zh
+          ? ["读取 PDF...", "解析顺序...", "重排页面...", "准备下载..."]
+          : ["Reading PDF...", "Parsing order...", "Reordering pages...", "Preparing download..."],
+      };
+    case "add-page":
+      return {
+        ...base,
+        processLabel: zh ? "正在插入空白页面。" : "Inserting a blank page into the PDF.",
+        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        outputFileName: "dockdocs-added.pdf",
+        steps: zh
+          ? ["读取 PDF...", "确定插入位置...", "添加空白页...", "准备下载..."]
+          : ["Reading PDF...", "Finding insert position...", "Adding blank page...", "Preparing download..."],
+      };
+    case "protect-pdf":
+      return {
+        ...base,
+        processLabel: zh ? "正在加密 PDF 并设置密码。" : "Encrypting the PDF with your password.",
+        resultLabel: zh ? "下载加密 PDF" : "Download protected PDF",
+        outputFileName: "dockdocs-protected.pdf",
+        steps: zh
+          ? ["读取 PDF...", "应用加密设置...", "设置权限...", "准备下载..."]
+          : ["Reading PDF...", "Applying encryption...", "Setting permissions...", "Preparing download..."],
+      };
   }
 }
 
@@ -1347,6 +1544,97 @@ function getWorkflowResult(
             artifact?.pageCount ? String(artifact.pageCount) : zh ? "已保留" : "Preserved",
           ],
           [zh ? "格式" : "Format", "PDF"],
+        ],
+      };
+    case "png-to-pdf":
+      return {
+        title: zh ? "PDF 已从图片生成" : "PDF created from images",
+        description: zh
+          ? "图片已按顺序合并为一个 PDF 文档。"
+          : "Images are combined into one ordered PDF document.",
+        rows: [
+          [zh ? "图片数" : "Images", String(fileCount)],
+          [zh ? "输出" : "Output", "PDF"],
+          [zh ? "页面数" : "Pages", artifact?.pageCount ? String(artifact.pageCount) : String(fileCount)],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : formatBytes(Math.max(totalSize * 0.72, 1))],
+        ],
+      };
+    case "pdf-to-jpg":
+      return {
+        title: zh ? "JPG 图片已准备" : "JPG images ready",
+        description: zh
+          ? "每个 PDF 页面已渲染为高质量 JPG 图片。"
+          : "Each PDF page is rendered as a high-quality JPG image.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
+          [zh ? "输出页数" : "Pages exported", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已渲染" : "Rendered"],
+          [zh ? "输出格式" : "Output format", artifact?.pageCount === 1 ? "JPG" : "ZIP"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+        ],
+      };
+    case "delete-page":
+      return {
+        title: zh ? "页面已删除" : "Pages deleted",
+        description: zh
+          ? "所选页面已从 PDF 中移除，其余页面已保留。"
+          : "Selected pages removed. Remaining pages are preserved.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
+          [zh ? "删除范围" : "Deleted ranges", pageRanges],
+          [zh ? "剩余页数" : "Remaining pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已保留" : "Preserved"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+        ],
+      };
+    case "rotate-page":
+      return {
+        title: zh ? "页面已旋转" : "Pages rotated",
+        description: zh
+          ? "所选页面旋转完成，PDF 已准备好下载。"
+          : "Selected pages rotated. PDF is ready to download.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
+          [zh ? "旋转范围" : "Rotated pages", pageRanges.split(":")[0] || "All"],
+          [zh ? "旋转角度" : "Rotation", `${pageRanges.split(":")[1] || "90"}°`],
+          [zh ? "总页数" : "Total pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已处理" : "Processed"],
+        ],
+      };
+    case "reorder-pages":
+      return {
+        title: zh ? "页面顺序已更新" : "Page order updated",
+        description: zh
+          ? "PDF 页面已按新顺序重新排列。"
+          : "PDF pages have been rearranged into the new order.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
+          [zh ? "新顺序" : "New order", pageRanges],
+          [zh ? "总页数" : "Total pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已处理" : "Processed"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+        ],
+      };
+    case "add-page":
+      return {
+        title: zh ? "空白页已添加" : "Blank page added",
+        description: zh
+          ? "空白页已成功插入到指定位置。"
+          : "A blank page has been inserted at the specified position.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
+          [zh ? "插入位置" : "Inserted after page", pageRanges.trim() || zh ? "末尾" : "End"],
+          [zh ? "总页数" : "Total pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已处理" : "Processed"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+        ],
+      };
+    case "protect-pdf":
+      return {
+        title: zh ? "PDF 已加密保护" : "PDF password protected",
+        description: zh
+          ? "PDF 已加密，打开时需要输入密码。"
+          : "The PDF is encrypted. A password is required to open it.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
+          [zh ? "加密方式" : "Encryption", "AES-128"],
+          [zh ? "总页数" : "Total pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已保留" : "Preserved"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
         ],
       };
   }

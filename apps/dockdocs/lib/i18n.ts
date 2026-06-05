@@ -16,6 +16,13 @@ export const routeSlugs = [
   "pdf-to-word",
   "ocr-pdf",
   "jpg-to-pdf",
+  "png-to-pdf",
+  "pdf-to-jpg",
+  "delete-page",
+  "rotate-page",
+  "reorder-pages",
+  "add-page",
+  "protect-pdf",
   "ai-workspace",
   "dashboard",
   "pricing",
@@ -41,6 +48,13 @@ export const toolSlugs = [
   "pdf-to-word",
   "ocr-pdf",
   "jpg-to-pdf",
+  "png-to-pdf",
+  "pdf-to-jpg",
+  "delete-page",
+  "rotate-page",
+  "reorder-pages",
+  "add-page",
+  "protect-pdf",
 ] as const;
 
 export type ToolSlug = (typeof toolSlugs)[number];
