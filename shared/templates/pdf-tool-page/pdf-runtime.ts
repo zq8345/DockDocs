@@ -11,6 +11,9 @@ export type PdfRuntimeSlug =
   | "png-to-pdf"
   | "pdf-to-word"
   | "pdf-to-jpg"
+  | "pdf-to-png"
+  | "text-to-pdf"
+  | "pdf-to-markdown"
   | "delete-page"
   | "rotate-page"
   | "reorder-pages"
@@ -68,6 +71,9 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "png-to-pdf" ||
     slug === "pdf-to-word" ||
     slug === "pdf-to-jpg" ||
+    slug === "pdf-to-png" ||
+    slug === "text-to-pdf" ||
+    slug === "pdf-to-markdown" ||
     slug === "delete-page" ||
     slug === "rotate-page" ||
     slug === "reorder-pages" ||
@@ -122,6 +128,18 @@ export async function runPdfRuntime({
       signal,
       onProgress,
     });
+  }
+
+  if (slug === "pdf-to-png") {
+    return pdfToPng(files[0], pageRanges, outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "text-to-pdf") {
+    return textToPdf(files[0], outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "pdf-to-markdown") {
+    return pdfToMarkdown(files[0], pageRanges, outputFileName, locale, signal, onProgress);
   }
 
   if (slug === "png-to-pdf") {
@@ -720,6 +738,256 @@ async function protectPdf(
     outputType: "pdf",
     pageCount: source.getPageCount(),
     fileCount: 1,
+  };
+}
+
+
+async function pdfToPng(
+  file: File,
+  pageRanges: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const pdfjs = await import("pdfjs-dist");
+  pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+  const sourceBytes = new Uint8Array(await file.arrayBuffer());
+  const pdfDoc = await pdfjs.getDocument({ data: sourceBytes }).promise;
+  const totalPages = pdfDoc.numPages;
+  const zh = locale === "zh";
+
+  let pageIndices: number[] = [];
+  if (pageRanges.trim()) {
+    try {
+      const ranges = parsePageRanges(pageRanges, totalPages, locale);
+      pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
+    } catch {
+      pageIndices = Array.from({ length: totalPages }, (_, i) => i);
+    }
+  } else {
+    pageIndices = Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  emitProgress(onProgress, 15, 1);
+
+  const outputs: Array<{ name: string; data: Uint8Array }> = [];
+  for (let i = 0; i < pageIndices.length; i++) {
+    throwIfAborted(signal);
+    const pageNum = pageIndices[i] + 1;
+    const page = await pdfDoc.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 2.0 });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext("2d")!;
+    await page.render({ canvasContext: ctx as any, canvas, viewport } as any).promise;
+
+    const pngBlob = await new Promise<Blob>((res, rej) =>
+      canvas.toBlob((b) => (b ? res(b) : rej(new Error(zh ? "图片生成失败" : "Image export failed."))), "image/png"),
+    );
+    outputs.push({
+      name: `page-${pageNum}.png`,
+      data: new Uint8Array(await pngBlob.arrayBuffer()),
+    });
+
+    emitProgress(onProgress, 18 + ((i + 1) / pageIndices.length) * 68, 2);
+    await yieldToBrowser();
+  }
+
+  throwIfAborted(signal);
+  emitProgress(onProgress, 92, 3);
+
+  let blob: Blob;
+  let outFileName = outputFileName;
+
+  if (outputs.length === 1) {
+    blob = new Blob([outputs[0].data], { type: "image/png" });
+    outFileName = outputs[0].name;
+  } else {
+    blob = new Blob([createZipArchive(outputs)], { type: "application/zip" });
+  }
+
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outFileName,
+    blob,
+    outputType: outputs.length === 1 ? "pdf" : "zip",
+    pageCount: outputs.length,
+    fileCount: outputs.length,
+  };
+}
+
+async function textToPdf(
+  file: File,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 10, 0);
+
+  const zh = locale === "zh";
+  const rawText = await file.text();
+
+  if (!rawText.trim()) {
+    throw new Error(zh ? "文件内容为空，无法转换。" : "The file appears to be empty.");
+  }
+
+  emitProgress(onProgress, 30, 1);
+
+  const output = await PDFDocument.create();
+  const font = await output.embedFont("Helvetica" as any);
+  const fontSize = 11;
+  const lineHeight = fontSize * 1.5;
+  const pageWidth = 595.28;
+  const pageHeight = 841.89;
+  const marginX = 56;
+  const marginY = 72;
+  const usableWidth = pageWidth - marginX * 2;
+  const usableHeight = pageHeight - marginY * 2;
+  const charsPerLine = Math.floor(usableWidth / (fontSize * 0.55));
+  const linesPerPage = Math.floor(usableHeight / lineHeight);
+
+  // Word-wrap lines
+  const rawLines = rawText.replace(/\r\n/g, "\n").split("\n");
+  const wrappedLines: string[] = [];
+  for (const raw of rawLines) {
+    if (raw.length === 0) {
+      wrappedLines.push("");
+      continue;
+    }
+    let remaining = raw;
+    while (remaining.length > charsPerLine) {
+      const breakAt = remaining.lastIndexOf(" ", charsPerLine) > 0
+        ? remaining.lastIndexOf(" ", charsPerLine)
+        : charsPerLine;
+      wrappedLines.push(remaining.slice(0, breakAt));
+      remaining = remaining.slice(breakAt).trimStart();
+    }
+    wrappedLines.push(remaining);
+  }
+
+  emitProgress(onProgress, 50, 2);
+  throwIfAborted(signal);
+
+  // Paginate
+  let lineIndex = 0;
+  while (lineIndex < wrappedLines.length) {
+    const page = output.addPage([pageWidth, pageHeight]);
+    let y = pageHeight - marginY;
+    for (let l = 0; l < linesPerPage && lineIndex < wrappedLines.length; l++, lineIndex++) {
+      const line = wrappedLines[lineIndex];
+      if (line.trim()) {
+        try {
+          page.drawText(line, { x: marginX, y, size: fontSize, font, color: { type: "RGB" as any, red: 0.1, green: 0.1, blue: 0.1 } });
+        } catch {
+          // skip lines with unsupported characters
+        }
+      }
+      y -= lineHeight;
+    }
+  }
+
+  emitProgress(onProgress, 88, 3);
+  throwIfAborted(signal);
+
+  const pdfBytes = await output.save();
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount: output.getPageCount(),
+    fileCount: 1,
+  };
+}
+
+async function pdfToMarkdown(
+  file: File,
+  pageRanges: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const pdfjs = await import("pdfjs-dist");
+  pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+  const sourceBytes = new Uint8Array(await file.arrayBuffer());
+  const pdfDoc = await pdfjs.getDocument({ data: sourceBytes }).promise;
+  const totalPages = pdfDoc.numPages;
+
+  let pageIndices: number[] = [];
+  if (pageRanges.trim()) {
+    try {
+      const ranges = parsePageRanges(pageRanges, totalPages, locale);
+      pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
+    } catch {
+      pageIndices = Array.from({ length: totalPages }, (_, i) => i);
+    }
+  } else {
+    pageIndices = Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  emitProgress(onProgress, 15, 1);
+
+  const sections: string[] = [];
+  const baseName = file.name.replace(/\.pdf$/i, "");
+  sections.push(`# ${baseName}\n`);
+
+  for (let i = 0; i < pageIndices.length; i++) {
+    throwIfAborted(signal);
+    const pageNum = pageIndices[i] + 1;
+    const page = await pdfDoc.getPage(pageNum);
+    const textContent = await page.getTextContent();
+
+    // Group items into lines by y-position
+    const lineMap = new Map<number, string[]>();
+    for (const item of textContent.items) {
+      if (!("str" in item) || !("transform" in item)) continue;
+      const y = Math.round((item as any).transform[5]);
+      if (!lineMap.has(y)) lineMap.set(y, []);
+      lineMap.get(y)!.push((item as any).str as string);
+    }
+
+    const sortedYs = [...lineMap.keys()].sort((a, b) => b - a);
+    const pageLines = sortedYs.map((y) => lineMap.get(y)!.join(" ").trim()).filter(Boolean);
+
+    if (pageLines.length > 0) {
+      sections.push(`\n## Page ${pageNum}\n\n${pageLines.join("\n")}\n`);
+    }
+
+    emitProgress(onProgress, 18 + ((i + 1) / pageIndices.length) * 68, 2);
+    await yieldToBrowser();
+  }
+
+  throwIfAborted(signal);
+  emitProgress(onProgress, 95, 3);
+
+  const markdown = sections.join("\n");
+  const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "text",
+    pageCount: pageIndices.length,
+    fileCount: 1,
+    text: markdown.slice(0, 500),
   };
 }
 

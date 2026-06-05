@@ -75,14 +75,14 @@ const featureDefinitions: FeatureDefinition[] = [
           { labels: { en: "Word to PDF", zh: "Word 转 PDF" }, tier: "PLUS" },
           { labels: { en: "PPT to PDF", zh: "PPT 转 PDF" }, tier: "PLUS" },
           { labels: { en: "Excel to PDF", zh: "Excel 转 PDF" }, tier: "PLUS" },
-          { labels: { en: "Text to PDF", zh: "文本转 PDF" }, tier: "PLUS" },
+          { labels: { en: "Text to PDF", zh: "文本转 PDF" }, tier: "PLUS", slug: "text-to-pdf" },
         ],
       },
       {
         labels: { en: "From PDF", zh: "从 PDF 转出" },
         items: [
           { labels: { en: "PDF to JPG", zh: "PDF 转 JPG" }, tier: "PLUS", slug: "pdf-to-jpg" },
-          { labels: { en: "PDF to PNG", zh: "PDF 转 PNG" }, tier: "PLUS" },
+          { labels: { en: "PDF to PNG", zh: "PDF 转 PNG" }, tier: "PLUS", slug: "pdf-to-png" },
         ],
       },
       {
@@ -95,7 +95,7 @@ const featureDefinitions: FeatureDefinition[] = [
       {
         labels: { en: "Developer Conversion", zh: "开发者转换" },
         items: [
-          { labels: { en: "PDF to Markdown", zh: "PDF 转 Markdown" }, tier: "PLUS" },
+          { labels: { en: "PDF to Markdown", zh: "PDF 转 Markdown" }, tier: "PLUS", slug: "pdf-to-markdown" },
         ],
       },
     ],

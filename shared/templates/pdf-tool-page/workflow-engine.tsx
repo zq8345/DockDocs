@@ -750,6 +750,34 @@ function ReadyWorkflowState({
         </label>
       ) : null}
 
+      {config.slug === "pdf-to-png" ? (
+        <label className="mt-4 block">
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+            {zh ? "导出页面范围（可选）" : "Page range to export (optional)"}
+          </span>
+          <input
+            value={pageRanges}
+            onChange={(event) => onPageRangesChange(event.target.value)}
+            placeholder={zh ? "留空 = 全部页面" : "Leave blank = all pages"}
+            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
+          />
+        </label>
+      ) : null}
+
+      {config.slug === "pdf-to-markdown" ? (
+        <label className="mt-4 block">
+          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+            {zh ? "提取页面范围（可选）" : "Page range to extract (optional)"}
+          </span>
+          <input
+            value={pageRanges}
+            onChange={(event) => onPageRangesChange(event.target.value)}
+            placeholder={zh ? "留空 = 全部页面" : "Leave blank = all pages"}
+            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
+          />
+        </label>
+      ) : null}
+
       {config.slug === "ocr-pdf" ? (
         <>
           <label className="mt-4 block">
@@ -1192,6 +1220,44 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
               "Preparing result...",
             ],
       };
+    case "pdf-to-png":
+      return {
+        ...base,
+        maxFileSize: 30 * mb,
+        maxTotalSize: 30 * mb,
+        processLabel: zh ? "正在将 PDF 页面渲染为 PNG 图片。" : "Rendering PDF pages as PNG images.",
+        resultLabel: zh ? "下载 PNG" : "Download PNG",
+        outputFileName: "dockdocs-pages.zip",
+        steps: zh
+          ? ["加载 PDF...", "渲染页面...", "导出 PNG 图片...", "打包下载..."]
+          : ["Loading PDF...", "Rendering pages...", "Exporting PNG images...", "Packaging download..."],
+      };
+    case "text-to-pdf":
+      return {
+        acceptedLabel: "TXT",
+        minFiles: 1,
+        maxFiles: 1,
+        maxFileSize: 5 * mb,
+        maxTotalSize: 5 * mb,
+        processLabel: zh ? "正在将文本内容排版为 PDF 文档。" : "Typesetting text content into a PDF document.",
+        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        outputFileName: "dockdocs-text.pdf",
+        steps: zh
+          ? ["读取文本文件...", "分析内容...", "生成 PDF 页面...", "准备下载..."]
+          : ["Reading text file...", "Processing content...", "Generating PDF pages...", "Preparing download..."],
+      };
+    case "pdf-to-markdown":
+      return {
+        ...base,
+        maxFileSize: 30 * mb,
+        maxTotalSize: 30 * mb,
+        processLabel: zh ? "正在从 PDF 提取文字并转换为 Markdown。" : "Extracting text from PDF and converting to Markdown.",
+        resultLabel: zh ? "下载 Markdown" : "Download Markdown",
+        outputFileName: "dockdocs-document.md",
+        steps: zh
+          ? ["加载 PDF...", "提取文字...", "构建 Markdown 结构...", "准备下载..."]
+          : ["Loading PDF...", "Extracting text...", "Building Markdown structure...", "Preparing download..."],
+      };
     case "png-to-pdf":
       return {
         acceptedLabel: "PNG, JPG, WebP",
@@ -1545,6 +1611,47 @@ function getWorkflowResult(
           ],
           [zh ? "格式" : "Format", "PDF"],
         ],
+      };
+    case "pdf-to-png":
+      return {
+        title: zh ? "PNG 图片已准备" : "PNG images ready",
+        description: zh
+          ? "每个 PDF 页面已渲染为高质量 PNG 图片。"
+          : "Each PDF page is rendered as a high-quality PNG image.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
+          [zh ? "输出页数" : "Pages exported", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已渲染" : "Rendered"],
+          [zh ? "输出格式" : "Output format", artifact?.pageCount === 1 ? "PNG" : "ZIP"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+        ],
+      };
+    case "text-to-pdf":
+      return {
+        title: zh ? "PDF 已从文本生成" : "PDF created from text",
+        description: zh
+          ? "文本内容已排版为可下载的 PDF 文档。"
+          : "Text content has been typeset into a downloadable PDF document.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "TXT"],
+          [zh ? "输出" : "Output", "PDF"],
+          [zh ? "页数" : "Pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已生成" : "Generated"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+        ],
+      };
+    case "pdf-to-markdown":
+      return {
+        title: zh ? "Markdown 已准备" : "Markdown ready",
+        description: zh
+          ? "PDF 文字内容已提取并转换为 Markdown 格式。"
+          : "PDF text content has been extracted and converted to Markdown.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
+          [zh ? "提取页数" : "Pages extracted", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已处理" : "Processed"],
+          [zh ? "输出格式" : "Output format", ".md"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+        ],
+        preview: "text",
+        previewText: artifact?.text ? artifact.text + (artifact.text.length >= 500 ? "\n…" : "") : undefined,
       };
     case "png-to-pdf":
       return {
