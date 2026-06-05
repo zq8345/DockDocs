@@ -101,8 +101,7 @@ export default async (req: Request, _context: Context) => {
     });
 
     if (!jobRes.ok) {
-      const err = await jobRes.text().catch(() => "");
-      return json({ ok: false, code: "JOB_CREATE_FAILED", message: `CloudConvert job creation failed: ${err.slice(0, 300)}` }, 502);
+      return json({ ok: false, code: "JOB_CREATE_FAILED", message: "The conversion service could not process this file right now. Try again in a moment." }, 502);
     }
 
     const job = await jobRes.json() as CloudConvertJob;
@@ -125,8 +124,7 @@ export default async (req: Request, _context: Context) => {
     });
 
     if (!uploadRes.ok && uploadRes.status !== 204) {
-      const err = await uploadRes.text().catch(() => "");
-      return json({ ok: false, code: "UPLOAD_FAILED", message: `File upload to CloudConvert failed (${uploadRes.status}): ${err.slice(0, 200)}` }, 502);
+      return json({ ok: false, code: "UPLOAD_FAILED", message: "The file upload could not be completed. Check your connection and try again." }, 502);
     }
 
     // 3. Poll for job completion
@@ -153,7 +151,7 @@ export default async (req: Request, _context: Context) => {
         return json({
           ok: false,
           code: "CONVERSION_FAILED",
-          message: failedTask?.message || "CloudConvert conversion failed.",
+          message: "The file could not be converted. The format may not be supported or the file may be corrupted.",
         }, 422);
       }
 

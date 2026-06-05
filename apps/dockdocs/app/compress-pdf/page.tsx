@@ -1,227 +1,119 @@
-import type { Metadata } from "next";
-import { RelatedTools } from "@/components/RelatedTools";
-import { UploadPanel } from "@/components/UploadPanel";
-import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
-import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
+import {
+  createPdfToolMetadata,
+  PdfToolPage,
+  type PdfToolPageConfig,
+} from "../../../../shared/templates/pdf-tool-page";
+import { languageAlternates } from "@/lib/i18n";
 
-const pageUrl = "https://dockdocs.app/compress-pdf";
-
-const faqs = [
-  {
-    question: "What is DockDocs Compress PDF?",
-    answer:
-      "DockDocs Compress PDF reduces file size as part of a broader AI document platform workflow.",
+const config = {
+  slug: "compress-pdf",
+  alternateLanguages: languageAlternates("compress-pdf"),
+  title: "Compress PDF Online Free | DockDocs",
+  description:
+    "Compress PDF files online for free. Reduce PDF file size for email, uploads, and sharing inside the DockDocs AI document workspace.",
+  keywords: ["compress pdf", "reduce pdf size", "pdf compressor", "shrink pdf"],
+  appName: "DockDocs Compress PDF",
+  schemaName: "DockDocs Compress PDF",
+  breadcrumbName: "Compress PDF",
+  heroTitle: "Compress PDF files online without losing quality.",
+  heroDescription:
+    "Reduce PDF file size for email, portals, uploads, and document sharing. DockDocs keeps compression inside the same clean workspace as every document tool.",
+  primaryActionLabel: "Compress PDF",
+  stats: [["Price", "Free"], ["Input", "PDF"], ["Output", "Compressed PDF"]],
+  upload: {
+    title: "Upload a PDF to compress",
+    description:
+      "Drag and drop a PDF file here, or choose from your device.",
+    buttonLabel: "Choose PDF",
+    note: "PDF only. Fast, secure compression with clear limits and processing states.",
   },
-  {
-    question: "What files are supported?",
-    answer:
-      "This UI is focused on PDF upload and PDF output, with clear limits and processing states.",
-  },
-  {
-    question: "Can I continue after compression?",
-    answer:
-      "Yes. The result surface points users toward download, copy, and follow-up document workflows.",
-  },
-  {
-    question: "Does it work on mobile?",
-    answer:
-      "Yes. The upload area, limits, and output preview stack into a single-column mobile layout.",
-  },
-];
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
+  benefitsTitle: "Reduce PDF size for sharing and uploads",
+  benefitsDescription:
+    "DockDocs Compress PDF shrinks file size while keeping the document readable and usable.",
+  benefits: [
     {
-      "@type": "WebApplication",
-      "@id": `${pageUrl}#app`,
-      name: "DockDocs Compress PDF",
-      applicationCategory: "BusinessApplication",
-      operatingSystem: "Web",
-      url: pageUrl,
+      title: "Smaller file size",
       description:
-        "Compress PDF files with DockDocs, an AI document platform for document workflows.",
-      brand: {
-        "@type": "Brand",
-        name: "DockDocs",
-        slogan: "AI Document Platform",
-      },
-      offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "USD",
-      },
+        "Reduce PDF size to meet email attachment limits and upload requirements.",
     },
     {
-      "@type": "FAQPage",
-      "@id": `${pageUrl}#faq`,
-      mainEntity: faqs.map((faq) => ({
-        "@type": "Question",
-        name: faq.question,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: faq.answer,
-        },
-      })),
+      title: "Faster sharing",
+      description:
+        "Compressed PDFs upload, download, and transfer faster across devices and platforms.",
+    },
+    {
+      title: "Clean output",
+      description:
+        "The compressed PDF stays readable and professional for business use.",
     },
   ],
-};
-
-export const metadata: Metadata = {
-  title: "Compress PDF Online",
-  description:
-    "Compress PDF files with DockDocs, the AI Document Workspace for document tools, office workflows, and PDF utilities.",
-  alternates: {
-    canonical: "/compress-pdf",
-  },
-  openGraph: {
-    title: "Compress PDF Online | DockDocs",
+  featuresTitle: "Built for modern PDF compression",
+  featuresDescription:
+    "A minimal DockDocs interface for reducing PDF file size inside document workflows.",
+  features: [
+    {
+      title: "Compress PDF files",
+      description:
+        "Reduce file size for email attachments, portal uploads, and document sharing.",
+    },
+    {
+      title: "Clean workspace",
+      description:
+        "Upload, compress, and download in one focused DockDocs interface.",
+    },
+    {
+      title: "Clear limits",
+      description:
+        "The upload card communicates supported formats, file size, and processing states.",
+    },
+    {
+      title: "Responsive DockDocs UI",
+      description:
+        "The same clean DockDocs interface works across desktop, tablet, and mobile screens.",
+    },
+  ],
+  workflowTitle: "How PDF compression fits into document work",
+  workflowDescription:
+    "Compress PDF is designed for common office moments: files are too large for email, a portal requires a size limit, or sharing needs to be faster.",
+  steps: [
+    "Select a PDF file from your device.",
+    "DockDocs compresses the file while preserving readability.",
+    "Download the compressed PDF ready for sharing.",
+  ],
+  faqTitle: "PDF compression questions",
+  faq: [
+    {
+      question: "How do I compress a PDF file online?",
+      answer:
+        "Upload a PDF file to DockDocs Compress PDF and download the reduced-size version. The workflow is designed for fast, clean compression.",
+    },
+    {
+      question: "Is this PDF compressor free?",
+      answer:
+        "The Compress PDF page is designed as a free online PDF compression workflow for everyday document organization.",
+    },
+    {
+      question: "Will the quality be affected?",
+      answer:
+        "Compression reduces file size while keeping the document readable. The output is optimized for email, uploads, and sharing.",
+    },
+    {
+      question: "Is the compress PDF page mobile friendly?",
+      answer:
+        "Yes. The DockDocs Compress PDF page is responsive and works across desktop, tablet, and mobile screens.",
+    },
+  ],
+  cta: {
+    eyebrow: "Compress PDF",
+    title: "Reduce PDF file size for sharing and uploads.",
     description:
-      "Reduce PDF file size in a clean, responsive DockDocs document workspace.",
-    url: pageUrl,
-    siteName: "DockDocs",
-    type: "website",
+      "Use DockDocs to compress PDF files for email, portals, and document handoff.",
+    buttonLabel: "Compress PDF now",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Compress PDF Online | DockDocs",
-    description:
-      "Reduce PDF file size in a clean, responsive DockDocs document workspace.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+} satisfies PdfToolPageConfig;
 
-function CompressPdfPageContent({ locale = "en" }: { locale?: RuntimeLocale }) {
-  const copy = getRuntimeCopy(locale);
-  const page = copy.compress;
-
-  return (
-    <main>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto grid min-h-[calc(100vh-92px)] max-w-7xl items-center gap-8 px-5 py-10 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:px-8">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              {page.eyebrow}
-            </p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl xl:text-6xl">
-              {page.title}
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[color:var(--muted)] sm:text-lg">
-              {page.description}
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <a
-                href="#upload"
-                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-[color:var(--background)] transition hover:opacity-90"
-              >
-                {page.primaryCta}
-              </a>
-              <a
-                href="/chat-with-pdf"
-                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-5 text-sm font-semibold transition hover:border-[color:var(--foreground)]"
-              >
-                {page.secondaryCta}
-              </a>
-            </div>
-          </div>
-          <UploadPanel
-            title={page.uploadTitle}
-            description={page.uploadDescription}
-            formats={page.formats}
-            limit={page.limit}
-            cta={page.cta}
-            interactive={false}
-            labels={copy.common.upload}
-          />
-        </div>
-      </section>
-
-      <section
-        id="upload"
-        className="border-b border-[color:var(--line)] px-5 py-16 sm:px-6 lg:px-8"
-      >
-        <div className="mx-auto max-w-7xl">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              {page.outputEyebrow}
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
-              {page.outputHeading}
-            </h2>
-            <p className="mt-5 max-w-2xl leading-7 text-[color:var(--muted)]">
-              {page.outputDescription}
-            </p>
-          </div>
-          <div className="mt-8">
-            <ToolRuntimeClient
-              uploadTitle={page.runtimeUploadTitle}
-              uploadDescription={page.runtimeUploadDescription}
-              formats={page.formats}
-              limit={page.limit}
-              cta={page.cta}
-              accept="application/pdf,.pdf"
-              allowedExtensions={[".pdf"]}
-              outputEyebrow={page.resultEyebrow}
-              outputTitle={page.resultTitle}
-              outputSummary={page.resultSummary}
-              keyPoints={[...page.keyPoints]}
-              actions={[...page.actions]}
-              emptyMessage={page.emptyMessage}
-              locale={locale}
-            />
-          </div>
-        </div>
-      </section>
-
-      <FaqSection locale={locale} />
-      <RelatedTools />
-    </main>
-  );
-}
+export const metadata = createPdfToolMetadata(config);
 
 export default function CompressPdfPage() {
-  return <CompressPdfPageContent />;
-}
-
-function FaqSection({ locale = "en" }: { locale?: RuntimeLocale }) {
-  const page = getRuntimeCopy(locale).compress;
-
-  return (
-    <section
-      id="faq"
-      aria-labelledby="faq-title"
-      className="border-b border-[color:var(--line)] px-5 py-16 sm:px-6 lg:px-8"
-    >
-      <div className="mx-auto max-w-4xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-          FAQ
-        </p>
-        <h2 id="faq-title" className="mt-4 text-3xl font-semibold">
-          {page.faqTitle}
-        </h2>
-        <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
-          {page.faqs.map((faq) => (
-            <details key={faq.question} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold">
-                {faq.question}
-                <span className="text-[color:var(--muted)] transition group-open:rotate-45">
-                  +
-                </span>
-              </summary>
-              <p className="mt-4 leading-7 text-[color:var(--muted)]">
-                {faq.answer}
-              </p>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return <PdfToolPage config={config} />;
 }

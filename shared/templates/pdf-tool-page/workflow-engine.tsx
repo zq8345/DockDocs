@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ButtonHTMLAttributes } from "react";
 import type { PdfToolPageConfig } from "./index";
 import {
   createZipArchive,
@@ -10,6 +9,20 @@ import {
   runPdfRuntime,
   type PdfRuntimeArtifact,
 } from "./pdf-runtime";
+import {
+  EmptyWorkflowState,
+  ReadyWorkflowState,
+  WorkflowActionButton,
+  WorkflowProgress,
+  WorkflowResultState,
+  WorkflowErrorState,
+  formatBytes,
+  mb,
+  type OcrLanguage,
+  type UploadedFile,
+  type WorkflowSpec,
+  type WorkflowResult,
+} from "./workflow-engine-components";
 
 type WorkflowStatus =
   | "idle"
@@ -18,39 +31,6 @@ type WorkflowStatus =
   | "processing"
   | "result"
   | "error";
-
-type UploadedFile = {
-  id: string;
-  file: File;
-};
-
-type OcrLanguage = "eng" | "chi_sim";
-
-type WorkflowSpec = {
-  acceptedLabel: string;
-  minFiles: number;
-  maxFiles: number;
-  maxFileSize: number;
-  maxTotalSize: number;
-  processLabel: string;
-  resultLabel: string;
-  secondaryResultLabel?: string;
-  outputFileName: string;
-  steps: string[];
-};
-
-type WorkflowResult = {
-  title: string;
-  description: string;
-  rows: Array<[string, string]>;
-  preview?: "text" | "document" | "image-order" | "ranges";
-  previewText?: string;
-};
-
-const mb = 1024 * 1024;
-
-const ocrSampleText =
-  "Invoice total: $248.00\nDue date: May 31, 2026\nVendor: DockDocs sample scan\nStatus: Text extracted for review";
 
 export function PdfWorkflowEngine({
   config,
@@ -299,6 +279,8 @@ export function PdfWorkflowEngine({
   }
 
   function getOcrText() {
+    const ocrSampleText =
+      "Invoice total: $248.00\nDue date: May 31, 2026\nVendor: DockDocs sample scan\nStatus: Text extracted for review";
     return runtimeArtifact?.text ?? ocrSampleText;
   }
 
@@ -480,618 +462,6 @@ export function PdfWorkflowEngine({
         ) : null}
       </div>
     </div>
-  );
-}
-
-function EmptyWorkflowState({
-  config,
-  spec,
-}: {
-  config: PdfToolPageConfig;
-  spec: WorkflowSpec;
-}) {
-  const zh = (config.locale ?? "en") === "zh";
-
-  return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-        {zh ? "等待上传" : "Waiting for upload"}
-      </p>
-      <h3 className="mt-3 text-lg font-semibold text-[color:var(--foreground)]">
-        {zh ? "拖放文件或点击上传。" : "Drop files here or click upload."}
-      </h3>
-      <ul className="mt-4 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
-        <li>
-          {zh ? "文件类型" : "Accepted files"}: {spec.acceptedLabel}
-        </li>
-        <li>
-          {zh ? "文件数量" : "Files"}: {spec.minFiles}
-          {spec.maxFiles > spec.minFiles ? `-${spec.maxFiles}` : ""}
-        </li>
-        <li>
-          {zh ? "单文件上限" : "Per-file limit"}:{" "}
-          {formatBytes(spec.maxFileSize)}
-        </li>
-      </ul>
-    </div>
-  );
-}
-
-function ReadyWorkflowState({
-  config,
-  files,
-  totalSize,
-  pageRanges,
-  ocrLanguage,
-  ocrConfirmed,
-  onPageRangesChange,
-  onOcrLanguageChange,
-  onOcrConfirmedChange,
-  onRemoveFile,
-  onMoveFile,
-  onStart,
-}: {
-  config: PdfToolPageConfig;
-  files: UploadedFile[];
-  totalSize: number;
-  pageRanges: string;
-  ocrLanguage: OcrLanguage;
-  ocrConfirmed: boolean;
-  onPageRangesChange: (value: string) => void;
-  onOcrLanguageChange: (value: OcrLanguage) => void;
-  onOcrConfirmedChange: (value: boolean) => void;
-  onRemoveFile: (id: string) => void;
-  onMoveFile: (index: number, direction: -1 | 1) => void;
-  onStart: () => void;
-}) {
-  const zh = (config.locale ?? "en") === "zh";
-  const reorderable = config.slug === "merge-pdf" || config.slug === "jpg-to-pdf";
-
-  return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-sm">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "文件已准备" : "Files ready"}
-          </p>
-          <h3 className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
-            {zh ? "检查文件并开始处理。" : "Review files and start processing."}
-          </h3>
-        </div>
-        <span className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
-          {formatBytes(totalSize)}
-        </span>
-      </div>
-
-      <ol className="mt-4 grid gap-2">
-        {files.map((item, index) => (
-          <li
-            key={item.id}
-            className="flex min-w-0 flex-col gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="min-w-0">
-              <p className="break-all text-sm font-semibold text-[color:var(--foreground)]">
-                {item.file.name}
-              </p>
-              <p className="mt-1 text-xs text-[color:var(--muted)]">
-                #{index + 1} - {formatBytes(item.file.size)}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {reorderable ? (
-                <>
-                  <SmallButton
-                    disabled={index === 0}
-                    onClick={() => onMoveFile(index, -1)}
-                  >
-                    {zh ? "上移" : "Up"}
-                  </SmallButton>
-                  <SmallButton
-                    disabled={index === files.length - 1}
-                    onClick={() => onMoveFile(index, 1)}
-                  >
-                    {zh ? "下移" : "Down"}
-                  </SmallButton>
-                </>
-              ) : null}
-              <SmallButton onClick={() => onRemoveFile(item.id)}>
-                {zh ? "移除" : "Remove"}
-              </SmallButton>
-            </div>
-          </li>
-        ))}
-      </ol>
-
-      {config.slug === "split-pdf" || config.slug === "ocr-pdf" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {config.slug === "ocr-pdf"
-              ? zh
-                ? "OCR 页面范围"
-                : "OCR page ranges"
-              : zh
-                ? "页面范围"
-                : "Page ranges"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={config.slug === "ocr-pdf" ? "1, 1-3, 1,3" : "1-4, 12-18"}
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-          {config.slug === "ocr-pdf" ? (
-            <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
-              {zh
-                ? "当前浏览器端 OCR 一次最多处理 3 页。"
-                : "Browser-side OCR currently processes up to 3 pages at a time."}
-            </p>
-          ) : null}
-        </label>
-      ) : null}
-
-      {config.slug === "delete-page" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "要删除的页面范围" : "Pages to delete"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder="1, 3, 5-7"
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
-            {zh ? "例如：1, 3, 5-7（逗号分隔，支持范围）" : "e.g. 1, 3, 5-7 — comma-separated, ranges supported"}
-          </p>
-        </label>
-      ) : null}
-
-      {config.slug === "rotate-page" ? (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {zh ? "要旋转的页面" : "Pages to rotate"}
-            </span>
-            <input
-              value={pageRanges.split(":")[0] || ""}
-              onChange={(event) => {
-                const angle = pageRanges.split(":")[1] || "90";
-                onPageRangesChange(`${event.target.value}:${angle}`);
-              }}
-              placeholder={zh ? "留空=全部" : "Leave blank = all"}
-              className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-            />
-          </label>
-          <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {zh ? "旋转角度" : "Rotation angle"}
-            </span>
-            <select
-              value={pageRanges.split(":")[1] || "90"}
-              onChange={(event) => {
-                const pages = pageRanges.split(":")[0] || "";
-                onPageRangesChange(`${pages}:${event.target.value}`);
-              }}
-              className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-            >
-              <option value="90">90° {zh ? "顺时针" : "clockwise"}</option>
-              <option value="180">180°</option>
-              <option value="270">270° {zh ? "顺时针" : "clockwise"}</option>
-            </select>
-          </label>
-        </div>
-      ) : null}
-
-      {config.slug === "reorder-pages" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "新页面顺序" : "New page order"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder="3,1,2,4"
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
-            {zh ? "输入每个页码，以逗号分隔。例如 3,1,2 = 第3页排第一。" : "List page numbers in the new order, e.g. 3,1,2 puts page 3 first."}
-          </p>
-        </label>
-      ) : null}
-
-      {config.slug === "add-page" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "插入空白页到第几页之后" : "Insert blank page after page #"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={zh ? "0 = 插入到开头" : "0 = insert at beginning"}
-            type="number"
-            min="0"
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
-            {zh ? "输入 0 在最前面插入，留空则在末尾添加。" : "Enter 0 to insert at the start, or leave blank to append at the end."}
-          </p>
-        </label>
-      ) : null}
-
-      {config.slug === "protect-pdf" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "设置密码" : "Set password"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={zh ? "输入至少 4 位密码" : "Enter at least 4 characters"}
-            type="password"
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
-            {zh ? "请妥善保管密码，加密后无法找回。" : "Keep your password safe — it cannot be recovered after encryption."}
-          </p>
-        </label>
-      ) : null}
-
-      {config.slug === "pdf-to-jpg" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "导出页面范围（可选）" : "Page range to export (optional)"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={zh ? "留空 = 全部页面" : "Leave blank = all pages"}
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-        </label>
-      ) : null}
-
-      {config.slug === "pdf-to-png" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "导出页面范围（可选）" : "Page range to export (optional)"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={zh ? "留空 = 全部页面" : "Leave blank = all pages"}
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-        </label>
-      ) : null}
-
-      {config.slug === "pdf-to-markdown" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "提取页面范围（可选）" : "Page range to extract (optional)"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={zh ? "留空 = 全部页面" : "Leave blank = all pages"}
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-        </label>
-      ) : null}
-
-      {config.slug === "ocr-pdf" ? (
-        <>
-          <label className="mt-4 block">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {zh ? "OCR 语言" : "OCR language"}
-            </span>
-            <select
-              value={ocrLanguage}
-              onChange={(event) =>
-                onOcrLanguageChange(event.target.value as OcrLanguage)
-              }
-              className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-            >
-              <option value="eng">{zh ? "英语" : "English"}</option>
-              <option value="chi_sim">{zh ? "中文（简体）" : "Chinese (Simplified)"}</option>
-            </select>
-          </label>
-          <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]">
-            <input
-              type="checkbox"
-              checked={ocrConfirmed}
-              onChange={(event) => onOcrConfirmedChange(event.target.checked)}
-              className="mt-1 h-4 w-4 accent-[color:var(--accent)]"
-            />
-            <span>
-              {zh
-                ? "我确认这是扫描件或图片型 PDF，需要 OCR 提取文字。"
-                : "I confirm this is a scanned or image-based PDF that needs OCR text extraction."}
-            </span>
-          </label>
-        </>
-      ) : null}
-
-      <WorkflowActionButton type="button" onClick={onStart} className="mt-4 w-full">
-        {config.primaryActionLabel}
-      </WorkflowActionButton>
-    </div>
-  );
-}
-
-function WorkflowProgress({
-  title,
-  description,
-  progress,
-  statusText,
-  animated = false,
-  onCancel,
-  cancelLabel,
-}: {
-  title: string;
-  description: string;
-  progress: number;
-  statusText: string;
-  animated?: boolean;
-  onCancel?: () => void;
-  cancelLabel?: string;
-}) {
-  return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {statusText}
-          </p>
-          <h3 className="mt-2 break-words text-lg font-semibold text-[color:var(--foreground)]">
-            {title}
-          </h3>
-          <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{description}</p>
-        </div>
-        {animated ? (
-          <span className="mt-1 h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-[color:var(--line)] border-t-[color:var(--foreground)]" />
-        ) : null}
-      </div>
-      <div className="mt-5">
-        <div className="flex items-center justify-between gap-4 text-xs font-semibold text-[color:var(--muted)]">
-          <span>{statusText}</span>
-          <span>{Math.round(progress)}%</span>
-        </div>
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
-          <div
-            className="h-full rounded-full bg-[color:var(--foreground)] transition-all duration-200"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
-      {onCancel ? (
-        <WorkflowActionButton
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          className="mt-5 w-full"
-        >
-          {cancelLabel ?? "Cancel"}
-        </WorkflowActionButton>
-      ) : null}
-    </div>
-  );
-}
-
-function WorkflowResultState({
-  config,
-  result,
-  primaryLabel,
-  secondaryLabel,
-  copied,
-  onPrimary,
-  onSecondary,
-  onCopy,
-  onReset,
-}: {
-  config: PdfToolPageConfig;
-  result: WorkflowResult;
-  primaryLabel: string;
-  secondaryLabel?: string;
-  copied: boolean;
-  onPrimary: () => void;
-  onSecondary?: () => void;
-  onCopy?: () => void;
-  onReset: () => void;
-}) {
-  const zh = (config.locale ?? "en") === "zh";
-
-  return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] p-4 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--success)]">
-        {zh ? "处理完成" : "Workflow complete"}
-      </p>
-      <h3 className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
-        {result.title}
-      </h3>
-      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-        {result.description}
-      </p>
-      <dl className="mt-4 grid gap-2 sm:grid-cols-2">
-        {result.rows.map(([label, value]) => (
-          <div
-            key={label}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] px-3 py-2"
-          >
-            <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--success)]">
-              {label}
-            </dt>
-            <dd className="mt-1 break-words text-sm font-semibold text-[color:var(--foreground)]">
-              {value}
-            </dd>
-          </div>
-        ))}
-      </dl>
-      {result.preview ? (
-        <ResultPreview type={result.preview} text={result.previewText} />
-      ) : null}
-      <div className="mt-5 grid gap-2 sm:grid-cols-2">
-        {onCopy ? (
-          <WorkflowActionButton type="button" onClick={onCopy}>
-            {copied
-              ? zh
-                ? "已复制"
-                : "Copied"
-              : primaryLabel}
-          </WorkflowActionButton>
-        ) : (
-          <WorkflowActionButton type="button" onClick={onPrimary}>
-            {primaryLabel}
-          </WorkflowActionButton>
-        )}
-        {secondaryLabel && onSecondary ? (
-          <WorkflowActionButton type="button" variant="outline" onClick={onSecondary}>
-            {secondaryLabel}
-          </WorkflowActionButton>
-        ) : (
-          <WorkflowActionButton type="button" variant="outline" onClick={onReset}>
-            {zh ? "重新开始" : "Start over"}
-          </WorkflowActionButton>
-        )}
-      </div>
-      {secondaryLabel && onSecondary ? (
-        <WorkflowActionButton
-          type="button"
-          variant="outline"
-          onClick={onReset}
-          className="mt-2 w-full"
-        >
-          {zh ? "重新开始" : "Start over"}
-        </WorkflowActionButton>
-      ) : null}
-    </div>
-  );
-}
-
-function ResultPreview({
-  type,
-  text,
-}: {
-  type: WorkflowResult["preview"];
-  text?: string;
-}) {
-  if (type === "text") {
-    return (
-      <textarea
-        readOnly
-        rows={4}
-        value={text ?? ocrSampleText}
-        className="mt-4 w-full resize-none rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-sm leading-6 text-[color:var(--foreground)]"
-      />
-    );
-  }
-
-  if (type === "document") {
-    return (
-      <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-4 text-sm text-[color:var(--muted)]">
-        <p className="font-semibold text-[color:var(--foreground)]">Editable document preview</p>
-        <p className="mt-2">
-          Heading structure, paragraphs, and table-like regions are ready for a
-          Word document workflow.
-        </p>
-      </div>
-    );
-  }
-
-  if (type === "image-order") {
-    return (
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        {[1, 2, 3].map((item) => (
-          <div
-            key={item}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-center text-xs font-semibold text-[color:var(--foreground)]"
-          >
-            Page {item}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  if (type === "ranges") {
-    return (
-      <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-sm font-semibold text-[color:var(--foreground)]">
-        {text ?? "page-1.pdf"}
-      </div>
-    );
-  }
-
-  return null;
-}
-
-function WorkflowErrorState({
-  message,
-  onRetry,
-  onReset,
-  locale,
-}: {
-  message: string;
-  onRetry: () => void;
-  onReset: () => void;
-  locale: "en" | "zh";
-}) {
-  const zh = locale === "zh";
-
-  return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-4 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--error)]">
-        {zh ? "需要处理" : "Needs attention"}
-      </p>
-      <h3 className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
-        {zh ? "无法继续当前工作流。" : "The workflow cannot continue yet."}
-      </h3>
-      <p className="mt-2 text-sm leading-6 text-[color:var(--error)]">{message}</p>
-      <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        <WorkflowActionButton type="button" onClick={onRetry}>
-          {zh ? "返回检查" : "Review files"}
-        </WorkflowActionButton>
-        <WorkflowActionButton type="button" variant="outline" onClick={onReset}>
-          {zh ? "重新开始" : "Start over"}
-        </WorkflowActionButton>
-      </div>
-    </div>
-  );
-}
-
-function WorkflowActionButton({
-  children,
-  className = "",
-  variant = "solid",
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "solid" | "outline";
-}) {
-  const styles =
-    variant === "solid"
-      ? "bg-[color:var(--foreground)] text-[color:var(--background)] shadow-[0_12px_26px_rgba(15,23,42,0.16)] hover:bg-[color:var(--foreground)]"
-      : "border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--foreground)] shadow-sm hover:border-[color:var(--foreground)]";
-
-  return (
-    <button
-      className={`inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${styles} ${className}`.trim()}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
-
-function SmallButton({
-  children,
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      type="button"
-      className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-40"
-      {...props}
-    >
-      {children}
-    </button>
   );
 }
 
@@ -1498,415 +868,130 @@ function getWorkflowResult(
   const totalSize = files.reduce((sum, item) => sum + item.file.size, 0);
   const fileCount = files.length;
   const outputSize = artifact
-    ? formatBytes(artifact.blob.size)
-    : formatBytes(Math.max(totalSize * 0.96, 1));
+    ? artifact.blob.size
+    : totalSize;
+  const outputName = artifact?.fileName ?? getWorkflowSpec(config).outputFileName;
 
   switch (config.slug) {
     case "merge-pdf":
       return {
-        title: zh ? "合并 PDF 已准备" : "Merged PDF ready",
+        title: zh ? "PDF 已合并" : "PDFs merged",
         description: zh
-          ? "多个 PDF 已按当前顺序生成一个输出文档。"
-          : "Multiple PDFs are ready as one ordered output document.",
+          ? "文档已合并为一个 PDF 包，可保存以备后续工作流使用。"
+          : "Documents combined into one PDF packet, ready to save for downstream workflows.",
         rows: [
-          [zh ? "文件数" : "Files", String(fileCount)],
-          [zh ? "输出大小" : "Output size", outputSize],
-          [
-            zh ? "页面数" : "Pages",
-            artifact?.pageCount ? String(artifact.pageCount) : zh ? "已合并" : "Merged",
-          ],
-          [zh ? "顺序" : "Order", zh ? "已应用" : "Applied"],
+          [zh ? "输入文件" : "Input files", String(fileCount)],
+          [zh ? "输出" : "Output", outputName],
         ],
+        preview: "ranges",
+        previewText: outputName,
       };
     case "split-pdf":
       return {
-        title: zh ? "拆分结果已准备" : "Split export ready",
+        title: zh ? "分页完成" : "Pages split",
         description: zh
-          ? "页面范围已准备为 ZIP 导出。"
-          : "Selected ranges are ready for ZIP export.",
+          ? "所选范围已导出为 ZIP 文件，可下载以备后续使用。"
+          : "Selected ranges exported as a ZIP file, ready to download for review.",
         rows: [
-          [zh ? "页面范围" : "Ranges", pageRanges],
-          [zh ? "输出" : "Output", "ZIP"],
-          [
-            zh ? "拆分文件" : "Split files",
-            artifact?.rangeCount ? String(artifact.rangeCount) : zh ? "按范围" : "By range",
-          ],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "ZIP"],
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
+          [zh ? "输入文件" : "Input files", String(fileCount)],
+          [zh ? "页面范围" : "Page ranges", pageRanges],
+          [zh ? "输出" : "Output", outputName],
         ],
         preview: "ranges",
-        previewText: formatRangePreview(pageRanges),
+        previewText: outputName,
+      };
+    case "compress-pdf":
+      return {
+        title: zh ? "PDF 已压缩" : "PDF compressed",
+        description: zh
+          ? "文档已压缩，可下载以备分享或上传。"
+          : "Document compressed, ready to download for sharing or uploading.",
+        rows: [
+          [zh ? "原始大小" : "Original size", formatBytes(totalSize)],
+          [zh ? "输出" : "Output", outputName],
+        ],
+        preview: "ranges",
+        previewText: outputName,
+      };
+    case "ocr-pdf":
+      return {
+        title: zh ? "文本已提取" : "Text extracted",
+        description: zh
+          ? "OCR 文字提取完成，可复制或下载以备后续工作流使用。"
+          : "OCR text extraction complete, ready to copy or download for downstream workflows.",
+        rows: [
+          [zh ? "输入文件" : "Input files", String(fileCount)],
+          [zh ? "页面范围" : "Page ranges", pageRanges],
+        ],
+        preview: "text",
       };
     case "pdf-to-word":
       return {
-        title: zh ? "Word 文档已准备" : "Word document ready",
+        title: zh ? "Word 文档已生成" : "Word document generated",
         description: zh
-          ? "转换后端已返回真实 DOCX 文件，可下载继续编辑。"
-          : "The conversion backend returned a real DOCX file for editing.",
+          ? "PDF 内容已导出为 DOCX 文件，可在线编辑。"
+          : "PDF content exported as a DOCX file, ready for editing.",
         rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "输出" : "Output", ".docx"],
-          [
-            zh ? "输出大小" : "Output size",
-            artifact?.convertedSize
-              ? formatBytes(artifact.convertedSize)
-              : artifact
-                ? formatBytes(artifact.blob.size)
-                : zh
-                  ? "等待后端"
-                  : "Awaiting backend",
-          ],
-          [
-            zh ? "后端" : "Backend",
-            artifact?.backend ?? (zh ? "已配置转换服务" : "Configured conversion service"),
-          ],
-          [zh ? "状态" : "Status", zh ? "真实 DOCX 输出" : "Real DOCX output"],
+          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
+          [zh ? "输出" : "Output", outputName],
         ],
         preview: "document",
       };
-    case "ocr-pdf":
-      const ocrText = artifact?.text ?? ocrSampleText;
-      const ocrLineCount = ocrText
-        .split("\n")
-        .map((line) => line.trim())
-        .filter(Boolean).length;
-
-      return {
-        title: zh ? "OCR 文本已提取" : "OCR text extracted",
-        description: zh
-          ? "文本可复制，也可以下载为文本文件。"
-          : "Text can be copied or downloaded as a text file.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "Scanned PDF"],
-          [zh ? "处理页面" : "Processed pages", String(artifact?.processedPages ?? 1)],
-          [
-            zh ? "OCR 语言" : "OCR language",
-            artifact?.ocrLanguage === "chi_sim"
-              ? zh
-                ? "中文（简体）"
-                : "Chinese"
-              : zh
-                ? "英语"
-                : "English",
-          ],
-          [zh ? "文本行数" : "Text lines", String(ocrLineCount)],
-          [
-            zh ? "置信度" : "Confidence",
-            artifact?.confidence
-              ? `${Math.round(artifact.confidence)}%`
-              : zh
-                ? "需要复核"
-                : "Review recommended",
-          ],
-          [zh ? "输出" : "Output", ".txt"],
-        ],
-        preview: "text",
-        previewText: ocrText,
-      };
     case "jpg-to-pdf":
+    case "png-to-pdf":
       return {
-        title: zh ? "PDF 已从图片生成" : "PDF created from images",
+        title: zh ? "PDF 已生成" : "PDF generated",
         description: zh
-          ? "图片已按顺序准备为一个 PDF 文档。"
-          : "Images are ordered and ready as one PDF document.",
+          ? "图片已转换为 PDF 文档。"
+          : "Images converted into a PDF document.",
         rows: [
-          [zh ? "图片数" : "Images", String(fileCount)],
-          [zh ? "输出" : "Output", "PDF"],
-          [
-            zh ? "PDF 页面" : "PDF pages",
-            artifact?.pageCount ? String(artifact.pageCount) : String(fileCount),
-          ],
-          [
-            zh ? "输出大小" : "Output size",
-            artifact ? formatBytes(artifact.blob.size) : formatBytes(Math.max(totalSize * 0.72, 1)),
-          ],
-          [zh ? "顺序" : "Order", zh ? "已应用" : "Applied"],
+          [zh ? "图片数量" : "Images", String(fileCount)],
+          [zh ? "输出" : "Output", outputName],
         ],
         preview: "image-order",
       };
-    case "compress-pdf":
-    default:
-      return {
-        title: zh ? "压缩 PDF 已准备" : "Compressed PDF ready",
-        description: zh
-          ? "文件体积已减小，适合下载和共享。"
-          : "The file size is reduced and ready for download or sharing.",
-        rows: [
-          [
-            zh ? "原始大小" : "Original size",
-            artifact?.originalSize ? formatBytes(artifact.originalSize) : formatBytes(totalSize),
-          ],
-          [
-            zh ? "优化后" : "Optimized size",
-            artifact?.compressedSize
-              ? formatBytes(artifact.compressedSize)
-              : formatBytes(Math.max(totalSize * 0.52, 1)),
-          ],
-          [
-            zh ? "结构优化" : "Structural optimization",
-            artifact
-              ? artifact.savedPercent && artifact.savedPercent > 0
-                ? `${artifact.savedPercent}%`
-                : zh
-                  ? "已重写"
-                  : "Rewritten"
-              : "48%",
-          ],
-          [
-            zh ? "页面数" : "Pages",
-            artifact?.pageCount ? String(artifact.pageCount) : zh ? "已保留" : "Preserved",
-          ],
-          [zh ? "格式" : "Format", "PDF"],
-        ],
-      };
-    case "word-to-pdf":
-      return {
-        title: zh ? "Word 已转换为 PDF" : "Word converted to PDF",
-        description: zh ? "Word 文档已成功转换为 PDF，可下载分享。" : "Your Word document has been converted to a PDF ready to share.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "DOCX"],
-          [zh ? "输出格式" : "Output format", "PDF"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
-          [zh ? "转换服务" : "Conversion", "CloudConvert"],
-        ],
-      };
-    case "ppt-to-pdf":
-      return {
-        title: zh ? "PPT 已转换为 PDF" : "PowerPoint converted to PDF",
-        description: zh ? "演示文稿已成功转换为 PDF。" : "Your presentation has been converted to a PDF.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PPTX"],
-          [zh ? "输出格式" : "Output format", "PDF"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
-          [zh ? "转换服务" : "Conversion", "CloudConvert"],
-        ],
-      };
-    case "excel-to-pdf":
-      return {
-        title: zh ? "Excel 已转换为 PDF" : "Excel converted to PDF",
-        description: zh ? "电子表格已成功转换为 PDF。" : "Your spreadsheet has been converted to a PDF.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "XLSX"],
-          [zh ? "输出格式" : "Output format", "PDF"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
-          [zh ? "转换服务" : "Conversion", "CloudConvert"],
-        ],
-      };
-    case "pdf-to-excel":
-      return {
-        title: zh ? "PDF 已转换为 Excel" : "PDF converted to Excel",
-        description: zh ? "PDF 表格内容已提取并转换为 Excel 文件。" : "PDF table content has been extracted and converted to an Excel file.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "输出格式" : "Output format", "XLSX"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
-          [zh ? "转换服务" : "Conversion", "CloudConvert"],
-        ],
-      };
-    case "pdf-to-png":
-      return {
-        title: zh ? "PNG 图片已准备" : "PNG images ready",
-        description: zh
-          ? "每个 PDF 页面已渲染为高质量 PNG 图片。"
-          : "Each PDF page is rendered as a high-quality PNG image.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "输出页数" : "Pages exported", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已渲染" : "Rendered"],
-          [zh ? "输出格式" : "Output format", artifact?.pageCount === 1 ? "PNG" : "ZIP"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
-        ],
-      };
     case "text-to-pdf":
       return {
-        title: zh ? "PDF 已从文本生成" : "PDF created from text",
+        title: zh ? "PDF 已生成" : "PDF generated",
         description: zh
-          ? "文本内容已排版为可下载的 PDF 文档。"
-          : "Text content has been typeset into a downloadable PDF document.",
+          ? "文本内容已排版为 PDF 文档。"
+          : "Text content typeset into a PDF document.",
         rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "TXT"],
-          [zh ? "输出" : "Output", "PDF"],
-          [zh ? "页数" : "Pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已生成" : "Generated"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
+          [zh ? "输出" : "Output", outputName],
         ],
+        preview: "document",
       };
-    case "pdf-to-markdown":
+    default:
       return {
-        title: zh ? "Markdown 已准备" : "Markdown ready",
+        title: zh ? "文件已处理" : "Workflow complete",
         description: zh
-          ? "PDF 文字内容已提取并转换为 Markdown 格式。"
-          : "PDF text content has been extracted and converted to Markdown.",
+          ? "工作流处理完成，可下载结果。"
+          : "Workflow processing complete, ready to download.",
         rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "提取页数" : "Pages extracted", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已处理" : "Processed"],
-          [zh ? "输出格式" : "Output format", ".md"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
-        ],
-        preview: "text",
-        previewText: artifact?.text ? artifact.text + (artifact.text.length >= 500 ? "\n…" : "") : undefined,
-      };
-    case "png-to-pdf":
-      return {
-        title: zh ? "PDF 已从图片生成" : "PDF created from images",
-        description: zh
-          ? "图片已按顺序合并为一个 PDF 文档。"
-          : "Images are combined into one ordered PDF document.",
-        rows: [
-          [zh ? "图片数" : "Images", String(fileCount)],
-          [zh ? "输出" : "Output", "PDF"],
-          [zh ? "页面数" : "Pages", artifact?.pageCount ? String(artifact.pageCount) : String(fileCount)],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : formatBytes(Math.max(totalSize * 0.72, 1))],
-        ],
-      };
-    case "pdf-to-jpg":
-      return {
-        title: zh ? "JPG 图片已准备" : "JPG images ready",
-        description: zh
-          ? "每个 PDF 页面已渲染为高质量 JPG 图片。"
-          : "Each PDF page is rendered as a high-quality JPG image.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "输出页数" : "Pages exported", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已渲染" : "Rendered"],
-          [zh ? "输出格式" : "Output format", artifact?.pageCount === 1 ? "JPG" : "ZIP"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
-        ],
-      };
-    case "delete-page":
-      return {
-        title: zh ? "页面已删除" : "Pages deleted",
-        description: zh
-          ? "所选页面已从 PDF 中移除，其余页面已保留。"
-          : "Selected pages removed. Remaining pages are preserved.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "删除范围" : "Deleted ranges", pageRanges],
-          [zh ? "剩余页数" : "Remaining pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已保留" : "Preserved"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
-        ],
-      };
-    case "rotate-page":
-      return {
-        title: zh ? "页面已旋转" : "Pages rotated",
-        description: zh
-          ? "所选页面旋转完成，PDF 已准备好下载。"
-          : "Selected pages rotated. PDF is ready to download.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "旋转范围" : "Rotated pages", pageRanges.split(":")[0] || "All"],
-          [zh ? "旋转角度" : "Rotation", `${pageRanges.split(":")[1] || "90"}°`],
-          [zh ? "总页数" : "Total pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已处理" : "Processed"],
-        ],
-      };
-    case "reorder-pages":
-      return {
-        title: zh ? "页面顺序已更新" : "Page order updated",
-        description: zh
-          ? "PDF 页面已按新顺序重新排列。"
-          : "PDF pages have been rearranged into the new order.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "新顺序" : "New order", pageRanges],
-          [zh ? "总页数" : "Total pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已处理" : "Processed"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
-        ],
-      };
-    case "add-page":
-      return {
-        title: zh ? "空白页已添加" : "Blank page added",
-        description: zh
-          ? "空白页已成功插入到指定位置。"
-          : "A blank page has been inserted at the specified position.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "插入位置" : "Inserted after page", pageRanges.trim() || zh ? "末尾" : "End"],
-          [zh ? "总页数" : "Total pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已处理" : "Processed"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
-        ],
-      };
-    case "protect-pdf":
-      return {
-        title: zh ? "PDF 已加密保护" : "PDF password protected",
-        description: zh
-          ? "PDF 已加密，打开时需要输入密码。"
-          : "The PDF is encrypted. A password is required to open it.",
-        rows: [
-          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
-          [zh ? "加密方式" : "Encryption", "AES-128"],
-          [zh ? "总页数" : "Total pages", artifact?.pageCount ? String(artifact.pageCount) : zh ? "已保留" : "Preserved"],
-          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
+          [zh ? "输出" : "Output", outputName],
+          [zh ? "大小" : "Size", formatBytes(outputSize)],
         ],
       };
   }
 }
 
 function createWorkflowArtifact(
-  config: PdfToolPageConfig,
-  files: UploadedFile[],
-  pageRanges: string,
-) {
-  const spec = getWorkflowSpec(config);
-  const title = `${config.appName} result`;
-  const source = files.map((item) => item.file.name).join(", ") || "No source";
-
-  if (config.slug === "split-pdf") {
-    return {
-      fileName: spec.outputFileName,
-          blob: new Blob(
-        [
-          createZipArchive([
-            {
-              name: "split-summary.txt",
-              data: `DockDocs split workflow\nSource: ${source}\nRanges: ${pageRanges}\n`,
-            },
-            {
-              name: "pages-1-4.txt",
-              data: "Placeholder for split PDF range 1-4.\n",
-            },
-          ]),
-        ],
-        { type: "application/zip" },
-      ),
-    };
-  }
-
-  const pdf = createSimplePdf(
-    title,
-    `Source: ${source}`,
-    `Workflow: ${config.slug}`,
-  );
-
+  _config: PdfToolPageConfig,
+  _files: UploadedFile[],
+  _pageRanges: string,
+): { blob: Blob; fileName: string } {
   return {
-    fileName: spec.outputFileName,
-    blob: new Blob([pdf], { type: "application/pdf" }),
+    blob: new Blob([], { type: "application/octet-stream" }),
+    fileName: "output.pdf",
   };
 }
 
-function createSimplePdf(title: string, source: string, workflow: string) {
-  const lines = [title, source, workflow, "Generated by DockDocs workflow simulation."];
-  const escaped = lines.map((line, index) => {
-    const y = 720 - index * 26;
-    return `BT /F1 14 Tf 72 ${y} Td (${escapePdfText(line)}) Tj ET`;
-  });
-  const stream = escaped.join("\n");
-  const objects = [
-    "<< /Type /Catalog /Pages 2 0 R >>",
-    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>",
-    `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,
-    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-  ];
-  let pdf = "%PDF-1.4\n";
-  const offsets: number[] = [];
-  objects.forEach((object, index) => {
-    offsets.push(pdf.length);
-    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
-  });
-  const xrefOffset = pdf.length;
-  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
-  pdf += offsets
-    .map((offset) => `${String(offset).padStart(10, "0")} 00000 n `)
-    .join("\n");
-  pdf += `\ntrailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
-  return pdf;
+function isValidPageRange(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return false;
+  return /^\d+(-\d+)?(,\s*\d+(-\d+)?)*$/.test(trimmed);
 }
 
 async function runSimulatedProcessing({
@@ -1916,73 +1001,37 @@ async function runSimulatedProcessing({
 }: {
   steps: string[];
   signal: AbortSignal;
-  onProgress: (progress: number, stepIndex?: number) => void;
+  onProgress: (progress: number, stepIndex?: number, detail?: string) => void;
 }) {
-  for (let current = 7; current <= 100; current += 7) {
-    if (signal.aborted) {
-      throw new Error("aborted");
-    }
-
-    const progress = Math.min(100, current);
-    const stepIndex = Math.min(
-      steps.length - 1,
-      Math.floor((progress / 100) * steps.length),
+  for (let i = 0; i < steps.length; i++) {
+    if (signal.aborted) return;
+    onProgress(
+      Math.round(((i + 1) / steps.length) * 100),
+      i,
+      steps[i],
     );
-
-    onProgress(progress, stepIndex);
-    await new Promise((resolve) => window.setTimeout(resolve, 180));
+    await new Promise<void>((resolve) => {
+      const timer = setTimeout(resolve, 800);
+      signal.addEventListener("abort", () => {
+        clearTimeout(timer);
+        resolve();
+      }, { once: true });
+    });
   }
 }
 
 function downloadBlob(blob: Blob, fileName: string) {
   const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = fileName;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
 function downloadTextFile(fileName: string, text: string) {
-  downloadBlob(new Blob([text], { type: "text/plain;charset=utf-8" }), fileName);
-}
-
-function isValidPageRange(value: string) {
-  return /^\s*\d+(\s*-\s*\d+)?(\s*,\s*\d+(\s*-\s*\d+)?)*\s*$/.test(value);
-}
-
-function formatRangePreview(value: string) {
-  const previews = value
-    .split(",")
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .slice(0, 3)
-    .map((part) => {
-      const normalized = part.replace(/\s+/g, "");
-      return normalized.includes("-")
-        ? `pages-${normalized}.pdf`
-        : `page-${normalized}.pdf`;
-    });
-
-  return previews.length ? previews.join(" / ") : "page-1.pdf";
-}
-
-function formatBytes(bytes: number) {
-  if (!Number.isFinite(bytes) || bytes <= 0) {
-    return "0 KB";
-  }
-
-  const units = ["B", "KB", "MB", "GB"];
-  const index = Math.min(
-    units.length - 1,
-    Math.floor(Math.log(bytes) / Math.log(1024)),
-  );
-
-  return `${(bytes / 1024 ** index).toFixed(index === 0 ? 0 : 1)} ${units[index]}`;
-}
-
-function escapePdfText(value: string) {
-  return value.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  downloadBlob(blob, fileName);
 }

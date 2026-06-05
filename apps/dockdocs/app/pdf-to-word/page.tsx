@@ -1,174 +1,109 @@
-import type { Metadata } from "next";
-import { RelatedTools } from "@/components/RelatedTools";
-import { UploadPanel } from "@/components/UploadPanel";
-import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
-import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
+import {
+  createPdfToolMetadata,
+  PdfToolPage,
+  type PdfToolPageConfig,
+} from "../../../../shared/templates/pdf-tool-page";
+import { languageAlternates } from "@/lib/i18n";
 
-const pageUrl = "https://dockdocs.app/pdf-to-word/";
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
+const config = {
+  slug: "pdf-to-word",
+  alternateLanguages: languageAlternates("pdf-to-word"),
+  title: "PDF to Word Converter Online Free | DockDocs",
+  description:
+    "Convert PDF files into editable Word-ready documents inside the DockDocs AI document workspace.",
+  keywords: ["pdf to word", "convert pdf to word", "pdf to docx", "pdf word converter"],
+  appName: "DockDocs PDF to Word",
+  schemaName: "DockDocs PDF to Word Converter",
+  breadcrumbName: "PDF to Word",
+  heroTitle: "Convert PDF to editable Word documents online.",
+  heroDescription:
+    "Upload a PDF and prepare it for Word workflows. Powered by DockDocs AI document workspace for PDF tools and document automation.",
+  primaryActionLabel: "Convert to Word",
+  stats: [["Price", "Free"], ["Input", "PDF"], ["Output", "DOCX"]],
+  upload: {
+    title: "Upload a PDF file",
+    description: "Drag and drop a PDF file here, or choose from your device.",
+    buttonLabel: "Choose PDF",
+    note: "PDF only. Max 10 MB.",
+  },
+  benefitsTitle: "Convert PDF files for document editing",
+  benefitsDescription:
+    "DockDocs PDF to Word prepares your files for editing, collaboration, and office workflows.",
+  benefits: [
     {
-      "@type": "WebPage",
-      "@id": `${pageUrl}#webpage`,
-      url: pageUrl,
-      name: "PDF to Word Converter Online | DockDocs",
+      title: "Editable output",
       description:
-        "Convert PDF files into editable Word-ready documents inside the DockDocs AI document workspace.",
-      isPartOf: {
-        "@type": "WebSite",
-        name: "DockDocs",
-        url: "https://dockdocs.app/",
-      },
-      about: {
-        "@id": `${pageUrl}#app`,
-      },
-      breadcrumb: {
-        "@id": `${pageUrl}#breadcrumb`,
-      },
+        "Convert PDF content into a Word document you can edit in Microsoft Word, Google Docs, or LibreOffice.",
     },
     {
-      "@type": "WebApplication",
-      "@id": `${pageUrl}#app`,
-      name: "DockDocs PDF to Word",
-      applicationCategory: "BusinessApplication",
-      operatingSystem: "Web",
-      url: pageUrl,
+      title: "Document-ready",
       description:
-        "Prepare PDF files for editable Word document workflows with DockDocs.",
-      brand: {
-        "@type": "Brand",
-        name: "DockDocs",
-        slogan: "AI Document Platform",
-      },
-      offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "USD",
-      },
+        "The output is structured for document workflows — reports, contracts, proposals, and forms.",
     },
     {
-      "@type": "BreadcrumbList",
-      "@id": `${pageUrl}#breadcrumb`,
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "DockDocs",
-          item: "https://dockdocs.app/",
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "PDF to Word",
-          item: pageUrl,
-        },
-      ],
+      title: "No software needed",
+      description:
+        "Convert PDF to Word directly in your browser — no Word or Acrobat required.",
     },
   ],
-};
-
-export const metadata: Metadata = {
-  title: "PDF to Word Converter Online",
-  description:
-    "Convert PDF files into editable Word-ready documents with DockDocs, the AI document workspace for PDF tools and document workflows.",
-  alternates: {
-    canonical: "/pdf-to-word/",
-  },
-  openGraph: {
-    title: "PDF to Word Converter Online | DockDocs",
+  featuresTitle: "Built for PDF to Word conversion",
+  featuresDescription:
+    "A minimal DockDocs interface for converting PDF files into editable Word documents.",
+  features: [
+    {
+      title: "PDF to DOCX",
+      description: "Convert standard PDF files into Microsoft Word DOCX format.",
+    },
+    {
+      title: "Text extraction",
+      description:
+        "Preserve text content for editing, copying, and document repurposing.",
+    },
+    {
+      title: "Up to 10 MB",
+      description: "Handles most business documents comfortably.",
+    },
+    {
+      title: "Responsive UI",
+      description: "Works across desktop, tablet, and mobile.",
+    },
+  ],
+  workflowTitle: "How PDF to Word fits into document work",
+  workflowDescription:
+    "Common uses: editing contracts, repurposing reports, updating forms, and extracting content for new documents.",
+  steps: [
+    "Upload a PDF file from your device.",
+    "DockDocs extracts the document content.",
+    "Download the editable Word document.",
+  ],
+  faqTitle: "PDF to Word questions",
+  faq: [
+    {
+      question: "How do I convert PDF to Word?",
+      answer:
+        "Upload a PDF file and download the converted Word document. The conversion extracts text content for editing.",
+    },
+    {
+      question: "Will the formatting be preserved?",
+      answer:
+        "Text content is extracted for editing. Complex layouts, images, and tables may require manual adjustment in Word.",
+    },
+    {
+      question: "Is this free?",
+      answer: "Yes, PDF to Word is a free conversion workflow in DockDocs.",
+    },
+  ],
+  cta: {
+    eyebrow: "PDF to Word",
+    title: "Convert PDF files to editable Word documents.",
     description:
-      "Prepare PDF files for editable Word document workflows inside DockDocs.",
-    url: pageUrl,
-    siteName: "DockDocs",
-    type: "website",
+      "Use DockDocs to prepare PDF files for Word editing, collaboration, and document workflows.",
+    buttonLabel: "Convert PDF now",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "PDF to Word Converter Online | DockDocs",
-    description:
-      "Prepare PDF files for editable Word document workflows inside DockDocs.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+} satisfies PdfToolPageConfig;
 
-function PdfToWordPageContent({ locale = "en" }: { locale?: RuntimeLocale }) {
-  const copy = getRuntimeCopy(locale);
-  const page = copy.pdfToWord;
-
-  return (
-    <main>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto grid min-h-[calc(100vh-92px)] max-w-7xl items-center gap-8 px-5 py-10 sm:px-6 lg:grid-cols-[0.78fr_1.22fr] lg:px-8">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              {page.eyebrow}
-            </p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl xl:text-6xl">
-              {page.title}
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[color:var(--muted)] sm:text-lg">
-              {page.description}
-            </p>
-          </div>
-          <UploadPanel
-            title={page.uploadTitle}
-            description={page.uploadDescription}
-            formats={page.formats}
-            limit={page.limit}
-            cta={page.cta}
-            interactive={false}
-            labels={copy.common.upload}
-          />
-        </div>
-      </section>
-
-      <section className="border-b border-[color:var(--line)] px-5 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              {page.outputEyebrow}
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
-              {page.outputHeading}
-            </h2>
-            <p className="mt-5 leading-7 text-[color:var(--muted)]">
-              {page.outputDescription}
-            </p>
-          </div>
-          <div className="mt-8">
-            <ToolRuntimeClient
-              uploadTitle={page.runtimeUploadTitle}
-              uploadDescription={page.runtimeUploadDescription}
-              formats={page.formats}
-              limit={page.limit}
-              cta={page.cta}
-              accept="application/pdf,.pdf"
-              allowedExtensions={[".pdf"]}
-              outputEyebrow={page.resultEyebrow}
-              outputTitle={page.resultTitle}
-              outputSummary={page.resultSummary}
-              keyPoints={[...page.keyPoints]}
-              actions={[...page.actions]}
-              emptyMessage={page.emptyMessage}
-              locale={locale}
-            />
-          </div>
-        </div>
-      </section>
-      <RelatedTools />
-    </main>
-  );
-}
+export const metadata = createPdfToolMetadata(config);
 
 export default function PdfToWordPage() {
-  return <PdfToWordPageContent />;
+  return <PdfToolPage config={config} />;
 }
