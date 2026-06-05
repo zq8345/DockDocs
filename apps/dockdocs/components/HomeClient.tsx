@@ -94,15 +94,6 @@ export function HomeClient() {
           </p>
         </div>
       </section>
-
-      {/* CTA */}
-      <section className="bg-[color:var(--foreground)]">
-        <div className="mx-auto flex max-w-6xl flex-col items-center px-5 py-16 text-center sm:py-24">
-          <h2 className="text-[30px] font-semibold tracking-[-0.016em] text-[color:var(--background)]">Ready to work smarter with PDFs?</h2>
-          <p className="mt-3 text-[15px] leading-relaxed text-[color:var(--background)]/60">All 26 tools free. No account required.</p>
-          <a href="/merge-pdf" className="mt-6 inline-flex min-h-[44px] items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:bg-[color:var(--accent-hover)]">Start free</a>
-        </div>
-      </section>
     </>
   );
 }
