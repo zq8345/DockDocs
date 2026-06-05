@@ -673,7 +673,83 @@ const enTools: Record<ToolSlug, ToolCopy> = {
       { question: "Is my PDF sent to a server?", answer: "No. All encryption happens in your browser." },
     ],
     cta: { eyebrow: "Protect PDF", title: "Add password protection to your PDF.", description: "Encrypt PDFs with a password entirely in your browser.", buttonLabel: "Protect PDF now" },
+  },  "word-to-pdf": {
+    title: "Word to PDF Converter Online Free | DockDocs",
+    description: "Convert Word documents to PDF online for free inside DockDocs.",
+    keywords: ["word to pdf", "docx to pdf", "convert word to pdf"],
+    appName: "DockDocs Word to PDF", schemaName: "DockDocs Word to PDF Converter", breadcrumbName: "Word to PDF",
+    heroTitle: "Convert Word documents to PDF online.", heroDescription: "Upload a DOCX file and download a high-fidelity PDF.",
+    primaryActionLabel: "Convert to PDF",
+    stats: [["Price", "Free"], ["Input", "DOCX / DOC"], ["Output", "PDF"]],
+    upload: { title: "Upload a Word document", description: "Drag and drop a .docx file here.", buttonLabel: "Choose Word file", accept: ".docx,.doc", fileBadge: "DOC", note: "DOCX and DOC supported. Max 20 MB." },
+    benefitsTitle: "Convert Word to PDF without losing formatting", benefitsDescription: "CloudConvert preserves fonts, tables, and layout.",
+    benefits: [{ title: "Accurate layout", description: "Fonts, tables, and formatting are preserved." }, { title: "Fast conversion", description: "Most documents convert in under 30 seconds." }, { title: "No software needed", description: "Convert directly in your browser." }],
+    featuresTitle: "Built for Word to PDF workflows", featuresDescription: "Minimal DockDocs interface powered by CloudConvert.",
+    features: [{ title: "DOCX and DOC", description: "Works with both formats." }, { title: "Layout preservation", description: "Uses LibreOffice for accurate rendering." }, { title: "Up to 20 MB", description: "Handles most business documents." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
+    workflowTitle: "How Word to PDF fits into document work", workflowDescription: "Common uses: contracts, reports, proposals.",
+    steps: ["Upload a DOCX or DOC file.", "CloudConvert converts it.", "Download the PDF."],
+    faqTitle: "Word to PDF questions",
+    faq: [{ question: "How do I convert Word to PDF?", answer: "Upload a DOCX file and download the converted PDF." }, { question: "Is formatting preserved?", answer: "Yes. CloudConvert uses LibreOffice for accurate rendering." }],
+    cta: { eyebrow: "Word to PDF", title: "Convert Word documents to PDF.", description: "Convert DOCX files to PDF for sharing.", buttonLabel: "Convert Word now" },
   },
+  "ppt-to-pdf": {
+    title: "PowerPoint to PDF Converter Online Free | DockDocs",
+    description: "Convert PowerPoint presentations to PDF online for free inside DockDocs.",
+    keywords: ["ppt to pdf", "pptx to pdf", "convert powerpoint to pdf"],
+    appName: "DockDocs PPT to PDF", schemaName: "DockDocs PowerPoint to PDF Converter", breadcrumbName: "PPT to PDF",
+    heroTitle: "Convert PowerPoint presentations to PDF online.", heroDescription: "Upload a PPTX file and download a presentation-ready PDF.",
+    primaryActionLabel: "Convert to PDF",
+    stats: [["Price", "Free"], ["Input", "PPTX / PPT"], ["Output", "PDF"]],
+    upload: { title: "Upload a PowerPoint file", description: "Drag and drop a .pptx file here.", buttonLabel: "Choose PPT file", accept: ".pptx,.ppt", fileBadge: "PPT", note: "PPTX and PPT supported. Max 20 MB." },
+    benefitsTitle: "Convert presentations to PDF for sharing", benefitsDescription: "Lock your slides in PDF format for universal compatibility.",
+    benefits: [{ title: "Slide-accurate output", description: "Layout, fonts, and images preserved." }, { title: "Share without software", description: "Recipients view without PowerPoint." }, { title: "Fast conversion", description: "Under 30 seconds for most files." }],
+    featuresTitle: "Built for PPT to PDF workflows", featuresDescription: "Minimal DockDocs interface powered by CloudConvert.",
+    features: [{ title: "PPTX and PPT", description: "Works with both formats." }, { title: "Slide preservation", description: "Each slide becomes a PDF page." }, { title: "Up to 20 MB", description: "Handles most presentations." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
+    workflowTitle: "How PPT to PDF fits into document work", workflowDescription: "Common uses: sharing decks, printing handouts.",
+    steps: ["Upload a PPTX or PPT file.", "CloudConvert converts it.", "Download the PDF."],
+    faqTitle: "PPT to PDF questions",
+    faq: [{ question: "How do I convert PowerPoint to PDF?", answer: "Upload a PPTX file and download the PDF." }, { question: "Will slides look the same?", answer: "Yes. CloudConvert preserves layouts, fonts, and images." }],
+    cta: { eyebrow: "PPT to PDF", title: "Convert PowerPoint to PDF.", description: "Convert PPTX files to PDF for sharing.", buttonLabel: "Convert PPT now" },
+  },
+  "excel-to-pdf": {
+    title: "Excel to PDF Converter Online Free | DockDocs",
+    description: "Convert Excel spreadsheets to PDF online for free inside DockDocs.",
+    keywords: ["excel to pdf", "xlsx to pdf", "convert excel to pdf"],
+    appName: "DockDocs Excel to PDF", schemaName: "DockDocs Excel to PDF Converter", breadcrumbName: "Excel to PDF",
+    heroTitle: "Convert Excel spreadsheets to PDF online.", heroDescription: "Upload an XLSX file and download a print-ready PDF.",
+    primaryActionLabel: "Convert to PDF",
+    stats: [["Price", "Free"], ["Input", "XLSX / XLS"], ["Output", "PDF"]],
+    upload: { title: "Upload an Excel file", description: "Drag and drop a .xlsx file here.", buttonLabel: "Choose Excel file", accept: ".xlsx,.xls", fileBadge: "XLS", note: "XLSX and XLS supported. Max 20 MB." },
+    benefitsTitle: "Convert spreadsheets to PDF for sharing", benefitsDescription: "Lock tables and charts in PDF format.",
+    benefits: [{ title: "Table-accurate output", description: "Cell layouts and charts preserved." }, { title: "Print-ready", description: "Formatted for printing from any device." }, { title: "No Excel needed", description: "Recipients view without spreadsheet software." }],
+    featuresTitle: "Built for Excel to PDF workflows", featuresDescription: "Minimal DockDocs interface powered by CloudConvert.",
+    features: [{ title: "XLSX and XLS", description: "Works with both formats." }, { title: "Chart preservation", description: "Charts included in output." }, { title: "Up to 20 MB", description: "Handles most spreadsheets." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
+    workflowTitle: "How Excel to PDF fits into document work", workflowDescription: "Common uses: reports, budgets, financial data.",
+    steps: ["Upload an XLSX or XLS file.", "CloudConvert converts it.", "Download the PDF."],
+    faqTitle: "Excel to PDF questions",
+    faq: [{ question: "How do I convert Excel to PDF?", answer: "Upload an XLSX file and download the PDF." }, { question: "Are charts preserved?", answer: "Yes. Charts and cell values are included in the output." }],
+    cta: { eyebrow: "Excel to PDF", title: "Convert Excel to PDF.", description: "Convert XLSX files to PDF for sharing.", buttonLabel: "Convert Excel now" },
+  },
+  "pdf-to-excel": {
+    title: "PDF to Excel Converter Online Free | DockDocs",
+    description: "Convert PDF tables to Excel spreadsheets online for free inside DockDocs.",
+    keywords: ["pdf to excel", "pdf to xlsx", "convert pdf to excel"],
+    appName: "DockDocs PDF to Excel", schemaName: "DockDocs PDF to Excel Converter", breadcrumbName: "PDF to Excel",
+    heroTitle: "Convert PDF tables to Excel spreadsheets.", heroDescription: "Extract table data from PDFs and download XLSX. Powered by CloudConvert.",
+    primaryActionLabel: "Convert to Excel",
+    stats: [["Price", "Free"], ["Input", "PDF"], ["Output", "XLSX"]],
+    upload: { title: "Upload a PDF to convert", description: "Drag and drop a PDF file here.", buttonLabel: "Choose PDF", note: "PDFs with tables work best. Max 20 MB." },
+    benefitsTitle: "Extract PDF table data into editable Excel", benefitsDescription: "Stop manually copying data from PDFs.",
+    benefits: [{ title: "Table extraction", description: "Identifies and extracts table structures." }, { title: "Editable output", description: "Edit in Excel, Google Sheets, or Numbers." }, { title: "Saves time", description: "Automate data extraction." }],
+    featuresTitle: "Built for PDF to Excel workflows", featuresDescription: "Minimal DockDocs interface powered by CloudConvert.",
+    features: [{ title: "Table recognition", description: "Extracts table structures from PDFs." }, { title: "XLSX output", description: "Standard Excel format." }, { title: "Up to 20 MB", description: "Handles most data PDFs." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
+    workflowTitle: "How PDF to Excel fits into document work", workflowDescription: "Common uses: financial data, reports, invoices.",
+    steps: ["Upload a PDF with tables.", "CloudConvert extracts the data.", "Download the XLSX."],
+    faqTitle: "PDF to Excel questions",
+    faq: [{ question: "How do I convert PDF to Excel?", answer: "Upload a PDF and download the XLSX." }, { question: "What if there are no tables?", answer: "Text-only PDFs will convert but may not produce clean spreadsheet data." }],
+    cta: { eyebrow: "PDF to Excel", title: "Extract PDF data into Excel.", description: "Convert PDF tables to editable XLSX.", buttonLabel: "Convert PDF now" },
+  },
+
 };
 
 const zhTools: Record<ToolSlug, ToolCopy> = {
@@ -944,6 +1020,11 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     upload: { ...enTools["protect-pdf"].upload, title: "上传要加密的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF" },
     cta: { eyebrow: "加密 PDF", title: "为 PDF 添加密码保护。", description: "完全在浏览器中用密码加密 PDF。", buttonLabel: "立即加密" },
   },
+  "word-to-pdf": { ...enTools["word-to-pdf"], title: "在线免费 Word 转 PDF | DockDocs", description: "在线免费将 Word 文档转换为 PDF。", appName: "DockDocs Word 转 PDF", breadcrumbName: "Word 转 PDF", heroTitle: "在线将 Word 文档转换为 PDF。", heroDescription: "上传 DOCX 文件，下载高保真 PDF。", primaryActionLabel: "转换为 PDF", upload: { ...enTools["word-to-pdf"].upload, title: "上传 Word 文档", description: "拖放 .docx 文件，或从设备中选择。", buttonLabel: "选择 Word 文件" }, cta: { eyebrow: "Word 转 PDF", title: "将 Word 文档转换为 PDF。", description: "将 DOCX 文件转换为 PDF 以便分享。", buttonLabel: "立即转换" } },
+  "ppt-to-pdf": { ...enTools["ppt-to-pdf"], title: "在线免费 PPT 转 PDF | DockDocs", description: "在线免费将 PowerPoint 演示文稿转换为 PDF。", appName: "DockDocs PPT 转 PDF", breadcrumbName: "PPT 转 PDF", heroTitle: "在线将 PowerPoint 演示文稿转换为 PDF。", heroDescription: "上传 PPTX 文件，下载演示就绪的 PDF。", primaryActionLabel: "转换为 PDF", upload: { ...enTools["ppt-to-pdf"].upload, title: "上传 PowerPoint 文件", description: "拖放 .pptx 文件，或从设备中选择。", buttonLabel: "选择 PPT 文件" }, cta: { eyebrow: "PPT 转 PDF", title: "将 PowerPoint 转换为 PDF。", description: "将 PPTX 文件转换为 PDF 以便分享。", buttonLabel: "立即转换" } },
+  "excel-to-pdf": { ...enTools["excel-to-pdf"], title: "在线免费 Excel 转 PDF | DockDocs", description: "在线免费将 Excel 表格转换为 PDF。", appName: "DockDocs Excel 转 PDF", breadcrumbName: "Excel 转 PDF", heroTitle: "在线将 Excel 表格转换为 PDF。", heroDescription: "上传 XLSX 文件，下载打印就绪的 PDF。", primaryActionLabel: "转换为 PDF", upload: { ...enTools["excel-to-pdf"].upload, title: "上传 Excel 文件", description: "拖放 .xlsx 文件，或从设备中选择。", buttonLabel: "选择 Excel 文件" }, cta: { eyebrow: "Excel 转 PDF", title: "将 Excel 转换为 PDF。", description: "将 XLSX 文件转换为 PDF 以便分享。", buttonLabel: "立即转换" } },
+  "pdf-to-excel": { ...enTools["pdf-to-excel"], title: "在线免费 PDF 转 Excel | DockDocs", description: "在线免费将 PDF 表格转换为 Excel。", appName: "DockDocs PDF 转 Excel", breadcrumbName: "PDF 转 Excel", heroTitle: "将 PDF 表格转换为 Excel 电子表格。", heroDescription: "从 PDF 提取表格数据，下载 XLSX 文件。", primaryActionLabel: "转换为 Excel", upload: { ...enTools["pdf-to-excel"].upload, title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF" }, cta: { eyebrow: "PDF 转 Excel", title: "将 PDF 数据提取到 Excel。", description: "将 PDF 表格转换为可编辑的 XLSX。", buttonLabel: "立即转换" } },
+
 };
 
 const localizedTools = {
@@ -967,3 +1048,7 @@ export function getLocalizedToolConfig(
 export function getLocalizedToolUrl(locale: Locale, slug: ToolSlug) {
   return absoluteUrl(localizedPath(locale, slug));
 }
+
+// ---------------------------------------------------------------------------
+// Appended: CloudConvert backend tools
+// ---------------------------------------------------------------------------

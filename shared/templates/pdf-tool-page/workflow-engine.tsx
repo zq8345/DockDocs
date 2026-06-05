@@ -1220,6 +1220,53 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
               "Preparing result...",
             ],
       };
+    case "word-to-pdf":
+      return {
+        acceptedLabel: "DOCX, DOC",
+        minFiles: 1, maxFiles: 1,
+        maxFileSize: 20 * mb, maxTotalSize: 20 * mb,
+        processLabel: zh ? "正在将 Word 文档转换为 PDF。" : "Converting Word document to PDF.",
+        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        outputFileName: "dockdocs-converted.pdf",
+        steps: zh
+          ? ["上传文档...", "发送到转换服务...", "转换中...", "准备下载..."]
+          : ["Uploading document...", "Sending to conversion service...", "Converting...", "Preparing download..."],
+      };
+    case "ppt-to-pdf":
+      return {
+        acceptedLabel: "PPTX, PPT",
+        minFiles: 1, maxFiles: 1,
+        maxFileSize: 20 * mb, maxTotalSize: 20 * mb,
+        processLabel: zh ? "正在将 PPT 演示文稿转换为 PDF。" : "Converting PowerPoint presentation to PDF.",
+        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        outputFileName: "dockdocs-converted.pdf",
+        steps: zh
+          ? ["上传文件...", "发送到转换服务...", "转换中...", "准备下载..."]
+          : ["Uploading file...", "Sending to conversion service...", "Converting...", "Preparing download..."],
+      };
+    case "excel-to-pdf":
+      return {
+        acceptedLabel: "XLSX, XLS",
+        minFiles: 1, maxFiles: 1,
+        maxFileSize: 20 * mb, maxTotalSize: 20 * mb,
+        processLabel: zh ? "正在将 Excel 表格转换为 PDF。" : "Converting Excel spreadsheet to PDF.",
+        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        outputFileName: "dockdocs-converted.pdf",
+        steps: zh
+          ? ["上传文件...", "发送到转换服务...", "转换中...", "准备下载..."]
+          : ["Uploading file...", "Sending to conversion service...", "Converting...", "Preparing download..."],
+      };
+    case "pdf-to-excel":
+      return {
+        ...base,
+        maxFileSize: 20 * mb, maxTotalSize: 20 * mb,
+        processLabel: zh ? "正在从 PDF 提取表格并转换为 Excel。" : "Extracting tables from PDF and converting to Excel.",
+        resultLabel: zh ? "下载 Excel" : "Download Excel",
+        outputFileName: "dockdocs-converted.xlsx",
+        steps: zh
+          ? ["上传 PDF...", "发送到转换服务...", "提取表格...", "准备下载..."]
+          : ["Uploading PDF...", "Sending to conversion service...", "Extracting tables...", "Preparing download..."],
+      };
     case "pdf-to-png":
       return {
         ...base,
@@ -1610,6 +1657,50 @@ function getWorkflowResult(
             artifact?.pageCount ? String(artifact.pageCount) : zh ? "已保留" : "Preserved",
           ],
           [zh ? "格式" : "Format", "PDF"],
+        ],
+      };
+    case "word-to-pdf":
+      return {
+        title: zh ? "Word 已转换为 PDF" : "Word converted to PDF",
+        description: zh ? "Word 文档已成功转换为 PDF，可下载分享。" : "Your Word document has been converted to a PDF ready to share.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "DOCX"],
+          [zh ? "输出格式" : "Output format", "PDF"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+          [zh ? "转换服务" : "Conversion", "CloudConvert"],
+        ],
+      };
+    case "ppt-to-pdf":
+      return {
+        title: zh ? "PPT 已转换为 PDF" : "PowerPoint converted to PDF",
+        description: zh ? "演示文稿已成功转换为 PDF。" : "Your presentation has been converted to a PDF.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PPTX"],
+          [zh ? "输出格式" : "Output format", "PDF"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+          [zh ? "转换服务" : "Conversion", "CloudConvert"],
+        ],
+      };
+    case "excel-to-pdf":
+      return {
+        title: zh ? "Excel 已转换为 PDF" : "Excel converted to PDF",
+        description: zh ? "电子表格已成功转换为 PDF。" : "Your spreadsheet has been converted to a PDF.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "XLSX"],
+          [zh ? "输出格式" : "Output format", "PDF"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+          [zh ? "转换服务" : "Conversion", "CloudConvert"],
+        ],
+      };
+    case "pdf-to-excel":
+      return {
+        title: zh ? "PDF 已转换为 Excel" : "PDF converted to Excel",
+        description: zh ? "PDF 表格内容已提取并转换为 Excel 文件。" : "PDF table content has been extracted and converted to an Excel file.",
+        rows: [
+          [zh ? "源文件" : "Source", files[0]?.file.name ?? "PDF"],
+          [zh ? "输出格式" : "Output format", "XLSX"],
+          [zh ? "输出大小" : "Output size", artifact ? formatBytes(artifact.blob.size) : "—"],
+          [zh ? "转换服务" : "Conversion", "CloudConvert"],
         ],
       };
     case "pdf-to-png":

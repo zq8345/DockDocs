@@ -1,5 +1,7 @@
 import { PDFDocument } from "pdf-lib";
 import { runOcrPdfFirstPage } from "./ocr-runtime";
+import { runCloudConvert } from "./cloudconvert-runtime";
+import type { CloudConvertRoute } from "./cloudconvert-runtime";
 import { runPdfToWordBackend } from "./pdf-to-word-runtime";
 
 export type PdfRuntimeSlug =
@@ -18,7 +20,11 @@ export type PdfRuntimeSlug =
   | "rotate-page"
   | "reorder-pages"
   | "add-page"
-  | "protect-pdf";
+  | "protect-pdf"
+  | "word-to-pdf"
+  | "ppt-to-pdf"
+  | "excel-to-pdf"
+  | "pdf-to-excel";
 
 export type PdfRuntimeProgress = {
   progress: number;
@@ -29,7 +35,7 @@ export type PdfRuntimeProgress = {
 export type PdfRuntimeArtifact = {
   fileName: string;
   blob: Blob;
-  outputType: "pdf" | "zip" | "text" | "docx";
+  outputType: "pdf" | "zip" | "text" | "docx" | "xlsx";
   pageCount?: number;
   fileCount?: number;
   rangeCount?: number;
@@ -78,7 +84,11 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "rotate-page" ||
     slug === "reorder-pages" ||
     slug === "add-page" ||
-    slug === "protect-pdf"
+    slug === "protect-pdf" ||
+    slug === "word-to-pdf" ||
+    slug === "ppt-to-pdf" ||
+    slug === "excel-to-pdf" ||
+    slug === "pdf-to-excel"
   );
 }
 
@@ -114,6 +124,18 @@ export async function runPdfRuntime({
       outputFileName,
       pageRanges,
       language: ocrLanguage,
+      locale,
+      signal,
+      onProgress,
+    });
+  }
+
+  const cloudConvertRoutes: PdfRuntimeSlug[] = ["word-to-pdf", "ppt-to-pdf", "excel-to-pdf", "pdf-to-excel"];
+  if (cloudConvertRoutes.includes(slug)) {
+    return runCloudConvert({
+      file: files[0],
+      route: slug as CloudConvertRoute,
+      outputFileName,
       locale,
       signal,
       onProgress,

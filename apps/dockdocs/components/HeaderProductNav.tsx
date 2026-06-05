@@ -72,9 +72,9 @@ const featureDefinitions: FeatureDefinition[] = [
         items: [
           { labels: { en: "JPG to PDF", zh: "JPG 转 PDF" }, tier: "FREE", slug: "jpg-to-pdf" },
           { labels: { en: "PNG to PDF", zh: "PNG 转 PDF" }, tier: "PLUS", slug: "png-to-pdf" },
-          { labels: { en: "Word to PDF", zh: "Word 转 PDF" }, tier: "PLUS" },
-          { labels: { en: "PPT to PDF", zh: "PPT 转 PDF" }, tier: "PLUS" },
-          { labels: { en: "Excel to PDF", zh: "Excel 转 PDF" }, tier: "PLUS" },
+          { labels: { en: "Word to PDF", zh: "Word 转 PDF" }, tier: "PLUS", slug: "word-to-pdf" },
+          { labels: { en: "PPT to PDF", zh: "PPT 转 PDF" }, tier: "PLUS", slug: "ppt-to-pdf" },
+          { labels: { en: "Excel to PDF", zh: "Excel 转 PDF" }, tier: "PLUS", slug: "excel-to-pdf" },
           { labels: { en: "Text to PDF", zh: "文本转 PDF" }, tier: "PLUS", slug: "text-to-pdf" },
         ],
       },
@@ -89,7 +89,7 @@ const featureDefinitions: FeatureDefinition[] = [
         labels: { en: "Office Conversion", zh: "Office 转换" },
         items: [
           { labels: { en: "PDF to Word", zh: "PDF 转 Word" }, tier: "FREE", slug: "pdf-to-word" },
-          { labels: { en: "PDF to Excel", zh: "PDF 转 Excel" }, tier: "PLUS" },
+          { labels: { en: "PDF to Excel", zh: "PDF 转 Excel" }, tier: "PLUS", slug: "pdf-to-excel" },
         ],
       },
       {
@@ -142,7 +142,7 @@ const featureDefinitions: FeatureDefinition[] = [
       {
         labels: { en: "Enhanced OCR", zh: "增强 OCR" },
         items: [
-          { labels: { en: "PDF to Excel", zh: "PDF 转 Excel" }, tier: "PLUS" },
+          { labels: { en: "PDF to Excel", zh: "PDF 转 Excel" }, tier: "PLUS", slug: "pdf-to-excel" },
         ],
       },
     ],
