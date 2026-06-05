@@ -12,73 +12,119 @@ const toolIcons: Record<string, string> = {
   "protect-pdf": "🔒", "unlock-pdf": "🔓", "edit-pdf": "✏️", "sign-pdf": "✍️",
 };
 
-type ToolCard = { name: string; href: string; category: string; isNew?: boolean };
+type ToolCard = { name: string; href: string; category: string; isNew?: boolean; desc: string };
 
 const allTools: ToolCard[] = [
-  { name: "Chat with PDF", href: "/chat-with-pdf", category: "ai", isNew: true },
-  { name: "AI Summary", href: "/ai-summary", category: "ai" },
-  { name: "OCR PDF", href: "/ocr-pdf", category: "ai" },
-  { name: "Translate PDF", href: "/translate-pdf", category: "ai", isNew: true },
-  { name: "Word to PDF", href: "/word-to-pdf", category: "convert" }, { name: "PDF to Word", href: "/pdf-to-word", category: "convert" },
-  { name: "Excel to PDF", href: "/excel-to-pdf", category: "convert" }, { name: "PDF to Excel", href: "/pdf-to-excel", category: "convert" },
-  { name: "PPT to PDF", href: "/ppt-to-pdf", category: "convert" },
-  { name: "JPG to PDF", href: "/jpg-to-pdf", category: "convert" }, { name: "PNG to PDF", href: "/png-to-pdf", category: "convert" },
-  { name: "PDF to JPG", href: "/pdf-to-jpg", category: "convert" }, { name: "PDF to PNG", href: "/pdf-to-png", category: "convert" },
-  { name: "Text to PDF", href: "/text-to-pdf", category: "convert" }, { name: "PDF to Markdown", href: "/pdf-to-markdown", category: "convert" },
-  { name: "Merge PDF", href: "/merge-pdf", category: "organize" }, { name: "Split PDF", href: "/split-pdf", category: "organize" },
-  { name: "Compress PDF", href: "/compress-pdf", category: "organize" },
-  { name: "Delete Pages", href: "/delete-page", category: "organize" }, { name: "Rotate Pages", href: "/rotate-page", category: "organize" },
-  { name: "Reorder Pages", href: "/reorder-pages", category: "organize" }, { name: "Add Pages", href: "/add-page", category: "organize" },
-  { name: "Protect PDF", href: "/protect-pdf", category: "security" }, { name: "Unlock PDF", href: "/unlock-pdf", category: "security", isNew: true },
-  { name: "Edit PDF", href: "/edit-pdf", category: "edit", isNew: true }, { name: "Sign PDF", href: "/sign-pdf", category: "edit", isNew: true },
+  { name: "Merge PDF", href: "/merge-pdf", category: "popular", desc: "Combine PDFs in the order you want." },
+  { name: "Compress PDF", href: "/compress-pdf", category: "popular", desc: "Reduce file size while optimizing quality." },
+  { name: "Chat with PDF", href: "/chat-with-pdf", category: "popular", desc: "Ask questions grounded in your document.", isNew: true },
+  { name: "Word to PDF", href: "/word-to-pdf", category: "convert", desc: "DOCX to high-fidelity PDF." },
+  { name: "PDF to Word", href: "/pdf-to-word", category: "convert", desc: "Extract content into editable Word." },
+  { name: "Split PDF", href: "/split-pdf", category: "popular", desc: "Extract pages or split by range." },
+  { name: "AI Summary", href: "/ai-summary", category: "ai", desc: "Summarize long documents." },
+  { name: "OCR PDF", href: "/ocr-pdf", category: "ai", desc: "Extract text from scanned PDFs." },
+  { name: "Excel to PDF", href: "/excel-to-pdf", category: "convert", desc: "Spreadsheets to PDF." },
+  { name: "Protect PDF", href: "/protect-pdf", category: "security", desc: "Encrypt with a password." },
+  { name: "Edit PDF", href: "/edit-pdf", category: "edit", desc: "Add text, shapes, annotations.", isNew: true },
+  { name: "Sign PDF", href: "/sign-pdf", category: "edit", desc: "Electronic signature.", isNew: true },
 ];
 
-const categories = [
-  { key: "all", label: "All" }, { key: "ai", label: "AI" }, { key: "convert", label: "Convert" },
-  { key: "organize", label: "Organize" }, { key: "edit", label: "Edit" }, { key: "security", label: "Security" },
-] as const;
+const highlightTools = allTools.filter(t => t.category === "popular");
+const otherTools = allTools.filter(t => t.category !== "popular");
+
+const features = [
+  { icon: "⚡", title: "Fast & free", desc: "Every tool is free. No account, no watermarks, no limits on daily use." },
+  { icon: "🔒", title: "Privacy first", desc: "Files processed in your browser. Nothing stored on our servers." },
+  { icon: "🤖", title: "AI-powered", desc: "Chat, summarize, translate, and extract insights from documents." },
+  { icon: "🌍", title: "Global", desc: "12 languages. Teams in 5 cities. 30M+ users worldwide." },
+];
 
 export function HomeClient() {
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const filtered = activeCategory === "all" ? allTools : allTools.filter((t) => t.category === activeCategory);
-
   return (
     <>
+      {/* Hero */}
       <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto flex max-w-6xl flex-col items-center px-5 py-16 text-center sm:py-20">
-          <h1 className="max-w-2xl text-[36px] font-semibold leading-[1.08] tracking-[-0.018em] sm:text-[48px]">Every tool you need for PDFs,<br /><span className="text-[color:var(--accent-strong)]">with AI.</span></h1>
-          <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-[color:var(--muted)]">Merge, split, compress, convert, chat, summarize — all 100% free.</p>
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:py-28 lg:grid-cols-2 lg:py-36">
+          <div>
+            <h1 className="text-[40px] font-semibold leading-[1.04] tracking-[-0.022em] sm:text-[52px] sm:leading-[1.02]">
+              PDF tools<br /><span className="text-[color:var(--accent-strong)]">built for real work.</span>
+            </h1>
+            <p className="mt-6 max-w-lg text-[16px] leading-relaxed text-[color:var(--muted)]">
+              Merge, compress, convert, chat with AI — every tool you need, all free. Built for teams that move fast.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href="/merge-pdf" className="inline-flex min-h-[44px] items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white shadow-[0_1px_3px_rgba(0,0,0,0.3)] transition hover:bg-[color:var(--accent-hover)]">Start free</a>
+              <a href="#tools" className="inline-flex min-h-[44px] items-center rounded-[var(--radius)] border border-[color:var(--line)] px-5 text-[14px] font-medium transition hover:border-[color:var(--line-strong)]">Browse tools →</a>
+            </div>
+          </div>
+          {/* Visual placeholder */}
+          <div className="hidden lg:block">
+            <div className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-8">
+              <div className="grid grid-cols-3 gap-3">
+                {["📄→📕", "📄→📊", "🔗", "📦", "🤖", "🔒", "✂️", "🔄", "✏️"].map((icon, i) => (
+                  <div key={i} className="flex aspect-square items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] text-[28px]">{icon}</div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div className="sticky top-[52px] z-30 border-b border-[color:var(--line)] bg-[color:var(--surface)]/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl justify-center gap-1 overflow-x-auto px-4 py-2">
-          {categories.map((cat) => (
-            <button key={cat.key} type="button" onClick={() => setActiveCategory(cat.key)}
-              className={`shrink-0 rounded-[var(--radius-sm)] px-4 py-2 text-[13px] font-medium transition ${activeCategory === cat.key ? "bg-[color:var(--foreground)] text-[color:var(--background)]" : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"}`}
-            >{cat.label}</button>
-          ))}
+      {/* Feature cards */}
+      <section className="border-b border-[color:var(--line)]">
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((f) => (
+              <div key={f.title} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 transition hover:border-[color:var(--line-strong)]">
+                <span className="text-[24px]">{f.icon}</span>
+                <h3 className="mt-4 text-[16px] font-semibold">{f.title}</h3>
+                <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--muted)]">{f.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
-      <section className="px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filtered.map((tool) => (
-              <a key={tool.href} href={tool.href} className="group relative flex items-center gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-raised)]">
+      {/* Top tools */}
+      <section id="tools" className="border-b border-[color:var(--line)]">
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">Most used</p>
+          <h2 className="mt-3 text-center text-[28px] font-semibold tracking-[-0.014em]">Start with these.</h2>
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {highlightTools.map((tool) => (
+              <a key={tool.href} href={tool.href} className="group relative flex items-start gap-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-raised)]">
                 {tool.isNew && <span className="absolute -top-1.5 -right-1.5 rounded-full bg-[color:var(--accent)] px-2 py-0.5 text-[9px] font-bold uppercase text-white shadow-sm">New</span>}
-                <span className="shrink-0 text-[22px]">{toolIcons[tool.href.replace(/^\//, "")] || "📄"}</span>
-                <span className="text-[13px] font-semibold">{tool.name}</span>
+                <span className="shrink-0 pt-0.5 text-[24px]">{toolIcons[tool.href.replace(/^\//, "")] || "📄"}</span>
+                <div><h3 className="text-[15px] font-semibold">{tool.name}</h3><p className="mt-1 text-[13px] leading-relaxed text-[color:var(--muted)]">{tool.desc}</p></div>
               </a>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-[color:var(--line)]">
-        <div className="mx-auto flex max-w-6xl flex-col items-center px-5 py-16 text-center sm:py-20">
-          <h2 className="text-[28px] font-semibold tracking-[-0.014em]">Ready to work smarter with PDFs?</h2>
-          <p className="mt-3 text-[14px] leading-relaxed text-[color:var(--muted)]">All tools free. No account required.</p>
+      {/* All tools compact */}
+      <section className="border-b border-[color:var(--line)]">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:py-20">
+          <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">Everything else</p>
+          <h2 className="mt-3 text-center text-[28px] font-semibold tracking-[-0.014em]">26 tools. All free.</h2>
+          <div className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {otherTools.map((tool) => (
+              <a key={tool.href} href={tool.href} className="group relative flex items-center gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 transition hover:border-[color:var(--line-strong)]">
+                {tool.isNew && <span className="absolute -top-1 -right-1 rounded-full bg-[color:var(--accent)] px-1.5 py-0.5 text-[8px] font-bold uppercase text-white">New</span>}
+                <span className="text-[18px]">{toolIcons[tool.href.replace(/^\//, "")] || "📄"}</span>
+                <span className="text-[13px] font-medium">{tool.name}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section>
+        <div className="mx-auto flex max-w-6xl flex-col items-center px-5 py-16 text-center sm:py-24">
+          <h2 className="text-[30px] font-semibold tracking-[-0.016em]">Ready to work smarter with PDFs?</h2>
+          <p className="mt-3 text-[15px] leading-relaxed text-[color:var(--muted)]">All 26 tools free. No account required. Start now.</p>
+          <a href="/merge-pdf" className="mt-6 inline-flex min-h-[44px] items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:bg-[color:var(--accent-hover)]">Start free</a>
         </div>
       </section>
     </>

@@ -575,36 +575,7 @@ function LocalizedDashboard({ locale }: { locale: Locale }) {
 }
 
 function LocalizedPricing({ locale }: { locale: Locale }) {
-  const copy = getRuntimeCopy(locale).pricing;
-
-  return (
-    <main>
-      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <Container className="py-10">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-            {copy.eyebrow}
-          </p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-tight sm:text-5xl">
-            {copy.title}
-          </h1>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-            {copy.description}
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <ButtonLink href="#comparison">{copy.primaryCta}</ButtonLink>
-            <ButtonLink href={localizedPath(locale, "chat-with-pdf")} variant="outline">
-              {copy.secondaryCta}
-            </ButtonLink>
-          </div>
-        </Container>
-      </Section>
-      <Section className="bg-[color:var(--surface)]">
-        <Container>
-          <PricingPlans />
-        </Container>
-      </Section>
-    </main>
-  );
+  return <PricingPlans />;
 }
 
 function LocalizedFaq({

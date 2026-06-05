@@ -66,7 +66,7 @@ export function Header() {
               All Tools <svg className="h-3 w-3 transition group-hover:rotate-180" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
             </span>
             <div className="absolute left-1/2 top-full z-50 mt-1 hidden w-[520px] -translate-x-1/2 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-[0_16px_48px_rgba(0,0,0,0.4)] group-hover:block">
-              <div className="grid grid-cols-2 gap-5">
+              <div className="grid gap-5" style={{ gridTemplateColumns: `repeat(${allToolGroups.length}, 1fr)` }}>
                 {allToolGroups.map((g) => (
                   <div key={g.label}>
                     <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{g.label}</p>
