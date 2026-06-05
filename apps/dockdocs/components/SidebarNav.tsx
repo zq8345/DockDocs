@@ -19,7 +19,7 @@ function localizeHref(href: string, locale: string): string {
   return `/${locale}${href}`;
 }
 
-type ToolGroup = {
+export type ToolGroup = {
   label: string;
   items: { name: string; href: string }[];
 };
@@ -74,7 +74,6 @@ export function SidebarNav() {
   const pathname = usePathname();
   const { locale, barePath } = stripLocale(pathname ?? "/");
 
-  // Show sidebar on home, tool pages, dashboard, pricing — in any locale
   const alwaysShowPaths = ["/dashboard", "/pricing"];
   const isToolPage =
     barePath === "/" ||
@@ -86,7 +85,7 @@ export function SidebarNav() {
   if (!isToolPage) return null;
 
   return (
-    <aside className="hidden w-56 shrink-0 border-r border-[color:var(--line)] bg-[color:var(--surface)] lg:block">
+    <aside className="hidden w-52 shrink-0 border-r border-[color:var(--line)] bg-[color:var(--surface)] md:block xl:w-56">
       <nav className="sticky top-[57px] max-h-[calc(100vh-57px)] overflow-y-auto px-3 py-4">
         {toolGroups.map((group) => (
           <div key={group.label} className="mb-5">
