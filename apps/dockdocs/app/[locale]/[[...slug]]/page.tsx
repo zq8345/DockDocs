@@ -618,279 +618,145 @@ function LocalizedFaq({
 
 const homeCopy = {
   en: {
-    title: "DockDocs AI Document Platform",
-    description:
-      "DockDocs is an AI document platform for PDF chat, summaries, OCR, conversion, compression, and real document workflows.",
+    title: "DockDocs — AI Document Platform",
+    description: "PDF tools, AI chat, OCR, compression, conversion and more. Process documents in your browser, privately and fast.",
     eyebrow: "AI Document Platform",
-    heroTitle: "ChatGPT for documents, built for real files.",
-    heroDescription:
-      "Upload PDFs, scans, reports, and office documents. Ask questions, summarize, extract text, convert files, or compress output without leaving the workspace.",
+    heroTitle: "The document workspace built for real work.",
+    heroDescription: "PDF tools, AI chat, OCR, conversion and compression — all in one place. No installs. Files processed locally where possible.",
     primary: "Chat with a PDF",
-    secondary: "View workspace",
-    categories: "Tool discovery",
-    categoryTitle: "Find the right document workflow without learning a tool grid.",
-    categoryDescription:
-      "Search is a UI shell for now. The surface guides users by outcome: ask, summarize, extract, convert, optimize, or review.",
-    searchLabel: "Find a document workflow",
-    searchPlaceholder: "Search by outcome: summarize, OCR, convert, compress...",
-    filters: ["AI", "Convert", "Optimize", "OCR", "FREE", "PLUS"],
-    popular: "Popular workflows",
-    popularWorkflows: [
-      "Upload a contract, ask for risks, then create action items.",
-      "OCR a scan before AI Summary or Chat with PDF.",
-      "Compress a PDF before sending it to a portal or client.",
-    ],
-    aiTitle: "Document intelligence stays visible.",
-    aiDescription:
-      "DockDocs keeps upload, processing, sources, summaries, and next actions in one workspace so documents feel reviewable instead of hidden behind a download-only result.",
+    secondary: "Browse tools ↓",
+    categoryTitle: "Everything you need for PDF work",
+    aiTitle: "Start working with your documents",
+    aiDescription: "Free to use. No account required for most tools. Switch to Plus for AI features.",
+    stats: [["20+", "PDF Tools"], ["Browser-side", "Processing"], ["Free", "Core tools"]] as [string, string][],
   },
   zh: {
-    title: "DockDocs AI 文档平台",
-    description: "DockDocs 是面向 PDF 问答、摘要、OCR、转换、压缩和真实文档工作流的 AI 文档平台。",
+    title: "DockDocs — AI 文档平台",
+    description: "PDF 工具、AI 问答、OCR、压缩和转换，一站完成。在浏览器中处理文档，快速且私密。",
     eyebrow: "AI 文档平台",
-    heroTitle: "面向真实文件的 ChatGPT for documents。",
-    heroDescription:
-      "上传 PDF、扫描件、报告和办公文档。你可以提问、摘要、提取文字、转换文件或压缩输出，并保持在同一个工作区中。",
+    heroTitle: "专为真实工作而生的文档工作区。",
+    heroDescription: "PDF 工具、AI 问答、OCR、转换和压缩——全在一处。无需安装软件，文件在本地处理。",
     primary: "与 PDF 对话",
-    secondary: "查看工作区",
-    categories: "工具发现",
-    categoryTitle: "不需要学习工具网格，也能找到正确文档工作流。",
-    categoryDescription:
-      "搜索目前是 UI 壳层。该区域按结果引导用户：提问、摘要、提取、转换、优化或复核。",
-    searchLabel: "查找文档工作流",
-    searchPlaceholder: "按结果搜索：摘要、OCR、转换、压缩...",
-    filters: ["AI", "转换", "优化", "OCR", "FREE", "PLUS"],
-    popular: "常用工作流",
-    popularWorkflows: [
-      "上传合同，提问风险，再生成行动项。",
-      "扫描件先 OCR，再进入 AI 摘要或 PDF 对话。",
-      "发送到门户或客户前，先压缩 PDF。",
-    ],
-    aiTitle: "文档智能结果保持可见。",
-    aiDescription:
-      "DockDocs 将上传、处理、来源、摘要和下一步操作放在同一个工作区，让文档结果可以被检查，而不是只停留在下载成功状态。",
+    secondary: "浏览工具 ↓",
+    categoryTitle: "PDF 工作所需的一切",
+    aiTitle: "开始处理你的文档",
+    aiDescription: "大多数工具免费使用，无需注册账户。升级 Plus 享受 AI 功能。",
+    stats: [["20+", "PDF 工具"], ["浏览器本地", "处理"], ["免费", "核心工具"]] as [string, string][],
   },
 } as const;
 
 const localizedTools = [
-  {
-    slug: "compress-pdf",
-    icon: "CP",
-    tier: "FREE",
-    group: { en: "Optimize", zh: "优化" },
-    en: "Compress PDF",
-    zh: "压缩 PDF",
-    description: {
-      en: "Reduce PDF size for email, portals, and handoff.",
-      zh: "减小 PDF 体积，便于邮件、门户和交付。",
-    },
-  },
-  {
-    slug: "merge-pdf",
-    icon: "MP",
-    tier: "FREE",
-    group: { en: "Edit", zh: "编辑" },
-    en: "Merge PDF",
-    zh: "合并 PDF",
-    description: {
-      en: "Combine pages into one reviewable document packet.",
-      zh: "将页面合并为可复核的文档包。",
-    },
-  },
-  {
-    slug: "split-pdf",
-    icon: "SP",
-    tier: "FREE",
-    group: { en: "Edit", zh: "编辑" },
-    en: "Split PDF",
-    zh: "拆分 PDF",
-    description: {
-      en: "Separate pages before sharing, OCR, or AI review.",
-      zh: "在分享、OCR 或 AI 审阅前拆分页面。",
-    },
-  },
-  {
-    slug: "pdf-to-word",
-    icon: "PW",
-    tier: "FREE",
-    group: { en: "Convert", zh: "转换" },
-    en: "PDF to Word",
-    zh: "PDF 转 Word",
-    description: {
-      en: "Move PDF content into an editable Word-ready workflow.",
-      zh: "将 PDF 内容转入可编辑的 Word 工作流。",
-    },
-  },
-  {
-    slug: "ocr-pdf",
-    icon: "OC",
-    tier: "FREE",
-    group: { en: "OCR", zh: "OCR" },
-    en: "OCR PDF",
-    zh: "OCR PDF",
-    description: {
-      en: "Make scanned text searchable before AI workflows.",
-      zh: "让扫描文字可搜索，再进入 AI 工作流。",
-    },
-  },
-  {
-    slug: "jpg-to-pdf",
-    icon: "JP",
-    tier: "FREE",
-    group: { en: "Convert", zh: "转换" },
-    en: "JPG to PDF",
-    zh: "JPG 转 PDF",
-    description: {
-      en: "Convert images into a clean PDF handoff.",
-      zh: "将图片转换为清晰的 PDF 交付文件。",
-    },
-  },
+  { slug: "compress-pdf", icon: "CP", tier: "FREE", group: { en: "Optimize", zh: "优化" }, en: "Compress PDF", zh: "压缩 PDF", description: { en: "Reduce PDF size for sharing.", zh: "减小 PDF 体积，便于分享。" } },
+  { slug: "merge-pdf", icon: "MP", tier: "FREE", group: { en: "Edit", zh: "编辑" }, en: "Merge PDF", zh: "合并 PDF", description: { en: "Combine multiple PDFs into one.", zh: "将多个 PDF 合并为一个文档。" } },
+  { slug: "split-pdf", icon: "SP", tier: "FREE", group: { en: "Edit", zh: "编辑" }, en: "Split PDF", zh: "拆分 PDF", description: { en: "Extract pages from any PDF.", zh: "从 PDF 中提取任意页面。" } },
+  { slug: "pdf-to-word", icon: "PW", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "PDF to Word", zh: "PDF 转 Word", description: { en: "Convert PDF to editable Word.", zh: "将 PDF 转换为可编辑的 Word 文档。" } },
+  { slug: "word-to-pdf", icon: "WP", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "Word to PDF", zh: "Word 转 PDF", description: { en: "Convert DOCX to PDF.", zh: "将 DOCX 转换为 PDF。" } },
+  { slug: "ocr-pdf", icon: "OC", tier: "FREE", group: { en: "OCR", zh: "OCR" }, en: "OCR PDF", zh: "OCR PDF", description: { en: "Make scanned text searchable.", zh: "让扫描文字可搜索。" } },
+  { slug: "jpg-to-pdf", icon: "JP", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "JPG to PDF", zh: "JPG 转 PDF", description: { en: "Turn images into a PDF.", zh: "将图片转换为 PDF 文档。" } },
+  { slug: "pdf-to-jpg", icon: "PJ", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "PDF to JPG", zh: "PDF 转 JPG", description: { en: "Export PDF pages as images.", zh: "将 PDF 页面导出为图片。" } },
+  { slug: "png-to-pdf", icon: "NP", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "PNG to PDF", zh: "PNG 转 PDF", description: { en: "Convert PNG images to PDF.", zh: "将 PNG 图片转换为 PDF。" } },
+  { slug: "pdf-to-png", icon: "PN", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "PDF to PNG", zh: "PDF 转 PNG", description: { en: "Export PDF pages as PNG.", zh: "将 PDF 页面导出为 PNG。" } },
+  { slug: "text-to-pdf", icon: "TP", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "Text to PDF", zh: "文本转 PDF", description: { en: "Convert plain text to PDF.", zh: "将纯文本文件转换为 PDF。" } },
+  { slug: "pdf-to-markdown", icon: "PM", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "PDF to Markdown", zh: "PDF 转 Markdown", description: { en: "Extract PDF text as Markdown.", zh: "将 PDF 文字提取为 Markdown。" } },
+  { slug: "excel-to-pdf", icon: "EP", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "Excel to PDF", zh: "Excel 转 PDF", description: { en: "Convert spreadsheets to PDF.", zh: "将 Excel 表格转换为 PDF。" } },
+  { slug: "ppt-to-pdf", icon: "PP", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "PPT to PDF", zh: "PPT 转 PDF", description: { en: "Convert presentations to PDF.", zh: "将演示文稿转换为 PDF。" } },
+  { slug: "pdf-to-excel", icon: "PE", tier: "FREE", group: { en: "Convert", zh: "转换" }, en: "PDF to Excel", zh: "PDF 转 Excel", description: { en: "Extract PDF tables to Excel.", zh: "从 PDF 提取表格到 Excel。" } },
+  { slug: "delete-page", icon: "DP", tier: "FREE", group: { en: "Edit", zh: "编辑" }, en: "Delete Page", zh: "删除页面", description: { en: "Remove unwanted PDF pages.", zh: "删除不需要的 PDF 页面。" } },
+  { slug: "rotate-page", icon: "RP", tier: "FREE", group: { en: "Edit", zh: "编辑" }, en: "Rotate Page", zh: "旋转页面", description: { en: "Fix PDF page orientation.", zh: "修复 PDF 页面方向。" } },
+  { slug: "reorder-pages", icon: "RO", tier: "FREE", group: { en: "Edit", zh: "编辑" }, en: "Reorder Pages", zh: "页面排序", description: { en: "Rearrange PDF page order.", zh: "重新排列 PDF 页面顺序。" } },
+  { slug: "add-page", icon: "AP", tier: "FREE", group: { en: "Edit", zh: "编辑" }, en: "Add Page", zh: "添加页面", description: { en: "Insert a blank page into PDF.", zh: "在 PDF 中插入空白页。" } },
+  { slug: "protect-pdf", icon: "PR", tier: "FREE", group: { en: "Security", zh: "安全" }, en: "Protect PDF", zh: "加密 PDF", description: { en: "Add password protection.", zh: "为 PDF 添加密码保护。" } },
 ] as const;
 
 function LocalizedHome({ locale }: { locale: Locale }) {
   const copy = homeCopy[locale];
+  const zh = locale === "zh";
 
   return (
-    <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
-      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <Container className="grid gap-12 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
-          <div>
-            <p className="inline-flex rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)] shadow-sm">
+    <main>
+      {/* Hero */}
+      <section className="relative overflow-hidden border-b border-[color:var(--line)]">
+        <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)", backgroundSize: "64px 64px" }} />
+        <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[900px] rounded-full opacity-10" style={{ background: "radial-gradient(circle, #6366f1 0%, transparent 70%)" }} />
+        <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-20 sm:px-6 sm:pt-28 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-1.5 text-xs font-semibold tracking-wide text-[color:var(--muted)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
               {copy.eyebrow}
-            </p>
-            <h1 className="mt-6 max-w-4xl break-words text-2xl font-semibold leading-tight sm:text-6xl">
+            </span>
+            <h1 className="mt-6 text-4xl font-semibold leading-[1.1] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-5xl lg:text-[64px]">
               {copy.heroTitle}
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-[color:var(--muted)] sm:text-lg">
+            <p className="mt-5 text-base leading-7 text-[color:var(--muted)] sm:text-lg sm:leading-8">
               {copy.heroDescription}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/chat-with-pdf">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <a href={localizedPath(locale, "chat-with-pdf")} className="inline-flex h-10 items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90">
                 {copy.primary}
-              </ButtonLink>
-              <ButtonLink href="#tools" variant="outline">
+              </a>
+              <a href="#tools" className="inline-flex h-10 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-5 text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
                 {copy.secondary}
-              </ButtonLink>
+              </a>
             </div>
           </div>
-          <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_32px_90px_rgba(24,24,20,0.10)]">
-            <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                {copy.categories}
-              </p>
-              <h2 className="mt-4 text-2xl font-semibold">{copy.categoryTitle}</h2>
-              <div className="mt-5 grid gap-3">
-                {localizedTools.map((tool) => (
-                  <a
-                    key={tool.slug}
-                    href={localizedPath(locale, tool.slug)}
-                    className="flex items-center justify-between rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 transition hover:border-[color:var(--foreground)]"
-                  >
-                    <span className="flex items-center gap-3">
-                      <span className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] text-xs font-bold">
-                        {tool.icon}
-                      </span>
-                      <span className="font-semibold">{tool[locale]}</span>
-                    </span>
-                    <span aria-hidden="true">-&gt;</span>
-                  </a>
-                ))}
+          <div className="mx-auto mt-14 grid max-w-2xl grid-cols-3 gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--line)]">
+            {copy.stats.map(([val, lbl]: [string, string]) => (
+              <div key={lbl} className="flex flex-col items-center bg-[color:var(--surface)] px-6 py-5 text-center">
+                <span className="text-xl font-semibold text-[color:var(--foreground)]">{val}</span>
+                <span className="mt-1 text-xs font-medium uppercase tracking-[0.1em] text-[color:var(--muted)]">{lbl}</span>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Tool Grid */}
+      <section id="tools" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8">
+          <div className="mb-10 flex items-end justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">{zh ? "工具" : "Tools"}</p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">{copy.categoryTitle}</h2>
             </div>
+            <a href={localizedPath(locale, "sitemap")} className="hidden text-sm font-medium text-[color:var(--muted)] transition hover:text-[color:var(--foreground)] sm:block">
+              {zh ? "查看全部 →" : "View all →"}
+            </a>
           </div>
-        </Container>
-      </Section>
-      <Section id="tools" className="bg-[color:var(--surface-subtle)]">
-        <Container>
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              {copy.categories}
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
-              {copy.categoryTitle}
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-              {copy.categoryDescription}
-            </p>
-          </div>
-          <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-            <label className="block">
-              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-                {copy.searchLabel}
-              </span>
-              <input
-                disabled
-                placeholder={copy.searchPlaceholder}
-                className="mt-3 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 text-sm text-[color:var(--muted)] outline-none"
-              />
-            </label>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {copy.filters.map((filter) => (
-                <span
-                  key={filter}
-                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-xs font-semibold text-[color:var(--muted)]"
-                >
-                  {filter}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {localizedTools.map((tool) => (
-              <a
-                key={tool.slug}
-                href={localizedPath(locale, tool.slug)}
-                className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                    {tool.group[locale]}
-                  </p>
-                  <span className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 py-1 text-xs font-semibold text-[color:var(--muted)]">
-                    {tool.tier}
-                  </span>
+              <a key={tool.slug} href={localizedPath(locale, tool.slug)}
+                className="group flex flex-col gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-raised)]">
+                <div className="flex items-center justify-between">
+                  <span className="rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[color:var(--accent-strong)]">{tool.group[locale]}</span>
+                  <span className="text-[color:var(--faint)] transition group-hover:text-[color:var(--muted)]">→</span>
                 </div>
-                <h2 className="mt-4 text-xl font-semibold">{tool[locale]}</h2>
-                <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
-                  {tool.description[locale]}
-                </p>
+                <div>
+                  <p className="text-sm font-semibold text-[color:var(--foreground)]">{tool[locale]}</p>
+                  <p className="mt-1 text-xs leading-5 text-[color:var(--muted)]">{tool.description[locale]}</p>
+                </div>
               </a>
             ))}
           </div>
-          <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              {copy.popular}
-            </p>
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
-              {copy.popularWorkflows.map((workflow) => (
-                <p
-                  key={workflow}
-                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]"
-                >
-                  {workflow}
-                </p>
-              ))}
+        </div>
+      </section>
+
+      {/* CTA Banner */}
+      <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8">
+          <div className="rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--foreground)] px-8 py-12 text-center shadow-[0_24px_64px_rgba(0,0,0,0.2)] sm:px-12">
+            <h2 className="text-2xl font-semibold text-[color:var(--background)] sm:text-3xl">{copy.aiTitle}</h2>
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[color:var(--background)]/60 sm:text-base">{copy.aiDescription}</p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <a href={localizedPath(locale, "chat-with-pdf")} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-sm font-semibold text-white transition hover:opacity-90">
+                {copy.primary}
+              </a>
+              <a href={localizedPath(locale, "pricing")} className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--background)]/20 px-6 text-sm font-semibold text-[color:var(--background)] transition hover:border-[color:var(--background)]/40">
+                {zh ? "查看定价" : "View pricing"}
+              </a>
             </div>
           </div>
-        </Container>
-      </Section>
-      <Section className="bg-[color:var(--surface)]">
-        <Container>
-          <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--foreground)] p-6 text-[color:var(--background)] shadow-[0_24px_60px_rgba(24,24,20,0.10)] sm:p-8">
-            <h2 className="text-2xl font-semibold">{copy.aiTitle}</h2>
-            <p className="mt-4 max-w-3xl leading-7 text-[color:var(--background)]/75">
-              {copy.aiDescription}
-            </p>
-            <ButtonLink
-              href={localizedPath(locale, "ai-workspace")}
-              variant="inverse"
-              className="mt-6"
-            >
-              {locale === "zh" ? "查看 AI 工作区" : "View AI Workspace"}
-            </ButtonLink>
-          </div>
-        </Container>
-      </Section>
+        </div>
+      </section>
     </main>
   );
 }

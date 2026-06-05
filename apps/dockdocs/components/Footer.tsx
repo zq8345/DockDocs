@@ -12,7 +12,7 @@ function href(path: string, locale: string) {
   return locale === defaultLocale ? path : `/${locale}${path}`;
 }
 
-const toolCols = [
+const toolColsEn = [
   {
     title: "AI Workspace",
     links: [
@@ -27,15 +27,19 @@ const toolCols = [
       { label: "Word to PDF", href: "/word-to-pdf" },
       { label: "PDF to Word", href: "/pdf-to-word" },
       { label: "Excel to PDF", href: "/excel-to-pdf" },
+      { label: "PDF to Excel", href: "/pdf-to-excel" },
+      { label: "PPT to PDF", href: "/ppt-to-pdf" },
       { label: "JPG to PDF", href: "/jpg-to-pdf" },
     ],
   },
   {
-    title: "Edit",
+    title: "Edit & Organize",
     links: [
       { label: "Merge PDF", href: "/merge-pdf" },
       { label: "Split PDF", href: "/split-pdf" },
       { label: "Compress PDF", href: "/compress-pdf" },
+      { label: "Delete Page", href: "/delete-page" },
+      { label: "Rotate Page", href: "/rotate-page" },
       { label: "Protect PDF", href: "/protect-pdf" },
     ],
   },
@@ -46,6 +50,48 @@ const toolCols = [
       { label: "Blog", href: "/blog" },
       { label: "Pricing", href: "/pricing" },
       { label: "Contact", href: "/contact" },
+    ],
+  },
+];
+
+const toolColsZh = [
+  {
+    title: "AI 工作区",
+    links: [
+      { label: "PDF 问答", href: "/chat-with-pdf" },
+      { label: "AI 摘要", href: "/ai-summary" },
+      { label: "OCR 工作区", href: "/ocr" },
+    ],
+  },
+  {
+    title: "转换",
+    links: [
+      { label: "Word 转 PDF", href: "/word-to-pdf" },
+      { label: "PDF 转 Word", href: "/pdf-to-word" },
+      { label: "Excel 转 PDF", href: "/excel-to-pdf" },
+      { label: "PDF 转 Excel", href: "/pdf-to-excel" },
+      { label: "PPT 转 PDF", href: "/ppt-to-pdf" },
+      { label: "JPG 转 PDF", href: "/jpg-to-pdf" },
+    ],
+  },
+  {
+    title: "编辑与整理",
+    links: [
+      { label: "合并 PDF", href: "/merge-pdf" },
+      { label: "拆分 PDF", href: "/split-pdf" },
+      { label: "压缩 PDF", href: "/compress-pdf" },
+      { label: "删除页面", href: "/delete-page" },
+      { label: "旋转页面", href: "/rotate-page" },
+      { label: "加密 PDF", href: "/protect-pdf" },
+    ],
+  },
+  {
+    title: "公司",
+    links: [
+      { label: "关于", href: "/about" },
+      { label: "博客", href: "/blog" },
+      { label: "定价", href: "/pricing" },
+      { label: "联系", href: "/contact" },
     ],
   },
 ];
@@ -64,10 +110,10 @@ export function Footer() {
               <BrandMark showWordmark={false} />
             </a>
             <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--faint)]">
-              AI-powered document tools for PDF workflows.
+              {locale === "zh" ? "面向 PDF 工作流的 AI 文档工具。" : "AI-powered document tools for PDF workflows."}
             </p>
           </div>
-          {toolCols.map((col) => (
+          {(locale === "zh" ? toolColsZh : toolColsEn).map((col) => (
             <div key={col.title}>
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
                 {col.title}
