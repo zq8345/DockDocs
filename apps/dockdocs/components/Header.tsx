@@ -6,21 +6,9 @@ import { BrandMark } from "@/components/BrandMark";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 
-const toolIcons: Record<string, string> = {
-  "chat-with-pdf": "💬", "ai-summary": "📋", "ocr-pdf": "🔍", "translate-pdf": "🌐",
-  "word-to-pdf": "📄", "pdf-to-word": "📕", "excel-to-pdf": "📊", "pdf-to-excel": "📕",
-  "ppt-to-pdf": "🖥", "jpg-to-pdf": "🖼", "png-to-pdf": "🖼", "pdf-to-jpg": "📕",
-  "pdf-to-png": "📕", "text-to-pdf": "📝", "pdf-to-markdown": "📕",
-  "merge-pdf": "🔗", "split-pdf": "✂️", "compress-pdf": "📦",
-  "delete-page": "🗑", "rotate-page": "🔄", "reorder-pages": "📑", "add-page": "➕",
-  "protect-pdf": "🔒", "unlock-pdf": "🔓", "edit-pdf": "✏️", "sign-pdf": "✍️",
-};
-
-function iconFor(href: string) { return toolIcons[href.replace(/^\//, "")] || "📄"; }
-
 const allToolGroups = [
   { label: "AI", items: ["Chat with PDF","AI Summary","OCR PDF","Translate PDF"], slugs: ["/chat-with-pdf","/ai-summary","/ocr-pdf","/translate-pdf"] },
-  { label: "Convert", items: ["Word to PDF","PDF to Word","Excel to PDF","PDF to Excel","PPT to PDF","JPG to PDF","PNG to PDF","PDF to JPG","PDF to PNG","Text to PDF","PDF to Markdown"], slugs: ["/word-to-pdf","/pdf-to-word","/excel-to-pdf","/pdf-to-excel","/ppt-to-pdf","/jpg-to-pdf","/png-to-pdf","/pdf-to-jpg","/pdf-to-png","/text-to-pdf","/pdf-to-markdown"] },
+  { label: "Convert", items: ["PDF to Word","PDF to Excel","PDF to JPG","PDF to PNG","PDF to Markdown","Word to PDF","Excel to PDF","PPT to PDF","JPG to PDF","PNG to PDF","Text to PDF"], slugs: ["/pdf-to-word","/pdf-to-excel","/pdf-to-jpg","/pdf-to-png","/pdf-to-markdown","/word-to-pdf","/excel-to-pdf","/ppt-to-pdf","/jpg-to-pdf","/png-to-pdf","/text-to-pdf"] },
   { label: "Organize", items: ["Merge PDF","Split PDF","Compress PDF","Delete Pages","Rotate Pages","Reorder Pages","Add Pages"], slugs: ["/merge-pdf","/split-pdf","/compress-pdf","/delete-page","/rotate-page","/reorder-pages","/add-page"] },
   { label: "Edit & Security", items: ["Edit PDF","Sign PDF","Protect PDF","Unlock PDF"], slugs: ["/edit-pdf","/sign-pdf","/protect-pdf","/unlock-pdf"] },
 ];
@@ -72,8 +60,7 @@ export function Header() {
                     <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{g.label}</p>
                     <div className="space-y-0.5">
                       {g.items.map((item, i) => (
-                        <button key={g.slugs[i]} type="button" onClick={() => navTo(g.slugs[i])} className="flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-2 py-1.5 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]">
-                          <span className="shrink-0 text-[15px]">{iconFor(g.slugs[i])}</span> {item}
+                        <button key={g.slugs[i]} type="button" onClick={() => navTo(g.slugs[i])} className="block w-full rounded-[var(--radius-sm)] px-2 py-1.5 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)] whitespace-nowrap">{item}
                         </button>
                       ))}
                     </div>
@@ -108,7 +95,7 @@ export function Header() {
                 <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{g.label}</p>
                 <div className="grid grid-cols-2 gap-1">
                   {g.items.map((item, i) => (
-                    <button key={g.slugs[i]} type="button" onClick={() => { navTo(g.slugs[i]); setMobileOpen(false); }} className="flex items-center gap-2 rounded-[var(--radius-sm)] px-2 py-2 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]">{iconFor(g.slugs[i])} {item}</button>
+                    <button key={g.slugs[i]} type="button" onClick={() => { navTo(g.slugs[i]); setMobileOpen(false); }} className="block w-full rounded-[var(--radius-sm)] px-2 py-2 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)] whitespace-nowrap">{item}</button>
                   ))}
                 </div>
               </div>
