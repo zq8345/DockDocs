@@ -1,4 +1,3 @@
-import { ButtonLink, Container, Section } from "@dock/shared/ui";
 import {
   defaultLocale,
   localizedHref,
@@ -17,189 +16,133 @@ export function SaasInfoPage({
   locale = defaultLocale,
   useLocalePrefix = false,
 }: SaasInfoPageProps) {
-  const crawlLinks =
-    locale === "zh"
-      ? [
-          {
-            label: "文档工作区",
-            href: "/",
-            description: "返回 DockDocs AI Document Platform 首页。",
-          },
-          {
-            label: "资源中心",
-            href: "/resources",
-            description: "按工作流浏览 PDF、OCR、转换和 AI 文档资源。",
-          },
-          {
-            label: "文档指南",
-            href: "/guides",
-            description: "阅读压缩、转换、OCR 和 AI 文档工作流指南。",
-          },
-          {
-            label: "FAQ",
-            href: "/faq",
-            description: "查看隐私、上传、OCR、AI 和导出相关问题。",
-          },
-        ]
-      : [
-          {
-            label: "PDF Tools",
-            href: "/",
-            description: "Return to the DockDocs PDF tools homepage.",
-          },
-          {
-            label: "Resources",
-            href: "/resources",
-            description:
-              "Browse PDF, OCR, conversion, and AI document workflow resources.",
-          },
-          {
-            label: "PDF Guides",
-            href: "/guides",
-            description:
-              "Read step-by-step guides for compression, merging, splitting, and conversion.",
-          },
-          {
-            label: "FAQ",
-            href: "/faq",
-            description:
-              "Review privacy, upload, OCR, AI, and export questions.",
-          },
-        ];
+  const zh = locale === "zh";
+
+  const crawlLinks = zh
+    ? [
+        { label: "PDF 工具", href: "/", description: "返回 DockDocs 首页。" },
+        { label: "资源中心", href: "/resources", description: "按工作流浏览 PDF、OCR、转换资源。" },
+        { label: "文档指南", href: "/guides", description: "阅读压缩、转换、OCR 工作流指南。" },
+        { label: "FAQ", href: "/faq", description: "查看隐私、上传、OCR、AI 问题。" },
+      ]
+    : [
+        { label: "PDF Tools", href: "/", description: "Return to the DockDocs homepage." },
+        { label: "Resources", href: "/resources", description: "Browse PDF, OCR, and conversion resources." },
+        { label: "Guides", href: "/guides", description: "Step-by-step compression, merge, and conversion guides." },
+        { label: "FAQ", href: "/faq", description: "Review privacy, upload, OCR, and AI questions." },
+      ];
 
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
-      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <Container className="py-16">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+      {/* Hero */}
+      <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
+        <div className="mx-auto max-w-3xl px-5 py-14 sm:px-6 sm:py-20">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
             {page.eyebrow}
           </p>
-          <h1 className="mt-5 max-w-4xl break-words text-2xl font-semibold leading-tight sm:text-6xl">
+          <h1 className="mt-4 text-2xl font-semibold leading-tight tracking-[-0.02em] text-[color:var(--foreground)] sm:text-4xl">
             {page.heroTitle}
           </h1>
-          <p className="mt-6 max-w-3xl text-base leading-8 text-[color:var(--muted)] sm:text-lg">
+          <p className="mt-4 text-base leading-8 text-[color:var(--muted)]">
             {page.heroDescription}
           </p>
           {(page.primaryAction || page.secondaryAction) && (
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap gap-3">
               {page.primaryAction ? (
-                <ButtonLink
-                  href={localizedHref(
-                    page.primaryAction.href,
-                    locale,
-                    useLocalePrefix,
-                  )}
+                <a
+                  href={localizedHref(page.primaryAction.href, locale, useLocalePrefix)}
+                  className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90"
                 >
                   {page.primaryAction.label}
-                </ButtonLink>
+                </a>
               ) : null}
               {page.secondaryAction ? (
-                <ButtonLink
-                  href={localizedHref(
-                    page.secondaryAction.href,
-                    locale,
-                    useLocalePrefix,
-                  )}
-                  variant="outline"
+                <a
+                  href={localizedHref(page.secondaryAction.href, locale, useLocalePrefix)}
+                  className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-5 text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
                 >
                   {page.secondaryAction.label}
-                </ButtonLink>
+                </a>
               ) : null}
             </div>
           )}
-        </Container>
-      </Section>
-      {page.sections.map((section, index) => (
-        <Section
-          key={section.title}
-          className={index % 2 === 0 ? "bg-[color:var(--surface-subtle)]" : "bg-[color:var(--surface)]"}
-        >
-          <Container>
-            <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-              <div>
-                <h2 className="text-2xl font-semibold leading-tight">
-                  {section.title}
-                </h2>
-                <p className="mt-4 leading-7 text-[color:var(--muted)]">
-                  {section.description}
-                </p>
+        </div>
+      </section>
+
+      {/* Content sections */}
+      {page.sections.map((section) => (
+        <section key={section.title} className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
+          <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+            <h2 className="text-xl font-semibold leading-snug tracking-tight text-[color:var(--foreground)]">
+              {section.title}
+            </h2>
+            <p className="mt-3 text-base leading-8 text-[color:var(--muted)]">
+              {section.description}
+            </p>
+            {section.items?.length ? (
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                {section.items.map((item) => (
+                  <article
+                    key={item.title}
+                    className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5"
+                  >
+                    <h3 className="text-[15px] font-semibold text-[color:var(--foreground)]">{item.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{item.description}</p>
+                  </article>
+                ))}
               </div>
-              {section.items?.length ? (
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {section.items.map((item) => (
-                    <article
-                      key={item.title}
-                      className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm"
-                    >
-                      <h3 className="font-semibold">{item.title}</h3>
-                      <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
-                        {item.description}
-                      </p>
-                    </article>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          </Container>
-        </Section>
+            ) : null}
+          </div>
+        </section>
       ))}
+
+      {/* FAQ */}
       {page.faqs?.length ? (
-        <Section className="bg-[color:var(--surface)]">
-          <Container className="max-w-4xl">
-            <div className="divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
+        <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
+          <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+            <div className="divide-y divide-[color:var(--line)]">
               {page.faqs.map((faq) => (
-                <details key={faq.question} className="group py-5">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold">
+                <details key={faq.question} className="group py-4">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-[color:var(--foreground)]">
                     {faq.question}
-                    <span className="text-[color:var(--muted)] transition group-open:rotate-45">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--muted)] transition group-open:rotate-45">
                       +
                     </span>
                   </summary>
-                  <p className="mt-4 leading-7 text-[color:var(--muted)]">{faq.answer}</p>
+                  <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{faq.answer}</p>
                 </details>
               ))}
             </div>
-          </Container>
-        </Section>
-      ) : null}
-      <Section className="border-t border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
-        <Container>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                {locale === "zh" ? "继续探索" : "Continue exploring"}
-              </p>
-              <h2 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl">
-                {locale === "zh"
-                  ? "相关工具、指南和支持内容。"
-                  : "Related tools, guides, and support content."}
-              </h2>
-            </div>
-            <p className="max-w-xl leading-7 text-[color:var(--muted)]">
-              {locale === "zh"
-                ? "这些链接帮助用户和搜索引擎在 DockDocs 的工具页、资源页和信任页面之间建立清晰路径。"
-                : "These links give users and search engines clear paths between DockDocs tools, resources, and trust pages."}
-            </p>
           </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        </section>
+      ) : null}
+
+      {/* Continue exploring */}
+      <section className="bg-[color:var(--surface-subtle)]">
+        <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
+            {zh ? "继续探索" : "Continue exploring"}
+          </p>
+          <h2 className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            {zh ? "相关工具、指南和支持" : "Related tools, guides, and support"}
+          </h2>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {crawlLinks.map((link) => (
               <a
                 key={link.href}
                 href={localizedHref(link.href, locale, useLocalePrefix)}
-                className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 text-sm shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:shadow-[0_16px_32px_rgba(24,24,20,0.08)]"
+                className="group rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 transition hover:border-[color:var(--line-strong)]"
               >
-                <h3 className="font-semibold text-[color:var(--foreground)]">{link.label}</h3>
-                <p className="mt-3 leading-6 text-[color:var(--muted)]">
-                  {link.description}
-                </p>
-                <span className="mt-5 inline-block font-semibold text-[color:var(--foreground)] transition group-hover:translate-x-0.5">
-                  {locale === "zh" ? "打开页面" : "Open page"} -&gt;
+                <h3 className="text-[15px] font-semibold text-[color:var(--foreground)]">{link.label}</h3>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{link.description}</p>
+                <span className="mt-4 inline-block text-sm font-medium text-[color:var(--accent)] transition group-hover:translate-x-0.5">
+                  {zh ? "打开页面 →" : "Open page →"}
                 </span>
               </a>
             ))}
           </div>
-        </Container>
-      </Section>
+        </div>
+      </section>
     </main>
   );
 }
