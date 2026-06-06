@@ -146,38 +146,38 @@ export default function AiWorkspacePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aiWorkspaceSchema) }}
       />
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <Container className="grid min-h-[66vh] items-center gap-12 py-16 lg:grid-cols-[1fr_0.9fr] lg:py-20">
+        <Container className="grid items-center gap-12 py-14 lg:grid-cols-[1fr_0.9fr] lg:py-16">
           <div>
             <StatusBadge
               className="shadow-sm"
               label="AI Workspace layer"
               status="Live"
             />
-            <h1 className="mt-6 max-w-4xl text-3xl font-semibold leading-tight sm:text-6xl sm:leading-[1.04]">
+            <h1 className="mt-5 max-w-3xl text-2xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
               AI PDF workspace for OCR, summaries, and Chat with PDF.
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-[color:var(--muted)] sm:text-lg">
+            <p className="mt-4 max-w-2xl text-base leading-8 text-[color:var(--muted)]">
               DockDocs stays PDF tools first. The AI Workspace layer helps when
               documents need OCR, summaries, Chat with PDF, or multi-step
               workflow support.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap gap-3">
               <ButtonLink href="/">Browse PDF tools</ButtonLink>
               <ButtonLink href="/ocr-pdf" variant="outline" className="bg-[color:var(--surface)]">
                 Try OCR PDF
               </ButtonLink>
             </div>
           </div>
-          <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 shadow-[0_24px_60px_rgba(24,24,20,0.08)]">
-            <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+          <div className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
+            <div className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
                 Workspace flow
               </p>
-              <div className="mt-5 grid gap-3">
+              <div className="mt-4 grid gap-2">
                 {workspaceSteps.map((step) => (
                   <div
                     key={step.label}
-                    className="flex items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 text-sm font-semibold text-[color:var(--foreground)]"
+                    className="flex items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-2.5 text-sm font-semibold text-[color:var(--foreground)]"
                   >
                     <span>{step.label}</span>
                     <StatusBadge label={step.status} status={step.status} />
@@ -192,21 +192,21 @@ export default function AiWorkspacePage() {
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
         <Container>
           <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
               Workspace capabilities
             </p>
-            <h2 className="mt-4 text-3xl font-semibold leading-tight">
+            <h2 className="mt-3 text-xl font-semibold leading-snug tracking-tight sm:text-2xl">
               One enhancement layer for practical document workflows.
             </h2>
           </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {workspaceFlows.map((flow) => (
               <div
                 key={flow.title}
-                className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm"
+                className="h-full rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5"
               >
-                <h3 className="text-lg font-semibold">{flow.title}</h3>
-                <p className="mt-4 text-sm leading-6 text-[color:var(--muted)]">
+                <h3 className="text-[15px] font-semibold">{flow.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
                   {flow.description}
                 </p>
               </div>
@@ -224,10 +224,10 @@ export default function AiWorkspacePage() {
       <Section className="bg-[color:var(--surface)]">
         <Container className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
               Start with PDF tools
             </p>
-            <h2 className="mt-4 text-3xl font-semibold leading-tight">
+            <h2 className="mt-3 text-xl font-semibold leading-snug tracking-tight sm:text-2xl">
               The AI layer stays connected to useful tools.
             </h2>
           </div>
@@ -236,12 +236,12 @@ export default function AiWorkspacePage() {
               <a
                 key={tool.href}
                 href={tool.href}
-                className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:border-[color:var(--foreground)]"
+                className="group rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 transition hover:border-[color:var(--line-strong)]"
               >
                 <div className="flex items-center justify-between gap-4">
-                  <h3 className="font-semibold">{tool.name}</h3>
-                  <span className="text-[color:var(--muted)] transition group-hover:translate-x-0.5 group-hover:text-[color:var(--foreground)]">
-                    -&gt;
+                  <h3 className="text-[14px] font-semibold">{tool.name}</h3>
+                  <span className="text-[color:var(--faint)] transition group-hover:translate-x-0.5 group-hover:text-[color:var(--muted)]">
+                    →
                   </span>
                 </div>
               </a>
