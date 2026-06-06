@@ -18,6 +18,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route.priority,
   }));
 
+  // Add zh alternates for all static routes
+  const zhRoutes = indexableRoutes
+    .filter((r) => r.path !== "/" && !r.path.startsWith("/zh"))
+    .map((route) => ({
+      url: absoluteUrl(`/zh${route.path}`),
+      lastModified: now,
+      changeFrequency: route.changeFrequency,
+      priority: Math.max((route.priority ?? 0.5) - 0.05, 0.3),
+    }));
+
   const geoRoutes = getProgrammaticGeoPageSeeds().flatMap((page) =>
     geoLocales.map((locale) => ({
       url: absoluteUrl(programmaticGeoPath(page.surface, page.slug, locale)),
@@ -28,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   return Array.from(
-    new Map([...staticRoutes, ...geoRoutes].map((route) => [route.url, route]))
+    new Map([...staticRoutes, ...zhRoutes, ...geoRoutes].map((route) => [route.url, route]))
       .values(),
   );
 }

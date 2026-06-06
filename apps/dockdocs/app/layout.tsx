@@ -45,13 +45,11 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
               var seg = path.split('/').filter(Boolean)[0];
               var hasPrefix = ['en','zh','ja','ko','es','fr','de','pt','it','ru','ar','hi'].includes(seg);
               if (hasPrefix) return;
-              var map = { zh:1, 'zh-cn':1, 'zh-tw':1, 'zh-hk':1, ja:1, ko:1, es:1, fr:1, de:1, pt:1, it:1, ru:1, ar:1, hi:1 };
+              // Only redirect to zh — the only non-English locale with full content
+              var zhLangs = {'zh':1,'zh-cn':1,'zh-tw':1,'zh-hk':1,'zh-sg':1};
               var code = lang.split('-')[0];
-              if (map[lang] || map[code]) {
-                var to = map[lang] ? lang.split('-')[0] : code;
-                if (to !== 'en') {
-                  window.location.replace('/' + to + (path === '/' ? '/' : path));
-                }
+              if (zhLangs[lang] || zhLangs[code] || code === 'zh') {
+                window.location.replace('/zh' + (path === '/' ? '/' : path));
               }
             } catch(e) {}
           })();
