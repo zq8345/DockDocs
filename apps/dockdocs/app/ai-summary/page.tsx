@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AiSummaryClient } from "./AiSummaryClient";
 
 export const metadata: Metadata = {
   title: "AI Summary — DockDocs",
@@ -9,14 +10,25 @@ export const metadata: Metadata = {
 
 export default function AiSummaryPage() {
   return (
-    <div className="mx-auto max-w-6xl px-5 py-12 sm:py-16">
-      <h1 className="text-[28px] font-semibold tracking-[-0.014em]">AI Summary</h1>
-      <p className="mt-2 text-[14px] leading-relaxed text-[color:var(--muted)]">
-        Upload a document and get an AI-powered summary with key points and actions.
-      </p>
-      <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center">
-        <p className="text-[14px] text-[color:var(--muted)]">AI Summary workspace is ready. Upload a PDF or document to begin.</p>
+    <main className="bg-[color:var(--surface)]">
+      <div className="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+        <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
+          <a href="/" className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
+          <span>/</span>
+          <span className="font-medium text-[color:var(--foreground)]">AI Summary</span>
+        </div>
+
+        <h1 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
+          AI Summary
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+          Upload a document and get an AI-powered summary with key points, action items, and next steps.
+        </p>
+
+        <div className="mt-8">
+          <AiSummaryClient locale="en" />
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

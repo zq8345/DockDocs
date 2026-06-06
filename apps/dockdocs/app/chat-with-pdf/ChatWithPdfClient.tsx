@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
-import { StatusBadge } from "@/components/ui/Status";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -104,7 +103,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
 
     try {
       const pdfjs = await import("pdfjs-dist");
-      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+      pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
       const buffer = await file.arrayBuffer();
       const pdf = await pdfjs.getDocument({ data: buffer }).promise;
@@ -226,172 +225,89 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
       id="workspace"
       aria-label={copy.workspaceTitle}
       data-testid="chat-workspace"
-      className="overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[0_24px_80px_rgba(15,23,42,0.10)]"
+      className="mx-auto max-w-3xl"
     >
-      <div className="flex items-center justify-between border-b border-[color:var(--line)] px-4 py-3 sm:px-5">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            {copy.workspaceLabel}
-          </p>
-          <p className="mt-1 text-sm font-semibold">{copy.workspaceTitle}</p>
-        </div>
-        <StatusBadge label={copy.mvp} status="QA" />
-      </div>
-
-      <div className="grid lg:min-h-[680px] lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[310px_minmax(0,1fr)_300px] 2xl:grid-cols-[330px_minmax(0,1fr)_320px]">
-        <aside
-          data-testid="document-sidebar"
-          className="border-b border-[color:var(--line)] bg-[color:var(--background)] p-4 sm:p-5 lg:border-b-0 lg:border-r"
+      {/* ── Upload zone (shown when no document) ── */}
+      {!documentText && !isExtracting ? (
+        <label
+          data-testid="upload-panel"
+          className="relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-12 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
         >
-          <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              {copy.document}
-            </p>
-            <StatePill state={documentState} label={sourceStats} />
+          <div className="flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] bg-[color:var(--accent)] text-sm font-bold text-white shadow-[0_8px_20px_rgba(99,102,241,0.3)]">
+            PDF
           </div>
-          <label
-            data-testid="upload-panel"
-            className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]/30 focus-within:border-[color:var(--accent)] focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[color:var(--accent)] sm:py-7"
-          >
-            <StatusBadge label="PDF" status="PDF" variant="solid" className="h-12 rounded-[var(--radius-sm)] px-4 text-sm" />
-            <span className="mt-4 text-sm font-semibold">{copy.choosePdf}</span>
-            <span className="mt-2 max-w-48 text-xs leading-5 text-[color:var(--muted)]">
-              {copy.uploadHelp}
-            </span>
-            <input
-              data-testid="upload-input"
-              type="file"
-              accept="application/pdf,.pdf"
-              className="sr-only"
-              onChange={handleFileChange}
-            />
-          </label>
+          <span className="mt-4 text-xl font-semibold text-[color:var(--foreground)]">{copy.choosePdf}</span>
+          <span className="mt-2 max-w-sm text-sm text-[color:var(--muted)]">{copy.uploadHelp}</span>
+          <span className="mt-5 inline-flex h-11 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90">
+            {copy.choosePdf}
+          </span>
+          {documentState === "error" && error && (
+            <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
+          )}
+          <input
+            data-testid="upload-input"
+            type="file"
+            accept="application/pdf,.pdf"
+            className="sr-only"
+            onChange={handleFileChange}
+          />
+        </label>
+      ) : null}
 
-          <div
-            data-testid={documentState === "error" ? "document-error-state" : "document-status"}
-            className="mt-5 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4"
-          >
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              {copy.documentStatus}
-            </p>
-            <p className="mt-3 break-words text-sm font-semibold">{activeDocumentName}</p>
-            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{status}</p>
-            {documentState === "error" && error && (
-              <p className="mt-1 text-sm leading-6 text-[color:var(--error)]">{error}</p>
-            )}
-            {isExtracting && (
-              <div className="mt-4 h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
-                <div className="h-full w-2/3 rounded-full bg-[color:var(--accent)]" />
-              </div>
-            )}
-          </div>
+      {/* ── Extracting state ── */}
+      {isExtracting ? (
+        <div className="rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface)] p-10 text-center">
+          <svg className="mx-auto h-10 w-10 animate-spin text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+            <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          <p className="mt-4 text-sm font-semibold text-[color:var(--foreground)]">{copy.readingStatus}</p>
+          <p className="mt-1 break-words text-xs text-[color:var(--muted)]">{activeDocumentName}</p>
+        </div>
+      ) : null}
 
-          <div
-            data-testid="result-state"
-            className="mt-5 grid gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-sm"
-          >
-            <CheckLine label={copy.checks[0]} active={documentText.length > 0} />
-            <CheckLine label={copy.checks[1]} active={Boolean(providerReference.provider)} />
-            <CheckLine label={copy.checks[2]} active={resultGenerated} />
-          </div>
-
-          <div className="mt-5 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              {copy.collectionsLabel}
-            </p>
-            <div className="mt-3 grid gap-2">
-              {copy.collections.map((collection, index) => (
-                <button
-                  key={collection.name}
-                  type="button"
-                  className={
-                    index === 0
-                      ? "flex min-h-11 items-center justify-between gap-3 rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-3 py-2 text-left text-sm font-semibold text-[color:var(--accent-strong)] transition active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-                      : "flex min-h-11 items-center justify-between gap-3 rounded-[var(--radius-sm)] px-3 py-2 text-left text-sm text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] dark:hover:bg-white/10"
-                  }
-                >
-                  <span className="min-w-0 break-words">{collection.name}</span>
-                  <span className="shrink-0 text-xs">{collection.count}</span>
-                </button>
-              ))}
+      {/* ── Active document chat ── */}
+      {documentText && !isExtracting ? (
+        <div className="space-y-4">
+          {/* Document bar */}
+          <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-[10px] font-bold text-[color:var(--accent-strong)]">
+              PDF
             </div>
-          </div>
-
-          <div className="mt-5 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              {copy.historyLabel}
-            </p>
-            <div className="mt-3 grid gap-2">
-              {(userQuestions.length > 0 ? userQuestions.map((item) => item.content) : copy.defaultHistory).map(
-                (item, index) => (
-                  <button
-                    key={`${item}-${index}`}
-                    type="button"
-                    onClick={() => setQuestion(item)}
-                    className="min-h-11 rounded-[var(--radius-sm)] px-3 py-2 text-left text-sm leading-5 text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] dark:hover:bg-white/10"
-                  >
-                    {item}
-                  </button>
-                ),
-              )}
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-[color:var(--foreground)]">{activeDocumentName}</p>
+              <p className="text-xs text-[color:var(--muted)]">
+                {pageCount
+                  ? copy.pageIndexed.replace("{pages}", String(pageCount)).replace("{plural}", pageCount === 1 ? "" : "s")
+                  : sourceStats}
+                {providerReference.provider ? ` · ${providerReference.provider}` : ""}
+              </p>
             </div>
-          </div>
-        </aside>
-
-        <div className="flex min-w-0 flex-col lg:min-h-[680px]">
-          <div className="order-1 border-b border-[color:var(--line)] p-4 sm:p-5">
-            <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-start 2xl:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-                  {copy.aiChat}
-                </p>
-                <h2 className="mt-2 text-xl font-semibold sm:text-2xl">
-                  {copy.conversationTitle}
-                </h2>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-[color:var(--muted)]">
-                  {copy.conversationDescription}
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-xs sm:max-w-64 2xl:min-w-48">
-                <MiniStat label={copy.messages} value={String(messages.length)} />
-                <MiniStat label={copy.runtime} value={isAsking ? copy.asking : documentState} />
-              </div>
-            </div>
+            <label className="shrink-0 cursor-pointer rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
+              {copy.choosePdf}
+              <input type="file" accept="application/pdf,.pdf" className="sr-only" onChange={handleFileChange} />
+            </label>
           </div>
 
+          {/* Conversation */}
           <div
             data-testid="conversation-workspace"
-            className="order-3 max-h-none flex-1 space-y-4 overflow-y-auto p-4 sm:p-5 lg:order-2"
+            className="min-h-[320px] space-y-3 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5"
           >
             {messages.length === 0 ? (
-              <div className="grid gap-4">
-                <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
-                  <p className="font-semibold">{copy.starterTitle}</p>
-                  <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                    {copy.starterDescription}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {copy.suggestedQuestions.map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        onClick={() => setQuestion(suggestion)}
-                        className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-left text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--foreground)] hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="grid gap-3 md:grid-cols-3">
-                  {copy.knowledgeCards.map((card, index) => (
-                    <KnowledgeCard
-                      key={card.title}
-                      testId={`knowledge-card-${["summary", "risks", "actions"][index]}`}
-                      title={card.title}
-                      description={card.description}
-                      onClick={() => setQuestion(card.prompt)}
-                    />
+              <div className="py-6 text-center">
+                <p className="text-sm font-semibold text-[color:var(--foreground)]">{copy.starterTitle}</p>
+                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[color:var(--muted)]">{copy.starterDescription}</p>
+                <div className="mt-5 flex flex-wrap justify-center gap-2">
+                  {copy.suggestedQuestions.map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      onClick={() => setQuestion(suggestion)}
+                      className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3.5 py-1.5 text-xs font-medium text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--foreground)]"
+                    >
+                      {suggestion}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -401,266 +317,73 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
                   key={`${message.role}-${index}`}
                   className={
                     message.role === "user"
-                      ? "ml-auto max-w-2xl rounded-[var(--radius)] bg-[color:var(--foreground)] p-4 text-[color:var(--background)]"
-                      : "max-w-2xl rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4"
+                      ? "ml-auto max-w-[85%] rounded-[var(--radius-lg)] bg-[color:var(--accent)] px-4 py-2.5 text-white"
+                      : "mr-auto max-w-[85%] rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-2.5"
                   }
                 >
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] opacity-75">
-                    {message.role === "user" ? copy.you : copy.assistant}
+                  <p className={`whitespace-pre-wrap text-sm leading-6 ${message.role === "user" ? "text-white" : "text-[color:var(--foreground)]"}`}>
+                    {message.content}
                   </p>
-                  <p className="mt-2 whitespace-pre-wrap text-sm leading-6">{message.content}</p>
                 </article>
               ))
             )}
-            {error && (
-              <div
-                data-testid="chat-error-state"
-                className="rounded-[var(--radius)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-4 text-sm leading-6 text-[color:var(--error)]"
-              >
+            {isAsking ? (
+              <div className="mr-auto flex max-w-[85%] items-center gap-2 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-3">
+                <span className="h-2 w-2 animate-bounce rounded-full bg-[color:var(--muted)]" style={{ animationDelay: "0ms" }} />
+                <span className="h-2 w-2 animate-bounce rounded-full bg-[color:var(--muted)]" style={{ animationDelay: "150ms" }} />
+                <span className="h-2 w-2 animate-bounce rounded-full bg-[color:var(--muted)]" style={{ animationDelay: "300ms" }} />
+              </div>
+            ) : null}
+            {error && messages.length > 0 ? (
+              <div data-testid="chat-error-state" className="rounded-[var(--radius-sm)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-3 text-sm leading-6 text-[color:var(--error)]">
                 {error}
               </div>
-            )}
+            ) : null}
           </div>
 
-          <form
-            onSubmit={askQuestion}
-            className="order-2 border-t border-[color:var(--line)] bg-[color:var(--surface)] p-4 lg:order-3"
-          >
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-              <label className="flex-1">
-                <span className="sr-only">{copy.questionLabel}</span>
-                <textarea
-                  data-testid="chat-input"
-                  value={question}
-                  onChange={(event) => setQuestion(event.target.value)}
-                  placeholder={copy.placeholder}
-                  rows={2}
-                  className="min-h-20 w-full resize-none rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-3 text-sm leading-6 outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--foreground)] sm:min-h-11"
-                />
-              </label>
+          {/* Input */}
+          <form onSubmit={askQuestion} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2">
+            <div className="flex items-end gap-2">
+              <textarea
+                data-testid="chat-input"
+                value={question}
+                onChange={(event) => setQuestion(event.target.value)}
+                placeholder={copy.placeholder}
+                rows={1}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    if (canAsk) askQuestion(e as unknown as React.FormEvent<HTMLFormElement>);
+                  }
+                }}
+                className="max-h-32 min-h-[44px] flex-1 resize-none rounded-[var(--radius-sm)] bg-transparent px-3 py-2.5 text-sm leading-6 outline-none placeholder:text-[color:var(--muted)]"
+              />
               <button
                 data-testid="ask-button"
                 type="submit"
                 disabled={!canAsk}
-                className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-45 disabled:active:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] sm:min-w-28"
+                className="inline-flex h-11 shrink-0 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {isAsking ? copy.asking : copy.ask}
               </button>
             </div>
           </form>
+
+          {/* Quick actions */}
+          <div className="flex flex-wrap gap-2">
+            {copy.knowledgeCards.map((card) => (
+              <button
+                key={card.title}
+                type="button"
+                onClick={() => setQuestion(card.prompt)}
+                className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3.5 py-1.5 text-xs font-medium text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--foreground)]"
+              >
+                {card.title}
+              </button>
+            ))}
+          </div>
         </div>
-
-        <aside
-          data-testid="source-intelligence-panel"
-          className="border-t border-[color:var(--line)] bg-[color:var(--background)] p-4 sm:p-5 xl:border-l xl:border-t-0"
-        >
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            {copy.sourceReferences}
-          </p>
-          <div className="mt-4 grid gap-3">
-            <SourceCard
-              title={copy.documentText}
-              value={
-                documentText
-                  ? locale === "zh"
-                    ? `${documentText.length.toLocaleString()} 个字符`
-                    : `${documentText.length.toLocaleString()} chars`
-                  : copy.notExtracted
-              }
-              tone={documentText ? "success" : documentState === "error" ? "error" : "neutral"}
-            />
-            <SourceCard
-              title={copy.pageContext}
-              value={
-                pageCount
-                  ? copy.pageIndexed
-                      .replace("{pages}", String(pageCount))
-                      .replace("{plural}", pageCount === 1 ? "" : "s")
-                  : copy.firstPages.replace("{pages}", String(maxPages))
-              }
-              tone={pageCount ? "success" : "neutral"}
-            />
-            <SourceCard
-              title={copy.references}
-              value={
-                providerReference.citations.length > 0
-                  ? copy.citationCount
-                      .replace("{count}", String(providerReference.citations.length))
-                      .replace("{plural}", providerReference.citations.length === 1 ? "" : "s")
-                  : resultGenerated
-                    ? copy.providerResponseReceived
-                    : copy.providerCitations
-              }
-              tone={resultGenerated ? "success" : "neutral"}
-            />
-            <SourceCard
-              title={copy.provider}
-              testId="provider-reference"
-              value={
-                providerReference.provider
-                  ? `${providerReference.provider}${providerReference.model ? ` / ${providerReference.model}` : ""}`
-                  : copy.waitingForAi
-              }
-              tone={providerReference.provider ? "success" : "neutral"}
-            />
-          </div>
-          <div className="mt-5 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              {copy.knowledgeCardsLabel}
-            </p>
-            <div className="mt-3 grid gap-2">
-              {copy.knowledgeCards.map((card, index) => (
-                <button
-                  key={card.title}
-                  data-testid={`knowledge-card-${["summary", "risks", "actions"][index]}-side`}
-                  type="button"
-                  onClick={() => setQuestion(card.prompt)}
-                  className="min-h-24 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-left transition hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-                >
-                  <span className="text-sm font-semibold">{card.title}</span>
-                  <span className="mt-1 block text-xs leading-5 text-[color:var(--muted)]">
-                    {card.description}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="mt-5 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-              {copy.suggestedActions}
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {copy.sideActions.map((action, index) => (
-                <button
-                  key={action}
-                  type="button"
-                  onClick={() => setQuestion(copy.knowledgeCards[index]?.prompt ?? action)}
-                  className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 text-left text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--foreground)] hover:text-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-                >
-                  {action}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="mt-5 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-            <p className="text-sm font-semibold">{copy.groundedTitle}</p>
-            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-              {copy.groundedDescription}
-            </p>
-          </div>
-        </aside>
-      </div>
+      ) : null}
     </section>
-  );
-}
-
-function KnowledgeCard({
-  testId,
-  title,
-  description,
-  onClick,
-}: {
-  testId: string;
-  title: string;
-  description: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      data-testid={testId}
-      type="button"
-      onClick={onClick}
-      className="group min-h-36 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-left transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-    >
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-xs font-semibold text-[color:var(--accent-strong)]">
-        {title.slice(0, 1)}
-      </span>
-      <span className="mt-3 block text-base font-semibold text-[color:var(--foreground)] transition group-hover:text-[color:var(--accent-strong)]">
-        {title}
-      </span>
-      <span className="mt-2 block text-sm leading-6 text-[color:var(--muted)]">
-        {description}
-      </span>
-    </button>
-  );
-}
-
-function StatePill({ state, label }: { state: RuntimeState; label: string }) {
-  const statusByState = {
-    empty: "Backlog",
-    selected: "Uploaded",
-    processing: "Active",
-    success: "Parsed",
-    error: "Blocked",
-  } as const;
-
-  return (
-    <StatusBadge
-      className="max-w-full truncate"
-      label={label}
-      status={statusByState[state]}
-    />
-  );
-}
-
-function SourceCard({
-  title,
-  value,
-  testId,
-  tone = "neutral",
-}: {
-  title: string;
-  value: string;
-  testId?: string;
-  tone?: "neutral" | "success" | "error";
-}) {
-  const dotClass =
-    tone === "success"
-      ? "bg-[color:var(--success)]"
-      : tone === "error"
-        ? "bg-[color:var(--error)]"
-        : "bg-[color:var(--muted)]";
-
-  return (
-    <div
-      data-testid={testId}
-      className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4"
-    >
-      <div className="flex items-center gap-2">
-        <span className={`h-2 w-2 shrink-0 rounded-full ${dotClass}`} />
-        <p className="min-w-0 break-words text-sm font-semibold">{title}</p>
-        <StatusBadge
-          label={tone === "success" ? "Parsed" : tone === "error" ? "Blocked" : "Source"}
-          status={tone === "success" ? "Parsed" : tone === "error" ? "Blocked" : "Source"}
-        />
-      </div>
-      <p className="mt-2 break-words text-sm leading-6 text-[color:var(--muted)]">{value}</p>
-    </div>
-  );
-}
-
-function MiniStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2">
-      <p className="font-semibold">{value}</p>
-      <p className="mt-1 text-[color:var(--muted)]">{label}</p>
-    </div>
-  );
-}
-
-function CheckLine({ label, active }: { label: string; active: boolean }) {
-  return (
-    <div className="flex items-center gap-2">
-      <span
-        className={
-          active
-            ? "flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--soft-accent)] text-xs font-semibold text-[color:var(--accent-strong)]"
-            : "flex h-5 w-5 items-center justify-center rounded-full border border-[color:var(--line)] text-xs font-semibold text-[color:var(--muted)]"
-        }
-      >
-        {active ? "+" : ""}
-      </span>
-      <span className="text-[color:var(--muted)]">{label}</span>
-    </div>
   );
 }
