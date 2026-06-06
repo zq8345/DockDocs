@@ -332,6 +332,7 @@ export function createPdfToolSchema(config: PdfToolPageConfig) {
 
 export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
   const schema = createPdfToolSchema(config);
+  const zh = (config.locale ?? "en") === "zh";
 
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
@@ -339,10 +340,92 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <HeroSection config={config} />
-      {config.relatedTools === false ? null : config.relatedTools}
-      <FaqSection config={config} />
-      <CtaSection config={config} />
+
+      {/* ── Hero + Upload (centered, full-width focus) ── */}
+      <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
+        <div className="mx-auto max-w-2xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+          {/* Breadcrumb */}
+          <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
+            <a href={zh ? "/zh/" : "/"} className="transition hover:text-[color:var(--foreground)]">
+              DockDocs
+            </a>
+            <span>/</span>
+            <span className="font-medium text-[color:var(--foreground)]">{config.breadcrumbName}</span>
+          </div>
+
+          {/* Title */}
+          <h1 className="text-2xl font-semibold leading-snug tracking-tight text-[color:var(--foreground)] sm:text-3xl">
+            {config.heroTitle}
+          </h1>
+          <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+            {config.heroDescription}
+          </p>
+
+          {/* Stats pills */}
+          {config.stats.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {config.stats.map(([label, value]) => (
+                <span
+                  key={label}
+                  className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-medium text-[color:var(--muted)]"
+                >
+                  {label}: <strong className="font-semibold text-[color:var(--foreground)]">{value}</strong>
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Upload engine */}
+          <div className="mt-8">
+            <PdfWorkflowEngine config={config} />
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ (collapsed, clean) ── */}
+      {config.faq.length > 0 && (
+        <section className="border-b border-[color:var(--line)]">
+          <div className="mx-auto max-w-2xl px-5 py-10 sm:px-6">
+            <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{config.faqTitle}</h2>
+            <div className="mt-5 divide-y divide-[color:var(--line)]">
+              {config.faq.map((item) => (
+                <details key={item.question} className="group py-4">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-[color:var(--foreground)]">
+                    {item.question}
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--muted)] transition group-open:rotate-45">
+                      +
+                    </span>
+                  </summary>
+                  <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── CTA ── */}
+      <section className="bg-[color:var(--surface-subtle)]">
+        <div className="mx-auto max-w-2xl px-5 py-10 sm:px-6">
+          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--foreground)] px-7 py-8 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--background)]/60">
+              {config.cta.eyebrow}
+            </p>
+            <h2 className="mt-2 text-xl font-semibold text-[color:var(--background)]">
+              {config.cta.title}
+            </h2>
+            <p className="mx-auto mt-2 max-w-md text-sm text-[color:var(--background)]/60">
+              {config.cta.description}
+            </p>
+            <a
+              href="#upload"
+              className="mt-5 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-sm font-semibold text-white transition hover:opacity-90"
+            >
+              {config.cta.buttonLabel}
+            </a>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

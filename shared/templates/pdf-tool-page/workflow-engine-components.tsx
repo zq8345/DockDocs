@@ -1,12 +1,12 @@
 "use client";
 
 import type { ButtonHTMLAttributes } from "react";
-import type {
-  PdfToolPageConfig,
-} from "./index";
+import type { PdfToolPageConfig } from "./index";
 import type { PdfRuntimeArtifact } from "./pdf-runtime";
 
-// Re-export shared types for consumers
+// ---------------------------------------------------------------------------
+// Shared types
+// ---------------------------------------------------------------------------
 export type WorkflowSpec = {
   acceptedLabel: string;
   minFiles: number;
@@ -28,20 +28,14 @@ export type WorkflowResult = {
   previewText?: string;
 };
 
-export type UploadedFile = {
-  id: string;
-  file: File;
-};
-
+export type UploadedFile = { id: string; file: File };
 export type OcrLanguage = "eng" | "chi_sim";
-
 export const mb = 1024 * 1024;
-
 export const ocrSampleText =
   "Invoice total: $248.00\nDue date: May 31, 2026\nVendor: DockDocs sample scan\nStatus: Text extracted for review";
 
 // ---------------------------------------------------------------------------
-// Empty workflow state
+// Empty state — shown before any file is uploaded
 // ---------------------------------------------------------------------------
 export function EmptyWorkflowState({
   config,
@@ -53,32 +47,18 @@ export function EmptyWorkflowState({
   const zh = (config.locale ?? "en") === "zh";
 
   return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-        {zh ? "等待上传" : "Waiting for upload"}
+    <div className="mt-4 rounded-[var(--radius-lg)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-8 text-center">
+      <p className="text-sm text-[color:var(--muted)]">
+        {zh
+          ? `接受 ${spec.acceptedLabel} · 单文件最大 ${formatBytes(spec.maxFileSize)}`
+          : `Accepts ${spec.acceptedLabel} · Max ${formatBytes(spec.maxFileSize)} per file`}
       </p>
-      <h3 className="mt-3 text-lg font-semibold text-[color:var(--foreground)]">
-        {zh ? "拖放文件或点击上传。" : "Drop files here or click upload."}
-      </h3>
-      <ul className="mt-4 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
-        <li>
-          {zh ? "文件类型" : "Accepted files"}: {spec.acceptedLabel}
-        </li>
-        <li>
-          {zh ? "文件数量" : "Files"}: {spec.minFiles}
-          {spec.maxFiles > spec.minFiles ? `-${spec.maxFiles}` : ""}
-        </li>
-        <li>
-          {zh ? "单文件上限" : "Per-file limit"}:{" "}
-          {formatBytes(spec.maxFileSize)}
-        </li>
-      </ul>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Ready workflow state (file list, options, start button)
+// Ready state — file list + options + start button
 // ---------------------------------------------------------------------------
 export function ReadyWorkflowState({
   config,
@@ -100,289 +80,179 @@ export function ReadyWorkflowState({
   pageRanges: string;
   ocrLanguage: OcrLanguage;
   ocrConfirmed: boolean;
-  onPageRangesChange: (value: string) => void;
-  onOcrLanguageChange: (value: OcrLanguage) => void;
-  onOcrConfirmedChange: (value: boolean) => void;
+  onPageRangesChange: (v: string) => void;
+  onOcrLanguageChange: (v: OcrLanguage) => void;
+  onOcrConfirmedChange: (v: boolean) => void;
   onRemoveFile: (id: string) => void;
   onMoveFile: (index: number, direction: -1 | 1) => void;
   onStart: () => void;
 }) {
   const zh = (config.locale ?? "en") === "zh";
-  const reorderable = config.slug === "merge-pdf" || config.slug === "jpg-to-pdf";
+  const reorderable = config.slug === "merge-pdf" || config.slug === "jpg-to-pdf" || config.slug === "png-to-pdf";
+
+  const inputCls =
+    "mt-2 h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--accent)]";
 
   return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-sm">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "文件已准备" : "Files ready"}
-          </p>
-          <h3 className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
-            {zh ? "检查文件并开始处理。" : "Review files and start processing."}
-          </h3>
-        </div>
-        <span className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
-          {formatBytes(totalSize)}
-        </span>
-      </div>
-
-      <ol className="mt-4 grid gap-2">
+    <div className="mt-4 space-y-3">
+      {/* File list */}
+      <ul className="space-y-2">
         {files.map((item, index) => (
           <li
             key={item.id}
-            className="flex min-w-0 flex-col gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 sm:flex-row sm:items-center sm:justify-between"
+            className="flex items-center gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-3"
           >
-            <div className="min-w-0">
-              <p className="break-all text-sm font-semibold text-[color:var(--foreground)]">
+            {/* File icon */}
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-[10px] font-bold text-[color:var(--accent-strong)]">
+              {item.file.name.split(".").pop()?.toUpperCase().slice(0, 3) ?? "PDF"}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-[color:var(--foreground)]">
                 {item.file.name}
               </p>
-              <p className="mt-1 text-xs text-[color:var(--muted)]">
-                #{index + 1} - {formatBytes(item.file.size)}
+              <p className="text-xs text-[color:var(--muted)]">
+                {formatBytes(item.file.size)}
+                {reorderable && files.length > 1 && ` · #${index + 1}`}
               </p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {reorderable ? (
+            <div className="flex shrink-0 items-center gap-1">
+              {reorderable && (
                 <>
-                  <SmallButton
+                  <button
+                    type="button"
                     disabled={index === 0}
                     onClick={() => onMoveFile(index, -1)}
+                    className="flex h-7 w-7 items-center justify-center rounded text-[color:var(--muted)] transition hover:bg-[color:var(--surface)] hover:text-[color:var(--foreground)] disabled:opacity-30"
+                    aria-label="Move up"
                   >
-                    {zh ? "上移" : "Up"}
-                  </SmallButton>
-                  <SmallButton
+                    ↑
+                  </button>
+                  <button
+                    type="button"
                     disabled={index === files.length - 1}
                     onClick={() => onMoveFile(index, 1)}
+                    className="flex h-7 w-7 items-center justify-center rounded text-[color:var(--muted)] transition hover:bg-[color:var(--surface)] hover:text-[color:var(--foreground)] disabled:opacity-30"
+                    aria-label="Move down"
                   >
-                    {zh ? "下移" : "Down"}
-                  </SmallButton>
+                    ↓
+                  </button>
                 </>
-              ) : null}
-              <SmallButton onClick={() => onRemoveFile(item.id)}>
-                {zh ? "移除" : "Remove"}
-              </SmallButton>
+              )}
+              <button
+                type="button"
+                onClick={() => onRemoveFile(item.id)}
+                className="flex h-7 w-7 items-center justify-center rounded text-[color:var(--muted)] transition hover:bg-[color:var(--surface)] hover:text-[color:var(--error)]"
+                aria-label="Remove file"
+              >
+                ✕
+              </button>
             </div>
           </li>
         ))}
-      </ol>
+      </ul>
 
-      {config.slug === "split-pdf" || config.slug === "ocr-pdf" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {config.slug === "ocr-pdf"
-              ? zh
-                ? "OCR 页面范围"
-                : "OCR page ranges"
-              : zh
-                ? "页面范围"
-                : "Page ranges"}
+      {/* Tool-specific options */}
+      {(config.slug === "split-pdf" || config.slug === "ocr-pdf") && (
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+            {config.slug === "ocr-pdf" ? (zh ? "OCR 页面范围" : "OCR page ranges") : (zh ? "页面范围" : "Page ranges")}
           </span>
           <input
             value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
+            onChange={(e) => onPageRangesChange(e.target.value)}
             placeholder={config.slug === "ocr-pdf" ? "1, 1-3, 1,3" : "1-4, 12-18"}
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
+            className={inputCls}
           />
-          {config.slug === "ocr-pdf" ? (
-            <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
-              {zh
-                ? "当前浏览器端 OCR 一次最多处理 3 页。"
-                : "Browser-side OCR currently processes up to 3 pages at a time."}
+          {config.slug === "ocr-pdf" && (
+            <p className="mt-1.5 text-xs text-[color:var(--muted)]">
+              {zh ? "浏览器端 OCR 一次最多处理 3 页。" : "Browser-side OCR processes up to 3 pages at a time."}
             </p>
-          ) : null}
+          )}
         </label>
-      ) : null}
+      )}
 
-      {config.slug === "delete-page" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "要删除的页面范围" : "Pages to delete"}
+      {config.slug === "delete-page" && (
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+            {zh ? "要删除的页面" : "Pages to delete"}
           </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder="1, 3, 5-7"
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
-            {zh ? "例如：1, 3, 5-7（逗号分隔，支持范围）" : "e.g. 1, 3, 5-7 — comma-separated, ranges supported"}
-          </p>
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder="1, 3, 5-7" className={inputCls} />
+          <p className="mt-1.5 text-xs text-[color:var(--muted)]">{zh ? "逗号分隔，支持范围，如 1, 3, 5-7" : "Comma-separated, ranges supported, e.g. 1, 3, 5-7"}</p>
         </label>
-      ) : null}
+      )}
 
-      {config.slug === "rotate-page" ? (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+      {config.slug === "rotate-page" && (
+        <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {zh ? "要旋转的页面" : "Pages to rotate"}
-            </span>
-            <input
-              value={pageRanges.split(":")[0] || ""}
-              onChange={(event) => {
-                const angle = pageRanges.split(":")[1] || "90";
-                onPageRangesChange(`${event.target.value}:${angle}`);
-              }}
-              placeholder={zh ? "留空=全部" : "Leave blank = all"}
-              className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-            />
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "要旋转的页面" : "Pages to rotate"}</span>
+            <input value={pageRanges.split(":")[0] || ""} onChange={(e) => { const a = pageRanges.split(":")[1] || "90"; onPageRangesChange(`${e.target.value}:${a}`); }} placeholder={zh ? "留空 = 全部" : "Blank = all"} className={inputCls} />
           </label>
           <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {zh ? "旋转角度" : "Rotation angle"}
-            </span>
-            <select
-              value={pageRanges.split(":")[1] || "90"}
-              onChange={(event) => {
-                const pages = pageRanges.split(":")[0] || "";
-                onPageRangesChange(`${pages}:${event.target.value}`);
-              }}
-              className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-            >
-              <option value="90">90° {zh ? "顺时针" : "clockwise"}</option>
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "旋转角度" : "Angle"}</span>
+            <select value={pageRanges.split(":")[1] || "90"} onChange={(e) => { const p = pageRanges.split(":")[0] || ""; onPageRangesChange(`${p}:${e.target.value}`); }} className={inputCls}>
+              <option value="90">90° {zh ? "顺时针" : "CW"}</option>
               <option value="180">180°</option>
-              <option value="270">270° {zh ? "顺时针" : "clockwise"}</option>
+              <option value="270">270° {zh ? "顺时针" : "CW"}</option>
             </select>
           </label>
         </div>
-      ) : null}
+      )}
 
-      {config.slug === "reorder-pages" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "新页面顺序" : "New page order"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder="3,1,2,4"
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
-            {zh ? "输入每个页码，以逗号分隔。例如 3,1,2 = 第3页排第一。" : "List page numbers in the new order, e.g. 3,1,2 puts page 3 first."}
-          </p>
+      {config.slug === "reorder-pages" && (
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "新页面顺序" : "New page order"}</span>
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder="3,1,2,4" className={inputCls} />
+          <p className="mt-1.5 text-xs text-[color:var(--muted)]">{zh ? "例如 3,1,2 = 第3页排第一" : "e.g. 3,1,2 puts page 3 first"}</p>
         </label>
-      ) : null}
+      )}
 
-      {config.slug === "add-page" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "插入空白页到第几页之后" : "Insert blank page after page #"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={zh ? "0 = 插入到开头" : "0 = insert at beginning"}
-            type="number"
-            min="0"
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
-            {zh ? "输入 0 在最前面插入，留空则在末尾添加。" : "Enter 0 to insert at the start, or leave blank to append at the end."}
-          </p>
+      {config.slug === "add-page" && (
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "在第几页之后插入" : "Insert after page #"}</span>
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "0 = 插入到开头" : "0 = insert at start"} type="number" min="0" className={inputCls} />
         </label>
-      ) : null}
+      )}
 
-      {config.slug === "protect-pdf" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "设置密码" : "Set password"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={zh ? "输入至少 4 位密码" : "Enter at least 4 characters"}
-            type="password"
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-          <p className="mt-2 text-xs font-medium text-[color:var(--muted)]">
-            {zh ? "请妥善保管密码，加密后无法找回。" : "Keep your password safe — it cannot be recovered after encryption."}
-          </p>
+      {config.slug === "protect-pdf" && (
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "设置密码" : "Set password"}</span>
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "至少 4 位" : "At least 4 characters"} type="password" className={inputCls} />
         </label>
-      ) : null}
+      )}
 
-      {config.slug === "pdf-to-jpg" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "导出页面范围（可选）" : "Page range to export (optional)"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={zh ? "留空 = 全部页面" : "Leave blank = all pages"}
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
+      {(config.slug === "pdf-to-jpg" || config.slug === "pdf-to-png" || config.slug === "pdf-to-markdown") && (
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "页面范围（可选）" : "Page range (optional)"}</span>
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "留空 = 全部页面" : "Blank = all pages"} className={inputCls} />
         </label>
-      ) : null}
+      )}
 
-      {config.slug === "pdf-to-png" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "导出页面范围（可选）" : "Page range to export (optional)"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={zh ? "留空 = 全部页面" : "Leave blank = all pages"}
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-        </label>
-      ) : null}
-
-      {config.slug === "pdf-to-markdown" ? (
-        <label className="mt-4 block">
-          <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {zh ? "提取页面范围（可选）" : "Page range to extract (optional)"}
-          </span>
-          <input
-            value={pageRanges}
-            onChange={(event) => onPageRangesChange(event.target.value)}
-            placeholder={zh ? "留空 = 全部页面" : "Leave blank = all pages"}
-            className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-          />
-        </label>
-      ) : null}
-
-      {config.slug === "ocr-pdf" ? (
+      {config.slug === "ocr-pdf" && (
         <>
-          <label className="mt-4 block">
-            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {zh ? "OCR 语言" : "OCR language"}
-            </span>
-            <select
-              value={ocrLanguage}
-              onChange={(event) =>
-                onOcrLanguageChange(event.target.value as OcrLanguage)
-              }
-              className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--foreground)]"
-            >
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "OCR 语言" : "OCR language"}</span>
+            <select value={ocrLanguage} onChange={(e) => onOcrLanguageChange(e.target.value as OcrLanguage)} className={inputCls}>
               <option value="eng">{zh ? "英语" : "English"}</option>
               <option value="chi_sim">{zh ? "中文（简体）" : "Chinese (Simplified)"}</option>
             </select>
           </label>
-          <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]">
-            <input
-              type="checkbox"
-              checked={ocrConfirmed}
-              onChange={(event) => onOcrConfirmedChange(event.target.checked)}
-              className="mt-1 h-4 w-4 accent-[color:var(--accent)]"
-            />
-            <span>
-              {zh
-                ? "我确认这是扫描件或图片型 PDF，需要 OCR 提取文字。"
-                : "I confirm this is a scanned or image-based PDF that needs OCR text extraction."}
-            </span>
+          <label className="flex cursor-pointer items-start gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]">
+            <input type="checkbox" checked={ocrConfirmed} onChange={(e) => onOcrConfirmedChange(e.target.checked)} className="mt-0.5 h-4 w-4 accent-[color:var(--accent)]" />
+            <span>{zh ? "我确认这是扫描件或图片型 PDF，需要 OCR 提取文字。" : "I confirm this is a scanned or image-based PDF that needs OCR text extraction."}</span>
           </label>
         </>
-      ) : null}
+      )}
 
-      <WorkflowActionButton type="button" onClick={onStart} className="mt-4 w-full">
+      {/* Start button */}
+      <PrimaryButton onClick={onStart} className="w-full">
         {config.primaryActionLabel}
-      </WorkflowActionButton>
+      </PrimaryButton>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Workflow progress bar
+// Processing progress
 // ---------------------------------------------------------------------------
 export function WorkflowProgress({
   title,
@@ -402,49 +272,48 @@ export function WorkflowProgress({
   cancelLabel?: string;
 }) {
   return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {statusText}
-          </p>
-          <h3 className="mt-2 break-words text-lg font-semibold text-[color:var(--foreground)]">
-            {title}
-          </h3>
-          <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{description}</p>
-        </div>
+    <div className="mt-4 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center">
+      {/* Spinner */}
+      <div className="mx-auto flex h-14 w-14 items-center justify-center">
         {animated ? (
-          <span className="mt-1 h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-[color:var(--line)] border-t-[color:var(--foreground)]" />
-        ) : null}
+          <svg className="h-10 w-10 animate-spin text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+            <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+        ) : (
+          <div className="h-10 w-10 rounded-full bg-[color:var(--soft-accent)]" />
+        )}
       </div>
-      <div className="mt-5">
-        <div className="flex items-center justify-between gap-4 text-xs font-semibold text-[color:var(--muted)]">
-          <span>{statusText}</span>
-          <span>{Math.round(progress)}%</span>
-        </div>
-        <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
+
+      <h3 className="mt-4 text-lg font-semibold text-[color:var(--foreground)]">{title}</h3>
+      <p className="mt-1.5 text-sm text-[color:var(--muted)]">{description}</p>
+
+      {/* Progress bar */}
+      <div className="mx-auto mt-5 max-w-xs">
+        <div className="h-1.5 overflow-hidden rounded-full bg-[color:var(--line)]">
           <div
-            className="h-full rounded-full bg-[color:var(--foreground)] transition-all duration-200"
+            className="h-full rounded-full bg-[color:var(--accent)] transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
+        <p className="mt-2 text-xs font-semibold text-[color:var(--muted)]">{Math.round(progress)}%</p>
       </div>
-      {onCancel ? (
-        <WorkflowActionButton
+
+      {onCancel && (
+        <button
           type="button"
-          variant="outline"
           onClick={onCancel}
-          className="mt-5 w-full"
+          className="mt-4 text-sm font-medium text-[color:var(--muted)] underline transition hover:text-[color:var(--foreground)]"
         >
           {cancelLabel ?? "Cancel"}
-        </WorkflowActionButton>
-      ) : null}
+        </button>
+      )}
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Workflow result state
+// Result state — download ready
 // ---------------------------------------------------------------------------
 export function WorkflowResultState({
   config,
@@ -470,133 +339,92 @@ export function WorkflowResultState({
   const zh = (config.locale ?? "en") === "zh";
 
   return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] p-4 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--success)]">
-        {zh ? "处理完成" : "Workflow complete"}
-      </p>
-      <h3 className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
-        {result.title}
-      </h3>
-      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-        {result.description}
-      </p>
-      <dl className="mt-4 grid gap-2 sm:grid-cols-2">
-        {result.rows.map(([label, value]) => (
-          <div
-            key={label}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] px-3 py-2"
-          >
-            <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--success)]">
-              {label}
-            </dt>
-            <dd className="mt-1 break-words text-sm font-semibold text-[color:var(--foreground)]">
-              {value}
-            </dd>
-          </div>
-        ))}
-      </dl>
-      {result.preview ? (
-        <ResultPreview type={result.preview} text={result.previewText} />
-      ) : null}
-      <div className="mt-5 grid gap-2 sm:grid-cols-2">
+    <div className="mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)]">
+      {/* Header */}
+      <div className="flex items-center gap-3 border-b border-[color:var(--success-line)] px-5 py-4">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[color:var(--success)] text-white text-sm">✓</div>
+        <div>
+          <p className="text-sm font-semibold text-[color:var(--foreground)]">{result.title}</p>
+          <p className="text-xs text-[color:var(--muted)]">{result.description}</p>
+        </div>
+      </div>
+
+      {/* Stats grid */}
+      {result.rows.length > 0 && (
+        <div className="grid grid-cols-2 divide-x divide-y divide-[color:var(--success-line)] border-b border-[color:var(--success-line)] sm:grid-cols-4">
+          {result.rows.slice(0, 4).map(([label, value]) => (
+            <div key={label} className="px-4 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[color:var(--success)]">{label}</p>
+              <p className="mt-0.5 truncate text-sm font-semibold text-[color:var(--foreground)]">{value}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Preview */}
+      {result.preview && (
+        <div className="border-b border-[color:var(--success-line)] px-5 py-3">
+          <ResultPreview type={result.preview} text={result.previewText} />
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="flex flex-col gap-2 px-5 py-4 sm:flex-row">
         {onCopy ? (
-          <WorkflowActionButton type="button" onClick={onCopy}>
-            {copied
-              ? zh
-                ? "已复制"
-                : "Copied"
-              : primaryLabel}
-          </WorkflowActionButton>
+          <PrimaryButton onClick={onCopy} className="flex-1">
+            {copied ? (zh ? "已复制" : "Copied ✓") : primaryLabel}
+          </PrimaryButton>
         ) : (
-          <WorkflowActionButton type="button" onClick={onPrimary}>
-            {primaryLabel}
-          </WorkflowActionButton>
+          <PrimaryButton onClick={onPrimary} className="flex-1">
+            ↓ {primaryLabel}
+          </PrimaryButton>
         )}
         {secondaryLabel && onSecondary ? (
-          <WorkflowActionButton type="button" variant="outline" onClick={onSecondary}>
-            {secondaryLabel}
-          </WorkflowActionButton>
-        ) : (
-          <WorkflowActionButton type="button" variant="outline" onClick={onReset}>
-            {zh ? "重新开始" : "Start over"}
-          </WorkflowActionButton>
-        )}
+          <OutlineButton onClick={onSecondary} className="flex-1">{secondaryLabel}</OutlineButton>
+        ) : null}
+        <OutlineButton onClick={onReset}>{zh ? "重新开始" : "Start over"}</OutlineButton>
       </div>
-      {secondaryLabel && onSecondary ? (
-        <WorkflowActionButton
-          type="button"
-          variant="outline"
-          onClick={onReset}
-          className="mt-2 w-full"
-        >
-          {zh ? "重新开始" : "Start over"}
-        </WorkflowActionButton>
-      ) : null}
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Result preview (text, document, image-order, ranges)
+// Result preview
 // ---------------------------------------------------------------------------
-export function ResultPreview({
-  type,
-  text,
-}: {
-  type: WorkflowResult["preview"];
-  text?: string;
-}) {
+export function ResultPreview({ type, text }: { type: WorkflowResult["preview"]; text?: string }) {
   if (type === "text") {
     return (
       <textarea
         readOnly
-        rows={4}
+        rows={3}
         value={text ?? ocrSampleText}
-        className="mt-4 w-full resize-none rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-sm leading-6 text-[color:var(--foreground)]"
+        className="w-full resize-none rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-xs leading-5 text-[color:var(--foreground)]"
       />
     );
   }
-
-  if (type === "document") {
-    return (
-      <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-4 text-sm text-[color:var(--muted)]">
-        <p className="font-semibold text-[color:var(--foreground)]">Editable document preview</p>
-        <p className="mt-2">
-          Heading structure, paragraphs, and table-like regions are ready for a
-          Word document workflow.
-        </p>
-      </div>
-    );
-  }
-
   if (type === "image-order") {
     return (
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        {[1, 2, 3].map((item) => (
-          <div
-            key={item}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-center text-xs font-semibold text-[color:var(--foreground)]"
-          >
-            Page {item}
+      <div className="flex gap-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex h-10 flex-1 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] text-xs font-semibold text-[color:var(--foreground)]">
+            p.{i}
           </div>
         ))}
       </div>
     );
   }
-
   if (type === "ranges") {
     return (
-      <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-sm font-semibold text-[color:var(--foreground)]">
+      <div className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] px-3 py-2 text-xs font-semibold text-[color:var(--foreground)]">
         {text ?? "page-1.pdf"}
       </div>
     );
   }
-
   return null;
 }
 
 // ---------------------------------------------------------------------------
-// Workflow error state
+// Error state
 // ---------------------------------------------------------------------------
 export function WorkflowErrorState({
   message,
@@ -610,52 +438,68 @@ export function WorkflowErrorState({
   locale: "en" | "zh";
 }) {
   const zh = locale === "zh";
-
   return (
-    <div className="rounded-[var(--radius)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-4 shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--error)]">
-        {zh ? "需要处理" : "Needs attention"}
-      </p>
-      <h3 className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
-        {zh ? "无法继续当前工作流。" : "The workflow cannot continue yet."}
-      </h3>
-      <p className="mt-2 text-sm leading-6 text-[color:var(--error)]">{message}</p>
-      <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        <WorkflowActionButton type="button" onClick={onRetry}>
-          {zh ? "返回检查" : "Review files"}
-        </WorkflowActionButton>
-        <WorkflowActionButton type="button" variant="outline" onClick={onReset}>
-          {zh ? "重新开始" : "Start over"}
-        </WorkflowActionButton>
+    <div className="mt-4 rounded-[var(--radius-lg)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-5">
+      <div className="flex items-start gap-3">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--error)] text-sm text-white">!</span>
+        <div>
+          <p className="text-sm font-semibold text-[color:var(--foreground)]">
+            {zh ? "无法继续" : "Cannot continue"}
+          </p>
+          <p className="mt-1 text-sm leading-6 text-[color:var(--error)]">{message}</p>
+        </div>
+      </div>
+      <div className="mt-4 flex gap-2">
+        <OutlineButton onClick={onRetry} className="flex-1">{zh ? "返回检查" : "Review"}</OutlineButton>
+        <OutlineButton onClick={onReset} className="flex-1">{zh ? "重新开始" : "Start over"}</OutlineButton>
       </div>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Shared button components
+// Button primitives
 // ---------------------------------------------------------------------------
-export function WorkflowActionButton({
+export function PrimaryButton({
   children,
   className = "",
-  variant = "solid",
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "solid" | "outline";
-}) {
-  const styles =
-    variant === "solid"
-      ? "bg-[color:var(--foreground)] text-[color:var(--background)] shadow-[0_12px_26px_rgba(15,23,42,0.16)] hover:bg-[color:var(--foreground)]"
-      : "border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--foreground)] shadow-sm hover:border-[color:var(--foreground)]";
-
+}: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className={`inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${styles} ${className}`.trim()}
+      className={`inline-flex h-11 items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       {...props}
     >
       {children}
     </button>
   );
+}
+
+export function OutlineButton({
+  children,
+  className = "",
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      className={`inline-flex h-11 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-5 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-subtle)] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+// Keep for backwards compatibility
+export function WorkflowActionButton({
+  children,
+  className = "",
+  variant = "solid",
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "solid" | "outline" }) {
+  return variant === "solid"
+    ? <PrimaryButton className={className} {...props}>{children}</PrimaryButton>
+    : <OutlineButton className={className} {...props}>{children}</OutlineButton>;
 }
 
 export function SmallButton({
@@ -665,7 +509,7 @@ export function SmallButton({
   return (
     <button
       type="button"
-      className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-40"
+      className="rounded border border-[color:var(--line)] bg-[color:var(--surface)] px-2.5 py-1 text-xs font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)] disabled:cursor-not-allowed disabled:opacity-40"
       {...props}
     >
       {children}
@@ -674,7 +518,7 @@ export function SmallButton({
 }
 
 // ---------------------------------------------------------------------------
-// Helpers shared with workflow-engine
+// Helpers
 // ---------------------------------------------------------------------------
 export function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;

@@ -307,167 +307,125 @@ export function PdfWorkflowEngine({
       data-workflow-status={status}
       data-real-runtime={isRealPdfRuntimeSlug(config.slug)}
       aria-labelledby="workflow-upload-title"
-      className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_32px_90px_rgba(24,24,20,0.10)]"
+      className="w-full"
     >
+      {/* ── Upload drop zone ── */}
       <div
-        onDragOver={(event) => {
-          event.preventDefault();
-          setIsDragging(true);
-        }}
+        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
-        onDrop={(event) => {
-          event.preventDefault();
-          setIsDragging(false);
-          chooseFiles(event.dataTransfer.files);
-        }}
-        className={`rounded-[var(--radius)] border border-dashed p-5 transition sm:p-6 ${
+        onDrop={(e) => { e.preventDefault(); setIsDragging(false); chooseFiles(e.dataTransfer.files); }}
+        onClick={() => status === "idle" && inputRef.current?.click()}
+        className={`relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-12 text-center transition ${
           isDragging
-            ? "border-[color:var(--foreground)] bg-[color:var(--surface)]"
-            : "border-[color:var(--line)] bg-[color:var(--surface-subtle)]"
+            ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
+            : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
         }`}
       >
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <div className="flex h-12 w-12 items-center justify-center rounded-[var(--radius)] bg-[color:var(--foreground)] text-sm font-semibold text-[color:var(--background)]">
-                {config.upload.fileBadge ??
-                  (config.slug === "jpg-to-pdf" ? "IMG" : "PDF")}
-              </div>
-              <h2
-                id="workflow-upload-title"
-                className="mt-5 break-words text-2xl font-semibold"
-              >
-                {config.upload.title}
-              </h2>
-              <p className="mt-3 max-w-md text-sm leading-6 text-[color:var(--muted)]">
-                {config.upload.description}
-              </p>
-            </div>
-            <span className="inline-flex w-fit rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
-              {spec.acceptedLabel}
-            </span>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <WorkflowActionButton
-              type="button"
-              onClick={() => inputRef.current?.click()}
-            >
-              {config.upload.buttonLabel}
-            </WorkflowActionButton>
-            <WorkflowActionButton
-              type="button"
-              variant="outline"
-              onClick={resetWorkflow}
-            >
-              {zh ? "重置工作流" : "Reset workflow"}
-            </WorkflowActionButton>
-          </div>
-          <input
-            ref={inputRef}
-            data-workflow-input={config.slug}
-            type="file"
-            accept={config.upload.accept ?? "application/pdf"}
-            multiple={config.upload.multiple}
-            className="sr-only"
-            onChange={(event) => {
-              if (event.currentTarget.files) {
-                chooseFiles(event.currentTarget.files);
-              }
-            }}
-          />
-          {config.upload.note ? (
-            <p className="text-xs font-medium text-[color:var(--muted)]">
-              {config.upload.note}
-            </p>
-          ) : null}
-          <div className="mt-3 flex items-center gap-2">
-            <span className="text-[11px] text-[color:var(--faint)]">or upload from</span>
-            <button type="button" className="inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-2.5 py-1 text-[12px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
-              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-              Google Drive
-            </button>
-          </div>
+        {/* File type badge */}
+        <div className="flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] bg-[color:var(--accent)] text-sm font-bold text-white shadow-[0_8px_20px_rgba(99,102,241,0.3)]">
+          {config.upload.fileBadge ?? (config.slug === "jpg-to-pdf" || config.slug === "png-to-pdf" ? "IMG" : "PDF")}
         </div>
+
+        <h2
+          id="workflow-upload-title"
+          className="mt-4 text-xl font-semibold text-[color:var(--foreground)]"
+        >
+          {config.upload.title}
+        </h2>
+        <p className="mt-2 max-w-sm text-sm text-[color:var(--muted)]">
+          {zh ? "拖放文件或点击选择" : "Drag & drop or click to select"}
+        </p>
+
+        {/* Choose button */}
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); inputRef.current?.click(); }}
+          className="mt-5 inline-flex h-11 items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90"
+        >
+          {config.upload.buttonLabel}
+        </button>
+
+        {/* Accepted types */}
+        <p className="mt-4 text-xs text-[color:var(--faint)]">
+          {spec.acceptedLabel}
+          {config.upload.note ? ` · ${config.upload.note}` : ""}
+        </p>
+
+        {/* Hidden file input */}
+        <input
+          ref={inputRef}
+          data-workflow-input={config.slug}
+          type="file"
+          accept={config.upload.accept ?? "application/pdf"}
+          multiple={config.upload.multiple}
+          className="sr-only"
+          onChange={(e) => { if (e.currentTarget.files) chooseFiles(e.currentTarget.files); }}
+        />
       </div>
 
-      <div className="mt-4">
-        {status === "idle" ? (
-          <EmptyWorkflowState config={config} spec={spec} />
-        ) : null}
+      {/* ── Status panels (below upload area) ── */}
+      {status === "idle" ? null : null}
 
-        {status === "uploading" ? (
-          <WorkflowProgress
-            title={zh ? "正在上传文件" : "Uploading files"}
-            description={
-              zh
-                ? "正在读取文件并准备工作流。"
-                : "Reading files and preparing the workflow."
-            }
-            progress={progress}
-            statusText={zh ? "上传中" : "Uploading"}
-          />
-        ) : null}
+      {status === "uploading" ? (
+        <WorkflowProgress
+          title={zh ? "正在读取文件…" : "Reading file…"}
+          description={zh ? "正在准备工作流。" : "Preparing the workflow."}
+          progress={progress}
+          statusText={zh ? "上传中" : "Uploading"}
+        />
+      ) : null}
 
-        {status === "ready" ? (
-          <ReadyWorkflowState
-            config={config}
-            files={files}
-            totalSize={totalSize}
-            pageRanges={pageRanges}
-            ocrLanguage={ocrLanguage}
-            ocrConfirmed={ocrConfirmed}
-            onPageRangesChange={setPageRanges}
-            onOcrLanguageChange={setOcrLanguage}
-            onOcrConfirmedChange={setOcrConfirmed}
-            onRemoveFile={removeFile}
-            onMoveFile={moveFile}
-            onStart={startProcessing}
-          />
-        ) : null}
+      {status === "ready" ? (
+        <ReadyWorkflowState
+          config={config}
+          files={files}
+          totalSize={totalSize}
+          pageRanges={pageRanges}
+          ocrLanguage={ocrLanguage}
+          ocrConfirmed={ocrConfirmed}
+          onPageRangesChange={setPageRanges}
+          onOcrLanguageChange={setOcrLanguage}
+          onOcrConfirmedChange={setOcrConfirmed}
+          onRemoveFile={removeFile}
+          onMoveFile={moveFile}
+          onStart={startProcessing}
+        />
+      ) : null}
 
-        {status === "processing" ? (
-          <WorkflowProgress
-            title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
-            description={spec.processLabel}
-            progress={progress}
-            statusText={zh ? "处理中" : "Processing"}
-            animated
-            onCancel={resetWorkflow}
-            cancelLabel={zh ? "取消处理" : "Cancel processing"}
-          />
-        ) : null}
+      {status === "processing" ? (
+        <WorkflowProgress
+          title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
+          description={spec.processLabel}
+          progress={progress}
+          statusText={zh ? "处理中" : "Processing"}
+          animated
+          onCancel={resetWorkflow}
+          cancelLabel={zh ? "取消" : "Cancel"}
+        />
+      ) : null}
 
-        {status === "result" ? (
-          <WorkflowResultState
-            config={config}
-            result={result}
-            primaryLabel={spec.resultLabel}
-            secondaryLabel={spec.secondaryResultLabel}
-            copied={copied}
-            onPrimary={downloadPrimaryResult}
-            onSecondary={
-              config.slug === "ocr-pdf"
-                ? () => downloadTextFile("dockdocs-ocr-text.txt", getOcrText())
-                : undefined
-            }
-            onCopy={config.slug === "ocr-pdf" ? copyOcrText : undefined}
-            onReset={resetWorkflow}
-          />
-        ) : null}
+      {status === "result" ? (
+        <WorkflowResultState
+          config={config}
+          result={result}
+          primaryLabel={spec.resultLabel}
+          secondaryLabel={spec.secondaryResultLabel}
+          copied={copied}
+          onPrimary={downloadPrimaryResult}
+          onSecondary={config.slug === "ocr-pdf" ? () => downloadTextFile("dockdocs-ocr-text.txt", getOcrText()) : undefined}
+          onCopy={config.slug === "ocr-pdf" ? copyOcrText : undefined}
+          onReset={resetWorkflow}
+        />
+      ) : null}
 
-        {status === "error" ? (
-          <WorkflowErrorState
-            message={error}
-            onRetry={() => {
-              setError("");
-              setStatus(files.length ? "ready" : "idle");
-            }}
-            onReset={resetWorkflow}
-            locale={locale}
-          />
-        ) : null}
-      </div>
+      {status === "error" ? (
+        <WorkflowErrorState
+          message={error}
+          onRetry={() => { setError(""); setStatus(files.length ? "ready" : "idle"); }}
+          onReset={resetWorkflow}
+          locale={locale}
+        />
+      ) : null}
     </div>
   );
 }
