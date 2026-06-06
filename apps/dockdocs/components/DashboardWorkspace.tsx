@@ -31,7 +31,7 @@ export function DashboardWorkspace({
           </p>
           <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <h1 className="max-w-3xl text-3xl font-semibold leading-tight sm:text-5xl">
+              <h1 className="max-w-3xl text-2xl font-semibold leading-tight tracking-[-0.02em] sm:text-3xl">
                 {page.title}
               </h1>
               <p className="mt-4 max-w-2xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">

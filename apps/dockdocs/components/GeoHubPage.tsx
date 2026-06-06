@@ -45,7 +45,7 @@ export function GeoHubPage({
             <p className="inline-flex rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)] shadow-sm">
               {hub.eyebrow}
             </p>
-            <h1 className="mt-6 max-w-4xl break-words text-3xl font-semibold leading-[1.08] sm:text-6xl sm:leading-[1.04]">
+            <h1 className="mt-6 max-w-4xl break-words text-2xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
               {hub.heroTitle}
             </h1>
             <p className="mt-6 max-w-3xl text-base leading-8 text-[color:var(--muted)] sm:text-lg">

@@ -46,12 +46,12 @@ export function BlogIndexPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)] py-0">
-        <Container className="grid min-h-[64vh] items-center gap-12 py-16 lg:grid-cols-[0.95fr_1.05fr] lg:py-24">
+        <Container className="grid items-center gap-12 py-14 lg:grid-cols-[0.95fr_1.05fr] lg:py-16">
           <div>
             <p className="inline-flex rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)] shadow-sm">
               {copy.eyebrow}
             </p>
-            <h1 className="mt-6 max-w-4xl break-words text-3xl font-semibold leading-[1.08] sm:text-6xl sm:leading-[1.04]">
+            <h1 className="mt-6 max-w-4xl break-words text-2xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
               {copy.heroTitle}
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-[color:var(--muted)] sm:text-lg">
@@ -262,7 +262,7 @@ export function BlogArticlePage({
               >
                 {article.category}
               </a>
-              <h1 className="mt-6 max-w-4xl break-words text-3xl font-semibold leading-[1.08] sm:text-6xl sm:leading-[1.04]">
+              <h1 className="mt-6 max-w-4xl break-words text-2xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
                 {content.title}
               </h1>
               <p className="mt-6 max-w-3xl text-base leading-8 text-[color:var(--muted)] sm:text-lg">
