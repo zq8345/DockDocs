@@ -14,6 +14,7 @@ import { GeoHubPage } from "@/components/GeoHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
+import { AboutPage } from "@/components/AboutPage";
 import { RelatedTools } from "@/components/RelatedTools";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
@@ -382,6 +383,10 @@ export default async function LocalizedRoute({
   if ((infoPageSlugs as readonly string[]).includes(slug)) {
     if (slug === "blog") {
       return <BlogIndexPage locale={rawLocale} useLocalePrefix />;
+    }
+
+    if (slug === "about") {
+      return <AboutPage locale={rawLocale} />;
     }
 
     return (

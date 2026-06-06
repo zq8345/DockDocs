@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { defaultLocale, isLocale } from "@/lib/i18n";
+import { defaultLocale, isAllLocale, isLocale } from "@/lib/i18n";
 
 const toolGroups = {
   en: [
@@ -116,7 +116,9 @@ type Locale = "en" | "zh";
 
 function stripLocale(p: string): Locale {
   const s = p.split("/").filter(Boolean);
-  return (isLocale(s[0]) ? s[0] : defaultLocale) as Locale;
+  // Detect any known locale prefix (including ja/ko/es etc), but only serve en/zh content
+  const detected = isAllLocale(s[0]) ? s[0] : defaultLocale;
+  return (isLocale(detected) ? detected : defaultLocale) as Locale;
 }
 function lh(h: string, l: string) {
   return l === defaultLocale ? h : `/${l}${h}`;
