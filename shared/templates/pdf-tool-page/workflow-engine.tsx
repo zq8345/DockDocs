@@ -10,7 +10,6 @@ import {
   type PdfRuntimeArtifact,
 } from "./pdf-runtime";
 import {
-  EmptyWorkflowState,
   ReadyWorkflowState,
   WorkflowActionButton,
   WorkflowProgress,
@@ -315,38 +314,28 @@ export function PdfWorkflowEngine({
         onDragLeave={() => setIsDragging(false)}
         onDrop={(e) => { e.preventDefault(); setIsDragging(false); chooseFiles(e.dataTransfer.files); }}
         onClick={() => status === "idle" && inputRef.current?.click()}
-        className={`relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-12 text-center transition ${
+        className={`relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-14 text-center transition ${
           isDragging
             ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
             : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
         }`}
       >
-        {/* File type badge */}
-        <div className="flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] bg-[color:var(--accent)] text-sm font-bold text-white shadow-[0_8px_20px_rgba(99,102,241,0.3)]">
-          {config.upload.fileBadge ?? (config.slug === "jpg-to-pdf" || config.slug === "png-to-pdf" ? "IMG" : "PDF")}
-        </div>
-
-        <h2
-          id="workflow-upload-title"
-          className="mt-4 text-xl font-semibold text-[color:var(--foreground)]"
-        >
-          {config.upload.title}
-        </h2>
-        <p className="mt-2 max-w-sm text-sm text-[color:var(--muted)]">
-          {zh ? "拖放文件或点击选择" : "Drag & drop or click to select"}
-        </p>
-
-        {/* Choose button */}
+        {/* Choose button — primary action */}
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); inputRef.current?.click(); }}
-          className="mt-5 inline-flex h-11 items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90"
+          className="inline-flex h-12 items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90"
         >
           {config.upload.buttonLabel}
         </button>
 
-        {/* Accepted types */}
-        <p className="mt-4 text-xs text-[color:var(--faint)]">
+        {/* Hint line */}
+        <p className="mt-4 text-sm text-[color:var(--muted)]">
+          {zh ? "或将文件拖放到此处" : "or drop your file here"}
+        </p>
+
+        {/* Accepted types — subtle */}
+        <p className="mt-1.5 text-xs text-[color:var(--faint)]">
           {spec.acceptedLabel}
           {config.upload.note ? ` · ${config.upload.note}` : ""}
         </p>
@@ -363,8 +352,8 @@ export function PdfWorkflowEngine({
         />
       </div>
 
-      {/* ── Status panels (below upload area) ── */}
-      {status === "idle" ? null : null}
+      {/* hidden a11y title */}
+      <h2 id="workflow-upload-title" className="sr-only">{config.upload.title}</h2>
 
       {status === "uploading" ? (
         <WorkflowProgress
