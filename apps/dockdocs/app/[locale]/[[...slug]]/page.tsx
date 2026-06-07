@@ -557,7 +557,7 @@ function LocalizedDashboard({ locale }: { locale: Locale }) {
 }
 
 function LocalizedPricing({ locale }: { locale: Locale }) {
-  return <PricingPlans />;
+  return <PricingPlans locale={locale === "zh" ? "zh" : "en"} />;
 }
 
 function LocalizedFaq({
