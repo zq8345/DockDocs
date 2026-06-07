@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { MissionControlPanel } from "@/components/MissionControlPanel";
 import { getMissionControlSnapshot } from "@/lib/mission-control";
+import { locales } from "@/lib/i18n";
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 export const metadata: Metadata = {
   title: "任务控制中心",
