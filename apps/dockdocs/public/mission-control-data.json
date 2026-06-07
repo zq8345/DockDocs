@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-06-08T00:00:00.000Z",
+  "seoGeo": {
+    "aiCitationRate": { "current": 0, "outOf": 10, "previous": 0, "delta": 0 },
+    "healthScore": 0,
+    "contentProducedToday": 0,
+    "externalMentions": 0,
+    "pagesLive": 0,
+    "pagesHealthy": 0
+  },
+  "cronJobs": [],
+  "alerts": []
+}
