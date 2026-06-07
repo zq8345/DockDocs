@@ -10,23 +10,28 @@ declare const Netlify: {
 // Supported conversion routes
 // ---------------------------------------------------------------------------
 const SUPPORTED_CONVERSIONS = {
-  "word-to-pdf": { inputFormat: "docx", outputFormat: "pdf", outputMime: "application/pdf", outputExt: "pdf" },
-  "ppt-to-pdf": { inputFormat: "pptx", outputFormat: "pdf", outputMime: "application/pdf", outputExt: "pdf" },
-  "excel-to-pdf": { inputFormat: "xlsx", outputFormat: "pdf", outputMime: "application/pdf", outputExt: "pdf" },
-  "pdf-to-excel": { inputFormat: "pdf", outputFormat: "xlsx", outputMime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", outputExt: "xlsx" },
-  "pdf-to-word": { inputFormat: "pdf", outputFormat: "docx", outputMime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", outputExt: "docx" },
+  "word-to-pdf": { inputFormat: "docx", outputFormat: "pdf", outputExt: "pdf" },
+  "ppt-to-pdf": { inputFormat: "pptx", outputFormat: "pdf", outputExt: "pdf" },
+  "excel-to-pdf": { inputFormat: "xlsx", outputFormat: "pdf", outputExt: "pdf" },
+  "pdf-to-excel": { inputFormat: "pdf", outputFormat: "xlsx", outputExt: "xlsx" },
+  "pdf-to-word": { inputFormat: "pdf", outputFormat: "docx", outputExt: "docx" },
 } as const;
 
 type ConversionRoute = keyof typeof SUPPORTED_CONVERSIONS;
 
-// Route that encrypts (password-protects) a PDF rather than converting
 const ENCRYPT_ROUTE = "protect-pdf";
-
-const MAX_FILE_BYTES = 6 * 1024 * 1024; // 6 MB — Netlify buffered function body limit
 const CLOUDCONVERT_API = "https://api.cloudconvert.com/v2";
 
 // ---------------------------------------------------------------------------
-// Handler
+// Handler — JSON-only control plane. The file NEVER passes through this
+// function: the browser uploads directly to CloudConvert and downloads the
+// result directly. This avoids Netlify's 6 MB function body limit.
+//
+// Two actions:
+//   { action: "create", route, password? }  -> creates a job, returns
+//        { jobId, upload: { url, parameters }, outputExt }
+//   { action: "status", jobId }             -> returns
+//        { status, downloadUrl? }
 // ---------------------------------------------------------------------------
 export default async (req: Request, _context: Context) => {
   if (req.method !== "POST") {
@@ -42,15 +47,56 @@ export default async (req: Request, _context: Context) => {
     }, 503);
   }
 
-  // Parse form
-  let formData: FormData;
+  let body: { action?: string; route?: string; password?: string; jobId?: string };
   try {
-    formData = await req.formData();
+    body = await req.json();
   } catch {
-    return json({ ok: false, code: "INVALID_FORM", message: "Could not parse form data." }, 400);
+    return json({ ok: false, code: "INVALID_BODY", message: "Expected JSON body." }, 400);
   }
 
-  const route = (formData.get("route") as string | null)?.trim();
+  // ── STATUS: poll an existing job ──
+  if (body.action === "status") {
+    const jobId = body.jobId?.trim();
+    if (!jobId) {
+      return json({ ok: false, code: "NO_JOB_ID", message: "jobId is required." }, 400);
+    }
+    try {
+      const statusRes = await fetch(`${CLOUDCONVERT_API}/jobs/${jobId}`, {
+        headers: { Authorization: `Bearer ${apiKey}` },
+      });
+      if (!statusRes.ok) {
+        return json({ ok: false, code: "STATUS_FAILED", message: "Could not check conversion status." }, 502);
+      }
+      const statusData = await statusRes.json() as CloudConvertJob;
+      const jobStatus = statusData.data.status;
+
+      if (jobStatus === "error") {
+        return json({
+          ok: false,
+          code: "CONVERSION_FAILED",
+          message: "The file could not be converted. The format may not be supported or the file may be corrupted.",
+        }, 200);
+      }
+
+      if (jobStatus === "finished") {
+        const exportTask = statusData.data.tasks.find((t) => t.name === "export-file");
+        const downloadUrl = exportTask?.result?.files?.[0]?.url ?? null;
+        if (!downloadUrl) {
+          return json({ ok: false, code: "NO_EXPORT", message: "Conversion finished but no output URL was returned." }, 200);
+        }
+        return json({ ok: true, status: "finished", downloadUrl });
+      }
+
+      // still waiting/processing
+      return json({ ok: true, status: jobStatus });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      return json({ ok: false, code: "INTERNAL_ERROR", message }, 500);
+    }
+  }
+
+  // ── CREATE: build a job and return the direct-upload form ──
+  const route = body.route?.trim();
   const isEncrypt = route === ENCRYPT_ROUTE;
   if (!route || (!isEncrypt && !(route in SUPPORTED_CONVERSIONS))) {
     return json({
@@ -60,47 +106,32 @@ export default async (req: Request, _context: Context) => {
     }, 400);
   }
 
-  const file = formData.get("file");
-  if (!file || !(file instanceof File)) {
-    return json({ ok: false, code: "NO_FILE", message: "No file uploaded." }, 400);
-  }
-
-  if (file.size > MAX_FILE_BYTES) {
-    return json({
-      ok: false,
-      code: "FILE_TOO_LARGE",
-      message: `File size limit is 6 MB. Uploaded file is ${Math.round(file.size / 1024 / 1024 * 10) / 10} MB.`,
-    }, 413);
-  }
-
-  // For encryption, the password comes in the form
-  const password = (formData.get("password") as string | null)?.trim() ?? "";
+  const password = body.password?.trim() ?? "";
   if (isEncrypt && password.length < 4) {
     return json({ ok: false, code: "INVALID_PASSWORD", message: "Password must be at least 4 characters." }, 400);
   }
 
   const conv = isEncrypt
-    ? { inputFormat: "pdf", outputFormat: "pdf", outputMime: "application/pdf", outputExt: "pdf" }
+    ? { inputFormat: "pdf", outputFormat: "pdf", outputExt: "pdf" }
     : SUPPORTED_CONVERSIONS[route as ConversionRoute];
-  const { inputFormat, outputFormat, outputMime, outputExt } = conv;
+  const { inputFormat, outputFormat, outputExt } = conv;
+
+  const processingTask = isEncrypt
+    ? {
+        operation: "pdf/encrypt",
+        input: "upload-file",
+        password,
+        owner_password: password,
+      }
+    : {
+        operation: "convert",
+        input: "upload-file",
+        input_format: inputFormat,
+        output_format: outputFormat,
+        ...(outputFormat === "pdf" ? { pdf_a: false, optimize_print: false } : {}),
+      };
 
   try {
-    // 1. Create a job — either a convert task or a pdf/encrypt task
-    const processingTask = isEncrypt
-      ? {
-          operation: "pdf/encrypt",
-          input: "upload-file",
-          password,
-          owner_password: password,
-        }
-      : {
-          operation: "convert",
-          input: "upload-file",
-          input_format: inputFormat,
-          output_format: outputFormat,
-          ...(outputFormat === "pdf" ? { pdf_a: false, optimize_print: false } : {}),
-        };
-
     const jobRes = await fetch(`${CLOUDCONVERT_API}/jobs`, {
       method: "POST",
       headers: {
@@ -109,9 +140,7 @@ export default async (req: Request, _context: Context) => {
       },
       body: JSON.stringify({
         tasks: {
-          "upload-file": {
-            operation: "import/upload",
-          },
+          "upload-file": { operation: "import/upload" },
           "convert-file": processingTask,
           "export-file": {
             operation: "export/url",
@@ -124,7 +153,7 @@ export default async (req: Request, _context: Context) => {
     });
 
     if (!jobRes.ok) {
-      return json({ ok: false, code: "JOB_CREATE_FAILED", message: "The conversion service could not process this file right now. Try again in a moment." }, 502);
+      return json({ ok: false, code: "JOB_CREATE_FAILED", message: "The conversion service could not start the job. Try again in a moment." }, 502);
     }
 
     const job = await jobRes.json() as CloudConvertJob;
@@ -134,81 +163,15 @@ export default async (req: Request, _context: Context) => {
       return json({ ok: false, code: "UPLOAD_TASK_MISSING", message: "CloudConvert did not return an upload form." }, 502);
     }
 
-    // 2. Upload the file to CloudConvert's S3 endpoint
-    const uploadForm = new FormData();
-    for (const [k, v] of Object.entries(uploadTask.result.form.parameters)) {
-      uploadForm.append(k, v as string);
-    }
-    uploadForm.append("file", file, file.name || `source.${inputFormat}`);
-
-    const uploadRes = await fetch(uploadTask.result.form.url, {
-      method: "POST",
-      body: uploadForm,
-    });
-
-    if (!uploadRes.ok && uploadRes.status !== 204) {
-      return json({ ok: false, code: "UPLOAD_FAILED", message: "The file upload could not be completed. Check your connection and try again." }, 502);
-    }
-
-    // 3. Poll for job completion
-    const jobId = job.data.id;
-    let exportUrl: string | null = null;
-    const startTime = Date.now();
-    const TIMEOUT_MS = 55_000; // Netlify function limit is 60s
-    const POLL_INTERVAL_MS = 1500;
-
-    while (Date.now() - startTime < TIMEOUT_MS) {
-      await sleep(POLL_INTERVAL_MS);
-
-      const statusRes = await fetch(`${CLOUDCONVERT_API}/jobs/${jobId}`, {
-        headers: { Authorization: `Bearer ${apiKey}` },
-      });
-
-      if (!statusRes.ok) continue;
-
-      const statusData = await statusRes.json() as CloudConvertJob;
-      const jobStatus = statusData.data.status;
-
-      if (jobStatus === "error") {
-        const failedTask = statusData.data.tasks.find((t) => t.status === "error");
-        return json({
-          ok: false,
-          code: "CONVERSION_FAILED",
-          message: "The file could not be converted. The format may not be supported or the file may be corrupted.",
-        }, 422);
-      }
-
-      if (jobStatus === "finished") {
-        const exportTask = statusData.data.tasks.find((t) => t.name === "export-file");
-        exportUrl = exportTask?.result?.files?.[0]?.url ?? null;
-        break;
-      }
-    }
-
-    if (!exportUrl) {
-      return json({ ok: false, code: "TIMEOUT", message: "Conversion timed out. Please try a smaller file." }, 504);
-    }
-
-    // 4. Download the converted file and stream it back
-    const downloadRes = await fetch(exportUrl);
-    if (!downloadRes.ok) {
-      return json({ ok: false, code: "DOWNLOAD_FAILED", message: "Could not download converted file from CloudConvert." }, 502);
-    }
-
-    const fileBytes = await downloadRes.arrayBuffer();
-    const baseName = file.name.replace(/\.[^.]+$/, "");
-    const outputFileName = `${baseName}.${outputExt}`;
-
-    return new Response(fileBytes, {
-      status: 200,
-      headers: {
-        "Content-Type": outputMime,
-        "Content-Disposition": `attachment; filename="${outputFileName}"`,
-        "Content-Length": String(fileBytes.byteLength),
-        "X-DockDocs-Route": route,
+    return json({
+      ok: true,
+      jobId: job.data.id,
+      upload: {
+        url: uploadTask.result.form.url,
+        parameters: uploadTask.result.form.parameters,
       },
+      outputExt,
     });
-
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return json({ ok: false, code: "INTERNAL_ERROR", message }, 500);
@@ -247,10 +210,6 @@ function json(body: unknown, status = 200, headers: Record<string, string> = {})
     status,
     headers: { "Content-Type": "application/json", ...headers },
   });
-}
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export const config = {

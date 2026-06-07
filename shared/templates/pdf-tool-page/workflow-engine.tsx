@@ -468,8 +468,8 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
     case "pdf-to-word":
       return {
         ...base,
-        maxFileSize: 5 * mb,
-        maxTotalSize: 5 * mb,
+        maxFileSize: 100 * mb,
+        maxTotalSize: 100 * mb,
         processLabel: zh
           ? "正在通过转换后端准备 DOCX 文件。"
           : "Preparing a DOCX file through the conversion backend.",
@@ -547,7 +547,7 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
       return {
         acceptedLabel: "DOCX, DOC",
         minFiles: 1, maxFiles: 1,
-        maxFileSize: 6 * mb, maxTotalSize: 6 * mb,
+        maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
         processLabel: zh ? "正在将 Word 文档转换为 PDF。" : "Converting Word document to PDF.",
         resultLabel: zh ? "下载 PDF" : "Download PDF",
         outputFileName: "dockdocs-converted.pdf",
@@ -559,7 +559,7 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
       return {
         acceptedLabel: "PPTX, PPT",
         minFiles: 1, maxFiles: 1,
-        maxFileSize: 6 * mb, maxTotalSize: 6 * mb,
+        maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
         processLabel: zh ? "正在将 PPT 演示文稿转换为 PDF。" : "Converting PowerPoint presentation to PDF.",
         resultLabel: zh ? "下载 PDF" : "Download PDF",
         outputFileName: "dockdocs-converted.pdf",
@@ -571,7 +571,7 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
       return {
         acceptedLabel: "XLSX, XLS",
         minFiles: 1, maxFiles: 1,
-        maxFileSize: 6 * mb, maxTotalSize: 6 * mb,
+        maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
         processLabel: zh ? "正在将 Excel 表格转换为 PDF。" : "Converting Excel spreadsheet to PDF.",
         resultLabel: zh ? "下载 PDF" : "Download PDF",
         outputFileName: "dockdocs-converted.pdf",
@@ -582,7 +582,7 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
     case "pdf-to-excel":
       return {
         ...base,
-        maxFileSize: 6 * mb, maxTotalSize: 6 * mb,
+        maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
         processLabel: zh ? "正在从 PDF 提取表格并转换为 Excel。" : "Extracting tables from PDF and converting to Excel.",
         resultLabel: zh ? "下载 Excel" : "Download Excel",
         outputFileName: "dockdocs-converted.xlsx",
