@@ -8,6 +8,16 @@
     "pagesLive": 42,
     "pagesHealthy": 42
   },
+  "analytics": {
+    "todayPageViews": 0,
+    "todayVisitors": 0,
+    "weekPageViews": 0,
+    "weekVisitors": 0,
+    "topPages": [],
+    "registeredUsers": 0,
+    "payingUsers": 0,
+    "conversionRate": "0%"
+  },
   "cronJobs": [
     { "name": "Content Factory", "schedule": "每 3h", "lastRun": null, "lastStatus": "pending", "nextRun": "2026-06-08T05:45:19+08:00", "summary": "产出博客+对比表+FAQ增强，含质量自检" },
     { "name": "Full Health Audit", "schedule": "每 4h", "lastRun": null, "lastStatus": "pending", "nextRun": "2026-06-08T06:46:17+08:00", "summary": "SEO+GEO+Schema 联合检查 42 个页面" },

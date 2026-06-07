@@ -19,16 +19,28 @@ export interface SeoGeoMetrics {
   pagesHealthy: number;
 }
 
+export interface AnalyticsData {
+  todayPageViews: number;
+  todayVisitors: number;
+  weekPageViews: number;
+  weekVisitors: number;
+  topPages: Array<{ path: string; views: number }>;
+  registeredUsers: number;
+  payingUsers: number;
+  conversionRate: string;
+}
+
 export interface Alert {
   level: "critical" | "warning" | "info";
-  source: string; // which job triggered this
+  source: string;
   message: string;
-  action: string; // what to do
+  action: string;
 }
 
 export interface MissionControlData {
   generatedAt: string;
   seoGeo: SeoGeoMetrics;
+  analytics: AnalyticsData;
   cronJobs: CronJobStatus[];
   alerts: Alert[];
 }
@@ -43,6 +55,16 @@ export const emptyMissionControlData: MissionControlData = {
     externalMentions: 0,
     pagesLive: 0,
     pagesHealthy: 0,
+  },
+  analytics: {
+    todayPageViews: 0,
+    todayVisitors: 0,
+    weekPageViews: 0,
+    weekVisitors: 0,
+    topPages: [],
+    registeredUsers: 0,
+    payingUsers: 0,
+    conversionRate: "0%",
   },
   cronJobs: [],
   alerts: [],
