@@ -834,10 +834,10 @@ function getWorkflowResult(
           : "Documents combined into one PDF packet, ready to save for downstream workflows.",
         rows: [
           [zh ? "输入文件" : "Input files", String(fileCount)],
+          [zh ? "总页数" : "Total pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
           [zh ? "输出" : "Output", outputName],
         ],
-        preview: "ranges",
-        previewText: outputName,
       };
     case "split-pdf":
       return {
