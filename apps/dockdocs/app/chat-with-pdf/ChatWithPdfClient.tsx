@@ -231,16 +231,12 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
       {!documentText && !isExtracting ? (
         <label
           data-testid="upload-panel"
-          className="relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-12 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
+          className="relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-14 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] bg-[color:var(--accent)] text-sm font-bold text-white shadow-[0_8px_20px_rgba(99,102,241,0.3)]">
-            PDF
-          </div>
-          <span className="mt-4 text-xl font-semibold text-[color:var(--foreground)]">{copy.choosePdf}</span>
-          <span className="mt-2 max-w-sm text-sm text-[color:var(--muted)]">{copy.uploadHelp}</span>
-          <span className="mt-5 inline-flex h-11 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90">
+          <span className="inline-flex h-12 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90">
             {copy.choosePdf}
           </span>
+          <span className="mt-4 text-sm text-[color:var(--muted)]">{copy.uploadHelp}</span>
           {documentState === "error" && error && (
             <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
           )}

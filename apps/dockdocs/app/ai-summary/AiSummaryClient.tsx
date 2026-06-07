@@ -110,18 +110,12 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
     <section className="mx-auto max-w-3xl">
       {/* Upload */}
       {status === "idle" || status === "error" ? (
-        <label className="relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-12 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]">
-          <div className="flex h-14 w-14 items-center justify-center rounded-[var(--radius-lg)] bg-[color:var(--accent)] text-sm font-bold text-white shadow-[0_8px_20px_rgba(99,102,241,0.3)]">
-            PDF
-          </div>
-          <span className="mt-4 text-xl font-semibold text-[color:var(--foreground)]">
-            {zh ? "上传 PDF 生成摘要" : "Upload a PDF to summarize"}
-          </span>
-          <span className="mt-2 max-w-sm text-sm text-[color:var(--muted)]">
-            {zh ? "拖放文件或点击选择，最多 20 页。" : "Drag & drop or click to select. Up to 20 pages."}
-          </span>
-          <span className="mt-5 inline-flex h-11 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90">
+        <label className="relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-14 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]">
+          <span className="inline-flex h-12 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90">
             {zh ? "选择 PDF" : "Choose PDF"}
+          </span>
+          <span className="mt-4 text-sm text-[color:var(--muted)]">
+            {zh ? "或将文件拖放到此处，最多 20 页" : "or drop your file here. Up to 20 pages"}
           </span>
           {status === "error" && error ? (
             <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
