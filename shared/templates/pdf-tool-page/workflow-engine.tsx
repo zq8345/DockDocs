@@ -857,11 +857,14 @@ function getWorkflowResult(
       const orig = artifact?.originalSize ?? totalSize;
       const comp = artifact?.compressedSize;
       const saved = artifact?.savedPercent;
+      const warn = artifact?._warning;
       return {
         title: zh ? "PDF 已压缩" : "PDF compressed",
-        description: zh
-          ? "文档已压缩，可下载以备分享或上传。"
-          : "Document compressed, ready to download for sharing or uploading.",
+        description: warn
+          ? warn
+          : zh
+            ? "文档已压缩，可下载以备分享或上传。"
+            : "Document compressed, ready to download for sharing or uploading.",
         rows: [
           [zh ? "原始大小" : "Original size", formatBytes(orig)],
           [zh ? "压缩后" : "Compressed size", comp != null ? formatBytes(comp) : "—"],

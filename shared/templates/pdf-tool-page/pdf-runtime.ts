@@ -108,7 +108,7 @@ export async function runPdfRuntime({
   }
 
   if (slug === "compress-pdf") {
-    return compressPdfFile(files[0], outputFileName, signal, onProgress);
+    return compressPdfFile(files[0], pageRanges, outputFileName, locale, signal, onProgress);
   }
 
   if (slug === "merge-pdf") {
@@ -237,53 +237,113 @@ export function getPdfRuntimeErrorMessage(error: unknown, locale: "en" | "zh") {
 
 async function compressPdfFile(
   file: File,
+  level: string,
   outputFileName: string,
+  locale: "en" | "zh",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
+  const zh = locale === "zh";
   throwIfAborted(signal);
-  emitProgress(onProgress, 5, 0);
+  emitProgress(onProgress, 4, 0, zh ? "正在读取 PDF…" : "Reading PDF…");
 
+  // Compression presets: scale = render resolution, quality = JPEG quality
+  const preset =
+    level === "high"
+      ? { scale: 1.0, quality: 0.5 }
+      : level === "low"
+        ? { scale: 1.6, quality: 0.82 }
+        : { scale: 1.3, quality: 0.68 }; // recommended (default)
+
+  const originalSize = file.size;
   const sourceBytes = await file.arrayBuffer();
-  const source = await PDFDocument.load(sourceBytes, {
-    updateMetadata: false,
-  });
-  const output = await PDFDocument.create();
-  const pages = await output.copyPages(source, source.getPageIndices());
 
-  emitProgress(onProgress, 34, 1);
-  for (let index = 0; index < pages.length; index += 1) {
+  // 1. Render each page to a JPEG via pdfjs
+  const pdfjs = await import("pdfjs-dist");
+  pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+  const pdfDoc = await pdfjs.getDocument({ data: sourceBytes.slice(0) }).promise;
+  const pageCount = pdfDoc.numPages;
+
+  emitProgress(onProgress, 10, 1, zh ? "正在压缩页面…" : "Compressing pages…");
+
+  const output = await PDFDocument.create();
+
+  for (let i = 1; i <= pageCount; i += 1) {
     throwIfAborted(signal);
-    output.addPage(pages[index]);
-    emitProgress(onProgress, 38 + ((index + 1) / pages.length) * 42, 2);
+    const page = await pdfDoc.getPage(i);
+    const viewport = page.getViewport({ scale: preset.scale });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.floor(viewport.width);
+    canvas.height = Math.floor(viewport.height);
+    const ctx = canvas.getContext("2d")!;
+    // White background so transparent areas don't turn black in JPEG
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    await page.render({ canvasContext: ctx as any, canvas, viewport } as any).promise;
+
+    const jpegBlob: Blob = await new Promise((res, rej) =>
+      canvas.toBlob(
+        (b) => (b ? res(b) : rej(new Error(zh ? "页面压缩失败" : "Page compression failed."))),
+        "image/jpeg",
+        preset.quality,
+      ),
+    );
+    const jpegBytes = new Uint8Array(await jpegBlob.arrayBuffer());
+    const embedded = await output.embedJpg(jpegBytes);
+
+    // Keep original page dimensions (PDF points) regardless of render scale
+    const pageWidthPt = viewport.width / preset.scale;
+    const pageHeightPt = viewport.height / preset.scale;
+    const newPage = output.addPage([pageWidthPt, pageHeightPt]);
+    newPage.drawImage(embedded, { x: 0, y: 0, width: pageWidthPt, height: pageHeightPt });
+
+    emitProgress(
+      onProgress,
+      10 + Math.round((i / pageCount) * 78),
+      2,
+      zh ? `正在压缩第 ${i}/${pageCount} 页…` : `Compressing page ${i}/${pageCount}…`,
+    );
     await yieldToBrowser();
   }
 
   throwIfAborted(signal);
-  emitProgress(onProgress, 90, 3);
-  const optimizedBytes = await output.save({
-    useObjectStreams: true,
-    addDefaultPage: false,
-    objectsPerTick: 24,
-  });
-  const blob = new Blob([optimizedBytes], { type: "application/pdf" });
-  const originalSize = file.size;
+  emitProgress(onProgress, 92, 3, zh ? "正在生成文件…" : "Building file…");
+
+  const compressedBytes = await output.save({ useObjectStreams: true, addDefaultPage: false });
+
+  // 2. If compression didn't help (e.g. text-only PDF), keep the original
+  let finalBytes = compressedBytes;
+  let usedOriginal = false;
+  if (compressedBytes.byteLength >= originalSize) {
+    finalBytes = new Uint8Array(sourceBytes);
+    usedOriginal = true;
+  }
+
+  const blob = new Blob([finalBytes], { type: "application/pdf" });
   const compressedSize = blob.size;
   const savedPercent = Math.max(
     0,
     Math.round(((originalSize - compressedSize) / Math.max(originalSize, 1)) * 100),
   );
+
   emitProgress(onProgress, 100, 3);
 
   return {
     fileName: outputFileName,
     blob,
     outputType: "pdf",
-    pageCount: source.getPageCount(),
+    pageCount,
     fileCount: 1,
     originalSize,
     compressedSize,
     savedPercent,
+    _warning: usedOriginal
+      ? zh
+        ? "该 PDF 已是最优体积（可能是纯文字文档），已保留原文件。"
+        : "This PDF is already optimal (likely text-only); the original was kept."
+      : undefined,
   };
 }
 
@@ -1164,10 +1224,12 @@ function emitProgress(
   onProgress: ((progress: PdfRuntimeProgress) => void) | undefined,
   progress: number,
   stepIndex: number,
+  detail?: string,
 ) {
   onProgress?.({
     progress: Math.max(0, Math.min(100, progress)),
     stepIndex,
+    detail,
   });
 }
 

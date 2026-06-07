@@ -243,6 +243,48 @@ export function ReadyWorkflowState({
         </>
       )}
 
+      {config.slug === "compress-pdf" && (
+        <div className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+            {zh ? "压缩级别" : "Compression level"}
+          </span>
+          <div className="mt-2 grid grid-cols-3 gap-2">
+            {[
+              { key: "low", en: "Light", zh: "轻度", enDesc: "Best quality", zhDesc: "质量优先" },
+              { key: "recommended", en: "Recommended", zh: "推荐", enDesc: "Balanced", zhDesc: "均衡" },
+              { key: "high", en: "Strong", zh: "高压缩", enDesc: "Smallest size", zhDesc: "体积最小" },
+            ].map((opt) => {
+              const current = ["low", "recommended", "high"].includes(pageRanges) ? pageRanges : "recommended";
+              const active = current === opt.key;
+              return (
+                <button
+                  key={opt.key}
+                  type="button"
+                  onClick={() => onPageRangesChange(opt.key)}
+                  className={`rounded-[var(--radius-sm)] border px-3 py-2.5 text-center transition ${
+                    active
+                      ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
+                      : "border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--line-strong)]"
+                  }`}
+                >
+                  <span className={`block text-sm font-semibold ${active ? "text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)]"}`}>
+                    {zh ? opt.zh : opt.en}
+                  </span>
+                  <span className="mt-0.5 block text-[11px] text-[color:var(--muted)]">
+                    {zh ? opt.zhDesc : opt.enDesc}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-xs text-[color:var(--muted)]">
+            {zh
+              ? "提示：压缩会将页面重绘为图像，文字将不可再选中。"
+              : "Note: compression rasterizes pages to images; text will no longer be selectable."}
+          </p>
+        </div>
+      )}
+
       {/* Start button */}
       <PrimaryButton onClick={onStart} className="w-full">
         {config.primaryActionLabel}
