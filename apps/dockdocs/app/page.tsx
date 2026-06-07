@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FeatureShowcase } from "@/components/FeatureShowcase";
 
 export const metadata: Metadata = {
   title: "DockDocs — AI Document Platform",
@@ -96,11 +97,11 @@ export default function Home() {
               AI Document Platform
             </div>
 
-            <h1 className="text-[40px] font-semibold leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-5xl lg:text-[62px]">
+            <h1 className="text-[40px] font-semibold leading-[1.05] tracking-[-0.03em] text-[color:var(--foreground)] sm:text-[56px] lg:text-[68px]">
               The document workspace<br className="hidden sm:block" /> built for real work.
             </h1>
 
-            <p className="mt-5 text-base leading-7 text-[color:var(--muted)] sm:text-lg sm:leading-8">
+            <p className="mx-auto mt-6 max-w-xl text-[16px] leading-8 text-[color:var(--muted)] sm:text-[18px]">
               PDF tools, AI chat, OCR, conversion and compression — all in one place.
               No installs. Files processed locally where possible.
             </p>
@@ -160,6 +161,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ── Feature showcase (Linear-style image+text) ── */}
+      <FeatureShowcase locale="en" />
 
       {/* ── Tool grid ── */}
       <section id="tools" className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">

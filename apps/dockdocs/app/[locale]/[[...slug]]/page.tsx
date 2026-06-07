@@ -14,6 +14,7 @@ import { DashboardWorkspace } from "@/components/DashboardWorkspace";
 import { GeoHubPage } from "@/components/GeoHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
+import { FeatureShowcase } from "@/components/FeatureShowcase";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { AboutPage } from "@/components/AboutPage";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
@@ -687,6 +688,9 @@ function LocalizedHome({ locale }: { locale: Locale }) {
           </div>
         </div>
       </section>
+
+      {/* Feature showcase (Linear-style image+text) */}
+      <FeatureShowcase locale={zh ? "zh" : "en"} />
 
       {/* Tool Grid */}
       <section id="tools" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
