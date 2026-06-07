@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   },
 };
 
+const clarityId = process.env.NEXT_PUBLIC_CLARITY_ID;
+
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -57,23 +59,19 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
             } catch(e) {}
           })();
         `}} />
-        {/* Microsoft Clarity — free analytics, no PII */}
-        <script
-          type="text/javascript"
-          dangerouslySetInnerHTML={{
-            __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","PLACEHOLDER_CLARITY_ID");`,
-          }}
-        />
+        {/* Microsoft Clarity — free analytics, no PII. Only injected when an ID is configured. */}
+        {clarityId && (
+          <script
+            type="text/javascript"
+            dangerouslySetInnerHTML={{
+              __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${clarityId}");`,
+            }}
+          />
+        )}
       </head>
       <body>
         <HtmlLangSync />
         <AppShell>{children}</AppShell>
-        {/* DockDocs Analytics — simple page view beacon */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var p=window.location.pathname;if(p.startsWith('/internal/'))return;fetch('/api/beacon?p='+encodeURIComponent(p)+'&r='+encodeURIComponent(document.referrer||'')+'&t='+encodeURIComponent(document.title||''),{method:'POST'}).catch(function(){});})();`,
-          }}
-        />
       </body>
     </html>
   );

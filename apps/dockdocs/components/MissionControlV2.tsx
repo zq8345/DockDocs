@@ -205,7 +205,7 @@ export function MissionControlV2() {
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">自动化驾驶舱</h1>
         </div>
         <div className="flex items-center gap-3">
-          <Badge label={`11 任务`} tone="neutral" />
+          <Badge label={`${m.cronJobs.length} 任务`} tone="neutral" />
           <Badge label={`${pending} 待执行`} tone="warning" />
           <p className="text-[12px] text-[color:var(--muted)]">{new Date(m.generatedAt).toLocaleString("zh-CN", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
         </div>
@@ -213,7 +213,7 @@ export function MissionControlV2() {
 
       {/* Key metrics */}
       <div className="mt-6 grid gap-3 sm:grid-cols-4">
-        <StatCard label="任务总数" value="11" sub="自动化 SEO/GEO" />
+        <StatCard label="任务总数" value={String(m.cronJobs.length)} sub="自动化 SEO/GEO" />
         <StatCard label="站点健康" value="100%" sub={`${m.seoGeo.pagesLive} 页面全部正常`} tone="success" />
         <StatCard label="AI 引用率" value="待首次追踪" sub="AI Citation Tracker 08:00 运行" />
         <StatCard label="月费" value="≈ ¥60" sub="DeepSeek + ECS" tone="success" />
