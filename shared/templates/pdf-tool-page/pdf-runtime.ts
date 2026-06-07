@@ -190,7 +190,20 @@ export async function runPdfRuntime({
   }
 
   if (slug === "protect-pdf") {
-    return protectPdf(files[0], pageRanges, outputFileName, locale, signal, onProgress);
+    const zh = locale === "zh";
+    const password = pageRanges.trim();
+    if (!password || password.length < 4) {
+      throw new Error(zh ? "请输入至少 4 位密码。" : "Enter a password of at least 4 characters.");
+    }
+    return runCloudConvert({
+      file: files[0],
+      route: "protect-pdf" as CloudConvertRoute,
+      outputFileName,
+      locale,
+      password,
+      signal,
+      onProgress,
+    });
   }
 
   return imagesToPdf(files, outputFileName, signal, onProgress);
@@ -763,61 +776,6 @@ async function addBlankPage(
     fileCount: 1,
   };
 }
-
-async function protectPdf(
-  file: File,
-  pageRanges: string,
-  outputFileName: string,
-  locale: "en" | "zh",
-  signal?: AbortSignal,
-  onProgress?: (progress: PdfRuntimeProgress) => void,
-): Promise<PdfRuntimeArtifact> {
-  throwIfAborted(signal);
-  emitProgress(onProgress, 5, 0);
-
-  const zh = locale === "zh";
-  const password = pageRanges.trim();
-
-  if (!password || password.length < 4) {
-    throw new Error(zh ? "请输入至少 4 位密码。" : "Enter a password of at least 4 characters.");
-  }
-
-  const sourceBytes = await file.arrayBuffer();
-  const source = await PDFDocument.load(sourceBytes);
-
-  emitProgress(onProgress, 40, 1);
-
-  // Copy all pages into a new doc
-  const output = await PDFDocument.create();
-  const pages = await output.copyPages(source, source.getPageIndices());
-  pages.forEach((p) => output.addPage(p));
-
-  emitProgress(onProgress, 70, 2);
-  throwIfAborted(signal);
-
-  // Embed password into document metadata as a marker
-  // Note: pdf-lib 1.x does not support AES encryption natively.
-  // We mark the file and set the open password via PDF standard annotations.
-  // For true encryption, upgrade to a server-side solution.
-  output.setTitle(`[Protected] ${file.name.replace(/\.pdf$/i, "")}`);
-  output.setKeywords([`pwd:${password}`]);
-
-  const pdfBytes = await output.save();
-  const blob = new Blob([pdfBytes], { type: "application/pdf" });
-  emitProgress(onProgress, 100, 3);
-
-  return {
-    fileName: outputFileName,
-    blob,
-    outputType: "pdf",
-    pageCount: source.getPageCount(),
-    fileCount: 1,
-    _warning: zh
-      ? "注意：当前版本为软件标记保护，不提供 AES 加密。建议升级到服务端加密方案。"
-      : "Note: This version uses metadata marking only, not AES encryption. A server-side solution is recommended for true protection.",
-  };
-}
-
 
 async function pdfToPng(
   file: File,

@@ -4,7 +4,8 @@ export type CloudConvertRoute =
   | "word-to-pdf"
   | "ppt-to-pdf"
   | "excel-to-pdf"
-  | "pdf-to-excel";
+  | "pdf-to-excel"
+  | "protect-pdf";
 
 const MAX_UPLOAD_BYTES = 6 * 1024 * 1024; // 6 MB — Netlify buffered function body limit
 
@@ -20,6 +21,7 @@ const ROUTE_META: Record<
     outputExt: "xlsx",
     outputType: "xlsx",
   },
+  "protect-pdf": { outputMime: "application/pdf", outputExt: "pdf", outputType: "pdf" },
 };
 
 type CloudConvertRuntimeInput = {
@@ -27,6 +29,7 @@ type CloudConvertRuntimeInput = {
   route: CloudConvertRoute;
   outputFileName: string;
   locale: "en" | "zh";
+  password?: string;
   signal?: AbortSignal;
   onProgress?: (progress: PdfRuntimeProgress) => void;
 };
@@ -36,6 +39,7 @@ export async function runCloudConvert({
   route,
   outputFileName,
   locale,
+  password,
   signal,
   onProgress,
 }: CloudConvertRuntimeInput): Promise<PdfRuntimeArtifact> {
@@ -56,6 +60,7 @@ export async function runCloudConvert({
   formData.append("file", file, file.name);
   formData.append("route", route);
   formData.append("locale", locale);
+  if (password) formData.append("password", password);
 
   emitProgress(onProgress, 20, 1, zh ? "正在上传文件..." : "Uploading file...");
 

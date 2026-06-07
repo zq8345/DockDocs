@@ -969,12 +969,13 @@ function getWorkflowResult(
       };
     case "protect-pdf":
       return {
-        title: zh ? "PDF 已处理" : "PDF processed",
-        description: artifact?._warning
-          ? artifact._warning
-          : zh ? "文档已添加保护标记。" : "Protection marking applied.",
+        title: zh ? "PDF 已加密" : "PDF encrypted",
+        description: zh
+          ? "已使用 AES 加密为 PDF 设置打开密码，可下载。"
+          : "PDF encrypted with an AES open password, ready to download.",
         rows: [
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
+          [zh ? "加密" : "Encryption", "AES-256"],
           [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
           [zh ? "输出" : "Output", outputName],
         ],

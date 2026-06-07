@@ -18,6 +18,9 @@ const SUPPORTED_CONVERSIONS = {
 
 type ConversionRoute = keyof typeof SUPPORTED_CONVERSIONS;
 
+// Route that encrypts (password-protects) a PDF rather than converting
+const ENCRYPT_ROUTE = "protect-pdf";
+
 const MAX_FILE_BYTES = 6 * 1024 * 1024; // 6 MB — Netlify buffered function body limit
 const CLOUDCONVERT_API = "https://api.cloudconvert.com/v2";
 
@@ -46,12 +49,13 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "INVALID_FORM", message: "Could not parse form data." }, 400);
   }
 
-  const route = (formData.get("route") as string | null)?.trim() as ConversionRoute | null;
-  if (!route || !(route in SUPPORTED_CONVERSIONS)) {
+  const route = (formData.get("route") as string | null)?.trim();
+  const isEncrypt = route === ENCRYPT_ROUTE;
+  if (!route || (!isEncrypt && !(route in SUPPORTED_CONVERSIONS))) {
     return json({
       ok: false,
       code: "INVALID_ROUTE",
-      message: `Route must be one of: ${Object.keys(SUPPORTED_CONVERSIONS).join(", ")}`,
+      message: `Route must be one of: ${Object.keys(SUPPORTED_CONVERSIONS).join(", ")}, ${ENCRYPT_ROUTE}`,
     }, 400);
   }
 
@@ -68,10 +72,34 @@ export default async (req: Request, _context: Context) => {
     }, 413);
   }
 
-  const { inputFormat, outputFormat, outputMime, outputExt } = SUPPORTED_CONVERSIONS[route];
+  // For encryption, the password comes in the form
+  const password = (formData.get("password") as string | null)?.trim() ?? "";
+  if (isEncrypt && password.length < 4) {
+    return json({ ok: false, code: "INVALID_PASSWORD", message: "Password must be at least 4 characters." }, 400);
+  }
+
+  const conv = isEncrypt
+    ? { inputFormat: "pdf", outputFormat: "pdf", outputMime: "application/pdf", outputExt: "pdf" }
+    : SUPPORTED_CONVERSIONS[route as ConversionRoute];
+  const { inputFormat, outputFormat, outputMime, outputExt } = conv;
 
   try {
-    // 1. Create a job with upload + convert + export tasks
+    // 1. Create a job — either a convert task or a pdf/encrypt task
+    const processingTask = isEncrypt
+      ? {
+          operation: "pdf/encrypt",
+          input: "upload-file",
+          password,
+          owner_password: password,
+        }
+      : {
+          operation: "convert",
+          input: "upload-file",
+          input_format: inputFormat,
+          output_format: outputFormat,
+          ...(outputFormat === "pdf" ? { pdf_a: false, optimize_print: false } : {}),
+        };
+
     const jobRes = await fetch(`${CLOUDCONVERT_API}/jobs`, {
       method: "POST",
       headers: {
@@ -83,13 +111,7 @@ export default async (req: Request, _context: Context) => {
           "upload-file": {
             operation: "import/upload",
           },
-          "convert-file": {
-            operation: "convert",
-            input: "upload-file",
-            input_format: inputFormat,
-            output_format: outputFormat,
-            ...(outputFormat === "pdf" ? { pdf_a: false, optimize_print: false } : {}),
-          },
+          "convert-file": processingTask,
           "export-file": {
             operation: "export/url",
             input: "convert-file",
