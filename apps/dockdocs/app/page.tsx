@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { FeatureShowcase } from "@/components/FeatureShowcase";
+import { HeroBackground } from "@/components/HeroBackground";
+import { HomeExtras } from "@/components/HomeExtras";
 
 export const metadata: Metadata = {
   title: "DockDocs — AI Document Platform",
@@ -62,9 +64,9 @@ const features = [
 ] as const;
 
 const stats = [
-  { value: "20+", label: "PDF Tools" },
-  { value: "Browser", label: "Local processing" },
-  { value: "Free", label: "Core tools" },
+  { value: "Private", label: "Files stay on your device" },
+  { value: "Secure", label: "Encrypted, never stored" },
+  { value: "Fast", label: "Instant in-browser tools" },
 ] as const;
 
 export default function Home() {
@@ -72,22 +74,7 @@ export default function Home() {
     <main>
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-[color:var(--line)]">
-        {/* Subtle grid */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
-        {/* Radial accent */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-[-120px] h-[500px] w-[800px] -translate-x-1/2 rounded-full opacity-[0.07]"
-          style={{ background: "radial-gradient(ellipse, var(--accent) 0%, transparent 70%)" }}
-        />
+        <HeroBackground />
 
         <div className="relative mx-auto max-w-5xl px-5 pb-20 pt-20 sm:px-6 sm:pt-28 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
@@ -98,7 +85,7 @@ export default function Home() {
             </div>
 
             <h1 className="text-[40px] font-semibold leading-[1.05] tracking-[-0.03em] text-[color:var(--foreground)] sm:text-[56px] lg:text-[68px]">
-              The document workspace<br className="hidden sm:block" /> built for real work.
+              Your all-in-one document workspace.
             </h1>
 
             <p className="mx-auto mt-6 max-w-xl text-[16px] leading-8 text-[color:var(--muted)] sm:text-[18px]">
@@ -164,6 +151,9 @@ export default function Home() {
 
       {/* ── Feature showcase (Linear-style image+text) ── */}
       <FeatureShowcase locale="en" />
+
+      {/* ── How it works + metrics (with scroll reveal) ── */}
+      <HomeExtras locale="en" />
 
       {/* ── Tool grid ── */}
       <section id="tools" className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">

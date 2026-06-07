@@ -15,6 +15,8 @@ import { GeoHubPage } from "@/components/GeoHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
 import { FeatureShowcase } from "@/components/FeatureShowcase";
+import { HeroBackground } from "@/components/HeroBackground";
+import { HomeExtras } from "@/components/HomeExtras";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { AboutPage } from "@/components/AboutPage";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
@@ -600,27 +602,27 @@ const homeCopy = {
     title: "DockDocs — AI Document Platform",
     description: "PDF tools, AI chat, OCR, compression, conversion and more. Process documents in your browser, privately and fast.",
     eyebrow: "AI Document Platform",
-    heroTitle: "The document workspace built for real work.",
+    heroTitle: "Your all-in-one document workspace.",
     heroDescription: "PDF tools, AI chat, OCR, conversion and compression — all in one place. No installs. Files processed locally where possible.",
     primary: "Chat with a PDF",
     secondary: "Browse tools ↓",
     categoryTitle: "Everything you need for PDF work",
     aiTitle: "Start working with your documents",
     aiDescription: "Free to use. No account required for most tools. Switch to Plus for AI features.",
-    stats: [["20+", "PDF Tools"], ["Browser-side", "Processing"], ["Free", "Core tools"]] as [string, string][],
+    stats: [["Private", "Files stay on your device"], ["Secure", "Encrypted, never stored"], ["Fast", "Instant in-browser tools"]] as [string, string][],
   },
   zh: {
     title: "DockDocs — AI 文档平台",
     description: "PDF 工具、AI 问答、OCR、压缩和转换，一站完成。在浏览器中处理文档，快速且私密。",
     eyebrow: "AI 文档平台",
-    heroTitle: "专为真实工作而生的文档工作区。",
+    heroTitle: "你的一站式文档工作区。",
     heroDescription: "PDF 工具、AI 问答、OCR、转换和压缩——全在一处。无需安装软件，文件在本地处理。",
     primary: "与 PDF 对话",
     secondary: "浏览工具 ↓",
     categoryTitle: "PDF 工作所需的一切",
     aiTitle: "开始处理你的文档",
     aiDescription: "大多数工具免费使用，无需注册账户。升级 Plus 享受 AI 功能。",
-    stats: [["20+", "PDF 工具"], ["浏览器本地", "处理"], ["免费", "核心工具"]] as [string, string][],
+    stats: [["隐私", "文件留在你的设备"], ["安全", "加密传输，绝不留存"], ["高效", "浏览器内即时处理"]] as [string, string][],
   },
 } as const;
 
@@ -655,8 +657,7 @@ function LocalizedHome({ locale }: { locale: Locale }) {
     <main>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-[color:var(--line)]">
-        <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)", backgroundSize: "64px 64px" }} />
-        <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[900px] rounded-full opacity-10" style={{ background: "radial-gradient(circle, #6366f1 0%, transparent 70%)" }} />
+        <HeroBackground />
         <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-20 sm:px-6 sm:pt-28 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-1.5 text-xs font-semibold tracking-wide text-[color:var(--muted)]">
@@ -691,6 +692,9 @@ function LocalizedHome({ locale }: { locale: Locale }) {
 
       {/* Feature showcase (Linear-style image+text) */}
       <FeatureShowcase locale={zh ? "zh" : "en"} />
+
+      {/* How it works + metrics (with scroll reveal) */}
+      <HomeExtras locale={zh ? "zh" : "en"} />
 
       {/* Tool Grid */}
       <section id="tools" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
