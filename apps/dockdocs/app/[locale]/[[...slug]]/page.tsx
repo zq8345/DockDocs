@@ -9,6 +9,7 @@ import { BlogArticlePage, BlogIndexPage } from "@/components/BlogPages";
 import { AiSummaryWorkflow } from "@/components/AiSummaryWorkflow";
 import { DocumentAnalyzerWorkflow } from "@/components/DocumentAnalyzerWorkflow";
 import { ChatWithPdfClient } from "@/app/chat-with-pdf/ChatWithPdfClient";
+import { AiSummaryClient } from "@/app/ai-summary/AiSummaryClient";
 import { DashboardWorkspace } from "@/components/DashboardWorkspace";
 import { GeoHubPage } from "@/components/GeoHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
@@ -341,7 +342,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "ai-summary") {
-    return <LocalizedRuntimeTool locale={rawLocale} tool="summary" />;
+    return <LocalizedAiSummary locale={rawLocale} />;
   }
 
   if (slug === "ocr") {
@@ -433,46 +434,64 @@ function getLocalizedProgrammaticGeoRoute(rawSlug?: string[]) {
 
 function LocalizedChatWithPdf({ locale }: { locale: Locale }) {
   const copy = getRuntimeCopy(locale).chat;
+  const zh = locale === "zh";
 
   return (
-    <main>
-      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <Container className="py-10">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-                {copy.heroEyebrow}
-              </p>
-              <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-tight sm:text-5xl xl:text-6xl">
-                {copy.heroTitle}
-              </h1>
-              <p className="mt-5 max-w-2xl text-base leading-7 text-[color:var(--muted)] sm:text-lg">
-                {copy.heroDescription}
-              </p>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <ButtonLink href="#workspace">{copy.primaryCta}</ButtonLink>
-                <ButtonLink href={localizedPath(locale, "compress-pdf")} variant="outline">
-                  {copy.secondaryCta}
-                </ButtonLink>
-              </div>
-            </div>
-            <div className="grid w-full max-w-xl grid-cols-3 gap-4 border-y border-[color:var(--line)] py-5 lg:w-[420px]">
-              {copy.metrics.map((metric) => (
-                <div key={metric.label}>
-                  <p className="text-2xl font-semibold">{metric.value}</p>
-                  <p className="mt-1 text-xs font-medium uppercase tracking-[0.12em] text-[color:var(--muted)]">
-                    {metric.label}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-10">
-            <ChatWithPdfClient locale={locale} />
-          </div>
-        </Container>
-      </Section>
+    <main className="bg-[color:var(--surface)]">
+      <div className="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+        <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
+          <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
+          <span>/</span>
+          <span className="font-medium text-[color:var(--foreground)]">{zh ? "PDF 问答" : "Chat with PDF"}</span>
+        </div>
+
+        <h1 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
+          {copy.heroTitle}
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+          {copy.heroDescription}
+        </p>
+
+        <div className="mt-8">
+          <ChatWithPdfClient locale={locale} />
+        </div>
+      </div>
+
       <LocalizedFaq title={copy.faqTitle} faqs={[...copy.faqs]} />
+    </main>
+  );
+}
+
+function LocalizedAiSummary({ locale }: { locale: Locale }) {
+  const copy = getRuntimeCopy(locale).summary;
+  const zh = locale === "zh";
+
+  return (
+    <main className="bg-[color:var(--surface)]">
+      <div className="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+        <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
+          <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
+          <span>/</span>
+          <span className="font-medium text-[color:var(--foreground)]">{zh ? "AI 摘要" : "AI Summary"}</span>
+        </div>
+
+        <h1 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
+          {copy.title}
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+          {copy.description}
+        </p>
+
+        <div className="mt-8">
+          <AiSummaryClient locale={locale} />
+        </div>
+      </div>
+      {"faqs" in copy && Array.isArray((copy as { faqs?: unknown }).faqs) ? (
+        <LocalizedFaq
+          title={(copy as { faqTitle?: string }).faqTitle ?? ""}
+          faqs={[...((copy as { faqs: Array<{ question: string; answer: string }> }).faqs)]}
+        />
+      ) : null}
     </main>
   );
 }
@@ -502,72 +521,40 @@ function LocalizedRuntimeTool({
         : [".pdf"];
 
   return (
-    <main>
-      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <Container className="grid min-h-[calc(100vh-92px)] items-center gap-8 py-10 lg:grid-cols-[0.78fr_1.22fr]">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              {page.eyebrow}
-            </p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight sm:text-5xl xl:text-6xl">
-              {page.title}
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[color:var(--muted)] sm:text-lg">
-              {page.description}
-            </p>
-            {"primaryCta" in page && (
-              <div className="mt-7 flex flex-wrap gap-3">
-                <ButtonLink href="#upload">{page.primaryCta}</ButtonLink>
-                <ButtonLink href={localizedPath(locale, "chat-with-pdf")} variant="outline">
-                  {page.secondaryCta}
-                </ButtonLink>
-              </div>
-            )}
-          </div>
-          <UploadPanel
-            title={page.uploadTitle}
-            description={page.uploadDescription}
+    <main className="bg-[color:var(--surface)]">
+      <div className="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+        <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
+          <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
+          <span>/</span>
+          <span className="font-medium text-[color:var(--foreground)]">{page.title}</span>
+        </div>
+
+        <h1 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
+          {page.title}
+        </h1>
+        <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+          {page.description}
+        </p>
+
+        <div id="upload" className="mt-8">
+          <ToolRuntimeClient
+            uploadTitle={page.runtimeUploadTitle}
+            uploadDescription={page.runtimeUploadDescription}
             formats={page.formats}
             limit={page.limit}
             cta={page.cta}
-            interactive={false}
-            labels={copy.common.upload}
+            accept={accept}
+            allowedExtensions={allowedExtensions}
+            outputEyebrow={page.resultEyebrow}
+            outputTitle={page.resultTitle}
+            outputSummary={page.resultSummary}
+            keyPoints={[...page.keyPoints]}
+            actions={[...page.actions]}
+            emptyMessage={page.emptyMessage}
+            locale={locale}
           />
-        </Container>
-      </Section>
-      <Section id="upload" className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <Container>
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              {page.outputEyebrow}
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
-              {page.outputHeading}
-            </h2>
-            <p className="mt-5 max-w-2xl leading-7 text-[color:var(--muted)]">
-              {page.outputDescription}
-            </p>
-          </div>
-          <div className="mt-8">
-            <ToolRuntimeClient
-              uploadTitle={page.runtimeUploadTitle}
-              uploadDescription={page.runtimeUploadDescription}
-              formats={page.formats}
-              limit={page.limit}
-              cta={page.cta}
-              accept={accept}
-              allowedExtensions={allowedExtensions}
-              outputEyebrow={page.resultEyebrow}
-              outputTitle={page.resultTitle}
-              outputSummary={page.resultSummary}
-              keyPoints={[...page.keyPoints]}
-              actions={[...page.actions]}
-              emptyMessage={page.emptyMessage}
-              locale={locale}
-            />
-          </div>
-        </Container>
-      </Section>
+        </div>
+      </div>
       {"faqs" in page && <LocalizedFaq title={page.faqTitle} faqs={[...page.faqs]} />}
     </main>
   );
@@ -592,25 +579,22 @@ function LocalizedFaq({
     <section
       id="faq"
       aria-labelledby="faq-title"
-      className="border-b border-[color:var(--line)] px-5 py-16 sm:px-6 lg:px-8"
+      className="border-b border-[color:var(--line)] bg-[color:var(--surface)]"
     >
-      <div className="mx-auto max-w-4xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-          FAQ
-        </p>
-        <h2 id="faq-title" className="mt-4 text-3xl font-semibold">
+      <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+        <h2 id="faq-title" className="text-lg font-semibold text-[color:var(--foreground)]">
           {title}
         </h2>
-        <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
+        <div className="mt-5 divide-y divide-[color:var(--line)]">
           {faqs.map((faq) => (
-            <details key={faq.question} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold">
+            <details key={faq.question} className="group py-4">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-[color:var(--foreground)]">
                 {faq.question}
-                <span className="text-[color:var(--muted)] transition group-open:rotate-45">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--muted)] transition group-open:rotate-45">
                   +
                 </span>
               </summary>
-              <p className="mt-4 leading-7 text-[color:var(--muted)]">{faq.answer}</p>
+              <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{faq.answer}</p>
             </details>
           ))}
         </div>
@@ -792,17 +776,17 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale }) {
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <Container className="py-16">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+        <Container className="py-14 sm:py-16">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
             {copy.eyebrow}
           </p>
-          <h1 className="mt-5 max-w-4xl break-words text-2xl font-semibold leading-tight sm:text-6xl">
+          <h1 className="mt-4 max-w-3xl text-2xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
             {copy.heroTitle}
           </h1>
-          <p className="mt-6 max-w-3xl text-base leading-8 text-[color:var(--muted)] sm:text-lg">
+          <p className="mt-4 max-w-3xl text-base leading-8 text-[color:var(--muted)]">
             {copy.heroDescription}
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-7 flex flex-wrap gap-3">
             <ButtonLink href={localizedPath(locale, "")}>
               {locale === "zh" ? "进入文档工作区" : "Browse PDF tools"}
             </ButtonLink>
@@ -814,14 +798,14 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale }) {
       </Section>
       <Section className="bg-[color:var(--surface-subtle)]">
         <Container>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {copy.cards.map((card) => (
               <article
                 key={card}
-                className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm"
+                className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5"
               >
-                <h2 className="text-xl font-semibold">{card}</h2>
-                <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
+                <h2 className="text-[15px] font-semibold">{card}</h2>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
                   {locale === "zh"
                     ? "作为文档工作区的智能能力，帮助理解和复用真实文件。"
                     : "An enhancement layer after the PDF task is clear."}
