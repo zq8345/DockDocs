@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   verification: googleSiteVerification ? { google: googleSiteVerification } : undefined,
+  other: {
+    "msvalidate.01": "63B37C213CDA327D499A4BC9549DF314",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
