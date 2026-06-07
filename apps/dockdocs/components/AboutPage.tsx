@@ -9,12 +9,13 @@ const content = {
     cta1: "All PDF Tools",
     cta2: "View Pricing",
 
-    // Capability stats (all verifiable facts, not user counts)
-    stats: [
-      { value: "20+", label: "Document tools" },
-      { value: "Local", label: "Most tools run in-browser" },
-      { value: "EN / ZH", label: "Fully bilingual" },
-      { value: "No sign-up", label: "Free tools, no account" },
+    // Hero aside — key reasons (replaces metric cards)
+    heroAsideEyebrow: "What that means for you",
+    heroAside: [
+      "Most tools run in your browser — files never leave your device",
+      "Core PDF tools are free, with no account required",
+      "Clear labels whenever a cloud step is involved",
+      "Your documents are never used to train AI",
     ],
 
     // Trust / why pay
@@ -79,11 +80,12 @@ const content = {
     cta1: "所有 PDF 工具",
     cta2: "查看定价",
 
-    stats: [
-      { value: "20+", label: "文档工具" },
-      { value: "本地", label: "多数工具浏览器内处理" },
-      { value: "中 / 英", label: "完整双语" },
-      { value: "免注册", label: "免费工具无需账户" },
+    heroAsideEyebrow: "这对你意味着什么",
+    heroAside: [
+      "大多数工具在浏览器中运行——文件绝不离开你的设备",
+      "核心 PDF 工具免费，无需注册",
+      "凡涉及云端步骤，都会明确标注",
+      "你的文档绝不会被用于训练 AI",
     ],
 
     trustEyebrow: "为什么可以把文件放心交给我们",
@@ -159,13 +161,18 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
                 <a href={pricingHref} className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-5 text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">{c.cta2}</a>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {c.stats.map(({ value, label }) => (
-                <div key={label} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-6">
-                  <p className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">{value}</p>
-                  <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{label}</p>
-                </div>
-              ))}
+            <div className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-8">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">{c.heroAsideEyebrow}</p>
+              <ul className="mt-4 space-y-4">
+                {c.heroAside.map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-[15px] leading-7 text-[color:var(--foreground)]">
+                    <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 5 5 9-11"/></svg>
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

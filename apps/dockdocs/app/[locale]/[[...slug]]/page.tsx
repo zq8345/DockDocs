@@ -16,7 +16,6 @@ import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { AboutPage } from "@/components/AboutPage";
-import { RelatedTools } from "@/components/RelatedTools";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";

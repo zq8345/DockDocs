@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
-import { RelatedTools } from "@/components/RelatedTools";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 
 function l(pathname: string | null): string {
@@ -108,7 +107,7 @@ export function Footer() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-1">
             <a href={href("/", locale)}>
-              <BrandMark showWordmark={false} />
+              <BrandMark showWordmark={true} />
             </a>
             <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--faint)]">
               {locale === "zh" ? "面向 PDF 工作流的 AI 文档工具。" : "AI-powered document tools for PDF workflows."}
@@ -133,11 +132,6 @@ export function Footer() {
               </ul>
             </div>
           ))}
-        </div>
-
-        {/* Related workspaces */}
-        <div className="mt-10 border-t border-[color:var(--line)] pt-8">
-          <RelatedTools compact />
         </div>
 
         {/* Bottom bar */}
