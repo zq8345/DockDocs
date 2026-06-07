@@ -407,14 +407,14 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       {/* ── CTA ── */}
       <section className="bg-[color:var(--surface-subtle)]">
         <div className="mx-auto max-w-2xl px-5 py-10 sm:px-6">
-          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--foreground)] px-7 py-8 text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--background)]/60">
+          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface)] px-7 py-8 text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">
               {config.cta.eyebrow}
             </p>
-            <h2 className="mt-2 text-xl font-semibold text-[color:var(--background)]">
+            <h2 className="mt-2 text-xl font-semibold text-[color:var(--foreground)]">
               {config.cta.title}
             </h2>
-            <p className="mx-auto mt-2 max-w-md text-sm text-[color:var(--background)]/60">
+            <p className="mx-auto mt-2 max-w-md text-sm text-[color:var(--muted)]">
               {config.cta.description}
             </p>
             <a

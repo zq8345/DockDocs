@@ -209,11 +209,11 @@ export default function Home() {
       {/* ── CTA ── */}
       <section className="bg-[color:var(--surface-subtle)]">
         <div className="mx-auto max-w-5xl px-5 py-16 sm:px-6 lg:px-8">
-          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--foreground)] px-8 py-14 text-center">
-            <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--background)] sm:text-3xl">
+          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-8 py-14 text-center">
+            <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
               Start working with your documents.
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-sm leading-7 text-[color:var(--background)]/60 sm:text-base">
+            <p className="mx-auto mt-4 max-w-lg text-sm leading-7 text-[color:var(--muted)] sm:text-base">
               Free to use. No account required for most tools. Switch to Plus for AI features and higher limits.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -225,7 +225,7 @@ export default function Home() {
               </a>
               <a
                 href="/pricing"
-                className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--background)]/20 px-6 text-sm font-semibold text-[color:var(--background)] transition hover:border-[color:var(--background)]/40"
+                className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-6 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
               >
                 View pricing
               </a>

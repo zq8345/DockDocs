@@ -722,14 +722,14 @@ function LocalizedHome({ locale }: { locale: Locale }) {
       {/* CTA Banner */}
       <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8">
-          <div className="rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--foreground)] px-8 py-12 text-center shadow-[0_24px_64px_rgba(0,0,0,0.2)] sm:px-12">
-            <h2 className="text-2xl font-semibold text-[color:var(--background)] sm:text-3xl">{copy.aiTitle}</h2>
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[color:var(--background)]/60 sm:text-base">{copy.aiDescription}</p>
+          <div className="rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-8 py-12 text-center sm:px-12">
+            <h2 className="text-2xl font-semibold text-[color:var(--foreground)] sm:text-3xl">{copy.aiTitle}</h2>
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">{copy.aiDescription}</p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <a href={localizedPath(locale, "chat-with-pdf")} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-sm font-semibold text-white transition hover:opacity-90">
                 {copy.primary}
               </a>
-              <a href={localizedPath(locale, "pricing")} className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--background)]/20 px-6 text-sm font-semibold text-[color:var(--background)] transition hover:border-[color:var(--background)]/40">
+              <a href={localizedPath(locale, "pricing")} className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-6 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">
                 {zh ? "查看定价" : "View pricing"}
               </a>
             </div>

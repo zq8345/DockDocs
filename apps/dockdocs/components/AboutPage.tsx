@@ -214,9 +214,9 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
       {/* ── CTA ── */}
       <section className="bg-[color:var(--surface-subtle)]">
         <div className="mx-auto max-w-5xl px-5 py-16 sm:px-6 lg:px-8">
-          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--foreground)] px-8 py-12 text-center">
-            <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--background)]">{c.ctaTitle}</h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-[color:var(--background)]/60">{c.ctaDesc}</p>
+          <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-8 py-12 text-center">
+            <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">{c.ctaTitle}</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-[color:var(--muted)]">{c.ctaDesc}</p>
             <a href={homeHref} className="mt-6 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-sm font-semibold text-white transition hover:opacity-90">{c.ctaBtn}</a>
           </div>
         </div>
