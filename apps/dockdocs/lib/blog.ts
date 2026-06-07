@@ -21,6 +21,7 @@ export const blogArticleSlugs = [
   "convert-image-to-pdf-online",
   "ocr-pdf-to-text-online",
   "pdf-to-word-for-editing",
+  "compress-pdf-quality-complete-guide",
 ] as const;
 
 export type BlogArticleSlug = (typeof blogArticleSlugs)[number];
