@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { defaultLocale, isLocale } from "@/lib/i18n";
@@ -99,6 +100,14 @@ const toolColsZh = [
 export function Footer() {
   const pathname = usePathname();
   const locale = l(pathname);
+  const [views, setViews] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/mission-control-data.json")
+      .then((res) => res.json())
+      .then((data) => setViews(data?.analytics?.todayPageViews ?? null))
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className="border-t border-[color:var(--line)] bg-[color:var(--surface)]">
@@ -139,7 +148,11 @@ export function Footer() {
           <p className="text-[12px] text-[color:var(--faint)]">
             &copy; {new Date().getFullYear()} DockDocs. All rights reserved.
           </p>
-          <div className="flex flex-wrap gap-x-5 gap-y-2 text-[12px] text-[color:var(--faint)]">
+          {views !== null && (
+            <p className="text-[12px] text-[color:var(--faint)]">今日 {views.toLocaleString()} 次浏览</p>
+          )}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-[color:var(--faint)]">
+            <span className="text-[color:var(--muted)]">📊 今日浏览: {views === null ? "..." : views.toLocaleString()}</span>
             <a href={href("/privacy-policy", locale)} className="transition hover:text-[color:var(--muted)]">Privacy</a>
             <a href={href("/terms", locale)} className="transition hover:text-[color:var(--muted)]">Terms</a>
           </div>
