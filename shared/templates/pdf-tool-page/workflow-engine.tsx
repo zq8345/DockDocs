@@ -48,7 +48,7 @@ export function PdfWorkflowEngine({
   const [stepIndex, setStepIndex] = useState(0);
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
-  const [pageRanges, setPageRanges] = useState("1");
+  const [pageRanges, setPageRanges] = useState("");
   const [ocrLanguage, setOcrLanguage] = useState<OcrLanguage>("eng");
   const [ocrConfirmed, setOcrConfirmed] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -266,7 +266,7 @@ export function PdfWorkflowEngine({
     setRuntimeArtifact(null);
     setOcrConfirmed(false);
     setOcrLanguage("eng");
-    setPageRanges("1");
+    setPageRanges("");
     if (inputRef.current) {
       inputRef.current.value = "";
     }

@@ -330,6 +330,45 @@ export function createPdfToolSchema(config: PdfToolPageConfig) {
   };
 }
 
+// Maps the fixed English stats vocabulary to Chinese, so localized tool
+// pages show translated pills without editing every tool config.
+const STAT_ZH: Record<string, string> = {
+  Price: "价格",
+  Input: "输入",
+  Output: "输出",
+  Workspace: "工作区",
+  Free: "免费",
+  "PDF files": "PDF 文件",
+  "PDF file": "PDF 文件",
+  PDF: "PDF",
+  "Multiple PDFs": "多个 PDF",
+  "One PDF": "一个 PDF",
+  "Pages or ranges": "页面或范围",
+  "Word documents": "Word 文档",
+  "Scanned PDFs": "扫描版 PDF",
+  "Extracted text": "提取的文字",
+  "JPG images": "JPG 图片",
+  "PNG images": "PNG 图片",
+  "PDF document": "PDF 文档",
+  "TXT file": "TXT 文件",
+  "Markdown (.md)": "Markdown (.md)",
+  "Trimmed PDF": "精简后的 PDF",
+  "Rotated PDF": "旋转后的 PDF",
+  "Reordered PDF": "重排后的 PDF",
+  "PDF + blank page": "PDF + 空白页",
+  "Encrypted PDF": "加密 PDF",
+  "AI documents": "AI 文档",
+  "DOCX / DOC": "DOCX / DOC",
+  "PPTX / PPT": "PPTX / PPT",
+  "XLSX / XLS": "XLSX / XLS",
+  XLSX: "XLSX",
+};
+
+function tStat(text: string, zh: boolean): string {
+  if (!zh) return text;
+  return STAT_ZH[text] ?? text;
+}
+
 export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
   const schema = createPdfToolSchema(config);
   const zh = (config.locale ?? "en") === "zh";
@@ -369,7 +408,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
                   key={label}
                   className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-medium text-[color:var(--muted)]"
                 >
-                  {label}: <strong className="font-semibold text-[color:var(--foreground)]">{value}</strong>
+                  {tStat(label, zh)}: <strong className="font-semibold text-[color:var(--foreground)]">{tStat(value, zh)}</strong>
                 </span>
               ))}
             </div>

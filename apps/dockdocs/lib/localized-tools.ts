@@ -1032,17 +1032,177 @@ const localizedTools = {
   zh: zhTools,
 };
 
+// Generic Chinese FAQ per tool. The zh tool configs inherit English FAQ via
+// the enTools spread; for Chinese pages we substitute these translated sets
+// so the FAQ section reads in Chinese.
+const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "compress-pdf": {
+    faqTitle: "PDF 压缩常见问题",
+    faq: [
+      { question: "如何压缩 PDF？", answer: "上传 PDF，选择压缩级别，然后下载更小的文件。" },
+      { question: "是否免费？", answer: "是的，压缩在你的浏览器本地完成，免费使用。" },
+      { question: "压缩后文字还能选中吗？", answer: "压缩会将页面重绘为图像，文字将不可再选中。如需保留文字层，请使用原文件。" },
+      { question: "文件会上传到服务器吗？", answer: "不会，所有处理都在你的浏览器中完成。" },
+    ],
+  },
+  "merge-pdf": {
+    faqTitle: "PDF 合并常见问题",
+    faq: [
+      { question: "可以上传多个 PDF 吗？", answer: "可以，上传多个 PDF 并按需要调整顺序后合并。" },
+      { question: "可以调整顺序吗？", answer: "可以，用每个文件旁的上下箭头调整合并顺序。" },
+      { question: "是否免费？", answer: "完全免费，且在浏览器本地处理。" },
+    ],
+  },
+  "split-pdf": {
+    faqTitle: "PDF 拆分常见问题",
+    faq: [
+      { question: "如何拆分 PDF？", answer: "上传 PDF，输入页面范围（如 1-4, 12-18），下载结果。" },
+      { question: "支持哪些范围格式？", answer: "支持逗号分隔的单页和范围，例如 1, 3, 5-7。" },
+      { question: "是否免费？", answer: "免费，且在浏览器本地处理。" },
+    ],
+  },
+  "reorder-pages": {
+    faqTitle: "页面排序常见问题",
+    faq: [
+      { question: "如何重排页面？", answer: "上传 PDF，输入新的页面顺序（如 3,1,2），下载重排后的文件。" },
+      { question: "必须包含所有页面吗？", answer: "只有列出的页面会出现在结果中，因此也可用于删除页面。" },
+      { question: "是否免费？", answer: "免费，且完全在浏览器中处理。" },
+    ],
+  },
+  "rotate-page": {
+    faqTitle: "旋转页面常见问题",
+    faq: [
+      { question: "如何旋转页面？", answer: "上传 PDF，选择要旋转的页面和角度，下载结果。" },
+      { question: "可以只旋转部分页面吗？", answer: "可以，指定页面范围；留空则旋转全部。" },
+      { question: "是否免费？", answer: "免费，且在浏览器本地处理。" },
+    ],
+  },
+  "delete-page": {
+    faqTitle: "删除页面常见问题",
+    faq: [
+      { question: "如何删除页面？", answer: "上传 PDF，输入要删除的页面（如 1, 3, 5-7），下载结果。" },
+      { question: "是否免费？", answer: "免费，且完全在浏览器中处理。" },
+    ],
+  },
+  "add-page": {
+    faqTitle: "添加页面常见问题",
+    faq: [
+      { question: "如何添加空白页？", answer: "上传 PDF，指定在第几页之后插入，下载结果。" },
+      { question: "是否免费？", answer: "免费，且在浏览器本地处理。" },
+    ],
+  },
+  "protect-pdf": {
+    faqTitle: "加密 PDF 常见问题",
+    faq: [
+      { question: "如何为 PDF 设置密码？", answer: "上传 PDF，设置至少 4 位的密码，下载加密后的文件。" },
+      { question: "加密是真实有效的吗？", answer: "是的，输出文件需要密码才能打开。" },
+      { question: "文件大小有限制吗？", answer: "通过云端加密的文件最大 6 MB。" },
+    ],
+  },
+  "jpg-to-pdf": {
+    faqTitle: "JPG 转 PDF 常见问题",
+    faq: [
+      { question: "如何把图片转成 PDF？", answer: "上传一张或多张 JPG 图片，调整顺序后下载 PDF。" },
+      { question: "可以合并多张图片吗？", answer: "可以，每张图片成为 PDF 的一页。" },
+      { question: "是否免费？", answer: "免费，且在浏览器本地处理。" },
+    ],
+  },
+  "png-to-pdf": {
+    faqTitle: "PNG 转 PDF 常见问题",
+    faq: [
+      { question: "如何把 PNG 转成 PDF？", answer: "上传一张或多张 PNG 图片，调整顺序后下载 PDF。" },
+      { question: "是否免费？", answer: "免费，且在浏览器本地处理。" },
+    ],
+  },
+  "text-to-pdf": {
+    faqTitle: "文本转 PDF 常见问题",
+    faq: [
+      { question: "如何把文本转成 PDF？", answer: "上传 TXT 文件，内容会被排版为 PDF 文档。" },
+      { question: "是否免费？", answer: "免费，且在浏览器本地处理。" },
+    ],
+  },
+  "pdf-to-jpg": {
+    faqTitle: "PDF 转 JPG 常见问题",
+    faq: [
+      { question: "如何把 PDF 转成 JPG？", answer: "上传 PDF，每一页会被导出为 JPG 图片并打包下载。" },
+      { question: "是否免费？", answer: "免费，且在浏览器本地处理。" },
+    ],
+  },
+  "pdf-to-png": {
+    faqTitle: "PDF 转 PNG 常见问题",
+    faq: [
+      { question: "如何把 PDF 转成 PNG？", answer: "上传 PDF，每一页会被导出为 PNG 图片并打包下载。" },
+      { question: "是否免费？", answer: "免费，且在浏览器本地处理。" },
+    ],
+  },
+  "pdf-to-markdown": {
+    faqTitle: "PDF 转 Markdown 常见问题",
+    faq: [
+      { question: "如何把 PDF 转成 Markdown？", answer: "上传可选择文字的 PDF，文字会被提取为 Markdown。" },
+      { question: "支持扫描件吗？", answer: "扫描件需要先用 OCR 提取文字。" },
+    ],
+  },
+  "pdf-to-word": {
+    faqTitle: "PDF 转 Word 常见问题",
+    faq: [
+      { question: "如何把 PDF 转成 Word？", answer: "上传 PDF，内容会被导出为可编辑的 DOCX 文件。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 6 MB。" },
+    ],
+  },
+  "ocr-pdf": {
+    faqTitle: "OCR 常见问题",
+    faq: [
+      { question: "什么是 OCR？", answer: "OCR 从扫描件或图片型 PDF 中识别并提取文字。" },
+      { question: "支持中文吗？", answer: "支持，可在选项中选择中文（简体）。" },
+      { question: "一次能处理多少页？", answer: "浏览器端 OCR 一次最多处理 3 页。" },
+    ],
+  },
+  "word-to-pdf": {
+    faqTitle: "Word 转 PDF 常见问题",
+    faq: [
+      { question: "如何把 Word 转成 PDF？", answer: "上传 DOCX/DOC 文件，下载转换后的 PDF。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 6 MB。" },
+    ],
+  },
+  "ppt-to-pdf": {
+    faqTitle: "PPT 转 PDF 常见问题",
+    faq: [
+      { question: "如何把 PPT 转成 PDF？", answer: "上传 PPTX/PPT 文件，下载转换后的 PDF。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 6 MB。" },
+    ],
+  },
+  "excel-to-pdf": {
+    faqTitle: "Excel 转 PDF 常见问题",
+    faq: [
+      { question: "如何把 Excel 转成 PDF？", answer: "上传 XLSX/XLS 文件，下载转换后的 PDF。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 6 MB。" },
+    ],
+  },
+  "pdf-to-excel": {
+    faqTitle: "PDF 转 Excel 常见问题",
+    faq: [
+      { question: "如何把 PDF 转成 Excel？", answer: "上传 PDF，表格数据会被导出为 XLSX 文件。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 6 MB。" },
+    ],
+  },
+};
+
 export function getLocalizedToolConfig(
   locale: Locale,
   slug: ToolSlug,
 ): PdfToolPageConfig {
-  return {
+  const base = {
     slug,
     locale,
     canonicalPath: localizedPath(locale, slug),
     alternateLanguages: languageAlternates(slug),
     ...localizedTools[locale][slug],
   };
+  // For Chinese pages, substitute translated FAQ (zh configs inherit EN FAQ)
+  if (locale === "zh" && zhFaq[slug]) {
+    return { ...base, faqTitle: zhFaq[slug]!.faqTitle, faq: zhFaq[slug]!.faq };
+  }
+  return base;
 }
 
 export function getLocalizedToolUrl(locale: Locale, slug: ToolSlug) {
