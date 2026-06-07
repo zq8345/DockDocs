@@ -349,14 +349,6 @@ export default async function LocalizedRoute({
     return <LocalizedRuntimeTool locale={rawLocale} tool="ocr" />;
   }
 
-  if (slug === "compress-pdf") {
-    return <LocalizedRuntimeTool locale={rawLocale} tool="compress" />;
-  }
-
-  if (slug === "pdf-to-word") {
-    return <LocalizedRuntimeTool locale={rawLocale} tool="pdfToWord" />;
-  }
-
   if (slug === "dashboard") {
     return <LocalizedDashboard locale={rawLocale} />;
   }
