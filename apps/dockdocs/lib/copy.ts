@@ -466,7 +466,7 @@ export const runtimeCopy = {
         {
           tier: "PLUS",
           name: "Plus",
-          price: "$12",
+          price: "$5",
           description: "For individuals who work with documents weekly and need richer AI workflows.",
           cta: "Upgrade to Plus",
           href: "/account/?plan=PLUS",
@@ -481,7 +481,7 @@ export const runtimeCopy = {
         {
           tier: "PRO",
           name: "Pro",
-          price: "$29",
+          price: "$20",
           description: "For teams that need shared document review patterns and stronger workspace visibility.",
           cta: "Upgrade to Pro",
           href: "/account/?plan=PRO",
@@ -962,7 +962,7 @@ export const runtimeCopy = {
         {
           tier: "PLUS",
           name: "Plus",
-          price: "$12",
+          price: "$5",
           description: "适合每周处理文档、需要更完整 AI 工作流的个人用户。",
           cta: "升级到 Plus",
           href: "/account/?plan=PLUS",
@@ -977,7 +977,7 @@ export const runtimeCopy = {
         {
           tier: "PRO",
           name: "Pro",
-          price: "$29",
+          price: "$20",
           description: "适合需要共享文档复核模式和更强工作区可见性的团队。",
           cta: "升级到 Pro",
           href: "/account/?plan=PRO",

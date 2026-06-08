@@ -113,7 +113,7 @@ export const billingPlans: Array<{
   {
     tier: "PLUS",
     name: "Plus",
-    price: "$9/month",
+    price: "$5/month",
     description: "Higher usage for individuals working with documents weekly.",
     cta: "Upgrade to Plus",
     highlights: [
@@ -126,7 +126,7 @@ export const billingPlans: Array<{
   {
     tier: "PRO",
     name: "Pro",
-    price: "$29/month",
+    price: "$20/month",
     description: "High-volume workspace placeholder for heavier document teams.",
     cta: "Upgrade to Pro",
     highlights: [

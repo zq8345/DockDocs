@@ -32,7 +32,10 @@ export type SavedChatRecord = {
 const storagePrefix = "dockdocs:account";
 export const anonymousAccountId = "anonymous";
 const maxSavedChats = 50;
-const developmentProAccountEmail = "zq8345@gmail.com";
+const developmentProAccountEmails = (process.env.NEXT_PUBLIC_DEV_PRO_EMAILS ?? "")
+  .split(",")
+  .map((entry) => entry.trim().toLowerCase())
+  .filter(Boolean);
 
 export async function getCurrentAccountUser(): Promise<DockAccountUser | null> {
   try {
@@ -155,7 +158,8 @@ function storageKey(userId: string) {
 }
 
 function isDevelopmentProAccountEmail(email: string | null | undefined) {
-  return email?.trim().toLowerCase() === developmentProAccountEmail;
+  const normalized = email?.trim().toLowerCase();
+  return normalized ? developmentProAccountEmails.includes(normalized) : false;
 }
 
 function createChatTitle(sourceName: string, question: string) {

@@ -49,7 +49,10 @@ export type SubscriptionSnapshot = {
 const prefix = "dockdocs:subscription";
 const legacyBillingPrefix = "dockdocs:billing";
 const anonymousUserId = "anonymous";
-const developmentProAccountEmail = "zq8345@gmail.com";
+const developmentProAccountEmails = (process.env.NEXT_PUBLIC_DEV_PRO_EMAILS ?? "")
+  .split(",")
+  .map((entry) => entry.trim().toLowerCase())
+  .filter(Boolean);
 
 export async function getSubscriptionSnapshot(): Promise<SubscriptionSnapshot> {
   const user = await getCurrentAccountUser();
@@ -200,7 +203,8 @@ export function createDevelopmentProSubscription(
 }
 
 export function isDevelopmentProAccountEmail(email: string | null | undefined) {
-  return email?.trim().toLowerCase() === developmentProAccountEmail;
+  const normalized = email?.trim().toLowerCase();
+  return normalized ? developmentProAccountEmails.includes(normalized) : false;
 }
 
 export function planDisplayName(plan: SubscriptionPlan) {

@@ -22,7 +22,7 @@ export const billingPlanConfigs: BillingPlanConfig[] = [
   {
     plan: "PLUS",
     name: "Plus",
-    price: "$9/month",
+    price: "$5/month",
     description: "Higher monthly usage for individual document work.",
     checkoutEnabled: true,
     priceEnvName: "DOCKDOCS_STRIPE_PLUS_PRICE_ID",
@@ -30,7 +30,7 @@ export const billingPlanConfigs: BillingPlanConfig[] = [
   {
     plan: "PRO",
     name: "Pro",
-    price: "$29/month",
+    price: "$20/month",
     description: "High-volume document workspace usage.",
     checkoutEnabled: true,
     priceEnvName: "DOCKDOCS_STRIPE_PRO_PRICE_ID",
