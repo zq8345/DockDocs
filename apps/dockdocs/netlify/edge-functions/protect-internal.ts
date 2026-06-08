@@ -1,26 +1,51 @@
-// protect-internal.ts — Netlify Edge Function:服务器层 Basic Auth
-// 保护内部控制台页面 + 它读取的数据 JSON,防止全网公开访问/下载。
-// 这是真正的鉴权(在 CDN 边缘拦截),不是前端登录框那种摆设。
+// protect-internal.ts — Netlify Edge Function: server-side Basic Auth
+// Protects ONLY the internal dashboard pages + the JSON data they read.
+// This is real auth (intercepted at the CDN edge), enforced before the
+// page/file is served.
 //
-// 注意:此文件由 Netlify 用 Deno 运行时单独打包,不属于 Next 应用。
-// 用内联类型(不从 URL 导入)以免被 Next 的 tsc 当成普通模块解析报错。
+// IMPORTANT: This function must NEVER block public pages (home, tools,
+// pricing, about, etc). It does an explicit internal-path check below and
+// calls context.next() (pass through) for everything else, regardless of
+// how Netlify routes the request in.
 //
-// 启用:在 Netlify 站点 Settings → Environment variables 设置
-//   MC_USER = 你的用户名
-//   MC_PASS = 你的强密码
-// 部署后访问 /internal/* 或 mission-control-data.json 会先弹出浏览器登录框。
+// Enable by setting in Netlify → Settings → Environment variables:
+//   MC_USER = your username
+//   MC_PASS = your strong password
+//
+// This file is bundled by Netlify with the Deno runtime (not part of Next).
 
-// Netlify 边缘运行时(Deno)全局
 declare const Deno: { env: { get(key: string): string | undefined } };
 type EdgeContext = { next: () => Promise<Response> };
 
+// Paths that actually require auth. Everything else passes through.
+function isProtectedPath(pathname: string): boolean {
+  // strip optional locale prefix: /en/... or /zh/...
+  const p = pathname.replace(/^\/(en|zh)(?=\/|$)/, "");
+  return (
+    p === "/internal" ||
+    p.startsWith("/internal/") ||
+    p === "/mission-control-data.json"
+  );
+}
+
 export default async (request: Request, context: EdgeContext): Promise<Response> => {
+  const pathname = new URL(request.url).pathname;
+
+  // SAFETY GATE: if this isn't an internal path, never challenge — pass through.
+  // This guarantees public pages are never blocked, even if Netlify's path
+  // matcher routes a broader set of requests into this function.
+  if (!isProtectedPath(pathname)) {
+    return context.next();
+  }
+
   const user = Deno.env.get("MC_USER");
   const pass = Deno.env.get("MC_PASS");
 
-  // 未配置账号密码时,为安全起见直接锁死(避免误以为已保护其实裸奔)
+  // If credentials aren't configured, do NOT lock the whole route — just pass
+  // through. (The internal dashboard simply won't be password-protected until
+  // MC_USER/MC_PASS are set. Better than risking a site-wide lockout.)
   if (!user || !pass) {
-    return new Response("Internal dashboard locked: MC_USER/MC_PASS not configured.", { status: 503 });
+    return context.next();
   }
 
   const expected = "Basic " + btoa(`${user}:${pass}`);
@@ -35,10 +60,12 @@ export default async (request: Request, context: EdgeContext): Promise<Response>
       },
     });
   }
-  return context.next(); // 通过鉴权,继续返回原始页面/文件
+
+  return context.next();
 };
 
-// 覆盖:内部页(含语言前缀)+ 控制台数据文件
+// Netlify only invokes this function for these paths. The in-function
+// isProtectedPath() check is a second safety layer on top of this.
 export const config = {
   path: ["/internal/*", "/en/internal/*", "/zh/internal/*", "/mission-control-data.json"],
 };
