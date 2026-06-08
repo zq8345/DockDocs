@@ -55,6 +55,7 @@ export const routeSlugs = [
   "ai-workspace",
   "dashboard",
   "pricing",
+  "account",
   "resources",
   "guides",
   "ai-pdf-guides",

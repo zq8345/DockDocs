@@ -20,7 +20,42 @@ import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 
 type AuthView = "loading" | "signed-out" | "email-sent" | "signed-in";
 
-export function AccountClient() {
+type AccountLocale = "en" | "zh";
+
+function getCopy(locale: AccountLocale) {
+  const zh = locale === "zh";
+  return {
+    redirecting: (label: string) => (zh ? `正在跳转到${label}…` : `Redirecting to ${label}…`),
+    oauthFailed: (label: string) => (zh ? `${label}登录失败` : `${label} sign-in failed`),
+    sendFailed: zh ? "发送失败,请重试" : "Failed to send, please try again",
+    signOutFailed: zh ? "退出失败" : "Sign out failed",
+    checkoutFailed: zh ? "结算失败" : "Checkout failed",
+    portalFailed: zh ? "账单管理打开失败" : "Couldn't open billing portal",
+    magicSentTitle: zh ? "登录链接已发送" : "Magic link sent",
+    magicSentBody: (email: string) =>
+      zh
+        ? `我们已把登录链接发到 ${email},点击邮件里的链接即可登录(可能在垃圾箱)。`
+        : `We've sent a sign-in link to ${email}. Click it to sign in (check spam too).`,
+    back: zh ? "← 返回" : "← Back",
+    continueGoogle: zh ? "使用 Google 继续" : "Continue with Google",
+    continueMicrosoft: zh ? "使用 Microsoft 继续" : "Continue with Microsoft",
+    orEmail: zh ? "或邮箱" : "or email",
+    sending: zh ? "发送中…" : "Sending…",
+    sendMagic: zh ? "发送登录链接" : "Send magic link",
+    emailHint: zh ? "无需密码,我们会发一封登录邮件给你" : "No password — we'll email you a sign-in link",
+    appleSoon: zh ? "即将支持 Apple 登录" : "Apple sign-in coming soon",
+    signedIn: zh ? "已登录" : "Signed in",
+    currentPlan: zh ? "当前套餐" : "Current plan",
+    upgradePlus: zh ? "升级 Plus" : "Upgrade to Plus",
+    upgradePro: zh ? "升级 Pro" : "Upgrade to Pro",
+    manageBilling: zh ? "管理账单" : "Manage billing",
+    loading: zh ? "加载…" : "Loading…",
+    signOut: zh ? "退出登录" : "Sign out",
+  };
+}
+
+export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
+  const t = getCopy(locale);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
   const [view, setView] = useState<AuthView>("loading");
@@ -64,8 +99,8 @@ export function AccountClient() {
   }, []);
 
   async function oauth(fn: () => Promise<void>, label: string) {
-    setError(""); setMessage(`正在跳转到${label}…`);
-    try { await fn(); } catch (err) { setError(err instanceof Error ? err.message : `${label}登录失败`); setMessage(""); }
+    setError(""); setMessage(t.redirecting(label));
+    try { await fn(); } catch (err) { setError(err instanceof Error ? err.message : t.oauthFailed(label)); setMessage(""); }
   }
 
   async function handleMagicLink(e: React.FormEvent) {
@@ -75,7 +110,7 @@ export function AccountClient() {
       await sendMagicLink(email.trim());
       setView("email-sent");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "发送失败,请重试");
+      setError(err instanceof Error ? err.message : t.sendFailed);
     } finally {
       setBusy("");
     }
@@ -83,16 +118,16 @@ export function AccountClient() {
 
   async function handleSignOut() {
     setError("");
-    try { await signOut(); } catch (err) { setError(err instanceof Error ? err.message : "退出失败"); }
+    try { await signOut(); } catch (err) { setError(err instanceof Error ? err.message : t.signOutFailed); }
   }
 
   async function handleBilling(plan: PaidSubscriptionPlan) {
     setBillingLoading(plan); setError("");
-    try { await createBillingCheckoutSession(plan); } catch (err) { setError(err instanceof Error ? err.message : "结算失败"); setBillingLoading(""); }
+    try { await createBillingCheckoutSession(plan); } catch (err) { setError(err instanceof Error ? err.message : t.checkoutFailed); setBillingLoading(""); }
   }
   async function handlePortal() {
     setBillingLoading("portal"); setError("");
-    try { await createBillingPortalSession(); } catch (err) { setError(err instanceof Error ? err.message : "账单管理打开失败"); setBillingLoading(""); }
+    try { await createBillingPortalSession(); } catch (err) { setError(err instanceof Error ? err.message : t.portalFailed); setBillingLoading(""); }
   }
 
   if (view === "loading") {
@@ -107,9 +142,9 @@ export function AccountClient() {
     return (
       <div className="mt-8 space-y-4 text-center">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[color:var(--success-surface)] text-[color:var(--success)] text-xl">✉</div>
-        <p className="text-[15px] font-semibold">登录链接已发送</p>
-        <p className="text-[13px] text-[color:var(--muted)]">我们已把登录链接发到 <span className="font-medium text-[color:var(--foreground)]">{email}</span>,点击邮件里的链接即可登录(可能在垃圾箱)。</p>
-        <button type="button" onClick={() => { setView("signed-out"); setMessage(""); }} className="text-[12px] text-[color:var(--muted)] hover:text-[color:var(--foreground)]">&larr; 返回</button>
+        <p className="text-[15px] font-semibold">{t.magicSentTitle}</p>
+        <p className="text-[13px] text-[color:var(--muted)]">{t.magicSentBody(email)}</p>
+        <button type="button" onClick={() => { setView("signed-out"); setMessage(""); }} className="text-[12px] text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.back}</button>
       </div>
     );
   }
@@ -121,14 +156,14 @@ export function AccountClient() {
         <button type="button" onClick={() => oauth(signInWithGoogle, "Google")}
           className="flex w-full items-center justify-center gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 text-[14px] font-semibold transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-raised)]">
           <svg className="h-5 w-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          使用 Google 继续
+          {t.continueGoogle}
         </button>
 
         {/* Microsoft */}
         <button type="button" onClick={() => oauth(signInWithMicrosoft, "Microsoft")}
           className="flex w-full items-center justify-center gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 text-[14px] font-semibold transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-raised)]">
           <svg className="h-5 w-5" viewBox="0 0 24 24"><path fill="#F25022" d="M3 3h8.5v8.5H3z"/><path fill="#7FBA00" d="M12.5 3H21v8.5h-8.5z"/><path fill="#00A4EF" d="M3 12.5h8.5V21H3z"/><path fill="#FFB900" d="M12.5 12.5H21V21h-8.5z"/></svg>
-          使用 Microsoft 继续
+          {t.continueMicrosoft}
         </button>
 
         {message && <p className="rounded-[var(--radius-sm)] bg-[color:var(--success-surface)] px-3 py-2 text-[13px] text-[color:var(--success)]">{message}</p>}
@@ -136,7 +171,7 @@ export function AccountClient() {
 
         <div className="flex items-center gap-3">
           <div className="h-px flex-1 bg-[color:var(--line)]" />
-          <span className="text-[11px] uppercase tracking-[0.14em] text-[color:var(--faint)]">或邮箱</span>
+          <span className="text-[11px] uppercase tracking-[0.14em] text-[color:var(--faint)]">{t.orEmail}</span>
           <div className="h-px flex-1 bg-[color:var(--line)]" />
         </div>
 
@@ -146,13 +181,13 @@ export function AccountClient() {
             className="w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2.5 text-[14px] outline-none transition focus:border-[color:var(--accent)]" />
           <button type="submit" disabled={!email || busy === "email"}
             className="w-full rounded-[var(--radius)] bg-[color:var(--accent)] px-4 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[color:var(--accent-hover)] disabled:opacity-50">
-            {busy === "email" ? "发送中…" : "发送登录链接"}
+            {busy === "email" ? t.sending : t.sendMagic}
           </button>
-          <p className="text-center text-[12px] text-[color:var(--faint)]">无需密码,我们会发一封登录邮件给你</p>
+          <p className="text-center text-[12px] text-[color:var(--faint)]">{t.emailHint}</p>
         </form>
 
         <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-[12px] text-[color:var(--faint)]">
-           即将支持 Apple 登录
+           {t.appleSoon}
         </div>
       </div>
     );
@@ -170,13 +205,13 @@ export function AccountClient() {
             <p className="text-[15px] font-semibold">{user?.name || user?.email}</p>
             <p className="text-[13px] text-[color:var(--muted)]">{user?.email}</p>
           </div>
-          <span className="ml-auto rounded-full bg-[color:var(--success-surface)] px-2.5 py-1 text-[11px] font-semibold text-[color:var(--success)]">已登录</span>
+          <span className="ml-auto rounded-full bg-[color:var(--success-surface)] px-2.5 py-1 text-[11px] font-semibold text-[color:var(--success)]">{t.signedIn}</span>
         </div>
       </div>
 
       {subscription && (
         <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">当前套餐</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{t.currentPlan}</p>
           <div className="mt-3 flex items-center justify-between">
             <div>
               <p className="text-[18px] font-semibold">{subscription.displayName}</p>
@@ -185,15 +220,15 @@ export function AccountClient() {
             {subscription.displayName === "Free" ? (
               <div className="flex gap-2">
                 <button type="button" onClick={() => handleBilling("PLUS")} disabled={billingLoading === "PLUS"} className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-1.5 text-[12px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] disabled:opacity-50">
-                  {billingLoading === "PLUS" ? "加载…" : "升级 Plus"}
+                  {billingLoading === "PLUS" ? t.loading : t.upgradePlus}
                 </button>
                 <button type="button" onClick={() => handleBilling("PRO")} disabled={billingLoading === "PRO"} className="rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-1.5 text-[12px] font-semibold text-white transition hover:bg-[color:var(--accent-hover)] disabled:opacity-50">
-                  {billingLoading === "PRO" ? "加载…" : "升级 Pro"}
+                  {billingLoading === "PRO" ? t.loading : t.upgradePro}
                 </button>
               </div>
             ) : (
               <button type="button" onClick={handlePortal} disabled={billingLoading === "portal"} className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-1.5 text-[12px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] disabled:opacity-50">
-                {billingLoading === "portal" ? "加载…" : "管理账单"}
+                {billingLoading === "portal" ? t.loading : t.manageBilling}
               </button>
             )}
           </div>
@@ -203,7 +238,7 @@ export function AccountClient() {
       {error && <p className="rounded-[var(--radius-sm)] bg-[color:var(--error-surface)] px-3 py-2 text-[13px] text-[color:var(--error)]">{error}</p>}
 
       <button type="button" onClick={handleSignOut} className="w-full rounded-[var(--radius)] border border-[color:var(--error-line)] px-4 py-2.5 text-[13px] font-medium text-[color:var(--error)] transition hover:bg-[color:var(--error-surface)]">
-        退出登录
+        {t.signOut}
       </button>
     </div>
   );

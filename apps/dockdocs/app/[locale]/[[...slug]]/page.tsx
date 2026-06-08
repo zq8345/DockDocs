@@ -19,6 +19,7 @@ import { HeroBackground } from "@/components/HeroBackground";
 import { HomeExtras } from "@/components/HomeExtras";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { AboutPage } from "@/components/AboutPage";
+import { AccountClient } from "@/components/AccountClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -242,6 +243,21 @@ export async function generateMetadata({
     );
   }
 
+  if (slug === "account") {
+    return {
+      title: rawLocale === "zh" ? "账户" : "Account",
+      description:
+        rawLocale === "zh"
+          ? "使用 Google、Microsoft 或邮箱登录 DockDocs,管理你的工作区与订阅。"
+          : "Sign in to DockDocs with Google, Microsoft, or email. Manage your workspace and billing.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "account"),
+        languages: languageAlternates("account"),
+      },
+      robots: { index: false, follow: true },
+    };
+  }
+
   if ((toolSlugs as readonly string[]).includes(slug)) {
     return createPdfToolMetadata(
       getLocalizedToolConfig(rawLocale, slug as ToolSlug),
@@ -360,6 +376,10 @@ export default async function LocalizedRoute({
     return <LocalizedPricing locale={rawLocale} />;
   }
 
+  if (slug === "account") {
+    return <LocalizedAccount locale={rawLocale} />;
+  }
+
   if ((toolSlugs as readonly string[]).includes(slug)) {
     return (
       <PdfToolPage config={getLocalizedToolConfig(rawLocale, slug as ToolSlug)} />
@@ -408,6 +428,31 @@ export default async function LocalizedRoute({
   }
 
   return <LocalizedHome locale={rawLocale} />;
+}
+
+function LocalizedAccount({ locale }: { locale: Locale }) {
+  const zh = locale === "zh";
+  return (
+    <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
+      <div className="mx-auto max-w-md">
+        <div className="text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent-strong)]">
+            {zh ? "账户" : "Account"}
+          </p>
+          <h1 className="mt-4 text-[28px] font-semibold tracking-[-0.014em]">
+            {zh ? "登录 DockDocs" : "Sign in to DockDocs"}
+          </h1>
+          <p className="mt-3 text-[14px] leading-relaxed text-[color:var(--muted)]">
+            {zh
+              ? "访问你的工作区、管理订阅,并跨设备保留文档记录。"
+              : "Access your workspace, manage billing, and keep your document history across devices."}
+          </p>
+        </div>
+
+        <AccountClient locale={locale} />
+      </div>
+    </div>
+  );
 }
 
 function getLocalizedBlogArticleSlug(rawSlug?: string[]) {

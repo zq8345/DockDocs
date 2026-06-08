@@ -33,7 +33,7 @@ export function onAuthChange(cb: (user: AuthUser | null) => void): () => void {
   return () => data.subscription.unsubscribe();
 }
 
-// 回到当前页(OAuth/魔法链接登录后跳回这里)
+// 登录后跳回当前页(/account 与 /zh/account 均已是真实路由,按语言原样返回)
 function redirectTo(): string | undefined {
   if (typeof window === "undefined") return undefined;
   return window.location.origin + window.location.pathname;
