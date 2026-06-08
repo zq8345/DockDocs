@@ -50,6 +50,7 @@ import {
   type ToolSlug,
 } from "@/lib/i18n";
 import { getRuntimeCopy } from "@/lib/copy";
+import { homeSchema, aboutSchema, pricingSchema } from "@/lib/page-schema";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import {
   createProgrammaticGeoMetadata,
@@ -381,7 +382,12 @@ export default async function LocalizedRoute({
     }
 
     if (slug === "about") {
-      return <AboutPage locale={rawLocale} />;
+      return (
+        <>
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema(rawLocale)) }} />
+          <AboutPage locale={rawLocale} />
+        </>
+      );
     }
 
     return (
@@ -584,7 +590,12 @@ function LocalizedDashboard({ locale }: { locale: Locale }) {
 }
 
 function LocalizedPricing({ locale }: { locale: Locale }) {
-  return <PricingPlans locale={locale === "zh" ? "zh" : "en"} />;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(locale)) }} />
+      <PricingPlans locale={locale === "zh" ? "zh" : "en"} />
+    </>
+  );
 }
 
 function LocalizedFaq({
@@ -680,6 +691,7 @@ function LocalizedHome({ locale }: { locale: Locale }) {
 
   return (
     <main>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema()) }} />
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-[color:var(--line)]">
         <HeroBackground />
