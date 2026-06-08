@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <main className="mx-auto max-w-3xl px-5 py-20 sm:px-6 lg:px-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "privacy-policy", "Privacy Policy")) }} />
       <h1 className="text-3xl font-semibold">Privacy Policy</h1>
       <p className="mt-5 leading-7 text-[color:var(--muted)]">
         This page is reserved for the Dock Tools privacy policy. Add your

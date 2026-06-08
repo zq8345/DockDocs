@@ -51,7 +51,7 @@ import {
   type ToolSlug,
 } from "@/lib/i18n";
 import { getRuntimeCopy } from "@/lib/copy";
-import { homeSchema, aboutSchema, pricingSchema } from "@/lib/page-schema";
+import { homeSchema, aboutSchema, pricingSchema, webPageSchema } from "@/lib/page-schema";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import {
   createProgrammaticGeoMetadata,
@@ -410,12 +410,12 @@ export default async function LocalizedRoute({
       );
     }
 
+    const infoPage = getInfoPage(rawLocale, slug as InfoPageSlug);
     return (
-      <SaasInfoPage
-        page={getInfoPage(rawLocale, slug as InfoPageSlug)}
-        locale={rawLocale}
-        useLocalePrefix
-      />
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(rawLocale, slug, infoPage.title)) }} />
+        <SaasInfoPage page={infoPage} locale={rawLocale} useLocalePrefix />
+      </>
     );
   }
 
@@ -424,7 +424,12 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "sitemap") {
-    return <LocalizedSitemap locale={rawLocale} />;
+    return (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(rawLocale, "sitemap", rawLocale === "zh" ? "网站地图" : "Sitemap")) }} />
+        <LocalizedSitemap locale={rawLocale} />
+      </>
+    );
   }
 
   return <LocalizedHome locale={rawLocale} />;

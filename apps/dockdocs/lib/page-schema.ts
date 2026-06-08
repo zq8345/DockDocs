@@ -88,3 +88,21 @@ export function pricingSchema(locale: string) {
     ],
   };
 }
+
+// 通用页面结构化数据 —— 给信息页/法律页/站点地图等补 JSON-LD(健康爬取曾标记它们缺 schema)。
+export function webPageSchema(locale: string, slug: string, name: string) {
+  const url = slug ? `${baseFor(locale)}/${slug}/` : `${baseFor(locale)}/`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name,
+        isPartOf: { "@type": "WebSite", "@id": `${SITE}#website`, name: "DockDocs", url: SITE },
+        inLanguage: locale,
+      },
+    ],
+  };
+}
