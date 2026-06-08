@@ -1,7 +1,7 @@
-import { getUser, type User } from "@netlify/identity";
+import { getUser as getAuthUser, type AuthUser } from "@/lib/auth";
 import type { AiChatHistoryTurn, AiChatResult } from "@/lib/ai-chat-runtime";
 
-export type DockAccountUser = Pick<User, "id" | "email" | "name" | "pictureUrl">;
+export type DockAccountUser = AuthUser;
 
 export type DockAccountState = {
   user: DockAccountUser | null;
@@ -34,9 +34,9 @@ export const anonymousAccountId = "anonymous";
 const maxSavedChats = 50;
 const developmentProAccountEmail = "zq8345@gmail.com";
 
-export async function getCurrentAccountUser() {
+export async function getCurrentAccountUser(): Promise<DockAccountUser | null> {
   try {
-    return toDockAccountUser(await getUser());
+    return await getAuthUser();
   } catch {
     return null;
   }
@@ -152,19 +152,6 @@ function writeSavedChats(userId: string, chats: SavedChatRecord[]) {
 
 function storageKey(userId: string) {
   return `${storagePrefix}:${userId}:chats`;
-}
-
-function toDockAccountUser(user: User | null | undefined): DockAccountUser | null {
-  if (!user?.id) {
-    return null;
-  }
-
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    pictureUrl: user.pictureUrl,
-  };
 }
 
 function isDevelopmentProAccountEmail(email: string | null | undefined) {

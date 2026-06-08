@@ -17,6 +17,7 @@
     "@dock/shared": "*",
     "@netlify/blobs": "^10.7.9",
     "@netlify/identity": "^1.2.0",
+    "@supabase/supabase-js": "^2.107.0",
     "next": "^15.5.18",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.7.284",
