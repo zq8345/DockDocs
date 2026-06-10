@@ -27,6 +27,13 @@ type Comparison = {
   documents: CmpDoc[];
 };
 
+type Recommendation = {
+  winnerId: string | null;
+  headline: string;
+  reasons: string[];
+  perDoc: Array<{ id: string; pros: string[]; cons: string[] }>;
+};
+
 const MAX_FILES = 8;
 
 const STR = {
@@ -108,6 +115,11 @@ const STR = {
   },
 } as const;
 
+const REC = {
+  en: { title: "Recommendation", thinking: "Weighing the options…", recommended: "Recommended" },
+  zh: { title: "推荐", thinking: "正在权衡各选项…", recommended: "推荐" },
+} as const;
+
 // Localized dimension labels (the backend returns English labels).
 const DIM_ZH: Record<string, string> = {
   vendor: "供应商",
@@ -131,6 +143,7 @@ const DIM_ZH: Record<string, string> = {
 
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale];
+  const r = REC[locale];
   const [results, setResults] = useState<DocResult[]>([]);
   const [busy, setBusy] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -138,6 +151,8 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const [comparing, setComparing] = useState(false);
   const [comparison, setComparison] = useState<Comparison | null>(null);
   const [compareError, setCompareError] = useState<string | null>(null);
+  const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
+  const [recommending, setRecommending] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const extractOne = useCallback(async (file: File): Promise<DocResult> => {
@@ -221,18 +236,35 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     setComparing(true);
     setCompareError(null);
     setComparison(null);
+    setRecommendation(null);
     try {
       const res = await fetch("/api/compare-extract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ docType, locale, documents: okDocs.map((r) => ({ id: r.id, name: r.name, text: r.text })) }),
+        body: JSON.stringify({ docType, locale, documents: okDocs.map((d) => ({ id: d.id, name: d.name, text: d.text })) }),
       });
       const data = await res.json();
       if (!data?.ok) {
         setCompareError(data?.message || t.failed);
         return;
       }
-      setComparison({ docType: data.docType, dimensions: data.dimensions, documents: data.documents });
+      const cmp: Comparison = { docType: data.docType, dimensions: data.dimensions, documents: data.documents };
+      setComparison(cmp);
+      // Auto-recommend on the extracted comparison — the "decide for you" payoff.
+      setRecommending(true);
+      try {
+        const rr = await fetch("/api/compare-recommend", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ docType: cmp.docType, locale, dimensions: cmp.dimensions, documents: cmp.documents }),
+        });
+        const rd = await rr.json();
+        if (rd?.ok && rd.recommendation) setRecommendation(rd.recommendation);
+      } catch {
+        /* recommendation is best-effort; the comparison table still shows */
+      } finally {
+        setRecommending(false);
+      }
     } catch (e) {
       setCompareError(e instanceof Error ? e.message : t.failed);
     } finally {
@@ -319,6 +351,46 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {compareError && <p className="mt-4 rounded-[var(--radius)] border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-300">{compareError}</p>}
+
+      {comparison && (recommending || recommendation) && (
+        <section className="mt-10">
+          <div className="rounded-[var(--radius-lg)] border border-[color:var(--accent)] bg-[color:var(--soft-accent)] p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">{r.title}</p>
+            {recommending && !recommendation ? (
+              <p className="mt-2 text-sm text-[color:var(--muted)]">{r.thinking}</p>
+            ) : recommendation ? (
+              <>
+                {recommendation.winnerId && (
+                  <p className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
+                    ✅ {r.recommended}：{comparison.documents.find((d) => d.id === recommendation.winnerId)?.name ?? recommendation.winnerId}
+                  </p>
+                )}
+                {recommendation.headline && <p className="mt-1 text-sm text-[color:var(--foreground)]">{recommendation.headline}</p>}
+                {recommendation.reasons.length > 0 && (
+                  <ul className="mt-3 space-y-1 text-sm text-[color:var(--muted)]">
+                    {recommendation.reasons.map((why, i) => (
+                      <li key={i}>· {why}</li>
+                    ))}
+                  </ul>
+                )}
+                {recommendation.perDoc.length > 0 && (
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {recommendation.perDoc.map((p) => (
+                      <div key={p.id} className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3">
+                        <p className="text-sm font-semibold text-[color:var(--foreground)]">
+                          {comparison.documents.find((d) => d.id === p.id)?.name ?? p.id}
+                        </p>
+                        {p.pros.length > 0 && <p className="mt-1.5 text-[12px] text-[color:var(--accent)]">+ {p.pros.join("；")}</p>}
+                        {p.cons.length > 0 && <p className="mt-1 text-[12px] text-amber-400/80">− {p.cons.join("；")}</p>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : null}
+          </div>
+        </section>
+      )}
 
       {comparison && (
         <section className="mt-10">
