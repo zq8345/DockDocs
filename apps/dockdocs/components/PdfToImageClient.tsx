@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { ToolFaq } from "@/components/ToolFaq";
+import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 type Locale = "en" | "zh";
 type Fmt = "jpg" | "png";
@@ -68,9 +69,9 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg" }: { loc
       setSelected(new Set(out.map((p) => p.idx)));
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e))); setPhase("idle");
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t]);
+  }, [t, locale]);
 
   const toggle = (idx: number) => setSelected((prev) => { const n = new Set(prev); if (n.has(idx)) n.delete(idx); else n.add(idx); return n; });
 
@@ -116,9 +117,9 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg" }: { loc
       URL.revokeObjectURL(url);
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e))); setPhase("ready");
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [selected, pages, format, fileName, t]);
+  }, [selected, pages, format, fileName, t, locale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">

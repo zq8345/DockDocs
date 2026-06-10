@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { ToolFaq } from "@/components/ToolFaq";
+import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 type Locale = "en" | "zh";
 type Pg = { idx: number; thumb: string };
@@ -63,9 +64,9 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
       }
       setPages(out); setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e))); setPhase("idle");
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t]);
+  }, [t, locale]);
 
   const toggleSplit = (afterIdx: number) => {
     setError(null);
@@ -110,9 +111,9 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
       URL.revokeObjectURL(url);
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e))); setPhase("ready");
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [splits, pages, fileName, t]);
+  }, [splits, pages, fileName, t, locale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">

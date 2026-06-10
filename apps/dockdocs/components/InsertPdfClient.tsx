@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
@@ -98,10 +99,10 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
       setInsertAfter(out.length); // default: at the end
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e)));
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("idle");
     }
-  }, [t]);
+  }, [t, locale]);
 
   const apply = useCallback(async () => {
     const main = mainRef.current;
@@ -149,10 +150,10 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
       URL.revokeObjectURL(url);
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e)));
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("ready");
     }
-  }, [insertAfter, fileName, t]);
+  }, [insertAfter, fileName, t, locale]);
 
   const Slot = ({ value, label }: { value: number; label: string }) => {
     const active = insertAfter === value;

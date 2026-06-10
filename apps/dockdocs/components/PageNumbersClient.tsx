@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState, type CSSProperties } from "react";
 import { ToolFaq } from "@/components/ToolFaq";
+import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 type Locale = "en" | "zh";
 type PosKey = "tl" | "tc" | "tr" | "bl" | "bc" | "br";
@@ -81,9 +82,9 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e))); setPhase("idle");
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t]);
+  }, [t, locale]);
 
   const previewLabel = useMemo(() => makeLabel(fmt, startAt, Math.max(1, numPages), zh), [fmt, startAt, numPages, zh]);
   const overlayStyle = useMemo(() => {
@@ -135,9 +136,9 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
       URL.revokeObjectURL(url);
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e))); setPhase("ready");
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [from, to, startAt, fmt, margin, pos, fileName, zh, t]);
+  }, [from, to, startAt, fmt, margin, pos, fileName, zh, t, locale]);
 
   const inputCls = "h-9 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2.5 text-[13px] text-[color:var(--foreground)]";
 

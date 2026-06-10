@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
@@ -62,9 +63,9 @@ export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
       }
       setPages(out); setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e))); setPhase("idle");
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t]);
+  }, [t, locale]);
 
   const rotateOne = (idx: number) => setRot((prev) => ({ ...prev, [idx]: ((prev[idx] || 0) + 90) % 360 }));
   const rotateAll = () => setRot((prev) => {
@@ -100,9 +101,9 @@ export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
       URL.revokeObjectURL(url);
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e))); setPhase("ready");
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [rot, fileName, t]);
+  }, [rot, fileName, t, locale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">

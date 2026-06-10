@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
@@ -130,11 +131,11 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
         setPages(doc.numPages);
         setPhase("ready");
       } catch (e) {
-        setError((e instanceof Error ? e.message : String(e)) || "Could not read PDF.");
+        setError(encryptedPdfMessage(e, locale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
         setPhase("idle");
       }
     },
-    [t],
+    [t, locale],
   );
 
   const onTranslate = useCallback(async () => {

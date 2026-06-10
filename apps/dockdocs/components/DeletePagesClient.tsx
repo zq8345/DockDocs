@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
@@ -64,9 +65,9 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
       }
       setPages(out); setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e))); setPhase("idle");
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t]);
+  }, [t, locale]);
 
   const toggle = (idx: number) => {
     setError(null);
@@ -99,9 +100,9 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
       URL.revokeObjectURL(url);
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e))); setPhase("ready");
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [marked, pages, fileName, t]);
+  }, [marked, pages, fileName, t, locale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">

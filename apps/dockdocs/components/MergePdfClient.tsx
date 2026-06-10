@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
@@ -51,6 +52,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const added: Item[] = [];
+      let encryptedSkipped = false;
       for (const f of pdfs) {
         try {
           const doc = await pdfjs.getDocument({ data: new Uint8Array(await f.arrayBuffer()) }).promise;
@@ -61,15 +63,17 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
           const ctx = canvas.getContext("2d");
           if (ctx) await page.render({ canvas, canvasContext: ctx, viewport }).promise;
           added.push({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.round(viewport.width)}`, name: f.name, pages: doc.numPages, thumb: canvas.toDataURL("image/jpeg", 0.7), file: f });
-        } catch {
+        } catch (e) {
+          if (isEncryptedPdfError(e)) encryptedSkipped = true;
           /* skip unreadable file */
         }
       }
       setItems((prev) => [...prev, ...added]);
+      if (encryptedSkipped) setError(encryptedPdfNotice(locale));
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [locale]);
 
   const move = (from: number, to: number) => {
     if (from === to || from < 0 || to < 0) return;
@@ -97,11 +101,11 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url; a.download = "dockdocs-merged.pdf"; a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e)));
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
     } finally {
       setWorking(false);
     }
-  }, [items, t]);
+  }, [items, t, locale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">

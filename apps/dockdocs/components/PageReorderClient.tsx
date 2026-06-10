@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
@@ -86,10 +87,10 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
       setPages(out);
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e)));
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("idle");
     }
-  }, [t]);
+  }, [t, locale]);
 
   const move = (from: number, to: number) => {
     if (from === to || from < 0 || to < 0) return;
@@ -133,10 +134,10 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
       URL.revokeObjectURL(url);
       setPhase("ready");
     } catch (e) {
-      setError(t.err + (e instanceof Error ? e.message : String(e)));
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("ready");
     }
-  }, [pages, fileName, t]);
+  }, [pages, fileName, t, locale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">
