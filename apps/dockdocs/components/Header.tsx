@@ -46,6 +46,7 @@ const toolGroups = {
         { name: "Reorder Pages", slug: "/reorder-pages" },
         { name: "Add Page", slug: "/add-page" },
         { name: "Watermark PDF", slug: "/watermark-pdf" },
+        { name: "Page Numbers", slug: "/page-numbers" },
       ],
     },
     {
@@ -96,6 +97,7 @@ const toolGroups = {
         { name: "页面排序", slug: "/reorder-pages" },
         { name: "添加页面", slug: "/add-page" },
         { name: "PDF 加水印", slug: "/watermark-pdf" },
+        { name: "PDF 页码", slug: "/page-numbers" },
       ],
     },
     {

@@ -34,6 +34,41 @@ type ToolCopy = {
 };
 
 const enTools: Record<ToolSlug, ToolCopy> = {
+  "page-numbers": {
+    title: "Add Page Numbers to PDF Online Free | DockDocs",
+    description: "Add page numbers to a PDF online for free. Fast, browser-side — your file never leaves your device.",
+    keywords: ["add page numbers to pdf", "pdf page numbers", "number pdf pages", "paginate pdf"],
+    appName: "DockDocs Page Numbers",
+    schemaName: "DockDocs PDF Page Numbers",
+    breadcrumbName: "Page Numbers",
+    heroTitle: "Add page numbers to your PDF.",
+    heroDescription: "Stamp a page number (e.g. 3 / 12) at the bottom center of every page. All processing happens locally — your file never leaves your device.",
+    primaryActionLabel: "Add page numbers",
+    stats: [["Price", "Free"], ["Input", "PDF file"], ["Output", "Numbered PDF"]],
+    upload: { title: "Upload a PDF to number", description: "Drag and drop a PDF here, or choose a file.", buttonLabel: "Choose PDF", note: "PDF only. Download a PDF with page numbers added." },
+    benefitsTitle: "Add page numbers without uploading to a server", benefitsDescription: "Upload locally and download a numbered PDF instantly.",
+    benefits: [
+      { title: "Every page numbered", description: "A clear 'page / total' number is added to each page." },
+      { title: "Privacy-first", description: "All processing happens in your browser. Your file never leaves your device." },
+      { title: "Print-ready", description: "Numbers help readers navigate printed and shared documents." },
+    ],
+    featuresTitle: "Built for PDF pagination", featuresDescription: "A minimal DockDocs interface for numbering PDF pages.",
+    features: [
+      { title: "Auto numbering", description: "Each page gets its number out of the total." },
+      { title: "Footer placement", description: "Placed in the bottom-center margin, clear of content." },
+      { title: "Browser-side", description: "Uses pdf-lib for fast, local processing." },
+      { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
+    ],
+    workflowTitle: "How page numbers fit into document work", workflowDescription: "Common uses: reports, contracts, handouts, and printed documents.",
+    steps: ["Upload a PDF.", "Click Add page numbers.", "Download the numbered PDF."],
+    faqTitle: "PDF page number questions",
+    faq: [
+      { question: "How do I add page numbers to a PDF?", answer: "Upload a PDF and download the result — each page is numbered automatically." },
+      { question: "Is my PDF sent to a server?", answer: "No. All processing happens in your browser. Your file never leaves your device." },
+      { question: "Where are the numbers placed?", answer: "In the bottom-center footer margin, shown as 'page / total'." },
+    ],
+    cta: { eyebrow: "Page Numbers", title: "Add page numbers to your PDF.", description: "Number every page — entirely in your browser.", buttonLabel: "Add page numbers now" },
+  },
   "watermark-pdf": {
     title: "Add Watermark to PDF Online Free | DockDocs",
     description: "Stamp a text watermark across every page of a PDF online for free. Fast, browser-side — your file never leaves your device.",
@@ -868,6 +903,18 @@ const enTools: Record<ToolSlug, ToolCopy> = {
 };
 
 const zhTools: Record<ToolSlug, ToolCopy> = {
+  "page-numbers": {
+    ...enTools["page-numbers"],
+    title: "在线免费给 PDF 添加页码 | DockDocs",
+    description: "在线免费为 PDF 添加页码。浏览器本地处理，文件不会离开你的设备。",
+    appName: "DockDocs 添加页码",
+    breadcrumbName: "PDF 页码",
+    heroTitle: "给 PDF 添加页码。",
+    heroDescription: "在每一页底部居中盖上页码（如 3 / 12）。完全在浏览器中处理——文件不会离开你的设备。",
+    primaryActionLabel: "添加页码",
+    upload: { ...enTools["page-numbers"].upload, title: "上传要加页码的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF" },
+    cta: { eyebrow: "PDF 页码", title: "为 PDF 添加页码。", description: "完全在浏览器中给每一页加上页码。", buttonLabel: "立即添加页码" },
+  },
   "watermark-pdf": {
     ...enTools["watermark-pdf"],
     title: "在线免费给 PDF 加水印 | DockDocs",
@@ -1171,6 +1218,14 @@ const localizedTools = {
 // the enTools spread; for Chinese pages we substitute these translated sets
 // so the FAQ section reads in Chinese.
 const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "page-numbers": {
+    faqTitle: "PDF 页码常见问题",
+    faq: [
+      { question: "如何给 PDF 加页码？", answer: "上传 PDF 然后下载结果——每页会自动加上页码。" },
+      { question: "我的 PDF 会上传到服务器吗？", answer: "不会。全部在你的浏览器中完成，文件不会离开你的设备。" },
+      { question: "页码加在哪里？", answer: "加在每页底部居中的页脚位置，显示为「页码 / 总页数」。" },
+    ],
+  },
   "watermark-pdf": {
     faqTitle: "PDF 加水印常见问题",
     faq: [

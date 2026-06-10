@@ -24,7 +24,8 @@ export type PdfRuntimeSlug =
   | "ppt-to-pdf"
   | "excel-to-pdf"
   | "pdf-to-excel"
-  | "watermark-pdf";
+  | "watermark-pdf"
+  | "page-numbers";
 
 export type PdfRuntimeProgress = {
   progress: number;
@@ -90,7 +91,8 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "ppt-to-pdf" ||
     slug === "excel-to-pdf" ||
     slug === "pdf-to-excel" ||
-    slug === "watermark-pdf"
+    slug === "watermark-pdf" ||
+    slug === "page-numbers"
   );
 }
 
@@ -186,6 +188,10 @@ export async function runPdfRuntime({
 
   if (slug === "watermark-pdf") {
     return watermarkPdfLocally(files[0], pageRanges.trim(), outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "page-numbers") {
+    return addPageNumbers(files[0], outputFileName, locale, signal, onProgress);
   }
 
   return imagesToPdf(files, outputFileName, signal, onProgress);
@@ -850,6 +856,72 @@ async function protectPdfLocally(
     blob,
     outputType: "pdf",
     pageCount,
+    fileCount: 1,
+  };
+}
+
+async function addPageNumbers(
+  file: File,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  const zh = locale === "zh";
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const sourceBytes = await file.arrayBuffer();
+  emitProgress(onProgress, 25, 1);
+  throwIfAborted(signal);
+
+  let pdfDoc;
+  try {
+    pdfDoc = await PDFDocument.load(sourceBytes);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (/encrypt|password/i.test(message)) {
+      throw new Error(
+        zh
+          ? "这个 PDF 已加密，请先解锁再添加页码。"
+          : "This PDF is encrypted. Unlock it first, then add page numbers.",
+      );
+    }
+    throw err;
+  }
+
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const pages = pdfDoc.getPages();
+  const total = pages.length;
+  emitProgress(onProgress, 55, 2);
+  throwIfAborted(signal);
+
+  pages.forEach((page, i) => {
+    const { width } = page.getSize();
+    const label = `${i + 1} / ${total}`;
+    const size = 10;
+    const textWidth = font.widthOfTextAtSize(label, size);
+    page.drawText(label, {
+      x: width / 2 - textWidth / 2,
+      y: 22,
+      size,
+      font,
+      color: rgb(0.4, 0.4, 0.4),
+    });
+  });
+
+  emitProgress(onProgress, 85, 3);
+  throwIfAborted(signal);
+
+  const outBytes = await pdfDoc.save();
+  const blob = new Blob([outBytes as BlobPart], { type: "application/pdf" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount: total,
     fileCount: 1,
   };
 }

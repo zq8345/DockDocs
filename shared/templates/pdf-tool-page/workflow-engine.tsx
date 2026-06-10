@@ -714,6 +714,16 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
           ? ["读取 PDF...", "生成水印...", "应用到每一页...", "准备下载..."]
           : ["Reading PDF...", "Preparing watermark...", "Applying to pages...", "Preparing download..."],
       };
+    case "page-numbers":
+      return {
+        ...base,
+        processLabel: zh ? "正在为每一页添加页码。" : "Adding page numbers to every page.",
+        resultLabel: zh ? "下载带页码 PDF" : "Download numbered PDF",
+        outputFileName: "dockdocs-numbered.pdf",
+        steps: zh
+          ? ["读取 PDF...", "计算页数...", "添加页码...", "准备下载..."]
+          : ["Reading PDF...", "Counting pages...", "Adding numbers...", "Preparing download..."],
+      };
   }
 }
 
@@ -994,6 +1004,17 @@ function getWorkflowResult(
       return {
         title: zh ? "水印已添加" : "Watermark added",
         description: zh ? "已为每一页盖上文字水印，可下载。" : "Text watermark stamped on every page, ready to download.",
+        rows: [
+          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
+          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
+          [zh ? "输出" : "Output", outputName],
+        ],
+      };
+    case "page-numbers":
+      return {
+        title: zh ? "页码已添加" : "Page numbers added",
+        description: zh ? "已为每一页加上页码，可下载。" : "Page numbers added to every page, ready to download.",
         rows: [
           [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
           [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
