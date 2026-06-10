@@ -22,6 +22,7 @@ import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { AboutPage } from "@/components/AboutPage";
 import { AccountClient } from "@/components/AccountClient";
 import { ComingSoonTool } from "@/components/ComingSoonTool";
+import { TranslatePdfClient } from "@/components/TranslatePdfClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -69,7 +70,6 @@ export const dynamicParams = false;
 const COMING_SOON_TOOLS: Record<string, { en: string; zh: string }> = {
   "edit-pdf": { en: "Edit PDF", zh: "编辑 PDF" },
   "sign-pdf": { en: "Sign PDF", zh: "签署 PDF" },
-  "translate-pdf": { en: "Translate PDF", zh: "翻译 PDF" },
 };
 
 type PageParams = {
@@ -420,6 +420,10 @@ export default async function LocalizedRoute({
   if (COMING_SOON_TOOLS[slug]) {
     const t = COMING_SOON_TOOLS[slug];
     return <ComingSoonTool locale={rawLocale} name={t.en} nameZh={t.zh} />;
+  }
+
+  if (slug === "translate-pdf") {
+    return <TranslatePdfClient locale={rawLocale} />;
   }
 
   if ((toolSlugs as readonly string[]).includes(slug)) {

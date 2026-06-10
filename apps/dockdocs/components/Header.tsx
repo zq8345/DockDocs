@@ -15,6 +15,7 @@ const toolGroups = {
         { name: "Compare documents", slug: "/compare" },
         { name: "Chat with PDF", slug: "/chat-with-pdf" },
         { name: "AI Summary", slug: "/ai-summary" },
+        { name: "Translate PDF", slug: "/translate-pdf" },
       ],
     },
     {
@@ -75,6 +76,7 @@ const toolGroups = {
         { name: "多文档对比", slug: "/compare" },
         { name: "PDF 问答", slug: "/chat-with-pdf" },
         { name: "AI 摘要", slug: "/ai-summary" },
+        { name: "翻译 PDF", slug: "/translate-pdf" },
       ],
     },
     {
