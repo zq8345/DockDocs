@@ -6,7 +6,7 @@ import { HomeExtras } from "@/components/HomeExtras";
 export const metadata: Metadata = {
   title: "DockDocs — AI Document Platform",
   description:
-    "20+ PDF tools for compress, convert, merge, split, OCR, AI chat, and more. Process documents in your browser, privately and fast.",
+    "Chat with any PDF and get answers with sources you can check — not guesses. Multi-document comparison for contracts and quotes is coming. Plus 20+ free PDF tools to compress, convert, merge, split, and OCR.",
   alternates: {
     canonical: "/",
     languages: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "DockDocs — AI Document Platform",
     description:
-      "PDF tools, AI chat, OCR, compression, and conversion — all in one place. No installs. Files processed locally where possible.",
+      "Chat with any PDF for grounded, source-cited answers. Multi-document comparison coming soon. Plus 20+ free PDF tools — no installs.",
     url: "https://dockdocs.app",
     siteName: "DockDocs",
     type: "website",
@@ -71,8 +71,8 @@ const features = [
 ] as const;
 
 const stats = [
+  { value: "Grounded", label: "Answers cite the source" },
   { value: "Private", label: "Files stay on your device" },
-  { value: "Secure", label: "Encrypted, never stored" },
   { value: "Fast", label: "Instant in-browser tools" },
 ] as const;
 
@@ -215,16 +215,17 @@ export default function Home() {
             {/* Badge */}
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-1.5 text-xs font-semibold tracking-wide text-[color:var(--muted)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" aria-hidden="true" />
-              AI Document Platform
+              AI Document Intelligence
             </div>
 
             <h1 className="text-[40px] font-semibold leading-[1.05] tracking-[-0.03em] text-[color:var(--foreground)] sm:text-[56px] lg:text-[68px]">
-              Your all-in-one document workspace.
+              Ask your documents. Compare them. Decide.
             </h1>
 
             <p className="mx-auto mt-6 max-w-xl text-[16px] leading-8 text-[color:var(--muted)] sm:text-[18px]">
-              PDF tools, AI chat, OCR, conversion and compression — all in one place.
-              No installs. Files processed locally where possible.
+              DockDocs reads your PDFs and answers with sources you can check — not guesses.
+              Chat with any document now; multi-document comparison for contracts and quotes is on the way.
+              Plus 20+ free PDF tools to get files ready.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -339,10 +340,10 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-5 py-16 sm:px-6 lg:px-8">
           <div className="overflow-hidden rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-8 py-14 text-center">
             <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
-              Start working with your documents.
+              Put AI to work on your documents.
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-              Free to use. No account required for most tools. Switch to Plus for AI features and higher limits.
+              Free to use. No account required for most tools. Plus adds AI chat and summaries; Pro adds the multi-document comparison engine.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <a
