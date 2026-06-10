@@ -34,6 +34,41 @@ type ToolCopy = {
 };
 
 const enTools: Record<ToolSlug, ToolCopy> = {
+  "pdf-to-text": {
+    title: "PDF to Text (TXT) Converter Online Free | DockDocs",
+    description: "Extract plain text from any PDF online for free. Fast, browser-side — your file never leaves your device.",
+    keywords: ["pdf to text", "pdf to txt", "extract text from pdf", "convert pdf to text"],
+    appName: "DockDocs PDF to Text",
+    schemaName: "DockDocs PDF to Text Converter",
+    breadcrumbName: "PDF to Text",
+    heroTitle: "Convert PDF to plain text.",
+    heroDescription: "Extract all the text from a PDF into a clean .txt file. All processing happens locally — your file never leaves your device.",
+    primaryActionLabel: "Convert to text",
+    stats: [["Price", "Free"], ["Input", "PDF file"], ["Output", "TXT file"]],
+    upload: { title: "Upload a PDF to extract text", description: "Drag and drop a PDF here, or choose a file.", buttonLabel: "Choose PDF", note: "PDF only. Download the extracted text as a .txt file." },
+    benefitsTitle: "Extract PDF text without uploading to a server", benefitsDescription: "Upload locally and download a plain-text file instantly.",
+    benefits: [
+      { title: "Clean plain text", description: "Get just the words — no formatting, ready to reuse." },
+      { title: "Privacy-first", description: "All extraction happens in your browser. Your file never leaves your device." },
+      { title: "Page selection", description: "Optionally extract only the pages you need." },
+    ],
+    featuresTitle: "Built for PDF text extraction", featuresDescription: "A minimal DockDocs interface for pulling text out of PDFs.",
+    features: [
+      { title: "Per-page text", description: "Text is extracted in reading order, page by page." },
+      { title: "Optional page range", description: "Extract everything or just selected pages." },
+      { title: "Browser-side", description: "Uses pdf.js for fast, local extraction." },
+      { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
+    ],
+    workflowTitle: "How PDF-to-text fits into document work", workflowDescription: "Common uses: copying quotes, feeding text to other tools, accessibility, and search.",
+    steps: ["Upload a PDF.", "Optionally enter a page range.", "Download the extracted .txt file."],
+    faqTitle: "PDF to text questions",
+    faq: [
+      { question: "How do I convert a PDF to text?", answer: "Upload a PDF and download the extracted plain-text .txt file." },
+      { question: "Does it work on scanned PDFs?", answer: "Only PDFs that contain real text. For scanned images, run OCR first." },
+      { question: "Is my PDF sent to a server?", answer: "No. All extraction happens in your browser. Your file never leaves your device." },
+    ],
+    cta: { eyebrow: "PDF to Text", title: "Convert your PDF to plain text.", description: "Extract clean text — entirely in your browser.", buttonLabel: "Convert to text now" },
+  },
   "page-numbers": {
     title: "Add Page Numbers to PDF Online Free | DockDocs",
     description: "Add page numbers to a PDF online for free. Fast, browser-side — your file never leaves your device.",
@@ -903,6 +938,18 @@ const enTools: Record<ToolSlug, ToolCopy> = {
 };
 
 const zhTools: Record<ToolSlug, ToolCopy> = {
+  "pdf-to-text": {
+    ...enTools["pdf-to-text"],
+    title: "在线免费 PDF 转文本（TXT） | DockDocs",
+    description: "在线免费从 PDF 提取纯文本。浏览器本地处理，文件不会离开你的设备。",
+    appName: "DockDocs PDF 转文本",
+    breadcrumbName: "PDF 转文本",
+    heroTitle: "把 PDF 转成纯文本。",
+    heroDescription: "从 PDF 提取全部文字为干净的 .txt 文件。完全在浏览器中处理——文件不会离开你的设备。",
+    primaryActionLabel: "提取文本",
+    upload: { ...enTools["pdf-to-text"].upload, title: "上传要提取文本的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF" },
+    cta: { eyebrow: "PDF 转文本", title: "把 PDF 转成纯文本。", description: "完全在浏览器中提取干净文本。", buttonLabel: "立即提取文本" },
+  },
   "page-numbers": {
     ...enTools["page-numbers"],
     title: "在线免费给 PDF 添加页码 | DockDocs",
@@ -1218,6 +1265,14 @@ const localizedTools = {
 // the enTools spread; for Chinese pages we substitute these translated sets
 // so the FAQ section reads in Chinese.
 const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "pdf-to-text": {
+    faqTitle: "PDF 转文本常见问题",
+    faq: [
+      { question: "如何把 PDF 转成文本？", answer: "上传 PDF，然后下载提取出的纯文本 .txt 文件。" },
+      { question: "扫描件能转吗？", answer: "仅支持含真实文字的 PDF。扫描图片请先用 OCR。" },
+      { question: "我的 PDF 会上传到服务器吗？", answer: "不会。全部在你的浏览器中完成，文件不会离开你的设备。" },
+    ],
+  },
   "page-numbers": {
     faqTitle: "PDF 页码常见问题",
     faq: [

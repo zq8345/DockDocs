@@ -54,6 +54,7 @@ export const routeSlugs = [
   "unlock-pdf",
   "watermark-pdf",
   "page-numbers",
+  "pdf-to-text",
   "ai-workspace",
   "compare",
   "dashboard",
@@ -101,6 +102,7 @@ export const toolSlugs = [
   "unlock-pdf",
   "watermark-pdf",
   "page-numbers",
+  "pdf-to-text",
 ] as const;
 
 export type ToolSlug = (typeof toolSlugs)[number];

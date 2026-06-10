@@ -26,7 +26,8 @@ export type PdfRuntimeSlug =
   | "pdf-to-excel"
   | "watermark-pdf"
   | "page-numbers"
-  | "unlock-pdf";
+  | "unlock-pdf"
+  | "pdf-to-text";
 
 export type PdfRuntimeProgress = {
   progress: number;
@@ -94,7 +95,8 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "pdf-to-excel" ||
     slug === "watermark-pdf" ||
     slug === "page-numbers" ||
-    slug === "unlock-pdf"
+    slug === "unlock-pdf" ||
+    slug === "pdf-to-text"
   );
 }
 
@@ -198,6 +200,10 @@ export async function runPdfRuntime({
 
   if (slug === "unlock-pdf") {
     return unlockPdfLocally(files[0], pageRanges.trim(), outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "pdf-to-text") {
+    return pdfToText(files[0], pageRanges, outputFileName, locale, signal, onProgress);
   }
 
   return imagesToPdf(files, outputFileName, signal, onProgress);
@@ -866,6 +872,79 @@ async function protectPdfLocally(
   };
 }
 
+async function pdfToText(
+  file: File,
+  pageRanges: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const pdfjs = await import("pdfjs-dist");
+  pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+  const sourceBytes = new Uint8Array(await file.arrayBuffer());
+  const pdfDoc = await pdfjs.getDocument({ data: sourceBytes }).promise;
+  const totalPages = pdfDoc.numPages;
+
+  let pageIndices: number[] = [];
+  if (pageRanges.trim()) {
+    try {
+      const ranges = parsePageRanges(pageRanges, totalPages, locale);
+      pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
+    } catch {
+      pageIndices = Array.from({ length: totalPages }, (_, i) => i);
+    }
+  } else {
+    pageIndices = Array.from({ length: totalPages }, (_, i) => i);
+  }
+
+  emitProgress(onProgress, 15, 1);
+
+  const sections: string[] = [];
+  for (let i = 0; i < pageIndices.length; i++) {
+    throwIfAborted(signal);
+    const pageNum = pageIndices[i] + 1;
+    const page = await pdfDoc.getPage(pageNum);
+    const textContent = await page.getTextContent();
+
+    const lineMap = new Map<number, string[]>();
+    for (const item of textContent.items) {
+      if (!("str" in item) || !("transform" in item)) continue;
+      const y = Math.round((item as any).transform[5]);
+      if (!lineMap.has(y)) lineMap.set(y, []);
+      lineMap.get(y)!.push((item as any).str as string);
+    }
+    const sortedYs = [...lineMap.keys()].sort((a, b) => b - a);
+    const pageLines = sortedYs.map((y) => lineMap.get(y)!.join(" ").trim()).filter(Boolean);
+    if (pageLines.length > 0) {
+      sections.push(pageLines.join("\n"));
+    }
+
+    emitProgress(onProgress, 18 + ((i + 1) / pageIndices.length) * 68, 2);
+    await yieldToBrowser();
+  }
+
+  throwIfAborted(signal);
+  emitProgress(onProgress, 95, 3);
+
+  const text = sections.join("\n\n");
+  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "text",
+    pageCount: pageIndices.length,
+    fileCount: 1,
+    text: text.slice(0, 500),
+  };
+}
+
 async function unlockPdfLocally(
   file: File,
   password: string,
@@ -1002,7 +1081,7 @@ async function watermarkPdfLocally(
     throw new Error(zh ? "水印文字最多 40 个字符。" : "Watermark text must be 40 characters or fewer.");
   }
   // StandardFonts (Helvetica) only encode Latin-1; reject other scripts with a clear message.
-  if (/[^ -ÿ]/.test(mark)) {
+  if (/[^\u0000-\u00ff]/.test(mark)) {
     throw new Error(
       zh
         ? "水印暂仅支持拉丁字母、数字和符号（如 CONFIDENTIAL）。中文水印即将支持。"

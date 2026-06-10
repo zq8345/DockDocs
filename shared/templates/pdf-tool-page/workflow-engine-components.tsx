@@ -237,7 +237,7 @@ export function ReadyWorkflowState({
         </label>
       )}
 
-      {(config.slug === "pdf-to-jpg" || config.slug === "pdf-to-png" || config.slug === "pdf-to-markdown") && (
+      {(config.slug === "pdf-to-jpg" || config.slug === "pdf-to-png" || config.slug === "pdf-to-markdown" || config.slug === "pdf-to-text") && (
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "页面范围（可选）" : "Page range (optional)"}</span>
           <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "留空 = 全部页面" : "Blank = all pages"} className={inputCls} />
