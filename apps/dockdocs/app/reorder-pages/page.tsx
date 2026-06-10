@@ -1,16 +1,16 @@
 import {
   createPdfToolMetadata,
-  PdfToolPage,
   type PdfToolPageConfig,
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
+import { PageReorderClient } from "@/components/PageReorderClient";
 
 const config = {
   slug: "reorder-pages",
   alternateLanguages: languageAlternates("reorder-pages"),
   title: "Reorder PDF Pages Online Free | DockDocs",
   description:
-    "Rearrange the page order of any PDF online for free. Fast, browser-side page reordering inside DockDocs.",
+    "Drag and drop to rearrange PDF pages online for free. Visual, browser-side page reordering inside DockDocs.",
   keywords: ["reorder pdf pages", "rearrange pdf pages", "change pdf page order", "sort pdf pages"],
   appName: "DockDocs Reorder Pages",
   schemaName: "DockDocs Reorder PDF Pages",
@@ -91,5 +91,5 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function ReorderPagesPage() {
-  return <PdfToolPage config={config} />;
+  return <PageReorderClient locale="en" />;
 }

@@ -23,6 +23,7 @@ import { AboutPage } from "@/components/AboutPage";
 import { AccountClient } from "@/components/AccountClient";
 import { ComingSoonTool } from "@/components/ComingSoonTool";
 import { TranslatePdfClient } from "@/components/TranslatePdfClient";
+import { PageReorderClient } from "@/components/PageReorderClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -424,6 +425,10 @@ export default async function LocalizedRoute({
 
   if (slug === "translate-pdf") {
     return <TranslatePdfClient locale={rawLocale} />;
+  }
+
+  if (slug === "reorder-pages") {
+    return <PageReorderClient locale={rawLocale} />;
   }
 
   if ((toolSlugs as readonly string[]).includes(slug)) {
