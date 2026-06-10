@@ -107,6 +107,7 @@ async function recommend({
   signal: AbortSignal;
 }): Promise<Recommendation | null> {
   const lang = locale === "zh" ? "Simplified Chinese" : "English";
+  const isContract = /contract/i.test(docType);
   const dimLabel = (k: string) => dimensions.find((d) => d.key === k)?.label ?? k;
 
   const table = documents
@@ -135,7 +136,9 @@ async function recommend({
         role: "system",
         content: [
           `You help a user choose between several ${docType} by reasoning ONLY over the already-extracted comparison fields provided.`,
-          "Pick the best overall option and explain why in plain, balanced language, noting tradeoffs (e.g. cheaper but slower).",
+          isContract
+            ? "These are CONTRACTS: frame the verdict around RISK and fairness — recommend the more favorable/balanced one, flag one-sided, unusual or aggressive clauses as cons, and explicitly call out missing standard protections (a (not recognized) field may be a missing clause worth flagging)."
+            : "Pick the best overall option and explain why in plain, balanced language, noting tradeoffs (e.g. cheaper but slower).",
           "Use ONLY the given field values. NEVER invent numbers or facts not present. A field marked (not recognized) is unknown — factor in the uncertainty, do not assume a value.",
           "If options are genuinely too close or key data is missing, set winnerId to null and say so.",
           `Write all text in ${lang}. Return ONLY valid JSON, no markdown, no prose outside the JSON.`,

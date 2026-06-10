@@ -120,6 +120,11 @@ const REC = {
   zh: { title: "推荐", thinking: "正在权衡各选项…", recommended: "推荐" },
 } as const;
 
+const TRACE = {
+  en: { source: "Source", notLocated: "Couldn't locate the exact snippet — showing the full text." },
+  zh: { source: "原文出处", notLocated: "未能精确定位片段——显示全文。" },
+} as const;
+
 // Localized dimension labels (the backend returns English labels).
 const DIM_ZH: Record<string, string> = {
   vendor: "供应商",
@@ -141,9 +146,23 @@ const DIM_ZH: Record<string, string> = {
   liability: "责任上限",
 };
 
+function locateSnippet(text: string, snippet: string, ctx = 600) {
+  const idx = text.toLowerCase().indexOf(snippet.toLowerCase());
+  if (idx < 0) return { found: false as const };
+  const start = Math.max(0, idx - ctx);
+  const end = Math.min(text.length, idx + snippet.length + ctx);
+  return {
+    found: true as const,
+    before: (start > 0 ? "…" : "") + text.slice(start, idx),
+    match: text.slice(idx, idx + snippet.length),
+    after: text.slice(idx + snippet.length, end) + (end < text.length ? "…" : ""),
+  };
+}
+
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale];
   const r = REC[locale];
+  const tr = TRACE[locale];
   const [results, setResults] = useState<DocResult[]>([]);
   const [busy, setBusy] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -153,6 +172,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const [compareError, setCompareError] = useState<string | null>(null);
   const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
   const [recommending, setRecommending] = useState(false);
+  const [trace, setTrace] = useState<{ docId: string; docName: string; snippet: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const extractOne = useCallback(async (file: File): Promise<DocResult> => {
@@ -417,9 +437,14 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
                             <>
                               <div className="text-[color:var(--foreground)]">{f.value}</div>
                               {f.source && (
-                                <div className="mt-0.5 text-[11px] italic text-[color:var(--faint)]" title={f.source}>
-                                  “{f.source.length > 52 ? `${f.source.slice(0, 52)}…` : f.source}”
-                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => setTrace({ docId: d.id, docName: d.name, snippet: f.source! })}
+                                  title={f.source}
+                                  className="mt-0.5 block text-left text-[11px] italic text-[color:var(--faint)] underline decoration-dotted underline-offset-2 transition hover:text-[color:var(--accent)]"
+                                >
+                                  “{f.source.length > 52 ? `${f.source.slice(0, 52)}…` : f.source}” ↗
+                                </button>
                               )}
                             </>
                           ) : (
@@ -447,6 +472,40 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
           </ul>
         </div>
       )}
+
+      {trace &&
+        (() => {
+          const docText = results.find((d) => d.id === trace.docId)?.text ?? "";
+          const loc = locateSnippet(docText, trace.snippet);
+          return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={() => setTrace(null)}>
+              <div className="max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center justify-between border-b border-[color:var(--line)] px-5 py-3">
+                  <p className="text-sm font-semibold text-[color:var(--foreground)]">
+                    {tr.source} · {trace.docName}
+                  </p>
+                  <button type="button" onClick={() => setTrace(null)} className="text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
+                    ✕
+                  </button>
+                </div>
+                <div className="max-h-[60vh] overflow-y-auto px-5 py-4 text-[13px] leading-6 text-[color:var(--muted)]">
+                  {loc.found ? (
+                    <p>
+                      {loc.before}
+                      <mark className="rounded bg-[color:var(--accent)] px-1 text-white">{loc.match}</mark>
+                      {loc.after}
+                    </p>
+                  ) : (
+                    <>
+                      <p className="mb-2 text-[11px] text-amber-400/80">{tr.notLocated}</p>
+                      <p>{docText}</p>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
     </main>
   );
 }
