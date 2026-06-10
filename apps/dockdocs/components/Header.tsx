@@ -10,15 +10,16 @@ const toolGroups = {
   en: [
     {
       label: "AI",
+      tier: "Plus",
       items: [
         { name: "Compare documents", slug: "/compare" },
         { name: "Chat with PDF", slug: "/chat-with-pdf" },
         { name: "AI Summary", slug: "/ai-summary" },
-        { name: "OCR PDF", slug: "/ocr-pdf" },
       ],
     },
     {
       label: "Convert",
+      tier: "Free",
       items: [
         { name: "PDF to Word", slug: "/pdf-to-word" },
         { name: "PDF to Excel", slug: "/pdf-to-excel" },
@@ -35,6 +36,7 @@ const toolGroups = {
     },
     {
       label: "Organize",
+      tier: "Free",
       items: [
         { name: "Merge PDF", slug: "/merge-pdf" },
         { name: "Split PDF", slug: "/split-pdf" },
@@ -46,22 +48,27 @@ const toolGroups = {
       ],
     },
     {
-      label: "Security",
-      items: [{ name: "Protect PDF", slug: "/protect-pdf" }],
+      label: "Security & OCR",
+      tier: "Free",
+      items: [
+        { name: "Protect PDF", slug: "/protect-pdf" },
+        { name: "OCR PDF", slug: "/ocr-pdf" },
+      ],
     },
   ],
   zh: [
     {
       label: "AI",
+      tier: "Plus",
       items: [
         { name: "多文档对比", slug: "/compare" },
         { name: "PDF 问答", slug: "/chat-with-pdf" },
         { name: "AI 摘要", slug: "/ai-summary" },
-        { name: "OCR PDF", slug: "/ocr-pdf" },
       ],
     },
     {
       label: "转换",
+      tier: "Free",
       items: [
         { name: "PDF 转 Word", slug: "/pdf-to-word" },
         { name: "PDF 转 Excel", slug: "/pdf-to-excel" },
@@ -78,6 +85,7 @@ const toolGroups = {
     },
     {
       label: "整理",
+      tier: "Free",
       items: [
         { name: "合并 PDF", slug: "/merge-pdf" },
         { name: "拆分 PDF", slug: "/split-pdf" },
@@ -89,13 +97,17 @@ const toolGroups = {
       ],
     },
     {
-      label: "安全",
-      items: [{ name: "加密 PDF", slug: "/protect-pdf" }],
+      label: "安全 & OCR",
+      tier: "Free",
+      items: [
+        { name: "加密 PDF", slug: "/protect-pdf" },
+        { name: "OCR PDF", slug: "/ocr-pdf" },
+      ],
     },
   ],
 } as const;
 
-const topSlugs = ["/merge-pdf", "/compress-pdf", "/chat-with-pdf"];
+const topSlugs = ["/chat-with-pdf", "/compare"];
 
 const pageLinks = {
   en: [
@@ -204,8 +216,9 @@ export function Header() {
                   >
                     {groups.map((g) => (
                       <div key={g.label} className="min-w-[110px]">
-                        <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
+                        <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
                           {g.label}
+                          <span className={`rounded-full px-1.5 py-px text-[9px] font-bold tracking-normal ${g.tier === "Plus" ? "bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]" : "text-[color:var(--faint)] opacity-60"}`}>{g.tier}</span>
                         </p>
                         <div className="space-y-0.5">
                           {g.items.map((item) => (
@@ -332,8 +345,9 @@ export function Header() {
               <div className="space-y-5">
                 {groups.map((g) => (
                   <div key={g.label}>
-                    <p className="mb-2.5 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
+                    <p className="mb-2.5 flex items-center gap-1.5 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
                       {g.label}
+                      <span className={`rounded-full px-1.5 py-px text-[9px] font-bold tracking-normal ${g.tier === "Plus" ? "bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]" : "text-[color:var(--faint)] opacity-60"}`}>{g.tier}</span>
                     </p>
                     <div className="grid grid-cols-2 gap-1.5">
                       {g.items.map((item) => (
