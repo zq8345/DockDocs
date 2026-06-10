@@ -32,7 +32,7 @@ const toolGroups: ToolGroup[] = [
     { name: "PPT to PDF", href: "/ppt-to-pdf" },
     { name: "JPG to PDF", href: "/jpg-to-pdf" }, { name: "PNG to PDF", href: "/png-to-pdf" },
     { name: "PDF to JPG", href: "/pdf-to-jpg" }, { name: "PDF to PNG", href: "/pdf-to-png" },
-    { name: "Text to PDF", href: "/text-to-pdf" }, { name: "PDF to Markdown", href: "/pdf-to-markdown" },
+    { name: "PDF to Markdown", href: "/pdf-to-markdown" },
   ]},
   { label: "Organize", items: [
     { name: "Merge PDF", href: "/merge-pdf" }, { name: "Split PDF", href: "/split-pdf" },

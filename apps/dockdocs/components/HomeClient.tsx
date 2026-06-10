@@ -6,7 +6,7 @@ const toolIcons: Record<string, string> = {
   "chat-with-pdf": "💬", "ai-summary": "📋", "ocr-pdf": "🔍", "translate-pdf": "🌐",
   "word-to-pdf": "📄", "pdf-to-word": "📕", "excel-to-pdf": "📊", "pdf-to-excel": "📕",
   "ppt-to-pdf": "🖥", "jpg-to-pdf": "🖼", "png-to-pdf": "🖼", "pdf-to-jpg": "📕",
-  "pdf-to-png": "📕", "text-to-pdf": "📝", "pdf-to-markdown": "📕",
+  "pdf-to-png": "📕", "pdf-to-markdown": "📕",
   "merge-pdf": "🔗", "split-pdf": "✂️", "compress-pdf": "📦",
   "delete-page": "🗑", "rotate-page": "🔄", "reorder-pages": "📑", "add-page": "➕",
   "protect-pdf": "🔒", "unlock-pdf": "🔓", "edit-pdf": "✏️", "sign-pdf": "✍️",

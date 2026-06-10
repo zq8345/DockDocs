@@ -43,7 +43,6 @@ export const indexableRoutes: SeoRoute[] = [
   { path: "/ppt-to-pdf/", name: "PPT to PDF — Presentation Converter", changeFrequency: w, priority: 0.8 },
   { path: "/jpg-to-pdf/", name: "JPG to PDF — Image to PDF", changeFrequency: w, priority: 0.85 },
   { path: "/png-to-pdf/", name: "PNG to PDF — Image Converter", changeFrequency: w, priority: 0.8 },
-  { path: "/text-to-pdf/", name: "Text to PDF — Plain Text Converter", changeFrequency: w, priority: 0.75 },
   // Organize
   { path: "/merge-pdf/", name: "Merge PDF — Combine Files Online", changeFrequency: w, priority: 0.9 },
   { path: "/split-pdf/", name: "Split PDF — Extract Pages", changeFrequency: w, priority: 0.85 },

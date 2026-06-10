@@ -36,8 +36,7 @@ export const routeSlugs = [
   "jpg-to-pdf",
   "png-to-pdf",
   "pdf-to-jpg",
-  "pdf-to-png",
-  "text-to-pdf",
+  "pdf-to-png",
   "pdf-to-markdown",
   "word-to-pdf",
   "ppt-to-pdf",
@@ -54,13 +53,7 @@ export const routeSlugs = [
   "unlock-pdf",
   "watermark-pdf",
   "page-numbers",
-  "pdf-to-text",
-  "webp-to-png",
-  "png-to-webp",
-  "webp-to-jpg",
-  "jpg-to-webp",
-  "jpg-to-png",
-  "png-to-jpg",
+  "pdf-to-text",
   "pdf-to-html",
   "ai-workspace",
   "compare",
@@ -91,8 +84,7 @@ export const toolSlugs = [
   "jpg-to-pdf",
   "png-to-pdf",
   "pdf-to-jpg",
-  "pdf-to-png",
-  "text-to-pdf",
+  "pdf-to-png",
   "pdf-to-markdown",
   "word-to-pdf",
   "ppt-to-pdf",
@@ -109,13 +101,7 @@ export const toolSlugs = [
   "unlock-pdf",
   "watermark-pdf",
   "page-numbers",
-  "pdf-to-text",
-  "webp-to-png",
-  "png-to-webp",
-  "webp-to-jpg",
-  "jpg-to-webp",
-  "jpg-to-png",
-  "png-to-jpg",
+  "pdf-to-text",
   "pdf-to-html",
 ] as const;
 

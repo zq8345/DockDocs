@@ -37,7 +37,6 @@ const tools = [
   { slug: "/pdf-to-jpg",      name: "PDF to JPG",        group: "Convert",   desc: "Export PDF pages as high-quality images." },
   { slug: "/png-to-pdf",      name: "PNG to PDF",        group: "Convert",   desc: "Convert PNG screenshots to PDF." },
   { slug: "/pdf-to-png",      name: "PDF to PNG",        group: "Convert",   desc: "Export PDF pages as lossless PNG." },
-  { slug: "/text-to-pdf",     name: "Text to PDF",       group: "Convert",   desc: "Turn plain text files into PDF." },
   { slug: "/pdf-to-markdown", name: "PDF to Markdown",   group: "Convert",   desc: "Extract PDF text as structured Markdown." },
   { slug: "/excel-to-pdf",    name: "Excel to PDF",      group: "Convert",   desc: "Convert spreadsheets to PDF." },
   { slug: "/ppt-to-pdf",      name: "PPT to PDF",        group: "Convert",   desc: "Convert presentations to PDF." },

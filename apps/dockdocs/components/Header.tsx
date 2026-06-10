@@ -33,14 +33,7 @@ const toolGroups = {
         { name: "Excel to PDF", slug: "/excel-to-pdf" },
         { name: "PPT to PDF", slug: "/ppt-to-pdf" },
         { name: "JPG to PDF", slug: "/jpg-to-pdf" },
-        { name: "PNG to PDF", slug: "/png-to-pdf" },
-        { name: "Text to PDF", slug: "/text-to-pdf" },
-        { name: "WebP to PNG", slug: "/webp-to-png" },
-        { name: "PNG to WebP", slug: "/png-to-webp" },
-        { name: "WebP to JPG", slug: "/webp-to-jpg" },
-        { name: "JPG to WebP", slug: "/jpg-to-webp" },
-        { name: "JPG to PNG", slug: "/jpg-to-png" },
-        { name: "PNG to JPG", slug: "/png-to-jpg" },
+        { name: "PNG to PDF", slug: "/png-to-pdf" },
       ],
     },
     {
@@ -94,14 +87,7 @@ const toolGroups = {
         { name: "Excel 转 PDF", slug: "/excel-to-pdf" },
         { name: "PPT 转 PDF", slug: "/ppt-to-pdf" },
         { name: "JPG 转 PDF", slug: "/jpg-to-pdf" },
-        { name: "PNG 转 PDF", slug: "/png-to-pdf" },
-        { name: "文本转 PDF", slug: "/text-to-pdf" },
-        { name: "WebP 转 PNG", slug: "/webp-to-png" },
-        { name: "PNG 转 WebP", slug: "/png-to-webp" },
-        { name: "WebP 转 JPG", slug: "/webp-to-jpg" },
-        { name: "JPG 转 WebP", slug: "/jpg-to-webp" },
-        { name: "JPG 转 PNG", slug: "/jpg-to-png" },
-        { name: "PNG 转 JPG", slug: "/png-to-jpg" },
+        { name: "PNG 转 PDF", slug: "/png-to-pdf" },
       ],
     },
     {
