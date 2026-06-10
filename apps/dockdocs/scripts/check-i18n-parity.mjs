@@ -1,0 +1,95 @@
+// i18n parity guard — runs after `next build` (as the `postbuild` script).
+//
+// Why this exists: features used to be built as English root pages
+// (app/<slug>/page.tsx) and the localized /zh/<slug> route had to be wired
+// separately. Forget that step and the feature 404s in another language — and
+// nothing catches it. This guard makes that impossible to ship silently:
+//
+//   Check A — every registered route (routeSlugs) is generated under EVERY
+//             locale (out/<locale>/<slug>/index.html).
+//   Check B — every English root page in out/ is registered in routeSlugs
+//             (otherwise it has no localized versions and will 404 elsewhere).
+//
+// Any failure exits non-zero, which fails `npm run build` locally AND on
+// Netlify — so a language can never silently lose a feature.
+
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const APP = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const OUT = join(APP, "out");
+const I18N = join(APP, "lib", "i18n.ts");
+
+// Root pages that are intentionally English-only / not user-facing in every
+// language. Add a slug here ONLY when it should deliberately NOT exist in other
+// languages — anything else is a parity bug the guard should catch.
+const EXCEPTIONS = new Set([
+  "internal", // internal dashboard, behind Basic Auth — not a public feature
+  "404", // Next.js error page, not a feature
+  "my-chats", // KNOWN GAP — logged-in saved-chats page, still English-only. TODO: localize like /compare, then remove from here.
+]);
+
+function die(lines) {
+  console.error("\n" + (Array.isArray(lines) ? lines.join("\n") : lines) + "\n");
+  process.exit(1);
+}
+
+if (!existsSync(OUT)) {
+  die(`[i18n-guard] No export output at ${OUT}. This must run after \`next build\`.`);
+}
+
+const src = readFileSync(I18N, "utf8");
+function pickArray(name) {
+  const m = src.match(new RegExp(`export const ${name}\\s*=\\s*\\[([\\s\\S]*?)\\]`));
+  if (!m) die(`[i18n-guard] Could not parse "${name}" from lib/i18n.ts — update the guard.`);
+  return [...m[1].matchAll(/"([^"]*)"/g)].map((x) => x[1]);
+}
+
+const locales = pickArray("locales");
+const allLocales = pickArray("allLocales");
+const routeSlugs = pickArray("routeSlugs");
+const routeSet = new Set(routeSlugs);
+const localeSet = new Set(allLocales);
+
+const hasPage = (rel) => existsSync(join(OUT, rel, "index.html"));
+
+// ── Check A: every routeSlug exists under every locale ──
+const missing = [];
+for (const locale of locales) {
+  for (const slug of routeSlugs) {
+    const rel = slug ? `${locale}/${slug}` : locale;
+    if (!hasPage(rel)) missing.push(`${locale} is missing "${slug || "(home)"}"  →  expected out/${rel}/index.html`);
+  }
+}
+
+// ── Check B: every English root page is registered in routeSlugs ──
+const unregistered = [];
+for (const entry of readdirSync(OUT)) {
+  if (entry.startsWith("_") || entry.startsWith(".")) continue; // _next, dotfiles
+  if (localeSet.has(entry)) continue; // locale dirs handled by Check A
+  if (EXCEPTIONS.has(entry)) continue;
+  const dir = join(OUT, entry);
+  if (!statSync(dir).isDirectory()) continue;
+  if (!existsSync(join(dir, "index.html"))) continue; // not a page route
+  if (!routeSet.has(entry)) {
+    unregistered.push(`/${entry}  →  add "${entry}" to routeSlugs (lib/i18n.ts) + handle it in the locale catch-all, or add it to EXCEPTIONS if it is deliberately English-only`);
+  }
+}
+
+if (missing.length === 0 && unregistered.length === 0) {
+  console.log(`[i18n-guard] OK — ${routeSlugs.length} routes present in all ${locales.length} locales (${locales.join(", ")}).`);
+  process.exit(0);
+}
+
+const out = ["[i18n-guard] FAILED — language feature parity is broken:"];
+if (unregistered.length) {
+  out.push("", "  English root pages NOT available in other languages (will 404):");
+  for (const u of unregistered) out.push(`    • ${u}`);
+}
+if (missing.length) {
+  out.push("", "  Registered routes missing under some locales:");
+  for (const m of missing) out.push(`    • ${m}`);
+}
+out.push("", "  Build blocked: every feature must exist in every language.");
+die(out);
