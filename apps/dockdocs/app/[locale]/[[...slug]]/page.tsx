@@ -31,6 +31,7 @@ import { RotatePagesClient } from "@/components/RotatePagesClient";
 import { MergePdfClient } from "@/components/MergePdfClient";
 import { SplitPdfClient } from "@/components/SplitPdfClient";
 import { PdfToImageClient } from "@/components/PdfToImageClient";
+import { PageNumbersClient } from "@/components/PageNumbersClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -468,6 +469,10 @@ export default async function LocalizedRoute({
 
   if (slug === "pdf-to-png") {
     return <PdfToImageClient locale={rawLocale} defaultFormat="png" />;
+  }
+
+  if (slug === "page-numbers") {
+    return <PageNumbersClient locale={rawLocale} />;
   }
 
   if ((toolSlugs as readonly string[]).includes(slug)) {

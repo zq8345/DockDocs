@@ -20,6 +20,23 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
       ],
     },
   },
+  "page-numbers": {
+    title: { en: "Add page numbers — FAQ", zh: "PDF 页码常见问题" },
+    items: {
+      en: [
+        { q: "How do I add page numbers to a PDF?", a: "Upload the PDF, pick the position, format, start number and page range, watch the live preview, then Add numbers & download." },
+        { q: "Can I start from a specific number or page?", a: "Yes. Set 'Start at' for the first number, and the from/to range for which pages get numbered." },
+        { q: "What formats are supported?", a: "Just the number (1), Page 1, 1 / N, or 1 of N — in six positions (top/bottom × left/center/right)." },
+        { q: "Is my file uploaded?", a: "No. Numbers are added in your browser — your PDF never leaves your device." },
+      ],
+      zh: [
+        { q: "如何给 PDF 加页码？", a: "上传 PDF，选择位置、格式、起始数字和页码范围，看实时预览，然后「添加页码并下载」。" },
+        { q: "可以从指定数字或指定页开始吗？", a: "可以。用「起始数字」设置第一个号码，用「从/到」设置哪些页加页码。" },
+        { q: "支持哪些格式？", a: "纯数字(1)、第 1 页、1 / N、1 / 共 N；位置有上/下 × 左/中/右 六种。" },
+        { q: "文件会被上传吗？", a: "不会。页码在你的浏览器中添加，PDF 不会离开你的设备。" },
+      ],
+    },
+  },
   "reorder-pages": {
     title: { en: "Reorder PDF pages — FAQ", zh: "PDF 页面排序常见问题" },
     items: {
