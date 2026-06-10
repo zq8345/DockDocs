@@ -30,7 +30,10 @@ export type PdfRuntimeSlug =
   | "pdf-to-text"
   | "webp-to-png"
   | "png-to-webp"
-  | "webp-to-jpg";
+  | "webp-to-jpg"
+  | "jpg-to-webp"
+  | "jpg-to-png"
+  | "png-to-jpg";
 
 export type PdfRuntimeProgress = {
   progress: number;
@@ -102,7 +105,10 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "pdf-to-text" ||
     slug === "webp-to-png" ||
     slug === "png-to-webp" ||
-    slug === "webp-to-jpg"
+    slug === "webp-to-jpg" ||
+    slug === "jpg-to-webp" ||
+    slug === "jpg-to-png" ||
+    slug === "png-to-jpg"
   );
 }
 
@@ -221,6 +227,18 @@ export async function runPdfRuntime({
   }
 
   if (slug === "webp-to-jpg") {
+    return convertImage(files[0], "image/jpeg", locale, outputFileName, signal, onProgress);
+  }
+
+  if (slug === "jpg-to-webp") {
+    return convertImage(files[0], "image/webp", locale, outputFileName, signal, onProgress);
+  }
+
+  if (slug === "jpg-to-png") {
+    return convertImage(files[0], "image/png", locale, outputFileName, signal, onProgress);
+  }
+
+  if (slug === "png-to-jpg") {
     return convertImage(files[0], "image/jpeg", locale, outputFileName, signal, onProgress);
   }
 

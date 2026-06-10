@@ -34,6 +34,102 @@ type ToolCopy = {
 };
 
 const enTools: Record<ToolSlug, ToolCopy> = {
+  "jpg-to-webp": {
+    title: "JPG to WebP Converter Online Free | DockDocs",
+    description: "Convert JPG images to WebP online for free — smaller files, same quality. Browser-side; your file never leaves your device.",
+    keywords: ["jpg to webp", "jpeg to webp", "convert jpg to webp", "compress jpg to webp"],
+    appName: "DockDocs JPG to WebP", schemaName: "DockDocs JPG to WebP Converter", breadcrumbName: "JPG to WebP",
+    heroTitle: "Convert JPG to WebP.", heroDescription: "Turn a JPG into a smaller WebP image at similar quality. All processing happens locally — your file never leaves your device.",
+    primaryActionLabel: "Convert to WebP",
+    stats: [["Price", "Free"], ["Input", "JPG image"], ["Output", "WebP image"]],
+    upload: { title: "Upload a JPG image", description: "Drag and drop a .jpg file here, or choose a file.", buttonLabel: "Choose JPG", accept: ".jpg,.jpeg,image/jpeg", fileBadge: "JPG", note: "JPG only. Download a WebP copy." },
+    benefitsTitle: "Convert JPG to WebP without uploading to a server", benefitsDescription: "Upload locally and download a smaller WebP instantly.",
+    benefits: [
+      { title: "Smaller files", description: "WebP is typically 25–35% smaller than JPG at similar quality." },
+      { title: "Faster pages", description: "Lighter images load quicker on websites." },
+      { title: "Privacy-first", description: "Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    featuresTitle: "Built for JPG to WebP conversion", featuresDescription: "A minimal DockDocs interface for converting JPG images.",
+    features: [
+      { title: "High quality", description: "Encoded at 92% quality for a great size/clarity balance." },
+      { title: "Full resolution", description: "Output matches the original image dimensions." },
+      { title: "Browser-side", description: "Uses the canvas API for fast, local conversion." },
+      { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
+    ],
+    workflowTitle: "How JPG to WebP fits into your work", workflowDescription: "Common uses: shrinking images for the web, faster page loads, and saving storage.",
+    steps: ["Upload a JPG image.", "Click Convert to WebP.", "Download the WebP."],
+    faqTitle: "JPG to WebP questions",
+    faq: [
+      { question: "How do I convert JPG to WebP?", answer: "Upload a .jpg image and download the converted WebP." },
+      { question: "Is it smaller?", answer: "Usually yes — WebP is often 25–35% smaller than JPG at similar quality." },
+      { question: "Is my image sent to a server?", answer: "No. Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    cta: { eyebrow: "JPG to WebP", title: "Convert your JPG to WebP.", description: "Get a smaller WebP — entirely in your browser.", buttonLabel: "Convert to WebP now" },
+  },
+  "jpg-to-png": {
+    title: "JPG to PNG Converter Online Free | DockDocs",
+    description: "Convert JPG images to PNG online for free. Fast, browser-side — your file never leaves your device.",
+    keywords: ["jpg to png", "jpeg to png", "convert jpg to png", "jpg to png converter"],
+    appName: "DockDocs JPG to PNG", schemaName: "DockDocs JPG to PNG Converter", breadcrumbName: "JPG to PNG",
+    heroTitle: "Convert JPG to PNG.", heroDescription: "Turn a JPG into a lossless PNG. All processing happens locally — your file never leaves your device.",
+    primaryActionLabel: "Convert to PNG",
+    stats: [["Price", "Free"], ["Input", "JPG image"], ["Output", "PNG image"]],
+    upload: { title: "Upload a JPG image", description: "Drag and drop a .jpg file here, or choose a file.", buttonLabel: "Choose JPG", accept: ".jpg,.jpeg,image/jpeg", fileBadge: "JPG", note: "JPG only. Download a PNG copy." },
+    benefitsTitle: "Convert JPG to PNG without uploading to a server", benefitsDescription: "Upload locally and download a PNG instantly.",
+    benefits: [
+      { title: "Lossless format", description: "PNG is great for editing and re-saving without quality loss." },
+      { title: "Universal compatibility", description: "PNG opens everywhere — editors, docs, and software." },
+      { title: "Privacy-first", description: "Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    featuresTitle: "Built for JPG to PNG conversion", featuresDescription: "A minimal DockDocs interface for converting JPG images.",
+    features: [
+      { title: "Full resolution", description: "Output matches the original image dimensions." },
+      { title: "Lossless output", description: "PNG re-encodes without further compression artifacts." },
+      { title: "Browser-side", description: "Uses the canvas API for fast, local conversion." },
+      { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
+    ],
+    workflowTitle: "How JPG to PNG fits into your work", workflowDescription: "Common uses: editing, tools that require PNG, and clean re-saving.",
+    steps: ["Upload a JPG image.", "Click Convert to PNG.", "Download the PNG."],
+    faqTitle: "JPG to PNG questions",
+    faq: [
+      { question: "How do I convert JPG to PNG?", answer: "Upload a .jpg image and download the converted PNG." },
+      { question: "Will quality improve?", answer: "No — PNG is lossless but can't restore detail already lost in the JPG. It just avoids further loss when re-saving." },
+      { question: "Is my image sent to a server?", answer: "No. Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    cta: { eyebrow: "JPG to PNG", title: "Convert your JPG to PNG.", description: "Get a lossless PNG — entirely in your browser.", buttonLabel: "Convert to PNG now" },
+  },
+  "png-to-jpg": {
+    title: "PNG to JPG Converter Online Free | DockDocs",
+    description: "Convert PNG images to JPG online for free — smaller files for sharing. Browser-side; your file never leaves your device.",
+    keywords: ["png to jpg", "png to jpeg", "convert png to jpg", "png to jpg converter"],
+    appName: "DockDocs PNG to JPG", schemaName: "DockDocs PNG to JPG Converter", breadcrumbName: "PNG to JPG",
+    heroTitle: "Convert PNG to JPG.", heroDescription: "Turn a PNG into a smaller JPG for easy sharing. Transparent areas become white. All processing happens locally — your file never leaves your device.",
+    primaryActionLabel: "Convert to JPG",
+    stats: [["Price", "Free"], ["Input", "PNG image"], ["Output", "JPG image"]],
+    upload: { title: "Upload a PNG image", description: "Drag and drop a .png file here, or choose a file.", buttonLabel: "Choose PNG", accept: ".png,image/png", fileBadge: "PNG", note: "PNG only. Download a JPG copy." },
+    benefitsTitle: "Convert PNG to JPG without uploading to a server", benefitsDescription: "Upload locally and download a smaller JPG instantly.",
+    benefits: [
+      { title: "Smaller files", description: "JPG is much lighter than PNG for photos and screenshots." },
+      { title: "Universal compatibility", description: "JPG works everywhere for sharing and printing." },
+      { title: "Privacy-first", description: "Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    featuresTitle: "Built for PNG to JPG conversion", featuresDescription: "A minimal DockDocs interface for converting PNG images.",
+    features: [
+      { title: "White background", description: "Transparent areas are filled white (JPG has no transparency)." },
+      { title: "High quality", description: "Encoded at 92% quality for a great size/clarity balance." },
+      { title: "Browser-side", description: "Uses the canvas API for fast, local conversion." },
+      { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
+    ],
+    workflowTitle: "How PNG to JPG fits into your work", workflowDescription: "Common uses: emailing photos, shrinking screenshots, and printing.",
+    steps: ["Upload a PNG image.", "Click Convert to JPG.", "Download the JPG."],
+    faqTitle: "PNG to JPG questions",
+    faq: [
+      { question: "How do I convert PNG to JPG?", answer: "Upload a .png image and download the converted JPG." },
+      { question: "What happens to transparency?", answer: "JPG has no transparency, so transparent areas are filled with white." },
+      { question: "Is my image sent to a server?", answer: "No. Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    cta: { eyebrow: "PNG to JPG", title: "Convert your PNG to JPG.", description: "Get a smaller JPG — entirely in your browser.", buttonLabel: "Convert to JPG now" },
+  },
   "png-to-webp": {
     title: "PNG to WebP Converter Online Free | DockDocs",
     description: "Convert PNG images to WebP online for free — smaller files, same quality. Browser-side; your file never leaves your device.",
@@ -1043,6 +1139,42 @@ const enTools: Record<ToolSlug, ToolCopy> = {
 };
 
 const zhTools: Record<ToolSlug, ToolCopy> = {
+  "jpg-to-webp": {
+    ...enTools["jpg-to-webp"],
+    title: "在线免费 JPG 转 WebP | DockDocs",
+    description: "在线免费把 JPG 图片转成 WebP——文件更小、画质相近。浏览器本地处理，文件不会离开你的设备。",
+    appName: "DockDocs JPG 转 WebP",
+    breadcrumbName: "JPG 转 WebP",
+    heroTitle: "把 JPG 转成 WebP。",
+    heroDescription: "把 JPG 转成更小的 WebP 图片，画质相近。完全在浏览器中处理——文件不会离开你的设备。",
+    primaryActionLabel: "转换为 WebP",
+    upload: { ...enTools["jpg-to-webp"].upload, title: "上传 JPG 图片", description: "拖放 .jpg 文件，或从设备中选择。", buttonLabel: "选择 JPG" },
+    cta: { eyebrow: "JPG 转 WebP", title: "把 JPG 转成 WebP。", description: "完全在浏览器中得到更小的 WebP。", buttonLabel: "立即转换" },
+  },
+  "jpg-to-png": {
+    ...enTools["jpg-to-png"],
+    title: "在线免费 JPG 转 PNG | DockDocs",
+    description: "在线免费把 JPG 图片转成 PNG。浏览器本地处理，文件不会离开你的设备。",
+    appName: "DockDocs JPG 转 PNG",
+    breadcrumbName: "JPG 转 PNG",
+    heroTitle: "把 JPG 转成 PNG。",
+    heroDescription: "把 JPG 转成无损的 PNG。完全在浏览器中处理——文件不会离开你的设备。",
+    primaryActionLabel: "转换为 PNG",
+    upload: { ...enTools["jpg-to-png"].upload, title: "上传 JPG 图片", description: "拖放 .jpg 文件，或从设备中选择。", buttonLabel: "选择 JPG" },
+    cta: { eyebrow: "JPG 转 PNG", title: "把 JPG 转成 PNG。", description: "完全在浏览器中得到无损 PNG。", buttonLabel: "立即转换" },
+  },
+  "png-to-jpg": {
+    ...enTools["png-to-jpg"],
+    title: "在线免费 PNG 转 JPG | DockDocs",
+    description: "在线免费把 PNG 图片转成 JPG——文件更小、便于分享。浏览器本地处理，文件不会离开你的设备。",
+    appName: "DockDocs PNG 转 JPG",
+    breadcrumbName: "PNG 转 JPG",
+    heroTitle: "把 PNG 转成 JPG。",
+    heroDescription: "把 PNG 转成更小的 JPG，方便分享。透明区域会变成白色。完全在浏览器中处理——文件不会离开你的设备。",
+    primaryActionLabel: "转换为 JPG",
+    upload: { ...enTools["png-to-jpg"].upload, title: "上传 PNG 图片", description: "拖放 .png 文件，或从设备中选择。", buttonLabel: "选择 PNG" },
+    cta: { eyebrow: "PNG 转 JPG", title: "把 PNG 转成 JPG。", description: "完全在浏览器中得到更小的 JPG。", buttonLabel: "立即转换" },
+  },
   "png-to-webp": {
     ...enTools["png-to-webp"],
     title: "在线免费 PNG 转 WebP | DockDocs",
@@ -1406,6 +1538,30 @@ const localizedTools = {
 // the enTools spread; for Chinese pages we substitute these translated sets
 // so the FAQ section reads in Chinese.
 const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "jpg-to-webp": {
+    faqTitle: "JPG 转 WebP 常见问题",
+    faq: [
+      { question: "如何把 JPG 转成 WebP？", answer: "上传 .jpg 图片，然后下载转换后的 WebP。" },
+      { question: "文件会更小吗？", answer: "通常会——同等画质下 WebP 一般比 JPG 小 25–35%。" },
+      { question: "我的图片会上传到服务器吗？", answer: "不会。转换在你的浏览器中完成，文件不会离开你的设备。" },
+    ],
+  },
+  "jpg-to-png": {
+    faqTitle: "JPG 转 PNG 常见问题",
+    faq: [
+      { question: "如何把 JPG 转成 PNG？", answer: "上传 .jpg 图片，然后下载转换后的 PNG。" },
+      { question: "画质会变好吗？", answer: "不会——PNG 是无损格式，但无法还原 JPG 已丢失的细节，只是重存时不再二次损失。" },
+      { question: "我的图片会上传到服务器吗？", answer: "不会。转换在你的浏览器中完成，文件不会离开你的设备。" },
+    ],
+  },
+  "png-to-jpg": {
+    faqTitle: "PNG 转 JPG 常见问题",
+    faq: [
+      { question: "如何把 PNG 转成 JPG？", answer: "上传 .png 图片，然后下载转换后的 JPG。" },
+      { question: "透明区域怎么处理？", answer: "JPG 不支持透明，透明区域会被填充为白色。" },
+      { question: "我的图片会上传到服务器吗？", answer: "不会。转换在你的浏览器中完成，文件不会离开你的设备。" },
+    ],
+  },
   "png-to-webp": {
     faqTitle: "PNG 转 WebP 常见问题",
     faq: [
