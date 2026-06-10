@@ -51,6 +51,11 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "FORBIDDEN_ORIGIN", message: "Requests are only allowed from DockDocs." }, 403);
   }
 
+  // Best-effort per-IP rate limit (in-memory, per warm instance) to bound budget abuse.
+  if (isRateLimited(req, 6, 60_000)) {
+    return json({ ok: false, code: "RATE_LIMITED", message: "Too many requests — please wait a minute and try again." }, 429);
+  }
+
   const provider = getProvider();
   if (!provider) {
     return json(
@@ -217,4 +222,23 @@ function safeJson(value: string): any {
 
 function redact(value: string) {
   return value.replace(/Bearer\s+[A-Za-z0-9._-]+/g, "Bearer [redacted]").slice(0, 400);
+}
+
+// Lightweight in-memory sliding-window limiter. Per warm instance only (Netlify
+// may run several), so it's a soft layer on top of the Origin guard + input caps —
+// enough to stop naive hammering. Swap for Netlify Blobs / Upstash for hard limits.
+const rlHits = new Map<string, number[]>();
+function isRateLimited(req: Request, limit: number, windowMs: number): boolean {
+  const ip =
+    req.headers.get("x-nf-client-connection-ip") ||
+    (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
+    "anon";
+  const now = Date.now();
+  const arr = (rlHits.get(ip) || []).filter((ts) => now - ts < windowMs);
+  arr.push(now);
+  rlHits.set(ip, arr);
+  if (rlHits.size > 5000) {
+    for (const [k, v] of rlHits) if (!v.length || now - v[v.length - 1] > windowMs) rlHits.delete(k);
+  }
+  return arr.length > limit;
 }
