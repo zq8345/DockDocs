@@ -229,6 +229,14 @@ export function ReadyWorkflowState({
         </label>
       )}
 
+      {config.slug === "unlock-pdf" && (
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "当前密码" : "Current password"}</span>
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "打开此 PDF 所需的密码" : "The password needed to open this PDF"} type="password" maxLength={64} className={inputCls} />
+          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{zh ? "只能用你提供的密码解锁，无法破解未知密码。" : "Unlocks using the password you provide — can't crack unknown passwords."}</span>
+        </label>
+      )}
+
       {(config.slug === "pdf-to-jpg" || config.slug === "pdf-to-png" || config.slug === "pdf-to-markdown") && (
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "页面范围（可选）" : "Page range (optional)"}</span>

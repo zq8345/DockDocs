@@ -70,7 +70,6 @@ const COMING_SOON_TOOLS: Record<string, { en: string; zh: string }> = {
   "edit-pdf": { en: "Edit PDF", zh: "编辑 PDF" },
   "sign-pdf": { en: "Sign PDF", zh: "签署 PDF" },
   "translate-pdf": { en: "Translate PDF", zh: "翻译 PDF" },
-  "unlock-pdf": { en: "Unlock PDF", zh: "解锁 PDF" },
 };
 
 type PageParams = {

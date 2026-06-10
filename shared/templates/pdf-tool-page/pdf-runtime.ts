@@ -25,7 +25,8 @@ export type PdfRuntimeSlug =
   | "excel-to-pdf"
   | "pdf-to-excel"
   | "watermark-pdf"
-  | "page-numbers";
+  | "page-numbers"
+  | "unlock-pdf";
 
 export type PdfRuntimeProgress = {
   progress: number;
@@ -92,7 +93,8 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "excel-to-pdf" ||
     slug === "pdf-to-excel" ||
     slug === "watermark-pdf" ||
-    slug === "page-numbers"
+    slug === "page-numbers" ||
+    slug === "unlock-pdf"
   );
 }
 
@@ -192,6 +194,10 @@ export async function runPdfRuntime({
 
   if (slug === "page-numbers") {
     return addPageNumbers(files[0], outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "unlock-pdf") {
+    return unlockPdfLocally(files[0], pageRanges.trim(), outputFileName, locale, signal, onProgress);
   }
 
   return imagesToPdf(files, outputFileName, signal, onProgress);
@@ -849,6 +855,56 @@ async function protectPdfLocally(
   // useObjectStreams:false is required for the encryption handler to apply cleanly.
   const encryptedBytes = await pdfDoc.save({ useObjectStreams: false });
   const blob = new Blob([encryptedBytes as BlobPart], { type: "application/pdf" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount,
+    fileCount: 1,
+  };
+}
+
+async function unlockPdfLocally(
+  file: File,
+  password: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  const zh = locale === "zh";
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  if (!password) {
+    throw new Error(zh ? "请输入该 PDF 的当前密码。" : "Enter the current password of this PDF.");
+  }
+
+  // The encryption-capable fork can load (decrypt) with the password.
+  const { PDFDocument: EncryptablePDFDocument } = await import("@cantoo/pdf-lib");
+  const sourceBytes = await file.arrayBuffer();
+  emitProgress(onProgress, 30, 1);
+  throwIfAborted(signal);
+
+  let pdfDoc;
+  try {
+    pdfDoc = await EncryptablePDFDocument.load(sourceBytes, { password });
+  } catch {
+    throw new Error(
+      zh
+        ? "无法解锁：密码不正确，或该文件不是受密码保护的 PDF。"
+        : "Could not unlock: the password is incorrect, or this isn't a password-protected PDF.",
+    );
+  }
+  const pageCount = pdfDoc.getPageCount();
+  emitProgress(onProgress, 65, 2);
+  throwIfAborted(signal);
+
+  // Saving without calling .encrypt() drops the password protection.
+  const outBytes = await pdfDoc.save({ useObjectStreams: false });
+  const blob = new Blob([outBytes as BlobPart], { type: "application/pdf" });
   emitProgress(onProgress, 100, 3);
 
   return {

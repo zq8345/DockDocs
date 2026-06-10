@@ -724,6 +724,16 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
           ? ["读取 PDF...", "计算页数...", "添加页码...", "准备下载..."]
           : ["Reading PDF...", "Counting pages...", "Adding numbers...", "Preparing download..."],
       };
+    case "unlock-pdf":
+      return {
+        ...base,
+        processLabel: zh ? "正在用密码解锁并移除保护。" : "Unlocking with the password and removing protection.",
+        resultLabel: zh ? "下载已解锁 PDF" : "Download unlocked PDF",
+        outputFileName: "dockdocs-unlocked.pdf",
+        steps: zh
+          ? ["读取 PDF...", "用密码解密...", "移除保护...", "准备下载..."]
+          : ["Reading PDF...", "Decrypting with password...", "Removing protection...", "Preparing download..."],
+      };
   }
 }
 
@@ -1015,6 +1025,17 @@ function getWorkflowResult(
       return {
         title: zh ? "页码已添加" : "Page numbers added",
         description: zh ? "已为每一页加上页码，可下载。" : "Page numbers added to every page, ready to download.",
+        rows: [
+          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
+          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
+          [zh ? "输出" : "Output", outputName],
+        ],
+      };
+    case "unlock-pdf":
+      return {
+        title: zh ? "PDF 已解锁" : "PDF unlocked",
+        description: zh ? "已移除密码保护，可自由打开、编辑和打印。" : "Password protection removed — open, edit, and print freely.",
         rows: [
           [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
           [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],

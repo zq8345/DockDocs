@@ -54,6 +54,7 @@ const toolGroups = {
       tier: "Free",
       items: [
         { name: "Protect PDF", slug: "/protect-pdf" },
+        { name: "Unlock PDF", slug: "/unlock-pdf" },
         { name: "OCR PDF", slug: "/ocr-pdf" },
       ],
     },
@@ -105,6 +106,7 @@ const toolGroups = {
       tier: "Free",
       items: [
         { name: "加密 PDF", slug: "/protect-pdf" },
+        { name: "解锁 PDF", slug: "/unlock-pdf" },
         { name: "OCR PDF", slug: "/ocr-pdf" },
       ],
     },

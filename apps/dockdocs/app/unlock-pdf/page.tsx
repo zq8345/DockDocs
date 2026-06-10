@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
-import { ComingSoonTool } from "@/components/ComingSoonTool";
+import {
+  createPdfToolMetadata,
+  PdfToolPage,
+} from "../../../../shared/templates/pdf-tool-page";
+import { getLocalizedToolConfig } from "@/lib/localized-tools";
 
-export const metadata: Metadata = {
-  title: "Unlock PDF — Coming Soon | DockDocs",
-  description: "PDF password removal from DockDocs is coming soon.",
-  alternates: { canonical: "/unlock-pdf/" },
-  robots: { index: false, follow: true },
-};
+const config = getLocalizedToolConfig("en", "unlock-pdf");
+
+export const metadata = createPdfToolMetadata(config);
 
 export default function UnlockPdfPage() {
-  return <ComingSoonTool name="Unlock PDF" nameZh="解锁 PDF" />;
+  return <PdfToolPage config={config} />;
 }
