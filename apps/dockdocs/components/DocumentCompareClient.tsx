@@ -339,7 +339,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         {t.badge}
       </div>
       <h1 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">{t.h1}</h1>
-      <p className="mt-3 max-w-2xl text-[color:var(--muted)]">{t.intro}</p>
+      <p className="mt-3 max-w-4xl text-[color:var(--muted)]">{t.intro}</p>
 
       <div
         onDragOver={(e) => {

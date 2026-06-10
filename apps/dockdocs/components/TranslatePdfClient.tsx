@@ -190,7 +190,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
       <h1 className="text-[28px] font-semibold tracking-[-0.018em] text-[color:var(--foreground)] sm:text-[34px]">
         {t.title}
       </h1>
-      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-3 max-w-4xl text-[15px] leading-relaxed text-[color:var(--muted)]">{t.subtitle}</p>
 
       {/* Upload */}
       {phase === "idle" || phase === "extracting" ? (

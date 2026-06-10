@@ -111,7 +111,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">
       <h1 className="text-[28px] font-semibold tracking-[-0.018em] text-[color:var(--foreground)] sm:text-[34px]">{t.title}</h1>
-      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-3 max-w-4xl text-[15px] leading-relaxed text-[color:var(--muted)]">{t.subtitle}</p>
 
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
@@ -140,7 +140,6 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
               <p className="text-[12.5px] text-[color:var(--muted)]">{t.hint}</p>
             </div>
             <div className="flex shrink-0 gap-2">
-              <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{busy ? t.rendering : `+ ${t.add}`}</button>
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               <button type="button" onClick={merge} disabled={working || items.length < 2} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{working ? t.working : t.merge}</button>
             </div>
@@ -164,6 +163,15 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
                 <p className="text-center text-[11px] text-[color:var(--muted)]">{t.pagesLabel(it.pages)}</p>
               </div>
             ))}
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="flex min-h-[140px] flex-col items-center justify-center gap-2 rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+              aria-label={t.add}
+            >
+              <span className="text-[30px] font-light leading-none">+</span>
+              <span className="text-[12.5px] font-medium">{busy ? t.rendering : t.add}</span>
+            </button>
           </div>
         </>
       )}

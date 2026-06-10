@@ -108,7 +108,7 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">
       <h1 className="text-[28px] font-semibold tracking-[-0.018em] text-[color:var(--foreground)] sm:text-[34px]">{t.title}</h1>
-      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-3 max-w-4xl text-[15px] leading-relaxed text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
         <div
