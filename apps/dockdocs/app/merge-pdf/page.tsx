@@ -1,9 +1,9 @@
 import {
   createPdfToolMetadata,
-  PdfToolPage,
   type PdfToolPageConfig,
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
+import { MergePdfClient } from "@/components/MergePdfClient";
 
 const mergePdfConfig = {
   slug: "merge-pdf",
@@ -125,5 +125,5 @@ const mergePdfConfig = {
 export const metadata = createPdfToolMetadata(mergePdfConfig);
 
 export default function MergePdfPage() {
-  return <PdfToolPage config={mergePdfConfig} />;
+  return <MergePdfClient locale="en" />;
 }

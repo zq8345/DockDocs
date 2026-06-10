@@ -1,0 +1,160 @@
+"use client";
+
+import { useCallback, useRef, useState } from "react";
+
+type Locale = "en" | "zh";
+type Item = { id: string; name: string; pages: number; thumb: string; file: File };
+
+const STR = {
+  en: {
+    title: "Merge PDF files",
+    subtitle: "Add your PDFs, drag them into the order you want, and combine them into one — you see each file before you merge, not after.",
+    drop: "Drag & drop PDFs here, or click to choose",
+    choose: "Choose PDFs", add: "Add more", rendering: "Reading files…",
+    hint: "Drag to reorder. They'll be merged top-to-bottom, left-to-right.",
+    files: (n: number, p: number) => `${n} file${n === 1 ? "" : "s"} · ${p} pages total`,
+    pagesLabel: (n: number) => `${n} page${n === 1 ? "" : "s"}`,
+    merge: "Merge & download", working: "Merging…", reset: "Start over",
+    needTwo: "Add at least 2 PDFs to merge.", err: "Something went wrong: ",
+  },
+  zh: {
+    title: "合并 PDF 文件",
+    subtitle: "添加 PDF，拖成你想要的顺序，合并成一个——合并前先看清每个文件，而不是合完才发现顺序错了。",
+    drop: "把多个 PDF 拖到这里，或点击选择",
+    choose: "选择 PDF", add: "继续添加", rendering: "正在读取文件…",
+    hint: "拖动调整顺序,按从上到下、从左到右合并。",
+    files: (n: number, p: number) => `${n} 个文件 · 共 ${p} 页`,
+    pagesLabel: (n: number) => `${n} 页`,
+    merge: "合并并下载", working: "正在合并…", reset: "重新开始",
+    needTwo: "至少添加 2 个 PDF 才能合并。", err: "出错了：",
+  },
+};
+
+export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
+  const t = STR[locale] ?? STR.en;
+  const [items, setItems] = useState<Item[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [working, setWorking] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dragFrom = useRef<number | null>(null);
+
+  const reset = () => { setItems([]); setError(null); };
+
+  const addFiles = useCallback(async (files: File[]) => {
+    const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
+    if (!pdfs.length) return;
+    setError(null); setBusy(true);
+    try {
+      const pdfjs = await import("pdfjs-dist");
+      pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+      const added: Item[] = [];
+      for (const f of pdfs) {
+        try {
+          const doc = await pdfjs.getDocument({ data: new Uint8Array(await f.arrayBuffer()) }).promise;
+          const page = await doc.getPage(1);
+          const viewport = page.getViewport({ scale: 0.45 });
+          const canvas = document.createElement("canvas");
+          canvas.width = viewport.width; canvas.height = viewport.height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) await page.render({ canvas, canvasContext: ctx, viewport }).promise;
+          added.push({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.round(viewport.width)}`, name: f.name, pages: doc.numPages, thumb: canvas.toDataURL("image/jpeg", 0.7), file: f });
+        } catch {
+          /* skip unreadable file */
+        }
+      }
+      setItems((prev) => [...prev, ...added]);
+    } finally {
+      setBusy(false);
+    }
+  }, []);
+
+  const move = (from: number, to: number) => {
+    if (from === to || from < 0 || to < 0) return;
+    setItems((prev) => { const next = [...prev]; const [it] = next.splice(from, 1); next.splice(to, 0, it); return next; });
+  };
+  const remove = (id: string) => setItems((prev) => prev.filter((x) => x.id !== id));
+
+  const totalPages = items.reduce((s, x) => s + x.pages, 0);
+
+  const merge = useCallback(async () => {
+    if (items.length < 2) { setError(t.needTwo); return; }
+    setWorking(true); setError(null);
+    try {
+      const { PDFDocument } = await import("pdf-lib");
+      const out = await PDFDocument.create();
+      for (const it of items) {
+        const doc = await PDFDocument.load(await it.file.arrayBuffer());
+        const copied = await out.copyPages(doc, doc.getPageIndices());
+        copied.forEach((p) => out.addPage(p));
+      }
+      const bytes = await out.save();
+      const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "dockdocs-merged.pdf"; a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError(t.err + (e instanceof Error ? e.message : String(e)));
+    } finally {
+      setWorking(false);
+    }
+  }, [items, t]);
+
+  return (
+    <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">
+      <h1 className="text-[28px] font-semibold tracking-[-0.018em] text-[color:var(--foreground)] sm:text-[34px]">{t.title}</h1>
+      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-[color:var(--muted)]">{t.subtitle}</p>
+
+      <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
+
+      {items.length === 0 ? (
+        <div
+          className="mt-8 cursor-pointer rounded-[var(--radius-lg)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-10 text-center transition hover:border-[color:var(--line-strong)]"
+          onClick={() => inputRef.current?.click()}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={(e) => { e.preventDefault(); const fs = Array.from(e.dataTransfer.files || []); if (fs.length) addFiles(fs); }}
+        >
+          <p className="text-[15px] font-medium text-[color:var(--foreground)]">{busy ? t.rendering : t.drop}</p>
+          {!busy && <button type="button" className="mt-4 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>}
+        </div>
+      ) : (
+        <>
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, totalPages)}</p>
+              <p className="text-[12.5px] text-[color:var(--muted)]">{t.hint}</p>
+            </div>
+            <div className="flex shrink-0 gap-2">
+              <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{busy ? t.rendering : `+ ${t.add}`}</button>
+              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
+              <button type="button" onClick={merge} disabled={working || items.length < 2} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{working ? t.working : t.merge}</button>
+            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+            {items.map((it, pos) => (
+              <div
+                key={it.id}
+                draggable
+                onDragStart={() => (dragFrom.current = pos)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => { e.preventDefault(); if (dragFrom.current != null) move(dragFrom.current, pos); dragFrom.current = null; }}
+                className="group relative cursor-grab rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2 transition hover:border-[color:var(--accent)] active:cursor-grabbing"
+              >
+                <span className="absolute left-2 top-2 z-10 flex h-6 min-w-6 items-center justify-center rounded-full bg-[color:var(--accent)] px-1.5 text-[12px] font-bold text-white">{pos + 1}</span>
+                <button type="button" onClick={() => remove(it.id)} className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white" aria-label="Remove">✕</button>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={it.thumb} alt={it.name} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
+                <p className="mt-1.5 truncate text-center text-[11.5px] font-medium text-[color:var(--foreground)]" title={it.name}>{it.name}</p>
+                <p className="text-center text-[11px] text-[color:var(--muted)]">{t.pagesLabel(it.pages)}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+    </div>
+  );
+}
