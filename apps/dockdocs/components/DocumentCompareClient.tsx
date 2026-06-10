@@ -173,6 +173,10 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
   const [recommending, setRecommending] = useState(false);
   const [trace, setTrace] = useState<{ docId: string; docName: string; snippet: string } | null>(null);
+  const [qaQ, setQaQ] = useState("");
+  const [qaBusy, setQaBusy] = useState(false);
+  const [qaAns, setQaAns] = useState<{ answer: string; sources: Array<{ docId: string; name: string; snippet: string }> } | null>(null);
+  const [qaErr, setQaErr] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const extractOne = useCallback(async (file: File): Promise<DocResult> => {
@@ -301,6 +305,31 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
 
   const dimLabel = (key: string, fallback: string) => (locale === "zh" ? DIM_ZH[key] ?? fallback : fallback);
 
+  const askQa = async () => {
+    const q = qaQ.trim();
+    if (!q || okDocs.length === 0) return;
+    setQaBusy(true);
+    setQaErr(null);
+    setQaAns(null);
+    try {
+      const res = await fetch("/api/compare-qa", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: q, locale, documents: okDocs.map((d) => ({ id: d.id, name: d.name, text: d.text })) }),
+      });
+      const data = await res.json();
+      if (data?.ok && typeof data.answer === "string") {
+        setQaAns({ answer: data.answer, sources: Array.isArray(data.sources) ? data.sources : [] });
+      } else {
+        setQaErr(data?.message || "Failed.");
+      }
+    } catch (e) {
+      setQaErr(e instanceof Error ? e.message : String(e));
+    } finally {
+      setQaBusy(false);
+    }
+  };
+
   return (
     <main className="mx-auto max-w-5xl px-5 py-14 sm:px-6 lg:px-8">
       <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
@@ -371,6 +400,41 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {compareError && <p className="mt-4 rounded-[var(--radius)] border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-300">{compareError}</p>}
+
+      {okDocs.length >= 1 && (
+        <section className="mt-10">
+          <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{locale === "zh" ? "跨文档提问" : "Ask across these documents"}</h2>
+          <p className="mt-1 text-sm text-[color:var(--muted)]">{locale === "zh" ? "用一个问题问遍上传的所有文档，答案带原文出处。" : "Ask one question across every document you uploaded — the answer cites the source."}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <input
+              value={qaQ}
+              onChange={(e) => setQaQ(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") askQa(); }}
+              placeholder={locale === "zh" ? "例如：哪份报价的交期最短？" : "e.g. Which quote has the shortest delivery time?"}
+              className="h-10 min-w-[220px] flex-1 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm text-[color:var(--foreground)]"
+            />
+            <button type="button" onClick={askQa} disabled={qaBusy || !qaQ.trim()} className="h-10 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+              {qaBusy ? (locale === "zh" ? "思考中…" : "Thinking…") : (locale === "zh" ? "提问" : "Ask")}
+            </button>
+          </div>
+          {qaErr && <p className="mt-3 rounded-[var(--radius)] border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-300">{qaErr}</p>}
+          {qaAns && (
+            <div className="mt-4 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
+              <p className="whitespace-pre-wrap text-sm leading-7 text-[color:var(--foreground)]">{qaAns.answer}</p>
+              {qaAns.sources.length > 0 && (
+                <div className="mt-3 border-t border-[color:var(--line)] pt-3">
+                  <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-[color:var(--muted)]">{locale === "zh" ? "出处" : "Sources"}</p>
+                  <ul className="space-y-1.5">
+                    {qaAns.sources.map((s, i) => (
+                      <li key={i} className="text-xs text-[color:var(--muted)]"><span className="font-semibold text-[color:var(--foreground)]">{s.name}:</span> “{s.snippet}”</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+      )}
 
       {comparison && (recommending || recommendation) && (
         <section className="mt-10">
