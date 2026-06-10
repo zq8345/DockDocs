@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
@@ -184,7 +185,14 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) onMain(f); }}
         >
-          <p className="text-[15px] font-medium text-[color:var(--foreground)]">{phase === "rendering" ? t.rendering : t.drop}</p>
+          {phase === "rendering" ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-1">
+              <Spinner />
+              <p className="text-[14px] font-medium text-[color:var(--muted)]">{t.rendering}</p>
+            </div>
+          ) : (
+            <p className="text-[15px] font-medium text-[color:var(--foreground)]">{t.drop}</p>
+          )}
           {phase !== "rendering" && (
             <button type="button" className="mt-4 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>
           )}

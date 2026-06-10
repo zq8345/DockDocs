@@ -124,7 +124,6 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
               <p className="text-[12.5px] text-[color:var(--muted)]">{t.hint}</p>
             </div>
             <div className="flex shrink-0 gap-2">
-              <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">+ {t.add}</button>
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.reset}</button>
               <button type="button" onClick={convert} disabled={working} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{working ? t.working : t.convert}</button>
             </div>
@@ -147,6 +146,15 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
                 <img src={it.url} alt={it.name} className="max-h-full max-w-full rounded-[var(--radius-sm)] object-contain" />
               </div>
             ))}
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+              aria-label={t.add}
+            >
+              <span className="text-[30px] font-light leading-none">+</span>
+              <span className="text-[12.5px] font-medium">{t.add}</span>
+            </button>
           </div>
         </>
       )}

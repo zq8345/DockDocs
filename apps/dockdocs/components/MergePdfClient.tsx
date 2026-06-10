@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
@@ -121,7 +122,14 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => { e.preventDefault(); const fs = Array.from(e.dataTransfer.files || []); if (fs.length) addFiles(fs); }}
         >
-          <p className="text-[15px] font-medium text-[color:var(--foreground)]">{busy ? t.rendering : t.drop}</p>
+          {busy ? (
+            <div className="flex flex-col items-center justify-center gap-3 py-1">
+              <Spinner />
+              <p className="text-[14px] font-medium text-[color:var(--muted)]">{t.rendering}</p>
+            </div>
+          ) : (
+            <p className="text-[15px] font-medium text-[color:var(--foreground)]">{t.drop}</p>
+          )}
           {!busy && <button type="button" className="mt-4 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>}
         </div>
       ) : (
