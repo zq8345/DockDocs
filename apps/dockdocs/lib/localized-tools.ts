@@ -382,7 +382,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     breadcrumbName: "Compress PDF",
     heroTitle: "Compress PDF online free with AI-powered optimization",
     heroDescription:
-      "Reduce PDF size for email, portals, forms, and document sharing inside the DockDocs PDF tools workspace.",
+      "That PDF too big to email or upload? Shrink it in seconds — small enough to send, sharp enough to read — without installing anything.",
     primaryActionLabel: "Compress PDF",
     stats: [["Price", "Free"], ["Input", "PDF files"], ["Workspace", "AI documents"]],
     upload: {
@@ -438,7 +438,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     breadcrumbName: "Merge PDF",
     heroTitle: "Merge PDF files online into one organized document.",
     heroDescription:
-      "Combine multiple PDFs into one clean packet for sharing, archiving, and review.",
+      "Tired of sending five separate attachments? Combine them into one clean, ordered PDF in seconds — easier to share, archive, and review.",
     primaryActionLabel: "Merge PDF",
     stats: [["Price", "Free"], ["Input", "Multiple PDFs"], ["Output", "One PDF"]],
     upload: {
@@ -537,7 +537,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     schemaName: "DockDocs PDF to Word Converter",
     breadcrumbName: "PDF to Word",
     heroTitle: "Convert PDF to Word online for editable documents.",
-    heroDescription: "Turn PDFs into editable Word-oriented workflows for revisions and collaboration.",
+    heroDescription: "Stop retyping PDFs by hand. Convert a PDF into an editable Word document in seconds, so you can revise and reuse the text instead of rebuilding it.",
     primaryActionLabel: "Convert PDF to Word",
     stats: [["Price", "Free"], ["Input", "PDF files"], ["Output", "Word documents"]],
     upload: {
@@ -635,7 +635,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     schemaName: "DockDocs JPG to PDF Converter",
     breadcrumbName: "JPG to PDF",
     heroTitle: "Convert JPG images to PDF in a clean document workflow.",
-    heroDescription: "Turn JPG photos, scans, and image files into PDF documents for sharing and archiving.",
+    heroDescription: "Photos and scans are awkward to send and print. Combine your JPGs into one clean PDF in seconds — easy to share, archive, and open anywhere.",
     primaryActionLabel: "Convert JPG to PDF",
     stats: [["Price", "Free"], ["Input", "JPG images"], ["Output", "PDF document"]],
     upload: {
