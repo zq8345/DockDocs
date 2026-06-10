@@ -1,5 +1,7 @@
 "use client";
 
+import { ToolFaq } from "@/components/ToolFaq";
+
 import { useCallback, useRef, useState } from "react";
 
 type Locale = "en" | "zh";
@@ -307,6 +309,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
           />
         </div>
       )}
+      <ToolFaq tool="translate-pdf" locale={locale} />
     </div>
   );
 }

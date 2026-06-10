@@ -1,5 +1,7 @@
 "use client";
 
+import { ToolFaq } from "@/components/ToolFaq";
+
 import { useCallback, useRef, useState } from "react";
 
 type Locale = "en" | "zh";
@@ -155,6 +157,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolFaq tool="merge-pdf" locale={locale} />
     </div>
   );
 }

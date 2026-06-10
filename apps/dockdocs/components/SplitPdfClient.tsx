@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
+import { ToolFaq } from "@/components/ToolFaq";
 
 type Locale = "en" | "zh";
 type Pg = { idx: number; thumb: string };
@@ -173,6 +174,7 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolFaq tool="split-pdf" locale={locale} />
     </div>
   );
 }

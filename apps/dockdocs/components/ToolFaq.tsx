@@ -1,0 +1,145 @@
+type Locale = "en" | "zh";
+type QA = { q: string; a: string };
+
+// FAQ content for the custom-client tools (which don't use the PdfToolPage template).
+const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[]; zh: QA[] } }> = {
+  "reorder-pages": {
+    title: { en: "Reorder PDF pages — FAQ", zh: "PDF 页面排序常见问题" },
+    items: {
+      en: [
+        { q: "How do I reorder pages in a PDF?", a: "Upload the PDF, then drag the page thumbnails into the order you want and click Apply & download." },
+        { q: "Can I delete pages too?", a: "Yes. Click the ✕ on any page thumbnail to remove it before downloading." },
+        { q: "Does it lose quality or upload my file?", a: "No. Pages keep their original content and everything runs in your browser — the file never leaves your device." },
+      ],
+      zh: [
+        { q: "如何给 PDF 页面排序？", a: "上传 PDF，把页面缩略图拖成你想要的顺序，然后点「应用并下载」。" },
+        { q: "可以同时删除页面吗？", a: "可以。点缩略图上的 ✕ 即可在下载前删除该页。" },
+        { q: "会降质或上传文件吗？", a: "不会。页面内容不变，全部在浏览器中处理，文件不会离开你的设备。" },
+      ],
+    },
+  },
+  "delete-page": {
+    title: { en: "Delete PDF pages — FAQ", zh: "删除 PDF 页面常见问题" },
+    items: {
+      en: [
+        { q: "How do I delete pages from a PDF?", a: "Upload the PDF, click the pages you want to remove (they turn red), then click Delete & download." },
+        { q: "Can I change my mind?", a: "Yes. Click a marked page again to keep it. You'll always see how many pages remain." },
+        { q: "Is my file uploaded?", a: "No. Everything happens in your browser — your PDF never leaves your device." },
+      ],
+      zh: [
+        { q: "如何删除 PDF 里的页面？", a: "上传 PDF，点击要删除的页面（会标红），然后点「删除并下载」。" },
+        { q: "点错了能取消吗？", a: "能。再点一次已标记的页面就会保留，界面会实时显示剩余页数。" },
+        { q: "文件会被上传吗？", a: "不会。全部在你的浏览器中完成，PDF 不会离开你的设备。" },
+      ],
+    },
+  },
+  "rotate-page": {
+    title: { en: "Rotate PDF pages — FAQ", zh: "旋转 PDF 页面常见问题" },
+    items: {
+      en: [
+        { q: "How do I rotate pages in a PDF?", a: "Upload the PDF and click a page to turn it 90°. Keep clicking to keep rotating, or use Rotate all 90°." },
+        { q: "Can I rotate only some pages?", a: "Yes. Each page rotates independently — click only the pages you need to fix." },
+        { q: "Is it private?", a: "Yes. Rotation happens in your browser; your file never leaves your device." },
+      ],
+      zh: [
+        { q: "如何旋转 PDF 页面？", a: "上传 PDF，点击某页即可旋转 90°，连续点继续转，也可用「全部旋转 90°」。" },
+        { q: "能只旋转部分页面吗？", a: "能。每页独立旋转，只点你需要纠正的页面即可。" },
+        { q: "私密吗？", a: "私密。旋转在你的浏览器中完成，文件不会离开你的设备。" },
+      ],
+    },
+  },
+  "merge-pdf": {
+    title: { en: "Merge PDF files — FAQ", zh: "合并 PDF 常见问题" },
+    items: {
+      en: [
+        { q: "How do I merge PDF files?", a: "Add your PDFs, drag the file thumbnails into the order you want, then click Merge & download." },
+        { q: "Can I control the order?", a: "Yes. Each file shows a thumbnail and a number; drag to reorder before merging." },
+        { q: "Are my files uploaded?", a: "No. Merging happens in your browser — your files never leave your device." },
+      ],
+      zh: [
+        { q: "如何合并 PDF 文件？", a: "添加 PDF，把文件缩略图拖成想要的顺序，然后点「合并并下载」。" },
+        { q: "能控制合并顺序吗？", a: "能。每个文件都有缩略图和序号，合并前拖动即可调整顺序。" },
+        { q: "文件会被上传吗？", a: "不会。合并在你的浏览器中完成，文件不会离开你的设备。" },
+      ],
+    },
+  },
+  "split-pdf": {
+    title: { en: "Split a PDF — FAQ", zh: "拆分 PDF 常见问题" },
+    items: {
+      en: [
+        { q: "How do I split a PDF?", a: "Upload it, click the ✂ between pages where you want to cut, then Split & download. Each segment becomes a separate PDF, packed into a ZIP." },
+        { q: "How do I know what goes into each file?", a: "Pages are tinted and badged by output file, and a live count shows how many files will be created." },
+        { q: "Is it private?", a: "Yes. Splitting happens in your browser; your file never leaves your device." },
+      ],
+      zh: [
+        { q: "如何拆分 PDF？", a: "上传后在页面之间点 ✂ 设置切分点，再点「拆分并下载」。每段会变成单独的 PDF，打包成 ZIP。" },
+        { q: "怎么看清每个文件包含哪些页？", a: "页面会按所属文件用颜色和「文件N」标注，并实时显示将生成几个文件。" },
+        { q: "私密吗？", a: "私密。拆分在你的浏览器中完成，文件不会离开你的设备。" },
+      ],
+    },
+  },
+  "add-page": {
+    title: { en: "Insert pages into a PDF — FAQ", zh: "向 PDF 插入页面常见问题" },
+    items: {
+      en: [
+        { q: "How do I insert pages into a PDF?", a: "Upload the PDF, click where to insert (at the start or after a page), then choose a PDF or image to insert there and download." },
+        { q: "Can I insert an image?", a: "Yes. You can insert another PDF (its pages) or a PNG/JPG image as a new page." },
+        { q: "Is my file uploaded?", a: "No. Everything happens in your browser — your files never leave your device." },
+      ],
+      zh: [
+        { q: "如何向 PDF 插入页面？", a: "上传 PDF，点击插入位置（最前或某页之后），再选择要插入的 PDF 或图片，然后下载。" },
+        { q: "可以插入图片吗？", a: "可以。你可以插入另一个 PDF（它的页面）或一张 PNG/JPG 图片作为新页面。" },
+        { q: "文件会被上传吗？", a: "不会。全部在你的浏览器中完成，文件不会离开你的设备。" },
+      ],
+    },
+  },
+  "watermark-pdf": {
+    title: { en: "Add a watermark to a PDF — FAQ", zh: "PDF 加水印常见问题" },
+    items: {
+      en: [
+        { q: "How do I add a watermark to a PDF?", a: "Upload the PDF, design a text or image watermark, see it on the live preview, set the pages, then Apply & download." },
+        { q: "Can I use an image watermark?", a: "Yes. Switch to Image mode to stamp a logo or picture; you can set position, opacity, and rotation." },
+        { q: "Is it private?", a: "Yes. The watermark is applied in your browser; your file never leaves your device." },
+      ],
+      zh: [
+        { q: "如何给 PDF 加水印？", a: "上传 PDF，设计文字或图片水印，在实时预览中查看，选好页码范围，然后「应用并下载」。" },
+        { q: "可以用图片水印吗？", a: "可以。切换到「图片」模式即可盖 Logo 或图片，并设置位置、透明度和旋转。" },
+        { q: "私密吗？", a: "私密。水印在你的浏览器中应用，文件不会离开你的设备。" },
+      ],
+    },
+  },
+  "translate-pdf": {
+    title: { en: "Translate a PDF — FAQ", zh: "翻译 PDF 常见问题" },
+    items: {
+      en: [
+        { q: "How do I translate a PDF?", a: "Upload it, pick a target language, and click Translate. The document's text is extracted and translated; you can copy or download the result." },
+        { q: "Does it keep the layout?", a: "Not yet — this version translates the text. Layout-preserving translation is on the roadmap." },
+        { q: "Is my file uploaded?", a: "The PDF is read in your browser; only the extracted text is sent to the AI to translate. The file itself never leaves your device." },
+      ],
+      zh: [
+        { q: "如何翻译 PDF？", a: "上传 PDF，选择目标语言，点「翻译」。文档文字会被提取并翻译，结果可复制或下载。" },
+        { q: "会保留版式吗？", a: "目前不会——此版本翻译文字内容。保留版式的翻译在路线图上。" },
+        { q: "文件会被上传吗？", a: "PDF 在你的浏览器中读取，只有提取出的文字会发送给 AI 翻译，文件本身不会离开你的设备。" },
+      ],
+    },
+  },
+};
+
+export function ToolFaq({ tool, locale = "en" }: { tool: string; locale?: Locale }) {
+  const data = FAQS[tool];
+  if (!data) return null;
+  const items = data.items[locale] ?? data.items.en;
+  return (
+    <section className="mx-auto mt-16 max-w-3xl border-t border-[color:var(--line)] pt-10">
+      <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{data.title[locale] ?? data.title.en}</h2>
+      <div className="mt-5 divide-y divide-[color:var(--line)]">
+        {items.map((it) => (
+          <div key={it.q} className="py-4">
+            <h3 className="text-sm font-semibold text-[color:var(--foreground)]">{it.q}</h3>
+            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{it.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
