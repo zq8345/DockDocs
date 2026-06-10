@@ -7,6 +7,7 @@ import { PdfToImageClient } from "@/components/PdfToImageClient";
 
 const config = {
   slug: "pdf-to-jpg",
+  canonicalPath: "/pdf-to-image/",
   alternateLanguages: languageAlternates("pdf-to-jpg"),
   title: "PDF to JPG Converter Online Free | DockDocs",
   description:

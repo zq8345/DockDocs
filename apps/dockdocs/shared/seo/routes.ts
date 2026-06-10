@@ -34,6 +34,7 @@ export const indexableRoutes: SeoRoute[] = [
   // Convert — PDF to X
   { path: "/pdf-to-word/", name: "PDF to Word — Free Online Converter", changeFrequency: w, priority: 0.85 },
   { path: "/pdf-to-excel/", name: "PDF to Excel — Extract Data", changeFrequency: w, priority: 0.85 },
+  { path: "/pdf-to-image/", name: "PDF to Image — PDF to JPG & PNG", changeFrequency: w, priority: 0.85 },
   { path: "/pdf-to-jpg/", name: "PDF to JPG — Convert Pages to Images", changeFrequency: w, priority: 0.8 },
   { path: "/pdf-to-png/", name: "PDF to PNG — Render Pages as Images", changeFrequency: w, priority: 0.8 },
   { path: "/pdf-to-markdown/", name: "PDF to Markdown — Extract Text", changeFrequency: w, priority: 0.75 },
@@ -41,6 +42,7 @@ export const indexableRoutes: SeoRoute[] = [
   { path: "/word-to-pdf/", name: "Word to PDF — Free DOCX Converter", changeFrequency: w, priority: 0.85 },
   { path: "/excel-to-pdf/", name: "Excel to PDF — Spreadsheet to PDF", changeFrequency: w, priority: 0.85 },
   { path: "/ppt-to-pdf/", name: "PPT to PDF — Presentation Converter", changeFrequency: w, priority: 0.8 },
+  { path: "/images-to-pdf/", name: "Image to PDF — JPG, PNG & WebP", changeFrequency: w, priority: 0.85 },
   { path: "/jpg-to-pdf/", name: "JPG to PDF — Image to PDF", changeFrequency: w, priority: 0.85 },
   { path: "/png-to-pdf/", name: "PNG to PDF — Image Converter", changeFrequency: w, priority: 0.8 },
   // Organize

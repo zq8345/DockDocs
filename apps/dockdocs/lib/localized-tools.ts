@@ -5,6 +5,7 @@ import {
   localizedPath,
   type Locale,
   type ToolSlug,
+  type RouteSlug,
 } from "@/lib/i18n";
 
 type ToolCopy = {
@@ -1442,6 +1443,14 @@ const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
   },
 };
 
+// jpg/png converters canonicalise to their merged hub page (Approach 2).
+const CANONICAL_HUB: Partial<Record<ToolSlug, string>> = {
+  "pdf-to-jpg": "pdf-to-image",
+  "pdf-to-png": "pdf-to-image",
+  "jpg-to-pdf": "images-to-pdf",
+  "png-to-pdf": "images-to-pdf",
+};
+
 export function getLocalizedToolConfig(
   locale: Locale,
   slug: ToolSlug,
@@ -1449,7 +1458,7 @@ export function getLocalizedToolConfig(
   const base = {
     slug,
     locale,
-    canonicalPath: localizedPath(locale, slug),
+    canonicalPath: localizedPath(locale, (CANONICAL_HUB[slug] ?? slug) as RouteSlug),
     alternateLanguages: languageAlternates(slug),
     ...localizedTools[locale][slug],
   };

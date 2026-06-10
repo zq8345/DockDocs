@@ -301,6 +301,28 @@ export async function generateMetadata({
     };
   }
 
+  if (slug === "pdf-to-image") {
+    return createLocalizedMetadata(
+      rawLocale,
+      "pdf-to-image",
+      rawLocale === "zh" ? "PDF 转图片 — PDF 转 JPG 或 PNG" : "PDF to Image — Convert PDF to JPG & PNG",
+      rawLocale === "zh"
+        ? "在浏览器里把 PDF 页面转成 JPG 或 PNG 图片：选页、选格式、下载，文件不离开你的设备。"
+        : "Convert PDF pages to JPG or PNG images online for free. Pick the pages, choose the format, and download — all in your browser.",
+    );
+  }
+
+  if (slug === "images-to-pdf") {
+    return createLocalizedMetadata(
+      rawLocale,
+      "images-to-pdf",
+      rawLocale === "zh" ? "图片转 PDF — JPG/PNG/WebP 转 PDF" : "Image to PDF — JPG, PNG & WebP to PDF",
+      rawLocale === "zh"
+        ? "把 JPG、PNG、WebP、GIF、BMP 图片合并成一个 PDF，每张一页，全程在浏览器完成。"
+        : "Convert JPG, PNG, WebP, GIF or BMP images to PDF online for free. Drag to order and combine into one PDF — all in your browser.",
+    );
+  }
+
   if ((toolSlugs as readonly string[]).includes(slug)) {
     return createPdfToolMetadata(
       getLocalizedToolConfig(rawLocale, slug as ToolSlug),
@@ -477,6 +499,14 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "jpg-to-pdf" || slug === "png-to-pdf") {
+    return <ImagesToPdfClient locale={rawLocale} />;
+  }
+
+  if (slug === "pdf-to-image") {
+    return <PdfToImageClient locale={rawLocale} defaultFormat="jpg" />;
+  }
+
+  if (slug === "images-to-pdf") {
     return <ImagesToPdfClient locale={rawLocale} />;
   }
 

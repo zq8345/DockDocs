@@ -24,16 +24,14 @@ const toolGroups = {
       items: [
         { name: "PDF to Word", slug: "/pdf-to-word" },
         { name: "PDF to Excel", slug: "/pdf-to-excel" },
-        { name: "PDF to JPG", slug: "/pdf-to-jpg" },
-        { name: "PDF to PNG", slug: "/pdf-to-png" },
+        { name: "PDF to Image", slug: "/pdf-to-image" },
         { name: "PDF to Markdown", slug: "/pdf-to-markdown" },
         { name: "PDF to Text", slug: "/pdf-to-text" },
         { name: "PDF to HTML", slug: "/pdf-to-html" },
         { name: "Word to PDF", slug: "/word-to-pdf" },
         { name: "Excel to PDF", slug: "/excel-to-pdf" },
         { name: "PPT to PDF", slug: "/ppt-to-pdf" },
-        { name: "JPG to PDF", slug: "/jpg-to-pdf" },
-        { name: "PNG to PDF", slug: "/png-to-pdf" },
+        { name: "Image to PDF", slug: "/images-to-pdf" },
       ],
     },
     {
@@ -78,16 +76,14 @@ const toolGroups = {
       items: [
         { name: "PDF 转 Word", slug: "/pdf-to-word" },
         { name: "PDF 转 Excel", slug: "/pdf-to-excel" },
-        { name: "PDF 转 JPG", slug: "/pdf-to-jpg" },
-        { name: "PDF 转 PNG", slug: "/pdf-to-png" },
+        { name: "PDF 转图片", slug: "/pdf-to-image" },
         { name: "PDF 转 Markdown", slug: "/pdf-to-markdown" },
         { name: "PDF 转文本", slug: "/pdf-to-text" },
         { name: "PDF 转 HTML", slug: "/pdf-to-html" },
         { name: "Word 转 PDF", slug: "/word-to-pdf" },
         { name: "Excel 转 PDF", slug: "/excel-to-pdf" },
         { name: "PPT 转 PDF", slug: "/ppt-to-pdf" },
-        { name: "JPG 转 PDF", slug: "/jpg-to-pdf" },
-        { name: "PNG 转 PDF", slug: "/png-to-pdf" },
+        { name: "图片转 PDF", slug: "/images-to-pdf" },
       ],
     },
     {

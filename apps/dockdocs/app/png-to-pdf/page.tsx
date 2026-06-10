@@ -7,6 +7,7 @@ import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
 
 const config = {
   slug: "png-to-pdf",
+  canonicalPath: "/images-to-pdf/",
   alternateLanguages: languageAlternates("png-to-pdf"),
   title: "PNG to PDF Converter Online Free | DockDocs",
   description:

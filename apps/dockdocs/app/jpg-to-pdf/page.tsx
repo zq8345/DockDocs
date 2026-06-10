@@ -7,6 +7,7 @@ import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
 
 const jpgToPdfConfig = {
   slug: "jpg-to-pdf",
+  canonicalPath: "/images-to-pdf/",
   alternateLanguages: languageAlternates("jpg-to-pdf"),
   title: "JPG to PDF Converter Online Free | DockDocs",
   description:
