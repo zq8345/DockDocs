@@ -1,9 +1,9 @@
 import {
   createPdfToolMetadata,
-  PdfToolPage,
   type PdfToolPageConfig,
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
+import { InsertPdfClient } from "@/components/InsertPdfClient";
 
 const config = {
   slug: "add-page",
@@ -91,5 +91,5 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function AddPagePage() {
-  return <PdfToolPage config={config} />;
+  return <InsertPdfClient locale="en" />;
 }
