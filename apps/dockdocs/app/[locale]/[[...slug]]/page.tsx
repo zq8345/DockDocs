@@ -30,6 +30,7 @@ import { DeletePagesClient } from "@/components/DeletePagesClient";
 import { RotatePagesClient } from "@/components/RotatePagesClient";
 import { MergePdfClient } from "@/components/MergePdfClient";
 import { SplitPdfClient } from "@/components/SplitPdfClient";
+import { PdfToImageClient } from "@/components/PdfToImageClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -459,6 +460,14 @@ export default async function LocalizedRoute({
 
   if (slug === "split-pdf") {
     return <SplitPdfClient locale={rawLocale} />;
+  }
+
+  if (slug === "pdf-to-jpg") {
+    return <PdfToImageClient locale={rawLocale} defaultFormat="jpg" />;
+  }
+
+  if (slug === "pdf-to-png") {
+    return <PdfToImageClient locale={rawLocale} defaultFormat="png" />;
   }
 
   if ((toolSlugs as readonly string[]).includes(slug)) {

@@ -3,6 +3,23 @@ type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
 const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[]; zh: QA[] } }> = {
+  "pdf-to-image": {
+    title: { en: "PDF to image — FAQ", zh: "PDF 转图片常见问题" },
+    items: {
+      en: [
+        { q: "How do I convert a PDF to JPG or PNG?", a: "Upload the PDF, click the pages you want, choose JPG or PNG, then Convert & download. One page downloads as an image; multiple pages download as a ZIP." },
+        { q: "Can I convert only some pages?", a: "Yes. Every page is shown as a thumbnail — click to include or exclude it before converting." },
+        { q: "JPG or PNG — which should I pick?", a: "PNG is lossless and great for sharp text and graphics; JPG is smaller and good for photos." },
+        { q: "Is my file uploaded?", a: "No. Pages are rendered to images in your browser — your PDF never leaves your device." },
+      ],
+      zh: [
+        { q: "如何把 PDF 转成 JPG 或 PNG？", a: "上传 PDF，点击要转换的页面，选 JPG 或 PNG，然后「转换并下载」。单页直接下载图片，多页打包成 ZIP。" },
+        { q: "可以只转部分页面吗？", a: "可以。每一页都以缩略图显示，转换前点击即可选中或排除。" },
+        { q: "JPG 还是 PNG？", a: "PNG 无损，适合清晰的文字和图形；JPG 体积更小，适合照片。" },
+        { q: "文件会被上传吗？", a: "不会。页面在你的浏览器中渲染成图片，PDF 不会离开你的设备。" },
+      ],
+    },
+  },
   "reorder-pages": {
     title: { en: "Reorder PDF pages — FAQ", zh: "PDF 页面排序常见问题" },
     items: {
