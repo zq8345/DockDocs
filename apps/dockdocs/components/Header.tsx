@@ -33,6 +33,7 @@ const toolGroups = {
         { name: "JPG to PDF", slug: "/jpg-to-pdf" },
         { name: "PNG to PDF", slug: "/png-to-pdf" },
         { name: "Text to PDF", slug: "/text-to-pdf" },
+        { name: "WebP to PNG", slug: "/webp-to-png" },
       ],
     },
     {
@@ -86,6 +87,7 @@ const toolGroups = {
         { name: "JPG 转 PDF", slug: "/jpg-to-pdf" },
         { name: "PNG 转 PDF", slug: "/png-to-pdf" },
         { name: "文本转 PDF", slug: "/text-to-pdf" },
+        { name: "WebP 转 PNG", slug: "/webp-to-png" },
       ],
     },
     {

@@ -27,7 +27,8 @@ export type PdfRuntimeSlug =
   | "watermark-pdf"
   | "page-numbers"
   | "unlock-pdf"
-  | "pdf-to-text";
+  | "pdf-to-text"
+  | "webp-to-png";
 
 export type PdfRuntimeProgress = {
   progress: number;
@@ -38,7 +39,7 @@ export type PdfRuntimeProgress = {
 export type PdfRuntimeArtifact = {
   fileName: string;
   blob: Blob;
-  outputType: "pdf" | "zip" | "text" | "docx" | "xlsx";
+  outputType: "pdf" | "zip" | "text" | "docx" | "xlsx" | "image";
   pageCount?: number;
   fileCount?: number;
   rangeCount?: number;
@@ -96,7 +97,8 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "watermark-pdf" ||
     slug === "page-numbers" ||
     slug === "unlock-pdf" ||
-    slug === "pdf-to-text"
+    slug === "pdf-to-text" ||
+    slug === "webp-to-png"
   );
 }
 
@@ -204,6 +206,10 @@ export async function runPdfRuntime({
 
   if (slug === "pdf-to-text") {
     return pdfToText(files[0], pageRanges, outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "webp-to-png") {
+    return convertImage(files[0], "image/png", locale, outputFileName, signal, onProgress);
   }
 
   return imagesToPdf(files, outputFileName, signal, onProgress);
@@ -868,6 +874,63 @@ async function protectPdfLocally(
     blob,
     outputType: "pdf",
     pageCount,
+    fileCount: 1,
+  };
+}
+
+async function convertImage(
+  file: File,
+  targetMime: string,
+  locale: "en" | "zh",
+  outputFileName: string,
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  const zh = locale === "zh";
+  throwIfAborted(signal);
+  emitProgress(onProgress, 10, 0);
+
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    throw new Error(
+      zh ? "无法读取这张图片，请确认文件格式正确。" : "Could not read this image. Make sure it's a valid image file.",
+    );
+  }
+  emitProgress(onProgress, 40, 1);
+  throwIfAborted(signal);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    throw new Error(zh ? "浏览器画布不可用。" : "Canvas is not available in this browser.");
+  }
+  // JPEG has no alpha channel — fill white so transparent areas don't turn black.
+  if (targetMime === "image/jpeg") {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  ctx.drawImage(bitmap, 0, 0);
+  emitProgress(onProgress, 70, 2);
+  throwIfAborted(signal);
+
+  const blob: Blob = await new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (b) => (b ? resolve(b) : reject(new Error("Image encoding failed."))),
+      targetMime,
+      targetMime === "image/jpeg" || targetMime === "image/webp" ? 0.92 : undefined,
+    );
+  });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "image",
+    pageCount: 1,
     fileCount: 1,
   };
 }

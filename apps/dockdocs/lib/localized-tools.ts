@@ -34,6 +34,41 @@ type ToolCopy = {
 };
 
 const enTools: Record<ToolSlug, ToolCopy> = {
+  "webp-to-png": {
+    title: "WebP to PNG Converter Online Free | DockDocs",
+    description: "Convert WebP images to PNG online for free. Fast, browser-side — your file never leaves your device.",
+    keywords: ["webp to png", "convert webp to png", "webp to png converter", "change webp to png"],
+    appName: "DockDocs WebP to PNG",
+    schemaName: "DockDocs WebP to PNG Converter",
+    breadcrumbName: "WebP to PNG",
+    heroTitle: "Convert WebP to PNG.",
+    heroDescription: "Turn a WebP image into a universally-supported PNG. All processing happens locally — your file never leaves your device.",
+    primaryActionLabel: "Convert to PNG",
+    stats: [["Price", "Free"], ["Input", "WebP image"], ["Output", "PNG image"]],
+    upload: { title: "Upload a WebP image", description: "Drag and drop a .webp file here, or choose a file.", buttonLabel: "Choose WebP", accept: ".webp,image/webp", fileBadge: "WEBP", note: "WebP only. Download a PNG copy." },
+    benefitsTitle: "Convert WebP to PNG without uploading to a server", benefitsDescription: "Upload locally and download a PNG instantly.",
+    benefits: [
+      { title: "Universal compatibility", description: "PNG opens everywhere — editors, docs, and older software." },
+      { title: "Lossless quality", description: "PNG keeps full quality and transparency." },
+      { title: "Privacy-first", description: "Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    featuresTitle: "Built for WebP to PNG conversion", featuresDescription: "A minimal DockDocs interface for converting WebP images.",
+    features: [
+      { title: "Keeps transparency", description: "The alpha channel is preserved in the PNG." },
+      { title: "Full resolution", description: "Output matches the original image dimensions." },
+      { title: "Browser-side", description: "Uses the canvas API for fast, local conversion." },
+      { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
+    ],
+    workflowTitle: "How WebP to PNG fits into your work", workflowDescription: "Common uses: editing WebP images, uploading where WebP isn't accepted, and sharing.",
+    steps: ["Upload a WebP image.", "Click Convert to PNG.", "Download the PNG."],
+    faqTitle: "WebP to PNG questions",
+    faq: [
+      { question: "How do I convert WebP to PNG?", answer: "Upload a .webp image and download the converted PNG." },
+      { question: "Is transparency kept?", answer: "Yes. The PNG preserves the alpha (transparency) channel." },
+      { question: "Is my image sent to a server?", answer: "No. Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    cta: { eyebrow: "WebP to PNG", title: "Convert your WebP to PNG.", description: "Get a universal PNG — entirely in your browser.", buttonLabel: "Convert to PNG now" },
+  },
   "pdf-to-text": {
     title: "PDF to Text (TXT) Converter Online Free | DockDocs",
     description: "Extract plain text from any PDF online for free. Fast, browser-side — your file never leaves your device.",
@@ -938,6 +973,18 @@ const enTools: Record<ToolSlug, ToolCopy> = {
 };
 
 const zhTools: Record<ToolSlug, ToolCopy> = {
+  "webp-to-png": {
+    ...enTools["webp-to-png"],
+    title: "在线免费 WebP 转 PNG | DockDocs",
+    description: "在线免费把 WebP 图片转成 PNG。浏览器本地处理，文件不会离开你的设备。",
+    appName: "DockDocs WebP 转 PNG",
+    breadcrumbName: "WebP 转 PNG",
+    heroTitle: "把 WebP 转成 PNG。",
+    heroDescription: "把 WebP 图片转成通用的 PNG 格式。完全在浏览器中处理——文件不会离开你的设备。",
+    primaryActionLabel: "转换为 PNG",
+    upload: { ...enTools["webp-to-png"].upload, title: "上传 WebP 图片", description: "拖放 .webp 文件，或从设备中选择。", buttonLabel: "选择 WebP" },
+    cta: { eyebrow: "WebP 转 PNG", title: "把 WebP 转成 PNG。", description: "完全在浏览器中得到通用 PNG。", buttonLabel: "立即转换" },
+  },
   "pdf-to-text": {
     ...enTools["pdf-to-text"],
     title: "在线免费 PDF 转文本（TXT） | DockDocs",
@@ -1265,6 +1312,14 @@ const localizedTools = {
 // the enTools spread; for Chinese pages we substitute these translated sets
 // so the FAQ section reads in Chinese.
 const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "webp-to-png": {
+    faqTitle: "WebP 转 PNG 常见问题",
+    faq: [
+      { question: "如何把 WebP 转成 PNG？", answer: "上传 .webp 图片，然后下载转换后的 PNG。" },
+      { question: "透明度会保留吗？", answer: "会。PNG 保留透明（alpha）通道。" },
+      { question: "我的图片会上传到服务器吗？", answer: "不会。转换在你的浏览器中完成，文件不会离开你的设备。" },
+    ],
+  },
   "pdf-to-text": {
     faqTitle: "PDF 转文本常见问题",
     faq: [
