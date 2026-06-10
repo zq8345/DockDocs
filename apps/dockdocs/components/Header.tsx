@@ -45,6 +45,7 @@ const toolGroups = {
         { name: "Rotate Pages", slug: "/rotate-page" },
         { name: "Reorder Pages", slug: "/reorder-pages" },
         { name: "Add Page", slug: "/add-page" },
+        { name: "Watermark PDF", slug: "/watermark-pdf" },
       ],
     },
     {
@@ -94,6 +95,7 @@ const toolGroups = {
         { name: "旋转页面", slug: "/rotate-page" },
         { name: "页面排序", slug: "/reorder-pages" },
         { name: "添加页面", slug: "/add-page" },
+        { name: "PDF 加水印", slug: "/watermark-pdf" },
       ],
     },
     {

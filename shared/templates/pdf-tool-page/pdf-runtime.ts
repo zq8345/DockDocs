@@ -1,4 +1,4 @@
-import { PDFDocument, rgb } from "pdf-lib";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { runOcrPdfFirstPage } from "./ocr-runtime";
 import { runCloudConvert } from "./cloudconvert-runtime";
 import type { CloudConvertRoute } from "./cloudconvert-runtime";
@@ -23,7 +23,8 @@ export type PdfRuntimeSlug =
   | "word-to-pdf"
   | "ppt-to-pdf"
   | "excel-to-pdf"
-  | "pdf-to-excel";
+  | "pdf-to-excel"
+  | "watermark-pdf";
 
 export type PdfRuntimeProgress = {
   progress: number;
@@ -88,7 +89,8 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "word-to-pdf" ||
     slug === "ppt-to-pdf" ||
     slug === "excel-to-pdf" ||
-    slug === "pdf-to-excel"
+    slug === "pdf-to-excel" ||
+    slug === "watermark-pdf"
   );
 }
 
@@ -180,6 +182,10 @@ export async function runPdfRuntime({
 
   if (slug === "protect-pdf") {
     return protectPdfLocally(files[0], pageRanges.trim(), outputFileName, locale, signal, onProgress);
+  }
+
+  if (slug === "watermark-pdf") {
+    return watermarkPdfLocally(files[0], pageRanges.trim(), outputFileName, locale, signal, onProgress);
   }
 
   return imagesToPdf(files, outputFileName, signal, onProgress);
@@ -844,6 +850,96 @@ async function protectPdfLocally(
     blob,
     outputType: "pdf",
     pageCount,
+    fileCount: 1,
+  };
+}
+
+async function watermarkPdfLocally(
+  file: File,
+  text: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  const zh = locale === "zh";
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  const mark = text.trim();
+  if (!mark) {
+    throw new Error(zh ? "请输入水印文字。" : "Enter the watermark text.");
+  }
+  if (mark.length > 40) {
+    throw new Error(zh ? "水印文字最多 40 个字符。" : "Watermark text must be 40 characters or fewer.");
+  }
+  // StandardFonts (Helvetica) only encode Latin-1; reject other scripts with a clear message.
+  if (/[^ -ÿ]/.test(mark)) {
+    throw new Error(
+      zh
+        ? "水印暂仅支持拉丁字母、数字和符号（如 CONFIDENTIAL）。中文水印即将支持。"
+        : "Watermark currently supports Latin letters, digits and symbols (e.g. CONFIDENTIAL). Other scripts coming soon.",
+    );
+  }
+
+  const sourceBytes = await file.arrayBuffer();
+  emitProgress(onProgress, 25, 1);
+  throwIfAborted(signal);
+
+  let pdfDoc;
+  try {
+    pdfDoc = await PDFDocument.load(sourceBytes);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (/encrypt|password/i.test(message)) {
+      throw new Error(
+        zh
+          ? "这个 PDF 已加密，请先解锁再加水印。"
+          : "This PDF is encrypted. Unlock it first, then add a watermark.",
+      );
+    }
+    throw err;
+  }
+
+  const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const pages = pdfDoc.getPages();
+  emitProgress(onProgress, 55, 2);
+  throwIfAborted(signal);
+
+  pages.forEach((page) => {
+    const { width, height } = page.getSize();
+    const diag = Math.sqrt(width * width + height * height);
+    let size = 56;
+    let textWidth = font.widthOfTextAtSize(mark, size);
+    if (textWidth > diag * 0.8) {
+      size = (size * diag * 0.8) / textWidth;
+      textWidth = diag * 0.8;
+    }
+    // Offset the rotated baseline so the diagonal mark sits near the page center.
+    const off = (textWidth / 2) * Math.cos(Math.PI / 4);
+    page.drawText(mark, {
+      x: width / 2 - off,
+      y: height / 2 - off,
+      size,
+      font,
+      color: rgb(0.5, 0.5, 0.5),
+      opacity: 0.22,
+      rotate: { type: "degrees" as any, angle: 45 },
+    });
+  });
+
+  emitProgress(onProgress, 85, 3);
+  throwIfAborted(signal);
+
+  const outBytes = await pdfDoc.save();
+  const blob = new Blob([outBytes as BlobPart], { type: "application/pdf" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount: pages.length,
     fileCount: 1,
   };
 }

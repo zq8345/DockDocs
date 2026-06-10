@@ -221,6 +221,14 @@ export function ReadyWorkflowState({
         </label>
       )}
 
+      {config.slug === "watermark-pdf" && (
+        <label className="block">
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "水印文字" : "Watermark text"}</span>
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "例如 CONFIDENTIAL、DRAFT" : "e.g. CONFIDENTIAL, DRAFT"} maxLength={40} className={inputCls} />
+          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{zh ? "斜向盖到每一页。暂支持拉丁字母 / 数字 / 符号。" : "Stamped diagonally on every page. Latin letters, digits & symbols for now."}</span>
+        </label>
+      )}
+
       {(config.slug === "pdf-to-jpg" || config.slug === "pdf-to-png" || config.slug === "pdf-to-markdown") && (
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "页面范围（可选）" : "Page range (optional)"}</span>

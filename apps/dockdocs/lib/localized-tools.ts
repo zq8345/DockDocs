@@ -34,6 +34,41 @@ type ToolCopy = {
 };
 
 const enTools: Record<ToolSlug, ToolCopy> = {
+  "watermark-pdf": {
+    title: "Add Watermark to PDF Online Free | DockDocs",
+    description: "Stamp a text watermark across every page of a PDF online for free. Fast, browser-side — your file never leaves your device.",
+    keywords: ["watermark pdf", "add watermark to pdf", "pdf watermark", "stamp pdf", "draft watermark"],
+    appName: "DockDocs Watermark PDF",
+    schemaName: "DockDocs PDF Watermark",
+    breadcrumbName: "Watermark PDF",
+    heroTitle: "Add a watermark to every page of your PDF.",
+    heroDescription: "Stamp text like CONFIDENTIAL or DRAFT diagonally across all pages. All processing happens locally — your file never leaves your device.",
+    primaryActionLabel: "Add watermark",
+    stats: [["Price", "Free"], ["Input", "PDF file"], ["Output", "Watermarked PDF"]],
+    upload: { title: "Upload a PDF to watermark", description: "Drag and drop a PDF here, or choose a file.", buttonLabel: "Choose PDF", note: "PDF only. Type your watermark text and download the result." },
+    benefitsTitle: "Watermark PDFs without uploading to a server", benefitsDescription: "Add your text and download a watermarked PDF instantly.",
+    benefits: [
+      { title: "Diagonal text stamp", description: "Your text is placed diagonally across every page." },
+      { title: "Privacy-first", description: "All watermarking happens in your browser. Your file never leaves your device." },
+      { title: "Mark status & ownership", description: "Show CONFIDENTIAL, DRAFT, or your company name on every page." },
+    ],
+    featuresTitle: "Built for PDF watermarking", featuresDescription: "A minimal DockDocs interface for stamping text onto PDFs.",
+    features: [
+      { title: "Any short text", description: "Up to 40 characters, stamped on every page." },
+      { title: "Semi-transparent", description: "Readable content stays visible under the mark." },
+      { title: "Browser-side", description: "Uses pdf-lib for fast, local processing." },
+      { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
+    ],
+    workflowTitle: "How watermarking fits into document work", workflowDescription: "Common uses: marking drafts, confidential reports, proofs, and ownership.",
+    steps: ["Upload a PDF.", "Type your watermark text (e.g. CONFIDENTIAL).", "Download the watermarked PDF."],
+    faqTitle: "PDF watermark questions",
+    faq: [
+      { question: "How do I add a watermark to a PDF?", answer: "Upload a PDF, type your watermark text, and download the stamped result." },
+      { question: "Is my PDF sent to a server?", answer: "No. All watermarking happens in your browser. Your file never leaves your device." },
+      { question: "Can I remove the watermark later?", answer: "The watermark is drawn into the page content, so keep your original file if you need an unmarked copy." },
+    ],
+    cta: { eyebrow: "Watermark PDF", title: "Add a watermark to your PDF.", description: "Stamp text across every page — entirely in your browser.", buttonLabel: "Add watermark now" },
+  },
   "compress-pdf": {
     title: "Compress PDF Online Free | DockDocs",
     description:
@@ -833,6 +868,18 @@ const enTools: Record<ToolSlug, ToolCopy> = {
 };
 
 const zhTools: Record<ToolSlug, ToolCopy> = {
+  "watermark-pdf": {
+    ...enTools["watermark-pdf"],
+    title: "在线免费给 PDF 加水印 | DockDocs",
+    description: "在线免费为 PDF 的每一页添加文字水印。浏览器本地处理，文件不会离开你的设备。",
+    appName: "DockDocs 加水印",
+    breadcrumbName: "PDF 加水印",
+    heroTitle: "给 PDF 的每一页加上文字水印。",
+    heroDescription: "在所有页面斜向盖上「机密」「草稿」等文字。完全在浏览器中处理——文件不会离开你的设备。",
+    primaryActionLabel: "添加水印",
+    upload: { ...enTools["watermark-pdf"].upload, title: "上传要加水印的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF" },
+    cta: { eyebrow: "PDF 加水印", title: "为 PDF 添加文字水印。", description: "完全在浏览器中给每一页盖上文字水印。", buttonLabel: "立即添加水印" },
+  },
   "compress-pdf": {
     ...enTools["compress-pdf"],
     title: "在线免费压缩 PDF | DockDocs",
@@ -1124,6 +1171,14 @@ const localizedTools = {
 // the enTools spread; for Chinese pages we substitute these translated sets
 // so the FAQ section reads in Chinese.
 const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "watermark-pdf": {
+    faqTitle: "PDF 加水印常见问题",
+    faq: [
+      { question: "如何给 PDF 加水印？", answer: "上传 PDF，输入水印文字，然后下载加好水印的文件。" },
+      { question: "我的 PDF 会上传到服务器吗？", answer: "不会。加水印完全在你的浏览器中完成，文件不会离开你的设备。" },
+      { question: "之后能去掉水印吗？", answer: "水印会绘制进页面内容，如需无水印版本请保留原始文件。" },
+    ],
+  },
   "compress-pdf": {
     faqTitle: "PDF 压缩常见问题",
     faq: [
