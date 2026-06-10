@@ -216,7 +216,8 @@ export function ReadyWorkflowState({
       {config.slug === "protect-pdf" && (
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "设置密码" : "Set password"}</span>
-          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "至少 4 位" : "At least 4 characters"} type="password" className={inputCls} />
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "4–32 位：字母 / 数字 / _" : "4–32 chars: letters, digits, _"} type="password" maxLength={32} className={inputCls} />
+          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{zh ? "打开 PDF 需要此密码，请记牢——忘了无法找回。" : "Required to open the PDF. Keep it safe — it cannot be recovered."}</span>
         </label>
       )}
 

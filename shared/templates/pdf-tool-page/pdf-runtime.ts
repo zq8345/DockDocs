@@ -179,20 +179,7 @@ export async function runPdfRuntime({
   }
 
   if (slug === "protect-pdf") {
-    const zh = locale === "zh";
-    const password = pageRanges.trim();
-    if (!password || password.length < 4) {
-      throw new Error(zh ? "请输入至少 4 位密码。" : "Enter a password of at least 4 characters.");
-    }
-    return runCloudConvert({
-      file: files[0],
-      route: "protect-pdf" as CloudConvertRoute,
-      outputFileName,
-      locale,
-      password,
-      signal,
-      onProgress,
-    });
+    return protectPdfLocally(files[0], pageRanges.trim(), outputFileName, locale, signal, onProgress);
   }
 
   return imagesToPdf(files, outputFileName, signal, onProgress);
@@ -762,6 +749,101 @@ async function addBlankPage(
     blob,
     outputType: "pdf",
     pageCount: totalPages + 1,
+    fileCount: 1,
+  };
+}
+
+// Password rules: 4–32 chars, letters / digits / underscore only.
+const PROTECT_PW_MIN = 4;
+const PROTECT_PW_MAX = 32;
+const PROTECT_PW_PATTERN = /^[A-Za-z0-9_]+$/;
+
+function validateProtectPassword(password: string, zh: boolean) {
+  if (password.length < PROTECT_PW_MIN) {
+    throw new Error(
+      zh ? `请输入至少 ${PROTECT_PW_MIN} 位密码。` : `Enter a password of at least ${PROTECT_PW_MIN} characters.`,
+    );
+  }
+  if (password.length > PROTECT_PW_MAX) {
+    throw new Error(
+      zh ? `密码最多 ${PROTECT_PW_MAX} 位。` : `Password can be at most ${PROTECT_PW_MAX} characters.`,
+    );
+  }
+  if (!PROTECT_PW_PATTERN.test(password)) {
+    throw new Error(
+      zh
+        ? "密码只能包含大小写字母、数字和下划线（_）。"
+        : "Password may contain only letters, digits, and underscores (_).",
+    );
+  }
+}
+
+// Real client-side AES-128 encryption via @cantoo/pdf-lib (an encryption-capable
+// pdf-lib fork). The file never leaves the browser. Requires the password to OPEN.
+async function protectPdfLocally(
+  file: File,
+  password: string,
+  outputFileName: string,
+  locale: "en" | "zh",
+  signal?: AbortSignal,
+  onProgress?: (progress: PdfRuntimeProgress) => void,
+): Promise<PdfRuntimeArtifact> {
+  const zh = locale === "zh";
+  throwIfAborted(signal);
+  emitProgress(onProgress, 5, 0);
+
+  validateProtectPassword(password, zh);
+
+  // Lazy-load the encryption-capable pdf-lib fork only when protect is actually used.
+  const { PDFDocument: EncryptablePDFDocument } = await import("@cantoo/pdf-lib");
+  const sourceBytes = await file.arrayBuffer();
+  emitProgress(onProgress, 25, 1);
+  throwIfAborted(signal);
+
+  let pdfDoc;
+  try {
+    pdfDoc = await EncryptablePDFDocument.load(sourceBytes);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (/encrypt|password/i.test(message)) {
+      throw new Error(
+        zh
+          ? "这个 PDF 已经被加密。请先解锁后再加密。"
+          : "This PDF is already encrypted. Unlock it first, then protect it.",
+      );
+    }
+    throw err;
+  }
+  const pageCount = pdfDoc.getPageCount();
+
+  emitProgress(onProgress, 55, 2);
+  throwIfAborted(signal);
+
+  // Require the password to open; once opened the file is fully usable.
+  pdfDoc.encrypt({
+    userPassword: password,
+    ownerPassword: password,
+    permissions: {
+      printing: "highResolution",
+      modifying: true,
+      copying: true,
+      annotating: true,
+      fillingForms: true,
+      contentAccessibility: true,
+      documentAssembly: true,
+    },
+  });
+
+  // useObjectStreams:false is required for the encryption handler to apply cleanly.
+  const encryptedBytes = await pdfDoc.save({ useObjectStreams: false });
+  const blob = new Blob([encryptedBytes as BlobPart], { type: "application/pdf" });
+  emitProgress(onProgress, 100, 3);
+
+  return {
+    fileName: outputFileName,
+    blob,
+    outputType: "pdf",
+    pageCount,
     fileCount: 1,
   };
 }

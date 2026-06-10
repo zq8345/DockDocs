@@ -42,8 +42,8 @@ const config = {
       description: "All encryption happens in your browser. Your file and password never leave your device.",
     },
     {
-      title: "Permission control",
-      description: "Restricts editing, copying, and printing while allowing form-filling.",
+      title: "Password to open",
+      description: "Only people with the password can open the file — the password is required to view it.",
     },
   ],
   featuresTitle: "Built for PDF password protection",
@@ -58,7 +58,7 @@ const config = {
   workflowDescription: "Common use cases: protecting contracts, financial documents, HR files, and confidential reports.",
   steps: [
     "Upload a PDF file from your device.",
-    "Enter a password (at least 4 characters).",
+    "Enter a password (4–32 letters, digits, or underscores).",
     "Download the encrypted, password-protected PDF.",
   ],
   faqTitle: "PDF password protection questions",
