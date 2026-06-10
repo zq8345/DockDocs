@@ -34,6 +34,8 @@ const toolGroups = {
         { name: "PNG to PDF", slug: "/png-to-pdf" },
         { name: "Text to PDF", slug: "/text-to-pdf" },
         { name: "WebP to PNG", slug: "/webp-to-png" },
+        { name: "PNG to WebP", slug: "/png-to-webp" },
+        { name: "WebP to JPG", slug: "/webp-to-jpg" },
       ],
     },
     {
@@ -88,6 +90,8 @@ const toolGroups = {
         { name: "PNG 转 PDF", slug: "/png-to-pdf" },
         { name: "文本转 PDF", slug: "/text-to-pdf" },
         { name: "WebP 转 PNG", slug: "/webp-to-png" },
+        { name: "PNG 转 WebP", slug: "/png-to-webp" },
+        { name: "WebP 转 JPG", slug: "/webp-to-jpg" },
       ],
     },
     {

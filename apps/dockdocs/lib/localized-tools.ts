@@ -34,6 +34,76 @@ type ToolCopy = {
 };
 
 const enTools: Record<ToolSlug, ToolCopy> = {
+  "png-to-webp": {
+    title: "PNG to WebP Converter Online Free | DockDocs",
+    description: "Convert PNG images to WebP online for free — smaller files, same quality. Browser-side; your file never leaves your device.",
+    keywords: ["png to webp", "convert png to webp", "png to webp converter", "compress png to webp"],
+    appName: "DockDocs PNG to WebP",
+    schemaName: "DockDocs PNG to WebP Converter",
+    breadcrumbName: "PNG to WebP",
+    heroTitle: "Convert PNG to WebP.",
+    heroDescription: "Turn a PNG into a smaller WebP image at the same quality. All processing happens locally — your file never leaves your device.",
+    primaryActionLabel: "Convert to WebP",
+    stats: [["Price", "Free"], ["Input", "PNG image"], ["Output", "WebP image"]],
+    upload: { title: "Upload a PNG image", description: "Drag and drop a .png file here, or choose a file.", buttonLabel: "Choose PNG", accept: ".png,image/png", fileBadge: "PNG", note: "PNG only. Download a WebP copy." },
+    benefitsTitle: "Convert PNG to WebP without uploading to a server", benefitsDescription: "Upload locally and download a smaller WebP instantly.",
+    benefits: [
+      { title: "Smaller files", description: "WebP is typically 25–35% smaller than PNG at similar quality." },
+      { title: "Keeps transparency", description: "WebP supports an alpha channel, just like PNG." },
+      { title: "Privacy-first", description: "Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    featuresTitle: "Built for PNG to WebP conversion", featuresDescription: "A minimal DockDocs interface for converting PNG images.",
+    features: [
+      { title: "High quality", description: "Encoded at 92% quality for a great size/clarity balance." },
+      { title: "Full resolution", description: "Output matches the original image dimensions." },
+      { title: "Browser-side", description: "Uses the canvas API for fast, local conversion." },
+      { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
+    ],
+    workflowTitle: "How PNG to WebP fits into your work", workflowDescription: "Common uses: shrinking images for the web, faster page loads, and saving storage.",
+    steps: ["Upload a PNG image.", "Click Convert to WebP.", "Download the WebP."],
+    faqTitle: "PNG to WebP questions",
+    faq: [
+      { question: "How do I convert PNG to WebP?", answer: "Upload a .png image and download the converted WebP." },
+      { question: "Is it smaller?", answer: "Usually yes — WebP is often 25–35% smaller than PNG at similar quality." },
+      { question: "Is my image sent to a server?", answer: "No. Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    cta: { eyebrow: "PNG to WebP", title: "Convert your PNG to WebP.", description: "Get a smaller WebP — entirely in your browser.", buttonLabel: "Convert to WebP now" },
+  },
+  "webp-to-jpg": {
+    title: "WebP to JPG Converter Online Free | DockDocs",
+    description: "Convert WebP images to JPG online for free. Fast, browser-side — your file never leaves your device.",
+    keywords: ["webp to jpg", "webp to jpeg", "convert webp to jpg", "webp to jpg converter"],
+    appName: "DockDocs WebP to JPG",
+    schemaName: "DockDocs WebP to JPG Converter",
+    breadcrumbName: "WebP to JPG",
+    heroTitle: "Convert WebP to JPG.",
+    heroDescription: "Turn a WebP image into a widely-supported JPG. Transparent areas become white. All processing happens locally — your file never leaves your device.",
+    primaryActionLabel: "Convert to JPG",
+    stats: [["Price", "Free"], ["Input", "WebP image"], ["Output", "JPG image"]],
+    upload: { title: "Upload a WebP image", description: "Drag and drop a .webp file here, or choose a file.", buttonLabel: "Choose WebP", accept: ".webp,image/webp", fileBadge: "WEBP", note: "WebP only. Download a JPG copy." },
+    benefitsTitle: "Convert WebP to JPG without uploading to a server", benefitsDescription: "Upload locally and download a JPG instantly.",
+    benefits: [
+      { title: "Universal compatibility", description: "JPG opens everywhere — perfect for sharing and printing." },
+      { title: "Compact photos", description: "JPG keeps photographic images small at high quality." },
+      { title: "Privacy-first", description: "Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    featuresTitle: "Built for WebP to JPG conversion", featuresDescription: "A minimal DockDocs interface for converting WebP images.",
+    features: [
+      { title: "White background", description: "Transparent areas are filled white (JPG has no transparency)." },
+      { title: "High quality", description: "Encoded at 92% quality for a great size/clarity balance." },
+      { title: "Browser-side", description: "Uses the canvas API for fast, local conversion." },
+      { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
+    ],
+    workflowTitle: "How WebP to JPG fits into your work", workflowDescription: "Common uses: sharing photos, printing, and uploading where WebP isn't accepted.",
+    steps: ["Upload a WebP image.", "Click Convert to JPG.", "Download the JPG."],
+    faqTitle: "WebP to JPG questions",
+    faq: [
+      { question: "How do I convert WebP to JPG?", answer: "Upload a .webp image and download the converted JPG." },
+      { question: "What happens to transparency?", answer: "JPG has no transparency, so transparent areas are filled with white." },
+      { question: "Is my image sent to a server?", answer: "No. Conversion happens in your browser. Your file never leaves your device." },
+    ],
+    cta: { eyebrow: "WebP to JPG", title: "Convert your WebP to JPG.", description: "Get a universal JPG — entirely in your browser.", buttonLabel: "Convert to JPG now" },
+  },
   "webp-to-png": {
     title: "WebP to PNG Converter Online Free | DockDocs",
     description: "Convert WebP images to PNG online for free. Fast, browser-side — your file never leaves your device.",
@@ -973,6 +1043,30 @@ const enTools: Record<ToolSlug, ToolCopy> = {
 };
 
 const zhTools: Record<ToolSlug, ToolCopy> = {
+  "png-to-webp": {
+    ...enTools["png-to-webp"],
+    title: "在线免费 PNG 转 WebP | DockDocs",
+    description: "在线免费把 PNG 图片转成 WebP——文件更小、画质不变。浏览器本地处理，文件不会离开你的设备。",
+    appName: "DockDocs PNG 转 WebP",
+    breadcrumbName: "PNG 转 WebP",
+    heroTitle: "把 PNG 转成 WebP。",
+    heroDescription: "把 PNG 转成更小的 WebP 图片，画质基本不变。完全在浏览器中处理——文件不会离开你的设备。",
+    primaryActionLabel: "转换为 WebP",
+    upload: { ...enTools["png-to-webp"].upload, title: "上传 PNG 图片", description: "拖放 .png 文件，或从设备中选择。", buttonLabel: "选择 PNG" },
+    cta: { eyebrow: "PNG 转 WebP", title: "把 PNG 转成 WebP。", description: "完全在浏览器中得到更小的 WebP。", buttonLabel: "立即转换" },
+  },
+  "webp-to-jpg": {
+    ...enTools["webp-to-jpg"],
+    title: "在线免费 WebP 转 JPG | DockDocs",
+    description: "在线免费把 WebP 图片转成 JPG。浏览器本地处理，文件不会离开你的设备。",
+    appName: "DockDocs WebP 转 JPG",
+    breadcrumbName: "WebP 转 JPG",
+    heroTitle: "把 WebP 转成 JPG。",
+    heroDescription: "把 WebP 图片转成通用的 JPG，透明区域会变成白色。完全在浏览器中处理——文件不会离开你的设备。",
+    primaryActionLabel: "转换为 JPG",
+    upload: { ...enTools["webp-to-jpg"].upload, title: "上传 WebP 图片", description: "拖放 .webp 文件，或从设备中选择。", buttonLabel: "选择 WebP" },
+    cta: { eyebrow: "WebP 转 JPG", title: "把 WebP 转成 JPG。", description: "完全在浏览器中得到通用 JPG。", buttonLabel: "立即转换" },
+  },
   "webp-to-png": {
     ...enTools["webp-to-png"],
     title: "在线免费 WebP 转 PNG | DockDocs",
@@ -1312,6 +1406,22 @@ const localizedTools = {
 // the enTools spread; for Chinese pages we substitute these translated sets
 // so the FAQ section reads in Chinese.
 const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "png-to-webp": {
+    faqTitle: "PNG 转 WebP 常见问题",
+    faq: [
+      { question: "如何把 PNG 转成 WebP？", answer: "上传 .png 图片，然后下载转换后的 WebP。" },
+      { question: "文件会更小吗？", answer: "通常会——同等画质下 WebP 一般比 PNG 小 25–35%。" },
+      { question: "我的图片会上传到服务器吗？", answer: "不会。转换在你的浏览器中完成，文件不会离开你的设备。" },
+    ],
+  },
+  "webp-to-jpg": {
+    faqTitle: "WebP 转 JPG 常见问题",
+    faq: [
+      { question: "如何把 WebP 转成 JPG？", answer: "上传 .webp 图片，然后下载转换后的 JPG。" },
+      { question: "透明区域怎么处理？", answer: "JPG 不支持透明，透明区域会被填充为白色。" },
+      { question: "我的图片会上传到服务器吗？", answer: "不会。转换在你的浏览器中完成，文件不会离开你的设备。" },
+    ],
+  },
   "webp-to-png": {
     faqTitle: "WebP 转 PNG 常见问题",
     faq: [

@@ -56,6 +56,8 @@ export const routeSlugs = [
   "page-numbers",
   "pdf-to-text",
   "webp-to-png",
+  "png-to-webp",
+  "webp-to-jpg",
   "ai-workspace",
   "compare",
   "dashboard",
@@ -105,6 +107,8 @@ export const toolSlugs = [
   "page-numbers",
   "pdf-to-text",
   "webp-to-png",
+  "png-to-webp",
+  "webp-to-jpg",
 ] as const;
 
 export type ToolSlug = (typeof toolSlugs)[number];

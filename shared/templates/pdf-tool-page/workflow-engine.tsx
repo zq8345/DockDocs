@@ -760,6 +760,34 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
           ? ["读取图片...", "解码 WebP...", "编码为 PNG...", "准备下载..."]
           : ["Reading image...", "Decoding WebP...", "Encoding PNG...", "Preparing download..."],
       };
+    case "png-to-webp":
+      return {
+        acceptedLabel: "PNG",
+        minFiles: 1,
+        maxFiles: 1,
+        maxFileSize: 20 * mb,
+        maxTotalSize: 20 * mb,
+        processLabel: zh ? "正在把 PNG 转换为 WebP。" : "Converting PNG to WebP.",
+        resultLabel: zh ? "下载 WebP" : "Download WebP",
+        outputFileName: "dockdocs-image.webp",
+        steps: zh
+          ? ["读取图片...", "解码 PNG...", "编码为 WebP...", "准备下载..."]
+          : ["Reading image...", "Decoding PNG...", "Encoding WebP...", "Preparing download..."],
+      };
+    case "webp-to-jpg":
+      return {
+        acceptedLabel: "WebP",
+        minFiles: 1,
+        maxFiles: 1,
+        maxFileSize: 20 * mb,
+        maxTotalSize: 20 * mb,
+        processLabel: zh ? "正在把 WebP 转换为 JPG。" : "Converting WebP to JPG.",
+        resultLabel: zh ? "下载 JPG" : "Download JPG",
+        outputFileName: "dockdocs-image.jpg",
+        steps: zh
+          ? ["读取图片...", "解码 WebP...", "编码为 JPG...", "准备下载..."]
+          : ["Reading image...", "Decoding WebP...", "Encoding JPG...", "Preparing download..."],
+      };
   }
 }
 
@@ -1073,6 +1101,26 @@ function getWorkflowResult(
       return {
         title: zh ? "已转换为 PNG" : "Converted to PNG",
         description: zh ? "WebP 已转换为 PNG，可下载。" : "WebP converted to PNG, ready to download.",
+        rows: [
+          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
+          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
+          [zh ? "输出" : "Output", outputName],
+        ],
+      };
+    case "png-to-webp":
+      return {
+        title: zh ? "已转换为 WebP" : "Converted to WebP",
+        description: zh ? "PNG 已转换为 WebP，可下载。" : "PNG converted to WebP, ready to download.",
+        rows: [
+          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
+          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
+          [zh ? "输出" : "Output", outputName],
+        ],
+      };
+    case "webp-to-jpg":
+      return {
+        title: zh ? "已转换为 JPG" : "Converted to JPG",
+        description: zh ? "WebP 已转换为 JPG，可下载。" : "WebP converted to JPG, ready to download.",
         rows: [
           [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
           [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
