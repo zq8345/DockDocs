@@ -63,6 +63,25 @@ const copy = {
     ctaTitle: "Try it free — decide later.",
     ctaDesc: "Open any tool right now. No account, no card, no commitment.",
     ctaBtn: "Start with a free tool",
+    scenariosTitle: "What can DockDocs solve for you?",
+    scenarios: [
+      { emoji: "📊", title: "Compare quotes & pick the best", before: "Open 3 files, copy numbers into a sheet — ~1 hour", after: "Upload → side-by-side table + a sourced pick — 1 min", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📄", title: "Catch the traps in a contract", before: "Pay a lawyer $300, or sign blind and get burned", after: "AI flags risky & missing clauses in minutes", tier: "Pro", href: "/compare" as RouteSlug },
+      { emoji: "🧾", title: "Process a batch of invoices", before: "Key them in one by one — hours, or hire help", after: "Drop the whole batch → auto-extract & summarize", tier: "Pro", href: "" as RouteSlug },
+      { emoji: "📕", title: "Understand a long report fast", before: "Read 80 pages to find a few answers — hours", after: "Ask it anything → sourced answers in 30s", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+    ],
+    compareTitle: "Compare plans",
+    compareCols: ["Free", "Plus", "Pro"],
+    compareRows: [
+      { f: "20+ PDF tools — convert, compress, merge, encrypt, OCR", v: ["✓", "✓", "✓"] },
+      { f: "Chat with PDF · AI summaries", v: ["—", "✓", "✓"] },
+      { f: "AI translate PDF (keeps layout)", v: ["—", "Soon", "Soon"] },
+      { f: "Compare multiple documents", v: ["—", "✓", "✓"] },
+      { f: "100 MB files · batch · no ads", v: ["—", "✓", "✓"] },
+      { f: "Automate workflows · API · auto-classify", v: ["—", "—", "✓"] },
+      { f: "Contract review — risk & missing clauses", v: ["—", "—", "✓"] },
+      { f: "Team workspace · priority support", v: ["—", "—", "✓"] },
+    ],
   },
   zh: {
     title: "定价简单，文档强大。",
@@ -120,6 +139,25 @@ const copy = {
     ctaTitle: "先免费试用——之后再决定。",
     ctaDesc: "现在就打开任意工具。无需注册、无需信用卡、无需承诺。",
     ctaBtn: "从一个免费工具开始",
+    scenariosTitle: "DockDocs 能替你解决什么?",
+    scenarios: [
+      { emoji: "📊", title: "比报价,选最优", before: "开 3 个文件抄数字进表格 —— 约 1 小时", after: "上传 → 并排对比表 + 带出处的推荐 —— 1 分钟", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📄", title: "看穿合同里的坑", before: "花 $300 找律师,或盲签踩坑", after: "AI 几分钟标出风险与缺失条款", tier: "Pro", href: "/compare" as RouteSlug },
+      { emoji: "🧾", title: "批量处理发票", before: "一张张录入几小时,或雇人", after: "整批丢进去 → 自动抽取汇总", tier: "Pro", href: "" as RouteSlug },
+      { emoji: "📕", title: "快速读懂长报告", before: "读 80 页找几个答案 —— 几小时", after: "问它任何问题 → 30 秒带出处的答案", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+    ],
+    compareTitle: "套餐对照",
+    compareCols: ["免费", "Plus", "Pro"],
+    compareRows: [
+      { f: "20+ PDF 工具(转换/压缩/合并/加密/OCR)", v: ["✓", "✓", "✓"] },
+      { f: "和 PDF 对话 · AI 摘要", v: ["—", "✓", "✓"] },
+      { f: "AI 翻译 PDF(保留版式)", v: ["—", "即将", "即将"] },
+      { f: "多文档对比", v: ["—", "✓", "✓"] },
+      { f: "100MB 大文件 · 批量 · 无广告", v: ["—", "✓", "✓"] },
+      { f: "工作流自动化 · API · 自动分类", v: ["—", "—", "✓"] },
+      { f: "合同审查(风险与缺失条款)", v: ["—", "—", "✓"] },
+      { f: "团队工作区 · 优先支持", v: ["—", "—", "✓"] },
+    ],
   },
 } as const;
 
@@ -216,6 +254,53 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
             {t}
           </span>
         ))}
+      </div>
+
+      {/* Solutions by scenario */}
+      <div className="mx-auto mt-20 max-w-5xl">
+        <h2 className="text-center text-[24px] font-semibold tracking-tight text-[color:var(--foreground)]">{c.scenariosTitle}</h2>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          {c.scenarios.map((s) => (
+            <div key={s.title} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[15px] font-semibold text-[color:var(--foreground)]">{s.emoji} {s.title}</p>
+                <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${s.tier === "Pro" ? "bg-[rgba(52,211,153,0.12)] text-[#34d399]" : "bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]"}`}>{s.tier}</span>
+              </div>
+              <p className="mt-3 text-[13px] leading-6 text-[color:var(--muted)]">😩 {s.before}</p>
+              <p className="mt-1.5 text-[13px] leading-6 text-[color:var(--foreground)]"><span className="text-[color:var(--accent)]">⚡</span> {s.after}</p>
+              {s.href && (
+                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] hover:underline">{locale === "zh" ? "去试试 →" : "Try it →"}</a>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Compare plans */}
+      <div className="mx-auto mt-20 max-w-4xl">
+        <h2 className="text-center text-[24px] font-semibold tracking-tight text-[color:var(--foreground)]">{c.compareTitle}</h2>
+        <div className="mt-8 overflow-x-auto rounded-[var(--radius-lg)] border border-[color:var(--line)]">
+          <table className="w-full border-collapse text-[14px]">
+            <thead>
+              <tr className="bg-[color:var(--surface-subtle)]">
+                <th className="border-b border-[color:var(--line)] px-4 py-3 text-left"></th>
+                {c.compareCols.map((col, i) => (
+                  <th key={col} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center text-[13px] font-semibold ${i === 1 ? "text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)]"}`}>{col}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {c.compareRows.map((row) => (
+                <tr key={row.f}>
+                  <td className="border-b border-[color:var(--line)] px-4 py-3 text-[color:var(--foreground)]">{row.f}</td>
+                  {row.v.map((val, i) => (
+                    <td key={i} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center ${val === "✓" ? "font-semibold text-[color:var(--accent)]" : val === "—" ? "text-[color:var(--faint)]" : "text-[12px] text-[color:var(--muted)]"}`}>{val}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* FAQ */}
