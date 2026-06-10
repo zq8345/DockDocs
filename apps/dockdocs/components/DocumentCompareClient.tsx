@@ -2,12 +2,11 @@
 
 import { useCallback, useRef, useState, type DragEvent } from "react";
 
-// Comparison engine UI.
+// Comparison engine UI (bilingual).
 //  D5: multi-file upload -> browser-side text extraction (pdf.js).
-//  D6: send extracted text to /api/compare-extract -> aligned structured fields
-//      with sources -> side-by-side comparison table.
-// Recommendation + clickable-to-page traceability come next.
+//  D6: /api/compare-extract -> aligned structured fields with sources -> table.
 
+type Locale = "en" | "zh";
 type DocStatus = "ok" | "empty" | "error";
 
 type DocResult = {
@@ -29,13 +28,109 @@ type Comparison = {
 };
 
 const MAX_FILES = 8;
-const DOC_TYPES = [
-  { value: "quote", label: "Quotes" },
-  { value: "invoice", label: "Invoices" },
-  { value: "contract", label: "Contracts" },
-];
 
-export function DocumentCompareClient() {
+const STR = {
+  en: {
+    badge: "Comparison engine · beta",
+    h1: "Compare documents",
+    intro: `Upload 2–${MAX_FILES} PDFs of the same kind. DockDocs reads them in your browser, then lines up the key terms side by side — with the source line behind every value.`,
+    drop: "Drag & drop PDFs here",
+    dropHint: "Read locally — your files never leave your device. Field extraction runs on our server.",
+    choose: "Choose PDFs",
+    samples: "Try 3 sample quotes",
+    extracting: "Extracting text…",
+    typeLabel: "Type",
+    compare: "Compare fields",
+    comparing: "Comparing…",
+    clear: "Clear",
+    bExtracted: "Text extracted",
+    bEmpty: "Not recognized (likely scanned — needs OCR)",
+    bError: "Failed to read",
+    needTwo: "Add at least 2 readable documents to compare.",
+    failed: "Comparison failed.",
+    comparison: "Comparison",
+    dimension: "Dimension",
+    notRecognized: "Not recognized",
+    tableNote:
+      "Extracted by AI. Each value shows the exact source line it came from (verified to appear in that document). “Not recognized” means the document didn’t state it — nothing is guessed.",
+    comingNext: "Coming next",
+    next: [
+      "A sourced recommendation (which option wins, and why)",
+      "Click any value to jump to the exact spot in the original PDF",
+      "Add your own dimensions to compare",
+    ],
+    docCount: (n: number) => `${n} document${n > 1 ? "s" : ""}`,
+    pages: (n: number) => `${n} page${n === 1 ? "" : "s"} · `,
+    chars: (n: number) => `${n.toLocaleString()} characters`,
+    docTypes: [
+      { value: "quote", label: "Quotes" },
+      { value: "invoice", label: "Invoices" },
+      { value: "contract", label: "Contracts" },
+    ],
+  },
+  zh: {
+    badge: "对比引擎 · 测试版",
+    h1: "多文档对比",
+    intro: `上传 2–${MAX_FILES} 份同类 PDF。DockDocs 在你浏览器里读取,把关键条款并排列出——每个值后面都带原文出处。`,
+    drop: "把 PDF 拖到这里",
+    dropHint: "在本地读取——文件不离开你的设备。字段抽取在我们服务器上完成。",
+    choose: "选择 PDF",
+    samples: "试用 3 份示例报价单",
+    extracting: "正在抽取文本…",
+    typeLabel: "类型",
+    compare: "对比字段",
+    comparing: "对比中…",
+    clear: "清空",
+    bExtracted: "已抽取文本",
+    bEmpty: "未识别(可能是扫描件——需 OCR)",
+    bError: "读取失败",
+    needTwo: "至少添加 2 份可读文档才能对比。",
+    failed: "对比失败。",
+    comparison: "对比结果",
+    dimension: "维度",
+    notRecognized: "未识别",
+    tableNote:
+      "由 AI 抽取。每个值都标注了它来自原文的那一句(已校验确实出现在该文档中)。「未识别」表示该文档没有写,绝不猜测。",
+    comingNext: "即将推出",
+    next: [
+      "带依据的推荐(选哪个、为什么)",
+      "点任意值,跳转到原 PDF 的对应位置",
+      "自定义你要对比的维度",
+    ],
+    docCount: (n: number) => `${n} 份文档`,
+    pages: (n: number) => `${n} 页 · `,
+    chars: (n: number) => `${n.toLocaleString()} 字符`,
+    docTypes: [
+      { value: "quote", label: "报价单" },
+      { value: "invoice", label: "账单" },
+      { value: "contract", label: "合同" },
+    ],
+  },
+} as const;
+
+// Localized dimension labels (the backend returns English labels).
+const DIM_ZH: Record<string, string> = {
+  vendor: "供应商",
+  total_price: "总价",
+  currency: "币种",
+  delivery_time: "交期",
+  payment_terms: "付款方式",
+  warranty: "质保",
+  validity: "有效期至",
+  invoice_number: "发票号",
+  total_amount: "总金额",
+  issue_date: "开票日期",
+  due_date: "到期日",
+  parties: "签约方",
+  effective_date: "生效日期",
+  term: "期限",
+  termination: "终止条款",
+  governing_law: "管辖法律",
+  liability: "责任上限",
+};
+
+export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
+  const t = STR[locale];
   const [results, setResults] = useState<DocResult[]>([]);
   const [busy, setBusy] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -59,14 +154,7 @@ export function DocumentCompareClient() {
         text += content.items.map((it) => ("str" in it ? it.str : "")).join(" ") + "\n";
       }
       const trimmed = text.replace(/\s+/g, " ").trim();
-      return {
-        id,
-        name: file.name,
-        pages: doc.numPages,
-        chars: trimmed.length,
-        text: trimmed,
-        status: trimmed.length > 0 ? "ok" : "empty",
-      };
+      return { id, name: file.name, pages: doc.numPages, chars: trimmed.length, text: trimmed, status: trimmed.length > 0 ? "ok" : "empty" };
     } catch (e) {
       return { id, name: file.name, pages: 0, chars: 0, text: "", status: "error", error: e instanceof Error ? e.message : String(e) };
     }
@@ -127,7 +215,7 @@ export function DocumentCompareClient() {
 
   const compare = useCallback(async () => {
     if (okDocs.length < 2) {
-      setCompareError("Add at least 2 readable documents to compare.");
+      setCompareError(t.needTwo);
       return;
     }
     setComparing(true);
@@ -137,41 +225,39 @@ export function DocumentCompareClient() {
       const res = await fetch("/api/compare-extract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ docType, locale: "en", documents: okDocs.map((r) => ({ id: r.id, name: r.name, text: r.text })) }),
+        body: JSON.stringify({ docType, locale, documents: okDocs.map((r) => ({ id: r.id, name: r.name, text: r.text })) }),
       });
       const data = await res.json();
       if (!data?.ok) {
-        setCompareError(data?.message || "Comparison failed.");
+        setCompareError(data?.message || t.failed);
         return;
       }
       setComparison({ docType: data.docType, dimensions: data.dimensions, documents: data.documents });
     } catch (e) {
-      setCompareError(e instanceof Error ? e.message : "Comparison failed.");
+      setCompareError(e instanceof Error ? e.message : t.failed);
     } finally {
       setComparing(false);
     }
-  }, [okDocs, docType]);
+  }, [okDocs, docType, locale, t]);
 
   const badge = (status: DocStatus) =>
     status === "ok"
-      ? { label: "Text extracted", cls: "text-[color:var(--accent)] border-[color:var(--accent)]" }
+      ? { label: t.bExtracted, cls: "text-[color:var(--accent)] border-[color:var(--accent)]" }
       : status === "empty"
-        ? { label: "Not recognized (likely scanned — needs OCR)", cls: "text-amber-400 border-amber-400/50" }
-        : { label: "Failed to read", cls: "text-red-400 border-red-400/50" };
+        ? { label: t.bEmpty, cls: "text-amber-400 border-amber-400/50" }
+        : { label: t.bError, cls: "text-red-400 border-red-400/50" };
+
+  const dimLabel = (key: string, fallback: string) => (locale === "zh" ? DIM_ZH[key] ?? fallback : fallback);
 
   return (
     <main className="mx-auto max-w-5xl px-5 py-14 sm:px-6 lg:px-8">
       <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
         <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
-        Comparison engine · beta
+        {t.badge}
       </div>
-      <h1 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">Compare documents</h1>
-      <p className="mt-3 max-w-2xl text-[color:var(--muted)]">
-        Upload 2–{MAX_FILES} PDFs of the same kind. DockDocs reads them in your browser, then lines up the key terms
-        side by side — with the source line behind every value.
-      </p>
+      <h1 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">{t.h1}</h1>
+      <p className="mt-3 max-w-2xl text-[color:var(--muted)]">{t.intro}</p>
 
-      {/* Dropzone */}
       <div
         onDragOver={(e) => {
           e.preventDefault();
@@ -183,39 +269,37 @@ export function DocumentCompareClient() {
           dragOver ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]" : "border-[color:var(--line)] bg-[color:var(--surface-subtle)]"
         }`}
       >
-        <p className="text-sm font-medium text-[color:var(--foreground)]">Drag & drop PDFs here</p>
-        <p className="mt-1 text-xs text-[color:var(--muted)]">Read locally — your files never leave your device. Field extraction runs on our server.</p>
+        <p className="text-sm font-medium text-[color:var(--foreground)]">{t.drop}</p>
+        <p className="mt-1 text-xs text-[color:var(--muted)]">{t.dropHint}</p>
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
           <button type="button" onClick={() => inputRef.current?.click()} disabled={busy} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
-            Choose PDFs
+            {t.choose}
           </button>
           <button type="button" onClick={loadSamples} disabled={busy} className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-5 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)] disabled:opacity-50">
-            Try 3 sample quotes
+            {t.samples}
           </button>
         </div>
         <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple hidden onChange={(e) => { void addFiles(Array.from(e.target.files ?? [])); e.target.value = ""; }} />
       </div>
 
-      {busy && <p className="mt-4 text-sm text-[color:var(--muted)]">Extracting text…</p>}
+      {busy && <p className="mt-4 text-sm text-[color:var(--muted)]">{t.extracting}</p>}
 
       {results.length > 0 && (
         <div className="mt-8 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-[color:var(--foreground)]">
-              {results.length} document{results.length > 1 ? "s" : ""}
-            </h2>
+            <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{t.docCount(results.length)}</h2>
             <div className="flex items-center gap-2">
-              <label className="text-xs text-[color:var(--muted)]">Type</label>
+              <label className="text-xs text-[color:var(--muted)]">{t.typeLabel}</label>
               <select value={docType} onChange={(e) => setDocType(e.target.value)} className="h-9 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-2 text-sm text-[color:var(--foreground)]">
-                {DOC_TYPES.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
+                {t.docTypes.map((d) => (
+                  <option key={d.value} value={d.value}>{d.label}</option>
                 ))}
               </select>
               <button type="button" onClick={compare} disabled={comparing || okDocs.length < 2} className="inline-flex h-9 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
-                {comparing ? "Comparing…" : "Compare fields"}
+                {comparing ? t.comparing : t.compare}
               </button>
               <button type="button" onClick={() => { setResults([]); setComparison(null); setCompareError(null); }} className="text-xs font-medium text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
-                Clear
+                {t.clear}
               </button>
             </div>
           </div>
@@ -227,9 +311,7 @@ export function DocumentCompareClient() {
                   <p className="text-sm font-semibold text-[color:var(--foreground)]">{r.name}</p>
                   <span className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${b.cls}`}>{b.label}</span>
                 </div>
-                <p className="mt-1 text-xs text-[color:var(--muted)]">
-                  {r.pages} page{r.pages === 1 ? "" : "s"} · {r.chars.toLocaleString()} characters
-                </p>
+                <p className="mt-1 text-xs text-[color:var(--muted)]">{t.pages(r.pages)}{t.chars(r.chars)}</p>
               </div>
             );
           })}
@@ -240,12 +322,12 @@ export function DocumentCompareClient() {
 
       {comparison && (
         <section className="mt-10">
-          <h2 className="text-lg font-semibold text-[color:var(--foreground)]">Comparison</h2>
+          <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{t.comparison}</h2>
           <div className="mt-3 overflow-x-auto rounded-[var(--radius-lg)] border border-[color:var(--line)]">
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="bg-[color:var(--surface-subtle)]">
-                  <th className="border-b border-[color:var(--line)] px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-[color:var(--muted)]">Dimension</th>
+                  <th className="border-b border-[color:var(--line)] px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-[color:var(--muted)]">{t.dimension}</th>
                   {comparison.documents.map((d) => (
                     <th key={d.id} className="border-b border-l border-[color:var(--line)] px-3 py-2 text-left text-xs font-semibold text-[color:var(--foreground)]">{d.name}</th>
                   ))}
@@ -254,7 +336,7 @@ export function DocumentCompareClient() {
               <tbody>
                 {comparison.dimensions.map((dim) => (
                   <tr key={dim.key} className="align-top">
-                    <td className="border-b border-[color:var(--line)] px-3 py-2 font-medium text-[color:var(--muted)]">{dim.label}</td>
+                    <td className="border-b border-[color:var(--line)] px-3 py-2 font-medium text-[color:var(--muted)]">{dimLabel(dim.key, dim.label)}</td>
                     {comparison.documents.map((d) => {
                       const f = d.fields[dim.key];
                       return (
@@ -269,7 +351,7 @@ export function DocumentCompareClient() {
                               )}
                             </>
                           ) : (
-                            <span className="text-[11px] text-amber-400/80">Not recognized</span>
+                            <span className="text-[11px] text-amber-400/80">{t.notRecognized}</span>
                           )}
                         </td>
                       );
@@ -279,19 +361,17 @@ export function DocumentCompareClient() {
               </tbody>
             </table>
           </div>
-          <p className="mt-3 text-xs text-[color:var(--muted)]">
-            Extracted by AI. Each value shows the exact source line it came from (verified to appear in that document). “Not recognized” means the document didn’t state it — nothing is guessed.
-          </p>
+          <p className="mt-3 text-xs text-[color:var(--muted)]">{t.tableNote}</p>
         </section>
       )}
 
       {!comparison && (
         <div className="mt-10 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">Coming next</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">{t.comingNext}</p>
           <ul className="mt-2 space-y-1 text-sm text-[color:var(--muted)]">
-            <li>· A sourced recommendation (which option wins, and why)</li>
-            <li>· Click any value to jump to the exact spot in the original PDF</li>
-            <li>· Add your own dimensions to compare</li>
+            {t.next.map((n) => (
+              <li key={n}>· {n}</li>
+            ))}
           </ul>
         </div>
       )}

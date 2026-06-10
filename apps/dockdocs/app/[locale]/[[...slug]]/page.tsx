@@ -14,6 +14,7 @@ import { DashboardWorkspace } from "@/components/DashboardWorkspace";
 import { GeoHubPage } from "@/components/GeoHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
+import { DocumentCompareClient } from "@/components/DocumentCompareClient";
 import { FeatureShowcase } from "@/components/FeatureShowcase";
 import { HeroBackground } from "@/components/HeroBackground";
 import { HomeExtras } from "@/components/HomeExtras";
@@ -252,6 +253,21 @@ export async function generateMetadata({
     );
   }
 
+  if (slug === "compare") {
+    return {
+      title: rawLocale === "zh" ? "多文档对比(测试版)" : "Compare documents (beta)",
+      description:
+        rawLocale === "zh"
+          ? "上传多份 PDF,在浏览器抽取文本,并排对比关键字段——每个值都带原文出处。"
+          : "Upload multiple PDFs, extract text in your browser, and line up the key terms side by side — with the source behind every value.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "compare"),
+        languages: languageAlternates("compare"),
+      },
+      robots: { index: false, follow: false },
+    };
+  }
+
   if (slug === "account") {
     return {
       title: rawLocale === "zh" ? "账户" : "Account",
@@ -388,6 +404,10 @@ export default async function LocalizedRoute({
 
   if (slug === "dashboard") {
     return <LocalizedDashboard locale={rawLocale} />;
+  }
+
+  if (slug === "compare") {
+    return <DocumentCompareClient locale={rawLocale} />;
   }
 
   if (slug === "pricing") {

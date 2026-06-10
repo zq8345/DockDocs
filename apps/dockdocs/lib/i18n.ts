@@ -53,6 +53,7 @@ export const routeSlugs = [
   "translate-pdf",
   "unlock-pdf",
   "ai-workspace",
+  "compare",
   "dashboard",
   "pricing",
   "account",

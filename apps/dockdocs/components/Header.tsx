@@ -160,8 +160,8 @@ export function Header() {
   }
 
   function navTo(href: string) {
-    // /account(统一登录页)和 /compare(单一英文 beta 页)无语言版本,不能加语言前缀,否则 /zh/... 会 404
-    router.push(href === "/account" || href === "/compare" ? href : lh(href, locale));
+    // /account 是全站统一登录页(仅 /account/,无语言版本),不能加语言前缀,否则 /zh/account 会 404
+    router.push(href === "/account" ? href : lh(href, locale));
   }
 
   const nl =
