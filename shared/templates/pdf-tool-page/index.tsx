@@ -423,7 +423,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
 
       {/* ── FAQ (collapsed, clean) ── */}
       {config.faq.length > 0 && (
-        <section className="border-b border-[color:var(--line)]">
+        <section>
           <div className="mx-auto max-w-2xl px-5 py-10 sm:px-6">
             <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{config.faqTitle}</h2>
             <div className="mt-5 divide-y divide-[color:var(--line)]">
