@@ -1,5 +1,17 @@
 import { getCurrentAccountUser } from "@/lib/account-runtime";
 import { isPaidSubscriptionPlan, type PaidSubscriptionPlan } from "@/lib/billing-config";
+import { supabase } from "@/lib/supabase";
+
+// Billing endpoints identify the user from the Supabase access token (Bearer).
+async function authHeader(): Promise<Record<string, string>> {
+  try {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  } catch {
+    return {};
+  }
+}
 
 export type SubscriptionPlan = "FREE" | "PLUS" | "PRO";
 
@@ -14,6 +26,8 @@ export type SubscriptionSource =
   | "local"
   | "stripe-checkout"
   | "stripe-webhook"
+  | "creem-checkout"
+  | "creem-webhook"
   | "manual";
 
 export type SubscriptionRecord = {
@@ -94,11 +108,12 @@ export async function createBillingCheckoutSession(plan: PaidSubscriptionPlan) {
     throw new Error("Choose Plus or Pro.");
   }
 
+  const auth = await authHeader();
   const response = await fetch("/api/billing/create-checkout-session", {
     method: "POST",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      ...auth,
     },
     body: JSON.stringify({
       plan,
@@ -311,7 +326,13 @@ function normalizeStatus(value: unknown): SubscriptionStatus | null {
 }
 
 function normalizeSource(value: unknown): SubscriptionSource {
-  if (value === "stripe-checkout" || value === "stripe-webhook" || value === "manual") {
+  if (
+    value === "stripe-checkout" ||
+    value === "stripe-webhook" ||
+    value === "creem-checkout" ||
+    value === "creem-webhook" ||
+    value === "manual"
+  ) {
     return value;
   }
 
@@ -356,9 +377,13 @@ async function readServerSubscription() {
   }
 
   try {
+    const auth = await authHeader();
+    if (!auth.Authorization) {
+      return null;
+    }
     const response = await fetch("/api/billing/subscription", {
       method: "GET",
-      credentials: "include",
+      headers: auth,
     });
     const payload = (await response.json().catch(() => null)) as
       | {

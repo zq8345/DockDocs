@@ -18,7 +18,7 @@ export type BillingSubscriptionRecord = {
   stripeSubscriptionId?: string;
   plan: SubscriptionPlan;
   status: SubscriptionStatus;
-  source: "stripe-webhook";
+  source: "stripe-webhook" | "creem-webhook";
   currentPeriodStart?: string;
   currentPeriodEnd?: string;
   cancelAtPeriodEnd?: boolean;

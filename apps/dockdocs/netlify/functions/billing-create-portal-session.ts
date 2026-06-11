@@ -23,7 +23,7 @@ export default async (req: Request, _context: Context) => {
     );
   }
 
-  const auth = await requireBillingUser();
+  const auth = await requireBillingUser(req);
   if (!auth.ok) {
     return auth.response;
   }

@@ -19,7 +19,7 @@ export default async (req: Request, _context: Context) => {
     );
   }
 
-  const user = await readBillingUser();
+  const user = await readBillingUser(req);
   if (!user) {
     return json({
       ok: true,

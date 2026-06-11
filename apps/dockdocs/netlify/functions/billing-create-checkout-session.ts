@@ -1,11 +1,7 @@
 import type { Config, Context } from "@netlify/functions";
 import { isPaidSubscriptionPlan } from "../../lib/billing-config";
 import { json, requireBillingUser } from "./_shared/billing-auth";
-import { readCustomerByUserId } from "./_shared/billing-store";
-import {
-  createStripeCheckoutSession,
-  readSiteOrigin,
-} from "./_shared/stripe-client";
+import { createCreemCheckout, type CreemPlan } from "./_shared/creem";
 
 type CheckoutRequest = {
   plan?: unknown;
@@ -25,7 +21,7 @@ export default async (req: Request, _context: Context) => {
     );
   }
 
-  const auth = await requireBillingUser();
+  const auth = await requireBillingUser(req);
   if (!auth.ok) {
     return auth.response;
   }
@@ -55,14 +51,12 @@ export default async (req: Request, _context: Context) => {
     );
   }
 
-  const origin = sanitizeOrigin(payload.origin) ?? readSiteOrigin();
-  const customer = await readCustomerByUserId(auth.user.id);
-  const checkout = await createStripeCheckoutSession({
-    plan: payload.plan,
+  const origin = sanitizeOrigin(payload.origin) ?? "https://dockdocs.app";
+  const checkout = await createCreemCheckout({
+    plan: payload.plan as CreemPlan,
     userId: auth.user.id,
     email: auth.user.email,
-    origin,
-    customerId: customer?.stripeCustomerId,
+    successUrl: `${origin}/account?upgraded=1`,
   });
 
   if (!checkout.ok) {
@@ -78,8 +72,8 @@ export default async (req: Request, _context: Context) => {
 
   return json({
     ok: true,
-    id: checkout.data.id,
-    url: checkout.data.url,
+    id: checkout.id,
+    url: checkout.url,
   });
 };
 
