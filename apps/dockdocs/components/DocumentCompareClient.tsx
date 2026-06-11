@@ -18,6 +18,7 @@ type DocResult = {
   text: string;
   status: DocStatus;
   error?: string;
+  file?: File; // kept so a scanned doc can be re-read with OCR
 };
 
 type CmpField = { value: string | null; source: string | null };
@@ -53,6 +54,8 @@ const STR = {
     clear: "Clear",
     bExtracted: "Text extracted",
     bEmpty: "Not recognized (likely scanned — needs OCR)",
+    ocrRun: "Extract text with OCR",
+    ocrBusy: "Reading with OCR… (this can take a few seconds)",
     bError: "Failed to read",
     needTwo: "Add at least 2 readable documents to compare.",
     failed: "Comparison failed.",
@@ -91,6 +94,8 @@ const STR = {
     clear: "清空",
     bExtracted: "已抽取文本",
     bEmpty: "未识别(可能是扫描件——需 OCR)",
+    ocrRun: "用 OCR 提取文字",
+    ocrBusy: "OCR 识别中…(可能需要几秒)",
     bError: "读取失败",
     needTwo: "至少添加 2 份可读文档才能对比。",
     failed: "对比失败。",
@@ -203,6 +208,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const [qaAns, setQaAns] = useState<{ answer: string; sources: Array<{ docId: string; name: string; snippet: string }> } | null>(null);
   const [qaErr, setQaErr] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [ocrBusy, setOcrBusy] = useState<Set<string>>(new Set());
 
   const extractOne = useCallback(async (file: File): Promise<DocResult> => {
     const id = `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 7)}`;
@@ -220,10 +226,10 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       const trimmed = text.replace(/\s+/g, " ").trim();
       const numPages = doc.numPages;
       try { doc.destroy(); } catch { /* ignore */ }
-      return { id, name: file.name, pages: numPages, chars: trimmed.length, text: trimmed, status: trimmed.length > 0 ? "ok" : "empty" };
+      return { id, name: file.name, pages: numPages, chars: trimmed.length, text: trimmed, status: trimmed.length > 0 ? "ok" : "empty", file };
     } catch (e) {
       const msg = isEncryptedPdfError(e) ? encryptedPdfNotice(locale) : e instanceof Error ? e.message : String(e);
-      return { id, name: file.name, pages: 0, chars: 0, text: "", status: "error", error: msg };
+      return { id, name: file.name, pages: 0, chars: 0, text: "", status: "error", error: msg, file };
     }
   }, [locale]);
 
@@ -240,6 +246,29 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     },
     [extractOne],
   );
+
+  // Re-read a scanned (empty) doc with in-browser OCR (free, client-side tesseract).
+  const runOcrOn = useCallback(async (id: string) => {
+    const doc = results.find((d) => d.id === id);
+    if (!doc?.file) return;
+    setOcrBusy((prev) => new Set(prev).add(id));
+    try {
+      const { runOcrPdfFirstPage } = await import("../../../shared/templates/pdf-tool-page/ocr-runtime");
+      const res = await runOcrPdfFirstPage({
+        file: doc.file,
+        outputFileName: doc.name,
+        pageRanges: "1-3",
+        language: locale === "zh" ? "chi_sim" : "eng",
+        locale,
+      });
+      const text = (res.text ?? "").replace(/\s+/g, " ").trim();
+      setResults((prev) => prev.map((d) => (d.id === id ? { ...d, text, chars: text.length, status: text ? "ok" : "empty", error: text ? undefined : d.error } : d)));
+    } catch (e) {
+      setResults((prev) => prev.map((d) => (d.id === id ? { ...d, status: "empty", error: e instanceof Error ? e.message : String(e) } : d)));
+    } finally {
+      setOcrBusy((prev) => { const n = new Set(prev); n.delete(id); return n; });
+    }
+  }, [results, locale]);
 
   const loadSamples = useCallback(async () => {
     setBusy(true);
@@ -438,6 +467,18 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
                   <span className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${b.cls}`}>{b.label}</span>
                 </div>
                 <p className="mt-1 text-xs text-[color:var(--muted)]">{t.pages(r.pages)}{t.chars(r.chars)}</p>
+                {r.status === "empty" && r.file && (
+                  ocrBusy.has(r.id) ? (
+                    <p className="mt-2 text-xs font-medium text-[color:var(--accent)]">{t.ocrBusy}</p>
+                  ) : (
+                    <button type="button" onClick={() => runOcrOn(r.id)} className="mt-2 rounded-[var(--radius-sm)] border border-[color:var(--accent)] px-3 py-1 text-[12px] font-medium text-[color:var(--accent-strong)] transition hover:bg-[color:var(--soft-accent)]">
+                      {t.ocrRun}
+                    </button>
+                  )
+                )}
+                {r.status === "empty" && !ocrBusy.has(r.id) && r.error && (
+                  <p className="mt-1 text-[11px] text-amber-400/80">{r.error}</p>
+                )}
               </div>
             );
           })}
