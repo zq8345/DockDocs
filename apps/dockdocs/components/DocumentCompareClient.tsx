@@ -117,8 +117,18 @@ const STR = {
 } as const;
 
 const REC = {
-  en: { title: "Recommendation", thinking: "Weighing the options…", recommended: "Recommended" },
-  zh: { title: "推荐", thinking: "正在权衡各选项…", recommended: "推荐" },
+  en: {
+    title: "Recommendation",
+    thinking: "Weighing the options…",
+    recommended: "Recommended",
+    disclaimer: "This verdict is the AI's reasoning over the figures in the table below — unlike each table cell, it isn't individually source-checked. Confirm the numbers in the table before deciding.",
+  },
+  zh: {
+    title: "推荐",
+    thinking: "正在权衡各选项…",
+    recommended: "推荐",
+    disclaimer: "此结论是 AI 基于下方表格里的数字做的推理——它不像表格每个单元格那样逐条核对过出处。决定前请以表格里的数字为准。",
+  },
 } as const;
 
 const TRACE = {
@@ -148,15 +158,20 @@ const DIM_ZH: Record<string, string> = {
 };
 
 function locateSnippet(text: string, snippet: string, ctx = 600) {
-  const idx = text.toLowerCase().indexOf(snippet.toLowerCase());
+  // Match the backend trust gate's normalization (lowercase + collapse whitespace)
+  // so a source it verified never silently fails to highlight here. The doc text
+  // is already single-spaced, so collapse the snippet's whitespace too.
+  const needle = snippet.replace(/\s+/g, " ").trim().toLowerCase();
+  const idx = needle ? text.toLowerCase().indexOf(needle) : -1;
   if (idx < 0) return { found: false as const };
+  const len = needle.length;
   const start = Math.max(0, idx - ctx);
-  const end = Math.min(text.length, idx + snippet.length + ctx);
+  const end = Math.min(text.length, idx + len + ctx);
   return {
     found: true as const,
     before: (start > 0 ? "…" : "") + text.slice(start, idx),
-    match: text.slice(idx, idx + snippet.length),
-    after: text.slice(idx + snippet.length, end) + (end < text.length ? "…" : ""),
+    match: text.slice(idx, idx + len),
+    after: text.slice(idx + len, end) + (end < text.length ? "…" : ""),
   };
 }
 
@@ -181,7 +196,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const extractOne = useCallback(async (file: File): Promise<DocResult> => {
-    const id = `${file.name}-${file.size}-${file.lastModified}`;
+    const id = `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 7)}`;
     try {
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
@@ -400,7 +415,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
               <button type="button" onClick={compare} disabled={comparing || okDocs.length < 2} className="inline-flex h-9 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
                 {comparing ? t.comparing : t.compare}
               </button>
-              <button type="button" onClick={() => { setResults([]); setComparison(null); setCompareError(null); }} className="text-xs font-medium text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
+              <button type="button" onClick={() => { setResults([]); setComparison(null); setCompareError(null); setRecommendation(null); setQaAns(null); setQaErr(null); setQaQ(""); setTrace(null); }} className="text-xs font-medium text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
                 {t.clear}
               </button>
             </div>
@@ -491,6 +506,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
                     ))}
                   </div>
                 )}
+                <p className="mt-4 border-t border-[color:var(--line)] pt-3 text-[11.5px] leading-5 text-[color:var(--muted)]">{r.disclaimer}</p>
               </>
             ) : null}
           </div>
