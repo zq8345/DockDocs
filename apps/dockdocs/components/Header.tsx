@@ -88,9 +88,9 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
           heading: "Single-doc AI",
           items: [
             { name: "Chat with PDF", slug: "/chat-with-pdf" },
-            { name: "AI Summary", slug: "/ai-summary" },
+            { name: "PDF Summary", slug: "/ai-summary" },
             { name: "Translate PDF", slug: "/translate-pdf" },
-            { name: "Flashcards", slug: "/flashcards" },
+            { name: "PDF Flashcards", slug: "/flashcards" },
           ],
         },
         {
@@ -199,9 +199,9 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
           heading: "单文档 AI",
           items: [
             { name: "PDF 问答", slug: "/chat-with-pdf" },
-            { name: "AI 摘要", slug: "/ai-summary" },
-            { name: "翻译 PDF", slug: "/translate-pdf" },
-            { name: "抽认卡", slug: "/flashcards" },
+            { name: "PDF 摘要提取", slug: "/ai-summary" },
+            { name: "PDF 翻译", slug: "/translate-pdf" },
+            { name: "PDF 抽认卡", slug: "/flashcards" },
           ],
         },
         {
@@ -346,7 +346,7 @@ export function Header() {
           </a>
 
           {/* Desktop nav — 4 category dropdowns */}
-          <nav className="hidden flex-1 items-center justify-center gap-x-12 lg:gap-x-24 md:flex">
+          <nav className="hidden flex-1 items-center justify-center gap-x-6 lg:gap-x-10 md:flex">
             {cats.map((cat) => (
               <div key={cat.label} className="relative group">
                 <span className={trigger}>
