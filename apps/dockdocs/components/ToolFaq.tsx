@@ -3,6 +3,23 @@ type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
 const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[]; zh: QA[] } }> = {
+  "sign-pdf": {
+    title: { en: "Sign PDF — FAQ", zh: "PDF 签名常见问题" },
+    items: {
+      en: [
+        { q: "How do I sign a PDF?", a: "Upload the PDF, draw or type your signature, pick the page and position, then Sign & download." },
+        { q: "Can I draw my signature?", a: "Yes — draw with your mouse or finger on the pad, or switch to Type to use your name in a signature font." },
+        { q: "Is my file uploaded?", a: "No. The signature is stamped onto the PDF in your browser — your file never leaves your device." },
+        { q: "Is an electronic signature legal?", a: "Typed and drawn e-signatures are accepted for many everyday documents, but check the requirements for your specific use." },
+      ],
+      zh: [
+        { q: "如何给 PDF 签名？", a: "上传 PDF，手写或打字你的签名，选择页面和位置，然后「签名并下载」。" },
+        { q: "可以手写签名吗？", a: "可以——用鼠标或手指在画板上书写，或切换到「打字」用签名字体写你的名字。" },
+        { q: "文件会被上传吗？", a: "不会。签名在你的浏览器中盖到 PDF 上，文件不会离开你的设备。" },
+        { q: "电子签名有法律效力吗？", a: "打字和手写电子签名在许多日常文档中被接受，具体用途请核对相关要求。" },
+      ],
+    },
+  },
   "crop-pdf": {
     title: { en: "Crop PDF — FAQ", zh: "裁剪 PDF 常见问题" },
     items: {

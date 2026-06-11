@@ -39,6 +39,7 @@ import { CropPdfClient } from "@/components/CropPdfClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
+import { SignPdfClient } from "@/components/SignPdfClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -85,7 +86,6 @@ export const dynamicParams = false;
 // 这些工具尚未实现(原本会下载空文件),改为"即将推出"占位,en 主路径见各自 app/<slug>/page.tsx。
 const COMING_SOON_TOOLS: Record<string, { en: string; zh: string }> = {
   "edit-pdf": { en: "Edit PDF", zh: "编辑 PDF" },
-  "sign-pdf": { en: "Sign PDF", zh: "签署 PDF" },
 };
 
 type PageParams = {
@@ -266,6 +266,20 @@ export async function generateMetadata({
       runtimeCopy.pricing.metadataTitle,
       runtimeCopy.pricing.metadataDescription,
     );
+  }
+
+  if (slug === "sign-pdf") {
+    return {
+      title: rawLocale === "zh" ? "给 PDF 签名 — 免费在线电子签名 | DockDocs" : "Sign a PDF — Free Online E-Signature | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "免费在线给 PDF 签名：手写或打字签名，放到页面上下载，全部在浏览器中完成。"
+          : "Sign a PDF online for free — draw or type your signature, place it on the page, and download. Entirely in your browser.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "sign-pdf"),
+        languages: languageAlternates("sign-pdf"),
+      },
+    };
   }
 
   if (slug === "flashcards") {
@@ -530,6 +544,9 @@ export default async function LocalizedRoute({
 
   if (slug === "flashcards") {
     return <QuizClient locale={rawLocale} />;
+  }
+  if (slug === "sign-pdf") {
+    return <SignPdfClient locale={rawLocale} />;
   }
 
   if (slug === "redline") {

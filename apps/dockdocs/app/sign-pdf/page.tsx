@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { ComingSoonTool } from "@/components/ComingSoonTool";
+import { SignPdfClient } from "@/components/SignPdfClient";
 
 export const metadata: Metadata = {
-  title: "Sign PDF — Coming Soon | DockDocs",
-  description: "Electronic PDF signing from DockDocs is coming soon.",
+  title: "Sign a PDF — Free Online E-Signature | DockDocs",
+  description:
+    "Sign a PDF online for free — draw or type your signature, place it on the page, and download. Entirely in your browser; your file never leaves your device.",
+  keywords: ["sign pdf", "esign pdf", "electronic signature pdf", "sign pdf online", "add signature to pdf"],
   alternates: { canonical: "/sign-pdf/" },
-  robots: { index: false, follow: true },
 };
 
 export default function SignPdfPage() {
-  return <ComingSoonTool name="Sign PDF" nameZh="签署 PDF" />;
+  return <SignPdfClient />;
 }
