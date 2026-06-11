@@ -1012,8 +1012,26 @@ async function pdfToHtmlDoc(
     throwIfAborted(signal);
     const pageNum = pageIndices[i] + 1;
     const page = await pdfDoc.getPage(pageNum);
-    const textContent = await page.getTextContent();
 
+    // Render the page so images/graphics/layout survive — the old text-only
+    // export dropped every picture and skipped image-only pages entirely.
+    let imgTag = "";
+    try {
+      const viewport = page.getViewport({ scale: 2 });
+      const canvas = document.createElement("canvas");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        await page.render({ canvas, canvasContext: ctx, viewport }).promise;
+        imgTag = `    <img class="page" src="${canvas.toDataURL("image/jpeg", 0.85)}" alt="Page ${pageNum}" />`;
+      }
+    } catch {
+      imgTag = "";
+    }
+
+    // Keep the selectable text too, tucked into a collapsible block.
+    const textContent = await page.getTextContent();
     const lineMap = new Map<number, string[]>();
     for (const item of textContent.items) {
       if (!("str" in item) || !("transform" in item)) continue;
@@ -1023,10 +1041,22 @@ async function pdfToHtmlDoc(
     }
     const sortedYs = [...lineMap.keys()].sort((a, b) => b - a);
     const pageLines = sortedYs.map((y) => lineMap.get(y)!.join(" ").trim()).filter(Boolean);
-    if (pageLines.length > 0) {
-      const paras = pageLines.map((l) => `    <p>${escapeHtml(l)}</p>`).join("\n");
-      sections.push(`  <section data-page="${pageNum}">\n${paras}\n  </section>`);
+    const paras = pageLines.map((l) => `      <p>${escapeHtml(l)}</p>`).join("\n");
+    const summary = locale === "zh" ? "本页文字" : "Page text";
+    const textBlock =
+      pageLines.length > 0
+        ? `    <details class="text">\n      <summary>${summary}</summary>\n${paras}\n    </details>`
+        : "";
+
+    let inner: string;
+    if (imgTag) {
+      inner = textBlock ? `${imgTag}\n${textBlock}` : imgTag;
+    } else if (textBlock) {
+      inner = textBlock;
+    } else {
+      inner = `    <p>${locale === "zh" ? "(本页无可提取内容)" : "(no extractable content on this page)"}</p>`;
     }
+    sections.push(`  <section data-page="${pageNum}">\n${inner}\n  </section>`);
 
     emitProgress(onProgress, 18 + ((i + 1) / pageIndices.length) * 68, 2);
     await yieldToBrowser();
@@ -1036,10 +1066,19 @@ async function pdfToHtmlDoc(
   emitProgress(onProgress, 95, 3);
 
   const html = `<!doctype html>
-<html lang="en">
+<html lang="${locale === "zh" ? "zh" : "en"}">
 <head>
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escapeHtml(baseName)}</title>
+  <style>
+    body { margin: 0; background: #f5f5f5; font-family: system-ui, -apple-system, sans-serif; }
+    section { margin: 0 auto 24px; max-width: 900px; padding: 16px 16px 0; }
+    img.page { display: block; width: 100%; height: auto; border: 1px solid #ddd; background: #fff; }
+    details.text { margin: 8px 0 0; font-size: 14px; color: #333; }
+    details.text summary { cursor: pointer; color: #666; }
+    details.text p { margin: 4px 0; }
+  </style>
 </head>
 <body>
 ${sections.join("\n")}
