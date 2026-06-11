@@ -90,12 +90,15 @@ const featureLimits: Record<
   Record<UsageFeature, { limit: number; period: UsagePeriod }>
 > = {
   FREE: {
-    chat: { limit: 5, period: "day" },
-    summary: { limit: 5, period: "day" },
-    ocr: { limit: 10, period: "day" },
-    compress: { limit: 20, period: "day" },
-    analyzer: { limit: 5, period: "day" },
-    contractAnalyzer: { limit: 5, period: "day" },
+    // Generous free daily caps (per-device): a soft upgrade nudge on top of the
+    // server-side per-minute rate limit, not a hard wall. Bump again once payment
+    // is live so the "upgrade" CTA actually leads somewhere.
+    chat: { limit: 10, period: "day" },
+    summary: { limit: 10, period: "day" },
+    ocr: { limit: 15, period: "day" },
+    compress: { limit: 30, period: "day" },
+    analyzer: { limit: 10, period: "day" },
+    contractAnalyzer: { limit: 10, period: "day" },
   },
   PLUS: {
     chat: { limit: 500, period: "month" },
