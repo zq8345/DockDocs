@@ -163,27 +163,26 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }}
       />
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-[color:var(--line)]">
+      <section className="relative flex min-h-[88vh] flex-col overflow-hidden border-b border-[color:var(--line)] pt-6">
         <HeroBackground />
 
-        <div className="relative mx-auto flex min-h-[86vh] max-w-6xl flex-col px-5 pb-6 pt-10 sm:px-6 lg:px-8">
-          {/* Keyword H1 for SEO — the visible hero is the interactive graph below */}
-          <h1 className="sr-only">Everything you need to do with a PDF — free tools, batch automation, and AI that actually reads your documents.</h1>
-          {/* Dynamic feature graph — the solution map (fills the centre) */}
-          <div className="flex flex-1 items-center justify-center">
-            <HeroFeatureGraph locale="en" />
-          </div>
+        {/* Keyword H1 for SEO — the visible hero is the interactive graph below */}
+        <h1 className="sr-only">Everything you need to do with a PDF — free tools, batch automation, and AI that actually reads your documents.</h1>
 
-          {/* Trust chips — pinned near the bottom edge */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5">
-            {stats.map(({ value, label }) => (
-              <span key={label} className="inline-flex items-center gap-1.5 text-[13px] text-[color:var(--muted)]">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                <span className="font-semibold text-[color:var(--foreground)]">{value}</span>
-                <span className="text-[color:var(--faint)]">{label}</span>
-              </span>
-            ))}
-          </div>
+        {/* Dynamic feature graph — full-bleed to the screen edges */}
+        <div className="relative w-full flex-1">
+          <HeroFeatureGraph locale="en" />
+        </div>
+
+        {/* Trust chips — pinned near the bottom edge */}
+        <div className="relative z-10 mx-auto mb-6 flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2.5 px-5">
+          {stats.map(({ value, label }) => (
+            <span key={label} className="inline-flex items-center gap-1.5 text-[13px] text-[color:var(--muted)]">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              <span className="font-semibold text-[color:var(--foreground)]">{value}</span>
+              <span className="text-[color:var(--faint)]">{label}</span>
+            </span>
+          ))}
         </div>
       </section>
 
