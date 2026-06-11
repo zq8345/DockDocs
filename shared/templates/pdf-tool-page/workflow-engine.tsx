@@ -317,9 +317,11 @@ export function PdfWorkflowEngine({
     const innerCls =
       status === "idle"
         ? "my-auto flex w-full flex-col items-center px-6 text-center"
-        : status === "result"
-          ? "my-auto w-full"
-          : "my-auto w-full px-5 sm:px-6";
+        : status === "ready"
+          ? "flex min-h-full w-full flex-col px-5 py-5 sm:px-6"
+          : status === "result"
+            ? "my-auto w-full"
+            : "my-auto w-full px-5 sm:px-6";
 
     return (
       <div
@@ -344,7 +346,7 @@ export function PdfWorkflowEngine({
                 <button
                   type="button"
                   onClick={(ev) => { ev.stopPropagation(); inputRef.current?.click(); }}
-                  className="inline-flex h-12 items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90"
+                  className="inline-flex h-12 w-1/2 items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90"
                 >
                   {config.upload.buttonLabel}
                 </button>
@@ -352,7 +354,7 @@ export function PdfWorkflowEngine({
                   {zh ? "或将文件拖放到此处" : "or drop your file here"}
                 </p>
                 <p className="mt-1.5 text-xs text-[color:var(--faint)]">
-                  {zh ? "支持格式" : "Supported"}: {spec.acceptedLabel}
+                  {zh ? `请上传不超过 ${formatBytes(spec.maxFileSize)} 的文件` : `Please upload a file up to ${formatBytes(spec.maxFileSize)}`}
                 </p>
               </>
             ) : null}
@@ -370,6 +372,7 @@ export function PdfWorkflowEngine({
             {status === "ready" ? (
               <ReadyWorkflowState
                 bare
+                bigPreview
                 config={config}
                 files={files}
                 totalSize={totalSize}

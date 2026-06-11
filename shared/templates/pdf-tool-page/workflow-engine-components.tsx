@@ -6,7 +6,7 @@ import type { PdfRuntimeArtifact } from "./pdf-runtime";
 
 // Visual preview of an uploaded file: first-page thumbnail for PDFs, the image
 // itself for images. Falls back to a small type badge while rendering / on error.
-function FileThumb({ file }: { file: File }) {
+function FileThumb({ file, className = "h-12 w-10" }: { file: File; className?: string }) {
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
     let cancelled = false;
@@ -44,14 +44,14 @@ function FileThumb({ file }: { file: File }) {
 
   if (!url) {
     return (
-      <div className="flex h-12 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-[10px] font-bold text-[color:var(--accent-strong)]">
+      <div className={`flex shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-[10px] font-bold text-[color:var(--accent-strong)] ${className}`}>
         {file.name.split(".").pop()?.toUpperCase().slice(0, 3) ?? "PDF"}
       </div>
     );
   }
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={url} alt={file.name} className="h-12 w-10 shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-white object-contain" />
+    <img src={url} alt={file.name} className={`shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-white object-contain ${className}`} />
   );
 }
 
@@ -125,6 +125,7 @@ export function ReadyWorkflowState({
   onMoveFile,
   onStart,
   bare = false,
+  bigPreview = false,
 }: {
   config: PdfToolPageConfig;
   files: UploadedFile[];
@@ -139,16 +140,28 @@ export function ReadyWorkflowState({
   onMoveFile: (index: number, direction: -1 | 1) => void;
   onStart: () => void;
   bare?: boolean;
+  bigPreview?: boolean;
 }) {
   const zh = (config.locale ?? "en") === "zh";
   const reorderable = config.slug === "merge-pdf" || config.slug === "jpg-to-pdf" || config.slug === "png-to-pdf";
+  const previewFile = files[0];
 
   const inputCls =
     "mt-2 h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--accent)]";
 
   return (
-    <div className={bare ? "space-y-3" : "mt-4 space-y-3"}>
+    <div className={bigPreview ? "flex w-full flex-1 flex-col gap-4" : bare ? "space-y-3" : "mt-4 space-y-3"}>
       {/* File list */}
+      {bigPreview && previewFile ? (
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+          <FileThumb file={previewFile.file} className="h-40 w-32 sm:h-48 sm:w-36" />
+          <div>
+            <p className="max-w-[16rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{previewFile.file.name}</p>
+            <p className="mt-0.5 text-xs text-[color:var(--muted)]">{formatBytes(previewFile.file.size)}</p>
+          </div>
+          <button type="button" onClick={() => onRemoveFile(previewFile.id)} className="text-xs text-[color:var(--muted)] underline transition hover:text-[color:var(--foreground)]">{zh ? "移除" : "Remove"}</button>
+        </div>
+      ) : (
       <ul className="space-y-2">
         {files.map((item, index) => (
           <li
@@ -201,6 +214,7 @@ export function ReadyWorkflowState({
           </li>
         ))}
       </ul>
+      )}
 
       {/* Tool-specific options */}
       {(config.slug === "split-pdf" || config.slug === "ocr-pdf") && (
@@ -354,7 +368,7 @@ export function ReadyWorkflowState({
       )}
 
       {/* Start button */}
-      <PrimaryButton onClick={onStart} className="w-full">
+      <PrimaryButton onClick={onStart} className={bigPreview ? "mt-auto w-1/2 self-center" : "w-full"}>
         {config.primaryActionLabel}
       </PrimaryButton>
     </div>
