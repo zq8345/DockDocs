@@ -66,6 +66,7 @@ export const routeSlugs = [
   "my-chats",
   "crop-pdf",
   "extract-to-excel",
+  "redline",
   "dashboard",
   "pricing",
   "account",

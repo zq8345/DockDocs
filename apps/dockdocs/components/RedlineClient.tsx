@@ -1,0 +1,172 @@
+"use client";
+
+import { useCallback, useRef, useState } from "react";
+import { Spinner } from "@/components/Spinner";
+import { encryptedPdfMessage } from "@/lib/pdf-errors";
+
+type Locale = "en" | "zh";
+type Op = { type: "eq" | "del" | "ins"; text: string };
+
+const STR = {
+  en: {
+    title: "Compare two PDF versions (redline)",
+    subtitle: "Upload an original and a revised PDF to see exactly what changed — added text is highlighted, removed text is struck through. Everything runs in your browser.",
+    original: "Original (v1)", revised: "Revised (v2)",
+    choose: "Choose PDF", reading: "Reading…", change: "Replace",
+    compare: "Compare versions", comparing: "Comparing…", reset: "Start over",
+    added: "Added", removed: "Removed", unchanged: "No textual changes found.",
+    summary: (a: number, d: number) => `${a} added · ${d} removed`,
+    need: "Add both PDFs to compare.",
+    err: "Something went wrong: ",
+    note: "Compares the extracted text sentence by sentence. Formatting and images aren't part of the comparison.",
+  },
+  zh: {
+    title: "对比两份 PDF 版本(红线)",
+    subtitle: "上传原始版和修订版 PDF，看清到底改了什么——新增文字高亮，删除文字加删除线。全部在浏览器中完成。",
+    original: "原始版 (v1)", revised: "修订版 (v2)",
+    choose: "选择 PDF", reading: "读取中…", change: "替换",
+    compare: "对比版本", comparing: "对比中…", reset: "重新开始",
+    added: "新增", removed: "删除", unchanged: "未发现文字差异。",
+    summary: (a: number, d: number) => `新增 ${a} · 删除 ${d}`,
+    need: "请添加两份 PDF。",
+    err: "出错了：",
+    note: "按句子逐句对比抽取出的文字。排版和图片不在对比范围内。",
+  },
+};
+
+async function extractText(file: File): Promise<string> {
+  const pdfjs = await import("pdfjs-dist");
+  pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+  const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+  let text = "";
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map((it) => ("str" in it ? it.str : "")).join(" ") + "\n";
+  }
+  try { doc.destroy(); } catch { /* ignore */ }
+  return text;
+}
+
+// Split into sentence-ish units for a readable redline.
+function toUnits(text: string): string[] {
+  return text
+    .replace(/\s+/g, " ")
+    .split(/(?<=[.!?。！？;；\n])\s+/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .slice(0, 2500); // cap to keep the LCS bounded on very large documents
+}
+
+// Sentence-level LCS diff -> ordered ops.
+function diff(a: string[], b: string[]): Op[] {
+  const n = a.length, m = b.length;
+  const dp: number[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--)
+    for (let j = m - 1; j >= 0; j--)
+      dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const ops: Op[] = [];
+  let i = 0, j = 0;
+  while (i < n && j < m) {
+    if (a[i] === b[j]) { ops.push({ type: "eq", text: a[i] }); i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) { ops.push({ type: "del", text: a[i] }); i++; }
+    else { ops.push({ type: "ins", text: b[j] }); j++; }
+  }
+  while (i < n) ops.push({ type: "del", text: a[i++] });
+  while (j < m) ops.push({ type: "ins", text: b[j++] });
+  return ops;
+}
+
+export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
+  const t = STR[locale] ?? STR.en;
+  const [a, setA] = useState<File | null>(null);
+  const [b, setB] = useState<File | null>(null);
+  const [phase, setPhase] = useState<"idle" | "comparing" | "done">("idle");
+  const [ops, setOps] = useState<Op[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const aRef = useRef<HTMLInputElement>(null);
+  const bRef = useRef<HTMLInputElement>(null);
+
+  const compare = useCallback(async () => {
+    if (!a || !b) { setError(t.need); return; }
+    setPhase("comparing"); setError(null); setOps([]);
+    try {
+      const [ta, tb] = await Promise.all([extractText(a), extractText(b)]);
+      const result = diff(toUnits(ta), toUnits(tb));
+      setOps(result);
+      setPhase("done");
+    } catch (e) {
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setPhase("idle");
+    }
+  }, [a, b, t, locale]);
+
+  const reset = () => { setA(null); setB(null); setOps([]); setPhase("idle"); setError(null); };
+
+  const counts = { ins: ops.filter((o) => o.type === "ins").length, del: ops.filter((o) => o.type === "del").length };
+
+  const slot = (file: File | null, set: (f: File | null) => void, ref: React.RefObject<HTMLInputElement | null>, label: string) => (
+    <div className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+      <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{label}</p>
+      <input ref={ref} type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { set(f); setPhase("idle"); setError(null); } }} />
+      {file ? (
+        <div className="mt-3 flex items-center justify-between gap-2">
+          <span className="truncate text-[13.5px] font-medium text-[color:var(--foreground)]" title={file.name}>{file.name}</span>
+          <button type="button" onClick={() => ref.current?.click()} className="shrink-0 text-[12.5px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.change}</button>
+        </div>
+      ) : (
+        <button type="button" onClick={() => ref.current?.click()} className="mt-3 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[13.5px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="mx-auto max-w-5xl px-5 py-16 sm:py-20">
+      <h1 className="text-[28px] font-semibold tracking-[-0.018em] text-[color:var(--foreground)] sm:text-[34px]">{t.title}</h1>
+      <p className="mt-3 max-w-4xl text-[15px] leading-relaxed text-[color:var(--muted)]">{t.subtitle}</p>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        {slot(a, setA, aRef, t.original)}
+        {slot(b, setB, bRef, t.revised)}
+      </div>
+
+      <div className="mt-5 flex items-center gap-2">
+        <button type="button" onClick={compare} disabled={!a || !b || phase === "comparing"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 py-2.5 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "comparing" ? (<><Spinner /> {t.comparing}</>) : t.compare}</button>
+        {(a || b) && <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2.5 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>}
+      </div>
+
+      {phase === "done" && (
+        <div className="mt-6">
+          <div className="mb-3 flex flex-wrap items-center gap-4 text-[12.5px]">
+            <span className="font-semibold text-[color:var(--muted)]">{t.summary(counts.ins, counts.del)}</span>
+            <span className="inline-flex items-center gap-1.5"><span className="inline-block h-3 w-3 rounded-sm bg-[rgba(52,211,153,0.3)]" />{t.added}</span>
+            <span className="inline-flex items-center gap-1.5"><span className="inline-block h-3 w-3 rounded-sm bg-[rgba(248,113,113,0.3)]" />{t.removed}</span>
+          </div>
+          {counts.ins === 0 && counts.del === 0 ? (
+            <p className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-4 text-[14px] text-[color:var(--muted)]">{t.unchanged}</p>
+          ) : (
+            <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 text-[14px] leading-7">
+              {ops.map((o, i) => (
+                <span
+                  key={i}
+                  className={
+                    o.type === "ins"
+                      ? "rounded-sm bg-[rgba(52,211,153,0.18)] text-[color:var(--foreground)]"
+                      : o.type === "del"
+                        ? "rounded-sm bg-[rgba(248,113,113,0.16)] text-[#b91c1c] line-through"
+                        : "text-[color:var(--muted)]"
+                  }
+                >
+                  {o.text}{" "}
+                </span>
+              ))}
+            </div>
+          )}
+          <p className="mt-3 text-[12px] text-[color:var(--faint)]">{t.note}</p>
+        </div>
+      )}
+
+      {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+    </div>
+  );
+}

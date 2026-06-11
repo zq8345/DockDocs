@@ -37,6 +37,7 @@ import { UrlToPdfClient } from "@/components/UrlToPdfClient";
 import { MyChatsClient } from "@/components/MyChatsClient";
 import { CropPdfClient } from "@/components/CropPdfClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
+import { RedlineClient } from "@/components/RedlineClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -264,6 +265,20 @@ export async function generateMetadata({
       runtimeCopy.pricing.metadataTitle,
       runtimeCopy.pricing.metadataDescription,
     );
+  }
+
+  if (slug === "redline") {
+    return {
+      title: rawLocale === "zh" ? "PDF 版本对比 / 红线 — 看清两版改了什么 | DockDocs" : "PDF Redline — Compare Two PDF Versions Free | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "上传原始版和修订版 PDF，逐句对比看清新增和删除的内容，全部在浏览器中完成。"
+          : "Compare two PDF versions to see exactly what changed — added text highlighted, removed text struck through. Free and in your browser.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "redline"),
+        languages: languageAlternates("redline"),
+      },
+    };
   }
 
   if (slug === "extract-to-excel") {
@@ -496,6 +511,10 @@ export default async function LocalizedRoute({
 
   if (slug === "dashboard") {
     return <LocalizedDashboard locale={rawLocale} />;
+  }
+
+  if (slug === "redline") {
+    return <RedlineClient locale={rawLocale} />;
   }
 
   if (slug === "extract-to-excel") {

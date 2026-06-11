@@ -20,6 +20,7 @@ const toolColsEn = [
       { label: "AI Summary", href: "/ai-summary" },
       { label: "OCR Workspace", href: "/ocr" },
       { label: "Extract to Excel", href: "/extract-to-excel" },
+      { label: "Compare versions", href: "/redline" },
     ],
   },
   {
@@ -68,6 +69,7 @@ const toolColsZh = [
       { label: "AI 摘要", href: "/ai-summary" },
       { label: "OCR 工作区", href: "/ocr" },
       { label: "抽取到表格", href: "/extract-to-excel" },
+      { label: "版本对比", href: "/redline" },
     ],
   },
   {
