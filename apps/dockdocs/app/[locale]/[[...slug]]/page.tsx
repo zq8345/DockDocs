@@ -41,6 +41,8 @@ import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
 import { BatchProtectClient } from "@/components/BatchProtectClient";
 import { BatchRenameClient } from "@/components/BatchRenameClient";
 import { BatchStampClient } from "@/components/BatchStampClient";
+import { BatchSplitMergeClient } from "@/components/BatchSplitMergeClient";
+import { BatchRotateClient } from "@/components/BatchRotateClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
@@ -458,6 +460,34 @@ export async function generateMetadata({
     };
   }
 
+  if (slug === "batch-split-merge") {
+    return {
+      title: rawLocale === "zh" ? "批量拆分 / 合并 PDF — 整批合并或按页拆分 | DockDocs" : "Batch Split & Merge PDF — Combine or Split Many PDFs Free | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "把整个文件夹的 PDF 合并成一个,或把每份按 N 页拆分,全部在浏览器中完成、打包下载,文件不外泄。"
+          : "Merge a whole folder of PDFs into one, or split each into N-page files — all in your browser, packaged for download. Your files never leave your device.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "batch-split-merge"),
+        languages: languageAlternates("batch-split-merge"),
+      },
+    };
+  }
+
+  if (slug === "batch-rotate-pdf") {
+    return {
+      title: rawLocale === "zh" ? "批量旋转 PDF — 整批纠正横/倒扫描件 | DockDocs" : "Batch Rotate PDF — Fix Many Sideways Scans Free | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "一次纠正整个文件夹横着或倒着的扫描件:把每份 PDF 每页旋转,打包 ZIP,全部在浏览器中完成,文件不外泄。"
+          : "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF and download one ZIP. Entirely in your browser.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "batch-rotate-pdf"),
+        languages: languageAlternates("batch-rotate-pdf"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: rawLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -711,6 +741,14 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-watermark-pdf") {
     return <BatchStampClient locale={rawLocale} />;
+  }
+
+  if (slug === "batch-split-merge") {
+    return <BatchSplitMergeClient locale={rawLocale} />;
+  }
+
+  if (slug === "batch-rotate-pdf") {
+    return <BatchRotateClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {
