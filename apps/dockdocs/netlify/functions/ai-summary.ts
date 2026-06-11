@@ -41,6 +41,24 @@ type ProviderSummaryResult = {
 
 const maxSummaryCharacters = 24_000;
 const aiSummaryMaxTokens = 1600;
+const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
+
+// Best-effort per-IP sliding-window limiter (per warm instance) to bound AI budget abuse.
+const rlHits = new Map<string, number[]>();
+function isRateLimited(req: Request, limit: number, windowMs: number): boolean {
+  const ip =
+    req.headers.get("x-nf-client-connection-ip") ||
+    (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
+    "anon";
+  const now = Date.now();
+  const arr = (rlHits.get(ip) || []).filter((ts) => now - ts < windowMs);
+  arr.push(now);
+  rlHits.set(ip, arr);
+  if (rlHits.size > 5000) {
+    for (const [k, v] of rlHits) if (!v.length || now - v[v.length - 1] > windowMs) rlHits.delete(k);
+  }
+  return arr.length > limit;
+}
 
 export default async (req: Request, _context: Context) => {
   if (req.method !== "POST") {
@@ -54,6 +72,14 @@ export default async (req: Request, _context: Context) => {
       405,
       { Allow: "POST" },
     );
+  }
+
+  const origin = req.headers.get("origin");
+  if (origin && !ALLOWED_ORIGIN.test(origin) && !/^http:\/\/localhost(:\d+)?$/i.test(origin)) {
+    return json({ ok: false, code: "FORBIDDEN_ORIGIN", message: "Requests are only allowed from DockDocs.", httpStatus: 403 }, 403);
+  }
+  if (isRateLimited(req, 10, 60_000)) {
+    return json({ ok: false, code: "RATE_LIMITED", message: "Too many requests — please wait a minute and try again.", httpStatus: 429 }, 429);
   }
 
   const provider = getProvider();

@@ -24,6 +24,24 @@ type ConversionRoute = keyof typeof SUPPORTED_CONVERSIONS;
 
 const ENCRYPT_ROUTE = "protect-pdf";
 const CLOUDCONVERT_API = "https://api.cloudconvert.com/v2";
+const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
+
+// Best-effort per-IP sliding-window limiter (per warm instance) to bound CloudConvert credit abuse.
+const rlHits = new Map<string, number[]>();
+function isRateLimited(req: Request, limit: number, windowMs: number): boolean {
+  const ip =
+    req.headers.get("x-nf-client-connection-ip") ||
+    (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
+    "anon";
+  const now = Date.now();
+  const arr = (rlHits.get(ip) || []).filter((ts) => now - ts < windowMs);
+  arr.push(now);
+  rlHits.set(ip, arr);
+  if (rlHits.size > 5000) {
+    for (const [k, v] of rlHits) if (!v.length || now - v[v.length - 1] > windowMs) rlHits.delete(k);
+  }
+  return arr.length > limit;
+}
 
 // ---------------------------------------------------------------------------
 // Handler — JSON-only control plane. The file NEVER passes through this
@@ -39,6 +57,11 @@ const CLOUDCONVERT_API = "https://api.cloudconvert.com/v2";
 export default async (req: Request, _context: Context) => {
   if (req.method !== "POST") {
     return json({ ok: false, code: "METHOD_NOT_ALLOWED", message: "Use POST." }, 405);
+  }
+
+  const origin = req.headers.get("origin");
+  if (origin && !ALLOWED_ORIGIN.test(origin) && !/^http:\/\/localhost(:\d+)?$/i.test(origin)) {
+    return json({ ok: false, code: "FORBIDDEN_ORIGIN", message: "Requests are only allowed from DockDocs." }, 403);
   }
 
   const apiKey = Netlify.env.get("CLOUDCONVERT_API_KEY")?.trim();
@@ -96,6 +119,11 @@ export default async (req: Request, _context: Context) => {
       const message = err instanceof Error ? err.message : "Unknown error";
       return json({ ok: false, code: "INTERNAL_ERROR", message }, 500);
     }
+  }
+
+  // Rate-limit only the costly CREATE path (status polling stays exempt so live jobs can poll).
+  if (isRateLimited(req, 12, 60_000)) {
+    return json({ ok: false, code: "RATE_LIMITED", message: "Too many conversions — please wait a minute and try again." }, 429);
   }
 
   // ── CREATE: build a job and return the direct-upload form ──

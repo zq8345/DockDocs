@@ -3,6 +3,22 @@ const openAiApiKey = process.env.OPENAI_API_KEY;
 const aiProviderTimeoutMs = 55_000;
 const maxDocumentTextChars = 40_000;
 const maxOutputTokens = 900;
+const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
+
+// Best-effort per-IP sliding-window limiter (per warm instance) to bound AI budget abuse.
+const rlHits = new Map();
+function isRateLimited(event, limit, windowMs) {
+  const h = event.headers || {};
+  const ip = h["x-nf-client-connection-ip"] || (h["x-forwarded-for"] || "").split(",")[0].trim() || "anon";
+  const now = Date.now();
+  const arr = (rlHits.get(ip) || []).filter((ts) => now - ts < windowMs);
+  arr.push(now);
+  rlHits.set(ip, arr);
+  if (rlHits.size > 5000) {
+    for (const [k, v] of rlHits) if (!v.length || now - v[v.length - 1] > windowMs) rlHits.delete(k);
+  }
+  return arr.length > limit;
+}
 
 const provider = deepSeekApiKey
   ? {
@@ -46,6 +62,14 @@ exports.handler = async function handler(event) {
 
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Method not allowed." });
+  }
+
+  const origin = (event.headers && (event.headers.origin || event.headers.Origin)) || "";
+  if (origin && !ALLOWED_ORIGIN.test(origin) && !/^http:\/\/localhost(:\d+)?$/i.test(origin)) {
+    return json(403, { error: "Requests are only allowed from DockDocs." });
+  }
+  if (isRateLimited(event, 20, 60_000)) {
+    return json(429, { error: "Too many requests — please wait a minute and try again." });
   }
 
   if (!provider) {
