@@ -30,6 +30,8 @@ const toolColsEn = [
       { label: "PDF to Excel", href: "/pdf-to-excel" },
       { label: "PPT to PDF", href: "/ppt-to-pdf" },
       { label: "JPG to PDF", href: "/jpg-to-pdf" },
+      { label: "HTML to PDF", href: "/html-to-pdf" },
+      { label: "URL to PDF", href: "/url-to-pdf" },
     ],
   },
   {
@@ -72,6 +74,8 @@ const toolColsZh = [
       { label: "PDF 转 Excel", href: "/pdf-to-excel" },
       { label: "PPT 转 PDF", href: "/ppt-to-pdf" },
       { label: "JPG 转 PDF", href: "/jpg-to-pdf" },
+      { label: "HTML 转 PDF", href: "/html-to-pdf" },
+      { label: "网页转 PDF", href: "/url-to-pdf" },
     ],
   },
   {

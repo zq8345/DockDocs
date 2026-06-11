@@ -29,6 +29,8 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "Excel to PDF", slug: "/excel-to-pdf" },
             { name: "PPT to PDF", slug: "/ppt-to-pdf" },
             { name: "Image to PDF", slug: "/images-to-pdf" },
+            { name: "HTML to PDF", slug: "/html-to-pdf" },
+            { name: "URL to PDF", slug: "/url-to-pdf" },
           ],
         },
         {
@@ -125,6 +127,8 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "Excel 转 PDF", slug: "/excel-to-pdf" },
             { name: "PPT 转 PDF", slug: "/ppt-to-pdf" },
             { name: "图片转 PDF", slug: "/images-to-pdf" },
+            { name: "HTML 转 PDF", slug: "/html-to-pdf" },
+            { name: "网页转 PDF", slug: "/url-to-pdf" },
           ],
         },
         {
