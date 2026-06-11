@@ -134,11 +134,12 @@ export async function createBillingCheckoutSession(plan: PaidSubscriptionPlan) {
 }
 
 export async function createBillingPortalSession() {
+  const auth = await authHeader();
   const response = await fetch("/api/billing/create-portal-session", {
     method: "POST",
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      ...auth,
     },
     body: JSON.stringify({
       origin: window.location.origin,
@@ -147,6 +148,11 @@ export async function createBillingPortalSession() {
   const payload = await readBillingResponse(response);
   if (!response.ok || !payload?.ok || !payload.url) {
     throw new Error(payload?.message || "Customer portal is not available.");
+  }
+
+  // Redirect the browser to the hosted Creem billing portal.
+  if (typeof window !== "undefined") {
+    window.location.assign(payload.url);
   }
 
   return payload.url;

@@ -105,3 +105,39 @@ export async function verifyCreemSignature(rawBody: string, signature: string | 
   }
   return mismatch === 0;
 }
+
+export type CreemPortalResult =
+  | { ok: true; url: string }
+  | { ok: false; status: number; code: string; message: string };
+
+// Generate a Creem customer portal link so a subscriber can manage / cancel.
+export async function createCreemPortal(customerId: string): Promise<CreemPortalResult> {
+  const apiKey = creemApiKey();
+  if (!apiKey) {
+    return { ok: false, status: 503, code: "CREEM_NOT_CONFIGURED", message: "Payments are not configured yet." };
+  }
+  if (!customerId) {
+    return { ok: false, status: 404, code: "NO_CUSTOMER", message: "No customer to manage." };
+  }
+
+  let res: Response;
+  try {
+    res = await fetch(`${creemApiBase()}/customers/billing`, {
+      method: "POST",
+      headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({ customer_id: customerId }),
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not reach the payment provider.";
+    return { ok: false, status: 502, code: "CREEM_UNREACHABLE", message };
+  }
+
+  const data = (await res.json().catch(() => null)) as
+    | { customer_portal_link?: string; url?: string; portal_url?: string; link?: string; message?: string }
+    | null;
+  const url = data?.customer_portal_link || data?.url || data?.portal_url || data?.link;
+  if (!res.ok || !url) {
+    return { ok: false, status: 502, code: "CREEM_PORTAL_FAILED", message: data?.message || `The payment provider returned status ${res.status}.` };
+  }
+  return { ok: true, url };
+}
