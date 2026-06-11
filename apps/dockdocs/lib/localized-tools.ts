@@ -37,16 +37,16 @@ type ToolCopy = {
 const enTools: Record<ToolSlug, ToolCopy> = {
   "pdf-to-html": {
     title: "PDF to HTML Converter Online Free | DockDocs",
-    description: "Convert a PDF's text into a clean HTML file online for free. Browser-side; your file never leaves your device.",
+    description: "Convert a PDF into a clean HTML file online for free — each page as an image with its selectable text in a collapsible block. Browser-side; your file never leaves your device.",
     keywords: ["pdf to html", "convert pdf to html", "pdf to html converter", "extract pdf to html"],
     appName: "DockDocs PDF to HTML", schemaName: "DockDocs PDF to HTML Converter", breadcrumbName: "PDF to HTML",
-    heroTitle: "Convert PDF to HTML.", heroDescription: "Extract a PDF's text into a clean, structured HTML file. All processing happens locally — your file never leaves your device.",
+    heroTitle: "Convert PDF to HTML.", heroDescription: "Turn each PDF page into an image in a clean HTML file, with its selectable text in a collapsible block beneath — layout preserved, text still searchable. All processing happens locally; your file never leaves your device.",
     primaryActionLabel: "Convert to HTML",
     stats: [["Price", "Free"], ["Input", "PDF file"], ["Output", "HTML file"]],
     upload: { title: "Upload a PDF to convert", description: "Drag and drop a PDF here, or choose a file.", buttonLabel: "Choose PDF", note: "PDF only. Download the text as a structured .html file." },
     benefitsTitle: "Convert PDF to HTML without uploading to a server", benefitsDescription: "Upload locally and download an HTML file instantly.",
     benefits: [
-      { title: "Clean structure", description: "Each page becomes a section and each line a paragraph." },
+      { title: "Layout preserved", description: "Each page becomes an image section, with its text kept in a collapsible block so it stays selectable." },
       { title: "Privacy-first", description: "All extraction happens in your browser. Your file never leaves your device." },
       { title: "Page selection", description: "Optionally convert only the pages you need." },
     ],
@@ -62,11 +62,11 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     faqTitle: "PDF to HTML questions",
     faq: [
       { question: "How do I convert a PDF to HTML?", answer: "Upload a PDF and download the generated HTML file." },
-      { question: "Does it keep images and exact layout?", answer: "No — this extracts text into clean HTML. For images and exact layout, keep the original PDF." },
+      { question: "Does it keep images and layout?", answer: "Yes — each page is rendered as an image so pictures and layout are preserved, and that page's selectable text is kept in a collapsible block beneath it so it stays searchable." },
       { question: "Is my PDF sent to a server?", answer: "No. All extraction happens in your browser. Your file never leaves your device." },
     ],
     cta: { eyebrow: "PDF to HTML", title: "Convert your PDF to HTML.", description: "Get clean, structured HTML — entirely in your browser.", buttonLabel: "Convert to HTML now" },
-  },
+  },
   "pdf-to-text": {
     title: "PDF to Text (TXT) Converter Online Free | DockDocs",
     description: "Extract plain text from any PDF online for free. Fast, browser-side — your file never leaves your device.",
@@ -509,7 +509,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
       { question: "Is my PDF sent to a server?", answer: "No. All conversion happens in your browser." },
     ],
     cta: { eyebrow: "PDF to PNG", title: "Extract PDF pages as lossless PNG images.", description: "Convert PDF pages to PNG in your browser.", buttonLabel: "Convert PDF now" },
-  },
+  },
   "pdf-to-markdown": {
     title: "PDF to Markdown Converter Online Free | DockDocs",
     description: "Convert PDF text content to Markdown online for free. Extract structured Markdown from any PDF inside DockDocs.",
@@ -1008,7 +1008,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     primaryActionLabel: "转换为 HTML",
     upload: { ...enTools["pdf-to-html"].upload, title: "上传要转换的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF" },
     cta: { eyebrow: "PDF 转 HTML", title: "把 PDF 转成 HTML。", description: "完全在浏览器中得到干净的结构化 HTML。", buttonLabel: "立即转换" },
-  },
+  },
   "pdf-to-text": {
     ...enTools["pdf-to-text"],
     title: "在线免费 PDF 转文本（TXT） | DockDocs",
@@ -1205,7 +1205,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     primaryActionLabel: "转换为 PNG",
     upload: { ...enTools["pdf-to-png"].upload, title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF" },
     cta: { eyebrow: "PDF 转 PNG", title: "将 PDF 页面提取为无损 PNG 图片。", description: "完全在浏览器中将 PDF 转换为 PNG。", buttonLabel: "立即转换" },
-  },
+  },
   "pdf-to-markdown": {
     ...enTools["pdf-to-markdown"],
     title: "在线免费 PDF 转 Markdown | DockDocs",
@@ -1332,10 +1332,10 @@ const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
     faqTitle: "PDF 转 HTML 常见问题",
     faq: [
       { question: "如何把 PDF 转成 HTML？", answer: "上传 PDF，然后下载生成的 HTML 文件。" },
-      { question: "会保留图片和精确版式吗？", answer: "不会——本工具把文字提取成干净的 HTML。需要图片和精确版式请保留原始 PDF。" },
+      { question: "会保留图片和版式吗？", answer: "会——每一页都渲染成图片，图片和版式都保留；该页的可选文字塞在下方的可折叠块里，仍可搜索。" },
       { question: "我的 PDF 会上传到服务器吗？", answer: "不会。全部在你的浏览器中完成，文件不会离开你的设备。" },
     ],
-  },
+  },
   "pdf-to-text": {
     faqTitle: "PDF 转文本常见问题",
     faq: [
@@ -1437,7 +1437,7 @@ const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
       { question: "如何把 PNG 转成 PDF？", answer: "上传一张或多张 PNG 图片，调整顺序后下载 PDF。" },
       { question: "是否免费？", answer: "免费，且在浏览器本地处理。" },
     ],
-  },
+  },
   "pdf-to-jpg": {
     faqTitle: "PDF 转 JPG 常见问题",
     faq: [
