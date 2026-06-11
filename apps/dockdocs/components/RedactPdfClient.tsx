@@ -34,6 +34,11 @@ function luhn(num: string) {
   return sum % 10 === 0;
 }
 
+// A box needs meaningful area in BOTH dimensions to count / apply (and to survive
+// a draw-release). One shared predicate => what the user sees is exactly what gets
+// redacted — no thin box that shows on screen but is silently dropped on apply.
+const sizable = (b: Box) => b.w > 0.0015 && b.h > 0.0015;
+
 const STR = {
   en: {
     title: "Redact PDF — permanently",
@@ -161,7 +166,7 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
   };
   const onUp = () => {
     const d = draw.current; draw.current = null;
-    if (d) setBoxes((prev) => prev.filter((b) => !(b.id === d.id && b.w < 0.005 && b.h < 0.005)));
+    if (d) setBoxes((prev) => prev.filter((b) => !(b.id === d.id && !sizable(b))));
   };
   const removeBox = (id: string) => setBoxes((prev) => prev.filter((b) => b.id !== id));
 
@@ -169,7 +174,7 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
   const apply = useCallback(async () => {
     const file = fileRef.current;
     if (!file) return;
-    const real = boxes.filter((b) => b.w > 0.003 && b.h > 0.003);
+    const real = boxes.filter(sizable);
     if (real.length === 0) { setError(t.needBox); return; }
     setPhase("working"); setError(null);
     try {
@@ -243,7 +248,7 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.boxes(boxes.filter((b) => b.w > 0.003 && b.h > 0.003).length)}</p>
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.boxes(boxes.filter(sizable).length)}</p>
               <p className="text-[12.5px] text-[color:var(--muted)]">{t.hint}</p>
             </div>
             <div className="flex shrink-0 gap-2">
