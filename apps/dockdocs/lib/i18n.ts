@@ -69,6 +69,7 @@ export const routeSlugs = [
   "redline",
   "flashcards",
   "batch-summary",
+  "classify",
   "dashboard",
   "pricing",
   "account",

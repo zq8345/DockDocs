@@ -40,6 +40,7 @@ import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
 import { BatchSummaryClient } from "@/components/BatchSummaryClient";
+import { ClassifyClient } from "@/components/ClassifyClient";
 import { SignPdfClient } from "@/components/SignPdfClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
@@ -279,6 +280,20 @@ export async function generateMetadata({
       alternates: {
         canonical: localizedPath(rawLocale, "sign-pdf"),
         languages: languageAlternates("sign-pdf"),
+      },
+    };
+  }
+
+  if (slug === "classify") {
+    return {
+      title: rawLocale === "zh" ? "PDF 自动分类打标签 — 一键整理文件夹 | DockDocs" : "Auto-Classify & Tag PDFs — Organize a Folder with AI | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "上传一堆 PDF，AI 自动归类、打标签（发票/简历/合同/论文），几秒整理好。"
+          : "Upload a pile of PDFs and let AI sort them into categories and tags — organize a folder in seconds.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "classify"),
+        languages: languageAlternates("classify"),
       },
     };
   }
@@ -555,6 +570,10 @@ export default async function LocalizedRoute({
 
   if (slug === "dashboard") {
     return <LocalizedDashboard locale={rawLocale} />;
+  }
+
+  if (slug === "classify") {
+    return <ClassifyClient locale={rawLocale} />;
   }
 
   if (slug === "batch-summary") {
