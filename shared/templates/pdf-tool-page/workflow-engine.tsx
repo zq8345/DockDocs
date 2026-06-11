@@ -304,8 +304,8 @@ export function PdfWorkflowEngine({
   if (single) {
     const dragging = isDragging && status === "idle";
     const idleFrame = dragging
-      ? "relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-14 text-center transition border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
-      : "relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-14 text-center transition border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]";
+      ? "relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed aspect-[16/9] px-6 text-center transition border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
+      : "relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed aspect-[16/9] px-6 text-center transition border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]";
     const frame =
       status === "idle"
         ? idleFrame
