@@ -13,7 +13,6 @@ export type PdfRuntimeSlug =
   | "pdf-to-word"
   | "pdf-to-jpg"
   | "pdf-to-png"
-  | "text-to-pdf"
   | "pdf-to-markdown"
   | "delete-page"
   | "rotate-page"
@@ -28,12 +27,6 @@ export type PdfRuntimeSlug =
   | "page-numbers"
   | "unlock-pdf"
   | "pdf-to-text"
-  | "webp-to-png"
-  | "png-to-webp"
-  | "webp-to-jpg"
-  | "jpg-to-webp"
-  | "jpg-to-png"
-  | "png-to-jpg"
   | "pdf-to-html";
 
 export type PdfRuntimeProgress = {
@@ -89,7 +82,6 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "pdf-to-word" ||
     slug === "pdf-to-jpg" ||
     slug === "pdf-to-png" ||
-    slug === "text-to-pdf" ||
     slug === "pdf-to-markdown" ||
     slug === "delete-page" ||
     slug === "rotate-page" ||
@@ -104,12 +96,6 @@ export function isRealPdfRuntimeSlug(slug: string): slug is PdfRuntimeSlug {
     slug === "page-numbers" ||
     slug === "unlock-pdf" ||
     slug === "pdf-to-text" ||
-    slug === "webp-to-png" ||
-    slug === "png-to-webp" ||
-    slug === "webp-to-jpg" ||
-    slug === "jpg-to-webp" ||
-    slug === "jpg-to-png" ||
-    slug === "png-to-jpg" ||
     slug === "pdf-to-html"
   );
 }
@@ -168,10 +154,6 @@ export async function runPdfRuntime({
     return pdfToPng(files[0], pageRanges, outputFileName, locale, signal, onProgress);
   }
 
-  if (slug === "text-to-pdf") {
-    return textToPdf(files[0], outputFileName, locale, signal, onProgress);
-  }
-
   if (slug === "pdf-to-markdown") {
     return pdfToMarkdown(files[0], pageRanges, outputFileName, locale, signal, onProgress);
   }
@@ -222,30 +204,6 @@ export async function runPdfRuntime({
 
   if (slug === "pdf-to-html") {
     return pdfToHtmlDoc(files[0], pageRanges, outputFileName, locale, signal, onProgress);
-  }
-
-  if (slug === "webp-to-png") {
-    return convertImage(files[0], "image/png", locale, outputFileName, signal, onProgress);
-  }
-
-  if (slug === "png-to-webp") {
-    return convertImage(files[0], "image/webp", locale, outputFileName, signal, onProgress);
-  }
-
-  if (slug === "webp-to-jpg") {
-    return convertImage(files[0], "image/jpeg", locale, outputFileName, signal, onProgress);
-  }
-
-  if (slug === "jpg-to-webp") {
-    return convertImage(files[0], "image/webp", locale, outputFileName, signal, onProgress);
-  }
-
-  if (slug === "jpg-to-png") {
-    return convertImage(files[0], "image/png", locale, outputFileName, signal, onProgress);
-  }
-
-  if (slug === "png-to-jpg") {
-    return convertImage(files[0], "image/jpeg", locale, outputFileName, signal, onProgress);
   }
 
   return imagesToPdf(files, outputFileName, signal, onProgress);
@@ -914,63 +872,6 @@ async function protectPdfLocally(
   };
 }
 
-async function convertImage(
-  file: File,
-  targetMime: string,
-  locale: "en" | "zh",
-  outputFileName: string,
-  signal?: AbortSignal,
-  onProgress?: (progress: PdfRuntimeProgress) => void,
-): Promise<PdfRuntimeArtifact> {
-  const zh = locale === "zh";
-  throwIfAborted(signal);
-  emitProgress(onProgress, 10, 0);
-
-  let bitmap: ImageBitmap;
-  try {
-    bitmap = await createImageBitmap(file);
-  } catch {
-    throw new Error(
-      zh ? "无法读取这张图片，请确认文件格式正确。" : "Could not read this image. Make sure it's a valid image file.",
-    );
-  }
-  emitProgress(onProgress, 40, 1);
-  throwIfAborted(signal);
-
-  const canvas = document.createElement("canvas");
-  canvas.width = bitmap.width;
-  canvas.height = bitmap.height;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    throw new Error(zh ? "浏览器画布不可用。" : "Canvas is not available in this browser.");
-  }
-  // JPEG has no alpha channel — fill white so transparent areas don't turn black.
-  if (targetMime === "image/jpeg") {
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  }
-  ctx.drawImage(bitmap, 0, 0);
-  emitProgress(onProgress, 70, 2);
-  throwIfAborted(signal);
-
-  const blob: Blob = await new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (b) => (b ? resolve(b) : reject(new Error("Image encoding failed."))),
-      targetMime,
-      targetMime === "image/jpeg" || targetMime === "image/webp" ? 0.92 : undefined,
-    );
-  });
-  emitProgress(onProgress, 100, 3);
-
-  return {
-    fileName: outputFileName,
-    blob,
-    outputType: "image",
-    pageCount: 1,
-    fileCount: 1,
-  };
-}
-
 async function pdfToHtmlDoc(
   file: File,
   pageRanges: string,
@@ -1456,94 +1357,6 @@ async function pdfToPng(
     outputType: outputs.length === 1 ? "pdf" : "zip",
     pageCount: outputs.length,
     fileCount: outputs.length,
-  };
-}
-
-async function textToPdf(
-  file: File,
-  outputFileName: string,
-  locale: "en" | "zh",
-  signal?: AbortSignal,
-  onProgress?: (progress: PdfRuntimeProgress) => void,
-): Promise<PdfRuntimeArtifact> {
-  throwIfAborted(signal);
-  emitProgress(onProgress, 10, 0);
-
-  const zh = locale === "zh";
-  const rawText = await file.text();
-
-  if (!rawText.trim()) {
-    throw new Error(zh ? "文件内容为空，无法转换。" : "The file appears to be empty.");
-  }
-
-  emitProgress(onProgress, 30, 1);
-
-  const output = await PDFDocument.create();
-  const font = await output.embedFont("Helvetica" as any);
-  const fontSize = 11;
-  const lineHeight = fontSize * 1.5;
-  const pageWidth = 595.28;
-  const pageHeight = 841.89;
-  const marginX = 56;
-  const marginY = 72;
-  const usableWidth = pageWidth - marginX * 2;
-  const usableHeight = pageHeight - marginY * 2;
-  const charsPerLine = Math.floor(usableWidth / (fontSize * 0.55));
-  const linesPerPage = Math.floor(usableHeight / lineHeight);
-
-  // Word-wrap lines
-  const rawLines = rawText.replace(/\r\n/g, "\n").split("\n");
-  const wrappedLines: string[] = [];
-  for (const raw of rawLines) {
-    if (raw.length === 0) {
-      wrappedLines.push("");
-      continue;
-    }
-    let remaining = raw;
-    while (remaining.length > charsPerLine) {
-      const breakAt = remaining.lastIndexOf(" ", charsPerLine) > 0
-        ? remaining.lastIndexOf(" ", charsPerLine)
-        : charsPerLine;
-      wrappedLines.push(remaining.slice(0, breakAt));
-      remaining = remaining.slice(breakAt).trimStart();
-    }
-    wrappedLines.push(remaining);
-  }
-
-  emitProgress(onProgress, 50, 2);
-  throwIfAborted(signal);
-
-  // Paginate
-  let lineIndex = 0;
-  while (lineIndex < wrappedLines.length) {
-    const page = output.addPage([pageWidth, pageHeight]);
-    let y = pageHeight - marginY;
-    for (let l = 0; l < linesPerPage && lineIndex < wrappedLines.length; l++, lineIndex++) {
-      const line = wrappedLines[lineIndex];
-      if (line.trim()) {
-        try {
-          page.drawText(line, { x: marginX, y, size: fontSize, font, color: rgb(0.1, 0.1, 0.1) });
-        } catch {
-          // skip lines with unsupported characters
-        }
-      }
-      y -= lineHeight;
-    }
-  }
-
-  emitProgress(onProgress, 88, 3);
-  throwIfAborted(signal);
-
-  const pdfBytes = await output.save();
-  const blob = new Blob([pdfBytes], { type: "application/pdf" });
-  emitProgress(onProgress, 100, 3);
-
-  return {
-    fileName: outputFileName,
-    blob,
-    outputType: "pdf",
-    pageCount: output.getPageCount(),
-    fileCount: 1,
   };
 }
 

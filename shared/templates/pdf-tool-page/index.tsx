@@ -491,75 +491,6 @@ function HeroSection({ config }: { config: PdfToolPageConfig }) {
   );
 }
 
-function WorkflowSimulator({ config }: { config: PdfToolPageConfig }) {
-  const states = getWorkflowStates(config);
-  const copy = templateCopy[config.locale ?? "en"];
-
-  return (
-    <Section id="workflow-preview" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
-      <Container>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {copy.workflowEyebrow}
-            </p>
-            <h2 className="mt-4 break-words text-2xl font-semibold leading-tight sm:text-3xl">
-              {copy.workflowTitle}
-            </h2>
-          </div>
-          <p className="max-w-xl leading-7 text-[color:var(--muted)]">
-            {copy.workflowDescription}
-          </p>
-        </div>
-        <div className="mt-8 grid gap-4 lg:grid-cols-3">
-          {states.map((state, index) => (
-            <div
-              key={state.title}
-              className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm"
-            >
-              <div className="flex items-center justify-between gap-4">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--foreground)] text-sm font-semibold text-[color:var(--background)]">
-                  {index + 1}
-                </span>
-                <span className="rounded-full border border-[color:var(--line)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
-                  {state.status}
-                </span>
-              </div>
-              <h3 className="mt-5 break-words text-lg font-semibold">{state.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
-                {state.description}
-              </p>
-              {state.preview ? (
-                <div className="mt-5 overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 text-sm text-[color:var(--muted)]">
-                  {state.preview}
-                </div>
-              ) : null}
-              {state.actionLabel ? (
-                <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-                  <button
-                    type="button"
-                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[color:var(--foreground)] px-5 py-3 text-sm font-semibold text-[color:var(--background)] shadow-[0_12px_26px_rgba(15,23,42,0.16)] transition hover:bg-[color:var(--foreground)] sm:w-auto"
-                  >
-                    {state.actionLabel}
-                  </button>
-                  {state.secondaryActionLabel ? (
-                    <button
-                      type="button"
-                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-sm transition hover:border-[color:var(--foreground)] sm:w-auto"
-                    >
-                      {state.secondaryActionLabel}
-                    </button>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-          ))}
-        </div>
-      </Container>
-    </Section>
-  );
-}
-
 function BenefitsSection({ config }: { config: PdfToolPageConfig }) {
   const copy = templateCopy[config.locale ?? "en"];
 
@@ -625,31 +556,6 @@ function HowItWorksSection({ config }: { config: PdfToolPageConfig }) {
             </li>
           ))}
         </ol>
-      </Container>
-    </Section>
-  );
-}
-
-function FaqSection({ config }: { config: PdfToolPageConfig }) {
-  const copy = templateCopy[config.locale ?? "en"];
-
-  return (
-    <Section id="faq" className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-      <Container className="max-w-4xl">
-        <SectionIntro eyebrow={copy.faq} title={config.faqTitle} />
-        <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
-          {config.faq.map((faq) => (
-            <details key={faq.question} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-semibold text-[color:var(--foreground)]">
-                {faq.question}
-                <span className="text-[color:var(--muted)] transition group-open:rotate-45">
-                  +
-                </span>
-              </summary>
-              <p className="mt-4 leading-7 text-[color:var(--muted)]">{faq.answer}</p>
-            </details>
-          ))}
-        </div>
       </Container>
     </Section>
   );
@@ -729,29 +635,6 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
               </span>
             </a>
           ))}
-        </div>
-      </Container>
-    </Section>
-  );
-}
-
-function CtaSection({ config }: { config: PdfToolPageConfig }) {
-  return (
-    <Section bordered={false} className="bg-[color:var(--surface)]">
-      <Container>
-        <div className="flex flex-col gap-6 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--foreground)] p-6 text-[color:var(--background)] shadow-[0_24px_60px_rgba(24,24,20,0.10)] sm:flex-row sm:items-center sm:justify-between sm:p-8">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--background)]/70">
-              {config.cta.eyebrow}
-            </p>
-            <h2 className="mt-3 text-2xl font-semibold">{config.cta.title}</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-[color:var(--background)]/75">
-              {config.cta.description}
-            </p>
-          </div>
-          <ButtonLink href="#upload" variant="inverse">
-            {config.cta.buttonLabel}
-          </ButtonLink>
         </div>
       </Container>
     </Section>
