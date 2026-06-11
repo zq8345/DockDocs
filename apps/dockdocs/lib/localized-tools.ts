@@ -197,7 +197,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     benefits: [
       { title: "Fast compression", description: "Move from upload to reduced file size without clutter." },
       { title: "Office-ready", description: "Useful for portals, email limits, forms, and document handoff." },
-      { title: "Clear result state", description: "Users see a believable compressed output before download." },
+      { title: "Clear result state", description: "Users see the compressed result before download." },
     ],
     featuresTitle: "Built for modern PDF compression",
     featuresDescription: "A consistent DockDocs light SaaS interface for everyday compression work.",
@@ -231,7 +231,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
   "merge-pdf": {
     title: "Merge PDF Files Online Free | DockDocs",
     description:
-      "Merge multiple PDF files into one organized document online. Fast, secure, and AI-ready PDF merge workflow.",
+      "Merge multiple PDF files into one organized document online. Fast, secure, fully in-browser PDF merge.",
     keywords: ["merge pdf", "combine pdf", "merge pdf online", "pdf merger"],
     appName: "DockDocs Merge PDF",
     schemaName: "DockDocs Merge PDF",
@@ -259,7 +259,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     featuresDescription: "A clean SaaS-style merge flow for everyday document packets.",
     features: [
       { title: "Multi-file upload", description: "Upload more than one PDF." },
-      { title: "Order simulation", description: "Preview the final file order." },
+      { title: "Reorder files", description: "Preview the final file order." },
       { title: "Merge state", description: "Show the processing stage." },
       { title: "Merged file CTA", description: "Download one organized PDF." },
     ],
@@ -269,8 +269,8 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     faqTitle: "PDF merge questions",
     faq: [
       { question: "Can I upload multiple PDFs?", answer: "Yes. The merge workflow is designed for multi-file upload." },
-      { question: "Can I reorder files?", answer: "The page includes a reorder simulation before the merged output." },
-      { question: "What is the output?", answer: "The intended output is one organized PDF file." },
+      { question: "Can I reorder files?", answer: "Drag files into the order you want before merging." },
+      { question: "What is the output?", answer: "The output is one merged PDF file." },
     ],
     cta: {
       eyebrow: "Merge PDF",
@@ -282,7 +282,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
   "split-pdf": {
     title: "Split PDF Online Free | DockDocs",
     description:
-      "Split PDF files into separate pages or extract page ranges online. Fast, secure, and AI-ready PDF split workflow.",
+      "Split PDF files into separate pages or extract page ranges online. Fast, secure, fully in-browser PDF split.",
     keywords: ["split pdf", "pdf splitter", "extract pdf pages", "split pdf online"],
     appName: "DockDocs Split PDF",
     schemaName: "DockDocs Split PDF",
@@ -309,7 +309,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     features: [
       { title: "Upload PDF", description: "Start with one PDF file." },
       { title: "Page range field", description: "Show the range input users expect." },
-      { title: "Split preview", description: "Preview the intended extracted sections." },
+      { title: "Split preview", description: "Preview the sections you'll get." },
       { title: "Export ZIP", description: "Download all split outputs together." },
     ],
     workflowTitle: "How PDF splitting fits into document work",
@@ -331,7 +331,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
   "pdf-to-word": {
     title: "PDF to Word Converter Online Free | DockDocs",
     description:
-      "Convert PDF files to editable Word documents online. Fast, secure, and AI-ready PDF conversion workflow.",
+      "Convert PDF files to editable Word documents online. Fast and accurate PDF to Word conversion.",
     keywords: ["pdf to word", "convert pdf to word", "pdf word converter", "pdf to docx"],
     appName: "DockDocs PDF to Word",
     schemaName: "DockDocs PDF to Word Converter",
@@ -366,9 +366,9 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     steps: ["Upload a PDF.", "Convert document structure.", "Download an editable Word document."],
     faqTitle: "PDF to Word questions",
     faq: [
-      { question: "Can I edit the output?", answer: "The intended workflow prepares PDF content for editable DOCX-style output." },
+      { question: "Can I edit the output?", answer: "The conversion produces an editable Word (DOCX) file." },
       { question: "Will layout be perfect?", answer: "Conversion quality depends on the original PDF structure." },
-      { question: "Is this AI-ready?", answer: "The workflow is designed to connect with future AI document review." },
+      { question: "Does it use AI?", answer: "No — it's a straightforward, reliable PDF-to-Word converter." },
     ],
     cta: {
       eyebrow: "PDF to Word",
@@ -385,7 +385,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     appName: "DockDocs OCR PDF",
     schemaName: "DockDocs OCR PDF",
     breadcrumbName: "OCR PDF",
-    heroTitle: "OCR PDF online for scanned documents and AI-ready text.",
+    heroTitle: "OCR PDF online to make scanned documents searchable.",
     heroDescription: "Turn scanned PDFs into searchable, reusable text workflows inside DockDocs.",
     primaryActionLabel: "OCR PDF",
     stats: [["Price", "Free"], ["Input", "Scanned PDFs"], ["Output", "Extracted text"]],
@@ -417,7 +417,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     faq: [
       { question: "How accurate is OCR?", answer: "Accuracy depends on scan quality, contrast, language, and layout." },
       { question: "Can I copy extracted text?", answer: "The workflow includes copy and download text actions." },
-      { question: "Is OCR an AI feature?", answer: "OCR is presented as an AI-ready document understanding layer." },
+      { question: "Is OCR an AI feature?", answer: "OCR uses optical character recognition to turn scanned images into selectable, searchable text." },
     ],
     cta: {
       eyebrow: "OCR PDF",
@@ -469,7 +469,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     faq: [
       { question: "Which image formats are accepted?", answer: "JPG to PDF accepts JPG, PNG, and WebP images." },
       { question: "Can I upload multiple images?", answer: "Yes. The workflow supports multiple image upload and page ordering." },
-      { question: "What is the output?", answer: "The intended output is one PDF document." },
+      { question: "What is the output?", answer: "The output is one PDF document." },
     ],
     cta: {
       eyebrow: "JPG to PDF",
@@ -787,11 +787,11 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     heroTitle: "Convert Word documents to PDF online.", heroDescription: "Upload a DOCX file and download a high-fidelity PDF.",
     primaryActionLabel: "Convert to PDF",
     stats: [["Price", "Free"], ["Input", "DOCX / DOC"], ["Output", "PDF"]],
-    upload: { title: "Upload a Word document", description: "Drag and drop a .docx file here.", buttonLabel: "Choose Word file", accept: ".docx,.doc", fileBadge: "DOC", note: "DOCX and DOC supported. Max 20 MB." },
+    upload: { title: "Upload a Word document", description: "Drag and drop a .docx file here.", buttonLabel: "Choose Word file", accept: ".docx,.doc", fileBadge: "DOC", note: "DOCX and DOC supported. Max 100 MB." },
     benefitsTitle: "Convert Word to PDF without losing formatting", benefitsDescription: "CloudConvert preserves fonts, tables, and layout.",
     benefits: [{ title: "Accurate layout", description: "Fonts, tables, and formatting are preserved." }, { title: "Fast conversion", description: "Most documents convert in under 30 seconds." }, { title: "No software needed", description: "Convert directly in your browser." }],
     featuresTitle: "Built for Word to PDF workflows", featuresDescription: "Minimal DockDocs interface powered by CloudConvert.",
-    features: [{ title: "DOCX and DOC", description: "Works with both formats." }, { title: "Layout preservation", description: "Uses LibreOffice for accurate rendering." }, { title: "Up to 20 MB", description: "Handles most business documents." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
+    features: [{ title: "DOCX and DOC", description: "Works with both formats." }, { title: "Layout preservation", description: "Uses LibreOffice for accurate rendering." }, { title: "Up to 100 MB", description: "Handles most business documents." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
     workflowTitle: "How Word to PDF fits into document work", workflowDescription: "Common uses: contracts, reports, proposals.",
     steps: ["Upload a DOCX or DOC file.", "CloudConvert converts it.", "Download the PDF."],
     faqTitle: "Word to PDF questions",
@@ -806,11 +806,11 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     heroTitle: "Convert PowerPoint presentations to PDF online.", heroDescription: "Upload a PPTX file and download a presentation-ready PDF.",
     primaryActionLabel: "Convert to PDF",
     stats: [["Price", "Free"], ["Input", "PPTX / PPT"], ["Output", "PDF"]],
-    upload: { title: "Upload a PowerPoint file", description: "Drag and drop a .pptx file here.", buttonLabel: "Choose PPT file", accept: ".pptx,.ppt", fileBadge: "PPT", note: "PPTX and PPT supported. Max 20 MB." },
+    upload: { title: "Upload a PowerPoint file", description: "Drag and drop a .pptx file here.", buttonLabel: "Choose PPT file", accept: ".pptx,.ppt", fileBadge: "PPT", note: "PPTX and PPT supported. Max 100 MB." },
     benefitsTitle: "Convert presentations to PDF for sharing", benefitsDescription: "Lock your slides in PDF format for universal compatibility.",
     benefits: [{ title: "Slide-accurate output", description: "Layout, fonts, and images preserved." }, { title: "Share without software", description: "Recipients view without PowerPoint." }, { title: "Fast conversion", description: "Under 30 seconds for most files." }],
     featuresTitle: "Built for PPT to PDF workflows", featuresDescription: "Minimal DockDocs interface powered by CloudConvert.",
-    features: [{ title: "PPTX and PPT", description: "Works with both formats." }, { title: "Slide preservation", description: "Each slide becomes a PDF page." }, { title: "Up to 20 MB", description: "Handles most presentations." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
+    features: [{ title: "PPTX and PPT", description: "Works with both formats." }, { title: "Slide preservation", description: "Each slide becomes a PDF page." }, { title: "Up to 100 MB", description: "Handles most presentations." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
     workflowTitle: "How PPT to PDF fits into document work", workflowDescription: "Common uses: sharing decks, printing handouts.",
     steps: ["Upload a PPTX or PPT file.", "CloudConvert converts it.", "Download the PDF."],
     faqTitle: "PPT to PDF questions",
@@ -825,11 +825,11 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     heroTitle: "Convert Excel spreadsheets to PDF online.", heroDescription: "Upload an XLSX file and download a print-ready PDF.",
     primaryActionLabel: "Convert to PDF",
     stats: [["Price", "Free"], ["Input", "XLSX / XLS"], ["Output", "PDF"]],
-    upload: { title: "Upload an Excel file", description: "Drag and drop a .xlsx file here.", buttonLabel: "Choose Excel file", accept: ".xlsx,.xls", fileBadge: "XLS", note: "XLSX and XLS supported. Max 20 MB." },
+    upload: { title: "Upload an Excel file", description: "Drag and drop a .xlsx file here.", buttonLabel: "Choose Excel file", accept: ".xlsx,.xls", fileBadge: "XLS", note: "XLSX and XLS supported. Max 100 MB." },
     benefitsTitle: "Convert spreadsheets to PDF for sharing", benefitsDescription: "Lock tables and charts in PDF format.",
     benefits: [{ title: "Table-accurate output", description: "Cell layouts and charts preserved." }, { title: "Print-ready", description: "Formatted for printing from any device." }, { title: "No Excel needed", description: "Recipients view without spreadsheet software." }],
     featuresTitle: "Built for Excel to PDF workflows", featuresDescription: "Minimal DockDocs interface powered by CloudConvert.",
-    features: [{ title: "XLSX and XLS", description: "Works with both formats." }, { title: "Chart preservation", description: "Charts included in output." }, { title: "Up to 20 MB", description: "Handles most spreadsheets." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
+    features: [{ title: "XLSX and XLS", description: "Works with both formats." }, { title: "Chart preservation", description: "Charts included in output." }, { title: "Up to 100 MB", description: "Handles most spreadsheets." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
     workflowTitle: "How Excel to PDF fits into document work", workflowDescription: "Common uses: reports, budgets, financial data.",
     steps: ["Upload an XLSX or XLS file.", "CloudConvert converts it.", "Download the PDF."],
     faqTitle: "Excel to PDF questions",
@@ -844,11 +844,11 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     heroTitle: "Convert PDF tables to Excel spreadsheets.", heroDescription: "Extract table data from PDFs and download XLSX. Powered by CloudConvert.",
     primaryActionLabel: "Convert to Excel",
     stats: [["Price", "Free"], ["Input", "PDF"], ["Output", "XLSX"]],
-    upload: { title: "Upload a PDF to convert", description: "Drag and drop a PDF file here.", buttonLabel: "Choose PDF", note: "PDFs with tables work best. Max 20 MB." },
+    upload: { title: "Upload a PDF to convert", description: "Drag and drop a PDF file here.", buttonLabel: "Choose PDF", note: "PDFs with tables work best. Max 100 MB." },
     benefitsTitle: "Extract PDF table data into editable Excel", benefitsDescription: "Stop manually copying data from PDFs.",
     benefits: [{ title: "Table extraction", description: "Identifies and extracts table structures." }, { title: "Editable output", description: "Edit in Excel, Google Sheets, or Numbers." }, { title: "Saves time", description: "Automate data extraction." }],
     featuresTitle: "Built for PDF to Excel workflows", featuresDescription: "Minimal DockDocs interface powered by CloudConvert.",
-    features: [{ title: "Table recognition", description: "Extracts table structures from PDFs." }, { title: "XLSX output", description: "Standard Excel format." }, { title: "Up to 20 MB", description: "Handles most data PDFs." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
+    features: [{ title: "Table recognition", description: "Extracts table structures from PDFs." }, { title: "XLSX output", description: "Standard Excel format." }, { title: "Up to 100 MB", description: "Handles most data PDFs." }, { title: "Responsive UI", description: "Works across all screen sizes." }],
     workflowTitle: "How PDF to Excel fits into document work", workflowDescription: "Common uses: financial data, reports, invoices.",
     steps: ["Upload a PDF with tables.", "CloudConvert extracts the data.", "Download the XLSX."],
     faqTitle: "PDF to Excel questions",
@@ -1108,7 +1108,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [
       { question: "OCR 准确率如何？", answer: "取决于扫描质量、对比度、语言和布局。" },
       { question: "可以复制文本吗？", answer: "工作流包含复制文本和下载文本操作。" },
-      { question: "OCR 是 AI 功能吗？", answer: "OCR 被定位为 AI-ready 的文档理解层。" },
+      { question: "OCR 是 AI 功能吗？", answer: "OCR 用光学字符识别把扫描件转成可选中、可搜索的文字。" },
     ],
     cta: { eyebrow: "OCR PDF", title: "将扫描文档变成可复用文本。", description: "提取、复核、复制并下载扫描 PDF 中的文字。", buttonLabel: "开始 OCR" },
   },
@@ -1359,7 +1359,7 @@ const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
     faq: [
       { question: "如何为 PDF 设置密码？", answer: "上传 PDF，设置至少 4 位的密码，下载加密后的文件。" },
       { question: "加密是真实有效的吗？", answer: "是的，输出文件需要密码才能打开。" },
-      { question: "文件大小有限制吗？", answer: "通过云端加密的文件最大 6 MB。" },
+      { question: "文件大小有限制吗？", answer: "加密在你的浏览器本地完成，文件不上传服务器，因此没有固定大小限制（仅受设备内存影响）。" },
     ],
   },
   "jpg-to-pdf": {
@@ -1402,7 +1402,7 @@ const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
     faqTitle: "PDF 转 Word 常见问题",
     faq: [
       { question: "如何把 PDF 转成 Word？", answer: "上传 PDF，内容会被导出为可编辑的 DOCX 文件。" },
-      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 6 MB。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 100 MB。" },
     ],
   },
   "ocr-pdf": {
@@ -1417,28 +1417,28 @@ const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
     faqTitle: "Word 转 PDF 常见问题",
     faq: [
       { question: "如何把 Word 转成 PDF？", answer: "上传 DOCX/DOC 文件，下载转换后的 PDF。" },
-      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 6 MB。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 100 MB。" },
     ],
   },
   "ppt-to-pdf": {
     faqTitle: "PPT 转 PDF 常见问题",
     faq: [
       { question: "如何把 PPT 转成 PDF？", answer: "上传 PPTX/PPT 文件，下载转换后的 PDF。" },
-      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 6 MB。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 100 MB。" },
     ],
   },
   "excel-to-pdf": {
     faqTitle: "Excel 转 PDF 常见问题",
     faq: [
       { question: "如何把 Excel 转成 PDF？", answer: "上传 XLSX/XLS 文件，下载转换后的 PDF。" },
-      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 6 MB。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 100 MB。" },
     ],
   },
   "pdf-to-excel": {
     faqTitle: "PDF 转 Excel 常见问题",
     faq: [
       { question: "如何把 PDF 转成 Excel？", answer: "上传 PDF，表格数据会被导出为 XLSX 文件。" },
-      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 6 MB。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 100 MB。" },
     ],
   },
 };
