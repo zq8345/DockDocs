@@ -37,6 +37,7 @@ import { UrlToPdfClient } from "@/components/UrlToPdfClient";
 import { MyChatsClient } from "@/components/MyChatsClient";
 import { CropPdfClient } from "@/components/CropPdfClient";
 import { RedactPdfClient } from "@/components/RedactPdfClient";
+import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
@@ -398,6 +399,20 @@ export async function generateMetadata({
     };
   }
 
+  if (slug === "batch-pdf-to-image") {
+    return {
+      title: rawLocale === "zh" ? "批量 PDF 转图片 — 整批 PDF 一次转 JPG/PNG | DockDocs" : "Batch PDF to Image — Convert Many PDFs to JPG/PNG Free | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "一次把整个文件夹的 PDF 都转成图片(JPG/PNG),每页一张、打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
+          : "Convert a whole folder of PDFs to images at once — every page to JPG or PNG, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "batch-pdf-to-image"),
+        languages: languageAlternates("batch-pdf-to-image"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: rawLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -635,6 +650,10 @@ export default async function LocalizedRoute({
 
   if (slug === "redact-pdf") {
     return <RedactPdfClient locale={rawLocale} />;
+  }
+
+  if (slug === "batch-pdf-to-image") {
+    return <BatchPdfToImageClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {
