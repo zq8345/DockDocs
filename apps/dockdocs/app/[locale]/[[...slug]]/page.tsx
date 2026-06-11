@@ -34,6 +34,7 @@ import { PdfToImageClient } from "@/components/PdfToImageClient";
 import { PageNumbersClient } from "@/components/PageNumbersClient";
 import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
 import { UrlToPdfClient } from "@/components/UrlToPdfClient";
+import { MyChatsClient } from "@/components/MyChatsClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -263,6 +264,21 @@ export async function generateMetadata({
     );
   }
 
+  if (slug === "my-chats") {
+    return {
+      title: rawLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "查看已保存的「和 PDF 对话」记录和上传文档的元数据。"
+          : "View saved Chat with PDF conversations and uploaded document metadata in DockDocs.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "my-chats"),
+        languages: languageAlternates("my-chats"),
+      },
+      robots: { index: false, follow: true },
+    };
+  }
+
   if (slug === "url-to-pdf") {
     return {
       title: rawLocale === "zh" ? "网页转 PDF — 免费在线把网页转成 PDF | DockDocs" : "URL to PDF — Convert a Web Page to PDF Free | DockDocs",
@@ -450,6 +466,10 @@ export default async function LocalizedRoute({
 
   if (slug === "dashboard") {
     return <LocalizedDashboard locale={rawLocale} />;
+  }
+
+  if (slug === "my-chats") {
+    return <MyChatsClient locale={rawLocale} />;
   }
 
   if (slug === "url-to-pdf") {

@@ -62,6 +62,7 @@ export const routeSlugs = [
   "ai-workspace",
   "compare",
   "url-to-pdf",
+  "my-chats",
   "dashboard",
   "pricing",
   "account",

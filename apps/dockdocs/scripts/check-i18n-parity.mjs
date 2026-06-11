@@ -27,7 +27,6 @@ const I18N = join(APP, "lib", "i18n.ts");
 const EXCEPTIONS = new Set([
   "internal", // internal dashboard, behind Basic Auth — not a public feature
   "404", // Next.js error page, not a feature
-  "my-chats", // KNOWN GAP — logged-in saved-chats page, still English-only. TODO: localize like /compare, then remove from here.
 ]);
 
 function die(lines) {
