@@ -13,7 +13,7 @@ const MAX_FILES = 8;
 const STR = {
   en: {
     title: "Auto-classify & tag PDFs",
-    subtitle: "Upload a pile of PDFs and let AI sort them into categories and tags — invoices, resumes, contracts, papers — so you can organize a folder in seconds.",
+    subtitle: "Upload a pile of PDFs and let AI label each with a category and tags — invoices, resumes, contracts, papers — so you can see at a glance what a messy pile is made of.",
     drop: "Drag & drop PDFs here, or click to choose", choose: "Choose PDFs", add: "Add more", reading: "Reading…",
     run: "Classify all", running: "Classifying", reset: "Start over",
     files: (n: number) => `${n} / ${MAX_FILES} files`, uncategorized: "Uncategorized",
@@ -22,7 +22,7 @@ const STR = {
   },
   zh: {
     title: "自动分类 / 打标签",
-    subtitle: "上传一堆 PDF，让 AI 自动归类、打标签——发票、简历、合同、论文——几秒整理好一个文件夹。",
+    subtitle: "上传一堆 PDF，让 AI 给每份打上分类和标签——发票、简历、合同、论文——一眼看清一堆杂乱文件都是些什么。",
     drop: "把 PDF 拖到这里，或点击选择", choose: "选择 PDF", add: "继续添加", reading: "读取中…",
     run: "全部分类", running: "分类中", reset: "重新开始",
     files: (n: number) => `${n} / ${MAX_FILES} 份`, uncategorized: "未分类",
