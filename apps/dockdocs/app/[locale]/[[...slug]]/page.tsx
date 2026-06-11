@@ -36,6 +36,7 @@ import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
 import { UrlToPdfClient } from "@/components/UrlToPdfClient";
 import { MyChatsClient } from "@/components/MyChatsClient";
 import { CropPdfClient } from "@/components/CropPdfClient";
+import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -265,6 +266,20 @@ export async function generateMetadata({
     );
   }
 
+  if (slug === "extract-to-excel") {
+    return {
+      title: rawLocale === "zh" ? "PDF 数据抽取到表格 — 发票/报价/合同 | DockDocs" : "Extract PDF Data to a Spreadsheet — Invoices, Quotes, Contracts | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "上传发票、报价单或合同，用 AI 把关键字段抽成表格，导出 CSV(Excel 可打开)。只报告文档里真实存在的内容。"
+          : "Upload invoices, quotes, or contracts and let AI pull the key fields into a spreadsheet you can download as CSV. It only reports what is actually in each document.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "extract-to-excel"),
+        languages: languageAlternates("extract-to-excel"),
+      },
+    };
+  }
+
   if (slug === "crop-pdf") {
     return {
       title: rawLocale === "zh" ? "裁剪 PDF — 免费在线裁掉 PDF 页边 | DockDocs" : "Crop PDF — Trim PDF Margins Online Free | DockDocs",
@@ -481,6 +496,10 @@ export default async function LocalizedRoute({
 
   if (slug === "dashboard") {
     return <LocalizedDashboard locale={rawLocale} />;
+  }
+
+  if (slug === "extract-to-excel") {
+    return <ExtractExcelClient locale={rawLocale} />;
   }
 
   if (slug === "crop-pdf") {

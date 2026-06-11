@@ -115,8 +115,8 @@ export default async (req: Request, _context: Context) => {
     }))
     .filter((d) => d.text.length > 0);
 
-  if (cleaned.length < 2) {
-    return json({ ok: false, code: "NEED_TWO_DOCS", message: "Add at least 2 documents with extracted text to compare." }, 200);
+  if (cleaned.length < 1) {
+    return json({ ok: false, code: "NO_DOCS", message: "Add at least one document with extracted text." }, 200);
   }
   if (cleaned.length > MAX_DOCS) {
     return json({ ok: false, code: "TOO_MANY_DOCS", message: `Compare up to ${MAX_DOCS} documents at a time.` }, 200);

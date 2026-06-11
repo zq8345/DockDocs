@@ -19,6 +19,7 @@ const toolColsEn = [
       { label: "Chat with PDF", href: "/chat-with-pdf" },
       { label: "AI Summary", href: "/ai-summary" },
       { label: "OCR Workspace", href: "/ocr" },
+      { label: "Extract to Excel", href: "/extract-to-excel" },
     ],
   },
   {
@@ -66,6 +67,7 @@ const toolColsZh = [
       { label: "PDF 问答", href: "/chat-with-pdf" },
       { label: "AI 摘要", href: "/ai-summary" },
       { label: "OCR 工作区", href: "/ocr" },
+      { label: "抽取到表格", href: "/extract-to-excel" },
     ],
   },
   {

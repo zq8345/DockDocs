@@ -68,6 +68,7 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
           items: [
             { name: "Compare documents", slug: "/compare" },
             { name: "Cross-doc Q&A", slug: "/compare" },
+            { name: "Extract to Excel", slug: "/extract-to-excel" },
           ],
         },
       ],
@@ -169,6 +170,7 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
           items: [
             { name: "多文档对比", slug: "/compare" },
             { name: "跨文档问答", slug: "/compare" },
+            { name: "抽取到表格", slug: "/extract-to-excel" },
           ],
         },
       ],
