@@ -3,6 +3,23 @@ type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
 const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[]; zh: QA[] } }> = {
+  "crop-pdf": {
+    title: { en: "Crop PDF — FAQ", zh: "裁剪 PDF 常见问题" },
+    items: {
+      en: [
+        { q: "How do I crop a PDF?", a: "Upload the PDF, drag the top/right/bottom/left sliders to trim each edge with a live preview, then Crop & download." },
+        { q: "Does it crop every page?", a: "Yes — the same margins are applied to all pages so the document stays consistent." },
+        { q: "Is the content deleted?", a: "No. Cropping sets the visible area (crop box); the trimmed content is hidden, not removed, so nothing is lost." },
+        { q: "Is my file uploaded?", a: "No. Cropping happens in your browser — your PDF never leaves your device." },
+      ],
+      zh: [
+        { q: "如何裁剪 PDF？", a: "上传 PDF，拖动上/右/下/左滑块,边看实时预览边裁掉每一边，然后「裁剪并下载」。" },
+        { q: "会裁剪每一页吗？", a: "会——同样的边距应用到所有页面，保持文档一致。" },
+        { q: "内容会被删除吗？", a: "不会。裁剪设置的是可见区域(裁剪框)，被裁的内容是隐藏而非删除，不会丢失。" },
+        { q: "文件会被上传吗？", a: "不会。裁剪在你的浏览器中完成，PDF 不会离开你的设备。" },
+      ],
+    },
+  },
   "images-to-pdf": {
     title: { en: "Images to PDF — FAQ", zh: "图片转 PDF 常见问题" },
     items: {

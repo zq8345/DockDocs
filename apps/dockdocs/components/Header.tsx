@@ -46,6 +46,7 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "Add Page", slug: "/add-page" },
             { name: "Watermark PDF", slug: "/watermark-pdf" },
             { name: "Page Numbers", slug: "/page-numbers" },
+            { name: "Crop PDF", slug: "/crop-pdf" },
           ],
         },
         {
@@ -145,6 +146,7 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "添加页面", slug: "/add-page" },
             { name: "PDF 加水印", slug: "/watermark-pdf" },
             { name: "PDF 页码", slug: "/page-numbers" },
+            { name: "裁剪 PDF", slug: "/crop-pdf" },
           ],
         },
         {

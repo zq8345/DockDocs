@@ -35,6 +35,7 @@ import { PageNumbersClient } from "@/components/PageNumbersClient";
 import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
 import { UrlToPdfClient } from "@/components/UrlToPdfClient";
 import { MyChatsClient } from "@/components/MyChatsClient";
+import { CropPdfClient } from "@/components/CropPdfClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
@@ -264,6 +265,20 @@ export async function generateMetadata({
     );
   }
 
+  if (slug === "crop-pdf") {
+    return {
+      title: rawLocale === "zh" ? "裁剪 PDF — 免费在线裁掉 PDF 页边 | DockDocs" : "Crop PDF — Trim PDF Margins Online Free | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "免费在线裁剪 PDF 页边：用实时预览裁掉任意一边的空白，每页按同样方式裁剪，全部在浏览器中完成。"
+          : "Crop PDF margins online for free. Trim whitespace from any edge with a live preview — every page cropped the same, all in your browser.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "crop-pdf"),
+        languages: languageAlternates("crop-pdf"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: rawLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -466,6 +481,10 @@ export default async function LocalizedRoute({
 
   if (slug === "dashboard") {
     return <LocalizedDashboard locale={rawLocale} />;
+  }
+
+  if (slug === "crop-pdf") {
+    return <CropPdfClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {

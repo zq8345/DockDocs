@@ -63,6 +63,7 @@ export const routeSlugs = [
   "compare",
   "url-to-pdf",
   "my-chats",
+  "crop-pdf",
   "dashboard",
   "pricing",
   "account",
