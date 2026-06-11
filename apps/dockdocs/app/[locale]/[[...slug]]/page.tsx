@@ -16,8 +16,8 @@ import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
 import { DocumentCompareClient } from "@/components/DocumentCompareClient";
 import { FeatureShowcase } from "@/components/FeatureShowcase";
+import { HeroChatDemo } from "@/components/HeroChatDemo";
 import { HeroBackground } from "@/components/HeroBackground";
-import { HomeExtras } from "@/components/HomeExtras";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { AboutPage } from "@/components/AboutPage";
 import { AccountClient } from "@/components/AccountClient";
@@ -838,26 +838,26 @@ const homeCopy = {
     description: "PDF tools, AI chat, OCR, compression, conversion and more. Process documents in your browser, privately and fast.",
     eyebrow: "AI Document Intelligence",
     heroTitle: "Ask your documents. Compare them. Decide.",
-    heroDescription: "DockDocs reads your PDFs and answers with sources you can check — not guesses. Chat with any document now; multi-document comparison for contracts and quotes is on the way. Plus 20+ free PDF tools to get files ready.",
+    heroDescription: "Upload a PDF and just ask — the AI answers from the actual text and shows a source you can check, not a guess. Compare several contracts or quotes side by side and pick the best in seconds (Beta). Plus 20+ free PDF tools, most running right in your browser.",
     primary: "Chat with a PDF",
-    secondary: "Browse tools ↓",
+    secondary: "Compare documents (Beta)",
     categoryTitle: "Everything you need for PDF work",
-    aiTitle: "Put AI to work on your documents",
-    aiDescription: "Free to use. No account required for most tools. Plus adds AI chat and summaries; Pro adds the comparison engine.",
-    stats: [["Grounded", "Answers cite the source"], ["Private", "Files stay on your device"], ["Fast", "Instant in-browser tools"]] as [string, string][],
+    aiTitle: "Every document, understood — read, checked, compared.",
+    aiDescription: "That's DockDocs: grounded AI plus 20+ local PDF tools, privacy-first and no sign-up. Understanding and verifiable evidence in one place — you just decide.",
+    stats: [["Grounded", "Answers cite the source"], ["Private", "Files stay on your device"], ["Free", "No account to start"]] as [string, string][],
   },
   zh: {
     title: "DockDocs — AI 文档平台",
     description: "PDF 工具、AI 问答、OCR、压缩和转换，一站完成。在浏览器中处理文档，快速且私密。",
     eyebrow: "AI 文档智能",
     heroTitle: "和你的文档对话，多份一起对比。",
-    heroDescription: "DockDocs 读懂你的 PDF，用你能核对的原文出处回答——不是瞎猜。现在就能和任意文档对话；面向合同、报价的多文档对比即将上线。另有 20+ 免费 PDF 工具帮你把文件准备好。",
+    heroDescription: "上传 PDF 直接提问——AI 用文档里的原文回答、给出可核对的出处，不是瞎猜。多份合同、报价还能一起对比，秒选最优（Beta）。另有 20+ 免费 PDF 工具，大多在浏览器内完成，文件不外泄。",
     primary: "与 PDF 对话",
-    secondary: "浏览工具 ↓",
+    secondary: "多文档对比（Beta）",
     categoryTitle: "PDF 工作所需的一切",
-    aiTitle: "让 AI 来处理你的文档",
-    aiDescription: "大多数工具免费使用，无需注册账户。Plus 解锁 AI 问答与摘要；Pro 再加多文档对比引擎。",
-    stats: [["可溯源", "答案可点回原文"], ["隐私", "文件留在你的设备"], ["高效", "浏览器内即时处理"]] as [string, string][],
+    aiTitle: "让每一份文档都能被读懂、核对、对比。",
+    aiDescription: "这就是 DockDocs —— 可溯源的 AI，加 20+ 本地 PDF 工具，隐私优先、无需注册。把理解力和可核对的依据放在一起，你只管做决定。",
+    stats: [["可溯源", "答案可点回原文"], ["隐私", "文件留在你的设备"], ["免费", "无需注册即可开始"]] as [string, string][],
   },
 } as const;
 
@@ -909,69 +909,44 @@ function LocalizedHome({ locale }: { locale: Locale }) {
               <a href={localizedPath(locale, "chat-with-pdf")} className="inline-flex h-10 items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90">
                 {copy.primary}
               </a>
-              <a href="#tools" className="inline-flex h-10 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-5 text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
+              <a href={localizedPath(locale, "compare")} className="inline-flex h-10 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-5 text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
                 {copy.secondary}
               </a>
             </div>
+            {/* Trust chips */}
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5">
+              {copy.stats.map(([val, lbl]: [string, string]) => (
+                <span key={lbl} className="inline-flex items-center gap-1.5 text-[13px] text-[color:var(--muted)]">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  <span className="font-semibold text-[color:var(--foreground)]">{val}</span>
+                  <span className="text-[color:var(--faint)]">{lbl}</span>
+                </span>
+              ))}
+            </div>
           </div>
-          <div className="mx-auto mt-14 grid max-w-2xl grid-cols-3 gap-px overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--line)]">
-            {copy.stats.map(([val, lbl]: [string, string]) => (
-              <div key={lbl} className="flex flex-col items-center bg-[color:var(--surface)] px-6 py-5 text-center">
-                <span className="text-xl font-semibold text-[color:var(--foreground)]">{val}</span>
-                <span className="mt-1 text-xs font-medium uppercase tracking-[0.1em] text-[color:var(--muted)]">{lbl}</span>
-              </div>
-            ))}
+          {/* Animated grounded-chat demo */}
+          <div className="mt-14">
+            <HeroChatDemo locale={zh ? "zh" : "en"} />
           </div>
         </div>
       </section>
 
-      {/* Feature showcase (Linear-style image+text) */}
+      {/* Core solutions + supporting metrics + quote */}
       <FeatureShowcase locale={zh ? "zh" : "en"} />
 
-      {/* How it works + metrics (with scroll reveal) */}
-      <HomeExtras locale={zh ? "zh" : "en"} />
-
-      {/* Tool Grid */}
-      <section id="tools" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
-        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8">
-          <div className="mb-10 flex items-end justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">{zh ? "工具" : "Tools"}</p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">{copy.categoryTitle}</h2>
-            </div>
-            <a href={localizedPath(locale, "sitemap")} className="hidden text-sm font-medium text-[color:var(--muted)] transition hover:text-[color:var(--foreground)] sm:block">
-              {zh ? "查看全部 →" : "View all →"}
-            </a>
-          </div>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {localizedTools.map((tool) => (
-              <a key={tool.slug} href={localizedPath(locale, tool.slug)}
-                className="group flex flex-col gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-raised)]">
-                <div className="flex items-center justify-between">
-                  <span className="rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[color:var(--accent-strong)]">{tool.group[locale]}</span>
-                  <span className="text-[color:var(--faint)] transition group-hover:text-[color:var(--muted)]">→</span>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-[color:var(--foreground)]">{tool[locale]}</p>
-                  <p className="mt-1 text-xs leading-5 text-[color:var(--muted)]">{tool.description[locale]}</p>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Banner */}
-      <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:px-8">
-          <div className="rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-8 py-12 text-center sm:px-12">
-            <h2 className="text-2xl font-semibold text-[color:var(--foreground)] sm:text-3xl">{copy.aiTitle}</h2>
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">{copy.aiDescription}</p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <a href={localizedPath(locale, "chat-with-pdf")} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-sm font-semibold text-white transition hover:opacity-90">
+      {/* Manifesto */}
+      <section className="bg-[color:var(--surface)]">
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-6 sm:py-28 lg:px-8">
+          <div className="relative overflow-hidden rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-16 text-center sm:px-12 sm:py-20">
+            <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[color:var(--accent)] to-transparent opacity-60" />
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--accent)]">DockDocs</p>
+            <h2 className="mx-auto mt-4 max-w-3xl text-[28px] font-semibold leading-[1.18] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[40px]">{copy.aiTitle}</h2>
+            <p className="mx-auto mt-5 max-w-xl text-[15px] leading-7 text-[color:var(--muted)] sm:text-base">{copy.aiDescription}</p>
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+              <a href={localizedPath(locale, "chat-with-pdf")} className="inline-flex h-11 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-sm font-semibold text-white transition hover:opacity-90">
                 {copy.primary}
               </a>
-              <a href={localizedPath(locale, "pricing")} className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-6 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">
+              <a href={localizedPath(locale, "pricing")} className="inline-flex h-11 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-7 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">
                 {zh ? "查看定价" : "View pricing"}
               </a>
             </div>
