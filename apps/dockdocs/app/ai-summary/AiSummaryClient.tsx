@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { checkUsage, markUsage, freeLimitMessage } from "@/lib/usage-gate";
 
 type SummaryData = {
   executiveSummary: string;
@@ -74,6 +75,13 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
 
       setStatus("summarizing");
 
+      const gate = await checkUsage("summary");
+      if (!gate.allowed) {
+        setError(freeLimitMessage(gate.limit, zh));
+        setStatus("error");
+        return;
+      }
+
       const response = await fetch("/api/ai-summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -91,6 +99,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
 
       setSummary(payload.summary as SummaryData);
       setStatus("done");
+      await markUsage(gate, "summary");
     } catch (err) {
       setError(err instanceof Error ? err.message : zh ? "处理失败。" : "Processing failed.");
       setStatus("error");

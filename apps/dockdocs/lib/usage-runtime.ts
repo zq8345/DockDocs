@@ -7,6 +7,7 @@ import {
 export type UsageFeature =
   | "chat"
   | "summary"
+  | "translate"
   | "ocr"
   | "compress"
   | "analyzer"
@@ -57,6 +58,7 @@ export type UsageEvent = UsageMetadata & {
 export const meteredFeatures: UsageFeature[] = [
   "chat",
   "summary",
+  "translate",
   "ocr",
   "compress",
   "analyzer",
@@ -74,6 +76,9 @@ const featureAliases: Record<string, UsageFeature> = {
   summary: "summary",
   aiSummary: "summary",
   "ai-summary": "summary",
+  translate: "translate",
+  translatePdf: "translate",
+  "translate-pdf": "translate",
   ocr: "ocr",
   "ocr-pdf": "ocr",
   compress: "compress",
@@ -95,6 +100,7 @@ const featureLimits: Record<
     // is live so the "upgrade" CTA actually leads somewhere.
     chat: { limit: 10, period: "day" },
     summary: { limit: 10, period: "day" },
+    translate: { limit: 10, period: "day" },
     ocr: { limit: 15, period: "day" },
     compress: { limit: 30, period: "day" },
     analyzer: { limit: 10, period: "day" },
@@ -103,6 +109,7 @@ const featureLimits: Record<
   PLUS: {
     chat: { limit: 500, period: "month" },
     summary: { limit: 500, period: "month" },
+    translate: { limit: 500, period: "month" },
     ocr: { limit: 500, period: "month" },
     compress: { limit: 1000, period: "month" },
     analyzer: { limit: 500, period: "month" },
@@ -111,6 +118,7 @@ const featureLimits: Record<
   PRO: {
     chat: { limit: 5000, period: "month" },
     summary: { limit: 5000, period: "month" },
+    translate: { limit: 5000, period: "month" },
     ocr: { limit: 5000, period: "month" },
     compress: { limit: 10000, period: "month" },
     analyzer: { limit: 5000, period: "month" },

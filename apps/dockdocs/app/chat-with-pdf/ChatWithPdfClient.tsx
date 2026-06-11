@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
+import { checkUsage, markUsage, freeLimitMessage } from "@/lib/usage-gate";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -161,6 +162,14 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
     setQuestion("");
     setError("");
     setIsAsking(true);
+
+    const gate = await checkUsage("chat");
+    if (!gate.allowed) {
+      setError(freeLimitMessage(gate.limit, locale === "zh"));
+      setIsAsking(false);
+      return;
+    }
+
     setMessages((current) => [...current, { role: "user", content: userQuestion }]);
 
     try {
@@ -196,6 +205,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
         ...current,
         { role: "assistant", content: payload.answer ?? "" },
       ]);
+      await markUsage(gate, "chat");
       setProviderReference({
         provider: payload.provider,
         model: payload.model,

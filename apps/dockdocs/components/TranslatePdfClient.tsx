@@ -2,6 +2,7 @@
 
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { checkUsage, markUsage, freeLimitMessage } from "@/lib/usage-gate";
 
 import { useCallback, useRef, useState } from "react";
 
@@ -144,6 +145,12 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
     setPhase("translating");
     setError(null);
     try {
+      const gate = await checkUsage("translate");
+      if (!gate.allowed) {
+        setError(freeLimitMessage(gate.limit, locale === "zh"));
+        setPhase("ready");
+        return;
+      }
       const res = await fetch("/api/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -153,6 +160,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
       if (data?.ok && typeof data.translation === "string") {
         setResult(data.translation);
         setPhase("done");
+        await markUsage(gate, "translate");
       } else {
         setError(t.errPrefix + (data?.message || "Unknown error."));
         setPhase("ready");
