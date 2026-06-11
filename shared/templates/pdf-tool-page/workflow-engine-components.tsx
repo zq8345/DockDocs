@@ -124,6 +124,7 @@ export function ReadyWorkflowState({
   onRemoveFile,
   onMoveFile,
   onStart,
+  bare = false,
 }: {
   config: PdfToolPageConfig;
   files: UploadedFile[];
@@ -137,6 +138,7 @@ export function ReadyWorkflowState({
   onRemoveFile: (id: string) => void;
   onMoveFile: (index: number, direction: -1 | 1) => void;
   onStart: () => void;
+  bare?: boolean;
 }) {
   const zh = (config.locale ?? "en") === "zh";
   const reorderable = config.slug === "merge-pdf" || config.slug === "jpg-to-pdf" || config.slug === "png-to-pdf";
@@ -145,7 +147,7 @@ export function ReadyWorkflowState({
     "mt-2 h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--accent)]";
 
   return (
-    <div className="mt-4 space-y-3">
+    <div className={bare ? "space-y-3" : "mt-4 space-y-3"}>
       {/* File list */}
       <ul className="space-y-2">
         {files.map((item, index) => (
@@ -370,6 +372,7 @@ export function WorkflowProgress({
   animated = false,
   onCancel,
   cancelLabel,
+  bare = false,
 }: {
   title: string;
   description: string;
@@ -378,9 +381,10 @@ export function WorkflowProgress({
   animated?: boolean;
   onCancel?: () => void;
   cancelLabel?: string;
+  bare?: boolean;
 }) {
   return (
-    <div className="mt-4 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center">
+    <div className={bare ? "text-center" : "mt-4 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center"}>
       {/* Spinner */}
       <div className="mx-auto flex h-14 w-14 items-center justify-center">
         {animated ? (
@@ -433,6 +437,7 @@ export function WorkflowResultState({
   onSecondary,
   onCopy,
   onReset,
+  bare = false,
 }: {
   config: PdfToolPageConfig;
   result: WorkflowResult;
@@ -443,11 +448,12 @@ export function WorkflowResultState({
   onSecondary?: () => void;
   onCopy?: () => void;
   onReset: () => void;
+  bare?: boolean;
 }) {
   const zh = (config.locale ?? "en") === "zh";
 
   return (
-    <div className="mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)]">
+    <div className={bare ? "overflow-hidden" : "mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)]"}>
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-[color:var(--success-line)] px-5 py-4">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[color:var(--success)] text-white text-sm">✓</div>
@@ -539,15 +545,17 @@ export function WorkflowErrorState({
   onRetry,
   onReset,
   locale,
+  bare = false,
 }: {
   message: string;
   onRetry: () => void;
   onReset: () => void;
   locale: "en" | "zh";
+  bare?: boolean;
 }) {
   const zh = locale === "zh";
   return (
-    <div className="mt-4 rounded-[var(--radius-lg)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-5">
+    <div className={bare ? "" : "mt-4 rounded-[var(--radius-lg)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-5"}>
       <div className="flex items-start gap-3">
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--error)] text-sm text-white">!</span>
         <div>

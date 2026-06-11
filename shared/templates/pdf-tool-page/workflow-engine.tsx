@@ -299,6 +299,137 @@ export function PdfWorkflowEngine({
     downloadBlob(artifact.blob, artifact.fileName);
   }
 
+  // ── Single-document tools: one box that morphs through every state ──
+  const single = spec.maxFiles === 1;
+  if (single) {
+    const dragging = isDragging && status === "idle";
+    const idleFrame = dragging
+      ? "relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-14 text-center transition border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
+      : "relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-14 text-center transition border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]";
+    const frame =
+      status === "idle"
+        ? idleFrame
+        : status === "result"
+          ? "overflow-hidden rounded-[var(--radius-xl)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)]"
+          : status === "error"
+            ? "rounded-[var(--radius-xl)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-5 sm:p-6"
+            : "rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 sm:p-6";
+
+    return (
+      <div
+        id="upload"
+        data-workflow-engine={config.slug}
+        data-workflow-status={status}
+        data-real-runtime={isRealPdfRuntimeSlug(config.slug)}
+        aria-labelledby="workflow-upload-title"
+        className="w-full"
+      >
+        <h2 id="workflow-upload-title" className="sr-only">{config.upload.title}</h2>
+        <div
+          onDragOver={(ev) => { if (status === "idle") { ev.preventDefault(); setIsDragging(true); } }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={(ev) => { if (status === "idle") { ev.preventDefault(); setIsDragging(false); chooseFiles(ev.dataTransfer.files); } }}
+          onClick={() => { if (status === "idle") inputRef.current?.click(); }}
+          className={frame}
+        >
+          {status === "idle" ? (
+            <>
+              <button
+                type="button"
+                onClick={(ev) => { ev.stopPropagation(); inputRef.current?.click(); }}
+                className="inline-flex h-12 items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90"
+              >
+                {config.upload.buttonLabel}
+              </button>
+              <p className="mt-4 text-sm text-[color:var(--muted)]">
+                {zh ? "或将文件拖放到此处" : "or drop your file here"}
+              </p>
+              <p className="mt-1.5 text-xs text-[color:var(--faint)]">
+                {zh ? "支持格式" : "Supported"}: {spec.acceptedLabel}
+              </p>
+            </>
+          ) : null}
+
+          {status === "uploading" ? (
+            <WorkflowProgress
+              bare
+              title={zh ? "正在读取文件…" : "Reading file…"}
+              description={zh ? "正在准备工作流。" : "Preparing the workflow."}
+              progress={progress}
+              statusText={zh ? "上传中" : "Uploading"}
+            />
+          ) : null}
+
+          {status === "ready" ? (
+            <ReadyWorkflowState
+              bare
+              config={config}
+              files={files}
+              totalSize={totalSize}
+              pageRanges={pageRanges}
+              ocrLanguage={ocrLanguage}
+              ocrConfirmed={ocrConfirmed}
+              onPageRangesChange={setPageRanges}
+              onOcrLanguageChange={setOcrLanguage}
+              onOcrConfirmedChange={setOcrConfirmed}
+              onRemoveFile={removeFile}
+              onMoveFile={moveFile}
+              onStart={startProcessing}
+            />
+          ) : null}
+
+          {status === "processing" ? (
+            <WorkflowProgress
+              bare
+              title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
+              description={spec.processLabel}
+              progress={progress}
+              statusText={zh ? "处理中" : "Processing"}
+              animated
+              onCancel={resetWorkflow}
+              cancelLabel={zh ? "取消" : "Cancel"}
+            />
+          ) : null}
+
+          {status === "result" ? (
+            <WorkflowResultState
+              bare
+              config={config}
+              result={result}
+              primaryLabel={spec.resultLabel}
+              secondaryLabel={spec.secondaryResultLabel}
+              copied={copied}
+              onPrimary={downloadPrimaryResult}
+              onSecondary={config.slug === "ocr-pdf" ? () => downloadTextFile("dockdocs-ocr-text.txt", getOcrText()) : undefined}
+              onCopy={config.slug === "ocr-pdf" ? copyOcrText : undefined}
+              onReset={resetWorkflow}
+            />
+          ) : null}
+
+          {status === "error" ? (
+            <WorkflowErrorState
+              bare
+              message={error}
+              onRetry={() => { setError(""); setStatus(files.length ? "ready" : "idle"); }}
+              onReset={resetWorkflow}
+              locale={locale}
+            />
+          ) : null}
+
+          <input
+            ref={inputRef}
+            data-workflow-input={config.slug}
+            type="file"
+            accept={config.upload.accept ?? "application/pdf"}
+            multiple={config.upload.multiple}
+            className="sr-only"
+            onChange={(ev) => { if (ev.currentTarget.files) chooseFiles(ev.currentTarget.files); }}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       id="upload"
