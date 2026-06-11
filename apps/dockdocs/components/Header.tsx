@@ -9,13 +9,19 @@ import { defaultLocale, isAllLocale, isLocale } from "@/lib/i18n";
 const toolGroups = {
   en: [
     {
-      label: "AI",
+      label: "AI tools",
       tier: "Plus",
       items: [
-        { name: "Compare documents", slug: "/compare" },
         { name: "Chat with PDF", slug: "/chat-with-pdf" },
         { name: "AI Summary", slug: "/ai-summary" },
         { name: "Translate PDF", slug: "/translate-pdf" },
+      ],
+    },
+    {
+      label: "Multi-doc",
+      tier: "Plus",
+      items: [
+        { name: "Compare documents", slug: "/compare" },
       ],
     },
     {
@@ -31,7 +37,7 @@ const toolGroups = {
         { name: "Word to PDF", slug: "/word-to-pdf" },
         { name: "Excel to PDF", slug: "/excel-to-pdf" },
         { name: "PPT to PDF", slug: "/ppt-to-pdf" },
-        { name: "Image to PDF", slug: "/images-to-pdf" },
+        { name: "Image to PDF", slug: "/images-to-pdf" },
       ],
     },
     {
@@ -58,16 +64,40 @@ const toolGroups = {
         { name: "OCR PDF", slug: "/ocr-pdf" },
       ],
     },
+    {
+      label: "AI workflows",
+      tier: "Soon",
+      items: [
+        { name: "Batch processing", slug: "/pricing" },
+        { name: "Auto pipelines", slug: "/pricing" },
+        { name: "Auto-classify", slug: "/pricing" },
+      ],
+    },
+    {
+      label: "By profession",
+      tier: "Soon",
+      items: [
+        { name: "Legal & contracts", slug: "/pricing" },
+        { name: "Finance & tax", slug: "/pricing" },
+        { name: "Research & academia", slug: "/pricing" },
+      ],
+    },
   ],
   zh: [
     {
-      label: "AI",
+      label: "AI 工具",
       tier: "Plus",
       items: [
-        { name: "多文档对比", slug: "/compare" },
         { name: "PDF 问答", slug: "/chat-with-pdf" },
         { name: "AI 摘要", slug: "/ai-summary" },
         { name: "翻译 PDF", slug: "/translate-pdf" },
+      ],
+    },
+    {
+      label: "多文档",
+      tier: "Plus",
+      items: [
+        { name: "多文档对比", slug: "/compare" },
       ],
     },
     {
@@ -83,7 +113,7 @@ const toolGroups = {
         { name: "Word 转 PDF", slug: "/word-to-pdf" },
         { name: "Excel 转 PDF", slug: "/excel-to-pdf" },
         { name: "PPT 转 PDF", slug: "/ppt-to-pdf" },
-        { name: "图片转 PDF", slug: "/images-to-pdf" },
+        { name: "图片转 PDF", slug: "/images-to-pdf" },
       ],
     },
     {
@@ -108,6 +138,24 @@ const toolGroups = {
         { name: "加密 PDF", slug: "/protect-pdf" },
         { name: "解锁 PDF", slug: "/unlock-pdf" },
         { name: "OCR PDF", slug: "/ocr-pdf" },
+      ],
+    },
+    {
+      label: "AI 工作流",
+      tier: "规划中",
+      items: [
+        { name: "批量处理", slug: "/pricing" },
+        { name: "自动管道", slug: "/pricing" },
+        { name: "自动分类", slug: "/pricing" },
+      ],
+    },
+    {
+      label: "专业领域",
+      tier: "规划中",
+      items: [
+        { name: "法律 / 合同", slug: "/pricing" },
+        { name: "财务 / 税务", slug: "/pricing" },
+        { name: "科研 / 学术", slug: "/pricing" },
       ],
     },
   ],
