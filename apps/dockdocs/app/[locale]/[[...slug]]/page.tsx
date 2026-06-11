@@ -44,6 +44,7 @@ import { BatchStampClient } from "@/components/BatchStampClient";
 import { BatchSplitMergeClient } from "@/components/BatchSplitMergeClient";
 import { BatchRotateClient } from "@/components/BatchRotateClient";
 import { BatchExtractSheetClient } from "@/components/BatchExtractSheetClient";
+import { BatchSortClient } from "@/components/BatchSortClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
@@ -503,6 +504,20 @@ export async function generateMetadata({
     };
   }
 
+  if (slug === "batch-sort") {
+    return {
+      title: rawLocale === "zh" ? "批量分类归档 PDF — AI 把杂乱文件分到文件夹 | DockDocs" : "Batch Sort PDFs into Folders — AI File Organizer Free | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "拖入一堆杂乱 PDF,AI 给每份分类并分到一个 ZIP 里的不同文件夹,全部在浏览器中完成,文件不外泄。"
+          : "Drop a messy pile of PDFs — AI labels each and sorts them into folders inside one ZIP. Entirely in your browser; your files never leave your device.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "batch-sort"),
+        languages: languageAlternates("batch-sort"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: rawLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -768,6 +783,10 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-extract-sheet") {
     return <BatchExtractSheetClient locale={rawLocale} />;
+  }
+
+  if (slug === "batch-sort") {
+    return <BatchSortClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {

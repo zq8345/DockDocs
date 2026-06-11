@@ -79,6 +79,7 @@ export const routeSlugs = [
   "batch-split-merge",
   "batch-rotate-pdf",
   "batch-extract-sheet",
+  "batch-sort",
   "dashboard",
   "pricing",
   "account",
