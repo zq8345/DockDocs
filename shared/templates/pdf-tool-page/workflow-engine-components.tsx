@@ -55,6 +55,35 @@ function FileThumb({ file, className = "h-12 w-10" }: { file: File; className?: 
   );
 }
 
+// Password input with a show/hide eye toggle.
+function PasswordField({ value, onChange, placeholder, maxLength, zh }: { value: string; onChange: (v: string) => void; placeholder: string; maxLength: number; zh: boolean }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative mt-2">
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        type={show ? "text" : "password"}
+        maxLength={maxLength}
+        className="h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] pl-3 pr-11 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--accent)]"
+      />
+      <button
+        type="button"
+        onClick={() => setShow((current) => !current)}
+        aria-label={show ? (zh ? "隐藏密码" : "Hide password") : (zh ? "显示密码" : "Show password")}
+        className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
+      >
+        {show ? (
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3l18 18" /><path d="M10.6 10.6a3 3 0 004.2 4.2" /><path d="M9.9 4.2A9.6 9.6 0 0 1 12 4c6 0 10 8 10 8a17.6 17.6 0 0 1-2.4 3.4M6.1 6.1A17.6 17.6 0 0 0 2 12s4 8 10 8a9.6 9.6 0 0 0 3.5-.7" /></svg>
+        ) : (
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z" /><circle cx="12" cy="12" r="3" /></svg>
+        )}
+      </button>
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Shared types
 // ---------------------------------------------------------------------------
@@ -145,6 +174,7 @@ export function ReadyWorkflowState({
   const zh = (config.locale ?? "en") === "zh";
   const reorderable = config.slug === "merge-pdf" || config.slug === "jpg-to-pdf" || config.slug === "png-to-pdf";
   const previewFile = files[0];
+  const hasOptions = ["split-pdf", "ocr-pdf", "delete-page", "rotate-page", "reorder-pages", "add-page", "protect-pdf", "watermark-pdf", "unlock-pdf", "pdf-to-jpg", "pdf-to-png", "pdf-to-markdown", "pdf-to-text", "pdf-to-html", "compress-pdf"].includes(config.slug);
 
   const inputCls =
     "mt-2 h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--accent)]";
@@ -153,14 +183,24 @@ export function ReadyWorkflowState({
     <div className={bigPreview ? "flex w-full flex-1 flex-col gap-4" : bare ? "space-y-3" : "mt-4 space-y-3"}>
       {/* File list */}
       {bigPreview && previewFile ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
-          <FileThumb file={previewFile.file} className="h-48 w-36 sm:h-72 sm:w-56" />
-          <div>
-            <p className="max-w-[16rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{previewFile.file.name}</p>
-            <p className="mt-0.5 text-xs text-[color:var(--muted)]">{formatBytes(previewFile.file.size)}</p>
+        hasOptions ? (
+          <div className="flex shrink-0 items-center justify-center gap-3">
+            <FileThumb file={previewFile.file} className="h-16 w-12" />
+            <div className="min-w-0">
+              <p className="max-w-[20rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{previewFile.file.name}</p>
+              <p className="text-xs text-[color:var(--muted)]">{formatBytes(previewFile.file.size)} · <button type="button" onClick={() => onRemoveFile(previewFile.id)} className="underline transition hover:text-[color:var(--foreground)]">{zh ? "移除" : "Remove"}</button></p>
+            </div>
           </div>
-          <button type="button" onClick={() => onRemoveFile(previewFile.id)} className="text-xs text-[color:var(--muted)] underline transition hover:text-[color:var(--foreground)]">{zh ? "移除" : "Remove"}</button>
-        </div>
+        ) : (
+          <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
+            <FileThumb file={previewFile.file} className="h-48 w-36 sm:h-72 sm:w-56" />
+            <div>
+              <p className="max-w-[16rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{previewFile.file.name}</p>
+              <p className="mt-0.5 text-xs text-[color:var(--muted)]">{formatBytes(previewFile.file.size)}</p>
+            </div>
+            <button type="button" onClick={() => onRemoveFile(previewFile.id)} className="text-xs text-[color:var(--muted)] underline transition hover:text-[color:var(--foreground)]">{zh ? "移除" : "Remove"}</button>
+          </div>
+        )
       ) : (
       <ul className="space-y-2">
         {files.map((item, index) => (
@@ -216,6 +256,7 @@ export function ReadyWorkflowState({
       </ul>
       )}
 
+      <div className={bigPreview && hasOptions ? "flex flex-1 flex-col justify-center gap-3" : bigPreview ? "contents" : "space-y-3"}>
       {/* Tool-specific options */}
       {(config.slug === "split-pdf" || config.slug === "ocr-pdf") && (
         <label className="block">
@@ -281,7 +322,7 @@ export function ReadyWorkflowState({
       {config.slug === "protect-pdf" && (
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "设置密码" : "Set password"}</span>
-          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "4–32 位：字母 / 数字 / _" : "4–32 chars: letters, digits, _"} type="password" maxLength={32} className={inputCls} />
+          <PasswordField value={pageRanges} onChange={onPageRangesChange} placeholder={zh ? "4–32 位：字母 / 数字 / _" : "4–32 chars: letters, digits, _"} maxLength={32} zh={zh} />
           <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{zh ? "打开 PDF 需要此密码，请记牢——忘了无法找回。" : "Required to open the PDF. Keep it safe — it cannot be recovered."}</span>
         </label>
       )}
@@ -297,7 +338,7 @@ export function ReadyWorkflowState({
       {config.slug === "unlock-pdf" && (
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "当前密码" : "Current password"}</span>
-          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "打开此 PDF 所需的密码" : "The password needed to open this PDF"} type="password" maxLength={64} className={inputCls} />
+          <PasswordField value={pageRanges} onChange={onPageRangesChange} placeholder={zh ? "打开此 PDF 所需的密码" : "The password needed to open this PDF"} maxLength={64} zh={zh} />
           <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{zh ? "只能用你提供的密码解锁，无法破解未知密码。" : "Unlocks using the password you provide — can't crack unknown passwords."}</span>
         </label>
       )}
@@ -366,6 +407,7 @@ export function ReadyWorkflowState({
           </p>
         </div>
       )}
+      </div>
 
       {/* Start button */}
       <PrimaryButton onClick={onStart} className={bigPreview ? "mt-auto w-1/2 self-center" : "w-full"}>
