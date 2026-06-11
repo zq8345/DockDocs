@@ -39,6 +39,7 @@ import { CropPdfClient } from "@/components/CropPdfClient";
 import { RedactPdfClient } from "@/components/RedactPdfClient";
 import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
 import { BatchProtectClient } from "@/components/BatchProtectClient";
+import { BatchRenameClient } from "@/components/BatchRenameClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
@@ -428,6 +429,20 @@ export async function generateMetadata({
     };
   }
 
+  if (slug === "batch-rename-pdf") {
+    return {
+      title: rawLocale === "zh" ? "批量重命名 PDF — 整批按编号或查找替换改名 | DockDocs" : "Batch Rename PDF — Rename Many Files by Pattern Free | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "一次给整个文件夹的 PDF 改名:按编号模板或查找替换,下载用新名字打包的 ZIP,全部在浏览器中完成。"
+          : "Rename a whole folder of PDFs at once — by a numbered pattern or find-and-replace — and download a ZIP with the new names. Entirely in your browser.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "batch-rename-pdf"),
+        languages: languageAlternates("batch-rename-pdf"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: rawLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -673,6 +688,10 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-protect-pdf") {
     return <BatchProtectClient locale={rawLocale} />;
+  }
+
+  if (slug === "batch-rename-pdf") {
+    return <BatchRenameClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {
