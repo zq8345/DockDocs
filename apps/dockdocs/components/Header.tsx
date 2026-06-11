@@ -10,7 +10,7 @@ type NavItem = { name: string; slug: string };
 type NavCol = { heading?: string; items: NavItem[] };
 type NavCat = { label: string; tier: string; cols: NavCol[] };
 
-const navCategories: Record<"en" | "zh", NavCat[]> = {
+export const navCategories: Record<"en" | "zh", NavCat[]> = {
   en: [
     {
       label: "PDF tools",
@@ -75,7 +75,6 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "Batch page numbers", slug: "/batch-page-numbers" },
             { name: "Batch split", slug: "/batch-split-merge" },
             { name: "Batch rotate", slug: "/batch-rotate-pdf" },
-            { name: "Batch extract to sheet", slug: "/batch-extract-sheet" },
             { name: "Batch sort into folders", slug: "/batch-sort" },
           ],
         },
@@ -187,7 +186,6 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "批量 PDF 添加页码", slug: "/batch-page-numbers" },
             { name: "批量 PDF 拆分", slug: "/batch-split-merge" },
             { name: "批量 PDF 旋转", slug: "/batch-rotate-pdf" },
-            { name: "批量抽取到表", slug: "/batch-extract-sheet" },
             { name: "批量分类归档", slug: "/batch-sort" },
           ],
         },
@@ -211,7 +209,7 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
           items: [
             { name: "多文档对比", slug: "/compare" },
             { name: "跨文档问答", slug: "/compare" },
-            { name: "批量 PDF 抽取到表格", slug: "/extract-to-excel" },
+            { name: "数据抽取到表格", slug: "/extract-to-excel" },
             { name: "批量摘要", slug: "/batch-summary" },
             { name: "自动分类", slug: "/classify" },
           ],

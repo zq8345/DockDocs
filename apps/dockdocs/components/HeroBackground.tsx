@@ -1,61 +1,42 @@
-// Futuristic SaaS hero background — layered grid, glow orbs, and a subtle
-// animated conic shimmer. Pure CSS/SVG, theme-aware, GPU-friendly.
+// Hero backdrop tuned for the feature graph: a faint dot-constellation that
+// fades out, a soft accent aurora behind the centre node, and gentle side
+// tints for depth. Pure CSS, theme-aware, no heavy motion.
 
 export function HeroBackground() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-      {/* Perspective grid that fades toward the top */}
+      {/* Dot constellation, fading toward the edges */}
       <div
-        className="absolute inset-0 opacity-[0.5]"
+        className="absolute inset-0 opacity-[0.55]"
         style={{
-          backgroundImage:
-            "linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%)",
-          WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%)",
+          backgroundImage: "radial-gradient(var(--line) 1.1px, transparent 1.2px)",
+          backgroundSize: "34px 34px",
+          maskImage: "radial-gradient(ellipse 78% 74% at 50% 44%, #000 32%, transparent 80%)",
+          WebkitMaskImage: "radial-gradient(ellipse 78% 74% at 50% 44%, #000 32%, transparent 80%)",
         }}
       />
 
-      {/* Primary accent glow */}
+      {/* Soft accent aurora behind the graph centre */}
       <div
-        className="absolute left-1/2 top-[-180px] h-[560px] w-[920px] -translate-x-1/2 rounded-full opacity-[0.18] blur-[8px]"
-        style={{ background: "radial-gradient(ellipse at center, var(--accent) 0%, transparent 65%)" }}
+        className="absolute left-1/2 top-[44%] h-[680px] w-[1120px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-[0.16] blur-[10px]"
+        style={{ background: "radial-gradient(ellipse at center, var(--accent) 0%, transparent 62%)" }}
       />
 
-      {/* Secondary side glows for depth */}
+      {/* Faint cyan / violet side tints for depth */}
       <div
-        className="absolute left-[6%] top-[28%] h-[280px] w-[280px] rounded-full opacity-[0.10] blur-[6px]"
+        className="absolute left-[8%] top-[58%] h-[300px] w-[300px] -translate-y-1/2 rounded-full opacity-[0.08] blur-[8px]"
         style={{ background: "radial-gradient(circle, #22d3ee 0%, transparent 70%)" }}
       />
       <div
-        className="absolute right-[6%] top-[20%] h-[320px] w-[320px] rounded-full opacity-[0.10] blur-[6px]"
+        className="absolute right-[8%] top-[40%] h-[320px] w-[320px] -translate-y-1/2 rounded-full opacity-[0.09] blur-[8px]"
         style={{ background: "radial-gradient(circle, #a855f7 0%, transparent 70%)" }}
       />
-
-      {/* Slow rotating conic shimmer behind the headline */}
-      <div className="absolute left-1/2 top-[-220px] h-[640px] w-[640px] -translate-x-1/2">
-        <div
-          className="dd-spin h-full w-full rounded-full opacity-[0.08]"
-          style={{
-            background:
-              "conic-gradient(from 0deg, transparent 0deg, var(--accent) 60deg, transparent 140deg, #22d3ee 220deg, transparent 300deg)",
-            maskImage: "radial-gradient(circle, transparent 55%, #000 56%, #000 70%, transparent 72%)",
-            WebkitMaskImage: "radial-gradient(circle, transparent 55%, #000 56%, #000 70%, transparent 72%)",
-          }}
-        />
-      </div>
 
       {/* Fine top highlight line */}
       <div
         className="absolute inset-x-0 top-0 h-px opacity-60"
         style={{ background: "linear-gradient(90deg, transparent, var(--accent), transparent)" }}
       />
-
-      <style>{`
-        @keyframes dd-spin { to { transform: rotate(360deg); } }
-        .dd-spin { animation: dd-spin 28s linear infinite; }
-        @media (prefers-reduced-motion: reduce) { .dd-spin { animation: none; } }
-      `}</style>
     </div>
   );
 }
