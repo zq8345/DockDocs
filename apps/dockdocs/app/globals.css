@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Tailwind v4 ignores the JS config's `content` unless loaded via @config, and
+   auto-detection only scans this app — not the sibling shared/ template dir.
+   Source it explicitly so classes used ONLY in shared/ (e.g. aspect-[16/9])
+   actually compile. */
+@source "../../../shared";
+
 /* ===================================================================
    DockDocs Design System — Linear-inspired dark-first palette
    Dark is the default. Light is an optional override (.light class).
