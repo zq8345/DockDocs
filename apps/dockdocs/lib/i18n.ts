@@ -78,6 +78,7 @@ export const routeSlugs = [
   "batch-watermark-pdf",
   "batch-split-merge",
   "batch-rotate-pdf",
+  "batch-extract-sheet",
   "dashboard",
   "pricing",
   "account",

@@ -43,6 +43,7 @@ import { BatchRenameClient } from "@/components/BatchRenameClient";
 import { BatchStampClient } from "@/components/BatchStampClient";
 import { BatchSplitMergeClient } from "@/components/BatchSplitMergeClient";
 import { BatchRotateClient } from "@/components/BatchRotateClient";
+import { BatchExtractSheetClient } from "@/components/BatchExtractSheetClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
@@ -488,6 +489,20 @@ export async function generateMetadata({
     };
   }
 
+  if (slug === "batch-extract-sheet") {
+    return {
+      title: rawLocale === "zh" ? "批量抽取数据到一张表 — 整批发票/报价/合同 → CSV | DockDocs" : "Batch Extract Data to Spreadsheet — Many Invoices to CSV | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "拖入整个文件夹的发票/报价/合同,AI 把每份的关键字段抽进同一张表(一份一行),导出 CSV。AI 只报告真实存在的内容。"
+          : "Drop a whole folder of invoices, quotes, or contracts — AI pulls the key fields from every file into one table (one row each) and exports CSV. It only reports what's actually there.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "batch-extract-sheet"),
+        languages: languageAlternates("batch-extract-sheet"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: rawLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -749,6 +764,10 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-rotate-pdf") {
     return <BatchRotateClient locale={rawLocale} />;
+  }
+
+  if (slug === "batch-extract-sheet") {
+    return <BatchExtractSheetClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {
