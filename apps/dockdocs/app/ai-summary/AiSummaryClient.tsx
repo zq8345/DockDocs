@@ -116,15 +116,18 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
   const nextSteps = summary?.suggestedNextSteps ?? summary?.nextSteps ?? [];
 
   return (
-    <section className="mx-auto max-w-3xl">
+    <section className="mx-auto max-w-5xl">
       {/* Upload */}
       {status === "idle" || status === "error" ? (
-        <label className="relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-14 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]">
-          <span className="inline-flex h-12 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90">
+        <label className="relative flex aspect-[16/9] w-full cursor-pointer flex-col items-center justify-center overflow-y-auto rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]">
+          <span className="inline-flex h-12 w-1/2 items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(99,102,241,0.35)] transition hover:opacity-90">
             {zh ? "选择 PDF" : "Choose PDF"}
           </span>
           <span className="mt-4 text-sm text-[color:var(--muted)]">
             {zh ? "或将文件拖放到此处，最多 20 页" : "or drop your file here. Up to 20 pages"}
+          </span>
+          <span className="mt-1.5 text-xs text-[color:var(--faint)]">
+            {zh ? "请上传不超过 25 MB 的文件" : "Please upload a file up to 25 MB"}
           </span>
           {status === "error" && error ? (
             <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
@@ -135,7 +138,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
 
       {/* Processing */}
       {status === "extracting" || status === "summarizing" ? (
-        <div className="rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface)] p-10 text-center">
+        <div className="flex aspect-[16/9] w-full flex-col items-center justify-center rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center">
           <svg className="mx-auto h-10 w-10 animate-spin text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
             <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -151,7 +154,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
 
       {/* Result */}
       {status === "done" && summary ? (
-        <div className="space-y-4">
+        <div className="mx-auto max-w-3xl space-y-4">
           <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] px-4 py-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[color:var(--success)] text-sm text-white">✓</div>
             <div className="min-w-0 flex-1">
