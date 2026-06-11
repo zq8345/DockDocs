@@ -163,19 +163,19 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }}
       />
       {/* ── Hero ── */}
-      <section className="relative flex min-h-[88vh] flex-col overflow-hidden border-b border-[color:var(--line)] pt-6">
+      <section className="relative min-h-[88vh] overflow-hidden border-b border-[color:var(--line)]">
         <HeroBackground />
 
         {/* Keyword H1 for SEO — the visible hero is the interactive graph below */}
         <h1 className="sr-only">Everything you need to do with a PDF — free tools, batch automation, and AI that actually reads your documents.</h1>
 
         {/* Dynamic feature graph — full-bleed to the screen edges */}
-        <div className="relative w-full flex-1">
+        <div className="absolute inset-0">
           <HeroFeatureGraph locale="en" />
         </div>
 
         {/* Trust chips — pinned near the bottom edge */}
-        <div className="relative z-10 mx-auto mb-6 flex max-w-6xl flex-wrap items-center justify-center gap-x-6 gap-y-2.5 px-5">
+        <div className="absolute inset-x-0 bottom-6 z-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5 px-5">
           {stats.map(({ value, label }) => (
             <span key={label} className="inline-flex items-center gap-1.5 text-[13px] text-[color:var(--muted)]">
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
