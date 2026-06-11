@@ -208,6 +208,40 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
       ],
     },
   },
+  "extract-to-excel": {
+    title: { en: "Extract PDF data to Excel — FAQ", zh: "PDF 数据抽取到表格常见问题" },
+    items: {
+      en: [
+        { q: "How do I extract data from PDFs into a spreadsheet?", a: "Upload up to 8 PDFs of the same kind — invoices, quotes, receipts — and the AI pulls the key fields into one table you can download as CSV for Excel or Sheets." },
+        { q: "What documents work best?", a: "Structured documents with consistent fields, like invoices, quotes and receipts. Every value is shown with the source line it came from." },
+        { q: "Can I open the result in Excel?", a: "Yes. Download the table as a CSV and open it directly in Excel, Google Sheets or Numbers." },
+        { q: "Is my file uploaded?", a: "The PDF is read in your browser; only the extracted text is sent to the AI to structure into fields. The file itself never leaves your device." },
+      ],
+      zh: [
+        { q: "如何把 PDF 里的数据抽取成表格？", a: "上传最多 8 份同类 PDF——发票、报价单、收据——AI 会把关键字段汇总到一张表里，可下载为 CSV 在 Excel 或表格软件中打开。" },
+        { q: "哪类文档效果最好？", a: "字段一致的结构化文档，比如发票、报价单、收据。每个值都标注了它来自原文的那一句。" },
+        { q: "结果能用 Excel 打开吗？", a: "能。把表格下载为 CSV，直接在 Excel、Google 表格或 Numbers 中打开。" },
+        { q: "文件会被上传吗？", a: "PDF 在你的浏览器中读取，只有提取出的文字会发送给 AI 整理成字段，文件本身不会离开你的设备。" },
+      ],
+    },
+  },
+  "redline": {
+    title: { en: "Compare PDF versions (redline) — FAQ", zh: "PDF 版本对比（红线）常见问题" },
+    items: {
+      en: [
+        { q: "How do I compare two versions of a document?", a: "Upload the old and the new PDF. DockDocs lines up the text and highlights what was added and removed, like track changes." },
+        { q: "Does it catch reworded text?", a: "It compares sentence by sentence — added and deleted sentences are marked. A small reword shows up as a deletion plus an addition." },
+        { q: "Is my file uploaded?", a: "No. The text is extracted and compared in your browser — your files never leave your device." },
+        { q: "How large can the documents be?", a: "The comparison runs in your browser and is tuned for documents up to a few thousand sentences." },
+      ],
+      zh: [
+        { q: "如何对比文档的两个版本？", a: "上传旧版和新版 PDF。DockDocs 会对齐文本，高亮新增和删除的内容，类似修订模式。" },
+        { q: "能识别改写的文字吗？", a: "它逐句对比——新增和删除的句子会被标出。小幅改写会显示为一处删除加一处新增。" },
+        { q: "文件会被上传吗？", a: "不会。文本在你的浏览器中提取并对比，文件不会离开你的设备。" },
+        { q: "文档可以多大？", a: "对比在你的浏览器中运行，适合最多几千句的文档。" },
+      ],
+    },
+  },
 };
 
 export function ToolFaq({ tool, locale = "en" }: { tool: string; locale?: Locale }) {

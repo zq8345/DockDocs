@@ -382,7 +382,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
 
       {/* ── Hero + Upload (centered, full-width focus) ── */}
       <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <div className="mx-auto max-w-2xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+        <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
           {/* Breadcrumb */}
           <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
             <a href={zh ? "/zh/" : "/"} className="transition hover:text-[color:var(--foreground)]">
@@ -393,10 +393,10 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl font-semibold leading-snug tracking-tight text-[color:var(--foreground)] sm:text-3xl">
+          <h1 className="text-[28px] font-semibold tracking-[-0.018em] text-[color:var(--foreground)] sm:text-[34px]">
             {config.heroTitle}
           </h1>
-          <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+          <p className="mt-3 max-w-4xl text-[15px] leading-relaxed text-[color:var(--muted)]">
             {config.heroDescription}
           </p>
 
@@ -424,7 +424,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       {/* ── FAQ (collapsed, clean) ── */}
       {config.faq.length > 0 && (
         <section>
-          <div className="mx-auto max-w-2xl px-5 py-10 sm:px-6">
+          <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6">
             <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{config.faqTitle}</h2>
             <div className="mt-5 divide-y divide-[color:var(--line)]">
               {config.faq.map((item) => (
