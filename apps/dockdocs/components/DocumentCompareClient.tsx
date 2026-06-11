@@ -175,6 +175,15 @@ function locateSnippet(text: string, snippet: string, ctx = 600) {
   };
 }
 
+// Resolve a doc's display name from an id, tolerating ids the LLM may echo
+// imperfectly in the recommendation (falls back to the name before ".pdf").
+function resolveDocName(docs: ReadonlyArray<{ id: string; name: string }>, id: string) {
+  const exact = docs.find((d) => d.id === id);
+  if (exact) return exact.name;
+  const cleaned = id.replace(/(\.pdf).*$/i, "$1");
+  return docs.find((d) => d.name === cleaned)?.name ?? cleaned;
+}
+
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale];
   const r = REC[locale];
@@ -482,7 +491,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
               <>
                 {recommendation.winnerId && (
                   <p className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
-                    ✅ {r.recommended}：{comparison.documents.find((d) => d.id === recommendation.winnerId)?.name ?? recommendation.winnerId}
+                    ✅ {r.recommended}：{resolveDocName(comparison.documents, recommendation.winnerId)}
                   </p>
                 )}
                 {recommendation.headline && <p className="mt-1 text-sm text-[color:var(--foreground)]">{recommendation.headline}</p>}
@@ -498,7 +507,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
                     {recommendation.perDoc.map((p) => (
                       <div key={p.id} className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3">
                         <p className="text-sm font-semibold text-[color:var(--foreground)]">
-                          {comparison.documents.find((d) => d.id === p.id)?.name ?? p.id}
+                          {resolveDocName(comparison.documents, p.id)}
                         </p>
                         {p.pros.length > 0 && <p className="mt-1.5 text-[12px] text-[color:var(--accent)]">+ {p.pros.join("；")}</p>}
                         {p.cons.length > 0 && <p className="mt-1 text-[12px] text-amber-400/80">− {p.cons.join("；")}</p>}
