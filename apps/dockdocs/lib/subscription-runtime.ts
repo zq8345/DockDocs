@@ -125,6 +125,11 @@ export async function createBillingCheckoutSession(plan: PaidSubscriptionPlan) {
     throw new Error(payload?.message || "Checkout is not available.");
   }
 
+  // Redirect the browser to the hosted Creem checkout page.
+  if (typeof window !== "undefined") {
+    window.location.assign(payload.url);
+  }
+
   return payload.url;
 }
 
