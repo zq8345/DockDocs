@@ -166,52 +166,21 @@ export default function Home() {
       <section className="relative overflow-hidden border-b border-[color:var(--line)]">
         <HeroBackground />
 
-        <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-20 sm:px-6 sm:pt-28 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            {/* Badge */}
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-1.5 text-xs font-semibold tracking-wide text-[color:var(--muted)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" aria-hidden="true" />
-              AI Document Intelligence
-            </div>
-
-            <h1 className="text-[34px] font-semibold leading-[1.08] tracking-[-0.03em] text-[color:var(--foreground)] sm:text-[46px] lg:text-[54px]">
-              Everything you need to do with a PDF.
-            </h1>
-
-            <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-7 text-[color:var(--muted)] sm:text-[17px]">
-              Free tools, batch automation, and AI that actually reads your documents — most run right in your browser, so your files never leave your device.
-            </p>
-
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href="/chat-with-pdf"
-                className="inline-flex h-10 items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90"
-              >
-                Chat with a PDF
-              </a>
-              <a
-                href="/compare"
-                className="inline-flex h-10 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-5 text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
-              >
-                Compare documents (Beta)
-              </a>
-            </div>
-
-            {/* Trust chips */}
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5">
-              {stats.map(({ value, label }) => (
-                <span key={label} className="inline-flex items-center gap-1.5 text-[13px] text-[color:var(--muted)]">
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  <span className="font-semibold text-[color:var(--foreground)]">{value}</span>
-                  <span className="text-[color:var(--faint)]">{label}</span>
-                </span>
-              ))}
-            </div>
-          </div>
-
+        <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-12 sm:px-6 sm:pt-16 lg:px-8">
+          {/* Keyword H1 for SEO — the visible hero is the interactive graph below */}
+          <h1 className="sr-only">Everything you need to do with a PDF — free tools, batch automation, and AI that actually reads your documents.</h1>
           {/* Dynamic feature graph — the solution map */}
-          <div className="mt-12 sm:mt-16">
-            <HeroFeatureGraph locale="en" />
+          <HeroFeatureGraph locale="en" />
+
+          {/* Trust chips */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5">
+            {stats.map(({ value, label }) => (
+              <span key={label} className="inline-flex items-center gap-1.5 text-[13px] text-[color:var(--muted)]">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <span className="font-semibold text-[color:var(--foreground)]">{value}</span>
+                <span className="text-[color:var(--faint)]">{label}</span>
+              </span>
+            ))}
           </div>
         </div>
       </section>

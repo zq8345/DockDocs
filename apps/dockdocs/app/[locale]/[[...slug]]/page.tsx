@@ -1252,40 +1252,20 @@ function LocalizedHome({ locale }: { locale: Locale }) {
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-[color:var(--line)]">
         <HeroBackground />
-        <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-20 sm:px-6 sm:pt-28 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-1.5 text-xs font-semibold tracking-wide text-[color:var(--muted)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
-              {copy.eyebrow}
-            </span>
-            <h1 className="mt-6 text-4xl font-semibold leading-[1.1] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-5xl lg:text-[64px]">
-              {copy.heroTitle}
-            </h1>
-            <p className="mt-5 text-base leading-7 text-[color:var(--muted)] sm:text-lg sm:leading-8">
-              {copy.heroDescription}
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <a href={localizedPath(locale, "chat-with-pdf")} className="inline-flex h-10 items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90">
-                {copy.primary}
-              </a>
-              <a href={localizedPath(locale, "compare")} className="inline-flex h-10 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-5 text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
-                {copy.secondary}
-              </a>
-            </div>
-            {/* Trust chips */}
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5">
-              {copy.stats.map(([val, lbl]: [string, string]) => (
-                <span key={lbl} className="inline-flex items-center gap-1.5 text-[13px] text-[color:var(--muted)]">
-                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  <span className="font-semibold text-[color:var(--foreground)]">{val}</span>
-                  <span className="text-[color:var(--faint)]">{lbl}</span>
-                </span>
-              ))}
-            </div>
-          </div>
+        <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-12 sm:px-6 sm:pt-16 lg:px-8">
+          {/* Keyword H1 for SEO — the visible hero is the interactive graph below */}
+          <h1 className="sr-only">{copy.heroTitle} {copy.heroDescription}</h1>
           {/* Dynamic feature graph — the solution map */}
-          <div className="mt-12 sm:mt-16">
-            <HeroFeatureGraph locale={zh ? "zh" : "en"} />
+          <HeroFeatureGraph locale={zh ? "zh" : "en"} />
+          {/* Trust chips */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5">
+            {copy.stats.map(([val, lbl]: [string, string]) => (
+              <span key={lbl} className="inline-flex items-center gap-1.5 text-[13px] text-[color:var(--muted)]">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <span className="font-semibold text-[color:var(--foreground)]">{val}</span>
+                <span className="text-[color:var(--faint)]">{lbl}</span>
+              </span>
+            ))}
           </div>
         </div>
       </section>
