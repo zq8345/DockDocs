@@ -87,21 +87,18 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "AI Summary", slug: "/ai-summary" },
             { name: "Translate PDF", slug: "/translate-pdf" },
             { name: "Flashcards", slug: "/flashcards" },
-            { name: "Batch summary", slug: "/batch-summary" },
-            { name: "Auto-classify", slug: "/classify" },
           ],
         },
       ],
     },
     {
       label: "AI workflows",
-      tier: "Soon",
+      tier: "Plus",
       cols: [
         {
           items: [
-            { name: "Batch processing", slug: "/pricing" },
-            { name: "Auto pipelines", slug: "/pricing" },
-            { name: "Auto-classify", slug: "/pricing" },
+            { name: "Batch summary", slug: "/batch-summary" },
+            { name: "Auto-classify", slug: "/classify" },
           ],
         },
       ],
@@ -157,7 +154,7 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "PDF 加水印", slug: "/watermark-pdf" },
             { name: "PDF 页码", slug: "/page-numbers" },
             { name: "裁剪 PDF", slug: "/crop-pdf" },
-            { name: "PDF 涂黑", slug: "/redact-pdf" },
+            { name: "智能涂黑", slug: "/redact-pdf" },
             { name: "PDF 签名", slug: "/sign-pdf" },
             { name: "批量压缩", slug: "/batch-compress" },
           ],
@@ -196,21 +193,18 @@ const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "AI 摘要", slug: "/ai-summary" },
             { name: "翻译 PDF", slug: "/translate-pdf" },
             { name: "抽认卡", slug: "/flashcards" },
-            { name: "批量摘要", slug: "/batch-summary" },
-            { name: "自动分类", slug: "/classify" },
           ],
         },
       ],
     },
     {
       label: "AI 工作流",
-      tier: "Soon",
+      tier: "Plus",
       cols: [
         {
           items: [
-            { name: "批量处理", slug: "/pricing" },
-            { name: "自动管道", slug: "/pricing" },
-            { name: "自动分类", slug: "/pricing" },
+            { name: "批量摘要", slug: "/batch-summary" },
+            { name: "自动分类", slug: "/classify" },
           ],
         },
       ],
@@ -382,11 +376,18 @@ export function Header() {
                             </p>
                           )}
                           <div className="space-y-0.5">
-                            {col.items.map((item, ii) => (
-                              <button key={`${item.slug}-${ii}`} type="button" onClick={() => navTo(item.slug)} className={itemCls}>
-                                {item.name}
-                              </button>
-                            ))}
+                            {col.items.map((item, ii) =>
+                              cat.tier === "Soon" ? (
+                                <span key={`${item.slug}-${ii}`} className="flex cursor-not-allowed items-center justify-between gap-2 rounded-[var(--radius-sm)] px-2 py-1 text-[13px] font-medium text-[color:var(--faint)] opacity-70">
+                                  {item.name}
+                                  <span className="text-[9px] font-semibold uppercase tracking-wide opacity-80">{locale === "zh" ? "开发中" : "soon"}</span>
+                                </span>
+                              ) : (
+                                <button key={`${item.slug}-${ii}`} type="button" onClick={() => navTo(item.slug)} className={itemCls}>
+                                  {item.name}
+                                </button>
+                              ),
+                            )}
                           </div>
                         </div>
                       ))}
@@ -534,16 +535,26 @@ export function Header() {
                           </p>
                         )}
                         <div className="grid grid-cols-2 gap-1.5">
-                          {col.items.map((item, ii) => (
-                            <button
-                              key={`${item.slug}-${ii}`}
-                              type="button"
-                              onClick={() => { navTo(item.slug); setMobileOpen(false); }}
-                              className="block w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
-                            >
-                              {item.name}
-                            </button>
-                          ))}
+                          {col.items.map((item, ii) =>
+                            cat.tier === "Soon" ? (
+                              <span
+                                key={`${item.slug}-${ii}`}
+                                className="flex w-full cursor-not-allowed items-center justify-between gap-1 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--faint)] opacity-60"
+                              >
+                                {item.name}
+                                <span className="text-[9px] font-semibold uppercase">{locale === "zh" ? "开发中" : "soon"}</span>
+                              </span>
+                            ) : (
+                              <button
+                                key={`${item.slug}-${ii}`}
+                                type="button"
+                                onClick={() => { navTo(item.slug); setMobileOpen(false); }}
+                                className="block w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
+                              >
+                                {item.name}
+                              </button>
+                            ),
+                          )}
                         </div>
                       </div>
                     ))}
