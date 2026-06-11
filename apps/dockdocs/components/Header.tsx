@@ -6,7 +6,7 @@ import { BrandMark } from "@/components/BrandMark";
 import { defaultLocale, isAllLocale, isLocale, locales, localeLabels } from "@/lib/i18n";
 
 // ── Top-level nav categories. Each opens a dropdown; PDF tools has sub-columns. ──
-type NavItem = { name: string; slug: string };
+type NavItem = { name: string; slug: string; soon?: boolean };
 type NavCol = { heading?: string; items: NavItem[] };
 type NavCat = { label: string; tier: string; cols: NavCol[] };
 
@@ -75,7 +75,7 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "Batch page numbers", slug: "/batch-page-numbers" },
             { name: "Batch split", slug: "/batch-split-merge" },
             { name: "Batch rotate", slug: "/batch-rotate-pdf" },
-            { name: "Batch sort into folders", slug: "/batch-sort" },
+            { name: "Batch classify PDFs", slug: "/batch-sort" },
           ],
         },
       ],
@@ -111,12 +111,12 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
       cols: [
         {
           items: [
-            { name: "Legal & contracts", slug: "/pricing" },
-            { name: "Finance & tax", slug: "/pricing" },
-            { name: "Research & academia", slug: "/pricing" },
-            { name: "Banking & finance", slug: "/pricing" },
-            { name: "Architecture & engineering", slug: "/pricing" },
-            { name: "Healthcare & medical", slug: "/pricing" },
+            { name: "Legal & contracts", slug: "/pricing", soon: true },
+            { name: "Finance & tax", slug: "/pricing", soon: true },
+            { name: "Research & academia", slug: "/pricing", soon: true },
+            { name: "Banking & finance", slug: "/pricing", soon: true },
+            { name: "Architecture & engineering", slug: "/pricing", soon: true },
+            { name: "Healthcare & medical", slug: "/pricing", soon: true },
           ],
         },
       ],
@@ -186,7 +186,7 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "批量 PDF 添加页码", slug: "/batch-page-numbers" },
             { name: "批量 PDF 拆分", slug: "/batch-split-merge" },
             { name: "批量 PDF 旋转", slug: "/batch-rotate-pdf" },
-            { name: "批量分类归档", slug: "/batch-sort" },
+            { name: "批量 PDF 分类", slug: "/batch-sort" },
           ],
         },
       ],
@@ -222,12 +222,12 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
       cols: [
         {
           items: [
-            { name: "法律 / 合同", slug: "/pricing" },
-            { name: "财务 / 税务", slug: "/pricing" },
-            { name: "科研 / 学术", slug: "/pricing" },
-            { name: "金融 / 投行", slug: "/pricing" },
-            { name: "建筑 / 工程", slug: "/pricing" },
-            { name: "医疗 / 健康", slug: "/pricing" },
+            { name: "法律 / 合同", slug: "/pricing", soon: true },
+            { name: "财务 / 税务", slug: "/pricing", soon: true },
+            { name: "科研 / 学术", slug: "/pricing", soon: true },
+            { name: "金融 / 投行", slug: "/pricing", soon: true },
+            { name: "建筑 / 工程", slug: "/pricing", soon: true },
+            { name: "医疗 / 健康", slug: "/pricing", soon: true },
           ],
         },
       ],
@@ -309,9 +309,9 @@ export function Header() {
   }
 
   const trigger =
-    "flex items-center gap-1 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)] cursor-pointer";
+    "flex items-center gap-1 rounded-[var(--radius-sm)] px-3 py-2 text-[15px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)] cursor-pointer";
   const itemCls =
-    "block w-full whitespace-nowrap rounded-[var(--radius-sm)] px-2 py-1 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]";
+    "block w-full whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[14.5px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]";
   const iconBtn =
     "inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-sm transition hover:border-[color:var(--line-strong)]";
 
@@ -346,7 +346,7 @@ export function Header() {
           </a>
 
           {/* Desktop nav — 4 category dropdowns */}
-          <nav className="hidden flex-1 items-center justify-center gap-0.5 md:flex">
+          <nav className="hidden flex-1 items-center justify-center gap-x-12 lg:gap-x-24 md:flex">
             {cats.map((cat) => (
               <div key={cat.label} className="relative group">
                 <span className={trigger}>
@@ -362,18 +362,25 @@ export function Header() {
                       style={{ gridTemplateColumns: `repeat(${cat.cols.length}, auto)` }}
                     >
                       {cat.cols.map((col, ci) => (
-                        <div key={col.heading ?? ci} className="min-w-[140px]">
+                        <div key={col.heading ?? ci} className="min-w-[168px]">
                           {col.heading && (
-                            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
+                            <p className="mb-2 text-[12.5px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
                               {col.heading}
                             </p>
                           )}
                           <div className="space-y-0.5">
-                            {col.items.map((item, ii) => (
-                              <button key={`${item.slug}-${ii}`} type="button" onClick={() => navTo(item.slug)} className={itemCls}>
-                                {item.name}
-                              </button>
-                            ))}
+                            {col.items.map((item, ii) =>
+                              item.soon ? (
+                                <span key={`${item.slug}-${ii}`} className="flex w-full cursor-default items-center justify-between gap-3 whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[14.5px] font-medium text-[color:var(--faint)]">
+                                  {item.name}
+                                  <span className="text-[10px] font-semibold uppercase opacity-80">{locale === "zh" ? "正在开发" : "soon"}</span>
+                                </span>
+                              ) : (
+                                <button key={`${item.slug}-${ii}`} type="button" onClick={() => navTo(item.slug)} className={itemCls}>
+                                  {item.name}
+                                </button>
+                              ),
+                            )}
                           </div>
                         </div>
                       ))}
@@ -520,16 +527,23 @@ export function Header() {
                           </p>
                         )}
                         <div className="grid grid-cols-2 gap-1.5">
-                          {col.items.map((item, ii) => (
-                            <button
-                              key={`${item.slug}-${ii}`}
-                              type="button"
-                              onClick={() => { navTo(item.slug); setMobileOpen(false); }}
-                              className="block w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
-                            >
-                              {item.name}
-                            </button>
-                          ))}
+                          {col.items.map((item, ii) =>
+                            item.soon ? (
+                              <span key={`${item.slug}-${ii}`} className="flex w-full cursor-default items-center justify-between gap-1 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--faint)]">
+                                {item.name}
+                                <span className="text-[10px] font-semibold uppercase opacity-80">{locale === "zh" ? "正在开发" : "soon"}</span>
+                              </span>
+                            ) : (
+                              <button
+                                key={`${item.slug}-${ii}`}
+                                type="button"
+                                onClick={() => { navTo(item.slug); setMobileOpen(false); }}
+                                className="block w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
+                              >
+                                {item.name}
+                              </button>
+                            ),
+                          )}
                         </div>
                       </div>
                     ))}
