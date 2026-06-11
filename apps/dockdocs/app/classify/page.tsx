@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ClassifyClient } from "@/components/ClassifyClient";
+import { BatchSortClient } from "@/components/BatchSortClient";
 
 export const metadata: Metadata = {
   title: "Auto-Classify & Tag PDFs — Organize a Folder with AI | DockDocs",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function ClassifyPage() {
-  return <ClassifyClient />;
+  return <BatchSortClient />;
 }

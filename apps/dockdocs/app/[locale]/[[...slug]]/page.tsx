@@ -741,7 +741,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "classify") {
-    return <ClassifyClient locale={rawLocale} />;
+    return <BatchSortClient locale={rawLocale} />;
   }
 
   if (slug === "batch-summary") {

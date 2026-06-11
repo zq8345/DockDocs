@@ -5,7 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
 type Locale = "en" | "zh";
-type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; msg?: string };
+type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
 
 const MAX_FILES = 30;
 
@@ -82,7 +82,7 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
       try {
         const res = await fetch("/api/classify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: it.text, locale }) });
         const data = await res.json();
-        if (data?.ok && data.category) updated[i] = { ...it, status: "done", category: String(data.category) };
+        if (data?.ok && data.category) updated[i] = { ...it, status: "done", category: String(data.category), tags: Array.isArray(data.tags) ? data.tags : [] };
         else updated[i] = { ...it, status: "error", category: t.uncategorized, msg: data?.message || "failed" };
       } catch (e) {
         updated[i] = { ...it, status: "error", category: t.uncategorized, msg: e instanceof Error ? e.message : String(e) };
@@ -155,7 +155,7 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
               <li key={it.id} className="flex items-center justify-between gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2.5 text-[13.5px]">
                 <span className="truncate font-medium text-[color:var(--foreground)]" title={it.name}>{it.name}</span>
                 <span className="shrink-0 text-[12.5px]">
-                  {it.status === "done" ? <span className="rounded-full bg-[color:var(--soft-accent)] px-2 py-0.5 text-[11.5px] font-medium text-[color:var(--accent-strong)]">{it.category}</span>
+                  {it.status === "done" ? <span className="inline-flex flex-wrap items-center justify-end gap-1"><span className="rounded-full bg-[color:var(--soft-accent)] px-2 py-0.5 text-[11.5px] font-medium text-[color:var(--accent-strong)]">{it.category}</span>{(it.tags || []).slice(0, 3).map((tg) => (<span key={tg} className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-1.5 py-0.5 text-[10.5px] text-[color:var(--muted)]">{tg}</span>))}</span>
                     : it.status === "error" ? <span className="text-[#f87171]" title={it.msg}>{it.category}</span>
                       : <span className="text-[color:var(--faint)]">·</span>}
                 </span>
