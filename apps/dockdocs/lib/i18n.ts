@@ -68,6 +68,7 @@ export const routeSlugs = [
   "extract-to-excel",
   "redline",
   "flashcards",
+  "batch-summary",
   "dashboard",
   "pricing",
   "account",

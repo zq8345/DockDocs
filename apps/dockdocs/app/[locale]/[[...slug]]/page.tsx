@@ -39,6 +39,7 @@ import { CropPdfClient } from "@/components/CropPdfClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
+import { BatchSummaryClient } from "@/components/BatchSummaryClient";
 import { SignPdfClient } from "@/components/SignPdfClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
@@ -278,6 +279,20 @@ export async function generateMetadata({
       alternates: {
         canonical: localizedPath(rawLocale, "sign-pdf"),
         languages: languageAlternates("sign-pdf"),
+      },
+    };
+  }
+
+  if (slug === "batch-summary") {
+    return {
+      title: rawLocale === "zh" ? "批量摘要 PDF — 一次总结多份文档 | DockDocs" : "Batch Summarize PDFs — Summarize Multiple Documents | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "上传多份报告/论文/合同，AI 为每份生成执行摘要和关键要点，一次最多 5 份。"
+          : "Upload several reports, papers, or contracts and get a concise AI summary of each — executive summary plus key points.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "batch-summary"),
+        languages: languageAlternates("batch-summary"),
       },
     };
   }
@@ -540,6 +555,10 @@ export default async function LocalizedRoute({
 
   if (slug === "dashboard") {
     return <LocalizedDashboard locale={rawLocale} />;
+  }
+
+  if (slug === "batch-summary") {
+    return <BatchSummaryClient locale={rawLocale} />;
   }
 
   if (slug === "flashcards") {
