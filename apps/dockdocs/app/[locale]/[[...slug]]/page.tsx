@@ -36,6 +36,7 @@ import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
 import { UrlToPdfClient } from "@/components/UrlToPdfClient";
 import { MyChatsClient } from "@/components/MyChatsClient";
 import { CropPdfClient } from "@/components/CropPdfClient";
+import { RedactPdfClient } from "@/components/RedactPdfClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
@@ -383,6 +384,20 @@ export async function generateMetadata({
     };
   }
 
+  if (slug === "redact-pdf") {
+    return {
+      title: rawLocale === "zh" ? "PDF 涂黑脱敏 — 永久删除敏感文字 | DockDocs" : "Redact PDF — Permanently Remove Sensitive Text Online Free | DockDocs",
+      description:
+        rawLocale === "zh"
+          ? "真正涂黑脱敏 PDF：把姓名、号码等敏感文字永久删除(不是盖个黑框),全部在浏览器中完成,文件不外泄。"
+          : "Redact a PDF for real — permanently destroy the hidden text, not just cover it. Entirely in your browser; your file never leaves your device.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "redact-pdf"),
+        languages: languageAlternates("redact-pdf"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: rawLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -616,6 +631,10 @@ export default async function LocalizedRoute({
 
   if (slug === "crop-pdf") {
     return <CropPdfClient locale={rawLocale} />;
+  }
+
+  if (slug === "redact-pdf") {
+    return <RedactPdfClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {
