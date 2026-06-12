@@ -164,79 +164,81 @@ const copy = {
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const zh = locale === "zh";
   const c = copy[locale] ?? copy.en;
   // 账户页全站统一为 /account(无语言版本),不要按 locale 加 /zh 前缀,否则 /zh/account 会 404
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale, href) : "/account");
+  const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
+  const h2 = "text-[26px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[32px]";
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-[32px] font-semibold leading-[1.1] tracking-[-0.018em] text-[color:var(--foreground)] sm:text-[42px]">
+        <p className={eyebrow}>{zh ? "// 定价" : "// Pricing"}</p>
+        <h1 className="mt-4 text-[34px] font-normal leading-[1.08] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[48px]">
           {c.title}
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-[color:var(--muted)]">
+        <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]">
           {c.subtitle}
         </p>
 
         {/* Monthly / Yearly toggle */}
-        <div className="mt-8 inline-flex items-center gap-1 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-1">
+        <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-[color:var(--line)] p-1">
           <button type="button" onClick={() => setYearly(false)}
-            className={`rounded-[var(--radius-sm)] px-4 py-1.5 text-[13px] font-medium transition ${!yearly ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
+            className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition ${!yearly ? "bg-[color:var(--accent)]" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
           >{c.monthly}</button>
           <button type="button" onClick={() => setYearly(true)}
-            className={`rounded-[var(--radius-sm)] px-4 py-1.5 text-[13px] font-medium transition ${yearly ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
+            className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition ${yearly ? "bg-[color:var(--accent)]" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
           >{c.yearly} <span className={`ml-1 text-[11px] ${yearly ? "text-[color:var(--on-accent)]" : "text-[color:var(--accent-strong)]"}`}>{c.save}</span></button>
         </div>
       </div>
 
       {/* Plans */}
-      <div className="mt-12 grid gap-5 lg:grid-cols-3">
+      <div className="mt-12 grid gap-4 lg:grid-cols-3">
         {c.plans.map((plan) => {
           const isFree = plan.monthlyPrice === "$0";
           const price = yearly && !isFree ? plan.yearlyPrice : plan.monthlyPrice;
           const featured = plan.featured;
           return (
             <article key={plan.name}
-              className={`relative flex flex-col rounded-[var(--radius-lg)] border p-6 transition hover:-translate-y-0.5 ${
+              className={`relative flex flex-col rounded-2xl border p-6 transition-colors ${
                 featured
-                  ? "border-[color:var(--accent)] bg-[color:var(--surface)] shadow-[0_8px_30px_rgba(62,207,142,0.15)] lg:-mt-2 lg:mb-2"
-                  : "border-[color:var(--line)] bg-[color:var(--surface)]"
+                  ? "border-[color:var(--accent)] lg:-mt-2 lg:mb-2"
+                  : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"
               }`}
             >
               {featured && (
-                <span className="mb-3 self-start rounded-full bg-[color:var(--accent)] px-3 py-1 text-[11px] font-semibold text-white">{c.mostPopular}</span>
+                <span className="mb-3 self-start rounded-full bg-[color:var(--accent)] px-3 py-1 text-[11px] font-medium">{c.mostPopular}</span>
               )}
-              <h2 className="text-[20px] font-semibold text-[color:var(--foreground)]">{plan.name}</h2>
+              <h2 className="text-[20px] font-normal text-[color:var(--foreground)]">{plan.name}</h2>
 
               <div className="mt-4">
-                <p className="text-[40px] font-semibold leading-none tracking-tight text-[color:var(--foreground)]">
-                  {price}<span className="text-[16px] font-normal text-[color:var(--muted)]">{isFree ? "" : c.perMo}</span>
+                <p className="text-[44px] font-normal leading-none tracking-tight text-[color:var(--foreground)]">
+                  {price}<span className="text-[16px] text-[color:var(--muted)]">{isFree ? "" : c.perMo}</span>
                 </p>
                 {yearly && !isFree && "yearlyTotal" in plan && plan.yearlyTotal && (
                   <p className="mt-1.5 text-[13px] text-[color:var(--muted)]">{c.billedYearly(plan.yearlyTotal)}</p>
                 )}
                 {!yearly && "valueLine" in plan && plan.valueLine && (
-                  <p className="mt-1.5 text-[13px] font-medium text-[color:var(--accent-strong)]">{plan.valueLine}</p>
+                  <p className="mt-1.5 text-[13px] text-[color:var(--accent-strong)]">{plan.valueLine}</p>
                 )}
               </div>
 
-              <p className="mt-4 text-[14px] leading-relaxed text-[color:var(--muted)]">{plan.tagline}</p>
+              <p className="mt-4 text-[14px] leading-[1.5] text-[color:var(--muted)]">{plan.tagline}</p>
 
               <ul className="mt-6 flex-1 space-y-3">
                 {plan.highlights.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-[14px] text-[color:var(--foreground)]">
-                    <span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${featured ? "bg-[color:var(--accent)] text-white" : "bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]"}`}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><path d="m5 12 5 5 9-11"/></svg>
-                    </span>
+                  <li key={item} className="flex items-start gap-2.5 text-[14px] leading-[1.45] text-[color:var(--foreground)]">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0 text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                     {item}
                   </li>
                 ))}
               </ul>
 
               <a href={toolHref(plan.href)}
-                className={`mt-6 flex min-h-[46px] w-full items-center justify-center rounded-[var(--radius)] text-[14px] font-semibold transition ${
-                  featured ? "bg-[color:var(--accent)] text-white hover:opacity-90" : "border border-[color:var(--line)] text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]"
+                className={`mt-6 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-medium transition ${
+                  featured ? "bg-[color:var(--accent)] hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--foreground)]"
                 }`}
               >{plan.cta}</a>
             </article>
@@ -248,28 +250,27 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
         {c.trust.map((t) => (
           <span key={t} className="flex items-center gap-2 text-[13px] text-[color:var(--muted)]">
-            <span className="flex h-4 w-4 items-center justify-center text-[color:var(--accent)]">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V5l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
-            </span>
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
             {t}
           </span>
         ))}
       </div>
 
       {/* Solutions by scenario */}
-      <div className="mx-auto mt-20 max-w-5xl">
-        <h2 className="text-center text-[24px] font-semibold tracking-tight text-[color:var(--foreground)]">{c.scenariosTitle}</h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="mx-auto mt-24 max-w-5xl">
+        <p className={`${eyebrow} text-center`}>{zh ? "// 应用场景" : "// Use cases"}</p>
+        <h2 className={`mt-3 text-center ${h2}`}>{c.scenariosTitle}</h2>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {c.scenarios.map((s) => (
-            <div key={s.title} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+            <div key={s.title} className="rounded-2xl border border-[color:var(--line)] p-5 transition-colors hover:border-[color:var(--line-strong)]">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-[15px] font-semibold text-[color:var(--foreground)]">{s.emoji} {s.title}</p>
-                <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${s.tier === "Pro" ? "bg-[rgba(52,211,153,0.12)] text-[#34d399]" : "bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]"}`}>{s.tier}</span>
+                <p className="text-[15px] font-normal text-[color:var(--foreground)]">{s.emoji} {s.title}</p>
+                <span className="shrink-0 rounded-full border border-[color:var(--line)] px-2.5 py-0.5 text-[11px] text-[color:var(--accent)]">{s.tier}</span>
               </div>
               <p className="mt-3 text-[13px] leading-6 text-[color:var(--muted)]">😩 {s.before}</p>
               <p className="mt-1.5 text-[13px] leading-6 text-[color:var(--foreground)]"><span className="text-[color:var(--accent)]">⚡</span> {s.after}</p>
               {s.href && (
-                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] hover:underline">{locale === "zh" ? "去试试 →" : "Try it →"}</a>
+                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{zh ? "去试试 →" : "Try it →"}</a>
               )}
             </div>
           ))}
@@ -277,15 +278,16 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Compare plans */}
-      <div className="mx-auto mt-20 max-w-4xl">
-        <h2 className="text-center text-[24px] font-semibold tracking-tight text-[color:var(--foreground)]">{c.compareTitle}</h2>
-        <div className="mt-8 overflow-x-auto rounded-[var(--radius-lg)] border border-[color:var(--line)]">
+      <div className="mx-auto mt-24 max-w-4xl">
+        <p className={`${eyebrow} text-center`}>{zh ? "// 套餐对照" : "// Compare"}</p>
+        <h2 className={`mt-3 text-center ${h2}`}>{c.compareTitle}</h2>
+        <div className="mt-10 overflow-x-auto rounded-2xl border border-[color:var(--line)]">
           <table className="w-full border-collapse text-[14px]">
             <thead>
-              <tr className="bg-[color:var(--surface-subtle)]">
+              <tr>
                 <th className="border-b border-[color:var(--line)] px-4 py-3 text-left"></th>
                 {c.compareCols.map((col, i) => (
-                  <th key={col} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center text-[13px] font-semibold ${i === 1 ? "text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)]"}`}>{col}</th>
+                  <th key={col} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center text-[13px] font-normal ${i === 1 ? "text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)]"}`}>{col}</th>
                 ))}
               </tr>
             </thead>
@@ -294,7 +296,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 <tr key={row.f}>
                   <td className="border-b border-[color:var(--line)] px-4 py-3 text-[color:var(--foreground)]">{row.f}</td>
                   {row.v.map((val, i) => (
-                    <td key={i} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center ${val === "✓" ? "font-semibold text-[color:var(--accent)]" : val === "—" ? "text-[color:var(--faint)]" : "text-[12px] text-[color:var(--muted)]"}`}>{val}</td>
+                    <td key={i} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center ${val === "✓" ? "text-[color:var(--accent)]" : val === "—" ? "text-[color:var(--faint)]" : "text-[12px] text-[color:var(--muted)]"}`}>{val}</td>
                   ))}
                 </tr>
               ))}
@@ -304,15 +306,16 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* FAQ */}
-      <div className="mx-auto mt-20 max-w-3xl">
-        <h2 className="text-center text-[24px] font-semibold tracking-tight text-[color:var(--foreground)]">{c.faqTitle}</h2>
+      <div className="mx-auto mt-24 max-w-3xl">
+        <p className={`${eyebrow} text-center`}>{zh ? "// 常见问题" : "// FAQ"}</p>
+        <h2 className={`mt-3 text-center ${h2}`}>{c.faqTitle}</h2>
         <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
           {c.faq.map((item, i) => (
             <div key={item.q}>
               <button type="button" onClick={() => setOpenFaq(openFaq === i ? null : i)}
                 className="flex w-full items-center justify-between gap-4 py-5 text-left"
               >
-                <span className="text-[15px] font-medium text-[color:var(--foreground)]">{item.q}</span>
+                <span className="text-[15px] font-normal text-[color:var(--foreground)]">{item.q}</span>
                 <span className={`shrink-0 text-[color:var(--muted)] transition ${openFaq === i ? "rotate-45" : ""}`}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
                 </span>
@@ -326,11 +329,11 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Bottom CTA */}
-      <div className="mx-auto mt-16 max-w-3xl rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-8 py-10 text-center">
-        <h2 className="text-[22px] font-semibold tracking-tight text-[color:var(--foreground)]">{c.ctaTitle}</h2>
-        <p className="mx-auto mt-3 max-w-xl text-[14px] leading-7 text-[color:var(--muted)]">{c.ctaDesc}</p>
-        <a href={locale === "zh" ? "/zh/" : "/"}
-          className="mt-6 inline-flex h-11 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-[14px] font-semibold text-white transition hover:opacity-90"
+      <div className="mx-auto mt-24 max-w-3xl text-center">
+        <h2 className={h2}>{c.ctaTitle}</h2>
+        <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.ctaDesc}</p>
+        <a href={zh ? "/zh/" : "/"}
+          className="mt-8 inline-flex h-11 items-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]"
         >{c.ctaBtn}</a>
       </div>
     </div>

@@ -384,10 +384,10 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
           {/* Title */}
-          <h1 className="text-[28px] font-semibold tracking-[-0.018em] text-[color:var(--foreground)] sm:text-[34px]">
+          <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">
             {config.breadcrumbName}
           </h1>
-          <p className="mt-3 max-w-4xl text-[15px] leading-relaxed text-[color:var(--muted)]">
+          <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">
             {config.heroDescription}
           </p>
 
@@ -402,11 +402,11 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       {config.faq.length > 0 && (
         <section>
           <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6">
-            <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{config.faqTitle}</h2>
-            <div className="mt-5 space-y-6">
+            <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{config.faqTitle}</h2>
+            <div className="mt-6 space-y-6">
               {config.faq.map((item) => (
                 <div key={item.question}>
-                  <h3 className="text-sm font-semibold text-[color:var(--foreground)]">{item.question}</h3>
+                  <h3 className="text-[15px] font-medium text-[color:var(--foreground)]">{item.question}</h3>
                   <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{item.answer}</p>
                 </div>
               ))}

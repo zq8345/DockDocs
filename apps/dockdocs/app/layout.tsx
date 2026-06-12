@@ -42,7 +42,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
               var theme = localStorage.getItem('dockdocs-theme');
               // Marketing/story pages (home, about) are force-dark — the brand stage.
               var mp = window.location.pathname.replace(/^\\/(zh|en)(?=\\/|$)/,'');
-              var marketing = (mp === '' || mp === '/' || mp === '/about' || mp === '/about/');
+              var marketing = (mp === '' || mp === '/' || mp === '/about' || mp === '/about/' || mp === '/pricing' || mp === '/pricing/');
               if (!marketing && (theme === 'light' || (!theme && window.matchMedia('(prefers-color-scheme: light)').matches))) {
                 document.documentElement.classList.add('light');
               }
