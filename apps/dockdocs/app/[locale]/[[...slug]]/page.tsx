@@ -1278,20 +1278,30 @@ const aiCopy = {
     title: "AI Document Workspace | DockDocs",
     description:
       "Organize, convert, OCR, and work with PDF documents inside the DockDocs AI Document Workspace.",
-    eyebrow: "AI Workspace Layer",
+    eyebrow: "AI workspace",
     heroTitle: "AI PDF workspace for OCR, summaries, and Chat with PDF.",
     heroDescription:
-      "DockDocs stays PDF tools first. AI helps with OCR, summaries, Chat with PDF, and multi-step document workflows.",
-    cards: ["OCR", "AI Summary", "Chat with PDF", "Workflow"],
+      "DockDocs stays PDF-tools first. The AI workspace steps in when a document needs OCR, a summary, a grounded Q&A, or a multi-step pass.",
+    cards: [
+      { t: "OCR", d: "Pull selectable text out of scanned or image-only PDFs." },
+      { t: "AI Summary", d: "Turn long reports and packets into a few working notes." },
+      { t: "Chat with PDF", d: "Ask about clauses, dates, and figures — every answer cites the page." },
+      { t: "Workflow", d: "Chain upload, OCR, summarize, and export into one pass." },
+    ],
   },
   zh: {
     title: "AI 文档工作区 | DockDocs",
     description: "在 DockDocs AI 文档工作区中整理、转换、OCR 并处理 PDF 文档。",
-    eyebrow: "AI 工作区层",
-    heroTitle: "AI 文档工作区，支持 OCR、摘要与 Chat with PDF。",
+    eyebrow: "AI 工作区",
+    heroTitle: "AI 文档工作区：OCR、摘要与 PDF 问答。",
     heroDescription:
-      "DockDocs 是面向真实文件的 AI Document Platform，用于 OCR、摘要、PDF 问答和多步骤文档工作流。",
-    cards: ["OCR", "AI 摘要", "PDF 问答", "工作流"],
+      "DockDocs 以 PDF 工具为先。当文档需要 OCR、摘要、有据问答或多步骤处理时，AI 工作区接手。",
+    cards: [
+      { t: "OCR", d: "从扫描件或纯图片 PDF 中提取可复制的文字。" },
+      { t: "AI 摘要", d: "把长报告和文件包浓缩成几条可用要点。" },
+      { t: "PDF 问答", d: "问条款、日期、数字——每个答案都标出处。" },
+      { t: "工作流", d: "上传、OCR、摘要、导出，串成一次完成。" },
+    ],
   },
 } as const;
 
@@ -1326,14 +1336,12 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale }) {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {copy.cards.map((card) => (
               <article
-                key={card}
+                key={card.t}
                 className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5"
               >
-                <h2 className="text-[15px] font-semibold">{card}</h2>
+                <h2 className="text-[15px] font-semibold">{card.t}</h2>
                 <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                  {locale === "zh"
-                    ? "作为文档工作区的智能能力，帮助理解和复用真实文件。"
-                    : "An enhancement layer after the PDF task is clear."}
+                  {card.d}
                 </p>
               </article>
             ))}

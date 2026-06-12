@@ -308,7 +308,10 @@ export function PdfWorkflowEngine({
   const single = spec.maxFiles === 1;
   if (single) {
     const dragging = isDragging && status === "idle";
-    const frameBase = "relative flex w-full flex-col overflow-y-auto rounded-[var(--radius-xl)] aspect-[16/9] transition";
+    // Local tools (pdf-lib/pdfjs/tesseract in the browser) never upload; the
+    // CloudConvert routes do. Only promise "not uploaded" for the local ones.
+    const runsLocally = isRealPdfRuntimeSlug(config.slug) && !["word-to-pdf", "ppt-to-pdf", "excel-to-pdf", "pdf-to-excel", "pdf-to-word", "html-to-pdf", "pdf-to-pdfa", "pdf-to-ppt", "protect-pdf"].includes(config.slug);
+    const frameBase = "relative flex w-full flex-col overflow-y-auto rounded-[var(--radius-xl)] min-h-[300px] sm:min-h-[360px] transition";
     const frameState =
       status === "idle"
         ? dragging
@@ -348,16 +351,31 @@ export function PdfWorkflowEngine({
           <div className={innerCls}>
             {status === "idle" ? (
               <>
+                <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--accent)]">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4M7 9l5-5 5 5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></svg>
+                </span>
                 <button
                   type="button"
                   onClick={(ev) => { ev.stopPropagation(); inputRef.current?.click(); }}
-                  className="inline-flex h-12 w-1/2 items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.32)] transition hover:opacity-90"
+                  className="inline-flex h-12 w-full max-w-[280px] items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.32)] transition hover:opacity-90"
                 >
                   {config.upload.buttonLabel}
                 </button>
-                <p className="mt-4 text-sm text-[color:var(--muted)]">
+                <p className="mt-3 text-sm text-[color:var(--muted)]">
                   {zh ? "或将文件拖放到此处" : "or drop your file here"}
                 </p>
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
+                  <span>{zh ? "支持格式" : "Supports"} {spec.acceptedLabel}</span>
+                  <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
+                  {runsLocally ? (
+                    <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
+                      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
+                      {zh ? "本地处理，文件不上传" : "Processed locally — never uploaded"}
+                    </span>
+                  ) : (
+                    <span>{zh ? "最大 100MB" : "Up to 100MB"}</span>
+                  )}
+                </div>
               </>
             ) : null}
 

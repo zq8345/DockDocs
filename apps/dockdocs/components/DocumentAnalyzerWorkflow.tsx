@@ -22,10 +22,10 @@ type AnalyzerStatus =
 
 const copy = {
   en: {
-    eyebrow: "Document Analyzer MVP",
+    eyebrow: "Document analysis",
     title: "Analyze a document before you start asking questions.",
     description:
-      "Upload a PDF, paste OCR text, or analyze a saved chat context. DockDocs sends only extracted text to the configured AI provider and returns structured workspace notes.",
+      "Upload a PDF, paste OCR text, or analyze a saved chat context. DockDocs sends only extracted text to the AI provider and returns structured workspace notes.",
     upload: "Choose PDF",
     pasteLabel: "OCR text or chat context",
     pastePlaceholder:
@@ -47,14 +47,14 @@ const copy = {
     references: "References",
     idle: "Upload a PDF or paste text to start.",
     ready: "Ready to analyze.",
-    truncated: "Context was trimmed to stay within the MVP limit.",
+    truncated: "Context was trimmed to fit the size limit.",
     noSavedContext: "No saved chat context yet.",
   },
   zh: {
-    eyebrow: "文档分析 MVP",
+    eyebrow: "文档分析",
     title: "提问前先自动分析文档。",
     description:
-      "上传 PDF、粘贴 OCR 文本，或分析已保存的 Chat Context。DockDocs 只发送提取文本到已配置的 AI provider，并返回结构化工作笔记。",
+      "上传 PDF、粘贴 OCR 文本，或分析已保存的对话上下文。DockDocs 只把提取的文本发送给 AI 服务，并返回结构化的工作笔记。",
     upload: "选择 PDF",
     pasteLabel: "OCR 文本或 Chat Context",
     pastePlaceholder: "粘贴 OCR 文本、复制的 PDF 文本或 Chat Context。",
@@ -75,7 +75,7 @@ const copy = {
     references: "引用依据",
     idle: "上传 PDF 或粘贴文本开始分析。",
     ready: "已准备分析。",
-    truncated: "上下文已按 MVP 限制裁剪。",
+    truncated: "上下文已按大小限制裁剪。",
     noSavedContext: "暂无已保存的 Chat Context。",
   },
 } as const;

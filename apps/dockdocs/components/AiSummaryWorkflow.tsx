@@ -19,7 +19,7 @@ type WorkflowStatus =
 
 const copy = {
   en: {
-    eyebrow: "AI Summary MVP",
+    eyebrow: "AI summary",
     title: "Summarize a PDF without sending the full file to AI.",
     description:
       "DockDocs extracts browser-readable PDF text locally, then sends text only to the configured AI provider. For scanned PDFs, run OCR first and paste the extracted text here.",
@@ -48,10 +48,10 @@ const copy = {
       "AI Summary limit reached for your current plan. Upgrade to continue.",
   },
   zh: {
-    eyebrow: "AI 摘要 MVP",
+    eyebrow: "AI 摘要",
     title: "为 PDF 生成摘要，但不把完整文件发送给 AI。",
     description:
-      "DockDocs 会在浏览器本地提取可读取的 PDF 文本，然后只把文本发送给已配置的 AI provider。扫描件请先运行 OCR，再把提取文本粘贴到这里。",
+      "DockDocs 会在浏览器本地提取可读取的 PDF 文本，然后只把文本发送给 AI 服务。扫描件请先运行 OCR，再把提取文本粘贴到这里。",
     upload: "选择 PDF",
     pasteLabel: "或粘贴 OCR / 已提取文本",
     pastePlaceholder: "扫描件或图片型 PDF 可先 OCR，再把文字粘贴到这里。",

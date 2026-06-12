@@ -199,33 +199,53 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
         @media (prefers-reduced-motion: reduce){.hfg-in,.batch-bar,.ms-bar,.mt-tile,.mx-scan,.mx-row,.ms-stack{animation:none!important;transition:none!important}}
       `}</style>
 
-      {/* ── Hero (who) — the only top hairline sits under the global header ── */}
+      {/* ── Hero (who + product) — copy left, live product demo right ── */}
       <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto max-w-3xl px-5 pb-20 pt-24 text-center sm:px-6 sm:pb-28 sm:pt-32">
-          <p className={EYEBROW(zh)}>{c.eyebrow}</p>
-          <h1 className="mt-5 text-[36px] font-normal leading-[1.05] tracking-[-0.03em] text-[color:var(--foreground)] sm:text-[54px] lg:text-[64px]">
-            {c.heroA}<br />{c.heroB}
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.heroSub}</p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a href={path("/chat-with-pdf")} className="inline-flex h-11 items-center justify-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]">{c.primary}</a>
-            <a href={path("/privacy-policy")} className="inline-flex h-11 items-center justify-center rounded-full border border-[color:var(--line-strong)] px-6 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)]">{c.secondary}</a>
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-16 pt-20 sm:px-6 sm:pb-20 sm:pt-24 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:pb-24 lg:pt-28">
+          <div className="text-center lg:text-left">
+            <p className={EYEBROW(zh)}>{c.eyebrow}</p>
+            <h1 className="mt-5 text-balance text-[34px] font-normal leading-[1.06] tracking-[-0.03em] text-[color:var(--foreground)] sm:text-[48px] lg:text-[56px]">
+              {c.heroA}<br />{c.heroB}
+            </h1>
+            <p className="mx-auto mt-6 max-w-xl text-pretty text-[16px] leading-[1.55] text-[color:var(--muted)] lg:mx-0">{c.heroSub}</p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+              <a href={path("/chat-with-pdf")} className="inline-flex h-11 items-center justify-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]">{c.primary}</a>
+              <a href={path("/privacy-policy")} className="inline-flex h-11 items-center justify-center rounded-full border border-[color:var(--line-strong)] px-6 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)]">{c.secondary}</a>
+            </div>
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 lg:justify-start">
+              {c.proof.map((f, i) => (
+                <span key={i} className="inline-flex items-center gap-1.5 text-[12.5px] text-[color:var(--muted)]">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  {"g" in f && f.g ? <span className="font-medium text-[color:var(--accent)]">{f.g}</span> : null}
+                  <span className="text-[color:var(--foreground)]">{f.t}</span>
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* ── Proof strip (proof) — no box, whitespace only ── */}
-      <section>
-        <div className="mx-auto max-w-3xl px-5 py-20 text-center sm:px-6 sm:py-28">
-          <p className="text-[18px] font-normal text-[color:var(--foreground)]">{c.proofHeading}</p>
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5">
-            {c.proof.map((f, i) => (
-              <span key={i} className="inline-flex items-center gap-1.5 text-[13px] text-[color:var(--muted)]">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                {"g" in f && f.g ? <span className="font-medium text-[color:var(--accent)]">{f.g}</span> : null}
-                <span className="text-[color:var(--foreground)]">{f.t}</span>
-              </span>
-            ))}
+          {/* live product demo: report → AI summary with a clickable-looking citation */}
+          <div className="hfg-in rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+            <div className="flex items-stretch gap-3">
+              <div className="flex w-[36%] flex-col gap-1.5 rounded-lg border border-[color:var(--line)] p-3">
+                {[80, 60, 70, 50, 65, 55].map((w, i) => <span key={i} className={`h-[3px] rounded-full ${i === 2 ? "bg-[color:var(--accent)]" : "bg-[color:var(--skeleton)]"}`} style={{ width: `${w}%`, opacity: i === 2 ? 0.9 : 1 }} />)}
+                <span className="mt-1 text-[10px] text-[color:var(--faint)]">report.pdf</span>
+              </div>
+              <div className="flex items-center text-[color:var(--accent)]">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </div>
+              <div className="flex-1 rounded-lg border border-[color:var(--line)] p-3">
+                <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
+                <div className="mb-1.5 flex items-center gap-1.5 text-[12px] text-[color:var(--foreground)]">
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
+                  <span className="min-w-0">{zh ? "营收同比 +23%" : "Revenue +23% YoY"}</span>
+                  <span className="ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)]">{c.cite}</span>
+                </div>
+                {[zh ? "亚太区为主要驱动" : "APAC is the main driver", zh ? "毛利率 41%（↑3pt）" : "Gross margin 41% (↑3pt)"].map((b) => (
+                  <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[12px] text-[color:var(--muted)] last:mb-0">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" />{b}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -247,27 +267,23 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
               ))}
             </div>
           </div>
-          {/* flagship visual: report → AI summary with a clickable-looking citation */}
-          <div className="hfg-in rounded-xl border border-[color:var(--line)] p-5">
-            <div className="flex items-stretch gap-3">
-              <div className="flex w-[36%] flex-col gap-1.5 rounded-lg border border-[color:var(--line)] p-3">
-                {[80, 60, 70, 50, 65, 55].map((w, i) => <span key={i} className={`h-[3px] rounded-full ${i === 2 ? "bg-[color:var(--accent)]" : "bg-[color:var(--skeleton)]"}`} style={{ width: `${w}%`, opacity: i === 2 ? 0.9 : 1 }} />)}
-                <span className="mt-1 text-[10px] text-[color:var(--faint)]">report.pdf</span>
+          {/* grounded Q&A: a question, then an answer that cites the exact pages */}
+          <div className="hfg-in rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+            <div className="flex justify-end">
+              <span className="max-w-[80%] rounded-2xl rounded-br-md border border-[color:var(--line)] bg-[color:var(--background)] px-3.5 py-2 text-[12.5px] leading-[1.45] text-[color:var(--foreground)]">{zh ? "第 3 季度营收增长了多少？" : "How much did Q3 revenue grow?"}</span>
+            </div>
+            <div className="mt-3 rounded-lg border border-[color:var(--line)] p-3.5">
+              <div className="mb-2.5 flex items-center gap-1.5 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />{zh ? "有据回答" : "Grounded answer"}
               </div>
-              <div className="flex items-center text-[color:var(--accent)]">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </div>
-              <div className="flex-1 rounded-lg border border-[color:var(--line)] p-3">
-                <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
-                <div className="mb-1.5 flex items-center gap-1.5 text-[12px] text-[color:var(--foreground)]">
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                  <span>{zh ? "营收同比 +23%" : "Revenue +23% YoY"}</span>
-                  <span className="ml-auto inline-flex items-center gap-1 rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)]">{c.cite}</span>
-                </div>
-                {[zh ? "亚太区为主要驱动" : "APAC is the main driver", zh ? "毛利率 41%（↑3pt）" : "Gross margin 41% (↑3pt)"].map((b) => (
-                  <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[12px] text-[color:var(--muted)] last:mb-0">
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" />{b}
-                  </div>
+              <p className="mb-3 text-[12.5px] leading-[1.5] text-[color:var(--foreground)]">{zh ? "第 3 季度营收同比增长 23%，主要由亚太区驱动。" : "Q3 revenue grew 23% year-over-year, driven mainly by APAC."}</p>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[10px] text-[color:var(--faint)]">{zh ? "依据" : "Sources"}</span>
+                {(zh ? ["第 12 页", "第 27 页"] : ["p.12", "p.27"]).map((cite) => (
+                  <span key={cite} className="inline-flex items-center gap-1 rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] font-medium text-[color:var(--accent)] transition-colors hover:border-[color:var(--accent)]">
+                    <svg width="9" height="9" viewBox="0 0 16 16" fill="none"><path d="M4 2h6l3 3v9H4z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
+                    {cite}
+                  </span>
                 ))}
               </div>
             </div>

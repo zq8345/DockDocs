@@ -31,7 +31,7 @@ type WorkflowStatus =
 
 const copy = {
   en: {
-    eyebrow: "Chat with PDF MVP",
+    eyebrow: "Chat with PDF",
     title: "Ask questions about extracted PDF text.",
     description:
       "DockDocs extracts readable PDF text locally, then sends only the selected text context and your question to the configured AI provider. For scanned PDFs, run OCR first and paste the extracted text here.",
@@ -66,7 +66,7 @@ const copy = {
       "Daily AI Chat limit reached for this browser. Sign in for a higher local quota or try again tomorrow.",
     privacyTitle: "Privacy behavior",
     privacy:
-      "The original PDF file is not sent to the AI provider. This MVP sends extracted text plus your question only after you start the chat request.",
+      "The original PDF file is never sent to the AI provider. Only the extracted text and your question are sent, and only after you start the chat.",
     idle: "Upload a PDF or paste OCR text, then ask a question.",
     ready: "Ready to ask.",
     working: "Asking the document...",
@@ -76,13 +76,13 @@ const copy = {
     validatingStatus: "Validating references and token usage...",
     fallbackStatus: "Streaming paused. Finishing with the standard response...",
     cancelled: "Cancelled. The partial answer was not saved.",
-    truncated: "Context was trimmed to stay within the MVP limit.",
+    truncated: "Context was trimmed to fit the size limit.",
   },
   zh: {
-    eyebrow: "PDF 问答 MVP",
+    eyebrow: "PDF 问答",
     title: "基于提取文本向 PDF 提问。",
     description:
-      "DockDocs 会在浏览器本地提取可读取的 PDF 文本，然后只把选中的文本上下文和你的问题发送给配置的 AI provider。扫描件请先运行 OCR，再把文字粘贴到这里。",
+      "DockDocs 会在浏览器本地提取可读取的 PDF 文本，然后只把选中的文本上下文和你的问题发送给 AI 服务。扫描件请先运行 OCR，再把文字粘贴到这里。",
     upload: "选择 PDF",
     pasteLabel: "或粘贴 OCR / 已提取文本",
     pastePlaceholder: "扫描件或图片型 PDF 可先 OCR，再把文字粘贴到这里。",
@@ -112,17 +112,17 @@ const copy = {
       "今天的 AI Chat 本地额度已用完。登录后可使用更高额度，或明天再试。",
     privacyTitle: "隐私处理方式",
     privacy:
-      "原始 PDF 文件不会发送给 AI provider。本 MVP 只会在你开始提问后发送提取文本和问题。",
+      "原始 PDF 文件不会发送给 AI 服务。只有在你开始提问后，才会发送提取的文本和你的问题。",
     idle: "上传 PDF 或粘贴 OCR 文本，然后提出问题。",
     ready: "已准备提问。",
     working: "正在询问文档...",
     extractingStatus: "正在读取文档文本...",
-    sendingStatus: "正在发送上下文到 AI provider...",
+    sendingStatus: "正在发送上下文到 AI 服务...",
     streamingStatus: "正在流式生成回答...",
     validatingStatus: "正在校验引用和 token 用量...",
     fallbackStatus: "流式响应中断，正在使用标准响应完成...",
     cancelled: "已取消。未完成回答不会保存到对话记录。",
-    truncated: "上下文已按 MVP 限制裁剪。",
+    truncated: "上下文已按大小限制裁剪。",
   },
 } as const;
 

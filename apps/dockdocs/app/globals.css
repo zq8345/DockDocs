@@ -175,6 +175,15 @@ button, input, textarea, select, a {
   color: var(--on-accent);
 }
 
+/* Line wrapping — balance headings and avoid single-character orphans on the
+   last line (notably for Chinese copy, e.g. a lone "文。" or a split "取消"). */
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+p, li {
+  text-wrap: pretty;
+}
+
 /* ===================================================================
    Utility animations
    =================================================================== */

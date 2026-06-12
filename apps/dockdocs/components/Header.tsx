@@ -374,9 +374,9 @@ export function Header() {
                                   <span className="text-[10px] font-semibold uppercase opacity-80">{locale === "zh" ? "正在开发" : "soon"}</span>
                                 </span>
                               ) : (
-                                <button key={`${item.slug}-${ii}`} type="button" onClick={() => navTo(item.slug)} className={itemCls}>
+                                <a key={`${item.slug}-${ii}`} href={lh(item.slug, locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo(item.slug); }} className={itemCls}>
                                   {item.name}
-                                </button>
+                                </a>
                               ),
                             )}
                           </div>
@@ -418,14 +418,14 @@ export function Header() {
                   <div className="fixed inset-0 z-40" aria-hidden="true" onClick={() => setMoreOpen(false)} />
                   <div className="absolute right-0 top-full z-50 mt-1.5 w-[210px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                     {pages.map((p) => (
-                      <button
+                      <a
                         key={p.href}
-                        type="button"
-                        onClick={() => { navTo(p.href); setMoreOpen(false); }}
+                        href={lh(p.href, locale)}
+                        onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo(p.href); setMoreOpen(false); }}
                         className="block w-full rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
                       >
                         {p.name}
-                      </button>
+                      </a>
                     ))}
                     <div className="my-1.5 border-t border-[color:var(--line)]" />
                     <div className="flex items-center justify-between px-3 py-1.5">
@@ -498,14 +498,14 @@ export function Header() {
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {pages.map((p) => (
-                    <button
+                    <a
                       key={p.href}
-                      type="button"
-                      onClick={() => { navTo(p.href); setMobileOpen(false); }}
+                      href={lh(p.href, locale)}
+                      onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo(p.href); setMobileOpen(false); }}
                       className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2 text-[14px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
                     >
                       {p.name}
-                    </button>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -532,14 +532,14 @@ export function Header() {
                                 <span className="text-[10px] font-semibold uppercase opacity-80">{locale === "zh" ? "正在开发" : "soon"}</span>
                               </span>
                             ) : (
-                              <button
+                              <a
                                 key={`${item.slug}-${ii}`}
-                                type="button"
-                                onClick={() => { navTo(item.slug); setMobileOpen(false); }}
+                                href={lh(item.slug, locale)}
+                                onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo(item.slug); setMobileOpen(false); }}
                                 className="block w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
                               >
                                 {item.name}
-                              </button>
+                              </a>
                             ),
                           )}
                         </div>
