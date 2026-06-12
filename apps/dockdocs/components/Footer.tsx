@@ -50,9 +50,12 @@ const toolColsEn = [
       { label: "Delete Page", href: "/delete-page" },
       { label: "Rotate Page", href: "/rotate-page" },
       { label: "Crop PDF", href: "/crop-pdf" },
+      { label: "Watermark PDF", href: "/watermark-pdf" },
       { label: "Sign PDF", href: "/sign-pdf" },
+      { label: "Redact PDF", href: "/redact-pdf" },
       { label: "Batch compress", href: "/batch-compress" },
       { label: "Protect PDF", href: "/protect-pdf" },
+      { label: "Unlock PDF", href: "/unlock-pdf" },
     ],
   },
   {
@@ -60,6 +63,7 @@ const toolColsEn = [
     links: [
       { label: "About", href: "/about" },
       { label: "Blog", href: "/blog" },
+      { label: "Guides", href: "/guides" },
       { label: "Pricing", href: "/pricing" },
       { label: "Contact", href: "/contact" },
     ],
@@ -104,9 +108,12 @@ const toolColsZh = [
       { label: "删除页面", href: "/delete-page" },
       { label: "旋转页面", href: "/rotate-page" },
       { label: "裁剪 PDF", href: "/crop-pdf" },
+      { label: "PDF 水印", href: "/watermark-pdf" },
       { label: "PDF 签名", href: "/sign-pdf" },
+      { label: "PDF 脱敏", href: "/redact-pdf" },
       { label: "批量压缩", href: "/batch-compress" },
       { label: "加密 PDF", href: "/protect-pdf" },
+      { label: "解密 PDF", href: "/unlock-pdf" },
     ],
   },
   {
@@ -114,6 +121,7 @@ const toolColsZh = [
     links: [
       { label: "关于", href: "/about" },
       { label: "博客", href: "/blog" },
+      { label: "指南", href: "/guides" },
       { label: "定价", href: "/pricing" },
       { label: "联系", href: "/contact" },
     ],
@@ -164,6 +172,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} DockDocs. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-[color:var(--faint)]">
+            <a href={href("/sitemap", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "站点地图" : "Sitemap"}</a>
             <a href={href("/privacy-policy", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "隐私" : "Privacy"}</a>
             <a href={href("/terms", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "条款" : "Terms"}</a>
           </div>
