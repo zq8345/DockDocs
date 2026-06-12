@@ -84,8 +84,8 @@ html.light {
   --surface-raised: #f9fafb;
 
   --foreground: #111827;
-  --muted: #6b7280;
-  --faint: #9ca3af;
+  --muted: #4b5563;
+  --faint: #6b7280;
 
   --line: #e5e7eb;
   --line-strong: #d1d5db;
@@ -97,7 +97,7 @@ html.light {
   --accent-strong: #0f7a4f;
   --accent-hover: #137a4f;
   --soft-accent: rgba(26, 156, 102, 0.08);
-  --on-accent: #ffffff;
+  --on-accent: #06140d;
 
   --success: #059669;
   --success-surface: #ecfdf5;

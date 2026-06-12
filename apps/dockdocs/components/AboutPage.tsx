@@ -187,21 +187,21 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
             <svg viewBox="0 0 920 300" className="w-full" role="img" aria-label={c.flowHeading}>
               {/* boundary */}
               <line x1="560" y1="40" x2="560" y2="260" style={{ stroke: "var(--line-strong)" }} strokeWidth="1.5" strokeDasharray="3 6" />
-              <text x="280" y="32" textAnchor="middle" fill="currentColor" className="fill-[color:var(--faint)] font-mono text-[13px]">{c.flowDevice}</text>
-              <text x="745" y="32" textAnchor="middle" fill="currentColor" className="fill-[color:var(--faint)] font-mono text-[13px]">{c.flowNet}</text>
+              <text x="280" y="32" textAnchor="middle" className="font-mono text-[13px]" style={{ fill: "var(--faint)" }}>{c.flowDevice}</text>
+              <text x="745" y="32" textAnchor="middle" className="font-mono text-[13px]" style={{ fill: "var(--faint)" }}>{c.flowNet}</text>
 
               {/* legacy lane — file crosses to a server */}
               <g className="text-[color:var(--faint)]" style={{ color: "var(--faint)" }} stroke="currentColor" fill="none" strokeWidth="1.6">
                 <rect x="70" y="92" width="74" height="52" rx="7" />
                 <line x1="70" y1="108" x2="144" y2="108" />
                 <circle cx="80" cy="100" r="1.6" fill="currentColor" />
-                <line x1="150" y1="118" x2="690" y2="118" />
-                <path d="M680 110l12 8-12 8" />
+                <line x1="150" y1="118" x2="692" y2="118" />
+                <path d="M690 112l12 6-12 6z" fill="currentColor" stroke="none" />
                 <rect x="700" y="96" width="64" height="46" rx="5" />
                 <line x1="712" y1="110" x2="752" y2="110" /><line x1="712" y1="120" x2="752" y2="120" /><line x1="712" y1="130" x2="752" y2="130" />
                 <text x="420" y="150" textAnchor="middle" fill="currentColor" stroke="none" className="font-mono text-[12px]">{c.flowLegacy}</text>
-                <text x="732" y="162" textAnchor="middle" fill="currentColor" stroke="none" className="text-[12px]">{c.flowServers}</text>
-                <line x1="690" y1="158" x2="774" y2="158" strokeWidth="1.4" />
+                <text x="732" y="164" textAnchor="middle" fill="currentColor" stroke="none" className="text-[12px]">{c.flowServers}</text>
+                <line x1="694" y1="159" x2="770" y2="159" strokeWidth="1.4" />
               </g>
 
               {/* dockdocs lane — file loops back, never crosses */}
@@ -209,14 +209,14 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
                 <rect x="70" y="206" width="74" height="52" rx="7" />
                 <line x1="70" y1="222" x2="144" y2="222" />
                 <circle cx="80" cy="214" r="1.6" fill="currentColor" />
-                {/* self-loop (refresh) glyph */}
-                <path d="M171 232a16 16 0 1 0 5-11" />
-                <path d="M174 206v9h9" />
-                <path className="ab-flow" d="M171 232a16 16 0 1 0 5-11" strokeWidth="2.4" />
-                <text x="300" y="226" fill="currentColor" stroke="none" className="font-mono text-[12px]">{c.flowLocal}</text>
+                {/* return-loop: file goes out a little, comes right back to the device — never crosses */}
+                <path d="M148 234H246a18 18 0 0 0 0-36H148" />
+                <path d="M148 198l13-6v12z" fill="currentColor" stroke="none" />
+                <path className="ab-flow" d="M148 234H246a18 18 0 0 0 0-36H148" strokeWidth="2.4" />
+                <text x="300" y="206" fill="currentColor" stroke="none" className="font-mono text-[12px]">{c.flowLocal}</text>
                 {/* 0 bytes pill */}
-                <rect x="296" y="236" width="150" height="26" rx="13" strokeWidth="1.4" />
-                <text x="371" y="253" textAnchor="middle" fill="currentColor" stroke="none" className="text-[12px]">{c.flowZero}</text>
+                <rect x="300" y="218" width="150" height="26" rx="13" strokeWidth="1.4" />
+                <text x="375" y="235" textAnchor="middle" fill="currentColor" stroke="none" className="text-[12px]">{c.flowZero}</text>
               </g>
             </svg>
           </div>
