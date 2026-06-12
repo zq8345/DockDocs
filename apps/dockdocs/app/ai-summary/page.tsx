@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "@/lib/i18n";
 import { AiSummaryClient } from "./AiSummaryClient";
 
 export const metadata: Metadata = {
   title: "AI Summary — DockDocs",
   description: "Summarize long documents into key points and actions with AI.",
-  alternates: { canonical: "/ai-summary/" },
+  alternates: { canonical: "/ai-summary/", languages: languageAlternates("ai-summary") },
   robots: { index: true, follow: true },
 };
 

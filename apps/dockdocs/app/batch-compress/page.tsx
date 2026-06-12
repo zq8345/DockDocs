@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "@/lib/i18n";
 import { BatchCompressClient } from "@/components/BatchCompressClient";
 
 export const metadata: Metadata = {
@@ -6,6 +7,10 @@ export const metadata: Metadata = {
   description:
     "Drop a whole folder of PDFs and compress them all in one go — each is shrunk in your browser and packaged into a single ZIP. Nothing is uploaded.",
   keywords: ["batch compress pdf", "compress multiple pdfs", "compress pdf folder", "bulk compress pdf", "reduce pdf size"],
+  alternates: {
+    canonical: "/batch-compress/",
+    languages: languageAlternates("batch-compress"),
+  },
 };
 
 export default function BatchCompressPage() {

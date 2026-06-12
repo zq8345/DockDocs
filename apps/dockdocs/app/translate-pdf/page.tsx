@@ -2,7 +2,7 @@ import { createPdfToolMetadata } from "../../../../shared/templates/pdf-tool-pag
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { TranslatePdfClient } from "@/components/TranslatePdfClient";
 
-const config = getLocalizedToolConfig("en", "translate-pdf");
+const config = { ...getLocalizedToolConfig("en", "translate-pdf"), canonicalPath: "/translate-pdf/" };
 
 export const metadata = createPdfToolMetadata(config);
 

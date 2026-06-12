@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "@/lib/i18n";
 import { BatchRotateClient } from "@/components/BatchRotateClient";
 
 export const metadata: Metadata = {
@@ -6,7 +7,7 @@ export const metadata: Metadata = {
   description:
     "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF and download one ZIP. Entirely in your browser; your files never leave your device.",
   keywords: ["batch rotate pdf", "rotate multiple pdf", "fix sideways scans", "bulk rotate pages"],
-  alternates: { canonical: "/batch-rotate-pdf/" },
+  alternates: { canonical: "/batch-rotate-pdf/", languages: languageAlternates("batch-rotate-pdf") },
 };
 
 export default function BatchRotatePdfPage() {

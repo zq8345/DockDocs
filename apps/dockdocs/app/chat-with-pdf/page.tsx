@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "@/lib/i18n";
 import { ChatWithPdfClient } from "./ChatWithPdfClient";
 
 export const metadata: Metadata = {
   title: "Chat with PDF — DockDocs",
   description: "Upload a PDF and ask grounded questions. AI-powered document chat.",
-  alternates: { canonical: "/chat-with-pdf/" },
+  alternates: { canonical: "/chat-with-pdf/", languages: languageAlternates("chat-with-pdf") },
   robots: { index: true, follow: true },
 };
 

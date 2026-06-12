@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "@/lib/i18n";
 import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Privacy policy for the Dock Tools AI office workspace.",
   alternates: {
-    canonical: "/privacy-policy",
+    canonical: "/privacy-policy/",
+    languages: languageAlternates("privacy-policy"),
   },
 };
 

@@ -4,7 +4,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 
-const config = getLocalizedToolConfig("en", "pdf-to-html");
+const config = { ...getLocalizedToolConfig("en", "pdf-to-html"), canonicalPath: "/pdf-to-html/" };
 
 export const metadata = createPdfToolMetadata(config);
 

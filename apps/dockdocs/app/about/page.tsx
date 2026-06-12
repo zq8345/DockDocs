@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "@/lib/i18n";
 import { AboutPage } from "@/components/AboutPage";
 
 export const metadata: Metadata = {
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
     "DockDocs is a privacy-first AI document platform with 50+ PDF tools, AI chat, OCR, and document workflows — built for teams, students, and professionals worldwide.",
   alternates: {
     canonical: "/about/",
-    languages: { zh: "/zh/about/" },
+    languages: languageAlternates("about"),
   },
   robots: { index: true, follow: true },
 };

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { languageAlternates } from "@/lib/i18n";
 import { SitemapContent } from "@/components/SitemapContent";
 import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Sitemap — DockDocs",
   description: "Complete sitemap of all DockDocs PDF tools, AI workflows, and pages.",
-  alternates: { canonical: "/sitemap/" },
+  alternates: { canonical: "/sitemap/", languages: languageAlternates("sitemap") },
 };
 
 export default function SitemapPage() {

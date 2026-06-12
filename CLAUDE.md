@@ -39,12 +39,10 @@
 - 11 cron jobs on Alibaba Cloud ECS (47.251.125.101) running DeepSeek V4 Pro
 - Mission Control at /internal/mission-control/ powered by hermè
 
-## Mandatory Cross-Review (CRITICAL)
-- **AFTER every commit**: run `git diff HEAD~1 | claude -p "Brief code review: any bugs or issues?" --max-turns 2` to self-review
-- **Before pushing**: run `npm run build` — zero errors required
-- **After pushing**: tell the user the commit is done, so DeepSeek can cross-review
-- DeepSeek will then review your code with a different model — this catches blind spots you can't see
+## Build Discipline (CRITICAL)
+- **Before pushing**: run `npm run build` — zero errors required (postbuild i18n-guard must stay green)
 - NEVER claim code is "ready" without passing build
+- Do NOT involve DeepSeek in any work / cross-review (dropped 2026-06-12 per Joe).
 - Use C:\Users\47203\Documents\Dock\apps\dockdocs\... for file tools
 - Terminal: use /c/Users/47203/Documents/Dock
 - MSYS paths like /c/Users/... work in bash, NEVER use in write_file

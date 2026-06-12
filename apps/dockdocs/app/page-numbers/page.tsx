@@ -2,7 +2,7 @@ import { createPdfToolMetadata } from "../../../../shared/templates/pdf-tool-pag
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { PageNumbersClient } from "@/components/PageNumbersClient";
 
-const config = getLocalizedToolConfig("en", "page-numbers");
+const config = { ...getLocalizedToolConfig("en", "page-numbers"), canonicalPath: "/page-numbers/" };
 
 export const metadata = createPdfToolMetadata(config);
 
