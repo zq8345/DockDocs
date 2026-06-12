@@ -366,9 +366,13 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     steps: ["Upload a PDF.", "Convert document structure.", "Download an editable Word document."],
     faqTitle: "PDF to Word questions",
     faq: [
-      { question: "Can I edit the output?", answer: "The conversion produces an editable Word (DOCX) file." },
-      { question: "Will layout be perfect?", answer: "Conversion quality depends on the original PDF structure." },
-      { question: "Does it use AI?", answer: "No — it's a straightforward, reliable PDF-to-Word converter." },
+      { question: "How do I convert a PDF to Word?", answer: "Upload your PDF, click Convert to Word, and download the editable .docx file in a few seconds." },
+      { question: "Will the original layout be preserved?", answer: "Text becomes editable content; simple documents convert cleanly, while complex layouts, images, and tables may need manual touch-ups in Word." },
+      { question: "Can I convert a scanned or image-based PDF?", answer: "Scanned PDFs have no text layer, so a direct conversion may come out blank or garbled. Run DockDocs OCR PDF first to extract the text, then convert." },
+      { question: "Is my file uploaded to a server?", answer: "Yes. PDF to Word needs server-side conversion, so the file is uploaded to our conversion service, processed, and then deleted — it is not used for anything else." },
+      { question: "Is there a file size limit?", answer: "Cloud-converted files are limited to 100 MB each." },
+      { question: "How long does it take?", answer: "Usually a few seconds to a minute, depending on the file size and page count." },
+      { question: "Is it free, and what format do I get?", answer: "Completely free. The output is a standard .docx that opens in Microsoft Word, WPS, or Google Docs." },
     ],
     cta: {
       eyebrow: "PDF to Word",
@@ -1462,8 +1466,13 @@ const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
   "pdf-to-word": {
     faqTitle: "PDF 转 Word 常见问题",
     faq: [
-      { question: "如何把 PDF 转成 Word？", answer: "上传 PDF，内容会被导出为可编辑的 DOCX 文件。" },
-      { question: "文件大小有限制吗？", answer: "通过云端转换的文件最大 100 MB。" },
+      { question: "如何把 PDF 转成 Word？", answer: "上传 PDF，点「PDF 转 Word」，几秒后下载导出的可编辑 .docx 文件。" },
+      { question: "会保留原来的排版吗？", answer: "文字会被提取成可编辑内容；简单文档效果很好，复杂版式、图片和表格可能需要在 Word 里手动微调。" },
+      { question: "扫描件 / 图片型 PDF 能转吗？", answer: "扫描件没有文字层，直接转出来的 Word 可能是空白或乱码。请先用「PDF OCR」提取文字，再转换。" },
+      { question: "我的文件会上传到服务器吗？", answer: "会。PDF 转 Word 需要服务端转换，文件会上传到我们的转换服务处理，完成后即从服务端删除，不作他用。" },
+      { question: "文件大小有限制吗？", answer: "通过云端转换的单个文件最大 100 MB。" },
+      { question: "转换要多久？", answer: "通常几秒到一分钟，取决于文件大小和页数。" },
+      { question: "免费吗？输出什么格式？", answer: "完全免费。输出标准 .docx，可用 Microsoft Word、WPS 或 Google 文档打开编辑。" },
     ],
   },
   "ocr-pdf": {

@@ -125,7 +125,7 @@ export function Footer() {
   const locale = l(pathname);
 
   return (
-    <footer className="border-t border-[color:var(--line)] bg-[color:var(--surface)]">
+    <footer className="border-t border-[color:var(--line)] bg-[color:var(--background)]">
       <div className="mx-auto max-w-6xl px-5 py-12 sm:px-6 lg:px-8">
         {/* Top: logo + columns */}
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">

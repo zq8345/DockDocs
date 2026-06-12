@@ -353,9 +353,6 @@ export function PdfWorkflowEngine({
                 <p className="mt-4 text-sm text-[color:var(--muted)]">
                   {zh ? "或将文件拖放到此处" : "or drop your file here"}
                 </p>
-                <p className="mt-1.5 text-xs text-[color:var(--faint)]">
-                  {zh ? `请上传不超过 ${formatBytes(spec.maxFileSize)} 的文件` : `Please upload a file up to ${formatBytes(spec.maxFileSize)}`}
-                </p>
               </>
             ) : null}
 

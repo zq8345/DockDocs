@@ -311,7 +311,7 @@ export function Header() {
   const itemCls =
     "block w-full whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[14.5px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]";
   const iconBtn =
-    "inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-sm transition hover:border-[color:var(--line-strong)]";
+    "inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] text-sm transition hover:border-[color:var(--line-strong)]";
 
   // Inline language toggle (used in More menu + mobile)
   const langToggle = (
@@ -336,7 +336,7 @@ export function Header() {
   return (
     <>
       {/* ── Fixed header bar ── */}
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-[color:var(--line)] bg-[color:var(--surface)]/90 backdrop-blur-xl">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-[color:var(--line)] bg-[color:var(--background)]/90 backdrop-blur-xl">
         <div className="mx-auto flex h-[52px] max-w-6xl items-center px-4 lg:px-6">
           {/* Logo */}
           <a href={lh("/", locale)} className="mr-3 shrink-0">
@@ -354,7 +354,7 @@ export function Header() {
                   </svg>
                 </span>
                 <div className="absolute left-0 top-full z-50 hidden w-max pt-2 group-hover:block">
-                  <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+                  <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-4 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                     <div
                       className="grid gap-x-7 gap-y-3"
                       style={{ gridTemplateColumns: `repeat(${cat.cols.length}, auto)` }}
@@ -395,7 +395,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => navTo("/account")}
-              className="hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] md:inline-flex"
+              className="hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] md:inline-flex"
             >
               {locale === "zh" ? "登录" : "Sign in"}
             </button>
@@ -416,7 +416,7 @@ export function Header() {
               {moreOpen && (
                 <>
                   <div className="fixed inset-0 z-40" aria-hidden="true" onClick={() => setMoreOpen(false)} />
-                  <div className="absolute right-0 top-full z-50 mt-1.5 w-[210px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+                  <div className="absolute right-0 top-full z-50 mt-1.5 w-[210px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                     {pages.map((p) => (
                       <button
                         key={p.href}
@@ -451,7 +451,7 @@ export function Header() {
               onClick={() => setMobileOpen((v) => !v)}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-[color:var(--foreground)] md:hidden"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] text-[color:var(--foreground)] md:hidden"
             >
               {mobileOpen ? (
                 <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4">
@@ -477,15 +477,15 @@ export function Header() {
             <div className="px-4 pb-8 pt-4">
 
               {/* Language / theme / sign-in row */}
-              <div className="mb-5 flex items-center gap-2 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2.5">
+              <div className="mb-5 flex items-center gap-2 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2.5">
                 {langToggle}
-                <button type="button" onClick={toggleTheme} aria-label="Toggle theme" className={`${iconBtn} bg-[color:var(--surface)]`}>
+                <button type="button" onClick={toggleTheme} aria-label="Toggle theme" className={`${iconBtn} bg-[color:var(--background)]`}>
                   {light ? "☾" : "☀"}
                 </button>
                 <button
                   type="button"
                   onClick={() => { navTo("/account"); setMobileOpen(false); }}
-                  className="ml-auto rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-[13px] font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
+                  className="ml-auto rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
                 >
                   {locale === "zh" ? "登录" : "Sign in"}
                 </button>
@@ -502,7 +502,7 @@ export function Header() {
                       key={p.href}
                       type="button"
                       onClick={() => { navTo(p.href); setMobileOpen(false); }}
-                      className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2 text-[14px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
+                      className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2 text-[14px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
                     >
                       {p.name}
                     </button>
@@ -527,7 +527,7 @@ export function Header() {
                         <div className="grid grid-cols-2 gap-1.5">
                           {col.items.map((item, ii) =>
                             item.soon ? (
-                              <span key={`${item.slug}-${ii}`} className="flex w-full cursor-default items-center justify-between gap-1 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--faint)]">
+                              <span key={`${item.slug}-${ii}`} className="flex w-full cursor-default items-center justify-between gap-1 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--faint)]">
                                 {item.name}
                                 <span className="text-[10px] font-semibold uppercase opacity-80">{locale === "zh" ? "正在开发" : "soon"}</span>
                               </span>
@@ -536,7 +536,7 @@ export function Header() {
                                 key={`${item.slug}-${ii}`}
                                 type="button"
                                 onClick={() => { navTo(item.slug); setMobileOpen(false); }}
-                                className="block w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
+                                className="block w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
                               >
                                 {item.name}
                               </button>

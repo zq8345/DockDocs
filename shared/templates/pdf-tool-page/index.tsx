@@ -383,36 +383,13 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       {/* ── Hero + Upload (centered, full-width focus) ── */}
       <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
-          {/* Breadcrumb */}
-          <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
-            <a href={zh ? "/zh/" : "/"} className="transition hover:text-[color:var(--foreground)]">
-              DockDocs
-            </a>
-            <span>/</span>
-            <span className="font-medium text-[color:var(--foreground)]">{config.breadcrumbName}</span>
-          </div>
-
           {/* Title */}
           <h1 className="text-[28px] font-semibold tracking-[-0.018em] text-[color:var(--foreground)] sm:text-[34px]">
-            {config.heroTitle}
+            {config.breadcrumbName}
           </h1>
           <p className="mt-3 max-w-4xl text-[15px] leading-relaxed text-[color:var(--muted)]">
             {config.heroDescription}
           </p>
-
-          {/* Stats pills */}
-          {config.stats.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {config.stats.map(([label, value]) => (
-                <span
-                  key={label}
-                  className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-medium text-[color:var(--muted)]"
-                >
-                  {tStat(label, zh)}: <strong className="font-semibold text-[color:var(--foreground)]">{tStat(value, zh)}</strong>
-                </span>
-              ))}
-            </div>
-          )}
 
           {/* Upload engine */}
           <div className="mt-8">
@@ -426,9 +403,9 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
         <section>
           <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6">
             <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{config.faqTitle}</h2>
-            <div className="mt-5 divide-y divide-[color:var(--line)]">
+            <div className="mt-5 space-y-6">
               {config.faq.map((item) => (
-                <div key={item.question} className="py-4">
+                <div key={item.question}>
                   <h3 className="text-sm font-semibold text-[color:var(--foreground)]">{item.question}</h3>
                   <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{item.answer}</p>
                 </div>

@@ -23,7 +23,7 @@
   /* Text — warm white/gray scale */
   --foreground: #fafafa;
   --muted: #a0a0a0;
-  --faint: #707070;
+  --faint: #8f8f8f;
 
   /* Borders — depth comes from these hairlines (Supabase relies on borders, not shadows) */
   --line: rgba(255, 255, 255, 0.09);
