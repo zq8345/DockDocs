@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
-import { Spinner } from "@/components/Spinner";
+import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
@@ -39,7 +39,6 @@ export function CropPdfClient({ locale = "en" }: { locale?: Locale }) {
   const [edges, setEdges] = useState<Edges>({ top: 0, right: 0, bottom: 0, left: 0 });
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<File | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const reset = () => { setPhase("idle"); setFileName(""); setPreview(""); setEdges({ top: 0, right: 0, bottom: 0, left: 0 }); setError(null); fileRef.current = null; };
 
@@ -109,21 +108,7 @@ export function CropPdfClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <div
-          className="mt-8 flex min-h-[300px] sm:min-h-[360px] py-8 w-full cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
-          onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("is-drag-over"); }}
-          onDragLeave={(e) => { if (e.currentTarget === e.target) e.currentTarget.classList.remove("is-drag-over"); }}
-          onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) onFile(f); }}
-        >
-          {phase === "rendering" ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-1"><Spinner /><p className="text-[14px] font-medium text-[color:var(--muted)]">{t.rendering}</p></div>
-          ) : (
-            <button type="button" className="inline-flex h-12 w-1/2 items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.32)] transition hover:opacity-90">{t.choose}</button>
-          )}
-          {phase !== "rendering" && (<><p className="mt-4 text-sm text-[color:var(--muted)]">{locale === "zh" ? "或将文件拖放到此处" : "or drop your file here"}</p><div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]"><span>{locale === "zh" ? "支持 PDF" : "Supports PDF"}</span><span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" /><span className="inline-flex items-center gap-1 text-[color:var(--accent)]"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>{locale === "zh" ? "本地处理，文件不上传" : "Processed locally — never uploaded"}</span></div></>)}
-          <input ref={inputRef} type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }} />
-        </div>
+        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
       ) : (
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <div className="order-2 lg:order-1">

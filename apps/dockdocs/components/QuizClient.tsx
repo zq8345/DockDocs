@@ -1,5 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { UploadDropzone } from "@/components/UploadDropzone";
 
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
@@ -42,7 +43,6 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
   const [cards, setCards] = useState<Card[]>([]);
   const [flipped, setFlipped] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const onFile = useCallback(async (file: File) => {
     if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
@@ -96,21 +96,7 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "reading" ? (
-        <div
-          className="mt-8 flex min-h-[300px] sm:min-h-[360px] py-8 w-full cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
-          onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("is-drag-over"); }}
-          onDragLeave={(e) => { if (e.currentTarget === e.target) e.currentTarget.classList.remove("is-drag-over"); }}
-          onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) onFile(f); }}
-        >
-          {phase === "reading" ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-1"><Spinner /><p className="text-[14px] font-medium text-[color:var(--muted)]">{t.reading}</p></div>
-          ) : (
-            <button type="button" className="inline-flex h-12 w-1/2 items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.32)] transition hover:opacity-90">{t.choose}</button>
-          )}
-          {phase !== "reading" && <p className="mt-4 text-sm text-[color:var(--muted)]">{locale === "zh" ? "或将文件拖放到此处" : "or drop your file here"}</p>}
-          <input ref={inputRef} type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }} />
-        </div>
+        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "reading"} busyLabel={t.reading} privacy={false} onFile={onFile} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
