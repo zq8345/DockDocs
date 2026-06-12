@@ -16,9 +16,9 @@ const baseClass =
 const variantClasses: Record<CardVariant, string> = {
   default: "border-[color:var(--line)]",
   muted: "border-[color:var(--line)] bg-[color:var(--surface-subtle)]",
-  elevated: "border-[color:var(--line)] shadow-[0_18px_55px_rgba(15,23,42,0.08)]",
+  elevated: "border-[color:var(--line-strong)]",
   interactive:
-    "border-[color:var(--line)] transition hover:border-[color:var(--foreground)] focus-within:border-[color:var(--accent)]",
+    "border-[color:var(--line)] transition-colors hover:border-[color:var(--line-strong)] focus-within:border-[color:var(--accent)]",
 };
 
 const toneClasses: Record<DockTone, string> = {
