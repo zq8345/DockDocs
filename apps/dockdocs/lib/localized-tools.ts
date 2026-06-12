@@ -1331,6 +1331,165 @@ const localizedTools = {
 // Generic Chinese FAQ per tool. The zh tool configs inherit English FAQ via
 // the enTools spread; for Chinese pages we substitute these translated sets
 // so the FAQ section reads in Chinese.
+const enFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "word-to-pdf": {
+    faqTitle: "Word to PDF FAQ",
+    faq: [
+      { question: "How do I convert a Word document to PDF?", answer: "Drag your Word file into the upload box, or click the button to pick a .docx or .doc file from your device. The conversion runs automatically, and once it's done you can download the PDF. There's nothing to install — no Word or Office needed." },
+      { question: "Does my file get uploaded, or does it stay on my device?", answer: "It gets uploaded. This is a cloud conversion tool, so your file is sent to our conversion service to be processed and then downloaded back as a PDF — it does leave your device. The file is deleted from the service after processing and is never kept or used for anything else. If a document is highly sensitive, use your own judgment before uploading." },
+      { question: "How does the conversion actually work, and will my formatting hold up?", answer: "We render your document with LibreOffice on the server, which gives good layout fidelity — fonts, tables, images, and overall layout are preserved well in most cases. As with any converter, a few very complex layouts (unusual fonts, nested text boxes, heavy macros) can shift slightly, so it's worth a quick look at the result." },
+      { question: "What's the file size limit, and which formats are supported?", answer: "Up to 100 MB per file, which covers the vast majority of contracts, reports, and resumes. Input can be either .docx or .doc, and the output is a standard PDF." },
+      { question: "Is the output a normal PDF I can open and edit anywhere?", answer: "Yes. It's a standard PDF that opens in any reader — Acrobat, your browser, your phone's built-in viewer, and so on. The text stays as a real text layer, so you can select, copy, and search it; pages aren't flattened into images. To edit the content later, open it in a PDF editor or convert it back to Word." },
+      { question: "What about scanned pages or images inside my Word file?", answer: "This tool converts the content that's already in your Word document. If you've pasted in a scan or screenshot, that part stays an image in the PDF — its text won't be selectable or searchable. To make image text searchable, run it through OCR first before or after converting." },
+      { question: "Is it free?", answer: "Yes, Word to PDF is free to use." },
+    ],
+  },
+  "excel-to-pdf": {
+    faqTitle: "Excel to PDF FAQ",
+    faq: [
+      { question: "How do I convert an Excel file to PDF?", answer: "Upload your spreadsheet (drag and drop or pick it from your device), and DockDocs converts it to a PDF you can download. No Excel or other software needed on your end." },
+      { question: "What happens to my file? Is it private?", answer: "Excel to PDF runs in the cloud, so your file is uploaded to our conversion service for processing and then deleted afterward. It is never kept or used for anything else. If you would rather a file never leave your device, use one of our client-side tools instead, since this one does require an upload to convert." },
+      { question: "Which formats can I convert, and what do I get back?", answer: "It supports modern .xlsx and legacy .xls spreadsheets. You get back a standard PDF that opens in any PDF reader, browser, or print dialog, so recipients do not need a spreadsheet app to view it." },
+      { question: "Is there a file size limit?", answer: "Yes, up to 100 MB per file. That covers most workbooks comfortably. If yours is larger, try removing unused sheets, embedded images, or extra tabs before converting." },
+      { question: "Do my formulas and charts carry over?", answer: "Charts and the laid-out tables come through, but formulas are flattened to static values in the PDF. The PDF shows the calculated numbers as they appeared in the sheet, not the live formulas, since a PDF cannot recalculate. If you need editable formulas, keep your original .xlsx." },
+      { question: "Why does my spreadsheet split across several pages or look cut off?", answer: "Wide sheets often span multiple pages because a PDF page is a fixed width and your columns may be wider than it. This is normal. To keep more on one page, narrow your columns, reduce font size, set a print area, or adjust scaling and page orientation in Excel before converting." },
+      { question: "Is Excel to PDF free?", answer: "Yes, it is free to use." },
+    ],
+  },
+  "ppt-to-pdf": {
+    faqTitle: "PPT to PDF FAQ",
+    faq: [
+      { question: "How do I convert a PowerPoint to PDF?", answer: "Drag your PowerPoint onto the upload box (or click to pick a file from your device). As soon as it uploads, conversion starts automatically, and you download the finished PDF when it's done. No PowerPoint or other software needed. Both .pptx and .ppt files work." },
+      { question: "How does the conversion actually work? Is my file uploaded?", answer: "Yes, and we want to be straight with you about it. This is a cloud tool, not a local one, so your file is uploaded to our conversion service for processing. Once the PDF is ready, the file is deleted from the service afterward. It's never kept or used for anything else. If a deck is highly confidential, weigh that before uploading." },
+      { question: "Is there a file size or slide limit?", answer: "Each file can be up to 100 MB. There's no hard cap on the number of slides, but bigger decks with more slides take a little longer to convert. Each slide becomes one PDF page." },
+      { question: "What does the output look like? Can I open it anywhere?", answer: "You get a standard PDF that opens in any PDF reader, browser, or print dialog. The layout, fonts, and images from your slides are preserved as closely as possible, so the deck looks the same on any device." },
+      { question: "Will my animations and embedded videos still work?", answer: "No. A PDF is a fixed, static document, so slide animations, transitions, and embedded video or audio won't play. Each slide is captured as it looks in its final state. If a slide reveals content through animation, the PDF shows everything at once. Keep your original .pptx if you still need the interactive version, since the PDF isn't meant to be edited like a presentation." },
+      { question: "Any common gotchas to watch for?", answer: "A few: text is preserved as selectable text in most cases, but if a slide is built from a full-page image or screenshot, that text won't be selectable or searchable unless you run OCR separately. Also, if your deck uses fonts that aren't widely available, spacing can shift slightly. Embedding fonts in PowerPoint or sticking to common fonts before converting helps." },
+      { question: "Is PPT to PDF free?", answer: "Yes. PPT to PDF is free to use. Just upload, convert, and download. No account or sign-up required." },
+    ],
+  },
+  "pdf-to-ppt": {
+    faqTitle: "PDF to PPT FAQ",
+    faq: [
+      { question: "How do I convert a PDF to PowerPoint?", answer: "Upload your PDF (drag and drop it or pick it from your device), and we'll convert it to an editable PowerPoint file. When it's done, download the PPTX and open it in PowerPoint, Keynote, Google Slides, or any app that reads PPTX. Each PDF page becomes its own slide." },
+      { question: "Does my file get uploaded somewhere, or does it stay on my device?", answer: "This one is a cloud conversion, so your file does leave your device. It's uploaded to our conversion service, processed there, and then deleted afterward. We never keep it or use it for anything else. If you'd rather a file never leave your computer, our purely client-side tools (like merge and split) handle everything in your browser instead." },
+      { question: "Is there a file size limit?", answer: "Yes, up to 100 MB per file. That covers most presentations and reports comfortably. If your PDF is larger, try compressing it or splitting it into smaller files first." },
+      { question: "Are the slides actually editable, or just images?", answer: "The output is a real, editable PPTX. Text, shapes, and layout come through as editable elements you can rework in PowerPoint. The one exception is scanned PDFs (see below), which come through as images." },
+      { question: "Why did my scanned PDF turn into pictures instead of editable text?", answer: "A scanned PDF is really just images of pages, with no actual text underneath, so there's nothing for us to pull out as editable text. Run it through OCR first to make the text recognizable, then convert. After that you'll get editable slides instead of flat images." },
+      { question: "The layout looks a little off after converting. Is that normal?", answer: "It can happen with complex layouts, heavy graphics, or unusual fonts. PDF and PowerPoint structure content differently, so we rebuild your pages as slides as faithfully as we can, but intricate designs may need a few touch-ups once they're open. Simple, text-and-image documents usually convert cleanly." },
+      { question: "Is PDF to PPT free?", answer: "Yes, it's free to use. Just upload your PDF and download the converted PowerPoint." },
+    ],
+  },
+  "pdf-to-excel": {
+    faqTitle: "PDF to Excel FAQ",
+    faq: [
+      { question: "How do I convert a PDF to Excel?", answer: "Upload a PDF that contains tables, and we'll detect the table structure and turn it into an .xlsx file. When it's done, just download the spreadsheet — it opens and edits in Excel, Google Sheets, WPS, or Numbers. No software to install." },
+      { question: "Does my file stay on my device, or is it uploaded?", answer: "To be straight with you: this is a cloud conversion tool, so your file is uploaded to our conversion service for processing. Once the conversion finishes, the file is deleted from the service — we don't keep it or use it for anything else. If your document is highly sensitive and you'd rather it never leave your machine, take that into account before uploading." },
+      { question: "Is there a file size limit?", answer: "Yes — up to 100 MB per file. That comfortably covers most reports, statements, invoices, and data tables you'd want to pull into a spreadsheet." },
+      { question: "What format do I get, and can I edit it right away?", answer: "You get a standard .xlsx file. It opens directly in Excel, Google Sheets, WPS, or Apple Numbers, and the cell values — numbers and text — are fully editable." },
+      { question: "Can I convert a scanned PDF?", answer: "Not well, no. A scanned PDF is really just an image, so the text inside isn't selectable and there's no table data to extract. You'd need to run OCR first to turn it into a searchable text PDF, and then convert that to Excel." },
+      { question: "Why do my converted tables sometimes come out messy?", answer: "The cleaner and more regular the table, the better the result. If the original PDF uses merged cells, tables that span pages, or a complex layout drawn with lines, the output may need some manual tidying of rows and columns. For best results, start from a PDF with clear, well-structured tables — and keep in mind that text stored as a compressed or non-selectable layer won't extract cleanly." },
+      { question: "Is it free?", answer: "Yes. PDF to Excel is free to use — no account or payment needed." },
+    ],
+  },
+  "html-to-pdf": {
+    faqTitle: "HTML to PDF FAQ",
+    faq: [
+      { question: "How do I convert an HTML file to PDF?", answer: "Upload an .html or .htm file, wait a few seconds for it to convert, then download the PDF. There's nothing to install and no sign-up needed." },
+      { question: "How does the conversion actually work?", answer: "Your file is uploaded to our conversion service, which renders the HTML with a real browser engine and turns it into a PDF. Once the PDF is ready and sent back to you, the uploaded file is deleted from the service. It's never kept or used for anything else. Since the file leaves your device for processing, avoid uploading anything you can't share with a third-party processor." },
+      { question: "Will my images and CSS show up in the PDF?", answer: "They will, as long as they're embedded in the HTML or reachable at a public URL the converter can load. Self-contained HTML (with inline CSS and embedded or absolute-URL images) works best. Content that's drawn by JavaScript after the page loads may not render, since the converter captures the page rather than fully running a live app." },
+      { question: "Is there a file size limit?", answer: "Yes, up to 100 MB per file. That's plenty for most standalone HTML documents, even with embedded images." },
+      { question: "What do I get back, and can I edit it?", answer: "You get a standard PDF that opens in any PDF viewer. Text that was real HTML text stays as selectable, searchable text. If your page included an image of text (like a scanned screenshot), that part becomes a picture in the PDF and won't be selectable unless you run it through OCR separately." },
+      { question: "Why does my PDF look different from the page in my browser?", answer: "The converter renders your HTML on its own, so anything that depended on your browser, your fonts, JavaScript-built content, or files only on your local machine may differ. For the closest match, embed your CSS and fonts, use absolute URLs for images, and keep the layout self-contained." },
+      { question: "Is HTML to PDF free?", answer: "Yes, it's completely free to use." },
+    ],
+  },
+  "pdf-to-pdfa": {
+    faqTitle: "PDF to PDF/A FAQ",
+    faq: [
+      { question: "How do I convert a PDF to PDF/A?", answer: "Drag your PDF onto the upload box (or click to pick it from your device), then hit Convert to PDF/A. We process the file and give you a PDF/A version to download. It still opens in any normal PDF reader like Acrobat, Preview, or your browser, so nothing changes about how you view or edit it." },
+      { question: "What is PDF/A and why would I need it?", answer: "PDF/A is the ISO standard for long-term archiving. It embeds the fonts and other resources the document needs inside the file itself, so it renders the same way years from now even if those fonts aren't installed anywhere. Many legal, government, and records-management systems require PDF/A specifically because it's built to stay readable far into the future." },
+      { question: "Is my file uploaded, or does it stay on my device?", answer: "It's uploaded. PDF/A conversion runs on our cloud conversion service, so the file is sent to that service for processing and then deleted afterward. It's never kept or used for anything else. If you'd rather not upload a sensitive document, this tool isn't a fit, since the conversion has to happen server-side." },
+      { question: "Is there a file size limit?", answer: "Yes, the limit is 100 MB per file. That covers the large majority of documents. If your PDF is bigger, try compressing it first or splitting it into smaller files, then convert each one." },
+      { question: "My PDF is a scanned document. Will the text be searchable in the PDF/A file?", answer: "Not automatically. PDF/A makes the file archive-compliant, but it doesn't add a text layer to scanned images on its own. If your PDF is just scanned pages, the text won't be selectable or searchable unless it's been run through OCR first. For archives where searchability matters, OCR the document before (or as part of) converting it." },
+      { question: "What does the output file look like?", answer: "You get a single PDF/A file with fonts and resources embedded so it stays self-contained. It opens and edits in the same apps you already use for PDFs. Note that to meet the standard, PDF/A bakes in fonts and removes some features that break long-term readability, so the file may be a bit larger than the original." },
+      { question: "Is it free?", answer: "Yes, PDF to PDF/A is completely free to use, with no account required." },
+    ],
+  },
+  "compress-pdf": {
+    faqTitle: "Compress PDF FAQ",
+    faq: [
+      { question: "How do I compress a PDF?", answer: "Drop a PDF onto the tool (or click to choose one from your device), pick a compression level, and let it process. When it's done, download the smaller PDF. There's nothing to install and no sign-up." },
+      { question: "How does the compression actually work?", answer: "To shrink the file, each page is re-rendered as an optimized image and rebuilt into a new PDF. That's why the biggest savings come from scanned or image-heavy documents. The trade-off is that any real text on the page becomes part of the image, so it's no longer selectable or searchable in the output. Compression levels let you trade quality for size — lower quality means a smaller file." },
+      { question: "Are my files uploaded anywhere?", answer: "No. Everything runs entirely in your browser on your own device. The file is never uploaded to a server and never leaves your device, so even sensitive documents stay private." },
+      { question: "Is there a file size limit?", answer: "There's no fixed size limit we impose. The practical ceiling is your device's memory, since the whole PDF is processed in the browser. Very large or high-page-count files use more RAM and take longer, and on a low-memory phone a huge PDF may struggle — but typical documents compress fine." },
+      { question: "What do I get back, and will the text still be selectable?", answer: "You get a standard PDF back, just smaller. Because pages are rasterized to images during compression, text on the compressed pages is no longer selectable or searchable. If keeping selectable text matters, compress a copy and keep your original. Also note that an already-small PDF (like a plain-text document) may not shrink much — compression helps most when there are images or scans to optimize." },
+      { question: "It's a scanned document — anything I should know?", answer: "Scanned PDFs usually compress well since they're already images. But the result still won't be searchable, and if your scan wasn't searchable to begin with, compressing it won't add that. To make scanned text searchable, run it through OCR first (or instead), then compress if you still need a smaller file." },
+      { question: "Is it free?", answer: "Yes, completely free. No account, no email, no watermark on your file, and you can compress as many PDFs as you want." },
+    ],
+  },
+  "pdf-to-text": {
+    faqTitle: "PDF to Text FAQ",
+    faq: [
+      { question: "How do I convert a PDF to text?", answer: "Drag your PDF into the upload box or click \"Choose PDF\" to pick a file from your device. The tool reads the text out of it and lets you download a plain .txt file. If you only want certain pages, you can enter a page range first. No sign-up and no software install." },
+      { question: "How does it actually work?", answer: "It opens the PDF in your browser with pdf.js and pulls out the existing text layer page by page, in reading order. It reads the characters that are already stored in the file as text — it does not re-type or re-recognize anything. Then it stitches the pages together into one .txt file you can download." },
+      { question: "Is my file uploaded anywhere?", answer: "No. Everything runs entirely in your browser on your own device. Your PDF is never uploaded to a server and never leaves your device — there's nothing to delete on our end because we never receive it. You can even disconnect from the internet after the page loads and it'll still work." },
+      { question: "Is there a file size limit?", answer: "There's no fixed limit we impose. Since the work happens locally, the practical ceiling is your device's memory and patience — very large or image-heavy PDFs use more RAM and take longer. Most everyday documents process in a second or two; a huge multi-hundred-page file on a phone may be slow or run out of memory." },
+      { question: "What does the output look like?", answer: "You get a clean plain-text .txt file with just the words. Formatting is not preserved — fonts, colors, bold/italic, columns, tables, and exact layout are all dropped. It's meant for copying quotes, feeding text into other tools, search, or accessibility, not for recreating the original page design." },
+      { question: "I got an empty or partial file — what happened?", answer: "The most common cause is a scanned or image-only PDF. If your PDF is really a picture of a page (a scan or a photo), it has no text layer to extract, so nothing comes out. Those need OCR first to turn the image into real text. A few other PDFs store text in unusual or compressed ways that aren't cleanly selectable, which can give garbled or missing characters — a quick test is to open the PDF in a normal viewer and try to select text with your mouse. If you can't select it there, this tool can't extract it either." },
+      { question: "Is it free?", answer: "Yes, completely free. Because the extraction happens in your browser there's no server cost, so you can convert as many PDFs as you like with no account, no watermark, and no limits." },
+    ],
+  },
+  "pdf-to-html": {
+    faqTitle: "PDF to HTML FAQ",
+    faq: [
+      { question: "How do I convert a PDF to HTML?", answer: "Open the tool, drag in your PDF (or click to choose a file), and optionally enter a page range if you only want certain pages. It converts right away, and you download a single .html file. Nothing to install, no sign-up." },
+      { question: "What does the HTML file actually look like?", answer: "Each PDF page is rendered as an image and placed in its own section, so the result looks identical to the original — fonts, layout, and graphics are preserved exactly. Beneath each page image we also tuck that page's text into a collapsible \"Page text\" block, so the words stay searchable and copyable even though the visible page is an image." },
+      { question: "Is the text in the page itself selectable?", answer: "Not in the page image itself — since each page is rendered as a picture, you can't highlight text directly on it. The recoverable text lives in the collapsible block under each page instead. If you need clean, freely selectable or editable text, use our PDF to Text or PDF to Word tool — those are built for that." },
+      { question: "Is my PDF uploaded to a server?", answer: "No. This tool runs entirely in your browser. Your file is never uploaded and never leaves your device — the conversion happens locally on your own machine." },
+      { question: "Is there a file size or page limit?", answer: "There's no fixed limit we impose. Because everything runs in your browser, the practical ceiling is your device's memory — very large or image-heavy PDFs (lots of high-res pages) use more RAM and take longer, so a huge file may be slow on an older or low-memory device." },
+      { question: "Does it work on scanned PDFs?", answer: "The page images will always look right, since we render every page as a picture regardless. But a scanned PDF has no real text layer, so the collapsible text block under each page will be empty. To make scanned pages searchable, run OCR first, then convert." },
+      { question: "Is it free?", answer: "Yes, completely free. There's no account, no watermark, and no upload — convert as many PDFs as you want, right in your browser." },
+    ],
+  },
+  "pdf-to-markdown": {
+    faqTitle: "PDF to Markdown FAQ",
+    faq: [
+      { question: "How do I convert a PDF to Markdown?", answer: "Drag a PDF onto the page or click to choose one from your device. If you only need certain pages, enter a page range. Then click Convert and download the resulting .md file. The conversion runs the moment you hit the button, right there in your browser." },
+      { question: "Is my PDF uploaded to a server?", answer: "No. This tool runs entirely in your browser, so your file never leaves your device. We use pdf.js to read the PDF and build the Markdown locally on your machine. Nothing is sent to us or stored anywhere, which makes it safe for confidential or sensitive documents." },
+      { question: "What does the output actually look like?", answer: "You get a plain .md file. The PDF's filename becomes a top-level heading (#), and each page is added as its own section with a \"## Page N\" heading followed by that page's text, with lines reconstructed from their positions on the page. It's ready to drop into GitHub, Notion, Obsidian, or any text editor." },
+      { question: "Does it work with scanned PDFs or photos of documents?", answer: "Not on its own. This tool extracts the existing text layer from a PDF. A scanned page is really just an image with no selectable text, so you'd get little or nothing back. Run the file through OCR first to add a text layer, then convert it here." },
+      { question: "My tables and multi-column pages came out messy. Why?", answer: "The tool reads text by its position on the page and groups it into lines, which works great for ordinary prose but can scramble complex tables, sidebars, or multi-column layouts. It doesn't rebuild Markdown tables or detect columns, so expect to do some manual cleanup on heavily formatted pages. A quick test: if you can select and copy the text in a normal PDF viewer, it'll convert; if you can't, the text is an image or otherwise locked out." },
+      { question: "Is there a file size limit?", answer: "There's no fixed cap we impose. Because everything happens in your browser, the practical limit is your device's available memory. Most documents convert fine, but a very large or image-heavy PDF on a low-memory device may run slowly or run out of room." },
+      { question: "Is it free?", answer: "Yes, completely free. There's no sign-up, no watermark, and no per-file charge. Since the work happens on your own device, you can convert as many PDFs as you like." },
+    ],
+  },
+  "protect-pdf": {
+    faqTitle: "Protect PDF FAQ",
+    faq: [
+      { question: "How do I password protect a PDF with DockDocs?", answer: "Three steps: drag your PDF onto the page (or click to choose a file), type an open password (4 to 32 characters, using letters, digits, or underscores), then click Protect PDF and download the encrypted file. From then on, anyone who opens that file in any PDF reader will be prompted for the password first." },
+      { question: "Is my file uploaded to a server?", answer: "No. Protect PDF runs entirely in your browser. The PDF is read locally, encrypted on your device, and the result is handed back to you as a download. Your file and your password are never uploaded and never leave your device — there's no server in the loop, so it even works offline once the page has loaded." },
+      { question: "Is the encryption real, or just a fake lock?", answer: "It's real. The tool applies standard AES encryption (the result screen reports AES-256) and sets it as the password required to open the document. Without the correct password, the content can't be read in any PDF viewer. It's the same open-password mechanism that built-in PDF readers honor, so pick a password that isn't easy to guess." },
+      { question: "I forgot the password — can I recover it?", answer: "No. The password is only ever used locally to encrypt the file, and we never store it or transmit it anywhere, so there's nothing for us to recover. If you lose the password, the PDF can't be opened again. Write it down or save it in a password manager before you close the tab." },
+      { question: "Is there a file size or page limit?", answer: "There's no fixed limit. Because everything runs on your own device, the practical ceiling is your computer's or phone's memory rather than any server quota. Very large PDFs may make the browser pause for a moment while it encrypts — that's normal, just give it a few seconds." },
+      { question: "Does the output stay a PDF, and does the content change?", answer: "Yes, the output is still a normal PDF. The pages, text, and layout are unchanged — the only difference is that an open password has been added. One thing to note: if the file you upload is already password-protected, you'll need to unlock it first before you can re-protect it." },
+      { question: "Is Protect PDF free?", answer: "Yes, it's completely free with no sign-up required. If you need to apply the same password to a whole folder of PDFs at once and get them back as a single ZIP, there's also a Batch Protect PDF tool that works the same client-side way." },
+    ],
+  },
+  "ocr-pdf": {
+    faqTitle: "OCR PDF FAQ",
+    faq: [
+      { question: "How do I OCR a PDF with this tool?", answer: "Choose your scanned PDF, pick the language (English or Simplified Chinese), set the page range you want to read, and run it. The tool renders each selected page, recognizes the text on it, and gives you the extracted text to copy or download. Everything happens right in your browser." },
+      { question: "Is my file uploaded to a server?", answer: "No. The OCR runs entirely in your browser using Tesseract.js, and your PDF never leaves your device. There's no upload step and nothing is stored on our end, which makes it safe for sensitive scans like contracts or IDs." },
+      { question: "How many pages can I process at once?", answer: "Up to 3 pages per run. If you point it at a longer document, set a page range (for example 1-3) to pick which pages to read. For a bigger file, run it a few times on different ranges. The PDF itself also needs to be 25 MB or smaller." },
+      { question: "What languages does it recognize?", answer: "English (eng) and Simplified Chinese (chi_sim). You pick one language per run, so choose the one that matches the main text on the page. Mixed-language documents will favor whichever language you select." },
+      { question: "What do I get back, and in what format?", answer: "You get plain, copyable text. When you process more than one page, the output is separated by simple '--- Page N ---' headers so you can tell which text came from which page. You can copy it to the clipboard or download it as a .txt file." },
+      { question: "Why is the extracted text messy or empty?", answer: "OCR accuracy depends on scan quality. Clear, high-resolution, straight scans read well; blurry, skewed, low-contrast, or handwritten pages produce errors or come back empty. The tool reports a confidence score so you can gauge how reliable a result is, and it will tell you when no text could be recognized — try a cleaner scan in that case. Note this tool is built for image-based, scanned PDFs: if your PDF was made from a scan or photo, the 'text' is really just an image you can't select or search, which is exactly what OCR fixes." },
+      { question: "Is it free?", answer: "Yes, OCR PDF is free to use. Because the recognition runs locally in your browser, there's no account or payment required to extract text." },
+    ],
+  },
+};
+
 const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
   "pdf-to-html": {
     faqTitle: "PDF 转 HTML 常见问题",
@@ -1614,6 +1773,9 @@ export function getLocalizedToolConfig(
   // For Chinese pages, substitute translated FAQ (zh configs inherit EN FAQ)
   if (locale === "zh" && zhFaq[slug]) {
     return { ...base, faqTitle: zhFaq[slug]!.faqTitle, faq: zhFaq[slug]!.faq };
+  }
+  if (locale === "en" && enFaq[slug]) {
+    return { ...base, faqTitle: enFaq[slug]!.faqTitle, faq: enFaq[slug]!.faq };
   }
   return base;
 }
