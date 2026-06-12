@@ -66,7 +66,6 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
         {
           items: [
             { name: "Merge PDF", slug: "/merge-pdf" },
-            { name: "Compare versions", slug: "/redline" },
             { name: "Batch compress", slug: "/batch-compress" },
             { name: "Batch PDF to image", slug: "/batch-pdf-to-image" },
             { name: "Batch encrypt", slug: "/batch-protect-pdf" },
@@ -97,6 +96,7 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
           items: [
             { name: "Compare documents", slug: "/compare" },
             { name: "Cross-doc Q&A", slug: "/compare" },
+            { name: "Compare versions", slug: "/redline" },
             { name: "Extract to Excel", slug: "/extract-to-excel" },
             { name: "Batch summary", slug: "/batch-summary" },
             { name: "Classify PDFs", slug: "/batch-sort" },
@@ -176,7 +176,6 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
         {
           items: [
             { name: "批量 PDF 合并", slug: "/merge-pdf" },
-            { name: "批量 PDF 对比", slug: "/redline" },
             { name: "批量 PDF 压缩", slug: "/batch-compress" },
             { name: "批量 PDF 转图片", slug: "/batch-pdf-to-image" },
             { name: "批量 PDF 加密", slug: "/batch-protect-pdf" },
@@ -207,6 +206,7 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
           items: [
             { name: "多文档对比", slug: "/compare" },
             { name: "跨文档问答", slug: "/compare" },
+            { name: "PDF 版本对比", slug: "/redline" },
             { name: "数据抽取到表格", slug: "/extract-to-excel" },
             { name: "批量摘要", slug: "/batch-summary" },
             { name: "PDF 智能分类", slug: "/batch-sort" },
