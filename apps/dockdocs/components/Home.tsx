@@ -141,7 +141,7 @@ function MiniSecure() {
   return (
     <div className="relative flex h-16 w-full flex-col justify-center gap-1.5 rounded-md border border-[color:var(--line)] px-3">
       <span className="h-[3px] w-[60%] rounded-full bg-[color:var(--skeleton)]" />
-      <span className="ms-bar h-[6px] rounded-sm bg-[color:var(--foreground)]" style={{ width: "14%" }} />
+      <span className="ms-bar h-[6px] rounded-sm bg-[color:var(--foreground)]" />
       <span className="h-[3px] w-[70%] rounded-full bg-[color:var(--skeleton)]" />
       <svg className="absolute right-3 top-3 text-[color:var(--accent)]" width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
     </div>
@@ -189,7 +189,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
         /* hover-triggered card animations (each card is a .group) */
         .batch-bar{width:8%;transition:width 1.5s cubic-bezier(.2,.8,.2,1)}
         .group:hover .batch-bar{width:70%}
-        .ms-bar{transition:width .6s ease}
+        .ms-bar{width:14%;transition:width .6s ease}
         .group:hover .ms-bar{width:48%}
         .group:hover .mt-tile{animation:mtPop .6s ease both;animation-delay:calc(var(--i)*.09s)}
         .mx-scan{opacity:0}

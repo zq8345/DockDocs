@@ -16,6 +16,7 @@ import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
 import { DocumentCompareClient } from "@/components/DocumentCompareClient";
 import { Home as HomeSections } from "@/components/Home";
+import { SitemapContent } from "@/components/SitemapContent";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { AboutPage } from "@/components/AboutPage";
 import { AccountClient } from "@/components/AccountClient";
@@ -1342,47 +1343,6 @@ function LocalizedSitemap({ locale }: { locale: Locale }) {
   const copy = sitemapCopy[locale];
   const groups = [
     {
-      title: locale === "zh" ? "文档工具" : "PDF Tools",
-      links: localizedTools.map((tool) => ({
-        name: tool[locale],
-        href: localizedPath(locale, tool.slug),
-      })),
-    },
-    {
-      title: locale === "zh" ? "支持与信任" : "Support and Trust",
-      links: [
-        "about",
-        "blog",
-        "help",
-        "faq",
-        "contact",
-        "privacy-policy",
-        "terms",
-      ].map((slug) => ({
-        name:
-          locale === "zh"
-            ? {
-                about: "关于",
-                blog: "资源",
-                help: "帮助",
-                faq: "常见问题",
-                contact: "联系",
-                "privacy-policy": "隐私政策",
-                terms: "服务条款",
-              }[slug]
-            : {
-                about: "About",
-                blog: "Resources",
-                help: "Help",
-                faq: "FAQ",
-                contact: "Contact",
-                "privacy-policy": "Privacy Policy",
-                terms: "Terms",
-              }[slug],
-        href: localizedPath(locale, slug as RouteSlug),
-      })),
-    },
-    {
       title: locale === "zh" ? "博客指南" : "Blog Guides",
       links: blogArticles.map((article) => ({
         name: getBlogArticleContent(article, locale).title,
@@ -1425,12 +1385,11 @@ function LocalizedSitemap({ locale }: { locale: Locale }) {
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <Container className="py-16">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-            {locale === "zh" ? "站点地图" : "Sitemap"}
-          </p>
-          <h1 className="mt-5 max-w-4xl break-words text-2xl font-semibold leading-tight sm:text-6xl">
+          <p className="font-mono text-[12px] text-[color:var(--faint)]">// {locale === "zh" ? "站点地图" : "Sitemap"}</p>
+          <h1 className="mt-4 max-w-4xl break-words text-[34px] font-normal tracking-[-0.025em] sm:text-[48px]">
             {copy.heading}
           </h1>
+          <SitemapContent locale={locale} />
         </Container>
       </Section>
       <Section className="bg-[color:var(--surface-subtle)]">
