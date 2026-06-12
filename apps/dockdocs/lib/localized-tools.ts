@@ -756,7 +756,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     keywords: ["password protect pdf", "encrypt pdf", "pdf password", "secure pdf online"],
     appName: "DockDocs Protect PDF",
     schemaName: "DockDocs PDF Password Protection",
-    breadcrumbName: "Password Protect",
+    breadcrumbName: "Protect PDF",
     heroTitle: "Add password protection to any PDF instantly.",
     heroDescription: "Encrypt your PDF with a password. All processing happens locally — your file never leaves your device.",
     primaryActionLabel: "Protect PDF",
@@ -1491,6 +1491,17 @@ const enFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
 };
 
 const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "unlock-pdf": {
+    faqTitle: "PDF 解密常见问题",
+    faq: [
+      { question: "不知道密码也能解锁 PDF 吗？", answer: "不能。「PDF 解密」要求你知道密码——它是在你拥有密码、但想去掉限制以便自由编辑、打印或分享时使用的，并不是破解或找回密码的工具。如果忘了密码，需要联系文件的所有者。" },
+      { question: "在线输入 PDF 密码安全吗？", answer: "安全。整个解密过程完全在你的浏览器本地用客户端技术完成——你的 PDF 文件和密码绝不会离开你的设备，也不会上传到任何服务器。这与那些把加密 PDF 和密码发到后端处理的服务有本质区别。" },
+      { question: "DockDocs 能去掉哪些类型的 PDF 密码？", answer: "两种都能：所有者密码（限制编辑、打印、复制）和用户/打开密码（打开文件就要输入）——前提是你知道密码。解密之后，PDF 不再有任何限制，可以自由使用。" },
+      { question: "解密会影响文件质量吗？", answer: "不会。去掉密码保护不会改动 PDF 的内容、排版、图片或文字质量。除了移除密码限制外，文件与原件逐字节一致——你拿到的是完全相同的文档，只是没有了那道锁。" },
+      { question: "解密后还能接着压缩或合并吗？", answer: "可以。解锁后就能继续用 DockDocs 的其它工具——用「PDF 压缩」减小体积、用「批量 PDF 合并」与其它文档合并，或转成 Word/Excel。解密后的文件适用于所有 DockDocs 工具。" },
+    ],
+  },
+
   "pdf-to-html": {
     faqTitle: "PDF 转 HTML 常见问题",
     faq: [

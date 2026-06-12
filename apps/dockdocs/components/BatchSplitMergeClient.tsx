@@ -15,7 +15,7 @@ const MAX_FILES = 50;
 const STR = {
   en: {
     title: "Batch split or merge PDFs",
-    titleSplit: "Batch split PDFs",
+    titleSplit: "Batch split",
     subSplit: "Split each PDF in a whole folder into smaller N-page files — all in your browser, packaged for download. Nothing is uploaded.",
     subtitle: "Merge a whole folder of PDFs into one, or split each PDF into smaller files — all in your browser, packaged for download. Nothing is uploaded.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",

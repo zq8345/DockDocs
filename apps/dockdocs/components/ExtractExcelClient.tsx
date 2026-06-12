@@ -14,7 +14,7 @@ type Doc = { id: string; name: string; text: string };
 
 const STR = {
   en: {
-    title: "Extract data from PDFs to a spreadsheet",
+    title: "Extract to Excel",
     subtitle: "Upload invoices, quotes, or contracts and pull the key fields into a clean table — then download as a spreadsheet (CSV, opens in Excel & Google Sheets). The AI only reports what's actually in each document.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", folder: "Choose folder",
     choose: "Choose PDFs", add: "Add more", reading: "Reading files…",

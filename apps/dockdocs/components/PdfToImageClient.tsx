@@ -12,7 +12,7 @@ type Pg = { idx: number; thumb: string };
 
 const STR = {
   en: {
-    title: "Convert PDF to images",
+    title: "PDF to Image",
     subtitle: "Upload a PDF, pick the pages you want, choose JPG or PNG, and download — you see and select every page before converting.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF", rendering: "Rendering pages…",

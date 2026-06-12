@@ -13,7 +13,7 @@ const SEG_TINTS = ["", "bg-[rgba(62,207,142,0.06)]", "bg-[rgba(52,211,153,0.07)]
 
 const STR = {
   en: {
-    title: "Split a PDF",
+    title: "Split PDF",
     subtitle: "Upload a PDF and click ✂ between pages to cut it into separate files — you see exactly which pages go into each file before you download.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF", rendering: "Rendering pages…",

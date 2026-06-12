@@ -14,7 +14,7 @@ const PW_OK = /^[A-Za-z0-9_]{4,32}$/;
 
 const STR = {
   en: {
-    title: "Encrypt multiple PDFs at once",
+    title: "Batch encrypt",
     subtitle: "Set one password and lock a whole folder of PDFs — each is encrypted in your browser and packaged into a single ZIP. Nothing is uploaded.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
     pw: "Password", pwPlaceholder: "Password to open the files", show: "Show", hide: "Hide",

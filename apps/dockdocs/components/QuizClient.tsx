@@ -10,7 +10,7 @@ type Card = { q: string; a: string };
 
 const STR = {
   en: {
-    title: "Make flashcards from a PDF",
+    title: "PDF Flashcards",
     subtitle: "Upload a textbook chapter, lecture notes, or a manual and turn it into study flashcards — questions and answers drawn only from your document. Flip a card to check yourself.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF", reading: "Reading…", count: "Cards", change: "Replace",

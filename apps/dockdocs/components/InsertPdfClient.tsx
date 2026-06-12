@@ -11,7 +11,7 @@ type Pg = { idx: number; thumb: string };
 
 const STR = {
   en: {
-    title: "Insert pages into a PDF",
+    title: "Add Page",
     subtitle: "Upload a PDF, pick where to insert, then add another PDF or an image at that spot. Everything happens in your browser.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF",

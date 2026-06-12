@@ -16,7 +16,7 @@ const MAX_FILES = 20;
 
 const STR = {
   en: {
-    title: "Convert multiple PDFs to images",
+    title: "Batch PDF to image",
     subtitle: "Drop a whole folder of PDFs and turn every page into a JPG or PNG — all rendered in your browser and packaged into one ZIP. Nothing is uploaded.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
     format: "Format", run: "Convert all", running: "Converting", download: "Download ZIP", reset: "Start over",

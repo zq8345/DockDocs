@@ -11,7 +11,7 @@ type Pg = { idx: number; thumb: string };
 
 const STR = {
   en: {
-    title: "Rotate PDF pages",
+    title: "Rotate Pages",
     subtitle: "Upload a PDF and click a page to rotate it — watch it turn before you download. Fix sideways scans and landscape pages in your browser.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF", rendering: "Rendering pages…",

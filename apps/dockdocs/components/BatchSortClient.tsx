@@ -12,7 +12,7 @@ const MAX_FILES = 30;
 
 const STR = {
   en: {
-    title: "Batch sort PDFs into folders",
+    title: "Classify PDFs",
     subtitle: "Drop a messy pile of PDFs — AI labels each (invoice, contract, resume, report…) and sorts them into folders inside one ZIP, so a chaotic folder comes out neatly organized. Your files never leave your device.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", add: "Add more", reading: "Reading files…",
     run: "Sort all", running: "Sorting", download: "Download sorted ZIP", reset: "Start over",

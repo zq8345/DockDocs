@@ -10,7 +10,7 @@ type Edges = { top: number; right: number; bottom: number; left: number };
 
 const STR = {
   en: {
-    title: "Crop PDF margins",
+    title: "Crop PDF",
     subtitle: "Upload a PDF, trim the whitespace from any edge with a live preview, and download — every page is cropped the same way, all in your browser.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF", rendering: "Rendering preview…",

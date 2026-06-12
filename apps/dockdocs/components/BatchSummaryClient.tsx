@@ -14,7 +14,7 @@ const MAX_FILES = 5;
 
 const STR = {
   en: {
-    title: "Summarize a batch of PDFs",
+    title: "Batch summary",
     subtitle: "Upload several reports, papers, or contracts and get a concise AI summary of each — executive summary plus key points. Up to 5 at a time.",
     drop: "Drag & drop PDFs here, or click to choose", choose: "Choose PDFs", add: "Add more", reading: "Reading…",
     run: "Summarize all", running: "Summarizing", reset: "Start over",

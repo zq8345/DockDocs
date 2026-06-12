@@ -12,7 +12,7 @@ type Item = { id: string; name: string; pages: number; thumb: string; file: File
 
 const STR = {
   en: {
-    title: "Merge PDF files",
+    title: "Merge PDF",
     subtitle: "Add your PDFs, drag them into the order you want, and combine them into one — you see each file before you merge, not after.",
     drop: "Drag & drop PDFs here, or click to choose",
     choose: "Choose PDFs", add: "Add more", rendering: "Reading files…",

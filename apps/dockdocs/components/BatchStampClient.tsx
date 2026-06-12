@@ -15,7 +15,7 @@ const MAX_FILES = 30;
 const STR = {
   en: {
     title: "Batch watermark or number PDFs",
-    titleWm: "Batch watermark PDFs", titlePn: "Batch add page numbers to PDFs",
+    titleWm: "Batch watermark", titlePn: "Batch page numbers",
     subWm: "Stamp a watermark across a whole folder of PDFs at once — each processed in your browser and packaged into one ZIP. Nothing is uploaded.",
     subPn: "Add page numbers across a whole folder of PDFs at once — each processed in your browser and packaged into one ZIP. Nothing is uploaded.",
     subtitle: "Stamp a watermark or add page numbers across a whole folder of PDFs at once — each processed in your browser and packaged into one ZIP. Nothing is uploaded.",

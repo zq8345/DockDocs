@@ -10,7 +10,7 @@ const ACCEPT = "image/png,image/jpeg,image/webp,image/gif,image/bmp,.png,.jpg,.j
 
 const STR = {
   en: {
-    title: "Convert images to PDF",
+    title: "Image to PDF",
     subtitle: "Add JPG, PNG, WebP, GIF or BMP images, drag them into order, and combine them into one PDF — one image per page. You see every image before converting.",
     drop: "Drag & drop images here, or click to choose",
     choose: "Choose images", add: "Add more", reading: "Reading images…",

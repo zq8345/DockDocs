@@ -13,7 +13,7 @@ const MAX_FILES = 100;
 
 const STR = {
   en: {
-    title: "Batch rename PDFs",
+    title: "Batch rename",
     subtitle: "Drop a whole folder and rename every file at once — by a numbered pattern or find-and-replace. The files themselves are untouched; you download a ZIP with the new names.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
     seq: "Numbered", rep: "Find & replace",

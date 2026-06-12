@@ -42,7 +42,7 @@ const sizable = (b: Box) => b.w > 0.0015 && b.h > 0.0015;
 
 const STR = {
   en: {
-    title: "Redact PDF — permanently",
+    title: "Redact PDF",
     subtitle: "Black out names, numbers and any sensitive text — then download a copy where it's truly gone. Unlike a black box you can copy under, DockDocs flattens each page to an image so the hidden text is destroyed for good. Runs in your browser; your file never leaves your device.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF", rendering: "Rendering pages…",

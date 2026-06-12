@@ -11,7 +11,7 @@ type Pg = { idx: number; thumb: string };
 
 const STR = {
   en: {
-    title: "Reorder PDF pages",
+    title: "Reorder Pages",
     subtitle: "Upload a PDF, then drag the page thumbnails into the order you want. Delete pages you don't need. Everything happens in your browser.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF",

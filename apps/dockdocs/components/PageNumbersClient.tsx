@@ -15,7 +15,7 @@ type MarginKey = keyof typeof MARGINS;
 
 const STR = {
   en: {
-    title: "Add page numbers to a PDF",
+    title: "Add Page Numbers",
     subtitle: "Upload a PDF, choose where the numbers go, the format, and which pages — see it on the live preview before you download.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF", rendering: "Rendering preview…",

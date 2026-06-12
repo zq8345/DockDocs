@@ -14,7 +14,7 @@ const MAX_FILES = 50;
 
 const STR = {
   en: {
-    title: "Batch rotate PDFs",
+    title: "Batch rotate",
     subtitle: "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF, packaged into one ZIP. All in your browser; nothing is uploaded.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
     rotate: "Rotate by",

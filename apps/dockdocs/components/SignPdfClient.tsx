@@ -17,7 +17,7 @@ const POS_ORDER: PosKey[] = ["tl", "tc", "tr", "ml", "c", "mr", "bl", "bc", "br"
 
 const STR = {
   en: {
-    title: "Sign a PDF", subtitle: "Upload a PDF, draw or type your signature, place it on the page, and download — entirely in your browser.",
+    title: "Sign PDF", subtitle: "Upload a PDF, draw or type your signature, place it on the page, and download — entirely in your browser.",
     drop: "Drag & drop a PDF here, or click to choose", choose: "Choose PDF", rendering: "Rendering page…",
     draw: "Draw", type: "Type", clear: "Clear", typed: "Type your name", page: "Page", position: "Position", size: "Size",
     apply: "Sign & download", working: "Signing…", reset: "Start over", preview: "Live preview", sig: "Your signature",

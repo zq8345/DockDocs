@@ -14,7 +14,7 @@ const MAX_FILES = 30;
 
 const STR = {
   en: {
-    title: "Compress multiple PDFs at once",
+    title: "Batch compress",
     subtitle: "Drop a whole folder of PDFs and shrink them all in one go — each is compressed in your browser and packaged into a single ZIP. Nothing is uploaded.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", reading: "Reading…",
     level: "Compression", low: "Light", recommended: "Recommended", high: "Strong",

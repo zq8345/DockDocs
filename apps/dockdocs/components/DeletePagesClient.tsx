@@ -11,7 +11,7 @@ type Pg = { idx: number; thumb: string };
 
 const STR = {
   en: {
-    title: "Delete pages from a PDF",
+    title: "Delete Pages",
     subtitle: "Upload a PDF and click the pages you want to remove — see exactly what's going before you download. Everything happens in your browser.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF", rendering: "Rendering pages…",

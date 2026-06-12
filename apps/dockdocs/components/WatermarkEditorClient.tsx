@@ -19,7 +19,7 @@ const POS_ORDER: PosKey[] = ["tl", "tc", "tr", "ml", "c", "mr", "bl", "bc", "br"
 
 const STR = {
   en: {
-    title: "Add a watermark to a PDF",
+    title: "Watermark PDF",
     subtitle: "Upload a PDF, design a text or image watermark, see it live on the page, then stamp it onto the pages you choose.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF", rendering: "Rendering preview…",

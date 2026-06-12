@@ -10,7 +10,7 @@ type Op = { type: "eq" | "del" | "ins"; text: string };
 
 const STR = {
   en: {
-    title: "Compare two PDF versions (redline)",
+    title: "Compare versions",
     subtitle: "Upload an original and a revised PDF to see exactly what changed — added text is highlighted, removed text is struck through. Everything runs in your browser.",
     original: "Original (v1)", revised: "Revised (v2)",
     choose: "Choose PDF", reading: "Reading…", change: "Replace",
