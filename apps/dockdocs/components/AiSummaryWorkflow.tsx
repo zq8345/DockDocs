@@ -68,7 +68,7 @@ const copy = {
     nextSteps: "建议下一步",
     privacyTitle: "隐私处理方式",
     privacy:
-      "PDF 文本提取在浏览器内完成。只有在你开始生成摘要后，提取出的文本才会发送给配置的 AI provider。本工作流不会把完整 PDF 文件发送给 AI provider。",
+      "PDF 文本提取在浏览器内完成。只有在你开始生成摘要后，提取出的文本才会发送给配置的 AI 服务。本工作流不会把完整 PDF 文件发送给 AI 服务。",
     idle: "上传 PDF 或粘贴 OCR 文本开始。",
     ready: "已准备生成摘要。",
     working: "正在生成摘要...",
