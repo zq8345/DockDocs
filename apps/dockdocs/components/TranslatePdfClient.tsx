@@ -54,7 +54,7 @@ const STR = {
     privacy: "Your file is read in your browser; only the extracted text is sent for translation.",
   },
   zh: {
-    title: "翻译 PDF",
+    title: "PDF 翻译",
     subtitle:
       "上传 PDF、选择语言，获得翻译后的文字。AI 翻译文档中的文字——私密处理，目前为纯文本（保留版式即将推出）。",
     drop: "把 PDF 拖到这里，或点击选择",
@@ -195,11 +195,11 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
     "rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]";
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-16 sm:py-20">
+    <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">
         {t.title}
       </h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {/* Upload */}
       {phase === "idle" || phase === "extracting" ? (

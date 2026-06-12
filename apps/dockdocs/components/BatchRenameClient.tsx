@@ -23,7 +23,7 @@ const STR = {
     note: "Renaming changes filenames only — the PDF contents are unchanged. Everything stays on your device.",
   },
   zh: {
-    title: "批量重命名 PDF",
+    title: "批量 PDF 改名",
     subtitle: "拖入整个文件夹，一次性给所有文件改名——按编号模板或查找替换。文件内容不变；你下载一个用新名字打包的 ZIP。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹",
     seq: "编号", rep: "查找替换",
@@ -93,7 +93,7 @@ export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
       <input ref={folderRef} type="file" multiple className="hidden" {...({ webkitdirectory: "", directory: "" } as Record<string, string>)} onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />

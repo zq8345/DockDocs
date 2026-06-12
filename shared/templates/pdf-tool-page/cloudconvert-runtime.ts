@@ -163,6 +163,9 @@ export async function runCloudConvert({
   }
 
   const fileBytes = await dlRes.arrayBuffer();
+  if (fileBytes.byteLength === 0) {
+    throw new Error(zh ? "下载的转换结果为空,请重试。" : "The converted file came back empty — please try again.");
+  }
   const { outputMime, outputType } = ROUTE_META[route];
   const blob = new Blob([fileBytes], { type: outputMime });
 

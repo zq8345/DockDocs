@@ -23,7 +23,7 @@ const STR = {
     needTwo: "Add at least 2 PDFs to merge.", err: "Something went wrong: ",
   },
   zh: {
-    title: "合并 PDF 文件",
+    title: "批量 PDF 合并",
     subtitle: "添加 PDF，拖成你想要的顺序，合并成一个——合并前先看清每个文件，而不是合完才发现顺序错了。",
     drop: "把多个 PDF 拖到这里，或点击选择",
     choose: "选择 PDF", add: "继续添加", rendering: "正在读取文件…",
@@ -113,7 +113,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 

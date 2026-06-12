@@ -17,6 +17,7 @@ import { PricingPlans } from "@/components/PricingPlans";
 import { DocumentCompareClient } from "@/components/DocumentCompareClient";
 import { Home as HomeSections } from "@/components/Home";
 import { SitemapContent } from "@/components/SitemapContent";
+import { ClientRedirect } from "@/components/ClientRedirect";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { AboutPage } from "@/components/AboutPage";
 import { AccountClient } from "@/components/AccountClient";
@@ -747,7 +748,8 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "ocr") {
-    return <LocalizedRuntimeTool locale={rawLocale} tool="ocr" />;
+    // /ocr was a fake placeholder (no real processing) — send users to the real OCR tool
+    return <ClientRedirect to={localizedPath(rawLocale, "ocr-pdf")} />;
   }
 
   if (slug === "dashboard") {

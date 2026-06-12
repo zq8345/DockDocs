@@ -24,7 +24,7 @@ const STR = {
     every: "Split every", everyUnit: "pages", everySet: "Set",
   },
   zh: {
-    title: "拆分 PDF",
+    title: "PDF 拆分",
     subtitle: "上传 PDF，在页面之间点 ✂ 把它切成多个文件——下载前就看清每个文件包含哪些页。",
     drop: "把 PDF 拖到这里，或点击选择",
     choose: "选择 PDF", rendering: "正在渲染页面…",
@@ -132,7 +132,7 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
         <div

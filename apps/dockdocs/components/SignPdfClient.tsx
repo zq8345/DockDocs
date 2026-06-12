@@ -25,7 +25,7 @@ const STR = {
     drawHint: "Draw with your mouse or finger.",
   },
   zh: {
-    title: "给 PDF 签名", subtitle: "上传 PDF，手写或打字你的签名，放到页面上，然后下载——全部在浏览器中完成。",
+    title: "PDF 签名", subtitle: "上传 PDF，手写或打字你的签名，放到页面上，然后下载——全部在浏览器中完成。",
     drop: "把 PDF 拖到这里，或点击选择", choose: "选择 PDF", rendering: "正在渲染页面…",
     draw: "手写", type: "打字", clear: "清除", typed: "输入你的名字", page: "页", position: "位置", size: "大小",
     apply: "签名并下载", working: "正在签名…", reset: "重新开始", preview: "实时预览", sig: "你的签名",
@@ -161,7 +161,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
         <div

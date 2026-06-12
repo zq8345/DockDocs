@@ -56,7 +56,7 @@ const STR = {
     err: "Something went wrong: ", tooMany: `This PDF has more than ${MAX_PAGES} pages. Split it first, then redact.`,
   },
   zh: {
-    title: "PDF 涂黑脱敏 —— 永久删除",
+    title: "PDF 智能涂黑",
     subtitle: "把姓名、号码等敏感文字涂黑,下载一份「真正删掉」的副本。不同于能从底下复制出来的假黑框,DockDocs 把每页拍平成图片、底层文字彻底销毁。全程在浏览器完成,文件不离开你的设备。",
     drop: "把 PDF 拖到这里,或点击选择",
     choose: "选择 PDF", rendering: "正在渲染页面…",
@@ -228,7 +228,7 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
         <div

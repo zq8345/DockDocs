@@ -30,7 +30,7 @@ const STR = {
     selected: "Insert point",
   },
   zh: {
-    title: "向 PDF 插入页面",
+    title: "PDF 页面添加",
     subtitle: "上传 PDF，选择插入位置，然后在该位置插入另一个 PDF 或一张图片。全部在浏览器中完成。",
     drop: "把 PDF 拖到这里，或点击选择",
     choose: "选择 PDF",
@@ -177,7 +177,7 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
         <div

@@ -528,12 +528,8 @@ async function pdfToJpg(
   const zh = locale === "zh";
   let pageIndices: number[] = [];
   if (pageRanges.trim()) {
-    try {
-      const ranges = parsePageRanges(pageRanges, totalPages, locale);
-      pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
-    } catch {
-      pageIndices = Array.from({ length: totalPages }, (_, i) => i);
-    }
+    const ranges = parsePageRanges(pageRanges, totalPages, locale);
+    pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
   } else {
     pageIndices = Array.from({ length: totalPages }, (_, i) => i);
   }
@@ -898,12 +894,8 @@ async function pdfToHtmlDoc(
 
   let pageIndices: number[] = [];
   if (pageRanges.trim()) {
-    try {
-      const ranges = parsePageRanges(pageRanges, totalPages, locale);
-      pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
-    } catch {
-      pageIndices = Array.from({ length: totalPages }, (_, i) => i);
-    }
+    const ranges = parsePageRanges(pageRanges, totalPages, locale);
+    pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
   } else {
     pageIndices = Array.from({ length: totalPages }, (_, i) => i);
   }
@@ -1025,12 +1017,8 @@ async function pdfToText(
 
   let pageIndices: number[] = [];
   if (pageRanges.trim()) {
-    try {
-      const ranges = parsePageRanges(pageRanges, totalPages, locale);
-      pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
-    } catch {
-      pageIndices = Array.from({ length: totalPages }, (_, i) => i);
-    }
+    const ranges = parsePageRanges(pageRanges, totalPages, locale);
+    pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
   } else {
     pageIndices = Array.from({ length: totalPages }, (_, i) => i);
   }
@@ -1305,12 +1293,8 @@ async function pdfToPng(
 
   let pageIndices: number[] = [];
   if (pageRanges.trim()) {
-    try {
-      const ranges = parsePageRanges(pageRanges, totalPages, locale);
-      pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
-    } catch {
-      pageIndices = Array.from({ length: totalPages }, (_, i) => i);
-    }
+    const ranges = parsePageRanges(pageRanges, totalPages, locale);
+    pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
   } else {
     pageIndices = Array.from({ length: totalPages }, (_, i) => i);
   }
@@ -1386,12 +1370,8 @@ async function pdfToMarkdown(
 
   let pageIndices: number[] = [];
   if (pageRanges.trim()) {
-    try {
-      const ranges = parsePageRanges(pageRanges, totalPages, locale);
-      pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
-    } catch {
-      pageIndices = Array.from({ length: totalPages }, (_, i) => i);
-    }
+    const ranges = parsePageRanges(pageRanges, totalPages, locale);
+    pageIndices = [...new Set(ranges.flatMap((r) => r.indices))].sort((a, b) => a - b);
   } else {
     pageIndices = Array.from({ length: totalPages }, (_, i) => i);
   }

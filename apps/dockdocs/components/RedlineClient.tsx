@@ -22,7 +22,7 @@ const STR = {
     note: "Compares the extracted text sentence by sentence. Formatting and images aren't part of the comparison.",
   },
   zh: {
-    title: "对比两份 PDF 版本(红线)",
+    title: "PDF 版本对比",
     subtitle: "上传原始版和修订版 PDF，看清到底改了什么——新增文字高亮，删除文字加删除线。全部在浏览器中完成。",
     original: "原始版 (v1)", revised: "修订版 (v2)",
     choose: "选择 PDF", reading: "读取中…", change: "替换",
@@ -124,7 +124,7 @@ export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {slot(a, setA, aRef, t.original)}

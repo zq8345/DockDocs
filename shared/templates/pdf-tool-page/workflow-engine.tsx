@@ -296,6 +296,11 @@ export function PdfWorkflowEngine({
 
     const artifact =
       runtimeArtifact ?? createWorkflowArtifact(config, files, pageRanges);
+    if (!artifact?.blob?.size) {
+      setError(zh ? "结果文件为空,请重试。" : "The result file is empty — please try again.");
+      setStatus("error");
+      return;
+    }
     downloadBlob(artifact.blob, artifact.fileName);
   }
 

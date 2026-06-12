@@ -30,7 +30,7 @@ const STR = {
     nonLatin: "Text watermark supports Latin letters/digits/symbols for now.", err: "Something went wrong: ",
   },
   zh: {
-    title: "给 PDF 添加水印",
+    title: "PDF 加水印",
     subtitle: "上传 PDF，设计文字或图片水印，在页面上实时预览，然后盖到你选择的页面范围。",
     drop: "把 PDF 拖到这里，或点击选择",
     choose: "选择 PDF", rendering: "正在渲染预览…",
@@ -214,7 +214,7 @@ export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
         <div

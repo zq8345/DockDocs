@@ -374,20 +374,20 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
   const zh = (config.locale ?? "en") === "zh";
 
   return (
-    <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
+    <main className="bg-[color:var(--background)] text-[color:var(--foreground)]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
       {/* ── Hero + Upload (centered, full-width focus) ── */}
-      <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
+      <section className="border-b border-[color:var(--line)]">
         <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
           {/* Title */}
           <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">
             {config.breadcrumbName}
           </h1>
-          <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">
+          <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">
             {config.heroDescription}
           </p>
 

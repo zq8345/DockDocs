@@ -23,7 +23,7 @@ const STR = {
     note: "Summaries are AI-generated from each document — give them a quick check. Processed one at a time to stay within limits.",
   },
   zh: {
-    title: "批量摘要多份 PDF",
+    title: "批量摘要",
     subtitle: "上传多份报告、论文或合同，AI 为每一份生成简明摘要——执行摘要 + 关键要点。一次最多 5 份。",
     drop: "把 PDF 拖到这里，或点击选择", choose: "选择 PDF", add: "继续添加", reading: "读取中…",
     run: "全部摘要", running: "摘要中", reset: "重新开始",
@@ -121,7 +121,7 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 

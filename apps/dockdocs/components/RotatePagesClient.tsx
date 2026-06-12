@@ -20,7 +20,7 @@ const STR = {
     reset: "Start over", none: "No rotations yet — click a page.", err: "Something went wrong: ",
   },
   zh: {
-    title: "旋转 PDF 页面",
+    title: "PDF 页面旋转",
     subtitle: "上传 PDF，点击页面即可旋转——下载前先看它转好。在浏览器里修正横放的扫描件和页面。",
     drop: "把 PDF 拖到这里，或点击选择",
     choose: "选择 PDF", rendering: "正在渲染页面…",
@@ -110,7 +110,7 @@ export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 max-w-3xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
         <div
