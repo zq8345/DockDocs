@@ -4,7 +4,7 @@ import { AboutPage } from "@/components/AboutPage";
 export const metadata: Metadata = {
   title: "About DockDocs",
   description:
-    "DockDocs is a privacy-first AI document platform with 20+ PDF tools, AI chat, OCR, and document workflows — built for teams, students, and professionals worldwide.",
+    "DockDocs is a privacy-first AI document platform with 50+ PDF tools, AI chat, OCR, and document workflows — built for teams, students, and professionals worldwide.",
   alternates: {
     canonical: "/about/",
     languages: { zh: "/zh/about/" },
@@ -21,7 +21,7 @@ const aboutSchema = {
       name: "DockDocs",
       url: "https://dockdocs.app",
       description:
-        "DockDocs is a privacy-first AI document platform with 20+ PDF tools including compress, merge, split, convert, OCR, AI chat, and AI summarization. Built for teams, students, and professionals worldwide.",
+        "DockDocs is a privacy-first AI document platform with 50+ PDF tools including compress, merge, split, convert, OCR, AI chat, and AI summarization. Built for teams, students, and professionals worldwide.",
       foundingDate: "2024",
       slogan: "AI document platform for real file workflows",
       sameAs: ["https://github.com/zq8345/dock-ai-ecosystem"],
@@ -32,7 +32,7 @@ const aboutSchema = {
       url: "https://dockdocs.app/about/",
       name: "About DockDocs — Free Online PDF Tools",
       description:
-        "DockDocs is a privacy-first AI document platform with 20+ PDF tools, AI chat, OCR, and document workflows.",
+        "DockDocs is a privacy-first AI document platform with 50+ PDF tools, AI chat, OCR, and document workflows.",
       about: { "@id": "https://dockdocs.app/about/#org" },
       isPartOf: {
         "@type": "WebSite",
