@@ -74,5 +74,11 @@ with a complete hreflang cluster; `/zh/` pages were already correct.
 ## Remaining
 
 - Production stays stale until the build is deployed to Netlify.
-- The `/en/slug/` ↔ `/slug/` duplicate ("/en dedup") is a separate, pre-existing
-  item, not addressed here.
+
+## Follow-up — /en dedup (resolved)
+
+The `/en/slug/` ↔ `/slug/` duplicate (both were self-canonical) is now fixed:
+`languageAlternates` points en + x-default hreflang at the non-prefixed `/slug/`,
+and the catch-all `generateMetadata` rewrites every EN canonical `/en/slug/` →
+`/slug/` (tool, info, legal, geo hub/programmatic, blog, home). `/en/slug/` now
+consolidates into `/slug/`; the en/zh/x-default cluster is fully reciprocal.

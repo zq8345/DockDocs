@@ -164,7 +164,26 @@ function createLocalizedMetadata(
   };
 }
 
-export async function generateMetadata({
+// English canonical lives at the non-prefixed path (/slug/). The catch-all also
+// renders /en/slug/, an exact duplicate — point its canonical back to /slug/ so
+// Google consolidates signals instead of seeing two self-canonical copies.
+function normalizeEnCanonical(meta: Metadata): Metadata {
+  const c = meta.alternates?.canonical;
+  if (typeof c !== "string") return meta;
+  const fixed = c.replace(/^\/en\//, "/").replace("dockdocs.app/en/", "dockdocs.app/");
+  if (fixed === c) return meta;
+  return { ...meta, alternates: { ...meta.alternates, canonical: fixed } };
+}
+
+export async function generateMetadata(args: {
+  params: Promise<PageParams>;
+}): Promise<Metadata> {
+  const { locale } = await args.params;
+  const meta = await generateMetadataInner(args);
+  return locale === "en" ? normalizeEnCanonical(meta) : meta;
+}
+
+async function generateMetadataInner({
   params,
 }: {
   params: Promise<PageParams>;

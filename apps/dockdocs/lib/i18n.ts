@@ -179,8 +179,10 @@ export function absoluteUrl(path: string): string {
 }
 
 export function languageAlternates(slug: RouteSlug) {
+  // English canonical is the non-prefixed path (/slug/); /en/slug/ is a duplicate
+  // alias. Point the en + x-default hreflang at /slug/ so they match the canonical.
   return {
-    en: absoluteUrl(localizedPath("en", slug)),
+    en: absoluteUrl(pathForSlug(slug)),
     zh: absoluteUrl(localizedPath("zh", slug)),
     "x-default": absoluteUrl(pathForSlug(slug)),
   };
