@@ -85,6 +85,7 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
         {
           heading: "Single-doc AI",
           items: [
+            { name: "AI Workspace", slug: "/ai-workspace" },
             { name: "Chat with PDF", slug: "/chat-with-pdf" },
             { name: "PDF Summary", slug: "/ai-summary" },
             { name: "Translate PDF", slug: "/translate-pdf" },
@@ -195,6 +196,7 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
         {
           heading: "单文档 AI",
           items: [
+            { name: "AI 工作台", slug: "/ai-workspace" },
             { name: "PDF 问答", slug: "/chat-with-pdf" },
             { name: "PDF 摘要提取", slug: "/ai-summary" },
             { name: "PDF 翻译", slug: "/translate-pdf" },

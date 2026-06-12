@@ -461,6 +461,8 @@ export function PdfWorkflowEngine({
     );
   }
 
+  const runsLocallyMulti = isRealPdfRuntimeSlug(config.slug) && !["word-to-pdf", "ppt-to-pdf", "excel-to-pdf", "pdf-to-excel", "pdf-to-word", "html-to-pdf", "pdf-to-pdfa", "pdf-to-ppt", "protect-pdf"].includes(config.slug);
+
   return (
     <div
       id="upload"
@@ -482,6 +484,11 @@ export function PdfWorkflowEngine({
             : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
         }`}
       >
+        {/* Upload icon */}
+        <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--accent)]">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4M7 9l5-5 5 5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></svg>
+        </span>
+
         {/* Choose button — primary action */}
         <button
           type="button"
@@ -496,10 +503,19 @@ export function PdfWorkflowEngine({
           {zh ? "或将文件拖放到此处" : "or drop your file here"}
         </p>
 
-        {/* Accepted types — subtle */}
-        <p className="mt-1.5 text-xs text-[color:var(--faint)]">
-          {zh ? "支持格式" : "Supported"}: {spec.acceptedLabel}
-        </p>
+        {/* Accepted types + privacy */}
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
+          <span>{zh ? "支持格式" : "Supports"} {spec.acceptedLabel}</span>
+          <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
+          {runsLocallyMulti ? (
+            <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
+              {zh ? "本地处理，文件不上传" : "Processed locally — never uploaded"}
+            </span>
+          ) : (
+            <span>{zh ? "最大 100MB" : "Up to 100MB"}</span>
+          )}
+        </div>
 
         {/* Hidden file input */}
         <input

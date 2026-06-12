@@ -97,7 +97,7 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
 
       {phase === "idle" || phase === "reading" ? (
         <div
-          className="mt-8 flex aspect-[16/9] w-full cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
+          className="mt-8 flex min-h-[300px] sm:min-h-[360px] py-8 w-full cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
           onClick={() => inputRef.current?.click()}
           onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add("is-drag-over"); }}
           onDragLeave={(e) => { if (e.currentTarget === e.target) e.currentTarget.classList.remove("is-drag-over"); }}

@@ -10,11 +10,13 @@ const STR = {
     choose: "Choose PDFs",
     folder: "Choose folder",
     note: "or drop multiple files / a single folder here",
+    privacy: "Processed locally — never uploaded",
   },
   zh: {
     choose: "选择 PDF",
     folder: "选择文件夹",
     note: "或将多个文件 / 单个文件夹拖放至此处",
+    privacy: "本地处理，文件不上传",
   },
 } as const;
 
@@ -53,7 +55,7 @@ export function BatchUploadBox({
 
   return (
     <div
-      className={`mt-8 flex aspect-[16/9] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[var(--radius-xl)] border-2 border-dashed px-6 text-center transition ${
+      className={`mt-8 flex min-h-[300px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-8 text-center transition sm:min-h-[360px] ${
         dragging
           ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
           : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
@@ -70,6 +72,9 @@ export function BatchUploadBox({
         </div>
       ) : (
         <>
+          <span className="mb-1 inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--accent)]">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4M7 9l5-5 5 5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></svg>
+          </span>
           <button type="button" onClick={(e) => { e.stopPropagation(); fileRef.current?.click(); }} className={btn}>
             {t.choose}
           </button>
@@ -77,6 +82,14 @@ export function BatchUploadBox({
             {t.folder}
           </button>
           <p className="mt-1 text-[13.5px] text-[color:var(--muted)]">{t.note}</p>
+          <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
+            <span>{locale === "zh" ? "支持 PDF" : "Supports PDF"}</span>
+            <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
+            <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
+              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
+              {t.privacy}
+            </span>
+          </div>
         </>
       )}
 
