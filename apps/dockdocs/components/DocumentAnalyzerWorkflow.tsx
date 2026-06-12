@@ -65,7 +65,7 @@ const copy = {
     source: "来源",
     context: "分析上下文",
     usage: "Token 用量",
-    provider: "Provider",
+    provider: "AI 服务",
     summary: "文档总结",
     keyDates: "关键日期",
     keyAmounts: "关键金额",

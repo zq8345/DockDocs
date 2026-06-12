@@ -95,7 +95,7 @@ const copy = {
     cancel: "取消",
     source: "来源",
     context: "发送上下文",
-    provider: "Provider",
+    provider: "AI 服务",
     usage: "Token 用量",
     answer: "回答",
     conversation: "对话记录",

@@ -60,7 +60,7 @@ const copy = {
     cancel: "取消",
     source: "来源",
     characters: "发送字符数",
-    provider: "Provider",
+    provider: "AI 服务",
     download: "下载摘要",
     executive: "执行摘要",
     keyPoints: "关键要点",
