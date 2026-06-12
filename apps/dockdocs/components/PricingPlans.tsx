@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { localizedPath, type RouteSlug } from "@/lib/i18n";
+import { createBillingCheckoutSession } from "@/lib/subscription-runtime";
+import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 
 type Locale = "en" | "zh";
 
@@ -67,7 +69,7 @@ const copy = {
     scenarios: [
       { emoji: "📊", title: "Compare quotes & pick the best", before: "Open 3 files, copy numbers into a sheet — ~1 hour", after: "Upload → side-by-side table + a sourced pick — 1 min", tier: "Plus", href: "/compare" as RouteSlug },
       { emoji: "📄", title: "Catch the traps in a contract", before: "Pay a lawyer $300, or sign blind and get burned", after: "AI flags risky & missing clauses in minutes", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "Process a batch of invoices", before: "Key them in one by one — hours, or hire help", after: "Drop the whole batch → auto-extract & summarize", tier: "Pro", href: "" as RouteSlug },
+      { emoji: "🧾", title: "Process a batch of invoices", before: "Key them in one by one — hours, or hire help", after: "Drop the whole batch → auto-extract & summarize", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "Understand a long report fast", before: "Read 80 pages to find a few answers — hours", after: "Ask it anything → sourced answers in 30s", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Compare plans",
@@ -143,7 +145,7 @@ const copy = {
     scenarios: [
       { emoji: "📊", title: "比报价,选最优", before: "开 3 个文件抄数字进表格 —— 约 1 小时", after: "上传 → 并排对比表 + 带出处的推荐 —— 1 分钟", tier: "Plus", href: "/compare" as RouteSlug },
       { emoji: "📄", title: "看穿合同里的坑", before: "花 $300 找律师,或盲签踩坑", after: "AI 几分钟标出风险与缺失条款", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "批量处理发票", before: "一张张录入几小时,或雇人", after: "整批丢进去 → 自动抽取汇总", tier: "Pro", href: "" as RouteSlug },
+      { emoji: "🧾", title: "批量处理发票", before: "一张张录入几小时,或雇人", after: "整批丢进去 → 自动抽取汇总", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "快速读懂长报告", before: "读 80 页找几个答案 —— 几小时", after: "问它任何问题 → 30 秒带出处的答案", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "套餐对照",
@@ -164,8 +166,21 @@ const copy = {
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [billingLoading, setBillingLoading] = useState("");
   const zh = locale === "zh";
   const c = copy[locale] ?? copy.en;
+
+  // Start hosted checkout for paid plans. Signed-in users go straight to Creem;
+  // signed-out users (or if checkout isn't configured yet) fall back to /account
+  // so they can sign in and upgrade there — instead of the button dead-ending.
+  async function upgrade(plan: PaidSubscriptionPlan) {
+    setBillingLoading(plan);
+    try {
+      await createBillingCheckoutSession(plan); // redirects to checkout on success
+    } catch {
+      if (typeof window !== "undefined") window.location.href = "/account";
+    }
+  }
   // 账户页全站统一为 /account(无语言版本),不要按 locale 加 /zh 前缀,否则 /zh/account 会 404
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale, href) : "/account");
   const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
@@ -200,6 +215,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
           const isFree = plan.monthlyPrice === "$0";
           const price = yearly && !isFree ? plan.yearlyPrice : plan.monthlyPrice;
           const featured = plan.featured;
+          const planKey: PaidSubscriptionPlan | null = isFree ? null : featured ? "PLUS" : "PRO";
+          const ctaCls = `mt-6 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-medium transition ${featured ? "bg-[color:var(--accent)] hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--foreground)]"}`;
           return (
             <article key={plan.name}
               className={`relative flex flex-col rounded-2xl border p-6 transition-colors ${
@@ -236,11 +253,13 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 ))}
               </ul>
 
-              <a href={toolHref(plan.href)}
-                className={`mt-6 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-medium transition ${
-                  featured ? "bg-[color:var(--accent)] hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--foreground)]"
-                }`}
-              >{plan.cta}</a>
+              {planKey ? (
+                <button type="button" onClick={() => upgrade(planKey)} disabled={billingLoading === planKey} className={ctaCls}>
+                  {billingLoading === planKey ? (zh ? "跳转中…" : "Redirecting…") : plan.cta}
+                </button>
+              ) : (
+                <a href={toolHref(plan.href)} className={ctaCls}>{plan.cta}</a>
+              )}
             </article>
           );
         })}
