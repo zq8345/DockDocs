@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { navCategories } from "@/components/Header";
 
 type Locale = "en" | "zh";
@@ -94,25 +94,26 @@ function MiniThumbs() {
   return (
     <div className="flex items-end gap-2">
       {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="flex h-14 w-10 flex-col gap-1 rounded-md border border-[color:var(--line)] p-1.5" style={i === 1 ? { transform: "translateY(-6px) rotate(-5deg)", borderColor: "var(--line-strong)" } : undefined}>
+        <div key={i} className="mt-tile flex h-14 w-10 flex-col gap-1 rounded-md border border-[color:var(--line)] p-1.5" style={{ ["--i"]: i } as CSSProperties}>
           {[70, 90, 55].map((w, k) => <span key={k} className="h-[3px] rounded-full bg-[color:var(--skeleton)]" style={{ width: `${w}%` }} />)}
         </div>
       ))}
-      <div className="flex h-14 w-10 items-center justify-center rounded-md border border-dashed border-[color:var(--line-strong)] text-[16px] text-[color:var(--faint)]">+</div>
+      <div className="mt-tile flex h-14 w-10 items-center justify-center rounded-md border border-dashed border-[color:var(--line-strong)] text-[16px] text-[color:var(--faint)]" style={{ ["--i"]: 4 } as CSSProperties}>+</div>
     </div>
   );
 }
 function MiniExtract({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="flex h-16 w-12 flex-col gap-1 rounded-md border border-[color:var(--line)] p-1.5">
+      <div className="relative flex h-16 w-12 flex-col gap-1 overflow-hidden rounded-md border border-[color:var(--line)] p-1.5">
         {[80, 60, 75, 50, 65].map((w, k) => <span key={k} className="h-[3px] rounded-full bg-[color:var(--skeleton)]" style={{ width: `${w}%` }} />)}
+        <span className="mx-scan pointer-events-none absolute inset-x-1 top-1 h-3 rounded" style={{ background: "linear-gradient(var(--soft-accent), transparent)" }} />
       </div>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-[color:var(--accent)]"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
       <div className="flex-1 rounded-md border border-[color:var(--line)] p-2">
         <p className="mb-1.5 text-[9px] font-normal uppercase tracking-[0.1em] text-[color:var(--faint)]">{label}</p>
         {[0, 1, 2].map((k) => (
-          <div key={k} className="mb-1 flex items-center gap-1.5 last:mb-0">
+          <div key={k} className="mx-row mb-1 flex items-center gap-1.5 last:mb-0" style={{ ["--i"]: k } as CSSProperties}>
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
             <span className="h-[3px] flex-1 rounded-full bg-[color:var(--skeleton)]" />
           </div>
@@ -126,11 +127,11 @@ function MiniBatch() {
     <div>
       <div className="relative h-14">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="absolute h-12 w-10 rounded-md border border-[color:var(--line)]" style={{ left: `${i * 10}px`, top: `${i * 3}px`, background: "var(--background)" }} />
+          <div key={i} className="ms-stack absolute h-12 w-10 rounded-md border border-[color:var(--line)]" style={{ left: `${i * 10}px`, top: `${i * 3}px`, background: "var(--background)", ["--i"]: i } as CSSProperties} />
         ))}
       </div>
       <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[color:var(--skeleton)]">
-        <div className="hfg-bar h-full rounded-full bg-[color:var(--accent)]" style={{ width: "70%" }} />
+        <div className="batch-bar h-full rounded-full bg-[color:var(--accent)]" />
       </div>
       <p className="mt-1.5 text-[11px] text-[color:var(--faint)]">142 files</p>
     </div>
@@ -140,7 +141,7 @@ function MiniSecure() {
   return (
     <div className="relative flex h-16 w-full flex-col justify-center gap-1.5 rounded-md border border-[color:var(--line)] px-3">
       <span className="h-[3px] w-[60%] rounded-full bg-[color:var(--skeleton)]" />
-      <span className="h-[6px] w-[45%] rounded-sm bg-[color:var(--foreground)]" />
+      <span className="ms-bar h-[6px] rounded-sm bg-[color:var(--foreground)]" style={{ width: "14%" }} />
       <span className="h-[3px] w-[70%] rounded-full bg-[color:var(--skeleton)]" />
       <svg className="absolute right-3 top-3 text-[color:var(--accent)]" width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
     </div>
@@ -154,6 +155,22 @@ const CARDS: { nav: number; span: number; visual: "thumbs" | "extract" | "batch"
   { nav: 3, span: 1, visual: "secure" },
 ];
 
+// concrete jobs DockDocs does — old way → DockDocs (low text, scannable)
+const SCENARIOS = [
+  { icon: <path d="M4 13h3v6H4zM10 9h3v10h-3zM16 5h3v14h-3z" />, href: "/compare",
+    en: ["Compare quotes, pick the best", "3 files into a sheet · ~1h", "a sourced pick · 1 min"],
+    zh: ["比报价,选最优", "开 3 个文件抄进表格 · 约 1 小时", "带出处的推荐 · 1 分钟"] },
+  { icon: <path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM13 3v4h4M8.5 14l2 2 4-4" />, href: "/redline",
+    en: ["Catch the traps in a contract", "a lawyer, or sign blind", "AI flags risky & missing clauses"],
+    zh: ["看穿合同里的坑", "花钱找律师,或盲签踩坑", "AI 标出风险与缺失条款"] },
+  { icon: <path d="M4 7l8-4 8 4-8 4-8-4ZM4 12l8 4 8-4M4 17l8 4 8-4" />, href: "/batch-extract-sheet",
+    en: ["Process a batch of invoices", "key them in one by one · hours", "drop the batch → auto-extract"],
+    zh: ["批量处理发票", "一张张录入 · 几小时", "整批丢进去 → 自动抽取"] },
+  { icon: <path d="M5 4h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5zM8.5 9h6M8.5 13h6" />, href: "/chat-with-pdf",
+    en: ["Understand a long report fast", "read 80 pages for a few answers", "ask it → sourced answers · 30s"],
+    zh: ["快速读懂长报告", "读 80 页找几个答案", "问它 → 30 秒带出处答案"] },
+];
+
 export function Home({ locale = "en" }: { locale?: Locale }) {
   const zh = locale === "zh";
   const c = COPY[zh ? "zh" : "en"];
@@ -163,11 +180,23 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
   return (
     <>
       <style>{`
-        @keyframes hfgFill{from{width:0}to{width:70%}}
         @keyframes hfgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-        .hfg-bar{animation:hfgFill 1.6s cubic-bezier(.2,.8,.2,1) both}
+        @keyframes mtPop{0%,100%{transform:translateY(0)}45%{transform:translateY(-7px)}}
+        @keyframes mxScan{0%{transform:translateY(-4px);opacity:0}15%{opacity:.9}100%{transform:translateY(46px);opacity:0}}
+        @keyframes mxRow{from{opacity:.2;transform:translateX(-4px)}to{opacity:1;transform:none}}
+        @keyframes msShuffle{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
         .hfg-in{animation:hfgIn .7s ease-out both}
-        @media (prefers-reduced-motion: reduce){.hfg-bar,.hfg-in{animation:none}}
+        /* hover-triggered card animations (each card is a .group) */
+        .batch-bar{width:8%;transition:width 1.5s cubic-bezier(.2,.8,.2,1)}
+        .group:hover .batch-bar{width:70%}
+        .ms-bar{transition:width .6s ease}
+        .group:hover .ms-bar{width:48%}
+        .group:hover .mt-tile{animation:mtPop .6s ease both;animation-delay:calc(var(--i)*.09s)}
+        .mx-scan{opacity:0}
+        .group:hover .mx-scan{animation:mxScan 1.5s ease-in-out infinite}
+        .group:hover .mx-row{animation:mxRow .45s ease both;animation-delay:calc(var(--i)*.16s + .15s)}
+        .group:hover .ms-stack{animation:msShuffle .6s ease both;animation-delay:calc(var(--i)*.1s)}
+        @media (prefers-reduced-motion: reduce){.hfg-in,.batch-bar,.ms-bar,.mt-tile,.mx-scan,.mx-row,.ms-stack{animation:none!important;transition:none!important}}
       `}</style>
 
       {/* ── Hero (who) — the only top hairline sits under the global header ── */}
@@ -293,6 +322,32 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
             {c.browseAll}
             <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </a>
+        </div>
+      </section>
+
+      {/* ── Use cases (understand what it solves) ── */}
+      <section>
+        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-6 sm:py-28 lg:px-8">
+          <p className={EYEBROW(zh)}>{zh ? "能替你做什么" : "What it does for you"}</p>
+          <h2 className="mt-4 text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]">{zh ? "几分钟,搞定原本要几小时的事。" : "Minutes, not hours."}</h2>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+            {SCENARIOS.map((s) => {
+              const t = zh ? s.zh : s.en;
+              return (
+                <a key={t[0]} href={path(s.href)} className="rounded-2xl border border-[color:var(--line)] p-6 transition-colors hover:border-[color:var(--line-strong)]">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[color:var(--line)] text-[color:var(--accent)]">
+                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{s.icon}</svg>
+                  </span>
+                  <p className="mt-4 text-[16px] font-normal text-[color:var(--foreground)]">{t[0]}</p>
+                  <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[13px] leading-[1.5]">
+                    <span className="text-[color:var(--faint)]">{t[1]}</span>
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[color:var(--accent)]"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    <span className="text-[color:var(--foreground)]">{t[2]}</span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
         </div>
       </section>
 

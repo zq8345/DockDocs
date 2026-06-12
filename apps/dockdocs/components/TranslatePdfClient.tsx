@@ -204,7 +204,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
       {/* Upload */}
       {phase === "idle" || phase === "extracting" ? (
         <div
-          className={`${card} mt-8 flex aspect-[16/9] w-full cursor-pointer flex-col items-center justify-center border-dashed px-6 text-center transition hover:border-[color:var(--line-strong)]`}
+          className={`${card} mt-8 flex aspect-[16/9] w-full cursor-pointer flex-col items-center justify-center border-dashed px-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]`}
           onClick={() => inputRef.current?.click()}
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
@@ -219,7 +219,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
           {phase !== "extracting" && (
             <button
               type="button"
-              className="mt-4 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white transition hover:opacity-90"
+              className="mt-4 inline-flex h-12 w-1/2 items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.32)] transition hover:opacity-90"
             >
               {t.choose}
             </button>
