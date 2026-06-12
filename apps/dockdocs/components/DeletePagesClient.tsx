@@ -125,9 +125,9 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
               <p className="text-[14px] font-medium text-[color:var(--muted)]">{t.rendering}</p>
             </div>
           ) : (
-            <p className="text-[15px] font-medium text-[color:var(--foreground)]">{t.drop}</p>
+            <button type="button" className="inline-flex h-12 w-1/2 items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.32)] transition hover:opacity-90">{t.choose}</button>
           )}
-          {phase !== "rendering" && <button type="button" className="mt-4 inline-flex h-12 w-1/2 items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.32)] transition hover:opacity-90">{t.choose}</button>}
+          {phase !== "rendering" && <p className="mt-4 text-sm text-[color:var(--muted)]">{locale === "zh" ? "或将文件拖放到此处" : "or drop your file here"}</p>}
           <input ref={inputRef} type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }} />
         </div>
       ) : (
