@@ -1,4 +1,5 @@
 "use client";
+import { BatchUploadBox } from "@/components/BatchUploadBox";
 
 import { ToolFaq } from "@/components/ToolFaq";
 import { Spinner } from "@/components/Spinner";
@@ -117,22 +118,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <div
-          className="mt-8 cursor-pointer rounded-[var(--radius-lg)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-10 text-center transition hover:border-[color:var(--line-strong)]"
-          onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => { e.preventDefault(); const fs = Array.from(e.dataTransfer.files || []); if (fs.length) addFiles(fs); }}
-        >
-          {busy ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-1">
-              <Spinner />
-              <p className="text-[14px] font-medium text-[color:var(--muted)]">{t.rendering}</p>
-            </div>
-          ) : (
-            <p className="text-[15px] font-medium text-[color:var(--foreground)]">{t.drop}</p>
-          )}
-          {!busy && <button type="button" className="mt-4 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>}
-        </div>
+        <BatchUploadBox locale={locale} onFiles={addFiles} busy={busy} busyLabel={t.rendering} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

@@ -120,6 +120,14 @@ html.light {
   color: var(--on-accent);
 }
 
+/* Drag-over highlight for upload boxes. Drag events can't trigger :hover, so the
+   single-doc dropzones toggle this class on dragenter/leave via the DOM. !important
+   so it wins over the base border-color/background utilities regardless of source order. */
+.is-drag-over {
+  border-color: var(--accent) !important;
+  background-color: var(--soft-accent) !important;
+}
+
 /* ===================================================================
    Base
    =================================================================== */
