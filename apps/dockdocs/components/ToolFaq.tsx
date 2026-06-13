@@ -2,9 +2,9 @@ type Locale = "en" | "zh" | "es";
 type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
-const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[]; zh: QA[] } }> = {
+const FAQS: Record<string, { title: { en: string; zh: string; es: string }; items: { en: QA[]; zh: QA[]; es: QA[] } }> = {
   "batch-compress": {
-    title: { en: "Batch compress PDF — FAQ", zh: "批量 PDF 压缩常见问题" },
+    title: { en: "Batch compress PDF — FAQ", zh: "批量 PDF 压缩常见问题", es: "Comprimir PDF por lotes — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I compress several PDFs at once?", a: "Drag your PDFs onto the page — or drop a whole folder, or use \"Choose folder\" — and any non-PDF files in that folder are filtered out automatically. Pick a compression strength (\"Light\", \"Recommended\", or \"Strong\"), then click \"Compress all\". Each file is processed one by one, and when it finishes you click \"Download ZIP\" to get them all back in a single archive." },
@@ -22,10 +22,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "为什么我的 PDF 压不了多少？", a: "压缩的原理是把每一页渲染成图片——这对扫描件和图片多的 PDF 效果很好，但对以纯文字为主的文件作用有限，因为本来就没多少可压的空间。如果某个文件几乎没变化，这是正常的；可以试试「强力」再多压一点，但纯文字 PDF 通常已经接近它的最小体积了。" },
         { q: "免费吗？需要注册吗？", a: "完全免费——无需注册、没有水印、也没有每日次数限制。打开页面就能直接开始压缩。" },
       ],
+      es: [
+        { q: "¿Cómo comprimo varios PDF a la vez?", a: "Arrastra tus PDF a la página —o suelta una carpeta entera, o usa «Elegir carpeta»— y cualquier archivo que no sea PDF dentro de esa carpeta se descarta de forma automática. Elige una intensidad de compresión («Ligera», «Recomendada» o «Fuerte») y luego haz clic en «Comprimir todo». Cada archivo se procesa uno por uno y, al terminar, haces clic en «Descargar ZIP» para recuperarlos todos en un solo archivo comprimido." },
+        { q: "¿Mis archivos se suben a un servidor?", a: "No. Es una herramienta 100 % del lado del cliente: cada PDF se lee y se comprime dentro de tu propio navegador, y nada se envía nunca a ningún servidor. Tus archivos jamás salen de tu dispositivo, y por eso puedes usarla con documentos confidenciales sin preocupación." },
+        { q: "¿Qué recibo de vuelta y cómo se nombran los archivos?", a: "Recibes un único archivo ZIP (dockdocs-compressed.zip). Dentro, cada PDF conserva su nombre original con «-compressed» añadido antes de la extensión, así que report.pdf se convierte en report-compressed.pdf. Cada fila también muestra cuánto se redujo ese archivo, y el botón de descarga muestra la reducción de tamaño total." },
+        { q: "¿Hay un límite de cuántos archivos o de qué tamaño pueden tener?", a: "Puedes añadir hasta 30 PDF por lote. No hay un tope de tamaño fijo por archivo: como todo se ejecuta en tu navegador, el límite real es la memoria de tu dispositivo. Los archivos grandes o numerosos siguen funcionando, solo que tardan más en procesarse en una máquina menos potente." },
+        { q: "¿Por qué mi PDF apenas se redujo?", a: "La compresión funciona renderizando cada página como imagen, lo cual es ideal para escaneos y PDF con muchas imágenes, pero hace poco con archivos que son mayormente texto plano: simplemente no hay mucho que exprimir. Si un archivo apenas cambia, es lo esperado; prueba «Fuerte» para reducir un poco más, pero los PDF de solo texto ya están cerca de su tamaño mínimo." },
+        { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Sí, es completamente gratis: sin registro, sin marca de agua, sin límite diario. Solo abre la página y empieza a comprimir." },
+      ],
     },
   },
   "batch-pdf-to-image": {
-    title: { en: "Batch PDF to image — FAQ", zh: "批量 PDF 转图片常见问题" },
+    title: { en: "Batch PDF to image — FAQ", zh: "批量 PDF 转图片常见问题", es: "PDF a imagen por lotes — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I convert a batch of PDFs to images?", a: "Drag your PDFs onto the upload box — or drop a whole folder, or click \"Choose folder\" to pick one. Choose JPG or PNG, then click \"Convert all\". Every page of every PDF is turned into an image and the result downloads as a single ZIP. There's no signup and no watermark." },
@@ -43,10 +51,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "一次能转多少份文件或多少页?", a: "每一批最多排入 20 份 PDF——超出的会被自动丢弃。页数和大小没有固定上限，真正的天花板是你设备的内存：超大 PDF 或页数极多时只是更慢一些，在配置较弱的机器上跑得吃力。任务很大时，建议拆成几批来转。" },
         { q: "为什么有一份 PDF 显示「失败」?", a: "最常见的原因是带密码或加密的 PDF——工具打不开就没法渲染页面，于是这份会被标为「失败」，而同批其他文件照常转换。请先去掉密码(可以用我们的「解锁 PDF」工具)，再把它加回来。损坏的文件或非 PDF 文件也可能失败；不过——如果你拖入的是文件夹，里面的非 PDF 文件会被自动过滤掉，而不会报失败。" },
       ],
+      es: [
+        { q: "¿Cómo convierto un lote de PDF a imágenes?", a: "Arrastra tus PDF a la casilla de carga —o suelta una carpeta entera, o haz clic en «Elegir carpeta» para escoger una—. Elige JPG o PNG y luego haz clic en «Convertir todo». Cada página de cada PDF se convierte en una imagen y el resultado se descarga como un único ZIP. No hay registro ni marca de agua." },
+        { q: "¿Mis archivos se suben a un servidor?", a: "No. Esta herramienta es 100 % del lado del cliente: cada PDF se lee y se renderiza en imágenes por completo dentro de tu navegador, y nada se sube nunca a ningún servidor. El ZIP que descargas se genera localmente en tu dispositivo. Incluso puedes usarla sin conexión una vez que la página ha cargado." },
+        { q: "¿Qué recibo de vuelta y cómo se nombran las imágenes?", a: "Recibes un archivo ZIP (llamado dockdocs-images.zip) que contiene cada página como una imagen separada. Cada archivo lleva el nombre de su PDF de origen más el número de página; por ejemplo, report.pdf se convierte en report-1.jpg, report-2.jpg, y así sucesivamente. Las páginas se renderizan a escala 2× para una salida nítida y de alta resolución." },
+        { q: "¿Cuál es la diferencia entre JPG y PNG aquí?", a: "JPG genera archivos más pequeños y aplana cada página sobre un fondo blanco, ideal para documentos con muchas fotos o escaneados. PNG no tiene pérdidas y conserva la transparencia, lo cual es mejor para dibujos lineales, diagramas o páginas que vayas a editar después. Elige el que mejor te convenga antes de pulsar «Convertir todo»; puedes volver a ejecutarlo con el otro formato cuando quieras." },
+        { q: "¿Cuántos archivos o páginas puedo convertir a la vez?", a: "Puedes poner en cola hasta 20 PDF por lote; los archivos que sobren se descartan automáticamente. No hay un límite fijo de páginas o tamaño, así que el techo real es la memoria de tu dispositivo: los PDF muy grandes o con muchísimas páginas simplemente tardan más y van más lentos en máquinas menos potentes. Para un trabajo grande, divídelo en varios lotes." },
+        { q: "¿Por qué uno de mis PDF mostró «fallido»?", a: "La causa más común es un PDF protegido con contraseña o cifrado: la herramienta no puede renderizar páginas que no puede abrir, así que ese archivo se marca como fallido mientras el resto del lote se convierte con normalidad. Quita primero la contraseña (nuestra herramienta Desbloquear PDF puede ayudar) y vuelve a añadirlo. Los archivos dañados o que no sean PDF también pueden fallar; ten en cuenta que, si sueltas una carpeta, los archivos que no sean PDF se descartan automáticamente en lugar de fallar." },
+      ],
     },
   },
   "batch-protect-pdf": {
-    title: { en: "Batch encrypt PDF — FAQ", zh: "批量 PDF 加密常见问题" },
+    title: { en: "Batch encrypt PDF — FAQ", zh: "批量 PDF 加密常见问题", es: "Cifrar PDF por lotes — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I encrypt several PDFs at once?", a: "Drag your PDFs onto the box — or drop an entire folder, or click to choose files. Type one password (the \"Password\" field), then click \"Encrypt all\". Every file is locked with that same password, and you get a single ZIP back with each file renamed to \"…-protected.pdf\"." },
@@ -64,10 +80,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "已经设过密码的 PDF 会怎么处理？", a: "会被跳过。工具打不开一个已加密的文件，自然也无法再次上锁，所以这类 PDF 会被排除在 ZIP 之外，而不会让整批任务失败。如果想在这里重新加密，请先用原密码解密它。" },
         { q: "真的免费吗？有水印或要注册吗？", a: "是的，完全免费，无需注册，也没有水印。加密后的 PDF 与你的原件逐字节一致，只是多了一道密码——DockDocs 不会往里面添加任何东西。" },
       ],
+      es: [
+        { q: "¿Cómo cifro varios PDF a la vez?", a: "Arrastra tus PDF a la casilla —o suelta una carpeta entera, o haz clic para elegir archivos—. Escribe una contraseña (el campo «Contraseña») y luego haz clic en «Cifrar todo». Cada archivo se bloquea con esa misma contraseña y recibes un único ZIP con cada archivo renombrado como «…-protected.pdf»." },
+        { q: "¿Mis archivos se suben a un servidor?", a: "No. Es una herramienta 100 % del lado del cliente: cada PDF se cifra dentro de tu propio navegador y nada sale jamás de tu dispositivo. No hay carga, ni cuenta, ni copia guardada en ningún sitio. Incluso puedes usarla sin conexión una vez que la página ha cargado." },
+        { q: "¿Qué recibo de vuelta y en qué formato?", a: "Recibes un archivo ZIP llamado «dockdocs-protected.zip». Dentro, cada PDF de entrada aparece como su propio archivo cifrado con el sufijo «-protected.pdf». Abre cualquiera de ellos y tu lector pedirá la contraseña que estableciste." },
+        { q: "¿Hay reglas para la contraseña o límites de cuántos archivos?", a: "La contraseña debe tener entre 4 y 32 caracteres usando solo letras, dígitos y el guion bajo (_); así es seguro aplicarla en cualquier lector de PDF. Puedes cifrar hasta 30 archivos por lote; para más, vuelve a ejecutar la herramienta. No hay un límite estricto de tamaño, pero como todo se ejecuta en tu navegador, los trabajos muy grandes van más lentos en dispositivos con poca memoria." },
+        { q: "¿Qué ocurre con un PDF que ya está protegido con contraseña?", a: "Se omite. La herramienta no puede volver a bloquear un archivo que no puede abrir, así que cualquier PDF que ya tenga contraseña queda fuera del ZIP en lugar de hacer fallar todo el lote. Descífralo primero (con la contraseña original) si quieres volver a cifrarlo aquí." },
+        { q: "¿De verdad es gratis? ¿Lleva marca de agua o requiere registro?", a: "Sí, completamente gratis, sin registro y sin marca de agua. Los PDF cifrados son byte a byte tus originales más la contraseña; DockDocs no les añade nada." },
+      ],
     },
   },
   "batch-rename-pdf": {
-    title: { en: "Batch rename PDF — FAQ", zh: "批量 PDF 改名常见问题" },
+    title: { en: "Batch rename PDF — FAQ", zh: "批量 PDF 改名常见问题", es: "Renombrar PDF por lotes — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I rename a batch of PDFs?", a: "Drag a whole folder (or a set of PDFs) onto the upload box, or click to choose files. Then pick a mode: \"Numbered\" gives every file a base name plus a sequence number (invoice-01.pdf, invoice-02.pdf…), and \"Find & replace\" swaps any text that appears in the existing filenames. A live preview shows each old name struck through next to its new name, so you can check the result before you commit. When it looks right, click \"Download renamed ZIP\"." },
@@ -85,10 +109,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "文件夹里混有非 PDF 文件可以直接拖进来吗？", a: "可以。你能直接拖入整个文件夹，工具会自动过滤掉所有非 PDF 的文件——图片、表格和其他文档都会被忽略，只有 PDF 才会被加入列表。你不需要事先清理文件夹。" },
         { q: "如果两个文件改名后重名了会怎样？", a: "工具会自动处理。如果编号模板或查找替换会产生两个相同的文件名，它会给靠后的那些加上 -1、-2（以此类推）的后缀，保证 ZIP 里每个文件名都唯一。不会有任何文件被悄悄覆盖或丢失。" },
       ],
+      es: [
+        { q: "¿Cómo renombro un lote de PDF?", a: "Arrastra una carpeta entera (o un conjunto de PDF) a la casilla de carga, o haz clic para elegir archivos. Luego elige un modo: «Numerado» da a cada archivo un nombre base más un número de secuencia (factura-01.pdf, factura-02.pdf…), y «Buscar y reemplazar» sustituye cualquier texto que aparezca en los nombres actuales. Una vista previa en vivo muestra cada nombre antiguo tachado junto a su nombre nuevo, para que compruebes el resultado antes de confirmar. Cuando se vea bien, haz clic en «Descargar ZIP renombrado»." },
+        { q: "¿Mis archivos se suben a algún sitio?", a: "No. Esta herramienta es 100 % del lado del cliente: cada archivo se lee y se renombra dentro de tu propio navegador, y nada se envía jamás a un servidor. No hay ningún paso de carga; el renombrado y el ZIP se generan localmente en tu dispositivo. Por eso también es gratis, sin registro, sin marca de agua y sin cuenta que crear." },
+        { q: "¿Qué recibo de vuelta y se modifican los PDF?", a: "Recibes un único archivo ZIP (dockdocs-renamed.zip) con copias de tus PDF y los nuevos nombres. Renombrar cambia únicamente los nombres de archivo; el contenido, las páginas y la calidad de los PDF quedan totalmente intactos. Los archivos originales de tu equipo tampoco se modifican; solo descargas un conjunto recién nombrado." },
+        { q: "¿Hay un límite de cuántos archivos puedo renombrar?", a: "Sí: esta herramienta procesa hasta 100 PDF por lote. Como todo se ejecuta en tu navegador, los lotes muy grandes usan más memoria y tardan un poco más en máquinas menos potentes, pero dentro del límite de 100 archivos es rápido. Si tienes más de 100 archivos, ejecuta un segundo lote." },
+        { q: "¿Puedo soltar una carpeta que tenga archivos que no sean PDF?", a: "Sí. Puedes soltar una carpeta entera y la herramienta descarta automáticamente todo lo que no sea PDF: imágenes, hojas de cálculo y otros documentos se ignoran, de modo que solo tus PDF se añaden a la lista. No necesitas limpiar la carpeta primero." },
+        { q: "¿Qué ocurre si dos archivos acabaran con el mismo nombre?", a: "La herramienta lo detecta automáticamente. Si un patrón numerado o un buscar y reemplazar produjera dos nombres idénticos, añade un sufijo -1, -2 (y así sucesivamente) a los posteriores, de modo que cada archivo del ZIP mantenga un nombre único. Nada se sobrescribe ni se pierde de forma silenciosa." },
+      ],
     },
   },
   "batch-rotate-pdf": {
-    title: { en: "Batch rotate PDF — FAQ", zh: "批量 PDF 旋转常见问题" },
+    title: { en: "Batch rotate PDF — FAQ", zh: "批量 PDF 旋转常见问题", es: "Rotar PDF por lotes — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I rotate a batch of PDFs?", a: "Drag your PDFs onto the box — or drop a whole folder, or use \"Choose folder\". Pick a rotation angle (90°, 180° or 270°), then click \"Rotate all\". When it finishes, click \"Download ZIP\" to get every rotated file in one archive. You can also use the \"+\" button to add more PDFs before running." },
@@ -106,10 +138,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "有数量限制吗？为什么有文件显示「失败」？", a: "每个批次最多可以添加 50 份 PDF。文件大小没有固定上限——因为全部在浏览器里运行，真正的限制是你设备的内存，所以在性能较弱的笔记本或手机上处理大批量只是会慢一些。已加密或设了密码的 PDF 无法被打开旋转，会被跳过并标记为「失败」；批次里其余文件照常处理，只有成功的文件会进入 ZIP。先解除密码，再重新添加即可。" },
         { q: "是免费的吗？需要注册账号吗？", a: "是的，完全免费——无需注册、无需账号，输出也不带水印。因为所有处理都在你的浏览器里完成，既没有任何费用，也没有使用次数限制；打开页面就能直接旋转。" },
       ],
+      es: [
+        { q: "¿Cómo roto un lote de PDF?", a: "Arrastra tus PDF a la casilla —o suelta una carpeta entera, o usa «Elegir carpeta»—. Elige un ángulo de rotación (90°, 180° o 270°) y luego haz clic en «Rotar todo». Cuando termine, haz clic en «Descargar ZIP» para obtener todos los archivos rotados en un solo archivo comprimido. También puedes usar el botón «+» para añadir más PDF antes de ejecutar." },
+        { q: "¿Mis archivos se suben a un servidor?", a: "No. Es una herramienta 100 % del lado del cliente: cada PDF se abre y se rota dentro de tu propio navegador usando los recursos de tu dispositivo, y el ZIP también se monta localmente. Nada se sube nunca a DockDocs ni a ningún otro sitio, así que tus documentos jamás salen de tu equipo." },
+        { q: "¿Qué recibo de vuelta y cómo se nombran los archivos?", a: "Recibes un único archivo ZIP (dockdocs-rotated.zip) con cada PDF rotado correctamente. Cada archivo conserva su nombre original con «-rotated» añadido antes de la extensión —por ejemplo, factura.pdf se convierte en factura-rotated.pdf—, así es fácil distinguir las copias nuevas de tus originales." },
+        { q: "¿Qué se rota y puedo rotar solo algunas páginas?", a: "El ángulo elegido se aplica a todas las páginas de cada PDF del lote: esto es un corrector de carpetas enteras, no un editor por página, así que aquí no puedes rotar páginas individuales. La rotación además se suma a cualquier rotación existente, de modo que aplicar 90° a una página ya rotada la gira otros 90°. Para un control por página, usa nuestra herramienta de rotación de un solo archivo." },
+        { q: "¿Hay límites y por qué un PDF podría decir «fallido»?", a: "Puedes añadir hasta 50 PDF por lote. No hay un tope de tamaño fijo: como todo se ejecuta en tu navegador, el límite real es la memoria de tu dispositivo, así que los trabajos grandes en un portátil o teléfono poco potente solo van más lentos. Los PDF cifrados o protegidos con contraseña no pueden abrirse para rotarse, así que se omiten y se marcan como «fallido»; el resto del lote sigue procesándose y solo los archivos correctos entran en el ZIP. Desbloquea primero el archivo y vuelve a añadirlo." },
+        { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Sí, es completamente gratis: sin registro, sin cuenta y sin marca de agua en tu resultado. Como todo el trabajo ocurre en tu navegador, no hay nada que pagar ni medidor de uso; solo abre la página y empieza a rotar." },
+      ],
     },
   },
   "batch-watermark-pdf": {
-    title: { en: "Batch watermark PDFs — FAQ", zh: "批量 PDF 添加水印常见问题" },
+    title: { en: "Batch watermark PDFs — FAQ", zh: "批量 PDF 添加水印常见问题", es: "Marca de agua en PDF por lotes — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I watermark a whole folder of PDFs at once?", a: "Drag a folder (or several PDFs) onto the upload box, or click to pick files. Type your watermark text — for example CONFIDENTIAL — then click \"Apply to all\". Each PDF is stamped one by one, and when it finishes you click \"Download ZIP\" to get every watermarked file in a single archive. If you dropped a folder, any non-PDF files inside it are filtered out automatically, so you don't have to clean the folder first." },
@@ -127,10 +167,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "免费吗？会加上它自己的水印或品牌标识吗？", a: "完全免费,无需注册、无试用、除了每次 30 份的批量上限外没有任何使用限制。你的 PDF 上唯一的水印就是你自己输入的文字——DockDocs 绝不会在你的文件上打上自己的 logo 或品牌标识。" },
         { q: "能自定义水印的位置或透明度吗？", a: "批量工具里不行。它使用固定的默认排版——每页一条对角水印——以保证整个文件夹效果一致。如果需要自定义位置、透明度或字号,请改用单文件的「加水印」工具,它能对单份文档进行完整控制。" },
       ],
+      es: [
+        { q: "¿Cómo pongo una marca de agua a toda una carpeta de PDF a la vez?", a: "Arrastra una carpeta (o varios PDF) a la casilla de carga, o haz clic para elegir archivos. Escribe el texto de tu marca de agua —por ejemplo, CONFIDENCIAL— y luego haz clic en «Aplicar a todo». Cada PDF se sella uno por uno y, al terminar, haces clic en «Descargar ZIP» para obtener todos los archivos con marca de agua en un solo archivo comprimido. Si soltaste una carpeta, los archivos que no sean PDF que haya dentro se descartan automáticamente, así que no tienes que limpiarla primero." },
+        { q: "¿Mis archivos se suben a un servidor?", a: "No. Cada PDF se procesa por completo en tu navegador, en tu propio dispositivo: nada se sube a ningún servidor y no hay cuenta ni inicio de sesión. Tus documentos jamás salen de tu equipo, que es justo por lo que es seguro para archivos confidenciales." },
+        { q: "¿Qué recibo de vuelta y cómo se nombran los archivos?", a: "Recibes un archivo ZIP (dockdocs-batch.zip) con todos los PDF marcados. Cada salida conserva su nombre original con el sufijo «-watermarked.pdf», así que report.pdf se convierte en report-watermarked.pdf. Tus archivos originales quedan intactos." },
+        { q: "¿Hay un límite de cuántos PDF puedo hacer a la vez?", a: "Esta herramienta por lotes procesa hasta 30 PDF por ejecución. Si añades más, solo se conservan los primeros 30. No hay un tope de tamaño fijo: como todo se ejecuta en tu navegador, el límite real es la memoria de tu dispositivo, así que los archivos muy grandes o las máquinas poco potentes simplemente irán más lentos. Para un trabajo mayor, divídelo en lotes de 30." },
+        { q: "¿Es gratis? ¿Añade su propia marca de agua o branding?", a: "Sí, es completamente gratis, sin registro, sin prueba y sin límites de uso más allá del tamaño de lote de 30 archivos por ejecución. La única marca de agua en tus PDF es el texto que escribes; DockDocs nunca estampa su propio logotipo ni branding en tus archivos." },
+        { q: "¿Puedo elegir dónde va la marca de agua o lo transparente que es?", a: "En la herramienta por lotes, no. Usa una ubicación predeterminada fija —una marca de agua diagonal sobre cada página— para mantener toda la carpeta coherente. Si necesitas una posición, opacidad o tamaño de fuente personalizados, usa la herramienta de marca de agua de un solo archivo, que te da control total sobre un documento a la vez." },
+      ],
     },
   },
   "batch-page-numbers": {
-    title: { en: "Batch page numbers — FAQ", zh: "批量 PDF 添加页码常见问题" },
+    title: { en: "Batch page numbers — FAQ", zh: "批量 PDF 添加页码常见问题", es: "Números de página por lotes — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I add page numbers to a batch of PDFs?", a: "Drag your PDFs onto the upload box — or drop a whole folder, or use \"Choose folder\" to pick one. The tool adds each PDF to the list, then click \"Apply to all\". Every file is numbered one by one, and when it finishes you click \"Download ZIP\" to get them all in a single archive." },
@@ -148,10 +196,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "能选择页码的位置或样式吗?", a: "批量工具里不行——它使用固定的默认排版,好让整个文件夹一键处理、风格统一。如果需要控制位置、字体或起始页码,请改用单文件的「加页码」工具,那里提供这些选项。" },
         { q: "免费吗?需要注册吗?会加水印吗?", a: "完全免费,无需注册,也不会给你的 PDF 加任何水印。因为一切都在你的浏览器本地完成,所以没有付费项目,也没有上传配额限制。" },
       ],
+      es: [
+        { q: "¿Cómo añado números de página a un lote de PDF?", a: "Arrastra tus PDF a la casilla de carga —o suelta una carpeta entera, o usa «Elegir carpeta» para escoger una—. La herramienta añade cada PDF a la lista; luego haz clic en «Aplicar a todo». Cada archivo se numera uno por uno y, al terminar, haces clic en «Descargar ZIP» para obtenerlos todos en un solo archivo comprimido." },
+        { q: "¿Mis archivos se suben a algún sitio?", a: "No. Es una herramienta 100 % del lado del cliente: cada PDF se abre y se numera dentro de tu propio navegador, y nada se envía a ningún servidor. Tus archivos jamás salen de tu dispositivo, y por eso funciona incluso con documentos confidenciales." },
+        { q: "¿Qué recibo de vuelta y cómo se nombran los archivos?", a: "Recibes un archivo ZIP (llamado dockdocs-batch.zip) con cada PDF numerado correctamente. Cada salida conserva su nombre original con el sufijo «-numbered.pdf» añadido, así que report.pdf se convierte en report-numbered.pdf. Solo se incluyen los archivos que se procesaron correctamente; los que fallaron se omiten y el resto sí pasa." },
+        { q: "¿Hay un límite de cuántos archivos puedo hacer a la vez y puedo soltar una carpeta con archivos que no sean PDF?", a: "Puedes procesar hasta 30 PDF por lote; el contador junto a la lista muestra cuántos has añadido (por ejemplo, «12 / 30 archivos»). No hay un límite estricto de tamaño, pero como todo se ejecuta en tu navegador, los archivos muy grandes o numerosos usan más memoria y van más lentos en dispositivos poco potentes. Puedes soltar sin problema una carpeta que también contenga imágenes o documentos de Word: la herramienta conserva automáticamente solo los PDF reales y descarta todo lo demás." },
+        { q: "¿Puedo elegir dónde van los números de página o cambiar su estilo?", a: "En la herramienta por lotes, no: usa una ubicación predeterminada fija para mantener toda la carpeta coherente con un solo clic. Si necesitas controlar la posición, la fuente o el número inicial, usa la herramienta de un solo archivo «Añadir números de página», que te ofrece esas opciones." },
+        { q: "¿Es gratis? ¿Necesito una cuenta o habrá una marca de agua?", a: "Es completamente gratis, sin registro necesario, y no se añade ninguna marca de agua a tus PDF. Como todo se ejecuta localmente en tu navegador, no hay nada que pagar ni cuota de carga." },
+      ],
     },
   },
   "batch-split-merge": {
-    title: { en: "Batch split PDF — FAQ", zh: "批量 PDF 拆分常见问题" },
+    title: { en: "Batch split PDF — FAQ", zh: "批量 PDF 拆分常见问题", es: "Dividir PDF por lotes — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I split a whole folder of PDFs at once?", a: "Drag and drop your PDFs — or a whole folder — onto the upload box, or click to choose them. Set \"Pages per file\" to how many pages each output piece should contain (1 splits every page into its own file), then click \"Run\". Each PDF is cut into chunks of that size and everything is packaged into a single ZIP you can download with \"Download ZIP\"." },
@@ -169,10 +225,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "文件数量或大小有限制吗?", a: "单次最多 50 份——超出的部分只保留前 50 份。页数和文件大小没有固定上限,真正的限制是设备内存,所以超大 PDF 或超大批量在性能较弱的机器上只会更慢一些。如果某份 PDF 损坏或加了密码,它会被标为「失败」并跳过——其余文件照常拆分。" },
         { q: "免费吗?需要注册吗?会加水印吗?", a: "完全免费,无需注册,也不加水印。因为所有处理都在你自己的设备上完成,没有任何用量额度或次数限制——想用多少次都可以。" },
       ],
+      es: [
+        { q: "¿Cómo divido toda una carpeta de PDF a la vez?", a: "Arrastra y suelta tus PDF —o una carpeta entera— en la casilla de carga, o haz clic para elegirlos. Configura «Páginas por archivo» con cuántas páginas debe contener cada parte de salida (1 divide cada página en su propio archivo) y luego haz clic en «Ejecutar». Cada PDF se corta en bloques de ese tamaño y todo se empaqueta en un único ZIP que puedes descargar con «Descargar ZIP»." },
+        { q: "¿Mis archivos se suben a un servidor?", a: "No. La división se ejecuta por completo en tu navegador usando un motor PDF local: nada se sube, nada se almacena y nada sale de tu dispositivo. Incluso puedes desconectarte de internet después de que la página cargue y seguirá funcionando. Por eso es seguro para documentos sensibles o confidenciales." },
+        { q: "¿Qué recibo de vuelta y cómo se nombran los archivos?", a: "Recibes un archivo ZIP (dockdocs-split.zip). Dentro, cada PDF se divide en partes nombradas a partir del original; por ejemplo, report.pdf se convierte en report-part1.pdf, report-part2.pdf, y así sucesivamente. Si subiste varios PDF, todas sus partes se agrupan juntas en el mismo ZIP." },
+        { q: "¿Puedo añadir una carpeta y qué ocurre con los archivos que no sean PDF que haya en ella?", a: "Sí: puedes soltar o elegir una carpeta entera. Cualquier archivo que no sea PDF se descarta automáticamente, así que no tienes que limpiar la carpeta primero. Solo los PDF se añaden a la lista y se procesan." },
+        { q: "¿Hay un límite de cuántos o de qué tamaño pueden ser los archivos?", a: "Hay un tope de 50 archivos por lote; si añades más, solo se conservan los primeros 50. No hay un límite fijo de páginas o tamaño de archivo; la restricción real es la memoria de tu dispositivo, así que los PDF muy grandes o los lotes enormes simplemente irán más lentos en máquinas poco potentes. Si un PDF está dañado o protegido con contraseña, se marca como «fallido» y se omite, mientras que el resto se divide con normalidad." },
+        { q: "¿Es gratis? ¿Necesito una cuenta o añadirá una marca de agua?", a: "Sí, es completamente gratis, sin registro y sin marca de agua. Como el trabajo ocurre en tu propio dispositivo, no hay créditos ni límites de uso de los que preocuparse: úsala tantas veces como quieras." },
+      ],
     },
   },
   "batch-summary": {
-    title: { en: "Batch summary — FAQ", zh: "批量摘要常见问题" },
+    title: { en: "Batch summary — FAQ", zh: "批量摘要常见问题", es: "Resumen por lotes — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I summarize several PDFs at once?", a: "Drag and drop your PDFs onto the drop zone, or click \"Choose PDFs\" to pick them. You can add up to 5 files at a time. Once they're loaded, click \"Summarize all\" — each document is summarized in turn, and you'll see a progress count like 2/5 while it works. When it finishes you get an executive summary plus key points for every file." },
@@ -190,10 +254,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "为什么一次只能 5 份,而且要逐份处理?", a: "每次最多 5 份、并且逐份依次处理——这是为了符合合理用量限制，让结果稳定可靠，而不至于让 AI 服务过载。文件更多时，跑完一批后点「重新开始」再加载下一批即可。处理失败的文件会单独标记出来，所以一份坏 PDF 不会拖垮其余的。" },
         { q: "摘要看起来不错,可以完全照搬吗?", a: "请把它当作快速的初步速览，而不是替代通读。摘要由 AI 从每份文档生成，可能漏掉细微之处，偶尔也会弄错某个细节——在依赖任何重要内容之前(尤其是合同或报告),建议对照原文快速核对一遍。" },
       ],
+      es: [
+        { q: "¿Cómo resumo varios PDF a la vez?", a: "Arrastra y suelta tus PDF en la zona de carga, o haz clic en «Elegir PDF» para escogerlos. Puedes añadir hasta 5 archivos a la vez. Una vez cargados, haz clic en «Resumir todo»: cada documento se resume por turnos y verás un recuento de progreso como 2/5 mientras trabaja. Al terminar obtienes un resumen ejecutivo más puntos clave de cada archivo." },
+        { q: "¿Mi archivo se sube a algún sitio? ¿Dónde ocurre el trabajo?", a: "Tu archivo PDF nunca se sube. El texto se extrae dentro de tu navegador y solo ese texto extraído —no el archivo original— se envía a nuestro servicio de resumen con IA para generar el resumen. Es una herramienta de IA, así que sí necesita conexión a internet para llegar al servicio de IA, pero el documento en sí permanece en tu dispositivo." },
+        { q: "Dice «sin texto extraíble (¿escaneado?)» en uno de mis archivos. ¿Qué pasa?", a: "Significa que el PDF no tiene una capa de texto que leer; casi siempre es una página escaneada o una foto guardada como PDF, que para la herramienta es solo una imagen. Pásalo primero por nuestra herramienta OCR PDF para añadir una capa de texto real, y luego vuelve y resúmelo aquí. Los PDF cifrados o protegidos con contraseña tampoco se pueden extraer; quita primero la contraseña." },
+        { q: "¿Qué recibo de vuelta y puedo guardarlo?", a: "Por cada PDF obtienes un breve resumen ejecutivo más una lista de puntos clave, mostrados como una tarjeta en la página. Una vez terminados todos los archivos, haz clic en «Descargar todo (.md)» para guardarlo todo como un único archivo Markdown (dockdocs-summaries.md) con una sección por documento, fácil de pegar en tus notas, un documento o un wiki." },
+        { q: "¿Por qué solo 5 archivos a la vez y por qué de uno en uno?", a: "Limitamos cada ejecución a 5 PDF y los procesamos uno tras otro para mantenernos dentro de los límites de uso justo y que los resultados sean fiables, en lugar de saturar el servicio de IA. Si tienes más, ejecuta un lote, haz clic en «Empezar de nuevo» y carga el siguiente conjunto. Los archivos que fallan se marcan de forma individual, así que un PDF defectuoso no detiene al resto." },
+        { q: "Los resúmenes se ven bien; ¿puedo confiar en ellos a ciegas?", a: "Trátalos como una primera pasada rápida, no como un sustituto de la lectura. Los resúmenes se generan con IA a partir de cada documento, así que pueden pasar por alto matices o, de vez en cuando, equivocarse en un detalle: revísalos siempre rápidamente contra la fuente antes de fiarte de algo importante, sobre todo en contratos o informes." },
+      ],
     },
   },
   "batch-sort": {
-    title: { en: "Classify PDFs — FAQ", zh: "PDF 智能分类常见问题" },
+    title: { en: "Classify PDFs — FAQ", zh: "PDF 智能分类常见问题", es: "Clasificar PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I use it?", a: "Drag and drop your PDFs — or a whole folder — onto the page, or click \"Choose PDFs\" / \"Choose folder\". Press \"Sort all\" and the AI labels each file with a category (invoice, contract, resume, report and so on). When it finishes, click \"Download sorted ZIP\" to get one ZIP with your files grouped into category folders. You can sort up to 30 files at a time." },
@@ -211,10 +283,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "我会拿到什么?原文件会被改动吗?", a: "你会拿到一个名为 dockdocs-sorted.zip 的 ZIP，里面每个类别一个子文件夹，你的原 PDF 原封不动地放在里面——不修改、不改名。如果同一文件夹里有两份文件会重名，我们会自动加上「-1」「-2」后缀，确保不会互相覆盖。" },
         { q: "分类准不准?", a: "类别由 AI 从每份文档的文字推断而来，是很好的起点，但建议快速核对一下——尤其是不常见的文档。为了保证速度，AI 只读取每份 PDF 的前 6 页，对大多数文件足够了，但如果某份文档要到后面才能看出类型，可能会判断偏差。" },
       ],
+      es: [
+        { q: "¿Cómo se usa?", a: "Arrastra y suelta tus PDF —o una carpeta entera— en la página, o haz clic en «Elegir PDF» / «Elegir carpeta». Pulsa «Clasificar todo» y la IA etiqueta cada archivo con una categoría (factura, contrato, currículum, informe, etc.). Al terminar, haz clic en «Descargar ZIP clasificado» para obtener un ZIP con tus archivos agrupados en carpetas por categoría. Puedes clasificar hasta 30 archivos a la vez." },
+        { q: "¿Mis archivos se suben a un servidor?", a: "No: tus archivos PDF reales jamás salen de tu dispositivo. Cada PDF se lee directamente en tu navegador para extraer su texto, y solo ese texto extraído se envía a nuestro servicio de IA para decidir la categoría. Los archivos en sí permanecen locales, y el ZIP final se genera en tu navegador a partir de tus originales." },
+        { q: "¿Funciona con PDF escaneados o fotos de documentos?", a: "No directamente. Un PDF escaneado o de solo imagen no tiene capa de texto, así que no hay nada que leer: esos archivos vuelven marcados como «sin texto» y van a parar a una carpeta «Sin clasificar». Pásalos primero por OCR (nuestra herramienta «OCR PDF» añade una capa de texto) y luego clasifícalos aquí." },
+        { q: "¿Necesito conexión a internet?", a: "Sí. El texto se extrae en tu dispositivo, pero la clasificación en sí la realiza nuestro servicio de IA en línea, así que necesitas estar conectado. La extracción de texto y el empaquetado final del ZIP ocurren localmente; solo la decisión de categoría necesita internet." },
+        { q: "¿Qué recibo de vuelta y se modifican mis archivos originales?", a: "Recibes un único ZIP llamado dockdocs-sorted.zip con una subcarpeta por categoría y tus PDF originales colocados dentro, intactos y sin modificar. Si dos archivos acabaran con el mismo nombre en la misma carpeta, añadimos un sufijo «-1», «-2» para que nada se sobrescriba." },
+        { q: "¿Qué tan precisas son las categorías?", a: "Las categorías las sugiere la IA a partir del texto de cada documento, así que son un buen punto de partida pero conviene revisarlas rápidamente, sobre todo en documentos poco habituales. Para que sea rápido, la IA lee solo las primeras 6 páginas de cada PDF, lo cual basta para la mayoría de archivos, pero puede errar el tema en un documento cuyo tipo solo queda claro más adelante." },
+      ],
     },
   },
   "flashcards": {
-    title: { en: "PDF Flashcards — FAQ", zh: "PDF 抽认卡常见问题" },
+    title: { en: "PDF Flashcards — FAQ", zh: "PDF 抽认卡常见问题", es: "Tarjetas de estudio de PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I turn a PDF into flashcards?", a: "Drop in a PDF — a textbook chapter, lecture notes, or a manual — and the tool reads the text right in your browser. Pick how many cards you want (5, 10, 15, or 20), then press \"Generate cards.\" You get a grid of question/answer cards; tap any card to flip it and check yourself." },
@@ -232,10 +312,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "有大小或使用限制吗？", a: "有。每次最多处理约 16,000 字符的文字——大约 12 页——所以请一次喂一个章节或小节，而不是整本书。另外还有合理使用的频率限制，约为每分钟六次生成。一旦触及，你会看到清晰的提示；缩短内容或稍等一分钟即可。" },
         { q: "是免费的吗？需要联网吗？", a: "免费使用——无需注册或付费。由于卡片是由 AI 服务生成的，你确实需要联网——浏览器离线读取你的 PDF，但生成卡片会向我们的服务器发起一次快速请求。" },
       ],
+      es: [
+        { q: "¿Cómo convierto un PDF en tarjetas de estudio?", a: "Suelta un PDF —un capítulo de un libro de texto, apuntes de clase o un manual— y la herramienta lee el texto directamente en tu navegador. Elige cuántas tarjetas quieres (5, 10, 15 o 20) y pulsa «Generar tarjetas». Obtienes una cuadrícula de tarjetas de pregunta/respuesta; toca cualquier tarjeta para darle la vuelta y autoevaluarte." },
+        { q: "¿Mi PDF se sube a algún sitio?", a: "Tu archivo PDF nunca se sube. El texto se extrae dentro de tu navegador y solo ese texto plano (más la cantidad de tarjetas y el idioma) se envía a nuestro servicio de IA para redactar las tarjetas. El archivo original, con sus imágenes, diseño y metadatos, permanece en tu dispositivo." },
+        { q: "¿Por qué dice «No se encontró texto en este PDF»?", a: "Tu PDF es un escaneo o una imagen: no tiene una capa de texto que leer, solo una imagen de la página. Pásalo primero por OCR para añadir una capa de texto consultable y luego vuelve a intentarlo. Consejo: si el PDF está protegido con contraseña, desbloquéalo primero con la herramienta «Desbloquear PDF»." },
+        { q: "¿Son precisas las tarjetas?", a: "Las tarjetas las redacta la IA usando únicamente el texto de tu documento; se le indica que no use conocimiento externo ni invente datos. Aun así, la IA puede malinterpretar o simplificar de más, así que revisa rápidamente las tarjetas antes de estudiar con ellas. La herramienta te lo recuerda en la pantalla de resultados." },
+        { q: "¿Hay un límite de tamaño o de uso?", a: "Sí. Cada ejecución acepta hasta unos 16 000 caracteres de texto —aproximadamente 12 páginas—, así que aliméntala con un capítulo o sección a la vez en lugar de un libro entero. También hay un límite de uso justo de unas seis generaciones por minuto. Si alcanzas alguno, verás un mensaje claro; solo acorta el contenido o espera un minuto." },
+        { q: "¿Es gratis y necesito conexión a internet?", a: "Es gratis de usar: no se necesita cuenta ni pago. Como las tarjetas las redacta un servicio de IA, sí necesitas conexión a internet: el navegador lee tu PDF sin conexión, pero generar las tarjetas hace una llamada rápida a nuestro servidor." },
+      ],
     },
   },
   "compare": {
-    title: { en: "Compare documents — FAQ", zh: "多文档对比常见问题" },
+    title: { en: "Compare documents — FAQ", zh: "多文档对比常见问题", es: "Comparar documentos — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I compare documents?", a: "Upload 2 to 8 PDFs of the same kind — quotes, invoices, or contracts — then pick the type and click \"Compare fields\". DockDocs lines up the key terms (price, delivery, payment, warranty, and so on) side by side in one table, with the exact source line behind every value. You also get a sourced recommendation for which option wins, and you can ask one question across all the documents at once." },
@@ -253,10 +341,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "对文件数量或大小有限制吗？", a: "一次最多对比 8 份 PDF,且至少要有 2 份可读才能开始对比。对于「跨文档提问」功能,所有文档合计文字需在 60,000 字符以内,问题在 500 字符以内——超了就换用更少或更短的文档。该工具需要联网,因为字段抽取和推荐是在我们服务器上完成的。" },
         { q: "免费吗？", a: "免费——你可以上传 PDF、做并排对比、拿到推荐,并跨文档提问。扫描件的浏览器内 OCR 也免费,因为它在你本地设备上运行。对比引擎目前是测试版,体验会持续改进。" },
       ],
+      es: [
+        { q: "¿Cómo comparo documentos?", a: "Sube de 2 a 8 PDF del mismo tipo —presupuestos, facturas o contratos—, luego elige el tipo y haz clic en «Comparar campos». DockDocs alinea los términos clave (precio, entrega, pago, garantía, etc.) lado a lado en una sola tabla, con la línea de origen exacta detrás de cada valor. También obtienes una recomendación con fuentes sobre qué opción gana, y puedes hacer una pregunta a todos los documentos a la vez." },
+        { q: "¿Mis archivos se suben a tu servidor?", a: "No: tus PDF jamás salen de tu dispositivo. DockDocs los lee directamente en tu navegador para extraer el texto. Solo ese texto plano extraído (no el archivo en sí) se envía a nuestro servidor, donde la IA extrae y alinea los campos. Así que el documento, su diseño y cualquier dato incrustado permanecen locales; lo que viaja son las palabras de la página." },
+        { q: "¿Por qué mi PDF dice «No reconocido (probablemente escaneado, necesita OCR)»?", a: "Significa que el PDF no tiene una capa de texto seleccionable: suele ser un escaneo o una foto de una página, así que no hay nada que leer. Haz clic en «Extraer texto con OCR» en ese documento y DockDocs ejecutará OCR en tu navegador para reconocer el texto (las primeras páginas), tras lo cual podrás compararlo como cualquier otro archivo. Los PDF cifrados o protegidos con contraseña tampoco se pueden leer hasta que se desbloquean." },
+        { q: "¿Qué recibo de vuelta y puedo confiar en los valores?", a: "Recibes una tabla comparativa donde cada celda muestra el valor más la línea de origen exacta de la que procede, y esa línea se verifica que aparezca realmente en tu documento, así que nada se inventa. Haz clic en cualquier línea de origen para saltar a un fragmento resaltado del texto original. Si un documento simplemente no indica algo, verás «No reconocido» en lugar de una suposición. Una advertencia: la recomendación general es el razonamiento de la IA sobre esas cifras y no se verifica fuente por fuente, así que confirma los datos de la tabla antes de decidir." },
+        { q: "¿Hay un límite de cantidad o tamaño de archivos?", a: "Puedes comparar hasta 8 PDF a la vez, y necesitas al menos 2 legibles para que la comparación se ejecute. Para la función de «preguntar a todos los documentos», el texto combinado de todos los documentos debe mantenerse por debajo de 60 000 caracteres y tu pregunta por debajo de 500 caracteres; si lo superas, usa documentos menos numerosos o más cortos. La herramienta necesita conexión a internet, ya que la extracción de campos y la recomendación se ejecutan en nuestro servidor." },
+        { q: "¿Es gratis?", a: "Sí: puedes subir tus PDF, ejecutar la comparación lado a lado, obtener la recomendación y hacer preguntas a tus documentos. El OCR en el navegador para archivos escaneados también es gratis, ya que se ejecuta localmente en tu dispositivo. El motor de comparación está en fase beta, así que su comportamiento puede seguir mejorando." },
+      ],
     },
   },
   "merge-pdf": {
-    title: { en: "Merge PDF files — FAQ", zh: "合并 PDF 常见问题" },
+    title: { en: "Merge PDF files — FAQ", zh: "合并 PDF 常见问题", es: "Combinar archivos PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I merge PDF files?", a: "Add two or more PDFs, drag the file thumbnails into the order you want, then click Merge & download. The pages are combined top-to-bottom in that order into a single PDF." },
@@ -274,10 +370,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "为什么有个 PDF 被跳过了？", a: "加了密码或被加密的 PDF 读不了，会被跳过并给出提示。先解除密码，再重新添加这个文件即可。" },
         { q: "免费吗？", a: "免费——完全免费，无水印、无需注册。合并结果会下载为一个 PDF 文件。" },
       ],
+      es: [
+        { q: "¿Cómo combino archivos PDF?", a: "Añade dos o más PDF, arrastra las miniaturas de los archivos al orden que quieras y luego haz clic en «Combinar y descargar». Las páginas se unen de arriba abajo en ese orden en un único PDF." },
+        { q: "¿Puedo controlar el orden en que se combinan?", a: "Sí. Cada archivo muestra una miniatura y una insignia con un número; arrástralos para reordenarlos antes de combinar. Ves exactamente qué va dónde antes de hacer clic, no después." },
+        { q: "¿Mis archivos se suben a un servidor?", a: "No. Todo se ejecuta localmente en tu navegador: la combinación se hace en tu dispositivo y tus archivos jamás se suben ni se envían a ningún sitio. No se necesita cuenta ni registro." },
+        { q: "¿Hay un límite de tamaño de archivo o de páginas?", a: "No hay un tope fijo. Como todo el trabajo se ejecuta en tu navegador, el límite práctico es la memoria de tu dispositivo: los archivos muy grandes o muchos a la vez pueden volverse lentos en dispositivos con poca RAM." },
+        { q: "¿Por qué se omitió uno de mis PDF?", a: "Los PDF protegidos con contraseña o cifrados no se pueden leer, así que quedan fuera con un aviso. Desbloquéalos o quita la contraseña primero y vuelve a añadir el archivo." },
+        { q: "¿Es gratis?", a: "Sí: completamente gratis, sin marca de agua y sin registro. El archivo combinado se descarga como un único PDF." },
+      ],
     },
   },
   "split-pdf": {
-    title: { en: "Split a PDF — FAQ", zh: "拆分 PDF 常见问题" },
+    title: { en: "Split a PDF — FAQ", zh: "拆分 PDF 常见问题", es: "Dividir un PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I split a PDF?", a: "Upload the PDF, then click the ✂ between any two pages to set a cut point. You can add as many cuts as you like, or use 'Split every N pages' to place them automatically. When you hit Split & download, each segment is saved as its own PDF, all packed into a single ZIP." },
@@ -293,10 +397,17 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "有文件大小或页数限制吗？", a: "没有固定上限。因为全部在浏览器里处理，实际限制取决于你设备的内存——页数很多或体积很大的 PDF 渲染会更慢，老旧的手机或笔记本可能比较吃力。" },
         { q: "拆分后得到什么？免费吗？", a: "你会得到一个 ZIP，里面每一段是一个 PDF（命名类似 document-part-1.pdf、document-part-2.pdf）。即使只设了一个切分点，输出也仍是 ZIP。完全免费，无需注册、不加水印。注意：带密码的 PDF 需要先解锁。" },
       ],
+      es: [
+        { q: "¿Cómo divido un PDF?", a: "Sube el PDF y luego haz clic en las ✂ entre dos páginas cualesquiera para fijar un punto de corte. Puedes añadir tantos cortes como quieras, o usar «Dividir cada N páginas» para colocarlos automáticamente. Cuando pulses «Dividir y descargar», cada segmento se guarda como su propio PDF, todos empaquetados en un único ZIP." },
+        { q: "¿Cómo sé qué acaba en cada archivo?", a: "Antes de descargar, las páginas se tintan con color y se etiquetan «Archivo 1», «Archivo 2», y así sucesivamente, y un recuento en vivo te dice exactamente cuántos archivos se crearán, de modo que no hay sorpresas." },
+        { q: "¿Mi archivo se sube a algún sitio?", a: "No. Toda la división se ejecuta localmente en tu navegador: el PDF se lee, se corta y se comprime en tu dispositivo y nunca se envía a un servidor. Nada sale de tu equipo." },
+        { q: "¿Hay un límite de tamaño de archivo o de páginas?", a: "No hay un tope fijo. Como todo se ejecuta en tu navegador, el límite práctico es la memoria de tu dispositivo: los PDF muy grandes o con muchas páginas tardan más en renderizarse y pueden exigir mucho a un teléfono o portátil antiguo." },
+        { q: "¿Qué recibo exactamente de vuelta y es gratis?", a: "Recibes un ZIP que contiene un PDF por segmento (nombrados como document-part-1.pdf, document-part-2.pdf). Aunque solo fijes un corte, la salida sigue siendo un ZIP. Es completamente gratis, sin registro ni marca de agua. Nota: los PDF protegidos con contraseña deben desbloquearse primero." },
+      ],
     },
   },
   "crop-pdf": {
-    title: { en: "Crop PDF — FAQ", zh: "裁剪 PDF 常见问题" },
+    title: { en: "Crop PDF — FAQ", zh: "裁剪 PDF 常见问题", es: "Recortar PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I crop a PDF?", a: "Upload your PDF, then drag the top, right, bottom and left sliders to trim each edge. You'll see a live preview as you go, so just adjust until it looks right and click Crop & download." },
@@ -314,10 +425,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "有文件大小限制吗？", a: "没有固定上限。因为都在浏览器里完成，实际能处理多大取决于你设备的内存——文件特别大时，配置较弱的机器可能会变慢或内存不足。" },
         { q: "免费吗？需要注册吗？", a: "完全免费，也不用注册。打开页面就能直接裁。" },
       ],
+      es: [
+        { q: "¿Cómo recorto un PDF?", a: "Sube tu PDF y luego arrastra los controles deslizantes superior, derecho, inferior e izquierdo para recortar cada borde. Verás una vista previa en vivo a medida que avanzas, así que ajusta hasta que se vea bien y haz clic en «Recortar y descargar»." },
+        { q: "¿Recorta todas las páginas de la misma manera?", a: "Sí. Los márgenes que estableces se aplican de forma uniforme a todas las páginas, de modo que todo el documento se mantiene coherente. Esta herramienta no permite recortar página por página." },
+        { q: "¿El contenido recortado se elimina realmente?", a: "No. Recortar cambia el área visible (el cuadro de recorte): las partes recortadas quedan ocultas, no borradas. Eso significa que nada se pierde de verdad, pero también que alguien podría recuperarlo. Si necesitas que el contenido desaparezca para siempre, usa una herramienta de censura (redacción) en su lugar." },
+        { q: "¿Mi archivo se sube a algún sitio?", a: "No. Todo se ejecuta localmente en tu navegador: tu PDF jamás sale de tu dispositivo y nada se envía a un servidor." },
+        { q: "¿Hay un límite de tamaño de archivo?", a: "No hay un límite fijo. Como todo ocurre en tu navegador, el techo práctico depende de la memoria de tu dispositivo: los archivos muy grandes pueden volverse lentos o quedarse sin memoria en máquinas poco potentes." },
+        { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Es completamente gratis y no se necesita registro. Solo abre la página y empieza a recortar." },
+      ],
     },
   },
   "sign-pdf": {
-    title: { en: "Sign PDF — FAQ", zh: "PDF 签名常见问题" },
+    title: { en: "Sign PDF — FAQ", zh: "PDF 签名常见问题", es: "Firmar PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I sign a PDF?", a: "Upload your PDF, draw or type your signature, choose the page, position and size, then click Sign & download. You get a new file named …-signed.pdf." },
@@ -335,10 +454,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "签名放在哪里？有哪些容易踩的坑？", a: "签名按九个固定锚点（四角、四边、居中）摆放，用大小滑块缩放——不能拖到精确的像素位置。一次只盖在一页上，需要签多页就逐页重复。加密/有密码的 PDF 需要先解锁。" },
         { q: "这算有法律效力的电子签名吗？", a: "签名是作为图片盖到页面上的，不是基于证书的数字签名。打字和手写电子签名在许多日常文档中被接受，具体用途请核对相关要求。" },
       ],
+      es: [
+        { q: "¿Cómo firmo un PDF?", a: "Sube tu PDF, dibuja o escribe tu firma, elige la página, la posición y el tamaño, y luego haz clic en «Firmar y descargar». Obtienes un archivo nuevo llamado …-signed.pdf." },
+        { q: "¿Mi archivo se sube a algún sitio?", a: "No. Todo el proceso se ejecuta en tu navegador: la página se renderiza y tu firma se estampa en el PDF localmente. Tu archivo jamás sale de tu dispositivo y nada se envía a un servidor." },
+        { q: "¿Puedo dibujar mi firma o tengo que escribirla?", a: "Cualquiera de las dos opciones funciona. Dibuja con el ratón o el dedo en el panel, o cambia a «Escribir» para representar tu nombre con una fuente caligráfica. Pulsa «Borrar» para rehacer una firma dibujada." },
+        { q: "¿Hay un límite de tamaño de archivo y cuesta algo?", a: "Es gratis y sin registro. No hay un tope de tamaño fijo, pero como todo se procesa en memoria, los PDF muy grandes dependen de la RAM de tu dispositivo: un archivo enorme puede ir lento en un teléfono o portátil antiguo." },
+        { q: "¿Dónde va exactamente la firma y hay algún detalle a tener en cuenta?", a: "Se coloca en una de nueve posiciones de anclaje (esquinas, bordes, centro) y se escala con el control deslizante de tamaño; no puedes arrastrarla a un píxel exacto. Se estampa en una página a la vez, así que repite el proceso por cada página que necesites firmar. Los PDF cifrados o protegidos con contraseña deben desbloquearse primero." },
+        { q: "¿Cuenta esto como una firma electrónica legal?", a: "La firma se estampa en la página como una imagen, no como una firma digital basada en certificado. Las firmas electrónicas escritas y dibujadas se aceptan en muchos documentos cotidianos, pero comprueba los requisitos concretos de tu caso de uso." },
+      ],
     },
   },
   "reorder-pages": {
-    title: { en: "Reorder PDF pages — FAQ", zh: "PDF 页面排序常见问题" },
+    title: { en: "Reorder PDF pages — FAQ", zh: "PDF 页面排序常见问题", es: "Reordenar páginas de PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I reorder pages in a PDF?", a: "Upload your PDF, then drag the page thumbnails into the order you want and click Apply & download. No typing page numbers — you arrange them visually." },
@@ -356,10 +483,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "排序会降低画质吗？", a: "不会。页面内容和分辨率保持原样，只改变顺序，不会重新渲染或压缩。" },
         { q: "免费吗？需要注册吗？", a: "完全免费，也无需注册。" },
       ],
+      es: [
+        { q: "¿Cómo reordeno las páginas de un PDF?", a: "Sube tu PDF, luego arrastra las miniaturas de las páginas al orden que quieras y haz clic en «Aplicar y descargar». No hay que escribir números de página: las organizas visualmente." },
+        { q: "¿Puedo eliminar páginas mientras lo hago?", a: "Sí. Haz clic en la ✕ de cualquier miniatura para descartar esa página y luego descarga. Reordenar y eliminar páginas ocurren en el mismo paso." },
+        { q: "¿Mi archivo se sube a algún sitio?", a: "No. Todo se ejecuta localmente en tu navegador: tu PDF jamás se sube ni sale de tu dispositivo." },
+        { q: "¿Hay un límite de tamaño de archivo o de páginas?", a: "No hay un límite fijo. Los PDF muy grandes simplemente dependen de la memoria de tu dispositivo, ya que todo el trabajo ocurre en tu equipo." },
+        { q: "¿Reordenar reducirá la calidad?", a: "No. Las páginas conservan su contenido y resolución originales; solo cambia el orden, nada se vuelve a renderizar ni se comprime." },
+        { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Es completamente gratis, sin registro necesario." },
+      ],
     },
   },
   "delete-page": {
-    title: { en: "Delete PDF pages — FAQ", zh: "删除 PDF 页面常见问题" },
+    title: { en: "Delete PDF pages — FAQ", zh: "删除 PDF 页面常见问题", es: "Eliminar páginas de PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I delete pages from a PDF?", a: "Upload your PDF, click the pages you want to remove (they turn red with an ✕), then click Delete & download. A counter shows how many pages will be deleted and how many remain." },
@@ -377,10 +512,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "删完会得到什么？", a: "一个删掉了所选页面的新 PDF，文件名为「原文件名-pages-removed.pdf」。其余页面内容和顺序保持不变，原文件也不会被改动。注意至少要保留一页。" },
         { q: "免费吗？", a: "免费——完全免费，无需注册或登录。" },
       ],
+      es: [
+        { q: "¿Cómo elimino páginas de un PDF?", a: "Sube tu PDF, haz clic en las páginas que quieras quitar (se ponen rojas con una ✕) y luego haz clic en «Eliminar y descargar». Un contador muestra cuántas páginas se eliminarán y cuántas quedan." },
+        { q: "¿Y si marco la página equivocada?", a: "Solo haz clic de nuevo en ella para conservarla: la marca roja y la ✕ desaparecen. Puedes marcar y desmarcar tantas veces como quieras antes de descargar." },
+        { q: "¿Mi archivo se sube a algún sitio?", a: "No. Todo el proceso se ejecuta en tu navegador usando la propia memoria de tu dispositivo: tu PDF jamás se envía a un servidor ni sale de tu dispositivo." },
+        { q: "¿Hay un límite de tamaño de archivo?", a: "No hay un tope fijo. Como el trabajo ocurre localmente, el límite práctico es la memoria de tu dispositivo: los PDF muy grandes o con muchas imágenes pueden ir lentos en máquinas de gama baja." },
+        { q: "¿Qué recibo de vuelta?", a: "Un PDF nuevo con las páginas marcadas eliminadas, descargado como «tuarchivo-pages-removed.pdf». El resto de las páginas conserva su contenido y orden originales; tu archivo original no se modifica. Debes conservar al menos una página." },
+        { q: "¿Es gratis?", a: "Sí: completamente gratis, sin registro ni cuenta necesaria." },
+      ],
     },
   },
   "rotate-page": {
-    title: { en: "Rotate PDF pages — FAQ", zh: "旋转 PDF 页面常见问题" },
+    title: { en: "Rotate PDF pages — FAQ", zh: "旋转 PDF 页面常见问题", es: "Rotar páginas de PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I rotate pages in a PDF?", a: "Upload the PDF and click a page to turn it 90° clockwise. Keep clicking the same page to rotate it 180°, 270°, and back. Or hit Rotate all 90° to spin every page at once, then download." },
@@ -398,10 +541,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "旋转会降低质量或改变内容吗？", a: "不会。旋转只是设置每页的方向标记，文字、图片和分辨率完全不变,不会重新渲染或压缩。" },
         { q: "免费吗？需要注册吗？", a: "完全免费，无需注册。打开页面、旋转、下载即可。" },
       ],
+      es: [
+        { q: "¿Cómo roto páginas de un PDF?", a: "Sube el PDF y haz clic en una página para girarla 90° en sentido horario. Sigue haciendo clic en la misma página para rotarla 180°, 270° y de vuelta. O pulsa «Rotar todo 90°» para girar todas las páginas a la vez, y luego descarga." },
+        { q: "¿Puedo rotar solo una página, o distintas páginas con distintos ángulos?", a: "Sí. Cada página se rota por su cuenta, así que puedes corregir un único escaneo de lado o ajustar distintas páginas a distintos ángulos: solo cambian las páginas en las que haces clic." },
+        { q: "¿Mi archivo se sube a algún sitio?", a: "No. Todo se ejecuta localmente en tu navegador: la rotación se escribe en el PDF en tu dispositivo y el archivo jamás se envía a un servidor ni sale de tu dispositivo." },
+        { q: "¿Hay un límite de tamaño de archivo o de páginas?", a: "No imponemos un límite fijo. Como todo ocurre en tu navegador, el techo práctico depende de la memoria de tu dispositivo: los PDF muy grandes pueden ir lentos en teléfonos o tabletas con poca memoria." },
+        { q: "¿Rotar pierde calidad o cambia el contenido?", a: "No. La rotación solo ajusta el indicador de orientación de cada página; el texto, las imágenes y la resolución quedan exactamente igual. Nada se vuelve a renderizar ni se comprime." },
+        { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Es completamente gratis, sin registro. Abre la página, rota y descarga." },
+      ],
     },
   },
   "add-page": {
-    title: { en: "Insert pages into a PDF — FAQ", zh: "向 PDF 插入页面常见问题" },
+    title: { en: "Insert pages into a PDF — FAQ", zh: "向 PDF 插入页面常见问题", es: "Insertar páginas en un PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I insert pages into a PDF?", a: "Upload your PDF, click where you want to insert (at the very start or after a specific page), then choose the file to insert there and click Insert & download." },
@@ -419,10 +570,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "有文件大小限制吗？", a: "没有固定上限，但因为全程在浏览器里完成，超大的 PDF 受你设备内存影响。如果文件太大处理吃力，可以换小一点的试试。" },
         { q: "是免费的吗？", a: "是，完全免费，无需注册或登录。" },
       ],
+      es: [
+        { q: "¿Cómo inserto páginas en un PDF?", a: "Sube tu PDF, haz clic donde quieras insertar (justo al principio o después de una página concreta), luego elige el archivo que insertar allí y haz clic en «Insertar y descargar»." },
+        { q: "¿Qué puedo insertar?", a: "Otro PDF (todas sus páginas se colocan en ese punto) o una sola imagen PNG/JPG, que se añade como una nueva página." },
+        { q: "¿Mi archivo se sube?", a: "No. Todo se ejecuta localmente en tu navegador usando pdf-lib: tus archivos jamás salen de tu dispositivo y nada se envía a un servidor." },
+        { q: "¿Qué recibo de vuelta?", a: "Un único PDF nuevo con las páginas insertadas en su sitio, descargado como «<tu-archivo>-with-insert.pdf». Tu archivo original no se modifica." },
+        { q: "¿Hay un límite de tamaño de archivo?", a: "No hay un límite fijo, pero como todo ocurre en tu navegador, los PDF muy grandes dependen de la memoria de tu dispositivo. Si un archivo enorme tiene dificultades, prueba con uno más pequeño." },
+        { q: "¿Es gratis?", a: "Sí: es completamente gratis, sin registro ni cuenta necesaria." },
+      ],
     },
   },
   "watermark-pdf": {
-    title: { en: "Add a watermark to a PDF — FAQ", zh: "PDF 加水印常见问题" },
+    title: { en: "Add a watermark to a PDF — FAQ", zh: "PDF 加水印常见问题", es: "Añadir una marca de agua a un PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I add a watermark to a PDF?", a: "Upload the PDF, build a text or image watermark, and adjust its position, opacity and rotation while you watch the live preview. Choose which pages to stamp, then click Apply & download." },
@@ -440,10 +599,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "有文件大小限制吗？", a: "没有固定上限。因为全部在本地处理，超大 PDF 只受设备内存影响——一般电脑都够用。" },
         { q: "免费吗？需要注册吗？", a: "免费，且无需注册。打开页面、添加 PDF、下载带水印的文件即可。" },
       ],
+      es: [
+        { q: "¿Cómo añado una marca de agua a un PDF?", a: "Sube el PDF, crea una marca de agua de texto o de imagen y ajusta su posición, opacidad y rotación mientras observas la vista previa en vivo. Elige qué páginas sellar y luego haz clic en «Aplicar y descargar»." },
+        { q: "¿Puedo usar una imagen o un logotipo en lugar de texto?", a: "Sí. Cambia al modo «Imagen» para colocar un logotipo o una imagen como marca de agua. En cualquier caso, puedes ajustar la posición, la opacidad y la rotación." },
+        { q: "¿La estampa en todas las páginas?", a: "Tú decides. La marca de agua va en las páginas que selecciones, así que puedes marcar todo el documento o solo páginas concretas." },
+        { q: "¿Mis archivos se suben a algún sitio?", a: "No. La marca de agua se aplica directamente en tu navegador: tu PDF jamás sale de tu dispositivo y nada se envía a un servidor." },
+        { q: "¿Hay un límite de tamaño de archivo?", a: "No hay un tope fijo. Como todo se ejecuta localmente, los PDF muy grandes solo están limitados por la memoria de tu dispositivo, que en la mayoría de las máquinas es de sobra." },
+        { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Es gratis y sin registro. Solo abre la página, añade tu PDF y descarga el archivo con marca de agua." },
+      ],
     },
   },
   "page-numbers": {
-    title: { en: "Add page numbers to a PDF — FAQ", zh: "PDF 添加页码 常见问题" },
+    title: { en: "Add page numbers to a PDF — FAQ", zh: "PDF 添加页码 常见问题", es: "Añadir números de página a un PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I add page numbers to a PDF?", a: "Upload your PDF, pick where the number goes (top or bottom, left/center/right), choose the format and start number, and set the page range. The live preview shows exactly how it looks, then click Add numbers & download." },
@@ -461,10 +628,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "有文件大小限制吗?", a: "没有固定上限。因为处理是在浏览器里完成的,超大 PDF 只受设备内存影响——一般文档在大多数电脑上都能顺利处理。" },
         { q: "免费吗?需要注册吗?", a: "完全免费,也不需要注册。打开页面直接用就行。" },
       ],
+      es: [
+        { q: "¿Cómo añado números de página a un PDF?", a: "Sube tu PDF, elige dónde va el número (arriba o abajo, izquierda/centro/derecha), escoge el formato y el número inicial, y establece el rango de páginas. La vista previa en vivo muestra exactamente cómo queda; luego haz clic en «Añadir números y descargar»." },
+        { q: "¿Mi archivo se sube a algún sitio?", a: "No. Todo se ejecuta localmente en tu navegador: el PDF se lee, se numera y se guarda en tu dispositivo. Tu archivo jamás se sube ni sale de tu equipo." },
+        { q: "¿Qué formatos y posiciones puedo usar?", a: "Cuatro formatos: solo el número (1), Página 1, 1 / N, o 1 de N. Seis posiciones: arriba o abajo, combinadas con izquierda, centro o derecha. También puedes establecer un margen pequeño, mediano o grande." },
+        { q: "¿Puedo empezar desde un número concreto o numerar solo algunas páginas?", a: "Sí. Usa «Empezar en» para el primer número (útil si tu portada no debe contar) y usa el rango desde/hasta para numerar solo una parte del documento. El recuento continúa a lo largo del rango que elijas." },
+        { q: "¿Hay un límite de tamaño de archivo?", a: "No hay un tope fijo. Como el trabajo ocurre en tu navegador, los PDF muy grandes solo están limitados por la memoria de tu dispositivo; en la mayoría de las máquinas los documentos típicos pasan sin problema." },
+        { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Sí, es completamente gratis y no se necesita registro. Solo abre la página y empieza." },
+      ],
     },
   },
   "images-to-pdf": {
-    title: { en: "Images to PDF — FAQ", zh: "图片转 PDF 常见问题" },
+    title: { en: "Images to PDF — FAQ", zh: "图片转 PDF 常见问题", es: "Imágenes a PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I convert images to a PDF?", a: "Add your images, drag the thumbnails into the order you want, then click Convert to PDF. Each image becomes one page, top to bottom, in a single file you can download." },
@@ -482,10 +657,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "有大小或数量限制吗？", a: "没有固定上限。因为全程在本地处理，实际上限取决于设备内存——图片过大或数量过多时，旧手机或内存较小的电脑可能会变慢。" },
         { q: "免费吗？需要注册吗？", a: "完全免费，无需注册，没有水印，也不用填邮箱。打开页面即可使用。" },
       ],
+      es: [
+        { q: "¿Cómo convierto imágenes en un PDF?", a: "Añade tus imágenes, arrastra las miniaturas al orden que quieras y luego haz clic en «Convertir a PDF». Cada imagen se convierte en una página, de arriba abajo, en un único archivo que puedes descargar." },
+        { q: "¿Qué formatos de imagen son compatibles?", a: "JPG, PNG, WebP, GIF y BMP. HEIC (el formato en el que los iPhone suelen guardar las fotos) aún no es compatible: convierte esas a JPG primero, o cambia el ajuste de la cámara de tu iPhone a «Más compatible»." },
+        { q: "¿Puedo combinar muchas imágenes en un solo PDF?", a: "Sí. Añade tantas como quieras y arrástralas para reordenarlas: se combinan en un único PDF exactamente en ese orden, una imagen por página." },
+        { q: "¿Mis imágenes se suben a algún sitio?", a: "No. Todo se ejecuta localmente en tu navegador: el PDF se genera en tu dispositivo y tus imágenes jamás se envían a un servidor ni se almacenan en ningún sitio." },
+        { q: "¿Hay un límite de tamaño o de cantidad de archivos?", a: "No hay un límite fijo. Como todo ocurre en tu dispositivo, el techo práctico es la memoria de tu dispositivo: imágenes de alta resolución muy grandes o muy numerosas pueden ralentizar un teléfono antiguo o un portátil con poca RAM." },
+        { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Sí, es completamente gratis, sin registro, sin marca de agua y sin necesidad de correo electrónico. Solo abre la página y empieza." },
+      ],
     },
   },
   "pdf-to-image": {
-    title: { en: "PDF to Image — FAQ", zh: "PDF 转图片常见问题" },
+    title: { en: "PDF to Image — FAQ", zh: "PDF 转图片常见问题", es: "PDF a imagen — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I convert a PDF to JPG or PNG?", a: "Drop in a PDF and every page shows up as a thumbnail. Click pages to include or exclude them (or use Select all / Select none), pick JPG or PNG, then Convert & download. A single page comes down as one image; multiple pages are bundled into a ZIP." },
@@ -503,10 +686,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "打不开我的 PDF，是怎么回事？", a: "最常见的原因是 PDF 加了密码或被加密，工具无法读取，请先去掉密码再试。输出按 2 倍分辨率渲染，画质清晰，但毕竟是图片——文字变成了像素，转换后无法再选中或搜索文字。" },
         { q: "是免费的吗？", a: "是的——完全免费，无需账号，没有水印，使用次数也没有限制。" },
       ],
+      es: [
+        { q: "¿Cómo convierto un PDF a JPG o PNG?", a: "Suelta un PDF y cada página aparece como una miniatura. Haz clic en las páginas para incluirlas o excluirlas (o usa «Seleccionar todo» / «No seleccionar ninguna»), elige JPG o PNG y luego «Convertir y descargar». Una sola página se descarga como una imagen; varias páginas se agrupan en un ZIP." },
+        { q: "¿Mi PDF se sube a algún sitio?", a: "No. Todo el proceso se ejecuta en tu navegador: el PDF se lee y se renderiza en imágenes localmente, y la descarga se genera en tu dispositivo. Nada se envía a un servidor, así que tu archivo jamás sale de tu equipo." },
+        { q: "JPG o PNG, ¿cuál debo elegir?", a: "PNG no tiene pérdidas, así que es ideal para texto nítido, dibujos lineales y capturas de pantalla. Los archivos JPG son más pequeños y van bien para fotos y escaneos. Algo que conviene saber: JPG no puede ser transparente, así que las zonas transparentes de una página se aplanan sobre un fondo blanco." },
+        { q: "¿Hay un límite de tamaño de archivo o de páginas?", a: "No hay un tope fijo ni registro. Como todo se procesa en tu navegador, el límite real es la memoria de tu dispositivo: los PDF muy grandes o con muchísimas páginas usan más RAM y tardan más, sobre todo en teléfonos o máquinas antiguas." },
+        { q: "No abre mi PDF, ¿qué pasa?", a: "La causa más común es un PDF protegido con contraseña o cifrado, que la herramienta no puede leer; quita primero la contraseña e inténtalo de nuevo. La salida se renderiza a 2× para imágenes nítidas, pero sigue siendo una imagen: el texto se convierte en píxeles, así que después no podrás seleccionarlo ni buscarlo." },
+        { q: "¿Es gratis?", a: "Sí: completamente gratis, sin cuenta, sin marca de agua y sin límite en cuántas veces lo uses." },
+      ],
     },
   },
   "redact-pdf": {
-    title: { en: "Redact PDF — Frequently Asked Questions", zh: "PDF 智能涂黑 —— 常见问题" },
+    title: { en: "Redact PDF — Frequently Asked Questions", zh: "PDF 智能涂黑 —— 常见问题", es: "Censurar PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I redact a PDF?", a: "Drop your PDF onto the page and DockDocs renders every page right in your browser. Drag a box over anything you want to hide — a name, an account number, a signature. DockDocs also auto-scans for likely sensitive items (emails, phone numbers, SSNs, card numbers, IPs) and pre-marks them; review those suggestions and click the ✕ on any box you don't want. When you're done, hit Apply & download to get the redacted copy." },
@@ -524,10 +715,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "导出的文件是什么样的?", a: "你会得到一份新的 PDF,每页都是拍平后的图片(约 158 DPI,清晰可读)。因为页面已经变成图片,被涂黑的内容永久消失,其余文字也不再能选中或搜索。这个取舍正是关键:选不中的文字,才是无法被还原的文字。" },
         { q: "自动识别的框可以直接信吗?", a: "把它当成帮你打个底,而不是万无一失。自动扫描能抓住邮箱、号码这类常见格式,但格式不太规整的可能漏掉,而且它不懂只有你才认得的、跟上下文相关的敏感信息。下载前,务必自己把每页过一遍,把检测没标到的地方手动拖框涂掉。" },
       ],
+      es: [
+        { q: "¿Cómo censuro un PDF?", a: "Suelta tu PDF en la página y DockDocs renderiza cada página directamente en tu navegador. Arrastra un cuadro sobre cualquier cosa que quieras ocultar: un nombre, un número de cuenta, una firma. DockDocs también escanea automáticamente en busca de elementos probablemente sensibles (correos, números de teléfono, números de seguridad social, números de tarjeta, IP) y los premarca; revisa esas sugerencias y haz clic en la ✕ de cualquier cuadro que no quieras. Cuando termines, pulsa «Aplicar y descargar» para obtener la copia censurada." },
+        { q: "¿El texto se elimina de verdad o solo se tapa con un recuadro negro?", a: "Se elimina de verdad. Muchas «censuras» solo colocan un rectángulo negro encima: el texto original sigue en el archivo y cualquiera puede copiarlo o borrar el recuadro. DockDocs vuelve a renderizar cada página como una imagen plana con las zonas negras incrustadas, de modo que el texto subyacente se destruye y desaparece para siempre. Eso es justo lo que hace que el resultado sea seguro para compartir." },
+        { q: "¿Mis archivos se suben a algún sitio?", a: "No. Todo el proceso se ejecuta dentro de tu navegador, en tu propio dispositivo: abrir el PDF, dibujar los cuadros y generar la copia censurada ocurren localmente. Tu archivo jamás se envía a un servidor ni sale de tu equipo, así que es una buena opción para documentos confidenciales o regulados." },
+        { q: "¿Hay algún límite y es gratis?", a: "Es completamente gratis, sin cuenta, correo ni instalación necesaria. No hay un tope de tamaño fijo, aunque los PDF muy grandes dependen de la memoria de tu dispositivo. El único límite estricto es el número de páginas: un documento puede tener hasta 30 páginas; si el tuyo es más largo, divídelo primero y censura cada parte." },
+        { q: "¿Cómo es el archivo de salida?", a: "Obtienes un PDF nuevo en el que cada página es una imagen aplanada (alrededor de 158 DPI, limpia y legible). Como las páginas ahora son imágenes, el contenido censurado desaparece de forma permanente y el resto del texto deja de ser seleccionable o consultable. Esa contrapartida es justo el objetivo: el texto que no puedes seleccionar es texto que no se puede recuperar." },
+        { q: "¿Debo fiarme de los cuadros detectados automáticamente por sí solos?", a: "Trátalos como un punto de partida, no como una garantía. El escaneo automático detecta patrones comunes como correos y números, pero puede pasar por alto cosas escritas en formatos poco habituales y no conocerá secretos específicos del contexto que solo tú puedes reconocer. Lee siempre las páginas tú mismo y arrastra cuadros sobre cualquier cosa que el detector no haya marcado antes de descargar." },
+      ],
     },
   },
   "translate-pdf": {
-    title: { en: "Translate a PDF — FAQ", zh: "翻译 PDF 常见问题" },
+    title: { en: "Translate a PDF — FAQ", zh: "翻译 PDF 常见问题", es: "Traducir un PDF — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I translate a PDF?", a: "Upload your PDF, pick a target language from the list, and click Translate. The text is pulled out of the file and translated by AI, then you can copy it or download it as a .txt file." },
@@ -545,10 +744,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "会保留原来的版式吗？翻完得到的是什么？", a: "暂时不会——这个版本只翻译文字内容，给你的是翻译后的文字，可复制或下载。能重排版式、还原成 PDF 的翻译还在规划中。另外要注意：如果 PDF 是扫描件或纯图片、没有可选中的文字，就没东西可提取，请先做 OCR。" },
         { q: "免费吗？法律文件能直接用吗？", a: "免费使用。AI 翻译很适合理解文档、出一份不错的初稿，但它不是认证翻译——用于法律、正式或需要认证的场景时，请找专业人士复核或翻译。" },
       ],
+      es: [
+        { q: "¿Cómo traduzco un PDF?", a: "Sube tu PDF, elige un idioma de destino de la lista y haz clic en «Traducir». El texto se extrae del archivo y lo traduce la IA; luego puedes copiarlo o descargarlo como un archivo .txt." },
+        { q: "¿Mi archivo se sube? ¿Es privado?", a: "El PDF se lee directamente en tu navegador: el archivo en sí jamás sale de tu dispositivo. Solo el texto plano extraído de él se envía a la IA para traducir. El documento original, el formato y las imágenes nunca se suben." },
+        { q: "¿Hay un límite de tamaño?", a: "Sí: unos 14 000 caracteres por ejecución, aproximadamente 10 páginas. Si tu documento es más largo, divídelo en fragmentos más pequeños y tradúcelos de uno en uno." },
+        { q: "¿A qué idiomas puedo traducir?", a: "Más de 18, incluidos inglés, chino simplificado y tradicional, español, francés, alemán, japonés, coreano, portugués, italiano, ruso, árabe, hindi y más. La herramienta detecta automáticamente el idioma de origen, así que solo eliges el de destino." },
+        { q: "¿Conserva el diseño original? ¿Qué recibo de vuelta?", a: "Todavía no: esta versión traduce solo el contenido de texto y te da el texto traducido para copiar o descargar. La traducción que conserva el diseño y reconstruye el PDF está en la hoja de ruta. Ten en cuenta también: si el PDF es un escaneo o una imagen sin texto seleccionable, no hay nada que extraer; pásale OCR primero." },
+        { q: "¿Es gratis? ¿Puedo fiarme de ella para documentos legales?", a: "Sí, es gratis de usar. La traducción con IA es estupenda para entender un documento y conseguir un buen primer borrador, pero no es una traducción certificada: para fines legales, oficiales o certificados, pide que una persona cualificada la revise o la traduzca." },
+      ],
     },
   },
   "extract-to-excel": {
-    title: { en: "Extract PDF data to a spreadsheet — FAQ", zh: "把 PDF 数据抽取成表格 — 常见问题" },
+    title: { en: "Extract PDF data to a spreadsheet — FAQ", zh: "把 PDF 数据抽取成表格 — 常见问题", es: "Extraer datos de PDF a una hoja de cálculo — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I extract data from PDFs into a spreadsheet?", a: "Drop in your invoices, quotes, or contracts (or pick a whole folder to batch them), choose the document type, and click Extract. The AI pulls the key fields — totals, dates, parties, terms — into one table you can download as a CSV that opens in Excel, Google Sheets, or Numbers. It's free." },
@@ -566,10 +773,18 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "什么都没抽出来,怎么回事？", a: "基本都是扫描件或拍照的 PDF。如果在普通阅读器里选不中里面的文字,浏览器就读不到内容,AI 拿到的是一张空白页。这种先做 OCR 再来。加密的 PDF 也得先解锁才能读取。" },
         { q: "哪类文档效果最好？", a: "字段固定的结构化单据——发票、报价单、合同——而且每个预设字段(供应商、总额、到期日、付款条款等)在文档里确实有写出来。自由格式的信件或排版很特别的文件,留空的格子会更多。" },
       ],
+      es: [
+        { q: "¿Cómo extraigo datos de PDF a una hoja de cálculo?", a: "Suelta tus facturas, presupuestos o contratos (o elige una carpeta entera para procesarlos por lotes), escoge el tipo de documento y haz clic en «Extraer». La IA extrae los campos clave —totales, fechas, partes, condiciones— en una sola tabla que puedes descargar como un CSV que se abre en Excel, Google Sheets o Numbers. Es gratis." },
+        { q: "¿Mis archivos se suben a un servidor?", a: "El PDF en sí jamás sale de tu dispositivo: se lee directamente en tu navegador. Solo el texto plano que extrae se envía a la IA para ordenarlo en columnas; el archivo original, con su diseño y cualquier imagen, permanece local. Si ese paso de enviar el texto es un inconveniente para contratos sensibles, conviene saberlo de antemano." },
+        { q: "¿Cómo sé que los números son correctos?", a: "Cada valor se etiqueta con la frase exacta de la que procede en el documento original, así que puedes verificarlo de un vistazo. Si la IA no encuentra con claridad un campo, deja la celda en blanco en lugar de adivinar, y descartamos cualquier cita de origen que no aparezca realmente en tu archivo, de modo que nada se fabrica." },
+        { q: "¿Cuáles son los límites?", a: "Hasta 8 documentos a la vez, y el texto combinado tiene un tope de unos 60 000 caracteres —aproximadamente una pila de facturas normales, no un contrato maestro de 200 páginas—. Para lotes grandes, procésalos en varias rondas." },
+        { q: "No extrajo nada, ¿qué pasó?", a: "Casi siempre es un PDF escaneado o fotografiado. Si el texto no es seleccionable en un lector de PDF normal, no hay nada que el navegador pueda leer y la IA recibe una página en blanco. Pásalos primero por OCR. Los PDF protegidos con contraseña tampoco se pueden leer hasta que los desbloquees." },
+        { q: "¿Qué documentos funcionan mejor?", a: "Documentación estructurada con campos consistentes —facturas, presupuestos y contratos— donde cada campo predefinido (proveedor, total, fecha de vencimiento, condiciones de pago, etc.) está realmente impreso en algún lugar del documento. Las cartas de formato libre o los diseños poco habituales dejarán más celdas en blanco." },
+      ],
     },
   },
   "redline": {
-    title: { en: "Compare PDF versions (redline) — FAQ", zh: "PDF 版本对比(红线)常见问题" },
+    title: { en: "Compare PDF versions (redline) — FAQ", zh: "PDF 版本对比(红线)常见问题", es: "Comparar versiones de PDF (línea roja) — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I compare two PDF versions?", a: "Upload the original (v1) and the revised (v2) PDF, then click Compare versions. DockDocs lines up the text and shows a single marked-up view — added text is highlighted in green, removed text is struck through in red, like track changes." },
@@ -587,6 +802,14 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
         { q: "文档可以多大?", a: "整个对比都在浏览器里运行,因此适合最多几千句的文档(每个文件上限 2500 句)。特别长的合同或书籍可能被截断或变慢。" },
         { q: "是免费的吗?", a: "免费——版本对比完全免费,无需注册,对比次数也不限。" },
       ],
+      es: [
+        { q: "¿Cómo comparo dos versiones de un PDF?", a: "Sube el PDF original (v1) y el revisado (v2), luego haz clic en «Comparar versiones». DockDocs alinea el texto y muestra una única vista con marcas: el texto añadido se resalta en verde y el texto eliminado se tacha en rojo, como el control de cambios." },
+        { q: "¿Mis archivos se suben a algún sitio?", a: "No. Es una herramienta del lado del cliente: el texto se extrae y se compara por completo en tu navegador, así que tus archivos jamás salen de tu dispositivo. Nada se envía a un servidor." },
+        { q: "¿Detecta frases reformuladas?", a: "Compara frase por frase, así que marca qué frases se añadieron y cuáles se eliminaron. Una pequeña reformulación aparece como una eliminación más una adición, en lugar de un cambio a nivel de palabra dentro de la frase." },
+        { q: "¿Qué compara exactamente? ¿Revisa el formato o las imágenes?", a: "Solo el texto extraído. Las fuentes, el diseño, los colores, las imágenes y las tablas no forman parte de la comparación, y los PDF escaneados sin una capa de texto real no darán resultados útiles. Si informa de que no hay cambios de texto, la redacción es idéntica aunque el aspecto haya cambiado." },
+        { q: "¿Cómo de grandes pueden ser los documentos?", a: "Toda la comparación se ejecuta en tu navegador, así que está ajustada para documentos de hasta unos miles de frases (tiene un tope de 2500 frases por archivo). Los contratos o libros muy largos pueden truncarse o ir lentos." },
+        { q: "¿Es gratis?", a: "Sí: comparar versiones es completamente gratis, sin registro y sin límite en el número de comparaciones." },
+      ],
     },
   },
 };
@@ -594,10 +817,10 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
 export function ToolFaq({ tool, locale = "en" }: { tool: string; locale?: Locale }) {
   const data = FAQS[tool];
   if (!data) return null;
-  const items = data.items[locale as "en" | "zh"] ?? data.items.en;
+  const items = data.items[locale] ?? data.items.en;
   return (
     <section className="mx-auto mt-12 border-t border-[color:var(--line)] pt-10">
-      <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{data.title[locale as "en" | "zh"] ?? data.title.en}</h2>
+      <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{data.title[locale] ?? data.title.en}</h2>
       <div className="mt-6 space-y-6">
         {items.map((it) => (
           <div key={it.q}>

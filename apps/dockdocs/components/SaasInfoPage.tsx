@@ -7,7 +7,7 @@ import {
 
 type SaasInfoPageProps = {
   page: InfoPageData;
-  locale?: Locale;
+  locale?: "en" | "zh" | "es";
   useLocalePrefix?: boolean;
 };
 

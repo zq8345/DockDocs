@@ -122,6 +122,46 @@ const STR = {
       { value: "contract", label: "合同" },
     ],
   },
+  es: {
+    badge: "Motor de comparación · beta",
+    h1: "Comparar documentos",
+    intro: `Sube de 2 a ${MAX_FILES} PDF del mismo tipo. DockDocs los lee en tu navegador y luego alinea los términos clave uno al lado del otro, con la línea de origen detrás de cada valor.`,
+    drop: "Arrastra y suelta PDF aquí",
+    dropHint: "Se leen localmente: tus archivos nunca salen de tu dispositivo. La extracción de campos se ejecuta en nuestro servidor.",
+    choose: "Elegir PDF",
+    samples: "Probar 3 cotizaciones de ejemplo",
+    extracting: "Extrayendo texto…",
+    typeLabel: "Tipo",
+    compare: "Comparar campos",
+    comparing: "Comparando…",
+    clear: "Limpiar",
+    bExtracted: "Texto extraído",
+    bEmpty: "No reconocido (probablemente escaneado: necesita OCR)",
+    ocrRun: "Extraer texto con OCR",
+    ocrBusy: "Leyendo con OCR… (esto puede tardar unos segundos)",
+    bError: "Error al leer",
+    needTwo: "Agrega al menos 2 documentos legibles para comparar.",
+    failed: "La comparación falló.",
+    comparison: "Comparación",
+    dimension: "Dimensión",
+    notRecognized: "No reconocido",
+    tableNote:
+      "Extraído por IA. Cada valor muestra la línea de origen exacta de la que proviene (verificada que aparece en ese documento). “No reconocido” significa que el documento no lo indicaba: no se adivina nada.",
+    comingNext: "Próximamente",
+    next: [
+      "Una recomendación con fuentes (qué opción gana y por qué)",
+      "Haz clic en cualquier valor para saltar al punto exacto en el PDF original",
+      "Agrega tus propias dimensiones para comparar",
+    ],
+    docCount: (n: number) => `${n} documento${n > 1 ? "s" : ""}`,
+    pages: (n: number) => `${n} página${n === 1 ? "" : "s"} · `,
+    chars: (n: number) => `${n.toLocaleString()} caracteres`,
+    docTypes: [
+      { value: "quote", label: "Cotizaciones" },
+      { value: "invoice", label: "Facturas" },
+      { value: "contract", label: "Contratos" },
+    ],
+  },
 } as const;
 
 const REC = {
@@ -137,11 +177,18 @@ const REC = {
     recommended: "推荐",
     disclaimer: "此结论是 AI 基于下方表格里的数字做的推理——它不像表格每个单元格那样逐条核对过出处。决定前请以表格里的数字为准。",
   },
+  es: {
+    title: "Recomendación",
+    thinking: "Sopesando las opciones…",
+    recommended: "Recomendado",
+    disclaimer: "Este veredicto es el razonamiento de la IA sobre las cifras de la tabla de abajo; a diferencia de cada celda de la tabla, no se verifica su fuente de forma individual. Confirma los números en la tabla antes de decidir.",
+  },
 } as const;
 
 const TRACE = {
   en: { source: "Source", notLocated: "Couldn't locate the exact snippet — showing the full text." },
   zh: { source: "原文出处", notLocated: "未能精确定位片段——显示全文。" },
+  es: { source: "Origen", notLocated: "No se pudo localizar el fragmento exacto: se muestra el texto completo." },
 } as const;
 
 // Localized dimension labels (the backend returns English labels).
@@ -193,7 +240,7 @@ function resolveDocName(docs: ReadonlyArray<{ id: string; name: string }>, id: s
 }
 
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
-  const cl = locale === "zh" ? "zh" : "en";
+  const cl = locale;
   const t = STR[cl];
   const r = REC[cl];
   const tr = TRACE[cl];

@@ -18,6 +18,12 @@ const STR = {
     note: "或将文件 / 文件夹拖放到此处",
     privacy: "本地处理，文件不上传",
   },
+  es: {
+    choose: "Elegir PDF",
+    folder: "Elegir una carpeta",
+    note: "o suelta archivos / una carpeta aquí",
+    privacy: "Procesado localmente — sin subir nada",
+  },
 } as const;
 
 function onlyPdfs(list: FileList | null): File[] {
@@ -40,7 +46,7 @@ export function BatchUploadBox({
   busy?: boolean;
   busyLabel?: string;
 }) {
-  const t = STR[locale === "zh" ? "zh" : "en"] ?? STR.en;
+  const t = STR[locale] ?? STR.en;
   const fileRef = useRef<HTMLInputElement>(null);
   const folderRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -84,7 +90,7 @@ export function BatchUploadBox({
             {t.folder}
           </button>
           <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-            <span>{locale === "zh" ? "支持 PDF" : "Supports PDF"}</span>
+            <span>{locale === "zh" ? "支持 PDF" : locale === "es" ? "Compatible con PDF" : "Supports PDF"}</span>
             <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
             <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
               <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>

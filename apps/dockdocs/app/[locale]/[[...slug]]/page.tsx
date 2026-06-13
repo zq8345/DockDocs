@@ -663,7 +663,7 @@ async function generateMetadataInner({
       return createLocalizedMetadata(uiLocale, "blog", page.title, page.description);
     }
 
-    const page = getInfoPage(uiLocale, slug as InfoPageSlug);
+    const page = getInfoPage(rawLocale, slug as InfoPageSlug);
     return createLocalizedMetadata(uiLocale, slug, page.title, page.description);
   }
 
@@ -947,11 +947,11 @@ export default async function LocalizedRoute({
       );
     }
 
-    const infoPage = getInfoPage(uiLocale, slug as InfoPageSlug);
+    const infoPage = getInfoPage(rawLocale, slug as InfoPageSlug);
     return (
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, slug, infoPage.title)) }} />
-        <SaasInfoPage page={infoPage} locale={uiLocale} useLocalePrefix />
+        <SaasInfoPage page={infoPage} locale={rawLocale} useLocalePrefix />
       </>
     );
   }

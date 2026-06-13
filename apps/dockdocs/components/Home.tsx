@@ -3,7 +3,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { navCategories } from "@/components/Header";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Item = { name: string; slug: string };
 
 const COPY = {
@@ -60,6 +60,33 @@ const COPY = {
     viewPricing: "查看定价",
     aiSummary: "AI 摘要",
     cite: "原文",
+  },
+  es: {
+    eyebrow: "Plataforma de PDF con IA centrada en la privacidad",
+    heroA: "Lee cualquier documento.",
+    heroB: "Confía en cada respuesta.",
+    heroSub: "~50 herramientas PDF que se ejecutan en tu navegador, más una IA que lee, compara y extrae tus documentos — con fuentes en las que puedes hacer clic para volver.",
+    primary: "Úsalo gratis",
+    secondary: "Mira cómo funciona la privacidad",
+    proofHeading: "Tus archivos nunca salen de tu dispositivo.",
+    proof: [{ t: "Procesado en tu navegador" }, { g: "0", t: " archivos subidos" }, { t: "Las respuestas citan la fuente" }, { t: "Sin registro" }],
+    aiEyebrow: "IA fundamentada",
+    aiHeading: "Una IA que muestra su trabajo.",
+    aiSub: "Pregunta a cualquier documento y cada respuesta apunta a la línea exacta de la que proviene. Compara, extrae, resume — fundamentado, nunca adivinado.",
+    aiCta: "Chatea con un PDF",
+    aiChips: ["Comparar", "Extraer a Excel", "Resumir", "Traducir 18 idiomas"],
+    capEyebrow: "Lo que puedes hacer",
+    capHeading: "Un solo kit. Cuatro formas de trabajar.",
+    capSub: "Cerca de 50 herramientas PDF en un solo lugar — convertir, organizar, firmar, redactar, OCR — la mayoría se ejecutan localmente en tu navegador.",
+    browseAll: "Ver todas las herramientas",
+    more: (n: number) => `y ${n} más`,
+    tools: "herramientas",
+    ctaHeadA: "Lee cualquier documento.",
+    ctaHeadB: "Confía en cada respuesta.",
+    ctaSub: "~50 herramientas, IA fundamentada, nada se sube. Gratis para empezar — sin registro.",
+    viewPricing: "Ver precios",
+    aiSummary: "Resumen de IA",
+    cite: "fuente",
   },
 } as const;
 
