@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Angle = 90 | 180 | 270;
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
@@ -34,6 +34,17 @@ const STR = {
     need: "至少添加一份 PDF。",
     note: "每份 PDF 的每一页都按所选角度旋转。已加密的 PDF 会被跳过。全部在你的设备上完成。",
     err: "出错了：",
+  },
+  es: {
+    title: "Rotar por lotes",
+    subtitle: "Corrige de una sola vez toda una carpeta de escaneos torcidos o al revés: gira cada página de cada PDF y empaquétalo todo en un solo ZIP. Todo en tu navegador; no se sube nada.",
+    drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
+    rotate: "Girar",
+    run: "Girar todo", running: "Girando", download: "Descargar ZIP", reset: "Empezar de nuevo",
+    files: (n: number) => `${n} / ${MAX_FILES} archivos`, done: "girado", failed: "falló",
+    need: "Agrega al menos un PDF.",
+    note: "Cada página de cada PDF se gira según el ángulo elegido. Los PDF cifrados se omiten. Todo permanece en tu dispositivo.",
+    err: "Algo salió mal: ",
   },
 };
 

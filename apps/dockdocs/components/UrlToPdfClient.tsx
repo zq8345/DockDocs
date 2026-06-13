@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 
 const STR = {
   en: {
@@ -46,6 +46,27 @@ const STR = {
       ["如何工作？", "粘贴网址后，我们用 CloudConvert 的浏览器引擎把页面渲染成 PDF，再下载到你的设备。"],
       ["哪些页面效果最好？", "公开、以静态为主的页面（文章、文档、发票）。需要登录或高度依赖 JavaScript 的页面可能无法完整渲染。"],
       ["免费吗？", "免费——网页转 PDF 不收费。"],
+    ] as const,
+  },
+  es: {
+    title: "Convierte una página web a PDF",
+    subtitle: "Pega una URL pública y descárgala como un PDF limpio, renderizado con un motor de navegador real. Sin subir archivos ni instalar nada.",
+    label: "URL de la página",
+    placeholder: "https://example.com/article",
+    convert: "Convertir a PDF",
+    working: "Renderizando la página…",
+    done: "Listo: tu PDF se descargó.",
+    again: "Convertir otra",
+    errInvalid: "Ingresa una URL completa que empiece con http:// o https://.",
+    errFailed: "No se pudo iniciar la conversión. Inténtalo de nuevo.",
+    errConvert: "No se pudo renderizar esa página. Puede que bloquee el acceso automatizado o que requiera iniciar sesión.",
+    errTimeout: "La página tardó demasiado en renderizarse. Prueba con una página más simple o ligera.",
+    note: "Funciona mejor con páginas públicas y autónomas. Las páginas detrás de un inicio de sesión o que dependen mucho de scripts podrían no renderizarse por completo.",
+    faqTitle: "Página web a PDF: preguntas frecuentes",
+    faqs: [
+      ["¿Cómo funciona?", "Pega una URL y renderizamos la página a un PDF con el motor de navegador de CloudConvert; luego se descarga en tu dispositivo."],
+      ["¿Qué páginas funcionan mejor?", "Páginas públicas y en su mayoría estáticas (artículos, documentos, facturas). Las páginas que requieren iniciar sesión o que usan mucho JavaScript podrían no renderizarse por completo."],
+      ["¿Es gratis?", "Sí: convertir una página web a PDF es gratis."],
     ] as const,
   },
 };

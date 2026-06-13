@@ -6,7 +6,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Pg = { idx: number; thumb: string };
 
 const SEG_TINTS = ["", "bg-[rgba(62,207,142,0.06)]", "bg-[rgba(52,211,153,0.07)]", "bg-[rgba(251,191,36,0.08)]", "bg-[rgba(96,165,250,0.07)]"];
@@ -33,6 +33,17 @@ const STR = {
     fileN: (n: number) => `文件 ${n}`, apply: "拆分并下载", working: "正在拆分…",
     reset: "重新开始", needSplit: "至少添加一个切分点。", err: "出错了：",
     every: "每", everyUnit: "页拆一份", everySet: "设置",
+  },
+  es: {
+    title: "Dividir PDF",
+    subtitle: "Sube un PDF y haz clic en ✂ entre las páginas para cortarlo en archivos separados: ves exactamente qué páginas van en cada archivo antes de descargar.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF", rendering: "Procesando páginas…",
+    hint: "Haz clic en ✂ después de una página para iniciar un archivo nuevo. Haz clic otra vez para deshacer.",
+    splitAfter: "Dividir aquí", files: (n: number) => `Se creará${n === 1 ? "" : "n"} ${n} archivo${n === 1 ? "" : "s"}`,
+    fileN: (n: number) => `Archivo ${n}`, apply: "Dividir y descargar", working: "Dividiendo…",
+    reset: "Empezar de nuevo", needSplit: "Agrega al menos un punto de división.", err: "Algo salió mal: ",
+    every: "Dividir cada", everyUnit: "páginas", everySet: "Aplicar",
   },
 };
 

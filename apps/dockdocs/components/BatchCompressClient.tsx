@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Level = "low" | "recommended" | "high";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; saved?: number; outSize?: number; blob?: Blob; msg?: string };
 
@@ -34,6 +34,17 @@ const STR = {
     totalSaved: (p: number) => `整体减小 ${p}%`,
     need: "至少添加一份 PDF。", err: "出错了：",
     note: "压缩会把页面渲染成图片，纯文字 PDF 可能压不了多少。全部在你的设备上完成。",
+  },
+  es: {
+    title: "Comprimir por lotes",
+    subtitle: "Arrastra una carpeta entera de PDF y redúcelos todos de una vez: cada uno se comprime en tu navegador y se empaqueta en un solo ZIP. No se sube nada.",
+    drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta", reading: "Leyendo…",
+    level: "Compresión", low: "Ligera", recommended: "Recomendada", high: "Fuerte",
+    run: "Comprimir todo", running: "Comprimiendo", download: "Descargar ZIP", reset: "Empezar de nuevo",
+    files: (n: number) => `${n} / ${MAX_FILES} archivos`, saved: "reducido", failed: "falló",
+    totalSaved: (p: number) => `${p}% más pequeño en total`,
+    need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
+    note: "La compresión convierte las páginas en imágenes, por lo que los PDF con mucho texto quizá no se reduzcan demasiado. Todo permanece en tu dispositivo.",
   },
 };
 
@@ -69,7 +80,7 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
           files: [it.file],
           pageRanges: level,
           outputFileName: it.name.replace(/\.pdf$/i, "") + "-compressed.pdf",
-          locale,
+          locale: locale === "zh" ? "zh" : "en",
         });
         const outSize = artifact.compressedSize ?? artifact.blob.size;
         updated[i] = { ...it, status: "done", blob: artifact.blob, outSize, saved: artifact.savedPercent };

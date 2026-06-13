@@ -5,7 +5,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 // Boxes are stored in NORMALIZED page fractions (0–1) so they map to any render scale.
 type Box = { id: string; page: number; x: number; y: number; w: number; h: number; auto?: boolean };
 type Pg = { idx: number; url: string; ratio: number }; // ratio = height / width
@@ -68,6 +68,20 @@ const STR = {
     needBox: "请先至少标记一处涂黑。",
     note: "输出为拍平的图片版 PDF:被涂黑的内容已永久删除、页面文字也不再可选——这正是它无法被还原的原因。",
     err: "出错了:", tooMany: `这份 PDF 超过 ${MAX_PAGES} 页。请先拆分再涂黑。`,
+  },
+  es: {
+    title: "Censurar PDF",
+    subtitle: "Tacha nombres, números y cualquier texto sensible, y descarga una copia donde realmente desaparecen. A diferencia de un recuadro negro por debajo del cual se puede copiar el texto, DockDocs aplana cada página como imagen para que el texto oculto se destruya para siempre. Se ejecuta en tu navegador; tu archivo nunca sale de tu dispositivo.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF", rendering: "Procesando páginas…",
+    hint: "Arrastra sobre una página para tachar un área. Los elementos sugeridos automáticamente vienen premarcados: haz clic en la ✕ de cualquier recuadro para quitarlo.",
+    autoFound: (n: number) => `Se detectaron automáticamente ${n} elemento${n === 1 ? "" : "s"} probablemente sensible${n === 1 ? "" : "s"} (correos, teléfonos, SSN, tarjetas, IP). Revísalos y agrega los tuyos.`,
+    autoNone: "No se detectaron correos/números evidentes automáticamente: arrastra sobre las páginas para censurar manualmente.",
+    boxes: (n: number) => `${n} censura${n === 1 ? "" : "s"}`,
+    clear: "Borrar todo", apply: "Aplicar y descargar", working: "Eliminando y aplanando…", reset: "Empezar de nuevo",
+    needBox: "Agrega al menos una censura primero.",
+    note: "El resultado es un PDF de imagen aplanada: el contenido censurado se elimina de forma permanente y el texto de la página ya no se puede seleccionar; eso es justamente lo que lo hace irrecuperable.",
+    err: "Algo salió mal: ", tooMany: `Este PDF tiene más de ${MAX_PAGES} páginas. Divídelo primero y luego censúralo.`,
   },
 };
 

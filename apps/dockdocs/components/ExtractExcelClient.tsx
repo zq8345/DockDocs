@@ -5,7 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type DocType = "invoice" | "quote" | "contract";
 type Dim = { key: string; label: string };
 type Field = { value: string | null; source: string | null };
@@ -38,6 +38,19 @@ const STR = {
     needFile: "至少添加一个 PDF。",
     err: "出错了：",
     note: "字段由 AI 抽取，建议快速核对。找不到的值会留空——不会瞎编。",
+  },
+  es: {
+    title: "Extraer a Excel",
+    subtitle: "Sube facturas, presupuestos o contratos y extrae los campos clave a una tabla limpia; luego descárgala como hoja de cálculo (CSV, se abre en Excel y Google Sheets). La IA solo informa lo que realmente aparece en cada documento.",
+    drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", folder: "Elegir carpeta",
+    choose: "Elegir PDF", add: "Agregar más", reading: "Leyendo archivos…",
+    type: "Tipo de documento", invoice: "Facturas", quote: "Presupuestos", contract: "Contratos",
+    extract: "Extraer campos", extracting: "Extrayendo…", reset: "Empezar de nuevo",
+    download: "Descargar CSV", doc: "Documento", notRecognized: "—",
+    files: (n: number) => `${n} archivo${n === 1 ? "" : "s"}`,
+    needFile: "Agrega al menos un PDF.",
+    err: "Algo salió mal: ",
+    note: "Los campos los extrae la IA y puede que necesiten una revisión rápida. Los valores que no encuentra se dejan en blanco; no los inventa.",
   },
 };
 

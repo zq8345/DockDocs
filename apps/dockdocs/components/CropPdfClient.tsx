@@ -5,7 +5,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Edges = { top: number; right: number; bottom: number; left: number };
 
 const STR = {
@@ -28,6 +28,16 @@ const STR = {
     reset: "重置边距", apply: "裁剪并下载", working: "正在裁剪…", start: "重新开始",
     hint: "拖动滑块裁掉每一边(占页面的百分比)。透明区域是保留的部分。",
     err: "出错了：",
+  },
+  es: {
+    title: "Recortar PDF",
+    subtitle: "Sube un PDF, recorta el espacio en blanco de cualquier borde con una vista previa en vivo y descárgalo: todas las páginas se recortan igual, todo en tu navegador.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF", rendering: "Generando vista previa…",
+    preview: "Vista previa en vivo", top: "Arriba", right: "Derecha", bottom: "Abajo", left: "Izquierda",
+    reset: "Restablecer bordes", apply: "Recortar y descargar", working: "Recortando…", start: "Empezar de nuevo",
+    hint: "Arrastra los controles para recortar cada borde (como % de la página). El área despejada es lo que conservas.",
+    err: "Algo salió mal: ",
   },
 };
 

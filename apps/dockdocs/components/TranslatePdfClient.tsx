@@ -8,7 +8,7 @@ import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
 import { useCallback, useState } from "react";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 
 const MAX_CHARS = 14_000;
 
@@ -75,6 +75,27 @@ const STR = {
     reset: "重新开始",
     errPrefix: "翻译失败：",
     privacy: "文件在你的浏览器中读取，只有提取出的文字会被发送去翻译。",
+  },
+  es: {
+    title: "Traducir PDF",
+    subtitle:
+      "Sube un PDF, elige un idioma y obtén el texto traducido. La IA traduce el texto del documento, procesado de forma privada y solo texto por ahora (la conservación del diseño llegará pronto).",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF",
+    extracting: "Leyendo el PDF…",
+    pagesChars: (p: number, c: number) => `${p} páginas · ${c.toLocaleString()} caracteres`,
+    noText: "No se encontró texto seleccionable. ¿Es un PDF escaneado? Aplica OCR primero.",
+    tooLong: `Este PDF tiene más texto que el límite de ${MAX_CHARS.toLocaleString()} caracteres. Usa un documento más corto (unas 10 páginas).`,
+    target: "Traducir a",
+    translate: "Traducir",
+    translating: "Traduciendo…",
+    result: "Traducción",
+    copy: "Copiar",
+    copied: "¡Copiado!",
+    download: "Descargar .txt",
+    reset: "Empezar de nuevo",
+    errPrefix: "La traducción falló: ",
+    privacy: "Tu archivo se lee en tu navegador; solo se envía el texto extraído para traducirlo.",
   },
 };
 

@@ -5,7 +5,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type PosKey = "tl" | "tc" | "tr" | "ml" | "c" | "mr" | "bl" | "bc" | "br";
 
 const POS: Record<PosKey, { x: number; y: number }> = {
@@ -32,10 +32,20 @@ const STR = {
     needSig: "请先手写或打字签名。", err: "出错了：",
     drawHint: "用鼠标或手指书写。",
   },
+  es: {
+    title: "Firmar PDF", subtitle: "Sube un PDF, dibuja o escribe tu firma, colócala en la página y descárgalo: todo en tu navegador.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir", choose: "Elegir PDF", rendering: "Procesando página…",
+    draw: "Dibujar", type: "Escribir", clear: "Borrar", typed: "Escribe tu nombre", page: "Página", position: "Posición", size: "Tamaño",
+    apply: "Firmar y descargar", working: "Firmando…", reset: "Empezar de nuevo", preview: "Vista previa en vivo", sig: "Tu firma",
+    needSig: "Primero dibuja o escribe una firma.", err: "Algo salió mal: ",
+    drawHint: "Dibuja con el mouse o el dedo.",
+  },
 };
 
 export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
+  // Child components/helpers only support en|zh; map other UI locales to their content fallback.
+  const baseLocale: "en" | "zh" = locale === "zh" ? "zh" : "en";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
@@ -71,7 +81,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(encryptedPdfMessage(e, baseLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
   }, [t, locale]);
 
@@ -151,7 +161,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       URL.revokeObjectURL(url);
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(encryptedPdfMessage(e, baseLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
   }, [sig, pos, size, page, fileName, t, locale]);
 
@@ -163,7 +173,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
+        <UploadDropzone locale={baseLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
       ) : (
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <div className="order-2 lg:order-1">
@@ -234,7 +244,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <ToolFaq tool="sign-pdf" locale={locale} />
+      <ToolFaq tool="sign-pdf" locale={baseLocale} />
     </div>
   );
 }

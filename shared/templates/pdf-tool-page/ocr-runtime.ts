@@ -7,7 +7,7 @@ type OcrRuntimeInput = {
   outputFileName: string;
   pageRanges: string;
   language: OcrLanguage;
-  locale: "en" | "zh";
+  locale: "en" | "zh" | "es";
   signal?: AbortSignal;
   onProgress?: (progress: PdfRuntimeProgress) => void;
 };
@@ -312,7 +312,7 @@ async function recognizeCanvas(
 function parseOcrPageRanges(
   value: string,
   pageCount: number,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
 ) {
   const zh = locale === "zh";
   const clean = value.trim() || "1";

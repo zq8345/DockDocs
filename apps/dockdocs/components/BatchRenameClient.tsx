@@ -5,7 +5,7 @@ import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Mode = "sequence" | "replace";
 type Item = { id: string; name: string; file: File };
 
@@ -33,6 +33,17 @@ const STR = {
     download: "下载改名后的 ZIP", reset: "重新开始",
     files: (n: number) => `${n} / ${MAX_FILES} 份`, preview: "预览", need: "至少添加一份 PDF。",
     note: "重命名只改文件名——PDF 内容不变。全部在你的设备上完成。",
+  },
+  es: {
+    title: "Renombrar por lotes",
+    subtitle: "Arrastra una carpeta entera y renombra todos los archivos a la vez, con un patrón numerado o buscar y reemplazar. Los archivos en sí no se modifican; descargas un ZIP con los nombres nuevos.",
+    drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
+    seq: "Numerado", rep: "Buscar y reemplazar",
+    base: "Nombre base", basePlaceholder: "p. ej. factura", start: "Empezar en",
+    find: "Buscar", replace: "Reemplazar con", findPlaceholder: "texto en el nombre del archivo", replacePlaceholder: "texto nuevo",
+    download: "Descargar ZIP renombrado", reset: "Empezar de nuevo",
+    files: (n: number) => `${n} / ${MAX_FILES} archivos`, preview: "Vista previa", need: "Agrega al menos un PDF.",
+    note: "Renombrar cambia solo los nombres de archivo: el contenido de los PDF no se modifica. Todo permanece en tu dispositivo.",
   },
 };
 

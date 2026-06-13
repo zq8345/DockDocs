@@ -5,7 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Op = { type: "eq" | "del" | "ins"; text: string };
 
 const STR = {
@@ -32,6 +32,18 @@ const STR = {
     need: "请添加两份 PDF。",
     err: "出错了：",
     note: "按句子逐句对比抽取出的文字。排版和图片不在对比范围内。",
+  },
+  es: {
+    title: "Comparar versiones",
+    subtitle: "Sube un PDF original y uno revisado para ver exactamente qué cambió: el texto añadido se resalta y el texto eliminado se muestra tachado. Todo se procesa en tu navegador.",
+    original: "Original (v1)", revised: "Revisado (v2)",
+    choose: "Elegir PDF", reading: "Leyendo…", change: "Reemplazar",
+    compare: "Comparar versiones", comparing: "Comparando…", reset: "Empezar de nuevo",
+    added: "Añadido", removed: "Eliminado", unchanged: "No se encontraron cambios de texto.",
+    summary: (a: number, d: number) => `${a} añadido · ${d} eliminado`,
+    need: "Agrega ambos PDF para comparar.",
+    err: "Algo salió mal: ",
+    note: "Compara el texto extraído oración por oración. El formato y las imágenes no forman parte de la comparación.",
   },
 };
 

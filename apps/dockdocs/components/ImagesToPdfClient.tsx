@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { ToolFaq } from "@/components/ToolFaq";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Item = { id: string; name: string; url: string; file: File };
 
 const ACCEPT = "image/png,image/jpeg,image/webp,image/gif,image/bmp,.png,.jpg,.jpeg,.webp,.gif,.bmp";
@@ -28,6 +28,16 @@ const STR = {
     count: (n: number) => `${n} 张图片`,
     convert: "转换为 PDF", working: "正在生成 PDF…", reset: "重新开始",
     needOne: "至少添加一张图片。", err: "出错了：",
+  },
+  es: {
+    title: "Imagen a PDF",
+    subtitle: "Agrega imágenes JPG, PNG, WebP, GIF o BMP, arrástralas para ordenarlas y combínalas en un solo PDF: una imagen por página. Ves cada imagen antes de convertir.",
+    drop: "Arrastra y suelta las imágenes aquí, o haz clic para elegir",
+    choose: "Elegir imágenes", add: "Agregar más", reading: "Leyendo imágenes…",
+    hint: "Arrastra para reordenar. Cada imagen se convierte en una página del PDF, de arriba a abajo.",
+    count: (n: number) => `${n} ${n === 1 ? "imagen" : "imágenes"}`,
+    convert: "Convertir a PDF", working: "Generando PDF…", reset: "Empezar de nuevo",
+    needOne: "Agrega al menos una imagen.", err: "Algo salió mal: ",
   },
 };
 

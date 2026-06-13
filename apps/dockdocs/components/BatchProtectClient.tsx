@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
 const MAX_FILES = 30;
@@ -36,6 +36,18 @@ const STR = {
     needFile: "至少添加一份 PDF。", needPw: "请输入有效密码(4–32 位：字母、数字、下划线)。",
     note: "每份 PDF 都将需要此密码才能打开。已加密的 PDF 会被跳过。全部在你的设备上完成。",
     err: "出错了：",
+  },
+  es: {
+    title: "Cifrar por lotes",
+    subtitle: "Define una sola contraseña y bloquea una carpeta entera de PDF: cada uno se cifra en tu navegador y se empaqueta en un único ZIP. No se sube nada.",
+    drop: "Arrastra y suelta los PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
+    pw: "Contraseña", pwPlaceholder: "Contraseña para abrir los archivos", show: "Mostrar", hide: "Ocultar",
+    pwRule: "De 4 a 32 caracteres: letras, dígitos y guion bajo (_).",
+    run: "Cifrar todo", running: "Cifrando", download: "Descargar ZIP", reset: "Empezar de nuevo",
+    files: (n: number) => `${n} / ${MAX_FILES} archivos`, done: "cifrado", failed: "error",
+    needFile: "Agrega al menos un PDF.", needPw: "Ingresa una contraseña válida (de 4 a 32: letras, dígitos y guion bajo).",
+    note: "Cada PDF requerirá esta contraseña para abrirse. Los PDF que ya están cifrados se omiten. Todo permanece en tu dispositivo.",
+    err: "Algo salió mal: ",
   },
 };
 
@@ -73,7 +85,7 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
           files: [it.file],
           pageRanges: password, // protect-pdf reads the password from pageRanges
           outputFileName: it.name.replace(/\.pdf$/i, "") + "-protected.pdf",
-          locale,
+          locale: locale === "zh" ? "zh" : "en",
         });
         updated[i] = { ...it, status: "done", blob: artifact.blob };
       } catch (e) {

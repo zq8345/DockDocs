@@ -6,7 +6,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -47,6 +47,25 @@ const STR = {
     needFile: "请选择要插入的 PDF 或图片。",
     err: "出错了：",
     selected: "插入点",
+  },
+  es: {
+    title: "Agregar página",
+    subtitle: "Sube un PDF, elige dónde insertar y luego agrega otro PDF o una imagen en ese punto. Todo ocurre en tu navegador.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF",
+    rendering: "Procesando páginas…",
+    pickSpot: "Elige dónde insertar: haz clic en una posición abajo.",
+    atStart: "Al principio de todo",
+    afterPage: (n: number) => `Después de la página ${n}`,
+    insertHere: "Insertar aquí ✓",
+    insertFile: "Archivo a insertar (PDF o imagen)",
+    chooseInsert: "Elegir archivo",
+    apply: "Insertar y descargar",
+    working: "Generando PDF…",
+    reset: "Empezar de nuevo",
+    needFile: "Elige un PDF o una imagen para insertar.",
+    err: "Algo salió mal: ",
+    selected: "Punto de inserción",
   },
 };
 

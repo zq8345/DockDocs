@@ -6,7 +6,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -29,6 +29,16 @@ const STR = {
     status: (del: number, keep: number) => `删除 ${del} 页 · 保留 ${keep} 页`,
     apply: "删除并下载", working: "正在生成 PDF…", reset: "重新开始",
     needKeep: "至少保留一页。", del: "将删除", err: "出错了：",
+  },
+  es: {
+    title: "Eliminar páginas",
+    subtitle: "Sube un PDF y haz clic en las páginas que quieras quitar; mira exactamente qué se va antes de descargar. Todo ocurre en tu navegador.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF", rendering: "Procesando páginas…",
+    hint: "Haz clic en una página para marcarla para eliminar. Haz clic de nuevo para conservarla.",
+    status: (del: number, keep: number) => `${del} para eliminar · ${keep} restantes`,
+    apply: "Eliminar y descargar", working: "Generando PDF…", reset: "Empezar de nuevo",
+    needKeep: "Conserva al menos una página.", del: "Se eliminará", err: "Algo salió mal: ",
   },
 };
 

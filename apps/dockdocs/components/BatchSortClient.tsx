@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
 
 const MAX_FILES = 30;
@@ -28,6 +28,15 @@ const STR = {
     files: (n: number) => `${n} / ${MAX_FILES} 份`, uncategorized: "未分类", failed: "无文字",
     need: "至少添加一份 PDF。", err: "出错了：",
     note: "类别由 AI 从每份文档文字推断,建议核对。ZIP 保留你的原文件,只是按类别分到不同文件夹。",
+  },
+  es: {
+    title: "Clasificar PDF",
+    subtitle: "Suelta un montón desordenado de PDF: la IA etiqueta cada uno (factura, contrato, currículum, informe…) y los ordena en carpetas dentro de un solo ZIP, para que una carpeta caótica quede prolijamente organizada. Tus archivos nunca salen de tu dispositivo.",
+    drop: "Arrastra y suelta los PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta", add: "Agregar más", reading: "Leyendo archivos…",
+    run: "Ordenar todo", running: "Ordenando", download: "Descargar ZIP ordenado", reset: "Empezar de nuevo",
+    files: (n: number) => `${n} / ${MAX_FILES} archivos`, uncategorized: "Sin categoría", failed: "sin texto",
+    need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
+    note: "Las categorías las sugiere la IA a partir del texto de cada documento y conviene revisarlas. El ZIP conserva tus archivos originales, solo los agrupa en carpetas por categoría.",
   },
 };
 

@@ -6,7 +6,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -39,6 +39,21 @@ const STR = {
     needOne: "至少保留一页。",
     page: "第",
     err: "出错了：",
+  },
+  es: {
+    title: "Reordenar páginas",
+    subtitle: "Sube un PDF y luego arrastra las miniaturas de las páginas hasta el orden que quieras. Elimina las páginas que no necesites. Todo ocurre en tu navegador.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF",
+    rendering: "Procesando páginas…",
+    hint: "Arrastra una página para moverla. Haz clic en ✕ para eliminar una página.",
+    apply: "Aplicar y descargar",
+    working: "Generando PDF…",
+    reset: "Empezar de nuevo",
+    removed: (n: number) => `${n} página${n === 1 ? "" : "s"} eliminada${n === 1 ? "" : "s"}`,
+    needOne: "Conserva al menos una página.",
+    page: "Página",
+    err: "Algo salió mal: ",
   },
 };
 

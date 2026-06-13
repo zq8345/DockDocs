@@ -7,7 +7,7 @@ import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Fmt = "jpg" | "png";
 type Img = { name: string; data: Uint8Array };
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; pages?: number; images?: Img[]; msg?: string };
@@ -32,6 +32,15 @@ const STR = {
     files: (n: number) => `${n} / ${MAX_FILES} 份`, pages: (n: number) => `${n} 页`, failed: "失败",
     need: "至少添加一份 PDF。", err: "出错了：",
     note: "每份 PDF 的每一页都会转成一张图片(2× 渲染)。文件多时稍慢——全部在你的设备上完成。",
+  },
+  es: {
+    title: "PDF a imagen por lotes",
+    subtitle: "Suelta una carpeta entera de PDF y convierte cada página en JPG o PNG: todo se procesa en tu navegador y se empaqueta en un solo ZIP. No se sube nada.",
+    drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
+    format: "Formato", run: "Convertir todo", running: "Convirtiendo", download: "Descargar ZIP", reset: "Empezar de nuevo",
+    files: (n: number) => `${n} / ${MAX_FILES} archivos`, pages: (n: number) => `${n} página${n === 1 ? "" : "s"}`, failed: "falló",
+    need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
+    note: "Cada página de cada PDF se convierte en una imagen (procesada a 2×). Los lotes grandes tardan un momento: todo permanece en tu dispositivo.",
   },
 };
 

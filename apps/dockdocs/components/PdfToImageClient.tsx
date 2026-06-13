@@ -6,7 +6,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Fmt = "jpg" | "png";
 type Pg = { idx: number; thumb: string };
 
@@ -32,6 +32,17 @@ const STR = {
     all: "全选", none: "全不选", format: "格式",
     convert: "转换并下载", working: "正在转换…", reset: "重新开始",
     needOne: "至少选择一页。", err: "出错了：",
+  },
+  es: {
+    title: "PDF a imagen",
+    subtitle: "Sube un PDF, elige las páginas que quieras, selecciona JPG o PNG y descarga: ves y seleccionas cada página antes de convertir.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF", rendering: "Procesando páginas…",
+    hint: "Haz clic en las páginas para incluirlas o excluirlas. Las páginas seleccionadas se convierten.",
+    selected: (n: number, t: number) => `${n} de ${t} páginas seleccionadas`,
+    all: "Seleccionar todo", none: "No seleccionar ninguna", format: "Formato",
+    convert: "Convertir y descargar", working: "Convirtiendo…", reset: "Empezar de nuevo",
+    needOne: "Selecciona al menos una página.", err: "Algo salió mal: ",
   },
 };
 

@@ -63,7 +63,7 @@ type PdfRuntimeInput = {
   files: File[];
   pageRanges: string;
   outputFileName: string;
-  locale: "en" | "zh";
+  locale: "en" | "zh" | "es";
   ocrLanguage?: "eng" | "chi_sim";
   signal?: AbortSignal;
   onProgress?: (progress: PdfRuntimeProgress) => void;
@@ -215,7 +215,7 @@ export async function runPdfRuntime({
   return imagesToPdf(files, outputFileName, signal, onProgress);
 }
 
-export function getPdfRuntimeErrorMessage(error: unknown, locale: "en" | "zh") {
+export function getPdfRuntimeErrorMessage(error: unknown, locale: "en" | "zh" | "es") {
   const zh = locale === "zh";
   const message = error instanceof Error ? error.message : String(error);
 
@@ -258,7 +258,7 @@ async function compressPdfFile(
   file: File,
   level: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -407,7 +407,7 @@ async function splitPdfFile(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -509,7 +509,7 @@ async function pdfToJpg(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -594,7 +594,7 @@ async function deletePdfPages(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -640,7 +640,7 @@ async function rotatePdfPages(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -695,7 +695,7 @@ async function reorderPdfPages(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -741,7 +741,7 @@ async function addBlankPage(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -812,7 +812,7 @@ async function protectPdfLocally(
   file: File,
   password: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -880,7 +880,7 @@ async function pdfToHtmlDoc(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -1003,7 +1003,7 @@ async function pdfToText(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -1072,7 +1072,7 @@ async function unlockPdfLocally(
   file: File,
   password: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -1121,7 +1121,7 @@ async function unlockPdfLocally(
 async function addPageNumbers(
   file: File,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -1188,7 +1188,7 @@ async function watermarkPdfLocally(
   file: File,
   text: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -1278,7 +1278,7 @@ async function pdfToPng(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -1356,7 +1356,7 @@ async function pdfToMarkdown(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -1431,7 +1431,7 @@ async function pdfToMarkdown(
 function parsePageRanges(
   value: string,
   pageCount: number,
-  locale: "en" | "zh",
+  locale: "en" | "zh" | "es",
 ): SplitRange[] {
   const zh = locale === "zh";
   const parts = value

@@ -1,4 +1,4 @@
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
@@ -594,10 +594,10 @@ const FAQS: Record<string, { title: { en: string; zh: string }; items: { en: QA[
 export function ToolFaq({ tool, locale = "en" }: { tool: string; locale?: Locale }) {
   const data = FAQS[tool];
   if (!data) return null;
-  const items = data.items[locale] ?? data.items.en;
+  const items = data.items[locale as "en" | "zh"] ?? data.items.en;
   return (
     <section className="mx-auto mt-12 border-t border-[color:var(--line)] pt-10">
-      <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{data.title[locale] ?? data.title.en}</h2>
+      <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{data.title[locale as "en" | "zh"] ?? data.title.en}</h2>
       <div className="mt-6 space-y-6">
         {items.map((it) => (
           <div key={it.q}>

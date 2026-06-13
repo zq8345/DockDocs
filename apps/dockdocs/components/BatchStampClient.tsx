@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Mode = "watermark" | "pagenum";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
@@ -42,6 +42,21 @@ const STR = {
     needText: "请输入水印文字。", needFile: "至少添加一份 PDF。",
     note: "使用默认排版(对角水印 / 页码)。需要自定义位置或透明度,请用单文件的「加水印」或「加页码」工具。全部在你的设备上完成。",
     err: "出错了：",
+  },
+  es: {
+    title: "Marca de agua o numeración por lotes de PDF",
+    titleWm: "Marca de agua por lotes", titlePn: "Números de página por lotes",
+    subWm: "Estampa una marca de agua en toda una carpeta de PDF de una sola vez: cada uno se procesa en tu navegador y se empaqueta en un solo ZIP. No se sube nada.",
+    subPn: "Agrega números de página a toda una carpeta de PDF de una sola vez: cada uno se procesa en tu navegador y se empaqueta en un solo ZIP. No se sube nada.",
+    subtitle: "Estampa una marca de agua o agrega números de página a toda una carpeta de PDF de una sola vez: cada uno se procesa en tu navegador y se empaqueta en un solo ZIP. No se sube nada.",
+    drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
+    wm: "Marca de agua", pn: "Números de página",
+    wmText: "Texto de la marca de agua", wmPlaceholder: "p. ej. CONFIDENCIAL",
+    run: "Aplicar a todos", running: "Procesando", download: "Descargar ZIP", reset: "Empezar de nuevo",
+    files: (n: number) => `${n} / ${MAX_FILES} archivos`, done: "listo", failed: "error",
+    needText: "Ingresa el texto de la marca de agua.", needFile: "Agrega al menos un PDF.",
+    note: "Usa la disposición predeterminada (marca de agua diagonal / números de página). Para una posición u opacidad personalizadas, usa las herramientas individuales de Marca de agua o Números de página. Todo permanece en tu dispositivo.",
+    err: "Algo salió mal: ",
   },
 };
 
@@ -81,7 +96,7 @@ export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale;
           files: [it.file],
           pageRanges: mode === "watermark" ? wmText.trim() : "", // watermark text rides on pageRanges; page-numbers ignores it
           outputFileName: it.name.replace(/\.pdf$/i, "") + suffix,
-          locale,
+          locale: locale === "zh" ? "zh" : "en",
         });
         updated[i] = { ...it, status: "done", blob: artifact.blob };
       } catch (e) {

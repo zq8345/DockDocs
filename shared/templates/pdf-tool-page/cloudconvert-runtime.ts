@@ -40,7 +40,7 @@ type CloudConvertRuntimeInput = {
   file: File;
   route: CloudConvertRoute;
   outputFileName: string;
-  locale: "en" | "zh";
+  locale: "en" | "zh" | "es";
   password?: string;
   signal?: AbortSignal;
   onProgress?: (progress: PdfRuntimeProgress) => void;
@@ -70,6 +70,11 @@ export async function runCloudConvert({
         : `File is too large (max 100 MB). Your file is ${mb(file.size)} MB.`,
     );
   }
+
+  // ── Fast path: self-hosted Gotenberg for forward conversions (marginal $0). ──
+  // Falls back to CloudConvert on any failure, oversized file, or reverse route.
+  const viaGotenberg = await tryGotenbergConvert({ file, route, outputFileName, locale, signal, onProgress });
+  if (viaGotenberg) return viaGotenberg;
 
   // ── 1. Ask our function to create a CloudConvert job ──
   emitProgress(onProgress, 6, 0, zh ? "正在创建转换任务..." : "Creating conversion job...");
@@ -178,6 +183,57 @@ export async function runCloudConvert({
     pageCount: undefined,
     fileCount: 1,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Self-hosted Gotenberg fast path
+// ---------------------------------------------------------------------------
+const GOTENBERG_API = "/api/gotenberg-convert";
+const GOTENBERG_ROUTES = new Set<CloudConvertRoute>([
+  "word-to-pdf",
+  "ppt-to-pdf",
+  "excel-to-pdf",
+  "html-to-pdf",
+  "pdf-to-pdfa",
+]);
+const GOTENBERG_MAX_BYTES = 5 * 1024 * 1024; // stay under Netlify's ~6 MB function body limit
+
+// Try the self-hosted converter first. Returns the artifact on success, or null
+// to signal "fall back to CloudConvert" (oversized file, reverse pdf->office
+// route, or any failure). Honors the abort signal.
+async function tryGotenbergConvert({
+  file,
+  route,
+  outputFileName,
+  locale,
+  signal,
+  onProgress,
+}: CloudConvertRuntimeInput): Promise<PdfRuntimeArtifact | null> {
+  if (!GOTENBERG_ROUTES.has(route) || file.size > GOTENBERG_MAX_BYTES) return null;
+  const zh = locale === "zh";
+  try {
+    emitProgress(onProgress, 12, 0, zh ? "正在创建转换任务..." : "Creating conversion job...");
+    const form = new FormData();
+    form.append("route", route);
+    form.append("file", file, file.name || "source");
+    emitProgress(onProgress, 40, 2, zh ? "正在转换中..." : "Converting...");
+    const res = await fetch(GOTENBERG_API, { method: "POST", body: form, signal });
+    if (!res.ok) return null;
+    const bytes = await res.arrayBuffer();
+    if (bytes.byteLength === 0) return null;
+    const { outputMime, outputType } = ROUTE_META[route];
+    emitProgress(onProgress, 100, 3);
+    return {
+      fileName: outputFileName,
+      blob: new Blob([bytes], { type: outputMime }),
+      outputType,
+      pageCount: undefined,
+      fileCount: 1,
+    };
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") throw err;
+    return null;
+  }
 }
 
 // ---------------------------------------------------------------------------

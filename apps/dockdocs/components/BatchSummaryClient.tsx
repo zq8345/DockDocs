@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Summary = { executiveSummary: string; keyPoints: string[]; actionItems?: string[]; nextSteps?: string[] };
 type Doc = { id: string; name: string; text: string };
 type Result = { name: string; summary?: Summary; error?: string };
@@ -32,6 +32,16 @@ const STR = {
     keyPoints: "关键要点", download: "下载全部 (.md)", need: "至少添加一份 PDF。",
     noText: "无可提取文字(扫描件?)", err: "出错了：",
     note: "摘要由 AI 从每份文档生成，建议快速核对。逐份处理以符合用量限制。",
+  },
+  es: {
+    title: "Resumen por lotes",
+    subtitle: "Sube varios informes, artículos o contratos y obtén un resumen conciso de cada uno generado por IA: resumen ejecutivo más puntos clave. Hasta 5 a la vez.",
+    drop: "Arrastra y suelta los PDF aquí, o haz clic para elegir", choose: "Elegir PDF", add: "Agregar más", reading: "Leyendo…",
+    run: "Resumir todo", running: "Resumiendo", reset: "Empezar de nuevo",
+    files: (n: number) => `${n} / ${MAX_FILES} archivos`,
+    keyPoints: "Puntos clave", download: "Descargar todo (.md)", need: "Agrega al menos un PDF.",
+    noText: "sin texto extraíble (¿escaneado?)", err: "Algo salió mal: ",
+    note: "Los resúmenes los genera la IA a partir de cada documento; conviene revisarlos rápidamente. Se procesan de uno en uno para no superar los límites.",
   },
 };
 

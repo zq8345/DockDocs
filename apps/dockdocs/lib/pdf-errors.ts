@@ -4,7 +4,7 @@
 // unlock the file first — so we turn the raw stack message into a clear hint
 // instead of dumping "PasswordException: No password given" onto the page.
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 
 /** True if the error is pdf.js / pdf-lib refusing a password-protected PDF. */
 export function isEncryptedPdfError(e: unknown): boolean {

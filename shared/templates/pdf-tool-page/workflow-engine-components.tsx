@@ -596,7 +596,7 @@ export function WorkflowErrorState({
   message: string;
   onRetry: () => void;
   onReset: () => void;
-  locale: "en" | "zh";
+  locale: "en" | "zh" | "es";
   bare?: boolean;
 }) {
   const zh = locale === "zh";

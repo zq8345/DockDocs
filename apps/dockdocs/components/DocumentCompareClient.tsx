@@ -10,7 +10,7 @@ import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 //  D5: multi-file upload -> browser-side text extraction (pdf.js).
 //  D6: /api/compare-extract -> aligned structured fields with sources -> table.
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type DocStatus = "ok" | "empty" | "error";
 
 type DocResult = {
@@ -193,9 +193,10 @@ function resolveDocName(docs: ReadonlyArray<{ id: string; name: string }>, id: s
 }
 
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale];
-  const r = REC[locale];
-  const tr = TRACE[locale];
+  const cl = locale === "zh" ? "zh" : "en";
+  const t = STR[cl];
+  const r = REC[cl];
+  const tr = TRACE[cl];
   const [results, setResults] = useState<DocResult[]>([]);
   const [busy, setBusy] = useState(false);
   const [dragOver, setDragOver] = useState(false);

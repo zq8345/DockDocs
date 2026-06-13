@@ -6,7 +6,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -27,6 +27,15 @@ const STR = {
     hint: "点击页面旋转 90°，连续点继续转。",
     rotateAll: "全部旋转 90°", apply: "应用并下载", working: "正在生成 PDF…",
     reset: "重新开始", none: "还没有旋转——点击某页试试。", err: "出错了：",
+  },
+  es: {
+    title: "Rotar páginas",
+    subtitle: "Sube un PDF y haz clic en una página para rotarla: mírala girar antes de descargarla. Corrige escaneos torcidos y páginas horizontales en tu navegador.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF", rendering: "Procesando páginas…",
+    hint: "Haz clic en una página para rotarla 90°. Sigue haciendo clic para seguir girando.",
+    rotateAll: "Rotar todo 90°", apply: "Aplicar y descargar", working: "Generando PDF…",
+    reset: "Empezar de nuevo", none: "Aún no hay rotaciones: haz clic en una página.", err: "Algo salió mal: ",
   },
 };
 

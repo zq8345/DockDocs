@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Card = { q: string; a: string };
 
 const STR = {
@@ -31,6 +31,17 @@ const STR = {
     noText: "这个 PDF 里没有文字。如果是扫描件，请先 OCR。",
     err: "出错了：",
     note: "卡片由 AI 从你的文档生成，学习前请快速核对。",
+  },
+  es: {
+    title: "Tarjetas de estudio PDF",
+    subtitle: "Sube el capítulo de un libro de texto, apuntes de clase o un manual y conviértelo en tarjetas de estudio — preguntas y respuestas extraídas únicamente de tu documento. Toca una tarjeta para girarla y ponerte a prueba.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF", reading: "Leyendo…", count: "Tarjetas", change: "Reemplazar",
+    generate: "Generar tarjetas", generating: "Generando…", reset: "Empezar de nuevo",
+    flip: "Toca para girar", question: "P", answer: "R",
+    noText: "No se encontró texto en este PDF. Si es un escaneo, ejecuta primero el OCR.",
+    err: "Algo salió mal: ",
+    note: "Las tarjetas las genera la IA a partir de tu documento. Revísalas rápidamente antes de estudiar.",
   },
 };
 

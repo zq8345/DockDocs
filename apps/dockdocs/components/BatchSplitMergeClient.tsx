@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type Mode = "merge" | "split";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; parts?: number; msg?: string };
 
@@ -41,6 +41,20 @@ const STR = {
     note: "合并保持上传顺序。拆分把每份 PDF 按 N 页切成若干份。全部在你的设备上完成。",
     err: "出错了：",
   },
+  es: {
+    title: "Dividir o combinar PDF por lotes",
+    titleSplit: "División por lotes",
+    subSplit: "Divide cada PDF de una carpeta entera en archivos más pequeños de N páginas, todo en tu navegador y listo para descargar. No se sube nada.",
+    subtitle: "Combina una carpeta entera de PDF en uno solo, o divide cada PDF en archivos más pequeños, todo en tu navegador y listo para descargar. No se sube nada.",
+    drop: "Arrastra y suelta los PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
+    merge: "Combinar en uno", split: "Dividir cada uno",
+    every: "Páginas por archivo", order: "Los archivos se combinan en el orden que se muestra.",
+    run: "Ejecutar", running: "Procesando", dlMerge: "Descargar PDF combinado", dlSplit: "Descargar ZIP", reset: "Empezar de nuevo",
+    files: (n: number) => `${n} / ${MAX_FILES} archivos`, parts: (n: number) => `${n} parte${n === 1 ? "" : "s"}`, failed: "falló",
+    needTwo: "Agrega al menos 2 PDF para combinar.", needFile: "Agrega al menos un PDF.",
+    note: "Al combinar se mantiene el orden de carga. La división separa cada PDF en bloques de N páginas. Todo permanece en tu dispositivo.",
+    err: "Algo salió mal: ",
+  },
 };
 
 export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
@@ -72,7 +86,7 @@ export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Lo
       if (items.length < 2) { setError(t.needTwo); return; }
       setPhase("running"); setProgress(0);
       try {
-        const artifact = await runPdfRuntime({ slug: "merge-pdf", files: items.map((it) => it.file), pageRanges: "", outputFileName: "merged.pdf", locale });
+        const artifact = await runPdfRuntime({ slug: "merge-pdf", files: items.map((it) => it.file), pageRanges: "", outputFileName: "merged.pdf", locale: locale === "zh" ? "zh" : "en" });
         result.current = { blob: artifact.blob, name: "dockdocs-merged.pdf" };
         setPhase("done");
       } catch (e) {

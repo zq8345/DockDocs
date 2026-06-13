@@ -5,7 +5,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 type PosKey = "tl" | "tc" | "tr" | "bl" | "bc" | "br";
 type Fmt = "n" | "page" | "slash" | "of";
 
@@ -35,6 +35,17 @@ const STR = {
     fmtN: "1", fmtPage: "第 1 页", fmtSlash: "1 / N", fmtOf: "1 / 共 N",
     apply: "添加页码并下载", working: "正在添加…", reset: "重新开始", preview: "实时预览",
     err: "出错了：",
+  },
+  es: {
+    title: "Agregar números de página",
+    subtitle: "Sube un PDF, elige dónde van los números, el formato y qué páginas; míralo en la vista previa en vivo antes de descargar.",
+    drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
+    choose: "Elegir PDF", rendering: "Generando vista previa…",
+    position: "Posición", margin: "Margen", small: "Pequeño", medium: "Mediano", large: "Grande",
+    startAt: "Empezar en", format: "Formato", pages: "Páginas", from: "desde", to: "hasta",
+    fmtN: "1", fmtPage: "Página 1", fmtSlash: "1 / N", fmtOf: "1 de N",
+    apply: "Agregar números y descargar", working: "Numerando…", reset: "Empezar de nuevo", preview: "Vista previa en vivo",
+    err: "Algo salió mal: ",
   },
 };
 

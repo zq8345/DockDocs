@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 
-type Locale = "en" | "zh";
+type Locale = "en" | "zh" | "es";
 
 const STR = {
   en: {
@@ -40,7 +40,7 @@ export function BatchUploadBox({
   busy?: boolean;
   busyLabel?: string;
 }) {
-  const t = STR[locale] ?? STR.en;
+  const t = STR[locale === "zh" ? "zh" : "en"] ?? STR.en;
   const fileRef = useRef<HTMLInputElement>(null);
   const folderRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
