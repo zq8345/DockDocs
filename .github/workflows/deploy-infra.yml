@@ -1,0 +1,27 @@
+name: Deploy Infra (Gotenberg + Reverse)
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'infra/gotenberg/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Aliyun ECS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: root
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          command_timeout: 15m
+          script: |
+            cd ~/dock-ai-ecosystem/infra/gotenberg
+            git pull
+            docker compose build --no-cache
+            docker compose up -d
+            echo "=== Health checks ==="
+            sleep 5
+            docker compose ps
