@@ -152,11 +152,13 @@ function createLocalizedMetadata(
       url: `https://dockdocs.app${canonical}`,
       siteName: "DockDocs",
       type: "website",
+      images: [{ url: "https://dockdocs.app/opengraph-image", width: 1200, height: 630, alt: "DockDocs — every tool you need for PDFs" }],
     },
     twitter: {
       card: "summary_large_image",
       title: pageTitle,
       description,
+      images: ["https://dockdocs.app/opengraph-image"],
     },
     robots: {
       index: true,

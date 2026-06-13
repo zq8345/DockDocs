@@ -218,11 +218,13 @@ export function createPdfToolMetadata(config: PdfToolPageConfig): Metadata {
       url: pageUrl,
       siteName: "DockDocs",
       type: "website",
+      images: [{ url: `${siteUrl}/opengraph-image`, width: 1200, height: 630, alt: "DockDocs — every tool you need for PDFs" }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: config.description,
+      images: [`${siteUrl}/opengraph-image`],
     },
     robots: {
       index: true,
