@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
-import { defaultLocale, isAllLocale, isLocale, locales, localeLabels } from "@/lib/i18n";
+import { defaultLocale, isAllLocale, routeLocales, localeLabels } from "@/lib/i18n";
 
 // ── Top-level nav categories. Each opens a dropdown; PDF tools has sub-columns. ──
 type NavItem = { name: string; slug: string; soon?: boolean };
@@ -361,10 +361,10 @@ const pageLinks = {
 
 type Locale = "en" | "zh";
 
-function stripLocale(p: string): Locale {
+function stripLocale(p: string): "en" | "zh" | "es" {
   const s = p.split("/").filter(Boolean);
-  const detected = isAllLocale(s[0]) ? s[0] : defaultLocale;
-  return (isLocale(detected) ? detected : defaultLocale) as Locale;
+  const first = s[0];
+  return first === "zh" || first === "es" ? first : "en";
 }
 function lh(h: string, l: string) {
   return l === defaultLocale ? h : `/${l}${h}`;
@@ -386,7 +386,7 @@ export function Header() {
   const locale = stripLocale(pathname ?? "/");
 
   const cats = navCategories[locale] ?? navCategories.en;
-  const pages = pageLinks[locale] ?? pageLinks.en;
+  const pages = pageLinks[locale === "es" ? "en" : locale] ?? pageLinks.en;
 
   useEffect(() => {
     setLight(document.documentElement.classList.contains("light"));
@@ -429,7 +429,7 @@ export function Header() {
   // Inline language toggle (used in More menu + mobile)
   const langToggle = (
     <div className="flex gap-1">
-      {locales.map((l) => (
+      {routeLocales.map((l) => (
         <button
           key={l}
           type="button"
