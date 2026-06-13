@@ -1,4 +1,5 @@
 import type { Config, Context } from "@netlify/functions";
+import { enforceFeatureGate } from "./_shared/feature-gate";
 
 declare const Netlify: {
   env: {
@@ -104,6 +105,12 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many requests — please wait a minute and try again.", httpStatus: 429 }, 429);
   }
 
+  // Server-side plan/usage gate (authoritative — not bypassable like the client).
+  const gate = await enforceFeatureGate(req, "chat");
+  if (!gate.ok) {
+    return gate.response;
+  }
+
   const provider = getProvider();
   if (!provider.apiUrl || !provider.apiKey || !provider.model) {
     return json(
@@ -181,6 +188,7 @@ export default async (req: Request, _context: Context) => {
   );
 
   if (payload.stream) {
+    await gate.commit();
     return streamAiChatResponse({
       provider: resolvedProvider,
       context: selectedContext.context,
@@ -226,6 +234,7 @@ export default async (req: Request, _context: Context) => {
       );
     }
 
+    await gate.commit();
     return json(
       {
         ok: true,

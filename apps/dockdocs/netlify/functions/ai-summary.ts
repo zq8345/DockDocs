@@ -1,4 +1,5 @@
 import type { Config, Context } from "@netlify/functions";
+import { enforceFeatureGate } from "./_shared/feature-gate";
 
 declare const Netlify: {
   env: {
@@ -80,6 +81,12 @@ export default async (req: Request, _context: Context) => {
   }
   if (isRateLimited(req, 10, 60_000)) {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many requests — please wait a minute and try again.", httpStatus: 429 }, 429);
+  }
+
+  // Server-side plan/usage gate (authoritative — not bypassable like the client).
+  const gate = await enforceFeatureGate(req, "summary");
+  if (!gate.ok) {
+    return gate.response;
   }
 
   const provider = getProvider();
@@ -173,6 +180,7 @@ export default async (req: Request, _context: Context) => {
       );
     }
 
+    await gate.commit();
     return json(
       {
         ok: true,

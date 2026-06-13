@@ -1,4 +1,5 @@
 import type { Config, Context } from "@netlify/functions";
+import { enforceFeatureGate } from "./_shared/feature-gate";
 
 declare const Netlify: {
   env: {
@@ -83,6 +84,14 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many requests — please wait a minute and try again." }, 429);
   }
 
+  // Server-side plan/usage gate (authoritative — not bypassable like the client).
+  // compare-extract is the metered entry point; compare-qa / compare-recommend
+  // are within-session follow-ups bounded by their own per-IP limits.
+  const gate = await enforceFeatureGate(req, "compare");
+  if (!gate.ok) {
+    return gate.response;
+  }
+
   const provider = getProvider();
   if (!provider) {
     return json(
@@ -154,6 +163,7 @@ export default async (req: Request, _context: Context) => {
       return { id: doc.id, name: doc.name, fields };
     });
 
+    await gate.commit();
     return json(
       {
         ok: true,

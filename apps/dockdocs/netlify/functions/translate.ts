@@ -1,4 +1,5 @@
 import type { Config, Context } from "@netlify/functions";
+import { enforceFeatureGate } from "./_shared/feature-gate";
 
 declare const Netlify: {
   env: {
@@ -56,6 +57,12 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many requests — please wait a minute and try again." }, 429);
   }
 
+  // Server-side plan/usage gate (authoritative — not bypassable like the client).
+  const gate = await enforceFeatureGate(req, "translate");
+  if (!gate.ok) {
+    return gate.response;
+  }
+
   const provider = getProvider();
   if (!provider) {
     return json(
@@ -107,6 +114,7 @@ export default async (req: Request, _context: Context) => {
     if (translation == null) {
       return json({ ok: false, code: "PROVIDER_ERROR", message: "The AI provider did not return a translation." }, 200);
     }
+    await gate.commit();
     return json({ ok: true, translation, targetLang: targetCode, model: provider.model }, 200);
   } catch (error) {
     const message = error instanceof Error ? error.message : "The AI provider timed out or could not be reached.";
