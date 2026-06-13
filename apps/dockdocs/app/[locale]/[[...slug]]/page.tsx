@@ -303,7 +303,7 @@ async function generateMetadataInner({
 
   if (slug === "sign-pdf") {
     return {
-      title: rawLocale === "zh" ? "给 PDF 签名 — 免费在线电子签名 | DockDocs" : "Sign a PDF — Free Online E-Signature | DockDocs",
+      title: rawLocale === "zh" ? "给 PDF 签名 — 免费在线电子签名" : "Sign a PDF — Free Online E-Signature",
       description:
         rawLocale === "zh"
           ? "免费在线给 PDF 签名：手写或打字签名，放到页面上下载，全部在浏览器中完成。"
@@ -317,7 +317,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-compress") {
     return {
-      title: rawLocale === "zh" ? "批量压缩 PDF — 一次压缩整个文件夹 | DockDocs" : "Batch Compress PDFs — Shrink a Whole Folder | DockDocs",
+      title: rawLocale === "zh" ? "批量压缩 PDF — 一次压缩整个文件夹" : "Batch Compress PDFs — Shrink a Whole Folder",
       description:
         rawLocale === "zh"
           ? "拖入整个 PDF 文件夹一次性全部压缩，每个在浏览器中压缩并打包成 ZIP，不上传。"
@@ -331,7 +331,7 @@ async function generateMetadataInner({
 
   if (slug === "classify") {
     return {
-      title: rawLocale === "zh" ? "PDF 自动分类打标签 — 一键整理文件夹 | DockDocs" : "Auto-Classify & Tag PDFs — Organize a Folder with AI | DockDocs",
+      title: rawLocale === "zh" ? "PDF 自动分类打标签 — 一键整理文件夹" : "Auto-Classify & Tag PDFs — Organize a Folder with AI",
       description:
         rawLocale === "zh"
           ? "上传一堆 PDF，AI 自动归类、打标签（发票/简历/合同/论文），几秒整理好。"
@@ -345,7 +345,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-summary") {
     return {
-      title: rawLocale === "zh" ? "批量摘要 PDF — 一次总结多份文档 | DockDocs" : "Batch Summarize PDFs — Summarize Multiple Documents | DockDocs",
+      title: rawLocale === "zh" ? "批量摘要 PDF — 一次总结多份文档" : "Batch Summarize PDFs — Summarize Multiple Documents",
       description:
         rawLocale === "zh"
           ? "上传多份报告/论文/合同，AI 为每份生成执行摘要和关键要点，一次最多 5 份。"
@@ -359,7 +359,7 @@ async function generateMetadataInner({
 
   if (slug === "flashcards") {
     return {
-      title: rawLocale === "zh" ? "PDF 抽认卡生成 — 从课本/讲义自动出题 | DockDocs" : "PDF Flashcard Maker — Study Cards from Any PDF | DockDocs",
+      title: rawLocale === "zh" ? "PDF 抽认卡生成 — 从课本/讲义自动出题" : "PDF Flashcard Maker — Study Cards from Any PDF",
       description:
         rawLocale === "zh"
           ? "上传课本章节、讲义或手册，用 AI 生成问答抽认卡（只来自你的文档），点卡片翻面自测。"
@@ -373,7 +373,7 @@ async function generateMetadataInner({
 
   if (slug === "redline") {
     return {
-      title: rawLocale === "zh" ? "PDF 版本对比 / 红线 — 看清两版改了什么 | DockDocs" : "PDF Redline — Compare Two PDF Versions Free | DockDocs",
+      title: rawLocale === "zh" ? "PDF 版本对比 / 红线 — 看清两版改了什么" : "PDF Redline — Compare Two PDF Versions Free",
       description:
         rawLocale === "zh"
           ? "上传原始版和修订版 PDF，逐句对比看清新增和删除的内容，全部在浏览器中完成。"
@@ -387,7 +387,7 @@ async function generateMetadataInner({
 
   if (slug === "extract-to-excel") {
     return {
-      title: rawLocale === "zh" ? "PDF 数据抽取到表格 — 发票/报价/合同 | DockDocs" : "Extract PDF Data to a Spreadsheet — Invoices, Quotes, Contracts | DockDocs",
+      title: rawLocale === "zh" ? "PDF 数据抽取到表格 — 发票/报价/合同" : "Extract PDF Data to a Spreadsheet — Invoices, Quotes, Contracts",
       description:
         rawLocale === "zh"
           ? "上传发票、报价单或合同，用 AI 把关键字段抽成表格，导出 CSV(Excel 可打开)。只报告文档里真实存在的内容。"
@@ -401,7 +401,7 @@ async function generateMetadataInner({
 
   if (slug === "crop-pdf") {
     return {
-      title: rawLocale === "zh" ? "裁剪 PDF — 免费在线裁掉 PDF 页边 | DockDocs" : "Crop PDF — Trim PDF Margins Online Free | DockDocs",
+      title: rawLocale === "zh" ? "裁剪 PDF — 免费在线裁掉 PDF 页边" : "Crop PDF — Trim PDF Margins Online Free",
       description:
         rawLocale === "zh"
           ? "免费在线裁剪 PDF 页边：用实时预览裁掉任意一边的空白，每页按同样方式裁剪，全部在浏览器中完成。"
@@ -415,7 +415,7 @@ async function generateMetadataInner({
 
   if (slug === "redact-pdf") {
     return {
-      title: rawLocale === "zh" ? "PDF 涂黑脱敏 — 永久删除敏感文字 | DockDocs" : "Redact PDF — Permanently Remove Sensitive Text Online Free | DockDocs",
+      title: rawLocale === "zh" ? "PDF 涂黑脱敏 — 永久删除敏感文字" : "Redact PDF — Permanently Remove Sensitive Text Online Free",
       description:
         rawLocale === "zh"
           ? "真正涂黑脱敏 PDF：把姓名、号码等敏感文字永久删除(不是盖个黑框),全部在浏览器中完成,文件不外泄。"
@@ -429,7 +429,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-pdf-to-image") {
     return {
-      title: rawLocale === "zh" ? "批量 PDF 转图片 — 整批 PDF 一次转 JPG/PNG | DockDocs" : "Batch PDF to Image — Convert Many PDFs to JPG/PNG Free | DockDocs",
+      title: rawLocale === "zh" ? "批量 PDF 转图片 — 整批 PDF 一次转 JPG/PNG" : "Batch PDF to Image — Convert Many PDFs to JPG/PNG Free",
       description:
         rawLocale === "zh"
           ? "一次把整个文件夹的 PDF 都转成图片(JPG/PNG),每页一张、打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
@@ -443,7 +443,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-protect-pdf") {
     return {
-      title: rawLocale === "zh" ? "批量加密 PDF — 整批 PDF 一次设密码 | DockDocs" : "Batch Encrypt PDF — Password-Protect Many PDFs Free | DockDocs",
+      title: rawLocale === "zh" ? "批量加密 PDF — 整批 PDF 一次设密码" : "Batch Encrypt PDF — Password-Protect Many PDFs Free",
       description:
         rawLocale === "zh"
           ? "设一个密码，给整个文件夹的 PDF 一次性加密,打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
@@ -457,7 +457,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-rename-pdf") {
     return {
-      title: rawLocale === "zh" ? "批量重命名 PDF — 整批按编号或查找替换改名 | DockDocs" : "Batch Rename PDF — Rename Many Files by Pattern Free | DockDocs",
+      title: rawLocale === "zh" ? "批量重命名 PDF — 整批按编号或查找替换改名" : "Batch Rename PDF — Rename Many Files by Pattern Free",
       description:
         rawLocale === "zh"
           ? "一次给整个文件夹的 PDF 改名:按编号模板或查找替换,下载用新名字打包的 ZIP,全部在浏览器中完成。"
@@ -471,7 +471,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-watermark-pdf") {
     return {
-      title: rawLocale === "zh" ? "批量加水印 / 页码 — 整批 PDF 一次加水印或页码 | DockDocs" : "Batch Watermark & Page Numbers — Stamp Many PDFs Free | DockDocs",
+      title: rawLocale === "zh" ? "批量加水印 / 页码 — 整批 PDF 一次加水印或页码" : "Batch Watermark & Page Numbers — Stamp Many PDFs Free",
       description:
         rawLocale === "zh"
           ? "给整个文件夹的 PDF 一次性加水印或加页码,打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
@@ -485,7 +485,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-page-numbers") {
     return {
-      title: rawLocale === "zh" ? "批量 PDF 添加页码 — 整批 PDF 一次加页码 | DockDocs" : "Batch Add Page Numbers to PDFs — Free | DockDocs",
+      title: rawLocale === "zh" ? "批量 PDF 添加页码 — 整批 PDF 一次加页码" : "Batch Add Page Numbers to PDFs — Free",
       description:
         rawLocale === "zh"
           ? "给整个文件夹的 PDF 一次性加页码,打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
@@ -499,7 +499,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-split-merge") {
     return {
-      title: rawLocale === "zh" ? "批量拆分 / 合并 PDF — 整批合并或按页拆分 | DockDocs" : "Batch Split & Merge PDF — Combine or Split Many PDFs Free | DockDocs",
+      title: rawLocale === "zh" ? "批量拆分 / 合并 PDF — 整批合并或按页拆分" : "Batch Split & Merge PDF — Combine or Split Many PDFs Free",
       description:
         rawLocale === "zh"
           ? "把整个文件夹的 PDF 合并成一个,或把每份按 N 页拆分,全部在浏览器中完成、打包下载,文件不外泄。"
@@ -513,7 +513,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-rotate-pdf") {
     return {
-      title: rawLocale === "zh" ? "批量旋转 PDF — 整批纠正横/倒扫描件 | DockDocs" : "Batch Rotate PDF — Fix Many Sideways Scans Free | DockDocs",
+      title: rawLocale === "zh" ? "批量旋转 PDF — 整批纠正横/倒扫描件" : "Batch Rotate PDF — Fix Many Sideways Scans Free",
       description:
         rawLocale === "zh"
           ? "一次纠正整个文件夹横着或倒着的扫描件:把每份 PDF 每页旋转,打包 ZIP,全部在浏览器中完成,文件不外泄。"
@@ -527,7 +527,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-extract-sheet") {
     return {
-      title: rawLocale === "zh" ? "批量抽取数据到一张表 — 整批发票/报价/合同 → CSV | DockDocs" : "Batch Extract Data to Spreadsheet — Many Invoices to CSV | DockDocs",
+      title: rawLocale === "zh" ? "批量抽取数据到一张表 — 整批发票/报价/合同 → CSV" : "Batch Extract Data to Spreadsheet — Many Invoices to CSV",
       description:
         rawLocale === "zh"
           ? "拖入整个文件夹的发票/报价/合同,AI 把每份的关键字段抽进同一张表(一份一行),导出 CSV。AI 只报告真实存在的内容。"
@@ -541,7 +541,7 @@ async function generateMetadataInner({
 
   if (slug === "batch-sort") {
     return {
-      title: rawLocale === "zh" ? "批量分类归档 PDF — AI 把杂乱文件分到文件夹 | DockDocs" : "Batch Sort PDFs into Folders — AI File Organizer Free | DockDocs",
+      title: rawLocale === "zh" ? "批量分类归档 PDF — AI 把杂乱文件分到文件夹" : "Batch Sort PDFs into Folders — AI File Organizer Free",
       description:
         rawLocale === "zh"
           ? "拖入一堆杂乱 PDF,AI 给每份分类并分到一个 ZIP 里的不同文件夹,全部在浏览器中完成,文件不外泄。"
@@ -570,7 +570,7 @@ async function generateMetadataInner({
 
   if (slug === "url-to-pdf") {
     return {
-      title: rawLocale === "zh" ? "网页转 PDF — 免费在线把网页转成 PDF | DockDocs" : "URL to PDF — Convert a Web Page to PDF Free | DockDocs",
+      title: rawLocale === "zh" ? "网页转 PDF — 免费在线把网页转成 PDF" : "URL to PDF — Convert a Web Page to PDF Free",
       description:
         rawLocale === "zh"
           ? "免费把任意公开网页转换为 PDF：粘贴网址，下载用真实浏览器引擎渲染的干净 PDF——无需上传、无需安装。"
@@ -1277,7 +1277,7 @@ function LocalizedHome({ locale }: { locale: Locale }) {
 
 const aiCopy = {
   en: {
-    title: "AI Document Workspace | DockDocs",
+    title: "AI Document Workspace",
     description:
       "Organize, convert, OCR, and work with PDF documents inside the DockDocs AI Document Workspace.",
     eyebrow: "AI workspace",
@@ -1292,7 +1292,7 @@ const aiCopy = {
     ],
   },
   zh: {
-    title: "AI 文档工作区 | DockDocs",
+    title: "AI 文档工作区",
     description: "在 DockDocs AI 文档工作区中整理、转换、OCR 并处理 PDF 文档。",
     eyebrow: "AI 工作区",
     heroTitle: "AI 文档工作区：OCR、摘要与 PDF 问答。",
@@ -1359,12 +1359,12 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale }) {
 
 const sitemapCopy = {
   en: {
-    title: "Sitemap | DockDocs",
+    title: "Sitemap",
     description: "Localized sitemap for DockDocs pages.",
     heading: "DockDocs localized sitemap.",
   },
   zh: {
-    title: "站点地图 | DockDocs",
+    title: "站点地图",
     description: "DockDocs 中文页面站点地图。",
     heading: "DockDocs 本地化站点地图。",
   },

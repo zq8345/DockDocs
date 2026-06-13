@@ -3,7 +3,7 @@ import { languageAlternates } from "@/lib/i18n";
 import { RedlineClient } from "@/components/RedlineClient";
 
 export const metadata: Metadata = {
-  title: "PDF Redline — Compare Two PDF Versions Free | DockDocs",
+  title: "PDF Redline — Compare Two PDF Versions Free",
   description:
     "Compare two PDF versions to see exactly what changed — added text is highlighted and removed text is struck through. Free, and entirely in your browser.",
   keywords: ["pdf redline", "compare pdf versions", "pdf diff", "compare two pdfs", "pdf version compare"],
