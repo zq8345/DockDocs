@@ -3,8 +3,9 @@ import { languageAlternates } from "@/lib/i18n";
 import { AiSummaryClient } from "./AiSummaryClient";
 
 export const metadata: Metadata = {
-  title: "AI Summary — DockDocs",
-  description: "Summarize long documents into key points and actions with AI.",
+  title: "AI PDF Summary — Summarize Documents Free",
+  description: "Summarize long PDFs and documents into key points and action items with AI — upload a file and get a concise summary in seconds. Free, in your browser.",
+  keywords: ["ai pdf summary", "summarize pdf", "summarize documents", "pdf summarizer", "ai document summary"],
   alternates: { canonical: "/ai-summary/", languages: languageAlternates("ai-summary") },
   robots: { index: true, follow: true },
 };

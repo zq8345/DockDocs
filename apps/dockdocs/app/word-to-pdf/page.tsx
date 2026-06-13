@@ -4,9 +4,9 @@ import { languageAlternates } from "@/lib/i18n";
 const config = {
   slug: "word-to-pdf",
   alternateLanguages: languageAlternates("word-to-pdf"),
-  title: "Word to PDF Converter Online Free | DockDocs",
-  description: "Convert Word documents to PDF online for free. Fast, accurate DOCX to PDF conversion inside DockDocs.",
-  keywords: ["word to pdf", "docx to pdf", "convert word to pdf", "word pdf converter"],
+  title: "Word to PDF — Convert DOC & DOCX Free",
+  description: "Convert Word to PDF online free. Turn your DOC and DOCX docs into clean PDFs in seconds — fonts, tables, and layout preserved. No install, no signup.",
+  keywords: ["word to pdf", "doc to pdf", "docs to pdf", "docx to pdf", "convert word to pdf", "word pdf converter"],
   appName: "DockDocs Word to PDF",
   schemaName: "DockDocs Word to PDF Converter",
   breadcrumbName: "Word to PDF",

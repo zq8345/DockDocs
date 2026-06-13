@@ -12,7 +12,7 @@ const config = {
   title: "PDF to PNG Converter Online Free | DockDocs",
   description:
     "Convert PDF pages to PNG images online for free. Extract high-quality PNG images from any PDF inside DockDocs.",
-  keywords: ["pdf to png", "pdf to image", "convert pdf to png", "extract pdf pages as png"],
+  keywords: ["pdf to png", "pdf to png free", "pdf to image", "convert pdf to png", "extract pdf pages as png"],
   appName: "DockDocs PDF to PNG",
   schemaName: "DockDocs PDF to PNG Converter",
   breadcrumbName: "PDF to PNG",

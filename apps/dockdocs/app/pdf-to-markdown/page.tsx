@@ -8,9 +8,9 @@ import { languageAlternates } from "@/lib/i18n";
 const config = {
   slug: "pdf-to-markdown",
   alternateLanguages: languageAlternates("pdf-to-markdown"),
-  title: "PDF to Markdown Converter Online Free | DockDocs",
+  title: "PDF to Markdown — Convert PDF to MD Free",
   description:
-    "Convert PDF text content to Markdown online for free. Extract structured Markdown from any PDF inside DockDocs.",
+    "Convert PDF to Markdown (MD) online free. Extract clean, structured Markdown text from any PDF — page headings included, all in your browser.",
   keywords: ["pdf to markdown", "pdf to md", "convert pdf to markdown", "extract pdf text markdown"],
   appName: "DockDocs PDF to Markdown",
   schemaName: "DockDocs PDF to Markdown Converter",
