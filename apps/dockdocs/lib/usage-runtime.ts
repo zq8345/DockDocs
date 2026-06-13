@@ -11,7 +11,8 @@ export type UsageFeature =
   | "ocr"
   | "compress"
   | "analyzer"
-  | "contractAnalyzer";
+  | "contractAnalyzer"
+  | "compare";
 
 export type UsagePeriod = "day" | "month";
 
@@ -63,6 +64,7 @@ export const meteredFeatures: UsageFeature[] = [
   "compress",
   "analyzer",
   "contractAnalyzer",
+  "compare",
 ];
 
 const prefix = "dockdocs:usage";
@@ -88,6 +90,8 @@ const featureAliases: Record<string, UsageFeature> = {
   "document-analyzer": "analyzer",
   contractAnalyzer: "contractAnalyzer",
   "contract-analyzer": "contractAnalyzer",
+  compare: "compare",
+  "compare-docs": "compare",
 };
 
 const featureLimits: Record<
@@ -105,6 +109,7 @@ const featureLimits: Record<
     compress: { limit: 30, period: "day" },
     analyzer: { limit: 10, period: "day" },
     contractAnalyzer: { limit: 10, period: "day" },
+    compare: { limit: 3, period: "day" },
   },
   PLUS: {
     chat: { limit: 500, period: "month" },
@@ -114,6 +119,7 @@ const featureLimits: Record<
     compress: { limit: 1000, period: "month" },
     analyzer: { limit: 500, period: "month" },
     contractAnalyzer: { limit: 500, period: "month" },
+    compare: { limit: 500, period: "month" },
   },
   PRO: {
     chat: { limit: 5000, period: "month" },
@@ -123,6 +129,7 @@ const featureLimits: Record<
     compress: { limit: 10000, period: "month" },
     analyzer: { limit: 5000, period: "month" },
     contractAnalyzer: { limit: 5000, period: "month" },
+    compare: { limit: 5000, period: "month" },
   },
 };
 

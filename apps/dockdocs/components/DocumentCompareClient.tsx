@@ -3,6 +3,8 @@
 import { useCallback, useRef, useState, type DragEvent } from "react";
 import { isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 import { ToolFaq } from "@/components/ToolFaq";
+import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
 // Comparison engine UI (bilingual).
 //  D5: multi-file upload -> browser-side text extraction (pdf.js).
@@ -210,6 +212,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const [qaErr, setQaErr] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [ocrBusy, setOcrBusy] = useState<Set<string>>(new Set());
+  const [limitHit, setLimitHit] = useState<number | null>(null);
 
   const extractOne = useCallback(async (file: File): Promise<DocResult> => {
     const id = `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 7)}`;
@@ -319,6 +322,13 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     setCompareError(null);
     setComparison(null);
     setRecommendation(null);
+    setLimitHit(null);
+    const gate = await checkUsage("compare");
+    if (!gate.allowed) {
+      setLimitHit(gate.limit);
+      setComparing(false);
+      return;
+    }
     try {
       const res = await fetch("/api/compare-extract", {
         method: "POST",
@@ -332,6 +342,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       }
       const cmp: Comparison = { docType: data.docType, dimensions: data.dimensions, documents: data.documents };
       setComparison(cmp);
+      void markUsage(gate, "compare");
       // Auto-recommend on the extracted comparison — the "decide for you" payoff.
       setRecommending(true);
       try {
@@ -487,6 +498,8 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {compareError && <p className="mt-4 rounded-[var(--radius)] border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-300">{compareError}</p>}
+
+      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
 
       {okDocs.length >= 1 && (
         <section className="mt-10">

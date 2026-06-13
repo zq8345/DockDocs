@@ -3,7 +3,8 @@
 import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
-import { checkUsage, markUsage, freeLimitMessage } from "@/lib/usage-gate";
+import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
 import { useCallback, useState } from "react";
 
@@ -89,6 +90,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
   const [result, setResult] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [limitHit, setLimitHit] = useState<number | null>(null);
 
   const reset = () => {
     setPhase("idle");
@@ -97,6 +99,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
     setPages(0);
     setResult("");
     setError(null);
+    setLimitHit(null);
   };
 
   const onFile = useCallback(
@@ -144,10 +147,11 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
     if (!text) return;
     setPhase("translating");
     setError(null);
+    setLimitHit(null);
     try {
       const gate = await checkUsage("translate");
       if (!gate.allowed) {
-        setError(freeLimitMessage(gate.limit, locale === "zh"));
+        setLimitHit(gate.limit);
         setPhase("ready");
         return;
       }
@@ -256,6 +260,8 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
           {error}
         </div>
       )}
+
+      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
 
       {/* Result */}
       {result && (

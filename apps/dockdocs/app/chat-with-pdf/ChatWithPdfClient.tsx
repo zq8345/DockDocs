@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
-import { checkUsage, markUsage, freeLimitMessage } from "@/lib/usage-gate";
+import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -34,6 +35,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
   const [isExtracting, setIsExtracting] = useState(false);
   const [isAsking, setIsAsking] = useState(false);
   const [error, setError] = useState("");
+  const [limitHit, setLimitHit] = useState<number | null>(null);
 
   const canAsk = useMemo(
     () => documentText.trim().length > 0 && question.trim().length > 0 && !isAsking,
@@ -161,11 +163,12 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
     const userQuestion = question.trim();
     setQuestion("");
     setError("");
+    setLimitHit(null);
     setIsAsking(true);
 
     const gate = await checkUsage("chat");
     if (!gate.allowed) {
-      setError(freeLimitMessage(gate.limit, locale === "zh"));
+      setLimitHit(gate.limit);
       setIsAsking(false);
       return;
     }
@@ -346,6 +349,10 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale })
               </div>
             ) : null}
           </div>
+
+          {limitHit !== null ? (
+            <UpgradePrompt locale={locale === "zh" ? "zh" : "en"} limit={limitHit} />
+          ) : null}
 
           {/* Input */}
           <form onSubmit={askQuestion} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2">

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { checkUsage, markUsage, freeLimitMessage } from "@/lib/usage-gate";
+import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
 type SummaryData = {
   executiveSummary: string;
@@ -25,6 +26,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");
   const [summary, setSummary] = useState<SummaryData | null>(null);
+  const [limitHit, setLimitHit] = useState<number | null>(null);
 
   async function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -32,6 +34,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
 
     setError("");
     setSummary(null);
+    setLimitHit(null);
 
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
       setError(zh ? "请上传 PDF 文件。" : "Please upload a PDF file.");
@@ -77,7 +80,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
 
       const gate = await checkUsage("summary");
       if (!gate.allowed) {
-        setError(freeLimitMessage(gate.limit, zh));
+        setLimitHit(gate.limit);
         setStatus("error");
         return;
       }
@@ -111,6 +114,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
     setFileName("");
     setError("");
     setSummary(null);
+    setLimitHit(null);
   }
 
   const nextSteps = summary?.suggestedNextSteps ?? summary?.nextSteps ?? [];
@@ -135,6 +139,8 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" }) {
           <input type="file" accept="application/pdf,.pdf" className="sr-only" onChange={handleFile} />
         </label>
       ) : null}
+
+      {limitHit !== null ? <UpgradePrompt locale={locale} limit={limitHit} /> : null}
 
       {/* Processing */}
       {status === "extracting" || status === "summarizing" ? (
