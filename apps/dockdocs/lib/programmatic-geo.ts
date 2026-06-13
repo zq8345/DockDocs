@@ -422,6 +422,54 @@ export type ProgrammaticGeoPageData = {
 const baseProgrammaticGeoPageSeeds: ProgrammaticGeoPageSeed[] = [
   {
     surface: "guides",
+    slug: "pdf-invoice-to-excel",
+    cluster: "ai-pdf",
+    toolHref: "/extract-to-excel/",
+    enTitle: "Convert PDF Invoices to Excel | DockDocs",
+    zhTitle: "把 PDF 发票抽取到 Excel | DockDocs",
+    enDescription: "Pull vendor, date, totals, tax, and line items from PDF invoices into a spreadsheet with AI — export as CSV that opens in Excel and Google Sheets.",
+    zhDescription: "用 AI 把 PDF 发票里的供应商、日期、金额、税号、行项目抽成表格,导出 CSV(Excel、Google 表格都能打开)。",
+    enQuestion: "How do I convert a PDF invoice into an Excel spreadsheet?",
+    zhQuestion: "怎么把 PDF 发票转成 Excel 表格?",
+    enAnswer: "Upload your invoices and let DockDocs' AI pull the key fields — vendor, date, totals, tax, line items — into a table you can download as CSV. It only reports what is actually in each document, so verify the numbers before filing.",
+    zhAnswer: "上传发票,DockDocs 的 AI 会把供应商、日期、金额、税号、行项目等关键字段抽成表格,导出 CSV。它只报告文档里真实存在的内容,入账前请核对数字。",
+    enSteps: ["Open Extract to Excel and upload one or more PDF invoices.","Let the AI extract vendor, date, totals, and line items.","Review the table and fix anything the source didn't contain.","Export as CSV and open it in Excel or Google Sheets."],
+    zhSteps: ["打开「抽取到表格」,上传一份或多份 PDF 发票。","让 AI 抽取供应商、日期、金额和行项目。","核对表格,修正源文件里没有的内容。","导出 CSV,在 Excel 或 Google 表格中打开。"],
+  },
+  {
+    surface: "guides",
+    slug: "extract-table-from-pdf",
+    cluster: "ai-pdf",
+    toolHref: "/pdf-to-excel/",
+    enTitle: "Extract Tables from PDF to Excel | DockDocs",
+    zhTitle: "从 PDF 提取表格到 Excel | DockDocs",
+    enDescription: "Turn tables locked inside a PDF into an editable Excel (XLSX) spreadsheet instead of retyping rows by hand.",
+    zhDescription: "把锁在 PDF 里的表格转成可编辑的 Excel(XLSX),不用再一行行手动重打。",
+    enQuestion: "How do I extract a table from a PDF into Excel?",
+    zhQuestion: "怎么把 PDF 里的表格提取到 Excel?",
+    enAnswer: "Use PDF to Excel: upload a PDF that contains tables and DockDocs converts the detected table structure into an editable XLSX file. Results are best on clean, text-based tables — scanned or irregular tables may need cleanup, so check the output before relying on it.",
+    zhAnswer: "用「PDF 转 Excel」:上传含表格的 PDF,DockDocs 会把识别到的表格结构转成可编辑的 XLSX。版式规整的文本型表格效果最好;扫描件或不规则表格可能需要手动整理,使用前请检查结果。",
+    enSteps: ["Open PDF to Excel and upload a PDF with tables.","Let it detect and convert the table structure.","Download the XLSX file.","Open in Excel or Google Sheets and tidy up any cells."],
+    zhSteps: ["打开「PDF 转 Excel」,上传含表格的 PDF。","让它识别并转换表格结构。","下载 XLSX 文件。","在 Excel 或 Google 表格中打开并整理单元格。"],
+  },
+  {
+    surface: "guides",
+    slug: "pdf-to-editable-powerpoint",
+    cluster: "pdf-to-word",
+    toolHref: "/pdf-to-ppt/",
+    enTitle: "Convert PDF to Editable PowerPoint | DockDocs",
+    zhTitle: "把 PDF 转成可编辑的 PowerPoint | DockDocs",
+    enDescription: "Turn a PDF into an editable PowerPoint (PPTX) deck so you can reuse slides, text, and layout instead of rebuilding them.",
+    zhDescription: "把 PDF 转成可编辑的 PowerPoint(PPTX),直接复用幻灯片、文字和版式,不用从头重做。",
+    enQuestion: "How do I convert a PDF into an editable PowerPoint?",
+    zhQuestion: "怎么把 PDF 转成可编辑的 PowerPoint?",
+    enAnswer: "Use PDF to PPT: upload your PDF and DockDocs converts it to an editable PPTX you can open in PowerPoint, Keynote, or Google Slides. Complex layouts may need minor adjustments, so review the slides after converting.",
+    zhAnswer: "用「PDF 转 PPT」:上传 PDF,DockDocs 会转成可在 PowerPoint、Keynote 或 Google 幻灯片中打开的可编辑 PPTX。复杂版式可能需要微调,转换后请检查幻灯片。",
+    enSteps: ["Open PDF to PPT and upload your PDF.","Convert it to an editable PPTX deck.","Download and open it in PowerPoint or Google Slides.","Adjust any slides where the layout shifted."],
+    zhSteps: ["打开「PDF 转 PPT」,上传 PDF。","转换成可编辑的 PPTX。","下载并在 PowerPoint 或 Google 幻灯片中打开。","微调版式有偏移的幻灯片。"],
+  },
+  {
+    surface: "guides",
     slug: "compress-pdf-for-gmail",
     cluster: "pdf-compression",
     toolHref: "/compress-pdf/",
@@ -2514,6 +2562,24 @@ const toolLabels: Record<string, { en: string; zh: string; description: string; 
     description: "Use AI for OCR, summaries, Chat with PDF, and review workflows.",
     zhDescription: "使用 AI 进行 OCR、摘要、PDF 问答和审阅工作流。",
   },
+  "/extract-to-excel/": {
+    en: "Extract to Excel",
+    zh: "抽取到表格",
+    description: "Extract invoice and document data into a spreadsheet with AI.",
+    zhDescription: "用 AI 把发票和文档数据抽成表格。",
+  },
+  "/pdf-to-excel/": {
+    en: "PDF to Excel",
+    zh: "PDF 转 Excel",
+    description: "Convert PDF tables into an editable Excel spreadsheet.",
+    zhDescription: "把 PDF 表格转成可编辑的 Excel 表格。",
+  },
+  "/pdf-to-ppt/": {
+    en: "PDF to PPT",
+    zh: "PDF 转 PPT",
+    description: "Convert a PDF into an editable PowerPoint presentation.",
+    zhDescription: "把 PDF 转成可编辑的 PowerPoint 演示文稿。",
+  },
 };
 
 const clusterLabels: Record<GeoSemanticCluster, { en: string; zh: string }> = {
@@ -2574,7 +2640,7 @@ export function getProgrammaticGeoPage(
     return null;
   }
 
-  const tool = toolLabels[seed.toolHref];
+  const tool = toolLabels[seed.toolHref] ?? toolLabels["/compress-pdf/"];
   const relatedPages = programmaticGeoPageSeeds
     .filter((page) => page.cluster === seed.cluster && page.slug !== seed.slug)
     .slice(0, 4)
