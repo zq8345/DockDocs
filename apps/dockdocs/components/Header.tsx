@@ -10,7 +10,7 @@ type NavItem = { name: string; slug: string; soon?: boolean };
 type NavCol = { heading?: string; items: NavItem[] };
 type NavCat = { label: string; tier: string; cols: NavCol[] };
 
-export const navCategories: Record<"en" | "zh", NavCat[]> = {
+export const navCategories: Record<"en" | "zh" | "es", NavCat[]> = {
   en: [
     {
       label: "PDF tools",
@@ -228,6 +228,117 @@ export const navCategories: Record<"en" | "zh", NavCat[]> = {
             { name: "金融 / 投行", slug: "/pricing", soon: true },
             { name: "建筑 / 工程", slug: "/pricing", soon: true },
             { name: "医疗 / 健康", slug: "/pricing", soon: true },
+          ],
+        },
+      ],
+    },
+  ],
+  es: [
+    {
+      label: "Herramientas PDF",
+      tier: "Free",
+      cols: [
+        {
+          heading: "Convertir",
+          items: [
+            { name: "PDF a Word", slug: "/pdf-to-word" },
+            { name: "PDF a Excel", slug: "/pdf-to-excel" },
+            { name: "PDF a PPT", slug: "/pdf-to-ppt" },
+            { name: "PDF a PDF/A", slug: "/pdf-to-pdfa" },
+            { name: "PDF a imagen", slug: "/pdf-to-image" },
+            { name: "PDF a HTML", slug: "/pdf-to-html" },
+            { name: "PDF a Markdown", slug: "/pdf-to-markdown" },
+            { name: "Word a PDF", slug: "/word-to-pdf" },
+            { name: "Excel a PDF", slug: "/excel-to-pdf" },
+            { name: "PPT a PDF", slug: "/ppt-to-pdf" },
+            { name: "Imagen a PDF", slug: "/images-to-pdf" },
+            { name: "HTML a PDF", slug: "/html-to-pdf" },
+          ],
+        },
+        {
+          heading: "Organizar",
+          items: [
+            { name: "Dividir PDF", slug: "/split-pdf" },
+            { name: "Comprimir PDF", slug: "/compress-pdf" },
+            { name: "Eliminar páginas", slug: "/delete-page" },
+            { name: "Rotar páginas", slug: "/rotate-page" },
+            { name: "Reordenar páginas", slug: "/reorder-pages" },
+            { name: "Añadir página", slug: "/add-page" },
+            { name: "Marca de agua en PDF", slug: "/watermark-pdf" },
+            { name: "Añadir números de página", slug: "/page-numbers" },
+            { name: "Recortar PDF", slug: "/crop-pdf" },
+            { name: "Censurar PDF", slug: "/redact-pdf" },
+            { name: "Firmar PDF", slug: "/sign-pdf" },
+          ],
+        },
+        {
+          heading: "Seguridad y OCR",
+          items: [
+            { name: "Proteger PDF", slug: "/protect-pdf" },
+            { name: "Desbloquear PDF", slug: "/unlock-pdf" },
+            { name: "OCR de PDF", slug: "/ocr-pdf" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Procesamiento por lotes",
+      tier: "Plus",
+      cols: [
+        {
+          items: [
+            { name: "Combinar PDF", slug: "/merge-pdf" },
+            { name: "Compresión por lotes", slug: "/batch-compress" },
+            { name: "PDF a imagen por lotes", slug: "/batch-pdf-to-image" },
+            { name: "Cifrado por lotes", slug: "/batch-protect-pdf" },
+            { name: "Renombrado por lotes", slug: "/batch-rename-pdf" },
+            { name: "Marca de agua por lotes", slug: "/batch-watermark-pdf" },
+            { name: "Números de página por lotes", slug: "/batch-page-numbers" },
+            { name: "División por lotes", slug: "/batch-split-merge" },
+            { name: "Rotación por lotes", slug: "/batch-rotate-pdf" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Flujos de trabajo con IA",
+      tier: "Plus",
+      cols: [
+        {
+          heading: "IA para un documento",
+          items: [
+            { name: "Espacio de trabajo IA", slug: "/ai-workspace" },
+            { name: "Chatear con PDF", slug: "/chat-with-pdf" },
+            { name: "Resumen de PDF", slug: "/ai-summary" },
+            { name: "Traducir PDF", slug: "/translate-pdf" },
+            { name: "Tarjetas de estudio de PDF", slug: "/flashcards" },
+          ],
+        },
+        {
+          heading: "IA para varios documentos",
+          items: [
+            { name: "Comparar documentos", slug: "/compare" },
+            { name: "Preguntas entre documentos", slug: "/compare" },
+            { name: "Comparar versiones", slug: "/redline" },
+            { name: "Extraer a Excel", slug: "/extract-to-excel" },
+            { name: "Resumen por lotes", slug: "/batch-summary" },
+            { name: "Clasificar PDF", slug: "/batch-sort" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Por profesión",
+      tier: "Soon",
+      cols: [
+        {
+          items: [
+            { name: "Legal y contratos", slug: "/pricing", soon: true },
+            { name: "Finanzas e impuestos", slug: "/pricing", soon: true },
+            { name: "Investigación y academia", slug: "/pricing", soon: true },
+            { name: "Banca y finanzas", slug: "/pricing", soon: true },
+            { name: "Arquitectura e ingeniería", slug: "/pricing", soon: true },
+            { name: "Salud y medicina", slug: "/pricing", soon: true },
           ],
         },
       ],

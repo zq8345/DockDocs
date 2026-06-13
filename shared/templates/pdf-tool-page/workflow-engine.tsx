@@ -36,7 +36,7 @@ export function PdfWorkflowEngine({
 }: {
   config: PdfToolPageConfig;
 }) {
-  const locale = config.locale ?? "en";
+  const locale: "en" | "zh" = config.locale === "zh" ? "zh" : "en";
   const zh = locale === "zh";
   const spec = useMemo(() => getWorkflowSpec(config), [config]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -969,7 +969,7 @@ function validateFiles(
 ):
   | { ok: true; files: UploadedFile[] }
   | { ok: false; message: string } {
-  const locale = config.locale ?? "en";
+  const locale: "en" | "zh" = config.locale === "zh" ? "zh" : "en";
   const zh = locale === "zh";
   const multiple = Boolean(config.upload.multiple);
 

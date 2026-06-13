@@ -3,6 +3,11 @@ export const siteUrl = "https://dockdocs.app";
 export const locales = ["en", "zh"] as const;
 export type Locale = (typeof locales)[number];
 
+// Locales that GENERATE routes. es is a "pilot" route locale: tool pages render
+// Spanish, everything else falls back to English (content type stays en|zh).
+export const routeLocales = ["en", "zh", "es"] as const;
+export type RouteLocale = (typeof routeLocales)[number];
+
 export const allLocales = ["en", "zh", "ja", "ko", "es", "fr", "de", "pt", "it", "ru", "ar", "hi"] as const;
 export type AllLocale = (typeof allLocales)[number];
 
@@ -154,6 +159,10 @@ export function isLocale(value: string | undefined): value is Locale {
   return (locales as readonly string[]).includes(value ?? "");
 }
 
+export function isRouteLocale(value: string | undefined): value is RouteLocale {
+  return (routeLocales as readonly string[]).includes(value ?? "");
+}
+
 export function isAllLocale(value: string | undefined): value is AllLocale {
   return (allLocales as readonly string[]).includes(value ?? "");
 }
@@ -170,7 +179,7 @@ export function pathForSlug(slug: RouteSlug): string {
   return slug ? `/${slug}/` : "/";
 }
 
-export function localizedPath(locale: Locale, slug: RouteSlug): string {
+export function localizedPath(locale: RouteLocale, slug: RouteSlug): string {
   return slug ? `/${locale}/${slug}/` : `/${locale}/`;
 }
 
@@ -184,6 +193,7 @@ export function languageAlternates(slug: RouteSlug) {
   return {
     en: absoluteUrl(pathForSlug(slug)),
     zh: absoluteUrl(localizedPath("zh", slug)),
+    es: absoluteUrl(localizedPath("es", slug)),
     "x-default": absoluteUrl(pathForSlug(slug)),
   };
 }
@@ -242,6 +252,18 @@ export const navCopy = {
     aiWorkspace: "AI 工作区",
     language: "语言",
   },
+  es: {
+    brand: "DockDocs",
+    badge: "Plataforma de documentos con IA",
+    pdfTools: "Herramientas de documentos",
+    compress: "Comprimir",
+    merge: "Combinar",
+    split: "Dividir",
+    ocr: "OCR",
+    jpgToPdf: "JPG a PDF",
+    aiWorkspace: "Espacio de trabajo IA",
+    language: "Idioma",
+  },
 } as const;
 
 export const relatedToolsCopy = {
@@ -298,6 +320,16 @@ export const relatedToolsCopy = {
       },
     ],
   },
+  es: {
+    title: "Herramientas relacionadas",
+    description: "Pasa entre las herramientas de PDF y los flujos de trabajo de documentos con IA de DockDocs sin salir de la plataforma.",
+    tools: [
+      { name: "JPG a PDF", href: "/jpg-to-pdf", description: "Convierte imágenes JPG, PNG y WebP en documentos PDF." },
+      { name: "Comprimir PDF", href: "/compress-pdf", description: "Reduce el tamaño del PDF para compartir, portales y correo." },
+      { name: "OCR de PDF", href: "/ocr-pdf", description: "Extrae texto de archivos PDF escaneados y basados en imágenes." },
+      { name: "Espacio de trabajo IA", href: "/ai-workspace", description: "Revisa, resume y trabaja con documentos usando capas de IA." },
+    ],
+  },
 } as const;
 
 export const footerCopy = {
@@ -328,6 +360,20 @@ export const footerCopy = {
     privacy: "隐私政策",
     terms: "服务条款",
     sitemap: "站点地图",
+  },
+  es: {
+    relatedTools: "Herramientas relacionadas",
+    resources: "Recursos",
+    guides: "Guías",
+    aiPdfGuides: "Guías de PDF con IA",
+    aiWorkspace: "Espacio de oficina con IA",
+    about: "Acerca de",
+    help: "Ayuda",
+    faq: "Preguntas frecuentes",
+    contact: "Contacto",
+    privacy: "Política de privacidad",
+    terms: "Términos",
+    sitemap: "Mapa del sitio",
   },
 } as const;
 

@@ -32,7 +32,7 @@ export type PdfToolUpload = {
 
 export type PdfToolPageConfig = {
   slug: string;
-  locale?: "en" | "zh";
+  locale?: "en" | "zh" | "es";
   canonicalPath?: string;
   alternateLanguages?: Record<string, string>;
   title: string;
@@ -196,6 +196,26 @@ const templateCopy = {
     indexingTitle: "与当前工作流相关的指南和支持内容。",
     indexingDescription:
       "从工具页继续进入 DockDocs 指南、资源、帮助内容和 AI 可读取的工作流中心。",
+  },
+  es: {
+    toolEyebrow: "Plataforma de documentos con IA",
+    previewWorkflow: "Ver el flujo de trabajo",
+    workflowEyebrow: "Flujo de la herramienta",
+    workflowTitle: "Un flujo realista, de la carga al resultado.",
+    workflowDescription:
+      "Estas páginas presentan los estados reales del flujo de trabajo del producto.",
+    benefits: "Ventajas",
+    features: "Funciones",
+    workflow: "Flujo de trabajo",
+    faq: "Preguntas frecuentes",
+    relatedTools: "Herramientas relacionadas",
+    relatedTitle: "Continúa con otro flujo de trabajo de PDF.",
+    relatedDescription:
+      "Pasa entre las herramientas de PDF de DockDocs sin salir de la plataforma.",
+    indexingEyebrow: "Lecturas recomendadas",
+    indexingTitle: "Guías y recursos relacionados con este flujo de trabajo.",
+    indexingDescription:
+      "Continúa desde la página de la herramienta hacia guías, recursos y contenido de ayuda de DockDocs.",
   },
 } as const;
 
@@ -546,12 +566,12 @@ function RelatedPdfTools({
   useLocalePrefix = false,
 }: {
   currentSlug: string;
-  locale?: "en" | "zh";
+  locale?: "en" | "zh" | "es";
   useLocalePrefix?: boolean;
 }) {
   const copy = templateCopy[locale];
-  const prefix = locale === "en" ? "/en" : "/zh";
-  const related = pdfTools[locale].filter((tool) => tool.slug !== currentSlug);
+  const prefix = `/${locale}`;
+  const related = pdfTools[locale === "zh" ? "zh" : "en"].filter((tool) => tool.slug !== currentSlug);
 
   return (
     <Section id="related-tools" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
@@ -791,7 +811,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
   return [...(articleLinks[config.slug] ?? []), ...common];
 }
 
-function localizeTemplateHref(href: string, locale?: "en" | "zh") {
+function localizeTemplateHref(href: string, locale?: "en" | "zh" | "es") {
   const clean = href === "/" ? "" : href.replace(/\/+$/g, "");
   const path = clean ? `${clean}/` : "/";
 
@@ -802,7 +822,7 @@ function localizeTemplateHref(href: string, locale?: "en" | "zh") {
   return path === "/" ? `/${locale}/` : `/${locale}${path}`;
 }
 
-function absoluteHref(href: string, locale?: "en" | "zh") {
+function absoluteHref(href: string, locale?: "en" | "zh" | "es") {
   return `${siteUrl}${localizeTemplateHref(href, locale)}`;
 }
 

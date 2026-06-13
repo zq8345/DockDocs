@@ -70,8 +70,10 @@ import {
   geoPageSlugs,
   infoPageSlugs,
   isLocale,
+  isRouteLocale,
   languageAlternates,
   locales,
+  routeLocales,
   localizedPath,
   normalizeSlug,
   routeSlugs,
@@ -106,7 +108,7 @@ type PageParams = {
 };
 
 export function generateStaticParams() {
-  const standardRoutes = locales.flatMap((locale) =>
+  const standardRoutes = routeLocales.flatMap((locale) =>
     routeSlugs.map((slug) => ({
       locale,
       slug: slug ? slug.split("/") : [],
@@ -192,14 +194,15 @@ async function generateMetadataInner({
   params: Promise<PageParams>;
 }): Promise<Metadata> {
   const { locale: rawLocale, slug: rawSlug } = await params;
-  if (!isLocale(rawLocale)) {
+  if (!isRouteLocale(rawLocale)) {
     return {};
   }
+  const uiLocale: "en" | "zh" = rawLocale === "zh" ? "zh" : "en";
 
   const programmaticGeoRoute = getLocalizedProgrammaticGeoRoute(rawSlug);
   if (programmaticGeoRoute) {
     const page = getProgrammaticGeoPage(
-      rawLocale,
+      uiLocale,
       programmaticGeoRoute.surface,
       programmaticGeoRoute.slug,
     );
@@ -208,7 +211,7 @@ async function generateMetadataInner({
       return {};
     }
 
-    return createProgrammaticGeoMetadata(page, rawLocale, true);
+    return createProgrammaticGeoMetadata(page, uiLocale, true);
   }
 
   const blogSlug = getLocalizedBlogArticleSlug(rawSlug);
@@ -218,8 +221,8 @@ async function generateMetadataInner({
       return {};
     }
 
-    const content = getBlogArticleContent(article, rawLocale);
-    const canonical = blogArticlePath(article.slug, rawLocale);
+    const content = getBlogArticleContent(article, uiLocale);
+    const canonical = blogArticlePath(article.slug, uiLocale);
 
     return {
       title: content.title,
@@ -255,10 +258,10 @@ async function generateMetadataInner({
     return {};
   }
 
-  const runtimeCopy = getRuntimeCopy(rawLocale);
+  const runtimeCopy = getRuntimeCopy(uiLocale);
   if (slug === "chat-with-pdf") {
     return createLocalizedMetadata(
-      rawLocale,
+      uiLocale,
       slug,
       runtimeCopy.chat.heroTitle,
       runtimeCopy.chat.heroDescription,
@@ -267,7 +270,7 @@ async function generateMetadataInner({
 
   if (slug === "ai-summary") {
     return createLocalizedMetadata(
-      rawLocale,
+      uiLocale,
       slug,
       runtimeCopy.summary.title,
       runtimeCopy.summary.description,
@@ -276,7 +279,7 @@ async function generateMetadataInner({
 
   if (slug === "ocr") {
     return createLocalizedMetadata(
-      rawLocale,
+      uiLocale,
       slug,
       runtimeCopy.ocr.title,
       runtimeCopy.ocr.description,
@@ -285,7 +288,7 @@ async function generateMetadataInner({
 
   if (slug === "dashboard") {
     return createLocalizedMetadata(
-      rawLocale,
+      uiLocale,
       slug,
       runtimeCopy.dashboard.title,
       runtimeCopy.dashboard.description,
@@ -294,7 +297,7 @@ async function generateMetadataInner({
 
   if (slug === "pricing") {
     return createLocalizedMetadata(
-      rawLocale,
+      uiLocale,
       slug,
       runtimeCopy.pricing.metadataTitle,
       runtimeCopy.pricing.metadataDescription,
@@ -303,13 +306,13 @@ async function generateMetadataInner({
 
   if (slug === "sign-pdf") {
     return {
-      title: rawLocale === "zh" ? "给 PDF 签名 — 免费在线电子签名" : "Sign a PDF — Free Online E-Signature",
+      title: uiLocale === "zh" ? "给 PDF 签名 — 免费在线电子签名" : "Sign a PDF — Free Online E-Signature",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "免费在线给 PDF 签名：手写或打字签名，放到页面上下载，全部在浏览器中完成。"
           : "Sign a PDF online for free — draw or type your signature, place it on the page, and download. Entirely in your browser.",
       alternates: {
-        canonical: localizedPath(rawLocale, "sign-pdf"),
+        canonical: localizedPath(uiLocale, "sign-pdf"),
         languages: languageAlternates("sign-pdf"),
       },
     };
@@ -317,13 +320,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-compress") {
     return {
-      title: rawLocale === "zh" ? "批量压缩 PDF — 一次压缩整个文件夹" : "Batch Compress PDFs — Shrink a Whole Folder",
+      title: uiLocale === "zh" ? "批量压缩 PDF — 一次压缩整个文件夹" : "Batch Compress PDFs — Shrink a Whole Folder",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "拖入整个 PDF 文件夹一次性全部压缩，每个在浏览器中压缩并打包成 ZIP，不上传。"
           : "Drop a whole folder of PDFs and compress them all in one go — each shrunk in your browser and packaged into a single ZIP.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-compress"),
+        canonical: localizedPath(uiLocale, "batch-compress"),
         languages: languageAlternates("batch-compress"),
       },
     };
@@ -331,13 +334,13 @@ async function generateMetadataInner({
 
   if (slug === "classify") {
     return {
-      title: rawLocale === "zh" ? "PDF 自动分类打标签 — 一键整理文件夹" : "Auto-Classify & Tag PDFs — Organize a Folder with AI",
+      title: uiLocale === "zh" ? "PDF 自动分类打标签 — 一键整理文件夹" : "Auto-Classify & Tag PDFs — Organize a Folder with AI",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "上传一堆 PDF，AI 自动归类、打标签（发票/简历/合同/论文），几秒整理好。"
           : "Upload a pile of PDFs and let AI sort them into categories and tags — organize a folder in seconds.",
       alternates: {
-        canonical: localizedPath(rawLocale, "classify"),
+        canonical: localizedPath(uiLocale, "classify"),
         languages: languageAlternates("classify"),
       },
     };
@@ -345,13 +348,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-summary") {
     return {
-      title: rawLocale === "zh" ? "批量摘要 PDF — 一次总结多份文档" : "Batch Summarize PDFs — Summarize Multiple Documents",
+      title: uiLocale === "zh" ? "批量摘要 PDF — 一次总结多份文档" : "Batch Summarize PDFs — Summarize Multiple Documents",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "上传多份报告/论文/合同，AI 为每份生成执行摘要和关键要点，一次最多 5 份。"
           : "Upload several reports, papers, or contracts and get a concise AI summary of each — executive summary plus key points.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-summary"),
+        canonical: localizedPath(uiLocale, "batch-summary"),
         languages: languageAlternates("batch-summary"),
       },
     };
@@ -359,13 +362,13 @@ async function generateMetadataInner({
 
   if (slug === "flashcards") {
     return {
-      title: rawLocale === "zh" ? "PDF 抽认卡生成 — 从课本/讲义自动出题" : "PDF Flashcard Maker — Study Cards from Any PDF",
+      title: uiLocale === "zh" ? "PDF 抽认卡生成 — 从课本/讲义自动出题" : "PDF Flashcard Maker — Study Cards from Any PDF",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "上传课本章节、讲义或手册，用 AI 生成问答抽认卡（只来自你的文档），点卡片翻面自测。"
           : "Turn a textbook chapter, lecture notes, or manual into study flashcards with AI — questions and answers drawn only from your document.",
       alternates: {
-        canonical: localizedPath(rawLocale, "flashcards"),
+        canonical: localizedPath(uiLocale, "flashcards"),
         languages: languageAlternates("flashcards"),
       },
     };
@@ -373,13 +376,13 @@ async function generateMetadataInner({
 
   if (slug === "redline") {
     return {
-      title: rawLocale === "zh" ? "PDF 版本对比 / 红线 — 看清两版改了什么" : "PDF Redline — Compare Two PDF Versions Free",
+      title: uiLocale === "zh" ? "PDF 版本对比 / 红线 — 看清两版改了什么" : "PDF Redline — Compare Two PDF Versions Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "上传原始版和修订版 PDF，逐句对比看清新增和删除的内容，全部在浏览器中完成。"
           : "Compare two PDF versions to see exactly what changed — added text highlighted, removed text struck through. Free and in your browser.",
       alternates: {
-        canonical: localizedPath(rawLocale, "redline"),
+        canonical: localizedPath(uiLocale, "redline"),
         languages: languageAlternates("redline"),
       },
     };
@@ -387,13 +390,13 @@ async function generateMetadataInner({
 
   if (slug === "extract-to-excel") {
     return {
-      title: rawLocale === "zh" ? "PDF 数据抽取到表格 — 发票/报价/合同" : "Extract PDF Data to a Spreadsheet — Invoices, Quotes, Contracts",
+      title: uiLocale === "zh" ? "PDF 数据抽取到表格 — 发票/报价/合同" : "Extract PDF Data to a Spreadsheet — Invoices, Quotes, Contracts",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "上传发票、报价单或合同，用 AI 把关键字段抽成表格，导出 CSV(Excel 可打开)。只报告文档里真实存在的内容。"
           : "Upload invoices, quotes, or contracts and let AI pull the key fields into a spreadsheet you can download as CSV. It only reports what is actually in each document.",
       alternates: {
-        canonical: localizedPath(rawLocale, "extract-to-excel"),
+        canonical: localizedPath(uiLocale, "extract-to-excel"),
         languages: languageAlternates("extract-to-excel"),
       },
     };
@@ -401,13 +404,13 @@ async function generateMetadataInner({
 
   if (slug === "crop-pdf") {
     return {
-      title: rawLocale === "zh" ? "裁剪 PDF — 免费在线裁掉 PDF 页边" : "Crop PDF — Trim PDF Margins Online Free",
+      title: uiLocale === "zh" ? "裁剪 PDF — 免费在线裁掉 PDF 页边" : "Crop PDF — Trim PDF Margins Online Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "免费在线裁剪 PDF 页边：用实时预览裁掉任意一边的空白，每页按同样方式裁剪，全部在浏览器中完成。"
           : "Crop PDF margins online for free. Trim whitespace from any edge with a live preview — every page cropped the same, all in your browser.",
       alternates: {
-        canonical: localizedPath(rawLocale, "crop-pdf"),
+        canonical: localizedPath(uiLocale, "crop-pdf"),
         languages: languageAlternates("crop-pdf"),
       },
     };
@@ -415,13 +418,13 @@ async function generateMetadataInner({
 
   if (slug === "redact-pdf") {
     return {
-      title: rawLocale === "zh" ? "PDF 涂黑脱敏 — 永久删除敏感文字" : "Redact PDF — Permanently Remove Sensitive Text Online Free",
+      title: uiLocale === "zh" ? "PDF 涂黑脱敏 — 永久删除敏感文字" : "Redact PDF — Permanently Remove Sensitive Text Online Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "真正涂黑脱敏 PDF：把姓名、号码等敏感文字永久删除(不是盖个黑框),全部在浏览器中完成,文件不外泄。"
           : "Redact a PDF for real — permanently destroy the hidden text, not just cover it. Entirely in your browser; your file never leaves your device.",
       alternates: {
-        canonical: localizedPath(rawLocale, "redact-pdf"),
+        canonical: localizedPath(uiLocale, "redact-pdf"),
         languages: languageAlternates("redact-pdf"),
       },
     };
@@ -429,13 +432,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-pdf-to-image") {
     return {
-      title: rawLocale === "zh" ? "批量 PDF 转图片 — 整批 PDF 一次转 JPG/PNG" : "Batch PDF to Image — Convert Many PDFs to JPG/PNG Free",
+      title: uiLocale === "zh" ? "批量 PDF 转图片 — 整批 PDF 一次转 JPG/PNG" : "Batch PDF to Image — Convert Many PDFs to JPG/PNG Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "一次把整个文件夹的 PDF 都转成图片(JPG/PNG),每页一张、打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
           : "Convert a whole folder of PDFs to images at once — every page to JPG or PNG, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-pdf-to-image"),
+        canonical: localizedPath(uiLocale, "batch-pdf-to-image"),
         languages: languageAlternates("batch-pdf-to-image"),
       },
     };
@@ -443,13 +446,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-protect-pdf") {
     return {
-      title: rawLocale === "zh" ? "批量加密 PDF — 整批 PDF 一次设密码" : "Batch Encrypt PDF — Password-Protect Many PDFs Free",
+      title: uiLocale === "zh" ? "批量加密 PDF — 整批 PDF 一次设密码" : "Batch Encrypt PDF — Password-Protect Many PDFs Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "设一个密码，给整个文件夹的 PDF 一次性加密,打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
           : "Set one password and encrypt a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-protect-pdf"),
+        canonical: localizedPath(uiLocale, "batch-protect-pdf"),
         languages: languageAlternates("batch-protect-pdf"),
       },
     };
@@ -457,13 +460,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-rename-pdf") {
     return {
-      title: rawLocale === "zh" ? "批量重命名 PDF — 整批按编号或查找替换改名" : "Batch Rename PDF — Rename Many Files by Pattern Free",
+      title: uiLocale === "zh" ? "批量重命名 PDF — 整批按编号或查找替换改名" : "Batch Rename PDF — Rename Many Files by Pattern Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "一次给整个文件夹的 PDF 改名:按编号模板或查找替换,下载用新名字打包的 ZIP,全部在浏览器中完成。"
           : "Rename a whole folder of PDFs at once — by a numbered pattern or find-and-replace — and download a ZIP with the new names. Entirely in your browser.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-rename-pdf"),
+        canonical: localizedPath(uiLocale, "batch-rename-pdf"),
         languages: languageAlternates("batch-rename-pdf"),
       },
     };
@@ -471,13 +474,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-watermark-pdf") {
     return {
-      title: rawLocale === "zh" ? "批量加水印 / 页码 — 整批 PDF 一次加水印或页码" : "Batch Watermark & Page Numbers — Stamp Many PDFs Free",
+      title: uiLocale === "zh" ? "批量加水印 / 页码 — 整批 PDF 一次加水印或页码" : "Batch Watermark & Page Numbers — Stamp Many PDFs Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "给整个文件夹的 PDF 一次性加水印或加页码,打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
           : "Add a watermark or page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-watermark-pdf"),
+        canonical: localizedPath(uiLocale, "batch-watermark-pdf"),
         languages: languageAlternates("batch-watermark-pdf"),
       },
     };
@@ -485,13 +488,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-page-numbers") {
     return {
-      title: rawLocale === "zh" ? "批量 PDF 添加页码 — 整批 PDF 一次加页码" : "Batch Add Page Numbers to PDFs — Free",
+      title: uiLocale === "zh" ? "批量 PDF 添加页码 — 整批 PDF 一次加页码" : "Batch Add Page Numbers to PDFs — Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "给整个文件夹的 PDF 一次性加页码,打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
           : "Add page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-page-numbers"),
+        canonical: localizedPath(uiLocale, "batch-page-numbers"),
         languages: languageAlternates("batch-page-numbers"),
       },
     };
@@ -499,13 +502,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-split-merge") {
     return {
-      title: rawLocale === "zh" ? "批量拆分 / 合并 PDF — 整批合并或按页拆分" : "Batch Split & Merge PDF — Combine or Split Many PDFs Free",
+      title: uiLocale === "zh" ? "批量拆分 / 合并 PDF — 整批合并或按页拆分" : "Batch Split & Merge PDF — Combine or Split Many PDFs Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "把整个文件夹的 PDF 合并成一个,或把每份按 N 页拆分,全部在浏览器中完成、打包下载,文件不外泄。"
           : "Merge a whole folder of PDFs into one, or split each into N-page files — all in your browser, packaged for download. Your files never leave your device.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-split-merge"),
+        canonical: localizedPath(uiLocale, "batch-split-merge"),
         languages: languageAlternates("batch-split-merge"),
       },
     };
@@ -513,13 +516,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-rotate-pdf") {
     return {
-      title: rawLocale === "zh" ? "批量旋转 PDF — 整批纠正横/倒扫描件" : "Batch Rotate PDF — Fix Many Sideways Scans Free",
+      title: uiLocale === "zh" ? "批量旋转 PDF — 整批纠正横/倒扫描件" : "Batch Rotate PDF — Fix Many Sideways Scans Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "一次纠正整个文件夹横着或倒着的扫描件:把每份 PDF 每页旋转,打包 ZIP,全部在浏览器中完成,文件不外泄。"
           : "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF and download one ZIP. Entirely in your browser.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-rotate-pdf"),
+        canonical: localizedPath(uiLocale, "batch-rotate-pdf"),
         languages: languageAlternates("batch-rotate-pdf"),
       },
     };
@@ -527,13 +530,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-extract-sheet") {
     return {
-      title: rawLocale === "zh" ? "批量抽取数据到一张表 — 整批发票/报价/合同 → CSV" : "Batch Extract Data to Spreadsheet — Many Invoices to CSV",
+      title: uiLocale === "zh" ? "批量抽取数据到一张表 — 整批发票/报价/合同 → CSV" : "Batch Extract Data to Spreadsheet — Many Invoices to CSV",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "拖入整个文件夹的发票/报价/合同,AI 把每份的关键字段抽进同一张表(一份一行),导出 CSV。AI 只报告真实存在的内容。"
           : "Drop a whole folder of invoices, quotes, or contracts — AI pulls the key fields from every file into one table (one row each) and exports CSV. It only reports what's actually there.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-extract-sheet"),
+        canonical: localizedPath(uiLocale, "batch-extract-sheet"),
         languages: languageAlternates("batch-extract-sheet"),
       },
     };
@@ -541,13 +544,13 @@ async function generateMetadataInner({
 
   if (slug === "batch-sort") {
     return {
-      title: rawLocale === "zh" ? "批量分类归档 PDF — AI 把杂乱文件分到文件夹" : "Batch Sort PDFs into Folders — AI File Organizer Free",
+      title: uiLocale === "zh" ? "批量分类归档 PDF — AI 把杂乱文件分到文件夹" : "Batch Sort PDFs into Folders — AI File Organizer Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "拖入一堆杂乱 PDF,AI 给每份分类并分到一个 ZIP 里的不同文件夹,全部在浏览器中完成,文件不外泄。"
           : "Drop a messy pile of PDFs — AI labels each and sorts them into folders inside one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-sort"),
+        canonical: localizedPath(uiLocale, "batch-sort"),
         languages: languageAlternates("batch-sort"),
       },
     };
@@ -555,13 +558,13 @@ async function generateMetadataInner({
 
   if (slug === "my-chats") {
     return {
-      title: rawLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
+      title: uiLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "查看已保存的「和 PDF 对话」记录和上传文档的元数据。"
           : "View saved Chat with PDF conversations and uploaded document metadata in DockDocs.",
       alternates: {
-        canonical: localizedPath(rawLocale, "my-chats"),
+        canonical: localizedPath(uiLocale, "my-chats"),
         languages: languageAlternates("my-chats"),
       },
       robots: { index: false, follow: true },
@@ -570,13 +573,13 @@ async function generateMetadataInner({
 
   if (slug === "url-to-pdf") {
     return {
-      title: rawLocale === "zh" ? "网页转 PDF — 免费在线把网页转成 PDF" : "URL to PDF — Convert a Web Page to PDF Free",
+      title: uiLocale === "zh" ? "网页转 PDF — 免费在线把网页转成 PDF" : "URL to PDF — Convert a Web Page to PDF Free",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "免费把任意公开网页转换为 PDF：粘贴网址，下载用真实浏览器引擎渲染的干净 PDF——无需上传、无需安装。"
           : "Convert any public web page to PDF online for free. Paste a URL and download a clean, browser-rendered PDF — no upload, no install.",
       alternates: {
-        canonical: localizedPath(rawLocale, "url-to-pdf"),
+        canonical: localizedPath(uiLocale, "url-to-pdf"),
         languages: languageAlternates("url-to-pdf"),
       },
     };
@@ -584,13 +587,13 @@ async function generateMetadataInner({
 
   if (slug === "compare") {
     return {
-      title: rawLocale === "zh" ? "多文档对比(测试版)" : "Compare documents (beta)",
+      title: uiLocale === "zh" ? "多文档对比(测试版)" : "Compare documents (beta)",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "上传多份 PDF,在浏览器抽取文本,并排对比关键字段——每个值都带原文出处。"
           : "Upload multiple PDFs, extract text in your browser, and line up the key terms side by side — with the source behind every value.",
       alternates: {
-        canonical: localizedPath(rawLocale, "compare"),
+        canonical: localizedPath(uiLocale, "compare"),
         languages: languageAlternates("compare"),
       },
       robots: { index: false, follow: false },
@@ -599,13 +602,13 @@ async function generateMetadataInner({
 
   if (slug === "account") {
     return {
-      title: rawLocale === "zh" ? "账户" : "Account",
+      title: uiLocale === "zh" ? "账户" : "Account",
       description:
-        rawLocale === "zh"
+        uiLocale === "zh"
           ? "使用 Google、Microsoft 或邮箱登录 DockDocs,管理你的工作区与订阅。"
           : "Sign in to DockDocs with Google, Microsoft, or email. Manage your workspace and billing.",
       alternates: {
-        canonical: localizedPath(rawLocale, "account"),
+        canonical: localizedPath(uiLocale, "account"),
         languages: languageAlternates("account"),
       },
       robots: { index: false, follow: true },
@@ -615,18 +618,18 @@ async function generateMetadataInner({
   if (COMING_SOON_TOOLS[slug]) {
     const t = COMING_SOON_TOOLS[slug];
     return {
-      title: `${rawLocale === "zh" ? t.zh : t.en} — ${rawLocale === "zh" ? "即将推出" : "Coming Soon"} | DockDocs`,
-      alternates: { canonical: localizedPath(rawLocale, slug as RouteSlug) },
+      title: `${uiLocale === "zh" ? t.zh : t.en} — ${uiLocale === "zh" ? "即将推出" : "Coming Soon"} | DockDocs`,
+      alternates: { canonical: localizedPath(uiLocale, slug as RouteSlug) },
       robots: { index: false, follow: true },
     };
   }
 
   if (slug === "pdf-to-image") {
     return createLocalizedMetadata(
-      rawLocale,
+      uiLocale,
       "pdf-to-image",
-      rawLocale === "zh" ? "PDF 转图片 — PDF 转 JPG 或 PNG" : "PDF to Image — Convert PDF to JPG & PNG",
-      rawLocale === "zh"
+      uiLocale === "zh" ? "PDF 转图片 — PDF 转 JPG 或 PNG" : "PDF to Image — Convert PDF to JPG & PNG",
+      uiLocale === "zh"
         ? "在浏览器里把 PDF 页面转成 JPG 或 PNG 图片：选页、选格式、下载，文件不离开你的设备。"
         : "Convert PDF pages to JPG or PNG images online for free. Pick the pages, choose the format, and download — all in your browser.",
     );
@@ -634,10 +637,10 @@ async function generateMetadataInner({
 
   if (slug === "images-to-pdf") {
     return createLocalizedMetadata(
-      rawLocale,
+      uiLocale,
       "images-to-pdf",
-      rawLocale === "zh" ? "图片转 PDF — JPG/PNG/WebP 转 PDF" : "Image to PDF — JPG, PNG & WebP to PDF",
-      rawLocale === "zh"
+      uiLocale === "zh" ? "图片转 PDF — JPG/PNG/WebP 转 PDF" : "Image to PDF — JPG, PNG & WebP to PDF",
+      uiLocale === "zh"
         ? "把 JPG、PNG、WebP、GIF、BMP 图片合并成一个 PDF，每张一页，全程在浏览器完成。"
         : "Convert JPG, PNG, WebP, GIF or BMP images to PDF online for free. Drag to order and combine into one PDF — all in your browser.",
     );
@@ -650,24 +653,24 @@ async function generateMetadataInner({
   }
 
   if ((geoPageSlugs as readonly string[]).includes(slug)) {
-    const hub = getGeoHub(rawLocale, slug as GeoPageSlug);
-    return createGeoHubMetadata(hub, localizedPath(rawLocale, slug));
+    const hub = getGeoHub(uiLocale, slug as GeoPageSlug);
+    return createGeoHubMetadata(hub, localizedPath(uiLocale, slug));
   }
 
   if ((infoPageSlugs as readonly string[]).includes(slug)) {
     if (slug === "blog") {
-      const page = blogIndexCopy[rawLocale];
-      return createLocalizedMetadata(rawLocale, "blog", page.title, page.description);
+      const page = blogIndexCopy[uiLocale];
+      return createLocalizedMetadata(uiLocale, "blog", page.title, page.description);
     }
 
-    const page = getInfoPage(rawLocale, slug as InfoPageSlug);
-    return createLocalizedMetadata(rawLocale, slug, page.title, page.description);
+    const page = getInfoPage(uiLocale, slug as InfoPageSlug);
+    return createLocalizedMetadata(uiLocale, slug, page.title, page.description);
   }
 
   if (slug === "ai-workspace") {
-    const copy = aiCopy[rawLocale];
+    const copy = aiCopy[uiLocale];
     return createLocalizedMetadata(
-      rawLocale,
+      uiLocale,
       "ai-workspace",
       copy.title,
       copy.description,
@@ -675,17 +678,17 @@ async function generateMetadataInner({
   }
 
   if (slug === "sitemap") {
-    const copy = sitemapCopy[rawLocale];
+    const copy = sitemapCopy[uiLocale];
     return createLocalizedMetadata(
-      rawLocale,
+      uiLocale,
       "sitemap",
       copy.title,
       copy.description,
     );
   }
 
-  const copy = homeCopy[rawLocale];
-  return createLocalizedMetadata(rawLocale, "", copy.title, copy.description);
+  const copy = homeCopy[uiLocale];
+  return createLocalizedMetadata(uiLocale, "", copy.title, copy.description);
 }
 
 export default async function LocalizedRoute({
@@ -694,14 +697,18 @@ export default async function LocalizedRoute({
   params: Promise<PageParams>;
 }) {
   const { locale: rawLocale, slug: rawSlug } = await params;
-  if (!isLocale(rawLocale)) {
+  if (!isRouteLocale(rawLocale)) {
     notFound();
   }
+  // Custom client + page components are typed en|zh. For es (pilot) they fall
+  // back to English for now (Phase 2); template tool pages + nav still render
+  // Spanish via getLocalizedToolConfig(rawLocale) / navCategories.es.
+  const uiLocale: "en" | "zh" = rawLocale === "zh" ? "zh" : "en";
 
   const programmaticGeoRoute = getLocalizedProgrammaticGeoRoute(rawSlug);
   if (programmaticGeoRoute) {
     const page = getProgrammaticGeoPage(
-      rawLocale,
+      uiLocale,
       programmaticGeoRoute.surface,
       programmaticGeoRoute.slug,
     );
@@ -713,7 +720,7 @@ export default async function LocalizedRoute({
     return (
       <ProgrammaticGeoPage
         page={page}
-        locale={rawLocale}
+        locale={uiLocale}
         useLocalePrefix
       />
     );
@@ -730,7 +737,7 @@ export default async function LocalizedRoute({
     return (
       <BlogArticlePage
         article={article}
-        locale={rawLocale}
+        locale={uiLocale}
         useLocalePrefix
       />
     );
@@ -742,11 +749,11 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "chat-with-pdf") {
-    return <LocalizedChatWithPdf locale={rawLocale} />;
+    return <LocalizedChatWithPdf locale={uiLocale} />;
   }
 
   if (slug === "ai-summary") {
-    return <LocalizedAiSummary locale={rawLocale} />;
+    return <LocalizedAiSummary locale={uiLocale} />;
   }
 
   if (slug === "ocr") {
@@ -755,159 +762,159 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "dashboard") {
-    return <LocalizedDashboard locale={rawLocale} />;
+    return <LocalizedDashboard locale={uiLocale} />;
   }
 
   if (slug === "batch-compress") {
-    return <BatchCompressClient locale={rawLocale} />;
+    return <BatchCompressClient locale={uiLocale} />;
   }
 
   if (slug === "classify") {
-    return <BatchSortClient locale={rawLocale} />;
+    return <BatchSortClient locale={uiLocale} />;
   }
 
   if (slug === "batch-summary") {
-    return <BatchSummaryClient locale={rawLocale} />;
+    return <BatchSummaryClient locale={uiLocale} />;
   }
 
   if (slug === "flashcards") {
-    return <QuizClient locale={rawLocale} />;
+    return <QuizClient locale={uiLocale} />;
   }
   if (slug === "sign-pdf") {
-    return <SignPdfClient locale={rawLocale} />;
+    return <SignPdfClient locale={uiLocale} />;
   }
 
   if (slug === "redline") {
-    return <RedlineClient locale={rawLocale} />;
+    return <RedlineClient locale={uiLocale} />;
   }
 
   if (slug === "extract-to-excel") {
-    return <ExtractExcelClient locale={rawLocale} />;
+    return <ExtractExcelClient locale={uiLocale} />;
   }
 
   if (slug === "crop-pdf") {
-    return <CropPdfClient locale={rawLocale} />;
+    return <CropPdfClient locale={uiLocale} />;
   }
 
   if (slug === "redact-pdf") {
-    return <RedactPdfClient locale={rawLocale} />;
+    return <RedactPdfClient locale={uiLocale} />;
   }
 
   if (slug === "batch-pdf-to-image") {
-    return <BatchPdfToImageClient locale={rawLocale} />;
+    return <BatchPdfToImageClient locale={uiLocale} />;
   }
 
   if (slug === "batch-protect-pdf") {
-    return <BatchProtectClient locale={rawLocale} />;
+    return <BatchProtectClient locale={uiLocale} />;
   }
 
   if (slug === "batch-rename-pdf") {
-    return <BatchRenameClient locale={rawLocale} />;
+    return <BatchRenameClient locale={uiLocale} />;
   }
 
   if (slug === "batch-watermark-pdf") {
-    return <BatchStampClient locale={rawLocale} lockMode="watermark" />;
+    return <BatchStampClient locale={uiLocale} lockMode="watermark" />;
   }
 
   if (slug === "batch-page-numbers") {
-    return <BatchStampClient locale={rawLocale} lockMode="pagenum" />;
+    return <BatchStampClient locale={uiLocale} lockMode="pagenum" />;
   }
 
   if (slug === "batch-split-merge") {
-    return <BatchSplitMergeClient locale={rawLocale} lockMode="split" />;
+    return <BatchSplitMergeClient locale={uiLocale} lockMode="split" />;
   }
 
   if (slug === "batch-rotate-pdf") {
-    return <BatchRotateClient locale={rawLocale} />;
+    return <BatchRotateClient locale={uiLocale} />;
   }
 
   if (slug === "batch-extract-sheet") {
-    return <ExtractExcelClient locale={rawLocale} />;
+    return <ExtractExcelClient locale={uiLocale} />;
   }
 
   if (slug === "batch-sort") {
-    return <BatchSortClient locale={rawLocale} />;
+    return <BatchSortClient locale={uiLocale} />;
   }
 
   if (slug === "my-chats") {
-    return <MyChatsClient locale={rawLocale} />;
+    return <MyChatsClient locale={uiLocale} />;
   }
 
   if (slug === "url-to-pdf") {
-    return <UrlToPdfClient locale={rawLocale} />;
+    return <UrlToPdfClient locale={uiLocale} />;
   }
 
   if (slug === "compare") {
-    return <DocumentCompareClient locale={rawLocale} />;
+    return <DocumentCompareClient locale={uiLocale} />;
   }
 
   if (slug === "pricing") {
-    return <LocalizedPricing locale={rawLocale} />;
+    return <LocalizedPricing locale={uiLocale} />;
   }
 
   if (slug === "account") {
-    return <LocalizedAccount locale={rawLocale} />;
+    return <LocalizedAccount locale={uiLocale} />;
   }
 
   if (COMING_SOON_TOOLS[slug]) {
     const t = COMING_SOON_TOOLS[slug];
-    return <ComingSoonTool locale={rawLocale} name={t.en} nameZh={t.zh} />;
+    return <ComingSoonTool locale={uiLocale} name={t.en} nameZh={t.zh} />;
   }
 
   if (slug === "translate-pdf") {
-    return <TranslatePdfClient locale={rawLocale} />;
+    return <TranslatePdfClient locale={uiLocale} />;
   }
 
   if (slug === "reorder-pages") {
-    return <PageReorderClient locale={rawLocale} />;
+    return <PageReorderClient locale={uiLocale} />;
   }
 
   if (slug === "add-page") {
-    return <InsertPdfClient locale={rawLocale} />;
+    return <InsertPdfClient locale={uiLocale} />;
   }
 
   if (slug === "watermark-pdf") {
-    return <WatermarkEditorClient locale={rawLocale} />;
+    return <WatermarkEditorClient locale={uiLocale} />;
   }
 
   if (slug === "delete-page") {
-    return <DeletePagesClient locale={rawLocale} />;
+    return <DeletePagesClient locale={uiLocale} />;
   }
 
   if (slug === "rotate-page") {
-    return <RotatePagesClient locale={rawLocale} />;
+    return <RotatePagesClient locale={uiLocale} />;
   }
 
   if (slug === "merge-pdf") {
-    return <MergePdfClient locale={rawLocale} />;
+    return <MergePdfClient locale={uiLocale} />;
   }
 
   if (slug === "split-pdf") {
-    return <SplitPdfClient locale={rawLocale} />;
+    return <SplitPdfClient locale={uiLocale} />;
   }
 
   if (slug === "pdf-to-jpg") {
-    return <PdfToImageClient locale={rawLocale} defaultFormat="jpg" />;
+    return <PdfToImageClient locale={uiLocale} defaultFormat="jpg" />;
   }
 
   if (slug === "pdf-to-png") {
-    return <PdfToImageClient locale={rawLocale} defaultFormat="png" />;
+    return <PdfToImageClient locale={uiLocale} defaultFormat="png" />;
   }
 
   if (slug === "page-numbers") {
-    return <PageNumbersClient locale={rawLocale} />;
+    return <PageNumbersClient locale={uiLocale} />;
   }
 
   if (slug === "jpg-to-pdf" || slug === "png-to-pdf") {
-    return <ImagesToPdfClient locale={rawLocale} />;
+    return <ImagesToPdfClient locale={uiLocale} />;
   }
 
   if (slug === "pdf-to-image") {
-    return <PdfToImageClient locale={rawLocale} defaultFormat="jpg" />;
+    return <PdfToImageClient locale={uiLocale} defaultFormat="jpg" />;
   }
 
   if (slug === "images-to-pdf") {
-    return <ImagesToPdfClient locale={rawLocale} />;
+    return <ImagesToPdfClient locale={uiLocale} />;
   }
 
   if ((toolSlugs as readonly string[]).includes(slug)) {
@@ -919,8 +926,8 @@ export default async function LocalizedRoute({
   if ((geoPageSlugs as readonly string[]).includes(slug)) {
     return (
       <GeoHubPage
-        hub={getGeoHub(rawLocale, slug as GeoPageSlug)}
-        locale={rawLocale}
+        hub={getGeoHub(uiLocale, slug as GeoPageSlug)}
+        locale={uiLocale}
         useLocalePrefix
       />
     );
@@ -928,41 +935,41 @@ export default async function LocalizedRoute({
 
   if ((infoPageSlugs as readonly string[]).includes(slug)) {
     if (slug === "blog") {
-      return <BlogIndexPage locale={rawLocale} useLocalePrefix />;
+      return <BlogIndexPage locale={uiLocale} useLocalePrefix />;
     }
 
     if (slug === "about") {
       return (
         <>
-          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema(rawLocale)) }} />
-          <AboutPage locale={rawLocale} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema(uiLocale)) }} />
+          <AboutPage locale={uiLocale} />
         </>
       );
     }
 
-    const infoPage = getInfoPage(rawLocale, slug as InfoPageSlug);
+    const infoPage = getInfoPage(uiLocale, slug as InfoPageSlug);
     return (
       <>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(rawLocale, slug, infoPage.title)) }} />
-        <SaasInfoPage page={infoPage} locale={rawLocale} useLocalePrefix />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, slug, infoPage.title)) }} />
+        <SaasInfoPage page={infoPage} locale={uiLocale} useLocalePrefix />
       </>
     );
   }
 
   if (slug === "ai-workspace") {
-    return <LocalizedAiWorkspace locale={rawLocale} />;
+    return <LocalizedAiWorkspace locale={uiLocale} />;
   }
 
   if (slug === "sitemap") {
     return (
       <>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(rawLocale, "sitemap", rawLocale === "zh" ? "网站地图" : "Sitemap")) }} />
-        <LocalizedSitemap locale={rawLocale} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, "sitemap", uiLocale === "zh" ? "网站地图" : "Sitemap")) }} />
+        <LocalizedSitemap locale={uiLocale} />
       </>
     );
   }
 
-  return <LocalizedHome locale={rawLocale} />;
+  return <LocalizedHome locale={uiLocale} />;
 }
 
 function LocalizedAccount({ locale }: { locale: Locale }) {
