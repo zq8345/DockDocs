@@ -10,7 +10,7 @@
 
 ## Joe 要做的(约 15 分钟,一次性)
 
-1. **开一台 VPS** —— Hetzner **CX22**(2 vCPU / 4GB,**德国或美国区**,别选亚洲区),系统 **Ubuntu 24.04**。记下公网 IP。
+1. **开一台 4GB 海外 VPS** —— 阿里云国际版海外地域 ECS(法兰克福/美国)、Vultr、或任意服务商均可,规格 **2 vCPU / 4GB、Ubuntu 24.04、选海外地域**(别选中国大陆)。记下公网 IP。
 2. **加一条 DNS 记录** —— 把一个子域名(例如 `convert.dockdocs.app`)的 **A 记录**指向这台 VPS 的 IP。(TLS 证书需要它。)
 3. **SSH 登进去,装 Docker:**
    ```bash
@@ -28,7 +28,7 @@
    ```bash
    docker compose up -d --build
    ```
-6. **只开必要端口**(防火墙):
+6. **只开必要端口 22 / 80 / 443** —— 先在云服务商的**安全组/防火墙**放行这三个(阿里云 = 安全组入方向规则);VPS 内可选再加 ufw:
    ```bash
    ufw allow 22 && ufw allow 80 && ufw allow 443 && ufw --force enable
    ```
