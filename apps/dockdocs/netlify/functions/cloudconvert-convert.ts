@@ -35,17 +35,18 @@ const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/
 
 // Best-effort per-IP sliding-window limiter (per warm instance) to bound CloudConvert credit abuse.
 const rlHits = new Map<string, number[]>();
-function isRateLimited(req: Request, limit: number, windowMs: number): boolean {
+const rlHitsDay = new Map<string, number[]>();
+function isRateLimited(req: Request, limit: number, windowMs: number, store = rlHits): boolean {
   const ip =
     req.headers.get("x-nf-client-connection-ip") ||
     (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() ||
     "anon";
   const now = Date.now();
-  const arr = (rlHits.get(ip) || []).filter((ts) => now - ts < windowMs);
+  const arr = (store.get(ip) || []).filter((ts) => now - ts < windowMs);
   arr.push(now);
-  rlHits.set(ip, arr);
-  if (rlHits.size > 5000) {
-    for (const [k, v] of rlHits) if (!v.length || now - v[v.length - 1] > windowMs) rlHits.delete(k);
+  store.set(ip, arr);
+  if (store.size > 5000) {
+    for (const [k, v] of store) if (!v.length || now - v[v.length - 1] > windowMs) store.delete(k);
   }
   return arr.length > limit;
 }
@@ -129,8 +130,14 @@ export default async (req: Request, _context: Context) => {
   }
 
   // Rate-limit only the costly CREATE path (status polling stays exempt so live jobs can poll).
+  // Per-minute burst guard + a per-day cap to bound CloudConvert credit abuse by scrapers.
+  // (Forward office/html/pdfa now go to the $0 self-hosted box; CloudConvert here serves
+  //  the paid reverse pdf->office, url-to-pdf, and the >5 MB fallback.)
   if (isRateLimited(req, 12, 60_000)) {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many conversions — please wait a minute and try again." }, 429);
+  }
+  if (isRateLimited(req, 40, 86_400_000, rlHitsDay)) {
+    return json({ ok: false, code: "DAILY_LIMIT", message: "Daily conversion limit reached. Sign in or upgrade for higher limits." }, 429);
   }
 
   // ── CREATE: build a job and return the direct-upload form ──
