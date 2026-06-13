@@ -1,5 +1,4 @@
 import type { PdfRuntimeArtifact, PdfRuntimeProgress } from "./pdf-runtime";
-import { tryAdobeExport } from "./adobe-runtime";
 
 export type CloudConvertRoute =
   | "word-to-pdf"
@@ -77,10 +76,10 @@ export async function runCloudConvert({
   const viaGotenberg = await tryGotenbergConvert({ file, route, outputFileName, locale, signal, onProgress });
   if (viaGotenberg) return viaGotenberg;
 
-  // ── Fast path: Adobe PDF Services for reverse pdf->office (high-fidelity, ToS-clean). ──
-  // Falls back to CloudConvert if Adobe is unconfigured or fails.
-  const viaAdobe = await tryAdobeExport({ file, route, outputFileName, locale, signal, onProgress });
-  if (viaAdobe) return viaAdobe;
+  // ── Fast path: OSS reverse converter (pdf2docx + pdfplumber) on Aliyun box. ──
+  // Free unlimited; no PDF/PPTX OSS option so that falls through to CloudConvert.
+  const viaOss = await tryOssReverse({ file, route, outputFileName, locale, signal, onProgress });
+  if (viaOss) return viaOss;
 
   // ── 1. Ask our function to create a CloudConvert job ──
   emitProgress(onProgress, 6, 0, zh ? "正在创建转换任务..." : "Creating conversion job...");
@@ -251,6 +250,72 @@ async function tryGotenbergConvert({
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") throw err;
     return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// OSS reverse fast path (pdf2docx + pdfplumber)
+// ---------------------------------------------------------------------------
+const REVERSE_API = "/api/reverse-convert";
+const REVERSE_ROUTES = new Set<CloudConvertRoute>(["pdf-to-word", "pdf-to-excel"]);
+const REVERSE_MAX_BYTES = 5 * 1024 * 1024; // mirrors Netlify function body limit
+
+const REVERSE_OUT: Record<
+  string,
+  { mime: string; outputType: PdfRuntimeArtifact["outputType"] }
+> = {
+  "pdf-to-word": {
+    mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    outputType: "docx",
+  },
+  "pdf-to-excel": {
+    mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    outputType: "xlsx",
+  },
+};
+
+async function tryOssReverse({
+  file,
+  route,
+  outputFileName,
+  locale,
+  signal,
+  onProgress,
+}: CloudConvertRuntimeInput): Promise<PdfRuntimeArtifact | null> {
+  if (!REVERSE_ROUTES.has(route) || file.size > REVERSE_MAX_BYTES) return null;
+  const zh = locale === "zh";
+  try {
+    emitProgress(onProgress, 12, 0, zh ? "正在创建转换任务..." : "Creating conversion job...");
+    const form = new FormData();
+    form.append("route", route);
+    form.append("file", file, file.name || "source.pdf");
+    emitProgress(onProgress, 40, 2, zh ? "正在转换中..." : "Converting...");
+    let tick = 40;
+    const ticker = setInterval(() => {
+      tick = Math.min(tick + 4, 90);
+      emitProgress(onProgress, tick, 2, zh ? "正在转换中..." : "Converting...");
+    }, 700);
+    let res: Response | null = null;
+    try {
+      res = await fetch(REVERSE_API, { method: "POST", body: form, signal });
+    } finally {
+      clearInterval(ticker);
+    }
+    if (!res || !res.ok) return null;
+    const bytes = await res.arrayBuffer();
+    if (bytes.byteLength === 0) return null;
+    const out = REVERSE_OUT[route];
+    emitProgress(onProgress, 100, 3);
+    return {
+      fileName: outputFileName,
+      blob: new Blob([bytes], { type: out.mime }),
+      outputType: out.outputType,
+      pageCount: undefined,
+      fileCount: 1,
+    };
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") throw err;
+    return null; // any failure -> fall through to CloudConvert
   }
 }
 

@@ -4,7 +4,7 @@
 # Full provisioning guide: ./README.md
 services:
   gotenberg:
-    build: .                       # ./Dockerfile = gotenberg/gotenberg:8 + Carlito/Caladea/Noto-CJK fonts
+    build: .                       # ./Dockerfile = gotenberg/gotenberg:8 + Liberation/Noto/Carlito fonts
     restart: unless-stopped
     command:
       - gotenberg
@@ -15,10 +15,19 @@ services:
       - "3000"                     # internal only — never published to the internet directly
     networks: [edge]
 
+  reverse:
+    build: ./reverse               # FastAPI pdf2docx + pdfplumber (PDF → DOCX/XLSX)
+    restart: unless-stopped
+    expose:
+      - "4000"                     # internal only
+    environment:
+      DOCKDOCS_REVERSE_SECRET: ${GOTENBERG_SECRET}   # reuse same shared secret
+    networks: [edge]
+
   caddy:
     image: caddy:2
     restart: unless-stopped
-    depends_on: [gotenberg]
+    depends_on: [gotenberg, reverse]
     ports:
       - "80:80"
       - "443:443"

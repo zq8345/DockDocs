@@ -1,10 +1,18 @@
 # Auto-HTTPS (Let's Encrypt) for your subdomain + a shared-secret gate.
 # Only requests carrying the X-DockDocs-Key header (sent by the Netlify function)
-# get through to Gotenberg; everything else gets 403. Gotenberg itself is never
-# exposed to the internet — only Caddy is.
+# get through; everything else gets 403. Services are never exposed directly.
 {$GOTENBERG_DOMAIN} {
 	@unauthorized not header X-DockDocs-Key {$GOTENBERG_SECRET}
 	respond @unauthorized "Forbidden" 403
 
-	reverse_proxy gotenberg:3000
+	# Reverse-convert service: /reverse/* → FastAPI on port 4000
+	handle /reverse/* {
+		uri strip_prefix /reverse
+		reverse_proxy reverse:4000
+	}
+
+	# Everything else → Gotenberg on port 3000
+	handle {
+		reverse_proxy gotenberg:3000
+	}
 }
