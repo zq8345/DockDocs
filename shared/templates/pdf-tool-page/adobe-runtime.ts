@@ -109,8 +109,9 @@ export async function tryAdobeExport({
         downloadUri = data.downloadUri as string;
         break;
       }
-      const elapsed = (Date.now() - start) / POLL_TIMEOUT_MS;
-      emitProgress(onProgress, Math.min(40 + Math.round(elapsed * 45), 85), 2, zh ? "正在转换中..." : "Converting...");
+      const elapsedMs = Date.now() - start;
+      const pct = 40 + Math.round(55 * (1 - Math.exp(-elapsedMs / 14000)));
+      emitProgress(onProgress, Math.min(pct, 95), 2, zh ? "正在转换中..." : "Converting...");
     }
     if (!downloadUri) return null;
 

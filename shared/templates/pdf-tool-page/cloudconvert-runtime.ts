@@ -149,9 +149,10 @@ export async function runCloudConvert({
       break;
     }
 
-    // bump progress slowly toward 85% while waiting
-    const elapsed = (Date.now() - start) / POLL_TIMEOUT_MS;
-    emitProgress(onProgress, Math.min(45 + Math.round(elapsed * 40), 85), 2, zh ? "正在转换中..." : "Converting...");
+    // Smoothly approach ~95% (asymptotic) so the bar never stalls at a fixed percent.
+    const elapsedMs = Date.now() - start;
+    const pct = 45 + Math.round(50 * (1 - Math.exp(-elapsedMs / 14000)));
+    emitProgress(onProgress, Math.min(pct, 95), 2, zh ? "正在转换中..." : "Converting...");
   }
 
   if (!downloadUrl) {
@@ -223,8 +224,19 @@ async function tryGotenbergConvert({
     form.append("route", route);
     form.append("file", file, file.name || "source");
     emitProgress(onProgress, 40, 2, zh ? "正在转换中..." : "Converting...");
-    const res = await fetch(GOTENBERG_API, { method: "POST", body: form, signal });
-    if (!res.ok) return null;
+    // The Gotenberg call is one synchronous request — ramp the bar while it runs.
+    let tick = 40;
+    const ticker = setInterval(() => {
+      tick = Math.min(tick + 4, 90);
+      emitProgress(onProgress, tick, 2, zh ? "正在转换中..." : "Converting...");
+    }, 700);
+    let res: Response | null = null;
+    try {
+      res = await fetch(GOTENBERG_API, { method: "POST", body: form, signal });
+    } finally {
+      clearInterval(ticker);
+    }
+    if (!res || !res.ok) return null;
     const bytes = await res.arrayBuffer();
     if (bytes.byteLength === 0) return null;
     const { outputMime, outputType } = ROUTE_META[route];

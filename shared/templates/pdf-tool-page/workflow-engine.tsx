@@ -412,7 +412,7 @@ export function PdfWorkflowEngine({
               <WorkflowProgress
                 bare
                 title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
-                description={spec.processLabel}
+                description={totalSize > 8 * 1024 * 1024 ? (zh ? spec.processLabel + " · 大文件，转换可能需要稍久" : spec.processLabel + " · large file — may take a bit") : spec.processLabel}
                 progress={progress}
                 statusText={zh ? "处理中" : "Processing"}
                 animated
@@ -561,7 +561,7 @@ export function PdfWorkflowEngine({
       {status === "processing" ? (
         <WorkflowProgress
           title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
-          description={spec.processLabel}
+          description={totalSize > 8 * 1024 * 1024 ? (zh ? spec.processLabel + " · 大文件，转换可能需要稍久" : spec.processLabel + " · large file — may take a bit") : spec.processLabel}
           progress={progress}
           statusText={zh ? "处理中" : "Processing"}
           animated
