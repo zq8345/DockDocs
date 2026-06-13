@@ -1,0 +1,36 @@
+# DockDocs self-hosted conversion engine.
+# Gotenberg (Chromium + LibreOffice) behind Caddy (auto-HTTPS + shared-secret auth).
+# Drives Office->PDF / html->PDF / url->PDF / PDF/A marginal cost to ~$0.
+# Full provisioning guide: ./README.md
+services:
+  gotenberg:
+    build: .                       # ./Dockerfile = gotenberg/gotenberg:8 + Carlito/Caladea/Noto-CJK fonts
+    restart: unless-stopped
+    command:
+      - gotenberg
+      - --api-timeout=120s         # allow big/complex documents
+      - --libreoffice-restart-after=10   # contain LibreOffice memory growth
+      - --chromium-restart-after=10      # contain Chromium url-route memory leak
+    expose:
+      - "3000"                     # internal only — never published to the internet directly
+    networks: [edge]
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on: [gotenberg]
+    ports:
+      - "80:80"
+      - "443:443"
+    env_file: .env                 # GOTENBERG_DOMAIN, GOTENBERG_SECRET
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [edge]
+
+networks:
+  edge: {}
+volumes:
+  caddy_data: {}
+  caddy_config: {}
