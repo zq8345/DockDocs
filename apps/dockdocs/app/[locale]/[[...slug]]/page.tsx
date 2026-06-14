@@ -54,6 +54,7 @@ import { BatchCompressClient } from "@/components/BatchCompressClient";
 import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
 import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
 import { BatchTranslateClient } from "@/components/BatchTranslateClient";
+import { BatchFixScansClient } from "@/components/BatchFixScansClient";
 import { SignPdfClient } from "@/components/SignPdfClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
@@ -601,6 +602,20 @@ async function generateMetadataInner({
     };
   }
 
+  if (slug === "batch-fix-scans") {
+    return {
+      title: uiLocale === "zh" ? "批量修扫描 — 整批裁页边/删页" : "Batch Fix Scans — Crop or Delete Pages in Bulk Free",
+      description:
+        uiLocale === "zh"
+          ? "一次清理整个文件夹的扫描件：给每页裁掉相同页边，或从每个文件删相同页，全部在浏览器中完成、打包 ZIP。"
+          : "Clean up a whole folder of scanned PDFs at once — crop the same margins off every page or delete the same pages from each file. All in your browser, one ZIP.",
+      alternates: {
+        canonical: localizedPath(uiLocale, "batch-fix-scans"),
+        languages: languageAlternates("batch-fix-scans"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: uiLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -891,6 +906,10 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-translate") {
     return <BatchTranslateClient locale={rawLocale} />;
+  }
+
+  if (slug === "batch-fix-scans") {
+    return <BatchFixScansClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {

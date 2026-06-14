@@ -3,6 +3,32 @@ type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
 const FAQS: Record<string, { title: { en: string; zh: string; es: string }; items: { en: QA[]; zh: QA[]; es: QA[] } }> = {
+  "batch-fix-scans": {
+    title: { en: "Batch fix scans — FAQ", zh: "批量修扫描常见问题", es: "Arreglar escaneos por lotes — preguntas frecuentes" },
+    items: {
+      en: [
+        { q: "What can Batch Fix Scans do?", a: "Two clean-up jobs across a whole folder of PDFs at once. Crop margins trims the same edges off every page of every file (great for removing black scan borders or binding margins). Delete pages removes the same page numbers from each file (great for stripping a cover sheet or separator page). Pick one mode, set it once, and it applies to the whole batch." },
+        { q: "How does cropping work?", a: "Use the sliders to trim each edge as a percentage of the page; the preview shows the first file with the trimmed area shaded. The same crop is applied to every page of every file in the batch. Cropping uses the PDF crop box, so the trimmed area is hidden, not destroyed — it can be restored later." },
+        { q: "How does delete pages work?", a: "Enter the page numbers to remove from each file, like 1 for a cover or 1,3-4 for several. Those pages are deleted from every file in the batch. If a file would lose all its pages, it is skipped and flagged so you don't get an empty document." },
+        { q: "Is there a limit, and are my files uploaded?", a: "Up to 30 files per batch. Everything runs entirely in your browser — your files are never uploaded, which makes this safe for confidential scans. You get them all back in a single ZIP." },
+        { q: "Is it free?", a: "Yes, completely free — no account, no watermark, no daily limit." },
+      ],
+      zh: [
+        { q: "批量修扫描能做什么？", a: "一次对整个文件夹的 PDF 做两类清理：「裁剪页边」给每个文件的每一页裁掉相同的边（适合去掉扫描黑边或装订线），「删除页面」从每个文件删掉相同的页码（适合去掉封面或分隔页）。选一种模式，设一次，应用到整批。" },
+        { q: "裁剪是怎么工作的？", a: "用滑块按页面百分比裁掉每一边；预览显示第一个文件、被裁区域加阴影。同样的裁剪会应用到整批每个文件的每一页。裁剪使用 PDF 裁剪框，所以被裁区域是隐藏而非销毁——以后可以还原。" },
+        { q: "删除页面怎么用？", a: "输入要从每个文件删除的页码，如 1 删封面，或 1,3-4 删多页。这些页会从整批每个文件中删除。如果某个文件会被删空，它会被跳过并标注，避免得到空文档。" },
+        { q: "有限制吗？文件会被上传吗？", a: "每批最多 30 个文件。全部在你的浏览器中完成——文件绝不上传，所以处理机密扫描件也安全。最后打包成一个 ZIP 拿回。" },
+        { q: "免费吗？", a: "完全免费——无需注册、没有水印、也没有每日次数限制。" },
+      ],
+      es: [
+        { q: "¿Qué puede hacer Arreglar escaneos por lotes?", a: "Dos tareas de limpieza sobre una carpeta entera de PDF a la vez. Recortar márgenes recorta los mismos bordes de cada página de cada archivo (ideal para quitar bordes negros de escaneo o márgenes de encuadernación). Eliminar páginas quita los mismos números de página de cada archivo (ideal para quitar una portada o página separadora). Elige un modo, configúralo una vez y se aplica a todo el lote." },
+        { q: "¿Cómo funciona el recorte?", a: "Usa los controles para recortar cada borde como porcentaje de la página; la vista previa muestra el primer archivo con el área recortada sombreada. El mismo recorte se aplica a cada página de cada archivo del lote. El recorte usa el cuadro de recorte del PDF, así que el área recortada se oculta, no se destruye, y puede restaurarse después." },
+        { q: "¿Cómo funciona eliminar páginas?", a: "Introduce los números de página a quitar de cada archivo, como 1 para una portada o 1,3-4 para varias. Esas páginas se eliminan de cada archivo del lote. Si un archivo perdería todas sus páginas, se omite y se marca para que no obtengas un documento vacío." },
+        { q: "¿Hay un límite y se suben mis archivos?", a: "Hasta 30 archivos por lote. Todo se ejecuta enteramente en tu navegador; tus archivos nunca se suben, lo que lo hace seguro para escaneos confidenciales. Los recibes todos en un solo ZIP." },
+        { q: "¿Es gratis?", a: "Sí, completamente gratis: sin cuenta, sin marca de agua, sin límite diario." },
+      ],
+    },
+  },
   "batch-translate": {
     title: { en: "Batch translate PDFs — FAQ", zh: "批量翻译 PDF 常见问题", es: "Traducir PDF por lotes — preguntas frecuentes" },
     items: {
