@@ -1,0 +1,18 @@
+import type { Metadata } from "next";
+import { languageAlternates } from "@/lib/i18n";
+import { BatchTranslateClient } from "@/components/BatchTranslateClient";
+
+export const metadata: Metadata = {
+  title: "Batch Translate PDFs — Translate a Whole Folder",
+  description:
+    "Translate a whole folder of PDFs into one language in a single run — each document's text is translated and packaged into a ZIP of .txt files.",
+  keywords: ["batch translate pdf", "translate multiple pdfs", "bulk pdf translation", "translate pdf folder"],
+  alternates: {
+    canonical: "/batch-translate/",
+    languages: languageAlternates("batch-translate"),
+  },
+};
+
+export default function BatchTranslatePage() {
+  return <BatchTranslateClient />;
+}

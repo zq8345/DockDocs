@@ -86,6 +86,7 @@ export const routeSlugs = [
   "batch-rotate-pdf",
   "batch-pdf-to-office",
   "batch-office-to-pdf",
+  "batch-translate",
   "batch-extract-sheet",
   "batch-sort",
   "dashboard",

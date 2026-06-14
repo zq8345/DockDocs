@@ -53,6 +53,7 @@ import { ClassifyClient } from "@/components/ClassifyClient";
 import { BatchCompressClient } from "@/components/BatchCompressClient";
 import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
 import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
+import { BatchTranslateClient } from "@/components/BatchTranslateClient";
 import { SignPdfClient } from "@/components/SignPdfClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
@@ -586,6 +587,20 @@ async function generateMetadataInner({
     };
   }
 
+  if (slug === "batch-translate") {
+    return {
+      title: uiLocale === "zh" ? "批量翻译 PDF — 整批翻译打包 ZIP" : "Batch Translate PDFs — Translate a Whole Folder Free",
+      description:
+        uiLocale === "zh"
+          ? "把整个文件夹的 PDF 一次性翻译成一种语言，每份的文字翻译后打包成 .txt 的 ZIP。"
+          : "Translate a whole folder of PDFs into one language at once — each document's text translated and packaged into a ZIP of .txt files.",
+      alternates: {
+        canonical: localizedPath(uiLocale, "batch-translate"),
+        languages: languageAlternates("batch-translate"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: uiLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -872,6 +887,10 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-office-to-pdf") {
     return <BatchOfficeToPdfClient locale={rawLocale} />;
+  }
+
+  if (slug === "batch-translate") {
+    return <BatchTranslateClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {

@@ -3,6 +3,32 @@ type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
 const FAQS: Record<string, { title: { en: string; zh: string; es: string }; items: { en: QA[]; zh: QA[]; es: QA[] } }> = {
+  "batch-translate": {
+    title: { en: "Batch translate PDFs — FAQ", zh: "批量翻译 PDF 常见问题", es: "Traducir PDF por lotes — preguntas frecuentes" },
+    items: {
+      en: [
+        { q: "How do I translate several PDFs at once?", a: "Drop your PDFs onto the page — or a whole folder — pick the target language, then click Translate all. Each PDF is read in your browser, its text is translated one by one, and you download them all as a single ZIP of .txt files." },
+        { q: "Which languages can I translate to?", a: "13 languages including English, Simplified and Traditional Chinese, Spanish, French, German, Japanese, Korean, Portuguese, Italian, Russian, Arabic, and Hindi. The whole batch is translated into the one language you pick." },
+        { q: "What do I get back — does it keep the layout?", a: "You get plain text (.txt), one file per PDF, zipped together. The translation is text-only, so the original layout, images, and formatting are not preserved. It's best for reading and reusing the content, not for producing a formatted copy." },
+        { q: "Is there a limit, and what about scanned PDFs?", a: "Up to 10 PDFs per batch, each up to about 10 pages (14,000 characters) of text. Scanned PDFs have no selectable text, so run OCR on them first; otherwise they're skipped with a note." },
+        { q: "Is it private and free?", a: "Each PDF is read in your browser and only the extracted text — never the file — is sent for translation. It's free; translation counts toward your daily AI usage limit, which resets each day." },
+      ],
+      zh: [
+        { q: "怎么一次翻译多个 PDF？", a: "把 PDF 拖到页面上——也可以整个文件夹——选目标语言，再点「全部翻译」。每份 PDF 在浏览器中读取，文字逐个翻译，最后打包成一个 .txt 文件的 ZIP 下载。" },
+        { q: "可以翻译成哪些语言？", a: "13 种语言，包括英语、简体和繁体中文、西班牙语、法语、德语、日语、韩语、葡萄牙语、意大利语、俄语、阿拉伯语和印地语。整批都会翻译成你选的那一种语言。" },
+        { q: "我拿回什么？保留版式吗？", a: "你拿回纯文本(.txt)，每份 PDF 一个文件，一起打包。翻译只含文字，所以原始版式、图片和格式都不保留。适合阅读和再利用内容，不适合产出带格式的副本。" },
+        { q: "有限制吗？扫描件怎么办？", a: "每批最多 10 份 PDF，每份约 10 页(1.4 万字符)以内的文字。扫描件没有可选文字，请先做 OCR，否则会被跳过并标注。" },
+        { q: "私密吗？免费吗？", a: "每份 PDF 在你的浏览器中读取，只有提取的文字（不是文件本身）会被发送去翻译。免费；翻译计入你的每日 AI 使用额度，每天重置。" },
+      ],
+      es: [
+        { q: "¿Cómo traduzco varios PDF a la vez?", a: "Arrastra tus PDF a la página (o una carpeta entera), elige el idioma de destino y haz clic en Traducir todo. Cada PDF se lee en tu navegador, su texto se traduce uno por uno y los descargas todos como un solo ZIP de archivos .txt." },
+        { q: "¿A qué idiomas puedo traducir?", a: "13 idiomas, incluidos inglés, chino simplificado y tradicional, español, francés, alemán, japonés, coreano, portugués, italiano, ruso, árabe e hindi. Todo el lote se traduce al idioma que elijas." },
+        { q: "¿Qué recibo? ¿Conserva el diseño?", a: "Recibes texto plano (.txt), un archivo por PDF, empaquetados juntos. La traducción es solo texto, así que no se conservan el diseño, las imágenes ni el formato originales. Es ideal para leer y reutilizar el contenido, no para producir una copia con formato." },
+        { q: "¿Hay un límite y qué pasa con los PDF escaneados?", a: "Hasta 10 PDF por lote, cada uno con unas 10 páginas (14 000 caracteres) de texto. Los PDF escaneados no tienen texto seleccionable, así que aplícales OCR primero; de lo contrario se omiten con una nota." },
+        { q: "¿Es privado y gratis?", a: "Cada PDF se lee en tu navegador y solo el texto extraído, nunca el archivo, se envía para traducir. Es gratis; la traducción cuenta para tu límite diario de uso de IA, que se restablece cada día." },
+      ],
+    },
+  },
   "batch-office-to-pdf": {
     title: { en: "Batch Office to PDF — FAQ", zh: "批量 Office 转 PDF 常见问题", es: "Office a PDF por lotes — preguntas frecuentes" },
     items: {
