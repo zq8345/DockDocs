@@ -52,6 +52,7 @@ import { BatchSummaryClient } from "@/components/BatchSummaryClient";
 import { ClassifyClient } from "@/components/ClassifyClient";
 import { BatchCompressClient } from "@/components/BatchCompressClient";
 import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
+import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
 import { SignPdfClient } from "@/components/SignPdfClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
@@ -571,6 +572,20 @@ async function generateMetadataInner({
     };
   }
 
+  if (slug === "batch-office-to-pdf") {
+    return {
+      title: uiLocale === "zh" ? "批量 Office 转 PDF — Word/PPT/Excel 整批转 PDF" : "Batch Office to PDF — Convert Word, PPT & Excel Folders Free",
+      description:
+        uiLocale === "zh"
+          ? "把整个文件夹的 Word、PowerPoint、Excel 一次性转成 PDF，打包成一个 ZIP，转换在服务器完成。"
+          : "Convert a whole folder of Word, PowerPoint, and Excel files to PDF at once, packaged into one ZIP.",
+      alternates: {
+        canonical: localizedPath(uiLocale, "batch-office-to-pdf"),
+        languages: languageAlternates("batch-office-to-pdf"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: uiLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -853,6 +868,10 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-pdf-to-office") {
     return <BatchPdfToOfficeClient locale={rawLocale} />;
+  }
+
+  if (slug === "batch-office-to-pdf") {
+    return <BatchOfficeToPdfClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {

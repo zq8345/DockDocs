@@ -3,6 +3,32 @@ type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
 const FAQS: Record<string, { title: { en: string; zh: string; es: string }; items: { en: QA[]; zh: QA[]; es: QA[] } }> = {
+  "batch-office-to-pdf": {
+    title: { en: "Batch Office to PDF — FAQ", zh: "批量 Office 转 PDF 常见问题", es: "Office a PDF por lotes — preguntas frecuentes" },
+    items: {
+      en: [
+        { q: "How do I convert several Office files to PDF at once?", a: "Drop your Word, PowerPoint, and Excel files onto the page — or a whole folder — then click Convert all. Each file is converted to PDF one by one, and when they finish you click Download ZIP to get them all in a single archive." },
+        { q: "Which formats can I convert?", a: "Word (.doc, .docx), PowerPoint (.ppt, .pptx), Excel (.xls, .xlsx), plus OpenDocument (.odt, .odp, .ods) and .rtf. The file type is detected automatically, so you can mix documents, slides, and spreadsheets in the same batch." },
+        { q: "Will the PDF look exactly like the original?", a: "Conversion uses LibreOffice — the same engine behind our single-file Office to PDF tools. For typical documents the result is faithful, but unusual fonts, macros, or very complex layouts can shift slightly, so check anything formatting-sensitive." },
+        { q: "Is there a size or count limit?", a: "Up to 20 files per batch, each up to 5 MB. For a file larger than 5 MB, use the single-file Word to PDF, PPT to PDF, or Excel to PDF tool, which handles bigger files." },
+        { q: "Are my files uploaded, and is it free?", a: "It's free with no account. Office conversion runs on our own server, so each file is sent there, converted to PDF, and returned — it is not stored or kept afterwards." },
+      ],
+      zh: [
+        { q: "怎么一次把多个 Office 文件转成 PDF？", a: "把 Word、PowerPoint、Excel 文件拖到页面上——也可以直接拖入整个文件夹——再点「全部转换」。每个文件逐个转成 PDF，完成后点「下载 ZIP」打包一起拿回。" },
+        { q: "支持哪些格式？", a: "Word(.doc/.docx)、PowerPoint(.ppt/.pptx)、Excel(.xls/.xlsx)，以及 OpenDocument(.odt/.odp/.ods)和 .rtf。文件类型自动识别，可以把文档、幻灯片、表格混在同一批里。" },
+        { q: "转出的 PDF 会和原件一模一样吗？", a: "转换使用 LibreOffice——和我们单文件 Office 转 PDF 工具相同的引擎。常规文档结果忠实，但特殊字体、宏或非常复杂的排版可能略有偏移，对格式敏感的文件请检查一下。" },
+        { q: "有数量或大小限制吗？", a: "每批最多 20 个文件，每个不超过 5MB。超过 5MB 的文件请用单文件的「Word 转 PDF」「PPT 转 PDF」或「Excel 转 PDF」工具，那里支持更大的文件。" },
+        { q: "文件会被上传吗？免费吗？", a: "免费、无需注册。Office 转换在我们自己的服务器上完成，所以每个文件会被发送到服务器转成 PDF 后返回——转换后不会保存或留存。" },
+      ],
+      es: [
+        { q: "¿Cómo convierto varios archivos de Office a PDF a la vez?", a: "Arrastra tus archivos de Word, PowerPoint y Excel a la página (o una carpeta entera) y haz clic en Convertir todo. Cada archivo se convierte a PDF uno por uno y, al terminar, pulsa Descargar ZIP para obtenerlos todos en un solo archivo." },
+        { q: "¿Qué formatos puedo convertir?", a: "Word (.doc, .docx), PowerPoint (.ppt, .pptx), Excel (.xls, .xlsx), además de OpenDocument (.odt, .odp, .ods) y .rtf. El tipo de archivo se detecta automáticamente, así que puedes mezclar documentos, diapositivas y hojas de cálculo en el mismo lote." },
+        { q: "¿El PDF quedará exactamente igual que el original?", a: "La conversión usa LibreOffice, el mismo motor de nuestras herramientas de un solo archivo. Para documentos típicos el resultado es fiel, pero fuentes poco comunes, macros o diseños muy complejos pueden variar un poco; revisa lo que sea sensible al formato." },
+        { q: "¿Hay límite de tamaño o cantidad?", a: "Hasta 20 archivos por lote, cada uno de hasta 5 MB. Para un archivo de más de 5 MB, usa la herramienta de un solo archivo Word a PDF, PPT a PDF o Excel a PDF, que admite archivos más grandes." },
+        { q: "¿Se suben mis archivos? ¿Es gratis?", a: "Es gratis y sin cuenta. La conversión de Office se ejecuta en nuestro propio servidor, así que cada archivo se envía allí, se convierte a PDF y se devuelve; no se almacena ni se conserva." },
+      ],
+    },
+  },
   "batch-pdf-to-office": {
     title: { en: "Batch PDF to Word/Excel — FAQ", zh: "批量 PDF 转 Word/Excel 常见问题", es: "PDF a Word/Excel por lotes — preguntas frecuentes" },
     items: {

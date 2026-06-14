@@ -26,25 +26,41 @@ const STR = {
   },
 } as const;
 
-function onlyPdfs(list: FileList | null): File[] {
-  return Array.from(list || []).filter(
-    (f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"),
-  );
+// Keep files whose extension matches `extensions`; PDFs are also matched by MIME
+// type so a .pdf with an odd name still gets through. Non-matching files (e.g.
+// other docs inside a dropped folder) are filtered out before onFiles is called.
+function matchFiles(list: FileList | null, extensions: string[]): File[] {
+  return Array.from(list || []).filter((f) => {
+    const lower = f.name.toLowerCase();
+    return extensions.some((e) => lower.endsWith(e)) || (extensions.includes(".pdf") && f.type === "application/pdf");
+  });
 }
 
 // Shared 16:9 upload box for all batch-processing tools. Supports file + folder
-// picking and drag-and-drop; non-PDF files (e.g. other docs inside a dropped
-// folder) are filtered out automatically before onFiles is called.
+// picking and drag-and-drop. Defaults to PDF-only; pass `accept`/`extensions`
+// (plus optional `chooseLabel`/`hint`/`privacyLabel`) to accept other file types
+// — e.g. Office docs for batch Office→PDF. Set privacyLabel={null} to hide the
+// "processed locally" badge on server-side tools (where files DO leave the device).
 export function BatchUploadBox({
   locale = "en",
   onFiles,
   busy = false,
   busyLabel,
+  accept = "application/pdf,.pdf",
+  extensions = [".pdf"],
+  chooseLabel,
+  hint,
+  privacyLabel,
 }: {
   locale?: Locale;
   onFiles: (files: File[]) => void;
   busy?: boolean;
   busyLabel?: string;
+  accept?: string;
+  extensions?: string[];
+  chooseLabel?: string;
+  hint?: string;
+  privacyLabel?: string | null;
 }) {
   const t = STR[locale] ?? STR.en;
   const fileRef = useRef<HTMLInputElement>(null);
@@ -52,8 +68,8 @@ export function BatchUploadBox({
   const [dragging, setDragging] = useState(false);
 
   const take = (list: FileList | null) => {
-    const pdfs = onlyPdfs(list);
-    if (pdfs.length) onFiles(pdfs);
+    const matched = matchFiles(list, extensions);
+    if (matched.length) onFiles(matched);
   };
 
   const btn =
@@ -82,7 +98,7 @@ export function BatchUploadBox({
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4M7 9l5-5 5 5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></svg>
           </span>
           <button type="button" onClick={(e) => { e.stopPropagation(); fileRef.current?.click(); }} className={btn}>
-            {t.choose}
+            {chooseLabel ?? t.choose}
           </button>
           <p className="mt-3 text-sm text-[color:var(--muted)]">{t.note}</p>
           <button type="button" onClick={(e) => { e.stopPropagation(); folderRef.current?.click(); }} className="mt-1.5 inline-flex items-center gap-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:text-[color:var(--accent)]">
@@ -90,12 +106,16 @@ export function BatchUploadBox({
             {t.folder}
           </button>
           <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-            <span>{locale === "zh" ? "支持 PDF" : locale === "es" ? "Compatible con PDF" : "Supports PDF"}</span>
-            <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
-            <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
-              <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
-              {t.privacy}
-            </span>
+            <span>{hint ?? (locale === "zh" ? "支持 PDF" : locale === "es" ? "Compatible con PDF" : "Supports PDF")}</span>
+            {privacyLabel !== null && (
+              <>
+                <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
+                <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
+                  <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
+                  {privacyLabel ?? t.privacy}
+                </span>
+              </>
+            )}
           </div>
         </>
       )}
@@ -103,7 +123,7 @@ export function BatchUploadBox({
       <input
         ref={fileRef}
         type="file"
-        accept="application/pdf,.pdf"
+        accept={accept}
         multiple
         className="hidden"
         onChange={(e) => { take(e.target.files); e.currentTarget.value = ""; }}
