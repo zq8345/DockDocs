@@ -3,6 +3,32 @@ type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
 const FAQS: Record<string, { title: { en: string; zh: string; es: string }; items: { en: QA[]; zh: QA[]; es: QA[] } }> = {
+  "batch-pdf-to-office": {
+    title: { en: "Batch PDF to Word/Excel — FAQ", zh: "批量 PDF 转 Word/Excel 常见问题", es: "PDF a Word/Excel por lotes — preguntas frecuentes" },
+    items: {
+      en: [
+        { q: "How do I convert several PDFs to Word or Excel at once?", a: "Drop your PDFs onto the page — or a whole folder — choose Word or Excel as the target, then click Convert all. Each file is converted one by one, and when they finish you click Download ZIP to get them all back in a single archive." },
+        { q: "Should I pick Word or Excel?", a: "Pick Word (.docx) for documents that are mostly text and paragraphs, and Excel (.xlsx) for PDFs built from tables — invoices, statements, data sheets. Excel works best when the PDF has clear rows and columns." },
+        { q: "Will the layout look exactly like the original?", a: "No converter can promise a pixel-perfect copy. We extract the text and tables into a genuinely editable file, which is what you want for editing — but scanned PDFs or heavily-designed pages may need cleanup afterwards. For a born-digital PDF with normal text and tables, results are usually close." },
+        { q: "Is there a size or count limit?", a: "You can convert up to 20 PDFs per batch, each up to 5 MB. For a file larger than 5 MB, use the single-file PDF to Word or PDF to Excel tool, which handles bigger files." },
+        { q: "Are my files uploaded, and is it free?", a: "It's free with no account. Unlike our browser-only tools, conversion to Office formats runs on our own server, so each PDF is sent there, converted, and returned — it is not stored or kept afterwards." },
+      ],
+      zh: [
+        { q: "怎么一次把多个 PDF 转成 Word 或 Excel？", a: "把多个 PDF 拖到页面上——也可以直接拖入整个文件夹——选择「转 Word」或「转 Excel」，再点「全部转换」。每个文件逐个转换，完成后点「下载 ZIP」，把它们打包成一个压缩包一起拿回。" },
+        { q: "该选 Word 还是 Excel？", a: "以文字和段落为主的文档选「转 Word(.docx)」；由表格构成的 PDF——发票、对账单、数据表——选「转 Excel(.xlsx)」。PDF 里行列越清晰，转 Excel 效果越好。" },
+        { q: "排版会和原件一模一样吗？", a: "没有任何转换器能保证逐像素还原。我们把文字和表格提取成真正可编辑的文件，这正是编辑所需——但扫描件或排版复杂的页面可能需要再整理。对于正常文字和表格的电子版 PDF，结果通常比较接近。" },
+        { q: "有数量或大小限制吗？", a: "每批最多转换 20 个 PDF，每个不超过 5MB。超过 5MB 的文件请用单文件的「PDF 转 Word」或「PDF 转 Excel」工具，那里支持更大的文件。" },
+        { q: "文件会被上传吗？免费吗？", a: "免费、无需注册。与我们的纯浏览器工具不同，转成 Office 格式在我们自己的服务器上完成，所以每个 PDF 会被发送到服务器转换后返回——转换后不会保存或留存。" },
+      ],
+      es: [
+        { q: "¿Cómo convierto varios PDF a Word o Excel a la vez?", a: "Arrastra tus PDF a la página (o una carpeta entera), elige Word o Excel como destino y haz clic en Convertir todo. Cada archivo se convierte uno por uno y, al terminar, pulsa Descargar ZIP para obtenerlos todos en un solo archivo." },
+        { q: "¿Debo elegir Word o Excel?", a: "Elige Word (.docx) para documentos con texto y párrafos, y Excel (.xlsx) para PDF formados por tablas: facturas, extractos, hojas de datos. Excel funciona mejor cuando el PDF tiene filas y columnas claras." },
+        { q: "¿El diseño quedará exactamente igual que el original?", a: "Ningún convertidor puede prometer una copia idéntica al píxel. Extraemos el texto y las tablas en un archivo realmente editable, que es lo que necesitas para editar, pero los PDF escaneados o muy diseñados pueden requerir ajustes después. Para un PDF digital con texto y tablas normales, el resultado suele ser cercano." },
+        { q: "¿Hay límite de tamaño o cantidad?", a: "Puedes convertir hasta 20 PDF por lote, cada uno de hasta 5 MB. Para un archivo de más de 5 MB, usa la herramienta de un solo archivo PDF a Word o PDF a Excel, que admite archivos más grandes." },
+        { q: "¿Se suben mis archivos? ¿Es gratis?", a: "Es gratis y sin cuenta. A diferencia de nuestras herramientas que funcionan solo en el navegador, la conversión a formatos de Office se ejecuta en nuestro propio servidor, así que cada PDF se envía allí, se convierte y se devuelve; no se almacena ni se conserva." },
+      ],
+    },
+  },
   "batch-compress": {
     title: { en: "Batch compress PDF — FAQ", zh: "批量 PDF 压缩常见问题", es: "Comprimir PDF por lotes — preguntas frecuentes" },
     items: {
