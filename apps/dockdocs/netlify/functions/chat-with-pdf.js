@@ -30,7 +30,7 @@ const provider = deepSeekApiKey
           process.env.DOCKDOCS_AI_SUMMARY_API_URL,
         "https://api.deepseek.com",
       ),
-      model: process.env.DEEPSEEK_MODEL || process.env.DOCKDOCS_AI_SUMMARY_MODEL || "deepseek-chat",
+      model: process.env.DEEPSEEK_MODEL || process.env.DOCKDOCS_AI_SUMMARY_MODEL || "deepseek-v4-flash",
     }
   : openAiApiKey
     ? {
@@ -112,7 +112,7 @@ exports.handler = async function handler(event) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: provider.model,
+        model: provider.model, ...(provider.model && provider.model.startsWith("deepseek") ? { thinking: { type: "disabled" } } : {}),
         max_tokens: maxOutputTokens,
         temperature: 0.1,
         response_format: { type: "json_object" },

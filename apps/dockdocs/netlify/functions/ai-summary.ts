@@ -258,7 +258,7 @@ function getProvider() {
       model:
         Netlify.env.get("DEEPSEEK_MODEL")?.trim() ||
         Netlify.env.get("DOCKDOCS_AI_SUMMARY_MODEL")?.trim() ||
-        "deepseek-chat",
+        "deepseek-v4-flash",
     };
   }
 
@@ -450,7 +450,7 @@ async function callProvider({
       Authorization: `Bearer ${provider.apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(provider.model?.startsWith("deepseek") ? { ...body, thinking: { type: "disabled" } } : body),
     signal,
   });
 

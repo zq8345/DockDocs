@@ -863,7 +863,7 @@ async function callProvider({
       Authorization: `Bearer ${provider.apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(provider.model?.startsWith("deepseek") ? { ...body, thinking: { type: "disabled" } } : body),
     signal,
   });
 
@@ -903,7 +903,7 @@ async function callProviderStream({
       Authorization: `Bearer ${provider.apiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(provider.model?.startsWith("deepseek") ? { ...body, thinking: { type: "disabled" } } : body),
     signal,
   });
 

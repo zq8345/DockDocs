@@ -157,7 +157,7 @@ async function callProvider(provider: ProviderConfig, body: Record<string, unkno
   const res = await fetch(provider.apiUrl, {
     method: "POST",
     headers: { Authorization: `Bearer ${provider.apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+    body: JSON.stringify(provider.model?.startsWith("deepseek") ? { ...body, thinking: { type: "disabled" } } : body),
     signal,
   });
   const responseText = await res.text();
@@ -178,7 +178,7 @@ function getProvider(): ProviderConfig | null {
         Netlify.env.get("DEEPSEEK_BASE_URL") || Netlify.env.get("DEEPSEEK_API_URL") || Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_URL"),
         "https://api.deepseek.com",
       ),
-      model: Netlify.env.get("DEEPSEEK_MODEL")?.trim() || Netlify.env.get("DOCKDOCS_AI_SUMMARY_MODEL")?.trim() || "deepseek-chat",
+      model: Netlify.env.get("DEEPSEEK_MODEL")?.trim() || Netlify.env.get("DOCKDOCS_AI_SUMMARY_MODEL")?.trim() || "deepseek-v4-flash",
     };
   }
   if (openAiKey) {
