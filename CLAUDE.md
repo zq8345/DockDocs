@@ -47,3 +47,20 @@
 - Use C:\Users\47203\Documents\Dock\apps\dockdocs\... for file tools
 - Terminal: use /c/Users/47203/Documents/Dock
 - MSYS paths like /c/Users/... work in bash, NEVER use in write_file
+
+## Multi-window collaboration (CRITICAL — read before any git op)
+Joe runs several Claude windows in PARALLEL on this SAME repo + working tree at once:
+- **总调度 (orchestration)** — planning, scheduling, fuzzy tasks, and integration arbiter (owns conflict calls on shared files).
+- **功能开发 (features)** — new features / PRO-exclusive tools.
+- **SEO-GEO** — SEO/GEO optimization (JSON-LD, sitemap, metadata).
+- **多语言 (locales)** — adding/maintaining locales + language polish.
+- **控制台** — works in a SEPARATE repo (dock-console) → zero conflict with this repo.
+- **测试验收** — read-only browser testing → zero write conflict.
+
+The first four share ONE working tree, so another window's UNCOMMITTED edits show up in your `git status`. Hard rules every window MUST follow:
+- **Only `git add <your specific files>`** — NEVER `git add -A` / `git commit -a` / `git add .` (you'd commit another window's half-finished work).
+- **Finish a small change → `git pull --rebase` → rebuild → commit + push IMMEDIATELY.** Never hoard uncommitted edits; a clean tree is what keeps the other windows unblocked (this is the highest-leverage rule).
+- **NEVER `git reset --hard` / `git restore .` / `git checkout -- .` / `git clean`** — they destroy other windows' uncommitted work. The ONLY safe discard is `git restore apps/dockdocs/tsconfig.tsbuildinfo` (build cache).
+- A green build may include another window's in-flight edits (shared tree); your COMMIT is still clean as long as you staged only your own files.
+- **Shared hot files** — `lib/i18n.ts`, `components/Header.tsx`, `components/ToolFaq.tsx`, `components/Footer.tsx`, `app/[locale]/[[...slug]]/page.tsx`: 功能开发 owns tool-registration edits; 多语言 owns locale/copy/localized-tools edits. Before editing a shared file outside your lane, check in via the 总调度 window.
+- Netlify cancels superseded deploys when two windows push close together — harmless; the final master HEAD always deploys. Never force-push to "fix" it.
