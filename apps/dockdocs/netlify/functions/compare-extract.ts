@@ -21,6 +21,7 @@ type DocInput = { id?: string; name?: string; text?: string };
 type ComparePayload = {
   documents?: DocInput[];
   docType?: string;
+  dimensions?: unknown[];
   locale?: "en" | "zh";
 };
 
@@ -65,6 +66,27 @@ const DIMENSION_PRESETS: Record<string, Dimension[]> = {
     { key: "liability", label: "Liability cap" },
   ],
 };
+
+const MAX_CUSTOM_DIMS = 12;
+
+// Validate and sanitize client-provided dimensions. Returns null when invalid
+// so the handler can fall back to the preset for the given docType.
+function parseClientDimensions(raw: unknown): Dimension[] | null {
+  if (!Array.isArray(raw) || raw.length === 0 || raw.length > MAX_CUSTOM_DIMS) return null;
+  const dims: Dimension[] = [];
+  const seenKeys = new Set<string>();
+  for (const item of raw) {
+    if (!item || typeof item !== "object") return null;
+    const d = item as Record<string, unknown>;
+    const key = typeof d.key === "string" ? d.key.trim().slice(0, 64) : "";
+    const label = typeof d.label === "string" ? d.label.trim().slice(0, 80) : "";
+    if (!key || !label) return null;
+    if (seenKeys.has(key)) continue; // silently deduplicate
+    seenKeys.add(key);
+    dims.push({ key, label });
+  }
+  return dims.length > 0 ? dims : null;
+}
 
 const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
 
@@ -112,7 +134,8 @@ export default async (req: Request, _context: Context) => {
   }
 
   const docType = typeof payload.docType === "string" && payload.docType in DIMENSION_PRESETS ? payload.docType : "quote";
-  const dimensions = DIMENSION_PRESETS[docType];
+  const clientDimensions = parseClientDimensions(payload.dimensions);
+  const dimensions = clientDimensions ?? DIMENSION_PRESETS[docType];
   const locale = payload.locale === "zh" ? "zh" : "en";
 
   const documents = Array.isArray(payload.documents) ? payload.documents : [];

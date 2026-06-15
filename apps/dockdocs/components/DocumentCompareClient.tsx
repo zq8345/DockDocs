@@ -96,6 +96,11 @@ const STR = {
     tplLastRun: "Last run",
     tplRunFiles: (n: number) => `${n} file${n > 1 ? "s" : ""}`,
     tplNoRuns: "No runs yet",
+    tplEditDims: "Edit dimensions",
+    tplDimLabel: "Label",
+    tplDimAdd: "+ Add",
+    tplDimApply: "Apply",
+    tplDimReset: "Reset to default",
     retry: "Try again",
   },
   zh: {
@@ -149,6 +154,11 @@ const STR = {
     tplLastRun: "最近运行",
     tplRunFiles: (n: number) => `${n} 份文件`,
     tplNoRuns: "暂无运行记录",
+    tplEditDims: "编辑维度",
+    tplDimLabel: "标签",
+    tplDimAdd: "+ 添加",
+    tplDimApply: "应用",
+    tplDimReset: "恢复默认",
     retry: "重试",
   },
   es: {
@@ -202,6 +212,11 @@ const STR = {
     tplLastRun: "Última ejecución",
     tplRunFiles: (n: number) => `${n} archivo${n > 1 ? "s" : ""}`,
     tplNoRuns: "Sin ejecuciones aún",
+    tplEditDims: "Editar dimensiones",
+    tplDimLabel: "Etiqueta",
+    tplDimAdd: "+ Agregar",
+    tplDimApply: "Aplicar",
+    tplDimReset: "Restaurar predeterminado",
     retry: "Reintentar",
   },
   pt: {
@@ -255,6 +270,11 @@ const STR = {
     tplLastRun: "Última execução",
     tplRunFiles: (n: number) => `${n} arquivo${n > 1 ? "s" : ""}`,
     tplNoRuns: "Nenhuma execução ainda",
+    tplEditDims: "Editar dimensões",
+    tplDimLabel: "Rótulo",
+    tplDimAdd: "+ Adicionar",
+    tplDimApply: "Aplicar",
+    tplDimReset: "Restaurar padrão",
     retry: "Tentar novamente",
   },
 } as const;
@@ -318,6 +338,42 @@ const DIM_ZH: Record<string, string> = {
   liability: "责任上限",
 };
 
+// Mirrors DIMENSION_PRESETS in compare-extract.ts — used to show default
+// dimensions in the editor before the first comparison result is back.
+const CLIENT_PRESETS: Record<string, Array<{ key: string; label: string }>> = {
+  quote: [
+    { key: "vendor", label: "Vendor" },
+    { key: "total_price", label: "Total price" },
+    { key: "currency", label: "Currency" },
+    { key: "delivery_time", label: "Delivery time" },
+    { key: "payment_terms", label: "Payment terms" },
+    { key: "warranty", label: "Warranty" },
+    { key: "validity", label: "Valid until" },
+  ],
+  invoice: [
+    { key: "vendor", label: "Vendor" },
+    { key: "invoice_number", label: "Invoice #" },
+    { key: "total_amount", label: "Total amount" },
+    { key: "currency", label: "Currency" },
+    { key: "issue_date", label: "Issue date" },
+    { key: "due_date", label: "Due date" },
+    { key: "payment_terms", label: "Payment terms" },
+  ],
+  contract: [
+    { key: "parties", label: "Parties" },
+    { key: "effective_date", label: "Effective date" },
+    { key: "term", label: "Term / duration" },
+    { key: "payment_terms", label: "Payment terms" },
+    { key: "termination", label: "Termination" },
+    { key: "governing_law", label: "Governing law" },
+    { key: "liability", label: "Liability cap" },
+  ],
+};
+
+function labelToKey(label: string): string {
+  return label.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "") || `dim_${Date.now()}`;
+}
+
 function locateSnippet(text: string, snippet: string, ctx = 600) {
   // Match the backend trust gate's normalization (lowercase + collapse whitespace)
   // so a source it verified never silently fails to highlight here. The doc text
@@ -376,6 +432,9 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const [templateRuns, setTemplateRuns] = useState<FlowRun[]>([]);
   const compareRef = useRef<() => Promise<void>>(async () => {});
   const [recError, setRecError] = useState<string | null>(null);
+  const [customDims, setCustomDims] = useState<Array<{ key: string; label: string }> | null>(null);
+  const [editDims, setEditDims] = useState(false);
+  const [editDimsRows, setEditDimsRows] = useState<Array<{ key: string; label: string }>>([]);
 
   useEffect(() => {
     setTemplates(loadTemplates());
@@ -512,7 +571,12 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       const res = await fetch("/api/compare-extract", {
         method: "POST",
         headers: { "Content-Type": "application/json", ...auth },
-        body: JSON.stringify({ docType, locale, documents: okDocs.map((d) => ({ id: d.id, name: d.name, text: d.text })) }),
+        body: JSON.stringify({
+          docType,
+          locale,
+          ...(customDims ? { dimensions: customDims } : {}),
+          documents: okDocs.map((d) => ({ id: d.id, name: d.name, text: d.text })),
+        }),
       });
       const data = await res.json();
       if (!data?.ok) {
@@ -573,6 +637,8 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
 
   const handleLoadTemplate = (tpl: FlowTemplate) => {
     setDocType(tpl.docType);
+    setCustomDims(tpl.dimensions.length > 0 ? tpl.dimensions : null);
+    setEditDims(false);
     setActiveTemplate(tpl);
     setComparison(null);
     setRecommendation(null);
@@ -725,11 +791,81 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
               <button type="button" onClick={compare} disabled={comparing || okDocs.length < 2} className="inline-flex h-9 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
                 {comparing ? t.comparing : t.compare}
               </button>
-              <button type="button" onClick={() => { setResults([]); setComparison(null); setCompareError(null); setRecommendation(null); setQaAns(null); setQaErr(null); setQaQ(""); setTrace(null); setOcrBusy(new Set()); }} className="text-xs font-medium text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
+              <button type="button" onClick={() => { setResults([]); setComparison(null); setCompareError(null); setRecommendation(null); setQaAns(null); setQaErr(null); setQaQ(""); setTrace(null); setOcrBusy(new Set()); setCustomDims(null); setEditDims(false); }} className="text-xs font-medium text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
                 {t.clear}
               </button>
             </div>
           </div>
+          {/* Dimensions panel */}
+          {!editDims ? (
+            <div className="flex flex-wrap items-center gap-1.5">
+              {(customDims ?? CLIENT_PRESETS[docType] ?? CLIENT_PRESETS.quote).map((d) => (
+                <span key={d.key} className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-2 py-0.5 text-[11px] text-[color:var(--muted)]">
+                  {dimLabel(d.key, d.label)}
+                </span>
+              ))}
+              <button
+                type="button"
+                onClick={() => {
+                  setEditDimsRows([...(customDims ?? CLIENT_PRESETS[docType] ?? CLIENT_PRESETS.quote)]);
+                  setEditDims(true);
+                }}
+                className="rounded-full border border-[color:var(--line)] px-2 py-0.5 text-[11px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+              >
+                {t.tplEditDims}
+              </button>
+            </div>
+          ) : (
+            <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
+              <div className="space-y-1.5">
+                {editDimsRows.map((row, i) => (
+                  <div key={`${row.key}-${i}`} className="flex items-center gap-2">
+                    <input
+                      value={row.label}
+                      onChange={(e) => setEditDimsRows((prev) => prev.map((r, idx) => idx === i ? { ...r, label: e.target.value } : r))}
+                      placeholder={t.tplDimLabel}
+                      className="h-8 flex-1 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-2 text-[13px] text-[color:var(--foreground)] outline-none focus:border-[color:var(--accent)]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setEditDimsRows((prev) => prev.filter((_, idx) => idx !== i))}
+                      className="px-1 text-[11px] text-[color:var(--error)] transition hover:opacity-80"
+                    >✕</button>
+                  </div>
+                ))}
+              </div>
+              {editDimsRows.length < 12 && (
+                <button
+                  type="button"
+                  onClick={() => setEditDimsRows((prev) => [...prev, { key: `custom_${prev.length + 1}`, label: "" }])}
+                  className="mt-2 text-[12px] font-medium text-[color:var(--accent)] transition hover:opacity-80"
+                >
+                  {t.tplDimAdd}
+                </button>
+              )}
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const valid = editDimsRows.filter((r) => r.label.trim()).map((r) => ({ key: r.key.startsWith("custom_") ? labelToKey(r.label) : r.key, label: r.label.trim() }));
+                    setCustomDims(valid.length > 0 ? valid : null);
+                    setEditDims(false);
+                  }}
+                  className="rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-1.5 text-[12px] font-semibold text-white transition hover:opacity-90"
+                >
+                  {t.tplDimApply}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setCustomDims(null); setEditDims(false); }}
+                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-1.5 text-[12px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)]"
+                >
+                  {t.tplDimReset}
+                </button>
+              </div>
+            </div>
+          )}
+
           {results.map((r) => {
             const b = badge(r.status);
             return (
