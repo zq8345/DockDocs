@@ -574,7 +574,44 @@ export function Header() {
   const iconBtn =
     "inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] text-sm transition hover:border-[color:var(--line-strong)]";
 
-  // Language selector dropdown (used in More menu + mobile)
+  // Language selector — desktop: flyout panel to the left; mobile: inline vertical expand
+  const langDropdownDesktop = (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setLangOpen((v) => !v)}
+        className="flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+      >
+        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : "Language"}</span>
+        <span className="flex items-center gap-1.5">
+          <span className="text-[12px] text-[color:var(--faint)]">{localeLabels[locale as keyof typeof localeLabels] ?? locale}</span>
+          <svg className="h-3 w-3 rotate-90 opacity-60" viewBox="0 0 12 12" fill="none">
+            <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </span>
+      </button>
+      {langOpen && (
+        <div className="absolute right-full top-0 z-10 mr-1 min-w-[180px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+          {(routeLocales as readonly string[]).map((l) => (
+            <button
+              key={l}
+              type="button"
+              onClick={() => { switchLang(l); setLangOpen(false); }}
+              className={`flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-1.5 text-left text-[13px] font-medium transition ${
+                l === locale
+                  ? "bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]"
+                  : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+              }`}
+            >
+              {localeLabels[l as keyof typeof localeLabels]}
+              {l === locale && <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   const langDropdown = (
     <div>
       <button
@@ -709,7 +746,7 @@ export function Header() {
                       </a>
                     ))}
                     <div className="my-1.5 border-t border-[color:var(--line)]" />
-                    {langDropdown}
+                    {langDropdownDesktop}
                     <button
                       type="button"
                       onClick={toggleTheme}
