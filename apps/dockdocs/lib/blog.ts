@@ -26,6 +26,9 @@ export const blogArticleSlugs = [
   "convert-doc-to-pdf-free",
   "pdf-to-markdown-for-developers",
   "dockdocs-vs-smallpdf-vs-ilovepdf",
+  "pdf-to-jpg-online-free",
+  "how-to-remove-pages-from-pdf",
+  "best-pdf-to-word-converter-free",
 ] as const;
 
 export type BlogArticleSlug = (typeof blogArticleSlugs)[number];
@@ -1839,6 +1842,523 @@ export const blogArticles: BlogArticle[] = [
             question: "Smallpdf 会将文件上传到服务器吗？",
             answer:
               "会。Smallpdf 在云服务器上处理文件。公司的隐私政策描述了较短的保留窗口（通常数小时）和传输加密。对大多数文档场景来说没有问题。但对于法律敏感材料或医疗、金融、法律等受监管行业，文件从不离开设备的浏览器端处理是明显更安全的选择。",
+          },
+        ],
+      },
+    },
+  },
+  {
+    slug: "pdf-to-jpg-online-free",
+    category: "Convert",
+    publishedAt: "2026-06-15",
+    updatedAt: "2026-06-15",
+    keywords: [
+      "pdf to jpg",
+      "convert pdf to jpg",
+      "pdf to jpg free",
+      "pdf to jpeg online",
+      "pdf to image online",
+      "pdf to png free",
+      "convert pdf to image",
+    ],
+    toolHref: "/pdf-to-image",
+    toolLabel: "PDF to Image",
+    relatedTools: [
+      { label: "PDF to Image", href: "/pdf-to-image" },
+      { label: "Compress PDF", href: "/compress-pdf" },
+      { label: "JPG to PDF", href: "/jpg-to-pdf" },
+      { label: "Help Center", href: "/help" },
+    ],
+    relatedArticleSlugs: [
+      "best-jpg-to-pdf-workflow",
+      "convert-image-to-pdf-online",
+      "how-to-compress-pdf-for-email",
+    ],
+    content: {
+      en: {
+        title: "PDF to JPG Online Free — Convert PDF to Image Without Uploading",
+        description:
+          "Convert PDF to JPG or PNG online for free — client-side processing, no file upload to servers, high-resolution output. A practical PDF-to-image guide.",
+        excerpt:
+          "Converting a PDF to JPG looks simple, but resolution, format choice, page selection, and privacy all matter. This guide covers the best way to convert PDF to image for free.",
+        readingTime: "6 min read",
+        ctaTitle: "Convert your PDF to JPG or PNG now",
+        ctaDescription:
+          "Use DockDocs PDF to Image to select pages, choose JPG or PNG, and download high-resolution images — all without uploading your file.",
+        ctaLabel: "Open PDF to Image",
+        sections: [
+          {
+            heading: "Why convert a PDF to JPG or PNG",
+            paragraphs: [
+              "There are several common reasons to convert a PDF page into an image. Presentations often need slides or diagrams as JPG files rather than PDFs. Social media platforms accept images, not PDF attachments. Some forms or portals require a JPEG scan rather than a PDF. And quick previews, thumbnails, or email inline images are all easier to handle as standard image files than as multi-page documents.",
+              "Converting PDF to image is also the right move when you need to embed a specific page into a design, a report, or a slide deck. A single exported JPG keeps the visual layout intact without requiring the reader to have a PDF viewer.",
+            ],
+            links: [{ label: "Open PDF to Image", href: "/pdf-to-image" }],
+          },
+          {
+            heading: "How to convert PDF to JPG free (step by step)",
+            paragraphs: [
+              "Open the PDF to Image tool and drop in your PDF — no account, no signup. Every page appears as a thumbnail. Click pages to include or exclude them, or use Select All to convert the entire document. Choose your output format — JPG or PNG — then click Convert and download.",
+              "A single page downloads as a standalone image. Multiple pages are bundled into a ZIP file, with one image per page. The whole process happens in your browser; your PDF never leaves your device.",
+            ],
+            links: [{ label: "Convert PDF to JPG", href: "/pdf-to-image" }],
+          },
+          {
+            heading: "JPG vs PNG: which format should you choose?",
+            paragraphs: [
+              "JPG and PNG serve different use cases. JPG produces smaller files and is ideal for photographs, scanned documents, and pages where file size matters more than pixel-perfect sharpness. PNG is lossless — every pixel is preserved exactly — making it the better choice for text-heavy pages, diagrams, charts, and screenshots where clarity is critical.",
+              "One practical difference: JPG does not support transparency. If a PDF page has a transparent background, it will be flattened to white in the JPG output. PNG preserves transparency. For most document pages — white background, printed text, scanned forms — JPG is perfectly fine and keeps the file size smaller.",
+            ],
+          },
+          {
+            heading: "Resolution and privacy: what to look for",
+            paragraphs: [
+              "Resolution matters for readability. A PDF rendered at standard resolution may look fine on screen but blurry when printed or zoomed in. DockDocs renders pages at 2× resolution (approximately 1190 × 1684 px for a standard A4 page), giving clear output for both screen use and light print use without producing enormous files.",
+              "Privacy is the other key factor. Many PDF-to-image tools upload your file to a cloud server, process it there, and return the result. DockDocs converts entirely in your browser using JavaScript — your PDF is read locally, rendered locally, and downloaded locally. Nothing is sent to a server. That makes it suitable for confidential documents, legal files, medical scans, and any file you prefer not to share with a third party.",
+            ],
+          },
+        ],
+        faq: [
+          {
+            question: "Is converting PDF to JPG free?",
+            answer:
+              "Yes. DockDocs PDF to Image converts PDF pages to JPG or PNG for free, with no account required and no file upload to servers.",
+          },
+          {
+            question: "Does my PDF get uploaded to a server?",
+            answer:
+              "No. All conversion happens in your browser. Your PDF is read and rendered locally, and the output images are generated on your device — nothing is sent to any server.",
+          },
+          {
+            question: "What resolution are the output images?",
+            answer:
+              "Pages are rendered at 2× scale for sharp results — approximately 1190 × 1684 px for a standard A4 page. This is suitable for most screen and light print use.",
+          },
+          {
+            question: "Should I choose JPG or PNG?",
+            answer:
+              "Choose JPG for smaller files and photos. Choose PNG for text-heavy pages, diagrams, or charts where lossless sharpness matters. PNG also preserves transparency; JPG flattens transparent areas to white.",
+          },
+        ],
+      },
+      zh: {
+        title: "PDF 转 JPG 在线免费——无需上传文件即可转图片",
+        description:
+          "免费在线把 PDF 转成 JPG 或 PNG——浏览器本地处理，文件不上传服务器，高清输出。一份实用的 PDF 转图片指南。",
+        excerpt:
+          "PDF 转 JPG 看起来简单，但分辨率、格式选择、页面选取和隐私保护都有讲究。本文介绍免费转换 PDF 为图片的最佳方法。",
+        readingTime: "6 分钟阅读",
+        ctaTitle: "立即把 PDF 转成 JPG 或 PNG",
+        ctaDescription:
+          "用 DockDocs「PDF 转图片」选择页面、选择格式并下载高清图片——无需上传文件。",
+        ctaLabel: "打开 PDF 转图片",
+        sections: [
+          {
+            heading: "为什么要把 PDF 转成 JPG 或 PNG",
+            paragraphs: [
+              "PDF 转图片的常见场景：演示文稿需要页面截图、社交媒体只接受图片格式、某些表单要求提交 JPEG 扫描件，以及需要把特定页面嵌入设计稿或幻灯片。",
+              "把 PDF 页面导出为 JPG 还能在不需要 PDF 阅读器的情况下，以单张图片完整保留版式，方便内嵌到报告、邮件或在线分享。",
+            ],
+            links: [{ label: "打开 PDF 转图片", href: "/pdf-to-image" }],
+          },
+          {
+            heading: "怎么免费把 PDF 转成 JPG（分步操作）",
+            paragraphs: [
+              "打开「PDF 转图片」，拖入 PDF——无需账号、无需注册。每页以缩略图显示，点击选中或取消页面，或用「全选」转换整份文档。选好格式（JPG 或 PNG），点击「转换并下载」。",
+              "单页下载为独立图片，多页打包成一个 ZIP，每页一张图。全程在浏览器内完成，PDF 不会离开你的设备。",
+            ],
+            links: [{ label: "PDF 转 JPG", href: "/pdf-to-image" }],
+          },
+          {
+            heading: "JPG 还是 PNG：怎么选",
+            paragraphs: [
+              "JPG 文件更小，适合照片、扫描件和对文件大小要求更高的场景。PNG 无损压缩，每个像素完整保留，适合文字密集、图表、流程图等需要高清晰度的页面。",
+              "另一个实际区别：JPG 不支持透明背景，透明区域会被填充为白色；PNG 保留透明度。对大多数带白底文字的文档页面，JPG 完全够用且体积更小。",
+            ],
+          },
+          {
+            heading: "分辨率和隐私：哪些工具值得选",
+            paragraphs: [
+              "分辨率决定清晰度。DockDocs 以 2× 分辨率渲染页面（标准 A4 页约 1190×1684 px），既适合屏幕显示，也能满足日常打印需求，同时不产生过大文件。",
+              "隐私是另一个关键。很多 PDF 转图片工具会把文件上传到云服务器处理。DockDocs 全程在浏览器内用 JavaScript 完成——PDF 在本地读取、本地渲染、本地下载，没有任何内容发送到服务器。适合处理合同、法律文件、医疗扫描件等不宜外传的文档。",
+            ],
+          },
+        ],
+        faq: [
+          {
+            question: "PDF 转 JPG 免费吗？",
+            answer:
+              "免费。DockDocs「PDF 转图片」把 PDF 页面转成 JPG 或 PNG 完全免费，无需注册，也不上传文件到服务器。",
+          },
+          {
+            question: "我的 PDF 会被上传到服务器吗？",
+            answer:
+              "不会。所有转换在浏览器内完成，PDF 在本地读取和渲染，输出图片在你的设备上生成，没有任何内容发送到服务器。",
+          },
+          {
+            question: "输出图片的分辨率是多少？",
+            answer:
+              "页面以 2× 比例渲染，标准 A4 页约为 1190×1684 px，适合屏幕显示和日常打印。",
+          },
+          {
+            question: "应该选 JPG 还是 PNG？",
+            answer:
+              "选 JPG 可得到更小的文件，适合照片。选 PNG 可得到无损清晰度，适合文字和图表。PNG 还保留透明度，JPG 会把透明区域填为白色。",
+          },
+        ],
+      },
+    },
+  },
+  {
+    slug: "how-to-remove-pages-from-pdf",
+    category: "Edit PDF",
+    publishedAt: "2026-06-15",
+    updatedAt: "2026-06-15",
+    keywords: [
+      "remove pages from pdf",
+      "delete pages from pdf",
+      "how to delete a page from pdf",
+      "remove page from pdf",
+      "delete pdf pages",
+      "pdf page remover",
+    ],
+    toolHref: "/delete-page",
+    toolLabel: "Delete PDF Page",
+    relatedTools: [
+      { label: "Delete PDF Page", href: "/delete-page" },
+      { label: "Split PDF", href: "/split-pdf" },
+      { label: "Merge PDF", href: "/merge-pdf" },
+      { label: "Help Center", href: "/help" },
+    ],
+    relatedArticleSlugs: [
+      "merge-pdf-without-losing-quality",
+      "how-to-split-pdf-pages",
+      "how-to-compress-pdf-for-email",
+    ],
+    content: {
+      en: {
+        title: "How to Remove Pages from a PDF — Delete, Preview, and Download",
+        description:
+          "Learn how to delete pages from a PDF online — remove unwanted pages, clean up drafts, and preview before downloading. Free, no account, private.",
+        excerpt:
+          "Removing the wrong pages from a PDF — or not being able to undo — is a common source of frustration. This guide shows how to safely delete, preview, and get a clean result.",
+        readingTime: "5 min read",
+        ctaTitle: "Remove pages from your PDF now",
+        ctaDescription:
+          "Use DockDocs Delete PDF Page to mark unwanted pages, preview the result, and download a clean PDF — in your browser, no upload.",
+        ctaLabel: "Open Delete PDF Page",
+        sections: [
+          {
+            heading: "When you need to remove pages from a PDF",
+            paragraphs: [
+              "PDF page removal is one of the most common document editing tasks. A shared draft may contain internal comments or confidential appendices that should not go to a client. A scanned packet may include blank separator pages, cover sheets, or accidental rescans. An exported report may have a last page of metadata or a watermarked version notice you want to strip before sending.",
+              "Whatever the reason, the goal is the same: get a cleaner, smaller, or more appropriate document without reworking the entire file. A good delete-page workflow lets you mark the unwanted pages visually, confirm the result, and download the trimmed PDF in one pass.",
+            ],
+            links: [{ label: "Open Delete PDF Page", href: "/delete-page" }],
+          },
+          {
+            heading: "How to delete pages from a PDF (step by step)",
+            paragraphs: [
+              "Open the Delete PDF Page tool and upload your PDF. Each page appears as a thumbnail with a remove button. Click the pages you want to delete — they are marked with a red overlay and a × badge. A live counter shows how many pages will remain. When you are satisfied, click Delete and Download.",
+              "If you click a page by mistake, click it again to unmark it. You can toggle any page on or off before downloading. The output is a new PDF with those pages removed; the original file on your device is unchanged.",
+            ],
+            links: [{ label: "Delete pages from PDF", href: "/delete-page" }],
+          },
+          {
+            heading: "What to check before downloading",
+            paragraphs: [
+              "Before clicking download, confirm the page count shown in the counter. Make sure you have not accidentally marked a page you need. For documents with signatures, stamps, or tables of contents, check that the remaining pages still make sense together — a missing page in the middle can break numbering or create confusing references.",
+              "It is also worth checking that at least one page will remain in the output. The tool requires a minimum of one page. If you need to remove all but one section, consider splitting first, removing pages from individual sections, then merging back.",
+            ],
+            links: [
+              { label: "Split PDF into sections", href: "/split-pdf" },
+              { label: "Combine PDFs back together", href: "/merge-pdf" },
+            ],
+          },
+          {
+            heading: "Related workflows: split, reorder, and extract",
+            paragraphs: [
+              "Removing pages is one operation in a broader set of page-level editing tools. If you want to pull specific pages into a new document rather than delete them from the original, Split PDF lets you extract page ranges as separate files. If you want to change the order of existing pages, Reorder Pages gives you drag-and-drop control. If you want to insert new pages at a specific position, Add Page handles that.",
+              "For many practical tasks — cleaning up a scanned packet before sending, extracting a contract section, removing a cover page from a template — the delete-page workflow is the fastest route. For more complex reorganization, combine it with split and merge.",
+            ],
+            links: [
+              { label: "Reorder pages with drag-and-drop", href: "/reorder-pages" },
+              { label: "Add a blank page at any position", href: "/add-page" },
+            ],
+          },
+        ],
+        faq: [
+          {
+            question: "How do I remove a page from a PDF for free?",
+            answer:
+              "Open DockDocs Delete PDF Page, upload your PDF, click the pages you want to remove, and click Delete and Download. It is free, with no account required.",
+          },
+          {
+            question: "Does my PDF get uploaded to a server?",
+            answer:
+              "No. All page removal happens in your browser using pdf-lib. Your PDF never leaves your device — nothing is sent to a server.",
+          },
+          {
+            question: "Can I undo a page deletion after downloading?",
+            answer:
+              "No — but the original file on your device is not changed. If you need the original, it is still there. Alternatively, toggle pages before downloading to make sure the selection is correct.",
+          },
+          {
+            question: "What is the difference between Delete Page and Split PDF?",
+            answer:
+              "Delete Page removes specific pages from a PDF and gives you the remainder. Split PDF divides a PDF into separate files by page range. Use Delete Page to clean up a document; use Split PDF to extract sections as standalone files.",
+          },
+        ],
+      },
+      zh: {
+        title: "如何删除 PDF 中的页面——标记、预览、下载",
+        description:
+          "了解如何在线删除 PDF 页面——去除不需要的页面、清理草稿，下载前可预览。免费、无账号、浏览器本地处理。",
+        excerpt:
+          "误删页面或无法撤销是 PDF 编辑的常见烦恼。本文介绍如何安全标记、预览并得到干净的结果。",
+        readingTime: "5 分钟阅读",
+        ctaTitle: "立即删除 PDF 中多余的页面",
+        ctaDescription:
+          "用 DockDocs「删除 PDF 页面」标记不需要的页面，预览后下载干净的 PDF——浏览器内完成，无需上传。",
+        ctaLabel: "打开删除 PDF 页面",
+        sections: [
+          {
+            heading: "什么情况下需要删除 PDF 页面",
+            paragraphs: [
+              "PDF 删页是最常见的文档编辑需求之一。发给客户的共享草稿可能含有内部批注或附件；扫描包可能夹杂空白页或意外重扫的页面；导出的报告可能在末尾带有水印版声明或系统元数据。",
+              "无论原因如何，目标都一样：得到更干净、更精简的文档，而不必重做整份文件。好的删页工具让你直观地标记要去除的页面，确认后一键下载。",
+            ],
+            links: [{ label: "打开删除 PDF 页面", href: "/delete-page" }],
+          },
+          {
+            heading: "如何删除 PDF 页面（分步操作）",
+            paragraphs: [
+              "打开「删除 PDF 页面」，上传 PDF。每页以缩略图显示，带有删除按钮。点击要删除的页面，页面会被红色蒙版和 × 标记。实时计数器显示剩余页数。确认无误后，点击「删除并下载」。",
+              "如果误点了某页，再点一次即可取消标记。下载前可随时切换任意页面的选中状态。输出的是一份新 PDF，设备上的原文件不受影响。",
+            ],
+            links: [{ label: "删除 PDF 页面", href: "/delete-page" }],
+          },
+          {
+            heading: "下载前需要确认什么",
+            paragraphs: [
+              "下载前，核对计数器显示的剩余页数，确保没有误标需要保留的页面。对于含有签名、盖章或目录的文档，检查剩余页面放在一起是否仍然完整——缺少中间某页可能破坏编号或引用逻辑。",
+              "还需确保至少保留一页。如果需要只保留某几个片段，可以先拆分、再分别删页、最后合并。",
+            ],
+            links: [
+              { label: "先拆分 PDF 再处理", href: "/split-pdf" },
+              { label: "合并多个 PDF", href: "/merge-pdf" },
+            ],
+          },
+          {
+            heading: "相关工作流：拆分、重排、插入",
+            paragraphs: [
+              "删页是一系列页面级编辑工具中的一个。如果想把特定页提取为新文档而非删除，可以用「拆分 PDF」按页面范围导出独立文件。如果想调整现有页面顺序，「重排页面」提供拖拽操作。如果需要在特定位置插入新页，「添加页面」可以完成。",
+              "对于许多常见任务——发送前清理扫描包、提取合同某一章节、去除模板封面——删页工作流是最快的路径。更复杂的重组操作可以结合拆分和合并一起使用。",
+            ],
+            links: [
+              { label: "拖拽重排页面", href: "/reorder-pages" },
+              { label: "在任意位置添加空白页", href: "/add-page" },
+            ],
+          },
+        ],
+        faq: [
+          {
+            question: "怎么免费删除 PDF 中的页面？",
+            answer:
+              "打开 DockDocs「删除 PDF 页面」，上传 PDF，点击要删除的页面，点击「删除并下载」。完全免费，无需注册。",
+          },
+          {
+            question: "我的 PDF 会被上传到服务器吗？",
+            answer:
+              "不会。所有删页操作在浏览器内通过 pdf-lib 完成，PDF 不会离开你的设备，没有任何内容发送到服务器。",
+          },
+          {
+            question: "下载后还能撤销删除吗？",
+            answer:
+              "不能——但设备上的原文件没有被修改，仍然完整。如果需要原文件，直接打开原版即可。下载前仔细确认标记，是最简单的预防方式。",
+          },
+          {
+            question: "「删除页面」和「拆分 PDF」有什么区别？",
+            answer:
+              "「删除页面」从 PDF 中去除特定页面，返回剩余内容。「拆分 PDF」把 PDF 按页面范围分割为独立文件。用「删除页面」清理文档，用「拆分 PDF」提取片段。",
+          },
+        ],
+      },
+    },
+  },
+  {
+    slug: "best-pdf-to-word-converter-free",
+    category: "Convert",
+    publishedAt: "2026-06-15",
+    updatedAt: "2026-06-15",
+    keywords: [
+      "pdf to word free",
+      "best pdf to word converter",
+      "pdf to word online free",
+      "free pdf to word converter",
+      "pdf to word no sign up",
+      "convert pdf to word free",
+      "pdf to docx free",
+    ],
+    toolHref: "/pdf-to-word",
+    toolLabel: "PDF to Word",
+    relatedTools: [
+      { label: "PDF to Word", href: "/pdf-to-word" },
+      { label: "Word to PDF", href: "/word-to-pdf" },
+      { label: "OCR PDF", href: "/ocr-pdf" },
+      { label: "Help Center", href: "/help" },
+    ],
+    relatedArticleSlugs: [
+      "convert-pdf-to-word-editable-document",
+      "pdf-to-word-for-editing",
+      "convert-doc-to-pdf-free",
+    ],
+    content: {
+      en: {
+        title: "Best Free PDF to Word Converter Online — No Sign Up, High Accuracy",
+        description:
+          "Find the best free PDF to Word converter online — no account, editable .docx output. A practical guide to accuracy, what to expect, and how to get clean results.",
+        excerpt:
+          "\"PDF to Word free\" is one of the most searched document queries. This guide explains what to look for in a free converter, how accuracy varies by document type, and how to get the best result.",
+        readingTime: "6 min read",
+        ctaTitle: "Convert your PDF to an editable Word document",
+        ctaDescription:
+          "Use DockDocs PDF to Word to convert any PDF to a .docx file — free, no account, high-fidelity output for text, tables, and layout.",
+        ctaLabel: "Open PDF to Word",
+        sections: [
+          {
+            heading: "What 'PDF to Word free' really means",
+            paragraphs: [
+              "When people search \"PDF to Word free\" or \"free PDF to Word converter\", they usually want one thing: an editable .docx file they can open in Microsoft Word, Google Docs, or any office suite, without paying for Acrobat or creating an account. The conversion should produce a document where text, tables, and layout are preserved and editable, not a locked image of the page.",
+              "There is an important distinction between online converters and desktop tools. Desktop PDF editors (like Adobe Acrobat) are powerful but expensive and require installation. Online converters work in any browser immediately, cost nothing, and handle the vast majority of everyday conversions just as well. For most use cases — editing a contract, updating a report, fixing a resume — an online free converter is the right tool.",
+            ],
+            links: [{ label: "Start with PDF to Word", href: "/pdf-to-word" }],
+          },
+          {
+            heading: "How accuracy varies by PDF type",
+            paragraphs: [
+              "The most important factor in PDF-to-Word accuracy is the source document. Text-based PDFs — documents originally created in Word, InDesign, or another authoring tool and exported to PDF — convert very well. The text is already stored as text, so the converter can extract and reformat it cleanly into a .docx file.",
+              "Scanned PDFs are different. A scanned PDF is essentially a photograph of a page — text is pixels, not characters. Directly converting a scanned PDF to Word without OCR produces either a blank document or a .docx with a page-sized image, not editable text. The fix is to run OCR first: optical character recognition converts the image into real text, which can then be exported to Word. If your PDF was scanned, use OCR PDF before the Word conversion.",
+              "Complex layouts — multiple columns, sidebars, watermarks, tables with merged cells, or heavy image use — convert less predictably. The resulting .docx may need some manual cleanup: adjusting spacing, fixing table cells, or repositioning images. For most everyday documents (contracts, reports, letters, resumes), the output is clean and ready to use.",
+            ],
+            links: [
+              { label: "OCR a scanned PDF first", href: "/ocr-pdf" },
+            ],
+          },
+          {
+            heading: "How to convert PDF to Word online for free (step by step)",
+            paragraphs: [
+              "Open the PDF to Word converter, upload your PDF, and click Convert. The tool sends your file to a high-fidelity conversion engine, processes it, and returns a .docx file — usually within a few seconds for a normal document. Download the file and open it in Word, Google Docs, or LibreOffice.",
+              "Step by step: 1) Open PDF to Word. 2) Click Choose PDF or drag the file onto the page. 3) Let the conversion run. 4) Download the .docx. 5) Open it in your editor and quickly scan for any formatting that needs a touch-up — especially tables and multi-column sections.",
+            ],
+            links: [{ label: "Convert PDF to Word now", href: "/pdf-to-word" }],
+          },
+          {
+            heading: "What to do if the conversion isn't perfect",
+            paragraphs: [
+              "For most text-based documents, the .docx output is clean and requires no editing. But for complex layouts, there are a few quick fixes. If table formatting is off, select the table and use Word's built-in table tools to correct cell widths and borders. If columns collapsed into a single column, add a two-column section break manually. If fonts look slightly different, apply your preferred style globally.",
+              "If the result is a blank document or image-only pages, the original was likely a scanned PDF. Run OCR first to extract the text layer, then convert. This two-step process — OCR then Word — handles the cases that direct conversion cannot.",
+            ],
+            links: [
+              { label: "OCR a scanned PDF", href: "/ocr-pdf" },
+              { label: "Word to PDF when done editing", href: "/word-to-pdf" },
+            ],
+          },
+        ],
+        faq: [
+          {
+            question: "Is PDF to Word conversion free?",
+            answer:
+              "Yes. DockDocs PDF to Word converts PDFs to editable .docx files for free, with no account or signup required.",
+          },
+          {
+            question: "Why is my converted Word document a blank or image file?",
+            answer:
+              "Your PDF is likely a scanned document — text is stored as an image rather than real characters. Run OCR PDF first to extract the text layer, then convert to Word.",
+          },
+          {
+            question: "Will the formatting be preserved?",
+            answer:
+              "For text-based PDFs, fonts, paragraphs, and most tables are preserved. Complex multi-column layouts or heavy image use may need minor cleanup in Word after conversion.",
+          },
+          {
+            question: "What is the file size limit?",
+            answer:
+              "DockDocs PDF to Word supports files up to 100 MB, which covers the vast majority of contracts, reports, and documents.",
+          },
+        ],
+      },
+      zh: {
+        title: "最佳免费 PDF 转 Word 在线工具——无需注册，高精度转换",
+        description:
+          "找到最佳免费在线 PDF 转 Word 工具——无需账号，输出可编辑的 .docx。一份关于转换精度、预期效果和如何得到干净结果的实用指南。",
+        excerpt:
+          "\"PDF 转 Word 免费\"是搜索量最高的文档操作之一。本文介绍免费转换工具该看哪些指标、不同文档类型的转换效果，以及如何获得最佳结果。",
+        readingTime: "6 分钟阅读",
+        ctaTitle: "立即把 PDF 转成可编辑的 Word 文档",
+        ctaDescription:
+          "用 DockDocs「PDF 转 Word」把任意 PDF 转成 .docx——免费、无账号、文字表格版式高保真。",
+        ctaLabel: "打开 PDF 转 Word",
+        sections: [
+          {
+            heading: "\"PDF 转 Word 免费\"到底指什么",
+            paragraphs: [
+              "当大家搜索\"PDF 转 Word 免费\"时，通常都想要同一件事：一个可在 Word、Google Docs 或其他办公套件里直接编辑的 .docx 文件，无需购买 Acrobat，也不用注册账号。转换结果应该是可编辑的文档，而不是页面图片的锁定版。",
+              "在线转换工具和桌面工具有本质区别。Adobe Acrobat 等桌面 PDF 编辑器功能强大但价格高、需要安装。在线转换工具在任何浏览器里立刻可用、完全免费，对绝大多数日常转换效果同样出色。编辑合同、更新报告、修改简历——在线免费转换是正确选择。",
+            ],
+            links: [{ label: "从 PDF 转 Word 开始", href: "/pdf-to-word" }],
+          },
+          {
+            heading: "不同 PDF 类型的转换精度",
+            paragraphs: [
+              "影响 PDF 转 Word 精度的最关键因素是源文档。文本型 PDF——原本用 Word、InDesign 等工具创建并导出为 PDF 的文档——转换效果最好。文字本来就以文本形式存储，转换器可以干净地提取并重排成 .docx 文件。",
+              "扫描件 PDF 情况不同。扫描 PDF 本质上是页面照片——文字是像素而非字符。直接把扫描 PDF 转为 Word，会得到空白文档或页面大小的图片，而不是可编辑文字。解决方法是先做 OCR：光学字符识别把图片转为真正的文字，再导出成 Word。如果你的 PDF 是扫描件，先用「OCR PDF」再转 Word。",
+              "复杂版式——多栏、侧边栏、水印、含合并单元格的表格或大量图片——转换效果较难预测，导出的 .docx 可能需要少量手动调整。对大多数日常文档（合同、报告、信件、简历），输出结果干净、开箱即用。",
+            ],
+            links: [
+              { label: "先给扫描件做 OCR", href: "/ocr-pdf" },
+            ],
+          },
+          {
+            heading: "怎么免费在线把 PDF 转成 Word（分步操作）",
+            paragraphs: [
+              "打开「PDF 转 Word」，上传 PDF，点击「转换」。工具把文件发送到高保真转换引擎处理，然后返回 .docx 文件——普通文档通常几秒内完成。下载后用 Word、Google Docs 或 LibreOffice 打开。",
+              "分步:1）打开 PDF 转 Word;2）点击「选择 PDF」或拖拽文件到页面上;3）等待转换;4）下载 .docx;5）用编辑器打开，快速检查格式——重点看表格和多栏区域。",
+            ],
+            links: [{ label: "立即转换 PDF 为 Word", href: "/pdf-to-word" }],
+          },
+          {
+            heading: "如果转换结果不理想怎么办",
+            paragraphs: [
+              "对大多数文本型文档，.docx 输出干净，无需编辑。对于复杂版式，有几个快速修复方法：表格格式错乱，用 Word 内置表格工具调整列宽和边框；多栏塌缩成单列，手动添加分节符并设置两栏布局；字体稍有不同，全局应用你偏好的样式。",
+              "如果结果是空白文档或纯图片页，源文件大概率是扫描 PDF。先用 OCR 提取文字层，再转 Word。这两步流程——OCR 然后转 Word——能处理直接转换无法处理的情况。",
+            ],
+            links: [
+              { label: "给扫描件做 OCR", href: "/ocr-pdf" },
+              { label: "编辑完再转回 PDF", href: "/word-to-pdf" },
+            ],
+          },
+        ],
+        faq: [
+          {
+            question: "PDF 转 Word 免费吗？",
+            answer:
+              "免费。DockDocs「PDF 转 Word」免费把 PDF 转成可编辑的 .docx，无需注册。",
+          },
+          {
+            question: "为什么转换后的 Word 文档是空白或图片文件？",
+            answer:
+              "你的 PDF 大概率是扫描件——文字以图片而非字符形式存储。先用「OCR PDF」提取文字层，再转 Word。",
+          },
+          {
+            question: "格式会被保留吗？",
+            answer:
+              "文本型 PDF 的字体、段落和大多数表格都会保留。复杂多栏版式或含大量图片的文档，转换后在 Word 里可能需要少量调整。",
+          },
+          {
+            question: "文件大小有限制吗？",
+            answer:
+              "DockDocs「PDF 转 Word」支持最大 100 MB 的文件，覆盖绝大多数合同、报告和日常文档。",
           },
         ],
       },
