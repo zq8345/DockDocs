@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type DragEvent } from "react";
 import { loadTemplates, saveTemplate, deleteTemplate, type FlowTemplate } from "@/lib/flow-templates";
+import { loadRunsForTemplate, saveRun, relativeTime, type FlowRun } from "@/lib/flow-runs";
 import { isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 import { ToolFaq } from "@/components/ToolFaq";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -90,6 +91,10 @@ const STR = {
     tplMyTemplates: "My templates",
     tplDelete: "Delete",
     tplLoaded: (name: string) => `Template: ${name}`,
+    tplRerunHint: "Drop new files to re-run automatically",
+    tplLastRun: "Last run",
+    tplRunFiles: (n: number) => `${n} file${n > 1 ? "s" : ""}`,
+    tplNoRuns: "No runs yet",
   },
   zh: {
     badge: "对比引擎 · 测试版",
@@ -138,6 +143,10 @@ const STR = {
     tplMyTemplates: "我的模板",
     tplDelete: "删除",
     tplLoaded: (name: string) => `模板：${name}`,
+    tplRerunHint: "拖入新文件即自动重跑对比",
+    tplLastRun: "最近运行",
+    tplRunFiles: (n: number) => `${n} 份文件`,
+    tplNoRuns: "暂无运行记录",
   },
   es: {
     badge: "Motor de comparación · beta",
@@ -186,6 +195,10 @@ const STR = {
     tplMyTemplates: "Mis plantillas",
     tplDelete: "Eliminar",
     tplLoaded: (name: string) => `Plantilla: ${name}`,
+    tplRerunHint: "Suelta archivos nuevos para volver a comparar automáticamente",
+    tplLastRun: "Última ejecución",
+    tplRunFiles: (n: number) => `${n} archivo${n > 1 ? "s" : ""}`,
+    tplNoRuns: "Sin ejecuciones aún",
   },
 } as const;
 
@@ -291,10 +304,23 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const [showSaveTpl, setShowSaveTpl] = useState(false);
   const [tplName, setTplName] = useState("");
   const [tplSaving, setTplSaving] = useState(false);
+  const [rerunReady, setRerunReady] = useState(false);
+  const [templateRuns, setTemplateRuns] = useState<FlowRun[]>([]);
+  const compareRef = useRef<() => Promise<void>>(async () => {});
 
   useEffect(() => {
     setTemplates(loadTemplates());
   }, []);
+
+  // Auto-trigger compare when a template is loaded and >= 2 readable docs are added.
+  useEffect(() => {
+    if (!rerunReady || comparing || comparison) return;
+    const ok = results.filter((r) => r.status === "ok");
+    if (ok.length >= 2) {
+      setRerunReady(false);
+      void compareRef.current();
+    }
+  }, [results, rerunReady, comparing, comparison]);
 
   const extractOne = useCallback(async (file: File): Promise<DocResult> => {
     const id = `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 7)}`;
@@ -425,6 +451,10 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       const cmp: Comparison = { docType: data.docType, dimensions: data.dimensions, documents: data.documents };
       setComparison(cmp);
       void markUsage(gate, "compare");
+      if (activeTemplate) {
+        saveRun({ templateId: activeTemplate.id, templateName: activeTemplate.name, fileNames: okDocs.map((d) => d.name), docType: cmp.docType, status: "ok" });
+        setTemplateRuns(loadRunsForTemplate(activeTemplate.id));
+      }
       // Auto-recommend on the extracted comparison — the "decide for you" payoff.
       setRecommending(true);
       try {
@@ -445,7 +475,10 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     } finally {
       setComparing(false);
     }
-  }, [okDocs, docType, locale, t]);
+  }, [okDocs, docType, locale, t, activeTemplate]);
+
+  // Keep ref in sync so the auto-trigger effect always calls the latest closure.
+  useEffect(() => { compareRef.current = compare; }, [compare]);
 
   const handleSaveTemplate = () => {
     const name = tplName.trim();
@@ -464,6 +497,8 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     setActiveTemplate(tpl);
     setComparison(null);
     setRecommendation(null);
+    setRerunReady(true);
+    setTemplateRuns(loadRunsForTemplate(tpl.id));
   };
 
   const handleDeleteTemplate = (id: string) => {
@@ -553,7 +588,19 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
             ))}
           </div>
           {activeTemplate && (
-            <p className="mt-2 text-xs text-[color:var(--accent)]">{t.tplLoaded(activeTemplate.name)}</p>
+            <div className="mt-2 space-y-1">
+              <p className="text-xs text-[color:var(--accent)]">{t.tplLoaded(activeTemplate.name)} · {t.tplRerunHint}</p>
+              {templateRuns.length > 0 && (
+                <div className="flex flex-wrap gap-x-4 gap-y-0.5">
+                  <span className="text-xs text-[color:var(--faint)]">{t.tplLastRun}:</span>
+                  {templateRuns.slice(0, 3).map((run) => (
+                    <span key={run.id} className="text-xs text-[color:var(--faint)]">
+                      {t.tplRunFiles(run.fileNames.length)} · {relativeTime(run.createdAt, locale)}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
         </div>
       )}
