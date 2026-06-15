@@ -7,25 +7,29 @@ import { languageAlternates, siteUrl } from "@/lib/i18n";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 
 export const metadata: Metadata = {
-  title: "AI Document Workspace",
+  title: "Chat with PDF & AI Document Workspace — Free | DockDocs",
   description:
-    "Organize, convert, OCR, and work with PDF documents inside the DockDocs AI Document Workspace.",
+    "Chat with any PDF, summarize documents, run OCR, and analyze contracts — all in one AI workspace. Upload a PDF and start asking questions in seconds. Free, no signup.",
   keywords: [
-    "ai document workspace",
-    "pdf workspace",
-    "ai pdf tools",
-    "document ocr",
-    "pdf summary",
     "chat with pdf",
+    "ai pdf chat",
+    "ask pdf questions",
+    "pdf ai",
+    "ai document workspace",
+    "pdf summary ai",
+    "summarize pdf",
+    "talk to pdf",
+    "pdf chatbot",
+    "ai pdf reader",
   ],
   alternates: {
     canonical: "/ai-workspace/",
     languages: languageAlternates("ai-workspace"),
   },
   openGraph: {
-    title: "AI Document Workspace",
+    title: "Chat with PDF & AI Document Workspace — Free | DockDocs",
     description:
-      "Organize, convert, OCR, and work with PDF documents inside the DockDocs AI Document Workspace.",
+      "Upload a PDF and chat with it, get an AI summary, run OCR, or analyze contracts — all in one free workspace.",
     url: "https://dockdocs.app/ai-workspace/",
     siteName: "DockDocs",
     type: "website",
