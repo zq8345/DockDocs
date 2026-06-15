@@ -94,6 +94,7 @@ export const navCategories: Record<"en" | "zh" | "es", NavCat[]> = {
             { name: "PDF Summary", slug: "/ai-summary" },
             { name: "Translate PDF", slug: "/translate-pdf" },
             { name: "PDF Flashcards", slug: "/flashcards" },
+            { name: "Contract Risk Check", slug: "/contract-risk" },
           ],
         },
         {
@@ -209,6 +210,7 @@ export const navCategories: Record<"en" | "zh" | "es", NavCat[]> = {
             { name: "PDF 摘要提取", slug: "/ai-summary" },
             { name: "PDF 翻译", slug: "/translate-pdf" },
             { name: "PDF 抽认卡", slug: "/flashcards" },
+            { name: "合同风险体检", slug: "/contract-risk" },
           ],
         },
         {
@@ -324,6 +326,7 @@ export const navCategories: Record<"en" | "zh" | "es", NavCat[]> = {
             { name: "Resumen de PDF", slug: "/ai-summary" },
             { name: "Traducir PDF", slug: "/translate-pdf" },
             { name: "Tarjetas de estudio de PDF", slug: "/flashcards" },
+            { name: "Revisión de riesgos del contrato", slug: "/contract-risk" },
           ],
         },
         {

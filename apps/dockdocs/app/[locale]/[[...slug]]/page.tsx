@@ -56,6 +56,7 @@ import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
 import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
 import { BatchTranslateClient } from "@/components/BatchTranslateClient";
 import { BatchFixScansClient } from "@/components/BatchFixScansClient";
+import { ContractRiskClient } from "@/components/ContractRiskClient";
 import { SignPdfClient } from "@/components/SignPdfClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
@@ -618,6 +619,20 @@ async function generateMetadataInner({
     };
   }
 
+  if (slug === "contract-risk") {
+    return {
+      title: uiLocale === "zh" ? "合同风险体检 — 签字前发现风险条款" : "Contract Risk Check — Spot Risky Clauses Before You Sign",
+      description:
+        uiLocale === "zh"
+          ? "上传合同,得到白话的风险清单:风险/单边/缺失条款,红黄绿标注、引用原文、附该问什么。仅供参考,非法律意见。"
+          : "Upload a contract and get a plain-language list of risky, one-sided, or missing clauses — flagged red/amber/green, quoted from your document. Informational, not legal advice.",
+      alternates: {
+        canonical: localizedPath(uiLocale, "contract-risk"),
+        languages: languageAlternates("contract-risk"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: uiLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -933,6 +948,10 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-fix-scans") {
     return <BatchFixScansClient locale={rawLocale} />;
+  }
+
+  if (slug === "contract-risk") {
+    return <ContractRiskClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {

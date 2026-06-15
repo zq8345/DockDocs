@@ -54,6 +54,7 @@ export const featureAliases: Record<string, UsageFeature> = {
   "document-analyzer": "analyzer",
   contractAnalyzer: "contractAnalyzer",
   "contract-analyzer": "contractAnalyzer",
+  "contract-risk": "contractAnalyzer",
   compare: "compare",
   "compare-docs": "compare",
   // Server-side CloudConvert gate — all paid/metered conversion routes that can

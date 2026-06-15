@@ -3,6 +3,32 @@ type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
 const FAQS: Record<string, { title: { en: string; zh: string; es: string }; items: { en: QA[]; zh: QA[]; es: QA[] } }> = {
+  "contract-risk": {
+    title: { en: "Contract Risk Check — FAQ", zh: "合同风险体检常见问题", es: "Revisión de riesgos del contrato — preguntas frecuentes" },
+    items: {
+      en: [
+        { q: "What does it check for?", a: "It scans your contract for clauses worth a second look — auto-renewal, one-sided termination or change, uncapped/unlimited liability, penalties and late fees, payment traps and hidden costs, overbroad non-compete, and missing standard protections (like no liability cap). Each finding is flagged red (high), amber (medium), or green (low), quoted from your contract, with a plain-language reason and what to ask before signing." },
+        { q: "Is this legal advice?", a: "No. It's an automated review to help a non-lawyer spot clauses that deserve attention — it is not legal advice and not a substitute for a lawyer. For anything important or high-value, have a qualified attorney review it. Flagging nothing is not a guarantee the contract is safe." },
+        { q: "Does it make up clauses or quotes?", a: "Every quote is verified against your actual contract text — if the AI returns a quote we can't find in your document, we drop it rather than show a fabricated citation. Missing-clause risks are shown without a quote and labelled as such. The AI can still miss things, so always read the full contract." },
+        { q: "Is my contract uploaded or stored?", a: "Your contract is read in your browser; only the extracted text is sent for analysis, and it is not stored afterwards. The file itself never leaves your device." },
+        { q: "Which contracts work best?", a: "Text-based PDFs (born-digital). Scanned contracts have no selectable text — run OCR first. It works in English, Chinese, Spanish and more; quotes stay in the contract's original language." },
+      ],
+      zh: [
+        { q: "它检查哪些东西?", a: "它会扫描合同里值得多看一眼的条款——自动续约、单方解约或单方变更、无上限/无限责任、违约金和滞纳金、付款陷阱和隐藏费用、过宽的竞业限制,以及缺失的标准保护(比如没有责任上限)。每条都标成 红(高)/黄(中)/绿(低),引用你合同的原文,配白话理由和签字前该问什么。" },
+        { q: "这是法律意见吗?", a: "不是。这是帮非律师发现值得注意条款的自动审查,不构成法律意见,也不能替代律师。重要或金额大的合同,请让有资质的律师审。没标出问题不代表合同一定安全。" },
+        { q: "它会编造条款或原文吗?", a: "每一条原文引用都会和你的合同实际文字核对——如果 AI 给出的引用在你文档里找不到,我们会丢弃它,而不是显示伪造的出处。缺失类风险不带引用并明确标注。AI 仍可能漏看,所以请完整阅读合同。" },
+        { q: "我的合同会被上传或保存吗?", a: "合同在你的浏览器中读取,只有提取的文字会被发送去分析,且事后不保存。文件本身不离开你的设备。" },
+        { q: "哪类合同效果最好?", a: "文字版 PDF(电子原生)。扫描件没有可选文字,请先做 OCR。支持中文、英文、西班牙语等;原文引用保持合同的原始语言。" },
+      ],
+      es: [
+        { q: "¿Qué revisa?", a: "Escanea tu contrato en busca de cláusulas que merecen una segunda mirada: renovación automática, terminación o cambio unilateral, responsabilidad ilimitada/sin tope, penalizaciones y recargos, trampas de pago y costos ocultos, no competencia excesiva y protecciones estándar ausentes (como la falta de tope de responsabilidad). Cada hallazgo se marca en rojo (alto), ámbar (medio) o verde (bajo), citado de tu contrato, con una razón en lenguaje claro y qué preguntar antes de firmar." },
+        { q: "¿Es asesoramiento legal?", a: "No. Es una revisión automatizada para ayudar a un no abogado a detectar cláusulas que merecen atención; no es asesoramiento legal ni sustituye a un abogado. Para algo importante o de alto valor, que lo revise un abogado calificado. No marcar nada no garantiza que el contrato sea seguro." },
+        { q: "¿Inventa cláusulas o citas?", a: "Cada cita se verifica contra el texto real de tu contrato: si la IA devuelve una cita que no encontramos en tu documento, la descartamos en lugar de mostrar una cita inventada. Los riesgos por cláusula ausente se muestran sin cita y se etiquetan como tales. La IA aún puede pasar cosas por alto, así que lee siempre el contrato completo." },
+        { q: "¿Se sube o se almacena mi contrato?", a: "Tu contrato se lee en tu navegador; solo se envía el texto extraído para analizarlo y no se almacena después. El archivo en sí nunca sale de tu dispositivo." },
+        { q: "¿Qué contratos funcionan mejor?", a: "PDF basados en texto (digitales de origen). Los contratos escaneados no tienen texto seleccionable: aplica OCR primero. Funciona en español, inglés, chino y más; las citas se mantienen en el idioma original del contrato." },
+      ],
+    },
+  },
   "batch-fix-scans": {
     title: { en: "Batch fix scans — FAQ", zh: "批量修扫描常见问题", es: "Arreglar escaneos por lotes — preguntas frecuentes" },
     items: {
