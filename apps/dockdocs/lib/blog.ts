@@ -23,6 +23,7 @@ export const blogArticleSlugs = [
   "pdf-to-word-for-editing",
   "compress-pdf-quality-complete-guide",
   "chat-with-pdf-vs-chatgpt-vs-chatpdf",
+  "convert-doc-to-pdf-free",
 ] as const;
 
 export type BlogArticleSlug = (typeof blogArticleSlugs)[number];
@@ -106,6 +107,181 @@ export const blogIndexCopy = {
 } as const;
 
 export const blogArticles: BlogArticle[] = [
+  {
+    slug: "convert-doc-to-pdf-free",
+    category: "Convert",
+    publishedAt: "2026-06-15",
+    updatedAt: "2026-06-15",
+    keywords: [
+      "doc to pdf",
+      "docs to pdf",
+      "doc to pdf converter",
+      "doc to pdf free",
+      "convert doc to pdf",
+      "docx to pdf",
+    ],
+    toolHref: "/word-to-pdf",
+    toolLabel: "Word to PDF",
+    relatedTools: [
+      { label: "Word to PDF", href: "/word-to-pdf" },
+      { label: "PDF to Word", href: "/pdf-to-word" },
+      { label: "Merge PDF", href: "/merge-pdf" },
+      { label: "Help Center", href: "/help" },
+    ],
+    relatedArticleSlugs: [
+      "convert-pdf-to-word-editable-document",
+      "merge-pdf-without-losing-quality",
+      "how-to-compress-pdf-for-email",
+    ],
+    content: {
+      en: {
+        title: "Doc to PDF: Convert DOC & DOCX to PDF for Free (Without Losing Formatting)",
+        description:
+          "How to convert a doc or docs to PDF online for free — keep fonts, tables, and layout intact, no install or signup. A practical doc-to-pdf and docx-to-pdf guide.",
+        excerpt:
+          "\"Doc to PDF\" is one of the most common document tasks there is. This guide covers what the term really means, how to convert for free, and how to keep the formatting exactly as it was.",
+        readingTime: "6 min read",
+        ctaTitle: "Convert your doc to PDF now",
+        ctaDescription:
+          "Use DockDocs Word to PDF to turn DOC, DOCX, and docs into clean, shareable PDFs — fonts, tables, and layout preserved.",
+        ctaLabel: "Open Word to PDF",
+        sections: [
+          {
+            heading: "\"Doc to PDF\" — what people actually mean",
+            paragraphs: [
+              "When people search \"doc to pdf\" or \"docs to pdf\" they usually mean one of three things: a Microsoft Word .doc file (the older format), a Word .docx file (the modern format), or a document they think of loosely as \"a doc.\" In almost every case the goal is the same — turn an editable word-processing file into a fixed, shareable PDF that looks identical on any device.",
+              "Why convert at all? A PDF locks the layout. Whoever opens it sees the same fonts, spacing, page breaks, and tables you saw, whether they are on a phone, a different operating system, or a printer. That predictability is exactly why contracts, resumes, invoices, and reports are almost always sent as PDF rather than as a raw Word file.",
+            ],
+            links: [
+              { label: "Start with Word to PDF", href: "/word-to-pdf" },
+            ],
+          },
+          {
+            heading: "How to convert a doc to PDF online (free)",
+            paragraphs: [
+              "The fastest free route is a browser converter — no Word, no Acrobat, no install. Open the Word to PDF tool, drop in your .doc or .docx file, and download the PDF. The whole thing takes a few seconds for a normal document, and nothing needs to be installed on your computer.",
+              "Step by step: 1) Open Word to PDF. 2) Choose your DOC or DOCX file (or drag it onto the page). 3) Let the converter render it. 4) Download the finished PDF and open it once to confirm the layout looks right before you send it.",
+            ],
+            links: [
+              { label: "Convert a doc to PDF", href: "/word-to-pdf" },
+            ],
+          },
+          {
+            heading: "Keeping fonts, tables, and layout intact",
+            paragraphs: [
+              "The thing that goes wrong most often with doc-to-pdf conversion is broken formatting — shifted tables, swapped fonts, or text that reflows onto extra pages. This happens when the converter does not render the document the same way Word does. A good converter uses a full office rendering engine (the same kind that powers desktop office suites), so fonts, tables, images, and page layout come out matching the original.",
+              "A few practical tips: embed or use common fonts so they are available during rendering, check documents with complex tables or columns after converting, and keep the source .docx in case you need to make an edit and re-convert. For most reports, letters, and forms the output is a faithful, print-ready copy.",
+            ],
+          },
+          {
+            heading: "Going the other way: PDF back to an editable doc",
+            paragraphs: [
+              "Sometimes you receive a PDF and need to edit it as a Word document again. That is the reverse conversion — PDF to Word — which rebuilds an editable .docx from the PDF text and layout. It is the natural companion to doc-to-pdf: convert to PDF to share and lock a document, convert back to Word when you need to change it.",
+              "If you regularly move between formats, it helps to keep both tools handy and to treat the PDF as the \"final\" copy and the Word file as the \"working\" copy. That keeps versions clear and avoids editing the wrong file.",
+            ],
+            links: [
+              { label: "Convert PDF to Word", href: "/pdf-to-word" },
+            ],
+          },
+        ],
+        faq: [
+          {
+            question: "Is converting doc to PDF free?",
+            answer:
+              "Yes. DockDocs Word to PDF converts DOC and DOCX files to PDF for free, with no account required.",
+          },
+          {
+            question: "Will the formatting stay the same?",
+            answer:
+              "Yes — fonts, tables, images, and page layout are preserved because the document is rendered with a full office engine. Check complex tables once after converting to be safe.",
+          },
+          {
+            question: "What is the difference between DOC and DOCX?",
+            answer:
+              "DOC is the older Microsoft Word format; DOCX is the modern XML-based format. Both convert to PDF the same way in DockDocs.",
+          },
+          {
+            question: "Can I convert the PDF back into a Word doc later?",
+            answer:
+              "Yes. Use PDF to Word to rebuild an editable .docx from a PDF when you need to make changes.",
+          },
+        ],
+      },
+      zh: {
+        title: "Doc 转 PDF:免费把 DOC 和 DOCX 转成 PDF(不丢排版)",
+        description:
+          "怎么免费把 doc / docs 在线转成 PDF——字体、表格、版式原样保留,无需安装或注册。一份实用的 doc 转 PDF、docx 转 PDF 指南。",
+        excerpt:
+          "\"Doc 转 PDF\"是最常见的文档操作之一。本文讲清这个词到底指什么、怎么免费转,以及怎样让排版和原文一模一样。",
+        readingTime: "6 分钟阅读",
+        ctaTitle: "现在就把你的 doc 转成 PDF",
+        ctaDescription:
+          "用 DockDocs「Word 转 PDF」把 DOC、DOCX 和 docs 转成干净、可分享的 PDF——字体、表格、版式都保留。",
+        ctaLabel: "打开 Word 转 PDF",
+        sections: [
+          {
+            heading: "\"Doc 转 PDF\"到底指什么",
+            paragraphs: [
+              "当人们搜\"doc 转 pdf\"或\"docs 转 pdf\"时,通常指三种情况之一:旧版 Word 的 .doc 文件、新版 Word 的 .docx 文件,或泛泛说的\"一个文档\"。但目标几乎都一样——把可编辑的文字处理文件,变成固定、可分享、在任何设备上看起来都一致的 PDF。",
+              "为什么要转?PDF 会锁定版式。无论对方用手机、不同操作系统还是打印机打开,看到的字体、间距、分页和表格都和你看到的一模一样。正因为这种可预期性,合同、简历、发票、报告几乎都用 PDF 发送,而不是直接发原始 Word 文件。",
+            ],
+            links: [
+              { label: "从 Word 转 PDF 开始", href: "/word-to-pdf" },
+            ],
+          },
+          {
+            heading: "怎么在线免费把 doc 转成 PDF",
+            paragraphs: [
+              "最快的免费方式是浏览器转换——不用 Word、不用 Acrobat、不用安装。打开「Word 转 PDF」,拖入你的 .doc 或 .docx 文件,下载 PDF 即可。普通文档几秒就好,电脑上什么都不用装。",
+              "分步:1）打开 Word 转 PDF;2）选择 DOC 或 DOCX 文件(或拖到页面上);3）等它渲染;4）下载 PDF,发送前先打开看一眼版式是否正常。",
+            ],
+            links: [
+              { label: "把 doc 转成 PDF", href: "/word-to-pdf" },
+            ],
+          },
+          {
+            heading: "保留字体、表格和版式",
+            paragraphs: [
+              "doc 转 PDF 最常出问题的就是排版错乱——表格错位、字体被替换、文字跑到多出来的页上。原因是转换器没有像 Word 那样渲染文档。好的转换器使用完整的办公渲染引擎(和桌面办公套件同源),所以字体、表格、图片和版式都能和原文一致。",
+              "几个实用建议:尽量用常见字体或嵌入字体,转换后检查含复杂表格/分栏的文档,并保留源 .docx 以便日后修改再转。对大多数报告、信函和表单,输出都是忠实、可直接打印的副本。",
+            ],
+          },
+          {
+            heading: "反过来:PDF 转回可编辑的 doc",
+            paragraphs: [
+              "有时你收到一个 PDF,需要重新当成 Word 文档来编辑。这就是反向转换——PDF 转 Word——从 PDF 的文字和版式重建一个可编辑的 .docx。它是 doc 转 PDF 的天然搭档:转成 PDF 用来分享和定稿,转回 Word 用来修改。",
+              "如果你经常在两种格式间切换,建议两个工具都备好,把 PDF 当\"最终稿\"、Word 当\"工作稿\",这样版本清晰,也不会改错文件。",
+            ],
+            links: [
+              { label: "PDF 转 Word", href: "/pdf-to-word" },
+            ],
+          },
+        ],
+        faq: [
+          {
+            question: "把 doc 转成 PDF 免费吗?",
+            answer:
+              "免费。DockDocs「Word 转 PDF」免费把 DOC 和 DOCX 转成 PDF,无需注册。",
+          },
+          {
+            question: "排版会变吗?",
+            answer:
+              "不会——字体、表格、图片和版式都会保留,因为文档是用完整办公引擎渲染的。保险起见,转换后检查一下复杂表格即可。",
+          },
+          {
+            question: "DOC 和 DOCX 有什么区别?",
+            answer:
+              "DOC 是旧版 Word 格式,DOCX 是新版基于 XML 的格式。在 DockDocs 里两者转 PDF 的方式相同。",
+          },
+          {
+            question: "之后能把 PDF 再转回 Word 文档吗?",
+            answer:
+              "可以。需要修改时,用「PDF 转 Word」从 PDF 重建可编辑的 .docx。",
+          },
+        ],
+      },
+    },
+  },
   {
     slug: "how-to-compress-pdf-for-email",
     category: "Compress PDF",
