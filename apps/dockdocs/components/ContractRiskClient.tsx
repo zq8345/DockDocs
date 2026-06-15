@@ -9,7 +9,7 @@ import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useMemo, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type RiskLevel = "high" | "medium" | "low";
 type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string };
 
@@ -119,6 +119,32 @@ const STR = {
     errPrefix: "Não foi possível concluir a revisão: ",
     retry: "Tentar novamente",
     privacy: "Seu contrato é lido no seu navegador; apenas o texto extraído é enviado para análise.",
+  },
+  fr: {
+    title: "Analyse des risques du contrat",
+    subtitle:
+      "Déposez un contrat et obtenez une liste en langage clair des clauses risquées, déséquilibrées ou absentes — chacune signalée en rouge / orange / vert, citée depuis votre document, avec les questions à poser avant de signer.",
+    proBadge: "PRO",
+    drop: "Glissez-déposez un PDF de contrat ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF de contrat",
+    extracting: "Lecture du contrat…",
+    pagesChars: (p: number, c: number) => `${p} page${p > 1 ? "s" : ""} · ${c.toLocaleString()} caractères`,
+    noText: "Aucun texte sélectionnable trouvé. S'agit-il d'un contrat scanné ? Appliquez d'abord l'OCR.",
+    tooLong: `Ce contrat dépasse la limite de ${MAX_CHARS.toLocaleString()} caractères — seule la première partie sera analysée.`,
+    analyze: "Vérifier les risques",
+    analyzing: "Analyse en cours…",
+    result: (n: number) => `${n} point${n > 1 ? "s" : ""} à examiner`,
+    noRisks: "Aucune clause à risque évidente n'a été détectée. Cela ne garantit pas que le contrat est sans risque — lisez-le intégralement.",
+    disclaimer: "Il s'agit d'une analyse automatisée destinée à vous aider à repérer les clauses méritant attention. Elle ne constitue pas un conseil juridique. Pour toute question importante, consultez un avocat.",
+    levelHigh: "Élevé", levelMedium: "Moyen", levelLow: "Faible",
+    quoteLabel: "Extrait de votre contrat",
+    notLocated: "Signalé comme protection absente ou manquante (pas de citation).",
+    whyLabel: "Pourquoi c'est important",
+    suggestionLabel: "Ce qu'il faut demander",
+    reset: "Analyser un autre",
+    errPrefix: "Impossible de terminer l'analyse : ",
+    retry: "Réessayer",
+    privacy: "Votre contrat est lu dans votre navigateur ; seul le texte extrait est transmis pour l'analyse.",
   },
 };
 

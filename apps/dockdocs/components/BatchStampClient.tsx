@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "watermark" | "pagenum";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
@@ -72,6 +72,21 @@ const STR = {
     needText: "Insira o texto da marca d'água.", needFile: "Adicione pelo menos um PDF.",
     note: "Usa o posicionamento padrão (marca d'água diagonal / números de página). Para posição ou opacidade personalizadas, use as ferramentas individuais de Marca d'água ou Números de página. Tudo permanece no seu dispositivo.",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Filigrane ou numérotation de PDF en lot",
+    titleWm: "Filigrane en lot", titlePn: "Numérotation de pages en lot",
+    subWm: "Apposez un filigrane sur tout un dossier de PDF en une seule fois : chaque fichier est traité dans votre navigateur et compressé dans un seul ZIP. Rien n'est envoyé.",
+    subPn: "Ajoutez des numéros de page à tout un dossier de PDF en une seule fois : chaque fichier est traité dans votre navigateur et compressé dans un seul ZIP. Rien n'est envoyé.",
+    subtitle: "Apposez un filigrane ou ajoutez des numéros de page à tout un dossier de PDF en une seule fois : chaque fichier est traité dans votre navigateur et compressé dans un seul ZIP. Rien n'est envoyé.",
+    drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour sélectionner", choose: "Choisir des PDF", folder: "Choisir un dossier",
+    wm: "Filigrane", pn: "Numéros de page",
+    wmText: "Texte du filigrane", wmPlaceholder: "ex. : CONFIDENTIEL",
+    run: "Appliquer à tous", running: "Traitement en cours", download: "Télécharger le ZIP", reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, done: "terminé", failed: "échec",
+    needText: "Veuillez saisir le texte du filigrane.", needFile: "Ajoutez au moins un PDF.",
+    note: "Utilise le positionnement par défaut (filigrane en diagonale / numéros de page). Pour une position ou une opacité personnalisées, utilisez les outils individuels Filigrane ou Numéros de page. Tout reste sur votre appareil.",
+    err: "Une erreur s'est produite : ",
   },
 };
 

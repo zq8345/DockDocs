@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "crop" | "delete";
 type Edges = { top: number; right: number; bottom: number; left: number };
 type Status = "queued" | "done" | "error";
@@ -100,6 +100,27 @@ const STR = {
     needDel: "Insira os números de página a excluir.",
     note: "Tudo é executado no seu navegador — seus arquivos nunca saem do seu dispositivo. Aparar oculta a área cortada (pode ser restaurada); excluir remove as páginas.",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Corriger les numérisations en lot",
+    subtitle:
+      "Nettoyez un dossier entier de PDF numérisés en une seule fois — rognez les mêmes marges sur chaque page ou supprimez les mêmes pages (comme une page de garde) de chaque fichier. Tout dans votre navigateur, regroupé dans un seul ZIP.",
+    crop: "Rogner les marges",
+    del: "Supprimer des pages",
+    top: "Haut", right: "Droite", bottom: "Bas", left: "Gauche",
+    preview: "Aperçu (premier fichier)",
+    cropHint: "Faites glisser pour rogner chaque bord (% de la page). La zone dégagée est ce qui est conservé. Appliqué à chaque page de chaque fichier.",
+    delLabel: "Pages à supprimer de chaque fichier",
+    delPlaceholder: "ex. : 1 ou 1,3-4",
+    delHint: "Ces numéros de page sont supprimés de chaque fichier. Les fichiers qui se retrouveraient sans pages sont ignorés.",
+    run: "Tout traiter", running: "Traitement en cours", download: "Télécharger le ZIP", reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`,
+    done: "terminé", failed: "échoué",
+    need: "Ajoutez au moins un PDF.",
+    needCrop: "Définissez au moins une marge à rogner.",
+    needDel: "Saisissez les numéros de page à supprimer.",
+    note: "Tout s'exécute dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Le rognage masque la zone coupée (elle peut être restaurée) ; la suppression retire définitivement les pages.",
+    err: "Une erreur s'est produite : ",
   },
 };
 

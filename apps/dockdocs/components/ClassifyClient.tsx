@@ -5,7 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Doc = { id: string; name: string; text: string };
 type Result = { name: string; category?: string; tags?: string[]; error?: string };
 
@@ -47,6 +47,15 @@ const STR = {
     files: (n: number) => `${n} / ${MAX_FILES} arquivos`, uncategorized: "Sem categoria",
     need: "Adicione pelo menos um PDF.", noText: "sem texto extraível (digitalizado?)", err: "Algo deu errado: ",
     note: "As categorias são sugeridas pela IA a partir do texto de cada documento — ajuste conforme necessário.",
+  },
+  fr: {
+    title: "Classer et étiqueter automatiquement les PDF",
+    subtitle: "Importez une pile de PDF et laissez l'IA attribuer à chacun une catégorie et des étiquettes — factures, CV, contrats, articles — pour voir en un coup d'œil ce que contient un tas de fichiers en désordre.",
+    drop: "Glissez-déposez des PDF ici, ou cliquez pour choisir", choose: "Choisir des PDF", add: "Ajouter d'autres", reading: "Lecture…",
+    run: "Tout classer", running: "Classement en cours", reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, uncategorized: "Non classé",
+    need: "Ajoutez au moins un PDF.", noText: "aucun texte extractible (scanné ?)", err: "Une erreur est survenue : ",
+    note: "Les catégories sont suggérées par l'IA à partir du texte de chaque document — ajustez-les selon vos besoins.",
   },
 };
 

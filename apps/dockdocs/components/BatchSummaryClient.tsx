@@ -6,7 +6,7 @@ import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Summary = { executiveSummary: string; keyPoints: string[]; actionItems?: string[]; nextSteps?: string[] };
 type Doc = { id: string; name: string; text: string };
 type Result = { name: string; summary?: Summary; error?: string };
@@ -53,6 +53,16 @@ const STR = {
     keyPoints: "Pontos-chave", download: "Baixar tudo (.md)", need: "Adicione pelo menos um PDF.",
     noText: "sem texto extraível (digitalizado?)", err: "Algo deu errado: ",
     note: "Os resumos são gerados pela IA a partir de cada documento — verifique-os rapidamente. Processados um por vez para manter-se dentro dos limites.",
+  },
+  fr: {
+    title: "Résumé par lot",
+    subtitle: "Importez plusieurs rapports, articles ou contrats et obtenez un résumé concis de chacun généré par IA — résumé exécutif et points clés. Jusqu'à 5 à la fois.",
+    drop: "Glissez-déposez des PDF ici, ou cliquez pour choisir", choose: "Choisir des PDF", add: "Ajouter d'autres", reading: "Lecture en cours…",
+    run: "Tout résumer", running: "Résumé en cours", reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`,
+    keyPoints: "Points clés", download: "Tout télécharger (.md)", need: "Ajoutez au moins un PDF.",
+    noText: "aucun texte extractible (document scanné ?)", err: "Une erreur est survenue : ",
+    note: "Les résumés sont générés par IA à partir de chaque document — vérifiez-les rapidement. Traités un par un pour respecter les limites d'utilisation.",
   },
 };
 

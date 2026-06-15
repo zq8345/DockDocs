@@ -6,7 +6,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Fmt = "jpg" | "png";
 type Pg = { idx: number; thumb: string };
 
@@ -54,6 +54,17 @@ const STR = {
     all: "Selecionar tudo", none: "Não selecionar nenhuma", format: "Formato",
     convert: "Converter e baixar", working: "Convertendo…", reset: "Recomeçar",
     needOne: "Selecione pelo menos uma página.", err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "PDF en image",
+    subtitle: "Importez un PDF, choisissez les pages souhaitées, sélectionnez JPG ou PNG et téléchargez — vous voyez et sélectionnez chaque page avant de convertir.",
+    drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF", rendering: "Rendu des pages en cours…",
+    hint: "Cliquez sur les pages pour les inclure ou les exclure. Les pages sélectionnées seront converties.",
+    selected: (n: number, t: number) => `${n} sur ${t} page${t > 1 ? "s" : ""} sélectionnée${n > 1 ? "s" : ""}`,
+    all: "Tout sélectionner", none: "Ne rien sélectionner", format: "Format",
+    convert: "Convertir et télécharger", working: "Conversion en cours…", reset: "Recommencer",
+    needOne: "Sélectionnez au moins une page.", err: "Une erreur est survenue : ",
   },
 };
 

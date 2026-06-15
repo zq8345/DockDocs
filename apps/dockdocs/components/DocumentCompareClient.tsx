@@ -13,7 +13,7 @@ import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 //  D5: multi-file upload -> browser-side text extraction (pdf.js).
 //  D6: /api/compare-extract -> aligned structured fields with sources -> table.
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type DocStatus = "ok" | "empty" | "error";
 
 type DocResult = {
@@ -289,6 +289,67 @@ const STR = {
     tplDropHere: "Solte PDFs para reexecutar",
     retry: "Tentar novamente",
   },
+  fr: {
+    badge: "Moteur de comparaison · bêta",
+    h1: "Comparer des documents",
+    intro: `Déposez 2 à ${MAX_FILES} PDF du même type. DockDocs les lit dans votre navigateur, puis aligne les termes clés côte à côte — avec la ligne source derrière chaque valeur.`,
+    drop: "Glissez-déposez vos PDF ici",
+    dropHint: "Lecture locale — vos fichiers ne quittent jamais votre appareil. L'extraction des champs s'effectue sur notre serveur.",
+    choose: "Choisir des PDF",
+    samples: "Tester 3 devis exemples",
+    extracting: "Extraction du texte…",
+    typeLabel: "Type",
+    compare: "Comparer les champs",
+    comparing: "Comparaison en cours…",
+    clear: "Effacer",
+    bExtracted: "Texte extrait",
+    bEmpty: "Non reconnu (probablement scanné — nécessite l'OCR)",
+    ocrRun: "Extraire le texte avec l'OCR",
+    ocrBusy: "Lecture par OCR… (cela peut prendre quelques secondes)",
+    bError: "Échec de la lecture",
+    needTwo: "Ajoutez au moins 2 documents lisibles pour lancer la comparaison.",
+    failed: "La comparaison a échoué.",
+    comparison: "Comparaison",
+    dimension: "Dimension",
+    notRecognized: "Non reconnu",
+    tableNote:
+      "Extrait par IA. Chaque valeur affiche la ligne source exacte dont elle provient (vérifiée comme présente dans ce document). « Non reconnu » signifie que le document ne le mentionne pas — rien n'est deviné.",
+    comingNext: "Prochainement",
+    next: [
+      "Une recommandation sourcée (quelle option l'emporte et pourquoi)",
+      "Cliquez sur une valeur pour accéder à l'emplacement exact dans le PDF original",
+      "Ajoutez vos propres dimensions à comparer",
+    ],
+    docCount: (n: number) => `${n} document${n > 1 ? "s" : ""}`,
+    pages: (n: number) => `${n} page${n === 1 ? "" : "s"} · `,
+    chars: (n: number) => `${n.toLocaleString()} caractères`,
+    docTypes: [
+      { value: "quote", label: "Devis" },
+      { value: "invoice", label: "Factures" },
+      { value: "contract", label: "Contrats" },
+    ],
+    tplSave: "Enregistrer comme modèle",
+    tplSaving: "Enregistrement…",
+    tplNamePlaceholder: "Nom du modèle (ex. Devis fournisseurs)",
+    tplConfirm: "Enregistrer",
+    tplCancel: "Annuler",
+    tplMyTemplates: "Mes modèles",
+    tplDelete: "Supprimer",
+    tplLoaded: (name: string) => `Modèle : ${name}`,
+    tplRerunHint: "Déposez de nouveaux fichiers pour relancer la comparaison automatiquement",
+    tplLastRun: "Dernière exécution",
+    tplRunFiles: (n: number) => `${n} fichier${n > 1 ? "s" : ""}`,
+    tplNoRuns: "Aucune exécution pour le moment",
+    tplEditDims: "Modifier les dimensions",
+    tplDimLabel: "Libellé",
+    tplDimAdd: "+ Ajouter",
+    tplDimApply: "Appliquer",
+    tplDimReset: "Rétablir les valeurs par défaut",
+    tplNewFiles: "Nouveaux fichiers",
+    tplDims: "dims.",
+    tplDropHere: "Déposez des PDF pour relancer",
+    retry: "Réessayer",
+  },
 } as const;
 
 const REC = {
@@ -320,6 +381,13 @@ const REC = {
     disclaimer: "Este veredicto é o raciocínio da IA sobre os números da tabela abaixo — ao contrário de cada célula da tabela, não é verificado individualmente em relação à fonte. Confirme os números na tabela antes de decidir.",
     recError: "Recomendação indisponível — a tabela de comparação abaixo continua precisa.",
   },
+  fr: {
+    title: "Recommandation",
+    thinking: "Évaluation des options…",
+    recommended: "Recommandé",
+    disclaimer: "Ce verdict est le raisonnement de l'IA sur les chiffres du tableau ci-dessous — contrairement à chaque cellule du tableau, il n'est pas vérifié individuellement par rapport à la source. Confirmez les chiffres dans le tableau avant de décider.",
+    recError: "Recommandation indisponible — le tableau de comparaison ci-dessous reste précis.",
+  },
 } as const;
 
 const TRACE = {
@@ -327,6 +395,7 @@ const TRACE = {
   zh: { source: "原文出处", notLocated: "未能精确定位片段——显示全文。" },
   es: { source: "Origen", notLocated: "No se pudo localizar el fragmento exacto: se muestra el texto completo." },
   pt: { source: "Origem", notLocated: "Não foi possível localizar o trecho exato — exibindo o texto completo." },
+  fr: { source: "Source", notLocated: "Impossible de localiser l'extrait exact — affichage du texte intégral." },
 } as const;
 
 // Localized dimension labels (the backend returns English labels).

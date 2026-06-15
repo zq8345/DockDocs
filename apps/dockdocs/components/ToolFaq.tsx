@@ -1,4 +1,4 @@
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
@@ -1359,6 +1359,7 @@ export function ToolFaq({ tool, locale = "en" }: { tool: string; locale?: Locale
       </section>
     );
   }
+  if (locale === "fr") return null;
   const data = FAQS[tool];
   if (!data) return null;
   const items = data.items[locale] ?? data.items.en;

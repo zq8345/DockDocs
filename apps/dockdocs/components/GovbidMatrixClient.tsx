@@ -9,7 +9,7 @@ import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useMemo, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type RequirementType = "mandatory" | "advisory";
 type Requirement = {
   id: string;
@@ -126,6 +126,32 @@ const STR = {
     filterMandatory: "Somente obrigatórios",
     filterAdvisory: "Somente recomendados",
     noQuote: "Citação não verificável",
+  },
+  fr: {
+    title: "Matrice de conformité pour appels d'offres publics",
+    eyebrow: "PRO · IA document unique",
+    subtitle: "Importez un appel d'offres ou un cahier des charges — extrayez chaque exigence « shall/must » dans une matrice numérotée avec références de section.",
+    upload: "Déposez votre PDF d'appel d'offres ici",
+    analyze: "Extraire les exigences",
+    analyzing: "Analyse de l'appel d'offres…",
+    noText: "Aucun texte lisible trouvé. Exécutez d'abord l'OCR sur ce PDF.",
+    errPrefix: "Échec de l'analyse :",
+    retry: "Réessayer",
+    privacy: "📋 Seul le texte extrait est envoyé pour analyse. Votre fichier ne quitte jamais votre appareil.",
+    mandatory: "Obligatoire",
+    advisory: "Recommandé",
+    colId: "#",
+    colSection: "Section",
+    colRequirement: "Exigence",
+    colPage: "Page",
+    colType: "Type",
+    colQuote: "Texte source",
+    downloadCsv: "Télécharger CSV",
+    found: (n: number) => `${n} exigence${n === 1 ? "" : "s"} trouvée${n === 1 ? "" : "s"}`,
+    filterAll: "Toutes",
+    filterMandatory: "Obligatoires uniquement",
+    filterAdvisory: "Recommandées uniquement",
+    noQuote: "Citation non vérifiable",
   },
 };
 

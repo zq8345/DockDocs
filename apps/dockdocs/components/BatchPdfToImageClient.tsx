@@ -7,7 +7,7 @@ import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Fmt = "jpg" | "png";
 type Img = { name: string; data: Uint8Array };
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; pages?: number; images?: Img[]; msg?: string };
@@ -50,6 +50,15 @@ const STR = {
     files: (n: number) => `${n} / ${MAX_FILES} arquivos`, pages: (n: number) => `${n} página${n === 1 ? "" : "s"}`, failed: "falhou",
     need: "Adicione pelo menos um PDF.", err: "Algo deu errado: ",
     note: "Cada página de cada PDF vira uma imagem (renderizada a 2×). Lotes grandes demoram um momento — tudo permanece no seu dispositivo.",
+  },
+  fr: {
+    title: "PDF en images en lot",
+    subtitle: "Déposez un dossier entier de PDF et convertissez chaque page en JPG ou PNG — tout est traité dans votre navigateur et regroupé dans un seul ZIP. Rien n'est téléversé.",
+    drop: "Faites glisser des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
+    format: "Format", run: "Tout convertir", running: "Conversion en cours", download: "Télécharger le ZIP", reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichier${n === 1 ? "" : "s"}`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "échec",
+    need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
+    note: "Chaque page de chaque PDF est convertie en image (rendue à 2×). Les grands lots prennent un moment — tout reste sur votre appareil.",
   },
 };
 

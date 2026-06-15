@@ -6,7 +6,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -45,6 +45,15 @@ const STR = {
     hint: "Clique em uma página para girá-la 90°. Continue clicando para continuar girando.",
     rotateAll: "Girar tudo 90°", apply: "Aplicar e baixar", working: "Gerando PDF…",
     reset: "Recomeçar", none: "Nenhuma rotação ainda — clique em uma página.", err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Faire pivoter des pages",
+    subtitle: "Importez un PDF et cliquez sur une page pour la faire pivoter — visualisez la rotation avant de télécharger. Corrigez les numérisations de travers et les pages en paysage directement dans votre navigateur.",
+    drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF", rendering: "Rendu des pages en cours…",
+    hint: "Cliquez sur une page pour la faire pivoter de 90°. Cliquez à nouveau pour continuer.",
+    rotateAll: "Tout pivoter de 90°", apply: "Appliquer et télécharger", working: "Génération du PDF…",
+    reset: "Recommencer", none: "Aucune rotation pour l'instant — cliquez sur une page.", err: "Une erreur est survenue : ",
   },
 };
 

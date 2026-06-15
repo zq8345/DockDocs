@@ -6,7 +6,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -85,6 +85,25 @@ const STR = {
     needFile: "Escolha um PDF ou uma imagem para inserir.",
     err: "Algo deu errado: ",
     selected: "Ponto de inserção",
+  },
+  fr: {
+    title: "Ajouter une page",
+    subtitle: "Importez un PDF, choisissez l'endroit où insérer, puis ajoutez un autre PDF ou une image à cet emplacement. Tout se passe dans votre navigateur.",
+    drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF",
+    rendering: "Chargement des pages…",
+    pickSpot: "Choisissez où insérer — cliquez sur un emplacement ci-dessous.",
+    atStart: "Tout au début",
+    afterPage: (n: number) => `Après la page ${n}`,
+    insertHere: "Insérer ici ✓",
+    insertFile: "Fichier à insérer (PDF ou image)",
+    chooseInsert: "Choisir un fichier",
+    apply: "Insérer et télécharger",
+    working: "Génération du PDF…",
+    reset: "Recommencer",
+    needFile: "Choisissez un PDF ou une image à insérer.",
+    err: "Une erreur s'est produite : ",
+    selected: "Point d'insertion",
   },
 };
 

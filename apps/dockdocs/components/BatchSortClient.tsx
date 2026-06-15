@@ -6,7 +6,7 @@ import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { authHeader } from "@/lib/supabase";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
 
 const MAX_FILES = 30;
@@ -47,6 +47,15 @@ const STR = {
     files: (n: number) => `${n} / ${MAX_FILES} arquivos`, uncategorized: "Sem categoria", failed: "sem texto",
     need: "Adicione pelo menos um PDF.", err: "Algo deu errado: ",
     note: "As categorias são sugeridas pela IA a partir do texto de cada documento e podem precisar de revisão. O ZIP mantém seus arquivos originais, apenas agrupados em pastas por categoria.",
+  },
+  fr: {
+    title: "Classer des PDF",
+    subtitle: "Déposez un tas de PDF en vrac — l'IA attribue une catégorie à chacun (facture, contrat, CV, rapport…) et les range dans des dossiers au sein d'un seul ZIP, transformant un dossier chaotique en fichiers bien organisés. Vos fichiers ne quittent jamais votre appareil.",
+    drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier", add: "Ajouter d'autres", reading: "Lecture des fichiers…",
+    run: "Tout classer", running: "Classement en cours", download: "Télécharger le ZIP classé", reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, uncategorized: "Non classé", failed: "aucun texte",
+    need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
+    note: "Les catégories sont suggérées par l'IA à partir du texte de chaque document et peuvent nécessiter une vérification. Le ZIP conserve vos fichiers d'origine, simplement regroupés dans des dossiers par catégorie.",
   },
 };
 

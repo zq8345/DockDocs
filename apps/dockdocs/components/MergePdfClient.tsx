@@ -7,7 +7,7 @@ import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/
 
 import { useCallback, useRef, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { id: string; name: string; pages: number; thumb: string; file: File };
 
 const STR = {
@@ -54,6 +54,17 @@ const STR = {
     pagesLabel: (n: number) => `${n} página${n === 1 ? "" : "s"}`,
     merge: "Unir e baixar", working: "Unindo…", reset: "Recomeçar",
     needTwo: "Adicione pelo menos 2 PDFs para uni-los.", err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Fusionner des PDF",
+    subtitle: "Ajoutez vos PDF, faites-les glisser dans l'ordre souhaité et combinez-les en un seul : vous voyez chaque fichier avant de les fusionner, pas après.",
+    drop: "Glissez-déposez vos PDF ici, ou cliquez pour choisir",
+    choose: "Choisir des PDF", add: "Ajouter d'autres", rendering: "Lecture des fichiers…",
+    hint: "Faites glisser pour réorganiser. Les fichiers seront fusionnés de haut en bas et de gauche à droite.",
+    files: (n: number, p: number) => `${n} fichier${n === 1 ? "" : "s"} · ${p} page${p === 1 ? "" : "s"} au total`,
+    pagesLabel: (n: number) => `${n} page${n === 1 ? "" : "s"}`,
+    merge: "Fusionner et télécharger", working: "Fusion en cours…", reset: "Recommencer",
+    needTwo: "Ajoutez au moins 2 PDF pour les fusionner.", err: "Une erreur est survenue : ",
   },
 };
 

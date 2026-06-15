@@ -5,7 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type DocType = "invoice" | "quote" | "contract";
 type Dim = { key: string; label: string };
 type Field = { value: string | null; source: string | null };
@@ -59,6 +59,17 @@ const STR = {
     files: (n: number) => `${n} / ${MAX_FILES} arquivos`, needFile: "Adicione pelo menos um PDF.",
     err: "Algo deu errado: ",
     note: "Os campos são extraídos por IA e podem precisar de uma verificação rápida. Valores não encontrados são deixados em branco — a IA não os inventa.",
+  },
+  fr: {
+    title: "Extraction de données en lot vers une seule feuille",
+    subtitle: "Déposez tout un dossier de factures, devis ou contrats — DockDocs extrait les champs clés de chaque fichier dans un tableau unique, une ligne par document, prêt à télécharger en CSV. L'IA ne rapporte que ce qui est réellement présent.",
+    drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier", add: "Ajouter d'autres", reading: "Lecture des fichiers…",
+    type: "Type de document", invoice: "Factures", quote: "Devis", contract: "Contrats",
+    extract: "Tout extraire", extracting: "Extraction en cours", reset: "Recommencer",
+    download: "Télécharger le CSV", doc: "Document", dash: "—",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, needFile: "Ajoutez au moins un PDF.",
+    err: "Une erreur est survenue : ",
+    note: "Les champs sont extraits par l'IA et peuvent nécessiter une vérification rapide. Les valeurs introuvables sont laissées vides — l'IA ne les invente pas.",
   },
 };
 

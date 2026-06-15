@@ -7,7 +7,7 @@ import {
 
 type SaasInfoPageProps = {
   page: InfoPageData;
-  locale?: "en" | "zh" | "es" | "pt";
+  locale?: "en" | "zh" | "es" | "pt" | "fr";
   useLocalePrefix?: boolean;
 };
 
@@ -17,6 +17,7 @@ export function SaasInfoPage({
   useLocalePrefix = false,
 }: SaasInfoPageProps) {
   const zh = locale === "zh";
+  const fr = locale === "fr";
 
   const crawlLinks = zh
     ? [
@@ -24,6 +25,13 @@ export function SaasInfoPage({
         { label: "资源中心", href: "/resources", description: "按工作流浏览 PDF、OCR、转换资源。" },
         { label: "文档指南", href: "/guides", description: "阅读压缩、转换、OCR 工作流指南。" },
         { label: "FAQ", href: "/faq", description: "查看隐私、上传、OCR、AI 问题。" },
+      ]
+    : fr
+    ? [
+        { label: "Outils PDF", href: "/", description: "Retourner à la page d'accueil DockDocs." },
+        { label: "Ressources", href: "/resources", description: "Parcourir les ressources PDF, OCR et de conversion." },
+        { label: "Guides", href: "/guides", description: "Guides pas à pas sur la compression, la fusion et la conversion." },
+        { label: "FAQ", href: "/faq", description: "Questions sur la confidentialité, le téléchargement, l'OCR et l'IA." },
       ]
     : [
         { label: "PDF Tools", href: "/", description: "Return to the DockDocs homepage." },
@@ -121,10 +129,10 @@ export function SaasInfoPage({
       <section className="bg-[color:var(--surface-subtle)]">
         <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-            {zh ? "继续探索" : "Continue exploring"}
+            {zh ? "继续探索" : fr ? "Continuer à explorer" : "Continue exploring"}
           </p>
           <h2 className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
-            {zh ? "相关工具、指南和支持" : "Related tools, guides, and support"}
+            {zh ? "相关工具、指南和支持" : fr ? "Outils, guides et assistance connexes" : "Related tools, guides, and support"}
           </h2>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {crawlLinks.map((link) => (
@@ -136,7 +144,7 @@ export function SaasInfoPage({
                 <h3 className="text-[15px] font-semibold text-[color:var(--foreground)]">{link.label}</h3>
                 <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{link.description}</p>
                 <span className="mt-4 inline-block text-sm font-medium text-[color:var(--accent)] transition group-hover:translate-x-0.5">
-                  {zh ? "打开页面 →" : "Open page →"}
+                  {zh ? "打开页面 →" : fr ? "Ouvrir la page →" : "Open page →"}
                 </span>
               </a>
             ))}

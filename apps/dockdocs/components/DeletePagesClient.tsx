@@ -6,7 +6,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -49,6 +49,16 @@ const STR = {
     status: (del: number, keep: number) => `${del} para excluir · ${keep} restantes`,
     apply: "Excluir e baixar", working: "Gerando PDF…", reset: "Recomeçar",
     needKeep: "Mantenha pelo menos uma página.", del: "Será excluída", err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Supprimer des pages",
+    subtitle: "Importez un PDF et cliquez sur les pages à supprimer — voyez exactement ce qui sera retiré avant de télécharger. Tout se passe dans votre navigateur.",
+    drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF", rendering: "Chargement des pages…",
+    hint: "Cliquez sur une page pour la marquer à supprimer. Cliquez à nouveau pour la conserver.",
+    status: (del: number, keep: number) => `${del} à supprimer · ${keep} restantes`,
+    apply: "Supprimer et télécharger", working: "Génération du PDF…", reset: "Recommencer",
+    needKeep: "Conservez au moins une page.", del: "Sera supprimée", err: "Une erreur est survenue : ",
   },
 };
 

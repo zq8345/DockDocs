@@ -5,7 +5,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type PosKey = "tl" | "tc" | "tr" | "bl" | "bc" | "br";
 type Fmt = "n" | "page" | "slash" | "of";
 
@@ -57,6 +57,17 @@ const STR = {
     fmtN: "1", fmtPage: "Página 1", fmtSlash: "1 / N", fmtOf: "1 de N",
     apply: "Adicionar números e baixar", working: "Numerando…", reset: "Recomeçar", preview: "Pré-visualização ao vivo",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Ajouter des numéros de page",
+    subtitle: "Importez un PDF, choisissez où placer les numéros, leur format et les pages concernées — visualisez le résultat en temps réel avant de télécharger.",
+    drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF", rendering: "Génération de l'aperçu…",
+    position: "Position", margin: "Marge", small: "Petite", medium: "Moyenne", large: "Grande",
+    startAt: "Commencer à", format: "Format", pages: "Pages", from: "de", to: "à",
+    fmtN: "1", fmtPage: "Page 1", fmtSlash: "1 / N", fmtOf: "1 sur N",
+    apply: "Ajouter les numéros et télécharger", working: "Numérotation…", reset: "Recommencer", preview: "Aperçu en direct",
+    err: "Une erreur est survenue : ",
   },
 };
 

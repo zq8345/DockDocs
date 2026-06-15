@@ -222,7 +222,7 @@ export function splitPathname(pathname: string) {
   };
 }
 
-export function localizedHref(href: string, locale: RouteLocale, usePrefix: boolean) {
+export function localizedHref(href: string, locale: RouteLocale | (string & {}), usePrefix: boolean) {
   if (href.startsWith("#") || href.startsWith("mailto:")) {
     return href;
   }

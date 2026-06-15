@@ -5,7 +5,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Edges = { top: number; right: number; bottom: number; left: number };
 
 const STR = {
@@ -48,6 +48,16 @@ const STR = {
     reset: "Redefinir bordas", apply: "Recortar e baixar", working: "Recortando…", start: "Recomeçar",
     hint: "Arraste os controles para recortar cada borda (como % da página). A área visível é o que você mantém.",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Rogner un PDF",
+    subtitle: "Importez un PDF, rognez les marges de chaque bord grâce à un aperçu en direct, puis téléchargez — toutes les pages sont rognées de la même façon, entièrement dans votre navigateur.",
+    drop: "Faites glisser un PDF ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF", rendering: "Génération de l'aperçu…",
+    preview: "Aperçu en direct", top: "Haut", right: "Droite", bottom: "Bas", left: "Gauche",
+    reset: "Réinitialiser les bords", apply: "Rogner et télécharger", working: "Rognage en cours…", start: "Recommencer",
+    hint: "Faites glisser les curseurs pour rogner chaque bord (en % de la page). La zone claire est la partie conservée.",
+    err: "Une erreur est survenue : ",
   },
 };
 

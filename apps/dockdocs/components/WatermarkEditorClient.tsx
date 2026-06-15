@@ -6,7 +6,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type PosKey = "tl" | "tc" | "tr" | "ml" | "c" | "mr" | "bl" | "bc" | "br";
 
 // Anchor as fractions of page width / height (y measured from the BOTTOM, pdf-lib style).
@@ -61,6 +61,17 @@ const STR = {
     pages: "Páginas", from: "de", to: "até", apply: "Aplicar e baixar", working: "Aplicando…",
     reset: "Recomeçar", preview: "Pré-visualização ao vivo", needText: "Digite o texto da marca d'água.", needImg: "Escolha uma imagem.",
     nonLatin: "A marca d'água de texto suporta por enquanto letras/dígitos/símbolos latinos.", err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Filigrane PDF",
+    subtitle: "Importez un PDF, concevez un filigrane texte ou image, visualisez-le en direct sur la page, puis appliquez-le sur les pages de votre choix.",
+    drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF", rendering: "Génération de l'aperçu…",
+    text: "Texte", image: "Image", wmText: "Texte du filigrane", size: "Taille", color: "Couleur",
+    chooseImg: "Choisir une image", position: "Position", opacity: "Opacité", rotate: "Pivoter 45°",
+    pages: "Pages", from: "de", to: "à", apply: "Appliquer et télécharger", working: "Application en cours…",
+    reset: "Recommencer", preview: "Aperçu en direct", needText: "Saisissez le texte du filigrane.", needImg: "Choisissez une image.",
+    nonLatin: "Le filigrane texte prend en charge pour l'instant les lettres/chiffres/symboles latins.", err: "Une erreur est survenue : ",
   },
 };
 

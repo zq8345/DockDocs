@@ -6,7 +6,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -69,6 +69,21 @@ const STR = {
     needOne: "Mantenha pelo menos uma página.",
     page: "Página",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Réorganiser les pages",
+    subtitle: "Importez un PDF, puis faites glisser les miniatures des pages dans l'ordre souhaité. Supprimez les pages inutiles. Tout se passe dans votre navigateur.",
+    drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF",
+    rendering: "Rendu des pages en cours…",
+    hint: "Faites glisser une page pour la déplacer. Cliquez sur ✕ pour supprimer une page.",
+    apply: "Appliquer et télécharger",
+    working: "Génération du PDF…",
+    reset: "Recommencer",
+    removed: (n: number) => `${n} page${n === 1 ? "" : "s"} supprimée${n === 1 ? "" : "s"}`,
+    needOne: "Conservez au moins une page.",
+    page: "Page",
+    err: "Une erreur est survenue : ",
   },
 };
 

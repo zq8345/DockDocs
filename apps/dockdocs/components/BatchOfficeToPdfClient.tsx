@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; blob?: Blob; msg?: string };
 
@@ -94,6 +94,23 @@ const STR = {
     hint: "Word, PowerPoint, Excel",
     note: "Os arquivos são convertidos para PDF no nosso servidor (o mesmo motor LibreOffice usado pelas ferramentas de arquivo único) e devolvidos — não são armazenados. Arquivos acima de 5 MB não são suportados em lote; use o conversor de arquivo único para esses.",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Office vers PDF en lot",
+    subtitle:
+      "Convertissez un dossier entier de fichiers Word, PowerPoint et Excel en PDF en une seule fois — chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP.",
+    run: "Tout convertir",
+    running: "Conversion en cours",
+    download: "Télécharger le ZIP",
+    reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`,
+    done: "terminé",
+    failed: "échec",
+    need: "Ajoutez au moins un fichier Office.",
+    tooBig: "Plus de 5 Mo — utilisez l'outil fichier unique",
+    hint: "Word, PowerPoint, Excel",
+    note: "Les fichiers sont convertis en PDF sur notre serveur (le même moteur LibreOffice que les outils fichier unique) et renvoyés — ils ne sont pas conservés. Les fichiers de plus de 5 Mo ne sont pas pris en charge en lot ; utilisez le convertisseur fichier unique pour ceux-là.",
+    err: "Une erreur s'est produite : ",
   },
 };
 

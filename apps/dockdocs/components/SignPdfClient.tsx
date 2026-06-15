@@ -5,7 +5,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type PosKey = "tl" | "tc" | "tr" | "ml" | "c" | "mr" | "bl" | "bc" | "br";
 
 const POS: Record<PosKey, { x: number; y: number }> = {
@@ -47,6 +47,14 @@ const STR = {
     apply: "Assinar e baixar", working: "Assinando…", reset: "Recomeçar", preview: "Prévia ao vivo", sig: "Sua assinatura",
     needSig: "Primeiro desenhe ou digite uma assinatura.", err: "Algo deu errado: ",
     drawHint: "Desenhe com o mouse ou o dedo.",
+  },
+  fr: {
+    title: "Signer un PDF", subtitle: "Importez un PDF, dessinez ou saisissez votre signature, positionnez-la sur la page et téléchargez — entièrement dans votre navigateur.",
+    drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir", choose: "Choisir un PDF", rendering: "Rendu de la page…",
+    draw: "Dessiner", type: "Saisir", clear: "Effacer", typed: "Tapez votre nom", page: "Page", position: "Position", size: "Taille",
+    apply: "Signer et télécharger", working: "Signature en cours…", reset: "Recommencer", preview: "Aperçu en direct", sig: "Votre signature",
+    needSig: "Veuillez d'abord dessiner ou saisir une signature.", err: "Une erreur est survenue : ",
+    drawHint: "Dessinez avec la souris ou le doigt.",
   },
 };
 

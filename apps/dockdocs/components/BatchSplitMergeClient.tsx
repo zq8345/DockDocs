@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "merge" | "split";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; parts?: number; msg?: string };
 
@@ -68,6 +68,20 @@ const STR = {
     needTwo: "Adicione pelo menos 2 PDFs para combinar.", needFile: "Adicione pelo menos um PDF.",
     note: "Ao combinar, a ordem de carregamento é mantida. A divisão separa cada PDF em blocos de N páginas. Tudo permanece no seu dispositivo.",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Diviser ou fusionner des PDF en lot",
+    titleSplit: "Division en lot",
+    subSplit: "Divisez chaque PDF d'un dossier entier en fichiers plus petits de N pages, le tout dans votre navigateur, prêt à télécharger. Rien n'est envoyé.",
+    subtitle: "Fusionnez un dossier entier de PDF en un seul, ou divisez chaque PDF en fichiers plus petits, le tout dans votre navigateur, prêt à télécharger. Rien n'est envoyé.",
+    drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
+    merge: "Fusionner en un seul", split: "Diviser chacun",
+    every: "Pages par fichier", order: "Les fichiers sont fusionnés dans l'ordre affiché.",
+    run: "Lancer", running: "Traitement en cours", dlMerge: "Télécharger le PDF fusionné", dlSplit: "Télécharger le ZIP", reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, parts: (n: number) => `${n} partie${n === 1 ? "" : "s"}`, failed: "échoué",
+    needTwo: "Ajoutez au moins 2 PDF à fusionner.", needFile: "Ajoutez au moins un PDF.",
+    note: "La fusion conserve l'ordre de chargement. La division découpe chaque PDF en blocs de N pages. Tout reste sur votre appareil.",
+    err: "Une erreur s'est produite : ",
   },
 };
 

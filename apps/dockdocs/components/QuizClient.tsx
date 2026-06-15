@@ -7,7 +7,7 @@ import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Card = { q: string; a: string };
 
 const STR = {
@@ -54,6 +54,17 @@ const STR = {
     noText: "Nenhum texto encontrado neste PDF. Se for um documento digitalizado, execute o OCR primeiro.",
     err: "Algo deu errado: ",
     note: "Os cartões são gerados pela IA a partir do seu documento. Verifique-os rapidamente antes de estudar.",
+  },
+  fr: {
+    title: "Fiches de révision PDF",
+    subtitle: "Importez un chapitre de manuel, des notes de cours ou un guide et transformez-les en fiches de révision — questions et réponses tirées uniquement de votre document. Retournez une fiche pour vous tester.",
+    drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF", reading: "Lecture…", count: "Fiches", change: "Remplacer",
+    generate: "Générer les fiches", generating: "Génération…", reset: "Recommencer",
+    flip: "Appuyez pour retourner", question: "Q", answer: "R",
+    noText: "Aucun texte trouvé dans ce PDF. S'il s'agit d'un scan, effectuez d'abord une reconnaissance OCR.",
+    err: "Une erreur est survenue : ",
+    note: "Les fiches sont générées par l'IA à partir de votre document. Vérifiez-les rapidement avant de commencer à étudier.",
   },
 };
 

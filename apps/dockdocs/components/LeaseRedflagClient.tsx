@@ -9,7 +9,7 @@ import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useMemo, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type RiskLevel = "high" | "medium" | "low";
 type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string };
 
@@ -119,6 +119,32 @@ const STR = {
     errPrefix: "Não foi possível concluir a análise: ",
     retry: "Tentar novamente",
     privacy: "Seu contrato de aluguel é lido no seu navegador; apenas o texto extraído é enviado para análise.",
+  },
+  fr: {
+    title: "Analyse des clauses abusives du bail",
+    subtitle:
+      "Téléversez votre bail (résidentiel ou commercial) et obtenez une liste en langage clair des clauses risquées, abusives ou manquantes — chacune signalée en rouge / orange / vert, citée de votre document, avec les questions à poser avant de signer.",
+    proBadge: "PRO",
+    drop: "Glissez-déposez un PDF de bail ici, ou cliquez pour choisir",
+    choose: "Choisir le PDF du bail",
+    extracting: "Lecture du bail…",
+    pagesChars: (p: number, c: number) => `${p} page${p > 1 ? "s" : ""} · ${c.toLocaleString()} caractères`,
+    noText: "Aucun texte sélectionnable trouvé. S'agit-il d'un bail numérisé ? Appliquez d'abord l'OCR.",
+    tooLong: `Ce bail dépasse la limite de ${MAX_CHARS.toLocaleString()} caractères ; seule la première partie sera analysée.`,
+    analyze: "Rechercher les clauses problématiques",
+    analyzing: "Analyse en cours…",
+    result: (n: number) => `${n} clause${n > 1 ? "s" : ""} à examiner`,
+    noRisks: "Aucune clause problématique évidente n'a été détectée. Cela ne garantit pas que le bail est équitable — lisez-le intégralement et envisagez de consulter un avocat.",
+    disclaimer: "Il s'agit d'une analyse automatisée destinée à aider les locataires à repérer les clauses méritant attention. Elle ne constitue pas un conseil juridique. Pour toute question importante, consultez un avocat ou une association de défense des droits des locataires.",
+    levelHigh: "Élevé", levelMedium: "Moyen", levelLow: "Faible",
+    quoteLabel: "Extrait de votre bail",
+    notLocated: "Signalé comme protection absente ou manquante (aucun extrait).",
+    whyLabel: "Pourquoi c'est important",
+    suggestionLabel: "Ce qu'il faut demander",
+    reset: "Analyser un autre bail",
+    errPrefix: "Impossible de terminer l'analyse : ",
+    retry: "Réessayer",
+    privacy: "Votre bail est lu dans votre navigateur ; seul le texte extrait est envoyé pour analyse.",
   },
 };
 

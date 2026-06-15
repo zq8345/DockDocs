@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { authHeader } from "@/lib/supabase";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 
 const STR = {
   en: {
@@ -89,6 +89,27 @@ const STR = {
       ["Como funciona?", "Cole uma URL e renderizamos a página em PDF usando o motor de navegador do CloudConvert; depois é baixado para o seu dispositivo."],
       ["Quais páginas funcionam melhor?", "Páginas públicas e principalmente estáticas (artigos, documentos, faturas). Páginas que exigem login ou usam muito JavaScript podem não renderizar completamente."],
       ["É gratuito?", "Sim — converter uma página web em PDF é gratuito."],
+    ] as const,
+  },
+  fr: {
+    title: "Convertir une page web en PDF",
+    subtitle: "Collez une URL publique et téléchargez-la en PDF propre — rendu par un vrai moteur de navigateur. Sans upload, sans installation.",
+    label: "URL de la page",
+    placeholder: "https://example.com/article",
+    convert: "Convertir en PDF",
+    working: "Rendu de la page en cours…",
+    done: "Terminé — votre PDF a été téléchargé.",
+    again: "Convertir une autre",
+    errInvalid: "Saisissez une URL complète commençant par http:// ou https://.",
+    errFailed: "Impossible de lancer la conversion. Veuillez réessayer.",
+    errConvert: "Impossible d'afficher cette page. Elle bloque peut-être l'accès automatisé ou nécessite une connexion.",
+    errTimeout: "La page a mis trop longtemps à s'afficher. Essayez une page plus simple ou plus légère.",
+    note: "Idéal pour les pages publiques et autonomes. Les pages nécessitant une connexion ou reposant fortement sur des scripts peuvent ne pas s'afficher entièrement.",
+    faqTitle: "Page web en PDF — questions fréquentes",
+    faqs: [
+      ["Comment ça fonctionne ?", "Collez une URL et nous affichons la page en PDF grâce au moteur de navigateur de CloudConvert, puis le fichier est téléchargé sur votre appareil."],
+      ["Quelles pages fonctionnent le mieux ?", "Les pages publiques et majoritairement statiques (articles, documentation, factures). Les pages nécessitant une connexion ou utilisant beaucoup de JavaScript peuvent ne pas s'afficher entièrement."],
+      ["Est-ce gratuit ?", "Oui — convertir une page web en PDF est gratuit."],
     ] as const,
   },
 };

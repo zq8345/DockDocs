@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Angle = 90 | 180 | 270;
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
@@ -56,6 +56,17 @@ const STR = {
     need: "Adicione pelo menos um PDF.",
     note: "Cada página de cada PDF é girada pelo ângulo escolhido. PDFs criptografados são ignorados. Tudo permanece no seu dispositivo.",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Rotation par lot",
+    subtitle: "Corrigez en une seule fois tout un dossier de scans de travers ou à l'envers : faites pivoter chaque page de chaque PDF et regroupez le tout dans un seul ZIP. Tout se passe dans votre navigateur ; rien n'est envoyé.",
+    drop: "Déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
+    rotate: "Rotation de",
+    run: "Tout faire pivoter", running: "Rotation en cours", download: "Télécharger le ZIP", reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, done: "pivoté", failed: "échec",
+    need: "Ajoutez au moins un PDF.",
+    note: "Chaque page de chaque PDF est pivotée selon l'angle choisi. Les PDF chiffrés sont ignorés. Tout reste sur votre appareil.",
+    err: "Une erreur est survenue : ",
   },
 };
 

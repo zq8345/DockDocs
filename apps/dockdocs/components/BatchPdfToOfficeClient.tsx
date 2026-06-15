@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Format = "word" | "excel";
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; blob?: Blob; msg?: string };
@@ -87,6 +87,24 @@ const STR = {
     tooBig: "Mais de 5 MB — use a ferramenta de arquivo único",
     note: "O texto e as tabelas são extraídos para um arquivo editável. PDFs digitalizados ou com muito design podem não converter perfeitamente. Arquivos acima de 5 MB não são suportados em lote — use o conversor de arquivo único para esses.",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "PDF en Word / Excel en lot",
+    subtitle:
+      "Convertissez un dossier entier de PDF en fichiers Word ou Excel modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP.",
+    word: "En Word (.docx)",
+    excel: "En Excel (.xlsx)",
+    run: "Tout convertir",
+    running: "Conversion en cours",
+    download: "Télécharger le ZIP",
+    reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`,
+    done: "terminé",
+    failed: "échec",
+    need: "Ajoutez au moins un PDF.",
+    tooBig: "Plus de 5 Mo — utilisez l'outil fichier unique",
+    note: "Le texte et les tableaux sont extraits dans un fichier modifiable. Les PDF numérisés ou très mis en page peuvent ne pas se convertir parfaitement. Les fichiers de plus de 5 Mo ne sont pas pris en charge en lot — utilisez le convertisseur fichier unique pour ceux-là.",
+    err: "Une erreur est survenue : ",
   },
 };
 
@@ -188,7 +206,7 @@ export function BatchPdfToOfficeClient({ locale = "en" }: { locale?: Locale }) {
       a.click();
       URL.revokeObjectURL(url);
     } catch {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "fr" ? "Impossible de créer le téléchargement — veuillez réessayer." : locale === "pt" ? "Não foi possível criar o download — tente novamente." : "Could not build the download — please try again.");
     }
   };
 
@@ -214,7 +232,7 @@ export function BatchPdfToOfficeClient({ locale = "en" }: { locale?: Locale }) {
       />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} privacyLabel={locale === "zh" ? "在我们的服务器转换" : locale === "es" ? "Convertido en nuestro servidor" : "Converted on our server"} />
+        <BatchUploadBox locale={locale} onFiles={addFiles} privacyLabel={locale === "zh" ? "在我们的服务器转换" : locale === "es" ? "Convertido en nuestro servidor" : locale === "fr" ? "Converti sur notre serveur" : locale === "pt" ? "Convertido no nosso servidor" : "Converted on our server"} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

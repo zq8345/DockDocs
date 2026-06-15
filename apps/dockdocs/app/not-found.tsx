@@ -13,6 +13,7 @@ export default function NotFound() {
   const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
   const locale = getLocale(pathname);
   const zh = locale === "zh";
+  const fr = locale === "fr";
 
   return (
     <main className="mx-auto min-h-[60vh] max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
@@ -20,19 +21,21 @@ export default function NotFound() {
         404
       </p>
       <h1 className="mt-3 text-3xl font-semibold text-[color:var(--foreground)]">
-        {zh ? "页面不存在" : "Page not found"}
+        {zh ? "页面不存在" : fr ? "Page introuvable" : "Page not found"}
       </h1>
       <p className="mt-4 max-w-2xl text-base leading-7 text-[color:var(--muted)]">
         {zh
           ? "你请求的 DockDocs 页面不存在或已被移动。"
+          : fr
+          ? "La page DockDocs demandée n'existe pas ou a été déplacée."
           : "The requested DockDocs page is unavailable or has been moved."}
       </p>
       <div className="mt-6">
         <a
-          href={zh ? "/zh/" : "/"}
+          href={zh ? "/zh/" : fr ? "/fr/" : "/"}
           className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90"
         >
-          {zh ? "回到首页" : "Back to home"}
+          {zh ? "回到首页" : fr ? "Retour à l'accueil" : "Back to home"}
         </a>
       </div>
     </main>

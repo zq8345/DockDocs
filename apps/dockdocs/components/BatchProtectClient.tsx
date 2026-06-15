@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
 const MAX_FILES = 30;
@@ -60,6 +60,18 @@ const STR = {
     needFile: "Adicione pelo menos um PDF.", needPw: "Insira uma senha válida (4 a 32: letras, dígitos e sublinhado).",
     note: "Cada PDF exigirá esta senha para ser aberto. PDFs já criptografados são ignorados. Tudo permanece no seu dispositivo.",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Chiffrement en lot",
+    subtitle: "Définissez un seul mot de passe et verrouillez un dossier entier de PDF : chacun est chiffré dans votre navigateur et regroupé dans un unique ZIP. Rien n'est envoyé.",
+    drop: "Faites glisser vos PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
+    pw: "Mot de passe", pwPlaceholder: "Mot de passe pour ouvrir les fichiers", show: "Afficher", hide: "Masquer",
+    pwRule: "De 4 à 32 caractères : lettres, chiffres et trait de soulignement (_).",
+    run: "Tout chiffrer", running: "Chiffrement en cours", download: "Télécharger le ZIP", reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, done: "chiffré", failed: "échec",
+    needFile: "Ajoutez au moins un PDF.", needPw: "Saisissez un mot de passe valide (4 à 32 : lettres, chiffres et trait de soulignement).",
+    note: "Chaque PDF nécessitera ce mot de passe pour être ouvert. Les PDF déjà chiffrés sont ignorés. Tout reste sur votre appareil.",
+    err: "Une erreur est survenue : ",
   },
 };
 

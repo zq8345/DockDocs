@@ -5,7 +5,7 @@ import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "sequence" | "replace";
 type Item = { id: string; name: string; file: File };
 
@@ -55,6 +55,17 @@ const STR = {
     download: "Baixar ZIP renomeado", reset: "Recomeçar",
     files: (n: number) => `${n} / ${MAX_FILES} arquivos`, preview: "Pré-visualização", need: "Adicione pelo menos um PDF.",
     note: "Renomear altera apenas os nomes dos arquivos — o conteúdo dos PDFs não é modificado. Tudo permanece no seu dispositivo.",
+  },
+  fr: {
+    title: "Renommer en masse",
+    subtitle: "Déposez un dossier entier et renommez tous les fichiers en une fois — selon un modèle numéroté ou par rechercher-remplacer. Les fichiers eux-mêmes ne sont pas modifiés ; vous téléchargez un ZIP avec les nouveaux noms.",
+    drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
+    seq: "Numéroté", rep: "Rechercher et remplacer",
+    base: "Nom de base", basePlaceholder: "ex. facture", start: "Commencer à",
+    find: "Rechercher", replace: "Remplacer par", findPlaceholder: "texte dans le nom du fichier", replacePlaceholder: "nouveau texte",
+    download: "Télécharger le ZIP renommé", reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, preview: "Aperçu", need: "Ajoutez au moins un PDF.",
+    note: "Le renommage ne modifie que les noms de fichiers — le contenu des PDF reste inchangé. Tout reste sur votre appareil.",
   },
 };
 

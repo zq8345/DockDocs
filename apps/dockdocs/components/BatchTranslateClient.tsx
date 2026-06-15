@@ -10,7 +10,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; translation?: string; msg?: string };
 
@@ -105,6 +105,24 @@ const STR = {
     tooLong: "Muito longo (mais de 14k caracteres)",
     note: "Cada PDF é lido no seu navegador; apenas o texto extraído é enviado para tradução. A saída é texto simples (.txt), um arquivo por PDF — o layout não é preservado. PDFs digitalizados precisam de OCR primeiro. Conta para o seu limite diário de IA.",
     err: "Algo deu errado: ",
+  },
+  fr: {
+    title: "Traduire des PDF en lot",
+    subtitle:
+      "Traduisez un dossier entier de PDF dans une seule langue en une seule fois — le texte de chacun est traduit et regroupé dans un seul fichier ZIP de fichiers .txt.",
+    target: "Traduire en",
+    run: "Tout traduire",
+    running: "Traduction en cours",
+    download: "Télécharger le ZIP",
+    reset: "Recommencer",
+    files: (n: number) => `${n} / ${MAX_FILES} fichiers`,
+    done: "terminé",
+    failed: "échec",
+    need: "Ajoutez au moins un PDF.",
+    noText: "Aucun texte sélectionnable (numérisé ?)",
+    tooLong: "Trop long (plus de 14 000 caractères)",
+    note: "Chaque PDF est lu dans votre navigateur ; seul le texte extrait est envoyé pour traduction. Le résultat est en texte brut (.txt), un fichier par PDF — la mise en page n'est pas conservée. Les PDF numérisés nécessitent une OCR au préalable. Compte dans votre limite IA quotidienne.",
+    err: "Une erreur s'est produite : ",
   },
 };
 

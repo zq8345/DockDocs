@@ -5,7 +5,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 // Boxes are stored in NORMALIZED page fractions (0–1) so they map to any render scale.
 type Box = { id: string; page: number; x: number; y: number; w: number; h: number; auto?: boolean };
 type Pg = { idx: number; url: string; ratio: number }; // ratio = height / width
@@ -96,6 +96,20 @@ const STR = {
     needBox: "Adicione pelo menos uma redação primeiro.",
     note: "O resultado é um PDF de imagem achatada: o conteúdo redigido é removido permanentemente e o texto da página não pode mais ser selecionado — é exatamente isso que o torna irrecuperável.",
     err: "Algo deu errado: ", tooMany: `Este PDF tem mais de ${MAX_PAGES} páginas. Divida-o primeiro e depois redija.`,
+  },
+  fr: {
+    title: "Caviarder un PDF",
+    subtitle: "Masquez définitivement les noms, numéros et tout texte sensible, puis téléchargez une copie où ces informations ont été véritablement supprimées. Contrairement à un cadre noir sous lequel on peut copier le texte, DockDocs aplatit chaque page en image afin que le contenu masqué soit détruit pour de bon. Fonctionne dans votre navigateur ; votre fichier ne quitte jamais votre appareil.",
+    drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir",
+    choose: "Choisir un PDF", rendering: "Rendu des pages en cours…",
+    hint: "Faites glisser sur une page pour noircir une zone. Les éléments suggérés automatiquement sont pré-marqués — cliquez sur le ✕ d'un cadre pour le supprimer.",
+    autoFound: (n: number) => `${n} élément${n === 1 ? "" : "s"} potentiellement sensible${n === 1 ? "" : "s"} détecté${n === 1 ? "" : "s"} automatiquement (e-mails, téléphones, numéros de sécurité sociale, cartes, IP). Vérifiez et ajoutez les vôtres.`,
+    autoNone: "Aucun e-mail ni numéro évident détecté automatiquement — faites glisser sur les pages pour caviarder manuellement.",
+    boxes: (n: number) => `${n} caviardage${n === 1 ? "" : "s"}`,
+    clear: "Tout effacer", apply: "Appliquer et télécharger", working: "Suppression et aplatissement…", reset: "Recommencer",
+    needBox: "Ajoutez au moins un caviardage d'abord.",
+    note: "Le résultat est un PDF image aplati : le contenu caviardé est supprimé définitivement et le texte de la page n'est plus sélectionnable — c'est précisément ce qui le rend irrécupérable.",
+    err: "Une erreur est survenue : ", tooMany: `Ce PDF contient plus de ${MAX_PAGES} pages. Divisez-le d'abord, puis caviardez-le.`,
   },
 };
 
