@@ -816,7 +816,7 @@ export default async function LocalizedRoute({
   // uiLocale: en|zh fallback for surfaces not yet translated (blog, geo, etc.)
   // extLocale: en|zh|es|pt for workspace components that support Spanish/Portuguese
   const uiLocale: "en" | "zh" = rawLocale === "zh" ? "zh" : "en";
-  const esLocale: Locale | "es" | "pt" = rawLocale === "zh" ? "zh" : rawLocale === "es" ? "es" : rawLocale === "pt" ? "pt" : "en";
+  const esLocale: Locale | "es" | "pt" | "fr" = rawLocale === "zh" ? "zh" : rawLocale === "es" ? "es" : rawLocale === "pt" ? "pt" : (rawLocale as string) === "fr" ? "fr" : "en";
 
   const programmaticGeoRoute = getLocalizedProgrammaticGeoRoute(rawSlug);
   if (programmaticGeoRoute) {
@@ -879,7 +879,7 @@ export default async function LocalizedRoute({
   // Indexable tools that render a custom client but aren't in toolSlugs
   // (sign-pdf is in toolSlugs and handled above; these are not): lightweight schema.
   const extraJsonLd = EXTRA_TOOL_SLUGS.includes(slug) ? (
-    <ExtraToolJsonLd slug={slug} locale={esLocale as "en" | "zh" | "es" | "pt"} />
+    <ExtraToolJsonLd slug={slug} locale={esLocale as "en" | "zh" | "es" | "pt" | "fr"} />
   ) : null;
 
   if (slug === "chat-with-pdf") {
@@ -1134,19 +1134,20 @@ export default async function LocalizedRoute({
   return <LocalizedHome locale={rawLocale} />;
 }
 
-function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" }) {
+function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
   const zh = locale === "zh";
   const es = locale === "es";
   const pt = locale === "pt";
+  const fr = locale === "fr";
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
       <div className="mx-auto max-w-md">
         <div className="text-center">
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent-strong)]">
-            {zh ? "账户" : es ? "Cuenta" : pt ? "Conta" : "Account"}
+            {zh ? "账户" : es ? "Cuenta" : pt ? "Conta" : fr ? "Compte" : "Account"}
           </p>
           <h1 className="mt-4 text-[28px] font-semibold tracking-[-0.014em]">
-            {zh ? "登录 DockDocs" : es ? "Iniciar sesión en DockDocs" : pt ? "Entrar no DockDocs" : "Sign in to DockDocs"}
+            {zh ? "登录 DockDocs" : es ? "Iniciar sesión en DockDocs" : pt ? "Entrar no DockDocs" : fr ? "Connexion à DockDocs" : "Sign in to DockDocs"}
           </h1>
           <p className="mt-3 text-[14px] leading-relaxed text-[color:var(--muted)]">
             {zh
@@ -1155,6 +1156,8 @@ function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" }) {
               ? "Accede a tu área de trabajo, gestiona la facturación y mantén el historial de documentos en todos tus dispositivos."
               : pt
               ? "Acesse seu espaço de trabalho, gerencie assinaturas e mantenha o histórico de documentos em todos os seus dispositivos."
+              : fr
+              ? "Accédez à votre espace de travail, gérez la facturation et conservez l'historique de vos documents sur tous vos appareils."
               : "Access your workspace, manage billing, and keep your document history across devices."}
           </p>
         </div>
@@ -1187,11 +1190,12 @@ function getLocalizedProgrammaticGeoRoute(rawSlug?: string[]) {
   return null;
 }
 
-function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" }) {
+function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
   const copy = getRuntimeCopy(locale).chat;
   const zh = locale === "zh";
   const es = locale === "es";
   const pt = locale === "pt";
+  const fr = locale === "fr";
   const url = `https://dockdocs.app${localizedPath(locale, "chat-with-pdf")}`;
   const schema = {
     "@context": "https://schema.org",
@@ -1211,7 +1215,7 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" }) {
         "@id": `${url}#breadcrumb`,
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "DockDocs", item: `https://dockdocs.app${localizedPath(locale, "")}` },
-          { "@type": "ListItem", position: 2, name: zh ? "PDF 问答" : es ? "Chat con PDF" : pt ? "Chat com PDF" : "Chat with PDF", item: url },
+          { "@type": "ListItem", position: 2, name: zh ? "PDF 问答" : es ? "Chat con PDF" : pt ? "Chat com PDF" : fr ? "Chat avec PDF" : "Chat with PDF", item: url },
         ],
       },
     ],
@@ -1224,7 +1228,7 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" }) {
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
           <span>/</span>
-          <span className="font-medium text-[color:var(--foreground)]">{zh ? "PDF 问答" : es ? "Chat con PDF" : pt ? "Chat com PDF" : "Chat with PDF"}</span>
+          <span className="font-medium text-[color:var(--foreground)]">{zh ? "PDF 问答" : es ? "Chat con PDF" : pt ? "Chat com PDF" : fr ? "Chat avec PDF" : "Chat with PDF"}</span>
         </div>
 
         <h1 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
@@ -1244,11 +1248,12 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" }) {
   );
 }
 
-function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" }) {
+function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
   const copy = getRuntimeCopy(locale).summary;
   const zh = locale === "zh";
   const es = locale === "es";
   const pt = locale === "pt";
+  const fr = locale === "fr";
   const url = `https://dockdocs.app${localizedPath(locale, "ai-summary")}`;
   const summaryFaqs =
     "faqs" in copy && Array.isArray((copy as { faqs?: unknown }).faqs)
@@ -1285,7 +1290,7 @@ function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" }) {
         "@id": `${url}#breadcrumb`,
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "DockDocs", item: `https://dockdocs.app${localizedPath(locale, "")}` },
-          { "@type": "ListItem", position: 2, name: zh ? "AI 摘要" : es ? "Resumen IA" : pt ? "Resumo IA" : "AI Summary", item: url },
+          { "@type": "ListItem", position: 2, name: zh ? "AI 摘要" : es ? "Resumen IA" : pt ? "Resumo IA" : fr ? "Résumé IA" : "AI Summary", item: url },
         ],
       },
     ],
@@ -1298,7 +1303,7 @@ function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" }) {
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
           <span>/</span>
-          <span className="font-medium text-[color:var(--foreground)]">{zh ? "AI 摘要" : es ? "Resumen IA" : pt ? "Resumo IA" : "AI Summary"}</span>
+          <span className="font-medium text-[color:var(--foreground)]">{zh ? "AI 摘要" : es ? "Resumen IA" : pt ? "Resumo IA" : fr ? "Résumé IA" : "AI Summary"}</span>
         </div>
 
         <h1 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
@@ -1386,15 +1391,15 @@ function LocalizedRuntimeTool({
   );
 }
 
-function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" }) {
+function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
   return <DashboardWorkspace locale={locale} />;
 }
 
-function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" }) {
+function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(locale === "zh" ? "zh" : "en")) }} />
-      <PricingPlans locale={locale === "zh" ? "zh" : locale === "es" ? "es" : locale === "pt" ? "pt" : "en"} />
+      <PricingPlans locale={locale === "zh" ? "zh" : locale === "es" ? "es" : locale === "pt" ? "pt" : locale === "fr" ? "fr" : "en"} />
     </>
   );
 }
@@ -1485,7 +1490,7 @@ const localizedTools = [
   { slug: "protect-pdf", icon: "PR", tier: "FREE", group: { en: "Security", zh: "安全" }, en: "Protect PDF", zh: "加密 PDF", description: { en: "Add password protection.", zh: "为 PDF 添加密码保护。" } },
 ] as const;
 
-function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" }) {
+function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" | "fr" }) {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema()) }} />
@@ -1552,9 +1557,23 @@ const aiCopy = {
       { t: "Fluxo de trabalho", d: "Encadeie upload, OCR, resumo e exportação em uma única etapa." },
     ],
   },
+  fr: {
+    title: "Espace de travail IA pour documents",
+    description: "Organisez, convertissez, appliquez l'OCR et travaillez avec des documents PDF dans l'espace de travail IA de DockDocs.",
+    eyebrow: "Espace de travail IA",
+    heroTitle: "Espace de travail IA pour PDF : OCR, résumés et Chat avec PDF.",
+    heroDescription:
+      "DockDocs priorise les outils PDF. L'espace de travail IA intervient quand un document nécessite de l'OCR, un résumé, des questions fondées ou plusieurs étapes.",
+    cards: [
+      { t: "OCR", d: "Extrayez du texte sélectionnable de PDFs numérisés ou composés uniquement d'images." },
+      { t: "Résumé IA", d: "Transformez de longs rapports en quelques notes exploitables." },
+      { t: "Chat avec PDF", d: "Posez des questions sur les clauses, dates et chiffres — chaque réponse cite la page." },
+      { t: "Flux de travail", d: "Enchaînez téléversement, OCR, résumé et export en une seule passe." },
+    ],
+  },
 } as const;
 
-function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" }) {
+function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
   const copy = aiCopy[locale] ?? aiCopy.en;
 
   return (
@@ -1572,7 +1591,7 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" }) {
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <ButtonLink href={localizedPath(locale, "")}>
-              {locale === "zh" ? "进入文档工作区" : locale === "es" ? "Explorar herramientas PDF" : locale === "pt" ? "Explorar ferramentas PDF" : "Browse PDF tools"}
+              {locale === "zh" ? "进入文档工作区" : locale === "es" ? "Explorar herramientas PDF" : locale === "pt" ? "Explorar ferramentas PDF" : locale === "fr" ? "Parcourir les outils PDF" : "Browse PDF tools"}
             </ButtonLink>
             <ButtonLink href={localizedPath(locale, "ocr-pdf")} variant="outline">
               OCR PDF
@@ -1625,21 +1644,26 @@ const sitemapCopy = {
     description: "Mapa do site localizado das páginas do DockDocs.",
     heading: "Mapa do site localizado do DockDocs.",
   },
+  fr: {
+    title: "Plan du site",
+    description: "Plan du site localisé des pages de DockDocs.",
+    heading: "Plan du site localisé de DockDocs.",
+  },
 } as const;
 
-function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" }) {
+function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
   const copy = sitemapCopy[locale] ?? sitemapCopy.en;
   const contentLocale: Locale = locale === "zh" ? "zh" : "en";
   const groups = [
     {
-      title: locale === "zh" ? "博客指南" : locale === "es" ? "Guías del blog" : locale === "pt" ? "Guias do blog" : "Blog Guides",
+      title: locale === "zh" ? "博客指南" : locale === "es" ? "Guías del blog" : locale === "pt" ? "Guias do blog" : locale === "fr" ? "Guides du blog" : "Blog Guides",
       links: blogArticles.map((article) => ({
         name: getBlogArticleContent(article, contentLocale).title,
         href: blogArticlePath(article.slug, contentLocale),
       })),
     },
     {
-      title: locale === "zh" ? "GEO 指南页" : locale === "es" ? "Guías GEO programáticas" : locale === "pt" ? "Guias GEO programáticos" : "Programmatic GEO Guides",
+      title: locale === "zh" ? "GEO 指南页" : locale === "es" ? "Guías GEO programáticas" : locale === "pt" ? "Guias GEO programáticos" : locale === "fr" ? "Guides GEO programmatiques" : "Programmatic GEO Guides",
       links: getProgrammaticGeoPageSeeds("guides").map((seed) => {
         const page = getProgrammaticGeoPage(contentLocale, seed.surface, seed.slug);
         return {
@@ -1649,7 +1673,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" }) {
       }),
     },
     {
-      title: locale === "zh" ? "GEO 资源页" : locale === "es" ? "Recursos GEO programáticos" : locale === "pt" ? "Recursos GEO programáticos" : "Programmatic GEO Resources",
+      title: locale === "zh" ? "GEO 资源页" : locale === "es" ? "Recursos GEO programáticos" : locale === "pt" ? "Recursos GEO programáticos" : locale === "fr" ? "Ressources GEO programmatiques" : "Programmatic GEO Resources",
       links: getProgrammaticGeoPageSeeds("resources").map((seed) => {
         const page = getProgrammaticGeoPage(contentLocale, seed.surface, seed.slug);
         return {
@@ -1659,7 +1683,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" }) {
       }),
     },
     {
-      title: locale === "zh" ? "GEO 资源中心" : locale === "es" ? "Centros GEO" : locale === "pt" ? "Centros GEO" : "GEO Hubs",
+      title: locale === "zh" ? "GEO 资源中心" : locale === "es" ? "Centros GEO" : locale === "pt" ? "Centros GEO" : locale === "fr" ? "Hubs GEO" : "GEO Hubs",
       links: (geoPageSlugs as readonly GeoPageSlug[]).map((geoSlug) => {
         const hub = getGeoHub(contentLocale, geoSlug);
         return {
@@ -1674,7 +1698,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" }) {
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <Container className="py-16">
-          <p className="font-mono text-[12px] text-[color:var(--faint)]">// {locale === "zh" ? "站点地图" : locale === "es" ? "mapa del sitio" : locale === "pt" ? "mapa do site" : "Sitemap"}</p>
+          <p className="font-mono text-[12px] text-[color:var(--faint)]">// {locale === "zh" ? "站点地图" : locale === "es" ? "mapa del sitio" : locale === "pt" ? "mapa do site" : locale === "fr" ? "plan du site" : "Sitemap"}</p>
           <h1 className="mt-4 max-w-4xl break-words text-[34px] font-normal tracking-[-0.025em] sm:text-[48px]">
             {copy.heading}
           </h1>

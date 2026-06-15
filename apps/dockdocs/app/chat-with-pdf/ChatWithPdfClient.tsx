@@ -21,7 +21,7 @@ const maxPages = 12;
 const maxCharacters = 40000;
 const maxFileBytes = 25 * 1024 * 1024;
 
-export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | "es" | "pt" }) {
+export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | "es" | "pt" | "fr" }) {
   const copy = getRuntimeCopy(locale).chat;
   const [fileName, setFileName] = useState("");
   const [documentText, setDocumentText] = useState("");

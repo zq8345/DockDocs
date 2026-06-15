@@ -26,7 +26,7 @@ import {
   type WorkspaceIdentity,
 } from "@/lib/workspace-runtime";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 
 const STR = {
   en: {
@@ -220,6 +220,54 @@ const STR = {
     savedDocs: "Documentos salvos",
     noDocs: "Nenhum metadado de documento salvo ainda.",
     docMeta: (chats: number, analyses: number) => `${chats} chats · ${analyses} análises`,
+  },
+  fr: {
+    eyebrow: "Mes chats",
+    heroTitle: "Historique sauvegardé de «Chat avec PDF».",
+    heroIntro: "Les utilisateurs connectés peuvent conserver l'historique des chats et les métadonnées des documents pour les consulter plus tard. Les fichiers PDF originaux ne sont pas stockés.",
+    loading: "Chargement du compte…",
+    signInTitle: "Connectez-vous pour séparer les données de l'espace de travail.",
+    signInDesc: "DockDocs peut conserver des enregistrements locaux dans le navigateur pour une utilisation anonyme, puis séparer les données connectées par ID de compte. Les PDF originaux ne sont pas sauvegardés.",
+    currentStorage: "Stockage actuel",
+    plan: "Plan",
+    sessionOnly: "Session uniquement",
+    savedChats: "Chats sauvegardés",
+    documents: "Documents",
+    turns: "Tours",
+    storage: "Stockage",
+    browser: "Navigateur",
+    signedIn: "Connecté",
+    workspaceStorage: "Stockage de l'espace de travail",
+    saved: "Sauvegardé",
+    clearChats: "Supprimer les chats du compte",
+    noChatsTitle: "Aucun chat dans le compte pour l'instant.",
+    noChatsDesc: "Démarrez dans Chat avec PDF en étant connecté. DockDocs sauvegardera la question, la réponse, les références, l'utilisation des tokens et les métadonnées du document.",
+    openChat: "Ouvrir Chat avec PDF",
+    turnsLabel: (n: number) => `${n} tour${n === 1 ? "" : "s"}`,
+    user: "Utilisateur",
+    assistant: "Assistant",
+    context: "Contexte",
+    trimmed: " · tronqué",
+    provider: "Fournisseur",
+    tokenUsage: "Utilisation des tokens",
+    totalTokens: (n: number) => `total ${n}`,
+    notAvailable: "non disponible",
+    workspace: "Espace de travail",
+    account: "Compte",
+    local: "Local",
+    todayChat: "Chat IA du jour",
+    totalTokensLabel: "Total des tokens",
+    savedSessions: "Sessions sauvegardées",
+    resumeWork: "Reprendre le travail sur les documents",
+    sessionsCount: (n: number) => `${n} session${n === 1 ? "" : "s"}`,
+    noSessions: "Aucune session sauvegardée pour l'instant.",
+    sessionMeta: (turns: number, tokens: number) => `${turns} tours · ${tokens} tokens`,
+    restore: "Restaurer",
+    delete: "Supprimer",
+    references: "Références",
+    savedDocs: "Documents sauvegardés",
+    noDocs: "Aucune métadonnée de document sauvegardée pour l'instant.",
+    docMeta: (chats: number, analyses: number) => `${chats} chats · ${analyses} analyses`,
   },
 };
 

@@ -20,10 +20,11 @@ const maxPages = 20;
 const maxCharacters = 24000;
 const maxFileBytes = 25 * 1024 * 1024;
 
-export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es" | "pt" }) {
+export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es" | "pt" | "fr" }) {
   const zh = locale === "zh";
   const es = locale === "es";
   const pt = locale === "pt";
+  const fr = locale === "fr";
   const [status, setStatus] = useState<Status>("idle");
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");
@@ -39,12 +40,12 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
     setLimitHit(null);
 
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
-      setError(zh ? "请上传 PDF 文件。" : es ? "Por favor, sube un archivo PDF." : pt ? "Por favor, envie um arquivo PDF." : "Please upload a PDF file.");
+      setError(zh ? "请上传 PDF 文件。" : es ? "Por favor, sube un archivo PDF." : pt ? "Por favor, envie um arquivo PDF." : fr ? "Veuillez téléverser un fichier PDF." : "Please upload a PDF file.");
       setStatus("error");
       return;
     }
     if (file.size > maxFileBytes) {
-      setError(zh ? "文件超过 25 MB 限制。" : es ? "El archivo supera el límite de 25 MB." : pt ? "O arquivo ultrapassa o limite de 25 MB." : "File exceeds the 25 MB limit.");
+      setError(zh ? "文件超过 25 MB 限制。" : es ? "El archivo supera el límite de 25 MB." : pt ? "O arquivo ultrapassa o limite de 25 MB." : fr ? "Le fichier dépasse la limite de 25 Mo." : "File exceeds the 25 MB limit.");
       setStatus("error");
       return;
     }
@@ -73,7 +74,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
 
       const text = pages.join("\n\n").slice(0, maxCharacters);
       if (!text.trim()) {
-        setError(zh ? "无法从该 PDF 提取文字，可能是扫描件。" : es ? "No se pudo extraer texto — puede ser un PDF escaneado." : pt ? "Não foi possível extrair texto — pode ser um PDF digitalizado." : "No text could be extracted — it may be a scanned PDF.");
+        setError(zh ? "无法从该 PDF 提取文字，可能是扫描件。" : es ? "No se pudo extraer texto — puede ser un PDF escaneado." : pt ? "Não foi possível extrair texto — pode ser um PDF digitalizado." : fr ? "Aucun texte n'a pu être extrait — il s'agit peut-être d'un PDF numérisé." : "No text could be extracted — it may be a scanned PDF.");
         setStatus("error");
         return;
       }
@@ -98,7 +99,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
       if (!payload?.ok || !payload.summary) {
         throw new Error(
           payload?.message ||
-            (zh ? "AI 摘要服务暂不可用。" : es ? "El servicio de resumen IA no está disponible." : pt ? "O serviço de Resumo IA está indisponível." : "AI Summary service is unavailable."),
+            (zh ? "AI 摘要服务暂不可用。" : es ? "El servicio de resumen IA no está disponible." : pt ? "O serviço de Resumo IA está indisponível." : fr ? "Le service de résumé IA est indisponible." : "AI Summary service is unavailable."),
         );
       }
 
@@ -106,7 +107,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
       setStatus("done");
       await markUsage(gate, "summary");
     } catch (err) {
-      setError(err instanceof Error ? err.message : zh ? "处理失败。" : es ? "Error al procesar." : pt ? "Falha ao processar." : "Processing failed.");
+      setError(err instanceof Error ? err.message : zh ? "处理失败。" : es ? "Error al procesar." : pt ? "Falha ao processar." : fr ? "Échec du traitement." : "Processing failed.");
       setStatus("error");
     }
   }
@@ -127,13 +128,13 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
       {status === "idle" || status === "error" ? (
         <label className="relative flex aspect-[16/9] w-full cursor-pointer flex-col items-center justify-center overflow-y-auto rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]">
           <span className="inline-flex h-12 w-1/2 items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
-            {zh ? "选择 PDF" : es ? "Elegir PDF" : pt ? "Escolher PDF" : "Choose PDF"}
+            {zh ? "选择 PDF" : es ? "Elegir PDF" : pt ? "Escolher PDF" : fr ? "Choisir un PDF" : "Choose PDF"}
           </span>
           <span className="mt-4 text-sm text-[color:var(--muted)]">
-            {zh ? "或将文件拖放到此处，最多 20 页" : es ? "o arrastra tu archivo aquí. Máx. 20 páginas" : pt ? "ou arraste o arquivo aqui. Máx. 20 páginas" : "or drop your file here. Up to 20 pages"}
+            {zh ? "或将文件拖放到此处，最多 20 页" : es ? "o arrastra tu archivo aquí. Máx. 20 páginas" : pt ? "ou arraste o arquivo aqui. Máx. 20 páginas" : fr ? "ou déposez votre fichier ici. 20 pages max." : "or drop your file here. Up to 20 pages"}
           </span>
           <span className="mt-1.5 text-xs text-[color:var(--faint)]">
-            {zh ? "请上传不超过 25 MB 的文件" : es ? "Sube un archivo de hasta 25 MB" : pt ? "Envie um arquivo de até 25 MB" : "Please upload a file up to 25 MB"}
+            {zh ? "请上传不超过 25 MB 的文件" : es ? "Sube un archivo de hasta 25 MB" : pt ? "Envie um arquivo de até 25 MB" : fr ? "Fichier jusqu'à 25 Mo" : "Please upload a file up to 25 MB"}
           </span>
           {status === "error" && error ? (
             <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
@@ -153,8 +154,8 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
           </svg>
           <p className="mt-4 text-sm font-semibold text-[color:var(--foreground)]">
             {status === "extracting"
-              ? zh ? "正在读取 PDF…" : es ? "Leyendo el PDF…" : pt ? "Lendo o PDF…" : "Reading PDF…"
-              : zh ? "AI 正在生成摘要…" : es ? "La IA está resumiendo…" : pt ? "A IA está resumindo…" : "AI is summarizing…"}
+              ? zh ? "正在读取 PDF…" : es ? "Leyendo el PDF…" : pt ? "Lendo o PDF…" : fr ? "Lecture du PDF…" : "Reading PDF…"
+              : zh ? "AI 正在生成摘要…" : es ? "La IA está resumiendo…" : pt ? "A IA está resumindo…" : fr ? "L'IA résume…" : "AI is summarizing…"}
           </p>
           <p className="mt-1 break-words text-xs text-[color:var(--muted)]">{fileName}</p>
         </div>
@@ -167,23 +168,23 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[color:var(--success)] text-sm text-white">✓</div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <p className="text-xs text-[color:var(--muted)]">{zh ? "摘要已生成" : es ? "Resumen generado" : pt ? "Resumo gerado" : "Summary generated"}</p>
+              <p className="text-xs text-[color:var(--muted)]">{zh ? "摘要已生成" : es ? "Resumen generado" : pt ? "Resumo gerado" : fr ? "Résumé généré" : "Summary generated"}</p>
             </div>
             <button
               type="button"
               onClick={reset}
               className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
             >
-              {zh ? "新文档" : es ? "Nuevo documento" : pt ? "Novo documento" : "New document"}
+              {zh ? "新文档" : es ? "Nuevo documento" : pt ? "Novo documento" : fr ? "Nouveau document" : "New document"}
             </button>
           </div>
 
-          <SummaryBlock title={zh ? "执行摘要" : es ? "Resumen ejecutivo" : pt ? "Resumo executivo" : "Executive Summary"}>
+          <SummaryBlock title={zh ? "执行摘要" : es ? "Resumen ejecutivo" : pt ? "Resumo executivo" : fr ? "Résumé exécutif" : "Executive Summary"}>
             <p className="text-sm leading-7 text-[color:var(--muted)]">{summary.executiveSummary}</p>
           </SummaryBlock>
 
           {summary.keyPoints?.length > 0 && (
-            <SummaryBlock title={zh ? "关键要点" : es ? "Puntos clave" : pt ? "Pontos principais" : "Key Points"}>
+            <SummaryBlock title={zh ? "关键要点" : es ? "Puntos clave" : pt ? "Pontos principais" : fr ? "Points clés" : "Key Points"}>
               <ul className="space-y-2">
                 {summary.keyPoints.map((point, i) => (
                   <li key={i} className="flex gap-2.5 text-sm leading-6 text-[color:var(--muted)]">
@@ -196,7 +197,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
           )}
 
           {summary.actionItems?.length > 0 && (
-            <SummaryBlock title={zh ? "行动项" : es ? "Acciones a realizar" : pt ? "Itens de ação" : "Action Items"}>
+            <SummaryBlock title={zh ? "行动项" : es ? "Acciones a realizar" : pt ? "Itens de ação" : fr ? "Points d'action" : "Action Items"}>
               <ul className="space-y-2">
                 {summary.actionItems.map((item, i) => (
                   <li key={i} className="flex gap-2.5 text-sm leading-6 text-[color:var(--muted)]">
@@ -209,7 +210,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
           )}
 
           {nextSteps.length > 0 && (
-            <SummaryBlock title={zh ? "后续步骤" : es ? "Próximos pasos sugeridos" : pt ? "Próximas etapas sugeridas" : "Suggested Next Steps"}>
+            <SummaryBlock title={zh ? "后续步骤" : es ? "Próximos pasos sugeridos" : pt ? "Próximas etapas sugeridas" : fr ? "Prochaines étapes suggérées" : "Suggested Next Steps"}>
               <ul className="space-y-2">
                 {nextSteps.map((step, i) => (
                   <li key={i} className="flex gap-2.5 text-sm leading-6 text-[color:var(--muted)]">

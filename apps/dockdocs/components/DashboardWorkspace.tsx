@@ -11,7 +11,7 @@ import { WorkspaceDashboardClient } from "@/components/WorkspaceDashboardClient"
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { defaultLocale, localizedPath, normalizeSlug } from "@/lib/i18n";
 
-type DashLocale = RuntimeLocale | "es" | "pt";
+type DashLocale = RuntimeLocale | "es" | "pt" | "fr";
 type DashboardCopy = ReturnType<typeof getRuntimeCopy>["dashboard"];
 
 type DashboardWorkspaceProps = {
