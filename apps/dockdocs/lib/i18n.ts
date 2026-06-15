@@ -203,6 +203,7 @@ export function languageAlternates(slug: RouteSlug) {
     en: absoluteUrl(pathForSlug(slug)),
     zh: absoluteUrl(localizedPath("zh", slug)),
     es: absoluteUrl(localizedPath("es", slug)),
+    pt: absoluteUrl(localizedPath("pt", slug)),
     "x-default": absoluteUrl(pathForSlug(slug)),
   };
 }

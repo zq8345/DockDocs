@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     languages: {
       en: "https://dockdocs.app/",
       zh: "https://dockdocs.app/zh/",
+      es: "https://dockdocs.app/es/",
+      pt: "https://dockdocs.app/pt/",
       "x-default": "https://dockdocs.app/",
     },
   },
