@@ -11,7 +11,7 @@ type NavItem = { name: string; slug: string; soon?: boolean };
 type NavCol = { heading?: string; items: NavItem[] };
 type NavCat = { label: string; tier: string; cols: NavCol[] };
 
-export const navCategories: Record<"en" | "zh" | "es", NavCat[]> = {
+export const navCategories: Record<"en" | "zh" | "es" | "pt", NavCat[]> = {
   en: [
     {
       label: "PDF tools",
@@ -366,6 +366,124 @@ export const navCategories: Record<"en" | "zh" | "es", NavCat[]> = {
       ],
     },
   ],
+  pt: [
+    {
+      label: "Ferramentas PDF",
+      tier: "Free",
+      cols: [
+        {
+          heading: "Converter",
+          items: [
+            { name: "PDF para Word", slug: "/pdf-to-word" },
+            { name: "PDF para Excel", slug: "/pdf-to-excel" },
+            { name: "PDF para PPT", slug: "/pdf-to-ppt" },
+            { name: "PDF para PDF/A", slug: "/pdf-to-pdfa" },
+            { name: "PDF para imagem", slug: "/pdf-to-image" },
+            { name: "PDF para HTML", slug: "/pdf-to-html" },
+            { name: "PDF para Markdown", slug: "/pdf-to-markdown" },
+            { name: "Word para PDF", slug: "/word-to-pdf" },
+            { name: "Excel para PDF", slug: "/excel-to-pdf" },
+            { name: "PPT para PDF", slug: "/ppt-to-pdf" },
+            { name: "Imagem para PDF", slug: "/images-to-pdf" },
+            { name: "HTML para PDF", slug: "/html-to-pdf" },
+          ],
+        },
+        {
+          heading: "Organizar",
+          items: [
+            { name: "Dividir PDF", slug: "/split-pdf" },
+            { name: "Comprimir PDF", slug: "/compress-pdf" },
+            { name: "Excluir páginas", slug: "/delete-page" },
+            { name: "Girar páginas", slug: "/rotate-page" },
+            { name: "Reordenar páginas", slug: "/reorder-pages" },
+            { name: "Adicionar página", slug: "/add-page" },
+            { name: "Marca d'água em PDF", slug: "/watermark-pdf" },
+            { name: "Adicionar números de página", slug: "/page-numbers" },
+            { name: "Recortar PDF", slug: "/crop-pdf" },
+            { name: "Redigir PDF", slug: "/redact-pdf" },
+            { name: "Assinar PDF", slug: "/sign-pdf" },
+          ],
+        },
+        {
+          heading: "Segurança e OCR",
+          items: [
+            { name: "Proteger PDF", slug: "/protect-pdf" },
+            { name: "Desbloquear PDF", slug: "/unlock-pdf" },
+            { name: "OCR de PDF", slug: "/ocr-pdf" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Processamento em lote",
+      tier: "Plus",
+      cols: [
+        {
+          items: [
+            { name: "Unir PDF", slug: "/merge-pdf" },
+            { name: "Compressão em lote", slug: "/batch-compress" },
+            { name: "PDF para imagem em lote", slug: "/batch-pdf-to-image" },
+            { name: "Criptografia em lote", slug: "/batch-protect-pdf" },
+            { name: "Renomear em lote", slug: "/batch-rename-pdf" },
+            { name: "Marca d'água em lote", slug: "/batch-watermark-pdf" },
+            { name: "Números de página em lote", slug: "/batch-page-numbers" },
+            { name: "Divisão em lote", slug: "/batch-split-merge" },
+            { name: "Rotação em lote", slug: "/batch-rotate-pdf" },
+            { name: "PDF para Word/Excel em lote", slug: "/batch-pdf-to-office" },
+            { name: "Office para PDF em lote", slug: "/batch-office-to-pdf" },
+            { name: "Traduzir em lote", slug: "/batch-translate" },
+            { name: "Corrigir digitalizações em lote", slug: "/batch-fix-scans" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Fluxos de trabalho com IA",
+      tier: "Plus",
+      cols: [
+        {
+          heading: "IA para um documento",
+          items: [
+            { name: "Espaço de trabalho IA", slug: "/ai-workspace" },
+            { name: "Chat com PDF", slug: "/chat-with-pdf" },
+            { name: "Resumo de PDF", slug: "/ai-summary" },
+            { name: "Traduzir PDF", slug: "/translate-pdf" },
+            { name: "Flashcards de PDF", slug: "/flashcards" },
+            { name: "Revisão de riscos do contrato", slug: "/contract-risk" },
+            { name: "Análise de riscos do arrendamento", slug: "/lease-redflag" },
+            { name: "Matriz de conformidade de licitação", slug: "/govbid-matrix" },
+          ],
+        },
+        {
+          heading: "IA para vários documentos",
+          items: [
+            { name: "Comparar documentos", slug: "/compare" },
+            { name: "Perguntas entre documentos", slug: "/compare" },
+            { name: "Comparar versões", slug: "/redline" },
+            { name: "Extrair para Excel", slug: "/extract-to-excel" },
+            { name: "Resumo em lote", slug: "/batch-summary" },
+            { name: "Classificar PDF", slug: "/batch-sort" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Por profissão",
+      tier: "Soon",
+      cols: [
+        {
+          items: [
+            { name: "Jurídico e contratos", slug: "/pricing", soon: true },
+            { name: "Finanças e impostos", slug: "/pricing", soon: true },
+            { name: "Pesquisa e academia", slug: "/pricing", soon: true },
+            { name: "Banco e finanças", slug: "/pricing", soon: true },
+            { name: "Arquitetura e engenharia", slug: "/pricing", soon: true },
+            { name: "Saúde e medicina", slug: "/pricing", soon: true },
+          ],
+        },
+      ],
+    },
+  ],
 };
 
 const pageLinks = {
@@ -383,10 +501,10 @@ const pageLinks = {
 
 type Locale = "en" | "zh";
 
-function stripLocale(p: string): "en" | "zh" | "es" {
+function stripLocale(p: string): "en" | "zh" | "es" | "pt" {
   const s = p.split("/").filter(Boolean);
   const first = s[0];
-  return first === "zh" || first === "es" ? first : "en";
+  return first === "zh" || first === "es" || first === "pt" ? first : "en";
 }
 function lh(h: string, l: string) {
   return l === defaultLocale ? h : `/${l}${h}`;
@@ -405,11 +523,12 @@ export function Header() {
   const [light, setLight] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const locale = stripLocale(pathname ?? "/");
 
   const cats = navCategories[locale] ?? navCategories.en;
-  const pages = pageLinks[locale === "es" ? "en" : locale] ?? pageLinks.en;
+  const pages = pageLinks[(locale === "es" || locale === "pt") ? "en" : locale as "en" | "zh"] ?? pageLinks.en;
 
   useEffect(() => {
     setLight(document.documentElement.classList.contains("light"));
@@ -420,7 +539,7 @@ export function Header() {
     const unsub = onAuthChange((u) => { if (mounted) setAuthUser(u); });
     return () => { mounted = false; unsub(); };
   }, []);
-  useEffect(() => { setMobileOpen(false); setMoreOpen(false); }, [pathname]);
+  useEffect(() => { setMobileOpen(false); setMoreOpen(false); setLangOpen(false); }, [pathname]);
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -455,23 +574,48 @@ export function Header() {
   const iconBtn =
     "inline-flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] text-sm transition hover:border-[color:var(--line-strong)]";
 
-  // Inline language toggle (used in More menu + mobile)
-  const langToggle = (
-    <div className="flex gap-1">
-      {routeLocales.map((l) => (
-        <button
-          key={l}
-          type="button"
-          onClick={() => switchLang(l)}
-          className={`rounded-[var(--radius-sm)] px-2.5 py-1 text-[12px] font-semibold transition ${
-            l === locale
-              ? "bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]"
-              : "border border-[color:var(--line)] text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
-          }`}
-        >
-          {localeLabels[l]}
-        </button>
-      ))}
+  // Language selector dropdown (used in More menu + mobile)
+  const langDropdown = (
+    <div>
+      <button
+        type="button"
+        onClick={() => setLangOpen((v) => !v)}
+        className="flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+      >
+        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : "Language"}</span>
+        <span className="flex items-center gap-1.5">
+          <span className="text-[12px] text-[color:var(--faint)]">{localeLabels[locale as keyof typeof localeLabels] ?? locale}</span>
+          <svg className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`} viewBox="0 0 12 12" fill="none">
+            <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </span>
+      </button>
+      {langOpen && (
+        <div className="mt-0.5 space-y-0.5 px-1 pb-1">
+          {(routeLocales as readonly string[]).map((l) => (
+            <button
+              key={l}
+              type="button"
+              onClick={() => { switchLang(l); setLangOpen(false); }}
+              className={`flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-1.5 text-left text-[13px] font-medium transition ${
+                l === locale
+                  ? "bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]"
+                  : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+              }`}
+            >
+              {localeLabels[l as keyof typeof localeLabels]}
+              {l === locale && <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />}
+            </button>
+          ))}
+          <button
+            disabled
+            className="flex w-full cursor-not-allowed items-center justify-between rounded-[var(--radius-sm)] px-3 py-1.5 text-left text-[13px] font-medium text-[color:var(--faint)] opacity-50"
+          >
+            {localeLabels.pt}
+            <span className="text-[10px] font-semibold uppercase tracking-wide">soon</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 
@@ -572,10 +716,7 @@ export function Header() {
                       </a>
                     ))}
                     <div className="my-1.5 border-t border-[color:var(--line)]" />
-                    <div className="flex items-center justify-between px-3 py-1.5">
-                      <span className="text-[12px] font-medium text-[color:var(--faint)]">{locale === "zh" ? "语言" : "Language"}</span>
-                      {langToggle}
-                    </div>
+                    {langDropdown}
                     <button
                       type="button"
                       onClick={toggleTheme}
@@ -620,21 +761,23 @@ export function Header() {
           <div className="flex-1 overflow-y-auto bg-[color:var(--background)]">
             <div className="px-4 pb-8 pt-4">
 
-              {/* Language / theme / sign-in row */}
-              <div className="mb-5 flex items-center gap-2 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2.5">
-                {langToggle}
-                <button type="button" onClick={toggleTheme} aria-label="Toggle theme" className={`${iconBtn} bg-[color:var(--background)]`}>
-                  {light ? "☾" : "☀"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { navTo("/account"); setMobileOpen(false); }}
-                  className="ml-auto rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
-                >
-                  {authUser
-                    ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "es" ? "Cuenta" : "Account"))
-                    : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : "Sign in")}
-                </button>
+              {/* Language + theme + sign-in */}
+              <div className="mb-5 overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)]">
+                {langDropdown}
+                <div className="flex items-center gap-2 border-t border-[color:var(--line)] px-3 py-2">
+                  <button type="button" onClick={toggleTheme} aria-label="Toggle theme" className={`${iconBtn} bg-[color:var(--background)]`}>
+                    {light ? "☾" : "☀"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { navTo("/account"); setMobileOpen(false); }}
+                    className="ml-auto rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
+                  >
+                    {authUser
+                      ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "es" ? "Cuenta" : "Account"))
+                      : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : "Sign in")}
+                  </button>
+                </div>
               </div>
 
               {/* Quick links — Pricing / Blog / About */}
