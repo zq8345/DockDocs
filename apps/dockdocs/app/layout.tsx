@@ -29,6 +29,7 @@ export const metadata: Metadata = {
 };
 
 const clarityId = process.env.NEXT_PUBLIC_CLARITY_ID;
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
@@ -65,6 +66,17 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
             } catch(e) {}
           })();
         `}} />
+        {/* Google Analytics 4 — env: NEXT_PUBLIC_GA_ID = G-XXXXXXXXXX */}
+        {gaId && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`,
+              }}
+            />
+          </>
+        )}
         {/* Microsoft Clarity — free analytics, no PII. Only injected when an ID is configured. */}
         {clarityId && (
           <script
