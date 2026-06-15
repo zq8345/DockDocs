@@ -892,7 +892,7 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     workflowTitle: "How Word to PDF fits into document work", workflowDescription: "Common uses: contracts, reports, proposals.",
     steps: ["Upload a DOCX or DOC file.", "CloudConvert converts it.", "Download the PDF."],
     faqTitle: "Word to PDF questions",
-    faq: [{ question: "How do I convert Word to PDF?", answer: "Upload a DOCX file and download the converted PDF." }, { question: "Is formatting preserved?", answer: "Yes. CloudConvert uses LibreOffice for accurate rendering." }],
+    faq: [{ question: "How do I convert Word to PDF?", answer: "Upload a DOCX file and download the converted PDF." }, { question: "Is formatting preserved?", answer: "Yes. The converter uses LibreOffice for accurate rendering, so fonts, tables, and layout are kept." }, { question: "What file formats are supported?", answer: "DOCX and DOC documents, up to 100 MB per file." }, { question: "Is Word to PDF free?", answer: "Yes. Converting Word documents to PDF on DockDocs is free." }, { question: "Do I need Microsoft Word installed?", answer: "No. The conversion runs online, so you don't need Word or any other software — just a browser." }, { question: "How long does the conversion take?", answer: "Most documents convert in under 30 seconds." }, { question: "Can I convert Word to PDF on my phone?", answer: "Yes. DockDocs works in any modern mobile or desktop browser." }],
     cta: { eyebrow: "Word to PDF", title: "Convert Word documents to PDF.", description: "Convert DOCX files to PDF for sharing.", buttonLabel: "Convert Word now" },
   },
   "ppt-to-pdf": {
