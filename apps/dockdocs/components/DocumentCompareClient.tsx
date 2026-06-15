@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, type DragEvent } from "react"
 import { loadTemplates, saveTemplate, deleteTemplate, type FlowTemplate } from "@/lib/flow-templates";
 import { loadRunsForTemplate, saveRun, relativeTime, type FlowRun } from "@/lib/flow-runs";
 import { isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
+import { authHeader } from "@/lib/supabase";
 import { ToolFaq } from "@/components/ToolFaq";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
@@ -438,9 +439,10 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       return;
     }
     try {
+      const auth = await authHeader();
       const res = await fetch("/api/compare-extract", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...auth },
         body: JSON.stringify({ docType, locale, documents: okDocs.map((d) => ({ id: d.id, name: d.name, text: d.text })) }),
       });
       const data = await res.json();
@@ -460,7 +462,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       try {
         const rr = await fetch("/api/compare-recommend", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...auth },
           body: JSON.stringify({ docType: cmp.docType, locale, dimensions: cmp.dimensions, documents: cmp.documents }),
         });
         const rd = await rr.json();
@@ -538,9 +540,10 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     setQaErr(null);
     setQaAns(null);
     try {
+      const auth = await authHeader();
       const res = await fetch("/api/compare-qa", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...auth },
         body: JSON.stringify({ question: q, locale, documents: okDocs.map((d) => ({ id: d.id, name: d.name, text: d.text })) }),
       });
       const data = await res.json();

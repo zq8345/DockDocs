@@ -16,3 +16,11 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     flowType: "pkce",
   },
 });
+
+// Returns { Authorization: "Bearer <token>" } when logged in, {} when not.
+// Spread into fetch headers so the Netlify functions can identify the plan.
+export async function authHeader(): Promise<Record<string, string>> {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
