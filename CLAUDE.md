@@ -38,7 +38,7 @@
 ## SEO/GEO
 - Desktop console = dock-console (Electron) at C:\Users\47203\Documents\dock-console. As of 2026-06-15 it collects metrics LOCALLY (collectors.js: health/GEO-JSON-LD/internal-links/new-pages/external-mentions by fetching dockdocs.app directly). No server dependency.
 - 国内 Alibaba Cloud ECS 47.251.125.101 (old Hermes/DeepSeek cron host + GSC puller) is being decommissioned — DeepSeek dropped 2026-06-12, console moved off it 2026-06-15. Site/conversions never depended on it (conversions run on the international box convert.dockdocs.app).
-- GSC query data in the console is "待接入" until a local Google service-account key is wired into collectors.js.
+- GSC query data is LIVE in the console: collectors.js pulls Search Console via a local service-account key at Documents/dock-gsc-key.json (wired 2026-06-15, sc-domain resource). It shows "待接入" only if that key is missing.
 
 ## Build Discipline (CRITICAL)
 - **Before pushing**: run `npm run build` — zero errors required (postbuild i18n-guard must stay green)
