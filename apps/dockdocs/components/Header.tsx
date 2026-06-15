@@ -97,6 +97,7 @@ export const navCategories: Record<"en" | "zh" | "es", NavCat[]> = {
             { name: "PDF Flashcards", slug: "/flashcards" },
             { name: "Contract Risk Check", slug: "/contract-risk" },
             { name: "Lease Red Flag Check", slug: "/lease-redflag" },
+            { name: "Gov Bid Compliance", slug: "/govbid-matrix" },
           ],
         },
         {
@@ -214,6 +215,7 @@ export const navCategories: Record<"en" | "zh" | "es", NavCat[]> = {
             { name: "PDF 抽认卡", slug: "/flashcards" },
             { name: "合同风险体检", slug: "/contract-risk" },
             { name: "租约红旗扫描", slug: "/lease-redflag" },
+            { name: "政府标书合规矩阵", slug: "/govbid-matrix" },
           ],
         },
         {
@@ -331,6 +333,7 @@ export const navCategories: Record<"en" | "zh" | "es", NavCat[]> = {
             { name: "Tarjetas de estudio de PDF", slug: "/flashcards" },
             { name: "Revisión de riesgos del contrato", slug: "/contract-risk" },
             { name: "Análisis de riesgos del arrendamiento", slug: "/lease-redflag" },
+            { name: "Matriz de cumplimiento de licitación", slug: "/govbid-matrix" },
           ],
         },
         {

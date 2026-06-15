@@ -58,6 +58,7 @@ import { BatchTranslateClient } from "@/components/BatchTranslateClient";
 import { BatchFixScansClient } from "@/components/BatchFixScansClient";
 import { ContractRiskClient } from "@/components/ContractRiskClient";
 import { LeaseRedflagClient } from "@/components/LeaseRedflagClient";
+import { GovbidMatrixClient } from "@/components/GovbidMatrixClient";
 import { SignPdfClient } from "@/components/SignPdfClient";
 import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
 import { UploadPanel } from "@/components/UploadPanel";
@@ -651,6 +652,23 @@ async function generateMetadataInner({
     };
   }
 
+  if (slug === "govbid-matrix") {
+    return {
+      title:
+        uiLocale === "zh"
+          ? "政府标书合规矩阵 — 自动提取招标文件所有 shall/must 条款"
+          : "Government Bid Compliance Matrix — Extract Every Shall/Must Requirement",
+      description:
+        uiLocale === "zh"
+          ? "上传 RFP 或政府招标文件，AI 自动提取每条强制性要求生成编号合规矩阵，带条款编号和页码引用，可导出 CSV。"
+          : "Upload an RFP or solicitation and get every mandatory 'shall/must' requirement extracted into a numbered compliance matrix with section references. Export to CSV.",
+      alternates: {
+        canonical: localizedPath(uiLocale, "govbid-matrix"),
+        languages: languageAlternates("govbid-matrix"),
+      },
+    };
+  }
+
   if (slug === "my-chats") {
     return {
       title: uiLocale === "zh" ? "我的对话 — DockDocs" : "My Chats — DockDocs",
@@ -974,6 +992,10 @@ export default async function LocalizedRoute({
 
   if (slug === "lease-redflag") {
     return <LeaseRedflagClient locale={rawLocale} />;
+  }
+
+  if (slug === "govbid-matrix") {
+    return <GovbidMatrixClient locale={rawLocale} />;
   }
 
   if (slug === "my-chats") {
