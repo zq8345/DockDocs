@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { ToolJsonLd } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
+import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { SignPdfClient } from "@/components/SignPdfClient";
 
 export const metadata: Metadata = {
@@ -11,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function SignPdfPage() {
-  return <SignPdfClient />;
+  return <><ToolJsonLd config={getLocalizedToolConfig("en", "sign-pdf")} /><SignPdfClient /></>;
 }

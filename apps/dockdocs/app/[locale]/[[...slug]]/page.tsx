@@ -92,6 +92,7 @@ import {
 import { getRuntimeCopy } from "@/lib/copy";
 import { homeSchema, aboutSchema, pricingSchema, webPageSchema } from "@/lib/page-schema";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
+import { ExtraToolJsonLd, EXTRA_TOOL_SLUGS } from "@/lib/extra-tool-schema";
 import {
   createProgrammaticGeoMetadata,
   getProgrammaticGeoPage,
@@ -824,6 +825,12 @@ export default async function LocalizedRoute({
     <ToolJsonLd config={getLocalizedToolConfig(rawLocale, schemaSlug)} />
   ) : null;
 
+  // Indexable tools that render a custom client but aren't in toolSlugs
+  // (sign-pdf is in toolSlugs and handled above; these are not): lightweight schema.
+  const extraJsonLd = EXTRA_TOOL_SLUGS.includes(slug) ? (
+    <ExtraToolJsonLd slug={slug} locale={esLocale as "en" | "zh" | "es"} />
+  ) : null;
+
   if (slug === "chat-with-pdf") {
     return <LocalizedChatWithPdf locale={esLocale} />;
   }
@@ -861,19 +868,19 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "redline") {
-    return <RedlineClient locale={rawLocale} />;
+    return <>{extraJsonLd}<RedlineClient locale={rawLocale} /></>;
   }
 
   if (slug === "extract-to-excel") {
-    return <ExtractExcelClient locale={rawLocale} />;
+    return <>{extraJsonLd}<ExtractExcelClient locale={rawLocale} /></>;
   }
 
   if (slug === "crop-pdf") {
-    return <CropPdfClient locale={rawLocale} />;
+    return <>{extraJsonLd}<CropPdfClient locale={rawLocale} /></>;
   }
 
   if (slug === "redact-pdf") {
-    return <RedactPdfClient locale={rawLocale} />;
+    return <>{extraJsonLd}<RedactPdfClient locale={rawLocale} /></>;
   }
 
   if (slug === "batch-pdf-to-image") {
@@ -933,7 +940,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "url-to-pdf") {
-    return <UrlToPdfClient locale={rawLocale} />;
+    return <>{extraJsonLd}<UrlToPdfClient locale={rawLocale} /></>;
   }
 
   if (slug === "compare") {
@@ -1049,7 +1056,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "ai-workspace") {
-    return <LocalizedAiWorkspace locale={esLocale} />;
+    return <>{extraJsonLd}<LocalizedAiWorkspace locale={esLocale} /></>;
   }
 
   if (slug === "sitemap") {

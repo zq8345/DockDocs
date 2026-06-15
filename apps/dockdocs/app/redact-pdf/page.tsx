@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { RedactPdfClient } from "@/components/RedactPdfClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Redact PDF — Permanently Remove Sensitive Text",
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function RedactPdfPage() {
-  return <RedactPdfClient />;
+  return <><ExtraToolJsonLd slug="redact-pdf" locale="en" /><RedactPdfClient /></>;
 }

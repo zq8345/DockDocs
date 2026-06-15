@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Extract PDF Data to a Spreadsheet",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function ExtractToExcelPage() {
-  return <ExtractExcelClient />;
+  return <><ExtraToolJsonLd slug="extract-to-excel" locale="en" /><ExtractExcelClient /></>;
 }

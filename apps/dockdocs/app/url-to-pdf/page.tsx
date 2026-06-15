@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { UrlToPdfClient } from "@/components/UrlToPdfClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "URL to PDF — Convert a Web Page to PDF Free",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function UrlToPdfPage() {
-  return <UrlToPdfClient />;
+  return <><ExtraToolJsonLd slug="url-to-pdf" locale="en" /><UrlToPdfClient /></>;
 }

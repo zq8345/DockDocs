@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { RedlineClient } from "@/components/RedlineClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "PDF Redline — Compare Two PDF Versions Free",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function RedlinePage() {
-  return <RedlineClient />;
+  return <><ExtraToolJsonLd slug="redline" locale="en" /><RedlineClient /></>;
 }

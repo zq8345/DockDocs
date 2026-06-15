@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { CropPdfClient } from "@/components/CropPdfClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Crop PDF — Trim PDF Margins Online Free",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function CropPdfPage() {
-  return <CropPdfClient />;
+  return <><ExtraToolJsonLd slug="crop-pdf" locale="en" /><CropPdfClient /></>;
 }
