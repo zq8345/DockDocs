@@ -1629,5 +1629,5 @@ export const runtimeCopy = {
 } as const;
 
 export function getRuntimeCopy(locale: RuntimeLocale | "es" = defaultLocale) {
-  return runtimeCopy[locale];
+  return runtimeCopy[locale] ?? runtimeCopy.en;
 }
