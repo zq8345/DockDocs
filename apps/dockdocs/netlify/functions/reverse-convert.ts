@@ -1,4 +1,5 @@
 import type { Context } from "@netlify/functions";
+import { enforceFeatureGate } from "./_shared/feature-gate";
 
 declare const Netlify: {
   env: {
@@ -57,6 +58,10 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many conversions — please wait a minute and try again." }, 429);
   }
 
+  // Per-plan conversion quota — reads only the Authorization header, safe before formData().
+  const gate = await enforceFeatureGate(req, "convert");
+  if (!gate.ok) return gate.response;
+
   let inForm: FormData;
   try {
     inForm = await req.formData();
@@ -104,6 +109,7 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "EMPTY_RESULT", message: "The converter returned an empty file." }, 502);
   }
 
+  await gate.commit();
   return new Response(result, {
     status: 200,
     headers: {
