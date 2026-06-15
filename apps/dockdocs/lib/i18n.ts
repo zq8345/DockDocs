@@ -7,7 +7,7 @@ export type Locale = (typeof locales)[number];
 // the locale, everything else falls back to English (content type stays en|zh).
 // pt-BR is being built content-first (inert ptTools/ptFaq/STR.pt/etc.); add "pt"
 // to this array to ACTIVATE it (LAST step, once content is complete).
-export const routeLocales = ["en", "zh", "es", "pt"] as const;
+export const routeLocales = ["en", "zh", "es", "pt", "fr"] as const;
 export type RouteLocale = (typeof routeLocales)[number];
 
 export const allLocales = ["en", "zh", "ja", "ko", "es", "fr", "de", "pt", "it", "ru", "ar", "hi"] as const;
