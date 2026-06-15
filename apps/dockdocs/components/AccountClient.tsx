@@ -23,20 +23,21 @@ import { trackSignUp, trackBeginCheckout } from "@/lib/analytics";
 type AuthView = "loading" | "signed-out" | "email-sent" | "signed-in";
 type DeleteState = "idle" | "confirm" | "deleting" | "done";
 
-type AccountLocale = "en" | "zh" | "es" | "pt";
+type AccountLocale = "en" | "zh" | "es" | "pt" | "fr";
 
 function getCopy(locale: AccountLocale) {
   const zh = locale === "zh";
   const es = locale === "es";
   const pt = locale === "pt";
+  const fr = locale === "fr";
   return {
-    redirecting: (label: string) => (zh ? `正在跳转到${label}…` : es ? `Redirigiendo a ${label}…` : pt ? `Redirecionando para ${label}…` : `Redirecting to ${label}…`),
-    oauthFailed: (label: string) => (zh ? `${label}登录失败` : es ? `Error al iniciar sesión con ${label}` : pt ? `Falha ao entrar com ${label}` : `${label} sign-in failed`),
-    sendFailed: zh ? "发送失败，请重试" : es ? "Error al enviar, inténtalo de nuevo" : pt ? "Falha ao enviar, tente novamente" : "Failed to send, please try again",
-    signOutFailed: zh ? "退出失败" : es ? "Error al cerrar sesión" : pt ? "Falha ao sair" : "Sign out failed",
-    checkoutFailed: zh ? "结算失败" : es ? "Error en el pago" : pt ? "Falha no pagamento" : "Checkout failed",
-    portalFailed: zh ? "账单管理打开失败" : es ? "No se pudo abrir el portal de facturación" : pt ? "Não foi possível abrir o portal de cobrança" : "Couldn't open billing portal",
-    magicSentTitle: zh ? "登录链接已发送" : es ? "Enlace de acceso enviado" : pt ? "Link de acesso enviado" : "Magic link sent",
+    redirecting: (label: string) => (zh ? `正在跳转到${label}…` : es ? `Redirigiendo a ${label}…` : pt ? `Redirecionando para ${label}…` : fr ? `Redirection vers ${label}…` : `Redirecting to ${label}…`),
+    oauthFailed: (label: string) => (zh ? `${label}登录失败` : es ? `Error al iniciar sesión con ${label}` : pt ? `Falha ao entrar com ${label}` : fr ? `Échec de connexion avec ${label}` : `${label} sign-in failed`),
+    sendFailed: zh ? "发送失败，请重试" : es ? "Error al enviar, inténtalo de nuevo" : pt ? "Falha ao enviar, tente novamente" : fr ? "Échec d'envoi, veuillez réessayer" : "Failed to send, please try again",
+    signOutFailed: zh ? "退出失败" : es ? "Error al cerrar sesión" : pt ? "Falha ao sair" : fr ? "Échec de la déconnexion" : "Sign out failed",
+    checkoutFailed: zh ? "结算失败" : es ? "Error en el pago" : pt ? "Falha no pagamento" : fr ? "Échec du paiement" : "Checkout failed",
+    portalFailed: zh ? "账单管理打开失败" : es ? "No se pudo abrir el portal de facturación" : pt ? "Não foi possível abrir o portal de cobrança" : fr ? "Impossible d'ouvrir le portail de facturation" : "Couldn't open billing portal",
+    magicSentTitle: zh ? "登录链接已发送" : es ? "Enlace de acceso enviado" : pt ? "Link de acesso enviado" : fr ? "Lien de connexion envoyé" : "Magic link sent",
     magicSentBody: (email: string) =>
       zh
         ? `我们已把登录链接发到 ${email}，点击邮件里的链接即可登录(可能在垃圾箱)。`
@@ -44,44 +45,50 @@ function getCopy(locale: AccountLocale) {
         ? `Hemos enviado un enlace de acceso a ${email}. Haz clic en él para iniciar sesión (revisa también spam).`
         : pt
         ? `Enviamos um link de acesso para ${email}. Clique nele para entrar (verifique também o spam).`
+        : fr
+        ? `Nous avons envoyé un lien de connexion à ${email}. Cliquez dessus pour vous connecter (vérifiez aussi les spams).`
         : `We've sent a sign-in link to ${email}. Click it to sign in (check spam too).`,
-    back: zh ? "← 返回" : es ? "← Volver" : pt ? "← Voltar" : "← Back",
-    continueGoogle: zh ? "使用 Google 继续" : es ? "Continuar con Google" : pt ? "Continuar com Google" : "Continue with Google",
-    continueMicrosoft: zh ? "使用 Microsoft 继续" : es ? "Continuar con Microsoft" : pt ? "Continuar com Microsoft" : "Continue with Microsoft",
-    orEmail: zh ? "或邮箱" : es ? "o correo" : pt ? "ou e-mail" : "or email",
-    sending: zh ? "发送中…" : es ? "Enviando…" : pt ? "Enviando…" : "Sending…",
-    sendMagic: zh ? "发送登录链接" : es ? "Enviar enlace de acceso" : pt ? "Enviar link de acesso" : "Send magic link",
-    emailHint: zh ? "无需密码，我们会发一封登录邮件给你" : es ? "Sin contraseña — te enviaremos un enlace de acceso" : pt ? "Sem senha — enviaremos um link de acesso por e-mail" : "No password — we'll email you a sign-in link",
-    appleSoon: zh ? "即将支持 Apple 登录" : es ? "Apple Sign-in próximamente" : pt ? "Apple Sign-in em breve" : "Apple sign-in coming soon",
-    signedIn: zh ? "已登录" : es ? "Sesión iniciada" : pt ? "Sessão iniciada" : "Signed in",
-    currentPlan: zh ? "当前套餐" : es ? "Plan actual" : pt ? "Plano atual" : "Current plan",
-    upgradePlus: zh ? "升级 Plus" : es ? "Actualizar a Plus" : pt ? "Fazer upgrade para Plus" : "Upgrade to Plus",
-    upgradePro: zh ? "升级 Pro" : es ? "Actualizar a Pro" : pt ? "Fazer upgrade para Pro" : "Upgrade to Pro",
-    manageBilling: zh ? "管理账单" : es ? "Administrar facturación" : pt ? "Gerenciar cobrança" : "Manage billing",
-    loading: zh ? "加载…" : es ? "Cargando…" : pt ? "Carregando…" : "Loading…",
-    signOut: zh ? "退出登录" : es ? "Cerrar sesión" : pt ? "Sair" : "Sign out",
-    privateSpace: zh ? "私密工作区" : es ? "Espacio privado" : pt ? "Espaço privado" : "Private Space",
+    back: zh ? "← 返回" : es ? "← Volver" : pt ? "← Voltar" : fr ? "← Retour" : "← Back",
+    continueGoogle: zh ? "使用 Google 继续" : es ? "Continuar con Google" : pt ? "Continuar com Google" : fr ? "Continuer avec Google" : "Continue with Google",
+    continueMicrosoft: zh ? "使用 Microsoft 继续" : es ? "Continuar con Microsoft" : pt ? "Continuar com Microsoft" : fr ? "Continuer avec Microsoft" : "Continue with Microsoft",
+    orEmail: zh ? "或邮箱" : es ? "o correo" : pt ? "ou e-mail" : fr ? "ou e-mail" : "or email",
+    sending: zh ? "发送中…" : es ? "Enviando…" : pt ? "Enviando…" : fr ? "Envoi en cours…" : "Sending…",
+    sendMagic: zh ? "发送登录链接" : es ? "Enviar enlace de acceso" : pt ? "Enviar link de acesso" : fr ? "Envoyer le lien de connexion" : "Send magic link",
+    emailHint: zh ? "无需密码，我们会发一封登录邮件给你" : es ? "Sin contraseña — te enviaremos un enlace de acceso" : pt ? "Sem senha — enviaremos um link de acesso por e-mail" : fr ? "Sans mot de passe — nous vous enverrons un lien de connexion" : "No password — we'll email you a sign-in link",
+    appleSoon: zh ? "即将支持 Apple 登录" : es ? "Apple Sign-in próximamente" : pt ? "Apple Sign-in em breve" : fr ? "Connexion Apple bientôt disponible" : "Apple sign-in coming soon",
+    signedIn: zh ? "已登录" : es ? "Sesión iniciada" : pt ? "Sessão iniciada" : fr ? "Connecté" : "Signed in",
+    currentPlan: zh ? "当前套餐" : es ? "Plan actual" : pt ? "Plano atual" : fr ? "Forfait actuel" : "Current plan",
+    upgradePlus: zh ? "升级 Plus" : es ? "Actualizar a Plus" : pt ? "Fazer upgrade para Plus" : fr ? "Passer à Plus" : "Upgrade to Plus",
+    upgradePro: zh ? "升级 Pro" : es ? "Actualizar a Pro" : pt ? "Fazer upgrade para Pro" : fr ? "Passer à Pro" : "Upgrade to Pro",
+    manageBilling: zh ? "管理账单" : es ? "Administrar facturación" : pt ? "Gerenciar cobrança" : fr ? "Gérer la facturation" : "Manage billing",
+    loading: zh ? "加载…" : es ? "Cargando…" : pt ? "Carregando…" : fr ? "Chargement…" : "Loading…",
+    signOut: zh ? "退出登录" : es ? "Cerrar sesión" : pt ? "Sair" : fr ? "Se déconnecter" : "Sign out",
+    privateSpace: zh ? "私密工作区" : es ? "Espacio privado" : pt ? "Espaço privado" : fr ? "Espace privé" : "Private Space",
     privateDesc: zh
       ? "启用后，你的流程模板和执行记录将加密同步到云端，跨设备访问，随时可删除。"
       : es
       ? "Cuando está activado, tus plantillas de flujo e historial de ejecuciones se sincronizan cifrados en la nube para acceso entre dispositivos. Puedes borrarlos en cualquier momento."
       : pt
       ? "Quando ativado, seus modelos de fluxo e histórico de execuções são sincronizados criptografados na nuvem para acesso entre dispositivos. Você pode excluí-los a qualquer momento."
+      : fr
+      ? "Lorsqu'activé, vos modèles de flux et votre historique d'exécutions sont synchronisés de façon chiffrée dans le cloud pour un accès multi-appareils. Vous pouvez les supprimer à tout moment."
       : "When enabled, your flow templates and run history sync encrypted to the cloud for cross-device access. You can delete them at any time.",
-    privateOn: zh ? "已启用" : es ? "Activado" : pt ? "Ativado" : "Enabled",
-    privateOff: zh ? "未启用" : es ? "Desactivado" : pt ? "Desativado" : "Disabled",
-    enableSync: zh ? "启用同步" : es ? "Activar sincronización" : pt ? "Ativar sincronização" : "Enable sync",
-    disableSync: zh ? "停用同步" : es ? "Desactivar sincronización" : pt ? "Desativar sincronização" : "Disable sync",
-    deleteData: zh ? "删除所有数据" : es ? "Eliminar todos los datos" : pt ? "Excluir todos os dados" : "Delete all data",
+    privateOn: zh ? "已启用" : es ? "Activado" : pt ? "Ativado" : fr ? "Activé" : "Enabled",
+    privateOff: zh ? "未启用" : es ? "Desactivado" : pt ? "Desativado" : fr ? "Désactivé" : "Disabled",
+    enableSync: zh ? "启用同步" : es ? "Activar sincronización" : pt ? "Ativar sincronização" : fr ? "Activer la synchronisation" : "Enable sync",
+    disableSync: zh ? "停用同步" : es ? "Desactivar sincronización" : pt ? "Desativar sincronização" : fr ? "Désactiver la synchronisation" : "Disable sync",
+    deleteData: zh ? "删除所有数据" : es ? "Eliminar todos los datos" : pt ? "Excluir todos os dados" : fr ? "Supprimer toutes les données" : "Delete all data",
     deleteConfirm: zh
       ? "确认删除？此操作不可撤销。"
       : es
       ? "¿Confirmar eliminación? Esta acción no se puede deshacer."
       : pt
       ? "Confirmar exclusão? Esta ação não pode ser desfeita."
+      : fr
+      ? "Confirmer la suppression ? Cette action est irréversible."
       : "Confirm delete? This cannot be undone.",
-    deleteCancel: zh ? "取消" : es ? "Cancelar" : pt ? "Cancelar" : "Cancel",
-    deleting: zh ? "删除中…" : es ? "Eliminando…" : pt ? "Excluindo…" : "Deleting…",
+    deleteCancel: zh ? "取消" : es ? "Cancelar" : pt ? "Cancelar" : fr ? "Annuler" : "Cancel",
+    deleting: zh ? "删除中…" : es ? "Eliminando…" : pt ? "Excluindo…" : fr ? "Suppression…" : "Deleting…",
     deleteOk: (t: number, r: number) =>
       zh
         ? `已删除 ${t} 个模板，${r} 条运行记录。`
@@ -89,8 +96,10 @@ function getCopy(locale: AccountLocale) {
         ? `Se eliminaron ${t} plantilla(s) y ${r} registro(s) de ejecución.`
         : pt
         ? `${t} modelo(s) e ${r} registro(s) de execução excluídos.`
+        : fr
+        ? `${t} modèle(s) et ${r} exécution(s) supprimés.`
         : `Deleted ${t} template(s) and ${r} run(s).`,
-    saving: zh ? "保存中…" : es ? "Guardando…" : pt ? "Salvando…" : "Saving…",
+    saving: zh ? "保存中…" : es ? "Guardando…" : pt ? "Salvando…" : fr ? "Enregistrement…" : "Saving…",
   };
 }
 

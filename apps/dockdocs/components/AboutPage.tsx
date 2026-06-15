@@ -4,7 +4,7 @@
 // --faint eyebrows, border-only, dividers only at header/footer, theme tokens
 // only (no rgba white-alpha → survives light mode; route is force-dark anyway).
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 
 const content = {
   en: {
@@ -243,6 +243,65 @@ const content = {
     ctaSub: "Abra qualquer ferramenta e observe a aba de rede — nas ferramentas do navegador, nada sai.",
     cta1: "Explorar as ferramentas", cta2: "Ver como a privacidade funciona",
   },
+  fr: {
+    heroEyebrow: "// Pourquoi DockDocs existe",
+    heroPre: "Vos documents ne regardent personne d'autre que ",
+    heroAccent: "vous.",
+    heroSub: "La plupart des outils DockDocs s'exécutent dans votre navigateur. Vos fichiers ne nous parviennent jamais — parce qu'ils ne vous quittent jamais.",
+
+    originEyebrow: "// Origine",
+    originPre: "Tous les autres sites PDF vous demandent d'abord d'envoyer le fichier. Nous avons ",
+    originAccent: "refusé",
+    originPost: " de construire ça.",
+    originBody: "Compresser un contrat ou une pièce d'identité ne devrait pas signifier la confier au cloud de quelqu'un d'autre. Nous avons donc fait le contraire : le traitement s'effectue sur votre machine, et les rares outils qui ont vraiment besoin d'un serveur vous le signalent avant que vous commenciez.",
+
+    flowEyebrow: "// Où va votre fichier",
+    flowHeading: "Où va vraiment votre fichier.",
+    flowSub: "À gauche : l'outil en ligne typique. À droite : DockDocs — dans la plupart des outils, le fichier ne franchit jamais la ligne.",
+    flowDevice: "Votre appareil",
+    flowNet: "Internet",
+    flowLegacy: "envoyé · stocké · analysé",
+    flowServers: "leurs serveurs",
+    flowLocal: "traité dans votre navigateur",
+    flowZero: "0 octet envoyé",
+
+    tableEyebrow: "// En termes clairs",
+    tableHeading: "Ce que nous faisons. Ce que nous ne faisons jamais.",
+    doHead: "Nous faisons",
+    neverHead: "Nous ne faisons jamais",
+    doRows: ["Traiter les fichiers dans votre navigateur", "Supprimer immédiatement les temporaires cloud", "Signaler chaque étape cloud à l'avance", "Citer la source de chaque réponse IA", "Vous laisser commencer sans compte"],
+    neverRows: ["Stocker vos documents", "Entraîner l'IA avec vos fichiers", "Vendre ou partager vos données", "Pièges de désabonnement par e-mail", "Envois cachés"],
+
+    statsEyebrow: "// Les chiffres qui comptent",
+    statsHeading: "Les chiffres qui comptent sont des zéros.",
+    stats: [
+      { n: "0", l: "fichiers stockés dans les outils navigateur", z: true },
+      { n: "0", l: "fichiers utilisés pour entraîner l'IA", z: true },
+      { n: "0 €", l: "pour commencer — sans compte", z: true },
+      { n: "~50", l: "outils PDF et IA", z: false },
+    ],
+
+    cloudEyebrow: "// Honnêtes sur le cloud",
+    cloudHeading: "Quand un outil utilise le cloud, il vous le dit.",
+    cloudSub: "Certains outils (conversion Office, OCR volumineuse, chat IA) ont besoin d'un serveur : signalé avant de commencer, chiffré en transit et supprimé juste après. Et l'IA cite toujours la ligne source.",
+    cloudSteps: ["signalé à l'avance", "chiffré en transit", "traité", "copie supprimée"],
+    cloudNotKept: "non conservé",
+    aiSummary: "réponse IA",
+    aiCite: "source",
+
+    valuesEyebrow: "// Ce sur quoi nous nous appuyons",
+    valuesHeading: "Ce sur quoi nous nous appuyons.",
+    values: [
+      { t: "Confidentialité par architecture", b: "Le traitement local est la valeur par défaut — pas un paramètre à activer." },
+      { t: "Vos fichiers, votre appareil", b: "Les outils navigateur n'envoient jamais rien, jamais." },
+      { t: "Aucun dark pattern", b: "Annulez en deux clics. Pas de désabonnement par e-mail." },
+      { t: "Transparents sur le fonctionnement", b: "Chaque étape cloud et chaque source IA sont identifiées." },
+    ],
+
+    ctaHeading: "Essayez un outil. Sans envoi. Sans compte.",
+    ctaSub: "Ouvrez n'importe quel outil et regardez l'onglet réseau — avec les outils navigateur, rien ne sort.",
+    cta1: "Explorer les outils", cta2: "Voir comment fonctionne la confidentialité",
+  },
 } as const;
 
 const Check = () => (
@@ -262,7 +321,7 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
   const c = content[locale] ?? content.en;
   const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
   const h2 = "text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]";
-  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : slug);
+  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : slug);
 
   return (
     <main>

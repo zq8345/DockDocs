@@ -5,7 +5,7 @@
 
 import { navCategories } from "@/components/Header";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { name: string; slug: string };
 
 const PAGES: Record<Locale, { label: string; items: [string, string][] }> = {
@@ -13,6 +13,7 @@ const PAGES: Record<Locale, { label: string; items: [string, string][] }> = {
   zh: { label: "页面", items: [["首页", "/"], ["关于", "/about"], ["定价", "/pricing"], ["博客", "/blog"], ["指南", "/guides"], ["资源", "/resources"], ["隐私", "/privacy-policy"], ["条款", "/terms"]] },
   es: { label: "Páginas", items: [["Inicio", "/"], ["Acerca de", "/about"], ["Precios", "/pricing"], ["Blog", "/blog"], ["Guías", "/guides"], ["Recursos", "/resources"], ["Privacidad", "/privacy-policy"], ["Términos", "/terms"]] },
   pt: { label: "Páginas", items: [["Início", "/"], ["Sobre", "/about"], ["Preços", "/pricing"], ["Blog", "/blog"], ["Guias", "/guides"], ["Recursos", "/resources"], ["Privacidade", "/privacy-policy"], ["Termos", "/terms"]] },
+  fr: { label: "Pages", items: [["Accueil", "/"], ["À propos", "/about"], ["Tarifs", "/pricing"], ["Blog", "/blog"], ["Guides", "/guides"], ["Ressources", "/resources"], ["Confidentialité", "/privacy-policy"], ["Conditions", "/terms"]] },
 };
 
 function flatItems(cat: { cols: { items: Item[] }[] }): Item[] {
@@ -25,8 +26,9 @@ export function SitemapContent({ locale = "en" }: { locale?: Locale }) {
   const zh = locale === "zh";
   const es = locale === "es";
   const pt = locale === "pt";
+  const fr = locale === "fr";
   const cats = (navCategories[locale] ?? navCategories.en).slice(0, 4);
-  const path = (slug: string) => (zh ? `/zh${slug}` : es ? `/es${slug}` : pt ? `/pt${slug}` : slug);
+  const path = (slug: string) => (zh ? `/zh${slug}` : es ? `/es${slug}` : pt ? `/pt${slug}` : fr ? `/fr${slug}` : slug);
   const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
   const link = "text-[14px] text-[color:var(--muted)] transition hover:text-[color:var(--accent-strong)]";
   const pages = PAGES[locale] ?? PAGES.en;

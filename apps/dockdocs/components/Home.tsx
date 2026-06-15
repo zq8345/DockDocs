@@ -3,7 +3,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { navCategories } from "@/components/Header";
 
-type Locale = "en" | "zh" | "es" | "pt";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { name: string; slug: string };
 
 const COPY = {
@@ -115,6 +115,33 @@ const COPY = {
     aiSummary: "Resumo de IA",
     cite: "fonte",
   },
+  fr: {
+    eyebrow: "Plateforme PDF IA axée sur la confidentialité",
+    heroA: "Lisez n'importe quel document.",
+    heroB: "Fiez-vous à chaque réponse.",
+    heroSub: "~50 outils PDF qui s'exécutent dans votre navigateur, plus une IA qui lit, compare et extrait vos documents — avec des sources cliquables.",
+    primary: "Utiliser gratuitement",
+    secondary: "Voir comment fonctionne la confidentialité",
+    proofHeading: "Vos fichiers ne quittent jamais votre appareil.",
+    proof: [{ t: "Traité dans votre navigateur" }, { g: "0", t: " fichiers envoyés" }, { t: "Les réponses citent la source" }, { t: "Sans inscription" }],
+    aiEyebrow: "IA fondée sur des preuves",
+    aiHeading: "Une IA qui montre son travail.",
+    aiSub: "Interrogez n'importe quel document et chaque réponse pointe vers la ligne exacte d'où elle provient. Comparez, extrayez, résumez — fondé sur des preuves, jamais inventé.",
+    aiCta: "Discuter avec un PDF",
+    aiChips: ["Comparer", "Extraire vers Excel", "Résumer", "Traduire en 18 langues"],
+    capEyebrow: "Ce que vous pouvez faire",
+    capHeading: "Une boîte à outils complète. Quatre façons de travailler.",
+    capSub: "Environ 50 outils PDF en un seul endroit — convertir, organiser, signer, caviarder, OCR — la plupart s'exécutent localement dans votre navigateur.",
+    browseAll: "Voir tous les outils",
+    more: (n: number) => `et ${n} de plus`,
+    tools: "outils",
+    ctaHeadA: "Lisez n'importe quel document.",
+    ctaHeadB: "Fiez-vous à chaque réponse.",
+    ctaSub: "~50 outils, IA fondée sur des preuves, rien n'est envoyé. Gratuit pour commencer — sans inscription.",
+    viewPricing: "Voir les tarifs",
+    aiSummary: "Résumé IA",
+    cite: "source",
+  },
 } as const;
 
 // category icons (nav order: 0 PDF · 1 Batch · 2 AI · 3 Profession)
@@ -214,26 +241,30 @@ const SCENARIOS = [
   { icon: <path d="M4 13h3v6H4zM10 9h3v10h-3zM16 5h3v14h-3z" />, href: "/compare",
     en: ["Compare quotes, pick the best", "3 files into a sheet · ~1h", "a sourced pick · 1 min"],
     zh: ["比报价，选最优", "开 3 个文件抄进表格 · 约 1 小时", "带出处的推荐 · 1 分钟"],
-    es: ["Compara presupuestos, elige el mejor", "3 archivos a una hoja · ~1 h", "una elección con fuentes · 1 min"] },
+    es: ["Compara presupuestos, elige el mejor", "3 archivos a una hoja · ~1 h", "una elección con fuentes · 1 min"],
+    fr: ["Comparez des devis, choisissez le meilleur", "3 fichiers dans un tableau · ~1h", "un choix documenté · 1 min"] },
   { icon: <path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM13 3v4h4M8.5 14l2 2 4-4" />, href: "/redline",
     en: ["Catch the traps in a contract", "a lawyer, or sign blind", "AI flags risky & missing clauses"],
     zh: ["看穿合同里的坑", "花钱找律师，或盲签踩坑", "AI 标出风险与缺失条款"],
-    es: ["Detecta las trampas de un contrato", "un abogado, o firmar a ciegas", "la IA señala cláusulas de riesgo y ausentes"] },
+    es: ["Detecta las trampas de un contrato", "un abogado, o firmar a ciegas", "la IA señala cláusulas de riesgo y ausentes"],
+    fr: ["Repérez les pièges d'un contrat", "un juriste, ou signer en aveugle", "l'IA signale les clauses à risque et manquantes"] },
   { icon: <path d="M4 7l8-4 8 4-8 4-8-4ZM4 12l8 4 8-4M4 17l8 4 8-4" />, href: "/batch-extract-sheet",
     en: ["Process a batch of invoices", "key them in one by one · hours", "drop the batch → auto-extract"],
     zh: ["批量处理发票", "一张张录入 · 几小时", "整批丢进去 → 自动抽取"],
-    es: ["Procesa un lote de facturas", "teclearlas una a una · horas", "suelta el lote → extracción automática"] },
+    es: ["Procesa un lote de facturas", "teclearlas una a una · horas", "suelta el lote → extracción automática"],
+    fr: ["Traitez un lot de factures", "les saisir une par une · des heures", "déposez le lot → extraction automatique"] },
   { icon: <path d="M5 4h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5zM8.5 9h6M8.5 13h6" />, href: "/chat-with-pdf",
     en: ["Understand a long report fast", "read 80 pages for a few answers", "ask it → sourced answers · 30s"],
     zh: ["快速读懂长报告", "读 80 页找几个答案", "问它 → 30 秒带出处答案"],
-    es: ["Entiende un informe largo rápido", "leer 80 páginas por unas respuestas", "pregúntale → respuestas con fuentes · 30 s"] },
+    es: ["Entiende un informe largo rápido", "leer 80 páginas por unas respuestas", "pregúntale → respuestas con fuentes · 30 s"],
+    fr: ["Comprendre un long rapport rapidement", "lire 80 pages pour quelques réponses", "interrogez-le → réponses documentées · 30s"] },
 ];
 
 export function Home({ locale = "en" }: { locale?: Locale }) {
   const zh = locale === "zh";
   const c = COPY[locale] ?? COPY.en;
   const cats = (navCategories[locale] ?? navCategories.en).slice(0, 4);
-  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : slug);
+  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : slug);
 
   return (
     <>
@@ -294,10 +325,10 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
                 <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
                 <div className="mb-1.5 flex items-center gap-1.5 text-[12px] text-[color:var(--foreground)]">
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                  <span className="min-w-0">{locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : "Revenue +23% YoY"}</span>
+                  <span className="min-w-0">{locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : "Revenue +23% YoY"}</span>
                   <span className="ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)]">{c.cite}</span>
                 </div>
-                {[locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : "APAC is the main driver", locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : "Gross margin 41% (↑3pt)"].map((b) => (
+                {[locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : "APAC is the main driver", locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : "Gross margin 41% (↑3pt)"].map((b) => (
                   <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[12px] text-[color:var(--muted)] last:mb-0">
                     <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" />{b}
                   </div>
@@ -328,15 +359,15 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
           {/* grounded Q&A: a question, then an answer that cites the exact pages */}
           <div className="hfg-in rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
             <div className="flex justify-end">
-              <span className="max-w-[80%] rounded-2xl rounded-br-md border border-[color:var(--line)] bg-[color:var(--background)] px-3.5 py-2 text-[12.5px] leading-[1.45] text-[color:var(--foreground)]">{locale === "zh" ? "第 3 季度营收增长了多少？" : locale === "es" ? "¿Cuánto crecieron los ingresos del 3.er trimestre?" : locale === "pt" ? "Quanto cresceu a receita do 3.º trimestre?" : "How much did Q3 revenue grow?"}</span>
+              <span className="max-w-[80%] rounded-2xl rounded-br-md border border-[color:var(--line)] bg-[color:var(--background)] px-3.5 py-2 text-[12.5px] leading-[1.45] text-[color:var(--foreground)]">{locale === "zh" ? "第 3 季度营收增长了多少？" : locale === "es" ? "¿Cuánto crecieron los ingresos del 3.er trimestre?" : locale === "pt" ? "Quanto cresceu a receita do 3.º trimestre?" : locale === "fr" ? "De combien les revenus du T3 ont-ils augmenté ?" : "How much did Q3 revenue grow?"}</span>
             </div>
             <div className="mt-3 rounded-lg border border-[color:var(--line)] p-3.5">
               <div className="mb-2.5 flex items-center gap-1.5 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />{locale === "zh" ? "有据回答" : locale === "es" ? "Respuesta fundamentada" : locale === "pt" ? "Resposta embasada" : "Grounded answer"}
+                <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />{locale === "zh" ? "有据回答" : locale === "es" ? "Respuesta fundamentada" : locale === "pt" ? "Resposta embasada" : locale === "fr" ? "Réponse fondée" : "Grounded answer"}
               </div>
-              <p className="mb-3 text-[12.5px] leading-[1.5] text-[color:var(--foreground)]">{locale === "zh" ? "第 3 季度营收同比增长 23%，主要由亚太区驱动。" : locale === "es" ? "Los ingresos del 3.er trimestre crecieron un 23% interanual, impulsados principalmente por APAC." : locale === "pt" ? "A receita do 3.º trimestre cresceu 23% ano a ano, impulsionada principalmente pela APAC." : "Q3 revenue grew 23% year-over-year, driven mainly by APAC."}</p>
+              <p className="mb-3 text-[12.5px] leading-[1.5] text-[color:var(--foreground)]">{locale === "zh" ? "第 3 季度营收同比增长 23%，主要由亚太区驱动。" : locale === "es" ? "Los ingresos del 3.er trimestre crecieron un 23% interanual, impulsados principalmente por APAC." : locale === "pt" ? "A receita do 3.º trimestre cresceu 23% ano a ano, impulsionada principalmente pela APAC." : locale === "fr" ? "Les revenus du T3 ont augmenté de 23% sur un an, principalement portés par l'APAC." : "Q3 revenue grew 23% year-over-year, driven mainly by APAC."}</p>
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[10px] text-[color:var(--faint)]">{locale === "zh" ? "依据" : locale === "es" ? "Fuentes" : locale === "pt" ? "Fontes" : "Sources"}</span>
+                <span className="text-[10px] text-[color:var(--faint)]">{locale === "zh" ? "依据" : locale === "es" ? "Fuentes" : locale === "pt" ? "Fontes" : locale === "fr" ? "Sources" : "Sources"}</span>
                 {(locale === "zh" ? ["第 12 页", "第 27 页"] : locale === "es" ? ["p.12", "p.27"] : locale === "pt" ? ["p.12", "p.27"] : ["p.12", "p.27"]).map((cite) => (
                   <span key={cite} className="inline-flex items-center gap-1 rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] font-medium text-[color:var(--accent)] transition-colors hover:border-[color:var(--accent)]">
                     <svg width="9" height="9" viewBox="0 0 16 16" fill="none"><path d="M4 2h6l3 3v9H4z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
@@ -402,11 +433,11 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
       {/* ── Use cases (understand what it solves) ── */}
       <section>
         <div className="mx-auto max-w-6xl px-5 py-20 sm:px-6 sm:py-28 lg:px-8">
-          <p className={EYEBROW(zh)}>{locale === "zh" ? "能替你做什么" : locale === "es" ? "Lo que hace por ti" : locale === "pt" ? "O que faz por você" : "What it does for you"}</p>
-          <h2 className="mt-4 text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]">{locale === "zh" ? "几分钟，搞定原本要几小时的事。" : locale === "es" ? "Minutos, no horas." : locale === "pt" ? "Minutos, não horas." : "Minutes, not hours."}</h2>
+          <p className={EYEBROW(zh)}>{locale === "zh" ? "能替你做什么" : locale === "es" ? "Lo que hace por ti" : locale === "pt" ? "O que faz por você" : locale === "fr" ? "Ce qu'il fait pour vous" : "What it does for you"}</p>
+          <h2 className="mt-4 text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]">{locale === "zh" ? "几分钟，搞定原本要几小时的事。" : locale === "es" ? "Minutos, no horas." : locale === "pt" ? "Minutos, não horas." : locale === "fr" ? "Des minutes, pas des heures." : "Minutes, not hours."}</h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-2">
             {SCENARIOS.map((s) => {
-              const t = locale === "zh" ? s.zh : locale === "es" ? s.es : locale === "pt" ? ((s as unknown as Record<string, string[]>).pt ?? s.es) : s.en;
+              const t = locale === "zh" ? s.zh : locale === "es" ? s.es : locale === "pt" ? ((s as unknown as Record<string, string[]>).pt ?? s.es) : locale === "fr" ? ((s as unknown as Record<string, string[]>).fr ?? s.en) : s.en;
               return (
                 <a key={t[0]} href={path(s.href)} className="rounded-2xl border border-[color:var(--line)] p-6 transition-colors hover:border-[color:var(--line-strong)]">
                   <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[color:var(--line)] text-[color:var(--accent)]">
