@@ -5,6 +5,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
+import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useMemo, useState } from "react";
 
@@ -178,9 +179,10 @@ export function LeaseRedflagClient({ locale = "en" }: { locale?: Locale }) {
         setPhase("ready");
         return;
       }
+      const auth = await authHeader();
       const res = await fetch("/api/lease-redflag", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...auth },
         body: JSON.stringify({ text, locale }),
       });
       const data = await res.json().catch(() => ({}));

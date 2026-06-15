@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
+import { authHeader } from "@/lib/supabase";
 
 type Locale = "en" | "zh" | "es";
 
@@ -78,13 +79,15 @@ export function UrlToPdfClient({ locale = "en" }: { locale?: Locale }) {
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
-  const post = (body: unknown, signal: AbortSignal) =>
-    fetch("/api/cloudconvert-convert", {
+  const post = async (body: unknown, signal: AbortSignal) => {
+    const auth = await authHeader();
+    return fetch("/api/cloudconvert-convert", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...auth },
       body: JSON.stringify(body),
       signal,
     });
+  };
 
   const convert = useCallback(async () => {
     const u = url.trim();

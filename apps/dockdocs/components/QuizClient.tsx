@@ -5,6 +5,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { authHeader } from "@/lib/supabase";
 
 type Locale = "en" | "zh" | "es";
 type Card = { q: string; a: string };
@@ -81,9 +82,10 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
     if (!text) return;
     setPhase("generating"); setError(null); setCards([]); setFlipped(new Set());
     try {
+      const auth = await authHeader();
       const res = await fetch("/api/quiz", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...auth },
         body: JSON.stringify({ text, count, locale }),
       });
       const data = await res.json();

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { defaultLocale, isAllLocale, routeLocales, localeLabels } from "@/lib/i18n";
+import { getUser, onAuthChange, type AuthUser } from "@/lib/auth";
 
 // ── Top-level nav categories. Each opens a dropdown; PDF tools has sub-columns. ──
 type NavItem = { name: string; slug: string; soon?: boolean };
@@ -401,6 +402,7 @@ export function Header() {
   const [light, setLight] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const locale = stripLocale(pathname ?? "/");
 
   const cats = navCategories[locale] ?? navCategories.en;
@@ -408,6 +410,12 @@ export function Header() {
 
   useEffect(() => {
     setLight(document.documentElement.classList.contains("light"));
+  }, []);
+  useEffect(() => {
+    let mounted = true;
+    getUser().then((u) => { if (mounted) setAuthUser(u); }).catch(() => {});
+    const unsub = onAuthChange((u) => { if (mounted) setAuthUser(u); });
+    return () => { mounted = false; unsub(); };
   }, []);
   useEffect(() => { setMobileOpen(false); setMoreOpen(false); }, [pathname]);
   useEffect(() => {
@@ -522,13 +530,15 @@ export function Header() {
 
           {/* Right actions */}
           <div className="ml-auto flex items-center gap-1.5">
-            {/* Sign in (desktop) */}
+            {/* Sign in / Account (desktop) */}
             <button
               type="button"
               onClick={() => navTo("/account")}
               className="hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] md:inline-flex"
             >
-              {locale === "zh" ? "登录" : "Sign in"}
+              {authUser
+                ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "es" ? "Cuenta" : "Account"))
+                : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : "Sign in")}
             </button>
 
             {/* Consolidated "More" menu (desktop) — Pricing/Blog/About + language + theme */}
@@ -618,7 +628,9 @@ export function Header() {
                   onClick={() => { navTo("/account"); setMobileOpen(false); }}
                   className="ml-auto rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
                 >
-                  {locale === "zh" ? "登录" : "Sign in"}
+                  {authUser
+                    ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "es" ? "Cuenta" : "Account"))
+                    : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : "Sign in")}
                 </button>
               </div>
 

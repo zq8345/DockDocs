@@ -4,6 +4,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
+import { authHeader } from "@/lib/supabase";
 
 type Locale = "en" | "zh" | "es";
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
@@ -84,13 +85,14 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
   const run = useCallback(async () => {
     if (items.length === 0) { setError(t.need); return; }
     setPhase("running"); setError(null); setProgress(0);
+    const auth = await authHeader();
     const updated = [...items];
     for (let i = 0; i < updated.length; i++) {
       setProgress(i + 1);
       const it = updated[i];
       if (!it.text) { updated[i] = { ...it, status: "error", category: t.uncategorized, msg: t.failed }; setItems([...updated]); continue; }
       try {
-        const res = await fetch("/api/classify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: it.text, locale }) });
+        const res = await fetch("/api/classify", { method: "POST", headers: { "Content-Type": "application/json", ...auth }, body: JSON.stringify({ text: it.text, locale }) });
         const data = await res.json();
         if (data?.ok && data.category) updated[i] = { ...it, status: "done", category: String(data.category), tags: Array.isArray(data.tags) ? data.tags : [] };
         else updated[i] = { ...it, status: "error", category: t.uncategorized, msg: data?.message || "failed" };

@@ -5,6 +5,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
+import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useState } from "react";
 
@@ -176,9 +177,10 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
         setPhase("ready");
         return;
       }
+      const auth = await authHeader();
       const res = await fetch("/api/translate", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...auth },
         body: JSON.stringify({ text, targetLang: target, locale }),
       });
       const data = await res.json();

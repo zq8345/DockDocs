@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { authHeader } from "@/lib/supabase";
 
 type Locale = "en" | "zh";
 type Doc = { id: string; name: string; text: string };
@@ -77,6 +78,7 @@ export function ClassifyClient({ locale = "en" }: { locale?: Locale }) {
   const run = useCallback(async () => {
     if (docs.length === 0) { setError(t.need); return; }
     setPhase("running"); setError(null); setResults([]); setProgress(0);
+    const auth = await authHeader();
     const out: Result[] = [];
     for (let i = 0; i < docs.length; i++) {
       const d = docs[i];
@@ -85,7 +87,7 @@ export function ClassifyClient({ locale = "en" }: { locale?: Locale }) {
       try {
         const res = await fetch("/api/classify", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...auth },
           body: JSON.stringify({ text: d.text, locale }),
         });
         const data = await res.json();

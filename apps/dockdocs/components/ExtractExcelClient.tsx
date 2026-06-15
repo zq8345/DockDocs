@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { authHeader } from "@/lib/supabase";
 
 type Locale = "en" | "zh" | "es";
 type DocType = "invoice" | "quote" | "contract";
@@ -104,9 +105,10 @@ export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
     if (usable.length === 0) { setError(t.needFile); return; }
     setPhase("extracting"); setError(null); setResults([]);
     try {
+      const auth = await authHeader();
       const res = await fetch("/api/compare-extract", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...auth },
         body: JSON.stringify({ docType, locale, documents: usable.map((d) => ({ id: d.id, name: d.name, text: d.text })) }),
       });
       const data = await res.json();

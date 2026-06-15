@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { authHeader } from "@/lib/supabase";
 
 type Locale = "en" | "zh";
 type DocType = "invoice" | "quote" | "contract";
@@ -97,12 +98,13 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
     const allDocs: DocResult[] = [];
     let dimensions: Dim[] = [];
     let lastErr = "";
+    const auth = await authHeader();
     for (let g = 0; g < groups.length; g++) {
       setProgress(g + 1);
       try {
         const res = await fetch("/api/compare-extract", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...auth },
           body: JSON.stringify({ docType, locale, documents: groups[g].map((d) => ({ id: d.id, name: d.name, text: d.text })) }),
         });
         const data = await res.json();

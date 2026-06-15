@@ -4,6 +4,7 @@ import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
@@ -149,6 +150,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
     setError(null);
     setLimitHit(null);
     setProgress(0);
+    const auth = await authHeader();
     const updated = [...items];
     for (let i = 0; i < updated.length; i++) {
       setProgress(i + 1);
@@ -173,7 +175,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
         }
         const res = await fetch("/api/translate", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...auth },
           body: JSON.stringify({ text, targetLang: target, locale }),
         });
         const data = await res.json().catch(() => ({}));

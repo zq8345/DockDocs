@@ -4,6 +4,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { authHeader } from "@/lib/supabase";
 
 type Locale = "en" | "zh" | "es";
 type Summary = { executiveSummary: string; keyPoints: string[]; actionItems?: string[]; nextSteps?: string[] };
@@ -92,6 +93,7 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
     const usable = docs.filter((d) => d.text.length > 0);
     if (docs.length === 0) { setError(t.need); return; }
     setPhase("running"); setError(null); setResults([]); setProgress(0);
+    const auth = await authHeader();
     const out: Result[] = [];
     for (let i = 0; i < docs.length; i++) {
       const d = docs[i];
@@ -100,7 +102,7 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
       try {
         const res = await fetch("/api/ai-summary", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...auth },
           body: JSON.stringify({ text: d.text, locale, sourceName: d.name }),
         });
         const data = await res.json();

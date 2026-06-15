@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { localizedPath, type RouteSlug } from "@/lib/i18n";
-import { createBillingCheckoutSession } from "@/lib/subscription-runtime";
+import { createBillingCheckoutSession, getSubscriptionSnapshot, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
+import { getUser, onAuthChange } from "@/lib/auth";
 
 type Locale = "en" | "zh" | "es";
 
@@ -243,6 +244,29 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [billingLoading, setBillingLoading] = useState("");
+  const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        const u = await getUser();
+        if (!mounted || !u) return;
+        const snap = await getSubscriptionSnapshot();
+        if (mounted) setSubscription(snap);
+      } catch {}
+    }
+    load();
+    const unsub = onAuthChange(async (u) => {
+      if (!mounted) return;
+      if (u) {
+        try { const snap = await getSubscriptionSnapshot(); if (mounted) setSubscription(snap); } catch {}
+      } else {
+        if (mounted) setSubscription(null);
+      }
+    });
+    return () => { mounted = false; unsub(); };
+  }, []);
   const zh = locale === "zh";
   const c = copy[locale] ?? copy.en;
 
@@ -292,6 +316,9 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
           const price = yearly && !isFree ? plan.yearlyPrice : plan.monthlyPrice;
           const featured = plan.featured;
           const planKey: PaidSubscriptionPlan | null = isFree ? null : featured ? "PLUS" : "PRO";
+          const isCurrentPlan = subscription
+            ? planKey !== null && subscription.displayName.toUpperCase() === planKey
+            : false;
           const ctaCls = `mt-6 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-medium transition ${featured ? "bg-[color:var(--accent)] hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--foreground)]"}`;
           return (
             <article key={plan.name}
@@ -330,8 +357,12 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               </ul>
 
               {planKey ? (
-                <button type="button" onClick={() => upgrade(planKey)} disabled={billingLoading === planKey} className={ctaCls}>
-                  {billingLoading === planKey ? (locale === "zh" ? "跳转中…" : locale === "es" ? "Redirigiendo…" : "Redirecting…") : plan.cta}
+                <button type="button" onClick={() => !isCurrentPlan && upgrade(planKey)} disabled={isCurrentPlan || billingLoading === planKey} className={ctaCls}>
+                  {isCurrentPlan
+                    ? (locale === "zh" ? "当前套餐" : locale === "es" ? "Plan actual" : "Current plan")
+                    : billingLoading === planKey
+                      ? (locale === "zh" ? "跳转中…" : locale === "es" ? "Redirigiendo…" : "Redirecting…")
+                      : plan.cta}
                 </button>
               ) : (
                 <a href={toolHref(plan.href)} className={ctaCls}>{plan.cta}</a>
