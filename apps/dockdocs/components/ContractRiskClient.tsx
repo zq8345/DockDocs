@@ -38,6 +38,7 @@ const STR = {
     suggestionLabel: "What to ask",
     reset: "Check another",
     errPrefix: "Couldn't complete the review: ",
+    retry: "Try again",
     privacy: "Your contract is read in your browser; only the extracted text is sent for analysis.",
   },
   zh: {
@@ -63,6 +64,7 @@ const STR = {
     suggestionLabel: "该问什么",
     reset: "检查另一份",
     errPrefix: "审查未能完成:",
+    retry: "重试",
     privacy: "合同在你的浏览器中读取,只有提取出的文字会被发送去分析。",
   },
   es: {
@@ -88,6 +90,7 @@ const STR = {
     suggestionLabel: "Qué preguntar",
     reset: "Revisar otro",
     errPrefix: "No se pudo completar la revisión: ",
+    retry: "Reintentar",
     privacy: "Tu contrato se lee en tu navegador; solo se envía el texto extraído para analizarlo.",
   },
 };
@@ -228,10 +231,36 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && (
-        <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>
+        <div role="alert" className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">
+          <span>{error}</span>
+          {phase === "ready" && (
+            <button type="button" onClick={onAnalyze} className="shrink-0 rounded border border-[rgba(248,113,113,0.4)] px-3 py-1 text-[12px] font-semibold transition hover:bg-[rgba(248,113,113,0.1)]">
+              {t.retry}
+            </button>
+          )}
+        </div>
       )}
 
       {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
+
+      {phase === "analyzing" && (
+        <div className="mt-6 space-y-3" aria-busy="true">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="animate-pulse rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
+              <div className="flex items-center gap-2">
+                <div className="h-2.5 w-2.5 rounded-full bg-[color:var(--surface-subtle)]" />
+                <div className="h-5 w-14 rounded bg-[color:var(--surface-subtle)]" />
+                <div className="h-5 w-32 rounded bg-[color:var(--surface-subtle)]" />
+              </div>
+              <div className="mt-3 space-y-2">
+                <div className="h-3.5 w-full rounded bg-[color:var(--surface-subtle)]" />
+                <div className="h-3.5 w-4/5 rounded bg-[color:var(--surface-subtle)]" />
+              </div>
+              <div className="mt-3 h-12 rounded bg-[color:var(--surface-subtle)] opacity-60" />
+            </div>
+          ))}
+        </div>
+      )}
 
       {risks && (
         <div className="mt-6">

@@ -96,6 +96,7 @@ const STR = {
     tplLastRun: "Last run",
     tplRunFiles: (n: number) => `${n} file${n > 1 ? "s" : ""}`,
     tplNoRuns: "No runs yet",
+    retry: "Try again",
   },
   zh: {
     badge: "对比引擎 · 测试版",
@@ -148,6 +149,7 @@ const STR = {
     tplLastRun: "最近运行",
     tplRunFiles: (n: number) => `${n} 份文件`,
     tplNoRuns: "暂无运行记录",
+    retry: "重试",
   },
   es: {
     badge: "Motor de comparación · beta",
@@ -200,6 +202,7 @@ const STR = {
     tplLastRun: "Última ejecución",
     tplRunFiles: (n: number) => `${n} archivo${n > 1 ? "s" : ""}`,
     tplNoRuns: "Sin ejecuciones aún",
+    retry: "Reintentar",
   },
 } as const;
 
@@ -209,18 +212,21 @@ const REC = {
     thinking: "Weighing the options…",
     recommended: "Recommended",
     disclaimer: "This verdict is the AI's reasoning over the figures in the table below — unlike each table cell, it isn't individually source-checked. Confirm the numbers in the table before deciding.",
+    recError: "Recommendation unavailable — the comparison table below is still accurate.",
   },
   zh: {
     title: "推荐",
     thinking: "正在权衡各选项…",
     recommended: "推荐",
     disclaimer: "此结论是 AI 基于下方表格里的数字做的推理——它不像表格每个单元格那样逐条核对过出处。决定前请以表格里的数字为准。",
+    recError: "推荐加载失败——下方对比表仍然准确。",
   },
   es: {
     title: "Recomendación",
     thinking: "Sopesando las opciones…",
     recommended: "Recomendado",
     disclaimer: "Este veredicto es el razonamiento de la IA sobre las cifras de la tabla de abajo; a diferencia de cada celda de la tabla, no se verifica su fuente de forma individual. Confirma los números en la tabla antes de decidir.",
+    recError: "Recomendación no disponible; la tabla de comparación sigue siendo precisa.",
   },
 } as const;
 
@@ -308,6 +314,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const [rerunReady, setRerunReady] = useState(false);
   const [templateRuns, setTemplateRuns] = useState<FlowRun[]>([]);
   const compareRef = useRef<() => Promise<void>>(async () => {});
+  const [recError, setRecError] = useState<string | null>(null);
 
   useEffect(() => {
     setTemplates(loadTemplates());
@@ -432,6 +439,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     setComparison(null);
     setRecommendation(null);
     setLimitHit(null);
+    setRecError(null);
     const gate = await checkUsage("compare");
     if (!gate.allowed) {
       setLimitHit(gate.limit);
@@ -467,8 +475,9 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         });
         const rd = await rr.json();
         if (rd?.ok && rd.recommendation) setRecommendation(rd.recommendation);
+        else setRecError(r.recError);
       } catch {
-        /* recommendation is best-effort; the comparison table still shows */
+        setRecError(r.recError);
       } finally {
         setRecommending(false);
       }
@@ -477,10 +486,17 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     } finally {
       setComparing(false);
     }
-  }, [okDocs, docType, locale, t, activeTemplate]);
+  }, [okDocs, docType, locale, t, r, activeTemplate]);
 
   // Keep ref in sync so the auto-trigger effect always calls the latest closure.
   useEffect(() => { compareRef.current = compare; }, [compare]);
+
+  useEffect(() => {
+    if (!trace) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setTrace(null); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [trace]);
 
   const handleSaveTemplate = () => {
     const name = tplName.trim();
@@ -680,7 +696,14 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
-      {compareError && <p className="mt-4 rounded-[var(--radius)] border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-300">{compareError}</p>}
+      {compareError && (
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <p role="alert" className="rounded-[var(--radius)] border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-300">{compareError}</p>
+          <button type="button" onClick={compare} disabled={comparing || okDocs.length < 2} className="inline-flex h-9 items-center rounded-[var(--radius)] border border-red-400/40 px-4 text-sm font-semibold text-red-300 transition hover:bg-red-400/10 disabled:opacity-50">
+            {t.retry}
+          </button>
+        </div>
+      )}
 
       {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
 
@@ -719,12 +742,14 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         </section>
       )}
 
-      {comparison && (recommending || recommendation) && (
+      {comparison && (recommending || recommendation || recError) && (
         <section className="mt-10">
           <div className="rounded-[var(--radius-lg)] border border-[color:var(--accent)] bg-[color:var(--soft-accent)] p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">{r.title}</p>
-            {recommending && !recommendation ? (
+            {recommending && !recommendation && !recError ? (
               <p className="mt-2 text-sm text-[color:var(--muted)]">{r.thinking}</p>
+            ) : recError ? (
+              <p className="mt-2 text-sm text-amber-400/80">{r.recError}</p>
             ) : recommendation ? (
               <>
                 {recommendation.winnerId && (
@@ -847,7 +872,45 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         </section>
       )}
 
-      {!comparison && (
+      {comparing && !comparison && (
+        <div className="mt-10 space-y-6" aria-busy="true">
+          <div className="animate-pulse rounded-[var(--radius-lg)] border border-[color:var(--accent)] bg-[color:var(--soft-accent)] p-5">
+            <div className="h-3 w-24 rounded bg-[color:var(--accent)]/20" />
+            <div className="mt-3 h-6 w-52 rounded bg-[color:var(--accent)]/20" />
+            <div className="mt-3 space-y-2">
+              <div className="h-4 w-full rounded bg-[color:var(--accent)]/20" />
+              <div className="h-4 w-5/6 rounded bg-[color:var(--accent)]/20" />
+              <div className="h-4 w-4/6 rounded bg-[color:var(--accent)]/20" />
+            </div>
+          </div>
+          <div className="animate-pulse overflow-x-auto rounded-[var(--radius-lg)] border border-[color:var(--line)]">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-[color:var(--surface-subtle)]">
+                  {[0, 1, 2, 3].map((i) => (
+                    <th key={i} className="border-b border-[color:var(--line)] px-3 py-2.5">
+                      <div className="h-3 w-20 rounded bg-[color:var(--surface)]" />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[0, 1, 2, 3, 4].map((i) => (
+                  <tr key={i}>
+                    {[0, 1, 2, 3].map((j) => (
+                      <td key={j} className="border-b border-[color:var(--line)] px-3 py-3">
+                        <div className={`h-4 rounded bg-[color:var(--surface-subtle)] ${j === 0 ? "w-24" : "w-full"}`} />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {!comparison && !comparing && (
         <div className="mt-10 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">{t.comingNext}</p>
           <ul className="mt-2 space-y-1 text-sm text-[color:var(--muted)]">
@@ -864,12 +927,12 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
           const loc = locateSnippet(docText, trace.snippet);
           return (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={() => setTrace(null)}>
-              <div className="max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-2xl" onClick={(e) => e.stopPropagation()}>
+              <div role="dialog" aria-modal="true" aria-labelledby="trace-dialog-title" className="max-h-[80vh] w-full max-w-2xl overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-2xl" onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center justify-between border-b border-[color:var(--line)] px-5 py-3">
-                  <p className="text-sm font-semibold text-[color:var(--foreground)]">
+                  <p id="trace-dialog-title" className="text-sm font-semibold text-[color:var(--foreground)]">
                     {tr.source} · {trace.docName}
                   </p>
-                  <button type="button" onClick={() => setTrace(null)} className="text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
+                  <button type="button" onClick={() => setTrace(null)} autoFocus aria-label="Close" className="text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
                     ✕
                   </button>
                 </div>
