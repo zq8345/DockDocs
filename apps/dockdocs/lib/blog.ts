@@ -25,6 +25,7 @@ export const blogArticleSlugs = [
   "chat-with-pdf-vs-chatgpt-vs-chatpdf",
   "convert-doc-to-pdf-free",
   "pdf-to-markdown-for-developers",
+  "dockdocs-vs-smallpdf-vs-ilovepdf",
 ] as const;
 
 export type BlogArticleSlug = (typeof blogArticleSlugs)[number];
@@ -1631,6 +1632,213 @@ export const blogArticles: BlogArticle[] = [
             question: "可以和扫描版 PDF 对话吗？",
             answer:
               "可以，但扫描件是图片，需要先识别出文字。先用 OCR 把扫描件转成可选文本，再对结果提问。DockDocs 把 OCR 和 PDF 问答放在一起，正是为这个流程准备的。",
+          },
+        ],
+      },
+    },
+  },
+  {
+    slug: "dockdocs-vs-smallpdf-vs-ilovepdf",
+    category: "Compare",
+    publishedAt: "2026-06-15",
+    updatedAt: "2026-06-15",
+    keywords: [
+      "dockdocs vs smallpdf",
+      "smallpdf alternative",
+      "ilovepdf alternative",
+      "dockdocs vs ilovepdf",
+      "free pdf tools comparison",
+      "smallpdf vs ilovepdf",
+      "best free pdf tool online",
+      "privacy pdf online",
+    ],
+    toolHref: "/compress-pdf",
+    toolLabel: "Compress PDF",
+    relatedTools: [
+      { label: "Compress PDF", href: "/compress-pdf" },
+      { label: "Merge PDF", href: "/merge-pdf" },
+      { label: "Word to PDF", href: "/word-to-pdf" },
+      { label: "PDF to Word", href: "/pdf-to-word" },
+    ],
+    relatedArticleSlugs: [
+      "how-to-compress-pdf-for-email",
+      "merge-pdf-without-losing-quality",
+      "convert-doc-to-pdf-free",
+    ],
+    content: {
+      en: {
+        title: "DockDocs vs Smallpdf vs iLovePDF: Honest Comparison (2026)",
+        description:
+          "A clear comparison of DockDocs, Smallpdf, and iLovePDF across privacy, free tier limits, features, and pricing — so you can choose the right PDF tool for your work.",
+        excerpt:
+          "Three of the most popular online PDF tools take very different approaches to privacy, free limits, and features. Here is a plain comparison to help you choose.",
+        readingTime: "7 min read",
+        ctaTitle: "Try DockDocs for free — no account needed",
+        ctaDescription:
+          "Compress, merge, split, convert, and edit PDFs directly in your browser. No file upload for client-side tools, no daily limits, no signup.",
+        ctaLabel: "Open PDF tools",
+        sections: [
+          {
+            heading: "Why the PDF tool you choose matters",
+            paragraphs: [
+              "Every week millions of people upload sensitive documents — contracts, tax forms, medical records, financial statements — to free online PDF tools. Most users never think about what happens to those files after the download link appears. The difference between the three most popular tools (DockDocs, Smallpdf, and iLovePDF) is not just features or price: it is fundamentally about where your document goes and what happens to it there.",
+              "This comparison focuses on the three things that matter most for everyday document work: privacy (does your file leave your device?), the free tier (what can you actually do without paying?), and the feature set (which tool handles the widest range of PDF tasks). We will be direct about where each tool wins and where it falls short.",
+            ],
+            links: [
+              { label: "DockDocs PDF tools", href: "/" },
+              { label: "Compress PDF free", href: "/compress-pdf" },
+            ],
+          },
+          {
+            heading: "Privacy and file security: where does your PDF go?",
+            paragraphs: [
+              "DockDocs processes most PDF tasks — compression, merging, splitting, image conversion, adding pages, watermarking, rotating, and more — entirely in your browser using JavaScript libraries (pdf-lib, pdfjs-dist). Your file is never uploaded to a server for these tools. If you are compressing a contract or splitting a medical record, the document does not travel over a network at all. For tools that require a server (Word-to-PDF conversion, for example, needs LibreOffice rendering), DockDocs is transparent about this and uses a dedicated conversion server.",
+              "Smallpdf and iLovePDF both upload your files to their cloud servers for processing. Both companies publish privacy policies that describe how files are stored and deleted (typically within hours), and both are reputable services. However, the simple fact is that uploading a file to a third-party server is a fundamentally different privacy posture than processing it locally. For regulated industries (healthcare, legal, finance), browser-side processing like DockDocs eliminates a class of compliance questions entirely.",
+              "Verdict on privacy: DockDocs wins for most tools. If keeping your document off any external server is a requirement, DockDocs is the only one of the three that offers this for its core tools.",
+            ],
+            links: [{ label: "How DockDocs protects your files", href: "/about" }],
+          },
+          {
+            heading: "Free tier: what you actually get without paying",
+            paragraphs: [
+              "Smallpdf's free tier historically limits users to two PDF tasks per hour (or per day, depending on when you check — their limits have changed over time). Some tools require a free account. The paid plan starts at around $9–12/month and removes the limits. The free experience is intentionally friction-heavy to encourage upgrades.",
+              "iLovePDF offers a free tier with more generous tool access, but some tools (like PDF signing and certain conversions) require a free account. File size limits and batch processing caps apply. Paid plans start from around $4/month.",
+              "DockDocs offers its browser-side tools — compression, merging, splitting, image conversion, page manipulation, OCR, PDF to Markdown, and more — with no daily limits and no account required. You can compress ten PDFs in a row without logging in or hitting a rate limit. The tools that do require a server (high-fidelity Word-to-PDF via CloudConvert, AI features like Chat with PDF) have usage tiers, but the wide client-side toolkit is genuinely unlimited and free.",
+              "Verdict on free tier: DockDocs wins for no-account, unlimited access to the broadest set of tools. iLovePDF is a good runner-up. Smallpdf's free tier is the most restrictive of the three.",
+            ],
+            links: [
+              { label: "DockDocs pricing", href: "/pricing" },
+              { label: "Merge PDF free", href: "/merge-pdf" },
+            ],
+          },
+          {
+            heading: "Feature comparison: what each tool does well",
+            paragraphs: [
+              "All three tools handle the core PDF operations: compress, merge, split, convert (PDF to Word, Word to PDF, JPG to PDF, PDF to JPG). For everyday tasks the experience is comparable — upload, process, download.",
+              "Smallpdf's strengths are its polished UI, e-signing workflow, and the breadth of its integrations (Google Drive, Dropbox, OneDrive sync). It is the most business-oriented of the three, with team plans and collaboration features. iLovePDF has a very wide tool list and is popular in education settings. Its batch conversion tool is particularly strong.",
+              "DockDocs differentiates in two areas. First, AI: Chat with PDF, AI document summary, and document analysis tools are built in — not an add-on. Second, the fully browser-side architecture means there is no network latency for client-side tools, and the privacy story is cleaner. For developers, the PDF to Markdown tool is uniquely useful for feeding PDFs into LLM pipelines. The visual tools (reorder pages, add watermark, crop pages) use a page-thumbnail UI rather than bare inputs.",
+              "If you need deep integrations with cloud storage and a polished signing workflow, Smallpdf is the strongest choice. If you need a broad, reliable free tool for batch work, iLovePDF is excellent. If privacy, no-account unlimited use, or AI document features are the priority, DockDocs is the right choice.",
+            ],
+            links: [
+              { label: "Chat with PDF", href: "/chat-with-pdf" },
+              { label: "PDF to Markdown", href: "/pdf-to-markdown" },
+              { label: "All PDF tools", href: "/" },
+            ],
+          },
+        ],
+        faq: [
+          {
+            question: "Is DockDocs a good Smallpdf alternative?",
+            answer:
+              "Yes. DockDocs covers the same core PDF operations (compress, merge, split, convert, OCR, sign) and adds AI features like Chat with PDF. The main differences: DockDocs processes most tools in your browser (no upload), has no daily task limits on free client-side tools, and requires no account. Smallpdf has stronger cloud integrations and a more polished e-sign workflow for team use.",
+          },
+          {
+            question: "Is DockDocs a good iLovePDF alternative?",
+            answer:
+              "Yes. DockDocs covers a similar tool set and is fully free for all browser-side tools without an account. iLovePDF is strong for batch conversions and has a wide tool list. DockDocs' key advantage is privacy — client-side tools never upload your file to any server.",
+          },
+          {
+            question: "Which free PDF tool is the most private?",
+            answer:
+              "DockDocs, for its browser-side tools. Compress, merge, split, rotate, add pages, watermark, PDF to Markdown, PDF to image, and more all run locally in your browser using JavaScript (pdf-lib, pdfjs-dist). Your file never leaves your device. Smallpdf and iLovePDF both upload files to cloud servers for processing.",
+          },
+          {
+            question: "Can I use DockDocs without creating an account?",
+            answer:
+              "Yes. All client-side PDF tools on DockDocs work without logging in. There are no daily limits and no task caps for these free tools. Some features — AI Chat with PDF, AI Summary, and high-fidelity Word-to-PDF conversion — are gated behind free or paid tiers, but you can try them without an account up to the free usage limit.",
+          },
+          {
+            question: "Does Smallpdf upload my files to a server?",
+            answer:
+              "Yes. Smallpdf processes files on its cloud servers. The company's privacy policy describes short retention windows (typically a few hours) and encryption in transit and at rest. For most document types this is fine. For legally sensitive materials or regulated industries (healthcare, finance, legal), browser-side processing — where the file never leaves your device — is a meaningfully stronger option.",
+          },
+        ],
+      },
+      zh: {
+        title: "DockDocs vs Smallpdf vs iLovePDF：2026 年真实横评",
+        description:
+          "全面对比 DockDocs、Smallpdf 和 iLovePDF 的隐私保护、免费额度、功能集和定价，帮你找到最适合的 PDF 工具。",
+        excerpt:
+          "三款最受欢迎的在线 PDF 工具，在隐私保护、免费限额和功能深度上走了完全不同的路线。这篇横评帮你做出正确的选择。",
+        readingTime: "7 分钟阅读",
+        ctaTitle: "免注册免费试用 DockDocs",
+        ctaDescription:
+          "在浏览器里直接压缩、合并、拆分、转换和编辑 PDF。客户端工具无文件上传、无每日限额，无需注册账号。",
+        ctaLabel: "打开 PDF 工具",
+        sections: [
+          {
+            heading: "为什么选对 PDF 工具很重要",
+            paragraphs: [
+              "每周都有数百万人把合同、税务表单、医疗记录、财务报告等敏感文件上传到免费在线 PDF 工具。大多数用户从不考虑下载链接出现后文件去了哪里。DockDocs、Smallpdf 和 iLovePDF 这三款最流行工具之间的差距，不只是功能和价格，更在于你的文件去了哪、经历了什么。",
+              "本次横评聚焦三个最重要的维度：隐私（文件会离开你的设备吗？）、免费额度（不付钱真正能用什么？）、功能集（谁覆盖了最广的 PDF 场景？）。我们会直接说清每款工具的优势和短板。",
+            ],
+            links: [
+              { label: "DockDocs PDF 工具", href: "/" },
+              { label: "免费压缩 PDF", href: "/compress-pdf" },
+            ],
+          },
+          {
+            heading: "隐私与文件安全：你的 PDF 去了哪里？",
+            paragraphs: [
+              "DockDocs 的大多数功能——压缩、合并、拆分、图片转换、添加页面、水印、旋转等——完全在浏览器内用 JavaScript 库（pdf-lib、pdfjs-dist）处理，文件从不上传服务器。如果你在处理合同或医疗档案，文件根本不会经过任何网络。对于确实需要服务器的功能（例如 Word 转 PDF 需要 LibreOffice 渲染），DockDocs 会明确告知，并使用专属转换服务器。",
+              "Smallpdf 和 iLovePDF 都会将文件上传至各自的云服务器进行处理。两家公司都有明确的隐私政策，通常描述了几小时内删除文件和传输加密等措施，两者都是可信赖的服务。但事实是：把文件上传给第三方服务器，和本地处理在隐私保护层面有本质区别。对医疗、法律、金融等受监管行业而言，DockDocs 的浏览器端处理可以从根本上消除一类合规问题。",
+              "隐私方面的结论：大多数工具上 DockDocs 获胜。如果要求文件绝不经过外部服务器，三款工具里只有 DockDocs 针对核心工具实现了这一点。",
+            ],
+            links: [{ label: "DockDocs 如何保护你的文件", href: "/about" }],
+          },
+          {
+            heading: "免费额度：不付费能用到什么程度？",
+            paragraphs: [
+              "Smallpdf 的免费套餐历史上限制用户每小时（或每天）只能执行两次 PDF 任务（限额随时间有所调整）。部分工具需要注册免费账号。付费计划从约 9–12 美元/月起，才能解除限额。其免费体验刻意制造摩擦以推动付费升级。",
+              "iLovePDF 的免费套餐工具访问相对宽松，但签名、部分转换功能需要免费账号。有文件大小限制和批量处理上限。付费计划从约 4 美元/月起。",
+              "DockDocs 的浏览器端工具——压缩、合并、拆分、图片转换、页面操作、OCR、PDF 转 Markdown 等——无每日限额，无需账号。你可以连续压缩十份 PDF，不用登录，也不会触发速率限制。需要服务器的功能（高保真 Word 转 PDF via CloudConvert、AI 功能如 PDF 问答）有使用配额，但广泛的客户端工具集是真正无限免费的。",
+              "免费额度结论：DockDocs 在无需账号、最广工具集无限访问方面获胜。iLovePDF 是不错的第二名。Smallpdf 免费套餐限制最多。",
+            ],
+            links: [
+              { label: "DockDocs 定价", href: "/pricing" },
+              { label: "免费合并 PDF", href: "/merge-pdf" },
+            ],
+          },
+          {
+            heading: "功能对比：各工具的擅长领域",
+            paragraphs: [
+              "三款工具都覆盖了核心 PDF 操作：压缩、合并、拆分、转换（PDF 转 Word、Word 转 PDF、JPG 转 PDF、PDF 转 JPG）。日常任务的体验差异不大——上传、处理、下载。",
+              "Smallpdf 的强项在于精致的 UI、电子签名工作流和丰富的集成（Google Drive、Dropbox、OneDrive 同步）。它是三款中最面向企业的，有团队计划和协作功能。iLovePDF 工具列表非常丰富，在教育场景中很受欢迎，批量转换功能尤为突出。",
+              "DockDocs 在两个方向上形成差异化。首先是 AI：PDF 问答、AI 文档摘要、文档分析内置于产品中，而非附加功能。其次是纯浏览器端架构——客户端工具没有网络延迟，隐私保护更彻底。对开发者而言，PDF 转 Markdown 工具在把 PDF 送入 LLM 管道时尤为实用。可视化工具（页面重排、水印、裁剪页面）采用页面缩略图 UI，而非简陋的输入框。",
+              "如果你需要与云存储深度集成和完善的签名工作流，Smallpdf 是三款中最强的。如果你需要覆盖面广的批量免费工具，iLovePDF 非常出色。如果优先考虑隐私、无账号免费使用或 AI 文档功能，DockDocs 是正确的选择。",
+            ],
+            links: [
+              { label: "PDF 问答", href: "/chat-with-pdf" },
+              { label: "PDF 转 Markdown", href: "/pdf-to-markdown" },
+              { label: "全部 PDF 工具", href: "/" },
+            ],
+          },
+        ],
+        faq: [
+          {
+            question: "DockDocs 是 Smallpdf 的好替代品吗？",
+            answer:
+              "是的。DockDocs 覆盖了相同的核心 PDF 操作（压缩、合并、拆分、转换、OCR、签名），并额外提供 AI 功能如 PDF 问答。主要区别：DockDocs 大多数工具在浏览器内处理（无需上传），客户端工具免费无每日限额，无需账号。Smallpdf 在云存储集成和团队电子签名工作流方面更为完善。",
+          },
+          {
+            question: "DockDocs 是 iLovePDF 的好替代品吗？",
+            answer:
+              "是的。DockDocs 覆盖类似的工具集，所有浏览器端工具免注册完全免费。iLovePDF 批量转换能力强，工具列表丰富。DockDocs 的核心优势是隐私——客户端工具不会将文件上传到任何服务器。",
+          },
+          {
+            question: "哪款免费 PDF 工具隐私保护最好？",
+            answer:
+              "对于浏览器端工具，DockDocs 最好。压缩、合并、拆分、旋转、添加页面、水印、PDF 转 Markdown、PDF 转图片等功能全部在浏览器内用 JavaScript（pdf-lib、pdfjs-dist）本地运行，文件从不离开你的设备。Smallpdf 和 iLovePDF 都会将文件上传到云服务器处理。",
+          },
+          {
+            question: "使用 DockDocs 需要注册账号吗？",
+            answer:
+              "不需要。DockDocs 所有客户端 PDF 工具无需登录即可使用，没有每日限额和任务上限。AI PDF 问答、AI 摘要和高保真 Word 转 PDF 等功能有免费配额或付费套餐，但你可以在不注册的情况下试用免费额度。",
+          },
+          {
+            question: "Smallpdf 会将文件上传到服务器吗？",
+            answer:
+              "会。Smallpdf 在云服务器上处理文件。公司的隐私政策描述了较短的保留窗口（通常数小时）和传输加密。对大多数文档场景来说没有问题。但对于法律敏感材料或医疗、金融、法律等受监管行业，文件从不离开设备的浏览器端处理是明显更安全的选择。",
           },
         ],
       },
