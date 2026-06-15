@@ -970,7 +970,396 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
   },
 };
 
+// cast: remove when "pt" is added to Locale
+const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: string }> }> = {
+  "contract-risk": {
+    title: "Análise de risco contratual — perguntas frequentes",
+    items: [
+      { q: "O que é verificado?", a: "Escaneia seu contrato em busca de cláusulas que merecem atenção: renovação automática, rescisão ou alteração unilateral, responsabilidade ilimitada, multas e juros de mora, armadilhas de pagamento e custos ocultos, não-concorrência excessiva e proteções-padrão ausentes (como ausência de limite de responsabilidade). Cada achado é marcado em vermelho (alto), âmbar (médio) ou verde (baixo), citado do seu contrato, com a razão em linguagem simples e o que perguntar antes de assinar." },
+      { q: "É assessoria jurídica?", a: "Não. É uma revisão automatizada para ajudar quem não é advogado a identificar cláusulas que merecem atenção — não é assessoria jurídica e não substitui um advogado. Para algo importante ou de alto valor, peça a um advogado qualificado que revise. Não sinalizar nada não garante que o contrato seja seguro." },
+      { q: "Cria cláusulas ou citações falsas?", a: "Cada citação é verificada no texto real do seu contrato — se a IA devolver uma citação que não encontramos no seu documento, a descartamos em vez de exibir uma referência fabricada. Riscos de cláusula ausente são exibidos sem citação e rotulados como tal. A IA ainda pode perder coisas, portanto leia sempre o contrato completo." },
+      { q: "Meu contrato é enviado ou armazenado?", a: "Seu contrato é lido no seu navegador; apenas o texto extraído é enviado para análise, e não é armazenado depois. O arquivo em si nunca sai do seu dispositivo." },
+      { q: "Quais contratos funcionam melhor?", a: "PDFs com texto (nativos digitais). Contratos digitalizados não têm texto selecionável — execute o OCR primeiro. Funciona em português, inglês, espanhol e outros; as citações permanecem no idioma original do contrato." },
+    ],
+  },
+  "lease-redflag": {
+    title: "Análise de risco do contrato de locação — perguntas frequentes",
+    items: [
+      { q: "O que é sinalizado?", a: "Escaneia seu contrato de locação em busca de cláusulas que podem prejudicar você como inquilino: reajuste agressivo de aluguel, multas pesadas por rescisão antecipada, direitos de entrada do locador não razoáveis, divisão de manutenção pouco clara, deduções excessivas de caução, restrições de sublocação, encargos injustos de permanência e proteções-padrão ausentes. Cada achado é marcado em vermelho, âmbar ou verde, com citação e o que perguntar ou negociar." },
+      { q: "É assessoria jurídica?", a: "Não. É uma revisão automatizada para ajudar inquilinos a identificar cláusulas que merecem atenção — não é assessoria jurídica e não substitui um advogado ou uma organização de direitos do inquilino. Para algo importante, consulte um advogado qualificado." },
+      { q: "Cria citações falsas?", a: "Cada citação é verificada no texto real do seu contrato — se a IA devolver uma citação que não encontramos no seu documento, a descartamos. Riscos de cláusula ausente são exibidos sem citação e rotulados como tal." },
+      { q: "Meu contrato é enviado ou armazenado?", a: "Seu contrato é lido no seu navegador; apenas o texto extraído é enviado para análise, e não é armazenado depois. O arquivo em si nunca sai do seu dispositivo." },
+      { q: "Quais formatos funcionam?", a: "PDFs com texto (nativos digitais). Contratos digitalizados precisam de OCR primeiro. Funciona em português, inglês, espanhol e outros; as citações permanecem no idioma original do contrato." },
+    ],
+  },
+  "batch-fix-scans": {
+    title: "Corrigir digitalizações em lote — perguntas frequentes",
+    items: [
+      { q: "O que o Corrigir digitalizações em lote faz?", a: "Duas tarefas de limpeza em uma pasta inteira de PDFs de uma vez. Cortar margens apara as mesmas bordas de cada página de cada arquivo (ótimo para remover bordas pretas de digitalização ou margens de encadernação). Excluir páginas remove os mesmos números de página de cada arquivo (ótimo para remover uma capa ou página separadora). Escolha um modo, configure uma vez e ele se aplica a todo o lote." },
+      { q: "Como funciona o corte?", a: "Use os controles deslizantes para aparar cada borda como porcentagem da página; a pré-visualização mostra o primeiro arquivo com a área aparada sombreada. O mesmo corte é aplicado a cada página de cada arquivo do lote. O corte usa a caixa de corte do PDF, então a área aparada fica oculta, não destruída — pode ser restaurada depois." },
+      { q: "Como funciona a exclusão de páginas?", a: "Digite os números das páginas a remover de cada arquivo, como 1 para uma capa ou 1,3-4 para várias. Essas páginas são excluídas de cada arquivo do lote. Se um arquivo ficasse sem páginas, ele é ignorado e sinalizado para você não receber um documento vazio." },
+      { q: "Há um limite e meus arquivos são enviados?", a: "Até 30 arquivos por lote. Tudo é executado inteiramente no seu navegador — seus arquivos nunca são enviados, o que torna isso seguro para digitalizações confidenciais. Você recebe tudo de volta em um único ZIP." },
+      { q: "É gratuito?", a: "Sim, completamente gratuito — sem conta, sem marca d'água, sem limite diário." },
+    ],
+  },
+  "batch-translate": {
+    title: "Traduzir PDFs em lote — perguntas frequentes",
+    items: [
+      { q: "Como traduzo vários PDFs de uma vez?", a: "Solte seus PDFs na página — ou uma pasta inteira — escolha o idioma de destino e clique em Traduzir tudo. Cada PDF é lido no seu navegador, o texto é traduzido um por um, e você baixa tudo como um único ZIP de arquivos .txt." },
+      { q: "Para quais idiomas posso traduzir?", a: "13 idiomas, incluindo inglês, chinês simplificado e tradicional, espanhol, francês, alemão, japonês, coreano, português, italiano, russo, árabe e hindi. Todo o lote é traduzido para o idioma que você escolher." },
+      { q: "O que recebo — mantém o layout?", a: "Você recebe texto simples (.txt), um arquivo por PDF, compactados juntos. A tradução é apenas de texto, então o layout original, imagens e formatação não são preservados. É ideal para ler e reutilizar o conteúdo, não para produzir uma cópia formatada." },
+      { q: "Há um limite e o que acontece com PDFs digitalizados?", a: "Até 10 PDFs por lote, cada um com até cerca de 10 páginas (14.000 caracteres) de texto. PDFs digitalizados não têm texto selecionável — execute o OCR neles primeiro; caso contrário, são ignorados com uma observação." },
+      { q: "É privado e gratuito?", a: "Cada PDF é lido no seu navegador e apenas o texto extraído — nunca o arquivo — é enviado para tradução. É gratuito; a tradução conta para o seu limite diário de uso de IA, que é redefinido a cada dia." },
+    ],
+  },
+  "batch-office-to-pdf": {
+    title: "Office para PDF em lote — perguntas frequentes",
+    items: [
+      { q: "Como converto vários arquivos do Office em PDF de uma vez?", a: "Solte seus arquivos do Word, PowerPoint e Excel na página — ou uma pasta inteira — e clique em Converter tudo. Cada arquivo é convertido em PDF um por um e, quando terminarem, clique em Baixar ZIP para obter tudo em um único arquivo." },
+      { q: "Quais formatos posso converter?", a: "Word (.doc, .docx), PowerPoint (.ppt, .pptx), Excel (.xls, .xlsx), além de OpenDocument (.odt, .odp, .ods) e .rtf. O tipo de arquivo é detectado automaticamente, então você pode misturar documentos, slides e planilhas no mesmo lote." },
+      { q: "O PDF ficará exatamente igual ao original?", a: "A conversão usa LibreOffice — o mesmo mecanismo das nossas ferramentas de Office para PDF de arquivo único. Para documentos típicos o resultado é fiel, mas fontes incomuns, macros ou layouts muito complexos podem variar um pouco; verifique o que for sensível à formatação." },
+      { q: "Há limite de tamanho ou quantidade?", a: "Até 20 arquivos por lote, cada um de até 5 MB. Para um arquivo maior que 5 MB, use a ferramenta de arquivo único Word para PDF, PPT para PDF ou Excel para PDF, que suporta arquivos maiores." },
+      { q: "Meus arquivos são enviados? É gratuito?", a: "É gratuito e sem conta. A conversão do Office é executada no nosso próprio servidor, então cada arquivo é enviado lá, convertido em PDF e devolvido — não é armazenado ou mantido depois." },
+    ],
+  },
+  "batch-pdf-to-office": {
+    title: "PDF para Word/Excel em lote — perguntas frequentes",
+    items: [
+      { q: "Como converto vários PDFs em Word ou Excel de uma vez?", a: "Solte seus PDFs na página — ou uma pasta inteira — escolha Word ou Excel como destino e clique em Converter tudo. Cada arquivo é convertido um por um e, quando terminarem, clique em Baixar ZIP para obter tudo em um único arquivo." },
+      { q: "Devo escolher Word ou Excel?", a: "Escolha Word (.docx) para documentos com texto e parágrafos, e Excel (.xlsx) para PDFs formados por tabelas — faturas, extratos, planilhas de dados. O Excel funciona melhor quando o PDF tem linhas e colunas claras." },
+      { q: "O layout ficará exatamente igual ao original?", a: "Nenhum conversor pode garantir uma cópia pixel a pixel. Extraímos o texto e as tabelas em um arquivo realmente editável — que é o que você precisa para editar — mas PDFs digitalizados ou com layout complexo podem precisar de ajustes depois. Para um PDF digital com texto e tabelas normais, o resultado costuma ser próximo." },
+      { q: "Há limite de tamanho ou quantidade?", a: "Você pode converter até 20 PDFs por lote, cada um de até 5 MB. Para um arquivo maior que 5 MB, use a ferramenta de arquivo único PDF para Word ou PDF para Excel, que suporta arquivos maiores." },
+      { q: "Meus arquivos são enviados? É gratuito?", a: "É gratuito e sem conta. Ao contrário das nossas ferramentas que funcionam apenas no navegador, a conversão para formatos do Office é executada no nosso próprio servidor, então cada PDF é enviado lá, convertido e devolvido — não é armazenado ou mantido depois." },
+    ],
+  },
+  "batch-compress": {
+    title: "Comprimir PDFs em lote — perguntas frequentes",
+    items: [
+      { q: "Como comprimo vários PDFs de uma vez?", a: "Arraste seus PDFs para a página — ou solte uma pasta inteira, ou use «Escolher pasta» — e qualquer arquivo que não seja PDF nessa pasta é filtrado automaticamente. Escolha uma intensidade de compressão («Leve», «Recomendada» ou «Intensa») e clique em «Comprimir tudo». Cada arquivo é processado um por um e, quando terminar, clique em «Baixar ZIP» para recuperar tudo em um único arquivo compactado." },
+      { q: "Meus arquivos são enviados a um servidor?", a: "Não. Esta é uma ferramenta 100% do lado do cliente: cada PDF é lido e comprimido dentro do seu próprio navegador, e nada é jamais enviado a qualquer servidor. Seus arquivos nunca saem do seu dispositivo, e é por isso que você pode usá-la com documentos confidenciais sem preocupação." },
+      { q: "O que recebo de volta e como os arquivos são nomeados?", a: "Você recebe um único arquivo ZIP (dockdocs-compressed.zip). Dentro dele, cada PDF mantém seu nome original com «-compressed» adicionado antes da extensão — então report.pdf se torna report-compressed.pdf. Cada linha também mostra o quanto aquele arquivo diminuiu, e o botão de download mostra a redução de tamanho total." },
+      { q: "Há limite de quantos arquivos ou de tamanho?", a: "Você pode adicionar até 30 PDFs por lote. Não há limite fixo de tamanho por arquivo — como tudo é executado no seu navegador, o limite real é a memória do seu dispositivo. Arquivos grandes ou numerosos ainda funcionam, só demoram mais para processar em máquinas mais fracas." },
+      { q: "Por que meu PDF não reduziu muito?", a: "A compressão funciona renderizando cada página como uma imagem, o que é ótimo para digitalizações e PDFs com muitas imagens, mas faz pouco por arquivos que são principalmente texto simples — simplesmente não há muito a comprimir. Se um arquivo mal muda, isso é esperado; tente «Intensa» para um pouco mais, mas PDFs somente de texto já estão perto do seu tamanho mínimo." },
+      { q: "É gratuito? Preciso de uma conta?", a: "Sim, é completamente gratuito — sem cadastro, sem marca d'água, sem limite diário. Basta abrir a página e começar a comprimir." },
+    ],
+  },
+  "batch-pdf-to-image": {
+    title: "PDF para imagem em lote — perguntas frequentes",
+    items: [
+      { q: "Como converto um lote de PDFs em imagens?", a: "Arraste seus PDFs para a caixa de upload — ou solte uma pasta inteira, ou clique em «Escolher pasta». Escolha JPG ou PNG e clique em «Converter tudo». Cada página de cada PDF é convertida em uma imagem e o resultado é baixado como um único ZIP. Sem cadastro e sem marca d'água." },
+      { q: "Meus arquivos são enviados a um servidor?", a: "Não. Esta ferramenta é 100% do lado do cliente: cada PDF é lido e renderizado em imagens inteiramente dentro do seu navegador, e nada é jamais enviado a qualquer servidor. O ZIP que você baixa é gerado localmente no seu dispositivo. Você pode até usá-la offline depois que a página carregar." },
+      { q: "O que recebo de volta e como as imagens são nomeadas?", a: "Você recebe um arquivo ZIP (chamado dockdocs-images.zip) contendo cada página como uma imagem separada. Cada arquivo leva o nome do seu PDF de origem mais o número da página — por exemplo, report.pdf se torna report-1.jpg, report-2.jpg, e assim por diante. As páginas são renderizadas em escala 2× para uma saída nítida e de alta resolução." },
+      { q: "Qual é a diferença entre JPG e PNG aqui?", a: "O JPG gera arquivos menores e achata cada página em um fundo branco — ideal para documentos com muitas fotos ou digitalizados. O PNG não tem perdas e mantém a transparência, o que é melhor para artes lineares, diagramas ou páginas que você vai editar depois. Escolha o que for mais adequado antes de clicar em «Converter tudo»; você pode executar novamente com o outro formato quando quiser." },
+      { q: "Quantos arquivos ou páginas posso converter de uma vez?", a: "Você pode colocar em fila até 20 PDFs por lote — arquivos extras além disso são descartados automaticamente. Não há limite fixo de páginas ou tamanho, então o teto real é a memória do seu dispositivo: PDFs muito grandes ou com muitas páginas simplesmente demoram mais e ficam mais lentos em máquinas mais fracas. Para um trabalho grande, divida-o em alguns lotes." },
+      { q: "Por que um dos meus PDFs mostrou «falhou»?", a: "A causa mais comum é um PDF protegido por senha ou criptografado — a ferramenta não pode renderizar páginas que não consegue abrir, então esse arquivo é marcado como falhou enquanto o restante do lote ainda se converte normalmente. Remova a senha primeiro (nossa ferramenta Desbloquear PDF pode ajudar) e depois adicione-o novamente. Arquivos corrompidos ou que não são PDF também podem falhar; note que, se você soltar uma pasta, arquivos que não são PDF são filtrados automaticamente em vez de falhar." },
+    ],
+  },
+  "batch-protect-pdf": {
+    title: "Criptografar PDFs em lote — perguntas frequentes",
+    items: [
+      { q: "Como criptografo vários PDFs de uma vez?", a: "Arraste seus PDFs para a caixa — ou solte uma pasta inteira, ou clique para escolher arquivos. Digite uma senha (o campo «Senha») e clique em «Criptografar tudo». Cada arquivo é bloqueado com essa mesma senha e você recebe um único ZIP com cada arquivo renomeado como «…-protected.pdf»." },
+      { q: "Meus arquivos são enviados a um servidor?", a: "Não. É uma ferramenta 100% do lado do cliente — cada PDF é criptografado dentro do seu próprio navegador e nada jamais sai do seu dispositivo. Não há upload, nem conta, nem cópia guardada em lugar algum. Você pode até usá-la offline depois que a página carregar." },
+      { q: "O que recebo de volta e em que formato?", a: "Você recebe um arquivo ZIP chamado «dockdocs-protected.zip». Dentro, cada PDF de entrada aparece como seu próprio arquivo criptografado com o sufixo «-protected.pdf». Abra qualquer um deles e seu leitor pedirá a senha que você definiu." },
+      { q: "Há regras para a senha ou limites de quantos arquivos?", a: "A senha deve ter entre 4 e 32 caracteres usando apenas letras, dígitos e o sublinhado (_) — isso a torna segura para aplicar em qualquer leitor de PDF. Você pode criptografar até 30 arquivos por lote; para mais, execute a ferramenta novamente. Não há limite rígido de tamanho, mas como tudo é executado no seu navegador, trabalhos muito grandes ficam mais lentos em dispositivos com pouca memória." },
+      { q: "O que acontece com um PDF que já está protegido por senha?", a: "É ignorado. A ferramenta não pode bloquear novamente um arquivo que não consegue abrir, então qualquer PDF que já tenha senha fica fora do ZIP em vez de fazer todo o lote falhar. Descriptografe-o primeiro (com a senha original) se quiser criptografá-lo novamente aqui." },
+      { q: "É realmente gratuito? Tem marca d'água ou exige cadastro?", a: "Sim, completamente gratuito, sem cadastro e sem marca d'água. Os PDFs criptografados são byte a byte seus originais mais a senha — o DockDocs não adiciona nada a eles." },
+    ],
+  },
+  "batch-rename-pdf": {
+    title: "Renomear PDFs em lote — perguntas frequentes",
+    items: [
+      { q: "Como renomeio um lote de PDFs?", a: "Arraste uma pasta inteira (ou um conjunto de PDFs) para a caixa de upload, ou clique para escolher arquivos. Em seguida, escolha um modo: «Numerado» dá a cada arquivo um nome base mais um número de sequência (fatura-01.pdf, fatura-02.pdf…), e «Localizar e substituir» troca qualquer texto que apareça nos nomes de arquivo atuais. Uma pré-visualização ao vivo mostra cada nome antigo riscado ao lado do seu novo nome, para que você verifique o resultado antes de confirmar. Quando parecer correto, clique em «Baixar ZIP renomeado»." },
+      { q: "Meus arquivos são enviados para algum lugar?", a: "Não. Esta ferramenta é 100% do lado do cliente — cada arquivo é lido e renomeado dentro do seu próprio navegador, e nada é jamais enviado a um servidor. Não há etapa de upload; a renomeação e o ZIP são gerados localmente no seu dispositivo. É por isso que também é gratuito, sem cadastro, sem marca d'água e sem conta a criar." },
+      { q: "O que recebo de volta e os PDFs são modificados?", a: "Você recebe um único arquivo ZIP (dockdocs-renamed.zip) contendo cópias dos seus PDFs com os novos nomes de arquivo. Renomear muda apenas os nomes de arquivo — o conteúdo, as páginas e a qualidade dos PDFs ficam completamente intactos. Os arquivos originais no seu computador também não são alterados; você apenas baixa um conjunto recém-nomeado." },
+      { q: "Há um limite de quantos arquivos posso renomear?", a: "Sim — esta ferramenta processa até 100 PDFs por lote. Como tudo é executado no seu navegador, lotes muito grandes usam mais memória e demoram um pouco mais em máquinas mais fracas, mas dentro do limite de 100 arquivos é rápido. Se você tiver mais de 100 arquivos, execute um segundo lote." },
+      { q: "Posso soltar uma pasta que tenha arquivos que não sejam PDF?", a: "Sim. Você pode soltar uma pasta inteira e a ferramenta descarta automaticamente qualquer coisa que não seja PDF — imagens, planilhas e outros documentos são ignorados, então apenas seus PDFs são adicionados à lista. Você não precisa limpar a pasta primeiro." },
+      { q: "O que acontece se dois arquivos ficassem com o mesmo nome?", a: "A ferramenta detecta isso automaticamente. Se um padrão numerado ou localizar e substituir produziria dois nomes de arquivo idênticos, ele adiciona um sufixo -1, -2 (e assim por diante) aos posteriores para que cada arquivo no ZIP mantenha um nome único. Nada é silenciosamente sobrescrito ou perdido." },
+    ],
+  },
+  "batch-rotate-pdf": {
+    title: "Rotacionar PDFs em lote — perguntas frequentes",
+    items: [
+      { q: "Como rotaciono um lote de PDFs?", a: "Arraste seus PDFs para a caixa — ou solte uma pasta inteira, ou use «Escolher pasta». Escolha um ângulo de rotação (90°, 180° ou 270°) e clique em «Rotacionar tudo». Quando terminar, clique em «Baixar ZIP» para obter todos os arquivos rotacionados em um único arquivo. Você também pode usar o botão «+» para adicionar mais PDFs antes de executar." },
+      { q: "Meus arquivos são enviados a um servidor?", a: "Não. É uma ferramenta 100% do lado do cliente — cada PDF é aberto e rotacionado dentro do seu próprio navegador usando os recursos do seu dispositivo, e o ZIP também é montado localmente. Nada é jamais enviado ao DockDocs ou a qualquer outro lugar, então seus documentos nunca saem do seu computador." },
+      { q: "O que recebo de volta e como os arquivos são nomeados?", a: "Você recebe um único arquivo ZIP (dockdocs-rotated.zip) contendo cada PDF rotacionado com sucesso. Cada arquivo mantém seu nome original com «-rotated» adicionado antes da extensão — por exemplo, fatura.pdf se torna fatura-rotated.pdf — então é fácil distinguir as novas cópias dos seus originais." },
+      { q: "O que é rotacionado e posso rotacionar apenas algumas páginas?", a: "O ângulo escolhido é aplicado a todas as páginas de cada PDF do lote — esta é uma ferramenta de correção de pasta inteira, não um editor por página, então você não pode rotacionar páginas individuais aqui. A rotação também se soma a qualquer rotação existente, então aplicar 90° a uma página já rotacionada a gira mais 90°. Para controle por página, use nossa ferramenta de rotação de arquivo único." },
+      { q: "Há limites e por que um PDF pode dizer «falhou»?", a: "Você pode adicionar até 50 PDFs por lote. Não há limite fixo de tamanho de arquivo — como tudo é executado no seu navegador, o limite real é a memória do seu dispositivo, então trabalhos grandes em um notebook ou celular mais fraco simplesmente ficam mais lentos. PDFs criptografados ou protegidos por senha não podem ser abertos para rotação, então são ignorados e marcados como «falhou»; o restante do lote ainda processa e apenas os arquivos bem-sucedidos entram no ZIP. Desbloqueie o arquivo primeiro e adicione-o novamente." },
+      { q: "É gratuito? Preciso de uma conta?", a: "Sim, é completamente gratuito — sem cadastro, sem conta e sem marca d'água no seu resultado. Como todo o trabalho acontece no seu navegador, não há nada a pagar nem medidor de uso; basta abrir a página e começar a rotacionar." },
+    ],
+  },
+  "batch-watermark-pdf": {
+    title: "Marca d'água em PDFs em lote — perguntas frequentes",
+    items: [
+      { q: "Como adiciono marca d'água a uma pasta inteira de PDFs de uma vez?", a: "Arraste uma pasta (ou vários PDFs) para a caixa de upload, ou clique para escolher arquivos. Digite o texto da sua marca d'água — por exemplo, CONFIDENCIAL — e clique em «Aplicar a todos». Cada PDF é carimbado um por um e, quando terminar, clique em «Baixar ZIP» para obter todos os arquivos com marca d'água em um único arquivo compactado. Se você soltou uma pasta, quaisquer arquivos que não sejam PDF dentro dela são filtrados automaticamente, então você não precisa limpá-la primeiro." },
+      { q: "Meus arquivos são enviados a um servidor?", a: "Não. Cada PDF é processado inteiramente no seu navegador, no seu próprio dispositivo — nada é enviado a qualquer servidor e não há conta ou login. Seus documentos nunca saem do seu computador, que é exatamente o motivo pelo qual é seguro para arquivos confidenciais." },
+      { q: "O que recebo de volta e como os arquivos são nomeados?", a: "Você recebe um arquivo ZIP (dockdocs-batch.zip) com todos os PDFs com marca d'água. Cada saída mantém seu nome original com o sufixo «-watermarked.pdf» — então report.pdf se torna report-watermarked.pdf. Seus arquivos originais ficam intactos." },
+      { q: "Há um limite de quantos PDFs posso fazer de uma vez?", a: "Esta ferramenta em lote processa até 30 PDFs por execução. Se você adicionar mais, apenas os primeiros 30 são mantidos. Não há limite fixo de tamanho de arquivo — como tudo é executado no seu navegador, o limite real é a memória do seu dispositivo, então arquivos muito grandes ou máquinas mais fracas simplesmente serão mais lentos. Para um trabalho maior, divida-o em lotes de 30." },
+      { q: "É gratuito? Adiciona sua própria marca d'água ou marca?", a: "Sim, é completamente gratuito, sem cadastro, sem avaliação e sem limites de uso além do tamanho de lote de 30 arquivos por execução. A única marca d'água nos seus PDFs é o texto que você digita — o DockDocs nunca carimba seu próprio logotipo ou marca nos seus arquivos." },
+      { q: "Posso escolher onde a marca d'água vai ou quão transparente ela é?", a: "Não na ferramenta em lote. Ela usa um posicionamento padrão fixo — uma marca d'água diagonal em cada página — para manter toda a pasta consistente. Se você precisar de posição, opacidade ou tamanho de fonte personalizados, use a ferramenta de Marca d'água de arquivo único, que lhe dá controle total sobre um documento de cada vez." },
+    ],
+  },
+  "batch-page-numbers": {
+    title: "Numeração de páginas em lote — perguntas frequentes",
+    items: [
+      { q: "Como adiciono números de página a um lote de PDFs?", a: "Arraste seus PDFs para a caixa de upload — ou solte uma pasta inteira, ou use «Escolher pasta». A ferramenta adiciona cada PDF à lista; em seguida, clique em «Aplicar a todos». Cada arquivo é numerado um por um e, quando terminar, clique em «Baixar ZIP» para obtê-los todos em um único arquivo compactado." },
+      { q: "Meus arquivos são enviados para algum lugar?", a: "Não. É uma ferramenta 100% do lado do cliente — cada PDF é aberto e numerado dentro do seu próprio navegador, e nada é enviado a qualquer servidor. Seus arquivos nunca saem do seu dispositivo, e é por isso que funciona mesmo com documentos confidenciais." },
+      { q: "O que recebo de volta e como os arquivos são nomeados?", a: "Você recebe um arquivo ZIP (chamado dockdocs-batch.zip) com cada PDF numerado com sucesso. Cada saída mantém seu nome original com o sufixo «-numbered.pdf» adicionado — então report.pdf se torna report-numbered.pdf. Apenas os arquivos que processaram com sucesso são incluídos; os que falharam são ignorados e o restante ainda passa." },
+      { q: "Há limite de quantos arquivos posso fazer de uma vez e posso soltar uma pasta com arquivos não-PDF?", a: "Você pode processar até 30 PDFs por lote — o contador ao lado da lista mostra quantos você adicionou (por exemplo, «12 / 30 arquivos»). Não há limite rígido de tamanho, mas como tudo é executado no seu navegador, arquivos muito grandes ou numerosos usam mais memória e ficam mais lentos em dispositivos mais fracos. Você pode soltar com segurança uma pasta que também contenha imagens ou documentos do Word: a ferramenta mantém automaticamente apenas os PDFs reais e filtra todo o resto." },
+      { q: "Posso escolher onde vão os números de página ou mudar o estilo?", a: "Não na ferramenta em lote — ela usa um posicionamento padrão fixo para manter toda a pasta consistente com um clique. Se você precisar controlar a posição, a fonte ou o número inicial, use a ferramenta de arquivo único «Adicionar números de página», que oferece essas opções." },
+      { q: "É gratuito? Preciso de uma conta ou haverá marca d'água?", a: "É completamente gratuito, sem cadastro necessário, e nenhuma marca d'água é adicionada aos seus PDFs. Como tudo é executado localmente no seu navegador, não há nada a pagar nem cota de upload." },
+    ],
+  },
+  "batch-split-merge": {
+    title: "Dividir PDFs em lote — perguntas frequentes",
+    items: [
+      { q: "Como divido uma pasta inteira de PDFs de uma vez?", a: "Arraste e solte seus PDFs — ou uma pasta inteira — na caixa de upload, ou clique para escolhê-los. Defina «Páginas por arquivo» com quantas páginas cada parte de saída deve conter (1 divide cada página em seu próprio arquivo) e clique em «Executar». Cada PDF é cortado em blocos desse tamanho e tudo é empacotado em um único ZIP que você pode baixar com «Baixar ZIP»." },
+      { q: "Meus arquivos são enviados a um servidor?", a: "Não. A divisão é executada inteiramente no seu navegador usando um mecanismo PDF local — nada é enviado, nada é armazenado e nada sai do seu dispositivo. Você pode até desconectar-se da internet depois que a página carregar e ainda funciona. É por isso que é seguro para documentos sensíveis ou confidenciais." },
+      { q: "O que recebo de volta e como os arquivos são nomeados?", a: "Você recebe um arquivo ZIP (dockdocs-split.zip). Dentro, cada PDF é dividido em partes nomeadas a partir do original — por exemplo, report.pdf se torna report-part1.pdf, report-part2.pdf, e assim por diante. Se você enviou vários PDFs, todas as suas partes são agrupadas juntas no mesmo ZIP." },
+      { q: "Posso adicionar uma pasta e o que acontece com arquivos não-PDF nela?", a: "Sim — você pode soltar ou escolher uma pasta inteira. Qualquer arquivo que não seja PDF é filtrado automaticamente, então você não precisa limpar a pasta primeiro. Apenas os PDFs são adicionados à lista e processados." },
+      { q: "Há limite de quantos ou de tamanho dos arquivos?", a: "Há um limite de 50 arquivos por lote — se você adicionar mais, apenas os primeiros 50 são mantidos. Não há limite fixo de páginas ou tamanho de arquivo; a restrição real é a memória do seu dispositivo, então PDFs muito grandes ou lotes enormes simplesmente ficam mais lentos em máquinas mais fracas. Se um PDF estiver corrompido ou protegido por senha, ele é marcado como «falhou» e ignorado, enquanto o restante ainda divide normalmente." },
+      { q: "É gratuito? Preciso de uma conta ou ele adiciona marca d'água?", a: "Sim, é completamente gratuito, sem cadastro e sem marca d'água. Como o trabalho acontece no seu próprio dispositivo, não há créditos de uso ou limites com os quais se preocupar — use quantas vezes quiser." },
+    ],
+  },
+  "batch-summary": {
+    title: "Resumo em lote — perguntas frequentes",
+    items: [
+      { q: "Como resumo vários PDFs de uma vez?", a: "Arraste e solte seus PDFs na zona de soltar, ou clique em «Escolher PDFs» para selecioná-los. Você pode adicionar até 5 arquivos de uma vez. Depois de carregados, clique em «Resumir tudo» — cada documento é resumido por vez e você verá uma contagem de progresso como 2/5 enquanto trabalha. Quando terminar, você obtém um resumo executivo mais pontos principais de cada arquivo." },
+      { q: "Meu arquivo é enviado para algum lugar? Onde o trabalho acontece?", a: "Seu arquivo PDF nunca é enviado. O texto é extraído dentro do seu navegador e apenas esse texto extraído — não o arquivo original — é enviado ao nosso serviço de resumo de IA para gerar o resumo. Esta é uma ferramenta de IA, então precisa de conexão à internet para acessar o serviço de IA, mas o documento em si fica no seu dispositivo." },
+      { q: "Diz «sem texto extraível (digitalização?)» em um dos meus arquivos. O que aconteceu?", a: "Isso significa que o PDF não tem uma camada de texto para ler — quase sempre é uma página digitalizada ou uma foto salva como PDF, que é apenas uma imagem para a ferramenta. Execute nossa ferramenta PDF OCR nela primeiro para adicionar uma camada de texto real e, em seguida, volte e resuma aqui. PDFs criptografados ou protegidos por senha também não extraem; remova a senha primeiro." },
+      { q: "O que recebo de volta e posso salvar?", a: "Para cada PDF você obtém um breve resumo executivo mais uma lista de pontos principais, mostrados como um cartão na página. Depois que todos os arquivos estiverem prontos, clique em «Baixar tudo (.md)» para salvar tudo como um único arquivo Markdown (dockdocs-summaries.md) com uma seção por documento — fácil de colocar em suas notas, um documento ou um wiki." },
+      { q: "Por que apenas 5 arquivos de uma vez e por que um de cada vez?", a: "Limitamos cada execução a 5 PDFs e os processamos um após o outro para permanecer dentro dos limites de uso justo e manter os resultados confiáveis em vez de sobrecarregar o serviço de IA. Se você tiver mais, execute um lote, clique em «Recomeçar» e carregue o próximo conjunto. Arquivos que falham são marcados individualmente, então um PDF ruim não impede o restante." },
+      { q: "Os resumos parecem bons — posso confiar neles cegamente?", a: "Trate-os como uma primeira passagem rápida, não como substituto da leitura. Os resumos são gerados por IA de cada documento, então podem perder nuances ou ocasionalmente errar um detalhe — sempre faça uma verificação rápida com a fonte antes de confiar em qualquer coisa importante, especialmente em contratos ou relatórios." },
+    ],
+  },
+  "batch-sort": {
+    title: "Classificar PDFs — perguntas frequentes",
+    items: [
+      { q: "Como usar?", a: "Arraste e solte seus PDFs — ou uma pasta inteira — na página, ou clique em «Escolher PDFs» / «Escolher pasta». Pressione «Classificar tudo» e a IA rotula cada arquivo com uma categoria (fatura, contrato, currículo, relatório, etc.). Quando terminar, clique em «Baixar ZIP classificado» para obter um ZIP com seus arquivos agrupados em pastas de categoria. Você pode classificar até 30 arquivos de uma vez." },
+      { q: "Meus arquivos são enviados a um servidor?", a: "Não — seus arquivos PDF reais nunca saem do seu dispositivo. Cada PDF é lido diretamente no seu navegador para extrair o texto e apenas esse texto extraído é enviado ao nosso serviço de IA para decidir a categoria. Os arquivos em si permanecem locais, e o ZIP final é gerado no seu navegador a partir dos seus originais." },
+      { q: "Funciona com PDFs digitalizados ou fotos de documentos?", a: "Não diretamente. Um PDF digitalizado ou somente de imagem não tem camada de texto, então não há nada para ler — esses arquivos voltam marcados como «sem texto» e ficam em uma pasta «Não classificado». Execute-os primeiro pelo OCR (nossa ferramenta «OCR PDF» adiciona uma camada de texto) e depois classifique-os aqui." },
+      { q: "Preciso de conexão à internet?", a: "Sim. O texto é extraído no seu dispositivo, mas a classificação real é feita pelo nosso serviço de IA online, então você precisa estar conectado. A extração de texto e o empacotamento final do ZIP acontecem localmente; apenas a decisão de categoria precisa da internet." },
+      { q: "O que recebo de volta e meus arquivos originais são alterados?", a: "Você recebe um único ZIP chamado dockdocs-sorted.zip com uma subpasta por categoria e seus PDFs originais colocados dentro — intactos e sem modificação. Se dois arquivos ficassem com o mesmo nome na mesma pasta, adicionamos um sufixo «-1», «-2» para que nada seja sobrescrito." },
+      { q: "Quão precisas são as categorias?", a: "As categorias são sugeridas pela IA a partir do texto de cada documento, então são um bom ponto de partida, mas vale uma verificação rápida — especialmente para documentos incomuns. Para ser rápido, a IA lê apenas as primeiras 6 páginas de cada PDF, o que é suficiente para a maioria dos arquivos, mas pode errar o tipo em um documento cujo tipo só fica claro mais adiante." },
+    ],
+  },
+  "flashcards": {
+    title: "Cartões de estudo de PDF — perguntas frequentes",
+    items: [
+      { q: "Como transformo um PDF em cartões de estudo?", a: "Solte um PDF — um capítulo de livro, anotações de aula ou um manual — e a ferramenta lê o texto diretamente no seu navegador. Escolha quantos cartões quer (5, 10, 15 ou 20) e pressione «Gerar cartões». Você obtém uma grade de cartões de pergunta/resposta; toque em qualquer cartão para virá-lo e testar a si mesmo." },
+      { q: "Meu PDF é enviado para algum lugar?", a: "Seu arquivo PDF nunca é enviado. O texto é extraído dentro do seu navegador e apenas esse texto simples (mais a quantidade de cartões e o idioma) é enviado ao nosso serviço de IA para redigir os cartões. O arquivo original, com suas imagens, layout e metadados, permanece no seu dispositivo." },
+      { q: "Por que diz «Nenhum texto encontrado neste PDF»?", a: "Seu PDF é uma digitalização ou uma imagem — não tem uma camada de texto para ler, apenas uma imagem da página. Execute-o primeiro pelo OCR para adicionar uma camada de texto pesquisável e depois tente novamente. Dica: se o PDF estiver protegido por senha, desbloqueie-o primeiro com a ferramenta «Desbloquear PDF»." },
+      { q: "Os cartões são precisos?", a: "Os cartões são redigidos pela IA usando apenas o texto do seu documento — ela é instruída a não usar conhecimento externo ou inventar fatos. Mesmo assim, a IA pode interpretar mal ou simplificar demais, então verifique os cartões rapidamente antes de estudar com eles. A ferramenta lembra você disso na tela de resultados." },
+      { q: "Há limite de tamanho ou uso?", a: "Sim. Cada execução aceita até cerca de 16.000 caracteres de texto — aproximadamente 12 páginas — então alimente-a com um capítulo ou seção de cada vez em vez de um livro inteiro. Também há um limite de uso justo de cerca de seis gerações por minuto. Se você atingir qualquer um deles, verá uma mensagem clara; basta encurtar o conteúdo ou aguardar um minuto." },
+      { q: "É gratuito e preciso de conexão à internet?", a: "É gratuito para usar — sem conta ou pagamento necessário. Como os cartões são redigidos por um serviço de IA, você precisa de conexão à internet: o navegador lê seu PDF offline, mas gerar os cartões faz uma chamada rápida ao nosso servidor." },
+    ],
+  },
+  "compare": {
+    title: "Comparar documentos — perguntas frequentes",
+    items: [
+      { q: "Como comparo documentos?", a: "Envie de 2 a 8 PDFs do mesmo tipo — orçamentos, faturas ou contratos — escolha o tipo e clique em «Comparar campos». O DockDocs alinha os termos principais (preço, entrega, pagamento, garantia, etc.) lado a lado em uma única tabela, com a linha de origem exata por trás de cada valor. Você também obtém uma recomendação com fontes sobre qual opção vence e pode fazer uma pergunta a todos os documentos de uma vez." },
+      { q: "Meus arquivos são enviados ao seu servidor?", a: "Não — seus PDFs nunca saem do seu dispositivo. O DockDocs os lê diretamente no seu navegador para extrair o texto. Apenas esse texto simples extraído (não o arquivo em si) é enviado ao nosso servidor, onde a IA extrai e alinha os campos. Então o documento, seu layout e quaisquer dados incorporados ficam locais; o que viaja são as palavras na página." },
+      { q: "Por que meu PDF diz «Não reconhecido (provavelmente digitalizado — precisa de OCR)»?", a: "Isso significa que o PDF não tem uma camada de texto selecionável — geralmente é uma digitalização ou uma foto de uma página, então não há nada para ler. Clique em «Extrair texto com OCR» nesse documento e o DockDocs executará o OCR no seu navegador para reconhecer o texto (as primeiras páginas) e, em seguida, você pode compará-lo como qualquer outro arquivo. PDFs criptografados ou protegidos por senha também não podem ser lidos até que sejam desbloqueados." },
+      { q: "O que recebo de volta e posso confiar nos valores?", a: "Você obtém uma tabela comparativa onde cada célula mostra o valor mais a linha de origem exata da qual veio — e essa linha é verificada para realmente aparecer no seu documento, então nada é inventado. Clique em qualquer linha de origem para ir a um trecho destacado do texto original. Se um documento simplesmente não declara algo, você verá «Não reconhecido» em vez de uma suposição. Uma ressalva: a recomendação geral é o raciocínio da IA sobre esses números e não é verificada individualmente por fonte, então confirme os valores na tabela antes de decidir." },
+      { q: "Há limite de quantidade ou tamanho de arquivos?", a: "Você pode comparar até 8 PDFs de uma vez e precisa de pelo menos 2 legíveis para a comparação funcionar. Para o recurso «perguntar em todos os documentos», o texto combinado de todos os documentos deve ficar abaixo de 60.000 caracteres e sua pergunta abaixo de 500 caracteres — se exceder, use documentos menos numerosos ou mais curtos. A ferramenta precisa de conexão à internet, pois a extração de campos e a recomendação são executadas no nosso servidor." },
+      { q: "É gratuito?", a: "Sim — você pode enviar seus PDFs, executar a comparação lado a lado, obter a recomendação e fazer perguntas em seus documentos. O OCR no navegador para arquivos digitalizados também é gratuito, pois é executado localmente no seu dispositivo. O mecanismo de comparação está em versão beta, então o comportamento pode continuar melhorando." },
+    ],
+  },
+  "merge-pdf": {
+    title: "Mesclar arquivos PDF — perguntas frequentes",
+    items: [
+      { q: "Como mesclar arquivos PDF?", a: "Adicione dois ou mais PDFs, arraste as miniaturas para a ordem desejada e clique em Mesclar e baixar. As páginas são combinadas de cima para baixo, nessa ordem, em um único PDF." },
+      { q: "Consigo controlar a ordem de mesclagem?", a: "Sim. Cada arquivo tem uma miniatura e um número — arraste para reordenar antes de mesclar. Você vê exatamente o que vai onde antes de clicar, não depois." },
+      { q: "Meus arquivos são enviados a um servidor?", a: "Não. Tudo é executado localmente no seu navegador — a mesclagem ocorre no seu dispositivo e seus arquivos nunca são enviados. Sem conta, sem cadastro." },
+      { q: "Há limite de tamanho ou de páginas?", a: "Não há limite fixo. Como todo o processo ocorre no navegador, o limite prático é a memória do dispositivo — arquivos muito grandes ou muitos de uma vez podem ficar lentos em dispositivos com pouca RAM." },
+      { q: "Por que um dos meus PDFs foi ignorado?", a: "PDFs protegidos por senha ou criptografados não podem ser lidos, então são excluídos com um aviso. Remova a senha primeiro e adicione o arquivo novamente." },
+      { q: "É gratuito?", a: "Sim — completamente gratuito, sem marca d'água e sem cadastro. O arquivo mesclado é baixado como um único PDF." },
+    ],
+  },
+  "split-pdf": {
+    title: "Dividir um PDF — perguntas frequentes",
+    items: [
+      { q: "Como dividir um PDF?", a: "Envie o PDF e clique no ✂ entre duas páginas para definir um ponto de corte. Adicione quantos cortes quiser ou use «Dividir a cada N páginas» para colocá-los automaticamente. Ao clicar em Dividir e baixar, cada segmento é salvo como um PDF separado, todos compactados em um único ZIP." },
+      { q: "Como sei o que vai em cada arquivo?", a: "Antes de baixar, as páginas são coloridas e rotuladas «Arquivo 1», «Arquivo 2», e assim por diante, e um contador ao vivo informa exatamente quantos arquivos serão criados — sem surpresas." },
+      { q: "Meu arquivo é enviado a algum lugar?", a: "Não. A divisão toda é feita localmente no seu navegador: o PDF é lido, cortado e compactado no seu dispositivo e nunca enviado a um servidor." },
+      { q: "Há limite de tamanho ou de páginas?", a: "Sem limite fixo. Como tudo ocorre no navegador, o limite prático é a memória do dispositivo — PDFs muito grandes ou com muitas páginas demoram mais para renderizar." },
+      { q: "O que recebo de volta e é gratuito?", a: "Um ZIP com um PDF por segmento (nomeados como document-part-1.pdf, document-part-2.pdf). Mesmo com um único corte, a saída é um ZIP. Totalmente gratuito, sem cadastro ou marca d'água. Observação: PDFs protegidos por senha precisam ser desbloqueados primeiro." },
+    ],
+  },
+  "crop-pdf": {
+    title: "Recortar PDF — perguntas frequentes",
+    items: [
+      { q: "Como recorto um PDF?", a: "Envie seu PDF e arraste os controles deslizantes superior, direito, inferior e esquerdo para aparar cada borda. Você verá uma pré-visualização ao vivo enquanto ajusta, então basta configurar até parecer certo e clicar em Recortar e baixar." },
+      { q: "Recorta todas as páginas da mesma forma?", a: "Sim. As margens definidas são aplicadas uniformemente a todas as páginas, então o documento inteiro fica consistente. Esta ferramenta não permite recorte por página." },
+      { q: "O conteúdo recortado é realmente excluído?", a: "Não. Recortar muda a área visível (a caixa de corte) — as partes recortadas ficam ocultas, não apagadas. Isso significa que nada é realmente perdido, mas também que alguém poderia recuperá-lo. Se precisar que o conteúdo desapareça definitivamente, use uma ferramenta de redação." },
+      { q: "Meu arquivo é enviado para algum lugar?", a: "Não. Tudo é executado localmente no seu navegador — seu PDF nunca sai do seu dispositivo e nada é enviado a um servidor." },
+      { q: "Há limite de tamanho?", a: "Não há limite fixo. Como tudo acontece no seu navegador, o teto prático depende da memória do seu dispositivo — arquivos muito grandes podem ficar lentos ou ficar sem memória em máquinas mais fracas." },
+      { q: "É gratuito? Preciso de uma conta?", a: "É completamente gratuito e não é necessário cadastro. Basta abrir a página e começar a recortar." },
+    ],
+  },
+  "sign-pdf": {
+    title: "Assinar PDF — perguntas frequentes",
+    items: [
+      { q: "Como assinar um PDF?", a: "Envie o PDF, desenhe ou digite sua assinatura, escolha a página, posição e tamanho e clique em Assinar e baixar. Você obtém um novo arquivo chamado …-signed.pdf." },
+      { q: "Meu arquivo é enviado?", a: "Não. Tudo ocorre no seu navegador — a página é renderizada e sua assinatura é carimbada no PDF localmente. Seu arquivo nunca sai do dispositivo e nada é enviado a um servidor." },
+      { q: "Posso desenhar minha assinatura ou só digitá-la?", a: "As duas opções funcionam. Desenhe com mouse ou dedo no painel, ou mude para Digitar para renderizar seu nome em fonte caligráfica. Clique em Limpar para refazer uma assinatura desenhada." },
+      { q: "Há limite de tamanho? Tem custo?", a: "Gratuito, sem cadastro. Sem limite fixo de tamanho, mas como tudo é processado em memória, PDFs muito grandes dependem da RAM do dispositivo — um arquivo enorme pode ficar lento em um celular ou notebook mais antigo." },
+      { q: "Onde fica a assinatura e há pontos a saber?", a: "Posicionada em uma de nove âncoras (cantos, bordas, centro) e redimensionada pelo controle de tamanho — não é possível arrastar para um pixel exato. É carimbada em uma página de cada vez; repita para cada página. PDFs criptografados precisam ser desbloqueados primeiro." },
+      { q: "Isso conta como assinatura eletrônica legal?", a: "A assinatura é carimbada na página como imagem, não como assinatura digital baseada em certificado. Assinaturas eletrônicas digitadas e desenhadas são aceitas em muitos documentos do dia a dia, mas verifique os requisitos específicos do seu caso." },
+    ],
+  },
+  "reorder-pages": {
+    title: "Reordenar páginas de PDF — perguntas frequentes",
+    items: [
+      { q: "Como reordenar páginas de um PDF?", a: "Envie o PDF, arraste as miniaturas para a ordem desejada e clique em Aplicar e baixar. Sem digitar números de página — você organiza visualmente." },
+      { q: "Posso excluir páginas ao mesmo tempo?", a: "Sim. Clique no ✕ de qualquer miniatura para remover essa página e depois baixe. Reordenar e remover páginas acontecem na mesma etapa." },
+      { q: "Meu arquivo é enviado?", a: "Não. Tudo é executado localmente no seu navegador — seu PDF nunca é enviado e nunca sai do seu dispositivo." },
+      { q: "Há limite de tamanho ou de páginas?", a: "Sem limite fixo. PDFs muito grandes dependem apenas da memória do dispositivo, pois todo o trabalho ocorre na sua máquina." },
+      { q: "Reordenar reduz a qualidade?", a: "Não. As páginas mantêm conteúdo e resolução originais — apenas a ordem muda, nada é re-renderizado ou comprimido." },
+      { q: "É gratuito? Precisa de conta?", a: "Completamente gratuito, sem cadastro." },
+    ],
+  },
+  "delete-page": {
+    title: "Excluir páginas de PDF — perguntas frequentes",
+    items: [
+      { q: "Como excluir páginas de um PDF?", a: "Envie o PDF, clique nas páginas que deseja remover (ficam vermelhas com ✕) e clique em Excluir e baixar. Um contador mostra quantas serão excluídas e quantas restam." },
+      { q: "E se eu marcar a página errada?", a: "Clique novamente para mantê-la — a marcação vermelha e o ✕ desaparecem. Você pode marcar e desmarcar quantas vezes quiser antes de baixar." },
+      { q: "Meu arquivo é enviado?", a: "Não. Tudo é processado no seu navegador usando a memória do dispositivo — seu PDF nunca é enviado a um servidor e nunca sai do seu dispositivo." },
+      { q: "Há limite de tamanho?", a: "Sem limite fixo. Como o trabalho acontece localmente, o limite prático é a memória do dispositivo — PDFs muito grandes ou com muitas imagens podem ficar lentos em máquinas de entrada." },
+      { q: "O que recebo de volta?", a: "Um novo PDF sem as páginas marcadas, baixado como «seuarquivo-pages-removed.pdf». As demais páginas mantêm conteúdo e ordem originais; o arquivo original não é alterado. É necessário manter ao menos uma página." },
+      { q: "É gratuito?", a: "Sim — completamente gratuito, sem cadastro ou conta necessária." },
+    ],
+  },
+  "rotate-page": {
+    title: "Rotacionar páginas de PDF — perguntas frequentes",
+    items: [
+      { q: "Como rotacionar páginas de um PDF?", a: "Envie o PDF e clique em uma página para girá-la 90° no sentido horário. Clique novamente na mesma página para 180°, 270° e de volta. Ou clique em Rotacionar todas 90° para girar todas de uma vez e depois baixe." },
+      { q: "Posso rotacionar só uma página ou definir ângulos diferentes por página?", a: "Sim. Cada página gira independentemente — você pode corrigir uma única digitalização torta ou definir ângulos diferentes para cada página; apenas as páginas que você clicar mudam." },
+      { q: "Meu arquivo é enviado?", a: "Não. Tudo é executado localmente no seu navegador — a rotação é gravada no PDF no seu dispositivo e o arquivo nunca é enviado a um servidor." },
+      { q: "Há limite de tamanho ou de páginas?", a: "Não impomos limite fixo. Como tudo ocorre no navegador, o teto prático depende da memória do dispositivo — PDFs muito grandes podem ficar lentos em celulares ou tablets com pouca memória." },
+      { q: "Rotacionar perde qualidade ou altera o conteúdo?", a: "Não. A rotação apenas define o sinalizador de orientação de cada página — texto, imagens e resolução ficam exatamente iguais. Nada é re-renderizado ou comprimido." },
+      { q: "É gratuito? Precisa de conta?", a: "Completamente gratuito, sem cadastro. Abra a página, rotacione e baixe." },
+    ],
+  },
+  "add-page": {
+    title: "Inserir páginas em um PDF — perguntas frequentes",
+    items: [
+      { q: "Como inserir páginas em um PDF?", a: "Envie seu PDF, clique onde deseja inserir (no início ou após uma página específica), escolha o arquivo para inserir e clique em Inserir e baixar." },
+      { q: "O que posso inserir?", a: "Outro PDF (todas as suas páginas são inseridas naquele ponto) ou uma imagem PNG/JPG, que é adicionada como uma nova página." },
+      { q: "Meu arquivo é enviado?", a: "Não. Tudo é executado localmente no seu navegador com pdf-lib — seus arquivos nunca saem do dispositivo e nada é enviado a um servidor." },
+      { q: "O que recebo de volta?", a: "Um único PDF novo com as páginas inseridas, baixado como «<seuarquivo>-with-insert.pdf». Seu arquivo original não é alterado." },
+      { q: "Há limite de tamanho?", a: "Sem limite fixo, mas como tudo ocorre no navegador, PDFs muito grandes dependem da memória do dispositivo. Se um arquivo enorme tiver dificuldades, tente um menor." },
+      { q: "É gratuito?", a: "Sim — completamente gratuito, sem cadastro ou conta necessária." },
+    ],
+  },
+  "watermark-pdf": {
+    title: "Adicionar marca d'água a um PDF — perguntas frequentes",
+    items: [
+      { q: "Como adicionar marca d'água a um PDF?", a: "Envie o PDF, crie uma marca d'água de texto ou imagem e ajuste posição, opacidade e rotação acompanhando a pré-visualização ao vivo. Escolha quais páginas carimbar e clique em Aplicar e baixar." },
+      { q: "Posso usar imagem ou logotipo em vez de texto?", a: "Sim. Mude para o modo Imagem para usar um logotipo ou imagem como marca d'água. Em qualquer modo você pode ajustar posição, opacidade e rotação." },
+      { q: "Carimba em todas as páginas?", a: "Você decide. A marca d'água vai nas páginas que você selecionar — pode marcar o documento inteiro ou apenas páginas específicas." },
+      { q: "Meus arquivos são enviados?", a: "Não. A marca d'água é aplicada diretamente no seu navegador — seu PDF nunca sai do dispositivo e nada é enviado a um servidor." },
+      { q: "Há limite de tamanho?", a: "Sem limite fixo. Como tudo é executado localmente, PDFs muito grandes são limitados apenas pela memória do dispositivo — na maioria das máquinas isso é suficiente." },
+      { q: "É gratuito? Precisa de conta?", a: "Gratuito, sem cadastro. Abra a página, adicione seu PDF e baixe o arquivo com marca d'água." },
+    ],
+  },
+  "page-numbers": {
+    title: "Adicionar números de página a um PDF — perguntas frequentes",
+    items: [
+      { q: "Como adicionar números de página a um PDF?", a: "Envie o PDF, escolha posição (topo ou rodapé, esquerda/centro/direita), formato e número inicial, e defina o intervalo de páginas. A pré-visualização ao vivo mostra o resultado; em seguida, clique em Adicionar números e baixar." },
+      { q: "Meu arquivo é enviado?", a: "Não. Tudo é executado localmente — o PDF é lido, numerado e salvo no seu dispositivo. Nunca é enviado a um servidor e nunca sai do seu computador." },
+      { q: "Quais formatos e posições posso usar?", a: "Quatro formatos: só o número (1), Página 1, 1 / N, ou 1 de N. Seis posições: topo ou rodapé, com esquerda, centro ou direita. Também há opção de margem pequena/média/grande." },
+      { q: "Posso começar de um número específico ou numerar só parte do documento?", a: "Sim. Use Começar em para o primeiro número (útil quando a capa não deve contar) e use o intervalo de/até para numerar apenas parte do documento. A contagem continua ao longo do intervalo que você escolher." },
+      { q: "Há limite de tamanho?", a: "Sem limite fixo. Como o trabalho acontece no navegador, PDFs muito grandes são limitados pela memória do dispositivo — na maioria das máquinas os documentos típicos passam sem problema." },
+      { q: "É gratuito? Precisa de conta?", a: "Sim, completamente gratuito e sem cadastro. Basta abrir a página e começar." },
+    ],
+  },
+  "images-to-pdf": {
+    title: "Imagens para PDF — perguntas frequentes",
+    items: [
+      { q: "Como converto imagens em PDF?", a: "Adicione suas imagens, arraste as miniaturas para a ordem desejada e clique em Converter para PDF. Cada imagem se torna uma página, de cima para baixo, em um único arquivo que você pode baixar." },
+      { q: "Quais formatos de imagem são compatíveis?", a: "JPG, PNG, WebP, GIF e BMP. HEIC (o formato que iPhones geralmente usam para salvar fotos) ainda não é compatível — converta-as para JPG primeiro ou altere a configuração da câmera do iPhone para «Mais Compatível»." },
+      { q: "Posso combinar muitas imagens em um único PDF?", a: "Sim. Adicione quantas quiser e arraste para reordenar — elas são mescladas em um único PDF exatamente nessa ordem, uma imagem por página." },
+      { q: "Minhas imagens são enviadas para algum lugar?", a: "Não. Tudo é executado localmente no seu navegador — o PDF é gerado no seu dispositivo e suas imagens nunca são enviadas a um servidor nem armazenadas em lugar algum." },
+      { q: "Há limite de tamanho ou quantidade de arquivos?", a: "Não há limite fixo. Como tudo acontece no seu dispositivo, o teto prático é a memória do seu dispositivo — imagens de alta resolução muito grandes ou muito numerosas podem deixar um celular mais antigo ou notebook com pouca RAM mais lento." },
+      { q: "É gratuito? Preciso de conta?", a: "Sim, é completamente gratuito, sem cadastro, sem marca d'água e sem necessidade de e-mail. Basta abrir a página e começar." },
+    ],
+  },
+  "pdf-to-image": {
+    title: "PDF para imagem — perguntas frequentes",
+    items: [
+      { q: "Como converto um PDF em JPG ou PNG?", a: "Solte um PDF e cada página aparece como uma miniatura. Clique nas páginas para incluir ou excluir (ou use Selecionar tudo / Selecionar nenhuma), escolha JPG ou PNG e clique em Converter e baixar. Uma única página é baixada como uma imagem; várias páginas são agrupadas em um ZIP." },
+      { q: "Meu PDF é enviado para algum lugar?", a: "Não. Tudo é executado no seu navegador — o PDF é lido e renderizado em imagens localmente e o download é gerado no seu dispositivo. Nada é enviado a um servidor, então seu arquivo nunca sai da sua máquina." },
+      { q: "JPG ou PNG — qual devo escolher?", a: "PNG é sem perdas, então é melhor para texto nítido, arte linear e capturas de tela. Os arquivos JPG são menores e bons para fotos e digitalizações. Uma coisa a saber: JPG não pode ser transparente, então áreas transparentes de uma página ficam com fundo branco." },
+      { q: "Há limite de tamanho ou de páginas?", a: "Não há limite fixo e não precisa de cadastro. Como tudo é processado no seu navegador, o limite real é a memória do dispositivo — PDFs muito grandes ou com muitas páginas usam mais RAM e demoram mais, especialmente em celulares ou máquinas mais antigas." },
+      { q: "Não abre meu PDF — o que há de errado?", a: "A causa mais comum é um PDF protegido por senha ou criptografado, que a ferramenta não consegue ler; remova a senha primeiro e tente novamente. A saída é renderizada em 2× para imagens nítidas, mas ainda é uma imagem — o texto vira pixels, então você não pode selecioná-lo ou pesquisá-lo depois." },
+      { q: "É gratuito?", a: "Sim — completamente gratuito, sem conta, sem marca d'água, sem limite em quantas vezes você usa." },
+    ],
+  },
+  "redact-pdf": {
+    title: "Redigir PDF — perguntas frequentes",
+    items: [
+      { q: "Como redigir um PDF?", a: "Solte seu PDF na página e o DockDocs renderiza cada página no seu navegador. Arraste uma caixa sobre o que quiser ocultar — um nome, número de conta, assinatura. O DockDocs também verifica automaticamente itens sensíveis (e-mails, telefones, CPF, números de cartão, IPs) e os pré-marca; revise e clique no ✕ de qualquer caixa que não quiser. Clique em Aplicar e baixar para obter a cópia redigida." },
+      { q: "O texto é realmente removido ou apenas coberto por uma caixa preta?", a: "Realmente removido. Muitas «redações» apenas colocam um retângulo preto por cima — o texto original ainda está no arquivo e alguém pode copiá-lo ou apagar a caixa. O DockDocs re-renderiza cada página como uma imagem plana com as áreas pretas gravadas, destruindo o texto subjacente permanentemente. É exatamente isso que torna o resultado seguro para compartilhar." },
+      { q: "Meus arquivos são enviados?", a: "Não. Tudo acontece no seu navegador no seu próprio dispositivo — abertura do PDF, desenho das caixas e geração da cópia redigida, tudo localmente. Seu arquivo nunca é enviado a um servidor e nunca sai do seu computador, então é adequado para documentos confidenciais ou regulados." },
+      { q: "Há limites? É gratuito?", a: "Completamente gratuito, sem conta, e-mail ou instalação necessária. Sem limite fixo de tamanho, mas PDFs muito grandes dependem da memória do dispositivo. O único limite rígido é a contagem de páginas: até 30 páginas por documento — se o seu for mais longo, divida-o primeiro e redigir cada parte." },
+      { q: "Como é o arquivo de saída?", a: "Você obtém um PDF novo onde cada página é uma imagem achatada (cerca de 158 DPI — limpa e legível). Como as páginas agora são imagens, o conteúdo redigido desaparece permanentemente e o restante do texto não pode mais ser selecionado ou pesquisado. Essa troca é exatamente o objetivo: texto que você não pode selecionar é texto que não pode ser recuperado." },
+      { q: "Devo confiar nas caixas detectadas automaticamente por si só?", a: "Trate-as como ponto de partida, não como garantia. A verificação automática captura padrões comuns como e-mails e números, mas pode perder coisas em formatos incomuns e não conhecerá segredos específicos do contexto que só você pode reconhecer. Sempre leia as páginas você mesmo e arraste caixas sobre qualquer coisa que o detector não sinalizou antes de baixar." },
+    ],
+  },
+  "translate-pdf": {
+    title: "Traduzir um PDF — perguntas frequentes",
+    items: [
+      { q: "Como traduzir um PDF?", a: "Envie o PDF, escolha o idioma de destino na lista e clique em Traduzir. O texto é extraído do arquivo e traduzido pela IA; em seguida, você pode copiá-lo ou baixá-lo como arquivo .txt." },
+      { q: "Meu arquivo é enviado? É privado?", a: "O PDF é lido diretamente no seu navegador — o arquivo em si nunca sai do dispositivo. Apenas o texto simples extraído é enviado à IA para traduzir. O documento original, formatação e imagens nunca são enviados." },
+      { q: "Há limite de tamanho?", a: "Sim — cerca de 14.000 caracteres por execução, aproximadamente 10 páginas. Se o documento for mais longo, divida em partes menores e traduza uma de cada vez." },
+      { q: "Para quais idiomas posso traduzir?", a: "Mais de 18, incluindo inglês, chinês simplificado e tradicional, espanhol, francês, alemão, japonês, coreano, português, italiano, russo, árabe, hindi e mais. A ferramenta detecta automaticamente o idioma de origem, então você só escolhe o destino." },
+      { q: "Mantém o layout original? O que recebo de volta?", a: "Ainda não — esta versão traduz apenas o conteúdo de texto e fornece o texto traduzido para copiar ou baixar. A tradução com preservação de layout está no roteiro. Observação: se o PDF for uma digitalização ou imagem sem texto selecionável, não há nada para extrair — execute o OCR primeiro." },
+      { q: "É gratuito? Posso confiar para documentos legais?", a: "Sim, é gratuito. A tradução por IA é ótima para entender um documento e obter um bom rascunho inicial, mas não é uma tradução certificada — para fins legais ou oficiais, peça a um profissional qualificado para revisá-la." },
+    ],
+  },
+  "extract-to-excel": {
+    title: "Extrair dados de PDF para planilha — perguntas frequentes",
+    items: [
+      { q: "Como extraio dados de PDFs para uma planilha?", a: "Solte suas faturas, orçamentos ou contratos (ou selecione uma pasta inteira para processar em lote), escolha o tipo de documento e clique em Extrair. A IA extrai os campos principais — totais, datas, partes, termos — em uma tabela que você pode baixar como CSV para abrir no Excel, Google Sheets ou Numbers. É gratuito." },
+      { q: "Meus arquivos são enviados a um servidor?", a: "O PDF em si nunca sai do seu dispositivo — é lido no seu navegador. Apenas o texto simples extraído é enviado à IA para organizar em colunas; o arquivo original, com seu layout e imagens, fica local. Se essa etapa de envio de texto for um problema para contratos sensíveis, vale saber disso antecipadamente." },
+      { q: "Como sei se os números estão certos?", a: "Cada valor é marcado com a frase exata de onde veio no documento original, para que você possa verificar rapidamente. Se a IA não encontrar um campo com clareza, deixa a célula em branco em vez de adivinhar — e descartamos qualquer citação de origem que não apareça realmente no seu arquivo, então nada é fabricado." },
+      { q: "Quais são os limites?", a: "Até 8 documentos de uma vez, e o texto combinado chega a cerca de 60.000 caracteres — aproximadamente uma pilha de faturas normais, não um contrato mestre de 200 páginas. Para lotes grandes, processe em algumas rodadas." },
+      { q: "Não extraiu nada — o que aconteceu?", a: "Quase sempre é um PDF digitalizado ou fotografado. Se o texto não for selecionável em um leitor de PDF normal, não há nada para o navegador ler e a IA recebe uma página em branco. Execute o OCR primeiro. PDFs protegidos por senha também não podem ser lidos até serem desbloqueados." },
+      { q: "Quais documentos funcionam melhor?", a: "Papelada estruturada com campos consistentes — faturas, orçamentos e contratos — onde cada campo predefinido (fornecedor, total, data de vencimento, condições de pagamento, etc.) está realmente impresso no documento. Cartas de formato livre ou layouts incomuns deixarão mais células em branco." },
+    ],
+  },
+  "redline": {
+    title: "Comparar versões de PDF (linha vermelha) — perguntas frequentes",
+    items: [
+      { q: "Como comparo duas versões de PDF?", a: "Envie o PDF original (v1) e o revisado (v2) e clique em Comparar versões. O DockDocs alinha o texto e exibe uma única visão marcada — texto adicionado é destacado em verde, texto removido é tachado em vermelho, como o controle de alterações." },
+      { q: "Meus arquivos são enviados para algum lugar?", a: "Não. É uma ferramenta do lado do cliente: o texto é extraído e comparado inteiramente no seu navegador, então seus arquivos nunca saem do seu dispositivo. Nada é enviado a um servidor." },
+      { q: "Detecta frases reformuladas?", a: "Compara frase por frase, então marca quais frases foram adicionadas e quais foram removidas. Uma pequena reformulação aparece como uma exclusão mais uma adição, em vez de uma mudança no nível da palavra dentro da frase." },
+      { q: "O que compara exatamente — verifica formatação ou imagens?", a: "Apenas o texto extraído. Fontes, layout, cores, imagens e tabelas não fazem parte da comparação, e PDFs digitalizados sem uma camada de texto real não produzirão resultados úteis. Se relatar nenhuma mudança de texto, a redação é idêntica mesmo que o visual tenha mudado." },
+      { q: "Qual pode ser o tamanho dos documentos?", a: "Toda a comparação é executada no seu navegador, então é ajustada para documentos de até alguns milhares de frases (limite de 2.500 frases por arquivo). Contratos ou livros muito longos podem ser truncados ou demorar." },
+      { q: "É gratuito?", a: "Sim — comparar versões é completamente gratuito, sem cadastro e sem limite no número de comparações." },
+    ],
+  },
+};
+
 export function ToolFaq({ tool, locale = "en" }: { tool: string; locale?: Locale }) {
+  // cast: remove when "pt" is added to Locale
+  if ((locale as string) === "pt") {
+    const ptData = FAQS_PT[tool];
+    if (!ptData) return null;
+    return (
+      <section className="mx-auto mt-12 border-t border-[color:var(--line)] pt-10">
+        <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{ptData.title}</h2>
+        <div className="mt-6 space-y-6">
+          {ptData.items.map((it) => (
+            <div key={it.q}>
+              <h3 className="text-[15px] font-medium text-[color:var(--foreground)]">{it.q}</h3>
+              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{it.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
   const data = FAQS[tool];
   if (!data) return null;
   const items = data.items[locale] ?? data.items.en;
