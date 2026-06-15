@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useRef, useState, type DragEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type DragEvent } from "react";
+import { loadTemplates, saveTemplate, deleteTemplate, type FlowTemplate } from "@/lib/flow-templates";
 import { isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 import { ToolFaq } from "@/components/ToolFaq";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -81,6 +82,14 @@ const STR = {
       { value: "invoice", label: "Invoices" },
       { value: "contract", label: "Contracts" },
     ],
+    tplSave: "Save as template",
+    tplSaving: "Saving…",
+    tplNamePlaceholder: "Template name (e.g. Vendor quotes)",
+    tplConfirm: "Save",
+    tplCancel: "Cancel",
+    tplMyTemplates: "My templates",
+    tplDelete: "Delete",
+    tplLoaded: (name: string) => `Template: ${name}`,
   },
   zh: {
     badge: "对比引擎 · 测试版",
@@ -121,6 +130,14 @@ const STR = {
       { value: "invoice", label: "账单" },
       { value: "contract", label: "合同" },
     ],
+    tplSave: "保存为模板",
+    tplSaving: "保存中…",
+    tplNamePlaceholder: "模板名称（如：供应商报价单）",
+    tplConfirm: "保存",
+    tplCancel: "取消",
+    tplMyTemplates: "我的模板",
+    tplDelete: "删除",
+    tplLoaded: (name: string) => `模板：${name}`,
   },
   es: {
     badge: "Motor de comparación · beta",
@@ -161,6 +178,14 @@ const STR = {
       { value: "invoice", label: "Facturas" },
       { value: "contract", label: "Contratos" },
     ],
+    tplSave: "Guardar como plantilla",
+    tplSaving: "Guardando…",
+    tplNamePlaceholder: "Nombre de plantilla (ej. Cotizaciones de proveedores)",
+    tplConfirm: "Guardar",
+    tplCancel: "Cancelar",
+    tplMyTemplates: "Mis plantillas",
+    tplDelete: "Eliminar",
+    tplLoaded: (name: string) => `Plantilla: ${name}`,
   },
 } as const;
 
@@ -261,6 +286,15 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [ocrBusy, setOcrBusy] = useState<Set<string>>(new Set());
   const [limitHit, setLimitHit] = useState<number | null>(null);
+  const [templates, setTemplates] = useState<FlowTemplate[]>([]);
+  const [activeTemplate, setActiveTemplate] = useState<FlowTemplate | null>(null);
+  const [showSaveTpl, setShowSaveTpl] = useState(false);
+  const [tplName, setTplName] = useState("");
+  const [tplSaving, setTplSaving] = useState(false);
+
+  useEffect(() => {
+    setTemplates(loadTemplates());
+  }, []);
 
   const extractOne = useCallback(async (file: File): Promise<DocResult> => {
     const id = `${file.name}-${file.size}-${file.lastModified}-${Math.random().toString(36).slice(2, 7)}`;
@@ -413,6 +447,31 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     }
   }, [okDocs, docType, locale, t]);
 
+  const handleSaveTemplate = () => {
+    const name = tplName.trim();
+    if (!name || !comparison) return;
+    setTplSaving(true);
+    const tpl = saveTemplate({ name, docType: comparison.docType, dimensions: comparison.dimensions });
+    setTemplates(loadTemplates());
+    setActiveTemplate(tpl);
+    setShowSaveTpl(false);
+    setTplName("");
+    setTplSaving(false);
+  };
+
+  const handleLoadTemplate = (tpl: FlowTemplate) => {
+    setDocType(tpl.docType);
+    setActiveTemplate(tpl);
+    setComparison(null);
+    setRecommendation(null);
+  };
+
+  const handleDeleteTemplate = (id: string) => {
+    deleteTemplate(id);
+    setTemplates(loadTemplates());
+    if (activeTemplate?.id === id) setActiveTemplate(null);
+  };
+
   const badge = (status: DocStatus) =>
     status === "ok"
       ? { label: t.bExtracted, cls: "text-[color:var(--accent)] border-[color:var(--accent)]" }
@@ -472,6 +531,32 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       </div>
       <h1 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">{t.h1}</h1>
       <p className="mt-3 max-w-4xl text-[color:var(--muted)]">{t.intro}</p>
+
+      {templates.length > 0 && (
+        <div className="mt-5">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">{t.tplMyTemplates}</p>
+          <div className="flex flex-wrap gap-2">
+            {templates.map((tpl) => (
+              <div key={tpl.id} className={`group flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition ${activeTemplate?.id === tpl.id ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]" : "border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]"}`}>
+                <button type="button" onClick={() => handleLoadTemplate(tpl)}>
+                  {tpl.name}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDeleteTemplate(tpl.id)}
+                  title={t.tplDelete}
+                  className="ml-0.5 opacity-0 transition group-hover:opacity-60 hover:!opacity-100"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+          {activeTemplate && (
+            <p className="mt-2 text-xs text-[color:var(--accent)]">{t.tplLoaded(activeTemplate.name)}</p>
+          )}
+        </div>
+      )}
 
       <div
         onDragOver={(e) => {
@@ -672,6 +757,43 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
             </table>
           </div>
           <p className="mt-3 text-xs text-[color:var(--muted)]">{t.tableNote}</p>
+          <div className="mt-5">
+            {!showSaveTpl ? (
+              <button
+                type="button"
+                onClick={() => { setShowSaveTpl(true); setTplName(""); }}
+                className="text-xs font-medium text-[color:var(--accent)] underline underline-offset-2 transition hover:opacity-80"
+              >
+                {t.tplSave}
+              </button>
+            ) : (
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  autoFocus
+                  value={tplName}
+                  onChange={(e) => setTplName(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") handleSaveTemplate(); if (e.key === "Escape") setShowSaveTpl(false); }}
+                  placeholder={t.tplNamePlaceholder}
+                  className="h-9 min-w-[200px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm text-[color:var(--foreground)]"
+                />
+                <button
+                  type="button"
+                  onClick={handleSaveTemplate}
+                  disabled={tplSaving || !tplName.trim()}
+                  className="h-9 rounded-[var(--radius)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  {tplSaving ? t.tplSaving : t.tplConfirm}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowSaveTpl(false)}
+                  className="text-xs text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
+                >
+                  {t.tplCancel}
+                </button>
+              </div>
+            )}
+          </div>
         </section>
       )}
 
