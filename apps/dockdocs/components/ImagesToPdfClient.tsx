@@ -101,7 +101,7 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
       const a = document.createElement("a");
       a.href = url; a.download = "dockdocs-images.pdf"; a.click();
       URL.revokeObjectURL(url);
-      if (failed > 0) setError((locale === "zh" ? `${failed} 张图片无法读取,已跳过。` : `${failed} image(s) could not be read and were skipped.`));
+      if (failed > 0) setError((locale === "zh" ? `${failed} 张图片无法读取，已跳过。` : `${failed} image(s) could not be read and were skipped.`));
     } catch (e) {
       setError(t.err + (e instanceof Error ? e.message : String(e)));
     } finally {

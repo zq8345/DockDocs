@@ -33,7 +33,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   }
 
-  // GEO pages —— en 规范地址是无前缀的(undefined),不再提交 /en/ 重复副本(会被 Google 当重复内容)
+  // GEO pages —— en 规范地址是无前缀的(undefined)，不再提交 /en/ 重复副本(会被 Google 当重复内容)
   const geoLocales = [undefined, "zh"] as const;
   const geoRoutes = getProgrammaticGeoPageSeeds()
     .filter((page) => isIndexableGeoSlug(page.slug))

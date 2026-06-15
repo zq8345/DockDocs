@@ -20,7 +20,7 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       name: "DockDocs 裁剪 PDF",
       crumb: "裁剪 PDF",
       description:
-        "免费在线裁剪 PDF 页边:用实时预览裁掉任意一边的空白,每页按同样方式裁剪,全部在浏览器中完成。",
+        "免费在线裁剪 PDF 页边：用实时预览裁掉任意一边的空白，每页按同样方式裁剪，全部在浏览器中完成。",
     },
   },
   "redact-pdf": {
@@ -34,7 +34,7 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       name: "DockDocs PDF 涂黑脱敏",
       crumb: "涂黑脱敏",
       description:
-        "真正涂黑脱敏 PDF:把姓名、号码等敏感文字永久删除(不是盖个黑框),全部在浏览器中完成,文件不外泄。",
+        "真正涂黑脱敏 PDF：把姓名、号码等敏感文字永久删除(不是盖个黑框)，全部在浏览器中完成，文件不外泄。",
     },
   },
   redline: {
@@ -48,7 +48,7 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       name: "DockDocs PDF 版本对比",
       crumb: "版本对比",
       description:
-        "上传原始版和修订版 PDF,逐句对比看清新增和删除的内容,全部在浏览器中完成。",
+        "上传原始版和修订版 PDF，逐句对比看清新增和删除的内容，全部在浏览器中完成。",
     },
   },
   "extract-to-excel": {
@@ -62,7 +62,7 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       name: "DockDocs PDF 数据抽取到表格",
       crumb: "数据抽取到表格",
       description:
-        "上传发票、报价单或合同,用 AI 把关键字段抽成表格,导出 CSV(Excel 可打开)。只报告文档里真实存在的内容。",
+        "上传发票、报价单或合同，用 AI 把关键字段抽成表格，导出 CSV(Excel 可打开)。只报告文档里真实存在的内容。",
     },
   },
   "url-to-pdf": {
@@ -76,7 +76,7 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       name: "DockDocs 网页转 PDF",
       crumb: "网页转 PDF",
       description:
-        "免费把任意公开网页转换为 PDF:粘贴网址,下载用真实浏览器引擎渲染的干净 PDF——无需上传、无需安装。",
+        "免费把任意公开网页转换为 PDF：粘贴网址，下载用真实浏览器引擎渲染的干净 PDF——无需上传、无需安装。",
     },
   },
   "ai-workspace": {

@@ -1,5 +1,5 @@
 // Supabase 版认证 API —— 替代 @netlify/identity。
-// 暴露与原来相近的接口,登录 UI 只需改 import + 邮箱改魔法链接。
+// 暴露与原来相近的接口，登录 UI 只需改 import + 邮箱改魔法链接。
 import { supabase } from "@/lib/supabase";
 
 export type AuthUser = {
@@ -25,7 +25,7 @@ export async function getUser(): Promise<AuthUser | null> {
   return mapUser(data.user);
 }
 
-// 订阅登录态变化;返回取消订阅函数
+// 订阅登录态变化；返回取消订阅函数
 export function onAuthChange(cb: (user: AuthUser | null) => void): () => void {
   const { data } = supabase.auth.onAuthStateChange((_event, session) => {
     cb(mapUser(session?.user ?? null));
@@ -33,7 +33,7 @@ export function onAuthChange(cb: (user: AuthUser | null) => void): () => void {
   return () => data.subscription.unsubscribe();
 }
 
-// 登录后跳回当前页(/account 与 /zh/account 均已是真实路由,按语言原样返回)
+// 登录后跳回当前页(/account 与 /zh/account 均已是真实路由，按语言原样返回)
 function redirectTo(): string | undefined {
   if (typeof window === "undefined") return undefined;
   return window.location.origin + window.location.pathname;
@@ -49,7 +49,7 @@ export async function signInWithMicrosoft(): Promise<void> {
   if (error) throw error;
 }
 
-// 邮箱魔法链接(免密码):发链接到邮箱,点击即登录
+// 邮箱魔法链接(免密码)：发链接到邮箱，点击即登录
 export async function sendMagicLink(email: string): Promise<void> {
   const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo() } });
   if (error) throw error;

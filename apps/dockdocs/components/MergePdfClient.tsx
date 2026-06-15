@@ -27,7 +27,7 @@ const STR = {
     subtitle: "添加 PDF，拖成你想要的顺序，合并成一个——合并前先看清每个文件，而不是合完才发现顺序错了。",
     drop: "把多个 PDF 拖到这里，或点击选择",
     choose: "选择 PDF", add: "继续添加", rendering: "正在读取文件…",
-    hint: "拖动调整顺序,按从上到下、从左到右合并。",
+    hint: "拖动调整顺序，按从上到下、从左到右合并。",
     files: (n: number, p: number) => `${n} 个文件 · 共 ${p} 页`,
     pagesLabel: (n: number) => `${n} 页`,
     merge: "合并并下载", working: "正在合并…", reset: "重新开始",
@@ -87,7 +87,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       if (skipped.length) {
         const list = skipped.join(", ");
         setError(locale === "zh"
-          ? `跳过了 ${skipped.length} 个无法读取的文件:${list}${encryptedSkipped ? "(含加密文件,请先解锁)" : ""}。`
+          ? `跳过了 ${skipped.length} 个无法读取的文件：${list}${encryptedSkipped ? "(含加密文件，请先解锁)" : ""}。`
           : `Skipped ${skipped.length} unreadable file(s): ${list}${encryptedSkipped ? " (some are password-protected — unlock them first)" : ""}.`);
       }
     } finally {

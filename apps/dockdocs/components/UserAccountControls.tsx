@@ -141,7 +141,7 @@ export function UserAccountControls() {
         <div className="grid w-full gap-2 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 shadow-sm sm:w-72">
           {state.emailSent ? (
             <p className="text-xs leading-5 text-[color:var(--success)]">
-              {isZh ? "登录链接已发送到邮箱,点击邮件中的链接即可登录。" : "Magic link sent — check your email to sign in."}
+              {isZh ? "登录链接已发送到邮箱，点击邮件中的链接即可登录。" : "Magic link sent — check your email to sign in."}
             </p>
           ) : (
             <>
@@ -155,7 +155,7 @@ export function UserAccountControls() {
               <button type="button" onClick={handleMagicLink} disabled={!state.email} className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 text-sm font-semibold text-white transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50">
                 {isZh ? "发送登录链接" : "Send magic link"}
               </button>
-              <p className="text-[11px] leading-4 text-[color:var(--faint)]">{isZh ? "免密码,我们会发一封登录邮件" : "No password — we'll email you a sign-in link"}</p>
+              <p className="text-[11px] leading-4 text-[color:var(--faint)]">{isZh ? "免密码，我们会发一封登录邮件" : "No password — we'll email you a sign-in link"}</p>
             </>
           )}
           {state.error ? <p className="text-xs leading-5 text-[color:var(--error)]">{state.error}</p> : null}

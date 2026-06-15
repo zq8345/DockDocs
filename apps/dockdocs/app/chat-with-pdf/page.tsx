@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-// 结构化数据(此页未走共享模板,手动补上,供 Google 理解 + AI 引用)
+// 结构化数据(此页未走共享模板，手动补上，供 Google 理解 + AI 引用)
 const SCHEMA = {
   "@context": "https://schema.org",
   "@graph": [

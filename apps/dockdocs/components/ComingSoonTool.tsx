@@ -1,4 +1,4 @@
-// 占位组件:替代"有页面但功能是桩、会下载空文件"的工具页。诚实地显示"即将推出",不再假装处理。
+// 占位组件：替代"有页面但功能是桩、会下载空文件"的工具页。诚实地显示"即将推出"，不再假装处理。
 type Props = { locale?: "en" | "zh" | "es"; name: string; nameZh?: string; nameEs?: string };
 
 export function ComingSoonTool({ locale = "en", name, nameZh, nameEs }: Props) {
@@ -12,7 +12,7 @@ export function ComingSoonTool({ locale = "en", name, nameZh, nameEs }: Props) {
       <p className="mt-3 text-[15px] font-semibold text-[color:var(--accent-strong)]">{zh ? "即将推出" : es ? "Próximamente" : "Coming soon"}</p>
       <p className="mt-3 text-[14px] leading-relaxed text-[color:var(--muted)]">
         {zh
-          ? "这个工具正在开发中,暂未上线。先去看看我们已经能用的工具吧。"
+          ? "这个工具正在开发中，暂未上线。先去看看我们已经能用的工具吧。"
           : es
           ? "Esta herramienta está en desarrollo y aún no está disponible. Mientras tanto, prueba las herramientas que ya están listas."
           : "This tool is under construction and not available yet. In the meantime, try the tools that are ready."}

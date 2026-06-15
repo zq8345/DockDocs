@@ -25,7 +25,7 @@ export function LanguageSwitcher() {
   function switchTo(locale: string) {
     const href = locale === defaultLocale ? `/${slug}` : `/${locale}/${slug}`;
     setOpen(false);
-    // 记住用户选择,避免被开机脚本按系统语言又弹回去
+    // 记住用户选择，避免被开机脚本按系统语言又弹回去
     try { window.localStorage.setItem("dockdocs-lang", locale); } catch {}
     router.push(href || "/");
   }

@@ -30,7 +30,7 @@ const STR = {
     run: "全部摘要", running: "摘要中", reset: "重新开始",
     files: (n: number) => `${n} / ${MAX_FILES} 份`,
     keyPoints: "关键要点", download: "下载全部 (.md)", need: "至少添加一份 PDF。",
-    noText: "无可提取文字(扫描件?)", err: "出错了：",
+    noText: "无可提取文字(扫描件？)", err: "出错了：",
     note: "摘要由 AI 从每份文档生成，建议快速核对。逐份处理以符合用量限制。",
   },
   es: {

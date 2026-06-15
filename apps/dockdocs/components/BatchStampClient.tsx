@@ -40,7 +40,7 @@ const STR = {
     run: "全部应用", running: "处理中", download: "下载 ZIP", reset: "重新开始",
     files: (n: number) => `${n} / ${MAX_FILES} 份`, done: "完成", failed: "失败",
     needText: "请输入水印文字。", needFile: "至少添加一份 PDF。",
-    note: "使用默认排版(对角水印 / 页码)。需要自定义位置或透明度,请用单文件的「加水印」或「加页码」工具。全部在你的设备上完成。",
+    note: "使用默认排版(对角水印 / 页码)。需要自定义位置或透明度，请用单文件的「加水印」或「加页码」工具。全部在你的设备上完成。",
     err: "出错了：",
   },
   es: {
@@ -120,7 +120,7 @@ export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale;
       a.href = url; a.download = "dockdocs-batch.zip"; a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败,请重试。" : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : "Could not build the download — please try again.");
     }
   };
 

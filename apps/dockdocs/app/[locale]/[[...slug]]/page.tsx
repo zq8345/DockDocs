@@ -103,7 +103,7 @@ import {
 
 export const dynamicParams = false;
 
-// 这些工具尚未实现(原本会下载空文件),改为"即将推出"占位,en 主路径见各自 app/<slug>/page.tsx。
+// 这些工具尚未实现(原本会下载空文件)，改为"即将推出"占位，en 主路径见各自 app/<slug>/page.tsx。
 const COMING_SOON_TOOLS: Record<string, { en: string; zh: string }> = {
   "edit-pdf": { en: "Edit PDF", zh: "编辑 PDF" },
 };
@@ -427,7 +427,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "PDF 涂黑脱敏 — 永久删除敏感文字" : "Redact PDF — Permanently Remove Sensitive Text Online Free",
       description:
         uiLocale === "zh"
-          ? "真正涂黑脱敏 PDF：把姓名、号码等敏感文字永久删除(不是盖个黑框),全部在浏览器中完成,文件不外泄。"
+          ? "真正涂黑脱敏 PDF：把姓名、号码等敏感文字永久删除(不是盖个黑框)，全部在浏览器中完成，文件不外泄。"
           : "Redact a PDF for real — permanently destroy the hidden text, not just cover it. Entirely in your browser; your file never leaves your device.",
       alternates: {
         canonical: localizedPath(uiLocale, "redact-pdf"),
@@ -441,7 +441,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "批量 PDF 转图片 — 整批 PDF 一次转 JPG/PNG" : "Batch PDF to Image — Convert Many PDFs to JPG/PNG Free",
       description:
         uiLocale === "zh"
-          ? "一次把整个文件夹的 PDF 都转成图片(JPG/PNG),每页一张、打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
+          ? "一次把整个文件夹的 PDF 都转成图片(JPG/PNG)，每页一张、打包成一个 ZIP，全部在浏览器中完成，文件不外泄。"
           : "Convert a whole folder of PDFs to images at once — every page to JPG or PNG, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
         canonical: localizedPath(uiLocale, "batch-pdf-to-image"),
@@ -455,7 +455,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "批量加密 PDF — 整批 PDF 一次设密码" : "Batch Encrypt PDF — Password-Protect Many PDFs Free",
       description:
         uiLocale === "zh"
-          ? "设一个密码，给整个文件夹的 PDF 一次性加密,打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
+          ? "设一个密码，给整个文件夹的 PDF 一次性加密，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。"
           : "Set one password and encrypt a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
         canonical: localizedPath(uiLocale, "batch-protect-pdf"),
@@ -469,7 +469,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "批量重命名 PDF — 整批按编号或查找替换改名" : "Batch Rename PDF — Rename Many Files by Pattern Free",
       description:
         uiLocale === "zh"
-          ? "一次给整个文件夹的 PDF 改名:按编号模板或查找替换,下载用新名字打包的 ZIP,全部在浏览器中完成。"
+          ? "一次给整个文件夹的 PDF 改名：按编号模板或查找替换，下载用新名字打包的 ZIP，全部在浏览器中完成。"
           : "Rename a whole folder of PDFs at once — by a numbered pattern or find-and-replace — and download a ZIP with the new names. Entirely in your browser.",
       alternates: {
         canonical: localizedPath(uiLocale, "batch-rename-pdf"),
@@ -483,7 +483,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "批量加水印 / 页码 — 整批 PDF 一次加水印或页码" : "Batch Watermark & Page Numbers — Stamp Many PDFs Free",
       description:
         uiLocale === "zh"
-          ? "给整个文件夹的 PDF 一次性加水印或加页码,打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
+          ? "给整个文件夹的 PDF 一次性加水印或加页码，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。"
           : "Add a watermark or page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
         canonical: localizedPath(uiLocale, "batch-watermark-pdf"),
@@ -497,7 +497,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "批量 PDF 添加页码 — 整批 PDF 一次加页码" : "Batch Add Page Numbers to PDFs — Free",
       description:
         uiLocale === "zh"
-          ? "给整个文件夹的 PDF 一次性加页码,打包成一个 ZIP,全部在浏览器中完成,文件不外泄。"
+          ? "给整个文件夹的 PDF 一次性加页码，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。"
           : "Add page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
         canonical: localizedPath(uiLocale, "batch-page-numbers"),
@@ -511,7 +511,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "批量拆分 / 合并 PDF — 整批合并或按页拆分" : "Batch Split & Merge PDF — Combine or Split Many PDFs Free",
       description:
         uiLocale === "zh"
-          ? "把整个文件夹的 PDF 合并成一个,或把每份按 N 页拆分,全部在浏览器中完成、打包下载,文件不外泄。"
+          ? "把整个文件夹的 PDF 合并成一个，或把每份按 N 页拆分，全部在浏览器中完成、打包下载，文件不外泄。"
           : "Merge a whole folder of PDFs into one, or split each into N-page files — all in your browser, packaged for download. Your files never leave your device.",
       alternates: {
         canonical: localizedPath(uiLocale, "batch-split-merge"),
@@ -525,7 +525,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "批量旋转 PDF — 整批纠正横/倒扫描件" : "Batch Rotate PDF — Fix Many Sideways Scans Free",
       description:
         uiLocale === "zh"
-          ? "一次纠正整个文件夹横着或倒着的扫描件:把每份 PDF 每页旋转,打包 ZIP,全部在浏览器中完成,文件不外泄。"
+          ? "一次纠正整个文件夹横着或倒着的扫描件：把每份 PDF 每页旋转，打包 ZIP，全部在浏览器中完成，文件不外泄。"
           : "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF and download one ZIP. Entirely in your browser.",
       alternates: {
         canonical: localizedPath(uiLocale, "batch-rotate-pdf"),
@@ -539,7 +539,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "批量抽取数据到一张表 — 整批发票/报价/合同 → CSV" : "Batch Extract Data to Spreadsheet — Many Invoices to CSV",
       description:
         uiLocale === "zh"
-          ? "拖入整个文件夹的发票/报价/合同,AI 把每份的关键字段抽进同一张表(一份一行),导出 CSV。AI 只报告真实存在的内容。"
+          ? "拖入整个文件夹的发票/报价/合同，AI 把每份的关键字段抽进同一张表(一份一行)，导出 CSV。AI 只报告真实存在的内容。"
           : "Drop a whole folder of invoices, quotes, or contracts — AI pulls the key fields from every file into one table (one row each) and exports CSV. It only reports what's actually there.",
       alternates: {
         canonical: localizedPath(uiLocale, "batch-extract-sheet"),
@@ -553,7 +553,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "批量分类归档 PDF — AI 把杂乱文件分到文件夹" : "Batch Sort PDFs into Folders — AI File Organizer Free",
       description:
         uiLocale === "zh"
-          ? "拖入一堆杂乱 PDF,AI 给每份分类并分到一个 ZIP 里的不同文件夹,全部在浏览器中完成,文件不外泄。"
+          ? "拖入一堆杂乱 PDF,AI 给每份分类并分到一个 ZIP 里的不同文件夹，全部在浏览器中完成，文件不外泄。"
           : "Drop a messy pile of PDFs — AI labels each and sorts them into folders inside one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
         canonical: localizedPath(uiLocale, "batch-sort"),
@@ -652,7 +652,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "多文档对比(测试版)" : "Compare documents (beta)",
       description:
         uiLocale === "zh"
-          ? "上传多份 PDF,在浏览器抽取文本,并排对比关键字段——每个值都带原文出处。"
+          ? "上传多份 PDF，在浏览器抽取文本，并排对比关键字段——每个值都带原文出处。"
           : "Upload multiple PDFs, extract text in your browser, and line up the key terms side by side — with the source behind every value.",
       alternates: {
         canonical: localizedPath(uiLocale, "compare"),
@@ -667,7 +667,7 @@ async function generateMetadataInner({
       title: uiLocale === "zh" ? "账户" : "Account",
       description:
         uiLocale === "zh"
-          ? "使用 Google、Microsoft 或邮箱登录 DockDocs,管理你的工作区与订阅。"
+          ? "使用 Google、Microsoft 或邮箱登录 DockDocs，管理你的工作区与订阅。"
           : "Sign in to DockDocs with Google, Microsoft, or email. Manage your workspace and billing.",
       alternates: {
         canonical: localizedPath(uiLocale, "account"),
@@ -1086,7 +1086,7 @@ function LocalizedAccount({ locale }: { locale: Locale | "es" }) {
           </h1>
           <p className="mt-3 text-[14px] leading-relaxed text-[color:var(--muted)]">
             {zh
-              ? "访问你的工作区、管理订阅,并跨设备保留文档记录。"
+              ? "访问你的工作区、管理订阅，并跨设备保留文档记录。"
               : es
               ? "Accede a tu área de trabajo, gestiona la facturación y mantén el historial de documentos en todos tus dispositivos."
               : "Access your workspace, manage billing, and keep your document history across devices."}

@@ -1,12 +1,12 @@
 // 本地化页面的结构化数据(JSON-LD)。
-// catch-all 渲染的 /zh/、/zh/about、/zh/pricing 等之前缺 schema,这里统一生成。
-// en 根路径(/、/about、/pricing)已在各自 page.tsx 注入,本文件供带语言前缀的页面使用。
+// catch-all 渲染的 /zh/、/zh/about、/zh/pricing 等之前缺 schema，这里统一生成。
+// en 根路径(/、/about、/pricing)已在各自 page.tsx 注入，本文件供带语言前缀的页面使用。
 
 const SITE = "https://dockdocs.app";
 const baseFor = (locale: string) => (locale === "en" ? SITE : `${SITE}/${locale}`);
 
 export function homeSchema() {
-  // Organization + WebSite 是全站实体,与语言无关
+  // Organization + WebSite 是全站实体，与语言无关
   return {
     "@context": "https://schema.org",
     "@graph": [

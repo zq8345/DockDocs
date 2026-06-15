@@ -15,7 +15,7 @@ import {
 const SYS_META: Record<SystemStatus, { label: string; box: string; text: string; dot: string }> = {
   ok: { label: "系统运行正常", box: "border-emerald-500/30 bg-emerald-500/10", text: "text-emerald-400", dot: "bg-emerald-400" },
   warn: { label: "有事项需关注", box: "border-amber-500/30 bg-amber-500/10", text: "text-amber-400", dot: "bg-amber-400" },
-  error: { label: "存在错误,需处理", box: "border-red-500/30 bg-red-500/10", text: "text-red-400", dot: "bg-red-400" },
+  error: { label: "存在错误，需处理", box: "border-red-500/30 bg-red-500/10", text: "text-red-400", dot: "bg-red-400" },
 };
 const TASK_META: Record<TaskStatus, { label: string; dot: string; text: string }> = {
   ok: { label: "正常", dot: "bg-emerald-400", text: "text-emerald-400" },
@@ -113,7 +113,7 @@ export function MissionControlV2() {
       <div className="mx-auto max-w-3xl px-5 py-20 text-center">
         <h1 className="text-[20px] font-semibold text-red-400">无法加载控制台数据</h1>
         <p className="mt-2 text-[13px] text-[color:var(--muted)]">{state.message}</p>
-        <p className="mt-1 text-[12px] text-[color:var(--muted)]">/mission-control-data.json 请求失败(未回退占位数据,避免误导)</p>
+        <p className="mt-1 text-[12px] text-[color:var(--muted)]">/mission-control-data.json 请求失败(未回退占位数据，避免误导)</p>
         <button type="button" onClick={() => setTick((t) => t + 1)}
           className="mt-5 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-[13px] font-semibold transition hover:bg-[color:var(--surface-subtle)]">
           重试
@@ -169,18 +169,18 @@ export function MissionControlV2() {
                   <span className={`mt-1.5 inline-block h-2 w-2 shrink-0 rounded-full ${meta.dot}`} />
                   <div className="min-w-0">
                     <p className="text-[13px] font-semibold text-[color:var(--foreground)]">{al.message}</p>
-                    <p className="mt-0.5 text-[12px] text-[color:var(--muted)]">来源:{al.source}</p>
+                    <p className="mt-0.5 text-[12px] text-[color:var(--muted)]">来源：{al.source}</p>
                   </div>
                 </div>
               );
             })}
           </div>
         ) : (
-          <p className="text-center text-[13px] text-[color:var(--muted)]">暂无告警,一切正常 ✅</p>
+          <p className="text-center text-[13px] text-[color:var(--muted)]">暂无告警，一切正常 ✅</p>
         )}
       </section>
 
-      {/* 4 · 核心指标(可视化,只显真实数据) */}
+      {/* 4 · 核心指标(可视化，只显真实数据) */}
       <section className="mt-8">
         <SectionTitle title="核心指标" />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -238,7 +238,7 @@ export function MissionControlV2() {
             </table>
           </Card>
         ) : (
-          <p className="text-center text-[13px] text-[color:var(--muted)]">{gscConnected ? "暂无机会词数据" : "GSC 接入后,这里会列出可优化的搜索词"}</p>
+          <p className="text-center text-[13px] text-[color:var(--muted)]">{gscConnected ? "暂无机会词数据" : "GSC 接入后，这里会列出可优化的搜索词"}</p>
         )}
       </section>
 
@@ -259,7 +259,7 @@ export function MissionControlV2() {
                     <span className={`text-[12px] font-medium ${meta.text}`}>{meta.label}</span>
                   </div>
                   <p className="mt-2 text-[11px] text-[color:var(--muted)]">
-                    {t.lastRun ? `上次运行:${relativeCN(t.lastRun, nowMs)}` : "尚未运行"}
+                    {t.lastRun ? `上次运行：${relativeCN(t.lastRun, nowMs)}` : "尚未运行"}
                   </p>
                 </Card>
               );

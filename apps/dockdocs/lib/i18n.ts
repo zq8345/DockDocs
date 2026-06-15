@@ -1262,9 +1262,9 @@ export const infoPages: Record<"en" | "zh" | "es", Record<InfoPageSlug, InfoPage
             "Las vistas previas de exportación y los estados de flujo de trabajo simulados ayudan a los usuarios a entender el resultado previsto. Los usuarios deben verificar los archivos finales antes de compartirlos.",
         },
         {
-          question: "¿DockDocs funciona en el móvil?",
+          question: "¿DockDocs funciona en el celular?",
           answer:
-            "Sí. La navegación, las áreas de carga, las tarjetas y los CTA están diseñados para funcionar en pantallas de escritorio, tablet y móvil.",
+            "Sí. La navegación, las áreas de carga, las tarjetas y los CTA están diseñados para funcionar en pantallas de escritorio, tableta y celular.",
         },
       ],
     },

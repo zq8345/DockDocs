@@ -41,7 +41,7 @@ export function CommercialAccountClient() {
         setAccount(await getDockAccountState());
         setSubscription(await getSubscriptionSnapshot());
         if (window.location.search.includes("checkout=success")) {
-          setMessage("结算已返回,订阅将在 Stripe 同步后更新。");
+          setMessage("结算已返回，订阅将在 Stripe 同步后更新。");
         }
       } catch (loadError) {
         if (mounted) setError(getErrorMessage(loadError));
@@ -69,7 +69,7 @@ export function CommercialAccountClient() {
     try {
       await sendMagicLink(email.trim());
       setEmailSent(true);
-      setMessage("登录链接已发送到邮箱,点击邮件中的链接即可登录。");
+      setMessage("登录链接已发送到邮箱，点击邮件中的链接即可登录。");
     } catch (e) {
       setError(getErrorMessage(e));
     }
@@ -181,7 +181,7 @@ function LoginCard({
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">登录</p>
-      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">登录后,保存的对话与工作区元数据将归属你的账户;匿名数据仅保留在本浏览器。</p>
+      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">登录后，保存的对话与工作区元数据将归属你的账户；匿名数据仅保留在本浏览器。</p>
       <button type="button" onClick={onGoogle} className="mt-4 min-h-11 w-full rounded-[var(--radius-sm)] bg-[color:var(--foreground)] px-4 text-sm font-semibold text-[color:var(--background)]">使用 Google 继续</button>
       <button type="button" onClick={onMicrosoft} className="mt-2 min-h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] px-4 text-sm font-semibold text-[color:var(--foreground)]">使用 Microsoft 继续</button>
       <div className="mt-4 flex items-center gap-3">
@@ -190,14 +190,14 @@ function LoginCard({
         <div className="h-px flex-1 bg-[color:var(--line)]" />
       </div>
       {emailSent ? (
-        <p className="mt-3 text-sm leading-6 text-[color:var(--success)]">登录链接已发送到邮箱,点击即可登录(可能在垃圾箱)。</p>
+        <p className="mt-3 text-sm leading-6 text-[color:var(--success)]">登录链接已发送到邮箱，点击即可登录(可能在垃圾箱)。</p>
       ) : (
         <div className="mt-3 grid gap-2">
           <input value={email} onChange={(e) => onEmailChange(e.target.value)} placeholder="you@example.com" type="email"
             className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none" />
           <button type="button" onClick={onMagicLink} disabled={!email}
             className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">发送登录链接</button>
-          <p className="text-[11px] text-[color:var(--faint)]">免密码,我们会发一封登录邮件给你</p>
+          <p className="text-[11px] text-[color:var(--faint)]">免密码，我们会发一封登录邮件给你</p>
         </div>
       )}
     </section>
@@ -222,7 +222,7 @@ function PlanCard({
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">套餐</p>
       <h2 className="mt-2 text-3xl font-semibold">{plan}</h2>
       <div className="mt-2"><StatusBadge label={status} status={subscription?.record.status === "active" ? "Active" : "Backlog"} /></div>
-      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">登录后可发起 Stripe 结算;订阅状态以 Stripe webhook 同步后为准。</p>
+      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">登录后可发起 Stripe 结算；订阅状态以 Stripe webhook 同步后为准。</p>
       <dl className="mt-4 grid gap-2 text-sm">
         <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
           <dt className="font-semibold text-[color:var(--muted)]">来源</dt>
@@ -259,7 +259,7 @@ function WorkspaceBindingCard({ account }: { account: DockAccountState | null })
   return (
     <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">工作区绑定</p>
-      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">工作区记录使用当前账户的存储 ID;原始 PDF 不会被存储。</p>
+      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">工作区记录使用当前账户的存储 ID；原始 PDF 不会被存储。</p>
       <p className="mt-4 break-all rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm font-semibold">{account?.storageId ?? "anonymous"}</p>
     </section>
   );

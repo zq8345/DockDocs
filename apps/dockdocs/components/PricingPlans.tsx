@@ -101,7 +101,7 @@ const copy = {
         monthlyPrice: "$0",
         yearlyPrice: "$0",
         tagline: "日常 PDF 工作所需的一切。",
-        highlights: ["20+ PDF 工具:转换、压缩、合并、拆分", "加密、页面编辑、扫描件 OCR", "浏览器本地处理——文件保持私密", "永久免费,无需注册"],
+        highlights: ["20+ PDF 工具：转换、压缩、合并、拆分", "加密、页面编辑、扫描件 OCR", "浏览器本地处理——文件保持私密", "永久免费，无需注册"],
         cta: "立即免费开始",
         href: "/chat-with-pdf" as RouteSlug,
         featured: false,
@@ -113,7 +113,7 @@ const copy = {
         yearlyTotal: "$36/年",
         tagline: "AI 替你读懂、横比文档——几秒搞定。",
         valueLine: "每月不到一杯咖啡的钱。",
-        highlights: ["包含「免费」全部功能", "和任意 PDF 对话——答案带原文出处", "AI 摘要与要点,几秒搞定", "多份文档并排对比", "100MB 大文件、批量与优先、无广告"],
+        highlights: ["包含「免费」全部功能", "和任意 PDF 对话——答案带原文出处", "AI 摘要与要点，几秒搞定", "多份文档并排对比", "100MB 大文件、批量与优先、无广告"],
         cta: "升级到 Plus",
         href: "" as RouteSlug,
         featured: true,
@@ -141,11 +141,11 @@ const copy = {
     ctaTitle: "先免费试用——之后再决定。",
     ctaDesc: "现在就打开任意工具。无需注册、无需信用卡、无需承诺。",
     ctaBtn: "从一个免费工具开始",
-    scenariosTitle: "DockDocs 能替你解决什么?",
+    scenariosTitle: "DockDocs 能替你解决什么？",
     scenarios: [
-      { emoji: "📊", title: "比报价,选最优", before: "开 3 个文件抄数字进表格 —— 约 1 小时", after: "上传 → 并排对比表 + 带出处的推荐 —— 1 分钟", tier: "Plus", href: "/compare" as RouteSlug },
-      { emoji: "📄", title: "看穿合同里的坑", before: "花 $300 找律师,或盲签踩坑", after: "AI 几分钟标出风险与缺失条款", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "批量处理发票", before: "一张张录入几小时,或雇人", after: "整批丢进去 → 自动抽取汇总", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📊", title: "比报价，选最优", before: "开 3 个文件抄数字进表格 —— 约 1 小时", after: "上传 → 并排对比表 + 带出处的推荐 —— 1 分钟", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📄", title: "看穿合同里的坑", before: "花 $300 找律师，或盲签踩坑", after: "AI 几分钟标出风险与缺失条款", tier: "Pro", href: "/compare" as RouteSlug },
+      { emoji: "🧾", title: "批量处理发票", before: "一张张录入几小时，或雇人", after: "整批丢进去 → 自动抽取汇总", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "快速读懂长报告", before: "读 80 页找几个答案 —— 几小时", after: "问它任何问题 → 30 秒带出处的答案", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "套餐对照",
@@ -257,7 +257,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       if (typeof window !== "undefined") window.location.href = "/account";
     }
   }
-  // 账户页全站统一为 /account(无语言版本),不要按 locale 加 /zh 前缀,否则 /zh/account 会 404
+  // 账户页全站统一为 /account(无语言版本)，不要按 locale 加 /zh 前缀，否则 /zh/account 会 404
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale, href) : "/account");
   const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : locale === "es" ? "" : "uppercase tracking-[0.08em]"}`;
   const h2 = "text-[26px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[32px]";

@@ -28,14 +28,14 @@ function getCopy(locale: AccountLocale) {
   return {
     redirecting: (label: string) => (zh ? `正在跳转到${label}…` : es ? `Redirigiendo a ${label}…` : `Redirecting to ${label}…`),
     oauthFailed: (label: string) => (zh ? `${label}登录失败` : es ? `Error al iniciar sesión con ${label}` : `${label} sign-in failed`),
-    sendFailed: zh ? "发送失败,请重试" : es ? "Error al enviar, inténtalo de nuevo" : "Failed to send, please try again",
+    sendFailed: zh ? "发送失败，请重试" : es ? "Error al enviar, inténtalo de nuevo" : "Failed to send, please try again",
     signOutFailed: zh ? "退出失败" : es ? "Error al cerrar sesión" : "Sign out failed",
     checkoutFailed: zh ? "结算失败" : es ? "Error en el pago" : "Checkout failed",
     portalFailed: zh ? "账单管理打开失败" : es ? "No se pudo abrir el portal de facturación" : "Couldn't open billing portal",
     magicSentTitle: zh ? "登录链接已发送" : es ? "Enlace de acceso enviado" : "Magic link sent",
     magicSentBody: (email: string) =>
       zh
-        ? `我们已把登录链接发到 ${email},点击邮件里的链接即可登录(可能在垃圾箱)。`
+        ? `我们已把登录链接发到 ${email}，点击邮件里的链接即可登录(可能在垃圾箱)。`
         : es
         ? `Hemos enviado un enlace de acceso a ${email}. Haz clic en él para iniciar sesión (revisa también spam).`
         : `We've sent a sign-in link to ${email}. Click it to sign in (check spam too).`,
@@ -45,7 +45,7 @@ function getCopy(locale: AccountLocale) {
     orEmail: zh ? "或邮箱" : es ? "o correo" : "or email",
     sending: zh ? "发送中…" : es ? "Enviando…" : "Sending…",
     sendMagic: zh ? "发送登录链接" : es ? "Enviar enlace de acceso" : "Send magic link",
-    emailHint: zh ? "无需密码,我们会发一封登录邮件给你" : es ? "Sin contraseña — te enviaremos un enlace de acceso" : "No password — we'll email you a sign-in link",
+    emailHint: zh ? "无需密码，我们会发一封登录邮件给你" : es ? "Sin contraseña — te enviaremos un enlace de acceso" : "No password — we'll email you a sign-in link",
     appleSoon: zh ? "即将支持 Apple 登录" : es ? "Apple Sign-in próximamente" : "Apple sign-in coming soon",
     signedIn: zh ? "已登录" : es ? "Sesión iniciada" : "Signed in",
     currentPlan: zh ? "当前套餐" : es ? "Plan actual" : "Current plan",

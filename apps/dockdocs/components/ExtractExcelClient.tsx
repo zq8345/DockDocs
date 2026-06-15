@@ -28,7 +28,7 @@ const STR = {
   },
   zh: {
     title: "数据抽取到表格",
-    subtitle: "上传发票、报价单或合同，把关键字段抽成一张干净的表格，再导出成表格文件(CSV,可用 Excel / Google 表格打开)。AI 只报告文档里真实存在的内容。",
+    subtitle: "上传发票、报价单或合同，把关键字段抽成一张干净的表格，再导出成表格文件(CSV，可用 Excel / Google 表格打开)。AI 只报告文档里真实存在的内容。",
     drop: "把 PDF（或整个文件夹）拖到这里，或点击选择", folder: "选择文件夹",
     choose: "选择 PDF", add: "继续添加", reading: "正在读取文件…",
     type: "文档类型", invoice: "发票", quote: "报价单", contract: "合同",

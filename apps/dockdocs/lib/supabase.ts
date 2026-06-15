@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
-// publishable key 是公开值(可入库/前端),用环境变量优先、内置默认兜底,保证构建即可用。
-// 如需覆盖,在 Netlify 设 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY。
+// publishable key 是公开值(可入库/前端)，用环境变量优先、内置默认兜底，保证构建即可用。
+// 如需覆盖，在 Netlify 设 NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY。
 const SUPABASE_URL =
   process.env.NEXT_PUBLIC_SUPABASE_URL || "https://kxoqgjtlfggsdhtwofoo.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY =

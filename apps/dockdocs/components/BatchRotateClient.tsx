@@ -26,7 +26,7 @@ const STR = {
   },
   zh: {
     title: "批量 PDF 旋转",
-    subtitle: "一次纠正整个文件夹里横着或倒着的扫描件——把每份 PDF 的每一页都旋转,打包成一个 ZIP。全部在浏览器中完成,不上传任何文件。",
+    subtitle: "一次纠正整个文件夹里横着或倒着的扫描件——把每份 PDF 的每一页都旋转，打包成一个 ZIP。全部在浏览器中完成，不上传任何文件。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹",
     rotate: "旋转角度",
     run: "全部旋转", running: "旋转中", download: "下载 ZIP", reset: "重新开始",
@@ -103,7 +103,7 @@ export function BatchRotateClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url; a.download = "dockdocs-rotated.zip"; a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败,请重试。" : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : "Could not build the download — please try again.");
     }
   };
 

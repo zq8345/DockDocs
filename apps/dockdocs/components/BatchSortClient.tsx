@@ -22,12 +22,12 @@ const STR = {
   },
   zh: {
     title: "PDF 智能分类",
-    subtitle: "拖入一堆杂乱的 PDF——AI 给每份打上分类(发票、合同、简历、报告…)并分到一个 ZIP 里的不同文件夹,杂乱文件夹一键变整齐。文件不离开你的设备。",
+    subtitle: "拖入一堆杂乱的 PDF——AI 给每份打上分类(发票、合同、简历、报告…)并分到一个 ZIP 里的不同文件夹，杂乱文件夹一键变整齐。文件不离开你的设备。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹", add: "继续添加", reading: "正在读取文件…",
     run: "全部分类", running: "分类中", download: "下载归档 ZIP", reset: "重新开始",
     files: (n: number) => `${n} / ${MAX_FILES} 份`, uncategorized: "未分类", failed: "无文字",
     need: "至少添加一份 PDF。", err: "出错了：",
-    note: "类别由 AI 从每份文档文字推断,建议核对。ZIP 保留你的原文件,只是按类别分到不同文件夹。",
+    note: "类别由 AI 从每份文档文字推断，建议核对。ZIP 保留你的原文件，只是按类别分到不同文件夹。",
   },
   es: {
     title: "Clasificar PDF",

@@ -104,7 +104,7 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url; a.download = "dockdocs-compressed.zip"; a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败,请重试。" : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : "Could not build the download — please try again.");
     }
   };
 

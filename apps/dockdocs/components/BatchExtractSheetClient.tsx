@@ -28,7 +28,7 @@ const STR = {
   },
   zh: {
     title: "批量抽取数据到一张表",
-    subtitle: "拖入整个文件夹的发票、报价单或合同——DockDocs 把每份的关键字段都抽进同一张表,一份一行,可导出 CSV。AI 只报告文档里真实存在的内容。",
+    subtitle: "拖入整个文件夹的发票、报价单或合同——DockDocs 把每份的关键字段都抽进同一张表，一份一行，可导出 CSV。AI 只报告文档里真实存在的内容。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹", add: "继续添加", reading: "正在读取文件…",
     type: "文档类型", invoice: "发票", quote: "报价单", contract: "合同",
     extract: "全部抽取", extracting: "抽取中", reset: "重新开始",

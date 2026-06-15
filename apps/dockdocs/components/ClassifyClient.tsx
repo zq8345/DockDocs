@@ -26,7 +26,7 @@ const STR = {
     drop: "把 PDF 拖到这里，或点击选择", choose: "选择 PDF", add: "继续添加", reading: "读取中…",
     run: "全部分类", running: "分类中", reset: "重新开始",
     files: (n: number) => `${n} / ${MAX_FILES} 份`, uncategorized: "未分类",
-    need: "至少添加一份 PDF。", noText: "无可提取文字(扫描件?)", err: "出错了：",
+    need: "至少添加一份 PDF。", noText: "无可提取文字(扫描件？)", err: "出错了：",
     note: "类别由 AI 从每份文档的文字推断，可按需调整。",
   },
 };
