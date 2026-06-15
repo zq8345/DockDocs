@@ -18,6 +18,7 @@ import {
 } from "@/lib/subscription-runtime";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 import { supabase, authHeader } from "@/lib/supabase";
+import { trackSignUp, trackBeginCheckout } from "@/lib/analytics";
 
 type AuthView = "loading" | "signed-out" | "email-sent" | "signed-in";
 type DeleteState = "idle" | "confirm" | "deleting" | "done";
@@ -158,6 +159,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
 
   async function oauth(fn: () => Promise<void>, label: string) {
     setError(""); setMessage(t.redirecting(label));
+    trackSignUp(label.toLowerCase() as "google" | "microsoft");
     try { await fn(); } catch (err) { setError(err instanceof Error ? err.message : t.oauthFailed(label)); setMessage(""); }
   }
 
@@ -167,6 +169,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
     try {
       await sendMagicLink(email.trim());
       setView("email-sent");
+      trackSignUp("email");
     } catch (err) {
       setError(err instanceof Error ? err.message : t.sendFailed);
     } finally {
@@ -217,6 +220,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
 
   async function handleBilling(plan: PaidSubscriptionPlan) {
     setBillingLoading(plan); setError("");
+    trackBeginCheckout(plan);
     try { await createBillingCheckoutSession(plan); } catch (err) { setError(err instanceof Error ? err.message : t.checkoutFailed); setBillingLoading(""); }
   }
   async function handlePortal() {
