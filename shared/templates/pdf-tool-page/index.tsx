@@ -352,6 +352,21 @@ export function createPdfToolSchema(config: PdfToolPageConfig) {
   };
 }
 
+// Standalone JSON-LD script for tool pages that render a custom *Client.tsx
+// instead of <PdfToolPage> (e.g. merge/split/images-to-pdf visual editors).
+// Those custom render paths bypass createPdfToolSchema, so drop this in
+// alongside the client to keep structured data (GEO) coverage complete.
+export function ToolJsonLd({ config }: { config: PdfToolPageConfig }) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(createPdfToolSchema(config)),
+      }}
+    />
+  );
+}
+
 // Maps the fixed English stats vocabulary to Chinese, so localized tool
 // pages show translated pills without editing every tool config.
 const STAT_ZH: Record<string, string> = {

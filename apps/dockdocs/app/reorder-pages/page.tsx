@@ -1,5 +1,6 @@
 import {
   createPdfToolMetadata,
+  ToolJsonLd,
   type PdfToolPageConfig,
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
@@ -91,5 +92,5 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function ReorderPagesPage() {
-  return <PageReorderClient locale="en" />;
+  return <><ToolJsonLd config={config} /><PageReorderClient locale="en" /></>;
 }

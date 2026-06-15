@@ -1,4 +1,4 @@
-import { createPdfToolMetadata } from "../../../../shared/templates/pdf-tool-page";
+import { createPdfToolMetadata, ToolJsonLd } from "../../../../shared/templates/pdf-tool-page";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { TranslatePdfClient } from "@/components/TranslatePdfClient";
 
@@ -7,5 +7,5 @@ const config = { ...getLocalizedToolConfig("en", "translate-pdf"), canonicalPath
 export const metadata = createPdfToolMetadata(config);
 
 export default function TranslatePdfPage() {
-  return <TranslatePdfClient locale="en" />;
+  return <><ToolJsonLd config={config} /><TranslatePdfClient locale="en" /></>;
 }

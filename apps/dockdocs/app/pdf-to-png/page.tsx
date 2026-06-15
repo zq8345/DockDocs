@@ -1,5 +1,6 @@
 import {
   createPdfToolMetadata,
+  ToolJsonLd,
   type PdfToolPageConfig,
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
@@ -71,5 +72,5 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function PdfToPngPage() {
-  return <PdfToImageClient locale="en" defaultFormat="png" />;
+  return <><ToolJsonLd config={config} /><PdfToImageClient locale="en" defaultFormat="png" /></>;
 }

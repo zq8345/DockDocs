@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import {
   createPdfToolMetadata,
   PdfToolPage,
+  ToolJsonLd,
 } from "../../../../../shared/templates/pdf-tool-page";
 import { AiChatWorkflow } from "@/components/AiChatWorkflow";
 import { BlogArticlePage, BlogIndexPage } from "@/components/BlogPages";
@@ -808,6 +809,21 @@ export default async function LocalizedRoute({
     notFound();
   }
 
+  // Tool pages that render a custom *Client.tsx below bypass <PdfToolPage>,
+  // so emit the same structured data here to keep GEO/JSON-LD coverage complete.
+  // Canonical hubs (images-to-pdf / pdf-to-image) aren't in toolSlugs, so borrow
+  // a keyword tool's localized config — it already canonicalises to the hub.
+  const HUB_SCHEMA_SLUG: Record<string, ToolSlug> = {
+    "images-to-pdf": "jpg-to-pdf",
+    "pdf-to-image": "pdf-to-jpg",
+  };
+  const schemaSlug = (toolSlugs as readonly string[]).includes(slug)
+    ? (slug as ToolSlug)
+    : HUB_SCHEMA_SLUG[slug];
+  const toolJsonLd = schemaSlug ? (
+    <ToolJsonLd config={getLocalizedToolConfig(rawLocale, schemaSlug)} />
+  ) : null;
+
   if (slug === "chat-with-pdf") {
     return <LocalizedChatWithPdf locale={esLocale} />;
   }
@@ -841,7 +857,7 @@ export default async function LocalizedRoute({
     return <QuizClient locale={rawLocale} />;
   }
   if (slug === "sign-pdf") {
-    return <SignPdfClient locale={rawLocale} />;
+    return <>{toolJsonLd}<SignPdfClient locale={rawLocale} /></>;
   }
 
   if (slug === "redline") {
@@ -938,59 +954,59 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "translate-pdf") {
-    return <TranslatePdfClient locale={rawLocale} />;
+    return <>{toolJsonLd}<TranslatePdfClient locale={rawLocale} /></>;
   }
 
   if (slug === "reorder-pages") {
-    return <PageReorderClient locale={rawLocale} />;
+    return <>{toolJsonLd}<PageReorderClient locale={rawLocale} /></>;
   }
 
   if (slug === "add-page") {
-    return <InsertPdfClient locale={rawLocale} />;
+    return <>{toolJsonLd}<InsertPdfClient locale={rawLocale} /></>;
   }
 
   if (slug === "watermark-pdf") {
-    return <WatermarkEditorClient locale={rawLocale} />;
+    return <>{toolJsonLd}<WatermarkEditorClient locale={rawLocale} /></>;
   }
 
   if (slug === "delete-page") {
-    return <DeletePagesClient locale={rawLocale} />;
+    return <>{toolJsonLd}<DeletePagesClient locale={rawLocale} /></>;
   }
 
   if (slug === "rotate-page") {
-    return <RotatePagesClient locale={rawLocale} />;
+    return <>{toolJsonLd}<RotatePagesClient locale={rawLocale} /></>;
   }
 
   if (slug === "merge-pdf") {
-    return <MergePdfClient locale={rawLocale} />;
+    return <>{toolJsonLd}<MergePdfClient locale={rawLocale} /></>;
   }
 
   if (slug === "split-pdf") {
-    return <SplitPdfClient locale={rawLocale} />;
+    return <>{toolJsonLd}<SplitPdfClient locale={rawLocale} /></>;
   }
 
   if (slug === "pdf-to-jpg") {
-    return <PdfToImageClient locale={rawLocale} defaultFormat="jpg" />;
+    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale} defaultFormat="jpg" /></>;
   }
 
   if (slug === "pdf-to-png") {
-    return <PdfToImageClient locale={rawLocale} defaultFormat="png" />;
+    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale} defaultFormat="png" /></>;
   }
 
   if (slug === "page-numbers") {
-    return <PageNumbersClient locale={rawLocale} />;
+    return <>{toolJsonLd}<PageNumbersClient locale={rawLocale} /></>;
   }
 
   if (slug === "jpg-to-pdf" || slug === "png-to-pdf") {
-    return <ImagesToPdfClient locale={rawLocale} />;
+    return <>{toolJsonLd}<ImagesToPdfClient locale={rawLocale} /></>;
   }
 
   if (slug === "pdf-to-image") {
-    return <PdfToImageClient locale={rawLocale} defaultFormat="jpg" />;
+    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale} defaultFormat="jpg" /></>;
   }
 
   if (slug === "images-to-pdf") {
-    return <ImagesToPdfClient locale={rawLocale} />;
+    return <>{toolJsonLd}<ImagesToPdfClient locale={rawLocale} /></>;
   }
 
   if ((toolSlugs as readonly string[]).includes(slug)) {
@@ -1158,9 +1174,51 @@ function LocalizedAiSummary({ locale }: { locale: Locale | "es" }) {
   const copy = getRuntimeCopy(locale).summary;
   const zh = locale === "zh";
   const es = locale === "es";
+  const url = `https://dockdocs.app${localizedPath(locale, "ai-summary")}`;
+  const summaryFaqs =
+    "faqs" in copy && Array.isArray((copy as { faqs?: unknown }).faqs)
+      ? (copy as { faqs: Array<{ question: string; answer: string }> }).faqs
+      : [];
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": `${url}#app`,
+        name: "DockDocs AI Summary",
+        url,
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web",
+        description: copy.description,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      },
+      ...(summaryFaqs.length
+        ? [
+            {
+              "@type": "FAQPage",
+              "@id": `${url}#faq`,
+              mainEntity: summaryFaqs.map((faq) => ({
+                "@type": "Question",
+                name: faq.question,
+                acceptedAnswer: { "@type": "Answer", text: faq.answer },
+              })),
+            },
+          ]
+        : []),
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "DockDocs", item: `https://dockdocs.app${localizedPath(locale, "")}` },
+          { "@type": "ListItem", position: 2, name: zh ? "AI 摘要" : es ? "Resumen IA" : "AI Summary", item: url },
+        ],
+      },
+    ],
+  };
 
   return (
     <main className="bg-[color:var(--surface)]">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <div className="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>

@@ -1,5 +1,6 @@
 import {
   createPdfToolMetadata,
+  ToolJsonLd,
   type PdfToolPageConfig,
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
@@ -129,5 +130,5 @@ const splitPdfConfig = {
 export const metadata = createPdfToolMetadata(splitPdfConfig);
 
 export default function SplitPdfPage() {
-  return <SplitPdfClient locale="en" />;
+  return <><ToolJsonLd config={splitPdfConfig} /><SplitPdfClient locale="en" /></>;
 }

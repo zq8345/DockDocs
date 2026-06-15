@@ -10,9 +10,38 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+const aiSummarySchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://dockdocs.app/ai-summary/#app",
+      name: "DockDocs AI Summary",
+      url: "https://dockdocs.app/ai-summary/",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      description:
+        "Summarize long PDFs and documents into key points and action items with AI — free, in your browser.",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://dockdocs.app/ai-summary/#breadcrumb",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "DockDocs", item: "https://dockdocs.app/" },
+        { "@type": "ListItem", position: 2, name: "AI Summary", item: "https://dockdocs.app/ai-summary/" },
+      ],
+    },
+  ],
+};
+
 export default function AiSummaryPage() {
   return (
     <main className="bg-[color:var(--surface)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aiSummarySchema) }}
+      />
       <div className="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href="/" className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
