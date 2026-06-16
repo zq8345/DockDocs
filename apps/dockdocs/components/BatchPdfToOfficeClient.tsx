@@ -108,10 +108,29 @@ const STR = {
   },
 };
 
-export function BatchPdfToOfficeClient({ locale = "en" }: { locale?: Locale }) {
+// Per-target heading/subtitle (native) for the split single-format pages.
+const PT: Record<Format, Record<Locale, { title: string; subtitle: string }>> = {
+  word: {
+    en: { title: "Batch PDF to Word", subtitle: "Convert a whole folder of PDFs to editable Word (.docx) files in one go — each is converted on our server and packaged into a single ZIP." },
+    zh: { title: "批量 PDF 转 Word", subtitle: "把整个文件夹的 PDF 一次性转成可编辑的 Word(.docx)——每个在服务器转换并打包成一个 ZIP。" },
+    es: { title: "PDF a Word por lotes", subtitle: "Convierte una carpeta entera de PDF a archivos Word (.docx) editables de una vez: cada uno se convierte en nuestro servidor y se empaqueta en un solo ZIP." },
+    pt: { title: "PDF para Word em lote", subtitle: "Converta uma pasta inteira de PDFs para arquivos Word (.docx) editáveis de uma vez: cada um é convertido no nosso servidor e empacotado em um único ZIP." },
+    fr: { title: "PDF en Word par lots", subtitle: "Convertissez un dossier entier de PDF en fichiers Word (.docx) modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP." },
+  },
+  excel: {
+    en: { title: "Batch PDF to Excel", subtitle: "Convert a whole folder of PDFs to editable Excel (.xlsx) spreadsheets in one go — each is converted on our server and packaged into a single ZIP." },
+    zh: { title: "批量 PDF 转 Excel", subtitle: "把整个文件夹的 PDF 一次性转成可编辑的 Excel(.xlsx)——每个在服务器转换并打包成一个 ZIP。" },
+    es: { title: "PDF a Excel por lotes", subtitle: "Convierte una carpeta entera de PDF a hojas de cálculo Excel (.xlsx) editables de una vez: cada una se convierte en nuestro servidor y se empaqueta en un solo ZIP." },
+    pt: { title: "PDF para Excel em lote", subtitle: "Converta uma pasta inteira de PDFs para planilhas Excel (.xlsx) editáveis de uma vez: cada uma é convertida no nosso servidor e empacotada em um único ZIP." },
+    fr: { title: "PDF en Excel par lots", subtitle: "Convertissez un dossier entier de PDF en feuilles de calcul Excel (.xlsx) modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP." },
+  },
+};
+
+export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Locale; target?: Format }) {
   const t = STR[locale] ?? STR.en;
+  const head = target ? (PT[target][locale] ?? PT[target].en) : { title: t.title, subtitle: t.subtitle };
   const [items, setItems] = useState<Item[]>([]);
-  const [format, setFormat] = useState<Format>("word");
+  const [format, setFormat] = useState<Format>(target ?? "word");
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -215,8 +234,8 @@ export function BatchPdfToOfficeClient({ locale = "en" }: { locale?: Locale }) {
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
-      <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{head.title}</h1>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{head.subtitle}</p>
 
       <input
         ref={inputRef}
@@ -238,18 +257,20 @@ export function BatchPdfToOfficeClient({ locale = "en" }: { locale?: Locale }) {
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-3">
               <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
-              <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
-                {formats.map((fmt) => (
-                  <button
-                    key={fmt}
-                    type="button"
-                    onClick={() => setFormat(fmt)}
-                    className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-[12.5px] font-medium transition ${format === fmt ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}
-                  >
-                    {fmt === "word" ? t.word : t.excel}
-                  </button>
-                ))}
-              </div>
+              {!target && (
+                <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
+                  {formats.map((fmt) => (
+                    <button
+                      key={fmt}
+                      type="button"
+                      onClick={() => setFormat(fmt)}
+                      className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-[12.5px] font-medium transition ${format === fmt ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}
+                    >
+                      {fmt === "word" ? t.word : t.excel}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="flex shrink-0 gap-2">
               {items.length < MAX_FILES && (
@@ -285,7 +306,7 @@ export function BatchPdfToOfficeClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <ToolFaq tool="batch-pdf-to-office" locale={locale} />
+      <ToolFaq tool={target ? `batch-pdf-to-${target}` : "batch-pdf-to-office"} locale={locale} />
     </div>
   );
 }

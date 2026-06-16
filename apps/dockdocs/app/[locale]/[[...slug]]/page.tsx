@@ -566,30 +566,72 @@ async function generateMetadataInner({
     };
   }
 
-  if (slug === "batch-pdf-to-office") {
+  if (slug === "batch-pdf-to-word") {
     return {
-      title: uiLocale === "zh" ? "批量 PDF 转 Word / Excel — 整批转换打包 ZIP" : "Batch PDF to Word / Excel — Convert Many PDFs Free",
+      title: uiLocale === "zh" ? "批量 PDF 转 Word — 整批转换打包 ZIP" : "Batch PDF to Word — Convert Many PDFs to Word Free",
       description:
         uiLocale === "zh"
-          ? "把整个文件夹的 PDF 一次性转成可编辑的 Word 或 Excel，打包成一个 ZIP，转换在服务器完成。"
-          : "Convert a whole folder of PDFs to editable Word or Excel files at once, packaged into one ZIP.",
+          ? "把整个文件夹的 PDF 一次性转成可编辑的 Word(.docx)，打包成一个 ZIP，转换在服务器完成。"
+          : "Convert a whole folder of PDFs to editable Word (.docx) files at once, packaged into one ZIP.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-pdf-to-office"),
-        languages: languageAlternates("batch-pdf-to-office"),
+        canonical: localizedPath(rawLocale, "batch-pdf-to-word"),
+        languages: languageAlternates("batch-pdf-to-word"),
       },
     };
   }
 
-  if (slug === "batch-office-to-pdf") {
+  if (slug === "batch-pdf-to-excel") {
     return {
-      title: uiLocale === "zh" ? "批量 Office 转 PDF — Word/PPT/Excel 整批转 PDF" : "Batch Office to PDF — Convert Word, PPT & Excel Folders Free",
+      title: uiLocale === "zh" ? "批量 PDF 转 Excel — 整批转换打包 ZIP" : "Batch PDF to Excel — Convert Many PDFs to Excel Free",
       description:
         uiLocale === "zh"
-          ? "把整个文件夹的 Word、PowerPoint、Excel 一次性转成 PDF，打包成一个 ZIP，转换在服务器完成。"
-          : "Convert a whole folder of Word, PowerPoint, and Excel files to PDF at once, packaged into one ZIP.",
+          ? "把整个文件夹的 PDF 一次性转成可编辑的 Excel(.xlsx)，打包成一个 ZIP，转换在服务器完成。"
+          : "Convert a whole folder of PDFs to editable Excel (.xlsx) spreadsheets at once, packaged into one ZIP.",
       alternates: {
-        canonical: localizedPath(rawLocale, "batch-office-to-pdf"),
-        languages: languageAlternates("batch-office-to-pdf"),
+        canonical: localizedPath(rawLocale, "batch-pdf-to-excel"),
+        languages: languageAlternates("batch-pdf-to-excel"),
+      },
+    };
+  }
+
+  if (slug === "batch-word-to-pdf") {
+    return {
+      title: uiLocale === "zh" ? "批量 Word 转 PDF — 整批转 PDF 打包 ZIP" : "Batch Word to PDF — Convert Many Word Files Free",
+      description:
+        uiLocale === "zh"
+          ? "把整个文件夹的 Word 文档一次性全部转成 PDF，打包成一个 ZIP，转换在服务器完成。"
+          : "Convert a whole folder of Word documents to PDF at once, packaged into one ZIP.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "batch-word-to-pdf"),
+        languages: languageAlternates("batch-word-to-pdf"),
+      },
+    };
+  }
+
+  if (slug === "batch-excel-to-pdf") {
+    return {
+      title: uiLocale === "zh" ? "批量 Excel 转 PDF — 整批转 PDF 打包 ZIP" : "Batch Excel to PDF — Convert Many Spreadsheets Free",
+      description:
+        uiLocale === "zh"
+          ? "把整个文件夹的 Excel 表格一次性全部转成 PDF，打包成一个 ZIP，转换在服务器完成。"
+          : "Convert a whole folder of Excel spreadsheets to PDF at once, packaged into one ZIP.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "batch-excel-to-pdf"),
+        languages: languageAlternates("batch-excel-to-pdf"),
+      },
+    };
+  }
+
+  if (slug === "batch-ppt-to-pdf") {
+    return {
+      title: uiLocale === "zh" ? "批量 PPT 转 PDF — 整批转 PDF 打包 ZIP" : "Batch PPT to PDF — Convert Many PowerPoints Free",
+      description:
+        uiLocale === "zh"
+          ? "把整个文件夹的 PowerPoint 演示文稿一次性全部转成 PDF，打包成一个 ZIP，转换在服务器完成。"
+          : "Convert a whole folder of PowerPoint presentations to PDF at once, packaged into one ZIP.",
+      alternates: {
+        canonical: localizedPath(rawLocale, "batch-ppt-to-pdf"),
+        languages: languageAlternates("batch-ppt-to-pdf"),
       },
     };
   }
@@ -980,12 +1022,24 @@ export default async function LocalizedRoute({
     return <BatchSortClient locale={rawLocale} />;
   }
 
-  if (slug === "batch-pdf-to-office") {
-    return <BatchPdfToOfficeClient locale={rawLocale} />;
+  if (slug === "batch-pdf-to-word") {
+    return <BatchPdfToOfficeClient locale={rawLocale} target="word" />;
   }
 
-  if (slug === "batch-office-to-pdf") {
-    return <BatchOfficeToPdfClient locale={rawLocale} />;
+  if (slug === "batch-pdf-to-excel") {
+    return <BatchPdfToOfficeClient locale={rawLocale} target="excel" />;
+  }
+
+  if (slug === "batch-word-to-pdf") {
+    return <BatchOfficeToPdfClient locale={rawLocale} source="word" />;
+  }
+
+  if (slug === "batch-excel-to-pdf") {
+    return <BatchOfficeToPdfClient locale={rawLocale} source="excel" />;
+  }
+
+  if (slug === "batch-ppt-to-pdf") {
+    return <BatchOfficeToPdfClient locale={rawLocale} source="ppt" />;
   }
 
   if (slug === "batch-translate") {

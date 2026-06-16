@@ -8,3 +8,46 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+
+# ── 301s: the two bundled batch tools were split into per-format tools (2026-06) ──
+# batch-pdf-to-office (PDF→Word/Excel) → batch-pdf-to-word ; batch-office-to-pdf (Office→PDF) → batch-word-to-pdf
+[[redirects]]
+  from = "/batch-pdf-to-office/*"
+  to = "/batch-pdf-to-word/"
+  status = 301
+[[redirects]]
+  from = "/zh/batch-pdf-to-office/*"
+  to = "/zh/batch-pdf-to-word/"
+  status = 301
+[[redirects]]
+  from = "/es/batch-pdf-to-office/*"
+  to = "/es/batch-pdf-to-word/"
+  status = 301
+[[redirects]]
+  from = "/pt/batch-pdf-to-office/*"
+  to = "/pt/batch-pdf-to-word/"
+  status = 301
+[[redirects]]
+  from = "/fr/batch-pdf-to-office/*"
+  to = "/fr/batch-pdf-to-word/"
+  status = 301
+[[redirects]]
+  from = "/batch-office-to-pdf/*"
+  to = "/batch-word-to-pdf/"
+  status = 301
+[[redirects]]
+  from = "/zh/batch-office-to-pdf/*"
+  to = "/zh/batch-word-to-pdf/"
+  status = 301
+[[redirects]]
+  from = "/es/batch-office-to-pdf/*"
+  to = "/es/batch-word-to-pdf/"
+  status = 301
+[[redirects]]
+  from = "/pt/batch-office-to-pdf/*"
+  to = "/pt/batch-word-to-pdf/"
+  status = 301
+[[redirects]]
+  from = "/fr/batch-office-to-pdf/*"
+  to = "/fr/batch-word-to-pdf/"
+  status = 301

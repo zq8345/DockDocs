@@ -114,8 +114,44 @@ const STR = {
   },
 };
 
-export function BatchOfficeToPdfClient({ locale = "en" }: { locale?: Locale }) {
+type Source = "word" | "excel" | "ppt";
+
+const SRC: Record<Source, { ext: string[]; route: "word-to-pdf" | "excel-to-pdf" | "ppt-to-pdf"; accept: string }> = {
+  word: { ext: [".doc", ".docx", ".odt", ".rtf"], route: "word-to-pdf", accept: ".doc,.docx,.odt,.rtf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
+  excel: { ext: [".xls", ".xlsx", ".ods"], route: "excel-to-pdf", accept: ".xls,.xlsx,.ods,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
+  ppt: { ext: [".ppt", ".pptx", ".odp"], route: "ppt-to-pdf", accept: ".ppt,.pptx,.odp,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" },
+};
+
+// Per-source heading/subtitle/hint (native) for the split single-format pages.
+const PS: Record<Source, Record<Locale, { title: string; subtitle: string; hint: string }>> = {
+  word: {
+    en: { title: "Batch Word to PDF", subtitle: "Convert a whole folder of Word documents to PDF in one go — each is converted on our server and packaged into a single ZIP.", hint: "Word documents" },
+    zh: { title: "批量 Word 转 PDF", subtitle: "把整个文件夹的 Word 文档一次性全部转成 PDF——每个在服务器转换并打包成一个 ZIP。", hint: "Word 文档" },
+    es: { title: "Word a PDF por lotes", subtitle: "Convierte una carpeta entera de documentos Word a PDF de una vez: cada uno se convierte en nuestro servidor y se empaqueta en un solo ZIP.", hint: "Documentos Word" },
+    pt: { title: "Word para PDF em lote", subtitle: "Converta uma pasta inteira de documentos Word para PDF de uma vez: cada um é convertido no nosso servidor e empacotado em um único ZIP.", hint: "Documentos Word" },
+    fr: { title: "Word en PDF par lots", subtitle: "Convertissez un dossier entier de documents Word en PDF en une seule fois — chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP.", hint: "Documents Word" },
+  },
+  excel: {
+    en: { title: "Batch Excel to PDF", subtitle: "Convert a whole folder of Excel spreadsheets to PDF in one go — each is converted on our server and packaged into a single ZIP.", hint: "Excel spreadsheets" },
+    zh: { title: "批量 Excel 转 PDF", subtitle: "把整个文件夹的 Excel 表格一次性全部转成 PDF——每个在服务器转换并打包成一个 ZIP。", hint: "Excel 表格" },
+    es: { title: "Excel a PDF por lotes", subtitle: "Convierte una carpeta entera de hojas de cálculo Excel a PDF de una vez: cada una se convierte en nuestro servidor y se empaqueta en un solo ZIP.", hint: "Hojas de cálculo Excel" },
+    pt: { title: "Excel para PDF em lote", subtitle: "Converta uma pasta inteira de planilhas Excel para PDF de uma vez: cada uma é convertida no nosso servidor e empacotada em um único ZIP.", hint: "Planilhas Excel" },
+    fr: { title: "Excel en PDF par lots", subtitle: "Convertissez un dossier entier de feuilles de calcul Excel en PDF en une seule fois — chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP.", hint: "Feuilles de calcul Excel" },
+  },
+  ppt: {
+    en: { title: "Batch PPT to PDF", subtitle: "Convert a whole folder of PowerPoint presentations to PDF in one go — each is converted on our server and packaged into a single ZIP.", hint: "PowerPoint slides" },
+    zh: { title: "批量 PPT 转 PDF", subtitle: "把整个文件夹的 PowerPoint 演示文稿一次性全部转成 PDF——每个在服务器转换并打包成一个 ZIP。", hint: "PowerPoint 演示文稿" },
+    es: { title: "PPT a PDF por lotes", subtitle: "Convierte una carpeta entera de presentaciones de PowerPoint a PDF de una vez: cada una se convierte en nuestro servidor y se empaqueta en un solo ZIP.", hint: "Presentaciones PowerPoint" },
+    pt: { title: "PPT para PDF em lote", subtitle: "Converta uma pasta inteira de apresentações do PowerPoint para PDF de uma vez: cada uma é convertida no nosso servidor e empacotada em um único ZIP.", hint: "Apresentações PowerPoint" },
+    fr: { title: "PPT en PDF par lots", subtitle: "Convertissez un dossier entier de présentations PowerPoint en PDF en une seule fois — chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP.", hint: "Présentations PowerPoint" },
+  },
+};
+
+export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Locale; source?: Source }) {
   const t = STR[locale] ?? STR.en;
+  const head = source ? (PS[source][locale] ?? PS[source].en) : { title: t.title, subtitle: t.subtitle, hint: t.hint };
+  const exts = source ? SRC[source].ext : OFFICE_EXT;
+  const accept = source ? SRC[source].accept : ACCEPT;
   const [items, setItems] = useState<Item[]>([]);
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
   const [progress, setProgress] = useState(0);
@@ -123,7 +159,8 @@ export function BatchOfficeToPdfClient({ locale = "en" }: { locale?: Locale }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const addFiles = useCallback((files: File[]) => {
-    const office = files.filter((f) => OFFICE_EXT.some((e) => f.name.toLowerCase().endsWith(e)));
+    const allowed = source ? SRC[source].ext : OFFICE_EXT;
+    const office = files.filter((f) => allowed.some((e) => f.name.toLowerCase().endsWith(e)));
     if (!office.length) return;
     setError(null);
     setPhase("idle");
@@ -138,7 +175,7 @@ export function BatchOfficeToPdfClient({ locale = "en" }: { locale?: Locale }) {
         })),
       ].slice(0, MAX_FILES),
     );
-  }, []);
+  }, [source]);
 
   const reset = () => {
     setItems([]);
@@ -166,7 +203,7 @@ export function BatchOfficeToPdfClient({ locale = "en" }: { locale?: Locale }) {
       }
       try {
         const fd = new FormData();
-        fd.append("route", routeFor(it.name));
+        fd.append("route", source ? SRC[source].route : routeFor(it.name));
         fd.append("file", it.file, it.file.name || "document");
         const res = await fetch(GOTENBERG_API, { method: "POST", body: fd });
         if (!res.ok) {
@@ -188,7 +225,7 @@ export function BatchOfficeToPdfClient({ locale = "en" }: { locale?: Locale }) {
       setItems([...updated]);
     }
     setPhase("done");
-  }, [items, t]);
+  }, [items, t, source]);
 
   const download = async () => {
     const files = items.filter((it) => it.status === "done" && it.blob);
@@ -217,13 +254,13 @@ export function BatchOfficeToPdfClient({ locale = "en" }: { locale?: Locale }) {
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
-      <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{head.title}</h1>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{head.subtitle}</p>
 
       <input
         ref={inputRef}
         type="file"
-        accept={ACCEPT}
+        accept={accept}
         multiple
         className="hidden"
         onChange={(e) => {
@@ -237,9 +274,9 @@ export function BatchOfficeToPdfClient({ locale = "en" }: { locale?: Locale }) {
         <BatchUploadBox
           locale={locale}
           onFiles={addFiles}
-          accept={ACCEPT}
-          extensions={OFFICE_EXT}
-          hint={t.hint}
+          accept={accept}
+          extensions={exts}
+          hint={head.hint}
           privacyLabel={null}
         />
       ) : (
@@ -280,7 +317,7 @@ export function BatchOfficeToPdfClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <ToolFaq tool="batch-office-to-pdf" locale={locale} />
+      <ToolFaq tool={source ? `batch-${source}-to-pdf` : "batch-office-to-pdf"} locale={locale} />
     </div>
   );
 }
