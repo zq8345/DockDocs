@@ -615,6 +615,12 @@ function getQuickAnswer(article: BlogArticle, locale: Locale) {
     if (article.category === "JPG to PDF") {
       return `如果手头是照片、收据、截图或扫描图，请使用 ${article.toolLabel} 将图片按顺序导出为一个 PDF 文档。`;
     }
+    if (article.category === "Convert") {
+      return `如果需要在不同文件格式之间转换，请使用 ${article.toolLabel} 完成转换，再打开导出文件确认排版、文字和图片是否完整。`;
+    }
+    if (article.category === "Edit PDF") {
+      return `如果 PDF 里有空白页、重复页或不想保留的页面，请使用 ${article.toolLabel} 删除这些页面，并在下载前确认剩余页码顺序无误。`;
+    }
     return `如果固定 PDF 需要编辑，请使用 ${article.toolLabel} 转换为可编辑草稿，并在协作前检查格式。`;
   }
 
@@ -632,6 +638,12 @@ function getQuickAnswer(article: BlogArticle, locale: Locale) {
   }
   if (article.category === "JPG to PDF") {
     return `Use ${article.toolLabel} when photos, receipts, screenshots, or scans need to become one stable PDF document.`;
+  }
+  if (article.category === "Convert") {
+    return `Use ${article.toolLabel} when a file needs to move to another format. Run the conversion, then open the result to confirm layout, text, and images stayed intact.`;
+  }
+  if (article.category === "Edit PDF") {
+    return `Use ${article.toolLabel} when a PDF contains blank, duplicate, or unwanted pages. Remove those pages, then check the remaining page order before downloading.`;
   }
   return `Use ${article.toolLabel} when a fixed PDF needs editing. Convert to a Word-style draft, then review formatting before collaboration.`;
 }
@@ -653,6 +665,12 @@ function getGeoSteps(article: BlogArticle, locale: Locale) {
     if (article.category === "JPG to PDF") {
       return ["上传 JPG、PNG 或 WebP 图片。", "调整页面顺序。", "导出 PDF。", "按需压缩或 OCR。"];
     }
+    if (article.category === "Convert") {
+      return ["上传源文件。", "运行格式转换。", "下载转换结果。", "打开文件检查排版与内容。"];
+    }
+    if (article.category === "Edit PDF") {
+      return ["上传 PDF。", "选择要删除的页面。", "预览剩余页面。", "下载修改后的 PDF。"];
+    }
     return ["上传 PDF。", "转换为 Word。", "检查可编辑输出。", "下载并继续编辑。"];
   }
 
@@ -670,6 +688,12 @@ function getGeoSteps(article: BlogArticle, locale: Locale) {
   }
   if (article.category === "JPG to PDF") {
     return ["Upload JPG, PNG, or WebP images.", "Arrange page order.", "Export one PDF.", "Compress or OCR if needed."];
+  }
+  if (article.category === "Convert") {
+    return ["Upload the source file.", "Run the format conversion.", "Download the converted result.", "Open the file and check layout and content."];
+  }
+  if (article.category === "Edit PDF") {
+    return ["Upload the PDF.", "Select the pages to delete.", "Preview the remaining pages.", "Download the edited PDF."];
   }
   return ["Upload the PDF.", "Convert to Word.", "Review the editable output.", "Download and continue editing."];
 }
@@ -691,6 +715,12 @@ function getWhenToUse(article: BlogArticle, locale: Locale) {
     if (article.category === "JPG to PDF") {
       return ["照片、收据或截图需要变成文档。", "门户要求 PDF 而不是图片。", "多张图片需要固定页面顺序。"];
     }
+    if (article.category === "Convert") {
+      return ["对方需要其它格式的文件。", "需要在另一款软件里打开或继续编辑。", "想保留排版的同时切换文件类型。"];
+    }
+    if (article.category === "Edit PDF") {
+      return ["PDF 含有空白页或重复页。", "分享前需要删掉某些页面。", "只想保留文档中的部分页面。"];
+    }
     return ["PDF 需要修改文字。", "缺少原始 Word 文件。", "需要协作、评论或复用内容。"];
   }
 
@@ -708,6 +738,12 @@ function getWhenToUse(article: BlogArticle, locale: Locale) {
   }
   if (article.category === "JPG to PDF") {
     return ["Photos, receipts, or screenshots need to become a document.", "A portal requires PDF instead of image files.", "Multiple images need stable page order."];
+  }
+  if (article.category === "Convert") {
+    return ["A recipient needs the file in a different format.", "The content must open or stay editable in another app.", "You want to switch file types while keeping the layout."];
+  }
+  if (article.category === "Edit PDF") {
+    return ["The PDF has blank or duplicate pages.", "Certain pages must be removed before sharing.", "Only part of the document needs to be kept."];
   }
   return ["A PDF needs text edits.", "The original Word file is missing.", "The content needs collaboration, comments, or reuse."];
 }
