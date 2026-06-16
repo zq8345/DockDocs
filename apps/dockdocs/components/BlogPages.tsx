@@ -621,6 +621,12 @@ function getQuickAnswer(article: BlogArticle, locale: Locale) {
     if (article.category === "Edit PDF") {
       return `如果 PDF 里有空白页、重复页或不想保留的页面，请使用 ${article.toolLabel} 删除这些页面，并在下载前确认剩余页码顺序无误。`;
     }
+    if (article.category === "Chat with PDF") {
+      return `如果文档太长不想通读，可以上传后用 ${article.toolLabel} 直接提问，再对照原文核实每个回答后再采用。`;
+    }
+    if (article.category === "Compare") {
+      return `先列出你最常做的 PDF 任务，再对照各工具的覆盖范围和限制（水印、强制注册、文件大小），用真实文件试一遍，选能干净完成任务的那个。`;
+    }
     return `如果固定 PDF 需要编辑，请使用 ${article.toolLabel} 转换为可编辑草稿，并在协作前检查格式。`;
   }
 
@@ -644,6 +650,12 @@ function getQuickAnswer(article: BlogArticle, locale: Locale) {
   }
   if (article.category === "Edit PDF") {
     return `Use ${article.toolLabel} when a PDF contains blank, duplicate, or unwanted pages. Remove those pages, then check the remaining page order before downloading.`;
+  }
+  if (article.category === "Chat with PDF") {
+    return `Use ${article.toolLabel} when a document is too long to read in full. Upload the file, ask questions in plain language, and check each answer against the source before relying on it.`;
+  }
+  if (article.category === "Compare") {
+    return `List the PDF tasks you do most, then compare each tool's coverage and limits (watermarks, forced signups, file-size caps). Test a real file in your top choice and pick the one that finishes the job cleanly.`;
   }
   return `Use ${article.toolLabel} when a fixed PDF needs editing. Convert to a Word-style draft, then review formatting before collaboration.`;
 }
@@ -671,6 +683,12 @@ function getGeoSteps(article: BlogArticle, locale: Locale) {
     if (article.category === "Edit PDF") {
       return ["上传 PDF。", "选择要删除的页面。", "预览剩余页面。", "下载修改后的 PDF。"];
     }
+    if (article.category === "Chat with PDF") {
+      return ["上传 PDF。", "用自然语言提问。", "对照文档核对回答。", "复制或下载需要的内容。"];
+    }
+    if (article.category === "Compare") {
+      return ["列出你最常做的 PDF 任务。", "对比各工具的覆盖范围与限制。", "用真实文件试一遍首选工具。", "选择能干净完成任务的那个。"];
+    }
     return ["上传 PDF。", "转换为 Word。", "检查可编辑输出。", "下载并继续编辑。"];
   }
 
@@ -694,6 +712,12 @@ function getGeoSteps(article: BlogArticle, locale: Locale) {
   }
   if (article.category === "Edit PDF") {
     return ["Upload the PDF.", "Select the pages to delete.", "Preview the remaining pages.", "Download the edited PDF."];
+  }
+  if (article.category === "Chat with PDF") {
+    return ["Upload the PDF.", "Ask a question in plain language.", "Check the answer against the document.", "Copy or download what you need."];
+  }
+  if (article.category === "Compare") {
+    return ["List the PDF tasks you do most.", "Compare each tool's coverage and limits.", "Test a real file in your top choice.", "Pick the tool that finishes the job cleanly."];
   }
   return ["Upload the PDF.", "Convert to Word.", "Review the editable output.", "Download and continue editing."];
 }
@@ -721,6 +745,12 @@ function getWhenToUse(article: BlogArticle, locale: Locale) {
     if (article.category === "Edit PDF") {
       return ["PDF 含有空白页或重复页。", "分享前需要删掉某些页面。", "只想保留文档中的部分页面。"];
     }
+    if (article.category === "Chat with PDF") {
+      return ["文档太长不想从头读到尾。", "需要快速找到某个事实或条款。", "想就内容继续追问。"];
+    }
+    if (article.category === "Compare") {
+      return ["正在几款 PDF 工具之间做选择。", "想避开水印或强制注册。", "需要一个能覆盖多种 PDF 任务的工具。"];
+    }
     return ["PDF 需要修改文字。", "缺少原始 Word 文件。", "需要协作、评论或复用内容。"];
   }
 
@@ -744,6 +774,12 @@ function getWhenToUse(article: BlogArticle, locale: Locale) {
   }
   if (article.category === "Edit PDF") {
     return ["The PDF has blank or duplicate pages.", "Certain pages must be removed before sharing.", "Only part of the document needs to be kept."];
+  }
+  if (article.category === "Chat with PDF") {
+    return ["A document is too long to read in full.", "You need a specific fact or clause fast.", "You want to ask follow-up questions about the content."];
+  }
+  if (article.category === "Compare") {
+    return ["You are deciding between PDF tools.", "You want to avoid watermarks or forced signups.", "You need a tool that covers several PDF tasks."];
   }
   return ["A PDF needs text edits.", "The original Word file is missing.", "The content needs collaboration, comments, or reuse."];
 }
