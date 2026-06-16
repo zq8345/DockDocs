@@ -729,7 +729,10 @@ async function generateMetadataInner({
 
   if (slug === "compare") {
     return {
-      title: uiLocale === "zh" ? "多文档对比(测试版)" : "Compare documents (beta)",
+      title:
+        uiLocale === "zh"
+          ? "多文档对比 — AI 文档比较 | DockDocs"
+          : "Compare PDF Documents with AI — DockDocs",
       description:
         uiLocale === "zh"
           ? "上传多份 PDF，在浏览器抽取文本，并排对比关键字段——每个值都带原文出处。"
@@ -738,7 +741,6 @@ async function generateMetadataInner({
         canonical: localizedPath(rawLocale, "compare"),
         languages: languageAlternates("compare"),
       },
-      robots: { index: false, follow: false },
     };
   }
 

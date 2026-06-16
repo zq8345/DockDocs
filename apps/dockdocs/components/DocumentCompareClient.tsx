@@ -46,7 +46,7 @@ const MAX_FILES = 8;
 
 const STR = {
   en: {
-    badge: "Comparison engine · beta",
+    badge: "Comparison engine",
     h1: "Compare documents",
     intro: `Upload 2–${MAX_FILES} PDFs of the same kind. DockDocs reads them in your browser, then lines up the key terms side by side — with the source line behind every value.`,
     drop: "Drag & drop PDFs here",
@@ -107,7 +107,7 @@ const STR = {
     retry: "Try again",
   },
   zh: {
-    badge: "对比引擎 · 测试版",
+    badge: "对比引擎",
     h1: "多文档对比",
     intro: `上传 2–${MAX_FILES} 份同类 PDF。DockDocs 在你浏览器里读取，把关键条款并排列出——每个值后面都带原文出处。`,
     drop: "把 PDF 拖到这里",
@@ -168,7 +168,7 @@ const STR = {
     retry: "重试",
   },
   es: {
-    badge: "Motor de comparación · beta",
+    badge: "Motor de comparación",
     h1: "Comparar documentos",
     intro: `Sube de 2 a ${MAX_FILES} PDF del mismo tipo. DockDocs los lee en tu navegador y luego alinea los términos clave uno al lado del otro, con la línea de origen detrás de cada valor.`,
     drop: "Arrastra y suelta PDF aquí",
@@ -229,7 +229,7 @@ const STR = {
     retry: "Reintentar",
   },
   pt: {
-    badge: "Motor de comparação · beta",
+    badge: "Motor de comparação",
     h1: "Comparar documentos",
     intro: `Envie de 2 a ${MAX_FILES} PDFs do mesmo tipo. O DockDocs os lê no seu navegador e alinha os termos-chave lado a lado — com a linha de origem por trás de cada valor.`,
     drop: "Arraste e solte PDFs aqui",
