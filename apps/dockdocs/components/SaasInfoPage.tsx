@@ -40,8 +40,26 @@ export function SaasInfoPage({
         { label: "FAQ", href: "/faq", description: "Review privacy, upload, OCR, and AI questions." },
       ];
 
+  const faqSchema = page.faqs?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: page.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      }
+    : null;
+
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
+      {faqSchema ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      ) : null}
       {/* Hero */}
       <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <div className="mx-auto max-w-3xl px-5 py-14 sm:px-6 sm:py-20">
