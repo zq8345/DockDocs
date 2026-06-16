@@ -4,7 +4,11 @@
 
 export type Tier = "free" | "plus" | "pro";
 
-export type TierValue = { en: string; zh: string };
+export type TierValue = {
+  en: string;
+  zh: string;
+  internal?: string; // NOT rendered on the pricing page; for gating config only
+};
 
 export type ToolItem = { slug: string; en: string; zh: string };
 
@@ -45,9 +49,9 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "ocr-pdf",       en: "OCR PDF",             zh: "PDF OCR" },
     ],
     limits: {
-      free: { en: "♾",  zh: "♾" },
-      plus: { en: "♾",  zh: "♾" },
-      pro:  { en: "♾",  zh: "♾" },
+      free: { en: "Unlimited", zh: "无限" },
+      plus: { en: "Unlimited", zh: "无限" },
+      pro:  { en: "Unlimited", zh: "无限" },
     },
   },
 
@@ -71,9 +75,9 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "url-to-pdf",      en: "URL to PDF",        zh: "网页转 PDF" },
     ],
     limits: {
-      free: { en: "♾ fair use",  zh: "♾ 公平使用" },
-      plus: { en: "♾",           zh: "♾" },
-      pro:  { en: "♾",           zh: "♾" },
+      free: { en: "Unlimited", zh: "无限", internal: "fair use · CloudConvert reverse conversion cap applies" },
+      plus: { en: "Unlimited", zh: "无限" },
+      pro:  { en: "Unlimited", zh: "无限" },
     },
   },
 
@@ -100,7 +104,7 @@ export const TIER_CATEGORIES: TierCategory[] = [
     limits: {
       free: { en: "≤ 3 files/batch · 3 batches/day", zh: "≤ 3文件/批 · 3批/天" },
       plus: { en: "≤ 20 files/batch",                 zh: "≤ 20文件/批" },
-      pro:  { en: "♾ fair use",                       zh: "♾ 公平使用" },
+      pro:  { en: "Unlimited", zh: "无限", internal: "fair use cap enforced server-side" },
     },
   },
 
@@ -118,7 +122,7 @@ export const TIER_CATEGORIES: TierCategory[] = [
     limits: {
       free: { en: "10 / day",   zh: "10次/天" },
       plus: { en: "200 / day",  zh: "200次/天" },
-      pro:  { en: "♾",          zh: "♾" },
+      pro:  { en: "Unlimited",  zh: "无限" },
     },
   },
 
@@ -134,9 +138,9 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "lease-redflag",    en: "Lease Red Flag Check",   zh: "租约红旗扫描" },
     ],
     limits: {
-      free: { en: "3 / day",                       zh: "3次/天" },
-      plus: { en: "500 / month",                    zh: "500次/月" },
-      pro:  { en: "♾  (~5 000/mo soft cap)",        zh: "♾（~5000/月软顶）" },
+      free: { en: "3 / day",    zh: "3次/天" },
+      plus: { en: "500 / month", zh: "500次/月" },
+      pro:  { en: "Unlimited",  zh: "无限", internal: "~5 000/mo soft cap" },
     },
   },
 
@@ -170,9 +174,9 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { en: "Healthcare & medical",       zh: "医疗 / 健康",  status: "coming" },
     ],
     limits: {
-      free: { en: "1 taste",          zh: "1次尝鲜" },
-      plus: { en: "20 / month",       zh: "20次/月" },
-      pro:  { en: "♾ all verticals",  zh: "♾ 全部垂直" },
+      free: { en: "1 taste",                  zh: "1次尝鲜" },
+      plus: { en: "20 / month",               zh: "20次/月" },
+      pro:  { en: "Unlimited · all verticals", zh: "无限 · 全部垂直" },
     },
   },
 
@@ -182,7 +186,7 @@ export const TIER_CATEGORIES: TierCategory[] = [
     tools: [],
     features: [
       { en: "Private workspace",                                               zh: "私密工作区",                status: "live" },
-      { en: "Unlimited fair-use — batch, AI & verticals (Plus is capped)",    zh: "无限（公平使用）批量/AI/垂直（Plus 有限额）", status: "live" },
+      { en: "Unlimited batch, AI & verticals (Plus is capped)",               zh: "无限批量/AI/垂直（Plus 有限额）",              status: "live" },
       { en: "API access",                                                      zh: "API 访问",                  status: "coming" },
       { en: "Team seats",                                                      zh: "团队席位",                  status: "coming" },
       { en: "Priority processing",                                             zh: "优先处理",                  status: "coming" },

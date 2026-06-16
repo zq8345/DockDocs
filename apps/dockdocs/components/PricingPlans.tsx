@@ -537,29 +537,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         ))}
       </div>
 
-      {/* Solutions by scenario */}
-      <div className="mx-auto mt-24 max-w-5xl">
-        <p className={`${eyebrow} text-center`}>{locale === "zh" ? "// 应用场景" : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : "// Use cases"}</p>
-        <h2 className={`mt-3 text-center ${h2}`}>{c.scenariosTitle}</h2>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2">
-          {c.scenarios.map((s) => (
-            <div key={s.title} className="rounded-2xl border border-[color:var(--line)] p-5 transition-colors hover:border-[color:var(--line-strong)]">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-[15px] font-normal text-[color:var(--foreground)]">{s.emoji} {s.title}</p>
-                <span className="shrink-0 rounded-full border border-[color:var(--line)] px-2.5 py-0.5 text-[11px] text-[color:var(--accent)]">{s.tier}</span>
-              </div>
-              <p className="mt-3 text-[13px] leading-6 text-[color:var(--muted)]">😩 {s.before}</p>
-              <p className="mt-1.5 text-[13px] leading-6 text-[color:var(--foreground)]"><span className="text-[color:var(--accent)]">⚡</span> {s.after}</p>
-              {s.href && (
-                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{locale === "zh" ? "去试试 →" : locale === "es" ? "Pruébalo →" : locale === "pt" ? "Experimente →" : locale === "fr" ? "Essayez →" : "Try it →"}</a>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Compare plans — driven by lib/tier-config.ts */}
-      <div className="mx-auto mt-24 max-w-4xl">
+      <div className="mx-auto mt-16 max-w-4xl">
         <p className={`${eyebrow} text-center`}>{locale === "zh" ? "// 套餐对照" : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : "// Compare"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.compareTitle}</h2>
         <p className="mt-2 text-center text-[13px] text-[color:var(--faint)]">
@@ -587,7 +566,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                   return locale === "zh" ? v.zh : v.en;
                 };
                 const cellCls = (val: string) =>
-                  val === "♾" || val.startsWith("♾") ? "font-medium text-[color:var(--foreground)]"
+                  val === "Unlimited" || val === "无限" || val.startsWith("Unlimited") || val.startsWith("无限")
+                    ? "font-medium text-[color:var(--foreground)]"
                   : val === "—" ? "text-[color:var(--faint)]"
                   : val.startsWith("✓") ? "font-medium text-[color:var(--accent)]"
                   : "text-[12px] text-[color:var(--muted)]";
@@ -664,6 +644,33 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               })}
             </tbody>
           </table>
+        </div>
+          <p className="mt-3 px-4 text-[11.5px] text-[color:var(--faint)]">
+            {locale === "zh"
+              ? <>* 无限套餐遵循合理使用政策，仅用于防止异常滥用。<a href="/terms/" className="underline hover:text-[color:var(--muted)]">查看条款</a></>
+              : <>* Unlimited plans are subject to our <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair Use Policy</a> to prevent abuse.</>
+            }
+          </p>
+      </div>
+
+      {/* Solutions by scenario */}
+      <div className="mx-auto mt-24 max-w-5xl">
+        <p className={`${eyebrow} text-center`}>{locale === "zh" ? "// 应用场景" : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : "// Use cases"}</p>
+        <h2 className={`mt-3 text-center ${h2}`}>{c.scenariosTitle}</h2>
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
+          {c.scenarios.map((s) => (
+            <div key={s.title} className="rounded-2xl border border-[color:var(--line)] p-5 transition-colors hover:border-[color:var(--line-strong)]">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[15px] font-normal text-[color:var(--foreground)]">{s.emoji} {s.title}</p>
+                <span className="shrink-0 rounded-full border border-[color:var(--line)] px-2.5 py-0.5 text-[11px] text-[color:var(--accent)]">{s.tier}</span>
+              </div>
+              <p className="mt-3 text-[13px] leading-6 text-[color:var(--muted)]">😩 {s.before}</p>
+              <p className="mt-1.5 text-[13px] leading-6 text-[color:var(--foreground)]"><span className="text-[color:var(--accent)]">⚡</span> {s.after}</p>
+              {s.href && (
+                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{locale === "zh" ? "去试试 →" : locale === "es" ? "Pruébalo →" : locale === "pt" ? "Experimente →" : locale === "fr" ? "Essayez →" : "Try it →"}</a>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
