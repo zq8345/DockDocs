@@ -8,10 +8,18 @@ export type TierValue = { en: string; zh: string };
 
 export type ToolItem = { slug: string; en: string; zh: string };
 
+// Pro-only features that have no standalone tool page (can't be linked)
+export type FeatureItem = {
+  en: string;
+  zh: string;
+  status: "live" | "coming"; // "coming" renders as "Coming soon" pill
+};
+
 export type TierCategory = {
   id: string;
   label: TierValue;
-  tools: ToolItem[];
+  tools: ToolItem[];         // tools with their own /slug page
+  features?: FeatureItem[];  // Pro-only capability items (no standalone page)
   limits: Record<Tier, TierValue>;
 };
 
@@ -135,9 +143,13 @@ export const TIER_CATEGORIES: TierCategory[] = [
   {
     id: "hero-premium",
     label: { en: "Hero premium outputs", zh: "英雄高级输出" },
-    // No standalone tool pages — these are advanced outputs within hero tools.
-    // Examples: Gov Bid → Excel export, statement batch, line-item extraction, large docs 100+ pages
     tools: [],
+    features: [
+      { en: "Gov Bid → Excel matrix export",                        zh: "标书 Excel 矩阵导出",          status: "coming" },
+      { en: "Statement batch processing + large files",             zh: "对账单批量处理 + 大文件",        status: "coming" },
+      { en: "Extract line items + break 8-doc / 60 k-char cap",    zh: "抽取行项目 + 突破8份6万字符上限", status: "coming" },
+      { en: "Hero large docs (long contracts · 100-300 page RFPs)", zh: "英雄大文档（长合同·100-300页RFP）", status: "coming" },
+    ],
     limits: {
       free: { en: "—", zh: "—" },
       plus: { en: "—", zh: "—" },
@@ -148,8 +160,15 @@ export const TIER_CATEGORIES: TierCategory[] = [
   {
     id: "verticals",
     label: { en: "Professional verticals", zh: "专业领域" },
-    // Vertical tools will be added here as they ship (vert-* backlog tasks).
     tools: [],
+    features: [
+      { en: "Legal & contracts",          zh: "法律 / 合同",  status: "coming" },
+      { en: "Finance & tax",              zh: "财务 / 税务",  status: "coming" },
+      { en: "Research & academia",        zh: "科研 / 学术",  status: "coming" },
+      { en: "Banking & finance",          zh: "金融 / 投行",  status: "coming" },
+      { en: "Architecture & engineering", zh: "建筑 / 工程",  status: "coming" },
+      { en: "Healthcare & medical",       zh: "医疗 / 健康",  status: "coming" },
+    ],
     limits: {
       free: { en: "1 taste",          zh: "1次尝鲜" },
       plus: { en: "20 / month",       zh: "20次/月" },
@@ -159,9 +178,15 @@ export const TIER_CATEGORIES: TierCategory[] = [
 
   {
     id: "pro-exclusive",
-    label: { en: "Pro exclusive features", zh: "Pro 专属" },
-    // API access, team workspace & private zone, priority processing
+    label: { en: "Pro exclusive", zh: "Pro 专属" },
     tools: [],
+    features: [
+      { en: "Private workspace",                                               zh: "私密工作区",                status: "live" },
+      { en: "Unlimited fair-use — batch, AI & verticals (Plus is capped)",    zh: "无限（公平使用）批量/AI/垂直（Plus 有限额）", status: "live" },
+      { en: "API access",                                                      zh: "API 访问",                  status: "coming" },
+      { en: "Team seats",                                                      zh: "团队席位",                  status: "coming" },
+      { en: "Priority processing",                                             zh: "优先处理",                  status: "coming" },
+    ],
     limits: {
       free: { en: "—", zh: "—" },
       plus: { en: "—", zh: "—" },

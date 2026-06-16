@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TIER_CATEGORIES } from "@/lib/tier-config";
+import type { FeatureItem } from "@/lib/tier-config";
 import { localizedPath, type RouteSlug, type RouteLocale } from "@/lib/i18n";
 import { createBillingCheckoutSession, getSubscriptionSnapshot, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
@@ -578,6 +579,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               {TIER_CATEGORIES.flatMap((cat) => {
                 const isOpen = openCat === cat.id;
                 const hasTools = cat.tools.length > 0;
+                const hasFeatures = (cat.features?.length ?? 0) > 0;
+                const canExpand = hasTools || hasFeatures;
                 const catLabel = locale === "zh" ? cat.label.zh : cat.label.en;
                 const lim = (tier: "free" | "plus" | "pro") => {
                   const v = cat.limits[tier];
@@ -592,12 +595,12 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 const rows = [
                   <tr
                     key={`row-${cat.id}`}
-                    onClick={() => hasTools && setOpenCat(isOpen ? null : cat.id)}
-                    className={`${hasTools ? "cursor-pointer hover:bg-[color:var(--surface-subtle)]" : ""} transition-colors`}
+                    onClick={() => canExpand && setOpenCat(isOpen ? null : cat.id)}
+                    className={`${canExpand ? "cursor-pointer hover:bg-[color:var(--surface-subtle)]" : ""} transition-colors`}
                   >
                     <td className="border-b border-[color:var(--line)] px-4 py-3">
                       <span className="flex items-center gap-2">
-                        {hasTools ? (
+                        {canExpand ? (
                           <svg className={`h-3 w-3 shrink-0 opacity-40 transition-transform ${isOpen ? "rotate-90" : ""}`} viewBox="0 0 12 12" fill="none">
                             <path d="M4 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                           </svg>
@@ -616,21 +619,42 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                   </tr>,
                 ];
 
-                if (isOpen && hasTools) {
+                if (isOpen && canExpand) {
                   rows.push(
                     <tr key={`tools-${cat.id}`}>
                       <td colSpan={4} className="border-b border-[color:var(--line)] bg-[color:var(--surface)] px-6 pb-4 pt-2">
-                        <div className="flex flex-wrap gap-2">
-                          {cat.tools.map((tool) => (
-                            <a
-                              key={tool.slug}
-                              href={`/${tool.slug}/`}
-                              className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
-                            >
-                              {locale === "zh" ? tool.zh : tool.en}
-                            </a>
-                          ))}
-                        </div>
+                        {hasTools && (
+                          <div className="flex flex-wrap gap-2">
+                            {cat.tools.map((tool) => (
+                              <a
+                                key={tool.slug}
+                                href={`/${tool.slug}/`}
+                                className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
+                              >
+                                {locale === "zh" ? tool.zh : tool.en}
+                              </a>
+                            ))}
+                          </div>
+                        )}
+                        {hasFeatures && (
+                          <ul className={`space-y-1.5 ${hasTools ? "mt-3" : ""}`}>
+                            {(cat.features as FeatureItem[]).map((f, i) => (
+                              <li key={i} className="flex items-center gap-2 text-[12.5px]">
+                                <span className={f.status === "live" ? "text-[color:var(--accent)]" : "text-[color:var(--faint)]"}>
+                                  {f.status === "live" ? "✓" : "○"}
+                                </span>
+                                <span className={f.status === "live" ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}>
+                                  {locale === "zh" ? f.zh : f.en}
+                                </span>
+                                {f.status === "coming" && (
+                                  <span className="rounded-full border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] text-[color:var(--faint)]">
+                                    {locale === "zh" ? "即将推出" : "Coming"}
+                                  </span>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </td>
                     </tr>
                   );
