@@ -8,6 +8,7 @@ import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 type ChatMessage = {
   role: "user" | "assistant";
   content: string;
+  citations?: string[];
 };
 
 type RuntimeState = "empty" | "selected" | "processing" | "success" | "error";
@@ -204,15 +205,18 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
         throw new Error(copy.providerEmpty);
       }
 
+      const citations = Array.isArray(payload.citations)
+        ? (payload.citations as string[]).filter((c) => typeof c === "string")
+        : [];
       setMessages((current) => [
         ...current,
-        { role: "assistant", content: payload.answer ?? "" },
+        { role: "assistant", content: payload.answer ?? "", citations },
       ]);
       await markUsage(gate, "chat");
       setProviderReference({
         provider: payload.provider,
         model: payload.model,
-        citations: Array.isArray(payload.citations) ? payload.citations : [],
+        citations: [],
       });
     } catch (caughtError) {
       const message =
@@ -333,6 +337,31 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
                   <p className={`whitespace-pre-wrap text-sm leading-6 ${message.role === "user" ? "text-white" : "text-[color:var(--foreground)]"}`}>
                     {message.content}
                   </p>
+                  {message.role === "assistant" && message.citations && message.citations.length > 0 && (
+                    <div className="mt-2.5 border-t border-[color:var(--line)] pt-2.5">
+                      <p className="mb-1.5 flex items-center gap-1 text-[11px] font-semibold text-[color:var(--accent)]">
+                        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                          <path d="M2 6.5l2.5 2.5L10 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        {locale === "zh"
+                          ? `${message.citations.length} 处已与原文核对`
+                          : locale === "es"
+                          ? `${message.citations.length} verificado${message.citations.length > 1 ? "s" : ""} en la fuente`
+                          : locale === "pt"
+                          ? `${message.citations.length} verificado${message.citations.length > 1 ? "s" : ""} na fonte`
+                          : locale === "fr"
+                          ? `${message.citations.length} vérifié${message.citations.length > 1 ? "s" : ""} dans la source`
+                          : `${message.citations.length} verified against source`}
+                      </p>
+                      <ul className="space-y-1">
+                        {message.citations.map((c, i) => (
+                          <li key={i} className="rounded-[var(--radius-sm)] border-l-2 border-[color:var(--accent)] bg-[color:var(--surface)] px-2.5 py-1.5 text-[11.5px] leading-[1.55] text-[color:var(--muted)] italic">
+                            &ldquo;{c}&rdquo;
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </article>
               ))
             )}

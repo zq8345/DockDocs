@@ -120,7 +120,7 @@ exports.handler = async function handler(event) {
           {
             role: "system",
             content:
-              "You answer questions about a PDF using only the supplied extracted text. Return strict JSON with an answer string and a citations array. If the text does not contain the answer, say that clearly.",
+              "You answer questions about a PDF using ONLY the supplied extracted text. Return strict JSON: {\"answer\": string, \"citations\": string[]}. Citations must be SHORT verbatim phrases (10–80 chars) copied exactly from documentText that directly support the answer — do NOT paraphrase. Include 1–3 citations. If the text does not contain the answer, say so in the answer field.",
           },
           {
             role: "user",
@@ -157,11 +157,12 @@ exports.handler = async function handler(event) {
       return json(502, { error: `${provider.name} provider returned an empty answer.` });
     }
 
+    const citations = groundCitations(parsed.citations, clippedDocumentText);
     return json(200, {
       answer,
       provider: provider.name,
       model: provider.model,
-      citations: Array.isArray(parsed.citations) ? parsed.citations : [],
+      citations,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
@@ -190,6 +191,16 @@ function normalizeChatCompletionsEndpoint(value, fallback) {
   }
 
   return `${normalizedUrl}/chat/completions`;
+}
+
+// Keep only citations that are verbatim substrings of the document text.
+// Drops AI-fabricated quotes — anything we can't locate stays out.
+function groundCitations(citations, text) {
+  const hay = text.toLowerCase().replace(/\s+/g, " ").trim();
+  return (Array.isArray(citations) ? citations : [])
+    .filter((c) => typeof c === "string" && c.trim().length >= 8)
+    .filter((c) => hay.includes(c.toLowerCase().replace(/\s+/g, " ").trim()))
+    .slice(0, 3);
 }
 
 function parseProviderJson(content) {
