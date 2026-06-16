@@ -82,7 +82,6 @@ const ROUTE_META: Partial<Record<RouteSlug, RouteMeta>> = {
   "extract-to-excel": { name: "Extract PDF Data to a Spreadsheet — Invoices, Quotes, Contracts", changeFrequency: w, priority: 0.8 },
   redline: { name: "PDF Redline — Compare Two PDF Versions", changeFrequency: w, priority: 0.78 },
   flashcards: { name: "PDF Flashcard Maker — Study Cards from Any PDF", changeFrequency: w, priority: 0.75 },
-  classify: { name: "Auto-Classify & Tag PDFs with AI", changeFrequency: w, priority: 0.72 },
   "batch-summary": { name: "Batch Summarize PDFs — Multiple Documents", changeFrequency: w, priority: 0.7 },
 
   // Convert — PDF to X

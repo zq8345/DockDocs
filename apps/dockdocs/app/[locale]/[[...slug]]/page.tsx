@@ -342,20 +342,6 @@ async function generateMetadataInner({
     };
   }
 
-  if (slug === "classify") {
-    return {
-      title: uiLocale === "zh" ? "PDF 自动分类打标签 — 一键整理文件夹" : "Auto-Classify & Tag PDFs — Organize a Folder with AI",
-      description:
-        uiLocale === "zh"
-          ? "上传一堆 PDF，AI 自动归类、打标签（发票/简历/合同/论文），几秒整理好。"
-          : "Upload a pile of PDFs and let AI sort them into categories and tags — organize a folder in seconds.",
-      alternates: {
-        canonical: localizedPath(rawLocale, "classify"),
-        languages: languageAlternates("classify"),
-      },
-    };
-  }
-
   if (slug === "batch-summary") {
     return {
       title: uiLocale === "zh" ? "批量摘要 PDF — 一次总结多份文档" : "Batch Summarize PDFs — Summarize Multiple Documents",
@@ -953,10 +939,6 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-compress") {
     return <BatchCompressClient locale={rawLocale} />;
-  }
-
-  if (slug === "classify") {
-    return <BatchSortClient locale={rawLocale} />;
   }
 
   if (slug === "batch-summary") {

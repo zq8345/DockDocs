@@ -80,7 +80,6 @@ export const routeSlugs = [
   "lease-redflag",
   "govbid-matrix",
   "batch-summary",
-  "classify",
   "batch-compress",
   "batch-pdf-to-image",
   "batch-protect-pdf",
