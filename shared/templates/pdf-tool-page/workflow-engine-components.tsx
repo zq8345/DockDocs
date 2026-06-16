@@ -327,9 +327,9 @@ export function ReadyWorkflowState({
 
       {config.slug === "unlock-pdf" && (
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "当前密码" : "Current password"}</span>
-          <PasswordField value={pageRanges} onChange={onPageRangesChange} placeholder={zh ? "打开此 PDF 所需的密码" : "The password needed to open this PDF"} maxLength={64} zh={zh} />
-          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{zh ? "只能用你提供的密码解锁，无法破解未知密码。" : "Unlocks using the password you provide — can't crack unknown passwords."}</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "打开密码（可选）" : "Open password (optional)"}</span>
+          <PasswordField value={pageRanges} onChange={onPageRangesChange} placeholder={zh ? "仅当文件需要密码才能打开时填写" : "Only if the PDF requires a password to open"} maxLength={64} zh={zh} />
+          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{zh ? "无打开密码？留空直接点击，即可移除打印 / 复制 / 编辑限制。" : "No open password? Leave empty and click to remove printing / copying / editing restrictions."}</span>
         </label>
       )}
 

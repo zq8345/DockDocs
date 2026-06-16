@@ -1080,10 +1080,6 @@ async function unlockPdfLocally(
   throwIfAborted(signal);
   emitProgress(onProgress, 5, 0);
 
-  if (!password) {
-    throw new Error(zh ? "请输入该 PDF 的当前密码。" : "Enter the current password of this PDF.");
-  }
-
   // The encryption-capable fork can load (decrypt) with the password.
   const { PDFDocument: EncryptablePDFDocument } = await import("@cantoo/pdf-lib");
   const sourceBytes = await file.arrayBuffer();
@@ -1092,12 +1088,17 @@ async function unlockPdfLocally(
 
   let pdfDoc;
   try {
-    pdfDoc = await EncryptablePDFDocument.load(sourceBytes, { password });
+    // Empty password removes owner/permission restrictions without needing a password.
+    pdfDoc = await EncryptablePDFDocument.load(sourceBytes, { password: password || "" });
   } catch {
     throw new Error(
-      zh
-        ? "无法解锁：密码不正确，或该文件不是受密码保护的 PDF。"
-        : "Could not unlock: the password is incorrect, or this isn't a password-protected PDF.",
+      password
+        ? zh
+          ? "无法解锁：密码不正确，或该文件不是受密码保护的 PDF。"
+          : "Could not unlock: the password is incorrect, or this isn't a password-protected PDF."
+        : zh
+          ? "未找到可移除的权限限制，或该 PDF 需要打开密码——请输入密码后重试。"
+          : "No removable restrictions found, or this PDF requires an open password — enter the password and try again.",
     );
   }
   const pageCount = pdfDoc.getPageCount();

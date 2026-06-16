@@ -927,12 +927,12 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
     case "unlock-pdf":
       return {
         ...base,
-        processLabel: zh ? "正在用密码解锁并移除保护。" : "Unlocking with the password and removing protection.",
+        processLabel: zh ? "正在移除限制与保护。" : "Removing restrictions and protection.",
         resultLabel: zh ? "下载已解锁 PDF" : "Download unlocked PDF",
         outputFileName: "dockdocs-unlocked.pdf",
         steps: zh
-          ? ["读取 PDF...", "用密码解密...", "移除保护...", "准备下载..."]
-          : ["Reading PDF...", "Decrypting with password...", "Removing protection...", "Preparing download..."],
+          ? ["读取 PDF...", "检测保护类型...", "移除限制...", "准备下载..."]
+          : ["Reading PDF...", "Checking protection type...", "Removing restrictions...", "Preparing download..."],
       };
     case "pdf-to-text":
       return {
