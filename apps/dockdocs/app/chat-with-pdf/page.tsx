@@ -10,6 +10,35 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+// FAQ — 真实能力、与实现相符；可被 AI 引擎引用的清晰事实块
+const FAQ = [
+  {
+    question: "How do I chat with a PDF?",
+    answer:
+      "Upload your PDF, then type a question about its content. The AI reads the document and answers using what is actually in the file — for example asking for a deadline, a clause, a figure, or a summary of a section.",
+  },
+  {
+    question: "Is Chat with PDF free?",
+    answer:
+      "Yes. You can upload a PDF and ask questions for free. There is a free usage quota, with paid plans for heavier use.",
+  },
+  {
+    question: "Are the answers based on my document or general knowledge?",
+    answer:
+      "Answers are grounded in your uploaded document — the AI is instructed to answer from the file's content rather than general knowledge. For important details like dates, numbers, and legal terms, verify the answer against the source passage.",
+  },
+  {
+    question: "What kinds of documents can I ask about?",
+    answer:
+      "It works with text-based PDFs such as contracts, reports, research papers, manuals, and meeting notes. For scanned (image-only) PDFs, run OCR first so the text can be read.",
+  },
+  {
+    question: "Are my documents kept private?",
+    answer:
+      "Your document is sent to the AI service to generate answers, then discarded. Files are not stored long-term or used to train models, and no account is required to start.",
+  },
+];
+
 // 结构化数据(此页未走共享模板，手动补上，供 Google 理解 + AI 引用)
 const SCHEMA = {
   "@context": "https://schema.org",
@@ -31,6 +60,15 @@ const SCHEMA = {
         { "@type": "ListItem", position: 1, name: "DockDocs", item: "https://dockdocs.app/" },
         { "@type": "ListItem", position: 2, name: "Chat with PDF", item: "https://dockdocs.app/chat-with-pdf/" },
       ],
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://dockdocs.app/chat-with-pdf/#faq",
+      mainEntity: FAQ.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
     },
   ],
 };
@@ -57,6 +95,25 @@ export default function ChatWithPdfPage() {
         <div className="mt-8">
           <ChatWithPdfClient locale="en" />
         </div>
+
+        <section className="mt-16 border-t border-[color:var(--line)] pt-10">
+          <h2 className="text-base font-medium text-[color:var(--foreground)]">Frequently Asked Questions</h2>
+          <dl className="mt-6 space-y-5">
+            {FAQ.map((item) => (
+              <div key={item.question}>
+                <dt className="text-sm font-medium text-[color:var(--foreground)]">{item.question}</dt>
+                <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">{item.answer}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-8 text-sm leading-6 text-[color:var(--muted)]">
+            Need a one-shot overview instead of a conversation? Try{" "}
+            <a href="/ai-summary/" className="text-[color:var(--accent)] hover:underline">AI Summary</a>
+            . For OCR, summaries, and chat together, open the{" "}
+            <a href="/ai-workspace/" className="text-[color:var(--accent)] hover:underline">AI Workspace</a>
+            .
+          </p>
+        </section>
       </div>
     </main>
   );
