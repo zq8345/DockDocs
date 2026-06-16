@@ -159,6 +159,32 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
       ],
     },
   },
+  "batch-pdf-to-word": {
+    title: { en: "Batch PDF to Word — FAQ", zh: "批量 PDF 转 Word 常见问题", es: "PDF a Word por lotes — preguntas frecuentes" },
+    items: {
+      en: [
+        { q: "How do I convert several PDFs to Word at once?", a: "Drop your PDFs onto the page — or a whole folder — then click Convert all. Each file is converted to an editable Word document one by one, and when they finish you click Download ZIP to get them all back in a single archive." },
+        { q: "Will the Word file look exactly like the original?", a: "No converter can promise a pixel-perfect copy. We extract the text into a genuinely editable .docx, which is what you want for editing — but scanned PDFs or heavily-designed pages may need cleanup afterwards. For a born-digital PDF with normal text, results are usually close." },
+        { q: "Which PDFs convert best?", a: "Text-based, born-digital PDFs convert best. Scanned PDFs have no selectable text — run OCR on them first, otherwise the Word file comes back empty. If your PDF is mostly tables, the PDF to Excel converter usually gives a cleaner result." },
+        { q: "Is there a size or count limit?", a: "You can convert up to 20 PDFs per batch, each up to 5 MB. For a file larger than 5 MB, use the single-file PDF to Word tool, which handles bigger files." },
+        { q: "Are my files uploaded, and is it free?", a: "It's free with no account. Unlike our browser-only tools, conversion to Word runs on our own server, so each PDF is sent there, converted, and returned — it is not stored or kept afterwards." },
+      ],
+      zh: [
+        { q: "怎么一次把多个 PDF 转成 Word？", a: "把多个 PDF 拖到页面上——也可以直接拖入整个文件夹——再点「全部转换」。每个文件逐个转成可编辑的 Word 文档，完成后点「下载 ZIP」，把它们打包成一个压缩包一起拿回。" },
+        { q: "转出的 Word 会和原件一模一样吗？", a: "没有任何转换器能保证逐像素还原。我们把文字提取成真正可编辑的 .docx，这正是编辑所需——但扫描件或排版复杂的页面可能需要再整理。对于正常文字的电子版 PDF，结果通常比较接近。" },
+        { q: "哪类 PDF 转换效果最好？", a: "文字版、电子原生的 PDF 效果最好。扫描件没有可选文字，请先做 OCR，否则转出的 Word 会是空的。如果 PDF 主要由表格构成，用「PDF 转 Excel」通常更整洁。" },
+        { q: "有数量或大小限制吗？", a: "每批最多转换 20 个 PDF，每个不超过 5MB。超过 5MB 的文件请用单文件的「PDF 转 Word」工具，那里支持更大的文件。" },
+        { q: "文件会被上传吗？免费吗？", a: "免费、无需注册。与我们的纯浏览器工具不同，转成 Word 在我们自己的服务器上完成，所以每个 PDF 会被发送到服务器转换后返回——转换后不会保存或留存。" },
+      ],
+      es: [
+        { q: "¿Cómo convierto varios PDF a Word a la vez?", a: "Arrastra tus PDF a la página (o una carpeta entera) y haz clic en Convertir todo. Cada archivo se convierte a un documento de Word editable uno por uno y, al terminar, pulsa Descargar ZIP para obtenerlos todos en un solo archivo." },
+        { q: "¿El archivo de Word quedará exactamente igual que el original?", a: "Ningún convertidor puede prometer una copia idéntica al píxel. Extraemos el texto en un .docx realmente editable, que es lo que necesitas para editar, pero los PDF escaneados o muy diseñados pueden requerir ajustes después. Para un PDF digital con texto normal, el resultado suele ser cercano." },
+        { q: "¿Qué PDF se convierten mejor?", a: "Los PDF basados en texto y digitales de origen se convierten mejor. Los PDF escaneados no tienen texto seleccionable: aplícales OCR primero, de lo contrario el archivo de Word saldrá vacío. Si tu PDF es mayormente tablas, el convertidor de PDF a Excel suele dar un resultado más limpio." },
+        { q: "¿Hay límite de tamaño o cantidad?", a: "Puedes convertir hasta 20 PDF por lote, cada uno de hasta 5 MB. Para un archivo de más de 5 MB, usa la herramienta de un solo archivo PDF a Word, que admite archivos más grandes." },
+        { q: "¿Se suben mis archivos? ¿Es gratis?", a: "Es gratis y sin cuenta. A diferencia de nuestras herramientas que funcionan solo en el navegador, la conversión a Word se ejecuta en nuestro propio servidor, así que cada PDF se envía allí, se convierte y se devuelve; no se almacena ni se conserva." },
+      ],
+    },
+  },
   "batch-compress": {
     title: { en: "Batch compress PDF — FAQ", zh: "批量 PDF 压缩常见问题", es: "Comprimir PDF por lotes — preguntas frecuentes" },
     items: {
@@ -1032,6 +1058,16 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Meus arquivos são enviados? É gratuito?", a: "É gratuito e sem conta. Ao contrário das nossas ferramentas que funcionam apenas no navegador, a conversão para formatos do Office é executada no nosso próprio servidor, então cada PDF é enviado lá, convertido e devolvido — não é armazenado ou mantido depois." },
     ],
   },
+  "batch-pdf-to-word": {
+    title: "PDF para Word em lote — perguntas frequentes",
+    items: [
+      { q: "Como converto vários PDFs em Word de uma vez?", a: "Solte seus PDFs na página — ou uma pasta inteira — e clique em Converter tudo. Cada arquivo é convertido em um documento do Word editável um por um e, quando terminarem, clique em Baixar ZIP para obter tudo em um único arquivo." },
+      { q: "O arquivo do Word ficará exatamente igual ao original?", a: "Nenhum conversor pode garantir uma cópia pixel a pixel. Extraímos o texto em um .docx realmente editável — que é o que você precisa para editar — mas PDFs digitalizados ou com layout complexo podem precisar de ajustes depois. Para um PDF digital com texto normal, o resultado costuma ser próximo." },
+      { q: "Quais PDFs convertem melhor?", a: "PDFs baseados em texto e de origem digital convertem melhor. PDFs digitalizados não têm texto selecionável — execute o OCR neles primeiro, caso contrário o arquivo do Word volta vazio. Se o seu PDF é formado principalmente por tabelas, o conversor de PDF para Excel costuma dar um resultado mais limpo." },
+      { q: "Há limite de tamanho ou quantidade?", a: "Você pode converter até 20 PDFs por lote, cada um de até 5 MB. Para um arquivo maior que 5 MB, use a ferramenta de arquivo único PDF para Word, que suporta arquivos maiores." },
+      { q: "Meus arquivos são enviados? É gratuito?", a: "É gratuito e sem conta. Ao contrário das nossas ferramentas que funcionam apenas no navegador, a conversão para Word é executada no nosso próprio servidor, então cada PDF é enviado lá, convertido e devolvido — não é armazenado ou mantido depois." },
+    ],
+  },
   "batch-compress": {
     title: "Comprimir PDFs em lote — perguntas frequentes",
     items: [
@@ -1400,6 +1436,16 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "La mise en page sera-t-elle exactement identique à l'original ?", a: "Aucun convertisseur ne peut promettre une copie pixel par pixel. Nous extrayons le texte et les tableaux dans un fichier réellement modifiable — ce dont vous avez besoin pour éditer — mais les PDF scannés ou très élaborés visuellement peuvent nécessiter des ajustements. Pour un PDF numérique avec du texte et des tableaux normaux, le résultat est généralement proche." },
       { q: "Y a-t-il une limite de taille ou de nombre ?", a: "Vous pouvez convertir jusqu'à 20 PDF par lot, chacun jusqu'à 5 Mo. Pour un fichier supérieur à 5 Mo, utilisez l'outil fichier unique PDF en Word ou PDF en Excel, qui gère les fichiers plus volumineux." },
       { q: "Mes fichiers sont-ils téléversés ? Est-ce gratuit ?", a: "C'est gratuit et sans compte. Contrairement à nos outils fonctionnant uniquement dans le navigateur, la conversion vers les formats Office s'effectue sur notre propre serveur, donc chaque PDF y est envoyé, converti et renvoyé — il n'est ni stocké ni conservé après coup." },
+    ],
+  },
+  "batch-pdf-to-word": {
+    title: "PDF en Word par lot — foire aux questions",
+    items: [
+      { q: "Comment convertir plusieurs PDF en Word à la fois ?", a: "Déposez vos PDF sur la page — ou un dossier entier — puis cliquez sur Tout convertir. Chaque fichier est converti en document Word modifiable l'un après l'autre et, une fois terminé, cliquez sur Télécharger le ZIP pour tout obtenir dans une seule archive." },
+      { q: "Le fichier Word sera-t-il exactement identique à l'original ?", a: "Aucun convertisseur ne peut promettre une copie pixel par pixel. Nous extrayons le texte dans un .docx réellement modifiable — ce dont vous avez besoin pour éditer — mais les PDF scannés ou très élaborés visuellement peuvent nécessiter des ajustements. Pour un PDF numérique avec du texte normal, le résultat est généralement proche." },
+      { q: "Quels PDF se convertissent le mieux ?", a: "Les PDF basés sur du texte et nativement numériques se convertissent le mieux. Les PDF scannés n'ont pas de texte sélectionnable — appliquez-leur d'abord l'OCR, sinon le fichier Word revient vide. Si votre PDF est principalement composé de tableaux, le convertisseur PDF en Excel donne généralement un résultat plus propre." },
+      { q: "Y a-t-il une limite de taille ou de nombre ?", a: "Vous pouvez convertir jusqu'à 20 PDF par lot, chacun jusqu'à 5 Mo. Pour un fichier supérieur à 5 Mo, utilisez l'outil fichier unique PDF en Word, qui gère les fichiers plus volumineux." },
+      { q: "Mes fichiers sont-ils téléversés ? Est-ce gratuit ?", a: "C'est gratuit et sans compte. Contrairement à nos outils fonctionnant uniquement dans le navigateur, la conversion vers Word s'effectue sur notre propre serveur, donc chaque PDF y est envoyé, converti et renvoyé — il n'est ni stocké ni conservé après coup." },
     ],
   },
   "batch-compress": {
