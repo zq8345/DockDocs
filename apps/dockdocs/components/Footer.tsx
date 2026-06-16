@@ -329,7 +329,7 @@ export function Footer() {
                   <li key={link.href}>
                     <a
                       href={href(link.href, locale)}
-                      className="text-[13px] text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
+                      className="text-[13px] font-medium text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
                     >
                       {link.label}
                     </a>
