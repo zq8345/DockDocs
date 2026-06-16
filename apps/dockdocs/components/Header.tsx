@@ -622,13 +622,38 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr", NavCat[]> =
 const pageLinks = {
   en: [
     { name: "Pricing", href: "/pricing" },
+    { name: "Guides", href: "/guides" },
     { name: "Blog", href: "/blog" },
     { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
   ],
   zh: [
     { name: "定价", href: "/pricing" },
+    { name: "指南", href: "/guides" },
     { name: "博客", href: "/blog" },
     { name: "关于", href: "/about" },
+    { name: "联系", href: "/contact" },
+  ],
+  es: [
+    { name: "Precios", href: "/pricing" },
+    { name: "Guías", href: "/guides" },
+    { name: "Blog", href: "/blog" },
+    { name: "Acerca de", href: "/about" },
+    { name: "Contacto", href: "/contact" },
+  ],
+  pt: [
+    { name: "Preços", href: "/pricing" },
+    { name: "Guias", href: "/guides" },
+    { name: "Blog", href: "/blog" },
+    { name: "Sobre", href: "/about" },
+    { name: "Contato", href: "/contact" },
+  ],
+  fr: [
+    { name: "Tarifs", href: "/pricing" },
+    { name: "Guides", href: "/guides" },
+    { name: "Blog", href: "/blog" },
+    { name: "À propos", href: "/about" },
+    { name: "Contact", href: "/contact" },
   ],
 } as const;
 
@@ -661,7 +686,7 @@ export function Header() {
   const locale = stripLocale(pathname ?? "/");
 
   const cats = navCategories[locale] ?? navCategories.en;
-  const pages = pageLinks[(locale === "es" || locale === "pt" || locale === "fr") ? "en" : locale as "en" | "zh"] ?? pageLinks.en;
+  const pages = pageLinks[locale] ?? pageLinks.en;
 
   useEffect(() => {
     setLight(document.documentElement.classList.contains("light"));
@@ -859,8 +884,8 @@ export function Header() {
                 aria-expanded={moreOpen}
                 className={iconBtn}
               >
-                <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor">
-                  <circle cx="3" cy="8" r="1.5" /><circle cx="8" cy="8" r="1.5" /><circle cx="13" cy="8" r="1.5" />
+                <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4">
+                  <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
               </button>
               {moreOpen && (
