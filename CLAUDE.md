@@ -79,4 +79,5 @@ The first four share ONE working tree, so another window's UNCOMMITTED edits sho
 - **Risk-tiered review before live:**
   - **High-risk** (payment / gating / billing / auth / data / large refactor) → push to a BRANCH → Netlify preview → 总调度 reviews the diff (runs a code-review pass) → only then merge to master. Never direct-to-prod.
   - **Low-risk** (UI / copy / content / SEO) → direct push to master; 总调度 reviews promptly after + 测试 verifies.
+- **Run `/code-review` before every push** (free first-party skill, zero supply-chain risk); add `/security-review` for anything touching auth / payment / billing / data. Cheapest quality gate — use it every time.
 - **Completion reporting (HARD RULE):** after each task, push then IMMEDIATELY `send_message` 总调度 (cross-session) with the commit hash + what changed — do NOT only write the report in your own window (Joe must hear all status from 总调度). 总调度 also polls `git log` as backup.
