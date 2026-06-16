@@ -542,7 +542,11 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         <p className={`${eyebrow} text-center`}>{locale === "zh" ? "// 套餐对照" : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : "// Compare"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.compareTitle}</h2>
         <p className="mt-2 text-center text-[13px] text-[color:var(--faint)]">
-          {locale === "zh" ? "点击分类展开该类所有工具" : "Click a category to see the tools it includes"}
+          {locale === "zh" ? "点击分类展开该类所有工具"
+            : locale === "es" ? "Haz clic en una categoría para ver las herramientas que incluye"
+            : locale === "pt" ? "Clique em uma categoria para ver as ferramentas que ela inclui"
+            : locale === "fr" ? "Cliquez sur une catégorie pour voir les outils qu'elle inclut"
+            : "Click a category to see the tools it includes"}
         </p>
         <div className="mt-8 overflow-x-auto rounded-2xl border border-[color:var(--line)]">
           <table className="w-full border-collapse text-[14px]">
@@ -560,13 +564,13 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 const hasTools = cat.tools.length > 0;
                 const hasFeatures = (cat.features?.length ?? 0) > 0;
                 const canExpand = hasTools || hasFeatures;
-                const catLabel = locale === "zh" ? cat.label.zh : cat.label.en;
+                const catLabel = cat.label[locale] ?? cat.label.en;
                 const lim = (tier: "free" | "plus" | "pro") => {
                   const v = cat.limits[tier];
-                  return locale === "zh" ? v.zh : v.en;
+                  return v[locale] ?? v.en;
                 };
                 const cellCls = (val: string) =>
-                  val === "Unlimited" || val === "无限" || val.startsWith("Unlimited") || val.startsWith("无限")
+                  val.startsWith("Unlimited") || val.startsWith("无限") || val.startsWith("Ilimitado") || val.startsWith("Illimité")
                     ? "font-medium text-[color:var(--foreground)]"
                   : val === "—" ? "text-[color:var(--faint)]"
                   : val.startsWith("✓") ? "font-medium text-[color:var(--accent)]"
@@ -624,11 +628,11 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                   {f.status === "live" ? "✓" : "○"}
                                 </span>
                                 <span className={f.status === "live" ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}>
-                                  {locale === "zh" ? f.zh : f.en}
+                                  {f[locale] ?? f.en}
                                 </span>
                                 {f.status === "coming" && (
                                   <span className="rounded-full border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] text-[color:var(--faint)]">
-                                    {locale === "zh" ? "即将推出" : "Coming"}
+                                    {locale === "zh" ? "即将推出" : locale === "es" ? "Pronto" : locale === "pt" ? "Em breve" : locale === "fr" ? "Bientôt" : "Coming"}
                                   </span>
                                 )}
                               </li>
@@ -648,6 +652,12 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
           <p className="mt-3 px-4 text-[11.5px] text-[color:var(--faint)]">
             {locale === "zh"
               ? <>* 无限套餐遵循合理使用政策，仅用于防止异常滥用。<a href="/terms/" className="underline hover:text-[color:var(--muted)]">查看条款</a></>
+              : locale === "es"
+              ? <>* Los planes ilimitados están sujetos a nuestra <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Política de Uso Razonable</a> para evitar abusos.</>
+              : locale === "pt"
+              ? <>* Os planos ilimitados estão sujeitos à nossa <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Política de Uso Justo</a> para evitar abusos.</>
+              : locale === "fr"
+              ? <>* Les forfaits illimités sont soumis à notre <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Politique d'utilisation équitable</a> afin de prévenir les abus.</>
               : <>* Unlimited plans are subject to our <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair Use Policy</a> to prevent abuse.</>
             }
           </p>

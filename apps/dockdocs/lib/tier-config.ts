@@ -7,6 +7,9 @@ export type Tier = "free" | "plus" | "pro";
 export type TierValue = {
   en: string;
   zh: string;
+  es: string;
+  pt: string;
+  fr: string;
   internal?: string; // NOT rendered on the pricing page; for gating config only
 };
 
@@ -16,6 +19,9 @@ export type ToolItem = { slug: string; en: string; zh: string };
 export type FeatureItem = {
   en: string;
   zh: string;
+  es: string;
+  pt: string;
+  fr: string;
   status: "live" | "coming"; // "coming" renders as "Coming soon" pill
 };
 
@@ -30,7 +36,13 @@ export type TierCategory = {
 export const TIER_CATEGORIES: TierCategory[] = [
   {
     id: "basic-pdf",
-    label: { en: "PDF tools (client-side, always free)", zh: "基础 PDF 工具（客户端，永久免费）" },
+    label: {
+      en: "PDF tools (client-side, always free)",
+      zh: "基础 PDF 工具（客户端，永久免费）",
+      es: "Herramientas PDF (en tu navegador, siempre gratis)",
+      pt: "Ferramentas PDF (no navegador, sempre grátis)",
+      fr: "Outils PDF (dans le navigateur, toujours gratuits)",
+    },
     tools: [
       { slug: "compress-pdf",  en: "Compress PDF",        zh: "PDF 压缩" },
       { slug: "merge-pdf",     en: "Merge PDF",           zh: "PDF 合并" },
@@ -49,15 +61,21 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "ocr-pdf",       en: "OCR PDF",             zh: "PDF OCR" },
     ],
     limits: {
-      free: { en: "Unlimited", zh: "无限" },
-      plus: { en: "Unlimited", zh: "无限" },
-      pro:  { en: "Unlimited", zh: "无限" },
+      free: { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité" },
+      plus: { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité" },
+      pro:  { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité" },
     },
   },
 
   {
     id: "convert",
-    label: { en: "Format conversion (single file)", zh: "格式转换（单文件）" },
+    label: {
+      en: "Format conversion (single file)",
+      zh: "格式转换（单文件）",
+      es: "Conversión de formatos (archivo único)",
+      pt: "Conversão de formatos (arquivo único)",
+      fr: "Conversion de formats (fichier unique)",
+    },
     tools: [
       { slug: "pdf-to-word",     en: "PDF to Word",       zh: "PDF 转 Word" },
       { slug: "pdf-to-excel",    en: "PDF to Excel",      zh: "PDF 转 Excel" },
@@ -75,15 +93,21 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "url-to-pdf",      en: "URL to PDF",        zh: "网页转 PDF" },
     ],
     limits: {
-      free: { en: "Unlimited", zh: "无限", internal: "fair use · CloudConvert reverse conversion cap applies" },
-      plus: { en: "Unlimited", zh: "无限" },
-      pro:  { en: "Unlimited", zh: "无限" },
+      free: { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", internal: "fair use · CloudConvert reverse conversion cap applies" },
+      plus: { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité" },
+      pro:  { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité" },
     },
   },
 
   {
     id: "batch",
-    label: { en: "Batch processing", zh: "批量处理" },
+    label: {
+      en: "Batch processing",
+      zh: "批量处理",
+      es: "Procesamiento por lotes",
+      pt: "Processamento em lote",
+      fr: "Traitement par lots",
+    },
     tools: [
       { slug: "batch-compress",      en: "Batch Compress",            zh: "批量 PDF 压缩" },
       { slug: "batch-pdf-to-image",  en: "Batch PDF to Image",        zh: "批量 PDF 转图片" },
@@ -102,15 +126,39 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "batch-fix-scans",     en: "Batch Fix Scans",           zh: "批量修扫描" },
     ],
     limits: {
-      free: { en: "≤ 3 files/batch · 3 batches/day",          zh: "≤ 3文件/批 · 3批/天" },
-      plus: { en: "≤ 20 files/batch · unlimited batches",      zh: "≤ 20文件/批 · 不限次" },
-      pro:  { en: "≤ 50 files/batch · unlimited batches",      zh: "≤ 50文件/批 · 不限次" },
+      free: {
+        en: "≤ 3 files/batch · 3 batches/day",
+        zh: "≤ 3文件/批 · 3批/天",
+        es: "≤ 3 archivos/lote · 3 lotes/día",
+        pt: "≤ 3 arquivos/lote · 3 lotes/dia",
+        fr: "≤ 3 fichiers/lot · 3 lots/jour",
+      },
+      plus: {
+        en: "≤ 20 files/batch · unlimited batches",
+        zh: "≤ 20文件/批 · 不限次",
+        es: "≤ 20 archivos/lote · lotes ilimitados",
+        pt: "≤ 20 arquivos/lote · lotes ilimitados",
+        fr: "≤ 20 fichiers/lot · lots illimités",
+      },
+      pro:  {
+        en: "≤ 50 files/batch · unlimited batches",
+        zh: "≤ 50文件/批 · 不限次",
+        es: "≤ 50 archivos/lote · lotes ilimitados",
+        pt: "≤ 50 arquivos/lote · lotes ilimitados",
+        fr: "≤ 50 fichiers/lot · lots illimités",
+      },
     },
   },
 
   {
     id: "ai-standard",
-    label: { en: "AI workflows — standard", zh: "AI 工作流（大路货）" },
+    label: {
+      en: "AI workflows — standard",
+      zh: "AI 工作流（大路货）",
+      es: "Flujos de trabajo con IA — estándar",
+      pt: "Fluxos de trabalho com IA — padrão",
+      fr: "Flux de travail IA — standard",
+    },
     tools: [
       { slug: "ai-workspace",  en: "AI Workspace",          zh: "AI 工作台" },
       { slug: "chat-with-pdf", en: "Chat with PDF",         zh: "PDF 问答" },
@@ -120,15 +168,21 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "batch-sort",    en: "Auto-Classify PDFs",    zh: "PDF 智能分类" },
     ],
     limits: {
-      free: { en: "10 / day",   zh: "10次/天" },
-      plus: { en: "200 / day",  zh: "200次/天" },
-      pro:  { en: "Unlimited",  zh: "无限" },
+      free: { en: "10 / day",   zh: "10次/天",  es: "10/día",  pt: "10/dia",  fr: "10/jour" },
+      plus: { en: "200 / day",  zh: "200次/天", es: "200/día", pt: "200/dia", fr: "200/jour" },
+      pro:  { en: "Unlimited",  zh: "无限",     es: "Ilimitado", pt: "Ilimitado", fr: "Illimité" },
     },
   },
 
   {
     id: "ai-hero",
-    label: { en: "AI heroes — specialized analysis", zh: "AI 英雄（专项分析）" },
+    label: {
+      en: "AI heroes — specialized analysis",
+      zh: "AI 英雄（专项分析）",
+      es: "IA expertos — análisis especializado",
+      pt: "IA especialistas — análise especializada",
+      fr: "IA experts — analyse spécialisée",
+    },
     tools: [
       { slug: "compare",          en: "Compare Documents",      zh: "多文档对比" },
       { slug: "redline",          en: "Compare Versions",       zh: "PDF 版本对比" },
@@ -138,63 +192,144 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "lease-redflag",    en: "Lease Red Flag Check",   zh: "租约红旗扫描" },
     ],
     limits: {
-      free: { en: "3 / day",    zh: "3次/天" },
-      plus: { en: "500 / month", zh: "500次/月" },
-      pro:  { en: "Unlimited",  zh: "无限", internal: "~5 000/mo soft cap" },
+      free: { en: "3 / day",    zh: "3次/天",  es: "3/día",   pt: "3/dia",   fr: "3/jour" },
+      plus: { en: "500 / month", zh: "500次/月", es: "500/mes", pt: "500/mês", fr: "500/mois" },
+      pro:  { en: "Unlimited",  zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", internal: "~5 000/mo soft cap" },
     },
   },
 
   {
     id: "hero-premium",
-    label: { en: "Hero premium outputs", zh: "英雄高级输出" },
+    label: {
+      en: "Hero premium outputs",
+      zh: "英雄高级输出",
+      es: "Salidas premium de expertos",
+      pt: "Saídas premium de especialistas",
+      fr: "Sorties premium des experts",
+    },
     tools: [],
     features: [
-      { en: "Gov Bid → Excel matrix export",                        zh: "标书 Excel 矩阵导出",          status: "coming" },
-      { en: "Statement batch processing + large files",             zh: "对账单批量处理 + 大文件",        status: "coming" },
-      { en: "Extract line items + break 8-doc / 60 k-char cap",    zh: "抽取行项目 + 突破8份6万字符上限", status: "coming" },
-      { en: "Hero large docs (long contracts · 100-300 page RFPs)", zh: "英雄大文档（长合同·100-300页RFP）", status: "coming" },
+      {
+        en: "Gov Bid → Excel matrix export",
+        zh: "标书 Excel 矩阵导出",
+        es: "Licitación → exportar matriz a Excel",
+        pt: "Licitação → exportar matriz para Excel",
+        fr: "Appel d'offres → export matrice Excel",
+        status: "coming",
+      },
+      {
+        en: "Statement batch processing + large files",
+        zh: "对账单批量处理 + 大文件",
+        es: "Procesamiento de extractos por lotes + archivos grandes",
+        pt: "Processamento de extratos em lote + arquivos grandes",
+        fr: "Traitement de relevés par lots + fichiers volumineux",
+        status: "coming",
+      },
+      {
+        en: "Extract line items + break 8-doc / 60 k-char cap",
+        zh: "抽取行项目 + 突破8份6万字符上限",
+        es: "Extraer partidas + superar el límite de 8 docs / 60 k caracteres",
+        pt: "Extrair itens + superar o limite de 8 docs / 60 mil caracteres",
+        fr: "Extraire les lignes + dépasser la limite de 8 docs / 60 k caractères",
+        status: "coming",
+      },
+      {
+        en: "Hero large docs (long contracts · 100-300 page RFPs)",
+        zh: "英雄大文档（长合同·100-300页RFP）",
+        es: "Documentos grandes para expertos (contratos largos · RFP de 100-300 páginas)",
+        pt: "Documentos grandes para especialistas (contratos longos · RFPs de 100-300 páginas)",
+        fr: "Grands documents pour experts (contrats longs · appels d'offres de 100-300 pages)",
+        status: "coming",
+      },
     ],
     limits: {
-      free: { en: "—", zh: "—" },
-      plus: { en: "—", zh: "—" },
-      pro:  { en: "✓ Pro only", zh: "✓ 仅 Pro" },
+      free: { en: "—", zh: "—", es: "—", pt: "—", fr: "—" },
+      plus: { en: "—", zh: "—", es: "—", pt: "—", fr: "—" },
+      pro:  { en: "✓ Pro only", zh: "✓ 仅 Pro", es: "✓ Solo Pro", pt: "✓ Só Pro", fr: "✓ Pro uniquement" },
     },
   },
 
   {
     id: "verticals",
-    label: { en: "Professional verticals", zh: "专业领域" },
+    label: {
+      en: "Professional verticals",
+      zh: "专业领域",
+      es: "Sectores profesionales",
+      pt: "Setores profissionais",
+      fr: "Secteurs professionnels",
+    },
     tools: [],
     features: [
-      { en: "Legal & contracts",          zh: "法律 / 合同",  status: "coming" },
-      { en: "Finance & tax",              zh: "财务 / 税务",  status: "coming" },
-      { en: "Research & academia",        zh: "科研 / 学术",  status: "coming" },
-      { en: "Banking & finance",          zh: "金融 / 投行",  status: "coming" },
-      { en: "Architecture & engineering", zh: "建筑 / 工程",  status: "coming" },
-      { en: "Healthcare & medical",       zh: "医疗 / 健康",  status: "coming" },
+      { en: "Legal & contracts",          zh: "法律 / 合同",  es: "Legal y contratos",          pt: "Jurídico e contratos",       fr: "Juridique et contrats",        status: "coming" },
+      { en: "Finance & tax",              zh: "财务 / 税务",  es: "Finanzas e impuestos",       pt: "Finanças e impostos",        fr: "Finance et fiscalité",         status: "coming" },
+      { en: "Research & academia",        zh: "科研 / 学术",  es: "Investigación y academia",   pt: "Pesquisa e academia",        fr: "Recherche et académique",      status: "coming" },
+      { en: "Banking & finance",          zh: "金融 / 投行",  es: "Banca y finanzas",           pt: "Banco e finanças",           fr: "Banque et finance",            status: "coming" },
+      { en: "Architecture & engineering", zh: "建筑 / 工程",  es: "Arquitectura e ingeniería",  pt: "Arquitetura e engenharia",   fr: "Architecture et ingénierie",   status: "coming" },
+      { en: "Healthcare & medical",       zh: "医疗 / 健康",  es: "Salud y medicina",           pt: "Saúde e medicina",           fr: "Santé et médecine",            status: "coming" },
     ],
     limits: {
-      free: { en: "1 taste",                  zh: "1次尝鲜" },
-      plus: { en: "20 / month",               zh: "20次/月" },
-      pro:  { en: "Unlimited · all verticals", zh: "无限 · 全部垂直" },
+      free: { en: "1 taste",                  zh: "1次尝鲜", es: "1 de prueba", pt: "1 de teste", fr: "1 à l'essai" },
+      plus: { en: "20 / month",               zh: "20次/月", es: "20/mes", pt: "20/mês", fr: "20/mois" },
+      pro:  { en: "Unlimited · all verticals", zh: "无限 · 全部垂直", es: "Ilimitado · todos los sectores", pt: "Ilimitado · todos os setores", fr: "Illimité · tous les secteurs" },
     },
   },
 
   {
     id: "pro-exclusive",
-    label: { en: "Pro exclusive", zh: "Pro 专属" },
+    label: {
+      en: "Pro exclusive",
+      zh: "Pro 专属",
+      es: "Exclusivo de Pro",
+      pt: "Exclusivo do Pro",
+      fr: "Exclusif Pro",
+    },
     tools: [],
     features: [
-      { en: "Private workspace",                                               zh: "私密工作区",                status: "live" },
-      { en: "Unlimited batch, AI & verticals (Plus is capped)",               zh: "无限批量/AI/垂直（Plus 有限额）",              status: "live" },
-      { en: "API access",                                                      zh: "API 访问",                  status: "coming" },
-      { en: "Team seats",                                                      zh: "团队席位",                  status: "coming" },
-      { en: "Priority processing",                                             zh: "优先处理",                  status: "coming" },
+      {
+        en: "Private workspace",
+        zh: "私密工作区",
+        es: "Espacio de trabajo privado",
+        pt: "Espaço de trabalho privado",
+        fr: "Espace de travail privé",
+        status: "live",
+      },
+      {
+        en: "Unlimited batch, AI & verticals (Plus is capped)",
+        zh: "无限批量/AI/垂直（Plus 有限额）",
+        es: "Lotes, IA y sectores ilimitados (Plus tiene límite)",
+        pt: "Lotes, IA e setores ilimitados (Plus tem limite)",
+        fr: "Lots, IA et secteurs illimités (Plus est limité)",
+        status: "live",
+      },
+      {
+        en: "API access",
+        zh: "API 访问",
+        es: "Acceso a la API",
+        pt: "Acesso à API",
+        fr: "Accès à l'API",
+        status: "coming",
+      },
+      {
+        en: "Team seats",
+        zh: "团队席位",
+        es: "Plazas de equipo",
+        pt: "Assentos de equipe",
+        fr: "Sièges d'équipe",
+        status: "coming",
+      },
+      {
+        en: "Priority processing",
+        zh: "优先处理",
+        es: "Procesamiento prioritario",
+        pt: "Processamento prioritário",
+        fr: "Traitement prioritaire",
+        status: "coming",
+      },
     ],
     limits: {
-      free: { en: "—", zh: "—" },
-      plus: { en: "—", zh: "—" },
-      pro:  { en: "✓", zh: "✓" },
+      free: { en: "—", zh: "—", es: "—", pt: "—", fr: "—" },
+      plus: { en: "—", zh: "—", es: "—", pt: "—", fr: "—" },
+      pro:  { en: "✓", zh: "✓", es: "✓", pt: "✓", fr: "✓" },
     },
   },
 ];
