@@ -102,9 +102,9 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "batch-fix-scans",     en: "Batch Fix Scans",           zh: "批量修扫描" },
     ],
     limits: {
-      free: { en: "≤ 3 files/batch · 3 batches/day", zh: "≤ 3文件/批 · 3批/天" },
-      plus: { en: "≤ 20 files/batch",                 zh: "≤ 20文件/批" },
-      pro:  { en: "Unlimited", zh: "无限", internal: "fair use cap enforced server-side" },
+      free: { en: "≤ 3 files/batch · 3 batches/day",          zh: "≤ 3文件/批 · 3批/天" },
+      plus: { en: "≤ 20 files/batch · unlimited batches",      zh: "≤ 20文件/批 · 不限次" },
+      pro:  { en: "≤ 50 files/batch · unlimited batches",      zh: "≤ 50文件/批 · 不限次" },
     },
   },
 
