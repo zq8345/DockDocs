@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createBillingCheckoutSession } from "@/lib/subscription-runtime";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 
-type PromptLocale = "en" | "zh" | "es" | "pt" | "fr";
+type PromptLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 const STR: Record<
   PromptLocale,
@@ -49,6 +49,14 @@ const STR: Record<
     redir: "Redirection…",
     all: "Voir tous les plans",
     pricing: "/fr/pricing",
+  },
+  ja: {
+    title: "本日の無料利用上限に達しました",
+    body: (n) => `無料プランは 1 日あたり ${n} 回までです。アップグレードすると上限が増え、すべてのプレミアム AI 機能をご利用いただけます。`,
+    cta: "Plus にアップグレード · 月額 $5",
+    redir: "リダイレクト中…",
+    all: "すべてのプランを見る",
+    pricing: "/ja/pricing",
   },
 };
 

@@ -4,7 +4,7 @@
 // unlock the file first — so we turn the raw stack message into a clear hint
 // instead of dumping "PasswordException: No password given" onto the page.
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 /** True if the error is pdf.js / pdf-lib refusing a password-protected PDF. */
 export function isEncryptedPdfError(e: unknown): boolean {
@@ -25,6 +25,7 @@ export function encryptedPdfNotice(locale: Locale): string {
   if (locale === "es") return "Este PDF está protegido con contraseña y no se puede abrir. Elimina la protección primero con la herramienta \"Desbloquear PDF\" y luego vuelve a intentarlo.";
   if (locale === "pt") return "Este PDF está protegido por senha e não pode ser aberto. Remova a proteção primeiro com a ferramenta \"Desbloquear PDF\" e tente novamente.";
   if (locale === "fr") return "Ce PDF est protégé par un mot de passe et ne peut pas être ouvert. Supprimez d'abord la protection avec l'outil « Déverrouiller PDF », puis réessayez.";
+  if (locale === "ja") return "この PDF はパスワードで保護されているため、開くことができません。まず「PDF のパスワードを解除」ツールで保護を解除してから、もう一度お試しください。";
   return "This PDF is password-protected, so it can't be opened. Remove the protection first with the \"Unlock PDF\" tool, then come back and try again.";
 }
 

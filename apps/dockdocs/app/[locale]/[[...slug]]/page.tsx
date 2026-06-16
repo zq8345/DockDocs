@@ -195,6 +195,10 @@ export async function generateMetadata(args: {
 }): Promise<Metadata> {
   const { locale } = await args.params;
   const meta = await generateMetadataInner(args);
+  // ja is a POC: routes render (mostly English fallback) but must NOT be indexed
+  // until native ja content is complete + native-reviewed. noindex/follow keeps
+  // thin/duplicate /ja/* pages out of Google. Remove this once ja ships natively.
+  if (locale === "ja") return { ...meta, robots: { index: false, follow: true } };
   return locale === "en" ? normalizeEnCanonical(meta) : meta;
 }
 
