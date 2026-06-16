@@ -77,6 +77,7 @@ const copy = {
     fallbackStatus: "Streaming paused. Finishing with the standard response...",
     cancelled: "Cancelled. The partial answer was not saved.",
     truncated: "Context was trimmed to fit the size limit.",
+    verifiedBadge: "Source verified",
   },
   zh: {
     eyebrow: "PDF 问答",
@@ -123,6 +124,7 @@ const copy = {
     fallbackStatus: "流式响应中断，正在使用标准响应完成...",
     cancelled: "已取消。未完成回答不会保存到对话记录。",
     truncated: "上下文已按大小限制裁剪。",
+    verifiedBadge: "已核对原文",
   },
 } as const;
 
@@ -647,7 +649,7 @@ export function AiChatWorkflow({
 
               <section className="mt-6 border-t border-[color:var(--line)] pt-5">
                 <h3 className="text-lg font-semibold text-[color:var(--foreground)]">{t.answer}</h3>
-                <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
+                <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-[color:var(--muted)]">
                   {result?.answer ?? streamingAnswer}
                 </p>
               </section>
@@ -666,7 +668,10 @@ export function AiChatWorkflow({
                           key={reference}
                           className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
                         >
-                          <p className={expanded || !canCollapse ? "" : "line-clamp-3"}>
+                          <span className="mb-2 inline-flex items-center gap-1 rounded-full bg-[rgba(62,207,142,0.1)] px-2 py-0.5 text-[11px] font-semibold text-[color:var(--accent)]">
+                            ✓ {t.verifiedBadge}
+                          </span>
+                          <p className={`mt-1 text-sm ${expanded || !canCollapse ? "" : "line-clamp-3"}`}>
                             {reference}
                           </p>
                           {featureFlags.citationViewer ? (

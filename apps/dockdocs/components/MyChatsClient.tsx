@@ -73,6 +73,7 @@ const STR = {
     restore: "Restore",
     delete: "Delete",
     references: "References",
+    verifiedBadge: "Source verified",
     savedDocs: "Saved documents",
     noDocs: "No document metadata saved yet.",
     docMeta: (chats: number, analyses: number) => `${chats} chats · ${analyses} analyses`,
@@ -121,6 +122,7 @@ const STR = {
     restore: "恢复",
     delete: "删除",
     references: "引用出处",
+    verifiedBadge: "已核对原文",
     savedDocs: "已保存文档",
     noDocs: "还没有保存的文档元数据。",
     docMeta: (chats: number, analyses: number) => `${chats} 次对话 · ${analyses} 次分析`,
@@ -169,6 +171,7 @@ const STR = {
     restore: "Restaurar",
     delete: "Eliminar",
     references: "Referencias",
+    verifiedBadge: "Verificado en el documento",
     savedDocs: "Documentos guardados",
     noDocs: "Aún no hay metadatos de documentos guardados.",
     docMeta: (chats: number, analyses: number) => `${chats} chats · ${analyses} análisis`,
@@ -217,6 +220,7 @@ const STR = {
     restore: "Restaurar",
     delete: "Excluir",
     references: "Referências",
+    verifiedBadge: "Verificado no documento",
     savedDocs: "Documentos salvos",
     noDocs: "Nenhum metadado de documento salvo ainda.",
     docMeta: (chats: number, analyses: number) => `${chats} chats · ${analyses} análises`,
@@ -265,6 +269,7 @@ const STR = {
     restore: "Restaurer",
     delete: "Supprimer",
     references: "Références",
+    verifiedBadge: "Vérifié dans le document",
     savedDocs: "Documents sauvegardés",
     noDocs: "Aucune métadonnée de document sauvegardée pour l'instant.",
     docMeta: (chats: number, analyses: number) => `${chats} chats · ${analyses} analyses`,
@@ -576,7 +581,10 @@ function WorkspaceOverview({
                     <summary className="cursor-pointer text-sm font-semibold text-[color:var(--foreground)]">{t.references}</summary>
                     <ul className="mt-3 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
                       {session.references.map((reference) => (
-                        <li key={reference} className="rounded-md border border-[color:var(--line)] bg-[color:var(--surface)] p-3">{reference}</li>
+                        <li key={reference} className="rounded-md border border-[color:var(--line)] bg-[color:var(--surface)] p-3">
+                          <span className="mb-2 inline-flex items-center gap-1 rounded-full bg-[rgba(62,207,142,0.1)] px-2 py-0.5 text-[11px] font-semibold text-[color:var(--accent)]">✓ {t.verifiedBadge}</span>
+                          <p className="mt-1 text-sm">{reference}</p>
+                        </li>
                       ))}
                     </ul>
                   </details>

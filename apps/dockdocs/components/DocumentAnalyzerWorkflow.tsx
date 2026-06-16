@@ -45,6 +45,7 @@ const copy = {
     risks: "Risks",
     actionItems: "Action Items",
     references: "References",
+    verifiedBadge: "Source verified",
     idle: "Upload a PDF or paste text to start.",
     ready: "Ready to analyze.",
     truncated: "Context was trimmed to fit the size limit.",
@@ -73,6 +74,7 @@ const copy = {
     risks: "风险",
     actionItems: "行动项",
     references: "引用依据",
+    verifiedBadge: "已核对原文",
     idle: "上传 PDF 或粘贴文本开始分析。",
     ready: "已准备分析。",
     truncated: "上下文已按大小限制裁剪。",
@@ -402,7 +404,8 @@ export function DocumentAnalyzerWorkflow({
                       key={reference}
                       className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
                     >
-                      {reference}
+                      <span className="mb-2 inline-flex items-center gap-1 rounded-full bg-[rgba(62,207,142,0.1)] px-2 py-0.5 text-[11px] font-semibold text-[color:var(--accent)]">✓ {t.verifiedBadge}</span>
+                      <p className="mt-1 text-sm">{reference}</p>
                     </li>
                   ))}
                 </ul>
