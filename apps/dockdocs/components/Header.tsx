@@ -11,7 +11,7 @@ type NavItem = { name: string; slug: string; soon?: boolean };
 type NavCol = { heading?: string; items: NavItem[] };
 type NavCat = { label: string; tier: string; cols: NavCol[] };
 
-export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr", NavCat[]> = {
+export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavCat[]> = {
   en: [
     {
       label: "PDF tools",
@@ -615,6 +615,126 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr", NavCat[]> =
       ],
     },
   ],
+  ja: [
+    {
+      label: "PDFツール",
+      tier: "Free",
+      cols: [
+        {
+          heading: "変換",
+          items: [
+            { name: "PDF を Word に変換", slug: "/pdf-to-word" },
+            { name: "PDF を Excel に変換", slug: "/pdf-to-excel" },
+            { name: "PDF を PowerPoint に変換", slug: "/pdf-to-ppt" },
+            { name: "PDF を PDF/A に変換", slug: "/pdf-to-pdfa" },
+            { name: "PDF を画像に変換", slug: "/pdf-to-image" },
+            { name: "PDF を HTML に変換", slug: "/pdf-to-html" },
+            { name: "PDF を Markdown に変換", slug: "/pdf-to-markdown" },
+            { name: "Word を PDF に変換", slug: "/word-to-pdf" },
+            { name: "Excel を PDF に変換", slug: "/excel-to-pdf" },
+            { name: "PowerPoint を PDF に変換", slug: "/ppt-to-pdf" },
+            { name: "画像を PDF に変換", slug: "/images-to-pdf" },
+            { name: "HTML を PDF に変換", slug: "/html-to-pdf" },
+          ],
+        },
+        {
+          heading: "編集・整理",
+          items: [
+            { name: "PDF を分割", slug: "/split-pdf" },
+            { name: "PDF を圧縮", slug: "/compress-pdf" },
+            { name: "ページを削除", slug: "/delete-page" },
+            { name: "ページを回転", slug: "/rotate-page" },
+            { name: "ページを並べ替え", slug: "/reorder-pages" },
+            { name: "ページを追加", slug: "/add-page" },
+            { name: "PDF に透かしを追加", slug: "/watermark-pdf" },
+            { name: "ページ番号を追加", slug: "/page-numbers" },
+            { name: "PDF をトリミング", slug: "/crop-pdf" },
+            { name: "PDF を黒塗り", slug: "/redact-pdf" },
+            { name: "PDF に署名", slug: "/sign-pdf" },
+          ],
+        },
+        {
+          heading: "セキュリティ・OCR",
+          items: [
+            { name: "PDF にパスワードを設定", slug: "/protect-pdf" },
+            { name: "PDF のパスワードを解除", slug: "/unlock-pdf" },
+            { name: "PDF を OCR（文字認識）", slug: "/ocr-pdf" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "一括処理",
+      tier: "Plus",
+      cols: [
+        {
+          items: [
+            { name: "PDF を結合", slug: "/merge-pdf" },
+            { name: "一括圧縮", slug: "/batch-compress" },
+            { name: "PDF を画像に一括変換", slug: "/batch-pdf-to-image" },
+            { name: "一括暗号化", slug: "/batch-protect-pdf" },
+            { name: "一括リネーム", slug: "/batch-rename-pdf" },
+            { name: "一括透かし", slug: "/batch-watermark-pdf" },
+            { name: "一括ページ番号", slug: "/batch-page-numbers" },
+            { name: "一括分割", slug: "/batch-split-merge" },
+            { name: "一括回転", slug: "/batch-rotate-pdf" },
+            { name: "PDF を Word に一括変換", slug: "/batch-pdf-to-word" },
+            { name: "PDF を Excel に一括変換", slug: "/batch-pdf-to-excel" },
+            { name: "Word を PDF に一括変換", slug: "/batch-word-to-pdf" },
+            { name: "Excel を PDF に一括変換", slug: "/batch-excel-to-pdf" },
+            { name: "PowerPoint を PDF に一括変換", slug: "/batch-ppt-to-pdf" },
+            { name: "一括翻訳", slug: "/batch-translate" },
+            { name: "スキャンを一括補正", slug: "/batch-fix-scans" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "AIワークフロー",
+      tier: "Plus",
+      cols: [
+        {
+          heading: "単一文書AI",
+          items: [
+            { name: "AI ワークスペース", slug: "/ai-workspace" },
+            { name: "PDF とチャット", slug: "/chat-with-pdf" },
+            { name: "PDF 要約", slug: "/ai-summary" },
+            { name: "PDF を翻訳", slug: "/translate-pdf" },
+            { name: "契約リスク診断", slug: "/contract-risk" },
+            { name: "賃貸契約リスク診断", slug: "/lease-redflag" },
+            { name: "入札要件コンプライアンス", slug: "/govbid-matrix" },
+          ],
+        },
+        {
+          heading: "複数文書AI",
+          items: [
+            { name: "文書を比較", slug: "/compare" },
+            { name: "文書横断 Q&A", slug: "/compare" },
+            { name: "バージョンを比較", slug: "/redline" },
+            { name: "Excel に抽出", slug: "/extract-to-excel" },
+            { name: "一括要約", slug: "/batch-summary" },
+            { name: "PDF を自動分類", slug: "/batch-sort" },
+          ],
+        },
+      ],
+    },
+    {
+      label: "業種別",
+      tier: "Soon",
+      cols: [
+        {
+          items: [
+            { name: "法務・契約", slug: "/pricing", soon: true },
+            { name: "財務・税務", slug: "/pricing", soon: true },
+            { name: "研究・学術", slug: "/pricing", soon: true },
+            { name: "銀行・金融", slug: "/pricing", soon: true },
+            { name: "建築・エンジニアリング", slug: "/pricing", soon: true },
+            { name: "医療・ヘルスケア", slug: "/pricing", soon: true },
+          ],
+        },
+      ],
+    },
+  ],
 };
 
 const pageLinks = {
@@ -653,14 +773,21 @@ const pageLinks = {
     { name: "À propos", href: "/about" },
     { name: "Contact", href: "/contact" },
   ],
+  ja: [
+    { name: "料金", href: "/pricing" },
+    { name: "ガイド", href: "/guides" },
+    { name: "ブログ", href: "/blog" },
+    { name: "会社概要", href: "/about" },
+    { name: "お問い合わせ", href: "/contact" },
+  ],
 } as const;
 
 type Locale = "en" | "zh";
 
-function stripLocale(p: string): "en" | "zh" | "es" | "pt" | "fr" {
+function stripLocale(p: string): "en" | "zh" | "es" | "pt" | "fr" | "ja" {
   const s = p.split("/").filter(Boolean);
   const first = s[0];
-  return first === "zh" || first === "es" || first === "pt" || first === "fr" ? first : "en";
+  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" ? first : "en";
 }
 function lh(h: string, l: string) {
   return l === defaultLocale ? h : `/${l}${h}`;
