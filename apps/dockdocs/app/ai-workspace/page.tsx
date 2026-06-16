@@ -78,6 +78,34 @@ const workspaceSteps = [
 
 const aiWorkspaceUrl = `${siteUrl}/ai-workspace/`;
 
+const workspaceFaq = [
+  {
+    question: "What can I do in the AI Workspace?",
+    answer:
+      "Upload a PDF and chat with it, generate an AI summary with key points, run OCR on scanned pages, and analyze documents — all in one place, without switching tools.",
+  },
+  {
+    question: "Is the AI Workspace free?",
+    answer:
+      "Yes. You can upload a PDF and start chatting, summarizing, or running OCR for free. AI features have a free quota, with paid plans for heavier use.",
+  },
+  {
+    question: "Do I need an account to chat with a PDF?",
+    answer:
+      "You can try the workspace without signing up. An account lets you save your chats and pick up where you left off across sessions.",
+  },
+  {
+    question: "How is the AI Workspace different from AI Summary?",
+    answer:
+      "AI Summary gives you a one-shot structured summary of a document. The AI Workspace is the full environment: chat back and forth with the PDF, summarize, run OCR, and analyze — use it when one summary is not enough.",
+  },
+  {
+    question: "Are my documents kept private?",
+    answer:
+      "AI features process your document on a server to generate answers and summaries, then discard it. Your files are not stored long-term or used to train models. Page-level PDF tools like compress, merge, and split run entirely in your browser.",
+  },
+];
+
 const aiWorkspaceSchema = {
   "@context": "https://schema.org",
   "@graph": [
@@ -138,6 +166,15 @@ const aiWorkspaceSchema = {
           item: aiWorkspaceUrl,
         },
       ],
+    },
+    {
+      "@type": "FAQPage",
+      "@id": `${aiWorkspaceUrl}#faq`,
+      mainEntity: workspaceFaq.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
     },
   ],
 };
@@ -249,6 +286,40 @@ export default function AiWorkspacePage() {
               </a>
             ))}
           </div>
+        </Container>
+      </Section>
+
+      <Section className="border-t border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
+        <Container className="max-w-3xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
+            FAQ
+          </p>
+          <h2 className="mt-3 text-xl font-semibold leading-snug tracking-tight sm:text-2xl">
+            Frequently asked questions
+          </h2>
+          <dl className="mt-8 space-y-6">
+            {workspaceFaq.map((item) => (
+              <div key={item.question}>
+                <dt className="text-[15px] font-semibold text-[color:var(--foreground)]">
+                  {item.question}
+                </dt>
+                <dd className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                  {item.answer}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-8 text-sm leading-6 text-[color:var(--muted)]">
+            Looking for a quick one-shot summary instead? Try{" "}
+            <a href="/ai-summary/" className="text-[color:var(--accent)] hover:underline">
+              AI Summary
+            </a>
+            . To ask questions about a single document, use{" "}
+            <a href="/chat-with-pdf/" className="text-[color:var(--accent)] hover:underline">
+              Chat with PDF
+            </a>
+            .
+          </p>
         </Container>
       </Section>
     </main>
