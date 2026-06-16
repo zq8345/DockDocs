@@ -615,7 +615,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                 href={`/${tool.slug}/`}
                                 className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
                               >
-                                {locale === "zh" ? tool.zh : tool.en}
+                                {tool[locale] ?? tool.en}
                               </a>
                             ))}
                           </div>
