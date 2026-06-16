@@ -185,6 +185,32 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
       ],
     },
   },
+  "batch-pdf-to-excel": {
+    title: { en: "Batch PDF to Excel — FAQ", zh: "批量 PDF 转 Excel 常见问题", es: "PDF a Excel por lotes — preguntas frecuentes" },
+    items: {
+      en: [
+        { q: "How do I convert several PDFs to Excel at once?", a: "Drop your PDFs onto the page — or a whole folder — then click Convert all. Each file is converted to an editable Excel spreadsheet one by one, and when they finish you click Download ZIP to get them all back in a single archive." },
+        { q: "Will the Excel file look exactly like the original?", a: "No converter can promise a pixel-perfect copy. We extract the tables and text into a genuinely editable .xlsx, which is what you want for working with the numbers — but scanned PDFs or heavily-designed pages may need cleanup afterwards. For a born-digital PDF with clear tables, results are usually close." },
+        { q: "Which PDFs convert best?", a: "PDFs built from clear tables — invoices, bank statements, data sheets — convert best, because the rows and columns map straight into spreadsheet cells. Scanned PDFs have no selectable text, so run OCR on them first. If your PDF is mostly paragraphs rather than tables, the PDF to Word converter usually gives a cleaner result." },
+        { q: "Is there a size or count limit?", a: "You can convert up to 20 PDFs per batch, each up to 5 MB. For a file larger than 5 MB, use the single-file PDF to Excel tool, which handles bigger files." },
+        { q: "Are my files uploaded, and is it free?", a: "It's free with no account. Unlike our browser-only tools, conversion to Excel runs on our own server, so each PDF is sent there, converted, and returned — it is not stored or kept afterwards." },
+      ],
+      zh: [
+        { q: "怎么一次把多个 PDF 转成 Excel？", a: "把多个 PDF 拖到页面上——也可以直接拖入整个文件夹——再点「全部转换」。每个文件逐个转成可编辑的 Excel 表格，完成后点「下载 ZIP」，把它们打包成一个压缩包一起拿回。" },
+        { q: "转出的 Excel 会和原件一模一样吗？", a: "没有任何转换器能保证逐像素还原。我们把表格和文字提取成真正可编辑的 .xlsx，这正是处理数据所需——但扫描件或排版复杂的页面可能需要再整理。对于表格清晰的电子版 PDF，结果通常比较接近。" },
+        { q: "哪类 PDF 转换效果最好？", a: "由清晰表格构成的 PDF——发票、对账单、数据表——效果最好，因为行列能直接对应到表格单元格。扫描件没有可选文字，请先做 OCR。如果 PDF 主要是段落文字而非表格，用「PDF 转 Word」通常更整洁。" },
+        { q: "有数量或大小限制吗？", a: "每批最多转换 20 个 PDF，每个不超过 5MB。超过 5MB 的文件请用单文件的「PDF 转 Excel」工具，那里支持更大的文件。" },
+        { q: "文件会被上传吗？免费吗？", a: "免费、无需注册。与我们的纯浏览器工具不同，转成 Excel 在我们自己的服务器上完成，所以每个 PDF 会被发送到服务器转换后返回——转换后不会保存或留存。" },
+      ],
+      es: [
+        { q: "¿Cómo convierto varios PDF a Excel a la vez?", a: "Arrastra tus PDF a la página (o una carpeta entera) y haz clic en Convertir todo. Cada archivo se convierte a una hoja de cálculo de Excel editable uno por uno y, al terminar, pulsa Descargar ZIP para obtenerlos todos en un solo archivo." },
+        { q: "¿El archivo de Excel quedará exactamente igual que el original?", a: "Ningún convertidor puede prometer una copia idéntica al píxel. Extraemos las tablas y el texto en un .xlsx realmente editable, que es lo que necesitas para trabajar con los datos, pero los PDF escaneados o muy diseñados pueden requerir ajustes después. Para un PDF digital con tablas claras, el resultado suele ser cercano." },
+        { q: "¿Qué PDF se convierten mejor?", a: "Los PDF formados por tablas claras —facturas, extractos bancarios, hojas de datos— se convierten mejor, porque las filas y columnas se asignan directamente a las celdas de la hoja de cálculo. Los PDF escaneados no tienen texto seleccionable, así que aplícales OCR primero. Si tu PDF es mayormente párrafos en lugar de tablas, el convertidor de PDF a Word suele dar un resultado más limpio." },
+        { q: "¿Hay límite de tamaño o cantidad?", a: "Puedes convertir hasta 20 PDF por lote, cada uno de hasta 5 MB. Para un archivo de más de 5 MB, usa la herramienta de un solo archivo PDF a Excel, que admite archivos más grandes." },
+        { q: "¿Se suben mis archivos? ¿Es gratis?", a: "Es gratis y sin cuenta. A diferencia de nuestras herramientas que funcionan solo en el navegador, la conversión a Excel se ejecuta en nuestro propio servidor, así que cada PDF se envía allí, se convierte y se devuelve; no se almacena ni se conserva." },
+      ],
+    },
+  },
   "batch-compress": {
     title: { en: "Batch compress PDF — FAQ", zh: "批量 PDF 压缩常见问题", es: "Comprimir PDF por lotes — preguntas frecuentes" },
     items: {
@@ -1068,6 +1094,16 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Meus arquivos são enviados? É gratuito?", a: "É gratuito e sem conta. Ao contrário das nossas ferramentas que funcionam apenas no navegador, a conversão para Word é executada no nosso próprio servidor, então cada PDF é enviado lá, convertido e devolvido — não é armazenado ou mantido depois." },
     ],
   },
+  "batch-pdf-to-excel": {
+    title: "PDF para Excel em lote — perguntas frequentes",
+    items: [
+      { q: "Como converto vários PDFs em Excel de uma vez?", a: "Solte seus PDFs na página — ou uma pasta inteira — e clique em Converter tudo. Cada arquivo é convertido em uma planilha do Excel editável um por um e, quando terminarem, clique em Baixar ZIP para obter tudo em um único arquivo." },
+      { q: "O arquivo do Excel ficará exatamente igual ao original?", a: "Nenhum conversor pode garantir uma cópia pixel a pixel. Extraímos as tabelas e o texto em um .xlsx realmente editável — que é o que você precisa para trabalhar com os números — mas PDFs digitalizados ou com layout complexo podem precisar de ajustes depois. Para um PDF digital com tabelas claras, o resultado costuma ser próximo." },
+      { q: "Quais PDFs convertem melhor?", a: "PDFs formados por tabelas claras — faturas, extratos bancários, planilhas de dados — convertem melhor, porque as linhas e colunas se mapeiam diretamente para as células da planilha. PDFs digitalizados não têm texto selecionável, então execute o OCR neles primeiro. Se o seu PDF é formado principalmente por parágrafos em vez de tabelas, o conversor de PDF para Word costuma dar um resultado mais limpo." },
+      { q: "Há limite de tamanho ou quantidade?", a: "Você pode converter até 20 PDFs por lote, cada um de até 5 MB. Para um arquivo maior que 5 MB, use a ferramenta de arquivo único PDF para Excel, que suporta arquivos maiores." },
+      { q: "Meus arquivos são enviados? É gratuito?", a: "É gratuito e sem conta. Ao contrário das nossas ferramentas que funcionam apenas no navegador, a conversão para Excel é executada no nosso próprio servidor, então cada PDF é enviado lá, convertido e devolvido — não é armazenado ou mantido depois." },
+    ],
+  },
   "batch-compress": {
     title: "Comprimir PDFs em lote — perguntas frequentes",
     items: [
@@ -1446,6 +1482,16 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Quels PDF se convertissent le mieux ?", a: "Les PDF basés sur du texte et nativement numériques se convertissent le mieux. Les PDF scannés n'ont pas de texte sélectionnable — appliquez-leur d'abord l'OCR, sinon le fichier Word revient vide. Si votre PDF est principalement composé de tableaux, le convertisseur PDF en Excel donne généralement un résultat plus propre." },
       { q: "Y a-t-il une limite de taille ou de nombre ?", a: "Vous pouvez convertir jusqu'à 20 PDF par lot, chacun jusqu'à 5 Mo. Pour un fichier supérieur à 5 Mo, utilisez l'outil fichier unique PDF en Word, qui gère les fichiers plus volumineux." },
       { q: "Mes fichiers sont-ils téléversés ? Est-ce gratuit ?", a: "C'est gratuit et sans compte. Contrairement à nos outils fonctionnant uniquement dans le navigateur, la conversion vers Word s'effectue sur notre propre serveur, donc chaque PDF y est envoyé, converti et renvoyé — il n'est ni stocké ni conservé après coup." },
+    ],
+  },
+  "batch-pdf-to-excel": {
+    title: "PDF en Excel par lot — foire aux questions",
+    items: [
+      { q: "Comment convertir plusieurs PDF en Excel à la fois ?", a: "Déposez vos PDF sur la page — ou un dossier entier — puis cliquez sur Tout convertir. Chaque fichier est converti en feuille de calcul Excel modifiable l'un après l'autre et, une fois terminé, cliquez sur Télécharger le ZIP pour tout obtenir dans une seule archive." },
+      { q: "Le fichier Excel sera-t-il exactement identique à l'original ?", a: "Aucun convertisseur ne peut promettre une copie pixel par pixel. Nous extrayons les tableaux et le texte dans un .xlsx réellement modifiable — ce dont vous avez besoin pour travailler avec les chiffres — mais les PDF scannés ou très élaborés visuellement peuvent nécessiter des ajustements. Pour un PDF numérique avec des tableaux clairs, le résultat est généralement proche." },
+      { q: "Quels PDF se convertissent le mieux ?", a: "Les PDF constitués de tableaux clairs — factures, relevés bancaires, feuilles de données — se convertissent le mieux, car les lignes et les colonnes correspondent directement aux cellules de la feuille de calcul. Les PDF scannés n'ont pas de texte sélectionnable, appliquez-leur donc d'abord l'OCR. Si votre PDF est principalement composé de paragraphes plutôt que de tableaux, le convertisseur PDF en Word donne généralement un résultat plus propre." },
+      { q: "Y a-t-il une limite de taille ou de nombre ?", a: "Vous pouvez convertir jusqu'à 20 PDF par lot, chacun jusqu'à 5 Mo. Pour un fichier supérieur à 5 Mo, utilisez l'outil fichier unique PDF en Excel, qui gère les fichiers plus volumineux." },
+      { q: "Mes fichiers sont-ils téléversés ? Est-ce gratuit ?", a: "C'est gratuit et sans compte. Contrairement à nos outils fonctionnant uniquement dans le navigateur, la conversion vers Excel s'effectue sur notre propre serveur, donc chaque PDF y est envoyé, converti et renvoyé — il n'est ni stocké ni conservé après coup." },
     ],
   },
   "batch-compress": {
