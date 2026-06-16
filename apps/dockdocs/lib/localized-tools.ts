@@ -4273,10 +4273,10 @@ export function getLocalizedToolConfig(
 ): PdfToolPageConfig {
   const base = {
     slug,
-    locale,
+    locale: locale === "ja" ? "en" : locale,
     canonicalPath: localizedPath(locale, (CANONICAL_HUB[slug] ?? slug) as RouteSlug),
     alternateLanguages: languageAlternates(slug),
-    ...localizedTools[locale][slug],
+    ...(localizedTools[locale as keyof typeof localizedTools] ?? localizedTools.en)[slug],
   };
   // For Chinese pages, substitute translated FAQ (zh configs inherit EN FAQ)
   if (locale === "zh" && zhFaq[slug]) {

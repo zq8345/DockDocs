@@ -821,7 +821,7 @@ async function generateMetadataInner({
   }
 
   if (slug === "ai-workspace") {
-    const copy = aiCopy[rawLocale] ?? aiCopy.en;
+    const copy = aiCopy[rawLocale as keyof typeof aiCopy] ?? aiCopy.en;
     return createLocalizedMetadata(
       rawLocale,
       "ai-workspace",
@@ -831,7 +831,7 @@ async function generateMetadataInner({
   }
 
   if (slug === "sitemap") {
-    const copy = sitemapCopy[rawLocale] ?? sitemapCopy.en;
+    const copy = sitemapCopy[rawLocale as keyof typeof sitemapCopy] ?? sitemapCopy.en;
     return createLocalizedMetadata(
       rawLocale,
       "sitemap",
@@ -840,7 +840,7 @@ async function generateMetadataInner({
     );
   }
 
-  const copy = homeCopy[rawLocale];
+  const copy = homeCopy[rawLocale as keyof typeof homeCopy] ?? homeCopy.en;
   return createLocalizedMetadata(rawLocale, "", copy.title, copy.description);
 }
 
@@ -940,110 +940,110 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "batch-compress") {
-    return <BatchCompressClient locale={rawLocale} />;
+    return <BatchCompressClient locale={esLocale} />;
   }
 
   if (slug === "batch-summary") {
-    return <BatchSummaryClient locale={rawLocale} />;
+    return <BatchSummaryClient locale={esLocale} />;
   }
 
   if (slug === "flashcards") {
-    return <QuizClient locale={rawLocale} />;
+    return <QuizClient locale={esLocale} />;
   }
   if (slug === "sign-pdf") {
-    return <>{toolJsonLd}<SignPdfClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<SignPdfClient locale={esLocale} /></>;
   }
 
   if (slug === "redline") {
-    return <>{extraJsonLd}<RedlineClient locale={rawLocale} /></>;
+    return <>{extraJsonLd}<RedlineClient locale={esLocale} /></>;
   }
 
   if (slug === "extract-to-excel") {
-    return <>{extraJsonLd}<ExtractExcelClient locale={rawLocale} /></>;
+    return <>{extraJsonLd}<ExtractExcelClient locale={esLocale} /></>;
   }
 
   if (slug === "crop-pdf") {
-    return <>{extraJsonLd}<CropPdfClient locale={rawLocale} /></>;
+    return <>{extraJsonLd}<CropPdfClient locale={esLocale} /></>;
   }
 
   if (slug === "redact-pdf") {
-    return <>{extraJsonLd}<RedactPdfClient locale={rawLocale} /></>;
+    return <>{extraJsonLd}<RedactPdfClient locale={esLocale} /></>;
   }
 
   if (slug === "batch-pdf-to-image") {
-    return <BatchPdfToImageClient locale={rawLocale} />;
+    return <BatchPdfToImageClient locale={esLocale} />;
   }
 
   if (slug === "batch-protect-pdf") {
-    return <BatchProtectClient locale={rawLocale} />;
+    return <BatchProtectClient locale={esLocale} />;
   }
 
   if (slug === "batch-rename-pdf") {
-    return <BatchRenameClient locale={rawLocale} />;
+    return <BatchRenameClient locale={esLocale} />;
   }
 
   if (slug === "batch-watermark-pdf") {
-    return <BatchStampClient locale={rawLocale} lockMode="watermark" />;
+    return <BatchStampClient locale={esLocale} lockMode="watermark" />;
   }
 
   if (slug === "batch-page-numbers") {
-    return <BatchStampClient locale={rawLocale} lockMode="pagenum" />;
+    return <BatchStampClient locale={esLocale} lockMode="pagenum" />;
   }
 
   if (slug === "batch-split-merge") {
-    return <BatchSplitMergeClient locale={rawLocale} lockMode="split" />;
+    return <BatchSplitMergeClient locale={esLocale} lockMode="split" />;
   }
 
   if (slug === "batch-rotate-pdf") {
-    return <BatchRotateClient locale={rawLocale} />;
+    return <BatchRotateClient locale={esLocale} />;
   }
 
   if (slug === "batch-extract-sheet") {
-    return <ExtractExcelClient locale={rawLocale} />;
+    return <ExtractExcelClient locale={esLocale} />;
   }
 
   if (slug === "batch-sort") {
-    return <BatchSortClient locale={rawLocale} />;
+    return <BatchSortClient locale={esLocale} />;
   }
 
   if (slug === "batch-pdf-to-word") {
-    return <BatchPdfToOfficeClient locale={rawLocale} target="word" />;
+    return <BatchPdfToOfficeClient locale={esLocale} target="word" />;
   }
 
   if (slug === "batch-pdf-to-excel") {
-    return <BatchPdfToOfficeClient locale={rawLocale} target="excel" />;
+    return <BatchPdfToOfficeClient locale={esLocale} target="excel" />;
   }
 
   if (slug === "batch-word-to-pdf") {
-    return <BatchOfficeToPdfClient locale={rawLocale} source="word" />;
+    return <BatchOfficeToPdfClient locale={esLocale} source="word" />;
   }
 
   if (slug === "batch-excel-to-pdf") {
-    return <BatchOfficeToPdfClient locale={rawLocale} source="excel" />;
+    return <BatchOfficeToPdfClient locale={esLocale} source="excel" />;
   }
 
   if (slug === "batch-ppt-to-pdf") {
-    return <BatchOfficeToPdfClient locale={rawLocale} source="ppt" />;
+    return <BatchOfficeToPdfClient locale={esLocale} source="ppt" />;
   }
 
   if (slug === "batch-translate") {
-    return <BatchTranslateClient locale={rawLocale} />;
+    return <BatchTranslateClient locale={esLocale} />;
   }
 
   if (slug === "batch-fix-scans") {
-    return <BatchFixScansClient locale={rawLocale} />;
+    return <BatchFixScansClient locale={esLocale} />;
   }
 
   if (slug === "contract-risk") {
-    return <ContractRiskClient locale={rawLocale} />;
+    return <ContractRiskClient locale={esLocale} />;
   }
 
   if (slug === "lease-redflag") {
-    return <LeaseRedflagClient locale={rawLocale} />;
+    return <LeaseRedflagClient locale={esLocale} />;
   }
 
   if (slug === "govbid-matrix") {
-    return <GovbidMatrixClient locale={rawLocale} />;
+    return <GovbidMatrixClient locale={esLocale} />;
   }
 
   if (slug === "my-chats") {
@@ -1051,11 +1051,11 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "url-to-pdf") {
-    return <>{extraJsonLd}<UrlToPdfClient locale={rawLocale} /></>;
+    return <>{extraJsonLd}<UrlToPdfClient locale={esLocale} /></>;
   }
 
   if (slug === "compare") {
-    return <DocumentCompareClient locale={rawLocale} />;
+    return <DocumentCompareClient locale={esLocale} />;
   }
 
   if (slug === "pricing") {
@@ -1072,59 +1072,59 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "translate-pdf") {
-    return <>{toolJsonLd}<TranslatePdfClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<TranslatePdfClient locale={esLocale} /></>;
   }
 
   if (slug === "reorder-pages") {
-    return <>{toolJsonLd}<PageReorderClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<PageReorderClient locale={esLocale} /></>;
   }
 
   if (slug === "add-page") {
-    return <>{toolJsonLd}<InsertPdfClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<InsertPdfClient locale={esLocale} /></>;
   }
 
   if (slug === "watermark-pdf") {
-    return <>{toolJsonLd}<WatermarkEditorClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<WatermarkEditorClient locale={esLocale} /></>;
   }
 
   if (slug === "delete-page") {
-    return <>{toolJsonLd}<DeletePagesClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<DeletePagesClient locale={esLocale} /></>;
   }
 
   if (slug === "rotate-page") {
-    return <>{toolJsonLd}<RotatePagesClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<RotatePagesClient locale={esLocale} /></>;
   }
 
   if (slug === "merge-pdf") {
-    return <>{toolJsonLd}<MergePdfClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<MergePdfClient locale={esLocale} /></>;
   }
 
   if (slug === "split-pdf") {
-    return <>{toolJsonLd}<SplitPdfClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<SplitPdfClient locale={esLocale} /></>;
   }
 
   if (slug === "pdf-to-jpg") {
-    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale} defaultFormat="jpg" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={esLocale} defaultFormat="jpg" /></>;
   }
 
   if (slug === "pdf-to-png") {
-    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale} defaultFormat="png" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={esLocale} defaultFormat="png" /></>;
   }
 
   if (slug === "page-numbers") {
-    return <>{toolJsonLd}<PageNumbersClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<PageNumbersClient locale={esLocale} /></>;
   }
 
   if (slug === "jpg-to-pdf" || slug === "png-to-pdf") {
-    return <>{toolJsonLd}<ImagesToPdfClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<ImagesToPdfClient locale={esLocale} /></>;
   }
 
   if (slug === "pdf-to-image") {
-    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale} defaultFormat="jpg" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={esLocale} defaultFormat="jpg" /></>;
   }
 
   if (slug === "images-to-pdf") {
-    return <>{toolJsonLd}<ImagesToPdfClient locale={rawLocale} /></>;
+    return <>{toolJsonLd}<ImagesToPdfClient locale={esLocale} /></>;
   }
 
   if ((toolSlugs as readonly string[]).includes(slug)) {
@@ -1152,7 +1152,7 @@ export default async function LocalizedRoute({
       return (
         <>
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema(uiLocale)) }} />
-          <AboutPage locale={rawLocale} />
+          <AboutPage locale={esLocale} />
         </>
       );
     }
@@ -1161,7 +1161,7 @@ export default async function LocalizedRoute({
     return (
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, slug, infoPage.title)) }} />
-        <SaasInfoPage page={infoPage} locale={rawLocale} useLocalePrefix />
+        <SaasInfoPage page={infoPage} locale={esLocale} useLocalePrefix />
       </>
     );
   }
@@ -1179,7 +1179,7 @@ export default async function LocalizedRoute({
     );
   }
 
-  return <LocalizedHome locale={rawLocale} />;
+  return <LocalizedHome locale={esLocale} />;
 }
 
 function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {

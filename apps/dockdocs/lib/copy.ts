@@ -2755,6 +2755,11 @@ export const runtimeCopy = {
   },
 } as const;
 
-export function getRuntimeCopy(locale: RuntimeLocale | "es" | "pt" | "fr" = defaultLocale) {
+// Japanese POC: blocks present here override English via the shallow merge in
+// getRuntimeCopy; everything else falls back to English. Expand as ja grows.
+const runtimeCopyJa: Partial<typeof runtimeCopy.en> = {};
+
+export function getRuntimeCopy(locale: RuntimeLocale | "es" | "pt" | "fr" | "ja" = defaultLocale) {
+  if (locale === "ja") return { ...runtimeCopy.en, ...runtimeCopyJa };
   return runtimeCopy[locale] ?? runtimeCopy.en;
 }
