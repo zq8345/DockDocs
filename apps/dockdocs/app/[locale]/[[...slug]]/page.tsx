@@ -810,7 +810,7 @@ async function generateMetadataInner({
     );
   }
 
-  const copy = homeCopy[uiLocale];
+  const copy = homeCopy[rawLocale];
   return createLocalizedMetadata(rawLocale, "", copy.title, copy.description);
 }
 
@@ -1475,6 +1475,18 @@ const homeCopy = {
     aiTitle: "让每一份文档都能被读懂、核对、对比。",
     aiDescription: "这就是 DockDocs —— 可溯源的 AI，加 20+ 本地 PDF 工具，隐私优先、无需注册。把理解力和可核对的依据放在一起，你只管做决定。",
     stats: [["可溯源", "答案可点回原文"], ["隐私", "文件留在你的设备"], ["安全", "文件用后自动删除"]] as [string, string][],
+  },
+  es: {
+    title: "DockDocs — Plataforma de documentos con IA",
+    description: "Herramientas PDF, chat con IA, OCR, compresión, conversión y más. Procesa documentos en tu navegador, de forma privada y rápida.",
+  },
+  pt: {
+    title: "DockDocs — Plataforma de documentos com IA",
+    description: "Ferramentas PDF, chat com IA, OCR, compressão, conversão e mais. Processe documentos no seu navegador, de forma privada e rápida.",
+  },
+  fr: {
+    title: "DockDocs — Plateforme de documents IA",
+    description: "Outils PDF, chat IA, OCR, compression, conversion et plus. Traitez vos documents dans votre navigateur, en toute confidentialité et rapidement.",
   },
 } as const;
 
