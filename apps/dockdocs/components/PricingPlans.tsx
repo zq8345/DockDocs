@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TIER_CATEGORIES } from "@/lib/tier-config";
 import { localizedPath, type RouteSlug, type RouteLocale } from "@/lib/i18n";
 import { createBillingCheckoutSession, getSubscriptionSnapshot, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
@@ -395,6 +396,7 @@ const copy = {
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [openCat, setOpenCat] = useState<string | null>(null);
   const [billingLoading, setBillingLoading] = useState("");
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
 
@@ -555,29 +557,87 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         </div>
       </div>
 
-      {/* Compare plans */}
+      {/* Compare plans — driven by lib/tier-config.ts */}
       <div className="mx-auto mt-24 max-w-4xl">
         <p className={`${eyebrow} text-center`}>{locale === "zh" ? "// 套餐对照" : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : "// Compare"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.compareTitle}</h2>
-        <div className="mt-10 overflow-x-auto rounded-2xl border border-[color:var(--line)]">
+        <p className="mt-2 text-center text-[13px] text-[color:var(--faint)]">
+          {locale === "zh" ? "点击分类展开该类所有工具" : "Click a category to see the tools it includes"}
+        </p>
+        <div className="mt-8 overflow-x-auto rounded-2xl border border-[color:var(--line)]">
           <table className="w-full border-collapse text-[14px]">
             <thead>
               <tr>
-                <th className="border-b border-[color:var(--line)] px-4 py-3 text-left"></th>
+                <th className="border-b border-[color:var(--line)] px-4 py-3 text-left" />
                 {c.compareCols.map((col, i) => (
                   <th key={col} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center text-[13px] font-normal ${i === 1 ? "text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)]"}`}>{col}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {c.compareRows.map((row) => (
-                <tr key={row.f}>
-                  <td className="border-b border-[color:var(--line)] px-4 py-3 text-[color:var(--foreground)]">{row.f}</td>
-                  {row.v.map((val, i) => (
-                    <td key={i} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center ${val === "✓" ? "text-[color:var(--accent)]" : val === "—" ? "text-[color:var(--faint)]" : "text-[12px] text-[color:var(--muted)]"}`}>{val}</td>
-                  ))}
-                </tr>
-              ))}
+              {TIER_CATEGORIES.flatMap((cat) => {
+                const isOpen = openCat === cat.id;
+                const hasTools = cat.tools.length > 0;
+                const catLabel = locale === "zh" ? cat.label.zh : cat.label.en;
+                const lim = (tier: "free" | "plus" | "pro") => {
+                  const v = cat.limits[tier];
+                  return locale === "zh" ? v.zh : v.en;
+                };
+                const cellCls = (val: string) =>
+                  val === "♾" || val.startsWith("♾") ? "font-medium text-[color:var(--foreground)]"
+                  : val === "—" ? "text-[color:var(--faint)]"
+                  : val.startsWith("✓") ? "font-medium text-[color:var(--accent)]"
+                  : "text-[12px] text-[color:var(--muted)]";
+
+                const rows = [
+                  <tr
+                    key={`row-${cat.id}`}
+                    onClick={() => hasTools && setOpenCat(isOpen ? null : cat.id)}
+                    className={`${hasTools ? "cursor-pointer hover:bg-[color:var(--surface-subtle)]" : ""} transition-colors`}
+                  >
+                    <td className="border-b border-[color:var(--line)] px-4 py-3">
+                      <span className="flex items-center gap-2">
+                        {hasTools ? (
+                          <svg className={`h-3 w-3 shrink-0 opacity-40 transition-transform ${isOpen ? "rotate-90" : ""}`} viewBox="0 0 12 12" fill="none">
+                            <path d="M4 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                          </svg>
+                        ) : (
+                          <span className="inline-block w-3" />
+                        )}
+                        <span className="text-[color:var(--foreground)]">{catLabel}</span>
+                      </span>
+                    </td>
+                    {(["free", "plus", "pro"] as const).map((tier) => {
+                      const val = lim(tier);
+                      return (
+                        <td key={tier} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center ${cellCls(val)}`}>{val}</td>
+                      );
+                    })}
+                  </tr>,
+                ];
+
+                if (isOpen && hasTools) {
+                  rows.push(
+                    <tr key={`tools-${cat.id}`}>
+                      <td colSpan={4} className="border-b border-[color:var(--line)] bg-[color:var(--surface)] px-6 pb-4 pt-2">
+                        <div className="flex flex-wrap gap-2">
+                          {cat.tools.map((tool) => (
+                            <a
+                              key={tool.slug}
+                              href={`/${tool.slug}/`}
+                              className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
+                            >
+                              {locale === "zh" ? tool.zh : tool.en}
+                            </a>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                }
+
+                return rows;
+              })}
             </tbody>
           </table>
         </div>
