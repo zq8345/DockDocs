@@ -4,13 +4,14 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
+import { BatchFileCard } from "@/components/BatchFileCard";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type DocType = "invoice" | "quote" | "contract";
 type Dim = { key: string; label: string };
 type Field = { value: string | null; source: string | null };
 type DocResult = { id: string; name: string; fields: Record<string, Field> };
-type Doc = { id: string; name: string; text: string };
+type Doc = { id: string; name: string; file: File; text: string };
 
 const MAX_FILES = 40;
 const CHUNK = 8; // compare-extract handles up to 8 docs per call
@@ -106,7 +107,7 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
             text += content.items.map((it) => ("str" in it ? it.str : "")).join(" ") + "\n";
           }
           try { doc.destroy(); } catch { /* ignore */ }
-          added.push({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 5)}`, name: f.name, text: text.replace(/\s+/g, " ").trim() });
+          added.push({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 5)}`, name: f.name, file: f, text: text.replace(/\s+/g, " ").trim() });
         } catch (e) {
           if (e && (e as { name?: string }).name === "PasswordException") encrypted = true;
         }
@@ -219,11 +220,15 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
             </div>
           </div>
 
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {docs.slice(0, 30).map((d) => (
-              <li key={d.id} className="max-w-[220px] truncate rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1.5 text-[12.5px] text-[color:var(--muted)]" title={d.name}>{d.name}</li>
+          <ul className="mt-4 grid gap-2">
+            {docs.map((d) => (
+              <BatchFileCard
+                key={d.id}
+                file={d.file}
+                status="queued"
+                onRemove={phase === "idle" ? () => setDocs((prev) => prev.filter((x) => x.id !== d.id)) : undefined}
+              />
             ))}
-            {docs.length > 30 && <li className="px-2 py-1.5 text-[12.5px] text-[color:var(--faint)]">+{docs.length - 30}</li>}
           </ul>
 
           {phase === "done" && dims.length > 0 && (

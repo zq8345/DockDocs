@@ -11,32 +11,37 @@ const STR = {
     folder: "Choose a folder instead",
     note: "or drop files / a folder here",
     privacy: "Processed locally — never uploaded",
+    rejected: (n: number, ext: string) => `${n} file${n > 1 ? "s" : ""} skipped — only ${ext} files are accepted`,
   },
   zh: {
     choose: "选择 PDF",
     folder: "改为选择文件夹",
     note: "或将文件 / 文件夹拖放到此处",
     privacy: "本地处理，文件不上传",
+    rejected: (n: number, ext: string) => `${n} 个文件已跳过 — 仅接受 ${ext} 格式`,
   },
   es: {
     choose: "Elegir PDF",
     folder: "Elegir una carpeta",
     note: "o suelta archivos / una carpeta aquí",
     privacy: "Procesado localmente — sin subir nada",
+    rejected: (n: number, ext: string) => `${n} archivo${n > 1 ? "s" : ""} omitido${n > 1 ? "s" : ""} — solo se aceptan archivos ${ext}`,
   },
   pt: {
     choose: "Escolher PDFs",
     folder: "Escolher uma pasta",
     note: "ou arraste arquivos / pasta aqui",
     privacy: "Processado localmente — nunca enviado",
+    rejected: (n: number, ext: string) => `${n} arquivo${n > 1 ? "s" : ""} ignorado${n > 1 ? "s" : ""} — apenas arquivos ${ext} são aceitos`,
   },
   fr: {
     choose: "Choisir des PDF",
     folder: "Choisir un dossier",
     note: "ou déposez des fichiers / un dossier ici",
     privacy: "Traité localement — jamais envoyé",
+    rejected: (n: number, ext: string) => `${n} fichier${n > 1 ? "s" : ""} ignoré${n > 1 ? "s" : ""} — seuls les fichiers ${ext} sont acceptés`,
   },
-} as const;
+};
 
 // Keep files whose extension matches `extensions`; PDFs are also matched by MIME
 // type so a .pdf with an odd name still gets through. Non-matching files (e.g.
@@ -78,9 +83,18 @@ export function BatchUploadBox({
   const fileRef = useRef<HTMLInputElement>(null);
   const folderRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
+  const [rejected, setRejected] = useState<string | null>(null);
+  const rejectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const take = (list: FileList | null) => {
+  const take = (list: FileList | null, suppressRejected = false) => {
     const matched = matchFiles(list, extensions);
+    const skipped = (list?.length ?? 0) - matched.length;
+    if (!suppressRejected && skipped > 0) {
+      const extLabel = extensions.join(" / ");
+      setRejected(t.rejected(skipped, extLabel));
+      if (rejectTimer.current) clearTimeout(rejectTimer.current);
+      rejectTimer.current = setTimeout(() => setRejected(null), 4000);
+    }
     if (matched.length) onFiles(matched);
   };
 
@@ -97,7 +111,7 @@ export function BatchUploadBox({
       onClick={() => fileRef.current?.click()}
       onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
       onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
-      onDrop={(e) => { e.preventDefault(); setDragging(false); take(e.dataTransfer.files); }}
+      onDrop={(e) => { e.preventDefault(); setDragging(false); take(e.dataTransfer.files, false); }}
     >
       {busy ? (
         <div className="flex flex-col items-center justify-center gap-3 py-1">
@@ -129,6 +143,9 @@ export function BatchUploadBox({
               </>
             )}
           </div>
+          {rejected && (
+            <p className="mt-2 text-[12.5px] text-[#f87171]">{rejected}</p>
+          )}
         </>
       )}
 
@@ -146,7 +163,7 @@ export function BatchUploadBox({
         multiple
         className="hidden"
         {...({ webkitdirectory: "", directory: "" } as Record<string, string>)}
-        onChange={(e) => { take(e.target.files); e.currentTarget.value = ""; }}
+        onChange={(e) => { take(e.target.files, true); e.currentTarget.value = ""; }}
       />
     </div>
   );
