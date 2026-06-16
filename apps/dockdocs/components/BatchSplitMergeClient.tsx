@@ -1,6 +1,7 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
+import { BatchFileCard } from "@/components/BatchFileCard";
 
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
@@ -209,14 +210,19 @@ export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Lo
 
           <ul className="mt-4 grid gap-2">
             {items.map((it) => (
-              <li key={it.id} className="flex items-center justify-between gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2.5 text-[13.5px]">
-                <span className="truncate font-medium text-[color:var(--foreground)]" title={it.name}>{it.name}</span>
-                <span className="shrink-0 text-[12.5px]">
-                  {mode === "split" && it.status === "done" ? <span className="text-[#34d399]">{t.parts(it.parts || 0)}</span>
-                    : it.status === "error" ? <span className="text-[#f87171]" title={it.msg}>{t.failed}</span>
-                      : <span className="text-[color:var(--faint)]">·</span>}
-                </span>
-              </li>
+              <BatchFileCard
+                key={it.id}
+                file={it.file}
+                status={it.status}
+                statusNode={
+                  mode === "split" && it.status === "done"
+                    ? <span className="text-[12.5px] text-[#34d399]">{t.parts(it.parts || 0)}</span>
+                    : it.status === "error"
+                    ? <span className="text-[12.5px] text-[#f87171]" title={it.msg}>{t.failed}</span>
+                    : undefined
+                }
+                onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
+              />
             ))}
           </ul>
           <p className="mt-3 text-[12px] text-[color:var(--faint)]">{t.note}</p>
