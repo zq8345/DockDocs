@@ -3,6 +3,32 @@ type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
 const FAQS: Record<string, { title: { en: string; zh: string; es: string }; items: { en: QA[]; zh: QA[]; es: QA[] } }> = {
+  "govbid-matrix": {
+    title: { en: "Government Bid Compliance Matrix — FAQ", zh: "政府标书合规矩阵常见问题", es: "Matriz de cumplimiento para licitaciones públicas — preguntas frecuentes" },
+    items: {
+      en: [
+        { q: "What does it extract?", a: "It reads an RFP, solicitation, or tender and pulls every binding 'shall/must/will' requirement into a numbered compliance matrix — each row carries the requirement, its section reference, the page, and whether it's mandatory or advisory. You can filter to mandatory-only and export the whole matrix to CSV to drop straight into your proposal-response tracker." },
+        { q: "Can I trace every requirement back to the solicitation?", a: "Yes — that's the point. Every row quotes the exact source text and shows its section and page, so you can verify each requirement against the original document before you commit to it in your bid. If the AI returns a quote we can't find in your file, we label it 'Quote unverifiable' rather than show a fabricated citation. Nothing is invented; what you can't trace, you can see you can't trace." },
+        { q: "Does this replace reading the solicitation myself?", a: "No. It's a fast first pass to make sure no 'shall/must' slips through — it is not a guarantee of completeness and not compliance or legal advice. You remain responsible for your bid's compliance; always read the full solicitation, and treat anything the tool misses as still binding." },
+        { q: "Is my solicitation uploaded or stored?", a: "Your file is read in your browser; only the extracted text is sent for analysis, and it is not stored afterwards. The file itself never leaves your device — which matters for pre-award and confidential tenders." },
+        { q: "Which documents work best?", a: "Text-based PDFs (born-digital). Scanned solicitations have no selectable text — run OCR first. It works in English, Chinese, Spanish, Portuguese, French and more; quotes stay in the document's original language." },
+      ],
+      zh: [
+        { q: "它提取什么?", a: "它读取 RFP、招标或投标文件,把每一条具约束力的「shall/must/will」要求提取成带编号的合规矩阵——每行包含合规要求、所属条款、页码,以及属于强制要求还是建议要求。你可以只看强制项,并把整个矩阵导出为 CSV,直接放进你的投标响应跟踪表。" },
+        { q: "每条要求都能核对回标书原文吗?", a: "可以——这正是它的重点。每一行都引用确切的原文,并标出条款和页码,这样你在投标中承诺之前,能逐条对照原始文件核对。如果 AI 给出的引用在你文件里找不到,我们会标成「引用未验证」,而不是显示伪造的出处。绝不编造;核对不到的,你能一眼看出核对不到。" },
+        { q: "这能替代我自己通读标书吗?", a: "不能。它是快速的第一遍,确保没有「shall/must」被漏掉——它不保证提取完整,也不构成合规意见或法律意见。投标的合规责任仍在你;请完整阅读招标文件,工具漏掉的内容同样具有约束力。" },
+        { q: "我的标书会被上传或保存吗?", a: "文件在你的浏览器中读取,只有提取的文字会被发送去分析,且事后不保存。文件本身不离开你的设备——这对授标前和涉密招标尤其重要。" },
+        { q: "哪类文件效果最好?", a: "文字版 PDF(电子原生)。扫描件没有可选文字,请先做 OCR。支持中文、英文、西班牙语、葡萄牙语、法语等;原文引用保持文件的原始语言。" },
+      ],
+      es: [
+        { q: "¿Qué extrae?", a: "Lee un RFP, pliego o licitación y reúne cada requisito vinculante 'shall/must/will' en una matriz de cumplimiento numerada: cada fila incluye el requisito, su referencia de sección, la página y si es obligatorio o recomendado. Puedes filtrar solo los obligatorios y exportar toda la matriz a CSV para volcarla directamente en tu seguimiento de respuesta a la propuesta." },
+        { q: "¿Puedo rastrear cada requisito hasta el pliego original?", a: "Sí, ese es el objetivo. Cada fila cita el texto fuente exacto y muestra su sección y página, para que verifiques cada requisito contra el documento original antes de comprometerte en tu oferta. Si la IA devuelve una cita que no encontramos en tu archivo, la etiquetamos como 'Cita no verificada' en lugar de mostrar una referencia inventada. No se inventa nada; lo que no puedes rastrear, ves que no puedes rastrearlo." },
+        { q: "¿Esto reemplaza leer el pliego yo mismo?", a: "No. Es una primera pasada rápida para asegurar que ningún 'shall/must' se escape; no garantiza exhaustividad ni es asesoramiento de cumplimiento o legal. La conformidad de tu oferta sigue siendo tu responsabilidad; lee siempre el pliego completo y considera vinculante todo lo que la herramienta pase por alto." },
+        { q: "¿Se sube o almacena mi licitación?", a: "Tu archivo se lee en tu navegador; solo se envía el texto extraído para análisis y no se almacena después. El archivo en sí nunca sale de tu dispositivo, algo clave en licitaciones confidenciales y previas a la adjudicación." },
+        { q: "¿Qué documentos funcionan mejor?", a: "PDF basados en texto (digitales de origen). Las licitaciones escaneadas no tienen texto seleccionable: aplica OCR primero. Funciona en español, inglés, chino, portugués, francés y más; las citas se mantienen en el idioma original del documento." },
+      ],
+    },
+  },
   "contract-risk": {
     title: { en: "Contract Risk Check — FAQ", zh: "合同风险体检常见问题", es: "Revisión de riesgos del contrato — preguntas frecuentes" },
     items: {
@@ -1024,6 +1050,16 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
 
 // cast: remove when "pt" is added to Locale
 const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: string }> }> = {
+  "govbid-matrix": {
+    title: "Matriz de conformidade para licitações públicas — perguntas frequentes",
+    items: [
+      { q: "O que ela extrai?", a: "Lê um RFP, edital ou licitação e reúne cada requisito vinculante 'shall/must/will' em uma matriz de conformidade numerada: cada linha traz o requisito, a referência de seção, a página e se é obrigatório ou recomendado. Você pode filtrar somente os obrigatórios e exportar toda a matriz em CSV para colar direto no seu controle de resposta à proposta." },
+      { q: "Consigo rastrear cada requisito até o edital original?", a: "Sim — esse é o objetivo. Cada linha cita o texto fonte exato e mostra sua seção e página, para você verificar cada requisito no documento original antes de assumi-lo na sua proposta. Se a IA devolver uma citação que não encontramos no seu arquivo, nós a rotulamos como 'Citação não verificável' em vez de exibir uma referência fabricada. Nada é inventado; o que você não consegue rastrear, você vê que não consegue." },
+      { q: "Isso substitui ler o edital eu mesmo?", a: "Não. É uma primeira passada rápida para garantir que nenhum 'shall/must' escape — não garante completude e não é assessoria de conformidade ou jurídica. A conformidade da sua proposta continua sendo sua responsabilidade; leia sempre o edital completo e trate como vinculante tudo o que a ferramenta deixar passar." },
+      { q: "Meu edital é enviado ou armazenado?", a: "Seu arquivo é lido no seu navegador; apenas o texto extraído é enviado para análise, e não é armazenado depois. O arquivo em si nunca sai do seu dispositivo — o que importa em licitações sigilosas e antes da adjudicação." },
+      { q: "Quais documentos funcionam melhor?", a: "PDFs com texto (nativos digitais). Licitações digitalizadas não têm texto selecionável — execute o OCR primeiro. Funciona em português, inglês, espanhol, francês e outros; as citações permanecem no idioma original do documento." },
+    ],
+  },
   "contract-risk": {
     title: "Análise de risco contratual — perguntas frequentes",
     items: [
@@ -1414,6 +1450,16 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
 };
 
 const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: string }> }> = {
+  "govbid-matrix": {
+    title: "Matrice de conformité pour appels d'offres publics — foire aux questions",
+    items: [
+      { q: "Qu'extrait-il ?", a: "Il lit un appel d'offres, un cahier des charges ou un marché et regroupe chaque exigence contraignante « shall/must/will » dans une matrice de conformité numérotée : chaque ligne indique l'exigence, sa référence de section, la page et si elle est obligatoire ou recommandée. Vous pouvez filtrer les exigences obligatoires uniquement et exporter toute la matrice en CSV pour l'intégrer directement à votre suivi de réponse à l'offre." },
+      { q: "Puis-je relier chaque exigence à l'appel d'offres d'origine ?", a: "Oui — c'est tout l'intérêt. Chaque ligne cite le texte source exact et indique sa section et sa page, afin que vous vérifiiez chaque exigence dans le document original avant de vous y engager dans votre offre. Si l'IA renvoie une citation que nous ne trouvons pas dans votre fichier, nous l'étiquetons « Citation non vérifiable » plutôt que d'afficher une référence fabriquée. Rien n'est inventé ; ce que vous ne pouvez pas tracer, vous voyez que vous ne pouvez pas le tracer." },
+      { q: "Cela remplace-t-il la lecture de l'appel d'offres moi-même ?", a: "Non. C'est un premier passage rapide pour s'assurer qu'aucun « shall/must » n'échappe — ce n'est ni une garantie d'exhaustivité, ni un conseil de conformité ou juridique. La conformité de votre offre reste votre responsabilité ; lisez toujours l'appel d'offres en entier et considérez comme contraignant tout ce que l'outil omet." },
+      { q: "Mon appel d'offres est-il téléversé ou stocké ?", a: "Votre fichier est lu dans votre navigateur ; seul le texte extrait est envoyé pour analyse, et il n'est pas conservé ensuite. Le fichier lui-même ne quitte jamais votre appareil — ce qui compte pour les marchés confidentiels et avant attribution." },
+      { q: "Quels documents fonctionnent le mieux ?", a: "Les PDF basés sur du texte (nés numériquement). Les appels d'offres scannés n'ont pas de texte sélectionnable — lancez d'abord l'OCR. Fonctionne en français, anglais, espagnol, portugais et plus ; les citations restent dans la langue originale du document." },
+    ],
+  },
   "contract-risk": {
     title: "Analyse de risques du contrat — foire aux questions",
     items: [
