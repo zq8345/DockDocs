@@ -44,7 +44,6 @@ type RouteMeta = {
 const NOINDEX_SLUGS = new Set<RouteSlug>([
   "ocr", // OCR runtime workspace (app/ocr) — "ocr-pdf" is the indexable SEO page
   "edit-pdf", // Coming-soon placeholder (COMING_SOON_TOOLS) — index:false
-  "compare", // Beta document compare — index:false, follow:false
   "my-chats", // Saved user conversations — index:false
   "dashboard", // Signed-in workspace — index:false
   "account", // Auth / billing — index:false
@@ -76,6 +75,7 @@ const ROUTE_META: Partial<Record<RouteSlug, RouteMeta>> = {
   terms: { name: "Terms of Service", changeFrequency: y, priority: 0.3 },
 
   // AI tools
+  compare: { name: "Compare PDF Documents with AI", changeFrequency: w, priority: 0.85 },
   "chat-with-pdf": { name: "Chat with PDF — AI Document Q&A", changeFrequency: w, priority: 0.85 },
   "ai-summary": { name: "AI Summary — Document Summarizer", changeFrequency: w, priority: 0.8 },
   "ocr-pdf": { name: "OCR PDF — Scanned PDF to Text", changeFrequency: w, priority: 0.8 },

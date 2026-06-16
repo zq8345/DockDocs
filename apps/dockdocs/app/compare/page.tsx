@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { DocumentCompareClient } from "@/components/DocumentCompareClient";
 
 export const metadata: Metadata = {
-  title: "Compare documents (beta) — DockDocs",
+  title: "Compare PDF Documents Side by Side with AI | DockDocs",
   description:
-    "Upload multiple PDFs and extract their text in your browser — the input layer of the DockDocs multi-document comparison engine.",
-  robots: { index: false, follow: false },
+    "Compare two or more PDF documents with AI to spot differences in clauses, terms, and content. Free, browser-based document comparison — nothing uploaded to any server.",
+  alternates: { canonical: "/compare/" },
 };
 
 export default function ComparePage() {
