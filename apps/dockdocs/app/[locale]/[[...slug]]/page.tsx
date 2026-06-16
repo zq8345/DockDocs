@@ -89,6 +89,7 @@ import {
   type GeoPageSlug,
   type InfoPageSlug,
   type Locale,
+  type RouteLocale,
   type RouteSlug,
   type ToolSlug,
 } from "@/lib/i18n";
@@ -142,7 +143,7 @@ export function generateStaticParams() {
 }
 
 function createLocalizedMetadata(
-  locale: Locale,
+  locale: RouteLocale,
   slug: RouteSlug,
   title: string,
   description: string,
@@ -267,10 +268,10 @@ async function generateMetadataInner({
     return {};
   }
 
-  const runtimeCopy = getRuntimeCopy(uiLocale);
+  const runtimeCopy = getRuntimeCopy(rawLocale);
   if (slug === "chat-with-pdf") {
     return createLocalizedMetadata(
-      uiLocale,
+      rawLocale,
       slug,
       runtimeCopy.chat.heroTitle,
       runtimeCopy.chat.heroDescription,
@@ -279,7 +280,7 @@ async function generateMetadataInner({
 
   if (slug === "ai-summary") {
     return createLocalizedMetadata(
-      uiLocale,
+      rawLocale,
       slug,
       runtimeCopy.summary.title,
       runtimeCopy.summary.description,
@@ -288,7 +289,7 @@ async function generateMetadataInner({
 
   if (slug === "ocr") {
     return createLocalizedMetadata(
-      uiLocale,
+      rawLocale,
       slug,
       runtimeCopy.ocr.title,
       runtimeCopy.ocr.description,
@@ -297,7 +298,7 @@ async function generateMetadataInner({
 
   if (slug === "dashboard") {
     return createLocalizedMetadata(
-      uiLocale,
+      rawLocale,
       slug,
       runtimeCopy.dashboard.title,
       runtimeCopy.dashboard.description,
@@ -306,7 +307,7 @@ async function generateMetadataInner({
 
   if (slug === "pricing") {
     return createLocalizedMetadata(
-      uiLocale,
+      rawLocale,
       slug,
       runtimeCopy.pricing.metadataTitle,
       runtimeCopy.pricing.metadataDescription,
@@ -321,7 +322,7 @@ async function generateMetadataInner({
           ? "免费在线给 PDF 签名：手写或打字签名，放到页面上下载，全部在浏览器中完成。"
           : "Sign a PDF online for free — draw or type your signature, place it on the page, and download. Entirely in your browser.",
       alternates: {
-        canonical: localizedPath(uiLocale, "sign-pdf"),
+        canonical: localizedPath(rawLocale, "sign-pdf"),
         languages: languageAlternates("sign-pdf"),
       },
     };
@@ -335,7 +336,7 @@ async function generateMetadataInner({
           ? "拖入整个 PDF 文件夹一次性全部压缩，每个在浏览器中压缩并打包成 ZIP，不上传。"
           : "Drop a whole folder of PDFs and compress them all in one go — each shrunk in your browser and packaged into a single ZIP.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-compress"),
+        canonical: localizedPath(rawLocale, "batch-compress"),
         languages: languageAlternates("batch-compress"),
       },
     };
@@ -349,7 +350,7 @@ async function generateMetadataInner({
           ? "上传一堆 PDF，AI 自动归类、打标签（发票/简历/合同/论文），几秒整理好。"
           : "Upload a pile of PDFs and let AI sort them into categories and tags — organize a folder in seconds.",
       alternates: {
-        canonical: localizedPath(uiLocale, "classify"),
+        canonical: localizedPath(rawLocale, "classify"),
         languages: languageAlternates("classify"),
       },
     };
@@ -363,7 +364,7 @@ async function generateMetadataInner({
           ? "上传多份报告/论文/合同，AI 为每份生成执行摘要和关键要点，一次最多 5 份。"
           : "Upload several reports, papers, or contracts and get a concise AI summary of each — executive summary plus key points.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-summary"),
+        canonical: localizedPath(rawLocale, "batch-summary"),
         languages: languageAlternates("batch-summary"),
       },
     };
@@ -377,7 +378,7 @@ async function generateMetadataInner({
           ? "上传课本章节、讲义或手册，用 AI 生成问答抽认卡（只来自你的文档），点卡片翻面自测。"
           : "Turn a textbook chapter, lecture notes, or manual into study flashcards with AI — questions and answers drawn only from your document.",
       alternates: {
-        canonical: localizedPath(uiLocale, "flashcards"),
+        canonical: localizedPath(rawLocale, "flashcards"),
         languages: languageAlternates("flashcards"),
       },
     };
@@ -391,7 +392,7 @@ async function generateMetadataInner({
           ? "上传原始版和修订版 PDF，逐句对比看清新增和删除的内容，全部在浏览器中完成。"
           : "Compare two PDF versions to see exactly what changed — added text highlighted, removed text struck through. Free and in your browser.",
       alternates: {
-        canonical: localizedPath(uiLocale, "redline"),
+        canonical: localizedPath(rawLocale, "redline"),
         languages: languageAlternates("redline"),
       },
     };
@@ -405,7 +406,7 @@ async function generateMetadataInner({
           ? "上传发票、报价单或合同，用 AI 把关键字段抽成表格，导出 CSV(Excel 可打开)。只报告文档里真实存在的内容。"
           : "Upload invoices, quotes, or contracts and let AI pull the key fields into a spreadsheet you can download as CSV. It only reports what is actually in each document.",
       alternates: {
-        canonical: localizedPath(uiLocale, "extract-to-excel"),
+        canonical: localizedPath(rawLocale, "extract-to-excel"),
         languages: languageAlternates("extract-to-excel"),
       },
     };
@@ -419,7 +420,7 @@ async function generateMetadataInner({
           ? "免费在线裁剪 PDF 页边：用实时预览裁掉任意一边的空白，每页按同样方式裁剪，全部在浏览器中完成。"
           : "Crop PDF margins online for free. Trim whitespace from any edge with a live preview — every page cropped the same, all in your browser.",
       alternates: {
-        canonical: localizedPath(uiLocale, "crop-pdf"),
+        canonical: localizedPath(rawLocale, "crop-pdf"),
         languages: languageAlternates("crop-pdf"),
       },
     };
@@ -433,7 +434,7 @@ async function generateMetadataInner({
           ? "真正涂黑脱敏 PDF：把姓名、号码等敏感文字永久删除(不是盖个黑框)，全部在浏览器中完成，文件不外泄。"
           : "Redact a PDF for real — permanently destroy the hidden text, not just cover it. Entirely in your browser; your file never leaves your device.",
       alternates: {
-        canonical: localizedPath(uiLocale, "redact-pdf"),
+        canonical: localizedPath(rawLocale, "redact-pdf"),
         languages: languageAlternates("redact-pdf"),
       },
     };
@@ -447,7 +448,7 @@ async function generateMetadataInner({
           ? "一次把整个文件夹的 PDF 都转成图片(JPG/PNG)，每页一张、打包成一个 ZIP，全部在浏览器中完成，文件不外泄。"
           : "Convert a whole folder of PDFs to images at once — every page to JPG or PNG, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-pdf-to-image"),
+        canonical: localizedPath(rawLocale, "batch-pdf-to-image"),
         languages: languageAlternates("batch-pdf-to-image"),
       },
     };
@@ -461,7 +462,7 @@ async function generateMetadataInner({
           ? "设一个密码，给整个文件夹的 PDF 一次性加密，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。"
           : "Set one password and encrypt a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-protect-pdf"),
+        canonical: localizedPath(rawLocale, "batch-protect-pdf"),
         languages: languageAlternates("batch-protect-pdf"),
       },
     };
@@ -475,7 +476,7 @@ async function generateMetadataInner({
           ? "一次给整个文件夹的 PDF 改名：按编号模板或查找替换，下载用新名字打包的 ZIP，全部在浏览器中完成。"
           : "Rename a whole folder of PDFs at once — by a numbered pattern or find-and-replace — and download a ZIP with the new names. Entirely in your browser.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-rename-pdf"),
+        canonical: localizedPath(rawLocale, "batch-rename-pdf"),
         languages: languageAlternates("batch-rename-pdf"),
       },
     };
@@ -489,7 +490,7 @@ async function generateMetadataInner({
           ? "给整个文件夹的 PDF 一次性加水印或加页码，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。"
           : "Add a watermark or page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-watermark-pdf"),
+        canonical: localizedPath(rawLocale, "batch-watermark-pdf"),
         languages: languageAlternates("batch-watermark-pdf"),
       },
     };
@@ -503,7 +504,7 @@ async function generateMetadataInner({
           ? "给整个文件夹的 PDF 一次性加页码，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。"
           : "Add page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-page-numbers"),
+        canonical: localizedPath(rawLocale, "batch-page-numbers"),
         languages: languageAlternates("batch-page-numbers"),
       },
     };
@@ -517,7 +518,7 @@ async function generateMetadataInner({
           ? "把整个文件夹的 PDF 合并成一个，或把每份按 N 页拆分，全部在浏览器中完成、打包下载，文件不外泄。"
           : "Merge a whole folder of PDFs into one, or split each into N-page files — all in your browser, packaged for download. Your files never leave your device.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-split-merge"),
+        canonical: localizedPath(rawLocale, "batch-split-merge"),
         languages: languageAlternates("batch-split-merge"),
       },
     };
@@ -531,7 +532,7 @@ async function generateMetadataInner({
           ? "一次纠正整个文件夹横着或倒着的扫描件：把每份 PDF 每页旋转，打包 ZIP，全部在浏览器中完成，文件不外泄。"
           : "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF and download one ZIP. Entirely in your browser.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-rotate-pdf"),
+        canonical: localizedPath(rawLocale, "batch-rotate-pdf"),
         languages: languageAlternates("batch-rotate-pdf"),
       },
     };
@@ -545,7 +546,7 @@ async function generateMetadataInner({
           ? "拖入整个文件夹的发票/报价/合同，AI 把每份的关键字段抽进同一张表(一份一行)，导出 CSV。AI 只报告真实存在的内容。"
           : "Drop a whole folder of invoices, quotes, or contracts — AI pulls the key fields from every file into one table (one row each) and exports CSV. It only reports what's actually there.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-extract-sheet"),
+        canonical: localizedPath(rawLocale, "batch-extract-sheet"),
         languages: languageAlternates("batch-extract-sheet"),
       },
     };
@@ -559,7 +560,7 @@ async function generateMetadataInner({
           ? "拖入一堆杂乱 PDF,AI 给每份分类并分到一个 ZIP 里的不同文件夹，全部在浏览器中完成，文件不外泄。"
           : "Drop a messy pile of PDFs — AI labels each and sorts them into folders inside one ZIP. Entirely in your browser; your files never leave your device.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-sort"),
+        canonical: localizedPath(rawLocale, "batch-sort"),
         languages: languageAlternates("batch-sort"),
       },
     };
@@ -573,7 +574,7 @@ async function generateMetadataInner({
           ? "把整个文件夹的 PDF 一次性转成可编辑的 Word 或 Excel，打包成一个 ZIP，转换在服务器完成。"
           : "Convert a whole folder of PDFs to editable Word or Excel files at once, packaged into one ZIP.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-pdf-to-office"),
+        canonical: localizedPath(rawLocale, "batch-pdf-to-office"),
         languages: languageAlternates("batch-pdf-to-office"),
       },
     };
@@ -587,7 +588,7 @@ async function generateMetadataInner({
           ? "把整个文件夹的 Word、PowerPoint、Excel 一次性转成 PDF，打包成一个 ZIP，转换在服务器完成。"
           : "Convert a whole folder of Word, PowerPoint, and Excel files to PDF at once, packaged into one ZIP.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-office-to-pdf"),
+        canonical: localizedPath(rawLocale, "batch-office-to-pdf"),
         languages: languageAlternates("batch-office-to-pdf"),
       },
     };
@@ -601,7 +602,7 @@ async function generateMetadataInner({
           ? "把整个文件夹的 PDF 一次性翻译成一种语言，每份的文字翻译后打包成 .txt 的 ZIP。"
           : "Translate a whole folder of PDFs into one language at once — each document's text translated and packaged into a ZIP of .txt files.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-translate"),
+        canonical: localizedPath(rawLocale, "batch-translate"),
         languages: languageAlternates("batch-translate"),
       },
     };
@@ -615,7 +616,7 @@ async function generateMetadataInner({
           ? "一次清理整个文件夹的扫描件：给每页裁掉相同页边，或从每个文件删相同页，全部在浏览器中完成、打包 ZIP。"
           : "Clean up a whole folder of scanned PDFs at once — crop the same margins off every page or delete the same pages from each file. All in your browser, one ZIP.",
       alternates: {
-        canonical: localizedPath(uiLocale, "batch-fix-scans"),
+        canonical: localizedPath(rawLocale, "batch-fix-scans"),
         languages: languageAlternates("batch-fix-scans"),
       },
     };
@@ -629,7 +630,7 @@ async function generateMetadataInner({
           ? "上传合同,得到白话的风险清单:风险/单边/缺失条款,红黄绿标注、引用原文、附该问什么。仅供参考,非法律意见。"
           : "Upload a contract and get a plain-language list of risky, one-sided, or missing clauses — flagged red/amber/green, quoted from your document. Informational, not legal advice.",
       alternates: {
-        canonical: localizedPath(uiLocale, "contract-risk"),
+        canonical: localizedPath(rawLocale, "contract-risk"),
         languages: languageAlternates("contract-risk"),
       },
     };
@@ -646,7 +647,7 @@ async function generateMetadataInner({
           ? "上传住宅或商业租约,标红不公平条款——租金飞涨、高额违约、入侵检查权等。逐条引用原文,附签字前该问什么。仅供参考,非法律意见。"
           : "Upload a lease and get a plain-language list of risky, unfair, or missing tenant clauses — flagged red/amber/green, quoted from your document. Informational, not legal advice.",
       alternates: {
-        canonical: localizedPath(uiLocale, "lease-redflag"),
+        canonical: localizedPath(rawLocale, "lease-redflag"),
         languages: languageAlternates("lease-redflag"),
       },
     };
@@ -663,7 +664,7 @@ async function generateMetadataInner({
           ? "上传 RFP 或政府招标文件，AI 自动提取每条强制性要求生成编号合规矩阵，带条款编号和页码引用，可导出 CSV。"
           : "Upload an RFP or solicitation and get every mandatory 'shall/must' requirement extracted into a numbered compliance matrix with section references. Export to CSV.",
       alternates: {
-        canonical: localizedPath(uiLocale, "govbid-matrix"),
+        canonical: localizedPath(rawLocale, "govbid-matrix"),
         languages: languageAlternates("govbid-matrix"),
       },
     };
@@ -677,7 +678,7 @@ async function generateMetadataInner({
           ? "查看已保存的「和 PDF 对话」记录和上传文档的元数据。"
           : "View saved Chat with PDF conversations and uploaded document metadata in DockDocs.",
       alternates: {
-        canonical: localizedPath(uiLocale, "my-chats"),
+        canonical: localizedPath(rawLocale, "my-chats"),
         languages: languageAlternates("my-chats"),
       },
       robots: { index: false, follow: true },
@@ -692,7 +693,7 @@ async function generateMetadataInner({
           ? "免费把任意公开网页转换为 PDF：粘贴网址，下载用真实浏览器引擎渲染的干净 PDF——无需上传、无需安装。"
           : "Convert any public web page to PDF online for free. Paste a URL and download a clean, browser-rendered PDF — no upload, no install.",
       alternates: {
-        canonical: localizedPath(uiLocale, "url-to-pdf"),
+        canonical: localizedPath(rawLocale, "url-to-pdf"),
         languages: languageAlternates("url-to-pdf"),
       },
     };
@@ -706,7 +707,7 @@ async function generateMetadataInner({
           ? "上传多份 PDF，在浏览器抽取文本，并排对比关键字段——每个值都带原文出处。"
           : "Upload multiple PDFs, extract text in your browser, and line up the key terms side by side — with the source behind every value.",
       alternates: {
-        canonical: localizedPath(uiLocale, "compare"),
+        canonical: localizedPath(rawLocale, "compare"),
         languages: languageAlternates("compare"),
       },
       robots: { index: false, follow: false },
@@ -721,7 +722,7 @@ async function generateMetadataInner({
           ? "使用 Google、Microsoft 或邮箱登录 DockDocs，管理你的工作区与订阅。"
           : "Sign in to DockDocs with Google, Microsoft, or email. Manage your workspace and billing.",
       alternates: {
-        canonical: localizedPath(uiLocale, "account"),
+        canonical: localizedPath(rawLocale, "account"),
         languages: languageAlternates("account"),
       },
       robots: { index: false, follow: true },
@@ -732,25 +733,34 @@ async function generateMetadataInner({
     const t = COMING_SOON_TOOLS[slug];
     return {
       title: `${uiLocale === "zh" ? t.zh : t.en} — ${uiLocale === "zh" ? "即将推出" : "Coming Soon"} | DockDocs`,
-      alternates: { canonical: localizedPath(uiLocale, slug as RouteSlug) },
+      alternates: { canonical: localizedPath(rawLocale, slug as RouteSlug) },
       robots: { index: false, follow: true },
     };
   }
 
   if (slug === "pdf-to-image") {
-    return createLocalizedMetadata(
-      uiLocale,
-      "pdf-to-image",
-      uiLocale === "zh" ? "PDF 转图片 — PDF 转 JPG 或 PNG" : "PDF to Image — Convert PDF to JPG & PNG",
-      uiLocale === "zh"
+    const title =
+      rawLocale === "zh" ? "PDF 转图片 — PDF 转 JPG 或 PNG"
+      : rawLocale === "es" ? "PDF a imagen — Convertir PDF a JPG y PNG"
+      : rawLocale === "pt" ? "PDF para imagem — Converter PDF em JPG e PNG"
+      : rawLocale === "fr" ? "PDF en image — Convertir PDF en JPG et PNG"
+      : "PDF to Image — Convert PDF to JPG & PNG";
+    const desc =
+      rawLocale === "zh"
         ? "在浏览器里把 PDF 页面转成 JPG 或 PNG 图片：选页、选格式、下载，文件不离开你的设备。"
-        : "Convert PDF pages to JPG or PNG images online for free. Pick the pages, choose the format, and download — all in your browser.",
-    );
+        : rawLocale === "es"
+        ? "Convierte páginas PDF a imágenes JPG o PNG en línea gratis. Elige las páginas, el formato y descarga — todo en tu navegador."
+        : rawLocale === "pt"
+        ? "Converta páginas PDF em imagens JPG ou PNG online gratuitamente. Escolha as páginas, o formato e baixe — tudo no seu navegador."
+        : rawLocale === "fr"
+        ? "Convertissez des pages PDF en images JPG ou PNG en ligne gratuitement. Choisissez les pages, le format et téléchargez — tout dans votre navigateur."
+        : "Convert PDF pages to JPG or PNG images online for free. Pick the pages, choose the format, and download — all in your browser.";
+    return createLocalizedMetadata(rawLocale, "pdf-to-image", title, desc);
   }
 
   if (slug === "images-to-pdf") {
     return createLocalizedMetadata(
-      uiLocale,
+      rawLocale,
       "images-to-pdf",
       uiLocale === "zh" ? "图片转 PDF — JPG/PNG/WebP 转 PDF" : "Image to PDF — JPG, PNG & WebP to PDF",
       uiLocale === "zh"
@@ -767,23 +777,23 @@ async function generateMetadataInner({
 
   if ((geoPageSlugs as readonly string[]).includes(slug)) {
     const hub = getGeoHub(uiLocale, slug as GeoPageSlug);
-    return createGeoHubMetadata(hub, localizedPath(uiLocale, slug));
+    return createGeoHubMetadata(hub, localizedPath(rawLocale, slug));
   }
 
   if ((infoPageSlugs as readonly string[]).includes(slug)) {
     if (slug === "blog") {
       const page = blogIndexCopy[uiLocale];
-      return createLocalizedMetadata(uiLocale, "blog", page.title, page.description);
+      return createLocalizedMetadata(rawLocale, "blog", page.title, page.description);
     }
 
     const page = getInfoPage(rawLocale, slug as InfoPageSlug);
-    return createLocalizedMetadata(uiLocale, slug, page.title, page.description);
+    return createLocalizedMetadata(rawLocale, slug, page.title, page.description);
   }
 
   if (slug === "ai-workspace") {
-    const copy = aiCopy[uiLocale];
+    const copy = aiCopy[rawLocale] ?? aiCopy.en;
     return createLocalizedMetadata(
-      uiLocale,
+      rawLocale,
       "ai-workspace",
       copy.title,
       copy.description,
@@ -791,9 +801,9 @@ async function generateMetadataInner({
   }
 
   if (slug === "sitemap") {
-    const copy = sitemapCopy[uiLocale];
+    const copy = sitemapCopy[rawLocale] ?? sitemapCopy.en;
     return createLocalizedMetadata(
-      uiLocale,
+      rawLocale,
       "sitemap",
       copy.title,
       copy.description,
@@ -801,7 +811,7 @@ async function generateMetadataInner({
   }
 
   const copy = homeCopy[uiLocale];
-  return createLocalizedMetadata(uiLocale, "", copy.title, copy.description);
+  return createLocalizedMetadata(rawLocale, "", copy.title, copy.description);
 }
 
 export default async function LocalizedRoute({
