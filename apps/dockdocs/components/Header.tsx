@@ -737,7 +737,7 @@ export function Header() {
         onClick={() => setLangOpen((v) => !v)}
         className="flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
       >
-        <svg className="h-3 w-3 -rotate-90 opacity-60" viewBox="0 0 12 12" fill="none">
+        <svg className="h-3 w-3 rotate-[-90deg] opacity-60" viewBox="0 0 12 12" fill="none">
           <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
         <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : "Language"}</span>
