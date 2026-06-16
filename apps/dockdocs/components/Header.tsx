@@ -737,16 +737,16 @@ export function Header() {
         onClick={() => setLangOpen((v) => !v)}
         className="flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
       >
-        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : "Language"}</span>
-        <span className="flex items-center gap-1.5">
-          <span className="text-[12px] text-[color:var(--faint)]">{localeLabels[locale as keyof typeof localeLabels] ?? locale}</span>
-          <svg className="h-3 w-3 rotate-90 opacity-60" viewBox="0 0 12 12" fill="none">
-            <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
+        <span className="flex items-center gap-2">
+          <span className="text-[14px] opacity-70">🌐</span>
+          <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : "Language"}</span>
         </span>
+        <svg className="h-3 w-3 rotate-90 opacity-60" viewBox="0 0 12 12" fill="none">
+          <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
       </button>
       {langOpen && (
-        <div className="absolute right-full top-0 z-10 mr-1 min-w-[180px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+        <div className="absolute right-full bottom-0 z-10 mr-1 min-w-[180px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
           {(routeLocales as readonly string[]).map((l) => (
             <button
               key={l}
@@ -759,7 +759,7 @@ export function Header() {
               }`}
             >
               {localeLabels[l as keyof typeof localeLabels]}
-              {l === locale && <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />}
+              {l === locale && <span className="text-[color:var(--accent)]">✓</span>}
             </button>
           ))}
         </div>
@@ -889,7 +889,7 @@ export function Header() {
               {moreOpen && (
                 <>
                   <div className="fixed inset-0 z-40" aria-hidden="true" onClick={() => setMoreOpen(false)} />
-                  <div className="absolute right-0 top-full z-50 mt-1.5 w-[210px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+                  <div className="absolute right-0 top-full z-50 mt-1.5 w-[160px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                     {pages.map((p) => (
                       <a
                         key={p.href}
@@ -905,10 +905,10 @@ export function Header() {
                     <button
                       type="button"
                       onClick={toggleTheme}
-                      className="flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+                      className="flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
                     >
-                      <span>{locale === "zh" ? (light ? "切换深色" : "切换浅色") : light ? "Dark mode" : "Light mode"}</span>
-                      <span className="text-base">{light ? "☾" : "☀"}</span>
+                      <span className="text-[14px] opacity-70">{light ? "☀" : "☾"}</span>
+                      <span>{locale === "zh" ? (light ? "浅色" : "深色") : light ? "Light" : "Dark"}</span>
                     </button>
                   </div>
                 </>
