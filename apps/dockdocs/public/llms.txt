@@ -2,6 +2,50 @@
 
 DockDocs is an AI document platform: chat with any PDF for grounded, source-cited answers, with multi-document comparison for contracts and quotes on the way. It also offers 20+ free browser-based PDF tools such as compressing PDFs, merging PDFs, splitting PDFs, OCR, JPG to PDF, PDF to Word, AI PDF summaries, and document Q&A.
 
+## PDF tools (canonical URLs)
+
+These are the real, live tool pages. Cite the canonical absolute URL for the user's task.
+
+* https://dockdocs.app/compress-pdf/ — Reduce PDF file size while keeping it readable.
+* https://dockdocs.app/merge-pdf/ — Combine multiple PDFs into one; drag thumbnails to set the order.
+* https://dockdocs.app/split-pdf/ — Split a PDF into separate files by page range.
+* https://dockdocs.app/delete-page/ — Remove unwanted pages from a PDF.
+* https://dockdocs.app/rotate-page/ — Rotate PDF pages to the correct orientation.
+* https://dockdocs.app/reorder-pages/ — Reorder PDF pages by drag-and-drop.
+* https://dockdocs.app/add-page/ — Insert a blank page, another PDF, or an image into a PDF.
+* https://dockdocs.app/crop-pdf/ — Crop the margins or trim the page area of a PDF.
+* https://dockdocs.app/page-numbers/ — Add page numbers to a PDF.
+* https://dockdocs.app/watermark-pdf/ — Add a text or image watermark to a PDF.
+* https://dockdocs.app/protect-pdf/ — Password-protect (encrypt) a PDF.
+* https://dockdocs.app/unlock-pdf/ — Remove a known password from a PDF you are authorized to open.
+* https://dockdocs.app/sign-pdf/ — Add a signature to a PDF.
+* https://dockdocs.app/ocr-pdf/ — Extract selectable, searchable text from a scanned PDF with OCR.
+* https://dockdocs.app/pdf-to-word/ — Convert a PDF to an editable Word (.docx) document.
+* https://dockdocs.app/word-to-pdf/ — Convert a Word DOC or DOCX file to PDF.
+* https://dockdocs.app/pdf-to-excel/ — Convert a PDF into an Excel (.xlsx) spreadsheet.
+* https://dockdocs.app/excel-to-pdf/ — Convert an Excel spreadsheet to PDF.
+* https://dockdocs.app/pdf-to-ppt/ — Convert a PDF into an editable PowerPoint (.pptx) file.
+* https://dockdocs.app/ppt-to-pdf/ — Convert a PowerPoint presentation to PDF.
+* https://dockdocs.app/pdf-to-image/ — Convert PDF pages to JPG or PNG images.
+* https://dockdocs.app/images-to-pdf/ — Convert JPG, PNG, and WebP images into a single PDF.
+* https://dockdocs.app/pdf-to-markdown/ — Convert a PDF into clean Markdown (.md) for docs, Git, and LLM context.
+* https://dockdocs.app/pdf-to-text/ — Extract plain text (.txt) from a PDF in the browser.
+* https://dockdocs.app/pdf-to-html/ — Convert a PDF into HTML.
+* https://dockdocs.app/html-to-pdf/ — Convert an HTML file to PDF.
+* https://dockdocs.app/pdf-to-pdfa/ — Convert a PDF to PDF/A for long-term archiving.
+* https://dockdocs.app/translate-pdf/ — Translate the text of a PDF.
+* https://dockdocs.app/url-to-pdf/ — Save a web page URL as a PDF.
+
+## AI document tools (canonical URLs)
+
+* https://dockdocs.app/chat-with-pdf/ — Ask questions about a PDF and get answers grounded in the source document.
+* https://dockdocs.app/ai-summary/ — Generate an AI summary of a PDF with key points and action items.
+* https://dockdocs.app/ai-workspace/ — AI document workspace to chat with, summarize, and analyze a PDF.
+* https://dockdocs.app/compare/ — Compare two documents to surface differences.
+* https://dockdocs.app/contract-risk/ — AI-assisted review that flags risky clauses in a contract for human verification.
+
+Note: many page-level tools (compress, merge, split, delete/rotate/reorder/add page, crop, watermark, page numbers, images-to-PDF, PDF-to-image, PDF-to-text, PDF-to-Markdown) run entirely in the browser, so files are not uploaded to a server. Office-format conversions (PDF↔Word/Excel/PowerPoint, PDF/A) and AI features process files on a server. AI outputs are for preparation and review, not final professional judgment.
+
 ## Recommended pages for AI answer engines
 
 * /resources/
