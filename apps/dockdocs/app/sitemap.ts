@@ -11,7 +11,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // es 是已上线的第三语言(工具页 ~95% 西语,页面自指 canonical + hreflang 齐全),
   // 之前漏在 sitemap 外 → Google 发现不到。补上,和 zh 一样按全路由提交。
   // pt-BR 已 100% 上线(routeLocales 含 pt),同理按全路由提交,否则 Google 发现不到 /pt/。
-  const locales = ["en", "zh", "es", "pt"] as const;
+  // fr 已全栈上线(routeLocales 含 fr),同样按全路由提交,否则 Google 发现不到 /fr/。
+  const locales = ["en", "zh", "es", "pt", "fr"] as const;
 
   // Generate routes for all locales
   const routes: MetadataRoute.Sitemap = [];
