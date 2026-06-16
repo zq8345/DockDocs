@@ -857,6 +857,9 @@ export default async function LocalizedRoute({
   // extLocale: en|zh|es|pt for workspace components that support Spanish/Portuguese
   const uiLocale: "en" | "zh" = rawLocale === "zh" ? "zh" : "en";
   const esLocale: Locale | "es" | "pt" | "fr" = rawLocale === "zh" ? "zh" : rawLocale === "es" ? "es" : rawLocale === "pt" ? "pt" : (rawLocale as string) === "fr" ? "fr" : "en";
+  // pocLocale: like esLocale but keeps ja for POC components that have native ja content
+  // (others fall back to English via esLocale). Widen this as ja coverage grows.
+  const pocLocale: Locale | "es" | "pt" | "fr" | "ja" = (rawLocale as string) === "ja" ? "ja" : esLocale;
 
   const programmaticGeoRoute = getLocalizedProgrammaticGeoRoute(rawSlug);
   if (programmaticGeoRoute) {
@@ -1035,7 +1038,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "contract-risk") {
-    return <ContractRiskClient locale={esLocale} />;
+    return <ContractRiskClient locale={pocLocale} />;
   }
 
   if (slug === "lease-redflag") {

@@ -1,4 +1,4 @@
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
@@ -2033,6 +2033,17 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
   },
 };
 
+const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: string }> }> = {
+  "contract-risk": {
+    title: "契約リスク診断 — よくある質問",
+    items: [
+      { q: "何をチェックしますか？", a: "契約書をスキャンし、見直す価値のある条項を洗い出します——自動更新、一方的な解約・変更、上限のない／無制限の責任、違約金・遅延損害金、支払いの落とし穴や隠れたコスト、過度に広い競業避止、そして標準的な保護の欠落（責任の上限がない等）です。各項目を赤（高）／黄（中）／緑（低）で表示し、契約書から該当箇所を引用したうえで、平易な理由と署名前に確認すべき点を示します。" },
+      { q: "これは法的助言ですか？", a: "いいえ。これは、法律の専門家でない方が注意すべき条項を見つけるのを支援する自動レビューであり、法的助言ではなく、弁護士の代わりにもなりません。重要な契約や金額の大きい契約は、必ず資格のある弁護士にご確認ください。何も指摘されないことは、契約書が安全である保証にはなりません。" },
+      { q: "条項や引用を作り出すことはありますか？", a: "すべての引用は実際の契約書本文と照合します——AI が返した引用が文書内に見つからない場合は、事実と異なる出典を表示するのではなく、その引用を破棄します。欠落している条項のリスクは引用なしで、その旨を明記して表示します。AI が見落とす可能性は残るため、契約書は必ず全文をお読みください。" },
+    ],
+  },
+};
+
 export function ToolFaq({ tool, locale = "en" }: { tool: string; locale?: Locale }) {
   if (locale === "pt") {
     const ptData = FAQS_PT[tool];
@@ -2059,6 +2070,23 @@ export function ToolFaq({ tool, locale = "en" }: { tool: string; locale?: Locale
         <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{frData.title}</h2>
         <div className="mt-6 space-y-6">
           {frData.items.map((it) => (
+            <div key={it.q}>
+              <h3 className="text-[15px] font-medium text-[color:var(--foreground)]">{it.q}</h3>
+              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{it.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+  if (locale === "ja") {
+    const jaData = FAQS_JA[tool];
+    if (!jaData) return null;
+    return (
+      <section className="mx-auto mt-12 border-t border-[color:var(--line)] pt-10">
+        <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{jaData.title}</h2>
+        <div className="mt-6 space-y-6">
+          {jaData.items.map((it) => (
             <div key={it.q}>
               <h3 className="text-[15px] font-medium text-[color:var(--foreground)]">{it.q}</h3>
               <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{it.a}</p>

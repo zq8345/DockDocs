@@ -9,7 +9,7 @@ import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useMemo, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type RiskLevel = "high" | "medium" | "low";
 type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string };
 
@@ -145,6 +145,32 @@ const STR = {
     errPrefix: "Impossible de terminer l'analyse : ",
     retry: "Réessayer",
     privacy: "Votre contrat est lu dans votre navigateur ; seul le texte extrait est transmis pour l'analyse.",
+  },
+  ja: {
+    title: "契約リスク診断",
+    subtitle:
+      "契約書をアップロードすると、リスクのある条項・一方的な条項・欠けている条項を分かりやすく一覧にします。各項目を赤／黄／緑で重要度表示し、契約書から該当箇所を引用したうえで、署名前に確認すべき点をお伝えします。",
+    proBadge: "PRO",
+    drop: "契約書 PDF をここにドラッグ＆ドロップ、またはクリックして選択",
+    choose: "契約書 PDF を選択",
+    extracting: "契約書を読み込んでいます…",
+    pagesChars: (p: number, c: number) => `${p} ページ · ${c.toLocaleString()} 文字`,
+    noText: "選択できるテキストが見つかりませんでした。スキャンした契約書ですか？まず OCR を実行してください。",
+    tooLong: `この契約書は ${MAX_CHARS.toLocaleString()} 文字の上限を超えています。先頭部分のみを分析します。`,
+    analyze: "リスクを診断",
+    analyzing: "確認しています…",
+    result: (n: number) => `確認すべきポイント ${n} 件`,
+    noRisks: "明確なリスク条項は見つかりませんでした。これは契約書が安全であることを保証するものではありません。必ず全文をお読みください。",
+    disclaimer: "本診断は、注意すべき条項を見つけるお手伝いをする自動レビューであり、法的助言ではありません。重要な事項は弁護士にご相談ください。",
+    levelHigh: "高", levelMedium: "中", levelLow: "低",
+    quoteLabel: "契約書からの引用",
+    notLocated: "欠けている保護条項として指摘（引用なし）。",
+    whyLabel: "重要な理由",
+    suggestionLabel: "確認すべきこと",
+    reset: "別の契約書を診断",
+    errPrefix: "レビューを完了できませんでした: ",
+    retry: "再試行",
+    privacy: "契約書はお使いのブラウザ内で読み込まれ、抽出されたテキストのみが分析のために送信されます。",
   },
 };
 
