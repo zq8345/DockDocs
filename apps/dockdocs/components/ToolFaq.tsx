@@ -3,6 +3,32 @@ type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
 const FAQS: Record<string, { title: { en: string; zh: string; es: string }; items: { en: QA[]; zh: QA[]; es: QA[] } }> = {
+  "chat-with-pdf": {
+    title: { en: "Chat with PDF — FAQ", zh: "PDF 对话常见问题", es: "Chat con PDF — preguntas frecuentes" },
+    items: {
+      en: [
+        { q: "How does it work?", a: "Upload a text-based PDF and DockDocs extracts its text in your browser, then you ask questions and the AI answers using that document's content — not generic web knowledge. It's a focused MVP: one document at a time, up to 12 pages / 40,000 characters / 25 MB per file." },
+        { q: "Can I trust the answers — are they tied to my document?", a: "Answers are grounded in the text extracted from your PDF, and when the AI's reply matches passages in your file, those appear under a '✓ verified against source' note with the exact quotes, so you can check them yourself. Citations depend on what the model returns and won't appear for every answer, and AI can still be wrong — for anything important, confirm against the original document." },
+        { q: "Is my PDF uploaded or stored?", a: "The text is extracted in your browser; only that extracted text is sent to the AI provider to answer your question, and the file itself never leaves your device and isn't stored afterwards." },
+        { q: "Which PDFs work?", a: "Text-based (born-digital) PDFs. Scanned PDFs have no selectable text — run OCR first so chat has something to read. It works in English, Chinese, Spanish, Portuguese, French and more; answers follow the language you ask in." },
+        { q: "Are there limits?", a: "The MVP caps each file at 25 MB, 12 pages, and 40,000 characters of extracted text; for longer documents, split or compress them first. A daily free quota applies — upgrade if you need more." },
+      ],
+      zh: [
+        { q: "它是怎么工作的?", a: "上传文字版 PDF,DockDocs 会在你的浏览器里提取文字,然后你提问、AI 基于这份文档的内容作答——而不是泛泛的网络知识。这是聚焦的 MVP:一次处理一份文档,单文件最多 12 页 / 40,000 字符 / 25 MB。" },
+        { q: "答案可信吗——是基于我的文档吗?", a: "答案锚定从你 PDF 提取的文字;当 AI 的回答命中文档里的段落时,会在「✓ 已与原文核对」提示下列出确切引文,方便你自己核对。引用取决于模型返回的内容,不是每条答案都有,而且 AI 仍可能出错——重要内容请回原文确认。" },
+        { q: "我的 PDF 会被上传或保存吗?", a: "文字在你的浏览器里提取;只有提取出的文字会发送给 AI provider 来回答你的问题,文件本身不离开你的设备,事后也不保存。" },
+        { q: "哪类 PDF 能用?", a: "文字版(电子原生)PDF。扫描件没有可选文字——请先做 OCR,让对话有内容可读。支持中文、英文、西班牙语、葡萄牙语、法语等;答案会跟随你提问的语言。" },
+        { q: "有什么限制吗?", a: "MVP 单文件上限为 25 MB、12 页、提取文字 40,000 字符;更长的文档请先拆分或压缩。每日有免费额度——需要更多可升级。" },
+      ],
+      es: [
+        { q: "¿Cómo funciona?", a: "Sube un PDF basado en texto y DockDocs extrae su texto en tu navegador; luego haces preguntas y la IA responde usando el contenido de ese documento, no conocimiento genérico de la web. Es un MVP enfocado: un documento a la vez, hasta 12 páginas / 40.000 caracteres / 25 MB por archivo." },
+        { q: "¿Puedo confiar en las respuestas? ¿Están basadas en mi documento?", a: "Las respuestas se fundamentan en el texto extraído de tu PDF y, cuando la respuesta de la IA coincide con pasajes de tu archivo, estos se muestran bajo un aviso «✓ verificado en la fuente» con las citas exactas, para que tú mismo las compruebes. Las citas dependen de lo que devuelve el modelo y no aparecen en todas las respuestas; además, la IA puede equivocarse: para algo importante, confírmalo en el documento original." },
+        { q: "¿Se sube o almacena mi PDF?", a: "El texto se extrae en tu navegador; solo ese texto extraído se envía al proveedor de IA para responder tu pregunta, y el archivo en sí nunca sale de tu dispositivo ni se almacena después." },
+        { q: "¿Qué PDF funcionan?", a: "PDF basados en texto (digitales de origen). Los PDF escaneados no tienen texto seleccionable: aplica OCR primero para que el chat tenga algo que leer. Funciona en español, inglés, chino, portugués, francés y más; las respuestas siguen el idioma en que preguntas." },
+        { q: "¿Hay límites?", a: "El MVP limita cada archivo a 25 MB, 12 páginas y 40.000 caracteres de texto extraído; para documentos más largos, divídelos o comprímelos primero. Se aplica una cuota diaria gratuita: mejora tu plan si necesitas más." },
+      ],
+    },
+  },
   "govbid-matrix": {
     title: { en: "Government Bid Compliance Matrix — FAQ", zh: "政府标书合规矩阵常见问题", es: "Matriz de cumplimiento para licitaciones públicas — preguntas frecuentes" },
     items: {
@@ -1050,6 +1076,16 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
 
 // cast: remove when "pt" is added to Locale
 const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: string }> }> = {
+  "chat-with-pdf": {
+    title: "Chat com PDF — perguntas frequentes",
+    items: [
+      { q: "Como funciona?", a: "Envie um PDF com texto e o DockDocs extrai o texto no seu navegador; depois você faz perguntas e a IA responde usando o conteúdo daquele documento — não conhecimento genérico da web. É um MVP focado: um documento por vez, até 12 páginas / 40.000 caracteres / 25 MB por arquivo." },
+      { q: "Posso confiar nas respostas? Elas se baseiam no meu documento?", a: "As respostas são fundamentadas no texto extraído do seu PDF e, quando a resposta da IA corresponde a trechos do seu arquivo, eles aparecem sob um aviso «✓ verificado na fonte» com as citações exatas, para você mesmo conferir. As citações dependem do que o modelo retorna e não aparecem em toda resposta; além disso, a IA ainda pode errar — para algo importante, confirme no documento original." },
+      { q: "Meu PDF é enviado ou armazenado?", a: "O texto é extraído no seu navegador; apenas esse texto extraído é enviado ao provedor de IA para responder à sua pergunta, e o arquivo em si nunca sai do seu dispositivo nem é armazenado depois." },
+      { q: "Quais PDFs funcionam?", a: "PDFs com texto (nativos digitais). PDFs digitalizados não têm texto selecionável — execute o OCR primeiro para o chat ter o que ler. Funciona em português, inglês, espanhol, francês e outros; as respostas seguem o idioma em que você pergunta." },
+      { q: "Há limites?", a: "O MVP limita cada arquivo a 25 MB, 12 páginas e 40.000 caracteres de texto extraído; para documentos mais longos, divida ou comprima antes. Há uma cota diária gratuita — faça upgrade se precisar de mais." },
+    ],
+  },
   "govbid-matrix": {
     title: "Matriz de conformidade para licitações públicas — perguntas frequentes",
     items: [
@@ -1450,6 +1486,16 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
 };
 
 const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: string }> }> = {
+  "chat-with-pdf": {
+    title: "Chat avec PDF — foire aux questions",
+    items: [
+      { q: "Comment ça marche ?", a: "Importez un PDF basé sur du texte et DockDocs en extrait le texte dans votre navigateur ; vous posez ensuite des questions et l'IA répond en s'appuyant sur le contenu de ce document — et non sur des connaissances générales du web. C'est un MVP ciblé : un document à la fois, jusqu'à 12 pages / 40 000 caractères / 25 Mo par fichier." },
+      { q: "Puis-je faire confiance aux réponses ? Sont-elles fondées sur mon document ?", a: "Les réponses sont fondées sur le texte extrait de votre PDF et, lorsque la réponse de l'IA correspond à des passages de votre fichier, ceux-ci s'affichent sous une mention « ✓ vérifié dans la source » avec les citations exactes, pour que vous puissiez les contrôler vous-même. Les citations dépendent de ce que renvoie le modèle et n'apparaissent pas pour chaque réponse ; de plus, l'IA peut se tromper — pour tout élément important, vérifiez dans le document original." },
+      { q: "Mon PDF est-il téléversé ou stocké ?", a: "Le texte est extrait dans votre navigateur ; seul ce texte extrait est envoyé au fournisseur d'IA pour répondre à votre question, et le fichier lui-même ne quitte jamais votre appareil et n'est pas conservé ensuite." },
+      { q: "Quels PDF fonctionnent ?", a: "Les PDF basés sur du texte (nés numériquement). Les PDF scannés n'ont pas de texte sélectionnable — lancez d'abord l'OCR pour que le chat ait quelque chose à lire. Fonctionne en français, anglais, espagnol, portugais et plus ; les réponses suivent la langue de votre question." },
+      { q: "Y a-t-il des limites ?", a: "Le MVP limite chaque fichier à 25 Mo, 12 pages et 40 000 caractères de texte extrait ; pour les documents plus longs, divisez-les ou compressez-les d'abord. Un quota quotidien gratuit s'applique — passez à une formule supérieure si besoin." },
+    ],
+  },
   "govbid-matrix": {
     title: "Matrice de conformité pour appels d'offres publics — foire aux questions",
     items: [

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
+import { ToolFaq } from "@/components/ToolFaq";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -238,6 +239,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
   }
 
   return (
+    <>
     <section
       id="workspace"
       aria-label={copy.workspaceTitle}
@@ -427,5 +429,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
         </div>
       ) : null}
     </section>
+    <ToolFaq tool="chat-with-pdf" locale={locale} />
+    </>
   );
 }
