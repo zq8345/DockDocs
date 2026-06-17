@@ -51,12 +51,14 @@
 
 ## Multi-window collaboration (CRITICAL — read before any git op)
 Joe runs several Claude windows in PARALLEL on this SAME repo + working tree at once. **Collaboration model = shared working tree + discipline (CONFIRMED 2026-06-17 — this is the model in use; do NOT assume git-worktree isolation).**
+
+> **⭐ LEAN MODEL (Joe, 2026-06-17 — supersedes any "5-minute patrol / keep all windows busy" approach):** Run **总调度 (1 cockpit) + AT MOST 2 execution windows running CONCURRENTLY — never more.** Day = 功能开发 (product) + SEO-GEO (growth). Night = 多语言 ALONE (≤1 execution at night). **测试验收 (read-only) + 控制台 (separate dock-console repo) = ON-DEMAND** — opened only when needed, NOT standing windows, NOT patrolled. **NO timer-based window patrol.** Coordination is **EVENT-DRIVEN**: an execution window reports done → 总调度 reviews + pushes; Joe sets priorities. For verification/research, 总调度 self-`curl`s the static-export HTML or spawns a SINGLE agent — NEVER a wide parallel agent fan-out (a 6-wide fan-out tripped server-side rate-limiting / 风控 on 2026-06-17). Rationale: fewer concurrent windows/agents = no request bursts = no throttle, far less babysitting.
 - **总调度 (orchestration)** — planning, scheduling, fuzzy tasks, and integration arbiter (owns conflict calls on shared files).
 - **功能开发 (features)** — new features / PRO-exclusive tools.
 - **SEO-GEO** — SEO/GEO optimization (JSON-LD, sitemap, metadata).
-- **多语言 (locales)** — adding/maintaining locales + language polish.
-- **控制台** — works in a SEPARATE repo (dock-console) → zero conflict with this repo.
-- **测试验收** — read-only browser testing → zero write conflict.
+- **多语言 (locales)** — adding/maintaining locales + language polish. **Night-only execution lane** (never concurrent with day's 功能/SEO).
+- **控制台** — works in a SEPARATE repo (dock-console) → zero conflict with this repo. **ON-DEMAND** (open when console/metrics work is needed; not a standing/patrolled window).
+- **测试验收** — read-only browser testing → zero write conflict. **ON-DEMAND** (open to verify a batch; for most string/metadata checks 总调度 self-curls the static HTML instead).
 
 The first four share ONE working tree, so another window's UNCOMMITTED edits show up in your `git status`. Hard rules every window MUST follow:
 - **Only `git add <your specific files>`** — NEVER `git add -A` / `git commit -a` / `git add .` (you'd commit another window's half-finished work).
@@ -84,7 +86,7 @@ Two modes; pick by whether Joe is at the window + the change's risk. (Added 2026
   - **Visual upload UX** — every upload shows a thumbnail (where feasible) + file size + clear success/reject feedback. No bare file lists, no silent rejects.
   - **Honest paywall copy** — show users plain words ("无限"); keep internal limits (fair-use soft caps) OUT of the UI; mark unbuilt features "coming / 即将", never advertise vaporware.
 - **Risk-tiered review before live:**
-  - **High-risk** (payment / gating / billing / auth / data / large refactor) → push to a BRANCH → Netlify preview → 总调度 reviews the diff (runs a code-review pass) → only then merge to master. Never direct-to-prod.
+  - **High-risk** (payment / gating / billing / auth / data / large refactor) → commit **locally on master only** (NOT a branch — switching branches on the shared tree disrupts every window) → 总调度 reviews the diff (writer≠reviewer, runs a code-review pass) → 总调度 merges/pushes. Never direct-to-prod.
   - **Low-risk** (UI / copy / content / SEO) → direct push to master; 总调度 reviews promptly after + 测试 verifies.
 - **Run `/code-review` before every push** (free first-party skill, zero supply-chain risk); add `/security-review` for anything touching auth / payment / billing / data. Cheapest quality gate — use it every time.
 - **Completion reporting (MODE-AWARE — see "Operating modes"):**
