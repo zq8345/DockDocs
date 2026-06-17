@@ -1108,7 +1108,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "pricing") {
-    return <LocalizedPricing locale={esLocale} />;
+    return <LocalizedPricing locale={pocLocale} />;
   }
 
   if (slug === "account") {
@@ -1491,11 +1491,11 @@ function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" | "fr" })
   return <DashboardWorkspace locale={locale} />;
 }
 
-function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
+function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(locale === "zh" ? "zh" : "en")) }} />
-      <PricingPlans locale={locale === "zh" ? "zh" : locale === "es" ? "es" : locale === "pt" ? "pt" : locale === "fr" ? "fr" : "en"} />
+      <PricingPlans locale={locale === "zh" ? "zh" : locale === "es" ? "es" : locale === "pt" ? "pt" : locale === "fr" ? "fr" : locale === "ja" ? "ja" : "en"} />
     </>
   );
 }
