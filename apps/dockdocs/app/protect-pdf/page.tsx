@@ -14,7 +14,7 @@ const config = {
   keywords: ["password protect pdf", "encrypt pdf", "pdf password", "secure pdf online", "lock pdf"],
   appName: "DockDocs Protect PDF",
   schemaName: "DockDocs PDF Password Protection",
-  breadcrumbName: "Password Protect",
+  breadcrumbName: "Password Protect & Encrypt PDF",
   heroTitle: "Add password protection to any PDF instantly.",
   heroDescription:
     "Encrypt your PDF with a password so only authorized recipients can open it. All processing happens locally in your browser — your file never leaves your device.",
@@ -78,6 +78,14 @@ const config = {
     {
       question: "Can I recover a forgotten password?",
       answer: "No. Keep your password safe — encrypted PDFs cannot be opened without the correct password.",
+    },
+    {
+      question: "What is the difference between password-protecting and encrypting a PDF?",
+      answer: "They are two parts of the same step. The password is what a reader types to open the file; AES-128 encryption is what scrambles the file's contents so it cannot be read without that password. DockDocs does both at once — set one password and the PDF is encrypted and locked.",
+    },
+    {
+      question: "Can I password protect a PDF on my phone?",
+      answer: "Yes. DockDocs runs in any modern browser, so you can encrypt a PDF on iPhone, iPad, or Android — no app required. The 4–32 character password and the file are processed locally on your device.",
     },
   ],
   cta: {

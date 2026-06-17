@@ -35,9 +35,11 @@ const config = {
   steps: ["Upload a PDF containing tables.", "CloudConvert extracts the data.", "Download the XLSX file."],
   faqTitle: "PDF to Excel questions",
   faq: [
-    { question: "How do I convert PDF to Excel?", answer: "Upload a PDF with tables and download the converted XLSX file." },
-    { question: "What if my PDF has no tables?", answer: "Text-only PDFs will still convert but may not produce clean spreadsheet data." },
-    { question: "Is this free?", answer: "Yes, PDF to Excel is a free conversion workflow." },
+    { question: "How do I convert PDF to Excel?", answer: "Upload a PDF with tables and download the converted XLSX file. Most documents convert in under 30 seconds, and the result opens in Excel, Google Sheets, or Numbers." },
+    { question: "What if my PDF has no tables?", answer: "Text-only PDFs will still convert but may not produce clean spreadsheet data. The converter works best on PDFs with clear, ruled tables — financial statements, invoices, and data reports." },
+    { question: "What is the file size limit?", answer: "You can convert PDF files up to 20 MB, which covers the large majority of multi-page data PDFs and reports." },
+    { question: "Can I convert a scanned PDF to Excel?", answer: "A scanned PDF is an image with no selectable text, so table extraction will be unreliable. Run it through DockDocs OCR PDF first to add a text layer, then convert that output to Excel." },
+    { question: "Is PDF to Excel free?", answer: "Yes. PDF to Excel is a free conversion workflow on DockDocs — no credits and no watermark on the XLSX output." },
   ],
   cta: { eyebrow: "PDF to Excel", title: "Extract PDF table data into Excel.", description: "Use DockDocs to convert PDF tables to editable XLSX spreadsheets.", buttonLabel: "Convert PDF now" },
 } satisfies PdfToolPageConfig;
