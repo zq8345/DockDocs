@@ -20,7 +20,6 @@ type Requirement = {
   section: string;
   requirement: string;
   quote: string | null;
-  page: string | null;
   type: RequirementType;
 };
 
@@ -62,7 +61,6 @@ Return ONLY valid JSON in exactly this structure (no markdown, no explanation):
       "section": "<section or paragraph number, e.g. L.3.1 or Section M or PWS 3.2, or empty string if not identifiable>",
       "requirement": "<plain-language summary of the requirement in ${lang}>",
       "quote": "<exact verbatim sentence(s) from the text that state this requirement>",
-      "page": "<page number as string if visible in text, else null>",
       "type": "mandatory"
     }
   ]
@@ -184,7 +182,6 @@ export default async function handler(req: Request, _ctx: Context) {
         section: typeof r.section === "string" ? r.section : "",
         requirement: typeof r.requirement === "string" ? r.requirement : "",
         quote: typeof r.quote === "string" ? r.quote : null,
-        page: typeof r.page === "string" ? r.page : null,
         type: (r.type === "advisory" ? "advisory" : "mandatory") as RequirementType,
       }))
       .filter((r) => r.requirement.length > 0);

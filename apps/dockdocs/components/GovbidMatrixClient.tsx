@@ -16,7 +16,6 @@ type Requirement = {
   section: string;
   requirement: string;
   quote: string | null;
-  page: string | null;
   type: RequirementType;
 };
 
@@ -39,7 +38,6 @@ const STR = {
     colId: "#",
     colSection: "Section",
     colRequirement: "Requirement",
-    colPage: "Page",
     colType: "Type",
     colQuote: "Source text",
     downloadCsv: "Download CSV",
@@ -52,7 +50,7 @@ const STR = {
   zh: {
     title: "政府标书合规矩阵",
     eyebrow: "PRO · 单文档 AI",
-    subtitle: "上传 RFP 或招标文件——自动提取每条「shall/must」合规要求，生成带条款编号和页码引用的合规矩阵。",
+    subtitle: "上传 RFP 或招标文件——自动提取每条「shall/must」合规要求，生成带条款编号的合规矩阵。",
     upload: "把招标 PDF 拖到这里",
     analyze: "提取合规要求",
     analyzing: "正在分析招标文件……",
@@ -65,7 +63,6 @@ const STR = {
     colId: "编号",
     colSection: "条款",
     colRequirement: "合规要求",
-    colPage: "页码",
     colType: "类型",
     colQuote: "原文引用",
     downloadCsv: "下载 CSV",
@@ -91,7 +88,6 @@ const STR = {
     colId: "#",
     colSection: "Sección",
     colRequirement: "Requisito",
-    colPage: "Página",
     colType: "Tipo",
     colQuote: "Texto fuente",
     downloadCsv: "Descargar CSV",
@@ -117,7 +113,6 @@ const STR = {
     colId: "#",
     colSection: "Seção",
     colRequirement: "Requisito",
-    colPage: "Página",
     colType: "Tipo",
     colQuote: "Texto fonte",
     downloadCsv: "Baixar CSV",
@@ -143,7 +138,6 @@ const STR = {
     colId: "#",
     colSection: "Section",
     colRequirement: "Exigence",
-    colPage: "Page",
     colType: "Type",
     colQuote: "Texte source",
     downloadCsv: "Télécharger CSV",
@@ -156,9 +150,9 @@ const STR = {
 };
 
 function exportCsv(requirements: Requirement[], t: typeof STR["en"]) {
-  const header = [t.colId, t.colSection, t.colType, t.colRequirement, t.colPage, t.colQuote].join(",");
+  const header = [t.colId, t.colSection, t.colType, t.colRequirement, t.colQuote].join(",");
   const rows = requirements.map((r) =>
-    [r.id, r.section, r.type, r.requirement, r.page ?? "", r.quote ?? ""]
+    [r.id, r.section, r.type, r.requirement, r.quote ?? ""]
       .map((v) => `"${String(v).replace(/"/g, '""')}"`)
       .join(","),
   );
@@ -191,7 +185,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
       // Extract text client-side
       const { getDocument } = await import("pdfjs-dist");
       const { GlobalWorkerOptions } = await import("pdfjs-dist");
-      GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
+      GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       let text = "";
       try {
         const ab = await file.arrayBuffer();
@@ -346,7 +340,6 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
                   <th className="px-3 py-2.5 text-left font-medium text-[color:var(--muted)]">{t.colSection}</th>
                   <th className="px-3 py-2.5 text-left font-medium text-[color:var(--muted)]">{t.colType}</th>
                   <th className="px-3 py-2.5 text-left font-medium text-[color:var(--muted)]">{t.colRequirement}</th>
-                  <th className="px-3 py-2.5 text-left font-medium text-[color:var(--muted)]">{t.colPage}</th>
                 </tr>
               </thead>
               <tbody>
@@ -375,7 +368,6 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
                         </blockquote>
                       )}
                     </td>
-                    <td className="px-3 py-2.5 text-[color:var(--muted)] whitespace-nowrap">{r.page ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>
