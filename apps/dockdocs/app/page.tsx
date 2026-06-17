@@ -36,8 +36,8 @@ const homeSchema = {
       "@id": `${siteUrl}#org`,
       name: "DockDocs",
       url: siteUrl,
-      description: "Free online PDF tools — compress, merge, split, convert, OCR, AI chat, and more. Browser-based, no installs.",
-      slogan: "AI document platform for real file workflows",
+      description: "Private, verifiable document AI: read any document and trust every answer because each one cites the exact source you can check. Plus 20+ PDF tools that run in your browser, so files never leave your device.",
+      slogan: "Read any document. Trust every answer.",
       foundingDate: "2024",
       sameAs: [
         "https://github.com/zq8345/dock-ai-ecosystem",
@@ -48,7 +48,7 @@ const homeSchema = {
       "@id": `${siteUrl}#website`,
       name: "DockDocs",
       url: siteUrl,
-      description: "Free online PDF tools with AI-powered document processing. Work with PDFs in your browser.",
+      description: "Document AI that cites its source so you can verify every answer, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
       inLanguage: ["en", "zh"],
       publisher: { "@id": `${siteUrl}#org` },
       potentialAction: {
@@ -64,9 +64,9 @@ const homeSchema = {
       "@type": "WebPage",
       "@id": `${siteUrl}#webpage`,
       url: siteUrl,
-      name: "DockDocs — Free Online PDF Tools",
+      name: "DockDocs — Private, Verifiable Document AI & PDF Tools",
       description:
-        "Every tool you need for PDFs — merge, split, compress, convert, chat, summarize, OCR. All free, no installs.",
+        "Read any document and trust every answer: DockDocs document AI cites the exact source so you can verify it, and 20+ PDF tools run in your browser so files never leave your device. Free, no sign-up.",
       isPartOf: { "@id": `${siteUrl}#website` },
       about: { "@id": `${siteUrl}#org` },
     },
@@ -80,7 +80,7 @@ const homeSchema = {
           name: "What is DockDocs?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "DockDocs is a free online PDF tools platform with over 20 tools including PDF compression, merging, splitting, conversion, OCR, AI chat, and document summarization. All tools work in your browser — no software installation required.",
+            text: "DockDocs is a private, verifiable document-AI platform. Chat with and summarize your documents and get answers that cite the exact source passage, so you can check them instead of trusting a black box. It also includes 20+ PDF tools that run in your browser — no installs, and files never leave your device for those tools.",
           },
         },
         {
@@ -96,7 +96,7 @@ const homeSchema = {
           name: "Are my PDF files safe on DockDocs?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes. DockDocs processes files locally in your browser where possible. For tools requiring server processing, files are encrypted in transit and automatically deleted after processing. DockDocs does not store, share, or sell your documents.",
+            text: "Yes — and you can verify it. Most PDF tools (compress, merge, split, convert, page edits) run entirely in your browser; you can open your browser's Network tab and confirm no file upload happens. For AI features and a few server-side conversions, only the text needed is sent, files are deleted after your session, and DockDocs does not use them to train its own models. DockDocs never sells or shares your documents.",
           },
         },
         {
@@ -112,15 +112,23 @@ const homeSchema = {
           name: "How does DockDocs AI Chat with PDF work?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Upload a PDF and ask questions in natural language. DockDocs AI reads the document and provides grounded, document-specific answers — not generic responses. It works with contracts, reports, research papers, manuals, and any text-based PDF.",
+            text: "Upload a PDF and ask questions in natural language. DockDocs AI reads the document and answers from its contents — and every answer points back to the exact source passage so you can click to the original and verify it. It works with contracts, reports, research papers, manuals, and any text-based PDF.",
           },
         },
         {
           "@type": "Question",
-          name: "What makes DockDocs different from other PDF tools?",
+          name: "How do I know the AI isn't making it up?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "DockDocs combines traditional PDF tools (compress, merge, convert) with AI-powered features (Chat with PDF, AI Summarization, OCR) in a single clean workspace. Files are processed locally where possible for privacy. The interface is designed to be fast and minimal — no clutter, no ads, no watermarks.",
+            text: "Every AI answer and extraction points back to the exact source passage in your own document, so you can click to the original and check it yourself — you never have to take the AI's word for it. When a claim can't be grounded in your file, DockDocs flags it rather than presenting it as fact. This source-traceability is the core difference from a general chatbot.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What makes DockDocs different from other PDF tools and from a general AI chatbot?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Two things a general AI chatbot can't offer: privacy you can verify and answers you can trust. Most DockDocs tools run in your browser, so sensitive files never leave your device (check the Network tab). And its document AI cites the exact source for every answer and extraction, so you can verify each one. It's built for the documents you can't paste into a general chatbot — contracts, financials, research — not just generic PDF editing.",
           },
         },
       ],
