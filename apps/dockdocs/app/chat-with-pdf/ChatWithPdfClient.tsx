@@ -5,7 +5,6 @@ import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { authHeader } from "@/lib/supabase";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
-import { ToolFaq } from "@/components/ToolFaq";
 import { GroundingNote } from "@/components/GroundingNote";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 
@@ -447,7 +446,6 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
     </section>
     <GroundingNote variant="chat" locale={locale} />
     <RelatedPdfTools locale={locale} exclude="/chat-with-pdf" />
-    <ToolFaq tool="chat-with-pdf" locale={locale} />
     </>
   );
 }
