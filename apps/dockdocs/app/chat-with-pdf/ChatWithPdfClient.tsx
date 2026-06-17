@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { authHeader } from "@/lib/supabase";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { ToolFaq } from "@/components/ToolFaq";
 
@@ -178,45 +179,58 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
     setMessages((current) => [...current, { role: "user", content: userQuestion }]);
 
     try {
-      const response = await fetch("/.netlify/functions/chat-with-pdf", {
+      // Gated, authoritative endpoint (server-side plan/usage enforcement +
+      // grounded citations). Replaces the legacy ungated /.netlify/functions/chat-with-pdf.
+      const auth = await authHeader();
+      const response = await fetch("/api/ai-chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...auth,
         },
         body: JSON.stringify({
-          fileName,
+          context: documentText,
           question: userQuestion,
-          documentText,
+          sourceName: fileName,
+          locale: locale === "zh" ? "zh" : "en",
         }),
       });
 
       const payload = (await response.json().catch(() => null)) as {
-        answer?: string;
-        error?: string;
-        provider?: string;
-        model?: string;
-        citations?: unknown[];
+        ok?: boolean;
+        code?: string;
+        limit?: number;
+        message?: string;
+        result?: { answer?: string; references?: unknown[]; provider?: string; model?: string };
       } | null;
 
-      if (!response.ok) {
-        throw new Error(payload?.error ?? copy.providerFailed);
+      // Server gate hit (authoritative) — show the upgrade prompt and stop.
+      if (response.status === 402 || payload?.code === "UPGRADE_REQUIRED") {
+        setLimitHit(typeof payload?.limit === "number" ? payload.limit : gate.limit);
+        setMessages((current) => current.slice(0, -1));
+        return;
       }
 
-      if (!payload?.answer) {
+      if (!response.ok || !payload?.ok) {
+        throw new Error(payload?.message ?? copy.providerFailed);
+      }
+
+      const answer = payload.result?.answer ?? "";
+      if (!answer) {
         throw new Error(copy.providerEmpty);
       }
 
-      const citations = Array.isArray(payload.citations)
-        ? (payload.citations as string[]).filter((c) => typeof c === "string")
+      const citations = Array.isArray(payload.result?.references)
+        ? (payload.result?.references as string[]).filter((c) => typeof c === "string")
         : [];
       setMessages((current) => [
         ...current,
-        { role: "assistant", content: payload.answer ?? "", citations },
+        { role: "assistant", content: answer, citations },
       ]);
       await markUsage(gate, "chat");
       setProviderReference({
-        provider: payload.provider,
-        model: payload.model,
+        provider: payload.result?.provider,
+        model: payload.result?.model,
         citations: [],
       });
     } catch (caughtError) {
