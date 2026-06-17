@@ -94,6 +94,63 @@ const config = {
 
 export const metadata = createPdfToolMetadata(config);
 
+// Related real pages for internal linking (consolidates signal onto this hub).
+const relatedLinks = [
+  { label: "PDF to JPG", href: "/pdf-to-jpg/" },
+  { label: "PDF to PNG", href: "/pdf-to-png/" },
+  { label: "Images to PDF", href: "/images-to-pdf/" },
+  { label: "Compress PDF", href: "/compress-pdf/" },
+];
+
 export default function PdfToImagePage() {
-  return <><ToolJsonLd config={config} /><PdfToImageClient locale="en" defaultFormat="jpg" /></>;
+  return (
+    <>
+      <ToolJsonLd config={config} />
+      <PdfToImageClient locale="en" defaultFormat="jpg" />
+      {/* Crawlable depth: the custom client renders the tool UI only, so the config's
+          benefits/steps/FAQ (which feed the JSON-LD) are also rendered as visible HTML
+          here — keeps the FAQPage schema matched to on-page content. */}
+      <section className="mx-auto max-w-3xl px-5 pb-16 sm:px-6">
+        <div className="border-t border-[color:var(--line)] pt-10">
+          <h2 className="text-lg font-medium text-[color:var(--foreground)]">{config.benefitsTitle}</h2>
+          <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{config.benefitsDescription}</p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {config.benefits.map((b) => (
+              <div key={b.title}>
+                <h3 className="text-sm font-medium text-[color:var(--foreground)]">{b.title}</h3>
+                <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">{b.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-10 border-t border-[color:var(--line)] pt-10">
+          <h2 className="text-lg font-medium text-[color:var(--foreground)]">{config.workflowTitle}</h2>
+          <ol className="mt-6 space-y-3">
+            {config.steps.map((step, i) => (
+              <li key={i} className="flex gap-3 text-sm leading-6 text-[color:var(--muted)]">
+                <span className="shrink-0 font-medium text-[color:var(--accent)]">{i + 1}.</span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        {/* NOTE: config.faq is NOT rendered here — the PdfToImageClient already shows a
+            visible "PDF to Image — FAQ". config.faq still feeds the FAQPage JSON-LD via
+            ToolJsonLd. (Client FAQ vs config.faq-schema dedup = cross-lane, flagged to 总调度.) */}
+
+        <div className="mt-10 border-t border-[color:var(--line)] pt-10">
+          <h2 className="text-lg font-medium text-[color:var(--foreground)]">Related tools</h2>
+          <div className="mt-4 flex flex-wrap gap-3">
+            {relatedLinks.map((l) => (
+              <a key={l.href} href={l.href} className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-1.5 text-sm text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
+                {l.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }
