@@ -106,7 +106,6 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
           heading: "Multi-doc AI",
           items: [
             { name: "Compare documents", slug: "/compare" },
-            { name: "Cross-doc Q&A", slug: "/compare" },
             { name: "Compare versions", slug: "/redline" },
             { name: "Extract to Excel", slug: "/extract-to-excel" },
             { name: "Batch summary", slug: "/batch-summary" },
@@ -226,7 +225,6 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
           heading: "多文档 AI",
           items: [
             { name: "多文档对比", slug: "/compare" },
-            { name: "跨文档问答", slug: "/compare" },
             { name: "PDF 版本对比", slug: "/redline" },
             { name: "数据抽取到表格", slug: "/extract-to-excel" },
             { name: "批量摘要", slug: "/batch-summary" },
@@ -347,7 +345,6 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
           heading: "IA para varios documentos",
           items: [
             { name: "Comparar documentos", slug: "/compare" },
-            { name: "Preguntas entre documentos", slug: "/compare" },
             { name: "Comparar versiones", slug: "/redline" },
             { name: "Extraer a Excel", slug: "/extract-to-excel" },
             { name: "Resumen por lotes", slug: "/batch-summary" },
@@ -468,7 +465,6 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
           heading: "IA para vários documentos",
           items: [
             { name: "Comparar documentos", slug: "/compare" },
-            { name: "Perguntas entre documentos", slug: "/compare" },
             { name: "Comparar versões", slug: "/redline" },
             { name: "Extrair para Excel", slug: "/extract-to-excel" },
             { name: "Resumo em lote", slug: "/batch-summary" },
@@ -589,7 +585,6 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
           heading: "IA pour plusieurs documents",
           items: [
             { name: "Comparer des documents", slug: "/compare" },
-            { name: "Questions multi-documents", slug: "/compare" },
             { name: "Comparer des versions", slug: "/redline" },
             { name: "Extraire vers Excel", slug: "/extract-to-excel" },
             { name: "Résumé par lots", slug: "/batch-summary" },
@@ -709,7 +704,6 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
           heading: "複数文書AI",
           items: [
             { name: "文書を比較", slug: "/compare" },
-            { name: "文書横断 Q&A", slug: "/compare" },
             { name: "バージョンを比較", slug: "/redline" },
             { name: "Excel に抽出", slug: "/extract-to-excel" },
             { name: "一括要約", slug: "/batch-summary" },
