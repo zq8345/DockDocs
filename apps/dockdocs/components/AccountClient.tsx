@@ -108,6 +108,17 @@ function getCopy(locale: AccountLocale) {
   };
 }
 
+// Billing interval label for the current-plan card. Lifetime is one-time and
+// never expires, so we say so explicitly (no renewal date is implied).
+function intervalLabel(interval: string, locale: AccountLocale): string {
+  const m: Record<string, Record<string, string>> = {
+    lifetime: { en: "Lifetime · never expires", zh: "终身 · 永久有效", es: "De por vida · nunca caduca", pt: "Vitalício · nunca expira", fr: "À vie · n'expire jamais" },
+    annual: { en: "Billed annually", zh: "按年计费", es: "Facturación anual", pt: "Cobrança anual", fr: "Facturation annuelle" },
+    monthly: { en: "Billed monthly", zh: "按月计费", es: "Facturación mensual", pt: "Cobrança mensal", fr: "Facturation mensuelle" },
+  };
+  return m[interval]?.[locale] ?? m[interval]?.en ?? "";
+}
+
 export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   const t = getCopy(locale);
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -339,6 +350,9 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
             <div>
               <p className="text-[18px] font-semibold">{subscription.displayName}</p>
               <p className="text-[12px] text-[color:var(--muted)]">{subscription.statusLabel}</p>
+              {subscription.displayName !== "Free" && subscription.record.interval && (
+                <p className="text-[11px] text-[color:var(--faint)]">{intervalLabel(subscription.record.interval, locale)}</p>
+              )}
             </div>
             {subscription.displayName === "Free" ? (
               <div className="flex gap-2">
