@@ -13,6 +13,7 @@ import { ChatWithPdfClient } from "@/app/chat-with-pdf/ChatWithPdfClient";
 import { AiSummaryClient } from "@/app/ai-summary/AiSummaryClient";
 import { DashboardWorkspace } from "@/components/DashboardWorkspace";
 import { GeoHubPage } from "@/components/GeoHubPage";
+import { LegalHubPage } from "@/components/LegalHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
 import { DocumentCompareClient } from "@/components/DocumentCompareClient";
@@ -297,6 +298,19 @@ async function generateMetadataInner({
       slug,
       runtimeCopy.ocr.title,
       runtimeCopy.ocr.description,
+    );
+  }
+
+  if (slug === "for/legal") {
+    return createLocalizedMetadata(
+      rawLocale,
+      slug,
+      uiLocale === "zh"
+        ? "法律 AI：合同 / 租约 / 标书审查 — DockDocs"
+        : "Legal AI: contract, lease & bid review — DockDocs",
+      uiLocale === "zh"
+        ? "面向法律团队的 AI 工具：合同风险体检、租约红旗、标书合规矩阵、版本对比——每条结论都可溯源到你的文件原文。"
+        : "AI tools for legal teams: contract risk, lease red flags, gov-bid compliance, and version compare — every finding traceable to your document.",
     );
   }
 
@@ -1184,6 +1198,10 @@ export default async function LocalizedRoute({
         <LocalizedSitemap locale={esLocale} />
       </>
     );
+  }
+
+  if (slug === "for/legal") {
+    return <LegalHubPage locale={esLocale} useLocalePrefix />;
   }
 
   return <LocalizedHome locale={esLocale} />;

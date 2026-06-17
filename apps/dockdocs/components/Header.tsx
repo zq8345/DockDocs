@@ -121,7 +121,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
       cols: [
         {
           items: [
-            { name: "Legal & contracts", slug: "/pricing", soon: true },
+            { name: "Legal & contracts", slug: "/for/legal" },
             { name: "Finance & tax", slug: "/pricing", soon: true },
             { name: "Research & academia", slug: "/pricing", soon: true },
             { name: "Banking & finance", slug: "/pricing", soon: true },
@@ -241,7 +241,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
       cols: [
         {
           items: [
-            { name: "法律 / 合同", slug: "/pricing", soon: true },
+            { name: "法律 / 合同", slug: "/for/legal" },
             { name: "财务 / 税务", slug: "/pricing", soon: true },
             { name: "科研 / 学术", slug: "/pricing", soon: true },
             { name: "金融 / 投行", slug: "/pricing", soon: true },
@@ -362,7 +362,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
       cols: [
         {
           items: [
-            { name: "Legal y contratos", slug: "/pricing", soon: true },
+            { name: "Legal y contratos", slug: "/for/legal" },
             { name: "Finanzas e impuestos", slug: "/pricing", soon: true },
             { name: "Investigación y academia", slug: "/pricing", soon: true },
             { name: "Banca y finanzas", slug: "/pricing", soon: true },
@@ -483,7 +483,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
       cols: [
         {
           items: [
-            { name: "Jurídico e contratos", slug: "/pricing", soon: true },
+            { name: "Jurídico e contratos", slug: "/for/legal" },
             { name: "Finanças e impostos", slug: "/pricing", soon: true },
             { name: "Pesquisa e academia", slug: "/pricing", soon: true },
             { name: "Banco e finanças", slug: "/pricing", soon: true },
@@ -604,7 +604,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
       cols: [
         {
           items: [
-            { name: "Juridique et contrats", slug: "/pricing", soon: true },
+            { name: "Juridique et contrats", slug: "/for/legal" },
             { name: "Finance et fiscalité", slug: "/pricing", soon: true },
             { name: "Recherche et académique", slug: "/pricing", soon: true },
             { name: "Banque et finance", slug: "/pricing", soon: true },
@@ -724,7 +724,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
       cols: [
         {
           items: [
-            { name: "法務・契約", slug: "/pricing", soon: true },
+            { name: "法務・契約", slug: "/for/legal" },
             { name: "財務・税務", slug: "/pricing", soon: true },
             { name: "研究・学術", slug: "/pricing", soon: true },
             { name: "銀行・金融", slug: "/pricing", soon: true },
