@@ -38,13 +38,40 @@ function checkRate(ip: string): boolean {
   return true;
 }
 
-function getProvider(): ProviderConfig {
-  const key = Netlify.env.get("DEEPSEEK_API_KEY") ?? "";
-  return {
-    apiUrl: "https://api.deepseek.com/chat/completions",
-    apiKey: key,
-    model: "deepseek-chat",
-  };
+// Env-configurable AI provider, identical pattern to contract-risk / lease-redflag:
+// DEEPSEEK_API_KEY or DOCKDOCS_AI_SUMMARY_API_KEY or OPENAI_API_KEY, with base-URL
+// overrides + fallback. Previously HARDCODED to the retired DeepSeek endpoint with
+// no fallback, which left the live tool dead ("AI service not configured") after
+// DeepSeek was dropped — this lets it be redirected to any OpenAI-compatible provider.
+function getProvider(): ProviderConfig | null {
+  const deepSeekKey =
+    Netlify.env.get("DEEPSEEK_API_KEY")?.trim() || Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_KEY")?.trim();
+  const openAiKey = Netlify.env.get("OPENAI_API_KEY")?.trim();
+  if (deepSeekKey) {
+    return {
+      apiKey: deepSeekKey,
+      apiUrl: normalizeChatEndpoint(
+        Netlify.env.get("DEEPSEEK_BASE_URL") || Netlify.env.get("DEEPSEEK_API_URL") || Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_URL"),
+        "https://api.deepseek.com",
+      ),
+      model: Netlify.env.get("DEEPSEEK_MODEL")?.trim() || Netlify.env.get("DOCKDOCS_AI_SUMMARY_MODEL")?.trim() || "deepseek-v4-flash",
+    };
+  }
+  if (openAiKey) {
+    return {
+      apiKey: openAiKey,
+      apiUrl: normalizeChatEndpoint(Netlify.env.get("OPENAI_BASE_URL"), "https://api.openai.com/v1"),
+      model: Netlify.env.get("OPENAI_MODEL")?.trim() || "gpt-4o-mini",
+    };
+  }
+  return null;
+}
+
+function normalizeChatEndpoint(base: string | undefined, fallback: string): string {
+  const raw = (base || fallback).trim().replace(/\/+$/, "");
+  if (/\/(chat\/)?completions$/.test(raw)) return raw;
+  if (/\/v\d+$/.test(raw)) return `${raw}/chat/completions`;
+  return `${raw}/v1/chat/completions`;
 }
 
 function buildPrompt(text: string, locale: string): string {
@@ -128,7 +155,7 @@ export default async function handler(req: Request, _ctx: Context) {
   }
 
   const provider = getProvider();
-  if (!provider.apiKey) {
+  if (!provider) {
     return new Response(JSON.stringify({ ok: false, message: "AI service not configured" }), {
       status: 503,
       headers: { "Content-Type": "application/json" },
@@ -144,7 +171,7 @@ export default async function handler(req: Request, _ctx: Context) {
       },
       body: JSON.stringify({
         model: provider.model,
-        thinking: { type: "disabled" },
+        ...(provider.model.startsWith("deepseek") ? { thinking: { type: "disabled" } } : {}),
         messages: [{ role: "user", content: buildPrompt(text, locale) }],
         temperature: 0.1,
         max_tokens: 4096,
