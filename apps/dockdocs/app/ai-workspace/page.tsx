@@ -103,7 +103,7 @@ const workspaceFaq = [
   {
     question: "Are my documents kept private?",
     answer:
-      "AI features process your document on a server to generate answers and summaries, then discard it. Your files are not stored long-term or used to train models. Page-level PDF tools like compress, merge, and split run entirely in your browser.",
+      "AI features send only the text needed to answer to the AI provider; DockDocs does not store your document after your session and does not use your files to train its own models. Page-level PDF tools like compress, merge, and split run entirely in your browser.",
   },
 ];
 
