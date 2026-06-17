@@ -60,6 +60,10 @@ const config = {
       answer: ".doc is the older Word 97–2003 binary format; .docx is the modern XML-based Office Open XML format used by Word 2007 and later. Both work with DockDocs — just upload whichever format you have.",
     },
     {
+      question: "Is my Word document private when I convert it?",
+      answer: "Word to PDF runs on a secure conversion server (CloudConvert), because faithful rendering needs a full office engine. Your file is encrypted in transit, converted, and deleted right after — it is never stored or used to train any model. If you need fully on-device processing, DockDocs' page tools like merge, split, and compress run entirely in your browser.",
+    },
+    {
       question: "Is the doc to PDF conversion free?",
       answer: "Yes. Converting Word documents to PDF is free on DockDocs. No credits, no subscription, and no watermark on the output file.",
     },
