@@ -15,6 +15,7 @@ import { DashboardWorkspace } from "@/components/DashboardWorkspace";
 import { GeoHubPage } from "@/components/GeoHubPage";
 import { LegalHubPage } from "@/components/LegalHubPage";
 import { FinanceHubPage } from "@/components/FinanceHubPage";
+import { ResearchHubPage } from "@/components/ResearchHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
 import { DocumentCompareClient } from "@/components/DocumentCompareClient";
@@ -325,6 +326,19 @@ async function generateMetadataInner({
       uiLocale === "zh"
         ? "面向财务团队的 AI 工具：把发票、对账单抽取到表格，浓缩财务报告，比较多份报价——每个数字都可溯源到你的文件原文。"
         : "AI tools for finance teams: extract invoices and statements to a spreadsheet, summarize financial reports, and compare quotes — every figure traceable to your document.",
+    );
+  }
+
+  if (slug === "for/research") {
+    return createLocalizedMetadata(
+      rawLocale,
+      slug,
+      uiLocale === "zh"
+        ? "科研 AI：论文摘要 / 问答 / 对比工具 — DockDocs"
+        : "Research AI: summarize, search & compare papers — DockDocs",
+      uiLocale === "zh"
+        ? "面向研究者的 AI 工具：摘要论文、向 PDF 提问方法、对比研究、扫描件 OCR、抽取数据表——每个答案都可溯源到原文，引用前先核对。"
+        : "AI tools for researchers: summarize papers, ask a PDF about its methods, compare studies, OCR scanned articles, and extract data tables — every answer traceable to the source.",
     );
   }
 
@@ -1220,6 +1234,10 @@ export default async function LocalizedRoute({
 
   if (slug === "for/finance") {
     return <FinanceHubPage locale={esLocale} useLocalePrefix />;
+  }
+
+  if (slug === "for/research") {
+    return <ResearchHubPage locale={esLocale} useLocalePrefix />;
   }
 
   return <LocalizedHome locale={esLocale} />;
