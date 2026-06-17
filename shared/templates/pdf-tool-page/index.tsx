@@ -475,6 +475,10 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
         </div>
       </section>
 
+      {/* ── Benefits · How-it-works (crawlable depth; skipped if a config has none) ── */}
+      {config.benefits.length > 0 && <BenefitsSection config={config} />}
+      {config.steps.length > 0 && <HowItWorksSection config={config} />}
+
       {/* ── FAQ (collapsed, clean) ── */}
       {config.faq.length > 0 && (
         <section>
