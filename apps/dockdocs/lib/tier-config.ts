@@ -23,6 +23,7 @@ export type FeatureItem = {
   pt: string;
   fr: string;
   status: "live" | "coming"; // "coming" renders as "Coming soon" pill
+  href?: string; // when live, the label links here (e.g. a shipped vertical hub /for/legal)
 };
 
 export type TierCategory = {
@@ -260,9 +261,9 @@ export const TIER_CATEGORIES: TierCategory[] = [
     },
     tools: [],
     features: [
-      { en: "Legal & contracts",          zh: "法律 / 合同",  es: "Legal y contratos",          pt: "Jurídico e contratos",       fr: "Juridique et contrats",        status: "coming" },
-      { en: "Finance & tax",              zh: "财务 / 税务",  es: "Finanzas e impuestos",       pt: "Finanças e impostos",        fr: "Finance et fiscalité",         status: "coming" },
-      { en: "Research & academia",        zh: "科研 / 学术",  es: "Investigación y academia",   pt: "Pesquisa e academia",        fr: "Recherche et académique",      status: "coming" },
+      { en: "Legal & contracts",          zh: "法律 / 合同",  es: "Legal y contratos",          pt: "Jurídico e contratos",       fr: "Juridique et contrats",        status: "live", href: "/for/legal" },
+      { en: "Finance & tax",              zh: "财务 / 税务",  es: "Finanzas e impuestos",       pt: "Finanças e impostos",        fr: "Finance et fiscalité",         status: "live", href: "/for/finance" },
+      { en: "Research & academia",        zh: "科研 / 学术",  es: "Investigación y academia",   pt: "Pesquisa e academia",        fr: "Recherche et académique",      status: "live", href: "/for/research" },
       { en: "Banking & finance",          zh: "金融 / 投行",  es: "Banca y finanzas",           pt: "Banco e finanças",           fr: "Banque et finance",            status: "coming" },
       { en: "Architecture & engineering", zh: "建筑 / 工程",  es: "Arquitectura e ingeniería",  pt: "Arquitetura e engenharia",   fr: "Architecture et ingénierie",   status: "coming" },
       { en: "Healthcare & medical",       zh: "医疗 / 健康",  es: "Salud y medicina",           pt: "Saúde e medicina",           fr: "Santé et médecine",            status: "coming" },

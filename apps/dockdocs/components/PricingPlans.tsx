@@ -627,9 +627,15 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                 <span className={f.status === "live" ? "text-[color:var(--accent)]" : "text-[color:var(--faint)]"}>
                                   {f.status === "live" ? "✓" : "○"}
                                 </span>
-                                <span className={f.status === "live" ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}>
-                                  {f[locale] ?? f.en}
-                                </span>
+                                {f.href ? (
+                                  <a href={f.href} className="text-[color:var(--foreground)] underline-offset-2 hover:underline">
+                                    {f[locale] ?? f.en}
+                                  </a>
+                                ) : (
+                                  <span className={f.status === "live" ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}>
+                                    {f[locale] ?? f.en}
+                                  </span>
+                                )}
                                 {f.status === "coming" && (
                                   <span className="rounded-full border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] text-[color:var(--faint)]">
                                     {locale === "zh" ? "即将推出" : locale === "es" ? "Pronto" : locale === "pt" ? "Em breve" : locale === "fr" ? "Bientôt" : "Coming"}
