@@ -306,8 +306,11 @@ export function createPdfToolSchema(config: PdfToolPageConfig) {
         url: pageUrl,
         name: config.title,
         description: config.description,
+        // IndexingLinks target en-only surfaces (/guides, /blog, /resources +
+        // their items). Use canonical non-prefixed URLs — a /pt|es|fr tool page
+        // must NOT link to /pt/guides/… etc. (those locale variants don't exist → 404).
         significantLink: getIndexingLinks(config).map((link) =>
-          absoluteHref(link.href, config.locale),
+          absoluteHref(link.href),
         ),
         isPartOf: {
           "@type": "WebSite",
@@ -683,7 +686,9 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
           {links.map((link) => (
             <a
               key={link.href}
-              href={localizeTemplateHref(link.href, config.locale)}
+              // Canonical non-prefixed href: these guide/blog/resource targets are
+              // en-only, so a /pt|es|fr tool page must link to /guides/X (not /pt/guides/X → 404).
+              href={localizeTemplateHref(link.href)}
               className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] hover:shadow-[0_16px_32px_rgba(24,24,20,0.08)]"
             >
               <h3 className="font-semibold text-[color:var(--foreground)]">{link.label}</h3>
