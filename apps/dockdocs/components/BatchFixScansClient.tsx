@@ -7,6 +7,7 @@ import { BatchFileCard } from "@/components/BatchFileCard";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "crop" | "delete";
@@ -31,7 +32,7 @@ const STR = {
     delPlaceholder: "e.g. 1 or 1,3-4",
     delHint: "These page numbers are removed from every file. Files that would lose all pages are skipped.",
     run: "Process all", running: "Processing", download: "Download ZIP", reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`,
+    files: (n: number, max: number) => `${n} / ${max} files`,
     done: "done", failed: "failed",
     need: "Add at least one PDF.",
     needCrop: "Set at least one margin to trim.",
@@ -52,7 +53,7 @@ const STR = {
     delPlaceholder: "如 1 或 1,3-4",
     delHint: "这些页码会从每个文件中删除。会被删空的文件将被跳过。",
     run: "全部处理", running: "处理中", download: "下载 ZIP", reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`,
+    files: (n: number, max: number) => `${n} / ${max} 份`,
     done: "完成", failed: "失败",
     need: "至少添加一份 PDF。",
     needCrop: "至少设置一边裁剪量。",
@@ -73,7 +74,7 @@ const STR = {
     delPlaceholder: "ej. 1 o 1,3-4",
     delHint: "Estos números de página se eliminan de cada archivo. Los archivos que perderían todas las páginas se omiten.",
     run: "Procesar todo", running: "Procesando", download: "Descargar ZIP", reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`,
+    files: (n: number, max: number) => `${n} / ${max} archivos`,
     done: "listo", failed: "falló",
     need: "Agrega al menos un PDF.",
     needCrop: "Establece al menos un margen para recortar.",
@@ -94,7 +95,7 @@ const STR = {
     delPlaceholder: "ex.: 1 ou 1,3-4",
     delHint: "Esses números de página são removidos de cada arquivo. Arquivos que ficariam sem páginas são ignorados.",
     run: "Processar tudo", running: "Processando", download: "Baixar ZIP", reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`,
+    files: (n: number, max: number) => `${n} / ${max} arquivos`,
     done: "pronto", failed: "falhou",
     need: "Adicione pelo menos um PDF.",
     needCrop: "Defina pelo menos uma margem para aparar.",
@@ -115,7 +116,7 @@ const STR = {
     delPlaceholder: "ex. : 1 ou 1,3-4",
     delHint: "Ces numéros de page sont supprimés de chaque fichier. Les fichiers qui se retrouveraient sans pages sont ignorés.",
     run: "Tout traiter", running: "Traitement en cours", download: "Télécharger le ZIP", reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`,
+    files: (n: number, max: number) => `${n} / ${max} fichiers`,
     done: "terminé", failed: "échoué",
     need: "Ajoutez au moins un PDF.",
     needCrop: "Définissez au moins une marge à rogner.",
@@ -140,6 +141,7 @@ function parsePageList(input: string): Set<number> {
 
 export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>("crop");
   const [edges, setEdges] = useState<Edges>(ZERO);
@@ -164,7 +166,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
           file: f,
           status: "queued" as const,
         })),
-      ].slice(0, MAX_FILES),
+      ].slice(0, maxFiles),
     );
   }, []);
 
@@ -313,7 +315,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
               <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
                 {(["crop", "delete"] as Mode[]).map((m) => (
                   <button key={m} type="button" onClick={() => { setMode(m); setError(null); }} className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-[12.5px] font-medium transition ${mode === m ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>
@@ -323,7 +325,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
               </div>
             </div>
             <div className="flex shrink-0 gap-2">
-              {items.length < MAX_FILES && (
+              {items.length < maxFiles && (
                 <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>
               )}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>

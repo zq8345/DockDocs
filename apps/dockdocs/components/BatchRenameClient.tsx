@@ -4,6 +4,7 @@ import { BatchUploadBox } from "@/components/BatchUploadBox";
 
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "sequence" | "replace";
@@ -20,7 +21,7 @@ const STR = {
     base: "Base name", basePlaceholder: "e.g. invoice", start: "Start at",
     find: "Find", replace: "Replace with", findPlaceholder: "text in the filename", replacePlaceholder: "new text",
     download: "Download renamed ZIP", reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`, preview: "Preview", need: "Add at least one PDF.",
+    files: (n: number, max: number) => `${n} / ${max} files`, preview: "Preview", need: "Add at least one PDF.",
     note: "Renaming changes filenames only — the PDF contents are unchanged. Everything stays on your device.",
   },
   zh: {
@@ -31,7 +32,7 @@ const STR = {
     base: "基础名", basePlaceholder: "如 invoice", start: "起始编号",
     find: "查找", replace: "替换为", findPlaceholder: "文件名中的文字", replacePlaceholder: "新文字",
     download: "下载改名后的 ZIP", reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`, preview: "预览", need: "至少添加一份 PDF。",
+    files: (n: number, max: number) => `${n} / ${max} 份`, preview: "预览", need: "至少添加一份 PDF。",
     note: "重命名只改文件名——PDF 内容不变。全部在你的设备上完成。",
   },
   es: {
@@ -42,7 +43,7 @@ const STR = {
     base: "Nombre base", basePlaceholder: "p. ej. factura", start: "Empezar en",
     find: "Buscar", replace: "Reemplazar con", findPlaceholder: "texto en el nombre del archivo", replacePlaceholder: "texto nuevo",
     download: "Descargar ZIP renombrado", reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`, preview: "Vista previa", need: "Agrega al menos un PDF.",
+    files: (n: number, max: number) => `${n} / ${max} archivos`, preview: "Vista previa", need: "Agrega al menos un PDF.",
     note: "Renombrar cambia solo los nombres de archivo: el contenido de los PDF no se modifica. Todo permanece en tu dispositivo.",
   },
   pt: {
@@ -53,7 +54,7 @@ const STR = {
     base: "Nome base", basePlaceholder: "ex.: fatura", start: "Começar em",
     find: "Localizar", replace: "Substituir por", findPlaceholder: "texto no nome do arquivo", replacePlaceholder: "novo texto",
     download: "Baixar ZIP renomeado", reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`, preview: "Pré-visualização", need: "Adicione pelo menos um PDF.",
+    files: (n: number, max: number) => `${n} / ${max} arquivos`, preview: "Pré-visualização", need: "Adicione pelo menos um PDF.",
     note: "Renomear altera apenas os nomes dos arquivos — o conteúdo dos PDFs não é modificado. Tudo permanece no seu dispositivo.",
   },
   fr: {
@@ -64,13 +65,14 @@ const STR = {
     base: "Nom de base", basePlaceholder: "ex. facture", start: "Commencer à",
     find: "Rechercher", replace: "Remplacer par", findPlaceholder: "texte dans le nom du fichier", replacePlaceholder: "nouveau texte",
     download: "Télécharger le ZIP renommé", reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, preview: "Aperçu", need: "Ajoutez au moins un PDF.",
+    files: (n: number, max: number) => `${n} / ${max} fichiers`, preview: "Aperçu", need: "Ajoutez au moins un PDF.",
     note: "Le renommage ne modifie que les noms de fichiers — le contenu des PDF reste inchangé. Tout reste sur votre appareil.",
   },
 };
 
 export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>("sequence");
   const [base, setBase] = useState("");
@@ -85,7 +87,7 @@ export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
     const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
     if (!pdfs.length) return;
     setError(null);
-    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f }))].slice(0, MAX_FILES));
+    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f }))].slice(0, maxFiles));
   }, []);
 
   const reset = () => { setItems([]); setError(null); };
@@ -160,8 +162,8 @@ export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
               )}
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
-              {items.length < MAX_FILES && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
+              {items.length < maxFiles && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}</button>
             </div>

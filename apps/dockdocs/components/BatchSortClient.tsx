@@ -6,6 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { authHeader } from "@/lib/supabase";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
@@ -18,7 +19,7 @@ const STR = {
     subtitle: "Drop a messy pile of PDFs — AI labels each (invoice, contract, resume, report…) and sorts them into folders inside one ZIP, so a chaotic folder comes out neatly organized. Your files never leave your device.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", add: "Add more", reading: "Reading files…",
     run: "Sort all", running: "Sorting", download: "Download sorted ZIP", reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`, uncategorized: "Uncategorized", failed: "no text",
+    files: (n: number, max: number) => `${n} / ${max} files`, uncategorized: "Uncategorized", failed: "no text",
     need: "Add at least one PDF.", err: "Something went wrong: ",
     note: "Categories are AI-suggested from each document's text and may need a check. The ZIP keeps your original files, just grouped into category folders.",
   },
@@ -27,7 +28,7 @@ const STR = {
     subtitle: "拖入一堆杂乱的 PDF——AI 给每份打上分类(发票、合同、简历、报告…)并分到一个 ZIP 里的不同文件夹，杂乱文件夹一键变整齐。文件不离开你的设备。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹", add: "继续添加", reading: "正在读取文件…",
     run: "全部分类", running: "分类中", download: "下载归档 ZIP", reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`, uncategorized: "未分类", failed: "无文字",
+    files: (n: number, max: number) => `${n} / ${max} 份`, uncategorized: "未分类", failed: "无文字",
     need: "至少添加一份 PDF。", err: "出错了：",
     note: "类别由 AI 从每份文档文字推断，建议核对。ZIP 保留你的原文件，只是按类别分到不同文件夹。",
   },
@@ -36,7 +37,7 @@ const STR = {
     subtitle: "Suelta un montón desordenado de PDF: la IA etiqueta cada uno (factura, contrato, currículum, informe…) y los ordena en carpetas dentro de un solo ZIP, para que una carpeta caótica quede prolijamente organizada. Tus archivos nunca salen de tu dispositivo.",
     drop: "Arrastra y suelta los PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta", add: "Agregar más", reading: "Leyendo archivos…",
     run: "Ordenar todo", running: "Ordenando", download: "Descargar ZIP ordenado", reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`, uncategorized: "Sin categoría", failed: "sin texto",
+    files: (n: number, max: number) => `${n} / ${max} archivos`, uncategorized: "Sin categoría", failed: "sin texto",
     need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
     note: "Las categorías las sugiere la IA a partir del texto de cada documento y conviene revisarlas. El ZIP conserva tus archivos originales, solo los agrupa en carpetas por categoría.",
   },
@@ -45,7 +46,7 @@ const STR = {
     subtitle: "Solte uma pilha desorganizada de PDFs: a IA rotula cada um (fatura, contrato, currículo, relatório…) e os organiza em pastas dentro de um único ZIP, transformando uma pasta caótica em algo bem organizado. Seus arquivos nunca saem do seu dispositivo.",
     drop: "Arraste e solte os PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta", add: "Adicionar mais", reading: "Lendo arquivos…",
     run: "Classificar tudo", running: "Classificando", download: "Baixar ZIP classificado", reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`, uncategorized: "Sem categoria", failed: "sem texto",
+    files: (n: number, max: number) => `${n} / ${max} arquivos`, uncategorized: "Sem categoria", failed: "sem texto",
     need: "Adicione pelo menos um PDF.", err: "Algo deu errado: ",
     note: "As categorias são sugeridas pela IA a partir do texto de cada documento e podem precisar de revisão. O ZIP mantém seus arquivos originais, apenas agrupados em pastas por categoria.",
   },
@@ -54,7 +55,7 @@ const STR = {
     subtitle: "Déposez un tas de PDF en vrac — l'IA attribue une catégorie à chacun (facture, contrat, CV, rapport…) et les range dans des dossiers au sein d'un seul ZIP, transformant un dossier chaotique en fichiers bien organisés. Vos fichiers ne quittent jamais votre appareil.",
     drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier", add: "Ajouter d'autres", reading: "Lecture des fichiers…",
     run: "Tout classer", running: "Classement en cours", download: "Télécharger le ZIP classé", reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, uncategorized: "Non classé", failed: "aucun texte",
+    files: (n: number, max: number) => `${n} / ${max} fichiers`, uncategorized: "Non classé", failed: "aucun texte",
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
     note: "Les catégories sont suggérées par l'IA à partir du texte de chaque document et peuvent nécessiter une vérification. Le ZIP conserve vos fichiers d'origine, simplement regroupés dans des dossiers par catégorie.",
   },
@@ -64,6 +65,7 @@ const folderSafe = (s: string) => s.replace(/[\\/:*?"<>|]+/g, "-").trim().slice(
 
 export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
@@ -93,7 +95,7 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
         } catch { /* encrypted / unreadable → no text, still include for uncategorized */ }
         added.push({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 5)}`, name: f.name, file: f, text: text.replace(/\s+/g, " ").trim(), status: "queued" });
       }
-      setItems((prev) => [...prev, ...added].slice(0, MAX_FILES));
+      setItems((prev) => [...prev, ...added].slice(0, maxFiles));
     } finally {
       setBusy(false);
     }
@@ -169,9 +171,9 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
+            <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
             <div className="flex shrink-0 gap-2">
-              {items.length < MAX_FILES && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+ {t.add}</button>}
+              {items.length < maxFiles && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+ {t.add}</button>}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}</button>

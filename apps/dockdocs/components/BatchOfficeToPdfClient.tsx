@@ -6,6 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Status = "queued" | "done" | "error";
@@ -36,7 +37,7 @@ const STR = {
     running: "Converting",
     download: "Download ZIP",
     reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`,
+    files: (n: number, max: number) => `${n} / ${max} files`,
     done: "done",
     failed: "failed",
     need: "Add at least one Office file.",
@@ -53,7 +54,7 @@ const STR = {
     running: "转换中",
     download: "下载 ZIP",
     reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`,
+    files: (n: number, max: number) => `${n} / ${max} 份`,
     done: "完成",
     failed: "失败",
     need: "至少添加一个 Office 文件。",
@@ -70,7 +71,7 @@ const STR = {
     running: "Convirtiendo",
     download: "Descargar ZIP",
     reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`,
+    files: (n: number, max: number) => `${n} / ${max} archivos`,
     done: "listo",
     failed: "falló",
     need: "Agrega al menos un archivo de Office.",
@@ -87,7 +88,7 @@ const STR = {
     running: "Convertendo",
     download: "Baixar ZIP",
     reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`,
+    files: (n: number, max: number) => `${n} / ${max} arquivos`,
     done: "pronto",
     failed: "falhou",
     need: "Adicione pelo menos um arquivo do Office.",
@@ -104,7 +105,7 @@ const STR = {
     running: "Conversion en cours",
     download: "Télécharger le ZIP",
     reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`,
+    files: (n: number, max: number) => `${n} / ${max} fichiers`,
     done: "terminé",
     failed: "échec",
     need: "Ajoutez au moins un fichier Office.",
@@ -150,6 +151,7 @@ const PS: Record<Source, Record<Locale, { title: string; subtitle: string; hint:
 
 export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Locale; source?: Source }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const head = source ? (PS[source][locale] ?? PS[source].en) : { title: t.title, subtitle: t.subtitle, hint: t.hint };
   const exts = source ? SRC[source].ext : OFFICE_EXT;
   const accept = source ? SRC[source].accept : ACCEPT;
@@ -174,7 +176,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Loc
           file: f,
           status: "queued" as const,
         })),
-      ].slice(0, MAX_FILES),
+      ].slice(0, maxFiles),
     );
   }, [source]);
 
@@ -283,9 +285,9 @@ export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Loc
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
+            <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
             <div className="flex shrink-0 gap-2">
-              {items.length < MAX_FILES && (
+              {items.length < maxFiles && (
                 <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>
               )}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>

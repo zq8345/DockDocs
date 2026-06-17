@@ -5,6 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { BatchFileCard } from "@/components/BatchFileCard";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type DocType = "invoice" | "quote" | "contract";
@@ -24,7 +25,7 @@ const STR = {
     type: "Document type", invoice: "Invoices", quote: "Quotes", contract: "Contracts",
     extract: "Extract all", extracting: "Extracting", reset: "Start over",
     download: "Download CSV", doc: "Document", dash: "—",
-    files: (n: number) => `${n} / ${MAX_FILES} files`, needFile: "Add at least one PDF.",
+    files: (n: number, max: number) => `${n} / ${max} files`, needFile: "Add at least one PDF.",
     err: "Something went wrong: ",
     note: "Fields are extracted by AI and may need a quick check. Values it can't find are left blank — it won't make them up.",
   },
@@ -35,7 +36,7 @@ const STR = {
     type: "文档类型", invoice: "发票", quote: "报价单", contract: "合同",
     extract: "全部抽取", extracting: "抽取中", reset: "重新开始",
     download: "下载 CSV", doc: "文档", dash: "—",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`, needFile: "至少添加一个 PDF。",
+    files: (n: number, max: number) => `${n} / ${max} 份`, needFile: "至少添加一个 PDF。",
     err: "出错了：",
     note: "字段由 AI 抽取，建议快速核对。找不到的值会留空——不会瞎编。",
   },
@@ -46,7 +47,7 @@ const STR = {
     type: "Tipo de documento", invoice: "Facturas", quote: "Presupuestos", contract: "Contratos",
     extract: "Extraer todo", extracting: "Extrayendo", reset: "Empezar de nuevo",
     download: "Descargar CSV", doc: "Documento", dash: "—",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`, needFile: "Agrega al menos un PDF.",
+    files: (n: number, max: number) => `${n} / ${max} archivos`, needFile: "Agrega al menos un PDF.",
     err: "Algo salió mal: ",
     note: "Los campos los extrae la IA y puede que necesiten una revisión rápida. Los valores que no encuentra se dejan en blanco; no los inventa.",
   },
@@ -57,7 +58,7 @@ const STR = {
     type: "Tipo de documento", invoice: "Faturas", quote: "Orçamentos", contract: "Contratos",
     extract: "Extrair tudo", extracting: "Extraindo", reset: "Recomeçar",
     download: "Baixar CSV", doc: "Documento", dash: "—",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`, needFile: "Adicione pelo menos um PDF.",
+    files: (n: number, max: number) => `${n} / ${max} arquivos`, needFile: "Adicione pelo menos um PDF.",
     err: "Algo deu errado: ",
     note: "Os campos são extraídos por IA e podem precisar de uma verificação rápida. Valores não encontrados são deixados em branco — a IA não os inventa.",
   },
@@ -68,7 +69,7 @@ const STR = {
     type: "Type de document", invoice: "Factures", quote: "Devis", contract: "Contrats",
     extract: "Tout extraire", extracting: "Extraction en cours", reset: "Recommencer",
     download: "Télécharger le CSV", doc: "Document", dash: "—",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, needFile: "Ajoutez au moins un PDF.",
+    files: (n: number, max: number) => `${n} / ${max} fichiers`, needFile: "Ajoutez au moins un PDF.",
     err: "Une erreur est survenue : ",
     note: "Les champs sont extraits par l'IA et peuvent nécessiter une vérification rapide. Les valeurs introuvables sont laissées vides — l'IA ne les invente pas.",
   },
@@ -76,6 +77,7 @@ const STR = {
 
 export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [docs, setDocs] = useState<Doc[]>([]);
   const [docType, setDocType] = useState<DocType>("invoice");
   const [busy, setBusy] = useState(false);
@@ -112,7 +114,7 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
           if (e && (e as { name?: string }).name === "PasswordException") encrypted = true;
         }
       }
-      setDocs((prev) => [...prev, ...added].slice(0, MAX_FILES));
+      setDocs((prev) => [...prev, ...added].slice(0, maxFiles));
       if (encrypted) setError(encryptedPdfMessage(undefined, locale) ?? t.err);
     } finally {
       setBusy(false);
@@ -206,7 +208,7 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(docs.length)}</p>
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(docs.length, maxFiles)}</p>
               <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
                 {types.map((ty) => (
                   <button key={ty} type="button" onClick={() => { setDocType(ty); setPhase("idle"); setResults([]); }} className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-[12.5px] font-medium transition ${docType === ty ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>{t[ty]}</button>

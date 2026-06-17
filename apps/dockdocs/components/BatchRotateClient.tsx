@@ -6,6 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Angle = 90 | 180 | 270;
@@ -20,7 +21,7 @@ const STR = {
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
     rotate: "Rotate by",
     run: "Rotate all", running: "Rotating", download: "Download ZIP", reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`, done: "rotated", failed: "failed",
+    files: (n: number, max: number) => `${n} / ${max} files`, done: "rotated", failed: "failed",
     need: "Add at least one PDF.",
     note: "Every page of each PDF is rotated by the chosen angle. Encrypted PDFs are skipped. Everything stays on your device.",
     err: "Something went wrong: ",
@@ -31,7 +32,7 @@ const STR = {
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹",
     rotate: "旋转角度",
     run: "全部旋转", running: "旋转中", download: "下载 ZIP", reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`, done: "已旋转", failed: "失败",
+    files: (n: number, max: number) => `${n} / ${max} 份`, done: "已旋转", failed: "失败",
     need: "至少添加一份 PDF。",
     note: "每份 PDF 的每一页都按所选角度旋转。已加密的 PDF 会被跳过。全部在你的设备上完成。",
     err: "出错了：",
@@ -42,7 +43,7 @@ const STR = {
     drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
     rotate: "Girar",
     run: "Girar todo", running: "Girando", download: "Descargar ZIP", reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`, done: "girado", failed: "falló",
+    files: (n: number, max: number) => `${n} / ${max} archivos`, done: "girado", failed: "falló",
     need: "Agrega al menos un PDF.",
     note: "Cada página de cada PDF se gira según el ángulo elegido. Los PDF cifrados se omiten. Todo permanece en tu dispositivo.",
     err: "Algo salió mal: ",
@@ -53,7 +54,7 @@ const STR = {
     drop: "Arraste e solte PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta",
     rotate: "Girar",
     run: "Girar tudo", running: "Girando", download: "Baixar ZIP", reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`, done: "girado", failed: "falhou",
+    files: (n: number, max: number) => `${n} / ${max} arquivos`, done: "girado", failed: "falhou",
     need: "Adicione pelo menos um PDF.",
     note: "Cada página de cada PDF é girada pelo ângulo escolhido. PDFs criptografados são ignorados. Tudo permanece no seu dispositivo.",
     err: "Algo deu errado: ",
@@ -64,7 +65,7 @@ const STR = {
     drop: "Déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
     rotate: "Rotation de",
     run: "Tout faire pivoter", running: "Rotation en cours", download: "Télécharger le ZIP", reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, done: "pivoté", failed: "échec",
+    files: (n: number, max: number) => `${n} / ${max} fichiers`, done: "pivoté", failed: "échec",
     need: "Ajoutez au moins un PDF.",
     note: "Chaque page de chaque PDF est pivotée selon l'angle choisi. Les PDF chiffrés sont ignorés. Tout reste sur votre appareil.",
     err: "Une erreur est survenue : ",
@@ -73,6 +74,7 @@ const STR = {
 
 export function BatchRotateClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [angle, setAngle] = useState<Angle>(90);
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
@@ -85,7 +87,7 @@ export function BatchRotateClient({ locale = "en" }: { locale?: Locale }) {
     const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
     if (!pdfs.length) return;
     setError(null); setPhase("idle");
-    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, MAX_FILES));
+    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, maxFiles));
   }, []);
 
   const reset = () => { setItems([]); setPhase("idle"); setProgress(0); setError(null); };
@@ -154,8 +156,8 @@ export function BatchRotateClient({ locale = "en" }: { locale?: Locale }) {
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
-              {items.length < MAX_FILES && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
+              {items.length < maxFiles && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" && doneCount > 0 ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}</button>

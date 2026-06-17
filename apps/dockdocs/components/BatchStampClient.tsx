@@ -6,6 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "watermark" | "pagenum";
@@ -24,7 +25,7 @@ const STR = {
     wm: "Watermark", pn: "Page numbers",
     wmText: "Watermark text", wmPlaceholder: "e.g. CONFIDENTIAL",
     run: "Apply to all", running: "Processing", download: "Download ZIP", reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`, done: "done", failed: "failed",
+    files: (n: number, max: number) => `${n} / ${max} files`, done: "done", failed: "failed",
     needText: "Enter the watermark text.", needFile: "Add at least one PDF.",
     note: "Uses the default placement (diagonal watermark / page numbers). For custom position or opacity, use the single-file Watermark or Page-numbers tools. Everything stays on your device.",
     err: "Something went wrong: ",
@@ -39,7 +40,7 @@ const STR = {
     wm: "水印", pn: "页码",
     wmText: "水印文字", wmPlaceholder: "如 机密 / CONFIDENTIAL",
     run: "全部应用", running: "处理中", download: "下载 ZIP", reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`, done: "完成", failed: "失败",
+    files: (n: number, max: number) => `${n} / ${max} 份`, done: "完成", failed: "失败",
     needText: "请输入水印文字。", needFile: "至少添加一份 PDF。",
     note: "使用默认排版(对角水印 / 页码)。需要自定义位置或透明度，请用单文件的「加水印」或「加页码」工具。全部在你的设备上完成。",
     err: "出错了：",
@@ -54,7 +55,7 @@ const STR = {
     wm: "Marca de agua", pn: "Números de página",
     wmText: "Texto de la marca de agua", wmPlaceholder: "p. ej. CONFIDENCIAL",
     run: "Aplicar a todos", running: "Procesando", download: "Descargar ZIP", reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`, done: "listo", failed: "error",
+    files: (n: number, max: number) => `${n} / ${max} archivos`, done: "listo", failed: "error",
     needText: "Ingresa el texto de la marca de agua.", needFile: "Agrega al menos un PDF.",
     note: "Usa la disposición predeterminada (marca de agua diagonal / números de página). Para una posición u opacidad personalizadas, usa las herramientas individuales de Marca de agua o Números de página. Todo permanece en tu dispositivo.",
     err: "Algo salió mal: ",
@@ -69,7 +70,7 @@ const STR = {
     wm: "Marca d'água", pn: "Números de página",
     wmText: "Texto da marca d'água", wmPlaceholder: "ex.: CONFIDENCIAL",
     run: "Aplicar a todos", running: "Processando", download: "Baixar ZIP", reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`, done: "pronto", failed: "erro",
+    files: (n: number, max: number) => `${n} / ${max} arquivos`, done: "pronto", failed: "erro",
     needText: "Insira o texto da marca d'água.", needFile: "Adicione pelo menos um PDF.",
     note: "Usa o posicionamento padrão (marca d'água diagonal / números de página). Para posição ou opacidade personalizadas, use as ferramentas individuais de Marca d'água ou Números de página. Tudo permanece no seu dispositivo.",
     err: "Algo deu errado: ",
@@ -84,7 +85,7 @@ const STR = {
     wm: "Filigrane", pn: "Numéros de page",
     wmText: "Texte du filigrane", wmPlaceholder: "ex. : CONFIDENTIEL",
     run: "Appliquer à tous", running: "Traitement en cours", download: "Télécharger le ZIP", reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, done: "terminé", failed: "échec",
+    files: (n: number, max: number) => `${n} / ${max} fichiers`, done: "terminé", failed: "échec",
     needText: "Veuillez saisir le texte du filigrane.", needFile: "Ajoutez au moins un PDF.",
     note: "Utilise le positionnement par défaut (filigrane en diagonale / numéros de page). Pour une position ou une opacité personnalisées, utilisez les outils individuels Filigrane ou Numéros de page. Tout reste sur votre appareil.",
     err: "Une erreur s'est produite : ",
@@ -93,6 +94,7 @@ const STR = {
 
 export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>(lockMode ?? "watermark");
   const [wmText, setWmText] = useState("");
@@ -106,7 +108,7 @@ export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale;
     const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
     if (!pdfs.length) return;
     setError(null); setPhase("idle");
-    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, MAX_FILES));
+    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, maxFiles));
   }, []);
 
   const reset = () => { setItems([]); setPhase("idle"); setProgress(0); setError(null); };
@@ -185,8 +187,8 @@ export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale;
               )}
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
-              {items.length < MAX_FILES && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
+              {items.length < maxFiles && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" && doneCount > 0 ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}</button>

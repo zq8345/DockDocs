@@ -10,6 +10,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Status = "queued" | "done" | "error";
@@ -44,7 +45,7 @@ const STR = {
     running: "Translating",
     download: "Download ZIP",
     reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`,
+    files: (n: number, max: number) => `${n} / ${max} files`,
     done: "done",
     failed: "failed",
     need: "Add at least one PDF.",
@@ -62,7 +63,7 @@ const STR = {
     running: "翻译中",
     download: "下载 ZIP",
     reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`,
+    files: (n: number, max: number) => `${n} / ${max} 份`,
     done: "完成",
     failed: "失败",
     need: "至少添加一份 PDF。",
@@ -80,7 +81,7 @@ const STR = {
     running: "Traduciendo",
     download: "Descargar ZIP",
     reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`,
+    files: (n: number, max: number) => `${n} / ${max} archivos`,
     done: "listo",
     failed: "falló",
     need: "Agrega al menos un PDF.",
@@ -98,7 +99,7 @@ const STR = {
     running: "Traduzindo",
     download: "Baixar ZIP",
     reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`,
+    files: (n: number, max: number) => `${n} / ${max} arquivos`,
     done: "pronto",
     failed: "falhou",
     need: "Adicione pelo menos um PDF.",
@@ -116,7 +117,7 @@ const STR = {
     running: "Traduction en cours",
     download: "Télécharger le ZIP",
     reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`,
+    files: (n: number, max: number) => `${n} / ${max} fichiers`,
     done: "terminé",
     failed: "échec",
     need: "Ajoutez au moins un PDF.",
@@ -144,6 +145,7 @@ async function extractText(file: File): Promise<string> {
 
 export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [target, setTarget] = useState(locale === "zh" ? "en" : "zh");
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
@@ -166,7 +168,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
           file: f,
           status: "queued" as const,
         })),
-      ].slice(0, MAX_FILES),
+      ].slice(0, maxFiles),
     );
   }, []);
 
@@ -278,7 +280,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
               <label className="inline-flex items-center gap-2">
                 <span className="text-[12px] font-medium text-[color:var(--muted)]">{t.target}</span>
                 <select
@@ -294,7 +296,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
               </label>
             </div>
             <div className="flex shrink-0 gap-2">
-              {items.length < MAX_FILES && (
+              {items.length < maxFiles && (
                 <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>
               )}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>

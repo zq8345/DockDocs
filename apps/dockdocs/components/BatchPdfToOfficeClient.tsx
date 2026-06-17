@@ -6,6 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Format = "word" | "excel";
@@ -27,7 +28,7 @@ const STR = {
     running: "Converting",
     download: "Download ZIP",
     reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`,
+    files: (n: number, max: number) => `${n} / ${max} files`,
     done: "done",
     failed: "failed",
     need: "Add at least one PDF.",
@@ -45,7 +46,7 @@ const STR = {
     running: "转换中",
     download: "下载 ZIP",
     reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`,
+    files: (n: number, max: number) => `${n} / ${max} 份`,
     done: "完成",
     failed: "失败",
     need: "至少添加一份 PDF。",
@@ -63,7 +64,7 @@ const STR = {
     running: "Convirtiendo",
     download: "Descargar ZIP",
     reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`,
+    files: (n: number, max: number) => `${n} / ${max} archivos`,
     done: "listo",
     failed: "falló",
     need: "Agrega al menos un PDF.",
@@ -81,7 +82,7 @@ const STR = {
     running: "Convertendo",
     download: "Baixar ZIP",
     reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`,
+    files: (n: number, max: number) => `${n} / ${max} arquivos`,
     done: "pronto",
     failed: "falhou",
     need: "Adicione pelo menos um PDF.",
@@ -99,7 +100,7 @@ const STR = {
     running: "Conversion en cours",
     download: "Télécharger le ZIP",
     reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`,
+    files: (n: number, max: number) => `${n} / ${max} fichiers`,
     done: "terminé",
     failed: "échec",
     need: "Ajoutez au moins un PDF.",
@@ -129,6 +130,7 @@ const PT: Record<Format, Record<Locale, { title: string; subtitle: string }>> = 
 
 export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Locale; target?: Format }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const head = target ? (PT[target][locale] ?? PT[target].en) : { title: t.title, subtitle: t.subtitle };
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Format>(target ?? "word");
@@ -151,7 +153,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
           file: f,
           status: "queued" as const,
         })),
-      ].slice(0, MAX_FILES),
+      ].slice(0, maxFiles),
     );
   }, []);
 
@@ -257,7 +259,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
               {!target && (
                 <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
                   {formats.map((fmt) => (
@@ -274,7 +276,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
               )}
             </div>
             <div className="flex shrink-0 gap-2">
-              {items.length < MAX_FILES && (
+              {items.length < maxFiles && (
                 <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>
               )}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>

@@ -6,6 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
@@ -21,7 +22,7 @@ const STR = {
     pw: "Password", pwPlaceholder: "Password to open the files", show: "Show", hide: "Hide",
     pwRule: "4–32 characters: letters, digits, underscore (_).",
     run: "Encrypt all", running: "Encrypting", download: "Download ZIP", reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`, done: "encrypted", failed: "failed",
+    files: (n: number, max: number) => `${n} / ${max} files`, done: "encrypted", failed: "failed",
     needFile: "Add at least one PDF.", needPw: "Enter a valid password (4–32: letters, digits, underscore).",
     note: "Each PDF will require this password to open. Already-encrypted PDFs are skipped. Everything stays on your device.",
     err: "Something went wrong: ",
@@ -33,7 +34,7 @@ const STR = {
     pw: "密码", pwPlaceholder: "打开文件所需的密码", show: "显示", hide: "隐藏",
     pwRule: "4–32 位：字母、数字、下划线(_)。",
     run: "全部加密", running: "加密中", download: "下载 ZIP", reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`, done: "已加密", failed: "失败",
+    files: (n: number, max: number) => `${n} / ${max} 份`, done: "已加密", failed: "失败",
     needFile: "至少添加一份 PDF。", needPw: "请输入有效密码(4–32 位：字母、数字、下划线)。",
     note: "每份 PDF 都将需要此密码才能打开。已加密的 PDF 会被跳过。全部在你的设备上完成。",
     err: "出错了：",
@@ -45,7 +46,7 @@ const STR = {
     pw: "Contraseña", pwPlaceholder: "Contraseña para abrir los archivos", show: "Mostrar", hide: "Ocultar",
     pwRule: "De 4 a 32 caracteres: letras, dígitos y guion bajo (_).",
     run: "Cifrar todo", running: "Cifrando", download: "Descargar ZIP", reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`, done: "cifrado", failed: "error",
+    files: (n: number, max: number) => `${n} / ${max} archivos`, done: "cifrado", failed: "error",
     needFile: "Agrega al menos un PDF.", needPw: "Ingresa una contraseña válida (de 4 a 32: letras, dígitos y guion bajo).",
     note: "Cada PDF requerirá esta contraseña para abrirse. Los PDF que ya están cifrados se omiten. Todo permanece en tu dispositivo.",
     err: "Algo salió mal: ",
@@ -57,7 +58,7 @@ const STR = {
     pw: "Senha", pwPlaceholder: "Senha para abrir os arquivos", show: "Mostrar", hide: "Ocultar",
     pwRule: "De 4 a 32 caracteres: letras, dígitos e sublinhado (_).",
     run: "Criptografar tudo", running: "Criptografando", download: "Baixar ZIP", reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`, done: "criptografado", failed: "erro",
+    files: (n: number, max: number) => `${n} / ${max} arquivos`, done: "criptografado", failed: "erro",
     needFile: "Adicione pelo menos um PDF.", needPw: "Insira uma senha válida (4 a 32: letras, dígitos e sublinhado).",
     note: "Cada PDF exigirá esta senha para ser aberto. PDFs já criptografados são ignorados. Tudo permanece no seu dispositivo.",
     err: "Algo deu errado: ",
@@ -69,7 +70,7 @@ const STR = {
     pw: "Mot de passe", pwPlaceholder: "Mot de passe pour ouvrir les fichiers", show: "Afficher", hide: "Masquer",
     pwRule: "De 4 à 32 caractères : lettres, chiffres et trait de soulignement (_).",
     run: "Tout chiffrer", running: "Chiffrement en cours", download: "Télécharger le ZIP", reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, done: "chiffré", failed: "échec",
+    files: (n: number, max: number) => `${n} / ${max} fichiers`, done: "chiffré", failed: "échec",
     needFile: "Ajoutez au moins un PDF.", needPw: "Saisissez un mot de passe valide (4 à 32 : lettres, chiffres et trait de soulignement).",
     note: "Chaque PDF nécessitera ce mot de passe pour être ouvert. Les PDF déjà chiffrés sont ignorés. Tout reste sur votre appareil.",
     err: "Une erreur est survenue : ",
@@ -78,6 +79,7 @@ const STR = {
 
 export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -91,7 +93,7 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
     const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
     if (!pdfs.length) return;
     setError(null); setPhase("idle");
-    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, MAX_FILES));
+    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, maxFiles));
   }, []);
 
   const reset = () => { setItems([]); setPhase("idle"); setProgress(0); setError(null); };
@@ -165,8 +167,8 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
               <p className="mt-1 text-[11.5px] text-[color:var(--faint)]">{t.pwRule}</p>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
-              {items.length < MAX_FILES && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
+              {items.length < maxFiles && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" && doneCount > 0 ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}</button>

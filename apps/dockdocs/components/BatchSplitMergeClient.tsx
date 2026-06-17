@@ -6,6 +6,7 @@ import { BatchFileCard } from "@/components/BatchFileCard";
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "merge" | "split";
@@ -23,7 +24,7 @@ const STR = {
     merge: "Merge into one", split: "Split each",
     every: "Pages per file", order: "Files merge in the order shown.",
     run: "Run", running: "Working", dlMerge: "Download merged PDF", dlSplit: "Download ZIP", reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`, parts: (n: number) => `${n} part${n === 1 ? "" : "s"}`, failed: "failed",
+    files: (n: number, max: number) => `${n} / ${max} files`, parts: (n: number) => `${n} part${n === 1 ? "" : "s"}`, failed: "failed",
     needTwo: "Add at least 2 PDFs to merge.", needFile: "Add at least one PDF.",
     note: "Merge keeps the upload order. Split breaks each PDF into chunks of N pages. Everything stays on your device.",
     err: "Something went wrong: ",
@@ -37,7 +38,7 @@ const STR = {
     merge: "合并成一个", split: "逐个拆分",
     every: "每个文件页数", order: "按显示顺序合并。",
     run: "开始", running: "处理中", dlMerge: "下载合并后的 PDF", dlSplit: "下载 ZIP", reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`, parts: (n: number) => `${n} 份`, failed: "失败",
+    files: (n: number, max: number) => `${n} / ${max} 份`, parts: (n: number) => `${n} 份`, failed: "失败",
     needTwo: "合并至少需要 2 份 PDF。", needFile: "至少添加一份 PDF。",
     note: "合并保持上传顺序。拆分把每份 PDF 按 N 页切成若干份。全部在你的设备上完成。",
     err: "出错了：",
@@ -51,7 +52,7 @@ const STR = {
     merge: "Combinar en uno", split: "Dividir cada uno",
     every: "Páginas por archivo", order: "Los archivos se combinan en el orden que se muestra.",
     run: "Ejecutar", running: "Procesando", dlMerge: "Descargar PDF combinado", dlSplit: "Descargar ZIP", reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`, parts: (n: number) => `${n} parte${n === 1 ? "" : "s"}`, failed: "falló",
+    files: (n: number, max: number) => `${n} / ${max} archivos`, parts: (n: number) => `${n} parte${n === 1 ? "" : "s"}`, failed: "falló",
     needTwo: "Agrega al menos 2 PDF para combinar.", needFile: "Agrega al menos un PDF.",
     note: "Al combinar se mantiene el orden de carga. La división separa cada PDF en bloques de N páginas. Todo permanece en tu dispositivo.",
     err: "Algo salió mal: ",
@@ -65,7 +66,7 @@ const STR = {
     merge: "Combinar em um", split: "Dividir cada um",
     every: "Páginas por arquivo", order: "Os arquivos são combinados na ordem exibida.",
     run: "Executar", running: "Processando", dlMerge: "Baixar PDF combinado", dlSplit: "Baixar ZIP", reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`, parts: (n: number) => `${n} parte${n === 1 ? "" : "s"}`, failed: "falhou",
+    files: (n: number, max: number) => `${n} / ${max} arquivos`, parts: (n: number) => `${n} parte${n === 1 ? "" : "s"}`, failed: "falhou",
     needTwo: "Adicione pelo menos 2 PDFs para combinar.", needFile: "Adicione pelo menos um PDF.",
     note: "Ao combinar, a ordem de carregamento é mantida. A divisão separa cada PDF em blocos de N páginas. Tudo permanece no seu dispositivo.",
     err: "Algo deu errado: ",
@@ -79,7 +80,7 @@ const STR = {
     merge: "Fusionner en un seul", split: "Diviser chacun",
     every: "Pages par fichier", order: "Les fichiers sont fusionnés dans l'ordre affiché.",
     run: "Lancer", running: "Traitement en cours", dlMerge: "Télécharger le PDF fusionné", dlSplit: "Télécharger le ZIP", reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, parts: (n: number) => `${n} partie${n === 1 ? "" : "s"}`, failed: "échoué",
+    files: (n: number, max: number) => `${n} / ${max} fichiers`, parts: (n: number) => `${n} partie${n === 1 ? "" : "s"}`, failed: "échoué",
     needTwo: "Ajoutez au moins 2 PDF à fusionner.", needFile: "Ajoutez au moins un PDF.",
     note: "La fusion conserve l'ordre de chargement. La division découpe chaque PDF en blocs de N pages. Tout reste sur votre appareil.",
     err: "Une erreur s'est produite : ",
@@ -88,6 +89,7 @@ const STR = {
 
 export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>(lockMode ?? "merge");
   const [n, setN] = useState(1);
@@ -102,7 +104,7 @@ export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Lo
     const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
     if (!pdfs.length) return;
     setError(null); setPhase("idle"); result.current = null;
-    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, MAX_FILES));
+    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, maxFiles));
   }, []);
 
   const reset = () => { setItems([]); setPhase("idle"); setProgress(0); setError(null); result.current = null; };
@@ -197,8 +199,8 @@ export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Lo
               )}
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
-              {items.length < MAX_FILES && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
+              {items.length < maxFiles && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" && result.current ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{mode === "merge" ? t.dlMerge : t.dlSplit}</button>

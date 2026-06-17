@@ -6,6 +6,7 @@ import { BatchFileCard } from "@/components/BatchFileCard";
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Level = "low" | "recommended" | "high";
@@ -20,7 +21,7 @@ const STR = {
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", reading: "Reading…",
     level: "Compression", low: "Light", recommended: "Recommended", high: "Strong",
     run: "Compress all", running: "Compressing", download: "Download ZIP", reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`, saved: "saved", failed: "failed",
+    files: (n: number, max: number) => `${n} / ${max} files`, saved: "saved", failed: "failed",
     totalSaved: (p: number) => `${p}% smaller overall`,
     need: "Add at least one PDF.", err: "Something went wrong: ",
     note: "Compression renders pages to images, so heavily-text PDFs may not shrink much. Everything stays on your device.",
@@ -31,7 +32,7 @@ const STR = {
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹", reading: "读取中…",
     level: "压缩强度", low: "轻度", recommended: "推荐", high: "强力",
     run: "全部压缩", running: "压缩中", download: "下载 ZIP", reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`, saved: "已减", failed: "失败",
+    files: (n: number, max: number) => `${n} / ${max} 份`, saved: "已减", failed: "失败",
     totalSaved: (p: number) => `整体减小 ${p}%`,
     need: "至少添加一份 PDF。", err: "出错了：",
     note: "压缩会把页面渲染成图片，纯文字 PDF 可能压不了多少。全部在你的设备上完成。",
@@ -42,7 +43,7 @@ const STR = {
     drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta", reading: "Leyendo…",
     level: "Compresión", low: "Ligera", recommended: "Recomendada", high: "Fuerte",
     run: "Comprimir todo", running: "Comprimiendo", download: "Descargar ZIP", reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`, saved: "reducido", failed: "falló",
+    files: (n: number, max: number) => `${n} / ${max} archivos`, saved: "reducido", failed: "falló",
     totalSaved: (p: number) => `${p}% más pequeño en total`,
     need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
     note: "La compresión convierte las páginas en imágenes, por lo que los PDF con mucho texto quizá no se reduzcan demasiado. Todo permanece en tu dispositivo.",
@@ -53,7 +54,7 @@ const STR = {
     drop: "Arraste e solte PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta", reading: "Lendo…",
     level: "Compressão", low: "Leve", recommended: "Recomendada", high: "Forte",
     run: "Comprimir tudo", running: "Comprimindo", download: "Baixar ZIP", reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`, saved: "reduzido", failed: "falhou",
+    files: (n: number, max: number) => `${n} / ${max} arquivos`, saved: "reduzido", failed: "falhou",
     totalSaved: (p: number) => `${p}% menor no total`,
     need: "Adicione pelo menos um PDF.", err: "Algo deu errado: ",
     note: "A compressão converte as páginas em imagens, por isso PDFs com muito texto podem não encolher muito. Tudo permanece no seu dispositivo.",
@@ -64,7 +65,7 @@ const STR = {
     drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour sélectionner", choose: "Choisir des PDF", folder: "Choisir un dossier", reading: "Lecture…",
     level: "Compression", low: "Légère", recommended: "Recommandée", high: "Forte",
     run: "Tout compresser", running: "Compression en cours", download: "Télécharger le ZIP", reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichiers`, saved: "économisé", failed: "échec",
+    files: (n: number, max: number) => `${n} / ${max} fichiers`, saved: "économisé", failed: "échec",
     totalSaved: (p: number) => `${p}% de réduction au total`,
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
     note: "La compression convertit les pages en images ; les PDF très textuels ne seront peut-être pas beaucoup réduits. Tout reste sur votre appareil.",
@@ -73,6 +74,7 @@ const STR = {
 
 export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [level, setLevel] = useState<Level>("recommended");
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
@@ -85,7 +87,7 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
     const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
     if (!pdfs.length) return;
     setError(null); setPhase("idle");
-    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, MAX_FILES));
+    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, maxFiles));
   }, []);
 
   const reset = () => { setItems([]); setPhase("idle"); setProgress(0); setError(null); };
@@ -155,7 +157,7 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
               <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
                 {levels.map((lv) => (
                   <button key={lv} type="button" onClick={() => setLevel(lv)} className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-[12.5px] font-medium transition ${level === lv ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>{t[lv]}</button>
@@ -163,7 +165,7 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
               </div>
             </div>
             <div className="flex shrink-0 gap-2">
-              {items.length < MAX_FILES && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
+              {items.length < maxFiles && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}{totalSaved > 0 ? ` · ${t.totalSaved(totalSaved)}` : ""}</button>

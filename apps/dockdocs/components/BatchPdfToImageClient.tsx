@@ -7,6 +7,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Fmt = "jpg" | "png";
@@ -21,7 +22,7 @@ const STR = {
     subtitle: "Drop a whole folder of PDFs and turn every page into a JPG or PNG — all rendered in your browser and packaged into one ZIP. Nothing is uploaded.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
     format: "Format", run: "Convert all", running: "Converting", download: "Download ZIP", reset: "Start over",
-    files: (n: number) => `${n} / ${MAX_FILES} files`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "failed",
+    files: (n: number, max: number) => `${n} / ${max} files`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "failed",
     need: "Add at least one PDF.", err: "Something went wrong: ",
     note: "Every page of every PDF becomes an image (rendered at 2×). Large batches take a moment — everything stays on your device.",
   },
@@ -30,7 +31,7 @@ const STR = {
     subtitle: "拖入整个 PDF 文件夹，把每一页都转成 JPG 或 PNG——全部在浏览器中渲染并打包成一个 ZIP。不上传任何文件。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹",
     format: "格式", run: "全部转换", running: "转换中", download: "下载 ZIP", reset: "重新开始",
-    files: (n: number) => `${n} / ${MAX_FILES} 份`, pages: (n: number) => `${n} 页`, failed: "失败",
+    files: (n: number, max: number) => `${n} / ${max} 份`, pages: (n: number) => `${n} 页`, failed: "失败",
     need: "至少添加一份 PDF。", err: "出错了：",
     note: "每份 PDF 的每一页都会转成一张图片(2× 渲染)。文件多时稍慢——全部在你的设备上完成。",
   },
@@ -39,7 +40,7 @@ const STR = {
     subtitle: "Suelta una carpeta entera de PDF y convierte cada página en JPG o PNG: todo se procesa en tu navegador y se empaqueta en un solo ZIP. No se sube nada.",
     drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
     format: "Formato", run: "Convertir todo", running: "Convirtiendo", download: "Descargar ZIP", reset: "Empezar de nuevo",
-    files: (n: number) => `${n} / ${MAX_FILES} archivos`, pages: (n: number) => `${n} página${n === 1 ? "" : "s"}`, failed: "falló",
+    files: (n: number, max: number) => `${n} / ${max} archivos`, pages: (n: number) => `${n} página${n === 1 ? "" : "s"}`, failed: "falló",
     need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
     note: "Cada página de cada PDF se convierte en una imagen (procesada a 2×). Los lotes grandes tardan un momento: todo permanece en tu dispositivo.",
   },
@@ -48,7 +49,7 @@ const STR = {
     subtitle: "Solte uma pasta inteira de PDFs e converta cada página em JPG ou PNG: tudo é processado no seu navegador e empacotado em um único ZIP. Nada é enviado.",
     drop: "Arraste e solte PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta",
     format: "Formato", run: "Converter tudo", running: "Convertendo", download: "Baixar ZIP", reset: "Recomeçar",
-    files: (n: number) => `${n} / ${MAX_FILES} arquivos`, pages: (n: number) => `${n} página${n === 1 ? "" : "s"}`, failed: "falhou",
+    files: (n: number, max: number) => `${n} / ${max} arquivos`, pages: (n: number) => `${n} página${n === 1 ? "" : "s"}`, failed: "falhou",
     need: "Adicione pelo menos um PDF.", err: "Algo deu errado: ",
     note: "Cada página de cada PDF vira uma imagem (renderizada a 2×). Lotes grandes demoram um momento — tudo permanece no seu dispositivo.",
   },
@@ -57,7 +58,7 @@ const STR = {
     subtitle: "Déposez un dossier entier de PDF et convertissez chaque page en JPG ou PNG — tout est traité dans votre navigateur et regroupé dans un seul ZIP. Rien n'est téléversé.",
     drop: "Faites glisser des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
     format: "Format", run: "Tout convertir", running: "Conversion en cours", download: "Télécharger le ZIP", reset: "Recommencer",
-    files: (n: number) => `${n} / ${MAX_FILES} fichier${n === 1 ? "" : "s"}`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "échec",
+    files: (n: number, max: number) => `${n} / ${max} fichier${n === 1 ? "" : "s"}`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "échec",
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
     note: "Chaque page de chaque PDF est convertie en image (rendue à 2×). Les grands lots prennent un moment — tout reste sur votre appareil.",
   },
@@ -65,6 +66,7 @@ const STR = {
 
 export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
+  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Fmt>("jpg");
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
@@ -77,7 +79,7 @@ export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
     const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
     if (!pdfs.length) return;
     setError(null); setPhase("idle");
-    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, MAX_FILES));
+    setItems((prev) => [...prev, ...pdfs.map((f) => ({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 6)}`, name: f.name, file: f, status: "queued" as const }))].slice(0, maxFiles));
   }, []);
 
   const reset = () => { setItems([]); setPhase("idle"); setProgress(0); setError(null); };
@@ -148,7 +150,7 @@ export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-3">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length)}</p>
+              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
               <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
                 {(["jpg", "png"] as const).map((f) => (
                   <button key={f} type="button" onClick={() => setFormat(f)} className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-[12.5px] font-semibold uppercase transition ${format === f ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>{f}</button>
@@ -156,7 +158,7 @@ export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
               </div>
             </div>
             <div className="flex shrink-0 gap-2">
-              {items.length < MAX_FILES && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
+              {items.length < maxFiles && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}{totalPages > 0 ? ` · ${t.pages(totalPages)}` : ""}</button>
