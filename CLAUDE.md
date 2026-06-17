@@ -50,7 +50,7 @@
 - MSYS paths like /c/Users/... work in bash, NEVER use in write_file
 
 ## Multi-window collaboration (CRITICAL — read before any git op)
-Joe runs several Claude windows in PARALLEL on this SAME repo + working tree at once:
+Joe runs several Claude windows in PARALLEL on this SAME repo + working tree at once. **Collaboration model = shared working tree + discipline (CONFIRMED 2026-06-17 — this is the model in use; do NOT assume git-worktree isolation).**
 - **总调度 (orchestration)** — planning, scheduling, fuzzy tasks, and integration arbiter (owns conflict calls on shared files).
 - **功能开发 (features)** — new features / PRO-exclusive tools.
 - **SEO-GEO** — SEO/GEO optimization (JSON-LD, sitemap, metadata).
@@ -60,13 +60,20 @@ Joe runs several Claude windows in PARALLEL on this SAME repo + working tree at 
 
 The first four share ONE working tree, so another window's UNCOMMITTED edits show up in your `git status`. Hard rules every window MUST follow:
 - **Only `git add <your specific files>`** — NEVER `git add -A` / `git commit -a` / `git add .` (you'd commit another window's half-finished work).
-- **Finish a small change → `git pull --rebase` → rebuild → commit + push IMMEDIATELY.** Never hoard uncommitted edits; a clean tree is what keeps the other windows unblocked (this is the highest-leverage rule).
+- **Finish a small change fast → `git pull --rebase` → rebuild → commit.** Never hoard uncommitted edits; a clean tree is what keeps the other windows unblocked (highest-leverage rule). **Whether you then PUSH depends on mode + risk — see "Operating modes" below** (day low-risk = commit + push; high-risk + ALL night work = commit-local only, 总调度 reviews & merges).
 - **NEVER `git reset --hard` / `git restore .` / `git checkout -- .` / `git clean`** — they destroy other windows' uncommitted work. The ONLY safe discard is `git restore apps/dockdocs/tsconfig.tsbuildinfo` (build cache).
 - A green build may include another window's in-flight edits (shared tree); your COMMIT is still clean as long as you staged only your own files.
 - **Shared hot files** — `lib/i18n.ts`, `components/Header.tsx`, `components/ToolFaq.tsx`, `components/Footer.tsx`, `app/[locale]/[[...slug]]/page.tsx`: 功能开发 owns tool-registration edits; 多语言 owns locale/copy/localized-tools edits. Before editing a shared file outside your lane, check in via the 总调度 window.
 - Netlify cancels superseded deploys when two windows push close together — harmless; the final master HEAD always deploys. Never force-push to "fix" it.
 - **Concurrent builds corrupt the shared `.next`.** All four windows share one `apps/dockdocs/.next`. Two `npm run build` running at once make the later one fail at "Collecting build traces" with `ENOENT …/*.nft.json` — this is NOT a code error. Fix: just re-run the build (do NOT `rm -rf .next`). Best: don't build at the same moment as another window.
 - **Task source per lane** (each window pulls its OWN lane's work from the shared backlog at `C:\Users\47203\Documents\dockdocs-backlog.json`): 功能开发 → `feat-*` / `vert-*` / `nf-*` / `batch-*` build tasks; SEO-GEO → `seo-*` / sitemap / JSON-LD / metadata; 多语言 → locale / copy / i18n tasks; 控制台 → the dock-console repo; 测试验收 → verify `status: review` items and report bugs. 总调度 plans, assigns, and arbitrates. Before grabbing a task outside your lane, check via the 总调度 window — and before building a NEW tool, search other sessions / the backlog so two windows don't build the same thing (e.g. contract-risk was almost duplicated as contract-risk-check).
+
+### Operating modes (day vs night) — governs PUSH & REPORTING
+Two modes; pick by whether Joe is at the window + the change's risk. (Added 2026-06-17 to resolve the day-vs-night contradiction that caused the popup storm + the "push immediately vs commit-local" clash.)
+- **DAY / attended** (Joe online; day = features + testing):
+  - **Low-risk** (UI / copy / content / SEO / i18n): `pull --rebase` → build green → commit + **push** to master directly; then report (see reporting rule).
+  - **High-risk** (payment / gating / billing / auth / data / large refactor): commit **locally only** → 总调度 reviews the diff (writer≠reviewer) → 总调度 merges. Never direct-to-prod.
+- **NIGHT / unattended** (Joe offline "我下班了/休息了", or 总调度 declares 夜班): **ALL work = commit locally only, NEVER push, NEVER `send_message`.** 总调度 polls `git log`, reviews (writer≠reviewer), merges. Only low-risk work at night; high-risk waits for Joe. (Why no send_message at night: each one pops an approval dialog → breaks unattended operation — the 2026-06-17 popup storm.)
 
 ## Code quality, UI verification & review (added 2026-06-16, 总调度)
 - **Least code, highest quality** — prefer REUSE over duplication: parameterize a component or extend the shared template instead of copy-pasting (e.g. the batch clients take a `target`/`source` prop, not 5 near-identical copies). Delete dead code. If a change feels like a lot of code, find the leaner path first.
@@ -80,4 +87,6 @@ The first four share ONE working tree, so another window's UNCOMMITTED edits sho
   - **High-risk** (payment / gating / billing / auth / data / large refactor) → push to a BRANCH → Netlify preview → 总调度 reviews the diff (runs a code-review pass) → only then merge to master. Never direct-to-prod.
   - **Low-risk** (UI / copy / content / SEO) → direct push to master; 总调度 reviews promptly after + 测试 verifies.
 - **Run `/code-review` before every push** (free first-party skill, zero supply-chain risk); add `/security-review` for anything touching auth / payment / billing / data. Cheapest quality gate — use it every time.
-- **Completion reporting (HARD RULE):** after each task, push then IMMEDIATELY `send_message` 总调度 (cross-session) with the commit hash + what changed — do NOT only write the report in your own window (Joe must hear all status from 总调度). 总调度 also polls `git log` as backup.
+- **Completion reporting (MODE-AWARE — see "Operating modes"):**
+  - **DAY / attended:** after committing (and pushing if low-risk), `send_message` 总调度 (cross-session) with the commit hash + what changed. Don't rely on a report only in your own window — Joe hears status from 总调度.
+  - **NIGHT / unattended:** do **NOT** `send_message` — every one pops an approval dialog that breaks unattended operation (the 2026-06-17 popup storm). Commit locally and STOP; 总调度 polls `git log` to pick up your work.
