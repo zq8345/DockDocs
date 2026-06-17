@@ -293,8 +293,14 @@ async function compressPdfFile(
     const viewport = page.getViewport({ scale: preset.scale });
 
     const canvas = document.createElement("canvas");
-    canvas.width = Math.floor(viewport.width);
-    canvas.height = Math.floor(viewport.height);
+    // Guard against degenerate page sizes (0 / NaN / Infinity). A 0-area canvas makes
+    // canvas.toBlob() never invoke its callback in some engines, so the await below
+    // hangs forever with no error and no timeout — the "stuck at 10%" symptom on a
+    // minimal/malformed PDF. Clamp to a real ≥1px canvas so encoding always settles.
+    const rawW = Math.floor(viewport.width);
+    const rawH = Math.floor(viewport.height);
+    canvas.width = Number.isFinite(rawW) && rawW > 0 ? rawW : 1;
+    canvas.height = Number.isFinite(rawH) && rawH > 0 ? rawH : 1;
     const ctx = canvas.getContext("2d")!;
     // White background so transparent areas don't turn black in JPEG
     ctx.fillStyle = "#ffffff";
@@ -312,9 +318,11 @@ async function compressPdfFile(
     const jpegBytes = new Uint8Array(await jpegBlob.arrayBuffer());
     const embedded = await output.embedJpg(jpegBytes);
 
-    // Keep original page dimensions (PDF points) regardless of render scale
-    const pageWidthPt = viewport.width / preset.scale;
-    const pageHeightPt = viewport.height / preset.scale;
+    // Derive the output page size from the (guarded) rendered canvas, so a degenerate
+    // page can't produce a 0/NaN-sized PDF page either. For normal pages canvas.width
+    // ≈ floor(viewport.width), so this keeps the original dimensions modulo sub-pixel.
+    const pageWidthPt = canvas.width / preset.scale;
+    const pageHeightPt = canvas.height / preset.scale;
     const newPage = output.addPage([pageWidthPt, pageHeightPt]);
     newPage.drawImage(embedded, { x: 0, y: 0, width: pageWidthPt, height: pageHeightPt });
 
