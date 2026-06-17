@@ -12,6 +12,7 @@ import {
   getClusterPages,
   getProgrammaticGeoPage,
   getProgrammaticGeoPageSeeds,
+  isIndexableGeoSlug,
   localizedProgrammaticHref,
   programmaticGeoPath,
   type GeoSemanticCluster,
@@ -231,16 +232,24 @@ export function GeoHubPage({
 }
 
 function getHubProgrammaticPages(slug: GeoHubData["slug"]) {
+  // Slim-down (2026-06-17): hubs list only indexable guides — noindex/thin pages
+  // are no longer surfaced as internal links (stops Google re-discovering them).
   if (slug === "guides") {
-    return getProgrammaticGeoPageSeeds("guides");
+    return getProgrammaticGeoPageSeeds("guides").filter((page) =>
+      isIndexableGeoSlug(page.slug),
+    );
   }
 
   if (slug === "ai-pdf-guides") {
     const aiClusters: GeoSemanticCluster[] = ["ai-pdf", "ocr-pdf"];
-    return aiClusters.flatMap((cluster) => getClusterPages(cluster));
+    return aiClusters
+      .flatMap((cluster) => getClusterPages(cluster))
+      .filter((page) => isIndexableGeoSlug(page.slug));
   }
 
-  return getProgrammaticGeoPageSeeds("resources");
+  return getProgrammaticGeoPageSeeds("resources").filter((page) =>
+    isIndexableGeoSlug(page.slug),
+  );
 }
 
 function createGeoHubSchema(
