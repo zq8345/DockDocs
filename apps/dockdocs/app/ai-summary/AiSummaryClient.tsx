@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
+import { GroundingNote } from "@/components/GroundingNote";
+import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 
 type SummaryData = {
   executiveSummary: string;
@@ -223,6 +225,9 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
           )}
         </div>
       ) : null}
+
+      <GroundingNote variant="summary" locale={locale} />
+      <RelatedPdfTools locale={locale} exclude="/ai-summary" />
     </section>
   );
 }

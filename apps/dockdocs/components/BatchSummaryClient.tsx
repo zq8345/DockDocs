@@ -1,5 +1,7 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { GroundingNote, groundingFaq } from "@/components/GroundingNote";
+import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
@@ -156,8 +158,51 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
     URL.revokeObjectURL(url);
   };
 
+  // JSON-LD for the en (/batch-summary/) and localized routes — this custom client
+  // has no shared-template config, so the schema is emitted here. FAQPage carries the
+  // source-grounding fact so the "summaries stay grounded" statement is citable.
+  const schemaPath = locale === "en" ? "/batch-summary/" : `/${locale}/batch-summary/`;
+  const schemaHome = locale === "en" ? "https://dockdocs.app/" : `https://dockdocs.app/${locale}/`;
+  const schemaUrl = `https://dockdocs.app${schemaPath}`;
+  const groundQa = groundingFaq("summary", locale);
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": `${schemaUrl}#app`,
+        name: "DockDocs Batch Summary",
+        url: schemaUrl,
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web",
+        description: t.subtitle,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${schemaUrl}#faq`,
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: groundQa.question,
+            acceptedAnswer: { "@type": "Answer", text: groundQa.answer },
+          },
+        ],
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${schemaUrl}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "DockDocs", item: schemaHome },
+          { "@type": "ListItem", position: 2, name: t.title, item: schemaUrl },
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
@@ -235,6 +280,8 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <GroundingNote variant="summary" locale={locale} />
+      <RelatedPdfTools locale={locale} exclude="/batch-summary" />
       <ToolFaq tool="batch-summary" locale={locale} />
     </div>
   );

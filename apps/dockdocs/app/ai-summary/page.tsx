@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { AiSummaryClient } from "./AiSummaryClient";
+import { groundingFaq } from "@/components/GroundingNote";
+
+// Source-grounding fact (shown as prose by GroundingNote in the client) folded into
+// the FAQ schema so the citable "summaries stay grounded" statement is structured data.
+const summaryGrounding = groundingFaq("summary", "en");
 
 export const metadata: Metadata = {
   title: "AI PDF Summarizer — Summarize Documents Free Online | DockDocs",
@@ -90,6 +95,11 @@ const aiSummarySchema = {
             "@type": "Answer",
             text: "AI Summary gives you a one-shot structured summary — key points, action items, and takeaways. AI Workspace lets you have a full conversation with your document: ask follow-up questions, drill into sections, or extract specific data. Use Summary for a quick overview; use Workspace for deep research.",
           },
+        },
+        {
+          "@type": "Question",
+          name: summaryGrounding.question,
+          acceptedAnswer: { "@type": "Answer", text: summaryGrounding.answer },
         },
       ],
     },

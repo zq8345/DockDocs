@@ -5,7 +5,7 @@
 // Mounted on /chat-with-pdf and /contract-risk; rendered on both the en and the
 // localized routes, so authored in all 5 active locales.
 
-type Variant = "chat" | "contract";
+type Variant = "chat" | "contract" | "summary";
 
 // Keyed by locale string with an en fallback, so any client's locale union
 // (some include ja) is safe to pass.
@@ -16,6 +16,20 @@ const TITLE: Record<string, string> = {
   pt: "Como o DockDocs ancora as respostas da IA no seu documento",
   fr: "Comment DockDocs ancre les réponses de l'IA dans votre document",
 };
+
+// Summaries are a paraphrase, not a verbatim quote, so the title speaks to
+// faithfulness/grounding rather than "answers".
+const TITLE_SUMMARY: Record<string, string> = {
+  en: "How DockDocs keeps summaries grounded in your document",
+  zh: "DockDocs 如何让摘要忠于你的原文",
+  es: "Cómo DockDocs mantiene los resúmenes anclados a tu documento",
+  pt: "Como o DockDocs mantém os resumos fiéis ao seu documento",
+  fr: "Comment DockDocs garde les résumés fidèles à votre document",
+};
+
+function titleMapFor(variant: Variant): Record<string, string> {
+  return variant === "summary" ? TITLE_SUMMARY : TITLE;
+}
 
 const BODY: Record<Variant, Record<string, string>> = {
   chat: {
@@ -32,10 +46,18 @@ const BODY: Record<Variant, Record<string, string>> = {
     pt: "Cada risco que o DockDocs sinaliza está ancorado à cláusula exata de onde veio — citada literalmente do seu contrato para que você possa verificá-la no original. Uma citação que não pode ser localizada no seu documento é marcada como não verificável e ocultada, em vez de apresentada como fato, e uma proteção realmente ausente é rotulada como faltante em vez de inventada. Nada é fabricado: o que não pode ser rastreado até o seu contrato, você vê que não pode ser rastreado. Esse ancoramento na fonte torna a revisão confiável, e não um palpite genérico de IA — embora seja uma primeira revisão informativa, não aconselhamento jurídico.",
     fr: "Chaque risque signalé par DockDocs est ancré à la clause exacte dont il provient, citée mot pour mot depuis votre contrat afin que vous puissiez la vérifier dans l'original. Une citation introuvable dans votre document est signalée comme invérifiable et masquée, plutôt que présentée comme un fait, et une protection réellement absente est étiquetée comme manquante au lieu d'être inventée. Rien n'est fabriqué : ce qui ne peut être relié à votre contrat, vous voyez que cela ne peut l'être. Cet ancrage dans la source rend l'analyse fiable plutôt qu'une supposition générique d'IA — bien qu'il s'agisse d'une première analyse informative, pas d'un conseil juridique.",
   },
+  summary: {
+    en: "Every summary is written only from the text of the document you uploaded — DockDocs instructs the AI to draw the key points, action items and takeaways from your file's own content and not to add facts from outside it. A summary is a paraphrase, not a quote, so for anything that matters — figures, dates, obligations — check it against the passage it came from. The value is a faithful condensation of what your document actually says, not a generic answer assembled from the model's general knowledge.",
+    zh: "每一份摘要都只依据你上传文档里的文字生成——DockDocs 会要求 AI 从你文件本身的内容中提炼要点、行动项和结论，不添加文档之外的事实。摘要是改写而非逐字引用，所以涉及关键信息——数字、日期、义务——请对照原文核对。它的价值在于忠实浓缩你文档真正说了什么，而不是用模型的通用知识拼凑出一个泛泛的答案。",
+    es: "Cada resumen se redacta únicamente a partir del texto del documento que subiste: DockDocs indica a la IA que extraiga los puntos clave, las acciones y las conclusiones del propio contenido de tu archivo y que no añada datos ajenos a él. Un resumen es una paráfrasis, no una cita, así que para lo que importa —cifras, fechas, obligaciones— contrástalo con el pasaje del que procede. Su valor es condensar fielmente lo que tu documento dice de verdad, no una respuesta genérica armada con el conocimiento general del modelo.",
+    pt: "Cada resumo é escrito apenas a partir do texto do documento que você enviou — o DockDocs instrui a IA a extrair os pontos-chave, as ações e as conclusões do próprio conteúdo do seu arquivo e a não acrescentar fatos externos a ele. Um resumo é uma paráfrase, não uma citação, então para o que importa — números, datas, obrigações — confira com o trecho de onde veio. O valor é condensar fielmente o que o seu documento realmente diz, não uma resposta genérica montada com o conhecimento geral do modelo.",
+    fr: "Chaque résumé est rédigé uniquement à partir du texte du document que vous avez importé : DockDocs demande à l'IA de tirer les points clés, les actions et les conclusions du contenu de votre fichier lui-même, sans ajouter de faits extérieurs. Un résumé est une paraphrase, pas une citation : pour ce qui compte — chiffres, dates, obligations — vérifiez-le par rapport au passage dont il provient. Sa valeur est de condenser fidèlement ce que votre document dit réellement, et non une réponse générique assemblée à partir des connaissances générales du modèle.",
+  },
 };
 
 export function GroundingNote({ variant, locale = "en" }: { variant: Variant; locale?: string }) {
-  const title = TITLE[locale] ?? TITLE.en;
+  const titles = titleMapFor(variant);
+  const title = titles[locale] ?? titles.en;
   const body = BODY[variant][locale] ?? BODY[variant].en;
   return (
     <section className="mt-12 border-t border-[color:var(--line)] pt-8">
@@ -48,5 +70,6 @@ export function GroundingNote({ variant, locale = "en" }: { variant: Variant; lo
 // Exported so the page-level FAQPage schema can reuse the exact same wording as a
 // crawlable Q&A (keeps the visible prose and the structured data in sync).
 export function groundingFaq(variant: Variant, locale: string = "en") {
-  return { question: TITLE[locale] ?? TITLE.en, answer: BODY[variant][locale] ?? BODY[variant].en };
+  const titles = titleMapFor(variant);
+  return { question: titles[locale] ?? titles.en, answer: BODY[variant][locale] ?? BODY[variant].en };
 }

@@ -1334,19 +1334,18 @@ function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" })
         description: copy.description,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       },
-      ...(summaryFaqs.length
-        ? [
-            {
-              "@type": "FAQPage",
-              "@id": `${url}#faq`,
-              mainEntity: summaryFaqs.map((faq) => ({
-                "@type": "Question",
-                name: faq.question,
-                acceptedAnswer: { "@type": "Answer", text: faq.answer },
-              })),
-            },
-          ]
-        : []),
+      {
+        // Localized FAQ + the source-grounding fact, so the citable "summaries stay
+        // grounded" statement is in the structured data on every locale (always emitted
+        // because grounding is always present, even if the locale has no copy.faqs).
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        mainEntity: [...summaryFaqs, groundingFaq("summary", locale)].map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      },
       {
         "@type": "BreadcrumbList",
         "@id": `${url}#breadcrumb`,
