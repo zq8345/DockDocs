@@ -104,6 +104,7 @@ export const routeSlugs = [
   "guides",
   "ai-pdf-guides",
   "for/legal",
+  "for/finance",
   "about",
   "blog",
   "help",

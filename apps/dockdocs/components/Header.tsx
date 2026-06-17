@@ -122,7 +122,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
         {
           items: [
             { name: "Legal & contracts", slug: "/for/legal" },
-            { name: "Finance & tax", slug: "/pricing", soon: true },
+            { name: "Finance & tax", slug: "/for/finance" },
             { name: "Research & academia", slug: "/pricing", soon: true },
             { name: "Banking & finance", slug: "/pricing", soon: true },
             { name: "Architecture & engineering", slug: "/pricing", soon: true },
@@ -242,7 +242,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
         {
           items: [
             { name: "法律 / 合同", slug: "/for/legal" },
-            { name: "财务 / 税务", slug: "/pricing", soon: true },
+            { name: "财务 / 税务", slug: "/for/finance" },
             { name: "科研 / 学术", slug: "/pricing", soon: true },
             { name: "金融 / 投行", slug: "/pricing", soon: true },
             { name: "建筑 / 工程", slug: "/pricing", soon: true },
@@ -363,7 +363,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
         {
           items: [
             { name: "Legal y contratos", slug: "/for/legal" },
-            { name: "Finanzas e impuestos", slug: "/pricing", soon: true },
+            { name: "Finanzas e impuestos", slug: "/for/finance" },
             { name: "Investigación y academia", slug: "/pricing", soon: true },
             { name: "Banca y finanzas", slug: "/pricing", soon: true },
             { name: "Arquitectura e ingeniería", slug: "/pricing", soon: true },
@@ -484,7 +484,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
         {
           items: [
             { name: "Jurídico e contratos", slug: "/for/legal" },
-            { name: "Finanças e impostos", slug: "/pricing", soon: true },
+            { name: "Finanças e impostos", slug: "/for/finance" },
             { name: "Pesquisa e academia", slug: "/pricing", soon: true },
             { name: "Banco e finanças", slug: "/pricing", soon: true },
             { name: "Arquitetura e engenharia", slug: "/pricing", soon: true },
@@ -605,7 +605,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
         {
           items: [
             { name: "Juridique et contrats", slug: "/for/legal" },
-            { name: "Finance et fiscalité", slug: "/pricing", soon: true },
+            { name: "Finance et fiscalité", slug: "/for/finance" },
             { name: "Recherche et académique", slug: "/pricing", soon: true },
             { name: "Banque et finance", slug: "/pricing", soon: true },
             { name: "Architecture et ingénierie", slug: "/pricing", soon: true },
@@ -725,7 +725,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
         {
           items: [
             { name: "法務・契約", slug: "/for/legal" },
-            { name: "財務・税務", slug: "/pricing", soon: true },
+            { name: "財務・税務", slug: "/for/finance" },
             { name: "研究・学術", slug: "/pricing", soon: true },
             { name: "銀行・金融", slug: "/pricing", soon: true },
             { name: "建築・エンジニアリング", slug: "/pricing", soon: true },

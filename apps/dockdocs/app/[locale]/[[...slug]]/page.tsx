@@ -14,6 +14,7 @@ import { AiSummaryClient } from "@/app/ai-summary/AiSummaryClient";
 import { DashboardWorkspace } from "@/components/DashboardWorkspace";
 import { GeoHubPage } from "@/components/GeoHubPage";
 import { LegalHubPage } from "@/components/LegalHubPage";
+import { FinanceHubPage } from "@/components/FinanceHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
 import { DocumentCompareClient } from "@/components/DocumentCompareClient";
@@ -311,6 +312,19 @@ async function generateMetadataInner({
       uiLocale === "zh"
         ? "面向法律团队的 AI 工具：合同风险体检、租约红旗、标书合规矩阵、版本对比——每条结论都可溯源到你的文件原文。"
         : "AI tools for legal teams: contract risk, lease red flags, gov-bid compliance, and version compare — every finding traceable to your document.",
+    );
+  }
+
+  if (slug === "for/finance") {
+    return createLocalizedMetadata(
+      rawLocale,
+      slug,
+      uiLocale === "zh"
+        ? "财务 AI：发票 / 对账单 / 财报工具 — DockDocs"
+        : "Finance AI: invoice, statement & report tools — DockDocs",
+      uiLocale === "zh"
+        ? "面向财务团队的 AI 工具：把发票、对账单抽取到表格，浓缩财务报告，比较多份报价——每个数字都可溯源到你的文件原文。"
+        : "AI tools for finance teams: extract invoices and statements to a spreadsheet, summarize financial reports, and compare quotes — every figure traceable to your document.",
     );
   }
 
@@ -1202,6 +1216,10 @@ export default async function LocalizedRoute({
 
   if (slug === "for/legal") {
     return <LegalHubPage locale={esLocale} useLocalePrefix />;
+  }
+
+  if (slug === "for/finance") {
+    return <FinanceHubPage locale={esLocale} useLocalePrefix />;
   }
 
   return <LocalizedHome locale={esLocale} />;
