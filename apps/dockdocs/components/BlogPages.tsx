@@ -967,18 +967,6 @@ function createBlogArticleSchema({
         })),
       },
       {
-        "@type": "QAPage",
-        "@id": `${articleUrl}#qa`,
-        mainEntity: {
-          "@type": "Question",
-          name: geoFaq[0]?.question ?? content.title,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: geoFaq[0]?.answer ?? getQuickAnswer(article, locale),
-          },
-        },
-      },
-      {
         "@type": "BreadcrumbList",
         "@id": `${articleUrl}#breadcrumb`,
         itemListElement: [
