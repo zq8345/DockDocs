@@ -17,6 +17,9 @@ const copy = {
     monthly: "Monthly",
     yearly: "Yearly",
     save: "Save ~40%",
+    lifetime: "Lifetime",
+    perOnce: "one-time",
+    lifetimeNote: "Founding rate — pay once, yours forever. Price rises later.",
     perMo: "/mo",
     mostPopular: "Most popular",
     billedYearly: (v: string) => `${v} billed yearly`,
@@ -94,6 +97,9 @@ const copy = {
     monthly: "按月",
     yearly: "按年",
     save: "省约 40%",
+    lifetime: "终身",
+    perOnce: "一次性",
+    lifetimeNote: "创始价——一次买断，永久使用，之后上调。",
     perMo: "/月",
     mostPopular: "最受欢迎",
     billedYearly: (v: string) => `按年计费 ${v}`,
@@ -170,6 +176,9 @@ const copy = {
     monthly: "Mensual",
     yearly: "Anual",
     save: "Ahorra ~40%",
+    lifetime: "De por vida",
+    perOnce: "pago único",
+    lifetimeNote: "Precio fundador: paga una vez, tuyo para siempre. Subirá después.",
     perMo: "/mes",
     mostPopular: "Más popular",
     billedYearly: (v: string) => `${v} facturado anualmente`,
@@ -246,6 +255,9 @@ const copy = {
     monthly: "Mensal",
     yearly: "Anual",
     save: "Economize ~40%",
+    lifetime: "Vitalício",
+    perOnce: "pagamento único",
+    lifetimeNote: "Preço fundador: pague uma vez, seu para sempre. O preço sobe depois.",
     perMo: "/mês",
     mostPopular: "Mais popular",
     billedYearly: (v: string) => `${v} cobrado anualmente`,
@@ -322,6 +334,9 @@ const copy = {
     monthly: "Mensuel",
     yearly: "Annuel",
     save: "Économisez ~40%",
+    lifetime: "À vie",
+    perOnce: "paiement unique",
+    lifetimeNote: "Tarif fondateur — payez une fois, à vous pour toujours. Le prix augmentera ensuite.",
     perMo: "/mois",
     mostPopular: "Le plus populaire",
     billedYearly: (v: string) => `${v} facturé annuellement`,
@@ -395,7 +410,7 @@ const copy = {
 } as const;
 
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
-  const [yearly, setYearly] = useState(true); // default to annual (best value) per pricing spec
+  const [period, setPeriod] = useState<"monthly" | "annual" | "lifetime">("annual"); // default annual per pricing spec
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openCat, setOpenCat] = useState<string | null>(null);
   const [billingLoading, setBillingLoading] = useState("");
@@ -431,7 +446,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   async function upgrade(plan: PaidSubscriptionPlan) {
     setBillingLoading(plan);
     try {
-      await createBillingCheckoutSession(plan, yearly ? "annual" : "monthly"); // redirects to checkout on success
+      await createBillingCheckoutSession(plan, period); // redirects to checkout on success
     } catch {
       if (typeof window !== "undefined") window.location.href = "/account";
     }
@@ -453,14 +468,17 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
           {c.subtitle}
         </p>
 
-        {/* Monthly / Yearly toggle */}
+        {/* Monthly / Yearly / Lifetime toggle */}
         <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-[color:var(--line)] p-1">
-          <button type="button" onClick={() => setYearly(false)}
-            className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition ${!yearly ? "bg-[color:var(--accent)]" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
+          <button type="button" onClick={() => setPeriod("monthly")}
+            className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition ${period === "monthly" ? "bg-[color:var(--accent)]" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
           >{c.monthly}</button>
-          <button type="button" onClick={() => setYearly(true)}
-            className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition ${yearly ? "bg-[color:var(--accent)]" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
-          >{c.yearly} <span className={`ml-1 text-[11px] ${yearly ? "text-[color:var(--on-accent)]" : "text-[color:var(--accent-strong)]"}`}>{c.save}</span></button>
+          <button type="button" onClick={() => setPeriod("annual")}
+            className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition ${period === "annual" ? "bg-[color:var(--accent)]" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
+          >{c.yearly} <span className={`ml-1 text-[11px] ${period === "annual" ? "text-[color:var(--on-accent)]" : "text-[color:var(--accent-strong)]"}`}>{c.save}</span></button>
+          <button type="button" onClick={() => setPeriod("lifetime")}
+            className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition ${period === "lifetime" ? "bg-[color:var(--accent)]" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
+          >{c.lifetime}</button>
         </div>
       </div>
 
@@ -468,7 +486,15 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       <div className="mt-12 grid gap-4 lg:grid-cols-3">
         {c.plans.map((plan) => {
           const isFree = plan.monthlyPrice === "$0";
-          const price = yearly && !isFree ? plan.yearlyPrice : plan.monthlyPrice;
+          const price = isFree
+            ? plan.monthlyPrice
+            // Lifetime is USD-constant (founding rate; pricing spec) — Plus $99 /
+            // Pro $399 — so it lives here, not in each locale's plan data.
+            : period === "lifetime"
+              ? (plan.featured ? "$99" : "$399")
+              : period === "annual"
+                ? plan.yearlyPrice
+                : plan.monthlyPrice;
           const featured = plan.featured;
           const planKey: PaidSubscriptionPlan | null = isFree ? null : featured ? "PLUS" : "PRO";
           const isCurrentPlan = subscription
@@ -490,12 +516,15 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
               <div className="mt-4">
                 <p className="text-[44px] font-normal leading-none tracking-tight text-[color:var(--foreground)]">
-                  {price}<span className="text-[16px] text-[color:var(--muted)]">{isFree ? "" : c.perMo}</span>
+                  {price}<span className="text-[16px] text-[color:var(--muted)]">{isFree ? "" : period === "lifetime" ? ` ${c.perOnce}` : c.perMo}</span>
                 </p>
-                {yearly && !isFree && "yearlyTotal" in plan && plan.yearlyTotal && (
+                {period === "annual" && !isFree && "yearlyTotal" in plan && plan.yearlyTotal && (
                   <p className="mt-1.5 text-[13px] text-[color:var(--muted)]">{c.billedYearly(plan.yearlyTotal)}</p>
                 )}
-                {!yearly && "valueLine" in plan && plan.valueLine && (
+                {period === "lifetime" && !isFree && (
+                  <p className="mt-1.5 text-[13px] text-[color:var(--accent-strong)]">{c.lifetimeNote}</p>
+                )}
+                {period === "monthly" && "valueLine" in plan && plan.valueLine && (
                   <p className="mt-1.5 text-[13px] text-[color:var(--accent-strong)]">{plan.valueLine}</p>
                 )}
               </div>
