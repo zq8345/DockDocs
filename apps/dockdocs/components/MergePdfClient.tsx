@@ -6,6 +6,7 @@ import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { id: string; name: string; pages: number; thumb: string; file: File };
@@ -74,10 +75,11 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dragFrom = useRef<number | null>(null);
 
-  const reset = () => { setItems([]); setError(null); };
+  const reset = () => { setItems([]); setError(null); setDone(false); };
 
   const addFiles = useCallback(async (files: File[]) => {
     const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
@@ -142,6 +144,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       const a = document.createElement("a");
       a.href = url; a.download = "dockdocs-merged.pdf"; a.click();
       URL.revokeObjectURL(url);
+      setDone(true);
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
     } finally {
@@ -201,6 +204,12 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
             </button>
           </div>
         </>
+      )}
+
+      {done && (
+        <div className="mt-6">
+          <ToolBridge slug="merge-pdf" locale={locale} useLocalePrefix={locale !== "en"} />
+        </div>
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}

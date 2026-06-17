@@ -5,6 +5,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Pg = { idx: number; thumb: string };
@@ -65,13 +66,14 @@ const STR = {
 export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
   const t = STR[locale] ?? STR.en;
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
+  const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
   const [pages, setPages] = useState<Pg[]>([]);
   const [marked, setMarked] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<File | null>(null);
 
-  const reset = () => {
+  const reset = () => { setDone(false);
     setPhase("idle"); setFileName(""); setPages([]); setMarked(new Set()); setError(null); fileRef.current = null;
   };
 
@@ -129,6 +131,7 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
       a.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-pages-removed.pdf";
       a.click();
       URL.revokeObjectURL(url);
+      setDone(true);
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
@@ -181,6 +184,11 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {done && (
+        <div className="mt-6">
+          <ToolBridge slug="delete-page" locale={locale} useLocalePrefix={locale !== "en"} />
+        </div>
+      )}
       <ToolFaq tool="delete-page" locale={locale} />
     </div>
   );
