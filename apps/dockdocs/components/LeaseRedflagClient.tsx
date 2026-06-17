@@ -11,7 +11,7 @@ import { useCallback, useMemo, useState } from "react";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type RiskLevel = "high" | "medium" | "low";
-type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string };
+type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string; missing?: boolean; unverified?: boolean };
 
 const MAX_CHARS = 24_000;
 
@@ -35,6 +35,7 @@ const STR = {
     levelHigh: "High", levelMedium: "Medium", levelLow: "Low",
     quoteLabel: "From your lease",
     notLocated: "Flagged as a missing/absent protection (no quote).",
+    unverifiedQuote: "A cited quote couldn't be located in your lease, so it was hidden.",
     whyLabel: "Why it matters",
     suggestionLabel: "What to ask",
     reset: "Scan another lease",
@@ -61,6 +62,7 @@ const STR = {
     levelHigh: "高", levelMedium: "中", levelLow: "低",
     quoteLabel: "租约原文",
     notLocated: "标记为缺失/没有的保护条款(无原文)。",
+    unverifiedQuote: "引文无法在租约原文中定位，已隐藏。",
     whyLabel: "为什么要注意",
     suggestionLabel: "该问什么",
     reset: "扫描另一份",
@@ -87,6 +89,7 @@ const STR = {
     levelHigh: "Alto", levelMedium: "Medio", levelLow: "Bajo",
     quoteLabel: "De tu arrendamiento",
     notLocated: "Marcada como protección ausente (sin cita).",
+    unverifiedQuote: "No se pudo localizar la cita en tu arrendamiento; se ocultó.",
     whyLabel: "Por qué importa",
     suggestionLabel: "Qué preguntar",
     reset: "Analizar otro",
@@ -113,6 +116,7 @@ const STR = {
     levelHigh: "Alto", levelMedium: "Médio", levelLow: "Baixo",
     quoteLabel: "Do seu contrato de aluguel",
     notLocated: "Sinalizada como proteção ausente/inexistente (sem citação).",
+    unverifiedQuote: "A citação não pôde ser localizada no seu contrato de aluguel; foi ocultada.",
     whyLabel: "Por que importa",
     suggestionLabel: "O que perguntar",
     reset: "Analisar outro",
@@ -139,6 +143,7 @@ const STR = {
     levelHigh: "Élevé", levelMedium: "Moyen", levelLow: "Faible",
     quoteLabel: "Extrait de votre bail",
     notLocated: "Signalé comme protection absente ou manquante (aucun extrait).",
+    unverifiedQuote: "La citation est introuvable dans votre bail ; elle a été masquée.",
     whyLabel: "Pourquoi c'est important",
     suggestionLabel: "Ce qu'il faut demander",
     reset: "Analyser un autre bail",
@@ -344,8 +349,10 @@ export function LeaseRedflagClient({ locale = "en" }: { locale?: Locale }) {
                         <span className="mb-1 block text-[10px] font-semibold uppercase not-italic tracking-[0.1em] text-[color:var(--faint)]">{t.quoteLabel}</span>
                         "{r.quote}"
                       </blockquote>
-                    ) : (
+                    ) : r.missing ? (
                       <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.notLocated}</p>
+                    ) : (
+                      <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.unverifiedQuote}</p>
                     )}
                   </li>
                 );

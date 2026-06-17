@@ -11,7 +11,7 @@ import { useCallback, useMemo, useState } from "react";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type RiskLevel = "high" | "medium" | "low";
-type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string };
+type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string; missing?: boolean; unverified?: boolean };
 
 const MAX_CHARS = 24_000;
 
@@ -35,6 +35,7 @@ const STR = {
     levelHigh: "High", levelMedium: "Medium", levelLow: "Low",
     quoteLabel: "From your contract",
     notLocated: "Flagged as a missing/absent protection (no quote).",
+    unverifiedQuote: "A cited quote couldn't be located in your document, so it was hidden.",
     whyLabel: "Why it matters",
     suggestionLabel: "What to ask",
     reset: "Check another",
@@ -61,6 +62,7 @@ const STR = {
     levelHigh: "高", levelMedium: "中", levelLow: "低",
     quoteLabel: "合同原文",
     notLocated: "标记为缺失/没有的保护条款(无原文)。",
+    unverifiedQuote: "引文无法在原文中定位，已隐藏。",
     whyLabel: "为什么要注意",
     suggestionLabel: "该问什么",
     reset: "检查另一份",
@@ -87,6 +89,7 @@ const STR = {
     levelHigh: "Alto", levelMedium: "Medio", levelLow: "Bajo",
     quoteLabel: "De tu contrato",
     notLocated: "Marcada como protección ausente (sin cita).",
+    unverifiedQuote: "No se pudo localizar la cita en tu documento; se ocultó.",
     whyLabel: "Por qué importa",
     suggestionLabel: "Qué preguntar",
     reset: "Revisar otro",
@@ -113,6 +116,7 @@ const STR = {
     levelHigh: "Alto", levelMedium: "Médio", levelLow: "Baixo",
     quoteLabel: "Do seu contrato",
     notLocated: "Sinalizada como proteção ausente/inexistente (sem citação).",
+    unverifiedQuote: "A citação não pôde ser localizada no seu documento; foi ocultada.",
     whyLabel: "Por que importa",
     suggestionLabel: "O que perguntar",
     reset: "Verificar outro",
@@ -139,6 +143,7 @@ const STR = {
     levelHigh: "Élevé", levelMedium: "Moyen", levelLow: "Faible",
     quoteLabel: "Extrait de votre contrat",
     notLocated: "Signalé comme protection absente ou manquante (pas de citation).",
+    unverifiedQuote: "La citation est introuvable dans votre document ; elle a été masquée.",
     whyLabel: "Pourquoi c'est important",
     suggestionLabel: "Ce qu'il faut demander",
     reset: "Analyser un autre",
@@ -165,6 +170,7 @@ const STR = {
     levelHigh: "高", levelMedium: "中", levelLow: "低",
     quoteLabel: "契約書からの引用",
     notLocated: "欠けている保護条項として指摘（引用なし）。",
+    unverifiedQuote: "引用箇所を本文中で確認できなかったため、非表示にしました。",
     whyLabel: "重要な理由",
     suggestionLabel: "確認すべきこと",
     reset: "別の契約書を診断",
@@ -370,8 +376,10 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
                         <span className="mb-1 block text-[10px] font-semibold uppercase not-italic tracking-[0.1em] text-[color:var(--faint)]">{t.quoteLabel}</span>
                         “{r.quote}”
                       </blockquote>
-                    ) : (
+                    ) : r.missing ? (
                       <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.notLocated}</p>
+                    ) : (
+                      <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.unverifiedQuote}</p>
                     )}
                   </li>
                 );

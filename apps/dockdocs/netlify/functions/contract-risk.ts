@@ -25,6 +25,9 @@ type Risk = {
   quote: string | null;
   why: string;
   suggestion: string;
+  // Disambiguates a null quote for the client (the brand's 可溯源 trust signal):
+  missing?: boolean;     // model gave no quote → a genuinely ABSENT/missing clause
+  unverified?: boolean;  // model gave a quote we could NOT locate → dropped as fabricated
 };
 
 const MAX_CHARS = 24_000;
@@ -131,20 +134,24 @@ function parseRisks(responseText: string): Risk[] {
     if (!type || !why) continue;
     const level: RiskLevel =
       r.level === "high" || r.level === "medium" || r.level === "low" ? r.level : "medium";
-    const quote = typeof r.quote === "string" && r.quote.trim() ? r.quote.trim() : null;
+    const trimmedQuote = typeof r.quote === "string" ? r.quote.trim() : "";
+    const quote = trimmedQuote.length > 0 ? trimmedQuote : null;
     const suggestion = typeof r.suggestion === "string" ? r.suggestion.trim() : "";
-    out.push({ type, level, quote, why, suggestion });
+    // No quote from the model = it is flagging a genuinely MISSING/absent protection.
+    out.push({ type, level, quote, why, suggestion, missing: quote === null });
   }
   return out.slice(0, 12);
 }
 
 // Trust gate: keep a quote only if it actually appears in the contract text.
-// Drops fabricated citations — a quote we can't locate becomes null ("not located").
+// A quote we can't locate is dropped and marked `unverified` (a fabricated citation) —
+// kept DISTINCT from a genuinely missing clause (`missing`, where the model gave no quote).
 function groundRisks(risks: Risk[], text: string): Risk[] {
   const hay = normalizeForMatch(text);
   return risks.map((r) => {
-    if (!r.quote) return r;
-    return hay.includes(normalizeForMatch(r.quote)) ? r : { ...r, quote: null };
+    if (!r.quote) return r; // missing-clause findings (no quote) pass through untouched
+    if (hay.includes(normalizeForMatch(r.quote))) return r; // citation verified
+    return { ...r, quote: null, unverified: true };
   });
 }
 
