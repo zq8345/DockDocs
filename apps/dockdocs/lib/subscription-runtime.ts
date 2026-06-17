@@ -61,6 +61,19 @@ export type SubscriptionSnapshot = {
   serverBacked: boolean;
 };
 
+// Error thrown by the billing actions, carrying the backend's code + HTTP status
+// so callers can show the real reason and only treat a genuine 401 as "sign in".
+export class BillingError extends Error {
+  code?: string;
+  status?: number;
+  constructor(message: string, opts?: { code?: string; status?: number }) {
+    super(message);
+    this.name = "BillingError";
+    this.code = opts?.code;
+    this.status = opts?.status;
+  }
+}
+
 const prefix = "dockdocs:subscription";
 const legacyBillingPrefix = "dockdocs:billing";
 const anonymousUserId = "anonymous";
@@ -127,7 +140,10 @@ export async function createBillingCheckoutSession(
   });
   const payload = await readBillingResponse(response);
   if (!response.ok || !payload?.ok || !payload.url) {
-    throw new Error(payload?.message || "Checkout is not available.");
+    throw new BillingError(payload?.message || "Checkout is not available.", {
+      code: payload?.code,
+      status: response.status,
+    });
   }
 
   // Redirect the browser to the hosted Creem checkout page.
@@ -156,7 +172,10 @@ export async function changeBillingPlan(plan: PaidSubscriptionPlan, interval: Bi
   });
   const payload = await readBillingResponse(response);
   if (!response.ok || !payload?.ok) {
-    throw new Error(payload?.message || "Couldn't change your plan — try managing billing instead.");
+    throw new BillingError(payload?.message || "Couldn't change your plan — try managing billing instead.", {
+      code: payload?.code,
+      status: response.status,
+    });
   }
   return true;
 }
@@ -175,7 +194,10 @@ export async function createBillingPortalSession() {
   });
   const payload = await readBillingResponse(response);
   if (!response.ok || !payload?.ok || !payload.url) {
-    throw new Error(payload?.message || "Customer portal is not available.");
+    throw new BillingError(payload?.message || "Customer portal is not available.", {
+      code: payload?.code,
+      status: response.status,
+    });
   }
 
   // Redirect the browser to the hosted Creem billing portal.
@@ -471,6 +493,7 @@ async function readBillingResponse(response: Response) {
     | {
         ok?: boolean;
         url?: string;
+        code?: string;
         message?: string;
       }
     | null;

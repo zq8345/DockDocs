@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { TIER_CATEGORIES } from "@/lib/tier-config";
 import type { FeatureItem } from "@/lib/tier-config";
 import { localizedPath, type RouteSlug, type RouteLocale } from "@/lib/i18n";
-import { createBillingCheckoutSession, createBillingPortalSession, changeBillingPlan, getSubscriptionSnapshot, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
+import { createBillingCheckoutSession, createBillingPortalSession, changeBillingPlan, getSubscriptionSnapshot, BillingError, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
 import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
 import { getUser, onAuthChange } from "@/lib/auth";
 
@@ -409,11 +409,61 @@ const copy = {
   },
 } as const;
 
+// Localized, user-facing copy for a billing failure code. The raw code + server
+// message still go to the console for diagnosis; users see a friendly reason.
+function billingErrorCopy(code: string | undefined, serverMessage: string, locale: Locale): string {
+  const t = (en: string, zh: string, es: string, pt: string, fr: string) =>
+    locale === "zh" ? zh : locale === "es" ? es : locale === "pt" ? pt : locale === "fr" ? fr : en;
+  switch (code) {
+    case "CREEM_PRODUCT_MISSING":
+    case "CREEM_NOT_CONFIGURED":
+      return t(
+        "This billing option isn't available right now. Please try another period or contact support.",
+        "该计费周期暂时不可用，请换一个周期或联系客服。",
+        "Esta opción de facturación no está disponible ahora. Prueba otro periodo o contacta con soporte.",
+        "Esta opção de cobrança não está disponível agora. Tente outro período ou contate o suporte.",
+        "Cette option de facturation est indisponible pour l'instant. Essayez une autre période ou contactez le support.",
+      );
+    case "CREEM_UPGRADE_FAILED":
+    case "CREEM_CHECKOUT_FAILED":
+    case "CREEM_PORTAL_FAILED":
+    case "CREEM_CANCEL_FAILED":
+    case "CREEM_UNREACHABLE":
+      return t(
+        "The payment service is temporarily unavailable. Please try again in a moment.",
+        "支付服务暂时不可用，请稍后再试。",
+        "El servicio de pago no está disponible temporalmente. Inténtalo de nuevo en un momento.",
+        "O serviço de pagamento está temporariamente indisponível. Tente novamente em instantes.",
+        "Le service de paiement est temporairement indisponible. Réessayez dans un instant.",
+      );
+    case "NO_RECURRING_SUB":
+      return t(
+        "No active subscription to change. Start a new checkout instead.",
+        "没有可更改的有效订阅，请重新发起结账。",
+        "No hay una suscripción activa para cambiar. Inicia un nuevo pago.",
+        "Nenhuma assinatura ativa para alterar. Inicie um novo checkout.",
+        "Aucun abonnement actif à modifier. Lancez un nouveau paiement.",
+      );
+    default:
+      return (
+        serverMessage ||
+        t(
+          "Something went wrong with billing. Please try again.",
+          "账单操作出错了，请重试。",
+          "Algo salió mal con la facturación. Inténtalo de nuevo.",
+          "Algo deu errado com a cobrança. Tente novamente.",
+          "Une erreur de facturation est survenue. Réessayez.",
+        )
+      );
+  }
+}
+
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [period, setPeriod] = useState<"monthly" | "annual" | "lifetime">("annual"); // default annual per pricing spec
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openCat, setOpenCat] = useState<string | null>(null);
   const [billingLoading, setBillingLoading] = useState("");
+  const [billingError, setBillingError] = useState("");
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
 
   useEffect(() => {
@@ -440,27 +490,50 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const zh = locale === "zh";
   const c = copy[locale] ?? copy.en;
 
-  // Start hosted checkout for paid plans. Signed-in users go straight to Creem;
-  // signed-out users (or if checkout isn't configured yet) fall back to /account
-  // so they can sign in and upgrade there — instead of the button dead-ending.
+  // Turn a billing failure into a clear, localized message AND a console line with
+  // the precise code — never swallow it into a silent /account redirect. Only a
+  // genuine auth failure (401) sends the user to sign in.
+  function handleBillingError(err: unknown) {
+    const e = err instanceof BillingError ? err : null;
+    const code = e?.code;
+    const message = e?.message || (err instanceof Error ? err.message : "");
+    console.error("[billing] action failed:", code ?? "(no code)", "—", message);
+
+    // Genuine not-signed-in → send to sign in.
+    if (e?.status === 401 || code === "UNAUTHORIZED" || code === "UNAUTHENTICATED") {
+      if (typeof window !== "undefined") window.location.href = "/account";
+      return;
+    }
+    // The change isn't an in-place upgrade (e.g. a downgrade) → open the portal.
+    if (code === "USE_PORTAL") {
+      void handlePortal();
+      return;
+    }
+    setBillingError(billingErrorCopy(code, message, locale));
+  }
+
+  // Start hosted checkout for paid plans (new subscription or upgrade-to-lifetime).
   async function upgrade(plan: PaidSubscriptionPlan) {
     setBillingLoading(plan);
+    setBillingError("");
     try {
       await createBillingCheckoutSession(plan, period); // redirects to checkout on success
-    } catch {
-      if (typeof window !== "undefined") window.location.href = "/account";
+    } catch (err) {
+      handleBillingError(err);
+      setBillingLoading("");
     }
   }
   // In-place upgrade of an existing recurring subscription (Creem prorates). No
   // redirect — refresh the snapshot so the card reflects the new plan/interval.
   async function changePlan(plan: PaidSubscriptionPlan) {
     setBillingLoading(plan);
+    setBillingError("");
     try {
       await changeBillingPlan(plan, period);
       const snap = await getSubscriptionSnapshot();
       setSubscription(snap);
-    } catch {
-      if (typeof window !== "undefined") window.location.href = "/account"; // safe fallback — manage billing there
+    } catch (err) {
+      handleBillingError(err);
     } finally {
       setBillingLoading("");
     }
@@ -469,10 +542,12 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   // double-charge); the real fix for downgrades is backlogged (nf-downgrade-flow).
   async function handlePortal() {
     setBillingLoading("portal");
+    setBillingError("");
     try {
       await createBillingPortalSession(); // redirects on success
-    } catch {
-      if (typeof window !== "undefined") window.location.href = "/account";
+    } catch (err) {
+      handleBillingError(err);
+      setBillingLoading("");
     }
   }
   // 账户页全站统一为 /account(无语言版本)，不要按 locale 加 /zh 前缀，否则 /zh/account 会 404
@@ -505,6 +580,13 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
           >{c.lifetime}</button>
         </div>
       </div>
+
+      {/* Billing error — surfaced, never silently swallowed into a redirect */}
+      {billingError && (
+        <div className="mx-auto mt-6 max-w-xl rounded-[var(--radius-sm)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] px-4 py-3 text-center text-[13px] text-[color:var(--error)]">
+          {billingError}
+        </div>
+      )}
 
       {/* Plans */}
       <div className="mt-12 grid gap-4 lg:grid-cols-3">
