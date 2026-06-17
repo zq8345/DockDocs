@@ -100,6 +100,11 @@ function getCopy(locale: AccountLocale) {
         ? `${t} modèle(s) et ${r} exécution(s) supprimés.`
         : `Deleted ${t} template(s) and ${r} run(s).`,
     saving: zh ? "保存中…" : es ? "Guardando…" : pt ? "Salvando…" : fr ? "Enregistrement…" : "Saving…",
+    eyebrow: zh ? "账户" : es ? "Cuenta" : pt ? "Conta" : fr ? "Compte" : "Account",
+    headSignedOut: zh ? "登录 DockDocs" : es ? "Iniciar sesión en DockDocs" : pt ? "Entrar no DockDocs" : fr ? "Connexion à DockDocs" : "Sign in to DockDocs",
+    headSignedIn: zh ? "你的账户" : es ? "Tu cuenta" : pt ? "Sua conta" : fr ? "Votre compte" : "Your account",
+    subSignedOut: zh ? "访问你的工作区、管理订阅，并跨设备保留文档记录。" : es ? "Accede a tu área de trabajo, gestiona la facturación y mantén el historial de documentos en todos tus dispositivos." : pt ? "Acesse seu espaço de trabalho, gerencie assinaturas e mantenha o histórico de documentos em todos os seus dispositivos." : fr ? "Accédez à votre espace de travail, gérez la facturation et conservez l'historique de vos documents sur tous vos appareils." : "Access your workspace, manage billing, and keep your document history across devices.",
+    subSignedIn: zh ? "管理你的套餐、账单与工作区。" : es ? "Gestiona tu plan, facturación y área de trabajo." : pt ? "Gerencie seu plano, cobrança e espaço de trabalho." : fr ? "Gérez votre forfait, votre facturation et votre espace de travail." : "Manage your plan, billing, and workspace.",
   };
 }
 
@@ -237,6 +242,14 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
     try { await createBillingPortalSession(); } catch (err) { setError(err instanceof Error ? err.message : t.portalFailed); setBillingLoading(""); }
   }
 
+  const header = (
+    <div className="text-center">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent-strong)]">{t.eyebrow}</p>
+      <h1 className="mt-4 text-[28px] font-semibold tracking-[-0.014em]">{view === "signed-in" ? t.headSignedIn : t.headSignedOut}</h1>
+      <p className="mt-3 text-[14px] leading-relaxed text-[color:var(--muted)]">{view === "signed-in" ? t.subSignedIn : t.subSignedOut}</p>
+    </div>
+  );
+
   if (view === "loading") {
     return (
       <div className="mt-10 flex justify-center">
@@ -248,6 +261,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   if (view === "email-sent") {
     return (
       <div className="mt-8 space-y-4 text-center">
+        {header}
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[color:var(--success-surface)] text-[color:var(--success)] text-xl">✉</div>
         <p className="text-[15px] font-semibold">{t.magicSentTitle}</p>
         <p className="text-[13px] text-[color:var(--muted)]">{t.magicSentBody(email)}</p>
@@ -259,6 +273,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   if (view === "signed-out") {
     return (
       <div className="mt-8 space-y-4">
+        {header}
         {/* Google */}
         <button type="button" onClick={() => oauth(signInWithGoogle, "Google")}
           className="flex w-full items-center justify-center gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 text-[14px] font-semibold transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-raised)]">
@@ -303,6 +318,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   // signed-in
   return (
     <div className="mt-8 space-y-6">
+      {header}
       <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
         <div className="flex items-center gap-4">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[color:var(--accent)] text-[14px] font-semibold text-white">

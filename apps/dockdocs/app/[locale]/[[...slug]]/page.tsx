@@ -1208,33 +1208,9 @@ export default async function LocalizedRoute({
 }
 
 function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
-  const zh = locale === "zh";
-  const es = locale === "es";
-  const pt = locale === "pt";
-  const fr = locale === "fr";
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
       <div className="mx-auto max-w-md">
-        <div className="text-center">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent-strong)]">
-            {zh ? "账户" : es ? "Cuenta" : pt ? "Conta" : fr ? "Compte" : "Account"}
-          </p>
-          <h1 className="mt-4 text-[28px] font-semibold tracking-[-0.014em]">
-            {zh ? "登录 DockDocs" : es ? "Iniciar sesión en DockDocs" : pt ? "Entrar no DockDocs" : fr ? "Connexion à DockDocs" : "Sign in to DockDocs"}
-          </h1>
-          <p className="mt-3 text-[14px] leading-relaxed text-[color:var(--muted)]">
-            {zh
-              ? "访问你的工作区、管理订阅，并跨设备保留文档记录。"
-              : es
-              ? "Accede a tu área de trabajo, gestiona la facturación y mantén el historial de documentos en todos tus dispositivos."
-              : pt
-              ? "Acesse seu espaço de trabalho, gerencie assinaturas e mantenha o histórico de documentos em todos os seus dispositivos."
-              : fr
-              ? "Accédez à votre espace de travail, gérez la facturation et conservez l'historique de vos documents sur tous vos appareils."
-              : "Access your workspace, manage billing, and keep your document history across devices."}
-          </p>
-        </div>
-
         <AccountClient locale={locale} />
       </div>
     </div>

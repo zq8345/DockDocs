@@ -34,6 +34,7 @@ const STR = {
     disclaimer: "This is an automated review to help tenants spot clauses worth attention. It is not legal advice. For anything important, consult a lawyer or a tenant-rights organization.",
     levelHigh: "High", levelMedium: "Medium", levelLow: "Low",
     quoteLabel: "From your lease",
+    verifiedBadge: "Verified against source",
     notLocated: "Flagged as a missing/absent protection (no quote).",
     unverifiedQuote: "A cited quote couldn't be located in your lease, so it was hidden.",
     whyLabel: "Why it matters",
@@ -61,6 +62,7 @@ const STR = {
     disclaimer: "这是帮租客发现值得注意条款的自动审查,不构成法律意见。重要事项请咨询律师或租客权益机构。",
     levelHigh: "高", levelMedium: "中", levelLow: "低",
     quoteLabel: "租约原文",
+    verifiedBadge: "已核对原文",
     notLocated: "标记为缺失/没有的保护条款(无原文)。",
     unverifiedQuote: "引文无法在租约原文中定位，已隐藏。",
     whyLabel: "为什么要注意",
@@ -88,6 +90,7 @@ const STR = {
     disclaimer: "Esta es una revisión automatizada para ayudar a los inquilinos a detectar cláusulas que merecen atención. No es asesoramiento legal. Para algo importante, consulta a un abogado o una organización de derechos del inquilino.",
     levelHigh: "Alto", levelMedium: "Medio", levelLow: "Bajo",
     quoteLabel: "De tu arrendamiento",
+    verifiedBadge: "Verificado con el original",
     notLocated: "Marcada como protección ausente (sin cita).",
     unverifiedQuote: "No se pudo localizar la cita en tu arrendamiento; se ocultó.",
     whyLabel: "Por qué importa",
@@ -115,6 +118,7 @@ const STR = {
     disclaimer: "Esta é uma revisão automatizada para ajudar inquilinos a identificar cláusulas que merecem atenção. Não constitui aconselhamento jurídico. Para assuntos importantes, consulte um advogado ou uma organização de direitos do inquilino.",
     levelHigh: "Alto", levelMedium: "Médio", levelLow: "Baixo",
     quoteLabel: "Do seu contrato de aluguel",
+    verifiedBadge: "Verificado no original",
     notLocated: "Sinalizada como proteção ausente/inexistente (sem citação).",
     unverifiedQuote: "A citação não pôde ser localizada no seu contrato de aluguel; foi ocultada.",
     whyLabel: "Por que importa",
@@ -142,6 +146,7 @@ const STR = {
     disclaimer: "Il s'agit d'une analyse automatisée destinée à aider les locataires à repérer les clauses méritant attention. Elle ne constitue pas un conseil juridique. Pour toute question importante, consultez un avocat ou une association de défense des droits des locataires.",
     levelHigh: "Élevé", levelMedium: "Moyen", levelLow: "Faible",
     quoteLabel: "Extrait de votre bail",
+    verifiedBadge: "Vérifié dans le document",
     notLocated: "Signalé comme protection absente ou manquante (aucun extrait).",
     unverifiedQuote: "La citation est introuvable dans votre bail ; elle a été masquée.",
     whyLabel: "Pourquoi c'est important",
@@ -345,10 +350,13 @@ export function LeaseRedflagClient({ locale = "en" }: { locale?: Locale }) {
                       <p className="mt-1.5 text-[13.5px] leading-relaxed text-[color:var(--foreground)]"><span className="text-[color:var(--muted)]">{t.suggestionLabel}: </span>{r.suggestion}</p>
                     )}
                     {r.quote ? (
-                      <blockquote className="mt-3 border-l-2 border-[color:var(--line-strong)] pl-3 text-[12.5px] italic leading-relaxed text-[color:var(--muted)]">
-                        <span className="mb-1 block text-[10px] font-semibold uppercase not-italic tracking-[0.1em] text-[color:var(--faint)]">{t.quoteLabel}</span>
-                        "{r.quote}"
-                      </blockquote>
+                      <div className="mt-3">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[rgba(52,211,153,0.12)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#34d399]">✓ {t.verifiedBadge}</span>
+                        <blockquote className="mt-2 border-l-2 border-[color:var(--line-strong)] pl-3 text-[12.5px] italic leading-relaxed text-[color:var(--muted)]">
+                          <span className="mb-1 block text-[10px] font-semibold uppercase not-italic tracking-[0.1em] text-[color:var(--faint)]">{t.quoteLabel}</span>
+                          "{r.quote}"
+                        </blockquote>
+                      </div>
                     ) : r.missing ? (
                       <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.notLocated}</p>
                     ) : (
