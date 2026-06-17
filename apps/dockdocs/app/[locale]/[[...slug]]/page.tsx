@@ -51,7 +51,6 @@ import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
 import { BatchSummaryClient } from "@/components/BatchSummaryClient";
-import { ClassifyClient } from "@/components/ClassifyClient";
 import { BatchCompressClient } from "@/components/BatchCompressClient";
 import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
 import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
