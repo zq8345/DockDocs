@@ -1,6 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { getStore } from "@netlify/blobs";
-import type { BillingSubscriptionRecord } from "./_shared/billing-store";
+import { readLifetimeBuyerCount, type BillingSubscriptionRecord } from "./_shared/billing-store";
 import { listPaywallHits, currentMonthKey } from "./_shared/paywall-store";
 import { billingPlanConfigs } from "../../lib/billing-config";
 import { featureLimits, meteredFeatures, type UsageFeature } from "../../lib/usage-limits";
@@ -109,6 +109,11 @@ export default async function handler(req: Request, _ctx: Context) {
     .filter((h) => h.periodKey === month && meteredFeatures.includes(h.feature))
     .map((h) => ({ feature: h.feature, plan: h.plan, count: h.count }));
 
+  // Lifetime founding window: distinct buyers vs the 1000-cap. Admin-only signal
+  // for "approaching 1000 → build the $199/$799 products + flip manually". No
+  // remaining count is ever shown to end users (no live ticker).
+  const lifetimeSold = await readLifetimeBuyerCount();
+
   return json(
     {
       generatedAt: new Date().toISOString(),
@@ -116,6 +121,7 @@ export default async function handler(req: Request, _ctx: Context) {
       retention: { paidActive, mrr, activation7d, momDecay, renewalRate, churnRisk },
       capPressure,
       paywallHits,
+      founding: { lifetimeSold, lifetimeCap: 1000, lifetimeRemaining: Math.max(0, 1000 - lifetimeSold) },
     },
     200,
     { "Cache-Control": "no-store" },

@@ -95,6 +95,36 @@ export async function markStripeEventProcessed(eventId: string) {
   });
 }
 
+// ── Lifetime founding-counter ────────────────────────────────────────────────
+// Counts DISTINCT lifetime buyers from 0 so we know when the first-1000 founding
+// window is filling (the price rises after 1000 — handled manually, no live
+// ticker is shown to users). Idempotent per user via a marker, so webhook retries
+// or a same-user repurchase never double-count. Concurrent first-time buyers
+// could in theory race the read-modify-write, but founding lifetime sales are
+// rare and Blobs uses strong consistency, so v1 accepts that; the count only
+// needs to be approximately right to signal "approaching 1000".
+const lifetimeCountKey = "lifetime/count.json";
+function lifetimeBuyerKey(userId: string) {
+  return `lifetime/buyers/${userId}.json`;
+}
+
+export async function readLifetimeBuyerCount(): Promise<number> {
+  const rec = await readJson<{ count?: number }>(lifetimeCountKey);
+  return typeof rec?.count === "number" && Number.isFinite(rec.count) ? rec.count : 0;
+}
+
+// Record a lifetime purchase for a user and return the resulting distinct-buyer
+// count. No-op (returns the current count) if this user is already counted.
+export async function recordLifetimeBuyer(userId: string): Promise<number> {
+  const current = await readLifetimeBuyerCount();
+  const already = await readJson<{ countedAt?: string }>(lifetimeBuyerKey(userId));
+  if (already) return current;
+  await writeJson(lifetimeBuyerKey(userId), { countedAt: new Date().toISOString() });
+  const next = current + 1;
+  await writeJson(lifetimeCountKey, { count: next });
+  return next;
+}
+
 export function createFreeBillingSubscription(
   userId: string,
 ): BillingSubscriptionRecord {

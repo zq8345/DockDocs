@@ -4,6 +4,7 @@ import {
   hasProcessedStripeEvent,
   markStripeEventProcessed,
   writeSubscription,
+  recordLifetimeBuyer,
   type BillingSubscriptionRecord,
 } from "./_shared/billing-store";
 
@@ -108,6 +109,12 @@ export default async (req: Request, _context: Context) => {
 
   if (record) {
     await writeSubscription(record);
+    // Founding counter: count distinct lifetime buyers (rare; idempotent per user).
+    // Runs only on a genuine lifetime activation, before the event is marked
+    // processed so a retry still counts if this step failed.
+    if (record.plan !== "FREE" && interval === "lifetime") {
+      await recordLifetimeBuyer(userId);
+    }
   }
   if (eventId) {
     await markStripeEventProcessed(eventId);
