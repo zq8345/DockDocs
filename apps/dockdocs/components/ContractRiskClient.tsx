@@ -2,6 +2,7 @@
 
 import { ToolFaq } from "@/components/ToolFaq";
 import { GroundingNote, groundingFaq } from "@/components/GroundingNote";
+import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -448,6 +449,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       <GroundingNote variant="contract" locale={locale} />
+      <RelatedPdfTools locale={locale} exclude="/contract-risk" />
       <ToolFaq tool="contract-risk" locale={locale} />
     </div>
   );

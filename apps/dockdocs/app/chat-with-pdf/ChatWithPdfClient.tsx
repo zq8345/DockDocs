@@ -7,6 +7,7 @@ import { authHeader } from "@/lib/supabase";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { ToolFaq } from "@/components/ToolFaq";
 import { GroundingNote } from "@/components/GroundingNote";
+import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -445,6 +446,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
       ) : null}
     </section>
     <GroundingNote variant="chat" locale={locale} />
+    <RelatedPdfTools locale={locale} exclude="/chat-with-pdf" />
     <ToolFaq tool="chat-with-pdf" locale={locale} />
     </>
   );
