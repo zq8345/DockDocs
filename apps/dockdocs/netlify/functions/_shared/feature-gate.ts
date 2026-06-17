@@ -34,9 +34,11 @@ const PRO_EMAIL_ALLOWLIST = (
 // Netlify Blobs. Anonymous callers (no token) are treated as FREE and counted by
 // IP, so the free-trial funnel keeps working without a login wall.
 //
-// Failure policy: FAIL OPEN. If auth or the blob store hiccups we let the
-// request through — the per-IP rate limiter on each function still bounds abuse,
-// and a Blobs outage must never take all AI features offline.
+// Failure policy: FAIL OPEN by default. If auth or the blob store hiccups we let
+// the request through — the per-IP rate limiter on each function still bounds abuse,
+// and a Blobs outage must never take all AI features offline. EXCEPTION: anonymous
+// CloudConvert (feature "convert", ip: subject) FAILS CLOSED on a usage-store error
+// because each call spends real money — see the readUsageCount catch below.
 
 export type FeatureGateResult =
   | {
@@ -87,7 +89,11 @@ export async function enforceFeatureGate(
   try {
     used = await readUsageCount(subjectId, feature, period, periodKey);
   } catch {
-    used = 0; // store unavailable -> fail open
+    // FAIL OPEN by default — a Blobs hiccup must never take all AI features offline.
+    // EXCEPTION: anonymous CloudConvert spends real money per call, so FAIL CLOSED for
+    // convert + ip: subjects (degrade, don't hand a scraper unlimited free conversions
+    // on a transient store error). Logged-in users still fail open.
+    used = feature === "convert" && subjectId.startsWith("ip:") ? limit : 0;
   }
 
   if (used >= limit) {
