@@ -395,7 +395,7 @@ const copy = {
 } as const;
 
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
-  const [yearly, setYearly] = useState(false);
+  const [yearly, setYearly] = useState(true); // default to annual (best value) per pricing spec
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openCat, setOpenCat] = useState<string | null>(null);
   const [billingLoading, setBillingLoading] = useState("");
@@ -431,7 +431,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   async function upgrade(plan: PaidSubscriptionPlan) {
     setBillingLoading(plan);
     try {
-      await createBillingCheckoutSession(plan); // redirects to checkout on success
+      await createBillingCheckoutSession(plan, yearly ? "annual" : "monthly"); // redirects to checkout on success
     } catch {
       if (typeof window !== "undefined") window.location.href = "/account";
     }
