@@ -2,6 +2,14 @@ import type { SubscriptionPlan } from "@/lib/subscription-runtime";
 
 export type PaidSubscriptionPlan = Exclude<SubscriptionPlan, "FREE">;
 
+// Billing interval. "monthly"/"annual" are recurring; "lifetime" is a one-time
+// payment that never expires (the founding/limited SKU — see the pricing spec).
+export type BillingInterval = "monthly" | "annual" | "lifetime";
+
+export function isBillingInterval(value: unknown): value is BillingInterval {
+  return value === "monthly" || value === "annual" || value === "lifetime";
+}
+
 export type BillingPlanConfig = {
   plan: SubscriptionPlan;
   name: "Free" | "Plus" | "Pro";

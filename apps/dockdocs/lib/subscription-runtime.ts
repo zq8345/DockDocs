@@ -1,5 +1,5 @@
 import { getCurrentAccountUser } from "@/lib/account-runtime";
-import { isPaidSubscriptionPlan, type PaidSubscriptionPlan } from "@/lib/billing-config";
+import { isPaidSubscriptionPlan, isBillingInterval, type PaidSubscriptionPlan, type BillingInterval } from "@/lib/billing-config";
 import { supabase } from "@/lib/supabase";
 
 // Billing endpoints identify the user from the Supabase access token (Bearer).
@@ -36,6 +36,7 @@ export type SubscriptionRecord = {
   source: SubscriptionSource;
   updatedAt: string;
   userId?: string;
+  interval?: BillingInterval;
   stripeSessionId?: string;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
@@ -103,7 +104,10 @@ export async function getSubscriptionSnapshot(): Promise<SubscriptionSnapshot> {
   };
 }
 
-export async function createBillingCheckoutSession(plan: PaidSubscriptionPlan) {
+export async function createBillingCheckoutSession(
+  plan: PaidSubscriptionPlan,
+  interval: BillingInterval = "monthly",
+) {
   if (!isPaidSubscriptionPlan(plan)) {
     throw new Error("Choose Plus or Pro.");
   }
@@ -117,6 +121,7 @@ export async function createBillingCheckoutSession(plan: PaidSubscriptionPlan) {
     },
     body: JSON.stringify({
       plan,
+      interval,
       origin: window.location.origin,
     }),
   });
@@ -271,6 +276,7 @@ function normalizeSubscriptionRecord(
     tier?: unknown;
     status?: unknown;
     source?: unknown;
+    interval?: unknown;
     updatedAt?: unknown;
     stripeSessionId?: unknown;
     stripeCustomerId?: unknown;
@@ -297,6 +303,7 @@ function normalizeSubscriptionRecord(
         ? input.updatedAt
         : new Date().toISOString(),
     userId,
+    interval: isBillingInterval(input.interval) ? input.interval : undefined,
     stripeSessionId:
       typeof input.stripeSessionId === "string" ? input.stripeSessionId : undefined,
     stripeCustomerId:

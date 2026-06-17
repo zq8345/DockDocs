@@ -1,10 +1,11 @@
 import type { Config, Context } from "@netlify/functions";
-import { isPaidSubscriptionPlan } from "../../lib/billing-config";
+import { isPaidSubscriptionPlan, isBillingInterval } from "../../lib/billing-config";
 import { json, requireBillingUser } from "./_shared/billing-auth";
 import { createCreemCheckout, type CreemPlan } from "./_shared/creem";
 
 type CheckoutRequest = {
   plan?: unknown;
+  interval?: unknown;
   origin?: unknown;
 };
 
@@ -51,9 +52,11 @@ export default async (req: Request, _context: Context) => {
     );
   }
 
+  const interval = isBillingInterval(payload.interval) ? payload.interval : "monthly";
   const origin = sanitizeOrigin(payload.origin) ?? "https://dockdocs.app";
   const checkout = await createCreemCheckout({
     plan: payload.plan as CreemPlan,
+    interval,
     userId: auth.user.id,
     email: auth.user.email,
     successUrl: `${origin}/account?upgraded=1`,

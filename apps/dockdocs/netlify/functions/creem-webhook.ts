@@ -1,5 +1,5 @@
 import type { Config, Context } from "@netlify/functions";
-import { planForCreemProductId, verifyCreemSignature } from "./_shared/creem";
+import { planAndIntervalForCreemProductId, verifyCreemSignature } from "./_shared/creem";
 import {
   hasProcessedStripeEvent,
   markStripeEventProcessed,
@@ -70,7 +70,9 @@ export default async (req: Request, _context: Context) => {
   }
 
   let record: BillingSubscriptionRecord | null = null;
-  const plan = planForCreemProductId(productId);
+  const mapped = planAndIntervalForCreemProductId(productId);
+  const plan = mapped?.plan ?? null;
+  const interval = mapped?.interval;
 
   if (ACTIVATING.has(eventType) && plan) {
     record = {
@@ -78,9 +80,13 @@ export default async (req: Request, _context: Context) => {
       stripeCustomerId: customerId || undefined,
       stripeSubscriptionId: subscriptionId || undefined,
       plan,
+      interval,
       status: eventType === "subscription.trialing" ? "trialing" : "active",
       source: "creem-webhook",
-      currentPeriodEnd,
+      // Lifetime is one-time → no period end (permanent; no deactivating event
+      // ever arrives). Recurring keeps the provider's period end so a later
+      // cancel/expire flips the plan back to FREE.
+      currentPeriodEnd: interval === "lifetime" ? undefined : currentPeriodEnd,
       priceId: productId || undefined,
       lastStripeEventId: eventId || undefined,
       updatedAt: new Date().toISOString(),

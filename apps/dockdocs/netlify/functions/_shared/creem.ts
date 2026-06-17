@@ -11,6 +11,8 @@ declare const Netlify: {
 };
 
 export type CreemPlan = "PLUS" | "PRO";
+// monthly/annual = recurring; lifetime = one-time (never expires).
+export type CreemInterval = "monthly" | "annual" | "lifetime";
 
 export function creemApiKey(): string {
   return Netlify.env.get("CREEM_API_KEY")?.trim() || "";
@@ -23,18 +25,34 @@ export function creemApiBase(): string {
     : "https://api.creem.io/v1";
 }
 
-export function creemProductIdForPlan(plan: CreemPlan): string {
-  const name = plan === "PRO" ? "CREEM_PRO_PRODUCT_ID" : "CREEM_PLUS_PRODUCT_ID";
-  return Netlify.env.get(name)?.trim() || "";
+export function creemProductIdForPlan(plan: CreemPlan, interval: CreemInterval = "monthly"): string {
+  // Env names: monthly = CREEM_PLUS_PRODUCT_ID / CREEM_PRO_PRODUCT_ID (pre-existing);
+  // annual = CREEM_{PLAN}_ANNUAL_PRODUCT_ID; lifetime = CREEM_{PLAN}_LIFETIME_PRODUCT_ID.
+  const seg = interval === "monthly" ? "" : `${interval.toUpperCase()}_`;
+  return Netlify.env.get(`CREEM_${plan}_${seg}PRODUCT_ID`)?.trim() || "";
 }
 
-// Map a product id seen in a webhook back to our plan.
-export function planForCreemProductId(productId: string | undefined | null): CreemPlan | null {
+// Map a product id seen in a webhook back to our (plan, interval). Checks all six
+// SKUs (plus/pro × monthly/annual/lifetime). Unset env vars return "" so they
+// never false-match a real product id.
+export function planAndIntervalForCreemProductId(
+  productId: string | undefined | null,
+): { plan: CreemPlan; interval: CreemInterval } | null {
   const id = (productId || "").trim();
   if (!id) return null;
-  if (id === Netlify.env.get("CREEM_PRO_PRODUCT_ID")?.trim()) return "PRO";
-  if (id === Netlify.env.get("CREEM_PLUS_PRODUCT_ID")?.trim()) return "PLUS";
+  const plans: CreemPlan[] = ["PLUS", "PRO"];
+  const intervals: CreemInterval[] = ["monthly", "annual", "lifetime"];
+  for (const plan of plans) {
+    for (const interval of intervals) {
+      if (id === creemProductIdForPlan(plan, interval)) return { plan, interval };
+    }
+  }
   return null;
+}
+
+// Back-compat helper — plan only.
+export function planForCreemProductId(productId: string | undefined | null): CreemPlan | null {
+  return planAndIntervalForCreemProductId(productId)?.plan ?? null;
 }
 
 export type CreemCheckoutResult =
@@ -43,17 +61,19 @@ export type CreemCheckoutResult =
 
 export async function createCreemCheckout(params: {
   plan: CreemPlan;
+  interval?: CreemInterval;
   userId: string;
   email?: string;
   successUrl: string;
 }): Promise<CreemCheckoutResult> {
+  const interval: CreemInterval = params.interval ?? "monthly";
   const apiKey = creemApiKey();
   if (!apiKey) {
     return { ok: false, status: 503, code: "CREEM_NOT_CONFIGURED", message: "Payments are not configured yet (set CREEM_API_KEY)." };
   }
-  const productId = creemProductIdForPlan(params.plan);
+  const productId = creemProductIdForPlan(params.plan, interval);
   if (!productId) {
-    return { ok: false, status: 503, code: "CREEM_PRODUCT_MISSING", message: `Missing product id (set CREEM_${params.plan}_PRODUCT_ID).` };
+    return { ok: false, status: 503, code: "CREEM_PRODUCT_MISSING", message: `Missing product id for ${params.plan} ${interval} — set the matching CREEM_… env var.` };
   }
 
   let res: Response;
@@ -66,7 +86,7 @@ export async function createCreemCheckout(params: {
         success_url: params.successUrl,
         ...(params.email ? { customer: { email: params.email } } : {}),
         // Echoed back in every webhook so we can grant the right user.
-        metadata: { userId: params.userId, plan: params.plan },
+        metadata: { userId: params.userId, plan: params.plan, interval },
       }),
     });
   } catch (error) {

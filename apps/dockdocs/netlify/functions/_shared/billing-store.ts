@@ -3,6 +3,7 @@ import type {
   SubscriptionPlan,
   SubscriptionStatus,
 } from "../../../lib/subscription-runtime";
+import type { BillingInterval } from "../../../lib/billing-config";
 
 export type BillingCustomerRecord = {
   userId: string;
@@ -19,6 +20,9 @@ export type BillingSubscriptionRecord = {
   plan: SubscriptionPlan;
   status: SubscriptionStatus;
   source: "stripe-webhook" | "creem-webhook";
+  // monthly/annual = recurring (currentPeriodEnd set); lifetime = one-time, never
+  // expires (currentPeriodEnd omitted — no deactivating event ever arrives).
+  interval?: BillingInterval;
   currentPeriodStart?: string;
   currentPeriodEnd?: string;
   cancelAtPeriodEnd?: boolean;
