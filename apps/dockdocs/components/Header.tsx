@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { defaultLocale, isAllLocale, routeLocales, localeLabels } from "@/lib/i18n";
 import { getUser, onAuthChange, type AuthUser } from "@/lib/auth";
+import { AccountMenu } from "@/components/AccountMenu";
 
 // ── Top-level nav categories. Each opens a dropdown; PDF tools has sub-columns. ──
 type NavItem = { name: string; slug: string; soon?: boolean };
@@ -986,16 +987,8 @@ export function Header() {
 
           {/* Right actions */}
           <div className="ml-auto flex items-center gap-1.5">
-            {/* Sign in / Account (desktop) */}
-            <button
-              type="button"
-              onClick={() => navTo("/account")}
-              className="hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] md:inline-flex"
-            >
-              {authUser
-                ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "es" ? "Cuenta" : locale === "pt" ? "Conta" : locale === "fr" ? "Compte" : "Account"))
-                : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : locale === "pt" ? "Entrar" : locale === "fr" ? "Connexion" : "Sign in")}
-            </button>
+            {/* Sign in / Account control (desktop) — badge + dropdown account card */}
+            <AccountMenu authUser={authUser} locale={locale} />
 
             {/* Consolidated "More" menu (desktop) — Pricing/Blog/About + language + theme */}
             <div className="relative hidden md:block">

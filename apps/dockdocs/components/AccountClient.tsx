@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   getUser,
   onAuthChange,
@@ -11,14 +12,13 @@ import {
   type AuthUser,
 } from "@/lib/auth";
 import {
-  createBillingCheckoutSession,
   createBillingPortalSession,
   getSubscriptionSnapshot,
   type SubscriptionSnapshot,
 } from "@/lib/subscription-runtime";
-import type { PaidSubscriptionPlan } from "@/lib/billing-config";
+import { planBadge, planStatusText, upgradePrompts } from "@/lib/membership-ui";
 import { supabase, authHeader } from "@/lib/supabase";
-import { trackSignUp, trackBeginCheckout } from "@/lib/analytics";
+import { trackSignUp } from "@/lib/analytics";
 
 type AuthView = "loading" | "signed-out" | "email-sent" | "signed-in";
 type DeleteState = "idle" | "confirm" | "deleting" | "done";
@@ -57,10 +57,15 @@ function getCopy(locale: AccountLocale) {
     emailHint: zh ? "无需密码，我们会发一封登录邮件给你" : es ? "Sin contraseña — te enviaremos un enlace de acceso" : pt ? "Sem senha — enviaremos um link de acesso por e-mail" : fr ? "Sans mot de passe — nous vous enverrons un lien de connexion" : "No password — we'll email you a sign-in link",
     appleSoon: zh ? "即将支持 Apple 登录" : es ? "Apple Sign-in próximamente" : pt ? "Apple Sign-in em breve" : fr ? "Connexion Apple bientôt disponible" : "Apple sign-in coming soon",
     signedIn: zh ? "已登录" : es ? "Sesión iniciada" : pt ? "Sessão iniciada" : fr ? "Connecté" : "Signed in",
-    currentPlan: zh ? "当前套餐" : es ? "Plan actual" : pt ? "Plano atual" : fr ? "Forfait actuel" : "Current plan",
-    upgradePlus: zh ? "升级 Plus" : es ? "Actualizar a Plus" : pt ? "Fazer upgrade para Plus" : fr ? "Passer à Plus" : "Upgrade to Plus",
-    upgradePro: zh ? "升级 Pro" : es ? "Actualizar a Pro" : pt ? "Fazer upgrade para Pro" : fr ? "Passer à Pro" : "Upgrade to Pro",
+    planBilling: zh ? "套餐与账单" : es ? "Plan y facturación" : pt ? "Plano e cobrança" : fr ? "Forfait et facturation" : "Plan & billing",
     manageBilling: zh ? "管理账单" : es ? "Administrar facturación" : pt ? "Gerenciar cobrança" : fr ? "Gérer la facturation" : "Manage billing",
+    manageBillingHint: zh ? "更改付款方式、取消或下载发票 — 由 Creem 安全托管，诚实无套路。" : es ? "Cambia tu pago, cancela o descarga facturas — gestionado de forma segura por Creem, sin trucos." : pt ? "Altere o pagamento, cancele ou baixe faturas — gerenciado com segurança pela Creem, sem pegadinhas." : fr ? "Modifiez le paiement, annulez ou téléchargez vos factures — géré en toute sécurité par Creem, sans pièges." : "Change payment, cancel, or download invoices — securely handled by Creem, no tricks.",
+    usageTitle: zh ? "用量与权益" : es ? "Uso y beneficios" : pt ? "Uso e benefícios" : fr ? "Utilisation et avantages" : "Usage & entitlements",
+    includedFree: zh ? "PDF 基础工具无限使用 · AI 工具可浅尝" : es ? "Herramientas PDF básicas ilimitadas · una muestra de las herramientas de IA" : pt ? "Ferramentas PDF básicas ilimitadas · uma amostra das ferramentas de IA" : fr ? "Outils PDF de base illimités · un aperçu des outils d'IA" : "Unlimited core PDF tools · a taste of AI tools",
+    includedPlus: zh ? "涵盖免费版 · AI 与批量工具可用量 · 公平用量" : es ? "Todo lo de Free · IA y herramientas por lotes con volumen de trabajo · uso justo" : pt ? "Tudo do Free · IA e ferramentas em lote com volume de trabalho · uso justo" : fr ? "Tout le forfait gratuit · IA et outils par lots à volume de travail · usage équitable" : "Everything in Free · AI & batch tools at working volume · fair use",
+    includedPro: zh ? "涵盖 Plus · 专业级精准 · 无限公平用量" : es ? "Todo lo de Plus · precisión profesional · uso justo ilimitado" : pt ? "Tudo do Plus · precisão profissional · uso justo ilimitado" : fr ? "Tout Plus · précision professionnelle · usage équitable illimité" : "Everything in Plus · pro-grade precision · unlimited fair use",
+    fairUse: zh ? "公平用量上限仅用于防止滥用，正常使用不会触及；门控上线后这里会显示实时用量。" : es ? "Los límites de uso justo solo evitan abusos; el uso normal nunca los alcanza. El uso en tiempo real aparecerá aquí pronto." : pt ? "Os limites de uso justo só evitam abusos; o uso normal nunca os atinge. O uso em tempo real aparecerá aqui em breve." : fr ? "Les limites d'usage équitable ne servent qu'à éviter les abus ; un usage normal ne les atteint jamais. L'utilisation en temps réel s'affichera bientôt ici." : "Fair-use limits only guard against abuse — normal use never hits them. Live usage will appear here once metering ships.",
+    trustLine: zh ? "你的文档从不用于训练我们的模型；多数工具在浏览器本地运行。" : es ? "Tus documentos nunca se usan para entrenar nuestros modelos; la mayoría de las herramientas se ejecutan localmente en tu navegador." : pt ? "Seus documentos nunca são usados para treinar nossos modelos; a maioria das ferramentas roda localmente no seu navegador." : fr ? "Vos documents ne servent jamais à entraîner nos modèles ; la plupart des outils s'exécutent localement dans votre navigateur." : "Your documents are never used to train our models — most tools run locally in your browser.",
     loading: zh ? "加载…" : es ? "Cargando…" : pt ? "Carregando…" : fr ? "Chargement…" : "Loading…",
     signOut: zh ? "退出登录" : es ? "Cerrar sesión" : pt ? "Sair" : fr ? "Se déconnecter" : "Sign out",
     privateSpace: zh ? "私密工作区" : es ? "Espacio privado" : pt ? "Espaço privado" : fr ? "Espace privé" : "Private Space",
@@ -108,19 +113,9 @@ function getCopy(locale: AccountLocale) {
   };
 }
 
-// Billing interval label for the current-plan card. Lifetime is one-time and
-// never expires, so we say so explicitly (no renewal date is implied).
-function intervalLabel(interval: string, locale: AccountLocale): string {
-  const m: Record<string, Record<string, string>> = {
-    lifetime: { en: "Lifetime · never expires", zh: "终身 · 永久有效", es: "De por vida · nunca caduca", pt: "Vitalício · nunca expira", fr: "À vie · n'expire jamais" },
-    annual: { en: "Billed annually", zh: "按年计费", es: "Facturación anual", pt: "Cobrança anual", fr: "Facturation annuelle" },
-    monthly: { en: "Billed monthly", zh: "按月计费", es: "Facturación mensual", pt: "Cobrança mensal", fr: "Facturation mensuelle" },
-  };
-  return m[interval]?.[locale] ?? m[interval]?.en ?? "";
-}
-
 export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   const t = getCopy(locale);
+  const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
   const [view, setView] = useState<AuthView>("loading");
@@ -243,10 +238,11 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
     }
   }
 
-  async function handleBilling(plan: PaidSubscriptionPlan) {
-    setBillingLoading(plan); setError("");
-    trackBeginCheckout(plan);
-    try { await createBillingCheckoutSession(plan); } catch (err) { setError(err instanceof Error ? err.message : t.checkoutFailed); setBillingLoading(""); }
+  // Upgrades always go to the pricing page so the user picks the interval there
+  // (the pricing CTA then does the correct checkout / in-place change-plan). This
+  // also fixes the old bug where the account page hardcoded a monthly checkout.
+  function goPricing() {
+    router.push(locale === "en" ? "/pricing" : `/${locale}/pricing`);
   }
   async function handlePortal() {
     setBillingLoading("portal"); setError("");
@@ -326,49 +322,86 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
     );
   }
 
-  // signed-in
+  // signed-in — membership center
+  const display = subscription?.displayName ?? "Free";
+  const interval = subscription?.record.interval;
+  const badge = planBadge(display, interval, locale);
+  const prompts = subscription ? upgradePrompts(display, interval, locale) : [];
+  const isPaid = subscription?.isPaidPlaceholder ?? false;
+  const included = display === "Pro" ? t.includedPro : display === "Plus" ? t.includedPlus : t.includedFree;
+
   return (
     <div className="mt-8 space-y-6">
       {header}
+
+      {/* Identity */}
       <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
         <div className="flex items-center gap-4">
-          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[color:var(--accent)] text-[14px] font-semibold text-white">
+          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[color:var(--accent)] text-[14px] font-semibold text-[color:var(--on-accent)]">
             {user?.pictureUrl ? <img src={user.pictureUrl} alt="" className="h-full w-full object-cover" /> : (user?.name?.charAt(0) ?? user?.email?.charAt(0)?.toUpperCase() ?? "?")}
           </div>
-          <div>
-            <p className="text-[15px] font-semibold">{user?.name || user?.email}</p>
-            <p className="text-[13px] text-[color:var(--muted)]">{user?.email}</p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="truncate text-[15px] font-semibold">{user?.name || user?.email}</p>
+              <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${badge.className}`}>{badge.label}</span>
+            </div>
+            <p className="truncate text-[13px] text-[color:var(--muted)]">{user?.email}</p>
           </div>
-          <span className="ml-auto rounded-full bg-[color:var(--success-surface)] px-2.5 py-1 text-[11px] font-semibold text-[color:var(--success)]">{t.signedIn}</span>
+          <span className="ml-auto shrink-0 rounded-full bg-[color:var(--success-surface)] px-2.5 py-1 text-[11px] font-semibold text-[color:var(--success)]">{t.signedIn}</span>
         </div>
       </div>
 
+      {/* Plan & billing */}
       {subscription && (
         <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{t.currentPlan}</p>
-          <div className="mt-3 flex items-center justify-between">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{t.planBilling}</p>
+          <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-[18px] font-semibold">{subscription.displayName}</p>
-              <p className="text-[12px] text-[color:var(--muted)]">{subscription.statusLabel}</p>
-              {subscription.displayName !== "Free" && subscription.record.interval && (
-                <p className="text-[11px] text-[color:var(--faint)]">{intervalLabel(subscription.record.interval, locale)}</p>
-              )}
-            </div>
-            {subscription.displayName === "Free" ? (
-              <div className="flex gap-2">
-                <button type="button" onClick={() => handleBilling("PLUS")} disabled={billingLoading === "PLUS"} className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-1.5 text-[12px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] disabled:opacity-50">
-                  {billingLoading === "PLUS" ? t.loading : t.upgradePlus}
-                </button>
-                <button type="button" onClick={() => handleBilling("PRO")} disabled={billingLoading === "PRO"} className="rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-1.5 text-[12px] font-semibold text-white transition hover:bg-[color:var(--accent-hover)] disabled:opacity-50">
-                  {billingLoading === "PRO" ? t.loading : t.upgradePro}
-                </button>
+              <div className="flex items-center gap-2">
+                <p className="text-[18px] font-semibold">{subscription.displayName}</p>
+                <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${badge.className}`}>{badge.label}</span>
               </div>
-            ) : (
-              <button type="button" onClick={handlePortal} disabled={billingLoading === "portal"} className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-1.5 text-[12px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] disabled:opacity-50">
+              <p className="mt-1 text-[12px] text-[color:var(--muted)]">
+                {planStatusText({ displayName: display, interval, status: subscription.record.status, currentPeriodEnd: subscription.record.currentPeriodEnd, cancelAtPeriodEnd: subscription.record.cancelAtPeriodEnd }, locale)}
+              </p>
+            </div>
+            {isPaid && (
+              <button type="button" onClick={handlePortal} disabled={billingLoading === "portal"} className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-1.5 text-[12px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] disabled:opacity-50">
                 {billingLoading === "portal" ? t.loading : t.manageBilling}
               </button>
             )}
           </div>
+
+          {/* Upgrade prompts — always route to pricing to pick the interval */}
+          {prompts.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {prompts.map((p, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={goPricing}
+                  className={
+                    p.primary
+                      ? "rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-1.5 text-[12px] font-semibold text-[color:var(--on-accent)] transition hover:bg-[color:var(--accent-hover)]"
+                      : "rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-1.5 text-[12px] font-medium text-[color:var(--accent-strong)] transition hover:border-[color:var(--line-strong)]"
+                  }
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {isPaid && <p className="mt-3 text-[11px] leading-5 text-[color:var(--faint)]">{t.manageBillingHint}</p>}
+        </div>
+      )}
+
+      {/* Usage & entitlements (lightweight — live metering ships later) */}
+      {subscription && (
+        <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{t.usageTitle}</p>
+          <p className="mt-3 text-[13px] leading-5 text-[color:var(--foreground)]">{included}</p>
+          <p className="mt-2 text-[12px] leading-5 text-[color:var(--muted)]">{t.fairUse}</p>
         </div>
       )}
 
@@ -421,6 +454,9 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
           )}
         </div>
       )}
+
+      {/* Trust reminder — the north-star promise */}
+      <p className="px-1 text-center text-[12px] leading-5 text-[color:var(--faint)]">{t.trustLine}</p>
 
       {error && <p className="rounded-[var(--radius-sm)] bg-[color:var(--error-surface)] px-3 py-2 text-[13px] text-[color:var(--error)]">{error}</p>}
 
