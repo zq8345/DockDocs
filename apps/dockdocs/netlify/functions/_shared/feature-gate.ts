@@ -1,6 +1,7 @@
 import { json, readBillingUser } from "./billing-auth";
 import { readSubscriptionByUserId } from "./billing-store";
 import { incrementUsageCount, readUsageCount } from "./usage-store";
+import { recordPaywallHit } from "./paywall-store";
 import {
   createPeriodKey,
   createResetAt,
@@ -97,6 +98,8 @@ export async function enforceFeatureGate(
   }
 
   if (used >= limit) {
+    // Anonymous demand signal: tally this (feature, plan) paywall hit (no PII).
+    await recordPaywallHit(feature, plan);
     return {
       ok: false,
       plan,
