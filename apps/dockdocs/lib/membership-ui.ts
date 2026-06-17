@@ -76,7 +76,7 @@ export function planStatusText(
     return pick(locale, "Lifetime · never expires", "终身永久 · 永不过期", "De por vida · nunca caduca", "Vitalício · nunca expira", "À vie · n'expire jamais");
   }
   if (status === "past_due") {
-    return pick(locale, "Past due · update your payment method", "续费失败 · 请更新付款方式", "Pago vencido · actualiza tu pago", "Pagamento vencido · atualize o pagamento", "Paiement en retard · mettez à jour le paiement");
+    return pick(locale, "Past due · update your payment method", "续费失败 · 请更新付款方式", "Pago vencido · actualiza tu método de pago", "Pagamento vencido · atualize sua forma de pagamento", "Paiement en retard · mettez à jour votre moyen de paiement");
   }
   if (status === "canceled" || cancelAtPeriodEnd) {
     if (date) {
@@ -85,7 +85,7 @@ export function planStatusText(
     return pick(locale, "Canceled", "已取消", "Cancelado", "Cancelado", "Annulé");
   }
   if (date) {
-    return pick(locale, `Active · renews ${date}`, `生效中 · 续费日 ${date}`, `Activo · se renueva el ${date}`, `Ativo · renova em ${date}`, `Actif · renouvelé le ${date}`);
+    return pick(locale, `Active · renews ${date}`, `生效中 · 续费日 ${date}`, `Activo · se renueva el ${date}`, `Ativo · renova em ${date}`, `Actif · se renouvelle le ${date}`);
   }
   const cycle =
     interval === "annual"
@@ -127,6 +127,6 @@ export function upgradePrompts(
   }
   // Pro on a recurring plan → lifetime.
   return [
-    { label: pick(locale, "Get lifetime — pay once", "切终身 · 一次买断永久", "Hazlo de por vida — pago único", "Torne vitalício — pague uma vez", "Passez à vie — paiement unique"), primary: true },
+    { label: pick(locale, "Get lifetime — pay once", "切终身 · 一次买断永久", "Hazlo de por vida — pago único", "Mude para vitalício — pague uma vez", "Passez à vie — paiement unique"), primary: true },
   ];
 }
