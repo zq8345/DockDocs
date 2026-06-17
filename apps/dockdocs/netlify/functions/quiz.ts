@@ -1,4 +1,5 @@
 import type { Config, Context } from "@netlify/functions";
+import { enforceFeatureGate } from "./_shared/feature-gate";
 
 declare const Netlify: {
   env: {
@@ -34,6 +35,10 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many requests — please wait a minute and try again." }, 429);
   }
 
+  // Server-side plan/usage gate (authoritative). Study cards = ai-standard ("summary").
+  const gate = await enforceFeatureGate(req, "summary");
+  if (!gate.ok) return gate.response;
+
   const provider = getProvider();
   if (!provider) {
     return json({ ok: false, code: "PROVIDER_NOT_CONFIGURED", message: "AI provider is not configured. Set DEEPSEEK_API_KEY (or OPENAI_API_KEY) in Netlify environment variables." }, 200);
@@ -64,6 +69,7 @@ export default async (req: Request, _context: Context) => {
     if (!cards || cards.length === 0) {
       return json({ ok: false, code: "PROVIDER_ERROR", message: "The AI provider did not return usable cards." }, 200);
     }
+    await gate.commit();
     return json({ ok: true, cards, model: provider.model }, 200);
   } catch (error) {
     const message = error instanceof Error ? error.message : "The AI provider timed out or could not be reached.";

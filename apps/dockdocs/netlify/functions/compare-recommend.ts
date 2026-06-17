@@ -1,4 +1,5 @@
 import type { Config, Context } from "@netlify/functions";
+import { enforceFeatureGate } from "./_shared/feature-gate";
 
 declare const Netlify: {
   env: { get(name: string): string | undefined };
@@ -47,6 +48,11 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many requests — please wait a minute and try again." }, 429);
   }
 
+  // Server-side plan/usage gate (authoritative). Shares the "compare" meter with
+  // compare-extract / compare-qa (one ai-hero feature).
+  const gate = await enforceFeatureGate(req, "compare");
+  if (!gate.ok) return gate.response;
+
   const provider = getProvider();
   if (!provider) {
     return json({ ok: false, code: "PROVIDER_NOT_CONFIGURED", message: "AI provider is not configured." }, 200);
@@ -84,6 +90,7 @@ export default async (req: Request, _context: Context) => {
     // Ensure winnerId is one of the actual documents (or null).
     const ids = new Set(documents.map((d) => d.id));
     if (rec.winnerId && !ids.has(rec.winnerId)) rec.winnerId = null;
+    await gate.commit();
     return json({ ok: true, recommendation: rec, model: provider.model, locale }, 200);
   } catch (error) {
     const message = error instanceof Error ? error.message : "The AI provider timed out or could not be reached.";
