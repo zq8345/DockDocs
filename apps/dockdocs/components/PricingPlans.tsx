@@ -12,7 +12,7 @@ type Locale = "en" | "zh" | "es" | "pt" | "fr";
 
 const copy = {
   en: {
-    title: "Simple pricing. Powerful documents.",
+    title: "Simple pricing. Powerful, private documents.",
     subtitle: "Start free — no account, no card. Upgrade only when you need AI, bigger files, or higher volume. Cancel anytime, in two clicks.",
     monthly: "Monthly",
     yearly: "Yearly",
