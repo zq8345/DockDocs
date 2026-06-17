@@ -61,10 +61,12 @@ export function isPaidSubscriptionPlan(
 const PLAN_RANK: Record<string, number> = { FREE: 0, PLUS: 1, PRO: 2 };
 const INTERVAL_RANK: Record<BillingInterval, number> = { monthly: 0, annual: 1, lifetime: 2 };
 
-// True when (toPlan, toInterval) is strictly higher than (fromPlan, fromInterval):
-// a higher plan tier, or the same plan with a longer interval. Equal or lower is
-// NOT an upgrade — those go through the billing portal, not the in-place
-// change-plan endpoint (which charges proration immediately).
+// An UPGRADE means the target is ≥ on BOTH dimensions — plan tier (Plus < Pro)
+// AND term length (monthly < annual < lifetime) — and strictly greater on at
+// least one. If either dimension goes DOWN it is not an upgrade (e.g. tier-up but
+// term-down, like Plus-annual → Pro-monthly), so it routes to the billing portal
+// rather than the in-place change-plan endpoint (which charges proration). Both
+// the pricing CTA and the server-side change-plan guard use this, so they agree.
 export function isPlanUpgrade(
   fromPlan: string,
   fromInterval: BillingInterval | undefined,
@@ -73,6 +75,10 @@ export function isPlanUpgrade(
 ): boolean {
   const fromPlanRank = PLAN_RANK[fromPlan] ?? 0;
   const toPlanRank = PLAN_RANK[toPlan] ?? 0;
-  if (toPlanRank !== fromPlanRank) return toPlanRank > fromPlanRank;
-  return (INTERVAL_RANK[toInterval] ?? 0) > (INTERVAL_RANK[fromInterval ?? "monthly"] ?? 0);
+  const fromIntervalRank = INTERVAL_RANK[fromInterval ?? "monthly"] ?? 0;
+  const toIntervalRank = INTERVAL_RANK[toInterval] ?? 0;
+  // Either dimension lower → not an upgrade.
+  if (toPlanRank < fromPlanRank || toIntervalRank < fromIntervalRank) return false;
+  // At least one dimension strictly higher.
+  return toPlanRank > fromPlanRank || toIntervalRank > fromIntervalRank;
 }
