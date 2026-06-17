@@ -74,12 +74,16 @@ const ROUTE_META: Partial<Record<RouteSlug, RouteMeta>> = {
   "privacy-policy": { name: "Privacy Policy", changeFrequency: y, priority: 0.3 },
   terms: { name: "Terms of Service", changeFrequency: y, priority: 0.3 },
 
-  // AI tools
-  compare: { name: "Compare PDF Documents with AI", changeFrequency: w, priority: 0.85 },
+  // AI tools — revenue/vertical pages get top-tier priority (slim-down 2026-06-17:
+  // crawl budget now concentrates on monetizable AI + conversion pages, not thin GEO).
+  compare: { name: "Compare PDF Documents with AI", changeFrequency: w, priority: 0.9 },
   "chat-with-pdf": { name: "Chat with PDF — AI Document Q&A", changeFrequency: w, priority: 0.85 },
   "ai-summary": { name: "AI Summary — Document Summarizer", changeFrequency: w, priority: 0.8 },
   "ocr-pdf": { name: "OCR PDF — Scanned PDF to Text", changeFrequency: w, priority: 0.8 },
-  "extract-to-excel": { name: "Extract PDF Data to a Spreadsheet — Invoices, Quotes, Contracts", changeFrequency: w, priority: 0.8 },
+  "extract-to-excel": { name: "Extract PDF Data to a Spreadsheet — Invoices, Quotes, Contracts", changeFrequency: w, priority: 0.9 },
+  "contract-risk": { name: "AI Contract Risk Review — Flag Risky Clauses", changeFrequency: w, priority: 0.9 },
+  "lease-redflag": { name: "Lease Red-Flag Review — AI Lease Clause Check", changeFrequency: w, priority: 0.85 },
+  "govbid-matrix": { name: "Gov Bid Compliance Matrix — AI Requirement Extraction", changeFrequency: w, priority: 0.85 },
   redline: { name: "PDF Redline — Compare Two PDF Versions", changeFrequency: w, priority: 0.78 },
   flashcards: { name: "PDF Flashcard Maker — Study Cards from Any PDF", changeFrequency: w, priority: 0.75 },
   "batch-summary": { name: "Batch Summarize PDFs — Multiple Documents", changeFrequency: w, priority: 0.7 },
