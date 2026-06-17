@@ -85,7 +85,7 @@ const aiSummarySchema = {
           name: "Is my PDF kept private when I use this?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Your document is sent to our AI service to generate the summary, then immediately discarded. We do not store, read, or train on your files. No account, no history, no data retention.",
+            text: "Only the text needed to generate the summary is sent to our AI provider. DockDocs does not store your document after your session and does not use your files to train its own models. No account, no history.",
           },
         },
         {
@@ -148,7 +148,7 @@ export default function AiSummaryPage() {
             </div>
             <div>
               <dt className="text-sm font-medium text-[color:var(--foreground)]">Is my PDF kept private?</dt>
-              <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">Your document is sent to our AI service to generate the summary, then immediately discarded. We do not store, read, or train on your files. No account, no history, no data retention.</dd>
+              <dd className="mt-1 text-sm leading-6 text-[color:var(--muted)]">Only the text needed to generate the summary is sent to our AI provider. DockDocs does not store your document after your session and does not use your files to train its own models. No account, no history.</dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-[color:var(--foreground)]">What is the difference between AI Summary and AI Workspace?</dt>

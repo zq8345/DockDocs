@@ -34,13 +34,13 @@ const content = {
     doHead: "We do",
     neverHead: "We never",
     doRows: ["Process files in your browser", "Delete cloud temp-files immediately", "Label every cloud step up front", "Cite the source of every AI answer", "Let you start with no account"],
-    neverRows: ["Store your documents", "Train AI on your files", "Sell or share your data", "Email-to-cancel traps", "Hidden uploads"],
+    neverRows: ["Store your documents", "Train our own models on your files", "Sell or share your data", "Email-to-cancel traps", "Hidden uploads"],
 
     statsEyebrow: "// The numbers that matter",
     statsHeading: "The numbers that matter are zeros.",
     stats: [
       { n: "0", l: "files stored for in-browser tools", z: true },
-      { n: "0", l: "files used to train AI", z: true },
+      { n: "0", l: "files used to train our own models", z: true },
       { n: "$0", l: "to start — no account", z: true },
       { n: "~50", l: "PDF & AI tools", z: false },
     ],

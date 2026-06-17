@@ -21,7 +21,7 @@ const copy = {
     mostPopular: "Most popular",
     billedYearly: (v: string) => `${v} billed yearly`,
     // trust bar
-    trust: ["7-day money-back guarantee", "Cancel anytime, no questions", "Files never used to train AI"],
+    trust: ["7-day money-back guarantee", "Cancel anytime, no questions", "Files never used to train our models"],
     plans: [
       {
         name: "Free",
@@ -62,7 +62,7 @@ const copy = {
       { q: "Can I cancel anytime?", a: "Yes. Manage or cancel your subscription yourself in a couple of clicks — no emails, no retention games. You keep access until the end of the period you paid for." },
       { q: "Is there a refund?", a: "Yes. If Plus or Pro isn't right for you, request a refund within 7 days of payment and we'll return it." },
       { q: "Do I need to pay to use DockDocs?", a: "No. All 20+ core PDF tools are free forever, with no account required. You only pay if you want AI features, larger files, or higher volume." },
-      { q: "What happens to my files?", a: "Most tools process entirely in your browser — your files never leave your device. Cloud conversions are processed and the temporary copy is deleted automatically. We never use your documents to train AI." },
+      { q: "What happens to my files?", a: "Most tools process entirely in your browser — your files never leave your device. Cloud conversions are processed and the temporary copy is deleted automatically. We never use your documents to train our own models, and only the text needed to answer is sent to the AI provider." },
       { q: "Can I switch plans later?", a: "Anytime. Upgrade, downgrade, or move between monthly and yearly whenever you like." },
     ],
     ctaTitle: "Try it free — decide later.",
