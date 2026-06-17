@@ -100,7 +100,19 @@ export default function ChatWithPdfPage() {
           <ChatWithPdfClient locale="en" />
         </div>
 
+        {/* Citable facts block — concise declarative statements (distinct from the
+            Q&A FAQ) that AI answer engines can lift directly. All true to the tool. */}
         <section className="mt-16 border-t border-[color:var(--line)] pt-10">
+          <h2 className="text-base font-medium text-[color:var(--foreground)]">How Chat with PDF works</h2>
+          <ul className="mt-6 space-y-3 text-sm leading-6 text-[color:var(--muted)]">
+            <li>Chat with PDF reads your uploaded document and answers from its contents — each answer points back to the source page or passage it came from, so you can verify it.</li>
+            <li>It works with text-based PDFs such as contracts, reports, research papers, manuals, and meeting notes. Scanned, image-only PDFs should be run through <a href="/ocr-pdf/" className="text-[color:var(--accent)] hover:underline">OCR</a> first.</li>
+            <li>It is free to start with no account. Your document is processed only to generate your answers and then discarded — it is not stored long-term or used to train models.</li>
+            <li>You can ask for a specific clause, a deadline, a number, a definition, or a plain-language summary of any section, then continue with follow-up questions.</li>
+          </ul>
+        </section>
+
+        <section className="mt-12 border-t border-[color:var(--line)] pt-10">
           <h2 className="text-base font-medium text-[color:var(--foreground)]">Frequently Asked Questions</h2>
           <dl className="mt-6 space-y-5">
             {FAQ.map((item) => (
