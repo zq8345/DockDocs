@@ -6,7 +6,7 @@ import { BatchFileCard } from "@/components/BatchFileCard";
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
-import { usePlanBatchFileCap } from "@/lib/batch-limits";
+import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "merge" | "split";
@@ -112,6 +112,8 @@ export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Lo
   const run = useCallback(async () => {
     if (items.length === 0) { setError(t.needFile); return; }
     setError(null); result.current = null;
+    const batchGate = await checkAndRecordBatchRun();
+    if (!batchGate.allowed) { setError(batchLimitMessage(locale)); return; }
 
     if (mode === "merge") {
       if (items.length < 2) { setError(t.needTwo); return; }

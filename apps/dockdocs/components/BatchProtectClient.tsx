@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
-import { usePlanBatchFileCap } from "@/lib/batch-limits";
+import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
@@ -101,6 +101,8 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
   const run = useCallback(async () => {
     if (items.length === 0) { setError(t.needFile); return; }
     if (!PW_OK.test(password)) { setError(t.needPw); return; }
+    const batchGate = await checkAndRecordBatchRun();
+    if (!batchGate.allowed) { setError(batchLimitMessage(locale)); return; }
     setPhase("running"); setError(null); setProgress(0);
     const updated = [...items];
     for (let i = 0; i < updated.length; i++) {

@@ -6,7 +6,7 @@ import { BatchFileCard } from "@/components/BatchFileCard";
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
-import { usePlanBatchFileCap } from "@/lib/batch-limits";
+import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Level = "low" | "recommended" | "high";
@@ -94,6 +94,8 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
 
   const run = useCallback(async () => {
     if (items.length === 0) { setError(t.need); return; }
+    const batchGate = await checkAndRecordBatchRun();
+    if (!batchGate.allowed) { setError(batchLimitMessage(locale)); return; }
     setPhase("running"); setError(null); setProgress(0);
     const updated = [...items];
     for (let i = 0; i < updated.length; i++) {

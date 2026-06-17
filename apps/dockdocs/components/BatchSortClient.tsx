@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { authHeader } from "@/lib/supabase";
-import { usePlanBatchFileCap } from "@/lib/batch-limits";
+import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
@@ -105,6 +105,8 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
 
   const run = useCallback(async () => {
     if (items.length === 0) { setError(t.need); return; }
+    const batchGate = await checkAndRecordBatchRun();
+    if (!batchGate.allowed) { setError(batchLimitMessage(locale)); return; }
     setPhase("running"); setError(null); setProgress(0);
     const auth = await authHeader();
     const updated = [...items];

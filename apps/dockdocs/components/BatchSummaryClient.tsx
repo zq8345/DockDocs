@@ -6,7 +6,7 @@ import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { BatchFileCard } from "@/components/BatchFileCard";
-import { usePlanBatchFileCap } from "@/lib/batch-limits";
+import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Summary = { executiveSummary: string; keyPoints: string[]; actionItems?: string[]; nextSteps?: string[] };
@@ -115,6 +115,8 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
   const run = useCallback(async () => {
     const usable = docs.filter((d) => d.text.length > 0);
     if (docs.length === 0) { setError(t.need); return; }
+    const batchGate = await checkAndRecordBatchRun();
+    if (!batchGate.allowed) { setError(batchLimitMessage(locale)); return; }
     setPhase("running"); setError(null); setResults([]); setProgress(0);
     const auth = await authHeader();
     const out: Result[] = [];

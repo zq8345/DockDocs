@@ -7,7 +7,7 @@ import { BatchFileCard } from "@/components/BatchFileCard";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
-import { usePlanBatchFileCap } from "@/lib/batch-limits";
+import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "crop" | "delete";
@@ -214,6 +214,8 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
 
   const run = useCallback(async () => {
     if (items.length === 0) { setError(t.need); return; }
+    const batchGate = await checkAndRecordBatchRun();
+    if (!batchGate.allowed) { setError(batchLimitMessage(locale)); return; }
     if (mode === "crop" && !hasCrop) { setError(t.needCrop); return; }
     const pageSet = mode === "delete" ? parsePageList(delPages) : new Set<number>();
     if (mode === "delete" && pageSet.size === 0) { setError(t.needDel); return; }

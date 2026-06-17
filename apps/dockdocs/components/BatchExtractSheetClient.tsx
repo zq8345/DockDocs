@@ -5,7 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { BatchFileCard } from "@/components/BatchFileCard";
-import { usePlanBatchFileCap } from "@/lib/batch-limits";
+import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type DocType = "invoice" | "quote" | "contract";
@@ -126,6 +126,8 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
   const extract = useCallback(async () => {
     const usable = docs.filter((d) => d.text.length > 0);
     if (usable.length === 0) { setError(t.needFile); return; }
+    const batchGate = await checkAndRecordBatchRun();
+    if (!batchGate.allowed) { setError(batchLimitMessage(locale)); return; }
     setPhase("extracting"); setError(null); setResults([]); setDims([]);
     const groups: Doc[][] = [];
     for (let i = 0; i < usable.length; i += CHUNK) groups.push(usable.slice(i, i + CHUNK));

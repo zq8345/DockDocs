@@ -4,7 +4,7 @@ import { BatchUploadBox } from "@/components/BatchUploadBox";
 
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
-import { usePlanBatchFileCap } from "@/lib/batch-limits";
+import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Mode = "sequence" | "replace";
@@ -115,6 +115,8 @@ export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
 
   const download = async () => {
     if (items.length === 0) { setError(t.need); return; }
+    const batchGate = await checkAndRecordBatchRun();
+    if (!batchGate.allowed) { setError(batchLimitMessage(locale)); return; }
     try {
       const entries = await Promise.all(items.map(async (it, i) => ({ name: newNames[i], data: new Uint8Array(await it.file.arrayBuffer()) })));
       const zip = createZipArchive(entries);

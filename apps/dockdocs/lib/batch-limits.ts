@@ -66,43 +66,54 @@ function readTodayRuns(): number {
   }
 }
 
-export type BatchRunGate = { allowed: boolean; paid: boolean; used: number; limit: number };
+export type BatchRunGate = { allowed: boolean; limit: number; used: number };
 
-// check()/record() pair for the free daily batch-run nudge. Call check() right
-// before running a batch; if !allowed, show the upgrade prompt (use `.limit`).
-// Call record() once a run actually starts (no-op for paid users).
-export function useBatchRunGate(): { check: () => BatchRunGate; record: () => void } {
-  const [paid, setPaid] = useState<boolean>(false);
-  useEffect(() => {
-    let active = true;
-    getSubscriptionSnapshot()
-      .then((snap) => {
-        if (active) setPaid(snap.record.plan !== "FREE");
-      })
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
-  }, []);
+// Plain async check+record for the free daily batch-run nudge — NOT a hook, so it
+// adds no useCallback-deps churn. Call it at the top of a batch client's (already
+// async) run handler:
+//   const gate = await checkAndRecordBatchRun();
+//   if (!gate.allowed) { setError(batchLimitMessage(locale)); return; }
+// Paid plans always pass (uncapped). Free plans get FREE_DAILY_BATCH_RUNS/day,
+// counted in localStorage; an allowed run is recorded immediately. Intentionally
+// bypassable — the real per-file COST is already enforced server-side.
+export async function checkAndRecordBatchRun(): Promise<BatchRunGate> {
+  let paid = false;
+  try {
+    const snap = await getSubscriptionSnapshot();
+    paid = snap.record.plan !== "FREE";
+  } catch {
+    /* treat as free on error */
+  }
+  if (paid) return { allowed: true, limit: Infinity, used: 0 };
 
-  return {
-    check: () => {
-      if (paid) return { allowed: true, paid: true, used: 0, limit: Infinity };
-      const used = readTodayRuns();
-      return { allowed: used < FREE_DAILY_BATCH_RUNS, paid: false, used, limit: FREE_DAILY_BATCH_RUNS };
-    },
-    record: () => {
-      if (paid) return;
-      if (typeof window === "undefined" || !window.localStorage) return;
-      try {
-        const used = readTodayRuns();
-        window.localStorage.setItem(
-          BATCH_RUNS_KEY,
-          JSON.stringify({ day: utcDayKey(), count: used + 1 }),
-        );
-      } catch {
-        /* best effort */
-      }
-    },
-  };
+  const used = readTodayRuns();
+  if (used >= FREE_DAILY_BATCH_RUNS) return { allowed: false, limit: FREE_DAILY_BATCH_RUNS, used };
+
+  if (typeof window !== "undefined" && window.localStorage) {
+    try {
+      window.localStorage.setItem(
+        BATCH_RUNS_KEY,
+        JSON.stringify({ day: utcDayKey(), count: used + 1 }),
+      );
+    } catch {
+      /* best effort */
+    }
+  }
+  return { allowed: true, limit: FREE_DAILY_BATCH_RUNS, used: used + 1 };
+}
+
+// Localized "free daily batch limit reached" upgrade nudge (en/zh/es/pt/fr).
+export function batchLimitMessage(locale: string): string {
+  switch (locale) {
+    case "zh":
+      return `已达免费每日批量上限（每天 ${FREE_DAILY_BATCH_RUNS} 批）。升级 Plus/Pro 可不限次——到「账户」页升级。`;
+    case "es":
+      return `Alcanzaste el límite diario gratuito de lotes (${FREE_DAILY_BATCH_RUNS}/día). Mejora a Plus/Pro para lotes ilimitados.`;
+    case "pt":
+      return `Você atingiu o limite diário gratuito de lotes (${FREE_DAILY_BATCH_RUNS}/dia). Faça upgrade para Plus/Pro para lotes ilimitados.`;
+    case "fr":
+      return `Vous avez atteint la limite quotidienne gratuite de lots (${FREE_DAILY_BATCH_RUNS}/jour). Passez à Plus/Pro pour des lots illimités.`;
+    default:
+      return `You've reached the free daily batch limit (${FREE_DAILY_BATCH_RUNS}/day). Upgrade to Plus/Pro for unlimited batches.`;
+  }
 }
