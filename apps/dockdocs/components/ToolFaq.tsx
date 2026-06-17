@@ -1,3 +1,5 @@
+import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "../../../shared/templates/pdf-tool-page/VerifyClientSide";
+
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type QA = { q: string; a: string };
 
@@ -2044,7 +2046,19 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
   },
 };
 
-export function ToolFaq({ tool, locale = "en" }: { tool: string; locale?: Locale }) {
+export function ToolFaq(props: { tool: string; locale?: Locale }) {
+  // Verifiable-trust block for pure-client tools (file never uploaded) — rendered
+  // as a sibling above the FAQ so it shows even when a locale has no FAQ data for
+  // this tool. Gated on LOCAL_ONLY_SLUGS so it NEVER appears on a server/AI tool.
+  return (
+    <>
+      {LOCAL_ONLY_SLUGS.has(props.tool) ? <VerifyClientSide locale={props.locale ?? "en"} /> : null}
+      <ToolFaqInner {...props} />
+    </>
+  );
+}
+
+function ToolFaqInner({ tool, locale = "en" }: { tool: string; locale?: Locale }) {
   if (locale === "pt") {
     const ptData = FAQS_PT[tool];
     if (!ptData) return null;

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { ButtonLink, Container, Section } from "../../ui";
 import { PdfWorkflowEngine } from "./workflow-engine";
+import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "./VerifyClientSide";
 
 export type PdfToolItem = {
   title: string;
@@ -497,6 +498,15 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
             </div>
           </div>
         </section>
+      )}
+
+      {/* ── Verifiable-trust proof: only on tools that upload nothing (gated) ── */}
+      {LOCAL_ONLY_SLUGS.has(config.slug) && (
+        <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
+          <Container>
+            <VerifyClientSide locale={config.locale ?? "en"} />
+          </Container>
+        </Section>
       )}
 
       {/* ── Recommended reading (crawlable internal links; SEO-reconciled to survivors) ── */}
