@@ -138,6 +138,29 @@ export async function createBillingCheckoutSession(
   return payload.url;
 }
 
+// In-place change of an existing recurring subscription's plan/interval (no
+// checkout redirect) — Creem prorates immediately and the webhook updates the
+// entitlement. The caller should refresh the subscription snapshot afterwards.
+export async function changeBillingPlan(plan: PaidSubscriptionPlan, interval: BillingInterval) {
+  if (!isPaidSubscriptionPlan(plan)) {
+    throw new Error("Choose Plus or Pro.");
+  }
+  const auth = await authHeader();
+  const response = await fetch("/api/billing/change-plan", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...auth,
+    },
+    body: JSON.stringify({ plan, interval }),
+  });
+  const payload = await readBillingResponse(response);
+  if (!response.ok || !payload?.ok) {
+    throw new Error(payload?.message || "Couldn't change your plan — try managing billing instead.");
+  }
+  return true;
+}
+
 export async function createBillingPortalSession() {
   const auth = await authHeader();
   const response = await fetch("/api/billing/create-portal-session", {

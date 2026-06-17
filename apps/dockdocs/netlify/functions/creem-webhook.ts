@@ -1,10 +1,11 @@
 import type { Config, Context } from "@netlify/functions";
-import { planAndIntervalForCreemProductId, verifyCreemSignature } from "./_shared/creem";
+import { planAndIntervalForCreemProductId, cancelCreemSubscription, verifyCreemSignature } from "./_shared/creem";
 import {
   hasProcessedStripeEvent,
   markStripeEventProcessed,
   writeSubscription,
   recordLifetimeBuyer,
+  readSubscriptionByUserId,
   type BillingSubscriptionRecord,
 } from "./_shared/billing-store";
 
@@ -75,6 +76,22 @@ export default async (req: Request, _context: Context) => {
   const plan = mapped?.plan ?? null;
   const interval = mapped?.interval;
 
+  // Defensive: an activating event whose product we can't map must NOT grant
+  // anything — surface it so a mis-set env / unexpected payload is caught.
+  if (ACTIVATING.has(eventType) && !plan && productId) {
+    console.warn(`[creem-webhook] activating ${eventType} with unmapped product_id ${productId} — no grant.`);
+  }
+
+  // Before a lifetime grant overwrites the stored record, capture any existing
+  // recurring subscription id so we can cancel it below (avoid double-charging).
+  let oldRecurringSubId: string | undefined;
+  if (ACTIVATING.has(eventType) && plan && interval === "lifetime") {
+    const existing = await readSubscriptionByUserId(userId);
+    if (existing && existing.plan !== "FREE" && existing.interval !== "lifetime" && existing.stripeSubscriptionId) {
+      oldRecurringSubId = existing.stripeSubscriptionId;
+    }
+  }
+
   if (ACTIVATING.has(eventType) && plan) {
     record = {
       userId,
@@ -109,11 +126,18 @@ export default async (req: Request, _context: Context) => {
 
   if (record) {
     await writeSubscription(record);
-    // Founding counter: count distinct lifetime buyers (rare; idempotent per user).
-    // Runs only on a genuine lifetime activation, before the event is marked
-    // processed so a retry still counts if this step failed.
     if (record.plan !== "FREE" && interval === "lifetime") {
+      // Founding counter: distinct lifetime buyers (rare; idempotent per user).
       await recordLifetimeBuyer(userId);
+      // Stop the user's prior recurring subscription so they aren't double-charged.
+      // Fail-safe: the lifetime grant already happened; if the cancel fails we log
+      // it for manual follow-up rather than withholding the purchased entitlement.
+      if (oldRecurringSubId) {
+        const cancelled = await cancelCreemSubscription(oldRecurringSubId, "immediate");
+        if (!cancelled.ok) {
+          console.error(`[creem-webhook] lifetime granted to user ${userId} but failed to cancel old recurring sub ${oldRecurringSubId}: ${cancelled.code} ${cancelled.message} — cancel manually.`);
+        }
+      }
     }
   }
   if (eventId) {

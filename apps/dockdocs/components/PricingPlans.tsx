@@ -4,11 +4,15 @@ import { useEffect, useState } from "react";
 import { TIER_CATEGORIES } from "@/lib/tier-config";
 import type { FeatureItem } from "@/lib/tier-config";
 import { localizedPath, type RouteSlug, type RouteLocale } from "@/lib/i18n";
-import { createBillingCheckoutSession, getSubscriptionSnapshot, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
+import { createBillingCheckoutSession, createBillingPortalSession, changeBillingPlan, getSubscriptionSnapshot, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 import { getUser, onAuthChange } from "@/lib/auth";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
+
+// Tier ordering for upgrade-vs-downgrade decisions on the pricing cards.
+const PLAN_RANK: Record<string, number> = { FREE: 0, PLUS: 1, PRO: 2 };
+const IV_RANK: Record<string, number> = { monthly: 0, annual: 1, lifetime: 2 };
 
 const copy = {
   en: {
@@ -92,7 +96,7 @@ const copy = {
     ],
   },
   zh: {
-    title: "定价简单，文档强大。",
+    title: "定价简单，文档强大且私密。",
     subtitle: "免费开始——无需注册、无需信用卡。只在你需要 AI、更大文件或更高用量时才升级。随时取消，两次点击搞定。",
     monthly: "按月",
     yearly: "按年",
@@ -171,7 +175,7 @@ const copy = {
     ],
   },
   es: {
-    title: "Precios simples. Documentos poderosos.",
+    title: "Precios simples. Documentos potentes y privados.",
     subtitle: "Empieza gratis — sin cuenta, sin tarjeta. Actualiza solo cuando necesites IA, archivos más grandes o mayor volumen. Cancela en cualquier momento, en dos clics.",
     monthly: "Mensual",
     yearly: "Anual",
@@ -250,7 +254,7 @@ const copy = {
     ],
   },
   pt: {
-    title: "Preços simples. Documentos poderosos.",
+    title: "Preços simples. Documentos poderosos e privados.",
     subtitle: "Comece grátis — sem conta, sem cartão. Faça upgrade só quando precisar de IA, arquivos maiores ou maior volume. Cancele a qualquer momento, em dois cliques.",
     monthly: "Mensal",
     yearly: "Anual",
@@ -329,7 +333,7 @@ const copy = {
     ],
   },
   fr: {
-    title: "Des tarifs simples. Des documents puissants.",
+    title: "Des tarifs simples. Des documents puissants et privés.",
     subtitle: "Commencez gratuitement — sans compte, sans carte. Passez à un forfait supérieur uniquement si vous avez besoin d'IA, de fichiers plus volumineux ou d'un volume plus élevé. Annulez à tout moment, en deux clics.",
     monthly: "Mensuel",
     yearly: "Annuel",
@@ -451,6 +455,30 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       if (typeof window !== "undefined") window.location.href = "/account";
     }
   }
+  // In-place upgrade of an existing recurring subscription (Creem prorates). No
+  // redirect — refresh the snapshot so the card reflects the new plan/interval.
+  async function changePlan(plan: PaidSubscriptionPlan) {
+    setBillingLoading(plan);
+    try {
+      await changeBillingPlan(plan, period);
+      const snap = await getSubscriptionSnapshot();
+      setSubscription(snap);
+    } catch {
+      if (typeof window !== "undefined") window.location.href = "/account"; // safe fallback — manage billing there
+    } finally {
+      setBillingLoading("");
+    }
+  }
+  // Downgrades / lateral changes route to the Creem billing portal (no auto
+  // double-charge); the real fix for downgrades is backlogged (nf-downgrade-flow).
+  async function handlePortal() {
+    setBillingLoading("portal");
+    try {
+      await createBillingPortalSession(); // redirects on success
+    } catch {
+      if (typeof window !== "undefined") window.location.href = "/account";
+    }
+  }
   // 账户页全站统一为 /account(无语言版本)，不要按 locale 加 /zh 前缀，否则 /zh/account 会 404
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale as RouteLocale, href) : "/account");
   const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh || locale === "es" || locale === "fr" ? "" : "uppercase tracking-[0.08em]"}`;
@@ -497,9 +525,24 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 : plan.monthlyPrice;
           const featured = plan.featured;
           const planKey: PaidSubscriptionPlan | null = isFree ? null : featured ? "PLUS" : "PRO";
-          const isCurrentPlan = subscription
-            ? planKey !== null && subscription.displayName.toUpperCase() === planKey
-            : false;
+          const curPlan = subscription ? subscription.displayName.toUpperCase() : "FREE";
+          const curInterval = subscription?.record.interval;
+          // CTA kind for this paid card at the selected period. "current" = user
+          // already has exactly this (plan+interval, or owns this plan via
+          // lifetime). "change" = in-place recurring upgrade (Creem proration).
+          // "checkout" = brand-new sub or an upgrade to lifetime. "manage" =
+          // downgrade / lateral → billing portal (no auto double-charge).
+          const ctaKind: "current" | "checkout" | "change" | "manage" =
+            !planKey || !subscription || curPlan === "FREE"
+              ? "checkout"
+              : curInterval === "lifetime"
+                ? (curPlan === planKey ? "current" : "manage")
+                : curPlan === planKey && curInterval === period
+                  ? "current"
+                  : (PLAN_RANK[planKey] ?? 0) > (PLAN_RANK[curPlan] ?? 0) ||
+                      (planKey === curPlan && (IV_RANK[period] ?? 0) > (IV_RANK[curInterval ?? "monthly"] ?? 0))
+                    ? (period === "lifetime" ? "checkout" : "change")
+                    : "manage";
           const ctaCls = `mt-6 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-medium transition ${featured ? "bg-[color:var(--accent)] hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--foreground)]"}`;
           return (
             <article key={plan.name}
@@ -541,13 +584,23 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               </ul>
 
               {planKey ? (
-                <button type="button" onClick={() => !isCurrentPlan && upgrade(planKey)} disabled={isCurrentPlan || billingLoading === planKey} className={ctaCls}>
-                  {isCurrentPlan
-                    ? (locale === "zh" ? "当前套餐" : locale === "es" ? "Plan actual" : locale === "pt" ? "Plano atual" : locale === "fr" ? "Forfait actuel" : "Current plan")
-                    : billingLoading === planKey
+                ctaKind === "current" ? (
+                  <span className={`${ctaCls} cursor-default opacity-60`}>
+                    {locale === "zh" ? "当前套餐" : locale === "es" ? "Plan actual" : locale === "pt" ? "Plano atual" : locale === "fr" ? "Forfait actuel" : "Current plan"}
+                  </span>
+                ) : ctaKind === "manage" ? (
+                  <button type="button" onClick={handlePortal} disabled={billingLoading === "portal"} className={ctaCls}>
+                    {billingLoading === "portal"
+                      ? (locale === "zh" ? "跳转中…" : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : "Redirecting…")
+                      : (locale === "zh" ? "管理账单" : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : "Manage billing")}
+                  </button>
+                ) : (
+                  <button type="button" onClick={() => (ctaKind === "change" ? changePlan(planKey) : upgrade(planKey))} disabled={billingLoading === planKey} className={ctaCls}>
+                    {billingLoading === planKey
                       ? (locale === "zh" ? "跳转中…" : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : "Redirecting…")
                       : plan.cta}
-                </button>
+                  </button>
+                )
               ) : (
                 <a href={toolHref(plan.href)} className={ctaCls}>{plan.cta}</a>
               )}

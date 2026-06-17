@@ -161,3 +161,64 @@ export async function createCreemPortal(customerId: string): Promise<CreemPortal
   }
   return { ok: true, url };
 }
+
+export type CreemActionResult =
+  | { ok: true }
+  | { ok: false; status: number; code: string; message: string };
+
+// Change a recurring subscription to a different product (plan/interval), with
+// proration charged immediately. Recurring → recurring only — the resulting
+// subscription.update webhook grants the new entitlement. Docs: POST
+// /v1/subscriptions/{id}/upgrade { product_id, update_behavior }.
+export async function upgradeCreemSubscription(
+  subscriptionId: string,
+  productId: string,
+): Promise<CreemActionResult> {
+  const apiKey = creemApiKey();
+  if (!apiKey) return { ok: false, status: 503, code: "CREEM_NOT_CONFIGURED", message: "Payments are not configured yet." };
+  if (!subscriptionId || !productId) return { ok: false, status: 400, code: "CREEM_BAD_UPGRADE", message: "Missing subscription or target product." };
+
+  let res: Response;
+  try {
+    res = await fetch(`${creemApiBase()}/subscriptions/${encodeURIComponent(subscriptionId)}/upgrade`, {
+      method: "POST",
+      headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({ product_id: productId, update_behavior: "proration-charge-immediately" }),
+    });
+  } catch (error) {
+    return { ok: false, status: 502, code: "CREEM_UNREACHABLE", message: error instanceof Error ? error.message : "Could not reach the payment provider." };
+  }
+  if (!res.ok) {
+    const data = (await res.json().catch(() => null)) as { message?: string } | null;
+    return { ok: false, status: 502, code: "CREEM_UPGRADE_FAILED", message: data?.message || `The payment provider returned status ${res.status}.` };
+  }
+  return { ok: true };
+}
+
+// Cancel a subscription (immediate by default). Used when a user buys a lifetime
+// (one-time) plan so their recurring subscription stops and they aren't double-
+// charged. Docs: POST /v1/subscriptions/{id}/cancel { mode }.
+export async function cancelCreemSubscription(
+  subscriptionId: string,
+  mode: "immediate" | "scheduled" = "immediate",
+): Promise<CreemActionResult> {
+  const apiKey = creemApiKey();
+  if (!apiKey) return { ok: false, status: 503, code: "CREEM_NOT_CONFIGURED", message: "Payments are not configured yet." };
+  if (!subscriptionId) return { ok: false, status: 400, code: "CREEM_NO_SUBSCRIPTION", message: "No subscription to cancel." };
+
+  let res: Response;
+  try {
+    res = await fetch(`${creemApiBase()}/subscriptions/${encodeURIComponent(subscriptionId)}/cancel`, {
+      method: "POST",
+      headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({ mode }),
+    });
+  } catch (error) {
+    return { ok: false, status: 502, code: "CREEM_UNREACHABLE", message: error instanceof Error ? error.message : "Could not reach the payment provider." };
+  }
+  if (!res.ok) {
+    const data = (await res.json().catch(() => null)) as { message?: string } | null;
+    return { ok: false, status: 502, code: "CREEM_CANCEL_FAILED", message: data?.message || `The payment provider returned status ${res.status}.` };
+  }
+  return { ok: true };
+}
