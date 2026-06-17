@@ -3,6 +3,7 @@
 import { useEffect, useState, type ButtonHTMLAttributes } from "react";
 import type { PdfToolPageConfig } from "./index";
 import type { PdfRuntimeArtifact } from "./pdf-runtime";
+import { ToolBridge, hasToolBridge } from "./ToolBridge";
 
 // Visual preview of an uploaded file: first-page thumbnail for PDFs, the image
 // itself for images. Falls back to a small type badge while rendering / on error.
@@ -544,6 +545,13 @@ export function WorkflowResultState({
         ) : null}
         <OutlineButton onClick={onReset}>{zh ? "重新开始" : "Start over"}</OutlineButton>
       </div>
+
+      {/* Post-result conversion bridge — honest next step; nothing renders if none */}
+      {hasToolBridge(config.slug) && (
+        <div className="border-t border-[color:var(--success-line)] px-5 py-4">
+          <ToolBridge slug={config.slug} locale={config.locale ?? "en"} useLocalePrefix={(config.locale ?? "en") !== "en"} />
+        </div>
+      )}
     </div>
   );
 }
