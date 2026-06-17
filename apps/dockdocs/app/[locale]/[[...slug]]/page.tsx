@@ -1240,7 +1240,7 @@ export default async function LocalizedRoute({
     return <ResearchHubPage locale={esLocale} useLocalePrefix />;
   }
 
-  return <LocalizedHome locale={esLocale} />;
+  return <LocalizedHome locale={pocLocale} />;
 }
 
 function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
@@ -1598,7 +1598,7 @@ const localizedTools = [
   { slug: "protect-pdf", icon: "PR", tier: "FREE", group: { en: "Security", zh: "安全" }, en: "Protect PDF", zh: "加密 PDF", description: { en: "Add password protection.", zh: "为 PDF 添加密码保护。" } },
 ] as const;
 
-function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" | "fr" }) {
+function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" }) {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema(locale)) }} />
