@@ -482,11 +482,70 @@ function resolveDocName(docs: ReadonlyArray<{ id: string; name: string }>, id: s
   return docs.find((d) => d.name === cleaned)?.name ?? cleaned;
 }
 
+// Cross-document Q&A copy (5 locales). The feature posts to /api/compare-qa,
+// which verifies every cited snippet actually appears in the named document.
+const QA: Record<Locale, {
+  title: string; desc: string; placeholder: string; ask: string; thinking: string;
+  sources: string; noAnswer: string; errMaxDocs: string; errTooLong: string; errQuestion: string;
+}> = {
+  en: {
+    title: "Ask across these documents",
+    desc: "Ask one question across every document you uploaded — the answer cites the source.",
+    placeholder: "e.g. Which quote has the shortest delivery time?",
+    ask: "Ask", thinking: "Thinking…", sources: "Sources",
+    noAnswer: "Couldn't find an answer in these documents.",
+    errMaxDocs: "Ask across up to 8 documents at a time.",
+    errTooLong: "Combined text is too long (60,000-character limit). Use fewer or shorter documents.",
+    errQuestion: "Question is too long (500-character limit).",
+  },
+  zh: {
+    title: "跨文档提问",
+    desc: "用一个问题问遍上传的所有文档，答案带原文出处。",
+    placeholder: "例如：哪份报价的交期最短？",
+    ask: "提问", thinking: "思考中…", sources: "出处",
+    noAnswer: "未能从这些文档中找到答案。",
+    errMaxDocs: "一次最多对 8 份文档提问。",
+    errTooLong: "文档合计文字过长（上限 60,000 字符），请用更少或更短的文档。",
+    errQuestion: "问题过长（上限 500 字符）。",
+  },
+  es: {
+    title: "Pregunta a todos estos documentos",
+    desc: "Haz una pregunta a todos los documentos que subiste — la respuesta cita la fuente.",
+    placeholder: "p. ej. ¿Qué presupuesto tiene el plazo de entrega más corto?",
+    ask: "Preguntar", thinking: "Pensando…", sources: "Fuentes",
+    noAnswer: "No se encontró una respuesta en estos documentos.",
+    errMaxDocs: "Pregunta a un máximo de 8 documentos a la vez.",
+    errTooLong: "El texto combinado es demasiado largo (límite de 60.000 caracteres). Usa menos documentos o más cortos.",
+    errQuestion: "La pregunta es demasiado larga (límite de 500 caracteres).",
+  },
+  pt: {
+    title: "Pergunte a todos estes documentos",
+    desc: "Faça uma pergunta a todos os documentos que você enviou — a resposta cita a fonte.",
+    placeholder: "ex.: Qual orçamento tem o menor prazo de entrega?",
+    ask: "Perguntar", thinking: "Pensando…", sources: "Fontes",
+    noAnswer: "Não foi possível encontrar uma resposta nestes documentos.",
+    errMaxDocs: "Pergunte a no máximo 8 documentos por vez.",
+    errTooLong: "O texto combinado é muito longo (limite de 60.000 caracteres). Use menos documentos ou mais curtos.",
+    errQuestion: "A pergunta é muito longa (limite de 500 caracteres).",
+  },
+  fr: {
+    title: "Interrogez tous ces documents",
+    desc: "Posez une seule question à tous les documents que vous avez importés — la réponse cite la source.",
+    placeholder: "ex. : Quel devis a le délai de livraison le plus court ?",
+    ask: "Demander", thinking: "Réflexion…", sources: "Sources",
+    noAnswer: "Aucune réponse trouvée dans ces documents.",
+    errMaxDocs: "Interrogez jusqu'à 8 documents à la fois.",
+    errTooLong: "Le texte combiné est trop long (limite de 60 000 caractères). Utilisez moins de documents ou plus courts.",
+    errQuestion: "La question est trop longue (limite de 500 caractères).",
+  },
+};
+
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const cl = locale;
   const t = STR[cl];
   const r = REC[cl];
   const tr = TRACE[cl];
+  const qa = QA[cl];
   const [results, setResults] = useState<DocResult[]>([]);
   const [busy, setBusy] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -749,16 +808,16 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     // Pre-checks mirroring /api/compare-qa so the user gets instant feedback
     // instead of a round-trip rejection.
     if (okDocs.length > 8) {
-      setQaErr(locale === "zh" ? "一次最多对 8 份文档提问。" : "Ask across up to 8 documents at a time.");
+      setQaErr(qa.errMaxDocs);
       return;
     }
     const totalChars = okDocs.reduce((s, d) => s + d.text.length, 0);
     if (totalChars > 60_000) {
-      setQaErr(locale === "zh" ? "文档合计文字过长（上限 60,000 字符），请用更少或更短的文档。" : "Combined text is too long (60,000-character limit). Use fewer or shorter documents.");
+      setQaErr(qa.errTooLong);
       return;
     }
     if (q.length > 500) {
-      setQaErr(locale === "zh" ? "问题过长（上限 500 字符）。" : "Question is too long (500-character limit).");
+      setQaErr(qa.errQuestion);
       return;
     }
     setQaBusy(true);
@@ -775,7 +834,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       if (data?.ok && typeof data.answer === "string" && data.answer.trim()) {
         setQaAns({ answer: data.answer, sources: Array.isArray(data.sources) ? data.sources : [] });
       } else if (data?.ok) {
-        setQaErr(locale === "zh" ? "未能从这些文档中找到答案。" : "Couldn't find an answer in these documents.");
+        setQaErr(qa.noAnswer);
       } else {
         setQaErr(data?.message || "Failed.");
       }
@@ -1028,19 +1087,19 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
 
       {okDocs.length >= 1 && (
-        <section className="mt-10">
-          <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{locale === "zh" ? "跨文档提问" : "Ask across these documents"}</h2>
-          <p className="mt-1 text-sm text-[color:var(--muted)]">{locale === "zh" ? "用一个问题问遍上传的所有文档，答案带原文出处。" : "Ask one question across every document you uploaded — the answer cites the source."}</p>
+        <section id="ask" className="mt-10">
+          <h2 className="text-lg font-semibold text-[color:var(--foreground)]">{qa.title}</h2>
+          <p className="mt-1 text-sm text-[color:var(--muted)]">{qa.desc}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <input
               value={qaQ}
               onChange={(e) => setQaQ(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") askQa(); }}
-              placeholder={locale === "zh" ? "例如：哪份报价的交期最短？" : "e.g. Which quote has the shortest delivery time?"}
+              placeholder={qa.placeholder}
               className="h-10 min-w-[220px] flex-1 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm text-[color:var(--foreground)]"
             />
             <button type="button" onClick={askQa} disabled={qaBusy || !qaQ.trim()} className="h-10 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
-              {qaBusy ? (locale === "zh" ? "思考中…" : "Thinking…") : (locale === "zh" ? "提问" : "Ask")}
+              {qaBusy ? qa.thinking : qa.ask}
             </button>
           </div>
           {qaErr && <p className="mt-3 rounded-[var(--radius)] border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-300">{qaErr}</p>}
@@ -1049,7 +1108,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
               <p className="whitespace-pre-wrap text-sm leading-7 text-[color:var(--foreground)]">{qaAns.answer}</p>
               {qaAns.sources.length > 0 && (
                 <div className="mt-3 border-t border-[color:var(--line)] pt-3">
-                  <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-[color:var(--muted)]">{locale === "zh" ? "出处" : "Sources"}</p>
+                  <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-[color:var(--muted)]">{qa.sources}</p>
                   <ul className="space-y-1.5">
                     {qaAns.sources.map((s, i) => (
                       <li key={i} className="text-xs text-[color:var(--muted)]"><span className="font-semibold text-[color:var(--foreground)]">{s.name}:</span> “{s.snippet}”</li>
