@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { GroundingNote, groundingFaq } from "@/components/GroundingNote";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -293,8 +294,52 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
 
   const card = "rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]";
 
+  // JSON-LD for both the en (/contract-risk/) and localized (/zh|/es… ) routes —
+  // this page has no shared-template config, so the schema is emitted here so it
+  // ships on every route that renders this client. FAQPage carries the source-
+  // grounding fact so an answer engine can cite how the review stays anchored.
+  const schemaPath = locale === "en" ? "/contract-risk/" : `/${locale}/contract-risk/`;
+  const schemaHome = locale === "en" ? "https://dockdocs.app/" : `https://dockdocs.app/${locale}/`;
+  const schemaUrl = `https://dockdocs.app${schemaPath}`;
+  const groundQa = groundingFaq("contract", locale);
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": `${schemaUrl}#app`,
+        name: "DockDocs Contract Risk Check",
+        url: schemaUrl,
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Web",
+        description: t.subtitle,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${schemaUrl}#faq`,
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: groundQa.question,
+            acceptedAnswer: { "@type": "Answer", text: groundQa.answer },
+          },
+        ],
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${schemaUrl}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "DockDocs", item: schemaHome },
+          { "@type": "ListItem", position: 2, name: t.title, item: schemaUrl },
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-3xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <div className="flex items-center gap-2">
         <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
         <span className="rounded-full border border-[color:var(--accent)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[color:var(--accent)]">{t.proBadge}</span>
@@ -402,6 +447,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
+      <GroundingNote variant="contract" locale={locale} />
       <ToolFaq tool="contract-risk" locale={locale} />
     </div>
   );

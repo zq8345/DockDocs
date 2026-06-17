@@ -98,6 +98,7 @@ import { getRuntimeCopy } from "@/lib/copy";
 import { homeSchema, aboutSchema, pricingSchema, webPageSchema } from "@/lib/page-schema";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { ExtraToolJsonLd, EXTRA_TOOL_SLUGS } from "@/lib/extra-tool-schema";
+import { groundingFaq } from "@/components/GroundingNote";
 import {
   createProgrammaticGeoMetadata,
   getProgrammaticGeoPage,
@@ -1258,6 +1259,18 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" 
         operatingSystem: "Web",
         description: copy.heroDescription,
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        // Localized FAQ + the source-grounding fact, so the citable grounding
+        // statement is in the structured data on every locale (the en route's
+        // FAQPage lives in app/chat-with-pdf/page.tsx).
+        mainEntity: [...copy.faqs, groundingFaq("chat", locale)].map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
       },
       {
         "@type": "BreadcrumbList",

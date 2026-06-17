@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { ChatWithPdfClient } from "./ChatWithPdfClient";
+import { groundingFaq } from "@/components/GroundingNote";
 
 export const metadata: Metadata = {
   title: "Chat with PDF — AI Q&A with Your Documents",
@@ -64,7 +65,10 @@ const SCHEMA = {
     {
       "@type": "FAQPage",
       "@id": "https://dockdocs.app/chat-with-pdf/#faq",
-      mainEntity: FAQ.map((item) => ({
+      // The visible FAQ list + the source-grounding fact (shown as prose by
+      // GroundingNote in the client), so the citable grounding statement is in
+      // the structured data without being duplicated in the visible FAQ list.
+      mainEntity: [...FAQ, groundingFaq("chat", "en")].map((item) => ({
         "@type": "Question",
         name: item.question,
         acceptedAnswer: { "@type": "Answer", text: item.answer },

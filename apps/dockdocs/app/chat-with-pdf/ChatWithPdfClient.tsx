@@ -6,6 +6,7 @@ import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { authHeader } from "@/lib/supabase";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { ToolFaq } from "@/components/ToolFaq";
+import { GroundingNote } from "@/components/GroundingNote";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -443,6 +444,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
         </div>
       ) : null}
     </section>
+    <GroundingNote variant="chat" locale={locale} />
     <ToolFaq tool="chat-with-pdf" locale={locale} />
     </>
   );
