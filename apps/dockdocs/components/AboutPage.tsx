@@ -93,13 +93,13 @@ const content = {
     doHead: "我们会",
     neverHead: "我们绝不",
     doRows: ["在你的浏览器里处理", "云端临时副本即刻删除", "云端步骤事先标注", "每个 AI 答案标注原文", "无需注册即可开始"],
-    neverRows: ["存储你的文档", "用你的文件训练 AI", "出售或分享你的数据", "发邮件才能取消的套路", "隐藏的上传"],
+    neverRows: ["存储你的文档", "用你的文件训练我们自己的模型", "出售或分享你的数据", "发邮件才能取消的套路", "隐藏的上传"],
 
     statsEyebrow: "// 真正重要的数字",
     statsHeading: "最重要的数字，是零。",
     stats: [
       { n: "0", l: "浏览器内工具不存储文件", z: true },
-      { n: "0", l: "文件用于训练 AI", z: true },
+      { n: "0", l: "文件用于训练我们自己的模型", z: true },
       { n: "$0", l: "开始使用 — 无需注册", z: true },
       { n: "~50", l: "PDF 与 AI 工具", z: false },
     ],
@@ -152,13 +152,13 @@ const content = {
     doHead: "Sí hacemos",
     neverHead: "Nunca hacemos",
     doRows: ["Procesar archivos en tu navegador", "Borrar al instante los temporales en la nube", "Señalar cada paso en la nube por adelantado", "Citar la fuente de cada respuesta de IA", "Dejarte empezar sin crear cuenta"],
-    neverRows: ["Almacenar tus documentos", "Entrenar IA con tus archivos", "Vender o compartir tus datos", "Trampas de cancelación por correo", "Subidas ocultas"],
+    neverRows: ["Almacenar tus documentos", "Entrenar nuestros propios modelos con tus archivos", "Vender o compartir tus datos", "Trampas de cancelación por correo", "Subidas ocultas"],
 
     statsEyebrow: "// Los números que importan",
     statsHeading: "Los números que importan son ceros.",
     stats: [
       { n: "0", l: "archivos guardados en herramientas del navegador", z: true },
-      { n: "0", l: "archivos usados para entrenar IA", z: true },
+      { n: "0", l: "archivos usados para entrenar nuestros propios modelos", z: true },
       { n: "$0", l: "para empezar, sin cuenta", z: true },
       { n: "~50", l: "herramientas de PDF e IA", z: false },
     ],
@@ -211,13 +211,13 @@ const content = {
     doHead: "Fazemos",
     neverHead: "Jamais fazemos",
     doRows: ["Processar arquivos no seu navegador", "Excluir temporários na nuvem imediatamente", "Indicar cada etapa na nuvem com antecedência", "Citar a fonte de cada resposta de IA", "Deixar você começar sem criar conta"],
-    neverRows: ["Armazenar seus documentos", "Treinar IA com seus arquivos", "Vender ou compartilhar seus dados", "Armadilhas de cancelamento por e-mail", "Envios ocultos"],
+    neverRows: ["Armazenar seus documentos", "Treinar nossos próprios modelos com seus arquivos", "Vender ou compartilhar seus dados", "Armadilhas de cancelamento por e-mail", "Envios ocultos"],
 
     statsEyebrow: "// Os números que importam",
     statsHeading: "Os números que importam são zeros.",
     stats: [
       { n: "0", l: "arquivos armazenados em ferramentas do navegador", z: true },
-      { n: "0", l: "arquivos usados para treinar IA", z: true },
+      { n: "0", l: "arquivos usados para treinar nossos próprios modelos", z: true },
       { n: "$0", l: "para começar — sem conta", z: true },
       { n: "~50", l: "ferramentas de PDF e IA", z: false },
     ],
@@ -270,13 +270,13 @@ const content = {
     doHead: "Nous faisons",
     neverHead: "Nous ne faisons jamais",
     doRows: ["Traiter les fichiers dans votre navigateur", "Supprimer immédiatement les temporaires cloud", "Signaler chaque étape cloud à l'avance", "Citer la source de chaque réponse IA", "Vous laisser commencer sans compte"],
-    neverRows: ["Stocker vos documents", "Entraîner l'IA avec vos fichiers", "Vendre ou partager vos données", "Pièges de désabonnement par e-mail", "Envois cachés"],
+    neverRows: ["Stocker vos documents", "Entraîner nos propres modèles avec vos fichiers", "Vendre ou partager vos données", "Pièges de désabonnement par e-mail", "Envois cachés"],
 
     statsEyebrow: "// Les chiffres qui comptent",
     statsHeading: "Les chiffres qui comptent sont des zéros.",
     stats: [
       { n: "0", l: "fichiers stockés dans les outils navigateur", z: true },
-      { n: "0", l: "fichiers utilisés pour entraîner l'IA", z: true },
+      { n: "0", l: "fichiers utilisés pour entraîner nos propres modèles", z: true },
       { n: "0 €", l: "pour commencer — sans compte", z: true },
       { n: "~50", l: "outils PDF et IA", z: false },
     ],

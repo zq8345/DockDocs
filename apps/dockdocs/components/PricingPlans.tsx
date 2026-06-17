@@ -97,7 +97,7 @@ const copy = {
     perMo: "/月",
     mostPopular: "最受欢迎",
     billedYearly: (v: string) => `按年计费 ${v}`,
-    trust: ["7 天无理由退款", "随时取消，绝不刁难", "绝不用文件训练 AI"],
+    trust: ["7 天无理由退款", "随时取消，绝不刁难", "绝不用文件训练我们自己的模型"],
     plans: [
       {
         name: "免费",
@@ -138,7 +138,7 @@ const copy = {
       { q: "可以随时取消吗？", a: "可以。你自己几次点击即可管理或取消订阅——无需发邮件，没有挽留套路。在你已付费的周期结束前，仍可正常使用。" },
       { q: "支持退款吗？", a: "支持。如果 Plus 或 Pro 不适合你，在付款后 7 天内申请退款，我们会全额退还。" },
       { q: "使用 DockDocs 必须付费吗？", a: "不必。全部 20+ 核心 PDF 工具永久免费，且无需注册。只有在你需要 AI 功能、更大文件或更高用量时才需付费。" },
-      { q: "我的文件会怎样？", a: "大多数工具完全在你的浏览器中处理——文件绝不离开你的设备。云端转换处理后会自动删除临时副本。我们绝不会用你的文档训练 AI。" },
+      { q: "我的文件会怎样？", a: "大多数工具完全在你的浏览器中处理——文件绝不离开你的设备。云端转换处理后会自动删除临时副本。我们绝不会用你的文档训练我们自己的模型。" },
       { q: "之后可以更换套餐吗？", a: "随时可以。升级、降级，或在按月与按年之间切换，随你心意。" },
     ],
     ctaTitle: "先免费试用——之后再决定。",
@@ -173,7 +173,7 @@ const copy = {
     perMo: "/mes",
     mostPopular: "Más popular",
     billedYearly: (v: string) => `${v} facturado anualmente`,
-    trust: ["Garantía de devolución de 7 días", "Cancela en cualquier momento, sin preguntas", "Tus archivos nunca se usan para entrenar IA"],
+    trust: ["Garantía de devolución de 7 días", "Cancela en cualquier momento, sin preguntas", "Tus archivos nunca se usan para entrenar nuestros propios modelos"],
     plans: [
       {
         name: "Gratis",
@@ -214,7 +214,7 @@ const copy = {
       { q: "¿Puedo cancelar en cualquier momento?", a: "Sí. Gestiona o cancela tu suscripción tú mismo en un par de clics — sin correos, sin trucos de retención. Mantienes el acceso hasta el final del período que pagaste." },
       { q: "¿Hay reembolsos?", a: "Sí. Si Plus o Pro no es lo que buscas, solicita un reembolso dentro de los 7 días del pago y te lo devolvemos." },
       { q: "¿Necesito pagar para usar DockDocs?", a: "No. Las 20+ herramientas PDF básicas son gratuitas para siempre, sin necesidad de cuenta. Solo pagas si quieres funciones de IA, archivos más grandes o mayor volumen." },
-      { q: "¿Qué pasa con mis archivos?", a: "La mayoría de herramientas procesan completamente en tu navegador — tus archivos nunca salen de tu dispositivo. Las conversiones en la nube se procesan y la copia temporal se elimina automáticamente. Nunca usamos tus documentos para entrenar IA." },
+      { q: "¿Qué pasa con mis archivos?", a: "La mayoría de herramientas procesan completamente en tu navegador — tus archivos nunca salen de tu dispositivo. Las conversiones en la nube se procesan y la copia temporal se elimina automáticamente. Nunca usamos tus documentos para entrenar nuestros propios modelos." },
       { q: "¿Puedo cambiar de plan después?", a: "En cualquier momento. Actualiza, baja de plan o cambia entre mensual y anual cuando quieras." },
     ],
     ctaTitle: "Pruébalo gratis — decide después.",
@@ -249,7 +249,7 @@ const copy = {
     perMo: "/mês",
     mostPopular: "Mais popular",
     billedYearly: (v: string) => `${v} cobrado anualmente`,
-    trust: ["Garantia de reembolso de 7 dias", "Cancele a qualquer momento, sem perguntas", "Seus arquivos nunca são usados para treinar IA"],
+    trust: ["Garantia de reembolso de 7 dias", "Cancele a qualquer momento, sem perguntas", "Seus arquivos nunca são usados para treinar nossos próprios modelos"],
     plans: [
       {
         name: "Grátis",
@@ -290,7 +290,7 @@ const copy = {
       { q: "Posso cancelar a qualquer momento?", a: "Sim. Gerencie ou cancele sua assinatura você mesmo em alguns cliques — sem e-mails, sem truques de retenção. Você mantém o acesso até o final do período pago." },
       { q: "Há reembolso?", a: "Sim. Se o Plus ou Pro não for o certo para você, solicite reembolso dentro de 7 dias do pagamento e devolveremos." },
       { q: "Preciso pagar para usar o DockDocs?", a: "Não. Todas as 20+ ferramentas PDF básicas são gratuitas para sempre, sem necessidade de conta. Você só paga se quiser recursos de IA, arquivos maiores ou maior volume." },
-      { q: "O que acontece com meus arquivos?", a: "A maioria das ferramentas processa inteiramente no seu navegador — seus arquivos nunca saem do seu dispositivo. Conversões em nuvem são processadas e a cópia temporária é excluída automaticamente. Nunca usamos seus documentos para treinar IA." },
+      { q: "O que acontece com meus arquivos?", a: "A maioria das ferramentas processa inteiramente no seu navegador — seus arquivos nunca saem do seu dispositivo. Conversões em nuvem são processadas e a cópia temporária é excluída automaticamente. Nunca usamos seus documentos para treinar nossos próprios modelos." },
       { q: "Posso trocar de plano depois?", a: "A qualquer momento. Faça upgrade, downgrade ou mude entre mensal e anual quando quiser." },
     ],
     ctaTitle: "Experimente grátis — decida depois.",
@@ -325,7 +325,7 @@ const copy = {
     perMo: "/mois",
     mostPopular: "Le plus populaire",
     billedYearly: (v: string) => `${v} facturé annuellement`,
-    trust: ["Garantie de remboursement 7 jours", "Annulez à tout moment, sans question", "Vos fichiers ne sont jamais utilisés pour entraîner l'IA"],
+    trust: ["Garantie de remboursement 7 jours", "Annulez à tout moment, sans question", "Vos fichiers ne sont jamais utilisés pour entraîner nos propres modèles"],
     plans: [
       {
         name: "Gratuit",
@@ -366,7 +366,7 @@ const copy = {
       { q: "Puis-je annuler à tout moment ?", a: "Oui. Gérez ou annulez votre abonnement vous-même en quelques clics — sans e-mail, sans artifices de rétention. Vous conservez l'accès jusqu'à la fin de la période payée." },
       { q: "Y a-t-il un remboursement ?", a: "Oui. Si Plus ou Pro ne vous convient pas, demandez un remboursement dans les 7 jours suivant le paiement et nous vous rembourserons." },
       { q: "Dois-je payer pour utiliser DockDocs ?", a: "Non. Tous les 20+ outils PDF de base sont gratuits pour toujours, sans compte nécessaire. Vous ne payez que si vous souhaitez des fonctionnalités IA, des fichiers plus volumineux ou un volume plus élevé." },
-      { q: "Que se passe-t-il avec mes fichiers ?", a: "La plupart des outils traitent entièrement dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Les conversions cloud sont traitées et la copie temporaire est supprimée automatiquement. Nous n'utilisons jamais vos documents pour entraîner l'IA." },
+      { q: "Que se passe-t-il avec mes fichiers ?", a: "La plupart des outils traitent entièrement dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Les conversions cloud sont traitées et la copie temporaire est supprimée automatiquement. Nous n'utilisons jamais vos documents pour entraîner nos propres modèles." },
       { q: "Puis-je changer de forfait par la suite ?", a: "À tout moment. Passez à un forfait supérieur, inférieur ou changez entre mensuel et annuel quand vous le souhaitez." },
     ],
     ctaTitle: "Essayez gratuitement — décidez ensuite.",
