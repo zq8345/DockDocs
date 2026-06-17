@@ -73,7 +73,7 @@ export function BlogIndexPage({
           <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_32px_90px_rgba(24,24,20,0.10)]">
             <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                {locale === "zh" ? "SEO 工作流地图" : "SEO workflow map"}
+                {locale === "zh" ? "热门指南" : "Popular guides"}
               </p>
               <div className="mt-5 grid gap-3">
                 {blogArticles.slice(0, 4).map((article) => {
@@ -164,7 +164,7 @@ export function BlogIndexPage({
           <div className="grid gap-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 shadow-[0_24px_60px_rgba(24,24,20,0.08)] sm:p-8 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                Internal SEO graph
+                {locale === "zh" ? "找到合适的工具" : "Find the right tool"}
               </p>
               <h2 className="mt-4 text-3xl font-semibold leading-tight">
                 {copy.workflowTitle}
@@ -870,7 +870,7 @@ function getGeoFaq(
     {
       question: `How does ${article.toolLabel} fit into an AI document workflow?`,
       answer:
-        "DockDocs stays PDF tools first. AI Workspace features such as OCR, summaries, and Chat with PDF are enhancement layers after the document task is clear.",
+        `DockDocs is built around document AI you can trust: OCR, summaries, and Chat with PDF read your file and cite the source, so you can verify every answer, and many tools run in your browser so files never leave your device. Use ${article.toolLabel} for the document task, then layer the AI on top — grounded in your own document, not a general model's guesswork.`,
     },
     {
       question: `What is the best workflow for ${article.toolLabel}?`,
