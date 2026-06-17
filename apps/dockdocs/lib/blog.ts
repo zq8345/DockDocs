@@ -29,6 +29,7 @@ export const blogArticleSlugs = [
   "pdf-to-jpg-online-free",
   "how-to-remove-pages-from-pdf",
   "best-pdf-to-word-converter-free",
+  "how-to-verify-ai-document-summary",
 ] as const;
 
 export type BlogArticleSlug = (typeof blogArticleSlugs)[number];
@@ -2359,6 +2360,188 @@ export const blogArticles: BlogArticle[] = [
             question: "文件大小有限制吗？",
             answer:
               "DockDocs「PDF 转 Word」支持最大 100 MB 的文件，覆盖绝大多数合同、报告和日常文档。",
+          },
+        ],
+      },
+    },
+  },
+  {
+    slug: "how-to-verify-ai-document-summary",
+    category: "AI Documents",
+    publishedAt: "2026-06-17",
+    updatedAt: "2026-06-17",
+    keywords: [
+      "how to verify ai summary",
+      "is ai summary accurate",
+      "ai summary hallucination",
+      "fact check ai summary",
+      "can i trust ai document summary",
+      "ai pdf summary accuracy",
+      "verify ai output",
+    ],
+    toolHref: "/ai-summary",
+    toolLabel: "AI Summary",
+    relatedTools: [
+      { label: "AI Summary", href: "/ai-summary" },
+      { label: "Chat with PDF", href: "/chat-with-pdf" },
+      { label: "OCR PDF", href: "/ocr-pdf" },
+      { label: "Help Center", href: "/help" },
+    ],
+    relatedArticleSlugs: [
+      "chat-with-pdf-vs-chatgpt-vs-chatpdf",
+      "pdf-to-markdown-for-developers",
+      "how-to-ocr-scanned-pdf-files",
+    ],
+    content: {
+      en: {
+        title: "How to Verify an AI Document Summary (and Catch Hallucinations)",
+        description:
+          "AI summaries save time but can omit, soften, or invent details. Learn a simple 4-step method to verify an AI document summary against the source — and catch hallucinations before you rely on it.",
+        excerpt:
+          "An AI summary is a starting point, not the final word. Here's how to check one against the source document — and spot the omissions and hallucinations that actually matter.",
+        readingTime: "7 min read",
+        ctaTitle: "Summarize a document — with the source one click away",
+        ctaDescription:
+          "Use DockDocs AI Summary to get the key points fast, then trace each one back to the original passage.",
+        ctaLabel: "Open AI Summary",
+        sections: [
+          {
+            heading: "Why an AI summary needs a second look",
+            paragraphs: [
+              "AI summarizers are fast, but they are not infallible. A summary can quietly drop a clause, soften a number, merge two separate ideas into one, or state something the document never actually says — a so-called \"hallucination.\" For casual reading, that is usually harmless. For a contract, an invoice, a research paper, or anything you will act on, an unchecked summary is a real risk.",
+              "The fix is a mindset shift: treat the AI summary as a draft map of the document, not a replacement for it. The map tells you where to look. It does not excuse you from looking when the stakes are high. The rest of this guide is a short, repeatable method for checking a summary quickly.",
+            ],
+            links: [{ label: "Try AI Summary", href: "/ai-summary" }],
+          },
+          {
+            heading: "The fastest check: can you trace it back to the source?",
+            paragraphs: [
+              "The single most useful property of any AI summary is traceability — can each claim be traced back to a specific page or passage in the original? A summary that shows you where a point came from can be spot-checked in seconds. A summary that is just a wall of confident text is a black box you have to trust blindly, and blind trust is exactly where mistakes slip through.",
+              "So prefer tools that cite the source passage behind each point, and use that citation: when the summary makes a claim that matters, click through to the original sentence and confirm it. DockDocs AI Summary and Chat with PDF are built around source-cited answers for this reason — every point is tied to the passage it came from, so verifying is a click, not a re-read of the whole file.",
+            ],
+            links: [
+              { label: "Ask questions with Chat with PDF", href: "/chat-with-pdf" },
+            ],
+          },
+          {
+            heading: "A 4-step method to verify any AI summary",
+            paragraphs: [
+              "1) Check the hard facts. Numbers, dates, names, totals, deadlines, and defined terms are where summaries slip most often. Find each one in the original and confirm it matches exactly — a summary that rounds \"$1,480,500\" to \"about $1.5M\" can change a decision.",
+              "2) Hunt for omissions. A summary's biggest risk is usually not a wrong fact — it is a missing one. Skim the document's headings and ask whether each section is represented. Pay special attention to exceptions, conditions, liabilities, and dates, which summaries love to compress away.",
+              "3) Stress-test the surprising claims. If the summary says something you did not expect, treat it as unverified until you have read the source sentence yourself. Surprises are where hallucinations hide.",
+              "4) Read the source for anything you will act on. For a decision, a signature, or a payment, let the summary point you to the right paragraph — then read that paragraph in full before you act.",
+            ],
+          },
+          {
+            heading: "When a summary is enough — and when it isn't",
+            paragraphs: [
+              "A summary on its own is fine for getting oriented: skimming a long report, deciding whether a document is even relevant, or prepping before a meeting. The goal there is speed, and an approximate picture is good enough.",
+              "It is not enough when you will sign, pay, cite, or make a legal, financial, or medical decision. There, verify against the original every time. The point of AI summarization is not to skip reading — it is to help you read the right 10% faster. A scanned document has no text layer for the AI to read, so run OCR first if your file is an image-only scan.",
+            ],
+            links: [{ label: "OCR a scanned PDF first", href: "/ocr-pdf" }],
+          },
+        ],
+        faq: [
+          {
+            question: "Can AI document summaries be wrong?",
+            answer:
+              "Yes. An AI summary can omit details, oversimplify, or occasionally state something the document does not actually say. It is a fast first pass, not a substitute for reading the source when the details matter.",
+          },
+          {
+            question: "What is a hallucination in an AI summary?",
+            answer:
+              "A hallucination is a confident-sounding claim that the document does not support — an invented figure, a misattributed quote, or a conclusion the text never draws. Hallucinations are less common in summaries that are grounded in a specific document than in open-ended chat, but they are still possible, so verify anything surprising.",
+          },
+          {
+            question: "How do I know if an AI summary left something important out?",
+            answer:
+              "Omissions are the hardest error to catch because nothing on the page looks wrong. Skim the document's headings and section titles and ask whether each is represented in the summary. Give extra attention to exceptions, conditions, liabilities, and dates.",
+          },
+          {
+            question: "Should I trust an AI summary of a contract or financial document?",
+            answer:
+              "Use it to orient yourself, never as the final word. For anything you will sign, pay, or rely on, read the specific clauses in the original document. A summary that cites its source passages makes that verification fast.",
+          },
+          {
+            question: "How can I make AI summaries easier to verify?",
+            answer:
+              "Use a summarizer that links each point back to its source passage, summarize one document at a time so the context stays clear, and ask follow-up questions on anything unclear so you can see the exact text behind each answer.",
+          },
+        ],
+      },
+      zh: {
+        title: "如何核验 AI 文档摘要(并识别「幻觉」)",
+        description:
+          "AI 摘要省时间,但可能漏掉、弱化或虚构细节。学会一套简单的 4 步法,把 AI 摘要对照原文核验——在你依赖它之前先抓出幻觉。",
+        excerpt:
+          "AI 摘要是起点,不是定论。本文教你如何把摘要对照原始文档核对,并识别那些真正要命的遗漏和幻觉。",
+        readingTime: "7 分钟阅读",
+        ctaTitle: "做文档摘要——原文出处一键可查",
+        ctaDescription:
+          "用 DockDocs「AI 摘要」快速拿到要点,再把每一条追溯回原文段落。",
+        ctaLabel: "打开 AI 摘要",
+        sections: [
+          {
+            heading: "为什么 AI 摘要要再看一眼",
+            paragraphs: [
+              "AI 摘要工具很快,但并非万无一失。一份摘要可能悄悄漏掉一个条款、弱化一个数字、把两个独立的意思糅成一个,甚至说出文档根本没说过的话——也就是所谓的「幻觉」。日常阅读时这通常无伤大雅;但对合同、发票、论文,或任何你要据此行动的文件,未经核验的摘要就是真实的风险。",
+              "解决办法是转变心态:把 AI 摘要当成文档的「草图地图」,而不是文档的替代品。地图告诉你去哪儿看,但在事关重大时,它不能替你去看。本文接下来就是一套简短、可复用的快速核验方法。",
+            ],
+            links: [{ label: "试试 AI 摘要", href: "/ai-summary" }],
+          },
+          {
+            heading: "最快的一招:能不能追溯到原文出处",
+            paragraphs: [
+              "任何 AI 摘要最有用的特性是「可溯源」——每一条结论能不能追回到原文的具体页面或段落?能告诉你出处的摘要,几秒钟就能抽查核对;只是一大段自信文字的摘要,则是一个你只能盲目信任的黑箱,而盲目信任恰恰是错误溜进来的地方。",
+              "所以优先选会标注每条出处的工具,并真的去用这个出处:当摘要给出一条重要结论时,点进原文那句话确认一下。DockDocs「AI 摘要」和「PDF 问答」正是围绕「标注来源」设计的——每一条都系回它的出处段落,核验只需一次点击,而不必把整份文件重读一遍。",
+            ],
+            links: [
+              { label: "用 PDF 问答提问", href: "/chat-with-pdf" },
+            ],
+          },
+          {
+            heading: "核验任何 AI 摘要的 4 步法",
+            paragraphs: [
+              "1）核对硬事实。数字、日期、姓名、金额、截止时间和定义条款最容易出错。把每一项在原文里找到,确认完全一致——把「1,480,500 元」摘成「约 150 万」就可能改变一个决定。",
+              "2）找遗漏。摘要最大的风险通常不是写错,而是漏写。快速扫一遍文档标题,逐一问:这一节在摘要里体现了吗?尤其留意例外、条件、责任和日期,这些最容易被摘要压缩掉。",
+              "3）压力测试反常的结论。如果摘要说了你没预料到的事,在你亲自读过原文那句之前,都把它当作未经证实。意外之处,正是幻觉藏身之地。",
+              "4）凡要据此行动的,读原文。涉及决定、签字或付款时,让摘要把你领到对应段落——然后在行动前,把那一段完整读一遍。",
+            ],
+          },
+          {
+            heading: "什么时候摘要够用,什么时候不够",
+            paragraphs: [
+              "只是为了「上手了解」时,摘要本身就够用:快速浏览一份长报告、判断一份文档是否相关、开会前做准备。这时追求的是速度,一个大致的画面就足够。",
+              "但当你要签字、付款、引用,或做法律、财务、医疗决定时,就不够了——这些场景每次都要对照原文核验。AI 摘要的意义不是让你跳过阅读,而是帮你更快地读对那关键的 10%。另外,扫描件没有可供 AI 读取的文字层,如果你的文件是纯图片扫描件,先做 OCR。",
+            ],
+            links: [{ label: "先给扫描件做 OCR", href: "/ocr-pdf" }],
+          },
+        ],
+        faq: [
+          {
+            question: "AI 文档摘要会出错吗?",
+            answer:
+              "会。AI 摘要可能漏掉细节、过度简化,偶尔还会说出文档其实没说的话。它是快速的初筛,而不是细节重要时替代读原文的工具。",
+          },
+          {
+            question: "AI 摘要里的「幻觉」是什么?",
+            answer:
+              "幻觉是指听起来很自信、但文档并不支持的说法——虚构的数字、张冠李戴的引用,或文中从未得出的结论。在「基于具体文档」的摘要里,幻觉比开放式聊天少,但仍可能出现,所以反常之处都要核验。",
+          },
+          {
+            question: "怎么知道 AI 摘要漏了重要内容?",
+            answer:
+              "遗漏最难发现,因为页面上看不出哪里不对。扫一遍文档的标题和小节名,逐一问它有没有在摘要里体现。尤其多留意例外、条件、责任和日期。",
+          },
+          {
+            question: "合同或财务文件的 AI 摘要可以信吗?",
+            answer:
+              "用它来快速上手,但绝不当作定论。任何你要签字、付款或据以行事的内容,都去读原文的具体条款。会标注出处段落的摘要,能让这一步核验变得很快。",
+          },
+          {
+            question: "怎样让 AI 摘要更容易核验?",
+            answer:
+              "选一个会把每条结论都链回原文出处的摘要工具;一次只摘要一份文档,让上下文保持清晰;对任何不清楚的地方追问,这样你能看到每条答案背后的确切原文。",
           },
         ],
       },
