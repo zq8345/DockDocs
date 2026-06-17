@@ -1550,8 +1550,8 @@ const homeCopy = {
     stats: [["Grounded", "Answers cite the source"], ["Private", "Files stay on your device"], ["Free", "No account to start"]] as [string, string][],
   },
   zh: {
-    title: "DockDocs — AI 文档平台",
-    description: "PDF 工具、AI 问答、OCR、压缩和转换，一站完成。在浏览器中处理文档，快速且私密。",
+    title: "DockDocs — 私密、可溯源的文档 AI 与 PDF 工具",
+    description: "读懂任意文档，信任每个答案：DockDocs 文档 AI 引用确切出处供你核对，PDF 工具在浏览器本地运行，文件不离设备。免费，无需注册。",
     eyebrow: "AI 文档智能",
     heroTitle: "围绕 PDF 的全方位解决方案。",
     heroDescription: "免费工具、批量自动化，加上真正读懂文档的 AI——大多在浏览器内完成，文件不外泄。",
@@ -1563,16 +1563,16 @@ const homeCopy = {
     stats: [["可溯源", "答案可点回原文"], ["隐私", "文件留在你的设备"], ["安全", "文件用后自动删除"]] as [string, string][],
   },
   es: {
-    title: "DockDocs — Plataforma de documentos con IA",
-    description: "Herramientas PDF, chat con IA, OCR, compresión, conversión y más. Procesa documentos en tu navegador, de forma privada y rápida.",
+    title: "DockDocs — IA documental privada y verificable + herramientas PDF",
+    description: "Lee cualquier documento y confía en cada respuesta: IA documental que cita la fuente para que la verifiques, más herramientas PDF que se ejecutan en tu navegador, sin que tus archivos salgan del dispositivo. Gratis, sin registro.",
   },
   pt: {
-    title: "DockDocs — Plataforma de documentos com IA",
-    description: "Ferramentas PDF, chat com IA, OCR, compressão, conversão e mais. Processe documentos no seu navegador, de forma privada e rápida.",
+    title: "DockDocs — IA documental privada e verificável + ferramentas PDF",
+    description: "Leia qualquer documento e confie em cada resposta: IA documental que cita a fonte para você verificar, além de ferramentas PDF que rodam no seu navegador, sem seus arquivos saírem do dispositivo. Grátis, sem cadastro.",
   },
   fr: {
-    title: "DockDocs — Plateforme de documents IA",
-    description: "Outils PDF, chat IA, OCR, compression, conversion et plus. Traitez vos documents dans votre navigateur, en toute confidentialité et rapidement.",
+    title: "DockDocs — IA documentaire privée et vérifiable + outils PDF",
+    description: "Lisez n'importe quel document et fiez-vous à chaque réponse : une IA documentaire qui cite sa source pour que vous la vérifiiez, plus des outils PDF exécutés dans votre navigateur, vos fichiers ne quittent jamais l'appareil. Gratuit, sans inscription.",
   },
 } as const;
 
@@ -1601,7 +1601,7 @@ const localizedTools = [
 function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" | "fr" }) {
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema()) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema(locale)) }} />
       <HomeSections locale={locale} />
     </main>
   );
