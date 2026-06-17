@@ -496,6 +496,8 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
         </section>
       )}
 
+      {/* ── Recommended reading (crawlable internal links; SEO-reconciled to survivors) ── */}
+      <IndexingLinksSection config={config} />
     </main>
   );
 }
