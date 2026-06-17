@@ -77,16 +77,17 @@ export const featureLimits: Record<
   Record<UsageFeature, { limit: number; period: UsagePeriod }>
 > = {
   FREE: {
-    // Generous free daily caps: a soft upgrade nudge on top of the server-side
-    // per-minute rate limit, not a hard wall. Bump again once payment is live so
-    // the "upgrade" CTA actually leads somewhere.
+    // Free daily caps, ALIGNED to the published tier-config.ts table (payment is live →
+    // these are the enforced free tier, server-side here; the client meter is a UX nudge):
+    //   ai-standard (chat/summary/translate/analyzer) = 10/day
+    //   ai-hero (contractAnalyzer/compare)            = 3/day
     chat: { limit: 10, period: "day" },
     summary: { limit: 10, period: "day" },
     translate: { limit: 10, period: "day" },
     ocr: { limit: 15, period: "day" },
     compress: { limit: 30, period: "day" },
     analyzer: { limit: 10, period: "day" },
-    contractAnalyzer: { limit: 10, period: "day" },
+    contractAnalyzer: { limit: 3, period: "day" },
     compare: { limit: 3, period: "day" },
     // CloudConvert costs real money per conversion (the only metered cost left after
     // self-hosting). Free callers (mostly anonymous, counted by IP) get a modest daily
@@ -95,12 +96,14 @@ export const featureLimits: Record<
     convert: { limit: 15, period: "day" },
   },
   PLUS: {
-    chat: { limit: 500, period: "month" },
-    summary: { limit: 500, period: "month" },
-    translate: { limit: 500, period: "month" },
+    // ai-standard (chat/summary/translate/analyzer) = 200/day per tier-config;
+    // ai-hero (contractAnalyzer/compare) = 500/month; ocr/compress/convert unchanged.
+    chat: { limit: 200, period: "day" },
+    summary: { limit: 200, period: "day" },
+    translate: { limit: 200, period: "day" },
     ocr: { limit: 500, period: "month" },
     compress: { limit: 1000, period: "month" },
-    analyzer: { limit: 500, period: "month" },
+    analyzer: { limit: 200, period: "day" },
     contractAnalyzer: { limit: 500, period: "month" },
     compare: { limit: 500, period: "month" },
     convert: { limit: 1500, period: "month" },
