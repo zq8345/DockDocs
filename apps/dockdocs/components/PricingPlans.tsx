@@ -5,14 +5,10 @@ import { TIER_CATEGORIES } from "@/lib/tier-config";
 import type { FeatureItem } from "@/lib/tier-config";
 import { localizedPath, type RouteSlug, type RouteLocale } from "@/lib/i18n";
 import { createBillingCheckoutSession, createBillingPortalSession, changeBillingPlan, getSubscriptionSnapshot, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
-import type { PaidSubscriptionPlan } from "@/lib/billing-config";
+import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
 import { getUser, onAuthChange } from "@/lib/auth";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
-
-// Tier ordering for upgrade-vs-downgrade decisions on the pricing cards.
-const PLAN_RANK: Record<string, number> = { FREE: 0, PLUS: 1, PRO: 2 };
-const IV_RANK: Record<string, number> = { monthly: 0, annual: 1, lifetime: 2 };
 
 const copy = {
   en: {
@@ -539,8 +535,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 ? (curPlan === planKey ? "current" : "manage")
                 : curPlan === planKey && curInterval === period
                   ? "current"
-                  : (PLAN_RANK[planKey] ?? 0) > (PLAN_RANK[curPlan] ?? 0) ||
-                      (planKey === curPlan && (IV_RANK[period] ?? 0) > (IV_RANK[curInterval ?? "monthly"] ?? 0))
+                  : isPlanUpgrade(curPlan, curInterval, planKey, period)
                     ? (period === "lifetime" ? "checkout" : "change")
                     : "manage";
           const ctaCls = `mt-6 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-medium transition ${featured ? "bg-[color:var(--accent)] hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--foreground)]"}`;

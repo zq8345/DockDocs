@@ -55,3 +55,24 @@ export function isPaidSubscriptionPlan(
 ): plan is PaidSubscriptionPlan {
   return plan === "PLUS" || plan === "PRO";
 }
+
+// Ranks for upgrade comparisons (higher = more). Shared by the pricing CTA and
+// the server-side change-plan guard so client and server agree on "upgrade".
+const PLAN_RANK: Record<string, number> = { FREE: 0, PLUS: 1, PRO: 2 };
+const INTERVAL_RANK: Record<BillingInterval, number> = { monthly: 0, annual: 1, lifetime: 2 };
+
+// True when (toPlan, toInterval) is strictly higher than (fromPlan, fromInterval):
+// a higher plan tier, or the same plan with a longer interval. Equal or lower is
+// NOT an upgrade — those go through the billing portal, not the in-place
+// change-plan endpoint (which charges proration immediately).
+export function isPlanUpgrade(
+  fromPlan: string,
+  fromInterval: BillingInterval | undefined,
+  toPlan: string,
+  toInterval: BillingInterval,
+): boolean {
+  const fromPlanRank = PLAN_RANK[fromPlan] ?? 0;
+  const toPlanRank = PLAN_RANK[toPlan] ?? 0;
+  if (toPlanRank !== fromPlanRank) return toPlanRank > fromPlanRank;
+  return (INTERVAL_RANK[toInterval] ?? 0) > (INTERVAL_RANK[fromInterval ?? "monthly"] ?? 0);
+}

@@ -1,5 +1,5 @@
 import type { Config, Context } from "@netlify/functions";
-import { isPaidSubscriptionPlan, isBillingInterval } from "../../lib/billing-config";
+import { isPaidSubscriptionPlan, isBillingInterval, isPlanUpgrade } from "../../lib/billing-config";
 import { json, requireBillingUser } from "./_shared/billing-auth";
 import { creemProductIdForPlan, upgradeCreemSubscription, type CreemPlan, type CreemInterval } from "./_shared/creem";
 import { readSubscriptionByUserId } from "./_shared/billing-store";
@@ -47,6 +47,13 @@ export default async (req: Request, _context: Context) => {
   // Already on this exact plan + interval → nothing to do.
   if (current.plan === payload.plan && current.interval === interval) {
     return json({ ok: true, alreadyOnPlan: true });
+  }
+
+  // Server-side upgrade-only guard: in-place change-plan charges proration
+  // immediately, so it is for UPGRADES only. Downgrades / lateral moves must go
+  // through the billing portal — never trust the client to enforce this.
+  if (!isPlanUpgrade(current.plan, current.interval, payload.plan, interval)) {
+    return json({ ok: false, code: "USE_PORTAL", message: "This isn't an upgrade — manage it from the billing portal." }, 409);
   }
 
   const targetProductId = creemProductIdForPlan(payload.plan as CreemPlan, interval as CreemInterval);
