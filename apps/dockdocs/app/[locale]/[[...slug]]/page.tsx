@@ -1580,12 +1580,12 @@ const aiCopy = {
     eyebrow: "AI workspace",
     heroTitle: "AI PDF workspace for OCR, summaries, and Chat with PDF.",
     heroDescription:
-      "DockDocs stays PDF-tools first. The AI workspace steps in when a document needs OCR, a summary, a grounded Q&A, or a multi-step pass.",
+      "DockDocs stays PDF-tools first. The AI workspace steps in when a document needs OCR, a summary, a grounded Q&A, or a quick analysis.",
     cards: [
       { t: "OCR", d: "Pull selectable text out of scanned or image-only PDFs." },
       { t: "AI Summary", d: "Turn long reports and packets into a few working notes." },
       { t: "Chat with PDF", d: "Ask about clauses, dates, and figures — every answer cites the page." },
-      { t: "Workflow", d: "Chain upload, OCR, summarize, and export into one pass." },
+      { t: "Document analysis", d: "Pull out the key clauses, dates, risks, and structure for a quick read." },
     ],
   },
   zh: {
@@ -1594,12 +1594,12 @@ const aiCopy = {
     eyebrow: "AI 工作区",
     heroTitle: "AI 文档工作区：OCR、摘要与 PDF 问答。",
     heroDescription:
-      "DockDocs 以 PDF 工具为先。当文档需要 OCR、摘要、有据问答或多步骤处理时，AI 工作区接手。",
+      "DockDocs 以 PDF 工具为先。当文档需要 OCR、摘要、有据问答或快速分析时，AI 工作区接手。",
     cards: [
       { t: "OCR", d: "从扫描件或纯图片 PDF 中提取可复制的文字。" },
       { t: "AI 摘要", d: "把长报告和文件包浓缩成几条可用要点。" },
       { t: "PDF 问答", d: "问条款、日期、数字——每个答案都标出处。" },
-      { t: "工作流", d: "上传、OCR、摘要、导出，串成一次完成。" },
+      { t: "文档分析", d: "提取关键条款、日期、风险和结构，快速过一遍。" },
     ],
   },
   es: {
@@ -1608,12 +1608,12 @@ const aiCopy = {
     eyebrow: "Área de trabajo IA",
     heroTitle: "Área de trabajo IA para PDF: OCR, resúmenes y Chat con PDF.",
     heroDescription:
-      "DockDocs prioriza las herramientas PDF. El área de trabajo IA entra en acción cuando un documento necesita OCR, un resumen, preguntas fundamentadas o varios pasos.",
+      "DockDocs prioriza las herramientas PDF. El área de trabajo IA entra en acción cuando un documento necesita OCR, un resumen, preguntas fundamentadas o un análisis rápido.",
     cards: [
       { t: "OCR", d: "Extrae texto seleccionable de PDFs escaneados o de solo imagen." },
       { t: "Resumen IA", d: "Convierte informes largos en unas pocas notas prácticas." },
       { t: "Chat con PDF", d: "Pregunta sobre cláusulas, fechas y cifras — cada respuesta cita la página." },
-      { t: "Flujo de trabajo", d: "Encadena subida, OCR, resumen y exportación en un solo paso." },
+      { t: "Análisis de documentos", d: "Extrae las cláusulas clave, fechas, riesgos y la estructura para una lectura rápida." },
     ],
   },
   pt: {
@@ -1622,12 +1622,12 @@ const aiCopy = {
     eyebrow: "Espaço de trabalho IA",
     heroTitle: "Espaço de trabalho IA para PDF: OCR, resumos e Chat com PDF.",
     heroDescription:
-      "O DockDocs prioriza as ferramentas PDF. O espaço de trabalho IA entra em ação quando um documento precisa de OCR, resumo, perguntas fundamentadas ou várias etapas.",
+      "O DockDocs prioriza as ferramentas PDF. O espaço de trabalho IA entra em ação quando um documento precisa de OCR, resumo, perguntas fundamentadas ou uma análise rápida.",
     cards: [
       { t: "OCR", d: "Extraia texto selecionável de PDFs digitalizados ou somente com imagens." },
       { t: "Resumo IA", d: "Transforme relatórios longos em poucas notas práticas." },
       { t: "Chat com PDF", d: "Pergunte sobre cláusulas, datas e valores — cada resposta cita a página." },
-      { t: "Fluxo de trabalho", d: "Encadeie upload, OCR, resumo e exportação em uma única etapa." },
+      { t: "Análise de documentos", d: "Extraia as cláusulas-chave, datas, riscos e a estrutura para uma leitura rápida." },
     ],
   },
   fr: {
@@ -1636,12 +1636,12 @@ const aiCopy = {
     eyebrow: "Espace de travail IA",
     heroTitle: "Espace de travail IA pour PDF : OCR, résumés et Chat avec PDF.",
     heroDescription:
-      "DockDocs priorise les outils PDF. L'espace de travail IA intervient quand un document nécessite de l'OCR, un résumé, des questions fondées ou plusieurs étapes.",
+      "DockDocs priorise les outils PDF. L'espace de travail IA intervient quand un document nécessite de l'OCR, un résumé, des questions fondées ou une analyse rapide.",
     cards: [
       { t: "OCR", d: "Extrayez du texte sélectionnable de PDFs numérisés ou composés uniquement d'images." },
       { t: "Résumé IA", d: "Transformez de longs rapports en quelques notes exploitables." },
       { t: "Chat avec PDF", d: "Posez des questions sur les clauses, dates et chiffres — chaque réponse cite la page." },
-      { t: "Flux de travail", d: "Enchaînez téléversement, OCR, résumé et export en une seule passe." },
+      { t: "Analyse de documents", d: "Extrayez les clauses clés, dates, risques et la structure pour une lecture rapide." },
     ],
   },
 } as const;

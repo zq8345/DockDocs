@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { AiChatWorkflow } from "@/components/AiChatWorkflow";
 import { AiSummaryWorkflow } from "@/components/AiSummaryWorkflow";
 import { DocumentAnalyzerWorkflow } from "@/components/DocumentAnalyzerWorkflow";
-import { StatusBadge } from "@/components/ui/Status";
 import { languageAlternates, siteUrl } from "@/lib/i18n";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 
@@ -53,9 +52,9 @@ const workspaceFlows = [
       "Ask questions about clauses, dates, risks, tables, and document evidence.",
   },
   {
-    title: "Workflow",
+    title: "Document analysis",
     description:
-      "Connect upload, convert, OCR, summarize, and export into one document flow.",
+      "Pull out the key clauses, dates, risks, and structure of a document for a quick review.",
   },
 ];
 
@@ -68,12 +67,14 @@ const linkedTools = [
   { name: "OCR PDF", href: "/ocr-pdf" },
 ];
 
-const workspaceSteps = [
-  { label: "Upload", status: "Uploaded" },
-  { label: "Convert", status: "Backlog" },
-  { label: "OCR", status: "Parsed" },
-  { label: "Summarize", status: "Active" },
-  { label: "Reuse", status: "Exported" },
+// Honest "what's actually on this page" list — the three real AI tools embedded
+// below plus the OCR tool they link to. Not a connected pipeline or status board;
+// these run independently, so no fake "Active/Exported" workflow states.
+const workspaceItems = [
+  { label: "AI Summary", note: "key points" },
+  { label: "Document analysis", note: "clauses · dates · risks" },
+  { label: "Chat with PDF", note: "answers cite the page" },
+  { label: "OCR", note: "scanned → text" },
 ];
 
 const aiWorkspaceUrl = `${siteUrl}/ai-workspace/`;
@@ -137,7 +138,7 @@ const aiWorkspaceSchema = {
       operatingSystem: "Web",
       url: aiWorkspaceUrl,
       description:
-        "AI PDF workspace for OCR, summaries, Chat with PDF, and multi-step document workflows.",
+        "AI PDF workspace for OCR, summaries, Chat with PDF, and document analysis — three AI tools on one page.",
       featureList: workspaceFlows.map((flow) => flow.title),
       offers: {
         "@type": "Offer",
@@ -196,9 +197,9 @@ export default function AiWorkspacePage() {
               AI PDF workspace for OCR, summaries, and Chat with PDF.
             </h1>
             <p className="mt-4 max-w-2xl text-pretty text-[16px] leading-[1.6] text-[color:var(--muted)]">
-              DockDocs stays PDF tools first. The AI Workspace layer helps when
-              documents need OCR, summaries, Chat with PDF, or multi-step
-              workflow support.
+              DockDocs stays PDF tools first. The AI Workspace layer helps when a
+              document needs OCR, a summary, Chat with PDF, or a quick analysis —
+              three AI tools on one page, each run on its own.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <ButtonLink href="/">Browse PDF tools</ButtonLink>
@@ -210,16 +211,16 @@ export default function AiWorkspacePage() {
           <div className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
             <div className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
-                Workspace flow
+                In this workspace
               </p>
               <div className="mt-4 grid gap-2">
-                {workspaceSteps.map((step) => (
+                {workspaceItems.map((item) => (
                   <div
-                    key={step.label}
+                    key={item.label}
                     className="flex items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-2.5 text-sm font-semibold text-[color:var(--foreground)]"
                   >
-                    <span>{step.label}</span>
-                    <StatusBadge label={step.status} status={step.status} />
+                    <span>{item.label}</span>
+                    <span className="text-xs font-normal text-[color:var(--muted)]">{item.note}</span>
                   </div>
                 ))}
               </div>
