@@ -109,12 +109,15 @@ export const featureLimits: Record<
     convert: { limit: 1500, period: "month" },
   },
   PRO: {
-    chat: { limit: 5000, period: "month" },
-    summary: { limit: 5000, period: "month" },
-    translate: { limit: 5000, period: "month" },
+    // ai-standard = Unlimited (fair use): a high fair-use ceiling that bounds only
+    // scripted abuse, effectively uncapped for any human. ai-hero (contractAnalyzer/
+    // compare) keeps the ~5000/mo soft cap; ocr/compress/convert unchanged.
+    chat: { limit: 100000, period: "month" },
+    summary: { limit: 100000, period: "month" },
+    translate: { limit: 100000, period: "month" },
     ocr: { limit: 5000, period: "month" },
     compress: { limit: 10000, period: "month" },
-    analyzer: { limit: 5000, period: "month" },
+    analyzer: { limit: 100000, period: "month" },
     contractAnalyzer: { limit: 5000, period: "month" },
     compare: { limit: 5000, period: "month" },
     convert: { limit: 15000, period: "month" },
