@@ -25,7 +25,7 @@ const researchConfig: VerticalConfig = {
       cardsTitle: "Tools for researchers",
       cards: [
         { slug: "ai-summary", label: "AI Summary", description: "Condense a long paper or report into its key findings, methods, and takeaways." },
-        { slug: "chat-with-pdf", label: "Chat with PDF", description: "Ask a paper about its methods, results, or definitions — every answer cites the page it came from." },
+        { slug: "chat-with-pdf", label: "Chat with PDF", description: "Ask a paper about its methods, results, or definitions — answers show the passage they came from, and flag what they can't trace." },
         { slug: "compare", label: "Compare Documents", description: "Line up several papers or studies side by side on the dimensions that matter." },
         { slug: "ocr-pdf", label: "PDF OCR", description: "Extract selectable text from scanned articles and old PDFs so you can search and quote them." },
         { slug: "extract-to-excel", label: "Extract to Excel", description: "Pull data tables and figures out of a PDF into a spreadsheet you can analyze." },
@@ -42,7 +42,7 @@ const researchConfig: VerticalConfig = {
       cardsTitle: "研究者工具",
       cards: [
         { slug: "ai-summary", label: "AI 摘要", description: "把长论文或报告浓缩成核心发现、方法与结论。" },
-        { slug: "chat-with-pdf", label: "PDF 问答", description: "向论文提问方法、结果或定义——每个答案都标出处的页码。" },
+        { slug: "chat-with-pdf", label: "PDF 问答", description: "向论文提问方法、结果或定义——答案会展示它出自的原文，并标出无法溯源的部分。" },
         { slug: "compare", label: "多文档对比", description: "围绕关键维度把多篇论文或研究并排比较。" },
         { slug: "ocr-pdf", label: "PDF OCR", description: "从扫描文章和旧 PDF 中提取可选中的文字，便于检索和引用。" },
         { slug: "extract-to-excel", label: "数据抽取到表格", description: "把 PDF 里的数据表和图表抽进可分析的表格。" },
@@ -59,7 +59,7 @@ const researchConfig: VerticalConfig = {
       cardsTitle: "Herramientas para investigadores",
       cards: [
         { slug: "ai-summary", label: "Resumen IA", description: "Condensa un artículo o informe extenso en sus hallazgos, métodos y conclusiones clave." },
-        { slug: "chat-with-pdf", label: "Chat con PDF", description: "Pregunta a un artículo sobre sus métodos, resultados o definiciones — cada respuesta cita la página de la que proviene." },
+        { slug: "chat-with-pdf", label: "Chat con PDF", description: "Pregunta a un artículo sobre sus métodos, resultados o definiciones — las respuestas muestran el pasaje del que provienen y señalan lo que no pueden rastrear." },
         { slug: "compare", label: "Comparar documentos", description: "Alinea varios artículos o estudios lado a lado según las dimensiones que importan." },
         { slug: "ocr-pdf", label: "OCR de PDF", description: "Extrae texto seleccionable de artículos escaneados y PDFs antiguos para poder buscarlos y citarlos." },
         { slug: "extract-to-excel", label: "Extraer a Excel", description: "Extrae tablas de datos y figuras de un PDF a una hoja de cálculo que puedas analizar." },
@@ -76,7 +76,7 @@ const researchConfig: VerticalConfig = {
       cardsTitle: "Ferramentas para pesquisadores",
       cards: [
         { slug: "ai-summary", label: "Resumo IA", description: "Condense um artigo ou relatório longo em suas principais descobertas, métodos e conclusões." },
-        { slug: "chat-with-pdf", label: "Chat com PDF", description: "Pergunte a um artigo sobre seus métodos, resultados ou definições — cada resposta cita a página de onde veio." },
+        { slug: "chat-with-pdf", label: "Chat com PDF", description: "Pergunte a um artigo sobre seus métodos, resultados ou definições — as respostas mostram o trecho de onde vieram e sinalizam o que não podem rastrear." },
         { slug: "compare", label: "Comparar documentos", description: "Alinhe vários artigos ou estudos lado a lado pelas dimensões que importam." },
         { slug: "ocr-pdf", label: "OCR de PDF", description: "Extraia texto selecionável de artigos digitalizados e PDFs antigos para poder pesquisá-los e citá-los." },
         { slug: "extract-to-excel", label: "Extrair para Excel", description: "Extraia tabelas de dados e figuras de um PDF para uma planilha que você possa analisar." },
@@ -93,7 +93,7 @@ const researchConfig: VerticalConfig = {
       cardsTitle: "Outils pour les chercheurs",
       cards: [
         { slug: "ai-summary", label: "Résumé IA", description: "Condensez un long article ou rapport en ses conclusions, méthodes et points clés." },
-        { slug: "chat-with-pdf", label: "Chat avec PDF", description: "Interrogez un article sur ses méthodes, résultats ou définitions — chaque réponse cite la page dont elle provient." },
+        { slug: "chat-with-pdf", label: "Chat avec PDF", description: "Interrogez un article sur ses méthodes, résultats ou définitions — les réponses montrent le passage dont elles proviennent et signalent ce qu'elles ne peuvent pas tracer." },
         { slug: "compare", label: "Comparer des documents", description: "Alignez plusieurs articles ou études côte à côte selon les dimensions qui comptent." },
         { slug: "ocr-pdf", label: "OCR PDF", description: "Extrayez du texte sélectionnable d'articles numérisés et de vieux PDFs pour pouvoir les rechercher et les citer." },
         { slug: "extract-to-excel", label: "Extraire vers Excel", description: "Extrayez les tableaux de données et figures d'un PDF vers un tableur que vous pouvez analyser." },
