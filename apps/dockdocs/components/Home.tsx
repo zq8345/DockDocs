@@ -225,7 +225,6 @@ function flatItems(cat: { cols: { items: Item[] }[] }): Item[] {
 }
 
 const EYEBROW = (zh: boolean) => `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
-const CARD = "group relative overflow-hidden rounded-2xl border border-[color:var(--line)] p-6 transition-colors duration-200 hover:border-[color:var(--line-strong)]";
 const GLOW = { background: "radial-gradient(480px circle at 30% 0%, rgba(62,207,142,0.06), transparent 62%)" };
 
 // ── About v2 design primitives (reused verbatim so Home reads as the same family) ──
@@ -401,21 +400,19 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
         @media (prefers-reduced-motion: reduce){.hfg-in,.batch-bar,.ms-bar,.mt-tile,.mx-scan,.mx-row,.ms-stack{animation:none!important;transition:none!important}}
       `}</style>
 
-      {/* ── 1 · Hero — centered anchor (deliberate contrast vs left-aligned interior); no mid-page divider ── */}
-      <section className="relative overflow-hidden">
-        {/* depth glow (very restrained — the Linear move: flat → has depth) */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[520px] bg-[radial-gradient(60%_50%_at_50%_0%,rgba(62,207,142,0.10),transparent)] blur-[40px]" />
-        <div className="relative z-10 mx-auto max-w-3xl px-5 pb-24 pt-28 text-center sm:px-6 sm:pb-28 sm:pt-36">
+      {/* ── 1 · Hero — left-aligned anchor, mirroring About §1 (eyebrow → big H1 → sub → CTAs → trust pills → weighty wide Figure → caption) ── */}
+      <section>
+        <div className={SHELL}>
           <p className={EYEBROW(zh)}>{c.eyebrow}</p>
-          <h1 className="mx-auto mt-5 max-w-[16ch] text-balance font-medium text-[40px] leading-[1.06] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[60px] sm:leading-[1.03] sm:tracking-[-0.03em] lg:text-[84px] lg:leading-[1.0] lg:tracking-[-0.04em]">
+          <h1 className="mt-4 max-w-[20ch] font-medium text-[40px] leading-[1.05] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[60px] sm:leading-[1.03] sm:tracking-[-0.03em] lg:text-[80px] lg:leading-[1.0] lg:tracking-[-0.04em]">
             {c.heroA}<br /><span className="text-[color:var(--muted)]">{c.heroB}</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-pretty text-[17px] leading-[1.65] text-[color:var(--muted)] sm:text-[19px]">{c.heroSub}</p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+          <p className={SUB}>{c.heroSub}</p>
+          <div className="mt-9 flex flex-wrap items-center gap-3">
             <a href={path("/chat-with-pdf")} className="inline-flex h-12 items-center justify-center rounded-full bg-[color:var(--accent)] px-6 text-[15px] font-medium transition hover:bg-[color:var(--accent-hover)]">{c.primary}</a>
             <a href={path("/privacy-policy")} className="inline-flex h-12 items-center justify-center rounded-full border border-[color:var(--line)] px-6 text-[15px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{c.secondary}</a>
           </div>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[13px] text-[color:var(--faint)]">
+          <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[color:var(--faint)]">
             {c.proof.map((f, i) => (
               <span key={i} className="inline-flex items-center gap-1.5">
                 <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
@@ -425,45 +422,41 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
             ))}
           </div>
 
-          {/* product as art: a real grounded-AI interface — report → AI summary, with a citation.
-              Kept LIGHTER than interior figures (soft glow only, no heavy shadow/gradient surface) so it never competes with the H1. */}
-          <div className="relative mt-16 sm:mt-20">
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 blur-[40px]" style={{ background: "radial-gradient(60% 60% at 50% 40%, rgba(62,207,142,0.08), transparent 70%)" }} />
-            <div className="hfg-in relative z-10 mx-auto max-w-xl rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-5 text-left shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-              <div className="flex items-stretch gap-3">
-                <div className="flex w-[36%] flex-col gap-1.5 rounded-lg border border-[color:var(--line)] p-3">
-                  {[80, 60, 70, 50, 65, 55].map((w, i) => <span key={i} className={`h-[3px] rounded-full ${i === 2 ? "bg-[color:var(--accent)]" : "bg-[color:var(--skeleton)]"}`} style={{ width: `${w}%`, opacity: i === 2 ? 0.9 : 1 }} />)}
-                  <span className="mt-1 text-[10px] text-[color:var(--faint)]">report.pdf</span>
+          {/* product as art: a real grounded-AI interface — report → AI summary, with a citation. Full About-weight Figure, wide. */}
+          <Figure className="mt-12" glow="24%">
+            <div className="hfg-in flex items-stretch gap-4">
+              <div className="flex w-[34%] flex-col gap-1.5 rounded-lg border border-[color:var(--line)] bg-black/20 p-4">
+                {[80, 60, 70, 50, 65, 55].map((w, i) => <span key={i} className={`h-[3px] rounded-full ${i === 2 ? "bg-[color:var(--accent)]" : "bg-[color:var(--skeleton)]"}`} style={{ width: `${w}%`, opacity: i === 2 ? 0.9 : 1 }} />)}
+                <span className="mt-1 text-[10px] text-[color:var(--faint)]">report.pdf</span>
+              </div>
+              <div className="flex items-center text-[color:var(--accent)]">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </div>
+              <div className="flex-1 rounded-lg border border-[color:var(--line)] bg-black/20 p-4">
+                <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
+                <div className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--foreground)]">
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
+                  <span className="min-w-0">{locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : "Revenue +23% YoY"}</span>
+                  <span className="ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)]">{c.cite}</span>
                 </div>
-                <div className="flex items-center text-[color:var(--accent)]">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                </div>
-                <div className="flex-1 rounded-lg border border-[color:var(--line)] p-3">
-                  <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
-                  <div className="mb-1.5 flex items-center gap-1.5 text-[12px] text-[color:var(--foreground)]">
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                    <span className="min-w-0">{locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : "Revenue +23% YoY"}</span>
-                    <span className="ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)]">{c.cite}</span>
+                {[locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : "APAC is the main driver", locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : "Gross margin 41% (↑3pt)"].map((b) => (
+                  <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--muted)] last:mb-0">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" />{b}
                   </div>
-                  {[locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : "APAC is the main driver", locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : "Gross margin 41% (↑3pt)"].map((b) => (
-                    <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[12px] text-[color:var(--muted)] last:mb-0">
-                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" />{b}
-                    </div>
-                  ))}
-                </div>
+                ))}
               </div>
             </div>
-            <p className="mt-4 font-mono text-[12px] text-[color:var(--faint)]">{c.figCaption}</p>
-          </div>
+          </Figure>
+          <p className={CAP}>{c.figCaption}</p>
         </div>
       </section>
 
       {/* ── 2 · Find your tool — bento promoted high + a REAL client-side search (funnel-critical) ── */}
       <section>
-        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-20 lg:px-8">
+        <div className={SHELL}>
           <p className={EYEBROW(zh)}>{c.findEyebrow}</p>
           <h2 className={`mt-4 ${H2}`}>{c.findHeading}</h2>
-          <p className="mt-4 max-w-2xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.capSub}</p>
+          <p className={SUB}>{c.capSub}</p>
 
           {/* contained search pill — never a full-width hairline */}
           <div className="relative mt-8 max-w-xl">
@@ -489,41 +482,43 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
               <p className="mt-6 text-[14px] text-[color:var(--faint)]">{c.searchNoResults}</p>
             )
           ) : (
-            <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-              {CARDS.map(({ nav, span, visual }) => {
-                const cat = cats[nav];
-                if (!cat) return null;
-                const tools = flatItems(cat as { cols: { items: Item[] }[] });
-                const chips = tools.slice(0, 4);
-                const more = tools.length - chips.length;
-                return (
-                  <div key={nav} className={`${CARD} ${span === 2 ? "md:col-span-2" : "md:col-span-1"}`}>
-                    <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={GLOW} />
-                    <div className="relative flex h-full flex-col">
-                      <div className="flex items-center gap-3">
-                        <Icon i={nav} />
-                        <h3 className="text-[18px] font-normal text-[color:var(--foreground)] sm:text-[20px]">{cat.label}</h3>
-                        <span className="ml-auto text-[12px] text-[color:var(--faint)]">{tools.length} {c.tools}</span>
-                      </div>
-                      <div className="mt-5">
-                        {visual === "thumbs" && <MiniThumbs />}
-                        {visual === "extract" && <MiniExtract label={c.aiSummary} />}
-                        {visual === "batch" && <MiniBatch />}
-                        {visual === "secure" && <MiniSecure />}
-                      </div>
-                      <div className="mt-5 flex flex-wrap items-center gap-2">
-                        {chips.map((t) => (
-                          <a key={t.slug} href={path(t.slug)} className="rounded-full border border-[color:var(--line)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition-colors hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">{t.name}</a>
-                        ))}
-                        {more > 0 && (
-                          <a href={path("/sitemap")} className="inline-flex items-center gap-1 px-1 text-[12px] text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{c.more(more)} →</a>
-                        )}
+            <Figure className="mt-8" glow="30%">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {CARDS.map(({ nav, span, visual }) => {
+                  const cat = cats[nav];
+                  if (!cat) return null;
+                  const tools = flatItems(cat as { cols: { items: Item[] }[] });
+                  const chips = tools.slice(0, 4);
+                  const more = tools.length - chips.length;
+                  return (
+                    <div key={nav} className={`group relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-black/20 p-5 transition-colors duration-200 hover:border-[color:var(--line-strong)] ${span === 2 ? "md:col-span-2" : "md:col-span-1"}`}>
+                      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={GLOW} />
+                      <div className="relative flex h-full flex-col">
+                        <div className="flex items-center gap-3">
+                          <Icon i={nav} />
+                          <h3 className="text-[18px] font-normal text-[color:var(--foreground)] sm:text-[20px]">{cat.label}</h3>
+                          <span className="ml-auto text-[12px] text-[color:var(--faint)]">{tools.length} {c.tools}</span>
+                        </div>
+                        <div className="mt-5">
+                          {visual === "thumbs" && <MiniThumbs />}
+                          {visual === "extract" && <MiniExtract label={c.aiSummary} />}
+                          {visual === "batch" && <MiniBatch />}
+                          {visual === "secure" && <MiniSecure />}
+                        </div>
+                        <div className="mt-5 flex flex-wrap items-center gap-2">
+                          {chips.map((t) => (
+                            <a key={t.slug} href={path(t.slug)} className="rounded-full border border-[color:var(--line-strong)] bg-[color:var(--surface)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--foreground)]">{t.name}</a>
+                          ))}
+                          {more > 0 && (
+                            <a href={path("/sitemap")} className="inline-flex items-center gap-1 px-1 text-[12px] text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{c.more(more)} →</a>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            </Figure>
           )}
 
           <a href={path("/sitemap")} className="mt-8 inline-flex items-center gap-1.5 text-[14px] font-medium text-[color:var(--accent)] transition hover:gap-2.5">
@@ -552,7 +547,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
 
           {/* grounded Q&A: a question, then an answer that cites VERBATIM SNIPPETS (what the product really returns — not page numbers) */}
           <Figure className="mt-10" glow="32%">
-            <div className="mx-auto max-w-xl">
+            <div>
               <div className="flex justify-end">
                 <span className="max-w-[80%] rounded-2xl rounded-br-md border border-[color:var(--line)] bg-[color:var(--background)] px-3.5 py-2 text-[12.5px] leading-[1.45] text-[color:var(--foreground)]">{c.qaQuestion}</span>
               </div>
