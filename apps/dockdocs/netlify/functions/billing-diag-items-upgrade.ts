@@ -60,10 +60,12 @@ export default async (req: Request, _ctx: Context) => {
   const base = creemApiBase();
   const getHeaders = { "x-api-key": apiKey };
   const postHeaders = { "x-api-key": apiKey, "Content-Type": "application/json" };
-  const subUrl = `${base}/subscriptions/${encodeURIComponent(subId)}`;
+  const subUrl = `${base}/subscriptions/${encodeURIComponent(subId)}`; // path form — for the POST update (Creem: POST /v1/subscriptions/{id})
+  // Creem RETRIEVE is query-param form (path form 404s — confirmed from the Creem OpenAPI spec: GET /v1/subscriptions?subscription_id=...).
+  const getUrl = `${base}/subscriptions?subscription_id=${encodeURIComponent(subId)}`;
 
   // 1) GET the subscription → find the existing item id + current product.
-  const getRes = await fetch(subUrl, { headers: getHeaders });
+  const getRes = await fetch(getUrl, { headers: getHeaders });
   const getBody = (await getRes.json().catch(() => null)) as Record<string, unknown> | null;
   const items = (getBody?.items ??
     (getBody?.subscription as Record<string, unknown> | undefined)?.items) as
@@ -86,7 +88,7 @@ export default async (req: Request, _ctx: Context) => {
   const postBody = await postRes.json().catch(() => null);
 
   // 3) GET again → resulting subscription state (did product/interval change?).
-  const getRes2 = await fetch(subUrl, { headers: getHeaders });
+  const getRes2 = await fetch(getUrl, { headers: getHeaders });
   const resultSubscription = await getRes2.json().catch(() => null);
 
   return json(
