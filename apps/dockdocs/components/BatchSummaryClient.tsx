@@ -9,6 +9,8 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { checkUsage } from "@/lib/usage-gate";
+import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Summary = { executiveSummary: string; keyPoints: string[]; actionItems?: string[]; nextSteps?: string[] };
@@ -79,6 +81,7 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
   const [progress, setProgress] = useState(0);
   const [results, setResults] = useState<Result[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [limitHit, setLimitHit] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const addFiles = useCallback(async (files: File[]) => {
@@ -112,14 +115,16 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
     }
   }, [locale, t]);
 
-  const reset = () => { setDocs([]); setResults([]); setPhase("idle"); setProgress(0); setError(null); };
+  const reset = () => { setDocs([]); setResults([]); setPhase("idle"); setProgress(0); setError(null); setLimitHit(null); };
 
   const run = useCallback(async () => {
     const usable = docs.filter((d) => d.text.length > 0);
     if (docs.length === 0) { setError(t.need); return; }
     const batchGate = await checkAndRecordBatchRun();
     if (!batchGate.allowed) { setError(batchLimitMessage(locale)); return; }
-    setPhase("running"); setError(null); setResults([]); setProgress(0);
+    setPhase("running"); setError(null); setResults([]); setProgress(0); setLimitHit(null);
+    const gate = await checkUsage("summary");
+    if (!gate.allowed) { setLimitHit(gate.limit); setPhase("idle"); return; }
     const auth = await authHeader();
     const out: Result[] = [];
     for (let i = 0; i < docs.length; i++) {
@@ -133,6 +138,12 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
           body: JSON.stringify({ text: d.text, locale, sourceName: d.name }),
         });
         const data = await res.json();
+        if (res.status === 402 || data?.code === "UPGRADE_REQUIRED") {
+          setLimitHit(data?.limit ?? gate.limit);
+          setResults([...out]);
+          setPhase("done");
+          return;
+        }
         if (data?.ok && data.summary) out.push({ name: d.name, summary: data.summary });
         else out.push({ name: d.name, error: data?.message || "failed" });
       } catch (e) {
@@ -280,6 +291,7 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
       <GroundingNote variant="summary" locale={locale} />
       <RelatedPdfTools locale={locale} exclude="/batch-summary" />
       <ToolFaq tool="batch-summary" locale={locale} />

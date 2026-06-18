@@ -6,6 +6,8 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
+import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Card = { q: string; a: string };
@@ -77,6 +79,7 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
   const [cards, setCards] = useState<Card[]>([]);
   const [flipped, setFlipped] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
+  const [limitHit, setLimitHit] = useState<number | null>(null);
 
   const onFile = useCallback(async (file: File) => {
     if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
@@ -102,7 +105,9 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
 
   const generate = useCallback(async () => {
     if (!text) return;
-    setPhase("generating"); setError(null); setCards([]); setFlipped(new Set());
+    const gate = await checkUsage("summary");
+    if (!gate.allowed) { setLimitHit(gate.limit); return; }
+    setPhase("generating"); setError(null); setCards([]); setFlipped(new Set()); setLimitHit(null);
     try {
       const auth = await authHeader();
       const res = await fetch("/api/quiz", {
@@ -111,9 +116,13 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
         body: JSON.stringify({ text, count, locale }),
       });
       const data = await res.json();
+      if (res.status === 402 || data?.code === "UPGRADE_REQUIRED") {
+        setLimitHit(data?.limit ?? gate.limit); setPhase("ready"); return;
+      }
       if (data?.ok && Array.isArray(data.cards) && data.cards.length > 0) {
         setCards(data.cards);
         setPhase("done");
+        await markUsage(gate, "summary");
       } else {
         setError(t.err + (data?.message || "Could not generate cards.")); setPhase("ready");
       }
@@ -122,7 +131,7 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
     }
   }, [text, count, locale, t]);
 
-  const reset = () => { setFileName(""); setText(""); setCards([]); setFlipped(new Set()); setPhase("idle"); setError(null); };
+  const reset = () => { setFileName(""); setText(""); setCards([]); setFlipped(new Set()); setPhase("idle"); setError(null); setLimitHit(null); };
   const toggle = (i: number) => setFlipped((p) => { const n = new Set(p); if (n.has(i)) n.delete(i); else n.add(i); return n; });
 
   return (
@@ -171,6 +180,7 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
       <ToolFaq tool="flashcards" locale={locale} />
     </div>
   );

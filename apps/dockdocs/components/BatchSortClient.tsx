@@ -7,6 +7,8 @@ import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { authHeader } from "@/lib/supabase";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { checkUsage } from "@/lib/usage-gate";
+import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
@@ -71,6 +73,7 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [limitHit, setLimitHit] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const folderRef = useRef<HTMLInputElement>(null);
 
@@ -101,13 +104,15 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
     }
   }, []);
 
-  const reset = () => { setItems([]); setPhase("idle"); setProgress(0); setError(null); };
+  const reset = () => { setItems([]); setPhase("idle"); setProgress(0); setError(null); setLimitHit(null); };
 
   const run = useCallback(async () => {
     if (items.length === 0) { setError(t.need); return; }
     const batchGate = await checkAndRecordBatchRun();
     if (!batchGate.allowed) { setError(batchLimitMessage(locale)); return; }
-    setPhase("running"); setError(null); setProgress(0);
+    setPhase("running"); setError(null); setProgress(0); setLimitHit(null);
+    const gate = await checkUsage("analyzer");
+    if (!gate.allowed) { setLimitHit(gate.limit); setPhase("idle"); return; }
     const auth = await authHeader();
     const updated = [...items];
     for (let i = 0; i < updated.length; i++) {
@@ -117,6 +122,12 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
       try {
         const res = await fetch("/api/classify", { method: "POST", headers: { "Content-Type": "application/json", ...auth }, body: JSON.stringify({ text: it.text, locale }) });
         const data = await res.json();
+        if (res.status === 402 || data?.code === "UPGRADE_REQUIRED") {
+          setLimitHit(data?.limit ?? gate.limit);
+          setItems([...updated]);
+          setPhase("done");
+          return;
+        }
         if (data?.ok && data.category) updated[i] = { ...it, status: "done", category: String(data.category), tags: Array.isArray(data.tags) ? data.tags : [] };
         else updated[i] = { ...it, status: "error", category: t.uncategorized, msg: data?.message || "failed" };
       } catch (e) {
@@ -217,6 +228,7 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
       <ToolFaq tool="batch-sort" locale={locale} />
     </div>
   );
