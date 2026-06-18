@@ -51,3 +51,10 @@
   from = "/fr/batch-office-to-pdf/*"
   to = "/fr/batch-word-to-pdf/"
   status = 301
+
+# ── /ja/ noindex: tool pages fall back to English (POC locale, not yet translated) ──
+# Remove once /ja/ tool pages are fully localized with native Japanese content.
+[[headers]]
+  for = "/ja/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, follow"
