@@ -14,7 +14,7 @@ const config = {
   heroDescription: "Upload an XLSX file and download a print-ready PDF. Powered by CloudConvert.",
   primaryActionLabel: "Convert to PDF",
   stats: [["Price", "Free"], ["Input", "XLSX / XLS"], ["Output", "PDF"]],
-  upload: { title: "Upload an Excel file", description: "Drag and drop a .xlsx file here, or choose from your device.", buttonLabel: "Choose Excel file", accept: ".xlsx,.xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileBadge: "XLS", note: "XLSX and XLS supported. Max 20 MB." },
+  upload: { title: "Upload an Excel file", description: "Drag and drop a .xlsx file here, or choose from your device.", buttonLabel: "Choose Excel file", accept: ".xlsx,.xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileBadge: "XLS", note: "XLSX and XLS supported. Max 100 MB." },
   benefitsTitle: "Convert spreadsheets to PDF for sharing and printing",
   benefitsDescription: "Lock your tables and charts in PDF format for universal compatibility.",
   benefits: [
@@ -27,7 +27,7 @@ const config = {
   features: [
     { title: "XLSX and XLS support", description: "Works with modern and legacy Excel formats." },
     { title: "Chart preservation", description: "Charts and tables are included in the PDF output." },
-    { title: "Up to 20 MB", description: "Handles most spreadsheet files comfortably." },
+    { title: "Up to 100 MB", description: "Handles most spreadsheet files comfortably." },
     { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
   ],
   workflowTitle: "How Excel to PDF fits into document work",

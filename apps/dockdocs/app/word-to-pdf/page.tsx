@@ -14,7 +14,7 @@ const config = {
   heroDescription: "Convert any doc to PDF — upload a Word document and download a pixel-perfect PDF in seconds. Fonts, tables, columns, and images are preserved. Powered by CloudConvert.",
   primaryActionLabel: "Convert to PDF",
   stats: [["Price", "Free"], ["Input", "DOCX / DOC"], ["Output", "PDF"]],
-  upload: { title: "Upload a Word document", description: "Drag and drop a .doc or .docx file here, or choose from your device.", buttonLabel: "Choose Word file", accept: ".docx,.doc,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document", fileBadge: "DOC", note: "DOCX and DOC supported. Max 20 MB." },
+  upload: { title: "Upload a Word document", description: "Drag and drop a .doc or .docx file here, or choose from your device.", buttonLabel: "Choose Word file", accept: ".docx,.doc,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document", fileBadge: "DOC", note: "DOCX and DOC supported. Max 100 MB." },
   benefitsTitle: "Convert docs to PDF without losing a single pixel",
   benefitsDescription: "CloudConvert renders your Word document through LibreOffice — the same engine used by enterprise converters — so every font, table, and column lands exactly where it should.",
   benefits: [
@@ -27,13 +27,13 @@ const config = {
   features: [
     { title: "DOCX and DOC support", description: "Works with modern .docx and legacy .doc Word formats." },
     { title: "LibreOffice rendering", description: "CloudConvert uses LibreOffice for accurate, high-fidelity PDF output." },
-    { title: "Up to 20 MB", description: "Handles contracts, reports, and multi-page business documents." },
+    { title: "Up to 100 MB", description: "Handles contracts, reports, and multi-page business documents." },
     { title: "Works everywhere", description: "Runs in any modern browser — Mac, Windows, iPhone, or Android." },
   ],
   workflowTitle: "How to convert a Word doc to PDF",
   workflowDescription: "Three steps — upload, convert, download. No software to install, no account to create.",
   steps: [
-    "Click 'Choose Word file' and select a .doc or .docx file from your device (up to 20 MB).",
+    "Click 'Choose Word file' and select a .doc or .docx file from your device (up to 100 MB).",
     "DockDocs sends it to CloudConvert, which renders it with LibreOffice — preserving fonts, tables, and layout.",
     "Download your finished PDF. Open it on any device without needing Word installed.",
   ],

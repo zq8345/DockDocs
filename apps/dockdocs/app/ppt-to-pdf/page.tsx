@@ -14,7 +14,7 @@ const config = {
   heroDescription: "Upload a PPTX file and download a presentation-ready PDF. Powered by CloudConvert.",
   primaryActionLabel: "Convert to PDF",
   stats: [["Price", "Free"], ["Input", "PPTX / PPT"], ["Output", "PDF"]],
-  upload: { title: "Upload a PowerPoint file", description: "Drag and drop a .pptx file here, or choose from your device.", buttonLabel: "Choose PPT file", accept: ".pptx,.ppt,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation", fileBadge: "PPT", note: "PPTX and PPT supported. Max 20 MB." },
+  upload: { title: "Upload a PowerPoint file", description: "Drag and drop a .pptx file here, or choose from your device.", buttonLabel: "Choose PPT file", accept: ".pptx,.ppt,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation", fileBadge: "PPT", note: "PPTX and PPT supported. Max 100 MB." },
   benefitsTitle: "Convert presentations to PDF for easy sharing",
   benefitsDescription: "Lock your slides in PDF format so they look the same on any device.",
   benefits: [
@@ -27,7 +27,7 @@ const config = {
   features: [
     { title: "PPTX and PPT support", description: "Works with modern and legacy PowerPoint formats." },
     { title: "Slide preservation", description: "Each slide becomes a PDF page." },
-    { title: "Up to 20 MB", description: "Handles most presentation files comfortably." },
+    { title: "Up to 100 MB", description: "Handles most presentation files comfortably." },
     { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
   ],
   workflowTitle: "How PPT to PDF fits into document work",

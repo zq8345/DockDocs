@@ -14,7 +14,7 @@ const config = {
   heroDescription: "Extract table data from PDF files and download a structured XLSX spreadsheet. Powered by CloudConvert.",
   primaryActionLabel: "Convert to Excel",
   stats: [["Price", "Free"], ["Input", "PDF"], ["Output", "XLSX"]],
-  upload: { title: "Upload a PDF to convert", description: "Drag and drop a PDF file here, or choose from your device.", buttonLabel: "Choose PDF", note: "PDF with tables works best. Max 20 MB." },
+  upload: { title: "Upload a PDF to convert", description: "Drag and drop a PDF file here, or choose from your device.", buttonLabel: "Choose PDF", note: "PDF with tables works best. Max 100 MB." },
   benefitsTitle: "Extract PDF table data into editable Excel",
   benefitsDescription: "Stop manually copying data from PDFs into spreadsheets.",
   benefits: [
@@ -27,7 +27,7 @@ const config = {
   features: [
     { title: "Table recognition", description: "Identifies and extracts table structures from PDFs." },
     { title: "XLSX output", description: "Downloads as a standard Excel file." },
-    { title: "Up to 20 MB", description: "Handles most data PDFs comfortably." },
+    { title: "Up to 100 MB", description: "Handles most data PDFs comfortably." },
     { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
   ],
   workflowTitle: "How PDF to Excel fits into document work",
@@ -37,7 +37,7 @@ const config = {
   faq: [
     { question: "How do I convert PDF to Excel?", answer: "Upload a PDF with tables and download the converted XLSX file. Most documents convert in under 30 seconds, and the result opens in Excel, Google Sheets, or Numbers." },
     { question: "What if my PDF has no tables?", answer: "Text-only PDFs will still convert but may not produce clean spreadsheet data. The converter works best on PDFs with clear, ruled tables — financial statements, invoices, and data reports." },
-    { question: "What is the file size limit?", answer: "You can convert PDF files up to 20 MB, which covers the large majority of multi-page data PDFs and reports." },
+    { question: "What is the file size limit?", answer: "You can convert PDF files up to 100 MB, which covers the large majority of multi-page data PDFs and reports." },
     { question: "Can I convert a scanned PDF to Excel?", answer: "A scanned PDF is an image with no selectable text, so table extraction will be unreliable. Run it through DockDocs OCR PDF first to add a text layer, then convert that output to Excel." },
     { question: "Is PDF to Excel free?", answer: "Yes. PDF to Excel is a free conversion workflow on DockDocs — no credits and no watermark on the XLSX output." },
   ],

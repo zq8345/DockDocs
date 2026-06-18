@@ -24,7 +24,7 @@ const config = {
     title: "Upload a PDF file",
     description: "Drag and drop a PDF file here, or choose from your device.",
     buttonLabel: "Choose PDF",
-    note: "PDF only. Max 10 MB.",
+    note: "PDF only. Max 100 MB.",
   },
   benefitsTitle: "Convert PDF files for document editing",
   benefitsDescription:
@@ -60,7 +60,7 @@ const config = {
         "Preserve text content for editing, copying, and document repurposing.",
     },
     {
-      title: "Up to 10 MB",
+      title: "Up to 100 MB",
       description: "Handles most business documents comfortably.",
     },
     {
