@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { navCategories } from "@/components/Header";
 
@@ -257,6 +257,37 @@ function Figure({ children, className = "", glow = "28%" }: { children: ReactNod
   );
 }
 
+// Shared JS-controlled typewriter. REST = fully shown (A-scheme: non-hover/touch visitors
+// see the value prop + SEO has the text). On hover (desktop only): lines re-type one by one;
+// lines not yet reached are clipped (tw-pending) so it reads as a true line-by-line reveal.
+// Resets to fully-shown on leave. Touch never fires onMouseEnter → stays at the shown rest state.
+function useLineReveal(count: number) {
+  const [phase, setPhase] = useState(-1);
+  const [active, setActive] = useState(false);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const start = useCallback(() => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+    // reduced-motion: skip the replay entirely, keep the static fully-shown rest state
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setActive(true);
+    setPhase(0);
+    for (let i = 1; i < count; i++) {
+      timers.current.push(setTimeout(() => setPhase(i), i * 480));
+    }
+  }, [count]);
+  const stop = useCallback(() => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+    setActive(false);
+    setPhase(-1);
+  }, []);
+  useEffect(() => () => { timers.current.forEach(clearTimeout); }, []);
+  // "" = rest (fully shown) · tw-on = typing/typed · tw-pending = waiting its turn (clipped)
+  const lineCls = useCallback((p: number) => (active ? (phase >= p ? "tw-on" : "tw-pending") : ""), [active, phase]);
+  return { active, start, stop, lineCls };
+}
+
 function Icon({ i }: { i: number }) {
   return (
     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[color:var(--line)] text-[color:var(--accent)]">
@@ -269,18 +300,40 @@ function Icon({ i }: { i: number }) {
 function MiniThumbs() {
   return (
     <div className="flex items-end gap-2">
-      {[0, 1, 2, 3].map((i) => (
+      {/* Compress target — shrinks + progress bar + badge on hover */}
+      <div className="relative flex flex-col items-center">
+        <span className="mc-badge pointer-events-none absolute -top-4 left-1/2 whitespace-nowrap rounded border border-[color:var(--line)] bg-[color:var(--surface)] px-1.5 py-px text-[9px] font-medium text-[color:var(--accent)]">−68%</span>
+        <div className="mc-file flex h-14 w-10 flex-col gap-1 overflow-hidden rounded-md border border-[color:var(--line)] p-1.5">
+          {[70, 90, 55].map((w, k) => (
+            <span key={k} className="h-[3px] shrink-0 rounded-full bg-[color:var(--skeleton)]" style={{ width: `${w}%` }} />
+          ))}
+        </div>
+        <div className="mt-1 h-1 w-10 overflow-hidden rounded-full bg-[color:var(--skeleton)]">
+          <div className="mc-progress h-full rounded-full bg-[color:var(--accent)]" />
+        </div>
+      </div>
+      {/* Other files */}
+      {[1, 2, 3].map((i) => (
         <div key={i} className="mt-tile flex h-14 w-10 flex-col gap-1 rounded-md border border-[color:var(--line)] p-1.5" style={{ ["--i"]: i } as CSSProperties}>
-          {[70, 90, 55].map((w, k) => <span key={k} className="h-[3px] rounded-full bg-[color:var(--skeleton)]" style={{ width: `${w}%` }} />)}
+          {[70, 90, 55].map((w, k) => (
+            <span key={k} className="h-[3px] rounded-full bg-[color:var(--skeleton)]" style={{ width: `${w}%` }} />
+          ))}
         </div>
       ))}
       <div className="mt-tile flex h-14 w-10 items-center justify-center rounded-md border border-dashed border-[color:var(--line-strong)] text-[16px] text-[color:var(--faint)]" style={{ ["--i"]: 4 } as CSSProperties}>+</div>
     </div>
   );
 }
-function MiniExtract({ label }: { label: string }) {
+function MiniExtract({ label, locale }: { label: string; locale: Locale }) {
+  const { start, stop, lineCls } = useLineReveal(3);
+  const lines = [
+    locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : "Revenue +23% YoY",
+    locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : "APAC is the main driver",
+    locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : "Gross margin 41%",
+  ];
+  const citeLabel = locale === "zh" ? "已溯源" : locale === "es" ? "citado" : locale === "pt" ? "citado" : locale === "fr" ? "cité" : "cited";
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-2.5" onMouseEnter={start} onMouseLeave={stop}>
       <div className="relative flex h-16 w-12 flex-col gap-1 overflow-hidden rounded-md border border-[color:var(--line)] p-1.5">
         {[80, 60, 75, 50, 65].map((w, k) => <span key={k} className="h-[3px] rounded-full bg-[color:var(--skeleton)]" style={{ width: `${w}%` }} />)}
         <span className="mx-scan pointer-events-none absolute inset-x-1 top-1 h-3 rounded" style={{ background: "linear-gradient(var(--soft-accent), transparent)" }} />
@@ -288,10 +341,17 @@ function MiniExtract({ label }: { label: string }) {
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-[color:var(--accent)]"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
       <div className="flex-1 rounded-md border border-[color:var(--line)] p-2">
         <p className="mb-1.5 text-[9px] font-normal uppercase tracking-[0.1em] text-[color:var(--faint)]">{label}</p>
-        {[0, 1, 2].map((k) => (
-          <div key={k} className="mx-row mb-1 flex items-center gap-1.5 last:mb-0" style={{ ["--i"]: k } as CSSProperties}>
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-            <span className="h-[3px] flex-1 rounded-full bg-[color:var(--skeleton)]" />
+        {/* Line 1 with source badge */}
+        <div className="mb-1 flex items-center gap-1 last:mb-0">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
+          <span className={`tw-line min-w-0 flex-1 text-[10px] leading-tight text-[color:var(--foreground)] ${lineCls(0)}`}>{lines[0]}</span>
+          <span className={`tw-pill ml-auto inline-flex shrink-0 items-center rounded border border-[color:var(--line)] px-1 py-px text-[8px] font-medium text-[color:var(--accent)] ${lineCls(0)}`}>{citeLabel}</span>
+        </div>
+        {/* Lines 2–3 */}
+        {lines.slice(1).map((line, i) => (
+          <div key={i} className="mb-1 flex items-center gap-1 last:mb-0">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" />
+            <span className={`tw-line min-w-0 flex-1 text-[10px] leading-tight text-[color:var(--muted)] ${lineCls(i + 1)}`}>{line}</span>
           </div>
         ))}
       </div>
@@ -301,6 +361,14 @@ function MiniExtract({ label }: { label: string }) {
 function MiniBatch() {
   return (
     <div>
+      {/* Sort-category labels appear after batch bar fills */}
+      <div className="mb-2 flex gap-1.5">
+        {(["Invoice", "Contract"] as const).map((lb, i) => (
+          <span key={i} className="ms-label inline-flex items-center gap-1 rounded-full border border-[color:var(--line)] px-2 py-px text-[9px] text-[color:var(--accent)]" style={{ ["--i"]: i } as CSSProperties}>
+            <span className="h-1 w-1 shrink-0 rounded-full bg-current" />{lb}
+          </span>
+        ))}
+      </div>
       <div className="relative h-14">
         {[0, 1, 2].map((i) => (
           <div key={i} className="ms-stack absolute h-12 w-10 rounded-md border border-[color:var(--line)]" style={{ left: `${i * 10}px`, top: `${i * 3}px`, background: "var(--background)", ["--i"]: i } as CSSProperties} />
@@ -315,11 +383,20 @@ function MiniBatch() {
 }
 function MiniSecure() {
   return (
-    <div className="relative flex h-16 w-full flex-col justify-center gap-1.5 rounded-md border border-[color:var(--line)] px-3">
-      <span className="h-[3px] w-[60%] rounded-full bg-[color:var(--skeleton)]" />
-      <span className="ms-bar h-[6px] rounded-sm bg-[color:var(--foreground)]" />
-      <span className="h-[3px] w-[70%] rounded-full bg-[color:var(--skeleton)]" />
-      <svg className="absolute right-3 top-3 text-[color:var(--accent)]" width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
+    <div className="relative flex h-full w-full flex-col gap-2 rounded-md border border-[color:var(--line)] p-3">
+      {/* Rotating profession label */}
+      <div className="relative h-5 overflow-hidden">
+        {(["Legal", "Finance", "Research"] as const).map((lb, i) => (
+          <span key={i} className={`sec-prof sec-prof-${i} absolute left-0 top-0 inline-flex items-center rounded-full border border-[color:var(--line)] px-2 py-px text-[9px] text-[color:var(--muted)]`}>{lb}</span>
+        ))}
+      </div>
+      {/* Risk-annotated contract lines (red/yellow/green) */}
+      {(["#ef4444", "#f59e0b", "#3ecf8e"] as const).map((color, i) => (
+        <div key={i} className="flex items-center gap-1.5">
+          <span className="sec-tag h-2 w-2 shrink-0 rounded-full" style={{ background: color, ["--i"]: i } as CSSProperties} />
+          <span className="h-[3px] flex-1 rounded-full bg-[color:var(--skeleton)]" />
+        </div>
+      ))}
     </div>
   );
 }
@@ -369,6 +446,8 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
   const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : slug);
 
   // ── real client-side tool search over the full flatItems set across all 4 cats ──
+  const heroReveal = useLineReveal(3);
+
   const [q, setQ] = useState("");
   const query = q.trim().toLowerCase();
   const allTools: Item[] = (() => {
@@ -397,16 +476,32 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
         .group:hover .mx-scan{animation:mxScan 1.5s ease-in-out infinite}
         .group:hover .mx-row{animation:mxRow .45s ease both;animation-delay:calc(var(--i)*.16s + .15s)}
         .group:hover .ms-stack{animation:msShuffle .6s ease both;animation-delay:calc(var(--i)*.1s)}
-        /* hero AI-summary: typewriter reveal on hover (rest = full shown → SEO-safe + complete; touch & reduced-motion = static) */
-        @keyframes htype{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+        /* JS-controlled typewriter: hero + ai-workflows card. REST = fully shown (A-scheme: non-hover/touch see it + SEO); hover re-types line by line */
+        @keyframes htype{from{opacity:1;clip-path:inset(0 100% 0 0)}to{opacity:1;clip-path:inset(0 0 0 0)}}
         @keyframes htypePill{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
-        @media (hover:hover){
-          .hfg-in:hover .htype{animation:htype .5s steps(16) both}
-          .hfg-in:hover .htype-2{animation-delay:.5s}
-          .hfg-in:hover .htype-3{animation-delay:1s}
-          .hfg-in:hover .htype-pill{animation:htypePill .3s ease .42s both}
-        }
-        @media (prefers-reduced-motion: reduce){.hfg-in,.batch-bar,.ms-bar,.mt-tile,.mx-scan,.mx-row,.ms-stack,.htype,.htype-pill{animation:none!important;transition:none!important}}
+        .tw-line{opacity:1}.tw-line.tw-pending{clip-path:inset(0 100% 0 0)}.tw-line.tw-on{animation:htype .5s steps(16) both}
+        .tw-pill{opacity:1}.tw-pill.tw-pending{opacity:0}.tw-pill.tw-on{animation:htypePill .3s ease .42s both}
+        /* MiniThumbs: compress animation */
+        @keyframes mcCompress{0%,25%{height:56px}75%,100%{height:36px}}
+        @keyframes mcBadgeIn{0%,50%{opacity:0;transform:translateX(-50%) scale(.8)}80%,100%{opacity:1;transform:translateX(-50%) scale(1)}}
+        @keyframes mcBarFill{from{width:0}to{width:100%}}
+        .mc-badge{opacity:0;transform:translateX(-50%)}.mc-progress{width:0}
+        .group:hover .mc-file{animation:mcCompress 1.5s ease both}
+        .group:hover .mc-badge{animation:mcBadgeIn 1.5s ease both}
+        .group:hover .mc-progress{animation:mcBarFill 1.2s ease-in-out .1s both}
+        /* MiniBatch: sort-category labels appear after progress fills */
+        @keyframes msLabelIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+        .ms-label{opacity:0}
+        .group:hover .ms-label{animation:msLabelIn .35s ease both;animation-delay:calc(var(--i)*.2s + .5s)}
+        /* MiniSecure: risk annotation dots + rotating profession label */
+        @keyframes secTagIn{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
+        @keyframes secRotate{0%,15%{opacity:0;transform:translateY(4px)}22%,65%{opacity:1;transform:none}72%,100%{opacity:0;transform:translateY(-3px)}}
+        .sec-tag{opacity:0}.sec-prof{opacity:0}
+        .group:hover .sec-tag{animation:secTagIn .35s ease both;animation-delay:calc(var(--i)*.22s + .15s)}
+        .group:hover .sec-prof-0{animation:secRotate 2.4s ease 0s infinite}
+        .group:hover .sec-prof-1{animation:secRotate 2.4s ease .8s infinite}
+        .group:hover .sec-prof-2{animation:secRotate 2.4s ease 1.6s infinite}
+        @media (prefers-reduced-motion:reduce){.hfg-in,.batch-bar,.ms-bar,.mt-tile,.mx-scan,.mx-row,.ms-stack,.mc-file,.mc-progress,.ms-label,.sec-tag,.sec-prof{animation:none!important;transition:none!important}.tw-line,.tw-pill{animation:none!important;opacity:1!important;clip-path:none!important}.mc-badge{animation:none!important;opacity:1!important;transform:translateX(-50%)!important}.ms-label,.sec-tag,.sec-prof{opacity:1!important;transform:none!important}}
       `}</style>
 
       {/* ── 1 · Hero — left-aligned anchor, mirroring About §1 (eyebrow → big H1 → sub → CTAs → trust pills → weighty wide Figure → caption) ── */}
@@ -433,7 +528,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
 
           {/* product as art: a real grounded-AI interface — report → AI summary, with a citation. Full About-weight Figure, wide. */}
           <Figure className="mt-12" glow="24%">
-            <div className="hfg-in flex items-stretch gap-4">
+            <div className="hfg-in flex items-stretch gap-4" onMouseEnter={heroReveal.start} onMouseLeave={heroReveal.stop}>
               <div className="flex w-[34%] flex-col gap-1.5 rounded-lg border border-[color:var(--line)] bg-black/20 p-4">
                 {[80, 60, 70, 50, 65, 55].map((w, i) => <span key={i} className={`h-[3px] rounded-full ${i === 2 ? "bg-[color:var(--accent)]" : "bg-[color:var(--skeleton)]"}`} style={{ width: `${w}%`, opacity: i === 2 ? 0.9 : 1 }} />)}
                 <span className="mt-1 text-[10px] text-[color:var(--faint)]">report.pdf</span>
@@ -445,12 +540,12 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
                 <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
                 <div className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--foreground)]">
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                  <span className="htype min-w-0">{locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : "Revenue +23% YoY"}</span>
-                  <span className="htype-pill ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)]">{c.cite}</span>
+                  <span className={`tw-line min-w-0 ${heroReveal.lineCls(0)}`}>{locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : "Revenue +23% YoY"}</span>
+                  <span className={`tw-pill ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)] ${heroReveal.lineCls(0)}`}>{c.cite}</span>
                 </div>
                 {[locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : "APAC is the main driver", locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : "Gross margin 41% (↑3pt)"].map((b, i) => (
                   <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--muted)] last:mb-0">
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" /><span className={`htype htype-${i + 2}`}>{b}</span>
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" /><span className={`tw-line ${heroReveal.lineCls(i + 1)}`}>{b}</span>
                   </div>
                 ))}
               </div>
@@ -510,7 +605,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
                         </div>
                         <div className="mt-5">
                           {visual === "thumbs" && <MiniThumbs />}
-                          {visual === "extract" && <MiniExtract label={c.aiSummary} />}
+                          {visual === "extract" && <MiniExtract label={c.aiSummary} locale={locale} />}
                           {visual === "batch" && <MiniBatch />}
                           {visual === "secure" && <MiniSecure />}
                         </div>
