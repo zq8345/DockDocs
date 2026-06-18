@@ -50,7 +50,7 @@ const content = {
 
     cloudEyebrow: "// Honest about the cloud",
     cloudHeading: "When a tool does use the cloud, it says so.",
-    cloudSub: "A few tools (Office conversion, big OCR, AI chat) need a server: labeled before you start, encrypted in transit, deleted right after. Every AI answer points to the exact source line.",
+    cloudSub: "A few tools (Office conversion, big OCR, AI chat) need a server: labeled before you start, encrypted in transit, deleted right after. When the AI answers a question or flags a finding, it shows the exact passage behind it — quoted from your file and verified to be there — and tells you when something can't be traced, instead of inventing a source.",
     cloudSteps: ["labeled up front", "encrypted in transit", "processed", "copy deleted"],
     cloudNotKept: "not retained",
     aiSummary: "AI answer",
@@ -118,7 +118,7 @@ const content = {
 
     cloudEyebrow: "// 对云端坦诚",
     cloudHeading: "少数工具确实要用云端——它会明说。",
-    cloudSub: "少数工具（Office 转换、大文件 OCR、AI 问答）需要服务器：开始前标注、传输加密、用完即删。每个 AI 答案都指向确切的原文那一行。",
+    cloudSub: "少数工具（Office 转换、大文件 OCR、AI 问答）需要服务器：开始前标注、传输加密、用完即删。AI 回答问题或标出某项发现时，会把支撑它的原文原句展示给你——从你的文件里逐字引用、并核实确实在文中——若有内容无法溯源，它会如实说明，而不是编造一个出处。",
     cloudSteps: ["事先标注", "传输加密", "处理", "副本删除"],
     cloudNotKept: "不留存",
     aiSummary: "AI 答案",
@@ -186,7 +186,7 @@ const content = {
 
     cloudEyebrow: "// Sinceros sobre la nube",
     cloudHeading: "Cuando una herramienta sí usa la nube, lo dice.",
-    cloudSub: "Algunas herramientas (conversión de Office, OCR grande, chat con IA) necesitan un servidor: avisado antes de empezar, cifrado en tránsito y borrado justo después. Cada respuesta de IA apunta a la línea de origen exacta.",
+    cloudSub: "Algunas herramientas (conversión de Office, OCR grande, chat con IA) necesitan un servidor: avisado antes de empezar, cifrado en tránsito y borrado justo después. Cuando la IA responde una pregunta o señala un hallazgo, te muestra el pasaje exacto que lo respalda —citado de tu archivo y comprobado que está realmente ahí— y te avisa cuando algo no se puede rastrear, en lugar de inventarse una fuente.",
     cloudSteps: ["avisado por adelantado", "cifrado en tránsito", "procesado", "copia borrada"],
     cloudNotKept: "no se conserva",
     aiSummary: "respuesta de IA",
@@ -254,7 +254,7 @@ const content = {
 
     cloudEyebrow: "// Honestos sobre a nuvem",
     cloudHeading: "Quando uma ferramenta usa a nuvem, ela avisa.",
-    cloudSub: "Algumas ferramentas (conversão do Office, OCR grande, chat com IA) precisam de um servidor: avisado antes de começar, criptografado em trânsito e excluído logo após. Cada resposta de IA aponta para a linha de origem exata.",
+    cloudSub: "Algumas ferramentas (conversão do Office, OCR grande, chat com IA) precisam de um servidor: avisado antes de começar, criptografado em trânsito e excluído logo após. Quando a IA responde a uma pergunta ou aponta uma constatação, ela mostra o trecho exato que a fundamenta — citado do seu arquivo e confirmado que está mesmo lá — e avisa quando algo não pode ser rastreado, em vez de inventar uma fonte.",
     cloudSteps: ["avisado com antecedência", "criptografado em trânsito", "processado", "cópia excluída"],
     cloudNotKept: "não retido",
     aiSummary: "resposta de IA",
@@ -322,7 +322,7 @@ const content = {
 
     cloudEyebrow: "// Honnêtes sur le cloud",
     cloudHeading: "Quand un outil utilise le cloud, il vous le dit.",
-    cloudSub: "Certains outils (conversion Office, OCR volumineuse, chat IA) ont besoin d'un serveur : signalé avant de commencer, chiffré en transit et supprimé juste après. Chaque réponse IA renvoie à la ligne source exacte.",
+    cloudSub: "Certains outils (conversion Office, OCR volumineuse, chat IA) ont besoin d'un serveur : signalé avant de commencer, chiffré en transit et supprimé juste après. Quand l'IA répond à une question ou relève un élément, elle montre le passage exact qui l'appuie — cité depuis votre fichier et vérifié qu'il s'y trouve — et vous indique quand quelque chose ne peut pas être tracé, au lieu d'inventer une source.",
     cloudSteps: ["signalé à l'avance", "chiffré en transit", "traité", "copie supprimée"],
     cloudNotKept: "non conservé",
     aiSummary: "réponse IA",
