@@ -490,7 +490,7 @@ const QA: Record<Locale, {
 }> = {
   en: {
     title: "Ask across these documents",
-    desc: "Ask one question across every document you uploaded — the answer cites the source.",
+    desc: "Ask one question across every document you uploaded — the answer shows its source.",
     placeholder: "e.g. Which quote has the shortest delivery time?",
     ask: "Ask", thinking: "Thinking…", sources: "Sources",
     noAnswer: "Couldn't find an answer in these documents.",
@@ -510,7 +510,7 @@ const QA: Record<Locale, {
   },
   es: {
     title: "Pregunta a todos estos documentos",
-    desc: "Haz una pregunta a todos los documentos que subiste — la respuesta cita la fuente.",
+    desc: "Haz una pregunta a todos los documentos que subiste — la respuesta muestra su fuente.",
     placeholder: "p. ej. ¿Qué presupuesto tiene el plazo de entrega más corto?",
     ask: "Preguntar", thinking: "Pensando…", sources: "Fuentes",
     noAnswer: "No se encontró una respuesta en estos documentos.",
@@ -520,7 +520,7 @@ const QA: Record<Locale, {
   },
   pt: {
     title: "Pergunte a todos estes documentos",
-    desc: "Faça uma pergunta a todos os documentos que você enviou — a resposta cita a fonte.",
+    desc: "Faça uma pergunta a todos os documentos que você enviou — a resposta mostra a fonte.",
     placeholder: "ex.: Qual orçamento tem o menor prazo de entrega?",
     ask: "Perguntar", thinking: "Pensando…", sources: "Fontes",
     noAnswer: "Não foi possível encontrar uma resposta nestes documentos.",
@@ -530,7 +530,7 @@ const QA: Record<Locale, {
   },
   fr: {
     title: "Interrogez tous ces documents",
-    desc: "Posez une seule question à tous les documents que vous avez importés — la réponse cite la source.",
+    desc: "Posez une seule question à tous les documents que vous avez importés — la réponse montre sa source.",
     placeholder: "ex. : Quel devis a le délai de livraison le plus court ?",
     ask: "Demander", thinking: "Réflexion…", sources: "Sources",
     noAnswer: "Aucune réponse trouvée dans ces documents.",

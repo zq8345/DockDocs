@@ -5,7 +5,7 @@ import { groundingFaq } from "@/components/GroundingNote";
 
 export const metadata: Metadata = {
   title: "Chat with PDF — AI Q&A with Your Documents",
-  description: "Chat with any PDF or document and get answers that cite the source — upload a file, ask questions, and let AI read it for you. Free, in your browser.",
+  description: "Chat with any PDF or document and get answers that show their source — upload a file, ask questions, and let AI read it for you. Free, in your browser.",
   keywords: ["chat with pdf", "chat with documents", "ai pdf chat", "ask pdf questions", "chat with document"],
   alternates: { canonical: "/chat-with-pdf/", languages: languageAlternates("chat-with-pdf") },
   robots: { index: true, follow: true },
