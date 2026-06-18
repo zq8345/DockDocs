@@ -8,7 +8,7 @@ import { createBillingCheckoutSession, createBillingPortalSession, changeBilling
 import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
 import { getUser, onAuthChange } from "@/lib/auth";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 
 const copy = {
   en: {
@@ -407,85 +407,6 @@ const copy = {
       { f: "Espace d'équipe · support prioritaire", v: ["—", "—", "✓"] },
     ],
   },
-  ja: {
-    title: "シンプルな料金。強力でプライベートな文書。",
-    subtitle: "無料で開始 — アカウントもカードも不要。AI・大きなファイル・大量処理が必要になったときだけアップグレード。解約はいつでも 2 クリックで。",
-    monthly: "月額",
-    yearly: "年額",
-    save: "約 40% お得",
-    lifetime: "買い切り",
-    perOnce: "一括",
-    lifetimeNote: "創設者価格 — 一度の支払いでずっと使えます。価格は今後上がります。",
-    perMo: "/月",
-    mostPopular: "人気 No.1",
-    billedYearly: (v: string) => `年額 ${v} で請求`,
-    trust: ["7 日間返金保証", "いつでも解約可能、引き止めなし", "ファイルを自社モデルの学習に使うことは一切ありません"],
-    plans: [
-      {
-        name: "Free",
-        monthlyPrice: "$0",
-        yearlyPrice: "$0",
-        tagline: "日々の PDF 作業に必要なすべて。",
-        highlights: ["20 以上の PDF ツール — 変換・圧縮・結合・分割", "暗号化、ページ編集、スキャン文書の OCR", "ブラウザ内で処理 — ファイルはプライベートなまま", "ずっと無料、アカウント不要"],
-        cta: "無料で始める",
-        href: "/chat-with-pdf" as RouteSlug,
-        featured: false,
-      },
-      {
-        name: "Plus",
-        monthlyPrice: "$5",
-        yearlyPrice: "$3",
-        yearlyTotal: "$36/年",
-        tagline: "AI が文書を読み、比較する — 数秒で。",
-        valueLine: "月にコーヒー 1 杯分未満。",
-        highlights: ["Free のすべて", "どんな PDF とも対話 — 回答は出典を明示", "AI 要約と要点を数秒で", "複数の文書を並べて比較", "100 MB のファイル、一括処理と優先処理、広告なし"],
-        cta: "Plus にアップグレード",
-        href: "" as RouteSlug,
-        featured: true,
-      },
-      {
-        name: "Pro",
-        monthlyPrice: "$20",
-        yearlyPrice: "$12",
-        yearlyTotal: "$144/年",
-        tagline: "文書ワークフローの自動化とプロ仕様のレビュー。",
-        highlights: ["Plus のすべて", "文書の一括ワークフローを自動化", "契約レビュー — リスク条項・欠落条項を指摘", "API アクセスと自動分類", "チームワークスペースと優先サポート"],
-        cta: "Pro にアップグレード",
-        href: "" as RouteSlug,
-        featured: false,
-      },
-    ],
-    faqTitle: "購入前のよくある質問",
-    faq: [
-      { q: "いつでも解約できますか？", a: "はい。数クリックでご自身で管理・解約できます — メール不要、引き止めもありません。お支払い済みの期間が終わるまではそのままご利用いただけます。" },
-      { q: "返金はありますか？", a: "はい。Plus または Pro がご期待に沿わない場合は、お支払いから 7 日以内にご申請いただければ全額返金します。" },
-      { q: "DockDocs の利用に支払いは必要ですか？", a: "いいえ。20 以上の主要な PDF ツールはずっと無料で、アカウントも不要です。AI 機能・大きなファイル・大量処理が必要な場合のみお支払いいただきます。" },
-      { q: "私のファイルはどうなりますか？", a: "ほとんどのツールは完全にブラウザ内で処理され、ファイルはお使いの端末から外に出ません。クラウド変換は処理後、一時コピーが自動的に削除されます。お客様の文書を自社モデルの学習に使うことは一切なく、回答に必要なテキストのみが AI プロバイダーに送られます。" },
-      { q: "後からプランを変更できますか？", a: "いつでも可能です。アップグレード、ダウングレード、月額と年額の切り替えがいつでもできます。" },
-    ],
-    ctaTitle: "無料で試して — あとで決める。",
-    ctaDesc: "今すぐどのツールでも開けます。アカウント・カード・契約は不要。",
-    ctaBtn: "無料ツールから始める",
-    scenariosTitle: "DockDocs で何が解決できる？",
-    scenarios: [
-      { emoji: "📊", title: "見積もりを比較して最適な 1 社を選ぶ", before: "3 つのファイルを開いて数字を表に転記 — 約 1 時間", after: "アップロード → 並列比較表＋出典付きの推奨 — 1 分", tier: "Plus", href: "/compare" as RouteSlug },
-      { emoji: "📄", title: "契約書の落とし穴を見抜く", before: "弁護士に 300 ドル払うか、よく読まず署名して痛い目に", after: "AI がリスク条項・欠落条項を数分で指摘", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "請求書をまとめて処理", before: "1 枚ずつ手入力で数時間、または人を雇う", after: "まとめて投入 → 自動で抽出・要約", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
-      { emoji: "📕", title: "長いレポートをすばやく把握", before: "80 ページを読んで答えを探す — 数時間", after: "何でも質問 → 出典付きの回答が 30 秒で", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
-    ],
-    compareTitle: "プラン比較",
-    compareCols: ["Free", "Plus", "Pro"],
-    compareRows: [
-      { f: "20 以上の PDF ツール — 変換・圧縮・結合・暗号化・OCR", v: ["✓", "✓", "✓"] },
-      { f: "PDF と対話 ・ AI 要約", v: ["—", "✓", "✓"] },
-      { f: "AI で PDF 翻訳（レイアウト維持）", v: ["—", "近日", "近日"] },
-      { f: "複数文書の比較", v: ["—", "✓", "✓"] },
-      { f: "100 MB ファイル ・ 一括処理 ・ 広告なし", v: ["—", "✓", "✓"] },
-      { f: "ワークフロー自動化 ・ API ・ 自動分類", v: ["—", "—", "✓"] },
-      { f: "契約レビュー — リスク・欠落条項", v: ["—", "—", "✓"] },
-      { f: "チームワークスペース ・ 優先サポート", v: ["—", "—", "✓"] },
-    ],
-  },
 } as const;
 
 // Localized, user-facing copy for a billing failure code. The raw code + server
@@ -802,10 +723,10 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 const hasTools = cat.tools.length > 0;
                 const hasFeatures = (cat.features?.length ?? 0) > 0;
                 const canExpand = hasTools || hasFeatures;
-                const catLabel = cat.label[locale as keyof typeof cat.label] ?? cat.label.en;
+                const catLabel = cat.label[locale] ?? cat.label.en;
                 const lim = (tier: "free" | "plus" | "pro") => {
                   const v = cat.limits[tier];
-                  return v[locale as keyof typeof v] ?? v.en;
+                  return v[locale] ?? v.en;
                 };
                 const cellCls = (val: string) =>
                   val.startsWith("Unlimited") || val.startsWith("无限") || val.startsWith("Ilimitado") || val.startsWith("Illimité")
@@ -853,7 +774,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                 href={`/${tool.slug}/`}
                                 className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
                               >
-                                {tool[locale as keyof typeof tool] ?? tool.en}
+                                {tool[locale] ?? tool.en}
                               </a>
                             ))}
                           </div>
@@ -867,11 +788,11 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                 </span>
                                 {f.href ? (
                                   <a href={f.href} className="text-[color:var(--foreground)] underline-offset-2 hover:underline">
-                                    {f[locale as keyof typeof f] ?? f.en}
+                                    {f[locale] ?? f.en}
                                   </a>
                                 ) : (
                                   <span className={f.status === "live" ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}>
-                                    {f[locale as keyof typeof f] ?? f.en}
+                                    {f[locale] ?? f.en}
                                   </span>
                                 )}
                                 {f.status === "coming" && (
