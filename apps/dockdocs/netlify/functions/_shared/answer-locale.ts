@@ -3,12 +3,11 @@
 // TEXT is localized — citations/verbatim snippets, JSON schema, field/column names,
 // and traceability markers stay as-is (the calling function controls those).
 //
-// Scope (2026-06-19): en/zh/es/pt/fr. ja is intentionally NOT here yet (pending Joe's
-// beta decision); an unknown/absent locale falls back to English.
+// Scope (2026-06-19): en/zh/es/pt/fr/ja. An unknown/absent locale falls back to English.
 
-export type AnswerLocale = "en" | "zh" | "es" | "pt" | "fr";
+export type AnswerLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
-const SUPPORTED: ReadonlySet<string> = new Set(["en", "zh", "es", "pt", "fr"]);
+const SUPPORTED: ReadonlySet<string> = new Set(["en", "zh", "es", "pt", "fr", "ja"]);
 
 // Normalize an untrusted client-supplied locale to a supported AnswerLocale.
 export function resolveAnswerLocale(raw: unknown): AnswerLocale {
@@ -26,6 +25,8 @@ export function answerLanguageName(locale: AnswerLocale): string {
       return "Portuguese";
     case "fr":
       return "French";
+    case "ja":
+      return "Japanese";
     default:
       return "English";
   }
