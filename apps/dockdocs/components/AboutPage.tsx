@@ -44,7 +44,7 @@ const content = {
     tableSub: "No fine print. The left list is the whole product; the right list is everything we refuse to do.",
     doHead: "We do",
     neverHead: "We never",
-    doRows: ["Process files in your browser", "Delete cloud temp-files immediately", "Label every cloud step up front", "Cite the source of every AI answer", "Let you start with no account"],
+    doRows: ["Process files in your browser", "Delete cloud temp-files immediately", "Label every cloud step up front", "Cite the source of an AI answer — or say when we can't", "Let you start with no account"],
     neverRows: ["Store your documents", "Train our own models on your files", "Sell or share your data", "Email-to-cancel traps", "Hidden uploads"],
     tableCaption: "Fig 0.4 — the deal, in full.",
 
@@ -112,7 +112,7 @@ const content = {
     tableSub: "没有小字条款。左边这列就是产品的全部；右边这列是我们拒绝做的一切。",
     doHead: "我们会",
     neverHead: "我们绝不",
-    doRows: ["在你的浏览器里处理", "云端临时副本即刻删除", "云端步骤事先标注", "每个 AI 答案标注原文", "无需注册即可开始"],
+    doRows: ["在你的浏览器里处理", "云端临时副本即刻删除", "云端步骤事先标注", "标注 AI 答案的出处——无法溯源时就明说", "无需注册即可开始"],
     neverRows: ["存储你的文档", "用你的文件训练我们自己的模型", "出售或分享你的数据", "发邮件才能取消的套路", "隐藏的上传"],
     tableCaption: "图 0.4 — 完整的约定。",
 
@@ -180,7 +180,7 @@ const content = {
     tableSub: "Sin letra pequeña. La lista de la izquierda es todo el producto; la de la derecha es todo lo que nos negamos a hacer.",
     doHead: "Sí hacemos",
     neverHead: "Nunca hacemos",
-    doRows: ["Procesar archivos en tu navegador", "Borrar al instante los temporales en la nube", "Señalar cada paso en la nube por adelantado", "Citar la fuente de cada respuesta de IA", "Dejarte empezar sin crear cuenta"],
+    doRows: ["Procesar archivos en tu navegador", "Borrar al instante los temporales en la nube", "Señalar cada paso en la nube por adelantado", "Citar la fuente de una respuesta de IA — o avisar cuando no podemos", "Dejarte empezar sin crear cuenta"],
     neverRows: ["Almacenar tus documentos", "Entrenar nuestros propios modelos con tus archivos", "Vender o compartir tus datos", "Trampas de cancelación por correo", "Subidas ocultas"],
     tableCaption: "Fig 0.4 — el trato, completo.",
 
@@ -248,7 +248,7 @@ const content = {
     tableSub: "Sem letras miúdas. A lista da esquerda é o produto inteiro; a da direita é tudo o que nos recusamos a fazer.",
     doHead: "Fazemos",
     neverHead: "Jamais fazemos",
-    doRows: ["Processar arquivos no seu navegador", "Excluir temporários na nuvem imediatamente", "Indicar cada etapa na nuvem com antecedência", "Citar a fonte de cada resposta de IA", "Deixar você começar sem criar conta"],
+    doRows: ["Processar arquivos no seu navegador", "Excluir temporários na nuvem imediatamente", "Indicar cada etapa na nuvem com antecedência", "Citar a fonte de uma resposta de IA — ou avisar quando não conseguimos", "Deixar você começar sem criar conta"],
     neverRows: ["Armazenar seus documentos", "Treinar nossos próprios modelos com seus arquivos", "Vender ou compartilhar seus dados", "Armadilhas de cancelamento por e-mail", "Envios ocultos"],
     tableCaption: "Fig 0.4 — o acordo, por completo.",
 
@@ -316,7 +316,7 @@ const content = {
     tableSub: "Pas de petits caractères. La liste de gauche est tout le produit ; celle de droite est tout ce que nous refusons de faire.",
     doHead: "Nous faisons",
     neverHead: "Nous ne faisons jamais",
-    doRows: ["Traiter les fichiers dans votre navigateur", "Supprimer immédiatement les temporaires cloud", "Signaler chaque étape cloud à l'avance", "Citer la source de chaque réponse IA", "Vous laisser commencer sans compte"],
+    doRows: ["Traiter les fichiers dans votre navigateur", "Supprimer immédiatement les temporaires cloud", "Signaler chaque étape cloud à l'avance", "Citer la source d'une réponse IA — ou le dire quand on ne peut pas", "Vous laisser commencer sans compte"],
     neverRows: ["Stocker vos documents", "Entraîner nos propres modèles avec vos fichiers", "Vendre ou partager vos données", "Pièges de désabonnement par e-mail", "Envois cachés"],
     tableCaption: "Fig 0.4 — l'accord, en entier.",
 
