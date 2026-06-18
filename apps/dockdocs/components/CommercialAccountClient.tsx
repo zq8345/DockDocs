@@ -18,6 +18,7 @@ import {
   type SubscriptionSnapshot,
 } from "@/lib/subscription-runtime";
 import { StatusBadge } from "@/components/ui/Status";
+import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
@@ -262,7 +263,9 @@ function useLocale(): Locale {
 }
 
 export function CommercialAccountClient() {
-  const t = STR[useLocale()];
+  const locale = useLocale();
+  const t = STR[locale];
+  const upgradeFlow = useUpgradeFlow(locale);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [account, setAccount] = useState<DockAccountState | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
@@ -328,7 +331,19 @@ export function CommercialAccountClient() {
   }
 
   async function handleCheckout(plan: PaidSubscriptionPlan) {
-    setError(""); setMessage(""); setBillingAction(plan === "PLUS" ? "checkout-plus" : "checkout-pro");
+    setError(""); setMessage("");
+    // A PAID user must go through the in-place proration upgrade (which cancels the
+    // old sub) — a fresh checkout here would create a second sub = double-charge.
+    // Free users have nothing to prorate → a plain new-subscription checkout.
+    if (subscription?.isPaidPlaceholder) {
+      const interval =
+        subscription.record.interval && subscription.record.interval !== "lifetime"
+          ? subscription.record.interval
+          : "monthly";
+      void upgradeFlow.beginUpgrade(plan, interval);
+      return;
+    }
+    setBillingAction(plan === "PLUS" ? "checkout-plus" : "checkout-pro");
     try { const url = await createBillingCheckoutSession(plan); window.location.assign(url); }
     catch (e) { setError(getErrorMessage(e, t.errorFallback)); } finally { setBillingAction(""); }
   }
@@ -349,6 +364,7 @@ export function CommercialAccountClient() {
 
   return (
     <section className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+      <UpgradeConfirmModal flow={upgradeFlow} locale={locale} />
       <div className="grid gap-6">
         <AccountStatusCard user={user} account={account} subscription={subscription} onLogout={handleLogout} t={t} />
         {user ? null : (
@@ -368,7 +384,7 @@ export function CommercialAccountClient() {
         <PlanCard signedIn={Boolean(user)} subscription={subscription} billingAction={billingAction} onCheckout={handleCheckout} onPortal={handlePortal} t={t} />
         <WorkspaceBindingCard account={account} t={t} />
         {message ? <StatusBadge className="justify-start p-3 text-sm" label={message} status="Completed" /> : null}
-        {error ? <StatusBadge role="alert" className="justify-start p-3 text-sm" label={error} status="Blocked" /> : null}
+        {(error || upgradeFlow.error) ? <StatusBadge role="alert" className="justify-start p-3 text-sm" label={error || upgradeFlow.error} status="Blocked" /> : null}
       </div>
     </section>
   );
