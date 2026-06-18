@@ -1,5 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
+import { resolveAnswerLocale, type AnswerLocale } from "./_shared/answer-locale";
 
 declare const Netlify: {
   env: {
@@ -22,7 +23,7 @@ type ComparePayload = {
   documents?: DocInput[];
   docType?: string;
   dimensions?: unknown[];
-  locale?: "en" | "zh";
+  locale?: AnswerLocale;
 };
 
 type Dimension = { key: string; label: string };
@@ -136,7 +137,7 @@ export default async (req: Request, _context: Context) => {
   const docType = typeof payload.docType === "string" && payload.docType in DIMENSION_PRESETS ? payload.docType : "quote";
   const clientDimensions = parseClientDimensions(payload.dimensions);
   const dimensions = clientDimensions ?? DIMENSION_PRESETS[docType];
-  const locale = payload.locale === "zh" ? "zh" : "en";
+  const locale = resolveAnswerLocale(payload.locale);
 
   const documents = Array.isArray(payload.documents) ? payload.documents : [];
   const cleaned = documents

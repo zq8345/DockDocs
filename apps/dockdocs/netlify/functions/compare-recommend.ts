@@ -1,5 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
+import { resolveAnswerLocale, answerLanguageName, type AnswerLocale } from "./_shared/answer-locale";
 
 declare const Netlify: {
   env: { get(name: string): string | undefined };
@@ -15,7 +16,7 @@ type DocIn = { id?: string; name?: string; fields?: Record<string, Field> };
 type Dimension = { key: string; label: string };
 type Payload = {
   docType?: string;
-  locale?: "en" | "zh";
+  locale?: AnswerLocale;
   dimensions?: Dimension[];
   documents?: DocIn[];
 };
@@ -66,7 +67,7 @@ export default async (req: Request, _context: Context) => {
   }
 
   const docType = typeof payload.docType === "string" ? payload.docType : "documents";
-  const locale = payload.locale === "zh" ? "zh" : "en";
+  const locale = resolveAnswerLocale(payload.locale);
   const dimensions = Array.isArray(payload.dimensions) ? payload.dimensions.filter((d) => d && typeof d.key === "string") : [];
   const documents = (Array.isArray(payload.documents) ? payload.documents : [])
     .map((d, i) => ({
@@ -113,12 +114,12 @@ async function recommend({
 }: {
   provider: ProviderConfig;
   docType: string;
-  locale: "en" | "zh";
+  locale: AnswerLocale;
   dimensions: Dimension[];
   documents: Array<{ id: string; name: string; fields: Record<string, Field> }>;
   signal: AbortSignal;
 }): Promise<Recommendation | null> {
-  const lang = locale === "zh" ? "Simplified Chinese" : "English";
+  const lang = answerLanguageName(locale);
   const isContract = /contract/i.test(docType);
   const dimLabel = (k: string) => dimensions.find((d) => d.key === k)?.label ?? k;
 

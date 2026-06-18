@@ -1,5 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
+import { resolveAnswerLocale, answerLanguageName, type AnswerLocale } from "./_shared/answer-locale";
 
 declare const Netlify: {
   env: {
@@ -14,7 +15,7 @@ declare const Netlify: {
 // we drop it (no fabricated citations).
 
 type DocInput = { id?: string; name?: string; text?: string };
-type Payload = { question?: string; documents?: DocInput[]; locale?: "en" | "zh" };
+type Payload = { question?: string; documents?: DocInput[]; locale?: AnswerLocale };
 type ProviderConfig = { apiUrl: string; apiKey: string; model: string };
 type Source = { docId: string; name: string; snippet: string };
 
@@ -55,7 +56,7 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "INVALID_JSON", message: "Send JSON with a question and documents." }, 200);
   }
 
-  const locale = payload.locale === "zh" ? "zh" : "en";
+  const locale = resolveAnswerLocale(payload.locale);
   const question = typeof payload.question === "string" ? payload.question.trim().slice(0, MAX_QUESTION) : "";
   if (!question) {
     return json({ ok: false, code: "NO_QUESTION", message: locale === "zh" ? "请输入问题。" : "Enter a question." }, 200);
@@ -120,7 +121,7 @@ async function askAcrossDocs({
   provider: ProviderConfig;
   question: string;
   documents: Array<{ id: string; name: string; text: string }>;
-  locale: "en" | "zh";
+  locale: AnswerLocale;
   signal: AbortSignal;
 }): Promise<{ answer: string; sources: Array<{ docId: string; snippet: string }> } | null> {
   const docBlocks = documents.map((d) => `### Document id="${d.id}" (${d.name})\n${d.text}`).join("\n\n");
@@ -134,7 +135,7 @@ async function askAcrossDocs({
         role: "system",
         content: [
           "You answer a question using ONLY the provided documents. Do not use outside knowledge.",
-          `Write the answer in ${locale === "zh" ? "Chinese" : "English"}.`,
+          `Write the answer in ${answerLanguageName(locale)}.`,
           "If the documents do not contain the answer, say so plainly.",
           "Return ONLY valid JSON: {\"answer\": string, \"sources\": [{\"docId\": string, \"snippet\": string}]}.",
           "Each snippet must be a SHORT verbatim quote (<=160 chars) copied EXACTLY from that document's text. Cite the document(s) you used. Do not invent quotes.",
