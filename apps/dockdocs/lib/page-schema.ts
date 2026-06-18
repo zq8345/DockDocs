@@ -139,6 +139,14 @@ export function pricingSchema(locale: string) {
         isPartOf: { "@type": "WebSite", name: "DockDocs", url: SITE },
         mainEntity: { "@id": `${SITE}/pricing/#app` },
       },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "DockDocs", item: `${baseFor(locale)}/` },
+          { "@type": "ListItem", position: 2, name: "Pricing", item: url },
+        ],
+      },
     ],
   };
 }

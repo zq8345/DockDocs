@@ -33,6 +33,14 @@ export type VerticalConfig = {
   copy: Record<string, VerticalCopy>;
 };
 
+// Breadcrumb pos-2 label per vertical — static English, matching the PdfToolPage
+// breadcrumbName style (not localized; if those are localized later, do these too).
+const VERTICAL_CRUMB: Record<string, string> = {
+  legal: "Legal AI",
+  finance: "Finance AI",
+  research: "Research AI",
+};
+
 export function VerticalHubPage({
   config,
   locale = defaultLocale,
@@ -57,6 +65,7 @@ export function VerticalHubPage({
         description: t.heroDescription,
         inLanguage: locale,
         isPartOf: { "@type": "WebSite", name: "DockDocs", url: siteUrl },
+        publisher: { "@type": "Organization", "@id": `${siteUrl}#org` },
       },
       {
         "@type": "ItemList",
@@ -68,6 +77,14 @@ export function VerticalHubPage({
           name: card.label,
           url: absoluteUrl(`/${card.slug}/`),
         })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${absoluteUrl(canonicalPath)}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "DockDocs", item: absoluteUrl(useLocalePrefix ? `/${locale}/` : "/") },
+          { "@type": "ListItem", position: 2, name: VERTICAL_CRUMB[config.vertical] ?? config.vertical, item: absoluteUrl(canonicalPath) },
+        ],
       },
     ],
   };

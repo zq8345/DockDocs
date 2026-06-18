@@ -41,6 +41,14 @@ const aboutSchema = {
         url: "https://dockdocs.app",
       },
     },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://dockdocs.app/about/#breadcrumb",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "DockDocs", item: "https://dockdocs.app/" },
+        { "@type": "ListItem", position: 2, name: "About", item: "https://dockdocs.app/about/" },
+      ],
+    },
   ],
 };
 

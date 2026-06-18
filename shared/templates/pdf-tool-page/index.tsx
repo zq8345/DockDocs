@@ -318,6 +318,7 @@ export function createPdfToolSchema(config: PdfToolPageConfig) {
           name: "DockDocs",
           url: siteUrl,
         },
+        publisher: { "@type": "Organization", "@id": `${siteUrl}#org` },
         about: {
           "@id": `${pageUrl}#app`,
         },

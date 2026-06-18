@@ -939,6 +939,7 @@ function createBlogArticleSchema({
         },
         publisher: {
           "@type": "Organization",
+          "@id": `${siteUrl}#org`,
           name: "DockDocs",
           url: siteUrl,
         },

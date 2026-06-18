@@ -524,6 +524,7 @@ function createProgrammaticGeoSchema(
           name: "DockDocs",
           url: siteUrl,
         },
+        publisher: { "@type": "Organization", "@id": `${siteUrl}#org` },
         breadcrumb: {
           "@id": `${pageUrl}#breadcrumb`,
         },

@@ -69,6 +69,14 @@ const pricingSchema = {
       },
       mainEntity: { "@id": "https://dockdocs.app/pricing/#app" },
     },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://dockdocs.app/pricing/#breadcrumb",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "DockDocs", item: "https://dockdocs.app/" },
+        { "@type": "ListItem", position: 2, name: "Pricing", item: "https://dockdocs.app/pricing/" },
+      ],
+    },
   ],
 };
 
