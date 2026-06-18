@@ -410,7 +410,9 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
           <h2 className={`mt-4 ${h2}`}>{c.flowHeading}</h2>
           <p className="mt-4 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{c.flowSub}</p>
 
-          <div className="mt-8 overflow-hidden rounded-2xl border border-[color:var(--line)] p-4 sm:p-8">
+          <div className="relative mt-8">
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(55%_60%_at_28%_50%,rgba(62,207,142,0.08),transparent)] blur-[44px]" />
+            <div className="relative z-10 overflow-hidden rounded-2xl border border-[color:var(--line-strong)] bg-[color:var(--surface)] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.02)] sm:p-8">
             <svg viewBox="0 0 920 300" className="w-full" role="img" aria-label={c.flowHeading}>
               {/* boundary */}
               <line x1="560" y1="40" x2="560" y2="260" style={{ stroke: "var(--line-strong)" }} strokeWidth="1.5" strokeDasharray="3 6" />
@@ -446,6 +448,7 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
                 <text x="375" y="235" textAnchor="middle" fill="currentColor" stroke="none" className="text-[12px]">{c.flowZero}</text>
               </g>
             </svg>
+            </div>
           </div>
         </div>
       </section>
@@ -520,11 +523,18 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
                 <div className="flex items-center text-[color:var(--accent)]"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg></div>
                 <div className="flex-1 rounded-lg border border-[color:var(--line)] p-3">
                   <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
-                  <div className="flex items-center gap-1.5 text-[12px] text-[color:var(--foreground)]">
+                  {/* highlighted, source-linked answer line — echoes the homepage grounded-AI demo */}
+                  <div className="mb-1.5 flex items-center gap-1.5 rounded bg-[color:var(--soft-accent)] px-1.5 py-1 text-[12px]">
                     <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                    <span className="h-[3px] flex-1 rounded-full bg-[color:var(--skeleton)]" />
-                    <span className="rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] text-[color:var(--accent)]">{c.aiCite}</span>
+                    <span className="h-[3px] flex-1 rounded-full bg-[color:var(--accent)] opacity-70" />
+                    <span className="shrink-0 rounded border border-[color:var(--accent)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)]">{c.aiCite}</span>
                   </div>
+                  {[58, 72].map((w, i) => (
+                    <div key={i} className="mb-1.5 flex items-center gap-1.5 last:mb-0">
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" />
+                      <span className="h-[3px] rounded-full bg-[color:var(--skeleton)]" style={{ width: `${w}%` }} />
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -540,8 +550,8 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {c.values.map((v, i) => (
               <div key={v.t} className="rounded-2xl border border-[color:var(--line)] p-6">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[color:var(--line)] text-[color:var(--accent)]">
-                  <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{VALUE_ICONS[i]}</svg>
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-[color:var(--accent-strong)] bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]">
+                  <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{VALUE_ICONS[i]}</svg>
                 </span>
                 <p className="mt-4 font-mono text-[11px] text-[color:var(--faint)]">{`0${i + 1}`}</p>
                 <p className="mt-1.5 text-[16px] font-normal text-[color:var(--foreground)]">{v.t}</p>
