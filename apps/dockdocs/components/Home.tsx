@@ -4,6 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { navCategories } from "@/components/Header";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { Figure, SHELL, H2, SUB, CAP, PANEL, eyebrowCls } from "@/components/design";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Item = { name: string; slug: string };
@@ -265,38 +266,7 @@ function flatItems(cat: { cols: { items: Item[] }[] }): Item[] {
   return out;
 }
 
-const EYEBROW = (zh: boolean) => `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
 const GLOW = { background: "radial-gradient(480px circle at 30% 0%, rgba(62,207,142,0.06), transparent 62%)" };
-
-// ── About v2 design primitives (reused verbatim so Home reads as the same family) ──
-const H2 = "text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]";
-const SUB = "mt-4 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]";
-const CAP = "mt-4 font-mono text-[12px] text-[color:var(--faint)]";
-const SHELL = "mx-auto max-w-5xl px-5 py-24 sm:px-6 sm:py-28 lg:px-8";
-const PANEL = "rounded-xl border border-[color:var(--line)] bg-black/20 p-5";
-
-// The same depth/weight recipe as AboutPage's <Figure>: soft accent glow behind,
-// raised gradient surface, strong border + large shadow, inner lit top edge.
-function Figure({ children, className = "", glow = "28%" }: { children: ReactNode; className?: string; glow?: string }) {
-  return (
-    <div className={`relative ${className}`}>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 blur-[48px]"
-        style={{ background: `radial-gradient(55% 60% at ${glow} 45%, rgba(62,207,142,0.10), transparent 70%)` }}
-      />
-      <div
-        className="relative z-10 overflow-hidden rounded-2xl border border-[color:var(--line-strong)] p-6 sm:p-8"
-        style={{
-          background: "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012) 60%, transparent), var(--surface)",
-          boxShadow: "0 24px 60px -20px rgba(0,0,0,0.6), inset 0 1px 0 0 rgba(255,255,255,0.04)",
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
 
 // Shared JS-controlled typewriter. REST = fully shown (A-scheme: non-hover/touch visitors
 // see the value prop + SEO has the text). On hover (desktop only): lines re-type one by one;
@@ -558,7 +528,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
       {/* ── 1 · Hero — left-aligned anchor, mirroring About §1 (eyebrow → big H1 → sub → CTAs → trust pills → weighty wide Figure → caption) ── */}
       <section>
         <div className={SHELL}>
-          <p className={EYEBROW(zh)}>{c.eyebrow}</p>
+          <p className={eyebrowCls(zh)}>{c.eyebrow}</p>
           <h1 className="mt-4 max-w-[20ch] font-medium text-[40px] leading-[1.05] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[60px] sm:leading-[1.03] sm:tracking-[-0.03em] lg:text-[80px] lg:leading-[1.0] lg:tracking-[-0.04em]">
             {c.heroA}<br /><span className="text-[color:var(--muted)]">{c.heroB}</span>
           </h1>
@@ -609,7 +579,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
       {/* ── 2 · Find your tool — bento promoted high + a REAL client-side search (funnel-critical) ── */}
       <section>
         <div className={SHELL}>
-          <p className={EYEBROW(zh)}>{c.findEyebrow}</p>
+          <p className={eyebrowCls(zh)}>{c.findEyebrow}</p>
           <h2 className={`mt-4 ${H2}`}>{c.findHeading}</h2>
           <p className={SUB}>{c.capSub}</p>
 
@@ -687,7 +657,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
       {/* ── 3 · Grounded AI (moat) — CTA + chips BEFORE the figure so the funnel link isn't buried ── */}
       <section>
         <div className={SHELL}>
-          <p className={EYEBROW(zh)}>{c.aiEyebrow}</p>
+          <p className={eyebrowCls(zh)}>{c.aiEyebrow}</p>
           <h2 className={`mt-4 ${H2}`}>{c.aiHeading}</h2>
           <p className={SUB}>{c.aiSub}</p>
           <a href={path("/chat-with-pdf")} className="mt-6 inline-flex items-center gap-1.5 text-[14px] font-medium text-[color:var(--accent)] transition hover:gap-2.5">
@@ -730,7 +700,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
       {/* ── 4 · What it does for you — 4 jobs in one Figure ── */}
       <section>
         <div className={SHELL}>
-          <p className={EYEBROW(zh)}>{c.jobsEyebrow}</p>
+          <p className={eyebrowCls(zh)}>{c.jobsEyebrow}</p>
           <h2 className={`mt-4 ${H2}`}>{c.jobsHeading}</h2>
           <Figure className="mt-10" glow="20%">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -759,7 +729,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
       {/* ── 5 · Try it — left-aligned closing CTA (unifies with About section 7) ── */}
       <section>
         <div className={SHELL}>
-          <p className={EYEBROW(zh)}>{c.ctaEyebrow}</p>
+          <p className={eyebrowCls(zh)}>{c.ctaEyebrow}</p>
           <h2 className={`mt-4 ${H2}`}>{c.ctaHeadA} <span className="text-[color:var(--muted)]">{c.ctaHeadB}</span></h2>
           <p className={SUB}>{c.ctaSub}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">

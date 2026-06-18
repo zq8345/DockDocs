@@ -8,6 +8,7 @@
 
 import type { ReactNode } from "react";
 import { deepHant } from "@/lib/zh-hant";
+import { Figure, SHELL, H2, SUB, CAP, PANEL, eyebrowCls } from "@/components/design";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
@@ -427,42 +428,15 @@ const Check = () => (
 );
 const Dash = () => <span className="mt-0.5 shrink-0 text-[color:var(--faint)]">—</span>;
 
-// The depth/weight recipe — every figure on the page sits in one of these so it
-// reads as a crafted object lifted above the flat page: soft accent glow behind,
-// raised gradient surface, strong border + large shadow, and an inner lit top edge.
-function Figure({ children, className = "", glow = "28%" }: { children: ReactNode; className?: string; glow?: string }) {
-  return (
-    <div className={`relative ${className}`}>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 blur-[48px]"
-        style={{ background: `radial-gradient(55% 60% at ${glow} 45%, rgba(62,207,142,0.10), transparent 70%)` }}
-      />
-      <div
-        className="relative z-10 overflow-hidden rounded-2xl border border-[color:var(--line-strong)] p-6 sm:p-8"
-        style={{
-          background: "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012) 60%, transparent), var(--surface)",
-          boxShadow: "0 24px 60px -20px rgba(0,0,0,0.6), inset 0 1px 0 0 rgba(255,255,255,0.04)",
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
-
-// A nested panel one level lower inside a <Figure>, for the layered panel-in-panel depth.
-const PANEL = "rounded-xl border border-[color:var(--line)] bg-black/20 p-5";
-
 export function AboutPage({ locale = "en" }: { locale?: Locale }) {
   const zh = locale === "zh" || locale === "ja" || locale === "zh-Hant";
   // zh-Hant content is the Traditional conversion of the zh copy via OpenCC.
   const c = locale === "zh-Hant" ? deepHant(content.zh) : (content[locale] ?? content.en);
-  const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
-  const h2 = "text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]";
-  const sub = "mt-4 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]";
-  const cap = "mt-4 font-mono text-[12px] text-[color:var(--faint)]";
-  const shell = "mx-auto max-w-5xl px-5 py-24 sm:px-6 sm:py-28 lg:px-8";
+  const eyebrow = eyebrowCls(zh);
+  const h2 = H2;
+  const sub = SUB;
+  const cap = CAP;
+  const shell = SHELL;
   const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "zh-Hant" ? `/zh-Hant${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : slug);
 
   return (
