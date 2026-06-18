@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { defaultLocale } from "@/lib/i18n";
 import { signOut, type AuthUser } from "@/lib/auth";
@@ -41,6 +41,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
   const [open, setOpen] = useState(false);
   const [snapshot, setSnapshot] = useState<SubscriptionSnapshot | null>(null);
   const [billingLoading, setBillingLoading] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -57,6 +58,23 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
       mounted = false;
     };
   }, [authUser]);
+
+  // Close on a click outside the menu (button + dropdown) or on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
   const t = (en: string, zh: string, es: string, pt: string, fr: string) =>
     loc === "zh" ? zh : loc === "es" ? es : loc === "pt" ? pt : loc === "fr" ? fr : en;
@@ -107,7 +125,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
   const isPaid = snapshot?.isPaidPlaceholder ?? false;
 
   return (
-    <div className="relative hidden md:block">
+    <div ref={menuRef} className="relative hidden md:block">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -128,7 +146,6 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
 
       {open && (
         <>
-          <div className="fixed inset-0 z-40" aria-hidden="true" onClick={() => setOpen(false)} />
           <div className="absolute right-0 top-full z-50 mt-1.5 w-[264px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
             {/* identity */}
             <div className="px-2.5 pb-2 pt-1.5">

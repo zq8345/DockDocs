@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { defaultLocale, isAllLocale, routeLocales, localeLabels } from "@/lib/i18n";
@@ -809,6 +809,9 @@ export function Header() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
+  const mobileBtnRef = useRef<HTMLButtonElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
   const locale = stripLocale(pathname ?? "/");
 
   const cats = navCategories[locale] ?? navCategories.en;
@@ -828,6 +831,36 @@ export function Header() {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
+  // Close the mobile menu on a click outside the panel (e.g. the header) or on Escape.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onDown = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (mobileBtnRef.current?.contains(target)) return;
+      if (mobilePanelRef.current && !mobilePanelRef.current.contains(target)) setMobileOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMobileOpen(false); };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [mobileOpen]);
+  // Close the desktop "More" menu on a click outside it or on Escape.
+  useEffect(() => {
+    if (!moreOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMoreOpen(false); };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [moreOpen]);
 
   function toggleTheme() {
     const n = !light;
@@ -991,7 +1024,7 @@ export function Header() {
             <AccountMenu authUser={authUser} locale={locale} />
 
             {/* Consolidated "More" menu (desktop) — Pricing/Blog/About + language + theme */}
-            <div className="relative hidden md:block">
+            <div ref={moreRef} className="relative hidden md:block">
               <button
                 type="button"
                 onClick={() => setMoreOpen((v) => !v)}
@@ -1004,9 +1037,7 @@ export function Header() {
                 </svg>
               </button>
               {moreOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" aria-hidden="true" onClick={() => setMoreOpen(false)} />
-                  <div className="absolute right-0 top-full z-50 mt-1.5 w-[160px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+                <div className="absolute right-0 top-full z-50 mt-1.5 w-[160px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                     {pages.map((p) => (
                       <a
                         key={p.href}
@@ -1028,12 +1059,12 @@ export function Header() {
                       <span>{locale === "zh" ? (light ? "浅色" : "深色") : light ? "Light" : "Dark"}</span>
                     </button>
                   </div>
-                </>
               )}
             </div>
 
             {/* Hamburger — mobile only */}
             <button
+              ref={mobileBtnRef}
               type="button"
               onClick={() => setMobileOpen((v) => !v)}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -1059,7 +1090,7 @@ export function Header() {
 
       {/* ── Mobile full-screen menu ── */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 flex flex-col md:hidden" style={{ top: `${HEADER_H}px` }}>
+        <div ref={mobilePanelRef} className="fixed inset-0 z-40 flex flex-col md:hidden" style={{ top: `${HEADER_H}px` }}>
           <div className="flex-1 overflow-y-auto bg-[color:var(--background)]">
             <div className="px-4 pb-8 pt-4">
 
