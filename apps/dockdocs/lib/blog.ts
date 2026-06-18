@@ -2417,7 +2417,7 @@ export const blogArticles: BlogArticle[] = [
             heading: "The fastest check: can you trace it back to the source?",
             paragraphs: [
               "The single most useful property of any AI summary is traceability — can each claim be traced back to a specific page or passage in the original? A summary that shows you where a point came from can be spot-checked in seconds. A summary that is just a wall of confident text is a black box you have to trust blindly, and blind trust is exactly where mistakes slip through.",
-              "So prefer tools that cite the source passage behind each point, and use that citation: when the summary makes a claim that matters, click through to the original sentence and confirm it. DockDocs AI Summary and Chat with PDF are built around source-cited answers for this reason — every point is tied to the passage it came from, so verifying is a click, not a re-read of the whole file.",
+              "So prefer tools that cite the source passage behind each point, and use that citation: when the summary makes a claim that matters, click through to the original sentence and confirm it. DockDocs AI Summary and Chat with PDF are built for this reason — Chat with PDF shows the passage behind an answer, and a summary stays drawn from your own document, so checking a point against the source is a quick click, not a re-read of the whole file.",
             ],
             links: [
               { label: "Ask questions with Chat with PDF", href: "/chat-with-pdf" },

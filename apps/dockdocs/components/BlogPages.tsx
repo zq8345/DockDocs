@@ -870,7 +870,7 @@ function getGeoFaq(
     {
       question: `How does ${article.toolLabel} fit into an AI document workflow?`,
       answer:
-        `DockDocs is built around document AI you can trust: OCR, summaries, and Chat with PDF read your file and cite the source, so you can verify every answer, and many tools run in your browser so files never leave your device. Use ${article.toolLabel} for the document task, then layer the AI on top — grounded in your own document, not a general model's guesswork.`,
+        `DockDocs is built around document AI you can trust: it reads your file and, when it answers or flags a finding, shows the source passage behind it so you can check it, and many tools run in your browser so files never leave your device. Use ${article.toolLabel} for the document task, then layer the AI on top — grounded in your own document, not a general model's guesswork.`,
     },
     {
       question: `What is the best workflow for ${article.toolLabel}?`,
