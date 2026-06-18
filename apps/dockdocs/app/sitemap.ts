@@ -13,7 +13,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // locale there automatically enrolls all its /<locale>/ routes here, so the
   // sitemap can never silently drift out of date again (fr was missed under the
   // old hardcoded array). en is the unprefixed canonical and is emitted below.
-  const locales = routeLocales;
+  // Incomplete locales (tool pages still fall back to English) are excluded so
+  // Google doesn't index thin/duplicate content. Remove from this set once a
+  // locale's tool pages are fully localized.
+  const INCOMPLETE_LOCALES = new Set(["ja"]);
+  const sitemapLocales = routeLocales.filter(l => !INCOMPLETE_LOCALES.has(l));
 
   // Generate routes for all locales
   const routes: MetadataRoute.Sitemap = [];
@@ -28,7 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
 
     // Localized routes
-    for (const locale of locales) {
+    for (const locale of sitemapLocales) {
       if (locale === "en") continue;
       routes.push({
         url: absoluteUrl(`/${locale}${route.path}`),
