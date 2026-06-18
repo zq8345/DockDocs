@@ -1,5 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
+import { resolveAnswerLocale, answerLanguageName, type AnswerLocale } from "./_shared/answer-locale";
 
 declare const Netlify: {
   env: {
@@ -12,7 +13,7 @@ declare const Netlify: {
 // browser extracts the PDF text (pdf.js) and sends it here; we return cards
 // grounded ONLY in the supplied text (no outside knowledge, no invented facts).
 
-type Payload = { text?: string; count?: number; locale?: "en" | "zh" };
+type Payload = { text?: string; count?: number; locale?: AnswerLocale };
 type ProviderConfig = { apiUrl: string; apiKey: string; model: string };
 type Card = { q: string; a: string };
 
@@ -52,7 +53,7 @@ export default async (req: Request, _context: Context) => {
   }
 
   const text = typeof payload.text === "string" ? payload.text.replace(/\r\n/g, "\n").trim() : "";
-  const uiLocale = payload.locale === "zh" ? "zh" : "en";
+  const uiLocale = resolveAnswerLocale(payload.locale);
   const count = Math.max(3, Math.min(MAX_CARDS, Math.round(Number(payload.count) || 10)));
 
   if (!text) {
@@ -95,10 +96,10 @@ async function generateCards({
   provider: ProviderConfig;
   text: string;
   count: number;
-  uiLocale: "en" | "zh";
+  uiLocale: AnswerLocale;
   signal: AbortSignal;
 }): Promise<Card[] | null> {
-  const lang = uiLocale === "zh" ? "Chinese" : "English";
+  const lang = answerLanguageName(uiLocale);
   const body = {
     model: provider.model,
     temperature: 0.3,

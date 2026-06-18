@@ -1,5 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
+import { resolveAnswerLocale, answerLanguageName, type AnswerLocale } from "./_shared/answer-locale";
 
 declare const Netlify: {
   env: {
@@ -11,7 +12,7 @@ declare const Netlify: {
 // the document's text. Backend-only so the prompt + API key stay private and we
 // can cap cost. Grounded in the supplied text; no outside knowledge.
 
-type Payload = { text?: string; locale?: "en" | "zh" };
+type Payload = { text?: string; locale?: AnswerLocale };
 type ProviderConfig = { apiUrl: string; apiKey: string; model: string };
 
 const MAX_CHARS = 12_000;
@@ -49,7 +50,7 @@ export default async (req: Request, _context: Context) => {
   }
 
   const text = typeof payload.text === "string" ? payload.text.replace(/\r\n/g, "\n").trim() : "";
-  const uiLocale = payload.locale === "zh" ? "zh" : "en";
+  const uiLocale = resolveAnswerLocale(payload.locale);
   if (!text) {
     return json({ ok: false, code: "NO_TEXT", message: uiLocale === "zh" ? "没有可用的文字（扫描件请先 OCR）。" : "No text found (run OCR first for scans)." }, 200);
   }
@@ -86,10 +87,10 @@ async function classify({
 }: {
   provider: ProviderConfig;
   text: string;
-  uiLocale: "en" | "zh";
+  uiLocale: AnswerLocale;
   signal: AbortSignal;
 }): Promise<{ category: string; tags: string[] } | null> {
-  const lang = uiLocale === "zh" ? "Chinese" : "English";
+  const lang = answerLanguageName(uiLocale);
   const body = {
     model: provider.model,
     temperature: 0.1,
