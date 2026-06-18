@@ -8,7 +8,7 @@ type Item = { name: string; slug: string };
 
 const COPY = {
   en: {
-    eyebrow: "Privacy-first AI PDF platform",
+    eyebrow: "Private · verifiable document AI",
     heroA: "Read any document.",
     heroB: "Trust every answer.",
     heroSub: "~50 PDF tools that run in your browser, plus AI that reads, compares and extracts your documents — with sources you can click back to.",
@@ -36,7 +36,7 @@ const COPY = {
     figCaption: "Fig 0.1 — every answer points back to its source. One click to verify.",
   },
   zh: {
-    eyebrow: "隐私优先的 AI PDF 平台",
+    eyebrow: "私密 · 可溯源的文档 AI",
     heroA: "读懂任意文档，",
     heroB: "答案皆可追溯。",
     heroSub: "约 50 个 PDF 工具在浏览器内运行，AI 读懂、对比、抽取你的文档——每个答案都能点回原文。",
@@ -64,7 +64,7 @@ const COPY = {
     figCaption: "图 0.1 — 每个答案都指回原文出处，一键即可核对。",
   },
   es: {
-    eyebrow: "Plataforma de PDF con IA centrada en la privacidad",
+    eyebrow: "IA documental privada y verificable",
     heroA: "Lee cualquier documento.",
     heroB: "Confía en cada respuesta.",
     heroSub: "~50 herramientas PDF que se ejecutan en tu navegador, más una IA que lee, compara y extrae tus documentos — con fuentes en las que puedes hacer clic para volver.",
@@ -92,7 +92,7 @@ const COPY = {
     figCaption: "Fig 0.1 — cada respuesta enlaza con su fuente. Verifícalo con un clic.",
   },
   pt: {
-    eyebrow: "Plataforma de PDF com IA focada em privacidade",
+    eyebrow: "IA de documentos privada e verificável",
     heroA: "Leia qualquer documento.",
     heroB: "Confie em cada resposta.",
     heroSub: "~50 ferramentas PDF que rodam no seu navegador, mais uma IA que lê, compara e extrai seus documentos — com fontes em que você pode clicar para voltar.",
@@ -120,7 +120,7 @@ const COPY = {
     figCaption: "Fig 0.1 — cada resposta aponta para a sua fonte. Verifique com um clique.",
   },
   fr: {
-    eyebrow: "Plateforme PDF IA axée sur la confidentialité",
+    eyebrow: "IA documentaire privée et vérifiable",
     heroA: "Lisez n'importe quel document.",
     heroB: "Fiez-vous à chaque réponse.",
     heroSub: "~50 outils PDF qui s'exécutent dans votre navigateur, plus une IA qui lit, compare et extrait vos documents — avec des sources cliquables.",
