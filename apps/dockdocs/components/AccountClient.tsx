@@ -17,7 +17,6 @@ import {
   type SubscriptionSnapshot,
 } from "@/lib/subscription-runtime";
 import { planBadge, planStatusText, upgradePrompts } from "@/lib/membership-ui";
-import { DiagItemsUpgrade } from "@/components/DiagItemsUpgrade";
 import { supabase, authHeader } from "@/lib/supabase";
 import { trackSignUp } from "@/lib/analytics";
 
@@ -129,19 +128,6 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   const [flowOptinSaving, setFlowOptinSaving] = useState(false);
   const [deleteState, setDeleteState] = useState<DeleteState>("idle");
   const [deleteMsg, setDeleteMsg] = useState("");
-  // TEMPORARY: show the items-upgrade diagnostic only behind ?diag=1 / #diag (remove
-  // later). Persisted so the locale redirect (which drops the query) can't lose it.
-  const [showDiag, setShowDiag] = useState(false);
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const seen = new URLSearchParams(window.location.search).has("diag") || window.location.hash.includes("diag");
-    if (seen) {
-      try { localStorage.setItem("dockdocs-diag", "1"); } catch {}
-      setShowDiag(true);
-    } else {
-      try { setShowDiag(localStorage.getItem("dockdocs-diag") === "1"); } catch {}
-    }
-  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -347,8 +333,6 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   return (
     <div className="mt-8 space-y-6">
       {header}
-
-      {showDiag && <DiagItemsUpgrade />}
 
       {/* Identity */}
       <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
