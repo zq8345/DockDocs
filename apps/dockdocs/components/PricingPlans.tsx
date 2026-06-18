@@ -418,6 +418,14 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [billingLoading, setBillingLoading] = useState("");
   const [billingError, setBillingError] = useState("");
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
+  // Which plan column is "selected" — drives the green frame + filled CTA on the card
+  // and the highlighted compare-table column. Independent of `featured` (the static
+  // "Most popular" badge, always Plus). Plans / compareCols / compare tiers are all
+  // index-aligned [Free, Plus, Pro], so one index links the cards to the table.
+  const [selectedIndex, setSelectedIndex] = useState<number>(() => {
+    const fi = (copy[locale] ?? copy.en).plans.findIndex((p) => p.featured);
+    return fi >= 0 ? fi : 1;
+  });
   // Shared in-place upgrade flow (quote → breakdown modal → discounted checkout).
   const upgrade = useUpgradeFlow(locale);
 
@@ -444,6 +452,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   }, []);
   const zh = locale === "zh";
   const c = copy[locale] ?? copy.en;
+  const selectLabel = locale === "zh" ? "选择套餐" : locale === "es" ? "Seleccionar plan" : locale === "pt" ? "Selecionar plano" : locale === "fr" ? "Sélectionner le forfait" : "Select plan";
 
   // Turn a billing failure into a clear, localized message AND a console line with
   // the precise code — never swallow it into a silent /account redirect. Only a
@@ -532,7 +541,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* Plans */}
       <div className="mt-12 grid gap-4 lg:grid-cols-3">
-        {c.plans.map((plan) => {
+        {c.plans.map((plan, idx) => {
           const isFree = plan.monthlyPrice === "$0";
           const price = isFree
             ? plan.monthlyPrice
@@ -544,6 +553,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 ? plan.yearlyPrice
                 : plan.monthlyPrice;
           const featured = plan.featured;
+          const selected = idx === selectedIndex;
           const planKey: PaidSubscriptionPlan | null = isFree ? null : featured ? "PLUS" : "PRO";
           const curPlan = subscription ? subscription.displayName.toUpperCase() : "FREE";
           const curInterval = subscription?.record.interval;
@@ -567,14 +577,20 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                   : isPlanUpgrade(curPlan, curInterval, planKey, period)
                     ? "upgrade"
                     : "manage";
-          const ctaCls = `mt-6 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-medium transition ${featured ? "bg-[color:var(--accent)] hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--foreground)]"}`;
+          const ctaCls = `mt-6 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-medium transition ${selected ? "bg-[color:var(--accent)] hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--foreground)]"}`;
           return (
             <article key={plan.name}
-              className={`relative flex flex-col rounded-2xl border p-6 transition-colors ${
-                featured
-                  ? "border-[color:var(--accent)] lg:-mt-2 lg:mb-2"
+              role="button"
+              tabIndex={0}
+              aria-pressed={selected}
+              aria-label={`${selectLabel}: ${plan.name}`}
+              onClick={() => setSelectedIndex(idx)}
+              onKeyDown={(e) => { if (e.target !== e.currentTarget) return; if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedIndex(idx); } }}
+              className={`relative flex cursor-pointer flex-col rounded-2xl border p-6 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--background)] ${
+                selected
+                  ? "border-[color:var(--accent)] ring-1 ring-[color:var(--accent)]"
                   : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"
-              }`}
+              }${featured ? " lg:-mt-2 lg:mb-2" : ""}`}
             >
               {featured && (
                 <span className="mb-3 self-start rounded-full bg-[color:var(--accent)] px-3 py-1 text-[11px] font-medium">{c.mostPopular}</span>
@@ -660,7 +676,9 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               <tr>
                 <th className="border-b border-[color:var(--line)] px-4 py-3 text-left" />
                 {c.compareCols.map((col, i) => (
-                  <th key={col} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center text-[13px] font-normal ${i === 1 ? "text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)]"}`}>{col}</th>
+                  <th key={col} className={`border-b border-l border-[color:var(--line)] p-1 text-center ${i === selectedIndex ? "bg-[color:var(--soft-accent)]" : ""}`}>
+                    <button type="button" onClick={() => setSelectedIndex(i)} aria-pressed={i === selectedIndex} aria-label={`${selectLabel}: ${col}`} className={`w-full rounded-md px-3 py-2 text-[13px] font-normal transition ${i === selectedIndex ? "font-medium text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)] hover:text-[color:var(--accent-strong)]"}`}>{col}</button>
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -700,10 +718,10 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                         <span className="text-[color:var(--foreground)]">{catLabel}</span>
                       </span>
                     </td>
-                    {(["free", "plus", "pro"] as const).map((tier) => {
+                    {(["free", "plus", "pro"] as const).map((tier, ti) => {
                       const val = lim(tier);
                       return (
-                        <td key={tier} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center ${cellCls(val)}`}>{val}</td>
+                        <td key={tier} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center ${ti === selectedIndex ? "bg-[color:var(--soft-accent)] " : ""}${cellCls(val)}`}>{val}</td>
                       );
                     })}
                   </tr>,
