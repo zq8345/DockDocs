@@ -1,5 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
+import { resolveAnswerLocale, answerLanguageName, type AnswerLocale } from "./_shared/answer-locale";
 
 declare const Netlify: {
   env: {
@@ -16,7 +17,7 @@ declare const Netlify: {
 // it (no fabricated citations). This is a "points to review" tool, NOT legal
 // advice; the prompt and the client copy both say so.
 
-type ContractRiskPayload = { text?: string; locale?: "en" | "zh" | "es" };
+type ContractRiskPayload = { text?: string; locale?: AnswerLocale };
 type ProviderConfig = { apiUrl: string; apiKey: string; model: string };
 type RiskLevel = "high" | "medium" | "low";
 type Risk = {
@@ -66,7 +67,7 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "INVALID_BODY", message: "Expected a JSON body." }, 400);
   }
 
-  const locale = payload.locale === "zh" ? "zh" : payload.locale === "es" ? "es" : "en";
+  const locale = resolveAnswerLocale(payload.locale);
   const text = normalizeText(String(payload.text || ""));
   if (text.length < 40) {
     return json({ ok: false, code: "NO_TEXT", message: "No contract text to analyze." }, 400);
@@ -102,8 +103,8 @@ export default async (req: Request, _context: Context) => {
   return json({ ok: true, risks, truncated: text.length > MAX_CHARS, provider: "configured-ai-provider", model: provider.model }, 200);
 };
 
-function contractPrompt(locale: "en" | "zh" | "es"): string {
-  const lang = locale === "zh" ? "Simplified Chinese" : locale === "es" ? "Spanish" : "English";
+function contractPrompt(locale: AnswerLocale): string {
+  const lang = answerLanguageName(locale);
   return [
     "You review a contract and flag risky, one-sided, or missing clauses for a NON-lawyer reader.",
     'Return ONLY valid JSON, no markdown or prose: {"risks":[{"type":"","level":"high|medium|low","quote":"","why":"","suggestion":""}]}',

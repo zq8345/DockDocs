@@ -1,5 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
+import { resolveAnswerLocale, answerLanguageName, type AnswerLocale } from "./_shared/answer-locale";
 
 declare const Netlify: {
   env: {
@@ -11,7 +12,7 @@ declare const Netlify: {
 // Uses the same enforceFeatureGate("contractAnalyzer") PRO slot and DeepSeek provider.
 // Trust rule ENFORCED: every `quote` must appear verbatim in the lease text.
 
-type LeasePayload = { text?: string; locale?: "en" | "zh" | "es" };
+type LeasePayload = { text?: string; locale?: AnswerLocale };
 type ProviderConfig = { apiUrl: string; apiKey: string; model: string };
 type RiskLevel = "high" | "medium" | "low";
 type Risk = {
@@ -58,7 +59,7 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "INVALID_BODY", message: "Expected a JSON body." }, 400);
   }
 
-  const locale = payload.locale === "zh" ? "zh" : payload.locale === "es" ? "es" : "en";
+  const locale = resolveAnswerLocale(payload.locale);
   const text = normalizeText(String(payload.text || ""));
   if (text.length < 40) {
     return json({ ok: false, code: "NO_TEXT", message: "No lease text to analyze." }, 400);
@@ -92,8 +93,8 @@ export default async (req: Request, _context: Context) => {
   return json({ ok: true, risks, truncated: text.length > MAX_CHARS }, 200);
 };
 
-function leasePrompt(locale: "en" | "zh" | "es"): string {
-  const lang = locale === "zh" ? "Simplified Chinese" : locale === "es" ? "Spanish" : "English";
+function leasePrompt(locale: AnswerLocale): string {
+  const lang = answerLanguageName(locale);
   return [
     "You review a residential or commercial lease and flag risky, unfair, or missing clauses for a TENANT (non-lawyer).",
     'Return ONLY valid JSON, no markdown: {"risks":[{"type":"","level":"high|medium|low","quote":"","why":"","suggestion":""}]}',

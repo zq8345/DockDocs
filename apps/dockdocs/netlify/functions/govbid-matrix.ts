@@ -1,5 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
+import { resolveAnswerLocale, answerLanguageName, type AnswerLocale } from "./_shared/answer-locale";
 
 declare const Netlify: {
   env: {
@@ -12,7 +13,7 @@ declare const Netlify: {
 // Uses the same enforceFeatureGate("contractAnalyzer") PRO slot as contract-risk.
 // Trust rule ENFORCED: every `quote` must appear verbatim in the solicitation text.
 
-type SolicitationPayload = { text?: string; locale?: "en" | "zh" | "es" };
+type SolicitationPayload = { text?: string; locale?: AnswerLocale };
 type ProviderConfig = { apiUrl: string; apiKey: string; model: string };
 type RequirementType = "mandatory" | "advisory";
 type Requirement = {
@@ -74,8 +75,8 @@ function normalizeChatEndpoint(base: string | undefined, fallback: string): stri
   return `${raw}/v1/chat/completions`;
 }
 
-function buildPrompt(text: string, locale: string): string {
-  const lang = locale === "zh" ? "Simplified Chinese" : locale === "es" ? "Spanish" : "English";
+function buildPrompt(text: string, locale: AnswerLocale): string {
+  const lang = answerLanguageName(locale);
   return `You are a government contracting compliance analyst. Extract EVERY compliance requirement from this solicitation document.
 
 Target: all statements containing "shall", "must", "will", "required", "required to", or similar mandatory/advisory language that an offeror or contractor must comply with.
@@ -145,7 +146,7 @@ export default async function handler(req: Request, _ctx: Context) {
   }
 
   const text = (body.text ?? "").trim();
-  const locale = body.locale ?? "en";
+  const locale = resolveAnswerLocale(body.locale);
 
   if (!text || text.length < 100) {
     return new Response(
