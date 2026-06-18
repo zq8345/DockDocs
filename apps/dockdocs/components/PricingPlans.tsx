@@ -424,17 +424,26 @@ function billingErrorCopy(code: string | undefined, serverMessage: string, local
         "Esta opção de cobrança não está disponível agora. Tente outro período ou contate o suporte.",
         "Cette option de facturation est indisponible pour l'instant. Essayez une autre période ou contactez le support.",
       );
-    case "CREEM_UPGRADE_FAILED":
+    case "CREEM_DISCOUNT_FAILED":
     case "CREEM_CHECKOUT_FAILED":
     case "CREEM_PORTAL_FAILED":
     case "CREEM_CANCEL_FAILED":
+    case "CREEM_GET_SUB_FAILED":
     case "CREEM_UNREACHABLE":
       return t(
-        "The payment service is temporarily unavailable. Please try again in a moment.",
-        "支付服务暂时不可用，请稍后再试。",
-        "El servicio de pago no está disponible temporalmente. Inténtalo de nuevo en un momento.",
-        "O serviço de pagamento está temporariamente indisponível. Tente novamente em instantes.",
-        "Le service de paiement est temporairement indisponible. Réessayez dans un instant.",
+        "Couldn't complete the upgrade right now. Please try again in a moment.",
+        "升级暂时无法完成，请稍后再试。",
+        "No se pudo completar la mejora ahora. Inténtalo de nuevo en un momento.",
+        "Não foi possível concluir o upgrade agora. Tente novamente em instantes.",
+        "Impossible de finaliser la mise à niveau pour l'instant. Réessayez dans un instant.",
+      );
+    case "CANNOT_PRORATE":
+      return t(
+        "We couldn't work out your unused credit. Please upgrade from Manage billing instead.",
+        "无法计算你的未用抵扣，请改从「管理账单」升级。",
+        "No pudimos calcular tu crédito no usado. Mejora desde «Gestionar facturación».",
+        "Não foi possível calcular seu crédito não usado. Faça o upgrade em «Gerenciar cobrança».",
+        "Impossible de calculer votre crédit non utilisé. Mettez à niveau depuis « Gérer la facturation ».",
       );
     case "NO_RECURRING_SUB":
       return t(

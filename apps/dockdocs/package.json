@@ -11,6 +11,7 @@
     "task-queue:generate": "node scripts/generate-task-queue-from-pmo.mjs",
     "geo:qa": "node scripts/geo-qa-check.mjs",
     "lint": "next lint",
+    "test": "node --test netlify/functions/_shared/webhook-decision.test.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui"
   },

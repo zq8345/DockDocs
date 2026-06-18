@@ -71,13 +71,20 @@ export default async (req: Request, _context: Context) => {
   const currentPeriodStart = normalizeDate(
     obj.current_period_start_date ?? obj.current_period_start ?? sub?.current_period_start_date ?? sub?.current_period_start,
   );
-  // Event emission time (unix ms) — drives the recency last-write-wins guard.
-  const eventAt =
+  // Event emission time (unix ms) — drives the recency last-write-wins guard. Creem
+  // always sends a top-level created_at; if it's ever absent, fall back to the receive
+  // time so recency still has a baseline (the identity guard already blocks the
+  // entitlement-wipe — this only hardens same-sub ordering), and warn so we notice.
+  let eventAt =
     typeof event.created_at === "number"
       ? event.created_at
       : typeof event.created === "number"
         ? event.created
         : undefined;
+  if (eventAt === undefined) {
+    console.warn(`[creem-webhook] ${eventType} missing created_at — using receive time for recency.`);
+    eventAt = Date.now();
+  }
 
   const mapped = planAndIntervalForCreemProductId(productId);
   const plan = mapped?.plan ?? null;
