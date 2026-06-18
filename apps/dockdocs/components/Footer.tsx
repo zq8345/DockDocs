@@ -341,7 +341,7 @@ export function Footer() {
               <BrandMark showWordmark={true} />
             </a>
             <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--faint)]">
-              {locale === "zh" ? "面向 PDF 工作流的 AI 文档工具。" : locale === "es" ? "Herramientas de documentos con IA para flujos de trabajo PDF." : locale === "pt" ? "Ferramentas de documentos com IA para fluxos de trabalho PDF." : locale === "fr" ? "Outils de documents IA pour les flux de travail PDF." : "AI-powered document tools for PDF workflows."}
+              {locale === "zh" ? "私密、可溯源的文档 AI" : locale === "es" ? "IA documental privada y verificable" : locale === "pt" ? "IA de documentos privada e verificável" : locale === "fr" ? "IA documentaire privée et vérifiable" : "Private, verifiable document AI"}
             </p>
           </div>
           {(locale === "zh" ? toolColsZh : locale === "es" ? toolColsEs : locale === "pt" ? toolColsPt : locale === "fr" ? toolColsFr : toolColsEn).map((col) => (
