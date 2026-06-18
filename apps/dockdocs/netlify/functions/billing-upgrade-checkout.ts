@@ -55,7 +55,9 @@ export default async (req: Request, _ctx: Context) => {
     if (!newProductId) {
       return json({ ok: false, code: "CREEM_PRODUCT_MISSING", message: `Missing product id for ${plan} ${interval}.` }, 503);
     }
-    const code = `UPG-${crypto.randomUUID().replace(/-/g, "").slice(0, 20).toUpperCase()}`;
+    // Creem caps discount codes at 14 characters — 14 hex (56 bits) is unique enough
+    // for a single-use, 1-hour code (no prefix to stay within the limit).
+    const code = crypto.randomUUID().replace(/-/g, "").slice(0, 14).toUpperCase();
     const expiryDateIso = new Date(Date.now() + 60 * 60 * 1000).toISOString();
     const disc = await createCreemDiscount({ amountCents: quote.creditCents, productId: newProductId, code, expiryDateIso });
     if (!disc.ok) {
