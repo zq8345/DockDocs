@@ -110,7 +110,7 @@ export default function PdfToImagePage() {
       {/* Crawlable depth: the custom client renders the tool UI only, so the config's
           benefits/steps/FAQ (which feed the JSON-LD) are also rendered as visible HTML
           here — keeps the FAQPage schema matched to on-page content. */}
-      <section className="mx-auto max-w-3xl px-5 pb-16 sm:px-6">
+      <section className="mx-auto max-w-5xl px-5 pb-16 sm:px-6">
         <div className="border-t border-[color:var(--line)] pt-10">
           <h2 className="text-lg font-medium text-[color:var(--foreground)]">{config.benefitsTitle}</h2>
           <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{config.benefitsDescription}</p>

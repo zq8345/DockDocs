@@ -463,7 +463,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
 
       {/* ── Hero + Upload (centered, full-width focus) ── */}
       <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+        <div className="mx-auto max-w-6xl px-5 pb-12 pt-12 sm:px-6 lg:px-8 sm:pt-16">
           {/* Title */}
           <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">
             {config.breadcrumbName}
@@ -486,7 +486,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       {/* ── FAQ (collapsed, clean) ── */}
       {config.faq.length > 0 && (
         <section>
-          <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6">
+          <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 lg:px-8">
             <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{config.faqTitle}</h2>
             <div className="mt-6 space-y-6">
               {config.faq.map((item) => (
