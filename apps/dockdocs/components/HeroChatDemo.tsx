@@ -9,8 +9,8 @@ const T = {
     a1: "Up ",
     a2: "23%",
     a3: " year over year — driven mostly by the APAC region.",
-    cite: "Source · p.4 · Revenue table",
-    note: "Grounded answer — every figure points back to the source.",
+    cite: "Source · “revenue rose 23% YoY”",
+    note: "Grounded answer — traced back to the passage it came from.",
   },
   zh: {
     doc: "Q4-财报.pdf",
@@ -18,8 +18,8 @@ const T = {
     a1: "同比增长 ",
     a2: "23%",
     a3: "，主要来自亚太区。",
-    cite: "来源 · 第 4 页 · 营收表",
-    note: "答案可溯源 —— 每个数字都能点回原文。",
+    cite: "来源 · “营收同比增长 23%”",
+    note: "答案可溯源 —— 点回它出自的原文。",
   },
 };
 

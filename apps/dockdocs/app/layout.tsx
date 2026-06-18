@@ -9,11 +9,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: "DockDocs — Private, Verifiable Document AI & PDF Tools", template: "%s — DockDocs" },
-  description: "Read any document and trust every answer — DockDocs is document AI that cites its source so you can verify it, plus PDF tools that run in your browser, so files never leave your device. Free, no sign-up.",
+  description: "Read any document and trust every answer — DockDocs is document AI that shows the source passage behind its answers and flags what it can't trace, so you can verify it, plus PDF tools that run in your browser, so files never leave your device. Free, no sign-up.",
   alternates: { canonical: "/" },
   openGraph: {
     title: "DockDocs — Private, Verifiable Document AI & PDF Tools",
-    description: "Document AI that cites its source so you can verify every answer, plus private PDF tools that run in your browser. Your files never leave your device.",
+    description: "Document AI that shows the source passage behind its answers so you can verify them, plus private PDF tools that run in your browser. Your files never leave your device.",
     url: absoluteUrl("/"), siteName: "DockDocs", type: "website",
   },
   robots: { index: true, follow: true },

@@ -19,7 +19,7 @@ const researchConfig: VerticalConfig = {
       eyebrow: "For research & academia",
       heroTitle: "AI document tools for papers, reports, and research",
       heroDescription:
-        "Summarize long papers into their key findings, ask a PDF about its methods and results, compare several studies side by side, OCR scanned articles, and pull data tables into a spreadsheet — every answer points back to the passage it came from, so you can verify before you cite.",
+        "Summarize long papers into their key findings, ask a PDF about its methods and results, compare several studies side by side, OCR scanned articles, and pull data tables into a spreadsheet — when it answers or flags a finding, it shows the passage behind it, so you can verify before you cite.",
       primary: "Summarize a paper",
       secondary: "Ask a paper",
       cardsTitle: "Tools for researchers",
@@ -36,7 +36,7 @@ const researchConfig: VerticalConfig = {
       eyebrow: "科研 / 学术",
       heroTitle: "面向论文、报告与研究的 AI 文档工具",
       heroDescription:
-        "把长论文浓缩成核心发现，向 PDF 提问它的方法与结果，并排比较多篇研究，对扫描文章做 OCR，把数据表抽进表格——每个答案都指回它出自的段落，让你在引用前能核对。",
+        "把长论文浓缩成核心发现，向 PDF 提问它的方法与结果，并排比较多篇研究，对扫描文章做 OCR，把数据表抽进表格——回答或标出某项发现时，它会展示支撑它的原文段落，让你在引用前能核对。",
       primary: "摘要一篇论文",
       secondary: "向论文提问",
       cardsTitle: "研究者工具",
@@ -53,7 +53,7 @@ const researchConfig: VerticalConfig = {
       eyebrow: "Investigación y academia",
       heroTitle: "Herramientas de documentos con IA para artículos, informes e investigación",
       heroDescription:
-        "Resume artículos extensos en sus hallazgos clave, pregunta a un PDF sobre sus métodos y resultados, compara varios estudios lado a lado, aplica OCR a artículos escaneados y extrae tablas de datos a una hoja de cálculo — cada respuesta apunta al pasaje del que proviene, para que puedas verificar antes de citar.",
+        "Resume artículos extensos en sus hallazgos clave, pregunta a un PDF sobre sus métodos y resultados, compara varios estudios lado a lado, aplica OCR a artículos escaneados y extrae tablas de datos a una hoja de cálculo — cuando responde o señala un hallazgo, muestra el pasaje que lo respalda, para que puedas verificar antes de citar.",
       primary: "Resumir un artículo",
       secondary: "Preguntar a un artículo",
       cardsTitle: "Herramientas para investigadores",
@@ -70,7 +70,7 @@ const researchConfig: VerticalConfig = {
       eyebrow: "Pesquisa e academia",
       heroTitle: "Ferramentas de documentos com IA para artigos, relatórios e pesquisa",
       heroDescription:
-        "Resuma artigos longos em suas principais descobertas, pergunte a um PDF sobre seus métodos e resultados, compare vários estudos lado a lado, aplique OCR a artigos digitalizados e extraia tabelas de dados para uma planilha — cada resposta aponta para o trecho de onde veio, para que você possa verificar antes de citar.",
+        "Resuma artigos longos em suas principais descobertas, pergunte a um PDF sobre seus métodos e resultados, compare vários estudos lado a lado, aplique OCR a artigos digitalizados e extraia tabelas de dados para uma planilha — quando responde ou aponta uma constatação, mostra o trecho que a fundamenta, para que você possa verificar antes de citar.",
       primary: "Resumir um artigo",
       secondary: "Perguntar a um artigo",
       cardsTitle: "Ferramentas para pesquisadores",
@@ -87,7 +87,7 @@ const researchConfig: VerticalConfig = {
       eyebrow: "Recherche et académique",
       heroTitle: "Outils documentaires IA pour articles, rapports et recherche",
       heroDescription:
-        "Résumez de longs articles en leurs conclusions clés, interrogez un PDF sur ses méthodes et résultats, comparez plusieurs études côte à côte, appliquez l'OCR à des articles numérisés et extrayez des tableaux de données vers un tableur — chaque réponse renvoie au passage dont elle provient, pour que vous puissiez vérifier avant de citer.",
+        "Résumez de longs articles en leurs conclusions clés, interrogez un PDF sur ses méthodes et résultats, comparez plusieurs études côte à côte, appliquez l'OCR à des articles numérisés et extrayez des tableaux de données vers un tableur — quand l'IA répond ou relève un élément, elle montre le passage qui l'appuie, pour que vous puissiez vérifier avant de citer.",
       primary: "Résumer un article",
       secondary: "Interroger un article",
       cardsTitle: "Outils pour les chercheurs",
