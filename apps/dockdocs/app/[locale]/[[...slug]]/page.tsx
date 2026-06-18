@@ -214,6 +214,532 @@ export async function generateMetadata(args: {
   return locale === "en" ? normalizeEnCanonical(meta) : meta;
 }
 
+// ---------------------------------------------------------------------------
+// Custom-tool metadata — rawLocale-keyed so es/pt/fr get native SEO copy.
+// Replaces the individual uiLocale==="zh" ternaries that shipped English to
+// indexed es/pt/fr pages. Each entry: { title, description, noindex? }.
+// ---------------------------------------------------------------------------
+const CUSTOM_TOOL_COPY: Record<string, {
+  title: Record<string, string>;
+  description: Record<string, string>;
+  noindex?: true;
+}> = {
+  "sign-pdf": {
+    title: {
+      zh: "给 PDF 签名 — 免费在线电子签名",
+      es: "Firmar un PDF — Firma electrónica gratuita",
+      pt: "Assinar um PDF — Assinatura eletrônica gratuita",
+      fr: "Signer un PDF — Signature électronique gratuite",
+      en: "Sign a PDF — Free Online E-Signature",
+    },
+    description: {
+      zh: "免费在线给 PDF 签名：手写或打字签名，放到页面上下载，全部在浏览器中完成。",
+      es: "Firma un PDF online gratis — dibuja o escribe tu firma, colócala en la página y descárgala. Todo en tu navegador.",
+      pt: "Assine um PDF online gratuitamente — desenhe ou escreva sua assinatura, posicione-a na página e baixe. Tudo no seu navegador.",
+      fr: "Signez un PDF en ligne gratuitement — dessinez ou tapez votre signature, placez-la sur la page et téléchargez. Entièrement dans votre navigateur.",
+      en: "Sign a PDF online for free — draw or type your signature, place it on the page, and download. Entirely in your browser.",
+    },
+  },
+  "batch-compress": {
+    title: {
+      zh: "批量压缩 PDF — 一次压缩整个文件夹",
+      es: "Comprimir PDF en lote — Comprimir toda una carpeta",
+      pt: "Comprimir PDFs em lote — Reduzir uma pasta inteira",
+      fr: "Compresser des PDF en lot — Réduire un dossier entier",
+      en: "Batch Compress PDFs — Shrink a Whole Folder",
+    },
+    description: {
+      zh: "拖入整个 PDF 文件夹一次性全部压缩，每个在浏览器中压缩并打包成 ZIP，不上传。",
+      es: "Arrastra una carpeta entera de PDFs y comprímelos todos de una vez — cada uno reducido en tu navegador y empaquetado en un ZIP.",
+      pt: "Arraste uma pasta inteira de PDFs e comprima todos de uma vez — cada um reduzido no seu navegador e empacotado em um único ZIP.",
+      fr: "Déposez un dossier entier de PDFs et compressez-les tous en une seule fois — chacun réduit dans votre navigateur et empaqueté dans un ZIP.",
+      en: "Drop a whole folder of PDFs and compress them all in one go — each shrunk in your browser and packaged into a single ZIP.",
+    },
+  },
+  "batch-summary": {
+    title: {
+      zh: "批量摘要 PDF — 一次总结多份文档",
+      es: "Resumir PDFs en lote — Resumir varios documentos a la vez",
+      pt: "Resumir PDFs em lote — Resumir vários documentos de uma vez",
+      fr: "Résumer des PDF en lot — Résumer plusieurs documents à la fois",
+      en: "Batch Summarize PDFs — Summarize Multiple Documents",
+    },
+    description: {
+      zh: "上传多份报告/论文/合同，AI 为每份生成执行摘要和关键要点，一次最多 5 份。",
+      es: "Sube varios informes, artículos o contratos y obtén un resumen conciso de cada uno generado por IA — resumen ejecutivo y puntos clave.",
+      pt: "Carregue vários relatórios, artigos ou contratos e obtenha um resumo conciso de cada um gerado por IA — resumo executivo e pontos-chave.",
+      fr: "Chargez plusieurs rapports, articles ou contrats et obtenez un résumé concis de chacun généré par IA — résumé exécutif et points clés.",
+      en: "Upload several reports, papers, or contracts and get a concise AI summary of each — executive summary plus key points.",
+    },
+  },
+  "flashcards": {
+    title: {
+      zh: "PDF 抽认卡生成 — 从课本/讲义自动出题",
+      es: "Tarjetas de estudio en PDF — Crea fichas desde cualquier PDF",
+      pt: "Cartões de estudo em PDF — Crie fichas de qualquer PDF",
+      fr: "Cartes mémoire PDF — Créez des fiches depuis n'importe quel PDF",
+      en: "PDF Flashcard Maker — Study Cards from Any PDF",
+    },
+    description: {
+      zh: "上传课本章节、讲义或手册，用 AI 生成问答抽认卡（只来自你的文档），点卡片翻面自测。",
+      es: "Convierte un capítulo de libro, apuntes o manual en tarjetas de estudio con IA — preguntas y respuestas extraídas únicamente de tu documento.",
+      pt: "Transforme um capítulo de livro, notas de aula ou manual em cartões de estudo com IA — perguntas e respostas retiradas somente do seu documento.",
+      fr: "Transformez un chapitre de manuel, des notes de cours ou un guide en cartes mémoire avec l'IA — questions et réponses tirées uniquement de votre document.",
+      en: "Turn a textbook chapter, lecture notes, or manual into study flashcards with AI — questions and answers drawn only from your document.",
+    },
+  },
+  "redline": {
+    title: {
+      zh: "PDF 版本对比 / 红线 — 看清两版改了什么",
+      es: "Comparar PDF — Marcar cambios entre dos versiones",
+      pt: "Comparar PDF — Marcar alterações entre duas versões",
+      fr: "Comparer PDF — Marquer les modifications entre deux versions",
+      en: "PDF Redline — Compare Two PDF Versions Free",
+    },
+    description: {
+      zh: "上传原始版和修订版 PDF，逐句对比看清新增和删除的内容，全部在浏览器中完成。",
+      es: "Compara dos versiones de un PDF para ver exactamente qué cambió — texto añadido resaltado, texto eliminado tachado. Gratis y en tu navegador.",
+      pt: "Compare duas versões de um PDF para ver exatamente o que mudou — texto adicionado destacado, texto removido riscado. Grátis e no seu navegador.",
+      fr: "Comparez deux versions d'un PDF pour voir exactement ce qui a changé — le texte ajouté surligné, le texte supprimé barré. Gratuit et dans votre navigateur.",
+      en: "Compare two PDF versions to see exactly what changed — added text highlighted, removed text struck through. Free and in your browser.",
+    },
+  },
+  "extract-to-excel": {
+    title: {
+      zh: "PDF 数据抽取到表格 — 发票/报价/合同",
+      es: "Extraer datos de PDF a hoja de cálculo — Facturas, cotizaciones, contratos",
+      pt: "Extrair dados de PDF para planilha — Faturas, orçamentos, contratos",
+      fr: "Extraire les données PDF vers un tableur — Factures, devis, contrats",
+      en: "Extract PDF Data to a Spreadsheet — Invoices, Quotes, Contracts",
+    },
+    description: {
+      zh: "上传发票、报价单或合同，用 AI 把关键字段抽成表格，导出 CSV(Excel 可打开)。只报告文档里真实存在的内容。",
+      es: "Sube facturas, cotizaciones o contratos y deja que la IA extraiga los campos clave en una hoja de cálculo descargable como CSV. Solo informa lo que realmente está en cada documento.",
+      pt: "Carregue faturas, orçamentos ou contratos e deixe a IA extrair os campos-chave em uma planilha baixável como CSV. Informa apenas o que realmente está em cada documento.",
+      fr: "Chargez des factures, devis ou contrats et laissez l'IA extraire les champs clés dans un tableur téléchargeable en CSV. Elle ne rapporte que ce qui est réellement dans chaque document.",
+      en: "Upload invoices, quotes, or contracts and let AI pull the key fields into a spreadsheet you can download as CSV. It only reports what is actually in each document.",
+    },
+  },
+  "crop-pdf": {
+    title: {
+      zh: "裁剪 PDF — 免费在线裁掉 PDF 页边",
+      es: "Recortar PDF — Eliminar márgenes de PDF online gratis",
+      pt: "Recortar PDF — Remover margens de PDF online grátis",
+      fr: "Rogner un PDF — Supprimer les marges d'un PDF en ligne",
+      en: "Crop PDF — Trim PDF Margins Online Free",
+    },
+    description: {
+      zh: "免费在线裁剪 PDF 页边：用实时预览裁掉任意一边的空白，每页按同样方式裁剪，全部在浏览器中完成。",
+      es: "Recorta los márgenes de un PDF online gratis. Elimina el espacio en blanco de cualquier borde con vista previa — todas las páginas recortadas igual, todo en tu navegador.",
+      pt: "Recorte as margens de um PDF online gratuitamente. Remova espaços em branco de qualquer borda com visualização ao vivo — todas as páginas recortadas igualmente, tudo no seu navegador.",
+      fr: "Rognez les marges d'un PDF en ligne gratuitement. Supprimez les espaces blancs de n'importe quel bord avec un aperçu en direct — toutes les pages rognées de la même façon, tout dans votre navigateur.",
+      en: "Crop PDF margins online for free. Trim whitespace from any edge with a live preview — every page cropped the same, all in your browser.",
+    },
+  },
+  "redact-pdf": {
+    title: {
+      zh: "PDF 涂黑脱敏 — 永久删除敏感文字",
+      es: "Redactar PDF — Eliminar texto sensible de forma permanente",
+      pt: "Redigir PDF — Remover texto sensível permanentemente",
+      fr: "Biffer un PDF — Supprimer définitivement le texte sensible",
+      en: "Redact PDF — Permanently Remove Sensitive Text Online Free",
+    },
+    description: {
+      zh: "真正涂黑脱敏 PDF：把姓名、号码等敏感文字永久删除(不是盖个黑框)，全部在浏览器中完成，文件不外泄。",
+      es: "Redacta un PDF de verdad — destruye permanentemente el texto oculto, no solo lo cubre. Todo en tu navegador; tu archivo nunca sale de tu dispositivo.",
+      pt: "Redija um PDF de verdade — destrua permanentemente o texto oculto, não apenas o cubra. Tudo no seu navegador; seu arquivo nunca sai do dispositivo.",
+      fr: "Biffez un PDF pour de vrai — détruisez définitivement le texte caché, ne le couvrez pas simplement. Entièrement dans votre navigateur ; votre fichier ne quitte jamais votre appareil.",
+      en: "Redact a PDF for real — permanently destroy the hidden text, not just cover it. Entirely in your browser; your file never leaves your device.",
+    },
+  },
+  "batch-pdf-to-image": {
+    title: {
+      zh: "批量 PDF 转图片 — 整批 PDF 一次转 JPG/PNG",
+      es: "PDF a imagen en lote — Convertir varios PDFs a JPG/PNG gratis",
+      pt: "PDF para imagem em lote — Converter vários PDFs em JPG/PNG grátis",
+      fr: "PDF en image en lot — Convertir plusieurs PDFs en JPG/PNG",
+      en: "Batch PDF to Image — Convert Many PDFs to JPG/PNG Free",
+    },
+    description: {
+      zh: "一次把整个文件夹的 PDF 都转成图片(JPG/PNG)，每页一张、打包成一个 ZIP，全部在浏览器中完成，文件不外泄。",
+      es: "Convierte una carpeta entera de PDFs a imágenes de una vez — cada página a JPG o PNG, empaquetadas en un ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
+      pt: "Converta uma pasta inteira de PDFs em imagens de uma vez — cada página em JPG ou PNG, empacotadas em um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
+      fr: "Convertissez un dossier entier de PDFs en images en une seule fois — chaque page en JPG ou PNG, empaquetées dans un ZIP. Entièrement dans votre navigateur.",
+      en: "Convert a whole folder of PDFs to images at once — every page to JPG or PNG, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
+    },
+  },
+  "batch-protect-pdf": {
+    title: {
+      zh: "批量加密 PDF — 整批 PDF 一次设密码",
+      es: "Cifrar PDF en lote — Proteger con contraseña varios PDFs gratis",
+      pt: "Criptografar PDFs em lote — Proteger vários PDFs com senha grátis",
+      fr: "Chiffrer des PDF en lot — Protéger plusieurs PDFs par mot de passe",
+      en: "Batch Encrypt PDF — Password-Protect Many PDFs Free",
+    },
+    description: {
+      zh: "设一个密码，给整个文件夹的 PDF 一次性加密，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。",
+      es: "Establece una contraseña y cifra una carpeta entera de PDFs de una vez, empaquetados en un ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
+      pt: "Defina uma senha e criptografe uma pasta inteira de PDFs de uma vez, empacotados em um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
+      fr: "Définissez un mot de passe et chiffrez un dossier entier de PDFs en une fois, empaquetés dans un ZIP. Entièrement dans votre navigateur.",
+      en: "Set one password and encrypt a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
+    },
+  },
+  "batch-rename-pdf": {
+    title: {
+      zh: "批量重命名 PDF — 整批按编号或查找替换改名",
+      es: "Renombrar PDF en lote — Renombrar archivos por patrón gratis",
+      pt: "Renomear PDFs em lote — Renomear arquivos por padrão grátis",
+      fr: "Renommer des PDF en lot — Renommer des fichiers par motif",
+      en: "Batch Rename PDF — Rename Many Files by Pattern Free",
+    },
+    description: {
+      zh: "一次给整个文件夹的 PDF 改名：按编号模板或查找替换，下载用新名字打包的 ZIP，全部在浏览器中完成。",
+      es: "Renombra una carpeta entera de PDFs de una vez — por patrón numerado o buscar y reemplazar — y descarga un ZIP con los nuevos nombres. Todo en tu navegador.",
+      pt: "Renomeie uma pasta inteira de PDFs de uma vez — por padrão numerado ou localizar e substituir — e baixe um ZIP com os novos nomes. Tudo no seu navegador.",
+      fr: "Renommez un dossier entier de PDFs en une fois — par modèle numéroté ou rechercher-remplacer — et téléchargez un ZIP avec les nouveaux noms. Entièrement dans votre navigateur.",
+      en: "Rename a whole folder of PDFs at once — by a numbered pattern or find-and-replace — and download a ZIP with the new names. Entirely in your browser.",
+    },
+  },
+  "batch-watermark-pdf": {
+    title: {
+      zh: "批量加水印 / 页码 — 整批 PDF 一次加水印或页码",
+      es: "Marca de agua en lote — Estampar marca o numeración en varios PDFs",
+      pt: "Marca d'água em lote — Adicionar marca ou numeração em vários PDFs",
+      fr: "Filigrane en lot — Tamponner plusieurs PDFs à la fois",
+      en: "Batch Watermark & Page Numbers — Stamp Many PDFs Free",
+    },
+    description: {
+      zh: "给整个文件夹的 PDF 一次性加水印或加页码，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。",
+      es: "Añade una marca de agua o números de página a una carpeta entera de PDFs de una vez, empaquetados en un ZIP. Todo en tu navegador.",
+      pt: "Adicione marca d'água ou numeração de páginas a uma pasta inteira de PDFs de uma vez, empacotados em um ZIP. Tudo no seu navegador.",
+      fr: "Ajoutez un filigrane ou des numéros de page à un dossier entier de PDFs en une fois, empaquetés dans un ZIP. Entièrement dans votre navigateur.",
+      en: "Add a watermark or page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
+    },
+  },
+  "batch-page-numbers": {
+    title: {
+      zh: "批量 PDF 添加页码 — 整批 PDF 一次加页码",
+      es: "Numerar PDFs en lote — Añadir número de página a varios PDFs gratis",
+      pt: "Numerar PDFs em lote — Adicionar numeração em vários PDFs grátis",
+      fr: "Numéroter des PDF en lot — Ajouter la pagination à plusieurs PDFs",
+      en: "Batch Add Page Numbers to PDFs — Free",
+    },
+    description: {
+      zh: "给整个文件夹的 PDF 一次性加页码，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。",
+      es: "Añade números de página a una carpeta entera de PDFs de una vez, empaquetados en un ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
+      pt: "Adicione números de página a uma pasta inteira de PDFs de uma vez, empacotados em um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
+      fr: "Ajoutez des numéros de page à un dossier entier de PDFs en une fois, empaquetés dans un ZIP. Entièrement dans votre navigateur.",
+      en: "Add page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
+    },
+  },
+  "batch-split-merge": {
+    title: {
+      zh: "批量拆分 / 合并 PDF — 整批合并或按页拆分",
+      es: "Dividir y fusionar PDF en lote — Combinar o dividir varios PDFs gratis",
+      pt: "Dividir e mesclar PDFs em lote — Combinar ou dividir vários PDFs grátis",
+      fr: "Diviser et fusionner des PDF en lot — Combiner ou fractionner plusieurs PDFs",
+      en: "Batch Split & Merge PDF — Combine or Split Many PDFs Free",
+    },
+    description: {
+      zh: "把整个文件夹的 PDF 合并成一个，或把每份按 N 页拆分，全部在浏览器中完成、打包下载，文件不外泄。",
+      es: "Fusiona una carpeta entera de PDFs en uno, o divide cada uno en archivos de N páginas — todo en tu navegador, empaquetado para descargar. Tus archivos nunca salen de tu dispositivo.",
+      pt: "Mescle uma pasta inteira de PDFs em um, ou divida cada um em arquivos de N páginas — tudo no seu navegador, empacotado para download. Seus arquivos nunca saem do dispositivo.",
+      fr: "Fusionnez un dossier entier de PDFs en un seul, ou divisez chacun en fichiers de N pages — le tout dans votre navigateur, empaqueté pour le téléchargement.",
+      en: "Merge a whole folder of PDFs into one, or split each into N-page files — all in your browser, packaged for download. Your files never leave your device.",
+    },
+  },
+  "batch-rotate-pdf": {
+    title: {
+      zh: "批量旋转 PDF — 整批纠正横/倒扫描件",
+      es: "Rotar PDF en lote — Corregir escaneos torcidos en varios archivos",
+      pt: "Girar PDFs em lote — Corrigir digitalizações viradas grátis",
+      fr: "Faire pivoter des PDF en lot — Corriger des scans de travers",
+      en: "Batch Rotate PDF — Fix Many Sideways Scans Free",
+    },
+    description: {
+      zh: "一次纠正整个文件夹横着或倒着的扫描件：把每份 PDF 每页旋转，打包 ZIP，全部在浏览器中完成，文件不外泄。",
+      es: "Corrige una carpeta entera de escaneos girados o al revés de una vez — rota cada página de cada PDF y descarga un ZIP. Todo en tu navegador.",
+      pt: "Corrija uma pasta inteira de digitalizações viradas de uma vez — gire cada página de cada PDF e baixe um ZIP. Tudo no seu navegador.",
+      fr: "Corrigez un dossier entier de scans de travers en une fois — faites pivoter chaque page de chaque PDF et téléchargez un ZIP. Entièrement dans votre navigateur.",
+      en: "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF and download one ZIP. Entirely in your browser.",
+    },
+  },
+  "batch-extract-sheet": {
+    title: {
+      zh: "批量抽取数据到一张表 — 整批发票/报价/合同 → CSV",
+      es: "Extraer datos en lote — Varias facturas/contratos a CSV",
+      pt: "Extrair dados em lote — Várias faturas/contratos para CSV",
+      fr: "Extraire des données en lot — Plusieurs factures/contrats vers CSV",
+      en: "Batch Extract Data to Spreadsheet — Many Invoices to CSV",
+    },
+    description: {
+      zh: "拖入整个文件夹的发票/报价/合同，AI 把每份的关键字段抽进同一张表(一份一行)，导出 CSV。AI 只报告真实存在的内容。",
+      es: "Arrastra una carpeta de facturas, cotizaciones o contratos — la IA extrae los campos clave de cada archivo en una tabla (una fila por documento) y exporta CSV. Solo informa lo que realmente está en cada uno.",
+      pt: "Arraste uma pasta de faturas, orçamentos ou contratos — a IA extrai os campos-chave de cada arquivo em uma tabela (uma linha por documento) e exporta CSV. Informa apenas o que realmente está em cada um.",
+      fr: "Déposez un dossier de factures, devis ou contrats — l'IA extrait les champs clés de chaque fichier dans un tableau (une ligne par document) et exporte en CSV. Elle ne rapporte que ce qui est réellement présent.",
+      en: "Drop a whole folder of invoices, quotes, or contracts — AI pulls the key fields from every file into one table (one row each) and exports CSV. It only reports what's actually there.",
+    },
+  },
+  "batch-sort": {
+    title: {
+      zh: "批量分类归档 PDF — AI 把杂乱文件分到文件夹",
+      es: "Clasificar PDFs en lote — Organizador de archivos con IA gratis",
+      pt: "Classificar PDFs em lote — Organizador de arquivos com IA grátis",
+      fr: "Trier des PDF en lot — Organiseur de fichiers par IA",
+      en: "Batch Sort PDFs into Folders — AI File Organizer Free",
+    },
+    description: {
+      zh: "拖入一堆杂乱 PDF,AI 给每份分类并分到一个 ZIP 里的不同文件夹，全部在浏览器中完成，文件不外泄。",
+      es: "Arrastra un montón de PDFs desordenados — la IA etiqueta cada uno y los organiza en carpetas dentro de un ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
+      pt: "Arraste uma pilha de PDFs desorganizados — a IA etiqueta cada um e os organiza em pastas dentro de um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
+      fr: "Déposez une pile de PDFs en vrac — l'IA étiquette chacun et les trie dans des dossiers à l'intérieur d'un ZIP. Entièrement dans votre navigateur.",
+      en: "Drop a messy pile of PDFs — AI labels each and sorts them into folders inside one ZIP. Entirely in your browser; your files never leave your device.",
+    },
+  },
+  "batch-pdf-to-word": {
+    title: {
+      zh: "批量 PDF 转 Word — 整批转换打包 ZIP",
+      es: "PDF a Word en lote — Convertir varios PDFs a Word gratis",
+      pt: "PDF para Word em lote — Converter vários PDFs em Word grátis",
+      fr: "PDF en Word en lot — Convertir plusieurs PDFs en Word",
+      en: "Batch PDF to Word — Convert Many PDFs to Word Free",
+    },
+    description: {
+      zh: "把整个文件夹的 PDF 一次性转成可编辑的 Word(.docx)，打包成一个 ZIP，转换在服务器完成。",
+      es: "Convierte una carpeta entera de PDFs en archivos Word editables (.docx) de una vez, empaquetados en un ZIP.",
+      pt: "Converta uma pasta inteira de PDFs em arquivos Word editáveis (.docx) de uma vez, empacotados em um ZIP.",
+      fr: "Convertissez un dossier entier de PDFs en fichiers Word modifiables (.docx) en une seule fois, empaquetés dans un ZIP.",
+      en: "Convert a whole folder of PDFs to editable Word (.docx) files at once, packaged into one ZIP.",
+    },
+  },
+  "batch-pdf-to-excel": {
+    title: {
+      zh: "批量 PDF 转 Excel — 整批转换打包 ZIP",
+      es: "PDF a Excel en lote — Convertir varios PDFs a Excel gratis",
+      pt: "PDF para Excel em lote — Converter vários PDFs em Excel grátis",
+      fr: "PDF en Excel en lot — Convertir plusieurs PDFs en Excel",
+      en: "Batch PDF to Excel — Convert Many PDFs to Excel Free",
+    },
+    description: {
+      zh: "把整个文件夹的 PDF 一次性转成可编辑的 Excel(.xlsx)，打包成一个 ZIP，转换在服务器完成。",
+      es: "Convierte una carpeta entera de PDFs en hojas de cálculo Excel (.xlsx) editables de una vez, empaquetadas en un ZIP.",
+      pt: "Converta uma pasta inteira de PDFs em planilhas Excel (.xlsx) editáveis de uma vez, empacotadas em um ZIP.",
+      fr: "Convertissez un dossier entier de PDFs en tableurs Excel (.xlsx) modifiables en une seule fois, empaquetés dans un ZIP.",
+      en: "Convert a whole folder of PDFs to editable Excel (.xlsx) spreadsheets at once, packaged into one ZIP.",
+    },
+  },
+  "batch-word-to-pdf": {
+    title: {
+      zh: "批量 Word 转 PDF — 整批转 PDF 打包 ZIP",
+      es: "Word a PDF en lote — Convertir varios archivos Word gratis",
+      pt: "Word para PDF em lote — Converter vários arquivos Word grátis",
+      fr: "Word en PDF en lot — Convertir plusieurs fichiers Word",
+      en: "Batch Word to PDF — Convert Many Word Files Free",
+    },
+    description: {
+      zh: "把整个文件夹的 Word 文档一次性全部转成 PDF，打包成一个 ZIP，转换在服务器完成。",
+      es: "Convierte una carpeta entera de documentos Word en PDF de una vez, empaquetados en un ZIP.",
+      pt: "Converta uma pasta inteira de documentos Word em PDF de uma vez, empacotados em um ZIP.",
+      fr: "Convertissez un dossier entier de documents Word en PDF en une seule fois, empaquetés dans un ZIP.",
+      en: "Convert a whole folder of Word documents to PDF at once, packaged into one ZIP.",
+    },
+  },
+  "batch-excel-to-pdf": {
+    title: {
+      zh: "批量 Excel 转 PDF — 整批转 PDF 打包 ZIP",
+      es: "Excel a PDF en lote — Convertir varias hojas de cálculo gratis",
+      pt: "Excel para PDF em lote — Converter várias planilhas grátis",
+      fr: "Excel en PDF en lot — Convertir plusieurs feuilles de calcul",
+      en: "Batch Excel to PDF — Convert Many Spreadsheets Free",
+    },
+    description: {
+      zh: "把整个文件夹的 Excel 表格一次性全部转成 PDF，打包成一个 ZIP，转换在服务器完成。",
+      es: "Convierte una carpeta entera de hojas de cálculo Excel en PDF de una vez, empaquetadas en un ZIP.",
+      pt: "Converta uma pasta inteira de planilhas Excel em PDF de uma vez, empacotadas em um ZIP.",
+      fr: "Convertissez un dossier entier de feuilles de calcul Excel en PDF en une seule fois, empaquetées dans un ZIP.",
+      en: "Convert a whole folder of Excel spreadsheets to PDF at once, packaged into one ZIP.",
+    },
+  },
+  "batch-ppt-to-pdf": {
+    title: {
+      zh: "批量 PPT 转 PDF — 整批转 PDF 打包 ZIP",
+      es: "PPT a PDF en lote — Convertir varias presentaciones gratis",
+      pt: "PPT para PDF em lote — Converter várias apresentações grátis",
+      fr: "PPT en PDF en lot — Convertir plusieurs présentations PowerPoint",
+      en: "Batch PPT to PDF — Convert Many PowerPoints Free",
+    },
+    description: {
+      zh: "把整个文件夹的 PowerPoint 演示文稿一次性全部转成 PDF，打包成一个 ZIP，转换在服务器完成。",
+      es: "Convierte una carpeta entera de presentaciones de PowerPoint en PDF de una vez, empaquetadas en un ZIP.",
+      pt: "Converta uma pasta inteira de apresentações do PowerPoint em PDF de uma vez, empacotadas em um ZIP.",
+      fr: "Convertissez un dossier entier de présentations PowerPoint en PDF en une seule fois, empaquetées dans un ZIP.",
+      en: "Convert a whole folder of PowerPoint presentations to PDF at once, packaged into one ZIP.",
+    },
+  },
+  "batch-translate": {
+    title: {
+      zh: "批量翻译 PDF — 整批翻译打包 ZIP",
+      es: "Traducir PDFs en lote — Traducir una carpeta entera gratis",
+      pt: "Traduzir PDFs em lote — Traduzir uma pasta inteira grátis",
+      fr: "Traduire des PDF en lot — Traduire un dossier entier",
+      en: "Batch Translate PDFs — Translate a Whole Folder Free",
+    },
+    description: {
+      zh: "把整个文件夹的 PDF 一次性翻译成一种语言，每份的文字翻译后打包成 .txt 的 ZIP。",
+      es: "Traduce una carpeta entera de PDFs a un idioma de una vez — el texto de cada documento traducido y empaquetado en un ZIP de archivos .txt.",
+      pt: "Traduza uma pasta inteira de PDFs para um idioma de uma vez — o texto de cada documento traduzido e empacotado em um ZIP de arquivos .txt.",
+      fr: "Traduisez un dossier entier de PDFs dans une langue en une seule fois — le texte de chaque document traduit et empaqueté dans un ZIP de fichiers .txt.",
+      en: "Translate a whole folder of PDFs into one language at once — each document's text translated and packaged into a ZIP of .txt files.",
+    },
+  },
+  "batch-fix-scans": {
+    title: {
+      zh: "批量修扫描 — 整批裁页边/删页",
+      es: "Reparar escaneos en lote — Recortar o eliminar páginas gratis",
+      pt: "Reparar digitalizações em lote — Recortar ou excluir páginas grátis",
+      fr: "Réparer des scans en lot — Rogner ou supprimer des pages en masse",
+      en: "Batch Fix Scans — Crop or Delete Pages in Bulk Free",
+    },
+    description: {
+      zh: "一次清理整个文件夹的扫描件：给每页裁掉相同页边，或从每个文件删相同页，全部在浏览器中完成、打包 ZIP。",
+      es: "Limpia una carpeta entera de PDFs escaneados de una vez — recorta los mismos márgenes de cada página o elimina las mismas páginas de cada archivo. Todo en tu navegador, un ZIP.",
+      pt: "Limpe uma pasta inteira de PDFs digitalizados de uma vez — recorte as mesmas margens de cada página ou exclua as mesmas páginas de cada arquivo. Tudo no seu navegador, um ZIP.",
+      fr: "Nettoyez un dossier entier de PDFs numérisés en une fois — rognez les mêmes marges de chaque page ou supprimez les mêmes pages de chaque fichier. Tout dans votre navigateur, un ZIP.",
+      en: "Clean up a whole folder of scanned PDFs at once — crop the same margins off every page or delete the same pages from each file. All in your browser, one ZIP.",
+    },
+  },
+  "contract-risk": {
+    title: {
+      zh: "合同风险体检 — 签字前发现风险条款",
+      es: "Revisión de riesgos en contratos — Detecta cláusulas peligrosas antes de firmar",
+      pt: "Revisão de riscos em contratos — Detecte cláusulas arriscadas antes de assinar",
+      fr: "Audit de risques contractuels — Repérez les clauses dangereuses avant de signer",
+      en: "Contract Risk Check — Spot Risky Clauses Before You Sign",
+    },
+    description: {
+      zh: "上传合同,得到白话的风险清单:风险/单边/缺失条款,红黄绿标注、引用原文、附该问什么。仅供参考,非法律意见。",
+      es: "Sube un contrato y obtén una lista en lenguaje claro de cláusulas arriesgadas, unilaterales o ausentes — marcadas en rojo/ámbar/verde y citadas de tu documento. Orientativo, no asesoramiento legal.",
+      pt: "Carregue um contrato e obtenha uma lista em linguagem simples de cláusulas arriscadas, unilaterais ou ausentes — marcadas em vermelho/âmbar/verde e citadas do seu documento. Informativo, não aconselhamento jurídico.",
+      fr: "Chargez un contrat et obtenez une liste en langage clair des clauses risquées, unilatérales ou manquantes — signalées en rouge/orange/vert et citées de votre document. Informatif, pas un conseil juridique.",
+      en: "Upload a contract and get a plain-language list of risky, one-sided, or missing clauses — flagged red/amber/green, quoted from your document. Informational, not legal advice.",
+    },
+  },
+  "lease-redflag": {
+    title: {
+      zh: "租约红旗扫描 — 签字前识别租约风险条款",
+      es: "Revisión de contrato de arrendamiento — Detecta cláusulas de riesgo antes de firmar",
+      pt: "Revisão de contrato de locação — Detecte cláusulas de risco antes de assinar",
+      fr: "Audit de bail — Repérez les clauses risquées avant de signer",
+      en: "Lease Red Flag Check — Spot Risky Clauses Before You Sign",
+    },
+    description: {
+      zh: "上传住宅或商业租约,标红不公平条款——租金飞涨、高额违约、入侵检查权等。逐条引用原文,附签字前该问什么。仅供参考,非法律意见。",
+      es: "Sube un contrato de arrendamiento y obtén una lista de cláusulas injustas o arriesgadas para el inquilino — marcadas en rojo/ámbar/verde y citadas de tu documento. Orientativo, no asesoramiento legal.",
+      pt: "Carregue um contrato de locação e obtenha uma lista de cláusulas injustas ou arriscadas para o locatário — marcadas em vermelho/âmbar/verde e citadas do seu documento. Informativo, não aconselhamento jurídico.",
+      fr: "Chargez un bail et obtenez une liste des clauses injustes ou risquées pour le locataire — signalées en rouge/orange/vert et citées de votre document. Informatif, pas un conseil juridique.",
+      en: "Upload a lease and get a plain-language list of risky, unfair, or missing tenant clauses — flagged red/amber/green, quoted from your document. Informational, not legal advice.",
+    },
+  },
+  "govbid-matrix": {
+    title: {
+      zh: "政府标书合规矩阵 — 自动提取招标文件所有 shall/must 条款",
+      es: "Matriz de cumplimiento de licitaciones — Extrae todos los requisitos shall/must",
+      pt: "Matriz de conformidade de licitações — Extraia todos os requisitos shall/must",
+      fr: "Matrice de conformité des appels d'offres — Extrayez toutes les exigences shall/must",
+      en: "Government Bid Compliance Matrix — Extract Every Shall/Must Requirement",
+    },
+    description: {
+      zh: "上传 RFP 或政府招标文件，AI 自动提取每条强制性要求生成编号合规矩阵，带条款编号和页码引用，可导出 CSV。",
+      es: "Sube una licitación o solicitud y obtén cada requisito obligatorio 'shall/must' extraído en una matriz de cumplimiento numerada con referencias de sección. Exporta a CSV.",
+      pt: "Carregue uma licitação ou solicitação e obtenha cada requisito obrigatório 'shall/must' extraído em uma matriz de conformidade numerada com referências de seção. Exporte para CSV.",
+      fr: "Chargez un appel d'offres et obtenez chaque exigence obligatoire 'shall/must' extraite dans une matrice de conformité numérotée avec des références de section. Exportez en CSV.",
+      en: "Upload an RFP or solicitation and get every mandatory 'shall/must' requirement extracted into a numbered compliance matrix with section references. Export to CSV.",
+    },
+  },
+  "my-chats": {
+    noindex: true,
+    title: {
+      zh: "我的对话 — DockDocs",
+      es: "Mis conversaciones — DockDocs",
+      pt: "Minhas conversas — DockDocs",
+      fr: "Mes conversations — DockDocs",
+      en: "My Chats — DockDocs",
+    },
+    description: {
+      zh: "查看已保存的「和 PDF 对话」记录和上传文档的元数据。",
+      es: "Ver conversaciones guardadas de Chat con PDF y metadatos de documentos subidos en DockDocs.",
+      pt: "Veja conversas salvas do Chat com PDF e metadados de documentos enviados no DockDocs.",
+      fr: "Consultez les conversations Chat avec PDF sauvegardées et les métadonnées des documents chargés sur DockDocs.",
+      en: "View saved Chat with PDF conversations and uploaded document metadata in DockDocs.",
+    },
+  },
+  "url-to-pdf": {
+    title: {
+      zh: "网页转 PDF — 免费在线把网页转成 PDF",
+      es: "URL a PDF — Convertir una página web a PDF gratis",
+      pt: "URL para PDF — Converter uma página web em PDF grátis",
+      fr: "URL en PDF — Convertir une page web en PDF",
+      en: "URL to PDF — Convert a Web Page to PDF Free",
+    },
+    description: {
+      zh: "免费把任意公开网页转换为 PDF：粘贴网址，下载用真实浏览器引擎渲染的干净 PDF——无需上传、无需安装。",
+      es: "Convierte cualquier página web pública en PDF online gratis. Pega la URL y descarga un PDF limpio renderizado en navegador — sin subir archivos, sin instalación.",
+      pt: "Converta qualquer página web pública em PDF online gratuitamente. Cole a URL e baixe um PDF limpo renderizado pelo navegador — sem upload, sem instalação.",
+      fr: "Convertissez n'importe quelle page web publique en PDF en ligne gratuitement. Collez une URL et téléchargez un PDF propre rendu par le navigateur — sans upload, sans installation.",
+      en: "Convert any public web page to PDF online for free. Paste a URL and download a clean, browser-rendered PDF — no upload, no install.",
+    },
+  },
+  "compare": {
+    title: {
+      zh: "多文档对比 — AI 文档比较 | DockDocs",
+      es: "Comparar documentos PDF con IA — DockDocs",
+      pt: "Comparar documentos PDF com IA — DockDocs",
+      fr: "Comparer des documents PDF avec l'IA — DockDocs",
+      en: "Compare PDF Documents with AI — DockDocs",
+    },
+    description: {
+      zh: "上传多份 PDF，在浏览器抽取文本，并排对比关键字段——每个值都带原文出处。",
+      es: "Sube varios PDFs, extrae el texto en tu navegador y compara los términos clave lado a lado — con la fuente detrás de cada valor.",
+      pt: "Carregue vários PDFs, extraia o texto no seu navegador e compare os termos-chave lado a lado — com a fonte por trás de cada valor.",
+      fr: "Chargez plusieurs PDFs, extrayez le texte dans votre navigateur et comparez les termes clés côte à côte — avec la source derrière chaque valeur.",
+      en: "Upload multiple PDFs, extract text in your browser, and line up the key terms side by side — with the source behind every value.",
+    },
+  },
+  "account": {
+    noindex: true,
+    title: {
+      zh: "账户",
+      es: "Cuenta",
+      pt: "Conta",
+      fr: "Compte",
+      en: "Account",
+    },
+    description: {
+      zh: "使用 Google、Microsoft 或邮箱登录 DockDocs，管理你的工作区与订阅。",
+      es: "Inicia sesión en DockDocs con Google, Microsoft o correo. Gestiona tu espacio de trabajo y suscripción.",
+      pt: "Entre no DockDocs com Google, Microsoft ou e-mail. Gerencie seu espaço de trabalho e assinatura.",
+      fr: "Connectez-vous à DockDocs avec Google, Microsoft ou e-mail. Gérez votre espace de travail et votre abonnement.",
+      en: "Sign in to DockDocs with Google, Microsoft, or email. Manage your workspace and billing.",
+    },
+  },
+  "images-to-pdf": {
+    title: {
+      zh: "图片转 PDF — JPG/PNG/WebP 转 PDF",
+      es: "Imagen a PDF — JPG, PNG y WebP a PDF",
+      pt: "Imagem para PDF — JPG, PNG e WebP para PDF",
+      fr: "Image en PDF — JPG, PNG et WebP en PDF",
+      en: "Image to PDF — JPG, PNG & WebP to PDF",
+    },
+    description: {
+      zh: "把 JPG、PNG、WebP、GIF、BMP 图片合并成一个 PDF，每张一页，全程在浏览器完成。",
+      es: "Convierte imágenes JPG, PNG, WebP, GIF o BMP a PDF online gratis. Arrastra para ordenar y combina en un PDF — todo en tu navegador.",
+      pt: "Converta imagens JPG, PNG, WebP, GIF ou BMP em PDF online gratuitamente. Arraste para ordenar e combine em um PDF — tudo no seu navegador.",
+      fr: "Convertissez des images JPG, PNG, WebP, GIF ou BMP en PDF en ligne gratuitement. Glissez pour ordonner et combinez en un PDF — tout dans votre navigateur.",
+      en: "Convert JPG, PNG, WebP, GIF or BMP images to PDF online for free. Drag to order and combine into one PDF — all in your browser.",
+    },
+  },
+};
+
 async function generateMetadataInner({
   params,
 }: {
@@ -379,6 +905,18 @@ async function generateMetadataInner({
       runtimeCopy.pricing.metadataTitle,
       runtimeCopy.pricing.metadataDescription,
     );
+  }
+
+  // ── rawLocale-keyed metadata for 32 custom tool slugs ──────────────────
+  // Fixes es/pt/fr pages that previously received English metadata because
+  // uiLocale collapses those locales to "en". Slugs with noindex:true get
+  // robots:{index:false} overlaid on the createLocalizedMetadata base.
+  const customCopy = CUSTOM_TOOL_COPY[slug];
+  if (customCopy) {
+    const title = customCopy.title[rawLocale] ?? customCopy.title.en;
+    const description = customCopy.description[rawLocale] ?? customCopy.description.en;
+    const meta = createLocalizedMetadata(rawLocale, slug as RouteSlug, title, description);
+    return customCopy.noindex ? { ...meta, robots: { index: false, follow: true } } : meta;
   }
 
   if (slug === "sign-pdf") {
