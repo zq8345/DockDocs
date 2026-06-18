@@ -65,6 +65,16 @@ const content = {
     ctaHeading: "Try a tool. No upload. No account.",
     ctaSub: "Open any tool and watch the network tab — for the in-browser ones, nothing leaves.",
     cta1: "Browse the tools", cta2: "See how privacy works",
+
+    relEyebrow: "// Your money & reliability",
+    relHeading: "Built to last — and answerable only to you.",
+    relBody: "DockDocs is built independently — not a VC-funded giant that monetizes data. We answer to you, not investors: no pressure to harvest data or chase growth at any cost. A product that runs on honest subscriptions and a very low cost base is built for the long term.",
+    relPoints: [
+      { t: "Payments", b: "Handled by Creem, a licensed Merchant of Record — we never see your card; invoices and refunds are handled professionally." },
+      { t: "Refunds", b: "7-day money-back, cancel anytime." },
+      { t: "No lock-in", b: "Your data is yours; export anytime." },
+      { t: "Anti-fragile", b: "Even if DockDocs disappeared one day, you lose nothing — the client-side tools always ran on your own machine; your files were never held hostage on our servers." },
+    ],
   },
   zh: {
     heroEyebrow: "// DockDocs 为何存在",
@@ -124,6 +134,16 @@ const content = {
     ctaHeading: "试用一个工具。无上传。无需注册。",
     ctaSub: "打开任意工具，盯着网络面板看——浏览器内的工具，什么都不会发出去。",
     cta1: "浏览全部工具", cta2: "看隐私怎么做到",
+
+    relEyebrow: "// 你的钱与可靠性",
+    relHeading: "为长期而生——只对你负责。",
+    relBody: "DockDocs 是独立打造的，不是一家靠 VC 烧钱、靠数据变现的巨头。我们只对你负责，不对投资人负责：没有人逼我们榨取数据或不计代价地增长。一个靠诚实订阅、成本极低的产品，反而为长期而生。",
+    relPoints: [
+      { t: "付款", b: "由 Creem（持牌 Merchant of Record）处理：我们看不到你的卡；发票与退款由它专业处理。" },
+      { t: "退款", b: "7 天无理由退款，随时取消。" },
+      { t: "无锁定", b: "你的数据是你的，随时导出。" },
+      { t: "反脆弱", b: "就算有一天 DockDocs 不在了，你也不损失什么：客户端工具一直跑在你自己机器上，你的文件从不被我们的服务器扣作人质。" },
+    ],
   },
   es: {
     heroEyebrow: "// Por qué existe DockDocs",
@@ -183,6 +203,16 @@ const content = {
     ctaHeading: "Prueba una herramienta. Sin subir nada. Sin cuenta.",
     ctaSub: "Abre cualquier herramienta y mira la pestaña de red: con las del navegador, nada sale.",
     cta1: "Explorar las herramientas", cta2: "Ver cómo funciona la privacidad",
+
+    relEyebrow: "// Tu dinero y la fiabilidad",
+    relHeading: "Hecho para durar — y responder solo ante ti.",
+    relBody: "DockDocs se construye de forma independiente, no es un gigante financiado por capital riesgo que monetiza datos. Respondemos ante ti, no ante inversores: sin presión por recolectar datos ni por crecer a cualquier precio. Un producto que vive de suscripciones honestas y con costes muy bajos está hecho para durar.",
+    relPoints: [
+      { t: "Pagos", b: "Gestionados por Creem, un Merchant of Record con licencia — nunca vemos tu tarjeta; las facturas y los reembolsos se gestionan profesionalmente." },
+      { t: "Reembolsos", b: "Devolución en 7 días, cancela cuando quieras." },
+      { t: "Sin bloqueo", b: "Tus datos son tuyos; expórtalos cuando quieras." },
+      { t: "Antifrágil", b: "Aunque DockDocs desapareciera un día, no pierdes nada: las herramientas del navegador siempre se ejecutaron en tu propia máquina; tus archivos nunca quedaron retenidos en nuestros servidores." },
+    ],
   },
   pt: {
     heroEyebrow: "// Por que o DockDocs existe",
@@ -242,6 +272,16 @@ const content = {
     ctaHeading: "Experimente uma ferramenta. Sem envio. Sem conta.",
     ctaSub: "Abra qualquer ferramenta e observe a aba de rede — nas ferramentas do navegador, nada sai.",
     cta1: "Explorar as ferramentas", cta2: "Ver como a privacidade funciona",
+
+    relEyebrow: "// Seu dinheiro e a confiabilidade",
+    relHeading: "Feito para durar — e responder só a você.",
+    relBody: "O DockDocs é construído de forma independente, não é um gigante financiado por capital de risco que monetiza dados. Respondemos a você, não a investidores: sem pressão para coletar dados ou crescer a qualquer custo. Um produto que vive de assinaturas honestas e com custos muito baixos é feito para durar.",
+    relPoints: [
+      { t: "Pagamentos", b: "Processados pela Creem, um Merchant of Record licenciado — nunca vemos seu cartão; faturas e reembolsos são tratados profissionalmente." },
+      { t: "Reembolsos", b: "Reembolso em 7 dias, cancele quando quiser." },
+      { t: "Sem aprisionamento", b: "Seus dados são seus; exporte quando quiser." },
+      { t: "Antifrágil", b: "Mesmo que o DockDocs desaparecesse um dia, você não perde nada: as ferramentas do navegador sempre rodaram na sua própria máquina; seus arquivos nunca ficaram reféns nos nossos servidores." },
+    ],
   },
   fr: {
     heroEyebrow: "// Pourquoi DockDocs existe",
@@ -301,6 +341,16 @@ const content = {
     ctaHeading: "Essayez un outil. Sans envoi. Sans compte.",
     ctaSub: "Ouvrez n'importe quel outil et regardez l'onglet réseau — avec les outils navigateur, rien ne sort.",
     cta1: "Explorer les outils", cta2: "Voir comment fonctionne la confidentialité",
+
+    relEyebrow: "// Votre argent et la fiabilité",
+    relHeading: "Conçu pour durer — et ne répondre qu'à vous.",
+    relBody: "DockDocs est conçu de façon indépendante, pas un géant financé par du capital-risque qui monétise les données. Nous répondons à vous, pas à des investisseurs : aucune pression pour collecter des données ou croître à tout prix. Un produit qui vit d'abonnements honnêtes et à très faible coût est fait pour durer.",
+    relPoints: [
+      { t: "Paiements", b: "Gérés par Creem, un Merchant of Record agréé — nous ne voyons jamais votre carte ; factures et remboursements traités professionnellement." },
+      { t: "Remboursements", b: "Remboursement sous 7 jours, annulez à tout moment." },
+      { t: "Sans verrouillage", b: "Vos données sont à vous ; exportez à tout moment." },
+      { t: "Antifragile", b: "Même si DockDocs disparaissait un jour, vous ne perdez rien : les outils navigateur ont toujours tourné sur votre propre machine ; vos fichiers n'ont jamais été retenus en otage sur nos serveurs." },
+    ],
   },
 } as const;
 
@@ -335,7 +385,7 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
       <section className="border-b border-[color:var(--line)]">
         <div className="mx-auto max-w-3xl px-5 pb-20 pt-24 text-center sm:px-6 sm:pb-28 sm:pt-32">
           <p className={eyebrow}>{c.heroEyebrow}</p>
-          <h1 className="mt-5 text-[36px] font-normal leading-[1.05] tracking-[-0.03em] text-[color:var(--foreground)] sm:text-[54px] lg:text-[64px]">
+          <h1 className="mt-5 text-[38px] font-medium leading-[1.05] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[56px] lg:text-[72px] lg:leading-[1.02] lg:tracking-[-0.04em]">
             {c.heroPre}<span className="text-[color:var(--accent)]">{c.heroAccent}</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]">{c.heroSub}</p>
@@ -496,6 +546,24 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
                 <p className="mt-4 font-mono text-[11px] text-[color:var(--faint)]">{`0${i + 1}`}</p>
                 <p className="mt-1.5 text-[16px] font-normal text-[color:var(--foreground)]">{v.t}</p>
                 <p className="mt-2 text-[14px] leading-[1.5] text-[color:var(--muted)]">{v.b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7.5 ── Your money & reliability (paid-user trust) ── */}
+      <section>
+        <div className="mx-auto max-w-5xl px-5 py-20 sm:px-6 sm:py-28 lg:px-8">
+          <p className={eyebrow}>{c.relEyebrow}</p>
+          <h2 className={`mt-4 ${h2}`}>{c.relHeading}</h2>
+          <p className="mt-4 max-w-2xl text-[16px] leading-[1.7] text-[color:var(--muted)]">{c.relBody}</p>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {c.relPoints.map((p, i) => (
+              <div key={p.t} className="rounded-2xl border border-[color:var(--line)] p-6">
+                <p className="font-mono text-[11px] text-[color:var(--faint)]">{`0${i + 1}`}</p>
+                <p className="mt-1.5 text-[16px] font-normal text-[color:var(--foreground)]">{p.t}</p>
+                <p className="mt-2 text-[14px] leading-[1.5] text-[color:var(--muted)]">{p.b}</p>
               </div>
             ))}
           </div>
