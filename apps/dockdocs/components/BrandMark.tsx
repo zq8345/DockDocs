@@ -17,9 +17,9 @@ export function BrandMark({ className = "", showWordmark = true, iconOnly = fals
     >
       <rect x="2" y="4" width="8" height="68" rx="4" fill="#3ECF8E" />
       <rect x="24" y="6" width="16" height="8" rx="4" fill="#3ECF8E" />
-      <rect x="40" y="20" width="16" height="8" rx="4" fill="#3ECF8E" />
+      <rect x="40" y="19" width="16" height="8" rx="4" fill="#3ECF8E" />
       <rect x="44" y="34" width="16" height="8" rx="4" fill="#3ECF8E" />
-      <rect x="40" y="48" width="16" height="8" rx="4" fill="#3ECF8E" />
+      <rect x="40" y="49" width="16" height="8" rx="4" fill="#3ECF8E" />
       <rect x="24" y="62" width="16" height="8" rx="4" fill="#3ECF8E" />
     </svg>
   );
