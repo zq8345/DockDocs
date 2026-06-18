@@ -18,7 +18,7 @@ const content = {
     heroSub: "Most DockDocs tools run entirely inside your browser — your files never reach us because they never leave you. Local is the default, not a setting you flip.",
     heroCaption: "Fig 0.1 — your file, and where it stays.",
 
-    flowEyebrow: "// Where your file actually goes",
+    flowEyebrow: "// Follow the file",
     flowHeading: "Where your file actually goes.",
     flowSub: "For most tools, the work happens on your machine — and the file never crosses the line.",
     flowDevice: "Your device",
@@ -48,8 +48,8 @@ const content = {
     neverRows: ["Store your documents", "Train our own models on your files", "Sell or share your data", "Email-to-cancel traps", "Hidden uploads"],
     tableCaption: "Fig 0.4 — the deal, in full.",
 
-    cloudEyebrow: "// When a tool uses the cloud",
-    cloudHeading: "When a tool does use the cloud, it says so — and the AI always cites its source.",
+    cloudEyebrow: "// Honest about the cloud",
+    cloudHeading: "When a tool does use the cloud, it says so.",
     cloudSub: "A few tools (Office conversion, big OCR, AI chat) need a server: labeled before you start, encrypted in transit, deleted right after. Every AI answer points to the exact source line.",
     cloudSteps: ["labeled up front", "encrypted in transit", "processed", "copy deleted"],
     cloudNotKept: "not retained",
@@ -86,7 +86,7 @@ const content = {
     heroSub: "DockDocs 的大多数工具完全在你的浏览器里运行——文件到不了我们这，因为它根本没离开你。本地处理是默认，而不是一个要你去打开的开关。",
     heroCaption: "图 0.1 — 你的文件，以及它留在哪。",
 
-    flowEyebrow: "// 文件到底去了哪",
+    flowEyebrow: "// 跟着文件走",
     flowHeading: "你的文件，到底去了哪。",
     flowSub: "大多数工具，处理都发生在你的设备上——文件从不越过这条线。",
     flowDevice: "你的设备",
@@ -116,8 +116,8 @@ const content = {
     neverRows: ["存储你的文档", "用你的文件训练我们自己的模型", "出售或分享你的数据", "发邮件才能取消的套路", "隐藏的上传"],
     tableCaption: "图 0.4 — 完整的约定。",
 
-    cloudEyebrow: "// 当某个工具用到云端",
-    cloudHeading: "少数工具确实要用云端——它会明说，而且 AI 永远标注原文出处。",
+    cloudEyebrow: "// 对云端坦诚",
+    cloudHeading: "少数工具确实要用云端——它会明说。",
     cloudSub: "少数工具（Office 转换、大文件 OCR、AI 问答）需要服务器：开始前标注、传输加密、用完即删。每个 AI 答案都指向确切的原文那一行。",
     cloudSteps: ["事先标注", "传输加密", "处理", "副本删除"],
     cloudNotKept: "不留存",
@@ -154,7 +154,7 @@ const content = {
     heroSub: "La mayoría de las herramientas de DockDocs funcionan por completo en tu navegador: tus archivos nunca llegan a nosotros porque nunca salen de ti. Lo local es lo predeterminado, no una opción que activas.",
     heroCaption: "Fig 0.1 — tu archivo, y dónde se queda.",
 
-    flowEyebrow: "// Adónde va realmente tu archivo",
+    flowEyebrow: "// Sigue el archivo",
     flowHeading: "Adónde va realmente tu archivo.",
     flowSub: "En la mayoría de las herramientas, el trabajo ocurre en tu equipo, y el archivo nunca cruza la línea.",
     flowDevice: "Tu dispositivo",
@@ -184,8 +184,8 @@ const content = {
     neverRows: ["Almacenar tus documentos", "Entrenar nuestros propios modelos con tus archivos", "Vender o compartir tus datos", "Trampas de cancelación por correo", "Subidas ocultas"],
     tableCaption: "Fig 0.4 — el trato, completo.",
 
-    cloudEyebrow: "// Cuando una herramienta usa la nube",
-    cloudHeading: "Cuando una herramienta sí usa la nube, lo dice — y la IA siempre cita su fuente.",
+    cloudEyebrow: "// Sinceros sobre la nube",
+    cloudHeading: "Cuando una herramienta sí usa la nube, lo dice.",
     cloudSub: "Algunas herramientas (conversión de Office, OCR grande, chat con IA) necesitan un servidor: avisado antes de empezar, cifrado en tránsito y borrado justo después. Cada respuesta de IA apunta a la línea de origen exacta.",
     cloudSteps: ["avisado por adelantado", "cifrado en tránsito", "procesado", "copia borrada"],
     cloudNotKept: "no se conserva",
@@ -222,7 +222,7 @@ const content = {
     heroSub: "A maioria das ferramentas do DockDocs roda inteiramente no seu navegador — seus arquivos nunca chegam até nós porque nunca saem de você. O local é o padrão, não uma configuração que você ativa.",
     heroCaption: "Fig 0.1 — seu arquivo, e onde ele fica.",
 
-    flowEyebrow: "// Para onde seu arquivo realmente vai",
+    flowEyebrow: "// Siga o arquivo",
     flowHeading: "Para onde seu arquivo realmente vai.",
     flowSub: "Na maioria das ferramentas, o processamento acontece na sua máquina, e o arquivo nunca cruza a linha.",
     flowDevice: "Seu dispositivo",
@@ -252,8 +252,8 @@ const content = {
     neverRows: ["Armazenar seus documentos", "Treinar nossos próprios modelos com seus arquivos", "Vender ou compartilhar seus dados", "Armadilhas de cancelamento por e-mail", "Envios ocultos"],
     tableCaption: "Fig 0.4 — o acordo, por completo.",
 
-    cloudEyebrow: "// Quando uma ferramenta usa a nuvem",
-    cloudHeading: "Quando uma ferramenta usa a nuvem, ela avisa — e a IA sempre cita sua fonte.",
+    cloudEyebrow: "// Honestos sobre a nuvem",
+    cloudHeading: "Quando uma ferramenta usa a nuvem, ela avisa.",
     cloudSub: "Algumas ferramentas (conversão do Office, OCR grande, chat com IA) precisam de um servidor: avisado antes de começar, criptografado em trânsito e excluído logo após. Cada resposta de IA aponta para a linha de origem exata.",
     cloudSteps: ["avisado com antecedência", "criptografado em trânsito", "processado", "cópia excluída"],
     cloudNotKept: "não retido",
@@ -290,7 +290,7 @@ const content = {
     heroSub: "La plupart des outils DockDocs s'exécutent entièrement dans votre navigateur — vos fichiers ne nous parviennent jamais parce qu'ils ne vous quittent jamais. Le local est la valeur par défaut, pas un paramètre à activer.",
     heroCaption: "Fig 0.1 — votre fichier, et là où il reste.",
 
-    flowEyebrow: "// Où va vraiment votre fichier",
+    flowEyebrow: "// Suivez le fichier",
     flowHeading: "Où va vraiment votre fichier.",
     flowSub: "Dans la plupart des outils, le traitement a lieu sur votre machine, et le fichier ne franchit jamais la ligne.",
     flowDevice: "Votre appareil",
@@ -320,8 +320,8 @@ const content = {
     neverRows: ["Stocker vos documents", "Entraîner nos propres modèles avec vos fichiers", "Vendre ou partager vos données", "Pièges de désabonnement par e-mail", "Envois cachés"],
     tableCaption: "Fig 0.4 — l'accord, en entier.",
 
-    cloudEyebrow: "// Quand un outil utilise le cloud",
-    cloudHeading: "Quand un outil utilise le cloud, il vous le dit — et l'IA cite toujours sa source.",
+    cloudEyebrow: "// Honnêtes sur le cloud",
+    cloudHeading: "Quand un outil utilise le cloud, il vous le dit.",
     cloudSub: "Certains outils (conversion Office, OCR volumineuse, chat IA) ont besoin d'un serveur : signalé avant de commencer, chiffré en transit et supprimé juste après. Chaque réponse IA renvoie à la ligne source exacte.",
     cloudSteps: ["signalé à l'avance", "chiffré en transit", "traité", "copie supprimée"],
     cloudNotKept: "non conservé",
@@ -439,6 +439,11 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
           <p className={sub}>{c.flowSub}</p>
           <Figure className="mt-10" glow="40%">
             <svg viewBox="0 0 960 360" className="w-full" role="img" aria-label={c.flowHeading}>
+              <defs>
+                <filter id="abPillGlow" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="9" />
+                </filter>
+              </defs>
               {/* cold "internet" wash on the right half */}
               <rect x="600" y="0" width="360" height="360" fill="rgba(255,255,255,0.015)" />
               {/* boundary */}
@@ -474,7 +479,8 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
                 <path d="M150 228l13-6v12z" fill="currentColor" stroke="none" />
                 <path className="ab-flow" d="M150 272H250a20 20 0 0 0 0-40H150" strokeWidth="2.6" />
                 <text x="300" y="244" fill="currentColor" stroke="none" className="font-mono text-[12px]">{c.flowStays}</text>
-                {/* the hero pill — lit */}
+                {/* the hero pill — lit, with a soft glow behind it (spec C names it the hero element) */}
+                <rect x="300" y="258" width="186" height="32" rx="16" fill="rgba(62,207,142,0.5)" stroke="none" filter="url(#abPillGlow)" />
                 <rect x="300" y="258" width="186" height="32" rx="16" fill="rgba(62,207,142,0.08)" strokeWidth="1.6" />
                 <text x="393" y="279" textAnchor="middle" fill="currentColor" stroke="none" className="text-[13px] font-medium">{c.flowZero}</text>
               </g>
@@ -547,7 +553,7 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
       <section>
         <div className={shell}>
           <p className={eyebrow}>{c.cloudEyebrow}</p>
-          <h2 className={`mt-4 max-w-3xl ${h2}`}>{c.cloudHeading}</h2>
+          <h2 className={`mt-4 max-w-2xl ${h2}`}>{c.cloudHeading}</h2>
           <p className={sub}>{c.cloudSub}</p>
           <Figure className="mt-10">
             <div className="grid gap-4 md:grid-cols-2">
