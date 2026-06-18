@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { TIER_CATEGORIES } from "@/lib/tier-config";
 import type { FeatureItem } from "@/lib/tier-config";
 import { localizedPath, type RouteSlug, type RouteLocale } from "@/lib/i18n";
-import { createBillingCheckoutSession, createBillingPortalSession, changeBillingPlan, getSubscriptionSnapshot, BillingError, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
+import { createBillingCheckoutSession, createBillingPortalSession, startUpgradeCheckout, getSubscriptionSnapshot, BillingError, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
 import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
 import { getUser, onAuthChange } from "@/lib/auth";
 
@@ -512,8 +512,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
     setBillingError(billingErrorCopy(code, message, locale));
   }
 
-  // Start hosted checkout for paid plans (new subscription or upgrade-to-lifetime).
-  async function upgrade(plan: PaidSubscriptionPlan) {
+  // Plain hosted checkout for a NEW subscription (Free → paid) — no credit.
+  async function plainCheckout(plan: PaidSubscriptionPlan) {
     setBillingLoading(plan);
     setBillingError("");
     try {
@@ -523,18 +523,16 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       setBillingLoading("");
     }
   }
-  // In-place upgrade of an existing recurring subscription (Creem prorates). No
-  // redirect — refresh the snapshot so the card reflects the new plan/interval.
-  async function changePlan(plan: PaidSubscriptionPlan) {
+  // Proration UPGRADE for a user who already has a recurring sub (recurring→recurring
+  // OR recurring→lifetime): the server computes the credit, mints a one-time discount,
+  // and redirects to a checkout where the user pays only the difference.
+  async function upgradeCheckout(plan: PaidSubscriptionPlan) {
     setBillingLoading(plan);
     setBillingError("");
     try {
-      await changeBillingPlan(plan, period);
-      const snap = await getSubscriptionSnapshot();
-      setSubscription(snap);
+      await startUpgradeCheckout(plan, period); // redirects to discounted checkout on success
     } catch (err) {
       handleBillingError(err);
-    } finally {
       setBillingLoading("");
     }
   }
@@ -610,7 +608,12 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
           // lifetime). "change" = in-place recurring upgrade (Creem proration).
           // "checkout" = brand-new sub or an upgrade to lifetime. "manage" =
           // downgrade / lateral → billing portal (no auto double-charge).
-          const ctaKind: "current" | "checkout" | "change" | "manage" =
+          // "checkout" = brand-new sub (Free→paid), plain hosted checkout, no credit.
+          // "upgrade"  = user already has a recurring sub → proration upgrade-checkout
+          //              (recurring→recurring OR recurring→lifetime; pays the difference).
+          // "manage"   = downgrade / lateral → billing portal. "current" = exact match
+          //              (or lifetime owner on their own plan).
+          const ctaKind: "current" | "checkout" | "upgrade" | "manage" =
             !planKey || !subscription || curPlan === "FREE"
               ? "checkout"
               : curInterval === "lifetime"
@@ -618,7 +621,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 : curPlan === planKey && curInterval === period
                   ? "current"
                   : isPlanUpgrade(curPlan, curInterval, planKey, period)
-                    ? (period === "lifetime" ? "checkout" : "change")
+                    ? "upgrade"
                     : "manage";
           const ctaCls = `mt-6 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-medium transition ${featured ? "bg-[color:var(--accent)] hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--foreground)]"}`;
           return (
@@ -672,7 +675,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                       : (locale === "zh" ? "管理账单" : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : "Manage billing")}
                   </button>
                 ) : (
-                  <button type="button" onClick={() => (ctaKind === "change" ? changePlan(planKey) : upgrade(planKey))} disabled={billingLoading === planKey} className={ctaCls}>
+                  <button type="button" onClick={() => (ctaKind === "upgrade" ? upgradeCheckout(planKey) : plainCheckout(planKey))} disabled={billingLoading === planKey} className={ctaCls}>
                     {billingLoading === planKey
                       ? (locale === "zh" ? "跳转中…" : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : "Redirecting…")
                       : plan.cta}

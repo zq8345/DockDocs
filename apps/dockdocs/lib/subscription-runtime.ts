@@ -154,30 +154,38 @@ export async function createBillingCheckoutSession(
   return payload.url;
 }
 
-// In-place change of an existing recurring subscription's plan/interval (no
-// checkout redirect) — Creem prorates immediately and the webhook updates the
-// entitlement. The caller should refresh the subscription snapshot afterwards.
-export async function changeBillingPlan(plan: PaidSubscriptionPlan, interval: BillingInterval) {
+// Start a proration UPGRADE checkout for a user who already has a recurring sub.
+// The server computes the unused-value credit, mints a one-time discount, and returns
+// a checkout URL; the browser redirects so the user pays only the difference. (Covers
+// recurring→recurring AND recurring→lifetime upgrades; replaces the old in-place
+// change-plan, which Creem couldn't do across billing intervals.)
+export async function startUpgradeCheckout(plan: PaidSubscriptionPlan, interval: BillingInterval) {
   if (!isPaidSubscriptionPlan(plan)) {
     throw new Error("Choose Plus or Pro.");
   }
   const auth = await authHeader();
-  const response = await fetch("/api/billing/change-plan", {
+  const response = await fetch("/api/billing/upgrade-checkout", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       ...auth,
     },
-    body: JSON.stringify({ plan, interval }),
+    body: JSON.stringify({ plan, interval, origin: window.location.origin }),
   });
   const payload = await readBillingResponse(response);
-  if (!response.ok || !payload?.ok) {
-    throw new BillingError(payload?.message || "Couldn't change your plan — try managing billing instead.", {
+  if (!response.ok || !payload?.ok || !payload.url) {
+    throw new BillingError(payload?.message || "Upgrade is not available.", {
       code: payload?.code,
       status: response.status,
     });
   }
-  return true;
+
+  // Redirect to the hosted Creem checkout (discount already applied server-side).
+  if (typeof window !== "undefined") {
+    window.location.assign(payload.url);
+  }
+
+  return payload.url;
 }
 
 export async function createBillingPortalSession() {

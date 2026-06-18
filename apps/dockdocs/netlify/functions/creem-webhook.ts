@@ -10,32 +10,18 @@ import {
   readSubscriptionBySubscriptionId,
   type BillingSubscriptionRecord,
 } from "./_shared/billing-store";
+import {
+  decideWebhookAction,
+  ACTIVATING,
+  CANCELING_STATUS,
+  HOLD_STATUS,
+} from "./_shared/webhook-decision";
 
 // Creem subscription webhook. Verifies the `creem-signature` header (HMAC-SHA256
 // over the raw body), then grants/revokes the user's plan based on the event.
 // The user is matched via metadata.userId that we attach at checkout time.
-
-const ACTIVATING = new Set([
-  "checkout.completed",
-  "subscription.active",
-  "subscription.paid",
-  "subscription.trialing",
-]);
-const DEACTIVATING = new Set(["subscription.canceled", "subscription.expired"]);
-
-// subscription.update is AMBIGUOUS — it can carry an active OR a canceling status
-// — so it is classified by the payload `status`, not assumed to be an activation.
-const CANCELING_STATUS = new Set([
-  "canceled",
-  "cancelled",
-  "expired",
-  "incomplete",
-  "incomplete_expired",
-  "unpaid",
-]);
-// Transient — leave the current entitlement untouched (a failed charge mustn't
-// immediately revoke access).
-const HOLD_STATUS = new Set(["past_due"]);
+// The activate/deactivate/ignore decision (+ which old sub to cancel) is the pure
+// decideWebhookAction() — classify + recency + identity guards, unit-tested apart.
 
 export default async (req: Request, _context: Context) => {
   if (req.method !== "POST") {
@@ -76,9 +62,22 @@ export default async (req: Request, _context: Context) => {
     str(asRecord(obj.subscription)?.id) ||
     str(obj.id);
   const statusStr = str(obj.status).toLowerCase();
+  const sub = asRecord(obj.subscription);
+  // Creem's real field names are current_period_{start,end}_date (the bare
+  // current_period_end never matched → period dates were never captured before).
   const currentPeriodEnd = normalizeDate(
-    obj.current_period_end ?? asRecord(obj.subscription)?.current_period_end,
+    obj.current_period_end_date ?? obj.current_period_end ?? sub?.current_period_end_date ?? sub?.current_period_end,
   );
+  const currentPeriodStart = normalizeDate(
+    obj.current_period_start_date ?? obj.current_period_start ?? sub?.current_period_start_date ?? sub?.current_period_start,
+  );
+  // Event emission time (unix ms) — drives the recency last-write-wins guard.
+  const eventAt =
+    typeof event.created_at === "number"
+      ? event.created_at
+      : typeof event.created === "number"
+        ? event.created
+        : undefined;
 
   const mapped = planAndIntervalForCreemProductId(productId);
   const plan = mapped?.plan ?? null;
@@ -102,25 +101,25 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: true, skipped: "no_user" });
   }
 
-  // Classify the effective action. subscription.update is decided by its payload
-  // status (it can be an upgrade OR a cancellation); other events map by set.
-  let action: "activate" | "deactivate" | "ignore";
-  if (eventType === "subscription.update") {
-    action = CANCELING_STATUS.has(statusStr)
-      ? "deactivate"
-      : HOLD_STATUS.has(statusStr)
-        ? "ignore"
-        : plan
-          ? "activate"
-          : "ignore";
-  } else if (ACTIVATING.has(eventType)) {
-    action = plan ? "activate" : "ignore";
-  } else if (DEACTIVATING.has(eventType)) {
-    action = "deactivate";
-  } else {
-    // Unhandled event (e.g. subscription.past_due) — leave the record untouched.
-    action = "ignore";
-  }
+  // Read the user's CURRENT stored subscription ONCE — the decision (classify +
+  // recency + identity/cancel-old guards) is the pure decideWebhookAction().
+  const existing = await readSubscriptionByUserId(userId);
+  const decision = decideWebhookAction({
+    eventType,
+    statusStr,
+    hasPlan: Boolean(plan),
+    interval,
+    subscriptionId,
+    eventAt,
+    existing: existing
+      ? {
+          plan: existing.plan,
+          interval: existing.interval,
+          stripeSubscriptionId: existing.stripeSubscriptionId,
+          lastEventAt: existing.lastEventAt,
+        }
+      : null,
+  });
 
   // Defensive: an event that intends to activate but whose product we can't map
   // must NOT grant anything — surface it so a mis-set env / unexpected payload is
@@ -131,82 +130,79 @@ export default async (req: Request, _context: Context) => {
   if (activationIntent && !plan && productId) {
     console.warn(`[creem-webhook] ${eventType} (status ${statusStr || "n/a"}) with unmapped product_id ${productId} — no grant.`);
   }
+  if (decision.action === "ignore") {
+    if (decision.reason === "stale-event" || decision.reason === "deactivate-not-current-sub") {
+      console.warn(`[creem-webhook] ${eventType} for sub ${subscriptionId || "?"} ignored — ${decision.reason} (current=${existing?.stripeSubscriptionId || "none"}, interval=${existing?.interval || "none"}).`);
+    }
+  }
 
   let record: BillingSubscriptionRecord | null = null;
-  let oldRecurringSubId: string | undefined;
+  const cancelOldSubId = decision.action === "activate" ? decision.cancelOldSubId : undefined;
 
-  if (action === "activate" && plan) {
-    // Before a lifetime grant overwrites the stored record, capture any existing
-    // recurring subscription id so we can cancel it below (avoid double-charging).
-    if (interval === "lifetime") {
-      const existing = await readSubscriptionByUserId(userId);
-      if (
-        existing &&
-        existing.plan !== "FREE" &&
-        existing.interval !== "lifetime" &&
-        existing.stripeSubscriptionId &&
-        existing.stripeSubscriptionId !== subscriptionId
-      ) {
-        oldRecurringSubId = existing.stripeSubscriptionId;
-      }
-    }
+  if (decision.action === "activate" && plan) {
     record = {
       userId,
-      stripeCustomerId: customerId || undefined,
+      stripeCustomerId: customerId || existing?.stripeCustomerId || undefined,
       stripeSubscriptionId: subscriptionId || undefined,
       plan,
       interval,
       status: statusStr === "trialing" || eventType === "subscription.trialing" ? "trialing" : "active",
       source: "creem-webhook",
       // Lifetime is one-time → no period end (permanent; no deactivating event
-      // ever arrives). Recurring keeps the provider's period end so a later
-      // cancel/expire flips the plan back to FREE.
+      // ever arrives). Recurring keeps the provider's period dates so a later
+      // cancel/expire flips the plan back to FREE and proration can be computed.
+      currentPeriodStart: interval === "lifetime" ? undefined : currentPeriodStart,
       currentPeriodEnd: interval === "lifetime" ? undefined : currentPeriodEnd,
       priceId: productId || undefined,
       lastStripeEventId: eventId || undefined,
+      lastEventAt: eventAt,
       updatedAt: new Date().toISOString(),
     };
-  } else if (action === "deactivate") {
-    // IDENTITY GUARD (critical): only downgrade if this event is about the user's
-    // CURRENT recurring subscription. Otherwise a just-purchased lifetime would be
-    // wiped to FREE by the cancellation webhook of the OLD recurring sub we
-    // deliberately cancelled — and stray/late/out-of-order cancels of a replaced
-    // subscription are ignored.
-    const existing = await readSubscriptionByUserId(userId);
-    const isCurrentSub = Boolean(
-      subscriptionId && existing?.stripeSubscriptionId && subscriptionId === existing.stripeSubscriptionId,
-    );
-    if (existing && existing.plan !== "FREE" && existing.interval !== "lifetime" && isCurrentSub) {
-      record = {
-        userId,
-        stripeCustomerId: customerId || existing.stripeCustomerId || undefined,
-        stripeSubscriptionId: subscriptionId || undefined,
-        plan: "FREE",
-        status: "canceled",
-        source: "creem-webhook",
-        lastStripeEventId: eventId || undefined,
-        updatedAt: new Date().toISOString(),
-      };
-    } else {
-      console.warn(
-        `[creem-webhook] ${eventType} for sub ${subscriptionId || "?"} ignored — not the user's current recurring subscription (current=${existing?.stripeSubscriptionId || "none"}, interval=${existing?.interval || "none"}).`,
-      );
-    }
+  } else if (decision.action === "deactivate") {
+    record = {
+      userId,
+      stripeCustomerId: customerId || existing?.stripeCustomerId || undefined,
+      stripeSubscriptionId: subscriptionId || undefined,
+      plan: "FREE",
+      status: "canceled",
+      source: "creem-webhook",
+      lastStripeEventId: eventId || undefined,
+      lastEventAt: eventAt,
+      updatedAt: new Date().toISOString(),
+    };
   }
 
   if (record) {
+    // CRITICAL ORDERING: write the NEW entitlement BEFORE cancelling the old sub, so
+    // the old sub's subsequent subscription.canceled webhook reads the new record and
+    // the subId mismatch (identity guard) makes it a no-op — never wiping the fresh
+    // entitlement (the e5a89b0 BLOCKER class).
     await writeSubscription(record);
     if (record.plan !== "FREE" && interval === "lifetime") {
       // Founding counter: distinct lifetime buyers (rare; idempotent per user).
       await recordLifetimeBuyer(userId);
-      // Stop the user's prior recurring subscription so they aren't double-charged.
-      // Fail-safe: the lifetime grant already happened; if the cancel fails we log
-      // it for manual follow-up rather than withholding the purchased entitlement.
-      if (oldRecurringSubId) {
-        const cancelled = await cancelCreemSubscription(oldRecurringSubId, "immediate");
-        if (!cancelled.ok) {
-          console.error(`[creem-webhook] lifetime granted to user ${userId} but failed to cancel old recurring sub ${oldRecurringSubId}: ${cancelled.code} ${cancelled.message} — cancel manually.`);
-        }
+    }
+    // Cancel the prior recurring sub this upgrade replaces (recurring→recurring OR
+    // recurring→lifetime), so the user isn't double-charged. Fail-safe: the new
+    // entitlement is already granted; on persistent failure we mark it so it's
+    // VISIBLE (admin-metrics + reconcile sweep) rather than a silent double-charge.
+    if (cancelOldSubId) {
+      let cancelled: Awaited<ReturnType<typeof cancelCreemSubscription>> = {
+        ok: false,
+        status: 0,
+        code: "NOT_ATTEMPTED",
+        message: "",
+      };
+      for (let attempt = 0; attempt < 3 && !cancelled.ok; attempt += 1) {
+        cancelled = await cancelCreemSubscription(cancelOldSubId, "immediate");
+      }
+      if (!cancelled.ok) {
+        console.error(`[creem-webhook] upgrade granted to user ${userId} but failed to cancel old recurring sub ${cancelOldSubId} after 3 tries: ${cancelled.code} ${cancelled.message}`);
+        await writeSubscription({
+          ...record,
+          pendingCancelFailure: { oldSubId: cancelOldSubId, at: new Date().toISOString() },
+          updatedAt: new Date().toISOString(),
+        });
       }
     }
   }

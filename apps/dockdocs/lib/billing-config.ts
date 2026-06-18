@@ -57,7 +57,7 @@ export function isPaidSubscriptionPlan(
 }
 
 // Ranks for upgrade comparisons (higher = more). Shared by the pricing CTA and
-// the server-side change-plan guard so client and server agree on "upgrade".
+// the server-side upgrade-checkout guard so client and server agree on "upgrade".
 const PLAN_RANK: Record<string, number> = { FREE: 0, PLUS: 1, PRO: 2 };
 const INTERVAL_RANK: Record<BillingInterval, number> = { monthly: 0, annual: 1, lifetime: 2 };
 
@@ -65,8 +65,8 @@ const INTERVAL_RANK: Record<BillingInterval, number> = { monthly: 0, annual: 1, 
 // AND term length (monthly < annual < lifetime) — and strictly greater on at
 // least one. If either dimension goes DOWN it is not an upgrade (e.g. tier-up but
 // term-down, like Plus-annual → Pro-monthly), so it routes to the billing portal
-// rather than the in-place change-plan endpoint (which charges proration). Both
-// the pricing CTA and the server-side change-plan guard use this, so they agree.
+// rather than the upgrade-checkout endpoint (which prorates the credit). Both the
+// pricing CTA and the server-side upgrade-checkout guard use this, so they agree.
 export function isPlanUpgrade(
   fromPlan: string,
   fromInterval: BillingInterval | undefined,
@@ -81,4 +81,16 @@ export function isPlanUpgrade(
   if (toPlanRank < fromPlanRank || toIntervalRank < fromIntervalRank) return false;
   // At least one dimension strictly higher.
   return toPlanRank > fromPlanRank || toIntervalRank > fromIntervalRank;
+}
+
+// Server-authoritative price per (plan, interval) in CENTS — the single source of
+// truth for proration credit and the discount amount. NEVER trust the client.
+// Founding pricing: Plus $5/$36/$99, Pro $20/$144/$399 (see the pricing spec).
+const PLAN_PRICE_CENTS: Record<string, Record<BillingInterval, number>> = {
+  PLUS: { monthly: 500, annual: 3600, lifetime: 9900 },
+  PRO: { monthly: 2000, annual: 14400, lifetime: 39900 },
+};
+
+export function planPriceCents(plan: string, interval: BillingInterval): number {
+  return PLAN_PRICE_CENTS[plan]?.[interval] ?? 0;
 }

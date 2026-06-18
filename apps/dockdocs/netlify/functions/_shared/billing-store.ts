@@ -28,6 +28,12 @@ export type BillingSubscriptionRecord = {
   cancelAtPeriodEnd?: boolean;
   priceId?: string;
   lastStripeEventId?: string;
+  // Provider event time (unix ms) of the last APPLIED event — used by the webhook's
+  // recency guard (last-write-wins) to ignore out-of-order/stale events.
+  lastEventAt?: number;
+  // Set when the post-upgrade cancellation of the user's OLD recurring sub failed,
+  // so it's visible (admin-metrics count) and the reconcile sweep can retry it.
+  pendingCancelFailure?: { oldSubId: string; at: string };
   updatedAt: string;
 };
 
@@ -65,6 +71,22 @@ export async function readSubscriptionBySubscriptionId(subscriptionId: string) {
     subscriptionLookupKey(subscriptionId),
   );
   return lookup?.userId ? readSubscriptionByUserId(lookup.userId) : null;
+}
+
+// All subscription records (for the reconcile-subs sweep). Best-effort; Blobs only.
+export async function listAllSubscriptions(): Promise<BillingSubscriptionRecord[]> {
+  try {
+    const store = getBillingStore();
+    const { blobs } = await store.list({ prefix: "subscriptions/by-user/" });
+    const out: BillingSubscriptionRecord[] = [];
+    for (const blob of blobs) {
+      const rec = (await store.get(blob.key, { type: "json" })) as BillingSubscriptionRecord | null;
+      if (rec) out.push(rec);
+    }
+    return out;
+  } catch {
+    return [];
+  }
 }
 
 export async function writeSubscription(record: BillingSubscriptionRecord) {

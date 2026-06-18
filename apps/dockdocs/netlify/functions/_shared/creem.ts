@@ -65,6 +65,10 @@ export async function createCreemCheckout(params: {
   userId: string;
   email?: string;
   successUrl: string;
+  // Proration upgrade: a server-created one-time discount code (= the credit) and
+  // the prior recurring sub this new sub supersedes (cancelled on activation).
+  discountCode?: string;
+  supersedesSubId?: string;
 }): Promise<CreemCheckoutResult> {
   const interval: CreemInterval = params.interval ?? "monthly";
   const apiKey = creemApiKey();
@@ -84,9 +88,16 @@ export async function createCreemCheckout(params: {
       body: JSON.stringify({
         product_id: productId,
         success_url: params.successUrl,
+        // Discount is applied SERVER-SIDE — the code is never handed to the user.
+        ...(params.discountCode ? { discount_code: params.discountCode } : {}),
         ...(params.email ? { customer: { email: params.email } } : {}),
         // Echoed back in every webhook so we can grant the right user.
-        metadata: { userId: params.userId, plan: params.plan, interval },
+        metadata: {
+          userId: params.userId,
+          plan: params.plan,
+          interval,
+          ...(params.supersedesSubId ? { supersedesSubId: params.supersedesSubId } : {}),
+        },
       }),
     });
   } catch (error) {
@@ -166,38 +177,9 @@ export type CreemActionResult =
   | { ok: true }
   | { ok: false; status: number; code: string; message: string };
 
-// Change a recurring subscription to a different product (plan/interval), with
-// proration charged immediately. Recurring → recurring only — the resulting
-// subscription.update webhook grants the new entitlement. Docs: POST
-// /v1/subscriptions/{id}/upgrade { product_id, update_behavior }.
-export async function upgradeCreemSubscription(
-  subscriptionId: string,
-  productId: string,
-): Promise<CreemActionResult> {
-  const apiKey = creemApiKey();
-  if (!apiKey) return { ok: false, status: 503, code: "CREEM_NOT_CONFIGURED", message: "Payments are not configured yet." };
-  if (!subscriptionId || !productId) return { ok: false, status: 400, code: "CREEM_BAD_UPGRADE", message: "Missing subscription or target product." };
-
-  let res: Response;
-  try {
-    res = await fetch(`${creemApiBase()}/subscriptions/${encodeURIComponent(subscriptionId)}/upgrade`, {
-      method: "POST",
-      headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
-      body: JSON.stringify({ product_id: productId, update_behavior: "proration-charge-immediately" }),
-    });
-  } catch (error) {
-    return { ok: false, status: 502, code: "CREEM_UNREACHABLE", message: error instanceof Error ? error.message : "Could not reach the payment provider." };
-  }
-  if (!res.ok) {
-    const data = (await res.json().catch(() => null)) as { message?: string } | null;
-    return { ok: false, status: 502, code: "CREEM_UPGRADE_FAILED", message: data?.message || `The payment provider returned status ${res.status}.` };
-  }
-  return { ok: true };
-}
-
-// Cancel a subscription (immediate by default). Used when a user buys a lifetime
-// (one-time) plan so their recurring subscription stops and they aren't double-
-// charged. Docs: POST /v1/subscriptions/{id}/cancel { mode }.
+// Cancel a subscription (immediate by default). Used to stop a user's prior
+// recurring sub after they upgrade (proration checkout) or buy a lifetime plan, so
+// they aren't double-charged. Docs: POST /v1/subscriptions/{id}/cancel { mode }.
 export async function cancelCreemSubscription(
   subscriptionId: string,
   mode: "immediate" | "scheduled" = "immediate",
@@ -221,4 +203,84 @@ export async function cancelCreemSubscription(
     return { ok: false, status: 502, code: "CREEM_CANCEL_FAILED", message: data?.message || `The payment provider returned status ${res.status}.` };
   }
   return { ok: true };
+}
+
+export type CreemDiscountResult =
+  | { ok: true; code: string; id?: string }
+  | { ok: false; status: number; code: string; message: string };
+
+// Create a single-use, product-scoped, time-limited FIXED discount = the proration
+// credit. `duration:"once"` on a subscription discounts only the first payment, so
+// the user pays (new price − credit) = the difference, then renews at full price.
+// Docs: POST /v1/discounts { type, amount, currency, duration, max_redemptions,
+// applies_to_products, expiry_date, code }.
+export async function createCreemDiscount(params: {
+  amountCents: number;
+  productId: string;
+  code: string;
+  expiryDateIso: string;
+  currency?: string;
+  name?: string;
+}): Promise<CreemDiscountResult> {
+  const apiKey = creemApiKey();
+  if (!apiKey) return { ok: false, status: 503, code: "CREEM_NOT_CONFIGURED", message: "Payments are not configured yet." };
+  if (!params.productId || !(params.amountCents > 0)) {
+    return { ok: false, status: 400, code: "CREEM_BAD_DISCOUNT", message: "Missing product or non-positive amount." };
+  }
+
+  let res: Response;
+  try {
+    res = await fetch(`${creemApiBase()}/discounts`, {
+      method: "POST",
+      headers: { "x-api-key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: params.name || `proration-${params.code}`,
+        code: params.code,
+        type: "fixed",
+        amount: params.amountCents,
+        currency: params.currency || "USD",
+        duration: "once",
+        max_redemptions: 1,
+        applies_to_products: [params.productId],
+        expiry_date: params.expiryDateIso,
+      }),
+    });
+  } catch (error) {
+    return { ok: false, status: 502, code: "CREEM_UNREACHABLE", message: error instanceof Error ? error.message : "Could not reach the payment provider." };
+  }
+  if (!res.ok) {
+    const data = (await res.json().catch(() => null)) as { message?: string } | null;
+    return { ok: false, status: 502, code: "CREEM_DISCOUNT_FAILED", message: data?.message || `The payment provider returned status ${res.status}.` };
+  }
+  const data = (await res.json().catch(() => null)) as { id?: string; code?: string } | null;
+  return { ok: true, code: data?.code || params.code, id: data?.id };
+}
+
+export type CreemSubscriptionResult =
+  | { ok: true; subscription: Record<string, unknown> }
+  | { ok: false; status: number; code: string; message: string };
+
+// Retrieve a subscription (for authoritative period dates when computing proration).
+// Creem's retrieve is the QUERY-PARAM form — the path form /subscriptions/{id} 404s.
+// Docs: GET /v1/subscriptions?subscription_id=...
+export async function getCreemSubscription(subscriptionId: string): Promise<CreemSubscriptionResult> {
+  const apiKey = creemApiKey();
+  if (!apiKey) return { ok: false, status: 503, code: "CREEM_NOT_CONFIGURED", message: "Payments are not configured yet." };
+  if (!subscriptionId) return { ok: false, status: 400, code: "CREEM_NO_SUBSCRIPTION", message: "No subscription to retrieve." };
+
+  let res: Response;
+  try {
+    res = await fetch(`${creemApiBase()}/subscriptions?subscription_id=${encodeURIComponent(subscriptionId)}`, {
+      headers: { "x-api-key": apiKey },
+    });
+  } catch (error) {
+    return { ok: false, status: 502, code: "CREEM_UNREACHABLE", message: error instanceof Error ? error.message : "Could not reach the payment provider." };
+  }
+  if (!res.ok) {
+    const data = (await res.json().catch(() => null)) as { message?: string } | null;
+    return { ok: false, status: 502, code: "CREEM_GET_SUB_FAILED", message: data?.message || `The payment provider returned status ${res.status}.` };
+  }
+  const subscription = (await res.json().catch(() => null)) as Record<string, unknown> | null;
+  if (!subscription) return { ok: false, status: 502, code: "CREEM_GET_SUB_FAILED", message: "Empty subscription body." };
+  return { ok: true, subscription };
 }

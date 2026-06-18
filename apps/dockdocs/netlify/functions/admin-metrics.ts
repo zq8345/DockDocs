@@ -114,6 +114,11 @@ export default async function handler(req: Request, _ctx: Context) {
   // remaining count is ever shown to end users (no live ticker).
   const lifetimeSold = await readLifetimeBuyerCount();
 
+  // Proration upgrade health: how many users have a stuck old-sub cancellation (the
+  // Path-2 residual risk — at risk of a silent double-charge). Anonymous count only;
+  // /api/billing/reconcile-subs clears these.
+  const pendingCancelFailures = subs.filter((s) => s.pendingCancelFailure?.oldSubId).length;
+
   return json(
     {
       generatedAt: new Date().toISOString(),
@@ -122,6 +127,7 @@ export default async function handler(req: Request, _ctx: Context) {
       capPressure,
       paywallHits,
       founding: { lifetimeSold, lifetimeCap: 1000, lifetimeRemaining: Math.max(0, 1000 - lifetimeSold) },
+      billingHealth: { pendingCancelFailures },
     },
     200,
     { "Cache-Control": "no-store" },
