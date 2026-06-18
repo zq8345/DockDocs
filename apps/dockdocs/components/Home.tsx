@@ -3,7 +3,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { navCategories } from "@/components/Header";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr";
 type Item = { name: string; slug: string };
 
 const COPY = {
@@ -142,33 +142,6 @@ const COPY = {
     aiSummary: "Résumé IA",
     cite: "source",
   },
-  ja: {
-    eyebrow: "プライバシー重視の AI PDF プラットフォーム",
-    heroA: "どんな文書も読み解く。",
-    heroB: "すべての答えを信頼できる。",
-    heroSub: "ブラウザ内で動く約 50 の PDF ツールに加え、文書を読み・比較し・抽出する AI — クリックで出典まで遡れます。",
-    primary: "無料で使う",
-    secondary: "プライバシーの仕組みを見る",
-    proofHeading: "ファイルは端末から外に出ません。",
-    proof: [{ t: "ブラウザ内で処理" }, { g: "0", t: " 件アップロード" }, { t: "回答は出典を明示" }, { t: "登録不要" }],
-    aiEyebrow: "根拠ある AI",
-    aiHeading: "根拠を示す AI。",
-    aiSub: "どんな文書にも質問でき、すべての答えが出典の該当行まで遡れます。比較・抽出・要約 — 推測ではなく、根拠に基づいて。",
-    aiCta: "PDF と対話する",
-    aiChips: ["比較", "Excel に抽出", "要約", "18 言語に翻訳"],
-    capEyebrow: "できること",
-    capHeading: "ひとつの道具箱、4 つの使い方。",
-    capSub: "約 50 の PDF ツールをひとつに — 変換・整理・署名・黒塗り・OCR — ほとんどがブラウザ内でローカルに動きます。",
-    browseAll: "すべてのツールを見る",
-    more: (n: number) => `他 ${n} 件`,
-    tools: "ツール",
-    ctaHeadA: "どんな文書も読み解く。",
-    ctaHeadB: "すべての答えを信頼できる。",
-    ctaSub: "約 50 のツール、根拠ある AI、アップロードなし。無料で開始 — 登録不要。",
-    viewPricing: "料金を見る",
-    aiSummary: "AI 要約",
-    cite: "出典",
-  },
 } as const;
 
 // category icons (nav order: 0 PDF · 1 Batch · 2 AI · 3 Profession)
@@ -291,7 +264,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
   const zh = locale === "zh";
   const c = COPY[locale] ?? COPY.en;
   const cats = (navCategories[locale] ?? navCategories.en).slice(0, 4);
-  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : slug);
+  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : slug);
 
   return (
     <>
