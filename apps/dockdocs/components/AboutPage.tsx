@@ -28,6 +28,7 @@ const content = {
     flowServers: "their servers",
     flowLocal: "processed in your browser",
     flowZero: "0 bytes uploaded",
+    flowCaption: "Fig 0.1 — for most tools, your file never crosses the line.",
 
     tableEyebrow: "// In plain terms",
     tableHeading: "What we do. What we never do.",
@@ -97,6 +98,7 @@ const content = {
     flowServers: "他们的服务器",
     flowLocal: "在浏览器内处理",
     flowZero: "0 字节上传",
+    flowCaption: "图 0.1 — 多数工具，你的文件从不过线。",
 
     tableEyebrow: "// 直白地说",
     tableHeading: "我们做什么。我们绝不做什么。",
@@ -166,6 +168,7 @@ const content = {
     flowServers: "sus servidores",
     flowLocal: "procesado en tu navegador",
     flowZero: "0 bytes subidos",
+    flowCaption: "Fig 0.1 — en la mayoría de herramientas, tu archivo nunca cruza la línea.",
 
     tableEyebrow: "// En pocas palabras",
     tableHeading: "Lo que hacemos. Lo que nunca hacemos.",
@@ -235,6 +238,7 @@ const content = {
     flowServers: "servidores deles",
     flowLocal: "processado no seu navegador",
     flowZero: "0 bytes enviados",
+    flowCaption: "Fig 0.1 — na maioria das ferramentas, seu arquivo nunca cruza a linha.",
 
     tableEyebrow: "// Em termos claros",
     tableHeading: "O que fazemos. O que jamais fazemos.",
@@ -304,6 +308,7 @@ const content = {
     flowServers: "leurs serveurs",
     flowLocal: "traité dans votre navigateur",
     flowZero: "0 octet envoyé",
+    flowCaption: "Fig 0.1 — pour la plupart des outils, votre fichier ne franchit jamais la ligne.",
 
     tableEyebrow: "// En termes clairs",
     tableHeading: "Ce que nous faisons. Ce que nous ne faisons jamais.",
@@ -450,6 +455,7 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
             </svg>
             </div>
           </div>
+          <p className="mt-4 font-mono text-[12px] text-[color:var(--faint)]">{c.flowCaption}</p>
         </div>
       </section>
 
