@@ -20,7 +20,7 @@ const pricingSchema = {
       operatingSystem: "Web",
       url: "https://dockdocs.app",
       description:
-        "Free online PDF tools with 20+ document processing features. AI-powered chat, OCR, compression, and conversion.",
+        "Free online PDF tools with ~50 document processing features. AI-powered chat, OCR, compression, and conversion.",
       offers: {
         "@type": "AggregateOffer",
         priceCurrency: "USD",
