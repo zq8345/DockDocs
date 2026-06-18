@@ -31,8 +31,26 @@ const HOME_FAQ: Record<string, { q: string; a: string }[]> = {
   ],
 };
 
+// Organization + WebSite descriptions, localized per homepage (the catch-all
+// renders homeSchema(locale) on /zh /es /pt /fr). Scoped anti-confabulation
+// wording consistent with HOME_FAQ; native polish to follow via the i18n lane.
+const ORG_DESC: Record<string, string> = {
+  en: "Private, verifiable document AI: read any document and trust its answers because the AI shows the source passage behind them and flags what it can't trace, so you can check it yourself. Plus ~50 PDF tools that run in your browser, so files never leave your device.",
+  zh: "私密、可溯源的文档 AI：读懂任意文档、信任它的答案——AI 会展示答案背后的原文出处、并标出无法溯源的部分，让你自己核对。另有约 50 个在浏览器内运行的 PDF 工具，文件不离开你的设备。",
+  es: "IA documental privada y verificable: lee cualquier documento y confía en sus respuestas porque la IA muestra el pasaje de origen detrás de ellas y señala lo que no puede rastrear, para que lo compruebes tú mismo. Además, ~50 herramientas PDF que se ejecutan en tu navegador, así tus archivos nunca salen de tu dispositivo.",
+  pt: "IA de documentos privada e verificável: leia qualquer documento e confie nas suas respostas porque a IA mostra o trecho de origem por trás delas e sinaliza o que não pode rastrear, para você conferir por conta própria. Além disso, ~50 ferramentas PDF que rodam no seu navegador, então seus arquivos nunca saem do seu dispositivo.",
+  fr: "IA documentaire privée et vérifiable : lisez n'importe quel document et fiez-vous à ses réponses car l'IA montre le passage source derrière elles et signale ce qu'elle ne peut pas tracer, pour que vous le vérifiiez vous-même. Plus ~50 outils PDF qui s'exécutent dans votre navigateur, vos fichiers ne quittent donc jamais votre appareil.",
+};
+const SITE_DESC: Record<string, string> = {
+  en: "Document AI that shows the source passage behind its answers so you can verify them, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
+  zh: "会展示答案背后原文出处、让你能核实的文档 AI，外加在浏览器内运行的私密 PDF 工具。专为那些你不敢粘进通用聊天机器人的文档而生。",
+  es: "IA documental que muestra el pasaje de origen detrás de sus respuestas para que las verifiques, más herramientas PDF privadas que se ejecutan en tu navegador. Hecha para los documentos que no pegarías en un chatbot genérico.",
+  pt: "IA de documentos que mostra o trecho de origem por trás de suas respostas para que você as verifique, além de ferramentas PDF privadas que rodam no seu navegador. Feita para os documentos que você não colaria num chatbot genérico.",
+  fr: "IA documentaire qui montre le passage source derrière ses réponses pour que vous les vérifiiez, plus des outils PDF privés qui s'exécutent dans votre navigateur. Conçue pour les documents que vous ne colleriez pas dans un chatbot généraliste.",
+};
+
 export function homeSchema(locale: string = "en") {
-  // Organization + WebSite are site-wide entities; FAQPage is localized.
+  // Organization + WebSite + FAQPage all localized per homepage (catch-all renders homeSchema(locale)).
   const faq = HOME_FAQ[locale] ?? HOME_FAQ.en;
   return {
     "@context": "https://schema.org",
@@ -42,7 +60,7 @@ export function homeSchema(locale: string = "en") {
         "@id": `${SITE}#org`,
         name: "DockDocs",
         url: SITE,
-        description: "Private, verifiable document AI: read any document and trust its answers because the AI shows the source passage behind them and flags what it can't trace, so you can check it yourself. Plus ~50 PDF tools that run in your browser, so files never leave your device.",
+        description: ORG_DESC[locale] ?? ORG_DESC.en,
         slogan: "Read any document. Trust every answer.",
         foundingDate: "2024",
         sameAs: ["https://github.com/zq8345/dock-ai-ecosystem"],
@@ -52,7 +70,7 @@ export function homeSchema(locale: string = "en") {
         "@id": `${SITE}#website`,
         name: "DockDocs",
         url: SITE,
-        description: "Document AI that shows the source passage behind its answers so you can verify them, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
+        description: SITE_DESC[locale] ?? SITE_DESC.en,
         inLanguage: ["en", "zh", "es", "pt", "fr"],
         publisher: { "@id": `${SITE}#org` },
       },
