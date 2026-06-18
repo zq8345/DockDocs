@@ -1543,12 +1543,12 @@ const homeCopy = {
     secondary: "Compare documents (Beta)",
     categoryTitle: "Everything you need for PDF work",
     aiTitle: "Every document, understood — read, checked, compared.",
-    aiDescription: "That's DockDocs: grounded AI plus 20+ local PDF tools, privacy-first and no sign-up. Understanding and verifiable evidence in one place — you just decide.",
-    stats: [["Grounded", "Answers cite the source"], ["Private", "Files stay on your device"], ["Free", "No account to start"]] as [string, string][],
+    aiDescription: "That's DockDocs: grounded AI plus ~50 local PDF tools, privacy-first and no sign-up. Understanding and verifiable evidence in one place — you just decide.",
+    stats: [["Grounded", "AI answers show their source"], ["Private", "Files stay on your device"], ["Free", "No account to start"]] as [string, string][],
   },
   zh: {
     title: "DockDocs — 私密、可溯源的文档 AI 与 PDF 工具",
-    description: "读懂任意文档，信任每个答案：DockDocs 文档 AI 引用确切出处供你核对，PDF 工具在浏览器本地运行，文件不离设备。免费，无需注册。",
+    description: "读懂任意文档，信任每个答案：DockDocs 文档 AI 会展示答案背后的原文出处供你核对，PDF 工具在浏览器本地运行，文件不离设备。免费，无需注册。",
     eyebrow: "AI 文档智能",
     heroTitle: "围绕 PDF 的全方位解决方案。",
     heroDescription: "免费工具、批量自动化，加上真正读懂文档的 AI——大多在浏览器内完成，文件不外泄。",
@@ -1556,20 +1556,20 @@ const homeCopy = {
     secondary: "多文档对比（Beta）",
     categoryTitle: "PDF 工作所需的一切",
     aiTitle: "让每一份文档都能被读懂、核对、对比。",
-    aiDescription: "这就是 DockDocs —— 可溯源的 AI，加 20+ 本地 PDF 工具，隐私优先、无需注册。把理解力和可核对的依据放在一起，你只管做决定。",
+    aiDescription: "这就是 DockDocs —— 可溯源的 AI，加约 50 个本地 PDF 工具，隐私优先、无需注册。把理解力和可核对的依据放在一起，你只管做决定。",
     stats: [["可溯源", "答案可点回原文"], ["隐私", "文件留在你的设备"], ["安全", "文件用后自动删除"]] as [string, string][],
   },
   es: {
     title: "DockDocs — IA documental privada y verificable + herramientas PDF",
-    description: "Lee cualquier documento y confía en cada respuesta: IA documental que cita la fuente para que la verifiques, más herramientas PDF que se ejecutan en tu navegador, sin que tus archivos salgan del dispositivo. Gratis, sin registro.",
+    description: "Lee cualquier documento y confía en cada respuesta: IA documental que muestra el pasaje de origen detrás de sus respuestas para que lo verifiques, más herramientas PDF que se ejecutan en tu navegador, sin que tus archivos salgan del dispositivo. Gratis, sin registro.",
   },
   pt: {
     title: "DockDocs — IA documental privada e verificável + ferramentas PDF",
-    description: "Leia qualquer documento e confie em cada resposta: IA documental que cita a fonte para você verificar, além de ferramentas PDF que rodam no seu navegador, sem seus arquivos saírem do dispositivo. Grátis, sem cadastro.",
+    description: "Leia qualquer documento e confie em cada resposta: IA documental que mostra o trecho de origem por trás de suas respostas para você verificar, além de ferramentas PDF que rodam no seu navegador, sem seus arquivos saírem do dispositivo. Grátis, sem cadastro.",
   },
   fr: {
     title: "DockDocs — IA documentaire privée et vérifiable + outils PDF",
-    description: "Lisez n'importe quel document et fiez-vous à chaque réponse : une IA documentaire qui cite sa source pour que vous la vérifiiez, plus des outils PDF exécutés dans votre navigateur, vos fichiers ne quittent jamais l'appareil. Gratuit, sans inscription.",
+    description: "Lisez n'importe quel document et fiez-vous à chaque réponse : une IA documentaire qui montre le passage source derrière ses réponses pour que vous les vérifiiez, plus des outils PDF exécutés dans votre navigateur, vos fichiers ne quittent jamais l'appareil. Gratuit, sans inscription.",
   },
 } as const;
 
@@ -1616,7 +1616,7 @@ const aiCopy = {
     cards: [
       { t: "OCR", d: "Pull selectable text out of scanned or image-only PDFs." },
       { t: "AI Summary", d: "Turn long reports and packets into a few working notes." },
-      { t: "Chat with PDF", d: "Ask about clauses, dates, and figures — every answer cites the page." },
+      { t: "Chat with PDF", d: "Ask about clauses, dates, and figures — answers show the passage behind them, and flag what they can't trace." },
       { t: "Document analysis", d: "Pull out the key clauses, dates, risks, and structure for a quick read." },
     ],
   },
@@ -1630,7 +1630,7 @@ const aiCopy = {
     cards: [
       { t: "OCR", d: "从扫描件或纯图片 PDF 中提取可复制的文字。" },
       { t: "AI 摘要", d: "把长报告和文件包浓缩成几条可用要点。" },
-      { t: "PDF 问答", d: "问条款、日期、数字——每个答案都标出处。" },
+      { t: "PDF 问答", d: "问条款、日期、数字——答案会展示背后的原文，并标出无法溯源的部分。" },
       { t: "文档分析", d: "提取关键条款、日期、风险和结构，快速过一遍。" },
     ],
   },
@@ -1644,7 +1644,7 @@ const aiCopy = {
     cards: [
       { t: "OCR", d: "Extrae texto seleccionable de PDFs escaneados o de solo imagen." },
       { t: "Resumen IA", d: "Convierte informes largos en unas pocas notas prácticas." },
-      { t: "Chat con PDF", d: "Pregunta sobre cláusulas, fechas y cifras — cada respuesta cita la página." },
+      { t: "Chat con PDF", d: "Pregunta sobre cláusulas, fechas y cifras — las respuestas muestran el pasaje que las respalda y señalan lo que no pueden rastrear." },
       { t: "Análisis de documentos", d: "Extrae las cláusulas clave, fechas, riesgos y la estructura para una lectura rápida." },
     ],
   },
@@ -1658,7 +1658,7 @@ const aiCopy = {
     cards: [
       { t: "OCR", d: "Extraia texto selecionável de PDFs digitalizados ou somente com imagens." },
       { t: "Resumo IA", d: "Transforme relatórios longos em poucas notas práticas." },
-      { t: "Chat com PDF", d: "Pergunte sobre cláusulas, datas e valores — cada resposta cita a página." },
+      { t: "Chat com PDF", d: "Pergunte sobre cláusulas, datas e valores — as respostas mostram o trecho que as fundamenta e sinalizam o que não podem rastrear." },
       { t: "Análise de documentos", d: "Extraia as cláusulas-chave, datas, riscos e a estrutura para uma leitura rápida." },
     ],
   },
@@ -1672,7 +1672,7 @@ const aiCopy = {
     cards: [
       { t: "OCR", d: "Extrayez du texte sélectionnable de PDFs numérisés ou composés uniquement d'images." },
       { t: "Résumé IA", d: "Transformez de longs rapports en quelques notes exploitables." },
-      { t: "Chat avec PDF", d: "Posez des questions sur les clauses, dates et chiffres — chaque réponse cite la page." },
+      { t: "Chat avec PDF", d: "Posez des questions sur les clauses, dates et chiffres — les réponses montrent le passage qui les appuie et signalent ce qu'elles ne peuvent pas tracer." },
       { t: "Analyse de documents", d: "Extrayez les clauses clés, dates, risques et la structure pour une lecture rapide." },
     ],
   },

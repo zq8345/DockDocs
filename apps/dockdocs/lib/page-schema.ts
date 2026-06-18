@@ -99,7 +99,7 @@ export function pricingSchema(locale: string) {
         applicationCategory: "BusinessApplication",
         operatingSystem: "Web",
         url: SITE,
-        description: "Free online PDF tools with 20+ document processing features. AI-powered chat, OCR, compression, and conversion.",
+        description: "Free online PDF tools with ~50 document processing features. AI-powered chat, OCR, compression, and conversion.",
         offers: {
           "@type": "AggregateOffer",
           priceCurrency: "USD",
