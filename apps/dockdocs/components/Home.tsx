@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { navCategories } from "@/components/Header";
 
@@ -8,144 +9,204 @@ type Item = { name: string; slug: string };
 
 const COPY = {
   en: {
-    eyebrow: "Private · verifiable document AI",
+    eyebrow: "// Private · verifiable document AI",
     heroA: "Read any document.",
     heroB: "Trust every answer.",
-    heroSub: "~50 PDF tools that run in your browser, plus AI that reads, compares and extracts your documents — with sources you can click back to.",
+    heroSub: "~50 PDF tools that run in your browser, plus AI that reads, compares and extracts your documents — and shows the source passage behind what it finds.",
     primary: "Use it free",
     secondary: "See how privacy works",
-    proofHeading: "Your files never leave your device.",
-    proof: [{ t: "Processed in your browser" }, { g: "0", t: " files uploaded" }, { t: "Answers cite the source" }, { t: "No sign-up" }],
-    aiEyebrow: "Grounded AI",
+    proof: [{ t: "Processed in your browser" }, { g: "0", t: " files uploaded" }, { t: "AI answers show their source" }, { t: "No sign-up" }],
+    findEyebrow: "// Find your tool",
+    findHeading: "Pick a tool. Start in one click.",
+    capSub: "About 50 PDF tools in one place — convert, organize, sign, redact, OCR — most running locally in your browser.",
+    searchPlaceholder: "Search ~50 tools — compress, merge, sign…",
+    searchNoResults: "No tool matches that — try another word, or browse all.",
+    fig2Caption: "Fig 0.2 — ~50 tools, four ways in.",
+    aiEyebrow: "// Grounded AI",
     aiHeading: "AI that shows its work.",
-    aiSub: "Ask any document and every answer points back to the exact line it came from. Compare, extract, summarize — grounded, never guessed.",
+    aiSub: "Ask any document; when it answers or flags a finding, it shows the exact passage behind it — and tells you when something can't be traced, instead of inventing a source. Compare, extract, summarize.",
     aiCta: "Chat with a PDF",
     aiChips: ["Compare", "Extract to Excel", "Summarize", "Translate 18 languages"],
-    capEyebrow: "What you can do",
-    capHeading: "One toolkit. Four ways to work.",
-    capSub: "About 50 PDF tools in one place — convert, organize, sign, redact, OCR — most running locally in your browser.",
+    fig3Caption: "Fig 0.3 — one grounded answer, traced to the exact passage.",
+    jobsEyebrow: "// What it does for you",
+    jobsHeading: "Minutes, not hours.",
+    fig4Caption: "Fig 0.4 — four everyday jobs, minutes instead of hours.",
     browseAll: "Browse all tools",
     more: (n: number) => `and ${n} more`,
     tools: "tools",
+    ctaEyebrow: "// Try it",
     ctaHeadA: "Read any document.",
     ctaHeadB: "Trust every answer.",
-    ctaSub: "~50 tools, grounded AI, nothing uploaded. Free to start — no sign-up.",
+    ctaSub: "~50 tools, AI that shows its source, nothing uploaded. Free to start — no sign-up.",
     viewPricing: "View pricing",
+    qaQuestion: "How much did Q3 revenue grow?",
+    qaGrounded: "Grounded answer",
+    qaAnswer: "Q3 revenue grew 23% year-over-year, driven mainly by APAC.",
+    qaSourcesLabel: "Sources",
+    qaSnippets: ["revenue +23% YoY", "APAC the main driver"],
     aiSummary: "AI summary",
     cite: "source",
-    figCaption: "Fig 0.1 — every answer points back to its source. One click to verify.",
+    figCaption: "Fig 0.1 — when the AI answers, it shows the passage behind it — and flags what it can't trace. One click to verify.",
   },
   zh: {
-    eyebrow: "私密 · 可溯源的文档 AI",
+    eyebrow: "// 私密 · 可溯源的文档 AI",
     heroA: "读懂任意文档，",
     heroB: "答案皆可追溯。",
-    heroSub: "约 50 个 PDF 工具在浏览器内运行，AI 读懂、对比、抽取你的文档——每个答案都能点回原文。",
+    heroSub: "约 50 个 PDF 工具在浏览器内运行，AI 读懂、对比、抽取你的文档——并展示它所发现内容背后的原文出处。",
     primary: "免费使用",
     secondary: "看隐私怎么做到",
-    proofHeading: "你的文件，从不离开你的设备。",
-    proof: [{ t: "在浏览器内处理" }, { g: "0", t: " 文件上传" }, { t: "答案可溯源" }, { t: "无需注册" }],
-    aiEyebrow: "AI · 可溯源",
+    proof: [{ t: "在浏览器内处理" }, { g: "0", t: " 文件上传" }, { t: "回答标注原文出处" }, { t: "无需注册" }],
+    findEyebrow: "// 找到你的工具",
+    findHeading: "选个工具，一键开始。",
+    capSub: "约 50 个 PDF 工具集中一处——转换、整理、签名、脱敏、OCR——大多在浏览器本地完成。",
+    searchPlaceholder: "搜索约 50 个工具——压缩、合并、签名……",
+    searchNoResults: "没有匹配的工具——换个词，或浏览全部。",
+    fig2Caption: "图 0.2 — 约 50 个工具，四种入口。",
+    aiEyebrow: "// AI · 可溯源",
     aiHeading: "会给你看依据的 AI。",
-    aiSub: "向任意文档提问，每个答案都能点回它出自的那一行。对比、抽取、摘要——有据可查，绝不瞎猜。",
+    aiSub: "向任意文档提问；AI 回答问题或标出某项发现时，会展示支撑它的原文原句——若有内容无法溯源，它会如实说明，而不是编造一个出处。对比、抽取、摘要。",
     aiCta: "与 PDF 对话",
     aiChips: ["多文档对比", "抽取到表格", "摘要", "翻译 18 种语言"],
-    capEyebrow: "能做什么",
-    capHeading: "一个工具箱，四种用法。",
-    capSub: "约 50 个 PDF 工具集中一处——转换、整理、签名、脱敏、OCR——大多在浏览器本地完成。",
+    fig3Caption: "图 0.3 — 一个有据回答，追溯到确切的原文。",
+    jobsEyebrow: "// 能替你做什么",
+    jobsHeading: "几分钟，搞定原本要几小时的事。",
+    fig4Caption: "图 0.4 — 四件日常事，几分钟而非几小时。",
     browseAll: "浏览全部工具",
     more: (n: number) => `还有 ${n} 个`,
     tools: "个工具",
+    ctaEyebrow: "// 试试看",
     ctaHeadA: "读懂任意文档，",
     ctaHeadB: "答案皆可追溯。",
-    ctaSub: "约 50 个工具，可溯源 AI，零上传。免费开始，无需注册。",
+    ctaSub: "约 50 个工具，会给你看依据的 AI，零上传。免费开始，无需注册。",
     viewPricing: "查看定价",
+    qaQuestion: "第 3 季度营收增长了多少？",
+    qaGrounded: "有据回答",
+    qaAnswer: "第 3 季度营收同比增长 23%，主要由亚太区驱动。",
+    qaSourcesLabel: "依据",
+    qaSnippets: ["营收同比 +23%", "亚太区为主要驱动"],
     aiSummary: "AI 摘要",
     cite: "原文",
-    figCaption: "图 0.1 — 每个答案都指回原文出处，一键即可核对。",
+    figCaption: "图 0.1 — AI 回答时，会展示支撑它的原文——无法溯源的会如实标出。一键即可核对。",
   },
   es: {
-    eyebrow: "IA documental privada y verificable",
+    eyebrow: "// IA documental privada y verificable",
     heroA: "Lee cualquier documento.",
     heroB: "Confía en cada respuesta.",
-    heroSub: "~50 herramientas PDF que se ejecutan en tu navegador, más una IA que lee, compara y extrae tus documentos — con fuentes en las que puedes hacer clic para volver.",
+    heroSub: "~50 herramientas PDF que se ejecutan en tu navegador, más una IA que lee, compara y extrae tus documentos — y muestra el pasaje de origen detrás de lo que encuentra.",
     primary: "Úsalo gratis",
     secondary: "Mira cómo funciona la privacidad",
-    proofHeading: "Tus archivos nunca salen de tu dispositivo.",
-    proof: [{ t: "Procesado en tu navegador" }, { g: "0", t: " archivos subidos" }, { t: "Las respuestas citan la fuente" }, { t: "Sin registro" }],
-    aiEyebrow: "IA fundamentada",
+    proof: [{ t: "Procesado en tu navegador" }, { g: "0", t: " archivos subidos" }, { t: "Las respuestas muestran su fuente" }, { t: "Sin registro" }],
+    findEyebrow: "// Encuentra tu herramienta",
+    findHeading: "Elige una herramienta. Empieza en un clic.",
+    capSub: "Cerca de 50 herramientas PDF en un solo lugar — convertir, organizar, firmar, redactar, OCR — la mayoría se ejecutan localmente en tu navegador.",
+    searchPlaceholder: "Busca ~50 herramientas — comprimir, combinar, firmar…",
+    searchNoResults: "Ninguna herramienta coincide — prueba otra palabra o explora todas.",
+    fig2Caption: "Fig 0.2 — ~50 herramientas, cuatro vías de entrada.",
+    aiEyebrow: "// IA fundamentada",
     aiHeading: "Una IA que muestra su trabajo.",
-    aiSub: "Pregunta a cualquier documento y cada respuesta apunta a la línea exacta de la que proviene. Compara, extrae, resume — fundamentado, nunca adivinado.",
+    aiSub: "Pregunta a cualquier documento; cuando responde o señala un hallazgo, te muestra el pasaje exacto que lo respalda — y te avisa cuando algo no se puede rastrear, en lugar de inventarse una fuente. Compara, extrae, resume.",
     aiCta: "Chatea con un PDF",
     aiChips: ["Comparar", "Extraer a Excel", "Resumir", "Traducir 18 idiomas"],
-    capEyebrow: "Lo que puedes hacer",
-    capHeading: "Un solo kit. Cuatro formas de trabajar.",
-    capSub: "Cerca de 50 herramientas PDF en un solo lugar — convertir, organizar, firmar, redactar, OCR — la mayoría se ejecutan localmente en tu navegador.",
+    fig3Caption: "Fig 0.3 — una respuesta fundamentada, rastreada al pasaje exacto.",
+    jobsEyebrow: "// Lo que hace por ti",
+    jobsHeading: "Minutos, no horas.",
+    fig4Caption: "Fig 0.4 — cuatro tareas cotidianas, minutos en vez de horas.",
     browseAll: "Ver todas las herramientas",
     more: (n: number) => `y ${n} más`,
     tools: "herramientas",
+    ctaEyebrow: "// Pruébalo",
     ctaHeadA: "Lee cualquier documento.",
     ctaHeadB: "Confía en cada respuesta.",
-    ctaSub: "~50 herramientas, IA fundamentada, nada se sube. Gratis para empezar — sin registro.",
+    ctaSub: "~50 herramientas, IA que muestra su fuente, nada se sube. Gratis para empezar — sin registro.",
     viewPricing: "Ver precios",
+    qaQuestion: "¿Cuánto crecieron los ingresos del 3.er trimestre?",
+    qaGrounded: "Respuesta fundamentada",
+    qaAnswer: "Los ingresos del 3.er trimestre crecieron un 23% interanual, impulsados principalmente por APAC.",
+    qaSourcesLabel: "Fuentes",
+    qaSnippets: ["ingresos +23% interanual", "APAC, motor principal"],
     aiSummary: "Resumen de IA",
     cite: "fuente",
-    figCaption: "Fig 0.1 — cada respuesta enlaza con su fuente. Verifícalo con un clic.",
+    figCaption: "Fig 0.1 — cuando la IA responde, muestra el pasaje que lo respalda — y señala lo que no puede rastrear. Verifícalo con un clic.",
   },
   pt: {
-    eyebrow: "IA de documentos privada e verificável",
+    eyebrow: "// IA de documentos privada e verificável",
     heroA: "Leia qualquer documento.",
     heroB: "Confie em cada resposta.",
-    heroSub: "~50 ferramentas PDF que rodam no seu navegador, mais uma IA que lê, compara e extrai seus documentos — com fontes em que você pode clicar para voltar.",
+    heroSub: "~50 ferramentas PDF que rodam no seu navegador, mais uma IA que lê, compara e extrai seus documentos — e mostra o trecho de origem por trás do que encontra.",
     primary: "Use gratuitamente",
     secondary: "Veja como a privacidade funciona",
-    proofHeading: "Seus arquivos nunca saem do seu dispositivo.",
-    proof: [{ t: "Processado no seu navegador" }, { g: "0", t: " arquivos enviados" }, { t: "As respostas citam a fonte" }, { t: "Sem cadastro" }],
-    aiEyebrow: "IA embasada",
+    proof: [{ t: "Processado no seu navegador" }, { g: "0", t: " arquivos enviados" }, { t: "As respostas mostram a fonte" }, { t: "Sem cadastro" }],
+    findEyebrow: "// Encontre sua ferramenta",
+    findHeading: "Escolha uma ferramenta. Comece em um clique.",
+    capSub: "Cerca de 50 ferramentas PDF em um só lugar — converter, organizar, assinar, redigir, OCR — a maioria roda localmente no seu navegador.",
+    searchPlaceholder: "Buscar ~50 ferramentas — comprimir, juntar, assinar…",
+    searchNoResults: "Nenhuma ferramenta corresponde — tente outra palavra ou veja todas.",
+    fig2Caption: "Fig 0.2 — ~50 ferramentas, quatro formas de entrar.",
+    aiEyebrow: "// IA embasada",
     aiHeading: "Uma IA que mostra seu trabalho.",
-    aiSub: "Pergunte a qualquer documento e cada resposta aponta para a linha exata de onde veio. Compare, extraia, resuma — embasado, nunca inventado.",
+    aiSub: "Pergunte a qualquer documento; quando responde ou aponta uma constatação, ela mostra o trecho exato que a fundamenta — e avisa quando algo não pode ser rastreado, em vez de inventar uma fonte. Compare, extraia, resuma.",
     aiCta: "Converse com um PDF",
     aiChips: ["Comparar", "Extrair para Excel", "Resumir", "Traduzir 18 idiomas"],
-    capEyebrow: "O que você pode fazer",
-    capHeading: "Um kit completo. Quatro formas de trabalhar.",
-    capSub: "Cerca de 50 ferramentas PDF em um só lugar — converter, organizar, assinar, redigir, OCR — a maioria roda localmente no seu navegador.",
+    fig3Caption: "Fig 0.3 — uma resposta embasada, rastreada ao trecho exato.",
+    jobsEyebrow: "// O que faz por você",
+    jobsHeading: "Minutos, não horas.",
+    fig4Caption: "Fig 0.4 — quatro tarefas do dia a dia, minutos em vez de horas.",
     browseAll: "Ver todas as ferramentas",
     more: (n: number) => `e mais ${n}`,
     tools: "ferramentas",
+    ctaEyebrow: "// Experimente",
     ctaHeadA: "Leia qualquer documento.",
     ctaHeadB: "Confie em cada resposta.",
-    ctaSub: "~50 ferramentas, IA embasada, nada é enviado. Grátis para começar — sem cadastro.",
+    ctaSub: "~50 ferramentas, IA que mostra a fonte, nada é enviado. Grátis para começar — sem cadastro.",
     viewPricing: "Ver preços",
+    qaQuestion: "Quanto cresceu a receita do 3.º trimestre?",
+    qaGrounded: "Resposta embasada",
+    qaAnswer: "A receita do 3.º trimestre cresceu 23% ano a ano, impulsionada principalmente pela APAC.",
+    qaSourcesLabel: "Fontes",
+    qaSnippets: ["receita +23% A/A", "APAC, motor principal"],
     aiSummary: "Resumo de IA",
     cite: "fonte",
-    figCaption: "Fig 0.1 — cada resposta aponta para a sua fonte. Verifique com um clique.",
+    figCaption: "Fig 0.1 — quando a IA responde, mostra o trecho por trás — e sinaliza o que não pode rastrear. Verifique com um clique.",
   },
   fr: {
-    eyebrow: "IA documentaire privée et vérifiable",
+    eyebrow: "// IA documentaire privée et vérifiable",
     heroA: "Lisez n'importe quel document.",
     heroB: "Fiez-vous à chaque réponse.",
-    heroSub: "~50 outils PDF qui s'exécutent dans votre navigateur, plus une IA qui lit, compare et extrait vos documents — avec des sources cliquables.",
+    heroSub: "~50 outils PDF qui s'exécutent dans votre navigateur, plus une IA qui lit, compare et extrait vos documents — et montre le passage source derrière ce qu'elle trouve.",
     primary: "Utiliser gratuitement",
     secondary: "Voir comment fonctionne la confidentialité",
-    proofHeading: "Vos fichiers ne quittent jamais votre appareil.",
-    proof: [{ t: "Traité dans votre navigateur" }, { g: "0", t: " fichiers envoyés" }, { t: "Les réponses citent la source" }, { t: "Sans inscription" }],
-    aiEyebrow: "IA fondée sur des preuves",
+    proof: [{ t: "Traité dans votre navigateur" }, { g: "0", t: " fichiers envoyés" }, { t: "Les réponses montrent leur source" }, { t: "Sans inscription" }],
+    findEyebrow: "// Trouvez votre outil",
+    findHeading: "Choisissez un outil. Commencez en un clic.",
+    capSub: "Environ 50 outils PDF en un seul endroit — convertir, organiser, signer, caviarder, OCR — la plupart s'exécutent localement dans votre navigateur.",
+    searchPlaceholder: "Rechercher ~50 outils — compresser, fusionner, signer…",
+    searchNoResults: "Aucun outil ne correspond — essayez un autre mot, ou voyez tous.",
+    fig2Caption: "Fig 0.2 — ~50 outils, quatre portes d'entrée.",
+    aiEyebrow: "// IA fondée sur des preuves",
     aiHeading: "Une IA qui montre son travail.",
-    aiSub: "Interrogez n'importe quel document et chaque réponse pointe vers la ligne exacte d'où elle provient. Comparez, extrayez, résumez — fondé sur des preuves, jamais inventé.",
+    aiSub: "Interrogez n'importe quel document ; quand l'IA répond ou relève un élément, elle montre le passage exact qui l'appuie — et vous indique quand quelque chose ne peut pas être tracé, au lieu d'inventer une source. Comparez, extrayez, résumez.",
     aiCta: "Discuter avec un PDF",
     aiChips: ["Comparer", "Extraire vers Excel", "Résumer", "Traduire en 18 langues"],
-    capEyebrow: "Ce que vous pouvez faire",
-    capHeading: "Une boîte à outils complète. Quatre façons de travailler.",
-    capSub: "Environ 50 outils PDF en un seul endroit — convertir, organiser, signer, caviarder, OCR — la plupart s'exécutent localement dans votre navigateur.",
+    fig3Caption: "Fig 0.3 — une réponse fondée, retracée jusqu'au passage exact.",
+    jobsEyebrow: "// Ce qu'il fait pour vous",
+    jobsHeading: "Des minutes, pas des heures.",
+    fig4Caption: "Fig 0.4 — quatre tâches du quotidien, des minutes au lieu d'heures.",
     browseAll: "Voir tous les outils",
     more: (n: number) => `et ${n} de plus`,
     tools: "outils",
+    ctaEyebrow: "// Essayez",
     ctaHeadA: "Lisez n'importe quel document.",
     ctaHeadB: "Fiez-vous à chaque réponse.",
-    ctaSub: "~50 outils, IA fondée sur des preuves, rien n'est envoyé. Gratuit pour commencer — sans inscription.",
+    ctaSub: "~50 outils, IA qui montre sa source, rien n'est envoyé. Gratuit pour commencer — sans inscription.",
     viewPricing: "Voir les tarifs",
+    qaQuestion: "De combien les revenus du T3 ont-ils augmenté ?",
+    qaGrounded: "Réponse fondée",
+    qaAnswer: "Les revenus du T3 ont augmenté de 23% sur un an, principalement portés par l'APAC.",
+    qaSourcesLabel: "Sources",
+    qaSnippets: ["revenus +23% sur un an", "APAC, principal moteur"],
     aiSummary: "Résumé IA",
     cite: "source",
-    figCaption: "Fig 0.1 — chaque réponse renvoie à sa source. Vérifiez d'un clic.",
+    figCaption: "Fig 0.1 — quand l'IA répond, elle montre le passage derrière — et signale ce qu'elle ne peut pas tracer. Vérifiez d'un clic.",
   },
 } as const;
 
@@ -166,6 +227,36 @@ function flatItems(cat: { cols: { items: Item[] }[] }): Item[] {
 const EYEBROW = (zh: boolean) => `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
 const CARD = "group relative overflow-hidden rounded-2xl border border-[color:var(--line)] p-6 transition-colors duration-200 hover:border-[color:var(--line-strong)]";
 const GLOW = { background: "radial-gradient(480px circle at 30% 0%, rgba(62,207,142,0.06), transparent 62%)" };
+
+// ── About v2 design primitives (reused verbatim so Home reads as the same family) ──
+const H2 = "text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]";
+const SUB = "mt-4 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]";
+const CAP = "mt-4 font-mono text-[12px] text-[color:var(--faint)]";
+const SHELL = "mx-auto max-w-5xl px-5 py-24 sm:px-6 sm:py-28 lg:px-8";
+const PANEL = "rounded-xl border border-[color:var(--line)] bg-black/20 p-5";
+
+// The same depth/weight recipe as AboutPage's <Figure>: soft accent glow behind,
+// raised gradient surface, strong border + large shadow, inner lit top edge.
+function Figure({ children, className = "", glow = "28%" }: { children: ReactNode; className?: string; glow?: string }) {
+  return (
+    <div className={`relative ${className}`}>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 blur-[48px]"
+        style={{ background: `radial-gradient(55% 60% at ${glow} 45%, rgba(62,207,142,0.10), transparent 70%)` }}
+      />
+      <div
+        className="relative z-10 overflow-hidden rounded-2xl border border-[color:var(--line-strong)] p-6 sm:p-8"
+        style={{
+          background: "linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012) 60%, transparent), var(--surface)",
+          boxShadow: "0 24px 60px -20px rgba(0,0,0,0.6), inset 0 1px 0 0 rgba(255,255,255,0.04)",
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 function Icon({ i }: { i: number }) {
   return (
@@ -241,28 +332,35 @@ const CARDS: { nav: number; span: number; visual: "thumbs" | "extract" | "batch"
   { nav: 3, span: 1, visual: "secure" },
 ];
 
+// section-3 capability chips link to their tool pages (funnel: link-bearing per spec)
+const AICHIP_SLUGS = ["/compare", "/extract-to-excel", "/ai-summary", "/translate-pdf"];
+
 // concrete jobs DockDocs does — old way → DockDocs (low text, scannable)
 const SCENARIOS = [
   { icon: <path d="M4 13h3v6H4zM10 9h3v10h-3zM16 5h3v14h-3z" />, href: "/compare",
     en: ["Compare quotes, pick the best", "3 files into a sheet · ~1h", "a sourced pick · 1 min"],
     zh: ["比报价，选最优", "开 3 个文件抄进表格 · 约 1 小时", "带出处的推荐 · 1 分钟"],
     es: ["Compara presupuestos, elige el mejor", "3 archivos a una hoja · ~1 h", "una elección con fuentes · 1 min"],
+    pt: ["Compare orçamentos, escolha o melhor", "3 arquivos em uma planilha · ~1h", "uma escolha com fontes · 1 min"],
     fr: ["Comparez des devis, choisissez le meilleur", "3 fichiers dans un tableau · ~1h", "un choix documenté · 1 min"] },
   { icon: <path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM13 3v4h4M8.5 14l2 2 4-4" />, href: "/redline",
     en: ["Catch the traps in a contract", "a lawyer, or sign blind", "AI flags risky & missing clauses"],
     zh: ["看穿合同里的坑", "花钱找律师，或盲签踩坑", "AI 标出风险与缺失条款"],
     es: ["Detecta las trampas de un contrato", "un abogado, o firmar a ciegas", "la IA señala cláusulas de riesgo y ausentes"],
+    pt: ["Detecte as armadilhas de um contrato", "um advogado, ou assinar às cegas", "a IA sinaliza cláusulas de risco e ausentes"],
     fr: ["Repérez les pièges d'un contrat", "un juriste, ou signer en aveugle", "l'IA signale les clauses à risque et manquantes"] },
   { icon: <path d="M4 7l8-4 8 4-8 4-8-4ZM4 12l8 4 8-4M4 17l8 4 8-4" />, href: "/batch-extract-sheet",
     en: ["Process a batch of invoices", "key them in one by one · hours", "drop the batch → auto-extract"],
     zh: ["批量处理发票", "一张张录入 · 几小时", "整批丢进去 → 自动抽取"],
     es: ["Procesa un lote de facturas", "teclearlas una a una · horas", "suelta el lote → extracción automática"],
+    pt: ["Processe um lote de faturas", "digitá-las uma a uma · horas", "solte o lote → extração automática"],
     fr: ["Traitez un lot de factures", "les saisir une par une · des heures", "déposez le lot → extraction automatique"] },
   { icon: <path d="M5 4h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5zM8.5 9h6M8.5 13h6" />, href: "/chat-with-pdf",
-    en: ["Understand a long report fast", "read 80 pages for a few answers", "ask it → sourced answers · 30s"],
-    zh: ["快速读懂长报告", "读 80 页找几个答案", "问它 → 30 秒带出处答案"],
-    es: ["Entiende un informe largo rápido", "leer 80 páginas por unas respuestas", "pregúntale → respuestas con fuentes · 30 s"],
-    fr: ["Comprendre un long rapport rapidement", "lire 80 pages pour quelques réponses", "interrogez-le → réponses documentées · 30s"] },
+    en: ["Understand a long report fast", "read 80 pages for a few answers", "ask it → answers you can trace · 30s"],
+    zh: ["快速读懂长报告", "读 80 页找几个答案", "问它 → 30 秒可追溯的答案"],
+    es: ["Entiende un informe largo rápido", "leer 80 páginas por unas respuestas", "pregúntale → respuestas que puedes rastrear · 30 s"],
+    pt: ["Entenda um relatório longo rápido", "ler 80 páginas por algumas respostas", "pergunte → respostas que você pode rastrear · 30s"],
+    fr: ["Comprendre un long rapport rapidement", "lire 80 pages pour quelques réponses", "interrogez-le → des réponses traçables · 30s"] },
 ];
 
 export function Home({ locale = "en" }: { locale?: Locale }) {
@@ -270,6 +368,16 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
   const c = COPY[locale] ?? COPY.en;
   const cats = (navCategories[locale] ?? navCategories.en).slice(0, 4);
   const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : slug);
+
+  // ── real client-side tool search over the full flatItems set across all 4 cats ──
+  const [q, setQ] = useState("");
+  const query = q.trim().toLowerCase();
+  const allTools: Item[] = (() => {
+    const seen = new Set<string>(); const out: Item[] = [];
+    for (const cat of cats) { if (!cat) continue; for (const it of flatItems(cat as { cols: { items: Item[] }[] })) { if (!seen.has(it.slug)) { seen.add(it.slug); out.push(it); } } }
+    return out;
+  })();
+  const matches = query ? allTools.filter((t) => t.name.toLowerCase().includes(query)) : [];
 
   return (
     <>
@@ -293,8 +401,8 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
         @media (prefers-reduced-motion: reduce){.hfg-in,.batch-bar,.ms-bar,.mt-tile,.mx-scan,.mx-row,.ms-stack{animation:none!important;transition:none!important}}
       `}</style>
 
-      {/* ── Hero — centered confident type + product-as-art with a restrained glow ── */}
-      <section className="relative overflow-hidden border-b border-[color:var(--line)]">
+      {/* ── 1 · Hero — centered anchor (deliberate contrast vs left-aligned interior); no mid-page divider ── */}
+      <section className="relative overflow-hidden">
         {/* depth glow (very restrained — the Linear move: flat → has depth) */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[520px] bg-[radial-gradient(60%_50%_at_50%_0%,rgba(62,207,142,0.10),transparent)] blur-[40px]" />
         <div className="relative z-10 mx-auto max-w-3xl px-5 pb-24 pt-28 text-center sm:px-6 sm:pb-28 sm:pt-36">
@@ -317,9 +425,11 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
             ))}
           </div>
 
-          {/* product as art: a real grounded-AI interface — report → AI summary, with a citation */}
-          <div className="mt-16 sm:mt-20">
-            <div className="hfg-in mx-auto max-w-xl rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-5 text-left shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
+          {/* product as art: a real grounded-AI interface — report → AI summary, with a citation.
+              Kept LIGHTER than interior figures (soft glow only, no heavy shadow/gradient surface) so it never competes with the H1. */}
+          <div className="relative mt-16 sm:mt-20">
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 blur-[40px]" style={{ background: "radial-gradient(60% 60% at 50% 40%, rgba(62,207,142,0.08), transparent 70%)" }} />
+            <div className="hfg-in relative z-10 mx-auto max-w-xl rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-5 text-left shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
               <div className="flex items-stretch gap-3">
                 <div className="flex w-[36%] flex-col gap-1.5 rounded-lg border border-[color:var(--line)] p-3">
                   {[80, 60, 70, 50, 65, 55].map((w, i) => <span key={i} className={`h-[3px] rounded-full ${i === 2 ? "bg-[color:var(--accent)]" : "bg-[color:var(--skeleton)]"}`} style={{ width: `${w}%`, opacity: i === 2 ? 0.9 : 1 }} />)}
@@ -348,131 +458,161 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
         </div>
       </section>
 
-      {/* ── AI "shows its work" (why) — left-aligned flagship ── */}
+      {/* ── 2 · Find your tool — bento promoted high + a REAL client-side search (funnel-critical) ── */}
       <section>
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:grid-cols-2 sm:px-6 sm:py-28 lg:px-8">
-          <div>
-            <p className={EYEBROW(zh)}>{c.aiEyebrow}</p>
-            <h2 className="mt-4 text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]">{c.aiHeading}</h2>
-            <p className="mt-4 max-w-md text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.aiSub}</p>
-            <a href={path("/chat-with-pdf")} className="mt-6 inline-flex items-center gap-1.5 text-[14px] font-medium text-[color:var(--accent)] transition hover:gap-2.5">
-              {c.aiCta}
-              <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </a>
-            <div className="mt-6 flex flex-wrap gap-2">
-              {c.aiChips.map((chip) => (
-                <span key={chip} className="rounded-full border border-[color:var(--line)] px-3 py-1 text-[12px] text-[color:var(--muted)]">{chip}</span>
-              ))}
-            </div>
-          </div>
-          {/* grounded Q&A: a question, then an answer that cites the exact pages */}
-          <div className="hfg-in rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
-            <div className="flex justify-end">
-              <span className="max-w-[80%] rounded-2xl rounded-br-md border border-[color:var(--line)] bg-[color:var(--background)] px-3.5 py-2 text-[12.5px] leading-[1.45] text-[color:var(--foreground)]">{locale === "zh" ? "第 3 季度营收增长了多少？" : locale === "es" ? "¿Cuánto crecieron los ingresos del 3.er trimestre?" : locale === "pt" ? "Quanto cresceu a receita do 3.º trimestre?" : locale === "fr" ? "De combien les revenus du T3 ont-ils augmenté ?" : "How much did Q3 revenue grow?"}</span>
-            </div>
-            <div className="mt-3 rounded-lg border border-[color:var(--line)] p-3.5">
-              <div className="mb-2.5 flex items-center gap-1.5 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />{locale === "zh" ? "有据回答" : locale === "es" ? "Respuesta fundamentada" : locale === "pt" ? "Resposta embasada" : locale === "fr" ? "Réponse fondée" : "Grounded answer"}
-              </div>
-              <p className="mb-3 text-[12.5px] leading-[1.5] text-[color:var(--foreground)]">{locale === "zh" ? "第 3 季度营收同比增长 23%，主要由亚太区驱动。" : locale === "es" ? "Los ingresos del 3.er trimestre crecieron un 23% interanual, impulsados principalmente por APAC." : locale === "pt" ? "A receita do 3.º trimestre cresceu 23% ano a ano, impulsionada principalmente pela APAC." : locale === "fr" ? "Les revenus du T3 ont augmenté de 23% sur un an, principalement portés par l'APAC." : "Q3 revenue grew 23% year-over-year, driven mainly by APAC."}</p>
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[10px] text-[color:var(--faint)]">{locale === "zh" ? "依据" : locale === "es" ? "Fuentes" : locale === "pt" ? "Fontes" : locale === "fr" ? "Sources" : "Sources"}</span>
-                {(locale === "zh" ? ["第 12 页", "第 27 页"] : locale === "es" ? ["p.12", "p.27"] : locale === "pt" ? ["p.12", "p.27"] : ["p.12", "p.27"]).map((cite) => (
-                  <span key={cite} className="inline-flex items-center gap-1 rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] font-medium text-[color:var(--accent)] transition-colors hover:border-[color:var(--accent)]">
-                    <svg width="9" height="9" viewBox="0 0 16 16" fill="none"><path d="M4 2h6l3 3v9H4z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
-                    {cite}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Capability bento (what) — breadth as a count, not a list ── */}
-      <section>
-        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-6 sm:py-28 lg:px-8">
-          <p className={EYEBROW(zh)}>{c.capEyebrow}</p>
-          <h2 className="mt-4 text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]">{c.capHeading}</h2>
+        <div className="mx-auto max-w-6xl px-5 py-16 sm:px-6 sm:py-20 lg:px-8">
+          <p className={EYEBROW(zh)}>{c.findEyebrow}</p>
+          <h2 className={`mt-4 ${H2}`}>{c.findHeading}</h2>
           <p className="mt-4 max-w-2xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.capSub}</p>
 
-          <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-            {CARDS.map(({ nav, span, visual }) => {
-              const cat = cats[nav];
-              if (!cat) return null;
-              const tools = flatItems(cat as { cols: { items: Item[] }[] });
-              const chips = tools.slice(0, 4);
-              const more = tools.length - chips.length;
-              return (
-                <div key={nav} className={`${CARD} ${span === 2 ? "md:col-span-2" : "md:col-span-1"}`}>
-                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={GLOW} />
-                  <div className="relative flex h-full flex-col">
-                    <div className="flex items-center gap-3">
-                      <Icon i={nav} />
-                      <h3 className="text-[18px] font-normal text-[color:var(--foreground)] sm:text-[20px]">{cat.label}</h3>
-                      <span className="ml-auto text-[12px] text-[color:var(--faint)]">{tools.length} {c.tools}</span>
-                    </div>
-                    <div className="mt-5">
-                      {visual === "thumbs" && <MiniThumbs />}
-                      {visual === "extract" && <MiniExtract label={c.aiSummary} />}
-                      {visual === "batch" && <MiniBatch />}
-                      {visual === "secure" && <MiniSecure />}
-                    </div>
-                    <div className="mt-5 flex flex-wrap items-center gap-2">
-                      {chips.map((t) => (
-                        <a key={t.slug} href={path(t.slug)} className="rounded-full border border-[color:var(--line)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition-colors hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">{t.name}</a>
-                      ))}
-                      {more > 0 && (
-                        <a href={path("/sitemap")} className="inline-flex items-center gap-1 px-1 text-[12px] text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{c.more(more)} →</a>
-                      )}
+          {/* contained search pill — never a full-width hairline */}
+          <div className="relative mt-8 max-w-xl">
+            <svg aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[color:var(--faint)]" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" /><path d="M20 20l-3.2-3.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+            <input
+              type="text"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={c.searchPlaceholder}
+              aria-label={c.searchPlaceholder}
+              className="h-12 w-full rounded-full border border-[color:var(--line-strong)] bg-[color:var(--surface)] pl-11 pr-4 text-[15px] text-[color:var(--foreground)] outline-none transition-colors placeholder:text-[color:var(--faint)] focus:border-[color:var(--accent)]"
+            />
+          </div>
+
+          {query ? (
+            matches.length ? (
+              <div className="mt-6 flex flex-wrap gap-2">
+                {matches.map((t) => (
+                  <a key={t.slug} href={path(t.slug)} className="rounded-full border border-[color:var(--line)] px-3 py-1.5 text-[13px] text-[color:var(--muted)] transition-colors hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">{t.name}</a>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-6 text-[14px] text-[color:var(--faint)]">{c.searchNoResults}</p>
+            )
+          ) : (
+            <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+              {CARDS.map(({ nav, span, visual }) => {
+                const cat = cats[nav];
+                if (!cat) return null;
+                const tools = flatItems(cat as { cols: { items: Item[] }[] });
+                const chips = tools.slice(0, 4);
+                const more = tools.length - chips.length;
+                return (
+                  <div key={nav} className={`${CARD} ${span === 2 ? "md:col-span-2" : "md:col-span-1"}`}>
+                    <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={GLOW} />
+                    <div className="relative flex h-full flex-col">
+                      <div className="flex items-center gap-3">
+                        <Icon i={nav} />
+                        <h3 className="text-[18px] font-normal text-[color:var(--foreground)] sm:text-[20px]">{cat.label}</h3>
+                        <span className="ml-auto text-[12px] text-[color:var(--faint)]">{tools.length} {c.tools}</span>
+                      </div>
+                      <div className="mt-5">
+                        {visual === "thumbs" && <MiniThumbs />}
+                        {visual === "extract" && <MiniExtract label={c.aiSummary} />}
+                        {visual === "batch" && <MiniBatch />}
+                        {visual === "secure" && <MiniSecure />}
+                      </div>
+                      <div className="mt-5 flex flex-wrap items-center gap-2">
+                        {chips.map((t) => (
+                          <a key={t.slug} href={path(t.slug)} className="rounded-full border border-[color:var(--line)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition-colors hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">{t.name}</a>
+                        ))}
+                        {more > 0 && (
+                          <a href={path("/sitemap")} className="inline-flex items-center gap-1 px-1 text-[12px] text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{c.more(more)} →</a>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
 
           <a href={path("/sitemap")} className="mt-8 inline-flex items-center gap-1.5 text-[14px] font-medium text-[color:var(--accent)] transition hover:gap-2.5">
             {c.browseAll}
             <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </a>
+          <p className={CAP}>{c.fig2Caption}</p>
         </div>
       </section>
 
-      {/* ── Use cases (understand what it solves) ── */}
+      {/* ── 3 · Grounded AI (moat) — CTA + chips BEFORE the figure so the funnel link isn't buried ── */}
       <section>
-        <div className="mx-auto max-w-6xl px-5 py-20 sm:px-6 sm:py-28 lg:px-8">
-          <p className={EYEBROW(zh)}>{locale === "zh" ? "能替你做什么" : locale === "es" ? "Lo que hace por ti" : locale === "pt" ? "O que faz por você" : locale === "fr" ? "Ce qu'il fait pour vous" : "What it does for you"}</p>
-          <h2 className="mt-4 text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]">{locale === "zh" ? "几分钟，搞定原本要几小时的事。" : locale === "es" ? "Minutos, no horas." : locale === "pt" ? "Minutos, não horas." : locale === "fr" ? "Des minutes, pas des heures." : "Minutes, not hours."}</h2>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {SCENARIOS.map((s) => {
-              const t = locale === "zh" ? s.zh : locale === "es" ? s.es : locale === "pt" ? ((s as unknown as Record<string, string[]>).pt ?? s.es) : locale === "fr" ? ((s as unknown as Record<string, string[]>).fr ?? s.en) : s.en;
-              return (
-                <a key={t[0]} href={path(s.href)} className="rounded-2xl border border-[color:var(--line)] p-6 transition-colors hover:border-[color:var(--line-strong)]">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[color:var(--line)] text-[color:var(--accent)]">
-                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{s.icon}</svg>
-                  </span>
-                  <p className="mt-4 text-[16px] font-normal text-[color:var(--foreground)]">{t[0]}</p>
-                  <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[13px] leading-[1.5]">
-                    <span className="text-[color:var(--faint)]">{t[1]}</span>
-                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[color:var(--accent)]"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                    <span className="text-[color:var(--foreground)]">{t[2]}</span>
-                  </div>
-                </a>
-              );
-            })}
+        <div className={SHELL}>
+          <p className={EYEBROW(zh)}>{c.aiEyebrow}</p>
+          <h2 className={`mt-4 ${H2}`}>{c.aiHeading}</h2>
+          <p className={SUB}>{c.aiSub}</p>
+          <a href={path("/chat-with-pdf")} className="mt-6 inline-flex items-center gap-1.5 text-[14px] font-medium text-[color:var(--accent)] transition hover:gap-2.5">
+            {c.aiCta}
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </a>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {c.aiChips.map((chip, i) => (
+              <a key={chip} href={path(AICHIP_SLUGS[i])} className="rounded-full border border-[color:var(--line)] px-3 py-1 text-[12px] text-[color:var(--muted)] transition-colors hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">{chip}</a>
+            ))}
           </div>
+
+          {/* grounded Q&A: a question, then an answer that cites VERBATIM SNIPPETS (what the product really returns — not page numbers) */}
+          <Figure className="mt-10" glow="32%">
+            <div className="mx-auto max-w-xl">
+              <div className="flex justify-end">
+                <span className="max-w-[80%] rounded-2xl rounded-br-md border border-[color:var(--line)] bg-[color:var(--background)] px-3.5 py-2 text-[12.5px] leading-[1.45] text-[color:var(--foreground)]">{c.qaQuestion}</span>
+              </div>
+              <div className={`mt-3 ${PANEL}`}>
+                <div className="mb-2.5 flex items-center gap-1.5 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />{c.qaGrounded}
+                </div>
+                <p className="mb-3 text-[12.5px] leading-[1.5] text-[color:var(--foreground)]">{c.qaAnswer}</p>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] text-[color:var(--faint)]">{c.qaSourcesLabel}</span>
+                  {c.qaSnippets.map((snip) => (
+                    <span key={snip} className="inline-flex items-center gap-1 rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] font-medium text-[color:var(--accent)] transition-colors hover:border-[color:var(--accent)]">
+                      <svg width="9" height="9" viewBox="0 0 16 16" fill="none"><path d="M5 4H3v3h2zM10 4H8v3h2z" fill="currentColor" /></svg>
+                      “{snip}”
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Figure>
+          <p className={CAP}>{c.fig3Caption}</p>
         </div>
       </section>
 
-      {/* ── Final CTA (cta) — reprise; the only bottom hairline is owned by the footer ── */}
+      {/* ── 4 · What it does for you — 4 jobs in one Figure ── */}
       <section>
-        <div className="mx-auto max-w-3xl px-5 py-24 text-center sm:px-6 sm:py-32">
-          <h2 className="text-[28px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">
-            {c.ctaHeadA}<br className="sm:hidden" />{c.ctaHeadB}
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.ctaSub}</p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className={SHELL}>
+          <p className={EYEBROW(zh)}>{c.jobsEyebrow}</p>
+          <h2 className={`mt-4 ${H2}`}>{c.jobsHeading}</h2>
+          <Figure className="mt-10" glow="20%">
+            <div className="grid gap-4 sm:grid-cols-2">
+              {SCENARIOS.map((s) => {
+                const t = locale === "zh" ? s.zh : locale === "es" ? s.es : locale === "pt" ? s.pt : locale === "fr" ? s.fr : s.en;
+                return (
+                  <a key={t[0]} href={path(s.href)} className={`${PANEL} block transition-colors hover:border-[color:var(--line-strong)]`}>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[color:var(--line)] text-[color:var(--accent)]">
+                      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{s.icon}</svg>
+                    </span>
+                    <p className="mt-4 text-[16px] font-normal text-[color:var(--foreground)]">{t[0]}</p>
+                    <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[13px] leading-[1.5]">
+                      <span className="text-[color:var(--faint)]">{t[1]}</span>
+                      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[color:var(--accent)]"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                      <span className="text-[color:var(--foreground)]">{t[2]}</span>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </Figure>
+          <p className={CAP}>{c.fig4Caption}</p>
+        </div>
+      </section>
+
+      {/* ── 5 · Try it — left-aligned closing CTA (unifies with About section 7) ── */}
+      <section>
+        <div className={SHELL}>
+          <p className={EYEBROW(zh)}>{c.ctaEyebrow}</p>
+          <h2 className={`mt-4 ${H2}`}>{c.ctaHeadA} <span className="text-[color:var(--muted)]">{c.ctaHeadB}</span></h2>
+          <p className={SUB}>{c.ctaSub}</p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             <a href={path("/chat-with-pdf")} className="inline-flex h-11 items-center justify-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]">{c.primary}</a>
             <a href={path("/pricing")} className="inline-flex h-11 items-center justify-center rounded-full border border-[color:var(--line-strong)] px-6 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)]">{c.viewPricing}</a>
           </div>

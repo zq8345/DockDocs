@@ -4,7 +4,7 @@ import { Home as HomeSections } from "@/components/Home";
 export const metadata: Metadata = {
   title: "DockDocs — AI Document Platform",
   description:
-    "Chat with any PDF and get answers with sources you can check — not guesses. Multi-document comparison for contracts and quotes is coming. Plus 20+ free PDF tools to compress, convert, merge, split, and OCR.",
+    "Chat with any PDF and get answers with sources you can check — not guesses. Multi-document comparison for contracts and quotes is coming. Plus ~50 free PDF tools to compress, convert, merge, split, and OCR.",
   alternates: {
     canonical: "/",
     languages: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "DockDocs — AI Document Platform",
     description:
-      "Chat with any PDF for grounded, source-cited answers. Multi-document comparison coming soon. Plus 20+ free PDF tools — no installs.",
+      "Chat with any PDF for grounded, source-cited answers. Multi-document comparison coming soon. Plus ~50 free PDF tools — no installs.",
     url: "https://dockdocs.app",
     siteName: "DockDocs",
     type: "website",
@@ -36,7 +36,7 @@ const homeSchema = {
       "@id": `${siteUrl}#org`,
       name: "DockDocs",
       url: siteUrl,
-      description: "Private, verifiable document AI: read any document and trust every answer because each one cites the exact source you can check. Plus 20+ PDF tools that run in your browser, so files never leave your device.",
+      description: "Private, verifiable document AI: read any document and trust its answers because the AI shows the source passage behind them and flags what it can't trace, so you can check it yourself. Plus ~50 PDF tools that run in your browser, so files never leave your device.",
       slogan: "Read any document. Trust every answer.",
       foundingDate: "2024",
       sameAs: [
@@ -48,17 +48,9 @@ const homeSchema = {
       "@id": `${siteUrl}#website`,
       name: "DockDocs",
       url: siteUrl,
-      description: "Document AI that cites its source so you can verify every answer, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
+      description: "Document AI that shows the source passage behind its answers so you can verify them, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
       inLanguage: ["en", "zh"],
       publisher: { "@id": `${siteUrl}#org` },
-      potentialAction: {
-        "@type": "SearchAction",
-        target: {
-          "@type": "EntryPoint",
-          urlTemplate: `${siteUrl}/search?q={search_term_string}`,
-        },
-        "query-input": "required name=search_term_string",
-      },
     },
     {
       "@type": "WebPage",
@@ -66,7 +58,7 @@ const homeSchema = {
       url: siteUrl,
       name: "DockDocs — Private, Verifiable Document AI & PDF Tools",
       description:
-        "Read any document and trust every answer: DockDocs document AI cites the exact source so you can verify it, and 20+ PDF tools run in your browser so files never leave your device. Free, no sign-up.",
+        "Read any document and check the answers: DockDocs document AI shows the exact source passage behind its answers so you can verify them, and ~50 PDF tools run in your browser so files never leave your device. Free, no sign-up.",
       isPartOf: { "@id": `${siteUrl}#website` },
       about: { "@id": `${siteUrl}#org` },
     },
@@ -80,7 +72,7 @@ const homeSchema = {
           name: "What is DockDocs?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "DockDocs is a private, verifiable document-AI platform. Chat with and summarize your documents and get answers that cite the exact source passage, so you can check them instead of trusting a black box. It also includes 20+ PDF tools that run in your browser — no installs, and files never leave your device for those tools.",
+            text: "DockDocs is a private, verifiable document-AI platform. Chat with and summarize your documents; when the AI answers, it shows the exact source passage behind what it finds so you can check it instead of trusting a black box — and flags what it can't trace. It also includes ~50 PDF tools that run in your browser — no installs, and files never leave your device for those tools.",
           },
         },
         {
@@ -104,7 +96,7 @@ const homeSchema = {
           name: "What PDF tools does DockDocs offer?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "DockDocs offers 20+ PDF tools: Compress PDF, Merge PDF, Split PDF, PDF to Word, Word to PDF, JPG to PDF, PDF to JPG, OCR PDF, Chat with PDF, AI Summary, Protect PDF, Unlock PDF, Sign PDF, Edit PDF, Translate PDF, and more.",
+            text: "DockDocs offers ~50 PDF tools: Compress PDF, Merge PDF, Split PDF, PDF to Word, Word to PDF, JPG to PDF, PDF to JPG, OCR PDF, Chat with PDF, AI Summary, Protect PDF, Unlock PDF, Sign PDF, Edit PDF, Translate PDF, and more.",
           },
         },
         {
@@ -112,7 +104,7 @@ const homeSchema = {
           name: "How does DockDocs AI Chat with PDF work?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Upload a PDF and ask questions in natural language. DockDocs AI reads the document and answers from its contents — and every answer points back to the exact source passage so you can click to the original and verify it. It works with contracts, reports, research papers, manuals, and any text-based PDF.",
+            text: "Upload a PDF and ask questions in natural language. DockDocs AI reads the document and answers from its contents — and answers show the exact source passage they came from so you can click to the original and verify them, and when something can't be traced, it says so instead of inventing a source. It works with contracts, reports, research papers, manuals, and any text-based PDF.",
           },
         },
         {
@@ -120,7 +112,7 @@ const homeSchema = {
           name: "How do I know the AI isn't making it up?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Every AI answer and extraction points back to the exact source passage in your own document, so you can click to the original and check it yourself — you never have to take the AI's word for it. When a claim can't be grounded in your file, DockDocs flags it rather than presenting it as fact. This source-traceability is the core difference from a general chatbot.",
+            text: "When the AI answers or extracts, it points back to the exact source passage in your own document so you can click to the original and check it yourself — you never have to take the AI's word for it. When a claim can't be grounded in your file, DockDocs flags it rather than presenting it as fact. This source-traceability is the core difference from a general chatbot.",
           },
         },
         {
@@ -128,7 +120,7 @@ const homeSchema = {
           name: "What makes DockDocs different from other PDF tools and from a general AI chatbot?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Two things a general AI chatbot can't offer: privacy you can verify and answers you can trust. Most DockDocs tools run in your browser, so sensitive files never leave your device (check the Network tab). And its document AI cites the exact source for every answer and extraction, so you can verify each one. It's built for the documents you can't paste into a general chatbot — contracts, financials, research — not just generic PDF editing.",
+            text: "Two things a general AI chatbot can't offer: privacy you can verify and answers you can trust. Most DockDocs tools run in your browser, so sensitive files never leave your device (check the Network tab). And its document AI shows the exact source passage behind its answers and extractions, and flags what it can't trace, so you can verify what it tells you. It's built for the documents you can't paste into a general chatbot — contracts, financials, research — not just generic PDF editing.",
           },
         },
       ],
