@@ -61,7 +61,7 @@ const config = {
     },
     {
       question: "Is my Word document private when I convert it?",
-      answer: "Word to PDF runs on a secure conversion server (CloudConvert), because faithful rendering needs a full office engine. Your file is encrypted in transit, converted, and deleted right after — it is never stored or used to train any model. If you need fully on-device processing, DockDocs' page tools like merge, split, and compress run entirely in your browser.",
+      answer: "Word to PDF runs on a secure conversion server (CloudConvert), because faithful rendering needs a full office engine. Your file is encrypted in transit, converted, and the temporary copy is deleted automatically right after — we don't store it. If you need fully on-device processing, DockDocs' page tools like merge, split, and compress run entirely in your browser.",
     },
     {
       question: "Is the doc to PDF conversion free?",
