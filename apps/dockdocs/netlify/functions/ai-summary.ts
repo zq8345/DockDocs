@@ -1,5 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
+import { resolveAnswerLocale, answerLanguageName, type AnswerLocale } from "./_shared/answer-locale";
 
 declare const Netlify: {
   env: {
@@ -9,7 +10,7 @@ declare const Netlify: {
 
 type AiSummaryPayload = {
   text?: string;
-  locale?: "en" | "zh";
+  locale?: AnswerLocale;
   sourceName?: string;
 };
 
@@ -124,7 +125,7 @@ export default async (req: Request, _context: Context) => {
   }
 
   const text = normalizeText(payload.text ?? "");
-  const locale = payload.locale === "zh" ? "zh" : "en";
+  const locale = resolveAnswerLocale(payload.locale);
 
   if (text.length < 80) {
     return json(
@@ -276,9 +277,8 @@ function getProvider() {
   return { apiUrl: undefined, apiKey: undefined, model: undefined };
 }
 
-function createProviderRequest(model: string, text: string, locale: "en" | "zh") {
-  const outputLanguage =
-    locale === "zh" ? "Simplified Chinese" : "English";
+function createProviderRequest(model: string, text: string, locale: AnswerLocale) {
+  const outputLanguage = answerLanguageName(locale);
 
   return {
     model,
@@ -339,11 +339,10 @@ function createProviderRequest(model: string, text: string, locale: "en" | "zh")
 function createRepairProviderRequest(
   model: string,
   text: string,
-  locale: "en" | "zh",
+  locale: AnswerLocale,
   previousContent: string,
 ) {
-  const outputLanguage =
-    locale === "zh" ? "Simplified Chinese" : "English";
+  const outputLanguage = answerLanguageName(locale);
 
   return {
     model,
@@ -394,7 +393,7 @@ async function generateProviderSummary({
 }: {
   provider: ProviderConfig;
   text: string;
-  locale: "en" | "zh";
+  locale: AnswerLocale;
   signal: AbortSignal;
 }): Promise<ProviderSummaryResult | null> {
   const first = await callProvider({

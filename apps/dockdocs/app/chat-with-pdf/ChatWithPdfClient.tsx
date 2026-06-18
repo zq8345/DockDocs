@@ -193,7 +193,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
           context: documentText,
           question: userQuestion,
           sourceName: fileName,
-          locale: locale === "zh" ? "zh" : "en",
+          locale,
         }),
       });
 

@@ -1,5 +1,6 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
+import { resolveAnswerLocale, answerLanguageName, type AnswerLocale } from "./_shared/answer-locale";
 
 declare const Netlify: {
   env: {
@@ -11,7 +12,7 @@ type AiChatPayload = {
   context?: string;
   question?: string;
   history?: AiChatHistoryTurn[];
-  locale?: "en" | "zh";
+  locale?: AnswerLocale;
   sourceName?: string;
   truncated?: boolean;
   stream?: boolean;
@@ -146,7 +147,7 @@ export default async (req: Request, _context: Context) => {
     );
   }
 
-  const locale = payload.locale === "zh" ? "zh" : "en";
+  const locale = resolveAnswerLocale(payload.locale);
   const context = normalizeText(payload.context ?? "");
   const question = normalizeText(payload.question ?? "");
   const history = normalizeHistory(payload.history);
@@ -341,7 +342,7 @@ function streamAiChatResponse({
   context: string;
   question: string;
   history: NormalizedHistoryTurn[];
-  locale: "en" | "zh";
+  locale: AnswerLocale;
   truncated: boolean;
 }) {
   const encoder = new TextEncoder();
@@ -455,7 +456,7 @@ async function generateProviderAnswer({
   context: string;
   question: string;
   history: NormalizedHistoryTurn[];
-  locale: "en" | "zh";
+  locale: AnswerLocale;
   signal: AbortSignal;
 }): Promise<ProviderChatResponse> {
   const first = await callProvider({
@@ -579,7 +580,7 @@ async function generateProviderAnswerStream({
   context: string;
   question: string;
   history: NormalizedHistoryTurn[];
-  locale: "en" | "zh";
+  locale: AnswerLocale;
   signal: AbortSignal;
   onAnswerDelta: (text: string) => void;
 }): Promise<ProviderChatResponse> {
@@ -703,10 +704,9 @@ function createProviderRequest(
   context: string,
   question: string,
   history: NormalizedHistoryTurn[],
-  locale: "en" | "zh",
+  locale: AnswerLocale,
 ) {
-  const outputLanguage =
-    locale === "zh" ? "Simplified Chinese" : "English";
+  const outputLanguage = answerLanguageName(locale);
 
   return {
     model,
@@ -773,7 +773,7 @@ function createStreamingProviderRequest(
   context: string,
   question: string,
   history: NormalizedHistoryTurn[],
-  locale: "en" | "zh",
+  locale: AnswerLocale,
 ) {
   return {
     ...createProviderRequest(model, context, question, history, locale),
@@ -789,11 +789,10 @@ function createRepairProviderRequest(
   context: string,
   question: string,
   history: NormalizedHistoryTurn[],
-  locale: "en" | "zh",
+  locale: AnswerLocale,
   previousContent: string,
 ) {
-  const outputLanguage =
-    locale === "zh" ? "Simplified Chinese" : "English";
+  const outputLanguage = answerLanguageName(locale);
 
   return {
     model,
@@ -1161,7 +1160,7 @@ function completeOcrFieldAnswer(
   result: AiChatAnswer,
   question: string,
   context: string,
-  locale: "en" | "zh",
+  locale: AnswerLocale,
 ): AiChatAnswer {
   const requestedFields = getRequestedOcrFields(question);
   if (requestedFields.length < 2) {
@@ -1290,7 +1289,7 @@ function answerContainsOcrValue(answer: string, value: string) {
 
 function formatOcrFieldAnswer(
   fields: OcrFieldEvidence[],
-  locale: "en" | "zh",
+  locale: AnswerLocale,
 ) {
   if (locale === "zh") {
     return fields
