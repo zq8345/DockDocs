@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { TIER_CATEGORIES } from "@/lib/tier-config";
 import type { FeatureItem } from "@/lib/tier-config";
 import { localizedPath, type RouteSlug, type RouteLocale } from "@/lib/i18n";
-import { createBillingCheckoutSession, createBillingPortalSession, startUpgradeCheckout, getUpgradeQuote, getSubscriptionSnapshot, BillingError, type SubscriptionSnapshot, type UpgradeQuote } from "@/lib/subscription-runtime";
+import { createBillingCheckoutSession, createBillingPortalSession, getSubscriptionSnapshot, BillingError, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
 import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
+import { billingErrorCopy } from "@/lib/membership-ui";
+import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
 import { getUser, onAuthChange } from "@/lib/auth";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr";
@@ -409,64 +411,6 @@ const copy = {
   },
 } as const;
 
-// Localized, user-facing copy for a billing failure code. The raw code + server
-// message still go to the console for diagnosis; users see a friendly reason.
-function billingErrorCopy(code: string | undefined, serverMessage: string, locale: Locale): string {
-  const t = (en: string, zh: string, es: string, pt: string, fr: string) =>
-    locale === "zh" ? zh : locale === "es" ? es : locale === "pt" ? pt : locale === "fr" ? fr : en;
-  switch (code) {
-    case "CREEM_PRODUCT_MISSING":
-    case "CREEM_NOT_CONFIGURED":
-      return t(
-        "This billing option isn't available right now. Please try another period or contact support.",
-        "该计费周期暂时不可用，请换一个周期或联系客服。",
-        "Esta opción de facturación no está disponible ahora. Prueba otro periodo o contacta con soporte.",
-        "Esta opção de cobrança não está disponível agora. Tente outro período ou contate o suporte.",
-        "Cette option de facturation est indisponible pour l'instant. Essayez une autre période ou contactez le support.",
-      );
-    case "CREEM_DISCOUNT_FAILED":
-    case "CREEM_CHECKOUT_FAILED":
-    case "CREEM_PORTAL_FAILED":
-    case "CREEM_CANCEL_FAILED":
-    case "CREEM_GET_SUB_FAILED":
-    case "CREEM_UNREACHABLE":
-      return t(
-        "Couldn't complete the upgrade right now. Please try again in a moment.",
-        "升级暂时无法完成，请稍后再试。",
-        "No se pudo completar la mejora ahora. Inténtalo de nuevo en un momento.",
-        "Não foi possível concluir o upgrade agora. Tente novamente em instantes.",
-        "Impossible de finaliser la mise à niveau pour l'instant. Réessayez dans un instant.",
-      );
-    case "CANNOT_PRORATE":
-      return t(
-        "We couldn't work out your unused credit. Please upgrade from Manage billing instead.",
-        "无法计算你的未用抵扣，请改从「管理账单」升级。",
-        "No pudimos calcular tu crédito no usado. Mejora desde «Gestionar facturación».",
-        "Não foi possível calcular seu crédito não usado. Faça o upgrade em «Gerenciar cobrança».",
-        "Impossible de calculer votre crédit non utilisé. Mettez à niveau depuis « Gérer la facturation ».",
-      );
-    case "NO_RECURRING_SUB":
-      return t(
-        "No active subscription to change. Start a new checkout instead.",
-        "没有可更改的有效订阅，请重新发起结账。",
-        "No hay una suscripción activa para cambiar. Inicia un nuevo pago.",
-        "Nenhuma assinatura ativa para alterar. Inicie um novo checkout.",
-        "Aucun abonnement actif à modifier. Lancez un nouveau paiement.",
-      );
-    default:
-      return (
-        serverMessage ||
-        t(
-          "Something went wrong with billing. Please try again.",
-          "账单操作出错了，请重试。",
-          "Algo salió mal con la facturación. Inténtalo de nuevo.",
-          "Algo deu errado com a cobrança. Tente novamente.",
-          "Une erreur de facturation est survenue. Réessayez.",
-        )
-      );
-  }
-}
-
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [period, setPeriod] = useState<"monthly" | "annual" | "lifetime">("annual"); // default annual per pricing spec
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -474,13 +418,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [billingLoading, setBillingLoading] = useState("");
   const [billingError, setBillingError] = useState("");
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
-  // Pre-checkout upgrade breakdown (new price − unused credit = you pay) shown before
-  // the redirect, so the credit is visible (the 可溯源/honest promise).
-  const [upgradeConfirm, setUpgradeConfirm] = useState<{
-    plan: PaidSubscriptionPlan;
-    interval: "monthly" | "annual" | "lifetime";
-    quote: UpgradeQuote;
-  } | null>(null);
+  // Shared in-place upgrade flow (quote → breakdown modal → discounted checkout).
+  const upgrade = useUpgradeFlow(locale);
 
   useEffect(() => {
     let mounted = true;
@@ -539,33 +478,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       setBillingLoading("");
     }
   }
-  // Proration UPGRADE (recurring→recurring OR recurring→lifetime): first fetch the
-  // server-authoritative breakdown and show it; the user confirms, THEN we redirect
-  // to the discounted checkout. Two steps so the credit is never hidden.
-  async function beginUpgrade(plan: PaidSubscriptionPlan) {
-    setBillingLoading(plan);
-    setBillingError("");
-    try {
-      const quote = await getUpgradeQuote(plan, period);
-      setUpgradeConfirm({ plan, interval: period, quote });
-    } catch (err) {
-      handleBillingError(err);
-    } finally {
-      setBillingLoading("");
-    }
-  }
-  async function confirmUpgrade() {
-    if (!upgradeConfirm) return;
-    setBillingLoading(upgradeConfirm.plan);
-    setBillingError("");
-    try {
-      await startUpgradeCheckout(upgradeConfirm.plan, upgradeConfirm.interval); // redirects on success
-    } catch (err) {
-      setUpgradeConfirm(null);
-      handleBillingError(err);
-      setBillingLoading("");
-    }
-  }
+  // The proration UPGRADE flow (quote → breakdown modal → discounted checkout) lives
+  // in useUpgradeFlow(); the "upgrade" CTA calls upgrade.beginUpgrade(plan, period).
   // Downgrades / lateral changes route to the Creem billing portal (no auto
   // double-charge); the real fix for downgrades is backlogged (nf-downgrade-flow).
   async function handlePortal() {
@@ -610,9 +524,9 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Billing error — surfaced, never silently swallowed into a redirect */}
-      {billingError && (
+      {(billingError || upgrade.error) && (
         <div className="mx-auto mt-6 max-w-xl rounded-[var(--radius-sm)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] px-4 py-3 text-center text-[13px] text-[color:var(--error)]">
-          {billingError}
+          {billingError || upgrade.error}
         </div>
       )}
 
@@ -705,8 +619,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                       : (locale === "zh" ? "管理账单" : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : "Manage billing")}
                   </button>
                 ) : (
-                  <button type="button" onClick={() => (ctaKind === "upgrade" ? beginUpgrade(planKey) : plainCheckout(planKey))} disabled={billingLoading === planKey} className={ctaCls}>
-                    {billingLoading === planKey
+                  <button type="button" onClick={() => (ctaKind === "upgrade" ? upgrade.beginUpgrade(planKey, period) : plainCheckout(planKey))} disabled={ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey} className={ctaCls}>
+                    {(ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey)
                       ? (locale === "zh" ? "跳转中…" : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : "Redirecting…")
                       : plan.cta}
                   </button>
@@ -915,60 +829,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Upgrade breakdown — credit is visible before the redirect (可溯源/honest). */}
-      {upgradeConfirm && (() => {
-        const q = upgradeConfirm.quote;
-        const money = (cents: number) => `$${(cents / 100).toFixed(2)}`;
-        const planName = upgradeConfirm.plan === "PLUS" ? "Plus" : "Pro";
-        const ivLabel =
-          upgradeConfirm.interval === "lifetime"
-            ? (locale === "zh" ? "终身" : locale === "es" ? "De por vida" : locale === "pt" ? "Vitalício" : locale === "fr" ? "À vie" : "Lifetime")
-            : upgradeConfirm.interval === "annual"
-              ? (locale === "zh" ? "年付" : locale === "es" ? "Anual" : locale === "pt" ? "Anual" : locale === "fr" ? "Annuel" : "Yearly")
-              : (locale === "zh" ? "月付" : locale === "es" ? "Mensual" : locale === "pt" ? "Mensal" : locale === "fr" ? "Mensuel" : "Monthly");
-        const loading = billingLoading === upgradeConfirm.plan;
-        return (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4" onClick={() => !loading && setUpgradeConfirm(null)}>
-            <div className="w-full max-w-sm rounded-2xl border border-[color:var(--line)] bg-[color:var(--background)] p-6 shadow-[0_24px_64px_rgba(0,0,0,0.5)]" onClick={(e) => e.stopPropagation()}>
-              <p className="text-[15px] font-semibold">
-                {locale === "zh" ? "确认升级" : locale === "es" ? "Confirmar mejora" : locale === "pt" ? "Confirmar upgrade" : locale === "fr" ? "Confirmer la mise à niveau" : "Confirm upgrade"}
-              </p>
-              <div className="mt-4 space-y-2 text-[14px]">
-                <div className="flex items-center justify-between">
-                  <span className="text-[color:var(--muted)]">{`${planName} · ${ivLabel}`}</span>
-                  <span>{money(q.newPriceCents)}</span>
-                </div>
-                {q.creditCents > 0 && (
-                  <div className="flex items-center justify-between text-[color:var(--accent-strong)]">
-                    <span>{locale === "zh" ? "未用价值（抵扣）" : locale === "es" ? "Valor no usado (crédito)" : locale === "pt" ? "Valor não usado (crédito)" : locale === "fr" ? "Valeur non utilisée (crédit)" : "Unused value (credit)"}</span>
-                    <span>{`−${money(q.creditCents)}`}</span>
-                  </div>
-                )}
-                <div className="flex items-center justify-between border-t border-[color:var(--line)] pt-2 text-[15px] font-semibold">
-                  <span>{locale === "zh" ? "现在支付" : locale === "es" ? "Pagas ahora" : locale === "pt" ? "Você paga agora" : locale === "fr" ? "Vous payez" : "You pay now"}</span>
-                  <span>{money(q.finalCents)}</span>
-                </div>
-              </div>
-              <p className="mt-3 text-[11px] leading-5 text-[color:var(--faint)]">
-                {locale === "zh" ? "升级立即生效；旧套餐当期未用部分已折抵，绝不重复收费。"
-                  : locale === "es" ? "La mejora es inmediata; el tiempo no usado de tu plan actual se acredita — sin cobros duplicados."
-                  : locale === "pt" ? "O upgrade é imediato; o tempo não usado do seu plano atual é creditado — sem cobranças duplicadas."
-                  : locale === "fr" ? "La mise à niveau est immédiate ; le temps non utilisé de votre forfait actuel est crédité — aucun double prélèvement."
-                  : "Upgrade is immediate; the unused time on your current plan is credited — never double-charged."}
-              </p>
-              <div className="mt-5 flex gap-2">
-                <button type="button" onClick={() => setUpgradeConfirm(null)} disabled={loading} className="flex-1 rounded-full border border-[color:var(--line-strong)] px-4 py-2.5 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)] disabled:opacity-50">
-                  {locale === "zh" ? "取消" : locale === "es" ? "Cancelar" : locale === "pt" ? "Cancelar" : locale === "fr" ? "Annuler" : "Cancel"}
-                </button>
-                <button type="button" onClick={confirmUpgrade} disabled={loading} className="flex-1 rounded-full bg-[color:var(--accent)] px-4 py-2.5 text-[13px] font-semibold text-[color:var(--on-accent)] transition hover:bg-[color:var(--accent-hover)] disabled:opacity-50">
-                  {loading
-                    ? (locale === "zh" ? "跳转中…" : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : "Redirecting…")
-                    : (locale === "zh" ? "确认并支付" : locale === "es" ? "Confirmar y pagar" : locale === "pt" ? "Confirmar e pagar" : locale === "fr" ? "Confirmer et payer" : "Confirm & pay")}
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
+      <UpgradeConfirmModal flow={upgrade} locale={locale} />
     </div>
   );
 }

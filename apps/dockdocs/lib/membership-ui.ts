@@ -1,4 +1,4 @@
-import type { BillingInterval } from "@/lib/billing-config";
+import type { BillingInterval, PaidSubscriptionPlan } from "@/lib/billing-config";
 
 // Shared membership presentation helpers. The nav account card, the nav badge,
 // and the account page all read from the SAME subscription snapshot through these
@@ -94,13 +94,15 @@ export function planStatusText(
   return pick(locale, `Active · ${cycle}`, `生效中 · ${cycle}`, `Activo · ${cycle}`, `Ativo · ${cycle}`, `Actif · ${cycle}`);
 }
 
-export type UpgradePrompt = { label: string; primary: boolean };
+export type UpgradeTarget = { plan: PaidSubscriptionPlan; interval: BillingInterval };
+// `target` set → the caller can run the in-place proration upgrade flow to that exact
+// (plan, interval). Absent (Free users) → route to /pricing for a plain checkout.
+export type UpgradePrompt = { label: string; primary: boolean; target?: UpgradeTarget };
 
-// Contextual upgrade prompts. ALL of them route to the pricing page — the user
-// picks the interval there and the pricing CTA performs the actual checkout /
-// in-place change-plan. So this stays pure routing and never decides entitlement
-// or hardcodes an interval. Returns [] for lifetime owners (nothing to upgrade
-// in-app; Plus-lifetime → Pro is handled manually).
+// Contextual upgrade prompts. For a user who already has a recurring sub, each prompt
+// carries a concrete `target` so the nav card / account page can pop the in-place
+// breakdown + checkout (no dumping the user onto /pricing to re-find it). Free users
+// have no sub to prorate → no target → /pricing. Returns [] for lifetime owners.
 export function upgradePrompts(
   displayName: PlanDisplayName,
   interval: BillingInterval | undefined,
@@ -112,21 +114,82 @@ export function upgradePrompts(
     ];
   }
   if (interval === "lifetime") return [];
+  const curInterval: BillingInterval = interval ?? "monthly";
 
   if (displayName === "Plus") {
     const prompts: UpgradePrompt[] = [
-      { label: pick(locale, "Upgrade to Pro", "升级 Pro 专业精准", "Mejora a Pro", "Faça upgrade para Pro", "Passer à Pro"), primary: true },
+      // Raise the tier, keep the current billing term.
+      { label: pick(locale, "Upgrade to Pro", "升级 Pro 专业精准", "Mejora a Pro", "Faça upgrade para Pro", "Passer à Pro"), primary: true, target: { plan: "PRO", interval: curInterval } },
     ];
-    if (interval !== "annual") {
+    if (curInterval !== "annual") {
       prompts.push({
         label: pick(locale, "Switch to yearly — save 40%", "切年付 · 省 40%", "Cambia a anual — ahorra 40%", "Mude para anual — economize 40%", "Passez à l'annuel — −40 %"),
         primary: false,
+        target: { plan: "PLUS", interval: "annual" },
       });
     }
     return prompts;
   }
   // Pro on a recurring plan → lifetime.
   return [
-    { label: pick(locale, "Get lifetime — pay once", "切终身 · 一次买断永久", "Hazlo de por vida — pago único", "Mude para vitalício — pague uma vez", "Passez à vie — paiement unique"), primary: true },
+    { label: pick(locale, "Get lifetime — pay once", "切终身 · 一次买断永久", "Hazlo de por vida — pago único", "Mude para vitalício — pague uma vez", "Passez à vie — paiement unique"), primary: true, target: { plan: "PRO", interval: "lifetime" } },
   ];
+}
+
+// Localized, user-facing copy for a billing failure code. The raw code + server
+// message still go to the console for diagnosis; users see a friendly reason. Shared
+// by the pricing page and the in-place upgrade flow.
+export function billingErrorCopy(code: string | undefined, serverMessage: string, locale: MembershipLocale): string {
+  const t = (en: string, zh: string, es: string, pt: string, fr: string) => pick(locale, en, zh, es, pt, fr);
+  switch (code) {
+    case "CREEM_PRODUCT_MISSING":
+    case "CREEM_NOT_CONFIGURED":
+      return t(
+        "This billing option isn't available right now. Please try another period or contact support.",
+        "该计费周期暂时不可用，请换一个周期或联系客服。",
+        "Esta opción de facturación no está disponible ahora. Prueba otro periodo o contacta con soporte.",
+        "Esta opção de cobrança não está disponível agora. Tente outro período ou contate o suporte.",
+        "Cette option de facturation est indisponible pour l'instant. Essayez une autre période ou contactez le support.",
+      );
+    case "CREEM_DISCOUNT_FAILED":
+    case "CREEM_CHECKOUT_FAILED":
+    case "CREEM_PORTAL_FAILED":
+    case "CREEM_CANCEL_FAILED":
+    case "CREEM_GET_SUB_FAILED":
+    case "CREEM_UNREACHABLE":
+      return t(
+        "Couldn't complete the upgrade right now. Please try again in a moment.",
+        "升级暂时无法完成，请稍后再试。",
+        "No se pudo completar la mejora ahora. Inténtalo de nuevo en un momento.",
+        "Não foi possível concluir o upgrade agora. Tente novamente em instantes.",
+        "Impossible de finaliser la mise à niveau pour l'instant. Réessayez dans un instant.",
+      );
+    case "CANNOT_PRORATE":
+      return t(
+        "We couldn't work out your unused credit. Please upgrade from Manage billing instead.",
+        "无法计算你的未用抵扣，请改从「管理账单」升级。",
+        "No pudimos calcular tu crédito no usado. Mejora desde «Gestionar facturación».",
+        "Não foi possível calcular seu crédito não usado. Faça o upgrade em «Gerenciar cobrança».",
+        "Impossible de calculer votre crédit non utilisé. Mettez à niveau depuis « Gérer la facturation ».",
+      );
+    case "NO_RECURRING_SUB":
+      return t(
+        "No active subscription to change. Start a new checkout instead.",
+        "没有可更改的有效订阅，请重新发起结账。",
+        "No hay una suscripción activa para cambiar. Inicia un nuevo pago.",
+        "Nenhuma assinatura ativa para alterar. Inicie um novo checkout.",
+        "Aucun abonnement actif à modifier. Lancez un nouveau paiement.",
+      );
+    default:
+      return (
+        serverMessage ||
+        t(
+          "Something went wrong with billing. Please try again.",
+          "账单操作出错了，请重试。",
+          "Algo salió mal con la facturación. Inténtalo de nuevo.",
+          "Algo deu errado com a cobrança. Tente novamente.",
+          "Une erreur de facturation est survenue. Réessayez.",
+        )
+      );
+  }
 }

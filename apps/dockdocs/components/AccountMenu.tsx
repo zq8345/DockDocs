@@ -15,11 +15,13 @@ import {
   upgradePrompts,
   type MembershipLocale,
 } from "@/lib/membership-ui";
+import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
 
 // Desktop nav account control: identity badge button + dropdown account card.
 // Reads the subscription snapshot so the badge / status / upgrade prompts match
-// the account page exactly. All upgrade prompts route to /pricing (interval is
-// chosen there); only "Manage billing" acts directly (Creem portal).
+// the account page exactly. Upgrade prompts for a recurring user invoke the in-place
+// breakdown flow (useUpgradeFlow); Free users go to /pricing; "Manage billing" opens
+// the Creem portal.
 
 function lh(href: string, locale: string) {
   return locale === defaultLocale ? href : `/${locale}${href}`;
@@ -35,6 +37,7 @@ const linkCls =
 export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; locale: string }) {
   const router = useRouter();
   const loc = asMembershipLocale(locale);
+  const upgradeFlow = useUpgradeFlow(loc);
   const [open, setOpen] = useState(false);
   const [snapshot, setSnapshot] = useState<SubscriptionSnapshot | null>(null);
   const [billingLoading, setBillingLoading] = useState(false);
@@ -152,23 +155,25 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
               )}
             </div>
 
-            {/* upgrade prompts → pricing (interval chosen there) */}
+            {/* upgrade prompts → in-place breakdown flow (target set) or /pricing (Free) */}
             {prompts.length > 0 && (
               <div className="mt-1.5 space-y-1 px-1">
                 {prompts.map((p, i) => (
                   <button
                     key={i}
                     type="button"
-                    onClick={() => go("/pricing")}
+                    disabled={upgradeFlow.loading}
+                    onClick={() => (p.target ? upgradeFlow.beginUpgrade(p.target.plan, p.target.interval) : go("/pricing"))}
                     className={
                       p.primary
-                        ? "block w-full rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-2.5 py-1.5 text-center text-[12px] font-semibold text-[color:var(--on-accent)] transition hover:bg-[color:var(--accent-hover)]"
-                        : "block w-full rounded-[var(--radius-sm)] px-2.5 py-1.5 text-center text-[12px] font-medium text-[color:var(--accent-strong)] transition hover:bg-[color:var(--surface-subtle)]"
+                        ? "block w-full rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-2.5 py-1.5 text-center text-[12px] font-semibold text-[color:var(--on-accent)] transition hover:bg-[color:var(--accent-hover)] disabled:opacity-50"
+                        : "block w-full rounded-[var(--radius-sm)] px-2.5 py-1.5 text-center text-[12px] font-medium text-[color:var(--accent-strong)] transition hover:bg-[color:var(--surface-subtle)] disabled:opacity-50"
                     }
                   >
                     {p.label}
                   </button>
                 ))}
+                {upgradeFlow.error && <p className="px-1.5 pt-1 text-[11px] leading-snug text-[color:var(--error)]">{upgradeFlow.error}</p>}
               </div>
             )}
 
@@ -195,6 +200,9 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
           </div>
         </>
       )}
+
+      {/* Upgrade breakdown modal — rendered outside the dropdown so it survives close. */}
+      <UpgradeConfirmModal flow={upgradeFlow} locale={loc} />
     </div>
   );
 }
