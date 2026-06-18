@@ -18,7 +18,7 @@ const aboutSchema = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://dockdocs.app/about/#org",
+      "@id": "https://dockdocs.app#org",
       name: "DockDocs",
       url: "https://dockdocs.app",
       description:
@@ -34,7 +34,7 @@ const aboutSchema = {
       name: "About DockDocs — Free Online PDF Tools",
       description:
         "DockDocs is a privacy-first AI document platform with 50+ PDF tools, AI chat, OCR, and document workflows.",
-      about: { "@id": "https://dockdocs.app/about/#org" },
+      about: { "@id": "https://dockdocs.app#org" },
       isPartOf: {
         "@type": "WebSite",
         name: "DockDocs",
