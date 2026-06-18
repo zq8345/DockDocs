@@ -154,7 +154,14 @@ export async function createBillingCheckoutSession(
   return payload.url;
 }
 
-export type UpgradeQuote = { newPriceCents: number; creditCents: number; finalCents: number };
+export type UpgradeQuote = {
+  currentPlan: string;
+  currentInterval: BillingInterval;
+  remainingDays: number;
+  newPriceCents: number;
+  creditCents: number;
+  finalCents: number;
+};
 
 // Read-only proration quote for the pre-upgrade breakdown ("new price − credit = you
 // pay"). All amounts are server-authoritative. No redirect / no side effects.
@@ -172,7 +179,17 @@ export async function getUpgradeQuote(
     body: JSON.stringify({ plan, interval }),
   });
   const payload = (await response.json().catch(() => null)) as
-    | { ok?: boolean; newPriceCents?: number; creditCents?: number; finalCents?: number; code?: string; message?: string }
+    | {
+        ok?: boolean;
+        currentPlan?: string;
+        currentInterval?: BillingInterval;
+        remainingDays?: number;
+        newPriceCents?: number;
+        creditCents?: number;
+        finalCents?: number;
+        code?: string;
+        message?: string;
+      }
     | null;
   if (!response.ok || !payload?.ok || typeof payload.finalCents !== "number") {
     throw new BillingError(payload?.message || "Couldn't compute the upgrade price.", {
@@ -181,6 +198,9 @@ export async function getUpgradeQuote(
     });
   }
   return {
+    currentPlan: payload.currentPlan ?? "",
+    currentInterval: (payload.currentInterval ?? "monthly") as BillingInterval,
+    remainingDays: payload.remainingDays ?? 0,
     newPriceCents: payload.newPriceCents ?? 0,
     creditCents: payload.creditCents ?? 0,
     finalCents: payload.finalCents,

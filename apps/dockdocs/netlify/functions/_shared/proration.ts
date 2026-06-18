@@ -8,6 +8,7 @@ export type UpgradeQuote =
       subId: string;
       currentPlan: string;
       currentInterval: BillingInterval;
+      remainingDays: number;
       newPriceCents: number;
       creditCents: number;
       finalCents: number;
@@ -62,13 +63,15 @@ export async function computeUpgradeQuote(
   if (!(Number.isFinite(startMs) && Number.isFinite(endMs) && endMs > startMs)) {
     return { ok: false, status: 409, code: "CANNOT_PRORATE", message: "Couldn't determine your current billing period — please manage billing instead." };
   }
-  const remainingFraction = Math.min(1, Math.max(0, (endMs - Date.now()) / (endMs - startMs)));
+  const now = Date.now();
+  const remainingFraction = Math.min(1, Math.max(0, (endMs - now) / (endMs - startMs)));
+  const remainingDays = Math.max(0, Math.ceil((endMs - now) / 86_400_000));
   let creditCents = Math.round(oldPriceCents * remainingFraction);
   // Never negative, never ≥ the new price (leave ≥1 cent to charge).
   creditCents = Math.max(0, Math.min(creditCents, newPriceCents - 1));
   const finalCents = newPriceCents - creditCents;
 
-  return { ok: true, subId, currentPlan: current.plan, currentInterval: curInterval, newPriceCents, creditCents, finalCents };
+  return { ok: true, subId, currentPlan: current.plan, currentInterval: curInterval, remainingDays, newPriceCents, creditCents, finalCents };
 }
 
 function strField(value: unknown): string | undefined {

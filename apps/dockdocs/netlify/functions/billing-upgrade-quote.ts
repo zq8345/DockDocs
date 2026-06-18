@@ -39,6 +39,9 @@ export default async (req: Request, _ctx: Context) => {
 
   return json({
     ok: true,
+    currentPlan: quote.currentPlan,
+    currentInterval: quote.currentInterval,
+    remainingDays: quote.remainingDays,
     newPriceCents: quote.newPriceCents,
     creditCents: quote.creditCents,
     finalCents: quote.finalCents,

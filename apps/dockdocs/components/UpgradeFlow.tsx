@@ -82,57 +82,133 @@ export function useUpgradeFlow(locale: MembershipLocale): UpgradeFlow {
   };
 }
 
+function intervalLabel(interval: string, locale: MembershipLocale): string {
+  if (interval === "lifetime") return locale === "zh" ? "终身" : locale === "es" ? "De por vida" : locale === "pt" ? "Vitalício" : locale === "fr" ? "À vie" : "Lifetime";
+  if (interval === "annual") return locale === "zh" ? "年付" : locale === "es" ? "Anual" : locale === "pt" ? "Anual" : locale === "fr" ? "Annuel" : "Yearly";
+  return locale === "zh" ? "月付" : locale === "es" ? "Mensual" : locale === "pt" ? "Mensal" : locale === "fr" ? "Mensuel" : "Monthly";
+}
+
+// Headline benefits per (target) tier — shown when upgrading to a higher tier.
+const PRO_BENEFITS: Record<MembershipLocale, string[]> = {
+  en: ["Contract risk review", "Batch workflow automation", "API access", "Team workspace"],
+  zh: ["合同风险审查", "批量工作流自动化", "API 接入", "团队工作区"],
+  es: ["Revisión de riesgos de contratos", "Automatización de flujos por lotes", "Acceso a la API", "Espacio de equipo"],
+  pt: ["Revisão de riscos de contratos", "Automação de fluxos em lote", "Acesso à API", "Espaço de equipe"],
+  fr: ["Analyse des risques de contrats", "Automatisation des flux par lots", "Accès API", "Espace d'équipe"],
+};
+
 // The breakdown confirmation modal — "new price − unused credit = you pay" — shown
 // before the redirect, so the credit is always visible (the 可溯源/honest promise).
 export function UpgradeConfirmModal({ flow, locale }: { flow: UpgradeFlow; locale: MembershipLocale }) {
   const c = flow.confirm;
   if (!c) return null;
   const q = c.quote;
+  const tt = (en: string, zh: string, es: string, pt: string, fr: string) =>
+    locale === "zh" ? zh : locale === "es" ? es : locale === "pt" ? pt : locale === "fr" ? fr : en;
   const money = (cents: number) => `$${(cents / 100).toFixed(2)}`;
-  const planName = c.plan === "PLUS" ? "Plus" : "Pro";
-  const ivLabel =
-    c.interval === "lifetime"
-      ? (locale === "zh" ? "终身" : locale === "es" ? "De por vida" : locale === "pt" ? "Vitalício" : locale === "fr" ? "À vie" : "Lifetime")
-      : c.interval === "annual"
-        ? (locale === "zh" ? "年付" : locale === "es" ? "Anual" : locale === "pt" ? "Anual" : locale === "fr" ? "Annuel" : "Yearly")
-        : (locale === "zh" ? "月付" : locale === "es" ? "Mensual" : locale === "pt" ? "Mensal" : locale === "fr" ? "Mensuel" : "Monthly");
+  const targetName = c.plan === "PLUS" ? "Plus" : "Pro";
+  const curName = q.currentPlan === "PRO" ? "Pro" : q.currentPlan === "PLUS" ? "Plus" : q.currentPlan;
+  const isTierUp = c.plan === "PRO" && q.currentPlan === "PLUS";
+
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4" onClick={() => !flow.loading && flow.dismiss()}>
-      <div className="w-full max-w-sm rounded-2xl border border-[color:var(--line)] bg-[color:var(--background)] p-6 shadow-[0_24px_64px_rgba(0,0,0,0.5)]" onClick={(e) => e.stopPropagation()}>
-        <p className="text-[15px] font-semibold">
-          {locale === "zh" ? "确认升级" : locale === "es" ? "Confirmar mejora" : locale === "pt" ? "Confirmar upgrade" : locale === "fr" ? "Confirmer la mise à niveau" : "Confirm upgrade"}
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+      onClick={() => !flow.loading && flow.dismiss()}
+    >
+      <div
+        className="w-full max-w-lg rounded-2xl border border-[color:var(--line-strong)] bg-[color:var(--surface-raised)] p-7 shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <p className="text-[18px] font-semibold tracking-[-0.01em]">
+          {tt("Confirm your upgrade", "确认升级", "Confirmar tu mejora", "Confirmar seu upgrade", "Confirmer votre mise à niveau")}
         </p>
-        <div className="mt-4 space-y-2 text-[14px]">
+
+        {/* Breakdown — new price − unused credit = you pay */}
+        <div className="mt-5 rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-[14px]">
           <div className="flex items-center justify-between">
-            <span className="text-[color:var(--muted)]">{`${planName} · ${ivLabel}`}</span>
+            <span className="text-[color:var(--muted)]">{`${targetName} · ${intervalLabel(c.interval, locale)}`}</span>
             <span>{money(q.newPriceCents)}</span>
           </div>
           {q.creditCents > 0 && (
-            <div className="flex items-center justify-between text-[color:var(--accent-strong)]">
-              <span>{locale === "zh" ? "未用价值（抵扣）" : locale === "es" ? "Valor no usado (crédito)" : locale === "pt" ? "Valor não usado (crédito)" : locale === "fr" ? "Valeur non utilisée (crédit)" : "Unused value (credit)"}</span>
-              <span>{`−${money(q.creditCents)}`}</span>
+            <div className="mt-2">
+              <div className="flex items-center justify-between text-[color:var(--accent-strong)]">
+                <span>{tt("Unused value (credit)", "未用价值（抵扣）", "Valor no usado (crédito)", "Valor não usado (crédito)", "Valeur non utilisée (crédit)")}</span>
+                <span>{`−${money(q.creditCents)}`}</span>
+              </div>
+              <p className="mt-1 text-[11px] text-[color:var(--faint)]">
+                {tt(
+                  `From your ${curName} (${intervalLabel(q.currentInterval, locale)}) — ${q.remainingDays} unused day${q.remainingDays === 1 ? "" : "s"} credited`,
+                  `来自你的 ${curName}·${intervalLabel(q.currentInterval, locale)} — 剩余 ${q.remainingDays} 天未用已折抵`,
+                  `De tu ${curName} (${intervalLabel(q.currentInterval, locale)}) — ${q.remainingDays} día(s) sin usar acreditados`,
+                  `Do seu ${curName} (${intervalLabel(q.currentInterval, locale)}) — ${q.remainingDays} dia(s) não usado(s) creditados`,
+                  `De votre ${curName} (${intervalLabel(q.currentInterval, locale)}) — ${q.remainingDays} jour(s) non utilisé(s) crédités`,
+                )}
+              </p>
             </div>
           )}
-          <div className="flex items-center justify-between border-t border-[color:var(--line)] pt-2 text-[15px] font-semibold">
-            <span>{locale === "zh" ? "现在支付" : locale === "es" ? "Pagas ahora" : locale === "pt" ? "Você paga agora" : locale === "fr" ? "Vous payez" : "You pay now"}</span>
-            <span>{money(q.finalCents)}</span>
+          <div className="mt-3 flex items-center justify-between border-t border-[color:var(--line)] pt-3">
+            <span className="text-[15px] font-semibold">{tt("You pay now", "现在支付", "Pagas ahora", "Você paga agora", "Vous payez")}</span>
+            <span className="text-[22px] font-semibold tracking-[-0.01em]">{money(q.finalCents)}</span>
           </div>
         </div>
-        <p className="mt-3 text-[11px] leading-5 text-[color:var(--faint)]">
-          {locale === "zh" ? "升级立即生效；旧套餐当期未用部分已折抵，绝不重复收费。"
-            : locale === "es" ? "La mejora es inmediata; el tiempo no usado de tu plan actual se acredita — sin cobros duplicados."
-            : locale === "pt" ? "O upgrade é imediato; o tempo não usado do seu plano atual é creditado — sem cobranças duplicadas."
-            : locale === "fr" ? "La mise à niveau est immédiate ; le temps non utilisé de votre forfait actuel est crédité — aucun double prélèvement."
-            : "Upgrade is immediate; the unused time on your current plan is credited — never double-charged."}
+
+        {/* What you unlock (tier upgrade) — or the value of the term change */}
+        {isTierUp ? (
+          <div className="mt-5">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">
+              {tt("You'll unlock", "升级后解锁", "Desbloquearás", "Você desbloqueia", "Vous débloquez")}
+            </p>
+            <ul className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {PRO_BENEFITS[locale].map((b) => (
+                <li key={b} className="flex items-start gap-2 text-[13px] text-[color:var(--foreground)]">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0 text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : c.interval === "lifetime" ? (
+          <p className="mt-5 text-[13px] text-[color:var(--accent-strong)]">
+            {tt("Pay once — yours forever, no more renewals.", "一次买断 — 永久使用，不再续费。", "Pago único — tuyo para siempre, sin renovaciones.", "Pague uma vez — seu para sempre, sem renovações.", "Paiement unique — à vous pour toujours, sans renouvellement.")}
+          </p>
+        ) : (
+          <p className="mt-5 text-[13px] text-[color:var(--accent-strong)]">
+            {tt("Switch to yearly and save ~40% vs monthly.", "切到年付，相比月付省约 40%。", "Cambia a anual y ahorra ~40% frente al mensual.", "Mude para anual e economize ~40% vs mensal.", "Passez à l'annuel et économisez ~40 % vs mensuel.")}
+          </p>
+        )}
+
+        {/* Trust row */}
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-[color:var(--muted)]">
+          {[
+            tt("7-day refund", "7天无理由退款", "Reembolso 7 días", "Reembolso em 7 dias", "Remboursement 7 jours"),
+            tt("Cancel anytime", "随时取消", "Cancela cuando quieras", "Cancele quando quiser", "Annulez à tout moment"),
+            tt("Secure checkout by Creem", "Creem 安全托管", "Pago seguro con Creem", "Pagamento seguro Creem", "Paiement sécurisé par Creem"),
+          ].map((label) => (
+            <span key={label} className="flex items-center gap-1.5">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              {label}
+            </span>
+          ))}
+        </div>
+
+        <p className="mt-4 text-[11px] leading-5 text-[color:var(--faint)]">
+          {tt(
+            "Upgrade is immediate; the unused time on your current plan is credited — never double-charged.",
+            "升级立即生效；旧套餐当期未用部分已折抵，绝不重复收费。",
+            "La mejora es inmediata; el tiempo no usado de tu plan actual se acredita — sin cobros duplicados.",
+            "O upgrade é imediato; o tempo não usado do seu plano atual é creditado — sem cobranças duplicadas.",
+            "La mise à niveau est immédiate ; le temps non utilisé de votre forfait actuel est crédité — aucun double prélèvement.",
+          )}
         </p>
-        <div className="mt-5 flex gap-2">
-          <button type="button" onClick={flow.dismiss} disabled={flow.loading} className="flex-1 rounded-full border border-[color:var(--line-strong)] px-4 py-2.5 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)] disabled:opacity-50">
-            {locale === "zh" ? "取消" : locale === "es" ? "Cancelar" : locale === "pt" ? "Cancelar" : locale === "fr" ? "Annuler" : "Cancel"}
+
+        <div className="mt-6 flex gap-3">
+          <button type="button" onClick={flow.dismiss} disabled={flow.loading} className="flex-1 rounded-full border border-[color:var(--line-strong)] px-4 py-3 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)] disabled:opacity-50">
+            {tt("Cancel", "取消", "Cancelar", "Cancelar", "Annuler")}
           </button>
-          <button type="button" onClick={flow.confirmUpgrade} disabled={flow.loading} className="flex-1 rounded-full bg-[color:var(--accent)] px-4 py-2.5 text-[13px] font-semibold text-[color:var(--on-accent)] transition hover:bg-[color:var(--accent-hover)] disabled:opacity-50">
+          <button type="button" onClick={flow.confirmUpgrade} disabled={flow.loading} className="flex-[1.6] rounded-full bg-[color:var(--accent)] px-4 py-3 text-[14px] font-semibold text-[color:var(--on-accent)] transition hover:bg-[color:var(--accent-hover)] disabled:opacity-50">
             {flow.loading
-              ? (locale === "zh" ? "跳转中…" : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : "Redirecting…")
-              : (locale === "zh" ? "确认并支付" : locale === "es" ? "Confirmar y pagar" : locale === "pt" ? "Confirmar e pagar" : locale === "fr" ? "Confirmer et payer" : "Confirm & pay")}
+              ? tt("Redirecting…", "跳转中…", "Redirigiendo…", "Redirecionando…", "Redirection…")
+              : `${tt("Confirm & pay", "确认并支付", "Confirmar y pagar", "Confirmar e pagar", "Confirmer et payer")} ${money(q.finalCents)}`}
           </button>
         </div>
       </div>
