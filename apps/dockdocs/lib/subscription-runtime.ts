@@ -154,6 +154,39 @@ export async function createBillingCheckoutSession(
   return payload.url;
 }
 
+export type UpgradeQuote = { newPriceCents: number; creditCents: number; finalCents: number };
+
+// Read-only proration quote for the pre-upgrade breakdown ("new price − credit = you
+// pay"). All amounts are server-authoritative. No redirect / no side effects.
+export async function getUpgradeQuote(
+  plan: PaidSubscriptionPlan,
+  interval: BillingInterval,
+): Promise<UpgradeQuote> {
+  if (!isPaidSubscriptionPlan(plan)) {
+    throw new Error("Choose Plus or Pro.");
+  }
+  const auth = await authHeader();
+  const response = await fetch("/api/billing/upgrade-quote", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...auth },
+    body: JSON.stringify({ plan, interval }),
+  });
+  const payload = (await response.json().catch(() => null)) as
+    | { ok?: boolean; newPriceCents?: number; creditCents?: number; finalCents?: number; code?: string; message?: string }
+    | null;
+  if (!response.ok || !payload?.ok || typeof payload.finalCents !== "number") {
+    throw new BillingError(payload?.message || "Couldn't compute the upgrade price.", {
+      code: payload?.code,
+      status: response.status,
+    });
+  }
+  return {
+    newPriceCents: payload.newPriceCents ?? 0,
+    creditCents: payload.creditCents ?? 0,
+    finalCents: payload.finalCents,
+  };
+}
+
 // Start a proration UPGRADE checkout for a user who already has a recurring sub.
 // The server computes the unused-value credit, mints a one-time discount, and returns
 // a checkout URL; the browser redirects so the user pays only the difference. (Covers
