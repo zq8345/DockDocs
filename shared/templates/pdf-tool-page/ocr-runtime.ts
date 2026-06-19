@@ -2,12 +2,40 @@ import type { PdfRuntimeArtifact, PdfRuntimeProgress } from "./pdf-runtime";
 
 type OcrLanguage = "eng" | "chi_sim";
 
+type OcrLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+
+// Full 6-locale string picker; falls back to English for any untranslated locale.
+function tr(
+  locale: OcrLocale,
+  en: string,
+  zh: string,
+  es: string,
+  pt: string,
+  fr: string,
+  ja: string,
+): string {
+  switch (locale) {
+    case "zh":
+      return zh;
+    case "es":
+      return es;
+    case "pt":
+      return pt;
+    case "fr":
+      return fr;
+    case "ja":
+      return ja;
+    default:
+      return en;
+  }
+}
+
 type OcrRuntimeInput = {
   file: File;
   outputFileName: string;
   pageRanges: string;
   language: OcrLanguage;
-  locale: "en" | "zh" | "es" | "pt" | "fr";
+  locale: OcrLocale;
   signal?: AbortSignal;
   onProgress?: (progress: PdfRuntimeProgress) => void;
 };
@@ -74,13 +102,19 @@ export async function runOcrPdfFirstPage({
 
   if (file.size > maxOcrPdfSize) {
     throw new Error(
-      locale === "zh"
-        ? "OCR 当前支持 25 MB 以下的 PDF。请先拆分或压缩文件后重试。"
-        : "OCR currently supports PDFs up to 25 MB. Split or compress the file and try again.",
+      tr(
+        locale,
+        "OCR currently supports PDFs up to 25 MB. Split or compress the file and try again.",
+        "OCR 当前支持 25 MB 以下的 PDF。请先拆分或压缩文件后重试。",
+        "El OCR admite actualmente PDF de hasta 25 MB. Divide o comprime el archivo e inténtalo de nuevo.",
+        "O OCR atualmente suporta PDFs de até 25 MB. Divida ou comprima o arquivo e tente novamente.",
+        "L'OCR prend actuellement en charge les PDF jusqu'à 25 Mo. Divisez ou compressez le fichier, puis réessayez.",
+        "OCR は現在 25 MB までの PDF に対応しています。ファイルを分割または圧縮して再試行してください。",
+      ),
     );
   }
 
-  emitProgress(onProgress, 4, 0, locale === "zh" ? "正在加载 PDF..." : "Loading PDF...");
+  emitProgress(onProgress, 4, 0, tr(locale, "Loading PDF...", "正在加载 PDF...", "Cargando PDF...", "Carregando PDF...", "Chargement du PDF...", "PDF を読み込み中..."));
   const pdf = await loadPdfDocument(file, signal);
 
   try {
@@ -89,9 +123,15 @@ export async function runOcrPdfFirstPage({
       onProgress,
       16,
       0,
-      locale === "zh"
-        ? `已选择 ${pages.length} 页，正在加载 OCR 引擎...`
-        : `${pages.length} page${pages.length === 1 ? "" : "s"} selected. Loading OCR worker...`,
+      tr(
+        locale,
+        `${pages.length} page${pages.length === 1 ? "" : "s"} selected. Loading OCR worker...`,
+        `已选择 ${pages.length} 页，正在加载 OCR 引擎...`,
+        `${pages.length} página${pages.length === 1 ? "" : "s"} seleccionada${pages.length === 1 ? "" : "s"}. Cargando el motor OCR...`,
+        `${pages.length} página${pages.length === 1 ? "" : "s"} selecionada${pages.length === 1 ? "" : "s"}. Carregando o mecanismo OCR...`,
+        `${pages.length} page${pages.length === 1 ? "" : "s"} sélectionnée${pages.length === 1 ? "" : "s"}. Chargement du moteur OCR...`,
+        `${pages.length} ページを選択しました。OCR エンジンを読み込み中...`,
+      ),
     );
 
     const worker = await createOcrWorker(language, signal, (progress) => {
@@ -99,9 +139,15 @@ export async function runOcrPdfFirstPage({
         onProgress,
         16 + progress * 10,
         1,
-        locale === "zh"
-          ? `正在加载 ${languageLabels[language]} OCR 模型...`
-          : `Loading ${languageLabels[language]} OCR model...`,
+        tr(
+          locale,
+          `Loading ${languageLabels[language]} OCR model...`,
+          `正在加载 ${languageLabels[language]} OCR 模型...`,
+          `Cargando el modelo OCR de ${languageLabels[language]}...`,
+          `Carregando o modelo OCR de ${languageLabels[language]}...`,
+          `Chargement du modèle OCR ${languageLabels[language]}...`,
+          `${languageLabels[language]} の OCR モデルを読み込み中...`,
+        ),
       );
     });
 
@@ -123,9 +169,15 @@ export async function runOcrPdfFirstPage({
             onProgress,
             pageProgressBase + progress * (pageProgressSize * 0.28),
             1,
-            locale === "zh"
-              ? `正在渲染第 ${pageNumber} 页...`
-              : `Rendering page ${pageNumber}...`,
+            tr(
+              locale,
+              `Rendering page ${pageNumber}...`,
+              `正在渲染第 ${pageNumber} 页...`,
+              `Renderizando la página ${pageNumber}...`,
+              `Renderizando a página ${pageNumber}...`,
+              `Rendu de la page ${pageNumber}...`,
+              `${pageNumber} ページ目をレンダリング中...`,
+            ),
           );
         });
 
@@ -135,9 +187,15 @@ export async function runOcrPdfFirstPage({
               onProgress,
               pageProgressBase + pageProgressSize * 0.28 + progress * (pageProgressSize * 0.64),
               2,
-              locale === "zh"
-                ? `正在识别第 ${pageNumber} 页，共 ${pages.length} 页...`
-                : `Recognizing page ${pageNumber} of ${pages.length}...`,
+              tr(
+                locale,
+                `Recognizing page ${pageNumber} of ${pages.length}...`,
+                `正在识别第 ${pageNumber} 页，共 ${pages.length} 页...`,
+                `Reconociendo la página ${pageNumber} de ${pages.length}...`,
+                `Reconhecendo a página ${pageNumber} de ${pages.length}...`,
+                `Reconnaissance de la page ${pageNumber} sur ${pages.length}...`,
+                `${pages.length} ページ中 ${pageNumber} ページ目を認識中...`,
+              ),
             );
           });
 
@@ -154,9 +212,15 @@ export async function runOcrPdfFirstPage({
           onProgress,
           pageProgressBase + pageProgressSize * 0.95,
           2,
-          locale === "zh"
-            ? `第 ${pageNumber} 页识别完成。`
-            : `Page ${pageNumber} recognized.`,
+          tr(
+            locale,
+            `Page ${pageNumber} recognized.`,
+            `第 ${pageNumber} 页识别完成。`,
+            `Página ${pageNumber} reconocida.`,
+            `Página ${pageNumber} reconhecida.`,
+            `Page ${pageNumber} reconnue.`,
+            `${pageNumber} ページ目を認識しました。`,
+          ),
         );
       }
 
@@ -164,15 +228,21 @@ export async function runOcrPdfFirstPage({
       const text = combinePageText(recognizedPages);
       if (!text) {
         throw new Error(
-          locale === "zh"
-            ? "未能从所选页面识别出文字。请尝试更清晰的扫描件或图片型 PDF。"
-            : "No text was recognized on the selected pages. Try a clearer scan or image-based PDF.",
+          tr(
+            locale,
+            "No text was recognized on the selected pages. Try a clearer scan or image-based PDF.",
+            "未能从所选页面识别出文字。请尝试更清晰的扫描件或图片型 PDF。",
+            "No se reconoció texto en las páginas seleccionadas. Prueba con un escaneo más nítido o un PDF basado en imágenes.",
+            "Nenhum texto foi reconhecido nas páginas selecionadas. Tente uma digitalização mais nítida ou um PDF baseado em imagens.",
+            "Aucun texte n'a été reconnu sur les pages sélectionnées. Essayez un scan plus net ou un PDF basé sur des images.",
+            "選択したページから文字を認識できませんでした。より鮮明なスキャンまたは画像ベースの PDF をお試しください。",
+          ),
         );
       }
 
-      emitProgress(onProgress, 96, 3, locale === "zh" ? "正在合并文本..." : "Combining text...");
+      emitProgress(onProgress, 96, 3, tr(locale, "Combining text...", "正在合并文本...", "Combinando el texto...", "Combinando o texto...", "Combinaison du texte...", "テキストを結合中..."));
       const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-      emitProgress(onProgress, 100, 3, locale === "zh" ? "OCR 完成。" : "OCR complete.");
+      emitProgress(onProgress, 100, 3, tr(locale, "OCR complete.", "OCR 完成。", "OCR completado.", "OCR concluído.", "OCR terminé.", "OCR が完了しました。"));
 
       return {
         fileName: outputFileName,
@@ -312,9 +382,8 @@ async function recognizeCanvas(
 function parseOcrPageRanges(
   value: string,
   pageCount: number,
-  locale: "en" | "zh" | "es" | "pt" | "fr",
+  locale: OcrLocale,
 ) {
-  const zh = locale === "zh";
   const clean = value.trim() || "1";
   const pageNumbers: number[] = [];
 
@@ -325,15 +394,29 @@ function parseOcrPageRanges(
 
     if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start) {
       throw new Error(
-        zh ? `OCR 页面范围无效：${part}` : `Invalid OCR page range: ${part}`,
+        tr(
+          locale,
+          `Invalid OCR page range: ${part}`,
+          `OCR 页面范围无效：${part}`,
+          `Rango de páginas OCR no válido: ${part}`,
+          `Intervalo de páginas OCR inválido: ${part}`,
+          `Plage de pages OCR non valide : ${part}`,
+          `OCR ページ範囲が無効です: ${part}`,
+        ),
       );
     }
 
     if (end > pageCount) {
       throw new Error(
-        zh
-          ? `OCR 页面范围 ${part} 超出文档页数。当前 PDF 共 ${pageCount} 页。`
-          : `OCR page range ${part} is outside this PDF. The file has ${pageCount} pages.`,
+        tr(
+          locale,
+          `OCR page range ${part} is outside this PDF. The file has ${pageCount} pages.`,
+          `OCR 页面范围 ${part} 超出文档页数。当前 PDF 共 ${pageCount} 页。`,
+          `El rango de páginas OCR ${part} está fuera de este PDF. El archivo tiene ${pageCount} páginas.`,
+          `O intervalo de páginas OCR ${part} está fora deste PDF. O arquivo tem ${pageCount} páginas.`,
+          `La plage de pages OCR ${part} dépasse ce PDF. Le fichier compte ${pageCount} pages.`,
+          `OCR ページ範囲 ${part} はこの PDF の範囲外です。このファイルは ${pageCount} ページです。`,
+        ),
       );
     }
 
@@ -345,14 +428,20 @@ function parseOcrPageRanges(
   }
 
   if (!pageNumbers.length) {
-    throw new Error(zh ? "请输入 OCR 页面范围。" : "Enter an OCR page range.");
+    throw new Error(tr(locale, "Enter an OCR page range.", "请输入 OCR 页面范围。", "Introduce un rango de páginas OCR.", "Insira um intervalo de páginas OCR.", "Saisissez une plage de pages OCR.", "OCR ページ範囲を入力してください。"));
   }
 
   if (pageNumbers.length > maxOcrPages) {
     throw new Error(
-      zh
-        ? `OCR 当前一次最多处理 ${maxOcrPages} 页。请缩小页面范围。`
-        : `OCR currently processes up to ${maxOcrPages} pages at a time. Choose a smaller range.`,
+      tr(
+        locale,
+        `OCR currently processes up to ${maxOcrPages} pages at a time. Choose a smaller range.`,
+        `OCR 当前一次最多处理 ${maxOcrPages} 页。请缩小页面范围。`,
+        `El OCR procesa actualmente hasta ${maxOcrPages} páginas a la vez. Elige un rango más pequeño.`,
+        `O OCR processa atualmente até ${maxOcrPages} páginas por vez. Escolha um intervalo menor.`,
+        `L'OCR traite actuellement jusqu'à ${maxOcrPages} pages à la fois. Choisissez une plage plus petite.`,
+        `OCR は現在一度に最大 ${maxOcrPages} ページまで処理します。より小さい範囲を選択してください。`,
+      ),
     );
   }
 

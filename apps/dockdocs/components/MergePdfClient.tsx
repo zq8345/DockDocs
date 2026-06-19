@@ -230,7 +230,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
 
       {done && (
         <div className="mt-6">
-          <ToolBridge slug="merge-pdf" locale={locale === "ja" ? "en" : locale} useLocalePrefix={locale !== "en"} />
+          <ToolBridge slug="merge-pdf" locale={locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
 

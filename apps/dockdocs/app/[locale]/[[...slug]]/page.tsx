@@ -1497,7 +1497,7 @@ function LocalizedRuntimeTool({
 }
 
 function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
-  return <DashboardWorkspace locale={locale === "ja" ? "en" : locale} />;
+  return <DashboardWorkspace locale={locale === "ja" ? "en" : locale} />; // i18n-guard-allow: dashboard run-history workspace has no ja copy yet (authenticated, non-indexed); tracked follow-up
 }
 
 function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {

@@ -57,7 +57,7 @@ function FileThumb({ file, className = "h-12 w-10" }: { file: File; className?: 
 }
 
 // Password input with a show/hide eye toggle.
-function PasswordField({ value, onChange, placeholder, maxLength, zh }: { value: string; onChange: (v: string) => void; placeholder: string; maxLength: number; zh: boolean }) {
+function PasswordField({ value, onChange, placeholder, maxLength, locale }: { value: string; onChange: (v: string) => void; placeholder: string; maxLength: number; locale: TemplateLocale }) {
   const [show, setShow] = useState(false);
   return (
     <div className="relative mt-2">
@@ -72,7 +72,7 @@ function PasswordField({ value, onChange, placeholder, maxLength, zh }: { value:
       <button
         type="button"
         onClick={() => setShow((current) => !current)}
-        aria-label={show ? (zh ? "隐藏密码" : "Hide password") : (zh ? "显示密码" : "Show password")}
+        aria-label={show ? tr(locale, "Hide password", "隐藏密码", "Ocultar contraseña", "Ocultar senha", "Masquer le mot de passe", "パスワードを非表示") : tr(locale, "Show password", "显示密码", "Mostrar contraseña", "Mostrar senha", "Afficher le mot de passe", "パスワードを表示")}
         className="absolute right-1.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
       >
         {show ? (
@@ -111,6 +111,35 @@ export type WorkflowResult = {
 
 export type UploadedFile = { id: string; file: File };
 export type OcrLanguage = "eng" | "chi_sim";
+
+// Full 6-locale string picker, keyed off the real config.locale. Falls back to
+// English for any locale without a translation (never leaks zh-only/en-only UI).
+type TemplateLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+function tr(
+  locale: TemplateLocale | undefined,
+  en: string,
+  zh: string,
+  es: string,
+  pt: string,
+  fr: string,
+  ja: string,
+): string {
+  switch (locale) {
+    case "zh":
+      return zh;
+    case "es":
+      return es;
+    case "pt":
+      return pt;
+    case "fr":
+      return fr;
+    case "ja":
+      return ja;
+    default:
+      return en;
+  }
+}
+
 export const mb = 1024 * 1024;
 export const ocrSampleText =
   "Invoice total: $248.00\nDue date: May 31, 2026\nVendor: DockDocs sample scan\nStatus: Text extracted for review";
@@ -125,14 +154,21 @@ export function EmptyWorkflowState({
   config: PdfToolPageConfig;
   spec: WorkflowSpec;
 }) {
-  const zh = (config.locale ?? "en") === "zh";
+  const locale = (config.locale ?? "en") as TemplateLocale;
+  const max = formatBytes(spec.maxFileSize);
 
   return (
     <div className="mt-4 rounded-[var(--radius-lg)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-8 text-center">
       <p className="text-sm text-[color:var(--muted)]">
-        {zh
-          ? `接受 ${spec.acceptedLabel} · 单文件最大 ${formatBytes(spec.maxFileSize)}`
-          : `Accepts ${spec.acceptedLabel} · Max ${formatBytes(spec.maxFileSize)} per file`}
+        {tr(
+          locale,
+          `Accepts ${spec.acceptedLabel} · Max ${max} per file`,
+          `接受 ${spec.acceptedLabel} · 单文件最大 ${max}`,
+          `Acepta ${spec.acceptedLabel} · Máx. ${max} por archivo`,
+          `Aceita ${spec.acceptedLabel} · Máx. ${max} por arquivo`,
+          `Accepte ${spec.acceptedLabel} · Max ${max} par fichier`,
+          `${spec.acceptedLabel} に対応 · 1 ファイル最大 ${max}`,
+        )}
       </p>
     </div>
   );
@@ -172,7 +208,7 @@ export function ReadyWorkflowState({
   bare?: boolean;
   bigPreview?: boolean;
 }) {
-  const zh = (config.locale ?? "en") === "zh";
+  const locale = (config.locale ?? "en") as TemplateLocale;
   const reorderable = config.slug === "merge-pdf" || config.slug === "jpg-to-pdf" || config.slug === "png-to-pdf";
   const previewFile = files[0];
   const hasOptions = ["split-pdf", "ocr-pdf", "delete-page", "rotate-page", "reorder-pages", "add-page", "protect-pdf", "watermark-pdf", "unlock-pdf", "pdf-to-jpg", "pdf-to-png", "pdf-to-markdown", "pdf-to-text", "pdf-to-html", "compress-pdf"].includes(config.slug);
@@ -190,7 +226,7 @@ export function ReadyWorkflowState({
             <p className="max-w-[20rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{previewFile.file.name}</p>
             <p className="mt-0.5 text-xs text-[color:var(--muted)]">{formatBytes(previewFile.file.size)}</p>
           </div>
-          <button type="button" onClick={() => onRemoveFile(previewFile.id)} className="text-xs text-[color:var(--muted)] underline transition hover:text-[color:var(--foreground)]">{zh ? "移除" : "Remove"}</button>
+          <button type="button" onClick={() => onRemoveFile(previewFile.id)} className="text-xs text-[color:var(--muted)] underline transition hover:text-[color:var(--foreground)]">{tr(locale, "Remove", "移除", "Quitar", "Remover", "Retirer", "削除")}</button>
         </div>
       ) : (
       <ul className="space-y-2">
@@ -252,7 +288,9 @@ export function ReadyWorkflowState({
       {(config.slug === "split-pdf" || config.slug === "ocr-pdf") && (
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            {config.slug === "ocr-pdf" ? (zh ? "OCR 页面范围" : "OCR page ranges") : (zh ? "页面范围" : "Page ranges")}
+            {config.slug === "ocr-pdf"
+              ? tr(locale, "OCR page ranges", "OCR 页面范围", "Rangos de páginas OCR", "Intervalos de páginas OCR", "Plages de pages OCR", "OCR ページ範囲")
+              : tr(locale, "Page ranges", "页面范围", "Rangos de páginas", "Intervalos de páginas", "Plages de pages", "ページ範囲")}
           </span>
           <input
             value={pageRanges}
@@ -262,7 +300,7 @@ export function ReadyWorkflowState({
           />
           {config.slug === "ocr-pdf" && (
             <p className="mt-1.5 text-xs text-[color:var(--muted)]">
-              {zh ? "浏览器端 OCR 一次最多处理 3 页。" : "Browser-side OCR processes up to 3 pages at a time."}
+              {tr(locale, "Browser-side OCR processes up to 3 pages at a time.", "浏览器端 OCR 一次最多处理 3 页。", "El OCR en el navegador procesa hasta 3 páginas a la vez.", "O OCR no navegador processa até 3 páginas por vez.", "L'OCR côté navigateur traite jusqu'à 3 pages à la fois.", "ブラウザ側 OCR は一度に最大 3 ページまで処理します。")}
             </p>
           )}
         </label>
@@ -271,25 +309,25 @@ export function ReadyWorkflowState({
       {config.slug === "delete-page" && (
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            {zh ? "要删除的页面" : "Pages to delete"}
+            {tr(locale, "Pages to delete", "要删除的页面", "Páginas a eliminar", "Páginas a excluir", "Pages à supprimer", "削除するページ")}
           </span>
           <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder="1, 3, 5-7" className={inputCls} />
-          <p className="mt-1.5 text-xs text-[color:var(--muted)]">{zh ? "逗号分隔，支持范围，如 1, 3, 5-7" : "Comma-separated, ranges supported, e.g. 1, 3, 5-7"}</p>
+          <p className="mt-1.5 text-xs text-[color:var(--muted)]">{tr(locale, "Comma-separated, ranges supported, e.g. 1, 3, 5-7", "逗号分隔，支持范围，如 1, 3, 5-7", "Separadas por comas, se admiten rangos, p. ej. 1, 3, 5-7", "Separadas por vírgula, intervalos suportados, ex. 1, 3, 5-7", "Séparées par des virgules, plages prises en charge, ex. 1, 3, 5-7", "カンマ区切り、範囲も指定可能、例: 1, 3, 5-7")}</p>
         </label>
       )}
 
       {config.slug === "rotate-page" && (
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "要旋转的页面" : "Pages to rotate"}</span>
-            <input value={pageRanges.split(":")[0] || ""} onChange={(e) => { const a = pageRanges.split(":")[1] || "90"; onPageRangesChange(`${e.target.value}:${a}`); }} placeholder={zh ? "留空 = 全部" : "Blank = all"} className={inputCls} />
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "Pages to rotate", "要旋转的页面", "Páginas a rotar", "Páginas a girar", "Pages à pivoter", "回転するページ")}</span>
+            <input value={pageRanges.split(":")[0] || ""} onChange={(e) => { const a = pageRanges.split(":")[1] || "90"; onPageRangesChange(`${e.target.value}:${a}`); }} placeholder={tr(locale, "Blank = all", "留空 = 全部", "Vacío = todas", "Vazio = todas", "Vide = toutes", "空欄 = 全ページ")} className={inputCls} />
           </label>
           <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "旋转角度" : "Angle"}</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "Angle", "旋转角度", "Ángulo", "Ângulo", "Angle", "回転角度")}</span>
             <select value={pageRanges.split(":")[1] || "90"} onChange={(e) => { const p = pageRanges.split(":")[0] || ""; onPageRangesChange(`${p}:${e.target.value}`); }} className={inputCls}>
-              <option value="90">90° {zh ? "顺时针" : "CW"}</option>
+              <option value="90">90° {tr(locale, "CW", "顺时针", "horario", "horário", "sens horaire", "時計回り")}</option>
               <option value="180">180°</option>
-              <option value="270">270° {zh ? "顺时针" : "CW"}</option>
+              <option value="270">270° {tr(locale, "CW", "顺时针", "horario", "horário", "sens horaire", "時計回り")}</option>
             </select>
           </label>
         </div>
@@ -297,62 +335,62 @@ export function ReadyWorkflowState({
 
       {config.slug === "reorder-pages" && (
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "新页面顺序" : "New page order"}</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "New page order", "新页面顺序", "Nuevo orden de páginas", "Nova ordem das páginas", "Nouvel ordre des pages", "新しいページ順")}</span>
           <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder="3,1,2,4" className={inputCls} />
-          <p className="mt-1.5 text-xs text-[color:var(--muted)]">{zh ? "例如 3,1,2 = 第3页排第一" : "e.g. 3,1,2 puts page 3 first"}</p>
+          <p className="mt-1.5 text-xs text-[color:var(--muted)]">{tr(locale, "e.g. 3,1,2 puts page 3 first", "例如 3,1,2 = 第3页排第一", "p. ej. 3,1,2 coloca la página 3 primero", "ex. 3,1,2 coloca a página 3 em primeiro", "ex. 3,1,2 place la page 3 en premier", "例: 3,1,2 で 3 ページ目が先頭になります")}</p>
         </label>
       )}
 
       {config.slug === "add-page" && (
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "在第几页之后插入" : "Insert after page #"}</span>
-          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "0 = 插入到开头" : "0 = insert at start"} type="number" min="0" className={inputCls} />
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "Insert after page #", "在第几页之后插入", "Insertar después de la página n.º", "Inserir após a página n.º", "Insérer après la page n°", "指定ページの後に挿入")}</span>
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={tr(locale, "0 = insert at start", "0 = 插入到开头", "0 = insertar al inicio", "0 = inserir no início", "0 = insérer au début", "0 = 先頭に挿入")} type="number" min="0" className={inputCls} />
         </label>
       )}
 
       {config.slug === "protect-pdf" && (
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "设置密码" : "Set password"}</span>
-          <PasswordField value={pageRanges} onChange={onPageRangesChange} placeholder={zh ? "4–32 位：字母 / 数字 / _" : "4–32 chars: letters, digits, _"} maxLength={32} zh={zh} />
-          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{zh ? "打开 PDF 需要此密码，请记牢——忘了无法找回。" : "Required to open the PDF. Keep it safe — it cannot be recovered."}</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "Set password", "设置密码", "Establecer contraseña", "Definir senha", "Définir le mot de passe", "パスワードを設定")}</span>
+          <PasswordField value={pageRanges} onChange={onPageRangesChange} placeholder={tr(locale, "4–32 chars: letters, digits, _", "4–32 位：字母 / 数字 / _", "4–32 caracteres: letras, dígitos, _", "4–32 caracteres: letras, dígitos, _", "4–32 caractères : lettres, chiffres, _", "4〜32 文字: 英字 / 数字 / _")} maxLength={32} locale={locale} />
+          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{tr(locale, "Required to open the PDF. Keep it safe — it cannot be recovered.", "打开 PDF 需要此密码，请记牢——忘了无法找回。", "Necesaria para abrir el PDF. Guárdala bien: no se puede recuperar.", "Necessária para abrir o PDF. Guarde-a bem: não pode ser recuperada.", "Requis pour ouvrir le PDF. Conservez-le précieusement : il ne peut pas être récupéré.", "PDF を開くのに必要です。大切に保管してください。復元はできません。")}</span>
         </label>
       )}
 
       {config.slug === "watermark-pdf" && (
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "水印文字" : "Watermark text"}</span>
-          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "例如 CONFIDENTIAL、DRAFT" : "e.g. CONFIDENTIAL, DRAFT"} maxLength={40} className={inputCls} />
-          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{zh ? "斜向盖到每一页。暂支持拉丁字母 / 数字 / 符号。" : "Stamped diagonally on every page. Latin letters, digits & symbols for now."}</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "Watermark text", "水印文字", "Texto de marca de agua", "Texto da marca d'água", "Texte du filigrane", "透かしテキスト")}</span>
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={tr(locale, "e.g. CONFIDENTIAL, DRAFT", "例如 CONFIDENTIAL、DRAFT", "p. ej. CONFIDENTIAL, DRAFT", "ex. CONFIDENTIAL, DRAFT", "ex. CONFIDENTIAL, DRAFT", "例: CONFIDENTIAL、DRAFT")} maxLength={40} className={inputCls} />
+          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{tr(locale, "Stamped diagonally on every page. Latin letters, digits & symbols for now.", "斜向盖到每一页。暂支持拉丁字母 / 数字 / 符号。", "Se estampa en diagonal en cada página. Por ahora: letras latinas, dígitos y símbolos.", "Aplicado na diagonal em cada página. Por enquanto: letras latinas, dígitos e símbolos.", "Apposé en diagonale sur chaque page. Pour l'instant : lettres latines, chiffres et symboles.", "各ページに斜めに押印します。現在はラテン文字 / 数字 / 記号に対応。")}</span>
         </label>
       )}
 
       {config.slug === "unlock-pdf" && (
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "打开密码（可选）" : "Open password (optional)"}</span>
-          <PasswordField value={pageRanges} onChange={onPageRangesChange} placeholder={zh ? "仅当文件需要密码才能打开时填写" : "Only if the PDF requires a password to open"} maxLength={64} zh={zh} />
-          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{zh ? "无打开密码？留空直接点击，即可移除打印 / 复制 / 编辑限制。" : "No open password? Leave empty and click to remove printing / copying / editing restrictions."}</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "Open password (optional)", "打开密码（可选）", "Contraseña de apertura (opcional)", "Senha de abertura (opcional)", "Mot de passe d'ouverture (facultatif)", "開くためのパスワード（任意）")}</span>
+          <PasswordField value={pageRanges} onChange={onPageRangesChange} placeholder={tr(locale, "Only if the PDF requires a password to open", "仅当文件需要密码才能打开时填写", "Solo si el PDF requiere contraseña para abrirse", "Apenas se o PDF exigir senha para abrir", "Uniquement si le PDF requiert un mot de passe pour s'ouvrir", "PDF を開くのにパスワードが必要な場合のみ入力")} maxLength={64} locale={locale} />
+          <span className="mt-1 block text-[11px] text-[color:var(--faint)]">{tr(locale, "No open password? Leave empty and click to remove printing / copying / editing restrictions.", "无打开密码？留空直接点击，即可移除打印 / 复制 / 编辑限制。", "¿Sin contraseña de apertura? Déjalo vacío y haz clic para quitar las restricciones de impresión / copia / edición.", "Sem senha de abertura? Deixe em branco e clique para remover as restrições de impressão / cópia / edição.", "Pas de mot de passe d'ouverture ? Laissez vide et cliquez pour supprimer les restrictions d'impression / copie / modification.", "開くためのパスワードがない場合は空欄のままクリックすると、印刷 / コピー / 編集の制限を解除できます。")}</span>
         </label>
       )}
 
       {(config.slug === "pdf-to-jpg" || config.slug === "pdf-to-png" || config.slug === "pdf-to-markdown" || config.slug === "pdf-to-text" || config.slug === "pdf-to-html") && (
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "页面范围（可选）" : "Page range (optional)"}</span>
-          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={zh ? "留空 = 全部页面" : "Blank = all pages"} className={inputCls} />
+          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "Page range (optional)", "页面范围（可选）", "Rango de páginas (opcional)", "Intervalo de páginas (opcional)", "Plage de pages (facultatif)", "ページ範囲（任意）")}</span>
+          <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={tr(locale, "Blank = all pages", "留空 = 全部页面", "Vacío = todas las páginas", "Vazio = todas as páginas", "Vide = toutes les pages", "空欄 = 全ページ")} className={inputCls} />
         </label>
       )}
 
       {config.slug === "ocr-pdf" && (
         <>
           <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{zh ? "OCR 语言" : "OCR language"}</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "OCR language", "OCR 语言", "Idioma de OCR", "Idioma do OCR", "Langue OCR", "OCR 言語")}</span>
             <select value={ocrLanguage} onChange={(e) => onOcrLanguageChange(e.target.value as OcrLanguage)} className={inputCls}>
-              <option value="eng">{zh ? "英语" : "English"}</option>
-              <option value="chi_sim">{zh ? "中文（简体）" : "Chinese (Simplified)"}</option>
+              <option value="eng">{tr(locale, "English", "英语", "Inglés", "Inglês", "Anglais", "英語")}</option>
+              <option value="chi_sim">{tr(locale, "Chinese (Simplified)", "中文（简体）", "Chino (simplificado)", "Chinês (simplificado)", "Chinois (simplifié)", "中国語（簡体字）")}</option>
             </select>
           </label>
           <label className="flex cursor-pointer items-start gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]">
             <input type="checkbox" checked={ocrConfirmed} onChange={(e) => onOcrConfirmedChange(e.target.checked)} className="mt-0.5 h-4 w-4 accent-[color:var(--accent)]" />
-            <span>{zh ? "我确认这是扫描件或图片型 PDF，需要 OCR 提取文字。" : "I confirm this is a scanned or image-based PDF that needs OCR text extraction."}</span>
+            <span>{tr(locale, "I confirm this is a scanned or image-based PDF that needs OCR text extraction.", "我确认这是扫描件或图片型 PDF，需要 OCR 提取文字。", "Confirmo que es un PDF escaneado o basado en imágenes que necesita extracción de texto por OCR.", "Confirmo que este é um PDF digitalizado ou baseado em imagens que precisa de extração de texto por OCR.", "Je confirme qu'il s'agit d'un PDF numérisé ou basé sur des images nécessitant une extraction de texte par OCR.", "これがスキャンまたは画像ベースの PDF で、OCR によるテキスト抽出が必要であることを確認します。")}</span>
           </label>
         </>
       )}
@@ -360,13 +398,13 @@ export function ReadyWorkflowState({
       {config.slug === "compress-pdf" && (
         <div className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            {zh ? "压缩级别" : "Compression level"}
+            {tr(locale, "Compression level", "压缩级别", "Nivel de compresión", "Nível de compressão", "Niveau de compression", "圧縮レベル")}
           </span>
           <div className="mt-2 grid grid-cols-3 gap-2">
             {[
-              { key: "low", en: "Light", zh: "轻度", enDesc: "Best quality", zhDesc: "质量优先" },
-              { key: "recommended", en: "Recommended", zh: "推荐", enDesc: "Balanced", zhDesc: "均衡" },
-              { key: "high", en: "Strong", zh: "高压缩", enDesc: "Smallest size", zhDesc: "体积最小" },
+              { key: "low", label: ["Light", "轻度", "Ligera", "Leve", "Légère", "弱"], desc: ["Best quality", "质量优先", "Mejor calidad", "Melhor qualidade", "Meilleure qualité", "品質優先"] },
+              { key: "recommended", label: ["Recommended", "推荐", "Recomendada", "Recomendada", "Recommandé", "推奨"], desc: ["Balanced", "均衡", "Equilibrada", "Equilibrada", "Équilibré", "バランス"] },
+              { key: "high", label: ["Strong", "高压缩", "Fuerte", "Forte", "Forte", "強"], desc: ["Smallest size", "体积最小", "Tamaño más pequeño", "Menor tamanho", "Taille minimale", "最小サイズ"] },
             ].map((opt) => {
               const current = ["low", "recommended", "high"].includes(pageRanges) ? pageRanges : "recommended";
               const active = current === opt.key;
@@ -382,19 +420,17 @@ export function ReadyWorkflowState({
                   }`}
                 >
                   <span className={`block text-sm font-semibold ${active ? "text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)]"}`}>
-                    {zh ? opt.zh : opt.en}
+                    {tr(locale, opt.label[0], opt.label[1], opt.label[2], opt.label[3], opt.label[4], opt.label[5])}
                   </span>
                   <span className="mt-0.5 block text-[11px] text-[color:var(--muted)]">
-                    {zh ? opt.zhDesc : opt.enDesc}
+                    {tr(locale, opt.desc[0], opt.desc[1], opt.desc[2], opt.desc[3], opt.desc[4], opt.desc[5])}
                   </span>
                 </button>
               );
             })}
           </div>
           <p className="mt-2 text-xs text-[color:var(--muted)]">
-            {zh
-              ? "提示：压缩会将页面重绘为图像，文字将不可再选中。"
-              : "Note: compression rasterizes pages to images; text will no longer be selectable."}
+            {tr(locale, "Note: compression rasterizes pages to images; text will no longer be selectable.", "提示：压缩会将页面重绘为图像，文字将不可再选中。", "Nota: la compresión rasteriza las páginas a imágenes; el texto ya no se podrá seleccionar.", "Nota: a compressão rasteriza as páginas em imagens; o texto não poderá mais ser selecionado.", "Remarque : la compression convertit les pages en images ; le texte ne sera plus sélectionnable.", "注意: 圧縮するとページが画像化され、テキストは選択できなくなります。")}
           </p>
         </div>
       )}
@@ -497,7 +533,7 @@ export function WorkflowResultState({
   onReset: () => void;
   bare?: boolean;
 }) {
-  const zh = (config.locale ?? "en") === "zh";
+  const locale = (config.locale ?? "en") as TemplateLocale;
 
   return (
     <div className={bare ? "overflow-hidden" : "mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)]"}>
@@ -533,7 +569,7 @@ export function WorkflowResultState({
       <div className="flex flex-col gap-2 px-5 py-4 sm:flex-row">
         {onCopy ? (
           <PrimaryButton onClick={onCopy} className="flex-1">
-            {copied ? (zh ? "已复制" : "Copied ✓") : primaryLabel}
+            {copied ? tr(locale, "Copied ✓", "已复制", "Copiado ✓", "Copiado ✓", "Copié ✓", "コピーしました ✓") : primaryLabel}
           </PrimaryButton>
         ) : (
           <PrimaryButton onClick={onPrimary} className="flex-1">
@@ -543,7 +579,7 @@ export function WorkflowResultState({
         {secondaryLabel && onSecondary ? (
           <OutlineButton onClick={onSecondary} className="flex-1">{secondaryLabel}</OutlineButton>
         ) : null}
-        <OutlineButton onClick={onReset}>{zh ? "重新开始" : "Start over"}</OutlineButton>
+        <OutlineButton onClick={onReset}>{tr(locale, "Start over", "重新开始", "Empezar de nuevo", "Recomeçar", "Recommencer", "やり直す")}</OutlineButton>
       </div>
 
       {/* Post-result conversion bridge — honest next step; nothing renders if none */}
@@ -604,24 +640,23 @@ export function WorkflowErrorState({
   message: string;
   onRetry: () => void;
   onReset: () => void;
-  locale: "en" | "zh" | "es";
+  locale: "en" | "zh" | "es" | "pt" | "fr" | "ja";
   bare?: boolean;
 }) {
-  const zh = locale === "zh";
   return (
     <div className={bare ? "" : "mt-4 rounded-[var(--radius-lg)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-5"}>
       <div className="flex items-start gap-3">
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--error)] text-sm text-white">!</span>
         <div>
           <p className="text-sm font-semibold text-[color:var(--foreground)]">
-            {zh ? "无法继续" : "Cannot continue"}
+            {tr(locale, "Cannot continue", "无法继续", "No se puede continuar", "Não é possível continuar", "Impossible de continuer", "続行できません")}
           </p>
           <p className="mt-1 text-sm leading-6 text-[color:var(--error)]">{message}</p>
         </div>
       </div>
       <div className="mt-4 flex gap-2">
-        <OutlineButton onClick={onRetry} className="flex-1">{zh ? "返回检查" : "Review"}</OutlineButton>
-        <OutlineButton onClick={onReset} className="flex-1">{zh ? "重新开始" : "Start over"}</OutlineButton>
+        <OutlineButton onClick={onRetry} className="flex-1">{tr(locale, "Review", "返回检查", "Revisar", "Revisar", "Vérifier", "確認に戻る")}</OutlineButton>
+        <OutlineButton onClick={onReset} className="flex-1">{tr(locale, "Start over", "重新开始", "Empezar de nuevo", "Recomeçar", "Recommencer", "やり直す")}</OutlineButton>
       </div>
     </div>
   );

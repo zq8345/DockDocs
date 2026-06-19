@@ -262,7 +262,7 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
       )}
       {done && (
         <div className="mt-6">
-          <ToolBridge slug="reorder-pages" locale={locale === "ja" ? "en" : locale} useLocalePrefix={locale !== "en"} />
+          <ToolBridge slug="reorder-pages" locale={locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
       <ToolFaq tool="reorder-pages" locale={locale} />
