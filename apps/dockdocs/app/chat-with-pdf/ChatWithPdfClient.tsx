@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
+import { toHant } from "@/lib/zh-hant";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { authHeader } from "@/lib/supabase";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
@@ -25,7 +26,7 @@ const maxPages = 12;
 const maxCharacters = 40000;
 const maxFileBytes = 25 * 1024 * 1024;
 
-export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | "es" | "pt" | "fr" | "ja" }) {
+export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
   const copy = getRuntimeCopy(locale).chat;
   const [fileName, setFileName] = useState("");
   const [documentText, setDocumentText] = useState("");
@@ -362,6 +363,8 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
                         </svg>
                         {locale === "zh"
                           ? `${message.citations.length} 处已与原文核对`
+                          : locale === "zh-Hant"
+                          ? toHant(`${message.citations.length} 处已与原文核对`)
                           : locale === "ja"
                           ? `${message.citations.length} 件を出典と照合済み`
                           : locale === "es"
@@ -399,7 +402,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
           </div>
 
           {limitHit !== null ? (
-            <UpgradePrompt locale={locale === "zh" ? "zh" : locale === "es" ? "es" : locale === "pt" ? "pt" : "en"} limit={limitHit} />
+            <UpgradePrompt locale={locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : locale === "es" ? "es" : locale === "pt" ? "pt" : "en"} limit={limitHit} />
           ) : null}
 
           {/* Input */}

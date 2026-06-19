@@ -96,6 +96,7 @@ import {
   type ToolSlug,
 } from "@/lib/i18n";
 import { getRuntimeCopy } from "@/lib/copy";
+import { toHant, deepHant } from "@/lib/zh-hant";
 import { homeSchema, aboutSchema, pricingSchema, webPageSchema } from "@/lib/page-schema";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { isJaNativeRoute } from "@/shared/seo/routes";
@@ -209,6 +210,11 @@ export async function generateMetadata(args: {
       return { ...meta, robots: { index: false, follow: true } };
     }
   }
+  // zh-Hant is OpenCC-derived (Simplified->Traditional) and ships NOINDEX until a
+  // native TW review happens. Mirror the ja POC handling.
+  if (locale === "zh-Hant") {
+    return { ...meta, robots: { index: false, follow: true } };
+  }
   return locale === "en" ? normalizeEnCanonical(meta) : meta;
 }
 
@@ -225,13 +231,14 @@ async function generateMetadataInner({
   // 6-locale picker for CUSTOM (non-template) tool/AI/vertical/batch page <title>
   // + meta description, so es/pt/fr/ja no longer leak English in <head>. (uiLocale
   // stays en/zh for blog/GEO/programmatic/info surfaces that are en/zh by design.)
-  const metaLocale: "en" | "zh" | "es" | "pt" | "fr" | "ja" = (
-    ["en", "zh", "es", "pt", "fr", "ja"] as const
+  const metaLocale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" = (
+    ["en", "zh", "es", "pt", "fr", "ja", "zh-Hant"] as const
   ).includes(rawLocale as never)
-    ? (rawLocale as "en" | "zh" | "es" | "pt" | "fr" | "ja")
+    ? (rawLocale as "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant")
     : "en";
+  // zh-Hant derives from the zh string via OpenCC (no separate Traditional copy).
   const m = (en: string, zh: string, es: string, pt: string, fr: string, ja: string) =>
-    ({ en, zh, es, pt, fr, ja })[metaLocale];
+    metaLocale === "zh-Hant" ? toHant(zh) : ({ en, zh, es, pt, fr, ja })[metaLocale];
 
   const programmaticGeoRoute = getLocalizedProgrammaticGeoRoute(rawSlug);
   if (programmaticGeoRoute) {
@@ -1265,8 +1272,12 @@ export default async function LocalizedRoute({
   }
   // uiLocale: en|zh fallback for surfaces not yet translated (blog, geo, etc.)
   // extLocale: en|zh|es|pt for workspace components that support Spanish/Portuguese
-  const uiLocale: "en" | "zh" = rawLocale === "zh" ? "zh" : "en";
+  const uiLocale: "en" | "zh" = rawLocale === "zh" || rawLocale === "zh-Hant" ? "zh" : "en";
   const esLocale: Locale | "es" | "pt" | "fr" = rawLocale === "zh" ? "zh" : rawLocale === "es" ? "es" : rawLocale === "pt" ? "pt" : (rawLocale as string) === "fr" ? "fr" : "en";
+  // clientLocale: locale passed to runtime *Client components. Preserves ja and
+  // zh-Hant so each client's pick/tr/t helper can branch (zh-Hant derives from zh
+  // via OpenCC inside those helpers); otherwise falls back to esLocale.
+  const clientLocale = rawLocale === "ja" ? "ja" : (rawLocale as string) === "zh-Hant" ? "zh-Hant" : esLocale;
 
   const programmaticGeoRoute = getLocalizedProgrammaticGeoRoute(rawSlug);
   if (programmaticGeoRoute) {
@@ -1329,15 +1340,15 @@ export default async function LocalizedRoute({
   // Indexable tools that render a custom client but aren't in toolSlugs
   // (sign-pdf is in toolSlugs and handled above; these are not): lightweight schema.
   const extraJsonLd = EXTRA_TOOL_SLUGS.includes(slug) ? (
-    <ExtraToolJsonLd slug={slug} locale={(rawLocale === "ja" ? "ja" : esLocale) as "en" | "zh" | "es" | "pt" | "fr" | "ja"} />
+    <ExtraToolJsonLd slug={slug} locale={clientLocale as "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant"} />
   ) : null;
 
   if (slug === "chat-with-pdf") {
-    return <LocalizedChatWithPdf locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <LocalizedChatWithPdf locale={clientLocale} />;
   }
 
   if (slug === "ai-summary") {
-    return <LocalizedAiSummary locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <LocalizedAiSummary locale={clientLocale} />;
   }
 
   if (slug === "ocr") {
@@ -1346,197 +1357,197 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "dashboard") {
-    return <LocalizedDashboard locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <LocalizedDashboard locale={clientLocale} />;
   }
 
   if (slug === "batch-compress") {
-    return <BatchCompressClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <BatchCompressClient locale={clientLocale} />;
   }
 
   if (slug === "batch-summary") {
-    return <BatchSummaryClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <BatchSummaryClient locale={clientLocale} />;
   }
 
   if (slug === "flashcards") {
-    return <QuizClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <QuizClient locale={clientLocale} />;
   }
   if (slug === "sign-pdf") {
-    return <>{toolJsonLd}<SignPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<SignPdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "redline") {
-    return <>{extraJsonLd}<RedlineClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{extraJsonLd}<RedlineClient locale={clientLocale} /></>;
   }
 
   if (slug === "extract-to-excel") {
-    return <>{extraJsonLd}<ExtractExcelClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{extraJsonLd}<ExtractExcelClient locale={clientLocale} /></>;
   }
 
   if (slug === "crop-pdf") {
-    return <>{extraJsonLd}<CropPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{extraJsonLd}<CropPdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "redact-pdf") {
-    return <>{extraJsonLd}<RedactPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{extraJsonLd}<RedactPdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "batch-pdf-to-image") {
-    return <BatchPdfToImageClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <BatchPdfToImageClient locale={clientLocale} />;
   }
 
   if (slug === "batch-protect-pdf") {
-    return <BatchProtectClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <BatchProtectClient locale={clientLocale} />;
   }
 
   if (slug === "batch-rename-pdf") {
-    return <BatchRenameClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <BatchRenameClient locale={clientLocale} />;
   }
 
   if (slug === "batch-watermark-pdf") {
-    return <BatchStampClient locale={rawLocale === "ja" ? "ja" : esLocale} lockMode="watermark" />;
+    return <BatchStampClient locale={clientLocale} lockMode="watermark" />;
   }
 
   if (slug === "batch-page-numbers") {
-    return <BatchStampClient locale={rawLocale === "ja" ? "ja" : esLocale} lockMode="pagenum" />;
+    return <BatchStampClient locale={clientLocale} lockMode="pagenum" />;
   }
 
   if (slug === "batch-split-merge") {
-    return <BatchSplitMergeClient locale={rawLocale === "ja" ? "ja" : esLocale} lockMode="split" />;
+    return <BatchSplitMergeClient locale={clientLocale} lockMode="split" />;
   }
 
   if (slug === "batch-rotate-pdf") {
-    return <BatchRotateClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <BatchRotateClient locale={clientLocale} />;
   }
 
   if (slug === "batch-extract-sheet") {
-    return <ExtractExcelClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <ExtractExcelClient locale={clientLocale} />;
   }
 
   if (slug === "batch-sort") {
-    return <BatchSortClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <BatchSortClient locale={clientLocale} />;
   }
 
   if (slug === "batch-pdf-to-word") {
-    return <BatchPdfToOfficeClient locale={rawLocale === "ja" ? "ja" : esLocale} target="word" />;
+    return <BatchPdfToOfficeClient locale={clientLocale} target="word" />;
   }
 
   if (slug === "batch-pdf-to-excel") {
-    return <BatchPdfToOfficeClient locale={rawLocale === "ja" ? "ja" : esLocale} target="excel" />;
+    return <BatchPdfToOfficeClient locale={clientLocale} target="excel" />;
   }
 
   if (slug === "batch-word-to-pdf") {
-    return <BatchOfficeToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} source="word" />;
+    return <BatchOfficeToPdfClient locale={clientLocale} source="word" />;
   }
 
   if (slug === "batch-excel-to-pdf") {
-    return <BatchOfficeToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} source="excel" />;
+    return <BatchOfficeToPdfClient locale={clientLocale} source="excel" />;
   }
 
   if (slug === "batch-ppt-to-pdf") {
-    return <BatchOfficeToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} source="ppt" />;
+    return <BatchOfficeToPdfClient locale={clientLocale} source="ppt" />;
   }
 
   if (slug === "batch-translate") {
-    return <BatchTranslateClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <BatchTranslateClient locale={clientLocale} />;
   }
 
   if (slug === "batch-fix-scans") {
-    return <BatchFixScansClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <BatchFixScansClient locale={clientLocale} />;
   }
 
   if (slug === "contract-risk") {
     // contract-risk has full ja (STR + FAQS_JA), so render it in Japanese on the
     // ja route; other custom clients still fall back to en until their ja lands.
-    return <ContractRiskClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <ContractRiskClient locale={clientLocale} />;
   }
 
   if (slug === "lease-redflag") {
-    return <LeaseRedflagClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <LeaseRedflagClient locale={clientLocale} />;
   }
 
   if (slug === "govbid-matrix") {
-    return <GovbidMatrixClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <GovbidMatrixClient locale={clientLocale} />;
   }
 
   if (slug === "my-chats") {
-    return <MyChatsClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <MyChatsClient locale={clientLocale} />;
   }
 
   if (slug === "url-to-pdf") {
-    return <>{extraJsonLd}<UrlToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{extraJsonLd}<UrlToPdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "compare") {
-    return <DocumentCompareClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <DocumentCompareClient locale={clientLocale} />;
   }
 
   if (slug === "pricing") {
-    return <LocalizedPricing locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <LocalizedPricing locale={clientLocale} />;
   }
 
   if (slug === "account") {
-    return <LocalizedAccount locale={rawLocale === "ja" ? "ja" : esLocale} />;
+    return <LocalizedAccount locale={clientLocale} />;
   }
 
   if (COMING_SOON_TOOLS[slug]) {
     const t = COMING_SOON_TOOLS[slug];
-    return <ComingSoonTool locale={rawLocale === "ja" ? "ja" : esLocale} name={t.en} nameZh={t.zh} />;
+    return <ComingSoonTool locale={clientLocale} name={t.en} nameZh={t.zh} />;
   }
 
   if (slug === "translate-pdf") {
-    return <>{toolJsonLd}<TranslatePdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<TranslatePdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "reorder-pages") {
-    return <>{toolJsonLd}<PageReorderClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<PageReorderClient locale={clientLocale} /></>;
   }
 
   if (slug === "add-page") {
-    return <>{toolJsonLd}<InsertPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<InsertPdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "watermark-pdf") {
-    return <>{toolJsonLd}<WatermarkEditorClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<WatermarkEditorClient locale={clientLocale} /></>;
   }
 
   if (slug === "delete-page") {
-    return <>{toolJsonLd}<DeletePagesClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<DeletePagesClient locale={clientLocale} /></>;
   }
 
   if (slug === "rotate-page") {
-    return <>{toolJsonLd}<RotatePagesClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<RotatePagesClient locale={clientLocale} /></>;
   }
 
   if (slug === "merge-pdf") {
-    return <>{toolJsonLd}<MergePdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<MergePdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "split-pdf") {
-    return <>{toolJsonLd}<SplitPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<SplitPdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "pdf-to-jpg") {
-    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale === "ja" ? "ja" : esLocale} defaultFormat="jpg" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="jpg" /></>;
   }
 
   if (slug === "pdf-to-png") {
-    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale === "ja" ? "ja" : esLocale} defaultFormat="png" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="png" /></>;
   }
 
   if (slug === "page-numbers") {
-    return <>{toolJsonLd}<PageNumbersClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<PageNumbersClient locale={clientLocale} /></>;
   }
 
   if (slug === "jpg-to-pdf" || slug === "png-to-pdf") {
-    return <>{toolJsonLd}<ImagesToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<ImagesToPdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "pdf-to-image") {
-    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale === "ja" ? "ja" : esLocale} defaultFormat="jpg" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="jpg" /></>;
   }
 
   if (slug === "images-to-pdf") {
-    return <>{toolJsonLd}<ImagesToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{toolJsonLd}<ImagesToPdfClient locale={clientLocale} /></>;
   }
 
   if ((toolSlugs as readonly string[]).includes(slug)) {
@@ -1557,14 +1568,20 @@ export default async function LocalizedRoute({
 
   if ((infoPageSlugs as readonly string[]).includes(slug)) {
     if (slug === "blog") {
-      return <BlogIndexPage locale={uiLocale} useLocalePrefix />;
+      // zh-Hant: BlogIndexPage derives Traditional copy from zh internally.
+      return (
+        <BlogIndexPage
+          locale={rawLocale === "zh-Hant" ? "zh-Hant" : uiLocale}
+          useLocalePrefix
+        />
+      );
     }
 
     if (slug === "about") {
       return (
         <>
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema(uiLocale)) }} />
-          <AboutPage locale={rawLocale === "ja" ? "ja" : esLocale} />
+          <AboutPage locale={clientLocale} />
         </>
       );
     }
@@ -1573,40 +1590,47 @@ export default async function LocalizedRoute({
     return (
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, slug, infoPage.title)) }} />
-        <SaasInfoPage page={infoPage} locale={rawLocale === "ja" ? "ja" : esLocale} useLocalePrefix />
+        <SaasInfoPage page={infoPage} locale={clientLocale} useLocalePrefix />
       </>
     );
   }
 
   if (slug === "ai-workspace") {
-    return <>{extraJsonLd}<LocalizedAiWorkspace locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
+    return <>{extraJsonLd}<LocalizedAiWorkspace locale={clientLocale} /></>;
   }
 
   if (slug === "sitemap") {
+    // zh-Hant: convert the zh title to Traditional and tag the schema zh-Hant.
+    const sitemapTitle =
+      rawLocale === "zh-Hant"
+        ? toHant("网站地图")
+        : uiLocale === "zh"
+          ? "网站地图"
+          : "Sitemap";
     return (
       <>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, "sitemap", uiLocale === "zh" ? "网站地图" : "Sitemap")) }} />
-        <LocalizedSitemap locale={rawLocale === "ja" ? "ja" : esLocale} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(rawLocale, "sitemap", sitemapTitle)) }} />
+        <LocalizedSitemap locale={clientLocale} />
       </>
     );
   }
 
   if (slug === "for/legal") {
-    return <LegalHubPage locale={rawLocale === "ja" ? "ja" : esLocale} useLocalePrefix />;
+    return <LegalHubPage locale={clientLocale} useLocalePrefix />;
   }
 
   if (slug === "for/finance") {
-    return <FinanceHubPage locale={rawLocale === "ja" ? "ja" : esLocale} useLocalePrefix />;
+    return <FinanceHubPage locale={clientLocale} useLocalePrefix />;
   }
 
   if (slug === "for/research") {
-    return <ResearchHubPage locale={rawLocale === "ja" ? "ja" : esLocale} useLocalePrefix />;
+    return <ResearchHubPage locale={clientLocale} useLocalePrefix />;
   }
 
-  return <LocalizedHome locale={rawLocale === "ja" ? "ja" : esLocale} />;
+  return <LocalizedHome locale={clientLocale} />;
 }
 
-function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
+function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
       <div className="mx-auto max-w-md">
@@ -1638,7 +1662,7 @@ function getLocalizedProgrammaticGeoRoute(rawSlug?: string[]) {
   return null;
 }
 
-function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
+function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
   const copy = getRuntimeCopy(locale).chat;
   const zh = locale === "zh";
   const es = locale === "es";
@@ -1709,7 +1733,7 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" 
   );
 }
 
-function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
+function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
   const copy = getRuntimeCopy(locale).summary;
   const zh = locale === "zh";
   const es = locale === "es";
@@ -1852,11 +1876,11 @@ function LocalizedRuntimeTool({
   );
 }
 
-function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
+function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
   return <DashboardWorkspace locale={locale} />;
 }
 
-function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
+function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(locale === "zh" ? "zh" : "en")) }} />
@@ -1969,7 +1993,7 @@ const localizedTools = [
   { slug: "protect-pdf", icon: "PR", tier: "FREE", group: { en: "Security", zh: "安全" }, en: "Protect PDF", zh: "加密 PDF", description: { en: "Add password protection.", zh: "为 PDF 添加密码保护。" } },
 ] as const;
 
-function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" }) {
+function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
   // ja now ships natively (homeSchema localizes Organization/WebSite/FAQ for ja),
   // so the JSON-LD matches the Japanese page Google sees.
   return (
@@ -2072,8 +2096,9 @@ const aiCopy = {
 const aiWidgetLocales = ["en", "zh", "es", "pt", "fr", "ja"] as const;
 type AiWidgetLocale = (typeof aiWidgetLocales)[number];
 
-function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
-  const copy = aiCopy[locale] ?? aiCopy.en;
+function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
+  // zh-Hant derives from zh via OpenCC.
+  const copy = locale === "zh-Hant" ? deepHant(aiCopy.zh) : (aiCopy[locale] ?? aiCopy.en);
   const aiLocale: AiWidgetLocale = (aiWidgetLocales as readonly string[]).includes(
     locale,
   )
@@ -2095,7 +2120,7 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" 
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <ButtonLink href={localizedPath(locale, "")}>
-              {locale === "zh" ? "进入文档工作区" : locale === "es" ? "Explorar herramientas PDF" : locale === "pt" ? "Explorar ferramentas PDF" : locale === "fr" ? "Parcourir les outils PDF" : "Browse PDF tools"}
+              {locale === "zh" ? "进入文档工作区" : locale === "zh-Hant" ? toHant("进入文档工作区") : locale === "es" ? "Explorar herramientas PDF" : locale === "pt" ? "Explorar ferramentas PDF" : locale === "fr" ? "Parcourir les outils PDF" : "Browse PDF tools"}
             </ButtonLink>
             <ButtonLink href={localizedPath(locale, "ocr-pdf")} variant="outline">
               OCR PDF
@@ -2160,39 +2185,53 @@ const sitemapCopy = {
   },
 } as const;
 
-function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
-  const copy = sitemapCopy[locale] ?? sitemapCopy.en;
-  const contentLocale: Locale = locale === "zh" ? "zh" : "en";
+function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
+  // zh-Hant derives from zh via OpenCC.
+  const hant = locale === "zh-Hant";
+  const h = (s: string) => (hant ? toHant(s) : s);
+  const copy = hant ? deepHant(sitemapCopy.zh) : (sitemapCopy[locale] ?? sitemapCopy.en);
+  const contentLocale: Locale = locale === "zh" || hant ? "zh" : "en";
   const groups = [
     {
-      title: locale === "zh" ? "博客指南" : locale === "es" ? "Guías del blog" : locale === "pt" ? "Guias do blog" : locale === "fr" ? "Guides du blog" : "Blog Guides",
+      title: locale === "zh" || hant ? h("博客指南") : locale === "es" ? "Guías del blog" : locale === "pt" ? "Guias do blog" : locale === "fr" ? "Guides du blog" : "Blog Guides",
       links: blogArticles.map((article) => ({
-        name: getBlogArticleContent(article, contentLocale).title,
-        href: blogArticlePath(article.slug, contentLocale),
+        name: h(getBlogArticleContent(article, contentLocale).title),
+        href: blogArticlePath(
+          article.slug,
+          (hant ? "zh-Hant" : contentLocale) as Locale,
+        ),
       })),
     },
     {
-      title: locale === "zh" ? "GEO 指南页" : locale === "es" ? "Guías GEO programáticas" : locale === "pt" ? "Guias GEO programáticos" : locale === "fr" ? "Guides GEO programmatiques" : "Programmatic GEO Guides",
+      title: locale === "zh" || hant ? h("GEO 指南页") : locale === "es" ? "Guías GEO programáticas" : locale === "pt" ? "Guias GEO programáticos" : locale === "fr" ? "Guides GEO programmatiques" : "Programmatic GEO Guides",
       links: getProgrammaticGeoPageSeeds("guides").map((seed) => {
         const page = getProgrammaticGeoPage(contentLocale, seed.surface, seed.slug);
         return {
-          name: page?.title ?? seed.slug,
-          href: programmaticGeoPath(seed.surface, seed.slug, contentLocale),
+          name: h(page?.title ?? seed.slug),
+          href: programmaticGeoPath(
+            seed.surface,
+            seed.slug,
+            (hant ? "zh-Hant" : contentLocale) as Locale,
+          ),
         };
       }),
     },
     {
-      title: locale === "zh" ? "GEO 资源页" : locale === "es" ? "Recursos GEO programáticos" : locale === "pt" ? "Recursos GEO programáticos" : locale === "fr" ? "Ressources GEO programmatiques" : "Programmatic GEO Resources",
+      title: locale === "zh" || hant ? h("GEO 资源页") : locale === "es" ? "Recursos GEO programáticos" : locale === "pt" ? "Recursos GEO programáticos" : locale === "fr" ? "Ressources GEO programmatiques" : "Programmatic GEO Resources",
       links: getProgrammaticGeoPageSeeds("resources").map((seed) => {
         const page = getProgrammaticGeoPage(contentLocale, seed.surface, seed.slug);
         return {
-          name: page?.title ?? seed.slug,
-          href: programmaticGeoPath(seed.surface, seed.slug, contentLocale),
+          name: h(page?.title ?? seed.slug),
+          href: programmaticGeoPath(
+            seed.surface,
+            seed.slug,
+            (hant ? "zh-Hant" : contentLocale) as Locale,
+          ),
         };
       }),
     },
     {
-      title: locale === "zh" ? "GEO 资源中心" : locale === "es" ? "Centros GEO" : locale === "pt" ? "Centros GEO" : locale === "fr" ? "Hubs GEO" : "GEO Hubs",
+      title: locale === "zh" || hant ? h("GEO 资源中心") : locale === "es" ? "Centros GEO" : locale === "pt" ? "Centros GEO" : locale === "fr" ? "Hubs GEO" : "GEO Hubs",
       links: (geoPageSlugs as readonly GeoPageSlug[]).map((geoSlug) => {
         const hub = getGeoHub(toGeoLocale(locale), geoSlug);
         return {
@@ -2207,7 +2246,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <Container className="py-16">
-          <p className="font-mono text-[12px] text-[color:var(--faint)]">// {locale === "zh" ? "站点地图" : locale === "es" ? "mapa del sitio" : locale === "pt" ? "mapa do site" : locale === "fr" ? "plan du site" : "Sitemap"}</p>
+          <p className="font-mono text-[12px] text-[color:var(--faint)]">// {locale === "zh" || hant ? h("站点地图") : locale === "es" ? "mapa del sitio" : locale === "pt" ? "mapa do site" : locale === "fr" ? "plan du site" : "Sitemap"}</p>
           <h1 className="mt-4 max-w-4xl break-words text-[34px] font-normal tracking-[-0.025em] sm:text-[48px]">
             {copy.heading}
           </h1>

@@ -9,8 +9,9 @@ import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
 import { billingErrorCopy } from "@/lib/membership-ui";
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
 import { getUser, onAuthChange } from "@/lib/auth";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 const copy = {
   en: {
@@ -502,7 +503,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   // "Most popular" badge, always Plus). Plans / compareCols / compare tiers are all
   // index-aligned [Free, Plus, Pro], so one index links the cards to the table.
   const [selectedIndex, setSelectedIndex] = useState<number>(() => {
-    const fi = (copy[locale] ?? copy.en).plans.findIndex((p) => p.featured);
+    const fi = (locale === "zh-Hant" ? copy.zh : (copy[locale] ?? copy.en)).plans.findIndex((p) => p.featured);
     return fi >= 0 ? fi : 1;
   });
   // Shared in-place upgrade flow (quote → breakdown modal → discounted checkout).
@@ -529,9 +530,12 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
     });
     return () => { mounted = false; unsub(); };
   }, []);
-  const zh = locale === "zh";
-  const c = copy[locale] ?? copy.en;
-  const selectLabel = locale === "zh" ? "选择套餐" : locale === "es" ? "Seleccionar plan" : locale === "pt" ? "Selecionar plano" : locale === "fr" ? "Sélectionner le forfait" : "Select plan";
+  // zh-Hant derives from zh via OpenCC.
+  const hant = locale === "zh-Hant";
+  const zh = locale === "zh" || hant;
+  const h = (s: string) => (hant ? toHant(s) : s);
+  const c = hant ? deepHant(copy.zh) : (copy[locale] ?? copy.en);
+  const selectLabel = zh ? h("选择套餐") : locale === "es" ? "Seleccionar plan" : locale === "pt" ? "Selecionar plano" : locale === "fr" ? "Sélectionner le forfait" : "Select plan";
 
   // Turn a billing failure into a clear, localized message AND a console line with
   // the precise code — never swallow it into a silent /account redirect. Only a
@@ -589,7 +593,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
       {/* Header */}
       <div className="text-center">
-        <p className={eyebrow}>{locale === "zh" ? "// 定价" : locale === "es" ? "// Precios" : locale === "pt" ? "// Preços" : locale === "fr" ? "// Tarifs" : "// Pricing"}</p>
+        <p className={eyebrow}>{zh ? h("// 定价") : locale === "es" ? "// Precios" : locale === "pt" ? "// Preços" : locale === "fr" ? "// Tarifs" : "// Pricing"}</p>
         <h1 className="mt-4 text-[34px] font-normal leading-[1.08] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[48px]">
           {c.title}
         </h1>
@@ -705,18 +709,18 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               {planKey ? (
                 ctaKind === "current" ? (
                   <span className={`${ctaCls} cursor-default opacity-60`}>
-                    {locale === "zh" ? "当前套餐" : locale === "es" ? "Plan actual" : locale === "pt" ? "Plano atual" : locale === "fr" ? "Forfait actuel" : "Current plan"}
+                    {zh ? h("当前套餐") : locale === "es" ? "Plan actual" : locale === "pt" ? "Plano atual" : locale === "fr" ? "Forfait actuel" : "Current plan"}
                   </span>
                 ) : ctaKind === "manage" ? (
                   <button type="button" onClick={handlePortal} disabled={billingLoading === "portal"} className={ctaCls}>
                     {billingLoading === "portal"
-                      ? (locale === "zh" ? "跳转中…" : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : "Redirecting…")
-                      : (locale === "zh" ? "管理账单" : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : "Manage billing")}
+                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : "Redirecting…")
+                      : (zh ? h("管理账单") : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : "Manage billing")}
                   </button>
                 ) : (
                   <button type="button" onClick={() => (ctaKind === "upgrade" ? upgrade.beginUpgrade(planKey, period) : plainCheckout(planKey))} disabled={ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey} className={ctaCls}>
                     {(ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey)
-                      ? (locale === "zh" ? "跳转中…" : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : "Redirecting…")
+                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : "Redirecting…")
                       : plan.cta}
                   </button>
                 )
@@ -740,10 +744,10 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* Compare plans — driven by lib/tier-config.ts */}
       <div className="mx-auto mt-16 max-w-4xl">
-        <p className={`${eyebrow} text-center`}>{locale === "zh" ? "// 套餐对照" : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : "// Compare"}</p>
+        <p className={`${eyebrow} text-center`}>{zh ? h("// 套餐对照") : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : "// Compare"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.compareTitle}</h2>
         <p className="mt-2 text-center text-[13px] text-[color:var(--faint)]">
-          {locale === "zh" ? "点击分类展开该类所有工具"
+          {zh ? h("点击分类展开该类所有工具")
             : locale === "es" ? "Haz clic en una categoría para ver las herramientas que incluye"
             : locale === "pt" ? "Clique em uma categoria para ver as ferramentas que ela inclui"
             : locale === "fr" ? "Cliquez sur une catégorie pour voir les outils qu'elle inclut"
@@ -767,11 +771,13 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 const hasTools = cat.tools.length > 0;
                 const hasFeatures = (cat.features?.length ?? 0) > 0;
                 const canExpand = hasTools || hasFeatures;
-                const tcLocale = locale;
-                const catLabel = cat.label[tcLocale] ?? cat.label.en;
+                // tier-config copy is keyed by the 6 base locales; for zh-Hant read
+                // zh then convert to Traditional via h().
+                const tcLocale: Exclude<Locale, "zh-Hant"> = hant ? "zh" : locale;
+                const catLabel = h(cat.label[tcLocale] ?? cat.label.en);
                 const lim = (tier: "free" | "plus" | "pro") => {
                   const v = cat.limits[tier];
-                  return v[tcLocale] ?? v.en;
+                  return h(v[tcLocale] ?? v.en);
                 };
                 const cellCls = (val: string) =>
                   val.startsWith("Unlimited") || val.startsWith("无限") || val.startsWith("Ilimitado") || val.startsWith("Illimité")
@@ -819,7 +825,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                 href={`/${tool.slug}/`}
                                 className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
                               >
-                                {tool[tcLocale] ?? tool.en}
+                                {h(tool[tcLocale] ?? tool.en)}
                               </a>
                             ))}
                           </div>
@@ -833,16 +839,16 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                 </span>
                                 {f.href ? (
                                   <a href={f.href} className="text-[color:var(--foreground)] underline-offset-2 hover:underline">
-                                    {f[tcLocale] ?? f.en}
+                                    {h(f[tcLocale] ?? f.en)}
                                   </a>
                                 ) : (
                                   <span className={f.status === "live" ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}>
-                                    {f[tcLocale] ?? f.en}
+                                    {h(f[tcLocale] ?? f.en)}
                                   </span>
                                 )}
                                 {f.status === "coming" && (
                                   <span className="rounded-full border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] text-[color:var(--faint)]">
-                                    {locale === "zh" ? "即将推出" : locale === "es" ? "Pronto" : locale === "pt" ? "Em breve" : locale === "fr" ? "Bientôt" : "Coming"}
+                                    {zh ? h("即将推出") : locale === "es" ? "Pronto" : locale === "pt" ? "Em breve" : locale === "fr" ? "Bientôt" : "Coming"}
                                   </span>
                                 )}
                               </li>
@@ -860,8 +866,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
           </table>
         </div>
           <p className="mt-3 px-4 text-[11.5px] text-[color:var(--faint)]">
-            {locale === "zh"
-              ? <>* 无限套餐遵循合理使用政策，仅用于防止异常滥用。<a href="/terms/" className="underline hover:text-[color:var(--muted)]">查看条款</a></>
+            {zh
+              ? <>{h("* 无限套餐遵循合理使用政策，仅用于防止异常滥用。")}<a href="/terms/" className="underline hover:text-[color:var(--muted)]">{h("查看条款")}</a></>
               : locale === "es"
               ? <>* Los planes ilimitados están sujetos a nuestra <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Política de Uso Razonable</a> para evitar abusos.</>
               : locale === "pt"
@@ -875,7 +881,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* Solutions by scenario */}
       <div className="mx-auto mt-24 max-w-5xl">
-        <p className={`${eyebrow} text-center`}>{locale === "zh" ? "// 应用场景" : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : "// Use cases"}</p>
+        <p className={`${eyebrow} text-center`}>{zh ? h("// 应用场景") : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : "// Use cases"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.scenariosTitle}</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {c.scenarios.map((s) => (
@@ -887,7 +893,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               <p className="mt-3 text-[13px] leading-6 text-[color:var(--muted)]">😩 {s.before}</p>
               <p className="mt-1.5 text-[13px] leading-6 text-[color:var(--foreground)]"><span className="text-[color:var(--accent)]">⚡</span> {s.after}</p>
               {s.href && (
-                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{locale === "zh" ? "去试试 →" : locale === "es" ? "Pruébalo →" : locale === "pt" ? "Experimente →" : locale === "fr" ? "Essayez →" : "Try it →"}</a>
+                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{zh ? h("去试试 →") : locale === "es" ? "Pruébalo →" : locale === "pt" ? "Experimente →" : locale === "fr" ? "Essayez →" : "Try it →"}</a>
               )}
             </div>
           ))}
@@ -896,7 +902,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* FAQ */}
       <div className="mx-auto mt-24 max-w-3xl">
-        <p className={`${eyebrow} text-center`}>{locale === "zh" ? "// 常见问题" : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : "// FAQ"}</p>
+        <p className={`${eyebrow} text-center`}>{zh ? h("// 常见问题") : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : "// FAQ"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.faqTitle}</h2>
         <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
           {c.faq.map((item, i) => (
@@ -921,7 +927,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       <div className="mx-auto mt-24 max-w-3xl text-center">
         <h2 className={h2}>{c.ctaTitle}</h2>
         <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.ctaDesc}</p>
-        <a href={locale === "zh" ? "/zh/" : locale === "es" ? "/es/" : locale === "pt" ? "/pt/" : locale === "fr" ? "/fr/" : "/"}
+        <a href={zh ? h("/zh/") : locale === "es" ? "/es/" : locale === "pt" ? "/pt/" : locale === "fr" ? "/fr/" : "/"}
           className="mt-8 inline-flex h-11 items-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]"
         >{c.ctaBtn}</a>
       </div>

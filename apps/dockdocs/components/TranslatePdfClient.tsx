@@ -6,10 +6,11 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
 import { useCallback, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 const MAX_CHARS = 14_000;
 
@@ -166,7 +167,7 @@ const STR = {
 type Phase = "idle" | "extracting" | "ready" | "translating" | "done";
 
 export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [phase, setPhase] = useState<Phase>("idle");
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
@@ -323,7 +324,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
               >
                 {LANGS.map((l) => (
                   <option key={l.code} value={l.code}>
-                    {locale === "zh" ? l.zh : l.en}
+                    {locale === "zh" ? l.zh : locale === "zh-Hant" ? toHant(l.zh) : l.en}
                   </option>
                 ))}
               </select>

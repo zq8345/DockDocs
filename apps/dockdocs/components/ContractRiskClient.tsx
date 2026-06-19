@@ -8,10 +8,11 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
+import { deepHant } from "@/lib/zh-hant";
 
 import { useCallback, useMemo, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type RiskLevel = "high" | "medium" | "low";
 type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string; missing?: boolean; unverified?: boolean };
 
@@ -198,7 +199,11 @@ const LEVEL_STYLE: Record<RiskLevel, { dot: string; chip: string; border: string
 type Phase = "idle" | "extracting" | "ready" | "analyzing" | "done";
 
 export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  // zh-Hant is rendered from zh via OpenCC; child components below
+  // (UploadDropzone / UpgradePrompt / ToolFaq / encryptedPdfMessage) don't
+  // accept zh-Hant in their Locale union, so map it to "zh" for those props.
+  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const [phase, setPhase] = useState<Phase>("idle");
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
@@ -252,11 +257,11 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
         setText(trimmed);
         setPhase("ready");
       } catch (e) {
-        setError(encryptedPdfMessage(e, locale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
+        setError(encryptedPdfMessage(e, childLocale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
         setPhase("idle");
       }
     },
-    [t, locale],
+    [t, locale, childLocale],
   );
 
   const onAnalyze = useCallback(async () => {
@@ -348,7 +353,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "extracting" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
       ) : (
         <div className={`${card} mt-8 p-5`}>
           <div className="flex items-center justify-between gap-3">
@@ -379,7 +384,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
 
       {phase === "analyzing" && (
         <div className="mt-6 space-y-3" aria-busy="true">
@@ -450,7 +455,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
 
       <GroundingNote variant="contract" locale={locale} />
       <RelatedPdfTools locale={locale} exclude="/contract-risk" />
-      <ToolFaq tool="contract-risk" locale={locale} />
+      <ToolFaq tool="contract-risk" locale={childLocale} />
     </div>
   );
 }

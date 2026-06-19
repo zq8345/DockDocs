@@ -1,5 +1,6 @@
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
-import { type GeoHubData, type GeoLocale } from "@/lib/geo";
+import { type GeoHubData, type GeoLocale, type GeoLocaleInput } from "@/lib/geo";
+import { deepHant } from "@/lib/zh-hant";
 import {
   absoluteUrl,
   defaultLocale,
@@ -20,7 +21,7 @@ import {
 
 type GeoHubPageProps = {
   hub: GeoHubData;
-  locale?: GeoLocale;
+  locale?: GeoLocaleInput;
   useLocalePrefix?: boolean;
 };
 
@@ -144,9 +145,10 @@ export function GeoHubPage({
   locale = defaultLocale,
   useLocalePrefix = false,
 }: GeoHubPageProps) {
-  const t = chrome[locale] ?? chrome.en;
+  // zh-Hant derives its chrome strings from zh via OpenCC.
+  const t = locale === "zh-Hant" ? deepHant(chrome.zh) : (chrome[locale] ?? chrome.en);
   // Programmatic-GEO + path helpers only know en/zh; derive a base locale for them.
-  const baseLocale: Locale = locale === "zh" ? "zh" : "en";
+  const baseLocale: Locale = locale === "zh" || locale === "zh-Hant" ? "zh" : "en";
   const canonicalPath = useLocalePrefix
     ? localizedPath(locale, hub.slug)
     : `/${hub.slug}/`;
@@ -270,11 +272,14 @@ export function GeoHubPage({
           </div>
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {getHubProgrammaticPages(hub.slug).map((seed) => {
-              const page = getProgrammaticGeoPage(baseLocale, seed.surface, seed.slug);
+              const rawPage = getProgrammaticGeoPage(baseLocale, seed.surface, seed.slug);
 
-              if (!page) {
+              if (!rawPage) {
                 return null;
               }
+
+              // zh-Hant derives its programmatic-GEO copy from zh via OpenCC.
+              const page = locale === "zh-Hant" ? deepHant(rawPage) : rawPage;
 
               return (
                 <a
@@ -358,7 +363,7 @@ function getHubProgrammaticPages(slug: GeoHubData["slug"]) {
 
 function createGeoHubSchema(
   hub: GeoHubData,
-  locale: GeoLocale,
+  locale: GeoLocaleInput,
   canonicalPath: string,
 ) {
   const pageUrl = absoluteUrl(canonicalPath);

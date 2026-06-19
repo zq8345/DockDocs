@@ -8,9 +8,10 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
-type Card = { q: string; a: string };
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Card ={ q: string; a: string };
 
 const STR = {
   en: {
@@ -82,7 +83,7 @@ const STR = {
 };
 
 export function QuizClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
   const [count, setCount] = useState(10);

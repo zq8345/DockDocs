@@ -1,4 +1,5 @@
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import { toHant } from "./zh-hant";
 import { runOcrPdfFirstPage } from "./ocr-runtime";
 import { runCloudConvert } from "./cloudconvert-runtime";
 import type { CloudConvertRoute } from "./cloudconvert-runtime";
@@ -32,14 +33,14 @@ export type PdfRuntimeSlug =
   | "pdf-to-ppt"
   | "pdf-to-html";
 
-export type RuntimeLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+export type RuntimeLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 // 6-way string picker. Keep PDF/OCR/API/DOCX/HTML/DockDocs and other
 // brand/format names untranslated. ja: full-width punctuation 。、「」,
-// half-width space around Latin tokens.
+// half-width space around Latin tokens. zh-Hant derives from zh via OpenCC.
 function makeRuntimeTr(locale: RuntimeLocale) {
   return (en: string, zh: string, es: string, pt: string, fr: string, ja: string): string =>
-    ({ en, zh, es, pt, fr, ja })[locale];
+    locale === "zh-Hant" ? toHant(zh) : ({ en, zh, es, pt, fr, ja })[locale];
 }
 
 export type PdfRuntimeProgress = {
@@ -1058,7 +1059,7 @@ async function pdfToHtmlDoc(
   throwIfAborted(signal);
   emitProgress(onProgress, 95, 3);
 
-  const htmlLang = { en: "en", zh: "zh", es: "es", pt: "pt", fr: "fr", ja: "ja" }[locale] ?? "en";
+  const htmlLang = { en: "en", zh: "zh", es: "es", pt: "pt", fr: "fr", ja: "ja", "zh-Hant": "zh-Hant" }[locale] ?? "en";
   const html = `<!doctype html>
 <html lang="${htmlLang}">
 <head>

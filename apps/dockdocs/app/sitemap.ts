@@ -20,7 +20,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // real Japanese copy, but the GEO guide hubs and blog still fall back to
   // English — so ja is enrolled below but filtered to its native routes only
   // (isJaNativeRoute), matching the catch-all's ja noindex gate.
-  const INCOMPLETE_LOCALES = new Set<string>([]);
+  // zh-Hant ships NOINDEX (OpenCC-derived Traditional, awaiting native TW review)
+  // → keep it OUT of the sitemap.
+  const INCOMPLETE_LOCALES = new Set<string>(["zh-Hant"]);
   const sitemapLocales = routeLocales.filter(l => !INCOMPLETE_LOCALES.has(l));
 
   // Generate routes for all locales

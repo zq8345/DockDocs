@@ -5,9 +5,10 @@ import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
-type DocType = "invoice" | "quote" | "contract";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type DocType ="invoice" | "quote" | "contract";
 type Dim = { key: string; label: string };
 type Field = { value: string | null; source: string | null };
 type DocResult = { id: string; name: string; fields: Record<string, Field> };
@@ -95,7 +96,7 @@ const STR = {
 };
 
 export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [docs, setDocs] = useState<Doc[]>([]);
   const [docType, setDocType] = useState<DocType>("invoice");
   const [busy, setBusy] = useState(false);

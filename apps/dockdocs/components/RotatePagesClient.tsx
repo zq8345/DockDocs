@@ -6,8 +6,9 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -68,7 +69,7 @@ const STR = {
 };
 
 export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -178,7 +179,7 @@ export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={p.thumb} alt={`page ${p.idx + 1}`} style={{ transform: `rotate(${deg}deg)` }} className="max-h-full max-w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] transition-transform duration-200" />
-                  <span className="absolute bottom-1 left-0 right-0 text-center text-[11px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${p.idx + 1} 页` : `Page ${p.idx + 1}`}</span>
+                  <span className="absolute bottom-1 left-0 right-0 text-center text-[11px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${p.idx + 1} 页` : locale === "zh-Hant" ? `第 ${p.idx + 1} 頁` : `Page ${p.idx + 1}`}</span>
                   <span className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[13px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100">↻</span>
                 </button>
               );

@@ -14,7 +14,7 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const OUT = join(process.cwd(), "out");
-const PREFIX_LOCALES = new Set(["zh", "es", "pt", "fr", "ja"]);
+const PREFIX_LOCALES = new Set(["zh", "es", "pt", "fr", "ja", "zh-Hant"]);
 
 async function walk(dir) {
   const out = [];

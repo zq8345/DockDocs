@@ -2,8 +2,9 @@
 
 import { useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 const STR = {
   en: {
@@ -86,7 +87,7 @@ export function BatchUploadBox({
   hint?: string;
   privacyLabel?: string | null;
 }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const fileRef = useRef<HTMLInputElement>(null);
   const folderRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -139,7 +140,7 @@ export function BatchUploadBox({
             {t.folder}
           </button>
           <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-            <span>{hint ?? (locale === "zh" ? "支持 PDF" : locale === "es" ? "Compatible con PDF" : locale === "pt" ? "Compatível com PDF" : locale === "fr" ? "Compatible PDF" : locale === "ja" ? "PDF対応" : "Supports PDF")}</span>
+            <span>{hint ?? (locale === "zh" ? "支持 PDF" : locale === "zh-Hant" ? toHant("支持 PDF") : locale === "es" ? "Compatible con PDF" : locale === "pt" ? "Compatível com PDF" : locale === "fr" ? "Compatible PDF" : locale === "ja" ? "PDF対応" : "Supports PDF")}</span>
             {privacyLabel !== null && (
               <>
                 <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />

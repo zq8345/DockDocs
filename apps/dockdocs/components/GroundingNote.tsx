@@ -5,6 +5,8 @@
 // Mounted on /chat-with-pdf and /contract-risk; rendered on both the en and the
 // localized routes, so authored in all 5 active locales.
 
+import { toHant } from "@/lib/zh-hant";
+
 type Variant = "chat" | "contract" | "summary";
 
 // Keyed by locale string with an en fallback, so any client's locale union
@@ -60,10 +62,16 @@ const BODY: Record<Variant, Record<string, string>> = {
   },
 };
 
+// Resolve a locale string from a Record, deriving zh-Hant from zh via OpenCC.
+function pickG(rec: Record<string, string>, locale: string): string {
+  if (locale === "zh-Hant") return toHant(rec.zh ?? rec.en);
+  return rec[locale] ?? rec.en;
+}
+
 export function GroundingNote({ variant, locale = "en" }: { variant: Variant; locale?: string }) {
   const titles = titleMapFor(variant);
-  const title = titles[locale] ?? titles.en;
-  const body = BODY[variant][locale] ?? BODY[variant].en;
+  const title = pickG(titles, locale);
+  const body = pickG(BODY[variant], locale);
   return (
     <section className="mt-12 border-t border-[color:var(--line)] pt-8">
       <h2 className="text-[15px] font-semibold text-[color:var(--foreground)]">{title}</h2>
@@ -76,5 +84,5 @@ export function GroundingNote({ variant, locale = "en" }: { variant: Variant; lo
 // crawlable Q&A (keeps the visible prose and the structured data in sync).
 export function groundingFaq(variant: Variant, locale: string = "en") {
   const titles = titleMapFor(variant);
-  return { question: titles[locale] ?? titles.en, answer: BODY[variant][locale] ?? BODY[variant].en };
+  return { question: pickG(titles, locale), answer: pickG(BODY[variant], locale) };
 }

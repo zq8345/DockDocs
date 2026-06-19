@@ -4,8 +4,9 @@ import { useCallback, useMemo, useRef, useState, type CSSProperties } from "reac
 import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type PosKey = "tl" | "tc" | "tr" | "bl" | "bc" | "br";
 type Fmt = "n" | "page" | "slash" | "of";
 
@@ -82,16 +83,18 @@ const STR = {
   },
 };
 
-function makeLabel(fmt: Fmt, n: number, total: number, zh: boolean): string {
-  if (fmt === "page") return zh ? `第 ${n} 页` : `Page ${n}`;
+function makeLabel(fmt: Fmt, n: number, total: number, zh: boolean, hant = false): string {
+  const conv = (s: string) => (hant ? toHant(s) : s);
+  if (fmt === "page") return zh ? conv(`第 ${n} 页`) : `Page ${n}`;
   if (fmt === "slash") return `${n} / ${total}`;
-  if (fmt === "of") return zh ? `${n} / 共 ${total}` : `${n} of ${total}`;
+  if (fmt === "of") return zh ? conv(`${n} / 共 ${total}`) : `${n} of ${total}`;
   return `${n}`;
 }
 
 export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
-  const zh = locale === "zh";
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const hant = locale === "zh-Hant";
+  const zh = locale === "zh" || locale === "zh-Hant";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
@@ -122,7 +125,7 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
       const ctx = canvas.getContext("2d");
       if (ctx) await page.render({ canvas, canvasContext: ctx, viewport }).promise;
       setPreview(canvas.toDataURL("image/jpeg", 0.8));
-      if (doc.numPages === 0) { setError(locale === "zh" ? "该 PDF 没有页面。" : "This PDF has no pages."); setPhase("idle"); return; } setNumPages(doc.numPages); setFrom(1); setTo(doc.numPages);
+      if (doc.numPages === 0) { setError(locale === "zh" ? "该 PDF 没有页面。" : locale === "zh-Hant" ? toHant("该 PDF 没有页面。") : "This PDF has no pages."); setPhase("idle"); return; } setNumPages(doc.numPages); setFrom(1); setTo(doc.numPages);
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {
@@ -130,7 +133,7 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
     }
   }, [t, locale]);
 
-  const previewLabel = useMemo(() => makeLabel(fmt, startAt, Math.max(1, numPages), zh), [fmt, startAt, numPages, zh]);
+  const previewLabel = useMemo(() => makeLabel(fmt, startAt, Math.max(1, numPages), zh, hant), [fmt, startAt, numPages, zh, hant]);
   const overlayStyle = useMemo(() => {
     const isTop = pos[0] === "t";
     const col = pos[1];
@@ -163,7 +166,7 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
         const pageNo = i + 1;
         if (pageNo < lo || pageNo > hi) return;
         const n = startAt + (pageNo - lo);
-        const label = makeLabel(fmt, n, total, zh);
+        const label = makeLabel(fmt, n, total, zh, hant);
         const { width, height } = page.getSize();
         const tw = font.widthOfTextAtSize(label, size);
         let x = width / 2 - tw / 2;
@@ -182,7 +185,7 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [from, to, startAt, fmt, margin, pos, fileName, zh, t, locale]);
+  }, [from, to, startAt, fmt, margin, pos, fileName, zh, hant, t, locale]);
 
   const inputCls = "h-9 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2.5 text-[13px] text-[color:var(--foreground)]";
 

@@ -19,25 +19,47 @@ import {
   siteUrl,
   type Locale,
 } from "@/lib/i18n";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
 type BlogPageProps = {
   locale?: Locale;
   useLocalePrefix?: boolean;
 };
 
+// zh-Hant is an OpenCC-derived route: render the zh copy but convert it to
+// Traditional. Callers pass locale="zh-Hant"; the data lookups below use the zh
+// source (never the en fallback) so no Simplified or English leaks through.
+type BlogIndexLocale = Locale | "zh-Hant";
+
 type BlogArticlePageProps = BlogPageProps & {
   article: BlogArticle;
 };
 
 export function BlogIndexPage({
-  locale = defaultLocale,
+  locale: rawLocale = defaultLocale,
   useLocalePrefix = false,
-}: BlogPageProps) {
-  const copy = blogIndexCopy[locale];
+}: Omit<BlogPageProps, "locale"> & { locale?: BlogIndexLocale }) {
+  const hant = rawLocale === "zh-Hant";
+  // Data lookups use zh for zh-Hant (convert via OpenCC), never the en fallback.
+  const dataLocale: Locale = hant ? "zh" : (rawLocale as Locale);
+  // The route locale drives hrefs/canonical so zh-Hant pages link within
+  // /zh-Hant (localizedPath/localizedHref accept the route-locale string).
+  const locale = rawLocale as Locale;
+  const routeLocale = rawLocale as string;
+  // Chinese-vs-English UI ternaries below treat zh-Hant as Chinese.
+  const zh = dataLocale === "zh";
+  // Convert a zh string to Traditional only on the zh-Hant route.
+  const h = (s: string) => (hant ? toHant(s) : s);
+  // Article content: pull zh, convert to Traditional on zh-Hant.
+  const articleContent = (article: BlogArticle) =>
+    hant
+      ? deepHant(getBlogArticleContent(article, "zh"))
+      : getBlogArticleContent(article, dataLocale);
+  const copy = hant ? deepHant(blogIndexCopy.zh) : blogIndexCopy[dataLocale];
   const canonicalPath = useLocalePrefix
-    ? localizedPath(locale, "blog")
+    ? localizedPath(routeLocale, "blog")
     : "/blog/";
-  const schema = createBlogIndexSchema(locale, canonicalPath);
+  const schema = createBlogIndexSchema(rawLocale, canonicalPath);
 
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
@@ -73,16 +95,16 @@ export function BlogIndexPage({
           <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_32px_90px_rgba(24,24,20,0.10)]">
             <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                {locale === "zh" ? "热门指南" : "Popular guides"}
+                {zh ? h("热门指南") : "Popular guides"}
               </p>
               <div className="mt-5 grid gap-3">
                 {blogArticles.slice(0, 4).map((article) => {
-                  const content = getBlogArticleContent(article, locale);
+                  const content = articleContent(article);
 
                   return (
                     <a
                       key={article.slug}
-                      href={articleHref(article.slug, locale, useLocalePrefix)}
+                      href={articleHref(article.slug, routeLocale, useLocalePrefix)}
                       className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:shadow-[0_16px_32px_rgba(24,24,20,0.08)]"
                     >
                       <div className="flex items-start justify-between gap-4">
@@ -127,12 +149,12 @@ export function BlogIndexPage({
           </div>
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {blogArticles.map((article) => {
-              const content = getBlogArticleContent(article, locale);
+              const content = articleContent(article);
 
               return (
                 <a
                   key={article.slug}
-                  href={articleHref(article.slug, locale, useLocalePrefix)}
+                  href={articleHref(article.slug, routeLocale, useLocalePrefix)}
                   className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:shadow-[0_18px_40px_rgba(24,24,20,0.08)]"
                 >
                   <div className="flex items-center justify-between gap-4">
@@ -150,7 +172,7 @@ export function BlogIndexPage({
                     {content.excerpt}
                   </p>
                   <span className="mt-5 inline-block text-sm font-semibold text-[color:var(--foreground)] transition group-hover:translate-x-0.5">
-                    {locale === "zh" ? "阅读指南" : "Read guide"} -&gt;
+                    {zh ? h("阅读指南") : "Read guide"} -&gt;
                   </span>
                 </a>
               );
@@ -164,7 +186,7 @@ export function BlogIndexPage({
           <div className="grid gap-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 shadow-[0_24px_60px_rgba(24,24,20,0.08)] sm:p-8 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                {locale === "zh" ? "找到合适的工具" : "Find the right tool"}
+                {zh ? h("找到合适的工具") : "Find the right tool"}
               </p>
               <h2 className="mt-4 text-3xl font-semibold leading-tight">
                 {copy.workflowTitle}
@@ -176,32 +198,32 @@ export function BlogIndexPage({
             <div className="grid gap-3 sm:grid-cols-2">
               {[
                 {
-                  label: locale === "zh" ? "压缩 PDF" : "Compress PDF",
+                  label: zh ? h("压缩 PDF") : "Compress PDF",
                   href: "/compress-pdf",
                 },
                 {
-                  label: locale === "zh" ? "JPG 转 PDF" : "JPG to PDF",
+                  label: zh ? h("JPG 转 PDF") : "JPG to PDF",
                   href: "/jpg-to-pdf",
                 },
                 {
-                  label: locale === "zh" ? "PDF 转 Word" : "PDF to Word",
+                  label: zh ? h("PDF 转 Word") : "PDF to Word",
                   href: "/pdf-to-word",
                 },
                 { label: "OCR PDF", href: "/ocr-pdf" },
                 {
-                  label: locale === "zh" ? "帮助与 FAQ" : "Help and FAQ",
+                  label: zh ? h("帮助与 FAQ") : "Help and FAQ",
                   href: "/help",
                 },
                 {
-                  label: locale === "zh" ? "资源中心" : "Resources",
+                  label: zh ? h("资源中心") : "Resources",
                   href: "/resources",
                 },
                 {
-                  label: locale === "zh" ? "PDF 指南" : "PDF Guides",
+                  label: zh ? h("PDF 指南") : "PDF Guides",
                   href: "/guides",
                 },
                 {
-                  label: locale === "zh" ? "AI PDF 指南" : "AI PDF Guides",
+                  label: zh ? h("AI PDF 指南") : "AI PDF Guides",
                   href: "/ai-pdf-guides",
                 },
               ].map((link) => (
@@ -586,10 +608,12 @@ function SidebarCard({
 
 function articleHref(
   slug: BlogArticleSlug | string,
-  locale: Locale,
+  locale: Locale | string,
   useLocalePrefix: boolean,
 ) {
-  return useLocalePrefix ? blogArticlePath(slug, locale) : blogArticlePath(slug);
+  return useLocalePrefix
+    ? blogArticlePath(slug, locale as Locale)
+    : blogArticlePath(slug);
 }
 
 function getQuickAnswerHeading(article: BlogArticle, locale: Locale) {
@@ -995,8 +1019,14 @@ function createBlogArticleSchema({
   };
 }
 
-function createBlogIndexSchema(locale: Locale, canonicalPath: string) {
-  const copy = blogIndexCopy[locale];
+function createBlogIndexSchema(locale: BlogIndexLocale, canonicalPath: string) {
+  const hant = locale === "zh-Hant";
+  const dataLocale: Locale = hant ? "zh" : locale;
+  const copy = hant ? deepHant(blogIndexCopy.zh) : blogIndexCopy[dataLocale];
+  const articleTitle = (article: BlogArticle) =>
+    hant
+      ? toHant(getBlogArticleContent(article, "zh").title)
+      : getBlogArticleContent(article, dataLocale).title;
   const pageUrl = absoluteUrl(canonicalPath);
 
   return {
@@ -1026,13 +1056,11 @@ function createBlogIndexSchema(locale: Locale, canonicalPath: string) {
         "@id": `${pageUrl}#itemlist`,
         name: copy.featuredTitle,
         itemListElement: blogArticles.map((article, index) => {
-          const content = getBlogArticleContent(article, locale);
-
           return {
             "@type": "ListItem",
             position: index + 1,
-            name: content.title,
-            url: absoluteUrl(blogArticlePath(article.slug, locale)),
+            name: articleTitle(article),
+            url: absoluteUrl(blogArticlePath(article.slug, locale as Locale)),
           };
         }),
       },

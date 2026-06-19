@@ -1,4 +1,5 @@
 import type { PdfToolPageConfig } from "../../../shared/templates/pdf-tool-page";
+import { deepHant } from "@/lib/zh-hant";
 import {
   absoluteUrl,
   languageAlternates,
@@ -6308,6 +6309,18 @@ export function getLocalizedToolConfig(
   locale: RouteLocale,
   slug: ToolSlug,
 ): PdfToolPageConfig {
+  // zh-Hant derives from zh via OpenCC: convert all copy, but keep structural
+  // fields (slug/locale/canonicalPath/alternateLanguages) for this locale.
+  if ((locale as string) === "zh-Hant") {
+    const zhConfig = getLocalizedToolConfig("zh", slug);
+    return {
+      ...deepHant(zhConfig),
+      slug,
+      locale,
+      canonicalPath: localizedPath(locale, (CANONICAL_HUB[slug] ?? slug) as RouteSlug),
+      alternateLanguages: languageAlternates(slug),
+    };
+  }
   const base = {
     slug,
     locale,

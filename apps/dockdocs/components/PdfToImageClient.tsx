@@ -5,8 +5,9 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Fmt = "jpg" | "png";
 type Pg = { idx: number; thumb: string };
 
@@ -86,7 +87,7 @@ const STR = {
 };
 
 export function PdfToImageClient({ locale = "en", defaultFormat = "jpg" }: { locale?: Locale; defaultFormat?: Fmt }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [pages, setPages] = useState<Pg[]>([]);

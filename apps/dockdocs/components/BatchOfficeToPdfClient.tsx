@@ -7,8 +7,11 @@ import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+// zh-Hant is derived from zh via OpenCC, so copy tables are keyed by the base locales only.
+type CopyLocale = Exclude<Locale, "zh-Hant">;
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; blob?: Blob; msg?: string };
 
@@ -142,7 +145,7 @@ const SRC: Record<Source, { ext: string[]; route: "word-to-pdf" | "excel-to-pdf"
 };
 
 // Per-source heading/subtitle/hint (native) for the split single-format pages.
-const PS: Record<Source, Record<Locale, { title: string; subtitle: string; hint: string }>> = {
+const PS: Record<Source, Record<CopyLocale, { title: string; subtitle: string; hint: string }>> = {
   word: {
     en: { title: "Batch Word to PDF", subtitle: "Convert a whole folder of Word documents to PDF in one go — each is converted on our server and packaged into a single ZIP.", hint: "Word documents" },
     zh: { title: "批量 Word 转 PDF", subtitle: "把整个文件夹的 Word 文档一次性全部转成 PDF——每个在服务器转换并打包成一个 ZIP。", hint: "Word 文档" },
@@ -170,9 +173,13 @@ const PS: Record<Source, Record<Locale, { title: string; subtitle: string; hint:
 };
 
 export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Locale; source?: Source }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  // zh-Hant child components (BatchUploadBox / ToolFaq) lack zh-Hant → map to "zh".
+  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
-  const head = source ? (PS[source][locale] ?? PS[source].en) : { title: t.title, subtitle: t.subtitle, hint: t.hint };
+  const head = source
+    ? (locale === "zh-Hant" ? deepHant(PS[source].zh) : (PS[source][locale as CopyLocale] ?? PS[source].en))
+    : { title: t.title, subtitle: t.subtitle, hint: t.hint };
   const exts = source ? SRC[source].ext : OFFICE_EXT;
   const accept = source ? SRC[source].accept : ACCEPT;
   const [items, setItems] = useState<Item[]>([]);
@@ -271,7 +278,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Loc
       a.click();
       URL.revokeObjectURL(url);
     } catch {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download — tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement — veuillez réessayer." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download — tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement — veuillez réessayer." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
     }
   };
 
@@ -297,7 +304,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Loc
 
       {items.length === 0 ? (
         <BatchUploadBox
-          locale={locale}
+          locale={childLocale}
           onFiles={addFiles}
           accept={accept}
           extensions={exts}
@@ -346,7 +353,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Loc
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <ToolFaq tool={source ? `batch-${source}-to-pdf` : "batch-office-to-pdf"} locale={locale} />
+      <ToolFaq tool={source ? `batch-${source}-to-pdf` : "batch-office-to-pdf"} locale={childLocale} />
     </div>
   );
 }

@@ -1,10 +1,12 @@
 import type { PdfRuntimeArtifact, PdfRuntimeProgress } from "./pdf-runtime";
+import { toHant } from "./zh-hant";
 
 type OcrLanguage = "eng" | "chi_sim";
 
-type OcrLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type OcrLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 // Full 6-locale string picker; falls back to English for any untranslated locale.
+// zh-Hant derives from zh via OpenCC.
 function tr(
   locale: OcrLocale,
   en: string,
@@ -15,6 +17,8 @@ function tr(
   ja: string,
 ): string {
   switch (locale) {
+    case "zh-Hant":
+      return toHant(zh);
     case "zh":
       return zh;
     case "es":

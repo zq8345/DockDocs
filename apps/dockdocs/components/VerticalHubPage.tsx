@@ -1,12 +1,13 @@
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 import { absoluteUrl, defaultLocale, localizedHref, siteUrl } from "@/lib/i18n";
+import { deepHant } from "@/lib/zh-hant";
 
 // Reusable marketing landing for a professional vertical (legal, finance, …).
 // Pure content page: it links to existing AI-hero tools, which keep their own
 // gating — it does NOT add any gate or advertise unbuilt-vertical quotas. The
 // card grid mirrors GeoHubPage. Honesty gate: only mount real, shipping tools.
 
-export type VerticalLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+export type VerticalLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 export type VerticalCard = { slug: string; label: string; description: string };
 
@@ -50,7 +51,8 @@ export function VerticalHubPage({
   locale?: VerticalLocale;
   useLocalePrefix?: boolean;
 }) {
-  const t = config.copy[locale] ?? config.copy.en;
+  // zh-Hant derives from zh via OpenCC.
+  const t = locale === "zh-Hant" ? deepHant(config.copy.zh ?? config.copy.en) : (config.copy[locale] ?? config.copy.en);
   const canonicalPath = useLocalePrefix
     ? `/${locale}/for/${config.vertical}/`
     : `/for/${config.vertical}/`;

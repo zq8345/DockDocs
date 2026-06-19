@@ -1,11 +1,12 @@
 import { siteUrl } from "@/lib/i18n";
+import { deepHant } from "@/lib/zh-hant";
 
 // Lightweight JSON-LD (WebApplication + BreadcrumbList) for indexable tool pages
 // that render a custom *Client.tsx and are NOT in toolSlugs — so they have no
 // PdfToolPageConfig and never went through createPdfToolSchema. This keeps GEO /
 // structured-data coverage complete across both render paths (the non-prefixed
 // app/<slug>/page.tsx and the /zh|/es catch-all). en/zh authored; es → en.
-type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Label = { name: string; description: string; crumb: string };
 
 const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
@@ -246,7 +247,10 @@ function pathFor(slug: string, locale: Loc): string {
 export function extraToolSchema(slug: string, locale: Loc) {
   const entry = EXTRA_TOOL_LABELS[slug];
   if (!entry) return null;
-  const lab = entry[locale] ?? entry.en;
+  // zh-Hant derives from zh via OpenCC.
+  const lab = locale === "zh-Hant"
+    ? (entry.zh ? deepHant(entry.zh) : entry.en)
+    : (entry[locale] ?? entry.en);
   if (!lab) return null;
   const url = `${siteUrl}${pathFor(slug, locale)}`;
   return {

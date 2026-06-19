@@ -22,6 +22,7 @@ import {
   type WorkflowSpec,
   type WorkflowResult,
 } from "./workflow-engine-components";
+import { toHant } from "./zh-hant";
 
 type WorkflowStatus =
   | "idle"
@@ -31,9 +32,9 @@ type WorkflowStatus =
   | "result"
   | "error";
 
-type L = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type L = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
-const SUPPORTED_LOCALES = ["en", "zh", "es", "pt", "fr", "ja"] as const;
+const SUPPORTED_LOCALES = ["en", "zh", "es", "pt", "fr", "ja", "zh-Hant"] as const;
 
 function normalizeLocale(value: unknown): L {
   return (SUPPORTED_LOCALES as readonly string[]).includes(value as string)
@@ -43,7 +44,7 @@ function normalizeLocale(value: unknown): L {
 
 function makeTr(loc: L) {
   return (en: string, zh: string, es: string, pt: string, fr: string, ja: string): string =>
-    ({ en, zh, es, pt, fr, ja })[loc];
+    loc === "zh-Hant" ? toHant(zh) : ({ en, zh, es, pt, fr, ja })[loc];
 }
 
 export function PdfWorkflowEngine({

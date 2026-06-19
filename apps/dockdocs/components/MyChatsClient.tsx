@@ -25,8 +25,9 @@ import {
   type WorkspaceAnalytics,
   type WorkspaceIdentity,
 } from "@/lib/workspace-runtime";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 const STR = {
   en: {
@@ -326,7 +327,7 @@ const STR = {
 };
 
 export function MyChatsClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [user, setUser] = useState<DockAccountUser | null>(null);
   const [chats, setChats] = useState<SavedChatRecord[]>([]);
   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);

@@ -8,12 +8,15 @@ import { authHeader } from "@/lib/supabase";
 import { ToolFaq } from "@/components/ToolFaq";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
 // Comparison engine UI (bilingual).
 //  D5: multi-file upload -> browser-side text extraction (pdf.js).
 //  D6: /api/compare-extract -> aligned structured fields with sources -> table.
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+// Base locales that have authored copy tables; zh-Hant is derived from zh via deepHant.
+type BaseLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type DocStatus = "ok" | "empty" | "error";
 
 type DocResult = {
@@ -553,7 +556,7 @@ function resolveDocName(docs: ReadonlyArray<{ id: string; name: string }>, id: s
 
 // Cross-document Q&A copy (5 locales). The feature posts to /api/compare-qa,
 // which verifies every cited snippet actually appears in the named document.
-const QA: Record<Locale, {
+const QA: Record<BaseLocale, {
   title: string; desc: string; placeholder: string; ask: string; thinking: string;
   sources: string; noAnswer: string; errMaxDocs: string; errTooLong: string; errQuestion: string;
 }> = {
@@ -620,11 +623,11 @@ const QA: Record<Locale, {
 };
 
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
-  const cl = locale;
-  const t = STR[cl];
-  const r = REC[cl];
-  const tr = TRACE[cl];
-  const qa = QA[cl];
+  const cl: BaseLocale = locale === "zh-Hant" ? "zh" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[cl];
+  const r = locale === "zh-Hant" ? deepHant(REC.zh) : REC[cl];
+  const tr = locale === "zh-Hant" ? deepHant(TRACE.zh) : TRACE[cl];
+  const qa = locale === "zh-Hant" ? deepHant(QA.zh) : QA[cl];
   const [results, setResults] = useState<DocResult[]>([]);
   const [busy, setBusy] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -718,7 +721,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         file: doc.file,
         outputFileName: doc.name,
         pageRanges: "1-3",
-        language: locale === "zh" ? "chi_sim" : "eng",
+        language: locale === "zh" || locale === "zh-Hant" ? "chi_sim" : "eng",
         locale,
       });
       const text = (res.text ?? "").replace(/\s+/g, " ").trim();
@@ -879,7 +882,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         ? { label: t.bEmpty, cls: "text-amber-400 border-amber-400/50" }
         : { label: t.bError, cls: "text-red-400 border-red-400/50" };
 
-  const dimLabel = (key: string, fallback: string) => (locale === "zh" ? DIM_ZH[key] ?? fallback : fallback);
+  const dimLabel = (key: string, fallback: string) => (locale === "zh" ? DIM_ZH[key] ?? fallback : locale === "zh-Hant" ? toHant(DIM_ZH[key] ?? fallback) : fallback);
 
   const askQa = async () => {
     const q = qaQ.trim();
@@ -983,7 +986,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
                   </p>
                   {lastRun ? (
                     <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">
-                      {t.tplLastRun}: {relativeTime(lastRun.createdAt, locale)} · {t.tplRunFiles(lastRun.fileNames.length)}
+                      {t.tplLastRun}: {relativeTime(lastRun.createdAt, cl)} · {t.tplRunFiles(lastRun.fileNames.length)}
                     </p>
                   ) : (
                     <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">{t.tplNoRuns}</p>
