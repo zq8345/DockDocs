@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { ToolFaq } from "@/components/ToolFaq";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Item = { id: string; name: string; url: string; file: File };
 
 const ACCEPT = "image/png,image/jpeg,image/webp,image/gif,image/bmp,.png,.jpg,.jpeg,.webp,.gif,.bmp";
@@ -58,6 +58,16 @@ const STR = {
     count: (n: number) => `${n} ${n === 1 ? "image" : "images"}`,
     convert: "Convertir en PDF", working: "Création du PDF…", reset: "Recommencer",
     needOne: "Ajoutez au moins une image.", err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "画像をPDFに",
+    subtitle: "JPG、PNG、WebP、GIF、BMPの画像を追加し、ドラッグして順番に並べ、1つのPDFに結合します——1画像につき1ページ。変換前にすべての画像を確認できます。",
+    drop: "ここに画像をドラッグ＆ドロップ、またはクリックして選択",
+    choose: "画像を選択", add: "追加", reading: "画像を読み取り中…",
+    hint: "ドラッグして並べ替え。各画像が上から下の順に1つのPDFページになります。",
+    count: (n: number) => `${n}枚の画像`,
+    convert: "PDFに変換", working: "PDFを生成中…", reset: "最初からやり直す",
+    needOne: "少なくとも1枚の画像を追加してください。", err: "問題が発生しました: ",
   },
 };
 

@@ -8,7 +8,7 @@ import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Item = { id: string; name: string; pages: number; thumb: string; file: File };
 
 const STR = {
@@ -66,6 +66,17 @@ const STR = {
     pagesLabel: (n: number) => `${n} page${n === 1 ? "" : "s"}`,
     merge: "Fusionner et télécharger", working: "Fusion en cours…", reset: "Recommencer",
     needTwo: "Ajoutez au moins 2 PDF pour les fusionner.", err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "PDFを結合",
+    subtitle: "PDFを追加し、好きな順番にドラッグして1つに結合します——結合後ではなく、結合前に各ファイルを確認できます。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択", add: "追加", rendering: "ファイルを読み取り中…",
+    hint: "ドラッグして並べ替え。上から下、左から右の順に結合されます。",
+    files: (n: number, p: number) => `${n}個のファイル · 合計${p}ページ`,
+    pagesLabel: (n: number) => `${n}ページ`,
+    merge: "結合してダウンロード", working: "結合中…", reset: "最初からやり直す",
+    needTwo: "結合するには少なくとも2つのPDFを追加してください。", err: "問題が発生しました: ",
   },
 };
 
@@ -160,7 +171,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} busy={busy} busyLabel={t.rendering} />
+        <BatchUploadBox locale={locale === "ja" ? "en" : locale} onFiles={addFiles} busy={busy} busyLabel={t.rendering} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
@@ -208,7 +219,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
 
       {done && (
         <div className="mt-6">
-          <ToolBridge slug="merge-pdf" locale={locale} useLocalePrefix={locale !== "en"} />
+          <ToolBridge slug="merge-pdf" locale={locale === "ja" ? "en" : locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
 

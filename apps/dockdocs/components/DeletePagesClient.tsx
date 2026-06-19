@@ -7,7 +7,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -60,6 +60,16 @@ const STR = {
     status: (del: number, keep: number) => `${del} à supprimer · ${keep} restantes`,
     apply: "Supprimer et télécharger", working: "Génération du PDF…", reset: "Recommencer",
     needKeep: "Conservez au moins une page.", del: "Sera supprimée", err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "ページを削除",
+    subtitle: "PDFをアップロードし、削除したいページをクリックします——ダウンロード前に何が消えるかを正確に確認できます。すべてブラウザ内で行われます。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択", rendering: "ページを描画中…",
+    hint: "ページをクリックして削除対象にします。もう一度クリックで保持。",
+    status: (del: number, keep: number) => `削除${del}ページ · 残り${keep}ページ`,
+    apply: "削除してダウンロード", working: "PDFを生成中…", reset: "最初からやり直す",
+    needKeep: "少なくとも1ページは残してください。", del: "削除されます", err: "問題が発生しました: ",
   },
 };
 
@@ -186,7 +196,7 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
       {done && (
         <div className="mt-6">
-          <ToolBridge slug="delete-page" locale={locale} useLocalePrefix={locale !== "en"} />
+          <ToolBridge slug="delete-page" locale={locale === "ja" ? "en" : locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
       <ToolFaq tool="delete-page" locale={locale} />

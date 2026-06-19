@@ -991,7 +991,7 @@ export default async function LocalizedRoute({
     return <QuizClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
   if (slug === "sign-pdf") {
-    return <>{toolJsonLd}<SignPdfClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<SignPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "redline") {
@@ -1003,11 +1003,11 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "crop-pdf") {
-    return <>{extraJsonLd}<CropPdfClient locale={esLocale} /></>;
+    return <>{extraJsonLd}<CropPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "redact-pdf") {
-    return <>{extraJsonLd}<RedactPdfClient locale={esLocale} /></>;
+    return <>{extraJsonLd}<RedactPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "batch-pdf-to-image") {
@@ -1114,59 +1114,59 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "translate-pdf") {
-    return <>{toolJsonLd}<TranslatePdfClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<TranslatePdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "reorder-pages") {
-    return <>{toolJsonLd}<PageReorderClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<PageReorderClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "add-page") {
-    return <>{toolJsonLd}<InsertPdfClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<InsertPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "watermark-pdf") {
-    return <>{toolJsonLd}<WatermarkEditorClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<WatermarkEditorClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "delete-page") {
-    return <>{toolJsonLd}<DeletePagesClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<DeletePagesClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "rotate-page") {
-    return <>{toolJsonLd}<RotatePagesClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<RotatePagesClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "merge-pdf") {
-    return <>{toolJsonLd}<MergePdfClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<MergePdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "split-pdf") {
-    return <>{toolJsonLd}<SplitPdfClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<SplitPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "pdf-to-jpg") {
-    return <>{toolJsonLd}<PdfToImageClient locale={esLocale} defaultFormat="jpg" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale === "ja" ? "ja" : esLocale} defaultFormat="jpg" /></>;
   }
 
   if (slug === "pdf-to-png") {
-    return <>{toolJsonLd}<PdfToImageClient locale={esLocale} defaultFormat="png" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale === "ja" ? "ja" : esLocale} defaultFormat="png" /></>;
   }
 
   if (slug === "page-numbers") {
-    return <>{toolJsonLd}<PageNumbersClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<PageNumbersClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "jpg-to-pdf" || slug === "png-to-pdf") {
-    return <>{toolJsonLd}<ImagesToPdfClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<ImagesToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "pdf-to-image") {
-    return <>{toolJsonLd}<PdfToImageClient locale={esLocale} defaultFormat="jpg" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={rawLocale === "ja" ? "ja" : esLocale} defaultFormat="jpg" /></>;
   }
 
   if (slug === "images-to-pdf") {
-    return <>{toolJsonLd}<ImagesToPdfClient locale={esLocale} /></>;
+    return <>{toolJsonLd}<ImagesToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if ((toolSlugs as readonly string[]).includes(slug)) {

@@ -5,7 +5,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Edges = { top: number; right: number; bottom: number; left: number };
 
 const STR = {
@@ -58,6 +58,16 @@ const STR = {
     reset: "Réinitialiser les bords", apply: "Rogner et télécharger", working: "Rognage en cours…", start: "Recommencer",
     hint: "Faites glisser les curseurs pour rogner chaque bord (en % de la page). La zone claire est la partie conservée.",
     err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "PDFをトリミング",
+    subtitle: "PDFをアップロードし、ライブプレビューで任意の辺の余白を切り取ってダウンロード——すべてのページが同じようにトリミングされ、すべてブラウザ内で完結します。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択", rendering: "プレビューを描画中…",
+    preview: "ライブプレビュー", top: "上", right: "右", bottom: "下", left: "左",
+    reset: "余白をリセット", apply: "トリミングしてダウンロード", working: "トリミング中…", start: "最初からやり直す",
+    hint: "スライダーをドラッグして各辺を切り取ります（ページに対する%）。透明な部分が残る範囲です。",
+    err: "問題が発生しました: ",
   },
 };
 

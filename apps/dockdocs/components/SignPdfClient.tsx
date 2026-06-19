@@ -5,7 +5,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type PosKey = "tl" | "tc" | "tr" | "ml" | "c" | "mr" | "bl" | "bc" | "br";
 
 const POS: Record<PosKey, { x: number; y: number }> = {
@@ -55,6 +55,14 @@ const STR = {
     apply: "Signer et télécharger", working: "Signature en cours…", reset: "Recommencer", preview: "Aperçu en direct", sig: "Votre signature",
     needSig: "Veuillez d'abord dessiner ou saisir une signature.", err: "Une erreur est survenue : ",
     drawHint: "Dessinez avec la souris ou le doigt.",
+  },
+  ja: {
+    title: "PDFに署名", subtitle: "PDFをアップロードし、署名を手書きまたは入力してページに配置し、ダウンロード——すべてブラウザ内で完結します。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", rendering: "ページを描画中…",
+    draw: "手書き", type: "入力", clear: "クリア", typed: "名前を入力", page: "ページ", position: "位置", size: "サイズ",
+    apply: "署名してダウンロード", working: "署名中…", reset: "最初からやり直す", preview: "ライブプレビュー", sig: "あなたの署名",
+    needSig: "まず署名を手書きまたは入力してください。", err: "問題が発生しました: ",
+    drawHint: "マウスまたは指で書いてください。",
   },
 };
 

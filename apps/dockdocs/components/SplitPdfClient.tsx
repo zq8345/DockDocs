@@ -6,7 +6,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Pg = { idx: number; thumb: string };
 
 const SEG_TINTS = ["", "bg-[rgba(62,207,142,0.06)]", "bg-[rgba(52,211,153,0.07)]", "bg-[rgba(251,191,36,0.08)]", "bg-[rgba(96,165,250,0.07)]"];
@@ -66,6 +66,17 @@ const STR = {
     fileN: (n: number) => `Fichier ${n}`, apply: "Diviser et télécharger", working: "Division en cours…",
     reset: "Recommencer", needSplit: "Ajoutez au moins un point de division.", err: "Une erreur est survenue : ",
     every: "Diviser tous les", everyUnit: "pages", everySet: "Appliquer",
+  },
+  ja: {
+    title: "PDFを分割",
+    subtitle: "PDFをアップロードし、ページ間の✂をクリックして別々のファイルに切り分けます——ダウンロード前に、どのページがどのファイルに入るかを正確に確認できます。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択", rendering: "ページを描画中…",
+    hint: "あるページの後に✂をクリックすると新しいファイルが始まります。もう一度クリックで取り消し。",
+    splitAfter: "ここで分割", files: (n: number) => `${n}個のファイルが作成されます`,
+    fileN: (n: number) => `ファイル ${n}`, apply: "分割してダウンロード", working: "分割中…",
+    reset: "最初からやり直す", needSplit: "少なくとも1つの分割ポイントを追加してください。", err: "問題が発生しました: ",
+    every: "分割する間隔", everyUnit: "ページごと", everySet: "適用",
   },
 };
 

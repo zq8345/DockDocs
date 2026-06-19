@@ -9,7 +9,7 @@ import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 const MAX_CHARS = 14_000;
 
@@ -139,6 +139,27 @@ const STR = {
     reset: "Recommencer",
     errPrefix: "La traduction a échoué : ",
     privacy: "Votre fichier est lu dans votre navigateur ; seul le texte extrait est envoyé pour la traduction.",
+  },
+  ja: {
+    title: "PDFを翻訳",
+    subtitle:
+      "PDFをアップロードし、言語を選んで翻訳されたテキストを取得します。AIが文書のテキストを翻訳します——プライベートに処理され、現在はテキストのみ対応（レイアウト保持は近日対応）。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択",
+    extracting: "PDFを読み取り中…",
+    pagesChars: (p: number, c: number) => `${p}ページ · ${c.toLocaleString()}文字`,
+    noText: "選択可能なテキストが見つかりません。スキャンされたPDFですか？先にOCRを実行してください。",
+    tooLong: `このPDFは${MAX_CHARS.toLocaleString()}文字の上限を超えるテキストを含んでいます。より短い文書（約10ページ）をお使いください。`,
+    target: "翻訳先",
+    translate: "翻訳",
+    translating: "翻訳中…",
+    result: "翻訳",
+    copy: "コピー",
+    copied: "コピーしました！",
+    download: ".txtをダウンロード",
+    reset: "最初からやり直す",
+    errPrefix: "翻訳に失敗しました: ",
+    privacy: "ファイルはブラウザ内で読み取られ、抽出されたテキストのみが翻訳のために送信されます。",
   },
 };
 
