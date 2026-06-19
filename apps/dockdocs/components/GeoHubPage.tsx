@@ -1,5 +1,5 @@
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
-import { type GeoHubData } from "@/lib/geo";
+import { type GeoHubData, type GeoLocale } from "@/lib/geo";
 import {
   absoluteUrl,
   defaultLocale,
@@ -20,8 +20,123 @@ import {
 
 type GeoHubPageProps = {
   hub: GeoHubData;
-  locale?: Locale;
+  locale?: GeoLocale;
   useLocalePrefix?: boolean;
+};
+
+// UI chrome strings (everything not carried by the hub data). Localized to all 6
+// content locales so a non-English visitor never sees English in the shell.
+const chrome: Record<
+  GeoLocale,
+  {
+    quickAnswer: string;
+    steps: [string, string, string, string];
+    clustersEyebrow: string;
+    clustersTitle: string;
+    clustersIntro: string;
+    openWorkflow: string;
+    hubEyebrow: string;
+    hubTitle: string;
+    readBlog: string;
+  }
+> = {
+  en: {
+    quickAnswer: "Quick Answer",
+    steps: [
+      "Choose the document outcome",
+      "Open the matching tool",
+      "Read the related guide",
+      "Export and continue the workflow",
+    ],
+    clustersEyebrow: "GEO semantic clusters",
+    clustersTitle: "Move from real questions into related tools and workflows.",
+    clustersIntro:
+      "These pages are grouped around PDF compression, OCR, conversion, and AI PDF workflows so Google and AI answer engines can understand DockDocs more clearly.",
+    openWorkflow: "Open workflow",
+    hubEyebrow: "GEO Content Hub",
+    hubTitle: "Move from question, to tool, to guide inside one document workflow.",
+    readBlog: "Read blog guides",
+  },
+  zh: {
+    quickAnswer: "快速答案",
+    steps: ["选择文档目标", "打开对应工具", "阅读相关指南", "导出并继续工作流"],
+    clustersEyebrow: "GEO 页面集群",
+    clustersTitle: "从真实问题进入相关工具和工作流。",
+    clustersIntro:
+      "这些页面围绕 PDF 压缩、OCR、转换和 AI PDF 工作流组织，帮助 Google 与 AI answer engines 更好理解 DockDocs。",
+    openWorkflow: "打开工作流",
+    hubEyebrow: "GEO 内容中心",
+    hubTitle: "从问题、工具和指南进入同一个文档工作流。",
+    readBlog: "阅读博客",
+  },
+  es: {
+    quickAnswer: "Respuesta rápida",
+    steps: [
+      "Elige el resultado del documento",
+      "Abre la herramienta correspondiente",
+      "Lee la guía relacionada",
+      "Exporta y continúa el flujo de trabajo",
+    ],
+    clustersEyebrow: "Clústeres semánticos GEO",
+    clustersTitle: "Pasa de preguntas reales a herramientas y flujos de trabajo relacionados.",
+    clustersIntro:
+      "Estas páginas se agrupan en torno a la compresión de PDF, el OCR, la conversión y los flujos de trabajo de PDF con IA para que Google y los motores de respuestas de IA entiendan DockDocs con más claridad.",
+    openWorkflow: "Abrir flujo de trabajo",
+    hubEyebrow: "Centro de contenido GEO",
+    hubTitle: "Pasa de la pregunta a la herramienta y a la guía dentro de un mismo flujo de trabajo documental.",
+    readBlog: "Leer las guías del blog",
+  },
+  pt: {
+    quickAnswer: "Resposta rápida",
+    steps: [
+      "Escolha o resultado do documento",
+      "Abra a ferramenta correspondente",
+      "Leia o guia relacionado",
+      "Exporte e continue o fluxo de trabalho",
+    ],
+    clustersEyebrow: "Clusters semânticos GEO",
+    clustersTitle: "Passe de perguntas reais para ferramentas e fluxos de trabalho relacionados.",
+    clustersIntro:
+      "Estas páginas são agrupadas em torno da compressão de PDF, OCR, conversão e fluxos de trabalho de PDF com IA para que o Google e os mecanismos de resposta de IA entendam o DockDocs com mais clareza.",
+    openWorkflow: "Abrir fluxo de trabalho",
+    hubEyebrow: "Centro de conteúdo GEO",
+    hubTitle: "Passe da pergunta para a ferramenta e para o guia dentro de um único fluxo de trabalho documental.",
+    readBlog: "Ler os guias do blog",
+  },
+  fr: {
+    quickAnswer: "Réponse rapide",
+    steps: [
+      "Choisissez le résultat documentaire",
+      "Ouvrez l'outil correspondant",
+      "Lisez le guide associé",
+      "Exportez et poursuivez le flux de travail",
+    ],
+    clustersEyebrow: "Clusters sémantiques GEO",
+    clustersTitle: "Passez de vraies questions aux outils et flux de travail associés.",
+    clustersIntro:
+      "Ces pages sont regroupées autour de la compression de PDF, de l'OCR, de la conversion et des flux de travail PDF avec IA afin que Google et les moteurs de réponses IA comprennent DockDocs plus clairement.",
+    openWorkflow: "Ouvrir le flux de travail",
+    hubEyebrow: "Centre de contenu GEO",
+    hubTitle: "Passez de la question à l'outil puis au guide dans un même flux de travail documentaire.",
+    readBlog: "Lire les guides du blog",
+  },
+  ja: {
+    quickAnswer: "クイック回答",
+    steps: [
+      "文書のゴールを選ぶ",
+      "対応するツールを開く",
+      "関連ガイドを読む",
+      "エクスポートしてワークフローを続ける",
+    ],
+    clustersEyebrow: "GEO セマンティッククラスター",
+    clustersTitle: "実際の疑問から関連ツールやワークフローへ進みます。",
+    clustersIntro:
+      "これらのページは PDF 圧縮・OCR・変換・AI PDF ワークフローを中心にまとめられており、Google や AI answer engines が DockDocs をより明確に理解できるようにします。",
+    openWorkflow: "ワークフローを開く",
+    hubEyebrow: "GEO コンテンツハブ",
+    hubTitle: "1 つのドキュメントワークフローの中で、疑問からツール、ガイドへと進みます。",
+    readBlog: "ブログを読む",
+  },
 };
 
 export function GeoHubPage({
@@ -29,6 +144,9 @@ export function GeoHubPage({
   locale = defaultLocale,
   useLocalePrefix = false,
 }: GeoHubPageProps) {
+  const t = chrome[locale] ?? chrome.en;
+  // Programmatic-GEO + path helpers only know en/zh; derive a base locale for them.
+  const baseLocale: Locale = locale === "zh" ? "zh" : "en";
   const canonicalPath = useLocalePrefix
     ? localizedPath(locale, hub.slug)
     : `/${hub.slug}/`;
@@ -69,21 +187,13 @@ export function GeoHubPage({
           </div>
           <aside className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5 shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {locale === "zh" ? "快速答案" : "Quick Answer"}
+              {t.quickAnswer}
             </p>
             <p className="mt-4 text-lg font-semibold leading-8 text-[color:var(--foreground)]">
               {hub.answer}
             </p>
             <ol className="mt-6 grid gap-3 text-sm text-[color:var(--muted)]">
-              {(locale === "zh"
-                ? ["选择文档目标", "打开对应工具", "阅读相关指南", "导出并继续工作流"]
-                : [
-                    "Choose the document outcome",
-                    "Open the matching tool",
-                    "Read the related guide",
-                    "Export and continue the workflow",
-                  ]
-              ).map((step, index) => (
+              {t.steps.map((step, index) => (
                 <li
                   key={step}
                   className="flex gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3"
@@ -148,23 +258,19 @@ export function GeoHubPage({
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                {locale === "zh" ? "GEO 页面集群" : "GEO semantic clusters"}
+                {t.clustersEyebrow}
               </p>
               <h2 className="mt-4 text-3xl font-semibold leading-tight">
-                {locale === "zh"
-                  ? "从真实问题进入相关工具和工作流。"
-                  : "Move from real questions into related tools and workflows."}
+                {t.clustersTitle}
               </h2>
             </div>
             <p className="max-w-xl leading-7 text-[color:var(--muted)]">
-              {locale === "zh"
-                ? "这些页面围绕 PDF 压缩、OCR、转换和 AI PDF 工作流组织，帮助 Google 与 AI answer engines 更好理解 DockDocs。"
-                : "These pages are grouped around PDF compression, OCR, conversion, and AI PDF workflows so Google and AI answer engines can understand DockDocs more clearly."}
+              {t.clustersIntro}
             </p>
           </div>
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {getHubProgrammaticPages(hub.slug).map((seed) => {
-              const page = getProgrammaticGeoPage(locale, seed.surface, seed.slug);
+              const page = getProgrammaticGeoPage(baseLocale, seed.surface, seed.slug);
 
               if (!page) {
                 return null;
@@ -175,7 +281,7 @@ export function GeoHubPage({
                   key={`${seed.surface}-${seed.slug}`}
                   href={localizedProgrammaticHref(
                     programmaticGeoPath(seed.surface, seed.slug),
-                    locale,
+                    baseLocale,
                     useLocalePrefix,
                   )}
                   className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:shadow-[0_18px_40px_rgba(24,24,20,0.08)]"
@@ -190,7 +296,7 @@ export function GeoHubPage({
                     {page.description}
                   </p>
                   <span className="mt-5 inline-block text-sm font-semibold text-[color:var(--foreground)] transition group-hover:translate-x-0.5">
-                    {locale === "zh" ? "打开工作流" : "Open workflow"} -&gt;
+                    {t.openWorkflow} -&gt;
                   </span>
                 </a>
               );
@@ -203,19 +309,17 @@ export function GeoHubPage({
         <Container>
           <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--foreground)] p-6 text-[color:var(--background)] shadow-[0_24px_60px_rgba(24,24,20,0.10)] sm:p-8">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--background)]/70">
-              {locale === "zh" ? "GEO 内容中心" : "GEO Content Hub"}
+              {t.hubEyebrow}
             </p>
             <h2 className="mt-3 text-2xl font-semibold">
-              {locale === "zh"
-                ? "从问题、工具和指南进入同一个文档工作流。"
-                : "Move from question, to tool, to guide inside one document workflow."}
+              {t.hubTitle}
             </h2>
             <div className="mt-6 flex flex-wrap gap-3">
               <ButtonLink
                 href={localizedHref("/blog", locale, useLocalePrefix)}
                 variant="inverse"
               >
-                {locale === "zh" ? "阅读博客" : "Read blog guides"}
+                {t.readBlog}
               </ButtonLink>
               <ButtonLink
                 href={localizedHref("/faq", locale, useLocalePrefix)}
@@ -254,7 +358,7 @@ function getHubProgrammaticPages(slug: GeoHubData["slug"]) {
 
 function createGeoHubSchema(
   hub: GeoHubData,
-  locale: Locale,
+  locale: GeoLocale,
   canonicalPath: string,
 ) {
   const pageUrl = absoluteUrl(canonicalPath);

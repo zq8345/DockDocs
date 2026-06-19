@@ -16,16 +16,17 @@ export type SeoRoute = {
 };
 
 // ja ships natively on tool pages, the home page, pricing/sitemap/ai-workspace,
-// and the info pages (about/help/faq/contact/privacy-policy/terms) — all of which
-// have real Japanese copy. The GEO guide hubs, the blog index/articles, and
-// programmatic-GEO still render an English fallback for ja, so they stay out of
-// the ja index + sitemap. Single source of truth shared by the catch-all's
-// noindex gate and the sitemap, so the two can't drift apart.
+// the info pages (about/help/faq/contact/privacy-policy/terms), and the GEO guide
+// hubs (resources/guides/ai-pdf-guides) — all of which now have real Japanese copy.
+// The blog index/articles and programmatic-GEO still render an English fallback for
+// ja, so they stay out of the ja index + sitemap. Single source of truth shared by
+// the catch-all's noindex gate and the sitemap, so the two can't drift apart.
 export function isJaNativeRoute(slug: string): boolean {
   if (slug === "") return true; // home
   if ((toolSlugs as readonly string[]).includes(slug)) return true;
   if (slug === "pricing" || slug === "sitemap" || slug === "ai-workspace") return true;
   if ((infoPageSlugs as readonly string[]).includes(slug) && slug !== "blog") return true;
+  if ((geoPageSlugs as readonly string[]).includes(slug)) return true;
   return false;
 }
 
