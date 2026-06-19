@@ -74,7 +74,7 @@ import {
   getBlogArticle,
   getBlogArticleContent,
 } from "@/lib/blog";
-import { createGeoHubMetadata, getGeoHub } from "@/lib/geo";
+import { createGeoHubMetadata, getGeoHub, toGeoLocale } from "@/lib/geo";
 import {
   getInfoPage,
   geoPageSlugs,
@@ -200,9 +200,9 @@ export async function generateMetadata(args: {
   const { locale, slug: rawSlug } = await args.params;
   const meta = await generateMetadataInner(args);
   // ja ships natively only on the surfaces that have real Japanese copy
-  // (isJaNativeRoute). English-fallback ja routes — blog, programmatic-GEO, GEO
-  // guide hubs — stay noindex; native ja routes flow through with index:true and
-  // pull their ja metadata from jaTools.
+  // (isJaNativeRoute). English-fallback ja routes — blog, programmatic-GEO — stay
+  // noindex; native ja routes (incl. the now-localized GEO guide hubs) flow through
+  // with index:true and pull their ja metadata from jaTools.
   if (locale === "ja") {
     const jaSlug = normalizeSlug(rawSlug);
     if (jaSlug === null || !isJaNativeRoute(jaSlug)) {
@@ -860,7 +860,7 @@ async function generateMetadataInner({
   }
 
   if ((geoPageSlugs as readonly string[]).includes(slug)) {
-    const hub = getGeoHub(uiLocale, slug as GeoPageSlug);
+    const hub = getGeoHub(toGeoLocale(rawLocale), slug as GeoPageSlug);
     return createGeoHubMetadata(hub, localizedPath(rawLocale, slug));
   }
 
@@ -1192,8 +1192,8 @@ export default async function LocalizedRoute({
   if ((geoPageSlugs as readonly string[]).includes(slug)) {
     return (
       <GeoHubPage
-        hub={getGeoHub(uiLocale, slug as GeoPageSlug)}
-        locale={uiLocale}
+        hub={getGeoHub(toGeoLocale(rawLocale), slug as GeoPageSlug)}
+        locale={toGeoLocale(rawLocale)}
         useLocalePrefix
       />
     );
@@ -1838,7 +1838,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
     {
       title: locale === "zh" ? "GEO 资源中心" : locale === "es" ? "Centros GEO" : locale === "pt" ? "Centros GEO" : locale === "fr" ? "Hubs GEO" : "GEO Hubs",
       links: (geoPageSlugs as readonly GeoPageSlug[]).map((geoSlug) => {
-        const hub = getGeoHub(contentLocale, geoSlug);
+        const hub = getGeoHub(toGeoLocale(locale), geoSlug);
         return {
           name: hub.eyebrow,
           href: localizedPath(locale, geoSlug),
