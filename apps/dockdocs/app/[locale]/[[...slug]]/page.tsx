@@ -1101,7 +1101,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "pricing") {
-    return <LocalizedPricing locale={esLocale} />;
+    return <LocalizedPricing locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "account") {
@@ -1110,7 +1110,7 @@ export default async function LocalizedRoute({
 
   if (COMING_SOON_TOOLS[slug]) {
     const t = COMING_SOON_TOOLS[slug];
-    return <ComingSoonTool locale={esLocale} name={t.en} nameZh={t.zh} />;
+    return <ComingSoonTool locale={rawLocale === "ja" ? "ja" : esLocale} name={t.en} nameZh={t.zh} />;
   }
 
   if (slug === "translate-pdf") {
