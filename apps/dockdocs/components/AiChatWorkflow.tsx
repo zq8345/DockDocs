@@ -29,6 +29,11 @@ type WorkflowStatus =
   | "result"
   | "error";
 
+const pick = (
+  locale: AiChatLocale,
+  m: Record<AiChatLocale, string>,
+): string => m[locale];
+
 const copy = {
   en: {
     eyebrow: "Chat with PDF",
@@ -126,6 +131,202 @@ const copy = {
     truncated: "上下文已按大小限制裁剪。",
     verifiedBadge: "已核对原文",
   },
+  es: {
+    eyebrow: "Chat con PDF",
+    title: "Haz preguntas sobre el texto extraído del PDF.",
+    description:
+      "DockDocs extrae localmente el texto legible del PDF y luego envía solo el contexto de texto seleccionado y tu pregunta al proveedor de IA configurado. Para PDF escaneados, ejecuta primero el OCR y pega aquí el texto extraído.",
+    upload: "Elegir PDF",
+    pasteLabel: "O pega texto de OCR / extraído",
+    pastePlaceholder:
+      "Pega aquí el texto de OCR o el texto copiado del PDF cuando el PDF esté escaneado o sea una imagen.",
+    questionLabel: "Pregunta",
+    questionPlaceholder:
+      "Pregunta sobre cláusulas, riesgos, fechas, obligaciones, tablas o próximos pasos.",
+    ask: "Hacer pregunta",
+    retry: "Reintentar",
+    reset: "Restablecer",
+    newChat: "Nuevo chat",
+    cancel: "Cancelar",
+    source: "Fuente",
+    context: "Contexto enviado",
+    provider: "Proveedor",
+    usage: "Uso de tokens",
+    answer: "Respuesta",
+    conversation: "Conversación",
+    user: "Usuario",
+    assistant: "Asistente",
+    references: "Referencias",
+    copyReference: "Copiar",
+    showReference: "Mostrar",
+    hideReference: "Ocultar",
+    templates: "Plantillas de prompts",
+    quota: "Hoy",
+    quotaRemaining: "restantes",
+    quotaExceeded:
+      "Has alcanzado el límite diario de AI Chat de este navegador. Inicia sesión para una cuota local mayor o vuelve a intentarlo mañana.",
+    privacyTitle: "Comportamiento de privacidad",
+    privacy:
+      "El archivo PDF original nunca se envía al proveedor de IA. Solo se envían el texto extraído y tu pregunta, y únicamente después de que inicias el chat.",
+    idle: "Sube un PDF o pega texto de OCR y haz una pregunta.",
+    ready: "Listo para preguntar.",
+    working: "Consultando el documento...",
+    extractingStatus: "Leyendo el texto del documento...",
+    sendingStatus: "Enviando el contexto al proveedor de IA...",
+    streamingStatus: "Transmitiendo la respuesta...",
+    validatingStatus: "Validando referencias y uso de tokens...",
+    fallbackStatus: "Transmisión en pausa. Finalizando con la respuesta estándar...",
+    cancelled: "Cancelado. La respuesta parcial no se guardó.",
+    truncated: "El contexto se recortó para ajustarse al límite de tamaño.",
+    verifiedBadge: "Fuente verificada",
+  },
+  pt: {
+    eyebrow: "Chat com PDF",
+    title: "Faça perguntas sobre o texto extraído do PDF.",
+    description:
+      "O DockDocs extrai localmente o texto legível do PDF e depois envia apenas o contexto de texto selecionado e sua pergunta ao provedor de IA configurado. Para PDFs digitalizados, execute primeiro o OCR e cole aqui o texto extraído.",
+    upload: "Escolher PDF",
+    pasteLabel: "Ou cole texto de OCR / extraído",
+    pastePlaceholder:
+      "Cole aqui o texto de OCR ou o texto copiado do PDF quando o PDF for digitalizado ou baseado em imagem.",
+    questionLabel: "Pergunta",
+    questionPlaceholder:
+      "Pergunte sobre cláusulas, riscos, datas, obrigações, tabelas ou próximos passos.",
+    ask: "Fazer pergunta",
+    retry: "Tentar novamente",
+    reset: "Redefinir",
+    newChat: "Novo chat",
+    cancel: "Cancelar",
+    source: "Fonte",
+    context: "Contexto enviado",
+    provider: "Provedor",
+    usage: "Uso de tokens",
+    answer: "Resposta",
+    conversation: "Conversa",
+    user: "Usuário",
+    assistant: "Assistente",
+    references: "Referências",
+    copyReference: "Copiar",
+    showReference: "Mostrar",
+    hideReference: "Ocultar",
+    templates: "Modelos de prompt",
+    quota: "Hoje",
+    quotaRemaining: "restantes",
+    quotaExceeded:
+      "Você atingiu o limite diário de AI Chat deste navegador. Faça login para uma cota local maior ou tente novamente amanhã.",
+    privacyTitle: "Comportamento de privacidade",
+    privacy:
+      "O arquivo PDF original nunca é enviado ao provedor de IA. Apenas o texto extraído e sua pergunta são enviados, e somente depois que você inicia o chat.",
+    idle: "Envie um PDF ou cole texto de OCR e faça uma pergunta.",
+    ready: "Pronto para perguntar.",
+    working: "Consultando o documento...",
+    extractingStatus: "Lendo o texto do documento...",
+    sendingStatus: "Enviando o contexto ao provedor de IA...",
+    streamingStatus: "Transmitindo a resposta...",
+    validatingStatus: "Validando referências e uso de tokens...",
+    fallbackStatus: "Transmissão pausada. Finalizando com a resposta padrão...",
+    cancelled: "Cancelado. A resposta parcial não foi salva.",
+    truncated: "O contexto foi reduzido para caber no limite de tamanho.",
+    verifiedBadge: "Fonte verificada",
+  },
+  fr: {
+    eyebrow: "Chat avec PDF",
+    title: "Posez des questions sur le texte extrait du PDF.",
+    description:
+      "DockDocs extrait localement le texte lisible du PDF, puis n'envoie que le contexte de texte sélectionné et votre question au fournisseur d'IA configuré. Pour les PDF numérisés, lancez d'abord l'OCR et collez ici le texte extrait.",
+    upload: "Choisir un PDF",
+    pasteLabel: "Ou collez le texte OCR / extrait",
+    pastePlaceholder:
+      "Collez ici le texte OCR ou le texte copié du PDF lorsque le PDF est numérisé ou composé d'images.",
+    questionLabel: "Question",
+    questionPlaceholder:
+      "Posez des questions sur les clauses, les risques, les dates, les obligations, les tableaux ou les prochaines étapes.",
+    ask: "Poser la question",
+    retry: "Réessayer",
+    reset: "Réinitialiser",
+    newChat: "Nouvelle conversation",
+    cancel: "Annuler",
+    source: "Source",
+    context: "Contexte envoyé",
+    provider: "Fournisseur",
+    usage: "Utilisation de jetons",
+    answer: "Réponse",
+    conversation: "Conversation",
+    user: "Utilisateur",
+    assistant: "Assistant",
+    references: "Références",
+    copyReference: "Copier",
+    showReference: "Afficher",
+    hideReference: "Masquer",
+    templates: "Modèles de prompts",
+    quota: "Aujourd'hui",
+    quotaRemaining: "restants",
+    quotaExceeded:
+      "Limite quotidienne d'AI Chat atteinte pour ce navigateur. Connectez-vous pour un quota local plus élevé ou réessayez demain.",
+    privacyTitle: "Comportement en matière de confidentialité",
+    privacy:
+      "Le fichier PDF original n'est jamais envoyé au fournisseur d'IA. Seuls le texte extrait et votre question sont envoyés, et uniquement après le lancement de la conversation.",
+    idle: "Importez un PDF ou collez du texte OCR, puis posez une question.",
+    ready: "Prêt à poser une question.",
+    working: "Interrogation du document...",
+    extractingStatus: "Lecture du texte du document...",
+    sendingStatus: "Envoi du contexte au fournisseur d'IA...",
+    streamingStatus: "Diffusion de la réponse...",
+    validatingStatus: "Validation des références et de l'utilisation des jetons...",
+    fallbackStatus: "Diffusion en pause. Finalisation avec la réponse standard...",
+    cancelled: "Annulé. La réponse partielle n'a pas été enregistrée.",
+    truncated: "Le contexte a été réduit pour respecter la limite de taille.",
+    verifiedBadge: "Source vérifiée",
+  },
+  ja: {
+    eyebrow: "PDF とチャット",
+    title: "抽出した PDF テキストについて質問します。",
+    description:
+      "DockDocs はブラウザー内で読み取り可能な PDF テキストを抽出し、設定済みの AI プロバイダーには選択したテキストコンテキストと質問のみを送信します。スキャンされた PDF の場合は、先に OCR を実行し、抽出したテキストをここに貼り付けてください。",
+    upload: "PDF を選択",
+    pasteLabel: "または OCR / 抽出済みテキストを貼り付け",
+    pastePlaceholder:
+      "PDF がスキャンまたは画像ベースの場合は、OCR テキストやコピーした PDF テキストをここに貼り付けてください。",
+    questionLabel: "質問",
+    questionPlaceholder:
+      "条項、リスク、日付、義務、表、次のステップなどについて質問してください。",
+    ask: "質問する",
+    retry: "再試行",
+    reset: "リセット",
+    newChat: "新しいチャット",
+    cancel: "キャンセル",
+    source: "ソース",
+    context: "送信したコンテキスト",
+    provider: "プロバイダー",
+    usage: "トークン使用量",
+    answer: "回答",
+    conversation: "会話",
+    user: "ユーザー",
+    assistant: "アシスタント",
+    references: "引用元",
+    copyReference: "コピー",
+    showReference: "表示",
+    hideReference: "折りたたむ",
+    templates: "プロンプトテンプレート",
+    quota: "本日",
+    quotaRemaining: "残り",
+    quotaExceeded:
+      "このブラウザーの本日の AI Chat 上限に達しました。サインインするとローカルの上限が増えます。または明日もう一度お試しください。",
+    privacyTitle: "プライバシーの取り扱い",
+    privacy:
+      "元の PDF ファイルが AI プロバイダーに送信されることはありません。送信されるのは抽出したテキストと質問のみで、チャットを開始した後にのみ送信されます。",
+    idle: "PDF をアップロードするか OCR テキストを貼り付けてから質問してください。",
+    ready: "質問の準備ができました。",
+    working: "文書に問い合わせています...",
+    extractingStatus: "文書テキストを読み込んでいます...",
+    sendingStatus: "コンテキストを AI プロバイダーに送信しています...",
+    streamingStatus: "回答をストリーミングしています...",
+    validatingStatus: "引用元とトークン使用量を検証しています...",
+    fallbackStatus: "ストリーミングを一時停止しました。標準応答で完了します...",
+    cancelled: "キャンセルしました。未完了の回答は保存されません。",
+    truncated: "コンテキストはサイズ制限に合わせて切り詰められました。",
+    verifiedBadge: "ソース検証済み",
+  },
 } as const;
 
 export function AiChatWorkflow({
@@ -204,7 +405,16 @@ export function AiChatWorkflow({
       selected.type !== "application/pdf" &&
       !selected.name.toLowerCase().endsWith(".pdf")
     ) {
-      setError(locale === "zh" ? "请上传 PDF 文件。" : "Upload a PDF file.");
+      setError(
+        pick(locale, {
+          en: "Upload a PDF file.",
+          zh: "请上传 PDF 文件。",
+          es: "Sube un archivo PDF.",
+          pt: "Envie um arquivo PDF.",
+          fr: "Importez un fichier PDF.",
+          ja: "PDF ファイルをアップロードしてください。",
+        }),
+      );
       setStatus("error");
       return;
     }
@@ -320,14 +530,24 @@ export function AiChatWorkflow({
       const message =
         chatError instanceof Error
           ? chatError.message
-          : locale === "zh"
-            ? "PDF 问答失败。"
-            : "Chat with PDF failed.";
+          : pick(locale, {
+              en: "Chat with PDF failed.",
+              zh: "PDF 问答失败。",
+              es: "El chat con PDF falló.",
+              pt: "O chat com PDF falhou.",
+              fr: "Échec du chat avec PDF.",
+              ja: "PDF とのチャットに失敗しました。",
+            });
       setError(
         message === "aborted"
-          ? locale === "zh"
-            ? "已取消。"
-            : "Cancelled."
+          ? pick(locale, {
+              en: "Cancelled.",
+              zh: "已取消。",
+              es: "Cancelado.",
+              pt: "Cancelado.",
+              fr: "Annulé.",
+              ja: "キャンセルしました。",
+            })
           : message,
       );
       setProgress(0);
@@ -524,7 +744,23 @@ export function AiChatWorkflow({
                   {quota.remaining} {t.quotaRemaining}
                 </p>
                 <p className="font-semibold text-[color:var(--muted)]">
-                  {quota.signedIn ? "Signed in" : "Anonymous"}
+                  {quota.signedIn
+                    ? pick(locale, {
+                        en: "Signed in",
+                        zh: "已登录",
+                        es: "Sesión iniciada",
+                        pt: "Conectado",
+                        fr: "Connecté",
+                        ja: "サインイン済み",
+                      })
+                    : pick(locale, {
+                        en: "Anonymous",
+                        zh: "匿名",
+                        es: "Anónimo",
+                        pt: "Anônimo",
+                        fr: "Anonyme",
+                        ja: "匿名",
+                      })}
                 </p>
               </div>
             ) : null}

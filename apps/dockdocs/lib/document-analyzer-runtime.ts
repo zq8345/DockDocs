@@ -52,6 +52,11 @@ type AnalyzerPayload = {
 
 const maxAnalyzerContextCharacters = 24_000;
 
+const pick = (
+  locale: AiChatLocale,
+  m: Record<AiChatLocale, string>,
+): string => m[locale];
+
 export async function analyzeDocument({
   file,
   pastedText,
@@ -63,7 +68,14 @@ export async function analyzeDocument({
 }: DocumentAnalyzerInput): Promise<DocumentAnalysis> {
   onProgress?.({
     progress: 8,
-    step: locale === "zh" ? "正在准备文档文本..." : "Preparing document text...",
+    step: pick(locale, {
+      en: "Preparing document text...",
+      zh: "正在准备文档文本...",
+      es: "Preparando el texto del documento...",
+      pt: "Preparando o texto do documento...",
+      fr: "Préparation du texte du document...",
+      ja: "文書テキストを準備しています...",
+    }),
   });
 
   const extracted = chatContext?.trim()
@@ -88,10 +100,14 @@ export async function analyzeDocument({
 
   onProgress?.({
     progress: 70,
-    step:
-      locale === "zh"
-        ? "正在生成文档分析..."
-        : "Generating document analysis...",
+    step: pick(locale, {
+      en: "Generating document analysis...",
+      zh: "正在生成文档分析...",
+      es: "Generando el análisis del documento...",
+      pt: "Gerando a análise do documento...",
+      fr: "Génération de l'analyse du document...",
+      ja: "文書分析を生成しています...",
+    }),
   });
 
   const payload = await requestAnalyzer({
@@ -111,7 +127,14 @@ export async function analyzeDocument({
 
   onProgress?.({
     progress: 100,
-    step: locale === "zh" ? "分析已完成。" : "Analysis is ready.",
+    step: pick(locale, {
+      en: "Analysis is ready.",
+      zh: "分析已完成。",
+      es: "El análisis está listo.",
+      pt: "A análise está pronta.",
+      fr: "L'analyse est prête.",
+      ja: "分析の準備ができました。",
+    }),
   });
 
   return {
@@ -165,9 +188,14 @@ async function requestAnalyzer({
   if (!response.ok || !payload?.ok || !payload.result?.answer) {
     throw new Error(
       payload?.message ||
-        (locale === "zh"
-          ? "Document Analyzer 暂不可用。"
-          : "Document Analyzer is currently unavailable."),
+        pick(locale, {
+          en: "Document Analyzer is currently unavailable.",
+          zh: "Document Analyzer 暂不可用。",
+          es: "Document Analyzer no está disponible en este momento.",
+          pt: "O Document Analyzer está indisponível no momento.",
+          fr: "Document Analyzer est actuellement indisponible.",
+          ja: "Document Analyzer は現在利用できません。",
+        }),
     );
   }
 
@@ -175,8 +203,7 @@ async function requestAnalyzer({
 }
 
 function createAnalyzerPrompt(locale: AiChatLocale) {
-  const language =
-    locale === "zh" ? "Simplified Chinese" : "English";
+  const language = analyzerLanguageName(locale);
   return [
     "Analyze the document automatically for a workspace user.",
     `Answer in ${language}.`,
@@ -193,6 +220,23 @@ function createAnalyzerPrompt(locale: AiChatLocale) {
     "Action Items:",
     "Use short bullet lines under each section.",
   ].join("\n");
+}
+
+function analyzerLanguageName(locale: AiChatLocale) {
+  switch (locale) {
+    case "zh":
+      return "Simplified Chinese";
+    case "es":
+      return "Spanish";
+    case "pt":
+      return "Portuguese";
+    case "fr":
+      return "French";
+    case "ja":
+      return "Japanese";
+    default:
+      return "English";
+  }
 }
 
 function parseAnalysisAnswer(answer: string) {

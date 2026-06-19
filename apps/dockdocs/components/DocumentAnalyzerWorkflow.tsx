@@ -20,6 +20,11 @@ type AnalyzerStatus =
   | "result"
   | "error";
 
+const pick = (
+  locale: AiChatLocale,
+  m: Record<AiChatLocale, string>,
+): string => m[locale];
+
 const copy = {
   en: {
     eyebrow: "Document analysis",
@@ -50,6 +55,7 @@ const copy = {
     ready: "Ready to analyze.",
     truncated: "Context was trimmed to fit the size limit.",
     noSavedContext: "No saved chat context yet.",
+    notFound: "Not found",
   },
   zh: {
     eyebrow: "文档分析",
@@ -79,6 +85,131 @@ const copy = {
     ready: "已准备分析。",
     truncated: "上下文已按大小限制裁剪。",
     noSavedContext: "暂无已保存的 Chat Context。",
+    notFound: "未找到",
+  },
+  es: {
+    eyebrow: "Análisis de documentos",
+    title: "Analiza un documento antes de empezar a hacer preguntas.",
+    description:
+      "Sube un PDF, pega texto de OCR o analiza un contexto de chat guardado. DockDocs envía solo el texto extraído al proveedor de IA y devuelve notas de trabajo estructuradas.",
+    upload: "Elegir PDF",
+    pasteLabel: "Texto de OCR o contexto de chat",
+    pastePlaceholder:
+      "Pega aquí texto de OCR extraído, texto copiado del PDF o un contexto de chat.",
+    analyze: "Analizar documento",
+    analyzing: "Analizando...",
+    reset: "Restablecer",
+    latestContext: "Usar el último contexto de chat guardado",
+    source: "Fuente",
+    context: "Contexto analizado",
+    usage: "Uso de tokens",
+    provider: "Proveedor",
+    summary: "Resumen del documento",
+    keyDates: "Fechas clave",
+    keyAmounts: "Importes clave",
+    people: "Personas / Organizaciones",
+    risks: "Riesgos",
+    actionItems: "Acciones",
+    references: "Referencias",
+    verifiedBadge: "Fuente verificada",
+    idle: "Sube un PDF o pega texto para empezar.",
+    ready: "Listo para analizar.",
+    truncated: "El contexto se recortó para ajustarse al límite de tamaño.",
+    noSavedContext: "Aún no hay contexto de chat guardado.",
+    notFound: "No encontrado",
+  },
+  pt: {
+    eyebrow: "Análise de documentos",
+    title: "Analise um documento antes de começar a fazer perguntas.",
+    description:
+      "Envie um PDF, cole texto de OCR ou analise um contexto de chat salvo. O DockDocs envia apenas o texto extraído ao provedor de IA e retorna notas de trabalho estruturadas.",
+    upload: "Escolher PDF",
+    pasteLabel: "Texto de OCR ou contexto de chat",
+    pastePlaceholder:
+      "Cole aqui texto de OCR extraído, texto copiado do PDF ou um contexto de chat.",
+    analyze: "Analisar documento",
+    analyzing: "Analisando...",
+    reset: "Redefinir",
+    latestContext: "Usar o último contexto de chat salvo",
+    source: "Fonte",
+    context: "Contexto analisado",
+    usage: "Uso de tokens",
+    provider: "Provedor",
+    summary: "Resumo do documento",
+    keyDates: "Datas-chave",
+    keyAmounts: "Valores-chave",
+    people: "Pessoas / Organizações",
+    risks: "Riscos",
+    actionItems: "Ações",
+    references: "Referências",
+    verifiedBadge: "Fonte verificada",
+    idle: "Envie um PDF ou cole texto para começar.",
+    ready: "Pronto para analisar.",
+    truncated: "O contexto foi reduzido para caber no limite de tamanho.",
+    noSavedContext: "Ainda não há contexto de chat salvo.",
+    notFound: "Não encontrado",
+  },
+  fr: {
+    eyebrow: "Analyse de documents",
+    title: "Analysez un document avant de commencer à poser des questions.",
+    description:
+      "Importez un PDF, collez du texte OCR ou analysez un contexte de conversation enregistré. DockDocs n'envoie que le texte extrait au fournisseur d'IA et renvoie des notes de travail structurées.",
+    upload: "Choisir un PDF",
+    pasteLabel: "Texte OCR ou contexte de conversation",
+    pastePlaceholder:
+      "Collez ici du texte OCR extrait, du texte copié du PDF ou un contexte de conversation.",
+    analyze: "Analyser le document",
+    analyzing: "Analyse en cours...",
+    reset: "Réinitialiser",
+    latestContext: "Utiliser le dernier contexte de conversation enregistré",
+    source: "Source",
+    context: "Contexte analysé",
+    usage: "Utilisation de jetons",
+    provider: "Fournisseur",
+    summary: "Résumé du document",
+    keyDates: "Dates clés",
+    keyAmounts: "Montants clés",
+    people: "Personnes / Organisations",
+    risks: "Risques",
+    actionItems: "Actions à mener",
+    references: "Références",
+    verifiedBadge: "Source vérifiée",
+    idle: "Importez un PDF ou collez du texte pour commencer.",
+    ready: "Prêt à analyser.",
+    truncated: "Le contexte a été réduit pour respecter la limite de taille.",
+    noSavedContext: "Aucun contexte de conversation enregistré pour l'instant.",
+    notFound: "Introuvable",
+  },
+  ja: {
+    eyebrow: "文書分析",
+    title: "質問を始める前に文書を分析します。",
+    description:
+      "PDF をアップロードするか、OCR テキストを貼り付けるか、保存済みのチャットコンテキストを分析します。DockDocs は抽出したテキストのみを AI プロバイダーに送信し、構造化された作業メモを返します。",
+    upload: "PDF を選択",
+    pasteLabel: "OCR テキストまたはチャットコンテキスト",
+    pastePlaceholder:
+      "抽出した OCR テキスト、コピーした PDF テキスト、またはチャットコンテキストをここに貼り付けてください。",
+    analyze: "文書を分析",
+    analyzing: "分析しています...",
+    reset: "リセット",
+    latestContext: "最後に保存したチャットコンテキストを使用",
+    source: "ソース",
+    context: "分析したコンテキスト",
+    usage: "トークン使用量",
+    provider: "プロバイダー",
+    summary: "文書の概要",
+    keyDates: "重要な日付",
+    keyAmounts: "重要な金額",
+    people: "人物 / 組織",
+    risks: "リスク",
+    actionItems: "アクション項目",
+    references: "引用元",
+    verifiedBadge: "ソース検証済み",
+    idle: "PDF をアップロードするかテキストを貼り付けて分析を開始します。",
+    ready: "分析の準備ができました。",
+    truncated: "コンテキストはサイズ制限に合わせて切り詰められました。",
+    noSavedContext: "保存済みのチャットコンテキストはまだありません。",
+    notFound: "見つかりません",
   },
 } as const;
 
@@ -133,7 +264,16 @@ export function DocumentAnalyzerWorkflow({
       selected.type !== "application/pdf" &&
       !selected.name.toLowerCase().endsWith(".pdf")
     ) {
-      setError(locale === "zh" ? "请上传 PDF 文件。" : "Upload a PDF file.");
+      setError(
+        pick(locale, {
+          en: "Upload a PDF file.",
+          zh: "请上传 PDF 文件。",
+          es: "Sube un archivo PDF.",
+          pt: "Envie um arquivo PDF.",
+          fr: "Importez un fichier PDF.",
+          ja: "PDF ファイルをアップロードしてください。",
+        }),
+      );
       setStatus("error");
       return;
     }
@@ -206,9 +346,14 @@ export function DocumentAnalyzerWorkflow({
       setError(
         analyzerError instanceof Error
           ? analyzerError.message
-          : locale === "zh"
-            ? "文档分析失败。"
-            : "Document analysis failed.",
+          : pick(locale, {
+              en: "Document analysis failed.",
+              zh: "文档分析失败。",
+              es: "El análisis del documento falló.",
+              pt: "A análise do documento falhou.",
+              fr: "Échec de l'analyse du document.",
+              ja: "文書分析に失敗しました。",
+            }),
       );
       setStatus("error");
     }
@@ -383,15 +528,16 @@ export function DocumentAnalyzerWorkflow({
               ) : null}
 
               <div className="mt-6 grid gap-4">
-                <AnalysisSection title={t.summary} items={[analysis.summary]} />
-                <AnalysisSection title={t.keyDates} items={analysis.keyDates} />
-                <AnalysisSection title={t.keyAmounts} items={analysis.keyAmounts} />
+                <AnalysisSection title={t.summary} items={[analysis.summary]} emptyLabel={t.notFound} />
+                <AnalysisSection title={t.keyDates} items={analysis.keyDates} emptyLabel={t.notFound} />
+                <AnalysisSection title={t.keyAmounts} items={analysis.keyAmounts} emptyLabel={t.notFound} />
                 <AnalysisSection
                   title={t.people}
                   items={analysis.peopleOrganizations}
+                  emptyLabel={t.notFound}
                 />
-                <AnalysisSection title={t.risks} items={analysis.risks} />
-                <AnalysisSection title={t.actionItems} items={analysis.actionItems} />
+                <AnalysisSection title={t.risks} items={analysis.risks} emptyLabel={t.notFound} />
+                <AnalysisSection title={t.actionItems} items={analysis.actionItems} emptyLabel={t.notFound} />
               </div>
 
               <section className="mt-6 border-t border-[color:var(--line)] pt-5">
@@ -448,8 +594,16 @@ function Info({ label, value }: { label: string; value: string }) {
   );
 }
 
-function AnalysisSection({ title, items }: { title: string; items: string[] }) {
-  const visibleItems = items.length > 0 ? items : ["Not found"];
+function AnalysisSection({
+  title,
+  items,
+  emptyLabel,
+}: {
+  title: string;
+  items: string[];
+  emptyLabel: string;
+}) {
+  const visibleItems = items.length > 0 ? items : [emptyLabel];
   return (
     <section className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
       <h3 className="font-semibold text-[color:var(--foreground)]">{title}</h3>

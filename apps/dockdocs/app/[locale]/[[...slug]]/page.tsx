@@ -1700,8 +1700,16 @@ const aiCopy = {
   },
 } as const;
 
+const aiWidgetLocales = ["en", "zh", "es", "pt", "fr", "ja"] as const;
+type AiWidgetLocale = (typeof aiWidgetLocales)[number];
+
 function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
   const copy = aiCopy[locale] ?? aiCopy.en;
+  const aiLocale: AiWidgetLocale = (aiWidgetLocales as readonly string[]).includes(
+    locale,
+  )
+    ? (locale as AiWidgetLocale)
+    : "en";
 
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
@@ -1743,9 +1751,9 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" 
           </div>
         </div>
       </Section>
-      <AiSummaryWorkflow locale={locale === "zh" ? "zh" : "en"} />
-      <DocumentAnalyzerWorkflow locale={locale === "zh" ? "zh" : "en"} />
-      <AiChatWorkflow locale={locale === "zh" ? "zh" : "en"} />
+      <AiSummaryWorkflow locale={aiLocale} />
+      <DocumentAnalyzerWorkflow locale={aiLocale} />
+      <AiChatWorkflow locale={aiLocale} />
     </main>
   );
 }

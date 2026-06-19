@@ -43,6 +43,11 @@ type ProviderSummaryResult = {
 
 const maxSummaryCharacters = 24_000;
 const aiSummaryMaxTokens = 1600;
+
+const pick = (
+  locale: AnswerLocale,
+  m: Record<AnswerLocale, string>,
+): string => m[locale];
 const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
 
 // Best-effort per-IP sliding-window limiter (per warm instance) to bound AI budget abuse.
@@ -132,10 +137,14 @@ export default async (req: Request, _context: Context) => {
       {
         ok: false,
         code: "AI_SUMMARY_TEXT_TOO_SHORT",
-        message:
-          locale === "zh"
-            ? "可用于摘要的文本太少。请先提取更多 PDF 文本或运行 OCR。"
-            : "There is not enough text to summarize. Extract more PDF text or run OCR first.",
+        message: pick(locale, {
+          en: "There is not enough text to summarize. Extract more PDF text or run OCR first.",
+          zh: "可用于摘要的文本太少。请先提取更多 PDF 文本或运行 OCR。",
+          es: "No hay suficiente texto para resumir. Extrae más texto del PDF o ejecuta primero el OCR.",
+          pt: "Não há texto suficiente para resumir. Extraia mais texto do PDF ou execute o OCR primeiro.",
+          fr: "Texte insuffisant pour générer un résumé. Extrayez davantage de texte du PDF ou lancez d'abord l'OCR.",
+          ja: "要約に十分なテキストがありません。PDF からさらにテキストを抽出するか、先に OCR を実行してください。",
+        }),
         httpStatus: 400,
       },
       200,
@@ -147,10 +156,14 @@ export default async (req: Request, _context: Context) => {
       {
         ok: false,
         code: "AI_SUMMARY_TEXT_TOO_LONG",
-        message:
-          locale === "zh"
-            ? "AI Summary 当前最多支持 24,000 个字符。请缩短文本后重试。"
-            : "AI Summary currently supports up to 24,000 characters. Shorten the text and try again.",
+        message: pick(locale, {
+          en: "AI Summary currently supports up to 24,000 characters. Shorten the text and try again.",
+          zh: "AI Summary 当前最多支持 24,000 个字符。请缩短文本后重试。",
+          es: "AI Summary admite actualmente hasta 24,000 caracteres. Acorta el texto e inténtalo de nuevo.",
+          pt: "O AI Summary suporta atualmente até 24.000 caracteres. Reduza o texto e tente novamente.",
+          fr: "AI Summary prend actuellement en charge jusqu'à 24 000 caractères. Raccourcissez le texte et réessayez.",
+          ja: "AI Summary は現在最大 24,000 文字に対応しています。テキストを短くして再試行してください。",
+        }),
         httpStatus: 413,
       },
       200,
@@ -173,8 +186,14 @@ export default async (req: Request, _context: Context) => {
         {
           ok: false,
           code: "AI_SUMMARY_INVALID_PROVIDER_OUTPUT",
-          message:
-            "AI Summary provider did not return the expected structured summary JSON.",
+          message: pick(locale, {
+            en: "AI Summary provider did not return the expected structured summary JSON.",
+            zh: "AI 摘要服务未返回预期的结构化摘要 JSON。",
+            es: "El proveedor de AI Summary no devolvió el JSON de resumen estructurado esperado.",
+            pt: "O provedor de AI Summary não retornou o JSON de resumo estruturado esperado.",
+            fr: "Le fournisseur AI Summary n'a pas renvoyé le JSON de résumé structuré attendu.",
+            ja: "AI Summary プロバイダーから期待される構造化要約 JSON が返されませんでした。",
+          }),
           httpStatus: 502,
         },
         200,
@@ -211,9 +230,26 @@ export default async (req: Request, _context: Context) => {
         code: timedOut
           ? "AI_SUMMARY_PROVIDER_TIMEOUT"
           : "AI_SUMMARY_PROVIDER_ERROR",
-        message: timedOut
-          ? "The AI Summary provider timed out or could not be reached."
-          : message,
+        message: pick(
+          locale,
+          timedOut
+            ? {
+                en: "The AI Summary provider timed out or could not be reached.",
+                zh: "AI 摘要服务超时或无法访问。",
+                es: "El proveedor de AI Summary agotó el tiempo de espera o no se pudo contactar.",
+                pt: "O provedor de AI Summary atingiu o tempo limite ou não pôde ser contatado.",
+                fr: "Le fournisseur AI Summary a expiré ou est injoignable.",
+                ja: "AI Summary プロバイダーがタイムアウトしたか、接続できませんでした。",
+              }
+            : {
+                en: "The AI Summary provider could not complete the request. Please try again.",
+                zh: "AI 摘要服务无法完成请求。请重试。",
+                es: "El proveedor de AI Summary no pudo completar la solicitud. Inténtalo de nuevo.",
+                pt: "O provedor de AI Summary não conseguiu concluir a solicitação. Tente novamente.",
+                fr: "Le fournisseur AI Summary n'a pas pu traiter la requête. Veuillez réessayer.",
+                ja: "AI Summary プロバイダーがリクエストを完了できませんでした。もう一度お試しください。",
+              },
+        ),
         httpStatus: timedOut ? 504 : 502,
       },
       200,

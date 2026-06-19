@@ -65,6 +65,11 @@ type NormalizedHistoryTurn = {
 const maxContextCharacters = 24_000;
 const minContextCharacters = 80;
 const aiChatMaxTokens = 1400;
+
+const pick = (
+  locale: AnswerLocale,
+  m: Record<AnswerLocale, string>,
+): string => m[locale];
 const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
 
 // Best-effort per-IP sliding-window limiter (per warm instance) to bound AI budget abuse.
@@ -157,10 +162,14 @@ export default async (req: Request, _context: Context) => {
       {
         ok: false,
         code: "AI_CHAT_CONTEXT_TOO_SHORT",
-        message:
-          locale === "zh"
-            ? "可用于问答的文档文本太少。请先提取更多文本或运行 OCR。"
-            : "There is not enough document text to answer from. Extract more text or run OCR first.",
+        message: pick(locale, {
+          en: "There is not enough document text to answer from. Extract more text or run OCR first.",
+          zh: "可用于问答的文档文本太少。请先提取更多文本或运行 OCR。",
+          es: "No hay suficiente texto del documento para responder. Extrae más texto o ejecuta primero el OCR.",
+          pt: "Não há texto suficiente no documento para responder. Extraia mais texto ou execute o OCR primeiro.",
+          fr: "Le texte du document est insuffisant pour répondre. Extrayez davantage de texte ou lancez d'abord l'OCR.",
+          ja: "回答に使える文書テキストが不足しています。さらにテキストを抽出するか、先に OCR を実行してください。",
+        }),
         httpStatus: 400,
       },
       200,
@@ -172,10 +181,14 @@ export default async (req: Request, _context: Context) => {
       {
         ok: false,
         code: "AI_CHAT_QUESTION_TOO_SHORT",
-        message:
-          locale === "zh"
-            ? "请输入一个更具体的问题。"
-            : "Ask a more specific question.",
+        message: pick(locale, {
+          en: "Ask a more specific question.",
+          zh: "请输入一个更具体的问题。",
+          es: "Haz una pregunta más específica.",
+          pt: "Faça uma pergunta mais específica.",
+          fr: "Posez une question plus précise.",
+          ja: "もっと具体的な質問を入力してください。",
+        }),
         httpStatus: 400,
       },
       200,
@@ -218,8 +231,14 @@ export default async (req: Request, _context: Context) => {
         {
           ok: false,
           code: "AI_CHAT_INVALID_PROVIDER_OUTPUT",
-          message:
-            "Chat with PDF provider did not return the expected structured answer JSON.",
+          message: pick(locale, {
+            en: "Chat with PDF provider did not return the expected structured answer JSON.",
+            zh: "Chat with PDF 服务未返回预期的结构化回答 JSON。",
+            es: "El proveedor de Chat with PDF no devolvió el JSON de respuesta estructurada esperado.",
+            pt: "O provedor de Chat with PDF não retornou o JSON de resposta estruturada esperado.",
+            fr: "Le fournisseur Chat with PDF n'a pas renvoyé le JSON de réponse structurée attendu.",
+            ja: "Chat with PDF プロバイダーから期待される構造化回答 JSON が返されませんでした。",
+          }),
           httpStatus: 502,
           diagnostics: {
             attempts: providerResult.attempts,
@@ -265,9 +284,26 @@ export default async (req: Request, _context: Context) => {
       {
         ok: false,
         code: timedOut ? "AI_CHAT_PROVIDER_TIMEOUT" : "AI_CHAT_PROVIDER_ERROR",
-        message: timedOut
-          ? "The Chat with PDF provider timed out or could not be reached."
-          : message,
+        message: pick(
+          locale,
+          timedOut
+            ? {
+                en: "The Chat with PDF provider timed out or could not be reached.",
+                zh: "Chat with PDF 服务超时或无法访问。",
+                es: "El proveedor de Chat with PDF agotó el tiempo de espera o no se pudo contactar.",
+                pt: "O provedor de Chat with PDF atingiu o tempo limite ou não pôde ser contatado.",
+                fr: "Le fournisseur Chat with PDF a expiré ou est injoignable.",
+                ja: "Chat with PDF プロバイダーがタイムアウトしたか、接続できませんでした。",
+              }
+            : {
+                en: "The Chat with PDF provider could not complete the request. Please try again.",
+                zh: "Chat with PDF 服务无法完成请求。请重试。",
+                es: "El proveedor de Chat with PDF no pudo completar la solicitud. Inténtalo de nuevo.",
+                pt: "O provedor de Chat with PDF não conseguiu concluir a solicitação. Tente novamente.",
+                fr: "Le fournisseur Chat with PDF n'a pas pu traiter la requête. Veuillez réessayer.",
+                ja: "Chat with PDF プロバイダーがリクエストを完了できませんでした。もう一度お試しください。",
+              },
+        ),
         httpStatus: timedOut ? 504 : 502,
         diagnostics: {
           attempts: 0,
@@ -371,8 +407,14 @@ function streamAiChatResponse({
             type: "error",
             ok: false,
             code: "AI_CHAT_INVALID_PROVIDER_OUTPUT",
-            message:
-              "Chat with PDF provider did not return the expected structured answer JSON.",
+            message: pick(locale, {
+              en: "Chat with PDF provider did not return the expected structured answer JSON.",
+              zh: "Chat with PDF 服务未返回预期的结构化回答 JSON。",
+              es: "El proveedor de Chat with PDF no devolvió el JSON de respuesta estructurada esperado.",
+              pt: "O provedor de Chat with PDF não retornou o JSON de resposta estruturada esperado.",
+              fr: "Le fournisseur Chat with PDF n'a pas renvoyé le JSON de réponse structurée attendu.",
+              ja: "Chat with PDF プロバイダーから期待される構造化回答 JSON が返されませんでした。",
+            }),
             diagnostics: {
               attempts: providerResult.attempts,
               maxTokens: aiChatMaxTokens,
@@ -412,9 +454,26 @@ function streamAiChatResponse({
           type: "error",
           ok: false,
           code: timedOut ? "AI_CHAT_PROVIDER_TIMEOUT" : "AI_CHAT_PROVIDER_ERROR",
-          message: timedOut
-            ? "The Chat with PDF provider timed out or could not be reached."
-            : message,
+          message: pick(
+            locale,
+            timedOut
+              ? {
+                  en: "The Chat with PDF provider timed out or could not be reached.",
+                  zh: "Chat with PDF 服务超时或无法访问。",
+                  es: "El proveedor de Chat with PDF agotó el tiempo de espera o no se pudo contactar.",
+                  pt: "O provedor de Chat with PDF atingiu o tempo limite ou não pôde ser contatado.",
+                  fr: "Le fournisseur Chat with PDF a expiré ou est injoignable.",
+                  ja: "Chat with PDF プロバイダーがタイムアウトしたか、接続できませんでした。",
+                }
+              : {
+                  en: "The Chat with PDF provider could not complete the request. Please try again.",
+                  zh: "Chat with PDF 服务无法完成请求。请重试。",
+                  es: "El proveedor de Chat with PDF no pudo completar la solicitud. Inténtalo de nuevo.",
+                  pt: "O provedor de Chat with PDF não conseguiu concluir a solicitação. Tente novamente.",
+                  fr: "Le fournisseur Chat with PDF n'a pas pu traiter la requête. Veuillez réessayer.",
+                  ja: "Chat with PDF プロバイダーがリクエストを完了できませんでした。もう一度お試しください。",
+                },
+          ),
           diagnostics: {
             attempts: 0,
             maxTokens: aiChatMaxTokens,
