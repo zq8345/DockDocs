@@ -990,7 +990,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "dashboard") {
-    return <LocalizedDashboard locale={esLocale} />;
+    return <LocalizedDashboard locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "batch-compress") {
@@ -1497,7 +1497,7 @@ function LocalizedRuntimeTool({
 }
 
 function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
-  return <DashboardWorkspace locale={locale === "ja" ? "en" : locale} />; // i18n-guard-allow: dashboard run-history workspace has no ja copy yet (authenticated, non-indexed); tracked follow-up
+  return <DashboardWorkspace locale={locale} />;
 }
 
 function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
