@@ -254,7 +254,7 @@ export function ReadyWorkflowState({
                     disabled={index === 0}
                     onClick={() => onMoveFile(index, -1)}
                     className="flex h-7 w-7 items-center justify-center rounded text-[color:var(--muted)] transition hover:bg-[color:var(--surface)] hover:text-[color:var(--foreground)] disabled:opacity-30"
-                    aria-label="Move up"
+                    aria-label={tr(locale, "Move up", "上移", "Subir", "Mover para cima", "Monter", "上へ移動")}
                   >
                     ↑
                   </button>
@@ -263,7 +263,7 @@ export function ReadyWorkflowState({
                     disabled={index === files.length - 1}
                     onClick={() => onMoveFile(index, 1)}
                     className="flex h-7 w-7 items-center justify-center rounded text-[color:var(--muted)] transition hover:bg-[color:var(--surface)] hover:text-[color:var(--foreground)] disabled:opacity-30"
-                    aria-label="Move down"
+                    aria-label={tr(locale, "Move down", "下移", "Bajar", "Mover para baixo", "Descendre", "下へ移動")}
                   >
                     ↓
                   </button>
@@ -273,7 +273,7 @@ export function ReadyWorkflowState({
                 type="button"
                 onClick={() => onRemoveFile(item.id)}
                 className="flex h-7 w-7 items-center justify-center rounded text-[color:var(--muted)] transition hover:bg-[color:var(--surface)] hover:text-[color:var(--error)]"
-                aria-label="Remove file"
+                aria-label={tr(locale, "Remove file", "移除文件", "Quitar archivo", "Remover arquivo", "Retirer le fichier", "ファイルを削除")}
               >
                 ✕
               </button>

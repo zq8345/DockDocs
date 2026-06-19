@@ -161,8 +161,8 @@ export async function runPdfRuntime({
       file: files[0],
       route: slug as CloudConvertRoute,
       outputFileName,
-      // cloudconvert-runtime supports en/zh/es; map the rest down to English.
-      locale: locale === "zh" ? "zh" : locale === "es" ? "es" : "en",
+      // cloudconvert-runtime now supports all 6 locales (incl. pt/fr/ja) — pass the real locale through.
+      locale,
       signal,
       onProgress,
     });

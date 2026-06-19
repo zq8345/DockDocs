@@ -115,7 +115,7 @@ export async function runOcrPdfFirstPage({
   }
 
   emitProgress(onProgress, 4, 0, tr(locale, "Loading PDF...", "正在加载 PDF...", "Cargando PDF...", "Carregando PDF...", "Chargement du PDF...", "PDF を読み込み中..."));
-  const pdf = await loadPdfDocument(file, signal);
+  const pdf = await loadPdfDocument(file, locale, signal);
 
   try {
     const pages = parseOcrPageRanges(pageRanges, pdf.numPages, locale);
@@ -179,7 +179,7 @@ export async function runOcrPdfFirstPage({
               `${pageNumber} ページ目をレンダリング中...`,
             ),
           );
-        });
+        }, locale);
 
         try {
           const ocr = await recognizeCanvas(worker, rendered.canvas, signal, (progress) => {
@@ -263,7 +263,7 @@ export async function runOcrPdfFirstPage({
   }
 }
 
-async function loadPdfDocument(file: File, signal?: AbortSignal) {
+async function loadPdfDocument(file: File, locale: OcrLocale, signal?: AbortSignal) {
   const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
   throwIfAborted(signal);
 
@@ -277,7 +277,7 @@ async function loadPdfDocument(file: File, signal?: AbortSignal) {
   throwIfAborted(signal);
 
   if (pdf.numPages < 1) {
-    throw new Error("This PDF does not contain pages.");
+    throw new Error(tr(locale, "This PDF does not contain pages.", "该 PDF 不包含任何页面。", "Este PDF no contiene páginas.", "Este PDF não contém páginas.", "Ce PDF ne contient aucune page.", "この PDF にはページが含まれていません。"));
   }
 
   return pdf;
@@ -288,6 +288,7 @@ async function renderPdfPage(
   pageNumber: number,
   signal: AbortSignal | undefined,
   onProgress: (progress: number) => void,
+  locale: OcrLocale,
 ): Promise<RenderedPage> {
   onProgress(0.05);
   const page = await pdf.getPage(pageNumber);
@@ -303,7 +304,7 @@ async function renderPdfPage(
   const context = canvas.getContext("2d", { alpha: false });
 
   if (!context) {
-    throw new Error("Canvas rendering is not available in this browser.");
+    throw new Error(tr(locale, "Canvas rendering is not available in this browser.", "此浏览器不支持 Canvas 渲染。", "El renderizado en canvas no está disponible en este navegador.", "A renderização em canvas não está disponível neste navegador.", "Le rendu canvas n'est pas disponible dans ce navigateur.", "このブラウザでは Canvas レンダリングを利用できません。"));
   }
 
   context.fillStyle = "#ffffff";
