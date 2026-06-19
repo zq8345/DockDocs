@@ -6,7 +6,7 @@ import { defaultLocale } from "@/lib/i18n";
 
 function l(pathname: string | null): string {
   const first = (pathname ?? "/").split("/").filter(Boolean)[0];
-  return first === "zh" || first === "es" || first === "pt" || first === "fr" ? first : defaultLocale;
+  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" ? first : defaultLocale;
 }
 function href(path: string, locale: string) {
   return locale === defaultLocale ? path : `/${locale}${path}`;
@@ -327,6 +327,69 @@ const toolColsFr = [
   },
 ];
 
+const toolColsJa = [
+  {
+    title: "AI ワークスペース",
+    links: [
+      { label: "PDFとチャット", href: "/chat-with-pdf" },
+      { label: "AI要約", href: "/ai-summary" },
+      { label: "フラッシュカード", href: "/flashcards" },
+      { label: "一括要約", href: "/batch-summary" },
+      { label: "自動分類", href: "/batch-sort" },
+      { label: "OCRワークスペース", href: "/ocr-pdf" },
+      { label: "Excelに抽出", href: "/extract-to-excel" },
+      { label: "バージョン比較", href: "/redline" },
+    ],
+  },
+  {
+    title: "変換",
+    links: [
+      { label: "WordをPDFに変換", href: "/word-to-pdf" },
+      { label: "PDFをWordに変換", href: "/pdf-to-word" },
+      { label: "ExcelをPDFに変換", href: "/excel-to-pdf" },
+      { label: "PDFをExcelに変換", href: "/pdf-to-excel" },
+      { label: "PDFをPPTに変換", href: "/pdf-to-ppt" },
+      { label: "PDFをPDF/Aに変換", href: "/pdf-to-pdfa" },
+      { label: "PPTをPDFに変換", href: "/ppt-to-pdf" },
+      { label: "JPGをPDFに変換", href: "/jpg-to-pdf" },
+      { label: "画像をPDFに変換", href: "/images-to-pdf" },
+      { label: "PDFを画像に変換", href: "/pdf-to-image" },
+      { label: "PDFをMarkdownに変換", href: "/pdf-to-markdown" },
+      { label: "PDFをHTMLに変換", href: "/pdf-to-html" },
+      { label: "PDFをテキストに変換", href: "/pdf-to-text" },
+      { label: "HTMLをPDFに変換", href: "/html-to-pdf" },
+      { label: "URLをPDFに変換", href: "/url-to-pdf" },
+    ],
+  },
+  {
+    title: "編集・整理",
+    links: [
+      { label: "PDFを結合", href: "/merge-pdf" },
+      { label: "PDFを分割", href: "/split-pdf" },
+      { label: "PDFを圧縮", href: "/compress-pdf" },
+      { label: "ページを削除", href: "/delete-page" },
+      { label: "ページを回転", href: "/rotate-page" },
+      { label: "PDFをトリミング", href: "/crop-pdf" },
+      { label: "PDFに透かし", href: "/watermark-pdf" },
+      { label: "PDFに署名", href: "/sign-pdf" },
+      { label: "PDFを墨消し", href: "/redact-pdf" },
+      { label: "一括圧縮", href: "/batch-compress" },
+      { label: "PDFを保護", href: "/protect-pdf" },
+      { label: "PDFのロック解除", href: "/unlock-pdf" },
+    ],
+  },
+  {
+    title: "会社",
+    links: [
+      { label: "会社概要", href: "/about" },
+      { label: "ブログ", href: "/blog" },
+      { label: "ガイド", href: "/guides" },
+      { label: "料金", href: "/pricing" },
+      { label: "お問い合わせ", href: "/contact" },
+    ],
+  },
+];
+
 export function Footer() {
   const pathname = usePathname();
   const locale = l(pathname);
@@ -341,10 +404,10 @@ export function Footer() {
               <BrandMark showWordmark={true} />
             </a>
             <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--faint)]">
-              {locale === "zh" ? "私密、可溯源的文档 AI" : locale === "es" ? "IA documental privada y verificable" : locale === "pt" ? "IA de documentos privada e verificável" : locale === "fr" ? "IA documentaire privée et vérifiable" : "Private, verifiable document AI"}
+              {locale === "zh" ? "私密、可溯源的文档 AI" : locale === "es" ? "IA documental privada y verificable" : locale === "pt" ? "IA de documentos privada e verificável" : locale === "fr" ? "IA documentaire privée et vérifiable" : locale === "ja" ? "プライベートで検証可能なドキュメントAI" : "Private, verifiable document AI"}
             </p>
           </div>
-          {(locale === "zh" ? toolColsZh : locale === "es" ? toolColsEs : locale === "pt" ? toolColsPt : locale === "fr" ? toolColsFr : toolColsEn).map((col) => (
+          {(locale === "zh" ? toolColsZh : locale === "es" ? toolColsEs : locale === "pt" ? toolColsPt : locale === "fr" ? toolColsFr : locale === "ja" ? toolColsJa : toolColsEn).map((col) => (
             <div key={col.title}>
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
                 {col.title}
@@ -371,9 +434,9 @@ export function Footer() {
             &copy; {new Date().getFullYear()} DockDocs. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-[color:var(--faint)]">
-            <a href={href("/sitemap", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "站点地图" : locale === "es" ? "Mapa del sitio" : locale === "fr" ? "Plan du site" : "Sitemap"}</a>
-            <a href={href("/privacy-policy", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "隐私" : locale === "es" ? "Privacidad" : locale === "fr" ? "Confidentialité" : "Privacy"}</a>
-            <a href={href("/terms", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "条款" : locale === "es" ? "Términos" : locale === "fr" ? "Conditions" : "Terms"}</a>
+            <a href={href("/sitemap", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "站点地图" : locale === "es" ? "Mapa del sitio" : locale === "fr" ? "Plan du site" : locale === "ja" ? "サイトマップ" : "Sitemap"}</a>
+            <a href={href("/privacy-policy", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "隐私" : locale === "es" ? "Privacidad" : locale === "fr" ? "Confidentialité" : locale === "ja" ? "プライバシー" : "Privacy"}</a>
+            <a href={href("/terms", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "条款" : locale === "es" ? "Términos" : locale === "fr" ? "Conditions" : locale === "ja" ? "利用規約" : "Terms"}</a>
           </div>
         </div>
       </div>
