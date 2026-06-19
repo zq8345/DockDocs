@@ -1,3 +1,5 @@
+import { deepHant } from "@/lib/zh-hant";
+
 export const siteUrl = "https://dockdocs.app";
 
 export const locales = ["en", "zh"] as const;
@@ -7,7 +9,7 @@ export type Locale = (typeof locales)[number];
 // the locale, everything else falls back to English (content type stays en|zh).
 // pt-BR is being built content-first (inert ptTools/ptFaq/STR.pt/etc.); add "pt"
 // to this array to ACTIVATE it (LAST step, once content is complete).
-export const routeLocales = ["en", "zh", "es", "pt", "fr", "ja"] as const;
+export const routeLocales = ["en", "zh", "es", "pt", "fr", "ja", "zh-Hant"] as const;
 export type RouteLocale = (typeof routeLocales)[number];
 
 export const allLocales = ["en", "zh", "zh-Hant", "ja", "ko", "es", "fr", "de", "pt", "it", "ru", "ar", "hi"] as const;
@@ -2543,6 +2545,7 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", Record<I
   },
 };
 
-export function getInfoPage(locale: "en" | "zh" | "es" | "pt" | "fr" | "ja", slug: InfoPageSlug) {
+export function getInfoPage(locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant", slug: InfoPageSlug) {
+  if (locale === "zh-Hant") return deepHant(infoPages.zh[slug]);
   return (infoPages[locale as keyof typeof infoPages] ?? infoPages.en)[slug];
 }

@@ -3,8 +3,9 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { navCategories } from "@/components/Header";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Item = { name: string; slug: string };
 
 const COPY = {
@@ -366,12 +367,14 @@ function MiniThumbs() {
 }
 function MiniExtract({ label, locale }: { label: string; locale: Locale }) {
   const { start, stop, lineCls } = useLineReveal(3);
+  const hant = locale === "zh-Hant";
+  const h = (s: string) => (hant ? toHant(s) : s);
   const lines = [
-    locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : "Revenue +23% YoY",
-    locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : "APAC is the main driver",
-    locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : "Gross margin 41%",
+    locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : "Revenue +23% YoY",
+    locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : "APAC is the main driver",
+    locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : "Gross margin 41%",
   ];
-  const citeLabel = locale === "zh" ? "已溯源" : locale === "es" ? "citado" : locale === "pt" ? "citado" : locale === "fr" ? "cité" : locale === "ja" ? "引用済み" : "cited";
+  const citeLabel = locale === "zh" || hant ? h("已溯源") : locale === "es" ? "citado" : locale === "pt" ? "citado" : locale === "fr" ? "cité" : locale === "ja" ? "引用済み" : "cited";
   return (
     <div className="flex items-center gap-2.5" onMouseEnter={start} onMouseLeave={stop}>
       <div className="relative flex h-16 w-12 flex-col gap-1 overflow-hidden rounded-md border border-[color:var(--line)] p-1.5">
@@ -484,10 +487,14 @@ const SCENARIOS = [
 ];
 
 export function Home({ locale = "en" }: { locale?: Locale }) {
-  const zh = locale === "zh" || locale === "ja";
-  const c = COPY[locale] ?? COPY.en;
-  const cats = (navCategories[locale] ?? navCategories.en).slice(0, 4);
-  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : slug);
+  // CJK typography flag (also covers zh-Hant). Content for zh-Hant is derived from
+  // zh via OpenCC: `hant` + `h(...)` convert chosen zh strings to Traditional.
+  const hant = locale === "zh-Hant";
+  const zh = locale === "zh" || locale === "ja" || hant;
+  const h = (s: string) => (hant ? toHant(s) : s);
+  const c = hant ? deepHant(COPY.zh) : (COPY[locale] ?? COPY.en);
+  const cats = (hant ? deepHant(navCategories.zh) : (navCategories[locale] ?? navCategories.en)).slice(0, 4);
+  const path = (slug: string) => (hant ? `/zh-Hant${slug}` : locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : slug);
 
   // ── real client-side tool search over the full flatItems set across all 4 cats ──
   const heroReveal = useLineReveal(3);
@@ -584,10 +591,10 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
                 <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
                 <div className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--foreground)]">
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                  <span className={`tw-line min-w-0 ${heroReveal.lineCls(0)}`}>{locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : "Revenue +23% YoY"}</span>
+                  <span className={`tw-line min-w-0 ${heroReveal.lineCls(0)}`}>{locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : "Revenue +23% YoY"}</span>
                   <span className={`tw-pill ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)] ${heroReveal.lineCls(0)}`}>{c.cite}</span>
                 </div>
-                {[locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : "APAC is the main driver", locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : "Gross margin 41% (↑3pt)"].map((b, i) => (
+                {[locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : "APAC is the main driver", locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : "Gross margin 41% (↑3pt)"].map((b, i) => (
                   <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--muted)] last:mb-0">
                     <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" /><span className={`tw-line ${heroReveal.lineCls(i + 1)}`}>{b}</span>
                   </div>
@@ -728,7 +735,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
           <Figure className="mt-10" glow="20%">
             <div className="grid gap-4 sm:grid-cols-2">
               {SCENARIOS.map((s) => {
-                const t = locale === "zh" ? s.zh : locale === "es" ? s.es : locale === "pt" ? s.pt : locale === "fr" ? s.fr : locale === "ja" ? s.ja : s.en;
+                const t = hant ? deepHant(s.zh) : locale === "zh" ? s.zh : locale === "es" ? s.es : locale === "pt" ? s.pt : locale === "fr" ? s.fr : locale === "ja" ? s.ja : s.en;
                 return (
                   <a key={t[0]} href={path(s.href)} className={`${PANEL} block transition-colors hover:border-[color:var(--line-strong)]`}>
                     <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[color:var(--line)] text-[color:var(--accent)]">

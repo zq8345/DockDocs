@@ -1,11 +1,12 @@
 import type { BillingInterval, PaidSubscriptionPlan } from "@/lib/billing-config";
+import { toHant } from "@/lib/zh-hant";
 
 // Shared membership presentation helpers. The nav account card, the nav badge,
 // and the account page all read from the SAME subscription snapshot through these
 // functions, so the identity / status / upgrade copy stays consistent. Pure
 // display + copy — never touches entitlement logic.
 
-export type MembershipLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+export type MembershipLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 export type PlanDisplayName = "Free" | "Plus" | "Pro";
 
 function pick(
@@ -17,6 +18,7 @@ function pick(
   fr: string,
   ja: string,
 ): string {
+  if (locale === "zh-Hant") return toHant(zh);
   return locale === "zh" ? zh : locale === "es" ? es : locale === "pt" ? pt : locale === "fr" ? fr : locale === "ja" ? ja : en;
 }
 
@@ -48,7 +50,7 @@ function formatDate(iso: string | undefined, locale: MembershipLocale): string {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return "";
     const loc =
-      locale === "zh" ? "zh-CN" : locale === "es" ? "es-ES" : locale === "pt" ? "pt-BR" : locale === "fr" ? "fr-FR" : locale === "ja" ? "ja-JP" : "en-US";
+      locale === "zh" ? "zh-CN" : locale === "zh-Hant" ? "zh-TW" : locale === "es" ? "es-ES" : locale === "pt" ? "pt-BR" : locale === "fr" ? "fr-FR" : locale === "ja" ? "ja-JP" : "en-US";
     return d.toLocaleDateString(loc, { year: "numeric", month: "short", day: "numeric" });
   } catch {
     return "";

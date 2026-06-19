@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { createBillingCheckoutSession } from "@/lib/subscription-runtime";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
+import { deepHant } from "@/lib/zh-hant";
 
+// Locales with their own copy literals (Record keys). zh-Hant derives from zh.
 type PromptLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type PromptLocaleInput = PromptLocale | "zh-Hant";
 
 const STR: Record<
   PromptLocale,
@@ -67,10 +70,10 @@ export function UpgradePrompt({
   locale = "en",
   limit,
 }: {
-  locale?: PromptLocale;
+  locale?: PromptLocaleInput;
   limit: number;
 }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [loading, setLoading] = useState<PaidSubscriptionPlan | "">("");
 
   async function upgrade(plan: PaidSubscriptionPlan) {

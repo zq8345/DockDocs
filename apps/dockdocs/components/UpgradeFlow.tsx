@@ -9,6 +9,7 @@ import {
 } from "@/lib/subscription-runtime";
 import { billingErrorCopy, type MembershipLocale } from "@/lib/membership-ui";
 import type { PaidSubscriptionPlan, BillingInterval } from "@/lib/billing-config";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
 type ConfirmState = { plan: PaidSubscriptionPlan; interval: BillingInterval; quote: UpgradeQuote };
 
@@ -83,13 +84,15 @@ export function useUpgradeFlow(locale: MembershipLocale): UpgradeFlow {
 }
 
 function intervalLabel(interval: string, locale: MembershipLocale): string {
-  if (interval === "lifetime") return locale === "zh" ? "终身" : locale === "es" ? "De por vida" : locale === "pt" ? "Vitalício" : locale === "fr" ? "À vie" : locale === "ja" ? "買い切り" : "Lifetime";
-  if (interval === "annual") return locale === "zh" ? "年付" : locale === "es" ? "Anual" : locale === "pt" ? "Anual" : locale === "fr" ? "Annuel" : locale === "ja" ? "年額" : "Yearly";
-  return locale === "zh" ? "月付" : locale === "es" ? "Mensual" : locale === "pt" ? "Mensal" : locale === "fr" ? "Mensuel" : locale === "ja" ? "月額" : "Monthly";
+  const h = (s: string) => (locale === "zh-Hant" ? toHant(s) : s);
+  if (interval === "lifetime") return locale === "zh" || locale === "zh-Hant" ? h("终身") : locale === "es" ? "De por vida" : locale === "pt" ? "Vitalício" : locale === "fr" ? "À vie" : locale === "ja" ? "買い切り" : "Lifetime";
+  if (interval === "annual") return locale === "zh" || locale === "zh-Hant" ? h("年付") : locale === "es" ? "Anual" : locale === "pt" ? "Anual" : locale === "fr" ? "Annuel" : locale === "ja" ? "年額" : "Yearly";
+  return locale === "zh" || locale === "zh-Hant" ? h("月付") : locale === "es" ? "Mensual" : locale === "pt" ? "Mensal" : locale === "fr" ? "Mensuel" : locale === "ja" ? "月額" : "Monthly";
 }
 
 // Headline benefits per (target) tier — shown when upgrading to a higher tier.
-const PRO_BENEFITS: Record<MembershipLocale, string[]> = {
+// Keyed by the 6 base content locales; zh-Hant derives from zh via OpenCC.
+const PRO_BENEFITS: Record<Exclude<MembershipLocale, "zh-Hant">, string[]> = {
   en: ["Contract risk review", "Batch workflow automation", "API access", "Team workspace"],
   zh: ["合同风险审查", "批量工作流自动化", "API 接入", "团队工作区"],
   es: ["Revisión de riesgos de contratos", "Automatización de flujos por lotes", "Acceso a la API", "Espacio de equipo"],
@@ -105,7 +108,7 @@ export function UpgradeConfirmModal({ flow, locale }: { flow: UpgradeFlow; local
   if (!c) return null;
   const q = c.quote;
   const tt = (en: string, zh: string, es: string, pt: string, fr: string, ja: string) =>
-    locale === "zh" ? zh : locale === "es" ? es : locale === "pt" ? pt : locale === "fr" ? fr : locale === "ja" ? ja : en;
+    locale === "zh-Hant" ? toHant(zh) : locale === "zh" ? zh : locale === "es" ? es : locale === "pt" ? pt : locale === "fr" ? fr : locale === "ja" ? ja : en;
   const money = (cents: number) => `$${(cents / 100).toFixed(2)}`;
   const targetName = c.plan === "PLUS" ? "Plus" : "Pro";
   const curName = q.currentPlan === "PRO" ? "Pro" : q.currentPlan === "PLUS" ? "Plus" : q.currentPlan;
@@ -161,7 +164,7 @@ export function UpgradeConfirmModal({ flow, locale }: { flow: UpgradeFlow; local
               {tt("You'll unlock", "升级后解锁", "Desbloquearás", "Você desbloqueia", "Vous débloquez", "アンロックされる機能")}
             </p>
             <ul className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2">
-              {PRO_BENEFITS[locale].map((b) => (
+              {(locale === "zh-Hant" ? deepHant(PRO_BENEFITS.zh) : PRO_BENEFITS[locale]).map((b) => (
                 <li key={b} className="flex items-start gap-2 text-[13px] text-[color:var(--foreground)]">
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0 text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                   {b}

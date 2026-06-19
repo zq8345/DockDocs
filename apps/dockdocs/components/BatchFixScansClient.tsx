@@ -8,8 +8,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Mode = "crop" | "delete";
 type Edges = { top: number; right: number; bottom: number; left: number };
 type Status = "queued" | "done" | "error";
@@ -161,7 +162,9 @@ function parsePageList(input: string): Set<number> {
 }
 
 export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  // zh-Hant child components (BatchUploadBox / ToolFaq / encryptedPdfMessage) lack zh-Hant → map to "zh".
+  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>("crop");
@@ -264,7 +267,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
           const total = pdf.getPageCount();
           const toRemove = [...pageSet].filter((p) => p >= 1 && p <= total);
           if (toRemove.length >= total) {
-            updated[i] = { ...it, status: "error", msg: locale === "zh" ? "会删空，已跳过" : locale === "es" ? "quedaría vacío, omitido" : "would be empty, skipped" };
+            updated[i] = { ...it, status: "error", msg: locale === "zh" ? "会删空，已跳过" : locale === "zh-Hant" ? toHant("会删空，已跳过") : locale === "es" ? "quedaría vacío, omitido" : "would be empty, skipped" };
             setItems([...updated]);
             continue;
           }
@@ -274,12 +277,12 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
         const bytes = await pdf.save();
         updated[i] = { ...it, status: "done", blob: new Blob([bytes as BlobPart], { type: "application/pdf" }) };
       } catch (e) {
-        updated[i] = { ...it, status: "error", msg: encryptedPdfMessage(e, locale) ?? (e instanceof Error ? e.message : String(e)) };
+        updated[i] = { ...it, status: "error", msg: encryptedPdfMessage(e, childLocale) ?? (e instanceof Error ? e.message : String(e)) };
       }
       setItems([...updated]);
     }
     setPhase("done");
-  }, [items, mode, edges, delPages, hasCrop, locale, t]);
+  }, [items, mode, edges, delPages, hasCrop, locale, t, childLocale]);
 
   const download = async () => {
     const files = items.filter((it) => it.status === "done" && it.blob);
@@ -301,7 +304,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
       a.click();
       URL.revokeObjectURL(url);
     } catch {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : "Could not build the download — please try again.");
     }
   };
 
@@ -333,7 +336,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
       />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} />
+        <BatchUploadBox locale={childLocale} onFiles={addFiles} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
@@ -428,7 +431,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <ToolFaq tool="batch-fix-scans" locale={locale} />
+      <ToolFaq tool="batch-fix-scans" locale={childLocale} />
     </div>
   );
 }

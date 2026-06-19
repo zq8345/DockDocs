@@ -1,4 +1,5 @@
 import { defaultLocale, isLocale, type Locale } from "@/lib/i18n";
+import { deepHant } from "@/lib/zh-hant";
 
 export type RuntimeLocale = Locale;
 
@@ -3326,7 +3327,8 @@ const runtimeCopyJa = {
   },
 };
 
-export function getRuntimeCopy(locale: RuntimeLocale | "es" | "pt" | "fr" | "ja" = defaultLocale) {
+export function getRuntimeCopy(locale: RuntimeLocale | "es" | "pt" | "fr" | "ja" | "zh-Hant" = defaultLocale) {
+  if (locale === "zh-Hant") return deepHant(runtimeCopy.zh) as unknown as typeof runtimeCopy.en;
   if (locale === "ja") return { ...runtimeCopy.en, ...runtimeCopyJa } as unknown as typeof runtimeCopy.en;
   return runtimeCopy[locale] ?? runtimeCopy.en;
 }

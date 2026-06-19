@@ -44,6 +44,8 @@ export const LOCAL_ONLY_SLUGS = new Set<string>([
   "page-numbers",
 ]);
 
+import { deepHant } from "./zh-hant";
+
 type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja"];
 
@@ -81,7 +83,10 @@ const COPY: Record<Loc, { title: string; body: string; how: string }> = {
 };
 
 export function VerifyClientSide({ locale = "en" }: { locale?: string }) {
-  const c = COPY[(LOCS.includes(locale as Loc) ? locale : "en") as Loc];
+  // zh-Hant derives from zh via OpenCC.
+  const c = locale === "zh-Hant"
+    ? deepHant(COPY.zh)
+    : COPY[(LOCS.includes(locale as Loc) ? locale : "en") as Loc];
   return (
     <section className="mt-12 border-t border-[color:var(--line)] pt-8">
       <div className="mx-auto max-w-3xl px-5">

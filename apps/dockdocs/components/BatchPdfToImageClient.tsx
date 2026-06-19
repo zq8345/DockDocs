@@ -8,8 +8,9 @@ import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
 type Fmt = "jpg" | "png";
 type Img = { name: string; data: Uint8Array };
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; pages?: number; images?: Img[]; msg?: string };
@@ -74,7 +75,7 @@ const STR = {
 };
 
 export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Fmt>("jpg");

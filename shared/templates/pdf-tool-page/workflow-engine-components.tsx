@@ -4,6 +4,7 @@ import { useEffect, useState, type ButtonHTMLAttributes } from "react";
 import type { PdfToolPageConfig } from "./index";
 import type { PdfRuntimeArtifact } from "./pdf-runtime";
 import { ToolBridge, hasToolBridge } from "./ToolBridge";
+import { toHant as ccTr } from "./zh-hant";
 
 // Visual preview of an uploaded file: first-page thumbnail for PDFs, the image
 // itself for images. Falls back to a small type badge while rendering / on error.
@@ -114,7 +115,7 @@ export type OcrLanguage = "eng" | "chi_sim";
 
 // Full 6-locale string picker, keyed off the real config.locale. Falls back to
 // English for any locale without a translation (never leaks zh-only/en-only UI).
-type TemplateLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type TemplateLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 function tr(
   locale: TemplateLocale | undefined,
   en: string,
@@ -125,6 +126,8 @@ function tr(
   ja: string,
 ): string {
   switch (locale) {
+    case "zh-Hant":
+      return ccTr(zh);
     case "zh":
       return zh;
     case "es":
@@ -640,7 +643,7 @@ export function WorkflowErrorState({
   message: string;
   onRetry: () => void;
   onReset: () => void;
-  locale: "en" | "zh" | "es" | "pt" | "fr" | "ja";
+  locale: TemplateLocale;
   bare?: boolean;
 }) {
   return (

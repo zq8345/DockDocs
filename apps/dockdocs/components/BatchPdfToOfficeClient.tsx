@@ -7,8 +7,11 @@ import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+// zh-Hant is derived from zh via OpenCC, so copy tables are keyed by the base locales only.
+type CopyLocale = Exclude<Locale, "zh-Hant">;
 type Format = "word" | "excel";
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; blob?: Blob; msg?: string };
@@ -129,7 +132,7 @@ const STR = {
 };
 
 // Per-target heading/subtitle (native) for the split single-format pages.
-const PT: Record<Format, Record<Locale, { title: string; subtitle: string }>> = {
+const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>> = {
   word: {
     en: { title: "Batch PDF to Word", subtitle: "Convert a whole folder of PDFs to editable Word (.docx) files in one go — each is converted on our server and packaged into a single ZIP." },
     zh: { title: "批量 PDF 转 Word", subtitle: "把整个文件夹的 PDF 一次性转成可编辑的 Word(.docx)——每个在服务器转换并打包成一个 ZIP。" },
@@ -149,9 +152,13 @@ const PT: Record<Format, Record<Locale, { title: string; subtitle: string }>> = 
 };
 
 export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Locale; target?: Format }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  // zh-Hant child components (BatchUploadBox / ToolFaq) lack zh-Hant → map to "zh".
+  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
-  const head = target ? (PT[target][locale] ?? PT[target].en) : { title: t.title, subtitle: t.subtitle };
+  const head = target
+    ? (locale === "zh-Hant" ? deepHant(PT[target].zh) : (PT[target][locale as CopyLocale] ?? PT[target].en))
+    : { title: t.title, subtitle: t.subtitle };
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Format>(target ?? "word");
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
@@ -250,7 +257,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
       a.click();
       URL.revokeObjectURL(url);
     } catch {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "fr" ? "Impossible de créer le téléchargement — veuillez réessayer." : locale === "pt" ? "Não foi possível criar o download — tente novamente." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "fr" ? "Impossible de créer le téléchargement — veuillez réessayer." : locale === "pt" ? "Não foi possível criar o download — tente novamente." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
     }
   };
 
@@ -276,7 +283,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
       />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} privacyLabel={locale === "zh" ? "在我们的服务器转换" : locale === "es" ? "Convertido en nuestro servidor" : locale === "fr" ? "Converti sur notre serveur" : locale === "pt" ? "Convertido no nosso servidor" : locale === "ja" ? "当社のサーバーで変換" : "Converted on our server"} />
+        <BatchUploadBox locale={childLocale} onFiles={addFiles} privacyLabel={locale === "zh" ? "在我们的服务器转换" : locale === "zh-Hant" ? toHant("在我们的服务器转换") : locale === "es" ? "Convertido en nuestro servidor" : locale === "fr" ? "Converti sur notre serveur" : locale === "pt" ? "Convertido no nosso servidor" : locale === "ja" ? "当社のサーバーで変換" : "Converted on our server"} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
@@ -335,7 +342,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <ToolFaq tool={target ? `batch-pdf-to-${target}` : "batch-pdf-to-office"} locale={locale} />
+      <ToolFaq tool={target ? `batch-pdf-to-${target}` : "batch-pdf-to-office"} locale={childLocale} />
     </div>
   );
 }

@@ -3,8 +3,9 @@
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { authHeader } from "@/lib/supabase";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 const STR = {
   en: {
@@ -136,7 +137,7 @@ const STR = {
 };
 
 export function UrlToPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [url, setUrl] = useState("");
   const [phase, setPhase] = useState<"idle" | "working" | "done">("idle");
   const [error, setError] = useState<string | null>(null);

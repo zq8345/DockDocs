@@ -6,8 +6,9 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -128,7 +129,7 @@ const STR = {
 };
 
 export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -277,7 +278,7 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
               <div key={p.idx} className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.thumb} alt={`page ${p.idx + 1}`} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
-                <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${p.idx + 1} 页` : `Page ${p.idx + 1}`}</p>
+                <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${p.idx + 1} 页` : locale === "zh-Hant" ? `第 ${p.idx + 1} 頁` : `Page ${p.idx + 1}`}</p>
                 <Slot value={p.idx + 1} label={t.afterPage(p.idx + 1)} />
               </div>
             ))}

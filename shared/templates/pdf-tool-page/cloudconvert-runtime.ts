@@ -1,4 +1,5 @@
 import type { PdfRuntimeArtifact, PdfRuntimeProgress } from "./pdf-runtime";
+import { toHant } from "./zh-hant";
 
 export type CloudConvertRoute =
   | "word-to-pdf"
@@ -36,7 +37,7 @@ const ROUTE_META: Record<
   "protect-pdf": { outputMime: "application/pdf", outputType: "pdf" },
 };
 
-export type CloudLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+export type CloudLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 type CloudConvertRuntimeInput = {
   file: File;
@@ -61,6 +62,8 @@ function tr(
   ja: string,
 ): string {
   switch (locale) {
+    case "zh-Hant":
+      return toHant(zh);
     case "zh":
       return zh;
     case "es":

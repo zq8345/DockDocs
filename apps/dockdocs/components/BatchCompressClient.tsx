@@ -7,8 +7,9 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
 type Level = "low" | "recommended" | "high";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; saved?: number; outSize?: number; blob?: Blob; msg?: string };
 
@@ -84,7 +85,7 @@ const STR = {
 };
 
 export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [level, setLevel] = useState<Level>("recommended");
@@ -118,7 +119,7 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
           files: [it.file],
           pageRanges: level,
           outputFileName: it.name.replace(/\.pdf$/i, "") + "-compressed.pdf",
-          locale: locale === "zh" ? "zh" : "en",
+          locale: locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : "en",
         });
         const outSize = artifact.compressedSize ?? artifact.blob.size;
         updated[i] = { ...it, status: "done", blob: artifact.blob, outSize, saved: artifact.savedPercent };
@@ -142,7 +143,7 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url; a.download = "dockdocs-compressed.zip"; a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : "Could not build the download — please try again.");
     }
   };
 

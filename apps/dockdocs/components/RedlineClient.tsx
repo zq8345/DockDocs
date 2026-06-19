@@ -4,9 +4,10 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
-type Op = { type: "eq" | "del" | "ins"; text: string };
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Op ={ type: "eq" | "del" | "ins"; text: string };
 
 const STR = {
   en: {
@@ -127,7 +128,7 @@ function diff(a: string[], b: string[]): Op[] {
 }
 
 export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [a, setA] = useState<File | null>(null);
   const [b, setB] = useState<File | null>(null);
   const [phase, setPhase] = useState<"idle" | "comparing" | "done">("idle");

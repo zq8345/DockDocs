@@ -4,8 +4,9 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties, type Poin
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type PosKey = "tl" | "tc" | "tr" | "ml" | "c" | "mr" | "bl" | "bc" | "br";
 
 const POS: Record<PosKey, { x: number; y: number }> = {
@@ -67,9 +68,9 @@ const STR = {
 };
 
 export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
-  // Child components/helpers only support en|zh; map other UI locales to their content fallback.
-  const baseLocale: "en" | "zh" = locale === "zh" ? "zh" : "en";
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  // Child components/helpers only support en|zh|zh-Hant; map other UI locales to their content fallback.
+  const baseLocale: "en" | "zh" | "zh-Hant" = locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : "en";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
@@ -93,7 +94,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
-      if (doc.numPages === 0) { setError(locale === "zh" ? "该 PDF 没有页面。" : "This PDF has no pages."); setPhase("idle"); return; } setNumPages(doc.numPages);
+      if (doc.numPages === 0) { setError(locale === "zh" ? "该 PDF 没有页面。" : locale === "zh-Hant" ? toHant("该 PDF 没有页面。") : "This PDF has no pages."); setPhase("idle"); return; } setNumPages(doc.numPages);
       const p = Math.max(1, Math.min(pageNum, doc.numPages));
       const pg = await doc.getPage(p);
       const viewport = pg.getViewport({ scale: 1.1 });

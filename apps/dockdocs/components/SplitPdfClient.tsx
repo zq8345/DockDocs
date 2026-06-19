@@ -5,8 +5,9 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Pg = { idx: number; thumb: string };
 
 const SEG_TINTS = ["", "bg-[rgba(62,207,142,0.06)]", "bg-[rgba(52,211,153,0.07)]", "bg-[rgba(251,191,36,0.08)]", "bg-[rgba(96,165,250,0.07)]"];
@@ -81,7 +82,7 @@ const STR = {
 };
 
 export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [pages, setPages] = useState<Pg[]>([]);
@@ -210,7 +211,7 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
                     <span className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-[color:var(--accent-strong)]">{t.fileN(seg + 1)}</span>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={p.thumb} alt={`page ${p.idx + 1}`} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
-                    <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${p.idx + 1} 页` : `Page ${p.idx + 1}`}</p>
+                    <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${p.idx + 1} 页` : locale === "zh-Hant" ? `第 ${p.idx + 1} 頁` : `Page ${p.idx + 1}`}</p>
                   </div>
                   {!isLast && (
                     <button

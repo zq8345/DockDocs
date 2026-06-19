@@ -2,8 +2,9 @@
 
 import { useRef } from "react";
 import { Spinner } from "@/components/Spinner";
+import { toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 // Shared single-file upload box for the hand-rolled visual PDF tools (split,
 // crop, sign, rotate, …). One look site-wide: a min-height dashed frame with an
@@ -33,11 +34,15 @@ export function UploadDropzone({
   onFile: (file: File) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const zh = locale === "zh";
+  // zh-Hant derives from zh via OpenCC: treat it as zh for the inline ternaries,
+  // then convert the chosen zh string to Traditional with `h(...)`.
+  const hant = locale === "zh-Hant";
+  const zh = locale === "zh" || hant;
   const ja = locale === "ja";
   const es = locale === "es";
   const pt = locale === "pt";
   const fr = locale === "fr";
+  const h = (s: string) => (hant ? toHant(s) : s);
 
   return (
     <div
@@ -64,15 +69,15 @@ export function UploadDropzone({
           >
             {buttonLabel}
           </button>
-          <p className="mt-3 text-sm text-[color:var(--muted)]">{zh ? "或将文件拖放到此处" : ja ? "またはファイルをここにドロップ" : es ? "o suelta tu archivo aquí" : pt ? "ou solte seu arquivo aqui" : fr ? "ou déposez votre fichier ici" : "or drop your file here"}</p>
+          <p className="mt-3 text-sm text-[color:var(--muted)]">{zh ? h("或将文件拖放到此处") : ja ? "またはファイルをここにドロップ" : es ? "o suelta tu archivo aquí" : pt ? "ou solte seu arquivo aqui" : fr ? "ou déposez votre fichier ici" : "or drop your file here"}</p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-            <span>{zh ? "支持" : ja ? "対応形式" : es ? "Admite" : pt ? "Suporta" : fr ? "Prend en charge" : "Supports"} {acceptLabel}</span>
+            <span>{zh ? h("支持") : ja ? "対応形式" : es ? "Admite" : pt ? "Suporta" : fr ? "Prend en charge" : "Supports"} {acceptLabel}</span>
             {privacy ? (
               <>
                 <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
                 <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
                   <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
-                  {zh ? "本地处理，文件不上传" : ja ? "ローカルで処理 — ファイルはアップロードされません" : es ? "Procesado localmente — nunca se sube" : pt ? "Processado localmente — nunca enviado" : fr ? "Traité localement — jamais téléversé" : "Processed locally — never uploaded"}
+                  {zh ? h("本地处理，文件不上传") : ja ? "ローカルで処理 — ファイルはアップロードされません" : es ? "Procesado localmente — nunca se sube" : pt ? "Processado localmente — nunca enviado" : fr ? "Traité localement — jamais téléversé" : "Processed locally — never uploaded"}
                 </span>
               </>
             ) : null}

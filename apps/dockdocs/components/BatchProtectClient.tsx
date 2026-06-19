@@ -7,8 +7,9 @@ import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
 const MAX_FILES = 30;
@@ -90,7 +91,7 @@ const STR = {
 };
 
 export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [password, setPassword] = useState("");
@@ -126,7 +127,7 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
           files: [it.file],
           pageRanges: password, // protect-pdf reads the password from pageRanges
           outputFileName: it.name.replace(/\.pdf$/i, "") + "-protected.pdf",
-          locale: locale === "zh" ? "zh" : "en",
+          locale: locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : "en",
         });
         updated[i] = { ...it, status: "done", blob: artifact.blob };
       } catch (e) {
@@ -149,7 +150,7 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url; a.download = "dockdocs-protected.zip"; a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : "Could not build the download — please try again.");
     }
   };
 

@@ -4,7 +4,17 @@
 // never imply a client-side tool uploaded anything. Returns null for slugs with no
 // bridge, so it's safe to mount everywhere. Only links to LIVE tools (never soon:true).
 
+import { toHant } from "./zh-hant";
+
+// Locales with their own bridge-copy literals (Record keys). zh-Hant is NOT a key;
+// it is derived from zh via OpenCC in the component (see BridgeLocaleInput).
 type BridgeLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type BridgeLocaleInput = BridgeLocale | "zh-Hant";
+// Resolve a per-locale string, deriving zh-Hant from the zh value via OpenCC.
+function bridgeStr(rec: Record<BridgeLocale, string>, locale: BridgeLocaleInput): string {
+  if (locale === "zh-Hant") return toHant(rec.zh);
+  return rec[locale] ?? rec.en;
+}
 
 type Bridge = {
   targetHref: string;
@@ -99,7 +109,7 @@ export function ToolBridge({
   useLocalePrefix = false,
 }: {
   slug: string;
-  locale?: BridgeLocale;
+  locale?: BridgeLocaleInput;
   useLocalePrefix?: boolean;
 }) {
   const bridge = BRIDGES[slug];
@@ -114,14 +124,14 @@ export function ToolBridge({
     >
       <div className="min-w-0">
         <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[color:var(--accent-strong)]">
-          {NEXT_LABEL[locale] ?? NEXT_LABEL.en}
+          {bridgeStr(NEXT_LABEL, locale)}
         </p>
         <p className="mt-1 text-[13px] leading-snug text-[color:var(--muted)]">
-          {bridge.pitch[locale] ?? bridge.pitch.en}
+          {bridgeStr(bridge.pitch, locale)}
         </p>
       </div>
       <span className="mt-0.5 shrink-0 whitespace-nowrap text-[13px] font-semibold text-[color:var(--foreground)] transition group-hover:translate-x-0.5">
-        {bridge.label[locale] ?? bridge.label.en} →
+        {bridgeStr(bridge.label, locale)} →
       </span>
     </a>
   );

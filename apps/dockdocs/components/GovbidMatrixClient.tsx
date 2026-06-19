@@ -6,10 +6,11 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
 import { useCallback, useMemo, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type RequirementType = "mandatory" | "advisory";
 type Requirement = {
   id: string;
@@ -191,7 +192,10 @@ function exportCsv(requirements: Requirement[], t: typeof STR["en"]) {
 }
 
 export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  // zh-Hant rendered from zh via OpenCC; child components (UpgradePrompt /
+  // ToolFaq / encryptedPdfMessage) lack zh-Hant in their union → map to "zh".
+  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const [phase, setPhase] = useState<"ready" | "analyzing" | "done">("ready");
   const [error, setError] = useState<string | null>(null);
   const [requirements, setRequirements] = useState<Requirement[] | null>(null);
@@ -221,7 +225,8 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
           text += content.items.map((i) => ("str" in i ? (i as { str?: string }).str : "") ?? "").join(" ") + "\n";
         }
       } catch (e) {
-        const msg = encryptedPdfMessage(e, locale) ?? (locale === "zh" ? "无法读取 PDF" : locale === "es" ? "No se pudo leer el PDF" : "Could not read PDF");
+        const zhReadErr = locale === "zh-Hant" ? toHant("无法读取 PDF") : "无法读取 PDF";
+        const msg = encryptedPdfMessage(e, childLocale) ?? (locale === "zh" || locale === "zh-Hant" ? zhReadErr : locale === "es" ? "No se pudo leer el PDF" : "Could not read PDF");
         setError(msg);
         setPhase("ready");
         return;
@@ -259,7 +264,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
       setRequirements(data.requirements ?? []);
       setPhase("done");
     },
-    [locale, t],
+    [locale, t, childLocale],
   );
 
   const filtered = useMemo(() => {
@@ -296,7 +301,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Limit hit */}
-      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
 
       {/* Error */}
       {error && (
@@ -404,7 +409,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
       {/* Privacy notice */}
       <p className="mt-8 text-[12px] text-[color:var(--faint)]">{t.privacy}</p>
 
-      <ToolFaq tool="govbid-matrix" locale={locale} />
+      <ToolFaq tool="govbid-matrix" locale={childLocale} />
     </main>
   );
 }

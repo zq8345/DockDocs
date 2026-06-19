@@ -9,8 +9,9 @@ import { authHeader } from "@/lib/supabase";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { checkUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
 
 const MAX_FILES = 30;
@@ -75,7 +76,7 @@ const STR = {
 const folderSafe = (s: string) => s.replace(/[\\/:*?"<>|]+/g, "-").trim().slice(0, 40) || "其他";
 
 export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);

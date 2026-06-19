@@ -1,7 +1,7 @@
 import { defaultLocale } from "@/lib/i18n";
 import { VerticalHubPage, type VerticalConfig } from "@/components/VerticalHubPage";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 // "Legal" professional vertical — now a thin config over the reusable
 // VerticalHubPage. Links to existing AI-hero tools (which keep their own gating);

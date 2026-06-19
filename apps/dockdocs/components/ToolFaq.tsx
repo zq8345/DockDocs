@@ -1,6 +1,7 @@
 import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "../../../shared/templates/pdf-tool-page/VerifyClientSide";
+import { toHant, deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
@@ -2539,10 +2540,12 @@ function ToolFaqInner({ tool, locale = "en" }: { tool: string; locale?: Locale }
   }
   const data = FAQS[tool];
   if (!data) return null;
-  const items = data.items[locale] ?? data.items.en;
+  // zh-Hant derives from the zh FAQ data via OpenCC.
+  const items = locale === "zh-Hant" ? deepHant(data.items.zh) : (data.items[locale as "en" | "zh" | "es"] ?? data.items.en);
+  const title = locale === "zh-Hant" ? toHant(data.title.zh) : (data.title[locale as "en" | "zh" | "es"] ?? data.title.en);
   return (
     <section className="mx-auto mt-12 border-t border-[color:var(--line)] pt-10">
-      <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{data.title[locale] ?? data.title.en}</h2>
+      <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{title}</h2>
       <div className="mt-6 space-y-6">
         {items.map((it) => (
           <div key={it.q}>

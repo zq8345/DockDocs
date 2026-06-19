@@ -7,8 +7,9 @@
 // All factual claims are verifiable; the only numbers are 0 / 0 / $0 / ~50.
 
 import type { ReactNode } from "react";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 
 const content = {
   en: {
@@ -454,14 +455,15 @@ function Figure({ children, className = "", glow = "28%" }: { children: ReactNod
 const PANEL = "rounded-xl border border-[color:var(--line)] bg-black/20 p-5";
 
 export function AboutPage({ locale = "en" }: { locale?: Locale }) {
-  const zh = locale === "zh" || locale === "ja";
-  const c = content[locale] ?? content.en;
+  const zh = locale === "zh" || locale === "ja" || locale === "zh-Hant";
+  // zh-Hant content is the Traditional conversion of the zh copy via OpenCC.
+  const c = locale === "zh-Hant" ? deepHant(content.zh) : (content[locale] ?? content.en);
   const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
   const h2 = "text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]";
   const sub = "mt-4 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]";
   const cap = "mt-4 font-mono text-[12px] text-[color:var(--faint)]";
   const shell = "mx-auto max-w-5xl px-5 py-24 sm:px-6 sm:py-28 lg:px-8";
-  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : slug);
+  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "zh-Hant" ? `/zh-Hant${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : slug);
 
   return (
     <main>

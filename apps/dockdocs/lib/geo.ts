@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { deepHant } from "@/lib/zh-hant";
 import { blogArticlePath, blogArticles, getBlogArticleContent } from "@/lib/blog";
 import {
   absoluteUrl,
@@ -34,7 +35,12 @@ export type GeoHubData = {
 
 // The GEO hubs ship in all 6 content locales. `Locale` (lib/i18n.ts) is only
 // en|zh, so the hub data needs its own wider content-locale union.
+// GeoLocale = locales with their OWN geo-hub content literals (used as Record keys
+// for workflowLinks/geoHubCopy). zh-Hant is NOT here — it is derived from zh via
+// OpenCC in getGeoHub/toGeoLocale (see GeoLocaleInput).
 export type GeoLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+// Locales accepted by the geo accessors at runtime (content locales + derived zh-Hant).
+export type GeoLocaleInput = GeoLocale | "zh-Hant";
 
 const workflowLinks: Record<
   GeoLocale,
@@ -907,16 +913,18 @@ export const geoHubCopy: Record<GeoLocale, Record<GeoPageSlug, GeoHubData>> = {
   },
 };
 
-const geoLocales: readonly GeoLocale[] = ["en", "zh", "es", "pt", "fr", "ja"];
+const geoLocales: readonly GeoLocaleInput[] = ["en", "zh", "es", "pt", "fr", "ja", "zh-Hant"];
 
 // Clamp any locale string to a GEO content locale; unknown locales fall back to en.
-export function toGeoLocale(locale: string): GeoLocale {
+// zh-Hant is preserved (derived from zh by getGeoHub).
+export function toGeoLocale(locale: string): GeoLocaleInput {
   return (geoLocales as readonly string[]).includes(locale)
-    ? (locale as GeoLocale)
+    ? (locale as GeoLocaleInput)
     : "en";
 }
 
-export function getGeoHub(locale: GeoLocale, slug: GeoPageSlug) {
+export function getGeoHub(locale: GeoLocaleInput, slug: GeoPageSlug) {
+  if (locale === "zh-Hant") return deepHant(geoHubCopy.zh[slug]);
   return geoHubCopy[locale][slug];
 }
 

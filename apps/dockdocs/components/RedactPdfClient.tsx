@@ -4,8 +4,9 @@ import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent }
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 // Boxes are stored in NORMALIZED page fractions (0–1) so they map to any render scale.
 type Box = { id: string; page: number; x: number; y: number; w: number; h: number; auto?: boolean };
 type Pg = { idx: number; url: string; ratio: number }; // ratio = height / width
@@ -128,7 +129,7 @@ const STR = {
 };
 
 export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [pages, setPages] = useState<Pg[]>([]);
   const [boxes, setBoxes] = useState<Box[]>([]);
@@ -321,7 +322,7 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
                     </div>
                   ))}
                 </div>
-                <p className="mt-1 text-center text-[11.5px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${pg.idx + 1} 页` : `Page ${pg.idx + 1}`}</p>
+                <p className="mt-1 text-center text-[11.5px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${pg.idx + 1} 页` : locale === "zh-Hant" ? toHant(`第 ${pg.idx + 1} 页`) : `Page ${pg.idx + 1}`}</p>
               </div>
             ))}
           </div>

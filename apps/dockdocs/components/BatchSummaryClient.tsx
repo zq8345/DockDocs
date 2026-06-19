@@ -11,8 +11,9 @@ import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { checkUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
 type Summary = { executiveSummary: string; keyPoints: string[]; actionItems?: string[]; nextSteps?: string[] };
 type Doc = { id: string; name: string; file: File; text: string };
 type Result = { name: string; summary?: Summary; error?: string };
@@ -83,7 +84,7 @@ const STR = {
 };
 
 export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [docs, setDocs] = useState<Doc[]>([]);
   const [busy, setBusy] = useState(false);

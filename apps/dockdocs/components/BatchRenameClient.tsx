@@ -5,8 +5,9 @@ import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
 type Mode = "sequence" | "replace";
 type Item = { id: string; name: string; file: File };
 
@@ -82,7 +83,7 @@ const STR = {
 };
 
 export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>("sequence");
@@ -137,7 +138,7 @@ export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url; a.download = "dockdocs-renamed.zip"; a.click();
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : "Could not build the download — please try again.");
     }
   };
 

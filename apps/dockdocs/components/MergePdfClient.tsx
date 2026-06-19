@@ -7,8 +7,9 @@ import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/
 
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
+import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Item = { id: string; name: string; pages: number; thumb: string; file: File };
 
 const STR = {
@@ -81,7 +82,7 @@ const STR = {
 };
 
 export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
@@ -122,9 +123,12 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       if (skipped.length) {
         const list = skipped.join(", ");
         const enc = encryptedSkipped;
+        const zhMsg = `跳过了 ${skipped.length} 个无法读取的文件：${list}${enc ? "(含加密文件，请先解锁)" : ""}。`;
         const msg =
           locale === "zh"
-            ? `跳过了 ${skipped.length} 个无法读取的文件：${list}${enc ? "(含加密文件，请先解锁)" : ""}。`
+            ? zhMsg
+            : locale === "zh-Hant"
+            ? toHant(zhMsg)
             : locale === "es"
               ? `Se omitieron ${skipped.length} archivo(s) ilegible(s): ${list}${enc ? " (algunos están protegidos con contraseña; desbloquéalos primero)" : ""}.`
               : locale === "pt"
