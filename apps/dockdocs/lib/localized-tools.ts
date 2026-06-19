@@ -3107,6 +3107,16 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
 // French (fr-FR) FAQ overrides
 // ---------------------------------------------------------------------------
 const frFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "edit-pdf": {
+    faqTitle: "Questions fréquentes sur l'édition de PDF",
+    faq: [
+      { question: "Puis-je éditer un PDF sans Adobe Acrobat ?", answer: "Oui. DockDocs propose un éditeur de PDF gratuit dans le navigateur qui permet d'ajouter du texte, des annotations, des formes et des images — sans Adobe Acrobat ni aucune installation de logiciel. Il fonctionne sur Windows, Mac, Linux et ChromeOS." },
+      { question: "L'édition de PDF en ligne est-elle sûre pour les documents sensibles ?", answer: "DockDocs Éditer PDF traite votre fichier entièrement dans le navigateur avec une technologie côté client. Votre PDF n'est jamais envoyé à un serveur : les documents sensibles restent sur votre appareil. Aucun compte ni inscription requis." },
+      { question: "Quels types de modifications puis-je apporter à un PDF ?", answer: "Avec DockDocs Éditer PDF, vous pouvez ajouter des zones de texte n'importe où sur la page, dessiner des formes et des lignes pour annoter, insérer des images comme des logos ou des signatures et annoter des documents. Cela couvre les besoins d'édition les plus courants sans la complexité d'un logiciel de bureau." },
+      { question: "Dois-je créer un compte pour éditer des PDF ?", answer: "Non. DockDocs Éditer PDF est entièrement gratuit et ne nécessite aucun compte, e-mail ni inscription. Ouvrez simplement la page, importez votre PDF, faites vos modifications et téléchargez." },
+      { question: "Puis-je éditer un PDF scanné ou basé sur une image ?", answer: "Pour les PDF scannés ou basés sur une image dont le texte n'est pas sélectionnable, utilisez d'abord DockDocs OCR PDF pour convertir le scan en texte sélectionnable, puis éditez le résultat. L'outil OCR extrait le texte des images et des documents scannés." },
+    ],
+  },
   "compress-pdf": {
     faqTitle: "FAQ – Compresser PDF",
     faq: [
@@ -5074,6 +5084,43 @@ const enFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
 };
 
 const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "pdf-to-image": {
+    faqTitle: "PDF 转图片常见问题",
+    faq: [
+      { question: "如何将 PDF 转换为图片？", answer: "上传 PDF，每一页都会在你的浏览器中渲染为 JPG 或 PNG 图片。" },
+      { question: "我的 PDF 会被发送到服务器吗？", answer: "不会。所有转换都在你的浏览器本地完成。" },
+      { question: "JPG 和 PNG 输出有什么区别？", answer: "JPG 体积更小、带轻微压缩；PNG 无损，更适合图表和截图。" },
+    ],
+  },
+  "edit-pdf": {
+    faqTitle: "PDF 编辑常见问题",
+    faq: [
+      { question: "不用 Adobe Acrobat 也能编辑 PDF 吗？", answer: "可以。DockDocs 提供免费的浏览器 PDF 编辑器，可添加文字、批注、形状和图片——无需 Adobe Acrobat 或安装任何软件。支持 Windows、Mac、Linux 和 ChromeOS。" },
+      { question: "在线编辑 PDF 处理敏感文档安全吗？", answer: "DockDocs 编辑 PDF 采用客户端技术，完全在浏览器中处理文件。你的 PDF 不会上传到服务器，敏感文档始终留在你的设备上。无需账号或注册。" },
+      { question: "可以对 PDF 做哪些编辑？", answer: "用 DockDocs 编辑 PDF，你可以在页面任意位置添加文本框、绘制形状和线条进行标注、插入徽标或签名等图片，并为文档添加批注。覆盖最常见的编辑需求，又不像桌面软件那样复杂。" },
+      { question: "编辑 PDF 需要注册账号吗？", answer: "不需要。DockDocs 编辑 PDF 完全免费，无需账号、邮箱或注册。打开页面、上传 PDF、编辑并下载即可。" },
+      { question: "可以编辑扫描件或图片型 PDF 吗？", answer: "对于文字不可选的扫描件或图片型 PDF，请先用 DockDocs OCR PDF 将扫描件转换为可选文字，再编辑结果。OCR 工具可从图片和扫描文档中提取文字。" },
+    ],
+  },
+  "sign-pdf": {
+    faqTitle: "PDF 签署常见问题",
+    faq: [
+      { question: "电子签名具有法律效力吗？", answer: "在大多数司法管辖区——包括美国（ESIGN 法案）、欧盟（eIDAS）、英国、加拿大、澳大利亚等——电子签名对大多数商务和个人文件具有法律约束力。DockDocs 提供签署工具；法律效力取决于你所在地区和文件类型。对于高度监管的文件，请咨询法律专业人士。" },
+      { question: "电子签名和数字签名有何区别？", answer: "电子签名（DockDocs 提供的）是文档上表示同意的可视标记，如手绘或输入的签名。数字签名是一种加密印章，通过证书颁发机构验证文档未被篡改并确认签署者身份。DockDocs 处理电子签名；如需基于证书的数字签名，请使用专门的 PKI 工具。" },
+      { question: "用 DockDocs 签署 PDF 需要账号吗？", answer: "不需要。DockDocs 签署 PDF 免费，无需账号、邮箱或注册。上传 PDF、添加签名并下载已签署文档，一次完成。" },
+      { question: "我的签名会被存储或共享吗？", answer: "不会。DockDocs 一切都在你的浏览器中处理——你的 PDF 和签名不会上传到任何服务器。关闭页面后不保存任何内容。这与会在服务器上存储签名和文档的云端电子签名服务不同。" },
+    ],
+  },
+  "translate-pdf": {
+    faqTitle: "PDF 翻译常见问题",
+    faq: [
+      { question: "DockDocs 可以翻译成哪些语言？", answer: "18+ 种语言，包括英语、中文（简体和繁体）、日语、韩语、法语、德语、西班牙语、葡萄牙语、意大利语、俄语、阿拉伯语、印地语、荷兰语、印尼语、越南语、泰语和土耳其语。完整列表见语言选择器。" },
+      { question: "AI 翻译对商务文件够准确吗？", answer: "它能生成不错的初稿，适合理解报告和往来邮件。对于具法律约束力的合同或认证翻译，请让专业译者复核——这是初稿，而非认证的法律翻译。" },
+      { question: "会保留原始版式和格式吗？", answer: "暂时不会。此版本翻译文档文字，提供可复制或下载的译文。保留版式（字体和定位）的翻译已在计划中。" },
+      { question: "我的 PDF 会上传到服务器吗？", answer: "PDF 在你的浏览器中读取；仅将提取的文字发送给 AI 翻译。文件本身不会离开你的设备。" },
+      { question: "有大小限制吗？", answer: "为保持快速和免费，每次翻译上限约 14,000 字符（约 10 页）。文档较长时，请先用 DockDocs 拆分 PDF 分段，再逐段翻译。" },
+    ],
+  },
   "unlock-pdf": {
     faqTitle: "PDF 解密常见问题",
     faq: [
@@ -5355,6 +5402,16 @@ const CANONICAL_HUB: Partial<Record<ToolSlug, string>> = {
 };
 
 const esFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "edit-pdf": {
+    faqTitle: "Preguntas frecuentes sobre la edición de PDF",
+    faq: [
+      { question: "¿Puedo editar un PDF sin Adobe Acrobat?", answer: "Sí. DockDocs ofrece un editor de PDF gratuito basado en el navegador que te permite agregar texto, anotaciones, formas e imágenes, sin Adobe Acrobat ni ninguna instalación de software. Funciona en Windows, Mac, Linux y ChromeOS." },
+      { question: "¿Es seguro editar PDF en línea con documentos confidenciales?", answer: "DockDocs Editar PDF procesa tu archivo por completo en el navegador con tecnología del lado del cliente. Tu PDF nunca se sube a un servidor, así que los documentos confidenciales permanecen en tu dispositivo. No se necesita cuenta ni registro." },
+      { question: "¿Qué tipos de ediciones puedo hacer en un PDF?", answer: "Con DockDocs Editar PDF puedes agregar cuadros de texto en cualquier parte de la página, dibujar formas y líneas para marcar, insertar imágenes como logotipos o firmas y anotar documentos. Cubre las necesidades de edición más comunes sin la complejidad del software de escritorio." },
+      { question: "¿Necesito crear una cuenta para editar PDF?", answer: "No. DockDocs Editar PDF es totalmente gratis y no requiere cuenta, correo ni registro. Solo abre la página, sube tu PDF, haz tus cambios y descarga." },
+      { question: "¿Puedo editar un PDF escaneado o basado en imágenes?", answer: "Para PDF escaneados o basados en imágenes donde el texto no se puede seleccionar, primero usa DockDocs OCR PDF para convertir el escaneo en texto seleccionable y luego edita el resultado. La herramienta de OCR extrae el texto de imágenes y documentos escaneados." },
+    ],
+  },
   "compress-pdf": {
     faqTitle: "Preguntas sobre la compresión de PDF",
     faq: [
@@ -5669,6 +5726,16 @@ const esFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
 };
 
 const ptFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "edit-pdf": {
+    faqTitle: "Perguntas frequentes sobre edição de PDF",
+    faq: [
+      { question: "Posso editar um PDF sem o Adobe Acrobat?", answer: "Sim. A DockDocs oferece um editor de PDF gratuito no navegador que permite adicionar texto, anotações, formas e imagens — sem Adobe Acrobat nem instalação de software. Funciona no Windows, Mac, Linux e ChromeOS." },
+      { question: "Editar PDF online é seguro para documentos confidenciais?", answer: "O DockDocs Editar PDF processa o arquivo inteiramente no navegador com tecnologia do lado do cliente. Seu PDF nunca é enviado a um servidor, então documentos confidenciais permanecem no seu dispositivo. Não é preciso conta nem cadastro." },
+      { question: "Que tipos de edição posso fazer em um PDF?", answer: "Com o DockDocs Editar PDF você pode adicionar caixas de texto em qualquer lugar da página, desenhar formas e linhas para marcação, inserir imagens como logotipos ou assinaturas e anotar documentos. Cobre as necessidades de edição mais comuns sem a complexidade de um software de desktop." },
+      { question: "Preciso criar uma conta para editar PDFs?", answer: "Não. O DockDocs Editar PDF é totalmente gratuito e não exige conta, e-mail nem cadastro. Basta abrir a página, enviar seu PDF, fazer as edições e baixar." },
+      { question: "Posso editar um PDF digitalizado ou baseado em imagem?", answer: "Para PDFs digitalizados ou baseados em imagem em que o texto não é selecionável, use primeiro o DockDocs OCR PDF para converter a digitalização em texto selecionável e depois edite o resultado. A ferramenta de OCR extrai o texto de imagens e documentos digitalizados." },
+    ],
+  },
   "compress-pdf": {
     faqTitle: "Perguntas sobre compressão de PDF",
     faq: [
