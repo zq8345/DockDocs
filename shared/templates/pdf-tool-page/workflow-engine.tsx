@@ -31,13 +31,35 @@ type WorkflowStatus =
   | "result"
   | "error";
 
+type L = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+
+const SUPPORTED_LOCALES = ["en", "zh", "es", "pt", "fr", "ja"] as const;
+
+function normalizeLocale(value: unknown): L {
+  return (SUPPORTED_LOCALES as readonly string[]).includes(value as string)
+    ? (value as L)
+    : "en";
+}
+
+// pdf-runtime and WorkflowErrorState only accept en/zh/es; map the rest down.
+function toRuntimeLocale(loc: L): "en" | "zh" | "es" {
+  return loc === "zh" ? "zh" : loc === "es" ? "es" : "en";
+}
+
+function makeTr(loc: L) {
+  return (en: string, zh: string, es: string, pt: string, fr: string, ja: string): string =>
+    ({ en, zh, es, pt, fr, ja })[loc];
+}
+
 export function PdfWorkflowEngine({
   config,
 }: {
   config: PdfToolPageConfig;
 }) {
-  const locale: "en" | "zh" = config.locale === "zh" ? "zh" : "en";
-  const zh = locale === "zh";
+  const loc = normalizeLocale(config.locale);
+  const tr = makeTr(loc);
+  // Helpers below (pdf-runtime, WorkflowErrorState) only accept en/zh/es.
+  const runtimeLocale = toRuntimeLocale(loc);
   const spec = useMemo(() => getWorkflowSpec(config), [config]);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -106,9 +128,14 @@ export function PdfWorkflowEngine({
   async function startProcessing() {
     if (files.length < spec.minFiles) {
       setError(
-        zh
-          ? `请至少上传 ${spec.minFiles} 个文件。`
-          : `Upload at least ${spec.minFiles} files to continue.`,
+        tr(
+          `Upload at least ${spec.minFiles} files to continue.`,
+          `请至少上传 ${spec.minFiles} 个文件。`,
+          `Sube al menos ${spec.minFiles} archivos para continuar.`,
+          `Envie pelo menos ${spec.minFiles} arquivos para continuar.`,
+          `Importez au moins ${spec.minFiles} fichiers pour continuer.`,
+          `続行するには ${spec.minFiles} 個以上のファイルをアップロードしてください。`,
+        ),
       );
       setStatus("error");
       return;
@@ -119,9 +146,14 @@ export function PdfWorkflowEngine({
       !isValidPageRange(pageRanges)
     ) {
       setError(
-        zh
-          ? "请输入有效页面范围，例如 1-4, 12-18。"
-          : "Enter a valid page range, such as 1-4, 12-18.",
+        tr(
+          "Enter a valid page range, such as 1-4, 12-18.",
+          "请输入有效页面范围，例如 1-4, 12-18。",
+          "Introduce un intervalo de páginas válido, por ejemplo 1-4, 12-18.",
+          "Insira um intervalo de páginas válido, por exemplo 1-4, 12-18.",
+          "Saisissez une plage de pages valide, par exemple 1-4, 12-18.",
+          "1-4、12-18 のような有効なページ範囲を入力してください。",
+        ),
       );
       setStatus("error");
       return;
@@ -129,9 +161,14 @@ export function PdfWorkflowEngine({
 
     if (config.slug === "ocr-pdf" && !ocrConfirmed) {
       setError(
-        zh
-          ? "请确认这是扫描件或图片型 PDF。"
-          : "Confirm this is a scanned or image-based PDF before OCR.",
+        tr(
+          "Confirm this is a scanned or image-based PDF before OCR.",
+          "请确认这是扫描件或图片型 PDF。",
+          "Confirma que se trata de un PDF escaneado o basado en imágenes antes del OCR.",
+          "Confirme que este é um PDF digitalizado ou baseado em imagens antes do OCR.",
+          "Avant l'OCR, confirmez qu'il s'agit d'un PDF numérisé ou basé sur des images.",
+          "OCR の前に、これがスキャンまたは画像ベースの PDF であることを確認してください。",
+        ),
       );
       setStatus("error");
       return;
@@ -179,7 +216,7 @@ export function PdfWorkflowEngine({
           pageRanges,
           ocrLanguage,
           outputFileName: spec.outputFileName,
-          locale,
+          locale: runtimeLocale,
           signal: controller.signal,
           onProgress: ({
             progress: nextProgress,
@@ -213,7 +250,7 @@ export function PdfWorkflowEngine({
         return;
       }
 
-      setError(getPdfRuntimeErrorMessage(processingError, locale));
+      setError(getPdfRuntimeErrorMessage(processingError, runtimeLocale));
       setStatus("error");
     } finally {
       if (processingRunRef.current === runId) {
@@ -286,9 +323,14 @@ export function PdfWorkflowEngine({
   function downloadPrimaryResult() {
     if (config.slug === "pdf-to-word" && !runtimeArtifact) {
       setError(
-        zh
-          ? "PDF 转 Word 后端没有返回 DOCX 文件。请重试或稍后再试。"
-          : "The PDF to Word backend did not return a DOCX file. Try again later.",
+        tr(
+          "The PDF to Word backend did not return a DOCX file. Try again later.",
+          "PDF 转 Word 后端没有返回 DOCX 文件。请重试或稍后再试。",
+          "El backend de PDF a Word no devolvió un archivo DOCX. Inténtalo de nuevo más tarde.",
+          "O backend de PDF para Word não retornou um arquivo DOCX. Tente novamente mais tarde.",
+          "Le backend PDF vers Word n'a pas renvoyé de fichier DOCX. Réessayez plus tard.",
+          "PDF から Word への変換バックエンドが DOCX ファイルを返しませんでした。後でもう一度お試しください。",
+        ),
       );
       setStatus("error");
       return;
@@ -297,7 +339,16 @@ export function PdfWorkflowEngine({
     const artifact =
       runtimeArtifact ?? createWorkflowArtifact(config, files, pageRanges);
     if (!artifact?.blob?.size) {
-      setError(zh ? "结果文件为空,请重试。" : "The result file is empty — please try again.");
+      setError(
+        tr(
+          "The result file is empty — please try again.",
+          "结果文件为空,请重试。",
+          "El archivo de resultado está vacío; inténtalo de nuevo.",
+          "O arquivo de resultado está vazio — tente novamente.",
+          "Le fichier de résultat est vide — veuillez réessayer.",
+          "結果ファイルが空です。もう一度お試しください。",
+        ),
+      );
       setStatus("error");
       return;
     }
@@ -362,18 +413,18 @@ export function PdfWorkflowEngine({
                   {config.upload.buttonLabel}
                 </button>
                 <p className="mt-3 text-sm text-[color:var(--muted)]">
-                  {zh ? "或将文件拖放到此处" : "or drop your file here"}
+                  {tr("or drop your file here", "或将文件拖放到此处", "o suelta tu archivo aquí", "ou solte o seu arquivo aqui", "ou déposez votre fichier ici", "またはファイルをここにドロップ")}
                 </p>
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-                  <span>{zh ? "支持格式" : "Supports"} {spec.acceptedLabel}</span>
+                  <span>{tr("Supports", "支持格式", "Admite", "Aceita", "Prend en charge", "対応形式")} {spec.acceptedLabel}</span>
                   <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
                   {runsLocally ? (
                     <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
                       <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
-                      {zh ? "本地处理，文件不上传" : "Processed locally — never uploaded"}
+                      {tr("Processed locally — never uploaded", "本地处理，文件不上传", "Procesado localmente — nunca se sube", "Processado localmente — nunca enviado", "Traité localement — jamais téléversé", "ローカルで処理 — アップロードされません")}
                     </span>
                   ) : (
-                    <span>{zh ? "最大 100MB" : "Up to 100MB"}</span>
+                    <span>{tr("Up to 100MB", "最大 100MB", "Hasta 100 MB", "Até 100 MB", "Jusqu'à 100 Mo", "最大 100MB")}</span>
                   )}
                 </div>
               </>
@@ -382,10 +433,10 @@ export function PdfWorkflowEngine({
             {status === "uploading" ? (
               <WorkflowProgress
                 bare
-                title={zh ? "正在读取文件…" : "Reading file…"}
-                description={zh ? "正在准备工作流。" : "Preparing the workflow."}
+                title={tr("Reading file…", "正在读取文件…", "Leyendo el archivo…", "Lendo o arquivo…", "Lecture du fichier…", "ファイルを読み込み中…")}
+                description={tr("Preparing the workflow.", "正在准备工作流。", "Preparando el flujo de trabajo.", "Preparando o fluxo de trabalho.", "Préparation du flux de travail.", "ワークフローを準備しています。")}
                 progress={progress}
-                statusText={zh ? "上传中" : "Uploading"}
+                statusText={tr("Uploading", "上传中", "Subiendo", "Enviando", "Téléversement", "アップロード中")}
               />
             ) : null}
 
@@ -412,12 +463,12 @@ export function PdfWorkflowEngine({
               <WorkflowProgress
                 bare
                 title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
-                description={totalSize > 8 * 1024 * 1024 ? (zh ? spec.processLabel + " · 大文件，转换可能需要稍久" : spec.processLabel + " · large file — may take a bit") : spec.processLabel}
+                description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，转换可能需要稍久", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります") : spec.processLabel}
                 progress={progress}
-                statusText={zh ? "处理中" : "Processing"}
+                statusText={tr("Processing", "处理中", "Procesando", "Processando", "Traitement", "処理中")}
                 animated
                 onCancel={resetWorkflow}
-                cancelLabel={zh ? "取消" : "Cancel"}
+                cancelLabel={tr("Cancel", "取消", "Cancelar", "Cancelar", "Annuler", "キャンセル")}
               />
             ) : null}
 
@@ -442,7 +493,7 @@ export function PdfWorkflowEngine({
                 message={error}
                 onRetry={() => { setError(""); setStatus(files.length ? "ready" : "idle"); }}
                 onReset={resetWorkflow}
-                locale={locale}
+                locale={runtimeLocale}
               />
             ) : null}
           </div>
@@ -500,20 +551,20 @@ export function PdfWorkflowEngine({
 
         {/* Hint line */}
         <p className="mt-4 text-sm text-[color:var(--muted)]">
-          {zh ? "或将文件拖放到此处" : "or drop your file here"}
+          {tr("or drop your file here", "或将文件拖放到此处", "o suelta tu archivo aquí", "ou solte o seu arquivo aqui", "ou déposez votre fichier ici", "またはファイルをここにドロップ")}
         </p>
 
         {/* Accepted types + privacy */}
         <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-          <span>{zh ? "支持格式" : "Supports"} {spec.acceptedLabel}</span>
+          <span>{tr("Supports", "支持格式", "Admite", "Aceita", "Prend en charge", "対応形式")} {spec.acceptedLabel}</span>
           <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
           {runsLocallyMulti ? (
             <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
               <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
-              {zh ? "本地处理，文件不上传" : "Processed locally — never uploaded"}
+              {tr("Processed locally — never uploaded", "本地处理，文件不上传", "Procesado localmente — nunca se sube", "Processado localmente — nunca enviado", "Traité localement — jamais téléversé", "ローカルで処理 — アップロードされません")}
             </span>
           ) : (
-            <span>{zh ? "最大 100MB" : "Up to 100MB"}</span>
+            <span>{tr("Up to 100MB", "最大 100MB", "Hasta 100 MB", "Até 100 MB", "Jusqu'à 100 Mo", "最大 100MB")}</span>
           )}
         </div>
 
@@ -534,10 +585,10 @@ export function PdfWorkflowEngine({
 
       {status === "uploading" ? (
         <WorkflowProgress
-          title={zh ? "正在读取文件…" : "Reading file…"}
-          description={zh ? "正在准备工作流。" : "Preparing the workflow."}
+          title={tr("Reading file…", "正在读取文件…", "Leyendo el archivo…", "Lendo o arquivo…", "Lecture du fichier…", "ファイルを読み込み中…")}
+          description={tr("Preparing the workflow.", "正在准备工作流。", "Preparando el flujo de trabajo.", "Preparando o fluxo de trabalho.", "Préparation du flux de travail.", "ワークフローを準備しています。")}
           progress={progress}
-          statusText={zh ? "上传中" : "Uploading"}
+          statusText={tr("Uploading", "上传中", "Subiendo", "Enviando", "Téléversement", "アップロード中")}
         />
       ) : null}
 
@@ -561,12 +612,12 @@ export function PdfWorkflowEngine({
       {status === "processing" ? (
         <WorkflowProgress
           title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
-          description={totalSize > 8 * 1024 * 1024 ? (zh ? spec.processLabel + " · 大文件，转换可能需要稍久" : spec.processLabel + " · large file — may take a bit") : spec.processLabel}
+          description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，转换可能需要稍久", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります") : spec.processLabel}
           progress={progress}
-          statusText={zh ? "处理中" : "Processing"}
+          statusText={tr("Processing", "处理中", "Procesando", "Processando", "Traitement", "処理中")}
           animated
           onCancel={resetWorkflow}
-          cancelLabel={zh ? "取消" : "Cancel"}
+          cancelLabel={tr("Cancel", "取消", "Cancelar", "Cancelar", "Annuler", "キャンセル")}
         />
       ) : null}
 
@@ -589,7 +640,7 @@ export function PdfWorkflowEngine({
           message={error}
           onRetry={() => { setError(""); setStatus(files.length ? "ready" : "idle"); }}
           onReset={resetWorkflow}
-          locale={locale}
+          locale={runtimeLocale}
         />
       ) : null}
     </div>
@@ -597,7 +648,26 @@ export function PdfWorkflowEngine({
 }
 
 function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
-  const zh = (config.locale ?? "en") === "zh";
+  const tr = makeTr(normalizeLocale(config.locale));
+  // Shared step phrases reused across many tools.
+  const S = {
+    uploadFile: tr("Uploading file...", "上传文件...", "Subiendo archivo...", "Enviando arquivo...", "Téléversement du fichier...", "ファイルをアップロード中..."),
+    uploadDocument: tr("Uploading document...", "上传文档...", "Subiendo documento...", "Enviando documento...", "Téléversement du document...", "ドキュメントをアップロード中..."),
+    uploadPdf: tr("Uploading PDF...", "上传 PDF...", "Subiendo PDF...", "Enviando PDF...", "Téléversement du PDF...", "PDF をアップロード中..."),
+    sendingToService: tr("Sending to conversion service...", "发送到转换服务...", "Enviando al servicio de conversión...", "Enviando ao serviço de conversão...", "Envoi au service de conversion...", "変換サービスに送信中..."),
+    converting: tr("Converting...", "转换中...", "Convirtiendo...", "Convertendo...", "Conversion en cours...", "変換中..."),
+    preparingDownload: tr("Preparing download...", "准备下载...", "Preparando la descarga...", "Preparando o download...", "Préparation du téléchargement...", "ダウンロードを準備中..."),
+    loadingPdf: tr("Loading PDF...", "加载 PDF...", "Cargando PDF...", "Carregando PDF...", "Chargement du PDF...", "PDF を読み込み中..."),
+    readingPdf: tr("Reading PDF...", "读取 PDF...", "Leyendo PDF...", "Lendo PDF...", "Lecture du PDF...", "PDF を読み込み中..."),
+    renderingPages: tr("Rendering pages...", "渲染页面...", "Renderizando páginas...", "Renderizando páginas...", "Rendu des pages...", "ページをレンダリング中..."),
+    extractingText: tr("Extracting text...", "提取文字...", "Extrayendo texto...", "Extraindo texto...", "Extraction du texte...", "テキストを抽出中..."),
+    locatingPages: tr("Locating pages...", "定位页面...", "Localizando páginas...", "Localizando páginas...", "Localisation des pages...", "ページを特定中..."),
+    readingImages: tr("Reading images...", "读取图片...", "Leyendo imágenes...", "Lendo imagens...", "Lecture des images...", "画像を読み込み中..."),
+    applyingPageOrder: tr("Applying page order...", "应用页面顺序...", "Aplicando el orden de páginas...", "Aplicando a ordem das páginas...", "Application de l'ordre des pages...", "ページ順序を適用中..."),
+    generatingPdfPages: tr("Generating PDF pages...", "生成 PDF 页面...", "Generando páginas PDF...", "Gerando páginas PDF...", "Génération des pages PDF...", "PDF ページを生成中..."),
+  };
+  const dlPdf = tr("Download PDF", "下载 PDF", "Descargar PDF", "Baixar PDF", "Télécharger le PDF", "PDF をダウンロード");
+  const exportPdf = tr("Export PDF", "导出 PDF", "Exportar PDF", "Exportar PDF", "Exporter le PDF", "PDF をエクスポート");
   const base = {
     acceptedLabel: "PDF",
     minFiles: 1,
@@ -612,75 +682,87 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
         ...base,
         minFiles: 2,
         maxFiles: 12,
-        processLabel: zh
-          ? "正在合并 PDF 页面并生成一个文档。"
-          : "Merging PDF pages into one organized document.",
-        resultLabel: zh ? "下载合并 PDF" : "Download merged PDF",
+        processLabel: tr(
+          "Merging PDF pages into one organized document.",
+          "正在合并 PDF 页面并生成一个文档。",
+          "Combinando las páginas de los PDF en un documento organizado.",
+          "Combinando as páginas dos PDFs em um documento organizado.",
+          "Fusion des pages PDF en un seul document organisé.",
+          "PDF のページを 1 つの整理された文書に結合しています。",
+        ),
+        resultLabel: tr("Download merged PDF", "下载合并 PDF", "Descargar PDF combinado", "Baixar PDF combinado", "Télécharger le PDF fusionné", "結合した PDF をダウンロード"),
         outputFileName: "dockdocs-merged.pdf",
-        steps: zh
-          ? ["分析 PDF 结构...", "应用文件顺序...", "合并文档...", "准备下载..."]
-          : [
-              "Analyzing PDF structure...",
-              "Applying file order...",
-              "Merging documents...",
-              "Preparing download...",
-            ],
+        steps: [
+          tr("Analyzing PDF structure...", "分析 PDF 结构...", "Analizando la estructura del PDF...", "Analisando a estrutura do PDF...", "Analyse de la structure du PDF...", "PDF の構造を解析中..."),
+          tr("Applying file order...", "应用文件顺序...", "Aplicando el orden de los archivos...", "Aplicando a ordem dos arquivos...", "Application de l'ordre des fichiers...", "ファイルの順序を適用中..."),
+          tr("Merging documents...", "合并文档...", "Combinando documentos...", "Combinando documentos...", "Fusion des documents...", "ドキュメントを結合中..."),
+          S.preparingDownload,
+        ],
       };
     case "split-pdf":
       return {
         ...base,
-        processLabel: zh
-          ? "正在读取页面范围并准备拆分输出。"
-          : "Reading page ranges and preparing split outputs.",
-        resultLabel: zh ? "导出 ZIP" : "Export ZIP",
+        processLabel: tr(
+          "Reading page ranges and preparing split outputs.",
+          "正在读取页面范围并准备拆分输出。",
+          "Leyendo los intervalos de páginas y preparando los archivos divididos.",
+          "Lendo os intervalos de páginas e preparando os arquivos divididos.",
+          "Lecture des plages de pages et préparation des fichiers fractionnés.",
+          "ページ範囲を読み取り、分割した出力を準備しています。",
+        ),
+        resultLabel: tr("Export ZIP", "导出 ZIP", "Exportar ZIP", "Exportar ZIP", "Exporter le ZIP", "ZIP をエクスポート"),
         outputFileName: "dockdocs-split-pages.zip",
-        steps: zh
-          ? ["分析页码...", "验证页面范围...", "拆分文档...", "打包 ZIP..."]
-          : [
-              "Analyzing page structure...",
-              "Validating ranges...",
-              "Splitting document...",
-              "Packaging ZIP...",
-            ],
+        steps: [
+          tr("Analyzing page structure...", "分析页码...", "Analizando la estructura de páginas...", "Analisando a estrutura das páginas...", "Analyse de la structure des pages...", "ページ構造を解析中..."),
+          tr("Validating ranges...", "验证页面范围...", "Validando intervalos...", "Validando intervalos...", "Validation des plages...", "範囲を検証中..."),
+          tr("Splitting document...", "拆分文档...", "Dividiendo el documento...", "Dividindo o documento...", "Fractionnement du document...", "ドキュメントを分割中..."),
+          tr("Packaging ZIP...", "打包 ZIP...", "Empaquetando ZIP...", "Empacotando ZIP...", "Création du ZIP...", "ZIP にまとめ中..."),
+        ],
       };
     case "pdf-to-word":
       return {
         ...base,
         maxFileSize: 100 * mb,
         maxTotalSize: 100 * mb,
-        processLabel: zh
-          ? "正在通过转换后端准备 DOCX 文件。"
-          : "Preparing a DOCX file through the conversion backend.",
-        resultLabel: zh ? "下载 .docx" : "Download .docx",
+        processLabel: tr(
+          "Preparing a DOCX file through the conversion backend.",
+          "正在通过转换后端准备 DOCX 文件。",
+          "Preparando un archivo DOCX a través del backend de conversión.",
+          "Preparando um arquivo DOCX por meio do backend de conversão.",
+          "Préparation d'un fichier DOCX via le backend de conversion.",
+          "変換バックエンドで DOCX ファイルを準備しています。",
+        ),
+        resultLabel: tr("Download .docx", "下载 .docx", "Descargar .docx", "Baixar .docx", "Télécharger le .docx", ".docx をダウンロード"),
         outputFileName: "dockdocs-converted.docx",
-        steps: zh
-          ? ["检查 PDF 文件...", "上传到转换后端...", "等待 DOCX 输出...", "准备下载..."]
-          : [
-              "Checking PDF file...",
-              "Uploading to conversion backend...",
-              "Waiting for DOCX output...",
-              "Preparing download...",
-            ],
+        steps: [
+          tr("Checking PDF file...", "检查 PDF 文件...", "Comprobando el archivo PDF...", "Verificando o arquivo PDF...", "Vérification du fichier PDF...", "PDF ファイルを確認中..."),
+          tr("Uploading to conversion backend...", "上传到转换后端...", "Subiendo al backend de conversión...", "Enviando ao backend de conversão...", "Téléversement vers le backend de conversion...", "変換バックエンドにアップロード中..."),
+          tr("Waiting for DOCX output...", "等待 DOCX 输出...", "Esperando la salida DOCX...", "Aguardando a saída DOCX...", "Attente de la sortie DOCX...", "DOCX の出力を待機中..."),
+          S.preparingDownload,
+        ],
       };
     case "ocr-pdf":
       return {
         ...base,
         maxFileSize: 25 * mb,
         maxTotalSize: 25 * mb,
-        processLabel: zh
-          ? "正在从扫描 PDF 中提取文字。"
-          : "Extracting text from scanned PDF pages.",
-        resultLabel: zh ? "复制提取文本" : "Copy extracted text",
-        secondaryResultLabel: zh ? "下载文本" : "Download text",
+        processLabel: tr(
+          "Extracting text from scanned PDF pages.",
+          "正在从扫描 PDF 中提取文字。",
+          "Extrayendo texto de las páginas PDF escaneadas.",
+          "Extraindo texto das páginas PDF digitalizadas.",
+          "Extraction du texte des pages PDF numérisées.",
+          "スキャンした PDF ページからテキストを抽出しています。",
+        ),
+        resultLabel: tr("Copy extracted text", "复制提取文本", "Copiar el texto extraído", "Copiar o texto extraído", "Copier le texte extrait", "抽出したテキストをコピー"),
+        secondaryResultLabel: tr("Download text", "下载文本", "Descargar el texto", "Baixar o texto", "Télécharger le texte", "テキストをダウンロード"),
         outputFileName: "dockdocs-ocr-text.txt",
-        steps: zh
-          ? ["加载 PDF...", "渲染页面...", "识别所选页面...", "合并文本输出..."]
-          : [
-              "Loading PDF...",
-              "Rendering pages...",
-              "Recognizing selected pages...",
-              "Combining text output...",
-            ],
+        steps: [
+          S.loadingPdf,
+          S.renderingPages,
+          tr("Recognizing selected pages...", "识别所选页面...", "Reconociendo las páginas seleccionadas...", "Reconhecendo as páginas selecionadas...", "Reconnaissance des pages sélectionnées...", "選択したページを認識中..."),
+          tr("Combining text output...", "合并文本输出...", "Combinando la salida de texto...", "Combinando a saída de texto...", "Combinaison de la sortie texte...", "テキスト出力を結合中..."),
+        ],
       };
     case "jpg-to-pdf":
       return {
@@ -689,144 +771,147 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
         maxFiles: 20,
         maxFileSize: 20 * mb,
         maxTotalSize: 120 * mb,
-        processLabel: zh
-          ? "正在把图片页面导出为 PDF 文档。"
-          : "Exporting image pages into a PDF document.",
-        resultLabel: zh ? "导出 PDF" : "Export PDF",
+        processLabel: tr(
+          "Exporting image pages into a PDF document.",
+          "正在把图片页面导出为 PDF 文档。",
+          "Exportando las páginas de imagen a un documento PDF.",
+          "Exportando as páginas de imagem para um documento PDF.",
+          "Exportation des pages d'image vers un document PDF.",
+          "画像ページを PDF 文書にエクスポートしています。",
+        ),
+        resultLabel: exportPdf,
         outputFileName: "dockdocs-images.pdf",
-        steps: zh
-          ? ["读取图片...", "应用页面顺序...", "生成 PDF 页面...", "准备 PDF 导出..."]
-          : [
-              "Reading images...",
-              "Applying page order...",
-              "Generating PDF pages...",
-              "Preparing PDF export...",
-            ],
+        steps: [
+          S.readingImages,
+          S.applyingPageOrder,
+          S.generatingPdfPages,
+          tr("Preparing PDF export...", "准备 PDF 导出...", "Preparando la exportación a PDF...", "Preparando a exportação para PDF...", "Préparation de l'export PDF...", "PDF エクスポートを準備中..."),
+        ],
       };
     case "compress-pdf":
     default:
       return {
         ...base,
-        processLabel: zh
-          ? "正在分析 PDF 并减小文件体积。"
-          : "Analyzing the PDF and reducing file size.",
-        resultLabel: zh ? "下载压缩 PDF" : "Download compressed PDF",
+        processLabel: tr(
+          "Analyzing the PDF and reducing file size.",
+          "正在分析 PDF 并减小文件体积。",
+          "Analizando el PDF y reduciendo el tamaño del archivo.",
+          "Analisando o PDF e reduzindo o tamanho do arquivo.",
+          "Analyse du PDF et réduction de la taille du fichier.",
+          "PDF を解析してファイルサイズを縮小しています。",
+        ),
+        resultLabel: tr("Download compressed PDF", "下载压缩 PDF", "Descargar PDF comprimido", "Baixar PDF comprimido", "Télécharger le PDF compressé", "圧縮した PDF をダウンロード"),
         outputFileName: "dockdocs-compressed.pdf",
-        steps: zh
-          ? ["分析 PDF 结构...", "优化图片和对象...", "压缩文档...", "准备结果..."]
-          : [
-              "Analyzing PDF structure...",
-              "Optimizing images and objects...",
-              "Compressing document...",
-              "Preparing result...",
-            ],
+        steps: [
+          tr("Analyzing PDF structure...", "分析 PDF 结构...", "Analizando la estructura del PDF...", "Analisando a estrutura do PDF...", "Analyse de la structure du PDF...", "PDF の構造を解析中..."),
+          tr("Optimizing images and objects...", "优化图片和对象...", "Optimizando imágenes y objetos...", "Otimizando imagens e objetos...", "Optimisation des images et objets...", "画像とオブジェクトを最適化中..."),
+          tr("Compressing document...", "压缩文档...", "Comprimiendo el documento...", "Comprimindo o documento...", "Compression du document...", "ドキュメントを圧縮中..."),
+          tr("Preparing result...", "准备结果...", "Preparando el resultado...", "Preparando o resultado...", "Préparation du résultat...", "結果を準備中..."),
+        ],
       };
     case "pdf-to-pdfa":
       return {
         acceptedLabel: "PDF",
         minFiles: 1, maxFiles: 1,
         maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
-        processLabel: zh ? "正在转换为 PDF/A 归档格式。" : "Converting to PDF/A archival format.",
-        resultLabel: zh ? "下载 PDF/A" : "Download PDF/A",
+        processLabel: tr("Converting to PDF/A archival format.", "正在转换为 PDF/A 归档格式。", "Convirtiendo al formato de archivo PDF/A.", "Convertendo para o formato de arquivamento PDF/A.", "Conversion au format d'archivage PDF/A.", "PDF/A 保存形式に変換しています。"),
+        resultLabel: tr("Download PDF/A", "下载 PDF/A", "Descargar PDF/A", "Baixar PDF/A", "Télécharger le PDF/A", "PDF/A をダウンロード"),
         outputFileName: "dockdocs-archive.pdf",
-        steps: zh
-          ? ["上传文件...", "发送到转换服务...", "转换中...", "准备下载..."]
-          : ["Uploading file...", "Sending to conversion service...", "Converting...", "Preparing download..."],
+        steps: [S.uploadFile, S.sendingToService, S.converting, S.preparingDownload],
       };
     case "pdf-to-ppt":
       return {
         acceptedLabel: "PDF",
         minFiles: 1, maxFiles: 1,
         maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
-        processLabel: zh ? "正在将 PDF 转换为 PowerPoint。" : "Converting PDF to PowerPoint.",
-        resultLabel: zh ? "下载 PPTX" : "Download PPTX",
+        processLabel: tr("Converting PDF to PowerPoint.", "正在将 PDF 转换为 PowerPoint。", "Convirtiendo PDF a PowerPoint.", "Convertendo PDF para PowerPoint.", "Conversion du PDF en PowerPoint.", "PDF を PowerPoint に変換しています。"),
+        resultLabel: tr("Download PPTX", "下载 PPTX", "Descargar PPTX", "Baixar PPTX", "Télécharger le PPTX", "PPTX をダウンロード"),
         outputFileName: "dockdocs-converted.pptx",
-        steps: zh
-          ? ["上传文件...", "发送到转换服务...", "转换中...", "准备下载..."]
-          : ["Uploading file...", "Sending to conversion service...", "Converting...", "Preparing download..."],
+        steps: [S.uploadFile, S.sendingToService, S.converting, S.preparingDownload],
       };
     case "html-to-pdf":
       return {
         acceptedLabel: "HTML",
         minFiles: 1, maxFiles: 1,
         maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
-        processLabel: zh ? "正在将 HTML 转换为 PDF。" : "Converting HTML to PDF.",
-        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        processLabel: tr("Converting HTML to PDF.", "正在将 HTML 转换为 PDF。", "Convirtiendo HTML a PDF.", "Convertendo HTML para PDF.", "Conversion du HTML en PDF.", "HTML を PDF に変換しています。"),
+        resultLabel: dlPdf,
         outputFileName: "dockdocs-converted.pdf",
-        steps: zh
-          ? ["上传文件...", "发送到转换服务...", "转换中...", "准备下载..."]
-          : ["Uploading file...", "Sending to conversion service...", "Converting...", "Preparing download..."],
+        steps: [S.uploadFile, S.sendingToService, S.converting, S.preparingDownload],
       };
     case "word-to-pdf":
       return {
         acceptedLabel: "DOCX, DOC",
         minFiles: 1, maxFiles: 1,
         maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
-        processLabel: zh ? "正在将 Word 文档转换为 PDF。" : "Converting Word document to PDF.",
-        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        processLabel: tr("Converting Word document to PDF.", "正在将 Word 文档转换为 PDF。", "Convirtiendo el documento de Word a PDF.", "Convertendo o documento do Word para PDF.", "Conversion du document Word en PDF.", "Word 文書を PDF に変換しています。"),
+        resultLabel: dlPdf,
         outputFileName: "dockdocs-converted.pdf",
-        steps: zh
-          ? ["上传文档...", "发送到转换服务...", "转换中...", "准备下载..."]
-          : ["Uploading document...", "Sending to conversion service...", "Converting...", "Preparing download..."],
+        steps: [S.uploadDocument, S.sendingToService, S.converting, S.preparingDownload],
       };
     case "ppt-to-pdf":
       return {
         acceptedLabel: "PPTX, PPT",
         minFiles: 1, maxFiles: 1,
         maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
-        processLabel: zh ? "正在将 PPT 演示文稿转换为 PDF。" : "Converting PowerPoint presentation to PDF.",
-        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        processLabel: tr("Converting PowerPoint presentation to PDF.", "正在将 PPT 演示文稿转换为 PDF。", "Convirtiendo la presentación de PowerPoint a PDF.", "Convertendo a apresentação do PowerPoint para PDF.", "Conversion de la présentation PowerPoint en PDF.", "PowerPoint プレゼンテーションを PDF に変換しています。"),
+        resultLabel: dlPdf,
         outputFileName: "dockdocs-converted.pdf",
-        steps: zh
-          ? ["上传文件...", "发送到转换服务...", "转换中...", "准备下载..."]
-          : ["Uploading file...", "Sending to conversion service...", "Converting...", "Preparing download..."],
+        steps: [S.uploadFile, S.sendingToService, S.converting, S.preparingDownload],
       };
     case "excel-to-pdf":
       return {
         acceptedLabel: "XLSX, XLS",
         minFiles: 1, maxFiles: 1,
         maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
-        processLabel: zh ? "正在将 Excel 表格转换为 PDF。" : "Converting Excel spreadsheet to PDF.",
-        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        processLabel: tr("Converting Excel spreadsheet to PDF.", "正在将 Excel 表格转换为 PDF。", "Convirtiendo la hoja de cálculo de Excel a PDF.", "Convertendo a planilha do Excel para PDF.", "Conversion de la feuille de calcul Excel en PDF.", "Excel スプレッドシートを PDF に変換しています。"),
+        resultLabel: dlPdf,
         outputFileName: "dockdocs-converted.pdf",
-        steps: zh
-          ? ["上传文件...", "发送到转换服务...", "转换中...", "准备下载..."]
-          : ["Uploading file...", "Sending to conversion service...", "Converting...", "Preparing download..."],
+        steps: [S.uploadFile, S.sendingToService, S.converting, S.preparingDownload],
       };
     case "pdf-to-excel":
       return {
         ...base,
         maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
-        processLabel: zh ? "正在从 PDF 提取表格并转换为 Excel。" : "Extracting tables from PDF and converting to Excel.",
-        resultLabel: zh ? "下载 Excel" : "Download Excel",
+        processLabel: tr("Extracting tables from PDF and converting to Excel.", "正在从 PDF 提取表格并转换为 Excel。", "Extrayendo tablas del PDF y convirtiéndolas a Excel.", "Extraindo tabelas do PDF e convertendo para Excel.", "Extraction des tableaux du PDF et conversion en Excel.", "PDF から表を抽出して Excel に変換しています。"),
+        resultLabel: tr("Download Excel", "下载 Excel", "Descargar Excel", "Baixar Excel", "Télécharger Excel", "Excel をダウンロード"),
         outputFileName: "dockdocs-converted.xlsx",
-        steps: zh
-          ? ["上传 PDF...", "发送到转换服务...", "提取表格...", "准备下载..."]
-          : ["Uploading PDF...", "Sending to conversion service...", "Extracting tables...", "Preparing download..."],
+        steps: [
+          S.uploadPdf,
+          S.sendingToService,
+          tr("Extracting tables...", "提取表格...", "Extrayendo tablas...", "Extraindo tabelas...", "Extraction des tableaux...", "表を抽出中..."),
+          S.preparingDownload,
+        ],
       };
     case "pdf-to-png":
       return {
         ...base,
         maxFileSize: 30 * mb,
         maxTotalSize: 30 * mb,
-        processLabel: zh ? "正在将 PDF 页面渲染为 PNG 图片。" : "Rendering PDF pages as PNG images.",
-        resultLabel: zh ? "下载 PNG" : "Download PNG",
+        processLabel: tr("Rendering PDF pages as PNG images.", "正在将 PDF 页面渲染为 PNG 图片。", "Renderizando las páginas PDF como imágenes PNG.", "Renderizando as páginas PDF como imagens PNG.", "Rendu des pages PDF en images PNG.", "PDF ページを PNG 画像としてレンダリングしています。"),
+        resultLabel: tr("Download PNG", "下载 PNG", "Descargar PNG", "Baixar PNG", "Télécharger le PNG", "PNG をダウンロード"),
         outputFileName: "dockdocs-pages.zip",
-        steps: zh
-          ? ["加载 PDF...", "渲染页面...", "导出 PNG 图片...", "打包下载..."]
-          : ["Loading PDF...", "Rendering pages...", "Exporting PNG images...", "Packaging download..."],
+        steps: [
+          S.loadingPdf,
+          S.renderingPages,
+          tr("Exporting PNG images...", "导出 PNG 图片...", "Exportando imágenes PNG...", "Exportando imagens PNG...", "Exportation des images PNG...", "PNG 画像をエクスポート中..."),
+          tr("Packaging download...", "打包下载...", "Empaquetando la descarga...", "Empacotando o download...", "Préparation du téléchargement...", "ダウンロードをまとめ中..."),
+        ],
       };
     case "pdf-to-markdown":
       return {
         ...base,
         maxFileSize: 30 * mb,
         maxTotalSize: 30 * mb,
-        processLabel: zh ? "正在从 PDF 提取文字并转换为 Markdown。" : "Extracting text from PDF and converting to Markdown.",
-        resultLabel: zh ? "下载 Markdown" : "Download Markdown",
+        processLabel: tr("Extracting text from PDF and converting to Markdown.", "正在从 PDF 提取文字并转换为 Markdown。", "Extrayendo texto del PDF y convirtiéndolo a Markdown.", "Extraindo texto do PDF e convertendo para Markdown.", "Extraction du texte du PDF et conversion en Markdown.", "PDF からテキストを抽出して Markdown に変換しています。"),
+        resultLabel: tr("Download Markdown", "下载 Markdown", "Descargar Markdown", "Baixar Markdown", "Télécharger le Markdown", "Markdown をダウンロード"),
         outputFileName: "dockdocs-document.md",
-        steps: zh
-          ? ["加载 PDF...", "提取文字...", "构建 Markdown 结构...", "准备下载..."]
-          : ["Loading PDF...", "Extracting text...", "Building Markdown structure...", "Preparing download..."],
+        steps: [
+          S.loadingPdf,
+          S.extractingText,
+          tr("Building Markdown structure...", "构建 Markdown 结构...", "Construyendo la estructura Markdown...", "Construindo a estrutura Markdown...", "Construction de la structure Markdown...", "Markdown 構造を構築中..."),
+          S.preparingDownload,
+        ],
       };
     case "png-to-pdf":
       return {
@@ -835,128 +920,164 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
         maxFiles: 20,
         maxFileSize: 20 * mb,
         maxTotalSize: 120 * mb,
-        processLabel: zh ? "正在将图片导出为 PDF 文档。" : "Exporting images into a PDF document.",
-        resultLabel: zh ? "导出 PDF" : "Export PDF",
+        processLabel: tr("Exporting images into a PDF document.", "正在将图片导出为 PDF 文档。", "Exportando las imágenes a un documento PDF.", "Exportando as imagens para um documento PDF.", "Exportation des images vers un document PDF.", "画像を PDF 文書にエクスポートしています。"),
+        resultLabel: exportPdf,
         outputFileName: "dockdocs-images.pdf",
-        steps: zh
-          ? ["读取图片...", "应用页面顺序...", "生成 PDF 页面...", "准备导出..."]
-          : ["Reading images...", "Applying page order...", "Generating PDF pages...", "Preparing export..."],
+        steps: [
+          S.readingImages,
+          S.applyingPageOrder,
+          S.generatingPdfPages,
+          tr("Preparing export...", "准备导出...", "Preparando la exportación...", "Preparando a exportação...", "Préparation de l'export...", "エクスポートを準備中..."),
+        ],
       };
     case "pdf-to-jpg":
       return {
         ...base,
         maxFileSize: 30 * mb,
         maxTotalSize: 30 * mb,
-        processLabel: zh ? "正在将 PDF 页面渲染为 JPG 图片。" : "Rendering PDF pages as JPG images.",
-        resultLabel: zh ? "下载 JPG" : "Download JPG",
+        processLabel: tr("Rendering PDF pages as JPG images.", "正在将 PDF 页面渲染为 JPG 图片。", "Renderizando las páginas PDF como imágenes JPG.", "Renderizando as páginas PDF como imagens JPG.", "Rendu des pages PDF en images JPG.", "PDF ページを JPG 画像としてレンダリングしています。"),
+        resultLabel: tr("Download JPG", "下载 JPG", "Descargar JPG", "Baixar JPG", "Télécharger le JPG", "JPG をダウンロード"),
         outputFileName: "dockdocs-pages.zip",
-        steps: zh
-          ? ["加载 PDF...", "渲染页面...", "导出 JPG 图片...", "打包下载..."]
-          : ["Loading PDF...", "Rendering pages...", "Exporting JPG images...", "Packaging download..."],
+        steps: [
+          S.loadingPdf,
+          S.renderingPages,
+          tr("Exporting JPG images...", "导出 JPG 图片...", "Exportando imágenes JPG...", "Exportando imagens JPG...", "Exportation des images JPG...", "JPG 画像をエクスポート中..."),
+          tr("Packaging download...", "打包下载...", "Empaquetando la descarga...", "Empacotando o download...", "Préparation du téléchargement...", "ダウンロードをまとめ中..."),
+        ],
       };
     case "delete-page":
       return {
         ...base,
-        processLabel: zh ? "正在删除所选页面。" : "Removing selected pages from the PDF.",
-        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        processLabel: tr("Removing selected pages from the PDF.", "正在删除所选页面。", "Eliminando las páginas seleccionadas del PDF.", "Removendo as páginas selecionadas do PDF.", "Suppression des pages sélectionnées du PDF.", "選択したページを PDF から削除しています。"),
+        resultLabel: dlPdf,
         outputFileName: "dockdocs-deleted.pdf",
-        steps: zh
-          ? ["读取 PDF...", "定位页面...", "删除页面...", "准备下载..."]
-          : ["Reading PDF...", "Locating pages...", "Deleting pages...", "Preparing download..."],
+        steps: [
+          S.readingPdf,
+          S.locatingPages,
+          tr("Deleting pages...", "删除页面...", "Eliminando páginas...", "Removendo páginas...", "Suppression des pages...", "ページを削除中..."),
+          S.preparingDownload,
+        ],
       };
     case "rotate-page":
       return {
         ...base,
-        processLabel: zh ? "正在旋转所选页面。" : "Rotating selected pages.",
-        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        processLabel: tr("Rotating selected pages.", "正在旋转所选页面。", "Girando las páginas seleccionadas.", "Girando as páginas selecionadas.", "Rotation des pages sélectionnées.", "選択したページを回転しています。"),
+        resultLabel: dlPdf,
         outputFileName: "dockdocs-rotated.pdf",
-        steps: zh
-          ? ["读取 PDF...", "定位页面...", "旋转页面...", "准备下载..."]
-          : ["Reading PDF...", "Locating pages...", "Rotating pages...", "Preparing download..."],
+        steps: [
+          S.readingPdf,
+          S.locatingPages,
+          tr("Rotating pages...", "旋转页面...", "Girando páginas...", "Girando páginas...", "Rotation des pages...", "ページを回転中..."),
+          S.preparingDownload,
+        ],
       };
     case "reorder-pages":
       return {
         ...base,
-        processLabel: zh ? "正在按新顺序排列页面。" : "Reordering pages into the new sequence.",
-        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        processLabel: tr("Reordering pages into the new sequence.", "正在按新顺序排列页面。", "Reordenando las páginas en la nueva secuencia.", "Reordenando as páginas na nova sequência.", "Réorganisation des pages dans le nouvel ordre.", "ページを新しい順序に並べ替えています。"),
+        resultLabel: dlPdf,
         outputFileName: "dockdocs-reordered.pdf",
-        steps: zh
-          ? ["读取 PDF...", "解析顺序...", "重排页面...", "准备下载..."]
-          : ["Reading PDF...", "Parsing order...", "Reordering pages...", "Preparing download..."],
+        steps: [
+          S.readingPdf,
+          tr("Parsing order...", "解析顺序...", "Analizando el orden...", "Analisando a ordem...", "Analyse de l'ordre...", "順序を解析中..."),
+          tr("Reordering pages...", "重排页面...", "Reordenando páginas...", "Reordenando páginas...", "Réorganisation des pages...", "ページを並べ替え中..."),
+          S.preparingDownload,
+        ],
       };
     case "add-page":
       return {
         ...base,
-        processLabel: zh ? "正在插入空白页面。" : "Inserting a blank page into the PDF.",
-        resultLabel: zh ? "下载 PDF" : "Download PDF",
+        processLabel: tr("Inserting a blank page into the PDF.", "正在插入空白页面。", "Insertando una página en blanco en el PDF.", "Inserindo uma página em branco no PDF.", "Insertion d'une page vierge dans le PDF.", "PDF に空白ページを挿入しています。"),
+        resultLabel: dlPdf,
         outputFileName: "dockdocs-added.pdf",
-        steps: zh
-          ? ["读取 PDF...", "确定插入位置...", "添加空白页...", "准备下载..."]
-          : ["Reading PDF...", "Finding insert position...", "Adding blank page...", "Preparing download..."],
+        steps: [
+          S.readingPdf,
+          tr("Finding insert position...", "确定插入位置...", "Buscando la posición de inserción...", "Localizando a posição de inserção...", "Recherche de la position d'insertion...", "挿入位置を確認中..."),
+          tr("Adding blank page...", "添加空白页...", "Añadiendo página en blanco...", "Adicionando página em branco...", "Ajout de la page vierge...", "空白ページを追加中..."),
+          S.preparingDownload,
+        ],
       };
     case "protect-pdf":
       return {
         ...base,
-        processLabel: zh ? "正在加密 PDF 并设置密码。" : "Encrypting the PDF with your password.",
-        resultLabel: zh ? "下载加密 PDF" : "Download protected PDF",
+        processLabel: tr("Encrypting the PDF with your password.", "正在加密 PDF 并设置密码。", "Cifrando el PDF con tu contraseña.", "Criptografando o PDF com a sua senha.", "Chiffrement du PDF avec votre mot de passe.", "パスワードで PDF を暗号化しています。"),
+        resultLabel: tr("Download protected PDF", "下载加密 PDF", "Descargar PDF protegido", "Baixar PDF protegido", "Télécharger le PDF protégé", "保護された PDF をダウンロード"),
         outputFileName: "dockdocs-protected.pdf",
-        steps: zh
-          ? ["读取 PDF...", "应用加密设置...", "设置权限...", "准备下载..."]
-          : ["Reading PDF...", "Applying encryption...", "Setting permissions...", "Preparing download..."],
+        steps: [
+          S.readingPdf,
+          tr("Applying encryption...", "应用加密设置...", "Aplicando el cifrado...", "Aplicando a criptografia...", "Application du chiffrement...", "暗号化を適用中..."),
+          tr("Setting permissions...", "设置权限...", "Configurando permisos...", "Definindo permissões...", "Configuration des autorisations...", "権限を設定中..."),
+          S.preparingDownload,
+        ],
       };
     case "watermark-pdf":
       return {
         ...base,
-        processLabel: zh ? "正在为每一页添加水印。" : "Stamping the watermark on every page.",
-        resultLabel: zh ? "下载加水印 PDF" : "Download watermarked PDF",
+        processLabel: tr("Stamping the watermark on every page.", "正在为每一页添加水印。", "Estampando la marca de agua en cada página.", "Aplicando a marca d'água em cada página.", "Apposition du filigrane sur chaque page.", "各ページに透かしを適用しています。"),
+        resultLabel: tr("Download watermarked PDF", "下载加水印 PDF", "Descargar PDF con marca de agua", "Baixar PDF com marca d'água", "Télécharger le PDF filigrané", "透かし入り PDF をダウンロード"),
         outputFileName: "dockdocs-watermarked.pdf",
-        steps: zh
-          ? ["读取 PDF...", "生成水印...", "应用到每一页...", "准备下载..."]
-          : ["Reading PDF...", "Preparing watermark...", "Applying to pages...", "Preparing download..."],
+        steps: [
+          S.readingPdf,
+          tr("Preparing watermark...", "生成水印...", "Preparando la marca de agua...", "Preparando a marca d'água...", "Préparation du filigrane...", "透かしを準備中..."),
+          tr("Applying to pages...", "应用到每一页...", "Aplicando a las páginas...", "Aplicando às páginas...", "Application aux pages...", "ページに適用中..."),
+          S.preparingDownload,
+        ],
       };
     case "page-numbers":
       return {
         ...base,
-        processLabel: zh ? "正在为每一页添加页码。" : "Adding page numbers to every page.",
-        resultLabel: zh ? "下载带页码 PDF" : "Download numbered PDF",
+        processLabel: tr("Adding page numbers to every page.", "正在为每一页添加页码。", "Añadiendo números de página a cada página.", "Adicionando números de página a cada página.", "Ajout des numéros de page à chaque page.", "各ページにページ番号を追加しています。"),
+        resultLabel: tr("Download numbered PDF", "下载带页码 PDF", "Descargar PDF numerado", "Baixar PDF numerado", "Télécharger le PDF numéroté", "ページ番号付き PDF をダウンロード"),
         outputFileName: "dockdocs-numbered.pdf",
-        steps: zh
-          ? ["读取 PDF...", "计算页数...", "添加页码...", "准备下载..."]
-          : ["Reading PDF...", "Counting pages...", "Adding numbers...", "Preparing download..."],
+        steps: [
+          S.readingPdf,
+          tr("Counting pages...", "计算页数...", "Contando páginas...", "Contando páginas...", "Comptage des pages...", "ページ数を計算中..."),
+          tr("Adding numbers...", "添加页码...", "Añadiendo números...", "Adicionando números...", "Ajout des numéros...", "番号を追加中..."),
+          S.preparingDownload,
+        ],
       };
     case "unlock-pdf":
       return {
         ...base,
-        processLabel: zh ? "正在移除限制与保护。" : "Removing restrictions and protection.",
-        resultLabel: zh ? "下载已解锁 PDF" : "Download unlocked PDF",
+        processLabel: tr("Removing restrictions and protection.", "正在移除限制与保护。", "Eliminando restricciones y protección.", "Removendo restrições e proteção.", "Suppression des restrictions et de la protection.", "制限と保護を解除しています。"),
+        resultLabel: tr("Download unlocked PDF", "下载已解锁 PDF", "Descargar PDF desbloqueado", "Baixar PDF desbloqueado", "Télécharger le PDF déverrouillé", "ロック解除した PDF をダウンロード"),
         outputFileName: "dockdocs-unlocked.pdf",
-        steps: zh
-          ? ["读取 PDF...", "检测保护类型...", "移除限制...", "准备下载..."]
-          : ["Reading PDF...", "Checking protection type...", "Removing restrictions...", "Preparing download..."],
+        steps: [
+          S.readingPdf,
+          tr("Checking protection type...", "检测保护类型...", "Comprobando el tipo de protección...", "Verificando o tipo de proteção...", "Vérification du type de protection...", "保護の種類を確認中..."),
+          tr("Removing restrictions...", "移除限制...", "Eliminando restricciones...", "Removendo restrições...", "Suppression des restrictions...", "制限を解除中..."),
+          S.preparingDownload,
+        ],
       };
     case "pdf-to-text":
       return {
         ...base,
         maxFileSize: 30 * mb,
         maxTotalSize: 30 * mb,
-        processLabel: zh ? "正在从 PDF 提取纯文本。" : "Extracting plain text from the PDF.",
-        resultLabel: zh ? "下载 TXT" : "Download TXT",
+        processLabel: tr("Extracting plain text from the PDF.", "正在从 PDF 提取纯文本。", "Extrayendo texto sin formato del PDF.", "Extraindo texto simples do PDF.", "Extraction du texte brut du PDF.", "PDF からプレーンテキストを抽出しています。"),
+        resultLabel: tr("Download TXT", "下载 TXT", "Descargar TXT", "Baixar TXT", "Télécharger le TXT", "TXT をダウンロード"),
         outputFileName: "dockdocs-text.txt",
-        steps: zh
-          ? ["加载 PDF...", "提取文字...", "整理文本...", "准备下载..."]
-          : ["Loading PDF...", "Extracting text...", "Assembling text...", "Preparing download..."],
+        steps: [
+          S.loadingPdf,
+          S.extractingText,
+          tr("Assembling text...", "整理文本...", "Ensamblando el texto...", "Montando o texto...", "Assemblage du texte...", "テキストをまとめ中..."),
+          S.preparingDownload,
+        ],
       };
     case "pdf-to-html":
       return {
         ...base,
         maxFileSize: 30 * mb,
         maxTotalSize: 30 * mb,
-        processLabel: zh ? "正在把 PDF 转换为 HTML。" : "Converting the PDF to HTML.",
-        resultLabel: zh ? "下载 HTML" : "Download HTML",
+        processLabel: tr("Converting the PDF to HTML.", "正在把 PDF 转换为 HTML。", "Convirtiendo el PDF a HTML.", "Convertendo o PDF para HTML.", "Conversion du PDF en HTML.", "PDF を HTML に変換しています。"),
+        resultLabel: tr("Download HTML", "下载 HTML", "Descargar HTML", "Baixar HTML", "Télécharger le HTML", "HTML をダウンロード"),
         outputFileName: "dockdocs-document.html",
-        steps: zh
-          ? ["加载 PDF...", "提取文字...", "生成 HTML...", "准备下载..."]
-          : ["Loading PDF...", "Extracting text...", "Building HTML...", "Preparing download..."],
+        steps: [
+          S.loadingPdf,
+          S.extractingText,
+          tr("Building HTML...", "生成 HTML...", "Construyendo HTML...", "Construindo HTML...", "Construction du HTML...", "HTML を構築中..."),
+          S.preparingDownload,
+        ],
       };
   }
 }
@@ -969,23 +1090,27 @@ function validateFiles(
 ):
   | { ok: true; files: UploadedFile[] }
   | { ok: false; message: string } {
-  const locale: "en" | "zh" = config.locale === "zh" ? "zh" : "en";
-  const zh = locale === "zh";
+  const tr = makeTr(normalizeLocale(config.locale));
   const multiple = Boolean(config.upload.multiple);
 
   if (!selected.length) {
     return {
       ok: false,
-      message: zh ? "请选择至少一个文件。" : "Choose at least one file.",
+      message: tr("Choose at least one file.", "请选择至少一个文件。", "Elige al menos un archivo.", "Escolha pelo menos um arquivo.", "Choisissez au moins un fichier.", "ファイルを 1 つ以上選択してください。"),
     };
   }
 
   if (!multiple && selected.length > 1) {
     return {
       ok: false,
-      message: zh
-        ? "此工作流一次只支持一个文件。"
-        : "This workflow supports one file at a time.",
+      message: tr(
+        "This workflow supports one file at a time.",
+        "此工作流一次只支持一个文件。",
+        "Este flujo de trabajo admite un archivo a la vez.",
+        "Este fluxo de trabalho aceita um arquivo por vez.",
+        "Ce flux de travail prend en charge un fichier à la fois.",
+        "このワークフローは一度に 1 つのファイルのみ対応しています。",
+      ),
     };
   }
 
@@ -994,27 +1119,42 @@ function validateFiles(
     if (!isAcceptedFile(file, config.upload.accept ?? "application/pdf")) {
       return {
         ok: false,
-        message: zh
-          ? `文件格式不支持：${file.name}`
-          : `Unsupported file type: ${file.name}`,
+        message: tr(
+          `Unsupported file type: ${file.name}`,
+          `文件格式不支持：${file.name}`,
+          `Tipo de archivo no admitido: ${file.name}`,
+          `Tipo de arquivo não suportado: ${file.name}`,
+          `Type de fichier non pris en charge : ${file.name}`,
+          `対応していないファイル形式です：${file.name}`,
+        ),
       };
     }
 
     if (file.size > spec.maxFileSize) {
       return {
         ok: false,
-        message: zh
-          ? `${file.name} 超过单文件大小上限。`
-          : `${file.name} exceeds the per-file size limit.`,
+        message: tr(
+          `${file.name} exceeds the per-file size limit.`,
+          `${file.name} 超过单文件大小上限。`,
+          `${file.name} supera el límite de tamaño por archivo.`,
+          `${file.name} excede o limite de tamanho por arquivo.`,
+          `${file.name} dépasse la limite de taille par fichier.`,
+          `${file.name} はファイルごとのサイズ上限を超えています。`,
+        ),
       };
     }
 
     if (nextFiles.length >= spec.maxFiles) {
       return {
         ok: false,
-        message: zh
-          ? `最多支持 ${spec.maxFiles} 个文件。`
-          : `Upload up to ${spec.maxFiles} files.`,
+        message: tr(
+          `Upload up to ${spec.maxFiles} files.`,
+          `最多支持 ${spec.maxFiles} 个文件。`,
+          `Sube hasta ${spec.maxFiles} archivos.`,
+          `Envie até ${spec.maxFiles} arquivos.`,
+          `Importez jusqu'à ${spec.maxFiles} fichiers.`,
+          `最大 ${spec.maxFiles} 個までアップロードできます。`,
+        ),
       };
     }
 
@@ -1028,9 +1168,14 @@ function validateFiles(
   if (total > spec.maxTotalSize) {
     return {
       ok: false,
-      message: zh
-        ? "文件总大小超过当前工作流上限。"
-        : "Total upload size exceeds the workflow limit.",
+      message: tr(
+        "Total upload size exceeds the workflow limit.",
+        "文件总大小超过当前工作流上限。",
+        "El tamaño total de la subida supera el límite del flujo de trabajo.",
+        "O tamanho total do envio excede o limite do fluxo de trabalho.",
+        "La taille totale du téléversement dépasse la limite du flux de travail.",
+        "アップロードの合計サイズがワークフローの上限を超えています。",
+      ),
     };
   }
 
@@ -1071,7 +1216,7 @@ function getWorkflowResult(
   pageRanges: string,
   artifact?: PdfRuntimeArtifact | null,
 ): WorkflowResult {
-  const zh = (config.locale ?? "en") === "zh";
+  const tr = makeTr(normalizeLocale(config.locale));
   const totalSize = files.reduce((sum, item) => sum + item.file.size, 0);
   const fileCount = files.length;
   const outputSize = artifact
@@ -1079,31 +1224,55 @@ function getWorkflowResult(
     : totalSize;
   const outputName = artifact?.fileName ?? getWorkflowSpec(config).outputFileName;
 
+  // Common row labels reused across results.
+  const L = {
+    input: tr("Input", "输入", "Entrada", "Entrada", "Entrée", "入力"),
+    inputFile: tr("Input file", "输入文件", "Archivo de entrada", "Arquivo de entrada", "Fichier d'entrée", "入力ファイル"),
+    inputFiles: tr("Input files", "输入文件", "Archivos de entrada", "Arquivos de entrada", "Fichiers d'entrée", "入力ファイル"),
+    pages: tr("Pages", "页数", "Páginas", "Páginas", "Pages", "ページ数"),
+    totalPages: tr("Total pages", "总页数", "Páginas totales", "Total de páginas", "Total des pages", "総ページ数"),
+    pageRanges: tr("Page ranges", "页面范围", "Intervalos de páginas", "Intervalos de páginas", "Plages de pages", "ページ範囲"),
+    outputSize: tr("Output size", "输出大小", "Tamaño de salida", "Tamanho de saída", "Taille de sortie", "出力サイズ"),
+    output: tr("Output", "输出", "Salida", "Saída", "Sortie", "出力"),
+    images: tr("Images", "图片数量", "Imágenes", "Imagens", "Images", "画像数"),
+    all: tr("All", "全部", "Todas", "Todas", "Toutes", "すべて"),
+  };
+
   switch (config.slug) {
     case "merge-pdf":
       return {
-        title: zh ? "PDF 已合并" : "PDFs merged",
-        description: zh
-          ? "文档已合并为一个 PDF 包，可保存以备后续工作流使用。"
-          : "Documents combined into one PDF packet, ready to save for downstream workflows.",
+        title: tr("PDFs merged", "PDF 已合并", "PDF combinados", "PDFs combinados", "PDF fusionnés", "PDF を結合しました"),
+        description: tr(
+          "Documents combined into one PDF packet, ready to save for downstream workflows.",
+          "文档已合并为一个 PDF 包，可保存以备后续工作流使用。",
+          "Documentos combinados en un solo PDF, listos para guardar y usar en flujos de trabajo posteriores.",
+          "Documentos combinados em um único PDF, prontos para salvar para fluxos de trabalho posteriores.",
+          "Documents fusionnés en un seul PDF, prêts à être enregistrés pour les flux de travail ultérieurs.",
+          "ドキュメントを 1 つの PDF にまとめました。後続のワークフロー用に保存できます。",
+        ),
         rows: [
-          [zh ? "输入文件" : "Input files", String(fileCount)],
-          [zh ? "总页数" : "Total pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.inputFiles, String(fileCount)],
+          [L.totalPages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "split-pdf":
       return {
-        title: zh ? "分页完成" : "Pages split",
-        description: zh
-          ? "所选范围已导出为 ZIP 文件，可下载以备后续使用。"
-          : "Selected ranges exported as a ZIP file, ready to download for review.",
+        title: tr("Pages split", "分页完成", "Páginas divididas", "Páginas divididas", "Pages fractionnées", "ページを分割しました"),
+        description: tr(
+          "Selected ranges exported as a ZIP file, ready to download for review.",
+          "所选范围已导出为 ZIP 文件，可下载以备后续使用。",
+          "Los intervalos seleccionados se exportaron como un archivo ZIP, listo para descargar y revisar.",
+          "Os intervalos selecionados foram exportados como um arquivo ZIP, prontos para baixar e revisar.",
+          "Les plages sélectionnées ont été exportées dans un fichier ZIP, prêt à télécharger pour révision.",
+          "選択した範囲を ZIP ファイルとしてエクスポートしました。ダウンロードして確認できます。",
+        ),
         rows: [
-          [zh ? "输入文件" : "Input file", files[0]?.file.name ?? "—"],
-          [zh ? "页面范围" : "Page ranges", pageRanges || (zh ? "全部" : "All")],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.inputFile, files[0]?.file.name ?? "—"],
+          [L.pageRanges, pageRanges || L.all],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "compress-pdf": {
@@ -1112,191 +1281,216 @@ function getWorkflowResult(
       const saved = artifact?.savedPercent;
       const warn = artifact?._warning;
       return {
-        title: zh ? "PDF 已压缩" : "PDF compressed",
+        title: tr("PDF compressed", "PDF 已压缩", "PDF comprimido", "PDF comprimido", "PDF compressé", "PDF を圧縮しました"),
         description: warn
           ? warn
-          : zh
-            ? "文档已压缩，可下载以备分享或上传。"
-            : "Document compressed, ready to download for sharing or uploading.",
+          : tr(
+              "Document compressed, ready to download for sharing or uploading.",
+              "文档已压缩，可下载以备分享或上传。",
+              "Documento comprimido, listo para descargar y compartir o subir.",
+              "Documento comprimido, pronto para baixar e compartilhar ou enviar.",
+              "Document compressé, prêt à télécharger pour le partage ou le téléversement.",
+              "ドキュメントを圧縮しました。共有やアップロード用にダウンロードできます。",
+            ),
         rows: [
-          [zh ? "原始大小" : "Original size", formatBytes(orig)],
-          [zh ? "压缩后" : "Compressed size", comp != null ? formatBytes(comp) : "—"],
-          [zh ? "已节省" : "Saved", saved != null ? `${saved}%` : "—"],
-          [zh ? "输出" : "Output", outputName],
+          [tr("Original size", "原始大小", "Tamaño original", "Tamanho original", "Taille d'origine", "元のサイズ"), formatBytes(orig)],
+          [tr("Compressed size", "压缩后", "Tamaño comprimido", "Tamanho comprimido", "Taille compressée", "圧縮後のサイズ"), comp != null ? formatBytes(comp) : "—"],
+          [tr("Saved", "已节省", "Ahorrado", "Economizado", "Économisé", "削減"), saved != null ? `${saved}%` : "—"],
+          [L.output, outputName],
         ],
       };
     }
     case "ocr-pdf":
       return {
-        title: zh ? "文本已提取" : "Text extracted",
-        description: zh
-          ? "OCR 文字提取完成，可复制或下载以备后续工作流使用。"
-          : "OCR text extraction complete, ready to copy or download for downstream workflows.",
+        title: tr("Text extracted", "文本已提取", "Texto extraído", "Texto extraído", "Texte extrait", "テキストを抽出しました"),
+        description: tr(
+          "OCR text extraction complete, ready to copy or download for downstream workflows.",
+          "OCR 文字提取完成，可复制或下载以备后续工作流使用。",
+          "Extracción de texto OCR completada, lista para copiar o descargar y usar en flujos de trabajo posteriores.",
+          "Extração de texto por OCR concluída, pronta para copiar ou baixar para fluxos de trabalho posteriores.",
+          "Extraction de texte OCR terminée, prête à copier ou télécharger pour les flux de travail ultérieurs.",
+          "OCR によるテキスト抽出が完了しました。後続のワークフロー用にコピーまたはダウンロードできます。",
+        ),
         rows: [
-          [zh ? "输入文件" : "Input files", String(fileCount)],
-          [zh ? "页面范围" : "Page ranges", pageRanges || (zh ? "全部" : "All")],
-          [zh ? "识别页数" : "Pages processed", artifact?.processedPages != null ? String(artifact.processedPages) : "—"],
+          [L.inputFiles, String(fileCount)],
+          [L.pageRanges, pageRanges || L.all],
+          [tr("Pages processed", "识别页数", "Páginas procesadas", "Páginas processadas", "Pages traitées", "処理したページ数"), artifact?.processedPages != null ? String(artifact.processedPages) : "—"],
         ],
         preview: "text",
       };
     case "pdf-to-word":
       return {
-        title: zh ? "Word 文档已生成" : "Word document generated",
-        description: zh
-          ? "PDF 内容已导出为 DOCX 文件，可在线编辑。"
-          : "PDF content exported as a DOCX file, ready for editing.",
+        title: tr("Word document generated", "Word 文档已生成", "Documento de Word generado", "Documento do Word gerado", "Document Word généré", "Word 文書を生成しました"),
+        description: tr(
+          "PDF content exported as a DOCX file, ready for editing.",
+          "PDF 内容已导出为 DOCX 文件，可在线编辑。",
+          "Contenido del PDF exportado como un archivo DOCX, listo para editar.",
+          "Conteúdo do PDF exportado como um arquivo DOCX, pronto para edição.",
+          "Contenu du PDF exporté en fichier DOCX, prêt à être modifié.",
+          "PDF の内容を DOCX ファイルとしてエクスポートしました。編集できます。",
+        ),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "jpg-to-pdf":
     case "png-to-pdf":
       return {
-        title: zh ? "PDF 已生成" : "PDF generated",
-        description: zh
-          ? "图片已转换为 PDF 文档。"
-          : "Images converted into a PDF document.",
+        title: tr("PDF generated", "PDF 已生成", "PDF generado", "PDF gerado", "PDF généré", "PDF を生成しました"),
+        description: tr(
+          "Images converted into a PDF document.",
+          "图片已转换为 PDF 文档。",
+          "Imágenes convertidas en un documento PDF.",
+          "Imagens convertidas em um documento PDF.",
+          "Images converties en un document PDF.",
+          "画像を PDF 文書に変換しました。",
+        ),
         rows: [
-          [zh ? "图片数量" : "Images", String(fileCount)],
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : String(fileCount)],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.images, String(fileCount)],
+          [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : String(fileCount)],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "delete-page":
       return {
-        title: zh ? "页面已删除" : "Pages deleted",
-        description: zh ? "指定页面已从 PDF 中移除。" : "Selected pages removed from the PDF.",
+        title: tr("Pages deleted", "页面已删除", "Páginas eliminadas", "Páginas removidas", "Pages supprimées", "ページを削除しました"),
+        description: tr("Selected pages removed from the PDF.", "指定页面已从 PDF 中移除。", "Las páginas seleccionadas se eliminaron del PDF.", "As páginas selecionadas foram removidas do PDF.", "Les pages sélectionnées ont été supprimées du PDF.", "選択したページを PDF から削除しました。"),
         rows: [
-          [zh ? "删除页面" : "Deleted", pageRanges || "—"],
-          [zh ? "剩余页数" : "Pages left", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [tr("Deleted", "删除页面", "Eliminadas", "Removidas", "Supprimées", "削除したページ"), pageRanges || "—"],
+          [tr("Pages left", "剩余页数", "Páginas restantes", "Páginas restantes", "Pages restantes", "残りページ数"), artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "rotate-page":
       return {
-        title: zh ? "页面已旋转" : "Pages rotated",
-        description: zh ? "页面方向已调整。" : "Page orientation adjusted.",
+        title: tr("Pages rotated", "页面已旋转", "Páginas giradas", "Páginas giradas", "Pages pivotées", "ページを回転しました"),
+        description: tr("Page orientation adjusted.", "页面方向已调整。", "Orientación de las páginas ajustada.", "Orientação das páginas ajustada.", "Orientation des pages ajustée.", "ページの向きを調整しました。"),
         rows: [
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "reorder-pages":
       return {
-        title: zh ? "页面已重排" : "Pages reordered",
-        description: zh ? "页面已按新顺序排列。" : "Pages arranged in the new order.",
+        title: tr("Pages reordered", "页面已重排", "Páginas reordenadas", "Páginas reordenadas", "Pages réorganisées", "ページを並べ替えました"),
+        description: tr("Pages arranged in the new order.", "页面已按新顺序排列。", "Páginas organizadas en el nuevo orden.", "Páginas organizadas na nova ordem.", "Pages disposées dans le nouvel ordre.", "ページを新しい順序に並べ替えました。"),
         rows: [
-          [zh ? "新顺序" : "New order", pageRanges || "—"],
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [tr("New order", "新顺序", "Nuevo orden", "Nova ordem", "Nouvel ordre", "新しい順序"), pageRanges || "—"],
+          [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "add-page":
       return {
-        title: zh ? "页面已添加" : "Page added",
-        description: zh ? "已插入空白页。" : "Blank page inserted.",
+        title: tr("Page added", "页面已添加", "Página añadida", "Página adicionada", "Page ajoutée", "ページを追加しました"),
+        description: tr("Blank page inserted.", "已插入空白页。", "Página en blanco insertada.", "Página em branco inserida.", "Page vierge insérée.", "空白ページを挿入しました。"),
         rows: [
-          [zh ? "总页数" : "Total pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.totalPages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "protect-pdf":
       return {
-        title: zh ? "PDF 已加密" : "PDF encrypted",
-        description: zh
-          ? "已使用 AES 加密为 PDF 设置打开密码，可下载。"
-          : "PDF encrypted with an AES open password, ready to download.",
+        title: tr("PDF encrypted", "PDF 已加密", "PDF cifrado", "PDF criptografado", "PDF chiffré", "PDF を暗号化しました"),
+        description: tr(
+          "PDF encrypted with an AES open password, ready to download.",
+          "已使用 AES 加密为 PDF 设置打开密码，可下载。",
+          "PDF cifrado con una contraseña de apertura AES, listo para descargar.",
+          "PDF criptografado com uma senha de abertura AES, pronto para baixar.",
+          "PDF chiffré avec un mot de passe d'ouverture AES, prêt à télécharger.",
+          "AES 開封パスワードで PDF を暗号化しました。ダウンロードできます。",
+        ),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "加密" : "Encryption", "AES-256"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [tr("Encryption", "加密", "Cifrado", "Criptografia", "Chiffrement", "暗号化"), "AES-256"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "watermark-pdf":
       return {
-        title: zh ? "水印已添加" : "Watermark added",
-        description: zh ? "已为每一页盖上文字水印，可下载。" : "Text watermark stamped on every page, ready to download.",
+        title: tr("Watermark added", "水印已添加", "Marca de agua añadida", "Marca d'água adicionada", "Filigrane ajouté", "透かしを追加しました"),
+        description: tr("Text watermark stamped on every page, ready to download.", "已为每一页盖上文字水印，可下载。", "Marca de agua de texto estampada en cada página, lista para descargar.", "Marca d'água de texto aplicada em cada página, pronta para baixar.", "Filigrane texte apposé sur chaque page, prêt à télécharger.", "各ページに文字の透かしを適用しました。ダウンロードできます。"),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "page-numbers":
       return {
-        title: zh ? "页码已添加" : "Page numbers added",
-        description: zh ? "已为每一页加上页码，可下载。" : "Page numbers added to every page, ready to download.",
+        title: tr("Page numbers added", "页码已添加", "Números de página añadidos", "Números de página adicionados", "Numéros de page ajoutés", "ページ番号を追加しました"),
+        description: tr("Page numbers added to every page, ready to download.", "已为每一页加上页码，可下载。", "Números de página añadidos a cada página, listos para descargar.", "Números de página adicionados a cada página, prontos para baixar.", "Numéros de page ajoutés à chaque page, prêts à télécharger.", "各ページにページ番号を追加しました。ダウンロードできます。"),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "unlock-pdf":
       return {
-        title: zh ? "PDF 已解锁" : "PDF unlocked",
-        description: zh ? "已移除密码保护，可自由打开、编辑和打印。" : "Password protection removed — open, edit, and print freely.",
+        title: tr("PDF unlocked", "PDF 已解锁", "PDF desbloqueado", "PDF desbloqueado", "PDF déverrouillé", "PDF のロックを解除しました"),
+        description: tr("Password protection removed — open, edit, and print freely.", "已移除密码保护，可自由打开、编辑和打印。", "Protección por contraseña eliminada: abre, edita e imprime sin restricciones.", "Proteção por senha removida — abra, edite e imprima livremente.", "Protection par mot de passe supprimée — ouvrez, modifiez et imprimez librement.", "パスワード保護を解除しました。自由に開いて編集・印刷できます。"),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "pdf-to-html":
       return {
-        title: zh ? "HTML 已生成" : "HTML generated",
-        description: zh ? "已把 PDF 文字转为结构化 HTML，可下载。" : "The PDF text was converted to structured HTML, ready to download.",
+        title: tr("HTML generated", "HTML 已生成", "HTML generado", "HTML gerado", "HTML généré", "HTML を生成しました"),
+        description: tr("The PDF text was converted to structured HTML, ready to download.", "已把 PDF 文字转为结构化 HTML，可下载。", "El texto del PDF se convirtió en HTML estructurado, listo para descargar.", "O texto do PDF foi convertido em HTML estruturado, pronto para baixar.", "Le texte du PDF a été converti en HTML structuré, prêt à télécharger.", "PDF のテキストを構造化された HTML に変換しました。ダウンロードできます。"),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "pdf-to-text":
       return {
-        title: zh ? "文本已提取" : "Text extracted",
-        description: zh ? "已从 PDF 提取纯文本，可下载 TXT。" : "Plain text extracted from the PDF, ready to download as TXT.",
+        title: tr("Text extracted", "文本已提取", "Texto extraído", "Texto extraído", "Texte extrait", "テキストを抽出しました"),
+        description: tr("Plain text extracted from the PDF, ready to download as TXT.", "已从 PDF 提取纯文本，可下载 TXT。", "Texto sin formato extraído del PDF, listo para descargar como TXT.", "Texto simples extraído do PDF, pronto para baixar como TXT.", "Texte brut extrait du PDF, prêt à télécharger au format TXT.", "PDF からプレーンテキストを抽出しました。TXT としてダウンロードできます。"),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "pdf-to-jpg":
     case "pdf-to-png":
       return {
-        title: zh ? "图片已生成" : "Images generated",
-        description: zh ? "PDF 页面已导出为图片（ZIP 打包）。" : "PDF pages exported as images (zipped).",
+        title: tr("Images generated", "图片已生成", "Imágenes generadas", "Imagens geradas", "Images générées", "画像を生成しました"),
+        description: tr("PDF pages exported as images (zipped).", "PDF 页面已导出为图片（ZIP 打包）。", "Páginas del PDF exportadas como imágenes (en ZIP).", "Páginas do PDF exportadas como imagens (em ZIP).", "Pages du PDF exportées en images (compressées en ZIP).", "PDF のページを画像としてエクスポートしました（ZIP 圧縮）。"),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "图片数量" : "Images", artifact?.imageCount != null ? String(artifact.imageCount) : (artifact?.pageCount != null ? String(artifact.pageCount) : "—")],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [L.images, artifact?.imageCount != null ? String(artifact.imageCount) : (artifact?.pageCount != null ? String(artifact.pageCount) : "—")],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     case "pdf-to-markdown":
       return {
-        title: zh ? "Markdown 已生成" : "Markdown generated",
-        description: zh ? "PDF 文字已提取为 Markdown。" : "PDF text extracted as Markdown.",
+        title: tr("Markdown generated", "Markdown 已生成", "Markdown generado", "Markdown gerado", "Markdown généré", "Markdown を生成しました"),
+        description: tr("PDF text extracted as Markdown.", "PDF 文字已提取为 Markdown。", "Texto del PDF extraído como Markdown.", "Texto do PDF extraído como Markdown.", "Texte du PDF extrait en Markdown.", "PDF のテキストを Markdown として抽出しました。"),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "页数" : "Pages", artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
         preview: "text",
       };
@@ -1308,25 +1502,30 @@ function getWorkflowResult(
     case "excel-to-pdf":
     case "pdf-to-excel":
       return {
-        title: zh ? "转换完成" : "Conversion complete",
-        description: zh ? "文件已转换，可下载。" : "File converted, ready to download.",
+        title: tr("Conversion complete", "转换完成", "Conversión completada", "Conversão concluída", "Conversion terminée", "変換が完了しました"),
+        description: tr("File converted, ready to download.", "文件已转换，可下载。", "Archivo convertido, listo para descargar.", "Arquivo convertido, pronto para baixar.", "Fichier converti, prêt à télécharger.", "ファイルを変換しました。ダウンロードできます。"),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "输出格式" : "Output format", outputName.split(".").pop()?.toUpperCase() ?? "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [tr("Output format", "输出格式", "Formato de salida", "Formato de saída", "Format de sortie", "出力形式"), outputName.split(".").pop()?.toUpperCase() ?? "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
     default:
       return {
-        title: zh ? "文件已处理" : "Workflow complete",
-        description: zh
-          ? "工作流处理完成，可下载结果。"
-          : "Workflow processing complete, ready to download.",
+        title: tr("Workflow complete", "文件已处理", "Flujo de trabajo completado", "Fluxo de trabalho concluído", "Flux de travail terminé", "ワークフローが完了しました"),
+        description: tr(
+          "Workflow processing complete, ready to download.",
+          "工作流处理完成，可下载结果。",
+          "Procesamiento del flujo de trabajo completado, listo para descargar.",
+          "Processamento do fluxo de trabalho concluído, pronto para baixar.",
+          "Traitement du flux de travail terminé, prêt à télécharger.",
+          "ワークフローの処理が完了しました。ダウンロードできます。",
+        ),
         rows: [
-          [zh ? "输入" : "Input", files[0]?.file.name ?? "—"],
-          [zh ? "输出大小" : "Output size", formatBytes(outputSize)],
-          [zh ? "输出" : "Output", outputName],
+          [L.input, files[0]?.file.name ?? "—"],
+          [L.outputSize, formatBytes(outputSize)],
+          [L.output, outputName],
         ],
       };
   }

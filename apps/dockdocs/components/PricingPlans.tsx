@@ -767,7 +767,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 const hasTools = cat.tools.length > 0;
                 const hasFeatures = (cat.features?.length ?? 0) > 0;
                 const canExpand = hasTools || hasFeatures;
-                const tcLocale = locale === "ja" ? "en" : locale;
+                const tcLocale = locale;
                 const catLabel = cat.label[tcLocale] ?? cat.label.en;
                 const lim = (tier: "free" | "plus" | "pro") => {
                   const v = cat.limits[tier];
