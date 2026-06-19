@@ -995,11 +995,11 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "redline") {
-    return <>{extraJsonLd}<RedlineClient locale={esLocale} /></>;
+    return <>{extraJsonLd}<RedlineClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "extract-to-excel") {
-    return <>{extraJsonLd}<ExtractExcelClient locale={esLocale} /></>;
+    return <>{extraJsonLd}<ExtractExcelClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "crop-pdf") {
