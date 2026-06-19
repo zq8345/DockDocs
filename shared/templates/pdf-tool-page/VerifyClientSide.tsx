@@ -44,8 +44,8 @@ export const LOCAL_ONLY_SLUGS = new Set<string>([
   "page-numbers",
 ]);
 
-type Loc = "en" | "zh" | "es" | "pt" | "fr";
-const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr"];
+type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja"];
 
 const COPY: Record<Loc, { title: string; body: string; how: string }> = {
   en: {
@@ -72,6 +72,11 @@ const COPY: Record<Loc, { title: string; body: string; how: string }> = {
     title: "Ne nous croyez pas sur parole — vérifiez",
     body: "Cet outil fonctionne entièrement dans votre navigateur. Votre fichier ne quitte jamais votre appareil : il n'est envoyé à aucun serveur.",
     how: "Vérifiez par vous-même : ouvrez les outils de développement du navigateur (F12, ou clic droit → Inspecter) → l'onglet « Network / Réseau » → puis lancez cet outil. Vous ne verrez votre fichier envoyé nulle part, car le traitement se fait localement sur votre appareil.",
+  },
+  ja: {
+    title: "言葉だけでなく、自分で確かめてください",
+    body: "このツールはすべてブラウザ内で動作します。あなたのファイルが端末から外に出ることはなく、どのサーバーにもアップロードされません。",
+    how: "ご自身で確認できます：ブラウザの開発者ツール（F12、または右クリック →「検証」）を開き →「Network / ネットワーク」タブに切り替えて → このツールを実行してみてください。処理はあなたの端末内でローカルに行われるため、ファイルがどこかにアップロードされる様子は表示されません。",
   },
 };
 

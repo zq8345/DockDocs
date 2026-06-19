@@ -12,8 +12,8 @@ import { navCategories } from "@/components/Header";
 // Names come from the shared, native-authored navCategories — never hardcoded here —
 // so every locale stays native-quality and a tool that ships in nav stays in sync.
 
-type Loc = "en" | "zh" | "es" | "pt" | "fr";
-const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr"];
+type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja"];
 
 // Curated, evergreen, real (non-`soon`) tools relevant to someone working a
 // document on an AI page. The current page's own slug is excluded at render.
@@ -34,6 +34,7 @@ const HEADING: Record<Loc, string> = {
   es: "Más herramientas para documentos",
   pt: "Mais ferramentas para documentos",
   fr: "Plus d'outils pour documents",
+  ja: "その他のドキュメントツール",
 };
 
 // slug -> native name for a locale, skipping any coming-soon tool.
@@ -52,7 +53,7 @@ function nameLookup(loc: Loc): Map<string, string> {
 }
 
 export function RelatedPdfTools({ locale = "en", exclude }: { locale?: string; exclude?: string }) {
-  // ja (POC) and any unknown locale fall back to the en surface so we never emit a
+  // Any unknown locale falls back to the en surface so we never emit a
   // half-translated heading or a tool link into a locale path that may not exist.
   const loc: Loc = LOCS.includes(locale as Loc) ? (locale as Loc) : "en";
   const names = nameLookup(loc);

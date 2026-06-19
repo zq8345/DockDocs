@@ -18,6 +18,7 @@ const STR = {
     choose: "Choose PDF", rendering: "Rendering pages…",
     hint: "Click pages to include/exclude them. Selected pages get converted.",
     selected: (n: number, t: number) => `${n} of ${t} pages selected`,
+    pageLabel: (n: number) => `Page ${n}`,
     all: "Select all", none: "Select none", format: "Format",
     convert: "Convert & download", working: "Converting…", reset: "Start over",
     needOne: "Select at least one page.", err: "Something went wrong: ",
@@ -29,6 +30,7 @@ const STR = {
     choose: "选择 PDF", rendering: "正在渲染页面…",
     hint: "点击页面以选中/取消，选中的页面会被转换。",
     selected: (n: number, t: number) => `已选 ${n} / ${t} 页`,
+    pageLabel: (n: number) => `第 ${n} 页`,
     all: "全选", none: "全不选", format: "格式",
     convert: "转换并下载", working: "正在转换…", reset: "重新开始",
     needOne: "至少选择一页。", err: "出错了：",
@@ -40,6 +42,7 @@ const STR = {
     choose: "Elegir PDF", rendering: "Procesando páginas…",
     hint: "Haz clic en las páginas para incluirlas o excluirlas. Las páginas seleccionadas se convierten.",
     selected: (n: number, t: number) => `${n} de ${t} páginas seleccionadas`,
+    pageLabel: (n: number) => `Página ${n}`,
     all: "Seleccionar todo", none: "No seleccionar ninguna", format: "Formato",
     convert: "Convertir y descargar", working: "Convirtiendo…", reset: "Empezar de nuevo",
     needOne: "Selecciona al menos una página.", err: "Algo salió mal: ",
@@ -51,6 +54,7 @@ const STR = {
     choose: "Escolher PDF", rendering: "Processando páginas…",
     hint: "Clique nas páginas para incluí-las ou excluí-las. As páginas selecionadas são convertidas.",
     selected: (n: number, t: number) => `${n} de ${t} páginas selecionadas`,
+    pageLabel: (n: number) => `Página ${n}`,
     all: "Selecionar tudo", none: "Não selecionar nenhuma", format: "Formato",
     convert: "Converter e baixar", working: "Convertendo…", reset: "Recomeçar",
     needOne: "Selecione pelo menos uma página.", err: "Algo deu errado: ",
@@ -62,6 +66,7 @@ const STR = {
     choose: "Choisir un PDF", rendering: "Rendu des pages en cours…",
     hint: "Cliquez sur les pages pour les inclure ou les exclure. Les pages sélectionnées seront converties.",
     selected: (n: number, t: number) => `${n} sur ${t} page${t > 1 ? "s" : ""} sélectionnée${n > 1 ? "s" : ""}`,
+    pageLabel: (n: number) => `Page ${n}`,
     all: "Tout sélectionner", none: "Ne rien sélectionner", format: "Format",
     convert: "Convertir et télécharger", working: "Conversion en cours…", reset: "Recommencer",
     needOne: "Sélectionnez au moins une page.", err: "Une erreur est survenue : ",
@@ -73,6 +78,7 @@ const STR = {
     choose: "PDFを選択", rendering: "ページを描画中…",
     hint: "ページをクリックして含める/除外を切り替えます。選択したページが変換されます。",
     selected: (n: number, t: number) => `${t}ページ中${n}ページを選択`,
+    pageLabel: (n: number) => `${n}ページ目`,
     all: "すべて選択", none: "選択を解除", format: "形式",
     convert: "変換してダウンロード", working: "変換中…", reset: "最初からやり直す",
     needOne: "少なくとも1ページを選択してください。", err: "問題が発生しました: ",
@@ -200,7 +206,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg" }: { loc
                   {on && <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--accent)] text-[11px] font-bold text-white">✓</span>}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={p.thumb} alt={`page ${p.idx + 1}`} className="max-h-full max-w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
-                  <span className="absolute bottom-1 left-0 right-0 text-center text-[11px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${p.idx + 1} 页` : `Page ${p.idx + 1}`}</span>
+                  <span className="absolute bottom-1 left-0 right-0 text-center text-[11px] text-[color:var(--muted)]">{t.pageLabel(p.idx + 1)}</span>
                 </button>
               );
             })}

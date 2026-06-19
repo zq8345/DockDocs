@@ -33,7 +33,7 @@ export type PdfToolUpload = {
 
 export type PdfToolPageConfig = {
   slug: string;
-  locale?: "en" | "zh" | "es" | "pt" | "fr";
+  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja";
   canonicalPath?: string;
   alternateLanguages?: Record<string, string>;
   title: string;
@@ -257,6 +257,26 @@ const templateCopy = {
     indexingTitle: "Guides et ressources liés à ce flux de travail.",
     indexingDescription:
       "Poursuivez depuis la page de l'outil vers les guides, ressources et contenus d'aide DockDocs.",
+  },
+  ja: {
+    toolEyebrow: "AI ドキュメントプラットフォーム",
+    previewWorkflow: "ワークフローをプレビュー",
+    workflowEyebrow: "ツールのワークフロー",
+    workflowTitle: "アップロードから出力までの実際のフロー。",
+    workflowDescription:
+      "これらのページは、製品の実際のワークフローの状態を示しています。",
+    benefits: "メリット",
+    features: "機能",
+    workflow: "ワークフロー",
+    faq: "よくある質問",
+    relatedTools: "関連ツール",
+    relatedTitle: "別の PDF ワークフローを続ける。",
+    relatedDescription:
+      "プラットフォームから離れることなく、DockDocs の PDF ツール間を移動できます。",
+    indexingEyebrow: "おすすめの記事",
+    indexingTitle: "このワークフローに関連するガイドとリソース。",
+    indexingDescription:
+      "ツールページから DockDocs のガイド、リソース、ヘルプコンテンツへ続けて進めます。",
   },
 } as const;
 

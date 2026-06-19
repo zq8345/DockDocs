@@ -5,7 +5,7 @@ import type { BillingInterval, PaidSubscriptionPlan } from "@/lib/billing-config
 // functions, so the identity / status / upgrade copy stays consistent. Pure
 // display + copy — never touches entitlement logic.
 
-export type MembershipLocale = "en" | "zh" | "es" | "pt" | "fr";
+export type MembershipLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 export type PlanDisplayName = "Free" | "Plus" | "Pro";
 
 function pick(
@@ -15,8 +15,9 @@ function pick(
   es: string,
   pt: string,
   fr: string,
+  ja: string,
 ): string {
-  return locale === "zh" ? zh : locale === "es" ? es : locale === "pt" ? pt : locale === "fr" ? fr : en;
+  return locale === "zh" ? zh : locale === "es" ? es : locale === "pt" ? pt : locale === "fr" ? fr : locale === "ja" ? ja : en;
 }
 
 // Identity badge shown after the user's name (nav button + account page).
@@ -27,7 +28,7 @@ export function planBadge(
 ): { label: string; className: string } {
   const suffix =
     interval === "lifetime"
-      ? ` · ${pick(locale, "Lifetime", "终身", "De por vida", "Vitalício", "À vie")}`
+      ? ` · ${pick(locale, "Lifetime", "终身", "De por vida", "Vitalício", "À vie", "買い切り")}`
       : "";
   if (displayName === "Pro") {
     // Brightest — solid accent fill.
@@ -47,7 +48,7 @@ function formatDate(iso: string | undefined, locale: MembershipLocale): string {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return "";
     const loc =
-      locale === "zh" ? "zh-CN" : locale === "es" ? "es-ES" : locale === "pt" ? "pt-BR" : locale === "fr" ? "fr-FR" : "en-US";
+      locale === "zh" ? "zh-CN" : locale === "es" ? "es-ES" : locale === "pt" ? "pt-BR" : locale === "fr" ? "fr-FR" : locale === "ja" ? "ja-JP" : "en-US";
     return d.toLocaleDateString(loc, { year: "numeric", month: "short", day: "numeric" });
   } catch {
     return "";
@@ -70,28 +71,28 @@ export function planStatusText(
   const date = formatDate(currentPeriodEnd, locale);
 
   if (displayName === "Free") {
-    return pick(locale, "Free plan", "免费版", "Plan gratuito", "Plano gratuito", "Forfait gratuit");
+    return pick(locale, "Free plan", "免费版", "Plan gratuito", "Plano gratuito", "Forfait gratuit", "無料プラン");
   }
   if (interval === "lifetime") {
-    return pick(locale, "Lifetime · never expires", "终身永久 · 永不过期", "De por vida · nunca caduca", "Vitalício · nunca expira", "À vie · n'expire jamais");
+    return pick(locale, "Lifetime · never expires", "终身永久 · 永不过期", "De por vida · nunca caduca", "Vitalício · nunca expira", "À vie · n'expire jamais", "買い切り · 無期限");
   }
   if (status === "past_due") {
-    return pick(locale, "Past due · update your payment method", "续费失败 · 请更新付款方式", "Pago vencido · actualiza tu método de pago", "Pagamento vencido · atualize sua forma de pagamento", "Paiement en retard · mettez à jour votre moyen de paiement");
+    return pick(locale, "Past due · update your payment method", "续费失败 · 请更新付款方式", "Pago vencido · actualiza tu método de pago", "Pagamento vencido · atualize sua forma de pagamento", "Paiement en retard · mettez à jour votre moyen de paiement", "支払い遅延 · お支払い方法を更新してください");
   }
   if (status === "canceled" || cancelAtPeriodEnd) {
     if (date) {
-      return pick(locale, `Canceled · active until ${date}`, `已取消 · 有效期至 ${date}`, `Cancelado · activo hasta ${date}`, `Cancelado · ativo até ${date}`, `Annulé · actif jusqu'au ${date}`);
+      return pick(locale, `Canceled · active until ${date}`, `已取消 · 有效期至 ${date}`, `Cancelado · activo hasta ${date}`, `Cancelado · ativo até ${date}`, `Annulé · actif jusqu'au ${date}`, `キャンセル済み · ${date} まで有効`);
     }
-    return pick(locale, "Canceled", "已取消", "Cancelado", "Cancelado", "Annulé");
+    return pick(locale, "Canceled", "已取消", "Cancelado", "Cancelado", "Annulé", "キャンセル済み");
   }
   if (date) {
-    return pick(locale, `Active · renews ${date}`, `生效中 · 续费日 ${date}`, `Activo · se renueva el ${date}`, `Ativo · renova em ${date}`, `Actif · se renouvelle le ${date}`);
+    return pick(locale, `Active · renews ${date}`, `生效中 · 续费日 ${date}`, `Activo · se renueva el ${date}`, `Ativo · renova em ${date}`, `Actif · se renouvelle le ${date}`, `有効 · ${date} に更新`);
   }
   const cycle =
     interval === "annual"
-      ? pick(locale, "annual", "按年", "anual", "anual", "annuel")
-      : pick(locale, "monthly", "按月", "mensual", "mensal", "mensuel");
-  return pick(locale, `Active · ${cycle}`, `生效中 · ${cycle}`, `Activo · ${cycle}`, `Ativo · ${cycle}`, `Actif · ${cycle}`);
+      ? pick(locale, "annual", "按年", "anual", "anual", "annuel", "年額")
+      : pick(locale, "monthly", "按月", "mensual", "mensal", "mensuel", "月額");
+  return pick(locale, `Active · ${cycle}`, `生效中 · ${cycle}`, `Activo · ${cycle}`, `Ativo · ${cycle}`, `Actif · ${cycle}`, `有効 · ${cycle}`);
 }
 
 export type UpgradeTarget = { plan: PaidSubscriptionPlan; interval: BillingInterval };
@@ -110,7 +111,7 @@ export function upgradePrompts(
 ): UpgradePrompt[] {
   if (displayName === "Free") {
     return [
-      { label: pick(locale, "Unlock AI & Pro precision", "升级解锁 AI 与专业精准", "Desbloquea IA y precisión Pro", "Desbloqueie IA e precisão Pro", "Débloquez l'IA et la précision Pro"), primary: true },
+      { label: pick(locale, "Unlock AI & Pro precision", "升级解锁 AI 与专业精准", "Desbloquea IA y precisión Pro", "Desbloqueie IA e precisão Pro", "Débloquez l'IA et la précision Pro", "AI とプロ精度をアンロック"), primary: true },
     ];
   }
   if (interval === "lifetime") return [];
@@ -119,11 +120,11 @@ export function upgradePrompts(
   if (displayName === "Plus") {
     const prompts: UpgradePrompt[] = [
       // Raise the tier, keep the current billing term.
-      { label: pick(locale, "Upgrade to Pro", "升级 Pro 专业精准", "Mejora a Pro", "Faça upgrade para Pro", "Passer à Pro"), primary: true, target: { plan: "PRO", interval: curInterval } },
+      { label: pick(locale, "Upgrade to Pro", "升级 Pro 专业精准", "Mejora a Pro", "Faça upgrade para Pro", "Passer à Pro", "Pro にアップグレード"), primary: true, target: { plan: "PRO", interval: curInterval } },
     ];
     if (curInterval !== "annual") {
       prompts.push({
-        label: pick(locale, "Switch to yearly — save 40%", "切年付 · 省 40%", "Cambia a anual — ahorra 40%", "Mude para anual — economize 40%", "Passez à l'annuel — −40 %"),
+        label: pick(locale, "Switch to yearly — save 40%", "切年付 · 省 40%", "Cambia a anual — ahorra 40%", "Mude para anual — economize 40%", "Passez à l'annuel — −40 %", "年額に切り替え — 40% お得"),
         primary: false,
         target: { plan: "PLUS", interval: "annual" },
       });
@@ -132,7 +133,7 @@ export function upgradePrompts(
   }
   // Pro on a recurring plan → lifetime.
   return [
-    { label: pick(locale, "Get lifetime — pay once", "切终身 · 一次买断永久", "Hazlo de por vida — pago único", "Mude para vitalício — pague uma vez", "Passez à vie — paiement unique"), primary: true, target: { plan: "PRO", interval: "lifetime" } },
+    { label: pick(locale, "Get lifetime — pay once", "切终身 · 一次买断永久", "Hazlo de por vida — pago único", "Mude para vitalício — pague uma vez", "Passez à vie — paiement unique", "買い切りにする — 一度の支払い"), primary: true, target: { plan: "PRO", interval: "lifetime" } },
   ];
 }
 
@@ -140,7 +141,7 @@ export function upgradePrompts(
 // message still go to the console for diagnosis; users see a friendly reason. Shared
 // by the pricing page and the in-place upgrade flow.
 export function billingErrorCopy(code: string | undefined, serverMessage: string, locale: MembershipLocale): string {
-  const t = (en: string, zh: string, es: string, pt: string, fr: string) => pick(locale, en, zh, es, pt, fr);
+  const t = (en: string, zh: string, es: string, pt: string, fr: string, ja: string) => pick(locale, en, zh, es, pt, fr, ja);
   switch (code) {
     case "CREEM_PRODUCT_MISSING":
     case "CREEM_NOT_CONFIGURED":
@@ -150,6 +151,7 @@ export function billingErrorCopy(code: string | undefined, serverMessage: string
         "Esta opción de facturación no está disponible ahora. Prueba otro periodo o contacta con soporte.",
         "Esta opção de cobrança não está disponível agora. Tente outro período ou contate o suporte.",
         "Cette option de facturation est indisponible pour l'instant. Essayez une autre période ou contactez le support.",
+        "この請求オプションは現在ご利用いただけません。別の期間を選ぶか、サポートにお問い合わせください。",
       );
     case "CREEM_DISCOUNT_FAILED":
     case "CREEM_CHECKOUT_FAILED":
@@ -163,6 +165,7 @@ export function billingErrorCopy(code: string | undefined, serverMessage: string
         "No se pudo completar la mejora ahora. Inténtalo de nuevo en un momento.",
         "Não foi possível concluir o upgrade agora. Tente novamente em instantes.",
         "Impossible de finaliser la mise à niveau pour l'instant. Réessayez dans un instant.",
+        "現在アップグレードを完了できませんでした。少し時間をおいて再度お試しください。",
       );
     case "CANNOT_PRORATE":
       return t(
@@ -171,6 +174,7 @@ export function billingErrorCopy(code: string | undefined, serverMessage: string
         "No pudimos calcular tu crédito no usado. Mejora desde «Gestionar facturación».",
         "Não foi possível calcular seu crédito não usado. Faça o upgrade em «Gerenciar cobrança».",
         "Impossible de calculer votre crédit non utilisé. Mettez à niveau depuis « Gérer la facturation ».",
+        "未使用分のクレジットを計算できませんでした。代わりに「請求の管理」からアップグレードしてください。",
       );
     case "NO_RECURRING_SUB":
       return t(
@@ -179,6 +183,7 @@ export function billingErrorCopy(code: string | undefined, serverMessage: string
         "No hay una suscripción activa para cambiar. Inicia un nuevo pago.",
         "Nenhuma assinatura ativa para alterar. Inicie um novo checkout.",
         "Aucun abonnement actif à modifier. Lancez un nouveau paiement.",
+        "変更できる有効なサブスクリプションがありません。新しいお支払いを開始してください。",
       );
     default:
       return (
@@ -189,6 +194,7 @@ export function billingErrorCopy(code: string | undefined, serverMessage: string
           "Algo salió mal con la facturación. Inténtalo de nuevo.",
           "Algo deu errado com a cobrança. Tente novamente.",
           "Une erreur de facturation est survenue. Réessayez.",
+          "請求処理でエラーが発生しました。もう一度お試しください。",
         )
       );
   }

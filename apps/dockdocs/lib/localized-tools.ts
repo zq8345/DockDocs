@@ -6310,7 +6310,7 @@ export function getLocalizedToolConfig(
 ): PdfToolPageConfig {
   const base = {
     slug,
-    locale: locale === "ja" ? "en" : locale,
+    locale,
     canonicalPath: localizedPath(locale, (CANONICAL_HUB[slug] ?? slug) as RouteSlug),
     alternateLanguages: languageAlternates(slug),
     ...(localizedTools[locale as keyof typeof localizedTools] ?? localizedTools.en)[slug],

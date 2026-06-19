@@ -983,7 +983,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
                   </p>
                   {lastRun ? (
                     <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">
-                      {t.tplLastRun}: {relativeTime(lastRun.createdAt, locale === "ja" ? "en" : locale)} · {t.tplRunFiles(lastRun.fileNames.length)}
+                      {t.tplLastRun}: {relativeTime(lastRun.createdAt, locale)} · {t.tplRunFiles(lastRun.fileNames.length)}
                     </p>
                   ) : (
                     <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">{t.tplNoRuns}</p>

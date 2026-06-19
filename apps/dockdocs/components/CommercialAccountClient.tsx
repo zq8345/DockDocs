@@ -303,7 +303,7 @@ function useLocale(): Locale {
 export function CommercialAccountClient() {
   const locale = useLocale();
   const t = STR[locale];
-  const upgradeFlow = useUpgradeFlow(locale === "ja" ? "en" : locale);
+  const upgradeFlow = useUpgradeFlow(locale);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [account, setAccount] = useState<DockAccountState | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
@@ -402,7 +402,7 @@ export function CommercialAccountClient() {
 
   return (
     <section className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-      <UpgradeConfirmModal flow={upgradeFlow} locale={locale === "ja" ? "en" : locale} />
+      <UpgradeConfirmModal flow={upgradeFlow} locale={locale} />
       <div className="grid gap-6">
         <AccountStatusCard user={user} account={account} subscription={subscription} onLogout={handleLogout} t={t} />
         {user ? null : (
