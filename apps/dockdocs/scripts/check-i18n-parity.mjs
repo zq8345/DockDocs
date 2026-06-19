@@ -125,8 +125,27 @@ for (const locale of BODY_LOCALES) {
   }
 }
 
+// ── Check D: every tool has a localized FAQ (no English-fallback FAQ) ──
+// getLocalizedToolConfig substitutes a localized FAQ from `${locale}Faq` maps;
+// any slug absent from a map falls back to the English enTools FAQ (and the
+// FAQPage JSON-LD goes out in English). Assert each locale's map covers all 31.
+const FAQ_LOCALES = ["zh", "es", "pt", "fr", "ja"];
+for (const locale of FAQ_LOCALES) {
+  const mapStart = toolsSrc.search(new RegExp(`const ${locale}Faq\\b[^=]*=\\s*\\{`));
+  if (mapStart < 0) {
+    incompleteBody.push(`${locale}: could not find ${locale}Faq in lib/localized-tools.ts — update the guard.`);
+    continue;
+  }
+  const map = objectAfter(toolsSrc, toolsSrc.indexOf("= {", mapStart));
+  for (const slug of toolSlugs) {
+    if (!map.includes(`"${slug}":`)) {
+      incompleteBody.push(`${locale} "${slug}" — FAQ falls back to English (missing from ${locale}Faq)`);
+    }
+  }
+}
+
 if (missing.length === 0 && unregistered.length === 0 && incompleteBody.length === 0) {
-  console.log(`[i18n-guard] OK — ${routeSlugs.length} routes present in all ${locales.length} locales (${locales.join(", ")}); tool bodies fully localized in ${BODY_LOCALES.join(", ")}.`);
+  console.log(`[i18n-guard] OK — ${routeSlugs.length} routes present in all ${locales.length} locales (${locales.join(", ")}); tool bodies + FAQ fully localized in ${BODY_LOCALES.join(", ")}.`);
   process.exit(0);
 }
 
@@ -140,7 +159,7 @@ if (missing.length) {
   for (const m of missing) out.push(`    • ${m}`);
 }
 if (incompleteBody.length) {
-  out.push("", "  Tool pages with un-localized body copy (English fallback):");
+  out.push("", "  Tool pages with un-localized body/FAQ copy (English fallback):");
   for (const b of incompleteBody) out.push(`    • ${b}`);
 }
 out.push("", "  Build blocked: every feature must exist — and be fully localized — in every language.");

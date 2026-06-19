@@ -3106,6 +3106,261 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
 // ---------------------------------------------------------------------------
 // French (fr-FR) FAQ overrides
 // ---------------------------------------------------------------------------
+const jaFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
+  "compress-pdf": {
+    faqTitle: "PDF圧縮のよくある質問",
+    faq: [
+      { question: "PDFをどう圧縮しますか？", answer: "PDFをアップロードし、圧縮状態を確認してから、圧縮後のファイルをダウンロードします。" },
+      { question: "圧縮ツールは無料ですか？", answer: "このページは日常的な無料PDFワークフローとして設計されています。" },
+      { question: "スマホでも使えますか？", answer: "はい。DockDocsのページはスマホとPCに対応したレスポンシブ設計です。" },
+    ],
+  },
+  "merge-pdf": {
+    faqTitle: "PDF結合のよくある質問",
+    faq: [
+      { question: "複数のPDFをアップロードできますか？", answer: "はい。結合フローは複数ファイルのアップロードに対応しています。" },
+      { question: "ファイルの順序を変更できますか？", answer: "結合前にファイルをドラッグして好きな順序に並べ替えられます。" },
+      { question: "出力は何ですか？", answer: "出力は1つの結合されたPDFファイルです。" },
+    ],
+  },
+  "split-pdf": {
+    faqTitle: "PDF分割のよくある質問",
+    faq: [
+      { question: "ページ範囲を抽出できますか？", answer: "はい。ページ範囲の入力欄があります。" },
+      { question: "出力は何ですか？", answer: "分割結果はZIPとして書き出されます。" },
+      { question: "スキャンしたPDFでも使えますか？", answer: "スキャンPDFもPDFとして読み込めますが、OCRは別の機能です。" },
+    ],
+  },
+  "pdf-to-word": {
+    faqTitle: "PDF→Wordのよくある質問",
+    faq: [
+      { question: "PDFをWordにどう変換しますか？", answer: "PDFをアップロードして「Wordに変換」をクリックし、数秒で編集可能な .docx をダウンロードします。" },
+      { question: "元のレイアウトは保持されますか？", answer: "テキストは編集可能になります。シンプルな文書はきれいに変換されますが、複雑なレイアウト・画像・表はWordでの手直しが必要な場合があります。" },
+      { question: "スキャンや画像ベースのPDFも変換できますか？", answer: "スキャンPDFにはテキスト層がないため、直接変換すると空白や文字化けになることがあります。先にDockDocsのOCR PDFでテキストを抽出してから変換してください。" },
+      { question: "ファイルはサーバーにアップロードされますか？", answer: "はい。PDF→Word変換はサーバー側処理が必要なため、ファイルは変換サービスにアップロードされ、処理後に削除されます。他の用途には使いません。" },
+      { question: "ファイルサイズの上限はありますか？", answer: "クラウド変換のファイルは1つあたり100 MBまでです。" },
+      { question: "どのくらい時間がかかりますか？", answer: "通常はファイルサイズとページ数に応じて数秒～1分程度です。" },
+      { question: "無料ですか？どの形式で受け取れますか？", answer: "完全無料です。出力はMicrosoft Word、WPS、Google ドキュメントで開ける標準の .docx です。" },
+    ],
+  },
+  "ocr-pdf": {
+    faqTitle: "OCR PDFのよくある質問",
+    faq: [
+      { question: "OCRの精度はどのくらいですか？", answer: "精度はスキャン品質・コントラスト・言語・レイアウトに依存します。" },
+      { question: "抽出したテキストをコピーできますか？", answer: "テキストのコピーとダウンロードの操作が用意されています。" },
+      { question: "OCRはAI機能ですか？", answer: "OCRは光学文字認識を使い、スキャン画像を選択・検索可能なテキストに変換します。" },
+    ],
+  },
+  "jpg-to-pdf": {
+    faqTitle: "JPG→PDFのよくある質問",
+    faq: [
+      { question: "どの画像形式に対応していますか？", answer: "JPG→PDFはJPG、PNG、WebP画像に対応しています。" },
+      { question: "複数の画像をアップロードできますか？", answer: "はい。複数画像のアップロードとページ並べ替えに対応しています。" },
+      { question: "出力は何ですか？", answer: "出力は1つのPDF文書です。" },
+    ],
+  },
+  "png-to-pdf": {
+    faqTitle: "PNG→PDFのよくある質問",
+    faq: [
+      { question: "PNGをPDFにどう変換しますか？", answer: "PNG画像をアップロードして、生成されたPDFをダウンロードします。" },
+      { question: "無料ですか？", answer: "はい。PNG→PDFは無料のワークフローです。" },
+    ],
+  },
+  "pdf-to-jpg": {
+    faqTitle: "PDF→JPGのよくある質問",
+    faq: [
+      { question: "PDFをJPGにどう変換しますか？", answer: "PDFをアップロードすると、各ページが高品質なJPG画像としてレンダリングされます。" },
+      { question: "私のPDFはサーバーに送信されますか？", answer: "いいえ。すべての変換はブラウザ内で行われます。" },
+    ],
+  },
+  "pdf-to-png": {
+    faqTitle: "PDF→PNGのよくある質問",
+    faq: [
+      { question: "PDFをPNGにどう変換しますか？", answer: "PDFをアップロードすると、各ページが無損失のPNGとしてレンダリングされます。" },
+      { question: "私のPDFはサーバーに送信されますか？", answer: "いいえ。すべての変換はブラウザ内で行われます。" },
+      { question: "PDF→PNGは無料ですか？", answer: "はい。完全無料で、アカウント・透かし・1ファイルあたりの上限はありません。各ページはブラウザ内でローカルにレンダリングされるため、好きなだけPNGを書き出せます。" },
+    ],
+  },
+  "pdf-to-image": {
+    faqTitle: "PDF→画像のよくある質問",
+    faq: [
+      { question: "PDFを画像にどう変換しますか？", answer: "PDFをアップロードすると、各ページがブラウザ内でJPGまたはPNGとしてレンダリングされます。" },
+      { question: "私のPDFはサーバーに送信されますか？", answer: "いいえ。すべての変換はブラウザ内でローカルに行われます。" },
+      { question: "JPGとPNG出力の違いは何ですか？", answer: "JPGはやや圧縮されてファイルが小さく、PNGは無損失で図やスクリーンショットに適しています。" },
+    ],
+  },
+  "pdf-to-markdown": {
+    faqTitle: "PDF→Markdownのよくある質問",
+    faq: [
+      { question: "PDFをMarkdownにどう変換しますか？", answer: "PDFをアップロードして、抽出されたMarkdownファイルをダウンロードします。" },
+      { question: "私のPDFはサーバーに送信されますか？", answer: "いいえ。すべての変換はブラウザ内で行われます。" },
+    ],
+  },
+  "word-to-pdf": {
+    faqTitle: "Word→PDFのよくある質問",
+    faq: [
+      { question: "WordをPDFにどう変換しますか？", answer: "DOCXファイルをアップロードして、変換後のPDFをダウンロードします。" },
+      { question: "書式は保持されますか？", answer: "はい。LibreOfficeで正確にレンダリングするため、フォント・表・レイアウトが保持されます。" },
+      { question: "どのファイル形式に対応していますか？", answer: "DOCXとDOC文書、1ファイルあたり最大100 MBです。" },
+      { question: "Word→PDFは無料ですか？", answer: "はい。DockDocsでのWord→PDF変換は無料です。" },
+      { question: "Microsoft Wordのインストールは必要ですか？", answer: "いいえ。変換はオンラインで実行されるため、Wordなどのソフトは不要で、ブラウザだけで使えます。" },
+      { question: "変換にはどのくらいかかりますか？", answer: "ほとんどの文書は30秒以内に変換されます。" },
+      { question: "スマホでもWord→PDF変換できますか？", answer: "はい。DockDocsは最新のモバイル・デスクトップブラウザで動作します。" },
+    ],
+  },
+  "html-to-pdf": {
+    faqTitle: "HTML→PDFのよくある質問",
+    faq: [
+      { question: "HTMLをPDFにどう変換しますか？", answer: ".htmlファイルをアップロードして、変換後のPDFをダウンロードします。" },
+      { question: "画像やCSSは含まれますか？", answer: "埋め込みまたは到達可能であれば含まれます。自己完結型のHTMLファイルが最も適しています。" },
+      { question: "無料ですか？", answer: "はい。HTML→PDFは無料の変換ワークフローです。" },
+    ],
+  },
+  "pdf-to-ppt": {
+    faqTitle: "PDF→PowerPointのよくある質問",
+    faq: [
+      { question: "PDFをPowerPointにどう変換しますか？", answer: "PDFをアップロードして、変換後のPPTXをダウンロードします。" },
+      { question: "スライドは編集できますか？", answer: "はい。出力は標準の編集可能なPowerPointファイルです。" },
+      { question: "無料ですか？", answer: "はい。PDF→PowerPointは無料の変換ワークフローです。" },
+    ],
+  },
+  "pdf-to-pdfa": {
+    faqTitle: "PDF→PDF/Aのよくある質問",
+    faq: [
+      { question: "PDF/Aとは何ですか？", answer: "PDF/Aは長期保存向けに設計された、フォントやリソースを埋め込んだISO標準のPDFです。" },
+      { question: "なぜPDF/Aに変換するのですか？", answer: "多くの法務・行政・記録システムでは、文書が将来も読めるようPDF/Aが求められます。" },
+      { question: "無料ですか？", answer: "はい。PDF→PDF/Aは無料の変換ワークフローです。" },
+    ],
+  },
+  "ppt-to-pdf": {
+    faqTitle: "PowerPoint→PDFのよくある質問",
+    faq: [
+      { question: "PowerPointをPDFにどう変換しますか？", answer: "PPTXファイルをアップロードして、PDFをダウンロードします。" },
+      { question: "スライドの見た目は同じですか？", answer: "はい。CloudConvertがレイアウト・フォント・画像を保持します。" },
+    ],
+  },
+  "excel-to-pdf": {
+    faqTitle: "Excel→PDFのよくある質問",
+    faq: [
+      { question: "ExcelをPDFにどう変換しますか？", answer: "XLSXファイルをアップロードして、PDFをダウンロードします。" },
+      { question: "グラフは保持されますか？", answer: "はい。グラフとセルの値が出力に含まれます。" },
+    ],
+  },
+  "pdf-to-excel": {
+    faqTitle: "PDF→Excelのよくある質問",
+    faq: [
+      { question: "PDFをExcelにどう変換しますか？", answer: "PDFをアップロードして、XLSXをダウンロードします。" },
+      { question: "表がない場合はどうなりますか？", answer: "テキストのみのPDFも変換できますが、きれいな表データにならない場合があります。" },
+    ],
+  },
+  "delete-page": {
+    faqTitle: "PDFページ削除のよくある質問",
+    faq: [
+      { question: "PDFのページをどう削除しますか？", answer: "PDFをアップロードし、削除するページを入力して、結果をダウンロードします。" },
+      { question: "複数ページを一度に削除できますか？", answer: "はい。1, 3, 5-7 のようにカンマ区切りで入力します。" },
+    ],
+  },
+  "rotate-page": {
+    faqTitle: "PDFページ回転のよくある質問",
+    faq: [
+      { question: "PDFのページをどう回転しますか？", answer: "PDFをアップロードし、ページと角度を選んでダウンロードします。" },
+      { question: "どの角度に対応していますか？", answer: "時計回りに90°、180°、270°です。" },
+    ],
+  },
+  "reorder-pages": {
+    faqTitle: "PDFページ並べ替えのよくある質問",
+    faq: [
+      { question: "PDFのページをどう並べ替えますか？", answer: "PDFをアップロードし、新しいページ順（例: 3,1,2）を入力してダウンロードします。" },
+      { question: "すべてのページを含める必要がありますか？", answer: "出力に表示されるのは入力したページのみです——ページ削除にも使えます。" },
+    ],
+  },
+  "add-page": {
+    faqTitle: "PDFページ追加のよくある質問",
+    faq: [
+      { question: "PDFに空白ページをどう追加しますか？", answer: "PDFをアップロードし、挿入位置を指定して結果をダウンロードします。" },
+      { question: "空白ページのサイズは？", answer: "最も近い既存ページのサイズを自動的に継承します。" },
+    ],
+  },
+  "protect-pdf": {
+    faqTitle: "PDFパスワード保護のよくある質問",
+    faq: [
+      { question: "PDFにどうパスワードを設定しますか？", answer: "PDFをアップロードし、パスワードを入力して、暗号化された結果をダウンロードします。" },
+      { question: "私のPDFはサーバーに送信されますか？", answer: "いいえ。すべての暗号化はブラウザ内で行われます。" },
+    ],
+  },
+  "edit-pdf": {
+    faqTitle: "PDF編集のよくある質問",
+    faq: [
+      { question: "Adobe AcrobatなしでPDFを編集できますか？", answer: "はい。DockDocsは無料のブラウザ版PDFエディタを提供し、テキスト・注釈・図形・画像を追加できます。Adobe Acrobatやソフトのインストールは不要で、Windows・Mac・Linux・ChromeOSで動作します。" },
+      { question: "機密文書のオンライン編集は安全ですか？", answer: "DockDocsの編集はクライアントサイド技術でブラウザ内で完結します。PDFはサーバーにアップロードされず、機密文書はデバイス上に留まります。アカウントや登録は不要です。" },
+      { question: "PDFにどんな編集ができますか？", answer: "ページの任意の位置にテキストボックスを追加し、マークアップ用の図形や線を描き、ロゴや署名などの画像を挿入し、文書に注釈を付けられます。デスクトップソフトのような複雑さなしに、最も一般的な編集ニーズをカバーします。" },
+      { question: "PDFを編集するにはアカウントが必要ですか？", answer: "いいえ。完全無料で、アカウント・メール・登録は不要です。ページを開き、PDFをアップロードし、編集してダウンロードするだけです。" },
+      { question: "スキャンや画像ベースのPDFを編集できますか？", answer: "テキストが選択できないスキャン・画像PDFの場合は、まずDockDocsのOCR PDFで選択可能なテキストに変換してから編集してください。OCRは画像やスキャン文書からテキストを抽出します。" },
+    ],
+  },
+  "sign-pdf": {
+    faqTitle: "PDF署名のよくある質問",
+    faq: [
+      { question: "電子署名は法的に有効ですか？", answer: "米国（ESIGN法）、EU（eIDAS）、英国、カナダ、オーストラリアなど多くの法域で、電子署名は大半のビジネス・個人文書に法的拘束力があります。DockDocsは署名を適用するツールを提供します。法的有効性は法域と文書の種類によります。規制の厳しい文書は専門家にご相談ください。" },
+      { question: "電子署名とデジタル署名の違いは何ですか？", answer: "電子署名（DockDocsが提供）は手書きや入力署名のような同意の視覚的な印です。デジタル署名は、文書が改ざんされていないことを検証し、認証局を通じて署名者の身元を確認する暗号的な封印です。DockDocsは電子署名を扱います。証明書ベースのデジタル署名には専用のPKIツールをご利用ください。" },
+      { question: "DockDocsでPDFに署名するにはアカウントが必要ですか？", answer: "いいえ。無料で、アカウント・メール・登録は不要です。PDFをアップロードし、署名を追加して、署名済み文書をダウンロードするまで一度で完了します。" },
+      { question: "署名は保存・共有されますか？", answer: "いいえ。すべてブラウザ内で処理され、PDFと署名はサーバーにアップロードされません。ページを閉じると何も保存されません。署名や文書をサーバーに保存するクラウド型電子署名サービスとは異なります。" },
+    ],
+  },
+  "translate-pdf": {
+    faqTitle: "PDF翻訳のよくある質問",
+    faq: [
+      { question: "DockDocsはどの言語に翻訳できますか？", answer: "英語、中国語（簡体・繁体）、日本語、韓国語、フランス語、ドイツ語、スペイン語、ポルトガル語、イタリア語、ロシア語、アラビア語、ヒンディー語、オランダ語、インドネシア語、ベトナム語、タイ語、トルコ語など18言語以上。完全なリストは言語セレクターに表示されます。" },
+      { question: "AI翻訳はビジネス文書に十分正確ですか？", answer: "レポートやメールの理解に適した良質な初稿を生成します。法的拘束力のある契約や認証翻訳には、専門の翻訳者による確認が必要です——これは初稿であり、認証された法的翻訳ではありません。" },
+      { question: "元のレイアウトや書式は保持されますか？", answer: "まだです。このバージョンは文書のテキストを翻訳し、コピーまたはダウンロードできる翻訳テキストを提供します。レイアウト（フォントや配置）を保持する翻訳は計画中です。" },
+      { question: "私のPDFはサーバーにアップロードされますか？", answer: "PDFはブラウザ内で読み込まれ、抽出されたテキストのみがAIに送られて翻訳されます。ファイル自体はデバイスから外に出ません。" },
+      { question: "サイズ制限はありますか？", answer: "高速かつ無料を保つため、1回あたり約14,000文字（約10ページ）に制限されています。長い文書はまずDockDocsの分割PDFで分けて、各部分を翻訳してください。" },
+    ],
+  },
+  "unlock-pdf": {
+    faqTitle: "PDF制限解除のよくある質問",
+    faq: [
+      { question: "PDFの制限を解除するにはパスワードが必要ですか？", answer: "必ずしも必要ありません。PDFが普通に開けるのに印刷・コピー・編集が制限されている場合は、パスワードなしで制限を解除できます——アップロードしてクリックするだけです。パスワードが必要なのは、ファイルを開くこと自体を妨げる開封パスワードがある場合のみです。" },
+      { question: "PDFのパスワードをオンラインで入力しても安全ですか？", answer: "DockDocsの解除はクライアントサイド技術ですべてブラウザ内で処理します。PDFファイルとパスワードはデバイスから外に出ず、サーバーにアップロードされません。保護されたPDFとパスワードをバックエンドに送るサービスとは根本的に異なります。" },
+      { question: "DockDocsはどんな種類のPDFパスワードを解除できますか？", answer: "編集・印刷・コピーを制限するオーナーパスワードと、ファイルを開けなくするユーザー／開封パスワードの両方を、パスワードがわかれば解除できます。解除後のPDFは制限がなく自由に使えます。" },
+      { question: "PDFを解除すると品質に影響しますか？", answer: "いいえ。パスワード保護の解除は、PDFの内容・書式・画像・テキスト品質を変えません。パスワード制限を除く以外はビット単位で同一です。" },
+      { question: "解除後に圧縮や結合もできますか？", answer: "はい。解除後は、圧縮PDF・結合PDF・編集PDF・Word/Excel変換など、他のDockDocsツールをすべて利用できます。" },
+    ],
+  },
+  "watermark-pdf": {
+    faqTitle: "PDF透かしのよくある質問",
+    faq: [
+      { question: "PDFにどう透かしを追加しますか？", answer: "PDFをアップロードし、透かしの文字を入力して、押印された結果をダウンロードします。" },
+      { question: "私のPDFはサーバーに送信されますか？", answer: "いいえ。すべての透かし処理はブラウザ内で行われます。ファイルはデバイスから外に出ません。" },
+      { question: "後で透かしを削除できますか？", answer: "透かしはページ内容に描き込まれるため、透かしなしのコピーが必要な場合は元のファイルを保管してください。" },
+    ],
+  },
+  "page-numbers": {
+    faqTitle: "PDFページ番号のよくある質問",
+    faq: [
+      { question: "PDFにどうページ番号を追加しますか？", answer: "PDFをアップロードして結果をダウンロードします——各ページに自動で番号が付きます。" },
+      { question: "私のPDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ内で行われます。ファイルはデバイスから外に出ません。" },
+      { question: "番号はどこに配置されますか？", answer: "下部中央の余白に「ページ / 合計」の形式で表示されます。" },
+    ],
+  },
+  "pdf-to-text": {
+    faqTitle: "PDF→テキストのよくある質問",
+    faq: [
+      { question: "PDFをテキストにどう変換しますか？", answer: "PDFをアップロードして、抽出されたプレーンテキストの .txt ファイルをダウンロードします。" },
+      { question: "スキャンしたPDFでも使えますか？", answer: "実際のテキストを含むPDFのみです。スキャン画像の場合は先にOCRを実行してください。" },
+      { question: "私のPDFはサーバーに送信されますか？", answer: "いいえ。すべての抽出はブラウザ内で行われます。ファイルはデバイスから外に出ません。" },
+    ],
+  },
+  "pdf-to-html": {
+    faqTitle: "PDF→HTMLのよくある質問",
+    faq: [
+      { question: "PDFをHTMLにどう変換しますか？", answer: "PDFをアップロードして、生成されたHTMLファイルをダウンロードします。" },
+      { question: "画像やレイアウトは保持されますか？", answer: "はい——各ページが画像としてレンダリングされ、写真とレイアウトが保持されます。そのページの選択可能なテキストは下の折りたたみブロックに保持され、検索可能なままです。" },
+      { question: "私のPDFはサーバーに送信されますか？", answer: "いいえ。すべての抽出はブラウザ内で行われます。ファイルはデバイスから外に出ません。" },
+    ],
+  },
+};
+
 const frFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question: string; answer: string }> }>> = {
   "edit-pdf": {
     faqTitle: "Questions fréquentes sur l'édition de PDF",
@@ -6073,6 +6328,9 @@ export function getLocalizedToolConfig(
   }
   if ((locale as string) === "fr" && frFaq[slug]) {
     return { ...base, faqTitle: frFaq[slug]!.faqTitle, faq: frFaq[slug]!.faq };
+  }
+  if (locale === "ja" && jaFaq[slug]) {
+    return { ...base, faqTitle: jaFaq[slug]!.faqTitle, faq: jaFaq[slug]!.faq };
   }
   if (locale === "en" && enFaq[slug]) {
     return { ...base, faqTitle: enFaq[slug]!.faqTitle, faq: enFaq[slug]!.faq };
