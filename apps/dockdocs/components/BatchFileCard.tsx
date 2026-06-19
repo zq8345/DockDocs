@@ -66,6 +66,7 @@ export function BatchFileCard({
   statusNode,
   doneLabel = "done",
   failLabel = "failed",
+  removeLabel = "Remove",
   onRemove,
 }: {
   file: File;
@@ -74,6 +75,7 @@ export function BatchFileCard({
   statusNode?: React.ReactNode;
   doneLabel?: string;
   failLabel?: string;
+  removeLabel?: string;
   onRemove?: () => void;
 }) {
   const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
@@ -101,7 +103,7 @@ export function BatchFileCard({
           <button
             type="button"
             onClick={onRemove}
-            aria-label="Remove"
+            aria-label={removeLabel}
             className="flex h-6 w-6 items-center justify-center rounded text-[color:var(--faint)] transition hover:bg-[rgba(248,113,113,0.1)] hover:text-[#f87171]"
           >
             <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">

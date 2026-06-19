@@ -36,15 +36,45 @@ const ROUTE_META: Record<
   "protect-pdf": { outputMime: "application/pdf", outputType: "pdf" },
 };
 
+export type CloudLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+
 type CloudConvertRuntimeInput = {
   file: File;
   route: CloudConvertRoute;
   outputFileName: string;
-  locale: "en" | "zh" | "es";
+  locale: CloudLocale;
   password?: string;
   signal?: AbortSignal;
   onProgress?: (progress: PdfRuntimeProgress) => void;
 };
+
+// 6-way string picker. Brand/format names (PDF, DOCX, Word, Excel, PowerPoint,
+// CloudConvert, OCR) stay untranslated inside the strings. ja uses full-width
+// punctuation with a half-width space around Latin tokens.
+function tr(
+  locale: CloudLocale,
+  en: string,
+  zh: string,
+  es: string,
+  pt: string,
+  fr: string,
+  ja: string,
+): string {
+  switch (locale) {
+    case "zh":
+      return zh;
+    case "es":
+      return es;
+    case "pt":
+      return pt;
+    case "fr":
+      return fr;
+    case "ja":
+      return ja;
+    default:
+      return en;
+  }
+}
 
 const API = "/api/cloudconvert-convert";
 const POLL_INTERVAL_MS = 1800;
@@ -59,15 +89,20 @@ export async function runCloudConvert({
   signal,
   onProgress,
 }: CloudConvertRuntimeInput): Promise<PdfRuntimeArtifact> {
-  const zh = locale === "zh";
-
   throwIfAborted(signal);
 
   if (file.size > MAX_UPLOAD_BYTES) {
+    const size = mb(file.size);
     throw new Error(
-      zh
-        ? `文件过大（最大 100 MB）。当前文件：${mb(file.size)} MB。`
-        : `File is too large (max 100 MB). Your file is ${mb(file.size)} MB.`,
+      tr(
+        locale,
+        `File is too large (max 100 MB). Your file is ${size} MB.`,
+        `文件过大（最大 100 MB）。当前文件：${size} MB。`,
+        `El archivo es demasiado grande (máx. 100 MB). Tu archivo: ${size} MB.`,
+        `O arquivo é muito grande (máx. 100 MB). Seu arquivo: ${size} MB.`,
+        `Le fichier est trop volumineux (max. 100 Mo). Votre fichier : ${size} Mo.`,
+        `ファイルが大きすぎます（最大 100 MB）。現在のファイル：${size} MB。`,
+      ),
     );
   }
 
@@ -82,17 +117,17 @@ export async function runCloudConvert({
   if (viaOss) return viaOss;
 
   // ── 1. Ask our function to create a CloudConvert job ──
-  emitProgress(onProgress, 6, 0, zh ? "正在创建转换任务..." : "Creating conversion job...");
+  emitProgress(onProgress, 6, 0, msgCreating(locale));
   const createRes = await postJson(
     API,
     { action: "create", route, password },
     signal,
-    zh,
+    locale,
   );
   const created = await createRes.json().catch(() => ({}));
 
   if (!createRes.ok || !created.ok) {
-    throw new Error(mapCreateError(createRes.status, created, zh));
+    throw new Error(mapCreateError(createRes.status, created, locale));
   }
 
   const { jobId, upload } = created as {
@@ -101,7 +136,7 @@ export async function runCloudConvert({
   };
 
   // ── 2. Upload the file DIRECTLY to CloudConvert (no size limit) ──
-  emitProgress(onProgress, 20, 1, zh ? "正在上传文件..." : "Uploading file...");
+  emitProgress(onProgress, 20, 1, msgUploading(locale));
   throwIfAborted(signal);
 
   const uploadForm = new FormData();
@@ -116,15 +151,33 @@ export async function runCloudConvert({
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") throw err;
     throw new Error(
-      zh ? "上传失败，请检查网络后重试。" : "Upload failed. Check your connection and retry.",
+      tr(
+        locale,
+        "Upload failed. Check your connection and retry.",
+        "上传失败，请检查网络后重试。",
+        "Error al subir. Comprueba tu conexión e inténtalo de nuevo.",
+        "Falha no envio. Verifique sua conexão e tente novamente.",
+        "Échec de l’envoi. Vérifiez votre connexion et réessayez.",
+        "アップロードに失敗しました。ネットワークを確認して再試行してください。",
+      ),
     );
   }
   if (!uploadRes.ok && uploadRes.status !== 204) {
-    throw new Error(zh ? "上传未能完成，请重试。" : "Upload could not be completed. Please retry.");
+    throw new Error(
+      tr(
+        locale,
+        "Upload could not be completed. Please retry.",
+        "上传未能完成，请重试。",
+        "No se pudo completar la subida. Vuelve a intentarlo.",
+        "Não foi possível concluir o envio. Tente novamente.",
+        "L’envoi n’a pas pu être terminé. Veuillez réessayer.",
+        "アップロードを完了できませんでした。再試行してください。",
+      ),
+    );
   }
 
   // ── 3. Poll our function for job status ──
-  emitProgress(onProgress, 45, 2, zh ? "正在转换中..." : "Converting...");
+  emitProgress(onProgress, 45, 2, msgConverting(locale));
   const start = Date.now();
   let downloadUrl: string | null = null;
 
@@ -132,14 +185,20 @@ export async function runCloudConvert({
     throwIfAborted(signal);
     await sleep(POLL_INTERVAL_MS, signal);
 
-    const statusRes = await postJson(API, { action: "status", jobId }, signal, zh);
+    const statusRes = await postJson(API, { action: "status", jobId }, signal, locale);
     const status = await statusRes.json().catch(() => ({}));
 
     if (!status.ok && status.code === "CONVERSION_FAILED") {
       throw new Error(
-        zh
-          ? "转换失败：文件格式可能不受支持或文件已损坏。"
-          : "Conversion failed: the format may be unsupported or the file is corrupted.",
+        tr(
+          locale,
+          "Conversion failed: the format may be unsupported or the file is corrupted.",
+          "转换失败：文件格式可能不受支持或文件已损坏。",
+          "La conversión falló: el formato puede no ser compatible o el archivo está dañado.",
+          "A conversão falhou: o formato pode não ter suporte ou o arquivo está corrompido.",
+          "Échec de la conversion : le format n’est peut-être pas pris en charge ou le fichier est corrompu.",
+          "変換に失敗しました：形式がサポートされていないか、ファイルが破損している可能性があります。",
+        ),
       );
     }
 
@@ -151,15 +210,25 @@ export async function runCloudConvert({
     // Smoothly approach ~95% (asymptotic) so the bar never stalls at a fixed percent.
     const elapsedMs = Date.now() - start;
     const pct = 45 + Math.round(50 * (1 - Math.exp(-elapsedMs / 14000)));
-    emitProgress(onProgress, Math.min(pct, 95), 2, zh ? "正在转换中..." : "Converting...");
+    emitProgress(onProgress, Math.min(pct, 95), 2, msgConverting(locale));
   }
 
   if (!downloadUrl) {
-    throw new Error(zh ? "转换超时，请稍后重试或换用更小的文件。" : "Conversion timed out. Try again or use a smaller file.");
+    throw new Error(
+      tr(
+        locale,
+        "Conversion timed out. Try again or use a smaller file.",
+        "转换超时，请稍后重试或换用更小的文件。",
+        "La conversión expiró. Inténtalo de nuevo o usa un archivo más pequeño.",
+        "A conversão expirou. Tente novamente ou use um arquivo menor.",
+        "Délai de conversion dépassé. Réessayez ou utilisez un fichier plus petit.",
+        "変換がタイムアウトしました。後で再試行するか、より小さいファイルをお使いください。",
+      ),
+    );
   }
 
   // ── 4. Download the result DIRECTLY from CloudConvert ──
-  emitProgress(onProgress, 90, 3, zh ? "正在下载结果..." : "Downloading result...");
+  emitProgress(onProgress, 90, 3, msgDownloading(locale));
   throwIfAborted(signal);
 
   let dlRes: Response;
@@ -167,15 +236,25 @@ export async function runCloudConvert({
     dlRes = await fetch(downloadUrl, { signal });
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") throw err;
-    throw new Error(zh ? "下载转换结果失败。" : "Could not download the converted file.");
+    throw new Error(msgDownloadFailed(locale));
   }
   if (!dlRes.ok) {
-    throw new Error(zh ? "下载转换结果失败。" : "Could not download the converted file.");
+    throw new Error(msgDownloadFailed(locale));
   }
 
   const fileBytes = await dlRes.arrayBuffer();
   if (fileBytes.byteLength === 0) {
-    throw new Error(zh ? "下载的转换结果为空,请重试。" : "The converted file came back empty — please try again.");
+    throw new Error(
+      tr(
+        locale,
+        "The converted file came back empty — please try again.",
+        "下载的转换结果为空,请重试。",
+        "El archivo convertido llegó vacío. Inténtalo de nuevo.",
+        "O arquivo convertido veio vazio. Tente novamente.",
+        "Le fichier converti est revenu vide. Veuillez réessayer.",
+        "変換されたファイルが空でした。再試行してください。",
+      ),
+    );
   }
   const { outputMime, outputType } = ROUTE_META[route];
   const blob = new Blob([fileBytes], { type: outputMime });
@@ -216,18 +295,17 @@ async function tryGotenbergConvert({
   onProgress,
 }: CloudConvertRuntimeInput): Promise<PdfRuntimeArtifact | null> {
   if (!GOTENBERG_ROUTES.has(route) || file.size > GOTENBERG_MAX_BYTES) return null;
-  const zh = locale === "zh";
   try {
-    emitProgress(onProgress, 12, 0, zh ? "正在创建转换任务..." : "Creating conversion job...");
+    emitProgress(onProgress, 12, 0, msgCreating(locale));
     const form = new FormData();
     form.append("route", route);
     form.append("file", file, file.name || "source");
-    emitProgress(onProgress, 40, 2, zh ? "正在转换中..." : "Converting...");
+    emitProgress(onProgress, 40, 2, msgConverting(locale));
     // The Gotenberg call is one synchronous request — ramp the bar while it runs.
     let tick = 40;
     const ticker = setInterval(() => {
       tick = Math.min(tick + 4, 90);
-      emitProgress(onProgress, tick, 2, zh ? "正在转换中..." : "Converting...");
+      emitProgress(onProgress, tick, 2, msgConverting(locale));
     }, 700);
     let res: Response | null = null;
     try {
@@ -283,17 +361,16 @@ async function tryOssReverse({
   onProgress,
 }: CloudConvertRuntimeInput): Promise<PdfRuntimeArtifact | null> {
   if (!REVERSE_ROUTES.has(route) || file.size > REVERSE_MAX_BYTES) return null;
-  const zh = locale === "zh";
   try {
-    emitProgress(onProgress, 12, 0, zh ? "正在创建转换任务..." : "Creating conversion job...");
+    emitProgress(onProgress, 12, 0, msgCreating(locale));
     const form = new FormData();
     form.append("route", route);
     form.append("file", file, file.name || "source.pdf");
-    emitProgress(onProgress, 40, 2, zh ? "正在转换中..." : "Converting...");
+    emitProgress(onProgress, 40, 2, msgConverting(locale));
     let tick = 40;
     const ticker = setInterval(() => {
       tick = Math.min(tick + 4, 90);
-      emitProgress(onProgress, tick, 2, zh ? "正在转换中..." : "Converting...");
+      emitProgress(onProgress, tick, 2, msgConverting(locale));
     }, 700);
     let res: Response | null = null;
     try {
@@ -322,27 +399,113 @@ async function tryOssReverse({
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+// ── Shared progress/status messages ──
+function msgCreating(locale: CloudLocale): string {
+  return tr(
+    locale,
+    "Creating conversion job...",
+    "正在创建转换任务...",
+    "Creando la tarea de conversión...",
+    "Criando a tarefa de conversão...",
+    "Création de la tâche de conversion...",
+    "変換タスクを作成しています...",
+  );
+}
+
+function msgUploading(locale: CloudLocale): string {
+  return tr(
+    locale,
+    "Uploading file...",
+    "正在上传文件...",
+    "Subiendo el archivo...",
+    "Enviando o arquivo...",
+    "Envoi du fichier...",
+    "ファイルをアップロードしています...",
+  );
+}
+
+function msgConverting(locale: CloudLocale): string {
+  return tr(
+    locale,
+    "Converting...",
+    "正在转换中...",
+    "Convirtiendo...",
+    "Convertendo...",
+    "Conversion en cours...",
+    "変換しています...",
+  );
+}
+
+function msgDownloading(locale: CloudLocale): string {
+  return tr(
+    locale,
+    "Downloading result...",
+    "正在下载结果...",
+    "Descargando el resultado...",
+    "Baixando o resultado...",
+    "Téléchargement du résultat...",
+    "結果をダウンロードしています...",
+  );
+}
+
+function msgDownloadFailed(locale: CloudLocale): string {
+  return tr(
+    locale,
+    "Could not download the converted file.",
+    "下载转换结果失败。",
+    "No se pudo descargar el archivo convertido.",
+    "Não foi possível baixar o arquivo convertido.",
+    "Impossible de télécharger le fichier converti.",
+    "変換されたファイルをダウンロードできませんでした。",
+  );
+}
+
 function mapCreateError(
   httpStatus: number,
   body: { code?: string; message?: string },
-  zh: boolean,
+  locale: CloudLocale,
 ): string {
   if (httpStatus === 503 || body.code === "NOT_CONFIGURED") {
-    return zh
-      ? "转换服务暂未配置（缺少 CloudConvert API Key）。"
-      : "Conversion service is not configured (missing CloudConvert API key).";
+    return tr(
+      locale,
+      "Conversion service is not configured (missing CloudConvert API key).",
+      "转换服务暂未配置（缺少 CloudConvert API Key）。",
+      "El servicio de conversión no está configurado (falta la clave de API de CloudConvert).",
+      "O serviço de conversão não está configurado (falta a chave de API do CloudConvert).",
+      "Le service de conversion n’est pas configuré (clé d’API CloudConvert manquante).",
+      "変換サービスが設定されていません（CloudConvert API キーがありません）。",
+    );
   }
   if (body.code === "INVALID_PASSWORD") {
-    return zh ? "密码至少需要 4 位。" : "Password must be at least 4 characters.";
+    return tr(
+      locale,
+      "Password must be at least 4 characters.",
+      "密码至少需要 4 位。",
+      "La contraseña debe tener al menos 4 caracteres.",
+      "A senha deve ter pelo menos 4 caracteres.",
+      "Le mot de passe doit comporter au moins 4 caractères.",
+      "パスワードは 4 文字以上で入力してください。",
+    );
   }
-  return body.message || (zh ? "无法启动转换任务，请重试。" : "Could not start the conversion job. Please retry.");
+  return (
+    body.message ||
+    tr(
+      locale,
+      "Could not start the conversion job. Please retry.",
+      "无法启动转换任务，请重试。",
+      "No se pudo iniciar la tarea de conversión. Inténtalo de nuevo.",
+      "Não foi possível iniciar a tarefa de conversão. Tente novamente.",
+      "Impossible de démarrer la tâche de conversion. Veuillez réessayer.",
+      "変換タスクを開始できませんでした。再試行してください。",
+    )
+  );
 }
 
 async function postJson(
   url: string,
   payload: unknown,
   signal: AbortSignal | undefined,
-  zh: boolean,
+  locale: CloudLocale,
 ): Promise<Response> {
   try {
     return await fetch(url, {
@@ -354,7 +517,15 @@ async function postJson(
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") throw err;
     throw new Error(
-      zh ? "网络错误，无法连接到转换服务。" : "Network error — could not reach the conversion service.",
+      tr(
+        locale,
+        "Network error — could not reach the conversion service.",
+        "网络错误，无法连接到转换服务。",
+        "Error de red: no se pudo conectar con el servicio de conversión.",
+        "Erro de rede — não foi possível conectar ao serviço de conversão.",
+        "Erreur réseau — impossible de joindre le service de conversion.",
+        "ネットワークエラー — 変換サービスに接続できませんでした。",
+      ),
     );
   }
 }

@@ -3131,6 +3131,199 @@ const runtimeCopyJa = {
     actions: ["要約をコピー", "概要をダウンロード", "追加の質問をする"],
     emptyMessage: "文書を選択して要約のプレビューを生成します。",
   },
+  ocr: {
+    eyebrow: "AI",
+    title: "スキャン文書を検索可能にし、AI に対応させます。",
+    description:
+      "スキャンした PDF を、明快な OCR のアップロード・処理・出力 UI で、後続の AI ワークフロー向けに準備します。",
+    uploadTitle: "スキャンした PDF をアップロード",
+    uploadDescription:
+      "スキャンや PDF をここにドロップして OCR 抽出を準備します。対応形式・上限・処理状態が UI に表示されます。",
+    formats: "PDF、PNG、JPG",
+    limit: "25 MB まで",
+    cta: "スキャンを選択",
+    outputEyebrow: "結果",
+    outputHeading: "OCR の結果は、隠れたファイルではなくワークスペースに表示されます。",
+    outputDescription:
+      "テキスト抽出・確度・次の AI アクションをまとめて表示し、何が準備できたかを把握できます。",
+    runtimeUploadTitle: "実行時に連動する OCR アップロード",
+    runtimeUploadDescription:
+      "スキャンした PDF や画像を選択して、OCR のアップロード・処理・出力・エラーの UI 状態を確認します。",
+    resultEyebrow: "OCR テキスト",
+    resultTitle: "抽出テキストのプレビュー",
+    resultSummary:
+      "文書は確認の準備ができました。確度の低い箇所は、要約やチャットのワークフローに進む前に明示されます。",
+    keyPoints: [
+      "スキャンしたページから選択可能なテキストを抽出しました。",
+      "確度の低い箇所は確認用に表示され続けます。",
+      "出力は Chat with PDF や AI 要約へそのまま続けられます。",
+    ],
+    actions: ["抽出テキストをコピー", "テキストファイルをダウンロード", "文書を要約"],
+    emptyMessage: "スキャンした文書を選択して OCR 出力を生成します。",
+  },
+  compress: {
+    eyebrow: "最適化",
+    title: "ドキュメントワークスペースを離れずに PDF を圧縮します。",
+    description:
+      "次の文書アクションを見える状態に保ちつつ、メール・ポータル・オフィスでの受け渡し用にファイルサイズを削減します。",
+    primaryCta: "PDF をアップロード",
+    secondaryCta: "Chat with PDF",
+    uploadTitle: "圧縮する PDF をアップロード",
+    uploadDescription:
+      "PDF をここにドロップするか、デバイスからファイルを選択します。UI は上限・状態・出力の見込みを常に表示します。",
+    formats: "PDF",
+    limit: "25 MB まで",
+    cta: "PDF を選択",
+    outputEyebrow: "結果",
+    outputHeading: "圧縮結果は、ただダウンロードするだけでなく確認できるべきです。",
+    outputDescription:
+      "結果エリアは、ファイル削減量・品質チェック・次の AI 文書アクションについて、一貫した DockDocs のパターンを用意します。",
+    runtimeUploadTitle: "実行時に連動する圧縮アップロード",
+    runtimeUploadDescription:
+      "PDF を選択して、圧縮の実行時ロジックを変えずにアップロード・選択済み・処理中・成功・エラーの UI 状態を確認します。",
+    resultEyebrow: "圧縮済み PDF",
+    resultTitle: "オフィスでの受け渡しに対応",
+    resultSummary:
+      "UI は選択中のファイル状態に連動し、ローカルの実行時状態が成功に達した後にのみ圧縮結果を表示します。",
+    keyPoints: [
+      "ファイルが小さくなり、アップロードポータルに対応できます。",
+      "文書の可読性が最優先の品質指標として保たれます。",
+      "後続の AI アクションは結果のそばに配置されます。",
+    ],
+    actions: ["圧縮済み PDF をダウンロード", "Chat with PDF に送る", "続けて AI 要約を実行"],
+    emptyMessage: "PDF を選択して圧縮結果のプレビューを生成します。",
+    faqTitle: "PDF 圧縮に関する質問",
+    faqs: [
+      {
+        question: "DockDocs の PDF 圧縮とは何ですか？",
+        answer:
+          "DockDocs の PDF 圧縮は、より広い AI ドキュメントプラットフォームのワークフローの一部としてファイルサイズを削減します。",
+      },
+      {
+        question: "対応しているファイルは何ですか？",
+        answer:
+          "この UI は PDF のアップロードと PDF の出力に特化しており、上限と処理状態を明確に表示します。",
+      },
+      {
+        question: "圧縮後も続けて作業できますか？",
+        answer:
+          "はい。結果画面では、ダウンロード・コピー・後続の文書ワークフローへユーザーを導きます。",
+      },
+      {
+        question: "モバイルでも使えますか？",
+        answer:
+          "はい。アップロードエリア・上限・出力プレビューは 1 カラムのモバイルレイアウトに収まります。",
+      },
+    ],
+  },
+  pdfToWord: {
+    eyebrow: "変換",
+    title: "PDF を編集可能な Word 向けの文書に変換します。",
+    description:
+      "同じ AI ドキュメントプラットフォーム内で変換を完結し、アップロード上限・出力状態・次のアクションを 1 か所にまとめます。",
+    uploadTitle: "変換する PDF をアップロード",
+    uploadDescription:
+      "PDF をここにドロップして、バックエンドのプロバイダーロジックを変えずに Word 変換ワークフローを準備します。",
+    formats: "PDF",
+    limit: "25 MB まで",
+    cta: "PDF を選択",
+    outputEyebrow: "結果",
+    outputHeading: "変換結果は、何が起きたかを説明すべきです。",
+    outputDescription:
+      "UI は、編集可能なコンテンツ・レイアウト確認・後続の文書アクションについて見込みを示します。",
+    runtimeUploadTitle: "実行時に連動する変換アップロード",
+    runtimeUploadDescription:
+      "PDF を選択して、プロバイダーロジックを変えずに変換のアップロード・処理・成功・エラーの UI 状態を確認します。",
+    resultEyebrow: "Word 出力",
+    resultTitle: "編集可能な文書の準備完了",
+    resultSummary:
+      "変換された文書は確認の準備ができ、レイアウトの注意点と後続のアクションが結果のそばに表示されます。",
+    keyPoints: [
+      "テキストコンテンツが編集用に準備されます。",
+      "受け渡し前にレイアウト確認が見える状態に保たれます。",
+      "ユーザーは要約やチャットのワークフローに続けられます。",
+    ],
+    actions: ["DOCX をダウンロード", "レイアウトの注意点を確認", "AI 要約を実行"],
+    emptyMessage: "PDF を選択して Word 出力のプレビューを生成します。",
+  },
+  pricing: {
+    metadataTitle: "料金",
+    metadataDescription:
+      "AI ドキュメントプラットフォームのワークフロー向け DockDocs の Free・Plus・Pro 料金 UI。",
+    eyebrow: "料金",
+    title: "AI ドキュメントワークスペースのためのプラン。",
+    description:
+      "まずは無料で始め、文書チャット・要約・OCR・変換・チームレビューでより高い上限が必要になったらアップグレードします。",
+    primaryCta: "プランを比較",
+    secondaryCta: "Chat PDF から始める",
+    recommended: "おすすめ",
+    featureColumn: "機能",
+    comparisonEyebrow: "機能比較",
+    comparisonTitle: "ワークスペースの利用範囲を比較。",
+    billingNote:
+      "UI のみ：Stripe、課金 API、利用上限の適用、サブスクリプションの確認は、今回のデザインでは接続されていません。",
+    flowEyebrow: "アップグレードの流れ",
+    flowTitle: "最初のアップロードから、より広い文書ワークスペースへ。",
+    flowDescription:
+      "料金の流れはここでは表示のみです：プランを選び、機能の利用範囲を確認し、アカウントの入口から続行します。",
+    flowSteps: ["実際のファイルから始める", "AI ワークスペースの利用範囲を比較", "アカウントメニューからアップグレード"],
+    plans: [
+      {
+        tier: "FREE",
+        name: "Free",
+        price: "$0",
+        description: "最初のアップロード、軽い AI 文書作業、コアなファイルワークフロー向け。",
+        cta: "無料で始める",
+        href: "/chat-with-pdf/",
+        recommended: false,
+        highlights: [
+          "Chat with PDF MVP",
+          "AI 要約プレビュー",
+          "OCR・圧縮・PDF to Word の入口",
+          "ワークスペースのダッシュボード基盤",
+        ],
+      },
+      {
+        tier: "PLUS",
+        name: "Plus",
+        price: "$5",
+        description: "毎週文書を扱い、より充実した AI ワークフローが必要な個人向け。",
+        cta: "Plus にアップグレード",
+        href: "/account/?plan=PLUS",
+        recommended: true,
+        highlights: [
+          "より高い AI ワークスペース上限",
+          "ナレッジカードと出典の確認",
+          "優先的な変換と OCR のワークフロー",
+          "保存された会話 UX のプレースホルダー",
+        ],
+      },
+      {
+        tier: "PRO",
+        name: "Pro",
+        price: "$20",
+        description: "共有の文書レビューパターンと、より強いワークスペースの可視性が必要なチーム向け。",
+        cta: "Pro にアップグレード",
+        href: "/account/?plan=PRO",
+        recommended: false,
+        highlights: [
+          "チームワークスペース IA のプレースホルダー",
+          "使用量とアクティビティのダッシュボード画面",
+          "高度な文書インテリジェンスのラベル",
+          "プロバイダー状態とコンプライアンスのプレースホルダー",
+        ],
+      },
+    ],
+    comparison: [
+      { feature: "Chat with PDF", values: ["FREE", "PLUS", "PRO"] },
+      { feature: "AI 要約", values: ["FREE", "PLUS", "PRO"] },
+      { feature: "OCR と抽出", values: ["FREE", "PLUS", "PRO"] },
+      { feature: "PDF to Word", values: ["FREE", "PLUS", "PRO"] },
+      { feature: "ナレッジカード", values: ["PLUS プレビュー", "PLUS", "PRO"] },
+      { feature: "ワークスペース分析", values: ["基本", "使用量プレースホルダー", "チームプレースホルダー"] },
+      { feature: "文書コレクション", values: ["基本", "PLUS", "PRO"] },
+    ],
+  },
 };
 
 export function getRuntimeCopy(locale: RuntimeLocale | "es" | "pt" | "fr" | "ja" = defaultLocale) {
