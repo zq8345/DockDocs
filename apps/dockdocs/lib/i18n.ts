@@ -10,14 +10,15 @@ export type Locale = (typeof locales)[number];
 export const routeLocales = ["en", "zh", "es", "pt", "fr", "ja"] as const;
 export type RouteLocale = (typeof routeLocales)[number];
 
-export const allLocales = ["en", "zh", "ja", "ko", "es", "fr", "de", "pt", "it", "ru", "ar", "hi"] as const;
+export const allLocales = ["en", "zh", "zh-Hant", "ja", "ko", "es", "fr", "de", "pt", "it", "ru", "ar", "hi"] as const;
 export type AllLocale = (typeof allLocales)[number];
 
 export const defaultLocale: Locale = "en";
 
 export const localeLabels: Record<AllLocale, string> = {
   en: "English",
-  zh: "中文",
+  zh: "简体中文",
+  "zh-Hant": "繁體中文",
   ja: "日本語",
   ko: "한국어",
   es: "Español",
