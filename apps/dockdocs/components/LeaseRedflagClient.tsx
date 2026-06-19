@@ -9,7 +9,7 @@ import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useMemo, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type RiskLevel = "high" | "medium" | "low";
 type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string; missing?: boolean; unverified?: boolean };
 
@@ -155,6 +155,34 @@ const STR = {
     errPrefix: "Impossible de terminer l'analyse : ",
     retry: "Réessayer",
     privacy: "Votre bail est lu dans votre navigateur ; seul le texte extrait est envoyé pour analyse.",
+  },
+  ja: {
+    title: "賃貸契約レッドフラグ診断",
+    subtitle:
+      "賃貸契約書（住宅・事業用）をアップロードすると、リスクのある条項・不公平な条項・欠けている条項を分かりやすく一覧にします。各項目を赤／黄／緑で表示し、契約書から該当箇所を引用したうえで、署名前に確認すべき点をお伝えします。",
+    proBadge: "PRO",
+    drop: "賃貸契約書 PDF をここにドラッグ＆ドロップ、またはクリックして選択",
+    choose: "賃貸契約書 PDF を選択",
+    extracting: "契約書を読み取り中…",
+    pagesChars: (p: number, c: number) => `${p} ページ · ${c.toLocaleString()} 文字`,
+    noText: "選択可能なテキストが見つかりません。スキャンした契約書ですか？先にOCRをかけてください。",
+    tooLong: `この契約書は ${MAX_CHARS.toLocaleString()} 文字の上限を超えています——先頭部分のみがレビューされます。`,
+    analyze: "レッドフラグをスキャン",
+    analyzing: "レビュー中…",
+    result: (n: number) => `${n}件の指摘を確認`,
+    noRisks: "明確なレッドフラグは見つかりませんでした。契約が公正である保証ではありません——全文を読み、弁護士の確認もご検討ください。",
+    disclaimer: "これは、借主が注意すべき条項を見つける手助けをする自動レビューです。法的助言ではありません。重要な点は弁護士や借主支援団体にご相談ください。",
+    levelHigh: "高", levelMedium: "中", levelLow: "低",
+    quoteLabel: "あなたの契約書より",
+    verifiedBadge: "出典と照合済み",
+    notLocated: "欠落している保護として指摘（引用なし）。",
+    unverifiedQuote: "引用された箇所を契約書内で確認できなかったため、非表示にしました。",
+    whyLabel: "なぜ重要か",
+    suggestionLabel: "確認すべきこと",
+    reset: "別の契約書をスキャン",
+    errPrefix: "スキャンを完了できませんでした: ",
+    retry: "再試行",
+    privacy: "契約書はブラウザ内で読み込まれ、分析には抽出されたテキストのみが送られます。",
   },
 };
 

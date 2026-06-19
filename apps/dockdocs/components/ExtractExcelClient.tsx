@@ -6,7 +6,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type DocType = "invoice" | "quote" | "contract";
 type Dim = { key: string; label: string };
 type Field = { value: string | null; source: string | null };
@@ -78,6 +78,19 @@ const STR = {
     needFile: "Ajoutez au moins un PDF.",
     err: "Une erreur est survenue : ",
     note: "Les champs sont extraits par IA et peuvent nécessiter une vérification rapide. Les valeurs introuvables sont laissées vides — l'IA ne les invente pas.",
+  },
+  ja: {
+    title: "Excelに抽出",
+    subtitle: "請求書・見積・契約書をアップロードして主要項目をきれいな表に抽出し、表計算ファイル（CSV、Excel・Google スプレッドシートで開けます）としてダウンロードできます。AIは各文書に実際にある内容のみを報告します。",
+    drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", folder: "フォルダを選択",
+    choose: "PDFを選択", add: "追加", reading: "ファイルを読み取り中…",
+    type: "文書の種類", invoice: "請求書", quote: "見積", contract: "契約書",
+    extract: "項目を抽出", extracting: "抽出中…", reset: "最初からやり直す",
+    download: "CSVをダウンロード", doc: "文書", notRecognized: "—",
+    files: (n: number) => `${n}件のファイル`,
+    needFile: "PDFを少なくとも1件追加してください。",
+    err: "問題が発生しました: ",
+    note: "項目はAIが抽出するため、簡単な確認が必要な場合があります。見つからない値は空欄のままにし、作り出すことはありません。",
   },
 };
 

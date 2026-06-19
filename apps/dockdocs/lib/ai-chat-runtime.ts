@@ -1,4 +1,9 @@
-export type AiChatLocale = "en" | "zh";
+export type AiChatLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+
+const pick = (
+  locale: AiChatLocale,
+  m: Record<AiChatLocale, string>,
+): string => m[locale];
 
 export type AiChatProgress = {
   progress: number;
@@ -86,9 +91,14 @@ export async function askAiAboutPdf({
   const normalizedQuestion = normalizeText(question);
   if (normalizedQuestion.length < 3) {
     throw new Error(
-      locale === "zh"
-        ? "请输入一个更具体的问题。"
-        : "Ask a more specific question.",
+      pick(locale, {
+        en: "Ask a more specific question.",
+        zh: "请输入一个更具体的问题。",
+        es: "Haz una pregunta más específica.",
+        pt: "Faça uma pergunta mais específica.",
+        fr: "Posez une question plus précise.",
+        ja: "もっと具体的な質問を入力してください。",
+      }),
     );
   }
 
@@ -112,7 +122,14 @@ export async function askAiAboutPdf({
   emitProgress(
     onProgress,
     70,
-    locale === "zh" ? "正在发送提取文本和问题..." : "Sending extracted text and question...",
+    pick(locale, {
+      en: "Sending extracted text and question...",
+      zh: "正在发送提取文本和问题...",
+      es: "Enviando el texto extraído y la pregunta...",
+      pt: "Enviando o texto extraído e a pergunta...",
+      fr: "Envoi du texte extrait et de la question...",
+      ja: "抽出したテキストと質問を送信しています...",
+    }),
   );
 
   const requestBody = {
@@ -135,7 +152,14 @@ export async function askAiAboutPdf({
   emitProgress(
     onProgress,
     100,
-    locale === "zh" ? "回答已准备好。" : "Answer is ready.",
+    pick(locale, {
+      en: "Answer is ready.",
+      zh: "回答已准备好。",
+      es: "La respuesta está lista.",
+      pt: "A resposta está pronta.",
+      fr: "La réponse est prête.",
+      ja: "回答の準備ができました。",
+    }),
   );
 
   return {
@@ -163,27 +187,55 @@ export async function extractAiDocumentText({
   const normalizedPastedText = normalizeText(pastedText ?? "");
   let sourceText = normalizedPastedText;
   let source: AiChatResult["source"] = "pasted-text";
-  let sourceName = locale === "zh" ? "粘贴文本" : "Pasted text";
+  let sourceName = pick(locale, {
+    en: "Pasted text",
+    zh: "粘贴文本",
+    es: "Texto pegado",
+    pt: "Texto colado",
+    fr: "Texte collé",
+    ja: "貼り付けたテキスト",
+  });
 
   throwIfAborted(signal);
 
   if (!sourceText && file) {
     if (!isPdfFile(file)) {
-      throw new Error(locale === "zh" ? "请上传 PDF 文件。" : "Upload a PDF file.");
+      throw new Error(
+        pick(locale, {
+          en: "Upload a PDF file.",
+          zh: "请上传 PDF 文件。",
+          es: "Sube un archivo PDF.",
+          pt: "Envie um arquivo PDF.",
+          fr: "Importez un fichier PDF.",
+          ja: "PDF ファイルをアップロードしてください。",
+        }),
+      );
     }
 
     if (file.size > maxPdfBytes) {
       throw new Error(
-        locale === "zh"
-          ? "Chat with PDF 当前支持最大 10 MB 的 PDF。请先拆分或压缩。"
-          : "Chat with PDF currently supports PDFs up to 10 MB. Split or compress the file first.",
+        pick(locale, {
+          en: "Chat with PDF currently supports PDFs up to 10 MB. Split or compress the file first.",
+          zh: "Chat with PDF 当前支持最大 10 MB 的 PDF。请先拆分或压缩。",
+          es: "Chat with PDF admite actualmente PDF de hasta 10 MB. Divide o comprime el archivo primero.",
+          pt: "O Chat with PDF suporta atualmente PDFs de até 10 MB. Divida ou comprima o arquivo primeiro.",
+          fr: "Chat with PDF prend actuellement en charge les PDF jusqu'à 10 Mo. Divisez ou compressez d'abord le fichier.",
+          ja: "Chat with PDF は現在最大 10 MB の PDF に対応しています。先にファイルを分割または圧縮してください。",
+        }),
       );
     }
 
     emitProgress(
       onProgress,
       12,
-      locale === "zh" ? "正在读取 PDF 文本..." : "Reading PDF text...",
+      pick(locale, {
+        en: "Reading PDF text...",
+        zh: "正在读取 PDF 文本...",
+        es: "Leyendo el texto del PDF...",
+        pt: "Lendo o texto do PDF...",
+        fr: "Lecture du texte du PDF...",
+        ja: "PDF のテキストを読み込んでいます...",
+      }),
     );
     sourceText = await extractPdfText(file, locale, signal, onProgress);
     source = "pdf-text";
@@ -193,9 +245,14 @@ export async function extractAiDocumentText({
   sourceText = normalizeText(sourceText);
   if (sourceText.length < minTextCharacters) {
     throw new Error(
-      locale === "zh"
-        ? "未找到足够文本用于问答。扫描件请先使用 OCR PDF 提取文字，再粘贴到 Chat with PDF。"
-        : "Not enough text was found for chat. For scanned PDFs, run OCR PDF first and paste the extracted text here.",
+      pick(locale, {
+        en: "Not enough text was found for chat. For scanned PDFs, run OCR PDF first and paste the extracted text here.",
+        zh: "未找到足够文本用于问答。扫描件请先使用 OCR PDF 提取文字，再粘贴到 Chat with PDF。",
+        es: "No se encontró suficiente texto para el chat. Para PDF escaneados, ejecuta primero OCR PDF y pega el texto extraído aquí.",
+        pt: "Não foi encontrado texto suficiente para o chat. Para PDFs digitalizados, execute primeiro o OCR PDF e cole o texto extraído aqui.",
+        fr: "Texte insuffisant pour le chat. Pour les PDF numérisés, lancez d'abord OCR PDF, puis collez le texte extrait ici.",
+        ja: "問い合わせに十分なテキストが見つかりませんでした。スキャンされた PDF の場合は、先に OCR PDF を実行し、抽出したテキストをここに貼り付けてください。",
+      }),
     );
   }
 
@@ -350,9 +407,14 @@ async function requestAiChatStream({
           throw new Error(
             typeof event.message === "string"
               ? event.message
-              : locale === "zh"
-                ? "Chat with PDF 接口当前不可用。"
-                : "The Chat with PDF provider is currently unavailable.",
+              : pick(locale, {
+                  en: "The Chat with PDF provider is currently unavailable.",
+                  zh: "Chat with PDF 接口当前不可用。",
+                  es: "El proveedor de Chat with PDF no está disponible en este momento.",
+                  pt: "O provedor do Chat with PDF está indisponível no momento.",
+                  fr: "Le fournisseur Chat with PDF est actuellement indisponible.",
+                  ja: "Chat with PDF プロバイダーは現在利用できません。",
+                }),
           );
         }
       }
@@ -360,9 +422,14 @@ async function requestAiChatStream({
   } catch (error) {
     if (receivedDelta) {
       throw new StreamInterruptedError(
-        locale === "zh"
-          ? "流式回答已中断。请重试。"
-          : "The streaming answer was interrupted. Retry the question.",
+        pick(locale, {
+          en: "The streaming answer was interrupted. Retry the question.",
+          zh: "流式回答已中断。请重试。",
+          es: "La respuesta en streaming se interrumpió. Vuelve a hacer la pregunta.",
+          pt: "A resposta em streaming foi interrompida. Refaça a pergunta.",
+          fr: "La réponse en streaming a été interrompue. Reposez la question.",
+          ja: "ストリーミング回答が中断されました。質問をやり直してください。",
+        }),
       );
     }
 
@@ -378,9 +445,14 @@ async function requestAiChatStream({
 
   if (receivedDelta && !finalPayload) {
     throw new StreamInterruptedError(
-      locale === "zh"
-        ? "流式回答已中断。请重试。"
-        : "The streaming answer was interrupted. Retry the question.",
+      pick(locale, {
+        en: "The streaming answer was interrupted. Retry the question.",
+        zh: "流式回答已中断。请重试。",
+        es: "La respuesta en streaming se interrumpió. Vuelve a hacer la pregunta.",
+        pt: "A resposta em streaming foi interrompida. Refaça a pergunta.",
+        fr: "La réponse en streaming a été interrompue. Reposez la question.",
+        ja: "ストリーミング回答が中断されました。質問をやり直してください。",
+      }),
     );
   }
 
@@ -419,9 +491,14 @@ function assertAiChatPayload(
   if (!response.ok || !payload?.ok || !payload.result?.answer) {
     throw new Error(
       payload?.message ||
-        (locale === "zh"
-          ? "Chat with PDF 接口当前不可用。"
-          : "The Chat with PDF provider is currently unavailable."),
+        pick(locale, {
+          en: "The Chat with PDF provider is currently unavailable.",
+          zh: "Chat with PDF 接口当前不可用。",
+          es: "El proveedor de Chat with PDF no está disponible en este momento.",
+          pt: "O provedor do Chat with PDF está indisponível no momento.",
+          fr: "Le fournisseur Chat with PDF est actuellement indisponible.",
+          ja: "Chat with PDF プロバイダーは現在利用できません。",
+        }),
     );
   }
 
@@ -463,9 +540,14 @@ async function extractPdfText(
       emitProgress(
         onProgress,
         18 + (pageNumber / pagesToRead) * 42,
-        locale === "zh"
-          ? `正在提取第 ${pageNumber} 页文本...`
-          : `Extracting text from page ${pageNumber} of ${pagesToRead}...`,
+        pick(locale, {
+          en: `Extracting text from page ${pageNumber} of ${pagesToRead}...`,
+          zh: `正在提取第 ${pageNumber} 页文本...`,
+          es: `Extrayendo texto de la página ${pageNumber} de ${pagesToRead}...`,
+          pt: `Extraindo texto da página ${pageNumber} de ${pagesToRead}...`,
+          fr: `Extraction du texte de la page ${pageNumber} sur ${pagesToRead}...`,
+          ja: `${pagesToRead} ページ中 ${pageNumber} ページ目のテキストを抽出しています...`,
+        }),
       );
 
       const page = await pdf.getPage(pageNumber);

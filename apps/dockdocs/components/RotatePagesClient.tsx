@@ -7,7 +7,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -55,6 +55,15 @@ const STR = {
     hint: "Cliquez sur une page pour la faire pivoter de 90°. Cliquez à nouveau pour continuer.",
     rotateAll: "Tout pivoter de 90°", apply: "Appliquer et télécharger", working: "Génération du PDF…",
     reset: "Recommencer", none: "Aucune rotation pour l'instant — cliquez sur une page.", err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "ページを回転",
+    subtitle: "PDFをアップロードし、ページをクリックして回転——ダウンロード前に回転の様子を確認できます。横向きのスキャンや横長ページをブラウザ内で修正します。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択", rendering: "ページを描画中…",
+    hint: "ページをクリックすると90°回転します。クリックを続けると回り続けます。",
+    rotateAll: "すべて90°回転", apply: "適用してダウンロード", working: "PDFを生成中…",
+    reset: "最初からやり直す", none: "まだ回転していません——ページをクリックしてください。", err: "問題が発生しました: ",
   },
 };
 
@@ -181,7 +190,7 @@ export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
       {done && (
         <div className="mt-6">
-          <ToolBridge slug="rotate-page" locale={locale} useLocalePrefix={locale !== "en"} />
+          <ToolBridge slug="rotate-page" locale={locale === "ja" ? "en" : locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
       <ToolFaq tool="rotate-page" locale={locale} />

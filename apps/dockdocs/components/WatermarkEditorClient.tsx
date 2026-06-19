@@ -6,7 +6,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type PosKey = "tl" | "tc" | "tr" | "ml" | "c" | "mr" | "bl" | "bc" | "br";
 
 // Anchor as fractions of page width / height (y measured from the BOTTOM, pdf-lib style).
@@ -72,6 +72,17 @@ const STR = {
     pages: "Pages", from: "de", to: "à", apply: "Appliquer et télécharger", working: "Application en cours…",
     reset: "Recommencer", preview: "Aperçu en direct", needText: "Saisissez le texte du filigrane.", needImg: "Choisissez une image.",
     nonLatin: "Le filigrane texte prend en charge pour l'instant les lettres/chiffres/symboles latins.", err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "PDFに透かし",
+    subtitle: "PDFをアップロードし、テキストまたは画像の透かしをデザインしてページ上でライブ表示し、選んだページに押印します。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択", rendering: "プレビューを描画中…",
+    text: "テキスト", image: "画像", wmText: "透かしのテキスト", size: "サイズ", color: "色",
+    chooseImg: "画像を選択", position: "位置", opacity: "不透明度", rotate: "45°回転",
+    pages: "ページ", from: "開始", to: "終了", apply: "適用してダウンロード", working: "押印中…",
+    reset: "最初からやり直す", preview: "ライブプレビュー", needText: "透かしのテキストを入力してください。", needImg: "画像を選択してください。",
+    nonLatin: "テキスト透かしは現在ラテン文字・数字・記号のみ対応しています。", err: "問題が発生しました: ",
   },
 };
 

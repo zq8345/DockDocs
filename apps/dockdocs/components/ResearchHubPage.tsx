@@ -1,7 +1,7 @@
 import { defaultLocale } from "@/lib/i18n";
 import { VerticalHubPage, type VerticalConfig } from "@/components/VerticalHubPage";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 // "Research & academia" professional vertical — a thin config over VerticalHubPage.
 // Honesty gate: every card is a real, shipping tool (ai-summary, chat-with-pdf,
@@ -99,6 +99,23 @@ const researchConfig: VerticalConfig = {
         { slug: "extract-to-excel", label: "Extraire vers Excel", description: "Extrayez les tableaux de données et figures d'un PDF vers un tableur que vous pouvez analyser." },
       ],
       disclaimer: "Ces outils vous aident à lire, rechercher et organiser votre recherche plus vite. Les résumés et réponses de l'IA peuvent manquer de nuance — vérifiez toujours par rapport à la source originale avant de citer ou de vous y fier.",
+    },
+    ja: {
+      eyebrow: "研究・学術向け",
+      heroTitle: "論文・レポート・研究のための AI ドキュメントツール",
+      heroDescription:
+        "長い論文を要点に凝縮し、PDF にその手法や結果を質問し、複数の研究を並べて比較し、スキャンした論文を OCR し、データ表をスプレッドシートに抽出できます——回答や指摘の際には、その根拠となる原文の該当箇所を示すので、引用する前に確認できます。",
+      primary: "論文を要約する",
+      secondary: "論文に質問する",
+      cardsTitle: "研究者向けツール",
+      cards: [
+        { slug: "ai-summary", label: "AI 要約", description: "長い論文やレポートを、主要な発見・手法・要点に凝縮します。" },
+        { slug: "chat-with-pdf", label: "PDF とチャット", description: "論文に手法・結果・定義を質問——回答は出典となった原文の該当箇所を示し、出典と照合できない部分は明示します。" },
+        { slug: "compare", label: "ドキュメント比較", description: "重要な観点で複数の論文や研究を並べて比較します。" },
+        { slug: "ocr-pdf", label: "PDF OCR", description: "スキャンした論文や古い PDF から選択可能なテキストを抽出し、検索と引用を可能にします。" },
+        { slug: "extract-to-excel", label: "Excel に抽出", description: "PDF 内のデータ表や図を、分析できるスプレッドシートに抽出します。" },
+      ],
+      disclaimer: "これらのツールは、研究資料をより速く読み・検索し・整理するのを助けます。AI の要約や回答は細かなニュアンスを見落とすことがあります——引用したり依拠したりする前に、必ず原典と照合して確認してください。",
     },
   },
 };

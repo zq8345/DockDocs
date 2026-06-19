@@ -5,7 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Op = { type: "eq" | "del" | "ins"; text: string };
 
 const STR = {
@@ -68,6 +68,18 @@ const STR = {
     need: "Ajoutez les deux PDF pour comparer.",
     err: "Une erreur est survenue : ",
     note: "Compare le texte extrait phrase par phrase. La mise en forme et les images ne font pas partie de la comparaison.",
+  },
+  ja: {
+    title: "バージョンを比較",
+    subtitle: "元版と改訂版のPDFをアップロードすると、変更点が一目で分かります——追加されたテキストはハイライト、削除されたテキストは取り消し線。すべてブラウザ内で動作します。",
+    original: "元版 (v1)", revised: "改訂版 (v2)",
+    choose: "PDFを選択", reading: "読み取り中…", change: "差し替え",
+    compare: "バージョンを比較", comparing: "比較中…", reset: "最初からやり直す",
+    added: "追加", removed: "削除", unchanged: "テキストの変更は見つかりませんでした。",
+    summary: (a: number, d: number) => `${a}件追加 · ${d}件削除`,
+    need: "比較するには両方のPDFを追加してください。",
+    err: "問題が発生しました: ",
+    note: "抽出テキストを文単位で比較します。書式や画像は比較対象外です。",
   },
 };
 

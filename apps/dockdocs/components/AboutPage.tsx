@@ -8,7 +8,7 @@
 
 import type { ReactNode } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 const content = {
   en: {
@@ -351,6 +351,74 @@ const content = {
     ctaSub: "Ouvrez n'importe quel outil et regardez l'onglet réseau — avec les outils navigateur, rien ne sort.",
     cta1: "Explorer les outils", cta2: "Voir comment fonctionne la confidentialité",
   },
+  ja: {
+    heroEyebrow: "// DockDocs について",
+    heroPre: "あなたの文書は、ほかの誰のものでもなく ",
+    heroAccent: "あなたのもの。",
+    heroSub: "DockDocs のほとんどのツールはブラウザ内で完結します——ファイルは手元から離れないので、私たちに届くことはありません。ローカルが既定であり、切り替える設定ではありません。",
+    heroCaption: "図 0.1 — あなたのファイルと、その置き場所。",
+
+    flowEyebrow: "// ファイルを追う",
+    flowHeading: "ファイルが実際にどこへ行くか。",
+    flowSub: "ほとんどのツールでは、処理はあなたの端末で行われ、ファイルは境界を越えません。",
+    flowDevice: "あなたの端末",
+    flowNet: "インターネット",
+    flowServers: "他社のサーバー",
+    flowZero: "アップロード 0 バイト",
+    flowLeaves: "端末から離れる",
+    flowNoCross: "この線を何も越えない",
+    flowWouldGo: "通常ならファイルが向かう先",
+    flowStays: "あなたの端末に留まる",
+    flowCaption: "図 0.2 — ほとんどのツールで、ファイルは境界を越えません。",
+
+    proofEyebrow: "// 私たちを信じなくていい",
+    proofHeading: "信じないで。F12 を押して。",
+    proofSub: "ブラウザのネットワークタブを開いてブラウザ内ツールを実行すれば、アップロードがゼロなのが見えます。Wi-Fi を切っても動きます。",
+    proofZero: "0 リクエスト · 0 B 転送",
+    proofOffline: "Wi-Fi を切っても動作。",
+    proofCallout: "これが証拠のすべて",
+    proofCaption: "図 0.3 — 実際のブラウザ内ツールをライブ取得。何も外に出ません。",
+
+    tableEyebrow: "// 平たく言うと",
+    tableHeading: "やること。決してやらないこと。",
+    tableSub: "細かい注釈はなし。左のリストが製品のすべて、右のリストが私たちが断固やらないこと。",
+    doHead: "やること",
+    neverHead: "やらないこと",
+    doRows: ["ファイルをブラウザ内で処理", "クラウドの一時ファイルを即時削除", "クラウド処理は事前に明示", "AI回答の根拠を提示——できない時はそう言う", "アカウントなしで開始できる"],
+    neverRows: ["あなたの文書を保存", "あなたのファイルで自社モデルを学習", "データの販売・共有", "解約させないメール手続きの罠", "こっそりアップロード"],
+    tableCaption: "図 0.4 — 約束のすべて。",
+
+    cloudEyebrow: "// クラウドについて正直に",
+    cloudHeading: "クラウドを使うツールは、そう明記します。",
+    cloudSub: "一部のツール(Office変換、大規模OCR、AIチャット)はサーバーを必要とします——開始前に明示し、転送中は暗号化、直後に削除します。AIが質問に答えたり指摘をする際は、その根拠となる原文箇所を——あなたのファイルから引用し実在を確認したうえで——示し、たどれない場合は出典を作らず正直に伝えます。",
+    cloudSteps: ["事前に明示", "転送中は暗号化", "処理", "コピーを削除"],
+    cloudNotKept: "保持しない",
+    aiSummary: "AI回答",
+    aiCite: "原文",
+    cloudCaption: "図 0.5 — クラウド処理は明示・削除され、AI回答は追跡可能。",
+
+    statsEyebrow: "// 大切な数字",
+    statsHeading: "大切な数字は、ゼロ。",
+    statsSub: "独立して構築——投資家ではなく、使う人々に支えられています。データを収集したり、何が何でも成長を追う圧力はありません。",
+    stats: [
+      { n: "0", l: "ブラウザ内ツールで保存するファイル", z: true },
+      { n: "0", l: "自社モデルの学習に使うファイル", z: true },
+      { n: "$0", l: "開始費用——アカウント不要", z: true },
+      { n: "~50", l: "PDF・AIツール", z: false },
+    ],
+    relPoints: [
+      { t: "決済", b: "ライセンスを持つ販売代行(Merchant of Record)の Creem 経由——私たちがカード情報を見ることはありません。" },
+      { t: "返金", b: "7日間返金保証、いつでも解約可能。" },
+      { t: "囲い込みなし", b: "データはあなたのもの。いつでもエクスポート可能。" },
+      { t: "壊れにくい", b: "ブラウザ内ツールは元からあなたの端末で動作——人質に取られません。" },
+    ],
+    statsCaption: "図 0.6 — 何を保存し、何を課金し、誰に対して責任を負うか。",
+
+    ctaEyebrow: "// 試す",
+    ctaHeading: "ツールを試す。アップロードなし。アカウントなし。",
+    ctaSub: "どれかツールを開いてネットワークタブを見てください——ブラウザ内ツールなら、何も外に出ません。",
+    cta1: "ツールを見る", cta2: "プライバシーの仕組みを見る",
+  },
 } as const;
 
 const Check = () => (
@@ -386,14 +454,14 @@ function Figure({ children, className = "", glow = "28%" }: { children: ReactNod
 const PANEL = "rounded-xl border border-[color:var(--line)] bg-black/20 p-5";
 
 export function AboutPage({ locale = "en" }: { locale?: Locale }) {
-  const zh = locale === "zh";
+  const zh = locale === "zh" || locale === "ja";
   const c = content[locale] ?? content.en;
   const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
   const h2 = "text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]";
   const sub = "mt-4 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]";
   const cap = "mt-4 font-mono text-[12px] text-[color:var(--faint)]";
   const shell = "mx-auto max-w-5xl px-5 py-24 sm:px-6 sm:py-28 lg:px-8";
-  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : slug);
+  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : slug);
 
   return (
     <main>

@@ -8,7 +8,7 @@ import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Mode = "merge" | "split";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; parts?: number; msg?: string };
 
@@ -84,6 +84,20 @@ const STR = {
     needTwo: "Ajoutez au moins 2 PDF à fusionner.", needFile: "Ajoutez au moins un PDF.",
     note: "La fusion conserve l'ordre de chargement. La division découpe chaque PDF en blocs de N pages. Tout reste sur votre appareil.",
     err: "Une erreur s'est produite : ",
+  },
+  ja: {
+    title: "PDF を一括で分割 / 結合",
+    titleSplit: "一括分割",
+    subSplit: "フォルダ内の各 PDF を N ページごとの小さなファイルに分割——すべてブラウザ内で処理し、ダウンロード用にまとめます。何もアップロードされません。",
+    subtitle: "フォルダ内の PDF すべてを 1 つに結合、または各 PDF を小さなファイルに分割——すべてブラウザ内で処理し、ダウンロード用にまとめます。何もアップロードされません。",
+    drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
+    merge: "1 つに結合", split: "個別に分割",
+    every: "ファイルごとのページ数", order: "ファイルは表示順に結合されます。",
+    run: "実行", running: "処理中", dlMerge: "結合した PDF をダウンロード", dlSplit: "ZIPをダウンロード", reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max} ファイル`, parts: (n: number) => `${n} 個`, failed: "失敗",
+    needTwo: "結合するには PDF を 2 つ以上追加してください。", needFile: "PDF を 1 つ以上追加してください。",
+    note: "結合はアップロード順を保持します。分割は各 PDF を N ページ単位のまとまりに分けます。すべてがお使いのデバイス内で完結します。",
+    err: "問題が発生しました: ",
   },
 };
 

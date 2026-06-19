@@ -5,7 +5,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type PosKey = "tl" | "tc" | "tr" | "bl" | "bc" | "br";
 type Fmt = "n" | "page" | "slash" | "of";
 
@@ -68,6 +68,17 @@ const STR = {
     fmtN: "1", fmtPage: "Page 1", fmtSlash: "1 / N", fmtOf: "1 sur N",
     apply: "Ajouter les numéros et télécharger", working: "Numérotation…", reset: "Recommencer", preview: "Aperçu en direct",
     err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "ページ番号を追加",
+    subtitle: "PDFをアップロードし、番号を入れる位置・書式・対象ページを選びます——ダウンロード前にライブプレビューで確認できます。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択", rendering: "プレビューを描画中…",
+    position: "位置", margin: "余白", small: "小", medium: "中", large: "大",
+    startAt: "開始番号", format: "書式", pages: "ページ", from: "開始", to: "終了",
+    fmtN: "1", fmtPage: "1 ページ", fmtSlash: "1 / N", fmtOf: "N 中 1",
+    apply: "番号を追加してダウンロード", working: "番号付け中…", reset: "最初からやり直す", preview: "ライブプレビュー",
+    err: "問題が発生しました: ",
   },
 };
 

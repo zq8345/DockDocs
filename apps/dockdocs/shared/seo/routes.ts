@@ -8,11 +8,26 @@ import {
 } from "@/lib/i18n";
 
 export type SeoRoute = {
+  slug: RouteSlug;
   path: string;
   name: string;
   changeFrequency: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority: number;
 };
+
+// ja ships natively on tool pages, the home page, pricing/sitemap/ai-workspace,
+// and the info pages (about/help/faq/contact/privacy-policy/terms) — all of which
+// have real Japanese copy. The GEO guide hubs, the blog index/articles, and
+// programmatic-GEO still render an English fallback for ja, so they stay out of
+// the ja index + sitemap. Single source of truth shared by the catch-all's
+// noindex gate and the sitemap, so the two can't drift apart.
+export function isJaNativeRoute(slug: string): boolean {
+  if (slug === "") return true; // home
+  if ((toolSlugs as readonly string[]).includes(slug)) return true;
+  if (slug === "pricing" || slug === "sitemap" || slug === "ai-workspace") return true;
+  if ((infoPageSlugs as readonly string[]).includes(slug) && slug !== "blog") return true;
+  return false;
+}
 
 export const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://dockdocs.app";
@@ -169,6 +184,7 @@ export const indexableRoutes: SeoRoute[] = routeSlugs
   .map((slug) => {
     const meta = metaForSlug(slug);
     return {
+      slug,
       path: pathForSlug(slug),
       name: meta.name,
       changeFrequency: meta.changeFrequency,

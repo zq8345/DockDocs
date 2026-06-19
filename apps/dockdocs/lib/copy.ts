@@ -2757,9 +2757,316 @@ export const runtimeCopy = {
 
 // Japanese POC: blocks present here override English via the shallow merge in
 // getRuntimeCopy; everything else falls back to English. Expand as ja grows.
-const runtimeCopyJa: Partial<typeof runtimeCopy.en> = {};
+// NOTE: runtimeCopy is `as const`, so a `Partial<typeof runtimeCopy.en>` annotation
+// would demand the exact English string literals and reject any translation. The
+// override is instead structural; getRuntimeCopy asserts the merged shape back to
+// the canonical runtime type.
+const runtimeCopyJa = {
+  shell: {
+    header: {
+      aria: "DockDocs ナビゲーション",
+      homeAria: "DockDocs ホーム",
+      tagline: "AIドキュメントプラットフォーム",
+      tools: "ツール",
+      menu: "メニュー",
+      closeMenu: "メニューを閉じる",
+      featureMenu: "機能メニュー",
+      utilityMenu: "アカウントとリンク",
+      free: "無料",
+      plus: "PLUS",
+      comingSoon: "近日公開",
+    },
+    nav: [
+      { name: "AI", href: "/#ai" },
+      { name: "変換", href: "/pdf-to-word", slug: "pdf-to-word" },
+      { name: "最適化", href: "/compress-pdf", slug: "compress-pdf" },
+      { name: "ダッシュボード", href: "/dashboard", slug: "dashboard" },
+      { name: "マイチャット", href: "/my-chats" },
+      { name: "料金", href: "/pricing" },
+      { name: "アカウント", href: "/account" },
+    ],
+    brand: {
+      aria: "ブランドナビゲーション",
+      products: [
+        {
+          name: "DockDocs",
+          href: "https://dockdocs.app",
+          description: "ファイル・要約・変換・確認のためのAIドキュメントワークスペース。",
+        },
+        {
+          name: "DockIMG",
+          href: "https://dockimg.app",
+          description: "画像の編集・クリーンアップ・変換のためのAI画像ワークスペース。",
+        },
+        {
+          name: "DockSEO",
+          href: "https://dockseo.app",
+          description: "スニペット・メタデータ・コンテンツ確認のための検索ワークスペース。",
+        },
+        {
+          name: "DockText",
+          href: "https://docktext.app",
+          description: "整文・要約・書式整えのためのAIライティングワークスペース。",
+        },
+      ],
+    },
+    footer: {
+      aria: "フッターナビゲーション",
+      copyrightPrefix: "(c)",
+      links: [
+        { name: "関連ワークスペース", href: "/#related-tools" },
+        { name: "DockDocs", href: "/" },
+        { name: "プライバシーポリシー", href: "/privacy-policy" },
+        { name: "利用規約", href: "/terms" },
+        { name: "サイトマップ", href: "/sitemap" },
+      ],
+    },
+    relatedTools: {
+      title: "関連ワークスペース",
+      description:
+        "デスクトップでもモバイルでも一貫したワークスペースで、Dock 製品間を行き来できます。",
+    },
+    account: {
+      account: "アカウント",
+      myChats: "マイチャット",
+      signedIn: "ログイン中",
+      logout: "ログアウト",
+      continueGoogle: "Google で続行",
+      email: "メール",
+      password: "パスワード",
+      login: "ログイン",
+      signedOutTitle: "ワークスペースアカウント",
+      signedOutDescription: "ログインすると、アカウント・アップグレード・ワークスペースの入口を1つのメニューにまとめられます。",
+      upgrade: "アップグレード",
+      currentPlan: "無料ワークスペース",
+      actionFailed: "アカウント操作に失敗しました。",
+    },
+    utility: {
+      accountTitle: "アカウント",
+      languageTitle: "言語",
+      linksTitle: "会社",
+      about: "会社概要",
+      blog: "ブログ",
+    },
+    toolTemplate: {
+      eyebrow: "AIドキュメントプラットフォーム",
+      schemaSlogan: "実際のファイル作業のためのAIドキュメントプラットフォーム",
+    },
+    legal: {
+      privacy: "プライバシーポリシー",
+      terms: "利用規約",
+      sitemap: "サイトマップ",
+    },
+    trust: {
+      localFirst: "ローカル優先",
+      exportReady: "エクスポート対応",
+    },
+    metadata: {
+      title: "DockDocs AIドキュメントワークスペース",
+      description: "PDF・Officeファイル・文章整え・文書ワークフローのためのAIドキュメントツール。",
+    },
+  },
+  common: {
+    upload: {
+      label: "アップロード",
+      dragDrop: "ドキュメントをドラッグ＆ドロップ",
+      selectedDescription: "ファイルが選択され、次の処理ステップの準備ができました。",
+      supported: "対応形式",
+      limit: "上限",
+      processing: "処理中",
+      successMessage: "実行UIの準備ができ、下に出力が表示されます。",
+      states: {
+        empty: "ファイル待ち",
+        idle: "アップロード可能",
+        selected: "ファイル選択済み",
+        processing: "ドキュメントを処理中",
+        success: "ドキュメント準備完了",
+        error: "要確認",
+      },
+    },
+    result: {
+      states: {
+        empty: "結果なし",
+        processing: "生成中",
+        success: "完了",
+        error: "エラー",
+      },
+      resultUnavailable: "結果は利用できません",
+      waitingForOutput: "出力を待機中",
+      runtimeError: "実行時にエラー状態が返されました。",
+      processingMessage:
+        "ドキュメントを処理しています。準備ができ次第、ここに出力が表示されます。",
+      keyPoints: "要点",
+      nextActions: "次のアクション",
+      copy: "コピー",
+      download: "ダウンロード",
+      startChat: "チャットを開始",
+    },
+    errors: {
+      unsupportedFile: "サポートされていないファイル形式です。対応形式:",
+      fileTooLarge: "ファイルが25 MBのUI上限を超えています。",
+    },
+  },
+  chat: {
+    heroEyebrow: "PDFと対話 MVP",
+    heroTitle: "PDFについて根拠に基づいた質問ができます。",
+    heroDescription:
+      "テキストベースのPDFをアップロードし、抽出された出典の状態を確認してから、文書中心のAIワークスペースで的を絞った質問をしましょう。",
+    primaryCta: "チャットを開く",
+    secondaryCta: "PDFを圧縮",
+    metrics: [
+      { value: "12", label: "ページ上限" },
+      { value: "40k", label: "テキスト上限" },
+      { value: "Live", label: "AI呼び出し" },
+    ],
+    workspaceLabel: "DockDocs ワークスペース",
+    workspaceTitle: "PDFと対話",
+    mvp: "MVP",
+    document: "文書",
+    choosePdf: "PDFを選択",
+    uploadHelp: "プロバイダーへのリクエスト前に、テキストはローカルで抽出されます。",
+    documentStatus: "文書の状態",
+    untitled: "無題の文書",
+    initialStatus: "PDFをアップロードして開始します。",
+    pdfRequiredStatus: "PDFが必要です。",
+    pdfRequiredError: "PDFファイルを選択してください。",
+    fileLimitStatus: "ファイルサイズの上限を超えています。",
+    fileLimitError: "25 MBまでのPDFを選択してください。",
+    readingStatus: "ブラウザ内でPDFのテキストを読み取り中。",
+    noTextStatus: "選択可能なテキストが見つかりません。",
+    noTextError: "このPDFには読み取り可能なテキストがありません。チャットを実行する前にOCRが必要です。",
+    extractionFailedStatus: "PDFのテキスト抽出に失敗しました。",
+    extractionFailedError: "このPDFを読み取れません。",
+    readyStatus: "準備完了:{pages}ページ{plural}から{characters}文字を抽出しました。",
+    sourceWaiting: "出典テキストを待機中",
+    sourceReady: "{characters}文字の準備完了",
+    checks: ["選択可能なテキストを抽出", "プロバイダーの参照を受信", "結果を生成"],
+    collectionsLabel: "コレクション",
+    collections: [
+      { name: "取締役会資料", count: "4文書" },
+      { name: "契約書", count: "9文書" },
+      { name: "調査メモ", count: "6文書" },
+    ],
+    historyLabel: "会話履歴",
+    defaultHistory: ["更新リスクを確認", "フォローアップの行動を抽出", "ポリシー条項を比較"],
+    aiChat: "AIチャット",
+    conversationTitle: "PDFについて質問する",
+    conversationDescription:
+      "文書に関する質問、要約、参照、次のアクションのための、根拠に基づいたAIワークスペース。",
+    messages: "メッセージ",
+    runtime: "実行時間",
+    asking: "質問中",
+    starterTitle: "根拠のある質問から始める",
+    starterDescription:
+      "選択可能なテキストを含むPDFをアップロードし、ファイルに基づいた事実、日付、条項、リスク、行動項目を尋ねましょう。",
+    suggestedQuestions: [
+      "主要な意思決定ポイントを要約する",
+      "言及されているリスクや障害は何ですか？",
+      "日付、担当者、行動項目を一覧にする",
+    ],
+    knowledgeCards: [
+      {
+        title: "要約",
+        description: "抽出された文書テキストからエグゼクティブ向けの概要を生成します。",
+        prompt: "このPDFのエグゼクティブサマリーを作成してください。",
+      },
+      {
+        title: "リスク",
+        description: "不明確な条項、障害、義務、日付を洗い出します。",
+        prompt: "このPDFのリスク、障害、義務を特定してください。",
+      },
+      {
+        title: "アクション",
+        description: "文書の内容を担当者、期限、次のステップに変換します。",
+        prompt: "このPDFから行動項目、担当者、日付を一覧にしてください。",
+      },
+    ],
+    you: "あなた",
+    assistant: "DockDocs",
+    questionLabel: "質問",
+    placeholder: "このPDFについて質問する",
+    ask: "送信",
+    sourceReferences: "出典の参照",
+    documentText: "文書テキスト",
+    notExtracted: "未抽出",
+    pageContext: "ページの文脈",
+    firstPages: "最初の{pages}ページ",
+    pageIndexed: "{pages}ページ{plural}をインデックス化",
+    references: "参照",
+    citationCount: "{count}件の引用{plural}",
+    providerResponseReceived: "プロバイダーの応答を受信しました",
+    providerCitations: "利用可能な場合のプロバイダー引用",
+    provider: "プロバイダー",
+    waitingForAi: "AIの応答を待機中",
+    knowledgeCardsLabel: "ナレッジカード",
+    suggestedActions: "推奨アクション",
+    sideActions: ["要約する", "リスクを探す", "アクションを作成"],
+    groundedTitle: "根拠のある回答のみ",
+    groundedDescription:
+      "チャットリクエストは抽出された文書テキストを文脈として使用します。PDFに回答が含まれていない場合、プロバイダーはその旨を伝えるべきです。",
+    providerFailed: "チャットプロバイダーへのリクエストに失敗しました。",
+    providerEmpty: "チャットプロバイダーから回答が返されませんでした。",
+    providerUnavailable: "チャットプロバイダーのエンドポイントが利用できません。",
+    unableToAnswer: "回答できません:",
+    faqTitle: "PDFと対話に関する質問",
+    faqs: [
+      {
+        question: "DockDocs のPDFと対話とは何ですか？",
+        answer:
+          "DockDocs のPDFと対話では、PDFをアップロードし、ブラウザ内で読み取り可能なテキストを抽出し、設定されたAIプロバイダーを通じて質問できます。",
+      },
+      {
+        question: "AIプロバイダーなしで回答しますか？",
+        answer:
+          "いいえ。プロバイダーのエンドポイントまたはAPIキーが利用できない場合、ページはシミュレートされた回答ではなく実際のエラーを返します。",
+      },
+      {
+        question: "スキャンしたPDFに対応していますか？",
+        answer:
+          "このMVPは選択可能なPDFテキストを読み取ります。スキャンしたPDFは、その内容についてチャットが回答する前にOCRが必要です。",
+      },
+      {
+        question: "静的エクスポートに対応していますか？",
+        answer:
+          "はい。ページは静的エクスポートに対応しており、プロバイダー呼び出しはデプロイ時に Netlify Function を経由して処理されます。",
+      },
+    ],
+  },
+  summary: {
+    eyebrow: "AI",
+    title: "文書を意思決定と次のアクションへ要約します。",
+    description:
+      "長いPDFやOfficeファイルを、確認可能なAI出力に変換します:要約、要点、エンティティ、推奨される次のステップ。",
+    primaryCta: "文書をアップロード",
+    secondaryCta: "チャットを開始",
+    uploadTitle: "AI要約用にアップロード",
+    uploadDescription:
+      "ここに文書をドロップすると、上限と状態が見える形でAI要約ワークフローを準備します。",
+    formats: "PDF、DOC、DOCX",
+    limit: "25 MBまで",
+    cta: "文書を選択",
+    outputEyebrow: "結果",
+    outputHeading: "確認とフォローアップを促す要約出力。",
+    outputDescription:
+      "結果ビューは単なる成功状態よりも読みやすいAI出力を優先し、次のワークフローをワンクリックの近さに保ちます。",
+    runtimeUploadTitle: "実行時に連動する要約アップロード",
+    runtimeUploadDescription:
+      "文書を選択して、要約の空・選択済み・処理中・成功・エラーのUI状態を確認します。",
+    resultEyebrow: "AI要約",
+    resultTitle: "取締役会レポートの要約",
+    resultSummary:
+      "直近四半期は売上が増加しましたが、次の業務レビュー前に、カスタマーサポート量とベンダー更新リスクのフォローアップが必要です。",
+    keyPoints: [
+      "エンタープライズ顧客全体でサポート量が増加しました。",
+      "2件のベンダー更新に担当者の確認が必要です。",
+      "予算の意思決定は、不足している財務インプットによって滞っています。",
+    ],
+    actions: ["要約をコピー", "概要をダウンロード", "追加の質問をする"],
+    emptyMessage: "文書を選択して要約のプレビューを生成します。",
+  },
+};
 
 export function getRuntimeCopy(locale: RuntimeLocale | "es" | "pt" | "fr" | "ja" = defaultLocale) {
-  if (locale === "ja") return { ...runtimeCopy.en, ...runtimeCopyJa };
+  if (locale === "ja") return { ...runtimeCopy.en, ...runtimeCopyJa } as unknown as typeof runtimeCopy.en;
   return runtimeCopy[locale] ?? runtimeCopy.en;
 }

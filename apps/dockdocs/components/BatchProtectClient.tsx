@@ -8,7 +8,7 @@ import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-t
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
 const MAX_FILES = 30;
@@ -74,6 +74,18 @@ const STR = {
     needFile: "Ajoutez au moins un PDF.", needPw: "Saisissez un mot de passe valide (4 à 32 : lettres, chiffres et trait de soulignement).",
     note: "Chaque PDF nécessitera ce mot de passe pour être ouvert. Les PDF déjà chiffrés sont ignorés. Tout reste sur votre appareil.",
     err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "一括暗号化",
+    subtitle: "パスワードを1つ設定して、フォルダ内のPDFをまとめてロック——各ファイルはブラウザ内で暗号化され、1つのZIPにまとめられます。アップロードは一切ありません。",
+    drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
+    pw: "パスワード", pwPlaceholder: "ファイルを開くためのパスワード", show: "表示", hide: "非表示",
+    pwRule: "4～32文字：英字、数字、アンダースコア（_）。",
+    run: "すべて暗号化", running: "暗号化中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max}件`, done: "暗号化済み", failed: "失敗",
+    needFile: "PDFを少なくとも1つ追加してください。", needPw: "有効なパスワードを入力してください（4～32：英字、数字、アンダースコア）。",
+    note: "各PDFを開くにはこのパスワードが必要になります。すでに暗号化されたPDFはスキップされます。すべてデバイス内で完結します。",
+    err: "問題が発生しました: ",
   },
 };
 

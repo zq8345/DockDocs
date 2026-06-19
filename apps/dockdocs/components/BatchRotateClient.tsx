@@ -8,7 +8,7 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Angle = 90 | 180 | 270;
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
@@ -69,6 +69,17 @@ const STR = {
     need: "Ajoutez au moins un PDF.",
     note: "Chaque page de chaque PDF est pivotée selon l'angle choisi. Les PDF chiffrés sont ignorés. Tout reste sur votre appareil.",
     err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "一括回転",
+    subtitle: "横向きや上下逆のスキャンが入ったフォルダを一度に修正——各 PDF のすべてのページを回転し、1 つの ZIP にまとめます。すべてブラウザ内で処理され、何もアップロードされません。",
+    drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
+    rotate: "回転角度",
+    run: "すべて回転", running: "回転中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max} ファイル`, done: "回転済み", failed: "失敗",
+    need: "PDF を 1 つ以上追加してください。",
+    note: "各 PDF のすべてのページが選択した角度で回転されます。暗号化された PDF はスキップされます。すべてがお使いのデバイス内で完結します。",
+    err: "問題が発生しました: ",
   },
 };
 

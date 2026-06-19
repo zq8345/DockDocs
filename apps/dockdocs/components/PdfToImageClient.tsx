@@ -6,7 +6,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Fmt = "jpg" | "png";
 type Pg = { idx: number; thumb: string };
 
@@ -65,6 +65,17 @@ const STR = {
     all: "Tout sélectionner", none: "Ne rien sélectionner", format: "Format",
     convert: "Convertir et télécharger", working: "Conversion en cours…", reset: "Recommencer",
     needOne: "Sélectionnez au moins une page.", err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "PDFを画像に",
+    subtitle: "PDFをアップロードし、必要なページを選び、JPGまたはPNGを選択してダウンロード——変換前にすべてのページを確認して選択できます。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択", rendering: "ページを描画中…",
+    hint: "ページをクリックして含める/除外を切り替えます。選択したページが変換されます。",
+    selected: (n: number, t: number) => `${t}ページ中${n}ページを選択`,
+    all: "すべて選択", none: "選択を解除", format: "形式",
+    convert: "変換してダウンロード", working: "変換中…", reset: "最初からやり直す",
+    needOne: "少なくとも1ページを選択してください。", err: "問題が発生しました: ",
   },
 };
 

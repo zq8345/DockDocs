@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { navCategories } from "@/components/Header";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Item = { name: string; slug: string };
 
 const COPY = {
@@ -208,6 +208,46 @@ const COPY = {
     cite: "source",
     figCaption: "Fig 0.1 — quand l'IA répond, elle montre le passage derrière — et signale ce qu'elle ne peut pas tracer. Vérifiez d'un clic.",
   },
+  ja: {
+    eyebrow: "// プライベート・検証可能なドキュメントAI",
+    heroA: "あらゆる文書を読み解く。",
+    heroB: "すべての回答に根拠を。",
+    heroSub: "約50のPDFツールがブラウザ内で動作。AIが文書を読み・比較・抽出し、見つけた内容の根拠となる原文箇所まで示します。",
+    primary: "無料で使う",
+    secondary: "プライバシーの仕組みを見る",
+    proof: [{ t: "ブラウザ内で処理" }, { g: "0", t: " ファイルのアップロード" }, { t: "回答は根拠を提示" }, { t: "登録不要" }],
+    findEyebrow: "// ツールを探す",
+    findHeading: "ツールを選んで、ワンクリックで開始。",
+    capSub: "約50のPDFツールを一か所に——変換・整理・署名・墨消し・OCR——その多くはブラウザ内でローカルに動作します。",
+    searchPlaceholder: "約50のツールを検索——圧縮、結合、署名…",
+    searchNoResults: "一致するツールがありません——別の語を試すか、すべて表示してください。",
+    fig2Caption: "図 0.2 — 約50ツール、4つの入口。",
+    aiEyebrow: "// 根拠を示すAI",
+    aiHeading: "根拠を示すAI。",
+    aiSub: "どんな文書にも質問できます。AIは回答や指摘の根拠となる原文箇所を示し、たどれない場合は出典を作らず正直に伝えます。比較・抽出・要約。",
+    aiCta: "PDFとチャット",
+    aiChips: ["比較", "Excelに抽出", "要約", "18言語に翻訳"],
+    fig3Caption: "図 0.3 — 根拠ある回答が、正確な原文まで辿れる。",
+    jobsEyebrow: "// あなたの代わりにできること",
+    jobsHeading: "数時間ではなく、数分で。",
+    fig4Caption: "図 0.4 — 日常の4つの作業が、数時間ではなく数分に。",
+    browseAll: "すべてのツールを見る",
+    more: (n: number) => `他${n}件`,
+    tools: "ツール",
+    ctaEyebrow: "// 試してみる",
+    ctaHeadA: "あらゆる文書を読み解く。",
+    ctaHeadB: "すべての回答に根拠を。",
+    ctaSub: "約50のツール、根拠を示すAI、アップロードなし。無料で開始——登録不要。",
+    viewPricing: "料金を見る",
+    qaQuestion: "第3四半期の売上はどれくらい伸びましたか？",
+    qaGrounded: "根拠ある回答",
+    qaAnswer: "第3四半期の売上は前年比23%増で、主にアジア太平洋が牽引しました。",
+    qaSourcesLabel: "根拠",
+    qaSnippets: ["売上 前年比+23%", "APACが主な牽引役"],
+    aiSummary: "AI要約",
+    cite: "原文",
+    figCaption: "図 0.1 — AIが回答するとき、その根拠となる原文を示し——たどれない箇所は正直に明示します。ワンクリックで確認。",
+  },
 } as const;
 
 // category icons (nav order: 0 PDF · 1 Batch · 2 AI · 3 Profession)
@@ -327,11 +367,11 @@ function MiniThumbs() {
 function MiniExtract({ label, locale }: { label: string; locale: Locale }) {
   const { start, stop, lineCls } = useLineReveal(3);
   const lines = [
-    locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : "Revenue +23% YoY",
-    locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : "APAC is the main driver",
-    locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : "Gross margin 41%",
+    locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : "Revenue +23% YoY",
+    locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : "APAC is the main driver",
+    locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : "Gross margin 41%",
   ];
-  const citeLabel = locale === "zh" ? "已溯源" : locale === "es" ? "citado" : locale === "pt" ? "citado" : locale === "fr" ? "cité" : "cited";
+  const citeLabel = locale === "zh" ? "已溯源" : locale === "es" ? "citado" : locale === "pt" ? "citado" : locale === "fr" ? "cité" : locale === "ja" ? "引用済み" : "cited";
   return (
     <div className="flex items-center gap-2.5" onMouseEnter={start} onMouseLeave={stop}>
       <div className="relative flex h-16 w-12 flex-col gap-1 overflow-hidden rounded-md border border-[color:var(--line)] p-1.5">
@@ -418,32 +458,36 @@ const SCENARIOS = [
     zh: ["比报价，选最优", "开 3 个文件抄进表格 · 约 1 小时", "带出处的推荐 · 1 分钟"],
     es: ["Compara presupuestos, elige el mejor", "3 archivos a una hoja · ~1 h", "una elección con fuentes · 1 min"],
     pt: ["Compare orçamentos, escolha o melhor", "3 arquivos em uma planilha · ~1h", "uma escolha com fontes · 1 min"],
-    fr: ["Comparez des devis, choisissez le meilleur", "3 fichiers dans un tableau · ~1h", "un choix documenté · 1 min"] },
+    fr: ["Comparez des devis, choisissez le meilleur", "3 fichiers dans un tableau · ~1h", "un choix documenté · 1 min"],
+    ja: ["見積もりを比較し、最適を選ぶ", "3ファイルを表に書き写す · 約1時間", "根拠つきの選定 · 1分"] },
   { icon: <path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM13 3v4h4M8.5 14l2 2 4-4" />, href: "/redline",
     en: ["Catch the traps in a contract", "a lawyer, or sign blind", "AI flags risky & missing clauses"],
     zh: ["看穿合同里的坑", "花钱找律师，或盲签踩坑", "AI 标出风险与缺失条款"],
     es: ["Detecta las trampas de un contrato", "un abogado, o firmar a ciegas", "la IA señala cláusulas de riesgo y ausentes"],
     pt: ["Detecte as armadilhas de um contrato", "um advogado, ou assinar às cegas", "a IA sinaliza cláusulas de risco e ausentes"],
-    fr: ["Repérez les pièges d'un contrat", "un juriste, ou signer en aveugle", "l'IA signale les clauses à risque et manquantes"] },
+    fr: ["Repérez les pièges d'un contrat", "un juriste, ou signer en aveugle", "l'IA signale les clauses à risque et manquantes"],
+    ja: ["契約書の落とし穴を見抜く", "弁護士に頼むか、よく見ずに署名", "AIがリスク条項と欠落を指摘"] },
   { icon: <path d="M4 7l8-4 8 4-8 4-8-4ZM4 12l8 4 8-4M4 17l8 4 8-4" />, href: "/batch-extract-sheet",
     en: ["Process a batch of invoices", "key them in one by one · hours", "drop the batch → auto-extract"],
     zh: ["批量处理发票", "一张张录入 · 几小时", "整批丢进去 → 自动抽取"],
     es: ["Procesa un lote de facturas", "teclearlas una a una · horas", "suelta el lote → extracción automática"],
     pt: ["Processe um lote de faturas", "digitá-las uma a uma · horas", "solte o lote → extração automática"],
-    fr: ["Traitez un lot de factures", "les saisir une par une · des heures", "déposez le lot → extraction automatique"] },
+    fr: ["Traitez un lot de factures", "les saisir une par une · des heures", "déposez le lot → extraction automatique"],
+    ja: ["請求書をまとめて処理", "1枚ずつ手入力 · 数時間", "まとめて投入 → 自動抽出"] },
   { icon: <path d="M5 4h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5zM8.5 9h6M8.5 13h6" />, href: "/chat-with-pdf",
     en: ["Understand a long report fast", "read 80 pages for a few answers", "ask it → answers you can trace · 30s"],
     zh: ["快速读懂长报告", "读 80 页找几个答案", "问它 → 30 秒可追溯的答案"],
     es: ["Entiende un informe largo rápido", "leer 80 páginas por unas respuestas", "pregúntale → respuestas que puedes rastrear · 30 s"],
     pt: ["Entenda um relatório longo rápido", "ler 80 páginas por algumas respostas", "pergunte → respostas que você pode rastrear · 30s"],
-    fr: ["Comprendre un long rapport rapidement", "lire 80 pages pour quelques réponses", "interrogez-le → des réponses traçables · 30s"] },
+    fr: ["Comprendre un long rapport rapidement", "lire 80 pages pour quelques réponses", "interrogez-le → des réponses traçables · 30s"],
+    ja: ["長い報告書を素早く理解", "数個の答えのために80ページ読む", "質問する → 追跡できる回答 · 30秒"] },
 ];
 
 export function Home({ locale = "en" }: { locale?: Locale }) {
-  const zh = locale === "zh";
+  const zh = locale === "zh" || locale === "ja";
   const c = COPY[locale] ?? COPY.en;
   const cats = (navCategories[locale] ?? navCategories.en).slice(0, 4);
-  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : slug);
+  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : slug);
 
   // ── real client-side tool search over the full flatItems set across all 4 cats ──
   const heroReveal = useLineReveal(3);
@@ -540,10 +584,10 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
                 <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
                 <div className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--foreground)]">
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                  <span className={`tw-line min-w-0 ${heroReveal.lineCls(0)}`}>{locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : "Revenue +23% YoY"}</span>
+                  <span className={`tw-line min-w-0 ${heroReveal.lineCls(0)}`}>{locale === "zh" ? "营收同比 +23%" : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : "Revenue +23% YoY"}</span>
                   <span className={`tw-pill ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)] ${heroReveal.lineCls(0)}`}>{c.cite}</span>
                 </div>
-                {[locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : "APAC is the main driver", locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : "Gross margin 41% (↑3pt)"].map((b, i) => (
+                {[locale === "zh" ? "亚太区为主要驱动" : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : "APAC is the main driver", locale === "zh" ? "毛利率 41%（↑3pt）" : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : "Gross margin 41% (↑3pt)"].map((b, i) => (
                   <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--muted)] last:mb-0">
                     <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" /><span className={`tw-line ${heroReveal.lineCls(i + 1)}`}>{b}</span>
                   </div>
@@ -684,7 +728,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
           <Figure className="mt-10" glow="20%">
             <div className="grid gap-4 sm:grid-cols-2">
               {SCENARIOS.map((s) => {
-                const t = locale === "zh" ? s.zh : locale === "es" ? s.es : locale === "pt" ? s.pt : locale === "fr" ? s.fr : s.en;
+                const t = locale === "zh" ? s.zh : locale === "es" ? s.es : locale === "pt" ? s.pt : locale === "fr" ? s.fr : locale === "ja" ? s.ja : s.en;
                 return (
                   <a key={t[0]} href={path(s.href)} className={`${PANEL} block transition-colors hover:border-[color:var(--line-strong)]`}>
                     <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[color:var(--line)] text-[color:var(--accent)]">

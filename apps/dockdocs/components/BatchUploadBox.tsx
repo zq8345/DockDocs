@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 const STR = {
   en: {
@@ -40,6 +40,13 @@ const STR = {
     note: "ou déposez des fichiers / un dossier ici",
     privacy: "Traité localement — jamais envoyé",
     rejected: (n: number, ext: string) => `${n} fichier${n > 1 ? "s" : ""} ignoré${n > 1 ? "s" : ""} — seuls les fichiers ${ext} sont acceptés`,
+  },
+  ja: {
+    choose: "PDFを選択",
+    folder: "フォルダを選択",
+    note: "またはファイル / フォルダをここにドロップ",
+    privacy: "ローカルで処理 — アップロードされません",
+    rejected: (n: number, ext: string) => `${n}件のファイルをスキップしました — ${ext} ファイルのみ対応しています`,
   },
 };
 

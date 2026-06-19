@@ -7,7 +7,7 @@ import { authHeader } from "@/lib/supabase";
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type DocType = "invoice" | "quote" | "contract";
 type Dim = { key: string; label: string };
 type Field = { value: string | null; source: string | null };
@@ -72,6 +72,17 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max} fichiers`, needFile: "Ajoutez au moins un PDF.",
     err: "Une erreur est survenue : ",
     note: "Les champs sont extraits par l'IA et peuvent nécessiter une vérification rapide. Les valeurs introuvables sont laissées vides — l'IA ne les invente pas.",
+  },
+  ja: {
+    title: "データを1つの表計算に一括抽出",
+    subtitle: "請求書、見積書、契約書のフォルダをまるごとドロップすると、DockDocsが各ファイルから主要な項目を1つの表に抽出します。1ドキュメントにつき1行で、CSVとしてダウンロードできます。AIは実際に存在する内容のみを報告します。",
+    drop: "ここにPDF（またはフォルダ）をドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択", add: "さらに追加", reading: "ファイルを読み取り中…",
+    type: "ドキュメントの種類", invoice: "請求書", quote: "見積書", contract: "契約書",
+    extract: "すべて抽出", extracting: "抽出中", reset: "最初からやり直す",
+    download: "CSVをダウンロード", doc: "ドキュメント", dash: "—",
+    files: (n: number, max: number) => `${n} / ${max} ファイル`, needFile: "PDFを1つ以上追加してください。",
+    err: "問題が発生しました: ",
+    note: "項目はAIによって抽出されるため、簡単な確認が必要な場合があります。見つからない値は空欄のままになります — AIが値を作り出すことはありません。",
   },
 };
 

@@ -6,7 +6,7 @@ import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Mode = "sequence" | "replace";
 type Item = { id: string; name: string; file: File };
 
@@ -67,6 +67,17 @@ const STR = {
     download: "Télécharger le ZIP renommé", reset: "Recommencer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`, preview: "Aperçu", need: "Ajoutez au moins un PDF.",
     note: "Le renommage ne modifie que les noms de fichiers — le contenu des PDF reste inchangé. Tout reste sur votre appareil.",
+  },
+  ja: {
+    title: "一括名前変更",
+    subtitle: "フォルダごとドロップして、すべてのファイルを一度に名前変更——連番パターンまたは検索と置換で。ファイル自体はそのまま；新しい名前のZIPをダウンロードします。",
+    drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
+    seq: "連番", rep: "検索と置換",
+    base: "ベース名", basePlaceholder: "例：invoice", start: "開始番号",
+    find: "検索", replace: "置換後", findPlaceholder: "ファイル名内のテキスト", replacePlaceholder: "新しいテキスト",
+    download: "名前変更したZIPをダウンロード", reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max}件`, preview: "プレビュー", need: "PDFを少なくとも1つ追加してください。",
+    note: "名前変更はファイル名のみを変更します——PDFの内容は変わりません。すべてデバイス内で完結します。",
   },
 };
 

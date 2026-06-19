@@ -7,7 +7,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -105,6 +105,25 @@ const STR = {
     needFile: "Choisissez un PDF ou une image à insérer.",
     err: "Une erreur s'est produite : ",
     selected: "Point d'insertion",
+  },
+  ja: {
+    title: "ページを挿入",
+    subtitle: "PDFをアップロードし、挿入する場所を選んで、その位置に別のPDFまたは画像を追加します。すべてブラウザ内で行われます。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択",
+    rendering: "ページを描画中…",
+    pickSpot: "挿入する場所を選択——下のスロットをクリックしてください。",
+    atStart: "いちばん最初に",
+    afterPage: (n: number) => `${n}ページ目の後`,
+    insertHere: "ここに挿入 ✓",
+    insertFile: "挿入するファイル（PDFまたは画像）",
+    chooseInsert: "ファイルを選択",
+    apply: "挿入してダウンロード",
+    working: "PDFを生成中…",
+    reset: "最初からやり直す",
+    needFile: "挿入するPDFまたは画像を選択してください。",
+    err: "問題が発生しました: ",
+    selected: "挿入ポイント",
   },
 };
 
@@ -283,7 +302,7 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
       {done && (
         <div className="mt-6">
-          <ToolBridge slug="add-page" locale={locale} useLocalePrefix={locale !== "en"} />
+          <ToolBridge slug="add-page" locale={locale === "ja" ? "en" : locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
       <ToolFaq tool="add-page" locale={locale} />

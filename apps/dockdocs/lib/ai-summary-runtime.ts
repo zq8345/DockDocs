@@ -1,4 +1,9 @@
-export type AiSummaryLocale = "en" | "zh";
+export type AiSummaryLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+
+const pick = (
+  locale: AiSummaryLocale,
+  m: Record<AiSummaryLocale, string>,
+): string => m[locale];
 
 export type AiSummaryProgress = {
   progress: number;
@@ -54,27 +59,55 @@ export async function generateAiSummary({
   const normalizedPastedText = normalizeText(pastedText ?? "");
   let sourceText = normalizedPastedText;
   let source: AiSummaryResult["source"] = "pasted-text";
-  let sourceName = locale === "zh" ? "粘贴文本" : "Pasted text";
+  let sourceName = pick(locale, {
+    en: "Pasted text",
+    zh: "粘贴文本",
+    es: "Texto pegado",
+    pt: "Texto colado",
+    fr: "Texte collé",
+    ja: "貼り付けたテキスト",
+  });
 
   throwIfAborted(signal);
 
   if (!sourceText && file) {
     if (!isPdfFile(file)) {
-      throw new Error(locale === "zh" ? "请上传 PDF 文件。" : "Upload a PDF file.");
+      throw new Error(
+        pick(locale, {
+          en: "Upload a PDF file.",
+          zh: "请上传 PDF 文件。",
+          es: "Sube un archivo PDF.",
+          pt: "Envie um arquivo PDF.",
+          fr: "Importez un fichier PDF.",
+          ja: "PDF ファイルをアップロードしてください。",
+        }),
+      );
     }
 
     if (file.size > maxPdfBytes) {
       throw new Error(
-        locale === "zh"
-          ? "AI 摘要当前支持最大 10 MB 的 PDF。请先拆分或压缩。"
-          : "AI Summary currently supports PDFs up to 10 MB. Split or compress the file first.",
+        pick(locale, {
+          en: "AI Summary currently supports PDFs up to 10 MB. Split or compress the file first.",
+          zh: "AI 摘要当前支持最大 10 MB 的 PDF。请先拆分或压缩。",
+          es: "AI Summary admite actualmente PDF de hasta 10 MB. Divide o comprime el archivo primero.",
+          pt: "O AI Summary suporta atualmente PDFs de até 10 MB. Divida ou comprima o arquivo primeiro.",
+          fr: "AI Summary prend actuellement en charge les PDF jusqu'à 10 Mo. Divisez ou compressez d'abord le fichier.",
+          ja: "AI Summary は現在最大 10 MB の PDF に対応しています。先にファイルを分割または圧縮してください。",
+        }),
       );
     }
 
     emitProgress(
       onProgress,
       12,
-      locale === "zh" ? "正在读取 PDF 文本..." : "Reading PDF text...",
+      pick(locale, {
+        en: "Reading PDF text...",
+        zh: "正在读取 PDF 文本...",
+        es: "Leyendo el texto del PDF...",
+        pt: "Lendo o texto do PDF...",
+        fr: "Lecture du texte du PDF...",
+        ja: "PDF のテキストを読み込んでいます...",
+      }),
     );
     sourceText = await extractPdfText(file, locale, signal, onProgress);
     source = "pdf-text";
@@ -85,9 +118,14 @@ export async function generateAiSummary({
 
   if (sourceText.length < minTextCharacters) {
     throw new Error(
-      locale === "zh"
-        ? "未找到足够文本用于摘要。扫描件请先使用 OCR PDF 提取文字，再粘贴到 AI Summary。"
-        : "Not enough text was found for summarization. For scanned PDFs, run OCR PDF first and paste the extracted text into AI Summary.",
+      pick(locale, {
+        en: "Not enough text was found for summarization. For scanned PDFs, run OCR PDF first and paste the extracted text into AI Summary.",
+        zh: "未找到足够文本用于摘要。扫描件请先使用 OCR PDF 提取文字，再粘贴到 AI Summary。",
+        es: "No se encontró suficiente texto para resumir. Para PDF escaneados, ejecuta primero OCR PDF y pega el texto extraído en AI Summary.",
+        pt: "Não foi encontrado texto suficiente para resumir. Para PDFs digitalizados, execute primeiro o OCR PDF e cole o texto extraído no AI Summary.",
+        fr: "Texte insuffisant pour générer un résumé. Pour les PDF numérisés, lancez d'abord OCR PDF, puis collez le texte extrait dans AI Summary.",
+        ja: "要約に十分なテキストが見つかりませんでした。スキャンされた PDF の場合は、先に OCR PDF を実行し、抽出したテキストを AI Summary に貼り付けてください。",
+      }),
     );
   }
 
@@ -95,7 +133,14 @@ export async function generateAiSummary({
   emitProgress(
     onProgress,
     68,
-    locale === "zh" ? "正在发送提取文本到 AI 摘要接口..." : "Sending extracted text to the AI summary provider...",
+    pick(locale, {
+      en: "Sending extracted text to the AI summary provider...",
+      zh: "正在发送提取文本到 AI 摘要接口...",
+      es: "Enviando el texto extraído al proveedor de AI Summary...",
+      pt: "Enviando o texto extraído ao provedor do AI Summary...",
+      fr: "Envoi du texte extrait au fournisseur AI Summary...",
+      ja: "抽出したテキストを AI 要約プロバイダーに送信しています...",
+    }),
   );
 
   const response = await fetch("/api/ai-summary", {
@@ -124,16 +169,28 @@ export async function generateAiSummary({
   if (!response.ok || !payload?.ok || !payload.summary) {
     throw new Error(
       payload?.message ||
-        (locale === "zh"
-          ? "AI 摘要接口当前不可用。"
-          : "The AI summary provider is currently unavailable."),
+        pick(locale, {
+          en: "The AI summary provider is currently unavailable.",
+          zh: "AI 摘要接口当前不可用。",
+          es: "El proveedor de AI Summary no está disponible en este momento.",
+          pt: "O provedor do AI Summary está indisponível no momento.",
+          fr: "Le fournisseur AI Summary est actuellement indisponible.",
+          ja: "AI 要約プロバイダーは現在利用できません。",
+        }),
     );
   }
 
   emitProgress(
     onProgress,
     100,
-    locale === "zh" ? "摘要已准备好。" : "Summary is ready.",
+    pick(locale, {
+      en: "Summary is ready.",
+      zh: "摘要已准备好。",
+      es: "El resumen está listo.",
+      pt: "O resumo está pronto.",
+      fr: "Le résumé est prêt.",
+      ja: "要約の準備ができました。",
+    }),
   );
 
   return {
@@ -166,9 +223,14 @@ async function extractPdfText(
       emitProgress(
         onProgress,
         18 + (pageNumber / pagesToRead) * 42,
-        locale === "zh"
-          ? `正在提取第 ${pageNumber} 页文本...`
-          : `Extracting text from page ${pageNumber} of ${pagesToRead}...`,
+        pick(locale, {
+          en: `Extracting text from page ${pageNumber} of ${pagesToRead}...`,
+          zh: `正在提取第 ${pageNumber} 页文本...`,
+          es: `Extrayendo texto de la página ${pageNumber} de ${pagesToRead}...`,
+          pt: `Extraindo texto da página ${pageNumber} de ${pagesToRead}...`,
+          fr: `Extraction du texte de la page ${pageNumber} sur ${pagesToRead}...`,
+          ja: `${pagesToRead} ページ中 ${pageNumber} ページ目のテキストを抽出しています...`,
+        }),
       );
 
       const page = await pdf.getPage(pageNumber);

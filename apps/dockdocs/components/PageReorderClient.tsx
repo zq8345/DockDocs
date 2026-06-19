@@ -7,7 +7,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Pg = { idx: number; thumb: string };
 
 const STR = {
@@ -85,6 +85,21 @@ const STR = {
     needOne: "Conservez au moins une page.",
     page: "Page",
     err: "Une erreur est survenue : ",
+  },
+  ja: {
+    title: "ページを並べ替え",
+    subtitle: "PDFをアップロードし、ページのサムネイルを好きな順番にドラッグします。不要なページは削除できます。すべてブラウザ内で行われます。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択",
+    rendering: "ページを描画中…",
+    hint: "ページをドラッグして移動。✕をクリックしてページを削除。",
+    apply: "適用してダウンロード",
+    working: "PDFを生成中…",
+    reset: "最初からやり直す",
+    removed: (n: number) => `${n}ページを削除しました`,
+    needOne: "少なくとも1ページは残してください。",
+    page: "ページ",
+    err: "問題が発生しました: ",
   },
 };
 
@@ -247,7 +262,7 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
       )}
       {done && (
         <div className="mt-6">
-          <ToolBridge slug="reorder-pages" locale={locale} useLocalePrefix={locale !== "en"} />
+          <ToolBridge slug="reorder-pages" locale={locale === "ja" ? "en" : locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
       <ToolFaq tool="reorder-pages" locale={locale} />

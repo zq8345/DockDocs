@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl, indexableRoutes } from "@/shared/seo/routes";
+import { absoluteUrl, indexableRoutes, isJaNativeRoute } from "@/shared/seo/routes";
 import { routeLocales } from "@/lib/i18n";
 import { getProgrammaticGeoPageSeeds, programmaticGeoPath, isIndexableGeoSlug } from "@/lib/programmatic-geo";
 import { blogArticleSlugs, blogArticlePath } from "@/lib/blog";
@@ -16,7 +16,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Incomplete locales (tool pages still fall back to English) are excluded so
   // Google doesn't index thin/duplicate content. Remove from this set once a
   // locale's tool pages are fully localized.
-  const INCOMPLETE_LOCALES = new Set(["ja"]);
+  // ja is partially native: its tool pages + home/pricing/sitemap/info pages have
+  // real Japanese copy, but the GEO guide hubs and blog still fall back to
+  // English — so ja is enrolled below but filtered to its native routes only
+  // (isJaNativeRoute), matching the catch-all's ja noindex gate.
+  const INCOMPLETE_LOCALES = new Set<string>([]);
   const sitemapLocales = routeLocales.filter(l => !INCOMPLETE_LOCALES.has(l));
 
   // Generate routes for all locales
@@ -34,6 +38,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Localized routes
     for (const locale of sitemapLocales) {
       if (locale === "en") continue;
+      // ja: only its native routes (skip English-fallback guide hubs/blog).
+      if (locale === "ja" && !isJaNativeRoute(route.slug)) continue;
       routes.push({
         url: absoluteUrl(`/${locale}${route.path}`),
         lastModified: now,

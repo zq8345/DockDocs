@@ -13,7 +13,7 @@ import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 //  D5: multi-file upload -> browser-side text extraction (pdf.js).
 //  D6: /api/compare-extract -> aligned structured fields with sources -> table.
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type DocStatus = "ok" | "empty" | "error";
 
 type DocResult = {
@@ -350,6 +350,67 @@ const STR = {
     tplDropHere: "Déposez des PDF pour relancer",
     retry: "Réessayer",
   },
+  ja: {
+    badge: "比較エンジン",
+    h1: "ドキュメントを比較",
+    intro: `同じ種類の PDF を 2〜${MAX_FILES} 件アップロードしてください。DockDocs がブラウザ内で読み取り、主要な項目を横並びで整理します — どの値の裏にも出典の一文が付きます。`,
+    drop: "ここに PDF をドラッグ＆ドロップ",
+    dropHint: "ローカルで読み取り — ファイルがデバイスから出ることはありません。項目の抽出は当社サーバーで実行されます。",
+    choose: "PDF を選択",
+    samples: "3 件のサンプル見積もりを試す",
+    extracting: "テキストを抽出中…",
+    typeLabel: "種類",
+    compare: "項目を比較",
+    comparing: "比較中…",
+    clear: "クリア",
+    bExtracted: "テキストを抽出しました",
+    bEmpty: "認識できません（スキャンの可能性 — OCR が必要）",
+    ocrRun: "OCR でテキストを抽出",
+    ocrBusy: "OCR で読み取り中…（数秒かかることがあります）",
+    bError: "読み取りに失敗しました",
+    needTwo: "比較するには、読み取り可能なドキュメントを 2 件以上追加してください。",
+    failed: "比較に失敗しました。",
+    comparison: "比較結果",
+    dimension: "項目",
+    notRecognized: "認識できません",
+    tableNote:
+      "AI によって抽出されました。各値には、それが由来する出典の一文（その文書に実際に出現することを確認済み）が表示されます。「認識できません」は、その文書に記載がなかったことを意味します — 推測は一切行いません。",
+    comingNext: "近日公開",
+    next: [
+      "出典付きのおすすめ（どの選択肢が優れているか、その理由）",
+      "値をクリックすると、元の PDF の該当箇所へジャンプ",
+      "比較したい項目を自分で追加",
+    ],
+    docCount: (n: number) => `${n} 件のドキュメント`,
+    pages: (n: number) => `${n} ページ · `,
+    chars: (n: number) => `${n.toLocaleString()} 文字`,
+    docTypes: [
+      { value: "quote", label: "見積もり" },
+      { value: "invoice", label: "請求書" },
+      { value: "contract", label: "契約書" },
+    ],
+    tplSave: "テンプレートとして保存",
+    tplSaving: "保存中…",
+    tplNamePlaceholder: "テンプレート名（例：取引先の見積もり）",
+    tplConfirm: "保存",
+    tplCancel: "キャンセル",
+    tplMyTemplates: "マイテンプレート",
+    tplDelete: "削除",
+    tplLoaded: (name: string) => `テンプレート：${name}`,
+    tplRerunHint: "新しいファイルをドロップすると自動で再実行されます",
+    tplLastRun: "最終実行",
+    tplRunFiles: (n: number) => `${n} 件のファイル`,
+    tplNoRuns: "実行履歴はまだありません",
+    tplEditDims: "項目を編集",
+    tplDimLabel: "ラベル",
+    tplDimAdd: "+ 追加",
+    tplDimApply: "適用",
+    tplDimReset: "デフォルトに戻す",
+    tplNewFiles: "新しいファイル",
+    tplDims: "項目",
+    tplDropHere: "PDF をドロップして再実行",
+    retry: "再試行",
+  },
 } as const;
 
 const REC = {
@@ -388,6 +449,13 @@ const REC = {
     disclaimer: "Ce verdict est le raisonnement de l'IA sur les chiffres du tableau ci-dessous — contrairement à chaque cellule du tableau, il n'est pas vérifié individuellement par rapport à la source. Confirmez les chiffres dans le tableau avant de décider.",
     recError: "Recommandation indisponible — le tableau de comparaison ci-dessous reste précis.",
   },
+  ja: {
+    title: "おすすめ",
+    thinking: "選択肢を比較検討中…",
+    recommended: "おすすめ",
+    disclaimer: "この判定は、下の表の数値に基づく AI の推論です — 表の各セルとは異なり、出典を個別に照合してはいません。決定する前に、表の数値をご確認ください。",
+    recError: "おすすめを読み込めませんでした — 下の比較表は引き続き正確です。",
+  },
 } as const;
 
 const TRACE = {
@@ -396,6 +464,7 @@ const TRACE = {
   es: { source: "Origen", notLocated: "No se pudo localizar el fragmento exacto: se muestra el texto completo." },
   pt: { source: "Origem", notLocated: "Não foi possível localizar o trecho exato — exibindo o texto completo." },
   fr: { source: "Source", notLocated: "Impossible de localiser l'extrait exact — affichage du texte intégral." },
+  ja: { source: "出典", notLocated: "該当箇所を正確に特定できませんでした — 全文を表示しています。" },
 } as const;
 
 // Localized dimension labels (the backend returns English labels).
@@ -538,6 +607,16 @@ const QA: Record<Locale, {
     errTooLong: "Le texte combiné est trop long (limite de 60 000 caractères). Utilisez moins de documents ou plus courts.",
     errQuestion: "La question est trop longue (limite de 500 caractères).",
   },
+  ja: {
+    title: "これらの文書をまとめて質問",
+    desc: "アップロードしたすべての文書に対して 1 つの質問ができます — 回答には出典が表示されます。",
+    placeholder: "例：交期が最も短い見積もりはどれですか？",
+    ask: "送信", thinking: "考え中…", sources: "出典",
+    noAnswer: "これらの文書から回答が見つかりませんでした。",
+    errMaxDocs: "一度に質問できるのは最大 8 件の文書までです。",
+    errTooLong: "テキストの合計が長すぎます（上限 60,000 文字）。文書の数を減らすか、短い文書をお使いください。",
+    errQuestion: "質問が長すぎます（上限 500 文字）。",
+  },
 };
 
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
@@ -640,7 +719,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         outputFileName: doc.name,
         pageRanges: "1-3",
         language: locale === "zh" ? "chi_sim" : "eng",
-        locale,
+        locale: locale === "ja" ? "en" : locale,
       });
       const text = (res.text ?? "").replace(/\s+/g, " ").trim();
       setResults((prev) => prev.map((d) => (d.id === id ? { ...d, text, chars: text.length, status: text ? "ok" : "empty", error: text ? undefined : d.error } : d)));
@@ -904,7 +983,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
                   </p>
                   {lastRun ? (
                     <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">
-                      {t.tplLastRun}: {relativeTime(lastRun.createdAt, locale)} · {t.tplRunFiles(lastRun.fileNames.length)}
+                      {t.tplLastRun}: {relativeTime(lastRun.createdAt, locale === "ja" ? "en" : locale)} · {t.tplRunFiles(lastRun.fileNames.length)}
                     </p>
                   ) : (
                     <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">{t.tplNoRuns}</p>

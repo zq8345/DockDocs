@@ -5,7 +5,7 @@
 
 import { navCategories } from "@/components/Header";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Item = { name: string; slug: string };
 
 const PAGES: Record<Locale, { label: string; items: [string, string][] }> = {
@@ -14,6 +14,7 @@ const PAGES: Record<Locale, { label: string; items: [string, string][] }> = {
   es: { label: "Páginas", items: [["Inicio", "/"], ["Acerca de", "/about"], ["Precios", "/pricing"], ["Blog", "/blog"], ["Guías", "/guides"], ["Recursos", "/resources"], ["Privacidad", "/privacy-policy"], ["Términos", "/terms"]] },
   pt: { label: "Páginas", items: [["Início", "/"], ["Sobre", "/about"], ["Preços", "/pricing"], ["Blog", "/blog"], ["Guias", "/guides"], ["Recursos", "/resources"], ["Privacidade", "/privacy-policy"], ["Termos", "/terms"]] },
   fr: { label: "Pages", items: [["Accueil", "/"], ["À propos", "/about"], ["Tarifs", "/pricing"], ["Blog", "/blog"], ["Guides", "/guides"], ["Ressources", "/resources"], ["Confidentialité", "/privacy-policy"], ["Conditions", "/terms"]] },
+  ja: { label: "ページ", items: [["ホーム", "/"], ["概要", "/about"], ["料金", "/pricing"], ["ブログ", "/blog"], ["ガイド", "/guides"], ["リソース", "/resources"], ["プライバシー", "/privacy-policy"], ["利用規約", "/terms"]] },
 };
 
 function flatItems(cat: { cols: { items: Item[] }[] }): Item[] {
@@ -27,9 +28,10 @@ export function SitemapContent({ locale = "en" }: { locale?: Locale }) {
   const es = locale === "es";
   const pt = locale === "pt";
   const fr = locale === "fr";
+  const ja = locale === "ja";
   const cats = (navCategories[locale] ?? navCategories.en).slice(0, 4);
-  const path = (slug: string) => (zh ? `/zh${slug}` : es ? `/es${slug}` : pt ? `/pt${slug}` : fr ? `/fr${slug}` : slug);
-  const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
+  const path = (slug: string) => (zh ? `/zh${slug}` : es ? `/es${slug}` : pt ? `/pt${slug}` : fr ? `/fr${slug}` : ja ? `/ja${slug}` : slug);
+  const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh || ja ? "" : "uppercase tracking-[0.08em]"}`;
   const link = "text-[14px] text-[color:var(--muted)] transition hover:text-[color:var(--accent-strong)]";
   const pages = PAGES[locale] ?? PAGES.en;
 

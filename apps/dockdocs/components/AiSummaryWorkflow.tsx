@@ -17,6 +17,11 @@ type WorkflowStatus =
   | "result"
   | "error";
 
+const pick = (
+  locale: AiSummaryLocale,
+  m: Record<AiSummaryLocale, string>,
+): string => m[locale];
+
 const copy = {
   en: {
     eyebrow: "AI summary",
@@ -74,6 +79,122 @@ const copy = {
     working: "正在生成摘要...",
     quotaExceeded: "当前套餐的 AI 摘要额度已用完。升级后可继续使用。",
   },
+  es: {
+    eyebrow: "Resumen con IA",
+    title: "Resume un PDF sin enviar el archivo completo a la IA.",
+    description:
+      "DockDocs extrae localmente el texto legible del PDF y luego envía solo el texto al proveedor de IA configurado. Para PDF escaneados, ejecuta primero el OCR y pega aquí el texto extraído.",
+    upload: "Elegir PDF",
+    pasteLabel: "O pega texto de OCR / extraído",
+    pastePlaceholder:
+      "Pega aquí el texto de OCR o el texto copiado del PDF cuando el PDF esté escaneado o sea una imagen.",
+    summarize: "Generar resumen",
+    reset: "Restablecer",
+    cancel: "Cancelar",
+    source: "Fuente",
+    characters: "Caracteres enviados",
+    provider: "Proveedor",
+    download: "Descargar resumen",
+    executive: "Resumen ejecutivo",
+    keyPoints: "Puntos clave",
+    actionItems: "Acciones",
+    nextSteps: "Próximos pasos sugeridos",
+    privacyTitle: "Comportamiento de privacidad",
+    privacy:
+      "La extracción del texto del PDF se realiza en el navegador. El proveedor de IA recibe solo el texto extraído después de que inicias el resumen. Este flujo no sube archivos al proveedor de IA.",
+    idle: "Sube un PDF o pega texto de OCR para empezar.",
+    ready: "Listo para resumir.",
+    working: "Generando el resumen...",
+    quotaExceeded:
+      "Has alcanzado el límite de AI Summary de tu plan actual. Mejora tu plan para continuar.",
+  },
+  pt: {
+    eyebrow: "Resumo com IA",
+    title: "Resuma um PDF sem enviar o arquivo completo para a IA.",
+    description:
+      "O DockDocs extrai localmente o texto legível do PDF e depois envia apenas o texto ao provedor de IA configurado. Para PDFs digitalizados, execute primeiro o OCR e cole aqui o texto extraído.",
+    upload: "Escolher PDF",
+    pasteLabel: "Ou cole texto de OCR / extraído",
+    pastePlaceholder:
+      "Cole aqui o texto de OCR ou o texto copiado do PDF quando o PDF for digitalizado ou baseado em imagem.",
+    summarize: "Gerar resumo",
+    reset: "Redefinir",
+    cancel: "Cancelar",
+    source: "Fonte",
+    characters: "Caracteres enviados",
+    provider: "Provedor",
+    download: "Baixar resumo",
+    executive: "Resumo executivo",
+    keyPoints: "Pontos principais",
+    actionItems: "Ações",
+    nextSteps: "Próximos passos sugeridos",
+    privacyTitle: "Comportamento de privacidade",
+    privacy:
+      "A extração do texto do PDF é feita no navegador. O provedor de IA recebe apenas o texto extraído depois que você inicia o resumo. Este fluxo não envia arquivos ao provedor de IA.",
+    idle: "Envie um PDF ou cole texto de OCR para começar.",
+    ready: "Pronto para resumir.",
+    working: "Gerando o resumo...",
+    quotaExceeded:
+      "Você atingiu o limite do AI Summary do seu plano atual. Faça upgrade para continuar.",
+  },
+  fr: {
+    eyebrow: "Résumé par IA",
+    title: "Résumez un PDF sans envoyer le fichier complet à l'IA.",
+    description:
+      "DockDocs extrait localement le texte lisible du PDF, puis envoie uniquement le texte au fournisseur d'IA configuré. Pour les PDF numérisés, lancez d'abord l'OCR et collez ici le texte extrait.",
+    upload: "Choisir un PDF",
+    pasteLabel: "Ou collez le texte OCR / extrait",
+    pastePlaceholder:
+      "Collez ici le texte OCR ou le texte copié du PDF lorsque le PDF est numérisé ou composé d'images.",
+    summarize: "Générer le résumé",
+    reset: "Réinitialiser",
+    cancel: "Annuler",
+    source: "Source",
+    characters: "Caractères envoyés",
+    provider: "Fournisseur",
+    download: "Télécharger le résumé",
+    executive: "Résumé exécutif",
+    keyPoints: "Points clés",
+    actionItems: "Actions à mener",
+    nextSteps: "Prochaines étapes suggérées",
+    privacyTitle: "Comportement en matière de confidentialité",
+    privacy:
+      "L'extraction du texte du PDF s'exécute dans le navigateur. Le fournisseur d'IA ne reçoit que le texte extrait, une fois le résumé lancé. Ce flux n'envoie aucun fichier au fournisseur d'IA.",
+    idle: "Importez un PDF ou collez du texte OCR pour commencer.",
+    ready: "Prêt à résumer.",
+    working: "Génération du résumé...",
+    quotaExceeded:
+      "Limite AI Summary atteinte pour votre formule actuelle. Passez à une formule supérieure pour continuer.",
+  },
+  ja: {
+    eyebrow: "AI 要約",
+    title: "ファイル全体を AI に送らずに PDF を要約します。",
+    description:
+      "DockDocs はブラウザー内で読み取り可能な PDF テキストを抽出し、設定済みの AI プロバイダーにはテキストのみを送信します。スキャンされた PDF の場合は、先に OCR を実行し、抽出したテキストをここに貼り付けてください。",
+    upload: "PDF を選択",
+    pasteLabel: "または OCR / 抽出済みテキストを貼り付け",
+    pastePlaceholder:
+      "PDF がスキャンまたは画像ベースの場合は、OCR テキストやコピーした PDF テキストをここに貼り付けてください。",
+    summarize: "要約を生成",
+    reset: "リセット",
+    cancel: "キャンセル",
+    source: "ソース",
+    characters: "送信文字数",
+    provider: "プロバイダー",
+    download: "要約をダウンロード",
+    executive: "エグゼクティブサマリー",
+    keyPoints: "重要ポイント",
+    actionItems: "アクション項目",
+    nextSteps: "推奨される次のステップ",
+    privacyTitle: "プライバシーの取り扱い",
+    privacy:
+      "PDF のテキスト抽出はブラウザー内で実行されます。AI プロバイダーが受け取るのは、要約を開始した後の抽出済みテキストのみです。このワークフローでは AI プロバイダーにファイルをアップロードしません。",
+    idle: "PDF をアップロードするか OCR テキストを貼り付けて開始します。",
+    ready: "要約の準備ができました。",
+    working: "要約を生成しています...",
+    quotaExceeded:
+      "現在のプランの AI Summary 上限に達しました。続けるにはアップグレードしてください。",
+  },
 } as const;
 
 export function AiSummaryWorkflow({
@@ -108,7 +229,16 @@ export function AiSummaryWorkflow({
       selected.type !== "application/pdf" &&
       !selected.name.toLowerCase().endsWith(".pdf")
     ) {
-      setError(locale === "zh" ? "请上传 PDF 文件。" : "Upload a PDF file.");
+      setError(
+        pick(locale, {
+          en: "Upload a PDF file.",
+          zh: "请上传 PDF 文件。",
+          es: "Sube un archivo PDF.",
+          pt: "Envie um arquivo PDF.",
+          fr: "Importez un fichier PDF.",
+          ja: "PDF ファイルをアップロードしてください。",
+        }),
+      );
       setStatus("error");
       return;
     }
@@ -172,10 +302,26 @@ export function AiSummaryWorkflow({
       const message =
         summaryError instanceof Error
           ? summaryError.message
-          : locale === "zh"
-            ? "AI 摘要失败。"
-            : "AI summary failed.";
-      setError(message === "aborted" ? (locale === "zh" ? "已取消。" : "Cancelled.") : message);
+          : pick(locale, {
+              en: "AI summary failed.",
+              zh: "AI 摘要失败。",
+              es: "El resumen con IA falló.",
+              pt: "O resumo com IA falhou.",
+              fr: "Échec du résumé par IA.",
+              ja: "AI 要約に失敗しました。",
+            });
+      setError(
+        message === "aborted"
+          ? pick(locale, {
+              en: "Cancelled.",
+              zh: "已取消。",
+              es: "Cancelado.",
+              pt: "Cancelado.",
+              fr: "Annulé.",
+              ja: "キャンセルしました。",
+            })
+          : message,
+      );
       setStatus("error");
     }
   }
@@ -367,20 +513,12 @@ export function AiSummaryWorkflow({
 }
 
 function downloadSummary(result: AiSummaryResult, locale: AiSummaryLocale) {
-  const labels =
-    locale === "zh"
-      ? {
-          executive: "执行摘要",
-          keyPoints: "关键要点",
-          actionItems: "行动项",
-          nextSteps: "建议下一步",
-        }
-      : {
-          executive: "Executive Summary",
-          keyPoints: "Key Points",
-          actionItems: "Action Items",
-          nextSteps: "Suggested Next Steps",
-        };
+  const labels = {
+    executive: copy[locale].executive,
+    keyPoints: copy[locale].keyPoints,
+    actionItems: copy[locale].actionItems,
+    nextSteps: copy[locale].nextSteps,
+  };
 
   const text = [
     labels.executive,

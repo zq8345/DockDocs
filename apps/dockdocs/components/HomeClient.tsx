@@ -1,6 +1,6 @@
 "use client";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 const STR = {
   en: {
@@ -136,6 +136,33 @@ const STR = {
       wordToPdf: { name: "Word en PDF", desc: "DOCX vers PDF haute fidélité." },
       pdfToWord: { name: "PDF en Word", desc: "Extrayez le contenu dans un Word modifiable." },
       splitPdf: { name: "Diviser un PDF", desc: "Extrayez des pages ou divisez par plage." },
+    },
+  },
+  ja: {
+    heroTitle1: "PDF ツール",
+    heroTitle2: "実際の仕事のために。",
+    heroSubtitle: "結合、圧縮、変換、AI との対話 — 必要な PDF ツールがすべて、しかも無料で。",
+    ctaStart: "無料で始める",
+    ctaBrowse: "ツールを見る →",
+    featFastTitle: "高速で無料",
+    featFastDesc: "すべてのツールが無料。アカウント不要、透かしなし、制限なし。",
+    featPrivacyTitle: "プライバシー最優先",
+    featPrivacyDesc: "ファイルはブラウザ内で処理されます。サーバーには何も保存されません。",
+    featAiTitle: "AI 搭載",
+    featAiDesc: "対話、要約、翻訳、ドキュメントからの洞察の抽出。",
+    featGlobalTitle: "グローバル",
+    featGlobalDesc: "12 言語。5 都市のチーム。世界中で 3,000 万人以上のユーザー。",
+    mostUsed: "よく使われる",
+    startWith: "まずはこちらから。",
+    viewAll: "26 個すべてのツールを見る →",
+    isNew: "新着",
+    tools: {
+      mergePdf: { name: "PDF を結合", desc: "好きな順番で PDF を結合します。" },
+      compressPdf: { name: "PDF を圧縮", desc: "品質を保ちながらファイルサイズを縮小します。" },
+      chatWithPdf: { name: "PDF と対話", desc: "ドキュメントに基づいて質問できます。" },
+      wordToPdf: { name: "Word を PDF に", desc: "DOCX を高精度な PDF に変換します。" },
+      pdfToWord: { name: "PDF を Word に", desc: "内容を編集可能な Word に抽出します。" },
+      splitPdf: { name: "PDF を分割", desc: "ページを抽出するか範囲で分割します。" },
     },
   },
 };

@@ -9,7 +9,7 @@ import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useMemo, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type RequirementType = "mandatory" | "advisory";
 type Requirement = {
   id: string;
@@ -146,6 +146,31 @@ const STR = {
     filterMandatory: "Obligatoires uniquement",
     filterAdvisory: "Recommandées uniquement",
     noQuote: "Citation non vérifiable",
+  },
+  ja: {
+    title: "入札コンプライアンス・マトリクス",
+    eyebrow: "PRO · 単一文書AI",
+    subtitle: "RFPや入札公告をアップロードすると、すべての「~しなければならない（shall/must）」要件を、セクション参照つきの番号付きコンプライアンス・マトリクスに抽出します。",
+    upload: "入札公告のPDFをここにドロップ",
+    analyze: "要件を抽出",
+    analyzing: "公告を分析中…",
+    noText: "読み取れるテキストがありません。先にこのPDFにOCRをかけてください。",
+    errPrefix: "分析に失敗しました:",
+    retry: "再試行",
+    privacy: "📋 分析には抽出されたテキストのみが送られます。ファイルがデバイスから出ることはありません。",
+    mandatory: "必須",
+    advisory: "任意",
+    colId: "#",
+    colSection: "セクション",
+    colRequirement: "要件",
+    colType: "種別",
+    colQuote: "出典テキスト",
+    downloadCsv: "CSVをダウンロード",
+    found: (n: number) => `${n}件の要件が見つかりました`,
+    filterAll: "すべて",
+    filterMandatory: "必須のみ",
+    filterAdvisory: "任意のみ",
+    noQuote: "引用を確認できません",
   },
 };
 

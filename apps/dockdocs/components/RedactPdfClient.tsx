@@ -5,7 +5,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 // Boxes are stored in NORMALIZED page fractions (0–1) so they map to any render scale.
 type Box = { id: string; page: number; x: number; y: number; w: number; h: number; auto?: boolean };
 type Pg = { idx: number; url: string; ratio: number }; // ratio = height / width
@@ -110,6 +110,20 @@ const STR = {
     needBox: "Ajoutez au moins un caviardage d'abord.",
     note: "Le résultat est un PDF image aplati : le contenu caviardé est supprimé définitivement et le texte de la page n'est plus sélectionnable — c'est précisément ce qui le rend irrécupérable.",
     err: "Une erreur est survenue : ", tooMany: `Ce PDF contient plus de ${MAX_PAGES} pages. Divisez-le d'abord, puis caviardez-le.`,
+  },
+  ja: {
+    title: "PDFを黒塗り",
+    subtitle: "名前、番号、機密テキストを黒塗りして、本当に消えたコピーをダウンロードできます。下から文字をコピーできる単なる黒い四角とは違い、DockDocsは各ページを画像に統合するため、隠した文字は完全に破棄されます。ブラウザ内で動作し、ファイルがデバイスから出ることはありません。",
+    drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択", rendering: "ページを描画中…",
+    hint: "ページ上をドラッグして範囲を黒塗りします。自動検出された項目は事前にマークされています——各ボックスの✕をクリックで削除。",
+    autoFound: (n: number) => `機密の可能性がある項目を${n}件自動検出しました（メール、電話番号、SSN、カード番号、IP）。確認し、必要に応じて自分で追加してください。`,
+    autoNone: "明らかなメール/番号は自動検出されませんでした——ページ上をドラッグして手動で黒塗りしてください。",
+    boxes: (n: number) => `${n}件の黒塗り`,
+    clear: "すべてクリア", apply: "適用してダウンロード", working: "削除して統合中…", reset: "最初からやり直す",
+    needBox: "まず少なくとも1件の黒塗りを追加してください。",
+    note: "出力は統合された画像PDFです。黒塗りした内容は完全に削除され、ページの文字は選択できなくなります——これこそが復元不可能である理由です。",
+    err: "問題が発生しました: ", tooMany: `このPDFは${MAX_PAGES}ページを超えています。先に分割してから黒塗りしてください。`,
   },
 };
 
