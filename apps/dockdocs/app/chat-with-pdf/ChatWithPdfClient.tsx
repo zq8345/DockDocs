@@ -25,7 +25,7 @@ const maxPages = 12;
 const maxCharacters = 40000;
 const maxFileBytes = 25 * 1024 * 1024;
 
-export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | "es" | "pt" | "fr" }) {
+export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | "es" | "pt" | "fr" | "ja" }) {
   const copy = getRuntimeCopy(locale).chat;
   const [fileName, setFileName] = useState("");
   const [documentText, setDocumentText] = useState("");
@@ -362,6 +362,8 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
                         </svg>
                         {locale === "zh"
                           ? `${message.citations.length} 处已与原文核对`
+                          : locale === "ja"
+                          ? `${message.citations.length} 件を出典と照合済み`
                           : locale === "es"
                           ? `${message.citations.length} verificado${message.citations.length > 1 ? "s" : ""} en la fuente`
                           : locale === "pt"

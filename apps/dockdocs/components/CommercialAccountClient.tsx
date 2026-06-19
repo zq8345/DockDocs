@@ -21,7 +21,7 @@ import { StatusBadge } from "@/components/ui/Status";
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 const STR: Record<Locale, {
   loading: string;
@@ -251,6 +251,44 @@ const STR: Record<Locale, {
     workspaceBindingTitle: "Liaison de l'espace de travail",
     workspaceBindingDescription: "Les enregistrements de l'espace de travail utilisent l'identifiant de stockage du compte actuel. Les PDF originaux ne sont jamais stockés.",
   },
+  ja: {
+    loading: "アカウントを読み込み中…",
+    checkoutSuccess: "決済が完了しました。Stripe の同期後にサブスクリプションが更新されます。",
+    magicLinkSent: "ログインリンクをメールに送信しました。メール内のリンクをクリックしてサインインしてください。",
+    errorFallback: "アカウント操作に失敗しました。",
+    currentUser: "現在のユーザー",
+    loggedInUser: "サインイン済みユーザー",
+    anonymousBrowser: "匿名ブラウザ",
+    statusLabel: "ステータス",
+    signedInLabel: "サインイン済み",
+    notSignedInLabel: "未サインイン",
+    planLabel: "プラン",
+    planStatusLabel: "プランの状態",
+    workspaceStorage: "ワークスペースストレージ",
+    signOut: "サインアウト",
+    loginTitle: "サインイン",
+    loginDescription: "サインインすると、保存された会話とワークスペースのメタデータがアカウントに紐づきます。匿名データはこのブラウザ内にのみ保存されます。",
+    continueWithGoogle: "Google で続ける",
+    continueWithMicrosoft: "Microsoft で続ける",
+    orEmail: "またはメール",
+    emailSentMessage: "ログインリンクをメールに送信しました。クリックしてサインインしてください(届かない場合は迷惑メールをご確認ください)。",
+    sendLoginLink: "ログインリンクを送信",
+    passwordlessNote: "パスワード不要 — サインインリンクをメールでお送りします。",
+    planTitle: "プラン",
+    planDescription: "サインインすると Stripe のお支払いを開始できます。サブスクリプションの状態は最新の Stripe webhook を反映します。",
+    sourceLabel: "ソース",
+    periodEndLabel: "期間終了",
+    updatedAtLabel: "更新日時",
+    notSet: "未設定",
+    opening: "開いています…",
+    upgradePlus: "Plus にアップグレード",
+    upgradePro: "Pro にアップグレード",
+    openingBilling: "お支払いを開いています…",
+    manageBilling: "お支払いを管理",
+    signInToBill: "サインインして決済を開始するか、カスタマーポータルを開いてください。",
+    workspaceBindingTitle: "ワークスペースの紐付け",
+    workspaceBindingDescription: "ワークスペースの記録は現在のアカウントのストレージ ID を使用します。元の PDF は保存されません。",
+  },
 };
 
 function useLocale(): Locale {
@@ -265,7 +303,7 @@ function useLocale(): Locale {
 export function CommercialAccountClient() {
   const locale = useLocale();
   const t = STR[locale];
-  const upgradeFlow = useUpgradeFlow(locale);
+  const upgradeFlow = useUpgradeFlow(locale === "ja" ? "en" : locale);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [account, setAccount] = useState<DockAccountState | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
@@ -364,7 +402,7 @@ export function CommercialAccountClient() {
 
   return (
     <section className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-      <UpgradeConfirmModal flow={upgradeFlow} locale={locale} />
+      <UpgradeConfirmModal flow={upgradeFlow} locale={locale === "ja" ? "en" : locale} />
       <div className="grid gap-6">
         <AccountStatusCard user={user} account={account} subscription={subscription} onLogout={handleLogout} t={t} />
         {user ? null : (

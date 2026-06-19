@@ -10,7 +10,7 @@ import { billingErrorCopy } from "@/lib/membership-ui";
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
 import { getUser, onAuthChange } from "@/lib/auth";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 const copy = {
   en: {
@@ -409,6 +409,85 @@ const copy = {
       { f: "Espace d'équipe · support prioritaire", v: ["—", "—", "✓"] },
     ],
   },
+  ja: {
+    title: "シンプルな料金。強力でプライベートなドキュメント。",
+    subtitle: "無料で開始 — アカウント不要、カード不要。AI、より大きなファイル、より多い処理量が必要なときだけアップグレード。いつでも2クリックで解約可能。",
+    monthly: "月額",
+    yearly: "年額",
+    save: "約40%お得",
+    lifetime: "買い切り",
+    perOnce: "一回限り",
+    lifetimeNote: "創設者価格 — 一度の支払いで永久に利用可能。価格は今後上がります。",
+    perMo: "/月",
+    mostPopular: "人気No.1",
+    billedYearly: (v: string) => `年額 ${v} で請求`,
+    trust: ["7日間返金保証", "いつでも解約可能、理由不要", "ファイルは自社モデルの学習に使用しません"],
+    plans: [
+      {
+        name: "Free",
+        monthlyPrice: "$0",
+        yearlyPrice: "$0",
+        tagline: "日常のPDF作業に必要なすべて。",
+        highlights: ["約50のPDFツール — 変換、圧縮、結合、分割", "暗号化、ページ編集、スキャン文書のOCR", "ブラウザ内で処理 — ファイルは非公開のまま", "永久無料、アカウント不要"],
+        cta: "今すぐ無料で始める",
+        href: "/chat-with-pdf" as RouteSlug,
+        featured: false,
+      },
+      {
+        name: "Plus",
+        monthlyPrice: "$5",
+        yearlyPrice: "$3",
+        yearlyTotal: "$36/年",
+        tagline: "AIがあなたのドキュメントを読んで比較 — 数秒で。",
+        valueLine: "月にコーヒー1杯以下。",
+        highlights: ["Freeのすべて", "あらゆるPDFと対話 — 回答には出典を表示", "AIによる要約と要点を数秒で", "複数のドキュメントを並べて比較", "100MBのファイル、一括処理と優先、広告なし"],
+        cta: "Plusにアップグレード",
+        href: "" as RouteSlug,
+        featured: true,
+      },
+      {
+        name: "Pro",
+        monthlyPrice: "$20",
+        yearlyPrice: "$12",
+        yearlyTotal: "$144/年",
+        tagline: "ドキュメントワークフローの自動化とプロ向けレビュー。",
+        highlights: ["Plusのすべて", "一括ドキュメントワークフローを自動化", "契約書レビュー — リスクや欠落条項を指摘", "APIアクセスと自動分類", "チームワークスペースと優先サポート"],
+        cta: "Proにアップグレード",
+        href: "" as RouteSlug,
+        featured: false,
+      },
+    ],
+    faqTitle: "購入前のよくある質問",
+    faq: [
+      { q: "いつでも解約できますか？", a: "はい。数クリックでご自身でサブスクリプションを管理・解約できます — メール不要、引き止めの仕掛けもありません。お支払い済みの期間の終了までは引き続きご利用いただけます。" },
+      { q: "返金はありますか？", a: "はい。PlusまたはProがご希望に合わない場合は、お支払いから7日以内に返金をリクエストいただければ返金いたします。" },
+      { q: "DockDocsの利用に支払いは必要ですか？", a: "いいえ。約50のコアPDFツールはすべて永久無料で、アカウントも不要です。AI機能、より大きなファイル、より多い処理量が必要な場合のみお支払いいただきます。" },
+      { q: "私のファイルはどうなりますか？", a: "ほとんどのツールは完全にブラウザ内で処理されます — ファイルがお使いのデバイスから出ることはありません。クラウド変換は処理後、一時コピーが自動的に削除されます。お客様のドキュメントを自社モデルの学習に使用することは一切なく、回答に必要なテキストのみがAIプロバイダーに送信されます。" },
+      { q: "後でプランを変更できますか？", a: "いつでも可能です。アップグレード、ダウングレード、月額と年額の切り替えをいつでもお好きに行えます。" },
+    ],
+    ctaTitle: "無料で試して — 後で決める。",
+    ctaDesc: "今すぐどのツールも開けます。アカウント不要、カード不要、契約不要。",
+    ctaBtn: "無料ツールから始める",
+    scenariosTitle: "DockDocsはあなたの何を解決できる？",
+    scenarios: [
+      { emoji: "📊", title: "見積もりを比較して最適なものを選ぶ", before: "3つのファイルを開いて数字をシートにコピー — 約1時間", after: "アップロード → 並列比較表 + 出典付きのおすすめ — 1分", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📄", title: "契約書の落とし穴を見抜く", before: "弁護士に$300払うか、よく見ずに署名して痛い目に遭う", after: "AIが数分でリスクや欠落条項を指摘", tier: "Pro", href: "/compare" as RouteSlug },
+      { emoji: "🧾", title: "請求書を一括処理する", before: "1枚ずつ入力 — 数時間、または人を雇う", after: "バッチごと投入 → 自動で抽出・要約", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📕", title: "長いレポートを素早く理解する", before: "80ページを読んでいくつかの答えを探す — 数時間", after: "何でも質問 → 30秒で出典付きの回答", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+    ],
+    compareTitle: "プランを比較",
+    compareCols: ["Free", "Plus", "Pro"],
+    compareRows: [
+      { f: "約50のPDFツール — 変換、圧縮、結合、暗号化、OCR", v: ["✓", "✓", "✓"] },
+      { f: "PDFと対話 · AI要約", v: ["—", "✓", "✓"] },
+      { f: "AIでPDFを翻訳（レイアウト保持）", v: ["—", "近日", "近日"] },
+      { f: "複数のドキュメントを比較", v: ["—", "✓", "✓"] },
+      { f: "100MBのファイル · 一括処理 · 広告なし", v: ["—", "✓", "✓"] },
+      { f: "ワークフロー自動化 · API · 自動分類", v: ["—", "—", "✓"] },
+      { f: "契約書レビュー — リスクと欠落条項", v: ["—", "—", "✓"] },
+      { f: "チームワークスペース · 優先サポート", v: ["—", "—", "✓"] },
+    ],
+  },
 } as const;
 
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
@@ -427,7 +506,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
     return fi >= 0 ? fi : 1;
   });
   // Shared in-place upgrade flow (quote → breakdown modal → discounted checkout).
-  const upgrade = useUpgradeFlow(locale);
+  const upgrade = useUpgradeFlow(locale === "ja" ? "en" : locale);
 
   useEffect(() => {
     let mounted = true;
@@ -473,7 +552,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       void handlePortal();
       return;
     }
-    setBillingError(billingErrorCopy(code, message, locale));
+    setBillingError(billingErrorCopy(code, message, locale === "ja" ? "en" : locale));
   }
 
   // Plain hosted checkout for a NEW subscription (Free → paid) — no credit.
@@ -688,10 +767,11 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 const hasTools = cat.tools.length > 0;
                 const hasFeatures = (cat.features?.length ?? 0) > 0;
                 const canExpand = hasTools || hasFeatures;
-                const catLabel = cat.label[locale] ?? cat.label.en;
+                const tcLocale = locale === "ja" ? "en" : locale;
+                const catLabel = cat.label[tcLocale] ?? cat.label.en;
                 const lim = (tier: "free" | "plus" | "pro") => {
                   const v = cat.limits[tier];
-                  return v[locale] ?? v.en;
+                  return v[tcLocale] ?? v.en;
                 };
                 const cellCls = (val: string) =>
                   val.startsWith("Unlimited") || val.startsWith("无限") || val.startsWith("Ilimitado") || val.startsWith("Illimité")
@@ -739,7 +819,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                 href={`/${tool.slug}/`}
                                 className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
                               >
-                                {tool[locale] ?? tool.en}
+                                {tool[tcLocale] ?? tool.en}
                               </a>
                             ))}
                           </div>
@@ -753,11 +833,11 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                 </span>
                                 {f.href ? (
                                   <a href={f.href} className="text-[color:var(--foreground)] underline-offset-2 hover:underline">
-                                    {f[locale] ?? f.en}
+                                    {f[tcLocale] ?? f.en}
                                   </a>
                                 ) : (
                                   <span className={f.status === "live" ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}>
-                                    {f[locale] ?? f.en}
+                                    {f[tcLocale] ?? f.en}
                                   </span>
                                 )}
                                 {f.status === "coming" && (
@@ -847,7 +927,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Upgrade breakdown — credit is visible before the redirect (可溯源/honest). */}
-      <UpgradeConfirmModal flow={upgrade} locale={locale} />
+      <UpgradeConfirmModal flow={upgrade} locale={locale === "ja" ? "en" : locale} />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { defaultLocale } from "@/lib/i18n";
 import { VerticalHubPage, type VerticalConfig } from "@/components/VerticalHubPage";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 // "Finance & tax" professional vertical — a thin config over VerticalHubPage.
 // Honesty gate: every card is a real, shipping tool (extract-to-excel,
@@ -98,6 +98,23 @@ const financeConfig: VerticalConfig = {
         { slug: "compare", label: "Comparer des documents", description: "Alignez devis, offres ou factures côte à côte selon les critères qui comptent, avec une recommandation en langage clair." },
       ],
       disclaimer: "Ces outils vous aident à lire et organiser plus vite vos documents financiers. Ils ne constituent pas un conseil financier, fiscal ou comptable — pour toute question importante, consultez un professionnel qualifié.",
+    },
+    ja: {
+      eyebrow: "財務・会計向け",
+      heroTitle: "請求書・明細書・財務レポートのための AI ドキュメントツール",
+      heroDescription:
+        "請求書・領収書・明細書から数字を抜き出して表計算シートにまとめ、長い財務レポートを要約し、複数の見積もりを並べて比較できます。すべての数値には出典となった行が表示されるので、帳簿に反映する前に一つずつ確認できます。",
+      primary: "表計算シートに抽出",
+      secondary: "レポートを要約",
+      cardsTitle: "財務チーム向けツール",
+      cards: [
+        { slug: "extract-to-excel", label: "Excel に抽出", description: "請求書・領収書・明細書を表計算シートに変換します。AI が重要な項目を抜き出し、各値の出典となった行を表示します。" },
+        { slug: "batch-extract-sheet", label: "シートに一括抽出", description: "請求書や領収書をまとめて投入すると、自動で抽出して 1 枚の表計算シートにまとめます。" },
+        { slug: "pdf-to-excel", label: "PDF を Excel に変換", description: "PDF 内の財務表や明細書を編集可能な Excel ファイルに変換します。" },
+        { slug: "ai-summary", label: "AI 要約", description: "長い財務レポート・開示書類・決算資料を要点と主要な数字に凝縮します。" },
+        { slug: "compare", label: "ドキュメント比較", description: "見積もり・入札・請求書を、重要な条件を軸に並べて比較し、わかりやすい言葉で推奨を示します。" },
+      ],
+      disclaimer: "これらのツールは財務ドキュメントをより速く読み、整理するのに役立ちます。財務・税務・会計に関する助言ではありません。重要な事項については、有資格の専門家にご相談ください。",
     },
   },
 };

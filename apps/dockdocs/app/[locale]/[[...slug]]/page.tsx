@@ -963,11 +963,11 @@ export default async function LocalizedRoute({
   ) : null;
 
   if (slug === "chat-with-pdf") {
-    return <LocalizedChatWithPdf locale={esLocale} />;
+    return <LocalizedChatWithPdf locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "ai-summary") {
-    return <LocalizedAiSummary locale={esLocale} />;
+    return <LocalizedAiSummary locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "ocr") {
@@ -1089,15 +1089,15 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "my-chats") {
-    return <MyChatsClient locale={esLocale} />;
+    return <MyChatsClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "url-to-pdf") {
-    return <>{extraJsonLd}<UrlToPdfClient locale={esLocale} /></>;
+    return <>{extraJsonLd}<UrlToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "compare") {
-    return <DocumentCompareClient locale={esLocale} />;
+    return <DocumentCompareClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "pricing") {
@@ -1209,38 +1209,38 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "ai-workspace") {
-    return <>{extraJsonLd}<LocalizedAiWorkspace locale={esLocale} /></>;
+    return <>{extraJsonLd}<LocalizedAiWorkspace locale={rawLocale === "ja" ? "ja" : esLocale} /></>;
   }
 
   if (slug === "sitemap") {
     return (
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, "sitemap", uiLocale === "zh" ? "网站地图" : "Sitemap")) }} />
-        <LocalizedSitemap locale={esLocale} />
+        <LocalizedSitemap locale={rawLocale === "ja" ? "ja" : esLocale} />
       </>
     );
   }
 
   if (slug === "for/legal") {
-    return <LegalHubPage locale={esLocale} useLocalePrefix />;
+    return <LegalHubPage locale={rawLocale === "ja" ? "ja" : esLocale} useLocalePrefix />;
   }
 
   if (slug === "for/finance") {
-    return <FinanceHubPage locale={esLocale} useLocalePrefix />;
+    return <FinanceHubPage locale={rawLocale === "ja" ? "ja" : esLocale} useLocalePrefix />;
   }
 
   if (slug === "for/research") {
-    return <ResearchHubPage locale={esLocale} useLocalePrefix />;
+    return <ResearchHubPage locale={rawLocale === "ja" ? "ja" : esLocale} useLocalePrefix />;
   }
 
   return <LocalizedHome locale={rawLocale === "ja" ? "ja" : esLocale} />;
 }
 
-function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
+function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
       <div className="mx-auto max-w-md">
-        <AccountClient locale={locale} />
+        <AccountClient locale={locale === "ja" ? "en" : locale} />
       </div>
     </div>
   );
@@ -1268,12 +1268,13 @@ function getLocalizedProgrammaticGeoRoute(rawSlug?: string[]) {
   return null;
 }
 
-function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
+function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
   const copy = getRuntimeCopy(locale).chat;
   const zh = locale === "zh";
   const es = locale === "es";
   const pt = locale === "pt";
   const fr = locale === "fr";
+  const ja = locale === "ja";
   const url = `https://dockdocs.app${localizedPath(locale, "chat-with-pdf")}`;
   const schema = {
     "@context": "https://schema.org",
@@ -1305,7 +1306,7 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" 
         "@id": `${url}#breadcrumb`,
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "DockDocs", item: `https://dockdocs.app${localizedPath(locale, "")}` },
-          { "@type": "ListItem", position: 2, name: zh ? "PDF 问答" : es ? "Chat con PDF" : pt ? "Chat com PDF" : fr ? "Chat avec PDF" : "Chat with PDF", item: url },
+          { "@type": "ListItem", position: 2, name: zh ? "PDF 问答" : es ? "Chat con PDF" : pt ? "Chat com PDF" : fr ? "Chat avec PDF" : ja ? "PDFと対話" : "Chat with PDF", item: url },
         ],
       },
     ],
@@ -1318,7 +1319,7 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" 
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
           <span>/</span>
-          <span className="font-medium text-[color:var(--foreground)]">{zh ? "PDF 问答" : es ? "Chat con PDF" : pt ? "Chat com PDF" : fr ? "Chat avec PDF" : "Chat with PDF"}</span>
+          <span className="font-medium text-[color:var(--foreground)]">{zh ? "PDF 问答" : es ? "Chat con PDF" : pt ? "Chat com PDF" : fr ? "Chat avec PDF" : ja ? "PDFと対話" : "Chat with PDF"}</span>
         </div>
 
         <h1 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
@@ -1338,12 +1339,13 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" 
   );
 }
 
-function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
+function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
   const copy = getRuntimeCopy(locale).summary;
   const zh = locale === "zh";
   const es = locale === "es";
   const pt = locale === "pt";
   const fr = locale === "fr";
+  const ja = locale === "ja";
   const url = `https://dockdocs.app${localizedPath(locale, "ai-summary")}`;
   const summaryFaqs =
     "faqs" in copy && Array.isArray((copy as { faqs?: unknown }).faqs)
@@ -1379,7 +1381,7 @@ function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" })
         "@id": `${url}#breadcrumb`,
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "DockDocs", item: `https://dockdocs.app${localizedPath(locale, "")}` },
-          { "@type": "ListItem", position: 2, name: zh ? "AI 摘要" : es ? "Resumen IA" : pt ? "Resumo IA" : fr ? "Résumé IA" : "AI Summary", item: url },
+          { "@type": "ListItem", position: 2, name: zh ? "AI 摘要" : es ? "Resumen IA" : pt ? "Resumo IA" : fr ? "Résumé IA" : ja ? "AI要約" : "AI Summary", item: url },
         ],
       },
     ],
@@ -1392,7 +1394,7 @@ function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" })
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
           <span>/</span>
-          <span className="font-medium text-[color:var(--foreground)]">{zh ? "AI 摘要" : es ? "Resumen IA" : pt ? "Resumo IA" : fr ? "Résumé IA" : "AI Summary"}</span>
+          <span className="font-medium text-[color:var(--foreground)]">{zh ? "AI 摘要" : es ? "Resumen IA" : pt ? "Resumo IA" : fr ? "Résumé IA" : ja ? "AI要約" : "AI Summary"}</span>
         </div>
 
         <h1 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
@@ -1480,15 +1482,15 @@ function LocalizedRuntimeTool({
   );
 }
 
-function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
-  return <DashboardWorkspace locale={locale} />;
+function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
+  return <DashboardWorkspace locale={locale === "ja" ? "en" : locale} />;
 }
 
-function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
+function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(locale === "zh" ? "zh" : "en")) }} />
-      <PricingPlans locale={locale === "zh" ? "zh" : locale === "es" ? "es" : locale === "pt" ? "pt" : locale === "fr" ? "fr" : "en"} />
+      <PricingPlans locale={locale === "zh" ? "zh" : locale === "es" ? "es" : locale === "pt" ? "pt" : locale === "fr" ? "fr" : locale === "ja" ? "ja" : "en"} />
     </>
   );
 }
@@ -1681,9 +1683,24 @@ const aiCopy = {
       { t: "Analyse de documents", d: "Extrayez les clauses clés, dates, risques et la structure pour une lecture rapide." },
     ],
   },
+  ja: {
+    title: "AIドキュメントワークスペース",
+    description:
+      "DockDocs の AIドキュメントワークスペースで、PDF文書の整理・変換・OCR・作業を行えます。",
+    eyebrow: "AIワークスペース",
+    heroTitle: "OCR・要約・PDFとの対話のためのAI PDFワークスペース。",
+    heroDescription:
+      "DockDocs はあくまでPDFツールを軸にしています。AIワークスペースは、文書にOCR・要約・根拠つきQ&A・簡単な分析が必要なときに登場します。",
+    cards: [
+      { t: "OCR", d: "スキャンや画像のみのPDFから、選択可能なテキストを抽出します。" },
+      { t: "AI要約", d: "長い報告書や資料を、いくつかの実用的なメモに変えます。" },
+      { t: "PDFと対話", d: "条項・日付・数値について質問でき、回答には根拠となる箇所が示され、追跡できない点は明示されます。" },
+      { t: "文書分析", d: "主要な条項・日付・リスク・構成を抽出し、すばやく把握できます。" },
+    ],
+  },
 } as const;
 
-function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
+function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
   const copy = aiCopy[locale] ?? aiCopy.en;
 
   return (
@@ -1759,9 +1776,14 @@ const sitemapCopy = {
     description: "Plan du site localisé des pages de DockDocs.",
     heading: "Plan du site localisé de DockDocs.",
   },
+  ja: {
+    title: "サイトマップ",
+    description: "DockDocs ページのローカライズされたサイトマップ。",
+    heading: "DockDocs ローカライズ・サイトマップ。",
+  },
 } as const;
 
-function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
+function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" }) {
   const copy = sitemapCopy[locale] ?? sitemapCopy.en;
   const contentLocale: Locale = locale === "zh" ? "zh" : "en";
   const groups = [

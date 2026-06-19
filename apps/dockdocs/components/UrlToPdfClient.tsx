@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { authHeader } from "@/lib/supabase";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 const STR = {
   en: {
@@ -110,6 +110,27 @@ const STR = {
       ["Comment ça fonctionne ?", "Collez une URL et nous affichons la page en PDF grâce au moteur de navigateur de CloudConvert, puis le fichier est téléchargé sur votre appareil."],
       ["Quelles pages fonctionnent le mieux ?", "Les pages publiques et majoritairement statiques (articles, documentation, factures). Les pages nécessitant une connexion ou utilisant beaucoup de JavaScript peuvent ne pas s'afficher entièrement."],
       ["Est-ce gratuit ?", "Oui — convertir une page web en PDF est gratuit."],
+    ] as const,
+  },
+  ja: {
+    title: "ウェブページを PDF に変換",
+    subtitle: "公開 URL を貼り付けるだけで、本物のブラウザエンジンでレンダリングしたきれいな PDF をダウンロードできます。アップロードもインストールも不要。",
+    label: "ページの URL",
+    placeholder: "https://example.com/article",
+    convert: "PDF に変換",
+    working: "ページをレンダリング中…",
+    done: "完了 — PDF をダウンロードしました。",
+    again: "別のページを変換",
+    errInvalid: "http:// または https:// で始まる完全な URL を入力してください。",
+    errFailed: "変換を開始できませんでした。再試行してください。",
+    errConvert: "そのページをレンダリングできませんでした。自動アクセスをブロックしているか、サインインが必要な可能性があります。",
+    errTimeout: "ページのレンダリングに時間がかかりすぎました。よりシンプルで軽いページをお試しください。",
+    note: "公開された自己完結型のページに最適です。ログインが必要なページやスクリプトに大きく依存するページは完全にレンダリングされない場合があります。",
+    faqTitle: "ウェブページを PDF に — よくある質問",
+    faqs: [
+      ["どのように動作しますか？", "URL を貼り付けると、CloudConvert のブラウザエンジンでページを PDF にレンダリングし、お使いのデバイスにダウンロードします。"],
+      ["どのページが最適ですか？", "公開された、ほぼ静的なページ（記事、ドキュメント、請求書）。ログインが必要なページや JavaScript を多用するページは完全にレンダリングされない場合があります。"],
+      ["無料ですか？", "はい — ウェブページの PDF 変換は無料です。"],
     ] as const,
   },
 };

@@ -1,7 +1,7 @@
 import { defaultLocale } from "@/lib/i18n";
 import { VerticalHubPage, type VerticalConfig } from "@/components/VerticalHubPage";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 
 // "Legal" professional vertical — now a thin config over the reusable
 // VerticalHubPage. Links to existing AI-hero tools (which keep their own gating);
@@ -97,6 +97,23 @@ const legalConfig: VerticalConfig = {
         { slug: "compare", label: "Comparer des documents", description: "Comparez plusieurs documents côte à côte selon les critères qui comptent, avec une recommandation en langage clair." },
       ],
       disclaimer: "Ces outils constituent une première analyse automatisée pour vous aider à repérer ce qui mérite attention. Ils ne constituent pas un conseil juridique — pour toute question importante, consultez un avocat qualifié.",
+    },
+    ja: {
+      eyebrow: "法務・契約向け",
+      heroTitle: "契約書・賃貸借契約・入札に対応する AI ドキュメントレビュー",
+      heroDescription:
+        "契約書、賃貸借契約、入札仕様書を読み込み、重要なポイントを浮かび上がらせる5つの特化ツール——リスクのある条項、不足している保護、コンプライアンス要件、そしてバージョン間で何が変わったか。すべての指摘はあなたの文書から引用されるため、行動する前に出典をたどって確認できます。",
+      primary: "契約書をチェック",
+      secondary: "賃貸借契約をスキャン",
+      cardsTitle: "法務チーム向けツール",
+      cards: [
+        { slug: "contract-risk", label: "契約リスクチェック", description: "署名する前に、リスクのある条項、一方的な条項、不足している条項を検出——それぞれあなたの契約書から引用し、何を確認すべきかも提示します。" },
+        { slug: "govbid-matrix", label: "政府入札コンプライアンスマトリクス", description: "RFP からすべての拘束力ある「shall/must」要件を抽出し、CSV にエクスポートできる番号付きコンプライアンスマトリクスにまとめます。" },
+        { slug: "lease-redflag", label: "賃貸借契約レッドフラグチェック", description: "署名する前に、住宅用または商業用の賃貸借契約に含まれる不公平・リスクのある・不足している借主保護をスキャンします。" },
+        { slug: "redline", label: "バージョンを比較", description: "契約書や文書の2つのバージョン間で何が変わったかを、条項ごとに正確に確認できます。" },
+        { slug: "compare", label: "文書を比較", description: "重要な条件について複数の文書を並べて比較し、平易な言葉での推奨を提示します。" },
+      ],
+      disclaimer: "これらのツールは、注目すべき点を見つける手助けをするための自動化された一次レビューです。法的助言ではありません——重要な事項については、資格のある弁護士にご相談ください。",
     },
   },
 };
