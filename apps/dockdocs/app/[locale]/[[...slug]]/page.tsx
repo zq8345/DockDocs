@@ -1192,7 +1192,7 @@ export default async function LocalizedRoute({
       return (
         <>
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema(uiLocale)) }} />
-          <AboutPage locale={esLocale} />
+          <AboutPage locale={rawLocale === "ja" ? "ja" : esLocale} />
         </>
       );
     }
@@ -1231,7 +1231,7 @@ export default async function LocalizedRoute({
     return <ResearchHubPage locale={esLocale} useLocalePrefix />;
   }
 
-  return <LocalizedHome locale={esLocale} />;
+  return <LocalizedHome locale={rawLocale === "ja" ? "ja" : esLocale} />;
 }
 
 function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" }) {
@@ -1527,6 +1527,12 @@ function LocalizedFaq({
 }
 
 const homeCopy = {
+  // ja: only the metadata fields are read (title/description at the use site);
+  // the visible homepage renders from Home.tsx COPY.ja.
+  ja: {
+    title: "DockDocs — AIドキュメントプラットフォーム",
+    description: "PDFツール、AIチャット、OCR、圧縮、変換など。ブラウザ内でプライベートかつ高速に文書を処理。",
+  },
   en: {
     title: "DockDocs — AI Document Platform",
     description: "PDF tools, AI chat, OCR, compression, conversion and more. Process documents in your browser, privately and fast.",
@@ -1589,10 +1595,13 @@ const localizedTools = [
   { slug: "protect-pdf", icon: "PR", tier: "FREE", group: { en: "Security", zh: "安全" }, en: "Protect PDF", zh: "加密 PDF", description: { en: "Add password protection.", zh: "为 PDF 添加密码保护。" } },
 ] as const;
 
-function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" | "fr" }) {
+function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" }) {
+  // ja stays noindex, so its JSON-LD can inherit the English schema; the visible
+  // page still renders in Japanese via HomeSections.
+  const schemaLocale = locale === "ja" ? "en" : locale;
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema(locale)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema(schemaLocale)) }} />
       <HomeSections locale={locale} />
     </main>
   );
