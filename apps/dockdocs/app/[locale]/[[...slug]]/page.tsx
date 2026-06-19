@@ -1075,7 +1075,9 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "contract-risk") {
-    return <ContractRiskClient locale={esLocale} />;
+    // contract-risk has full ja (STR + FAQS_JA), so render it in Japanese on the
+    // ja route; other custom clients still fall back to en until their ja lands.
+    return <ContractRiskClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "lease-redflag") {
