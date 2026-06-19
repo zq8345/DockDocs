@@ -9,7 +9,7 @@ import { authHeader } from "@/lib/supabase";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Card = { q: string; a: string };
 
 const STR = {
@@ -67,6 +67,17 @@ const STR = {
     noText: "Aucun texte trouvé dans ce PDF. S'il s'agit d'un scan, effectuez d'abord une reconnaissance OCR.",
     err: "Une erreur est survenue : ",
     note: "Les fiches sont générées par l'IA à partir de votre document. Vérifiez-les rapidement avant de commencer à étudier.",
+  },
+  ja: {
+    title: "PDFフラッシュカード",
+    subtitle: "教科書の章・講義ノート・マニュアルをアップロードして学習用フラッシュカードに変換します——問題と回答は文書の内容のみから作られます。カードをタップして自己確認できます。",
+    drop: "PDFをここにドラッグ＆ドロップ、またはクリックして選択",
+    choose: "PDFを選択", reading: "読み取り中…", count: "枚数", change: "差し替え",
+    generate: "カードを生成", generating: "生成中…", reset: "最初からやり直す",
+    flip: "タップして裏返す", question: "問", answer: "答",
+    noText: "このPDFにテキストが見つかりません。スキャンの場合は先にOCRをかけてください。",
+    err: "問題が発生しました: ",
+    note: "カードは文書からAIが生成します。学習前に簡単に確認してください。",
   },
 };
 

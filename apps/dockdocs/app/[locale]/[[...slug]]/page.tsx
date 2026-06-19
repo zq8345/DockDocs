@@ -988,7 +988,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "flashcards") {
-    return <QuizClient locale={esLocale} />;
+    return <QuizClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
   if (slug === "sign-pdf") {
     return <>{toolJsonLd}<SignPdfClient locale={esLocale} /></>;
