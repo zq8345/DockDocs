@@ -98,6 +98,7 @@ import {
 import { getRuntimeCopy } from "@/lib/copy";
 import { homeSchema, aboutSchema, pricingSchema, webPageSchema } from "@/lib/page-schema";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
+import { isJaNativeRoute } from "@/shared/seo/routes";
 import { ExtraToolJsonLd, EXTRA_TOOL_SLUGS } from "@/lib/extra-tool-schema";
 import { groundingFaq } from "@/components/GroundingNote";
 import {
@@ -196,12 +197,18 @@ function normalizeEnCanonical(meta: Metadata): Metadata {
 export async function generateMetadata(args: {
   params: Promise<PageParams>;
 }): Promise<Metadata> {
-  const { locale } = await args.params;
+  const { locale, slug: rawSlug } = await args.params;
   const meta = await generateMetadataInner(args);
-  // ja is a POC: routes render (mostly English fallback) but must NOT be indexed
-  // until native ja content is complete + native-reviewed. noindex/follow keeps
-  // thin/duplicate /ja/* pages out of Google. Remove this once ja ships natively.
-  if (locale === "ja") return { ...meta, robots: { index: false, follow: true } };
+  // ja ships natively only on the surfaces that have real Japanese copy
+  // (isJaNativeRoute). English-fallback ja routes — blog, programmatic-GEO, GEO
+  // guide hubs — stay noindex; native ja routes flow through with index:true and
+  // pull their ja metadata from jaTools.
+  if (locale === "ja") {
+    const jaSlug = normalizeSlug(rawSlug);
+    if (jaSlug === null || !isJaNativeRoute(jaSlug)) {
+      return { ...meta, robots: { index: false, follow: true } };
+    }
+  }
   return locale === "en" ? normalizeEnCanonical(meta) : meta;
 }
 
@@ -273,6 +280,13 @@ async function generateMetadataInner({
   const slug = normalizeSlug(rawSlug);
   if (slug === null) {
     return {};
+  }
+
+  // Every tool slug — template AND custom-client — has native ja copy in jaTools.
+  // The inline en/zh/es/pt/fr overrides below have no ja branch, so serve ja tool
+  // metadata uniformly from the locale tool config instead of falling to English.
+  if (rawLocale === "ja" && (toolSlugs as readonly string[]).includes(slug)) {
+    return createPdfToolMetadata(getLocalizedToolConfig("ja", slug as ToolSlug));
   }
 
   const runtimeCopy = getRuntimeCopy(rawLocale);
@@ -1600,12 +1614,11 @@ const localizedTools = [
 ] as const;
 
 function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" }) {
-  // ja stays noindex, so its JSON-LD can inherit the English schema; the visible
-  // page still renders in Japanese via HomeSections.
-  const schemaLocale = locale === "ja" ? "en" : locale;
+  // ja now ships natively (homeSchema localizes Organization/WebSite/FAQ for ja),
+  // so the JSON-LD matches the Japanese page Google sees.
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema(schemaLocale)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema(locale)) }} />
       <HomeSections locale={locale} />
     </main>
   );

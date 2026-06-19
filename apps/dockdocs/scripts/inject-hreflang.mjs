@@ -1,23 +1,24 @@
 // Post-build fixup: inject rel="alternate" hreflang link tags into the static
 // export so search engines can connect the per-locale variants of each page.
 //
-// The app-router static export emits no hreflang at all. We can't easily know
-// inside generateMetadata which locales actually have a given route (blog/guides
-// exist only for en/zh, tools for all), so we derive it from the emitted files:
-// for each en (root) route we look up which secondary-locale variants actually
-// exist on disk and link exactly those — no dangling alternates.
+// The app-router static export emits no hreflang at all. We derive each route's
+// real cluster from the emitted files: for every en (root) route we look up which
+// locale variants actually exist on disk AND are indexable, and link exactly
+// those — no dangling alternates, and never a link to a noindex page.
 //
-// ja is deliberately noindex (machine-translated, awaiting native review), so it
-// is excluded from every cluster: a noindex page should not be part of an
-// hreflang set. ja pages therefore receive no hreflang.
+// ja is only partially native (tool pages + home/pricing/sitemap/info are
+// Japanese; GEO guide hubs + blog still fall back to English, so those ja pages
+// are noindex). Rather than hard-code that split, we read each ja page's robots
+// meta: an indexable ja variant joins the cluster, a noindex one does not. The
+// same robots check applies to every locale, so a noindex page in any locale is
+// automatically kept out of the hreflang set.
 
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const OUT = join(process.cwd(), "out");
 const BASE = "https://dockdocs.app";
-// Indexable secondary locales only (ja omitted on purpose — noindex).
-const SECONDARY = ["zh", "es", "pt", "fr"];
+const SECONDARY = ["zh", "es", "pt", "fr", "ja"];
 const LOCALE_DIRS = new Set(["en", "zh", "es", "pt", "fr", "ja"]);
 
 async function collectRoutes(base, { skipTopLevelLocaleDirs = false } = {}) {
@@ -53,6 +54,16 @@ const fileFor = (locale, route) =>
     ? join(OUT, route, "index.html")
     : join(OUT, locale, route, "index.html");
 
+const isNoindex = (html) => /<meta name="robots"[^>]*content="[^"]*noindex/i.test(html);
+
+async function readIfExists(file) {
+  try {
+    return await readFile(file, "utf8");
+  } catch {
+    return null;
+  }
+}
+
 // en routes = the canonical root tree (locale-prefixed dirs excluded).
 const enRoutes = await collectRoutes(OUT, { skipTopLevelLocaleDirs: true });
 const secondaryRoutes = {};
@@ -60,28 +71,36 @@ for (const loc of SECONDARY) secondaryRoutes[loc] = await collectRoutes(join(OUT
 
 let injected = 0;
 for (const route of enRoutes) {
-  const cluster = ["en", ...SECONDARY.filter((loc) => secondaryRoutes[loc].has(route))];
-  if (cluster.length < 2) continue; // nothing to link
+  // Eligible variants = file exists AND is indexable. en (root) is the canonical;
+  // if it's missing or noindex, there is no cluster to build.
+  const enHtml = await readIfExists(fileFor("en", route));
+  if (!enHtml || isNoindex(enHtml)) continue;
+
+  const variants = [{ loc: "en", file: fileFor("en", route), html: enHtml }];
+  for (const loc of SECONDARY) {
+    if (!secondaryRoutes[loc].has(route)) continue;
+    const file = fileFor(loc, route);
+    const html = await readIfExists(file);
+    if (!html || isNoindex(html)) continue;
+    variants.push({ loc, file, html });
+  }
+  if (variants.length < 2) continue; // nothing to link
 
   const links =
-    cluster.map((loc) => `<link rel="alternate" hreflang="${loc}" href="${urlFor(loc, route)}"/>`).join("") +
+    variants.map((v) => `<link rel="alternate" hreflang="${v.loc}" href="${urlFor(v.loc, route)}"/>`).join("") +
     `<link rel="alternate" hreflang="x-default" href="${urlFor("en", route)}"/>`;
 
-  // Inject into every variant that exists, incl. the /en mirror of the root page.
-  const targets = [fileFor("en", route), fileFor("en", route ? `en/${route}` : "en")];
-  for (const loc of SECONDARY) if (secondaryRoutes[loc].has(route)) targets.push(fileFor(loc, route));
+  // Inject into every eligible variant, plus the /en mirror of the root page.
+  const targets = variants.map((v) => ({ file: v.file, html: v.html }));
+  const mirrorFile = fileFor("en", route ? `en/${route}` : "en");
+  const mirrorHtml = await readIfExists(mirrorFile);
+  if (mirrorHtml) targets.push({ file: mirrorFile, html: mirrorHtml });
 
-  for (const f of targets) {
-    let html;
-    try {
-      html = await readFile(f, "utf8");
-    } catch {
-      continue;
-    }
+  for (const { file, html } of targets) {
     if (html.includes('hreflang="')) continue;
     const next = html.replace("</head>", `${links}</head>`);
     if (next !== html) {
-      await writeFile(f, next);
+      await writeFile(file, next);
       injected++;
     }
   }
