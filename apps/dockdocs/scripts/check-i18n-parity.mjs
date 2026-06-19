@@ -82,11 +82,10 @@ for (const entry of readdirSync(OUT)) {
 // can't see that — the page exists, it's just half-English. This check asserts
 // the locales we claim are fully localized override the user-facing body arrays.
 //
-// Scope = locales verified 100% complete at the body level. en is the source;
-// zh is tracked separately (still has English-fallback tool bodies, 2026-06).
-// ja is noindex but its tool bodies are now fully localized, so it's locked in
-// here to prevent regression.
-const BODY_LOCALES = ["es", "pt", "fr", "ja"];
+// Scope = every locale whose tool bodies are fully localized (verified 100%).
+// en is the source locale. zh/es/pt/fr/ja all override the body arrays for
+// every tool; ja stays noindex, but that's about indexing, not completeness.
+const BODY_LOCALES = ["zh", "es", "pt", "fr", "ja"];
 const BODY_FIELDS = ["benefits", "features", "steps"];
 const incompleteBody = [];
 
