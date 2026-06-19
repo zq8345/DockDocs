@@ -76,8 +76,57 @@ for (const entry of readdirSync(OUT)) {
   }
 }
 
-if (missing.length === 0 && unregistered.length === 0) {
-  console.log(`[i18n-guard] OK — ${routeSlugs.length} routes present in all ${locales.length} locales (${locales.join(", ")}).`);
+// ── Check C: tool-page BODY copy is actually localized (not English fallback) ──
+// A locale's tool entry can register a title/description but still spread
+// ...enTools[slug], leaving benefits/features/steps in English. Route checks A/B
+// can't see that — the page exists, it's just half-English. This check asserts
+// the locales we claim are fully localized override the user-facing body arrays.
+//
+// Scope = locales verified 100% complete at the body level. en is the source;
+// zh is tracked separately (still has English-fallback tool bodies, 2026-06);
+// ja is intentionally noindex until fully localized — so none are listed here.
+const BODY_LOCALES = ["es", "pt", "fr"];
+const BODY_FIELDS = ["benefits", "features", "steps"];
+const incompleteBody = [];
+
+const toolsSrc = readFileSync(join(APP, "lib", "localized-tools.ts"), "utf8");
+const toolSlugs = pickArray("toolSlugs");
+
+// Extract the {...} object literal that starts at the first "{" after `from`.
+function objectAfter(text, from) {
+  const open = text.indexOf("{", from);
+  if (open < 0) return "";
+  let depth = 0;
+  for (let i = open; i < text.length; i++) {
+    if (text[i] === "{") depth++;
+    else if (text[i] === "}" && --depth === 0) return text.slice(open, i + 1);
+  }
+  return "";
+}
+
+for (const locale of BODY_LOCALES) {
+  const recStart = toolsSrc.search(new RegExp(`const ${locale}Tools:\\s*Record<ToolSlug, ToolCopy>\\s*=`));
+  if (recStart < 0) {
+    incompleteBody.push(`${locale}: could not find ${locale}Tools in lib/localized-tools.ts — update the guard.`);
+    continue;
+  }
+  const record = objectAfter(toolsSrc, recStart);
+  for (const slug of toolSlugs) {
+    const at = record.indexOf(`"${slug}":`);
+    if (at < 0) {
+      incompleteBody.push(`${locale} "${slug}" — entry missing from ${locale}Tools`);
+      continue;
+    }
+    const entry = objectAfter(record, at);
+    const missingFields = BODY_FIELDS.filter((f) => !new RegExp(`\\b${f}:\\s*\\[`).test(entry));
+    if (missingFields.length) {
+      incompleteBody.push(`${locale} "${slug}" — body falls back to English (no localized ${missingFields.join(", ")})`);
+    }
+  }
+}
+
+if (missing.length === 0 && unregistered.length === 0 && incompleteBody.length === 0) {
+  console.log(`[i18n-guard] OK — ${routeSlugs.length} routes present in all ${locales.length} locales (${locales.join(", ")}); tool bodies fully localized in ${BODY_LOCALES.join(", ")}.`);
   process.exit(0);
 }
 
@@ -90,5 +139,9 @@ if (missing.length) {
   out.push("", "  Registered routes missing under some locales:");
   for (const m of missing) out.push(`    • ${m}`);
 }
-out.push("", "  Build blocked: every feature must exist in every language.");
+if (incompleteBody.length) {
+  out.push("", "  Tool pages with un-localized body copy (English fallback):");
+  for (const b of incompleteBody) out.push(`    • ${b}`);
+}
+out.push("", "  Build blocked: every feature must exist — and be fully localized — in every language.");
 die(out);
