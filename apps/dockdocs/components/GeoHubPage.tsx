@@ -272,11 +272,14 @@ export function GeoHubPage({
           </div>
           <div className="mt-8 grid gap-4 lg:grid-cols-3">
             {getHubProgrammaticPages(hub.slug).map((seed) => {
-              const page = getProgrammaticGeoPage(baseLocale, seed.surface, seed.slug);
+              const rawPage = getProgrammaticGeoPage(baseLocale, seed.surface, seed.slug);
 
-              if (!page) {
+              if (!rawPage) {
                 return null;
               }
+
+              // zh-Hant derives its programmatic-GEO copy from zh via OpenCC.
+              const page = locale === "zh-Hant" ? deepHant(rawPage) : rawPage;
 
               return (
                 <a

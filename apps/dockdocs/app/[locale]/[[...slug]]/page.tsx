@@ -1568,7 +1568,13 @@ export default async function LocalizedRoute({
 
   if ((infoPageSlugs as readonly string[]).includes(slug)) {
     if (slug === "blog") {
-      return <BlogIndexPage locale={uiLocale} useLocalePrefix />;
+      // zh-Hant: BlogIndexPage derives Traditional copy from zh internally.
+      return (
+        <BlogIndexPage
+          locale={rawLocale === "zh-Hant" ? "zh-Hant" : uiLocale}
+          useLocalePrefix
+        />
+      );
     }
 
     if (slug === "about") {
@@ -1594,9 +1600,16 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "sitemap") {
+    // zh-Hant: convert the zh title to Traditional and tag the schema zh-Hant.
+    const sitemapTitle =
+      rawLocale === "zh-Hant"
+        ? toHant("网站地图")
+        : uiLocale === "zh"
+          ? "网站地图"
+          : "Sitemap";
     return (
       <>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, "sitemap", uiLocale === "zh" ? "网站地图" : "Sitemap")) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(rawLocale, "sitemap", sitemapTitle)) }} />
         <LocalizedSitemap locale={clientLocale} />
       </>
     );
@@ -2182,8 +2195,11 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
     {
       title: locale === "zh" || hant ? h("博客指南") : locale === "es" ? "Guías del blog" : locale === "pt" ? "Guias do blog" : locale === "fr" ? "Guides du blog" : "Blog Guides",
       links: blogArticles.map((article) => ({
-        name: getBlogArticleContent(article, contentLocale).title,
-        href: blogArticlePath(article.slug, contentLocale),
+        name: h(getBlogArticleContent(article, contentLocale).title),
+        href: blogArticlePath(
+          article.slug,
+          (hant ? "zh-Hant" : contentLocale) as Locale,
+        ),
       })),
     },
     {
@@ -2191,8 +2207,12 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
       links: getProgrammaticGeoPageSeeds("guides").map((seed) => {
         const page = getProgrammaticGeoPage(contentLocale, seed.surface, seed.slug);
         return {
-          name: page?.title ?? seed.slug,
-          href: programmaticGeoPath(seed.surface, seed.slug, contentLocale),
+          name: h(page?.title ?? seed.slug),
+          href: programmaticGeoPath(
+            seed.surface,
+            seed.slug,
+            (hant ? "zh-Hant" : contentLocale) as Locale,
+          ),
         };
       }),
     },
@@ -2201,8 +2221,12 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
       links: getProgrammaticGeoPageSeeds("resources").map((seed) => {
         const page = getProgrammaticGeoPage(contentLocale, seed.surface, seed.slug);
         return {
-          name: page?.title ?? seed.slug,
-          href: programmaticGeoPath(seed.surface, seed.slug, contentLocale),
+          name: h(page?.title ?? seed.slug),
+          href: programmaticGeoPath(
+            seed.surface,
+            seed.slug,
+            (hant ? "zh-Hant" : contentLocale) as Locale,
+          ),
         };
       }),
     },
