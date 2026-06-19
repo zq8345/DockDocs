@@ -604,7 +604,7 @@ export function WorkflowErrorState({
   message: string;
   onRetry: () => void;
   onReset: () => void;
-  locale: "en" | "zh" | "es";
+  locale: "en" | "zh" | "es" | "pt" | "fr" | "ja";
   bare?: boolean;
 }) {
   const zh = locale === "zh";

@@ -32,6 +32,16 @@ export type PdfRuntimeSlug =
   | "pdf-to-ppt"
   | "pdf-to-html";
 
+export type RuntimeLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+
+// 6-way string picker. Keep PDF/OCR/API/DOCX/HTML/DockDocs and other
+// brand/format names untranslated. ja: full-width punctuation 。、「」,
+// half-width space around Latin tokens.
+function makeRuntimeTr(locale: RuntimeLocale) {
+  return (en: string, zh: string, es: string, pt: string, fr: string, ja: string): string =>
+    ({ en, zh, es, pt, fr, ja })[locale];
+}
+
 export type PdfRuntimeProgress = {
   progress: number;
   stepIndex?: number;
@@ -63,7 +73,7 @@ type PdfRuntimeInput = {
   files: File[];
   pageRanges: string;
   outputFileName: string;
-  locale: "en" | "zh" | "es";
+  locale: RuntimeLocale;
   ocrLanguage?: "eng" | "chi_sim";
   signal?: AbortSignal;
   onProgress?: (progress: PdfRuntimeProgress) => void;
@@ -138,7 +148,8 @@ export async function runPdfRuntime({
       outputFileName,
       pageRanges,
       language: ocrLanguage,
-      locale,
+      // ocr-runtime supports en/zh/es/pt/fr (no ja); fall ja back to English.
+      locale: locale === "ja" ? "en" : locale,
       signal,
       onProgress,
     });
@@ -150,7 +161,8 @@ export async function runPdfRuntime({
       file: files[0],
       route: slug as CloudConvertRoute,
       outputFileName,
-      locale,
+      // cloudconvert-runtime supports en/zh/es; map the rest down to English.
+      locale: locale === "zh" ? "zh" : locale === "es" ? "es" : "en",
       signal,
       onProgress,
     });
@@ -215,30 +227,46 @@ export async function runPdfRuntime({
   return imagesToPdf(files, outputFileName, signal, onProgress);
 }
 
-export function getPdfRuntimeErrorMessage(error: unknown, locale: "en" | "zh" | "es") {
-  const zh = locale === "zh";
+export function getPdfRuntimeErrorMessage(error: unknown, locale: RuntimeLocale) {
+  const tr = makeRuntimeTr(locale);
   const message = error instanceof Error ? error.message : String(error);
 
   if (message === "aborted") {
-    return zh ? "处理已取消。" : "Processing was cancelled.";
+    return tr(
+      "Processing was cancelled.",
+      "处理已取消。",
+      "El procesamiento se canceló.",
+      "O processamento foi cancelado.",
+      "Le traitement a été annulé.",
+      "処理がキャンセルされました。",
+    );
   }
 
   if (/encrypted|password/i.test(message)) {
-    return zh
-      ? "暂不支持加密或受密码保护的 PDF。请先移除密码后重试。"
-      : "Encrypted or password-protected PDFs are not supported yet. Remove the password and try again.";
+    return tr(
+      "Encrypted or password-protected PDFs are not supported yet. Remove the password and try again.",
+      "暂不支持加密或受密码保护的 PDF。请先移除密码后重试。",
+      "Los PDF cifrados o protegidos con contraseña aún no son compatibles. Quita la contraseña e inténtalo de nuevo.",
+      "PDFs criptografados ou protegidos por senha ainda não são compatíveis. Remova a senha e tente novamente.",
+      "Les PDF chiffrés ou protégés par mot de passe ne sont pas encore pris en charge. Retirez le mot de passe et réessayez.",
+      "暗号化された PDF やパスワード保護された PDF はまだ対応していません。パスワードを解除してからもう一度お試しください。",
+    );
   }
 
   if (/page range|range|page/i.test(message)) {
-    return zh
-      ? message
-      : message;
+    // Range/page errors are thrown already localized — pass through unchanged.
+    return message;
   }
 
   if (/image/i.test(message)) {
-    return zh
-      ? "无法读取其中一张图片。请使用 JPG、PNG 或 WebP 图片重试。"
-      : "One image could not be read. Try JPG, PNG, or WebP images.";
+    return tr(
+      "One image could not be read. Try JPG, PNG, or WebP images.",
+      "无法读取其中一张图片。请使用 JPG、PNG 或 WebP 图片重试。",
+      "No se pudo leer una de las imágenes. Prueba con imágenes JPG, PNG o WebP.",
+      "Não foi possível ler uma das imagens. Tente imagens JPG, PNG ou WebP.",
+      "Une image n'a pas pu être lue. Essayez des images JPG, PNG ou WebP.",
+      "画像の 1 つを読み込めませんでした。JPG、PNG、または WebP の画像でお試しください。",
+    );
   }
 
   if (/ocr|canvas|recognized|pages|PDF/i.test(message)) {
@@ -249,22 +277,27 @@ export function getPdfRuntimeErrorMessage(error: unknown, locale: "en" | "zh" | 
     return message;
   }
 
-  return zh
-    ? "处理文件时出现问题。请检查文件后重试。"
-    : "Something went wrong while processing the file. Review the files and try again.";
+  return tr(
+    "Something went wrong while processing the file. Review the files and try again.",
+    "处理文件时出现问题。请检查文件后重试。",
+    "Ocurrió un problema al procesar el archivo. Revisa los archivos e inténtalo de nuevo.",
+    "Ocorreu um problema ao processar o arquivo. Verifique os arquivos e tente novamente.",
+    "Un problème est survenu lors du traitement du fichier. Vérifiez les fichiers et réessayez.",
+    "ファイルの処理中に問題が発生しました。ファイルを確認してからもう一度お試しください。",
+  );
 }
 
 async function compressPdfFile(
   file: File,
   level: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
-  const zh = locale === "zh";
+  const tr = makeRuntimeTr(locale);
   throwIfAborted(signal);
-  emitProgress(onProgress, 4, 0, zh ? "正在读取 PDF…" : "Reading PDF…");
+  emitProgress(onProgress, 4, 0, tr("Reading PDF…", "正在读取 PDF…", "Leyendo el PDF…", "Lendo o PDF…", "Lecture du PDF…", "PDF を読み込み中…"));
 
   // Compression presets: scale = render resolution, quality = JPEG quality
   const preset =
@@ -283,7 +316,7 @@ async function compressPdfFile(
   const pdfDoc = await pdfjs.getDocument({ data: sourceBytes.slice(0) }).promise;
   const pageCount = pdfDoc.numPages;
 
-  emitProgress(onProgress, 10, 1, zh ? "正在压缩页面…" : "Compressing pages…");
+  emitProgress(onProgress, 10, 1, tr("Compressing pages…", "正在压缩页面…", "Comprimiendo las páginas…", "Comprimindo as páginas…", "Compression des pages…", "ページを圧縮中…"));
 
   const output = await PDFDocument.create();
 
@@ -310,7 +343,7 @@ async function compressPdfFile(
 
     const jpegBlob: Blob = await new Promise((res, rej) =>
       canvas.toBlob(
-        (b) => (b ? res(b) : rej(new Error(zh ? "页面压缩失败" : "Page compression failed."))),
+        (b) => (b ? res(b) : rej(new Error(tr("Page compression failed.", "页面压缩失败", "Error al comprimir la página.", "Falha ao comprimir a página.", "Échec de la compression de la page.", "ページの圧縮に失敗しました。")))),
         "image/jpeg",
         preset.quality,
       ),
@@ -330,13 +363,20 @@ async function compressPdfFile(
       onProgress,
       10 + Math.round((i / pageCount) * 78),
       2,
-      zh ? `正在压缩第 ${i}/${pageCount} 页…` : `Compressing page ${i}/${pageCount}…`,
+      tr(
+        `Compressing page ${i}/${pageCount}…`,
+        `正在压缩第 ${i}/${pageCount} 页…`,
+        `Comprimiendo la página ${i}/${pageCount}…`,
+        `Comprimindo a página ${i}/${pageCount}…`,
+        `Compression de la page ${i}/${pageCount}…`,
+        `${i}/${pageCount} ページ目を圧縮中…`,
+      ),
     );
     await yieldToBrowser();
   }
 
   throwIfAborted(signal);
-  emitProgress(onProgress, 92, 3, zh ? "正在生成文件…" : "Building file…");
+  emitProgress(onProgress, 92, 3, tr("Building file…", "正在生成文件…", "Generando el archivo…", "Gerando o arquivo…", "Création du fichier…", "ファイルを生成中…"));
 
   const compressedBytes = await output.save({ useObjectStreams: true, addDefaultPage: false });
 
@@ -367,9 +407,14 @@ async function compressPdfFile(
     compressedSize,
     savedPercent,
     _warning: usedOriginal
-      ? zh
-        ? "该 PDF 已是最优体积（可能是纯文字文档），已保留原文件。"
-        : "This PDF is already optimal (likely text-only); the original was kept."
+      ? tr(
+          "This PDF is already optimal (likely text-only); the original was kept.",
+          "该 PDF 已是最优体积（可能是纯文字文档），已保留原文件。",
+          "Este PDF ya tiene el tamaño óptimo (probablemente solo texto); se conservó el original.",
+          "Este PDF já tem o tamanho ideal (provavelmente só texto); o original foi mantido.",
+          "Ce PDF est déjà optimal (probablement uniquement du texte) ; l'original a été conservé.",
+          "この PDF はすでに最適なサイズです（おそらくテキストのみ）。元のファイルを保持しました。",
+        )
       : undefined,
   };
 }
@@ -415,7 +460,7 @@ async function splitPdfFile(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -517,7 +562,7 @@ async function pdfToJpg(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -533,7 +578,7 @@ async function pdfToJpg(
   const totalPages = pdfDoc.numPages;
 
   // Parse which pages to convert
-  const zh = locale === "zh";
+  const tr = makeRuntimeTr(locale);
   let pageIndices: number[] = [];
   if (pageRanges.trim()) {
     const ranges = parsePageRanges(pageRanges, totalPages, locale);
@@ -559,7 +604,7 @@ async function pdfToJpg(
     await page.render({ canvasContext: ctx as any, canvas, viewport } as any).promise;
 
     const jpgBlob = await new Promise<Blob>((res, rej) =>
-      canvas.toBlob((b) => (b ? res(b) : rej(new Error(zh ? "图片生成失败" : "Image export failed."))), "image/jpeg", 0.92),
+      canvas.toBlob((b) => (b ? res(b) : rej(new Error(tr("Image export failed.", "图片生成失败", "Error al exportar la imagen.", "Falha ao exportar a imagem.", "Échec de l'export de l'image.", "画像のエクスポートに失敗しました。")))), "image/jpeg", 0.92),
     );
     outputs.push({
       name: `page-${pageNum}.jpg`,
@@ -602,14 +647,14 @@ async function deletePdfPages(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
   throwIfAborted(signal);
   emitProgress(onProgress, 5, 0);
 
-  const zh = locale === "zh";
+  const tr = makeRuntimeTr(locale);
   const sourceBytes = await file.arrayBuffer();
   const source = await PDFDocument.load(sourceBytes);
   const totalPages = source.getPageCount();
@@ -618,7 +663,14 @@ async function deletePdfPages(
   const deleteSet = new Set(ranges.flatMap((r) => r.indices));
 
   if (deleteSet.size >= totalPages) {
-    throw new Error(zh ? "不能删除所有页面。" : "Cannot delete all pages from the PDF.");
+    throw new Error(tr(
+      "Cannot delete all pages from the PDF.",
+      "不能删除所有页面。",
+      "No se pueden eliminar todas las páginas del PDF.",
+      "Não é possível excluir todas as páginas do PDF.",
+      "Impossible de supprimer toutes les pages du PDF.",
+      "PDF のすべてのページを削除することはできません。",
+    ));
   }
 
   emitProgress(onProgress, 30, 1);
@@ -648,7 +700,7 @@ async function rotatePdfPages(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -703,14 +755,14 @@ async function reorderPdfPages(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
   throwIfAborted(signal);
   emitProgress(onProgress, 5, 0);
 
-  const zh = locale === "zh";
+  const tr = makeRuntimeTr(locale);
   const sourceBytes = await file.arrayBuffer();
   const source = await PDFDocument.load(sourceBytes);
   const totalPages = source.getPageCount();
@@ -719,7 +771,14 @@ async function reorderPdfPages(
   const orderParts = pageRanges.split(",").map((p) => parseInt(p.trim(), 10)).filter((n) => Number.isInteger(n) && n >= 1 && n <= totalPages);
 
   if (orderParts.length === 0) {
-    throw new Error(zh ? "请输入新的页面顺序，例如：3,1,2" : "Enter new page order, e.g. 3,1,2");
+    throw new Error(tr(
+      "Enter new page order, e.g. 3,1,2",
+      "请输入新的页面顺序，例如：3,1,2",
+      "Introduce el nuevo orden de páginas, por ejemplo 3,1,2",
+      "Insira a nova ordem das páginas, por exemplo 3,1,2",
+      "Saisissez le nouvel ordre des pages, par exemple 3,1,2",
+      "新しいページ順序を入力してください（例: 3,1,2）",
+    ));
   }
 
   emitProgress(onProgress, 25, 1);
@@ -749,7 +808,7 @@ async function addBlankPage(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -762,7 +821,14 @@ async function addBlankPage(
 
   // pageRanges: position to insert after (e.g. "2" = insert after page 2, "0" = insert at beginning)
   const parsedInsert = parseInt(pageRanges.trim() || String(totalPages), 10);
-  if (!Number.isFinite(parsedInsert)) throw new Error(locale === "zh" ? "请输入有效的页码。" : "Enter a valid page number.");
+  if (!Number.isFinite(parsedInsert)) throw new Error(makeRuntimeTr(locale)(
+    "Enter a valid page number.",
+    "请输入有效的页码。",
+    "Introduce un número de página válido.",
+    "Insira um número de página válido.",
+    "Saisissez un numéro de page valide.",
+    "有効なページ番号を入力してください。",
+  ));
   const insertAfter = Math.max(0, Math.min(totalPages, parsedInsert));
 
   emitProgress(onProgress, 40, 1);
@@ -794,23 +860,37 @@ const PROTECT_PW_MIN = 4;
 const PROTECT_PW_MAX = 32;
 const PROTECT_PW_PATTERN = /^[A-Za-z0-9_]+$/;
 
-function validateProtectPassword(password: string, zh: boolean) {
+function validateProtectPassword(password: string, locale: RuntimeLocale) {
+  const tr = makeRuntimeTr(locale);
   if (password.length < PROTECT_PW_MIN) {
-    throw new Error(
-      zh ? `请输入至少 ${PROTECT_PW_MIN} 位密码。` : `Enter a password of at least ${PROTECT_PW_MIN} characters.`,
-    );
+    throw new Error(tr(
+      `Enter a password of at least ${PROTECT_PW_MIN} characters.`,
+      `请输入至少 ${PROTECT_PW_MIN} 位密码。`,
+      `Introduce una contraseña de al menos ${PROTECT_PW_MIN} caracteres.`,
+      `Insira uma senha com pelo menos ${PROTECT_PW_MIN} caracteres.`,
+      `Saisissez un mot de passe d'au moins ${PROTECT_PW_MIN} caractères.`,
+      `${PROTECT_PW_MIN} 文字以上のパスワードを入力してください。`,
+    ));
   }
   if (password.length > PROTECT_PW_MAX) {
-    throw new Error(
-      zh ? `密码最多 ${PROTECT_PW_MAX} 位。` : `Password can be at most ${PROTECT_PW_MAX} characters.`,
-    );
+    throw new Error(tr(
+      `Password can be at most ${PROTECT_PW_MAX} characters.`,
+      `密码最多 ${PROTECT_PW_MAX} 位。`,
+      `La contraseña puede tener como máximo ${PROTECT_PW_MAX} caracteres.`,
+      `A senha pode ter no máximo ${PROTECT_PW_MAX} caracteres.`,
+      `Le mot de passe peut comporter au maximum ${PROTECT_PW_MAX} caractères.`,
+      `パスワードは最大 ${PROTECT_PW_MAX} 文字です。`,
+    ));
   }
   if (!PROTECT_PW_PATTERN.test(password)) {
-    throw new Error(
-      zh
-        ? "密码只能包含大小写字母、数字和下划线（_）。"
-        : "Password may contain only letters, digits, and underscores (_).",
-    );
+    throw new Error(tr(
+      "Password may contain only letters, digits, and underscores (_).",
+      "密码只能包含大小写字母、数字和下划线（_）。",
+      "La contraseña solo puede contener letras, dígitos y guiones bajos (_).",
+      "A senha pode conter apenas letras, dígitos e sublinhados (_).",
+      "Le mot de passe ne peut contenir que des lettres, des chiffres et des traits de soulignement (_).",
+      "パスワードに使用できるのは英字、数字、アンダースコア（_）のみです。",
+    ));
   }
 }
 
@@ -820,15 +900,15 @@ async function protectPdfLocally(
   file: File,
   password: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
-  const zh = locale === "zh";
+  const tr = makeRuntimeTr(locale);
   throwIfAborted(signal);
   emitProgress(onProgress, 5, 0);
 
-  validateProtectPassword(password, zh);
+  validateProtectPassword(password, locale);
 
   // Lazy-load the encryption-capable pdf-lib fork only when protect is actually used.
   const { PDFDocument: EncryptablePDFDocument } = await import("@cantoo/pdf-lib");
@@ -842,11 +922,14 @@ async function protectPdfLocally(
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     if (/encrypt|password/i.test(message)) {
-      throw new Error(
-        zh
-          ? "这个 PDF 已经被加密。请先解锁后再加密。"
-          : "This PDF is already encrypted. Unlock it first, then protect it.",
-      );
+      throw new Error(tr(
+        "This PDF is already encrypted. Unlock it first, then protect it.",
+        "这个 PDF 已经被加密。请先解锁后再加密。",
+        "Este PDF ya está cifrado. Desbloquéalo primero y luego protégelo.",
+        "Este PDF já está criptografado. Desbloqueie-o primeiro e depois proteja-o.",
+        "Ce PDF est déjà chiffré. Déverrouillez-le d'abord, puis protégez-le.",
+        "この PDF はすでに暗号化されています。先にロックを解除してから保護してください。",
+      ));
     }
     throw err;
   }
@@ -888,7 +971,7 @@ async function pdfToHtmlDoc(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -910,6 +993,7 @@ async function pdfToHtmlDoc(
     pageIndices = Array.from({ length: totalPages }, (_, i) => i);
   }
 
+  const tr = makeRuntimeTr(locale);
   const escapeHtml = (s: string) =>
     s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -951,7 +1035,7 @@ async function pdfToHtmlDoc(
     const sortedYs = [...lineMap.keys()].sort((a, b) => b - a);
     const pageLines = sortedYs.map((y) => lineMap.get(y)!.join(" ").trim()).filter(Boolean);
     const paras = pageLines.map((l) => `      <p>${escapeHtml(l)}</p>`).join("\n");
-    const summary = locale === "zh" ? "本页文字" : "Page text";
+    const summary = tr("Page text", "本页文字", "Texto de la página", "Texto da página", "Texte de la page", "ページのテキスト");
     const textBlock =
       pageLines.length > 0
         ? `    <details class="text">\n      <summary>${summary}</summary>\n${paras}\n    </details>`
@@ -963,7 +1047,7 @@ async function pdfToHtmlDoc(
     } else if (textBlock) {
       inner = textBlock;
     } else {
-      inner = `    <p>${locale === "zh" ? "(本页无可提取内容)" : "(no extractable content on this page)"}</p>`;
+      inner = `    <p>${tr("(no extractable content on this page)", "(本页无可提取内容)", "(no hay contenido extraíble en esta página)", "(nenhum conteúdo extraível nesta página)", "(aucun contenu extractible sur cette page)", "（このページに抽出可能なコンテンツはありません）")}</p>`;
     }
     sections.push(`  <section data-page="${pageNum}">\n${inner}\n  </section>`);
 
@@ -974,8 +1058,9 @@ async function pdfToHtmlDoc(
   throwIfAborted(signal);
   emitProgress(onProgress, 95, 3);
 
+  const htmlLang = { en: "en", zh: "zh", es: "es", pt: "pt", fr: "fr", ja: "ja" }[locale] ?? "en";
   const html = `<!doctype html>
-<html lang="${locale === "zh" ? "zh" : "en"}">
+<html lang="${htmlLang}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -1011,7 +1096,7 @@ async function pdfToText(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -1080,11 +1165,11 @@ async function unlockPdfLocally(
   file: File,
   password: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
-  const zh = locale === "zh";
+  const tr = makeRuntimeTr(locale);
   throwIfAborted(signal);
   emitProgress(onProgress, 5, 0);
 
@@ -1101,12 +1186,22 @@ async function unlockPdfLocally(
   } catch {
     throw new Error(
       password
-        ? zh
-          ? "无法解锁：密码不正确，或该文件不是受密码保护的 PDF。"
-          : "Could not unlock: the password is incorrect, or this isn't a password-protected PDF."
-        : zh
-          ? "未找到可移除的权限限制，或该 PDF 需要打开密码——请输入密码后重试。"
-          : "No removable restrictions found, or this PDF requires an open password — enter the password and try again.",
+        ? tr(
+            "Could not unlock: the password is incorrect, or this isn't a password-protected PDF.",
+            "无法解锁：密码不正确，或该文件不是受密码保护的 PDF。",
+            "No se pudo desbloquear: la contraseña es incorrecta o este no es un PDF protegido con contraseña.",
+            "Não foi possível desbloquear: a senha está incorreta ou este não é um PDF protegido por senha.",
+            "Déverrouillage impossible : le mot de passe est incorrect, ou il ne s'agit pas d'un PDF protégé par mot de passe.",
+            "ロックを解除できませんでした。パスワードが正しくないか、これはパスワード保護された PDF ではありません。",
+          )
+        : tr(
+            "No removable restrictions found, or this PDF requires an open password — enter the password and try again.",
+            "未找到可移除的权限限制，或该 PDF 需要打开密码——请输入密码后重试。",
+            "No se encontraron restricciones que se puedan quitar, o este PDF requiere una contraseña de apertura: introduce la contraseña e inténtalo de nuevo.",
+            "Não foram encontradas restrições removíveis, ou este PDF exige uma senha de abertura — insira a senha e tente novamente.",
+            "Aucune restriction supprimable n'a été trouvée, ou ce PDF nécessite un mot de passe d'ouverture — saisissez le mot de passe et réessayez.",
+            "解除できる制限が見つからないか、この PDF を開くにはパスワードが必要です。パスワードを入力してもう一度お試しください。",
+          ),
     );
   }
   const pageCount = pdfDoc.getPageCount();
@@ -1130,11 +1225,11 @@ async function unlockPdfLocally(
 async function addPageNumbers(
   file: File,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
-  const zh = locale === "zh";
+  const tr = makeRuntimeTr(locale);
   throwIfAborted(signal);
   emitProgress(onProgress, 5, 0);
 
@@ -1148,11 +1243,14 @@ async function addPageNumbers(
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     if (/encrypt|password/i.test(message)) {
-      throw new Error(
-        zh
-          ? "这个 PDF 已加密，请先解锁再添加页码。"
-          : "This PDF is encrypted. Unlock it first, then add page numbers.",
-      );
+      throw new Error(tr(
+        "This PDF is encrypted. Unlock it first, then add page numbers.",
+        "这个 PDF 已加密，请先解锁再添加页码。",
+        "Este PDF está cifrado. Desbloquéalo primero y luego añade los números de página.",
+        "Este PDF está criptografado. Desbloqueie-o primeiro e depois adicione os números de página.",
+        "Ce PDF est chiffré. Déverrouillez-le d'abord, puis ajoutez les numéros de page.",
+        "この PDF は暗号化されています。先にロックを解除してからページ番号を追加してください。",
+      ));
     }
     throw err;
   }
@@ -1197,28 +1295,45 @@ async function watermarkPdfLocally(
   file: File,
   text: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
-  const zh = locale === "zh";
+  const tr = makeRuntimeTr(locale);
   throwIfAborted(signal);
   emitProgress(onProgress, 5, 0);
 
   const mark = text.trim();
   if (!mark) {
-    throw new Error(zh ? "请输入水印文字。" : "Enter the watermark text.");
+    throw new Error(tr(
+      "Enter the watermark text.",
+      "请输入水印文字。",
+      "Introduce el texto de la marca de agua.",
+      "Insira o texto da marca d'água.",
+      "Saisissez le texte du filigrane.",
+      "透かしのテキストを入力してください。",
+    ));
   }
   if (mark.length > 40) {
-    throw new Error(zh ? "水印文字最多 40 个字符。" : "Watermark text must be 40 characters or fewer.");
+    throw new Error(tr(
+      "Watermark text must be 40 characters or fewer.",
+      "水印文字最多 40 个字符。",
+      "El texto de la marca de agua debe tener 40 caracteres o menos.",
+      "O texto da marca d'água deve ter no máximo 40 caracteres.",
+      "Le texte du filigrane ne doit pas dépasser 40 caractères.",
+      "透かしのテキストは 40 文字以内にしてください。",
+    ));
   }
   // StandardFonts (Helvetica) only encode Latin-1; reject other scripts with a clear message.
   if (/[^\u0000-\u00ff]/.test(mark)) {
-    throw new Error(
-      zh
-        ? "水印暂仅支持拉丁字母、数字和符号（如 CONFIDENTIAL）。中文水印即将支持。"
-        : "Watermark currently supports Latin letters, digits and symbols (e.g. CONFIDENTIAL). Other scripts coming soon.",
-    );
+    throw new Error(tr(
+      "Watermark currently supports Latin letters, digits and symbols (e.g. CONFIDENTIAL). Other scripts coming soon.",
+      "水印暂仅支持拉丁字母、数字和符号（如 CONFIDENTIAL）。中文水印即将支持。",
+      "La marca de agua admite por ahora solo letras latinas, dígitos y símbolos (p. ej. CONFIDENTIAL). Otros alfabetos llegarán pronto.",
+      "A marca d'água atualmente aceita apenas letras latinas, dígitos e símbolos (por exemplo, CONFIDENTIAL). Outros alfabetos em breve.",
+      "Le filigrane prend actuellement en charge uniquement les lettres latines, les chiffres et les symboles (par exemple CONFIDENTIAL). D'autres alphabets arrivent bientôt.",
+      "透かしは現在、ラテン文字・数字・記号（例: CONFIDENTIAL）のみに対応しています。その他の文字は近日対応予定です。",
+    ));
   }
 
   const sourceBytes = await file.arrayBuffer();
@@ -1231,11 +1346,14 @@ async function watermarkPdfLocally(
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     if (/encrypt|password/i.test(message)) {
-      throw new Error(
-        zh
-          ? "这个 PDF 已加密，请先解锁再加水印。"
-          : "This PDF is encrypted. Unlock it first, then add a watermark.",
-      );
+      throw new Error(tr(
+        "This PDF is encrypted. Unlock it first, then add a watermark.",
+        "这个 PDF 已加密，请先解锁再加水印。",
+        "Este PDF está cifrado. Desbloquéalo primero y luego añade una marca de agua.",
+        "Este PDF está criptografado. Desbloqueie-o primeiro e depois adicione uma marca d'água.",
+        "Ce PDF est chiffré. Déverrouillez-le d'abord, puis ajoutez un filigrane.",
+        "この PDF は暗号化されています。先にロックを解除してから透かしを追加してください。",
+      ));
     }
     throw err;
   }
@@ -1287,7 +1405,7 @@ async function pdfToPng(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -1300,7 +1418,7 @@ async function pdfToPng(
   const sourceBytes = new Uint8Array(await file.arrayBuffer());
   const pdfDoc = await pdfjs.getDocument({ data: sourceBytes }).promise;
   const totalPages = pdfDoc.numPages;
-  const zh = locale === "zh";
+  const tr = makeRuntimeTr(locale);
 
   let pageIndices: number[] = [];
   if (pageRanges.trim()) {
@@ -1326,7 +1444,7 @@ async function pdfToPng(
     await page.render({ canvasContext: ctx as any, canvas, viewport } as any).promise;
 
     const pngBlob = await new Promise<Blob>((res, rej) =>
-      canvas.toBlob((b) => (b ? res(b) : rej(new Error(zh ? "图片生成失败" : "Image export failed."))), "image/png"),
+      canvas.toBlob((b) => (b ? res(b) : rej(new Error(tr("Image export failed.", "图片生成失败", "Error al exportar la imagen.", "Falha ao exportar a imagem.", "Échec de l'export de l'image.", "画像のエクスポートに失敗しました。")))), "image/png"),
     );
     outputs.push({
       name: `page-${pageNum}.png`,
@@ -1365,7 +1483,7 @@ async function pdfToMarkdown(
   file: File,
   pageRanges: string,
   outputFileName: string,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
   signal?: AbortSignal,
   onProgress?: (progress: PdfRuntimeProgress) => void,
 ): Promise<PdfRuntimeArtifact> {
@@ -1440,16 +1558,23 @@ async function pdfToMarkdown(
 function parsePageRanges(
   value: string,
   pageCount: number,
-  locale: "en" | "zh" | "es",
+  locale: RuntimeLocale,
 ): SplitRange[] {
-  const zh = locale === "zh";
+  const tr = makeRuntimeTr(locale);
   const parts = value
     .split(",")
     .map((part) => part.trim())
     .filter(Boolean);
 
   if (!parts.length) {
-    throw new Error(zh ? "请输入页面范围。" : "Enter a page range.");
+    throw new Error(tr(
+      "Enter a page range.",
+      "请输入页面范围。",
+      "Introduce un intervalo de páginas.",
+      "Insira um intervalo de páginas.",
+      "Saisissez une plage de pages.",
+      "ページ範囲を入力してください。",
+    ));
   }
 
   return parts.map((part) => {
@@ -1458,19 +1583,25 @@ function parsePageRanges(
     const end = rawEnd || rawStart;
 
     if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start) {
-      throw new Error(
-        zh
-          ? `页面范围无效：${part}`
-          : `Invalid page range: ${part}`,
-      );
+      throw new Error(tr(
+        `Invalid page range: ${part}`,
+        `页面范围无效：${part}`,
+        `Intervalo de páginas no válido: ${part}`,
+        `Intervalo de páginas inválido: ${part}`,
+        `Plage de pages non valide : ${part}`,
+        `ページ範囲が無効です: ${part}`,
+      ));
     }
 
     if (end > pageCount) {
-      throw new Error(
-        zh
-          ? `页面范围 ${part} 超出文档页数。当前 PDF 共 ${pageCount} 页。`
-          : `Page range ${part} is outside this PDF. The file has ${pageCount} pages.`,
-      );
+      throw new Error(tr(
+        `Page range ${part} is outside this PDF. The file has ${pageCount} pages.`,
+        `页面范围 ${part} 超出文档页数。当前 PDF 共 ${pageCount} 页。`,
+        `El intervalo de páginas ${part} está fuera de este PDF. El archivo tiene ${pageCount} páginas.`,
+        `O intervalo de páginas ${part} está fora deste PDF. O arquivo tem ${pageCount} páginas.`,
+        `La plage de pages ${part} dépasse ce PDF. Le fichier comporte ${pageCount} pages.`,
+        `ページ範囲 ${part} はこの PDF の範囲外です。このファイルは ${pageCount} ページです。`,
+      ));
     }
 
     return {

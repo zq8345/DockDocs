@@ -41,11 +41,6 @@ function normalizeLocale(value: unknown): L {
     : "en";
 }
 
-// pdf-runtime and WorkflowErrorState only accept en/zh/es; map the rest down.
-function toRuntimeLocale(loc: L): "en" | "zh" | "es" {
-  return loc === "zh" ? "zh" : loc === "es" ? "es" : "en";
-}
-
 function makeTr(loc: L) {
   return (en: string, zh: string, es: string, pt: string, fr: string, ja: string): string =>
     ({ en, zh, es, pt, fr, ja })[loc];
@@ -58,8 +53,6 @@ export function PdfWorkflowEngine({
 }) {
   const loc = normalizeLocale(config.locale);
   const tr = makeTr(loc);
-  // Helpers below (pdf-runtime, WorkflowErrorState) only accept en/zh/es.
-  const runtimeLocale = toRuntimeLocale(loc);
   const spec = useMemo(() => getWorkflowSpec(config), [config]);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -216,7 +209,7 @@ export function PdfWorkflowEngine({
           pageRanges,
           ocrLanguage,
           outputFileName: spec.outputFileName,
-          locale: runtimeLocale,
+          locale: loc,
           signal: controller.signal,
           onProgress: ({
             progress: nextProgress,
@@ -250,7 +243,7 @@ export function PdfWorkflowEngine({
         return;
       }
 
-      setError(getPdfRuntimeErrorMessage(processingError, runtimeLocale));
+      setError(getPdfRuntimeErrorMessage(processingError, loc));
       setStatus("error");
     } finally {
       if (processingRunRef.current === runId) {
@@ -493,7 +486,7 @@ export function PdfWorkflowEngine({
                 message={error}
                 onRetry={() => { setError(""); setStatus(files.length ? "ready" : "idle"); }}
                 onReset={resetWorkflow}
-                locale={runtimeLocale}
+                locale={loc}
               />
             ) : null}
           </div>
@@ -640,7 +633,7 @@ export function PdfWorkflowEngine({
           message={error}
           onRetry={() => { setError(""); setStatus(files.length ? "ready" : "idle"); }}
           onReset={resetWorkflow}
-          locale={runtimeLocale}
+          locale={loc}
         />
       ) : null}
     </div>

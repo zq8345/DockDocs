@@ -28,7 +28,7 @@ function lh(href: string, locale: string) {
 }
 
 function asMembershipLocale(locale: string): MembershipLocale {
-  return locale === "zh" || locale === "es" || locale === "pt" || locale === "fr" ? locale : "en";
+  return locale === "zh" || locale === "es" || locale === "pt" || locale === "fr" || locale === "ja" ? locale : "en";
 }
 
 const linkCls =
@@ -76,8 +76,8 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
     };
   }, [open]);
 
-  const t = (en: string, zh: string, es: string, pt: string, fr: string) =>
-    loc === "zh" ? zh : loc === "es" ? es : loc === "pt" ? pt : loc === "fr" ? fr : en;
+  const t = (en: string, zh: string, es: string, pt: string, fr: string, ja: string) =>
+    loc === "zh" ? zh : loc === "es" ? es : loc === "pt" ? pt : loc === "fr" ? fr : loc === "ja" ? ja : en;
 
   function go(href: string) {
     setOpen(false);
@@ -112,12 +112,12 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
         onClick={() => go("/account")}
         className="hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] md:inline-flex"
       >
-        {t("Sign in", "登录", "Iniciar sesión", "Entrar", "Connexion")}
+        {t("Sign in", "登录", "Iniciar sesión", "Entrar", "Connexion", "ログイン")}
       </button>
     );
   }
 
-  const name = authUser.name ?? authUser.email ?? t("Account", "账户", "Cuenta", "Conta", "Compte");
+  const name = authUser.name ?? authUser.email ?? t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント");
   const display = snapshot?.displayName ?? "Free";
   const interval = snapshot?.record.interval;
   const badge = planBadge(display, interval, loc);
@@ -130,7 +130,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-label={t("Account", "账户", "Cuenta", "Conta", "Compte")}
+        aria-label={t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント")}
         className="flex items-center gap-2 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] py-1 pl-1 pr-2.5 transition hover:border-[color:var(--line-strong)]"
       >
         <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[color:var(--accent)] text-[11px] font-semibold text-[color:var(--on-accent)]">
@@ -198,13 +198,13 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
 
             {/* links */}
             <button type="button" onClick={() => go("/account")} className={linkCls}>
-              {t("Account center", "账户中心", "Centro de cuenta", "Central da conta", "Centre du compte")}
+              {t("Account center", "账户中心", "Centro de cuenta", "Central da conta", "Centre du compte", "アカウントセンター")}
             </button>
             {isPaid && (
               <button type="button" onClick={handlePortal} disabled={billingLoading} className={`${linkCls} disabled:opacity-50`}>
                 {billingLoading
-                  ? t("Opening…", "打开中…", "Abriendo…", "Abrindo…", "Ouverture…")
-                  : t("Manage billing", "管理账单", "Gestionar facturación", "Gerenciar cobrança", "Gérer la facturation")}
+                  ? t("Opening…", "打开中…", "Abriendo…", "Abrindo…", "Ouverture…", "開いています…")
+                  : t("Manage billing", "管理账单", "Gestionar facturación", "Gerenciar cobrança", "Gérer la facturation", "請求を管理")}
               </button>
             )}
             <button
@@ -212,7 +212,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
               onClick={handleSignOut}
               className="block w-full rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[13px] font-medium text-[color:var(--error)] transition hover:bg-[color:var(--error-surface)]"
             >
-              {t("Sign out", "退出登录", "Cerrar sesión", "Sair", "Se déconnecter")}
+              {t("Sign out", "退出登录", "Cerrar sesión", "Sair", "Se déconnecter", "サインアウト")}
             </button>
           </div>
         </>
