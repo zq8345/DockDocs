@@ -1201,7 +1201,7 @@ export default async function LocalizedRoute({
     return (
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, slug, infoPage.title)) }} />
-        <SaasInfoPage page={infoPage} locale={esLocale} useLocalePrefix />
+        <SaasInfoPage page={infoPage} locale={rawLocale === "ja" ? "ja" : esLocale} useLocalePrefix />
       </>
     );
   }

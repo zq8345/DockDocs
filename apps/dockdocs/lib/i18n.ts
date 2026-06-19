@@ -483,7 +483,7 @@ export type InfoPageData = {
   faqs?: Array<{ question: string; answer: string }>;
 };
 
-export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr", Record<InfoPageSlug, InfoPageData>> = {
+export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", Record<InfoPageSlug, InfoPageData>> = {
   en: {
     about: {
       slug: "about",
@@ -824,6 +824,352 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr", Record<InfoPage
               title: "Liability limitations",
               description:
                 "DockDocs should not be used as the sole basis for legal, financial, medical, or compliance decisions.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  ja: {
+    about: {
+      slug: "about",
+      title: "DockDocs について",
+      description:
+        "プライバシー優先のPDFツールから、AIドキュメントワークフローのワークスペースへと進化する DockDocs について。",
+      eyebrow: "DockDocs について",
+      heroTitle: "実際のファイル作業のためのAIドキュメントワークスペース。",
+      heroDescription:
+        "DockDocs は日々の文書作業をよりシンプルにします——圧縮・結合・分割・変換・OCR・要約・確認を、ひとつの整ったワークスペースで。",
+      primaryAction: { label: "JPG→PDF から始める", href: "/jpg-to-pdf" },
+      secondaryAction: { label: "AI ワークスペースを見る", href: "/ai-workspace" },
+      sections: [
+        {
+          title: "ミッション",
+          description:
+            "私たちの使命は、チーム・学生・実務担当者・個人のプロフェッショナルに、雑然としたツールサイトのように感じさせない、速いPDFワークフローを届けることです。",
+          items: [
+            {
+              title: "まずPDFツール",
+              description:
+                "DockDocs は実用的な作業から始まります——圧縮・結合・分割・変換・OCR、そして受け渡し用のファイル準備。",
+            },
+            {
+              title: "AIは強化として",
+              description:
+                "AIは、OCR・要約・PDFとのチャット・ワークフロー支援など、文書理解を高める場面にのみ加えます。",
+            },
+            {
+              title: "プライバシー優先の思想",
+              description:
+                "製品の方向性は、明確なアップロードの説明、透明な処理状態、最小限のデータ露出を重視します。",
+            },
+          ],
+        },
+        {
+          title: "製品の方向性",
+          description:
+            "DockDocs は個別のPDFツールから、世界中の生産性に資するより広いAIドキュメントワークスペースへと進化しています。",
+          items: [
+            {
+              title: "対応ワークフロー",
+              description:
+                "PDF圧縮、PDF結合、PDF分割、PDF→Word、OCR PDF、JPG→PDF、AI要約、文書Q&A。",
+            },
+            {
+              title: "ワークスペースの構想",
+              description:
+                "長期的な方向性は、文書の内容を整理・変換・理解・再利用できる単一の場所です。",
+            },
+          ],
+        },
+      ],
+    },
+    blog: {
+      slug: "blog",
+      title: "リソースとブログ | DockDocs",
+      description:
+        "PDFツール、OCRワークフロー、JPG→PDF変換、AIドキュメント生産性に関する DockDocs のリソース。",
+      eyebrow: "リソース",
+      heroTitle: "PDFツールとAIドキュメントワークフローのリソース。",
+      heroDescription:
+        "PDFとAIドキュメント生産性にまつわる実践ガイド、ワークフロー解説、製品アップデート、今後のSEOリソースのためのコンテンツハブ。",
+      sections: [
+        {
+          title: "予定しているリソース領域",
+          description:
+            "ブログは薄い告知ではなく、長く役立つエバーグリーンなコンテンツのために用意しています。",
+          items: [
+            {
+              title: "PDFワークフローガイド",
+              description:
+                "圧縮・結合・分割・変換、そして整った文書一式を準備するためのガイド。",
+            },
+            {
+              title: "変換リソース",
+              description:
+                "JPG→PDF、PDF→Word、スキャンPDF、文書の受け渡しワークフローに関する記事。",
+            },
+            {
+              title: "AIドキュメント生産性",
+              description:
+                "OCR、AI要約、PDFとのチャット、文書自動化パターンのためのリソース。",
+            },
+          ],
+        },
+      ],
+    },
+    help: {
+      slug: "help",
+      title: "ヘルプセンター | DockDocs",
+      description:
+        "DockDocs のアップロード、プライバシー優先のPDFワークフロー、対応形式、ローカル処理、AIドキュメントの制限についてのヘルプ。",
+      eyebrow: "ヘルプセンター",
+      heroTitle: "アップロード・プライバシー・形式・AIワークフローのヘルプ。",
+      heroDescription:
+        "このページで、DockDocs のツールページの構成、各ワークフローが想定するファイル、AI機能が当てはまる場面を理解できます。",
+      sections: [
+        {
+          title: "アップロードの挙動と対応形式",
+          description:
+            "各ツールページは、何をアップロードできるか、ワークフローが何を準備しているか、最後にどのエクスポート操作が現れるかを示します。",
+          items: [
+            {
+              title: "アップロードの挙動",
+              description:
+                "選択したワークフローのアップロードカードからファイルを選びます。PDFツールはPDF中心、JPG→PDFは文書作成のために画像ファイルを受け付けます。",
+            },
+            {
+              title: "対応形式",
+              description:
+                "中心的なワークフローは、PDF、スキャンPDF、JPG、PNG、WebP、編集可能なWord向けの文書変換に対応します。",
+            },
+            {
+              title: "トラブルシューティング",
+              description:
+                "ファイルが大きすぎる、または形式が違う場合は、AI系のワークフローの前にまず圧縮や変換から始めてください。",
+            },
+          ],
+        },
+        {
+          title: "ローカル処理、プライバシー優先の取り扱い、AIの制限",
+          description:
+            "DockDocs は、可能な限りローカル優先の文書準備、プライバシー優先の取り扱い、AI支援機能の明確な制限を中心に設計されています。",
+          items: [
+            {
+              title: "ローカル処理",
+              description:
+                "可能な限り、DockDocs はブラウザ優先・ローカル優先のワークフロー設計を採り、将来のクラウドやAIの工程が入る前に、簡単な文書準備をユーザーの手元で行えるようにします。",
+            },
+            {
+              title: "プライバシー優先の取り扱い",
+              description:
+                "ツールページは、本番処理を有効にする前に、アップロードの想定、処理の目的、保持ポリシー、削除の挙動を説明すべきです。",
+            },
+            {
+              title: "AIの制限",
+              description:
+                "OCR・要約・PDFとのチャットは文書の確認に役立ちますが、提出・署名・共有の前に重要な出力を検証してください。",
+            },
+          ],
+        },
+      ],
+    },
+    faq: {
+      slug: "faq",
+      title: "よくある質問 | DockDocs",
+      description:
+        "DockDocs のPDFツール、プライバシー優先のワークフロー、OCR、AI要約、PDFとのチャットに関するよくある質問。",
+      eyebrow: "よくある質問",
+      heroTitle: "DockDocs の質問と回答。",
+      heroDescription:
+        "PDFツール、ファイルのプライバシー、ブラウザ優先のワークフロー、OCR、JPG変換、エクスポート、モバイル利用、AIドキュメント機能への回答。",
+      sections: [
+        {
+          title: "サイト全体のFAQ",
+          description: "文書をアップロードする前によく聞かれる質問への実用的な回答。",
+        },
+      ],
+      faqs: [
+        {
+          question: "DockDocs とは何ですか？",
+          answer:
+            "DockDocs は、AI機能を二次的な生産性レイヤーとして加えた、プライバシー優先のPDFツールプラットフォームです。",
+        },
+        {
+          question: "ファイルはブラウザ内で処理されますか？",
+          answer:
+            "DockDocs は可能な限りブラウザ優先・ローカル優先のワークフローを目指して設計されています。将来クラウド処理やAI処理を行う場合は、アップロード前に明確に開示します。",
+        },
+        {
+          question: "私のファイルはどの程度プライベートですか？",
+          answer:
+            "製品の方向性はプライバシー優先です——明確なアップロード目的、透明な処理状態、本番処理の前に文書化された保持ルール。",
+        },
+        {
+          question: "OCRの精度はどのくらいですか？",
+          answer:
+            "OCRの精度はスキャン品質、画像のコントラスト、言語、ページレイアウトに依存します。重要なワークフローで使う前に抽出テキストを確認してください。",
+        },
+        {
+          question: "JPG画像をPDFに変換できますか？",
+          answer:
+            "はい。JPG→PDF は JPG・PNG・WebP のアップロード、ページの並べ替え、PDFエクスポートに対応しています。",
+        },
+        {
+          question: "AI要約とPDFとのチャットは何ができますか？",
+          answer:
+            "AI機能は文書の要約・検索・質問に役立ちます。法務・財務・専門的な確認の代わりにはなりません。",
+        },
+        {
+          question: "エクスポートは最終版ですか？",
+          answer:
+            "エクスポートのプレビューやワークフロー状態の表示は、想定される結果の理解を助けます。共有の前に最終ファイルを検証してください。",
+        },
+        {
+          question: "DockDocs はモバイルで動作しますか？",
+          answer:
+            "はい。ナビゲーション、アップロード領域、カード、CTAは、デスクトップ・タブレット・モバイルの画面で動作するよう設計されています。",
+        },
+      ],
+    },
+    contact: {
+      slug: "contact",
+      title: "お問い合わせ | DockDocs",
+      description:
+        "製品に関する質問、PDFワークフローのフィードバック、プライバシーの質問、AIドキュメントワークスペースのお問い合わせは DockDocs まで。",
+      eyebrow: "お問い合わせ",
+      heroTitle: "DockDocs チームへのお問い合わせ。",
+      heroDescription:
+        "製品フィードバック、プライバシーの質問、PDFワークフローのご要望、AIワークスペースのアイデア、ビジネスのお問い合わせにこのページをご利用ください。",
+      primaryAction: { label: "DockDocs にメール", href: "mailto:hello@dockdocs.app" },
+      secondaryAction: { label: "ヘルプセンターを見る", href: "/help" },
+      sections: [
+        {
+          title: "サポート窓口",
+          description:
+            "DockDocs は製品の成長に合わせ、問い合わせ手段をシンプルに保ちます。",
+          items: [
+            {
+              title: "サポートメール",
+              description:
+                "製品の質問・不具合報告・プライバシーの質問・ワークフローのフィードバックは hello@dockdocs.app へ。",
+            },
+            {
+              title: "返信の目安",
+              description:
+                "初期段階のサポート依頼は製品フィードバックとして確認します。緊急の本番SLAは今後のビジネスプランで対応します。",
+            },
+            {
+              title: "エンタープライズのお問い合わせ",
+              description:
+                "チームは、PDFワークフローの処理量、AI文書レビュー、プライバシー要件、連携のアイデアについてご相談いただけます。",
+            },
+          ],
+        },
+      ],
+    },
+    "privacy-policy": {
+      slug: "privacy-policy",
+      title: "プライバシーポリシー | DockDocs",
+      description:
+        "DockDocs のアップロード、ローカル優先のPDFワークフロー、AI処理、保持、Cookie、アナリティクスに関するプライバシーポリシー。",
+      eyebrow: "プライバシーポリシー",
+      heroTitle: "プライバシー優先の文書ワークフローには明確なルールが必要です。",
+      heroDescription:
+        "このポリシーの構成は、DockDocs がアップロード、ローカル処理、将来のAI処理、保持、Cookie、アナリティクスにどう向き合うかを説明します。",
+      sections: [
+        {
+          title: "文書の取り扱い",
+          description:
+            "DockDocs は、ユーザーがファイルをアップロードする前に、文書処理の想定を明確にするよう設計されています。",
+          items: [
+            {
+              title: "アップロード",
+              description:
+                "ツールページは、アップロード前に対応形式、処理の目的、想定される出力を示すべきです。",
+            },
+            {
+              title: "ローカル処理",
+              description:
+                "可能な限り、クラウドのワークフローが入る前に、簡単な文書準備はブラウザ内またはユーザーの手元で行うべきです。",
+            },
+            {
+              title: "AI処理",
+              description:
+                "OCR・要約・文書Q&AなどのAI機能はモデル処理を必要とする場合があります。それらのワークフローは制限と取り扱いルールを明確に開示すべきです。",
+            },
+          ],
+        },
+        {
+          title: "データとサイト運用",
+          description:
+            "本番のSaaSプライバシーページは、保持、Cookie、アナリティクス、連絡経路を定義すべきです。",
+          items: [
+            {
+              title: "保持",
+              description:
+                "本番の保持期間、削除の挙動、一時ファイルの取り扱いは、公開前に文書化すべきです。",
+            },
+            {
+              title: "Cookie",
+              description:
+                "DockDocs は、サイト運用や言語選択などの今後の設定のために、必須Cookieを使用する場合があります。",
+            },
+            {
+              title: "アナリティクス",
+              description:
+                "アナリティクスを有効にする場合は、文書の内容を露出させるためではなく、集計的な製品利用の把握のために使うべきです。",
+            },
+          ],
+        },
+      ],
+    },
+    terms: {
+      slug: "terms",
+      title: "利用規約 | DockDocs",
+      description:
+        "DockDocs のPDFツール、AIドキュメントワークフロー、制限、知的財産、責任に関する利用規約。",
+      eyebrow: "利用規約",
+      heroTitle: "DockDocs のPDF・AIワークフロー利用規約。",
+      heroDescription:
+        "本規約は、許容される利用、ユーザーの責任、AIの制限、知的財産、責任の範囲を概説します。",
+      sections: [
+        {
+          title: "DockDocs の利用",
+          description:
+            "DockDocs のツールは、適法な文書ワークフロー、生産性、変換、整理、確認のためのものです。",
+          items: [
+            {
+              title: "利用",
+              description:
+                "ユーザーは、文書をアップロード・変換・確認・エクスポートする権利を有していることを確認する責任があります。",
+            },
+            {
+              title: "制限",
+              description:
+                "ファイル処理、出力品質、OCRの精度、AI支援による確認は、元ファイルやワークフローによって異なる場合があります。",
+            },
+            {
+              title: "知的財産",
+              description:
+                "ユーザーは処理する内容について引き続き責任を負います。DockDocs のブランド、インターフェース、製品素材は DockDocs の資産です。",
+            },
+          ],
+        },
+        {
+          title: "AIと責任",
+          description:
+            "AI機能は生産性の補助であり、専門的な助言として扱うべきではありません。",
+          items: [
+            {
+              title: "AIの免責",
+              description:
+                "AI要約、OCRテキスト、PDFとのチャットの回答は、不完全または不正確な場合があります。重要な出力は検証してください。",
+            },
+            {
+              title: "責任の制限",
+              description:
+                "DockDocs を、法務・財務・医療・コンプライアンスの判断の唯一の根拠として用いるべきではありません。",
             },
           ],
         },
