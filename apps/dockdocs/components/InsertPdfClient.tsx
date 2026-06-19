@@ -302,7 +302,7 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
       {done && (
         <div className="mt-6">
-          <ToolBridge slug="add-page" locale={locale === "ja" ? "en" : locale} useLocalePrefix={locale !== "en"} />
+          <ToolBridge slug="add-page" locale={locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
       <ToolFaq tool="add-page" locale={locale} />

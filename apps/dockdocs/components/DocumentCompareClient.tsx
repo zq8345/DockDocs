@@ -719,7 +719,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         outputFileName: doc.name,
         pageRanges: "1-3",
         language: locale === "zh" ? "chi_sim" : "eng",
-        locale: locale === "ja" ? "en" : locale,
+        locale,
       });
       const text = (res.text ?? "").replace(/\s+/g, " ").trim();
       setResults((prev) => prev.map((d) => (d.id === id ? { ...d, text, chars: text.length, status: text ? "ok" : "empty", error: text ? undefined : d.error } : d)));

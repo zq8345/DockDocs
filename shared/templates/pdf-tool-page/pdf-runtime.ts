@@ -148,8 +148,8 @@ export async function runPdfRuntime({
       outputFileName,
       pageRanges,
       language: ocrLanguage,
-      // ocr-runtime supports en/zh/es/pt/fr (no ja); fall ja back to English.
-      locale: locale === "ja" ? "en" : locale,
+      // ocr-runtime now supports all 6 locales (incl. ja) — pass the real locale through.
+      locale,
       signal,
       onProgress,
     });
