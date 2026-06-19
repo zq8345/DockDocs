@@ -2757,9 +2757,159 @@ export const runtimeCopy = {
 
 // Japanese POC: blocks present here override English via the shallow merge in
 // getRuntimeCopy; everything else falls back to English. Expand as ja grows.
-const runtimeCopyJa: Partial<typeof runtimeCopy.en> = {};
+// NOTE: runtimeCopy is `as const`, so a `Partial<typeof runtimeCopy.en>` annotation
+// would demand the exact English string literals and reject any translation. The
+// override is instead structural; getRuntimeCopy asserts the merged shape back to
+// the canonical runtime type.
+const runtimeCopyJa = {
+  shell: {
+    header: {
+      aria: "DockDocs ナビゲーション",
+      homeAria: "DockDocs ホーム",
+      tagline: "AIドキュメントプラットフォーム",
+      tools: "ツール",
+      menu: "メニュー",
+      closeMenu: "メニューを閉じる",
+      featureMenu: "機能メニュー",
+      utilityMenu: "アカウントとリンク",
+      free: "無料",
+      plus: "PLUS",
+      comingSoon: "近日公開",
+    },
+    nav: [
+      { name: "AI", href: "/#ai" },
+      { name: "変換", href: "/pdf-to-word", slug: "pdf-to-word" },
+      { name: "最適化", href: "/compress-pdf", slug: "compress-pdf" },
+      { name: "ダッシュボード", href: "/dashboard", slug: "dashboard" },
+      { name: "マイチャット", href: "/my-chats" },
+      { name: "料金", href: "/pricing" },
+      { name: "アカウント", href: "/account" },
+    ],
+    brand: {
+      aria: "ブランドナビゲーション",
+      products: [
+        {
+          name: "DockDocs",
+          href: "https://dockdocs.app",
+          description: "ファイル・要約・変換・確認のためのAIドキュメントワークスペース。",
+        },
+        {
+          name: "DockIMG",
+          href: "https://dockimg.app",
+          description: "画像の編集・クリーンアップ・変換のためのAI画像ワークスペース。",
+        },
+        {
+          name: "DockSEO",
+          href: "https://dockseo.app",
+          description: "スニペット・メタデータ・コンテンツ確認のための検索ワークスペース。",
+        },
+        {
+          name: "DockText",
+          href: "https://docktext.app",
+          description: "整文・要約・書式整えのためのAIライティングワークスペース。",
+        },
+      ],
+    },
+    footer: {
+      aria: "フッターナビゲーション",
+      copyrightPrefix: "(c)",
+      links: [
+        { name: "関連ワークスペース", href: "/#related-tools" },
+        { name: "DockDocs", href: "/" },
+        { name: "プライバシーポリシー", href: "/privacy-policy" },
+        { name: "利用規約", href: "/terms" },
+        { name: "サイトマップ", href: "/sitemap" },
+      ],
+    },
+    relatedTools: {
+      title: "関連ワークスペース",
+      description:
+        "デスクトップでもモバイルでも一貫したワークスペースで、Dock 製品間を行き来できます。",
+    },
+    account: {
+      account: "アカウント",
+      myChats: "マイチャット",
+      signedIn: "ログイン中",
+      logout: "ログアウト",
+      continueGoogle: "Google で続行",
+      email: "メール",
+      password: "パスワード",
+      login: "ログイン",
+      signedOutTitle: "ワークスペースアカウント",
+      signedOutDescription: "ログインすると、アカウント・アップグレード・ワークスペースの入口を1つのメニューにまとめられます。",
+      upgrade: "アップグレード",
+      currentPlan: "無料ワークスペース",
+      actionFailed: "アカウント操作に失敗しました。",
+    },
+    utility: {
+      accountTitle: "アカウント",
+      languageTitle: "言語",
+      linksTitle: "会社",
+      about: "会社概要",
+      blog: "ブログ",
+    },
+    toolTemplate: {
+      eyebrow: "AIドキュメントプラットフォーム",
+      schemaSlogan: "実際のファイル作業のためのAIドキュメントプラットフォーム",
+    },
+    legal: {
+      privacy: "プライバシーポリシー",
+      terms: "利用規約",
+      sitemap: "サイトマップ",
+    },
+    trust: {
+      localFirst: "ローカル優先",
+      exportReady: "エクスポート対応",
+    },
+    metadata: {
+      title: "DockDocs AIドキュメントワークスペース",
+      description: "PDF・Officeファイル・文章整え・文書ワークフローのためのAIドキュメントツール。",
+    },
+  },
+  common: {
+    upload: {
+      label: "アップロード",
+      dragDrop: "ドキュメントをドラッグ＆ドロップ",
+      selectedDescription: "ファイルが選択され、次の処理ステップの準備ができました。",
+      supported: "対応形式",
+      limit: "上限",
+      processing: "処理中",
+      successMessage: "実行UIの準備ができ、下に出力が表示されます。",
+      states: {
+        empty: "ファイル待ち",
+        idle: "アップロード可能",
+        selected: "ファイル選択済み",
+        processing: "ドキュメントを処理中",
+        success: "ドキュメント準備完了",
+        error: "要確認",
+      },
+    },
+    result: {
+      states: {
+        empty: "結果なし",
+        processing: "生成中",
+        success: "完了",
+        error: "エラー",
+      },
+      resultUnavailable: "結果は利用できません",
+      waitingForOutput: "出力を待機中",
+      runtimeError: "実行時にエラー状態が返されました。",
+      processingMessage:
+        "ドキュメントを処理しています。準備ができ次第、ここに出力が表示されます。",
+      keyPoints: "要点",
+      nextActions: "次のアクション",
+      copy: "コピー",
+      download: "ダウンロード",
+      startChat: "チャットを開始",
+    },
+    errors: {
+      unsupportedFile: "サポートされていないファイル形式です。対応形式:",
+      fileTooLarge: "ファイルが25 MBのUI上限を超えています。",
+    },
+  },
+};
 
 export function getRuntimeCopy(locale: RuntimeLocale | "es" | "pt" | "fr" | "ja" = defaultLocale) {
-  if (locale === "ja") return { ...runtimeCopy.en, ...runtimeCopyJa };
+  if (locale === "ja") return { ...runtimeCopy.en, ...runtimeCopyJa } as unknown as typeof runtimeCopy.en;
   return runtimeCopy[locale] ?? runtimeCopy.en;
 }
