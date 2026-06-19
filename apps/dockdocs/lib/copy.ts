@@ -2762,6 +2762,73 @@ export const runtimeCopy = {
 // override is instead structural; getRuntimeCopy asserts the merged shape back to
 // the canonical runtime type.
 const runtimeCopyJa = {
+  dashboard: {
+    eyebrow: "ダッシュボード",
+    title: "ドキュメントワークスペースの概要。",
+    description: "ドキュメント・AI 会話・要約・ワークフローの状態を一元管理するコントロールセンター。",
+    newDocument: "新規ドキュメント",
+    startChat: "チャットを開始",
+    workspace: "ワークスペース",
+    nav: ["ドキュメント", "AI", "変換", "最適化", "設定"],
+    stats: [
+      { label: "ドキュメント", value: "18" },
+      { label: "会話", value: "9" },
+      { label: "要約", value: "14" },
+      { label: "ワークフロー", value: "6" },
+    ],
+    overviewLabel: "概要",
+    recentLabel: "最近のドキュメント",
+    conversationsLabel: "最近の会話",
+    actionsLabel: "AI アクション",
+    healthLabel: "ワークスペースの状態",
+    nextStepsLabel: "おすすめの次のステップ",
+    emptyTitle: "まだアップロードがありません",
+    emptyDescription:
+      "PDF・スキャン・レポート・Office 文書をアップロードして始めましょう。DockDocs がファイル、AI の出力、次のアクションを見える化します。",
+    continueWork: "作業を続ける",
+    openChat: "AI チャットを開く",
+    upgradeCta: "料金を見る",
+    upgradeDescription:
+      "ワークスペースの容量がもっと必要ですか？この UI では課金状態を変えずに Plus と Pro のオプションを確認できます。",
+    analyticsLabel: "分析",
+    usageLabel: "使用量（準備中）",
+    activityLabel: "最近のアクティビティ",
+    onboardingTitle: "初めてですか？まずは 1 つのファイルから。",
+    onboardingDescription:
+      "ドキュメントをアップロードし、出典に基づく質問を 1 つ行ってから、ダッシュボードに戻って最近のファイルと次のアクションを確認しましょう。",
+    documents: [
+      { name: "Board-report.pdf", type: "PDF", status: "準備完了", action: "AI 要約" },
+      { name: "Vendor-contract.pdf", type: "PDF", status: "要確認", action: "チャット" },
+      { name: "Scanned-invoice.pdf", type: "スキャン", status: "処理中", action: "OCR" },
+    ],
+    conversations: [
+      { title: "ベンダー契約からリスクを抽出", meta: "Vendor-contract.pdf", status: "出典 2 件" },
+      { title: "取締役会レポートのアクションを要約", meta: "Board-report.pdf", status: "準備完了" },
+      { title: "請求書の支払条件を探す", meta: "Scanned-invoice.pdf", status: "先に OCR" },
+    ],
+    actions: [
+      { title: "Chat with PDF", description: "出典コンテキスト付きで、根拠のある質問ができます。", href: "/chat-with-pdf", tier: "FREE" },
+      { title: "要約", description: "概要・要点・エンティティ・次のステップを作成します。", href: "/ai-summary", tier: "FREE" },
+      { title: "OCR", description: "AI でレビューする前に、スキャン文書を検索可能にします。", href: "/ocr", tier: "FREE" },
+      { title: "変換", description: "PDF を編集可能な Word 向けワークフローへ。", href: "/pdf-to-word", tier: "FREE" },
+      { title: "圧縮", description: "メール・ポータル・受け渡し用にファイルサイズを削減。", href: "/compress-pdf", tier: "FREE" },
+    ],
+    health: [
+      { label: "ストレージ", value: "ローカルプレビュー", tone: "Ready" },
+      { label: "処理", value: "ランタイム UI 連動", tone: "Healthy" },
+      { label: "プロバイダー", value: "環境で設定済み", tone: "Placeholder" },
+    ],
+    nextSteps: [
+      "実際の PDF をアップロードして、出典付きの会話を始めましょう。",
+      "レビューに送る前に AI 要約を作成しましょう。",
+      "質問の前に、スキャンは OCR を使いましょう。",
+    ],
+    activity: [
+      "取締役会レポートの要約を生成しました",
+      "ベンダー契約を Chat with PDF で開きました",
+      "スキャンした請求書を OCR の待機列に追加しました",
+    ],
+  },
   shell: {
     header: {
       aria: "DockDocs ナビゲーション",
