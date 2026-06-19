@@ -1081,11 +1081,11 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "lease-redflag") {
-    return <LeaseRedflagClient locale={esLocale} />;
+    return <LeaseRedflagClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "govbid-matrix") {
-    return <GovbidMatrixClient locale={esLocale} />;
+    return <GovbidMatrixClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "my-chats") {
