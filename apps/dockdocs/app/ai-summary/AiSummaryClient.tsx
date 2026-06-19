@@ -146,7 +146,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
         </label>
       ) : null}
 
-      {limitHit !== null ? <UpgradePrompt locale={locale === "ja" ? "en" : locale} limit={limitHit} /> : null}
+      {limitHit !== null ? <UpgradePrompt locale={locale} limit={limitHit} /> : null}
 
       {/* Processing */}
       {status === "extracting" || status === "summarizing" ? (

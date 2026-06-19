@@ -506,7 +506,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
     return fi >= 0 ? fi : 1;
   });
   // Shared in-place upgrade flow (quote → breakdown modal → discounted checkout).
-  const upgrade = useUpgradeFlow(locale === "ja" ? "en" : locale);
+  const upgrade = useUpgradeFlow(locale);
 
   useEffect(() => {
     let mounted = true;
@@ -552,7 +552,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       void handlePortal();
       return;
     }
-    setBillingError(billingErrorCopy(code, message, locale === "ja" ? "en" : locale));
+    setBillingError(billingErrorCopy(code, message, locale));
   }
 
   // Plain hosted checkout for a NEW subscription (Free → paid) — no credit.
@@ -927,7 +927,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Upgrade breakdown — credit is visible before the redirect (可溯源/honest). */}
-      <UpgradeConfirmModal flow={upgrade} locale={locale === "ja" ? "en" : locale} />
+      <UpgradeConfirmModal flow={upgrade} locale={locale} />
     </div>
   );
 }

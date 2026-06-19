@@ -121,9 +121,20 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       setItems((prev) => [...prev, ...added]);
       if (skipped.length) {
         const list = skipped.join(", ");
-        setError(locale === "zh"
-          ? `跳过了 ${skipped.length} 个无法读取的文件：${list}${encryptedSkipped ? "(含加密文件，请先解锁)" : ""}。`
-          : `Skipped ${skipped.length} unreadable file(s): ${list}${encryptedSkipped ? " (some are password-protected — unlock them first)" : ""}.`);
+        const enc = encryptedSkipped;
+        const msg =
+          locale === "zh"
+            ? `跳过了 ${skipped.length} 个无法读取的文件：${list}${enc ? "(含加密文件，请先解锁)" : ""}。`
+            : locale === "es"
+              ? `Se omitieron ${skipped.length} archivo(s) ilegible(s): ${list}${enc ? " (algunos están protegidos con contraseña; desbloquéalos primero)" : ""}.`
+              : locale === "pt"
+                ? `${skipped.length} arquivo(s) ilegível(eis) ignorado(s): ${list}${enc ? " (alguns estão protegidos por senha; desbloqueie-os primeiro)" : ""}.`
+                : locale === "fr"
+                  ? `${skipped.length} fichier(s) illisible(s) ignoré(s) : ${list}${enc ? " (certains sont protégés par mot de passe ; déverrouillez-les d'abord)" : ""}.`
+                  : locale === "ja"
+                    ? `読み取れなかったファイルを${skipped.length}件スキップしました：${list}${enc ? "(一部はパスワード保護されています。先に解除してください)" : ""}。`
+                    : `Skipped ${skipped.length} unreadable file(s): ${list}${enc ? " (some are password-protected — unlock them first)" : ""}.`;
+        setError(msg);
       }
     } finally {
       setBusy(false);

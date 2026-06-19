@@ -139,7 +139,7 @@ export function BatchUploadBox({
             {t.folder}
           </button>
           <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-            <span>{hint ?? (locale === "zh" ? "支持 PDF" : locale === "es" ? "Compatible con PDF" : "Supports PDF")}</span>
+            <span>{hint ?? (locale === "zh" ? "支持 PDF" : locale === "es" ? "Compatible con PDF" : locale === "pt" ? "Compatível com PDF" : locale === "fr" ? "Compatible PDF" : locale === "ja" ? "PDF対応" : "Supports PDF")}</span>
             {privacyLabel !== null && (
               <>
                 <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />

@@ -53,11 +53,17 @@ export function saveRun(run: Omit<FlowRun, "id" | "createdAt">): FlowRun {
   return next;
 }
 
-export function relativeTime(iso: string, locale: "en" | "zh" | "es" | "pt" | "fr"): string {
+export function relativeTime(iso: string, locale: "en" | "zh" | "es" | "pt" | "fr" | "ja"): string {
   const diff = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diff / 60_000);
   const hours = Math.floor(diff / 3_600_000);
   const days = Math.floor(diff / 86_400_000);
+  if (locale === "ja") {
+    if (mins < 1) return "たった今";
+    if (mins < 60) return `${mins}分前`;
+    if (hours < 24) return `${hours}時間前`;
+    return `${days}日前`;
+  }
   if (locale === "zh") {
     if (mins < 1) return "刚刚";
     if (mins < 60) return `${mins} 分钟前`;

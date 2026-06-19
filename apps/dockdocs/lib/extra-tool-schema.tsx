@@ -5,7 +5,7 @@ import { siteUrl } from "@/lib/i18n";
 // PdfToolPageConfig and never went through createPdfToolSchema. This keeps GEO /
 // structured-data coverage complete across both render paths (the non-prefixed
 // app/<slug>/page.tsx and the /zh|/es catch-all). en/zh authored; es → en.
-type Loc = "en" | "zh" | "es" | "pt" | "fr";
+type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Label = { name: string; description: string; crumb: string };
 
 const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
@@ -40,6 +40,12 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       description:
         "Rognez les marges d'un PDF en ligne et gratuitement. Supprimez les espaces blancs de n'importe quel bord avec un aperçu en direct — toutes les pages rognées de la même façon, dans votre navigateur.",
     },
+    ja: {
+      name: "DockDocs PDF 余白トリミング",
+      crumb: "PDF 余白トリミング",
+      description:
+        "PDF の余白を無料でオンライントリミング。ライブプレビューを見ながらどの辺の余白も削除でき、全ページを同じ範囲でトリミング。すべてブラウザ内で完結します。",
+    },
   },
   "redact-pdf": {
     en: {
@@ -71,6 +77,12 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "Caviarder PDF",
       description:
         "Caviardez un PDF pour de vrai : détruisez définitivement le texte caché, au lieu de seulement le masquer. Entièrement dans votre navigateur ; votre fichier ne quitte jamais votre appareil.",
+    },
+    ja: {
+      name: "DockDocs PDF 黒塗り墨消し",
+      crumb: "PDF 黒塗り墨消し",
+      description:
+        "PDF を本当に黒塗りします。隠した文字を上から覆うだけでなく、永久に削除します。すべてブラウザ内で処理し、ファイルが端末から外に出ることはありません。",
     },
   },
   redline: {
@@ -104,6 +116,12 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       description:
         "Comparez deux versions d'un PDF pour voir exactement ce qui a changé : texte ajouté surligné, texte supprimé barré. Gratuit et dans votre navigateur.",
     },
+    ja: {
+      name: "DockDocs PDF 変更履歴・差分",
+      crumb: "PDF 差分比較",
+      description:
+        "2 つのバージョンの PDF を比較して、変更点を正確に把握。追加されたテキストはハイライト、削除されたテキストは取り消し線で表示。無料、ブラウザ内で完結します。",
+    },
   },
   "extract-to-excel": {
     en: {
@@ -135,6 +153,12 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "Extraire vers Excel",
       description:
         "Importez factures, devis ou contrats et laissez l'IA extraire les champs clés vers un tableur téléchargeable en CSV. Elle ne rapporte que ce qui figure réellement dans chaque document.",
+    },
+    ja: {
+      name: "DockDocs Excel への抽出",
+      crumb: "Excel への抽出",
+      description:
+        "請求書・見積書・契約書をアップロードすると、AI が主要な項目を表に抽出し、CSV としてダウンロードできます。各文書に実際に書かれている内容だけを報告します。",
     },
   },
   "url-to-pdf": {
@@ -168,6 +192,12 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       description:
         "Convertissez n'importe quelle page web publique en PDF en ligne et gratuitement. Collez une URL et téléchargez un PDF propre rendu par le navigateur — sans téléversement ni installation.",
     },
+    ja: {
+      name: "DockDocs ウェブページを PDF に",
+      crumb: "URL を PDF に",
+      description:
+        "公開ウェブページを無料でオンライン PDF 化。URL を貼り付けるだけで、本物のブラウザエンジンでレンダリングされたきれいな PDF をダウンロード。アップロードもインストールも不要です。",
+    },
   },
   "ai-workspace": {
     en: {
@@ -199,6 +229,12 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "Espace IA",
       description:
         "Espace de travail PDF avec IA pour l'OCR, les résumés, le chat avec le PDF et les flux en plusieurs étapes, le tout dans votre navigateur.",
+    },
+    ja: {
+      name: "DockDocs AI ドキュメントワークスペース",
+      crumb: "AI ワークスペース",
+      description:
+        "OCR、要約、PDF とのチャット、複数ステップのドキュメント処理を行う AI 文書ワークスペース。すべてブラウザ内で完結します。",
     },
   },
 };

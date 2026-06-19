@@ -973,7 +973,7 @@ export default async function LocalizedRoute({
   // Indexable tools that render a custom client but aren't in toolSlugs
   // (sign-pdf is in toolSlugs and handled above; these are not): lightweight schema.
   const extraJsonLd = EXTRA_TOOL_SLUGS.includes(slug) ? (
-    <ExtraToolJsonLd slug={slug} locale={esLocale as "en" | "zh" | "es" | "pt" | "fr"} />
+    <ExtraToolJsonLd slug={slug} locale={(rawLocale === "ja" ? "ja" : esLocale) as "en" | "zh" | "es" | "pt" | "fr" | "ja"} />
   ) : null;
 
   if (slug === "chat-with-pdf") {
@@ -1119,7 +1119,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "account") {
-    return <LocalizedAccount locale={esLocale} />;
+    return <LocalizedAccount locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (COMING_SOON_TOOLS[slug]) {
@@ -1254,7 +1254,7 @@ function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
       <div className="mx-auto max-w-md">
-        <AccountClient locale={locale === "ja" ? "en" : locale} />
+        <AccountClient locale={locale === "zh" ? "zh" : locale === "es" ? "es" : locale === "pt" ? "pt" : locale === "fr" ? "fr" : locale === "ja" ? "ja" : "en"} />
       </div>
     </div>
   );
