@@ -9,7 +9,7 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Fmt = "jpg" | "png";
 type Img = { name: string; data: Uint8Array };
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; pages?: number; images?: Img[]; msg?: string };
@@ -61,6 +61,15 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max} fichier${n === 1 ? "" : "s"}`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "échec",
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
     note: "Chaque page de chaque PDF est convertie en image (rendue à 2×). Les grands lots prennent un moment — tout reste sur votre appareil.",
+  },
+  ja: {
+    title: "一括PDFを画像に",
+    subtitle: "PDFのフォルダごとドロップして、すべてのページをJPGまたはPNGに変換——すべてブラウザ内でレンダリングされ、1つのZIPにまとめられます。アップロードは一切ありません。",
+    drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
+    format: "形式", run: "すべて変換", running: "変換中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max}件`, pages: (n: number) => `${n}ページ`, failed: "失敗",
+    need: "PDFを少なくとも1つ追加してください。", err: "問題が発生しました: ",
+    note: "各PDFのすべてのページが画像になります（2×でレンダリング）。大量のバッチは少し時間がかかります——すべてデバイス内で完結します。",
   },
 };
 

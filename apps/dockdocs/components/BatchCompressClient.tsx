@@ -8,7 +8,7 @@ import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Level = "low" | "recommended" | "high";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; saved?: number; outSize?: number; blob?: Blob; msg?: string };
 
@@ -69,6 +69,17 @@ const STR = {
     totalSaved: (p: number) => `${p}% de réduction au total`,
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
     note: "La compression convertit les pages en images ; les PDF très textuels ne seront peut-être pas beaucoup réduits. Tout reste sur votre appareil.",
+  },
+  ja: {
+    title: "一括圧縮",
+    subtitle: "PDFのフォルダごとドロップして一度にすべて縮小——各ファイルはブラウザ内で圧縮され、1つのZIPにまとめられます。アップロードは一切ありません。",
+    drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択", reading: "読み取り中…",
+    level: "圧縮", low: "弱", recommended: "推奨", high: "強",
+    run: "すべて圧縮", running: "圧縮中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max}件`, saved: "削減", failed: "失敗",
+    totalSaved: (p: number) => `全体で${p}%小さく`,
+    need: "PDFを少なくとも1つ追加してください。", err: "問題が発生しました: ",
+    note: "圧縮はページを画像に変換するため、テキスト主体のPDFはあまり縮小されない場合があります。すべてデバイス内で完結します。",
   },
 };
 

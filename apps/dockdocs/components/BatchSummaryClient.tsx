@@ -12,7 +12,7 @@ import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "
 import { checkUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Summary = { executiveSummary: string; keyPoints: string[]; actionItems?: string[]; nextSteps?: string[] };
 type Doc = { id: string; name: string; file: File; text: string };
 type Result = { name: string; summary?: Summary; error?: string };
@@ -69,6 +69,16 @@ const STR = {
     keyPoints: "Points clés", download: "Tout télécharger (.md)", need: "Ajoutez au moins un PDF.",
     noText: "aucun texte extractible (document scanné ?)", err: "Une erreur est survenue : ",
     note: "Les résumés sont générés par IA à partir de chaque document — vérifiez-les rapidement. Traités un par un pour respecter les limites d'utilisation.",
+  },
+  ja: {
+    title: "一括要約",
+    subtitle: "複数のレポート、論文、契約書をアップロードすると、各文書のAIによる簡潔な要約——要点をまとめたエグゼクティブサマリー——が得られます。一度に最大5件まで。",
+    drop: "PDFをここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", add: "追加", reading: "読み取り中…",
+    run: "すべて要約", running: "要約中", reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max}件`,
+    keyPoints: "要点", download: "すべてダウンロード (.md)", need: "PDFを少なくとも1つ追加してください。",
+    noText: "抽出可能なテキストがありません（スキャン？）", err: "問題が発生しました: ",
+    note: "要約は各文書からAIが生成します——簡単に確認してください。制限内に収めるため1件ずつ処理します。",
   },
 };
 

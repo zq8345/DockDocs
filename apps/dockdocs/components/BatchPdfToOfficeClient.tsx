@@ -8,7 +8,7 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Format = "word" | "excel";
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; blob?: Blob; msg?: string };
@@ -108,6 +108,24 @@ const STR = {
     note: "Le texte et les tableaux sont extraits dans un fichier modifiable. Les PDF numérisés ou très mis en page peuvent ne pas se convertir parfaitement. Les fichiers de plus de 5 Mo ne sont pas pris en charge en lot — utilisez le convertisseur fichier unique pour ceux-là.",
     err: "Une erreur est survenue : ",
   },
+  ja: {
+    title: "PDFをWord / Excelに一括変換",
+    subtitle:
+      "フォルダ内のPDFをまとめて編集可能なWordまたはExcelファイルに変換します。各ファイルはサーバーで変換され、1つのZIPにまとめられます。",
+    word: "Wordに変換 (.docx)",
+    excel: "Excelに変換 (.xlsx)",
+    run: "すべて変換",
+    running: "変換中",
+    download: "ZIPをダウンロード",
+    reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max} ファイル`,
+    done: "完了",
+    failed: "失敗",
+    need: "PDFを1つ以上追加してください。",
+    tooBig: "5 MB超 — 単一ファイルツールをご利用ください",
+    note: "テキストと表が編集可能なファイルに抽出されます。スキャンされたPDFや凝ったデザインのPDFは完全には変換できない場合があります。5 MBを超えるファイルは一括処理に対応していません — その場合は単一ファイル変換ツールをご利用ください。",
+    err: "問題が発生しました: ",
+  },
 };
 
 // Per-target heading/subtitle (native) for the split single-format pages.
@@ -118,6 +136,7 @@ const PT: Record<Format, Record<Locale, { title: string; subtitle: string }>> = 
     es: { title: "PDF a Word por lotes", subtitle: "Convierte una carpeta entera de PDF a archivos Word (.docx) editables de una vez: cada uno se convierte en nuestro servidor y se empaqueta en un solo ZIP." },
     pt: { title: "PDF para Word em lote", subtitle: "Converta uma pasta inteira de PDFs para arquivos Word (.docx) editáveis de uma vez: cada um é convertido no nosso servidor e empacotado em um único ZIP." },
     fr: { title: "PDF en Word par lots", subtitle: "Convertissez un dossier entier de PDF en fichiers Word (.docx) modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP." },
+    ja: { title: "PDFをWordに一括変換", subtitle: "フォルダ内のPDFをまとめて編集可能なWord（.docx）に変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。" },
   },
   excel: {
     en: { title: "Batch PDF to Excel", subtitle: "Convert a whole folder of PDFs to editable Excel (.xlsx) spreadsheets in one go — each is converted on our server and packaged into a single ZIP." },
@@ -125,6 +144,7 @@ const PT: Record<Format, Record<Locale, { title: string; subtitle: string }>> = 
     es: { title: "PDF a Excel por lotes", subtitle: "Convierte una carpeta entera de PDF a hojas de cálculo Excel (.xlsx) editables de una vez: cada una se convierte en nuestro servidor y se empaqueta en un solo ZIP." },
     pt: { title: "PDF para Excel em lote", subtitle: "Converta uma pasta inteira de PDFs para planilhas Excel (.xlsx) editáveis de uma vez: cada uma é convertida no nosso servidor e empacotada em um único ZIP." },
     fr: { title: "PDF en Excel par lots", subtitle: "Convertissez un dossier entier de PDF en feuilles de calcul Excel (.xlsx) modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP." },
+    ja: { title: "PDFをExcelに一括変換", subtitle: "フォルダ内のPDFをまとめて編集可能なExcel（.xlsx）に変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。" },
   },
 };
 

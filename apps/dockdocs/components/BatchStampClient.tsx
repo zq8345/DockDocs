@@ -8,7 +8,7 @@ import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-t
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Mode = "watermark" | "pagenum";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
@@ -89,6 +89,21 @@ const STR = {
     needText: "Veuillez saisir le texte du filigrane.", needFile: "Ajoutez au moins un PDF.",
     note: "Utilise le positionnement par défaut (filigrane en diagonale / numéros de page). Pour une position ou une opacité personnalisées, utilisez les outils individuels Filigrane ou Numéros de page. Tout reste sur votre appareil.",
     err: "Une erreur s'est produite : ",
+  },
+  ja: {
+    title: "PDF に一括で透かし / ページ番号",
+    titleWm: "PDF に一括で透かし", titlePn: "PDF に一括でページ番号",
+    subWm: "フォルダ内の PDF すべてに一度に透かしを付与——各ファイルはブラウザ内で処理され、1 つの ZIP にまとめられます。何もアップロードされません。",
+    subPn: "フォルダ内の PDF すべてに一度にページ番号を付与——各ファイルはブラウザ内で処理され、1 つの ZIP にまとめられます。何もアップロードされません。",
+    subtitle: "フォルダ内の PDF すべてに一度に透かしやページ番号を付与——各ファイルはブラウザ内で処理され、1 つの ZIP にまとめられます。何もアップロードされません。",
+    drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
+    wm: "透かし", pn: "ページ番号",
+    wmText: "透かしのテキスト", wmPlaceholder: "例: CONFIDENTIAL",
+    run: "すべてに適用", running: "処理中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max} ファイル`, done: "完了", failed: "失敗",
+    needText: "透かしのテキストを入力してください。", needFile: "PDF を 1 つ以上追加してください。",
+    note: "既定の配置（斜めの透かし / ページ番号）を使用します。位置や不透明度をカスタマイズするには、単一ファイル用の「透かし」または「ページ番号」ツールをご利用ください。すべてがお使いのデバイス内で完結します。",
+    err: "問題が発生しました: ",
   },
 };
 

@@ -9,7 +9,7 @@ import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Mode = "crop" | "delete";
 type Edges = { top: number; right: number; bottom: number; left: number };
 type Status = "queued" | "done" | "error";
@@ -123,6 +123,27 @@ const STR = {
     needDel: "Saisissez les numéros de page à supprimer.",
     note: "Tout s'exécute dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Le rognage masque la zone coupée (elle peut être restaurée) ; la suppression retire définitivement les pages.",
     err: "Une erreur s'est produite : ",
+  },
+  ja: {
+    title: "スキャン補正を一括処理",
+    subtitle:
+      "フォルダ内のスキャンしたPDFをまとめて整えます — すべてのページから同じ余白を切り取ったり、各ファイルから同じページ（表紙など）を削除したりできます。すべてブラウザ内で処理し、1つのZIPにまとめます。",
+    crop: "余白を切り取る",
+    del: "ページを削除",
+    top: "上", right: "右", bottom: "下", left: "左",
+    preview: "プレビュー（最初のファイル）",
+    cropHint: "ドラッグして各辺を切り取ります（ページに対する%）。透明な部分が保持されます。すべてのファイルのすべてのページに適用されます。",
+    delLabel: "各ファイルから削除するページ",
+    delPlaceholder: "例: 1 または 1,3-4",
+    delHint: "これらのページ番号がすべてのファイルから削除されます。すべてのページが失われるファイルはスキップされます。",
+    run: "すべて処理", running: "処理中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max} ファイル`,
+    done: "完了", failed: "失敗",
+    need: "PDFを1つ以上追加してください。",
+    needCrop: "切り取る余白を1つ以上設定してください。",
+    needDel: "削除するページ番号を入力してください。",
+    note: "すべてブラウザ内で処理されます — ファイルがデバイスから出ることはありません。切り取りは切り取った領域を隠すだけです（元に戻せます）。削除はそれらのページを取り除きます。",
+    err: "問題が発生しました: ",
   },
 };
 

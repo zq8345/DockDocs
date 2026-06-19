@@ -10,7 +10,7 @@ import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "
 import { checkUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
 
 const MAX_FILES = 30;
@@ -60,6 +60,15 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max} fichiers`, uncategorized: "Non classé", failed: "aucun texte",
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
     note: "Les catégories sont suggérées par l'IA à partir du texte de chaque document et peuvent nécessiter une vérification. Le ZIP conserve vos fichiers d'origine, simplement regroupés dans des dossiers par catégorie.",
+  },
+  ja: {
+    title: "PDF を分類",
+    subtitle: "雑然とした PDF の山をドロップ——AI が各ファイルにラベルを付け（請求書、契約書、履歴書、レポートなど）、1 つの ZIP 内のフォルダに振り分けるので、散らかったフォルダがきれいに整理されます。ファイルがデバイスから出ることはありません。",
+    drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択", add: "追加", reading: "ファイルを読み取り中…",
+    run: "すべて分類", running: "分類中", download: "分類済み ZIP をダウンロード", reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max} ファイル`, uncategorized: "未分類", failed: "テキストなし",
+    need: "PDF を 1 つ以上追加してください。", err: "問題が発生しました: ",
+    note: "カテゴリは各ドキュメントのテキストから AI が推測したもので、確認が必要な場合があります。ZIP は元のファイルをそのまま保持し、カテゴリ別フォルダにまとめるだけです。",
   },
 };
 

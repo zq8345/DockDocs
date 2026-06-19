@@ -980,11 +980,11 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "batch-compress") {
-    return <BatchCompressClient locale={esLocale} />;
+    return <BatchCompressClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "batch-summary") {
-    return <BatchSummaryClient locale={esLocale} />;
+    return <BatchSummaryClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "flashcards") {
@@ -1011,67 +1011,67 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "batch-pdf-to-image") {
-    return <BatchPdfToImageClient locale={esLocale} />;
+    return <BatchPdfToImageClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "batch-protect-pdf") {
-    return <BatchProtectClient locale={esLocale} />;
+    return <BatchProtectClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "batch-rename-pdf") {
-    return <BatchRenameClient locale={esLocale} />;
+    return <BatchRenameClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "batch-watermark-pdf") {
-    return <BatchStampClient locale={esLocale} lockMode="watermark" />;
+    return <BatchStampClient locale={rawLocale === "ja" ? "ja" : esLocale} lockMode="watermark" />;
   }
 
   if (slug === "batch-page-numbers") {
-    return <BatchStampClient locale={esLocale} lockMode="pagenum" />;
+    return <BatchStampClient locale={rawLocale === "ja" ? "ja" : esLocale} lockMode="pagenum" />;
   }
 
   if (slug === "batch-split-merge") {
-    return <BatchSplitMergeClient locale={esLocale} lockMode="split" />;
+    return <BatchSplitMergeClient locale={rawLocale === "ja" ? "ja" : esLocale} lockMode="split" />;
   }
 
   if (slug === "batch-rotate-pdf") {
-    return <BatchRotateClient locale={esLocale} />;
+    return <BatchRotateClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "batch-extract-sheet") {
-    return <ExtractExcelClient locale={esLocale} />;
+    return <ExtractExcelClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "batch-sort") {
-    return <BatchSortClient locale={esLocale} />;
+    return <BatchSortClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "batch-pdf-to-word") {
-    return <BatchPdfToOfficeClient locale={esLocale} target="word" />;
+    return <BatchPdfToOfficeClient locale={rawLocale === "ja" ? "ja" : esLocale} target="word" />;
   }
 
   if (slug === "batch-pdf-to-excel") {
-    return <BatchPdfToOfficeClient locale={esLocale} target="excel" />;
+    return <BatchPdfToOfficeClient locale={rawLocale === "ja" ? "ja" : esLocale} target="excel" />;
   }
 
   if (slug === "batch-word-to-pdf") {
-    return <BatchOfficeToPdfClient locale={esLocale} source="word" />;
+    return <BatchOfficeToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} source="word" />;
   }
 
   if (slug === "batch-excel-to-pdf") {
-    return <BatchOfficeToPdfClient locale={esLocale} source="excel" />;
+    return <BatchOfficeToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} source="excel" />;
   }
 
   if (slug === "batch-ppt-to-pdf") {
-    return <BatchOfficeToPdfClient locale={esLocale} source="ppt" />;
+    return <BatchOfficeToPdfClient locale={rawLocale === "ja" ? "ja" : esLocale} source="ppt" />;
   }
 
   if (slug === "batch-translate") {
-    return <BatchTranslateClient locale={esLocale} />;
+    return <BatchTranslateClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "batch-fix-scans") {
-    return <BatchFixScansClient locale={esLocale} />;
+    return <BatchFixScansClient locale={rawLocale === "ja" ? "ja" : esLocale} />;
   }
 
   if (slug === "contract-risk") {

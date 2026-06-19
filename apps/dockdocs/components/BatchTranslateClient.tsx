@@ -12,7 +12,7 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; translation?: string; msg?: string };
 
@@ -125,6 +125,24 @@ const STR = {
     tooLong: "Trop long (plus de 14 000 caractères)",
     note: "Chaque PDF est lu dans votre navigateur ; seul le texte extrait est envoyé pour traduction. Le résultat est en texte brut (.txt), un fichier par PDF — la mise en page n'est pas conservée. Les PDF numérisés nécessitent une OCR au préalable. Compte dans votre limite IA quotidienne.",
     err: "Une erreur s'est produite : ",
+  },
+  ja: {
+    title: "PDF を一括翻訳",
+    subtitle:
+      "フォルダ内の PDF すべてを 1 回の実行で同じ言語に翻訳——各ファイルのテキストが翻訳され、.txt ファイルの 1 つの ZIP にまとめられます。",
+    target: "翻訳先",
+    run: "すべて翻訳",
+    running: "翻訳中",
+    download: "ZIPをダウンロード",
+    reset: "最初からやり直す",
+    files: (n: number, max: number) => `${n} / ${max} ファイル`,
+    done: "完了",
+    failed: "失敗",
+    need: "PDF を 1 つ以上追加してください。",
+    noText: "選択可能なテキストがありません（スキャン？）",
+    tooLong: "長すぎます（14,000 文字超）",
+    note: "各 PDF はブラウザ内で読み取られ、抽出されたテキストのみが翻訳のために送信されます。出力は PDF 1 つにつき 1 ファイルのプレーンテキスト（.txt）で、レイアウトは保持されません。スキャンされた PDF は先に OCR が必要です。1 日の AI 上限にカウントされます。",
+    err: "問題が発生しました: ",
   },
 };
 
