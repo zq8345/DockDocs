@@ -1,6 +1,7 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
 import { BatchFileCard } from "@/components/BatchFileCard";
+import { BatchUploadBox } from "@/components/BatchUploadBox";
 
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
@@ -85,17 +86,19 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
   const [error, setError] = useState<string | null>(null);
   const [limitHit, setLimitHit] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const folderRef = useRef<HTMLInputElement>(null);
 
   const addFiles = useCallback(async (files: File[]) => {
     const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
     if (!pdfs.length) return;
+    // Slice to remaining slots BEFORE extraction (don't pdfjs-parse discards).
+    const toProcess = pdfs.slice(0, Math.max(0, maxFiles - items.length));
+    if (!toProcess.length) return;
     setError(null); setBusy(true); setPhase("idle");
     try {
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const added: Item[] = [];
-      for (const f of pdfs) {
+      for (const f of toProcess) {
         let text = "";
         try {
           const doc = await pdfjs.getDocument({ data: new Uint8Array(await f.arrayBuffer()) }).promise;
@@ -112,7 +115,7 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
     } finally {
       setBusy(false);
     }
-  }, []);
+  }, [items.length, maxFiles]);
 
   const reset = () => { setItems([]); setPhase("idle"); setProgress(0); setError(null); setLimitHit(null); };
 
@@ -170,27 +173,18 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
-      <input ref={folderRef} type="file" multiple className="hidden" {...({ webkitdirectory: "", directory: "" } as Record<string, string>)} onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <div
-          className="mt-8 cursor-pointer rounded-[var(--radius-lg)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-10 text-center transition hover:border-[color:var(--line-strong)]"
-          onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => { e.preventDefault(); const fs = Array.from(e.dataTransfer.files || []); if (fs.length) addFiles(fs); }}
-        >
-          {busy ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-1"><Spinner /><p className="text-[14px] font-medium text-[color:var(--muted)]">{t.reading}</p></div>
-          ) : (
-            <p className="text-[15px] font-medium text-[color:var(--foreground)]">{t.drop}</p>
-          )}
-          {!busy && (
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              <button type="button" onClick={(e) => { e.stopPropagation(); inputRef.current?.click(); }} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>
-              <button type="button" onClick={(e) => { e.stopPropagation(); folderRef.current?.click(); }} className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] px-5 text-[14px] font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.folder}</button>
-            </div>
-          )}
-        </div>
+        <BatchUploadBox
+          locale={locale}
+          onFiles={addFiles}
+          busy={busy}
+          busyLabel={t.reading}
+          accept="application/pdf,.pdf"
+          extensions={[".pdf"]}
+          chooseLabel={t.choose}
+          privacyLabel={null}
+        />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

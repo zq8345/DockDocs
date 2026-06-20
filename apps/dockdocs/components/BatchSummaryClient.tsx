@@ -99,13 +99,18 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
   const addFiles = useCallback(async (files: File[]) => {
     const pdfs = files.filter((f) => f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf"));
     if (!pdfs.length) return;
+    // Slice to the remaining slots BEFORE extraction so a large drop/folder
+    // doesn't pdfjs-parse files we'd only discard (the setDocs slice below
+    // stays as belt-and-suspenders for concurrent adds).
+    const toProcess = pdfs.slice(0, Math.max(0, maxFiles - docs.length));
+    if (!toProcess.length) return;
     setError(null); setBusy(true); setPhase("idle"); setResults([]);
     try {
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const added: Doc[] = [];
       let encrypted = false;
-      for (const f of pdfs) {
+      for (const f of toProcess) {
         try {
           const doc = await pdfjs.getDocument({ data: new Uint8Array(await f.arrayBuffer()) }).promise;
           let text = "";
@@ -125,7 +130,7 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
     } finally {
       setBusy(false);
     }
-  }, [locale, t]);
+  }, [locale, t, docs.length, maxFiles]);
 
   const reset = () => { setDocs([]); setResults([]); setPhase("idle"); setProgress(0); setError(null); setLimitHit(null); };
 
