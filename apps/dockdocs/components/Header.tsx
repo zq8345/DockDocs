@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { defaultLocale, isAllLocale, routeLocales, localeLabels } from "@/lib/i18n";
+import { deepHant } from "@/lib/zh-hant";
 import { getUser, onAuthChange, type AuthUser } from "@/lib/auth";
 import { AccountMenu } from "@/components/AccountMenu";
 
@@ -785,10 +786,10 @@ const pageLinks = {
 
 type Locale = "en" | "zh";
 
-function stripLocale(p: string): "en" | "zh" | "es" | "pt" | "fr" | "ja" {
+function stripLocale(p: string): "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" {
   const s = p.split("/").filter(Boolean);
   const first = s[0];
-  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" ? first : "en";
+  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "zh-Hant" ? first : "en";
 }
 function lh(h: string, l: string) {
   return l === defaultLocale ? h : `/${l}${h}`;
@@ -814,8 +815,10 @@ export function Header() {
   const moreRef = useRef<HTMLDivElement>(null);
   const locale = stripLocale(pathname ?? "/");
 
-  const cats = navCategories[locale] ?? navCategories.en;
-  const pages = pageLinks[locale] ?? pageLinks.en;
+  // zh-Hant derives the entire nav from the zh source via OpenCC (deepHant),
+  // mirroring ToolFaq/Home; otherwise stripLocale's "zh-Hant" falls through to en.
+  const cats = locale === "zh-Hant" ? deepHant(navCategories.zh) : (navCategories[locale] ?? navCategories.en);
+  const pages = locale === "zh-Hant" ? deepHant(pageLinks.zh) : (pageLinks[locale] ?? pageLinks.en);
 
   useEffect(() => {
     setLight(document.documentElement.classList.contains("light"));

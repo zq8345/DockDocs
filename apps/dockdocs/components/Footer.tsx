@@ -3,10 +3,11 @@
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { defaultLocale } from "@/lib/i18n";
+import { deepHant } from "@/lib/zh-hant";
 
 function l(pathname: string | null): string {
   const first = (pathname ?? "/").split("/").filter(Boolean)[0];
-  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" ? first : defaultLocale;
+  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "zh-Hant" ? first : defaultLocale;
 }
 function href(path: string, locale: string) {
   return locale === defaultLocale ? path : `/${locale}${path}`;
@@ -404,10 +405,10 @@ export function Footer() {
               <BrandMark showWordmark={true} />
             </a>
             <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--faint)]">
-              {locale === "zh" ? "私密、可溯源的文档 AI" : locale === "es" ? "IA documental privada y verificable" : locale === "pt" ? "IA de documentos privada e verificável" : locale === "fr" ? "IA documentaire privée et vérifiable" : locale === "ja" ? "プライベートで検証可能なドキュメントAI" : "Private, verifiable document AI"}
+              {locale === "zh" ? "私密、可溯源的文档 AI" : locale === "zh-Hant" ? deepHant("私密、可溯源的文档 AI") : locale === "es" ? "IA documental privada y verificable" : locale === "pt" ? "IA de documentos privada e verificável" : locale === "fr" ? "IA documentaire privée et vérifiable" : locale === "ja" ? "プライベートで検証可能なドキュメントAI" : "Private, verifiable document AI"}
             </p>
           </div>
-          {(locale === "zh" ? toolColsZh : locale === "es" ? toolColsEs : locale === "pt" ? toolColsPt : locale === "fr" ? toolColsFr : locale === "ja" ? toolColsJa : toolColsEn).map((col) => (
+          {(locale === "zh" ? toolColsZh : locale === "zh-Hant" ? deepHant(toolColsZh) : locale === "es" ? toolColsEs : locale === "pt" ? toolColsPt : locale === "fr" ? toolColsFr : locale === "ja" ? toolColsJa : toolColsEn).map((col) => (
             <div key={col.title}>
               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
                 {col.title}
@@ -431,12 +432,12 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col gap-4 border-t border-[color:var(--line)] pt-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-[12px] text-[color:var(--faint)]">
-            &copy; {new Date().getFullYear()} DockDocs. All rights reserved.
+            &copy; {new Date().getFullYear()} DockDocs. {locale === "zh" ? "版权所有。" : locale === "zh-Hant" ? deepHant("版权所有。") : locale === "es" ? "Todos los derechos reservados." : locale === "pt" ? "Todos os direitos reservados." : locale === "fr" ? "Tous droits réservés." : locale === "ja" ? "無断転載を禁じます。" : "All rights reserved."}
           </p>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-[color:var(--faint)]">
-            <a href={href("/sitemap", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "站点地图" : locale === "es" ? "Mapa del sitio" : locale === "fr" ? "Plan du site" : locale === "ja" ? "サイトマップ" : "Sitemap"}</a>
-            <a href={href("/privacy-policy", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "隐私" : locale === "es" ? "Privacidad" : locale === "fr" ? "Confidentialité" : locale === "ja" ? "プライバシー" : "Privacy"}</a>
-            <a href={href("/terms", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "条款" : locale === "es" ? "Términos" : locale === "fr" ? "Conditions" : locale === "ja" ? "利用規約" : "Terms"}</a>
+            <a href={href("/sitemap", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "站点地图" : locale === "zh-Hant" ? deepHant("站点地图") : locale === "es" ? "Mapa del sitio" : locale === "pt" ? "Mapa do site" : locale === "fr" ? "Plan du site" : locale === "ja" ? "サイトマップ" : "Sitemap"}</a>
+            <a href={href("/privacy-policy", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "隐私" : locale === "zh-Hant" ? deepHant("隐私") : locale === "es" ? "Privacidad" : locale === "pt" ? "Privacidade" : locale === "fr" ? "Confidentialité" : locale === "ja" ? "プライバシー" : "Privacy"}</a>
+            <a href={href("/terms", locale)} className="transition hover:text-[color:var(--muted)]">{locale === "zh" ? "条款" : locale === "zh-Hant" ? deepHant("条款") : locale === "es" ? "Términos" : locale === "pt" ? "Termos" : locale === "fr" ? "Conditions" : locale === "ja" ? "利用規約" : "Terms"}</a>
           </div>
         </div>
       </div>

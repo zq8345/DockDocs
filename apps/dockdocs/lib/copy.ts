@@ -2591,6 +2591,7 @@ export const runtimeCopy = {
       limit: "Jusqu'à 25 Mo",
       cta: "Sélectionner un PDF",
       outputEyebrow: "Sortie",
+      outputHeading: "La sortie de conversion doit expliquer ce qui s'est passé.",
       outputDescription:
         "L'interface établit les attentes sur le contenu modifiable, la révision de la mise en page et les actions documentaires de suivi.",
       runtimeUploadTitle: "Envoi de conversion lié à l'environnement d'exécution",
