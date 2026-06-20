@@ -5,6 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
+import { dropzoneVisual } from "@/components/design";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Op ={ type: "eq" | "del" | "ins"; text: string };
@@ -134,6 +135,7 @@ export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
   const [phase, setPhase] = useState<"idle" | "comparing" | "done">("idle");
   const [ops, setOps] = useState<Op[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [draggingSlot, setDraggingSlot] = useState<"a" | "b" | null>(null);
   const aRef = useRef<HTMLInputElement>(null);
   const bRef = useRef<HTMLInputElement>(null);
 
@@ -155,19 +157,27 @@ export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
 
   const counts = { ins: ops.filter((o) => o.type === "ins").length, del: ops.filter((o) => o.type === "del").length };
 
-  const slot = (file: File | null, set: (f: File | null) => void, ref: React.RefObject<HTMLInputElement | null>, label: string) => (
-    <div className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
-      <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{label}</p>
+  const slot = (file: File | null, set: (f: File | null) => void, ref: React.RefObject<HTMLInputElement | null>, label: string, slotKey: "a" | "b") => (
+    <>
       <input ref={ref} type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { set(f); setPhase("idle"); setError(null); } }} />
+      <div
+        onClick={() => ref.current?.click()}
+      onDragOver={(e) => { e.preventDefault(); setDraggingSlot(slotKey); }}
+      onDragLeave={(e) => { if (e.currentTarget === e.target) setDraggingSlot(null); }}
+      onDrop={(e) => { e.preventDefault(); setDraggingSlot(null); const f = e.dataTransfer.files?.[0]; if (f) { set(f); setPhase("idle"); setError(null); } }}
+      className={`${dropzoneVisual(draggingSlot === slotKey)} cursor-pointer p-5`}
+    >
+      <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{label}</p>
       {file ? (
         <div className="mt-3 flex items-center justify-between gap-2">
           <span className="truncate text-[13.5px] font-medium text-[color:var(--foreground)]" title={file.name}>{file.name}</span>
-          <button type="button" onClick={() => ref.current?.click()} className="shrink-0 text-[12.5px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.change}</button>
+          <button type="button" onClick={(e) => { e.stopPropagation(); ref.current?.click(); }} className="shrink-0 text-[12.5px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.change}</button>
         </div>
       ) : (
-        <button type="button" onClick={() => ref.current?.click()} className="mt-3 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[13.5px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>
+        <button type="button" onClick={(e) => { e.stopPropagation(); ref.current?.click(); }} className="mt-3 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[13.5px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>
       )}
     </div>
+    </>
   );
 
   return (
@@ -176,8 +186,8 @@ export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        {slot(a, setA, aRef, t.original)}
-        {slot(b, setB, bRef, t.revised)}
+        {slot(a, setA, aRef, t.original, "a")}
+        {slot(b, setB, bRef, t.revised, "b")}
       </div>
 
       <div className="mt-5 flex items-center gap-2">
