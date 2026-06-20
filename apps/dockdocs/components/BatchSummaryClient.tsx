@@ -30,7 +30,7 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max} files`,
     keyPoints: "Key points", download: "Download all (.md)", need: "Add at least one PDF.",
     noText: "no extractable text (scan?)", err: "Something went wrong: ",
-    note: "Summaries are AI-generated from each document — give them a quick check. Processed one at a time to stay within limits.",
+    note: "Each PDF is read in your browser; only the extracted text is sent to the AI to summarize it — your file itself isn't uploaded. Summaries are AI-generated from each document — give them a quick check. Processed one at a time to stay within limits.",
   },
   zh: {
     title: "批量摘要",
@@ -40,7 +40,7 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max} 份`,
     keyPoints: "关键要点", download: "下载全部 (.md)", need: "至少添加一份 PDF。",
     noText: "无可提取文字(扫描件？)", err: "出错了：",
-    note: "摘要由 AI 从每份文档生成，建议快速核对。逐份处理以符合用量限制。",
+    note: "每份 PDF 在你的浏览器中读取，只有提取的文本会发送给 AI 用于摘要——文件本身不会上传。摘要由 AI 从每份文档生成，建议快速核对。逐份处理以符合用量限制。",
   },
   es: {
     title: "Resumen por lotes",
@@ -50,7 +50,7 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max} archivos`,
     keyPoints: "Puntos clave", download: "Descargar todo (.md)", need: "Agrega al menos un PDF.",
     noText: "sin texto extraíble (¿escaneado?)", err: "Algo salió mal: ",
-    note: "Los resúmenes los genera la IA a partir de cada documento; conviene revisarlos rápidamente. Se procesan de uno en uno para no superar los límites.",
+    note: "Cada PDF se lee en tu navegador; solo el texto extraído se envía a la IA para resumirlo: el archivo en sí no se sube. Los resúmenes los genera la IA a partir de cada documento; conviene revisarlos rápidamente. Se procesan de uno en uno para no superar los límites.",
   },
   pt: {
     title: "Resumo em lote",
@@ -60,7 +60,7 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max} arquivos`,
     keyPoints: "Pontos-chave", download: "Baixar tudo (.md)", need: "Adicione pelo menos um PDF.",
     noText: "sem texto extraível (digitalizado?)", err: "Algo deu errado: ",
-    note: "Os resumos são gerados pela IA a partir de cada documento — verifique-os rapidamente. Processados um por vez para manter-se dentro dos limites.",
+    note: "Cada PDF é lido no seu navegador; apenas o texto extraído é enviado à IA para resumi-lo — o arquivo em si não é enviado. Os resumos são gerados pela IA a partir de cada documento — verifique-os rapidamente. Processados um por vez para manter-se dentro dos limites.",
   },
   fr: {
     title: "Résumé par lot",
@@ -70,7 +70,7 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max} fichiers`,
     keyPoints: "Points clés", download: "Tout télécharger (.md)", need: "Ajoutez au moins un PDF.",
     noText: "aucun texte extractible (document scanné ?)", err: "Une erreur est survenue : ",
-    note: "Les résumés sont générés par IA à partir de chaque document — vérifiez-les rapidement. Traités un par un pour respecter les limites d'utilisation.",
+    note: "Chaque PDF est lu dans votre navigateur ; seul le texte extrait est envoyé à l'IA pour le résumer — le fichier lui-même n'est pas téléversé. Les résumés sont générés par IA à partir de chaque document — vérifiez-les rapidement. Traités un par un pour respecter les limites d'utilisation.",
   },
   ja: {
     title: "一括要約",
@@ -80,7 +80,7 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max}件`,
     keyPoints: "要点", download: "すべてダウンロード (.md)", need: "PDFを少なくとも1つ追加してください。",
     noText: "抽出可能なテキストがありません（スキャン？）", err: "問題が発生しました: ",
-    note: "要約は各文書からAIが生成します——簡単に確認してください。制限内に収めるため1件ずつ処理します。",
+    note: "各 PDF はブラウザ内で読み取られ、要約のために抽出されたテキストのみが AI に送信されます——ファイル自体はアップロードされません。要約は各文書からAIが生成します——簡単に確認してください。制限内に収めるため1件ずつ処理します。",
   },
 };
 

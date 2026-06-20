@@ -28,7 +28,7 @@ const STR = {
     download: "Download CSV", doc: "Document", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} files`, needFile: "Add at least one PDF.",
     err: "Something went wrong: ",
-    note: "Fields are extracted by AI and may need a quick check. Values it can't find are left blank — it won't make them up.",
+    note: "Each PDF is read in your browser; only the extracted text is sent to the AI to pull the key fields — your file itself isn't uploaded. Fields are extracted by AI and may need a quick check. Values it can't find are left blank — it won't make them up.",
   },
   zh: {
     title: "批量抽取数据到一张表",
@@ -39,7 +39,7 @@ const STR = {
     download: "下载 CSV", doc: "文档", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} 份`, needFile: "至少添加一个 PDF。",
     err: "出错了：",
-    note: "字段由 AI 抽取，建议快速核对。找不到的值会留空——不会瞎编。",
+    note: "每份 PDF 在你的浏览器中读取，只有提取的文本会发送给 AI 用于抽取字段——文件本身不会上传。字段由 AI 抽取，建议快速核对。找不到的值会留空——不会瞎编。",
   },
   es: {
     title: "Extraer datos en lote a una sola hoja",
@@ -50,7 +50,7 @@ const STR = {
     download: "Descargar CSV", doc: "Documento", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} archivos`, needFile: "Agrega al menos un PDF.",
     err: "Algo salió mal: ",
-    note: "Los campos los extrae la IA y puede que necesiten una revisión rápida. Los valores que no encuentra se dejan en blanco; no los inventa.",
+    note: "Cada PDF se lee en tu navegador; solo el texto extraído se envía a la IA para extraer los campos: el archivo en sí no se sube. Los campos los extrae la IA y puede que necesiten una revisión rápida. Los valores que no encuentra se dejan en blanco; no los inventa.",
   },
   pt: {
     title: "Extração em lote de dados para uma única planilha",
@@ -61,7 +61,7 @@ const STR = {
     download: "Baixar CSV", doc: "Documento", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} arquivos`, needFile: "Adicione pelo menos um PDF.",
     err: "Algo deu errado: ",
-    note: "Os campos são extraídos por IA e podem precisar de uma verificação rápida. Valores não encontrados são deixados em branco — a IA não os inventa.",
+    note: "Cada PDF é lido no seu navegador; apenas o texto extraído é enviado à IA para extrair os campos — o arquivo em si não é enviado. Os campos são extraídos por IA e podem precisar de uma verificação rápida. Valores não encontrados são deixados em branco — a IA não os inventa.",
   },
   fr: {
     title: "Extraction de données en lot vers une seule feuille",
@@ -72,7 +72,7 @@ const STR = {
     download: "Télécharger le CSV", doc: "Document", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} fichiers`, needFile: "Ajoutez au moins un PDF.",
     err: "Une erreur est survenue : ",
-    note: "Les champs sont extraits par l'IA et peuvent nécessiter une vérification rapide. Les valeurs introuvables sont laissées vides — l'IA ne les invente pas.",
+    note: "Chaque PDF est lu dans votre navigateur ; seul le texte extrait est envoyé à l'IA pour en extraire les champs — le fichier lui-même n'est pas téléversé. Les champs sont extraits par l'IA et peuvent nécessiter une vérification rapide. Les valeurs introuvables sont laissées vides — l'IA ne les invente pas.",
   },
   ja: {
     title: "データを1つの表計算に一括抽出",
@@ -83,7 +83,7 @@ const STR = {
     download: "CSVをダウンロード", doc: "ドキュメント", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} ファイル`, needFile: "PDFを1つ以上追加してください。",
     err: "問題が発生しました: ",
-    note: "項目はAIによって抽出されるため、簡単な確認が必要な場合があります。見つからない値は空欄のままになります — AIが値を作り出すことはありません。",
+    note: "各 PDF はブラウザ内で読み取られ、項目を抽出するために抽出されたテキストのみが AI に送信されます——ファイル自体はアップロードされません。項目はAIによって抽出されるため、簡単な確認が必要な場合があります。見つからない値は空欄のままになります — AIが値を作り出すことはありません。",
   },
 };
 
