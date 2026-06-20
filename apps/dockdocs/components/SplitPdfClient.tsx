@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
@@ -82,8 +83,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why split a PDF in your browser",
+    benefitsDescription: "Pull a large PDF apart into separate files or page ranges, without uploading it.",
+    benefits: [
+      { title: "Extract the pages you need", description: "Pull out a single page, a range, or every page as its own file — keep only what matters." },
+      { title: "Split by range or per page", description: "Choose exact page ranges, or burst every page into its own PDF, packaged into one ZIP." },
+      { title: "Stays on your device", description: "Splitting happens entirely in your browser — your file is never uploaded to a server." },
+    ],
+    workflowTitle: "How splitting fits your document work",
+    workflowDescription: "For the moment one big PDF has to become several — separating a scanned batch, pulling a chapter, sharing just one section.",
+    steps: [
+      "Upload the PDF you want to split.",
+      "Pick page ranges, or split every page into its own file.",
+      "Download the separate PDFs as a single ZIP.",
+    ],
+    readingTitle: "More ways to organize PDFs",
+    readingDescription: "Related tools and guides for splitting and combining documents.",
+    readingLinks: [
+      { label: "Merge PDFs", href: "/merge-pdf", description: "The reverse — combine several PDFs into one ordered document." },
+      { label: "Split a PDF by page ranges", href: "/guides/split-pdf-page-ranges", description: "How to extract specific page ranges into separate PDFs." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里拆分 PDF",
+    benefitsDescription: "把一个大 PDF 拆成多个文件或页面范围，全程不上传。",
+    benefits: [
+      { title: "只提取你需要的页", description: "抽出单页、某个范围，或把每页都拆成独立文件——只留有用的。" },
+      { title: "按范围或逐页拆", description: "选择精确页面范围，或把每页拆成独立 PDF，打包成一个 ZIP。" },
+      { title: "文件不离开设备", description: "拆分完全在你的浏览器中完成——文件从不上传到服务器。" },
+    ],
+    workflowTitle: "拆分如何融入你的文档工作",
+    workflowDescription: "当一个大 PDF 需要变成几个时——分开扫描批次、抽出某一章、只分享某一节。",
+    steps: [
+      "上传要拆分的 PDF。",
+      "选择页面范围，或把每页拆成独立文件。",
+      "把拆出的多个 PDF 作为一个 ZIP 下载。",
+    ],
+    readingTitle: "更多整理 PDF 的方式",
+    readingDescription: "拆分与合并文档的相关工具和指南。",
+    readingLinks: [
+      { label: "合并 PDF", href: "/merge-pdf", description: "反向操作——把多个 PDF 合并成一个有序文档。" },
+      { label: "按页面范围拆分 PDF", href: "/guides/split-pdf-page-ranges", description: "如何把指定页面范围抽成独立 PDF。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué dividir un PDF en tu navegador",
+    benefitsDescription: "Separa un PDF grande en archivos o rangos de páginas, sin subirlo.",
+    benefits: [
+      { title: "Extrae las páginas que necesitas", description: "Saca una sola página, un rango o cada página como archivo propio: quédate solo con lo que importa." },
+      { title: "Divide por rango o por página", description: "Elige rangos de páginas exactos o separa cada página en su propio PDF, empaquetados en un ZIP." },
+      { title: "Permanece en tu dispositivo", description: "La división ocurre completamente en tu navegador: tu archivo nunca se sube a un servidor." },
+    ],
+    workflowTitle: "Cómo encaja la división en tu trabajo",
+    workflowDescription: "Para cuando un PDF grande debe convertirse en varios: separar un lote escaneado, sacar un capítulo, compartir solo una sección.",
+    steps: [
+      "Sube el PDF que quieres dividir.",
+      "Elige rangos de páginas o divide cada página en su propio archivo.",
+      "Descarga los PDF separados en un único ZIP.",
+    ],
+    readingTitle: "Más formas de organizar PDF",
+    readingDescription: "Herramientas y guías relacionadas para dividir y combinar documentos.",
+    readingLinks: [
+      { label: "Combinar PDF", href: "/merge-pdf", description: "Lo contrario: combina varios PDF en un solo documento ordenado." },
+      { label: "Dividir un PDF por rangos de páginas", href: "/guides/split-pdf-page-ranges", description: "Cómo extraer rangos de páginas específicos en PDF separados." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que dividir um PDF no seu navegador",
+    benefitsDescription: "Separe um PDF grande em arquivos ou intervalos de páginas, sem enviá-lo.",
+    benefits: [
+      { title: "Extraia as páginas necessárias", description: "Tire uma única página, um intervalo ou cada página como arquivo próprio: fique só com o que importa." },
+      { title: "Divida por intervalo ou por página", description: "Escolha intervalos de páginas exatos ou separe cada página em seu próprio PDF, empacotados em um ZIP." },
+      { title: "Permanece no seu dispositivo", description: "A divisão acontece inteiramente no seu navegador: seu arquivo nunca é enviado a um servidor." },
+    ],
+    workflowTitle: "Como a divisão se encaixa no seu trabalho",
+    workflowDescription: "Para quando um PDF grande precisa virar vários: separar um lote digitalizado, tirar um capítulo, compartilhar só uma seção.",
+    steps: [
+      "Envie o PDF que deseja dividir.",
+      "Escolha intervalos de páginas ou divida cada página em seu próprio arquivo.",
+      "Baixe os PDF separados em um único ZIP.",
+    ],
+    readingTitle: "Mais formas de organizar PDF",
+    readingDescription: "Ferramentas e guias relacionados para dividir e combinar documentos.",
+    readingLinks: [
+      { label: "Combinar PDF", href: "/merge-pdf", description: "O contrário: combine vários PDF em um único documento ordenado." },
+      { label: "Dividir um PDF por intervalos de páginas", href: "/guides/split-pdf-page-ranges", description: "Como extrair intervalos de páginas específicos em PDF separados." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi diviser un PDF dans votre navigateur",
+    benefitsDescription: "Séparez un grand PDF en fichiers ou plages de pages, sans le téléverser.",
+    benefits: [
+      { title: "Extrayez les pages voulues", description: "Sortez une seule page, une plage ou chaque page comme fichier distinct : ne gardez que l'essentiel." },
+      { title: "Divisez par plage ou par page", description: "Choisissez des plages de pages exactes ou séparez chaque page dans son propre PDF, regroupés dans un ZIP." },
+      { title: "Reste sur votre appareil", description: "La division se fait entièrement dans votre navigateur : votre fichier n'est jamais téléversé sur un serveur." },
+    ],
+    workflowTitle: "Comment la division s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un grand PDF doit devenir plusieurs : séparer un lot numérisé, extraire un chapitre, partager une seule section.",
+    steps: [
+      "Importez le PDF à diviser.",
+      "Choisissez des plages de pages, ou séparez chaque page dans son propre fichier.",
+      "Téléchargez les PDF séparés dans un seul ZIP.",
+    ],
+    readingTitle: "Plus de façons d'organiser les PDF",
+    readingDescription: "Outils et guides associés pour diviser et combiner des documents.",
+    readingLinks: [
+      { label: "Fusionner des PDF", href: "/merge-pdf", description: "L'inverse : combinez plusieurs PDF en un seul document ordonné." },
+      { label: "Diviser un PDF par plages de pages", href: "/guides/split-pdf-page-ranges", description: "Comment extraire des plages de pages spécifiques dans des PDF distincts." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF を分割する理由",
+    benefitsDescription: "大きな PDF を別々のファイルやページ範囲に分けます。アップロードしません。",
+    benefits: [
+      { title: "必要なページだけ抽出", description: "1 ページ、範囲、または各ページを個別ファイルとして抽出——必要なものだけ残せます。" },
+      { title: "範囲またはページ単位で分割", description: "正確なページ範囲を選ぶか、各ページを個別 PDF に分け、1 つの ZIP にまとめます。" },
+      { title: "端末から出ない", description: "分割はすべてブラウザ内で完了——ファイルがサーバーにアップロードされることはありません。" },
+    ],
+    workflowTitle: "分割が文書作業にどう役立つか",
+    workflowDescription: "1 つの大きな PDF を複数に分ける必要があるとき——スキャンの束を分ける、章を抜き出す、1 セクションだけ共有する。",
+    steps: [
+      "分割したい PDF をアップロードします。",
+      "ページ範囲を選ぶか、各ページを個別ファイルに分割します。",
+      "分割された PDF を 1 つの ZIP としてダウンロードします。",
+    ],
+    readingTitle: "PDF を整理する他の方法",
+    readingDescription: "文書の分割と結合に関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "PDF を結合", href: "/merge-pdf", description: "逆の操作——複数の PDF を 1 つの順序立った文書に結合します。" },
+      { label: "ページ範囲で PDF を分割", href: "/guides/split-pdf-page-ranges", description: "指定したページ範囲を別々の PDF として抽出する方法。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [pages, setPages] = useState<Pg[]>([]);
@@ -233,6 +376,7 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="split-pdf" locale={locale} />
     </div>
   );
