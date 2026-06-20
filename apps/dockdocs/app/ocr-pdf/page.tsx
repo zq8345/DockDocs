@@ -34,7 +34,7 @@ const ocrPdfConfig = {
     description:
       "Drag and drop a scanned PDF file here, or choose a file from your device.",
     buttonLabel: "Choose PDF",
-    note: "PDF only. Built for scanned documents, forms, and text extraction workflows.",
+    note: "PDF only. Built for scanned documents, forms, and text extraction workflows. Up to 3 pages per run — first page only by default.",
   },
   benefitsTitle: "Extract text from scans without a heavy interface",
   benefitsDescription:
