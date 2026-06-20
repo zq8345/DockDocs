@@ -2799,14 +2799,14 @@ const runtimeCopyJa = {
     onboardingDescription:
       "ドキュメントをアップロードし、出典に基づく質問を 1 つ行ってから、ダッシュボードに戻って最近のファイルと次のアクションを確認しましょう。",
     documents: [
-      { name: "Board-report.pdf", type: "PDF", status: "準備完了", action: "AI 要約" },
-      { name: "Vendor-contract.pdf", type: "PDF", status: "要確認", action: "チャット" },
-      { name: "Scanned-invoice.pdf", type: "スキャン", status: "処理中", action: "OCR" },
+      { name: "取締役会レポート.pdf", type: "PDF", status: "準備完了", action: "AI 要約" },
+      { name: "ベンダー契約.pdf", type: "PDF", status: "要確認", action: "チャット" },
+      { name: "スキャン請求書.pdf", type: "スキャン", status: "処理中", action: "OCR" },
     ],
     conversations: [
-      { title: "ベンダー契約からリスクを抽出", meta: "Vendor-contract.pdf", status: "出典 2 件" },
-      { title: "取締役会レポートのアクションを要約", meta: "Board-report.pdf", status: "準備完了" },
-      { title: "請求書の支払条件を探す", meta: "Scanned-invoice.pdf", status: "先に OCR" },
+      { title: "ベンダー契約からリスクを抽出", meta: "ベンダー契約.pdf", status: "出典 2 件" },
+      { title: "取締役会レポートのアクションを要約", meta: "取締役会レポート.pdf", status: "準備完了" },
+      { title: "請求書の支払条件を探す", meta: "スキャン請求書.pdf", status: "先に OCR" },
     ],
     actions: [
       { title: "Chat with PDF", description: "出典コンテキスト付きで、根拠のある質問ができます。", href: "/chat-with-pdf", tier: "FREE" },
@@ -2816,9 +2816,9 @@ const runtimeCopyJa = {
       { title: "圧縮", description: "メール・ポータル・受け渡し用にファイルサイズを削減。", href: "/compress-pdf", tier: "FREE" },
     ],
     health: [
-      { label: "ストレージ", value: "ローカルプレビュー", tone: "Ready" },
-      { label: "処理", value: "ランタイム UI 連動", tone: "Healthy" },
-      { label: "プロバイダー", value: "環境で設定済み", tone: "Placeholder" },
+      { label: "ストレージ", value: "ローカルプレビュー", tone: "準備完了" },
+      { label: "処理", value: "ランタイム UI 連動", tone: "正常" },
+      { label: "プロバイダー", value: "環境で設定済み", tone: "プレースホルダー" },
     ],
     nextSteps: [
       "実際の PDF をアップロードして、出典付きの会話を始めましょう。",
@@ -3279,7 +3279,7 @@ const runtimeCopyJa = {
         href: "/chat-with-pdf/",
         recommended: false,
         highlights: [
-          "Chat with PDF MVP",
+          "PDF チャット（MVP）",
           "AI 要約プレビュー",
           "OCR・圧縮・PDF to Word の入口",
           "ワークスペースのダッシュボード基盤",
@@ -3320,7 +3320,7 @@ const runtimeCopyJa = {
       { feature: "Chat with PDF", values: ["FREE", "PLUS", "PRO"] },
       { feature: "AI 要約", values: ["FREE", "PLUS", "PRO"] },
       { feature: "OCR と抽出", values: ["FREE", "PLUS", "PRO"] },
-      { feature: "PDF to Word", values: ["FREE", "PLUS", "PRO"] },
+      { feature: "PDF から Word", values: ["FREE", "PLUS", "PRO"] },
       { feature: "ナレッジカード", values: ["PLUS プレビュー", "PLUS", "PRO"] },
       { feature: "ワークスペース分析", values: ["基本", "使用量プレースホルダー", "チームプレースホルダー"] },
       { feature: "文書コレクション", values: ["基本", "PLUS", "PRO"] },
