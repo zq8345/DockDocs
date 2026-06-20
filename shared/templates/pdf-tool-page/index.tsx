@@ -652,16 +652,16 @@ function HowItWorksSection({ config }: { config: PdfToolPageConfig }) {
 
   return (
     <Section bordered={false}>
-      <Container className="!max-w-5xl grid gap-10 lg:grid-cols-[0.8fr_1fr]">
+      <Container className="!max-w-5xl">
         <SectionIntro
           eyebrow={copy.workflow}
           title={config.workflowTitle}
           description={config.workflowDescription}
         />
-        <ol className="grid gap-4 sm:grid-cols-2">
+        <ol className="mt-10 grid gap-4 sm:grid-cols-3">
           {config.steps.map((step, index) => (
             <li key={step}>
-              <div className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-black/20 p-5">
+              <div className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-black/20 p-5 transition hover:border-[color:var(--foreground)]">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--foreground)] text-sm font-semibold text-[color:var(--background)]">
                   {index + 1}
                 </span>
