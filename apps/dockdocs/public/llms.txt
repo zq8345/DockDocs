@@ -1,6 +1,6 @@
 # DockDocs
 
-DockDocs is an AI document platform: chat with any PDF for grounded, source-cited answers, with multi-document comparison for contracts and quotes on the way. It also offers 20+ free browser-based PDF tools such as compressing PDFs, merging PDFs, splitting PDFs, OCR, JPG to PDF, PDF to Word, AI PDF summaries, and document Q&A.
+DockDocs is an AI document platform: chat with any PDF for grounded, source-cited answers, with multi-document comparison for contracts and quotes on the way. It also offers ~50 free browser-based PDF tools such as compressing PDFs, merging PDFs, splitting PDFs, OCR, JPG to PDF, PDF to Word, AI PDF summaries, and document Q&A.
 
 ## PDF tools (canonical URLs)
 
