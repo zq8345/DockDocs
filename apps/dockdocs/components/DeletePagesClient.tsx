@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
@@ -74,8 +75,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why delete PDF pages in your browser",
+    benefitsDescription: "Drop unwanted pages from any PDF — blank, duplicate, or confidential — in a few clicks.",
+    benefits: [
+      { title: "Remove what doesn't belong", description: "Delete blank scans, duplicate pages, or sections you don't want to share — keep only the pages that matter." },
+      { title: "Pick pages visually", description: "Every page shows as a thumbnail; click to mark the ones to remove and see the result before you export." },
+      { title: "The rest stays intact", description: "Remaining pages keep their original quality and order — deleting never re-renders or shifts the others." },
+    ],
+    workflowTitle: "How deleting pages fits your work",
+    workflowDescription: "For the moment a PDF carries pages it shouldn't — a cover sheet, a blank back page, an internal note before sharing.",
+    steps: [
+      "Upload the PDF you want to trim.",
+      "Click the page thumbnails you want to remove.",
+      "Download the PDF with those pages gone.",
+    ],
+    readingTitle: "More ways to organize PDFs",
+    readingDescription: "Related tools for trimming and rearranging document pages.",
+    readingLinks: [
+      { label: "Split a PDF", href: "/split-pdf", description: "Pull a large PDF apart into separate files or page ranges." },
+      { label: "Reorder pages", href: "/reorder-pages", description: "Drag to change the page order of a PDF." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里删除 PDF 页面",
+    benefitsDescription: "几次点击就从 PDF 里删掉不需要的页——空白页、重复页或机密页。",
+    benefits: [
+      { title: "删掉多余的页", description: "删除空白扫描、重复页，或不想分享的部分——只留有用的页。" },
+      { title: "可视化选页", description: "每页显示为缩略图；点击标记要删的页，导出前看到结果。" },
+      { title: "其余页不受影响", description: "保留的页保持原始质量和顺序——删除不会重新渲染或移动其他页。" },
+    ],
+    workflowTitle: "删页如何融入你的工作",
+    workflowDescription: "当 PDF 带着不该有的页时——封面页、空白底页、分享前要去掉的内部备注。",
+    steps: [
+      "上传要精简的 PDF。",
+      "点击要删除的页面缩略图。",
+      "下载已删掉那些页的 PDF。",
+    ],
+    readingTitle: "更多整理 PDF 的方式",
+    readingDescription: "精简和重排文档页面的相关工具。",
+    readingLinks: [
+      { label: "拆分 PDF", href: "/split-pdf", description: "把一个大 PDF 拆成多个文件或页面范围。" },
+      { label: "重排页面", href: "/reorder-pages", description: "拖拽调整 PDF 的页面顺序。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué eliminar páginas de PDF en tu navegador",
+    benefitsDescription: "Quita páginas no deseadas de cualquier PDF —en blanco, duplicadas o confidenciales— en unos clics.",
+    benefits: [
+      { title: "Quita lo que sobra", description: "Elimina escaneos en blanco, páginas duplicadas o secciones que no quieres compartir: quédate solo con las páginas que importan." },
+      { title: "Elige páginas visualmente", description: "Cada página aparece como miniatura; haz clic para marcar las que quitar y ve el resultado antes de exportar." },
+      { title: "El resto queda intacto", description: "Las páginas restantes conservan su calidad y orden originales: eliminar nunca recrea ni mueve las demás." },
+    ],
+    workflowTitle: "Cómo encaja eliminar páginas en tu trabajo",
+    workflowDescription: "Para cuando un PDF lleva páginas que no debería: una portada, una página final en blanco, una nota interna antes de compartir.",
+    steps: [
+      "Sube el PDF que quieres recortar.",
+      "Haz clic en las miniaturas de las páginas que quieres quitar.",
+      "Descarga el PDF sin esas páginas.",
+    ],
+    readingTitle: "Más formas de organizar PDF",
+    readingDescription: "Herramientas relacionadas para recortar y reorganizar páginas de documentos.",
+    readingLinks: [
+      { label: "Dividir un PDF", href: "/split-pdf", description: "Separa un PDF grande en archivos o rangos de páginas." },
+      { label: "Reordenar páginas", href: "/reorder-pages", description: "Reorganiza el orden de las páginas del PDF arrastrando." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que excluir páginas de PDF no seu navegador",
+    benefitsDescription: "Remova páginas indesejadas de qualquer PDF — em branco, duplicadas ou confidenciais — em alguns cliques.",
+    benefits: [
+      { title: "Remova o que não pertence", description: "Exclua digitalizações em branco, páginas duplicadas ou seções que não quer compartilhar: fique só com as páginas que importam." },
+      { title: "Escolha páginas visualmente", description: "Cada página aparece como miniatura; clique para marcar as que remover e veja o resultado antes de exportar." },
+      { title: "O resto fica intacto", description: "As páginas restantes mantêm a qualidade e a ordem originais: excluir nunca recria nem move as outras." },
+    ],
+    workflowTitle: "Como excluir páginas se encaixa no seu trabalho",
+    workflowDescription: "Para quando um PDF carrega páginas que não deveria: uma capa, uma página final em branco, uma nota interna antes de compartilhar.",
+    steps: [
+      "Envie o PDF que deseja recortar.",
+      "Clique nas miniaturas das páginas que deseja remover.",
+      "Baixe o PDF sem essas páginas.",
+    ],
+    readingTitle: "Mais formas de organizar PDF",
+    readingDescription: "Ferramentas relacionadas para recortar e reorganizar páginas de documentos.",
+    readingLinks: [
+      { label: "Dividir um PDF", href: "/split-pdf", description: "Separe um PDF grande em arquivos ou intervalos de páginas." },
+      { label: "Reordenar páginas", href: "/reorder-pages", description: "Reorganize a ordem das páginas do PDF arrastando." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi supprimer des pages PDF dans votre navigateur",
+    benefitsDescription: "Retirez les pages indésirables de n'importe quel PDF — vierges, en double ou confidentielles — en quelques clics.",
+    benefits: [
+      { title: "Retirez ce qui n'a pas sa place", description: "Supprimez les scans vierges, les pages en double ou les sections à ne pas partager : ne gardez que les pages utiles." },
+      { title: "Choisissez visuellement", description: "Chaque page s'affiche en miniature ; cliquez pour marquer celles à retirer et voyez le résultat avant d'exporter." },
+      { title: "Le reste reste intact", description: "Les pages restantes conservent leur qualité et leur ordre d'origine : la suppression ne recrée ni ne déplace les autres." },
+    ],
+    workflowTitle: "Comment supprimer des pages s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un PDF contient des pages qu'il ne devrait pas : une page de garde, une page finale vierge, une note interne avant partage.",
+    steps: [
+      "Importez le PDF à alléger.",
+      "Cliquez sur les miniatures des pages à retirer.",
+      "Téléchargez le PDF sans ces pages.",
+    ],
+    readingTitle: "Plus de façons d'organiser les PDF",
+    readingDescription: "Outils associés pour alléger et réorganiser les pages des documents.",
+    readingLinks: [
+      { label: "Diviser un PDF", href: "/split-pdf", description: "Séparez un grand PDF en fichiers ou plages de pages." },
+      { label: "Réorganiser les pages", href: "/reorder-pages", description: "Réorganisez l'ordre des pages du PDF par glisser-déposer." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF ページを削除する理由",
+    benefitsDescription: "不要なページ——空白、重複、機密——を数クリックで PDF から取り除きます。",
+    benefits: [
+      { title: "不要なページを除去", description: "空白スキャン、重複ページ、共有したくない部分を削除——必要なページだけ残せます。" },
+      { title: "視覚的にページを選択", description: "各ページがサムネイルで表示されます。削除するページをクリックで選び、書き出す前に結果を確認できます。" },
+      { title: "残りはそのまま", description: "残ったページは元の品質と順序を保持——削除で他のページが再描画されたり動いたりしません。" },
+    ],
+    workflowTitle: "ページ削除が作業にどう役立つか",
+    workflowDescription: "PDF にあるべきでないページが含まれるとき——表紙、空白の裏ページ、共有前の社内メモ。",
+    steps: [
+      "整理したい PDF をアップロードします。",
+      "削除したいページのサムネイルをクリックします。",
+      "それらのページを除いた PDF をダウンロードします。",
+    ],
+    readingTitle: "PDF を整理する他の方法",
+    readingDescription: "文書のページを整理・並べ替えるための関連ツール。",
+    readingLinks: [
+      { label: "PDF を分割", href: "/split-pdf", description: "大きな PDF を別々のファイルやページ範囲に分けます。" },
+      { label: "ページを並べ替え", href: "/reorder-pages", description: "ドラッグして PDF のページ順を変更します。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -200,6 +343,7 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
           <ToolBridge slug="delete-page" locale={locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="delete-page" locale={locale} />
     </div>
   );
