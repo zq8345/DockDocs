@@ -8,6 +8,7 @@ import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { trackToolRun } from "@/lib/track";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Item = { id: string; name: string; pages: number; thumb: string; file: File };
@@ -171,6 +172,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url; a.download = "dockdocs-merged.pdf"; a.click();
       URL.revokeObjectURL(url);
       setDone(true);
+      trackToolRun("merge-pdf");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
     } finally {

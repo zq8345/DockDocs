@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toHant } from "@/lib/zh-hant";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { trackToolRun } from "@/lib/track";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { GroundingNote } from "@/components/GroundingNote";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
@@ -113,6 +114,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
 
       setSummary(payload.summary as SummaryData);
       setStatus("done");
+      trackToolRun("ai-summary");
       await markUsage(gate, "summary");
     } catch (err) {
       setError(err instanceof Error ? err.message : zh ? h("处理失败。") : ja ? "処理に失敗しました。" : es ? "Error al procesar." : pt ? "Falha ao processar." : fr ? "Échec du traitement." : "Processing failed.");

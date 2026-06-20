@@ -239,6 +239,11 @@ export function PdfWorkflowEngine({
       setProgress(100);
       setStepIndex(spec.steps.length - 1);
       setStatus("result");
+      // North-star activation: one place fires tool_run for every template tool.
+      // Inlined (not @/lib/track) because shared/ must not depend on apps/. Payload
+      // is slug-only — no file name/content/identity (privacy red-line).
+      (window as Window & { umami?: { track: (e: string, d?: Record<string, string>) => void } })
+        .umami?.track("tool_run", { slug: config.slug });
     } catch (processingError) {
       if (processingRunRef.current !== runId || controller.signal.aborted) {
         return;

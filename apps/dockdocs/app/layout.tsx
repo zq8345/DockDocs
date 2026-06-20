@@ -78,6 +78,11 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
             />
           </>
         )}
+        {/* Umami — self-hosted, cookieless, privacy-first analytics (convert box).
+            Production-only so localhost/dev never pollutes the funnel data. */}
+        {process.env.NODE_ENV === "production" && (
+          <script defer src="https://analytics.dockdocs.app/script.js" data-website-id="c576eb96-1361-4fed-b7f0-ff0f4d0107f0" />
+        )}
         {/* Microsoft Clarity — free analytics, no PII. Only injected when an ID is configured. */}
         {clarityId && (
           <script

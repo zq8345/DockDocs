@@ -9,6 +9,7 @@ import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
+import { trackToolRun } from "@/lib/track";
 
 import { useCallback, useMemo, useState } from "react";
 
@@ -287,6 +288,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
         const sorted = (data.risks as Risk[]).slice().sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
         setRisks(sorted);
         setPhase("done");
+        trackToolRun("contract-risk");
         await markUsage(gate, "contractAnalyzer");
       } else {
         setError(t.errPrefix + (data?.message || "Unknown error."));

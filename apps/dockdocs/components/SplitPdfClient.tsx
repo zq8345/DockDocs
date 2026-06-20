@@ -6,6 +6,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
+import { trackToolRun } from "@/lib/track";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Pg = { idx: number; thumb: string };
@@ -168,6 +169,7 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url; a.download = `${base}-split.zip`; a.click();
       URL.revokeObjectURL(url);
       setPhase("ready");
+      trackToolRun("split-pdf");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }

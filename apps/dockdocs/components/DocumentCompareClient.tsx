@@ -7,6 +7,7 @@ import { isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { ToolFaq } from "@/components/ToolFaq";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { trackToolRun } from "@/lib/track";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
@@ -808,6 +809,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       }
       const cmp: Comparison = { docType: data.docType, dimensions: data.dimensions, documents: data.documents };
       setComparison(cmp);
+      trackToolRun("compare");
       void markUsage(gate, "compare");
       if (activeTemplate) {
         saveRun({ templateId: activeTemplate.id, templateName: activeTemplate.name, fileNames: okDocs.map((d) => d.name), docType: cmp.docType, status: "ok" });

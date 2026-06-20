@@ -6,6 +6,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
+import { trackToolRun } from "@/lib/track";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type DocType ="invoice" | "quote" | "contract";
@@ -180,6 +181,7 @@ export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
         setDims(data.dimensions);
         setResults(data.documents);
         setPhase("done");
+        trackToolRun("extract-to-excel");
       } else {
         setError(t.err + (data?.message || "Extraction failed."));
         setPhase("idle");
