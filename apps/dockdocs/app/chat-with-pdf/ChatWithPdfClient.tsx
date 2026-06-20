@@ -270,7 +270,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
       id="workspace"
       aria-label={copy.workspaceTitle}
       data-testid="chat-workspace"
-      className="mx-auto max-w-3xl"
+      className="mx-auto max-w-5xl"
     >
       {/* ── Upload zone (shown when no document) ── */}
       {!documentText && !isExtracting ? (
@@ -312,7 +312,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
 
       {/* ── Active document chat ── */}
       {documentText && !isExtracting ? (
-        <div className="space-y-4">
+        <div className="mx-auto max-w-3xl space-y-4">
           {/* Document bar */}
           <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-[10px] font-bold text-[color:var(--accent-strong)]">

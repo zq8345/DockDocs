@@ -299,7 +299,7 @@ export function LeaseRedflagClient({ locale = "en" }: { locale?: Locale }) {
   const card = "rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]";
 
   return (
-    <div className="mx-auto max-w-3xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
+    <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
       <div className="flex items-center gap-2">
         <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
         <span className="rounded-full border border-[color:var(--accent)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[color:var(--accent)]">{t.proBadge}</span>

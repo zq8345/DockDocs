@@ -282,7 +282,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
   };
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-12">
+    <main className="mx-auto max-w-5xl px-5 py-12">
       {/* Header */}
       <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-[color:var(--faint)]">{t.eyebrow}</p>
       <h1 className="mt-2 text-[32px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[40px]">
