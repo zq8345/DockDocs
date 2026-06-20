@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
@@ -69,8 +70,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why rotate PDF pages in your browser",
+    benefitsDescription: "Fix the orientation of any page — or the whole document — in seconds.",
+    benefits: [
+      { title: "Fix sideways scans", description: "Straighten pages that scanned in landscape or upside-down so the document reads the right way up." },
+      { title: "Rotate all or just some", description: "Apply a rotation to the whole PDF, or pick individual pages that need a different turn." },
+      { title: "90° steps, any direction", description: "Turn pages 90°, 180°, or 270° — clockwise or counter-clockwise — and preview before you save." },
+    ],
+    workflowTitle: "How rotating fits your document work",
+    workflowDescription: "For the moment a scan or export comes out sideways — a contract photographed in landscape, a batch scanned the wrong way.",
+    steps: [
+      "Upload the PDF with pages to rotate.",
+      "Select pages and choose the rotation angle.",
+      "Apply and download the corrected PDF.",
+    ],
+    readingTitle: "More ways to organize PDFs",
+    readingDescription: "Related tools for fixing and rearranging document pages.",
+    readingLinks: [
+      { label: "Reorder pages", href: "/reorder-pages", description: "Drag to change the page order of a PDF." },
+      { label: "Crop a PDF", href: "/crop-pdf", description: "Trim page margins or unwanted whitespace." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里旋转 PDF 页面",
+    benefitsDescription: "几秒钟修正任意页面——或整份文档——的方向。",
+    benefits: [
+      { title: "修正横置扫描", description: "把横向或倒置扫描的页面转正，让文档以正确方向阅读。" },
+      { title: "整份或选页旋转", description: "对整个 PDF 应用旋转，或挑出需要单独转向的某几页。" },
+      { title: "90°步进、任意方向", description: "把页面转 90°、180° 或 270°——顺时针或逆时针——保存前可预览。" },
+    ],
+    workflowTitle: "旋转如何融入你的文档工作",
+    workflowDescription: "当扫描或导出歪了时——横拍的合同、扫反方向的一批文件。",
+    steps: [
+      "上传有页面要旋转的 PDF。",
+      "选择页面并选好旋转角度。",
+      "应用并下载修正后的 PDF。",
+    ],
+    readingTitle: "更多整理 PDF 的方式",
+    readingDescription: "修正和重排文档页面的相关工具。",
+    readingLinks: [
+      { label: "重排页面", href: "/reorder-pages", description: "拖拽调整 PDF 的页面顺序。" },
+      { label: "裁剪 PDF", href: "/crop-pdf", description: "裁掉页边或多余的留白。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué rotar páginas de PDF en tu navegador",
+    benefitsDescription: "Corrige la orientación de cualquier página —o de todo el documento— en segundos.",
+    benefits: [
+      { title: "Corrige escaneos de lado", description: "Endereza páginas escaneadas en horizontal o al revés para que el documento se lea correctamente." },
+      { title: "Rota todo o solo algunas", description: "Aplica una rotación a todo el PDF o elige páginas concretas que necesiten otro giro." },
+      { title: "Pasos de 90°, cualquier dirección", description: "Gira páginas 90°, 180° o 270°, en sentido horario o antihorario, y previsualiza antes de guardar." },
+    ],
+    workflowTitle: "Cómo encaja la rotación en tu trabajo",
+    workflowDescription: "Para cuando un escaneo o exportación sale de lado: un contrato fotografiado en horizontal, un lote escaneado al revés.",
+    steps: [
+      "Sube el PDF con páginas para rotar.",
+      "Selecciona páginas y elige el ángulo de rotación.",
+      "Aplica y descarga el PDF corregido.",
+    ],
+    readingTitle: "Más formas de organizar PDF",
+    readingDescription: "Herramientas relacionadas para corregir y reorganizar páginas de documentos.",
+    readingLinks: [
+      { label: "Reordenar páginas", href: "/reorder-pages", description: "Reorganiza el orden de las páginas del PDF arrastrando." },
+      { label: "Recortar PDF", href: "/crop-pdf", description: "Recorta márgenes o espacios en blanco sobrantes." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que girar páginas de PDF no seu navegador",
+    benefitsDescription: "Corrija a orientação de qualquer página — ou do documento inteiro — em segundos.",
+    benefits: [
+      { title: "Corrija digitalizações de lado", description: "Endireite páginas digitalizadas na horizontal ou de cabeça para baixo para o documento ser lido corretamente." },
+      { title: "Gire tudo ou só algumas", description: "Aplique uma rotação ao PDF inteiro ou escolha páginas específicas que precisam de outro giro." },
+      { title: "Passos de 90°, qualquer direção", description: "Gire páginas 90°, 180° ou 270°, no sentido horário ou anti-horário, e visualize antes de salvar." },
+    ],
+    workflowTitle: "Como a rotação se encaixa no seu trabalho",
+    workflowDescription: "Para quando uma digitalização ou exportação sai de lado: um contrato fotografado na horizontal, um lote digitalizado ao contrário.",
+    steps: [
+      "Envie o PDF com páginas para girar.",
+      "Selecione páginas e escolha o ângulo de rotação.",
+      "Aplique e baixe o PDF corrigido.",
+    ],
+    readingTitle: "Mais formas de organizar PDF",
+    readingDescription: "Ferramentas relacionadas para corrigir e reorganizar páginas de documentos.",
+    readingLinks: [
+      { label: "Reordenar páginas", href: "/reorder-pages", description: "Reorganize a ordem das páginas do PDF arrastando." },
+      { label: "Recortar PDF", href: "/crop-pdf", description: "Corte margens ou espaços em branco sobrando." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi faire pivoter des pages PDF dans votre navigateur",
+    benefitsDescription: "Corrigez l'orientation de n'importe quelle page — ou de tout le document — en quelques secondes.",
+    benefits: [
+      { title: "Corrigez les scans de travers", description: "Redressez les pages numérisées en paysage ou à l'envers pour que le document se lise dans le bon sens." },
+      { title: "Tout ou seulement certaines", description: "Appliquez une rotation à tout le PDF, ou choisissez les pages qui ont besoin d'un autre sens." },
+      { title: "Pas de 90°, toute direction", description: "Tournez les pages de 90°, 180° ou 270°, dans le sens horaire ou antihoraire, et prévisualisez avant d'enregistrer." },
+    ],
+    workflowTitle: "Comment la rotation s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un scan ou un export sort de travers : un contrat photographié en paysage, un lot numérisé à l'envers.",
+    steps: [
+      "Importez le PDF dont les pages doivent pivoter.",
+      "Sélectionnez les pages et choisissez l'angle de rotation.",
+      "Appliquez et téléchargez le PDF corrigé.",
+    ],
+    readingTitle: "Plus de façons d'organiser les PDF",
+    readingDescription: "Outils associés pour corriger et réorganiser les pages des documents.",
+    readingLinks: [
+      { label: "Réorganiser les pages", href: "/reorder-pages", description: "Réorganisez l'ordre des pages du PDF par glisser-déposer." },
+      { label: "Rogner un PDF", href: "/crop-pdf", description: "Coupez les marges ou les blancs superflus." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF ページを回転する理由",
+    benefitsDescription: "任意のページ——または文書全体——の向きを数秒で修正します。",
+    benefits: [
+      { title: "横向きスキャンを修正", description: "横向きや上下逆さまにスキャンされたページをまっすぐにし、正しい向きで読めるようにします。" },
+      { title: "全部または一部だけ回転", description: "PDF 全体に回転を適用するか、別の向きが必要な個別ページを選べます。" },
+      { title: "90° 単位、任意の方向", description: "ページを 90°、180°、270°——時計回りまたは反時計回りに回転し、保存前にプレビューできます。" },
+    ],
+    workflowTitle: "回転が文書作業にどう役立つか",
+    workflowDescription: "スキャンや書き出しが横向きになったとき——横向きで撮影した契約書、逆向きにスキャンした束。",
+    steps: [
+      "回転したいページのある PDF をアップロードします。",
+      "ページを選び、回転角度を選択します。",
+      "適用して、修正された PDF をダウンロードします。",
+    ],
+    readingTitle: "PDF を整理する他の方法",
+    readingDescription: "文書のページを修正・並べ替えるための関連ツール。",
+    readingLinks: [
+      { label: "ページを並べ替え", href: "/reorder-pages", description: "ドラッグして PDF のページ順を変更します。" },
+      { label: "PDF をトリミング", href: "/crop-pdf", description: "余白や不要な空白を切り取ります。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -196,6 +339,7 @@ export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
           <ToolBridge slug="rotate-page" locale={locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="rotate-page" locale={locale} />
     </div>
   );
