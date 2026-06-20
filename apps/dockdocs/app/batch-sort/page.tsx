@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchSortClient } from "@/components/BatchSortClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Batch Sort PDFs into Folders — AI File Organizer Online Free",
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchSortPage() {
-  return <BatchSortClient />;
+  return <><ExtraToolJsonLd slug="batch-sort" locale="en" /><BatchSortClient /></>;
 }

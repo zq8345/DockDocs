@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchTranslateClient } from "@/components/BatchTranslateClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Batch Translate PDFs — Translate a Whole Folder",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchTranslatePage() {
-  return <BatchTranslateClient />;
+  return <><ExtraToolJsonLd slug="batch-translate" locale="en" /><BatchTranslateClient /></>;
 }

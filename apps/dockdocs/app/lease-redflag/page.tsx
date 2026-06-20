@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { LeaseRedflagClient } from "@/components/LeaseRedflagClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Lease Red Flag Check — Spot Risky Clauses Before You Sign",
@@ -21,5 +22,5 @@ export const metadata: Metadata = {
 };
 
 export default function LeaseRedflagPage() {
-  return <LeaseRedflagClient />;
+  return <><ExtraToolJsonLd slug="lease-redflag" locale="en" /><LeaseRedflagClient /></>;
 }

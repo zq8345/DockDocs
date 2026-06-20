@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { QuizClient } from "@/components/QuizClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "PDF Flashcard Maker — Study Cards from Any PDF",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function FlashcardsPage() {
-  return <QuizClient />;
+  return <><ExtraToolJsonLd slug="flashcards" locale="en" /><QuizClient /></>;
 }

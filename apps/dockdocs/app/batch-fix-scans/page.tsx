@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchFixScansClient } from "@/components/BatchFixScansClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Batch Fix Scans — Crop Margins or Delete Pages in Bulk",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchFixScansPage() {
-  return <BatchFixScansClient />;
+  return <><ExtraToolJsonLd slug="batch-fix-scans" locale="en" /><BatchFixScansClient /></>;
 }

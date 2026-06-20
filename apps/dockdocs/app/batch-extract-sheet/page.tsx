@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Batch Extract Data to Spreadsheet — Many Invoices to CSV Online",
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchExtractSheetPage() {
-  return <ExtractExcelClient />;
+  return <><ExtraToolJsonLd slug="batch-extract-sheet" locale="en" /><ExtractExcelClient /></>;
 }

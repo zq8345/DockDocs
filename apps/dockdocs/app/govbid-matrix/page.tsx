@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { GovbidMatrixClient } from "@/components/GovbidMatrixClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Government Bid Compliance Matrix — Extract Every Shall/Must Requirement",
@@ -21,5 +22,5 @@ export const metadata: Metadata = {
 };
 
 export default function GovbidMatrixPage() {
-  return <GovbidMatrixClient />;
+  return <><ExtraToolJsonLd slug="govbid-matrix" locale="en" /><GovbidMatrixClient /></>;
 }

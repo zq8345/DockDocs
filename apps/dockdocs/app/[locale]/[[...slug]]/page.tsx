@@ -1944,7 +1944,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "batch-compress") {
-    return <BatchCompressClient locale={clientLocale} />;
+    return <>{extraJsonLd}<BatchCompressClient locale={clientLocale} /></>;
   }
 
   if (slug === "batch-summary") {
@@ -1952,7 +1952,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "flashcards") {
-    return <QuizClient locale={clientLocale} />;
+    return <>{extraJsonLd}<QuizClient locale={clientLocale} /></>;
   }
   if (slug === "sign-pdf") {
     return <>{toolJsonLd}<SignPdfClient locale={clientLocale} /></>;
@@ -2003,11 +2003,11 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "batch-extract-sheet") {
-    return <ExtractExcelClient locale={clientLocale} />;
+    return <>{extraJsonLd}<ExtractExcelClient locale={clientLocale} /></>;
   }
 
   if (slug === "batch-sort") {
-    return <BatchSortClient locale={clientLocale} />;
+    return <>{extraJsonLd}<BatchSortClient locale={clientLocale} /></>;
   }
 
   if (slug === "batch-pdf-to-word") {
@@ -2031,11 +2031,11 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "batch-translate") {
-    return <BatchTranslateClient locale={clientLocale} />;
+    return <>{extraJsonLd}<BatchTranslateClient locale={clientLocale} /></>;
   }
 
   if (slug === "batch-fix-scans") {
-    return <BatchFixScansClient locale={clientLocale} />;
+    return <>{extraJsonLd}<BatchFixScansClient locale={clientLocale} /></>;
   }
 
   if (slug === "contract-risk") {
@@ -2045,11 +2045,11 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "lease-redflag") {
-    return <LeaseRedflagClient locale={clientLocale} />;
+    return <>{extraJsonLd}<LeaseRedflagClient locale={clientLocale} /></>;
   }
 
   if (slug === "govbid-matrix") {
-    return <GovbidMatrixClient locale={clientLocale} />;
+    return <>{extraJsonLd}<GovbidMatrixClient locale={clientLocale} /></>;
   }
 
   if (slug === "my-chats") {
@@ -2061,7 +2061,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "compare") {
-    return <DocumentCompareClient locale={clientLocale} />;
+    return <>{extraJsonLd}<DocumentCompareClient locale={clientLocale} /></>;
   }
 
   if (slug === "pricing") {

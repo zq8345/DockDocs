@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DocumentCompareClient } from "@/components/DocumentCompareClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Compare PDF Documents Side by Side with AI | DockDocs",
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function ComparePage() {
-  return <DocumentCompareClient />;
+  return <><ExtraToolJsonLd slug="compare" locale="en" /><DocumentCompareClient /></>;
 }

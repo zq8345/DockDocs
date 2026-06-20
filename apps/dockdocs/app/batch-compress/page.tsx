@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchCompressClient } from "@/components/BatchCompressClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Batch Compress PDFs — Shrink a Whole Folder",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchCompressPage() {
-  return <BatchCompressClient />;
+  return <><ExtraToolJsonLd slug="batch-compress" locale="en" /><BatchCompressClient /></>;
 }
