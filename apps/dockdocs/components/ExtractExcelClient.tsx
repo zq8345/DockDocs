@@ -27,6 +27,10 @@ const STR = {
     needFile: "Add at least one PDF.",
     err: "Something went wrong: ",
     note: "Fields are extracted by AI and may need a quick check. Values it can't find are left blank — it won't make them up.",
+    verifiedBadge: "✓ Verified against source",
+    verified: "✓ source",
+    sourceFrom: "Source:",
+    unverified: "Value found — exact passage not located. Please verify.",
   },
   zh: {
     title: "数据抽取到表格",
@@ -40,6 +44,10 @@ const STR = {
     needFile: "至少添加一个 PDF。",
     err: "出错了：",
     note: "字段由 AI 抽取，建议快速核对。找不到的值会留空——不会瞎编。",
+    verifiedBadge: "✓ 已核对原文",
+    verified: "✓ 已核对",
+    sourceFrom: "原文：",
+    unverified: "找到了值，但未定位到精确原文，请自行核对。",
   },
   es: {
     title: "Extraer a Excel",
@@ -53,6 +61,10 @@ const STR = {
     needFile: "Agrega al menos un PDF.",
     err: "Algo salió mal: ",
     note: "Los campos los extrae la IA y puede que necesiten una revisión rápida. Los valores que no encuentra se dejan en blanco; no los inventa.",
+    verifiedBadge: "✓ Verificado en el documento",
+    verified: "✓ verificado",
+    sourceFrom: "Fuente:",
+    unverified: "Valor encontrado, pero no se localizó el fragmento exacto. Por favor, verifique.",
   },
   pt: {
     title: "Extrair para Excel",
@@ -66,6 +78,10 @@ const STR = {
     needFile: "Adicione pelo menos um PDF.",
     err: "Algo deu errado: ",
     note: "Os campos são extraídos por IA e podem precisar de uma verificação rápida. Valores não encontrados são deixados em branco — a IA não os inventa.",
+    verifiedBadge: "✓ Verificado na fonte",
+    verified: "✓ verificado",
+    sourceFrom: "Fonte:",
+    unverified: "Valor encontrado, mas o trecho exato não foi localizado. Por favor, verifique.",
   },
   fr: {
     title: "Extraire vers Excel",
@@ -79,6 +95,10 @@ const STR = {
     needFile: "Ajoutez au moins un PDF.",
     err: "Une erreur est survenue : ",
     note: "Les champs sont extraits par IA et peuvent nécessiter une vérification rapide. Les valeurs introuvables sont laissées vides — l'IA ne les invente pas.",
+    verifiedBadge: "✓ Vérifié dans la source",
+    verified: "✓ vérifié",
+    sourceFrom: "Source :",
+    unverified: "Valeur trouvée, mais le passage exact n'a pas été localisé. Veuillez vérifier.",
   },
   ja: {
     title: "Excelに抽出",
@@ -92,6 +112,10 @@ const STR = {
     needFile: "PDFを少なくとも1件追加してください。",
     err: "問題が発生しました: ",
     note: "項目はAIが抽出するため、簡単な確認が必要な場合があります。見つからない値は空欄のままにし、作り出すことはありません。",
+    verifiedBadge: "✓ 原文で確認済み",
+    verified: "✓ 確認済み",
+    sourceFrom: "出典：",
+    unverified: "値は見つかりましたが、正確な箇所を特定できませんでした。ご確認ください。",
   },
 };
 
@@ -232,10 +256,15 @@ export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
             ))}
           </ul>
 
-          {phase === "done" && dims.length > 0 && (
+          {phase === "done" && dims.length > 0 && (() => {
+            const hasAnySource = results.some((r) => dims.some((d) => r.fields[d.key]?.source != null));
+            return (
             <div className="mt-6">
-              <div className="mb-3 flex items-center justify-between">
-                <p className="text-[12.5px] text-[color:var(--faint)]">{t.note}</p>
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-[12.5px] text-[color:var(--faint)]">{t.note}</p>
+                  {hasAnySource && <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[color:var(--accent)] px-2.5 py-0.5 text-[11px] font-medium text-[color:var(--accent)]">{t.verifiedBadge}</span>}
+                </div>
                 <button type="button" onClick={download} className="shrink-0 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}</button>
               </div>
               <div className="overflow-x-auto rounded-[var(--radius)] border border-[color:var(--line)]">
@@ -251,17 +280,39 @@ export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
                   <tbody>
                     {results.map((r) => (
                       <tr key={r.id} className="even:bg-[color:var(--surface-subtle)]/40">
-                        <td className="border-b border-[color:var(--line)] px-3 py-2 font-medium text-[color:var(--foreground)]">{r.name}</td>
-                        {dims.map((d) => (
-                          <td key={d.key} className="border-b border-[color:var(--line)] px-3 py-2 text-[color:var(--muted)]">{r.fields[d.key]?.value ?? t.notRecognized}</td>
-                        ))}
+                        <td className="border-b border-[color:var(--line)] px-3 py-2 align-top font-medium text-[color:var(--foreground)]">{r.name}</td>
+                        {dims.map((d) => {
+                          const field = r.fields[d.key];
+                          return (
+                            <td key={d.key} className="border-b border-[color:var(--line)] px-3 py-2 align-top text-[color:var(--muted)]">
+                              {field?.value != null ? (
+                                <div className="space-y-1">
+                                  <span className="block">{field.value}</span>
+                                  {field.source != null ? (
+                                    <details>
+                                      <summary className="inline-flex cursor-pointer list-none items-center gap-1 rounded-full border border-[color:var(--accent)] px-2 py-0.5 text-[10px] font-medium text-[color:var(--accent)] outline-none [&::-webkit-details-marker]:hidden">
+                                        {t.verified}
+                                      </summary>
+                                      <p className="mt-1 rounded border border-[color:var(--line)] bg-black/20 px-2 py-1.5 text-[11px] italic leading-relaxed text-[color:var(--faint)]">
+                                        <span className="not-italic font-mono">{t.sourceFrom}</span> &ldquo;{field.source}&rdquo;
+                                      </p>
+                                    </details>
+                                  ) : (
+                                    <span className="text-[10px] text-[color:var(--faint)]">{t.unverified}</span>
+                                  )}
+                                </div>
+                              ) : <span>{t.notRecognized}</span>}
+                            </td>
+                          );
+                        })}
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
-          )}
+          );
+          })()}
         </>
       )}
 
