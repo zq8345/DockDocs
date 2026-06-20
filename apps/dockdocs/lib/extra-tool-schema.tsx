@@ -1,5 +1,6 @@
 import { siteUrl } from "@/lib/i18n";
 import { deepHant } from "@/lib/zh-hant";
+import { getToolFaqItems } from "@/components/ToolFaq";
 
 // Lightweight JSON-LD (WebApplication + BreadcrumbList) for indexable tool pages
 // that render a custom *Client.tsx and are NOT in toolSlugs — so they have no
@@ -586,6 +587,12 @@ function pathFor(slug: string, locale: Loc): string {
   return locale === "en" ? `/${slug}/` : `/${locale}/${slug}/`;
 }
 
+// Slugs whose custom client renders a real visible <ToolFaq> Q&A — so we can emit
+// FAQPage JSON-LD that reuses that exact visible copy (no fabricated FAQ). Other
+// extra-tool slugs (e.g. /for/* hubs, batch tools without a verified FAQ) are
+// intentionally excluded.
+const FAQ_PAGE_SLUGS = new Set(["compare", "extract-to-excel", "redline", "redact-pdf"]);
+
 export function extraToolSchema(slug: string, locale: Loc) {
   const entry = EXTRA_TOOL_LABELS[slug];
   if (!entry) return null;
@@ -595,29 +602,49 @@ export function extraToolSchema(slug: string, locale: Loc) {
     : (entry[locale] ?? entry.en);
   if (!lab) return null;
   const url = `${siteUrl}${pathFor(slug, locale)}`;
+  const graph: object[] = [
+    {
+      "@type": "WebApplication",
+      "@id": `${url}#app`,
+      name: lab.name,
+      url,
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      description: lab.description,
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      brand: { "@type": "Brand", name: "DockDocs" },
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": `${url}#breadcrumb`,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "DockDocs", item: siteUrl },
+        { "@type": "ListItem", position: 2, name: lab.crumb, item: url },
+      ],
+    },
+  ];
+
+  // FAQPage — reuse the SAME Q&A the page renders (getToolFaqItems), so the
+  // structured data never drifts from the visible FAQ. Only for slugs with a
+  // real visible FAQ in this locale.
+  if (FAQ_PAGE_SLUGS.has(slug)) {
+    const faqItems = getToolFaqItems(slug, locale);
+    if (faqItems && faqItems.length > 0) {
+      graph.push({
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        mainEntity: faqItems.map((it) => ({
+          "@type": "Question",
+          name: it.q,
+          acceptedAnswer: { "@type": "Answer", text: it.a },
+        })),
+      });
+    }
+  }
+
   return {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebApplication",
-        "@id": `${url}#app`,
-        name: lab.name,
-        url,
-        applicationCategory: "BusinessApplication",
-        operatingSystem: "Web",
-        description: lab.description,
-        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
-        brand: { "@type": "Brand", name: "DockDocs" },
-      },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${url}#breadcrumb`,
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "DockDocs", item: siteUrl },
-          { "@type": "ListItem", position: 2, name: lab.crumb, item: url },
-        ],
-      },
-    ],
+    "@graph": graph,
   };
 }
 

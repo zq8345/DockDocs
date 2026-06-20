@@ -2474,6 +2474,19 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
   },
 };
 
+// Resolve the SAME FAQ Q&A items that ToolFaqInner renders for a (tool, locale),
+// so FAQPage JSON-LD can reuse the exact visible copy (single source of truth).
+// Returns null when the tool has no FAQ for that locale (→ emit no FAQPage).
+export function getToolFaqItems(tool: string, locale: Locale = "en"): QA[] | null {
+  if (locale === "pt") return FAQS_PT[tool]?.items ?? null;
+  if (locale === "fr") return FAQS_FR[tool]?.items ?? null;
+  if (locale === "ja") return FAQS_JA[tool]?.items ?? null;
+  const data = FAQS[tool];
+  if (!data) return null;
+  if (locale === "zh-Hant") return deepHant(data.items.zh);
+  return data.items[locale as "en" | "zh" | "es"] ?? data.items.en;
+}
+
 export function ToolFaq(props: { tool: string; locale?: Locale }) {
   // Verifiable-trust block for pure-client tools (file never uploaded) — rendered
   // as a sibling BELOW the FAQ (aligns with the template path, which also renders
