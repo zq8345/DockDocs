@@ -15,12 +15,30 @@ function converter(): (s: string) => string {
   return _converter;
 }
 
+// Sense-dependent terms resolved on the SIMPLIFIED input, BEFORE OpenCC — at this
+// point 文件 vs 文档 are still distinct (after conversion they collapse, so it must
+// be done here). Domain-validated for this PDF tool (verified across the zh source):
+// 文件 is always "file", 文档 always "document", 支持 always software "support".
+// Order matters: 文件→檔案 runs before 文档→文件 (distinct keys, no collision) so
+// file-sense lands on 檔案 and document-sense on 文件.
+const TW_PRE: Array<[string, string]> = [
+  ["文件", "檔案"], // file → 檔案
+  ["文档", "文件"], // document (mainland 文档) → TW 文件
+  ["支持", "支援"], // software support → 支援
+];
+
+function applyTwPre(s: string): string {
+  let out = s;
+  for (const [from, to] of TW_PRE) {
+    if (out.includes(from)) out = out.split(from).join(to);
+  }
+  return out;
+}
+
 // High-frequency, UNAMBIGUOUS Taiwan terms that twp still leaves as mainland
 // vocabulary. Applied to the Traditional output, longest-key-first so a longer
 // phrase wins before any substring of it. Keys are Chinese phrases only (no
 // ASCII), so PDF/OCR/AI/DockDocs/URLs/brand tokens are never touched.
-// AMBIGUOUS terms are deliberately EXCLUDED and left for native TW review:
-//   文件 (file→檔案 OR document) · 支持 (support→支援 OR endorse).
 const TW_VOCAB: Record<string, string> = {
   服務器: "伺服器",
   在線: "線上",
@@ -57,7 +75,7 @@ function applyTwVocab(s: string): string {
 /** Convert a Simplified-Chinese string to Traditional (Taiwan). Memoized converter. */
 export function toHant(s: string): string {
   if (!s) return s;
-  return applyTwVocab(converter()(s));
+  return applyTwVocab(converter()(applyTwPre(s)));
 }
 
 /**

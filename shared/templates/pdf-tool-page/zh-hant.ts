@@ -9,12 +9,28 @@ import * as OpenCC from "opencc-js";
 // no separate Traditional literal in the template.
 let _conv: ((s: string) => string) | null = null;
 
+// Sense-dependent terms resolved on the SIMPLIFIED input, BEFORE OpenCC — 文件 vs
+// 文档 are still distinct here (they collapse after conversion). Domain-validated
+// for this PDF tool: 文件 is always "file", 文档 always "document", 支持 always
+// software "support". Order: 文件→檔案 before 文档→文件 (distinct keys, no collision).
+const TW_PRE: Array<[string, string]> = [
+  ["文件", "檔案"], // file → 檔案
+  ["文档", "文件"], // document (mainland 文档) → TW 文件
+  ["支持", "支援"], // software support → 支援
+];
+
+function applyTwPre(s: string): string {
+  let out = s;
+  for (const [from, to] of TW_PRE) {
+    if (out.includes(from)) out = out.split(from).join(to);
+  }
+  return out;
+}
+
 // High-frequency, UNAMBIGUOUS Taiwan terms that twp still leaves as mainland
 // vocabulary. Applied to the Traditional output, longest-key-first so a longer
 // phrase wins before any substring of it. Keys are Chinese phrases only (no
 // ASCII), so PDF/OCR/AI/DockDocs/URLs/brand tokens are never touched.
-// AMBIGUOUS terms are deliberately EXCLUDED and left for native TW review:
-//   文件 (file→檔案 OR document) · 支持 (support→支援 OR endorse).
 const TW_VOCAB: Record<string, string> = {
   服務器: "伺服器",
   在線: "線上",
@@ -51,7 +67,7 @@ function applyTwVocab(s: string): string {
 export function toHant(s: string): string {
   if (!s) return s;
   if (!_conv) _conv = OpenCC.Converter({ from: "cn", to: "twp" });
-  return applyTwVocab(_conv(s));
+  return applyTwVocab(_conv(applyTwPre(s)));
 }
 
 export function deepHant<T>(value: T): T {
