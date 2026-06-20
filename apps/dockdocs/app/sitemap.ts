@@ -16,13 +16,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Incomplete locales (tool pages still fall back to English) are excluded so
   // Google doesn't index thin/duplicate content. Remove from this set once a
   // locale's tool pages are fully localized.
-  // ja is partially native: its tool pages + home/pricing/sitemap/info pages have
-  // real Japanese copy, but the GEO guide hubs and blog still fall back to
-  // English — so ja is enrolled below but filtered to its native routes only
-  // (isJaNativeRoute), matching the catch-all's ja noindex gate.
-  // zh-Hant ships NOINDEX (OpenCC-derived Traditional, awaiting native TW review)
-  // → keep it OUT of the sitemap.
-  const INCOMPLETE_LOCALES = new Set<string>(["zh-Hant"]);
+  // ja and zh-Hant are partially native: tool pages + home/pricing/sitemap/info
+  // pages + GEO hubs have real (ja) / OpenCC-derived (zh-Hant) copy, but blog and
+  // programmatic-GEO fall back to English / aren't generated for them — so both are
+  // enrolled but filtered to their native routes only (isJaNativeRoute), matching
+  // the catch-all's noindex gate.
+  const INCOMPLETE_LOCALES = new Set<string>([]);
   const sitemapLocales = routeLocales.filter(l => !INCOMPLETE_LOCALES.has(l));
 
   // Generate routes for all locales
@@ -40,8 +39,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Localized routes
     for (const locale of sitemapLocales) {
       if (locale === "en") continue;
-      // ja: only its native routes (skip English-fallback guide hubs/blog).
-      if (locale === "ja" && !isJaNativeRoute(route.slug)) continue;
+      // ja & zh-Hant: only their native routes (skip blog / programmatic-GEO,
+      // which fall back to English / aren't generated for them).
+      if ((locale === "ja" || locale === "zh-Hant") && !isJaNativeRoute(route.slug)) continue;
       routes.push({
         url: absoluteUrl(`/${locale}${route.path}`),
         lastModified: now,

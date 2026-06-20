@@ -18,7 +18,7 @@ import { join } from "node:path";
 
 const OUT = join(process.cwd(), "out");
 const BASE = "https://dockdocs.app";
-const SECONDARY = ["zh", "es", "pt", "fr", "ja"];
+const SECONDARY = ["zh", "es", "pt", "fr", "ja", "zh-Hant"];
 const LOCALE_DIRS = new Set(["en", "zh", "es", "pt", "fr", "ja"]);
 
 async function collectRoutes(base, { skipTopLevelLocaleDirs = false } = {}) {
