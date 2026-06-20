@@ -54,7 +54,7 @@ const STR = {
   en: {
     badge: "Comparison engine",
     h1: "Compare documents",
-    intro: `Upload 2–${MAX_FILES} PDFs of the same kind. DockDocs reads them in your browser, then lines up the key terms side by side — with the source line behind every value.`,
+    intro: `Upload 2–${MAX_FILES} PDFs of the same kind. DockDocs reads them in your browser, then lines up the key terms side by side — with the source line shown wherever it can be located.`,
     drop: "Drag & drop PDFs here",
     dropHint: "Read locally — your files never leave your device. Field extraction runs on our server.",
     choose: "Choose PDFs",
@@ -115,7 +115,7 @@ const STR = {
   zh: {
     badge: "对比引擎",
     h1: "多文档对比",
-    intro: `上传 2–${MAX_FILES} 份同类 PDF。DockDocs 在你浏览器里读取，把关键条款并排列出——每个值后面都带原文出处。`,
+    intro: `上传 2–${MAX_FILES} 份同类 PDF。DockDocs 在你浏览器里读取，把关键条款并排列出——可定位时在值后面给出原文出处。`,
     drop: "把 PDF 拖到这里",
     dropHint: "在本地读取——文件不离开你的设备。字段抽取在我们服务器上完成。",
     choose: "选择 PDF",
@@ -176,7 +176,7 @@ const STR = {
   es: {
     badge: "Motor de comparación",
     h1: "Comparar documentos",
-    intro: `Sube de 2 a ${MAX_FILES} PDF del mismo tipo. DockDocs los lee en tu navegador y luego alinea los términos clave uno al lado del otro, con la línea de origen detrás de cada valor.`,
+    intro: `Sube de 2 a ${MAX_FILES} PDF del mismo tipo. DockDocs los lee en tu navegador y luego alinea los términos clave uno al lado del otro, con la línea de origen detrás de cada valor cuando puede localizarla.`,
     drop: "Arrastra y suelta PDF aquí",
     dropHint: "Se leen localmente: tus archivos nunca salen de tu dispositivo. La extracción de campos se ejecuta en nuestro servidor.",
     choose: "Elegir PDF",
@@ -237,7 +237,7 @@ const STR = {
   pt: {
     badge: "Motor de comparação",
     h1: "Comparar documentos",
-    intro: `Envie de 2 a ${MAX_FILES} PDFs do mesmo tipo. O DockDocs os lê no seu navegador e alinha os termos-chave lado a lado — com a linha de origem por trás de cada valor.`,
+    intro: `Envie de 2 a ${MAX_FILES} PDFs do mesmo tipo. O DockDocs os lê no seu navegador e alinha os termos-chave lado a lado — com a linha de origem por trás de cada valor quando consegue localizá-la.`,
     drop: "Arraste e solte PDFs aqui",
     dropHint: "Lidos localmente: seus arquivos nunca saem do seu dispositivo. A extração de campos é executada no nosso servidor.",
     choose: "Escolher PDFs",
@@ -298,7 +298,7 @@ const STR = {
   fr: {
     badge: "Moteur de comparaison · bêta",
     h1: "Comparer des documents",
-    intro: `Déposez 2 à ${MAX_FILES} PDF du même type. DockDocs les lit dans votre navigateur, puis aligne les termes clés côte à côte — avec la ligne source derrière chaque valeur.`,
+    intro: `Déposez 2 à ${MAX_FILES} PDF du même type. DockDocs les lit dans votre navigateur, puis aligne les termes clés côte à côte — avec la ligne source derrière chaque valeur lorsqu'elle peut être localisée.`,
     drop: "Glissez-déposez vos PDF ici",
     dropHint: "Lecture locale — vos fichiers ne quittent jamais votre appareil. L'extraction des champs s'effectue sur notre serveur.",
     choose: "Choisir des PDF",
@@ -359,7 +359,7 @@ const STR = {
   ja: {
     badge: "比較エンジン",
     h1: "ドキュメントを比較",
-    intro: `同じ種類の PDF を 2〜${MAX_FILES} 件アップロードしてください。DockDocs がブラウザ内で読み取り、主要な項目を横並びで整理します — どの値の裏にも出典の一文が付きます。`,
+    intro: `同じ種類の PDF を 2〜${MAX_FILES} 件アップロードしてください。DockDocs がブラウザ内で読み取り、主要な項目を横並びで整理します — 出典を特定できた値には原文の一文を表示します。`,
     drop: "ここに PDF をドラッグ＆ドロップ",
     dropHint: "ローカルで読み取り — ファイルがデバイスから出ることはありません。項目の抽出は当社サーバーで実行されます。",
     choose: "PDF を選択",

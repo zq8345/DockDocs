@@ -249,31 +249,31 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       name: "DockDocs 多文档对比",
       crumb: "多文档对比",
       description:
-        "上传多份 PDF，在浏览器抽取文本，并排对比关键字段——每个值都带原文出处。",
+        "上传多份 PDF，在浏览器抽取文本，并排对比关键字段——可定位时给出原文出处。",
     },
     es: {
       name: "DockDocs Comparar PDF",
       crumb: "Comparar PDF",
       description:
-        "Sube varios PDFs, extrae el texto en tu navegador y compara los términos clave lado a lado — con la fuente detrás de cada valor.",
+        "Sube varios PDFs, extrae el texto en tu navegador y compara los términos clave lado a lado — con la fuente detrás de cada valor cuando puede localizarla.",
     },
     pt: {
       name: "DockDocs Comparar PDF",
       crumb: "Comparar PDF",
       description:
-        "Carregue vários PDFs, extraia o texto no seu navegador e compare os termos-chave lado a lado — com a fonte por trás de cada valor.",
+        "Carregue vários PDFs, extraia o texto no seu navegador e compare os termos-chave lado a lado — com a fonte por trás de cada valor quando consegue localizá-la.",
     },
     fr: {
       name: "DockDocs Comparer PDF",
       crumb: "Comparer PDF",
       description:
-        "Chargez plusieurs PDFs, extrayez le texte dans votre navigateur et comparez les termes clés côte à côte — avec la source derrière chaque valeur.",
+        "Chargez plusieurs PDFs, extrayez le texte dans votre navigateur et comparez les termes clés côte à côte — avec la source derrière chaque valeur lorsqu'elle peut être localisée.",
     },
     ja: {
       name: "DockDocs PDF比較",
       crumb: "PDF比較",
       description:
-        "複数のPDFをアップロードしてブラウザ内でテキスト抽出し、主要な条件を並べて比較—各値の出典も確認できます。",
+        "複数のPDFをアップロードしてブラウザ内でテキスト抽出し、主要な条件を並べて比較—出典を特定できた値には原文の出典も表示します。",
     },
   },
   "govbid-matrix": {
