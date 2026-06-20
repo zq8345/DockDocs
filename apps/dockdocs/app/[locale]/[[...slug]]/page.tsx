@@ -61,8 +61,6 @@ import { ContractRiskClient } from "@/components/ContractRiskClient";
 import { LeaseRedflagClient } from "@/components/LeaseRedflagClient";
 import { GovbidMatrixClient } from "@/components/GovbidMatrixClient";
 import { SignPdfClient } from "@/components/SignPdfClient";
-import { ToolRuntimeClient } from "@/components/ToolRuntimeClient";
-import { UploadPanel } from "@/components/UploadPanel";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 import {
   blogArticleAlternates,
@@ -2329,70 +2327,6 @@ function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" | 
           faqs={[...((copy as { faqs: Array<{ question: string; answer: string }> }).faqs)]}
         />
       ) : null}
-    </main>
-  );
-}
-
-type RuntimeToolKey = "summary" | "ocr" | "compress" | "pdfToWord";
-
-function LocalizedRuntimeTool({
-  locale,
-  tool,
-}: {
-  locale: Locale;
-  tool: RuntimeToolKey;
-}) {
-  const copy = getRuntimeCopy(locale);
-  const page = copy[tool];
-  const accept =
-    tool === "summary"
-      ? "application/pdf,.pdf,.doc,.docx"
-      : tool === "ocr"
-        ? "application/pdf,.pdf,image/png,.png,image/jpeg,.jpg,.jpeg"
-        : "application/pdf,.pdf";
-  const allowedExtensions =
-    tool === "summary"
-      ? [".pdf", ".doc", ".docx"]
-      : tool === "ocr"
-        ? [".pdf", ".png", ".jpg", ".jpeg"]
-        : [".pdf"];
-
-  return (
-    <main className="bg-[color:var(--surface)]">
-      <div className="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
-        <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
-          <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
-          <span>/</span>
-          <span className="font-medium text-[color:var(--foreground)]">{page.title}</span>
-        </div>
-
-        <h1 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-3xl">
-          {page.title}
-        </h1>
-        <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-          {page.description}
-        </p>
-
-        <div id="upload" className="mt-8">
-          <ToolRuntimeClient
-            uploadTitle={page.runtimeUploadTitle}
-            uploadDescription={page.runtimeUploadDescription}
-            formats={page.formats}
-            limit={page.limit}
-            cta={page.cta}
-            accept={accept}
-            allowedExtensions={allowedExtensions}
-            outputEyebrow={page.resultEyebrow}
-            outputTitle={page.resultTitle}
-            outputSummary={page.resultSummary}
-            keyPoints={[...page.keyPoints]}
-            actions={[...page.actions]}
-            emptyMessage={page.emptyMessage}
-            locale={locale}
-          />
-        </div>
-      </div>
-      {"faqs" in page && <LocalizedFaq title={page.faqTitle} faqs={[...page.faqs]} />}
     </main>
   );
 }
