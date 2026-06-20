@@ -21,7 +21,6 @@ import { PricingPlans } from "@/components/PricingPlans";
 import { DocumentCompareClient } from "@/components/DocumentCompareClient";
 import { Home as HomeSections } from "@/components/Home";
 import { SitemapContent } from "@/components/SitemapContent";
-import { ClientRedirect } from "@/components/ClientRedirect";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { AboutPage } from "@/components/AboutPage";
 import { AccountClient } from "@/components/AccountClient";
@@ -847,14 +846,6 @@ async function generateMetadataInner({
     );
   }
 
-  if (slug === "ocr") {
-    return createLocalizedMetadata(
-      rawLocale,
-      slug,
-      runtimeCopy.ocr.title,
-      runtimeCopy.ocr.description,
-    );
-  }
 
   if (slug === "for/legal") {
     return createLocalizedMetadata(
@@ -1885,10 +1876,6 @@ export default async function LocalizedRoute({
     return <LocalizedAiSummary locale={clientLocale} />;
   }
 
-  if (slug === "ocr") {
-    // /ocr was a fake placeholder (no real processing) — send users to the real OCR tool
-    return <ClientRedirect to={localizedPath(rawLocale, "ocr-pdf")} />;
-  }
 
   if (slug === "dashboard") {
     return <LocalizedDashboard locale={clientLocale} />;

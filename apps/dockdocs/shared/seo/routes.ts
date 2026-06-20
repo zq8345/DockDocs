@@ -58,7 +58,6 @@ type RouteMeta = {
 // not be advertised in the sitemap. Keep this in sync with the robots:{index:false}
 // pages — see app/[locale]/[[...slug]]/page.tsx and the matching app/<slug> roots.
 const NOINDEX_SLUGS = new Set<RouteSlug>([
-  "ocr", // OCR runtime workspace (app/ocr) — "ocr-pdf" is the indexable SEO page
   "edit-pdf", // Coming-soon placeholder (COMING_SOON_TOOLS) — index:false
   "my-chats", // Saved user conversations — index:false
   "dashboard", // Signed-in workspace — index:false

@@ -37,7 +37,6 @@ export const routeSlugs = [
   "",
   "chat-with-pdf",
   "ai-summary",
-  "ocr",
   "compress-pdf",
   "merge-pdf",
   "split-pdf",

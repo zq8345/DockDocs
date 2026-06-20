@@ -1,3 +1,8 @@
+# /ocr was a fake placeholder (simulated OCR, FAQ falsely claimed real Tesseract);
+# the real tool is /ocr-pdf. 301 the en root + every locale variant to it.
+/ocr /ocr-pdf 301!
+/:lng/ocr /:lng/ocr-pdf 301!
+
 /classify /batch-sort 301
 
 # --- GEO content slim-down (P0 2026-06-17): 410 removed thin /guides pages ---
