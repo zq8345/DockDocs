@@ -502,9 +502,9 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
-      {/* ── Hero + Upload (centered, full-width focus) ── */}
-      <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto max-w-6xl px-5 pb-12 pt-12 sm:px-6 lg:px-8 sm:pt-16">
+      {/* ── Hero + Upload ── */}
+      <section>
+        <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 lg:px-8 sm:pt-16">
           {/* Title */}
           <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">
             {config.breadcrumbName}
@@ -527,7 +527,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       {/* ── FAQ (collapsed, clean) ── */}
       {config.faq.length > 0 && (
         <section>
-          <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6 lg:px-8">
             <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{config.faqTitle}</h2>
             <div className="mt-6 space-y-6">
               {config.faq.map((item) => (
@@ -543,8 +543,8 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
 
       {/* ── Verifiable-trust proof: only on tools that upload nothing (gated) ── */}
       {LOCAL_ONLY_SLUGS.has(config.slug) && (
-        <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-          <Container>
+        <Section bordered={false}>
+          <Container className="!max-w-5xl">
             <VerifyClientSide locale={config.locale ?? "en"} />
           </Container>
         </Section>
@@ -609,8 +609,8 @@ function BenefitsSection({ config }: { config: PdfToolPageConfig }) {
   const copy = tlCopy(config.locale ?? "en");
 
   return (
-    <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-      <Container>
+    <Section bordered={false}>
+      <Container className="!max-w-5xl">
         <SectionIntro
           eyebrow={copy.benefits}
           title={config.benefitsTitle}
@@ -630,8 +630,8 @@ function FeaturesSection({ config }: { config: PdfToolPageConfig }) {
   const copy = tlCopy(config.locale ?? "en");
 
   return (
-    <Section id="features" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
-      <Container>
+    <Section id="features" bordered={false}>
+      <Container className="!max-w-5xl">
         <SectionIntro
           eyebrow={copy.features}
           title={config.featuresTitle}
@@ -651,8 +651,8 @@ function HowItWorksSection({ config }: { config: PdfToolPageConfig }) {
   const copy = tlCopy(config.locale ?? "en");
 
   return (
-    <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-      <Container className="grid gap-10 lg:grid-cols-[0.8fr_1fr]">
+    <Section bordered={false}>
+      <Container className="!max-w-5xl grid gap-10 lg:grid-cols-[0.8fr_1fr]">
         <SectionIntro
           eyebrow={copy.workflow}
           title={config.workflowTitle}
@@ -661,11 +661,11 @@ function HowItWorksSection({ config }: { config: PdfToolPageConfig }) {
         <ol className="grid gap-4 sm:grid-cols-2">
           {config.steps.map((step, index) => (
             <li key={step}>
-              <div className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm">
+              <div className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-black/20 p-5">
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--foreground)] text-sm font-semibold text-[color:var(--background)]">
                   {index + 1}
                 </span>
-                <p className="mt-4 font-semibold text-[color:var(--foreground)]">{step}</p>
+                <p className="mt-4 font-normal text-[color:var(--foreground)]">{step}</p>
               </div>
             </li>
           ))}
@@ -689,8 +689,8 @@ function RelatedPdfTools({
   const related = pdfTools[locale === "zh" || locale === "zh-Hant" ? "zh" : "en"].filter((tool) => tool.slug !== currentSlug);
 
   return (
-    <Section id="related-tools" className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
-      <Container>
+    <Section id="related-tools" bordered={false}>
+      <Container className="!max-w-5xl">
         <SectionIntro
           eyebrow={copy.relatedTools}
           title={copy.relatedTitle}
@@ -701,10 +701,10 @@ function RelatedPdfTools({
             <a
               key={tool.href}
               href={useLocalePrefix ? `${prefix}${tool.href}` : tool.href}
-              className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:shadow-[0_16px_32px_rgba(24,24,20,0.08)]"
+              className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-black/20 p-5 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
             >
               <div className="flex items-center justify-between gap-4">
-                <h3 className="font-semibold text-[color:var(--foreground)]">{tool.name}</h3>
+                <h3 className="font-normal text-[color:var(--foreground)]">{tool.name}</h3>
                 <span className="text-[color:var(--muted)] transition group-hover:translate-x-0.5 group-hover:text-[color:var(--foreground)]">
                   -&gt;
                 </span>
@@ -741,8 +741,8 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
   const links = getIndexingLinks(config);
 
   return (
-    <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-      <Container>
+    <Section bordered={false}>
+      <Container className="!max-w-5xl">
         <SectionIntro
           eyebrow={copy.indexingEyebrow}
           title={copy.indexingTitle}
@@ -755,9 +755,9 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
               // Canonical non-prefixed href: these guide/blog/resource targets are
               // en-only, so a /pt|es|fr tool page must link to /guides/X (not /pt/guides/X → 404).
               href={localizeTemplateHref(link.href)}
-              className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)] hover:bg-[color:var(--surface)] hover:shadow-[0_16px_32px_rgba(24,24,20,0.08)]"
+              className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-black/20 p-5 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
             >
-              <h3 className="font-semibold text-[color:var(--foreground)]">{link.label}</h3>
+              <h3 className="font-normal text-[color:var(--foreground)]">{link.label}</h3>
               <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
                 {link.description}
               </p>
@@ -1078,10 +1078,10 @@ function SectionIntro({
 }) {
   return (
     <div className="max-w-2xl">
-      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-        {eyebrow}
+      <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-[color:var(--faint)]">
+        // {eyebrow}
       </p>
-      <h2 className="mt-4 text-2xl font-semibold leading-tight text-[color:var(--foreground)] sm:text-3xl">
+      <h2 className="mt-4 text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]">
         <span className="break-words">{title}</span>
       </h2>
       {description ? (
@@ -1093,8 +1093,8 @@ function SectionIntro({
 
 function InfoCard({ item }: { item: PdfToolItem }) {
   return (
-    <div className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm transition hover:border-[color:var(--foreground)]">
-      <h3 className="break-words text-lg font-semibold text-[color:var(--foreground)]">{item.title}</h3>
+    <div className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-black/20 p-5 transition hover:border-[color:var(--foreground)]">
+      <h3 className="break-words text-[15px] font-medium text-[color:var(--foreground)]">{item.title}</h3>
       <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
         {item.description}
       </p>
