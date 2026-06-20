@@ -6,6 +6,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
+import { trackToolRun } from "@/lib/track";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Fmt = "jpg" | "png";
@@ -166,6 +167,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg" }: { loc
       const a = document.createElement("a");
       a.href = url; a.download = outName; a.click();
       URL.revokeObjectURL(url);
+      trackToolRun("pdf-to-image");
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");

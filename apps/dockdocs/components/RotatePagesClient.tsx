@@ -7,6 +7,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { deepHant } from "@/lib/zh-hant";
+import { trackToolRun } from "@/lib/track";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Pg = { idx: number; thumb: string };
@@ -139,6 +140,7 @@ export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
       a.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-rotated.pdf";
       a.click();
       URL.revokeObjectURL(url);
+      trackToolRun("rotate-page");
       setDone(true);
       setPhase("ready");
     } catch (e) {

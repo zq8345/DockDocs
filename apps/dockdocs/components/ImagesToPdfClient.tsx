@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { ToolFaq } from "@/components/ToolFaq";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import { dropzoneShell } from "@/components/design";
+import { trackToolRun } from "@/lib/track";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Item = { id: string; name: string; url: string; file: File };
@@ -134,6 +135,7 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
       const a = document.createElement("a");
       a.href = url; a.download = "dockdocs-images.pdf"; a.click();
       URL.revokeObjectURL(url);
+      trackToolRun("images-to-pdf");
       if (failed > 0) setError((locale === "zh" ? `${failed} 张图片无法读取，已跳过。` : locale === "zh-Hant" ? toHant(`${failed} 张图片无法读取，已跳过。`) : `${failed} image(s) could not be read and were skipped.`));
     } catch (e) {
       setError(t.err + (e instanceof Error ? e.message : String(e)));

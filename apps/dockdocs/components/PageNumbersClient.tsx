@@ -5,6 +5,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { trackToolRun } from "@/lib/track";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type PosKey = "tl" | "tc" | "tr" | "bl" | "bc" | "br";
@@ -181,6 +182,7 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
       const a = document.createElement("a");
       a.href = url; a.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-numbered.pdf"; a.click();
       URL.revokeObjectURL(url);
+      trackToolRun("page-numbers");
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
