@@ -197,7 +197,14 @@ export function pathForSlug(slug: RouteSlug): string {
 }
 
 export function localizedPath(locale: RouteLocale | (string & {}), slug: RouteSlug): string {
-  return slug ? `/${locale}/${slug}/` : `/${locale}/`;
+  // Emit the locale URL segment lowercase (/zh-hant/, not /zh-Hant/). Netlify
+  // serves the static export case-insensitively and 301-redirects mixed-case
+  // paths to their lowercase form, so any /zh-Hant/ URL we emit (canonical, OG,
+  // nav) would point through a redirect. Every other route locale is already
+  // lowercase, so this is a no-op for them. (hreflang language ATTRIBUTES keep
+  // the BCP-47 "zh-Hant" casing — only the href path is lowercased.)
+  const seg = locale.toLowerCase();
+  return slug ? `/${seg}/${slug}/` : `/${seg}/`;
 }
 
 export function absoluteUrl(path: string): string {

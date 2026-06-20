@@ -46,7 +46,10 @@ async function collectRoutes(base, { skipTopLevelLocaleDirs = false } = {}) {
 
 const urlFor = (locale, route) => {
   const seg = route ? route + "/" : "";
-  return locale === "en" ? `${BASE}/${seg}` : `${BASE}/${locale}/${seg}`;
+  // Lowercase the locale URL segment (/zh-hant/) to match Netlify's case-insensitive
+  // serving — a /zh-Hant/ href 301-redirects. The hreflang ATTRIBUTE keeps "zh-Hant"
+  // (BCP-47); only this href path is lowercased. Disk reads (fileFor) stay cased.
+  return locale === "en" ? `${BASE}/${seg}` : `${BASE}/${locale.toLowerCase()}/${seg}`;
 };
 
 const fileFor = (locale, route) =>

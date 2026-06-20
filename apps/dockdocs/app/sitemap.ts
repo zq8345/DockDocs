@@ -43,7 +43,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       // which fall back to English / aren't generated for them).
       if ((locale === "ja" || locale === "zh-Hant") && !isJaNativeRoute(route.slug)) continue;
       routes.push({
-        url: absoluteUrl(`/${locale}${route.path}`),
+        // zh-Hant emitted lowercase (/zh-hant/) to match Netlify's case-insensitive
+        // serving — a /zh-Hant/ sitemap URL would 301-redirect. No-op for other locales.
+        url: absoluteUrl(`/${locale.toLowerCase()}${route.path}`),
         lastModified: now,
         changeFrequency: route.changeFrequency as MetadataRoute.Sitemap[number]["changeFrequency"],
         priority: route.priority * 0.85, // Slightly lower priority for translated pages
