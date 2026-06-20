@@ -1,18 +1,16 @@
-// i18n COVERAGE guard — REPORT mode (Phase 1 of the i18n root-fix).
+// i18n COVERAGE guard — FAIL mode (Phase 3 of the i18n root-fix).
 //
-// This is a SEPARATE, report-only companion to scripts/check-i18n-parity.mjs.
-// The parity guard (build-blocking, currently GREEN) only checks route presence
-// + tool benefits/features/steps + FAQ. This guard inventories EVERY remaining
-// user-facing string source and reports BOTH:
+// This is a SEPARATE build-blocking companion to scripts/check-i18n-parity.mjs.
+// The parity guard only checks route presence + tool bodies + FAQ. This guard
+// inventories EVERY remaining user-facing string source and enforces BOTH:
 //   • MISSING  — a non-en locale lacks a key the en source has, and
 //   • LEAK     — a non-en locale's value === the en value (and the value is not
 //                an allow-listed legitimately-identical string) → SUSPECTED
 //                untranslated (this is the class that lets English leak through
 //                the `...enTools[slug]` spread, e.g. the stats chips).
 //
-// It NEVER fails the build (always exit 0). It is safe to wire into postbuild
-// as a warning-only step, but is intentionally NOT wired in yet (Phase 3 flips
-// the guard to FAIL mode once the existing gaps are filled).
+// Phase 3: exits 1 on any gap → blocks the build until fixed.
+// Any new English string must be translated in ALL locales before it can ship.
 //
 // Sources inventoried:
 //   1. lib/localized-tools.ts   — per-locale tool objects, ALL fields incl.
@@ -41,9 +39,10 @@ const SOURCE = "en";
 // Data locales we expect to carry hand-written translations (zh-Hant excluded:
 // it derives via deepHant). Order matters only for report readability.
 const DATA_LOCALES = ["zh", "es", "pt", "fr", "ja"];
-// CUSTOM_TOOL_COPY is read by RAW locale key (no deepHant), so zh-Hant + ja
-// both need explicit entries there.
-const CUSTOM_LOCALES = ["zh", "es", "pt", "fr", "ja", "zh-Hant"];
+// CUSTOM_TOOL_COPY was previously read by RAW locale key, requiring explicit zh-Hant entries.
+// The handler now derives zh-Hant via toHant(zh) (same as localized-tools.ts), so zh-Hant
+// no longer needs hand-written entries there. Only explicit-entry locales are checked here.
+const CUSTOM_LOCALES = ["zh", "es", "pt", "fr", "ja"];
 
 // ── English-leak allowlist ───────────────────────────────────────────────────
 // A non-en value that EQUALS the en value is only OK if it's one of these
@@ -561,9 +560,14 @@ L.push("      footer links and un-localized 'All rights reserved'.");
 L.push("    Recommendation: Phase 4 should hoist these into a checkable locale");
 L.push("    structure (like runtimeCopy.shell) so this guard can cover them.");
 L.push("");
-L.push("  Report-only (exit 0). Flip to FAIL mode in Phase 3 once gaps are filled.");
+L.push("  Phase 3 FAIL mode: exits 1 if any gaps found above.");
 L.push("════════════════════════════════════════════════════════════════════");
 L.push("");
 
 console.log(L.join("\n"));
+const totalGaps = toolTotal + copyTotal + customTotal;
+if (totalGaps > 0) {
+  console.error(`[i18n-coverage] FAIL — ${totalGaps} gap(s) found. Fix all gaps before pushing.`);
+  process.exit(1);
+}
 process.exit(0);
