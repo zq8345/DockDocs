@@ -619,12 +619,12 @@ const CUSTOM_TOOL_COPY: Record<string, {
   },
   "batch-translate": {
     title: {
-      zh: "批量翻译 PDF — 整批翻译打包 ZIP",
-      es: "Traducir PDFs en lote — Traducir una carpeta entera gratis",
-      pt: "Traduzir PDFs em lote — Traduzir uma pasta inteira grátis",
-      fr: "Traduire des PDF en lot — Traduire un dossier entier",
-      ja: "PDF一括翻訳 — フォルダごとまとめて翻訳",
-      en: "Batch Translate PDFs — Translate a Whole Folder Free",
+      zh: "批量 PDF 翻译 — 整批翻译打包 ZIP",
+      es: "Traducir PDF por lotes — Traducir una carpeta entera gratis",
+      pt: "Traduzir PDF em lote — Traduzir uma pasta inteira grátis",
+      fr: "Traduction PDF par lots — Traduire un dossier entier",
+      ja: "PDF を一括翻訳 — フォルダごとまとめて翻訳",
+      en: "Batch PDF Translate — Translate a Whole Folder Free",
     },
     description: {
       zh: "把整个文件夹的 PDF 一次性翻译成一种语言，每份的文字翻译后打包成 .txt 的 ZIP。",
@@ -637,12 +637,12 @@ const CUSTOM_TOOL_COPY: Record<string, {
   },
   "batch-fix-scans": {
     title: {
-      zh: "批量修扫描 — 整批裁页边/删页",
-      es: "Reparar escaneos en lote — Recortar o eliminar páginas gratis",
-      pt: "Reparar digitalizações em lote — Recortar ou excluir páginas grátis",
-      fr: "Réparer des scans en lot — Rogner ou supprimer des pages en masse",
-      ja: "スキャン一括修正 — 余白切り取り・ページ削除をまとめて処理",
-      en: "Batch Fix Scans — Crop or Delete Pages in Bulk Free",
+      zh: "批量 PDF 修扫描 — 整批裁页边/删页",
+      es: "Reparar escaneos PDF por lotes — Recortar o eliminar páginas gratis",
+      pt: "Reparar digitalizações PDF em lote — Recortar ou excluir páginas grátis",
+      fr: "Corriger scans PDF par lots — Rogner ou supprimer des pages en masse",
+      ja: "PDF スキャンを一括補正 — 余白切り取り・ページ削除をまとめて処理",
+      en: "Batch PDF Fix Scans — Crop or Delete Pages in Bulk Free",
     },
     description: {
       zh: "一次清理整个文件夹的扫描件：给每页裁掉相同页边，或从每个文件删相同页，全部在浏览器中完成、打包 ZIP。",
@@ -1525,12 +1525,12 @@ async function generateMetadataInner({
   if (slug === "batch-translate") {
     return {
       title: m(
-        "Batch Translate PDFs — Translate a Whole Folder Free",
-        "批量翻译 PDF — 整批翻译打包 ZIP",
-        "Traducir PDF en lote — Traduce una carpeta entera gratis",
+        "Batch PDF Translate — Translate a Whole Folder Free",
+        "批量 PDF 翻译 — 整批翻译打包 ZIP",
+        "Traducir PDF por lotes — Traduce una carpeta entera gratis",
         "Traduzir PDF em lote — Traduza uma pasta inteira grátis",
-        "Traduire des PDF par lot — Traduisez un dossier entier gratuitement",
-        "PDFを一括翻訳 — フォルダ全体を無料で翻訳",
+        "Traduction PDF par lots — Traduisez un dossier entier gratuitement",
+        "PDF を一括翻訳 — フォルダ全体を無料で翻訳",
       ),
       description: m(
         "Translate a whole folder of PDFs into one language at once — each document's text translated and packaged into a ZIP of .txt files.",
@@ -1550,12 +1550,12 @@ async function generateMetadataInner({
   if (slug === "batch-fix-scans") {
     return {
       title: m(
-        "Batch Fix Scans — Crop or Delete Pages in Bulk Free",
-        "批量修扫描 — 整批裁页边/删页",
-        "Corregir escaneos en lote — Recorta o elimina páginas en masa gratis",
-        "Corrigir digitalizações em lote — Recorte ou exclua páginas em massa grátis",
-        "Corriger des scans par lot — Rognez ou supprimez des pages en masse gratuitement",
-        "スキャンを一括補正 — ページの一括トリミング/削除（無料）",
+        "Batch PDF Fix Scans — Crop or Delete Pages in Bulk Free",
+        "批量 PDF 修扫描 — 整批裁页边/删页",
+        "Corregir escaneos PDF por lotes — Recorta o elimina páginas en masa gratis",
+        "Corrigir digitalizações PDF em lote — Recorte ou exclua páginas em massa grátis",
+        "Corriger scans PDF par lots — Rognez ou supprimez des pages en masse gratuitement",
+        "PDF スキャンを一括補正 — ページの一括トリミング/削除（無料）",
       ),
       description: m(
         "Clean up a whole folder of scanned PDFs at once — crop the same margins off every page or delete the same pages from each file. All in your browser, one ZIP.",
