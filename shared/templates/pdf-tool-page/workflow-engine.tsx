@@ -365,7 +365,7 @@ export function PdfWorkflowEngine({
     const dragging = isDragging && status === "idle";
     // Local tools (pdf-lib/pdfjs/tesseract in the browser) never upload; the
     // CloudConvert routes do. Only promise "not uploaded" for the local ones.
-    const runsLocally = isRealPdfRuntimeSlug(config.slug) && !["word-to-pdf", "ppt-to-pdf", "excel-to-pdf", "pdf-to-excel", "pdf-to-word", "html-to-pdf", "pdf-to-pdfa", "pdf-to-ppt", "protect-pdf"].includes(config.slug);
+    const runsLocally = isRealPdfRuntimeSlug(config.slug) && !["word-to-pdf", "ppt-to-pdf", "excel-to-pdf", "pdf-to-excel", "pdf-to-word", "html-to-pdf", "pdf-to-pdfa", "pdf-to-ppt"].includes(config.slug);
     const frameBase = "relative flex w-full flex-col overflow-y-auto rounded-[var(--radius-xl)] min-h-[300px] sm:min-h-[360px] transition";
     const frameState =
       status === "idle"
@@ -516,7 +516,7 @@ export function PdfWorkflowEngine({
     );
   }
 
-  const runsLocallyMulti = isRealPdfRuntimeSlug(config.slug) && !["word-to-pdf", "ppt-to-pdf", "excel-to-pdf", "pdf-to-excel", "pdf-to-word", "html-to-pdf", "pdf-to-pdfa", "pdf-to-ppt", "protect-pdf"].includes(config.slug);
+  const runsLocallyMulti = isRealPdfRuntimeSlug(config.slug) && !["word-to-pdf", "ppt-to-pdf", "excel-to-pdf", "pdf-to-excel", "pdf-to-word", "html-to-pdf", "pdf-to-pdfa", "pdf-to-ppt"].includes(config.slug);
 
   return (
     <div

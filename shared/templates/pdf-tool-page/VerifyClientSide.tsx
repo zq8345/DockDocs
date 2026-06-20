@@ -97,14 +97,20 @@ const COPY: Record<Loc, { title: string; body: string; how: string }> = {
   },
 };
 
-export function VerifyClientSide({ locale = "en" }: { locale?: string }) {
+export function VerifyClientSide({ locale = "en", divider = true }: { locale?: string; divider?: boolean }) {
   // zh-Hant derives from zh via OpenCC.
   const c = locale === "zh-Hant"
     ? deepHant(COPY.zh)
     : COPY[(LOCS.includes(locale as Loc) ? locale : "en") as Loc];
+  // `divider` = the block's own top border-t. Keep it ON where the block is the
+  // sole separator (template path: it follows a border-less inline FAQ). Turn it
+  // OFF (ToolFaq passes divider={false}) where a preceding section already draws a
+  // border-t — the FAQ section, or BatchToolSections — so the block doesn't stack
+  // a SECOND adjacent divider (Joe's "double line"). Width is 5xl to align with the
+  // other content sections (it was a too-narrow 3xl).
   return (
-    <section className="mt-12 border-t border-[color:var(--line)] pt-8">
-      <div className="mx-auto max-w-3xl px-5">
+    <section className={divider ? "mt-12 border-t border-[color:var(--line)] pt-8" : "mt-10"}>
+      <div className="mx-auto max-w-5xl px-5">
         <h2 className="text-[15px] font-semibold text-[color:var(--foreground)]">{c.title}</h2>
         <p className="mt-3 text-[13.5px] leading-relaxed text-[color:var(--muted)]">{c.body}</p>
         <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--faint)]">{c.how}</p>

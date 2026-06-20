@@ -2484,7 +2484,7 @@ export function ToolFaq(props: { tool: string; locale?: Locale }) {
   return (
     <>
       <ToolFaqInner {...props} />
-      {LOCAL_ONLY_SLUGS.has(props.tool) ? <VerifyClientSide locale={props.locale ?? "en"} /> : null}
+      {LOCAL_ONLY_SLUGS.has(props.tool) ? <VerifyClientSide locale={props.locale ?? "en"} divider={false} /> : null}
     </>
   );
 }
