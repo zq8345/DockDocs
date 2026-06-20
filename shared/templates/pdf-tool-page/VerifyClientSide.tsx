@@ -42,6 +42,21 @@ export const LOCAL_ONLY_SLUGS = new Set<string>([
   "redline",
   "watermark-pdf",
   "page-numbers",
+  // batch tools — all pure-client (pdf-lib / pdfjs / canvas, zero fetch of user
+  // data; audited 2026-06-20, independently grep-verified by 总调度). Each batch
+  // client renders <ToolFaq tool="batch-…"/>, so this set gates them too.
+  // NOTE: batch-fix-scans is crop-margins / delete-page via pdf-lib — NOT OCR/AI,
+  // no network. The upload batches (office↔pdf conversion, summary/sort/translate/
+  // extract-sheet AI) are deliberately absent — they POST file or extracted text.
+  "batch-compress",
+  "batch-pdf-to-image",
+  "batch-protect-pdf",
+  "batch-rename-pdf",
+  "batch-watermark-pdf",
+  "batch-page-numbers",
+  "batch-split-merge",
+  "batch-rotate-pdf",
+  "batch-fix-scans",
 ]);
 
 import { deepHant } from "./zh-hant";

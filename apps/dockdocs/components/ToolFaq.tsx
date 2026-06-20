@@ -2476,12 +2476,15 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
 
 export function ToolFaq(props: { tool: string; locale?: Locale }) {
   // Verifiable-trust block for pure-client tools (file never uploaded) — rendered
-  // as a sibling above the FAQ so it shows even when a locale has no FAQ data for
-  // this tool. Gated on LOCAL_ONLY_SLUGS so it NEVER appears on a server/AI tool.
+  // as a sibling BELOW the FAQ (aligns with the template path, which also renders
+  // it after the FAQ, and avoids a double border-t divider stacking against the
+  // FAQ section). Still shows when a locale has no FAQ data (ToolFaqInner returns
+  // null) — it's an independent sibling. Gated on LOCAL_ONLY_SLUGS so it NEVER
+  // appears on a server/AI tool.
   return (
     <>
-      {LOCAL_ONLY_SLUGS.has(props.tool) ? <VerifyClientSide locale={props.locale ?? "en"} /> : null}
       <ToolFaqInner {...props} />
+      {LOCAL_ONLY_SLUGS.has(props.tool) ? <VerifyClientSide locale={props.locale ?? "en"} /> : null}
     </>
   );
 }
