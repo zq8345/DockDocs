@@ -8,13 +8,14 @@ import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
 import { dropzoneShell } from "@/components/design";
+import { formatBytes } from "@/lib/files";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type DocType ="invoice" | "quote" | "contract";
 type Dim = { key: string; label: string };
 type Field = { value: string | null; source: string | null };
 type DocResult = { id: string; name: string; fields: Record<string, Field> };
-type Doc = { id: string; name: string; text: string };
+type Doc = { id: string; name: string; size: number; text: string };
 
 const STR = {
   en: {
@@ -153,7 +154,7 @@ export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
             text += content.items.map((it) => ("str" in it ? it.str : "")).join(" ") + "\n";
           }
           try { doc.destroy(); } catch { /* ignore */ }
-          added.push({ id: `${f.name}-${f.size}-${f.lastModified}`, name: f.name, text: text.replace(/\s+/g, " ").trim() });
+          added.push({ id: `${f.name}-${f.size}-${f.lastModified}`, name: f.name, size: f.size, text: text.replace(/\s+/g, " ").trim() });
         } catch (e) {
           if (e && (e as { name?: string }).name === "PasswordException") encrypted = true;
         }
@@ -257,7 +258,7 @@ export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
 
           <ul className="mt-3 flex flex-wrap gap-2">
             {docs.map((d) => (
-              <li key={d.id} className="truncate rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1.5 text-[12.5px] text-[color:var(--muted)]" title={d.name}>{d.name}</li>
+              <li key={d.id} className="flex items-center gap-1.5 truncate rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1.5 text-[12.5px] text-[color:var(--muted)]" title={d.name}><span className="truncate">{d.name}</span><span className="shrink-0 text-[color:var(--faint)]">{formatBytes(d.size)}</span></li>
             ))}
           </ul>
 

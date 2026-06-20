@@ -9,6 +9,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { trackToolRun } from "@/lib/track";
 import { dropzoneShell } from "@/components/design";
+import { formatBytes } from "@/lib/files";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
@@ -1138,7 +1139,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
                   <p className="text-sm font-semibold text-[color:var(--foreground)]">{r.name}</p>
                   <span className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${b.cls}`}>{b.label}</span>
                 </div>
-                <p className="mt-1 text-xs text-[color:var(--muted)]">{t.pages(r.pages)}{t.chars(r.chars)}</p>
+                <p className="mt-1 text-xs text-[color:var(--muted)]">{t.pages(r.pages)}{t.chars(r.chars)}{r.file ? ` · ${formatBytes(r.file.size)}` : ""}</p>
                 {r.status === "empty" && r.file && (
                   ocrBusy.has(r.id) ? (
                     <p className="mt-2 text-xs font-medium text-[color:var(--accent)]">{t.ocrBusy}</p>
