@@ -7,6 +7,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
+import { dropzoneShell } from "@/components/design";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type DocType ="invoice" | "quote" | "contract";
@@ -123,6 +124,7 @@ const STR = {
 export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [docs, setDocs] = useState<Doc[]>([]);
+  const [dragging, setDragging] = useState(false);
   const [docType, setDocType] = useState<DocType>("invoice");
   const [busy, setBusy] = useState(false);
   const [phase, setPhase] = useState<"idle" | "extracting" | "done">("idle");
@@ -217,10 +219,11 @@ export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
 
       {docs.length === 0 ? (
         <div
-          className="mt-8 cursor-pointer rounded-[var(--radius-lg)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-10 text-center transition hover:border-[color:var(--line-strong)]"
+          className={`mt-8 ${dropzoneShell(dragging)}`}
           onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => { e.preventDefault(); const fs = Array.from(e.dataTransfer.files || []); if (fs.length) addFiles(fs); }}
+          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
+          onDrop={(e) => { e.preventDefault(); setDragging(false); const fs = Array.from(e.dataTransfer.files || []); if (fs.length) addFiles(fs); }}
         >
           {busy ? (
             <div className="flex flex-col items-center justify-center gap-3 py-1"><Spinner /><p className="text-[14px] font-medium text-[color:var(--muted)]">{t.reading}</p></div>

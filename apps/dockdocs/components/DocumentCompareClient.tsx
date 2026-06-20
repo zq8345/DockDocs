@@ -8,6 +8,7 @@ import { authHeader } from "@/lib/supabase";
 import { ToolFaq } from "@/components/ToolFaq";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { trackToolRun } from "@/lib/track";
+import { dropzoneShell } from "@/components/design";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
@@ -1017,28 +1018,25 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
+      <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple hidden onChange={(e) => { void addFiles(Array.from(e.target.files ?? [])); e.target.value = ""; }} />
+
       <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
-        }}
-        onDragLeave={() => setDragOver(false)}
+        onClick={() => inputRef.current?.click()}
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={(e) => { if (e.currentTarget === e.target) setDragOver(false); }}
         onDrop={onDrop}
-        className={`mt-8 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border border-dashed px-6 py-12 text-center transition ${
-          dragOver ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]" : "border-[color:var(--line)] bg-[color:var(--surface-subtle)]"
-        }`}
+        className={`mt-8 ${dropzoneShell(dragOver)}`}
       >
         <p className="text-sm font-medium text-[color:var(--foreground)]">{t.drop}</p>
         <p className="mt-1 text-xs text-[color:var(--muted)]">{t.dropHint}</p>
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-          <button type="button" onClick={() => inputRef.current?.click()} disabled={busy} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+          <button type="button" onClick={(e) => { e.stopPropagation(); inputRef.current?.click(); }} disabled={busy} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
             {t.choose}
           </button>
-          <button type="button" onClick={loadSamples} disabled={busy} className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-5 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)] disabled:opacity-50">
+          <button type="button" onClick={(e) => { e.stopPropagation(); loadSamples(); }} disabled={busy} className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-5 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)] disabled:opacity-50">
             {t.samples}
           </button>
         </div>
-        <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple hidden onChange={(e) => { void addFiles(Array.from(e.target.files ?? [])); e.target.value = ""; }} />
       </div>
 
       {busy && <p className="mt-4 text-sm text-[color:var(--muted)]">{t.extracting}</p>}
