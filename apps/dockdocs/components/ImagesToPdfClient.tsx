@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { ToolFaq } from "@/components/ToolFaq";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { dropzoneShell } from "@/components/design";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Item = { id: string; name: string; url: string; file: File };
@@ -78,6 +79,7 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dragFrom = useRef<number | null>(null);
 
@@ -149,10 +151,11 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
 
       {items.length === 0 ? (
         <div
-          className="mt-8 cursor-pointer rounded-[var(--radius-lg)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-10 text-center transition hover:border-[color:var(--line-strong)]"
+          className={`mt-8 ${dropzoneShell(dragging)}`}
           onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => { e.preventDefault(); const fs = Array.from(e.dataTransfer.files || []); if (fs.length) addFiles(fs); }}
+          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
+          onDrop={(e) => { e.preventDefault(); setDragging(false); const fs = Array.from(e.dataTransfer.files || []); if (fs.length) addFiles(fs); }}
         >
           <p className="text-[15px] font-medium text-[color:var(--foreground)]">{busy ? t.reading : t.drop}</p>
           {!busy && <button type="button" className="mt-4 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>}
