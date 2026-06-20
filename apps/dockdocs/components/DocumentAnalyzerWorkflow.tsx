@@ -399,20 +399,18 @@ export function DocumentAnalyzerWorkflow({
       id="document-analyzer"
       className="border-b border-[color:var(--line)] bg-[color:var(--surface)] py-16"
     >
-      <div className="mx-auto grid max-w-5xl gap-8 px-5 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
-        <div>
-          <p className="text-sm font-mono uppercase tracking-[0.1em] text-[color:var(--faint)]">
-            {t.eyebrow}
-          </p>
-          <h2 className="mt-4 break-words text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">
-            {t.title}
-          </h2>
-          <p className="mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-            {t.description}
-          </p>
-        </div>
+      <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
+        <p className="text-sm font-mono uppercase tracking-[0.1em] text-[color:var(--faint)]">
+          {t.eyebrow}
+        </p>
+        <h2 className="mt-4 break-words text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">
+          {t.title}
+        </h2>
+        <p className="mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
+          {t.description}
+        </p>
 
-        <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
+        <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
           <div
             onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
             onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
