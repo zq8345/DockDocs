@@ -90,7 +90,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "Extract the pages you need", description: "Pull out a single page, a range, or every page as its own file — keep only what matters." },
       { title: "Split by range or per page", description: "Choose exact page ranges, or burst every page into its own PDF, packaged into one ZIP." },
-      { title: "Stays on your device", description: "Splitting happens entirely in your browser — your file is never uploaded to a server." },
+      { title: "Original pages, untouched", description: "Each extracted page keeps its original quality and layout — splitting never re-renders or degrades the content." },
     ],
     workflowTitle: "How splitting fits your document work",
     workflowDescription: "For the moment one big PDF has to become several — separating a scanned batch, pulling a chapter, sharing just one section.",
@@ -113,7 +113,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "只提取你需要的页", description: "抽出单页、某个范围，或把每页都拆成独立文件——只留有用的。" },
       { title: "按范围或逐页拆", description: "选择精确页面范围，或把每页拆成独立 PDF，打包成一个 ZIP。" },
-      { title: "文件不离开设备", description: "拆分完全在你的浏览器中完成——文件从不上传到服务器。" },
+      { title: "原页不动、质量不变", description: "抽出的每一页都保留原始质量和版式——拆分不会重新渲染或损失内容。" },
     ],
     workflowTitle: "拆分如何融入你的文档工作",
     workflowDescription: "当一个大 PDF 需要变成几个时——分开扫描批次、抽出某一章、只分享某一节。",
@@ -136,7 +136,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "Extrae las páginas que necesitas", description: "Saca una sola página, un rango o cada página como archivo propio: quédate solo con lo que importa." },
       { title: "Divide por rango o por página", description: "Elige rangos de páginas exactos o separa cada página en su propio PDF, empaquetados en un ZIP." },
-      { title: "Permanece en tu dispositivo", description: "La división ocurre completamente en tu navegador: tu archivo nunca se sube a un servidor." },
+      { title: "Páginas originales, intactas", description: "Cada página extraída conserva su calidad y diseño originales: la división nunca recrea ni degrada el contenido." },
     ],
     workflowTitle: "Cómo encaja la división en tu trabajo",
     workflowDescription: "Para cuando un PDF grande debe convertirse en varios: separar un lote escaneado, sacar un capítulo, compartir solo una sección.",
@@ -159,7 +159,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "Extraia as páginas necessárias", description: "Tire uma única página, um intervalo ou cada página como arquivo próprio: fique só com o que importa." },
       { title: "Divida por intervalo ou por página", description: "Escolha intervalos de páginas exatos ou separe cada página em seu próprio PDF, empacotados em um ZIP." },
-      { title: "Permanece no seu dispositivo", description: "A divisão acontece inteiramente no seu navegador: seu arquivo nunca é enviado a um servidor." },
+      { title: "Páginas originais, intactas", description: "Cada página extraída mantém a qualidade e o layout originais: a divisão nunca recria nem degrada o conteúdo." },
     ],
     workflowTitle: "Como a divisão se encaixa no seu trabalho",
     workflowDescription: "Para quando um PDF grande precisa virar vários: separar um lote digitalizado, tirar um capítulo, compartilhar só uma seção.",
@@ -182,7 +182,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "Extrayez les pages voulues", description: "Sortez une seule page, une plage ou chaque page comme fichier distinct : ne gardez que l'essentiel." },
       { title: "Divisez par plage ou par page", description: "Choisissez des plages de pages exactes ou séparez chaque page dans son propre PDF, regroupés dans un ZIP." },
-      { title: "Reste sur votre appareil", description: "La division se fait entièrement dans votre navigateur : votre fichier n'est jamais téléversé sur un serveur." },
+      { title: "Pages d'origine, intactes", description: "Chaque page extraite conserve sa qualité et sa mise en page d'origine : la division ne recrée ni ne dégrade jamais le contenu." },
     ],
     workflowTitle: "Comment la division s'intègre à votre travail",
     workflowDescription: "Pour le moment où un grand PDF doit devenir plusieurs : séparer un lot numérisé, extraire un chapitre, partager une seule section.",
@@ -205,7 +205,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "必要なページだけ抽出", description: "1 ページ、範囲、または各ページを個別ファイルとして抽出——必要なものだけ残せます。" },
       { title: "範囲またはページ単位で分割", description: "正確なページ範囲を選ぶか、各ページを個別 PDF に分け、1 つの ZIP にまとめます。" },
-      { title: "端末から出ない", description: "分割はすべてブラウザ内で完了——ファイルがサーバーにアップロードされることはありません。" },
+      { title: "元のページをそのまま", description: "抽出された各ページは元の品質とレイアウトを保持——分割でコンテンツが再描画されたり劣化したりすることはありません。" },
     ],
     workflowTitle: "分割が文書作業にどう役立つか",
     workflowDescription: "1 つの大きな PDF を複数に分ける必要があるとき——スキャンの束を分ける、章を抜き出す、1 セクションだけ共有する。",

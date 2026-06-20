@@ -90,7 +90,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "One document from many", description: "Combine contracts, scans, and reports into a single PDF that's easy to send, print, or archive." },
       { title: "Drag to set the order", description: "Reorder the files before merging so pages land in exactly the sequence you want." },
-      { title: "Stays on your device", description: "Merging happens entirely in your browser — your files are never uploaded to a server." },
+      { title: "No limits, no watermark", description: "Combine as many PDFs as you need — no file cap, no sign-up, and nothing stamped on the result." },
     ],
     workflowTitle: "How merging fits your document work",
     workflowDescription: "For the moment separate PDFs need to become one packet — a signed contract, a bundle of receipts, a report with appendices.",
@@ -113,7 +113,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "多份合成一份", description: "把合同、扫描件、报告合并成一个 PDF，方便发送、打印或归档。" },
       { title: "拖拽决定顺序", description: "合并前调整文件顺序，让页面正好按你想要的次序排列。" },
-      { title: "文件不离开设备", description: "合并完全在你的浏览器中完成——文件从不上传到服务器。" },
+      { title: "无限制、无水印", description: "想合并多少份都行——没有文件数上限、无需注册，结果上也不留任何水印。" },
     ],
     workflowTitle: "合并如何融入你的文档工作",
     workflowDescription: "当几个独立 PDF 需要变成一个包时——一份签好的合同、一叠收据、一份带附录的报告。",
@@ -136,7 +136,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "Un documento de muchos", description: "Combina contratos, escaneos e informes en un solo PDF fácil de enviar, imprimir o archivar." },
       { title: "Arrastra para ordenar", description: "Reordena los archivos antes de combinar para que las páginas queden justo en la secuencia que quieres." },
-      { title: "Permanece en tu dispositivo", description: "La combinación ocurre completamente en tu navegador: tus archivos nunca se suben a un servidor." },
+      { title: "Sin límites, sin marca de agua", description: "Combina tantos PDF como necesites: sin tope de archivos, sin registro y sin nada estampado en el resultado." },
     ],
     workflowTitle: "Cómo encaja la combinación en tu trabajo",
     workflowDescription: "Para cuando varios PDF separados deben convertirse en un paquete: un contrato firmado, un conjunto de recibos, un informe con anexos.",
@@ -159,7 +159,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "Um documento de muitos", description: "Combine contratos, digitalizações e relatórios em um único PDF fácil de enviar, imprimir ou arquivar." },
       { title: "Arraste para ordenar", description: "Reordene os arquivos antes de combinar para que as páginas fiquem exatamente na sequência que você quer." },
-      { title: "Permanece no seu dispositivo", description: "A combinação acontece inteiramente no seu navegador: seus arquivos nunca são enviados a um servidor." },
+      { title: "Sem limites, sem marca d'água", description: "Combine quantos PDF precisar: sem limite de arquivos, sem cadastro e sem nada carimbado no resultado." },
     ],
     workflowTitle: "Como a combinação se encaixa no seu trabalho",
     workflowDescription: "Para quando vários PDF separados precisam virar um pacote: um contrato assinado, um conjunto de recibos, um relatório com anexos.",
@@ -182,7 +182,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "Un document à partir de plusieurs", description: "Combinez contrats, numérisations et rapports en un seul PDF facile à envoyer, imprimer ou archiver." },
       { title: "Glissez pour ordonner", description: "Réorganisez les fichiers avant la fusion pour que les pages soient exactement dans l'ordre voulu." },
-      { title: "Reste sur votre appareil", description: "La fusion se fait entièrement dans votre navigateur : vos fichiers ne sont jamais téléversés sur un serveur." },
+      { title: "Sans limite, sans filigrane", description: "Combinez autant de PDF que nécessaire : aucune limite de fichiers, aucune inscription, et rien d'estampillé sur le résultat." },
     ],
     workflowTitle: "Comment la fusion s'intègre à votre travail",
     workflowDescription: "Pour le moment où plusieurs PDF distincts doivent devenir un seul dossier : un contrat signé, un lot de reçus, un rapport avec annexes.",
@@ -205,7 +205,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefits: [
       { title: "複数を 1 つに", description: "契約書、スキャン、レポートを 1 つの PDF に結合——送信、印刷、保管が簡単になります。" },
       { title: "ドラッグで順序を指定", description: "結合前にファイルを並べ替え、ページを思いどおりの順序に。" },
-      { title: "端末から出ない", description: "結合はすべてブラウザ内で完了——ファイルがサーバーにアップロードされることはありません。" },
+      { title: "制限なし、透かしなし", description: "必要なだけ PDF を結合——ファイル数の上限なし、登録不要、結果に透かしも入りません。" },
     ],
     workflowTitle: "結合が文書作業にどう役立つか",
     workflowDescription: "別々の PDF を 1 つにまとめる必要があるとき——署名済みの契約書、領収書の束、付録付きのレポート。",
