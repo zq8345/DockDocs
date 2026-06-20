@@ -11,19 +11,30 @@ export const PANEL = "rounded-xl border border-[color:var(--line)] bg-black/20 p
 export const eyebrowCls = (zh: boolean) =>
   `font-mono text-[12px] text-[color:var(--faint)] ${zh ? "" : "uppercase tracking-[0.08em]"}`;
 
-// ── Dropzone shell ──────────────────────────────────────────────────────────
-// One upload look site-wide (UploadDropzone + BatchUploadBox + every migrated
-// inline drop area). Depth comes from the dashed border only — no shadow, no
-// self-set aspect/width. `active` swaps the idle border/bg for the drag-over
-// highlight (drag events can't trigger :hover, so callers pass their dragging
-// state). Lives inside the page max-w-5xl shell; callers prepend their own
-// margin (e.g. `mt-8`) and any extra flex gap.
-export const dropzoneShell = (active = false) =>
-  `flex min-h-[260px] w-full cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-8 text-center transition sm:min-h-[300px] ${
+// ── Dropzone visual + shell ─────────────────────────────────────────────────
+// dropzoneVisual is the SINGLE source for what a dropzone looks like: radius,
+// dashed border, and the idle↔active (hover / drag-over) highlight — nothing
+// about layout. Inline drop areas (e.g. the AI workflow control panels, which
+// keep their own button-row / textarea layout) spread this onto their own
+// container so they share the exact border/radius/drag-over treatment WITHOUT a
+// re-drifted inline `border-2 border-dashed …` copy. `active` swaps the idle
+// state for the drag-over highlight (drag events can't trigger :hover, so
+// callers pass their dragging state).
+export const dropzoneVisual = (active = false) =>
+  `rounded-[var(--radius-xl)] border-2 border-dashed transition ${
     active
       ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
       : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
   }`;
+
+// dropzoneShell = dropzoneVisual + the full-dropzone layout (flex column,
+// min-height, centering, padding, cursor). One upload look site-wide for the
+// standard single-file dropzones (UploadDropzone, BatchUploadBox, AI idle
+// zones). Depth comes from the dashed border only — no shadow, no self-set
+// aspect/width. Lives inside the page max-w-5xl shell; callers prepend their
+// own margin (e.g. `mt-8`) and any extra flex gap.
+export const dropzoneShell = (active = false) =>
+  `flex min-h-[260px] w-full cursor-pointer flex-col items-center justify-center px-6 py-8 text-center sm:min-h-[300px] ${dropzoneVisual(active)}`;
 
 // ── Figure ────────────────────────────────────────────────────────────────
 // Depth/weight treatment shared across About + Home (and all future v2 pages):

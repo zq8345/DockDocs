@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { dropzoneVisual } from "@/components/design";
 import {
   askAiAboutPdf,
   type AiChatHistoryTurn,
@@ -338,6 +339,7 @@ export function AiChatWorkflow({
   const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [dragging, setDragging] = useState(false);
   const [pastedText, setPastedText] = useState("");
   const [question, setQuestion] = useState("");
   const [status, setStatus] = useState<WorkflowStatus>("idle");
@@ -639,7 +641,12 @@ export function AiChatWorkflow({
         </div>
 
         <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-          <div className="rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+            onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
+            onDrop={(e) => { e.preventDefault(); setDragging(false); chooseFile(e.dataTransfer.files); }}
+            className={`${dropzoneVisual(dragging)} p-5`}
+          >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 type="button"
