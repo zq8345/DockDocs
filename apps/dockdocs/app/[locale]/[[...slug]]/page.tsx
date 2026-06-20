@@ -200,20 +200,16 @@ export async function generateMetadata(args: {
 }): Promise<Metadata> {
   const { locale, slug: rawSlug } = await args.params;
   const meta = await generateMetadataInner(args);
-  // ja ships natively only on the surfaces that have real Japanese copy
-  // (isJaNativeRoute). English-fallback ja routes — blog, programmatic-GEO — stay
-  // noindex; native ja routes (incl. the now-localized GEO guide hubs) flow through
-  // with index:true and pull their ja metadata from jaTools.
-  if (locale === "ja") {
-    const jaSlug = normalizeSlug(rawSlug);
-    if (jaSlug === null || !isJaNativeRoute(jaSlug)) {
+  // ja and zh-Hant are partially-native locales: they ship index:true on the
+  // surfaces with real (ja) / OpenCC-derived-from-zh (zh-Hant) content — tools,
+  // home, pricing, sitemap, ai-workspace, info pages, GEO guide hubs
+  // (isJaNativeRoute) — but blog index/articles and programmatic-GEO still fall
+  // back to English/aren't generated for them, so those stay noindex.
+  if (locale === "ja" || locale === "zh-Hant") {
+    const s = normalizeSlug(rawSlug);
+    if (s === null || !isJaNativeRoute(s)) {
       return { ...meta, robots: { index: false, follow: true } };
     }
-  }
-  // zh-Hant is OpenCC-derived (Simplified->Traditional) and ships NOINDEX until a
-  // native TW review happens. Mirror the ja POC handling.
-  if (locale === "zh-Hant") {
-    return { ...meta, robots: { index: false, follow: true } };
   }
   return locale === "en" ? normalizeEnCanonical(meta) : meta;
 }
