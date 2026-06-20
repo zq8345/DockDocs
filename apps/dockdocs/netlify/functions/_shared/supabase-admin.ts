@@ -85,3 +85,43 @@ export async function dbDelete(table: string, query: string): Promise<void> {
     throw new Error(`Supabase delete from ${table} failed (${res.status}): ${body}`);
   }
 }
+
+/**
+ * Count registered auth users via the GoTrue admin API (auth.users isn't exposed
+ * through PostgREST). Returns ONLY aggregate counts — { total, last7d }.
+ *
+ * 🔴 PRIVACY: each page response carries full user records (email, metadata).
+ * They are tallied server-side and discarded immediately; NOTHING per-user is
+ * returned, logged, or persisted. Caller must surface counts only.
+ *
+ * Paging is capped (100 pages × 200 = 20k users) as a runaway guard; far above
+ * the current user base. If ever exceeded, total slightly under-counts rather
+ * than looping forever.
+ */
+export async function countAuthUsers(): Promise<{ total: number; last7d: number }> {
+  const key = serviceRoleKey();
+  const weekAgoMs = Date.now() - 7 * 86_400_000;
+  const perPage = 200;
+  let total = 0;
+  let last7d = 0;
+  for (let page = 1; page <= 100; page += 1) {
+    const res = await fetch(
+      `${SUPABASE_URL}/auth/v1/admin/users?page=${page}&per_page=${perPage}`,
+      { headers: { apikey: key, Authorization: `Bearer ${key}` } },
+    );
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      throw new Error(`GoTrue admin users failed (${res.status}): ${body}`);
+    }
+    const data = (await res.json()) as { users?: Array<{ created_at?: string }> };
+    const users = data.users ?? [];
+    if (users.length === 0) break;
+    total += users.length;
+    for (const u of users) {
+      const t = u.created_at ? Date.parse(u.created_at) : NaN;
+      if (Number.isFinite(t) && t >= weekAgoMs) last7d += 1;
+    }
+    if (users.length < perPage) break;
+  }
+  return { total, last7d };
+}

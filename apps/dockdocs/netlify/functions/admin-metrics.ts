@@ -2,6 +2,7 @@ import type { Config, Context } from "@netlify/functions";
 import { getStore } from "@netlify/blobs";
 import { readLifetimeBuyerCount, type BillingSubscriptionRecord } from "./_shared/billing-store";
 import { listPaywallHits, currentMonthKey } from "./_shared/paywall-store";
+import { countAuthUsers } from "./_shared/supabase-admin";
 import { billingPlanConfigs } from "../../lib/billing-config";
 import { featureLimits, meteredFeatures, type UsageFeature } from "../../lib/usage-limits";
 import type { SubscriptionPlan } from "../../lib/subscription-runtime";
@@ -114,6 +115,12 @@ export default async function handler(req: Request, _ctx: Context) {
   // remaining count is ever shown to end users (no live ticker).
   const lifetimeSold = await readLifetimeBuyerCount();
 
+  // signups (B-flow, additive): total registered auth users + those created in
+  // the last 7 days. Aggregate counts only — no PII. Degrades to {0,0} if the
+  // service-role key is unset or GoTrue is unreachable, so the endpoint never
+  // 500s on this additive field.
+  const signups = await countAuthUsers().catch(() => ({ total: 0, last7d: 0 }));
+
   // Proration upgrade health: how many users have a stuck old-sub cancellation (the
   // Path-2 residual risk — at risk of a silent double-charge). Anonymous count only;
   // /api/billing/reconcile-subs clears these.
@@ -123,6 +130,7 @@ export default async function handler(req: Request, _ctx: Context) {
     {
       generatedAt: new Date().toISOString(),
       currency: "USD",
+      signups,
       retention: { paidActive, mrr, activation7d, momDecay, renewalRate, churnRisk },
       capPressure,
       paywallHits,
