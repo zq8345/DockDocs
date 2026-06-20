@@ -1360,9 +1360,9 @@ async function generateMetadataInner({
       description: m(
         "Drop a whole folder of invoices, quotes, or contracts — AI pulls the key fields from every file into one table (one row each) and exports CSV. It only reports what's actually there.",
         "拖入整个文件夹的发票/报价/合同，AI 把每份的关键字段抽进同一张表(一份一行)，导出 CSV。AI 只报告真实存在的内容。",
-        "Arrastra una carpeta entera de facturas, presupuestos o contratos: la IA extrae los campos clave de cada archivo a una sola tabla (una fila por archivo) y exporta CSV. Solo informa de lo que realmente hay.",
-        "Arraste uma pasta inteira de faturas, orçamentos ou contratos: a IA extrai os campos-chave de cada arquivo para uma única tabela (uma linha por arquivo) e exporta CSV. Ela só informa o que realmente existe.",
-        "Déposez un dossier entier de factures, devis ou contrats : l'IA extrait les champs clés de chaque fichier dans un seul tableau (une ligne par fichier) et exporte en CSV. Elle ne signale que ce qui s'y trouve réellement.",
+        "Arrastra una carpeta entera de facturas, presupuestos o contratos: la IA extrae los campos clave de cada archivo a una sola tabla y exporta CSV.",
+        "Arraste uma pasta inteira de faturas, orçamentos ou contratos: a IA extrai os campos-chave de cada arquivo para uma única tabela e exporta CSV.",
+        "Déposez un dossier entier de factures, devis ou contrats : l'IA extrait les champs clés de chaque fichier dans un seul tableau et exporte en CSV.",
         "請求書・見積書・契約書のフォルダ全体をドロップすると、AIが各ファイルの主要項目を1つの表（各ファイル1行）に抽出してCSVで出力。実際に存在する内容のみを報告します。",
       ),
       alternates: {
@@ -1585,9 +1585,9 @@ async function generateMetadataInner({
       description: m(
         "Upload a contract and get a plain-language list of risky, one-sided, or missing clauses — flagged red/amber/green, quoted from your document. Informational, not legal advice.",
         "上传合同,得到白话的风险清单:风险/单边/缺失条款,红黄绿标注、引用原文、附该问什么。仅供参考,非法律意见。",
-        "Sube un contrato y obtén una lista en lenguaje claro de cláusulas riesgosas, unilaterales o ausentes, marcadas en rojo/ámbar/verde y citadas de tu documento. Informativo, no asesoramiento legal.",
-        "Envie um contrato e obtenha uma lista em linguagem simples de cláusulas arriscadas, unilaterais ou ausentes, sinalizadas em vermelho/âmbar/verde e citadas do seu documento. Informativo, não é aconselhamento jurídico.",
-        "Importez un contrat et obtenez une liste en langage clair des clauses à risque, déséquilibrées ou manquantes, signalées en rouge/orange/vert et citées de votre document. À titre informatif, pas un avis juridique.",
+        "Sube un contrato y obtén una lista en lenguaje claro de cláusulas riesgosas, unilaterales o ausentes, marcadas en rojo/ámbar/verde y citadas del documento.",
+        "Envie um contrato e obtenha uma lista em linguagem simples de cláusulas arriscadas, unilaterais ou ausentes, sinalizadas em vermelho/âmbar/verde.",
+        "Importez un contrat et obtenez une liste en langage clair des clauses à risque, déséquilibrées ou manquantes, signalées en rouge/orange/vert.",
         "契約書をアップロードすると、リスクのある条項・一方的な条項・欠落している条項を平易な言葉で一覧表示。赤/黄/緑で示し、文書から引用します。参考情報であり法的助言ではありません。",
       ),
       alternates: {

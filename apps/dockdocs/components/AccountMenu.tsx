@@ -212,7 +212,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
               onClick={handleSignOut}
               className="block w-full rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[13px] font-medium text-[color:var(--error)] transition hover:bg-[color:var(--error-surface)]"
             >
-              {t("Sign out", "退出登录", "Cerrar sesión", "Sair", "Se déconnecter", "サインアウト")}
+              {t("Sign out", "退出登录", "Cerrar sesión", "Sair", "Se déconnecter", "ログアウト")}
             </button>
           </div>
         </>
