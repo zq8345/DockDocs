@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+import { formatBytes } from "@/lib/files";
 
 function PdfThumb({ file }: { file: File }) {
   const [url, setUrl] = useState<string | null>(null);

@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
+import { dropzoneShell } from "@/components/design";
+import { matchFiles } from "@/lib/files";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
@@ -51,17 +53,7 @@ const STR = {
   },
 };
 
-// Keep files whose extension matches `extensions`; PDFs are also matched by MIME
-// type so a .pdf with an odd name still gets through. Non-matching files (e.g.
-// other docs inside a dropped folder) are filtered out before onFiles is called.
-function matchFiles(list: FileList | null, extensions: string[]): File[] {
-  return Array.from(list || []).filter((f) => {
-    const lower = f.name.toLowerCase();
-    return extensions.some((e) => lower.endsWith(e)) || (extensions.includes(".pdf") && f.type === "application/pdf");
-  });
-}
-
-// Shared 16:9 upload box for all batch-processing tools. Supports file + folder
+// Shared upload box for all batch-processing tools. Supports file + folder
 // picking and drag-and-drop. Defaults to PDF-only; pass `accept`/`extensions`
 // (plus optional `chooseLabel`/`hint`/`privacyLabel`) to accept other file types
 // — e.g. Office docs for batch Office→PDF. Set privacyLabel={null} to hide the
@@ -111,11 +103,7 @@ export function BatchUploadBox({
 
   return (
     <div
-      className={`mt-8 flex min-h-[300px] w-full cursor-pointer flex-col items-center justify-center gap-3 rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-8 text-center transition sm:min-h-[360px] ${
-        dragging
-          ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
-          : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
-      }`}
+      className={`mt-8 gap-3 ${dropzoneShell(dragging)}`}
       onClick={() => fileRef.current?.click()}
       onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
       onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
