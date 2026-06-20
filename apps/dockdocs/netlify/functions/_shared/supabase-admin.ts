@@ -94,9 +94,11 @@ export async function dbDelete(table: string, query: string): Promise<void> {
  * They are tallied server-side and discarded immediately; NOTHING per-user is
  * returned, logged, or persisted. Caller must surface counts only.
  *
- * Paging is capped (100 pages × 200 = 20k users) as a runaway guard; far above
- * the current user base. If ever exceeded, total slightly under-counts rather
- * than looping forever.
+ * Paging terminates on the first EMPTY page. GoTrue clamps per_page to its own
+ * server-side max (often 50) regardless of what we request, so a short page is
+ * NOT the last page — only an empty one is. A 100-page cap is a runaway guard
+ * (capacity = 100 × GoTrue's server max, far above the current user base); if
+ * ever exceeded, total slightly under-counts rather than looping forever.
  */
 export async function countAuthUsers(): Promise<{ total: number; last7d: number }> {
   const key = serviceRoleKey();
@@ -115,13 +117,16 @@ export async function countAuthUsers(): Promise<{ total: number; last7d: number 
     }
     const data = (await res.json()) as { users?: Array<{ created_at?: string }> };
     const users = data.users ?? [];
+    // Terminate ONLY on an empty page. GoTrue clamps per_page to its server-side
+    // max (often 50) regardless of the 200 we ask for, so a short page (< perPage)
+    // is NOT the last page — inferring end-of-list from a short page would stop
+    // after page 1 and badly under-count. Page until empty (or the 100-page cap).
     if (users.length === 0) break;
     total += users.length;
     for (const u of users) {
       const t = u.created_at ? Date.parse(u.created_at) : NaN;
       if (Number.isFinite(t) && t >= weekAgoMs) last7d += 1;
     }
-    if (users.length < perPage) break;
   }
   return { total, last7d };
 }

@@ -119,7 +119,12 @@ export default async function handler(req: Request, _ctx: Context) {
   // the last 7 days. Aggregate counts only — no PII. Degrades to {0,0} if the
   // service-role key is unset or GoTrue is unreachable, so the endpoint never
   // 500s on this additive field.
-  const signups = await countAuthUsers().catch(() => ({ total: 0, last7d: 0 }));
+  const signups = await countAuthUsers().catch((err) => {
+    // Log so a degraded {0,0} (key unset / GoTrue down) is distinguishable in
+    // function logs from a genuine "no users yet" {0,0}.
+    console.warn("admin-metrics: signups count failed, degrading to {0,0}:", err);
+    return { total: 0, last7d: 0 };
+  });
 
   // Proration upgrade health: how many users have a stuck old-sub cancellation (the
   // Path-2 residual risk — at risk of a silent double-charge). Anonymous count only;
