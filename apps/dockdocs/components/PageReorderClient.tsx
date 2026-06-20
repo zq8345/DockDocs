@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
@@ -104,8 +105,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why reorder PDF pages in your browser",
+    benefitsDescription: "Drag pages into the right order — no re-scanning, no re-exporting.",
+    benefits: [
+      { title: "Drag pages into place", description: "Grab any page thumbnail and drop it where it belongs — fix an out-of-order scan or move a section in seconds." },
+      { title: "See it before you save", description: "The new order shows live as you drag, so you can confirm the sequence before exporting." },
+      { title: "Same pages, new order", description: "Reordering only changes the sequence — every page keeps its original quality and content untouched." },
+    ],
+    workflowTitle: "How reordering fits your document work",
+    workflowDescription: "For the moment pages came out of sequence — a scan fed in the wrong order, an appendix that belongs up front.",
+    steps: [
+      "Upload the PDF with pages to rearrange.",
+      "Drag the page thumbnails into the order you want.",
+      "Download the reordered PDF.",
+    ],
+    readingTitle: "More ways to organize PDFs",
+    readingDescription: "Related tools for rearranging and trimming document pages.",
+    readingLinks: [
+      { label: "Rotate pages", href: "/rotate-page", description: "Straighten pages that scanned sideways or upside-down." },
+      { label: "Delete pages", href: "/delete-page", description: "Remove unwanted pages from a PDF." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里重排 PDF 页面",
+    benefitsDescription: "把页面拖到正确顺序——不用重新扫描、不用重新导出。",
+    benefits: [
+      { title: "拖拽就位", description: "抓住任意页面缩略图拖到该在的位置——几秒钟修正乱序扫描或挪动某一节。" },
+      { title: "保存前先看", description: "拖动时新顺序实时显示，导出前可确认序列。" },
+      { title: "页面不变、只换顺序", description: "重排只改变次序——每页保持原始质量和内容不动。" },
+    ],
+    workflowTitle: "重排如何融入你的文档工作",
+    workflowDescription: "当页面顺序乱了时——扫描进纸顺序错了、该放前面的附录跑到后面。",
+    steps: [
+      "上传要重排页面的 PDF。",
+      "把页面缩略图拖成你想要的顺序。",
+      "下载重排后的 PDF。",
+    ],
+    readingTitle: "更多整理 PDF 的方式",
+    readingDescription: "重排和精简文档页面的相关工具。",
+    readingLinks: [
+      { label: "旋转页面", href: "/rotate-page", description: "把横置或倒置的页面转正。" },
+      { label: "删除页面", href: "/delete-page", description: "从 PDF 中删掉不需要的页。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué reordenar páginas de PDF en tu navegador",
+    benefitsDescription: "Arrastra las páginas al orden correcto, sin volver a escanear ni exportar.",
+    benefits: [
+      { title: "Arrastra a su lugar", description: "Toma cualquier miniatura de página y suéltala donde corresponde: corrige un escaneo desordenado o mueve una sección en segundos." },
+      { title: "Míralo antes de guardar", description: "El nuevo orden se muestra en vivo mientras arrastras, así confirmas la secuencia antes de exportar." },
+      { title: "Mismas páginas, nuevo orden", description: "Reordenar solo cambia la secuencia: cada página conserva su calidad y contenido originales intactos." },
+    ],
+    workflowTitle: "Cómo encaja reordenar en tu trabajo",
+    workflowDescription: "Para cuando las páginas salen desordenadas: un escaneo alimentado en el orden equivocado, un anexo que va al principio.",
+    steps: [
+      "Sube el PDF con páginas para reorganizar.",
+      "Arrastra las miniaturas al orden que quieras.",
+      "Descarga el PDF reordenado.",
+    ],
+    readingTitle: "Más formas de organizar PDF",
+    readingDescription: "Herramientas relacionadas para reorganizar y recortar páginas de documentos.",
+    readingLinks: [
+      { label: "Rotar páginas", href: "/rotate-page", description: "Endereza páginas en horizontal o al revés." },
+      { label: "Eliminar páginas", href: "/delete-page", description: "Quita páginas no deseadas de un PDF." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que reordenar páginas de PDF no seu navegador",
+    benefitsDescription: "Arraste as páginas para a ordem certa, sem redigitalizar nem reexportar.",
+    benefits: [
+      { title: "Arraste para o lugar", description: "Pegue qualquer miniatura de página e solte onde ela pertence: corrija uma digitalização fora de ordem ou mova uma seção em segundos." },
+      { title: "Veja antes de salvar", description: "A nova ordem aparece ao vivo enquanto você arrasta, então confirma a sequência antes de exportar." },
+      { title: "Mesmas páginas, nova ordem", description: "Reordenar só muda a sequência: cada página mantém a qualidade e o conteúdo originais intactos." },
+    ],
+    workflowTitle: "Como reordenar se encaixa no seu trabalho",
+    workflowDescription: "Para quando as páginas saem fora de ordem: uma digitalização alimentada na ordem errada, um anexo que vai para o início.",
+    steps: [
+      "Envie o PDF com páginas para reorganizar.",
+      "Arraste as miniaturas para a ordem que quiser.",
+      "Baixe o PDF reordenado.",
+    ],
+    readingTitle: "Mais formas de organizar PDF",
+    readingDescription: "Ferramentas relacionadas para reorganizar e recortar páginas de documentos.",
+    readingLinks: [
+      { label: "Girar páginas", href: "/rotate-page", description: "Endireite páginas na horizontal ou de cabeça para baixo." },
+      { label: "Excluir páginas", href: "/delete-page", description: "Remova páginas indesejadas de um PDF." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi réorganiser des pages PDF dans votre navigateur",
+    benefitsDescription: "Glissez les pages dans le bon ordre, sans renumériser ni réexporter.",
+    benefits: [
+      { title: "Glissez à la bonne place", description: "Attrapez n'importe quelle miniature de page et déposez-la où elle doit être : corrigez un scan désordonné ou déplacez une section en quelques secondes." },
+      { title: "Voyez avant d'enregistrer", description: "Le nouvel ordre s'affiche en direct pendant que vous glissez, pour confirmer la séquence avant d'exporter." },
+      { title: "Mêmes pages, nouvel ordre", description: "Réorganiser ne change que la séquence : chaque page conserve sa qualité et son contenu d'origine intacts." },
+    ],
+    workflowTitle: "Comment la réorganisation s'intègre à votre travail",
+    workflowDescription: "Pour le moment où les pages sortent dans le désordre : un scan alimenté dans le mauvais ordre, une annexe qui doit passer en tête.",
+    steps: [
+      "Importez le PDF dont les pages doivent être réorganisées.",
+      "Glissez les miniatures dans l'ordre souhaité.",
+      "Téléchargez le PDF réorganisé.",
+    ],
+    readingTitle: "Plus de façons d'organiser les PDF",
+    readingDescription: "Outils associés pour réorganiser et alléger les pages des documents.",
+    readingLinks: [
+      { label: "Faire pivoter des pages", href: "/rotate-page", description: "Redressez les pages en paysage ou à l'envers." },
+      { label: "Supprimer des pages", href: "/delete-page", description: "Retirez les pages indésirables d'un PDF." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF ページを並べ替える理由",
+    benefitsDescription: "ページを正しい順序にドラッグ——再スキャンも再書き出しも不要。",
+    benefits: [
+      { title: "ドラッグで配置", description: "任意のページサムネイルをつかんで、あるべき場所にドロップ——順序が狂ったスキャンを直したり、セクションを数秒で移動できます。" },
+      { title: "保存前に確認", description: "ドラッグ中に新しい順序がリアルタイムで表示されるので、書き出す前にシーケンスを確認できます。" },
+      { title: "同じページ、新しい順序", description: "並べ替えは順序を変えるだけ——各ページは元の品質と内容をそのまま保持します。" },
+    ],
+    workflowTitle: "並べ替えが文書作業にどう役立つか",
+    workflowDescription: "ページの順序が狂ったとき——間違った順序で読み込まれたスキャン、前に来るべき付録。",
+    steps: [
+      "並べ替えたいページのある PDF をアップロードします。",
+      "ページサムネイルを好きな順序にドラッグします。",
+      "並べ替えた PDF をダウンロードします。",
+    ],
+    readingTitle: "PDF を整理する他の方法",
+    readingDescription: "文書のページを並べ替え・整理するための関連ツール。",
+    readingLinks: [
+      { label: "ページを回転", href: "/rotate-page", description: "横向きや上下逆のページをまっすぐにします。" },
+      { label: "ページを削除", href: "/delete-page", description: "PDF から不要なページを取り除きます。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -266,6 +409,7 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
           <ToolBridge slug="reorder-pages" locale={locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="reorder-pages" locale={locale} />
     </div>
   );
