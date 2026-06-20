@@ -8,6 +8,7 @@ import { authHeader } from "@/lib/supabase";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { GroundingNote } from "@/components/GroundingNote";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
+import { dropzoneShell } from "@/components/design";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -41,6 +42,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
   const [isAsking, setIsAsking] = useState(false);
   const [error, setError] = useState("");
   const [limitHit, setLimitHit] = useState<number | null>(null);
+  const [dragging, setDragging] = useState(false);
 
   const canAsk = useMemo(
     () => documentText.trim().length > 0 && question.trim().length > 0 && !isAsking,
@@ -76,9 +78,17 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
   const userQuestions = messages.filter((message) => message.role === "user");
   const activeDocumentName = fileName || copy.untitled;
 
-  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    void processFile(event.target.files?.[0]);
+  }
 
+  function handleDrop(event: React.DragEvent) {
+    event.preventDefault();
+    setDragging(false);
+    void processFile(event.dataTransfer.files?.[0]);
+  }
+
+  async function processFile(file: File | undefined) {
     setError("");
     setMessages([]);
     setDocumentText("");
@@ -266,9 +276,12 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
       {!documentText && !isExtracting ? (
         <label
           data-testid="upload-panel"
-          className="relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-14 text-center transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
+          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
+          onDrop={handleDrop}
+          className={dropzoneShell(dragging)}
         >
-          <span className="inline-flex h-12 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
+          <span className="inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
             {copy.choosePdf}
           </span>
           <span className="mt-4 text-sm text-[color:var(--muted)]">{copy.uploadHelp}</span>
