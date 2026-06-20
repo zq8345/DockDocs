@@ -2,6 +2,7 @@
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 
@@ -82,8 +83,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why merge PDFs in your browser",
+    benefitsDescription: "Combine several PDFs into one ordered document, without uploading anything.",
+    benefits: [
+      { title: "One document from many", description: "Combine contracts, scans, and reports into a single PDF that's easy to send, print, or archive." },
+      { title: "Drag to set the order", description: "Reorder the files before merging so pages land in exactly the sequence you want." },
+      { title: "Stays on your device", description: "Merging happens entirely in your browser — your files are never uploaded to a server." },
+    ],
+    workflowTitle: "How merging fits your document work",
+    workflowDescription: "For the moment separate PDFs need to become one packet — a signed contract, a bundle of receipts, a report with appendices.",
+    steps: [
+      "Add the PDFs you want to combine, by drag-and-drop or the file picker.",
+      "Drag the files into the order you want them merged.",
+      "Merge and download the single combined PDF.",
+    ],
+    readingTitle: "More ways to organize PDFs",
+    readingDescription: "Related tools and guides for combining and splitting documents.",
+    readingLinks: [
+      { label: "Split a PDF", href: "/split-pdf", description: "The reverse — pull a large PDF apart into separate files or page ranges." },
+      { label: "Merge PDFs without losing quality", href: "/guides/merge-pdfs-without-losing-quality", description: "How multiple PDFs combine into one file with no quality loss." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里合并 PDF",
+    benefitsDescription: "把多个 PDF 合并成一个有序文档，全程不上传任何文件。",
+    benefits: [
+      { title: "多份合成一份", description: "把合同、扫描件、报告合并成一个 PDF，方便发送、打印或归档。" },
+      { title: "拖拽决定顺序", description: "合并前调整文件顺序，让页面正好按你想要的次序排列。" },
+      { title: "文件不离开设备", description: "合并完全在你的浏览器中完成——文件从不上传到服务器。" },
+    ],
+    workflowTitle: "合并如何融入你的文档工作",
+    workflowDescription: "当几个独立 PDF 需要变成一个包时——一份签好的合同、一叠收据、一份带附录的报告。",
+    steps: [
+      "通过拖拽或文件选择器添加要合并的 PDF。",
+      "把文件拖成你想要的合并顺序。",
+      "合并并下载这一个合并后的 PDF。",
+    ],
+    readingTitle: "更多整理 PDF 的方式",
+    readingDescription: "合并与拆分文档的相关工具和指南。",
+    readingLinks: [
+      { label: "拆分 PDF", href: "/split-pdf", description: "反向操作——把一个大 PDF 拆成多个文件或页面范围。" },
+      { label: "无损合并 PDF", href: "/guides/merge-pdfs-without-losing-quality", description: "多个 PDF 如何无损合并成一个文件。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué combinar PDF en tu navegador",
+    benefitsDescription: "Combina varios PDF en un solo documento ordenado, sin subir nada.",
+    benefits: [
+      { title: "Un documento de muchos", description: "Combina contratos, escaneos e informes en un solo PDF fácil de enviar, imprimir o archivar." },
+      { title: "Arrastra para ordenar", description: "Reordena los archivos antes de combinar para que las páginas queden justo en la secuencia que quieres." },
+      { title: "Permanece en tu dispositivo", description: "La combinación ocurre completamente en tu navegador: tus archivos nunca se suben a un servidor." },
+    ],
+    workflowTitle: "Cómo encaja la combinación en tu trabajo",
+    workflowDescription: "Para cuando varios PDF separados deben convertirse en un paquete: un contrato firmado, un conjunto de recibos, un informe con anexos.",
+    steps: [
+      "Agrega los PDF que quieres combinar, arrastrándolos o con el selector de archivos.",
+      "Arrastra los archivos al orden en que quieres combinarlos.",
+      "Combina y descarga el único PDF combinado.",
+    ],
+    readingTitle: "Más formas de organizar PDF",
+    readingDescription: "Herramientas y guías relacionadas para combinar y dividir documentos.",
+    readingLinks: [
+      { label: "Dividir un PDF", href: "/split-pdf", description: "Lo contrario: separa un PDF grande en archivos o rangos de páginas." },
+      { label: "Combinar PDF sin perder calidad", href: "/guides/merge-pdfs-without-losing-quality", description: "Cómo varios PDF se combinan en un archivo sin pérdida de calidad." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que combinar PDF no seu navegador",
+    benefitsDescription: "Combine vários PDF em um único documento ordenado, sem enviar nada.",
+    benefits: [
+      { title: "Um documento de muitos", description: "Combine contratos, digitalizações e relatórios em um único PDF fácil de enviar, imprimir ou arquivar." },
+      { title: "Arraste para ordenar", description: "Reordene os arquivos antes de combinar para que as páginas fiquem exatamente na sequência que você quer." },
+      { title: "Permanece no seu dispositivo", description: "A combinação acontece inteiramente no seu navegador: seus arquivos nunca são enviados a um servidor." },
+    ],
+    workflowTitle: "Como a combinação se encaixa no seu trabalho",
+    workflowDescription: "Para quando vários PDF separados precisam virar um pacote: um contrato assinado, um conjunto de recibos, um relatório com anexos.",
+    steps: [
+      "Adicione os PDF que deseja combinar, arrastando ou pelo seletor de arquivos.",
+      "Arraste os arquivos para a ordem em que deseja combiná-los.",
+      "Combine e baixe o único PDF combinado.",
+    ],
+    readingTitle: "Mais formas de organizar PDF",
+    readingDescription: "Ferramentas e guias relacionados para combinar e dividir documentos.",
+    readingLinks: [
+      { label: "Dividir um PDF", href: "/split-pdf", description: "O contrário: separe um PDF grande em arquivos ou intervalos de páginas." },
+      { label: "Combinar PDF sem perder qualidade", href: "/guides/merge-pdfs-without-losing-quality", description: "Como vários PDF se combinam em um arquivo sem perda de qualidade." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi fusionner des PDF dans votre navigateur",
+    benefitsDescription: "Combinez plusieurs PDF en un seul document ordonné, sans rien téléverser.",
+    benefits: [
+      { title: "Un document à partir de plusieurs", description: "Combinez contrats, numérisations et rapports en un seul PDF facile à envoyer, imprimer ou archiver." },
+      { title: "Glissez pour ordonner", description: "Réorganisez les fichiers avant la fusion pour que les pages soient exactement dans l'ordre voulu." },
+      { title: "Reste sur votre appareil", description: "La fusion se fait entièrement dans votre navigateur : vos fichiers ne sont jamais téléversés sur un serveur." },
+    ],
+    workflowTitle: "Comment la fusion s'intègre à votre travail",
+    workflowDescription: "Pour le moment où plusieurs PDF distincts doivent devenir un seul dossier : un contrat signé, un lot de reçus, un rapport avec annexes.",
+    steps: [
+      "Ajoutez les PDF à combiner, par glisser-déposer ou via le sélecteur de fichiers.",
+      "Glissez les fichiers dans l'ordre de fusion souhaité.",
+      "Fusionnez et téléchargez l'unique PDF combiné.",
+    ],
+    readingTitle: "Plus de façons d'organiser les PDF",
+    readingDescription: "Outils et guides associés pour combiner et diviser des documents.",
+    readingLinks: [
+      { label: "Diviser un PDF", href: "/split-pdf", description: "L'inverse : séparez un grand PDF en fichiers ou plages de pages." },
+      { label: "Fusionner des PDF sans perte de qualité", href: "/guides/merge-pdfs-without-losing-quality", description: "Comment plusieurs PDF se combinent en un fichier sans perte de qualité." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF を結合する理由",
+    benefitsDescription: "複数の PDF を 1 つの順序立った文書に結合します。何もアップロードしません。",
+    benefits: [
+      { title: "複数を 1 つに", description: "契約書、スキャン、レポートを 1 つの PDF に結合——送信、印刷、保管が簡単になります。" },
+      { title: "ドラッグで順序を指定", description: "結合前にファイルを並べ替え、ページを思いどおりの順序に。" },
+      { title: "端末から出ない", description: "結合はすべてブラウザ内で完了——ファイルがサーバーにアップロードされることはありません。" },
+    ],
+    workflowTitle: "結合が文書作業にどう役立つか",
+    workflowDescription: "別々の PDF を 1 つにまとめる必要があるとき——署名済みの契約書、領収書の束、付録付きのレポート。",
+    steps: [
+      "結合したい PDF をドラッグ＆ドロップまたはファイル選択で追加します。",
+      "結合したい順序にファイルをドラッグします。",
+      "結合して、1 つにまとまった PDF をダウンロードします。",
+    ],
+    readingTitle: "PDF を整理する他の方法",
+    readingDescription: "文書の結合と分割に関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "PDF を分割", href: "/split-pdf", description: "逆の操作——大きな PDF を別々のファイルやページ範囲に分けます。" },
+      { label: "品質を落とさずに PDF を結合", href: "/guides/merge-pdfs-without-losing-quality", description: "複数の PDF が品質を損なわずに 1 つのファイルに結合される方法。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
@@ -241,6 +384,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="merge-pdf" locale={locale} />
     </div>
   );

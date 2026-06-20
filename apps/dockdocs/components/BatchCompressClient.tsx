@@ -1,6 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
-import { BatchToolSections, type BatchSectionsContent } from "@/components/BatchToolSections";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { BatchFileCard } from "@/components/BatchFileCard";
 
@@ -89,7 +89,7 @@ const STR = {
 // file tool pages have, brought to the batch page). zh-Hant derives from zh via
 // deepHant (recurses arrays/objects). Reading links point at the matching single-
 // file tool + a real guide + the resources hub (weight to /compress-pdf + funnel).
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", BatchSectionsContent> = {
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why batch-compress a whole folder",
     benefitsDescription: "Shrink every PDF in a folder in one pass, entirely in your browser.",
@@ -232,7 +232,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", BatchSectionsCon
 
 export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: BatchSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [level, setLevel] = useState<Level>("recommended");
@@ -358,7 +358,7 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <BatchToolSections locale={locale} content={sec} />
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="batch-compress" locale={locale} />
     </div>
   );

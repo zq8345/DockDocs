@@ -1,25 +1,26 @@
-// Reusable //Benefits //Workflow //Recommended-reading sections for BATCH tool
-// pages (custom clients that don't use the PdfToolPage template). Pure presentation:
-// the batch client supplies the per-tool content (already localized), this renders
-// it with the SAME card visuals as the single-file tool pages (InfoCard chrome +
-// grid-3 + number-badge steps + reading-link cards) so batch pages match them.
-// Eyebrows + "Continue" are built-in 5-lang (zh-Hant derived) to stay consistent.
+// Reusable //Benefits //Workflow //Recommended-reading sections for custom-client
+// tool pages (the ones that don't use the PdfToolPage template — single-file custom
+// clients AND batch clients). Pure presentation: the client supplies the per-tool
+// content (already localized), this renders it with the SAME card visuals as the
+// single-file template pages (InfoCard chrome + grid-3 + number-badge steps +
+// reading-link cards). Eyebrows + "Continue" are built-in 5-lang (zh-Hant derived)
+// to stay consistent. Single source so ~40 custom tools align without re-drift.
 import { toHant } from "@/lib/zh-hant";
 
 type Loc = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
 
-export type BatchBenefit = { title: string; description: string };
-export type BatchReadingLink = { label: string; href: string; description: string };
-export type BatchSectionsContent = {
+export type ToolBenefit = { title: string; description: string };
+export type ToolReadingLink = { label: string; href: string; description: string };
+export type ToolSectionsContent = {
   benefitsTitle: string;
   benefitsDescription: string;
-  benefits: BatchBenefit[];
+  benefits: ToolBenefit[];
   workflowTitle: string;
   workflowDescription: string;
   steps: string[];
   readingTitle: string;
   readingDescription: string;
-  readingLinks: BatchReadingLink[];
+  readingLinks: ToolReadingLink[];
 };
 
 const EYEBROW = {
@@ -46,7 +47,7 @@ function Intro({ eyebrow, title, description }: { eyebrow: string; title: string
   );
 }
 
-export function BatchToolSections({ locale = "en", content }: { locale?: Loc; content: BatchSectionsContent }) {
+export function ToolSections({ locale = "en", content }: { locale?: Loc; content: ToolSectionsContent }) {
   const c = content;
   return (
     <div className="mx-auto mt-16 max-w-5xl space-y-16 border-t border-[color:var(--line)] pt-12">
