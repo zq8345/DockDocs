@@ -8,6 +8,7 @@ import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { BatchFileCard } from "@/components/BatchFileCard";
+import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { checkUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
@@ -231,19 +232,16 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {docs.length === 0 ? (
-        <div
-          className="mt-8 cursor-pointer rounded-[var(--radius-lg)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-10 text-center transition hover:border-[color:var(--line-strong)]"
-          onClick={() => inputRef.current?.click()}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => { e.preventDefault(); const fs = Array.from(e.dataTransfer.files || []); if (fs.length) addFiles(fs); }}
-        >
-          {busy ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-1"><Spinner /><p className="text-[14px] font-medium text-[color:var(--muted)]">{t.reading}</p></div>
-          ) : (
-            <p className="text-[15px] font-medium text-[color:var(--foreground)]">{t.drop}</p>
-          )}
-          {!busy && <button type="button" className="mt-4 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>}
-        </div>
+        <BatchUploadBox
+          locale={locale}
+          onFiles={addFiles}
+          busy={busy}
+          busyLabel={t.reading}
+          accept="application/pdf,.pdf"
+          extensions={[".pdf"]}
+          chooseLabel={t.choose}
+          privacyLabel={null}
+        />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
