@@ -98,6 +98,7 @@ import { homeSchema, aboutSchema, pricingSchema, webPageSchema } from "@/lib/pag
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { isJaNativeRoute } from "@/shared/seo/routes";
 import { ExtraToolJsonLd, EXTRA_TOOL_SLUGS } from "@/lib/extra-tool-schema";
+import { getFaqItems } from "@/components/ToolFaq";
 import { groundingFaq } from "@/components/GroundingNote";
 import {
   createProgrammaticGeoMetadata,
@@ -1920,9 +1921,39 @@ export default async function LocalizedRoute({
   const schemaSlug = (toolSlugs as readonly string[]).includes(slug)
     ? (slug as ToolSlug)
     : HUB_SCHEMA_SLUG[slug];
-  const toolJsonLd = schemaSlug ? (
-    <ToolJsonLd config={getLocalizedToolConfig(rawLocale, schemaSlug)} />
-  ) : null;
+  // SINGLE-SOURCE FAQ: custom-client tools render their visible FAQ from
+  // <ToolFaq> (ToolFaq.tsx), but their JSON-LD comes from localized-tools'
+  // config.faq — historically a DIFFERENT set, which violates Google's
+  // "structured data must match visible content" policy. So override config.faq
+  // with the exact visible items when ToolFaq has copy for this slug+locale;
+  // otherwise keep config.faq (never lose or shrink FAQ JSON-LD). The visible
+  // FAQ key usually equals the slug, except a couple of clients reuse another
+  // tool's FAQ table.
+  const VISIBLE_FAQ_TOOL: Record<string, string> = {
+    "jpg-to-pdf": "images-to-pdf",
+    "png-to-pdf": "images-to-pdf",
+  };
+  const toolJsonLd = schemaSlug
+    ? (() => {
+        const cfg = getLocalizedToolConfig(rawLocale, schemaSlug);
+        // Hub pages (images-to-pdf / pdf-to-image) borrow a keyword tool's config
+        // for content shape, but the JSON-LD url/breadcrumb must point at the HUB
+        // itself, not the borrowed tool. This matters since pdf-to-jpg became
+        // self-canonical (no longer folds into /pdf-to-image): without this, the
+        // hub's borrowed config would emit pdf-to-jpg's /pdf-to-jpg/ url on the
+        // /pdf-to-image page. Force the hub's own canonical path here.
+        const hubCfg = HUB_SCHEMA_SLUG[slug]
+          ? { ...cfg, slug, canonicalPath: localizedPath(rawLocale, slug as RouteSlug) }
+          : cfg;
+        const visibleFaq = getFaqItems(
+          VISIBLE_FAQ_TOOL[slug] ?? slug,
+          clientLocale as "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant",
+        );
+        return (
+          <ToolJsonLd config={visibleFaq ? { ...hubCfg, faq: visibleFaq } : hubCfg} />
+        );
+      })()
+    : null;
 
   // Indexable tools that render a custom client but aren't in toolSlugs
   // (sign-pdf is in toolSlugs and handled above; these are not): lightweight schema.
@@ -2110,7 +2141,17 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "pdf-to-jpg") {
-    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="jpg" variant="jpg" /></>;
+    // Self-canonical JPG page: render the localized benefits/features/steps for
+    // content depth (every active locale has this copy in localized-tools.ts).
+    const jpgCfg = getLocalizedToolConfig(rawLocale, "pdf-to-jpg");
+    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="jpg" variant="jpg" content={{
+      benefitsTitle: jpgCfg.benefitsTitle,
+      benefits: jpgCfg.benefits,
+      featuresTitle: jpgCfg.featuresTitle,
+      features: jpgCfg.features,
+      workflowTitle: jpgCfg.workflowTitle,
+      steps: jpgCfg.steps,
+    }} /></>;
   }
 
   if (slug === "pdf-to-png") {

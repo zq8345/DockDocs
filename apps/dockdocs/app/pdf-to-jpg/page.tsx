@@ -5,10 +5,13 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { PdfToImageClient } from "@/components/PdfToImageClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 const config = {
   slug: "pdf-to-jpg",
-  canonicalPath: "/pdf-to-image/",
+  // Self-canonical: pdf-to-jpg competes on its own "pdf to jpg" demand rather than
+  // folding into /pdf-to-image (SEO decision, 2026-06-21 — mirrors pdf-to-png).
+  canonicalPath: "/pdf-to-jpg/",
   alternateLanguages: languageAlternates("pdf-to-jpg"),
   title: "PDF to JPG Converter Online Free | DockDocs",
   description:
@@ -94,5 +97,22 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function PdfToJpgPage() {
-  return <><ToolJsonLd config={config} /><PdfToImageClient locale="en" defaultFormat="jpg" /></>;
+  return (
+    <>
+      <ToolJsonLd config={withVisibleFaq(config, "pdf-to-jpg")} />
+      <PdfToImageClient
+        locale="en"
+        defaultFormat="jpg"
+        variant="jpg"
+        content={{
+          benefitsTitle: config.benefitsTitle,
+          benefits: config.benefits,
+          featuresTitle: config.featuresTitle,
+          features: config.features,
+          workflowTitle: config.workflowTitle,
+          steps: config.steps,
+        }}
+      />
+    </>
+  );
 }

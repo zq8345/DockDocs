@@ -5,6 +5,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { SplitPdfClient } from "@/components/SplitPdfClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 const splitPdfConfig = {
   slug: "split-pdf",
@@ -130,5 +131,5 @@ const splitPdfConfig = {
 export const metadata = createPdfToolMetadata(splitPdfConfig);
 
 export default function SplitPdfPage() {
-  return <><ToolJsonLd config={splitPdfConfig} /><SplitPdfClient locale="en" /></>;
+  return <><ToolJsonLd config={withVisibleFaq(splitPdfConfig, "split-pdf")} /><SplitPdfClient locale="en" /></>;
 }

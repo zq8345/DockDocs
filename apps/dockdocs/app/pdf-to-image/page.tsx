@@ -5,6 +5,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { PdfToImageClient } from "@/components/PdfToImageClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 // Canonical hub for the PDF-to-image tool. /pdf-to-jpg and /pdf-to-png are kept
 // as keyword landing pages but canonicalise here so the ranking signals
@@ -105,7 +106,7 @@ const relatedLinks = [
 export default function PdfToImagePage() {
   return (
     <>
-      <ToolJsonLd config={config} />
+      <ToolJsonLd config={withVisibleFaq(config, "pdf-to-image")} />
       <PdfToImageClient locale="en" defaultFormat="jpg" />
       {/* Crawlable depth: the custom client renders the tool UI only, so the config's
           benefits/steps/FAQ (which feed the JSON-LD) are also rendered as visible HTML
@@ -136,9 +137,10 @@ export default function PdfToImagePage() {
           </ol>
         </div>
 
-        {/* NOTE: config.faq is NOT rendered here — the PdfToImageClient already shows a
-            visible "PDF to Image — FAQ". config.faq still feeds the FAQPage JSON-LD via
-            ToolJsonLd. (Client FAQ vs config.faq-schema dedup = cross-lane, flagged to 总调度.) */}
+        {/* config.faq is NOT rendered here — PdfToImageClient already shows the visible
+            "PDF to Image — FAQ" (from ToolFaq.tsx). The FAQPage JSON-LD above now sources
+            those SAME visible items via withVisibleFaq(), so structured data matches the
+            page (single-source FAQ, 2026-06-21). */}
 
         <div className="mt-10 border-t border-[color:var(--line)] pt-10">
           <h2 className="text-lg font-medium text-[color:var(--foreground)]">Related tools</h2>

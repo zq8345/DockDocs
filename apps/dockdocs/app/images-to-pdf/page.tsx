@@ -5,6 +5,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 // Canonical hub for the image-to-PDF tool. /jpg-to-pdf and /png-to-pdf are kept
 // as keyword landing pages but canonicalise here so the ranking signals
@@ -78,5 +79,5 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function ImagesToPdfPage() {
-  return <><ToolJsonLd config={config} /><ImagesToPdfClient locale="en" /></>;
+  return <><ToolJsonLd config={withVisibleFaq(config, "images-to-pdf")} /><ImagesToPdfClient locale="en" /></>;
 }

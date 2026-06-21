@@ -5,6 +5,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { RotatePagesClient } from "@/components/RotatePagesClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 const config = {
   slug: "rotate-page",
@@ -92,5 +93,5 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function RotatePagePage() {
-  return <><ToolJsonLd config={config} /><RotatePagesClient locale="en" /></>;
+  return <><ToolJsonLd config={withVisibleFaq(config, "rotate-page")} /><RotatePagesClient locale="en" /></>;
 }

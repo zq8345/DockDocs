@@ -5,6 +5,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { DeletePagesClient } from "@/components/DeletePagesClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 const config = {
   slug: "delete-page",
@@ -92,5 +93,5 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function DeletePagePage() {
-  return <><ToolJsonLd config={config} /><DeletePagesClient locale="en" /></>;
+  return <><ToolJsonLd config={withVisibleFaq(config, "delete-page")} /><DeletePagesClient locale="en" /></>;
 }

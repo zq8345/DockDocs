@@ -5,6 +5,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { InsertPdfClient } from "@/components/InsertPdfClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 const config = {
   slug: "add-page",
@@ -100,5 +101,5 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function AddPagePage() {
-  return <><ToolJsonLd config={config} /><InsertPdfClient locale="en" /></>;
+  return <><ToolJsonLd config={withVisibleFaq(config, "add-page")} /><InsertPdfClient locale="en" /></>;
 }

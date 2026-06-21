@@ -2572,6 +2572,36 @@ const FAQ_FALLBACK: Record<string, string> = {
   "pdf-to-jpg": "pdf-to-image",
 };
 
+// Single source of truth for FAQ JSON-LD: returns the EXACT items rendered as the
+// visible FAQ by <ToolFaq> for this tool+locale, mapped to {question,answer} for
+// FAQPage structured data. Returns null when this locale has no FAQ copy for the
+// tool (no fallback row exists), so callers can fall back to their own config.faq
+// — guaranteeing JSON-LD FAQ never disappears and never mixes English into a
+// non-English page. Mirrors ToolFaqInner's resolution one-for-one.
+export function getFaqItems(
+  tool: string,
+  locale: Locale = "en",
+): { question: string; answer: string }[] | null {
+  let items: QA[] | undefined;
+  if (locale === "pt") {
+    items = (FAQS_PT[tool] ?? FAQS_PT[FAQ_FALLBACK[tool]])?.items;
+  } else if (locale === "fr") {
+    items = (FAQS_FR[tool] ?? FAQS_FR[FAQ_FALLBACK[tool]])?.items;
+  } else if (locale === "ja") {
+    items = (FAQS_JA[tool] ?? FAQS_JA[FAQ_FALLBACK[tool]])?.items;
+  } else {
+    const data = FAQS[tool] ?? FAQS[FAQ_FALLBACK[tool]];
+    if (data) {
+      items =
+        locale === "zh-Hant"
+          ? deepHant(data.items.zh)
+          : data.items[locale as "en" | "zh" | "es"] ?? data.items.en;
+    }
+  }
+  if (!items) return null;
+  return items.map((it) => ({ question: it.q, answer: it.a }));
+}
+
 function ToolFaqInner({ tool, locale = "en" }: { tool: string; locale?: Locale }) {
   if (locale === "pt") {
     const ptData = FAQS_PT[tool] ?? FAQS_PT[FAQ_FALLBACK[tool]];

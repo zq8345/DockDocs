@@ -5923,11 +5923,11 @@ const zhFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
 };
 
 // jpg/png converters canonicalise to their merged hub page (Approach 2).
-// EXCEPTION: pdf-to-png is self-canonical — it has real search demand
-// ("pdf to png") and standalone PNG-specific copy, so it competes on its own
-// rather than folding into /pdf-to-image (SEO decision, 2026-06-21).
+// EXCEPTION: pdf-to-png AND pdf-to-jpg are self-canonical — both have real search
+// demand ("pdf to png" / "pdf to jpg") and standalone format-specific copy, so they
+// compete on their own rather than folding into /pdf-to-image (SEO decision: png
+// 2026-06-21, jpg 2026-06-21). /pdf-to-image stays as the generic hub.
 const CANONICAL_HUB: Partial<Record<ToolSlug, string>> = {
-  "pdf-to-jpg": "pdf-to-image",
   "jpg-to-pdf": "images-to-pdf",
   "png-to-pdf": "images-to-pdf",
 };

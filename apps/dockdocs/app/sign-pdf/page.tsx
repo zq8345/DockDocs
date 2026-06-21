@@ -3,6 +3,7 @@ import { ToolJsonLd } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { SignPdfClient } from "@/components/SignPdfClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 export const metadata: Metadata = {
   title: "Sign a PDF — Free Online E-Signature",
@@ -13,5 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default function SignPdfPage() {
-  return <><ToolJsonLd config={getLocalizedToolConfig("en", "sign-pdf")} /><SignPdfClient /></>;
+  return <><ToolJsonLd config={withVisibleFaq(getLocalizedToolConfig("en", "sign-pdf"), "sign-pdf")} /><SignPdfClient /></>;
 }

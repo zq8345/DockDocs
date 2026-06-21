@@ -5,6 +5,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { MergePdfClient } from "@/components/MergePdfClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 const mergePdfConfig = {
   slug: "merge-pdf",
@@ -126,5 +127,5 @@ const mergePdfConfig = {
 export const metadata = createPdfToolMetadata(mergePdfConfig);
 
 export default function MergePdfPage() {
-  return <><ToolJsonLd config={mergePdfConfig} /><MergePdfClient locale="en" /></>;
+  return <><ToolJsonLd config={withVisibleFaq(mergePdfConfig, "merge-pdf")} /><MergePdfClient locale="en" /></>;
 }

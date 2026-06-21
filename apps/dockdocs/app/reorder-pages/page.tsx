@@ -5,6 +5,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { PageReorderClient } from "@/components/PageReorderClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 const config = {
   slug: "reorder-pages",
@@ -92,5 +93,5 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function ReorderPagesPage() {
-  return <><ToolJsonLd config={config} /><PageReorderClient locale="en" /></>;
+  return <><ToolJsonLd config={withVisibleFaq(config, "reorder-pages")} /><PageReorderClient locale="en" /></>;
 }

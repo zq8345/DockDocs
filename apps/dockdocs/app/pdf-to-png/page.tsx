@@ -5,6 +5,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { PdfToImageClient } from "@/components/PdfToImageClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 const config = {
   slug: "pdf-to-png",
@@ -76,7 +77,7 @@ export const metadata = createPdfToolMetadata(config);
 export default function PdfToPngPage() {
   return (
     <>
-      <ToolJsonLd config={config} />
+      <ToolJsonLd config={withVisibleFaq(config, "pdf-to-png")} />
       <PdfToImageClient
         locale="en"
         defaultFormat="png"

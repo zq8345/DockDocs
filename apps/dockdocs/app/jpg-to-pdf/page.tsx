@@ -5,6 +5,7 @@ import {
 } from "../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
 const jpgToPdfConfig = {
   slug: "jpg-to-pdf",
@@ -135,5 +136,5 @@ const jpgToPdfConfig = {
 export const metadata = createPdfToolMetadata(jpgToPdfConfig);
 
 export default function JpgToPdfPage() {
-  return <><ToolJsonLd config={jpgToPdfConfig} /><ImagesToPdfClient locale="en" /></>;
+  return <><ToolJsonLd config={withVisibleFaq(jpgToPdfConfig, "images-to-pdf")} /><ImagesToPdfClient locale="en" /></>;
 }
