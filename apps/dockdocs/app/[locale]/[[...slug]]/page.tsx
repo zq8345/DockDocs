@@ -2110,11 +2110,21 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "pdf-to-jpg") {
-    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="jpg" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="jpg" variant="jpg" /></>;
   }
 
   if (slug === "pdf-to-png") {
-    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="png" /></>;
+    // Self-canonical PNG page: render the localized benefits/features/steps for
+    // content depth (every active locale has this copy in localized-tools.ts).
+    const pngCfg = getLocalizedToolConfig(rawLocale, "pdf-to-png");
+    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="png" variant="png" content={{
+      benefitsTitle: pngCfg.benefitsTitle,
+      benefits: pngCfg.benefits,
+      featuresTitle: pngCfg.featuresTitle,
+      features: pngCfg.features,
+      workflowTitle: pngCfg.workflowTitle,
+      steps: pngCfg.steps,
+    }} /></>;
   }
 
   if (slug === "page-numbers") {
@@ -2126,7 +2136,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "pdf-to-image") {
-    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="jpg" /></>;
+    return <>{toolJsonLd}<PdfToImageClient locale={clientLocale} defaultFormat="jpg" variant="hub" /></>;
   }
 
   if (slug === "images-to-pdf") {

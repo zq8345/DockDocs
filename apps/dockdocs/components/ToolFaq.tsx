@@ -1008,6 +1008,35 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
       ],
     },
   },
+  "pdf-to-png": {
+    title: { en: "PDF to PNG — FAQ", zh: "PDF 转 PNG 常见问题", es: "PDF a PNG — preguntas frecuentes" },
+    items: {
+      en: [
+        { q: "How do I convert a PDF to PNG?", a: "Drop in a PDF and every page shows up as a thumbnail. Click pages to include or exclude them (or use Select all / Select none), make sure PNG is selected, then Convert & download. A single page comes down as one PNG; multiple pages are bundled into a ZIP." },
+        { q: "Is my PDF uploaded anywhere?", a: "No. The whole thing runs in your browser — the PDF is read and rendered to PNG locally and the download is generated on your device. Nothing is sent to a server, so your file never leaves your machine." },
+        { q: "Why choose PNG instead of JPG?", a: "PNG is lossless, so it keeps text, line art, diagrams and screenshots razor-sharp with no compression artifacts, and it supports transparency. JPG files are smaller and fine for photos, but they soften fine detail and can't be transparent." },
+        { q: "Is there a file size or page limit?", a: "There's no fixed cap and no sign-up. Because everything is processed in your browser, the real limit is your device's memory — very large or very high-page-count PDFs use more RAM and take longer, especially on phones or older machines." },
+        { q: "It won't open my PDF — what's wrong?", a: "The most common cause is a password-protected or encrypted PDF, which the tool can't read; remove the password first and try again. Output is rendered at 2x for crisp images, but it's still a picture — the text becomes pixels, so you can't select or search it afterwards." },
+        { q: "Is PDF to PNG free?", a: "Yes — completely free, no account, no watermark, no limit on how many times you use it." },
+      ],
+      zh: [
+        { q: "如何把 PDF 转成 PNG？", a: "把 PDF 拖进来，每一页都会显示为缩略图。点击页面来选中或排除（也可用「全选 / 全不选」），确认已选择 PNG，然后点「转换并下载」。单页直接下载成一张 PNG，多页会打包成 ZIP。" },
+        { q: "我的 PDF 会被上传吗？", a: "不会。整个过程都在你的浏览器里完成——PDF 在本地读取并渲染成 PNG，下载文件也在你的设备上生成，不会发送到任何服务器，文件始终不离开你的设备。" },
+        { q: "为什么选 PNG 而不是 JPG？", a: "PNG 是无损的，能让文字、线条图、图表和截图保持极致清晰、没有压缩噪点，而且支持透明。JPG 体积更小、适合照片，但会让细节变模糊，且不支持透明。" },
+        { q: "有文件大小或页数限制吗？", a: "没有固定上限，也无需注册。因为全部在浏览器里处理，真正的限制是你设备的内存——页数很多或很大的 PDF 会占用更多内存、处理更慢，手机或老旧电脑上尤其明显。" },
+        { q: "打不开我的 PDF，是怎么回事？", a: "最常见的原因是 PDF 加了密码或被加密，工具无法读取，请先去掉密码再试。输出按 2 倍分辨率渲染，画质清晰，但毕竟是图片——文字变成了像素，转换后无法再选中或搜索文字。" },
+        { q: "PDF 转 PNG 是免费的吗？", a: "是的——完全免费，无需账号，没有水印，使用次数也没有限制。" },
+      ],
+      es: [
+        { q: "¿Cómo convierto un PDF a PNG?", a: "Suelta un PDF y cada página aparece como una miniatura. Haz clic en las páginas para incluirlas o excluirlas (o usa «Seleccionar todo» / «No seleccionar ninguna»), asegúrate de tener PNG seleccionado y luego «Convertir y descargar». Una sola página se descarga como un PNG; varias páginas se agrupan en un ZIP." },
+        { q: "¿Mi PDF se sube a algún sitio?", a: "No. Todo el proceso se ejecuta en tu navegador: el PDF se lee y se renderiza en PNG localmente, y la descarga se genera en tu dispositivo. Nada se envía a un servidor, así que tu archivo jamás sale de tu equipo." },
+        { q: "¿Por qué elegir PNG en lugar de JPG?", a: "PNG no tiene pérdidas, así que mantiene el texto, los dibujos lineales, los diagramas y las capturas de pantalla nítidos y sin artefactos de compresión, y admite transparencia. Los archivos JPG son más pequeños y van bien para fotos, pero suavizan los detalles finos y no pueden ser transparentes." },
+        { q: "¿Hay un límite de tamaño de archivo o de páginas?", a: "No hay un tope fijo ni registro. Como todo se procesa en tu navegador, el límite real es la memoria de tu dispositivo: los PDF muy grandes o con muchísimas páginas usan más RAM y tardan más, sobre todo en teléfonos o máquinas antiguas." },
+        { q: "No abre mi PDF, ¿qué pasa?", a: "La causa más común es un PDF protegido con contraseña o cifrado, que la herramienta no puede leer; quita primero la contraseña e inténtalo de nuevo. La salida se renderiza a 2× para imágenes nítidas, pero sigue siendo una imagen: el texto se convierte en píxeles, así que después no podrás seleccionarlo ni buscarlo." },
+        { q: "¿Es gratis PDF a PNG?", a: "Sí: completamente gratis, sin cuenta, sin marca de agua y sin límite en cuántas veces lo uses." },
+      ],
+    },
+  },
   "pdf-to-image": {
     title: { en: "PDF to Image — FAQ", zh: "PDF 转图片常见问题", es: "PDF a imagen — preguntas frecuentes" },
     items: {
@@ -1539,6 +1568,17 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "É gratuito? Preciso de conta?", a: "Sim, é completamente gratuito, sem cadastro, sem marca d'água e sem necessidade de e-mail. Basta abrir a página e começar." },
     ],
   },
+  "pdf-to-png": {
+    title: "PDF para PNG — perguntas frequentes",
+    items: [
+      { q: "Como converto um PDF em PNG?", a: "Solte um PDF e cada página aparece como uma miniatura. Clique nas páginas para incluir ou excluir (ou use Selecionar tudo / Selecionar nenhuma), confirme que PNG está selecionado e clique em Converter e baixar. Uma única página é baixada como um PNG; várias páginas são agrupadas em um ZIP." },
+      { q: "Meu PDF é enviado para algum lugar?", a: "Não. Tudo é executado no seu navegador — o PDF é lido e renderizado em PNG localmente e o download é gerado no seu dispositivo. Nada é enviado a um servidor, então seu arquivo nunca sai da sua máquina." },
+      { q: "Por que escolher PNG em vez de JPG?", a: "PNG é sem perdas, então mantém texto, arte linear, diagramas e capturas de tela nítidos, sem artefatos de compressão, e suporta transparência. Os arquivos JPG são menores e bons para fotos, mas suavizam detalhes finos e não podem ser transparentes." },
+      { q: "Há limite de tamanho ou de páginas?", a: "Não há limite fixo e não precisa de cadastro. Como tudo é processado no seu navegador, o limite real é a memória do dispositivo — PDFs muito grandes ou com muitas páginas usam mais RAM e demoram mais, especialmente em celulares ou máquinas mais antigas." },
+      { q: "Não abre meu PDF — o que há de errado?", a: "A causa mais comum é um PDF protegido por senha ou criptografado, que a ferramenta não consegue ler; remova a senha primeiro e tente novamente. A saída é renderizada em 2× para imagens nítidas, mas ainda é uma imagem — o texto vira pixels, então você não pode selecioná-lo ou pesquisá-lo depois." },
+      { q: "PDF para PNG é gratuito?", a: "Sim — completamente gratuito, sem conta, sem marca d'água, sem limite em quantas vezes você usa." },
+    ],
+  },
   "pdf-to-image": {
     title: "PDF para imagem — perguntas frequentes",
     items: [
@@ -1979,6 +2019,17 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Est-ce gratuit ? Ai-je besoin d'un compte ?", a: "Oui, c'est entièrement gratuit, sans inscription, sans filigrane et sans e-mail requis. Ouvrez simplement la page et commencez." },
     ],
   },
+  "pdf-to-png": {
+    title: "PDF en PNG — foire aux questions",
+    items: [
+      { q: "Comment convertir un PDF en PNG ?", a: "Déposez un PDF et chaque page apparaît sous forme de miniature. Cliquez sur les pages pour les inclure ou les exclure (ou utilisez Tout sélectionner / Ne rien sélectionner), vérifiez que PNG est sélectionné, puis Convertir et télécharger. Une seule page se télécharge sous forme d'un PNG ; plusieurs pages sont regroupées dans un ZIP." },
+      { q: "Mon PDF est-il téléversé quelque part ?", a: "Non. Tout se passe dans votre navigateur — le PDF est lu et converti en PNG localement et le téléchargement est généré sur votre appareil. Rien n'est envoyé à un serveur, donc votre fichier ne quitte jamais votre machine." },
+      { q: "Pourquoi choisir le PNG plutôt que le JPG ?", a: "Le PNG est sans perte : il garde le texte, le dessin au trait, les schémas et les captures d'écran parfaitement nets, sans artefacts de compression, et prend en charge la transparence. Les fichiers JPG sont plus petits et conviennent aux photos, mais ils adoucissent les détails fins et ne peuvent pas être transparents." },
+      { q: "Y a-t-il une limite de taille ou de pages ?", a: "Il n'y a pas de limite fixe et pas d'inscription. Comme tout est traité dans votre navigateur, la vraie limite est la mémoire de votre appareil — les PDF très volumineux ou avec beaucoup de pages utilisent plus de RAM et prennent plus de temps, surtout sur les téléphones ou les machines anciennes." },
+      { q: "Il ne peut pas ouvrir mon PDF — que se passe-t-il ?", a: "La cause la plus courante est un PDF protégé par mot de passe ou chiffré, que l'outil ne peut pas lire ; supprimez d'abord le mot de passe et réessayez. La sortie est rendue à 2× pour des images nettes, mais c'est toujours une image — le texte devient des pixels, vous ne pouvez donc pas le sélectionner ni le rechercher ensuite." },
+      { q: "La conversion PDF en PNG est-elle gratuite ?", a: "Oui — entièrement gratuit, sans compte, sans filigrane, sans limite sur le nombre de fois que vous l'utilisez." },
+    ],
+  },
   "pdf-to-image": {
     title: "PDF en image — foire aux questions",
     items: [
@@ -2229,6 +2280,17 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "画像はどこかにアップロードされますか？", a: "いいえ。すべてブラウザ内でローカルに動作し、PDFはデバイス上で作られ、画像がサーバーに送られたり保存されることはありません。" },
       { q: "サイズやファイル数の上限はありますか？", a: "固定の上限はありません。すべてデバイス上で行われるため、実質的な上限はデバイスのメモリで、非常に大きい・多数の高解像度画像は古い端末や低メモリのPCでは遅くなることがあります。" },
       { q: "無料ですか？アカウントは必要ですか？", a: "はい、完全無料で、登録・透かし・メール不要です。ページを開いて始めるだけです。" },
+    ],
+  },
+  "pdf-to-png": {
+    title: "PDFをPNGに変換 — よくある質問",
+    items: [
+      { q: "PDFをどうPNGに変換しますか？", a: "PDFを投入すると各ページがサムネイルで表示されます。含める/除外するページをクリックし（「すべて選択」「選択解除」も可）、PNGが選択されていることを確認して「変換してダウンロード」をクリックします。1ページなら1枚のPNG、複数ページならZIPにまとめられます。" },
+      { q: "私のPDFはどこかにアップロードされますか？", a: "いいえ。すべてブラウザ内で動作し、PDFの読み取りとPNGへの描画はローカルで行われ、ダウンロードもデバイス上で生成されます。サーバーには何も送られず、ファイルがデバイスから出ることはありません。" },
+      { q: "JPGではなくPNGを選ぶ理由は？", a: "PNGは無損失なので、文字・線画・図表・スクリーンショットを圧縮ノイズなく非常にくっきり保ち、透過にも対応します。JPGはファイルが小さく写真に向きますが、細部が甘くなり、透過はできません。" },
+      { q: "ファイルサイズやページ数の上限はありますか？", a: "固定の上限はなく、登録も不要です。すべてブラウザ内で処理するため、実質的な上限はデバイスのメモリで、非常に大きい・ページ数の多いPDFはRAMを多く使い時間がかかります（特にスマホや古い端末）。" },
+      { q: "PDFが開けません——何が問題ですか？", a: "最も多い原因はパスワード保護・暗号化されたPDFで、ツールが読み取れません。先にパスワードを解除して再度お試しください。出力は鮮明さのため2倍で描画しますが、あくまで画像なので、文字はピクセルになり後から選択・検索はできません。" },
+      { q: "PDFからPNGへの変換は無料ですか？", a: "はい——完全無料で、アカウント・透かし・利用回数の制限もありません。" },
     ],
   },
   "pdf-to-image": {
@@ -2502,9 +2564,17 @@ export function ToolFaq(props: { tool: string; locale?: Locale }) {
   );
 }
 
+// Variant tools (pdf-to-png / pdf-to-jpg) carry their own FAQ where it exists,
+// but fall back to the generic image FAQ for any locale that lacks variant copy —
+// so a non-English page never renders an empty FAQ or English fallback text.
+const FAQ_FALLBACK: Record<string, string> = {
+  "pdf-to-png": "pdf-to-image",
+  "pdf-to-jpg": "pdf-to-image",
+};
+
 function ToolFaqInner({ tool, locale = "en" }: { tool: string; locale?: Locale }) {
   if (locale === "pt") {
-    const ptData = FAQS_PT[tool];
+    const ptData = FAQS_PT[tool] ?? FAQS_PT[FAQ_FALLBACK[tool]];
     if (!ptData) return null;
     return (
       <section className="mx-auto mt-12 border-t border-[color:var(--line)] pt-10">
@@ -2521,7 +2591,7 @@ function ToolFaqInner({ tool, locale = "en" }: { tool: string; locale?: Locale }
     );
   }
   if (locale === "fr") {
-    const frData = FAQS_FR[tool];
+    const frData = FAQS_FR[tool] ?? FAQS_FR[FAQ_FALLBACK[tool]];
     if (!frData) return null;
     return (
       <section className="mx-auto mt-12 border-t border-[color:var(--line)] pt-10">
@@ -2538,7 +2608,7 @@ function ToolFaqInner({ tool, locale = "en" }: { tool: string; locale?: Locale }
     );
   }
   if (locale === "ja") {
-    const jaData = FAQS_JA[tool];
+    const jaData = FAQS_JA[tool] ?? FAQS_JA[FAQ_FALLBACK[tool]];
     if (!jaData) return null;
     return (
       <section className="mx-auto mt-12 border-t border-[color:var(--line)] pt-10">
@@ -2554,7 +2624,7 @@ function ToolFaqInner({ tool, locale = "en" }: { tool: string; locale?: Locale }
       </section>
     );
   }
-  const data = FAQS[tool];
+  const data = FAQS[tool] ?? FAQS[FAQ_FALLBACK[tool]];
   if (!data) return null;
   // zh-Hant derives from the zh FAQ data via OpenCC.
   const items = locale === "zh-Hant" ? deepHant(data.items.zh) : (data.items[locale as "en" | "zh" | "es"] ?? data.items.en);

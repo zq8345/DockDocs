@@ -8,7 +8,9 @@ import { PdfToImageClient } from "@/components/PdfToImageClient";
 
 const config = {
   slug: "pdf-to-png",
-  canonicalPath: "/pdf-to-image/",
+  // Self-canonical: pdf-to-png competes on its own "pdf to png" demand rather than
+  // folding into /pdf-to-image (SEO decision, 2026-06-21).
+  canonicalPath: "/pdf-to-png/",
   alternateLanguages: languageAlternates("pdf-to-png"),
   title: "PDF to PNG Converter Online Free | DockDocs",
   description:
@@ -72,5 +74,22 @@ const config = {
 export const metadata = createPdfToolMetadata(config);
 
 export default function PdfToPngPage() {
-  return <><ToolJsonLd config={config} /><PdfToImageClient locale="en" defaultFormat="png" /></>;
+  return (
+    <>
+      <ToolJsonLd config={config} />
+      <PdfToImageClient
+        locale="en"
+        defaultFormat="png"
+        variant="png"
+        content={{
+          benefitsTitle: config.benefitsTitle,
+          benefits: config.benefits,
+          featuresTitle: config.featuresTitle,
+          features: config.features,
+          workflowTitle: config.workflowTitle,
+          steps: config.steps,
+        }}
+      />
+    </>
+  );
 }

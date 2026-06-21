@@ -10,12 +10,30 @@ import { trackToolRun } from "@/lib/track";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 type Fmt = "jpg" | "png";
+// Page variant — drives the H1/subtitle + FAQ so /pdf-to-png, /pdf-to-jpg and the
+// /pdf-to-image hub each present their own native copy from one shared component.
+type Variant = "png" | "jpg" | "hub";
+// Optional content-depth block (benefits / features / steps), passed pre-localized
+// from the server so the SEO copy is rendered, not only fed to JSON-LD. Only the
+// png variant uses this today; every field must already exist in the page locale.
+type ContentDepth = {
+  benefitsTitle?: string;
+  benefits?: Array<{ title: string; description: string }>;
+  featuresTitle?: string;
+  features?: Array<{ title: string; description: string }>;
+  workflowTitle?: string;
+  steps?: string[];
+};
 type Pg = { idx: number; thumb: string };
 
 const STR = {
   en: {
     title: "PDF to Image",
     subtitle: "Upload a PDF, pick the pages you want, choose JPG or PNG, and download — you see and select every page before converting.",
+    titlePng: "PDF to PNG",
+    subtitlePng: "Convert PDF pages to lossless PNG images. Upload a PDF, pick the pages you want, and download — every page renders right in your browser.",
+    titleJpg: "PDF to JPG",
+    subtitleJpg: "Convert PDF pages to JPG images. Upload a PDF, pick the pages you want, and download — every page renders right in your browser.",
     drop: "Drag & drop a PDF here, or click to choose",
     choose: "Choose PDF", rendering: "Rendering pages…",
     hint: "Click pages to include/exclude them. Selected pages get converted.",
@@ -28,6 +46,10 @@ const STR = {
   zh: {
     title: "PDF 转图片",
     subtitle: "上传 PDF，选择要转换的页面，选 JPG 或 PNG，然后下载——转换前每一页都看得到、可勾选。",
+    titlePng: "PDF 转 PNG",
+    subtitlePng: "把 PDF 页面转成无损 PNG 图片。上传 PDF，选择要转换的页面，然后下载——每一页都在你的浏览器里渲染。",
+    titleJpg: "PDF 转 JPG",
+    subtitleJpg: "把 PDF 页面转成 JPG 图片。上传 PDF，选择要转换的页面，然后下载——每一页都在你的浏览器里渲染。",
     drop: "把 PDF 拖到这里，或点击选择",
     choose: "选择 PDF", rendering: "正在渲染页面…",
     hint: "点击页面以选中/取消，选中的页面会被转换。",
@@ -40,6 +62,10 @@ const STR = {
   es: {
     title: "PDF a imagen",
     subtitle: "Sube un PDF, elige las páginas que quieras, selecciona JPG o PNG y descarga: ves y seleccionas cada página antes de convertir.",
+    titlePng: "PDF a PNG",
+    subtitlePng: "Convierte páginas de PDF en imágenes PNG sin pérdidas. Sube un PDF, elige las páginas que quieras y descarga: cada página se procesa en tu navegador.",
+    titleJpg: "PDF a JPG",
+    subtitleJpg: "Convierte páginas de PDF en imágenes JPG. Sube un PDF, elige las páginas que quieras y descarga: cada página se procesa en tu navegador.",
     drop: "Arrastra y suelta un PDF aquí, o haz clic para elegir",
     choose: "Elegir PDF", rendering: "Procesando páginas…",
     hint: "Haz clic en las páginas para incluirlas o excluirlas. Las páginas seleccionadas se convierten.",
@@ -52,6 +78,10 @@ const STR = {
   pt: {
     title: "PDF para imagem",
     subtitle: "Envie um PDF, escolha as páginas desejadas, selecione JPG ou PNG e baixe: você vê e seleciona cada página antes de converter.",
+    titlePng: "PDF para PNG",
+    subtitlePng: "Converta páginas de PDF em imagens PNG sem perdas. Envie um PDF, escolha as páginas desejadas e baixe: cada página é processada no seu navegador.",
+    titleJpg: "PDF para JPG",
+    subtitleJpg: "Converta páginas de PDF em imagens JPG. Envie um PDF, escolha as páginas desejadas e baixe: cada página é processada no seu navegador.",
     drop: "Arraste e solte um PDF aqui, ou clique para escolher",
     choose: "Escolher PDF", rendering: "Processando páginas…",
     hint: "Clique nas páginas para incluí-las ou excluí-las. As páginas selecionadas são convertidas.",
@@ -64,6 +94,10 @@ const STR = {
   fr: {
     title: "PDF en image",
     subtitle: "Importez un PDF, choisissez les pages souhaitées, sélectionnez JPG ou PNG et téléchargez — vous voyez et sélectionnez chaque page avant de convertir.",
+    titlePng: "PDF en PNG",
+    subtitlePng: "Convertissez les pages d'un PDF en images PNG sans perte. Importez un PDF, choisissez les pages souhaitées et téléchargez — chaque page est traitée dans votre navigateur.",
+    titleJpg: "PDF en JPG",
+    subtitleJpg: "Convertissez les pages d'un PDF en images JPG. Importez un PDF, choisissez les pages souhaitées et téléchargez — chaque page est traitée dans votre navigateur.",
     drop: "Glissez-déposez un PDF ici, ou cliquez pour choisir",
     choose: "Choisir un PDF", rendering: "Rendu des pages en cours…",
     hint: "Cliquez sur les pages pour les inclure ou les exclure. Les pages sélectionnées seront converties.",
@@ -76,6 +110,10 @@ const STR = {
   ja: {
     title: "PDFを画像に",
     subtitle: "PDFをアップロードし、必要なページを選び、JPGまたはPNGを選択してダウンロード——変換前にすべてのページを確認して選択できます。",
+    titlePng: "PDFをPNGに",
+    subtitlePng: "PDFのページを無損失のPNG画像に変換します。PDFをアップロードし、必要なページを選んでダウンロード——各ページはブラウザ内で描画されます。",
+    titleJpg: "PDFをJPGに",
+    subtitleJpg: "PDFのページをJPG画像に変換します。PDFをアップロードし、必要なページを選んでダウンロード——各ページはブラウザ内で描画されます。",
     drop: "ここにPDFをドラッグ＆ドロップ、またはクリックして選択",
     choose: "PDFを選択", rendering: "ページを描画中…",
     hint: "ページをクリックして含める/除外を切り替えます。選択したページが変換されます。",
@@ -87,8 +125,14 @@ const STR = {
   },
 };
 
-export function PdfToImageClient({ locale = "en", defaultFormat = "jpg" }: { locale?: Locale; defaultFormat?: Fmt }) {
+export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant = "hub", content }: { locale?: Locale; defaultFormat?: Fmt; variant?: Variant; content?: ContentDepth }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  // Per-variant H1/subtitle (every locale in STR carries all three pairs).
+  const heading = variant === "png" ? t.titlePng : variant === "jpg" ? t.titleJpg : t.title;
+  const subheading = variant === "png" ? t.subtitlePng : variant === "jpg" ? t.subtitleJpg : t.subtitle;
+  // FAQ slug per variant; png/jpg degrade to the generic image FAQ inside ToolFaq
+  // when a locale lacks variant-specific data (never mixes English into a locale).
+  const faqTool = variant === "png" ? "pdf-to-png" : variant === "jpg" ? "pdf-to-jpg" : "pdf-to-image";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [pages, setPages] = useState<Pg[]>([]);
@@ -176,8 +220,8 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg" }: { loc
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
-      <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+      <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{heading}</h1>
+      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{subheading}</p>
 
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
@@ -219,7 +263,51 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg" }: { loc
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
 
-      <ToolFaq tool="pdf-to-image" locale={locale} />
+      {content && (
+        <div className="mt-14 space-y-12">
+          {content.benefits && content.benefits.length > 0 && (
+            <section>
+              {content.benefitsTitle && <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{content.benefitsTitle}</h2>}
+              <div className="mt-6 grid gap-5 sm:grid-cols-3">
+                {content.benefits.map((b) => (
+                  <div key={b.title} className="rounded-[var(--radius)] border border-[color:var(--line)] p-5">
+                    <h3 className="text-[15px] font-medium text-[color:var(--foreground)]">{b.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{b.description}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+          {content.features && content.features.length > 0 && (
+            <section>
+              {content.featuresTitle && <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{content.featuresTitle}</h2>}
+              <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                {content.features.map((f) => (
+                  <div key={f.title}>
+                    <h3 className="text-[15px] font-medium text-[color:var(--foreground)]">{f.title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{f.description}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+          {content.steps && content.steps.length > 0 && (
+            <section>
+              {content.workflowTitle && <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{content.workflowTitle}</h2>}
+              <ol className="mt-6 space-y-3">
+                {content.steps.map((s, i) => (
+                  <li key={s} className="flex gap-3 text-sm leading-6 text-[color:var(--muted)]">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[color:var(--line)] text-[12px] font-medium text-[color:var(--foreground)]">{i + 1}</span>
+                    <span>{s}</span>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+        </div>
+      )}
+
+      <ToolFaq tool={faqTool} locale={locale} />
     </div>
   );
 }
