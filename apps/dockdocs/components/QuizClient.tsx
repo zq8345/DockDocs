@@ -1,5 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 
 import { useCallback, useRef, useState } from "react";
@@ -82,8 +83,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why turn a document into flashcards",
+    benefitsDescription: "Study from cards built directly from your own material — the document's text is analyzed by AI to write the questions and answers.",
+    benefits: [
+      { title: "Cards from your own source", description: "Questions and answers are written from the document you upload, so you revise the exact material you need to know — not a generic deck." },
+      { title: "Active recall, not re-reading", description: "Each card hides the answer until you flip it, forcing you to retrieve it from memory — the study method that actually sticks." },
+      { title: "Choose how many to make", description: "Ask for 5, 10, 15, or 20 cards to match a quick review or a full chapter, generated from the same text in one pass." },
+    ],
+    workflowTitle: "How flashcards fit your study",
+    workflowDescription: "When you have a chapter, lecture notes, or a manual and want to test yourself instead of just reading it again.",
+    steps: [
+      "Upload the PDF you want to study from.",
+      "Pick how many cards you want, and the AI drafts question-and-answer pairs from the text.",
+      "Flip each card to quiz yourself, and give the answers a quick check before relying on them.",
+    ],
+    readingTitle: "More ways to work with your document",
+    readingDescription: "Related AI tools for studying and understanding the same material.",
+    readingLinks: [
+      { label: "Summarize a PDF", href: "/ai-summary", description: "Condense the chapter into key points before you turn it into cards." },
+      { label: "Chat with a PDF", href: "/chat-with-pdf", description: "Ask follow-up questions about anything in the document the cards don't cover." },
+      { label: "Document workflow resources", href: "/resources", description: "A structured hub for document tools, conversion, and AI study paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么把文档变成抽认卡",
+    benefitsDescription: "用直接基于你自己资料生成的卡片学习——由 AI 分析文档文字来撰写问题和答案。",
+    benefits: [
+      { title: "卡片来自你自己的资料", description: "问题和答案都基于你上传的文档撰写，复习的正是你需要掌握的内容，而不是一套通用题库。" },
+      { title: "主动回忆，而非反复重读", description: "每张卡片在你翻面前都藏着答案，逼你从记忆里把它取出来——这才是真正记得住的学习法。" },
+      { title: "自选生成数量", description: "可要 5、10、15 或 20 张卡片，适配快速复习或整章学习，一次从同一段文字生成。" },
+    ],
+    workflowTitle: "抽认卡如何融入你的学习",
+    workflowDescription: "当你手上有一章内容、讲义或手册，想自测而不只是再读一遍时。",
+    steps: [
+      "上传你想用来学习的 PDF。",
+      "选择想要的卡片数量，AI 会从文字中起草问答对。",
+      "翻开每张卡片自测，并在依赖答案前快速核对一遍。",
+    ],
+    readingTitle: "处理文档的更多方式",
+    readingDescription: "用于学习和理解同一份资料的相关 AI 工具。",
+    readingLinks: [
+      { label: "总结 PDF", href: "/ai-summary", description: "在做成卡片前，先把这一章浓缩成要点。" },
+      { label: "与 PDF 对话", href: "/chat-with-pdf", description: "就卡片没覆盖到的内容，向文档继续追问。" },
+      { label: "文档工作流资源", href: "/resources", description: "按工作流整理的文档工具、转换和 AI 学习路径中心。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué convertir un documento en tarjetas de estudio",
+    benefitsDescription: "Estudia con tarjetas creadas directamente a partir de tu propio material: la IA analiza el texto del documento para redactar las preguntas y respuestas.",
+    benefits: [
+      { title: "Tarjetas de tu propia fuente", description: "Las preguntas y respuestas se redactan a partir del documento que subes, así repasas justo el material que necesitas saber, no un mazo genérico." },
+      { title: "Recuerdo activo, no relectura", description: "Cada tarjeta oculta la respuesta hasta que la giras, lo que te obliga a recuperarla de memoria: el método de estudio que de verdad funciona." },
+      { title: "Elige cuántas crear", description: "Pide 5, 10, 15 o 20 tarjetas según sea un repaso rápido o un capítulo completo, generadas del mismo texto en una sola pasada." },
+    ],
+    workflowTitle: "Cómo encajan las tarjetas en tu estudio",
+    workflowDescription: "Cuando tienes un capítulo, apuntes de clase o un manual y quieres ponerte a prueba en lugar de solo volver a leerlo.",
+    steps: [
+      "Sube el PDF con el que quieres estudiar.",
+      "Elige cuántas tarjetas quieres y la IA redacta pares de pregunta y respuesta a partir del texto.",
+      "Gira cada tarjeta para examinarte y revisa rápidamente las respuestas antes de fiarte de ellas.",
+    ],
+    readingTitle: "Más formas de trabajar con tu documento",
+    readingDescription: "Herramientas de IA relacionadas para estudiar y entender el mismo material.",
+    readingLinks: [
+      { label: "Resumir un PDF", href: "/ai-summary", description: "Condensa el capítulo en puntos clave antes de convertirlo en tarjetas." },
+      { label: "Chatear con un PDF", href: "/chat-with-pdf", description: "Haz preguntas de seguimiento sobre lo que las tarjetas no cubran." },
+      { label: "Recursos de flujos de trabajo de documentos", href: "/resources", description: "Un centro estructurado de herramientas de documentos, conversión y rutas de estudio con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que transformar um documento em flashcards",
+    benefitsDescription: "Estude com cartões criados diretamente a partir do seu próprio material: a IA analisa o texto do documento para redigir as perguntas e respostas.",
+    benefits: [
+      { title: "Cartões da sua própria fonte", description: "As perguntas e respostas são redigidas a partir do documento que você envia, então você revisa exatamente o conteúdo que precisa saber, não um baralho genérico." },
+      { title: "Recordação ativa, não releitura", description: "Cada cartão esconde a resposta até você virá-lo, forçando você a recuperá-la da memória: o método de estudo que realmente fixa." },
+      { title: "Escolha quantos criar", description: "Peça 5, 10, 15 ou 20 cartões para uma revisão rápida ou um capítulo inteiro, gerados do mesmo texto de uma só vez." },
+    ],
+    workflowTitle: "Como os flashcards se encaixam no seu estudo",
+    workflowDescription: "Quando você tem um capítulo, notas de aula ou um manual e quer se testar em vez de apenas reler.",
+    steps: [
+      "Envie o PDF com o qual você quer estudar.",
+      "Escolha quantos cartões deseja e a IA redige pares de pergunta e resposta a partir do texto.",
+      "Vire cada cartão para se testar e confira rapidamente as respostas antes de confiar nelas.",
+    ],
+    readingTitle: "Mais formas de trabalhar com seu documento",
+    readingDescription: "Ferramentas de IA relacionadas para estudar e entender o mesmo material.",
+    readingLinks: [
+      { label: "Resumir um PDF", href: "/ai-summary", description: "Condense o capítulo em pontos-chave antes de transformá-lo em cartões." },
+      { label: "Conversar com um PDF", href: "/chat-with-pdf", description: "Faça perguntas de acompanhamento sobre o que os cartões não cobrirem." },
+      { label: "Recursos de fluxos de trabalho de documentos", href: "/resources", description: "Um hub estruturado de ferramentas de documentos, conversão e trilhas de estudo com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi transformer un document en fiches de révision",
+    benefitsDescription: "Révisez à partir de fiches créées directement depuis votre propre matière : l'IA analyse le texte du document pour rédiger les questions et les réponses.",
+    benefits: [
+      { title: "Des fiches issues de votre source", description: "Les questions et réponses sont rédigées à partir du document que vous importez : vous révisez exactement la matière à connaître, pas un jeu de fiches générique." },
+      { title: "Rappel actif, pas relecture", description: "Chaque fiche masque la réponse jusqu'à ce que vous la retourniez, vous obligeant à la retrouver de mémoire : la méthode de révision qui ancre vraiment." },
+      { title: "Choisissez combien en créer", description: "Demandez 5, 10, 15 ou 20 fiches selon une révision rapide ou un chapitre entier, générées du même texte en une seule fois." },
+    ],
+    workflowTitle: "Comment les fiches s'intègrent à vos révisions",
+    workflowDescription: "Quand vous avez un chapitre, des notes de cours ou un guide et que vous voulez vous tester plutôt que simplement le relire.",
+    steps: [
+      "Importez le PDF avec lequel vous voulez réviser.",
+      "Choisissez le nombre de fiches souhaité et l'IA rédige des paires question-réponse à partir du texte.",
+      "Retournez chaque fiche pour vous interroger, et vérifiez rapidement les réponses avant de vous y fier.",
+    ],
+    readingTitle: "D'autres façons d'exploiter votre document",
+    readingDescription: "Outils d'IA associés pour réviser et comprendre la même matière.",
+    readingLinks: [
+      { label: "Résumer un PDF", href: "/ai-summary", description: "Condensez le chapitre en points clés avant d'en faire des fiches." },
+      { label: "Discuter avec un PDF", href: "/chat-with-pdf", description: "Posez des questions de suivi sur ce que les fiches ne couvrent pas." },
+      { label: "Ressources de flux de travail documentaire", href: "/resources", description: "Un hub structuré d'outils documentaires, de conversion et de parcours de révision IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "文書をフラッシュカードにする理由",
+    benefitsDescription: "自分の資料から直接作ったカードで学習——AI が文書のテキストを分析して問題と回答を作成します。",
+    benefits: [
+      { title: "自分の資料から作るカード", description: "問題と回答はアップロードした文書をもとに作られるので、汎用デッキではなく、覚えるべき内容そのものを復習できます。" },
+      { title: "再読ではなく能動的想起", description: "各カードは裏返すまで答えを隠すため、記憶から引き出すことを促します——本当に身につく学習法です。" },
+      { title: "枚数を選べる", description: "サッと復習なら少なめ、章まるごとなら多めに、5・10・15・20 枚から選べます。同じテキストから一度に生成します。" },
+    ],
+    workflowTitle: "フラッシュカードが学習にどう役立つか",
+    workflowDescription: "章・講義ノート・マニュアルがあり、ただ読み返すのではなく自己テストしたいときに。",
+    steps: [
+      "学習に使いたい PDF をアップロードします。",
+      "枚数を選ぶと、AI がテキストから問題と回答のペアを作成します。",
+      "各カードを裏返して自己テストし、頼る前に答えを軽く確認します。",
+    ],
+    readingTitle: "文書を活用する他の方法",
+    readingDescription: "同じ資料を学び理解するための関連 AI ツール。",
+    readingLinks: [
+      { label: "PDF を要約", href: "/ai-summary", description: "カードにする前に、章を要点へとまとめます。" },
+      { label: "PDF とチャット", href: "/chat-with-pdf", description: "カードでカバーしきれない点を文書に追加で質問できます。" },
+      { label: "文書ワークフローのリソース", href: "/resources", description: "文書ツール、変換、AI 学習の導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function QuizClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
   const [count, setCount] = useState(10);
@@ -193,6 +336,7 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
       {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="flashcards" locale={locale} />
     </div>
   );

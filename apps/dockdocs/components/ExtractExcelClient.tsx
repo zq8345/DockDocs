@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
@@ -122,8 +123,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why pull document data into a spreadsheet",
+    benefitsDescription: "Turn a stack of invoices, quotes, or contracts into one clean table — the AI reads the text of each document and lifts out the fields you need.",
+    benefits: [
+      { title: "Batch in, one table out", description: "Drop in a whole folder of documents and get a single spreadsheet — one row per file, the same columns lined up across every document." },
+      { title: "Only what's actually there", description: "The AI reports the values it can read in the text; fields it can't find are left blank rather than guessed, so a missing number stays empty instead of invented." },
+      { title: "CSV that opens anywhere", description: "Download as a CSV that opens straight in Excel and Google Sheets — ready to sort, filter, or paste into your own reconciliation." },
+    ],
+    workflowTitle: "How extraction fits your document work",
+    workflowDescription: "For the moment the numbers and terms you need are trapped across many PDFs and you'd rather not retype them by hand.",
+    steps: [
+      "Add your invoices, quotes, or contracts and pick the document type.",
+      "The document's text is analyzed by AI, which lifts the key fields into rows.",
+      "Review the table and download the spreadsheet as CSV.",
+    ],
+    readingTitle: "More ways to work through documents",
+    readingDescription: "Related AI tools for reading, comparing, and questioning your files.",
+    readingLinks: [
+      { label: "Compare documents", href: "/compare", description: "Line several documents up side by side and see where their key terms differ." },
+      { label: "Flag contract risks", href: "/contract-risk", description: "Surface unusual or one-sided clauses in a contract before you sign." },
+      { label: "Document workflow resources", href: "/resources", description: "A structured hub for PDF tools, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么把文档数据抽进表格",
+    benefitsDescription: "把一摞发票、报价单或合同变成一张干净的表格——AI 读取每份文档的文字，抽出你需要的字段。",
+    benefits: [
+      { title: "批量进，一表出", description: "丢进整个文件夹的文档，得到一张表格——每个文件一行，所有文档的列都对齐一致。" },
+      { title: "只报真实存在的内容", description: "AI 只报告它能在文字里读到的值；找不到的字段会留空，而不是瞎猜，缺失的数字保持为空而非编造。" },
+      { title: "CSV 到处都能打开", description: "导出成 CSV，直接用 Excel 和 Google 表格打开——可排序、筛选，或粘进你自己的对账表。" },
+    ],
+    workflowTitle: "抽取如何融入你的文档工作",
+    workflowDescription: "当你需要的数字和条款散落在许多 PDF 里，又不想一个个手动重敲时。",
+    steps: [
+      "添加你的发票、报价单或合同，并选择文档类型。",
+      "文档的文字由 AI 分析，把关键字段提取成一行行。",
+      "核对表格，把结果导出为 CSV 表格文件。",
+    ],
+    readingTitle: "更多处理文档的方式",
+    readingDescription: "用于阅读、比较和追问文件的相关 AI 工具。",
+    readingLinks: [
+      { label: "对比文档", href: "/compare", description: "把多份文档并排放在一起，看出它们关键条款的差异。" },
+      { label: "标记合同风险", href: "/contract-risk", description: "在签字前找出合同里异常或一边倒的条款。" },
+      { label: "文档工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué extraer datos de documentos a una hoja de cálculo",
+    benefitsDescription: "Convierte un montón de facturas, presupuestos o contratos en una tabla limpia: la IA lee el texto de cada documento y extrae los campos que necesitas.",
+    benefits: [
+      { title: "Lote a la entrada, una tabla a la salida", description: "Suelta una carpeta entera de documentos y obtén una sola hoja de cálculo: una fila por archivo, con las mismas columnas alineadas en todos los documentos." },
+      { title: "Solo lo que realmente está", description: "La IA informa los valores que puede leer en el texto; los campos que no encuentra se dejan en blanco en lugar de adivinarlos, así un número ausente queda vacío y no inventado." },
+      { title: "CSV que se abre en cualquier sitio", description: "Descárgalo como CSV que se abre directamente en Excel y Google Sheets, listo para ordenar, filtrar o pegar en tu propia conciliación." },
+    ],
+    workflowTitle: "Cómo encaja la extracción en tu trabajo",
+    workflowDescription: "Para cuando los números y términos que necesitas están atrapados en muchos PDF y prefieres no volver a teclearlos a mano.",
+    steps: [
+      "Agrega tus facturas, presupuestos o contratos y elige el tipo de documento.",
+      "El texto del documento lo analiza la IA, que extrae los campos clave en filas.",
+      "Revisa la tabla y descarga la hoja de cálculo en CSV.",
+    ],
+    readingTitle: "Más formas de trabajar con documentos",
+    readingDescription: "Herramientas de IA relacionadas para leer, comparar y consultar tus archivos.",
+    readingLinks: [
+      { label: "Comparar documentos", href: "/compare", description: "Pon varios documentos uno al lado del otro y ve dónde difieren sus términos clave." },
+      { label: "Detectar riesgos en contratos", href: "/contract-risk", description: "Saca a la luz cláusulas inusuales o desequilibradas en un contrato antes de firmar." },
+      { label: "Recursos de flujos de trabajo de documentos", href: "/resources", description: "Un centro estructurado de herramientas PDF, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que extrair dados de documentos para uma planilha",
+    benefitsDescription: "Transforme uma pilha de faturas, orçamentos ou contratos em uma tabela limpa: a IA lê o texto de cada documento e extrai os campos de que você precisa.",
+    benefits: [
+      { title: "Lote na entrada, uma tabela na saída", description: "Solte uma pasta inteira de documentos e receba uma única planilha: uma linha por arquivo, com as mesmas colunas alinhadas em todos os documentos." },
+      { title: "Apenas o que realmente consta", description: "A IA relata os valores que consegue ler no texto; os campos que não encontra ficam em branco em vez de adivinhados, então um número ausente fica vazio, não inventado." },
+      { title: "CSV que abre em qualquer lugar", description: "Baixe como CSV que abre direto no Excel e no Google Sheets, pronto para ordenar, filtrar ou colar na sua própria conciliação." },
+    ],
+    workflowTitle: "Como a extração se encaixa no seu trabalho",
+    workflowDescription: "Para quando os números e termos de que você precisa estão presos em muitos PDFs e você prefere não redigitá-los à mão.",
+    steps: [
+      "Adicione suas faturas, orçamentos ou contratos e escolha o tipo de documento.",
+      "O texto do documento é analisado pela IA, que extrai os campos-chave em linhas.",
+      "Revise a tabela e baixe a planilha em CSV.",
+    ],
+    readingTitle: "Mais formas de trabalhar com documentos",
+    readingDescription: "Ferramentas de IA relacionadas para ler, comparar e consultar seus arquivos.",
+    readingLinks: [
+      { label: "Comparar documentos", href: "/compare", description: "Coloque vários documentos lado a lado e veja onde seus termos-chave diferem." },
+      { label: "Sinalizar riscos em contratos", href: "/contract-risk", description: "Revele cláusulas incomuns ou desequilibradas em um contrato antes de assinar." },
+      { label: "Recursos de fluxos de trabalho de documentos", href: "/resources", description: "Um hub estruturado de ferramentas PDF, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi extraire les données d'un document vers un tableur",
+    benefitsDescription: "Transformez une pile de factures, devis ou contrats en un tableau clair : l'IA lit le texte de chaque document et en extrait les champs dont vous avez besoin.",
+    benefits: [
+      { title: "Un lot en entrée, un tableau en sortie", description: "Déposez un dossier entier de documents et obtenez un seul tableur : une ligne par fichier, les mêmes colonnes alignées sur tous les documents." },
+      { title: "Seulement ce qui y figure vraiment", description: "L'IA rapporte les valeurs qu'elle peut lire dans le texte ; les champs introuvables sont laissés vides plutôt que devinés, un chiffre manquant reste vide et n'est pas inventé." },
+      { title: "Un CSV qui s'ouvre partout", description: "Téléchargez un CSV qui s'ouvre directement dans Excel et Google Sheets, prêt à trier, filtrer ou coller dans votre propre rapprochement." },
+    ],
+    workflowTitle: "Comment l'extraction s'intègre à votre travail",
+    workflowDescription: "Pour le moment où les chiffres et clauses dont vous avez besoin sont dispersés dans de nombreux PDF et que vous préférez ne pas les ressaisir à la main.",
+    steps: [
+      "Ajoutez vos factures, devis ou contrats et choisissez le type de document.",
+      "Le texte du document est analysé par l'IA, qui extrait les champs clés en lignes.",
+      "Vérifiez le tableau et téléchargez le tableur au format CSV.",
+    ],
+    readingTitle: "Plus de façons de traiter vos documents",
+    readingDescription: "Outils d'IA associés pour lire, comparer et interroger vos fichiers.",
+    readingLinks: [
+      { label: "Comparer des documents", href: "/compare", description: "Placez plusieurs documents côte à côte et voyez où leurs clauses clés diffèrent." },
+      { label: "Repérer les risques d'un contrat", href: "/contract-risk", description: "Faites ressortir les clauses inhabituelles ou déséquilibrées d'un contrat avant de signer." },
+      { label: "Ressources de flux de travail documentaires", href: "/resources", description: "Un hub structuré d'outils PDF, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "文書データを表計算に取り出す理由",
+    benefitsDescription: "請求書・見積・契約書の束を 1 つのきれいな表に変換します——AI が各文書の文字を読み取り、必要な項目を抜き出します。",
+    benefits: [
+      { title: "まとめて入れて、1 つの表に", description: "フォルダごと文書を入れると 1 つの表計算が得られます——ファイルごとに 1 行、すべての文書で同じ列がそろいます。" },
+      { title: "実際にある内容だけ", description: "AI は文字から読み取れた値を報告します。見つからない項目は推測せず空欄のままにするため、欠けている数値は捏造されず空のまま残ります。" },
+      { title: "どこでも開ける CSV", description: "CSV としてダウンロードでき、Excel や Google スプレッドシートでそのまま開けます——並べ替え・絞り込み・自分の照合表への貼り付けがすぐに行えます。" },
+    ],
+    workflowTitle: "抽出が文書作業にどう役立つか",
+    workflowDescription: "必要な数値や条項が多数の PDF に散らばっていて、手で打ち直したくないとき。",
+    steps: [
+      "請求書・見積・契約書を追加し、文書の種類を選びます。",
+      "文書の文字を AI が解析し、主要な項目を行に取り出します。",
+      "表を確認し、結果を CSV としてダウンロードします。",
+    ],
+    readingTitle: "文書を処理する他の方法",
+    readingDescription: "ファイルを読む・比較する・問い合わせるための関連 AI ツール。",
+    readingLinks: [
+      { label: "文書を比較", href: "/compare", description: "複数の文書を並べて、主要な条項の違いを確認します。" },
+      { label: "契約リスクを指摘", href: "/contract-risk", description: "署名する前に、契約書の異常な、または一方的な条項を洗い出します。" },
+      { label: "文書ワークフローのリソース", href: "/resources", description: "PDF ツール、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [docs, setDocs] = useState<Doc[]>([]);
   const [dragging, setDragging] = useState(false);
   const [docType, setDocType] = useState<DocType>("invoice");
@@ -323,6 +466,7 @@ export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="extract-to-excel" locale={locale} />
     </div>
   );
