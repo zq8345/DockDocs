@@ -108,6 +108,18 @@ const BANNED = [
   { re: /chaque\s+réponse\s+cite/i, why: 'fr "chaque réponse cite"', scopable: true },
   { re: /すべての回答が[^。]{0,8}引用/, why: 'ja "すべての回答が…引用"', scopable: true },
   { re: /必ず[^。]{0,8}(引用|出典|指し示)/, why: 'ja "必ず…引用/出典" — 必ず over-claim', scopable: true },
+  // "sourced answer(s)" is a citation claim — scopable (chat cites only when locatable)
+  { re: /sourced\s+answers?/i, why: 'en "sourced answer(s)" — scope it (chat cites only when locatable)', scopable: true },
+
+  // — compare-recommend = citeNo: the recommendation has NO single source to cite,
+  //   so a "sourced recommendation" is HARD-banned (use "backed by the numbers /
+  //   基于并排数据 / based on the side-by-side data") —
+  { re: /sourced\s+(pick|recommendation|verdict|choice)/i, why: 'en "sourced pick/recommendation/verdict" — compare-recommend is citeNo' },
+  { re: /带出处的推荐/, why: 'zh "带出处的推荐" — 推荐无单一出处,用"基于并排数据"' },
+  { re: /(recomendaci[oó]n|elecci[oó]n|veredicto)\s+con\s+(la\s+)?fuente/i, why: 'es "recomendación/elección/veredicto con fuente" — citeNo' },
+  { re: /(recomenda[çc][ãa]o|escolha|veredic?to)\s+com\s+(a\s+)?fonte/i, why: 'pt "recomendação/escolha/veredicto com fonte" — citeNo' },
+  { re: /(recommandation|choix|verdict)\s+(document[ée]e?|sourcée?)/i, why: 'fr "recommandation/choix/verdict documenté/sourcé" — citeNo' },
+  { re: /(出典付き|根拠つき|根拠付き)の(おすすめ|推奨|選択|選定|判定|結論)/, why: 'ja "出典付き/根拠つきの…結論" — 推奨に単一の出典なし' },
 
   // — marketing absolutes (HARD: never exempt) —
   { re: /court-ready/i, why: 'en "court-ready" — legal absolute' },

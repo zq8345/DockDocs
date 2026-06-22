@@ -427,12 +427,12 @@ const AICHIP_SLUGS = ["/compare", "/extract-to-excel", "/ai-summary", "/translat
 // concrete jobs DockDocs does — old way → DockDocs (low text, scannable)
 const SCENARIOS = [
   { icon: <path d="M4 13h3v6H4zM10 9h3v10h-3zM16 5h3v14h-3z" />, href: "/compare",
-    en: ["Compare quotes, pick the best", "3 files into a sheet · ~1h", "a sourced pick · 1 min"],
-    zh: ["比报价，选最优", "开 3 个文件抄进表格 · 约 1 小时", "带出处的推荐 · 1 分钟"],
-    es: ["Compara presupuestos, elige el mejor", "3 archivos a una hoja · ~1 h", "una elección con fuentes · 1 min"],
-    pt: ["Compare orçamentos, escolha o melhor", "3 arquivos em uma planilha · ~1h", "uma escolha com fontes · 1 min"],
-    fr: ["Comparez des devis, choisissez le meilleur", "3 fichiers dans un tableau · ~1h", "un choix documenté · 1 min"],
-    ja: ["見積もりを比較し、最適を選ぶ", "3ファイルを表に書き写す · 約1時間", "根拠つきの選定 · 1分"] },
+    en: ["Compare quotes, pick the best", "3 files into a sheet · ~1h", "a data-backed pick · 1 min"],
+    zh: ["比报价，选最优", "开 3 个文件抄进表格 · 约 1 小时", "基于数据的推荐 · 1 分钟"],
+    es: ["Compara presupuestos, elige el mejor", "3 archivos a una hoja · ~1 h", "una elección basada en los datos · 1 min"],
+    pt: ["Compare orçamentos, escolha o melhor", "3 arquivos em uma planilha · ~1h", "uma escolha baseada nos dados · 1 min"],
+    fr: ["Comparez des devis, choisissez le meilleur", "3 fichiers dans un tableau · ~1h", "un choix fondé sur les chiffres · 1 min"],
+    ja: ["見積もりを比較し、最適を選ぶ", "3ファイルを表に書き写す · 約1時間", "数値に基づく選定 · 1分"] },
   { icon: <path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM13 3v4h4M8.5 14l2 2 4-4" />, href: "/redline",
     en: ["Catch the traps in a contract", "a lawyer, or sign blind", "AI flags risky & missing clauses"],
     zh: ["看穿合同里的坑", "花钱找律师，或盲签踩坑", "AI 标出风险与缺失条款"],

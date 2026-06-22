@@ -79,7 +79,7 @@ const STR = {
       "Extracted by AI. Each value shows the exact source line it came from (verified to appear in that document). “Not recognized” means the document didn’t state it — nothing is guessed.",
     comingNext: "Coming next",
     next: [
-      "A sourced recommendation (which option wins, and why)",
+      "A recommendation backed by the compared numbers (which option wins, and why)",
       "Click any value to jump to the exact spot in the original PDF",
       "Add your own dimensions to compare",
     ],
@@ -201,7 +201,7 @@ const STR = {
       "Extraído por IA. Cada valor muestra la línea de origen exacta de la que proviene (verificada que aparece en ese documento). “No reconocido” significa que el documento no lo indicaba: no se adivina nada.",
     comingNext: "Próximamente",
     next: [
-      "Una recomendación con fuentes (qué opción gana y por qué)",
+      "Una recomendación basada en los datos comparados (qué opción gana y por qué)",
       "Haz clic en cualquier valor para saltar al punto exacto en el PDF original",
       "Agrega tus propias dimensiones para comparar",
     ],
@@ -262,7 +262,7 @@ const STR = {
       "Extraído por IA. Cada valor mostra a linha de origem exata de onde veio (verificada como presente nesse documento). \"Não reconhecido\" significa que o documento não o indicava — nada é inventado.",
     comingNext: "Em breve",
     next: [
-      "Uma recomendação com fontes (qual opção vence e por quê)",
+      "Uma recomendação baseada nos dados comparados (qual opção vence e por quê)",
       "Clique em qualquer valor para ir ao ponto exato no PDF original",
       "Adicione suas próprias dimensões para comparar",
     ],
@@ -323,7 +323,7 @@ const STR = {
       "Extrait par IA. Chaque valeur affiche la ligne source exacte dont elle provient (vérifiée comme présente dans ce document). « Non reconnu » signifie que le document ne le mentionne pas — rien n'est deviné.",
     comingNext: "Prochainement",
     next: [
-      "Une recommandation sourcée (quelle option l'emporte et pourquoi)",
+      "Une recommandation fondée sur les chiffres comparés (quelle option l'emporte et pourquoi)",
       "Cliquez sur une valeur pour accéder à l'emplacement exact dans le PDF original",
       "Ajoutez vos propres dimensions à comparer",
     ],
@@ -384,7 +384,7 @@ const STR = {
       "AI によって抽出されました。各値には、それが由来する出典の一文（その文書に実際に出現することを確認済み）が表示されます。「認識できません」は、その文書に記載がなかったことを意味します — 推測は一切行いません。",
     comingNext: "近日公開",
     next: [
-      "出典付きのおすすめ（どの選択肢が優れているか、その理由）",
+      "比較した数値に基づくおすすめ（どの選択肢が優れているか、その理由）",
       "値をクリックすると、元の PDF の該当箇所へジャンプ",
       "比較したい項目を自分で追加",
     ],
@@ -629,7 +629,7 @@ const QA: Record<BaseLocale, {
 const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why compare documents with DockDocs",
-    benefitsDescription: "Line up two PDFs side by side, ask questions that span both, and get a sourced verdict — the AI reads the documents' text for you.",
+    benefitsDescription: "Line up two PDFs side by side, ask questions that span both, and get a verdict drawn from those numbers — the AI reads the documents' text for you.",
     benefits: [
       { title: "Key terms lined up side by side", description: "The AI pulls vendor, price, dates, and terms from each PDF into one table, so the differences between two documents jump out instead of hiding across pages." },
       { title: "Answers point back to the source line", description: "When you ask a question across both documents and the answer draws on a specific line, it's shown with that source line — and the server verifies that snippet really appears in the named document before showing it." },
@@ -640,7 +640,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     steps: [
       "Upload the two PDFs you want to compare.",
       "The document's text is analyzed by AI to align fields, answer cross-document questions, or recommend a winner.",
-      "Review the side-by-side table, ask a question, or read the sourced verdict.",
+      "Review the side-by-side table, ask a question, or read the data-backed verdict.",
     ],
     readingTitle: "More AI document tools",
     readingDescription: "Related ways to read, check, and pull facts out of your PDFs.",
@@ -675,7 +675,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
   },
   es: {
     benefitsTitle: "Por qué comparar documentos con DockDocs",
-    benefitsDescription: "Coloca dos PDF lado a lado, haz preguntas que abarcan ambos y obtén un veredicto con fuentes: la IA lee el texto de los documentos por ti.",
+    benefitsDescription: "Coloca dos PDF lado a lado, haz preguntas que abarcan ambos y obtén un veredicto basado en los datos: la IA lee el texto de los documentos por ti.",
     benefits: [
       { title: "Términos clave alineados lado a lado", description: "La IA extrae proveedor, precio, fechas y condiciones de cada PDF en una sola tabla, para que las diferencias entre dos documentos salten a la vista en vez de ocultarse entre páginas." },
       { title: "Las respuestas remiten a la línea de origen", description: "Cuando haces una pregunta sobre ambos documentos y la respuesta se basa en una línea concreta, se muestra junto a esa línea de origen, y el servidor verifica que ese fragmento realmente aparece en el documento indicado antes de mostrarlo." },
@@ -686,7 +686,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     steps: [
       "Sube los dos PDF que quieres comparar.",
       "La IA analiza el texto del documento para alinear campos, responder preguntas entre documentos o recomendar un ganador.",
-      "Revisa la tabla comparativa, haz una pregunta o lee el veredicto con fuentes.",
+      "Revisa la tabla comparativa, haz una pregunta o lee el veredicto basado en los datos.",
     ],
     readingTitle: "Más herramientas de documentos con IA",
     readingDescription: "Formas relacionadas de leer, revisar y extraer datos de tus PDF.",
@@ -698,7 +698,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
   },
   pt: {
     benefitsTitle: "Por que comparar documentos com o DockDocs",
-    benefitsDescription: "Coloque dois PDFs lado a lado, faça perguntas que abrangem ambos e obtenha um veredicto com fontes — a IA lê o texto dos documentos para você.",
+    benefitsDescription: "Coloque dois PDFs lado a lado, faça perguntas que abrangem ambos e obtenha um veredicto baseado nos dados — a IA lê o texto dos documentos para você.",
     benefits: [
       { title: "Termos-chave alinhados lado a lado", description: "A IA extrai fornecedor, preço, datas e condições de cada PDF em uma única tabela, para que as diferenças entre dois documentos saltem aos olhos em vez de se esconderem entre as páginas." },
       { title: "As respostas remetem à linha de origem", description: "Quando você faz uma pergunta sobre os dois documentos e a resposta se baseia em uma linha específica, ela é exibida com essa linha de origem — e o servidor verifica se esse trecho realmente aparece no documento indicado antes de exibi-lo." },
@@ -709,7 +709,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     steps: [
       "Envie os dois PDFs que deseja comparar.",
       "A IA analisa o texto do documento para alinhar campos, responder perguntas entre documentos ou recomendar um vencedor.",
-      "Revise a tabela comparativa, faça uma pergunta ou leia o veredicto com fontes.",
+      "Revise a tabela comparativa, faça uma pergunta ou leia o veredicto baseado nos dados.",
     ],
     readingTitle: "Mais ferramentas de documentos com IA",
     readingDescription: "Formas relacionadas de ler, verificar e extrair dados dos seus PDFs.",
@@ -721,7 +721,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
   },
   fr: {
     benefitsTitle: "Pourquoi comparer des documents avec DockDocs",
-    benefitsDescription: "Placez deux PDF côte à côte, posez des questions couvrant les deux et obtenez un verdict sourcé — l'IA lit le texte des documents pour vous.",
+    benefitsDescription: "Placez deux PDF côte à côte, posez des questions couvrant les deux et obtenez un verdict fondé sur les chiffres — l'IA lit le texte des documents pour vous.",
     benefits: [
       { title: "Termes clés alignés côte à côte", description: "L'IA extrait fournisseur, prix, dates et conditions de chaque PDF dans un seul tableau, pour que les différences entre deux documents sautent aux yeux au lieu de se cacher au fil des pages." },
       { title: "Les réponses renvoient à la ligne source", description: "Lorsque vous posez une question sur les deux documents et que la réponse s'appuie sur une ligne précise, celle-ci est affichée avec sa ligne d'origine — et le serveur vérifie que cet extrait apparaît réellement dans le document nommé avant de l'afficher." },
@@ -732,7 +732,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     steps: [
       "Importez les deux PDF que vous souhaitez comparer.",
       "L'IA analyse le texte du document pour aligner les champs, répondre aux questions transversales ou recommander un gagnant.",
-      "Consultez le tableau comparatif, posez une question ou lisez le verdict sourcé.",
+      "Consultez le tableau comparatif, posez une question ou lisez le verdict fondé sur les chiffres.",
     ],
     readingTitle: "Plus d'outils de documents IA",
     readingDescription: "Des façons connexes de lire, vérifier et extraire des données de vos PDF.",
@@ -744,7 +744,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
   },
   ja: {
     benefitsTitle: "DockDocs でドキュメントを比較する理由",
-    benefitsDescription: "2 つの PDF を並べて、両方にまたがる質問をし、出典付きの結論を得られます — AI が文書のテキストを読み取ります。",
+    benefitsDescription: "2 つの PDF を並べて、両方にまたがる質問をし、数値に基づく結論を得られます — AI が文書のテキストを読み取ります。",
     benefits: [
       { title: "主要項目を横並びで整理", description: "AI が各 PDF から取引先・価格・日付・条件を 1 つの表に抽出するので、2 つの文書の違いがページ間に埋もれず一目で分かります。" },
       { title: "回答は出典の一文を示す", description: "両方の文書にまたがる質問をしたとき、回答が特定の一文に基づく場合は、その出典の一文とともに示されます — しかも表示前に、その一節が指定の文書に実際に出現することをサーバーが検証します。" },
@@ -755,7 +755,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     steps: [
       "比較したい 2 つの PDF をアップロードします。",
       "AI が文書のテキストを解析し、項目をそろえ、文書横断の質問に答え、優れた選択肢を推奨します。",
-      "横並びの比較表を確認し、質問をするか、出典付きの結論を読みます。",
+      "横並びの比較表を確認し、質問をするか、数値に基づく結論を読みます。",
     ],
     readingTitle: "その他の AI ドキュメントツール",
     readingDescription: "PDF を読み取り、確認し、事実を抽出する関連ツール。",
