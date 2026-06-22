@@ -172,7 +172,7 @@ export const TIER_CATEGORIES: TierCategory[] = [
     },
     tools: [
       { slug: "ai-workspace",  en: "AI Workspace",          zh: "AI 工作台",    es: "Espacio de trabajo IA", pt: "Espaço de trabalho IA", fr: "Espace de travail IA", ja: "AI ワークスペース" },
-      { slug: "chat-with-pdf", en: "Chat with PDF",         zh: "PDF 问答",     es: "Chatear con PDF",       pt: "Chat com PDF",          fr: "Chat avec PDF",        ja: "PDF とチャット" },
+      { slug: "chat-with-pdf", en: "Chat with PDF",         zh: "PDF 问答",     es: "Chatear con PDF",       pt: "Chat com PDF",          fr: "Chat avec PDF",        ja: "PDFと対話" },
       { slug: "ai-summary",    en: "AI Summary",            zh: "PDF 摘要提取", es: "Resumen de PDF",        pt: "Resumo de PDF",         fr: "Résumé PDF",           ja: "AI 要約" },
       { slug: "translate-pdf", en: "Translate PDF",         zh: "PDF 翻译",     es: "Traducir PDF",          pt: "Traduzir PDF",          fr: "Traduire PDF",         ja: "PDF 翻訳" },
       { slug: "batch-summary", en: "Batch Summary",         zh: "批量摘要",     es: "Resumen por lotes",     pt: "Resumo em lote",        fr: "Résumé par lots",      ja: "一括要約" },

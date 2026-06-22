@@ -332,7 +332,7 @@ const toolColsJa = [
   {
     title: "AI ワークスペース",
     links: [
-      { label: "PDFとチャット", href: "/chat-with-pdf" },
+      { label: "PDFと対話", href: "/chat-with-pdf" },
       { label: "AI要約", href: "/ai-summary" },
       { label: "フラッシュカード", href: "/flashcards" },
       { label: "一括要約", href: "/batch-summary" },

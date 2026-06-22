@@ -157,10 +157,10 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
             {zh ? h("选择 PDF") : ja ? "PDF を選択" : es ? "Elegir PDF" : pt ? "Escolher PDF" : fr ? "Choisir un PDF" : "Choose PDF"}
           </span>
           <span className="mt-4 text-sm text-[color:var(--muted)]">
-            {zh ? h("或将文件拖放到此处，最多 20 页") : ja ? "またはファイルをここにドラッグ＆ドロップ。最大 20 ページ" : es ? "o arrastra tu archivo aquí. Máx. 20 páginas" : pt ? "ou arraste o arquivo aqui. Máx. 20 páginas" : fr ? "ou déposez votre fichier ici. 20 pages max." : "or drop your file here. Up to 20 pages"}
+            {zh ? h("或将文件拖放到此处，最多 20 页") : ja ? "またはファイルをここにドラッグ＆ドロップ" : es ? "o arrastra tu archivo aquí. Máx. 20 páginas" : pt ? "ou arraste o arquivo aqui. Máx. 20 páginas" : fr ? "ou déposez votre fichier ici. 20 pages max." : "or drop your file here. Up to 20 pages"}
           </span>
           <span className="mt-1.5 text-xs text-[color:var(--faint)]">
-            {zh ? h("请上传不超过 25 MB 的文件") : ja ? "25 MB までのファイルをアップロードしてください" : es ? "Sube un archivo de hasta 25 MB" : pt ? "Envie um arquivo de até 25 MB" : fr ? "Fichier jusqu'à 25 Mo" : "Please upload a file up to 25 MB"}
+            {zh ? h("请上传不超过 25 MB 的文件") : ja ? "最大20ページ・25MBまで" : es ? "Sube un archivo de hasta 25 MB" : pt ? "Envie um arquivo de até 25 MB" : fr ? "Fichier jusqu'à 25 Mo" : "Please upload a file up to 25 MB"}
           </span>
           {status === "error" && error ? (
             <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>

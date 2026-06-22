@@ -699,7 +699,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavC
           heading: "単一文書AI",
           items: [
             { name: "AI ワークスペース", slug: "/ai-workspace" },
-            { name: "PDF とチャット", slug: "/chat-with-pdf" },
+            { name: "PDFと対話", slug: "/chat-with-pdf" },
             { name: "PDF 要約", slug: "/ai-summary" },
             { name: "PDF を翻訳", slug: "/translate-pdf" },
             { name: "契約リスク診断", slug: "/contract-risk" },

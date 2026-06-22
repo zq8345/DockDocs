@@ -2810,7 +2810,7 @@ const runtimeCopyJa = {
     ],
     actions: [
       { title: "Chat with PDF", description: "出典コンテキスト付きで、根拠のある質問ができます。", href: "/chat-with-pdf", tier: "FREE" },
-      { title: "要約", description: "概要・要点・エンティティ・次のステップを作成します。", href: "/ai-summary", tier: "FREE" },
+      { title: "要約", description: "概要・要点・主要項目・次のステップを作成します。", href: "/ai-summary", tier: "FREE" },
       { title: "OCR", description: "AI でレビューする前に、スキャン文書を検索可能にします。", href: "/ocr", tier: "FREE" },
       { title: "変換", description: "PDF を編集可能な Word 向けワークフローへ。", href: "/pdf-to-word", tier: "FREE" },
       { title: "圧縮", description: "メール・ポータル・受け渡し用にファイルサイズを削減。", href: "/compress-pdf", tier: "FREE" },
@@ -3105,7 +3105,7 @@ const runtimeCopyJa = {
     eyebrow: "AI",
     title: "文書を意思決定と次のアクションへ要約します。",
     description:
-      "長いPDFやOfficeファイルを、確認可能なAI出力に変換します:要約、要点、エンティティ、推奨される次のステップ。",
+      "長いPDFやOfficeファイルを、確認可能なAI出力に変換します：要約・要点・主要項目・推奨される次のステップ。",
     primaryCta: "文書をアップロード",
     secondaryCta: "チャットを開始",
     uploadTitle: "AI要約用にアップロード",

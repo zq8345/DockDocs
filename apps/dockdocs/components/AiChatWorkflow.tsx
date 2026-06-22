@@ -280,7 +280,7 @@ const copy = {
     verifiedBadge: "Source vérifiée",
   },
   ja: {
-    eyebrow: "PDF とチャット",
+    eyebrow: "PDFと対話",
     title: "抽出した PDF テキストについて質問します。",
     description:
       "DockDocs はブラウザー内で読み取り可能な PDF テキストを抽出し、設定済みの AI プロバイダーには選択したテキストコンテキストと質問のみを送信します。スキャンされた PDF の場合は、先に OCR を実行し、抽出したテキストをここに貼り付けてください。",
