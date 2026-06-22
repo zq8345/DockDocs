@@ -111,6 +111,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.7,
     },
+    {
+      url: absoluteUrl("/dockdocs-vs-smallpdf-vs-ilovepdf/"),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
   ];
 
   return Array.from(

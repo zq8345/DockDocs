@@ -32,6 +32,7 @@ const EXCEPTIONS = new Set([
   "compress-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
   "are-free-pdf-tools-safe", // standalone English-first GEO content page (Q&A) — no localized variants yet by design
   "ai-read-pdf-without-storing", // standalone English-first GEO content page (Q&A) — no localized variants yet by design
+  "dockdocs-vs-smallpdf-vs-ilovepdf", // standalone English-first GEO comparison page — no localized variants yet by design
 ]);
 
 function die(lines) {
