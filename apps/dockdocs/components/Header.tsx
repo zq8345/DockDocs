@@ -800,6 +800,17 @@ function currentSlug(pathname: string | null) {
   return rest.join("/");
 }
 
+const HEADER_LABELS = {
+  soon:  { en: "soon",  zh: "正在开发", "zh-Hant": "即將推出", es: "próximo",  pt: "em breve", fr: "bientôt", ja: "近日公開" },
+  more:  { en: "More",  zh: "更多",     "zh-Hant": "更多",     es: "Más",      pt: "Mais",     fr: "Plus",    ja: "その他" },
+  light: { en: "Light", zh: "浅色",     "zh-Hant": "淺色",     es: "Claro",    pt: "Claro",    fr: "Clair",   ja: "ライト" },
+  dark:  { en: "Dark",  zh: "深色",     "zh-Hant": "深色",     es: "Oscuro",   pt: "Escuro",   fr: "Sombre",  ja: "ダーク" },
+} as const;
+type HdrLabelLocale = keyof (typeof HEADER_LABELS)["soon"];
+function hdrLabel(key: keyof typeof HEADER_LABELS, locale: string): string {
+  return (HEADER_LABELS[key] as Record<string, string>)[locale] ?? HEADER_LABELS[key].en;
+}
+
 const HEADER_H = 52; // px — must match h-[52px] below
 
 export function Header() {
@@ -1003,7 +1014,7 @@ export function Header() {
                               item.soon ? (
                                 <span key={`${item.slug}-${ii}`} className="flex w-full cursor-default items-center justify-between gap-3 whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[14.5px] font-medium text-[color:var(--faint)]">
                                   {item.name}
-                                  <span className="text-[10px] font-semibold uppercase opacity-80">{locale === "zh" ? "正在开发" : "soon"}</span>
+                                  <span className="text-[10px] font-semibold uppercase opacity-80">{hdrLabel("soon", locale)}</span>
                                 </span>
                               ) : (
                                 <a key={`${item.slug}-${ii}`} href={lh(item.slug, locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo(item.slug); }} className={itemCls}>
@@ -1031,7 +1042,7 @@ export function Header() {
               <button
                 type="button"
                 onClick={() => setMoreOpen((v) => !v)}
-                aria-label={locale === "zh" ? "更多" : "More"}
+                aria-label={hdrLabel("more", locale)}
                 aria-expanded={moreOpen}
                 className={iconBtn}
               >
@@ -1059,7 +1070,7 @@ export function Header() {
                       className="flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
                     >
                       <span className="text-[14px] opacity-70">{light ? "☀" : "☾"}</span>
-                      <span>{locale === "zh" ? (light ? "浅色" : "深色") : light ? "Light" : "Dark"}</span>
+                      <span>{hdrLabel(light ? "light" : "dark", locale)}</span>
                     </button>
                   </div>
               )}
@@ -1119,7 +1130,7 @@ export function Header() {
               {/* Quick links — Pricing / Blog / About */}
               <div className="mb-5">
                 <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
-                  {locale === "zh" ? "更多" : "More"}
+                  {hdrLabel("more", locale)}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {pages.map((p) => (
