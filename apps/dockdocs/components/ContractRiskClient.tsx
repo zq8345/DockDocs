@@ -213,7 +213,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     workflowDescription: "For the moment you're handed an agreement and need to know where the traps are before it lands on your desk for signature.",
     steps: [
       "Upload the contract PDF — its text is extracted and sent for analysis.",
-      "The AI flags risky, one-sided, or missing clauses and quotes each from your document.",
+      "The AI flags risky, one-sided, or missing clauses — quoting the ones it can locate in your document, and noting the missing ones.",
       "Review the red/amber/green list with the question to raise for each point.",
     ],
     readingTitle: "More AI document review tools",
@@ -236,7 +236,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     workflowDescription: "当一份协议递到你手上、需要在它送去签字前弄清陷阱在哪里时。",
     steps: [
       "上传合同 PDF——提取其中的文字并发送去分析。",
-      "AI 标出有风险、单方面或缺失的条款,并逐条引用你文档中的原文。",
+      "AI 标出有风险、单方面或缺失的条款——能定位到原文的逐条引用，缺失类则标注为缺失。",
       "对照红/黄/绿清单逐项查看,每条都附有该提出的问题。",
     ],
     readingTitle: "更多 AI 文档审查工具",
@@ -259,7 +259,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     workflowDescription: "Para cuando recibes un acuerdo y necesitas saber dónde están las trampas antes de que llegue a tu mesa para firmar.",
     steps: [
       "Sube el PDF del contrato: se extrae su texto y se envía para analizarlo.",
-      "La IA marca cláusulas riesgosas, unilaterales o ausentes y cita cada una de tu documento.",
+      "La IA marca cláusulas riesgosas, unilaterales o ausentes — citando de tu documento las que puede localizar y señalando las ausentes.",
       "Revisa la lista roja/ámbar/verde con la pregunta a plantear en cada punto.",
     ],
     readingTitle: "Más herramientas de revisión con IA",
@@ -282,7 +282,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     workflowDescription: "Para quando você recebe um acordo e precisa saber onde estão as armadilhas antes de ele chegar à sua mesa para assinatura.",
     steps: [
       "Envie o PDF do contrato: o texto é extraído e enviado para análise.",
-      "A IA sinaliza cláusulas arriscadas, unilaterais ou ausentes e cita cada uma do seu documento.",
+      "A IA sinaliza cláusulas arriscadas, unilaterais ou ausentes — citando do seu documento as que consegue localizar e marcando as ausentes.",
       "Revise a lista vermelho/âmbar/verde com a pergunta a levantar em cada ponto.",
     ],
     readingTitle: "Mais ferramentas de revisão com IA",
@@ -305,7 +305,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     workflowDescription: "Pour le moment où on vous remet un accord et où vous devez savoir où sont les pièges avant qu'il arrive sur votre bureau pour signature.",
     steps: [
       "Déposez le PDF du contrat : son texte est extrait et envoyé pour analyse.",
-      "L'IA signale les clauses risquées, déséquilibrées ou absentes et cite chacune depuis votre document.",
+      "L'IA signale les clauses risquées, déséquilibrées ou absentes — en citant depuis votre document celles qu'elle peut localiser et en indiquant les absentes.",
       "Parcourez la liste rouge/orange/vert avec la question à soulever pour chaque point.",
     ],
     readingTitle: "Plus d'outils d'analyse de documents par IA",
@@ -328,7 +328,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     workflowDescription: "契約書を渡され、署名のために手元に来る前に落とし穴がどこにあるかを知っておきたいとき。",
     steps: [
       "契約書 PDF をアップロード——そのテキストが抽出され、分析のために送信されます。",
-      "AI がリスクのある・一方的な・欠けている条項を指摘し、それぞれをあなたの文書から引用します。",
+      "AI がリスクのある・一方的な・欠けている条項を指摘し、特定できたものはあなたの文書から引用し、欠けているものは「欠落」と明示します。",
       "赤／黄／緑の一覧を、各項目で確認すべき質問とともに見直します。",
     ],
     readingTitle: "他の AI 文書レビューツール",

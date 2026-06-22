@@ -566,7 +566,7 @@ const QA: Record<BaseLocale, {
 }> = {
   en: {
     title: "Ask across these documents",
-    desc: "Ask one question across every document you uploaded — the answer shows its source.",
+    desc: "Ask one question across every document you uploaded — the answer shows its source when one can be located.",
     placeholder: "e.g. Which quote has the shortest delivery time?",
     ask: "Ask", thinking: "Thinking…", sources: "Sources",
     noAnswer: "Couldn't find an answer in these documents.",
@@ -576,7 +576,7 @@ const QA: Record<BaseLocale, {
   },
   zh: {
     title: "跨文档提问",
-    desc: "用一个问题问遍上传的所有文档，答案带原文出处。",
+    desc: "用一个问题问遍上传的所有文档，找得到原文时答案会带上出处。",
     placeholder: "例如：哪份报价的交期最短？",
     ask: "提问", thinking: "思考中…", sources: "出处",
     noAnswer: "未能从这些文档中找到答案。",
@@ -586,7 +586,7 @@ const QA: Record<BaseLocale, {
   },
   es: {
     title: "Pregunta a todos estos documentos",
-    desc: "Haz una pregunta a todos los documentos que subiste — la respuesta muestra su fuente.",
+    desc: "Haz una pregunta a todos los documentos que subiste — la respuesta muestra su fuente cuando puede localizarse.",
     placeholder: "p. ej. ¿Qué presupuesto tiene el plazo de entrega más corto?",
     ask: "Preguntar", thinking: "Pensando…", sources: "Fuentes",
     noAnswer: "No se encontró una respuesta en estos documentos.",
@@ -596,7 +596,7 @@ const QA: Record<BaseLocale, {
   },
   pt: {
     title: "Pergunte a todos estes documentos",
-    desc: "Faça uma pergunta a todos os documentos que você enviou — a resposta mostra a fonte.",
+    desc: "Faça uma pergunta a todos os documentos que você enviou — a resposta mostra a fonte quando ela pode ser localizada.",
     placeholder: "ex.: Qual orçamento tem o menor prazo de entrega?",
     ask: "Perguntar", thinking: "Pensando…", sources: "Fontes",
     noAnswer: "Não foi possível encontrar uma resposta nestes documentos.",
@@ -606,7 +606,7 @@ const QA: Record<BaseLocale, {
   },
   fr: {
     title: "Interrogez tous ces documents",
-    desc: "Posez une seule question à tous les documents que vous avez importés — la réponse montre sa source.",
+    desc: "Posez une seule question à tous les documents que vous avez importés — la réponse montre sa source lorsqu'elle peut être localisée.",
     placeholder: "ex. : Quel devis a le délai de livraison le plus court ?",
     ask: "Demander", thinking: "Réflexion…", sources: "Sources",
     noAnswer: "Aucune réponse trouvée dans ces documents.",
@@ -616,7 +616,7 @@ const QA: Record<BaseLocale, {
   },
   ja: {
     title: "これらの文書をまとめて質問",
-    desc: "アップロードしたすべての文書に対して 1 つの質問ができます — 回答には出典が表示されます。",
+    desc: "アップロードしたすべての文書に対して 1 つの質問ができます — 出典を特定できる場合は回答に表示されます。",
     placeholder: "例：交期が最も短い見積もりはどれですか？",
     ask: "送信", thinking: "考え中…", sources: "出典",
     noAnswer: "これらの文書から回答が見つかりませんでした。",

@@ -6,7 +6,7 @@ import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 export const metadata: Metadata = {
   title: "Government Bid Compliance Matrix — Extract Every Shall/Must Requirement",
   description:
-    "Upload an RFP or government solicitation and get every mandatory 'shall/must' requirement extracted into a numbered compliance matrix with section references and page numbers. Export to CSV.",
+    "Upload an RFP or government solicitation and get every mandatory 'shall/must' requirement extracted into a numbered compliance matrix with section references. Export to CSV.",
   keywords: [
     "government bid compliance",
     "RFP requirements extraction",

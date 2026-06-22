@@ -30,7 +30,7 @@ const HOME_FAQ: Record<string, { q: string; a: string }[]> = {
     { q: "Qu'est-ce qui distingue DockDocs des autres outils PDF et d'un chatbot IA généraliste ?", a: "Deux choses qu'un chatbot généraliste ne peut offrir : une confidentialité vérifiable et des réponses fiables. La plupart des outils DockDocs s'exécutent dans votre navigateur, vos fichiers sensibles ne quittent donc jamais votre appareil ; et son IA documentaire montre le passage source derrière ses réponses et signale ce qu'elle ne peut pas tracer, pour que vous puissiez vérifier ce qu'elle vous dit. Elle est conçue pour les documents que vous ne colleriez pas dans un chatbot généraliste : contrats, finances, recherche." },
   ],
   ja: [
-    { q: "AI が作り話をしていないと、どうすれば分かりますか？", a: "AI が回答・抽出を行うとき、あなたの文書内の該当箇所（原文）を必ず指し示すので、原文を開いて自分で確認できます——AI の言葉を鵜呑みにする必要はありません。ある主張をあなたのファイルから裏付けられない場合、DockDocs はそれを事実として提示せず、裏付けが取れないことを明示します。この出典までたどれること（可溯源性）こそ、汎用チャットボットとの決定的な違いです。" },
+    { q: "AI が作り話をしていないと、どうすれば分かりますか？", a: "AI が回答・抽出を行うとき、あなたの文書内の該当箇所（原文）を指し示せる場合はそれを示すので、原文を開いて自分で確認できます——AI の言葉を鵜呑みにする必要はありません。ある主張をあなたのファイルから裏付けられない場合、DockDocs はそれを事実として提示せず、裏付けが取れないことを明示します。この出典までたどれること（可溯源性）こそ、汎用チャットボットとの決定的な違いです。" },
     { q: "DockDocs は他の PDF ツールや汎用 AI チャットボットと何が違いますか？", a: "汎用チャットボットには提供できない 2 つの点があります——検証できるプライバシーと、信頼できる回答です。DockDocs のほとんどのツールはお使いのブラウザ内で動作するため、機密ファイルがデバイスの外に出ることはありません。さらに文書 AI は回答の根拠となる原文箇所を示し、たどれない部分は明示するので、内容を自分で検証できます。汎用チャットボットに貼り付けられない文書——契約書・財務資料・研究資料——のために作られています。" },
   ],
 };
@@ -47,12 +47,12 @@ const ORG_DESC: Record<string, string> = {
   ja: "プライベートで検証できる文書 AI——あらゆる文書を読み解き、その回答を検証できます。AI が回答の根拠となる原文箇所を示し、たどれない部分は明示するので、自分で確認できます。さらに、お使いのブラウザ内で動作する約 50 種類の PDF ツールにより、ファイルがデバイスの外に出ることはありません。",
 };
 const SITE_DESC: Record<string, string> = {
-  en: "Document AI that shows the source passage behind its answers so you can verify them, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
-  zh: "会展示答案背后原文出处、让你能核实的文档 AI，外加在浏览器内运行的私密 PDF 工具。专为那些你不敢粘进通用聊天机器人的文档而生。",
-  es: "IA documental que muestra el pasaje de origen detrás de sus respuestas para que las verifiques, más herramientas PDF privadas que se ejecutan en tu navegador. Hecha para los documentos que no pegarías en un chatbot genérico.",
-  pt: "IA de documentos que mostra o trecho de origem por trás de suas respostas para que você as verifique, além de ferramentas PDF privadas que rodam no seu navegador. Feita para os documentos que você não colaria num chatbot genérico.",
-  fr: "IA documentaire qui montre le passage source derrière ses réponses pour que vous les vérifiiez, plus des outils PDF privés qui s'exécutent dans votre navigateur. Conçue pour les documents que vous ne colleriez pas dans un chatbot généraliste.",
-  ja: "回答の根拠となる原文箇所を示して検証できるようにする文書 AI と、お使いのブラウザ内で動作するプライベートな PDF ツール。汎用チャットボットに貼り付けられない文書のために作られています。",
+  en: "Document AI that shows the source passage behind its answers, and flags what it can't trace, so you can verify them, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
+  zh: "会展示答案背后原文出处、并标出无法溯源的部分、让你能核实的文档 AI，外加在浏览器内运行的私密 PDF 工具。专为那些你不敢粘进通用聊天机器人的文档而生。",
+  es: "IA documental que muestra el pasaje de origen detrás de sus respuestas y señala lo que no puede rastrear, para que las verifiques, más herramientas PDF privadas que se ejecutan en tu navegador. Hecha para los documentos que no pegarías en un chatbot genérico.",
+  pt: "IA de documentos que mostra o trecho de origem por trás de suas respostas e sinaliza o que não pode rastrear, para que você as verifique, além de ferramentas PDF privadas que rodam no seu navegador. Feita para os documentos que você não colaria num chatbot genérico.",
+  fr: "IA documentaire qui montre le passage source derrière ses réponses et signale ce qu'elle ne peut pas tracer, pour que vous les vérifiiez, plus des outils PDF privés qui s'exécutent dans votre navigateur. Conçue pour les documents que vous ne colleriez pas dans un chatbot généraliste.",
+  ja: "回答の根拠となる原文箇所を示し、たどれない部分は明示して検証できるようにする文書 AI と、お使いのブラウザ内で動作するプライベートな PDF ツール。汎用チャットボットに貼り付けられない文書のために作られています。",
 };
 
 export function homeSchema(locale: string = "en") {

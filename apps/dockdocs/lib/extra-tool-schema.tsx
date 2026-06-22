@@ -282,13 +282,13 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       name: "DockDocs Bid Compliance Matrix",
       crumb: "Bid Compliance Matrix",
       description:
-        "Upload an RFP or government solicitation and get every mandatory 'shall/must' requirement extracted into a numbered compliance matrix with section references and page numbers. Export to CSV.",
+        "Upload an RFP or government solicitation and get every mandatory 'shall/must' requirement extracted into a numbered compliance matrix with section references. Export to CSV.",
     },
     zh: {
       name: "DockDocs 标书合规矩阵",
       crumb: "标书合规矩阵",
       description:
-        "上传 RFP 或政府招标文件，AI 自动提取每条强制性要求生成编号合规矩阵，带条款编号和页码引用，可导出 CSV。",
+        "上传 RFP 或政府招标文件，AI 自动提取每条强制性要求生成编号合规矩阵，带条款编号引用，可导出 CSV。",
     },
     es: {
       name: "DockDocs Matriz de licitaciones",

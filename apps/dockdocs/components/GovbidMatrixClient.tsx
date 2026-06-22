@@ -198,7 +198,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "The AI reads your solicitation's text and turns scattered obligations into one structured, exportable matrix.",
     benefits: [
       { title: "Every shall/must, nothing missed", description: "The AI sweeps the whole solicitation for binding language — 'shall', 'must', 'is required to' — so a buried requirement on page 47 doesn't cost you the bid." },
-      { title: "Each line cites its section + source", description: "Every requirement carries the clause number it came from and the exact source sentence, so your team can verify each one against the original RFP." },
+      { title: "Each line carries its source clause", description: "Every requirement carries the clause number it came from, and the exact source sentence when it can be located, so your team can verify each one against the original RFP." },
       { title: "Export to CSV for your response", description: "Send the numbered matrix straight to a spreadsheet and assign owners, status, and proof — turning extraction into a working compliance checklist." },
     ],
     workflowTitle: "From solicitation PDF to compliance checklist",
@@ -221,7 +221,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "AI 读取招标文件的文本，把散落各处的义务整理成一份结构化、可导出的矩阵。",
     benefits: [
       { title: "每条 shall/must 都不漏", description: "AI 通读整份招标文件，捕捉所有约束性措辞——「shall」「must」「必须」——让埋在第 47 页的要求不再让你丢标。" },
-      { title: "每条都标注条款与原文", description: "每条要求都附上来源条款编号和原文句子，方便你的团队逐条对照原始 RFP 核验。" },
+      { title: "每条都标注来源条款", description: "每条要求都附上来源条款编号，能定位到原文时还附上原文句子，方便你的团队逐条对照原始 RFP 核验。" },
       { title: "导出 CSV 用于投标响应", description: "把编号矩阵直接导入表格，分配负责人、状态和佐证——让提取结果变成可执行的合规清单。" },
     ],
     workflowTitle: "从招标 PDF 到合规清单",
@@ -244,7 +244,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "La IA lee el texto del pliego y convierte obligaciones dispersas en una matriz estructurada y exportable.",
     benefits: [
       { title: "Cada shall/must, sin omitir nada", description: "La IA recorre todo el pliego en busca de lenguaje vinculante —'shall', 'must', 'deberá'— para que un requisito enterrado en la página 47 no te cueste la licitación." },
-      { title: "Cada línea cita su sección y fuente", description: "Cada requisito lleva el número de cláusula de origen y la frase fuente exacta, para que tu equipo verifique cada uno contra el RFP original." },
+      { title: "Cada línea lleva su cláusula de origen", description: "Cada requisito lleva el número de cláusula de origen, y la frase fuente exacta cuando puede localizarse, para que tu equipo verifique cada uno contra el RFP original." },
       { title: "Exporta a CSV para tu respuesta", description: "Lleva la matriz numerada directo a una hoja de cálculo y asigna responsables, estado y evidencia: la extracción se convierte en una lista de cumplimiento operativa." },
     ],
     workflowTitle: "Del PDF del pliego a la lista de cumplimiento",
@@ -267,7 +267,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "A IA lê o texto do edital e transforma obrigações dispersas em uma matriz estruturada e exportável.",
     benefits: [
       { title: "Cada shall/must, nada esquecido", description: "A IA varre todo o edital em busca de linguagem vinculante —'shall', 'must', 'deverá'— para que um requisito escondido na página 47 não custe a licitação." },
-      { title: "Cada linha cita sua seção e fonte", description: "Cada requisito traz o número da cláusula de origem e a frase fonte exata, para sua equipe conferir cada um contra o RFP original." },
+      { title: "Cada linha traz sua cláusula de origem", description: "Cada requisito traz o número da cláusula de origem, e a frase fonte exata quando ela pode ser localizada, para sua equipe conferir cada um contra o RFP original." },
       { title: "Exporte para CSV na sua resposta", description: "Leve a matriz numerada direto para uma planilha e atribua responsáveis, status e comprovação: a extração vira uma lista de conformidade operacional." },
     ],
     workflowTitle: "Do PDF do edital à lista de conformidade",
@@ -290,7 +290,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "L'IA lit le texte de l'appel d'offres et transforme des obligations éparses en une matrice structurée et exportable.",
     benefits: [
       { title: "Chaque shall/must, rien d'oublié", description: "L'IA parcourt tout l'appel d'offres à la recherche du langage contraignant —« shall », « must », « devra »— pour qu'une exigence enfouie en page 47 ne vous coûte pas le marché." },
-      { title: "Chaque ligne cite sa section et sa source", description: "Chaque exigence porte le numéro de clause d'origine et la phrase source exacte, pour que votre équipe vérifie chacune par rapport à l'appel d'offres original." },
+      { title: "Chaque ligne porte sa clause d'origine", description: "Chaque exigence porte le numéro de clause d'origine, et la phrase source exacte lorsqu'elle peut être localisée, pour que votre équipe vérifie chacune par rapport à l'appel d'offres original." },
       { title: "Exportez en CSV pour votre réponse", description: "Envoyez la matrice numérotée directement dans un tableur et attribuez responsables, statut et preuves : l'extraction devient une liste de conformité opérationnelle." },
     ],
     workflowTitle: "Du PDF de l'appel d'offres à la liste de conformité",
@@ -313,7 +313,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "AI が入札文書のテキストを読み取り、散在する義務を 1 つの構造化された、書き出し可能なマトリクスにまとめます。",
     benefits: [
       { title: "すべての shall/must を見逃さない", description: "AI が入札文書全体から拘束力のある表現——「shall」「must」「~しなければならない」——を洗い出すので、47 ページ目に埋もれた要件が落札を逃す原因になりません。" },
-      { title: "各行にセクションと出典を明記", description: "各要件には出典の条項番号と原文の一文が付くため、チームが元の RFP と照らし合わせて 1 件ずつ確認できます。" },
+      { title: "各行に出典の条項番号を明記", description: "各要件には出典の条項番号が付き、原文を特定できる場合はその一文も添えられるため、チームが元の RFP と照らし合わせて 1 件ずつ確認できます。" },
       { title: "提案用に CSV へ書き出し", description: "番号付きマトリクスをそのまま表計算ソフトに取り込み、担当者・ステータス・証跡を割り当て——抽出結果が実用的なコンプライアンス・チェックリストになります。" },
     ],
     workflowTitle: "入札 PDF からコンプライアンス・チェックリストへ",

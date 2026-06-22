@@ -682,7 +682,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       en: "Lease Red Flag Check — Spot Risky Clauses Before You Sign",
     },
     description: {
-      zh: "上传住宅或商业租约,标红不公平条款——租金飞涨、高额违约、入侵检查权等。逐条引用原文,附签字前该问什么。仅供参考,非法律意见。",
+      zh: "上传住宅或商业租约,标红不公平条款——租金飞涨、高额违约、入侵检查权等。引用到的条款附上原文、无法定位时会说明,附签字前该问什么。仅供参考,非法律意见。",
       es: "Sube un contrato de arrendamiento y obtén una lista de cláusulas injustas o arriesgadas para el inquilino — marcadas en rojo/ámbar/verde y citadas de tu documento. Orientativo, no asesoramiento legal.",
       pt: "Carregue um contrato de locação e obtenha uma lista de cláusulas injustas ou arriscadas para o locatário — marcadas em vermelho/âmbar/verde e citadas do seu documento. Informativo, não aconselhamento jurídico.",
       fr: "Chargez un bail et obtenez une liste des clauses injustes ou risquées pour le locataire — signalées en rouge/orange/vert et citées de votre document. Informatif, pas un conseil juridique.",
@@ -700,7 +700,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       en: "Government Bid Compliance Matrix — Extract Every Shall/Must Requirement",
     },
     description: {
-      zh: "上传 RFP 或政府招标文件，AI 自动提取每条强制性要求生成编号合规矩阵，带条款编号和页码引用，可导出 CSV。",
+      zh: "上传 RFP 或政府招标文件，AI 自动提取每条强制性要求生成编号合规矩阵，带条款编号引用，可导出 CSV。",
       es: "Sube una licitación o solicitud y obtén cada requisito obligatorio 'shall/must' extraído en una matriz de cumplimiento numerada con referencias de sección. Exporta a CSV.",
       pt: "Carregue uma licitação ou solicitação e obtenha cada requisito obrigatório 'shall/must' extraído em uma matriz de conformidade numerada com referências de seção. Exporte para CSV.",
       fr: "Chargez un appel d'offres et obtenez chaque exigence obligatoire 'shall/must' extraite dans une matrice de conformité numérotée avec des références de section. Exportez en CSV.",
@@ -1610,7 +1610,7 @@ async function generateMetadataInner({
       ),
       description: m(
         "Upload a lease and get a plain-language list of risky, unfair, or missing tenant clauses — flagged red/amber/green, quoted from your document. Informational, not legal advice.",
-        "上传住宅或商业租约,标红不公平条款——租金飞涨、高额违约、入侵检查权等。逐条引用原文,附签字前该问什么。仅供参考,非法律意见。",
+        "上传住宅或商业租约,标红不公平条款——租金飞涨、高额违约、入侵检查权等。引用到的条款附上原文、无法定位时会说明,附签字前该问什么。仅供参考,非法律意见。",
         "Sube un contrato de alquiler y obtén una lista en lenguaje claro de cláusulas riesgosas, injustas o ausentes para el inquilino, marcadas en rojo/ámbar/verde y citadas de tu documento. Informativo, no asesoramiento legal.",
         "Envie um contrato de aluguel e obtenha uma lista em linguagem simples de cláusulas arriscadas, injustas ou ausentes para o inquilino, sinalizadas em vermelho/âmbar/verde e citadas do seu documento. Informativo, não é aconselhamento jurídico.",
         "Importez un bail et obtenez une liste en langage clair des clauses à risque, abusives ou manquantes pour le locataire, signalées en rouge/orange/vert et citées de votre document. À titre informatif, pas un avis juridique.",
@@ -1635,7 +1635,7 @@ async function generateMetadataInner({
       ),
       description: m(
         "Upload an RFP or solicitation and get every mandatory 'shall/must' requirement extracted into a numbered compliance matrix with section references. Export to CSV.",
-        "上传 RFP 或政府招标文件，AI 自动提取每条强制性要求生成编号合规矩阵，带条款编号和页码引用，可导出 CSV。",
+        "上传 RFP 或政府招标文件，AI 自动提取每条强制性要求生成编号合规矩阵，带条款编号引用，可导出 CSV。",
         "Sube un RFP o pliego de licitación y extrae cada requisito obligatorio («shall/must») en una matriz de cumplimiento numerada con referencias de sección. Exporta a CSV.",
         "Envie um RFP ou edital e extraia cada requisito obrigatório («shall/must») em uma matriz de conformidade numerada com referências de seção. Exporte para CSV.",
         "Importez un appel d'offres ou un cahier des charges et extrayez chaque exigence obligatoire (« shall/must ») dans une matrice de conformité numérotée avec références de section. Exportez en CSV.",
@@ -2516,7 +2516,7 @@ const homeCopy = {
   },
   zh: {
     title: "DockDocs — 私密、可溯源的文档 AI 与 PDF 工具",
-    description: "读懂任意文档，逐一核验答案：DockDocs 文档 AI 会展示答案背后的原文出处供你核对，PDF 工具在浏览器本地运行，文件不离设备。免费，无需注册。",
+    description: "读懂任意文档，逐一核验答案：DockDocs 文档 AI 会展示答案背后的原文出处供你核对、无法溯源时也会说明，PDF 工具在浏览器本地运行，文件不离设备。免费，无需注册。",
     eyebrow: "AI 文档智能",
     heroTitle: "围绕 PDF 的全方位解决方案。",
     heroDescription: "免费工具、批量自动化，加上真正读懂文档的 AI——大多在浏览器内完成，文件不外泄。",
@@ -2529,15 +2529,15 @@ const homeCopy = {
   },
   es: {
     title: "DockDocs — IA documental privada y verificable + herramientas PDF",
-    description: "Lee cualquier documento y verifica cada respuesta: IA documental que muestra el pasaje de origen detrás de sus respuestas para que lo verifiques, más herramientas PDF que se ejecutan en tu navegador, sin que tus archivos salgan del dispositivo. Gratis, sin registro.",
+    description: "Lee cualquier documento y verifica cada respuesta: IA documental que muestra el pasaje de origen detrás de sus respuestas y señala lo que no puede rastrear, para que lo verifiques, más herramientas PDF que se ejecutan en tu navegador, sin que tus archivos salgan del dispositivo. Gratis, sin registro.",
   },
   pt: {
     title: "DockDocs — IA documental privada e verificável + ferramentas PDF",
-    description: "Leia qualquer documento e verifique cada resposta: IA documental que mostra o trecho de origem por trás de suas respostas para você verificar, além de ferramentas PDF que rodam no seu navegador, sem seus arquivos saírem do dispositivo. Grátis, sem cadastro.",
+    description: "Leia qualquer documento e verifique cada resposta: IA documental que mostra o trecho de origem por trás de suas respostas e sinaliza o que não pode rastrear, para você verificar, além de ferramentas PDF que rodam no seu navegador, sem seus arquivos saírem do dispositivo. Grátis, sem cadastro.",
   },
   fr: {
     title: "DockDocs — IA documentaire privée et vérifiable + outils PDF",
-    description: "Lisez n'importe quel document et vérifiez chaque réponse : une IA documentaire qui montre le passage source derrière ses réponses pour que vous les vérifiiez, plus des outils PDF exécutés dans votre navigateur, vos fichiers ne quittent jamais l'appareil. Gratuit, sans inscription.",
+    description: "Lisez n'importe quel document et vérifiez chaque réponse : une IA documentaire qui montre le passage source derrière ses réponses et signale ce qu'elle ne peut pas tracer, pour que vous les vérifiiez, plus des outils PDF exécutés dans votre navigateur, vos fichiers ne quittent jamais l'appareil. Gratuit, sans inscription.",
   },
 } as const;
 
