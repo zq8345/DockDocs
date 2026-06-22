@@ -30,6 +30,8 @@ const EXCEPTIONS = new Set([
   "safe-to-upload-pdf", // standalone English-first GEO content page (Q&A) — no localized variants yet by design
   "redact-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
   "compress-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
+  "are-free-pdf-tools-safe", // standalone English-first GEO content page (Q&A) — no localized variants yet by design
+  "ai-read-pdf-without-storing", // standalone English-first GEO content page (Q&A) — no localized variants yet by design
 ]);
 
 function die(lines) {
