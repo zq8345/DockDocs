@@ -1,6 +1,7 @@
-// Single source of truth for plan tier limits.
-// Drives the pricing comparison table + future gating (feat-gating-enforce).
-// NOTE: gating enforcement is NOT wired here yet — display only.
+// Pricing-DISPLAY source of truth — drives the PricingPlans.tsx comparison table.
+// ⚠️ Gating enforcement is LIVE and lives ELSEWHERE: lib/usage-limits.ts (featureLimits)
+// + netlify/functions/_shared/feature-gate.ts. This file is DISPLAY-ONLY; the numbers
+// here MUST stay in sync with the enforced limits in usage-limits.ts.
 
 export type Tier = "free" | "plus" | "pro";
 
@@ -98,7 +99,7 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "url-to-pdf",      en: "URL to PDF",        zh: "网页转 PDF",      es: "URL a PDF",      pt: "URL para PDF",      fr: "URL en PDF",      ja: "URL を PDF に変換" },
     ],
     limits: {
-      free: { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限", internal: "fair use · CloudConvert reverse conversion cap applies" },
+      free: { en: "Forward unlimited · PDF→Office 15/day", zh: "正向转换无限 · PDF→Office 15/天", es: "Directa ilimitada · PDF→Office 15/día", pt: "Direta ilimitada · PDF→Office 15/dia", fr: "Directe illimitée · PDF→Office 15/jour", ja: "順方向は無制限 · PDF→Office は15/日", internal: "forward (Office→PDF/html/pdfa) = convertFree 60/day fair-use ≈ unlimited; reverse PDF→Office + url-to-pdf + protect = convert 15/day (paid CloudConvert cap)" },
       plus: { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限" },
       pro:  { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限" },
     },

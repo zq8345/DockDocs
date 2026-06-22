@@ -18,7 +18,8 @@ export type UsageFeature =
   | "analyzer"
   | "contractAnalyzer"
   | "compare"
-  | "convert";
+  | "convert"
+  | "convertFree";
 
 export type UsagePeriod = "day" | "month";
 
@@ -32,6 +33,7 @@ export const meteredFeatures: UsageFeature[] = [
   "contractAnalyzer",
   "compare",
   "convert",
+  "convertFree",
 ];
 
 export const featureAliases: Record<string, UsageFeature> = {
@@ -57,19 +59,23 @@ export const featureAliases: Record<string, UsageFeature> = {
   "contract-risk": "contractAnalyzer",
   compare: "compare",
   "compare-docs": "compare",
-  // Server-side CloudConvert gate — all paid/metered conversion routes that can
-  // fall back to (or only run on) CloudConvert map to the single "convert" meter.
+  // Conversion meters. NOTE: server enforcement is by the literal feature key the 3
+  // endpoints pass to enforceFeatureGate — these aliases drive client/doc consistency,
+  // not the server gate. Option-C split: forward $0 self-hosted-Gotenberg routes →
+  // "convertFree" (high fair-use, no real cost); paid CloudConvert routes (reverse
+  // pdf→Office, url-to-pdf, >5MB fallback, protect-pdf encrypt) keep the low "convert".
   convert: "convert",
-  "word-to-pdf": "convert",
-  "ppt-to-pdf": "convert",
-  "excel-to-pdf": "convert",
-  "html-to-pdf": "convert",
-  "url-to-pdf": "convert",
-  "pdf-to-pdfa": "convert",
-  "pdf-to-word": "convert",
-  "pdf-to-excel": "convert",
-  "pdf-to-ppt": "convert",
-  "protect-pdf": "convert",
+  convertFree: "convertFree",
+  "word-to-pdf": "convertFree",   // forward · $0 gotenberg
+  "ppt-to-pdf": "convertFree",    // forward · $0 gotenberg
+  "excel-to-pdf": "convertFree",  // forward · $0 gotenberg
+  "html-to-pdf": "convertFree",   // forward · $0 gotenberg
+  "pdf-to-pdfa": "convertFree",   // forward · $0 gotenberg pdfengines
+  "url-to-pdf": "convert",        // CloudConvert only ($) — code-verified PAID, not $0
+  "pdf-to-word": "convert",       // reverse ($, OSS box + CC fallback)
+  "pdf-to-excel": "convert",      // reverse ($, OSS box + CC fallback)
+  "pdf-to-ppt": "convert",        // reverse ($, CloudConvert only)
+  "protect-pdf": "convert",       // CloudConvert encrypt ($) — server route is NOT pure-client
 };
 
 export const featureLimits: Record<
@@ -94,6 +100,10 @@ export const featureLimits: Record<
     // cap so scrapers can't burn credits; most conversions run $0 on the self-hosted
     // box and never reach this gate. ADJUSTABLE — Joe's call on the exact numbers.
     convert: { limit: 15, period: "day" },
+    // Forward $0 self-hosted conversions (Gotenberg) — high fair-use bucket. These
+    // cost nothing, so the cap only bounds scripted abuse; effectively "unlimited"
+    // for any human (Option C — stops the dishonest 15/day on free $0 conversions).
+    convertFree: { limit: 60, period: "day" },
   },
   PLUS: {
     // ai-standard (chat/summary/translate/analyzer) = 200/day per tier-config;
@@ -107,6 +117,7 @@ export const featureLimits: Record<
     contractAnalyzer: { limit: 500, period: "month" },
     compare: { limit: 500, period: "month" },
     convert: { limit: 1500, period: "month" },
+    convertFree: { limit: 2000, period: "month" },
   },
   PRO: {
     // ai-standard = Unlimited (fair use): a high fair-use ceiling that bounds only
@@ -121,6 +132,7 @@ export const featureLimits: Record<
     contractAnalyzer: { limit: 5000, period: "month" },
     compare: { limit: 5000, period: "month" },
     convert: { limit: 15000, period: "month" },
+    convertFree: { limit: 100000, period: "month" },
   },
 };
 

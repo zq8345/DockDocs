@@ -67,7 +67,10 @@ export default async (req: Request, _context: Context) => {
   }
 
   // Per-plan conversion quota — reads only the Authorization header, safe before formData().
-  const gate = await enforceFeatureGate(req, "convert");
+  // This endpoint serves ONLY forward $0 self-hosted Gotenberg routes (word/ppt/excel/html→pdf,
+  // pdf-to-pdfa), so it meters on "convertFree" (high fair-use, no real cost). Paid CloudConvert
+  // paths (cloudconvert-convert / reverse-convert) keep the low "convert" meter (Option C).
+  const gate = await enforceFeatureGate(req, "convertFree");
   if (!gate.ok) return gate.response;
 
   let inForm: FormData;
