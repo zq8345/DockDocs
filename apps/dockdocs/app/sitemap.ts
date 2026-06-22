@@ -77,7 +77,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   );
 
+  // Standalone English-first GEO content pages (Q&A pages AI engines cite). They
+  // have dedicated app/<slug>/page.tsx routes and are intentionally NOT in routeSlugs
+  // (no localized variants yet), so they're enumerated here.
+  const standaloneContentRoutes = [
+    {
+      url: absoluteUrl("/safe-to-upload-pdf/"),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+  ];
+
   return Array.from(
-    new Map([...routes, ...geoRoutes, ...blogRoutes].map((r) => [r.url, r])).values(),
+    new Map([...routes, ...geoRoutes, ...blogRoutes, ...standaloneContentRoutes].map((r) => [r.url, r])).values(),
   );
 }
