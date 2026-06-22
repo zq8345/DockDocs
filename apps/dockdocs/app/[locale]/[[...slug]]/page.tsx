@@ -2690,7 +2690,7 @@ function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" 
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <ButtonLink href={localizedPath(locale, "")}>
-              {locale === "zh" ? "进入文档工作区" : locale === "zh-Hant" ? toHant("进入文档工作区") : locale === "es" ? "Explorar herramientas PDF" : locale === "pt" ? "Explorar ferramentas PDF" : locale === "fr" ? "Parcourir les outils PDF" : "Browse PDF tools"}
+              {locale === "zh" ? "进入文档工作区" : locale === "zh-Hant" ? toHant("进入文档工作区") : locale === "es" ? "Explorar herramientas PDF" : locale === "pt" ? "Explorar ferramentas PDF" : locale === "fr" ? "Parcourir les outils PDF" : locale === "ja" ? "PDFツールを見る" : "Browse PDF tools"}
             </ButtonLink>
             <ButtonLink href={localizedPath(locale, "ocr-pdf")} variant="outline">
               OCR PDF
@@ -2763,7 +2763,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
   const contentLocale: Locale = locale === "zh" || hant ? "zh" : "en";
   const groups = [
     {
-      title: locale === "zh" || hant ? h("博客指南") : locale === "es" ? "Guías del blog" : locale === "pt" ? "Guias do blog" : locale === "fr" ? "Guides du blog" : "Blog Guides",
+      title: locale === "zh" || hant ? h("博客指南") : locale === "es" ? "Guías del blog" : locale === "pt" ? "Guias do blog" : locale === "fr" ? "Guides du blog" : locale === "ja" ? "ブログガイド" : "Blog Guides",
       links: blogArticles.map((article) => ({
         name: h(getBlogArticleContent(article, contentLocale).title),
         href: blogArticlePath(
@@ -2773,7 +2773,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
       })),
     },
     {
-      title: locale === "zh" || hant ? h("GEO 指南页") : locale === "es" ? "Guías GEO programáticas" : locale === "pt" ? "Guias GEO programáticos" : locale === "fr" ? "Guides GEO programmatiques" : "Programmatic GEO Guides",
+      title: locale === "zh" || hant ? h("GEO 指南页") : locale === "es" ? "Guías GEO programáticas" : locale === "pt" ? "Guias GEO programáticos" : locale === "fr" ? "Guides GEO programmatiques" : locale === "ja" ? "GEO ガイドページ" : "Programmatic GEO Guides",
       links: getProgrammaticGeoPageSeeds("guides").map((seed) => {
         const page = getProgrammaticGeoPage(contentLocale, seed.surface, seed.slug);
         return {
@@ -2787,7 +2787,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
       }),
     },
     {
-      title: locale === "zh" || hant ? h("GEO 资源页") : locale === "es" ? "Recursos GEO programáticos" : locale === "pt" ? "Recursos GEO programáticos" : locale === "fr" ? "Ressources GEO programmatiques" : "Programmatic GEO Resources",
+      title: locale === "zh" || hant ? h("GEO 资源页") : locale === "es" ? "Recursos GEO programáticos" : locale === "pt" ? "Recursos GEO programáticos" : locale === "fr" ? "Ressources GEO programmatiques" : locale === "ja" ? "GEO リソースページ" : "Programmatic GEO Resources",
       links: getProgrammaticGeoPageSeeds("resources").map((seed) => {
         const page = getProgrammaticGeoPage(contentLocale, seed.surface, seed.slug);
         return {
@@ -2801,7 +2801,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
       }),
     },
     {
-      title: locale === "zh" || hant ? h("GEO 资源中心") : locale === "es" ? "Centros GEO" : locale === "pt" ? "Centros GEO" : locale === "fr" ? "Hubs GEO" : "GEO Hubs",
+      title: locale === "zh" || hant ? h("GEO 资源中心") : locale === "es" ? "Centros GEO" : locale === "pt" ? "Centros GEO" : locale === "fr" ? "Hubs GEO" : locale === "ja" ? "GEO ハブ" : "GEO Hubs",
       links: (geoPageSlugs as readonly GeoPageSlug[]).map((geoSlug) => {
         const hub = getGeoHub(toGeoLocale(locale), geoSlug);
         return {
@@ -2816,7 +2816,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <Container className="py-16">
-          <p className="font-mono text-[12px] text-[color:var(--faint)]">// {locale === "zh" || hant ? h("站点地图") : locale === "es" ? "mapa del sitio" : locale === "pt" ? "mapa do site" : locale === "fr" ? "plan du site" : "Sitemap"}</p>
+          <p className="font-mono text-[12px] text-[color:var(--faint)]">// {locale === "zh" || hant ? h("站点地图") : locale === "es" ? "mapa del sitio" : locale === "pt" ? "mapa do site" : locale === "fr" ? "plan du site" : locale === "ja" ? "サイトマップ" : "Sitemap"}</p>
           <h1 className="mt-4 max-w-4xl break-words text-[34px] font-normal tracking-[-0.025em] sm:text-[48px]">
             {copy.heading}
           </h1>
