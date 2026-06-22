@@ -5,7 +5,7 @@ import { ResearchHubPage } from "@/components/ResearchHubPage";
 export const metadata: Metadata = {
   title: "Research AI: summarize, search & compare papers — DockDocs",
   description:
-    "AI tools for researchers: summarize papers, ask a PDF about its methods, compare studies, OCR scanned articles, and extract data tables — every answer traceable to the source. Verify before you cite.",
+    "AI tools for researchers: summarize papers, ask a PDF about its methods, compare studies, OCR scanned articles, and extract data tables — with answers traced to their source where the AI can, so you verify before you cite.",
   keywords: [
     "research AI tools",
     "summarize research paper AI",

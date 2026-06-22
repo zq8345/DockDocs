@@ -938,8 +938,8 @@ async function generateMetadataInner({
       slug,
       ({ zh: "科研 AI：论文摘要 / 问答 / 对比工具 — DockDocs", es: "IA para investigación: resume, consulta y compara artículos — DockDocs", pt: "IA para pesquisa: resuma, consulte e compare artigos — DockDocs", fr: "IA pour la recherche : résumez, interrogez et comparez des articles — DockDocs" } as Record<string, string>)[rawLocale]
         ?? "Research AI: summarize, search & compare papers — DockDocs",
-      ({ zh: "面向研究者的 AI 工具：摘要论文、向 PDF 提问方法、对比研究、扫描件 OCR、抽取数据表——每个答案都可溯源到原文，引用前先核对。", es: "Herramientas de IA para investigadores: resume artículos, pregunta a un PDF sobre sus métodos, compara estudios, aplica OCR a artículos escaneados y extrae tablas de datos, con cada respuesta rastreable hasta la fuente.", pt: "Ferramentas de IA para pesquisadores: resuma artigos, pergunte a um PDF sobre seus métodos, compare estudos, aplique OCR em artigos digitalizados e extraia tabelas de dados, com cada resposta rastreável até a fonte.", fr: "Outils d'IA pour les chercheurs : résumez des articles, interrogez un PDF sur ses méthodes, comparez des études, appliquez l'OCR à des articles numérisés et extrayez des tableaux de données, chaque réponse étant traçable jusqu'à la source." } as Record<string, string>)[rawLocale]
-        ?? "AI tools for researchers: summarize papers, ask a PDF about its methods, compare studies, OCR scanned articles, and extract data tables — every answer traceable to the source.",
+      ({ zh: "面向研究者的 AI 工具：摘要论文、向 PDF 提问方法、对比研究、扫描件 OCR、抽取数据表——AI 力所能及时会把答案溯源到原文，引用前请核对。", es: "Herramientas de IA para investigadores: resume artículos, pregunta a un PDF sobre sus métodos, compara estudios, aplica OCR a artículos escaneados y extrae tablas de datos, con las respuestas rastreables hasta la fuente cuando la IA puede.", pt: "Ferramentas de IA para pesquisadores: resuma artigos, pergunte a um PDF sobre seus métodos, compare estudos, aplique OCR em artigos digitalizados e extraia tabelas de dados, com as respostas rastreáveis até a fonte quando a IA pode.", fr: "Outils d'IA pour les chercheurs : résumez des articles, interrogez un PDF sur ses méthodes, comparez des études, appliquez l'OCR à des articles numérisés et extrayez des tableaux de données, les réponses étant traçables jusqu'à la source quand l'IA le peut." } as Record<string, string>)[rawLocale]
+        ?? "AI tools for researchers: summarize papers, ask a PDF about its methods, compare studies, OCR scanned articles, and extract data tables — with answers traced to their source where the AI can.",
     );
   }
 
@@ -2512,11 +2512,11 @@ const homeCopy = {
     categoryTitle: "Everything you need for PDF work",
     aiTitle: "Every document, understood — read, checked, compared.",
     aiDescription: "That's DockDocs: grounded AI plus ~50 local PDF tools, privacy-first and no sign-up. Understanding and verifiable evidence in one place — you just decide.",
-    stats: [["Grounded", "AI answers show their source"], ["Private", "Files stay on your device"], ["Free", "No account to start"]] as [string, string][],
+    stats: [["Grounded", "AI shows its source — or says it can't"], ["Private", "Files stay on your device"], ["Free", "No account to start"]] as [string, string][],
   },
   zh: {
     title: "DockDocs — 私密、可溯源的文档 AI 与 PDF 工具",
-    description: "读懂任意文档，信任每个答案：DockDocs 文档 AI 会展示答案背后的原文出处供你核对，PDF 工具在浏览器本地运行，文件不离设备。免费，无需注册。",
+    description: "读懂任意文档，逐一核验答案：DockDocs 文档 AI 会展示答案背后的原文出处供你核对，PDF 工具在浏览器本地运行，文件不离设备。免费，无需注册。",
     eyebrow: "AI 文档智能",
     heroTitle: "围绕 PDF 的全方位解决方案。",
     heroDescription: "免费工具、批量自动化，加上真正读懂文档的 AI——大多在浏览器内完成，文件不外泄。",
@@ -2525,19 +2525,19 @@ const homeCopy = {
     categoryTitle: "PDF 工作所需的一切",
     aiTitle: "让每一份文档都能被读懂、核对、对比。",
     aiDescription: "这就是 DockDocs —— 可溯源的 AI，加约 50 个本地 PDF 工具，隐私优先、无需注册。把理解力和可核对的依据放在一起，你只管做决定。",
-    stats: [["可溯源", "答案可点回原文"], ["隐私", "文件留在你的设备"], ["安全", "文件用后自动删除"]] as [string, string][],
+    stats: [["可溯源", "答案可点回原文，无法溯源会说明"], ["隐私", "文件留在你的设备"], ["安全", "文件用后自动删除"]] as [string, string][],
   },
   es: {
     title: "DockDocs — IA documental privada y verificable + herramientas PDF",
-    description: "Lee cualquier documento y confía en cada respuesta: IA documental que muestra el pasaje de origen detrás de sus respuestas para que lo verifiques, más herramientas PDF que se ejecutan en tu navegador, sin que tus archivos salgan del dispositivo. Gratis, sin registro.",
+    description: "Lee cualquier documento y verifica cada respuesta: IA documental que muestra el pasaje de origen detrás de sus respuestas para que lo verifiques, más herramientas PDF que se ejecutan en tu navegador, sin que tus archivos salgan del dispositivo. Gratis, sin registro.",
   },
   pt: {
     title: "DockDocs — IA documental privada e verificável + ferramentas PDF",
-    description: "Leia qualquer documento e confie em cada resposta: IA documental que mostra o trecho de origem por trás de suas respostas para você verificar, além de ferramentas PDF que rodam no seu navegador, sem seus arquivos saírem do dispositivo. Grátis, sem cadastro.",
+    description: "Leia qualquer documento e verifique cada resposta: IA documental que mostra o trecho de origem por trás de suas respostas para você verificar, além de ferramentas PDF que rodam no seu navegador, sem seus arquivos saírem do dispositivo. Grátis, sem cadastro.",
   },
   fr: {
     title: "DockDocs — IA documentaire privée et vérifiable + outils PDF",
-    description: "Lisez n'importe quel document et fiez-vous à chaque réponse : une IA documentaire qui montre le passage source derrière ses réponses pour que vous les vérifiiez, plus des outils PDF exécutés dans votre navigateur, vos fichiers ne quittent jamais l'appareil. Gratuit, sans inscription.",
+    description: "Lisez n'importe quel document et vérifiez chaque réponse : une IA documentaire qui montre le passage source derrière ses réponses pour que vous les vérifiiez, plus des outils PDF exécutés dans votre navigateur, vos fichiers ne quittent jamais l'appareil. Gratuit, sans inscription.",
   },
 } as const;
 

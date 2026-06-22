@@ -39,12 +39,12 @@ const HOME_FAQ: Record<string, { q: string; a: string }[]> = {
 // renders homeSchema(locale) on /zh /es /pt /fr). Scoped anti-confabulation
 // wording consistent with HOME_FAQ; native polish to follow via the i18n lane.
 const ORG_DESC: Record<string, string> = {
-  en: "Private, verifiable document AI: read any document and trust its answers because the AI shows the source passage behind them and flags what it can't trace, so you can check it yourself. Plus ~50 PDF tools that run in your browser, so files never leave your device.",
-  zh: "私密、可溯源的文档 AI：读懂任意文档、信任它的答案——AI 会展示答案背后的原文出处、并标出无法溯源的部分，让你自己核对。另有约 50 个在浏览器内运行的 PDF 工具，文件不离开你的设备。",
-  es: "IA documental privada y verificable: lee cualquier documento y confía en sus respuestas porque la IA muestra el pasaje de origen detrás de ellas y señala lo que no puede rastrear, para que lo compruebes tú mismo. Además, ~50 herramientas PDF que se ejecutan en tu navegador, así tus archivos nunca salen de tu dispositivo.",
-  pt: "IA de documentos privada e verificável: leia qualquer documento e confie nas suas respostas porque a IA mostra o trecho de origem por trás delas e sinaliza o que não pode rastrear, para você conferir por conta própria. Além disso, ~50 ferramentas PDF que rodam no seu navegador, então seus arquivos nunca saem do seu dispositivo.",
-  fr: "IA documentaire privée et vérifiable : lisez n'importe quel document et fiez-vous à ses réponses car l'IA montre le passage source derrière elles et signale ce qu'elle ne peut pas tracer, pour que vous le vérifiiez vous-même. Plus ~50 outils PDF qui s'exécutent dans votre navigateur, vos fichiers ne quittent donc jamais votre appareil.",
-  ja: "プライベートで検証できる文書 AI——あらゆる文書を読み解き、その回答を信頼できます。AI が回答の根拠となる原文箇所を示し、たどれない部分は明示するので、自分で確認できるからです。さらに、お使いのブラウザ内で動作する約 50 種類の PDF ツールにより、ファイルがデバイスの外に出ることはありません。",
+  en: "Private, verifiable document AI: read any document and verify its answers — the AI shows the source passage behind them and flags what it can't trace, so you can check it yourself. Plus ~50 PDF tools that run in your browser, so files never leave your device.",
+  zh: "私密、可溯源的文档 AI：读懂任意文档、逐一核验它的答案——AI 会展示答案背后的原文出处、并标出无法溯源的部分，让你自己核对。另有约 50 个在浏览器内运行的 PDF 工具，文件不离开你的设备。",
+  es: "IA documental privada y verificable: lee cualquier documento y verifica sus respuestas — la IA muestra el pasaje de origen detrás de ellas y señala lo que no puede rastrear, para que lo compruebes tú mismo. Además, ~50 herramientas PDF que se ejecutan en tu navegador, así tus archivos nunca salen de tu dispositivo.",
+  pt: "IA de documentos privada e verificável: leia qualquer documento e verifique suas respostas — a IA mostra o trecho de origem por trás delas e sinaliza o que não pode rastrear, para você conferir por conta própria. Além disso, ~50 ferramentas PDF que rodam no seu navegador, então seus arquivos nunca saem do seu dispositivo.",
+  fr: "IA documentaire privée et vérifiable : lisez n'importe quel document et vérifiez ses réponses — l'IA montre le passage source derrière elles et signale ce qu'elle ne peut pas tracer, pour que vous le vérifiiez vous-même. Plus ~50 outils PDF qui s'exécutent dans votre navigateur, vos fichiers ne quittent donc jamais votre appareil.",
+  ja: "プライベートで検証できる文書 AI——あらゆる文書を読み解き、その回答を検証できます。AI が回答の根拠となる原文箇所を示し、たどれない部分は明示するので、自分で確認できます。さらに、お使いのブラウザ内で動作する約 50 種類の PDF ツールにより、ファイルがデバイスの外に出ることはありません。",
 };
 const SITE_DESC: Record<string, string> = {
   en: "Document AI that shows the source passage behind its answers so you can verify them, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
@@ -67,7 +67,7 @@ export function homeSchema(locale: string = "en") {
         name: "DockDocs",
         url: SITE,
         description: ORG_DESC[locale] ?? ORG_DESC.en,
-        slogan: "Read any document. Trust every answer.",
+        slogan: "Read any document. Verify every answer.",
         foundingDate: "2024",
         sameAs: ["https://github.com/zq8345/dock-ai-ecosystem"],
       },

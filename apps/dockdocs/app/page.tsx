@@ -36,8 +36,8 @@ const homeSchema = {
       "@id": `${siteUrl}#org`,
       name: "DockDocs",
       url: siteUrl,
-      description: "Private, verifiable document AI: read any document and trust its answers because the AI shows the source passage behind them and flags what it can't trace, so you can check it yourself. Plus ~50 PDF tools that run in your browser, so files never leave your device.",
-      slogan: "Read any document. Trust every answer.",
+      description: "Private, verifiable document AI: read any document and verify its answers — the AI shows the source passage behind them and flags what it can't trace, so you can check it yourself. Plus ~50 PDF tools that run in your browser, so files never leave your device.",
+      slogan: "Read any document. Verify every answer.",
       foundingDate: "2024",
       sameAs: [
         "https://github.com/zq8345/dock-ai-ecosystem",
