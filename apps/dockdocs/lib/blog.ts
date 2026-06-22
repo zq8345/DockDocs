@@ -360,7 +360,7 @@ export const blogArticles: BlogArticle[] = [
             heading: "Markdown as LLM context (RAG and Q&A)",
             paragraphs: [
               "If your goal is to ask an AI questions about a document, Markdown is an excellent intermediate format: it is compact, preserves structure, and is easy to chunk for retrieval-augmented generation (RAG). Convert the PDF to .md, split it by heading, and you have clean passages to embed or paste into a prompt.",
-              "If you would rather skip the pipeline, Chat with PDF does the reading for you — upload a PDF and ask questions, with answers that cite the source passage. PDF-to-Markdown is the right tool when you want the raw text in your own stack; Chat with PDF is right when you just want answers.",
+              "If you would rather skip the pipeline, Chat with PDF does the reading for you — upload a PDF and ask questions, with answers that cite the source passage when one can be located. PDF-to-Markdown is the right tool when you want the raw text in your own stack; Chat with PDF is right when you just want answers.",
             ],
             links: [
               { label: "Try Chat with PDF", href: "/chat-with-pdf" },
@@ -1494,7 +1494,7 @@ export const blogArticles: BlogArticle[] = [
           {
             heading: "DockDocs, ChatGPT, and ChatPDF at a glance",
             paragraphs: [
-              "DockDocs Chat with PDF is a free, browser-based tool with no account required. It extracts the document text in your browser and sends only that text to the model, and its answers cite the passages they were taken from. It is built specifically around working with one document at a time.",
+              "DockDocs Chat with PDF is a free, browser-based tool with no account required. It extracts the document text in your browser and sends only that text to the model, and it cites the source passage behind an answer when one can be located. It is built specifically around working with one document at a time.",
               "ChatGPT is a powerful general-purpose assistant. It can discuss an uploaded file, but reliable file handling generally sits behind a paid plan or tighter free limits, it is not designed solely around a single document, and it does not always point you to the exact passage an answer came from. ChatPDF is a dedicated chat-with-PDF product whose free tier typically caps the number of pages and the file size, with paid tiers to lift those limits. All three can answer questions about a PDF; they make different tradeoffs getting there.",
             ],
           },
@@ -1509,7 +1509,7 @@ export const blogArticles: BlogArticle[] = [
           {
             heading: "Grounded answers vs confident guesses",
             paragraphs: [
-              "An AI answer is only useful if you can trust it. The failure mode to avoid is a fluent, confident answer that is not actually in the document — a hallucination. DockDocs is built to ground each answer in the source text and show the passages it relied on, so you can verify the claim against the document in seconds instead of taking it on faith.",
+              "An AI answer is only useful if you can trust it. The failure mode to avoid is a fluent, confident answer that is not actually in the document — a hallucination. DockDocs is built to ground its answers in the source text and show the passage an answer relied on where it can, so you can verify the claim against the document in seconds instead of taking it on faith.",
               "General assistants are improving at this, but a single uploaded file is just one of many things they handle, and they do not always surface the exact sentence behind an answer. For high-stakes documents — legal clauses, numbers, obligations, dates — the ability to jump straight to the cited passage is the difference between a helpful tool and a risky one.",
             ],
           },
@@ -1536,7 +1536,7 @@ export const blogArticles: BlogArticle[] = [
           {
             question: "What is the best free way to chat with a PDF?",
             answer:
-              "For most people, a free browser-based tool like DockDocs Chat with PDF is the best starting point: it needs no account, extracts the text in your browser so the file is not uploaded, and cites the passages behind each answer. Dedicated and general assistants can do more but usually involve sign-up, paid tiers, or uploading the full file.",
+              "For most people, a free browser-based tool like DockDocs Chat with PDF is the best starting point: it needs no account, extracts the text in your browser so the file is not uploaded, and cites the source passage behind an answer when one can be located. Dedicated and general assistants can do more but usually involve sign-up, paid tiers, or uploading the full file.",
           },
           {
             question: "Is it safe to chat with a confidential PDF using AI?",
@@ -1546,7 +1546,7 @@ export const blogArticles: BlogArticle[] = [
           {
             question: "Why do AI tools sometimes give wrong answers about a PDF?",
             answer:
-              "Large language models can produce fluent answers that are not actually supported by the document — a hallucination. The safeguard is grounding: tools that cite the exact passage behind each answer let you verify the claim quickly. Always check important figures, dates, and clauses against the cited text.",
+              "Large language models can produce fluent answers that are not actually supported by the document — a hallucination. The safeguard is grounding: a tool that cites the exact passage behind an answer lets you verify the claim quickly. Always check important figures, dates, and clauses against the cited text.",
           },
           {
             question: "Can I chat with a scanned PDF?",
@@ -1578,7 +1578,7 @@ export const blogArticles: BlogArticle[] = [
           {
             heading: "三者速览",
             paragraphs: [
-              "DockDocs PDF 问答是免费、基于浏览器、无需注册的工具。它在你的浏览器里抽取文档文字，只把文字发给模型，且答案会标注出处段落，专门为「一次处理一份文档」而设计。",
+              "DockDocs PDF 问答是免费、基于浏览器、无需注册的工具。它在你的浏览器里抽取文档文字，只把文字发给模型，且答案在能定位到原文时会标注出处段落，专门为「一次处理一份文档」而设计。",
               "ChatGPT 是强大的通用助手，可以讨论你上传的文件，但稳定的文件处理通常需要付费套餐或受较紧的免费额度限制，它并非只围绕单一文档设计，也不总能指出答案来自原文哪一句。ChatPDF 是专门的 PDF 问答产品，免费档通常限制页数和文件大小，更高用量要升级付费。三者都能回答 PDF 的问题，只是路径上的取舍不同。",
             ],
           },
@@ -1593,7 +1593,7 @@ export const blogArticles: BlogArticle[] = [
           {
             heading: "有据可查的答案 vs 自信的瞎猜",
             paragraphs: [
-              "AI 的答案只有可信才有用。最该避免的失败，是一个流畅自信、但文档里根本没有的答案——也就是幻觉。DockDocs 的设计就是把每个答案锚定在原文，并展示它依据的段落，让你几秒内就能对照文档核实，而不是凭信任接受。",
+              "AI 的答案只有可信才有用。最该避免的失败，是一个流畅自信、但文档里根本没有的答案——也就是幻觉。DockDocs 的设计就是尽量把答案锚定在原文，在能定位到原文时展示它依据的段落，让你几秒内就能对照文档核实，而不是凭信任接受。",
               "通用助手在这方面在进步，但单个上传文件只是它要处理的众多东西之一，并不总能给出答案背后的确切句子。对法律条款、数字、义务、日期这类高风险内容，「能直接跳到被引用的原文」正是「好用工具」和「有风险工具」的分界。",
             ],
           },
@@ -1620,7 +1620,7 @@ export const blogArticles: BlogArticle[] = [
           {
             question: "免费和 PDF 对话，最好的方式是什么？",
             answer:
-              "对多数人来说，像 DockDocs PDF 问答这样的免费浏览器工具是最佳起点：无需注册，文本在浏览器里抽取所以文件不上传，且每个答案都标注出处段落。专门产品和通用助手能做更多，但通常涉及注册、付费档或上传完整文件。",
+              "对多数人来说，像 DockDocs PDF 问答这样的免费浏览器工具是最佳起点：无需注册，文本在浏览器里抽取所以文件不上传，且答案在能定位到原文时标注出处段落。专门产品和通用助手能做更多，但通常涉及注册、付费档或上传完整文件。",
           },
           {
             question: "用 AI 和机密 PDF 对话安全吗？",
@@ -1630,7 +1630,7 @@ export const blogArticles: BlogArticle[] = [
           {
             question: "为什么 AI 有时会答错 PDF 的内容？",
             answer:
-              "大模型可能给出流畅却并非文档支持的答案，也就是幻觉。防护办法是溯源：能标注每个答案背后确切段落的工具，让你快速核实。重要的数字、日期和条款，务必对照被引用的原文再确认。",
+              "大模型可能给出流畅却并非文档支持的答案，也就是幻觉。防护办法是溯源：会标注答案背后确切段落的工具，让你快速核实。重要的数字、日期和条款，务必对照被引用的原文再确认。",
           },
           {
             question: "可以和扫描版 PDF 对话吗？",
@@ -2400,9 +2400,9 @@ export const blogArticles: BlogArticle[] = [
         excerpt:
           "An AI summary is a starting point, not the final word. Here's how to check one against the source document — and spot the omissions and hallucinations that actually matter.",
         readingTime: "7 min read",
-        ctaTitle: "Summarize a document — with the source one click away",
+        ctaTitle: "Summarize a document — with the original one click away",
         ctaDescription:
-          "Use DockDocs AI Summary to get the key points fast, then trace each one back to the original passage.",
+          "Use DockDocs AI Summary to get the key points fast, then check each one against the original document.",
         ctaLabel: "Open AI Summary",
         sections: [
           {
@@ -2429,7 +2429,7 @@ export const blogArticles: BlogArticle[] = [
               "1) Check the hard facts. Numbers, dates, names, totals, deadlines, and defined terms are where summaries slip most often. Find each one in the original and confirm it matches exactly — a summary that rounds \"$1,480,500\" to \"about $1.5M\" can change a decision.",
               "2) Hunt for omissions. A summary's biggest risk is usually not a wrong fact — it is a missing one. Skim the document's headings and ask whether each section is represented. Pay special attention to exceptions, conditions, liabilities, and dates, which summaries love to compress away.",
               "3) Stress-test the surprising claims. If the summary says something you did not expect, treat it as unverified until you have read the source sentence yourself. Surprises are where hallucinations hide.",
-              "4) Read the source for anything you will act on. For a decision, a signature, or a payment, let the summary point you to the right paragraph — then read that paragraph in full before you act.",
+              "4) Read the source for anything you will act on. For a decision, a signature, or a payment, let the summary point you to the right section — then read that part of the original in full before you act.",
             ],
           },
           {
@@ -2460,12 +2460,12 @@ export const blogArticles: BlogArticle[] = [
           {
             question: "Should I trust an AI summary of a contract or financial document?",
             answer:
-              "Use it to orient yourself, never as the final word. For anything you will sign, pay, or rely on, read the specific clauses in the original document. A summary that cites its source passages makes that verification fast.",
+              "Use it to orient yourself, never as the final word. For anything you will sign, pay, or rely on, read the specific clauses in the original document. A summary is a paraphrase, not a quote — use it to find the right clauses fast, then verify them against the original itself.",
           },
           {
             question: "How can I make AI summaries easier to verify?",
             answer:
-              "Use a summarizer that links each point back to its source passage, summarize one document at a time so the context stays clear, and ask follow-up questions on anything unclear so you can see the exact text behind each answer.",
+              "Use a summarizer that stays drawn from your own document, summarize one document at a time so the context stays clear, and ask follow-up questions on anything unclear — in Chat with PDF you can see the exact passage behind an answer where it can be located.",
           },
         ],
       },
@@ -2476,9 +2476,9 @@ export const blogArticles: BlogArticle[] = [
         excerpt:
           "AI 摘要是起点,不是定论。本文教你如何把摘要对照原始文档核对,并识别那些真正要命的遗漏和幻觉。",
         readingTime: "7 分钟阅读",
-        ctaTitle: "做文档摘要——原文出处一键可查",
+        ctaTitle: "做文档摘要——随时对照原文",
         ctaDescription:
-          "用 DockDocs「AI 摘要」快速拿到要点,再把每一条追溯回原文段落。",
+          "用 DockDocs「AI 摘要」快速拿到要点,再把每一条对照原文核对。",
         ctaLabel: "打开 AI 摘要",
         sections: [
           {
@@ -2493,7 +2493,7 @@ export const blogArticles: BlogArticle[] = [
             heading: "最快的一招:能不能追溯到原文出处",
             paragraphs: [
               "任何 AI 摘要最有用的特性是「可溯源」——每一条结论能不能追回到原文的具体页面或段落?能告诉你出处的摘要,几秒钟就能抽查核对;只是一大段自信文字的摘要,则是一个你只能盲目信任的黑箱,而盲目信任恰恰是错误溜进来的地方。",
-              "所以优先选会标注每条出处的工具,并真的去用这个出处:当摘要给出一条重要结论时,点进原文那句话确认一下。DockDocs「AI 摘要」和「PDF 问答」正是围绕「标注来源」设计的——每一条都系回它的出处段落,核验只需一次点击,而不必把整份文件重读一遍。",
+              "所以当摘要给出一条重要结论时,去对照原文确认一下。DockDocs「PDF 问答」在能定位到原文时会展示答案背后的段落,而「AI 摘要」始终只基于你自己的文档生成、不向其中添加外部事实;所以要核对一条结论,对照原文只需一次点击,而不必把整份文件重读一遍。",
             ],
             links: [
               { label: "用 PDF 问答提问", href: "/chat-with-pdf" },
@@ -2536,12 +2536,12 @@ export const blogArticles: BlogArticle[] = [
           {
             question: "合同或财务文件的 AI 摘要可以信吗?",
             answer:
-              "用它来快速上手,但绝不当作定论。任何你要签字、付款或据以行事的内容,都去读原文的具体条款。会标注出处段落的摘要,能让这一步核验变得很快。",
+              "用它来快速上手,但绝不当作定论。任何你要签字、付款或据以行事的内容,都去读原文的具体条款。摘要是改写而非逐字引用——用它快速找到该读的条款,再对照原文本身核验。",
           },
           {
             question: "怎样让 AI 摘要更容易核验?",
             answer:
-              "选一个会把每条结论都链回原文出处的摘要工具;一次只摘要一份文档,让上下文保持清晰;对任何不清楚的地方追问,这样你能看到每条答案背后的确切原文。",
+              "选一个始终只基于你自己文档生成的摘要工具;一次只摘要一份文档,让上下文保持清晰;对任何不清楚的地方追问——在 PDF 问答里,找得到原文时你能看到答案背后的确切段落。",
           },
         ],
       },
