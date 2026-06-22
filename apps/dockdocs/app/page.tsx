@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "DockDocs — AI Document Platform",
     description:
-      "Chat with any PDF for grounded answers that show their source. Multi-document comparison coming soon. Plus ~50 free PDF tools — no installs.",
+      "Chat with any PDF for grounded answers that show their source when it can be located. Multi-document comparison coming soon. Plus ~50 free PDF tools — no installs.",
     url: "https://dockdocs.app",
     siteName: "DockDocs",
     type: "website",

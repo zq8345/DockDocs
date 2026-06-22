@@ -73,7 +73,7 @@ const linkedTools = [
 const workspaceItems = [
   { label: "AI Summary", note: "key points" },
   { label: "Document analysis", note: "clauses · dates · risks" },
-  { label: "Chat with PDF", note: "answers show their source" },
+  { label: "Chat with PDF", note: "answers show their source when located" },
   { label: "OCR", note: "scanned → text" },
 ];
 
