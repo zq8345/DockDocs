@@ -53,15 +53,20 @@ function pickArray(name) {
 
 const locales = pickArray("locales");
 const allLocales = pickArray("allLocales");
+// Every locale that gets its own URL prefix (en/zh/zh-Hant/es/pt/fr/ja).
+// Check A iterates THIS, not `locales` (which is only en+zh) — otherwise the
+// es/pt/fr/ja/zh-Hant routes are never asserted to exist and a feature can
+// silently 404 in those languages.
+const routeLocales = pickArray("routeLocales");
 const routeSlugs = pickArray("routeSlugs");
 const routeSet = new Set(routeSlugs);
 const localeSet = new Set(allLocales);
 
 const hasPage = (rel) => existsSync(join(OUT, rel, "index.html"));
 
-// ── Check A: every routeSlug exists under every locale ──
+// ── Check A: every routeSlug exists under every ROUTE locale (all 7) ──
 const missing = [];
-for (const locale of locales) {
+for (const locale of routeLocales) {
   for (const slug of routeSlugs) {
     const rel = slug ? `${locale}/${slug}` : locale;
     if (!hasPage(rel)) missing.push(`${locale} is missing "${slug || "(home)"}"  →  expected out/${rel}/index.html`);
@@ -151,7 +156,7 @@ for (const locale of FAQ_LOCALES) {
 }
 
 if (missing.length === 0 && unregistered.length === 0 && incompleteBody.length === 0) {
-  console.log(`[i18n-guard] OK — ${routeSlugs.length} routes present in all ${locales.length} locales (${locales.join(", ")}); tool bodies + FAQ fully localized in ${BODY_LOCALES.join(", ")}.`);
+  console.log(`[i18n-guard] OK — ${routeSlugs.length} routes present in all ${routeLocales.length} route locales (${routeLocales.join(", ")}); tool bodies + FAQ fully localized in ${BODY_LOCALES.join(", ")}.`);
   process.exit(0);
 }
 
