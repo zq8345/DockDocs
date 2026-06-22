@@ -19,7 +19,7 @@ const DESC: Record<string, { zh: string; en: string }> = {
   "/split-pdf": { zh: "拆分、合并、压缩、整理页面", en: "Split, merge, compress, organize" },
   "/merge-pdf": { zh: "把多份 PDF 合并成一个", en: "Combine multiple PDFs into one" },
   "/protect-pdf": { zh: "加密、解锁、电子签名", en: "Encrypt, unlock, e-sign" },
-  "/chat-with-pdf": { zh: "和 PDF 对话，答案带出处", en: "Ask your PDF — answers show their source" },
+  "/chat-with-pdf": { zh: "和 PDF 对话，能定位到原文时带出处", en: "Ask your PDF — answers show their source when it can be located" },
   "/compare": { zh: "多份合同 / 报价并排对比", en: "Compare contracts & quotes" },
   "/batch-compress": { zh: "整个文件夹一次压缩", en: "Compress a whole folder" },
 };
