@@ -1819,6 +1819,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Comprimir PDF ayuda cuando un archivo es demasiado pesado para correos, cargas, portales o archivos de documentos.",
     steps: ["Selecciona un archivo PDF desde tu dispositivo.", "Deja que DockDocs prepare el documento para optimizarlo.", "Descarga un PDF más liviano para compartir, subir o archivar."],
     cta: { eyebrow: "Comprimir PDF", title: "Empieza con un PDF más liviano y fácil de compartir.", description: "Reduce el tamaño del PDF para los límites de carga, el correo y una entrega de documentos impecable.", buttonLabel: "Comprimir PDF ahora" },
+    faq: [{ question: "¿Cómo comprimo un PDF?", answer: "Suba el PDF, revise el estado de compresión y descargue el archivo reducido." }, { question: "¿Es gratis?", answer: "Sí, esta herramienta está diseñada para la compresión gratuita de PDF en el día a día." }, { question: "¿Funciona en el celular?", answer: "Sí, la página es compatible con dispositivos móviles y de escritorio." }],
   },
   "protect-pdf": {
     ...enTools["protect-pdf"],
@@ -1842,6 +1843,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos habituales: contratos, documentos financieros e informes confidenciales.",
     steps: ["Sube un PDF.", "Ingresa una contraseña (al menos 4 caracteres).", "Descarga el PDF cifrado."],
     cta: { eyebrow: "Proteger PDF", title: "Agrega protección con contraseña a tu PDF.", description: "Cifra PDFs con una contraseña por completo en tu navegador.", buttonLabel: "Proteger PDF ahora" },
+    faq: [{ question: "¿Cómo protejo un PDF con contraseña?", answer: "Suba el PDF, establezca una contraseña y descargue el archivo cifrado." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Todo el cifrado ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }, { question: "¿Es gratis?", answer: "Sí, proteger un PDF con contraseña es completamente gratis." }],
   },
   "unlock-pdf": {
     ...enTools["unlock-pdf"],
@@ -1865,6 +1867,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Sube tu PDF con restricciones, deja el campo de contraseña vacío o ingrésala si el archivo lo requiere, y descarga el PDF libre.",
     steps: ["Sube el PDF con restricciones o protección con contraseña.", "Deja el campo vacío si solo necesitas eliminar restricciones de uso, o ingresa la contraseña si el PDF pide una para abrirse.", "Descarga el PDF desbloqueado, listo para editar, imprimir y compartir."],
     cta: { eyebrow: "Desbloquear PDF", title: "Quita la protección con contraseña de tus PDFs gratis.", description: "Sin descargas, sin cuenta y sin almacenamiento. Desbloquea PDFs de forma segura en tu navegador con DockDocs.", buttonLabel: "Desbloquear PDF ahora" },
+    faq: [{ question: "¿Se necesita contraseña para eliminar las restricciones de un PDF?", answer: "No siempre. Si el PDF se abre con normalidad pero tiene bloqueadas la impresión, copia o edición (contraseña de permisos), las restricciones se pueden eliminar sin contraseña. Si el PDF requiere contraseña para abrirse (contraseña de apertura), deberá proporcionarla." }, { question: "¿Cómo elimino las restricciones de permisos de un PDF?", answer: "Suba el PDF y la herramienta detectará y eliminará automáticamente las restricciones de permisos; luego descargue el archivo desbloqueado." }, { question: "¿Es gratis?", answer: "Sí, eliminar restricciones de un PDF es completamente gratis." }, { question: "¿Es legal?", answer: "Solo para uso con sus propios documentos o documentos para los que cuente con autorización." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Todo el procesamiento ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }],
   },
   "ocr-pdf": {
     ...enTools["ocr-pdf"],
@@ -1888,6 +1891,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "El OCR de PDF ayuda a convertir documentos basados en imágenes en texto que puedes buscar y reutilizar.",
     steps: ["Sube un PDF escaneado.", "Ejecuta el reconocimiento de texto por OCR.", "Copia o descarga el texto extraído."],
     cta: { eyebrow: "OCR de PDF", title: "Convierte documentos escaneados en texto reutilizable.", description: "Extrae, revisa, copia y descarga el texto de tus PDF escaneados.", buttonLabel: "Iniciar OCR" },
+    faq: [{ question: "¿Cómo aplico OCR a un PDF?", answer: "Suba el PDF escaneado y descargue el archivo resultante con una capa de texto buscable." }, { question: "¿Es compatible con PDF escaneados y contenido manuscrito?", answer: "Es compatible con la mayoría de documentos impresos y escaneados; la precisión con texto manuscrito es menor." }, { question: "¿Es gratis?", answer: "Sí, el OCR es completamente gratis." }],
   },
   "pdf-to-word": {
     ...enTools["pdf-to-word"],
@@ -1911,6 +1915,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "PDF a Word resulta útil cuando un PDF estático necesita modificarse, reutilizarse o compartirse para colaborar.",
     steps: ["Sube un PDF.", "Convierte la estructura del documento.", "Descarga un documento de Word editable."],
     cta: { eyebrow: "PDF a Word", title: "Prepara tus PDF para editarlos y reutilizarlos.", description: "Pasa de documentos estáticos a flujos de trabajo editables.", buttonLabel: "Convertir ahora" },
+    faq: [{ question: "¿Cómo convierto un PDF a Word?", answer: "Suba el PDF y descargue el archivo DOCX editable." }, { question: "¿Se conserva el formato tras la conversión?", answer: "CloudConvert hace su mejor esfuerzo por preservar el diseño, aunque el resultado puede variar según el PDF." }, { question: "¿Es gratis?", answer: "Sí, la conversión de PDF a Word es completamente gratis." }],
   },
   "pdf-to-excel": {
     ...enTools["pdf-to-excel"],
@@ -1934,6 +1939,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos habituales: datos financieros, reportes, facturas.",
     steps: ["Sube un PDF con tablas.", "CloudConvert extrae los datos.", "Descarga el XLSX."],
     cta: { eyebrow: "PDF a Excel", title: "Extrae los datos de tus PDF a Excel.", description: "Convierte las tablas de tus PDF a XLSX editable.", buttonLabel: "Convertir PDF ahora" },
+    faq: [{ question: "¿Cómo convierto un PDF a Excel?", answer: "Suba el PDF y descargue el archivo XLSX." }, { question: "¿Es gratis?", answer: "Sí, la conversión de PDF a Excel es completamente gratis." }],
   },
   "pdf-to-ppt": {
     ...enTools["pdf-to-ppt"],
@@ -1957,6 +1963,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: reutilizar páginas de un informe como diapositivas para una presentación.",
     steps: ["Sube un archivo PDF.", "CloudConvert lo convierte a PPTX.", "Descarga el PowerPoint."],
     cta: { eyebrow: "PDF a PPT", title: "Convierte PDF a PowerPoint.", description: "Transforma las páginas de un PDF en una presentación PPTX editable.", buttonLabel: "Convertir PDF ahora" },
+    faq: [{ question: "¿Cómo convierto un PDF a PowerPoint?", answer: "Suba el PDF y descargue el archivo PPTX convertido." }, { question: "¿Se conserva el formato de las diapositivas?", answer: "CloudConvert convierte cada página del PDF en una diapositiva. El resultado puede variar según el PDF." }, { question: "¿Es gratis?", answer: "Sí, la conversión de PDF a PowerPoint es completamente gratis." }],
   },
   "pdf-to-pdfa": {
     ...enTools["pdf-to-pdfa"],
@@ -1980,6 +1987,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos habituales: ámbito legal, administraciones públicas y registros que deben seguir siendo legibles durante años.",
     steps: ["Sube un archivo PDF.", "CloudConvert lo convierte a PDF/A.", "Descarga el PDF de archivo."],
     cta: { eyebrow: "PDF a PDF/A", title: "Convierte PDF a PDF/A.", description: "Prepara tus documentos para archivarlos y cumplir con los requisitos.", buttonLabel: "Convertir PDF ahora" },
+    faq: [{ question: "¿Qué es PDF/A?", answer: "PDF/A es la versión estandarizada por ISO del PDF, diseñada para el archivo a largo plazo, con fuentes y recursos completamente incrustados." }, { question: "¿Cómo convierto un PDF a PDF/A?", answer: "Suba el PDF y descargue el archivo PDF/A listo para archivo a largo plazo." }, { question: "¿Es gratis?", answer: "Sí, la conversión de PDF a PDF/A es completamente gratis." }],
   },
   "pdf-to-html": {
     ...enTools["pdf-to-html"],
@@ -2003,6 +2011,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: publicar contenido en la web, reutilizarlo y mejorar la accesibilidad.",
     steps: ["Sube un PDF.", "Si quieres, ingresa un rango de páginas.", "Descarga el archivo .html."],
     cta: { eyebrow: "PDF a HTML", title: "Convierte tu PDF a HTML.", description: "Obtén HTML limpio y estructurado, todo dentro de tu navegador.", buttonLabel: "Convertir a HTML ahora" },
+    faq: [{ question: "¿Cómo convierto un PDF a HTML?", answer: "Suba el PDF y descargue el archivo HTML generado." }, { question: "¿Se conservan las imágenes y el formato?", answer: "Sí. Cada página se renderiza como imagen para preservar el diseño, y una sección desplegable debajo de cada página conserva el texto original seleccionable para facilitar la búsqueda." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Todo el procesamiento ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }],
   },
   "pdf-to-markdown": {
     ...enTools["pdf-to-markdown"],
@@ -2026,6 +2035,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: importar PDF a wikis y sistemas de documentación.",
     steps: ["Sube un PDF basado en texto.", "Si quieres, indica un rango de páginas.", "Descarga el archivo Markdown."],
     cta: { eyebrow: "PDF a Markdown", title: "Extrae el contenido del PDF como Markdown estructurado.", description: "Convierte PDF a Markdown desde tu navegador.", buttonLabel: "Convertir PDF ahora" },
+    faq: [{ question: "¿Cómo convierto un PDF a Markdown?", answer: "Suba el PDF y descargue el archivo .md convertido." }, { question: "¿Se conserva el formato tras la conversión?", answer: "Los encabezados, listas y párrafos se convierten a sintaxis Markdown en la medida de lo posible; las tablas complejas pueden tener resultados limitados." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Todo el procesamiento ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }],
   },
   "word-to-pdf": {
     ...enTools["word-to-pdf"],
@@ -2049,6 +2059,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos habituales: contratos, informes, propuestas.",
     steps: ["Sube un archivo DOCX o DOC.", "CloudConvert lo convierte.", "Descarga el PDF."],
     cta: { eyebrow: "Word a PDF", title: "Convierte documentos de Word a PDF.", description: "Convierte archivos DOCX a PDF para compartirlos.", buttonLabel: "Convertir Word ahora" },
+    faq: [{ question: "¿Cómo convierto un documento Word a PDF?", answer: "Suba el archivo DOCX o DOC y descargue el PDF convertido." }, { question: "¿Se conserva el formato tras la conversión?", answer: "Nuestro motor de conversión preserva fuentes, espaciado y maquetación, con resultados equivalentes a exportar directamente desde Word." }, { question: "¿Es gratis?", answer: "Sí, la conversión de Word a PDF es completamente gratis y no requiere cuenta." }, { question: "¿Qué formatos de archivo se admiten?", answer: "Se admiten los formatos .docx y .doc, con un tamaño máximo de archivo de 100 MB." }],
   },
   "excel-to-pdf": {
     ...enTools["excel-to-pdf"],
@@ -2072,6 +2083,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: informes, presupuestos y datos financieros.",
     steps: ["Sube un archivo XLSX o XLS.", "CloudConvert lo convierte.", "Descarga el PDF."],
     cta: { eyebrow: "Excel a PDF", title: "Convierte Excel a PDF.", description: "Convierte archivos XLSX a PDF para compartirlos.", buttonLabel: "Convertir Excel ahora" },
+    faq: [{ question: "¿Cómo convierto Excel a PDF?", answer: "Suba el archivo XLSX y descargue el PDF." }, { question: "¿Es gratis?", answer: "Sí, la conversión de Excel a PDF es completamente gratis." }],
   },
   "ppt-to-pdf": {
     ...enTools["ppt-to-pdf"],
@@ -2095,6 +2107,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: compartir presentaciones e imprimir material de apoyo.",
     steps: ["Sube un archivo PPTX o PPT.", "CloudConvert lo convierte.", "Descarga el PDF."],
     cta: { eyebrow: "PPT a PDF", title: "Convierte PowerPoint a PDF.", description: "Convierte archivos PPTX a PDF para compartirlos.", buttonLabel: "Convertir PPT ahora" },
+    faq: [{ question: "¿Cómo convierto PowerPoint a PDF?", answer: "Suba el archivo PPTX y descargue el PDF." }, { question: "¿Es gratis?", answer: "Sí, la conversión de PPT a PDF es completamente gratis." }],
   },
   "html-to-pdf": {
     ...enTools["html-to-pdf"],
@@ -2118,6 +2131,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: facturas, informes y páginas web exportadas.",
     steps: ["Sube un archivo .html.", "CloudConvert lo convierte a PDF.", "Descarga el resultado."],
     cta: { eyebrow: "HTML a PDF", title: "Convierte archivos HTML a PDF.", description: "Transforma archivos HTML autónomos en PDF limpios para compartir.", buttonLabel: "Convertir HTML ahora" },
+    faq: [{ question: "¿Cómo convierto HTML a PDF?", answer: "Suba el archivo .html y descargue el PDF convertido." }, { question: "¿Se incluyen las imágenes y el CSS?", answer: "Sí, siempre que las imágenes y el CSS estén incrustados o sean accesibles. Los archivos HTML totalmente autocontenidos ofrecen los mejores resultados." }, { question: "¿Es gratis?", answer: "Sí, la conversión de HTML a PDF es completamente gratis." }],
   },
   "merge-pdf": {
     ...enTools["merge-pdf"],
@@ -2141,6 +2155,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Combinar PDF es útil para paquetes de clientes, solicitudes, facturas y conjuntos de informes.",
     steps: ["Sube varios PDF.", "Arrastra para definir el orden.", "Descarga un único PDF combinado."],
     cta: { eyebrow: "Combinar PDF", title: "Crea un paquete de documentos limpio y unificado.", description: "Combina PDF en un resultado organizado para el trabajo, los estudios o la entrega a clientes.", buttonLabel: "Combinar PDF ahora" },
+    faq: [{ question: "¿Puedo subir varios PDF a la vez?", answer: "Sí, el flujo de trabajo de combinación admite la carga de múltiples archivos." }, { question: "¿Puedo cambiar el orden de los archivos?", answer: "Sí, la página incluye una vista previa para ordenar los archivos antes de combinarlos." }, { question: "¿Qué obtengo como resultado?", answer: "Obtendrá un único archivo PDF con todas las páginas en el orden elegido." }],
   },
   "split-pdf": {
     ...enTools["split-pdf"],
@@ -2164,6 +2179,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Dividir PDF ayuda a preparar archivos más pequeños a partir de informes, formularios, escaneos y paquetes.",
     steps: ["Sube un PDF.", "Haz clic entre páginas para definir los cortes.", "Descarga los segmentos en un ZIP."],
     cta: { eyebrow: "Dividir PDF", title: "Extrae solo las páginas que necesitas.", description: "Prepara conjuntos de documentos más pequeños a partir de un PDF más grande.", buttonLabel: "Dividir PDF ahora" },
+    faq: [{ question: "¿Puedo extraer un rango de páginas?", answer: "Sí, el flujo de trabajo incluye un campo para especificar el rango de páginas que desea extraer." }, { question: "¿Qué obtengo como resultado?", answer: "Los archivos divididos se descargan en un ZIP." }, { question: "¿Funciona con PDF escaneados?", answer: "Sí, como entrada de PDF; el reconocimiento de texto pertenece al flujo de trabajo de OCR." }],
   },
   "jpg-to-pdf": {
     ...enTools["jpg-to-pdf"],
@@ -2187,6 +2203,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "JPG a PDF ayuda a convertir imágenes en documentos portables para almacenamiento, envío y entrega.",
     steps: ["Selecciona una o más imágenes.", "Ordénalas por páginas.", "Exporta el documento PDF."],
     cta: { eyebrow: "JPG a PDF", title: "Convierte tus imágenes en un PDF organizado.", description: "Prepara fotos, escaneos, recibos e imágenes para compartirlos en PDF.", buttonLabel: "Convertir JPG ahora" },
+    faq: [{ question: "¿Cómo convierto JPG a PDF?", answer: "Suba una o varias imágenes JPG y descargue el PDF combinado." }, { question: "¿Puedo subir varias imágenes?", answer: "Sí, el flujo de trabajo permite combinar múltiples JPG en un solo PDF." }, { question: "¿Es gratis?", answer: "Sí, la conversión de JPG a PDF es completamente gratis." }],
   },
   "png-to-pdf": {
     ...enTools["png-to-pdf"],
@@ -2210,6 +2227,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: capturas de pantalla, diagramas y exportaciones de diseño.",
     steps: ["Elige las imágenes PNG.", "Ordénalas por páginas.", "Convierte y descarga el PDF."],
     cta: { eyebrow: "PNG a PDF", title: "Convierte imágenes PNG en un PDF.", description: "Transforma archivos PNG en PDF para compartirlos y almacenarlos.", buttonLabel: "Convertir PNG ahora" },
+    faq: [{ question: "¿Cómo convierto PNG a PDF?", answer: "Suba una o varias imágenes PNG y descargue el PDF combinado." }, { question: "¿Puedo subir varias imágenes?", answer: "Sí, el flujo de trabajo permite combinar múltiples PNG en un solo PDF." }, { question: "¿Es gratis?", answer: "Sí, la conversión de PNG a PDF es completamente gratis." }],
   },
   "pdf-to-jpg": {
     ...enTools["pdf-to-jpg"],
@@ -2233,6 +2251,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: extraer diagramas, compartir páginas concretas o usar fragmentos de un documento.",
     steps: ["Sube un PDF.", "Si quieres, elige qué páginas convertir.", "Descarga las imágenes JPG o el ZIP."],
     cta: { eyebrow: "PDF a JPG", title: "Extrae las páginas de tu PDF como imágenes JPG.", description: "Convierte páginas de PDF en imágenes, por completo en tu navegador.", buttonLabel: "Convertir PDF ahora" },
+    faq: [{ question: "¿Cómo convierto un PDF a JPG?", answer: "Suba el PDF y descargue un archivo JPG por cada página, empaquetados juntos." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Toda la conversión ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }, { question: "¿Es gratis?", answer: "Sí, la conversión de PDF a JPG es completamente gratis." }],
   },
   "pdf-to-png": {
     ...enTools["pdf-to-png"],
@@ -2256,6 +2275,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: extraer diagramas, archivar páginas individuales o compartir fragmentos del documento.",
     steps: ["Sube un PDF.", "Si quieres, elige qué páginas convertir.", "Descarga las imágenes PNG o el ZIP."],
     cta: { eyebrow: "PDF a PNG", title: "Extrae las páginas de tu PDF como imágenes PNG.", description: "Convierte páginas de PDF en PNG sin pérdida, por completo en tu navegador.", buttonLabel: "Convertir PDF ahora" },
+    faq: [{ question: "¿Cómo convierto un PDF a PNG?", answer: "Suba el PDF y descargue un archivo PNG por cada página, empaquetados juntos." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Toda la conversión ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }, { question: "¿Es gratis?", answer: "Sí, la conversión de PDF a PNG es completamente gratis." }],
   },
   "pdf-to-image": {
     ...enTools["pdf-to-image"],
@@ -2279,6 +2299,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Extrae diagramas, archiva diapositivas o prepara imágenes para la web.",
     steps: ["Sube un PDF.", "Si quieres, indica un rango de páginas y un formato.", "Descarga las imágenes o el ZIP."],
     cta: { eyebrow: "PDF a imagen", title: "Extrae las páginas de tu PDF como imágenes JPG o PNG.", description: "Convierte páginas de PDF en imágenes, por completo en tu navegador.", buttonLabel: "Convertir PDF ahora" },
+    faq: [{ question: "¿Cómo convierto un PDF a imagen?", answer: "Suba el PDF, elija el formato de salida y obtendrá una imagen por cada página." }, { question: "¿Qué formatos de imagen se admiten?", answer: "Se admiten JPG y PNG, ambos procesados localmente en el navegador." }, { question: "¿Es gratis?", answer: "Sí, la conversión de PDF a imagen es completamente gratis." }],
   },
   "delete-page": {
     ...enTools["delete-page"],
@@ -2302,6 +2323,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: quitar portadas, páginas en blanco o secciones confidenciales antes de compartir.",
     steps: ["Sube un PDF.", "Haz clic en las páginas que quieres eliminar.", "Descarga el PDF recortado."],
     cta: { eyebrow: "Eliminar páginas", title: "Quita las páginas que no necesitas de tu PDF.", description: "Elimina páginas de forma precisa, por completo en tu navegador.", buttonLabel: "Eliminar páginas ahora" },
+    faq: [{ question: "¿Cómo elimino páginas de un PDF?", answer: "Suba el PDF, seleccione las páginas que desea eliminar y descargue el archivo actualizado." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Todo el procesamiento ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }, { question: "¿Es gratis?", answer: "Sí, eliminar páginas de un PDF es completamente gratis." }],
   },
   "rotate-page": {
     ...enTools["rotate-page"],
@@ -2325,6 +2347,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: corregir documentos escaneados de lado o páginas que quedaron al revés.",
     steps: ["Sube un PDF.", "Haz clic en las páginas para girarlas, o usa «Rotar todo».", "Descarga el PDF corregido."],
     cta: { eyebrow: "Rotar páginas", title: "Corrige la orientación de las páginas de tu PDF.", description: "Rota páginas de PDF sin subirlas a un servidor.", buttonLabel: "Rotar páginas ahora" },
+    faq: [{ question: "¿Cómo roto páginas de un PDF?", answer: "Suba el PDF, seleccione las páginas y el ángulo de rotación, y descargue el archivo actualizado." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Todo el procesamiento ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }, { question: "¿Es gratis?", answer: "Sí, rotar páginas de un PDF es completamente gratis." }],
   },
   "reorder-pages": {
     ...enTools["reorder-pages"],
@@ -2348,6 +2371,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: corregir el orden de escaneos, reorganizar informes o preparar documentos para entrega.",
     steps: ["Sube un PDF.", "Arrastra las miniaturas al nuevo orden.", "Descarga el PDF reorganizado."],
     cta: { eyebrow: "Reordenar páginas", title: "Reorganiza las páginas de tu PDF.", description: "Cambia el orden de las páginas sin subirlas a un servidor.", buttonLabel: "Reordenar páginas ahora" },
+    faq: [{ question: "¿Cómo reorganizo las páginas de un PDF?", answer: "Suba el PDF, arrastre las miniaturas para cambiar el orden y descargue el archivo actualizado." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Todo el procesamiento ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }, { question: "¿Es gratis?", answer: "Sí, reorganizar las páginas de un PDF es completamente gratis." }],
   },
   "add-page": {
     ...enTools["add-page"],
@@ -2371,6 +2395,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: añadir portadas, páginas separadoras, anexos o imágenes a un documento existente.",
     steps: ["Sube un PDF.", "Haz clic donde quieres insertar y elige el archivo a añadir.", "Descarga el PDF actualizado."],
     cta: { eyebrow: "Añadir páginas", title: "Inserta páginas en el lugar exacto de tu PDF.", description: "Añade páginas a tus documentos PDF sin subirlos a un servidor.", buttonLabel: "Insertar páginas ahora" },
+    faq: [{ question: "¿Cómo inserto una página en blanco en un PDF?", answer: "Suba el PDF, elija la posición de inserción y descargue el archivo actualizado." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Todo el procesamiento ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }, { question: "¿Es gratis?", answer: "Sí, agregar páginas en blanco a un PDF es completamente gratis." }],
   },
   "page-numbers": {
     ...enTools["page-numbers"],
@@ -2394,6 +2419,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: informes, contratos, folletos y documentos impresos que requieren referencia de página.",
     steps: ["Sube un PDF.", "Elige la posición, el formato y el número inicial.", "Descarga el PDF paginado."],
     cta: { eyebrow: "Números de página", title: "Añade números de página a tu PDF.", description: "Numera cada página, por completo en tu navegador.", buttonLabel: "Añadir números ahora" },
+    faq: [{ question: "¿Cómo agrego números de página a un PDF?", answer: "Suba el PDF y descargue el resultado; cada página recibirá su número automáticamente." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Todo el procesamiento ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }, { question: "¿Dónde aparecen los números de página?", answer: "En el pie de página, centrados, con el formato «página actual / total de páginas»." }],
   },
   "watermark-pdf": {
     ...enTools["watermark-pdf"],
@@ -2417,6 +2443,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: marcar borradores, informes confidenciales, pruebas y documentos con autoría.",
     steps: ["Sube un PDF.", "Escribe el texto de la marca de agua (o sube una imagen).", "Descarga el PDF con la marca de agua."],
     cta: { eyebrow: "Marca de agua", title: "Añade una marca de agua a tu PDF.", description: "Estampa texto o imagen en cada página, por completo en tu navegador.", buttonLabel: "Añadir marca de agua ahora" },
+    faq: [{ question: "¿Cómo agrego una marca de agua a un PDF?", answer: "Suba el PDF, escriba el texto de la marca de agua y descargue el archivo resultante." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Toda la operación de marca de agua ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }, { question: "¿Puedo eliminar la marca de agua después?", answer: "La marca de agua queda integrada en el contenido de la página. Si necesita una versión sin marca, conserve el archivo original." }],
   },
   "sign-pdf": {
     ...enTools["sign-pdf"],
@@ -2440,6 +2467,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Sube el PDF, añade tu firma y descarga el documento firmado listo para enviar.",
     steps: ["Sube el PDF que necesitas firmar.", "Dibuja, escribe o sube tu firma y colócala en el documento.", "Descarga el PDF firmado listo para enviar o compartir."],
     cta: { eyebrow: "Firmar PDF", title: "Firma tus documentos PDF gratis.", description: "Sin descargas, sin registro y sin almacenamiento. Firma PDF de forma segura en tu navegador con DockDocs.", buttonLabel: "Firmar PDF ahora" },
+    faq: [{ question: "¿Cómo firmo un PDF?", answer: "Suba el PDF, agregue su firma (a mano o escribiéndola) y descargue el archivo firmado." }, { question: "¿La firma tiene validez legal?", answer: "DockDocs genera una firma visual, adecuada para uso interno o escenarios informales. Para firmas con plena validez legal, utilice un servicio de firma electrónica certificado." }, { question: "¿Es gratis?", answer: "Sí, la firma de PDF es completamente gratis." }],
   },
   "translate-pdf": {
     ...enTools["translate-pdf"],
@@ -2463,6 +2491,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Sube tu PDF, elige el idioma de destino y descarga el texto traducido.",
     steps: ["Sube el PDF que quieres traducir.", "Elige el idioma de destino — la IA traduce el texto del documento.", "Copia o descarga el texto traducido."],
     cta: { eyebrow: "Traducir PDF", title: "Traduce tus documentos PDF con IA.", description: "Gratis y rápido. Traduce el texto de un PDF a más de 18 idiomas con la IA de DockDocs.", buttonLabel: "Traducir PDF ahora" },
+    faq: [{ question: "¿Cómo traduzco un PDF?", answer: "Suba el PDF, seleccione el idioma de destino y descargue el archivo traducido." }, { question: "¿Qué idiomas se admiten?", answer: "El motor de IA admite decenas de idiomas, incluyendo inglés, español, francés, alemán y chino, entre otros." }, { question: "¿Se conserva el formato tras la traducción?", answer: "La IA hace su mejor esfuerzo por preservar el diseño y el formato, aunque el resultado puede variar según el PDF." }],
   },
   "pdf-to-text": {
     ...enTools["pdf-to-text"],
@@ -2495,6 +2524,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comunes: copiar citas, alimentar texto a otras herramientas, accesibilidad y búsqueda.",
     steps: ["Sube un PDF.", "Si quieres, indica un rango de páginas.", "Descarga el archivo .txt extraído."],
     cta: { eyebrow: "PDF a Texto", title: "Convierte tu PDF a texto plano.", description: "Extrae texto limpio, por completo en tu navegador.", buttonLabel: "Convertir a texto ahora" },
+    faq: [{ question: "¿Cómo convierto un PDF a texto?", answer: "Suba el PDF y descargue el archivo .txt con el texto extraído." }, { question: "¿Es compatible con PDF escaneados?", answer: "Solo se admiten PDF que contengan texto real. Para documentos escaneados, utilice primero el flujo de trabajo de OCR." }, { question: "¿Mi PDF se envía a algún servidor?", answer: "No. Todo el procesamiento ocurre localmente en su navegador; el archivo nunca abandona su dispositivo." }],
   },
   "edit-pdf": {
     ...enTools["edit-pdf"],
@@ -2527,6 +2557,7 @@ const esTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "El flujo para editar PDF de DockDocs está pensado para la rapidez: sube, edita y descarga.",
     steps: ["Sube tu archivo PDF arrastrándolo a la página o haciendo clic para buscarlo.", "Agrega texto, formas o imágenes con las herramientas de anotación integradas.", "Descarga el PDF editado con tus cambios aplicados, listo para compartir."],
     cta: { eyebrow: "Editar PDF", title: "Empieza a editar tus documentos PDF gratis.", description: "Sin descargas, sin registro. Edita PDF directamente en tu navegador con DockDocs.", buttonLabel: "Editar PDF ahora" },
+    faq: [{ question: "¿Puedo editar un PDF sin Adobe Acrobat?", answer: "Sí. DockDocs ofrece edición de PDF gratuita en el navegador, sin necesidad de instalar ningún software." }, { question: "¿Puedo agregar texto e imágenes?", answer: "Sí, puede agregar anotaciones de texto e imágenes en cualquier parte de la página." }, { question: "¿El archivo sigue siendo un PDF después de editarlo?", answer: "Sí, el archivo descargado sigue siendo un PDF estándar." }, { question: "¿Se conserva el formato original tras la edición?", answer: "El contenido original no se modifica; el texto e imágenes nuevos se superponen como una capa de anotaciones." }, { question: "¿Es gratis?", answer: "Sí, las funciones básicas de edición de PDF son completamente gratis." }],
   },
 };
 
@@ -2557,6 +2588,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Comprimir PDF ajuda quando um arquivo está pesado demais para e-mails, uploads, portais ou arquivamento de documentos.",
     steps: ["Selecione um arquivo PDF do seu dispositivo.", "Deixe a DockDocs preparar o documento para otimizá-lo.", "Baixe um PDF mais leve para compartilhar, enviar ou arquivar."],
     cta: { eyebrow: "Comprimir PDF", title: "Comece com um PDF mais leve e fácil de compartilhar.", description: "Reduza o tamanho do PDF para limites de upload, e-mail e uma entrega de documentos impecável.", buttonLabel: "Comprimir PDF agora" },
+    faq: [{ question: "Como comprimir um PDF?", answer: "Envie o PDF, verifique o status da compressao e baixe o arquivo comprimido." }, { question: "E grats?", answer: "Sim, esta pagina foi criada para uso diario gratuito de compressao de PDF." }, { question: "Funciona no celular?", answer: "Sim. A pagina e compativel com dispositivos moveis e desktop." }],
   },
   "protect-pdf": {
     ...enTools["protect-pdf"],
@@ -2580,6 +2612,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: contratos, documentos financeiros e relatórios confidenciais.",
     steps: ["Envie um PDF.", "Digite uma senha (no mínimo 4 caracteres).", "Baixe o PDF criptografado."],
     cta: { eyebrow: "Proteger PDF", title: "Adicione proteção por senha ao seu PDF.", description: "Criptografe PDFs com uma senha inteiramente no seu navegador.", buttonLabel: "Proteger PDF agora" },
+    faq: [{ question: "Como proteger um PDF com senha?", answer: "Envie o PDF, defina uma senha e baixe o arquivo criptografado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processo de criptografia acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a protecao de PDF com senha e totalmente gratuita." }],
   },
   "unlock-pdf": {
     ...enTools["unlock-pdf"],
@@ -2603,6 +2636,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Envie o PDF com restrições, deixe o campo de senha vazio ou preencha se o arquivo exigir, e baixe o PDF livre.",
     steps: ["Envie o PDF com restrições ou proteção por senha.", "Deixe o campo vazio se só precisar remover restrições de uso, ou insira a senha se o PDF pedir uma para abrir.", "Baixe o PDF desbloqueado, pronto para editar, imprimir e compartilhar."],
     cta: { eyebrow: "Desbloquear PDF", title: "Remova a proteção por senha dos seus PDFs grátis.", description: "Sem downloads, sem conta e sem armazenamento. Desbloqueie PDFs com segurança no seu navegador com a DockDocs.", buttonLabel: "Desbloquear PDF agora" },
+    faq: [{ question: "Preciso de senha para remover as restricoes de um PDF?", answer: "Nem sempre. Se o PDF abre normalmente mas impressao, copia ou edicao estao bloqueadas (senha de permissoes), as restricoes podem ser removidas sem senha. Se o PDF exigir senha para abrir (senha de abertura), voce precisara fornece-la." }, { question: "Como remover a senha de permissoes de um PDF?", answer: "Envie o PDF e a ferramenta detecta e remove automaticamente as restricoes de permissoes. Depois e so baixar o arquivo desbloqueado." }, { question: "E grats?", answer: "Sim, a remocao de restricoes de PDF e totalmente gratuita." }, { question: "Isso e legal?", answer: "Sim, desde que voce use apenas em documentos proprios ou para os quais tenha autorizacao." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }],
   },
   "ocr-pdf": {
     ...enTools["ocr-pdf"],
@@ -2626,6 +2660,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "O OCR de PDF ajuda a converter documentos baseados em imagem em texto que você pode pesquisar e reaproveitar.",
     steps: ["Envie um PDF digitalizado.", "Execute o reconhecimento de texto por OCR.", "Copie ou baixe o texto extraído."],
     cta: { eyebrow: "OCR de PDF", title: "Converta documentos digitalizados em texto reaproveitável.", description: "Extraia, confira, copie e baixe o texto dos seus PDFs digitalizados.", buttonLabel: "Iniciar OCR" },
+    faq: [{ question: "Como fazer OCR em um PDF?", answer: "Envie o PDF digitalizado e baixe o arquivo com a camada de texto pesquisavel." }, { question: "Funciona com PDFs digitalizados e conteudo manuscrito?", answer: "Funciona bem com a maioria dos documentos impressos digitalizados. O reconhecimento de texto manuscrito tem precisao menor." }, { question: "E grats?", answer: "Sim, o OCR e totalmente gratuito." }],
   },
   "pdf-to-word": {
     ...enTools["pdf-to-word"],
@@ -2649,6 +2684,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "PDF para Word é útil quando um PDF estático precisa ser modificado, reaproveitado ou compartilhado para colaboração.",
     steps: ["Envie um PDF.", "Converta a estrutura do documento.", "Baixe um documento do Word editável."],
     cta: { eyebrow: "PDF para Word", title: "Prepare seus PDFs para editar e reaproveitar.", description: "Passe de documentos estáticos para fluxos de trabalho editáveis.", buttonLabel: "Converter agora" },
+    faq: [{ question: "Como converter PDF para Word?", answer: "Envie o PDF e baixe o arquivo DOCX editavel." }, { question: "A formatacao e preservada apos a conversao?", answer: "O CloudConvert faz o melhor possivel para preservar o layout, mas o resultado pode variar conforme o PDF." }, { question: "E grats?", answer: "Sim, a conversao de PDF para Word e totalmente gratuita." }],
   },
   "pdf-to-excel": {
     ...enTools["pdf-to-excel"],
@@ -2672,6 +2708,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: dados financeiros, relatórios, faturas.",
     steps: ["Envie um PDF com tabelas.", "A CloudConvert extrai os dados.", "Baixe o XLSX."],
     cta: { eyebrow: "PDF para Excel", title: "Extraia os dados dos seus PDFs para o Excel.", description: "Converta as tabelas dos seus PDFs em XLSX editável.", buttonLabel: "Converter PDF agora" },
+    faq: [{ question: "Como converter PDF para Excel?", answer: "Envie o PDF e baixe o arquivo XLSX gerado." }, { question: "E grats?", answer: "Sim, a conversao de PDF para Excel e totalmente gratuita." }],
   },
   "pdf-to-ppt": {
     ...enTools["pdf-to-ppt"],
@@ -2695,6 +2732,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: reaproveitar páginas de um relatório como slides para uma apresentação.",
     steps: ["Envie um arquivo PDF.", "A CloudConvert converte para PPTX.", "Baixe o PowerPoint."],
     cta: { eyebrow: "PDF para PPT", title: "Converta PDF em PowerPoint.", description: "Transforme as páginas de um PDF em uma apresentação PPTX editável.", buttonLabel: "Converter PDF agora" },
+    faq: [{ question: "Como converter PDF para PowerPoint?", answer: "Envie o PDF e baixe o arquivo PPTX convertido." }, { question: "A formatacao dos slides e preservada?", answer: "O CloudConvert converte cada pagina do PDF em um slide. O resultado pode variar conforme o PDF." }, { question: "E grats?", answer: "Sim, a conversao de PDF para PowerPoint e totalmente gratuita." }],
   },
   "pdf-to-pdfa": {
     ...enTools["pdf-to-pdfa"],
@@ -2718,6 +2756,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: jurídico, órgãos públicos e registros que precisam continuar legíveis por anos.",
     steps: ["Envie um arquivo PDF.", "A CloudConvert converte para PDF/A.", "Baixe o PDF de arquivo."],
     cta: { eyebrow: "PDF para PDF/A", title: "Converta PDF em PDF/A.", description: "Prepare seus documentos para arquivamento e conformidade.", buttonLabel: "Converter PDF agora" },
+    faq: [{ question: "O que e PDF/A?", answer: "PDF/A e uma versao do PDF padronizada pela ISO, projetada para arquivamento de longo prazo, com fontes e recursos totalmente incorporados." }, { question: "Como converter PDF para PDF/A?", answer: "Envie o PDF e baixe o arquivo PDF/A pronto para arquivamento de longo prazo." }, { question: "E grats?", answer: "Sim, a conversao de PDF para PDF/A e totalmente gratuita." }],
   },
   "pdf-to-html": {
     ...enTools["pdf-to-html"],
@@ -2741,6 +2780,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: publicar conteúdo na web, reaproveitá-lo e melhorar a acessibilidade.",
     steps: ["Envie um PDF.", "Se quiser, informe um intervalo de páginas.", "Baixe o arquivo .html."],
     cta: { eyebrow: "PDF para HTML", title: "Converta seu PDF em HTML.", description: "Obtenha HTML limpo e estruturado, tudo dentro do seu navegador.", buttonLabel: "Converter em HTML agora" },
+    faq: [{ question: "Como converter PDF para HTML?", answer: "Envie o PDF e baixe o arquivo HTML gerado." }, { question: "As imagens e a formatacao sao preservadas?", answer: "Sim - cada pagina e renderizada como imagem para preservar o layout, e uma area recolhivel abaixo da pagina mantem o texto original selecionavel para facilitar a busca." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }],
   },
   "pdf-to-markdown": {
     ...enTools["pdf-to-markdown"],
@@ -2764,6 +2804,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: importar PDFs para wikis e sistemas de documentação.",
     steps: ["Envie um PDF baseado em texto.", "Se quiser, informe um intervalo de páginas.", "Baixe o arquivo Markdown."],
     cta: { eyebrow: "PDF para Markdown", title: "Extraia o conteúdo do PDF como Markdown estruturado.", description: "Converta PDF em Markdown direto do seu navegador.", buttonLabel: "Converter PDF agora" },
+    faq: [{ question: "Como converter PDF para Markdown?", answer: "Envie o PDF e baixe o arquivo .md convertido." }, { question: "A formatacao e preservada apos a conversao?", answer: "Titulos, listas e paragrafos sao convertidos para sintaxe Markdown sempre que possivel. Tabelas complexas podem ter resultado limitado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }],
   },
   "word-to-pdf": {
     ...enTools["word-to-pdf"],
@@ -2787,6 +2828,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: contratos, relatórios, propostas.",
     steps: ["Envie um arquivo DOCX ou DOC.", "A CloudConvert converte.", "Baixe o PDF."],
     cta: { eyebrow: "Word para PDF", title: "Converta documentos do Word em PDF.", description: "Converta arquivos DOCX em PDF para compartilhar.", buttonLabel: "Converter Word agora" },
+    faq: [{ question: "Como converter um documento Word para PDF?", answer: "Envie o arquivo DOCX ou DOC e baixe o PDF convertido." }, { question: "A formatacao e preservada apos a conversao?", answer: "Nosso motor de conversao preserva fontes, espacamento e layout - com resultado equivalente ao de uma exportacao direta do Word." }, { question: "E grats?", answer: "Sim, a conversao de Word para PDF e totalmente gratuita e nao requer conta." }, { question: "Quais formatos de arquivo sao suportados?", answer: "Sao suportados os formatos .docx e .doc, com tamanho maximo de 100 MB." }],
   },
   "excel-to-pdf": {
     ...enTools["excel-to-pdf"],
@@ -2810,6 +2852,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: relatórios, orçamentos e dados financeiros.",
     steps: ["Envie um arquivo XLSX ou XLS.", "A CloudConvert converte.", "Baixe o PDF."],
     cta: { eyebrow: "Excel para PDF", title: "Converta Excel em PDF.", description: "Converta arquivos XLSX em PDF para compartilhar.", buttonLabel: "Converter Excel agora" },
+    faq: [{ question: "Como converter Excel para PDF?", answer: "Envie o arquivo XLSX e baixe o PDF gerado." }, { question: "E grats?", answer: "Sim, a conversao de Excel para PDF e totalmente gratuita." }],
   },
   "ppt-to-pdf": {
     ...enTools["ppt-to-pdf"],
@@ -2833,6 +2876,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: compartilhar apresentações e imprimir material de apoio.",
     steps: ["Envie um arquivo PPTX ou PPT.", "A CloudConvert converte.", "Baixe o PDF."],
     cta: { eyebrow: "PPT para PDF", title: "Converta PowerPoint em PDF.", description: "Converta arquivos PPTX em PDF para compartilhar.", buttonLabel: "Converter PPT agora" },
+    faq: [{ question: "Como converter PowerPoint para PDF?", answer: "Envie o arquivo PPTX e baixe o PDF gerado." }, { question: "E grats?", answer: "Sim, a conversao de PPT para PDF e totalmente gratuita." }],
   },
   "html-to-pdf": {
     ...enTools["html-to-pdf"],
@@ -2856,6 +2900,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: faturas, relatórios e páginas web exportadas.",
     steps: ["Envie um arquivo .html.", "A CloudConvert converte para PDF.", "Baixe o resultado."],
     cta: { eyebrow: "HTML para PDF", title: "Converta arquivos HTML em PDF.", description: "Transforme arquivos HTML autossuficientes em PDFs limpos para compartilhar.", buttonLabel: "Converter HTML agora" },
+    faq: [{ question: "Como converter HTML para PDF?", answer: "Envie o arquivo .html e baixe o PDF convertido." }, { question: "Imagens e CSS serao incluidos?", answer: "Sim, desde que as imagens e o CSS estejam incorporados ou acessiveis. Arquivos HTML totalmente autossuficientes dao os melhores resultados." }, { question: "E grats?", answer: "Sim, a conversao de HTML para PDF e totalmente gratuita." }],
   },
   "merge-pdf": {
     ...enTools["merge-pdf"],
@@ -2879,6 +2924,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Mesclar PDF é útil para conjuntos de clientes, candidaturas, faturas e pacotes de relatórios.",
     steps: ["Envie vários PDFs.", "Organize a ordem dos arquivos.", "Baixe um único PDF unificado."],
     cta: { eyebrow: "Mesclar PDF", title: "Crie um conjunto de documentos limpo e único.", description: "Combine PDFs em um resultado organizado para o trabalho, a faculdade ou a entrega ao cliente.", buttonLabel: "Mesclar PDF agora" },
+    faq: [{ question: "Posso enviar varios PDFs?", answer: "Sim, o fluxo de mesclagem suporta o envio de varios arquivos." }, { question: "Posso ajustar a ordem dos arquivos?", answer: "Sim, a pagina inclui uma previa com ordenacao antes de mesclar." }, { question: "Qual e o resultado gerado?", answer: "O resultado e um unico arquivo PDF com as paginas na ordem definida." }],
   },
   "split-pdf": {
     ...enTools["split-pdf"],
@@ -2902,6 +2948,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Dividir PDF ajuda a preparar arquivos menores a partir de relatórios, formulários, digitalizações e conjuntos.",
     steps: ["Envie um único PDF.", "Informe os intervalos de páginas.", "Exporte as páginas divididas em ZIP."],
     cta: { eyebrow: "Dividir PDF", title: "Extraia apenas as páginas de que você precisa.", description: "Prepare conjuntos de documentos menores a partir de um PDF maior.", buttonLabel: "Dividir PDF agora" },
+    faq: [{ question: "Posso extrair um intervalo de paginas?", answer: "Sim, o fluxo inclui um campo para definir o intervalo de paginas desejado." }, { question: "Qual e o resultado gerado?", answer: "O resultado da divisao e exportado em um arquivo ZIP." }, { question: "Funciona com PDF digitalizado?", answer: "Sim como entrada de PDF. O reconhecimento de texto e um fluxo de OCR separado." }],
   },
   "jpg-to-pdf": {
     ...enTools["jpg-to-pdf"],
@@ -2925,6 +2972,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "JPG para PDF ajuda a transformar imagens em documentos portáteis para armazenar, compartilhar e entregar.",
     steps: ["Selecione uma ou mais imagens.", "Organize a ordem das páginas.", "Exporte um documento PDF."],
     cta: { eyebrow: "JPG para PDF", title: "Transforme imagens em um fluxo de documento pronto para PDF.", description: "Prepare fotos, digitalizações, recibos e imagens para compartilhar em PDF.", buttonLabel: "Converter JPG agora" },
+    faq: [{ question: "Como converter JPG para PDF?", answer: "Envie uma ou mais imagens JPG e baixe o PDF gerado." }, { question: "Posso enviar varias imagens?", answer: "Sim, o fluxo suporta a combinacao de varios JPGs em um unico PDF." }, { question: "E grats?", answer: "Sim, a conversao de JPG para PDF e totalmente gratuita." }],
   },
   "png-to-pdf": {
     ...enTools["png-to-pdf"],
@@ -2948,6 +2996,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: capturas de tela, diagramas e exportações de protótipos.",
     steps: ["Selecione imagens PNG.", "Organize-as na ordem.", "Converta em PDF."],
     cta: { eyebrow: "PNG para PDF", title: "Transforme imagens PNG em PDF.", description: "Converta arquivos PNG em PDF para compartilhar e armazenar.", buttonLabel: "Converter PNG agora" },
+    faq: [{ question: "Como converter PNG para PDF?", answer: "Envie uma ou mais imagens PNG e baixe o PDF gerado." }, { question: "Posso enviar varias imagens?", answer: "Sim, o fluxo suporta a combinacao de varios PNGs em um unico PDF." }, { question: "E grats?", answer: "Sim, a conversao de PNG para PDF e totalmente gratuita." }],
   },
   "pdf-to-jpg": {
     ...enTools["pdf-to-jpg"],
@@ -2971,6 +3020,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: extrair diagramas, compartilhar páginas específicas.",
     steps: ["Envie um PDF.", "Informe um intervalo de páginas, se quiser.", "Baixe as imagens JPG ou o ZIP."],
     cta: { eyebrow: "PDF para JPG", title: "Extraia as páginas de um PDF como imagens JPG.", description: "Converta as páginas de um PDF em imagens, totalmente no seu navegador.", buttonLabel: "Converter PDF agora" },
+    faq: [{ question: "Como converter PDF para JPG?", answer: "Envie o PDF e cada pagina sera convertida em uma imagem JPG para download em pacote." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Toda a conversao acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a conversao de PDF para JPG e totalmente gratuita." }],
   },
   "pdf-to-png": {
     ...enTools["pdf-to-png"],
@@ -2994,6 +3044,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: extrair diagramas, arquivar páginas.",
     steps: ["Envie um PDF.", "Informe um intervalo de páginas, se quiser.", "Baixe as imagens PNG ou o ZIP."],
     cta: { eyebrow: "PDF para PNG", title: "Extraia as páginas de um PDF como imagens PNG sem perdas.", description: "Converta as páginas de um PDF em PNG no seu navegador.", buttonLabel: "Converter PDF agora" },
+    faq: [{ question: "Como converter PDF para PNG?", answer: "Envie o PDF e cada pagina sera convertida em uma imagem PNG para download em pacote." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Toda a conversao acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a conversao de PDF para PNG e totalmente gratuita." }],
   },
   "pdf-to-image": {
     ...enTools["pdf-to-image"],
@@ -3017,6 +3068,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Extraia diagramas, arquive slides, prepare imagens para a web.",
     steps: ["Envie um PDF.", "Informe um intervalo de páginas e um formato, se quiser.", "Baixe as imagens ou o ZIP."],
     cta: { eyebrow: "PDF para imagem", title: "Extraia as páginas de um PDF como imagens JPG ou PNG.", description: "Converta as páginas de um PDF em imagens no seu navegador.", buttonLabel: "Converter PDF agora" },
+    faq: [{ question: "Como converter PDF para imagem?", answer: "Envie o PDF, escolha o formato de saida e cada pagina sera convertida em uma imagem." }, { question: "Quais formatos de imagem sao suportados?", answer: "JPG e PNG, ambos processados localmente no seu navegador." }, { question: "E grats?", answer: "Sim, a conversao de PDF para imagem e totalmente gratuita." }],
   },
   "delete-page": {
     ...enTools["delete-page"],
@@ -3040,6 +3092,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: remover capas, páginas em branco, seções confidenciais.",
     steps: ["Envie um PDF.", "Informe os números ou intervalos de páginas a excluir.", "Baixe o PDF reduzido."],
     cta: { eyebrow: "Excluir páginas", title: "Remova as páginas indesejadas do seu PDF.", description: "Reduza PDFs removendo páginas ou intervalos específicos.", buttonLabel: "Excluir páginas agora" },
+    faq: [{ question: "Como excluir paginas de um PDF?", answer: "Envie o PDF, selecione as paginas que deseja excluir e baixe o arquivo atualizado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a exclusao de paginas do PDF e totalmente gratuita." }],
   },
   "rotate-page": {
     ...enTools["rotate-page"],
@@ -3063,6 +3116,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: corrigir documentos digitalizados, endireitar páginas de lado.",
     steps: ["Envie um PDF.", "Selecione as páginas a girar e o ângulo.", "Baixe o PDF corrigido."],
     cta: { eyebrow: "Girar páginas", title: "Corrija a orientação das páginas de um PDF em segundos.", description: "Gire páginas de PDF sem enviá-las a um servidor.", buttonLabel: "Girar páginas agora" },
+    faq: [{ question: "Como girar paginas de um PDF?", answer: "Envie o PDF, selecione as paginas e o angulo de rotacao, e baixe o arquivo atualizado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a rotacao de paginas do PDF e totalmente gratuita." }],
   },
   "reorder-pages": {
     ...enTools["reorder-pages"],
@@ -3086,6 +3140,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: corrigir a ordem de uma digitalização, reorganizar relatórios.",
     steps: ["Envie um PDF.", "Informe a nova ordem em números separados por vírgulas (ex.: 3,1,2,4).", "Baixe o PDF reordenado."],
     cta: { eyebrow: "Reordenar páginas", title: "Reorganize as páginas do seu PDF.", description: "Reordene as páginas de um PDF sem enviá-las a um servidor.", buttonLabel: "Reordenar agora" },
+    faq: [{ question: "Como reorganizar as paginas de um PDF?", answer: "Envie o PDF, arraste as miniaturas para ajustar a ordem e baixe o arquivo atualizado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a reorganizacao de paginas do PDF e totalmente gratuita." }],
   },
   "add-page": {
     ...enTools["add-page"],
@@ -3109,6 +3164,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: páginas de separação, espaço para anotações, margem para impressão.",
     steps: ["Envie um PDF.", "Informe a posição de inserção (0 = início, vazio = fim).", "Baixe o PDF atualizado."],
     cta: { eyebrow: "Adicionar páginas", title: "Insira uma página em branco no seu PDF.", description: "Adicione páginas em branco a PDFs sem enviá-los a um servidor.", buttonLabel: "Adicionar página agora" },
+    faq: [{ question: "Como inserir uma pagina em branco em um PDF?", answer: "Envie o PDF, escolha onde inserir a pagina e baixe o arquivo atualizado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, adicionar paginas em branco ao PDF e totalmente gratuito." }],
   },
   "page-numbers": {
     ...enTools["page-numbers"],
@@ -3132,6 +3188,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: relatórios, contratos, apostilas e documentos impressos.",
     steps: ["Envie um PDF.", "Clique em Adicionar números de página.", "Baixe o PDF numerado."],
     cta: { eyebrow: "Numeração de páginas", title: "Adicione números de página ao seu PDF.", description: "Numere cada página — totalmente no seu navegador.", buttonLabel: "Numerar agora" },
+    faq: [{ question: "Como adicionar numeros de pagina a um PDF?", answer: "Envie o PDF e baixe o resultado - os numeros de pagina sao adicionados automaticamente em cada pagina." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "Onde os numeros de pagina ficam posicionados?", answer: "No rodape centralizado, no formato pagina atual/total de paginas." }],
   },
   "watermark-pdf": {
     ...enTools["watermark-pdf"],
@@ -3155,6 +3212,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: marcar rascunhos, relatórios confidenciais, provas e propriedade.",
     steps: ["Envie um PDF.", "Digite o texto da marca d'água (ex.: CONFIDENCIAL).", "Baixe o PDF com marca d'água."],
     cta: { eyebrow: "Marca d'água em PDF", title: "Adicione uma marca d'água ao seu PDF.", description: "Carimbe texto em cada página — totalmente no seu navegador.", buttonLabel: "Adicionar marca d'água agora" },
+    faq: [{ question: "Como adicionar marca dagua a um PDF?", answer: "Envie o PDF, digite o texto da marca dagua e baixe o arquivo com a marca aplicada." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento de marca dagua acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "Posso remover a marca dagua depois?", answer: "A marca dagua fica incorporada ao conteudo da pagina. Se precisar de uma versao sem marca dagua, guarde o arquivo original." }],
   },
   "sign-pdf": {
     ...enTools["sign-pdf"],
@@ -3178,6 +3236,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "O fluxo de assinatura da DockDocs é simples — envie, assine e baixe o documento assinado.",
     steps: ["Envie o documento PDF que você precisa assinar.", "Desenhe, digite ou envie sua assinatura e posicione-a no documento.", "Baixe o PDF assinado, pronto para enviar ou compartilhar."],
     cta: { eyebrow: "Assinar PDF", title: "Assine seus documentos PDF grátis.", description: "Sem downloads, sem cadastro, sem armazenamento. Assine PDFs com segurança no seu navegador com a DockDocs.", buttonLabel: "Assinar PDF agora" },
+    faq: [{ question: "Como assinar um PDF?", answer: "Envie o PDF, adicione sua assinatura (desenhada ou digitada) e baixe o arquivo assinado." }, { question: "A assinatura tem validade juridica?", answer: "O DockDocs gera uma assinatura visual - indicada para uso interno ou situacoes informais. Para assinaturas com validade juridica, use um servico de assinatura eletronica certificado." }, { question: "E grats?", answer: "Sim, a funcao de assinatura de PDF e totalmente gratuita." }],
   },
   "translate-pdf": {
     ...enTools["translate-pdf"],
@@ -3201,6 +3260,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Envie seu PDF, selecione o idioma de destino e baixe o documento traduzido.",
     steps: ["Envie o PDF que você quer traduzir.", "Selecione o idioma de destino — a IA traduz o texto do documento.", "Copie ou baixe o texto traduzido."],
     cta: { eyebrow: "Traduzir PDF", title: "Traduza seus documentos PDF com IA.", description: "Grátis e rápido. Traduza o texto de um PDF para mais de 18 idiomas com a IA da DockDocs.", buttonLabel: "Traduzir PDF agora" },
+    faq: [{ question: "Como traduzir um PDF?", answer: "Envie o PDF, escolha o idioma de destino e baixe o arquivo traduzido." }, { question: "Quais idiomas sao suportados?", answer: "O motor de IA suporta dezenas de idiomas, incluindo ingles, espanhol, frances, alemao, chines e outros." }, { question: "A formatacao e preservada apos a traducao?", answer: "O motor de IA faz o melhor possivel para manter o layout e a formatacao, mas o resultado pode variar conforme o PDF." }],
   },
   "pdf-to-text": {
     ...enTools["pdf-to-text"],
@@ -3233,6 +3293,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usos comuns: copiar citações, inserir texto em outras ferramentas, acessibilidade e pesquisa.",
     steps: ["Envie um PDF.", "Se quiser, informe um intervalo de páginas.", "Baixe o arquivo .txt extraído."],
     cta: { eyebrow: "PDF para Texto", title: "Converta seu PDF em texto simples.", description: "Extraia texto limpo, inteiramente no seu navegador.", buttonLabel: "Converter em texto agora" },
+    faq: [{ question: "Como converter PDF para texto?", answer: "Envie o PDF e baixe o arquivo .txt com o texto extraido." }, { question: "Funciona com PDF digitalizado?", answer: "Apenas com PDFs que contenham texto real. Para documentos digitalizados, faca o OCR antes." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }],
   },
   "edit-pdf": {
     ...enTools["edit-pdf"],
@@ -3875,6 +3936,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Compresser un PDF est utile quand un fichier est trop lourd pour les e-mails, les importations, les portails ou l'archivage de documents.",
     steps: ["Sélectionnez un fichier PDF depuis votre appareil.", "Laissez DockDocs préparer le document pour l'optimiser.", "Téléchargez un PDF plus léger pour le partager, l'envoyer ou l'archiver."],
     cta: { eyebrow: "Compresser PDF", title: "Commencez avec un PDF plus léger et facile à partager.", description: "Réduisez la taille du PDF pour les limites d'importation, les e-mails et une remise de documents impeccable.", buttonLabel: "Compresser PDF maintenant" },
+    faq: [{ question: "Comment compresser un PDF ?", answer: "Déposez votre PDF, vérifiez le taux de compression, puis téléchargez le fichier compressé." }, { question: "Est-ce gratuit ?", answer: "Oui, cet outil est conçu pour une compression PDF quotidienne entièrement gratuite." }, { question: "Peut-on l'utiliser sur mobile ?", answer: "Oui, la page fonctionne aussi bien sur mobile que sur ordinateur." }],
   },
   "protect-pdf": {
     ...enTools["protect-pdf"],
@@ -3898,6 +3960,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : contrats, documents financiers et rapports confidentiels.",
     steps: ["Importez un PDF.", "Saisissez un mot de passe (4 caractères minimum).", "Téléchargez le PDF chiffré."],
     cta: { eyebrow: "Protéger PDF", title: "Ajoutez une protection par mot de passe à votre PDF.", description: "Chiffrez des PDF avec un mot de passe entièrement dans votre navigateur.", buttonLabel: "Protéger PDF maintenant" },
+    faq: [{ question: "Comment protéger un PDF par mot de passe ?", answer: "Déposez votre PDF, définissez un mot de passe, puis téléchargez le fichier chiffré." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toutes les opérations de chiffrement s'effectuent localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la protection par mot de passe d'un PDF est entièrement gratuite." }],
   },
   "unlock-pdf": {
     ...enTools["unlock-pdf"],
@@ -3921,6 +3984,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Importez votre PDF avec restrictions, laissez le champ mot de passe vide ou renseignez-le si le fichier l'exige, et téléchargez le PDF libéré.",
     steps: ["Importez le PDF comportant des restrictions ou une protection par mot de passe.", "Laissez le champ vide si vous souhaitez uniquement supprimer les restrictions d'usage, ou saisissez le mot de passe si le PDF en demande un pour s'ouvrir.", "Téléchargez le PDF déverrouillé, prêt à éditer, imprimer et partager."],
     cta: { eyebrow: "Déverrouiller PDF", title: "Supprimez la protection par mot de passe de vos PDF gratuitement.", description: "Sans téléchargement, sans compte et sans stockage. Déverrouillez les PDF en toute sécurité dans votre navigateur avec DockDocs.", buttonLabel: "Déverrouiller PDF maintenant" },
+    faq: [{ question: "Faut-il un mot de passe pour lever les restrictions d'un PDF ?", answer: "Pas nécessairement. Si le PDF s'ouvre normalement mais que l'impression, la copie ou l'édition est verrouillée (mot de passe de permissions), les restrictions peuvent être supprimées sans mot de passe. En revanche, si le PDF requiert un mot de passe à l'ouverture, vous devez le fournir." }, { question: "Comment supprimer le mot de passe de permissions d'un PDF ?", answer: "Déposez votre PDF ; l'outil détecte et supprime automatiquement les restrictions, puis vous téléchargez le fichier déverrouillé." }, { question: "Est-ce gratuit ?", answer: "Oui, la suppression des restrictions PDF est entièrement gratuite." }, { question: "Est-ce légal ?", answer: "Cet outil est réservé à vos propres documents ou à ceux pour lesquels vous avez obtenu une autorisation." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }],
   },
   "ocr-pdf": {
     ...enTools["ocr-pdf"],
@@ -3944,6 +4008,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "L'OCR de PDF aide à convertir des documents basés sur des images en texte interrogeable et réutilisable.",
     steps: ["Importez un PDF scanné.", "Lancez la reconnaissance de texte par OCR.", "Copiez ou téléchargez le texte extrait."],
     cta: { eyebrow: "OCR PDF", title: "Convertissez les documents scannés en texte réutilisable.", description: "Extrayez, vérifiez, copiez et téléchargez le texte de vos PDF scannés.", buttonLabel: "Lancer l'OCR" },
+    faq: [{ question: "Comment appliquer l'OCR à un PDF ?", answer: "Déposez votre PDF numérisé et téléchargez le fichier résultant avec une couche de texte consultable." }, { question: "Les PDF numérisés et l'écriture manuscrite sont-ils pris en charge ?", answer: "La plupart des documents numérisés imprimés sont pris en charge ; la reconnaissance de l'écriture manuscrite est moins précise." }, { question: "Est-ce gratuit ?", answer: "Oui, l'OCR est entièrement gratuit." }],
   },
   "pdf-to-word": {
     ...enTools["pdf-to-word"],
@@ -3967,6 +4032,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "PDF en Word est utile quand un PDF statique doit être modifié, réutilisé ou partagé pour collaboration.",
     steps: ["Importez un PDF.", "Convertissez la structure du document.", "Téléchargez un document Word modifiable."],
     cta: { eyebrow: "PDF en Word", title: "Préparez vos PDF pour les éditer et les réutiliser.", description: "Passez des documents statiques à des flux de travail modifiables.", buttonLabel: "Convertir maintenant" },
+    faq: [{ question: "Comment convertir un PDF en Word ?", answer: "Déposez votre PDF et téléchargez le fichier DOCX modifiable." }, { question: "La mise en forme est-elle conservée après conversion ?", answer: "CloudConvert s'efforce de préserver la mise en page, mais le résultat peut varier selon le PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en Word est entièrement gratuite." }],
   },
   "pdf-to-excel": {
     ...enTools["pdf-to-excel"],
@@ -3990,6 +4056,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : données financières, rapports, factures.",
     steps: ["Importez un PDF avec des tableaux.", "CloudConvert extrait les données.", "Téléchargez le fichier XLSX."],
     cta: { eyebrow: "PDF en Excel", title: "Extrayez les données de vos PDF vers Excel.", description: "Convertissez les tableaux PDF en XLSX modifiable.", buttonLabel: "Convertir PDF maintenant" },
+    faq: [{ question: "Comment convertir un PDF en Excel ?", answer: "Déposez votre PDF et téléchargez le fichier XLSX." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en Excel est entièrement gratuite." }],
   },
   "pdf-to-ppt": {
     ...enTools["pdf-to-ppt"],
@@ -4013,6 +4080,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : réutiliser les pages d'un rapport comme diapositives pour une présentation.",
     steps: ["Importez un fichier PDF.", "CloudConvert convertit en PPTX.", "Téléchargez le PowerPoint."],
     cta: { eyebrow: "PDF en PPT", title: "Convertissez PDF en PowerPoint.", description: "Transformez les pages d'un PDF en présentation PPTX modifiable.", buttonLabel: "Convertir PDF maintenant" },
+    faq: [{ question: "Comment convertir un PDF en PowerPoint ?", answer: "Déposez votre PDF et téléchargez le fichier PPTX converti." }, { question: "La mise en forme des diapositives est-elle conservée ?", answer: "CloudConvert convertit chaque page PDF en diapositive ; le résultat peut varier selon le PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en PowerPoint est entièrement gratuite." }],
   },
   "pdf-to-pdfa": {
     ...enTools["pdf-to-pdfa"],
@@ -4036,6 +4104,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : juridique, administrations publiques et registres devant rester lisibles pendant des années.",
     steps: ["Importez un fichier PDF.", "CloudConvert convertit en PDF/A.", "Téléchargez le PDF d'archive."],
     cta: { eyebrow: "PDF en PDF/A", title: "Convertissez PDF en PDF/A.", description: "Préparez vos documents pour l'archivage et la conformité.", buttonLabel: "Convertir PDF maintenant" },
+    faq: [{ question: "Qu'est-ce que le PDF/A ?", answer: "Le PDF/A est une version du PDF normalisée par l'ISO, conçue pour l'archivage à long terme, avec polices et ressources entièrement intégrées." }, { question: "Comment convertir un PDF en PDF/A ?", answer: "Déposez votre PDF et téléchargez le fichier PDF/A conforme aux normes d'archivage à long terme." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en PDF/A est entièrement gratuite." }],
   },
   "pdf-to-html": {
     ...enTools["pdf-to-html"],
@@ -4059,6 +4128,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : publier du contenu sur le web, le réutiliser et améliorer l'accessibilité.",
     steps: ["Importez un PDF.", "Indiquez une plage de pages si souhaité.", "Téléchargez le fichier .html."],
     cta: { eyebrow: "PDF en HTML", title: "Convertissez votre PDF en HTML.", description: "Obtenez du HTML propre et structuré, entièrement dans votre navigateur.", buttonLabel: "Convertir en HTML maintenant" },
+    faq: [{ question: "Comment convertir un PDF en HTML ?", answer: "Déposez votre PDF et téléchargez le fichier HTML généré." }, { question: "Les images et la mise en page sont-elles conservées ?", answer: "Oui — chaque page est rendue sous forme d'image pour préserver la mise en forme ; une zone dépliable sous chaque page contient le texte sélectionnable d'origine pour faciliter la recherche." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toute l'extraction s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }],
   },
   "pdf-to-markdown": {
     ...enTools["pdf-to-markdown"],
@@ -4082,6 +4152,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : importer des PDF dans des wikis et des systèmes de documentation.",
     steps: ["Importez un PDF à base de texte.", "Indiquez une plage de pages si souhaité.", "Téléchargez le fichier Markdown."],
     cta: { eyebrow: "PDF en Markdown", title: "Extrayez le contenu d'un PDF en Markdown structuré.", description: "Convertissez PDF en Markdown directement depuis votre navigateur.", buttonLabel: "Convertir PDF maintenant" },
+    faq: [{ question: "Comment convertir un PDF en Markdown ?", answer: "Déposez votre PDF et téléchargez le fichier .md converti." }, { question: "La mise en forme est-elle conservée après conversion ?", answer: "Les titres, listes et paragraphes sont convertis en syntaxe Markdown dans la mesure du possible ; les tableaux complexes peuvent être moins bien rendus." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toute l'extraction s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }],
   },
   "word-to-pdf": {
     ...enTools["word-to-pdf"],
@@ -4105,6 +4176,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : contrats, rapports, propositions.",
     steps: ["Importez un fichier DOCX ou DOC.", "CloudConvert convertit.", "Téléchargez le PDF."],
     cta: { eyebrow: "Word en PDF", title: "Convertissez des documents Word en PDF.", description: "Convertissez des fichiers DOCX en PDF pour les partager.", buttonLabel: "Convertir Word maintenant" },
+    faq: [{ question: "Comment convertir un document Word en PDF ?", answer: "Déposez votre fichier DOCX ou DOC et téléchargez le PDF converti." }, { question: "La mise en forme est-elle conservée après conversion ?", answer: "Notre moteur de conversion préserve les polices, l'espacement et la mise en page — avec un résultat comparable à l'export direct depuis Word." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion Word en PDF est entièrement gratuite, sans compte requis." }, { question: "Quels formats de fichiers sont acceptés ?", answer: "Les formats .docx et .doc sont pris en charge, avec une taille de fichier maximale de 100 Mo." }],
   },
   "excel-to-pdf": {
     ...enTools["excel-to-pdf"],
@@ -4128,6 +4200,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : rapports, budgets et données financières.",
     steps: ["Importez un fichier XLSX ou XLS.", "CloudConvert convertit.", "Téléchargez le PDF."],
     cta: { eyebrow: "Excel en PDF", title: "Convertissez Excel en PDF.", description: "Convertissez des fichiers XLSX en PDF pour les partager.", buttonLabel: "Convertir Excel maintenant" },
+    faq: [{ question: "Comment convertir un fichier Excel en PDF ?", answer: "Déposez votre fichier XLSX et téléchargez le PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion Excel en PDF est entièrement gratuite." }],
   },
   "ppt-to-pdf": {
     ...enTools["ppt-to-pdf"],
@@ -4151,6 +4224,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : partager des présentations et imprimer du matériel de support.",
     steps: ["Importez un fichier PPTX ou PPT.", "CloudConvert convertit.", "Téléchargez le PDF."],
     cta: { eyebrow: "PPT en PDF", title: "Convertissez PowerPoint en PDF.", description: "Convertissez des fichiers PPTX en PDF pour les partager.", buttonLabel: "Convertir PPT maintenant" },
+    faq: [{ question: "Comment convertir un PowerPoint en PDF ?", answer: "Déposez votre fichier PPTX et téléchargez le PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PPT en PDF est entièrement gratuite." }],
   },
   "html-to-pdf": {
     ...enTools["html-to-pdf"],
@@ -4174,6 +4248,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : factures, rapports et pages web exportées.",
     steps: ["Importez un fichier .html.", "CloudConvert convertit en PDF.", "Téléchargez le résultat."],
     cta: { eyebrow: "HTML en PDF", title: "Convertissez des fichiers HTML en PDF.", description: "Transformez des fichiers HTML autonomes en PDF propres à partager.", buttonLabel: "Convertir HTML maintenant" },
+    faq: [{ question: "Comment convertir un fichier HTML en PDF ?", answer: "Déposez votre fichier .html et téléchargez le PDF converti." }, { question: "Les images et le CSS sont-ils inclus ?", answer: "Oui, à condition que les images et le CSS soient intégrés ou accessibles. Les fichiers HTML entièrement autonomes donnent les meilleurs résultats." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion HTML en PDF est entièrement gratuite." }],
   },
   "merge-pdf": {
     ...enTools["merge-pdf"],
@@ -4197,6 +4272,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Fusionner des PDF est utile pour les dossiers clients, les candidatures, les factures et les lots de rapports.",
     steps: ["Importez plusieurs PDF.", "Organisez l'ordre des fichiers.", "Téléchargez un PDF fusionné unique."],
     cta: { eyebrow: "Fusionner PDF", title: "Créez un dossier de documents propre et unique.", description: "Combinez des PDF en un résultat organisé pour le travail, les études ou la remise client.", buttonLabel: "Fusionner PDF maintenant" },
+    faq: [{ question: "Peut-on déposer plusieurs PDF en même temps ?", answer: "Oui, l'outil accepte plusieurs fichiers à la fois." }, { question: "Peut-on modifier l'ordre des fichiers ?", answer: "Oui, un aperçu avec tri est disponible avant la fusion." }, { question: "Quel est le résultat obtenu ?", answer: "Un seul fichier PDF regroupant tous vos documents dans l'ordre choisi." }],
   },
   "split-pdf": {
     ...enTools["split-pdf"],
@@ -4220,6 +4296,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Diviser un PDF aide à préparer des fichiers plus petits à partir de rapports, formulaires, scans et dossiers.",
     steps: ["Importez un seul PDF.", "Saisissez des plages de pages.", "Exportez les pages divisées en ZIP."],
     cta: { eyebrow: "Diviser PDF", title: "Extrayez uniquement les pages dont vous avez besoin.", description: "Préparez des ensembles de documents plus petits à partir d'un PDF plus volumineux.", buttonLabel: "Diviser PDF maintenant" },
+    faq: [{ question: "Peut-on extraire une plage de pages ?", answer: "Oui, l'outil permet de définir une plage de pages à extraire." }, { question: "Quel est le résultat obtenu ?", answer: "Les pages extraites sont exportées sous forme de fichier ZIP." }, { question: "Fonctionne-t-il avec des PDF numérisés ?", answer: "Oui en tant que fichier PDF d'entrée ; la reconnaissance de texte relève du flux OCR." }],
   },
   "jpg-to-pdf": {
     ...enTools["jpg-to-pdf"],
@@ -4243,6 +4320,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "JPG en PDF aide à transformer des images en documents portables pour le stockage, le partage et la remise.",
     steps: ["Sélectionnez une ou plusieurs images.", "Organisez l'ordre des pages.", "Exportez un document PDF."],
     cta: { eyebrow: "JPG en PDF", title: "Transformez des images en flux documentaire prêt pour le PDF.", description: "Préparez photos, scans, reçus et images pour un partage en PDF.", buttonLabel: "Convertir JPG maintenant" },
+    faq: [{ question: "Comment convertir un JPG en PDF ?", answer: "Déposez une ou plusieurs images JPG et téléchargez le PDF combiné." }, { question: "Peut-on déposer plusieurs images ?", answer: "Oui, l'outil permet de fusionner plusieurs JPG en un seul PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion JPG en PDF est entièrement gratuite." }],
   },
   "png-to-pdf": {
     ...enTools["png-to-pdf"],
@@ -4266,6 +4344,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : captures d'écran, schémas et exports de maquettes.",
     steps: ["Sélectionnez des images PNG.", "Organisez-les dans l'ordre.", "Convertissez en PDF."],
     cta: { eyebrow: "PNG en PDF", title: "Transformez des images PNG en PDF.", description: "Convertissez des fichiers PNG en PDF pour les partager et les stocker.", buttonLabel: "Convertir PNG maintenant" },
+    faq: [{ question: "Comment convertir un PNG en PDF ?", answer: "Déposez une ou plusieurs images PNG et téléchargez le PDF combiné." }, { question: "Peut-on déposer plusieurs images ?", answer: "Oui, l'outil permet de fusionner plusieurs PNG en un seul PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PNG en PDF est entièrement gratuite." }],
   },
   "pdf-to-jpg": {
     ...enTools["pdf-to-jpg"],
@@ -4289,6 +4368,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : extraire des schémas, partager des pages précises.",
     steps: ["Importez un PDF.", "Indiquez une plage de pages si souhaité.", "Téléchargez les images JPG ou le ZIP."],
     cta: { eyebrow: "PDF en JPG", title: "Extrayez les pages d'un PDF en images JPG.", description: "Convertissez les pages d'un PDF en images, entièrement dans votre navigateur.", buttonLabel: "Convertir PDF maintenant" },
+    faq: [{ question: "Comment convertir un PDF en JPG ?", answer: "Déposez votre PDF ; chaque page est convertie en une image JPG, puis téléchargées ensemble." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toute la conversion s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en JPG est entièrement gratuite." }],
   },
   "pdf-to-png": {
     ...enTools["pdf-to-png"],
@@ -4312,6 +4392,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : extraire des schémas, archiver des pages.",
     steps: ["Importez un PDF.", "Indiquez une plage de pages si souhaité.", "Téléchargez les images PNG ou le ZIP."],
     cta: { eyebrow: "PDF en PNG", title: "Extrayez les pages d'un PDF en images PNG sans perte.", description: "Convertissez les pages d'un PDF en PNG dans votre navigateur.", buttonLabel: "Convertir PDF maintenant" },
+    faq: [{ question: "Comment convertir un PDF en PNG ?", answer: "Déposez votre PDF ; chaque page est convertie en une image PNG, puis téléchargées ensemble." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toute la conversion s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en PNG est entièrement gratuite." }],
   },
   "pdf-to-image": {
     ...enTools["pdf-to-image"],
@@ -4335,6 +4416,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Extrayez des schémas, archivez des diapositives, préparez des images pour le web.",
     steps: ["Importez un PDF.", "Indiquez une plage de pages et un format si souhaité.", "Téléchargez les images ou le ZIP."],
     cta: { eyebrow: "PDF en image", title: "Extrayez les pages d'un PDF en images JPG ou PNG.", description: "Convertissez les pages d'un PDF en images dans votre navigateur.", buttonLabel: "Convertir PDF maintenant" },
+    faq: [{ question: "Comment convertir un PDF en image ?", answer: "Déposez votre PDF, choisissez le format de sortie, et chaque page sera convertie en une image." }, { question: "Quels formats d'image sont pris en charge ?", answer: "JPG et PNG sont disponibles, tous deux traités localement dans votre navigateur." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en image est entièrement gratuite." }],
   },
   "delete-page": {
     ...enTools["delete-page"],
@@ -4358,6 +4440,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : retirer pages de garde, pages blanches, sections confidentielles.",
     steps: ["Importez un PDF.", "Saisissez les numéros ou plages de pages à supprimer.", "Téléchargez le PDF allégé."],
     cta: { eyebrow: "Supprimer des pages", title: "Retirez les pages inutiles de votre PDF.", description: "Allégez vos PDF en retirant des pages ou des plages précises.", buttonLabel: "Supprimer des pages maintenant" },
+    faq: [{ question: "Comment supprimer une page d'un PDF ?", answer: "Déposez votre PDF, sélectionnez les pages à supprimer, puis téléchargez le fichier mis à jour." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la suppression de pages PDF est entièrement gratuite." }],
   },
   "rotate-page": {
     ...enTools["rotate-page"],
@@ -4381,6 +4464,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : corriger des documents scannés, redresser des pages de travers.",
     steps: ["Importez un PDF.", "Sélectionnez les pages à faire pivoter et l'angle.", "Téléchargez le PDF corrigé."],
     cta: { eyebrow: "Faire pivoter les pages", title: "Corrigez l'orientation des pages d'un PDF en quelques secondes.", description: "Faites pivoter des pages de PDF sans les envoyer sur un serveur.", buttonLabel: "Faire pivoter maintenant" },
+    faq: [{ question: "Comment faire pivoter des pages d'un PDF ?", answer: "Déposez votre PDF, choisissez les pages et l'angle de rotation, puis téléchargez le fichier mis à jour." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la rotation de pages PDF est entièrement gratuite." }],
   },
   "reorder-pages": {
     ...enTools["reorder-pages"],
@@ -4404,6 +4488,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : corriger l'ordre d'un scan, réorganiser des rapports.",
     steps: ["Importez un PDF.", "Saisissez le nouvel ordre, en nombres séparés par des virgules (ex. 3,1,2,4).", "Téléchargez le PDF réorganisé."],
     cta: { eyebrow: "Réorganiser les pages", title: "Réorganisez les pages de votre PDF.", description: "Réorganisez les pages d'un PDF sans les envoyer sur un serveur.", buttonLabel: "Réorganiser maintenant" },
+    faq: [{ question: "Comment réorganiser les pages d'un PDF ?", answer: "Déposez votre PDF, faites glisser les miniatures pour ajuster l'ordre, puis téléchargez le fichier mis à jour." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la réorganisation des pages PDF est entièrement gratuite." }],
   },
   "add-page": {
     ...enTools["add-page"],
@@ -4427,6 +4512,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : pages de séparation, espace d'annotation, marges d'impression.",
     steps: ["Importez un PDF.", "Indiquez la position d'insertion (0 = début, vide = fin).", "Téléchargez le PDF mis à jour."],
     cta: { eyebrow: "Insérer des pages", title: "Insérez une page vierge dans votre PDF.", description: "Ajoutez des pages vierges à vos PDF sans les envoyer sur un serveur.", buttonLabel: "Insérer une page maintenant" },
+    faq: [{ question: "Comment insérer une page blanche dans un PDF ?", answer: "Déposez votre PDF, choisissez l'emplacement d'insertion, puis téléchargez le fichier mis à jour." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, l'ajout d'une page blanche à un PDF est entièrement gratuit." }],
   },
   "page-numbers": {
     ...enTools["page-numbers"],
@@ -4450,6 +4536,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : rapports, contrats, supports et documents imprimés.",
     steps: ["Importez un PDF.", "Cliquez sur Ajouter des numéros de page.", "Téléchargez le PDF numéroté."],
     cta: { eyebrow: "Numérotation des pages", title: "Ajoutez des numéros de page à votre PDF.", description: "Numérotez chaque page — entièrement dans votre navigateur.", buttonLabel: "Numéroter maintenant" },
+    faq: [{ question: "Comment ajouter des numéros de page à un PDF ?", answer: "Déposez votre PDF et téléchargez le résultat ; les numéros de page sont ajoutés automatiquement sur chaque page." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Où les numéros de page sont-ils placés ?", answer: "En pied de page, centré, au format « page actuelle / nombre total de pages »." }],
   },
   "watermark-pdf": {
     ...enTools["watermark-pdf"],
@@ -4473,6 +4560,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : marquer des brouillons, des rapports confidentiels, des épreuves et la propriété.",
     steps: ["Importez un PDF.", "Saisissez le texte du filigrane (ex. CONFIDENTIEL).", "Téléchargez le PDF filigrané."],
     cta: { eyebrow: "Filigrane PDF", title: "Ajoutez un filigrane à votre PDF.", description: "Apposez du texte sur chaque page — entièrement dans votre navigateur.", buttonLabel: "Ajouter un filigrane maintenant" },
+    faq: [{ question: "Comment ajouter un filigrane à un PDF ?", answer: "Déposez votre PDF, saisissez le texte du filigrane, puis téléchargez le fichier obtenu." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toutes les opérations de filigrane s'effectuent localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Peut-on supprimer le filigrane par la suite ?", answer: "Le filigrane est intégré au contenu de la page ; conservez le fichier original si vous avez besoin d'une version sans filigrane." }],
   },
   "sign-pdf": {
     ...enTools["sign-pdf"],
@@ -4496,6 +4584,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Le flux de signature de DockDocs est simple — importer, signer, télécharger votre document signé.",
     steps: ["Importez le document PDF que vous devez signer.", "Dessinez, saisissez ou importez votre signature et placez-la sur le document.", "Téléchargez le PDF signé, prêt à envoyer ou à partager."],
     cta: { eyebrow: "Signer PDF", title: "Signez vos documents PDF gratuitement.", description: "Sans téléchargement, sans inscription, sans stockage. Signez vos PDF en toute sécurité dans votre navigateur avec DockDocs.", buttonLabel: "Signer PDF maintenant" },
+    faq: [{ question: "Comment signer un PDF ?", answer: "Déposez votre PDF, ajoutez votre signature (dessinée à la main ou saisie au clavier), puis téléchargez le fichier signé." }, { question: "La signature a-t-elle une valeur juridique ?", answer: "DockDocs génère une signature visuelle, adaptée à un usage interne ou informel. Pour une signature juridiquement contraignante, utilisez un service de signature électronique certifié." }, { question: "Est-ce gratuit ?", answer: "Oui, la signature PDF est entièrement gratuite." }],
   },
   "translate-pdf": {
     ...enTools["translate-pdf"],
@@ -4519,6 +4608,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Importez votre PDF, sélectionnez la langue cible et téléchargez le document traduit.",
     steps: ["Importez le PDF à traduire.", "Sélectionnez la langue cible — l'IA traduit le texte du document.", "Copiez ou téléchargez le texte traduit."],
     cta: { eyebrow: "Traduire PDF", title: "Traduisez vos documents PDF avec l'IA.", description: "Gratuit et rapide. Traduisez le texte d'un PDF vers plus de 18 langues avec l'IA de DockDocs.", buttonLabel: "Traduire PDF maintenant" },
+    faq: [{ question: "Comment traduire un PDF ?", answer: "Déposez votre PDF, choisissez la langue cible, puis téléchargez le fichier traduit." }, { question: "Quelles langues sont prises en charge ?", answer: "Le moteur IA prend en charge des dizaines de langues, dont l'anglais, l'espagnol, le français, l'allemand et le chinois." }, { question: "La mise en forme est-elle conservée après traduction ?", answer: "L'IA s'efforce de préserver la mise en page et la mise en forme, mais le résultat peut varier selon le PDF." }],
   },
   "edit-pdf": {
     ...enTools["edit-pdf"],
@@ -4551,6 +4641,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Le flux d'édition PDF de DockDocs est pensé pour la rapidité — importer, éditer, télécharger.",
     steps: ["Importez votre fichier PDF en le glissant sur la page ou en cliquant pour parcourir.", "Ajoutez du texte, des formes ou des images à l'aide des outils d'annotation intégrés.", "Téléchargez le PDF édité avec vos modifications appliquées — prêt à partager."],
     cta: { eyebrow: "Éditer PDF", title: "Commencez à éditer vos documents PDF gratuitement.", description: "Sans téléchargement, sans inscription. Éditez des PDF directement dans votre navigateur avec DockDocs.", buttonLabel: "Éditer PDF maintenant" },
+    faq: [{ question: "Peut-on modifier un PDF sans Adobe Acrobat ?", answer: "Oui. DockDocs propose un éditeur PDF gratuit directement dans le navigateur, sans installation requise." }, { question: "Peut-on ajouter du texte et des images ?", answer: "Oui, vous pouvez ajouter des annotations textuelles et des images à n'importe quel endroit de la page." }, { question: "Le fichier reste-t-il au format PDF après modification ?", answer: "Oui, le fichier téléchargé est un PDF standard." }, { question: "La mise en forme d'origine est-elle préservée ?", answer: "Le contenu original reste intact ; le texte et les images ajoutés viennent se superposer sous forme de couche d'annotations." }, { question: "Est-ce gratuit ?", answer: "Oui, les fonctions d'édition PDF de base sont entièrement gratuites." }],
   },
   "pdf-to-text": {
     ...enTools["pdf-to-text"],
@@ -4583,6 +4674,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "Usages courants : copier des citations, insérer du texte dans d'autres outils, accessibilité et recherche.",
     steps: ["Importez un PDF.", "Indiquez une plage de pages si souhaité.", "Téléchargez le fichier .txt extrait."],
     cta: { eyebrow: "PDF en Texte", title: "Convertissez votre PDF en texte brut.", description: "Extrayez du texte propre, entièrement dans votre navigateur.", buttonLabel: "Convertir en texte maintenant" },
+    faq: [{ question: "Comment convertir un PDF en texte ?", answer: "Déposez votre PDF et téléchargez le fichier .txt extrait." }, { question: "Les PDF numérisés sont-ils pris en charge ?", answer: "Seuls les PDF contenant du vrai texte sont pris en charge. Pour les documents numérisés, utilisez d'abord l'outil OCR." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toute l'extraction s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }],
   },
 };
 
@@ -4624,6 +4716,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップで簡単にPDFを圧縮できます。",
     steps: ["PDFをアップロード。", "品質レベルを選択。", "圧縮されたPDFをダウンロード。"],
     cta: { eyebrow: "PDF圧縮", title: "PDFをブラウザで圧縮。", description: "無料・安全・瞬時に処理。", buttonLabel: "今すぐ圧縮" },
+    faq: [{ question: "PDFを圧縮するにはどうすればいいですか？", answer: "PDFをアップロードして圧縮状態を確認し、圧縮後のファイルをダウンロードしてください。" }, { question: "無料で使えますか？", answer: "はい。このページは日常的なPDF圧縮を無料で行えるように設計されています。" }, { question: "スマートフォンでも使えますか？", answer: "はい。スマートフォンとパソコンの両方に対応しています。" }],
   },
   "pdf-to-word": {
     ...enTools["pdf-to-word"],
@@ -4656,6 +4749,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップで簡単に変換できます。",
     steps: ["PDFをアップロード。", "変換が自動で実行されます。", "DOCXファイルをダウンロード。"],
     cta: { eyebrow: "PDFをWordに変換", title: "PDFを編集可能なWordに変換。", description: "書式を保持したまま高精度に変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PDFをWordに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、編集可能なDOCXファイルをダウンロードしてください。" }, { question: "変換後もレイアウトは保持されますか？", answer: "CloudConvertが可能な限りレイアウトを維持しますが、PDFの内容によって結果が異なる場合があります。" }, { question: "無料で使えますか？", answer: "はい。PDFからWordへの変換は完全無料です。" }],
   },
   "word-to-pdf": {
     ...enTools["word-to-pdf"],
@@ -4688,14 +4782,15 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップで簡単に変換できます。",
     steps: ["DOCXまたはDOCファイルをアップロード。", "CloudConvertが変換を実行。", "PDFをダウンロード。"],
     cta: { eyebrow: "WordをPDFに変換", title: "Word文書をPDFに変換。", description: "DOCXファイルを共有しやすいPDFに変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "WordをPDFに変換するにはどうすればいいですか？", answer: "DOCXまたはDOCファイルをアップロードして、変換されたPDFをダウンロードしてください。" }, { question: "変換後もレイアウトは保持されますか？", answer: "変換エンジンがフォント、行間、レイアウトを維持するため、Wordから直接エクスポートした結果と同等の品質が得られます。" }, { question: "無料で使えますか？", answer: "はい。WordからPDFへの変換は完全無料で、アカウント登録も不要です。" }, { question: "対応しているファイル形式は何ですか？", answer: ".docx と .doc 形式に対応しており、最大ファイルサイズは 100 MB です。" }],
   },
   "ocr-pdf": {
     ...enTools["ocr-pdf"],
     title: "PDFをOCR処理（無料）| DockDocs",
     description: "スキャンPDFのテキストをOCRで認識・検索可能に。ブラウザ内処理でプライベート。",
-    appName: "DockDocs OCR",
-    schemaName: "DockDocs OCR",
-    breadcrumbName: "PDF OCR",
+    appName: "DockDocs OCR処理",
+    schemaName: "DockDocs OCR処理",
+    breadcrumbName: "PDFをOCR処理",
     heroTitle: "スキャンPDFをテキスト検索可能に。",
     heroDescription: "スキャンPDFのテキストを認識してコピー・検索・編集できるようになります。",
     primaryActionLabel: "OCRを実行",
@@ -4720,6 +4815,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "スキャンPDFのテキストを3ステップで認識。",
     steps: ["PDFをアップロード。", "言語を選択（オプション）。", "テキスト付きPDFをダウンロード。"],
     cta: { eyebrow: "PDF OCR", title: "スキャンPDFをテキスト検索可能に。", description: "ブラウザで無料・安全にOCR処理。", buttonLabel: "今すぐOCRを実行" },
+    faq: [{ question: "PDFにOCRをかけるにはどうすればいいですか？", answer: "スキャンしたPDFをアップロードして、検索可能なテキスト層が追加された出力ファイルをダウンロードしてください。" }, { question: "スキャン文書や手書きにも対応していますか？", answer: "ほとんどの印刷されたスキャン文書に対応しています。手書き文字の認識精度は低くなります。" }, { question: "無料で使えますか？", answer: "はい。OCRは完全無料です。" }],
   },
   "pdf-to-markdown": {
     ...enTools["pdf-to-markdown"],
@@ -4752,6 +4848,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでシンプルに変換。",
     steps: ["PDFをアップロード。", "ページ範囲を指定（オプション）。", ".mdファイルをダウンロード。"],
     cta: { eyebrow: "PDFをMarkdownに変換", title: "PDFをMarkdownに変換。", description: "ブラウザで無料・安全に変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PDFをMarkdownに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、変換された .md ファイルをダウンロードしてください。" }, { question: "変換後もレイアウトは保持されますか？", answer: "見出し、リスト、段落はできる限りMarkdown形式に変換されます。複雑な表の処理には限界がある場合があります。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }],
   },
   "html-to-pdf": {
     ...enTools["html-to-pdf"],
@@ -4784,6 +4881,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでシンプルに変換。",
     steps: ["HTMLファイルをアップロード。", "変換が自動で実行されます。", "PDFをダウンロード。"],
     cta: { eyebrow: "HTMLをPDFに変換", title: "HTMLをPDFに変換。", description: "書式を保持して高品質に変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "HTMLをPDFに変換するにはどうすればいいですか？", answer: ".html ファイルをアップロードして、変換されたPDFをダウンロードしてください。" }, { question: "画像やCSSは含まれますか？", answer: "はい。画像やCSSがファイルに埋め込まれているか参照可能であれば含まれます。完全に自己完結したHTMLファイルが最適です。" }, { question: "無料で使えますか？", answer: "はい。HTMLからPDFへの変換は完全無料です。" }],
   },
   "pdf-to-ppt": {
     ...enTools["pdf-to-ppt"],
@@ -4816,6 +4914,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでシンプルに変換。",
     steps: ["PDFをアップロード。", "変換が自動で実行されます。", "PPTXファイルをダウンロード。"],
     cta: { eyebrow: "PDFをPPTに変換", title: "PDFをPowerPointに変換。", description: "PDFスライドを編集可能なプレゼンに変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PDFをPowerPointに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、変換されたPPTXファイルをダウンロードしてください。" }, { question: "スライドのレイアウトは保持されますか？", answer: "CloudConvertがPDFの各ページをスライドに変換します。結果はPDFの内容によって異なります。" }, { question: "無料で使えますか？", answer: "はい。PDFからPowerPointへの変換は完全無料です。" }],
   },
   "pdf-to-pdfa": {
     ...enTools["pdf-to-pdfa"],
@@ -4848,6 +4947,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでアーカイブ対応PDFに変換。",
     steps: ["PDFをアップロード。", "変換が自動で実行されます。", "PDF/Aファイルをダウンロード。"],
     cta: { eyebrow: "PDFをPDF/Aに変換", title: "PDFをPDF/Aアーカイブ形式に変換。", description: "長期保存・コンプライアンスに対応した形式に変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PDF/Aとは何ですか？", answer: "PDF/AはPDFのISO標準化フォーマットで、長期保存を目的として設計されており、フォントやリソースが完全に埋め込まれています。" }, { question: "PDFをPDF/Aに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、長期保存基準に準拠したPDF/Aファイルをダウンロードしてください。" }, { question: "無料で使えますか？", answer: "はい。PDFからPDF/Aへの変換は完全無料です。" }],
   },
   "ppt-to-pdf": {
     ...enTools["ppt-to-pdf"],
@@ -4880,6 +4980,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでシンプルに変換。",
     steps: ["PPTXファイルをアップロード。", "変換が自動で実行されます。", "PDFをダウンロード。"],
     cta: { eyebrow: "PPTをPDFに変換", title: "PowerPointをPDFに変換。", description: "プレゼンを誰でも開けるPDF形式で共有。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PowerPointをPDFに変換するにはどうすればいいですか？", answer: "PPTXファイルをアップロードして、PDFをダウンロードしてください。" }, { question: "無料で使えますか？", answer: "はい。PowerPointからPDFへの変換は完全無料です。" }],
   },
   "excel-to-pdf": {
     ...enTools["excel-to-pdf"],
@@ -4912,6 +5013,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでシンプルに変換。",
     steps: ["Excelファイルをアップロード。", "変換が自動で実行されます。", "PDFをダウンロード。"],
     cta: { eyebrow: "ExcelをPDFに変換", title: "Excelスプレッドシートをそのまま書式でPDFに変換。", description: "Excelなしで誰でも開けるPDFに変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "ExcelをPDFに変換するにはどうすればいいですか？", answer: "XLSXファイルをアップロードして、PDFをダウンロードしてください。" }, { question: "無料で使えますか？", answer: "はい。ExcelからPDFへの変換は完全無料です。" }],
   },
   "pdf-to-excel": {
     ...enTools["pdf-to-excel"],
@@ -4944,6 +5046,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでPDFの表データをExcelに変換。",
     steps: ["PDFをアップロード。", "変換が自動で実行されます。", "XLSXファイルをダウンロード。"],
     cta: { eyebrow: "PDFをExcelに変換", title: "PDFをExcelに変換。", description: "表データを編集可能なスプレッドシートに変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PDFをExcelに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、XLSXファイルをダウンロードしてください。" }, { question: "無料で使えますか？", answer: "はい。PDFからExcelへの変換は完全無料です。" }],
   },
   "protect-pdf": {
     ...enTools["protect-pdf"],
@@ -4976,6 +5079,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでPDFにパスワードを設定。",
     steps: ["PDFをアップロード。", "パスワードを入力。", "保護されたPDFをダウンロード。"],
     cta: { eyebrow: "PDFを保護", title: "PDFにパスワードを設定。", description: "ブラウザで無料・安全に保護。", buttonLabel: "今すぐ保護" },
+    faq: [{ question: "PDFにパスワードをかけるにはどうすればいいですか？", answer: "PDFをアップロードしてパスワードを設定し、暗号化されたファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての暗号化処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFの暗号化は完全無料です。" }],
   },
   "edit-pdf": {
     ...enTools["edit-pdf"],
@@ -5008,6 +5112,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "DockDocsのPDF編集は速くてシンプル。",
     steps: ["PDFをアップロード。", "テキスト・図形・画像を追加。", "編集済みPDFをダウンロード。"],
     cta: { eyebrow: "PDFを編集", title: "PDFをブラウザで無料編集。", description: "インストール不要でブラウザだけで編集。", buttonLabel: "今すぐ編集" },
+    faq: [{ question: "Adobe Acrobatなしでもコンテンツを編集できますか？", answer: "はい。DockDocsはブラウザ上で使える無料のPDF編集機能を提供しており、ソフトウェアのインストールは不要です。" }, { question: "テキストや画像を追加できますか？", answer: "はい。ページの任意の位置にテキスト注釈や画像を追加できます。" }, { question: "編集後もPDF形式のままですか？", answer: "はい。ダウンロードされるファイルは標準的なPDF形式のままです。" }, { question: "編集後も元のレイアウトは保持されますか？", answer: "元のコンテンツはそのまま保持され、新たに追加したテキストや画像は注釈レイヤーとして重ねて表示されます。" }, { question: "無料で使えますか？", answer: "はい。基本的なPDF編集機能は完全無料です。" }],
   },
   "unlock-pdf": {
     ...enTools["unlock-pdf"],
@@ -5040,6 +5145,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでシンプルに解除。",
     steps: ["PDFをアップロード。", "パスワードを入力（必要な場合）。", "制限が解除されたPDFをダウンロード。"],
     cta: { eyebrow: "PDF制限解除", title: "PDFの制限を解除。", description: "ブラウザで無料・安全に解除。", buttonLabel: "今すぐ解除" },
+    faq: [{ question: "PDFの制限を解除するにはパスワードが必要ですか？", answer: "必ずしも必要ではありません。PDFは開けるが印刷・コピー・編集がロックされている場合（権限パスワード）は、パスワードなしで制限を解除できます。PDFを開くためにパスワードが必要な場合（オープンパスワード）は、パスワードの入力が必要です。" }, { question: "PDFの権限パスワードを削除するにはどうすればいいですか？", answer: "PDFをアップロードすると、ツールが自動的に権限の制限を検出して削除し、制限解除済みのファイルをダウンロードできます。" }, { question: "無料で使えますか？", answer: "はい。PDFの制限解除は完全無料です。" }, { question: "これは合法ですか？", answer: "ご自身のファイルまたは使用許可を得たファイルにのみご利用ください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }],
   },
   "pdf-to-text": {
     ...enTools["pdf-to-text"],
@@ -5072,6 +5178,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでシンプルに変換。",
     steps: ["PDFをアップロード。", "ページ範囲を指定（オプション）。", "抽出した.txtファイルをダウンロード。"],
     cta: { eyebrow: "PDFをテキストに変換", title: "PDFをプレーンテキストに変換。", description: "ブラウザで無料・安全に抽出。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PDFをテキストに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、抽出された .txt ファイルをダウンロードしてください。" }, { question: "スキャンされたPDFにも対応していますか？", answer: "実際のテキストが含まれるPDFのみ対応しています。スキャン文書はOCR処理を先に行ってください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }],
   },
   "pdf-to-html": {
     ...enTools["pdf-to-html"],
@@ -5104,6 +5211,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "3ステップでシンプルに変換。",
     steps: ["PDFをアップロード。", "ページ範囲を指定（オプション）。", ".htmlファイルをダウンロード。"],
     cta: { eyebrow: "PDFをHTMLに変換", title: "PDFをHTMLに変換。", description: "ブラウザで無料・安全に変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PDFをHTMLに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、生成されたHTMLファイルをダウンロードしてください。" }, { question: "画像やレイアウトは保持されますか？", answer: "はい。各ページは画像としてレンダリングされるため、画像とレイアウトが保持されます。また、ページ下部の折りたたみ可能な領域に元のテキストが含まれており、検索にも利用できます。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }],
   },
   // ── custom client tools (SEO metadata only — benefits/features/steps not rendered) ──
   "merge-pdf": {
@@ -5128,6 +5236,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "申請書類、請求書、レポートのまとめなどに便利です。",
     steps: ["複数のPDFをアップロード。", "ファイルの順序を整える。", "結合した1つのPDFをダウンロード。"],
     cta: { eyebrow: "PDF結合", title: "複数のPDFを1つに結合。", description: "ブラウザで無料・安全に結合。", buttonLabel: "今すぐ結合" },
+    faq: [{ question: "複数のPDFをアップロードできますか？", answer: "はい。結合ワークフローでは複数ファイルのアップロードに対応しています。" }, { question: "順番を変更できますか？", answer: "はい。結合前に並び替えのプレビューが表示されます。" }, { question: "出力結果はどうなりますか？", answer: "指定した順序でまとめられた1つのPDFファイルが出力されます。" }],
   },
   "split-pdf": {
     ...enTools["split-pdf"],
@@ -5151,6 +5260,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "レポートやフォーム、スキャン文書から小さなファイルを準備するのに役立ちます。",
     steps: ["1つのPDFをアップロード。", "ページ範囲を入力。", "分割したページをZIPで書き出し。"],
     cta: { eyebrow: "PDF分割", title: "PDFをページで分割。", description: "ブラウザで無料・安全に分割。", buttonLabel: "今すぐ分割" },
+    faq: [{ question: "特定のページ範囲を抽出できますか？", answer: "はい。ワークフローにページ範囲の入力欄があります。" }, { question: "出力結果はどうなりますか？", answer: "分割結果はZIPファイルとしてエクスポートされます。" }, { question: "スキャンしたPDFでも使えますか？", answer: "PDFの入力としては使用できます。文字認識が必要な場合はOCRワークフローをご利用ください。" }],
   },
   "jpg-to-pdf": {
     ...enTools["jpg-to-pdf"],
@@ -5174,6 +5284,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "画像を保存・共有・受け渡し用のポータブルな文書にできます。",
     steps: ["1枚以上の画像を選択。", "ページ順を整える。", "PDF文書として書き出し。"],
     cta: { eyebrow: "JPGをPDFに変換", title: "JPG画像をPDFに変換。", description: "ブラウザで無料・安全に変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "JPGをPDFに変換するにはどうすればいいですか？", answer: "1枚または複数枚のJPGをアップロードして、まとめたPDFをダウンロードしてください。" }, { question: "複数の画像をアップロードできますか？", answer: "はい。複数のJPGを1つのPDFにまとめることができます。" }, { question: "無料で使えますか？", answer: "はい。JPGからPDFへの変換は完全無料です。" }],
   },
   "png-to-pdf": {
     ...enTools["png-to-pdf"],
@@ -5197,6 +5308,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "スクリーンショット、図、デザイン書き出しなどに便利です。",
     steps: ["PNG画像を選択。", "順番に並べる。", "PDFに変換。"],
     cta: { eyebrow: "PNGをPDFに変換", title: "PNG画像をPDFに変換。", description: "ブラウザで無料・安全に変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PNGをPDFに変換するにはどうすればいいですか？", answer: "1枚または複数枚のPNGをアップロードして、まとめたPDFをダウンロードしてください。" }, { question: "複数の画像をアップロードできますか？", answer: "はい。複数のPNGを1つのPDFにまとめることができます。" }, { question: "無料で使えますか？", answer: "はい。PNGからPDFへの変換は完全無料です。" }],
   },
   "pdf-to-jpg": {
     ...enTools["pdf-to-jpg"],
@@ -5220,6 +5332,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "図の抽出や特定ページの共有などに便利です。",
     steps: ["PDFをアップロード。", "必要ならページ範囲を指定。", "JPG画像またはZIPをダウンロード。"],
     cta: { eyebrow: "PDFをJPGに変換", title: "PDFをJPG画像に変換。", description: "ブラウザで無料・安全に変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PDFをJPGに変換するにはどうすればいいですか？", answer: "PDFをアップロードすると、各ページがJPG画像として生成され、まとめてダウンロードできます。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての変換処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFからJPGへの変換は完全無料です。" }],
   },
   "pdf-to-png": {
     ...enTools["pdf-to-png"],
@@ -5243,6 +5356,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "図の抽出やページの保存などに便利です。",
     steps: ["PDFをアップロード。", "必要ならページ範囲を指定。", "PNG画像またはZIPをダウンロード。"],
     cta: { eyebrow: "PDFをPNGに変換", title: "PDFをPNG画像に変換。", description: "ブラウザで無料・安全に変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PDFをPNGに変換するにはどうすればいいですか？", answer: "PDFをアップロードすると、各ページがPNG画像として生成され、まとめてダウンロードできます。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての変換処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFからPNGへの変換は完全無料です。" }],
   },
   "pdf-to-image": {
     ...enTools["pdf-to-image"],
@@ -5266,6 +5380,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "図の抽出、スライドの保存、Web用画像の準備などに。",
     steps: ["PDFをアップロード。", "必要ならページ範囲と形式を指定。", "画像またはZIPをダウンロード。"],
     cta: { eyebrow: "PDFを画像に変換", title: "PDFをJPG・PNG画像に変換。", description: "ブラウザで無料・安全に変換。", buttonLabel: "今すぐ変換" },
+    faq: [{ question: "PDFを画像に変換するにはどうすればいいですか？", answer: "PDFをアップロードして出力形式を選択すると、各ページが1枚の画像として生成されます。" }, { question: "どの画像形式に対応していますか？", answer: "JPGとPNGに対応しており、いずれもブラウザ上でローカルに変換できます。" }, { question: "無料で使えますか？", answer: "はい。PDFから画像への変換は完全無料です。" }],
   },
   "delete-page": {
     ...enTools["delete-page"],
@@ -5289,6 +5404,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "表紙や空白ページ、機密セクションの削除などに便利です。",
     steps: ["PDFをアップロード。", "削除するページ番号や範囲を入力。", "整理されたPDFをダウンロード。"],
     cta: { eyebrow: "PDFページを削除", title: "PDFから不要なページを削除。", description: "ブラウザで無料・安全に処理。", buttonLabel: "今すぐ削除" },
+    faq: [{ question: "PDFのページを削除するにはどうすればいいですか？", answer: "PDFをアップロードして削除するページを選択し、更新されたファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFのページ削除は完全無料です。" }],
   },
   "rotate-page": {
     ...enTools["rotate-page"],
@@ -5312,6 +5428,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "スキャン文書の修正や、横向きページの補正などに便利です。",
     steps: ["PDFをアップロード。", "回転するページと角度を選択。", "修正したPDFをダウンロード。"],
     cta: { eyebrow: "PDFページを回転", title: "PDFページを回転。", description: "ブラウザで無料・安全に処理。", buttonLabel: "今すぐ回転" },
+    faq: [{ question: "PDFのページを回転させるにはどうすればいいですか？", answer: "PDFをアップロードして回転させるページと角度を選択し、更新されたファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFのページ回転は完全無料です。" }],
   },
   "reorder-pages": {
     ...enTools["reorder-pages"],
@@ -5335,6 +5452,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "スキャン順序の修正やレポートの再構成などに便利です。",
     steps: ["PDFをアップロード。", "新しい順序をカンマ区切りで入力（例: 3,1,2,4）。", "並べ替えたPDFをダウンロード。"],
     cta: { eyebrow: "PDFページを並べ替え", title: "PDFのページを並べ替え。", description: "ブラウザで無料・安全に処理。", buttonLabel: "今すぐ並べ替え" },
+    faq: [{ question: "PDFのページを並び替えるにはどうすればいいですか？", answer: "PDFをアップロードしてサムネイルをドラッグして順番を変更し、更新されたファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFのページ並び替えは完全無料です。" }],
   },
   "add-page": {
     ...enTools["add-page"],
@@ -5358,6 +5476,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "区切りページ、メモ用の余白、印刷用の調整などに便利です。",
     steps: ["PDFをアップロード。", "挿入位置を入力（0 = 先頭、空欄 = 末尾）。", "更新したPDFをダウンロード。"],
     cta: { eyebrow: "PDFにページを追加", title: "PDFにページを追加。", description: "ブラウザで無料・安全に処理。", buttonLabel: "今すぐ追加" },
+    faq: [{ question: "PDFに空白ページを挿入するにはどうすればいいですか？", answer: "PDFをアップロードして挿入位置を選択し、更新されたファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFへの空白ページ追加は完全無料です。" }],
   },
   "sign-pdf": {
     ...enTools["sign-pdf"],
@@ -5381,6 +5500,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "アップロード・署名・ダウンロードのシンプルな流れ。",
     steps: ["署名するPDFをアップロード。", "署名を描く・入力・アップロードして配置。", "署名済みのPDFをダウンロード。"],
     cta: { eyebrow: "PDFに署名", title: "PDFに無料で電子署名。", description: "ダウンロード不要・アカウント不要・データ保存なし。", buttonLabel: "今すぐ署名" },
+    faq: [{ question: "PDFに署名するにはどうすればいいですか？", answer: "PDFをアップロードして署名（手書きまたは入力）を追加し、署名済みのファイルをダウンロードしてください。" }, { question: "署名に法的効力はありますか？", answer: "DockDocsが生成するのはビジュアル署名であり、社内や軽微な用途向けです。法的拘束力が必要な場合は、認定された電子署名サービスをご利用ください。" }, { question: "無料で使えますか？", answer: "はい。PDF署名機能は完全無料です。" }],
   },
   "translate-pdf": {
     ...enTools["translate-pdf"],
@@ -5404,6 +5524,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "アップロードし、対象言語を選び、翻訳した文書をダウンロード。",
     steps: ["翻訳するPDFをアップロード。", "対象言語を選択するとAIが翻訳。", "翻訳テキストをコピーまたはダウンロード。"],
     cta: { eyebrow: "PDFを翻訳", title: "AIでPDFを無料翻訳。", description: "18言語以上に対応。PDFのテキストを素早く翻訳。", buttonLabel: "今すぐ翻訳" },
+    faq: [{ question: "PDFを翻訳するにはどうすればいいですか？", answer: "PDFをアップロードして目標言語を選択し、翻訳されたファイルをダウンロードしてください。" }, { question: "どの言語に対応していますか？", answer: "AIエンジンは英語、スペイン語、フランス語、ドイツ語、中国語など数十の言語に対応しています。" }, { question: "翻訳後もレイアウトは保持されますか？", answer: "AIがレイアウトと書式の保持に努めますが、PDFの内容によって結果が異なる場合があります。" }],
   },
   "watermark-pdf": {
     ...enTools["watermark-pdf"],
@@ -5427,6 +5548,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "下書き、機密レポート、校正、所有権の明示などに便利です。",
     steps: ["PDFをアップロード。", "透かしのテキストを入力（例: CONFIDENTIAL）。", "透かし入りPDFをダウンロード。"],
     cta: { eyebrow: "PDFに透かし", title: "PDFにテキストの透かしを追加。", description: "ブラウザで無料・安全に処理。", buttonLabel: "今すぐ追加" },
+    faq: [{ question: "PDFに透かしを追加するにはどうすればいいですか？", answer: "PDFをアップロードして透かしのテキストを入力し、透かし入りのファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての透かし処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "後から透かしを削除できますか？", answer: "透かしはページのコンテンツに埋め込まれています。透かしなしのバージョンが必要な場合は、元のファイルを保存しておいてください。" }],
   },
   "page-numbers": {
     ...enTools["page-numbers"],
