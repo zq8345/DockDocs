@@ -31,12 +31,12 @@ const SKIP_FILE = /\.(test|spec)\.(ts|tsx)$|\.d\.ts$/;
 // code branches on zh (often `locale === "zh" || hant`), not a separate arm.
 const CONTENT_LOCALES = ["zh", "es", "pt", "fr", "ja"];
 
-// Missing-arm leaks currently live only in BatchFixScansClient /
-// BatchTranslateClient (owned by the feature window). Until those get pt/fr/ja
-// arms, missing-arm findings are reported as WARNINGS (they do NOT block the
-// build); the regex patterns A/B still hard-fail. Flip this to true once the
-// known leaks are fixed, so new missing-arm leaks hard-fail too. Tracked with 总调度.
-const MISSING_ARM_FAILS = false;
+// All known missing-arm leaks are fixed (BatchFixScans/BatchTranslate got
+// pt/fr/ja arms — commit alongside this flip). Missing-arm now HARD-FAILS the
+// build like patterns A/B, so any NEW silent-English-fallback ternary is caught
+// at build time. Set back to false only if a temporary known-gap batch needs to
+// land before its arms (and track the cleanup).
+const MISSING_ARM_FAILS = true;
 
 const REGEX_PATTERNS = [
   { id: "ja-collapse", re: /===\s*"ja"\s*\?\s*"en"/, msg: 'collapses ja → "en" (ship English to ja users)' },

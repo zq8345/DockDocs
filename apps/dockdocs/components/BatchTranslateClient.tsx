@@ -414,7 +414,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
       a.click();
       URL.revokeObjectURL(url);
     } catch {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download; tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement ; réessayez." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
     }
   };
 
@@ -439,7 +439,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
       />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} privacyLabel={locale === "zh" ? "文件在本地读取，仅发送文字" : locale === "es" ? "Leído localmente; solo se envía el texto" : "Read locally — only text is sent"} />
+        <BatchUploadBox locale={locale} onFiles={addFiles} privacyLabel={locale === "zh" ? "文件在本地读取，仅发送文字" : locale === "es" ? "Leído localmente; solo se envía el texto" : locale === "pt" ? "Lido localmente; apenas o texto é enviado" : locale === "fr" ? "Lu localement — seul le texte est envoyé" : locale === "ja" ? "ローカルで読み取り、テキストのみ送信" : "Read locally — only text is sent"} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

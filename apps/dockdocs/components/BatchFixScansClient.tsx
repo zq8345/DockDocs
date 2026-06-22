@@ -410,7 +410,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
           const total = pdf.getPageCount();
           const toRemove = [...pageSet].filter((p) => p >= 1 && p <= total);
           if (toRemove.length >= total) {
-            updated[i] = { ...it, status: "error", msg: locale === "zh" ? "会删空，已跳过" : locale === "zh-Hant" ? toHant("会删空，已跳过") : locale === "es" ? "quedaría vacío, omitido" : "would be empty, skipped" };
+            updated[i] = { ...it, status: "error", msg: locale === "zh" ? "会删空，已跳过" : locale === "zh-Hant" ? toHant("会删空，已跳过") : locale === "es" ? "quedaría vacío, omitido" : locale === "pt" ? "ficaria vazio, ignorado" : locale === "fr" ? "serait vide, ignoré" : locale === "ja" ? "空になるためスキップ" : "would be empty, skipped" };
             setItems([...updated]);
             continue;
           }
@@ -447,7 +447,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
       a.click();
       URL.revokeObjectURL(url);
     } catch {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : "Could not build the download — please try again.");
+      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download; tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement ; réessayez." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
     }
   };
 
