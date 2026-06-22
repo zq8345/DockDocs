@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -166,8 +167,150 @@ const STR = {
 
 type Phase = "idle" | "extracting" | "ready" | "translating" | "done";
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "What the PDF translator does",
+    benefitsDescription: "Turn a PDF in one language into readable text in another, without retyping it.",
+    benefits: [
+      { title: "Translate into 18 languages", description: "Pick from English, Chinese, Spanish, French, Japanese, Arabic, Hindi and more — the AI renders your document's text in the target language you choose." },
+      { title: "Full prose, not word-by-word", description: "The extracted text is translated as connected sentences, so the result reads naturally instead of as a stitched-together glossary." },
+      { title: "Copy or download as .txt", description: "Get the translation as plain text you can copy straight into an email or save as a .txt file — layout-preserving output is on the roadmap." },
+    ],
+    workflowTitle: "How translation fits your document work",
+    workflowDescription: "When a PDF arrives in a language your team doesn't read — a foreign contract, a supplier's spec sheet, a research paper.",
+    steps: [
+      "Upload the PDF; its text is extracted in your browser and the text is sent to the AI.",
+      "Choose the language you want it translated into and start the translation.",
+      "Read the result on screen, then copy it or download it as a .txt file.",
+    ],
+    readingTitle: "More AI document tools",
+    readingDescription: "Related ways to work with what a document says, not just its format.",
+    readingLinks: [
+      { label: "Chat with a PDF", href: "/chat-with-pdf", description: "Ask questions about a document and get answers drawn from its text." },
+      { label: "Summarize a PDF", href: "/ai-summary", description: "Condense a long document into its key points before or after translating it." },
+      { label: "AI document resources", href: "/resources", description: "A structured hub for AI document tools, conversion, and PDF workflows." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "PDF 翻译工具能做什么",
+    benefitsDescription: "把一种语言的 PDF 转成另一种语言的可读文字，无需重新打字。",
+    benefits: [
+      { title: "翻译成 18 种语言", description: "可选英语、中文、西班牙语、法语、日语、阿拉伯语、印地语等——AI 会把文档中的文字翻成你选的目标语言。" },
+      { title: "成段译文，而非逐词", description: "提取出的文字按连贯的句子翻译，结果读起来自然流畅，而不是拼凑的词汇表。" },
+      { title: "复制或下载为 .txt", description: "译文以纯文本呈现，可直接复制进邮件或保存为 .txt 文件——保留版式的输出已在规划中。" },
+    ],
+    workflowTitle: "翻译如何融入你的文档工作",
+    workflowDescription: "当一份 PDF 是团队看不懂的语言时——外文合同、供应商规格表、研究论文。",
+    steps: [
+      "上传 PDF，文字在你的浏览器中提取，文字随后发送给 AI。",
+      "选择要翻译成的语言并开始翻译。",
+      "在屏幕上查看结果，然后复制或下载为 .txt 文件。",
+    ],
+    readingTitle: "更多 AI 文档工具",
+    readingDescription: "围绕文档“说了什么”而非仅是格式的相关方式。",
+    readingLinks: [
+      { label: "与 PDF 对话", href: "/chat-with-pdf", description: "就文档提问，获得基于其文字内容的回答。" },
+      { label: "总结 PDF", href: "/ai-summary", description: "在翻译前后把长文档浓缩成要点。" },
+      { label: "AI 文档资源", href: "/resources", description: "按工作流整理 AI 文档工具、转换和 PDF 流程的中心。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Qué hace el traductor de PDF",
+    benefitsDescription: "Convierte un PDF de un idioma en texto legible en otro, sin volver a teclearlo.",
+    benefits: [
+      { title: "Traduce a 18 idiomas", description: "Elige entre inglés, chino, español, francés, japonés, árabe, hindi y más: la IA traduce el texto de tu documento al idioma de destino que elijas." },
+      { title: "Prosa completa, no palabra por palabra", description: "El texto extraído se traduce como frases conectadas, así el resultado se lee con naturalidad en lugar de como un glosario improvisado." },
+      { title: "Copia o descarga como .txt", description: "Obtén la traducción como texto plano que puedes pegar en un correo o guardar como archivo .txt; la salida que conserva el diseño está en la hoja de ruta." },
+    ],
+    workflowTitle: "Cómo encaja la traducción en tu trabajo",
+    workflowDescription: "Cuando llega un PDF en un idioma que tu equipo no lee: un contrato extranjero, una ficha técnica de un proveedor, un artículo de investigación.",
+    steps: [
+      "Sube el PDF; su texto se extrae en tu navegador y el texto se envía a la IA.",
+      "Elige el idioma al que quieres traducirlo e inicia la traducción.",
+      "Lee el resultado en pantalla y luego cópialo o descárgalo como archivo .txt.",
+    ],
+    readingTitle: "Más herramientas de documentos con IA",
+    readingDescription: "Formas relacionadas de trabajar con lo que dice un documento, no solo su formato.",
+    readingLinks: [
+      { label: "Chatea con un PDF", href: "/chat-with-pdf", description: "Haz preguntas sobre un documento y obtén respuestas extraídas de su texto." },
+      { label: "Resumir un PDF", href: "/ai-summary", description: "Condensa un documento largo en sus puntos clave antes o después de traducirlo." },
+      { label: "Recursos de documentos con IA", href: "/resources", description: "Un centro estructurado de herramientas de documentos con IA, conversión y flujos PDF." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "O que o tradutor de PDF faz",
+    benefitsDescription: "Transforme um PDF em um idioma em texto legível em outro, sem redigitar.",
+    benefits: [
+      { title: "Traduza para 18 idiomas", description: "Escolha entre inglês, chinês, espanhol, francês, japonês, árabe, hindi e mais: a IA traduz o texto do seu documento para o idioma de destino escolhido." },
+      { title: "Prosa completa, não palavra por palavra", description: "O texto extraído é traduzido como frases conectadas, então o resultado se lê com naturalidade em vez de um glossário emendado." },
+      { title: "Copie ou baixe como .txt", description: "Receba a tradução como texto simples para colar em um e-mail ou salvar como arquivo .txt; a saída que preserva o layout está no roadmap." },
+    ],
+    workflowTitle: "Como a tradução se encaixa no seu trabalho",
+    workflowDescription: "Quando chega um PDF em um idioma que sua equipe não lê: um contrato estrangeiro, uma ficha técnica de fornecedor, um artigo de pesquisa.",
+    steps: [
+      "Envie o PDF; o texto é extraído no seu navegador e o texto é enviado para a IA.",
+      "Escolha o idioma para o qual quer traduzir e inicie a tradução.",
+      "Leia o resultado na tela e depois copie ou baixe como arquivo .txt.",
+    ],
+    readingTitle: "Mais ferramentas de documentos com IA",
+    readingDescription: "Formas relacionadas de trabalhar com o que um documento diz, não apenas seu formato.",
+    readingLinks: [
+      { label: "Converse com um PDF", href: "/chat-with-pdf", description: "Faça perguntas sobre um documento e receba respostas extraídas do texto dele." },
+      { label: "Resumir um PDF", href: "/ai-summary", description: "Condense um documento longo em seus pontos principais antes ou depois de traduzi-lo." },
+      { label: "Recursos de documentos com IA", href: "/resources", description: "Um hub estruturado de ferramentas de documentos com IA, conversão e fluxos PDF." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Ce que fait le traducteur de PDF",
+    benefitsDescription: "Transformez un PDF d'une langue en texte lisible dans une autre, sans le retaper.",
+    benefits: [
+      { title: "Traduisez vers 18 langues", description: "Choisissez parmi l'anglais, le chinois, l'espagnol, le français, le japonais, l'arabe, l'hindi et plus : l'IA traduit le texte de votre document dans la langue cible choisie." },
+      { title: "Une prose complète, pas mot à mot", description: "Le texte extrait est traduit en phrases reliées, le résultat se lit donc naturellement plutôt que comme un glossaire bricolé." },
+      { title: "Copiez ou téléchargez en .txt", description: "Obtenez la traduction en texte brut à coller dans un e-mail ou à enregistrer en fichier .txt ; la sortie conservant la mise en page est prévue." },
+    ],
+    workflowTitle: "Comment la traduction s'intègre à votre travail",
+    workflowDescription: "Quand un PDF arrive dans une langue que votre équipe ne lit pas : un contrat étranger, une fiche technique de fournisseur, un article de recherche.",
+    steps: [
+      "Téléversez le PDF ; son texte est extrait dans votre navigateur et le texte est envoyé à l'IA.",
+      "Choisissez la langue vers laquelle traduire et lancez la traduction.",
+      "Lisez le résultat à l'écran, puis copiez-le ou téléchargez-le en fichier .txt.",
+    ],
+    readingTitle: "Plus d'outils documentaires IA",
+    readingDescription: "Façons connexes de travailler sur ce que dit un document, pas seulement son format.",
+    readingLinks: [
+      { label: "Discuter avec un PDF", href: "/chat-with-pdf", description: "Posez des questions sur un document et obtenez des réponses tirées de son texte." },
+      { label: "Résumer un PDF", href: "/ai-summary", description: "Condensez un long document en ses points clés avant ou après la traduction." },
+      { label: "Ressources documentaires IA", href: "/resources", description: "Un hub structuré d'outils documentaires IA, de conversion et de parcours PDF." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "PDF 翻訳ツールでできること",
+    benefitsDescription: "ある言語の PDF を別の言語の読めるテキストに変換します。打ち直し不要です。",
+    benefits: [
+      { title: "18 の言語に翻訳", description: "英語、中国語、スペイン語、フランス語、日本語、アラビア語、ヒンディー語などから選択——AI が文書のテキストを選んだ言語に翻訳します。" },
+      { title: "単語単位ではなく文章として", description: "抽出されたテキストはつながった文として翻訳されるため、結果は寄せ集めの用語集ではなく自然に読めます。" },
+      { title: "コピーまたは .txt でダウンロード", description: "翻訳はプレーンテキストで得られ、メールに貼り付けたり .txt ファイルとして保存できます——レイアウト保持の出力は対応予定です。" },
+    ],
+    workflowTitle: "翻訳が文書作業にどう役立つか",
+    workflowDescription: "チームが読めない言語の PDF が届いたとき——外国語の契約書、取引先の仕様書、研究論文。",
+    steps: [
+      "PDF をアップロードします。テキストはブラウザ内で抽出され、そのテキストが AI に送信されます。",
+      "翻訳したい言語を選んで翻訳を開始します。",
+      "結果を画面で確認し、コピーするか .txt ファイルとしてダウンロードします。",
+    ],
+    readingTitle: "他の AI 文書ツール",
+    readingDescription: "形式だけでなく、文書が何を述べているかを扱う関連手段。",
+    readingLinks: [
+      { label: "PDF とチャット", href: "/chat-with-pdf", description: "文書について質問し、そのテキストに基づく回答を得ます。" },
+      { label: "PDF を要約", href: "/ai-summary", description: "翻訳の前後に、長い文書を要点へ凝縮します。" },
+      { label: "AI 文書リソース", href: "/resources", description: "AI 文書ツール、変換、PDF ワークフローを整理したハブ。" },
+    ],
+  },
+};
+
 export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [phase, setPhase] = useState<Phase>("idle");
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
@@ -381,6 +524,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
           />
         </div>
       )}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="translate-pdf" locale={locale} />
     </div>
   );

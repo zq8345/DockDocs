@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { GroundingNote, groundingFaq } from "@/components/GroundingNote";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 import { UploadDropzone } from "@/components/UploadDropzone";
@@ -199,8 +200,150 @@ const LEVEL_STYLE: Record<RiskLevel, { dot: string; chip: string; border: string
 
 type Phase = "idle" | "extracting" | "ready" | "analyzing" | "done";
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "What the contract review gives you",
+    benefitsDescription: "The AI reads the full contract text and surfaces the clauses worth a second look before you sign.",
+    benefits: [
+      { title: "Risky clauses, in plain words", description: "Auto-renewal, one-sided indemnity, unlimited liability, lopsided termination — each unusual or aggressive clause is explained in everyday language, not legalese." },
+      { title: "Every flag points to its clause", description: "Each finding is shown with the exact passage it came from, verified against your document; when a quote can't be located in the text, it's hidden rather than guessed." },
+      { title: "Red / amber / green triage", description: "Findings are ranked by severity and paired with a concrete question to ask before signing, so you know what to negotiate first." },
+    ],
+    workflowTitle: "How a contract check fits your work",
+    workflowDescription: "For the moment you're handed an agreement and need to know where the traps are before it lands on your desk for signature.",
+    steps: [
+      "Upload the contract PDF — its text is extracted and sent for analysis.",
+      "The AI flags risky, one-sided, or missing clauses and quotes each from your document.",
+      "Review the red/amber/green list with the question to raise for each point.",
+    ],
+    readingTitle: "More AI document review tools",
+    readingDescription: "Related tools for reading contracts, leases, and tenders with traceable findings.",
+    readingLinks: [
+      { label: "Lease red-flag check", href: "/lease-redflag", description: "The same clause-by-clause review tuned for rental and lease agreements." },
+      { label: "Government bid analyzer", href: "/govbid-matrix", description: "Turn a tender document into a structured requirements matrix you can act on." },
+      { label: "AI document resources", href: "/resources", description: "A structured hub for AI review, OCR, conversion, and other document workflows." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "这份合同审查能给你什么",
+    benefitsDescription: "AI 通读全文,在你签字前把值得再看一眼的条款挑出来。",
+    benefits: [
+      { title: "用白话讲清风险条款", description: "自动续约、单方面赔偿、无限责任、失衡的解约条款——每条异常或激进的条款都用日常语言解释,而不是法言法语。" },
+      { title: "每个风险都指向对应原文", description: "每条结论都附上它出自的原文段落,并与你的文档核对;当引文无法在正文中定位时,会被隐藏而不是凭空生成。" },
+      { title: "红/黄/绿 分级排查", description: "结论按严重程度排序,并配上一句签字前该问的具体问题,让你知道先谈哪一条。" },
+    ],
+    workflowTitle: "合同审查如何融入你的工作",
+    workflowDescription: "当一份协议递到你手上、需要在它送去签字前弄清陷阱在哪里时。",
+    steps: [
+      "上传合同 PDF——提取其中的文字并发送去分析。",
+      "AI 标出有风险、单方面或缺失的条款,并逐条引用你文档中的原文。",
+      "对照红/黄/绿清单逐项查看,每条都附有该提出的问题。",
+    ],
+    readingTitle: "更多 AI 文档审查工具",
+    readingDescription: "审查合同、租约和招标文件、结论可溯源的相关工具。",
+    readingLinks: [
+      { label: "租约红旗体检", href: "/lease-redflag", description: "同样的逐条审查,针对租赁与租约协议做了调整。" },
+      { label: "政府招标分析", href: "/govbid-matrix", description: "把一份招标文件变成可执行的结构化需求矩阵。" },
+      { label: "AI 文档资源", href: "/resources", description: "按工作流整理 AI 审查、OCR、转换等文档路径的资源中心。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Qué te da la revisión del contrato",
+    benefitsDescription: "La IA lee todo el texto del contrato y destaca las cláusulas que conviene revisar antes de firmar.",
+    benefits: [
+      { title: "Cláusulas riesgosas, en lenguaje claro", description: "Renovación automática, indemnización unilateral, responsabilidad ilimitada, terminación desequilibrada: cada cláusula inusual o agresiva se explica en lenguaje cotidiano, no jurídico." },
+      { title: "Cada alerta apunta a su cláusula", description: "Cada hallazgo se muestra con el pasaje exacto del que proviene, verificado en tu documento; si una cita no se localiza en el texto, se oculta en lugar de inventarse." },
+      { title: "Triaje rojo / ámbar / verde", description: "Los hallazgos se ordenan por gravedad y se acompañan de una pregunta concreta para hacer antes de firmar, así sabes qué negociar primero." },
+    ],
+    workflowTitle: "Cómo encaja la revisión en tu trabajo",
+    workflowDescription: "Para cuando recibes un acuerdo y necesitas saber dónde están las trampas antes de que llegue a tu mesa para firmar.",
+    steps: [
+      "Sube el PDF del contrato: se extrae su texto y se envía para analizarlo.",
+      "La IA marca cláusulas riesgosas, unilaterales o ausentes y cita cada una de tu documento.",
+      "Revisa la lista roja/ámbar/verde con la pregunta a plantear en cada punto.",
+    ],
+    readingTitle: "Más herramientas de revisión con IA",
+    readingDescription: "Herramientas relacionadas para leer contratos, arrendamientos y licitaciones con hallazgos rastreables.",
+    readingLinks: [
+      { label: "Revisión de alertas de arrendamiento", href: "/lease-redflag", description: "La misma revisión cláusula por cláusula adaptada a contratos de alquiler y arrendamiento." },
+      { label: "Analizador de licitaciones", href: "/govbid-matrix", description: "Convierte un pliego de licitación en una matriz de requisitos estructurada y accionable." },
+      { label: "Recursos de documentos con IA", href: "/resources", description: "Un centro estructurado de revisión con IA, OCR, conversión y otros flujos documentales." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "O que a revisão do contrato oferece",
+    benefitsDescription: "A IA lê todo o texto do contrato e destaca as cláusulas que merecem uma segunda olhada antes de você assinar.",
+    benefits: [
+      { title: "Cláusulas arriscadas, em linguagem simples", description: "Renovação automática, indenização unilateral, responsabilidade ilimitada, rescisão desequilibrada: cada cláusula incomum ou agressiva é explicada em linguagem do dia a dia, não jurídica." },
+      { title: "Cada alerta aponta para sua cláusula", description: "Cada achado é mostrado com o trecho exato de onde veio, verificado no seu documento; quando uma citação não pode ser localizada no texto, ela é ocultada em vez de inventada." },
+      { title: "Triagem vermelho / âmbar / verde", description: "Os achados são ordenados por gravidade e acompanhados de uma pergunta concreta para fazer antes de assinar, para você saber o que negociar primeiro." },
+    ],
+    workflowTitle: "Como a revisão se encaixa no seu trabalho",
+    workflowDescription: "Para quando você recebe um acordo e precisa saber onde estão as armadilhas antes de ele chegar à sua mesa para assinatura.",
+    steps: [
+      "Envie o PDF do contrato: o texto é extraído e enviado para análise.",
+      "A IA sinaliza cláusulas arriscadas, unilaterais ou ausentes e cita cada uma do seu documento.",
+      "Revise a lista vermelho/âmbar/verde com a pergunta a levantar em cada ponto.",
+    ],
+    readingTitle: "Mais ferramentas de revisão com IA",
+    readingDescription: "Ferramentas relacionadas para ler contratos, locações e licitações com achados rastreáveis.",
+    readingLinks: [
+      { label: "Verificação de alertas de locação", href: "/lease-redflag", description: "A mesma revisão cláusula por cláusula ajustada para contratos de aluguel e locação." },
+      { label: "Analisador de licitações", href: "/govbid-matrix", description: "Transforme um edital de licitação em uma matriz de requisitos estruturada e acionável." },
+      { label: "Recursos de documentos com IA", href: "/resources", description: "Um hub estruturado de revisão com IA, OCR, conversão e outros fluxos documentais." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Ce que l'analyse du contrat vous apporte",
+    benefitsDescription: "L'IA lit l'intégralité du texte du contrat et fait ressortir les clauses à examiner avant de signer.",
+    benefits: [
+      { title: "Les clauses à risque, en clair", description: "Reconduction automatique, indemnisation déséquilibrée, responsabilité illimitée, résiliation inéquitable : chaque clause inhabituelle ou agressive est expliquée en langage courant, pas en jargon juridique." },
+      { title: "Chaque alerte renvoie à sa clause", description: "Chaque constat est présenté avec le passage exact dont il provient, vérifié dans votre document ; lorsqu'une citation est introuvable dans le texte, elle est masquée plutôt que devinée." },
+      { title: "Tri rouge / orange / vert", description: "Les constats sont classés par gravité et accompagnés d'une question concrète à poser avant de signer, pour savoir quoi négocier en priorité." },
+    ],
+    workflowTitle: "Comment l'analyse s'intègre à votre travail",
+    workflowDescription: "Pour le moment où on vous remet un accord et où vous devez savoir où sont les pièges avant qu'il arrive sur votre bureau pour signature.",
+    steps: [
+      "Déposez le PDF du contrat : son texte est extrait et envoyé pour analyse.",
+      "L'IA signale les clauses risquées, déséquilibrées ou absentes et cite chacune depuis votre document.",
+      "Parcourez la liste rouge/orange/vert avec la question à soulever pour chaque point.",
+    ],
+    readingTitle: "Plus d'outils d'analyse de documents par IA",
+    readingDescription: "Outils associés pour lire contrats, baux et appels d'offres avec des constats traçables.",
+    readingLinks: [
+      { label: "Analyse des alertes de bail", href: "/lease-redflag", description: "La même analyse clause par clause adaptée aux contrats de location et baux." },
+      { label: "Analyseur d'appels d'offres", href: "/govbid-matrix", description: "Transformez un dossier d'appel d'offres en une matrice d'exigences structurée et exploitable." },
+      { label: "Ressources documentaires IA", href: "/resources", description: "Un hub structuré d'analyse IA, d'OCR, de conversion et d'autres parcours documentaires." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "契約レビューで得られること",
+    benefitsDescription: "AI が契約書の全文を読み取り、署名前に見直す価値のある条項を浮かび上がらせます。",
+    benefits: [
+      { title: "リスク条項を分かりやすく", description: "自動更新、一方的な補償、無制限責任、不均衡な解約条項——異常・攻撃的な条項を一つひとつ、法律用語ではなく日常の言葉で説明します。" },
+      { title: "各指摘は該当条項を示す", description: "各指摘には、その出どころとなった本文の該当箇所が添えられ、あなたの文書と照合されます。引用箇所が本文中で確認できない場合は、推測せず非表示にします。" },
+      { title: "赤／黄／緑の重要度分け", description: "指摘は重大度順に並び、署名前に確認すべき具体的な質問が添えられるので、まず何を交渉すべきか分かります。" },
+    ],
+    workflowTitle: "契約チェックが業務にどう役立つか",
+    workflowDescription: "契約書を渡され、署名のために手元に来る前に落とし穴がどこにあるかを知っておきたいとき。",
+    steps: [
+      "契約書 PDF をアップロード——そのテキストが抽出され、分析のために送信されます。",
+      "AI がリスクのある・一方的な・欠けている条項を指摘し、それぞれをあなたの文書から引用します。",
+      "赤／黄／緑の一覧を、各項目で確認すべき質問とともに見直します。",
+    ],
+    readingTitle: "他の AI 文書レビューツール",
+    readingDescription: "契約書・賃貸借契約・入札文書を、たどれる指摘付きで読むための関連ツール。",
+    readingLinks: [
+      { label: "賃貸借レッドフラグ診断", href: "/lease-redflag", description: "同じ条項ごとのレビューを、賃貸・リース契約向けに調整したもの。" },
+      { label: "入札文書アナライザー", href: "/govbid-matrix", description: "入札文書を、実務で使える構造化された要件マトリクスに変換します。" },
+      { label: "AI 文書リソース", href: "/resources", description: "AI レビュー、OCR、変換などの文書ワークフローを整理したハブ。" },
+    ],
+  },
+};
+
 export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   // zh-Hant is rendered from zh via OpenCC; child components below
   // (UploadDropzone / UpgradePrompt / ToolFaq / encryptedPdfMessage) don't
   // accept zh-Hant in their Locale union, so map it to "zh" for those props.
@@ -457,6 +600,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
 
       <GroundingNote variant="contract" locale={locale} />
       <RelatedPdfTools locale={locale} exclude="/contract-risk" />
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="contract-risk" locale={childLocale} />
     </div>
   );

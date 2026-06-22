@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -196,8 +197,150 @@ const LEVEL_STYLE: Record<RiskLevel, { dot: string; chip: string; border: string
 
 type Phase = "idle" | "extracting" | "ready" | "analyzing" | "done";
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "What the lease scan gives you",
+    benefitsDescription: "An AI read of your rental agreement that surfaces the clauses worth a second look — before you sign.",
+    benefits: [
+      { title: "Risky clauses flagged in plain words", description: "The AI reads the whole lease and calls out unfair, one-sided, or unusual terms — auto-renewal traps, blanket repair liability, lopsided penalties — in language you don't need a lawyer to follow." },
+      { title: "Sorted red / amber / green by severity", description: "Each finding is rated high, medium, or low, so you can see at a glance which clauses are deal-breakers and which are just worth a question." },
+      { title: "Each red flag points to its source clause", description: "When the AI can locate the exact wording, it shows the quoted passage with a 'Verified against source' badge; a quote it can't pin down is hidden rather than guessed at." },
+    ],
+    workflowTitle: "How the lease check fits before you sign",
+    workflowDescription: "For the moment a landlord hands you a lease and you have days, not weeks, to decide what to push back on.",
+    steps: [
+      "Upload your lease PDF — residential or commercial.",
+      "The AI analyzes the document's text and flags risky, unfair, or missing clauses.",
+      "Read the rated findings, the quoted source clause, and what to ask before you sign.",
+    ],
+    readingTitle: "More AI document review tools",
+    readingDescription: "Related AI reviewers and the resource hub for getting more from your documents.",
+    readingLinks: [
+      { label: "Contract risk review", href: "/contract-risk", description: "Run the same kind of clause-by-clause risk read on any contract, not just a lease." },
+      { label: "Bid & tender matrix", href: "/govbid-matrix", description: "Turn a tender or RFP into a structured requirements matrix you can answer point by point." },
+      { label: "Document resource hub", href: "/resources", description: "A structured hub for PDF tools, conversion, and AI document workflows." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "租约扫描能给你什么",
+    benefitsDescription: "用 AI 通读你的租约,在签字前把值得再看一眼的条款挑出来。",
+    benefits: [
+      { title: "白话标出风险条款", description: "AI 通读整份租约,把不公平、单方面或异常的条款指出来——自动续约陷阱、全部维修责任、畸轻畸重的违约金——用你不需要律师就能看懂的话讲清楚。" },
+      { title: "按严重程度分红/黄/绿", description: "每条都标为高、中、低等级,一眼就能看出哪些是硬伤、哪些只是值得问一句。" },
+      { title: "每个红旗都指向原文条款", description: "当 AI 能定位到确切措辞时,会附上引用的原文并打上「已核对原文」标记;无法定位的引文会被隐藏,而不是猜一个。" },
+    ],
+    workflowTitle: "租约检查如何融入签字前的流程",
+    workflowDescription: "当房东把租约递给你,而你只有几天、没有几周来决定该争取改哪些条款时。",
+    steps: [
+      "上传你的租约 PDF——住宅或商业均可。",
+      "AI 分析文档文字,标出有风险、不公平或缺失的条款。",
+      "查看分级结果、引用的原文条款,以及签字前该问什么。",
+    ],
+    readingTitle: "更多 AI 文档审查工具",
+    readingDescription: "相关的 AI 审查工具,以及让文档发挥更大价值的资源中心。",
+    readingLinks: [
+      { label: "合同风险审查", href: "/contract-risk", description: "对任何合同做同样的逐条风险通读,不限于租约。" },
+      { label: "招投标矩阵", href: "/govbid-matrix", description: "把招标书或 RFP 转成结构化的需求矩阵,逐条作答。" },
+      { label: "文档资源中心", href: "/resources", description: "按工作流整理的 PDF 工具、转换和 AI 文档路径中心。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Lo que te da el análisis del arrendamiento",
+    benefitsDescription: "Una lectura con IA de tu contrato de arrendamiento que destaca las cláusulas que merecen una segunda mirada, antes de firmar.",
+    benefits: [
+      { title: "Cláusulas riesgosas señaladas en lenguaje claro", description: "La IA lee todo el contrato y marca los términos injustos, unilaterales o inusuales —trampas de renovación automática, responsabilidad total de reparaciones, penalizaciones desproporcionadas— en un lenguaje que no necesita abogado." },
+      { title: "Ordenadas en rojo / ámbar / verde por gravedad", description: "Cada hallazgo se califica como alto, medio o bajo, para que veas de un vistazo qué cláusulas son inaceptables y cuáles solo merecen una pregunta." },
+      { title: "Cada alerta apunta a su cláusula de origen", description: "Cuando la IA puede localizar la redacción exacta, muestra el pasaje citado con un sello «Verificado con el original»; una cita que no puede ubicar se oculta en lugar de inventarse." },
+    ],
+    workflowTitle: "Cómo encaja el análisis antes de firmar",
+    workflowDescription: "Para cuando un arrendador te entrega un contrato y tienes días, no semanas, para decidir qué objetar.",
+    steps: [
+      "Sube el PDF de tu arrendamiento, residencial o comercial.",
+      "La IA analiza el texto del documento y señala cláusulas riesgosas, injustas o ausentes.",
+      "Lee los hallazgos calificados, la cláusula de origen citada y qué preguntar antes de firmar.",
+    ],
+    readingTitle: "Más herramientas de revisión de documentos con IA",
+    readingDescription: "Revisores con IA relacionados y el centro de recursos para sacar más de tus documentos.",
+    readingLinks: [
+      { label: "Revisión de riesgos de contratos", href: "/contract-risk", description: "Haz la misma lectura de riesgo cláusula por cláusula en cualquier contrato, no solo un arrendamiento." },
+      { label: "Matriz de licitaciones", href: "/govbid-matrix", description: "Convierte una licitación o RFP en una matriz de requisitos estructurada que puedes responder punto por punto." },
+      { label: "Centro de recursos de documentos", href: "/resources", description: "Un centro estructurado de herramientas PDF, conversión y flujos de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "O que a análise do contrato de aluguel oferece",
+    benefitsDescription: "Uma leitura com IA do seu contrato de aluguel que destaca as cláusulas que merecem um segundo olhar, antes de assinar.",
+    benefits: [
+      { title: "Cláusulas arriscadas sinalizadas em linguagem simples", description: "A IA lê todo o contrato e aponta termos injustos, unilaterais ou incomuns — armadilhas de renovação automática, responsabilidade total por reparos, multas desproporcionais — em linguagem que dispensa advogado." },
+      { title: "Ordenadas em vermelho / âmbar / verde por gravidade", description: "Cada achado é classificado como alto, médio ou baixo, para você ver de relance quais cláusulas são inaceitáveis e quais apenas merecem uma pergunta." },
+      { title: "Cada alerta aponta para a cláusula de origem", description: "Quando a IA consegue localizar o texto exato, ela mostra o trecho citado com um selo «Verificado no original»; uma citação que não consegue localizar é ocultada em vez de adivinhada." },
+    ],
+    workflowTitle: "Como a análise se encaixa antes de assinar",
+    workflowDescription: "Para quando um locador entrega um contrato e você tem dias, não semanas, para decidir o que contestar.",
+    steps: [
+      "Envie o PDF do seu contrato de aluguel — residencial ou comercial.",
+      "A IA analisa o texto do documento e sinaliza cláusulas arriscadas, injustas ou ausentes.",
+      "Leia os achados classificados, a cláusula de origem citada e o que perguntar antes de assinar.",
+    ],
+    readingTitle: "Mais ferramentas de revisão de documentos com IA",
+    readingDescription: "Revisores com IA relacionados e o hub de recursos para aproveitar melhor seus documentos.",
+    readingLinks: [
+      { label: "Revisão de riscos de contrato", href: "/contract-risk", description: "Faça a mesma leitura de risco cláusula por cláusula em qualquer contrato, não só num aluguel." },
+      { label: "Matriz de licitações", href: "/govbid-matrix", description: "Transforme um edital ou RFP em uma matriz de requisitos estruturada para responder ponto a ponto." },
+      { label: "Hub de recursos de documentos", href: "/resources", description: "Um hub estruturado de ferramentas PDF, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Ce que l'analyse du bail vous apporte",
+    benefitsDescription: "Une lecture par IA de votre bail qui met en évidence les clauses méritant un second regard, avant de signer.",
+    benefits: [
+      { title: "Clauses à risque signalées en langage clair", description: "L'IA lit l'intégralité du bail et repère les clauses injustes, déséquilibrées ou inhabituelles — pièges de reconduction tacite, responsabilité totale des réparations, pénalités disproportionnées — dans un langage sans jargon juridique." },
+      { title: "Triées en rouge / orange / vert selon la gravité", description: "Chaque point est noté élevé, moyen ou faible, pour voir d'un coup d'œil les clauses rédhibitoires et celles qui méritent simplement une question." },
+      { title: "Chaque alerte renvoie à sa clause d'origine", description: "Quand l'IA localise la formulation exacte, elle affiche le passage cité avec une mention « Vérifié dans le document » ; une citation qu'elle ne peut situer est masquée plutôt que devinée." },
+    ],
+    workflowTitle: "Comment l'analyse s'intègre avant la signature",
+    workflowDescription: "Pour le moment où un bailleur vous remet un bail et où vous avez des jours, pas des semaines, pour décider quoi contester.",
+    steps: [
+      "Téléversez le PDF de votre bail — résidentiel ou commercial.",
+      "L'IA analyse le texte du document et signale les clauses risquées, injustes ou manquantes.",
+      "Lisez les points notés, la clause d'origine citée et les questions à poser avant de signer.",
+    ],
+    readingTitle: "Plus d'outils de revue de documents par IA",
+    readingDescription: "Outils de revue par IA associés et le hub de ressources pour tirer plus de vos documents.",
+    readingLinks: [
+      { label: "Analyse des risques d'un contrat", href: "/contract-risk", description: "Faites la même lecture de risque clause par clause sur tout contrat, pas seulement un bail." },
+      { label: "Matrice d'appels d'offres", href: "/govbid-matrix", description: "Transformez un appel d'offres ou un RFP en une matrice d'exigences structurée à traiter point par point." },
+      { label: "Hub de ressources documentaires", href: "/resources", description: "Un hub structuré d'outils PDF, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "賃貸契約スキャンでわかること",
+    benefitsDescription: "賃貸契約書を AI が通読し、署名前にもう一度見ておくべき条項を浮かび上がらせます。",
+    benefits: [
+      { title: "リスク条項を分かりやすく指摘", description: "AI が契約書全体を読み、不公平・一方的・異例な条項——自動更新の落とし穴、修繕責任の全面負担、不均衡な違約金——を、弁護士なしでも分かる言葉で示します。" },
+      { title: "深刻度を赤／黄／緑で分類", description: "各指摘を高・中・低で評価。どの条項が致命的で、どれが一言確認すれば済むものか、ひと目で分かります。" },
+      { title: "各レッドフラグが該当条項を指し示す", description: "AI が正確な文言を特定できる場合は、引用箇所を「出典と照合済み」バッジ付きで表示します。特定できない引用は推測せず非表示にします。" },
+    ],
+    workflowTitle: "署名前の流れにどう組み込むか",
+    workflowDescription: "貸主から契約書を渡され、何を交渉すべきか数週間ではなく数日で決めなければならないときに。",
+    steps: [
+      "賃貸契約書の PDF をアップロード——住宅用でも事業用でも。",
+      "AI が文書のテキストを分析し、リスクのある・不公平な・欠けている条項を指摘します。",
+      "評価された指摘、引用された該当条項、署名前に確認すべき点を読みます。",
+    ],
+    readingTitle: "他の AI 文書レビューツール",
+    readingDescription: "関連する AI レビューツールと、文書をより活かすためのリソースハブ。",
+    readingLinks: [
+      { label: "契約リスクレビュー", href: "/contract-risk", description: "賃貸契約に限らず、あらゆる契約書を同じように条項ごとにリスク通読します。" },
+      { label: "入札・提案マトリクス", href: "/govbid-matrix", description: "入札書や RFP を構造化された要件マトリクスに変換し、項目ごとに回答できます。" },
+      { label: "文書リソースハブ", href: "/resources", description: "PDF ツール、変換、AI 文書ワークフローを整理したハブ。" },
+    ],
+  },
+};
+
 export function LeaseRedflagClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   // zh-Hant rendered from zh via OpenCC; child components (UploadDropzone /
   // UpgradePrompt / ToolFaq / encryptedPdfMessage) lack zh-Hant in their union,
   // so map it to "zh" for those props.
@@ -407,6 +550,7 @@ export function LeaseRedflagClient({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="lease-redflag" locale={childLocale} />
     </div>
   );

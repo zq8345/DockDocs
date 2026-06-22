@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -33,7 +34,7 @@ const STR = {
     noText: "No readable text found. Run OCR on this PDF first.",
     errPrefix: "Analysis failed:",
     retry: "Retry",
-    privacy: "📋 Only extracted text is sent for analysis. Your file never leaves your device.",
+    privacy: "📋 Only the extracted text is sent for analysis — your file itself isn't uploaded.",
     mandatory: "Mandatory",
     advisory: "Advisory",
     colId: "#",
@@ -58,7 +59,7 @@ const STR = {
     noText: "未检测到可读文本，请先对该 PDF 做 OCR。",
     errPrefix: "分析失败：",
     retry: "重试",
-    privacy: "📋 仅发送提取的文本进行分析，文件本身不离开你的设备。",
+    privacy: "📋 仅发送提取的文本进行分析——文件本身不会上传。",
     mandatory: "强制要求",
     advisory: "建议要求",
     colId: "编号",
@@ -83,7 +84,7 @@ const STR = {
     noText: "No se encontró texto legible. Aplica OCR a este PDF primero.",
     errPrefix: "Análisis fallido:",
     retry: "Reintentar",
-    privacy: "📋 Solo se envía el texto extraído para análisis. Tu archivo nunca sale de tu dispositivo.",
+    privacy: "📋 Solo se envía el texto extraído para análisis: el archivo en sí no se sube.",
     mandatory: "Obligatorio",
     advisory: "Recomendado",
     colId: "#",
@@ -108,7 +109,7 @@ const STR = {
     noText: "Nenhum texto legível encontrado. Execute OCR neste PDF primeiro.",
     errPrefix: "Análise falhou:",
     retry: "Tentar novamente",
-    privacy: "📋 Apenas o texto extraído é enviado para análise. Seu arquivo nunca sai do seu dispositivo.",
+    privacy: "📋 Apenas o texto extraído é enviado para análise — o arquivo em si não é enviado.",
     mandatory: "Obrigatório",
     advisory: "Recomendado",
     colId: "#",
@@ -133,7 +134,7 @@ const STR = {
     noText: "Aucun texte lisible trouvé. Exécutez d'abord l'OCR sur ce PDF.",
     errPrefix: "Échec de l'analyse :",
     retry: "Réessayer",
-    privacy: "📋 Seul le texte extrait est envoyé pour analyse. Votre fichier ne quitte jamais votre appareil.",
+    privacy: "📋 Seul le texte extrait est envoyé pour analyse — le fichier lui-même n'est pas téléversé.",
     mandatory: "Obligatoire",
     advisory: "Recommandé",
     colId: "#",
@@ -158,7 +159,7 @@ const STR = {
     noText: "読み取れるテキストがありません。先にこのPDFにOCRをかけてください。",
     errPrefix: "分析に失敗しました:",
     retry: "再試行",
-    privacy: "📋 分析には抽出されたテキストのみが送られます。ファイルがデバイスから出ることはありません。",
+    privacy: "📋 分析には抽出されたテキストのみが送られます——ファイル自体はアップロードされません。",
     mandatory: "必須",
     advisory: "任意",
     colId: "#",
@@ -191,8 +192,150 @@ function exportCsv(requirements: Requirement[], t: typeof STR["en"]) {
   URL.revokeObjectURL(url);
 }
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "What the compliance matrix does for you",
+    benefitsDescription: "The AI reads your solicitation's text and turns scattered obligations into one structured, exportable matrix.",
+    benefits: [
+      { title: "Every shall/must, nothing missed", description: "The AI sweeps the whole solicitation for binding language — 'shall', 'must', 'is required to' — so a buried requirement on page 47 doesn't cost you the bid." },
+      { title: "Each line cites its section + source", description: "Every requirement carries the clause number it came from and the exact source sentence, so your team can verify each one against the original RFP." },
+      { title: "Export to CSV for your response", description: "Send the numbered matrix straight to a spreadsheet and assign owners, status, and proof — turning extraction into a working compliance checklist." },
+    ],
+    workflowTitle: "From solicitation PDF to compliance checklist",
+    workflowDescription: "When a tender lands and you need every binding requirement pulled out before the deadline clock starts.",
+    steps: [
+      "Upload the RFP or solicitation PDF.",
+      "The AI analyzes the document's text and extracts each shall/must requirement with its section reference.",
+      "Review the numbered matrix and download it as CSV for your bid response.",
+    ],
+    readingTitle: "More AI document analysis",
+    readingDescription: "Related tools for reading contracts, leases, and long documents.",
+    readingLinks: [
+      { label: "Contract risk review", href: "/contract-risk", description: "Flag risky clauses and one-sided terms in a contract, each tied to its source passage." },
+      { label: "AI document workspace", href: "/ai-workspace", description: "Ask questions across a whole document and get answers traced back to the text." },
+      { label: "AI document resources", href: "/resources", description: "A structured hub for AI document tools, extraction, and analysis paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "合规矩阵能为你做什么",
+    benefitsDescription: "AI 读取招标文件的文本，把散落各处的义务整理成一份结构化、可导出的矩阵。",
+    benefits: [
+      { title: "每条 shall/must 都不漏", description: "AI 通读整份招标文件，捕捉所有约束性措辞——「shall」「must」「必须」——让埋在第 47 页的要求不再让你丢标。" },
+      { title: "每条都标注条款与原文", description: "每条要求都附上来源条款编号和原文句子，方便你的团队逐条对照原始 RFP 核验。" },
+      { title: "导出 CSV 用于投标响应", description: "把编号矩阵直接导入表格，分配负责人、状态和佐证——让提取结果变成可执行的合规清单。" },
+    ],
+    workflowTitle: "从招标 PDF 到合规清单",
+    workflowDescription: "当一份标书到手、你需要在截止倒计时开始前把每条约束性要求提取出来时。",
+    steps: [
+      "上传 RFP 或招标 PDF。",
+      "AI 分析文档文本，逐条提取 shall/must 要求并标注条款编号。",
+      "查看编号矩阵，导出 CSV 用于你的投标响应。",
+    ],
+    readingTitle: "更多 AI 文档分析",
+    readingDescription: "用于读合同、租约和长文档的相关工具。",
+    readingLinks: [
+      { label: "合同风险审查", href: "/contract-risk", description: "标记合同中的风险条款和单方面条款，每条都关联到来源段落。" },
+      { label: "AI 文档工作台", href: "/ai-workspace", description: "针对整份文档提问，得到可追溯回原文的答案。" },
+      { label: "AI 文档资源", href: "/resources", description: "按工作流整理的 AI 文档工具、提取与分析路径中心。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Qué hace por ti la matriz de cumplimiento",
+    benefitsDescription: "La IA lee el texto del pliego y convierte obligaciones dispersas en una matriz estructurada y exportable.",
+    benefits: [
+      { title: "Cada shall/must, sin omitir nada", description: "La IA recorre todo el pliego en busca de lenguaje vinculante —'shall', 'must', 'deberá'— para que un requisito enterrado en la página 47 no te cueste la licitación." },
+      { title: "Cada línea cita su sección y fuente", description: "Cada requisito lleva el número de cláusula de origen y la frase fuente exacta, para que tu equipo verifique cada uno contra el RFP original." },
+      { title: "Exporta a CSV para tu respuesta", description: "Lleva la matriz numerada directo a una hoja de cálculo y asigna responsables, estado y evidencia: la extracción se convierte en una lista de cumplimiento operativa." },
+    ],
+    workflowTitle: "Del PDF del pliego a la lista de cumplimiento",
+    workflowDescription: "Cuando llega una licitación y necesitas extraer cada requisito vinculante antes de que empiece la cuenta atrás.",
+    steps: [
+      "Sube el PDF del RFP o pliego.",
+      "La IA analiza el texto del documento y extrae cada requisito shall/must con su referencia de sección.",
+      "Revisa la matriz numerada y descárgala en CSV para tu propuesta.",
+    ],
+    readingTitle: "Más análisis de documentos con IA",
+    readingDescription: "Herramientas relacionadas para leer contratos, arrendamientos y documentos largos.",
+    readingLinks: [
+      { label: "Revisión de riesgos de contrato", href: "/contract-risk", description: "Detecta cláusulas riesgosas y términos desequilibrados, cada uno ligado a su pasaje fuente." },
+      { label: "Espacio de trabajo de documentos con IA", href: "/ai-workspace", description: "Haz preguntas sobre todo un documento y obtén respuestas rastreables al texto." },
+      { label: "Recursos de documentos con IA", href: "/resources", description: "Un centro estructurado de herramientas de IA, extracción y análisis de documentos." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "O que a matriz de conformidade faz por você",
+    benefitsDescription: "A IA lê o texto do edital e transforma obrigações dispersas em uma matriz estruturada e exportável.",
+    benefits: [
+      { title: "Cada shall/must, nada esquecido", description: "A IA varre todo o edital em busca de linguagem vinculante —'shall', 'must', 'deverá'— para que um requisito escondido na página 47 não custe a licitação." },
+      { title: "Cada linha cita sua seção e fonte", description: "Cada requisito traz o número da cláusula de origem e a frase fonte exata, para sua equipe conferir cada um contra o RFP original." },
+      { title: "Exporte para CSV na sua resposta", description: "Leve a matriz numerada direto para uma planilha e atribua responsáveis, status e comprovação: a extração vira uma lista de conformidade operacional." },
+    ],
+    workflowTitle: "Do PDF do edital à lista de conformidade",
+    workflowDescription: "Quando uma licitação chega e você precisa extrair cada requisito vinculante antes da contagem regressiva começar.",
+    steps: [
+      "Envie o PDF do RFP ou edital.",
+      "A IA analisa o texto do documento e extrai cada requisito shall/must com sua referência de seção.",
+      "Revise a matriz numerada e baixe-a em CSV para sua proposta.",
+    ],
+    readingTitle: "Mais análise de documentos com IA",
+    readingDescription: "Ferramentas relacionadas para ler contratos, contratos de locação e documentos longos.",
+    readingLinks: [
+      { label: "Análise de riscos de contrato", href: "/contract-risk", description: "Sinalize cláusulas arriscadas e termos desequilibrados, cada um ligado ao seu trecho de origem." },
+      { label: "Espaço de trabalho de documentos com IA", href: "/ai-workspace", description: "Faça perguntas sobre um documento inteiro e obtenha respostas rastreáveis ao texto." },
+      { label: "Recursos de documentos com IA", href: "/resources", description: "Um hub estruturado de ferramentas de IA, extração e análise de documentos." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Ce que la matrice de conformité fait pour vous",
+    benefitsDescription: "L'IA lit le texte de l'appel d'offres et transforme des obligations éparses en une matrice structurée et exportable.",
+    benefits: [
+      { title: "Chaque shall/must, rien d'oublié", description: "L'IA parcourt tout l'appel d'offres à la recherche du langage contraignant —« shall », « must », « devra »— pour qu'une exigence enfouie en page 47 ne vous coûte pas le marché." },
+      { title: "Chaque ligne cite sa section et sa source", description: "Chaque exigence porte le numéro de clause d'origine et la phrase source exacte, pour que votre équipe vérifie chacune par rapport à l'appel d'offres original." },
+      { title: "Exportez en CSV pour votre réponse", description: "Envoyez la matrice numérotée directement dans un tableur et attribuez responsables, statut et preuves : l'extraction devient une liste de conformité opérationnelle." },
+    ],
+    workflowTitle: "Du PDF de l'appel d'offres à la liste de conformité",
+    workflowDescription: "Quand un appel d'offres arrive et qu'il faut extraire chaque exigence contraignante avant le départ du compte à rebours.",
+    steps: [
+      "Importez le PDF de l'appel d'offres ou du cahier des charges.",
+      "L'IA analyse le texte du document et extrait chaque exigence shall/must avec sa référence de section.",
+      "Vérifiez la matrice numérotée et téléchargez-la en CSV pour votre réponse.",
+    ],
+    readingTitle: "Plus d'analyse de documents par IA",
+    readingDescription: "Outils associés pour lire contrats, baux et documents longs.",
+    readingLinks: [
+      { label: "Analyse des risques de contrat", href: "/contract-risk", description: "Repérez les clauses risquées et déséquilibrées, chacune reliée à son passage source." },
+      { label: "Espace de travail documentaire IA", href: "/ai-workspace", description: "Posez des questions sur un document entier et obtenez des réponses traçables au texte." },
+      { label: "Ressources documentaires IA", href: "/resources", description: "Un hub structuré d'outils IA, d'extraction et d'analyse de documents." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "コンプライアンス・マトリクスができること",
+    benefitsDescription: "AI が入札文書のテキストを読み取り、散在する義務を 1 つの構造化された、書き出し可能なマトリクスにまとめます。",
+    benefits: [
+      { title: "すべての shall/must を見逃さない", description: "AI が入札文書全体から拘束力のある表現——「shall」「must」「~しなければならない」——を洗い出すので、47 ページ目に埋もれた要件が落札を逃す原因になりません。" },
+      { title: "各行にセクションと出典を明記", description: "各要件には出典の条項番号と原文の一文が付くため、チームが元の RFP と照らし合わせて 1 件ずつ確認できます。" },
+      { title: "提案用に CSV へ書き出し", description: "番号付きマトリクスをそのまま表計算ソフトに取り込み、担当者・ステータス・証跡を割り当て——抽出結果が実用的なコンプライアンス・チェックリストになります。" },
+    ],
+    workflowTitle: "入札 PDF からコンプライアンス・チェックリストへ",
+    workflowDescription: "入札案件が届き、締め切りのカウントダウンが始まる前にすべての拘束的要件を抜き出す必要があるとき。",
+    steps: [
+      "RFP や入札公告の PDF をアップロードします。",
+      "AI が文書のテキストを分析し、各 shall/must 要件をセクション参照とともに抽出します。",
+      "番号付きマトリクスを確認し、提案用に CSV としてダウンロードします。",
+    ],
+    readingTitle: "その他の AI 文書分析",
+    readingDescription: "契約書、賃貸借契約、長文を読むための関連ツール。",
+    readingLinks: [
+      { label: "契約リスクレビュー", href: "/contract-risk", description: "契約書のリスク条項や一方的な条件を、それぞれ出典箇所に紐づけて指摘します。" },
+      { label: "AI 文書ワークスペース", href: "/ai-workspace", description: "文書全体に質問し、本文までたどれる回答を得られます。" },
+      { label: "AI 文書リソース", href: "/resources", description: "AI 文書ツール、抽出、分析の導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   // zh-Hant rendered from zh via OpenCC; child components (UpgradePrompt /
   // ToolFaq / encryptedPdfMessage) lack zh-Hant in their union → map to "zh".
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
@@ -409,6 +552,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
       {/* Privacy notice */}
       <p className="mt-8 text-[12px] text-[color:var(--faint)]">{t.privacy}</p>
 
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="govbid-matrix" locale={childLocale} />
     </main>
   );
