@@ -1,5 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
@@ -162,8 +163,150 @@ async function extractText(file: File): Promise<string> {
   return out.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
 }
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Translate a whole folder at once",
+    benefitsDescription: "Point one run at a folder of PDFs and get every document translated into the same target language.",
+    benefits: [
+      { title: "A folder, not a file", description: "Queue up to ten PDFs and translate them all in one pass instead of opening, copying, and pasting one document at a time." },
+      { title: "AI reads the text of each PDF", description: "The text of every document is extracted and translated by AI, so phrasing reads naturally rather than word-for-word like a dictionary swap." },
+      { title: "One ZIP, one language per run", description: "Every translation comes back as a .txt file named after its PDF, bundled into a single ZIP — pick a new target language and run the folder again." },
+    ],
+    workflowTitle: "How batch translation fits your work",
+    workflowDescription: "For when a stack of PDFs — vendor contracts, research papers, a folder of reports — all need to be read in one language.",
+    steps: [
+      "Drop a folder of PDFs in and choose the language to translate them into.",
+      "AI extracts and translates the text of each document, one after another.",
+      "Download the ZIP of .txt translations, one file per PDF.",
+    ],
+    readingTitle: "More AI document tools",
+    readingDescription: "Related ways to translate and work through documents with AI.",
+    readingLinks: [
+      { label: "Translate a single PDF", href: "/translate-pdf", description: "The one-file version — translate a single PDF and read the result side by side." },
+      { label: "Batch summarize PDFs", href: "/batch-summary", description: "Same folder workflow, but summarize each PDF instead of translating it." },
+      { label: "AI document resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "一次翻译整个文件夹",
+    benefitsDescription: "对着一个装满 PDF 的文件夹跑一次，就能把每份文档都翻译成同一种目标语言。",
+    benefits: [
+      { title: "是文件夹，不是单个文件", description: "一次最多排入十份 PDF 并一并翻译，不必逐份打开、复制、粘贴。" },
+      { title: "AI 读取每份 PDF 的文字", description: "每份文档的文字都会被提取并由 AI 翻译，读起来自然通顺，而不是像查字典那样逐词替换。" },
+      { title: "一次一个 ZIP、一种语言", description: "每份译文以与原 PDF 同名的 .txt 文件返回，打包成一个 ZIP——换一种目标语言，再把文件夹跑一遍即可。" },
+    ],
+    workflowTitle: "批量翻译如何融入你的工作",
+    workflowDescription: "当一堆 PDF——供应商合同、研究论文、一整个文件夹的报告——都需要用同一种语言阅读时。",
+    steps: [
+      "放入一个装着 PDF 的文件夹，选择要翻译成的语言。",
+      "AI 逐份提取并翻译每份文档的文字。",
+      "下载 .txt 译文的 ZIP，每份 PDF 对应一个文件。",
+    ],
+    readingTitle: "更多 AI 文档工具",
+    readingDescription: "用 AI 翻译和处理文档的相关方式。",
+    readingLinks: [
+      { label: "翻译单个 PDF", href: "/translate-pdf", description: "单文件版本——翻译一份 PDF 并并排查看结果。" },
+      { label: "批量总结 PDF", href: "/batch-summary", description: "同样的文件夹工作流，只是把每份 PDF 总结而不是翻译。" },
+      { label: "AI 文档资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Traduce una carpeta entera de una vez",
+    benefitsDescription: "Apunta una sola ejecución a una carpeta de PDF y traduce cada documento al mismo idioma de destino.",
+    benefits: [
+      { title: "Una carpeta, no un archivo", description: "Pon en cola hasta diez PDF y tradúcelos todos de una pasada, en vez de abrir, copiar y pegar uno a uno." },
+      { title: "La IA lee el texto de cada PDF", description: "El texto de cada documento se extrae y traduce con IA, así la redacción se lee con naturalidad en lugar de palabra por palabra como un diccionario." },
+      { title: "Un ZIP, un idioma por ejecución", description: "Cada traducción vuelve como un archivo .txt con el nombre de su PDF, agrupados en un solo ZIP: elige otro idioma de destino y vuelve a ejecutar la carpeta." },
+    ],
+    workflowTitle: "Cómo encaja la traducción por lotes en tu trabajo",
+    workflowDescription: "Para cuando una pila de PDF —contratos de proveedores, artículos de investigación, una carpeta de informes— debe leerse en un solo idioma.",
+    steps: [
+      "Suelta una carpeta de PDF y elige el idioma al que traducirlos.",
+      "La IA extrae y traduce el texto de cada documento, uno tras otro.",
+      "Descarga el ZIP de traducciones .txt, un archivo por PDF.",
+    ],
+    readingTitle: "Más herramientas de documentos con IA",
+    readingDescription: "Otras formas de traducir y trabajar documentos con IA.",
+    readingLinks: [
+      { label: "Traducir un solo PDF", href: "/translate-pdf", description: "La versión de un archivo: traduce un PDF y lee el resultado en paralelo." },
+      { label: "Resumir PDF por lotes", href: "/batch-summary", description: "El mismo flujo de carpeta, pero resume cada PDF en vez de traducirlo." },
+      { label: "Recursos de documentos con IA", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Traduza uma pasta inteira de uma vez",
+    benefitsDescription: "Aponte uma única execução para uma pasta de PDFs e traduza cada documento para o mesmo idioma de destino.",
+    benefits: [
+      { title: "Uma pasta, não um arquivo", description: "Coloque até dez PDFs na fila e traduza todos de uma vez, em vez de abrir, copiar e colar um por um." },
+      { title: "A IA lê o texto de cada PDF", description: "O texto de cada documento é extraído e traduzido pela IA, então a redação soa natural em vez de palavra por palavra como um dicionário." },
+      { title: "Um ZIP, um idioma por execução", description: "Cada tradução volta como um arquivo .txt com o nome do seu PDF, reunidos em um único ZIP: escolha outro idioma de destino e rode a pasta de novo." },
+    ],
+    workflowTitle: "Como a tradução em lote se encaixa no seu trabalho",
+    workflowDescription: "Para quando uma pilha de PDFs — contratos de fornecedores, artigos de pesquisa, uma pasta de relatórios — precisa ser lida em um só idioma.",
+    steps: [
+      "Solte uma pasta de PDFs e escolha o idioma para o qual traduzi-los.",
+      "A IA extrai e traduz o texto de cada documento, um após o outro.",
+      "Baixe o ZIP de traduções .txt, um arquivo por PDF.",
+    ],
+    readingTitle: "Mais ferramentas de documentos com IA",
+    readingDescription: "Outras formas de traduzir e trabalhar documentos com IA.",
+    readingLinks: [
+      { label: "Traduzir um único PDF", href: "/translate-pdf", description: "A versão de um arquivo — traduza um PDF e leia o resultado lado a lado." },
+      { label: "Resumir PDFs em lote", href: "/batch-summary", description: "O mesmo fluxo de pasta, mas resume cada PDF em vez de traduzir." },
+      { label: "Recursos de documentos com IA", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Traduisez un dossier entier d'un coup",
+    benefitsDescription: "Lancez une seule exécution sur un dossier de PDF et traduisez chaque document dans la même langue cible.",
+    benefits: [
+      { title: "Un dossier, pas un fichier", description: "Mettez jusqu'à dix PDF en file et traduisez-les tous d'un seul passage, au lieu d'ouvrir, copier et coller un par un." },
+      { title: "L'IA lit le texte de chaque PDF", description: "Le texte de chaque document est extrait et traduit par l'IA, si bien que la formulation se lit naturellement plutôt que mot à mot comme un dictionnaire." },
+      { title: "Un ZIP, une langue par exécution", description: "Chaque traduction revient sous forme de fichier .txt portant le nom de son PDF, regroupés dans un seul ZIP : choisissez une autre langue cible et relancez le dossier." },
+    ],
+    workflowTitle: "Comment la traduction par lot s'intègre à votre travail",
+    workflowDescription: "Pour quand une pile de PDF — contrats fournisseurs, articles de recherche, un dossier de rapports — doit être lue dans une seule langue.",
+    steps: [
+      "Déposez un dossier de PDF et choisissez la langue dans laquelle les traduire.",
+      "L'IA extrait et traduit le texte de chaque document, l'un après l'autre.",
+      "Téléchargez le ZIP des traductions .txt, un fichier par PDF.",
+    ],
+    readingTitle: "Plus d'outils de documents IA",
+    readingDescription: "D'autres façons de traduire et de traiter des documents avec l'IA.",
+    readingLinks: [
+      { label: "Traduire un seul PDF", href: "/translate-pdf", description: "La version mono-fichier — traduisez un PDF et lisez le résultat côte à côte." },
+      { label: "Résumer des PDF en lot", href: "/batch-summary", description: "Le même flux de dossier, mais résume chaque PDF au lieu de le traduire." },
+      { label: "Ressources documents IA", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "フォルダ全体を一度に翻訳",
+    benefitsDescription: "PDF が入ったフォルダに対して 1 回実行するだけで、すべての文書を同じ翻訳先の言語に翻訳します。",
+    benefits: [
+      { title: "ファイルではなくフォルダ単位", description: "最大 10 件の PDF をまとめてキューに入れ、1 回で翻訳——1 つずつ開いてコピー＆ペーストする必要はありません。" },
+      { title: "AI が各 PDF のテキストを読み取る", description: "各文書のテキストが抽出され AI が翻訳するため、辞書のような逐語訳ではなく自然な言い回しになります。" },
+      { title: "1 回につき 1 つの ZIP・1 言語", description: "各翻訳は元の PDF と同じ名前の .txt ファイルとして返され、1 つの ZIP にまとめられます——別の翻訳先言語を選び、フォルダをもう一度実行できます。" },
+    ],
+    workflowTitle: "一括翻訳が作業にどう役立つか",
+    workflowDescription: "ベンダー契約書、研究論文、レポートのフォルダなど、PDF の山をすべて 1 つの言語で読みたいとき。",
+    steps: [
+      "PDF の入ったフォルダをドロップし、翻訳先の言語を選びます。",
+      "AI が各文書のテキストを順番に抽出し翻訳します。",
+      ".txt 翻訳の ZIP をダウンロード——PDF 1 つにつき 1 ファイルです。",
+    ],
+    readingTitle: "その他の AI 文書ツール",
+    readingDescription: "AI で文書を翻訳・処理する関連の方法。",
+    readingLinks: [
+      { label: "単一の PDF を翻訳", href: "/translate-pdf", description: "1 ファイル版——1 つの PDF を翻訳し、結果を並べて読めます。" },
+      { label: "PDF を一括要約", href: "/batch-summary", description: "同じフォルダのワークフローで、翻訳の代わりに各 PDF を要約します。" },
+      { label: "AI 文書リソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [target, setTarget] = useState(locale === "zh" ? "en" : "zh");
@@ -355,6 +498,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
 
       {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="batch-translate" locale={locale} />
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 
@@ -76,8 +77,150 @@ const STR = {
 
 const folderSafe = (s: string) => s.replace(/[\\/:*?"<>|]+/g, "-").trim().slice(0, 40) || "其他";
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why sort a folder of PDFs with AI",
+    benefitsDescription: "Turn a chaotic pile of mixed documents into category folders in one pass.",
+    benefits: [
+      { title: "A whole folder in one pass", description: "Drop dozens of mixed PDFs at once — the AI labels every document and groups them into category folders inside a single ZIP." },
+      { title: "Categories read from the text", description: "Each document's text is analyzed by AI to suggest a label (invoice, contract, resume, report…), so the sort follows what's actually inside, not just file names." },
+      { title: "Your originals stay untouched", description: "The ZIP holds your original PDFs unchanged — only moved into category folders, nothing rewritten or re-encoded." },
+    ],
+    workflowTitle: "How auto-sorting fits your document work",
+    workflowDescription: "For the moment a download folder or a shared drive turns into a mess of unnamed PDFs that need to be filed.",
+    steps: [
+      "Drop a folder of PDFs, or pick the files you want to organize.",
+      "The AI reads each document's text and suggests a category for it.",
+      "Download one ZIP with everything grouped into category folders.",
+    ],
+    readingTitle: "More ways to handle PDFs in bulk",
+    readingDescription: "Related AI tools and guides for working across many documents.",
+    readingLinks: [
+      { label: "Summarize PDFs in bulk", href: "/batch-summary", description: "Run a whole folder of PDFs through AI and get a short summary for each." },
+      { label: "Spot contract risks", href: "/contract-risk", description: "Have AI read a contract's text and flag risky clauses and missing terms." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么用 AI 给一整个文件夹的 PDF 分类",
+    benefitsDescription: "一遍处理，把杂乱混在一起的文档整理成分类文件夹。",
+    benefits: [
+      { title: "一次处理整个文件夹", description: "一次拖入几十份混杂的 PDF——AI 给每份文档打标签，并归类到一个 ZIP 里的不同分类文件夹。" },
+      { title: "按正文内容判断类别", description: "每份文档的文本由 AI 分析后给出标签(发票、合同、简历、报告…),分类依据是文件里真正的内容，而不只是文件名。" },
+      { title: "原文件保持不动", description: "ZIP 里是你原封不动的 PDF——只是移进了分类文件夹，没有重写、也没有重新编码。" },
+    ],
+    workflowTitle: "自动分类如何融入你的文档工作",
+    workflowDescription: "当下载文件夹或共享盘变成一堆没命名、待归档的 PDF 时。",
+    steps: [
+      "拖入一个装满 PDF 的文件夹，或挑选要整理的文件。",
+      "AI 读取每份文档的文本，并为它推荐一个类别。",
+      "下载一个 ZIP，里面所有文件都已归入分类文件夹。",
+    ],
+    readingTitle: "更多批量处理 PDF 的方式",
+    readingDescription: "跨多份文档处理的相关 AI 工具和指南。",
+    readingLinks: [
+      { label: "批量总结 PDF", href: "/batch-summary", description: "把一整个文件夹的 PDF 交给 AI，为每份生成简短摘要。" },
+      { label: "识别合同风险", href: "/contract-risk", description: "让 AI 阅读合同正文，标出有风险的条款和缺失的条目。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué ordenar una carpeta de PDF con IA",
+    benefitsDescription: "Convierte un montón caótico de documentos mezclados en carpetas por categoría en una sola pasada.",
+    benefits: [
+      { title: "Una carpeta entera de una vez", description: "Suelta decenas de PDF mezclados a la vez: la IA etiqueta cada documento y los agrupa en carpetas por categoría dentro de un solo ZIP." },
+      { title: "Categorías leídas del texto", description: "El texto de cada documento se analiza con IA para sugerir una etiqueta (factura, contrato, currículum, informe…), así el orden sigue lo que hay dentro, no solo el nombre del archivo." },
+      { title: "Tus originales quedan intactos", description: "El ZIP contiene tus PDF originales sin cambios: solo movidos a carpetas por categoría, nada reescrito ni recodificado." },
+    ],
+    workflowTitle: "Cómo encaja el orden automático en tu trabajo",
+    workflowDescription: "Para cuando una carpeta de descargas o una unidad compartida se vuelve un lío de PDF sin nombre que hay que archivar.",
+    steps: [
+      "Suelta una carpeta de PDF, o elige los archivos que quieres organizar.",
+      "La IA lee el texto de cada documento y le sugiere una categoría.",
+      "Descarga un único ZIP con todo agrupado en carpetas por categoría.",
+    ],
+    readingTitle: "Más formas de manejar PDF en bloque",
+    readingDescription: "Herramientas de IA y guías relacionadas para trabajar con muchos documentos.",
+    readingLinks: [
+      { label: "Resumir PDF en bloque", href: "/batch-summary", description: "Pasa una carpeta entera de PDF por la IA y obtén un breve resumen de cada uno." },
+      { label: "Detectar riesgos de contrato", href: "/contract-risk", description: "Haz que la IA lea el texto de un contrato y señale cláusulas riesgosas y términos faltantes." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que organizar uma pasta de PDFs com IA",
+    benefitsDescription: "Transforme uma pilha caótica de documentos misturados em pastas por categoria em uma única passagem.",
+    benefits: [
+      { title: "Uma pasta inteira de uma vez", description: "Solte dezenas de PDFs misturados de uma só vez: a IA rotula cada documento e os agrupa em pastas por categoria dentro de um único ZIP." },
+      { title: "Categorias lidas do texto", description: "O texto de cada documento é analisado pela IA para sugerir um rótulo (fatura, contrato, currículo, relatório…), então a organização segue o que há dentro, não apenas o nome do arquivo." },
+      { title: "Seus originais ficam intactos", description: "O ZIP mantém seus PDFs originais sem alteração: apenas movidos para pastas por categoria, nada reescrito ou recodificado." },
+    ],
+    workflowTitle: "Como a organização automática se encaixa no seu trabalho",
+    workflowDescription: "Para quando uma pasta de downloads ou um drive compartilhado vira uma bagunça de PDFs sem nome que precisam ser arquivados.",
+    steps: [
+      "Solte uma pasta de PDFs, ou escolha os arquivos que deseja organizar.",
+      "A IA lê o texto de cada documento e sugere uma categoria para ele.",
+      "Baixe um único ZIP com tudo agrupado em pastas por categoria.",
+    ],
+    readingTitle: "Mais formas de lidar com PDFs em massa",
+    readingDescription: "Ferramentas de IA e guias relacionados para trabalhar com muitos documentos.",
+    readingLinks: [
+      { label: "Resumir PDFs em massa", href: "/batch-summary", description: "Passe uma pasta inteira de PDFs pela IA e obtenha um resumo curto de cada um." },
+      { label: "Detectar riscos de contrato", href: "/contract-risk", description: "Faça a IA ler o texto de um contrato e sinalizar cláusulas arriscadas e termos faltantes." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi trier un dossier de PDF avec l'IA",
+    benefitsDescription: "Transformez un tas chaotique de documents mélangés en dossiers par catégorie en une seule passe.",
+    benefits: [
+      { title: "Un dossier entier en une fois", description: "Déposez des dizaines de PDF mélangés d'un coup : l'IA attribue une étiquette à chaque document et les regroupe dans des dossiers par catégorie au sein d'un seul ZIP." },
+      { title: "Des catégories lues dans le texte", description: "Le texte de chaque document est analysé par l'IA pour suggérer une étiquette (facture, contrat, CV, rapport…), si bien que le tri suit le contenu réel, pas seulement le nom du fichier." },
+      { title: "Vos originaux restent intacts", description: "Le ZIP conserve vos PDF d'origine sans modification : seulement déplacés dans des dossiers par catégorie, rien de réécrit ni de réencodé." },
+    ],
+    workflowTitle: "Comment le tri automatique s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un dossier de téléchargements ou un disque partagé devient un fouillis de PDF sans nom à classer.",
+    steps: [
+      "Déposez un dossier de PDF, ou choisissez les fichiers à organiser.",
+      "L'IA lit le texte de chaque document et lui suggère une catégorie.",
+      "Téléchargez un seul ZIP avec tout regroupé dans des dossiers par catégorie.",
+    ],
+    readingTitle: "Plus de façons de gérer les PDF en masse",
+    readingDescription: "Outils d'IA et guides associés pour travailler sur de nombreux documents.",
+    readingLinks: [
+      { label: "Résumer des PDF en masse", href: "/batch-summary", description: "Passez un dossier entier de PDF dans l'IA et obtenez un court résumé pour chacun." },
+      { label: "Repérer les risques d'un contrat", href: "/contract-risk", description: "Faites lire le texte d'un contrat par l'IA pour signaler les clauses à risque et les termes manquants." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "AI で PDF のフォルダを仕分ける理由",
+    benefitsDescription: "雑然と混ざった文書の山を、一度の処理でカテゴリ別フォルダに整理します。",
+    benefits: [
+      { title: "フォルダ全体を一度に処理", description: "混在した PDF を一度に何十件もドロップ——AI が各文書にラベルを付け、1 つの ZIP 内のカテゴリ別フォルダにまとめます。" },
+      { title: "本文からカテゴリを判断", description: "各文書のテキストを AI が分析してラベル(請求書、契約書、履歴書、レポートなど)を提案するため、ファイル名だけでなく中身に沿って仕分けされます。" },
+      { title: "元のファイルはそのまま", description: "ZIP には元の PDF が変更なしで入ります——カテゴリ別フォルダに移動するだけで、書き換えや再エンコードはしません。" },
+    ],
+    workflowTitle: "自動仕分けが文書作業にどう役立つか",
+    workflowDescription: "ダウンロードフォルダや共有ドライブが、名前のない PDF の山になって整理が必要なとき。",
+    steps: [
+      "PDF の入ったフォルダをドロップするか、整理したいファイルを選びます。",
+      "AI が各文書のテキストを読み取り、カテゴリを提案します。",
+      "すべてがカテゴリ別フォルダにまとまった ZIP を 1 つダウンロードします。",
+    ],
+    readingTitle: "PDF を一括処理する他の方法",
+    readingDescription: "多くの文書をまたいで扱うための関連 AI ツールとガイド。",
+    readingLinks: [
+      { label: "PDF を一括要約", href: "/batch-summary", description: "フォルダ内の PDF をまとめて AI にかけ、それぞれの短い要約を取得します。" },
+      { label: "契約リスクを検出", href: "/contract-risk", description: "AI に契約書の本文を読ませ、リスクのある条項や不足している項目を指摘させます。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
@@ -233,6 +376,7 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
       {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="batch-sort" locale={locale} />
     </div>
   );
