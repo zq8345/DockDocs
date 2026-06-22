@@ -116,7 +116,8 @@ function objectAfter(text, from) {
 }
 
 for (const locale of BODY_LOCALES) {
-  const recStart = toolsSrc.search(new RegExp(`const ${locale}Tools:\\s*Record<ToolSlug, ToolCopy>\\s*=`));
+  // type may be ToolCopy (en) or LocalizedToolCopy (locale tables, P0.2 — keywords/faqTitle omitted, no enTools spread)
+  const recStart = toolsSrc.search(new RegExp(`const ${locale}Tools:\\s*Record<ToolSlug, \\w+>\\s*=`));
   if (recStart < 0) {
     incompleteBody.push(`${locale}: could not find ${locale}Tools in lib/localized-tools.ts — update the guard.`);
     continue;
