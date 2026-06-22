@@ -35,6 +35,11 @@ export const LOCAL_ONLY_SLUGS = new Set<string>([
   "reorder-pages",
   "add-page",
   "pdf-to-image",
+  // pdf-to-jpg / pdf-to-png share PdfToImageClient (pure client-side pdf.js, same
+  // engine as the hub) but render their own variant faqTool, so each needs its own
+  // allowlist entry for the verify-block to show on those pages (2026-06-21).
+  "pdf-to-jpg",
+  "pdf-to-png",
   "images-to-pdf",
   "crop-pdf",
   "redact-pdf",

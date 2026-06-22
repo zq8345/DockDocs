@@ -95,64 +95,16 @@ const config = {
 
 export const metadata = createPdfToolMetadata(config);
 
-// Related real pages for internal linking (consolidates signal onto this hub).
-const relatedLinks = [
-  { label: "PDF to JPG", href: "/pdf-to-jpg/" },
-  { label: "PDF to PNG", href: "/pdf-to-png/" },
-  { label: "Images to PDF", href: "/images-to-pdf/" },
-  { label: "Compress PDF", href: "/compress-pdf/" },
-];
-
 export default function PdfToImagePage() {
   return (
     <>
+      {/* FAQPage JSON-LD sources the visible FAQ via withVisibleFaq (single-source).
+          Depth (benefits/workflow/recommended-reading) is now rendered by the client's
+          ToolSections on the hub variant — one shared source across EN + all locales,
+          replacing the old bespoke inline sections + static "100% private" card (privacy
+          is covered by the verify-block the hub already carries). */}
       <ToolJsonLd config={withVisibleFaq(config, "pdf-to-image")} />
       <PdfToImageClient locale="en" defaultFormat="jpg" />
-      {/* Crawlable depth: the custom client renders the tool UI only, so the config's
-          benefits/steps/FAQ (which feed the JSON-LD) are also rendered as visible HTML
-          here — keeps the FAQPage schema matched to on-page content. */}
-      <section className="mx-auto max-w-5xl px-5 pb-16 sm:px-6">
-        <div className="border-t border-[color:var(--line)] pt-10">
-          <h2 className="text-lg font-medium text-[color:var(--foreground)]">{config.benefitsTitle}</h2>
-          <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{config.benefitsDescription}</p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {config.benefits.map((b) => (
-              <div key={b.title}>
-                <h3 className="text-sm font-medium text-[color:var(--foreground)]">{b.title}</h3>
-                <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">{b.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-10 border-t border-[color:var(--line)] pt-10">
-          <h2 className="text-lg font-medium text-[color:var(--foreground)]">{config.workflowTitle}</h2>
-          <ol className="mt-6 space-y-3">
-            {config.steps.map((step, i) => (
-              <li key={i} className="flex gap-3 text-sm leading-6 text-[color:var(--muted)]">
-                <span className="shrink-0 font-medium text-[color:var(--accent)]">{i + 1}.</span>
-                <span>{step}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        {/* config.faq is NOT rendered here — PdfToImageClient already shows the visible
-            "PDF to Image — FAQ" (from ToolFaq.tsx). The FAQPage JSON-LD above now sources
-            those SAME visible items via withVisibleFaq(), so structured data matches the
-            page (single-source FAQ, 2026-06-21). */}
-
-        <div className="mt-10 border-t border-[color:var(--line)] pt-10">
-          <h2 className="text-lg font-medium text-[color:var(--foreground)]">Related tools</h2>
-          <div className="mt-4 flex flex-wrap gap-3">
-            {relatedLinks.map((l) => (
-              <a key={l.href} href={l.href} className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-1.5 text-sm text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
-                {l.label}
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
     </>
   );
 }

@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
@@ -125,8 +126,161 @@ const STR = {
   },
 };
 
+// Hub-only depth (the /pdf-to-image canonical). jpg/png variants render their
+// own variant-native depth via the `content` prop (left untouched); the hub had
+// no client depth, so it carries the standard ToolSections block here, giving
+// EN + all locales one shared source (replaces the old bespoke inline page.tsx
+// sections + the static "100% private" card — privacy is covered by the verify-block).
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why convert PDF pages to images",
+    benefitsDescription: "Turn any PDF page into a JPG or PNG you can drop into a slide, doc, or post.",
+    benefits: [
+      { title: "JPG or PNG, your call", description: "Pick JPG for small shareable files or PNG for lossless, crisp text and diagrams — choose per export." },
+      { title: "Pick exactly the pages", description: "Every page shows as a thumbnail; convert one page, a range, or the whole document." },
+      { title: "Sharp 2× resolution", description: "Pages render at twice native resolution for screen-clear, print-ready images." },
+    ],
+    workflowTitle: "How converting to images fits your work",
+    workflowDescription: "For the moment a PDF page needs to become an image — a chart for a slide, a page preview, a thumbnail.",
+    steps: [
+      "Upload a PDF — drag and drop or choose a file.",
+      "Select the pages and pick JPG or PNG.",
+      "Convert and download; multiple pages arrive in a ZIP.",
+    ],
+    readingTitle: "More image and PDF tools",
+    readingDescription: "Related converters and guides for working between PDFs and images.",
+    readingLinks: [
+      { label: "Images to PDF", href: "/images-to-pdf", description: "The reverse — combine JPG/PNG images into one PDF." },
+      { label: "Compress PDF", href: "/compress-pdf", description: "Shrink a PDF's file size before or after converting." },
+      { label: "Convert images to PDF for upload", href: "/guides/convert-images-to-pdf-for-upload", description: "A guide to turning images into an upload-ready PDF." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么把 PDF 页面转成图片",
+    benefitsDescription: "把任意 PDF 页面变成可放进幻灯片、文档或帖子的 JPG 或 PNG。",
+    benefits: [
+      { title: "JPG 还是 PNG 你定", description: "JPG 文件小、好分享；PNG 无损、文字图表清晰——每次导出自己选。" },
+      { title: "精确挑选页面", description: "每页显示为缩略图；转一页、一个范围或整份文档。" },
+      { title: "2 倍高清渲染", description: "页面以两倍原始分辨率渲染，屏幕清晰、可直接打印。" },
+    ],
+    workflowTitle: "转图片如何融入你的工作",
+    workflowDescription: "当一个 PDF 页面需要变成图片时——放幻灯片的图表、页面预览、缩略图。",
+    steps: [
+      "上传 PDF——拖拽或选择文件。",
+      "选择页面并选 JPG 或 PNG。",
+      "转换并下载；多页打包成一个 ZIP。",
+    ],
+    readingTitle: "更多图片和 PDF 工具",
+    readingDescription: "在 PDF 和图片之间转换的相关工具和指南。",
+    readingLinks: [
+      { label: "图片转 PDF", href: "/images-to-pdf", description: "反向操作——把 JPG/PNG 图片合并成一个 PDF。" },
+      { label: "压缩 PDF", href: "/compress-pdf", description: "转换前后缩小 PDF 体积。" },
+      { label: "把图片转成可上传的 PDF", href: "/guides/convert-images-to-pdf-for-upload", description: "把图片变成可直接上传的 PDF 的指南。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué convertir páginas de PDF en imágenes",
+    benefitsDescription: "Convierte cualquier página de PDF en un JPG o PNG que puedas poner en una diapositiva, un documento o una publicación.",
+    benefits: [
+      { title: "JPG o PNG, tú decides", description: "Elige JPG para archivos pequeños y fáciles de compartir, o PNG para texto y diagramas nítidos sin pérdida; elige en cada exportación." },
+      { title: "Elige exactamente las páginas", description: "Cada página aparece como miniatura; convierte una página, un rango o todo el documento." },
+      { title: "Resolución nítida 2×", description: "Las páginas se renderizan al doble de la resolución original, claras en pantalla y listas para imprimir." },
+    ],
+    workflowTitle: "Cómo encaja convertir a imágenes en tu trabajo",
+    workflowDescription: "Para cuando una página de PDF necesita convertirse en imagen: un gráfico para una diapositiva, una vista previa de página, una miniatura.",
+    steps: [
+      "Sube un PDF: arrástralo o elige un archivo.",
+      "Selecciona las páginas y elige JPG o PNG.",
+      "Convierte y descarga; varias páginas llegan en un ZIP.",
+    ],
+    readingTitle: "Más herramientas de imagen y PDF",
+    readingDescription: "Conversores y guías relacionados para trabajar entre PDF e imágenes.",
+    readingLinks: [
+      { label: "Imágenes a PDF", href: "/images-to-pdf", description: "Lo contrario: combina imágenes JPG/PNG en un solo PDF." },
+      { label: "Comprimir PDF", href: "/compress-pdf", description: "Reduce el tamaño del PDF antes o después de convertir." },
+      { label: "Convertir imágenes a PDF para subir", href: "/guides/convert-images-to-pdf-for-upload", description: "Una guía para convertir imágenes en un PDF listo para subir." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que converter páginas de PDF em imagens",
+    benefitsDescription: "Transforme qualquer página de PDF em um JPG ou PNG para colocar em um slide, documento ou post.",
+    benefits: [
+      { title: "JPG ou PNG, você escolhe", description: "Escolha JPG para arquivos pequenos e fáceis de compartilhar, ou PNG para texto e diagramas nítidos sem perda; escolha a cada exportação." },
+      { title: "Escolha exatamente as páginas", description: "Cada página aparece como miniatura; converta uma página, um intervalo ou o documento inteiro." },
+      { title: "Resolução nítida 2×", description: "As páginas são renderizadas no dobro da resolução original, nítidas na tela e prontas para impressão." },
+    ],
+    workflowTitle: "Como converter em imagens se encaixa no seu trabalho",
+    workflowDescription: "Para quando uma página de PDF precisa virar imagem: um gráfico para um slide, uma prévia de página, uma miniatura.",
+    steps: [
+      "Envie um PDF: arraste ou escolha um arquivo.",
+      "Selecione as páginas e escolha JPG ou PNG.",
+      "Converta e baixe; várias páginas chegam em um ZIP.",
+    ],
+    readingTitle: "Mais ferramentas de imagem e PDF",
+    readingDescription: "Conversores e guias relacionados para trabalhar entre PDF e imagens.",
+    readingLinks: [
+      { label: "Imagens para PDF", href: "/images-to-pdf", description: "O contrário: combine imagens JPG/PNG em um único PDF." },
+      { label: "Comprimir PDF", href: "/compress-pdf", description: "Reduza o tamanho do PDF antes ou depois de converter." },
+      { label: "Converter imagens em PDF para upload", href: "/guides/convert-images-to-pdf-for-upload", description: "Um guia para transformar imagens em um PDF pronto para upload." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi convertir des pages PDF en images",
+    benefitsDescription: "Transformez n'importe quelle page PDF en JPG ou PNG à glisser dans une diapo, un document ou un post.",
+    benefits: [
+      { title: "JPG ou PNG, à vous de choisir", description: "Choisissez le JPG pour des fichiers légers à partager, ou le PNG pour un texte et des schémas nets sans perte ; à chaque export." },
+      { title: "Choisissez précisément les pages", description: "Chaque page s'affiche en miniature ; convertissez une page, une plage ou tout le document." },
+      { title: "Résolution nette 2×", description: "Les pages sont rendues au double de la résolution d'origine, nettes à l'écran et prêtes à imprimer." },
+    ],
+    workflowTitle: "Comment la conversion en images s'intègre à votre travail",
+    workflowDescription: "Pour le moment où une page PDF doit devenir une image : un graphique pour une diapo, un aperçu de page, une miniature.",
+    steps: [
+      "Importez un PDF : glissez-déposez ou choisissez un fichier.",
+      "Sélectionnez les pages et choisissez JPG ou PNG.",
+      "Convertissez et téléchargez ; plusieurs pages arrivent dans un ZIP.",
+    ],
+    readingTitle: "Plus d'outils image et PDF",
+    readingDescription: "Convertisseurs et guides associés pour travailler entre PDF et images.",
+    readingLinks: [
+      { label: "Images en PDF", href: "/images-to-pdf", description: "L'inverse : combinez des images JPG/PNG en un seul PDF." },
+      { label: "Compresser un PDF", href: "/compress-pdf", description: "Réduisez la taille d'un PDF avant ou après la conversion." },
+      { label: "Convertir des images en PDF pour le téléversement", href: "/guides/convert-images-to-pdf-for-upload", description: "Un guide pour transformer des images en PDF prêt à téléverser." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "PDF ページを画像に変換する理由",
+    benefitsDescription: "任意の PDF ページを、スライド・文書・投稿に貼れる JPG または PNG に変換します。",
+    benefits: [
+      { title: "JPG か PNG か選べる", description: "共有しやすい軽量な JPG か、テキストや図が鮮明な無損失の PNG か——書き出すたびに選べます。" },
+      { title: "ページを正確に選択", description: "各ページがサムネイルで表示されます。1 ページ、範囲、または文書全体を変換できます。" },
+      { title: "鮮明な 2 倍解像度", description: "ページは元の 2 倍の解像度でレンダリングされ、画面で鮮明、印刷にも対応します。" },
+    ],
+    workflowTitle: "画像変換が作業にどう役立つか",
+    workflowDescription: "PDF ページを画像にする必要があるとき——スライド用の図表、ページのプレビュー、サムネイル。",
+    steps: [
+      "PDF をアップロード——ドラッグ＆ドロップまたはファイルを選択。",
+      "ページを選び、JPG または PNG を選択。",
+      "変換してダウンロード。複数ページは 1 つの ZIP にまとまります。",
+    ],
+    readingTitle: "画像と PDF の他のツール",
+    readingDescription: "PDF と画像の間で作業するための関連コンバーターとガイド。",
+    readingLinks: [
+      { label: "画像を PDF に", href: "/images-to-pdf", description: "逆の操作——JPG/PNG 画像を 1 つの PDF にまとめます。" },
+      { label: "PDF を圧縮", href: "/compress-pdf", description: "変換の前後で PDF のサイズを縮小します。" },
+      { label: "アップロード用に画像を PDF に変換", href: "/guides/convert-images-to-pdf-for-upload", description: "画像をアップロード可能な PDF にするガイド。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant = "hub", content }: { locale?: Locale; defaultFormat?: Fmt; variant?: Variant; content?: ContentDepth }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   // Per-variant H1/subtitle (every locale in STR carries all three pairs).
   const heading = variant === "png" ? t.titlePng : variant === "jpg" ? t.titleJpg : t.title;
   const subheading = variant === "png" ? t.subtitlePng : variant === "jpg" ? t.subtitleJpg : t.subtitle;
@@ -307,6 +461,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
         </div>
       )}
 
+      {variant === "hub" && <ToolSections locale={locale} content={sec} />}
       <ToolFaq tool={faqTool} locale={locale} />
     </div>
   );
