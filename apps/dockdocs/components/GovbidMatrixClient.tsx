@@ -369,7 +369,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
         }
       } catch (e) {
         const zhReadErr = locale === "zh-Hant" ? toHant("无法读取 PDF") : "无法读取 PDF";
-        const msg = encryptedPdfMessage(e, childLocale) ?? (locale === "zh" || locale === "zh-Hant" ? zhReadErr : locale === "es" ? "No se pudo leer el PDF" : "Could not read PDF");
+        const msg = encryptedPdfMessage(e, childLocale) ?? (locale === "zh" || locale === "zh-Hant" ? zhReadErr : locale === "es" ? "No se pudo leer el PDF" : locale === "pt" ? "Não foi possível ler o PDF" : locale === "fr" ? "Impossible de lire le PDF" : locale === "ja" ? "PDF を読み取れませんでした" : "Could not read PDF");
         setError(msg);
         setPhase("ready");
         return;

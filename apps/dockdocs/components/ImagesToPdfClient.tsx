@@ -271,7 +271,7 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
           failed++;
         }
       }
-      if (pdf.getPageCount() === 0) throw new Error(locale === "zh" ? "没有能读取的图片(HEIC 等格式暂不支持)。" : locale === "zh-Hant" ? toHant("没有能读取的图片(HEIC 等格式暂不支持)。") : "No readable images (formats like HEIC aren't supported yet).");
+      if (pdf.getPageCount() === 0) throw new Error(locale === "zh" ? "没有能读取的图片(HEIC 等格式暂不支持)。" : locale === "zh-Hant" ? toHant("没有能读取的图片(HEIC 等格式暂不支持)。") : locale === "es" ? "No hay imágenes legibles (formatos como HEIC aún no se admiten)." : locale === "pt" ? "Nenhuma imagem legível (formatos como HEIC ainda não são suportados)." : locale === "fr" ? "Aucune image lisible (les formats comme HEIC ne sont pas encore pris en charge)." : locale === "ja" ? "読み取れる画像がありません（HEIC などの形式は未対応です）。" : "No readable images (formats like HEIC aren't supported yet).");
       const bytes = await pdf.save();
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
@@ -279,7 +279,7 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url; a.download = "dockdocs-images.pdf"; a.click();
       URL.revokeObjectURL(url);
       trackToolRun("images-to-pdf");
-      if (failed > 0) setError((locale === "zh" ? `${failed} 张图片无法读取，已跳过。` : locale === "zh-Hant" ? toHant(`${failed} 张图片无法读取，已跳过。`) : `${failed} image(s) could not be read and were skipped.`));
+      if (failed > 0) setError((locale === "zh" ? `${failed} 张图片无法读取，已跳过。` : locale === "zh-Hant" ? toHant(`${failed} 张图片无法读取，已跳过。`) : locale === "es" ? `${failed} imagen(es) no se pudieron leer y se omitieron.` : locale === "pt" ? `${failed} imagem(ns) não puderam ser lidas e foram ignoradas.` : locale === "fr" ? `${failed} image(s) n'ont pas pu être lues et ont été ignorées.` : locale === "ja" ? `${failed} 枚の画像を読み取れず、スキップしました。` : `${failed} image(s) could not be read and were skipped.`));
     } catch (e) {
       setError(t.err + (e instanceof Error ? e.message : String(e)));
     } finally {

@@ -237,7 +237,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
-      if (doc.numPages === 0) { setError(locale === "zh" ? "该 PDF 没有页面。" : locale === "zh-Hant" ? toHant("该 PDF 没有页面。") : "This PDF has no pages."); setPhase("idle"); return; } setNumPages(doc.numPages);
+      if (doc.numPages === 0) { setError(locale === "zh" ? "该 PDF 没有页面。" : locale === "zh-Hant" ? toHant("该 PDF 没有页面。") : locale === "es" ? "Este PDF no tiene páginas." : locale === "pt" ? "Este PDF não tem páginas." : locale === "fr" ? "Ce PDF n'a aucune page." : locale === "ja" ? "この PDF にはページがありません。" : "This PDF has no pages."); setPhase("idle"); return; } setNumPages(doc.numPages);
       const p = Math.max(1, Math.min(pageNum, doc.numPages));
       const pg = await doc.getPage(p);
       const viewport = pg.getViewport({ scale: 1.1 });
