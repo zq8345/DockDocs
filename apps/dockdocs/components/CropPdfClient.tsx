@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
 
@@ -72,8 +73,144 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why crop PDFs in your browser",
+    benefitsDescription: "Trim margins and whitespace to tighten every page, with a live preview before you commit.",
+    benefits: [
+      { title: "See the crop before you apply it", description: "Drag each edge against a live page preview, so you know exactly what stays and what gets trimmed — no guesswork, no reopening the file." },
+      { title: "Cut margins, keep your content", description: "Slice off scanner whitespace or wide print margins so the text and figures fill the page and read better on screens." },
+      { title: "One crop across every page", description: "The edges you set are applied uniformly to all pages, giving you a consistent, evenly framed document in a single pass." },
+    ],
+    workflowTitle: "Where cropping fits your document work",
+    workflowDescription: "For the moment a PDF arrives with too much empty border — a scan, an exported slide, a page meant for print you now read on screen.",
+    steps: [
+      "Upload the PDF you want to tidy up.",
+      "Drag the top, right, bottom, and left edges in the live preview until only the content you want remains.",
+      "Crop and download the trimmed PDF.",
+    ],
+    readingTitle: "More ways to reshape PDFs",
+    readingDescription: "Related tools and guides for trimming and reorganizing documents.",
+    readingLinks: [
+      { label: "Split a PDF", href: "/split-pdf", description: "Pull a large PDF apart into separate files or page ranges." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里裁剪 PDF",
+    benefitsDescription: "裁掉页边空白，让每一页更紧凑，下手前先用实时预览看清效果。",
+    benefits: [
+      { title: "裁之前先看到效果", description: "对着实时页面预览拖动每一条边，清楚知道哪部分保留、哪部分被裁掉——不用猜，也不用反复打开文件。" },
+      { title: "去掉页边，保住内容", description: "裁掉扫描留下的空白或过宽的打印页边，让文字和图表填满版面，在屏幕上更易读。" },
+      { title: "一次裁剪应用到每一页", description: "你设定的边距会统一应用到所有页面，一次操作就得到边框一致、版式整齐的文档。" },
+    ],
+    workflowTitle: "裁剪如何融入你的文档工作",
+    workflowDescription: "当一份 PDF 边框留白太多时——一张扫描件、一页导出的幻灯片，或一份本为打印、如今在屏幕上看的页面。",
+    steps: [
+      "上传你想整理的 PDF。",
+      "在实时预览中拖动上、右、下、左四条边，直到只剩你想要的内容。",
+      "裁剪并下载裁好后的 PDF。",
+    ],
+    readingTitle: "更多重塑 PDF 的方式",
+    readingDescription: "裁剪与整理文档的相关工具和指南。",
+    readingLinks: [
+      { label: "拆分 PDF", href: "/split-pdf", description: "把一个大 PDF 拆成多个文件或页面范围。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué recortar PDF en tu navegador",
+    benefitsDescription: "Recorta márgenes y espacios en blanco para ajustar cada página, con una vista previa en vivo antes de confirmar.",
+    benefits: [
+      { title: "Ve el recorte antes de aplicarlo", description: "Arrastra cada borde sobre una vista previa en vivo y sabrás con exactitud qué se conserva y qué se recorta, sin adivinar ni volver a abrir el archivo." },
+      { title: "Quita márgenes, conserva tu contenido", description: "Elimina el blanco del escaneo o los márgenes de impresión amplios para que el texto y las figuras llenen la página y se lean mejor en pantalla." },
+      { title: "Un recorte para todas las páginas", description: "Los bordes que defines se aplican por igual a todas las páginas, para un documento uniforme y bien encuadrado en un solo paso." },
+    ],
+    workflowTitle: "Dónde encaja el recorte en tu trabajo",
+    workflowDescription: "Para cuando un PDF llega con demasiado borde vacío: un escaneo, una diapositiva exportada o una página pensada para imprimir que ahora lees en pantalla.",
+    steps: [
+      "Sube el PDF que quieres ordenar.",
+      "Arrastra los bordes superior, derecho, inferior e izquierdo en la vista previa hasta dejar solo el contenido que quieres.",
+      "Recorta y descarga el PDF ajustado.",
+    ],
+    readingTitle: "Más formas de remodelar PDF",
+    readingDescription: "Herramientas y guías relacionadas para recortar y reorganizar documentos.",
+    readingLinks: [
+      { label: "Dividir un PDF", href: "/split-pdf", description: "Separa un PDF grande en archivos o rangos de páginas." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que recortar PDF no seu navegador",
+    benefitsDescription: "Apare margens e espaços em branco para ajustar cada página, com uma prévia ao vivo antes de confirmar.",
+    benefits: [
+      { title: "Veja o recorte antes de aplicar", description: "Arraste cada borda sobre uma prévia ao vivo e saiba exatamente o que fica e o que é aparado, sem adivinhar nem reabrir o arquivo." },
+      { title: "Tire as margens, mantenha o conteúdo", description: "Remova o branco da digitalização ou as margens de impressão largas para que o texto e as figuras preencham a página e fiquem mais legíveis na tela." },
+      { title: "Um recorte em todas as páginas", description: "As bordas que você define são aplicadas igualmente a todas as páginas, gerando um documento uniforme e bem enquadrado em uma única passada." },
+    ],
+    workflowTitle: "Onde o recorte se encaixa no seu trabalho",
+    workflowDescription: "Para quando um PDF chega com borda vazia demais: uma digitalização, um slide exportado ou uma página feita para imprimir que agora você lê na tela.",
+    steps: [
+      "Envie o PDF que deseja organizar.",
+      "Arraste as bordas superior, direita, inferior e esquerda na prévia até restar só o conteúdo que você quer.",
+      "Recorte e baixe o PDF ajustado.",
+    ],
+    readingTitle: "Mais formas de remodelar PDF",
+    readingDescription: "Ferramentas e guias relacionados para recortar e reorganizar documentos.",
+    readingLinks: [
+      { label: "Dividir um PDF", href: "/split-pdf", description: "Separe um PDF grande em arquivos ou intervalos de páginas." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi rogner des PDF dans votre navigateur",
+    benefitsDescription: "Rognez marges et blancs pour resserrer chaque page, avec un aperçu en direct avant de valider.",
+    benefits: [
+      { title: "Voyez le rognage avant de l'appliquer", description: "Faites glisser chaque bord sur un aperçu en direct : vous savez exactement ce qui reste et ce qui est rogné, sans deviner ni rouvrir le fichier." },
+      { title: "Coupez les marges, gardez le contenu", description: "Supprimez le blanc de numérisation ou les larges marges d'impression pour que texte et figures remplissent la page et se lisent mieux à l'écran." },
+      { title: "Un seul rognage sur toutes les pages", description: "Les bords que vous définissez s'appliquent uniformément à toutes les pages, pour un document cohérent et bien cadré en une seule passe." },
+    ],
+    workflowTitle: "Où le rognage s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un PDF arrive avec trop de bordure vide : un scan, une diapositive exportée ou une page prévue pour l'impression que vous lisez désormais à l'écran.",
+    steps: [
+      "Importez le PDF à remettre en forme.",
+      "Faites glisser les bords haut, droit, bas et gauche dans l'aperçu jusqu'à ne garder que le contenu voulu.",
+      "Rognez et téléchargez le PDF ajusté.",
+    ],
+    readingTitle: "Plus de façons de remodeler les PDF",
+    readingDescription: "Outils et guides associés pour rogner et réorganiser des documents.",
+    readingLinks: [
+      { label: "Diviser un PDF", href: "/split-pdf", description: "Séparez un grand PDF en fichiers ou plages de pages." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF をトリミングする理由",
+    benefitsDescription: "余白を切り取って各ページを引き締めます。確定する前にライブプレビューで確認できます。",
+    benefits: [
+      { title: "適用する前に仕上がりを確認", description: "ライブのページプレビュー上で各辺をドラッグするので、残す部分と切り取る部分が正確にわかります。勘に頼らず、ファイルを開き直す必要もありません。" },
+      { title: "余白を切り、中身は残す", description: "スキャンの白地や広すぎる印刷余白を取り除き、文字や図がページいっぱいに収まって画面で読みやすくなります。" },
+      { title: "全ページに同じトリミング", description: "設定した辺はすべてのページに均一に適用され、一度の操作で枠の揃った整った文書になります。" },
+    ],
+    workflowTitle: "トリミングが文書作業にどう役立つか",
+    workflowDescription: "PDF の余白が多すぎるとき——スキャン、書き出したスライド、印刷用だったページを今は画面で読む場合に。",
+    steps: [
+      "整えたい PDF をアップロードします。",
+      "ライブプレビューで上・右・下・左の辺をドラッグし、残したい内容だけにします。",
+      "トリミングして、整えた PDF をダウンロードします。",
+    ],
+    readingTitle: "PDF を整える他の方法",
+    readingDescription: "文書のトリミングと再整理に関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "PDF を分割", href: "/split-pdf", description: "大きな PDF を別々のファイルやページ範囲に分けます。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function CropPdfClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
@@ -186,6 +323,7 @@ export function CropPdfClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="crop-pdf" locale={locale} />
     </div>
   );

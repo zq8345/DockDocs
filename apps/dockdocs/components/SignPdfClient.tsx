@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
@@ -67,8 +68,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why sign PDFs in your browser",
+    benefitsDescription: "Add a real signature to a contract or form and place it exactly where it belongs.",
+    benefits: [
+      { title: "Draw, type, or use an image", description: "Sign by hand on the pad, type your name in a script font, or drop in a signature image — whichever looks right." },
+      { title: "Place it exactly on the page", description: "Pick the page, drag the size, and choose any of nine positions so the signature lands on the right line." },
+      { title: "See it before you commit", description: "A live preview shows the signature on the actual page, so you download a signed PDF with no surprises." },
+    ],
+    workflowTitle: "How signing fits your document work",
+    workflowDescription: "For the moment a PDF comes back needing your name — an agreement, an offer letter, a consent form, an invoice approval.",
+    steps: [
+      "Upload the PDF you need to sign.",
+      "Draw, type, or add your signature, then size and place it on the right page.",
+      "Sign and download the finished PDF.",
+    ],
+    readingTitle: "More ways to finish a PDF",
+    readingDescription: "Related tools and guides for signing and protecting documents.",
+    readingLinks: [
+      { label: "Redact a PDF", href: "/redact-pdf", description: "Black out sensitive details before you sign or share the document." },
+      { label: "How to sign a PDF online free", href: "/guides/sign-pdf-online-free", description: "A step-by-step walkthrough of signing a PDF without installing anything." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里签名 PDF",
+    benefitsDescription: "给合同或表单加上真实签名，并精确放到该签的位置。",
+    benefits: [
+      { title: "手写、打字或用图片", description: "在签名板上手写、用花体字打出名字，或直接放入一张签名图片——怎么合适怎么来。" },
+      { title: "精确放到页面上", description: "选定页码、拖动调整大小，并从九个位置中任选其一，让签名正好落在签字行上。" },
+      { title: "落笔前先看效果", description: "实时预览会把签名叠在真实页面上，下载已签 PDF 时不会有任何意外。" },
+    ],
+    workflowTitle: "签名如何融入你的文档工作",
+    workflowDescription: "当一份 PDF 退回来等你签名时——一份协议、一封录用通知、一张同意书、一张待审批的发票。",
+    steps: [
+      "上传需要签名的 PDF。",
+      "手写、打字或添加你的签名，再调整大小并放到正确的页面上。",
+      "签名并下载完成的 PDF。",
+    ],
+    readingTitle: "更多收尾 PDF 的方式",
+    readingDescription: "签名与保护文档的相关工具和指南。",
+    readingLinks: [
+      { label: "PDF 涂黑遮盖", href: "/redact-pdf", description: "在签名或分享前，把敏感信息彻底涂黑。" },
+      { label: "如何免费在线签名 PDF", href: "/guides/sign-pdf-online-free", description: "一步步教你无需安装任何软件就能给 PDF 签名。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué firmar PDF en tu navegador",
+    benefitsDescription: "Agrega una firma real a un contrato o formulario y colócala justo donde corresponde.",
+    benefits: [
+      { title: "Dibuja, escribe o usa una imagen", description: "Firma a mano en el panel, escribe tu nombre en una fuente manuscrita o inserta una imagen de tu firma: lo que mejor se vea." },
+      { title: "Colócala exacta en la página", description: "Elige la página, ajusta el tamaño y selecciona una de nueve posiciones para que la firma caiga en la línea correcta." },
+      { title: "Míralo antes de confirmar", description: "Una vista previa en vivo muestra la firma sobre la página real, así descargas un PDF firmado sin sorpresas." },
+    ],
+    workflowTitle: "Cómo encaja la firma en tu trabajo",
+    workflowDescription: "Para cuando vuelve un PDF que necesita tu nombre: un acuerdo, una carta de oferta, un consentimiento, la aprobación de una factura.",
+    steps: [
+      "Sube el PDF que necesitas firmar.",
+      "Dibuja, escribe o agrega tu firma, luego ajústala y colócala en la página correcta.",
+      "Firma y descarga el PDF terminado.",
+    ],
+    readingTitle: "Más formas de terminar un PDF",
+    readingDescription: "Herramientas y guías relacionadas para firmar y proteger documentos.",
+    readingLinks: [
+      { label: "Tachar un PDF", href: "/redact-pdf", description: "Oculta los datos sensibles antes de firmar o compartir el documento." },
+      { label: "Cómo firmar un PDF en línea gratis", href: "/guides/sign-pdf-online-free", description: "Una guía paso a paso para firmar un PDF sin instalar nada." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que assinar PDF no seu navegador",
+    benefitsDescription: "Adicione uma assinatura real a um contrato ou formulário e posicione-a exatamente onde deve ficar.",
+    benefits: [
+      { title: "Desenhe, digite ou use uma imagem", description: "Assine à mão no painel, digite seu nome em uma fonte manuscrita ou insira uma imagem da assinatura: o que ficar melhor." },
+      { title: "Posicione exata na página", description: "Escolha a página, ajuste o tamanho e selecione uma das nove posições para a assinatura cair na linha certa." },
+      { title: "Veja antes de confirmar", description: "Uma prévia ao vivo mostra a assinatura sobre a página real, então você baixa um PDF assinado sem surpresas." },
+    ],
+    workflowTitle: "Como a assinatura se encaixa no seu trabalho",
+    workflowDescription: "Para quando volta um PDF que precisa do seu nome: um acordo, uma carta de proposta, um termo de consentimento, a aprovação de uma nota fiscal.",
+    steps: [
+      "Envie o PDF que você precisa assinar.",
+      "Desenhe, digite ou adicione sua assinatura, depois ajuste o tamanho e posicione na página certa.",
+      "Assine e baixe o PDF finalizado.",
+    ],
+    readingTitle: "Mais formas de finalizar um PDF",
+    readingDescription: "Ferramentas e guias relacionados para assinar e proteger documentos.",
+    readingLinks: [
+      { label: "Ocultar dados em um PDF", href: "/redact-pdf", description: "Cubra informações sensíveis antes de assinar ou compartilhar o documento." },
+      { label: "Como assinar um PDF online grátis", href: "/guides/sign-pdf-online-free", description: "Um passo a passo para assinar um PDF sem instalar nada." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi signer des PDF dans votre navigateur",
+    benefitsDescription: "Ajoutez une vraie signature à un contrat ou un formulaire et placez-la exactement où il faut.",
+    benefits: [
+      { title: "Dessinez, saisissez ou importez une image", description: "Signez à la main sur le pavé, tapez votre nom dans une police manuscrite ou insérez une image de signature : selon ce qui rend le mieux." },
+      { title: "Placez-la exactement sur la page", description: "Choisissez la page, ajustez la taille et sélectionnez l'une des neuf positions pour que la signature tombe sur la bonne ligne." },
+      { title: "Voyez avant de valider", description: "Un aperçu en direct affiche la signature sur la vraie page, vous téléchargez donc un PDF signé sans surprise." },
+    ],
+    workflowTitle: "Comment la signature s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un PDF revient et attend votre nom : un accord, une lettre d'offre, un formulaire de consentement, la validation d'une facture.",
+    steps: [
+      "Importez le PDF à signer.",
+      "Dessinez, saisissez ou ajoutez votre signature, puis ajustez sa taille et placez-la sur la bonne page.",
+      "Signez et téléchargez le PDF finalisé.",
+    ],
+    readingTitle: "Plus de façons de finaliser un PDF",
+    readingDescription: "Outils et guides associés pour signer et protéger des documents.",
+    readingLinks: [
+      { label: "Caviarder un PDF", href: "/redact-pdf", description: "Masquez les données sensibles avant de signer ou partager le document." },
+      { label: "Comment signer un PDF en ligne gratuitement", href: "/guides/sign-pdf-online-free", description: "Un guide pas à pas pour signer un PDF sans rien installer." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF に署名する理由",
+    benefitsDescription: "契約書やフォームに本物の署名を加え、あるべき場所に正確に配置します。",
+    benefits: [
+      { title: "手書き・入力・画像に対応", description: "パッドに手書きする、筆記体フォントで名前を入力する、署名画像を読み込む——いちばん見栄えのよい方法で。" },
+      { title: "ページ上に正確に配置", description: "ページを選び、サイズをドラッグで調整し、9 つの位置から選んで署名を正しい行に合わせます。" },
+      { title: "確定前にプレビュー", description: "ライブプレビューが実際のページ上に署名を表示するので、思いどおりの署名済み PDF をダウンロードできます。" },
+    ],
+    workflowTitle: "署名が文書作業にどう役立つか",
+    workflowDescription: "あなたの名前を求めて PDF が戻ってきたとき——契約書、オファーレター、同意書、請求書の承認。",
+    steps: [
+      "署名が必要な PDF をアップロードします。",
+      "署名を手書き・入力・追加し、サイズを調整して正しいページに配置します。",
+      "署名して、完成した PDF をダウンロードします。",
+    ],
+    readingTitle: "PDF を仕上げる他の方法",
+    readingDescription: "署名と文書保護に関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "PDF を黒塗りする", href: "/redact-pdf", description: "署名や共有の前に、機密情報を黒く塗りつぶします。" },
+      { label: "PDF を無料でオンライン署名する方法", href: "/guides/sign-pdf-online-free", description: "何もインストールせずに PDF に署名する手順を順を追って解説。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   // Child components/helpers only support en|zh|zh-Hant; map other UI locales to their content fallback.
   const baseLocale: "en" | "zh" | "zh-Hant" = locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : "en";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
@@ -269,6 +412,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="sign-pdf" locale={baseLocale} />
     </div>
   );

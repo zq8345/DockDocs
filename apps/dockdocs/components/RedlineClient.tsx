@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
 import { dropzoneVisual } from "@/components/design";
@@ -128,8 +129,144 @@ function diff(a: string[], b: string[]): Op[] {
   return ops;
 }
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why redline PDFs in your browser",
+    benefitsDescription: "Compare an original and a revised PDF and see every text change marked up — no need to read both side by side.",
+    benefits: [
+      { title: "Every edit, marked in place", description: "Added text is highlighted and removed text is struck through in one continuous read, so you never miss a quiet wording change." },
+      { title: "Built for long documents", description: "A sentence-level diff scans through hundreds of pages and surfaces only what actually changed between the two versions." },
+      { title: "A clear added/removed tally", description: "See at a glance how many passages were added versus removed before you read a single line of the markup." },
+    ],
+    workflowTitle: "How redlining fits your review work",
+    workflowDescription: "For the moment two versions of a contract, policy, or report land on your desk and you have to know exactly what moved.",
+    steps: [
+      "Upload the original PDF and the revised PDF you want to compare.",
+      "Run the comparison to red-line every added and removed passage.",
+      "Read the marked-up result and download or share what changed.",
+    ],
+    readingTitle: "More ways to work with documents",
+    readingDescription: "Related tools and guides for reviewing and finalizing PDFs.",
+    readingLinks: [
+      { label: "Redact a PDF", href: "/redact-pdf", description: "Permanently black out sensitive text before sharing a reviewed document." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里红线对比 PDF",
+    benefitsDescription: "对比原始版和修订版 PDF，每处文字改动都标注出来——不必再把两份文件并排逐行核对。",
+    benefits: [
+      { title: "每处改动就地标注", description: "新增文字高亮、删除文字加删除线，连贯地一次读完，再细微的措辞变动也不会漏看。" },
+      { title: "为长文档而生", description: "按句子级别比对，可扫遍数百页，只把两个版本之间真正变化的内容呈现出来。" },
+      { title: "新增/删除一目了然", description: "读正文之前就先看到共新增了多少处、删除了多少处。" },
+    ],
+    workflowTitle: "红线对比如何融入你的审阅工作",
+    workflowDescription: "当一份合同、制度或报告的两个版本摆到你面前，你必须搞清楚到底改了哪里时。",
+    steps: [
+      "上传要对比的原始版 PDF 和修订版 PDF。",
+      "运行对比，把每处新增和删除都标成红线。",
+      "查看标注结果，下载或分享改动内容。",
+    ],
+    readingTitle: "更多处理文档的方式",
+    readingDescription: "审阅和定稿 PDF 的相关工具与指南。",
+    readingLinks: [
+      { label: "涂黑 PDF", href: "/redact-pdf", description: "分享审阅过的文档前，永久涂黑其中的敏感文字。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué comparar PDF en tu navegador",
+    benefitsDescription: "Compara un PDF original y uno revisado y ve cada cambio de texto marcado, sin tener que leer ambos en paralelo.",
+    benefits: [
+      { title: "Cada edición, marcada en su sitio", description: "El texto añadido se resalta y el eliminado se tacha en una lectura continua, para que no se te escape ningún cambio sutil de redacción." },
+      { title: "Pensado para documentos largos", description: "Una comparación frase por frase recorre cientos de páginas y muestra solo lo que realmente cambió entre las dos versiones." },
+      { title: "Un recuento claro de añadidos y eliminados", description: "Ve de un vistazo cuántos pasajes se añadieron frente a los eliminados antes de leer una sola línea del marcado." },
+    ],
+    workflowTitle: "Cómo encaja la comparación en tu revisión",
+    workflowDescription: "Para cuando dos versiones de un contrato, una política o un informe llegan a tu mesa y necesitas saber exactamente qué cambió.",
+    steps: [
+      "Sube el PDF original y el PDF revisado que quieres comparar.",
+      "Ejecuta la comparación para marcar en rojo cada pasaje añadido y eliminado.",
+      "Lee el resultado marcado y descarga o comparte lo que cambió.",
+    ],
+    readingTitle: "Más formas de trabajar con documentos",
+    readingDescription: "Herramientas y guías relacionadas para revisar y finalizar PDF.",
+    readingLinks: [
+      { label: "Ocultar texto de un PDF", href: "/redact-pdf", description: "Tacha de forma permanente el texto sensible antes de compartir un documento revisado." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que comparar PDF no seu navegador",
+    benefitsDescription: "Compare um PDF original e um revisado e veja cada alteração de texto marcada, sem precisar ler os dois lado a lado.",
+    benefits: [
+      { title: "Cada edição, marcada no lugar", description: "O texto adicionado é destacado e o removido é tachado em uma leitura contínua, para você nunca perder uma mudança discreta de redação." },
+      { title: "Feito para documentos longos", description: "Uma comparação frase por frase percorre centenas de páginas e mostra apenas o que realmente mudou entre as duas versões." },
+      { title: "Uma contagem clara de adições e remoções", description: "Veja num relance quantos trechos foram adicionados versus removidos antes de ler uma única linha da marcação." },
+    ],
+    workflowTitle: "Como a comparação se encaixa na sua revisão",
+    workflowDescription: "Para quando duas versões de um contrato, política ou relatório chegam à sua mesa e você precisa saber exatamente o que mudou.",
+    steps: [
+      "Envie o PDF original e o PDF revisado que deseja comparar.",
+      "Execute a comparação para marcar em vermelho cada trecho adicionado e removido.",
+      "Leia o resultado marcado e baixe ou compartilhe o que mudou.",
+    ],
+    readingTitle: "Mais formas de trabalhar com documentos",
+    readingDescription: "Ferramentas e guias relacionados para revisar e finalizar PDF.",
+    readingLinks: [
+      { label: "Ocultar texto de um PDF", href: "/redact-pdf", description: "Apague permanentemente o texto sensível antes de compartilhar um documento revisado." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi comparer des PDF dans votre navigateur",
+    benefitsDescription: "Comparez un PDF original et un PDF révisé et voyez chaque modification de texte annotée, sans avoir à lire les deux en parallèle.",
+    benefits: [
+      { title: "Chaque modification, annotée sur place", description: "Le texte ajouté est surligné et le texte supprimé est barré en une lecture continue, pour ne jamais manquer un changement de formulation discret." },
+      { title: "Conçu pour les longs documents", description: "Une comparaison phrase par phrase parcourt des centaines de pages et ne fait ressortir que ce qui a réellement changé entre les deux versions." },
+      { title: "Un décompte clair des ajouts et suppressions", description: "Voyez d'un coup d'œil combien de passages ont été ajoutés par rapport à ceux supprimés avant de lire une seule ligne de l'annotation." },
+    ],
+    workflowTitle: "Comment la comparaison s'intègre à votre relecture",
+    workflowDescription: "Pour le moment où deux versions d'un contrat, d'une politique ou d'un rapport arrivent sur votre bureau et où vous devez savoir précisément ce qui a bougé.",
+    steps: [
+      "Importez le PDF original et le PDF révisé à comparer.",
+      "Lancez la comparaison pour souligner en rouge chaque passage ajouté et supprimé.",
+      "Lisez le résultat annoté et téléchargez ou partagez ce qui a changé.",
+    ],
+    readingTitle: "Plus de façons de travailler avec les documents",
+    readingDescription: "Outils et guides associés pour relire et finaliser des PDF.",
+    readingLinks: [
+      { label: "Caviarder un PDF", href: "/redact-pdf", description: "Masquez définitivement le texte sensible avant de partager un document relu." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF を赤字対比する理由",
+    benefitsDescription: "元版と改訂版の PDF を比較し、すべてのテキスト変更をマークアップ表示——両方を並べて読み比べる必要はありません。",
+    benefits: [
+      { title: "すべての変更をその場で表示", description: "追加テキストはハイライト、削除テキストは取り消し線で一続きに読めるので、わずかな言い回しの変更も見逃しません。" },
+      { title: "長い文書のために設計", description: "文単位の差分で数百ページを走査し、2 つのバージョン間で実際に変わった箇所だけを浮かび上がらせます。" },
+      { title: "追加・削除の件数が一目瞭然", description: "マークアップを一行も読む前に、何か所追加され、何か所削除されたかをひと目で把握できます。" },
+    ],
+    workflowTitle: "赤字対比がレビュー作業にどう役立つか",
+    workflowDescription: "契約書、規程、レポートの 2 つのバージョンが手元に届き、どこが動いたのかを正確に把握しなければならないとき。",
+    steps: [
+      "比較したい元版 PDF と改訂版 PDF をアップロードします。",
+      "比較を実行し、追加・削除された箇所をすべて赤字でマークします。",
+      "マークアップ結果を確認し、変更点をダウンロードまたは共有します。",
+    ],
+    readingTitle: "文書を扱う他の方法",
+    readingDescription: "PDF のレビューと仕上げに関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "PDF を黒塗り", href: "/redact-pdf", description: "レビュー済みの文書を共有する前に、機密テキストを完全に黒塗りします。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [a, setA] = useState<File | null>(null);
   const [b, setB] = useState<File | null>(null);
   const [phase, setPhase] = useState<"idle" | "comparing" | "done">("idle");
@@ -227,6 +364,7 @@ export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="redline" locale={locale} />
     </div>
   );

@@ -4,6 +4,7 @@ import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent }
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
@@ -128,8 +129,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why redact PDFs in your browser",
+    benefitsDescription: "Black out sensitive content and download a copy where the hidden text is truly gone — not just covered.",
+    benefits: [
+      { title: "The text is destroyed, not hidden", description: "Each page is flattened to an image, so the blacked-out words can't be copied, searched, or recovered the way they can under a simple black box." },
+      { title: "Auto-finds the obvious risks", description: "Emails, phone numbers, SSNs, card numbers, and IPs are detected and pre-marked for you — review each one and remove any false positives before applying." },
+      { title: "Precise manual control", description: "Drag a box over anything the detector misses — names, figures, signatures, logos — and place exactly as many redactions as a page needs." },
+    ],
+    workflowTitle: "How redaction fits your document work",
+    workflowDescription: "For the moment a file has to be shared but parts of it must never be read — a contract, a medical record, a discovery document, a screenshot with personal data.",
+    steps: [
+      "Upload the PDF you need to sanitize (up to 30 pages).",
+      "Confirm the auto-detected items and drag boxes over anything else to black out.",
+      "Apply and download a flattened copy with the redacted content permanently removed.",
+    ],
+    readingTitle: "More ways to protect PDFs",
+    readingDescription: "Related tools and guides for securing and finishing documents.",
+    readingLinks: [
+      { label: "Watermark a PDF", href: "/watermark-pdf", description: "Stamp a label like CONFIDENTIAL or DRAFT across pages before you share them." },
+      { label: "How to redact a PDF for free", href: "/guides/redact-pdf-free", description: "A step-by-step walkthrough of removing sensitive text so it can't be recovered." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里给 PDF 涂黑",
+    benefitsDescription: "把敏感内容涂黑，下载一份隐藏文字真正被删掉的副本——而不只是被盖住。",
+    benefits: [
+      { title: "文字被销毁，而非藏起", description: "每页都被拍平成图片，被涂黑的文字无法像普通黑框那样被复制、搜索或还原出来。" },
+      { title: "自动找出明显风险", description: "邮箱、电话、SSN、卡号、IP 会被自动识别并预先标记——逐项复核、剔除误报后再应用。" },
+      { title: "手动精确控制", description: "对识别遗漏的内容——姓名、数字、签名、徽标——拖框框住，一页需要几处就标几处。" },
+    ],
+    workflowTitle: "涂黑如何融入你的文档工作",
+    workflowDescription: "当文件必须分享、但其中某些内容绝不能被看到时——合同、病历、证据材料、含个人信息的截图。",
+    steps: [
+      "上传需要脱敏的 PDF(最多 30 页)。",
+      "确认自动识别的项目，并对其他要涂黑的内容拖框框选。",
+      "应用并下载一份已永久删除涂黑内容的拍平副本。",
+    ],
+    readingTitle: "更多保护 PDF 的方式",
+    readingDescription: "用于加固和收尾文档的相关工具和指南。",
+    readingLinks: [
+      { label: "给 PDF 加水印", href: "/watermark-pdf", description: "分享前在页面上盖上「机密」「草稿」之类的标记。" },
+      { label: "如何免费给 PDF 涂黑", href: "/guides/redact-pdf-free", description: "一步步教你删除敏感文字、让它无法被还原。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué censurar PDF en tu navegador",
+    benefitsDescription: "Tacha contenido sensible y descarga una copia donde el texto oculto realmente desaparece, no solo se cubre.",
+    benefits: [
+      { title: "El texto se destruye, no se oculta", description: "Cada página se aplana como imagen, así que las palabras tachadas no se pueden copiar, buscar ni recuperar como ocurre bajo un simple recuadro negro." },
+      { title: "Detecta los riesgos evidentes", description: "Correos, teléfonos, SSN, números de tarjeta e IP se detectan y premarcan por ti: revisa cada uno y quita los falsos positivos antes de aplicar." },
+      { title: "Control manual preciso", description: "Arrastra un recuadro sobre lo que el detector pase por alto —nombres, cifras, firmas, logotipos— y coloca tantas censuras como necesite la página." },
+    ],
+    workflowTitle: "Cómo encaja la censura en tu trabajo",
+    workflowDescription: "Para cuando un archivo debe compartirse pero hay partes que nadie debe leer: un contrato, un historial médico, un documento de prueba, una captura con datos personales.",
+    steps: [
+      "Sube el PDF que necesitas sanear (hasta 30 páginas).",
+      "Confirma los elementos detectados y arrastra recuadros sobre todo lo demás que quieras tachar.",
+      "Aplica y descarga una copia aplanada con el contenido censurado eliminado de forma permanente.",
+    ],
+    readingTitle: "Más formas de proteger PDF",
+    readingDescription: "Herramientas y guías relacionadas para asegurar y finalizar documentos.",
+    readingLinks: [
+      { label: "Marca de agua en un PDF", href: "/watermark-pdf", description: "Estampa una etiqueta como CONFIDENCIAL o BORRADOR en las páginas antes de compartirlas." },
+      { label: "Cómo censurar un PDF gratis", href: "/guides/redact-pdf-free", description: "Guía paso a paso para eliminar texto sensible de modo que no se pueda recuperar." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que redigir PDF no seu navegador",
+    benefitsDescription: "Oculte conteúdo sensível e baixe uma cópia onde o texto escondido realmente desaparece, não apenas fica coberto.",
+    benefits: [
+      { title: "O texto é destruído, não escondido", description: "Cada página é achatada como imagem, então as palavras ocultadas não podem ser copiadas, pesquisadas ou recuperadas como acontece sob uma simples caixa preta." },
+      { title: "Encontra os riscos óbvios", description: "E-mails, telefones, CPF/SSN, números de cartão e IPs são detectados e pré-marcados para você: revise cada um e remova os falsos positivos antes de aplicar." },
+      { title: "Controle manual preciso", description: "Arraste uma caixa sobre o que o detector deixar passar —nomes, valores, assinaturas, logotipos— e coloque quantas redações a página precisar." },
+    ],
+    workflowTitle: "Como a redação se encaixa no seu trabalho",
+    workflowDescription: "Para quando um arquivo precisa ser compartilhado, mas partes dele nunca devem ser lidas: um contrato, um prontuário médico, um documento de prova, uma captura com dados pessoais.",
+    steps: [
+      "Envie o PDF que você precisa higienizar (até 30 páginas).",
+      "Confirme os itens detectados e arraste caixas sobre tudo o mais que quiser ocultar.",
+      "Aplique e baixe uma cópia achatada com o conteúdo redigido removido permanentemente.",
+    ],
+    readingTitle: "Mais formas de proteger PDF",
+    readingDescription: "Ferramentas e guias relacionados para proteger e finalizar documentos.",
+    readingLinks: [
+      { label: "Marca d'água em um PDF", href: "/watermark-pdf", description: "Carimbe um rótulo como CONFIDENCIAL ou RASCUNHO nas páginas antes de compartilhá-las." },
+      { label: "Como redigir um PDF de graça", href: "/guides/redact-pdf-free", description: "Um passo a passo para remover texto sensível de modo que não possa ser recuperado." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi caviarder des PDF dans votre navigateur",
+    benefitsDescription: "Masquez le contenu sensible et téléchargez une copie où le texte caché disparaît vraiment, au lieu d'être simplement recouvert.",
+    benefits: [
+      { title: "Le texte est détruit, pas masqué", description: "Chaque page est aplatie en image : les mots caviardés ne peuvent plus être copiés, recherchés ni récupérés, contrairement à un simple cadre noir." },
+      { title: "Repère les risques évidents", description: "E-mails, téléphones, numéros de sécurité sociale, cartes et IP sont détectés et pré-marqués pour vous : vérifiez chacun et retirez les faux positifs avant d'appliquer." },
+      { title: "Contrôle manuel précis", description: "Tracez un cadre sur tout ce que le détecteur oublie —noms, montants, signatures, logos— et placez autant de caviardages que la page l'exige." },
+    ],
+    workflowTitle: "Comment le caviardage s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un fichier doit être partagé mais où certaines parties ne doivent jamais être lues : un contrat, un dossier médical, une pièce de procédure, une capture avec des données personnelles.",
+    steps: [
+      "Importez le PDF à nettoyer (jusqu'à 30 pages).",
+      "Confirmez les éléments détectés et tracez des cadres sur tout le reste à masquer.",
+      "Appliquez et téléchargez une copie aplatie où le contenu caviardé est définitivement supprimé.",
+    ],
+    readingTitle: "Plus de façons de protéger les PDF",
+    readingDescription: "Outils et guides associés pour sécuriser et finaliser les documents.",
+    readingLinks: [
+      { label: "Filigraner un PDF", href: "/watermark-pdf", description: "Apposez une mention comme CONFIDENTIEL ou BROUILLON sur les pages avant de les partager." },
+      { label: "Comment caviarder un PDF gratuitement", href: "/guides/redact-pdf-free", description: "Un guide pas à pas pour supprimer le texte sensible afin qu'il soit irrécupérable." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF を黒塗りする理由",
+    benefitsDescription: "機密内容を黒塗りし、隠した文字が本当に消えた——ただ覆われただけではない——コピーをダウンロードできます。",
+    benefits: [
+      { title: "文字は隠すのではなく破棄", description: "各ページを画像に統合するため、黒塗りした文字は単なる黒い四角の下とは違い、コピーも検索も復元もできません。" },
+      { title: "明らかなリスクを自動検出", description: "メール、電話番号、SSN、カード番号、IP を検出して事前にマーク——各項目を確認し、誤検出を外してから適用できます。" },
+      { title: "手動での精密な制御", description: "検出が見逃した部分——名前、数値、署名、ロゴ——にボックスをドラッグし、ページに必要なだけ黒塗りを配置できます。" },
+    ],
+    workflowTitle: "黒塗りが文書作業にどう役立つか",
+    workflowDescription: "ファイルを共有しなければならないが、一部は決して読まれてはならないとき——契約書、診療記録、証拠資料、個人情報を含むスクリーンショット。",
+    steps: [
+      "黒塗りしたい PDF をアップロードします(最大 30 ページ)。",
+      "自動検出された項目を確認し、その他に黒塗りしたい箇所をドラッグで囲みます。",
+      "適用して、黒塗り内容が完全に削除された統合済みコピーをダウンロードします。",
+    ],
+    readingTitle: "PDF を保護する他の方法",
+    readingDescription: "文書を保護し仕上げるための関連ツールとガイド。",
+    readingLinks: [
+      { label: "PDF に透かしを入れる", href: "/watermark-pdf", description: "共有前に「社外秘」「ドラフト」などのラベルをページに押します。" },
+      { label: "PDF を無料で黒塗りする方法", href: "/guides/redact-pdf-free", description: "機密文字を復元できないように削除する手順を順を追って解説します。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [pages, setPages] = useState<Pg[]>([]);
   const [boxes, setBoxes] = useState<Box[]>([]);
@@ -332,6 +475,7 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="redact-pdf" locale={locale} />
     </div>
   );

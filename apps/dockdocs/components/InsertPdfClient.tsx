@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
@@ -128,8 +129,144 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why add pages to a PDF in your browser",
+    benefitsDescription: "Drop new pages exactly where they belong, without rebuilding the whole document.",
+    benefits: [
+      { title: "Insert at any position", description: "Splice another PDF or an image in at the very start, after any page, or at the end — you pick the slot visually before you build." },
+      { title: "See the page before you place", description: "Thumbnails of every existing page let you choose the insert point with certainty, instead of guessing at page numbers." },
+      { title: "Keeps the original intact", description: "Your existing pages stay in their original order and quality — the new pages are added around them, nothing is re-rendered or downscaled." },
+    ],
+    workflowTitle: "How adding pages fits your document work",
+    workflowDescription: "For the moment a finished PDF is missing something — a cover sheet, a signed addendum, a scanned receipt that belongs mid-document.",
+    steps: [
+      "Upload the PDF you want to add pages to.",
+      "Click the insert point, then choose the PDF or image to drop in there.",
+      "Insert and download the combined PDF with the new pages in place.",
+    ],
+    readingTitle: "More ways to assemble PDFs",
+    readingDescription: "Related tools and guides for building and combining documents.",
+    readingLinks: [
+      { label: "Merge PDFs", href: "/merge-pdf", description: "Combine several whole PDFs into one ordered file instead of inserting page by page." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里给 PDF 加页",
+    benefitsDescription: "把新页面精准插到该在的位置，无需重建整个文档。",
+    benefits: [
+      { title: "任意位置插入", description: "把另一个 PDF 或一张图片插到最前面、任意一页之后，或最末尾——生成前先直观选好位置。" },
+      { title: "插入前先看页面", description: "每一页都有缩略图，让你确定地选好插入点，而不是靠页码瞎猜。" },
+      { title: "原文件保持不变", description: "现有页面的顺序和清晰度都原样保留——新页面只是插在它们之间，不会被重新渲染或压缩。" },
+    ],
+    workflowTitle: "加页如何融入你的文档工作",
+    workflowDescription: "当一份做好的 PDF 还缺点东西时——一张封面、一份签好的补充协议、一张该放在文档中间的扫描收据。",
+    steps: [
+      "上传你要加页的 PDF。",
+      "点击插入点，再选择要插入的 PDF 或图片。",
+      "插入并下载已把新页面放好的合并 PDF。",
+    ],
+    readingTitle: "更多拼装 PDF 的方式",
+    readingDescription: "组建与合并文档的相关工具和指南。",
+    readingLinks: [
+      { label: "合并 PDF", href: "/merge-pdf", description: "把多个完整 PDF 合并成一个有序文件，而不是逐页插入。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué agregar páginas a un PDF en tu navegador",
+    benefitsDescription: "Coloca las páginas nuevas justo donde corresponden, sin rehacer todo el documento.",
+    benefits: [
+      { title: "Inserta en cualquier posición", description: "Intercala otro PDF o una imagen al principio, después de cualquier página o al final: eliges el punto visualmente antes de generar." },
+      { title: "Ve la página antes de colocar", description: "Las miniaturas de cada página existente te dejan elegir el punto de inserción con certeza, en lugar de adivinar números de página." },
+      { title: "Mantiene el original intacto", description: "Tus páginas actuales conservan su orden y calidad originales: las nuevas se agregan alrededor, nada se vuelve a procesar ni se reduce." },
+    ],
+    workflowTitle: "Cómo encaja agregar páginas en tu trabajo",
+    workflowDescription: "Para cuando a un PDF terminado le falta algo: una portada, un anexo firmado, un recibo escaneado que va en medio del documento.",
+    steps: [
+      "Sube el PDF al que quieres agregar páginas.",
+      "Haz clic en el punto de inserción y elige el PDF o la imagen que vas a colocar ahí.",
+      "Inserta y descarga el PDF combinado con las páginas nuevas en su lugar.",
+    ],
+    readingTitle: "Más formas de armar PDF",
+    readingDescription: "Herramientas y guías relacionadas para construir y combinar documentos.",
+    readingLinks: [
+      { label: "Unir PDF", href: "/merge-pdf", description: "Combina varios PDF completos en un solo archivo ordenado en vez de insertar página por página." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que adicionar páginas a um PDF no seu navegador",
+    benefitsDescription: "Coloque as páginas novas exatamente onde elas pertencem, sem refazer o documento inteiro.",
+    benefits: [
+      { title: "Insira em qualquer posição", description: "Encaixe outro PDF ou uma imagem no início, depois de qualquer página ou no fim: você escolhe o ponto visualmente antes de gerar." },
+      { title: "Veja a página antes de colocar", description: "As miniaturas de cada página existente deixam você escolher o ponto de inserção com certeza, em vez de adivinhar números de página." },
+      { title: "Mantém o original intacto", description: "Suas páginas atuais mantêm a ordem e a qualidade originais: as novas são adicionadas ao redor, nada é reprocessado ou reduzido." },
+    ],
+    workflowTitle: "Como adicionar páginas se encaixa no seu trabalho",
+    workflowDescription: "Para quando falta algo num PDF pronto: uma capa, um aditivo assinado, um recibo digitalizado que entra no meio do documento.",
+    steps: [
+      "Envie o PDF ao qual deseja adicionar páginas.",
+      "Clique no ponto de inserção e escolha o PDF ou a imagem que vai colocar ali.",
+      "Insira e baixe o PDF combinado com as páginas novas no lugar.",
+    ],
+    readingTitle: "Mais formas de montar PDF",
+    readingDescription: "Ferramentas e guias relacionados para construir e combinar documentos.",
+    readingLinks: [
+      { label: "Unir PDF", href: "/merge-pdf", description: "Combine vários PDF inteiros em um único arquivo ordenado em vez de inserir página por página." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi ajouter des pages à un PDF dans votre navigateur",
+    benefitsDescription: "Placez les nouvelles pages exactement à leur place, sans reconstruire tout le document.",
+    benefits: [
+      { title: "Insérez à n'importe quelle position", description: "Intercalez un autre PDF ou une image tout au début, après n'importe quelle page ou à la fin : vous choisissez l'emplacement visuellement avant de générer." },
+      { title: "Voyez la page avant de placer", description: "Les miniatures de chaque page existante vous laissent choisir le point d'insertion avec certitude, au lieu de deviner des numéros de page." },
+      { title: "Garde l'original intact", description: "Vos pages actuelles conservent leur ordre et leur qualité d'origine : les nouvelles s'ajoutent autour, rien n'est recalculé ni réduit." },
+    ],
+    workflowTitle: "Comment l'ajout de pages s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un PDF terminé manque de quelque chose : une page de garde, un avenant signé, un reçu numérisé qui va au milieu du document.",
+    steps: [
+      "Importez le PDF auquel vous voulez ajouter des pages.",
+      "Cliquez sur le point d'insertion, puis choisissez le PDF ou l'image à y déposer.",
+      "Insérez et téléchargez le PDF combiné avec les nouvelles pages en place.",
+    ],
+    readingTitle: "Plus de façons d'assembler les PDF",
+    readingDescription: "Outils et guides associés pour construire et combiner des documents.",
+    readingLinks: [
+      { label: "Fusionner des PDF", href: "/merge-pdf", description: "Combinez plusieurs PDF entiers en un seul fichier ordonné au lieu d'insérer page par page." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF にページを追加する理由",
+    benefitsDescription: "新しいページをあるべき位置にぴったり挿入。文書全体を作り直す必要はありません。",
+    benefits: [
+      { title: "任意の位置に挿入", description: "別の PDF や画像を、いちばん最初・任意のページの後・末尾に差し込めます——生成前に位置を目で見て選べます。" },
+      { title: "置く前にページを確認", description: "既存の各ページのサムネイルで、ページ番号を当てずっぽうにせず、挿入位置を確実に選べます。" },
+      { title: "元の文書はそのまま", description: "既存ページは元の順序と画質を保持——新しいページはその前後に追加されるだけで、再描画も縮小もされません。" },
+    ],
+    workflowTitle: "ページ追加が文書作業にどう役立つか",
+    workflowDescription: "完成した PDF に何かが足りないとき——表紙、署名済みの補足、文書の途中に入るスキャンした領収書など。",
+    steps: [
+      "ページを追加したい PDF をアップロードします。",
+      "挿入位置をクリックし、そこに差し込む PDF または画像を選びます。",
+      "新しいページが収まった結合 PDF を、挿入してダウンロードします。",
+    ],
+    readingTitle: "PDF を組み立てる他の方法",
+    readingDescription: "文書の作成と結合に関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "PDF を結合", href: "/merge-pdf", description: "1 ページずつ挿入する代わりに、複数の PDF 全体を 1 つの順序立ったファイルに結合します。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -306,6 +443,7 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
           <ToolBridge slug="add-page" locale={locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="add-page" locale={locale} />
     </div>
   );

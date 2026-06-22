@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState, type CSSProperties } from "react";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
@@ -92,8 +93,144 @@ function makeLabel(fmt: Fmt, n: number, total: number, zh: boolean, hant = false
   return `${n}`;
 }
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Numbering that fits the document",
+    benefitsDescription: "Place page numbers exactly where you want them, in the format you want, on the pages you choose.",
+    benefits: [
+      { title: "Pick any corner or center", description: "Drop numbers in any of six spots — top or bottom, left, center, or right — with a small, medium, or large margin to match your layout." },
+      { title: "Four ready formats", description: "Choose plain \"1\", \"Page 1\", \"1 / N\", or \"1 of N\" — the right wording for reports, briefs, or print-ready packets." },
+      { title: "Start number and page range", description: "Begin counting at any number and number only the pages you choose, so front matter or cover pages stay untouched." },
+    ],
+    workflowTitle: "How page numbers fit your document work",
+    workflowDescription: "For the moment a draft, scan, or merged packet needs clean, consistent page numbers before you send or print it.",
+    steps: [
+      "Upload the PDF you want to number.",
+      "Set the position, format, start number, and page range — and check the live preview.",
+      "Add the numbers and download your finished PDF.",
+    ],
+    readingTitle: "More ways to finish a PDF",
+    readingDescription: "Related tools and guides for marking up and preparing documents.",
+    readingLinks: [
+      { label: "Watermark a PDF", href: "/watermark-pdf", description: "Stamp text or an image across every page to label drafts or mark confidential files." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "贴合文档的页码",
+    benefitsDescription: "把页码放在你想要的位置、用你想要的格式，只加在你选定的页面上。",
+    benefits: [
+      { title: "六个位置随你选", description: "页码可放在六个位置之一——上方或下方的左、中、右——并配以小、中、大三种边距，贴合你的版式。" },
+      { title: "四种现成格式", description: "可选纯数字「1」、「第 1 页」、「1 / N」或「1 / 共 N」——为报告、简报或可付印的文档选对写法。" },
+      { title: "起始数字与页码范围", description: "可从任意数字开始计数，只为你选定的页面编号，让扉页或封面保持原样。" },
+    ],
+    workflowTitle: "页码如何融入你的文档工作",
+    workflowDescription: "当一份草稿、扫描件或合并后的文档在发送或打印前需要干净一致的页码时。",
+    steps: [
+      "上传要添加页码的 PDF。",
+      "设置位置、格式、起始数字和页码范围——并在实时预览中确认。",
+      "添加页码并下载完成的 PDF。",
+    ],
+    readingTitle: "更多收尾 PDF 的方式",
+    readingDescription: "标注和准备文档的相关工具与指南。",
+    readingLinks: [
+      { label: "为 PDF 添加水印", href: "/watermark-pdf", description: "在每一页加盖文字或图片，用于标注草稿或标记机密文件。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Numeración a la medida del documento",
+    benefitsDescription: "Coloca los números de página justo donde quieras, en el formato que quieras y solo en las páginas que elijas.",
+    benefits: [
+      { title: "Cualquier esquina o el centro", description: "Coloca los números en una de seis posiciones —arriba o abajo, a la izquierda, al centro o a la derecha— con margen pequeño, mediano o grande para adaptarse a tu diseño." },
+      { title: "Cuatro formatos listos", description: "Elige «1», «Página 1», «1 / N» o «1 de N»: la redacción adecuada para informes, escritos o documentos listos para imprimir." },
+      { title: "Número inicial y rango de páginas", description: "Empieza a contar desde cualquier número y numera solo las páginas que elijas, para que la portada o las páginas preliminares queden intactas." },
+    ],
+    workflowTitle: "Cómo encajan los números de página en tu trabajo",
+    workflowDescription: "Para cuando un borrador, un escaneo o un documento combinado necesita números de página limpios y coherentes antes de enviarlo o imprimirlo.",
+    steps: [
+      "Sube el PDF que quieres numerar.",
+      "Define la posición, el formato, el número inicial y el rango de páginas, y revisa la vista previa en vivo.",
+      "Agrega los números y descarga tu PDF terminado.",
+    ],
+    readingTitle: "Más formas de terminar un PDF",
+    readingDescription: "Herramientas y guías relacionadas para marcar y preparar documentos.",
+    readingLinks: [
+      { label: "Poner marca de agua a un PDF", href: "/watermark-pdf", description: "Estampa texto o una imagen en cada página para etiquetar borradores o marcar archivos confidenciales." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Numeração sob medida para o documento",
+    benefitsDescription: "Coloque os números de página exatamente onde quiser, no formato que quiser e só nas páginas que escolher.",
+    benefits: [
+      { title: "Qualquer canto ou o centro", description: "Coloque os números em uma de seis posições —em cima ou embaixo, à esquerda, ao centro ou à direita— com margem pequena, média ou grande para combinar com seu layout." },
+      { title: "Quatro formatos prontos", description: "Escolha «1», «Página 1», «1 / N» ou «1 de N»: a redação certa para relatórios, peças ou documentos prontos para impressão." },
+      { title: "Número inicial e intervalo de páginas", description: "Comece a contar de qualquer número e numere apenas as páginas que escolher, para que a capa ou as páginas iniciais fiquem intactas." },
+    ],
+    workflowTitle: "Como os números de página se encaixam no seu trabalho",
+    workflowDescription: "Para quando um rascunho, uma digitalização ou um documento combinado precisa de números de página limpos e consistentes antes de enviar ou imprimir.",
+    steps: [
+      "Envie o PDF que deseja numerar.",
+      "Defina a posição, o formato, o número inicial e o intervalo de páginas, e confira a pré-visualização ao vivo.",
+      "Adicione os números e baixe seu PDF finalizado.",
+    ],
+    readingTitle: "Mais formas de finalizar um PDF",
+    readingDescription: "Ferramentas e guias relacionados para marcar e preparar documentos.",
+    readingLinks: [
+      { label: "Adicionar marca d'água a um PDF", href: "/watermark-pdf", description: "Carimbe texto ou uma imagem em cada página para rotular rascunhos ou marcar arquivos confidenciais." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Une numérotation adaptée au document",
+    benefitsDescription: "Placez les numéros de page exactement où vous voulez, dans le format souhaité et uniquement sur les pages que vous choisissez.",
+    benefits: [
+      { title: "N'importe quel coin ou le centre", description: "Placez les numéros à l'une des six positions — en haut ou en bas, à gauche, au centre ou à droite — avec une marge petite, moyenne ou grande selon votre mise en page." },
+      { title: "Quatre formats prêts à l'emploi", description: "Choisissez « 1 », « Page 1 », « 1 / N » ou « 1 sur N » : la formulation adaptée aux rapports, mémoires ou documents prêts à imprimer." },
+      { title: "Numéro de départ et plage de pages", description: "Commencez le décompte à n'importe quel numéro et ne numérotez que les pages choisies, pour laisser la couverture ou les pages liminaires intactes." },
+    ],
+    workflowTitle: "Comment la numérotation s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un brouillon, un scan ou un document fusionné a besoin de numéros de page nets et cohérents avant l'envoi ou l'impression.",
+    steps: [
+      "Importez le PDF à numéroter.",
+      "Réglez la position, le format, le numéro de départ et la plage de pages, puis vérifiez l'aperçu en direct.",
+      "Ajoutez les numéros et téléchargez votre PDF terminé.",
+    ],
+    readingTitle: "D'autres façons de finaliser un PDF",
+    readingDescription: "Outils et guides associés pour annoter et préparer des documents.",
+    readingLinks: [
+      { label: "Ajouter un filigrane à un PDF", href: "/watermark-pdf", description: "Apposez un texte ou une image sur chaque page pour étiqueter des brouillons ou marquer des fichiers confidentiels." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "文書に合ったページ番号",
+    benefitsDescription: "ページ番号を思いどおりの位置・書式で、選んだページだけに付けられます。",
+    benefits: [
+      { title: "六か所から位置を選択", description: "上下の左・中央・右、六か所のいずれかに番号を配置でき、小・中・大の余白でレイアウトに合わせられます。" },
+      { title: "4 つの書式を用意", description: "「1」「1 ページ」「1 / N」「N 中 1」から選択——レポートや書面、印刷用の文書に合った表記に。" },
+      { title: "開始番号とページ範囲", description: "任意の番号から数え始め、選んだページだけに番号を付けられるので、表紙や前付けはそのまま残せます。" },
+    ],
+    workflowTitle: "ページ番号が文書作業にどう役立つか",
+    workflowDescription: "下書き、スキャン、結合した文書を送信・印刷する前に、整ったページ番号が必要なとき。",
+    steps: [
+      "番号を付けたい PDF をアップロードします。",
+      "位置・書式・開始番号・ページ範囲を設定し、ライブプレビューで確認します。",
+      "番号を追加して、完成した PDF をダウンロードします。",
+    ],
+    readingTitle: "PDF を仕上げる他の方法",
+    readingDescription: "文書のマークアップと準備に関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "PDF に透かしを入れる", href: "/watermark-pdf", description: "各ページにテキストや画像を重ねて、下書きの明示や機密ファイルの表示に使えます。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const hant = locale === "zh-Hant";
   const zh = locale === "zh" || locale === "zh-Hant";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
@@ -261,6 +398,7 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
 
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="page-numbers" locale={locale} />
     </div>
   );

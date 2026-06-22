@@ -1,6 +1,7 @@
 "use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
@@ -94,8 +95,144 @@ function hexToRgb(hex: string): [number, number, number] {
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 }
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why watermark your PDF here",
+    benefitsDescription: "Stamp a text or image watermark across every page, with full control over how it looks.",
+    benefits: [
+      { title: "Text or image marks", description: "Stamp wording like CONFIDENTIAL or DRAFT, or drop in your own logo image — whichever fits the document." },
+      { title: "Dial in the exact look", description: "Tune size, color, opacity, a 45° tilt, and one of nine anchor positions, all from a live preview before you commit." },
+      { title: "Pick the pages to mark", description: "Stamp the whole file or just a page range, so cover sheets and appendices can stay clean." },
+    ],
+    workflowTitle: "How watermarking fits your document work",
+    workflowDescription: "For the moment a PDF needs a visible mark of ownership or status before it goes out — a draft, a confidential report, a branded handout.",
+    steps: [
+      "Upload the PDF you want to mark.",
+      "Design the text or image watermark and position it using the live preview.",
+      "Apply the watermark and download the stamped PDF.",
+    ],
+    readingTitle: "More ways to finish a PDF",
+    readingDescription: "Related tools and guides for marking up and organizing documents.",
+    readingLinks: [
+      { label: "Add page numbers", href: "/page-numbers", description: "Number the pages of your PDF before sending or printing." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在这里给 PDF 加水印",
+    benefitsDescription: "把文字或图片水印盖到每一页，外观细节完全由你掌控。",
+    benefits: [
+      { title: "文字或图片水印", description: "盖上「机密」「草稿」之类的字样，或放上你自己的 Logo 图片——按文档需要任意选择。" },
+      { title: "精细调到想要的样子", description: "字号、颜色、透明度、45° 倾斜，以及九个锚点位置，全都在实时预览里调好再落定。" },
+      { title: "指定要加水印的页面", description: "整份文件或仅某个页码范围都行，让封面和附录可以保持干净。" },
+    ],
+    workflowTitle: "加水印如何融入你的文档工作",
+    workflowDescription: "当一份 PDF 在发出前需要一个可见的归属或状态标记时——草稿、机密报告、带品牌的资料。",
+    steps: [
+      "上传你要加水印的 PDF。",
+      "设计文字或图片水印，借助实时预览调好位置。",
+      "应用水印并下载盖好水印的 PDF。",
+    ],
+    readingTitle: "更多收尾 PDF 的方式",
+    readingDescription: "标注和整理文档的相关工具与指南。",
+    readingLinks: [
+      { label: "添加页码", href: "/page-numbers", description: "在发送或打印前为 PDF 页面编号。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué poner marca de agua a tu PDF aquí",
+    benefitsDescription: "Estampa una marca de agua de texto o imagen en cada página, con control total sobre su aspecto.",
+    benefits: [
+      { title: "Marcas de texto o imagen", description: "Estampa palabras como CONFIDENCIAL o BORRADOR, o coloca tu propio logotipo: lo que mejor se adapte al documento." },
+      { title: "Ajusta el aspecto exacto", description: "Regula tamaño, color, opacidad, una inclinación de 45° y una de nueve posiciones de anclaje, todo desde una vista previa en vivo antes de aplicar." },
+      { title: "Elige las páginas a marcar", description: "Estampa todo el archivo o solo un rango de páginas, para que las portadas y los anexos queden limpios." },
+    ],
+    workflowTitle: "Cómo encaja la marca de agua en tu trabajo",
+    workflowDescription: "Para cuando un PDF necesita una marca visible de propiedad o estado antes de enviarse: un borrador, un informe confidencial, un folleto con tu marca.",
+    steps: [
+      "Sube el PDF que quieres marcar.",
+      "Diseña la marca de agua de texto o imagen y ubícala con la vista previa en vivo.",
+      "Aplica la marca de agua y descarga el PDF estampado.",
+    ],
+    readingTitle: "Más formas de rematar un PDF",
+    readingDescription: "Herramientas y guías relacionadas para anotar y organizar documentos.",
+    readingLinks: [
+      { label: "Agregar números de página", href: "/page-numbers", description: "Numera las páginas de tu PDF antes de enviarlo o imprimirlo." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que aplicar marca d'água ao seu PDF aqui",
+    benefitsDescription: "Aplique uma marca d'água de texto ou imagem em cada página, com controle total sobre a aparência.",
+    benefits: [
+      { title: "Marcas de texto ou imagem", description: "Aplique palavras como CONFIDENCIAL ou RASCUNHO, ou insira seu próprio logotipo: o que melhor servir ao documento." },
+      { title: "Ajuste a aparência exata", description: "Regule tamanho, cor, opacidade, uma inclinação de 45° e uma de nove posições de ancoragem, tudo a partir de uma pré-visualização ao vivo antes de aplicar." },
+      { title: "Escolha as páginas a marcar", description: "Aplique no arquivo inteiro ou apenas em um intervalo de páginas, para que capas e anexos fiquem limpos." },
+    ],
+    workflowTitle: "Como a marca d'água se encaixa no seu trabalho",
+    workflowDescription: "Para quando um PDF precisa de uma marca visível de propriedade ou status antes de sair: um rascunho, um relatório confidencial, um material com sua marca.",
+    steps: [
+      "Envie o PDF que deseja marcar.",
+      "Crie a marca d'água de texto ou imagem e posicione-a usando a pré-visualização ao vivo.",
+      "Aplique a marca d'água e baixe o PDF marcado.",
+    ],
+    readingTitle: "Mais formas de finalizar um PDF",
+    readingDescription: "Ferramentas e guias relacionados para anotar e organizar documentos.",
+    readingLinks: [
+      { label: "Adicionar números de página", href: "/page-numbers", description: "Numere as páginas do seu PDF antes de enviar ou imprimir." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi filigraner votre PDF ici",
+    benefitsDescription: "Apposez un filigrane texte ou image sur chaque page, avec un contrôle total sur son apparence.",
+    benefits: [
+      { title: "Marques texte ou image", description: "Apposez des mentions comme CONFIDENTIEL ou BROUILLON, ou ajoutez votre propre logo : selon ce qui convient au document." },
+      { title: "Réglez l'apparence au détail près", description: "Ajustez la taille, la couleur, l'opacité, une inclinaison à 45° et l'une des neuf positions d'ancrage, le tout depuis un aperçu en direct avant d'appliquer." },
+      { title: "Choisissez les pages à marquer", description: "Apposez le filigrane sur tout le fichier ou seulement une plage de pages, pour garder couvertures et annexes intactes." },
+    ],
+    workflowTitle: "Comment le filigrane s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un PDF a besoin d'une marque visible de propriété ou de statut avant d'être diffusé : un brouillon, un rapport confidentiel, un document à votre marque.",
+    steps: [
+      "Importez le PDF à marquer.",
+      "Concevez le filigrane texte ou image et placez-le à l'aide de l'aperçu en direct.",
+      "Appliquez le filigrane et téléchargez le PDF marqué.",
+    ],
+    readingTitle: "Plus de façons de finaliser un PDF",
+    readingDescription: "Outils et guides associés pour annoter et organiser des documents.",
+    readingLinks: [
+      { label: "Ajouter des numéros de page", href: "/page-numbers", description: "Numérotez les pages de votre PDF avant l'envoi ou l'impression." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ここで PDF に透かしを入れる理由",
+    benefitsDescription: "テキストまたは画像の透かしを全ページに押印し、見た目を細かく調整できます。",
+    benefits: [
+      { title: "テキストまたは画像の透かし", description: "「CONFIDENTIAL」「DRAFT」などの文字を押すか、自分のロゴ画像を載せるか——文書に合わせて選べます。" },
+      { title: "見た目を思いどおりに調整", description: "サイズ・色・不透明度・45°の傾き、そして9つのアンカー位置を、適用前にライブプレビューで調整できます。" },
+      { title: "透かしを入れるページを指定", description: "ファイル全体でも特定のページ範囲だけでも押印でき、表紙や付録はそのままにできます。" },
+    ],
+    workflowTitle: "透かしが文書作業にどう役立つか",
+    workflowDescription: "PDF を送り出す前に、所有や状態を示す目印が必要なとき——下書き、機密レポート、ブランド入りの配布資料。",
+    steps: [
+      "透かしを入れたい PDF をアップロードします。",
+      "テキストまたは画像の透かしをデザインし、ライブプレビューで位置を決めます。",
+      "透かしを適用し、押印済みの PDF をダウンロードします。",
+    ],
+    readingTitle: "PDF を仕上げる他の方法",
+    readingDescription: "文書への書き込みや整理に関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "ページ番号を追加", href: "/page-numbers", description: "送信や印刷の前に PDF のページに番号を振ります。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
@@ -343,6 +480,7 @@ export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="watermark-pdf" locale={locale} />
     </div>
   );
