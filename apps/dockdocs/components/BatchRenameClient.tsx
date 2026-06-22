@@ -1,5 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 
 import { useCallback, useRef, useState } from "react";
@@ -82,8 +83,144 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why batch-rename a folder of PDFs",
+    benefitsDescription: "Rename a whole folder of PDFs in one pass and download the renamed set as a single ZIP.",
+    benefits: [
+      { title: "Rename a whole folder at once", description: "Drop in dozens or hundreds of PDFs and apply one naming rule to all of them — no opening and renaming files one by one." },
+      { title: "Numbered patterns or find-and-replace", description: "Pick a base name with a sequential counter, or swap a piece of text across every filename for instantly consistent naming." },
+      { title: "Download the renamed set as one ZIP", description: "Every renamed file comes back in a single ZIP with the original PDF contents untouched — only the filenames change." },
+    ],
+    workflowTitle: "How batch renaming fits your document work",
+    workflowDescription: "For the moment a folder of exports, scans, or invoices lands with messy or duplicate names and needs a clean, sortable naming scheme.",
+    steps: [
+      "Drop in a folder of PDFs, or pick the files you want to rename.",
+      "Choose a numbered pattern or find-and-replace, and check the live before/after preview.",
+      "Download the renamed set as one ZIP.",
+    ],
+    readingTitle: "More ways to organize PDFs",
+    readingDescription: "Related tools and resources for managing batches of documents.",
+    readingLinks: [
+      { label: "Merge PDFs", href: "/merge-pdf", description: "Combine several PDFs into one ordered document." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么要批量给整个文件夹的 PDF 改名",
+    benefitsDescription: "一次性给整个文件夹的 PDF 改名，把改好名的文件打包成一个 ZIP 下载。",
+    benefits: [
+      { title: "整个文件夹一次改完", description: "拖入几十、几百个 PDF，对它们统一套用一条命名规则——不用一个个打开再改名。" },
+      { title: "编号模板或查找替换", description: "选一个基础名加自动递增的编号，或在所有文件名里替换一段文字，瞬间得到一致的命名。" },
+      { title: "改好名的文件打包成一个 ZIP", description: "所有改好名的文件装进一个 ZIP 返回，PDF 内容原封不动——只有文件名变了。" },
+    ],
+    workflowTitle: "批量改名如何融入你的文档工作",
+    workflowDescription: "当一个文件夹的导出件、扫描件或发票名字杂乱、重复，需要一套整洁、可排序的命名方案时。",
+    steps: [
+      "拖入一个文件夹的 PDF，或选择要改名的文件。",
+      "选择编号模板或查找替换，并查看实时的改名前后对照预览。",
+      "把改好名的文件打包成一个 ZIP 下载。",
+    ],
+    readingTitle: "更多整理 PDF 的方式",
+    readingDescription: "管理成批文档的相关工具和资源。",
+    readingLinks: [
+      { label: "合并 PDF", href: "/merge-pdf", description: "把多个 PDF 合并成一个有序文档。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué renombrar por lotes una carpeta de PDF",
+    benefitsDescription: "Renombra una carpeta entera de PDF de una sola vez y descarga el conjunto renombrado en un único ZIP.",
+    benefits: [
+      { title: "Renombra una carpeta entera de una vez", description: "Suelta decenas o cientos de PDF y aplica una sola regla de nombres a todos: sin abrir y renombrar archivo por archivo." },
+      { title: "Patrones numerados o buscar y reemplazar", description: "Elige un nombre base con un contador secuencial, o cambia un fragmento de texto en cada nombre de archivo para una nomenclatura coherente al instante." },
+      { title: "Descarga el conjunto renombrado en un ZIP", description: "Todos los archivos renombrados vuelven en un único ZIP con el contenido de los PDF intacto: solo cambian los nombres." },
+    ],
+    workflowTitle: "Cómo encaja el renombrado por lotes en tu trabajo",
+    workflowDescription: "Para cuando una carpeta de exportaciones, escaneos o facturas llega con nombres desordenados o duplicados y necesita un esquema limpio y ordenable.",
+    steps: [
+      "Suelta una carpeta de PDF, o elige los archivos que quieres renombrar.",
+      "Elige un patrón numerado o buscar y reemplazar, y revisa la vista previa antes/después en vivo.",
+      "Descarga el conjunto renombrado en un único ZIP.",
+    ],
+    readingTitle: "Más formas de organizar PDF",
+    readingDescription: "Herramientas y recursos relacionados para gestionar lotes de documentos.",
+    readingLinks: [
+      { label: "Unir PDF", href: "/merge-pdf", description: "Combina varios PDF en un solo documento ordenado." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que renomear em lote uma pasta de PDF",
+    benefitsDescription: "Renomeie uma pasta inteira de PDF de uma só vez e baixe o conjunto renomeado em um único ZIP.",
+    benefits: [
+      { title: "Renomeie uma pasta inteira de uma vez", description: "Solte dezenas ou centenas de PDF e aplique uma única regra de nomes a todos — sem abrir e renomear arquivo por arquivo." },
+      { title: "Padrões numerados ou localizar e substituir", description: "Escolha um nome base com um contador sequencial, ou troque um trecho de texto em cada nome de arquivo para uma nomenclatura consistente na hora." },
+      { title: "Baixe o conjunto renomeado em um ZIP", description: "Todos os arquivos renomeados voltam em um único ZIP com o conteúdo dos PDF intacto — só os nomes mudam." },
+    ],
+    workflowTitle: "Como o renome em lote se encaixa no seu trabalho",
+    workflowDescription: "Para quando uma pasta de exportações, digitalizações ou faturas chega com nomes bagunçados ou duplicados e precisa de um esquema limpo e ordenável.",
+    steps: [
+      "Solte uma pasta de PDF, ou escolha os arquivos que deseja renomear.",
+      "Escolha um padrão numerado ou localizar e substituir, e confira a pré-visualização antes/depois ao vivo.",
+      "Baixe o conjunto renomeado em um único ZIP.",
+    ],
+    readingTitle: "Mais formas de organizar PDF",
+    readingDescription: "Ferramentas e recursos relacionados para gerenciar lotes de documentos.",
+    readingLinks: [
+      { label: "Unir PDF", href: "/merge-pdf", description: "Combine vários PDF em um único documento ordenado." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi renommer en masse un dossier de PDF",
+    benefitsDescription: "Renommez tout un dossier de PDF en une fois et téléchargez l'ensemble renommé dans un seul ZIP.",
+    benefits: [
+      { title: "Renommez tout un dossier en une fois", description: "Déposez des dizaines ou des centaines de PDF et appliquez une seule règle de nommage à tous — sans ouvrir et renommer fichier par fichier." },
+      { title: "Modèles numérotés ou rechercher-remplacer", description: "Choisissez un nom de base avec un compteur séquentiel, ou remplacez un fragment de texte dans chaque nom de fichier pour une nomenclature cohérente instantanément." },
+      { title: "Téléchargez l'ensemble renommé en un ZIP", description: "Tous les fichiers renommés reviennent dans un seul ZIP, le contenu des PDF intact : seuls les noms changent." },
+    ],
+    workflowTitle: "Comment le renommage en masse s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un dossier d'exports, de numérisations ou de factures arrive avec des noms désordonnés ou en double et a besoin d'un schéma propre et triable.",
+    steps: [
+      "Déposez un dossier de PDF, ou choisissez les fichiers à renommer.",
+      "Choisissez un modèle numéroté ou rechercher-remplacer, et vérifiez l'aperçu avant/après en direct.",
+      "Téléchargez l'ensemble renommé dans un seul ZIP.",
+    ],
+    readingTitle: "Plus de façons d'organiser les PDF",
+    readingDescription: "Outils et ressources associés pour gérer des lots de documents.",
+    readingLinks: [
+      { label: "Fusionner des PDF", href: "/merge-pdf", description: "Combinez plusieurs PDF en un seul document ordonné." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "フォルダ内の PDF を一括で名前変更する理由",
+    benefitsDescription: "フォルダ内の PDF をまとめて名前変更し、名前を変えたファイルを 1 つの ZIP でダウンロードします。",
+    benefits: [
+      { title: "フォルダごと一度に名前変更", description: "数十、数百の PDF をドロップして、すべてに 1 つの命名ルールを適用——1 ファイルずつ開いて名前を変える必要はありません。" },
+      { title: "連番パターンまたは検索と置換", description: "連番カウンター付きのベース名を選ぶか、すべてのファイル名で一部のテキストを置き換えて、瞬時に一貫した命名に。" },
+      { title: "名前を変えたファイルを 1 つの ZIP で", description: "名前を変えたすべてのファイルが 1 つの ZIP で返ってきます。PDF の中身はそのまま——変わるのはファイル名だけです。" },
+    ],
+    workflowTitle: "一括名前変更が文書作業にどう役立つか",
+    workflowDescription: "エクスポート、スキャン、請求書のフォルダが乱雑だったり重複した名前で届き、整理された並べ替え可能な命名規則が必要なとき。",
+    steps: [
+      "PDF のフォルダをドロップするか、名前を変えたいファイルを選びます。",
+      "連番パターンまたは検索と置換を選び、変更前後のライブプレビューを確認します。",
+      "名前を変えたファイルを 1 つの ZIP でダウンロードします。",
+    ],
+    readingTitle: "PDF を整理する他の方法",
+    readingDescription: "文書のバッチ管理に役立つ関連ツールとリソース。",
+    readingLinks: [
+      { label: "PDF を結合", href: "/merge-pdf", description: "複数の PDF を 1 つの順序立った文書に結合します。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>("sequence");
@@ -198,6 +335,7 @@ export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="batch-rename-pdf" locale={locale} />
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { BatchFileCard } from "@/components/BatchFileCard";
 
@@ -74,8 +75,144 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Batch PDF-to-image, a whole folder at once",
+    benefitsDescription: "Point it at a folder of PDFs and get every page back as a JPG or PNG, packaged into one ZIP.",
+    benefits: [
+      { title: "Convert a folder in one pass", description: "Drop a whole folder of PDFs and convert all of them together — no opening files one at a time or repeating the same export 30 times." },
+      { title: "Every page becomes an image", description: "Each page of each PDF is rendered at 2× into its own crisp JPG or PNG, named after the source file so the order stays clear." },
+      { title: "One tidy ZIP to download", description: "All the images come back in a single ZIP, so a 50-page batch is one download instead of hundreds of loose files." },
+    ],
+    workflowTitle: "How batch conversion fits your work",
+    workflowDescription: "For the moment a stack of PDFs needs to become images — slides for a deck, page previews for a catalog, or graphics to drop into another document.",
+    steps: [
+      "Drop a folder of PDFs, or pick the files you want to convert.",
+      "Choose JPG or PNG and convert the whole batch at once.",
+      "Download the single ZIP with every page as an image.",
+    ],
+    readingTitle: "More ways to turn PDFs into images",
+    readingDescription: "Related tools and guides for converting and organizing PDFs.",
+    readingLinks: [
+      { label: "PDF to image (single)", href: "/pdf-to-image", description: "Convert one PDF to JPG or PNG when you don't need a whole folder." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "批量 PDF 转图片，整个文件夹一次搞定",
+    benefitsDescription: "对准一个装满 PDF 的文件夹，把每一页都转成 JPG 或 PNG，并打包成一个 ZIP。",
+    benefits: [
+      { title: "一遍转换整个文件夹", description: "拖入整个 PDF 文件夹，一次性全部转换——不用一个个打开，也不用把同样的导出重复 30 遍。" },
+      { title: "每一页都变成图片", description: "每份 PDF 的每一页都以 2× 渲染成清晰的 JPG 或 PNG，并以源文件命名，顺序一目了然。" },
+      { title: "一个整洁的 ZIP 下载", description: "所有图片都装进一个 ZIP，50 页的批量也只是一次下载，而不是几百个零散文件。" },
+    ],
+    workflowTitle: "批量转换如何融入你的工作",
+    workflowDescription: "当一叠 PDF 需要变成图片时——做幻灯片的素材、目录的页面预览，或要放进其他文档的图形。",
+    steps: [
+      "拖入一个 PDF 文件夹，或挑选你要转换的文件。",
+      "选择 JPG 或 PNG，一次转换整批。",
+      "下载这个包含每一页图片的 ZIP。",
+    ],
+    readingTitle: "更多把 PDF 转成图片的方式",
+    readingDescription: "转换与整理 PDF 的相关工具和指南。",
+    readingLinks: [
+      { label: "PDF 转图片(单个)", href: "/pdf-to-image", description: "当你不需要整个文件夹时，把单个 PDF 转成 JPG 或 PNG。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "PDF a imagen por lotes, una carpeta entera de una vez",
+    benefitsDescription: "Apúntalo a una carpeta de PDF y obtén cada página como JPG o PNG, empaquetadas en un solo ZIP.",
+    benefits: [
+      { title: "Convierte una carpeta de una pasada", description: "Suelta una carpeta entera de PDF y convíertelos todos juntos: sin abrir archivos uno por uno ni repetir la misma exportación 30 veces." },
+      { title: "Cada página se vuelve imagen", description: "Cada página de cada PDF se procesa a 2× en su propio JPG o PNG nítido, con el nombre del archivo de origen para mantener el orden claro." },
+      { title: "Un solo ZIP ordenado", description: "Todas las imágenes vuelven en un único ZIP, así un lote de 50 páginas es una descarga en vez de cientos de archivos sueltos." },
+    ],
+    workflowTitle: "Cómo encaja la conversión por lotes en tu trabajo",
+    workflowDescription: "Para cuando un montón de PDF debe convertirse en imágenes: diapositivas para una presentación, vistas previas para un catálogo o gráficos para otro documento.",
+    steps: [
+      "Suelta una carpeta de PDF, o elige los archivos que quieres convertir.",
+      "Elige JPG o PNG y convierte todo el lote de una vez.",
+      "Descarga el único ZIP con cada página como imagen.",
+    ],
+    readingTitle: "Más formas de convertir PDF en imágenes",
+    readingDescription: "Herramientas y guías relacionadas para convertir y organizar PDF.",
+    readingLinks: [
+      { label: "PDF a imagen (individual)", href: "/pdf-to-image", description: "Convierte un solo PDF a JPG o PNG cuando no necesitas una carpeta entera." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "PDF para imagem em lote, uma pasta inteira de uma vez",
+    benefitsDescription: "Aponte para uma pasta de PDFs e receba cada página como JPG ou PNG, empacotadas em um único ZIP.",
+    benefits: [
+      { title: "Converta uma pasta de uma só vez", description: "Solte uma pasta inteira de PDFs e converta todos juntos: sem abrir arquivos um a um nem repetir a mesma exportação 30 vezes." },
+      { title: "Cada página vira imagem", description: "Cada página de cada PDF é renderizada a 2× em seu próprio JPG ou PNG nítido, com o nome do arquivo de origem para manter a ordem clara." },
+      { title: "Um ZIP organizado para baixar", description: "Todas as imagens voltam em um único ZIP, então um lote de 50 páginas é um download em vez de centenas de arquivos soltos." },
+    ],
+    workflowTitle: "Como a conversão em lote se encaixa no seu trabalho",
+    workflowDescription: "Para quando uma pilha de PDFs precisa virar imagens: slides para uma apresentação, prévias de página para um catálogo ou gráficos para outro documento.",
+    steps: [
+      "Solte uma pasta de PDFs, ou escolha os arquivos que deseja converter.",
+      "Escolha JPG ou PNG e converta o lote inteiro de uma vez.",
+      "Baixe o único ZIP com cada página como imagem.",
+    ],
+    readingTitle: "Mais formas de transformar PDF em imagens",
+    readingDescription: "Ferramentas e guias relacionados para converter e organizar PDFs.",
+    readingLinks: [
+      { label: "PDF para imagem (individual)", href: "/pdf-to-image", description: "Converta um único PDF para JPG ou PNG quando não precisar de uma pasta inteira." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "PDF en images en lot, un dossier entier d'un coup",
+    benefitsDescription: "Pointez-le vers un dossier de PDF et récupérez chaque page en JPG ou PNG, regroupées dans un seul ZIP.",
+    benefits: [
+      { title: "Convertissez un dossier en une passe", description: "Déposez un dossier entier de PDF et convertissez-les tous ensemble : sans ouvrir les fichiers un par un ni répéter le même export 30 fois." },
+      { title: "Chaque page devient une image", description: "Chaque page de chaque PDF est rendue à 2× dans son propre JPG ou PNG net, nommé d'après le fichier source pour garder l'ordre clair." },
+      { title: "Un seul ZIP bien rangé", description: "Toutes les images reviennent dans un unique ZIP : un lot de 50 pages est un seul téléchargement au lieu de centaines de fichiers épars." },
+    ],
+    workflowTitle: "Comment la conversion par lots s'intègre à votre travail",
+    workflowDescription: "Pour le moment où une pile de PDF doit devenir des images : des diapositives pour une présentation, des aperçus de pages pour un catalogue ou des visuels pour un autre document.",
+    steps: [
+      "Déposez un dossier de PDF, ou choisissez les fichiers à convertir.",
+      "Choisissez JPG ou PNG et convertissez tout le lot d'un coup.",
+      "Téléchargez l'unique ZIP avec chaque page en image.",
+    ],
+    readingTitle: "Plus de façons de transformer les PDF en images",
+    readingDescription: "Outils et guides associés pour convertir et organiser les PDF.",
+    readingLinks: [
+      { label: "PDF en image (unique)", href: "/pdf-to-image", description: "Convertissez un seul PDF en JPG ou PNG quand vous n'avez pas besoin d'un dossier entier." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "一括 PDF を画像に、フォルダごと一度に",
+    benefitsDescription: "PDF のフォルダを指定すると、すべてのページが JPG または PNG になり、1 つの ZIP にまとめられます。",
+    benefits: [
+      { title: "フォルダを一度で変換", description: "PDF のフォルダごとドロップして、すべてまとめて変換——ファイルを 1 つずつ開いたり、同じ書き出しを 30 回繰り返したりする必要はありません。" },
+      { title: "すべてのページが画像に", description: "各 PDF の各ページが 2× で鮮明な JPG または PNG にレンダリングされ、元のファイル名が付くので順序が一目で分かります。" },
+      { title: "1 つの整った ZIP でダウンロード", description: "すべての画像が 1 つの ZIP で返ってくるので、50 ページのバッチも何百もの個別ファイルではなく 1 回のダウンロードで済みます。" },
+    ],
+    workflowTitle: "一括変換が作業にどう役立つか",
+    workflowDescription: "PDF の山を画像にする必要があるとき——プレゼン用のスライド、カタログのページプレビュー、別の文書に貼り込むグラフィックなど。",
+    steps: [
+      "PDF のフォルダをドロップするか、変換したいファイルを選びます。",
+      "JPG または PNG を選び、バッチ全体を一度に変換します。",
+      "すべてのページを画像にした 1 つの ZIP をダウンロードします。",
+    ],
+    readingTitle: "PDF を画像にする他の方法",
+    readingDescription: "PDF の変換と整理に関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "PDF を画像に(単一)", href: "/pdf-to-image", description: "フォルダ全体が不要なときに、1 つの PDF を JPG または PNG に変換します。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Fmt>("jpg");
@@ -203,6 +340,7 @@ export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="batch-pdf-to-image" locale={locale} />
     </div>
   );

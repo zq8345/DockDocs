@@ -1,5 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 
 import { useCallback, useRef, useState } from "react";
@@ -90,8 +91,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why batch-encrypt PDFs in your browser",
+    benefitsDescription: "Lock an entire folder of PDFs with one password and get them all back as a single ZIP.",
+    benefits: [
+      { title: "One password, a whole folder", description: "Set a single password once and apply real AES encryption to every PDF in the batch — no opening and re-saving files one at a time." },
+      { title: "Packaged into one ZIP", description: "Every encrypted PDF comes back named after the original in one tidy ZIP, ready to forward or archive in a single download." },
+      { title: "Built for stacks of files", description: "Process up to 30 PDFs in a run, with already-encrypted files skipped automatically so nothing is double-locked." },
+    ],
+    workflowTitle: "How batch encryption fits your document work",
+    workflowDescription: "For the moment you need to send a folder of contracts, statements, or records and every file has to be password-protected before it leaves your hands.",
+    steps: [
+      "Drop in your PDFs or pick a whole folder at once.",
+      "Type one password and encrypt every file in the batch.",
+      "Download the single ZIP of protected PDFs.",
+    ],
+    readingTitle: "More ways to protect PDFs",
+    readingDescription: "Related tools and guides for locking and unlocking documents.",
+    readingLinks: [
+      { label: "Protect a single PDF", href: "/protect-pdf", description: "Password-protect just one PDF when you don't need the whole batch." },
+      { label: "How to remove a PDF password", href: "/guides/remove-password-from-pdf", description: "The reverse — take the password off a PDF you already own." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里批量加密 PDF",
+    benefitsDescription: "用一个密码锁住整个文件夹的 PDF，全部打包成一个 ZIP 取回。",
+    benefits: [
+      { title: "一个密码，整个文件夹", description: "只需设一次密码，就对批次里的每个 PDF 应用真正的 AES 加密——不必逐个打开再另存。" },
+      { title: "打包成一个 ZIP", description: "每个加密后的 PDF 都沿用原文件名，整齐收进一个 ZIP，一次下载即可转发或归档。" },
+      { title: "为成堆文件而生", description: "单次最多处理 30 个 PDF，已加密的文件会自动跳过，绝不重复加锁。" },
+    ],
+    workflowTitle: "批量加密如何融入你的文档工作",
+    workflowDescription: "当你要发送一整个文件夹的合同、对账单或档案，而每个文件离手前都必须加上密码保护时。",
+    steps: [
+      "拖入你的 PDF，或一次性选择整个文件夹。",
+      "输入一个密码，给批次里的每个文件加密。",
+      "下载这一个装着受保护 PDF 的 ZIP。",
+    ],
+    readingTitle: "更多保护 PDF 的方式",
+    readingDescription: "锁定与解锁文档的相关工具和指南。",
+    readingLinks: [
+      { label: "保护单个 PDF", href: "/protect-pdf", description: "当你不需要整批处理时，只给一个 PDF 设密码。" },
+      { label: "如何移除 PDF 密码", href: "/guides/remove-password-from-pdf", description: "反向操作——为你已拥有的 PDF 去掉密码。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué cifrar PDF por lotes en tu navegador",
+    benefitsDescription: "Bloquea una carpeta entera de PDF con una sola contraseña y recupéralos todos en un único ZIP.",
+    benefits: [
+      { title: "Una contraseña, toda una carpeta", description: "Define una contraseña una sola vez y aplica cifrado AES real a cada PDF del lote, sin abrir y volver a guardar archivos uno por uno." },
+      { title: "Empaquetados en un solo ZIP", description: "Cada PDF cifrado vuelve con el nombre del original en un ZIP ordenado, listo para reenviar o archivar en una sola descarga." },
+      { title: "Pensado para pilas de archivos", description: "Procesa hasta 30 PDF por ejecución y los archivos ya cifrados se omiten automáticamente para no bloquearlos dos veces." },
+    ],
+    workflowTitle: "Cómo encaja el cifrado por lotes en tu trabajo",
+    workflowDescription: "Para cuando necesitas enviar una carpeta de contratos, estados de cuenta o expedientes y cada archivo debe protegerse con contraseña antes de salir de tus manos.",
+    steps: [
+      "Suelta tus PDF o elige una carpeta entera de una vez.",
+      "Escribe una contraseña y cifra cada archivo del lote.",
+      "Descarga el único ZIP de PDF protegidos.",
+    ],
+    readingTitle: "Más formas de proteger PDF",
+    readingDescription: "Herramientas y guías relacionadas para bloquear y desbloquear documentos.",
+    readingLinks: [
+      { label: "Proteger un solo PDF", href: "/protect-pdf", description: "Protege con contraseña un único PDF cuando no necesitas todo el lote." },
+      { label: "Cómo quitar la contraseña de un PDF", href: "/guides/remove-password-from-pdf", description: "Lo contrario: quita la contraseña de un PDF que ya posees." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que criptografar PDF em lote no seu navegador",
+    benefitsDescription: "Bloqueie uma pasta inteira de PDFs com uma só senha e receba todos de volta em um único ZIP.",
+    benefits: [
+      { title: "Uma senha, uma pasta inteira", description: "Defina uma senha uma única vez e aplique criptografia AES real a cada PDF do lote, sem abrir e salvar de novo arquivo por arquivo." },
+      { title: "Empacotados em um único ZIP", description: "Cada PDF criptografado volta com o nome do original em um ZIP organizado, pronto para encaminhar ou arquivar em um só download." },
+      { title: "Feito para pilhas de arquivos", description: "Processe até 30 PDFs por execução, com os arquivos já criptografados ignorados automaticamente para não bloquear duas vezes." },
+    ],
+    workflowTitle: "Como a criptografia em lote se encaixa no seu trabalho",
+    workflowDescription: "Para quando você precisa enviar uma pasta de contratos, extratos ou registros e cada arquivo tem de ser protegido por senha antes de sair das suas mãos.",
+    steps: [
+      "Solte seus PDFs ou escolha uma pasta inteira de uma vez.",
+      "Digite uma senha e criptografe cada arquivo do lote.",
+      "Baixe o único ZIP de PDFs protegidos.",
+    ],
+    readingTitle: "Mais formas de proteger PDF",
+    readingDescription: "Ferramentas e guias relacionados para bloquear e desbloquear documentos.",
+    readingLinks: [
+      { label: "Proteger um único PDF", href: "/protect-pdf", description: "Proteja com senha um só PDF quando não precisar do lote inteiro." },
+      { label: "Como remover a senha de um PDF", href: "/guides/remove-password-from-pdf", description: "O contrário: tire a senha de um PDF que já é seu." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi chiffrer des PDF par lot dans votre navigateur",
+    benefitsDescription: "Verrouillez un dossier entier de PDF avec un seul mot de passe et récupérez-les tous dans un unique ZIP.",
+    benefits: [
+      { title: "Un mot de passe, tout un dossier", description: "Définissez un mot de passe une seule fois et appliquez un vrai chiffrement AES à chaque PDF du lot, sans ouvrir et réenregistrer les fichiers un par un." },
+      { title: "Regroupés dans un seul ZIP", description: "Chaque PDF chiffré revient au nom de l'original dans un ZIP bien rangé, prêt à transférer ou archiver en un seul téléchargement." },
+      { title: "Conçu pour les piles de fichiers", description: "Traitez jusqu'à 30 PDF par exécution ; les fichiers déjà chiffrés sont ignorés automatiquement pour ne pas les verrouiller deux fois." },
+    ],
+    workflowTitle: "Comment le chiffrement par lot s'intègre à votre travail",
+    workflowDescription: "Pour le moment où vous devez envoyer un dossier de contrats, de relevés ou de dossiers et où chaque fichier doit être protégé par mot de passe avant de quitter vos mains.",
+    steps: [
+      "Déposez vos PDF ou choisissez un dossier entier d'un coup.",
+      "Saisissez un mot de passe et chiffrez chaque fichier du lot.",
+      "Téléchargez l'unique ZIP de PDF protégés.",
+    ],
+    readingTitle: "Plus de façons de protéger les PDF",
+    readingDescription: "Outils et guides associés pour verrouiller et déverrouiller des documents.",
+    readingLinks: [
+      { label: "Protéger un seul PDF", href: "/protect-pdf", description: "Protégez par mot de passe un seul PDF quand vous n'avez pas besoin de tout le lot." },
+      { label: "Comment retirer le mot de passe d'un PDF", href: "/guides/remove-password-from-pdf", description: "L'inverse : retirez le mot de passe d'un PDF qui vous appartient déjà." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで PDF を一括暗号化する理由",
+    benefitsDescription: "1 つのパスワードでフォルダ内の PDF をまとめてロックし、1 つの ZIP で受け取れます。",
+    benefits: [
+      { title: "1 つのパスワードでフォルダ全体", description: "パスワードを一度設定するだけで、バッチ内のすべての PDF に本物の AES 暗号化を適用——1 ファイルずつ開いて保存し直す必要はありません。" },
+      { title: "1 つの ZIP にまとめて", description: "暗号化された各 PDF は元のファイル名のまま、整った 1 つの ZIP に収まり、1 回のダウンロードで転送や保管ができます。" },
+      { title: "大量のファイル向けに設計", description: "1 回で最大 30 件の PDF を処理し、すでに暗号化されたファイルは自動的にスキップされるため二重ロックになりません。" },
+    ],
+    workflowTitle: "一括暗号化が文書作業にどう役立つか",
+    workflowDescription: "契約書、明細書、記録のフォルダを送る必要があり、手元を離れる前にどのファイルもパスワード保護しなければならないとき。",
+    steps: [
+      "PDF をドロップするか、フォルダごと一度に選択します。",
+      "パスワードを 1 つ入力し、バッチ内のすべてのファイルを暗号化します。",
+      "保護された PDF が入った 1 つの ZIP をダウンロードします。",
+    ],
+    readingTitle: "PDF を保護する他の方法",
+    readingDescription: "文書のロックと解除に関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "単一の PDF を保護", href: "/protect-pdf", description: "バッチ全体が不要なときに、1 つの PDF だけにパスワードを設定します。" },
+      { label: "PDF のパスワードを解除する方法", href: "/guides/remove-password-from-pdf", description: "逆の操作——すでに自分が所有する PDF からパスワードを外します。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [password, setPassword] = useState("");
@@ -211,6 +354,7 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="batch-protect-pdf" locale={locale} />
     </div>
   );

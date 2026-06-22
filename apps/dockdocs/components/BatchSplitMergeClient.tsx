@@ -1,5 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { BatchFileCard } from "@/components/BatchFileCard";
 
@@ -102,8 +103,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Batch-split a whole folder of PDFs",
+    benefitsDescription: "Point at a folder, split every PDF the same way, and collect the results in one ZIP.",
+    benefits: [
+      { title: "Every file in one pass", description: "Drop a whole folder and split each PDF at once — no opening files one at a time or repeating the same steps." },
+      { title: "Fixed-size chunks", description: "Set the pages-per-file once and apply it across the batch, so every PDF is cut into the same N-page parts." },
+      { title: "One ZIP, clearly named", description: "Every split part lands in a single ZIP with predictable per-file names, ready to unpack and hand off." },
+    ],
+    workflowTitle: "How batch splitting fits your work",
+    workflowDescription: "For the moment a stack of multi-page PDFs has to become many smaller files — single-page scans, chapter splits, per-record exports.",
+    steps: [
+      "Drop a folder of PDFs, or pick the files you want to split.",
+      "Set how many pages each output file should hold, then run the batch.",
+      "Download one ZIP containing every split part.",
+    ],
+    readingTitle: "More ways to split PDFs",
+    readingDescription: "Related tools and guides for breaking documents apart.",
+    readingLinks: [
+      { label: "Split a single PDF", href: "/split-pdf", description: "Break one PDF into separate files or page ranges." },
+      { label: "Split a PDF by page ranges", href: "/guides/split-pdf-page-ranges", description: "How to pull out exact page ranges instead of fixed-size chunks." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "批量拆分整个文件夹的 PDF",
+    benefitsDescription: "指向一个文件夹，用同一规则拆分其中每份 PDF，结果统一打包成一个 ZIP。",
+    benefits: [
+      { title: "一次处理所有文件", description: "拖入整个文件夹即可同时拆分每份 PDF——不用逐个打开文件、重复相同步骤。" },
+      { title: "按固定页数切分", description: "只需设置一次「每份页数」，即可应用到整批，让每份 PDF 都按相同的 N 页切成若干份。" },
+      { title: "一个 ZIP，命名清晰", description: "每个拆分出的部分都进入同一个 ZIP，文件名按规则可预测，解压即可交付。" },
+    ],
+    workflowTitle: "批量拆分如何融入你的工作",
+    workflowDescription: "当一叠多页 PDF 需要变成许多小文件时——逐页扫描件、按章节拆分、按记录导出。",
+    steps: [
+      "拖入一个装满 PDF 的文件夹，或选择要拆分的文件。",
+      "设置每个输出文件包含多少页，然后运行批处理。",
+      "下载包含所有拆分部分的单个 ZIP。",
+    ],
+    readingTitle: "更多拆分 PDF 的方式",
+    readingDescription: "拆解文档的相关工具和指南。",
+    readingLinks: [
+      { label: "拆分单个 PDF", href: "/split-pdf", description: "把一个 PDF 拆成多个文件或页面范围。" },
+      { label: "按页面范围拆分 PDF", href: "/guides/split-pdf-page-ranges", description: "如何按精确的页面范围提取，而非固定页数切分。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Divide por lotes una carpeta entera de PDF",
+    benefitsDescription: "Apunta a una carpeta, divide cada PDF con la misma regla y reúne los resultados en un solo ZIP.",
+    benefits: [
+      { title: "Todos los archivos de una vez", description: "Suelta una carpeta entera y divide cada PDF a la vez: sin abrir archivos uno por uno ni repetir los mismos pasos." },
+      { title: "Bloques de tamaño fijo", description: "Define las páginas por archivo una sola vez y aplícalo a todo el lote, para que cada PDF se corte en las mismas partes de N páginas." },
+      { title: "Un ZIP, con nombres claros", description: "Cada parte dividida llega en un único ZIP con nombres por archivo predecibles, listos para descomprimir y entregar." },
+    ],
+    workflowTitle: "Cómo encaja la división por lotes en tu trabajo",
+    workflowDescription: "Para cuando una pila de PDF de varias páginas debe convertirse en muchos archivos más pequeños: escaneos de una página, divisiones por capítulos, exportaciones por registro.",
+    steps: [
+      "Suelta una carpeta de PDF, o elige los archivos que quieres dividir.",
+      "Define cuántas páginas tendrá cada archivo de salida y ejecuta el lote.",
+      "Descarga un único ZIP con todas las partes divididas.",
+    ],
+    readingTitle: "Más formas de dividir PDF",
+    readingDescription: "Herramientas y guías relacionadas para separar documentos.",
+    readingLinks: [
+      { label: "Dividir un solo PDF", href: "/split-pdf", description: "Separa un PDF en archivos o rangos de páginas." },
+      { label: "Dividir un PDF por rangos de páginas", href: "/guides/split-pdf-page-ranges", description: "Cómo extraer rangos de páginas exactos en lugar de bloques de tamaño fijo." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Divida em lote uma pasta inteira de PDFs",
+    benefitsDescription: "Aponte para uma pasta, divida cada PDF com a mesma regra e reúna os resultados em um único ZIP.",
+    benefits: [
+      { title: "Todos os arquivos de uma vez", description: "Solte uma pasta inteira e divida cada PDF de uma vez: sem abrir arquivos um a um nem repetir os mesmos passos." },
+      { title: "Blocos de tamanho fixo", description: "Defina as páginas por arquivo uma só vez e aplique a todo o lote, para que cada PDF seja cortado nas mesmas partes de N páginas." },
+      { title: "Um ZIP, com nomes claros", description: "Cada parte dividida vai para um único ZIP com nomes por arquivo previsíveis, prontos para descompactar e entregar." },
+    ],
+    workflowTitle: "Como a divisão em lote se encaixa no seu trabalho",
+    workflowDescription: "Para quando uma pilha de PDFs de várias páginas precisa virar muitos arquivos menores: digitalizações de uma página, divisões por capítulo, exportações por registro.",
+    steps: [
+      "Solte uma pasta de PDFs, ou escolha os arquivos que deseja dividir.",
+      "Defina quantas páginas cada arquivo de saída terá e execute o lote.",
+      "Baixe um único ZIP com todas as partes divididas.",
+    ],
+    readingTitle: "Mais formas de dividir PDF",
+    readingDescription: "Ferramentas e guias relacionados para separar documentos.",
+    readingLinks: [
+      { label: "Dividir um único PDF", href: "/split-pdf", description: "Separe um PDF em arquivos ou intervalos de páginas." },
+      { label: "Dividir um PDF por intervalos de páginas", href: "/guides/split-pdf-page-ranges", description: "Como extrair intervalos de páginas exatos em vez de blocos de tamanho fixo." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Divisez en lot un dossier entier de PDF",
+    benefitsDescription: "Pointez vers un dossier, divisez chaque PDF selon la même règle et regroupez les résultats dans un seul ZIP.",
+    benefits: [
+      { title: "Tous les fichiers en une fois", description: "Déposez un dossier entier et divisez chaque PDF d'un coup : sans ouvrir les fichiers un par un ni répéter les mêmes étapes." },
+      { title: "Blocs de taille fixe", description: "Définissez les pages par fichier une seule fois et appliquez-le à tout le lot, pour que chaque PDF soit découpé en parts identiques de N pages." },
+      { title: "Un ZIP, des noms clairs", description: "Chaque partie issue de la division arrive dans un seul ZIP, avec des noms par fichier prévisibles, prêts à décompresser et à transmettre." },
+    ],
+    workflowTitle: "Comment la division en lot s'intègre à votre travail",
+    workflowDescription: "Pour le moment où une pile de PDF de plusieurs pages doit devenir de nombreux fichiers plus petits : numérisations d'une page, découpes par chapitre, exports par enregistrement.",
+    steps: [
+      "Déposez un dossier de PDF, ou choisissez les fichiers à diviser.",
+      "Indiquez combien de pages chaque fichier de sortie doit contenir, puis lancez le lot.",
+      "Téléchargez un seul ZIP contenant toutes les parties divisées.",
+    ],
+    readingTitle: "Plus de façons de diviser les PDF",
+    readingDescription: "Outils et guides associés pour séparer des documents.",
+    readingLinks: [
+      { label: "Diviser un seul PDF", href: "/split-pdf", description: "Séparez un PDF en fichiers ou plages de pages." },
+      { label: "Diviser un PDF par plages de pages", href: "/guides/split-pdf-page-ranges", description: "Comment extraire des plages de pages exactes plutôt que des blocs de taille fixe." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "フォルダ内の PDF をまとめて分割",
+    benefitsDescription: "フォルダを指定し、各 PDF を同じルールで分割して、結果を 1 つの ZIP にまとめます。",
+    benefits: [
+      { title: "すべてのファイルを一括処理", description: "フォルダごとドロップして各 PDF を一度に分割——ファイルを 1 つずつ開いたり、同じ手順を繰り返したりする必要はありません。" },
+      { title: "固定ページ数で分割", description: "「ファイルごとのページ数」を一度設定すれば一括に適用——各 PDF が同じ N ページ単位のまとまりに切り分けられます。" },
+      { title: "1 つの ZIP、分かりやすい名前", description: "分割された各パートは 1 つの ZIP にまとまり、ファイルごとに予測できる名前が付くので、展開してそのまま渡せます。" },
+    ],
+    workflowTitle: "一括分割が作業にどう役立つか",
+    workflowDescription: "複数ページの PDF の山を、多数の小さなファイルにする必要があるとき——1 ページずつのスキャン、章ごとの分割、レコードごとの書き出し。",
+    steps: [
+      "PDF の入ったフォルダをドロップ、または分割したいファイルを選択します。",
+      "出力ファイル 1 つあたりのページ数を設定し、一括処理を実行します。",
+      "分割されたすべてのパートを含む 1 つの ZIP をダウンロードします。",
+    ],
+    readingTitle: "PDF を分割する他の方法",
+    readingDescription: "文書を分割するための関連ツールとガイド。",
+    readingLinks: [
+      { label: "単一の PDF を分割", href: "/split-pdf", description: "1 つの PDF を別々のファイルやページ範囲に分けます。" },
+      { label: "ページ範囲で PDF を分割", href: "/guides/split-pdf-page-ranges", description: "固定ページ数ではなく、正確なページ範囲を取り出す方法。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>(lockMode ?? "merge");
@@ -249,6 +392,7 @@ export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Lo
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="batch-split-merge" locale={locale} />
     </div>
   );

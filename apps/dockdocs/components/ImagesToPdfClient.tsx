@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import { dropzoneShell } from "@/components/design";
 import { trackToolRun } from "@/lib/track";
@@ -74,8 +75,150 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why turn images into a PDF in your browser",
+    benefitsDescription: "Combine JPG and PNG images into one ordered PDF, ready to send, print, or archive.",
+    benefits: [
+      { title: "Many images, one PDF", description: "Bundle photos, screenshots, and scans into a single PDF that travels and prints as one clean file." },
+      { title: "Set the page order yourself", description: "Drag the images into sequence before converting, so each page lands exactly where you want it." },
+      { title: "One image or many per page", description: "Choose one image per page for full-size shots, or pack several onto a page to keep the PDF compact." },
+    ],
+    workflowTitle: "How image-to-PDF fits your work",
+    workflowDescription: "For the moment loose images need to become one document — a photo set, a stack of receipts, scanned pages from your phone.",
+    steps: [
+      "Add the JPG or PNG images you want to combine, by drag-and-drop or the file picker.",
+      "Drag the images into the order you want, and pick one or many per page.",
+      "Convert and download the single combined PDF.",
+    ],
+    readingTitle: "More ways to work with images and PDFs",
+    readingDescription: "Related tools and guides for converting between images and documents.",
+    readingLinks: [
+      { label: "PDF to image", href: "/pdf-to-image", description: "The reverse — turn each page of a PDF back into a JPG or PNG." },
+      { label: "Convert images to PDF for upload", href: "/guides/convert-images-to-pdf-for-upload", description: "Why portals ask for a single PDF, and how to prep your images for it." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么在浏览器里把图片转成 PDF",
+    benefitsDescription: "把 JPG、PNG 图片合并成一个有序 PDF，方便发送、打印或归档。",
+    benefits: [
+      { title: "多张图片，一个 PDF", description: "把照片、截图、扫描件打包成一个 PDF，作为一个干净的文件传输和打印。" },
+      { title: "自己决定页面顺序", description: "转换前把图片拖成想要的顺序，让每一页都正好排在你要的位置。" },
+      { title: "每页一张或多张", description: "整幅大图可每页一张，也可把多张拼到一页，让 PDF 更紧凑。" },
+    ],
+    workflowTitle: "图片转 PDF 如何融入你的工作",
+    workflowDescription: "当一堆零散图片需要变成一个文档时——一组照片、一叠收据、手机拍的扫描页。",
+    steps: [
+      "通过拖拽或文件选择器添加要合并的 JPG 或 PNG 图片。",
+      "把图片拖成你想要的顺序，并选择每页一张或多张。",
+      "转换并下载这一个合并后的 PDF。",
+    ],
+    readingTitle: "更多处理图片与 PDF 的方式",
+    readingDescription: "图片与文档互转的相关工具和指南。",
+    readingLinks: [
+      { label: "PDF 转图片", href: "/pdf-to-image", description: "反向操作——把 PDF 的每一页转回 JPG 或 PNG。" },
+      { label: "把图片转成 PDF 用于上传", href: "/guides/convert-images-to-pdf-for-upload", description: "为什么很多平台要求单个 PDF，以及如何为此准备好图片。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué convertir imágenes en PDF en tu navegador",
+    benefitsDescription: "Combina imágenes JPG y PNG en un solo PDF ordenado, listo para enviar, imprimir o archivar.",
+    benefits: [
+      { title: "Muchas imágenes, un PDF", description: "Reúne fotos, capturas y escaneos en un único PDF que se envía e imprime como un archivo limpio." },
+      { title: "Tú decides el orden de las páginas", description: "Arrastra las imágenes en secuencia antes de convertir, para que cada página quede justo donde quieres." },
+      { title: "Una o varias imágenes por página", description: "Elige una imagen por página para fotos a tamaño completo, o agrupa varias para que el PDF sea más compacto." },
+    ],
+    workflowTitle: "Cómo encaja imagen a PDF en tu trabajo",
+    workflowDescription: "Para cuando varias imágenes sueltas deben convertirse en un documento: un conjunto de fotos, una pila de recibos, páginas escaneadas con el móvil.",
+    steps: [
+      "Agrega las imágenes JPG o PNG que quieres combinar, arrastrándolas o con el selector de archivos.",
+      "Arrastra las imágenes al orden que quieras y elige una o varias por página.",
+      "Convierte y descarga el único PDF combinado.",
+    ],
+    readingTitle: "Más formas de trabajar con imágenes y PDF",
+    readingDescription: "Herramientas y guías relacionadas para convertir entre imágenes y documentos.",
+    readingLinks: [
+      { label: "PDF a imagen", href: "/pdf-to-image", description: "Lo contrario: convierte cada página de un PDF de nuevo en JPG o PNG." },
+      { label: "Convertir imágenes a PDF para subir", href: "/guides/convert-images-to-pdf-for-upload", description: "Por qué los portales piden un solo PDF y cómo preparar tus imágenes para ello." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que transformar imagens em PDF no seu navegador",
+    benefitsDescription: "Combine imagens JPG e PNG em um único PDF ordenado, pronto para enviar, imprimir ou arquivar.",
+    benefits: [
+      { title: "Muitas imagens, um PDF", description: "Junte fotos, capturas de tela e digitalizações em um único PDF que circula e imprime como um arquivo limpo." },
+      { title: "Você define a ordem das páginas", description: "Arraste as imagens em sequência antes de converter, para que cada página fique exatamente onde você quer." },
+      { title: "Uma ou várias imagens por página", description: "Escolha uma imagem por página para fotos em tamanho cheio, ou agrupe várias para deixar o PDF mais compacto." },
+    ],
+    workflowTitle: "Como imagem para PDF se encaixa no seu trabalho",
+    workflowDescription: "Para quando várias imagens soltas precisam virar um documento: um conjunto de fotos, uma pilha de recibos, páginas digitalizadas pelo celular.",
+    steps: [
+      "Adicione as imagens JPG ou PNG que deseja combinar, arrastando ou pelo seletor de arquivos.",
+      "Arraste as imagens para a ordem desejada e escolha uma ou várias por página.",
+      "Converta e baixe o único PDF combinado.",
+    ],
+    readingTitle: "Mais formas de trabalhar com imagens e PDF",
+    readingDescription: "Ferramentas e guias relacionados para converter entre imagens e documentos.",
+    readingLinks: [
+      { label: "PDF para imagem", href: "/pdf-to-image", description: "O contrário: transforme cada página de um PDF de volta em JPG ou PNG." },
+      { label: "Converter imagens em PDF para envio", href: "/guides/convert-images-to-pdf-for-upload", description: "Por que os portais pedem um único PDF e como preparar suas imagens para isso." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi convertir des images en PDF dans votre navigateur",
+    benefitsDescription: "Combinez des images JPG et PNG en un seul PDF ordonné, prêt à envoyer, imprimer ou archiver.",
+    benefits: [
+      { title: "Plusieurs images, un seul PDF", description: "Réunissez photos, captures d'écran et numérisations dans un seul PDF qui s'envoie et s'imprime comme un fichier net." },
+      { title: "Vous fixez l'ordre des pages", description: "Glissez les images dans l'ordre avant la conversion, pour que chaque page tombe exactement où vous voulez." },
+      { title: "Une ou plusieurs images par page", description: "Choisissez une image par page pour les photos en pleine taille, ou regroupez-en plusieurs pour un PDF plus compact." },
+    ],
+    workflowTitle: "Comment images en PDF s'intègre à votre travail",
+    workflowDescription: "Pour le moment où des images éparses doivent devenir un document : une série de photos, une pile de reçus, des pages numérisées au téléphone.",
+    steps: [
+      "Ajoutez les images JPG ou PNG à combiner, par glisser-déposer ou via le sélecteur de fichiers.",
+      "Glissez les images dans l'ordre voulu et choisissez une ou plusieurs par page.",
+      "Convertissez et téléchargez l'unique PDF combiné.",
+    ],
+    readingTitle: "Plus de façons de travailler avec images et PDF",
+    readingDescription: "Outils et guides associés pour convertir entre images et documents.",
+    readingLinks: [
+      { label: "PDF en image", href: "/pdf-to-image", description: "L'inverse : reconvertissez chaque page d'un PDF en JPG ou PNG." },
+      { label: "Convertir des images en PDF pour l'envoi", href: "/guides/convert-images-to-pdf-for-upload", description: "Pourquoi les portails demandent un seul PDF, et comment y préparer vos images." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "ブラウザで画像を PDF にする理由",
+    benefitsDescription: "JPG・PNG 画像を 1 つの順序立った PDF に結合——送信、印刷、保管が簡単になります。",
+    benefits: [
+      { title: "複数の画像を 1 つの PDF に", description: "写真、スクリーンショット、スキャンを 1 つの PDF にまとめ、きれいな 1 ファイルとして送受信・印刷できます。" },
+      { title: "ページ順は自分で指定", description: "変換前に画像をドラッグして並べ替え、各ページを思いどおりの位置に。" },
+      { title: "1 ページに 1 枚でも複数枚でも", description: "大きく見せたい写真は 1 ページ 1 枚、複数枚をまとめれば PDF をコンパクトに。" },
+    ],
+    workflowTitle: "画像から PDF が作業にどう役立つか",
+    workflowDescription: "バラバラの画像を 1 つの文書にまとめたいとき——写真のセット、領収書の束、スマホで撮ったスキャンページ。",
+    steps: [
+      "結合したい JPG・PNG 画像をドラッグ＆ドロップまたはファイル選択で追加します。",
+      "画像を好きな順序にドラッグし、1 ページあたり 1 枚か複数枚かを選びます。",
+      "変換して、1 つにまとまった PDF をダウンロードします。",
+    ],
+    readingTitle: "画像と PDF を扱う他の方法",
+    readingDescription: "画像と文書を相互変換する関連ツールとガイド。",
+    readingLinks: [
+      { label: "PDF を画像に", href: "/pdf-to-image", description: "逆の操作——PDF の各ページを JPG や PNG に戻します。" },
+      { label: "アップロード用に画像を PDF へ変換", href: "/guides/convert-images-to-pdf-for-upload", description: "なぜ多くのサイトが 1 つの PDF を求めるのか、そのために画像をどう準備するか。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
@@ -207,6 +350,7 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
 
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="images-to-pdf" locale={locale} />
     </div>
   );

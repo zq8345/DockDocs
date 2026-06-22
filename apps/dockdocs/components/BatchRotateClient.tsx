@@ -1,5 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 
 import { useCallback, useRef, useState } from "react";
@@ -84,8 +85,144 @@ const STR = {
   },
 };
 
+const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why batch-rotate a whole folder",
+    benefitsDescription: "Straighten an entire stack of sideways or upside-down scans in one pass, packaged into a single ZIP.",
+    benefits: [
+      { title: "A whole folder in one pass", description: "Drop in dozens of PDFs — or a folder — and every page of every file is rotated together, no opening them one at a time." },
+      { title: "Pick 90°, 180°, or 270°", description: "Choose one angle for the batch: 90° or 270° for sideways scans, 180° to flip upside-down pages right way up." },
+      { title: "One ZIP back, names kept", description: "Every rotated PDF returns in a single ZIP with its original filename plus -rotated, ready to archive or send." },
+    ],
+    workflowTitle: "How batch rotation fits your scanning work",
+    workflowDescription: "For when a feeder or phone scan dumps a pile of PDFs that all came out sideways or flipped, and fixing them individually would take ages.",
+    steps: [
+      "Add your PDFs by drag-and-drop, the file picker, or by choosing a whole folder.",
+      "Pick the rotation angle — 90°, 180°, or 270° — to apply to every page.",
+      "Rotate all and download the single ZIP of corrected PDFs.",
+    ],
+    readingTitle: "More ways to fix page orientation",
+    readingDescription: "Related tools and guides for rotating and organizing PDFs.",
+    readingLinks: [
+      { label: "Rotate a single PDF", href: "/rotate-page", description: "Turn just one PDF — choose specific pages and angles with a live preview." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么要整个文件夹批量旋转",
+    benefitsDescription: "一次性把一整叠横着或倒着的扫描件摆正，打包成一个 ZIP。",
+    benefits: [
+      { title: "整个文件夹一次搞定", description: "拖入几十份 PDF——或一整个文件夹——每份文件的每一页一起旋转，不用一份份打开。" },
+      { title: "可选 90°、180° 或 270°", description: "为整批选一个角度：横向扫描用 90° 或 270°，倒置页面用 180° 翻正。" },
+      { title: "回传一个 ZIP，文件名保留", description: "每份旋转后的 PDF 都装进一个 ZIP，沿用原文件名并加上 -rotated，可直接归档或发送。" },
+    ],
+    workflowTitle: "批量旋转如何融入你的扫描工作",
+    workflowDescription: "当馈纸扫描或手机扫描一下子产出一堆全都横着或倒着的 PDF，一份份去修会花很久时。",
+    steps: [
+      "通过拖拽、文件选择器，或选择一整个文件夹来添加 PDF。",
+      "选择旋转角度——90°、180° 或 270°——应用到每一页。",
+      "全部旋转，并下载这一个装着修正后 PDF 的 ZIP。",
+    ],
+    readingTitle: "更多修正页面方向的方式",
+    readingDescription: "旋转与整理 PDF 的相关工具和指南。",
+    readingLinks: [
+      { label: "旋转单个 PDF", href: "/rotate-page", description: "只旋转一份 PDF——配合实时预览选择具体页面和角度。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué rotar toda una carpeta por lotes",
+    benefitsDescription: "Endereza de una sola pasada una pila entera de escaneos torcidos o al revés, empaquetada en un único ZIP.",
+    benefits: [
+      { title: "Una carpeta entera de una vez", description: "Suelta decenas de PDF —o una carpeta— y cada página de cada archivo se gira a la vez, sin abrirlos uno por uno." },
+      { title: "Elige 90°, 180° o 270°", description: "Escoge un ángulo para el lote: 90° o 270° para escaneos torcidos, 180° para poner derechas las páginas al revés." },
+      { title: "Un ZIP de vuelta, con sus nombres", description: "Cada PDF girado vuelve en un único ZIP con su nombre original más -rotated, listo para archivar o enviar." },
+    ],
+    workflowTitle: "Cómo encaja la rotación por lotes en tu trabajo de escaneo",
+    workflowDescription: "Para cuando un alimentador o un escaneo con el móvil suelta un montón de PDF que salieron todos torcidos o volteados, y arreglarlos uno a uno llevaría una eternidad.",
+    steps: [
+      "Agrega tus PDF arrastrándolos, con el selector de archivos o eligiendo una carpeta entera.",
+      "Elige el ángulo de rotación —90°, 180° o 270°— para aplicarlo a cada página.",
+      "Gira todo y descarga el único ZIP con los PDF corregidos.",
+    ],
+    readingTitle: "Más formas de corregir la orientación de las páginas",
+    readingDescription: "Herramientas y guías relacionadas para rotar y organizar PDF.",
+    readingLinks: [
+      { label: "Rotar un solo PDF", href: "/rotate-page", description: "Gira un único PDF: elige páginas y ángulos concretos con vista previa en vivo." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que girar uma pasta inteira em lote",
+    benefitsDescription: "Endireite de uma só vez uma pilha inteira de digitalizações tortas ou de cabeça para baixo, empacotada em um único ZIP.",
+    benefits: [
+      { title: "Uma pasta inteira de uma vez", description: "Solte dezenas de PDFs — ou uma pasta — e cada página de cada arquivo é girada junto, sem abrir um por um." },
+      { title: "Escolha 90°, 180° ou 270°", description: "Escolha um ângulo para o lote: 90° ou 270° para digitalizações tortas, 180° para colocar de pé as páginas de cabeça para baixo." },
+      { title: "Um ZIP de volta, com os nomes", description: "Cada PDF girado volta em um único ZIP com o nome original mais -rotated, pronto para arquivar ou enviar." },
+    ],
+    workflowTitle: "Como a rotação em lote se encaixa no seu trabalho de digitalização",
+    workflowDescription: "Para quando um alimentador ou uma digitalização pelo celular despeja um monte de PDFs que saíram todos tortos ou virados, e consertá-los um a um levaria uma eternidade.",
+    steps: [
+      "Adicione seus PDFs arrastando, pelo seletor de arquivos ou escolhendo uma pasta inteira.",
+      "Escolha o ângulo de rotação — 90°, 180° ou 270° — para aplicar a cada página.",
+      "Gire tudo e baixe o único ZIP com os PDFs corrigidos.",
+    ],
+    readingTitle: "Mais formas de corrigir a orientação das páginas",
+    readingDescription: "Ferramentas e guias relacionados para girar e organizar PDFs.",
+    readingLinks: [
+      { label: "Girar um único PDF", href: "/rotate-page", description: "Gire apenas um PDF: escolha páginas e ângulos específicos com pré-visualização ao vivo." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi faire pivoter tout un dossier par lot",
+    benefitsDescription: "Redressez en une seule passe une pile entière de scans de travers ou à l'envers, regroupée dans un seul ZIP.",
+    benefits: [
+      { title: "Un dossier entier d'un coup", description: "Déposez des dizaines de PDF — ou un dossier — et chaque page de chaque fichier pivote en même temps, sans les ouvrir un par un." },
+      { title: "Choisissez 90°, 180° ou 270°", description: "Sélectionnez un angle pour le lot : 90° ou 270° pour les scans de travers, 180° pour remettre droites les pages à l'envers." },
+      { title: "Un ZIP en retour, noms conservés", description: "Chaque PDF pivoté revient dans un seul ZIP avec son nom d'origine suivi de -rotated, prêt à archiver ou envoyer." },
+    ],
+    workflowTitle: "Comment la rotation par lot s'intègre à votre travail de numérisation",
+    workflowDescription: "Pour quand un chargeur ou un scan au téléphone produit un tas de PDF tous sortis de travers ou retournés, et les corriger un par un prendrait une éternité.",
+    steps: [
+      "Ajoutez vos PDF par glisser-déposer, via le sélecteur de fichiers ou en choisissant un dossier entier.",
+      "Choisissez l'angle de rotation — 90°, 180° ou 270° — à appliquer à chaque page.",
+      "Faites tout pivoter et téléchargez l'unique ZIP des PDF corrigés.",
+    ],
+    readingTitle: "Plus de façons de corriger l'orientation des pages",
+    readingDescription: "Outils et guides associés pour faire pivoter et organiser des PDF.",
+    readingLinks: [
+      { label: "Faire pivoter un seul PDF", href: "/rotate-page", description: "Faites pivoter un seul PDF : choisissez des pages et des angles précis avec un aperçu en direct." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "フォルダ全体を一括回転する理由",
+    benefitsDescription: "横向きや上下逆のスキャンの山を一度のパスでまっすぐにし、1 つの ZIP にまとめます。",
+    benefits: [
+      { title: "フォルダ全体を一度に", description: "数十件の PDF——またはフォルダ——をドロップすれば、各ファイルのすべてのページがまとめて回転。1 つずつ開く必要はありません。" },
+      { title: "90°・180°・270° から選択", description: "バッチに 1 つの角度を選択：横向きのスキャンには 90° または 270°、上下逆のページには 180° で正しい向きに。" },
+      { title: "1 つの ZIP で返却、名前は保持", description: "回転後の各 PDF は元のファイル名に -rotated を付けて 1 つの ZIP に。そのまま保管や送信ができます。" },
+    ],
+    workflowTitle: "一括回転がスキャン作業にどう役立つか",
+    workflowDescription: "フィーダーやスマホのスキャンで、すべて横向きや裏返しで出てきた PDF の山ができ、1 つずつ直すと膨大な時間がかかるとき。",
+    steps: [
+      "ドラッグ＆ドロップ、ファイル選択、またはフォルダ全体の選択で PDF を追加します。",
+      "すべてのページに適用する回転角度——90°・180°・270°——を選びます。",
+      "すべて回転して、修正済み PDF をまとめた 1 つの ZIP をダウンロードします。",
+    ],
+    readingTitle: "ページの向きを直す他の方法",
+    readingDescription: "PDF の回転と整理に関する関連ツールとガイド。",
+    readingLinks: [
+      { label: "単一の PDF を回転", href: "/rotate-page", description: "1 つの PDF だけを回転——ライブプレビューで特定のページと角度を選べます。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function BatchRotateClient({ locale = "en" }: { locale?: Locale }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [angle, setAngle] = useState<Angle>(90);
@@ -199,6 +336,7 @@ export function BatchRotateClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="batch-rotate-pdf" locale={locale} />
     </div>
   );
