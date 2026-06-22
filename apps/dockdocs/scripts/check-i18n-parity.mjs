@@ -29,6 +29,7 @@ const EXCEPTIONS = new Set([
   "404", // Next.js error page, not a feature
   "safe-to-upload-pdf", // standalone English-first GEO content page (Q&A) — no localized variants yet by design
   "redact-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
+  "compress-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
 ]);
 
 function die(lines) {
