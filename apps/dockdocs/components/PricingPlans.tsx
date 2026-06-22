@@ -66,7 +66,7 @@ const copy = {
     faqTitle: "Questions before you buy",
     faq: [
       { q: "Can I cancel anytime?", a: "Yes. Manage or cancel your subscription yourself in a couple of clicks — no emails, no retention games. You keep access until the end of the period you paid for." },
-      { q: "Is there a refund?", a: "Yes — Plus, Pro, and lifetime are all covered. If a plan isn't right for you, contact us within 7 days of payment and we'll refund it in full. Creem has no self-serve refund button, so just reach out — use 'Contact merchant' on your Creem order page, or email hello@dockdocs.app — and we'll handle it." },
+      { q: "Is there a refund?", a: "Yes — Plus, Pro, and lifetime are all covered. If a plan isn't right for you, contact us within 7 days of payment and we'll refund it in full. Creem has no self-serve refund button, so just reach out — use 'Contact merchant' on your Creem order page, or email billing@dockdocs.app — and we'll handle it." },
       { q: "Do I need to pay to use DockDocs?", a: "No. All ~50 core PDF tools are free forever, with no account required. You only pay if you want AI features, larger files, or higher volume." },
       { q: "What happens to my files?", a: "Most tools process entirely in your browser — your files never leave your device. Cloud conversions are processed and the temporary copy is deleted automatically. We never use your documents to train our own models, and only the text needed to answer is sent to the AI provider." },
       { q: "Can I switch plans later?", a: "Anytime. Upgrade, downgrade, or move between monthly and yearly whenever you like." },
@@ -145,7 +145,7 @@ const copy = {
     faqTitle: "购买前的疑问",
     faq: [
       { q: "可以随时取消吗？", a: "可以。你自己几次点击即可管理或取消订阅——无需发邮件，没有挽留套路。在你已付费的周期结束前，仍可正常使用。" },
-      { q: "支持退款吗？", a: "支持——Plus、Pro 和终身均适用。如果某个套餐不适合你，在付款后 7 天内联系我们，我们为你全额退款。Creem 没有自助退款按钮，你联系一下即可——通过 Creem 订单页的「联系商家」，或邮件 hello@dockdocs.app——我们来处理。" },
+      { q: "支持退款吗？", a: "支持——Plus、Pro 和终身均适用。如果某个套餐不适合你，在付款后 7 天内联系我们，我们为你全额退款。Creem 没有自助退款按钮，你联系一下即可——通过 Creem 订单页的「联系商家」，或邮件 billing@dockdocs.app——我们来处理。" },
       { q: "使用 DockDocs 必须付费吗？", a: "不必。全部 ~50 核心 PDF 工具永久免费，且无需注册。只有在你需要 AI 功能、更大文件或更高用量时才需付费。" },
       { q: "我的文件会怎样？", a: "大多数工具完全在你的浏览器中处理——文件绝不离开你的设备。云端转换处理后会自动删除临时副本。我们绝不会用你的文档训练我们自己的模型。" },
       { q: "之后可以更换套餐吗？", a: "随时可以。升级、降级，或在按月与按年之间切换，随你心意。" },
@@ -224,7 +224,7 @@ const copy = {
     faqTitle: "Preguntas antes de comprar",
     faq: [
       { q: "¿Puedo cancelar en cualquier momento?", a: "Sí. Gestiona o cancela tu suscripción tú mismo en un par de clics — sin correos, sin trucos de retención. Mantienes el acceso hasta el final del período que pagaste." },
-      { q: "¿Hay reembolsos?", a: "Sí: Plus, Pro y de por vida están todos cubiertos. Si un plan no es lo que buscas, contáctanos dentro de los 7 días del pago y te lo reembolsamos por completo. Creem no tiene un botón de reembolso automático, así que solo escríbenos — con «Contactar al comerciante» en tu página de pedido de Creem, o por correo a hello@dockdocs.app — y lo gestionamos." },
+      { q: "¿Hay reembolsos?", a: "Sí: Plus, Pro y de por vida están todos cubiertos. Si un plan no es lo que buscas, contáctanos dentro de los 7 días del pago y te lo reembolsamos por completo. Creem no tiene un botón de reembolso automático, así que solo escríbenos — con «Contactar al comerciante» en tu página de pedido de Creem, o por correo a billing@dockdocs.app — y lo gestionamos." },
       { q: "¿Necesito pagar para usar DockDocs?", a: "No. Las ~50 herramientas PDF básicas son gratuitas para siempre, sin necesidad de cuenta. Solo pagas si quieres funciones de IA, archivos más grandes o mayor volumen." },
       { q: "¿Qué pasa con mis archivos?", a: "La mayoría de herramientas procesan completamente en tu navegador — tus archivos nunca salen de tu dispositivo. Las conversiones en la nube se procesan y la copia temporal se elimina automáticamente. Nunca usamos tus documentos para entrenar nuestros propios modelos." },
       { q: "¿Puedo cambiar de plan después?", a: "En cualquier momento. Actualiza, baja de plan o cambia entre mensual y anual cuando quieras." },
@@ -303,7 +303,7 @@ const copy = {
     faqTitle: "Perguntas antes de comprar",
     faq: [
       { q: "Posso cancelar a qualquer momento?", a: "Sim. Gerencie ou cancele sua assinatura você mesmo em alguns cliques — sem e-mails, sem truques de retenção. Você mantém o acesso até o final do período pago." },
-      { q: "Há reembolso?", a: "Sim — Plus, Pro e vitalício estão todos cobertos. Se um plano não for o certo para você, entre em contato dentro de 7 dias do pagamento e devolvemos o valor integral. A Creem não tem botão de reembolso automático, então é só falar conosco — pelo «Contatar comerciante» na sua página de pedido da Creem, ou por e-mail para hello@dockdocs.app — que cuidamos disso." },
+      { q: "Há reembolso?", a: "Sim — Plus, Pro e vitalício estão todos cobertos. Se um plano não for o certo para você, entre em contato dentro de 7 dias do pagamento e devolvemos o valor integral. A Creem não tem botão de reembolso automático, então é só falar conosco — pelo «Contatar comerciante» na sua página de pedido da Creem, ou por e-mail para billing@dockdocs.app — que cuidamos disso." },
       { q: "Preciso pagar para usar o DockDocs?", a: "Não. Todas as ~50 ferramentas PDF básicas são gratuitas para sempre, sem necessidade de conta. Você só paga se quiser recursos de IA, arquivos maiores ou maior volume." },
       { q: "O que acontece com meus arquivos?", a: "A maioria das ferramentas processa inteiramente no seu navegador — seus arquivos nunca saem do seu dispositivo. Conversões em nuvem são processadas e a cópia temporária é excluída automaticamente. Nunca usamos seus documentos para treinar nossos próprios modelos." },
       { q: "Posso trocar de plano depois?", a: "A qualquer momento. Faça upgrade, downgrade ou mude entre mensal e anual quando quiser." },
@@ -382,7 +382,7 @@ const copy = {
     faqTitle: "Questions avant d'acheter",
     faq: [
       { q: "Puis-je annuler à tout moment ?", a: "Oui. Gérez ou annulez votre abonnement vous-même en quelques clics — sans e-mail, sans artifices de rétention. Vous conservez l'accès jusqu'à la fin de la période payée." },
-      { q: "Y a-t-il un remboursement ?", a: "Oui — Plus, Pro et à vie sont tous couverts. Si une formule ne vous convient pas, contactez-nous dans les 7 jours suivant le paiement et nous vous remboursons intégralement. Creem n'a pas de bouton de remboursement en libre-service, écrivez-nous simplement — via « Contacter le marchand » sur votre page de commande Creem, ou par e-mail à hello@dockdocs.app — et nous nous en occupons." },
+      { q: "Y a-t-il un remboursement ?", a: "Oui — Plus, Pro et à vie sont tous couverts. Si une formule ne vous convient pas, contactez-nous dans les 7 jours suivant le paiement et nous vous remboursons intégralement. Creem n'a pas de bouton de remboursement en libre-service, écrivez-nous simplement — via « Contacter le marchand » sur votre page de commande Creem, ou par e-mail à billing@dockdocs.app — et nous nous en occupons." },
       { q: "Dois-je payer pour utiliser DockDocs ?", a: "Non. Tous les ~50 outils PDF de base sont gratuits pour toujours, sans compte nécessaire. Vous ne payez que si vous souhaitez des fonctionnalités IA, des fichiers plus volumineux ou un volume plus élevé." },
       { q: "Que se passe-t-il avec mes fichiers ?", a: "La plupart des outils traitent entièrement dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Les conversions cloud sont traitées et la copie temporaire est supprimée automatiquement. Nous n'utilisons jamais vos documents pour entraîner nos propres modèles." },
       { q: "Puis-je changer de forfait par la suite ?", a: "À tout moment. Passez à un forfait supérieur, inférieur ou changez entre mensuel et annuel quand vous le souhaitez." },
