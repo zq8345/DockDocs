@@ -632,7 +632,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "Line up two PDFs side by side, ask questions that span both, and get a sourced verdict — the AI reads the documents' text for you.",
     benefits: [
       { title: "Key terms lined up side by side", description: "The AI pulls vendor, price, dates, and terms from each PDF into one table, so the differences between two documents jump out instead of hiding across pages." },
-      { title: "Answers point back to the source line", description: "When you ask a question across both documents, the answer cites the exact line it came from — and the server verifies that snippet really appears in the named document before showing it." },
+      { title: "Answers point back to the source line", description: "When you ask a question across both documents and the answer draws on a specific line, it's shown with that source line — and the server verifies that snippet really appears in the named document before showing it." },
       { title: "A verdict you can check", description: "Get a recommendation on which option wins and why, with each underlying figure traceable to the table — so you can confirm the numbers before you decide." },
     ],
     workflowTitle: "How comparing fits your document work",
@@ -645,7 +645,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     readingTitle: "More AI document tools",
     readingDescription: "Related ways to read, check, and pull facts out of your PDFs.",
     readingLinks: [
-      { label: "Contract risk review", href: "/contract-risk", description: "Flag risky clauses in a single contract, each finding tied to its source line." },
+      { label: "Contract risk review", href: "/contract-risk", description: "Flag risky clauses in a single contract, each quoted risk tied to its source line." },
       { label: "Government bid matrix", href: "/govbid-matrix", description: "Turn a tender document into a structured requirements matrix you can act on." },
       { label: "Extract to Excel", href: "/extract-to-excel", description: "Pull tables and fields out of a PDF into a clean spreadsheet." },
     ],
@@ -655,7 +655,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "把两份 PDF 并排摆开，跨两份提问，并拿到带依据的结论——AI 替你读取文档里的文字。",
     benefits: [
       { title: "关键条款并排呈现", description: "AI 从每份 PDF 里抽出供应商、价格、日期和条款，汇成一张表，让两份文档的差异一眼可见，不再散落在各页之间。" },
-      { title: "答案指回原文出处", description: "当你跨两份文档提问时，答案会标注它来自的那一句——而且服务器会先校验该片段确实出现在所指名的文档里，再展示给你。" },
+      { title: "答案指回原文出处", description: "当你跨两份文档提问、且答案确实依据某一句时，会把那句原文一并给出——而且服务器会先校验该片段确实出现在所指名的文档里，再展示给你。" },
       { title: "可核对的结论", description: "拿到“选哪个、为什么”的推荐，每一项依据数字都能追溯到表格——决定前你可以先核对数字。" },
     ],
     workflowTitle: "对比如何融入你的文档工作",
@@ -668,7 +668,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     readingTitle: "更多 AI 文档工具",
     readingDescription: "阅读、核查并从 PDF 中抽取事实的相关方式。",
     readingLinks: [
-      { label: "合同风险审阅", href: "/contract-risk", description: "标记单份合同里的高风险条款，每条结论都对应原文出处。" },
+      { label: "合同风险审阅", href: "/contract-risk", description: "标记单份合同里的高风险条款，引用到的每条风险都对应原文出处。" },
       { label: "政府招标矩阵", href: "/govbid-matrix", description: "把招标文件转成可执行的结构化需求矩阵。" },
       { label: "抽取到 Excel", href: "/extract-to-excel", description: "把 PDF 里的表格和字段抽取成一张干净的表格。" },
     ],
@@ -678,7 +678,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "Coloca dos PDF lado a lado, haz preguntas que abarcan ambos y obtén un veredicto con fuentes: la IA lee el texto de los documentos por ti.",
     benefits: [
       { title: "Términos clave alineados lado a lado", description: "La IA extrae proveedor, precio, fechas y condiciones de cada PDF en una sola tabla, para que las diferencias entre dos documentos salten a la vista en vez de ocultarse entre páginas." },
-      { title: "Las respuestas remiten a la línea de origen", description: "Cuando haces una pregunta sobre ambos documentos, la respuesta cita la línea exacta de la que proviene, y el servidor verifica que ese fragmento realmente aparece en el documento indicado antes de mostrarlo." },
+      { title: "Las respuestas remiten a la línea de origen", description: "Cuando haces una pregunta sobre ambos documentos y la respuesta se basa en una línea concreta, se muestra junto a esa línea de origen, y el servidor verifica que ese fragmento realmente aparece en el documento indicado antes de mostrarlo." },
       { title: "Un veredicto que puedes comprobar", description: "Obtén una recomendación sobre qué opción gana y por qué, con cada cifra de base rastreable hasta la tabla, para que confirmes los números antes de decidir." },
     ],
     workflowTitle: "Cómo encaja la comparación en tu trabajo",
@@ -691,7 +691,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     readingTitle: "Más herramientas de documentos con IA",
     readingDescription: "Formas relacionadas de leer, revisar y extraer datos de tus PDF.",
     readingLinks: [
-      { label: "Revisión de riesgos de contrato", href: "/contract-risk", description: "Marca cláusulas de riesgo en un solo contrato, cada hallazgo ligado a su línea de origen." },
+      { label: "Revisión de riesgos de contrato", href: "/contract-risk", description: "Marca cláusulas de riesgo en un solo contrato, cada riesgo citado ligado a su línea de origen." },
       { label: "Matriz de licitaciones", href: "/govbid-matrix", description: "Convierte un pliego de licitación en una matriz de requisitos estructurada y accionable." },
       { label: "Extraer a Excel", href: "/extract-to-excel", description: "Extrae tablas y campos de un PDF a una hoja de cálculo limpia." },
     ],
@@ -701,7 +701,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "Coloque dois PDFs lado a lado, faça perguntas que abrangem ambos e obtenha um veredicto com fontes — a IA lê o texto dos documentos para você.",
     benefits: [
       { title: "Termos-chave alinhados lado a lado", description: "A IA extrai fornecedor, preço, datas e condições de cada PDF em uma única tabela, para que as diferenças entre dois documentos saltem aos olhos em vez de se esconderem entre as páginas." },
-      { title: "As respostas remetem à linha de origem", description: "Quando você faz uma pergunta sobre os dois documentos, a resposta cita a linha exata de onde veio — e o servidor verifica se esse trecho realmente aparece no documento indicado antes de exibi-lo." },
+      { title: "As respostas remetem à linha de origem", description: "Quando você faz uma pergunta sobre os dois documentos e a resposta se baseia em uma linha específica, ela é exibida com essa linha de origem — e o servidor verifica se esse trecho realmente aparece no documento indicado antes de exibi-lo." },
       { title: "Um veredicto que você pode conferir", description: "Receba uma recomendação sobre qual opção vence e por quê, com cada número de base rastreável até a tabela — para que você confirme os números antes de decidir." },
     ],
     workflowTitle: "Como a comparação se encaixa no seu trabalho",
@@ -714,7 +714,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     readingTitle: "Mais ferramentas de documentos com IA",
     readingDescription: "Formas relacionadas de ler, verificar e extrair dados dos seus PDFs.",
     readingLinks: [
-      { label: "Análise de risco de contrato", href: "/contract-risk", description: "Sinalize cláusulas arriscadas em um único contrato, cada achado ligado à sua linha de origem." },
+      { label: "Análise de risco de contrato", href: "/contract-risk", description: "Sinalize cláusulas arriscadas em um único contrato, cada risco citado ligado à sua linha de origem." },
       { label: "Matriz de licitações", href: "/govbid-matrix", description: "Transforme um edital em uma matriz de requisitos estruturada e acionável." },
       { label: "Extrair para Excel", href: "/extract-to-excel", description: "Extraia tabelas e campos de um PDF para uma planilha limpa." },
     ],
@@ -724,7 +724,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "Placez deux PDF côte à côte, posez des questions couvrant les deux et obtenez un verdict sourcé — l'IA lit le texte des documents pour vous.",
     benefits: [
       { title: "Termes clés alignés côte à côte", description: "L'IA extrait fournisseur, prix, dates et conditions de chaque PDF dans un seul tableau, pour que les différences entre deux documents sautent aux yeux au lieu de se cacher au fil des pages." },
-      { title: "Les réponses renvoient à la ligne source", description: "Lorsque vous posez une question sur les deux documents, la réponse cite la ligne exacte dont elle provient — et le serveur vérifie que cet extrait apparaît réellement dans le document nommé avant de l'afficher." },
+      { title: "Les réponses renvoient à la ligne source", description: "Lorsque vous posez une question sur les deux documents et que la réponse s'appuie sur une ligne précise, celle-ci est affichée avec sa ligne d'origine — et le serveur vérifie que cet extrait apparaît réellement dans le document nommé avant de l'afficher." },
       { title: "Un verdict que vous pouvez vérifier", description: "Obtenez une recommandation sur l'option gagnante et pourquoi, chaque chiffre sous-jacent étant traçable jusqu'au tableau — pour confirmer les chiffres avant de décider." },
     ],
     workflowTitle: "Comment la comparaison s'intègre à votre travail",
@@ -737,7 +737,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     readingTitle: "Plus d'outils de documents IA",
     readingDescription: "Des façons connexes de lire, vérifier et extraire des données de vos PDF.",
     readingLinks: [
-      { label: "Analyse des risques d'un contrat", href: "/contract-risk", description: "Repérez les clauses à risque d'un seul contrat, chaque constat lié à sa ligne source." },
+      { label: "Analyse des risques d'un contrat", href: "/contract-risk", description: "Repérez les clauses à risque d'un seul contrat, chaque risque cité lié à sa ligne source." },
       { label: "Matrice d'appel d'offres", href: "/govbid-matrix", description: "Transformez un dossier d'appel d'offres en une matrice d'exigences structurée et exploitable." },
       { label: "Extraire vers Excel", href: "/extract-to-excel", description: "Extrayez les tableaux et champs d'un PDF vers une feuille de calcul propre." },
     ],
@@ -747,7 +747,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     benefitsDescription: "2 つの PDF を並べて、両方にまたがる質問をし、出典付きの結論を得られます — AI が文書のテキストを読み取ります。",
     benefits: [
       { title: "主要項目を横並びで整理", description: "AI が各 PDF から取引先・価格・日付・条件を 1 つの表に抽出するので、2 つの文書の違いがページ間に埋もれず一目で分かります。" },
-      { title: "回答は出典の一文を示す", description: "両方の文書にまたがる質問をすると、回答はその由来となった一文を引用します — しかも表示前に、その一節が指定の文書に実際に出現することをサーバーが検証します。" },
+      { title: "回答は出典の一文を示す", description: "両方の文書にまたがる質問をしたとき、回答が特定の一文に基づく場合は、その出典の一文とともに示されます — しかも表示前に、その一節が指定の文書に実際に出現することをサーバーが検証します。" },
       { title: "確認できる結論", description: "どの選択肢が優れているか、その理由とともに推奨を提示します。根拠となる各数値は表まで遡れるので、決定前に数値を確認できます。" },
     ],
     workflowTitle: "比較が文書作業にどう役立つか",
@@ -760,7 +760,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
     readingTitle: "その他の AI ドキュメントツール",
     readingDescription: "PDF を読み取り、確認し、事実を抽出する関連ツール。",
     readingLinks: [
-      { label: "契約リスクレビュー", href: "/contract-risk", description: "1 件の契約書のリスク条項を抽出し、各指摘を出典の一文に紐づけます。" },
+      { label: "契約リスクレビュー", href: "/contract-risk", description: "1 件の契約書のリスク条項を抽出し、引用できた各リスクを出典の一文に紐づけます。" },
       { label: "入札要件マトリクス", href: "/govbid-matrix", description: "入札文書を、実行できる構造化された要件マトリクスに変換します。" },
       { label: "Excel に抽出", href: "/extract-to-excel", description: "PDF の表や項目を、整ったスプレッドシートに抽出します。" },
     ],

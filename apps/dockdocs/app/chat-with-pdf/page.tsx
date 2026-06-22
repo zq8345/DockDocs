@@ -105,7 +105,7 @@ export default function ChatWithPdfPage() {
         <section className="mt-16 border-t border-[color:var(--line)] pt-10">
           <h2 className="text-base font-medium text-[color:var(--foreground)]">How Chat with PDF works</h2>
           <ul className="mt-6 space-y-3 text-sm leading-6 text-[color:var(--muted)]">
-            <li>Chat with PDF reads your uploaded document and answers from its contents — each answer points back to the source page or passage it came from, so you can verify it.</li>
+            <li>Chat with PDF reads your uploaded document and answers from its contents — answers point back to the source page or passage when one can be located, so you can verify them.</li>
             <li>It works with text-based PDFs such as contracts, reports, research papers, manuals, and meeting notes. Scanned, image-only PDFs should be run through <a href="/ocr-pdf/" className="text-[color:var(--accent)] hover:underline">OCR</a> first.</li>
             <li>It is free to start with no account. Text is extracted in your browser and only the text needed to answer is sent to the AI provider — DockDocs does not store your document after your session, and does not use your files to train its own models.</li>
             <li>You can ask for a specific clause, a deadline, a number, a definition, or a plain-language summary of any section, then continue with follow-up questions.</li>

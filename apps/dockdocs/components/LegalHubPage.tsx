@@ -39,7 +39,7 @@ const legalConfig: VerticalConfig = {
       secondary: "扫描一份租约",
       cardsTitle: "法律团队工具",
       cards: [
-        { slug: "contract-risk", label: "合同风险体检", description: "签字前标出风险、单方面或缺失的条款——每条都引用你的合同原文，并告诉你该问什么。" },
+        { slug: "contract-risk", label: "合同风险体检", description: "签字前标出风险、单方面或缺失的条款——标出的风险都引用你的合同原文，缺失类明确标注，并告诉你该问什么。" },
         { slug: "govbid-matrix", label: "政府标书合规矩阵", description: "把招标文件里每一条具约束力的「shall/must」要求提取成带编号的合规矩阵，可导出 CSV。" },
         { slug: "lease-redflag", label: "租约红旗扫描", description: "签约前扫描住宅或商业租约里不公平、有风险或缺失的租客保护条款。" },
         { slug: "redline", label: "PDF 版本对比", description: "逐条看清一份合同或文档两个版本之间到底改了什么。" },
