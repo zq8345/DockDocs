@@ -2541,10 +2541,8 @@ const esTools: Record<ToolSlug, LocalizedToolCopy> = {
 // pt-BR (Brazil): built content-first, INERT until "pt" is added to routeLocales.
 // Starts as an English clone; pt-BR overrides are filled in incrementally. It is
 // referenced by localizedTools below but only actually read once pt is activated.
-const ptTools: Record<ToolSlug, ToolCopy> = {
-  ...enTools,
+const ptTools: Record<ToolSlug, LocalizedToolCopy> = {
   "compress-pdf": {
-    ...enTools["compress-pdf"],
     title: "Comprimir PDF online grátis | DockDocs",
     description: "Comprima arquivos PDF online, grátis e totalmente no seu navegador. Reduza o tamanho do arquivo para e-mails, uploads e compartilhamento.",
     appName: "DockDocs Comprimir PDF",
@@ -2554,7 +2552,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Esse PDF está pesado demais para enviar por e-mail ou subir? Reduza em segundos: leve o bastante para enviar e nítido o bastante para ler, sem instalar nada.",
     primaryActionLabel: "Comprimir PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivos PDF"], ["Espaço", "Documentos IA"]],
-    upload: { ...enTools["compress-pdf"].upload, title: "Envie um PDF para comprimir", description: "Arraste e solte um arquivo PDF aqui, ou escolha um arquivo do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Rápido, seguro e pensado para documentos de escritório." },
+    upload: { title: "Envie um PDF para comprimir", description: "Arraste e solte um arquivo PDF aqui, ou escolha um arquivo do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Rápido, seguro e pensado para documentos de escritório." },
     benefitsTitle: "PDFs mais leves sem uma interface complicada",
     benefitsDescription: "Envie, comprima, confira o resultado e baixe um arquivo mais leve em um fluxo de trabalho claro.",
     benefits: [{ title: "Compressão rápida", description: "Vá do upload a um arquivo mais leve sem distrações." }, { title: "Pronto para o escritório", description: "Útil para portais, limites de e-mail, formulários e entrega de documentos." }, { title: "Resultado claro", description: "Você vê o resultado comprimido antes de baixar." }],
@@ -2568,7 +2566,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como comprimir um PDF?", answer: "Envie o PDF, verifique o status da compressao e baixe o arquivo comprimido." }, { question: "E grats?", answer: "Sim, esta pagina foi criada para uso diario gratuito de compressao de PDF." }, { question: "Funciona no celular?", answer: "Sim. A pagina e compativel com dispositivos moveis e desktop." }],
   },
   "protect-pdf": {
-    ...enTools["protect-pdf"],
     title: "Proteger PDF com senha online grátis | DockDocs",
     description: "Adicione proteção por senha a qualquer PDF online e grátis. Criptografia de PDF rápida e segura, processada no seu navegador, dentro da DockDocs.",
     appName: "DockDocs Proteger PDF",
@@ -2578,7 +2575,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Criptografe seu PDF com uma senha. Todo o processamento acontece localmente: seu arquivo nunca sai do seu dispositivo.",
     primaryActionLabel: "Proteger PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "PDF criptografado"]],
-    upload: { ...enTools["protect-pdf"].upload, title: "Envie um PDF para proteger", description: "Arraste e solte um PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Defina uma senha e baixe seu PDF criptografado." },
+    upload: { title: "Envie um PDF para proteger", description: "Arraste e solte um PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Defina uma senha e baixe seu PDF criptografado." },
     benefitsTitle: "Proteja PDFs sem enviá-los a um servidor",
     benefitsDescription: "Envie o arquivo localmente, defina uma senha e baixe um PDF criptografado na hora.",
     benefits: [{ title: "Criptografia AES-128", description: "Criptografia padrão do mercado para o seu PDF." }, { title: "Privacidade em primeiro lugar", description: "Seu arquivo e sua senha nunca saem do seu dispositivo." }, { title: "Controle de permissões", description: "Restrinja a edição e a cópia, mas permita o preenchimento de formulários." }],
@@ -2592,7 +2589,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como proteger um PDF com senha?", answer: "Envie o PDF, defina uma senha e baixe o arquivo criptografado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processo de criptografia acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a protecao de PDF com senha e totalmente gratuita." }],
   },
   "unlock-pdf": {
-    ...enTools["unlock-pdf"],
     title: "Desbloquear PDF online grátis | DockDocs",
     description: "Remova a proteção por senha de um PDF online e grátis. Desbloqueie PDFs para editar, imprimir e compartilhar, tudo no seu navegador.",
     appName: "DockDocs Desbloquear PDF",
@@ -2602,7 +2598,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Remova restrições de impressão, cópia e edição de qualquer PDF instantaneamente — sem precisar de senha. Ou insira sua senha para desbloquear completamente um arquivo protegido. Funciona no seu navegador com a DockDocs.",
     primaryActionLabel: "Remover restrições",
     stats: [["Preço", "Grátis"], ["Entrada", "PDF com restrições"], ["Saída", "PDF desbloqueado"], ["Segurança", "Local no navegador"]],
-    upload: { ...enTools["unlock-pdf"].upload, title: "Envie um PDF com restrições ou proteção", description: "Arraste e solte aqui um arquivo PDF restringido ou protegido, ou escolha-o do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Sem senha para remover restrições de uso (impressão, cópia, edição). Insira a senha somente se o PDF exigir uma para ser aberto. Tudo é processado no seu navegador." },
+    upload: { title: "Envie um PDF com restrições ou proteção", description: "Arraste e solte aqui um arquivo PDF restringido ou protegido, ou escolha-o do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Sem senha para remover restrições de uso (impressão, cópia, edição). Insira a senha somente se o PDF exigir uma para ser aberto. Tudo é processado no seu navegador." },
     benefitsTitle: "Por que desbloquear PDFs com a DockDocs",
     benefitsDescription: "Um jeito rápido, gratuito e seguro de remover a proteção por senha de um PDF, sem precisar instalar nada.",
     benefits: [{ title: "Desbloqueio de PDF grátis", description: "Remova a proteção por senha dos seus PDFs sem pagar por programas caros. Não é necessária conta." }, { title: "Segurança no navegador", description: "Seu PDF e a senha são processados localmente no seu navegador; nunca são enviados a nenhum servidor." }, { title: "Resultados na hora", description: "Digite a senha uma vez e o PDF desbloqueado fica pronto para baixar em segundos." }],
@@ -2616,7 +2612,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Preciso de senha para remover as restricoes de um PDF?", answer: "Nem sempre. Se o PDF abre normalmente mas impressao, copia ou edicao estao bloqueadas (senha de permissoes), as restricoes podem ser removidas sem senha. Se o PDF exigir senha para abrir (senha de abertura), voce precisara fornece-la." }, { question: "Como remover a senha de permissoes de um PDF?", answer: "Envie o PDF e a ferramenta detecta e remove automaticamente as restricoes de permissoes. Depois e so baixar o arquivo desbloqueado." }, { question: "E grats?", answer: "Sim, a remocao de restricoes de PDF e totalmente gratuita." }, { question: "Isso e legal?", answer: "Sim, desde que voce use apenas em documentos proprios ou para os quais tenha autorizacao." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }],
   },
   "ocr-pdf": {
-    ...enTools["ocr-pdf"],
     title: "OCR de PDF online grátis | DockDocs",
     description: "Extraia texto de arquivos PDF digitalizados online com fluxos de OCR com tecnologia de IA dentro da DockDocs.",
     appName: "DockDocs OCR de PDF",
@@ -2626,7 +2621,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Converta seus PDFs digitalizados em texto que você pode pesquisar e reaproveitar dentro da DockDocs.",
     primaryActionLabel: "Aplicar OCR ao PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "PDF digitalizados"], ["Saída", "Texto extraído"]],
-    upload: { ...enTools["ocr-pdf"].upload, title: "Envie um PDF digitalizado", description: "Arraste e solte aqui um arquivo PDF digitalizado, ou escolha um arquivo do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Feito para documentos digitalizados, formulários e extração de texto. Até 3 páginas por execução; apenas a primeira página por padrão." },
+    upload: { title: "Envie um PDF digitalizado", description: "Arraste e solte aqui um arquivo PDF digitalizado, ou escolha um arquivo do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Feito para documentos digitalizados, formulários e extração de texto. Até 3 páginas por execução; apenas a primeira página por padrão." },
     benefitsTitle: "Extraia texto de digitalizações sem uma interface complicada",
     benefitsDescription: "Envie uma digitalização, aplique OCR, confira o texto extraído, copie ou baixe.",
     benefits: [{ title: "Texto reaproveitável", description: "Transforme páginas digitalizadas em texto que você pode pesquisar." }, { title: "Progresso do OCR", description: "Mostra o andamento do reconhecimento antes do resultado." }, { title: "Copiar e baixar", description: "Oferece ações de resultado focadas no texto." }],
@@ -2640,7 +2635,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como fazer OCR em um PDF?", answer: "Envie o PDF digitalizado e baixe o arquivo com a camada de texto pesquisavel." }, { question: "Funciona com PDFs digitalizados e conteudo manuscrito?", answer: "Funciona bem com a maioria dos documentos impressos digitalizados. O reconhecimento de texto manuscrito tem precisao menor." }, { question: "E grats?", answer: "Sim, o OCR e totalmente gratuito." }],
   },
   "pdf-to-word": {
-    ...enTools["pdf-to-word"],
     title: "Converter PDF em Word online grátis | DockDocs",
     description: "Converta arquivos PDF em documentos do Word editáveis online. Conversão de PDF para Word rápida e precisa.",
     appName: "DockDocs PDF para Word",
@@ -2650,7 +2644,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Pare de redigitar seus PDFs na mão. Converta um PDF em um documento do Word editável em segundos, para modificar e reaproveitar o texto em vez de refazê-lo do zero.",
     primaryActionLabel: "Converter PDF em Word",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivos PDF"], ["Saída", "Documentos Word"]],
-    upload: { ...enTools["pdf-to-word"].upload, title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui, ou escolha um arquivo do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Pensado para fluxos de trabalho com documentos editáveis." },
+    upload: { title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui, ou escolha um arquivo do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Pensado para fluxos de trabalho com documentos editáveis." },
     benefitsTitle: "Crie arquivos do Word editáveis sem uma interface sobrecarregada",
     benefitsDescription: "Envie, converta, visualize a estrutura editável e baixe um resultado em formato DOCX.",
     benefits: [{ title: "Resultado editável", description: "Prepara o conteúdo do PDF para você poder modificá-lo." }, { title: "Prévia da estrutura", description: "Mostra títulos, texto e tabelas antes de baixar." }, { title: "Exportação para DOCX", description: "Orienta você para a exportação de um documento editável." }],
@@ -2664,7 +2658,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PDF para Word?", answer: "Envie o PDF e baixe o arquivo DOCX editavel." }, { question: "A formatacao e preservada apos a conversao?", answer: "O CloudConvert faz o melhor possivel para preservar o layout, mas o resultado pode variar conforme o PDF." }, { question: "E grats?", answer: "Sim, a conversao de PDF para Word e totalmente gratuita." }],
   },
   "pdf-to-excel": {
-    ...enTools["pdf-to-excel"],
     title: "Converter PDF em Excel online grátis | DockDocs",
     description: "Converta tabelas de PDF em planilhas do Excel online e grátis dentro da DockDocs.",
     appName: "DockDocs PDF para Excel",
@@ -2674,7 +2667,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extraia os dados das tabelas dos seus PDFs e baixe em XLSX. Com a tecnologia da CloudConvert.",
     primaryActionLabel: "Converter em Excel",
     stats: [["Preço", "Grátis"], ["Entrada", "PDF"], ["Saída", "XLSX"]],
-    upload: { ...enTools["pdf-to-excel"].upload, title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "PDFs com tabelas dão melhores resultados. No máximo 100 MB." },
+    upload: { title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "PDFs com tabelas dão melhores resultados. No máximo 100 MB." },
     benefitsTitle: "Extraia os dados das tabelas dos seus PDFs para um Excel editável",
     benefitsDescription: "Pare de copiar dados dos seus PDFs na mão.",
     benefits: [{ title: "Extração de tabelas", description: "Identifica e extrai a estrutura das tabelas." }, { title: "Resultado editável", description: "Edite no Excel, Google Sheets ou Numbers." }, { title: "Economiza tempo", description: "Automatiza a extração de dados." }],
@@ -2688,7 +2681,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PDF para Excel?", answer: "Envie o PDF e baixe o arquivo XLSX gerado." }, { question: "E grats?", answer: "Sim, a conversao de PDF para Excel e totalmente gratuita." }],
   },
   "pdf-to-ppt": {
-    ...enTools["pdf-to-ppt"],
     title: "Converter PDF em PowerPoint online grátis | DockDocs",
     description: "Converta arquivos PDF em apresentações de PowerPoint (PPTX) editáveis, online e grátis, dentro da DockDocs.",
     appName: "DockDocs PDF para PPT",
@@ -2698,7 +2690,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Envie um PDF e baixe uma apresentação PPTX editável.",
     primaryActionLabel: "Converter em PPTX",
     stats: [["Preço", "Grátis"], ["Entrada", "PDF"], ["Saída", "PPTX"]],
-    upload: { ...enTools["pdf-to-ppt"].upload, title: "Envie um PDF", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Suporta PDF. No máximo 100 MB." },
+    upload: { title: "Envie um PDF", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Suporta PDF. No máximo 100 MB." },
     benefitsTitle: "Converta um PDF em slides editáveis",
     benefitsDescription: "A CloudConvert reconstrói as páginas do seu PDF como slides do PowerPoint.",
     benefits: [{ title: "Slides editáveis", description: "Cada página do PDF vira um slide PPTX editável." }, { title: "Conversão rápida", description: "A maioria dos arquivos converte em menos de um minuto." }, { title: "Sem instalar programas", description: "Converta direto no seu navegador." }],
@@ -2712,7 +2704,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PDF para PowerPoint?", answer: "Envie o PDF e baixe o arquivo PPTX convertido." }, { question: "A formatacao dos slides e preservada?", answer: "O CloudConvert converte cada pagina do PDF em um slide. O resultado pode variar conforme o PDF." }, { question: "E grats?", answer: "Sim, a conversao de PDF para PowerPoint e totalmente gratuita." }],
   },
   "pdf-to-pdfa": {
-    ...enTools["pdf-to-pdfa"],
     title: "Conversor de PDF para PDF/A online grátis | DockDocs",
     description: "Converta arquivos PDF para o padrão de arquivamento PDF/A online e grátis dentro da DockDocs.",
     appName: "DockDocs PDF para PDF/A",
@@ -2722,7 +2713,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Envie um PDF e baixe um arquivo PDF/A pensado para arquivamento e conformidade de longo prazo.",
     primaryActionLabel: "Converter em PDF/A",
     stats: [["Preço", "Grátis"], ["Entrada", "PDF"], ["Saída", "PDF/A"]],
-    upload: { ...enTools["pdf-to-pdfa"].upload, title: "Envie um PDF", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Suporta PDF. No máximo 100 MB." },
+    upload: { title: "Envie um PDF", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Suporta PDF. No máximo 100 MB." },
     benefitsTitle: "Prepare um PDF para arquivamento",
     benefitsDescription: "O formato PDF/A incorpora as fontes e remove os elementos que dificultam a leitura no longo prazo.",
     benefits: [{ title: "Arquivamento de longo prazo", description: "PDF/A é o padrão ISO para documentos de arquivo." }, { title: "Autossuficiente", description: "Fontes e recursos ficam incorporados, então fica igual anos depois." }, { title: "Sem instalar programas", description: "Converta direto no seu navegador." }],
@@ -2736,7 +2727,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "O que e PDF/A?", answer: "PDF/A e uma versao do PDF padronizada pela ISO, projetada para arquivamento de longo prazo, com fontes e recursos totalmente incorporados." }, { question: "Como converter PDF para PDF/A?", answer: "Envie o PDF e baixe o arquivo PDF/A pronto para arquivamento de longo prazo." }, { question: "E grats?", answer: "Sim, a conversao de PDF para PDF/A e totalmente gratuita." }],
   },
   "pdf-to-html": {
-    ...enTools["pdf-to-html"],
     title: "Converter PDF em HTML online grátis | DockDocs",
     description: "Converta um PDF em um arquivo HTML limpo, online e grátis: cada página como imagem com o texto selecionável em um bloco recolhível. Tudo no navegador; seu arquivo nunca sai do seu dispositivo.",
     appName: "DockDocs PDF para HTML",
@@ -2746,7 +2736,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Converta cada página do PDF em uma imagem dentro de um arquivo HTML limpo, com o texto selecionável em um bloco recolhível abaixo: o layout é preservado e o texto continua pesquisável. Todo o processamento acontece localmente; seu arquivo nunca sai do seu dispositivo.",
     primaryActionLabel: "Converter em HTML",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "Arquivo HTML"]],
-    upload: { ...enTools["pdf-to-html"].upload, title: "Envie um PDF para converter", description: "Arraste e solte um PDF aqui, ou escolha um arquivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Baixe o texto como um arquivo .html estruturado." },
+    upload: { title: "Envie um PDF para converter", description: "Arraste e solte um PDF aqui, ou escolha um arquivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Baixe o texto como um arquivo .html estruturado." },
     benefitsTitle: "Converta PDF em HTML sem enviá-lo a um servidor",
     benefitsDescription: "Envie o arquivo localmente e baixe um arquivo HTML na hora.",
     benefits: [{ title: "Layout preservado", description: "Cada página vira uma seção de imagem, com o texto guardado em um bloco recolhível para continuar selecionável." }, { title: "Privacidade em primeiro lugar", description: "Toda a extração acontece no seu navegador. Seu arquivo nunca sai do seu dispositivo." }, { title: "Seleção de páginas", description: "Se quiser, converta só as páginas que precisar." }],
@@ -2760,7 +2750,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PDF para HTML?", answer: "Envie o PDF e baixe o arquivo HTML gerado." }, { question: "As imagens e a formatacao sao preservadas?", answer: "Sim - cada pagina e renderizada como imagem para preservar o layout, e uma area recolhivel abaixo da pagina mantem o texto original selecionavel para facilitar a busca." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }],
   },
   "pdf-to-markdown": {
-    ...enTools["pdf-to-markdown"],
     title: "Converter PDF em Markdown online grátis | DockDocs",
     description: "Converta o conteúdo de texto de um PDF em Markdown online e grátis. Extraia Markdown estruturado de qualquer PDF dentro da DockDocs.",
     appName: "DockDocs PDF para Markdown",
@@ -2770,7 +2759,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extraia o texto de qualquer PDF e dê a ele estrutura em Markdown. Funciona inteiramente no seu navegador.",
     primaryActionLabel: "Converter em Markdown",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "Markdown (.md)"]],
-    upload: { ...enTools["pdf-to-markdown"].upload, title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Funciona melhor com PDFs baseados em texto. Aplique OCR primeiro se o seu PDF for digitalizado." },
+    upload: { title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Funciona melhor com PDFs baseados em texto. Aplique OCR primeiro se o seu PDF for digitalizado." },
     benefitsTitle: "Extraia o conteúdo do PDF como Markdown",
     benefitsDescription: "Envie o arquivo, extraia o conteúdo e baixe um arquivo .md.",
     benefits: [{ title: "Resultado pensado para devs", description: "O Markdown funciona no GitHub, Notion, Obsidian e em qualquer editor." }, { title: "Privacidade acima de tudo", description: "Todo o processamento acontece no seu navegador." }, { title: "Resultado estruturado por páginas", description: "Cada página do PDF vira uma seção de Markdown." }],
@@ -2784,7 +2773,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PDF para Markdown?", answer: "Envie o PDF e baixe o arquivo .md convertido." }, { question: "A formatacao e preservada apos a conversao?", answer: "Titulos, listas e paragrafos sao convertidos para sintaxe Markdown sempre que possivel. Tabelas complexas podem ter resultado limitado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }],
   },
   "word-to-pdf": {
-    ...enTools["word-to-pdf"],
     title: "Converter Word em PDF online grátis | DockDocs",
     description: "Converta documentos do Word em PDF online e grátis dentro da DockDocs.",
     appName: "DockDocs Word para PDF",
@@ -2794,7 +2782,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Envie um arquivo DOCX e baixe um PDF de alta fidelidade.",
     primaryActionLabel: "Converter em PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "DOCX / DOC"], ["Saída", "PDF"]],
-    upload: { ...enTools["word-to-pdf"].upload, title: "Envie um documento do Word", description: "Arraste e solte aqui um arquivo .docx.", buttonLabel: "Escolher arquivo do Word", note: "Compatível com DOCX e DOC. No máximo 100 MB." },
+    upload: { title: "Envie um documento do Word", description: "Arraste e solte aqui um arquivo .docx.", buttonLabel: "Escolher arquivo do Word", note: "Compatível com DOCX e DOC. No máximo 100 MB." },
     benefitsTitle: "Converta Word em PDF sem perder a formatação",
     benefitsDescription: "A CloudConvert preserva as fontes, as tabelas e o layout.",
     benefits: [{ title: "Layout fiel", description: "Fontes, tabelas e formatação são preservadas." }, { title: "Conversão rápida", description: "A maioria dos documentos converte em menos de 30 segundos." }, { title: "Sem instalar programas", description: "Converta direto no seu navegador." }],
@@ -2808,7 +2796,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter um documento Word para PDF?", answer: "Envie o arquivo DOCX ou DOC e baixe o PDF convertido." }, { question: "A formatacao e preservada apos a conversao?", answer: "Nosso motor de conversao preserva fontes, espacamento e layout - com resultado equivalente ao de uma exportacao direta do Word." }, { question: "E grats?", answer: "Sim, a conversao de Word para PDF e totalmente gratuita e nao requer conta." }, { question: "Quais formatos de arquivo sao suportados?", answer: "Sao suportados os formatos .docx e .doc, com tamanho maximo de 100 MB." }],
   },
   "excel-to-pdf": {
-    ...enTools["excel-to-pdf"],
     title: "Conversor de Excel para PDF online grátis | DockDocs",
     description: "Converta planilhas do Excel em PDF online e grátis dentro da DockDocs.",
     appName: "DockDocs Excel para PDF",
@@ -2818,7 +2805,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Envie um arquivo XLSX e baixe um PDF pronto para imprimir.",
     primaryActionLabel: "Converter em PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "XLSX / XLS"], ["Saída", "PDF"]],
-    upload: { ...enTools["excel-to-pdf"].upload, title: "Envie um arquivo do Excel", description: "Arraste e solte um arquivo .xlsx aqui.", buttonLabel: "Escolher arquivo do Excel", note: "Compatível com XLSX e XLS. No máximo 100 MB." },
+    upload: { title: "Envie um arquivo do Excel", description: "Arraste e solte um arquivo .xlsx aqui.", buttonLabel: "Escolher arquivo do Excel", note: "Compatível com XLSX e XLS. No máximo 100 MB." },
     benefitsTitle: "Converta planilhas em PDF para compartilhar",
     benefitsDescription: "Fixe tabelas e gráficos no formato PDF.",
     benefits: [{ title: "Resultado fiel às tabelas", description: "O layout das células e os gráficos são preservados." }, { title: "Pronto para imprimir", description: "Com a formatação certa para imprimir de qualquer dispositivo." }, { title: "Sem precisar do Excel", description: "Os destinatários podem ver sem ter um programa de planilhas." }],
@@ -2832,7 +2819,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter Excel para PDF?", answer: "Envie o arquivo XLSX e baixe o PDF gerado." }, { question: "E grats?", answer: "Sim, a conversao de Excel para PDF e totalmente gratuita." }],
   },
   "ppt-to-pdf": {
-    ...enTools["ppt-to-pdf"],
     title: "Converter PowerPoint em PDF online grátis | DockDocs",
     description: "Converta apresentações de PowerPoint em PDF online e grátis dentro da DockDocs.",
     appName: "DockDocs PPT para PDF",
@@ -2842,7 +2828,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Envie um arquivo PPTX e baixe um PDF pronto para apresentar.",
     primaryActionLabel: "Converter em PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "PPTX / PPT"], ["Saída", "PDF"]],
-    upload: { ...enTools["ppt-to-pdf"].upload, title: "Envie um arquivo do PowerPoint", description: "Arraste e solte um arquivo .pptx aqui.", buttonLabel: "Escolher arquivo PPT", note: "Compatível com PPTX e PPT. No máximo 100 MB." },
+    upload: { title: "Envie um arquivo do PowerPoint", description: "Arraste e solte um arquivo .pptx aqui.", buttonLabel: "Escolher arquivo PPT", note: "Compatível com PPTX e PPT. No máximo 100 MB." },
     benefitsTitle: "Converta apresentações em PDF para compartilhar",
     benefitsDescription: "Fixe seus slides no formato PDF para compatibilidade universal.",
     benefits: [{ title: "Resultado fiel aos slides", description: "Layout, fontes e imagens são preservados." }, { title: "Compartilhe sem instalar software", description: "Quem recebe consegue ver sem o PowerPoint." }, { title: "Conversão rápida", description: "Menos de 30 segundos para a maioria dos arquivos." }],
@@ -2856,7 +2842,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PowerPoint para PDF?", answer: "Envie o arquivo PPTX e baixe o PDF gerado." }, { question: "E grats?", answer: "Sim, a conversao de PPT para PDF e totalmente gratuita." }],
   },
   "html-to-pdf": {
-    ...enTools["html-to-pdf"],
     title: "Conversor de HTML para PDF online grátis | DockDocs",
     description: "Converta arquivos HTML em PDF online e grátis dentro da DockDocs.",
     appName: "DockDocs HTML para PDF",
@@ -2866,7 +2851,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Envie um arquivo .html e baixe um PDF limpo e pronto para imprimir.",
     primaryActionLabel: "Converter em PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "HTML"], ["Saída", "PDF"]],
-    upload: { ...enTools["html-to-pdf"].upload, title: "Envie um arquivo HTML", description: "Arraste e solte aqui um arquivo .html ou .htm.", buttonLabel: "Escolher arquivo HTML", note: "Compatível com HTML e HTM. No máximo 100 MB." },
+    upload: { title: "Envie um arquivo HTML", description: "Arraste e solte aqui um arquivo .html ou .htm.", buttonLabel: "Escolher arquivo HTML", note: "Compatível com HTML e HTM. No máximo 100 MB." },
     benefitsTitle: "Converta seu HTML em um PDF fácil de compartilhar",
     benefitsDescription: "A CloudConvert processa seu HTML com um motor de navegador real.",
     benefits: [{ title: "Renderização fiel", description: "Títulos, tabelas e estilos são preservados." }, { title: "Conversão rápida", description: "A maioria dos arquivos converte em menos de 30 segundos." }, { title: "Sem instalar nada", description: "Converta direto no seu navegador." }],
@@ -2880,7 +2865,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter HTML para PDF?", answer: "Envie o arquivo .html e baixe o PDF convertido." }, { question: "Imagens e CSS serao incluidos?", answer: "Sim, desde que as imagens e o CSS estejam incorporados ou acessiveis. Arquivos HTML totalmente autossuficientes dao os melhores resultados." }, { question: "E grats?", answer: "Sim, a conversao de HTML para PDF e totalmente gratuita." }],
   },
   "merge-pdf": {
-    ...enTools["merge-pdf"],
     title: "Mesclar PDF online grátis | DockDocs",
     description: "Mescle vários arquivos PDF em um único documento, online e grátis. Tudo acontece no seu navegador: seus arquivos nunca são enviados a nenhum servidor.",
     appName: "DockDocs Mesclar PDF",
@@ -2890,7 +2874,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Cansado de enviar cinco anexos separados? Combine tudo em um PDF limpo e ordenado em segundos — mais fácil de compartilhar, arquivar e revisar.",
     primaryActionLabel: "Mesclar PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "Vários PDF"], ["Saída", "Um único PDF"]],
-    upload: { ...enTools["merge-pdf"].upload, title: "Envie os PDFs para mesclar", description: "Arraste e solte vários arquivos PDF aqui, ou escolha arquivos do seu dispositivo.", buttonLabel: "Escolher PDFs", note: "Somente PDF. Feito para montar conjuntos de documentos organizados." },
+    upload: { title: "Envie os PDFs para mesclar", description: "Arraste e solte vários arquivos PDF aqui, ou escolha arquivos do seu dispositivo.", buttonLabel: "Escolher PDFs", note: "Somente PDF. Feito para montar conjuntos de documentos organizados." },
     benefitsTitle: "Combine PDFs sem uma interface complicada",
     benefitsDescription: "Envie, reordene, mescle e baixe um único PDF final.",
     benefits: [{ title: "Um único conjunto", description: "Transforme PDFs espalhados em um único documento organizado." }, { title: "Prévia da ordem", description: "Veja a ordem dos documentos antes de mesclar." }, { title: "Download do resultado", description: "Receba um único arquivo unificado como resultado final." }],
@@ -2904,7 +2888,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Posso enviar varios PDFs?", answer: "Sim, o fluxo de mesclagem suporta o envio de varios arquivos." }, { question: "Posso ajustar a ordem dos arquivos?", answer: "Sim, a pagina inclui uma previa com ordenacao antes de mesclar." }, { question: "Qual e o resultado gerado?", answer: "O resultado e um unico arquivo PDF com as paginas na ordem definida." }],
   },
   "split-pdf": {
-    ...enTools["split-pdf"],
     title: "Dividir PDF online grátis | DockDocs",
     description: "Divida um PDF em vários arquivos ou extraia as páginas que precisar, online e grátis. Todo o processamento acontece no seu navegador.",
     appName: "DockDocs Dividir PDF",
@@ -2914,7 +2897,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extraia páginas, separe seções e prepare conjuntos de documentos focados.",
     primaryActionLabel: "Dividir PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "Um único PDF"], ["Saída", "Páginas ou intervalos"]],
-    upload: { ...enTools["split-pdf"].upload, title: "Envie um PDF para dividir", description: "Arraste e solte um arquivo PDF aqui, ou escolha um arquivo do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Feito para fluxos de extração de páginas." },
+    upload: { title: "Envie um PDF para dividir", description: "Arraste e solte um arquivo PDF aqui, ou escolha um arquivo do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Feito para fluxos de extração de páginas." },
     benefitsTitle: "Extraia páginas de PDF sem uma interface complicada",
     benefitsDescription: "Envie um PDF, informe os intervalos de páginas, veja a prévia da divisão e exporte um ZIP.",
     benefits: [{ title: "Exportações focadas", description: "Extraia apenas as páginas necessárias sem enviar o arquivo inteiro." }, { title: "Entrada de intervalos", description: "Use uma sintaxe de intervalo clara, como 1-4 ou 12-18." }, { title: "Resultado em ZIP", description: "Agrupe os resultados da divisão em um único ZIP pronto para exportar." }],
@@ -2928,7 +2911,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Posso extrair um intervalo de paginas?", answer: "Sim, o fluxo inclui um campo para definir o intervalo de paginas desejado." }, { question: "Qual e o resultado gerado?", answer: "O resultado da divisao e exportado em um arquivo ZIP." }, { question: "Funciona com PDF digitalizado?", answer: "Sim como entrada de PDF. O reconhecimento de texto e um fluxo de OCR separado." }],
   },
   "jpg-to-pdf": {
-    ...enTools["jpg-to-pdf"],
     title: "Converter JPG em PDF online grátis | DockDocs",
     description: "Converta imagens JPG em um documento PDF, online e grátis. Combine várias fotos em um único PDF diretamente no seu navegador.",
     appName: "DockDocs JPG para PDF",
@@ -2938,7 +2920,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Fotos e digitalizações são chatas de enviar e imprimir. Junte seus JPGs em um único PDF limpo em segundos — fácil de compartilhar, arquivar e abrir em qualquer lugar.",
     primaryActionLabel: "Converter JPG em PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "Imagens JPG"], ["Saída", "Documento PDF"]],
-    upload: { ...enTools["jpg-to-pdf"].upload, title: "Envie imagens JPG", description: "Arraste e solte imagens JPG aqui, ou escolha fotos do seu dispositivo.", buttonLabel: "Escolher imagens JPG", note: "Aceita imagens JPG, PNG e WebP para criar um PDF." },
+    upload: { title: "Envie imagens JPG", description: "Arraste e solte imagens JPG aqui, ou escolha fotos do seu dispositivo.", buttonLabel: "Escolher imagens JPG", note: "Aceita imagens JPG, PNG e WebP para criar um PDF." },
     benefitsTitle: "Crie PDFs a partir de imagens sem um editor pesado",
     benefitsDescription: "Envie imagens, organize a ordem das páginas e exporte um único PDF.",
     benefits: [{ title: "Da foto ao documento", description: "Converta recibos, anotações, digitalizações e fotos em PDFs." }, { title: "Ordem das páginas", description: "Veja a ordem das imagens antes de exportar." }, { title: "Exportar em PDF", description: "Baixe um único documento PDF a partir de imagens." }],
@@ -2952,7 +2934,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter JPG para PDF?", answer: "Envie uma ou mais imagens JPG e baixe o PDF gerado." }, { question: "Posso enviar varias imagens?", answer: "Sim, o fluxo suporta a combinacao de varios JPGs em um unico PDF." }, { question: "E grats?", answer: "Sim, a conversao de JPG para PDF e totalmente gratuita." }],
   },
   "png-to-pdf": {
-    ...enTools["png-to-pdf"],
     title: "Converter PNG em PDF online grátis | DockDocs",
     description: "Converta imagens PNG em um documento PDF, online e grátis. Junte várias imagens em um único PDF diretamente no seu navegador.",
     appName: "DockDocs PNG para PDF",
@@ -2962,7 +2943,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Transforme capturas de tela, diagramas e gráficos PNG em documentos PDF para compartilhar e arquivar.",
     primaryActionLabel: "Converter PNG em PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "Imagens PNG"], ["Saída", "Documento PDF"]],
-    upload: { ...enTools["png-to-pdf"].upload, title: "Envie imagens PNG", description: "Arraste e solte imagens PNG aqui.", buttonLabel: "Escolher imagens PNG", note: "Aceita imagens PNG, JPG e WebP para criar um PDF." },
+    upload: { title: "Envie imagens PNG", description: "Arraste e solte imagens PNG aqui.", buttonLabel: "Escolher imagens PNG", note: "Aceita imagens PNG, JPG e WebP para criar um PDF." },
     benefitsTitle: "Crie PDFs a partir de imagens PNG",
     benefitsDescription: "Envie, organize e baixe um PDF limpo.",
     benefits: [{ title: "Das capturas aos documentos", description: "Converta capturas de tela e diagramas em PDFs compartilháveis." }, { title: "Upload de várias imagens", description: "Combine vários PNGs em um único documento organizado." }, { title: "Resultado pronto para o escritório", description: "Prepare seus PNGs para e-mail, uploads e entrega ao cliente." }],
@@ -2976,7 +2957,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PNG para PDF?", answer: "Envie uma ou mais imagens PNG e baixe o PDF gerado." }, { question: "Posso enviar varias imagens?", answer: "Sim, o fluxo suporta a combinacao de varios PNGs em um unico PDF." }, { question: "E grats?", answer: "Sim, a conversao de PNG para PDF e totalmente gratuita." }],
   },
   "pdf-to-jpg": {
-    ...enTools["pdf-to-jpg"],
     title: "Converter PDF em JPG online grátis | DockDocs",
     description: "Converta cada página de um PDF em uma imagem JPG, online e grátis. Todo o processamento acontece no seu navegador; seus arquivos não são enviados.",
     appName: "DockDocs PDF para JPG",
@@ -2986,7 +2966,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extraia imagens JPG de alta qualidade de qualquer PDF. Tudo é executado no seu navegador.",
     primaryActionLabel: "Converter em JPG",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "Imagens JPG"]],
-    upload: { ...enTools["pdf-to-jpg"].upload, title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Cada página é convertida em uma imagem JPG de alta qualidade." },
+    upload: { title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Cada página é convertida em uma imagem JPG de alta qualidade." },
     benefitsTitle: "Extraia as páginas de um PDF como imagens",
     benefitsDescription: "Envie, selecione as páginas e baixe imagens JPG na hora.",
     benefits: [{ title: "Resultado de alta qualidade", description: "As páginas são renderizadas em 2× para imagens JPG nítidas." }, { title: "Privacidade em primeiro lugar", description: "Todo o processamento acontece no seu navegador." }, { title: "Exportação individual ou em lote", description: "Uma página baixa em JPG; várias em um ZIP." }],
@@ -3000,7 +2980,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PDF para JPG?", answer: "Envie o PDF e cada pagina sera convertida em uma imagem JPG para download em pacote." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Toda a conversao acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a conversao de PDF para JPG e totalmente gratuita." }],
   },
   "pdf-to-png": {
-    ...enTools["pdf-to-png"],
     title: "Converter PDF em PNG online grátis | DockDocs",
     description: "Converta as páginas de um PDF em imagens PNG de alta qualidade, online e grátis. Tudo acontece no seu navegador; seus arquivos não são enviados.",
     appName: "DockDocs PDF para PNG",
@@ -3010,7 +2989,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extraia imagens PNG sem perdas de qualquer PDF. Tudo é executado no seu navegador.",
     primaryActionLabel: "Converter em PNG",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "Imagens PNG"]],
-    upload: { ...enTools["pdf-to-png"].upload, title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Cada página é convertida em um PNG sem perdas." },
+    upload: { title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Cada página é convertida em um PNG sem perdas." },
     benefitsTitle: "Extraia as páginas de um PDF como PNG sem perdas",
     benefitsDescription: "Envie, selecione as páginas e baixe imagens PNG.",
     benefits: [{ title: "Qualidade sem perdas", description: "O PNG preserva cada pixel, sem artefatos de compressão." }, { title: "Privacidade em primeiro lugar", description: "Todo o processamento acontece no seu navegador." }, { title: "Exportação individual ou em lote", description: "Uma página em PNG; várias em um ZIP." }],
@@ -3024,7 +3003,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PDF para PNG?", answer: "Envie o PDF e cada pagina sera convertida em uma imagem PNG para download em pacote." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Toda a conversao acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a conversao de PDF para PNG e totalmente gratuita." }],
   },
   "pdf-to-image": {
-    ...enTools["pdf-to-image"],
     title: "Converter PDF em imagem online grátis | DockDocs",
     description: "Converta as páginas de um PDF em imagens JPG ou PNG, online e grátis. Extraia imagens de alta qualidade de qualquer PDF; todo o processamento acontece no seu navegador e seus arquivos não são enviados.",
     appName: "DockDocs PDF para imagem",
@@ -3034,7 +3012,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Exporte qualquer página de um PDF como imagem JPG de alta qualidade ou PNG sem perdas. Nenhum envio para servidor.",
     primaryActionLabel: "Converter em imagem",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "Imagens JPG ou PNG"]],
-    upload: { ...enTools["pdf-to-image"].upload, title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Escolha JPG para fotos, PNG para um resultado sem perdas." },
+    upload: { title: "Envie um PDF para converter", description: "Arraste e solte um arquivo PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Escolha JPG para fotos, PNG para um resultado sem perdas." },
     benefitsTitle: "Extraia as páginas de um PDF como imagens",
     benefitsDescription: "Envie, escolha um formato e baixe as imagens.",
     benefits: [{ title: "Saída em JPG ou PNG", description: "Escolha JPG para arquivos menores ou PNG para qualidade sem perdas." }, { title: "Privacidade em primeiro lugar", description: "Todo o processamento acontece no seu navegador — sem envio." }, { title: "Exportação individual ou em lote", description: "Uma página como imagem; várias páginas em um ZIP." }],
@@ -3048,7 +3026,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PDF para imagem?", answer: "Envie o PDF, escolha o formato de saida e cada pagina sera convertida em uma imagem." }, { question: "Quais formatos de imagem sao suportados?", answer: "JPG e PNG, ambos processados localmente no seu navegador." }, { question: "E grats?", answer: "Sim, a conversao de PDF para imagem e totalmente gratuita." }],
   },
   "delete-page": {
-    ...enTools["delete-page"],
     title: "Excluir páginas de um PDF online grátis | DockDocs",
     description: "Exclua páginas específicas de um PDF, online e grátis. Remova as páginas que não precisar diretamente no seu navegador, sem enviar arquivos.",
     appName: "DockDocs Excluir páginas",
@@ -3058,7 +3035,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Exclua uma ou mais páginas de um PDF informando intervalos de páginas. Todo o processamento acontece no seu navegador.",
     primaryActionLabel: "Excluir páginas",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "PDF reduzido"]],
-    upload: { ...enTools["delete-page"].upload, title: "Envie um PDF para editar", description: "Arraste e solte um PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Informe as páginas a excluir e baixe o resultado." },
+    upload: { title: "Envie um PDF para editar", description: "Arraste e solte um PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Informe as páginas a excluir e baixe o resultado." },
     benefitsTitle: "Remova páginas de um PDF sem um editor pesado",
     benefitsDescription: "Envie, informe as páginas a remover e baixe na hora.",
     benefits: [{ title: "Remoção precisa", description: "Exclua páginas individuais ou intervalos em uma única operação." }, { title: "Privacidade em primeiro lugar", description: "Todo o processamento acontece no seu navegador." }, { title: "Resultado limpo", description: "As páginas restantes mantêm a ordem original." }],
@@ -3072,7 +3049,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como excluir paginas de um PDF?", answer: "Envie o PDF, selecione as paginas que deseja excluir e baixe o arquivo atualizado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a exclusao de paginas do PDF e totalmente gratuita." }],
   },
   "rotate-page": {
-    ...enTools["rotate-page"],
     title: "Girar páginas de um PDF online grátis | DockDocs",
     description: "Gire as páginas de um PDF em 90°, 180° ou 270° e salve o resultado, online e grátis. Tudo acontece no seu navegador.",
     appName: "DockDocs Girar PDF",
@@ -3082,7 +3058,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Gire páginas individuais ou o PDF inteiro em 90°, 180° ou 270°. Todo o processamento é executado localmente.",
     primaryActionLabel: "Girar páginas",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "PDF girado"]],
-    upload: { ...enTools["rotate-page"].upload, title: "Envie um PDF para girar", description: "Arraste e solte um PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Escolha quais páginas girar e o ângulo." },
+    upload: { title: "Envie um PDF para girar", description: "Arraste e solte um PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Escolha quais páginas girar e o ângulo." },
     benefitsTitle: "Corrija a orientação de um PDF sem um editor pesado",
     benefitsDescription: "Envie, escolha a rotação e baixe o PDF corrigido na hora.",
     benefits: [{ title: "Rotação seletiva", description: "Gire páginas específicas ou todas as páginas." }, { title: "Vários ângulos", description: "Escolha 90°, 180° ou 270° no sentido horário." }, { title: "Privacidade em primeiro lugar", description: "Todo o processamento acontece no seu navegador." }],
@@ -3096,7 +3072,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como girar paginas de um PDF?", answer: "Envie o PDF, selecione as paginas e o angulo de rotacao, e baixe o arquivo atualizado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a rotacao de paginas do PDF e totalmente gratuita." }],
   },
   "reorder-pages": {
-    ...enTools["reorder-pages"],
     title: "Reordenar páginas de um PDF online grátis | DockDocs",
     description: "Reorganize a ordem das páginas de um PDF arrastando e soltando, online e grátis. Todo o processamento acontece no seu navegador.",
     appName: "DockDocs Reordenar páginas",
@@ -3106,7 +3081,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Informe uma nova sequência de páginas e baixe um PDF reordenado na hora. Todo o processamento é executado localmente.",
     primaryActionLabel: "Reordenar páginas",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "PDF reordenado"]],
-    upload: { ...enTools["reorder-pages"].upload, title: "Envie um PDF para reordenar", description: "Arraste e solte um PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Informe a nova ordem das páginas para reorganizar o documento." },
+    upload: { title: "Envie um PDF para reordenar", description: "Arraste e solte um PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Informe a nova ordem das páginas para reorganizar o documento." },
     benefitsTitle: "Reordene as páginas de um PDF sem um editor pesado",
     benefitsDescription: "Envie, informe a nova sequência e baixe na hora.",
     benefits: [{ title: "Controle total da sequência", description: "Avance, recue ou reorganize completamente as páginas." }, { title: "Privacidade em primeiro lugar", description: "Todo o processamento acontece no seu navegador." }, { title: "Resultado limpo", description: "As páginas mantêm o conteúdo original na nova ordem." }],
@@ -3120,7 +3095,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como reorganizar as paginas de um PDF?", answer: "Envie o PDF, arraste as miniaturas para ajustar a ordem e baixe o arquivo atualizado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, a reorganizacao de paginas do PDF e totalmente gratuita." }],
   },
   "add-page": {
-    ...enTools["add-page"],
     title: "Adicionar páginas a um PDF online grátis | DockDocs",
     description: "Insira páginas em branco ou novas em um PDF na posição que quiser, online e grátis. Tudo acontece no seu navegador.",
     appName: "DockDocs Adicionar páginas",
@@ -3130,7 +3104,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Adicione uma página em branco em qualquer posição do seu PDF. Todo o processamento acontece localmente no seu navegador.",
     primaryActionLabel: "Adicionar página em branco",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "PDF + página em branco"]],
-    upload: { ...enTools["add-page"].upload, title: "Envie um PDF para editar", description: "Arraste e solte um PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Informe onde inserir a página em branco." },
+    upload: { title: "Envie um PDF para editar", description: "Arraste e solte um PDF aqui.", buttonLabel: "Escolher PDF", note: "Somente PDF. Informe onde inserir a página em branco." },
     benefitsTitle: "Adicione uma página em branco sem um editor pesado",
     benefitsDescription: "Envie, escolha a posição e baixe na hora.",
     benefits: [{ title: "Inserção precisa", description: "Insira após uma página específica, ou no início do documento." }, { title: "Tamanho compatível", description: "A página em branco assume o tamanho das páginas adjacentes." }, { title: "Privacidade em primeiro lugar", description: "Todo o processamento acontece no seu navegador." }],
@@ -3144,7 +3118,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como inserir uma pagina em branco em um PDF?", answer: "Envie o PDF, escolha onde inserir a pagina e baixe o arquivo atualizado." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "E grats?", answer: "Sim, adicionar paginas em branco ao PDF e totalmente gratuito." }],
   },
   "page-numbers": {
-    ...enTools["page-numbers"],
     title: "Adicionar números de página ao PDF grátis | DockDocs",
     description: "Adicione números de página ao seu PDF com a posição e o estilo que preferir, online e grátis. Todo o processamento acontece no seu navegador.",
     appName: "DockDocs Numeração de páginas",
@@ -3154,7 +3127,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Carimbe um número de página (ex.: 3 / 12) na parte inferior central de cada página. Todo o processamento acontece localmente — seu arquivo nunca sai do seu dispositivo.",
     primaryActionLabel: "Adicionar números de página",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "PDF numerado"]],
-    upload: { ...enTools["page-numbers"].upload, title: "Envie um PDF para numerar", description: "Arraste e solte um PDF aqui, ou escolha um arquivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Baixe um PDF com os números de página adicionados." },
+    upload: { title: "Envie um PDF para numerar", description: "Arraste e solte um PDF aqui, ou escolha um arquivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Baixe um PDF com os números de página adicionados." },
     benefitsTitle: "Adicione números de página sem enviar a um servidor",
     benefitsDescription: "Envie localmente e baixe um PDF numerado na hora.",
     benefits: [{ title: "Cada página numerada", description: "Um número « página / total » claro é adicionado a cada página." }, { title: "Privacidade em primeiro lugar", description: "Todo o processamento acontece no seu navegador. Seu arquivo nunca sai do seu dispositivo." }, { title: "Pronto para impressão", description: "Os números ajudam a se localizar em documentos impressos e compartilhados." }],
@@ -3168,7 +3141,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como adicionar numeros de pagina a um PDF?", answer: "Envie o PDF e baixe o resultado - os numeros de pagina sao adicionados automaticamente em cada pagina." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "Onde os numeros de pagina ficam posicionados?", answer: "No rodape centralizado, no formato pagina atual/total de paginas." }],
   },
   "watermark-pdf": {
-    ...enTools["watermark-pdf"],
     title: "Marca d'água em PDF online grátis | DockDocs",
     description: "Adicione uma marca d'água de texto ao seu PDF, online e grátis. Personalize o texto e a posição diretamente no seu navegador, sem enviar arquivos.",
     appName: "DockDocs Marca d'água",
@@ -3178,7 +3150,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Carimbe um texto como CONFIDENCIAL ou RASCUNHO na diagonal em todas as páginas. Todo o processamento acontece localmente — seu arquivo nunca sai do seu dispositivo.",
     primaryActionLabel: "Adicionar marca d'água",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "PDF com marca d'água"]],
-    upload: { ...enTools["watermark-pdf"].upload, title: "Envie um PDF para aplicar a marca d'água", description: "Arraste e solte um PDF aqui, ou escolha um arquivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Digite o texto da marca d'água e baixe o resultado." },
+    upload: { title: "Envie um PDF para aplicar a marca d'água", description: "Arraste e solte um PDF aqui, ou escolha um arquivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Digite o texto da marca d'água e baixe o resultado." },
     benefitsTitle: "Aplique marca d'água em PDFs sem enviar a um servidor",
     benefitsDescription: "Adicione seu texto e baixe um PDF com marca d'água na hora.",
     benefits: [{ title: "Texto na diagonal", description: "Seu texto é posicionado na diagonal em cada página." }, { title: "Privacidade em primeiro lugar", description: "Toda a aplicação da marca d'água acontece no seu navegador. Seu arquivo nunca sai do seu dispositivo." }, { title: "Status e propriedade", description: "Mostre CONFIDENCIAL, RASCUNHO ou o nome da sua empresa em cada página." }],
@@ -3192,7 +3164,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como adicionar marca dagua a um PDF?", answer: "Envie o PDF, digite o texto da marca dagua e baixe o arquivo com a marca aplicada." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento de marca dagua acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }, { question: "Posso remover a marca dagua depois?", answer: "A marca dagua fica incorporada ao conteudo da pagina. Se precisar de uma versao sem marca dagua, guarde o arquivo original." }],
   },
   "sign-pdf": {
-    ...enTools["sign-pdf"],
     title: "Assinar PDF online grátis | DockDocs",
     description: "Assine seus PDFs e adicione texto ou iniciais, online e grátis. Desenhe ou escreva sua assinatura diretamente no seu navegador; seus arquivos não são enviados.",
     appName: "DockDocs Assinar PDF",
@@ -3202,7 +3173,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Adicione sua assinatura eletrônica a qualquer PDF. Desenhe, digite ou envie sua assinatura — tudo no seu navegador com a DockDocs.",
     primaryActionLabel: "Assinar PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "PDF"], ["Saída", "PDF assinado"], ["Segurança", "Local no navegador"]],
-    upload: { ...enTools["sign-pdf"].upload, title: "Envie um PDF para assinar", description: "Arraste e solte um arquivo PDF aqui, ou escolha do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Sua assinatura e seu documento nunca saem do seu dispositivo." },
+    upload: { title: "Envie um PDF para assinar", description: "Arraste e solte um arquivo PDF aqui, ou escolha do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Sua assinatura e seu documento nunca saem do seu dispositivo." },
     benefitsTitle: "Por que assinar PDFs com a DockDocs",
     benefitsDescription: "Uma forma rápida, gratuita e segura de adicionar assinaturas eletrônicas aos seus PDFs.",
     benefits: [{ title: "Assinatura eletrônica gratuita", description: "Assine PDFs sem pagar assinaturas caras de serviços de e-signature. Sem precisar de conta." }, { title: "Assinatura com privacidade", description: "Seu documento e sua assinatura são processados no seu navegador. Sem envio para servidores externos." }, { title: "Várias opções de assinatura", description: "Desenhe sua assinatura, digite-a com uma fonte manuscrita, ou envie uma imagem de assinatura." }],
@@ -3216,7 +3187,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como assinar um PDF?", answer: "Envie o PDF, adicione sua assinatura (desenhada ou digitada) e baixe o arquivo assinado." }, { question: "A assinatura tem validade juridica?", answer: "O DockDocs gera uma assinatura visual - indicada para uso interno ou situacoes informais. Para assinaturas com validade juridica, use um servico de assinatura eletronica certificado." }, { question: "E grats?", answer: "Sim, a funcao de assinatura de PDF e totalmente gratuita." }],
   },
   "translate-pdf": {
-    ...enTools["translate-pdf"],
     title: "Traduzir PDF com IA online grátis | DockDocs",
     description: "Traduza o texto de um PDF para mais de 18 idiomas com IA, online e grátis. O PDF é lido no seu navegador; apenas o texto a traduzir é enviado.",
     appName: "DockDocs Traduzir PDF",
@@ -3226,7 +3196,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extraia o texto de um PDF e traduza-o para mais de 18 idiomas com IA. Apenas texto por enquanto — a tradução com preservação do layout está chegando.",
     primaryActionLabel: "Traduzir PDF",
     stats: [["Preço", "Grátis"], ["Idiomas", "18+"], ["Entrada", "PDF"], ["Saída", "Texto traduzido"]],
-    upload: { ...enTools["translate-pdf"].upload, title: "Envie um PDF para traduzir", description: "Arraste e solte um arquivo PDF aqui, ou escolha do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. A IA traduz o texto do documento; copie ou baixe o resultado." },
+    upload: { title: "Envie um PDF para traduzir", description: "Arraste e solte um arquivo PDF aqui, ou escolha do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. A IA traduz o texto do documento; copie ou baixe o resultado." },
     benefitsTitle: "Por que traduzir PDFs com IA na DockDocs",
     benefitsDescription: "Uma tradução com IA do texto do seu PDF, rápida, gratuita e com privacidade.",
     benefits: [{ title: "Privado por design", description: "Seu PDF é lido no seu navegador; apenas o texto extraído é enviado para tradução. O arquivo nunca sai do seu dispositivo." }, { title: "Mais de 18 idiomas", description: "Traduza entre os principais idiomas do mundo, incluindo chinês, japonês, coreano, espanhol, francês, alemão, árabe, hindi e outros." }, { title: "Sem copiar e colar", description: "Envie o PDF diretamente — o texto é extraído e traduzido para você. Copie ou baixe o resultado." }],
@@ -3240,7 +3210,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como traduzir um PDF?", answer: "Envie o PDF, escolha o idioma de destino e baixe o arquivo traduzido." }, { question: "Quais idiomas sao suportados?", answer: "O motor de IA suporta dezenas de idiomas, incluindo ingles, espanhol, frances, alemao, chines e outros." }, { question: "A formatacao e preservada apos a traducao?", answer: "O motor de IA faz o melhor possivel para manter o layout e a formatacao, mas o resultado pode variar conforme o PDF." }],
   },
   "pdf-to-text": {
-    ...enTools["pdf-to-text"],
     title: "Converter PDF em Texto (TXT) online grátis | DockDocs",
     description: "Extraia texto simples de qualquer PDF, online e grátis. Rápido e no seu navegador: seu arquivo nunca sai do seu dispositivo.",
     appName: "DockDocs PDF para Texto",
@@ -3250,7 +3219,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extraia todo o texto de um PDF em um arquivo .txt limpo. Todo o processamento acontece localmente: seu arquivo nunca sai do seu dispositivo.",
     primaryActionLabel: "Converter em texto",
     stats: [["Preço", "Grátis"], ["Entrada", "Arquivo PDF"], ["Saída", "Arquivo TXT"]],
-    upload: { ...enTools["pdf-to-text"].upload, title: "Envie um PDF para extrair o texto", description: "Arraste e solte um PDF aqui, ou escolha um arquivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Baixe o texto extraído como um arquivo .txt." },
+    upload: { title: "Envie um PDF para extrair o texto", description: "Arraste e solte um PDF aqui, ou escolha um arquivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Baixe o texto extraído como um arquivo .txt." },
     benefitsTitle: "Extraia o texto de um PDF sem enviá-lo a um servidor",
     benefitsDescription: "Envie o arquivo localmente e baixe um arquivo de texto simples na hora.",
     benefits: [
@@ -3273,7 +3242,6 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Como converter PDF para texto?", answer: "Envie o PDF e baixe o arquivo .txt com o texto extraido." }, { question: "Funciona com PDF digitalizado?", answer: "Apenas com PDFs que contenham texto real. Para documentos digitalizados, faca o OCR antes." }, { question: "Meu PDF e enviado para algum servidor?", answer: "Nao. Todo o processamento acontece localmente no seu navegador, e o arquivo nunca sai do seu dispositivo." }],
   },
   "edit-pdf": {
-    ...enTools["edit-pdf"],
     title: "Editar PDF online grátis | DockDocs",
     description: "Edite arquivos PDF online grátis: adicione texto, imagens, formas e anotações. Sem downloads, sem marca d'água, um editor de PDF no navegador da DockDocs.",
     appName: "DockDocs Editar PDF",
@@ -3283,7 +3251,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Adicione texto, imagens, formas e anotações a qualquer PDF. Sem instalar nada: edite diretamente no seu navegador com a DockDocs.",
     primaryActionLabel: "Editar PDF",
     stats: [["Preço", "Grátis"], ["Entrada", "PDF"], ["Saída", "PDF editado"], ["Plataforma", "Navegador"]],
-    upload: { ...enTools["edit-pdf"].upload, title: "Envie um PDF para editar", description: "Arraste e solte um arquivo PDF aqui, ou escolha do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Todo o processamento acontece no seu navegador: seu arquivo nunca sai do seu dispositivo." },
+    upload: { title: "Envie um PDF para editar", description: "Arraste e solte um arquivo PDF aqui, ou escolha do seu dispositivo.", buttonLabel: "Escolher PDF", note: "Somente PDF. Todo o processamento acontece no seu navegador: seu arquivo nunca sai do seu dispositivo." },
     benefitsTitle: "Por que editar PDF com a DockDocs",
     benefitsDescription: "Um editor de PDF rápido e gratuito que funciona no seu navegador, sem precisar de cadastro.",
     benefits: [
@@ -3302,6 +3270,7 @@ const ptTools: Record<ToolSlug, ToolCopy> = {
     workflowTitle: "Como editar um PDF em 3 passos",
     workflowDescription: "O fluxo de edição de PDF da DockDocs é pensado para a rapidez: envie, edite e baixe.",
     steps: ["Envie seu arquivo PDF arrastando-o para a página ou clicando para procurar.", "Adicione texto, formas ou imagens com as ferramentas de anotação integradas.", "Baixe o PDF editado com suas alterações aplicadas, pronto para compartilhar."],
+    faq: enTools["edit-pdf"].faq, // base = en; ptFaq["edit-pdf"] substitutes the localized FAQ at runtime
     cta: { eyebrow: "Editar PDF", title: "Comece a editar seus documentos PDF grátis.", description: "Sem downloads, sem cadastro. Edite PDF diretamente no seu navegador com a DockDocs.", buttonLabel: "Editar PDF agora" },
   },
 };
@@ -3889,10 +3858,8 @@ const frFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
 // ---------------------------------------------------------------------------
 // French (fr-FR) tool content
 // ---------------------------------------------------------------------------
-const frTools: Record<ToolSlug, ToolCopy> = {
-  ...enTools,
+const frTools: Record<ToolSlug, LocalizedToolCopy> = {
   "compress-pdf": {
-    ...enTools["compress-pdf"],
     title: "Compresser PDF en ligne gratuit | DockDocs",
     description: "Compressez des fichiers PDF en ligne, gratuitement et entièrement dans votre navigateur. Réduisez la taille du fichier pour les e-mails et le partage.",
     appName: "DockDocs Compresser PDF",
@@ -3902,7 +3869,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Ce PDF est trop lourd pour l'envoyer par e-mail ou l'importer ? Réduisez-le en quelques secondes : assez léger pour l'envoyer et assez net pour le lire, sans rien installer.",
     primaryActionLabel: "Compresser PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichiers PDF"], ["Espace", "Documents IA"]],
-    upload: { ...enTools["compress-pdf"].upload, title: "Déposez un PDF à compresser", description: "Glissez-déposez un fichier PDF ici, ou choisissez un fichier depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Rapide, sécurisé et adapté aux documents professionnels." },
+    upload: { title: "Déposez un PDF à compresser", description: "Glissez-déposez un fichier PDF ici, ou choisissez un fichier depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Rapide, sécurisé et adapté aux documents professionnels." },
     benefitsTitle: "Des PDF plus légers sans interface compliquée",
     benefitsDescription: "Déposez, compressez, vérifiez le résultat et téléchargez un fichier plus léger en un flux de travail clair.",
     benefits: [{ title: "Compression rapide", description: "De l'importation à un fichier plus léger, sans distraction." }, { title: "Prêt pour le bureau", description: "Utile pour les portails, les limites d'e-mail, les formulaires et la remise de documents." }, { title: "Résultat clair", description: "Vous voyez le résultat compressé avant de le télécharger." }],
@@ -3916,7 +3883,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment compresser un PDF ?", answer: "Déposez votre PDF, vérifiez le taux de compression, puis téléchargez le fichier compressé." }, { question: "Est-ce gratuit ?", answer: "Oui, cet outil est conçu pour une compression PDF quotidienne entièrement gratuite." }, { question: "Peut-on l'utiliser sur mobile ?", answer: "Oui, la page fonctionne aussi bien sur mobile que sur ordinateur." }],
   },
   "protect-pdf": {
-    ...enTools["protect-pdf"],
     title: "Protéger PDF par mot de passe en ligne gratuit | DockDocs",
     description: "Ajoutez une protection par mot de passe à n'importe quel PDF en ligne et gratuitement. Chiffrement de PDF rapide et sécurisé, traité dans votre navigateur, avec DockDocs.",
     appName: "DockDocs Protéger PDF",
@@ -3926,7 +3892,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Chiffrez votre PDF avec un mot de passe. Tout le traitement est local : votre fichier ne quitte jamais votre appareil.",
     primaryActionLabel: "Protéger PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "PDF chiffré"]],
-    upload: { ...enTools["protect-pdf"].upload, title: "Déposez un PDF à protéger", description: "Glissez-déposez un PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Définissez un mot de passe et téléchargez votre PDF chiffré." },
+    upload: { title: "Déposez un PDF à protéger", description: "Glissez-déposez un PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Définissez un mot de passe et téléchargez votre PDF chiffré." },
     benefitsTitle: "Protégez vos PDF sans les envoyer sur un serveur",
     benefitsDescription: "Importez le fichier localement, définissez un mot de passe et téléchargez un PDF chiffré instantanément.",
     benefits: [{ title: "Chiffrement AES-128", description: "Chiffrement standard du secteur pour votre PDF." }, { title: "Confidentialité avant tout", description: "Votre fichier et votre mot de passe ne quittent jamais votre appareil." }, { title: "Contrôle des permissions", description: "Restreignez l'édition et la copie tout en autorisant le remplissage de formulaires." }],
@@ -3940,7 +3906,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment protéger un PDF par mot de passe ?", answer: "Déposez votre PDF, définissez un mot de passe, puis téléchargez le fichier chiffré." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toutes les opérations de chiffrement s'effectuent localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la protection par mot de passe d'un PDF est entièrement gratuite." }],
   },
   "unlock-pdf": {
-    ...enTools["unlock-pdf"],
     title: "Déverrouiller un PDF gratuitement | DockDocs",
     description: "Supprimez la protection par mot de passe d'un PDF en ligne et gratuitement. Déverrouillez vos PDF pour les éditer, imprimer et partager.",
     appName: "DockDocs Déverrouiller PDF",
@@ -3950,7 +3915,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Supprimez les restrictions d'impression, de copie et d'édition de n'importe quel PDF instantanément — sans mot de passe. Ou saisissez votre mot de passe pour déverrouiller complètement un fichier protégé. Fonctionne dans votre navigateur avec DockDocs.",
     primaryActionLabel: "Supprimer les restrictions",
     stats: [["Prix", "Gratuit"], ["Entrée", "PDF restreint"], ["Sortie", "PDF déverrouillé"], ["Sécurité", "Local dans le navigateur"]],
-    upload: { ...enTools["unlock-pdf"].upload, title: "Déposez un PDF avec des restrictions ou une protection", description: "Glissez-déposez un fichier PDF restreint ou protégé ici, ou choisissez-le depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "Aucun mot de passe requis pour supprimer les restrictions d'usage (impression, copie, édition). Saisissez un mot de passe uniquement si le PDF en exige un pour s'ouvrir. Tout est traité dans votre navigateur." },
+    upload: { title: "Déposez un PDF avec des restrictions ou une protection", description: "Glissez-déposez un fichier PDF restreint ou protégé ici, ou choisissez-le depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "Aucun mot de passe requis pour supprimer les restrictions d'usage (impression, copie, édition). Saisissez un mot de passe uniquement si le PDF en exige un pour s'ouvrir. Tout est traité dans votre navigateur." },
     benefitsTitle: "Pourquoi déverrouiller vos PDF avec DockDocs",
     benefitsDescription: "Un moyen rapide, gratuit et sécurisé de supprimer la protection par mot de passe d'un PDF, sans rien installer.",
     benefits: [{ title: "Déverrouillage gratuit", description: "Supprimez la protection par mot de passe sans payer de logiciels coûteux. Aucun compte requis." }, { title: "Sécurité dans le navigateur", description: "Votre PDF et le mot de passe sont traités localement dans votre navigateur ; ils ne sont jamais envoyés à un serveur." }, { title: "Résultats instantanés", description: "Saisissez le mot de passe une fois et le PDF déverrouillé est prêt à télécharger en quelques secondes." }],
@@ -3964,7 +3929,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Faut-il un mot de passe pour lever les restrictions d'un PDF ?", answer: "Pas nécessairement. Si le PDF s'ouvre normalement mais que l'impression, la copie ou l'édition est verrouillée (mot de passe de permissions), les restrictions peuvent être supprimées sans mot de passe. En revanche, si le PDF requiert un mot de passe à l'ouverture, vous devez le fournir." }, { question: "Comment supprimer le mot de passe de permissions d'un PDF ?", answer: "Déposez votre PDF ; l'outil détecte et supprime automatiquement les restrictions, puis vous téléchargez le fichier déverrouillé." }, { question: "Est-ce gratuit ?", answer: "Oui, la suppression des restrictions PDF est entièrement gratuite." }, { question: "Est-ce légal ?", answer: "Cet outil est réservé à vos propres documents ou à ceux pour lesquels vous avez obtenu une autorisation." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }],
   },
   "ocr-pdf": {
-    ...enTools["ocr-pdf"],
     title: "OCR PDF en ligne gratuit | DockDocs",
     description: "Extrayez le texte de fichiers PDF scannés en ligne avec des flux OCR alimentés par l'IA dans DockDocs.",
     appName: "DockDocs OCR PDF",
@@ -3974,7 +3938,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Convertissez vos PDF scannés en texte interrogeable et réutilisable dans DockDocs.",
     primaryActionLabel: "Appliquer l'OCR au PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "PDF numérisés"], ["Sortie", "Texte extrait"]],
-    upload: { ...enTools["ocr-pdf"].upload, title: "Déposez un PDF scanné", description: "Glissez-déposez un fichier PDF scanné ici, ou choisissez un fichier depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Conçu pour les documents scannés, formulaires et extraction de texte. Jusqu'à 3 pages par exécution ; uniquement la première page par défaut." },
+    upload: { title: "Déposez un PDF scanné", description: "Glissez-déposez un fichier PDF scanné ici, ou choisissez un fichier depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Conçu pour les documents scannés, formulaires et extraction de texte. Jusqu'à 3 pages par exécution ; uniquement la première page par défaut." },
     benefitsTitle: "Extrayez du texte de scans sans interface compliquée",
     benefitsDescription: "Importez un scan, appliquez l'OCR, vérifiez le texte extrait, copiez ou téléchargez.",
     benefits: [{ title: "Texte réutilisable", description: "Transformez des pages scannées en texte interrogeable." }, { title: "Progression de l'OCR", description: "Affiche l'avancement de la reconnaissance avant le résultat." }, { title: "Copier et télécharger", description: "Propose des actions de résultat centrées sur le texte." }],
@@ -3988,7 +3952,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment appliquer l'OCR à un PDF ?", answer: "Déposez votre PDF numérisé et téléchargez le fichier résultant avec une couche de texte consultable." }, { question: "Les PDF numérisés et l'écriture manuscrite sont-ils pris en charge ?", answer: "La plupart des documents numérisés imprimés sont pris en charge ; la reconnaissance de l'écriture manuscrite est moins précise." }, { question: "Est-ce gratuit ?", answer: "Oui, l'OCR est entièrement gratuit." }],
   },
   "pdf-to-word": {
-    ...enTools["pdf-to-word"],
     title: "Convertir PDF en Word en ligne gratuit | DockDocs",
     description: "Convertissez des fichiers PDF en documents Word modifiables en ligne. Conversion PDF vers Word rapide et précise.",
     appName: "DockDocs PDF en Word",
@@ -3998,7 +3961,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Arrêtez de ressaisir vos PDF à la main. Convertissez un PDF en document Word modifiable en quelques secondes, pour éditer et réutiliser le texte plutôt que de le refaire de zéro.",
     primaryActionLabel: "Convertir PDF en Word",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichiers PDF"], ["Sortie", "Documents Word"]],
-    upload: { ...enTools["pdf-to-word"].upload, title: "Déposez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici, ou choisissez un fichier depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Conçu pour les flux de travail avec des documents modifiables." },
+    upload: { title: "Déposez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici, ou choisissez un fichier depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Conçu pour les flux de travail avec des documents modifiables." },
     benefitsTitle: "Créez des fichiers Word modifiables sans interface surchargée",
     benefitsDescription: "Importez, convertissez, visualisez la structure modifiable et téléchargez un résultat au format DOCX.",
     benefits: [{ title: "Résultat modifiable", description: "Prépare le contenu du PDF pour que vous puissiez l'éditer." }, { title: "Aperçu de la structure", description: "Affiche les titres, le texte et les tableaux avant le téléchargement." }, { title: "Export en DOCX", description: "Vous guide vers l'export d'un document modifiable." }],
@@ -4012,7 +3975,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un PDF en Word ?", answer: "Déposez votre PDF et téléchargez le fichier DOCX modifiable." }, { question: "La mise en forme est-elle conservée après conversion ?", answer: "CloudConvert s'efforce de préserver la mise en page, mais le résultat peut varier selon le PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en Word est entièrement gratuite." }],
   },
   "pdf-to-excel": {
-    ...enTools["pdf-to-excel"],
     title: "Convertir PDF en Excel en ligne gratuit | DockDocs",
     description: "Convertissez des tableaux PDF en feuilles de calcul Excel en ligne et gratuitement dans DockDocs.",
     appName: "DockDocs PDF en Excel",
@@ -4022,7 +3984,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extrayez les données de tableaux de vos PDF et téléchargez en XLSX. Propulsé par CloudConvert.",
     primaryActionLabel: "Convertir en Excel",
     stats: [["Prix", "Gratuit"], ["Entrée", "PDF"], ["Sortie", "XLSX"]],
-    upload: { ...enTools["pdf-to-excel"].upload, title: "Déposez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "Les PDF avec tableaux donnent les meilleurs résultats. 100 Mo maximum." },
+    upload: { title: "Déposez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "Les PDF avec tableaux donnent les meilleurs résultats. 100 Mo maximum." },
     benefitsTitle: "Extrayez les données de tableaux PDF vers Excel modifiable",
     benefitsDescription: "Arrêtez de recopier manuellement les données de vos PDF.",
     benefits: [{ title: "Extraction de tableaux", description: "Identifie et extrait la structure des tableaux." }, { title: "Résultat modifiable", description: "Éditez dans Excel, Google Sheets ou Numbers." }, { title: "Gain de temps", description: "Automatise l'extraction de données." }],
@@ -4036,7 +3998,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un PDF en Excel ?", answer: "Déposez votre PDF et téléchargez le fichier XLSX." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en Excel est entièrement gratuite." }],
   },
   "pdf-to-ppt": {
-    ...enTools["pdf-to-ppt"],
     title: "Convertir PDF en PowerPoint en ligne gratuit | DockDocs",
     description: "Convertissez des fichiers PDF en présentations PowerPoint (PPTX) modifiables, en ligne et gratuitement, dans DockDocs.",
     appName: "DockDocs PDF en PPT",
@@ -4046,7 +4007,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Importez un PDF et téléchargez une présentation PPTX modifiable.",
     primaryActionLabel: "Convertir en PPTX",
     stats: [["Prix", "Gratuit"], ["Entrée", "PDF"], ["Sortie", "PPTX"]],
-    upload: { ...enTools["pdf-to-ppt"].upload, title: "Déposez un PDF", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF pris en charge. 100 Mo maximum." },
+    upload: { title: "Déposez un PDF", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF pris en charge. 100 Mo maximum." },
     benefitsTitle: "Convertissez un PDF en diapositives modifiables",
     benefitsDescription: "CloudConvert reconstruit les pages de votre PDF en diapositives PowerPoint.",
     benefits: [{ title: "Diapositives modifiables", description: "Chaque page du PDF devient une diapositive PPTX modifiable." }, { title: "Conversion rapide", description: "La plupart des fichiers sont convertis en moins d'une minute." }, { title: "Sans logiciel à installer", description: "Convertissez directement dans votre navigateur." }],
@@ -4060,7 +4021,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un PDF en PowerPoint ?", answer: "Déposez votre PDF et téléchargez le fichier PPTX converti." }, { question: "La mise en forme des diapositives est-elle conservée ?", answer: "CloudConvert convertit chaque page PDF en diapositive ; le résultat peut varier selon le PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en PowerPoint est entièrement gratuite." }],
   },
   "pdf-to-pdfa": {
-    ...enTools["pdf-to-pdfa"],
     title: "Convertisseur PDF vers PDF/A en ligne gratuit | DockDocs",
     description: "Convertissez des fichiers PDF au format d'archivage PDF/A en ligne et gratuitement dans DockDocs.",
     appName: "DockDocs PDF en PDF/A",
@@ -4070,7 +4030,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Importez un PDF et téléchargez un fichier PDF/A conçu pour l'archivage et la conformité à long terme.",
     primaryActionLabel: "Convertir en PDF/A",
     stats: [["Prix", "Gratuit"], ["Entrée", "PDF"], ["Sortie", "PDF/A"]],
-    upload: { ...enTools["pdf-to-pdfa"].upload, title: "Déposez un PDF", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF pris en charge. 100 Mo maximum." },
+    upload: { title: "Déposez un PDF", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF pris en charge. 100 Mo maximum." },
     benefitsTitle: "Préparez un PDF pour l'archivage",
     benefitsDescription: "Le format PDF/A incorpore les polices et supprime les éléments qui nuisent à la lisibilité à long terme.",
     benefits: [{ title: "Archivage à long terme", description: "PDF/A est la norme ISO pour les documents d'archive." }, { title: "Autonome", description: "Polices et ressources incorporées, identique des années plus tard." }, { title: "Sans logiciel à installer", description: "Convertissez directement dans votre navigateur." }],
@@ -4084,7 +4044,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Qu'est-ce que le PDF/A ?", answer: "Le PDF/A est une version du PDF normalisée par l'ISO, conçue pour l'archivage à long terme, avec polices et ressources entièrement intégrées." }, { question: "Comment convertir un PDF en PDF/A ?", answer: "Déposez votre PDF et téléchargez le fichier PDF/A conforme aux normes d'archivage à long terme." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en PDF/A est entièrement gratuite." }],
   },
   "pdf-to-html": {
-    ...enTools["pdf-to-html"],
     title: "Convertir PDF en HTML en ligne gratuit | DockDocs",
     description: "Convertissez un PDF en fichier HTML propre, en ligne et gratuitement : chaque page comme image avec le texte sélectionnable dans un bloc repliable. Tout dans le navigateur ; votre fichier ne quitte jamais votre appareil.",
     appName: "DockDocs PDF en HTML",
@@ -4094,7 +4053,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Convertissez chaque page du PDF en image dans un fichier HTML propre, avec le texte sélectionnable dans un bloc repliable en dessous : la mise en page est préservée et le texte reste interrogeable. Tout le traitement est local ; votre fichier ne quitte jamais votre appareil.",
     primaryActionLabel: "Convertir en HTML",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "Fichier HTML"]],
-    upload: { ...enTools["pdf-to-html"].upload, title: "Déposez un PDF à convertir", description: "Glissez-déposez un PDF ici, ou choisissez un fichier.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Téléchargez le texte sous forme de fichier .html structuré." },
+    upload: { title: "Déposez un PDF à convertir", description: "Glissez-déposez un PDF ici, ou choisissez un fichier.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Téléchargez le texte sous forme de fichier .html structuré." },
     benefitsTitle: "Convertissez PDF en HTML sans l'envoyer sur un serveur",
     benefitsDescription: "Importez le fichier localement et téléchargez un fichier HTML instantanément.",
     benefits: [{ title: "Mise en page préservée", description: "Chaque page devient une section image, avec le texte conservé dans un bloc repliable pour rester sélectionnable." }, { title: "Confidentialité avant tout", description: "Toute l'extraction se fait dans votre navigateur. Votre fichier ne quitte jamais votre appareil." }, { title: "Sélection de pages", description: "Si vous le souhaitez, convertissez uniquement les pages dont vous avez besoin." }],
@@ -4108,7 +4067,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un PDF en HTML ?", answer: "Déposez votre PDF et téléchargez le fichier HTML généré." }, { question: "Les images et la mise en page sont-elles conservées ?", answer: "Oui — chaque page est rendue sous forme d'image pour préserver la mise en forme ; une zone dépliable sous chaque page contient le texte sélectionnable d'origine pour faciliter la recherche." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toute l'extraction s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }],
   },
   "pdf-to-markdown": {
-    ...enTools["pdf-to-markdown"],
     title: "Convertir PDF en Markdown en ligne gratuit | DockDocs",
     description: "Convertissez le contenu textuel d'un PDF en Markdown en ligne et gratuitement. Extrayez du Markdown structuré depuis n'importe quel PDF dans DockDocs.",
     appName: "DockDocs PDF en Markdown",
@@ -4118,7 +4076,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extrayez le texte de n'importe quel PDF et donnez-lui une structure Markdown. Fonctionne entièrement dans votre navigateur.",
     primaryActionLabel: "Convertir en Markdown",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "Markdown (.md)"]],
-    upload: { ...enTools["pdf-to-markdown"].upload, title: "Déposez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Fonctionne mieux avec les PDF à base de texte. Appliquez d'abord l'OCR si votre PDF est scanné." },
+    upload: { title: "Déposez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Fonctionne mieux avec les PDF à base de texte. Appliquez d'abord l'OCR si votre PDF est scanné." },
     benefitsTitle: "Extrayez le contenu d'un PDF en Markdown",
     benefitsDescription: "Importez le fichier, extrayez le contenu et téléchargez un fichier .md.",
     benefits: [{ title: "Résultat orienté développeurs", description: "Le Markdown fonctionne sur GitHub, Notion, Obsidian et tout éditeur." }, { title: "Confidentialité avant tout", description: "Tout le traitement se fait dans votre navigateur." }, { title: "Résultat structuré par pages", description: "Chaque page du PDF devient une section Markdown." }],
@@ -4132,7 +4090,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un PDF en Markdown ?", answer: "Déposez votre PDF et téléchargez le fichier .md converti." }, { question: "La mise en forme est-elle conservée après conversion ?", answer: "Les titres, listes et paragraphes sont convertis en syntaxe Markdown dans la mesure du possible ; les tableaux complexes peuvent être moins bien rendus." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toute l'extraction s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }],
   },
   "word-to-pdf": {
-    ...enTools["word-to-pdf"],
     title: "Convertir Word en PDF en ligne gratuit | DockDocs",
     description: "Convertissez des documents Word en PDF en ligne et gratuitement dans DockDocs.",
     appName: "DockDocs Word en PDF",
@@ -4142,7 +4099,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Importez un fichier DOCX et téléchargez un PDF haute fidélité.",
     primaryActionLabel: "Convertir en PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "DOCX / DOC"], ["Sortie", "PDF"]],
-    upload: { ...enTools["word-to-pdf"].upload, title: "Déposez un document Word", description: "Glissez-déposez un fichier .docx ici.", buttonLabel: "Choisir un fichier Word", note: "DOCX et DOC acceptés. 100 Mo maximum." },
+    upload: { title: "Déposez un document Word", description: "Glissez-déposez un fichier .docx ici.", buttonLabel: "Choisir un fichier Word", note: "DOCX et DOC acceptés. 100 Mo maximum." },
     benefitsTitle: "Convertissez Word en PDF sans perdre la mise en forme",
     benefitsDescription: "CloudConvert préserve les polices, les tableaux et la mise en page.",
     benefits: [{ title: "Mise en page fidèle", description: "Polices, tableaux et mise en forme sont préservés." }, { title: "Conversion rapide", description: "La plupart des documents sont convertis en moins de 30 secondes." }, { title: "Sans logiciel à installer", description: "Convertissez directement dans votre navigateur." }],
@@ -4156,7 +4113,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un document Word en PDF ?", answer: "Déposez votre fichier DOCX ou DOC et téléchargez le PDF converti." }, { question: "La mise en forme est-elle conservée après conversion ?", answer: "Notre moteur de conversion préserve les polices, l'espacement et la mise en page — avec un résultat comparable à l'export direct depuis Word." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion Word en PDF est entièrement gratuite, sans compte requis." }, { question: "Quels formats de fichiers sont acceptés ?", answer: "Les formats .docx et .doc sont pris en charge, avec une taille de fichier maximale de 100 Mo." }],
   },
   "excel-to-pdf": {
-    ...enTools["excel-to-pdf"],
     title: "Convertisseur Excel en PDF en ligne gratuit | DockDocs",
     description: "Convertissez des feuilles de calcul Excel en PDF en ligne et gratuitement dans DockDocs.",
     appName: "DockDocs Excel en PDF",
@@ -4166,7 +4122,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Importez un fichier XLSX et téléchargez un PDF prêt à imprimer.",
     primaryActionLabel: "Convertir en PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "XLSX / XLS"], ["Sortie", "PDF"]],
-    upload: { ...enTools["excel-to-pdf"].upload, title: "Déposez un fichier Excel", description: "Glissez-déposez un fichier .xlsx ici.", buttonLabel: "Choisir un fichier Excel", note: "XLSX et XLS acceptés. 100 Mo maximum." },
+    upload: { title: "Déposez un fichier Excel", description: "Glissez-déposez un fichier .xlsx ici.", buttonLabel: "Choisir un fichier Excel", note: "XLSX et XLS acceptés. 100 Mo maximum." },
     benefitsTitle: "Convertissez des feuilles de calcul en PDF pour les partager",
     benefitsDescription: "Fixez tableaux et graphiques au format PDF.",
     benefits: [{ title: "Résultat fidèle aux tableaux", description: "La mise en page des cellules et les graphiques sont préservés." }, { title: "Prêt à imprimer", description: "Formatage adapté pour imprimer depuis n'importe quel appareil." }, { title: "Sans Excel requis", description: "Les destinataires peuvent consulter sans logiciel de tableur." }],
@@ -4180,7 +4136,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un fichier Excel en PDF ?", answer: "Déposez votre fichier XLSX et téléchargez le PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion Excel en PDF est entièrement gratuite." }],
   },
   "ppt-to-pdf": {
-    ...enTools["ppt-to-pdf"],
     title: "Convertir PowerPoint en PDF en ligne gratuit | DockDocs",
     description: "Convertissez des présentations PowerPoint en PDF en ligne et gratuitement dans DockDocs.",
     appName: "DockDocs PPT en PDF",
@@ -4190,7 +4145,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Importez un fichier PPTX et téléchargez un PDF prêt à présenter.",
     primaryActionLabel: "Convertir en PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "PPTX / PPT"], ["Sortie", "PDF"]],
-    upload: { ...enTools["ppt-to-pdf"].upload, title: "Déposez un fichier PowerPoint", description: "Glissez-déposez un fichier .pptx ici.", buttonLabel: "Choisir un fichier PPT", note: "PPTX et PPT acceptés. 100 Mo maximum." },
+    upload: { title: "Déposez un fichier PowerPoint", description: "Glissez-déposez un fichier .pptx ici.", buttonLabel: "Choisir un fichier PPT", note: "PPTX et PPT acceptés. 100 Mo maximum." },
     benefitsTitle: "Convertissez des présentations en PDF pour les partager",
     benefitsDescription: "Fixez vos diapositives au format PDF pour une compatibilité universelle.",
     benefits: [{ title: "Résultat fidèle aux diapositives", description: "Mise en page, polices et images sont préservés." }, { title: "Partagez sans logiciel", description: "Les destinataires peuvent voir sans PowerPoint." }, { title: "Conversion rapide", description: "Moins de 30 secondes pour la plupart des fichiers." }],
@@ -4204,7 +4159,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un PowerPoint en PDF ?", answer: "Déposez votre fichier PPTX et téléchargez le PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PPT en PDF est entièrement gratuite." }],
   },
   "html-to-pdf": {
-    ...enTools["html-to-pdf"],
     title: "Convertisseur HTML en PDF en ligne gratuit | DockDocs",
     description: "Convertissez des fichiers HTML en PDF en ligne et gratuitement dans DockDocs.",
     appName: "DockDocs HTML en PDF",
@@ -4214,7 +4168,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Importez un fichier .html et téléchargez un PDF propre prêt à imprimer.",
     primaryActionLabel: "Convertir en PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "HTML"], ["Sortie", "PDF"]],
-    upload: { ...enTools["html-to-pdf"].upload, title: "Déposez un fichier HTML", description: "Glissez-déposez un fichier .html ou .htm ici.", buttonLabel: "Choisir un fichier HTML", note: "HTML et HTM acceptés. 100 Mo maximum." },
+    upload: { title: "Déposez un fichier HTML", description: "Glissez-déposez un fichier .html ou .htm ici.", buttonLabel: "Choisir un fichier HTML", note: "HTML et HTM acceptés. 100 Mo maximum." },
     benefitsTitle: "Convertissez votre HTML en PDF facile à partager",
     benefitsDescription: "CloudConvert traite votre HTML avec un vrai moteur de navigateur.",
     benefits: [{ title: "Rendu fidèle", description: "Titres, tableaux et styles sont préservés." }, { title: "Conversion rapide", description: "La plupart des fichiers sont convertis en moins de 30 secondes." }, { title: "Sans rien installer", description: "Convertissez directement dans votre navigateur." }],
@@ -4228,7 +4182,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un fichier HTML en PDF ?", answer: "Déposez votre fichier .html et téléchargez le PDF converti." }, { question: "Les images et le CSS sont-ils inclus ?", answer: "Oui, à condition que les images et le CSS soient intégrés ou accessibles. Les fichiers HTML entièrement autonomes donnent les meilleurs résultats." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion HTML en PDF est entièrement gratuite." }],
   },
   "merge-pdf": {
-    ...enTools["merge-pdf"],
     title: "Fusionner PDF en ligne gratuit | DockDocs",
     description: "Combinez plusieurs fichiers PDF en un seul document, en ligne et gratuitement. Tout se passe dans votre navigateur : vos fichiers ne sont jamais envoyés sur aucun serveur.",
     appName: "DockDocs Fusionner PDF",
@@ -4238,7 +4191,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Fatigué d'envoyer cinq pièces jointes séparées ? Combinez-les en un PDF propre et ordonné en quelques secondes — plus simple à partager, archiver et relire.",
     primaryActionLabel: "Fusionner PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "Plusieurs PDF"], ["Sortie", "Un seul PDF"]],
-    upload: { ...enTools["merge-pdf"].upload, title: "Importez les PDF à fusionner", description: "Glissez-déposez plusieurs fichiers PDF ici, ou choisissez des fichiers depuis votre appareil.", buttonLabel: "Choisir des PDF", note: "PDF uniquement. Conçu pour assembler des dossiers de documents." },
+    upload: { title: "Importez les PDF à fusionner", description: "Glissez-déposez plusieurs fichiers PDF ici, ou choisissez des fichiers depuis votre appareil.", buttonLabel: "Choisir des PDF", note: "PDF uniquement. Conçu pour assembler des dossiers de documents." },
     benefitsTitle: "Combinez des PDF sans interface compliquée",
     benefitsDescription: "Importez, réorganisez, fusionnez et téléchargez un seul PDF final.",
     benefits: [{ title: "Un seul dossier", description: "Transformez des PDF éparpillés en un document unique et organisé." }, { title: "Aperçu de l'ordre", description: "Visualisez l'ordre des documents avant la fusion." }, { title: "Téléchargement du résultat", description: "Obtenez un seul fichier fusionné comme résultat final." }],
@@ -4252,7 +4205,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Peut-on déposer plusieurs PDF en même temps ?", answer: "Oui, l'outil accepte plusieurs fichiers à la fois." }, { question: "Peut-on modifier l'ordre des fichiers ?", answer: "Oui, un aperçu avec tri est disponible avant la fusion." }, { question: "Quel est le résultat obtenu ?", answer: "Un seul fichier PDF regroupant tous vos documents dans l'ordre choisi." }],
   },
   "split-pdf": {
-    ...enTools["split-pdf"],
     title: "Diviser PDF en ligne gratuit | DockDocs",
     description: "Divisez un PDF en plusieurs fichiers ou extrayez les pages dont vous avez besoin, en ligne et gratuitement. Tout le traitement se fait dans votre navigateur.",
     appName: "DockDocs Diviser PDF",
@@ -4262,7 +4214,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extrayez des pages, séparez des sections et préparez des ensembles de documents ciblés.",
     primaryActionLabel: "Diviser PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "Un seul PDF"], ["Sortie", "Pages ou plages"]],
-    upload: { ...enTools["split-pdf"].upload, title: "Importez un PDF à diviser", description: "Glissez-déposez un fichier PDF ici, ou choisissez un fichier depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Conçu pour les flux d'extraction de pages." },
+    upload: { title: "Importez un PDF à diviser", description: "Glissez-déposez un fichier PDF ici, ou choisissez un fichier depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Conçu pour les flux d'extraction de pages." },
     benefitsTitle: "Extrayez des pages de PDF sans interface compliquée",
     benefitsDescription: "Importez un PDF, saisissez des plages de pages, prévisualisez la division et exportez un ZIP.",
     benefits: [{ title: "Exports ciblés", description: "Extrayez uniquement les pages nécessaires sans envoyer tout le fichier." }, { title: "Saisie de plages", description: "Utilisez une syntaxe de plage claire, par exemple 1-4 ou 12-18." }, { title: "Résultat en ZIP", description: "Regroupez les résultats de la division dans un seul ZIP prêt à l'export." }],
@@ -4276,7 +4228,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Peut-on extraire une plage de pages ?", answer: "Oui, l'outil permet de définir une plage de pages à extraire." }, { question: "Quel est le résultat obtenu ?", answer: "Les pages extraites sont exportées sous forme de fichier ZIP." }, { question: "Fonctionne-t-il avec des PDF numérisés ?", answer: "Oui en tant que fichier PDF d'entrée ; la reconnaissance de texte relève du flux OCR." }],
   },
   "jpg-to-pdf": {
-    ...enTools["jpg-to-pdf"],
     title: "Convertir des images JPG en PDF | DockDocs",
     description: "Convertissez des images JPG en document PDF, en ligne et gratuitement. Combinez plusieurs photos en un seul PDF directement dans votre navigateur.",
     appName: "DockDocs JPG en PDF",
@@ -4286,7 +4237,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Les photos et les scans sont peu pratiques à envoyer et à imprimer. Réunissez vos JPG en un PDF propre en quelques secondes — facile à partager, archiver et ouvrir partout.",
     primaryActionLabel: "Convertir JPG en PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "Images JPG"], ["Sortie", "Document PDF"]],
-    upload: { ...enTools["jpg-to-pdf"].upload, title: "Importez des images JPG", description: "Glissez-déposez des images JPG ici, ou choisissez des photos depuis votre appareil.", buttonLabel: "Choisir des images JPG", note: "Prend en charge les images JPG, PNG et WebP pour créer un PDF." },
+    upload: { title: "Importez des images JPG", description: "Glissez-déposez des images JPG ici, ou choisissez des photos depuis votre appareil.", buttonLabel: "Choisir des images JPG", note: "Prend en charge les images JPG, PNG et WebP pour créer un PDF." },
     benefitsTitle: "Créez des PDF à partir d'images sans éditeur lourd",
     benefitsDescription: "Importez des images, organisez l'ordre des pages et exportez un seul PDF.",
     benefits: [{ title: "De la photo au document", description: "Convertissez reçus, notes, scans et photos en PDF." }, { title: "Ordre des pages", description: "Prévisualisez l'ordre des images avant l'export." }, { title: "Export en PDF", description: "Téléchargez un seul document PDF à partir d'images." }],
@@ -4300,7 +4251,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un JPG en PDF ?", answer: "Déposez une ou plusieurs images JPG et téléchargez le PDF combiné." }, { question: "Peut-on déposer plusieurs images ?", answer: "Oui, l'outil permet de fusionner plusieurs JPG en un seul PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion JPG en PDF est entièrement gratuite." }],
   },
   "png-to-pdf": {
-    ...enTools["png-to-pdf"],
     title: "Convertir PNG en PDF en ligne gratuit | DockDocs",
     description: "Convertissez des images PNG en document PDF, en ligne et gratuitement. Regroupez plusieurs images en un seul PDF directement dans votre navigateur.",
     appName: "DockDocs PNG en PDF",
@@ -4310,7 +4260,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Transformez captures d'écran, schémas et graphiques PNG en documents PDF à partager et à archiver.",
     primaryActionLabel: "Convertir PNG en PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "Images PNG"], ["Sortie", "Document PDF"]],
-    upload: { ...enTools["png-to-pdf"].upload, title: "Importez des images PNG", description: "Glissez-déposez des images PNG ici.", buttonLabel: "Choisir des images PNG", note: "Prend en charge les images PNG, JPG et WebP pour créer un PDF." },
+    upload: { title: "Importez des images PNG", description: "Glissez-déposez des images PNG ici.", buttonLabel: "Choisir des images PNG", note: "Prend en charge les images PNG, JPG et WebP pour créer un PDF." },
     benefitsTitle: "Créez des PDF à partir d'images PNG",
     benefitsDescription: "Importez, organisez et téléchargez un PDF propre.",
     benefits: [{ title: "Des captures aux documents", description: "Convertissez captures d'écran et schémas en PDF partageables." }, { title: "Import de plusieurs images", description: "Combinez plusieurs PNG en un seul document organisé." }, { title: "Résultat prêt pour le bureau", description: "Préparez vos PNG pour l'e-mail, les importations et la remise client." }],
@@ -4324,7 +4274,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un PNG en PDF ?", answer: "Déposez une ou plusieurs images PNG et téléchargez le PDF combiné." }, { question: "Peut-on déposer plusieurs images ?", answer: "Oui, l'outil permet de fusionner plusieurs PNG en un seul PDF." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PNG en PDF est entièrement gratuite." }],
   },
   "pdf-to-jpg": {
-    ...enTools["pdf-to-jpg"],
     title: "Convertir PDF en JPG en ligne gratuit | DockDocs",
     description: "Convertissez chaque page d'un PDF en image JPG, en ligne et gratuitement. Tout le traitement se fait dans votre navigateur ; vos fichiers ne sont pas envoyés.",
     appName: "DockDocs PDF en JPG",
@@ -4334,7 +4283,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extrayez des images JPG haute qualité de n'importe quel PDF. Tout s'exécute dans votre navigateur.",
     primaryActionLabel: "Convertir en JPG",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "Images JPG"]],
-    upload: { ...enTools["pdf-to-jpg"].upload, title: "Importez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Chaque page est rendue en image JPG haute qualité." },
+    upload: { title: "Importez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Chaque page est rendue en image JPG haute qualité." },
     benefitsTitle: "Extrayez les pages d'un PDF en images",
     benefitsDescription: "Importez, sélectionnez les pages et téléchargez des images JPG instantanément.",
     benefits: [{ title: "Résultat haute qualité", description: "Les pages sont rendues en 2× pour des images JPG nettes." }, { title: "Confidentialité avant tout", description: "Tout le traitement se fait dans votre navigateur." }, { title: "Export individuel ou groupé", description: "Une page se télécharge en JPG ; plusieurs dans un ZIP." }],
@@ -4348,7 +4297,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un PDF en JPG ?", answer: "Déposez votre PDF ; chaque page est convertie en une image JPG, puis téléchargées ensemble." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toute la conversion s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en JPG est entièrement gratuite." }],
   },
   "pdf-to-png": {
-    ...enTools["pdf-to-png"],
     title: "Convertir PDF en PNG en ligne gratuit | DockDocs",
     description: "Convertissez les pages d'un PDF en images PNG haute qualité, en ligne et gratuitement. Tout se passe dans votre navigateur ; vos fichiers ne sont pas envoyés.",
     appName: "DockDocs PDF en PNG",
@@ -4358,7 +4306,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extrayez des images PNG sans perte de n'importe quel PDF. Tout s'exécute dans votre navigateur.",
     primaryActionLabel: "Convertir en PNG",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "Images PNG"]],
-    upload: { ...enTools["pdf-to-png"].upload, title: "Importez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Chaque page est rendue en PNG sans perte." },
+    upload: { title: "Importez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Chaque page est rendue en PNG sans perte." },
     benefitsTitle: "Extrayez les pages d'un PDF en PNG sans perte",
     benefitsDescription: "Importez, sélectionnez les pages et téléchargez des images PNG.",
     benefits: [{ title: "Qualité sans perte", description: "Le PNG conserve chaque pixel, sans artefact de compression." }, { title: "Confidentialité avant tout", description: "Tout le traitement se fait dans votre navigateur." }, { title: "Export individuel ou groupé", description: "Une page en PNG ; plusieurs dans un ZIP." }],
@@ -4372,7 +4320,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un PDF en PNG ?", answer: "Déposez votre PDF ; chaque page est convertie en une image PNG, puis téléchargées ensemble." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toute la conversion s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en PNG est entièrement gratuite." }],
   },
   "pdf-to-image": {
-    ...enTools["pdf-to-image"],
     title: "Convertir PDF en image en ligne gratuit | DockDocs",
     description: "Convertissez les pages de votre PDF en images JPG ou PNG, en ligne et gratuitement. Sélectionnez les pages, choisissez le format et téléchargez — tout dans votre navigateur.",
     appName: "DockDocs PDF en image",
@@ -4382,7 +4329,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Exportez n'importe quelle page d'un PDF en image JPG haute qualité ou PNG sans perte. Aucun envoi vers un serveur.",
     primaryActionLabel: "Convertir en image",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "Images JPG ou PNG"]],
-    upload: { ...enTools["pdf-to-image"].upload, title: "Importez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Choisissez JPG pour les photos, PNG pour un résultat sans perte." },
+    upload: { title: "Importez un PDF à convertir", description: "Glissez-déposez un fichier PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Choisissez JPG pour les photos, PNG pour un résultat sans perte." },
     benefitsTitle: "Extrayez les pages d'un PDF en images",
     benefitsDescription: "Importez, choisissez un format et téléchargez les images.",
     benefits: [{ title: "Sortie JPG ou PNG", description: "Choisissez JPG pour des fichiers plus légers ou PNG pour une qualité sans perte." }, { title: "Confidentialité avant tout", description: "Tout le traitement se fait dans votre navigateur — aucun envoi." }, { title: "Export individuel ou groupé", description: "Une page en image ; plusieurs pages dans un ZIP." }],
@@ -4396,7 +4343,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment convertir un PDF en image ?", answer: "Déposez votre PDF, choisissez le format de sortie, et chaque page sera convertie en une image." }, { question: "Quels formats d'image sont pris en charge ?", answer: "JPG et PNG sont disponibles, tous deux traités localement dans votre navigateur." }, { question: "Est-ce gratuit ?", answer: "Oui, la conversion PDF en image est entièrement gratuite." }],
   },
   "delete-page": {
-    ...enTools["delete-page"],
     title: "Supprimer des pages d'un PDF en ligne gratuit | DockDocs",
     description: "Supprimez des pages spécifiques d'un PDF, en ligne et gratuitement. Retirez les pages dont vous n'avez pas besoin directement dans votre navigateur, sans envoyer de fichiers.",
     appName: "DockDocs Supprimer des pages",
@@ -4406,7 +4352,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Supprimez une ou plusieurs pages d'un PDF en indiquant des plages de pages. Tout le traitement se fait dans votre navigateur.",
     primaryActionLabel: "Supprimer des pages",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "PDF allégé"]],
-    upload: { ...enTools["delete-page"].upload, title: "Importez un PDF à éditer", description: "Glissez-déposez un PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Indiquez les pages à supprimer et téléchargez le résultat." },
+    upload: { title: "Importez un PDF à éditer", description: "Glissez-déposez un PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Indiquez les pages à supprimer et téléchargez le résultat." },
     benefitsTitle: "Retirez des pages d'un PDF sans éditeur lourd",
     benefitsDescription: "Importez, indiquez les pages à retirer et téléchargez instantanément.",
     benefits: [{ title: "Suppression précise", description: "Supprimez des pages individuelles ou des plages en une seule opération." }, { title: "Confidentialité avant tout", description: "Tout le traitement se fait dans votre navigateur." }, { title: "Résultat propre", description: "Les pages restantes conservent leur ordre d'origine." }],
@@ -4420,7 +4366,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment supprimer une page d'un PDF ?", answer: "Déposez votre PDF, sélectionnez les pages à supprimer, puis téléchargez le fichier mis à jour." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la suppression de pages PDF est entièrement gratuite." }],
   },
   "rotate-page": {
-    ...enTools["rotate-page"],
     title: "Faire pivoter les pages d'un PDF | DockDocs",
     description: "Faites pivoter les pages d'un PDF de 90°, 180° ou 270° et enregistrez le résultat, en ligne et gratuitement. Tout se passe dans votre navigateur.",
     appName: "DockDocs Faire pivoter PDF",
@@ -4430,7 +4375,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Faites pivoter des pages individuelles ou tout le PDF de 90°, 180° ou 270°. Tout le traitement s'exécute localement.",
     primaryActionLabel: "Faire pivoter les pages",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "PDF pivoté"]],
-    upload: { ...enTools["rotate-page"].upload, title: "Importez un PDF à faire pivoter", description: "Glissez-déposez un PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Choisissez les pages à faire pivoter et l'angle." },
+    upload: { title: "Importez un PDF à faire pivoter", description: "Glissez-déposez un PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Choisissez les pages à faire pivoter et l'angle." },
     benefitsTitle: "Corrigez l'orientation d'un PDF sans éditeur lourd",
     benefitsDescription: "Importez, choisissez la rotation et téléchargez le PDF corrigé instantanément.",
     benefits: [{ title: "Rotation sélective", description: "Faites pivoter des pages précises ou toutes les pages." }, { title: "Plusieurs angles", description: "Choisissez 90°, 180° ou 270° dans le sens horaire." }, { title: "Confidentialité avant tout", description: "Tout le traitement se fait dans votre navigateur." }],
@@ -4444,7 +4389,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment faire pivoter des pages d'un PDF ?", answer: "Déposez votre PDF, choisissez les pages et l'angle de rotation, puis téléchargez le fichier mis à jour." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la rotation de pages PDF est entièrement gratuite." }],
   },
   "reorder-pages": {
-    ...enTools["reorder-pages"],
     title: "Réorganiser les pages d'un PDF en ligne gratuit | DockDocs",
     description: "Réorganisez l'ordre des pages d'un PDF par glisser-déposer, en ligne et gratuitement. Tout le traitement se fait dans votre navigateur.",
     appName: "DockDocs Réorganiser les pages",
@@ -4454,7 +4398,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Indiquez une nouvelle séquence de pages et téléchargez un PDF réorganisé instantanément. Tout le traitement s'exécute localement.",
     primaryActionLabel: "Réorganiser les pages",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "PDF réorganisé"]],
-    upload: { ...enTools["reorder-pages"].upload, title: "Importez un PDF à réorganiser", description: "Glissez-déposez un PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Saisissez le nouvel ordre des pages pour réorganiser votre document." },
+    upload: { title: "Importez un PDF à réorganiser", description: "Glissez-déposez un PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Saisissez le nouvel ordre des pages pour réorganiser votre document." },
     benefitsTitle: "Réorganisez les pages d'un PDF sans éditeur lourd",
     benefitsDescription: "Importez, saisissez la nouvelle séquence et téléchargez instantanément.",
     benefits: [{ title: "Contrôle total de la séquence", description: "Avancez, reculez ou réorganisez complètement les pages." }, { title: "Confidentialité avant tout", description: "Tout le traitement se fait dans votre navigateur." }, { title: "Résultat propre", description: "Les pages conservent leur contenu d'origine dans le nouvel ordre." }],
@@ -4468,7 +4412,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment réorganiser les pages d'un PDF ?", answer: "Déposez votre PDF, faites glisser les miniatures pour ajuster l'ordre, puis téléchargez le fichier mis à jour." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, la réorganisation des pages PDF est entièrement gratuite." }],
   },
   "add-page": {
-    ...enTools["add-page"],
     title: "Insérer des pages dans un PDF en ligne gratuit | DockDocs",
     description: "Insérez des pages vierges ou nouvelles dans un PDF à la position souhaitée, en ligne et gratuitement. Tout se passe dans votre navigateur.",
     appName: "DockDocs Insérer des pages",
@@ -4478,7 +4421,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Ajoutez une page vierge à n'importe quelle position dans votre PDF. Tout le traitement se fait localement dans votre navigateur.",
     primaryActionLabel: "Insérer une page vierge",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "PDF + page vierge"]],
-    upload: { ...enTools["add-page"].upload, title: "Importez un PDF à éditer", description: "Glissez-déposez un PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Indiquez où insérer la page vierge." },
+    upload: { title: "Importez un PDF à éditer", description: "Glissez-déposez un PDF ici.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Indiquez où insérer la page vierge." },
     benefitsTitle: "Ajoutez une page vierge sans éditeur lourd",
     benefitsDescription: "Importez, choisissez la position et téléchargez instantanément.",
     benefits: [{ title: "Insertion précise", description: "Insérez après une page précise, ou au début du document." }, { title: "Taille adaptée", description: "La page vierge reprend la taille des pages adjacentes." }, { title: "Confidentialité avant tout", description: "Tout le traitement se fait dans votre navigateur." }],
@@ -4492,7 +4435,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment insérer une page blanche dans un PDF ?", answer: "Déposez votre PDF, choisissez l'emplacement d'insertion, puis téléchargez le fichier mis à jour." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Est-ce gratuit ?", answer: "Oui, l'ajout d'une page blanche à un PDF est entièrement gratuit." }],
   },
   "page-numbers": {
-    ...enTools["page-numbers"],
     title: "Numéroter les pages d'un PDF en ligne gratuit | DockDocs",
     description: "Ajoutez des numéros de page à votre PDF avec la position et le style de votre choix, en ligne et gratuitement. Tout le traitement se fait dans votre navigateur.",
     appName: "DockDocs Numérotation des pages",
@@ -4502,7 +4444,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Apposez un numéro de page (ex. 3 / 12) en bas et au centre de chaque page. Tout le traitement se fait localement — votre fichier ne quitte jamais votre appareil.",
     primaryActionLabel: "Ajouter des numéros de page",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "PDF numéroté"]],
-    upload: { ...enTools["page-numbers"].upload, title: "Importez un PDF à numéroter", description: "Glissez-déposez un PDF ici, ou choisissez un fichier.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Téléchargez un PDF avec les numéros de page ajoutés." },
+    upload: { title: "Importez un PDF à numéroter", description: "Glissez-déposez un PDF ici, ou choisissez un fichier.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Téléchargez un PDF avec les numéros de page ajoutés." },
     benefitsTitle: "Ajoutez des numéros de page sans envoi sur un serveur",
     benefitsDescription: "Importez en local et téléchargez un PDF numéroté instantanément.",
     benefits: [{ title: "Chaque page numérotée", description: "Un numéro « page / total » clair est ajouté à chaque page." }, { title: "Confidentialité avant tout", description: "Tout le traitement se fait dans votre navigateur. Votre fichier ne quitte jamais votre appareil." }, { title: "Prêt à imprimer", description: "Les numéros aident à se repérer dans les documents imprimés et partagés." }],
@@ -4516,7 +4458,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment ajouter des numéros de page à un PDF ?", answer: "Déposez votre PDF et téléchargez le résultat ; les numéros de page sont ajoutés automatiquement sur chaque page." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Tout le traitement s'effectue localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Où les numéros de page sont-ils placés ?", answer: "En pied de page, centré, au format « page actuelle / nombre total de pages »." }],
   },
   "watermark-pdf": {
-    ...enTools["watermark-pdf"],
     title: "Filigrane PDF en ligne gratuit | DockDocs",
     description: "Ajoutez un filigrane texte à votre PDF, en ligne et gratuitement. Personnalisez le texte et la position directement dans votre navigateur, sans envoyer de fichiers.",
     appName: "DockDocs Filigrane PDF",
@@ -4526,7 +4467,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Apposez un texte comme CONFIDENTIEL ou BROUILLON en diagonale sur toutes les pages. Tout le traitement se fait localement — votre fichier ne quitte jamais votre appareil.",
     primaryActionLabel: "Ajouter un filigrane",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "PDF filigrané"]],
-    upload: { ...enTools["watermark-pdf"].upload, title: "Importez un PDF à filigraner", description: "Glissez-déposez un PDF ici, ou choisissez un fichier.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Saisissez le texte du filigrane et téléchargez le résultat." },
+    upload: { title: "Importez un PDF à filigraner", description: "Glissez-déposez un PDF ici, ou choisissez un fichier.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Saisissez le texte du filigrane et téléchargez le résultat." },
     benefitsTitle: "Filigranez vos PDF sans envoi sur un serveur",
     benefitsDescription: "Ajoutez votre texte et téléchargez un PDF filigrané instantanément.",
     benefits: [{ title: "Texte en diagonale", description: "Votre texte est placé en diagonale sur chaque page." }, { title: "Confidentialité avant tout", description: "Tout le filigranage se fait dans votre navigateur. Votre fichier ne quitte jamais votre appareil." }, { title: "Statut et propriété", description: "Affichez CONFIDENTIEL, BROUILLON ou le nom de votre entreprise sur chaque page." }],
@@ -4540,7 +4481,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment ajouter un filigrane à un PDF ?", answer: "Déposez votre PDF, saisissez le texte du filigrane, puis téléchargez le fichier obtenu." }, { question: "Mon PDF est-il envoyé à un serveur ?", answer: "Non. Toutes les opérations de filigrane s'effectuent localement dans votre navigateur ; le fichier ne quitte jamais votre appareil." }, { question: "Peut-on supprimer le filigrane par la suite ?", answer: "Le filigrane est intégré au contenu de la page ; conservez le fichier original si vous avez besoin d'une version sans filigrane." }],
   },
   "sign-pdf": {
-    ...enTools["sign-pdf"],
     title: "Signer PDF en ligne gratuit | DockDocs",
     description: "Signez vos PDF et ajoutez du texte ou des initiales, en ligne et gratuitement. Dessinez ou saisissez votre signature directement dans votre navigateur ; vos fichiers ne sont pas envoyés.",
     appName: "DockDocs Signer PDF",
@@ -4550,7 +4490,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Ajoutez votre signature électronique à n'importe quel PDF. Dessinez-la, saisissez-la ou importez-la — le tout dans votre navigateur avec DockDocs.",
     primaryActionLabel: "Signer PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "PDF"], ["Sortie", "PDF signé"], ["Sécurité", "Local dans le navigateur"]],
-    upload: { ...enTools["sign-pdf"].upload, title: "Importez un PDF à signer", description: "Glissez-déposez un fichier PDF ici, ou choisissez depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Votre signature et votre document ne quittent jamais votre appareil." },
+    upload: { title: "Importez un PDF à signer", description: "Glissez-déposez un fichier PDF ici, ou choisissez depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Votre signature et votre document ne quittent jamais votre appareil." },
     benefitsTitle: "Pourquoi signer vos PDF avec DockDocs",
     benefitsDescription: "Un moyen rapide, gratuit et sécurisé d'ajouter des signatures électroniques à vos PDF.",
     benefits: [{ title: "Signature électronique gratuite", description: "Signez vos PDF sans payer d'abonnement coûteux à un service de signature. Aucun compte requis." }, { title: "Signature respectueuse de la vie privée", description: "Votre document et votre signature sont traités dans votre navigateur. Aucun envoi vers des serveurs externes." }, { title: "Plusieurs options de signature", description: "Dessinez votre signature, saisissez-la avec une police manuscrite, ou importez une image de signature." }],
@@ -4564,7 +4504,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment signer un PDF ?", answer: "Déposez votre PDF, ajoutez votre signature (dessinée à la main ou saisie au clavier), puis téléchargez le fichier signé." }, { question: "La signature a-t-elle une valeur juridique ?", answer: "DockDocs génère une signature visuelle, adaptée à un usage interne ou informel. Pour une signature juridiquement contraignante, utilisez un service de signature électronique certifié." }, { question: "Est-ce gratuit ?", answer: "Oui, la signature PDF est entièrement gratuite." }],
   },
   "translate-pdf": {
-    ...enTools["translate-pdf"],
     title: "Traduire PDF avec l'IA en ligne gratuit | DockDocs",
     description: "Traduisez le texte d'un PDF vers plus de 18 langues avec l'IA, en ligne et gratuitement. Le PDF est lu dans votre navigateur ; seul le texte à traduire est envoyé.",
     appName: "DockDocs Traduire PDF",
@@ -4574,7 +4513,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extrayez le texte d'un PDF et traduisez-le vers plus de 18 langues avec l'IA. Texte uniquement pour l'instant — la traduction avec préservation de la mise en page arrive bientôt.",
     primaryActionLabel: "Traduire PDF",
     stats: [["Prix", "Gratuit"], ["Langues", "18+"], ["Entrée", "PDF"], ["Sortie", "Texte traduit"]],
-    upload: { ...enTools["translate-pdf"].upload, title: "Importez un PDF à traduire", description: "Glissez-déposez un fichier PDF ici, ou choisissez depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. L'IA traduit le texte du document ; copiez ou téléchargez le résultat." },
+    upload: { title: "Importez un PDF à traduire", description: "Glissez-déposez un fichier PDF ici, ou choisissez depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. L'IA traduit le texte du document ; copiez ou téléchargez le résultat." },
     benefitsTitle: "Pourquoi traduire vos PDF avec l'IA sur DockDocs",
     benefitsDescription: "Une traduction IA du texte de votre PDF, rapide, gratuite et respectueuse de la vie privée.",
     benefits: [{ title: "Privé par conception", description: "Votre PDF est lu dans votre navigateur ; seul le texte extrait est envoyé pour traduction. Le fichier ne quitte jamais votre appareil." }, { title: "Plus de 18 langues", description: "Traduisez entre les grandes langues du monde, dont le chinois, le japonais, le coréen, l'espagnol, le français, l'allemand, l'arabe, l'hindi et d'autres." }, { title: "Sans copier-coller", description: "Importez le PDF directement — le texte est extrait et traduit pour vous. Copiez ou téléchargez le résultat." }],
@@ -4588,7 +4527,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Comment traduire un PDF ?", answer: "Déposez votre PDF, choisissez la langue cible, puis téléchargez le fichier traduit." }, { question: "Quelles langues sont prises en charge ?", answer: "Le moteur IA prend en charge des dizaines de langues, dont l'anglais, l'espagnol, le français, l'allemand et le chinois." }, { question: "La mise en forme est-elle conservée après traduction ?", answer: "L'IA s'efforce de préserver la mise en page et la mise en forme, mais le résultat peut varier selon le PDF." }],
   },
   "edit-pdf": {
-    ...enTools["edit-pdf"],
     title: "Éditer PDF en ligne gratuit | DockDocs",
     description: "Éditez des fichiers PDF en ligne gratuitement — ajoutez du texte, des images, des formes et des annotations. Sans téléchargement, sans filigrane, éditeur PDF basé sur le navigateur par DockDocs.",
     appName: "DockDocs Éditer PDF",
@@ -4598,7 +4536,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Ajoutez du texte, des images, des formes et des annotations à n'importe quel PDF. Pas d'installation — éditez directement dans votre navigateur avec DockDocs.",
     primaryActionLabel: "Éditer PDF",
     stats: [["Prix", "Gratuit"], ["Entrée", "PDF"], ["Sortie", "PDF modifié"], ["Plateforme", "Navigateur"]],
-    upload: { ...enTools["edit-pdf"].upload, title: "Déposez un PDF à éditer", description: "Glissez-déposez un fichier PDF ici, ou choisissez depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Tout le traitement se fait dans votre navigateur — votre fichier ne quitte jamais votre appareil." },
+    upload: { title: "Déposez un PDF à éditer", description: "Glissez-déposez un fichier PDF ici, ou choisissez depuis votre appareil.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Tout le traitement se fait dans votre navigateur — votre fichier ne quitte jamais votre appareil." },
     benefitsTitle: "Pourquoi éditer des PDF avec DockDocs",
     benefitsDescription: "Un éditeur PDF rapide et gratuit qui fonctionne dans votre navigateur, sans inscription.",
     benefits: [
@@ -4621,7 +4559,6 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Peut-on modifier un PDF sans Adobe Acrobat ?", answer: "Oui. DockDocs propose un éditeur PDF gratuit directement dans le navigateur, sans installation requise." }, { question: "Peut-on ajouter du texte et des images ?", answer: "Oui, vous pouvez ajouter des annotations textuelles et des images à n'importe quel endroit de la page." }, { question: "Le fichier reste-t-il au format PDF après modification ?", answer: "Oui, le fichier téléchargé est un PDF standard." }, { question: "La mise en forme d'origine est-elle préservée ?", answer: "Le contenu original reste intact ; le texte et les images ajoutés viennent se superposer sous forme de couche d'annotations." }, { question: "Est-ce gratuit ?", answer: "Oui, les fonctions d'édition PDF de base sont entièrement gratuites." }],
   },
   "pdf-to-text": {
-    ...enTools["pdf-to-text"],
     title: "Convertir PDF en Texte (TXT) en ligne gratuit | DockDocs",
     description: "Extrayez le texte brut de n'importe quel PDF, en ligne et gratuitement. Rapide et dans votre navigateur : votre fichier ne quitte jamais votre appareil.",
     appName: "DockDocs PDF en Texte",
@@ -4631,7 +4568,7 @@ const frTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "Extrayez tout le texte d'un PDF dans un fichier .txt propre. Tout le traitement est local : votre fichier ne quitte jamais votre appareil.",
     primaryActionLabel: "Convertir en texte",
     stats: [["Prix", "Gratuit"], ["Entrée", "Fichier PDF"], ["Sortie", "Fichier TXT"]],
-    upload: { ...enTools["pdf-to-text"].upload, title: "Déposez un PDF pour extraire le texte", description: "Glissez-déposez un PDF ici, ou choisissez un fichier.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Téléchargez le texte extrait sous forme de fichier .txt." },
+    upload: { title: "Déposez un PDF pour extraire le texte", description: "Glissez-déposez un PDF ici, ou choisissez un fichier.", buttonLabel: "Choisir un PDF", note: "PDF uniquement. Téléchargez le texte extrait sous forme de fichier .txt." },
     benefitsTitle: "Extrayez le texte d'un PDF sans l'envoyer sur un serveur",
     benefitsDescription: "Importez le fichier localement et téléchargez un fichier texte brut instantanément.",
     benefits: [
@@ -4660,10 +4597,9 @@ const frTools: Record<ToolSlug, ToolCopy> = {
 // Benefits/features/steps are shown on template-rendered tool pages.
 // Custom-client tools get SEO metadata only (benefits not rendered there).
 // ---------------------------------------------------------------------------
-const jaTools: Record<ToolSlug, ToolCopy> = {
+const jaTools: Record<ToolSlug, LocalizedToolCopy> = {
   // ── template tools ────────────────────────────────────────────────────────
   "compress-pdf": {
-    ...enTools["compress-pdf"],
     title: "PDFを無料圧縮（オンライン）| DockDocs",
     description: "PDFをブラウザで無料圧縮。サーバー不要、ファイルはデバイスから出ません。",
     appName: "DockDocs PDF圧縮",
@@ -4673,7 +4609,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFをアップロードして圧縮ファイルをダウンロード。ブラウザ内処理でファイルはサーバーに送信されません。",
     primaryActionLabel: "PDFを圧縮",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["ワークスペース", "AIドキュメント"]],
-    upload: { ...enTools["compress-pdf"].upload, title: "圧縮するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。高速・安全で、オフィス文書向けに設計されています。" },
+    upload: { title: "圧縮するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。高速・安全で、オフィス文書向けに設計されています。" },
     benefitsTitle: "PDFを圧縮する理由",
     benefitsDescription: "ファイルサイズを小さくして共有・保存を簡単に。",
     benefits: [
@@ -4696,7 +4632,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFを圧縮するにはどうすればいいですか？", answer: "PDFをアップロードして圧縮状態を確認し、圧縮後のファイルをダウンロードしてください。" }, { question: "無料で使えますか？", answer: "はい。このページは日常的なPDF圧縮を無料で行えるように設計されています。" }, { question: "スマートフォンでも使えますか？", answer: "はい。スマートフォンとパソコンの両方に対応しています。" }],
   },
   "pdf-to-word": {
-    ...enTools["pdf-to-word"],
     title: "PDFをWordに変換（無料）| DockDocs",
     description: "PDFを編集可能なWord（DOCX）ファイルに無料変換。書式を保持して変換。",
     appName: "DockDocs PDF→Word変換",
@@ -4706,7 +4641,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFをアップロードして編集可能なDOCXファイルをダウンロード。フォントと書式を維持して変換します。",
     primaryActionLabel: "Wordに変換",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "Word文書"]],
-    upload: { ...enTools["pdf-to-word"].upload, title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。編集可能な文書ワークフロー向けに設計されています。" },
+    upload: { title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。編集可能な文書ワークフロー向けに設計されています。" },
     benefitsTitle: "PDFをWordに変換する理由",
     benefitsDescription: "PDFのテキストを編集可能なWordファイルに変換。",
     benefits: [
@@ -4729,7 +4664,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFをWordに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、編集可能なDOCXファイルをダウンロードしてください。" }, { question: "変換後もレイアウトは保持されますか？", answer: "CloudConvertが可能な限りレイアウトを維持しますが、PDFの内容によって結果が異なる場合があります。" }, { question: "無料で使えますか？", answer: "はい。PDFからWordへの変換は完全無料です。" }],
   },
   "word-to-pdf": {
-    ...enTools["word-to-pdf"],
     title: "WordをPDFに変換（無料）| DockDocs",
     description: "WordファイルをPDFに無料変換。書式を保持した高品質な出力。",
     appName: "DockDocs Word→PDF変換",
@@ -4739,7 +4673,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "DOCXファイルをアップロードして高品質なPDFをダウンロード。",
     primaryActionLabel: "PDFに変換",
     stats: [["価格", "無料"], ["入力", "DOCX / DOC"], ["出力", "PDF"]],
-    upload: { ...enTools["word-to-pdf"].upload, title: "WordファイルをアップロードしてPDFに変換", description: ".docxファイルをここにドラッグ＆ドロップ、またはデバイスから選択。", buttonLabel: "Wordファイルを選択", note: "DOCXとDOC対応、最大100MB。" },
+    upload: { title: "WordファイルをアップロードしてPDFに変換", description: ".docxファイルをここにドラッグ＆ドロップ、またはデバイスから選択。", buttonLabel: "Wordファイルを選択", note: "DOCXとDOC対応、最大100MB。" },
     benefitsTitle: "WordをPDFに変換する理由",
     benefitsDescription: "Word文書を共有・印刷・保管しやすいPDF形式に変換。",
     benefits: [
@@ -4762,7 +4696,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "WordをPDFに変換するにはどうすればいいですか？", answer: "DOCXまたはDOCファイルをアップロードして、変換されたPDFをダウンロードしてください。" }, { question: "変換後もレイアウトは保持されますか？", answer: "変換エンジンがフォント、行間、レイアウトを維持するため、Wordから直接エクスポートした結果と同等の品質が得られます。" }, { question: "無料で使えますか？", answer: "はい。WordからPDFへの変換は完全無料で、アカウント登録も不要です。" }, { question: "対応しているファイル形式は何ですか？", answer: ".docx と .doc 形式に対応しており、最大ファイルサイズは 100 MB です。" }],
   },
   "ocr-pdf": {
-    ...enTools["ocr-pdf"],
     title: "PDFをOCR処理（無料）| DockDocs",
     description: "スキャンPDFのテキストをOCRで認識・検索可能に。ブラウザ内処理でプライベート。",
     appName: "DockDocs OCR処理",
@@ -4772,7 +4705,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "スキャンPDFのテキストを認識してコピー・検索・編集できるようになります。",
     primaryActionLabel: "OCRを実行",
     stats: [["価格", "無料"], ["入力", "スキャンされたPDF"], ["出力", "抽出されたテキスト"]],
-    upload: { ...enTools["ocr-pdf"].upload, title: "OCRするPDFをアップロード", description: "スキャンPDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。スキャン文書・フォーム・テキスト抽出向け。1回につき最大3ページ、既定では最初のページのみ。" },
+    upload: { title: "OCRするPDFをアップロード", description: "スキャンPDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。スキャン文書・フォーム・テキスト抽出向け。1回につき最大3ページ、既定では最初のページのみ。" },
     benefitsTitle: "PDFにOCRを適用する理由",
     benefitsDescription: "スキャン文書をコピー・検索できるデジタルテキストに変換。",
     benefits: [
@@ -4795,7 +4728,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFにOCRをかけるにはどうすればいいですか？", answer: "スキャンしたPDFをアップロードして、検索可能なテキスト層が追加された出力ファイルをダウンロードしてください。" }, { question: "スキャン文書や手書きにも対応していますか？", answer: "ほとんどの印刷されたスキャン文書に対応しています。手書き文字の認識精度は低くなります。" }, { question: "無料で使えますか？", answer: "はい。OCRは完全無料です。" }],
   },
   "pdf-to-markdown": {
-    ...enTools["pdf-to-markdown"],
     title: "PDFをMarkdownに変換（無料）| DockDocs",
     description: "PDFをMarkdown形式に変換。ブラウザ内処理でファイルはデバイスから出ません。",
     appName: "DockDocs PDF→Markdown変換",
@@ -4805,7 +4737,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFのテキストをMarkdown形式に変換してダウンロード。ブラウザ内処理でプライベート。",
     primaryActionLabel: "Markdownに変換",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "Markdown (.md)"]],
-    upload: { ...enTools["pdf-to-markdown"].upload, title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。テキストベースのPDFに最適です。スキャンPDFはまずOCRを実行してください。" },
+    upload: { title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。テキストベースのPDFに最適です。スキャンPDFはまずOCRを実行してください。" },
     benefitsTitle: "PDFをMarkdownに変換する理由",
     benefitsDescription: "PDFのテキストをMarkdownワークフローに取り込む最速の方法。",
     benefits: [
@@ -4828,7 +4760,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFをMarkdownに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、変換された .md ファイルをダウンロードしてください。" }, { question: "変換後もレイアウトは保持されますか？", answer: "見出し、リスト、段落はできる限りMarkdown形式に変換されます。複雑な表の処理には限界がある場合があります。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }],
   },
   "html-to-pdf": {
-    ...enTools["html-to-pdf"],
     title: "HTMLをPDFに変換（無料）| DockDocs",
     description: "HTMLファイルをPDFに変換。書式を保持した高品質な出力。",
     appName: "DockDocs HTML→PDF変換",
@@ -4838,7 +4769,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "HTMLファイルをアップロードして印刷・共有しやすいPDFをダウンロード。",
     primaryActionLabel: "PDFに変換",
     stats: [["価格", "無料"], ["入力", "HTML"], ["出力", "PDF"]],
-    upload: { ...enTools["html-to-pdf"].upload, title: "HTMLファイルをアップロード", description: ".htmlまたは.htmファイルをドラッグ＆ドロップ、またはデバイスから選択。", buttonLabel: "HTMLファイルを選択", note: "HTMLとHTMに対応。最大100MB。" },
+    upload: { title: "HTMLファイルをアップロード", description: ".htmlまたは.htmファイルをドラッグ＆ドロップ、またはデバイスから選択。", buttonLabel: "HTMLファイルを選択", note: "HTMLとHTMに対応。最大100MB。" },
     benefitsTitle: "HTMLをPDFに変換する理由",
     benefitsDescription: "Webページや文書をPDFとして保存・共有。",
     benefits: [
@@ -4861,7 +4792,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "HTMLをPDFに変換するにはどうすればいいですか？", answer: ".html ファイルをアップロードして、変換されたPDFをダウンロードしてください。" }, { question: "画像やCSSは含まれますか？", answer: "はい。画像やCSSがファイルに埋め込まれているか参照可能であれば含まれます。完全に自己完結したHTMLファイルが最適です。" }, { question: "無料で使えますか？", answer: "はい。HTMLからPDFへの変換は完全無料です。" }],
   },
   "pdf-to-ppt": {
-    ...enTools["pdf-to-ppt"],
     title: "PDFをPowerPointに変換（無料）| DockDocs",
     description: "PDFをPowerPoint（PPTX）に変換。スライドを編集可能な形式に。",
     appName: "DockDocs PDF→PPT変換",
@@ -4871,7 +4801,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFをアップロードして編集可能なPPTXプレゼンテーションをダウンロード。",
     primaryActionLabel: "PPTXに変換",
     stats: [["価格", "無料"], ["入力", "PDF"], ["出力", "PPTX"]],
-    upload: { ...enTools["pdf-to-ppt"].upload, title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFに対応。最大100MB。" },
+    upload: { title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFに対応。最大100MB。" },
     benefitsTitle: "PDFをPowerPointに変換する理由",
     benefitsDescription: "PDFスライドをPowerPointで再利用・編集できるように。",
     benefits: [
@@ -4894,7 +4824,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFをPowerPointに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、変換されたPPTXファイルをダウンロードしてください。" }, { question: "スライドのレイアウトは保持されますか？", answer: "CloudConvertがPDFの各ページをスライドに変換します。結果はPDFの内容によって異なります。" }, { question: "無料で使えますか？", answer: "はい。PDFからPowerPointへの変換は完全無料です。" }],
   },
   "pdf-to-pdfa": {
-    ...enTools["pdf-to-pdfa"],
     title: "PDFをPDF/Aに変換（無料）| DockDocs",
     description: "PDFを長期保存・法令遵守に対応したPDF/Aアーカイブ形式に変換。",
     appName: "DockDocs PDF→PDF/A変換",
@@ -4904,7 +4833,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFをアップロードして長期保存・コンプライアンスに対応したPDF/Aをダウンロード。",
     primaryActionLabel: "PDF/Aに変換",
     stats: [["価格", "無料"], ["入力", "PDF"], ["出力", "PDF/A"]],
-    upload: { ...enTools["pdf-to-pdfa"].upload, title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFに対応。最大100MB。" },
+    upload: { title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFに対応。最大100MB。" },
     benefitsTitle: "PDFをPDF/Aに変換する理由",
     benefitsDescription: "文書の長期保存とコンプライアンスを確保。",
     benefits: [
@@ -4927,7 +4856,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDF/Aとは何ですか？", answer: "PDF/AはPDFのISO標準化フォーマットで、長期保存を目的として設計されており、フォントやリソースが完全に埋め込まれています。" }, { question: "PDFをPDF/Aに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、長期保存基準に準拠したPDF/Aファイルをダウンロードしてください。" }, { question: "無料で使えますか？", answer: "はい。PDFからPDF/Aへの変換は完全無料です。" }],
   },
   "ppt-to-pdf": {
-    ...enTools["ppt-to-pdf"],
     title: "PowerPointをPDFに変換（無料）| DockDocs",
     description: "PPTXプレゼンテーションをPDFに変換。スライドをそのままPDFで共有。",
     appName: "DockDocs PPT→PDF変換",
@@ -4937,7 +4865,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PPTXファイルをアップロードしてプレゼン共有に最適なPDFをダウンロード。",
     primaryActionLabel: "PDFに変換",
     stats: [["価格", "無料"], ["入力", "PPTX / PPT"], ["出力", "PDF"]],
-    upload: { ...enTools["ppt-to-pdf"].upload, title: "PowerPointファイルをアップロード", description: ".pptxファイルをドラッグ＆ドロップ、またはデバイスから選択。", buttonLabel: "PPTファイルを選択", note: "PPTXとPPTに対応。最大100MB。" },
+    upload: { title: "PowerPointファイルをアップロード", description: ".pptxファイルをドラッグ＆ドロップ、またはデバイスから選択。", buttonLabel: "PPTファイルを選択", note: "PPTXとPPTに対応。最大100MB。" },
     benefitsTitle: "PowerPointをPDFに変換する理由",
     benefitsDescription: "プレゼンを誰でも開けるPDF形式で安全に共有。",
     benefits: [
@@ -4960,7 +4888,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PowerPointをPDFに変換するにはどうすればいいですか？", answer: "PPTXファイルをアップロードして、PDFをダウンロードしてください。" }, { question: "無料で使えますか？", answer: "はい。PowerPointからPDFへの変換は完全無料です。" }],
   },
   "excel-to-pdf": {
-    ...enTools["excel-to-pdf"],
     title: "ExcelをPDFに変換（無料）| DockDocs",
     description: "Excelスプレッドシートをそのままの書式でPDFに変換。印刷・共有に最適。",
     appName: "DockDocs Excel→PDF変換",
@@ -4970,7 +4897,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "XLSXファイルをアップロードして印刷しやすいPDFをダウンロード。",
     primaryActionLabel: "PDFに変換",
     stats: [["価格", "無料"], ["入力", "XLSX / XLS"], ["出力", "PDF"]],
-    upload: { ...enTools["excel-to-pdf"].upload, title: "Excelファイルをアップロード", description: ".xlsxファイルをドラッグ＆ドロップ、またはデバイスから選択。", buttonLabel: "Excelファイルを選択", note: "XLSXとXLSに対応。最大100MB。" },
+    upload: { title: "Excelファイルをアップロード", description: ".xlsxファイルをドラッグ＆ドロップ、またはデバイスから選択。", buttonLabel: "Excelファイルを選択", note: "XLSXとXLSに対応。最大100MB。" },
     benefitsTitle: "ExcelをPDFに変換する理由",
     benefitsDescription: "スプレッドシートをPDFで簡単に共有・印刷。",
     benefits: [
@@ -4993,7 +4920,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "ExcelをPDFに変換するにはどうすればいいですか？", answer: "XLSXファイルをアップロードして、PDFをダウンロードしてください。" }, { question: "無料で使えますか？", answer: "はい。ExcelからPDFへの変換は完全無料です。" }],
   },
   "pdf-to-excel": {
-    ...enTools["pdf-to-excel"],
     title: "PDFをExcelに変換（無料）| DockDocs",
     description: "PDFの表データをExcel（XLSX）に変換。再利用・編集可能に。",
     appName: "DockDocs PDF→Excel変換",
@@ -5003,7 +4929,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFの表データをExcelスプレッドシートに変換してダウンロード。",
     primaryActionLabel: "Excelに変換",
     stats: [["価格", "無料"], ["入力", "PDF"], ["出力", "XLSX"]],
-    upload: { ...enTools["pdf-to-excel"].upload, title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "表を含むPDFに最適です。最大100MB。" },
+    upload: { title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "表を含むPDFに最適です。最大100MB。" },
     benefitsTitle: "PDFをExcelに変換する理由",
     benefitsDescription: "PDFの表データをExcelで編集・分析できるように。",
     benefits: [
@@ -5026,7 +4952,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFをExcelに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、XLSXファイルをダウンロードしてください。" }, { question: "無料で使えますか？", answer: "はい。PDFからExcelへの変換は完全無料です。" }],
   },
   "protect-pdf": {
-    ...enTools["protect-pdf"],
     title: "PDFにパスワードを設定（無料）| DockDocs",
     description: "PDFにパスワードを設定してアクセスを制限。ブラウザ内処理でプライベート。",
     appName: "DockDocs PDF保護",
@@ -5036,7 +4961,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "パスワードを設定してPDFへのアクセスを制限。ブラウザ内処理でファイルはサーバーに送信されません。",
     primaryActionLabel: "PDFを保護",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "暗号化されたPDF"]],
-    upload: { ...enTools["protect-pdf"].upload, title: "保護するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。パスワードを設定し、暗号化されたPDFをダウンロードします。" },
+    upload: { title: "保護するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。パスワードを設定し、暗号化されたPDFをダウンロードします。" },
     benefitsTitle: "PDFを保護する理由",
     benefitsDescription: "機密文書をパスワードで保護して安全に共有。",
     benefits: [
@@ -5059,7 +4984,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFにパスワードをかけるにはどうすればいいですか？", answer: "PDFをアップロードしてパスワードを設定し、暗号化されたファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての暗号化処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFの暗号化は完全無料です。" }],
   },
   "edit-pdf": {
-    ...enTools["edit-pdf"],
     title: "PDFを無料オンライン編集 | DockDocs",
     description: "テキスト・画像・図形・注釈をPDFに追加。インストール不要でブラウザだけで編集。",
     appName: "DockDocs PDF編集",
@@ -5069,7 +4993,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "テキスト・画像・図形・注釈を追加。インストール不要でブラウザだけで編集できます。",
     primaryActionLabel: "PDFを編集",
     stats: [["価格", "無料"], ["入力", "PDF"], ["出力", "編集後のPDF"], ["プラットフォーム", "ブラウザ"]],
-    upload: { ...enTools["edit-pdf"].upload, title: "編集するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。すべての処理はブラウザ内で行われ、ファイルがデバイスから外に出ることはありません。" },
+    upload: { title: "編集するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。すべての処理はブラウザ内で行われ、ファイルがデバイスから外に出ることはありません。" },
     benefitsTitle: "DockDocsでPDFを編集する理由",
     benefitsDescription: "インストール不要のブラウザ内PDFエディタ。",
     benefits: [
@@ -5092,7 +5016,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "Adobe Acrobatなしでもコンテンツを編集できますか？", answer: "はい。DockDocsはブラウザ上で使える無料のPDF編集機能を提供しており、ソフトウェアのインストールは不要です。" }, { question: "テキストや画像を追加できますか？", answer: "はい。ページの任意の位置にテキスト注釈や画像を追加できます。" }, { question: "編集後もPDF形式のままですか？", answer: "はい。ダウンロードされるファイルは標準的なPDF形式のままです。" }, { question: "編集後も元のレイアウトは保持されますか？", answer: "元のコンテンツはそのまま保持され、新たに追加したテキストや画像は注釈レイヤーとして重ねて表示されます。" }, { question: "無料で使えますか？", answer: "はい。基本的なPDF編集機能は完全無料です。" }],
   },
   "unlock-pdf": {
-    ...enTools["unlock-pdf"],
     title: "PDF制限を解除（無料）| DockDocs",
     description: "PDFの印刷・コピー・編集制限をパスワードなしで解除。ブラウザ内処理でプライベート。",
     appName: "DockDocs PDF解除",
@@ -5102,7 +5025,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "印刷・コピー・編集制限をワンクリックで解除。パスワードが必要な場合は入力してください。",
     primaryActionLabel: "制限を解除",
     stats: [["価格", "無料"], ["入力", "制限されたPDF"], ["出力", "ロック解除されたPDF"], ["セキュリティ", "ブラウザ内で完結"]],
-    upload: { ...enTools["unlock-pdf"].upload, title: "制限されたPDFをアップロード", description: "制限またはパスワード保護されたPDFをドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "権限制限（印刷/コピー/編集）の解除はパスワード不要。パスワードが必要なPDFのみ入力が必要です。" },
+    upload: { title: "制限されたPDFをアップロード", description: "制限またはパスワード保護されたPDFをドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "権限制限（印刷/コピー/編集）の解除はパスワード不要。パスワードが必要なPDFのみ入力が必要です。" },
     benefitsTitle: "PDFの制限を解除する理由",
     benefitsDescription: "ロックされたPDFを再び自由に使えるように。",
     benefits: [
@@ -5125,7 +5048,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFの制限を解除するにはパスワードが必要ですか？", answer: "必ずしも必要ではありません。PDFは開けるが印刷・コピー・編集がロックされている場合（権限パスワード）は、パスワードなしで制限を解除できます。PDFを開くためにパスワードが必要な場合（オープンパスワード）は、パスワードの入力が必要です。" }, { question: "PDFの権限パスワードを削除するにはどうすればいいですか？", answer: "PDFをアップロードすると、ツールが自動的に権限の制限を検出して削除し、制限解除済みのファイルをダウンロードできます。" }, { question: "無料で使えますか？", answer: "はい。PDFの制限解除は完全無料です。" }, { question: "これは合法ですか？", answer: "ご自身のファイルまたは使用許可を得たファイルにのみご利用ください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }],
   },
   "pdf-to-text": {
-    ...enTools["pdf-to-text"],
     title: "PDFをテキストに変換（無料）| DockDocs",
     description: "PDFからテキストをブラウザで無料抽出。ファイルはデバイスから出ません。",
     appName: "DockDocs PDF→テキスト変換",
@@ -5135,7 +5057,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFのテキストを.txtファイルに抽出してダウンロード。ブラウザ内処理でプライベート。",
     primaryActionLabel: "テキストに変換",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "TXTファイル"]],
-    upload: { ...enTools["pdf-to-text"].upload, title: "テキストを抽出するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。抽出したテキストを.txtファイルとしてダウンロードできます。" },
+    upload: { title: "テキストを抽出するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。抽出したテキストを.txtファイルとしてダウンロードできます。" },
     benefitsTitle: "PDFをテキストに変換する理由",
     benefitsDescription: "PDFのテキストをコピー・再利用できるように。",
     benefits: [
@@ -5158,7 +5080,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFをテキストに変換するにはどうすればいいですか？", answer: "PDFをアップロードして、抽出された .txt ファイルをダウンロードしてください。" }, { question: "スキャンされたPDFにも対応していますか？", answer: "実際のテキストが含まれるPDFのみ対応しています。スキャン文書はOCR処理を先に行ってください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }],
   },
   "pdf-to-html": {
-    ...enTools["pdf-to-html"],
     title: "PDFをHTMLに変換（無料）| DockDocs",
     description: "PDFをHTMLファイルに変換。ブラウザ内処理でファイルはデバイスから出ません。",
     appName: "DockDocs PDF→HTML変換",
@@ -5168,7 +5089,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFの各ページを画像とテキストブロックを含むHTMLファイルに変換。ブラウザ内処理でプライベート。",
     primaryActionLabel: "HTMLに変換",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "HTMLファイル"]],
-    upload: { ...enTools["pdf-to-html"].upload, title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。テキストを構造化された.htmlファイルとしてダウンロードできます。" },
+    upload: { title: "変換するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。テキストを構造化された.htmlファイルとしてダウンロードできます。" },
     benefitsTitle: "PDFをHTMLに変換する理由",
     benefitsDescription: "PDFをWebに公開・再利用するための最速の方法。",
     benefits: [
@@ -5192,7 +5113,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
   },
   // ── custom client tools (SEO metadata only — benefits/features/steps not rendered) ──
   "merge-pdf": {
-    ...enTools["merge-pdf"],
     title: "PDFを結合（無料）| DockDocs",
     description: "複数のPDFを1つにまとめる。ブラウザ内処理でファイルはサーバーに送信されません。",
     appName: "DockDocs PDF結合",
@@ -5202,7 +5122,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "複数のPDFをドラッグ＆ドロップして1つにまとめます。ブラウザ内処理でプライベート。",
     primaryActionLabel: "PDFを結合",
     stats: [["価格", "無料"], ["入力", "複数のPDF"], ["出力", "1つのPDF"]],
-    upload: { ...enTools["merge-pdf"].upload, title: "PDFをアップロード", description: "結合するPDFをドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。整理された文書パック向けに設計されています。" },
+    upload: { title: "PDFをアップロード", description: "結合するPDFをドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。整理された文書パック向けに設計されています。" },
     benefitsTitle: "複雑な操作なしでPDFを結合",
     benefitsDescription: "アップロードして並べ替え、結合して1つのPDFをダウンロード。",
     benefits: [{ title: "1つにまとめる", description: "ばらばらのPDFを1つの整理された文書に。" }, { title: "順序のプレビュー", description: "結合前に文書の順序を確認できます。" }, { title: "結果をダウンロード", description: "結合された1つのファイルを出力します。" }],
@@ -5216,7 +5136,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "複数のPDFをアップロードできますか？", answer: "はい。結合ワークフローでは複数ファイルのアップロードに対応しています。" }, { question: "順番を変更できますか？", answer: "はい。結合前に並び替えのプレビューが表示されます。" }, { question: "出力結果はどうなりますか？", answer: "指定した順序でまとめられた1つのPDFファイルが出力されます。" }],
   },
   "split-pdf": {
-    ...enTools["split-pdf"],
     title: "PDFを分割（無料）| DockDocs",
     description: "PDFをページ指定で分割。ブラウザ内処理でファイルはサーバーに送信されません。",
     appName: "DockDocs PDF分割",
@@ -5226,7 +5145,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFをページ範囲で分割してダウンロード。ブラウザ内処理でプライベート。",
     primaryActionLabel: "PDFを分割",
     stats: [["価格", "無料"], ["入力", "1つのPDF"], ["出力", "ページまたは範囲"]],
-    upload: { ...enTools["split-pdf"].upload, title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。ページ抽出ワークフロー向けに設計されています。" },
+    upload: { title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。ページ抽出ワークフロー向けに設計されています。" },
     benefitsTitle: "複雑な操作なしでページを抽出",
     benefitsDescription: "PDFをアップロードし、ページ範囲を入力して分割、ZIPで出力。",
     benefits: [{ title: "必要な部分だけ", description: "ファイル全体を送らず必要なページだけ抽出。" }, { title: "範囲の入力", description: "1-4 や 12-18 のような分かりやすい範囲指定。" }, { title: "ZIPで出力", description: "分割結果を1つのZIPにまとめます。" }],
@@ -5240,7 +5159,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "特定のページ範囲を抽出できますか？", answer: "はい。ワークフローにページ範囲の入力欄があります。" }, { question: "出力結果はどうなりますか？", answer: "分割結果はZIPファイルとしてエクスポートされます。" }, { question: "スキャンしたPDFでも使えますか？", answer: "PDFの入力としては使用できます。文字認識が必要な場合はOCRワークフローをご利用ください。" }],
   },
   "jpg-to-pdf": {
-    ...enTools["jpg-to-pdf"],
     title: "JPGをPDFに変換（無料）| DockDocs",
     description: "JPG画像をPDFに変換。ブラウザ内処理でファイルはサーバーに送信されません。",
     appName: "DockDocs JPG→PDF変換",
@@ -5250,7 +5168,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "JPG画像をアップロードしてPDFに変換。ブラウザ内処理でプライベート。",
     primaryActionLabel: "PDFに変換",
     stats: [["価格", "無料"], ["入力", "JPG画像"], ["出力", "PDF文書"]],
-    upload: { ...enTools["jpg-to-pdf"].upload, title: "JPGファイルをアップロード", description: "JPG画像をドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "JPGを選択", note: "PDF作成のためのJPG・PNG・WebP画像に対応しています。" },
+    upload: { title: "JPGファイルをアップロード", description: "JPG画像をドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "JPGを選択", note: "PDF作成のためのJPG・PNG・WebP画像に対応しています。" },
     benefitsTitle: "重い編集ソフトなしで画像からPDFを作成",
     benefitsDescription: "画像をアップロードし、ページ順を整えて1つのPDFを書き出します。",
     benefits: [{ title: "写真を文書に", description: "レシート・メモ・スキャン・写真をPDFに変換。" }, { title: "ページ順の調整", description: "書き出し前に画像の順序をプレビュー。" }, { title: "PDFで書き出し", description: "画像から1つのPDF文書をダウンロード。" }],
@@ -5264,7 +5182,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "JPGをPDFに変換するにはどうすればいいですか？", answer: "1枚または複数枚のJPGをアップロードして、まとめたPDFをダウンロードしてください。" }, { question: "複数の画像をアップロードできますか？", answer: "はい。複数のJPGを1つのPDFにまとめることができます。" }, { question: "無料で使えますか？", answer: "はい。JPGからPDFへの変換は完全無料です。" }],
   },
   "png-to-pdf": {
-    ...enTools["png-to-pdf"],
     title: "PNGをPDFに変換（無料）| DockDocs",
     description: "PNG画像をPDFに変換。ブラウザ内処理でファイルはサーバーに送信されません。",
     appName: "DockDocs PNG→PDF変換",
@@ -5274,7 +5191,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PNG画像をアップロードしてPDFに変換。ブラウザ内処理でプライベート。",
     primaryActionLabel: "PDFに変換",
     stats: [["価格", "無料"], ["入力", "PNG画像"], ["出力", "PDF文書"]],
-    upload: { ...enTools["png-to-pdf"].upload, title: "PNGファイルをアップロード", description: "PNG画像をドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PNGを選択", note: "PNG・JPG・WebPに対応。すべての画像を1つのPDFにまとめてダウンロードできます。" },
+    upload: { title: "PNGファイルをアップロード", description: "PNG画像をドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PNGを選択", note: "PNG・JPG・WebPに対応。すべての画像を1つのPDFにまとめてダウンロードできます。" },
     benefitsTitle: "PNG画像からPDFを作成",
     benefitsDescription: "アップロードして整理し、きれいなPDFをダウンロード。",
     benefits: [{ title: "スクリーンショットを文書に", description: "スクリーンショットや図をそのまま共有できるPDFに。" }, { title: "複数画像のアップロード", description: "複数のPNGを1つの文書にまとめます。" }, { title: "ビジネス向けの出力", description: "メール送付・アップロード・受け渡しに適したPDFに整えます。" }],
@@ -5288,7 +5205,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PNGをPDFに変換するにはどうすればいいですか？", answer: "1枚または複数枚のPNGをアップロードして、まとめたPDFをダウンロードしてください。" }, { question: "複数の画像をアップロードできますか？", answer: "はい。複数のPNGを1つのPDFにまとめることができます。" }, { question: "無料で使えますか？", answer: "はい。PNGからPDFへの変換は完全無料です。" }],
   },
   "pdf-to-jpg": {
-    ...enTools["pdf-to-jpg"],
     title: "PDFをJPGに変換（無料）| DockDocs",
     description: "PDFの各ページをJPG画像に変換。ブラウザ内処理でプライベート。",
     appName: "DockDocs PDF→JPG変換",
@@ -5298,7 +5214,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFの各ページをJPG画像としてダウンロード。",
     primaryActionLabel: "JPGに変換",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "JPG画像"]],
-    upload: { ...enTools["pdf-to-jpg"].upload, title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。各ページを高画質のJPGとして書き出します。" },
+    upload: { title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。各ページを高画質のJPGとして書き出します。" },
     benefitsTitle: "PDFのページを画像として抽出",
     benefitsDescription: "アップロードしてページを選び、JPG画像をすぐにダウンロード。",
     benefits: [{ title: "高画質の出力", description: "2倍解像度でレンダリングし鮮明なJPGに。" }, { title: "プライバシー優先", description: "すべての処理はブラウザ内で行われます。" }, { title: "個別・一括ダウンロード", description: "1ページはJPG、複数ページはZIPで。" }],
@@ -5312,7 +5228,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFをJPGに変換するにはどうすればいいですか？", answer: "PDFをアップロードすると、各ページがJPG画像として生成され、まとめてダウンロードできます。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての変換処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFからJPGへの変換は完全無料です。" }],
   },
   "pdf-to-png": {
-    ...enTools["pdf-to-png"],
     title: "PDFをPNGに変換（無料）| DockDocs",
     description: "PDFの各ページをPNG画像に変換。ブラウザ内処理でプライベート。",
     appName: "DockDocs PDF→PNG変換",
@@ -5322,7 +5237,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFの各ページをPNG画像としてダウンロード。",
     primaryActionLabel: "PNGに変換",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "PNG画像"]],
-    upload: { ...enTools["pdf-to-png"].upload, title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。各ページを劣化のないPNGとして書き出します。" },
+    upload: { title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。各ページを劣化のないPNGとして書き出します。" },
     benefitsTitle: "PDFのページをロスレスPNGとして抽出",
     benefitsDescription: "アップロードしてページを選び、PNG画像をダウンロード。",
     benefits: [{ title: "ロスレス画質", description: "PNGは圧縮劣化なくすべてのピクセルを保持。" }, { title: "プライバシー優先", description: "すべての処理はブラウザ内で行われます。" }, { title: "個別・一括ダウンロード", description: "1ページはPNG、複数ページはZIPで。" }],
@@ -5336,7 +5251,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFをPNGに変換するにはどうすればいいですか？", answer: "PDFをアップロードすると、各ページがPNG画像として生成され、まとめてダウンロードできます。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての変換処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFからPNGへの変換は完全無料です。" }],
   },
   "pdf-to-image": {
-    ...enTools["pdf-to-image"],
     title: "PDFを画像に変換（無料）| DockDocs",
     description: "PDFをJPGまたはPNG画像に変換。ブラウザ内処理でプライベート。",
     appName: "DockDocs PDF→画像変換",
@@ -5346,7 +5260,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFをJPGまたはPNG形式の画像としてダウンロード。",
     primaryActionLabel: "画像に変換",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "JPGまたはPNG画像"]],
-    upload: { ...enTools["pdf-to-image"].upload, title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。写真にはJPG、劣化のない出力にはPNGを選択してください。" },
+    upload: { title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。写真にはJPG、劣化のない出力にはPNGを選択してください。" },
     benefitsTitle: "PDFのページを画像として抽出",
     benefitsDescription: "アップロードして形式を選び、画像をダウンロード。",
     benefits: [{ title: "JPGまたはPNG出力", description: "軽いファイルはJPG、ロスレスはPNGを選択。" }, { title: "プライバシー優先", description: "すべての処理はブラウザ内で行われ、送信はありません。" }, { title: "個別・一括ダウンロード", description: "1ページは画像、複数ページはZIPで。" }],
@@ -5360,7 +5274,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFを画像に変換するにはどうすればいいですか？", answer: "PDFをアップロードして出力形式を選択すると、各ページが1枚の画像として生成されます。" }, { question: "どの画像形式に対応していますか？", answer: "JPGとPNGに対応しており、いずれもブラウザ上でローカルに変換できます。" }, { question: "無料で使えますか？", answer: "はい。PDFから画像への変換は完全無料です。" }],
   },
   "delete-page": {
-    ...enTools["delete-page"],
     title: "PDFのページを削除（無料）| DockDocs",
     description: "PDFから不要なページを削除。ブラウザ内処理でファイルはサーバーに送信されません。",
     appName: "DockDocs ページ削除",
@@ -5370,7 +5283,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "削除するページを選択してPDFをダウンロード。ブラウザ内処理でプライベート。",
     primaryActionLabel: "ページを削除",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "ページ削除後のPDF"]],
-    upload: { ...enTools["delete-page"].upload, title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。削除するページを指定し、整理後のPDFをダウンロードします。" },
+    upload: { title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。削除するページを指定し、整理後のPDFをダウンロードします。" },
     benefitsTitle: "重い編集ソフトなしでページを削除",
     benefitsDescription: "アップロードして削除するページを指定し、すぐにダウンロード。",
     benefits: [{ title: "正確な削除", description: "個別ページや範囲をまとめて削除。" }, { title: "プライバシー優先", description: "すべての処理はブラウザ内で行われます。" }, { title: "きれいな出力", description: "残ったページは元の順序を保持します。" }],
@@ -5384,7 +5297,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFのページを削除するにはどうすればいいですか？", answer: "PDFをアップロードして削除するページを選択し、更新されたファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFのページ削除は完全無料です。" }],
   },
   "rotate-page": {
-    ...enTools["rotate-page"],
     title: "PDFページを回転（無料）| DockDocs",
     description: "PDFのページを90°・180°・270°回転。ブラウザ内処理でプライベート。",
     appName: "DockDocs ページ回転",
@@ -5394,7 +5306,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFのページを必要な角度に回転してダウンロード。",
     primaryActionLabel: "ページを回転",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "回転後のPDF"]],
-    upload: { ...enTools["rotate-page"].upload, title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。回転するページと角度を選択してください。" },
+    upload: { title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。回転するページと角度を選択してください。" },
     benefitsTitle: "重い編集ソフトなしで向きを修正",
     benefitsDescription: "アップロードして回転を選び、修正したPDFをすぐにダウンロード。",
     benefits: [{ title: "選択的な回転", description: "特定のページまたは全ページを回転。" }, { title: "複数の角度", description: "時計回りに90°・180°・270°から選択。" }, { title: "プライバシー優先", description: "すべての処理はブラウザ内で行われます。" }],
@@ -5408,7 +5320,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFのページを回転させるにはどうすればいいですか？", answer: "PDFをアップロードして回転させるページと角度を選択し、更新されたファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFのページ回転は完全無料です。" }],
   },
   "reorder-pages": {
-    ...enTools["reorder-pages"],
     title: "PDFページを並べ替え（無料）| DockDocs",
     description: "PDFのページ順序をドラッグ＆ドロップで並べ替え。ブラウザ内処理でプライベート。",
     appName: "DockDocs ページ並べ替え",
@@ -5418,7 +5329,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFのページをドラッグ＆ドロップで並べ替えてダウンロード。",
     primaryActionLabel: "ページを並べ替え",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "並べ替え後のPDF"]],
-    upload: { ...enTools["reorder-pages"].upload, title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。新しいページ順を入力して文書を並べ替えます。" },
+    upload: { title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。新しいページ順を入力して文書を並べ替えます。" },
     benefitsTitle: "重い編集ソフトなしでページを並べ替え",
     benefitsDescription: "アップロードして新しい順序を入力し、すぐにダウンロード。",
     benefits: [{ title: "順序を自在に制御", description: "前後への移動や全体の並べ替えが可能。" }, { title: "プライバシー優先", description: "すべての処理はブラウザ内で行われます。" }, { title: "きれいな出力", description: "各ページの内容を保ったまま新しい順序に。" }],
@@ -5432,7 +5343,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFのページを並び替えるにはどうすればいいですか？", answer: "PDFをアップロードしてサムネイルをドラッグして順番を変更し、更新されたファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFのページ並び替えは完全無料です。" }],
   },
   "add-page": {
-    ...enTools["add-page"],
     title: "PDFにページを追加（無料）| DockDocs",
     description: "PDFに空白ページを追加。ブラウザ内処理でファイルはサーバーに送信されません。",
     appName: "DockDocs ページ追加",
@@ -5442,7 +5352,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFに空白ページを追加してダウンロード。ブラウザ内処理でプライベート。",
     primaryActionLabel: "ページを追加",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "PDF + 空白ページ"]],
-    upload: { ...enTools["add-page"].upload, title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。空白ページを挿入する位置を指定してください。" },
+    upload: { title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。空白ページを挿入する位置を指定してください。" },
     benefitsTitle: "重い編集ソフトなしで空白ページを追加",
     benefitsDescription: "アップロードして位置を選び、すぐにダウンロード。",
     benefits: [{ title: "正確な挿入", description: "特定ページの後、または先頭に挿入。" }, { title: "サイズを自動調整", description: "空白ページは隣接ページのサイズに合わせます。" }, { title: "プライバシー優先", description: "すべての処理はブラウザ内で行われます。" }],
@@ -5456,7 +5366,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFに空白ページを挿入するにはどうすればいいですか？", answer: "PDFをアップロードして挿入位置を選択し、更新されたファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "無料で使えますか？", answer: "はい。PDFへの空白ページ追加は完全無料です。" }],
   },
   "sign-pdf": {
-    ...enTools["sign-pdf"],
     title: "PDFに電子署名（無料）| DockDocs",
     description: "PDFに電子署名を追加。書いたり・入力したり・画像を使って署名できます。",
     appName: "DockDocs PDF署名",
@@ -5466,7 +5375,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "署名を描く・入力する・画像でアップロード。ブラウザ内でプライベートに署名できます。",
     primaryActionLabel: "PDFに署名",
     stats: [["価格", "無料"], ["入力", "PDF"], ["出力", "署名済みPDF"], ["セキュリティ", "ブラウザ内で完結"]],
-    upload: { ...enTools["sign-pdf"].upload, title: "署名するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。署名と文書がデバイスから外に出ることはありません。" },
+    upload: { title: "署名するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。署名と文書がデバイスから外に出ることはありません。" },
     benefitsTitle: "DockDocsでPDFに署名する理由",
     benefitsDescription: "速く・無料で・安全にPDFへ電子署名を追加できます。",
     benefits: [{ title: "無料で電子署名", description: "高額なサービス契約なしで署名。アカウント不要。" }, { title: "プライバシー優先の署名", description: "文書も署名もブラウザ内で処理。外部サーバーへの送信はありません。" }, { title: "複数の署名方法", description: "手書き、入力、画像アップロードに対応。" }],
@@ -5480,7 +5389,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFに署名するにはどうすればいいですか？", answer: "PDFをアップロードして署名（手書きまたは入力）を追加し、署名済みのファイルをダウンロードしてください。" }, { question: "署名に法的効力はありますか？", answer: "DockDocsが生成するのはビジュアル署名であり、社内や軽微な用途向けです。法的拘束力が必要な場合は、認定された電子署名サービスをご利用ください。" }, { question: "無料で使えますか？", answer: "はい。PDF署名機能は完全無料です。" }],
   },
   "translate-pdf": {
-    ...enTools["translate-pdf"],
     title: "PDFをAI翻訳（無料）| DockDocs",
     description: "AIでPDFのテキストを18言語以上に翻訳。ブラウザ内でプライベートに処理。",
     appName: "DockDocs PDF翻訳",
@@ -5490,7 +5398,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "PDFのテキストを抽出してAIが18言語以上に翻訳。テキスト出力で素早く確認できます。",
     primaryActionLabel: "PDFを翻訳",
     stats: [["価格", "無料"], ["言語", "18以上"], ["入力", "PDF"], ["出力", "翻訳されたテキスト"]],
-    upload: { ...enTools["translate-pdf"].upload, title: "翻訳するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。AIが文書のテキストを翻訳します。結果はコピーまたはダウンロードできます。" },
+    upload: { title: "翻訳するPDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。AIが文書のテキストを翻訳します。結果はコピーまたはダウンロードできます。" },
     benefitsTitle: "DockDocsでAI翻訳する理由",
     benefitsDescription: "速く・無料で・プライバシーに配慮したPDFテキストのAI翻訳。",
     benefits: [{ title: "プライバシー設計", description: "PDFはブラウザ内で読み込み、抽出テキストのみを翻訳に送信。ファイルは外に出ません。" }, { title: "18言語以上", description: "中国語・日本語・韓国語・スペイン語・フランス語・ドイツ語・アラビア語・ヒンディー語など主要言語に対応。" }, { title: "コピペ不要", description: "PDFをそのままアップロードすればテキストを抽出して翻訳。結果はコピー・ダウンロード可能。" }],
@@ -5504,7 +5412,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFを翻訳するにはどうすればいいですか？", answer: "PDFをアップロードして目標言語を選択し、翻訳されたファイルをダウンロードしてください。" }, { question: "どの言語に対応していますか？", answer: "AIエンジンは英語、スペイン語、フランス語、ドイツ語、中国語など数十の言語に対応しています。" }, { question: "翻訳後もレイアウトは保持されますか？", answer: "AIがレイアウトと書式の保持に努めますが、PDFの内容によって結果が異なる場合があります。" }],
   },
   "watermark-pdf": {
-    ...enTools["watermark-pdf"],
     title: "PDFに透かしを追加（無料）| DockDocs",
     description: "PDFにテキストの透かしを追加。ブラウザ内処理でファイルはサーバーに送信されません。",
     appName: "DockDocs 透かし追加",
@@ -5514,7 +5421,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "「CONFIDENTIAL」「DRAFT」などのテキスト透かしをPDFの各ページに追加。",
     primaryActionLabel: "透かしを追加",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "透かし入りPDF"]],
-    upload: { ...enTools["watermark-pdf"].upload, title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。透かしのテキストを入力し、結果をダウンロードします。" },
+    upload: { title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。透かしのテキストを入力し、結果をダウンロードします。" },
     benefitsTitle: "サーバーに送らず透かしを追加",
     benefitsDescription: "テキストを入力して、透かし入りPDFをすぐにダウンロード。",
     benefits: [{ title: "斜めのテキスト", description: "入力したテキストを各ページに斜めに配置。" }, { title: "プライバシー優先", description: "透かし処理はすべてブラウザ内。ファイルは外に出ません。" }, { title: "状態と所有権の明示", description: "CONFIDENTIAL・DRAFT・社名などを各ページに表示。" }],
@@ -5528,7 +5435,6 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "PDFに透かしを追加するにはどうすればいいですか？", answer: "PDFをアップロードして透かしのテキストを入力し、透かし入りのファイルをダウンロードしてください。" }, { question: "PDFはサーバーに送信されますか？", answer: "いいえ。すべての透かし処理はブラウザ上でローカルに行われ、ファイルがデバイスの外に出ることはありません。" }, { question: "後から透かしを削除できますか？", answer: "透かしはページのコンテンツに埋め込まれています。透かしなしのバージョンが必要な場合は、元のファイルを保存しておいてください。" }],
   },
   "page-numbers": {
-    ...enTools["page-numbers"],
     title: "PDFにページ番号を追加（無料）| DockDocs",
     description: "PDFの各ページにページ番号を追加。ブラウザ内処理でファイルはサーバーに送信されません。",
     appName: "DockDocs ページ番号",
@@ -5538,7 +5444,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "各ページの下中央にページ番号（例: 3 / 12）を追加。ブラウザ内処理でプライベート。",
     primaryActionLabel: "ページ番号を追加",
     stats: [["価格", "無料"], ["入力", "PDFファイル"], ["出力", "ページ番号付きPDF"]],
-    upload: { ...enTools["page-numbers"].upload, title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。ページ番号を追加したPDFをダウンロードできます。" },
+    upload: { title: "PDFをアップロード", description: "PDFをここにドラッグ＆ドロップ、またはファイルを選択。", buttonLabel: "PDFを選択", note: "PDFのみ。ページ番号を追加したPDFをダウンロードできます。" },
     benefitsTitle: "サーバーに送らずページ番号を追加",
     benefitsDescription: "ローカルでアップロードし、番号入りPDFをすぐにダウンロード。",
     benefits: [{ title: "全ページに番号", description: "各ページに「ページ / 合計」を分かりやすく追加。" }, { title: "プライバシー優先", description: "すべての処理はブラウザ内。ファイルは外に出ません。" }, { title: "印刷に最適", description: "印刷・共有文書での見やすさに役立ちます。" }],
@@ -5548,6 +5454,7 @@ const jaTools: Record<ToolSlug, ToolCopy> = {
     workflowTitle: "ページ番号の活用シーン",
     workflowDescription: "レポート、契約書、配布資料、印刷文書などに便利です。",
     steps: ["PDFをアップロード。", "「ページ番号を追加」をクリック。", "番号入りPDFをダウンロード。"],
+    faq: enTools["page-numbers"].faq, // base = en; jaFaq["page-numbers"] substitutes the localized FAQ at runtime
     cta: { eyebrow: "PDFにページ番号", title: "PDFにページ番号を追加。", description: "ブラウザで無料・安全に処理。", buttonLabel: "今すぐ追加" },
   },
 };
