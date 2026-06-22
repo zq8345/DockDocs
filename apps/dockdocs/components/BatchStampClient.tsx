@@ -1,5 +1,6 @@
 "use client";
 import { ToolFaq } from "@/components/ToolFaq";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 
 import { useCallback, useRef, useState } from "react";
@@ -108,8 +109,282 @@ const STR = {
   },
 };
 
+// Two section sets — this client serves batch-watermark-pdf (lockMode=watermark)
+// AND batch-page-numbers (lockMode=pagenum); sec picks by lockMode below.
+const SECTIONS_WM: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why batch-watermark PDFs",
+    benefitsDescription: "Stamp the same watermark across a whole folder of PDFs in one run.",
+    benefits: [
+      { title: "One mark, every file", description: "Apply the same text or image watermark to every page of every PDF in the folder — no opening files one by one." },
+      { title: "Consistent placement", description: "Set the position, size, opacity, and angle once and it lands identically across the whole batch." },
+      { title: "One ZIP back", description: "All watermarked PDFs come back in a single ZIP, ready to share or archive." },
+    ],
+    workflowTitle: "How batch watermarking fits your work",
+    workflowDescription: "For the moment a folder of drafts, proofs, or confidential files all need the same stamp before they go out.",
+    steps: [
+      "Drop a folder of PDFs onto the page.",
+      "Design the watermark — text or image, position, opacity.",
+      "Run and download the watermarked PDFs as one ZIP.",
+    ],
+    readingTitle: "More ways to mark PDFs",
+    readingDescription: "Related tools for watermarking and numbering documents.",
+    readingLinks: [
+      { label: "Watermark a single PDF", href: "/watermark-pdf", description: "Stamp one PDF with a live preview." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么批量给 PDF 加水印",
+    benefitsDescription: "一次给整个文件夹的 PDF 盖上同一个水印。",
+    benefits: [
+      { title: "一个水印、盖遍所有", description: "把同一个文字或图片水印应用到文件夹里每个 PDF 的每一页——不用一个个打开。" },
+      { title: "位置统一一致", description: "位置、大小、透明度、角度设一次，整批文件上完全一致地落下。" },
+      { title: "打包一个 ZIP", description: "所有加好水印的 PDF 装进一个 ZIP，方便分享或归档。" },
+    ],
+    workflowTitle: "批量加水印如何融入你的工作",
+    workflowDescription: "当一整个文件夹的草稿、校样或机密文件都要在发出前盖上同一个章。",
+    steps: [
+      "把 PDF 文件夹拖到页面上。",
+      "设计水印——文字或图片、位置、透明度。",
+      "运行并把加好水印的 PDF 作为一个 ZIP 下载。",
+    ],
+    readingTitle: "更多给 PDF 做标记的方式",
+    readingDescription: "给文档加水印和页码的相关工具。",
+    readingLinks: [
+      { label: "给单个 PDF 加水印", href: "/watermark-pdf", description: "实时预览着给一个 PDF 盖水印。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué poner marca de agua a PDF por lotes",
+    benefitsDescription: "Estampa la misma marca de agua en una carpeta entera de PDF de una vez.",
+    benefits: [
+      { title: "Una marca, todos los archivos", description: "Aplica la misma marca de agua de texto o imagen a cada página de cada PDF de la carpeta, sin abrirlos uno por uno." },
+      { title: "Colocación coherente", description: "Define posición, tamaño, opacidad y ángulo una vez y se aplica idéntica en todo el lote." },
+      { title: "Un único ZIP", description: "Todos los PDF con marca de agua vuelven en un solo ZIP, listos para compartir o archivar." },
+    ],
+    workflowTitle: "Cómo encaja la marca de agua por lotes en tu trabajo",
+    workflowDescription: "Para cuando una carpeta de borradores, pruebas o archivos confidenciales necesita el mismo sello antes de salir.",
+    steps: [
+      "Suelta una carpeta de PDF en la página.",
+      "Diseña la marca de agua: texto o imagen, posición, opacidad.",
+      "Ejecuta y descarga los PDF con marca de agua en un ZIP.",
+    ],
+    readingTitle: "Más formas de marcar PDF",
+    readingDescription: "Herramientas relacionadas para marcar y numerar documentos.",
+    readingLinks: [
+      { label: "Marca de agua en un solo PDF", href: "/watermark-pdf", description: "Estampa un PDF con vista previa en vivo." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que adicionar marca d'água a PDF em lote",
+    benefitsDescription: "Aplique a mesma marca d'água a uma pasta inteira de PDF de uma vez.",
+    benefits: [
+      { title: "Uma marca, todos os arquivos", description: "Aplique a mesma marca d'água de texto ou imagem a cada página de cada PDF da pasta, sem abri-los um a um." },
+      { title: "Posicionamento consistente", description: "Defina posição, tamanho, opacidade e ângulo uma vez e tudo é aplicado de forma idêntica em todo o lote." },
+      { title: "Um único ZIP", description: "Todos os PDF com marca d'água voltam em um único ZIP, prontos para compartilhar ou arquivar." },
+    ],
+    workflowTitle: "Como a marca d'água em lote se encaixa no seu trabalho",
+    workflowDescription: "Para quando uma pasta de rascunhos, provas ou arquivos confidenciais precisa do mesmo carimbo antes de sair.",
+    steps: [
+      "Solte uma pasta de PDF na página.",
+      "Desenhe a marca d'água: texto ou imagem, posição, opacidade.",
+      "Execute e baixe os PDF com marca d'água em um ZIP.",
+    ],
+    readingTitle: "Mais formas de marcar PDF",
+    readingDescription: "Ferramentas relacionadas para marcar e numerar documentos.",
+    readingLinks: [
+      { label: "Marca d'água em um único PDF", href: "/watermark-pdf", description: "Carimbe um PDF com pré-visualização ao vivo." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi filigraner des PDF par lots",
+    benefitsDescription: "Apposez le même filigrane sur un dossier entier de PDF en une fois.",
+    benefits: [
+      { title: "Un filigrane, tous les fichiers", description: "Appliquez le même filigrane texte ou image à chaque page de chaque PDF du dossier, sans les ouvrir un par un." },
+      { title: "Placement cohérent", description: "Définissez position, taille, opacité et angle une fois, appliqués à l'identique sur tout le lot." },
+      { title: "Un seul ZIP", description: "Tous les PDF filigranés reviennent dans un seul ZIP, prêts à partager ou archiver." },
+    ],
+    workflowTitle: "Comment le filigrane par lot s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un dossier de brouillons, d'épreuves ou de fichiers confidentiels a besoin du même tampon avant l'envoi.",
+    steps: [
+      "Déposez un dossier de PDF sur la page.",
+      "Concevez le filigrane : texte ou image, position, opacité.",
+      "Lancez et téléchargez les PDF filigranés dans un ZIP.",
+    ],
+    readingTitle: "Plus de façons de marquer les PDF",
+    readingDescription: "Outils associés pour filigraner et numéroter les documents.",
+    readingLinks: [
+      { label: "Filigraner un seul PDF", href: "/watermark-pdf", description: "Tamponnez un PDF avec aperçu en direct." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "PDF に一括で透かしを入れる理由",
+    benefitsDescription: "フォルダ内のすべての PDF に同じ透かしを一度に入れます。",
+    benefits: [
+      { title: "1 つの透かしを全ファイルに", description: "同じテキストまたは画像の透かしを、フォルダ内の各 PDF の全ページに適用——1 つずつ開く必要はありません。" },
+      { title: "一貫した配置", description: "位置・サイズ・不透明度・角度を一度設定すれば、バッチ全体に同じように適用されます。" },
+      { title: "1 つの ZIP に", description: "透かしを入れたすべての PDF が 1 つの ZIP にまとまり、共有や保管にすぐ使えます。" },
+    ],
+    workflowTitle: "一括透かしが作業にどう役立つか",
+    workflowDescription: "下書き・校正・機密ファイルのフォルダに、送る前に同じスタンプが必要なとき。",
+    steps: [
+      "PDF のフォルダをページにドロップします。",
+      "透かしをデザイン——テキストまたは画像、位置、不透明度。",
+      "実行して、透かし入りの PDF を 1 つの ZIP でダウンロードします。",
+    ],
+    readingTitle: "PDF に印を付ける他の方法",
+    readingDescription: "文書に透かしやページ番号を付ける関連ツール。",
+    readingLinks: [
+      { label: "単一の PDF に透かし", href: "/watermark-pdf", description: "ライブプレビューで 1 つの PDF にスタンプ。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
+const SECTIONS_PN: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "Why batch-add page numbers",
+    benefitsDescription: "Add page numbers to a whole folder of PDFs in one consistent pass.",
+    benefits: [
+      { title: "Number every file the same", description: "Apply the same page-number style and position to every PDF in the folder at once." },
+      { title: "Pick the format and spot", description: "Choose the position, format (1 / N), and starting number — applied uniformly across the batch." },
+      { title: "One ZIP back", description: "All numbered PDFs come back in a single ZIP, ready to collate or hand off." },
+    ],
+    workflowTitle: "How batch page-numbering fits your work",
+    workflowDescription: "For the moment a folder of reports, chapters, or exhibits all need consistent page numbers before binding or filing.",
+    steps: [
+      "Drop a folder of PDFs onto the page.",
+      "Choose the page-number position, format, and start.",
+      "Run and download the numbered PDFs as one ZIP.",
+    ],
+    readingTitle: "More ways to finish PDFs",
+    readingDescription: "Related tools for numbering and marking documents.",
+    readingLinks: [
+      { label: "Add page numbers to one PDF", href: "/page-numbers", description: "Number a single PDF's pages." },
+      { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "为什么批量给 PDF 加页码",
+    benefitsDescription: "一次给整个文件夹的 PDF 加上统一的页码。",
+    benefits: [
+      { title: "每个文件编号一致", description: "把同样的页码样式和位置一次性应用到文件夹里每个 PDF。" },
+      { title: "选好格式和位置", description: "选择位置、格式（1 / 共 N 页）和起始页码——整批统一应用。" },
+      { title: "打包一个 ZIP", description: "所有加好页码的 PDF 装进一个 ZIP，方便整理或交付。" },
+    ],
+    workflowTitle: "批量加页码如何融入你的工作",
+    workflowDescription: "当一整个文件夹的报告、章节或附件都要在装订或归档前加上连续页码。",
+    steps: [
+      "把 PDF 文件夹拖到页面上。",
+      "选择页码的位置、格式和起始号。",
+      "运行并把加好页码的 PDF 作为一个 ZIP 下载。",
+    ],
+    readingTitle: "更多收尾 PDF 的方式",
+    readingDescription: "给文档加页码和标记的相关工具。",
+    readingLinks: [
+      { label: "给单个 PDF 加页码", href: "/page-numbers", description: "给一个 PDF 的页面加上页码。" },
+      { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Por qué numerar páginas de PDF por lotes",
+    benefitsDescription: "Añade números de página a una carpeta entera de PDF en una pasada uniforme.",
+    benefits: [
+      { title: "Numera cada archivo igual", description: "Aplica el mismo estilo y posición de número de página a cada PDF de la carpeta a la vez." },
+      { title: "Elige el formato y el lugar", description: "Elige la posición, el formato (1 / N) y el número inicial, aplicados de forma uniforme en todo el lote." },
+      { title: "Un único ZIP", description: "Todos los PDF numerados vuelven en un solo ZIP, listos para ordenar o entregar." },
+    ],
+    workflowTitle: "Cómo encaja numerar páginas por lotes en tu trabajo",
+    workflowDescription: "Para cuando una carpeta de informes, capítulos o anexos necesita números de página coherentes antes de encuadernar o archivar.",
+    steps: [
+      "Suelta una carpeta de PDF en la página.",
+      "Elige la posición, el formato y el inicio del número de página.",
+      "Ejecuta y descarga los PDF numerados en un ZIP.",
+    ],
+    readingTitle: "Más formas de rematar PDF",
+    readingDescription: "Herramientas relacionadas para numerar y marcar documentos.",
+    readingLinks: [
+      { label: "Numerar las páginas de un PDF", href: "/page-numbers", description: "Numera las páginas de un solo PDF." },
+      { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "Por que numerar páginas de PDF em lote",
+    benefitsDescription: "Adicione números de página a uma pasta inteira de PDF em uma passada uniforme.",
+    benefits: [
+      { title: "Numere cada arquivo igual", description: "Aplique o mesmo estilo e posição de número de página a cada PDF da pasta de uma vez." },
+      { title: "Escolha o formato e o local", description: "Escolha a posição, o formato (1 / N) e o número inicial, aplicados de forma uniforme em todo o lote." },
+      { title: "Um único ZIP", description: "Todos os PDF numerados voltam em um único ZIP, prontos para ordenar ou entregar." },
+    ],
+    workflowTitle: "Como numerar páginas em lote se encaixa no seu trabalho",
+    workflowDescription: "Para quando uma pasta de relatórios, capítulos ou anexos precisa de números de página consistentes antes de encadernar ou arquivar.",
+    steps: [
+      "Solte uma pasta de PDF na página.",
+      "Escolha a posição, o formato e o início do número de página.",
+      "Execute e baixe os PDF numerados em um ZIP.",
+    ],
+    readingTitle: "Mais formas de finalizar PDF",
+    readingDescription: "Ferramentas relacionadas para numerar e marcar documentos.",
+    readingLinks: [
+      { label: "Numerar as páginas de um PDF", href: "/page-numbers", description: "Numere as páginas de um único PDF." },
+      { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Pourquoi numéroter des pages PDF par lots",
+    benefitsDescription: "Ajoutez des numéros de page à un dossier entier de PDF en une passe uniforme.",
+    benefits: [
+      { title: "Numérotez chaque fichier pareil", description: "Appliquez le même style et la même position de numéro de page à chaque PDF du dossier en une fois." },
+      { title: "Choisissez le format et l'endroit", description: "Choisissez la position, le format (1 / N) et le numéro de départ, appliqués uniformément sur tout le lot." },
+      { title: "Un seul ZIP", description: "Tous les PDF numérotés reviennent dans un seul ZIP, prêts à classer ou remettre." },
+    ],
+    workflowTitle: "Comment la numérotation par lot s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un dossier de rapports, chapitres ou annexes a besoin de numéros de page cohérents avant reliure ou archivage.",
+    steps: [
+      "Déposez un dossier de PDF sur la page.",
+      "Choisissez la position, le format et le départ du numéro de page.",
+      "Lancez et téléchargez les PDF numérotés dans un ZIP.",
+    ],
+    readingTitle: "Plus de façons de finaliser les PDF",
+    readingDescription: "Outils associés pour numéroter et marquer les documents.",
+    readingLinks: [
+      { label: "Numéroter les pages d'un PDF", href: "/page-numbers", description: "Numérotez les pages d'un seul PDF." },
+      { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "PDF に一括でページ番号を付ける理由",
+    benefitsDescription: "フォルダ内のすべての PDF に統一したページ番号を一度に付けます。",
+    benefits: [
+      { title: "全ファイルを同じ番号付けに", description: "同じページ番号のスタイルと位置を、フォルダ内の各 PDF に一度に適用します。" },
+      { title: "形式と位置を選択", description: "位置、形式（1 / N）、開始番号を選び、バッチ全体に統一して適用します。" },
+      { title: "1 つの ZIP に", description: "ページ番号を付けたすべての PDF が 1 つの ZIP にまとまり、整理や引き渡しにすぐ使えます。" },
+    ],
+    workflowTitle: "一括ページ番号付けが作業にどう役立つか",
+    workflowDescription: "レポート・章・添付資料のフォルダに、製本や提出の前に一貫したページ番号が必要なとき。",
+    steps: [
+      "PDF のフォルダをページにドロップします。",
+      "ページ番号の位置、形式、開始番号を選びます。",
+      "実行して、ページ番号付きの PDF を 1 つの ZIP でダウンロードします。",
+    ],
+    readingTitle: "PDF を仕上げる他の方法",
+    readingDescription: "文書にページ番号や印を付ける関連ツール。",
+    readingLinks: [
+      { label: "単一の PDF にページ番号", href: "/page-numbers", description: "1 つの PDF のページに番号を付けます。" },
+      { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+};
+
 export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const SECTIONS = lockMode === "pagenum" ? SECTIONS_PN : SECTIONS_WM;
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>(lockMode ?? "watermark");
@@ -234,6 +509,7 @@ export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale;
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      <ToolSections locale={locale} content={sec} />
       <ToolFaq tool={lockMode === "pagenum" ? "batch-page-numbers" : "batch-watermark-pdf"} locale={locale} />
     </div>
   );
