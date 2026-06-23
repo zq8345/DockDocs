@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { dropzoneVisual } from "@/components/design";
+import { AiDocUpload } from "@/components/AiDocUpload";
 import {
   generateAiSummary,
   type AiSummaryLocale,
@@ -204,10 +204,8 @@ export function AiSummaryWorkflow({
   locale?: AiSummaryLocale;
 }) {
   const t = copy[locale];
-  const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [dragging, setDragging] = useState(false);
   const [pastedText, setPastedText] = useState("");
   const [status, setStatus] = useState<WorkflowStatus>("idle");
   const [progress, setProgress] = useState(0);
@@ -345,9 +343,6 @@ export function AiSummaryWorkflow({
     setProgressStep("");
     setError("");
     setResult(null);
-    if (inputRef.current) {
-      inputRef.current.value = "";
-    }
   }
 
   return (
@@ -368,41 +363,16 @@ export function AiSummaryWorkflow({
         </p>
 
         <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-          <div
-            onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-            onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
-            onDrop={(e) => { e.preventDefault(); setDragging(false); chooseFile(e.dataTransfer.files); }}
-            className={`${dropzoneVisual(dragging)} p-5`}
+          <AiDocUpload
+            buttonLabel={t.upload}
+            resetLabel={t.reset}
+            inputData={{ "data-ai-summary-input": "pdf" }}
+            fileName={file?.name}
+            idleText={t.idle}
+            disabled={isWorking}
+            onFiles={chooseFile}
+            onReset={reset}
           >
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <button
-                type="button"
-                onClick={() => inputRef.current?.click()}
-                disabled={isWorking}
-                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-3 text-sm font-semibold text-[color:var(--on-accent)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {t.upload}
-              </button>
-              <button
-                type="button"
-                onClick={reset}
-                disabled={isWorking}
-                className="inline-flex min-h-11 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-3 text-sm font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)] disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {t.reset}
-              </button>
-            </div>
-            <input
-              ref={inputRef}
-              data-ai-summary-input="pdf"
-              type="file"
-              accept="application/pdf"
-              className="sr-only"
-              onChange={(event) => chooseFile(event.target.files)}
-            />
-            <p className="mt-4 break-words text-sm font-semibold text-[color:var(--foreground)]">
-              {file?.name ?? t.idle}
-            </p>
             <label className="mt-5 block text-sm font-semibold text-[color:var(--foreground)]">
               {t.pasteLabel}
             </label>
@@ -418,7 +388,7 @@ export function AiSummaryWorkflow({
               placeholder={t.pastePlaceholder}
               className="mt-3 min-h-32 w-full resize-y rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 text-sm leading-6 text-[color:var(--foreground)] outline-none transition placeholder:text-[color:var(--muted)] focus:border-[color:var(--foreground)] disabled:opacity-60"
             />
-          </div>
+          </AiDocUpload>
 
           <div className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4">
             <div className="flex flex-col gap-3 sm:flex-row">

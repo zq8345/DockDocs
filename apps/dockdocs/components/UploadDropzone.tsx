@@ -67,6 +67,8 @@ export function UploadDropzone({
   acceptLabel = "PDF",
   buttonLabel,
   privacy = true,
+  note,
+  limits,
   busy = false,
   busyLabel,
   resetOnPick = false,
@@ -84,6 +86,15 @@ export function UploadDropzone({
   acceptLabel?: string;
   buttonLabel: string;
   privacy?: boolean;
+  // Custom processing note (already localized by the caller) shown in the meta row.
+  // When provided it REPLACES the default green "never uploaded" privacy line — use
+  // it for tools whose real behavior is NOT "never uploaded" (e.g. AI tools that send
+  // extracted text to a provider). Rendered neutral (no lock/accent) so it never dresses
+  // a server-bound note as a privacy badge. Honesty: pass the tool's TRUE note.
+  note?: ReactNode;
+  // Optional limit line (already localized), e.g. "Up to 20 pages · 25 MB". Only pass
+  // a limit the tool actually enforces — never invent one.
+  limits?: ReactNode;
   busy?: boolean;
   busyLabel?: string;
   resetOnPick?: boolean;
@@ -166,7 +177,20 @@ export function UploadDropzone({
           ) : null}
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
             <span>{zh ? h("支持") : ja ? "対応形式" : es ? "Admite" : pt ? "Suporta" : fr ? "Prend en charge" : "Supports"} {acceptLabel}</span>
-            {privacy ? (
+            {limits ? (
+              <>
+                <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
+                <span className="text-[color:var(--muted)]">{limits}</span>
+              </>
+            ) : null}
+            {note ? (
+              // Custom, caller-localized note REPLACES the default privacy line. Neutral
+              // (muted, no lock/accent) so a server-bound note is never shown as a privacy badge.
+              <>
+                <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
+                <span className="text-[color:var(--muted)]">{note}</span>
+              </>
+            ) : privacy ? (
               <>
                 <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
                 <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
