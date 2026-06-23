@@ -18,6 +18,7 @@ const STR = {
     original: "Original (v1)", revised: "Revised (v2)",
     choose: "Choose PDF", reading: "Reading…", change: "Replace",
     compare: "Compare versions", comparing: "Comparing…", reset: "Start over",
+    dropHint: "Compared locally — your files never leave your device.",
     added: "Added", removed: "Removed", unchanged: "No textual changes found.",
     summary: (a: number, d: number) => `${a} added · ${d} removed`,
     need: "Add both PDFs to compare.",
@@ -30,6 +31,7 @@ const STR = {
     original: "原始版 (v1)", revised: "修订版 (v2)",
     choose: "选择 PDF", reading: "读取中…", change: "替换",
     compare: "对比版本", comparing: "对比中…", reset: "重新开始",
+    dropHint: "在本地对比——文件不离开你的设备。",
     added: "新增", removed: "删除", unchanged: "未发现文字差异。",
     summary: (a: number, d: number) => `新增 ${a} · 删除 ${d}`,
     need: "请添加两份 PDF。",
@@ -42,6 +44,7 @@ const STR = {
     original: "Original (v1)", revised: "Revisado (v2)",
     choose: "Elegir PDF", reading: "Leyendo…", change: "Reemplazar",
     compare: "Comparar versiones", comparing: "Comparando…", reset: "Empezar de nuevo",
+    dropHint: "Se comparan localmente: tus archivos nunca salen de tu dispositivo.",
     added: "Añadido", removed: "Eliminado", unchanged: "No se encontraron cambios de texto.",
     summary: (a: number, d: number) => `${a} añadido · ${d} eliminado`,
     need: "Agrega ambos PDF para comparar.",
@@ -54,6 +57,7 @@ const STR = {
     original: "Original (v1)", revised: "Revisado (v2)",
     choose: "Escolher PDF", reading: "Lendo…", change: "Substituir",
     compare: "Comparar versões", comparing: "Comparando…", reset: "Recomeçar",
+    dropHint: "Comparados localmente: seus arquivos nunca saem do seu dispositivo.",
     added: "Adicionado", removed: "Removido", unchanged: "Nenhuma alteração textual encontrada.",
     summary: (a: number, d: number) => `${a} adicionado · ${d} removido`,
     need: "Adicione ambos os PDFs para comparar.",
@@ -66,6 +70,7 @@ const STR = {
     original: "Original (v1)", revised: "Révisé (v2)",
     choose: "Choisir un PDF", reading: "Lecture…", change: "Remplacer",
     compare: "Comparer les versions", comparing: "Comparaison…", reset: "Recommencer",
+    dropHint: "Comparaison locale — vos fichiers ne quittent jamais votre appareil.",
     added: "Ajouté", removed: "Supprimé", unchanged: "Aucune modification textuelle détectée.",
     summary: (a: number, d: number) => `${a} ajouté · ${d} supprimé`,
     need: "Ajoutez les deux PDF pour comparer.",
@@ -78,6 +83,7 @@ const STR = {
     original: "元版 (v1)", revised: "改訂版 (v2)",
     choose: "PDFを選択", reading: "読み取り中…", change: "差し替え",
     compare: "バージョンを比較", comparing: "比較中…", reset: "最初からやり直す",
+    dropHint: "ローカルで比較 — ファイルがデバイスから出ることはありません。",
     added: "追加", removed: "削除", unchanged: "テキストの変更は見つかりませんでした。",
     summary: (a: number, d: number) => `${a}件追加 · ${d}件削除`,
     need: "比較するには両方のPDFを追加してください。",
@@ -326,6 +332,8 @@ export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
         {slot(a, setA, aRef, t.original, "a")}
         {slot(b, setB, bRef, t.revised, "b")}
       </div>
+
+      <p className="mt-3 text-xs text-[color:var(--muted)]">{t.dropHint}</p>
 
       <div className="mt-5 flex items-center gap-2">
         <button type="button" onClick={compare} disabled={!a || !b || phase === "comparing"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 py-2.5 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "comparing" ? (<><Spinner /> {t.comparing}</>) : t.compare}</button>
