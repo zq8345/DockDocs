@@ -34,6 +34,9 @@ const EXCEPTIONS = new Set([
   "ai-read-pdf-without-storing", // standalone English-first GEO content page (Q&A) — no localized variants yet by design
   "dockdocs-vs-smallpdf-vs-ilovepdf", // standalone English-first GEO comparison page — no localized variants yet by design
   "url-to-pdf", // retired CloudConvert tool → standalone English-first GEO how-to (browser Print → Save as PDF); old localized tool routes 301'd to it
+  "merge-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
+  "split-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
+  "password-protect-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
 ]);
 
 function die(lines) {
