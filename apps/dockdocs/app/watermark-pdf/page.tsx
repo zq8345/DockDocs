@@ -3,7 +3,7 @@ import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { WatermarkEditorClient } from "@/components/WatermarkEditorClient";
 import { withVisibleFaq } from "@/lib/single-source-faq";
 
-const config = { ...getLocalizedToolConfig("en", "watermark-pdf"), canonicalPath: "/watermark-pdf/" };
+const config = getLocalizedToolConfig("en", "watermark-pdf");
 
 export const metadata = createPdfToolMetadata(config);
 

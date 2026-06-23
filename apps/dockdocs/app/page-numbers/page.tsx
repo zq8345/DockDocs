@@ -3,7 +3,7 @@ import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { PageNumbersClient } from "@/components/PageNumbersClient";
 import { withVisibleFaq } from "@/lib/single-source-faq";
 
-const config = { ...getLocalizedToolConfig("en", "page-numbers"), canonicalPath: "/page-numbers/" };
+const config = getLocalizedToolConfig("en", "page-numbers");
 
 export const metadata = createPdfToolMetadata(config);
 
