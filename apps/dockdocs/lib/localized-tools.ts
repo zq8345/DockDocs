@@ -3496,9 +3496,14 @@ const jaFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
   "compress-pdf": {
     faqTitle: "PDF圧縮のよくある質問",
     faq: [
-      { question: "PDFを圧縮するには？", answer: "PDFをアップロードすると圧縮の結果を確認でき、そのまま圧縮後のファイルをダウンロードできます。" },
-      { question: "圧縮ツールは無料ですか？", answer: "はい。完全に無料でご利用いただけます。アカウント登録も不要です。" },
+      { question: "PDFを圧縮するには？", answer: "PDFをツールにドラッグ＆ドロップ（またはクリックしてデバイスから選択）し、圧縮レベルを選んで処理を待ちます。完了したら、軽くなったPDFをダウンロードしてください。インストール不要、登録も不要です。" },
+      { question: "圧縮はどういう仕組みですか？", answer: "ファイルを小さくするため、各ページを最適化した画像として描き直し、新しいPDFに組み直します。そのため、スキャン文書や画像の多い文書ほど圧縮効果が大きくなります。代わりに、ページ上の実際の文字は画像の一部になるため、出力では選択も検索もできなくなります。圧縮レベルで画質とサイズのバランスを調整でき、画質を下げるほどファイルは小さくなります。" },
+      { question: "ファイルはどこかにアップロードされますか？", answer: "いいえ。すべての処理はお使いのデバイス上、ブラウザ内で完結します。ファイルがサーバーにアップロードされることはなく、デバイスから出ることもないため、機密文書でもプライバシーが保たれます。" },
+      { question: "ファイルサイズの制限はありますか？", answer: "こちらで定める固定の上限はありません。PDF全体をブラウザ内で処理するため、実質的な上限はデバイスのメモリです。非常に大きい、またはページ数の多いファイルはメモリを多く使い時間もかかります。メモリの少ないスマホでは巨大なPDFが厳しい場合もありますが、一般的な文書なら問題なく圧縮できます。" },
+      { question: "何が返ってきますか？文字は選択できたままですか？", answer: "返ってくるのは通常のPDFで、サイズだけが小さくなります。圧縮時にページが画像化されるため、圧縮後のページの文字は選択も検索もできなくなります。選択可能な文字を残したい場合は、コピーを圧縮して原本を残してください。また、すでに小さいPDF（テキストだけの文書など）はあまり縮まないことがあります。圧縮が最も効くのは、最適化できる画像やスキャンが含まれる場合です。" },
+      { question: "スキャン文書ですが、注意点はありますか？", answer: "スキャンPDFはすでに画像なので、たいてい圧縮効果は高いです。ただし結果は依然として検索可能にはならず、元のスキャンが検索可能でなかった場合、圧縮しても検索可能にはなりません。スキャン文字を検索可能にするには、先にOCRをかけてから、まだ小さくする必要があれば圧縮してください。" },
       { question: "スマホでも使えますか？", answer: "はい。DockDocsのページはスマホとPCに対応したレスポンシブ設計です。" },
+      { question: "無料ですか？", answer: "はい、完全に無料です。アカウントもメールも不要で、ファイルに透かしも入りません。好きなだけPDFを圧縮できます。" },
     ],
   },
   "merge-pdf": {
@@ -3761,10 +3766,14 @@ const frFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
   "compress-pdf": {
     faqTitle: "FAQ – Compresser PDF",
     faq: [
-      { question: "Comment compresser un PDF ?", answer: "Déposez votre PDF dans la zone d'import, attendez que la compression se termine et téléchargez le fichier allégé. Rien à installer." },
-      { question: "La compression est-elle gratuite ?", answer: "Oui, entièrement gratuite. Aucun compte ni inscription n'est requis." },
-      { question: "Mon fichier est-il envoyé sur un serveur ?", answer: "Non. La compression s'effectue directement dans votre navigateur ; votre PDF ne quitte jamais votre appareil." },
+      { question: "Comment compresser un PDF ?", answer: "Déposez un PDF sur l'outil (ou cliquez pour en choisir un depuis votre appareil), choisissez un niveau de compression et laissez-le traiter. Une fois terminé, téléchargez le PDF allégé. Rien à installer, aucune inscription." },
+      { question: "Comment fonctionne réellement la compression ?", answer: "Pour réduire le fichier, chaque page est re-rendue sous forme d'image optimisée puis reconstruite dans un nouveau PDF. C'est pourquoi les plus grandes économies viennent des documents numérisés ou riches en images. En contrepartie, le vrai texte de la page devient partie intégrante de l'image : il n'est donc plus sélectionnable ni recherchable dans le résultat. Les niveaux de compression vous permettent d'arbitrer entre qualité et taille : moins de qualité, fichier plus petit." },
+      { question: "Mon fichier est-il envoyé quelque part ?", answer: "Non. Tout s'exécute entièrement dans votre navigateur, sur votre propre appareil. Le fichier n'est jamais téléversé sur un serveur et ne quitte jamais votre appareil, si bien que même les documents sensibles restent privés." },
+      { question: "Y a-t-il une limite de taille de fichier ?", answer: "Nous n'imposons aucune limite fixe. Le plafond pratique est la mémoire de votre appareil, puisque tout le PDF est traité dans le navigateur. Les fichiers très volumineux ou comptant beaucoup de pages consomment plus de mémoire et prennent plus de temps, et sur un téléphone à faible mémoire un PDF énorme peut peiner — mais les documents courants se compressent sans souci." },
+      { question: "Qu'est-ce que je récupère, et le texte restera-t-il sélectionnable ?", answer: "Vous récupérez un PDF standard, simplement plus petit. Comme les pages sont converties en images pendant la compression, le texte des pages compressées n'est plus sélectionnable ni recherchable. Si conserver un texte sélectionnable compte pour vous, compressez une copie et gardez l'original. Notez aussi qu'un PDF déjà petit (comme un document en texte brut) ne diminuera peut-être pas beaucoup — la compression aide surtout lorsqu'il y a des images ou des numérisations à optimiser." },
+      { question: "C'est un document numérisé — quelque chose à savoir ?", answer: "Les PDF numérisés se compressent généralement bien puisqu'ils sont déjà des images. Mais le résultat ne sera toujours pas recherchable, et si votre numérisation ne l'était pas au départ, la compression n'y changera rien. Pour rendre le texte numérisé recherchable, passez-le d'abord par l'OCR, puis compressez si vous avez encore besoin d'un fichier plus léger." },
       { question: "Puis-je l'utiliser sur mobile ?", answer: "Oui. Les pages DockDocs s'adaptent à tous les écrans : ordinateur, tablette et smartphone." },
+      { question: "Est-ce gratuit ?", answer: "Oui, entièrement gratuit. Aucun compte, aucun e-mail, aucun filigrane sur votre fichier, et vous pouvez compresser autant de PDF que vous voulez." },
     ],
   },
   "protect-pdf": {
@@ -6180,10 +6189,14 @@ const esFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
   "compress-pdf": {
     faqTitle: "Preguntas sobre la compresión de PDF",
     faq: [
-      { question: "¿Cómo comprimo un PDF?", answer: "Sube un PDF, revisa el estado de la compresión y luego descarga el resultado comprimido." },
-      { question: "¿El compresor es gratis?", answer: "La página está pensada como un flujo de trabajo de PDF gratuito para el día a día." },
+      { question: "¿Cómo comprimo un PDF?", answer: "Arrastra un PDF a la herramienta (o haz clic para elegir uno de tu dispositivo), elige un nivel de compresión y deja que lo procese. Cuando termine, descarga el PDF más ligero. No hay nada que instalar ni que registrarse." },
+      { question: "¿Cómo funciona realmente la compresión?", answer: "Para reducir el archivo, cada página se vuelve a renderizar como una imagen optimizada y se reconstruye en un PDF nuevo. Por eso el mayor ahorro se obtiene con documentos escaneados o con muchas imágenes. La contrapartida es que el texto real de la página pasa a formar parte de la imagen, así que deja de poder seleccionarse o buscarse en el resultado. Los niveles de compresión te permiten cambiar calidad por tamaño: menos calidad significa un archivo más pequeño." },
+      { question: "¿Se sube mi archivo a algún sitio?", answer: "No. Todo se ejecuta por completo en tu navegador, en tu propio dispositivo. El archivo nunca se sube a un servidor ni sale de tu equipo, así que incluso los documentos confidenciales se mantienen privados." },
+      { question: "¿Hay un límite de tamaño de archivo?", answer: "No imponemos un límite fijo. El tope práctico es la memoria de tu dispositivo, ya que todo el PDF se procesa en el navegador. Los archivos muy grandes o con muchas páginas consumen más memoria y tardan más, y en un teléfono con poca memoria un PDF enorme puede atascarse, pero los documentos normales se comprimen sin problema." },
+      { question: "¿Qué obtengo de vuelta y el texto seguirá siendo seleccionable?", answer: "Obtienes un PDF estándar, solo que más pequeño. Como las páginas se convierten en imágenes durante la compresión, el texto de las páginas comprimidas deja de ser seleccionable o buscable. Si te importa conservar el texto seleccionable, comprime una copia y guarda el original. Ten en cuenta también que un PDF que ya es pequeño (como un documento de solo texto) quizá no se reduzca mucho: la compresión ayuda sobre todo cuando hay imágenes o escaneos que optimizar." },
+      { question: "Es un documento escaneado, ¿algo que deba saber?", answer: "Los PDF escaneados suelen comprimirse bien porque ya son imágenes. Pero el resultado seguirá sin poder buscarse, y si tu escaneo no era buscable de entrada, comprimirlo no lo hará buscable. Para que el texto escaneado se pueda buscar, pásalo primero por OCR y luego comprímelo si aún necesitas un archivo más pequeño." },
       { question: "¿Puedo usarlo en el celular?", answer: "Sí. Las páginas de DockDocs son adaptables para móvil y computadora." },
-      { question: "¿Se sube mi archivo a un servidor?", answer: "No. La compresión se realiza dentro de tu navegador, así que tu PDF no se envía a ningún servidor." },
+      { question: "¿Es gratis?", answer: "Sí, totalmente gratis. Sin cuenta, sin correo, sin marca de agua en tu archivo, y puedes comprimir tantos PDF como quieras." },
     ],
   },
   "protect-pdf": {
@@ -6504,10 +6517,14 @@ const ptFaq: Partial<Record<ToolSlug, { faqTitle: string; faq: Array<{ question:
   "compress-pdf": {
     faqTitle: "Perguntas sobre compressão de PDF",
     faq: [
-      { question: "Como comprimo um PDF?", answer: "Envie um PDF, confira o status da compressão e baixe o resultado comprimido." },
-      { question: "O compressor é grátis?", answer: "A página foi pensada como um fluxo de trabalho de PDF gratuito para o dia a dia." },
+      { question: "Como comprimo um PDF?", answer: "Arraste um PDF para a ferramenta (ou clique para escolher um do seu dispositivo), selecione um nível de compressão e deixe processar. Quando terminar, baixe o PDF menor. Não há nada para instalar nem cadastro." },
+      { question: "Como a compressão funciona de verdade?", answer: "Para reduzir o arquivo, cada página é re-renderizada como uma imagem otimizada e reconstruída em um novo PDF. Por isso a maior economia vem de documentos digitalizados ou com muitas imagens. A contrapartida é que o texto real da página passa a fazer parte da imagem, então deixa de poder ser selecionado ou pesquisado no resultado. Os níveis de compressão permitem trocar qualidade por tamanho: menos qualidade significa um arquivo menor." },
+      { question: "Meu arquivo é enviado a algum lugar?", answer: "Não. Tudo roda inteiramente no seu navegador, no seu próprio dispositivo. O arquivo nunca é enviado a um servidor nem sai do seu equipamento, então até documentos sigilosos permanecem privados." },
+      { question: "Há um limite de tamanho de arquivo?", answer: "Não impomos um limite fixo. O teto prático é a memória do seu dispositivo, já que todo o PDF é processado no navegador. Arquivos muito grandes ou com muitas páginas usam mais memória e demoram mais, e num celular com pouca memória um PDF enorme pode travar — mas documentos comuns comprimem bem." },
+      { question: "O que recebo de volta e o texto continuará selecionável?", answer: "Você recebe um PDF padrão, só que menor. Como as páginas são convertidas em imagens durante a compressão, o texto das páginas comprimidas deixa de ser selecionável ou pesquisável. Se for importante manter o texto selecionável, comprima uma cópia e guarde o original. Note também que um PDF que já é pequeno (como um documento só de texto) pode não diminuir muito — a compressão ajuda mais quando há imagens ou digitalizações para otimizar." },
+      { question: "É um documento digitalizado — algo que eu deva saber?", answer: "PDFs digitalizados costumam comprimir bem porque já são imagens. Mas o resultado ainda não será pesquisável, e se a sua digitalização já não era pesquisável, comprimir não vai torná-la pesquisável. Para tornar o texto digitalizado pesquisável, passe-o primeiro por OCR e depois comprima, se ainda precisar de um arquivo menor." },
       { question: "Posso usar no celular?", answer: "Sim. As páginas da DockDocs são adaptáveis para celular e computador." },
-      { question: "Meu arquivo é enviado a um servidor?", answer: "Não. A compressão é feita dentro do seu navegador, então o seu PDF não é enviado a nenhum servidor." },
+      { question: "É grátis?", answer: "Sim, totalmente grátis. Sem conta, sem e-mail, sem marca d'água no seu arquivo, e você pode comprimir quantos PDFs quiser." },
     ],
   },
   "protect-pdf": {
