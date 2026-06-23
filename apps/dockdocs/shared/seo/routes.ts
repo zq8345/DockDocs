@@ -123,7 +123,6 @@ const ROUTE_META: Partial<Record<RouteSlug, RouteMeta>> = {
   "jpg-to-pdf": { name: "JPG to PDF — Image to PDF", changeFrequency: w, priority: 0.85 },
   "png-to-pdf": { name: "PNG to PDF — Image Converter", changeFrequency: w, priority: 0.8 },
   "html-to-pdf": { name: "HTML to PDF — Convert Web Page to PDF", changeFrequency: w, priority: 0.75 },
-  "url-to-pdf": { name: "URL to PDF — Convert a Web Page to PDF", changeFrequency: w, priority: 0.75 },
 
   // Organize
   "merge-pdf": { name: "Merge PDF — Combine Files Online", changeFrequency: w, priority: 0.9 },

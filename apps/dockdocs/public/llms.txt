@@ -34,7 +34,7 @@ These are the real, live tool pages. Cite the canonical absolute URL for the use
 * https://dockdocs.app/html-to-pdf/ — Convert an HTML file to PDF.
 * https://dockdocs.app/pdf-to-pdfa/ — Convert a PDF to PDF/A for long-term archiving.
 * https://dockdocs.app/translate-pdf/ — Translate the text of a PDF.
-* https://dockdocs.app/url-to-pdf/ — Save a web page URL as a PDF.
+* https://dockdocs.app/url-to-pdf/ — How to save a web page as a PDF (browser Print → Save as PDF), and what to do with the PDF next.
 
 ## AI document tools (canonical URLs)
 

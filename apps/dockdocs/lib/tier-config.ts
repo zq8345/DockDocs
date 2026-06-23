@@ -96,10 +96,9 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "ppt-to-pdf",      en: "PPT to PDF",        zh: "PPT 转 PDF",      es: "PPT a PDF",      pt: "PPT para PDF",      fr: "PPT en PDF",      ja: "PPT を PDF に変換" },
       { slug: "images-to-pdf",   en: "Images to PDF",     zh: "图片转 PDF",      es: "Imagen a PDF",   pt: "Imagem para PDF",   fr: "Image en PDF",    ja: "画像を PDF に変換" },
       { slug: "html-to-pdf",     en: "HTML to PDF",       zh: "HTML 转 PDF",     es: "HTML a PDF",     pt: "HTML para PDF",     fr: "HTML en PDF",     ja: "HTML を PDF に変換" },
-      { slug: "url-to-pdf",      en: "URL to PDF",        zh: "网页转 PDF",      es: "URL a PDF",      pt: "URL para PDF",      fr: "URL en PDF",      ja: "URL を PDF に変換" },
     ],
     limits: {
-      free: { en: "Forward unlimited · PDF→Office 15/day", zh: "正向转换无限 · PDF→Office 15/天", es: "Directa ilimitada · PDF→Office 15/día", pt: "Direta ilimitada · PDF→Office 15/dia", fr: "Directe illimitée · PDF→Office 15/jour", ja: "順方向は無制限 · PDF→Office は15/日", internal: "forward (Office→PDF/html/pdfa) = convertFree 60/day fair-use ≈ unlimited; reverse PDF→Office + url-to-pdf + protect = convert 15/day (paid CloudConvert cap)" },
+      free: { en: "Forward unlimited · PDF→Office 15/day", zh: "正向转换无限 · PDF→Office 15/天", es: "Directa ilimitada · PDF→Office 15/día", pt: "Direta ilimitada · PDF→Office 15/dia", fr: "Directe illimitée · PDF→Office 15/jour", ja: "順方向は無制限 · PDF→Office は15/日", internal: "forward (Office→PDF/html/pdfa) = convertFree 60/day fair-use ≈ unlimited; reverse PDF→Office + protect = convert 15/day (paid CloudConvert cap)" },
       plus: { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限" },
       pro:  { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限" },
     },

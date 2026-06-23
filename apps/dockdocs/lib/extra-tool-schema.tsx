@@ -163,44 +163,6 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
         "請求書・見積書・契約書をアップロードすると、AI が主要な項目を表に抽出し、CSV としてダウンロードできます。各文書に実際に書かれている内容だけを報告します。",
     },
   },
-  "url-to-pdf": {
-    en: {
-      name: "DockDocs URL to PDF",
-      crumb: "URL to PDF",
-      description:
-        "Convert any public web page to PDF online for free. Paste a URL and download a clean, browser-rendered PDF — no upload, no install.",
-    },
-    zh: {
-      name: "DockDocs 网页转 PDF",
-      crumb: "网页转 PDF",
-      description:
-        "免费把任意公开网页转换为 PDF：粘贴网址，下载用真实浏览器引擎渲染的干净 PDF——无需上传、无需安装。",
-    },
-    es: {
-      name: "DockDocs URL a PDF",
-      crumb: "URL a PDF",
-      description:
-        "Convierte cualquier página web pública a PDF en línea y gratis. Pega una URL y descarga un PDF limpio renderizado por el navegador: sin subir nada, sin instalar.",
-    },
-    pt: {
-      name: "DockDocs URL para PDF",
-      crumb: "URL para PDF",
-      description:
-        "Converta qualquer página web pública em PDF online e grátis. Cole uma URL e baixe um PDF limpo renderizado pelo navegador — sem upload, sem instalação.",
-    },
-    fr: {
-      name: "DockDocs URL en PDF",
-      crumb: "URL en PDF",
-      description:
-        "Convertissez n'importe quelle page web publique en PDF en ligne et gratuitement. Collez une URL et téléchargez un PDF propre rendu par le navigateur — sans téléversement ni installation.",
-    },
-    ja: {
-      name: "DockDocs ウェブページを PDF に",
-      crumb: "URL を PDF に",
-      description:
-        "公開ウェブページを無料でオンライン PDF 化。URL を貼り付けるだけで、本物のブラウザエンジンでレンダリングされたきれいな PDF をダウンロード。アップロードもインストールも不要です。",
-    },
-  },
   "ai-workspace": {
     en: {
       name: "DockDocs AI Document Workspace",

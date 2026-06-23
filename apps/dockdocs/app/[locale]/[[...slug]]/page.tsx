@@ -36,7 +36,6 @@ import { SplitPdfClient } from "@/components/SplitPdfClient";
 import { PdfToImageClient } from "@/components/PdfToImageClient";
 import { PageNumbersClient } from "@/components/PageNumbersClient";
 import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
-import { UrlToPdfClient } from "@/components/UrlToPdfClient";
 import { MyChatsClient } from "@/components/MyChatsClient";
 import { CropPdfClient } from "@/components/CropPdfClient";
 import { RedactPdfClient } from "@/components/RedactPdfClient";
@@ -725,24 +724,6 @@ const CUSTOM_TOOL_COPY: Record<string, {
       fr: "Consultez les conversations Chat avec PDF sauvegardées et les métadonnées des documents chargés sur DockDocs.",
       ja: "DockDocsでこれまでに行ったすべてのAI会話を確認・再開できます。",
       en: "View saved Chat with PDF conversations and uploaded document metadata in DockDocs.",
-    },
-  },
-  "url-to-pdf": {
-    title: {
-      zh: "网页转 PDF — 免费在线把网页转成 PDF",
-      es: "URL a PDF — Convertir una página web a PDF gratis",
-      pt: "URL para PDF — Converter uma página web em PDF grátis",
-      fr: "URL en PDF — Convertir une page web en PDF",
-      ja: "URLをPDFに変換 — ウェブページを無料でPDF化",
-      en: "URL to PDF — Convert a Web Page to PDF Free",
-    },
-    description: {
-      zh: "免费把任意公开网页转换为 PDF：粘贴网址，下载用真实浏览器引擎渲染的干净 PDF——无需上传、无需安装。",
-      es: "Convierte cualquier página web pública en PDF online gratis. Pega la URL y descarga un PDF limpio renderizado en navegador — sin subir archivos, sin instalación.",
-      pt: "Converta qualquer página web pública em PDF online gratuitamente. Cole a URL e baixe um PDF limpo renderizado pelo navegador — sem upload, sem instalação.",
-      fr: "Convertissez n'importe quelle page web publique en PDF en ligne gratuitement. Collez une URL et téléchargez un PDF propre rendu par le navigateur — sans upload, sans installation.",
-      ja: "URLを貼り付けるだけでPDFに変換—DockDocsがページをレンダリングして印刷可能なPDFとしてダウンロードできます。",
-      en: "Convert any public web page to PDF online for free. Paste a URL and download a clean, browser-rendered PDF — no upload, no install.",
     },
   },
   "compare": {
@@ -1674,31 +1655,6 @@ async function generateMetadataInner({
     };
   }
 
-  if (slug === "url-to-pdf") {
-    return {
-      title: m(
-        "URL to PDF — Convert a Web Page to PDF Free",
-        "网页转 PDF — 免费在线把网页转成 PDF",
-        "URL a PDF — Convierte una página web en PDF gratis",
-        "URL para PDF — Converta uma página web em PDF grátis",
-        "URL en PDF — Convertissez une page web en PDF gratuitement",
-        "URLをPDFに — ウェブページを無料でPDFに変換",
-      ),
-      description: m(
-        "Convert any public web page to PDF online for free. Paste a URL and download a clean, browser-rendered PDF — no upload, no install.",
-        "免费把任意公开网页转换为 PDF：粘贴网址，下载用真实浏览器引擎渲染的干净 PDF——无需上传、无需安装。",
-        "Convierte cualquier página web pública en PDF en línea gratis. Pega una URL y descarga un PDF limpio renderizado por el navegador: sin subir archivos, sin instalar nada.",
-        "Converta qualquer página web pública em PDF online grátis. Cole uma URL e baixe um PDF limpo renderizado pelo navegador: sem upload, sem instalação.",
-        "Convertissez n'importe quelle page web publique en PDF en ligne gratuitement. Collez une URL et téléchargez un PDF propre rendu par le navigateur : sans téléversement, sans installation.",
-        "公開ウェブページを無料でオンラインでPDFに変換。URLを貼り付けるだけで、ブラウザでレンダリングされたきれいなPDFをダウンロード。アップロードもインストールも不要です。",
-      ),
-      alternates: {
-        canonical: localizedPath(rawLocale, "url-to-pdf"),
-        languages: languageAlternates("url-to-pdf"),
-      },
-    };
-  }
-
   if (slug === "compare") {
     return {
       title: m(
@@ -2085,10 +2041,6 @@ export default async function LocalizedRoute({
 
   if (slug === "my-chats") {
     return <MyChatsClient locale={clientLocale} />;
-  }
-
-  if (slug === "url-to-pdf") {
-    return <>{extraJsonLd}<UrlToPdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "compare") {

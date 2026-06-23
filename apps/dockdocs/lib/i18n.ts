@@ -71,7 +71,6 @@ export const routeSlugs = [
   "pdf-to-html",
   "ai-workspace",
   "compare",
-  "url-to-pdf",
   "my-chats",
   "crop-pdf",
   "extract-to-excel",

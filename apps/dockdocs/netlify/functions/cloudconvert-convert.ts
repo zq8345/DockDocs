@@ -32,40 +32,6 @@ function cloudConvertFailMessage(status: number): string {
   if (status === 402 || status === 429) return "The conversion service is temporarily over its quota. Please try again later.";
   return "The conversion service could not start the job. Try again in a moment.";
 }
-// Reject obvious internal / loopback / link-local / cloud-metadata capture targets.
-function isBlockedUrlTarget(rawUrl: string): boolean {
-  let host: string;
-  try {
-    host = new URL(rawUrl).hostname.toLowerCase().replace(/^\[|\]$/g, "");
-  } catch {
-    return true;
-  }
-  if (
-    host === "localhost" ||
-    host === "::1" ||
-    host.endsWith(".local") ||
-    host.endsWith(".internal") ||
-    host === "metadata.google.internal"
-  ) {
-    return true;
-  }
-  const m = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-  if (m) {
-    const a = Number(m[1]);
-    const b = Number(m[2]);
-    if (
-      a === 0 ||
-      a === 127 ||
-      a === 10 ||
-      (a === 169 && b === 254) ||
-      (a === 172 && b >= 16 && b <= 31) ||
-      (a === 192 && b === 168)
-    ) {
-      return true;
-    }
-  }
-  return false;
-}
 
 const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
 
@@ -167,7 +133,7 @@ export default async (req: Request, _context: Context) => {
   // Rate-limit only the costly CREATE path (status polling stays exempt so live jobs can poll).
   // Per-minute burst guard + a per-day cap to bound CloudConvert credit abuse by scrapers.
   // (Forward office/html/pdfa now go to the $0 self-hosted box; CloudConvert here serves
-  //  the paid reverse pdf->office, url-to-pdf, and the >5 MB fallback.)
+  //  the paid reverse pdf->office and the >5 MB fallback.)
   if (isRateLimited(req, 12, 60_000)) {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many conversions — please wait a minute and try again." }, 429);
   }
@@ -183,59 +149,6 @@ export default async (req: Request, _context: Context) => {
 
   // ── CREATE: build a job and return the direct-upload form ──
   const route = body.route?.trim();
-  if (route === "url-to-pdf") {
-    const url = body.url?.trim() ?? "";
-    if (!/^https?:\/\/.+/i.test(url)) {
-      return json({ ok: false, code: "INVALID_URL", message: "Enter a full http(s) URL." }, 400);
-    }
-    // SSRF defense-in-depth: the URL is fetched by CloudConvert's headless Chrome
-    // (not our infra), but still refuse obvious internal/loopback/metadata targets.
-    if (isBlockedUrlTarget(url)) {
-      return json({ ok: false, code: "BLOCKED_URL", message: "That URL points to a private or internal address and can't be captured." }, 400);
-    }
-    try {
-      const jobRes = await fetch(`${CLOUDCONVERT_API}/jobs`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tasks: {
-            // Real headless-Chrome render (runs JS, real layout, loads relative assets)
-            // via capture-website — replaces the old import/url + convert(html->pdf) that
-            // fetched raw HTML, so JS-rendered pages no longer come out blank/partial.
-            // A realistic UA + networkidle wait help with JS-heavy pages and basic bot
-            // checks; hard bot-protected sites (e.g. Cloudflare) may still be refused and
-            // fall through to the friendly error below.
-            "capture-website": {
-              operation: "capture-website",
-              url,
-              output_format: "pdf",
-              screen_width: 1366,
-              screen_height: 768,
-              wait_until: "networkidle2",
-              timeout: 30,
-              headers: {
-                "User-Agent":
-                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-              },
-            },
-            "export-file": { operation: "export/url", input: "capture-website", inline: false, archive_multiple_files: false },
-          },
-        }),
-      });
-      if (!jobRes.ok) {
-        const detail = await jobRes.text().catch(() => "");
-        console.error("[cloudconvert] job create failed", jobRes.status, detail.slice(0, 400));
-        return json({ ok: false, code: "JOB_CREATE_FAILED", status: jobRes.status, message: cloudConvertFailMessage(jobRes.status) }, 502);
-      }
-      const job = await jobRes.json() as CloudConvertJob;
-      await gate.commit();
-      return json({ ok: true, jobId: job.data.id, outputExt: "pdf" });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Unknown error";
-      return json({ ok: false, code: "INTERNAL_ERROR", message }, 500);
-    }
-  }
-
   const isEncrypt = route === ENCRYPT_ROUTE;
   if (!route || (!isEncrypt && !(route in SUPPORTED_CONVERSIONS))) {
     return json({

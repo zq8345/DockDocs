@@ -5,6 +5,13 @@
 
 /classify /batch-sort 301
 
+# url-to-pdf TOOL retired (CloudConvert capture-website: uploaded the URL, couldn't
+# reach pages behind a login, failed on JS-heavy / Cloudflare-protected sites). The
+# canonical /url-to-pdf is now an honest how-to page (browser Print → Save as PDF).
+# 301 the old localized tool routes (/<lng>/url-to-pdf) to it. :lng matches one segment,
+# so the bare /url-to-pdf content page is untouched.
+/:lng/url-to-pdf /url-to-pdf 301!
+
 # --- GEO content slim-down (P0 2026-06-17): 410 removed thin /guides pages ---
 /guides/ocr-pdf-for-scanned-receipts /410 410!
 /zh/guides/ocr-pdf-for-scanned-receipts /410 410!
