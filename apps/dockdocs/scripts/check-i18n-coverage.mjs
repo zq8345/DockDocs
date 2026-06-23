@@ -36,13 +36,18 @@ const PAGE = join(APP, "app", "[locale]", "[[...slug]]", "page.tsx");
 
 // ── locales ────────────────────────────────────────────────────────────────
 const SOURCE = "en";
-// Data locales we expect to carry hand-written translations (zh-Hant excluded:
-// it derives via deepHant). Order matters only for report readability.
-const DATA_LOCALES = ["zh", "es", "pt", "fr", "ja"];
-// CUSTOM_TOOL_COPY was previously read by RAW locale key, requiring explicit zh-Hant entries.
-// The handler now derives zh-Hant via toHant(zh) (same as localized-tools.ts), so zh-Hant
-// no longer needs hand-written entries there. Only explicit-entry locales are checked here.
-const CUSTOM_LOCALES = ["zh", "es", "pt", "fr", "ja"];
+// DATA_LOCALES / CUSTOM_LOCALES are DERIVED from routeLocales (lib/i18n.ts) just
+// below — NOT hardcoded. That way adding a new route locale (e.g. "de") AUTO-enrolls
+// it here and this guard FAILS the build until that locale is translated in all three
+// inventoried sources, instead of silently shipping English. (en is the source; zh-Hant
+// derives via deepHant, so it's excluded from hand-written-data parity. CUSTOM_TOOL_COPY
+// also derives zh-Hant via toHant(zh), so it uses the same explicit-entry locale list.)
+// ⚠️ KNOWN RESIDUAL GAP: this guard inventories only the THREE sources below
+// (localized-tools.ts, copy.ts, CUSTOM_TOOL_COPY). It does NOT scan the custom-client
+// inline STR/SECTIONS dictionaries or ToolFaq's FAQS — those use per-file hardcoded
+// locale unions + `?? .en` fallback, and the catch-all narrows an unknown locale to
+// "en" (esLocale/clientLocale/metaLocale), so adding a locale ships English there with
+// a GREEN build. Closing that needs the canonical-store refactor, not this guard.
 
 // ── English-leak allowlist ───────────────────────────────────────────────────
 // A non-en value that EQUALS the en value is only OK if it's one of these
@@ -218,6 +223,17 @@ function asString(raw) {
 const toolsSrc = read(TOOLS, "lib/localized-tools.ts");
 const i18nSrc = read(I18N, "lib/i18n.ts");
 const toolSlugs = pickStringArray(i18nSrc, "toolSlugs");
+
+// Hand-written-translation locales = routeLocales minus en (the source) and zh-Hant
+// (deepHant-derived). DERIVED so a newly-added route locale can't silently skip this
+// guard (see the locales note up top). Fail closed if the parse yields nothing.
+const ROUTE_LOCALES = pickStringArray(i18nSrc, "routeLocales");
+const DATA_LOCALES = ROUTE_LOCALES.filter((l) => l !== "en" && l !== "zh-Hant");
+const CUSTOM_LOCALES = DATA_LOCALES;
+if (!DATA_LOCALES.length) {
+  console.error("[i18n-coverage] FAIL — could not parse routeLocales from lib/i18n.ts (derived locale list is empty). Fix the parser before trusting this guard.");
+  process.exit(1);
+}
 
 // Extract a `${locale}Tools` record -> Map<slug, entryObjText>
 function extractRecord(localeVar) {
