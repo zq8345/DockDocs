@@ -1045,9 +1045,8 @@ const enTools: Record<ToolSlug, ToolCopy> = {
 
 };
 
-const zhTools: Record<ToolSlug, ToolCopy> = {
+const zhTools: Record<ToolSlug, LocalizedToolCopy> = {
   "pdf-to-html": {
-    ...enTools["pdf-to-html"],
     title: "在线免费 PDF 转 HTML | DockDocs",
     description: "在线免费把 PDF 的文字转成干净的 HTML 文件。浏览器本地处理，文件不会离开你的设备。",
     appName: "DockDocs PDF 转 HTML",
@@ -1057,7 +1056,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "把 PDF 的文字提取成干净、结构化的 HTML 文件。完全在浏览器中处理——文件不会离开你的设备。",
     primaryActionLabel: "转换为 HTML",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "HTML 文件"]],
-    upload: { ...enTools["pdf-to-html"].upload, title: "上传要转换的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。下载结构化 .html 格式的文字。" },
+    upload: { title: "上传要转换的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。下载结构化 .html 格式的文字。" },
     benefitsTitle: "将 PDF 转为 HTML，本地处理无需上传",
     benefitsDescription: "上传即处理，下载干净的 HTML 文件。",
     benefits: [
@@ -1080,7 +1079,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何将 PDF 转为 HTML？", answer: "上传 PDF，下载生成的 HTML 文件。" }, { question: "能保留图片和排版吗？", answer: "可以——每页渲染为图片以保留图片和版式，页面下方的可折叠区域保留原始可选文字，方便搜索。" }, { question: "我的 PDF 会发送到服务器吗？", answer: "不会。所有提取操作在浏览器本地完成，文件不会离开你的设备。" }],
   },
   "pdf-to-text": {
-    ...enTools["pdf-to-text"],
     title: "在线免费 PDF 转文本（TXT） | DockDocs",
     description: "在线免费从 PDF 提取纯文本。浏览器本地处理，文件不会离开你的设备。",
     appName: "DockDocs PDF 转文本",
@@ -1090,7 +1088,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "从 PDF 提取全部文字为干净的 .txt 文件。完全在浏览器中处理——文件不会离开你的设备。",
     primaryActionLabel: "提取文本",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "TXT 文件"]],
-    upload: { ...enTools["pdf-to-text"].upload, title: "上传要提取文本的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。下载提取的文字（.txt 格式）。" },
+    upload: { title: "上传要提取文本的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。下载提取的文字（.txt 格式）。" },
     benefitsTitle: "将 PDF 文字提取为纯文本，本地处理无需上传",
     benefitsDescription: "上传即处理，下载干净的纯文本文件。",
     benefits: [
@@ -1113,7 +1111,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何将 PDF 转为文本？", answer: "上传 PDF，下载提取的纯文本 .txt 文件。" }, { question: "支持扫描版 PDF 吗？", answer: "仅支持包含真实文字的 PDF。扫描版文档请先进行 OCR 识别。" }, { question: "我的 PDF 会发送到服务器吗？", answer: "不会。所有提取操作在浏览器本地完成，文件不会离开你的设备。" }],
   },
   "page-numbers": {
-    ...enTools["page-numbers"],
     title: "在线免费给 PDF 添加页码 | DockDocs",
     description: "在线免费为 PDF 添加页码。浏览器本地处理，文件不会离开你的设备。",
     appName: "DockDocs 添加页码",
@@ -1123,7 +1120,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "在每一页底部居中盖上页码（如 3 / 12）。完全在浏览器中处理——文件不会离开你的设备。",
     primaryActionLabel: "添加页码",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "添加页码的 PDF"]],
-    upload: { ...enTools["page-numbers"].upload, title: "上传要加页码的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。下载添加页码后的 PDF。" },
+    upload: { title: "上传要加页码的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。下载添加页码后的 PDF。" },
     benefitsTitle: "无需上传服务器即可添加页码",
     benefitsDescription: "本地上传，立即下载带页码的 PDF。",
     benefits: [{ title: "每页编号", description: "每页添加清晰的「页码 / 总数」。" }, { title: "隐私优先", description: "所有处理都在你的浏览器中完成。文件不会离开你的设备。" }, { title: "适合打印", description: "页码便于在打印和共享文档中查找。" }],
@@ -1137,7 +1134,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何给 PDF 添加页码？", answer: "上传 PDF 后下载结果，每页会自动添加页码。" }, { question: "我的 PDF 会发送到服务器吗？", answer: "不会。所有处理在浏览器本地完成，文件不会离开你的设备。" }, { question: "页码放在哪里？", answer: "底部居中页脚区域，格式为「当前页/总页数」。" }],
   },
   "watermark-pdf": {
-    ...enTools["watermark-pdf"],
     title: "在线免费给 PDF 加水印 | DockDocs",
     description: "在线免费为 PDF 的每一页添加文字水印。浏览器本地处理，文件不会离开你的设备。",
     appName: "DockDocs 加水印",
@@ -1147,7 +1143,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "在所有页面斜向盖上「机密」「草稿」等文字。完全在浏览器中处理——文件不会离开你的设备。",
     primaryActionLabel: "添加水印",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "加水印 PDF"]],
-    upload: { ...enTools["watermark-pdf"].upload, title: "上传要加水印的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。输入水印文字后下载结果。" },
+    upload: { title: "上传要加水印的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。输入水印文字后下载结果。" },
     benefitsTitle: "无需上传服务器即可添加水印",
     benefitsDescription: "输入文字，立即下载带水印的 PDF。",
     benefits: [{ title: "斜向文字", description: "你的文字以斜向盖在每一页上。" }, { title: "隐私优先", description: "所有水印处理都在你的浏览器中完成。文件不会离开你的设备。" }, { title: "标注状态与归属", description: "在每页显示「机密」「草稿」或公司名称。" }],
@@ -1161,7 +1157,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何给 PDF 添加水印？", answer: "上传 PDF，输入水印文字，下载盖印后的结果。" }, { question: "我的 PDF 会发送到服务器吗？", answer: "不会。所有水印操作在浏览器本地完成，文件不会离开你的设备。" }, { question: "之后可以删除水印吗？", answer: "水印已嵌入页面内容，如需无水印版本，请保留原始文件。" }],
   },
   "compress-pdf": {
-    ...enTools["compress-pdf"],
     title: "在线免费压缩 PDF | DockDocs",
     description: "使用 DockDocs 在线压缩 PDF 文件，适合上传、邮件、表单和日常共享。",
     appName: "DockDocs 压缩 PDF",
@@ -1171,7 +1166,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "为邮件、门户上传、表单提交和文档共享减小 PDF 文件体积。",
     primaryActionLabel: "压缩 PDF",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "更小的 PDF"]],
-    upload: { ...enTools["compress-pdf"].upload, title: "上传 PDF 进行压缩", description: "拖放 PDF 文件，或从设备中选择文件。", buttonLabel: "选择 PDF", note: "仅限 PDF。快速、安全，专为办公文档设计。" },
+    upload: { title: "上传 PDF 进行压缩", description: "拖放 PDF 文件，或从设备中选择文件。", buttonLabel: "选择 PDF", note: "仅限 PDF。快速、安全，专为办公文档设计。" },
     benefitsTitle: "用清晰流程压缩 PDF",
     benefitsDescription: "上传、压缩、查看结果并下载更小的文件。",
     benefits: [
@@ -1190,7 +1185,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowTitle: "PDF 压缩如何融入文档工作",
     workflowDescription: "当文件过大、无法上传或不便发送时，压缩 PDF 可以帮助完成交付。",
     steps: ["选择一个 PDF 文件。", "让 DockDocs 准备压缩。", "下载更小的 PDF。"],
-    faqTitle: "PDF 压缩问题",
     faq: [
       { question: "如何压缩 PDF？", answer: "上传 PDF，查看压缩状态，然后下载压缩后的文件。" },
       { question: "是否免费？", answer: "该页面面向日常免费 PDF 压缩工作流设计。" },
@@ -1199,7 +1193,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     cta: { eyebrow: "压缩 PDF", title: "从更小、更易分享的 PDF 开始。", description: "用于上传限制、邮件和文档交付。", buttonLabel: "立即压缩" },
   },
   "merge-pdf": {
-    ...enTools["merge-pdf"],
     title: "在线免费合并 PDF | DockDocs",
     description: "在线将多个 PDF 合并成一个有序文档。",
     appName: "DockDocs 合并 PDF",
@@ -1209,7 +1202,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "把多个 PDF 合并为一个清晰的文档包，适合共享、归档和审阅。",
     primaryActionLabel: "合并 PDF",
     stats: [["价格", "免费"], ["输入", "多个 PDF"], ["输出", "一个 PDF"]],
-    upload: { ...enTools["merge-pdf"].upload, title: "上传要合并的 PDF", description: "拖放多个 PDF 文件，或从设备中选择文件。", buttonLabel: "选择 PDF 文件", note: "仅限 PDF。专为整理成册的文档而设计。" },
+    upload: { title: "上传要合并的 PDF", description: "拖放多个 PDF 文件，或从设备中选择文件。", buttonLabel: "选择 PDF 文件", note: "仅限 PDF。专为整理成册的文档而设计。" },
     benefitsTitle: "轻松合并多个 PDF",
     benefitsDescription: "上传、排序、合并并下载一个最终 PDF。",
     benefits: [
@@ -1228,7 +1221,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowTitle: "PDF 合并如何融入文档工作",
     workflowDescription: "合并 PDF 适合客户资料包、申请材料、发票和报告合集。",
     steps: ["上传多个 PDF。", "调整文件顺序。", "下载合并后的 PDF。"],
-    faqTitle: "PDF 合并问题",
     faq: [
       { question: "可以上传多个 PDF 吗？", answer: "可以，合并工作流支持多文件上传。" },
       { question: "可以调整顺序吗？", answer: "页面包含合并前的排序预览。" },
@@ -1237,7 +1229,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     cta: { eyebrow: "合并 PDF", title: "创建一个清晰的文档包。", description: "将多个 PDF 合并为一个有序结果。", buttonLabel: "立即合并" },
   },
   "split-pdf": {
-    ...enTools["split-pdf"],
     title: "在线免费拆分 PDF | DockDocs",
     description: "在线拆分 PDF 页面或提取页面范围。",
     appName: "DockDocs 拆分 PDF",
@@ -1247,7 +1238,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "从一个 PDF 中提取页面、分离章节或准备更小的文档集。",
     primaryActionLabel: "拆分 PDF",
     stats: [["价格", "免费"], ["输入", "一个 PDF"], ["输出", "页面或范围"]],
-    upload: { ...enTools["split-pdf"].upload, title: "上传 PDF 进行拆分", description: "拖放 PDF 文件，或从设备中选择文件。", buttonLabel: "选择 PDF", note: "仅限 PDF。专为页面提取工作流而设计。" },
+    upload: { title: "上传 PDF 进行拆分", description: "拖放 PDF 文件，或从设备中选择文件。", buttonLabel: "选择 PDF", note: "仅限 PDF。专为页面提取工作流而设计。" },
     benefitsTitle: "快速提取 PDF 页面",
     benefitsDescription: "上传 PDF、输入页面范围、预览拆分并导出 ZIP。",
     benefits: [
@@ -1266,7 +1257,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowTitle: "PDF 拆分如何融入文档工作",
     workflowDescription: "拆分 PDF 可从报告、表单、扫描件和资料包中提取需要的页面。",
     steps: ["上传一个 PDF。", "输入页面范围。", "将拆分结果导出为 ZIP。"],
-    faqTitle: "PDF 拆分问题",
     faq: [
       { question: "可以提取页面范围吗？", answer: "可以，工作流包含页面范围输入。" },
       { question: "输出是什么？", answer: "拆分结果以 ZIP 导出的形式呈现。" },
@@ -1275,7 +1265,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     cta: { eyebrow: "拆分 PDF", title: "只提取你需要的页面。", description: "从一个较大的 PDF 准备更小的文档集。", buttonLabel: "立即拆分" },
   },
   "pdf-to-word": {
-    ...enTools["pdf-to-word"],
     title: "在线免费 PDF 转 Word | DockDocs",
     description: "将 PDF 在线转换为可编辑的 Word 文档工作流。",
     appName: "DockDocs PDF 转 Word",
@@ -1285,7 +1274,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "把 PDF 转入可编辑文档工作流，方便修改、协作和复用。",
     primaryActionLabel: "PDF 转 Word",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "Word 文档"]],
-    upload: { ...enTools["pdf-to-word"].upload, title: "上传要转换的 PDF", description: "拖放 PDF 文件，或从设备中选择文件。", buttonLabel: "选择 PDF", note: "仅限 PDF。专为可编辑文档工作流而设计。" },
+    upload: { title: "上传要转换的 PDF", description: "拖放 PDF 文件，或从设备中选择文件。", buttonLabel: "选择 PDF", note: "仅限 PDF。专为可编辑文档工作流而设计。" },
     benefitsTitle: "从 PDF 创建可编辑文档",
     benefitsDescription: "上传、转换、预览结构并下载 DOCX 风格结果。",
     benefits: [
@@ -1304,7 +1293,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowTitle: "PDF 转 Word 如何融入文档工作",
     workflowDescription: "当静态 PDF 需要修改、复用或协作时，PDF 转 Word 很有用。",
     steps: ["上传 PDF。", "转换文档结构。", "下载可编辑 Word 文档。"],
-    faqTitle: "PDF 转 Word 问题",
     faq: [
       { question: "输出可以编辑吗？", answer: "该工作流面向可编辑 DOCX 风格输出设计。" },
       { question: "版式会完全一致吗？", answer: "转换质量取决于原始 PDF 结构。" },
@@ -1313,7 +1301,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     cta: { eyebrow: "PDF 转 Word", title: "让 PDF 进入可编辑工作流。", description: "从静态文档进入可修改、可复用的流程。", buttonLabel: "立即转换" },
   },
   "ocr-pdf": {
-    ...enTools["ocr-pdf"],
     title: "在线免费 OCR PDF | DockDocs",
     description: "使用 DockDocs 从扫描 PDF 中提取文本。",
     appName: "DockDocs OCR PDF",
@@ -1323,7 +1310,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "将扫描 PDF 转换为可搜索、可复用的文本工作流。",
     primaryActionLabel: "OCR PDF",
     stats: [["价格", "免费"], ["输入", "扫描 PDF"], ["输出", "提取文本"]],
-    upload: { ...enTools["ocr-pdf"].upload, title: "上传扫描 PDF", description: "拖放扫描 PDF，或从设备中选择文件。", buttonLabel: "选择 PDF", note: "仅 PDF，专为扫描文档、表单和文字提取打造。每次最多 3 页，默认仅第 1 页。" },
+    upload: { title: "上传扫描 PDF", description: "拖放扫描 PDF，或从设备中选择文件。", buttonLabel: "选择 PDF", note: "仅 PDF，专为扫描文档、表单和文字提取打造。每次最多 3 页，默认仅第 1 页。" },
     benefitsTitle: "从扫描件中提取文本",
     benefitsDescription: "上传扫描件、运行 OCR、查看文本、复制或下载。",
     benefits: [
@@ -1342,7 +1329,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowTitle: "OCR PDF 如何融入文档工作",
     workflowDescription: "OCR PDF 可将图片型文档转换为可搜索、可复用文本。",
     steps: ["上传扫描 PDF。", "运行 OCR 识别。", "复制或下载提取文本。"],
-    faqTitle: "OCR PDF 问题",
     faq: [
       { question: "OCR 准确率如何？", answer: "取决于扫描质量、对比度、语言和布局。" },
       { question: "可以复制文本吗？", answer: "工作流包含复制文本和下载文本操作。" },
@@ -1351,7 +1337,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     cta: { eyebrow: "OCR PDF", title: "将扫描文档变成可复用文本。", description: "提取、复核、复制并下载扫描 PDF 中的文字。", buttonLabel: "开始 OCR" },
   },
   "jpg-to-pdf": {
-    ...enTools["jpg-to-pdf"],
     title: "在线免费 JPG 转 PDF | DockDocs",
     description: "将 JPG 图片在线转换为 PDF，支持隐私优先的图片转文档工作流。",
     appName: "DockDocs JPG 转 PDF",
@@ -1361,7 +1346,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "把照片、扫描图和图片文件转换为适合共享和归档的 PDF。",
     primaryActionLabel: "JPG 转 PDF",
     stats: [["价格", "免费"], ["输入", "JPG 图片"], ["输出", "PDF 文档"]],
-    upload: { ...enTools["jpg-to-pdf"].upload, title: "上传 JPG 图片", description: "拖放 JPG 图片，或从设备中选择照片。", buttonLabel: "选择 JPG 图片", note: "支持 JPG、PNG 和 WebP 图片转 PDF。" },
+    upload: { title: "上传 JPG 图片", description: "拖放 JPG 图片，或从设备中选择照片。", buttonLabel: "选择 JPG 图片", note: "支持 JPG、PNG 和 WebP 图片转 PDF。" },
     benefitsTitle: "从图片创建 PDF",
     benefitsDescription: "上传图片、调整页面顺序并导出一个 PDF。",
     benefits: [{ title: "照片变文档", description: "将收据、笔记、扫描图和照片转换为 PDF。" }, { title: "页面排序", description: "导出前预览图片顺序。" }, { title: "导出 PDF", description: "从图片下载一个 PDF 文档。" }],
@@ -1371,7 +1356,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowTitle: "JPG 转 PDF 如何融入文档工作",
     workflowDescription: "JPG 转 PDF 可将图片变成便于存储、共享和交付的文档。",
     steps: ["选择一张或多张图片。", "调整页面顺序。", "导出 PDF 文档。"],
-    faqTitle: "JPG 转 PDF 问题",
     faq: [
       { question: "支持哪些图片格式？", answer: "JPG 转 PDF 支持 JPG、PNG 和 WebP 图片。" },
       { question: "可以上传多张图片吗？", answer: "可以，工作流支持多图片上传和页面排序。" },
@@ -1380,7 +1364,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     cta: { eyebrow: "JPG 转 PDF", title: "将图片转换为 PDF 文档工作流。", description: "为照片、扫描图和收据创建 PDF。", buttonLabel: "立即转换" },
   },
   "pdf-to-png": {
-    ...enTools["pdf-to-png"],
     title: "在线免费 PDF 转 PNG | DockDocs",
     description: "在线免费将 PDF 页面转换为 PNG 图片。",
     appName: "DockDocs PDF 转 PNG", breadcrumbName: "PDF 转 PNG",
@@ -1389,7 +1372,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "从任意 PDF 提取无损 PNG 图片，完全在浏览器中处理。",
     primaryActionLabel: "转换为 PNG",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "PNG 图片"]],
-    upload: { ...enTools["pdf-to-png"].upload, title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。每页渲染为无损 PNG。" },
+    upload: { title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。每页渲染为无损 PNG。" },
     benefitsTitle: "将 PDF 页面提取为无损 PNG",
     benefitsDescription: "上传、选择页面并下载 PNG 图片。",
     benefits: [{ title: "无损画质", description: "PNG 无压缩失真，保留每个像素。" }, { title: "隐私优先", description: "所有处理都在你的浏览器中完成。" }, { title: "单页或批量导出", description: "单页为 PNG，多页打包为 ZIP。" }],
@@ -1403,7 +1386,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何将 PDF 转为 PNG？", answer: "上传 PDF，每页渲染为无损 PNG 图片。" }, { question: "我的 PDF 会发送到服务器吗？", answer: "不会，所有转换在浏览器本地完成。" }, { question: "PDF 转 PNG 免费吗？", answer: "是的，PDF 转 PNG 完全免费，无需账号、无水印、无文件数量限制。每页在浏览器本地渲染，没有服务器成本，可以导出任意数量的 PNG。" }],
   },
   "pdf-to-image": {
-    ...enTools["pdf-to-image"],
     title: "在线免费 PDF 转图片 | DockDocs",
     description: "在线免费将 PDF 页面转换为 JPG 或 PNG 图片，完全在浏览器中处理。",
     appName: "DockDocs PDF 转图片", breadcrumbName: "PDF 转图片",
@@ -1412,7 +1394,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "将任意 PDF 页面导出为高质量 JPG 或无损 PNG，无需上传至服务器。",
     primaryActionLabel: "转换为图片",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "JPG 或 PNG 图片"]],
-    upload: { ...enTools["pdf-to-image"].upload, title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。照片选 JPG，无损导出选 PNG。" },
+    upload: { title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。照片选 JPG，无损导出选 PNG。" },
     benefitsTitle: "将 PDF 页面提取为图片",
     benefitsDescription: "上传、选择格式并下载图片。",
     benefits: [{ title: "JPG 或 PNG 输出", description: "需要更小文件选 JPG，需要无损选 PNG。" }, { title: "隐私优先", description: "所有处理都在你的浏览器中完成——无需上传。" }, { title: "单页或批量导出", description: "单页为图片，多页打包为 ZIP。" }],
@@ -1426,7 +1408,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何将 PDF 转为图片？", answer: "上传 PDF，每页在浏览器中渲染为 JPG 或 PNG 图片。" }, { question: "我的 PDF 会发送到服务器吗？", answer: "不会，所有转换在浏览器本地完成。" }, { question: "JPG 和 PNG 输出有什么区别？", answer: "JPG 有轻微压缩，文件较小；PNG 无损压缩，适合图表和截图。" }],
   },
   "pdf-to-markdown": {
-    ...enTools["pdf-to-markdown"],
     title: "在线免费 PDF 转 Markdown | DockDocs",
     description: "在线免费将 PDF 文字内容转换为 Markdown 格式。",
     appName: "DockDocs PDF 转 Markdown", breadcrumbName: "PDF 转 Markdown",
@@ -1435,7 +1416,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "提取任意 PDF 的文字内容，结构化为 Markdown 格式，完全在浏览器中处理。",
     primaryActionLabel: "转换为 Markdown",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "Markdown (.md)"]],
-    upload: { ...enTools["pdf-to-markdown"].upload, title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。文字版 PDF 效果最佳；如为扫描件，请先进行 OCR。" },
+    upload: { title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。文字版 PDF 效果最佳；如为扫描件，请先进行 OCR。" },
     benefitsTitle: "将 PDF 内容提取为 Markdown",
     benefitsDescription: "上传、提取并下载 .md 文件。",
     benefits: [
@@ -1458,7 +1439,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何将 PDF 转为 Markdown？", answer: "上传 PDF，下载提取的 Markdown 文件。" }, { question: "我的 PDF 会发送到服务器吗？", answer: "不会，所有转换在浏览器本地完成。" }],
   },
   "png-to-pdf": {
-    ...enTools["png-to-pdf"],
     title: "在线免费 PNG 转 PDF | DockDocs",
     description: "在线免费将 PNG 图片转换为 PDF 文档。",
     appName: "DockDocs PNG 转 PDF",
@@ -1468,7 +1448,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "将截图、图表和 PNG 图形转换为可分享的 PDF 文档。",
     primaryActionLabel: "PNG 转 PDF",
     stats: [["价格", "免费"], ["输入", "PNG 图片"], ["输出", "PDF 文档"]],
-    upload: { ...enTools["png-to-pdf"].upload, title: "上传 PNG 图片", description: "拖放 PNG 图片，或从设备中选择文件。", buttonLabel: "选择 PNG 图片", note: "支持 PNG 图片。可多选以创建多页 PDF。" },
+    upload: { title: "上传 PNG 图片", description: "拖放 PNG 图片，或从设备中选择文件。", buttonLabel: "选择 PNG 图片", note: "支持 PNG 图片。可多选以创建多页 PDF。" },
     benefitsTitle: "从 PNG 图片创建 PDF",
     benefitsDescription: "上传、整理并下载干净的 PDF。",
     benefits: [{ title: "截图变文档", description: "把截图和图表转换为可分享的 PDF。" }, { title: "多图上传", description: "将多张 PNG 整理为一个文档。" }, { title: "办公适用输出", description: "为邮件、上传和交接准备 PNG。" }],
@@ -1482,7 +1462,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何将 PNG 转为 PDF？", answer: "上传 PNG 图片，下载生成的 PDF 文件。" }, { question: "这是免费的吗？", answer: "是的，PNG 转 PDF 完全免费。" }],
   },
   "pdf-to-jpg": {
-    ...enTools["pdf-to-jpg"],
     title: "在线免费 PDF 转 JPG | DockDocs",
     description: "在线免费将 PDF 页面转换为 JPG 图片。",
     appName: "DockDocs PDF 转 JPG",
@@ -1492,7 +1471,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "从任意 PDF 提取高质量 JPG 图片，完全在浏览器中处理。",
     primaryActionLabel: "转换为 JPG",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "JPG 图片"]],
-    upload: { ...enTools["pdf-to-jpg"].upload, title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。每页渲染为高质量 JPG。" },
+    upload: { title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。每页渲染为高质量 JPG。" },
     benefitsTitle: "将 PDF 页面提取为图片",
     benefitsDescription: "上传、选择页面，立即下载 JPG 图片。",
     benefits: [{ title: "高质量输出", description: "以 2 倍分辨率渲染，生成清晰的 JPG 图片。" }, { title: "隐私优先", description: "所有处理都在你的浏览器中完成。" }, { title: "单页或批量导出", description: "单页下载为 JPG，多页打包为 ZIP。" }],
@@ -1506,7 +1485,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何将 PDF 转为 JPG？", answer: "上传 PDF，每页渲染为高质量 JPG 图片。" }, { question: "我的 PDF 会发送到服务器吗？", answer: "不会，所有转换在浏览器本地完成。" }],
   },
   "delete-page": {
-    ...enTools["delete-page"],
     title: "在线免费删除 PDF 页面 | DockDocs",
     description: "在线免费从 PDF 中删除不需要的页面。",
     appName: "DockDocs 删除页面",
@@ -1516,7 +1494,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "通过指定页面范围删除 PDF 中的一个或多个页面，完全在浏览器中处理。",
     primaryActionLabel: "删除页面",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "裁剪后的 PDF"]],
-    upload: { ...enTools["delete-page"].upload, title: "上传要编辑的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。指定要删除的页面后下载结果。" },
+    upload: { title: "上传要编辑的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。指定要删除的页面后下载结果。" },
     benefitsTitle: "无需重型编辑器即可删除页面",
     benefitsDescription: "上传、指定要删除的页面，立即下载。",
     benefits: [{ title: "精确删除", description: "一次操作删除单个页面或页面范围。" }, { title: "隐私优先", description: "所有处理都在你的浏览器中完成。" }, { title: "输出干净", description: "保留的页面保持原始顺序。" }],
@@ -1530,7 +1508,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何删除 PDF 的页面？", answer: "上传 PDF，输入要删除的页码，下载结果。" }, { question: "能一次删除多页吗？", answer: "可以，输入逗号分隔的页码列表，如 1, 3, 5-7。" }],
   },
   "rotate-page": {
-    ...enTools["rotate-page"],
     title: "在线免费旋转 PDF 页面 | DockDocs",
     description: "在线免费旋转 PDF 页面，快速修复方向问题。",
     appName: "DockDocs 旋转页面",
@@ -1540,7 +1517,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "将单个页面或整个 PDF 旋转 90°、180° 或 270°，完全在浏览器中处理。",
     primaryActionLabel: "旋转页面",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "旋转后的 PDF"]],
-    upload: { ...enTools["rotate-page"].upload, title: "上传要旋转的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。选择要旋转的页面和旋转角度。" },
+    upload: { title: "上传要旋转的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。选择要旋转的页面和旋转角度。" },
     benefitsTitle: "无需重型编辑器即可修复方向",
     benefitsDescription: "上传、选择旋转角度，立即下载修复后的 PDF。",
     benefits: [{ title: "选择性旋转", description: "旋转特定页面或全部页面。" }, { title: "多种角度", description: "可选顺时针 90°、180° 或 270°。" }, { title: "隐私优先", description: "所有处理都在你的浏览器中完成。" }],
@@ -1554,7 +1531,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何旋转 PDF 页面？", answer: "上传 PDF，选择页面和角度，下载即可。" }, { question: "支持哪些旋转角度？", answer: "顺时针 90°、180° 或 270°。" }],
   },
   "reorder-pages": {
-    ...enTools["reorder-pages"],
     title: "在线免费重排 PDF 页面 | DockDocs",
     description: "在线免费重新排列 PDF 页面顺序。",
     appName: "DockDocs 重排页面",
@@ -1564,7 +1540,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "指定新的页面顺序，立即下载重排后的 PDF，完全在浏览器中处理。",
     primaryActionLabel: "重排页面",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "重排后的 PDF"]],
-    upload: { ...enTools["reorder-pages"].upload, title: "上传要重排的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。以逗号分隔输入新页面顺序。" },
+    upload: { title: "上传要重排的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。以逗号分隔输入新页面顺序。" },
     benefitsTitle: "无需重型编辑器即可重排页面",
     benefitsDescription: "上传、输入新顺序，立即下载。",
     benefits: [{ title: "完全掌控顺序", description: "可前移、后移或完全重新排列页面。" }, { title: "隐私优先", description: "所有处理都在你的浏览器中完成。" }, { title: "输出干净", description: "各页内容不变，按新顺序排列。" }],
@@ -1578,7 +1554,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何重新排列 PDF 页面？", answer: "上传 PDF，输入新的页面顺序（如 3,1,2），下载即可。" }, { question: "必须包含所有页面吗？", answer: "只有列出的页面会出现在输出中——这也是删除页面的便捷方式。" }],
   },
   "add-page": {
-    ...enTools["add-page"],
     title: "在线免费添加空白页到 PDF | DockDocs",
     description: "在线免费在 PDF 中插入空白页。",
     appName: "DockDocs 添加页面",
@@ -1588,7 +1563,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "在 PDF 文档的任意位置添加空白页，完全在浏览器中处理。",
     primaryActionLabel: "添加空白页",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "已插入空白页"]],
-    upload: { ...enTools["add-page"].upload, title: "上传要编辑的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。指定空白页的插入位置。" },
+    upload: { title: "上传要编辑的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。指定空白页的插入位置。" },
     benefitsTitle: "无需重型编辑器即可添加空白页",
     benefitsDescription: "上传、选择位置，立即下载。",
     benefits: [{ title: "精确插入", description: "在指定页面之后，或在开头插入。" }, { title: "尺寸匹配", description: "空白页与相邻页面尺寸一致。" }, { title: "隐私优先", description: "所有处理都在你的浏览器中完成。" }],
@@ -1602,7 +1577,6 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     faq: [{ question: "如何在 PDF 中插入空白页？", answer: "上传 PDF，指定插入位置，下载结果。" }, { question: "空白页的尺寸是多少？", answer: "自动继承最近相邻页面的尺寸。" }],
   },
   "protect-pdf": {
-    ...enTools["protect-pdf"],
     title: "在线免费为 PDF 设置密码 | DockDocs",
     description: "在线免费为任意 PDF 添加密码保护。",
     appName: "DockDocs 加密 PDF",
@@ -1612,7 +1586,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     heroDescription: "用密码加密 PDF，完全在浏览器中处理——文件不会离开您的设备。",
     primaryActionLabel: "加密 PDF",
     stats: [["价格", "免费"], ["输入", "PDF 文件"], ["输出", "加密 PDF"]],
-    upload: { ...enTools["protect-pdf"].upload, title: "上传要加密的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。设置密码后下载加密 PDF。" },
+    upload: { title: "上传要加密的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。设置密码后下载加密 PDF。" },
     benefitsTitle: "在本地加密 PDF，无需上传至服务器",
     benefitsDescription: "上传 PDF，设置密码，立即下载加密文件。",
     benefits: [
@@ -1634,7 +1608,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     cta: { eyebrow: "加密 PDF", title: "为 PDF 添加密码保护。", description: "完全在浏览器中用密码加密 PDF。", buttonLabel: "立即加密" },
     faq: [{ question: "如何给 PDF 设置密码？", answer: "上传 PDF，输入密码，下载加密后的文件。" }, { question: "我的 PDF 会发送到服务器吗？", answer: "不会，所有加密操作在浏览器本地完成。" }],
   },
-  "html-to-pdf": { ...enTools["html-to-pdf"], title: "在线免费 HTML 转 PDF | DockDocs", description: "在线免费将 HTML 文件转换为 PDF。", appName: "DockDocs HTML 转 PDF", schemaName: "DockDocs HTML 转 PDF", breadcrumbName: "HTML 转 PDF", heroTitle: "在线将 HTML 文件转换为 PDF。", heroDescription: "上传 .html 文件，下载干净、可打印的 PDF。", primaryActionLabel: "转换为 PDF", stats: [["价格", "免费"], ["输入", "HTML"], ["输出", "PDF"]], upload: { ...enTools["html-to-pdf"].upload, title: "上传 HTML 文件", description: "拖放 .html 或 .htm 文件，或从设备中选择。", buttonLabel: "选择 HTML 文件", note: "支持 HTML 和 HTM，最大 100 MB。" },
+  "html-to-pdf": { title: "在线免费 HTML 转 PDF | DockDocs", description: "在线免费将 HTML 文件转换为 PDF。", appName: "DockDocs HTML 转 PDF", schemaName: "DockDocs HTML 转 PDF", breadcrumbName: "HTML 转 PDF", heroTitle: "在线将 HTML 文件转换为 PDF。", heroDescription: "上传 .html 文件，下载干净、可打印的 PDF。", primaryActionLabel: "转换为 PDF", stats: [["价格", "免费"], ["输入", "HTML"], ["输出", "PDF"]], upload: { title: "上传 HTML 文件", description: "拖放 .html 或 .htm 文件，或从设备中选择。", buttonLabel: "选择 HTML 文件", note: "支持 HTML 和 HTM，最大 100 MB。" },
     benefitsTitle: "将 HTML 转为可分享的 PDF",
     benefitsDescription: "CloudConvert 使用真实浏览器引擎渲染 HTML。",
     benefits: [
@@ -1654,7 +1628,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "常见用途：发票、报告和导出的网页。",
     steps: ["上传 .html 文件。", "CloudConvert 将其转换为 PDF。", "下载结果。"],
     cta: { eyebrow: "HTML 转 PDF", title: "将 HTML 文件转换为 PDF。", description: "把独立的 HTML 文件转成可分享的 PDF。", buttonLabel: "立即转换" }, faq: [{ question: "如何将 HTML 转为 PDF？", answer: "上传 .html 文件，下载转换后的 PDF。" }, { question: "图片和 CSS 会包含进来吗？", answer: "是的，只要图片和 CSS 已内嵌或可访问。完全自包含的 HTML 文件效果最佳。" }, { question: "这是免费的吗？", answer: "是的，HTML 转 PDF 完全免费。" }], },
-  "pdf-to-ppt": { ...enTools["pdf-to-ppt"], title: "在线免费 PDF 转 PPT | DockDocs", description: "在线免费将 PDF 转换为可编辑的 PowerPoint(PPTX)。", appName: "DockDocs PDF 转 PPT", schemaName: "DockDocs PDF 转 PPT", breadcrumbName: "PDF 转 PPT", heroTitle: "在线将 PDF 转换为 PowerPoint。", heroDescription: "上传 PDF，下载可编辑的 PPTX 演示文稿。", primaryActionLabel: "转换为 PPTX", stats: [["价格", "免费"], ["输入", "PDF"], ["输出", "PPTX"]], upload: { ...enTools["pdf-to-ppt"].upload, title: "上传 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF，最大 100 MB。" },
+  "pdf-to-ppt": { title: "在线免费 PDF 转 PPT | DockDocs", description: "在线免费将 PDF 转换为可编辑的 PowerPoint(PPTX)。", appName: "DockDocs PDF 转 PPT", schemaName: "DockDocs PDF 转 PPT", breadcrumbName: "PDF 转 PPT", heroTitle: "在线将 PDF 转换为 PowerPoint。", heroDescription: "上传 PDF，下载可编辑的 PPTX 演示文稿。", primaryActionLabel: "转换为 PPTX", stats: [["价格", "免费"], ["输入", "PDF"], ["输出", "PPTX"]], upload: { title: "上传 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF，最大 100 MB。" },
     benefitsTitle: "把 PDF 转成可编辑幻灯片",
     benefitsDescription: "CloudConvert 将 PDF 页面重建为 PowerPoint 幻灯片。",
     benefits: [
@@ -1674,7 +1648,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "常见用途：将报告页面复用为演示幻灯片。",
     steps: ["上传 PDF 文件。", "CloudConvert 将其转换为 PPTX。", "下载 PowerPoint。"],
     cta: { eyebrow: "PDF 转 PPT", title: "将 PDF 转换为 PowerPoint。", description: "把 PDF 页面转成可编辑的 PPTX。", buttonLabel: "立即转换" }, faq: [{ question: "如何将 PDF 转为 PowerPoint？", answer: "上传 PDF，下载转换后的 PPTX 文件。" }, { question: "幻灯片可以编辑吗？", answer: "是的，输出是标准可编辑的 PowerPoint 文件。" }, { question: "这是免费的吗？", answer: "是的，PDF 转 PowerPoint 完全免费。" }], },
-  "pdf-to-pdfa": { ...enTools["pdf-to-pdfa"], title: "在线免费 PDF 转 PDF/A | DockDocs", description: "在线免费将 PDF 转换为 PDF/A 归档标准格式。", appName: "DockDocs PDF 转 PDF/A", schemaName: "DockDocs PDF 转 PDF/A", breadcrumbName: "PDF 转 PDF/A", heroTitle: "将 PDF 转换为 PDF/A 归档格式。", heroDescription: "上传 PDF，下载用于长期归档与合规的 PDF/A 文件。", primaryActionLabel: "转换为 PDF/A", stats: [["价格", "免费"], ["输入", "PDF"], ["输出", "PDF/A"]], upload: { ...enTools["pdf-to-pdfa"].upload, title: "上传 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF，最大 100 MB。" },
+  "pdf-to-pdfa": { title: "在线免费 PDF 转 PDF/A | DockDocs", description: "在线免费将 PDF 转换为 PDF/A 归档标准格式。", appName: "DockDocs PDF 转 PDF/A", schemaName: "DockDocs PDF 转 PDF/A", breadcrumbName: "PDF 转 PDF/A", heroTitle: "将 PDF 转换为 PDF/A 归档格式。", heroDescription: "上传 PDF，下载用于长期归档与合规的 PDF/A 文件。", primaryActionLabel: "转换为 PDF/A", stats: [["价格", "免费"], ["输入", "PDF"], ["输出", "PDF/A"]], upload: { title: "上传 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF，最大 100 MB。" },
     benefitsTitle: "将 PDF 转为可长期归档的格式",
     benefitsDescription: "PDF/A 内嵌字体，确保多年后仍能正常显示。",
     benefits: [
@@ -1694,8 +1668,8 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "常见用途：法律、政府及需长期保存的档案。",
     steps: ["上传 PDF 文件。", "CloudConvert 将其转换为 PDF/A。", "下载归档 PDF。"],
     cta: { eyebrow: "PDF 转 PDF/A", title: "将 PDF 转换为 PDF/A。", description: "让文档可长期归档、符合合规要求。", buttonLabel: "立即转换" }, faq: [{ question: "什么是 PDF/A？", answer: "PDF/A 是 PDF 的 ISO 标准化版本，专为长期归档设计，字体和资源完全嵌入。" }, { question: "为什么要转为 PDF/A？", answer: "许多法律、政府和档案系统要求使用 PDF/A，以确保文档在未来仍可读取。" }, { question: "这是免费的吗？", answer: "是的，PDF 转 PDF/A 完全免费。" }], },
-  "word-to-pdf": { ...enTools["word-to-pdf"], title: "在线免费 Word 转 PDF | DockDocs", description: "在线免费将 Word 文档转换为 PDF。", appName: "DockDocs Word 转 PDF", schemaName: "DockDocs Word 转 PDF", breadcrumbName: "Word 转 PDF", heroTitle: "在线将 Word 文档转换为 PDF。", heroDescription: "上传 DOCX 文件，下载高保真 PDF。", primaryActionLabel: "转换为 PDF", stats: [["价格", "免费"], ["输入", "DOCX / DOC"], ["输出", "PDF"]], benefitsTitle: "Word 转 PDF，排版不走样", benefitsDescription: "CloudConvert 保留字体、表格和版式。", benefits: [{ title: "排版精准", description: "字体、表格和格式都会保留。" }, { title: "转换快速", description: "大多数文档 30 秒内完成转换。" }, { title: "无需安装软件", description: "直接在浏览器中转换。" }], featuresTitle: "为 Word 转 PDF 而打造", featuresDescription: "由 CloudConvert 驱动的简洁 DockDocs 界面。", features: [{ title: "DOCX 与 DOC", description: "两种格式都支持。" }, { title: "版式保留", description: "采用 LibreOffice 实现精准渲染。" }, { title: "最大 100 MB", description: "可处理大多数商务文档。" }, { title: "自适应界面", description: "适配各种屏幕尺寸。" }], workflowTitle: "Word 转 PDF 如何融入文档工作", workflowDescription: "常见用途：合同、报告、提案。", steps: ["上传 DOCX 或 DOC 文件。", "CloudConvert 完成转换。", "下载 PDF。"], upload: { ...enTools["word-to-pdf"].upload, title: "上传 Word 文档", description: "拖放 .docx 文件，或从设备中选择。", buttonLabel: "选择 Word 文件", note: "支持 DOCX 与 DOC，最大 100 MB。" }, cta: { eyebrow: "Word 转 PDF", title: "将 Word 文档转换为 PDF。", description: "将 DOCX 文件转换为 PDF 以便分享。", buttonLabel: "立即转换" }, faq: [{ question: "如何将 Word 转为 PDF？", answer: "上传 DOCX 文件，下载转换后的 PDF。" }, { question: "格式能保留吗？", answer: "是的，转换器使用 LibreOffice 进行精确渲染，字体、表格和版式均完整保留。" }, { question: "支持哪些文件格式？", answer: "支持 DOCX 和 DOC 文档，单文件最大 100 MB。" }, { question: "Word 转 PDF 是免费的吗？", answer: "是的，在 DockDocs 上将 Word 文档转为 PDF 完全免费。" }, { question: "需要安装 Microsoft Word 吗？", answer: "不需要，转换在线完成，只需浏览器，无需安装 Word 或其他软件。" }, { question: "转换需要多长时间？", answer: "大多数文档在 30 秒内完成转换。" }, { question: "能在手机上将 Word 转为 PDF 吗？", answer: "可以，DockDocs 支持所有现代手机和桌面浏览器。" }], },
-  "ppt-to-pdf": { ...enTools["ppt-to-pdf"], title: "在线免费 PPT 转 PDF | DockDocs", description: "在线免费将 PowerPoint 演示文稿转换为 PDF。", appName: "DockDocs PPT 转 PDF", schemaName: "DockDocs PPT 转 PDF", breadcrumbName: "PPT 转 PDF", heroTitle: "在线将 PowerPoint 演示文稿转换为 PDF。", heroDescription: "上传 PPTX 文件，下载演示就绪的 PDF。", primaryActionLabel: "转换为 PDF", stats: [["价格", "免费"], ["输入", "PPTX / PPT"], ["输出", "PDF"]], upload: { ...enTools["ppt-to-pdf"].upload, title: "上传 PowerPoint 文件", description: "拖放 .pptx 文件，或从设备中选择。", buttonLabel: "选择 PPT 文件", note: "支持 PPTX 和 PPT，最大 100 MB。" },
+  "word-to-pdf": { title: "在线免费 Word 转 PDF | DockDocs", description: "在线免费将 Word 文档转换为 PDF。", appName: "DockDocs Word 转 PDF", schemaName: "DockDocs Word 转 PDF", breadcrumbName: "Word 转 PDF", heroTitle: "在线将 Word 文档转换为 PDF。", heroDescription: "上传 DOCX 文件，下载高保真 PDF。", primaryActionLabel: "转换为 PDF", stats: [["价格", "免费"], ["输入", "DOCX / DOC"], ["输出", "PDF"]], benefitsTitle: "Word 转 PDF，排版不走样", benefitsDescription: "CloudConvert 保留字体、表格和版式。", benefits: [{ title: "排版精准", description: "字体、表格和格式都会保留。" }, { title: "转换快速", description: "大多数文档 30 秒内完成转换。" }, { title: "无需安装软件", description: "直接在浏览器中转换。" }], featuresTitle: "为 Word 转 PDF 而打造", featuresDescription: "由 CloudConvert 驱动的简洁 DockDocs 界面。", features: [{ title: "DOCX 与 DOC", description: "两种格式都支持。" }, { title: "版式保留", description: "采用 LibreOffice 实现精准渲染。" }, { title: "最大 100 MB", description: "可处理大多数商务文档。" }, { title: "自适应界面", description: "适配各种屏幕尺寸。" }], workflowTitle: "Word 转 PDF 如何融入文档工作", workflowDescription: "常见用途：合同、报告、提案。", steps: ["上传 DOCX 或 DOC 文件。", "CloudConvert 完成转换。", "下载 PDF。"], upload: { title: "上传 Word 文档", description: "拖放 .docx 文件，或从设备中选择。", buttonLabel: "选择 Word 文件", note: "支持 DOCX 与 DOC，最大 100 MB。" }, cta: { eyebrow: "Word 转 PDF", title: "将 Word 文档转换为 PDF。", description: "将 DOCX 文件转换为 PDF 以便分享。", buttonLabel: "立即转换" }, faq: [{ question: "如何将 Word 转为 PDF？", answer: "上传 DOCX 文件，下载转换后的 PDF。" }, { question: "格式能保留吗？", answer: "是的，转换器使用 LibreOffice 进行精确渲染，字体、表格和版式均完整保留。" }, { question: "支持哪些文件格式？", answer: "支持 DOCX 和 DOC 文档，单文件最大 100 MB。" }, { question: "Word 转 PDF 是免费的吗？", answer: "是的，在 DockDocs 上将 Word 文档转为 PDF 完全免费。" }, { question: "需要安装 Microsoft Word 吗？", answer: "不需要，转换在线完成，只需浏览器，无需安装 Word 或其他软件。" }, { question: "转换需要多长时间？", answer: "大多数文档在 30 秒内完成转换。" }, { question: "能在手机上将 Word 转为 PDF 吗？", answer: "可以，DockDocs 支持所有现代手机和桌面浏览器。" }], },
+  "ppt-to-pdf": { title: "在线免费 PPT 转 PDF | DockDocs", description: "在线免费将 PowerPoint 演示文稿转换为 PDF。", appName: "DockDocs PPT 转 PDF", schemaName: "DockDocs PPT 转 PDF", breadcrumbName: "PPT 转 PDF", heroTitle: "在线将 PowerPoint 演示文稿转换为 PDF。", heroDescription: "上传 PPTX 文件，下载演示就绪的 PDF。", primaryActionLabel: "转换为 PDF", stats: [["价格", "免费"], ["输入", "PPTX / PPT"], ["输出", "PDF"]], upload: { title: "上传 PowerPoint 文件", description: "拖放 .pptx 文件，或从设备中选择。", buttonLabel: "选择 PPT 文件", note: "支持 PPTX 和 PPT，最大 100 MB。" },
     benefitsTitle: "将演示文稿转换为 PDF 以便分享",
     benefitsDescription: "将幻灯片固定为通用兼容的 PDF 格式。",
     benefits: [
@@ -1715,7 +1689,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "常见用途：分享演示文稿、打印讲义。",
     steps: ["上传 PPTX 或 PPT 文件。", "CloudConvert 完成转换。", "下载 PDF。"],
     cta: { eyebrow: "PPT 转 PDF", title: "将 PowerPoint 转换为 PDF。", description: "将 PPTX 文件转换为 PDF 以便分享。", buttonLabel: "立即转换" }, faq: [{ question: "如何将 PowerPoint 转为 PDF？", answer: "上传 PPTX 文件，下载 PDF 即可。" }, { question: "幻灯片外观能保持一致吗？", answer: "是的，CloudConvert 会保留版式、字体和图片。" }], },
-  "excel-to-pdf": { ...enTools["excel-to-pdf"], title: "在线免费 Excel 转 PDF | DockDocs", description: "在线免费将 Excel 表格转换为 PDF。", appName: "DockDocs Excel 转 PDF", schemaName: "DockDocs Excel 转 PDF", breadcrumbName: "Excel 转 PDF", heroTitle: "在线将 Excel 表格转换为 PDF。", heroDescription: "上传 XLSX 文件，下载打印就绪的 PDF。", primaryActionLabel: "转换为 PDF", stats: [["价格", "免费"], ["输入", "XLSX / XLS"], ["输出", "PDF"]], upload: { ...enTools["excel-to-pdf"].upload, title: "上传 Excel 文件", description: "拖放 .xlsx 文件，或从设备中选择。", buttonLabel: "选择 Excel 文件", note: "支持 XLSX 和 XLS，最大 100 MB。" },
+  "excel-to-pdf": { title: "在线免费 Excel 转 PDF | DockDocs", description: "在线免费将 Excel 表格转换为 PDF。", appName: "DockDocs Excel 转 PDF", schemaName: "DockDocs Excel 转 PDF", breadcrumbName: "Excel 转 PDF", heroTitle: "在线将 Excel 表格转换为 PDF。", heroDescription: "上传 XLSX 文件，下载打印就绪的 PDF。", primaryActionLabel: "转换为 PDF", stats: [["价格", "免费"], ["输入", "XLSX / XLS"], ["输出", "PDF"]], upload: { title: "上传 Excel 文件", description: "拖放 .xlsx 文件，或从设备中选择。", buttonLabel: "选择 Excel 文件", note: "支持 XLSX 和 XLS，最大 100 MB。" },
     benefitsTitle: "将表格转换为 PDF 以便分享",
     benefitsDescription: "将表格和图表固定为 PDF 格式。",
     benefits: [
@@ -1735,7 +1709,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     workflowDescription: "常见用途：报告、预算、财务数据。",
     steps: ["上传 XLSX 或 XLS 文件。", "CloudConvert 完成转换。", "下载 PDF。"],
     cta: { eyebrow: "Excel 转 PDF", title: "将 Excel 转换为 PDF。", description: "将 XLSX 文件转换为 PDF 以便分享。", buttonLabel: "立即转换" }, faq: [{ question: "如何将 Excel 转为 PDF？", answer: "上传 XLSX 文件，下载 PDF 即可。" }, { question: "图表能保留吗？", answer: "是的，输出文件包含图表和单元格数据。" }], },
-  "pdf-to-excel": { ...enTools["pdf-to-excel"], title: "在线免费 PDF 转 Excel | DockDocs", description: "在线免费将 PDF 表格转换为 Excel。", appName: "DockDocs PDF 转 Excel", schemaName: "DockDocs PDF 转 Excel", breadcrumbName: "PDF 转 Excel", heroTitle: "将 PDF 表格转换为 Excel 电子表格。", heroDescription: "从 PDF 提取表格数据，下载 XLSX 文件。", primaryActionLabel: "转换为 Excel", stats: [["价格", "免费"], ["输入", "PDF"], ["输出", "XLSX"]], upload: { ...enTools["pdf-to-excel"].upload, title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "含表格的 PDF 效果最佳，最大 100 MB。" },
+  "pdf-to-excel": { title: "在线免费 PDF 转 Excel | DockDocs", description: "在线免费将 PDF 表格转换为 Excel。", appName: "DockDocs PDF 转 Excel", schemaName: "DockDocs PDF 转 Excel", breadcrumbName: "PDF 转 Excel", heroTitle: "将 PDF 表格转换为 Excel 电子表格。", heroDescription: "从 PDF 提取表格数据，下载 XLSX 文件。", primaryActionLabel: "转换为 Excel", stats: [["价格", "免费"], ["输入", "PDF"], ["输出", "XLSX"]], upload: { title: "上传 PDF 文件", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "含表格的 PDF 效果最佳，最大 100 MB。" },
     benefitsTitle: "将 PDF 表格数据提取到可编辑的 Excel",
     benefitsDescription: "告别从 PDF 手动复制数据的时代。",
     benefits: [
@@ -1756,7 +1730,7 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     steps: ["上传含表格的 PDF。", "CloudConvert 提取数据。", "下载 XLSX。"],
     cta: { eyebrow: "PDF 转 Excel", title: "将 PDF 数据提取到 Excel。", description: "将 PDF 表格转换为可编辑的 XLSX。", buttonLabel: "立即转换" }, faq: [{ question: "如何将 PDF 转为 Excel？", answer: "上传 PDF，下载 XLSX 文件即可。" }, { question: "如果 PDF 没有表格怎么办？", answer: "纯文字 PDF 可以转换，但可能无法生成整洁的表格数据。" }], },
 
-  "edit-pdf": { ...enTools["edit-pdf"], title: "在线免费编辑 PDF | DockDocs", description: "在线免费编辑 PDF 文件——添加文字、图片、形状和批注。", appName: "DockDocs 编辑 PDF", schemaName: "DockDocs 编辑 PDF", breadcrumbName: "编辑 PDF", heroTitle: "在线免费编辑 PDF 文件。", heroDescription: "向任何 PDF 添加文字、图片、形状和批注——无需安装，直接在浏览器中编辑。", primaryActionLabel: "编辑 PDF", stats: [["价格", "免费"], ["输入", "PDF"], ["输出", "编辑后的 PDF"], ["平台", "浏览器"]], upload: { ...enTools["edit-pdf"].upload, title: "上传要编辑的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。所有处理均在浏览器中完成，文件不会离开您的设备。" },
+  "edit-pdf": { title: "在线免费编辑 PDF | DockDocs", description: "在线免费编辑 PDF 文件——添加文字、图片、形状和批注。", appName: "DockDocs 编辑 PDF", schemaName: "DockDocs 编辑 PDF", breadcrumbName: "编辑 PDF", heroTitle: "在线免费编辑 PDF 文件。", heroDescription: "向任何 PDF 添加文字、图片、形状和批注——无需安装，直接在浏览器中编辑。", primaryActionLabel: "编辑 PDF", stats: [["价格", "免费"], ["输入", "PDF"], ["输出", "编辑后的 PDF"], ["平台", "浏览器"]], upload: { title: "上传要编辑的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。所有处理均在浏览器中完成，文件不会离开您的设备。" },
     benefitsTitle: "为什么用 DockDocs 编辑 PDF",
     benefitsDescription: "快速免费的浏览器 PDF 编辑器，无需注册。",
     benefits: [
@@ -1777,11 +1751,11 @@ const zhTools: Record<ToolSlug, ToolCopy> = {
     steps: ["将 PDF 文件拖到页面或点击浏览上传。", "使用内置批注工具添加文字、图形或图片。", "下载附有修改的编辑后 PDF——可立即分享。"],
     cta: { eyebrow: "编辑 PDF", title: "免费开始编辑您的 PDF 文档。", description: "无需下载，无需注册。直接在浏览器中用 DockDocs 编辑 PDF。", buttonLabel: "立即编辑" }, faq: [{ question: "不用 Adobe Acrobat 能编辑 PDF 吗？", answer: "可以。DockDocs 提供免费的在线 PDF 编辑器，支持添加文字、批注、形状和图片，无需 Adobe Acrobat 或任何软件。支持 Windows、Mac、Linux 和 ChromeOS。" }, { question: "在线编辑 PDF 对敏感文档安全吗？", answer: "DockDocs 的 PDF 编辑器完全在浏览器本地运行，使用客户端技术处理文件。你的 PDF 不会上传到任何服务器，敏感文档始终保留在你的设备上，无需注册账号。" }, { question: "可以对 PDF 做哪些编辑？", answer: "使用 DockDocs 编辑 PDF，你可以在页面任意位置添加文字框、绘制标注形状和线条、插入图片（如 Logo 或签名），以及为文档添加批注，满足最常见的 PDF 编辑需求。" }, { question: "编辑 PDF 需要创建账号吗？", answer: "不需要。DockDocs 编辑 PDF 完全免费，无需账号、邮箱或注册。打开页面、上传 PDF、完成编辑、下载即可。" }, { question: "能编辑扫描版或图片型 PDF 吗？", answer: "对于文字不可选的扫描版或图片型 PDF，建议先用 DockDocs OCR PDF 将其转为可选文字，再进行编辑。" }], },
 
-  "sign-pdf": { ...enTools["sign-pdf"], title: "在线免费签署 PDF | DockDocs", description: "在线免费为 PDF 添加电子签名。", appName: "DockDocs 签署 PDF", schemaName: "DockDocs 签署 PDF", breadcrumbName: "签署 PDF", heroTitle: "在线免费签署 PDF 文档。", heroDescription: "向任何 PDF 添加电子签名——绘制、输入或上传签名，全在浏览器中完成。", primaryActionLabel: "签署 PDF", stats: [["价格", "免费"], ["输入", "PDF"], ["输出", "签名 PDF"], ["安全", "浏览器本地"]], upload: { ...enTools["sign-pdf"].upload, title: "上传要签署的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。签名和文档始终不会离开您的设备。" }, benefitsTitle: "为什么用 DockDocs 签署 PDF", benefitsDescription: "快速、免费、安全地为 PDF 添加电子签名。", benefits: [{ title: "免费电子签名", description: "无需昂贵的电子签名订阅，无需账号即可签署。" }, { title: "隐私优先签署", description: "文档和签名均在浏览器中处理，不上传至外部服务器。" }, { title: "多种签名方式", description: "手绘、输入或上传签名图片。" }], featuresTitle: "为快速签署文档而打造", featuresDescription: "专注的 PDF 签署工具，覆盖电子签名核心流程，毫不繁琐。", features: [{ title: "手绘签名", description: "用鼠标、触控板或触摸屏在 PDF 上自然签名。" }, { title: "输入签名", description: "输入姓名并选择手写风格字体，呈现干净专业的外观。" }, { title: "上传签名图片", description: "已有 PNG 或 JPG 签名？上传并放到文档上。" }, { title: "自由缩放与定位", description: "在任意页面上随意拖动、缩放和定位签名。" }], workflowTitle: "三步签署 PDF", workflowDescription: "上传、签署、下载已签署文档，流程简单。", steps: ["上传需要签署的 PDF 文档。", "手绘、输入或上传签名并放置到文档上。", "下载可发送或共享的已签署 PDF。"], cta: { eyebrow: "签署 PDF", title: "免费签署您的 PDF 文档。", description: "无需下载，无需注册，不存储数据。在浏览器中安全签署 PDF。", buttonLabel: "立即签署" }, faq: [{ question: "电子签名具有法律效力吗？", answer: "在大多数司法管辖区——包括美国（ESIGN Act）、欧盟（eIDAS）、英国、加拿大、澳大利亚等——电子签名对大多数商业和个人文件具有法律约束力。法律效力取决于你所在地区和文件类型，高度受监管的文件请咨询法律专业人士。" }, { question: "电子签名和数字签名有什么区别？", answer: "电子签名（DockDocs 提供的）是文档上表示同意的视觉标记，如手写或打字签名。数字签名是加密印章，通过证书机构验证文档未被篡改并确认签署者身份。" }, { question: "用 DockDocs 签署 PDF 需要账号吗？", answer: "不需要。DockDocs 签署 PDF 完全免费，无需账号、邮箱或注册。上传 PDF、添加签名、下载签署文件，一次完成。" }, { question: "我的签名会被保存或分享吗？", answer: "不会。DockDocs 在浏览器本地处理一切，你的 PDF 和签名不会上传到任何服务器。关闭页面后，什么都不会保存。" }], },
+  "sign-pdf": { title: "在线免费签署 PDF | DockDocs", description: "在线免费为 PDF 添加电子签名。", appName: "DockDocs 签署 PDF", schemaName: "DockDocs 签署 PDF", breadcrumbName: "签署 PDF", heroTitle: "在线免费签署 PDF 文档。", heroDescription: "向任何 PDF 添加电子签名——绘制、输入或上传签名，全在浏览器中完成。", primaryActionLabel: "签署 PDF", stats: [["价格", "免费"], ["输入", "PDF"], ["输出", "签名 PDF"], ["安全", "浏览器本地"]], upload: { title: "上传要签署的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。签名和文档始终不会离开您的设备。" }, benefitsTitle: "为什么用 DockDocs 签署 PDF", benefitsDescription: "快速、免费、安全地为 PDF 添加电子签名。", benefits: [{ title: "免费电子签名", description: "无需昂贵的电子签名订阅，无需账号即可签署。" }, { title: "隐私优先签署", description: "文档和签名均在浏览器中处理，不上传至外部服务器。" }, { title: "多种签名方式", description: "手绘、输入或上传签名图片。" }], featuresTitle: "为快速签署文档而打造", featuresDescription: "专注的 PDF 签署工具，覆盖电子签名核心流程，毫不繁琐。", features: [{ title: "手绘签名", description: "用鼠标、触控板或触摸屏在 PDF 上自然签名。" }, { title: "输入签名", description: "输入姓名并选择手写风格字体，呈现干净专业的外观。" }, { title: "上传签名图片", description: "已有 PNG 或 JPG 签名？上传并放到文档上。" }, { title: "自由缩放与定位", description: "在任意页面上随意拖动、缩放和定位签名。" }], workflowTitle: "三步签署 PDF", workflowDescription: "上传、签署、下载已签署文档，流程简单。", steps: ["上传需要签署的 PDF 文档。", "手绘、输入或上传签名并放置到文档上。", "下载可发送或共享的已签署 PDF。"], cta: { eyebrow: "签署 PDF", title: "免费签署您的 PDF 文档。", description: "无需下载，无需注册，不存储数据。在浏览器中安全签署 PDF。", buttonLabel: "立即签署" }, faq: [{ question: "电子签名具有法律效力吗？", answer: "在大多数司法管辖区——包括美国（ESIGN Act）、欧盟（eIDAS）、英国、加拿大、澳大利亚等——电子签名对大多数商业和个人文件具有法律约束力。法律效力取决于你所在地区和文件类型，高度受监管的文件请咨询法律专业人士。" }, { question: "电子签名和数字签名有什么区别？", answer: "电子签名（DockDocs 提供的）是文档上表示同意的视觉标记，如手写或打字签名。数字签名是加密印章，通过证书机构验证文档未被篡改并确认签署者身份。" }, { question: "用 DockDocs 签署 PDF 需要账号吗？", answer: "不需要。DockDocs 签署 PDF 完全免费，无需账号、邮箱或注册。上传 PDF、添加签名、下载签署文件，一次完成。" }, { question: "我的签名会被保存或分享吗？", answer: "不会。DockDocs 在浏览器本地处理一切，你的 PDF 和签名不会上传到任何服务器。关闭页面后，什么都不会保存。" }], },
 
-  "translate-pdf": { ...enTools["translate-pdf"], title: "在线免费 AI 翻译 PDF | DockDocs", description: "在线免费用 AI 翻译 PDF 的文字，支持 18+ 种语言，浏览器内私密处理。", appName: "DockDocs 翻译 PDF", schemaName: "DockDocs 翻译 PDF", breadcrumbName: "翻译 PDF", heroTitle: "用 AI 免费翻译 PDF 文档。", heroDescription: "提取 PDF 文字并用 AI 翻译成 18+ 种语言。目前为纯文本，保留版式即将推出。", primaryActionLabel: "翻译 PDF", stats: [["价格", "免费"], ["语言", "18+"], ["输入", "PDF"], ["输出", "翻译文本"]], upload: { ...enTools["translate-pdf"].upload, title: "上传要翻译的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。AI 翻译文档文字，可复制输出或导出。" }, benefitsTitle: "为什么用 DockDocs 的 AI 翻译 PDF", benefitsDescription: "快速、免费、隐私优先的 PDF 文字 AI 翻译。", benefits: [{ title: "隐私设计", description: "PDF 在浏览器中读取，仅将提取的文字发送翻译。文件不会离开你的设备。" }, { title: "18+ 种语言", description: "支持中文、日语、韩语、西班牙语、法语、德语、阿拉伯语、印地语等主要语言互译。" }, { title: "无需复制粘贴", description: "直接上传 PDF——自动提取并翻译文字，结果可复制或下载。" }], featuresTitle: "AI 驱动的 PDF 翻译功能", featuresDescription: "DockDocs 翻译 PDF 提取文档文字并用 AI 翻译。", features: [{ title: "整篇文档文字", description: "一次性翻译所有页面的可选文字。" }, { title: "文本输出（目前）", description: "提供可复制或下载的翻译文本。保留版式的输出已在计划中。" }, { title: "广泛语言覆盖", description: "英语、中文（简体和繁体）、日语、韩语、法语、德语、西班牙语、葡萄牙语、意大利语、俄语、阿拉伯语、印地语等。" }, { title: "优质初稿质量", description: "非常适合理解报告、邮件和文档；法律内容请人工复核。" }], workflowTitle: "三步翻译 PDF", workflowDescription: "上传 PDF，选择目标语言，下载翻译后的文档。", steps: ["上传要翻译的 PDF。", "选择目标语言，AI 翻译文档文字。", "复制或下载翻译文本。"], cta: { eyebrow: "翻译 PDF", title: "用 AI 翻译您的 PDF 文档。", description: "免费快速。把 PDF 的文字翻译成 18+ 种语言。", buttonLabel: "立即翻译" }, faq: [{ question: "DockDocs 能翻译成哪些语言？", answer: "18 种以上语言，包括英语、中文（简体和繁体）、日语、韩语、法语、德语、西班牙语、葡萄牙语、意大利语、俄语、阿拉伯语、印地语、荷兰语、印尼语、越南语、泰语和土耳其语，完整列表见语言选择器。" }, { question: "AI 翻译用于商业文件准确吗？", answer: "可以提供良好的初步翻译，适用于理解报告和往来文件。对于具有法律约束力的合同或认证翻译，需要专业译者审核——这只是初稿，不是经认证的法律翻译。" }, { question: "能保留原始版式和格式吗？", answer: "暂不支持。当前版本翻译文档文字并提供可复制或下载的译文。保留版式的翻译在开发路线图中。" }, { question: "我的 PDF 会上传到服务器吗？", answer: "PDF 在浏览器中读取，只有提取的文字发送给 AI 进行翻译，文件本身不会离开你的设备。" }, { question: "有大小限制吗？", answer: "每次翻译上限约 14,000 字符（约 10 页），以保持速度和免费。较长文档请先用 DockDocs 拆分 PDF 后分段翻译。" }], },
+  "translate-pdf": { title: "在线免费 AI 翻译 PDF | DockDocs", description: "在线免费用 AI 翻译 PDF 的文字，支持 18+ 种语言，浏览器内私密处理。", appName: "DockDocs 翻译 PDF", schemaName: "DockDocs 翻译 PDF", breadcrumbName: "翻译 PDF", heroTitle: "用 AI 免费翻译 PDF 文档。", heroDescription: "提取 PDF 文字并用 AI 翻译成 18+ 种语言。目前为纯文本，保留版式即将推出。", primaryActionLabel: "翻译 PDF", stats: [["价格", "免费"], ["语言", "18+"], ["输入", "PDF"], ["输出", "翻译文本"]], upload: { title: "上传要翻译的 PDF", description: "拖放 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "仅支持 PDF。AI 翻译文档文字，可复制输出或导出。" }, benefitsTitle: "为什么用 DockDocs 的 AI 翻译 PDF", benefitsDescription: "快速、免费、隐私优先的 PDF 文字 AI 翻译。", benefits: [{ title: "隐私设计", description: "PDF 在浏览器中读取，仅将提取的文字发送翻译。文件不会离开你的设备。" }, { title: "18+ 种语言", description: "支持中文、日语、韩语、西班牙语、法语、德语、阿拉伯语、印地语等主要语言互译。" }, { title: "无需复制粘贴", description: "直接上传 PDF——自动提取并翻译文字，结果可复制或下载。" }], featuresTitle: "AI 驱动的 PDF 翻译功能", featuresDescription: "DockDocs 翻译 PDF 提取文档文字并用 AI 翻译。", features: [{ title: "整篇文档文字", description: "一次性翻译所有页面的可选文字。" }, { title: "文本输出（目前）", description: "提供可复制或下载的翻译文本。保留版式的输出已在计划中。" }, { title: "广泛语言覆盖", description: "英语、中文（简体和繁体）、日语、韩语、法语、德语、西班牙语、葡萄牙语、意大利语、俄语、阿拉伯语、印地语等。" }, { title: "优质初稿质量", description: "非常适合理解报告、邮件和文档；法律内容请人工复核。" }], workflowTitle: "三步翻译 PDF", workflowDescription: "上传 PDF，选择目标语言，下载翻译后的文档。", steps: ["上传要翻译的 PDF。", "选择目标语言，AI 翻译文档文字。", "复制或下载翻译文本。"], cta: { eyebrow: "翻译 PDF", title: "用 AI 翻译您的 PDF 文档。", description: "免费快速。把 PDF 的文字翻译成 18+ 种语言。", buttonLabel: "立即翻译" }, faq: [{ question: "DockDocs 能翻译成哪些语言？", answer: "18 种以上语言，包括英语、中文（简体和繁体）、日语、韩语、法语、德语、西班牙语、葡萄牙语、意大利语、俄语、阿拉伯语、印地语、荷兰语、印尼语、越南语、泰语和土耳其语，完整列表见语言选择器。" }, { question: "AI 翻译用于商业文件准确吗？", answer: "可以提供良好的初步翻译，适用于理解报告和往来文件。对于具有法律约束力的合同或认证翻译，需要专业译者审核——这只是初稿，不是经认证的法律翻译。" }, { question: "能保留原始版式和格式吗？", answer: "暂不支持。当前版本翻译文档文字并提供可复制或下载的译文。保留版式的翻译在开发路线图中。" }, { question: "我的 PDF 会上传到服务器吗？", answer: "PDF 在浏览器中读取，只有提取的文字发送给 AI 进行翻译，文件本身不会离开你的设备。" }, { question: "有大小限制吗？", answer: "每次翻译上限约 14,000 字符（约 10 页），以保持速度和免费。较长文档请先用 DockDocs 拆分 PDF 后分段翻译。" }], },
 
-  "unlock-pdf": { ...enTools["unlock-pdf"], title: "在线免费移除 PDF 限制 | DockDocs", description: "在线免费移除 PDF 的打印、复制、编辑限制，无需密码。或输入密码解除完整保护。", appName: "DockDocs 解锁 PDF", schemaName: "DockDocs 解锁 PDF", breadcrumbName: "PDF 解除限制", heroTitle: "免费移除 PDF 限制和密码保护。", heroDescription: "一键移除 PDF 的打印、复制、编辑限制——无需密码。或输入密码解除完整保护。全程在浏览器中完成。", primaryActionLabel: "移除限制", stats: [["价格", "免费"], ["输入", "受限 PDF"], ["输出", "解锁的 PDF"], ["安全", "浏览器本地"]], upload: { ...enTools["unlock-pdf"].upload, title: "上传有限制或密码保护的 PDF", description: "拖放受限制或受密码保护的 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "移除权限限制（打印/复制/编辑）无需密码，留空直接点击即可。仅当 PDF 需要密码才能打开时，才需填写密码。一切在你的浏览器中处理。" },
+  "unlock-pdf": { title: "在线免费移除 PDF 限制 | DockDocs", description: "在线免费移除 PDF 的打印、复制、编辑限制，无需密码。或输入密码解除完整保护。", appName: "DockDocs 解锁 PDF", schemaName: "DockDocs 解锁 PDF", breadcrumbName: "PDF 解除限制", heroTitle: "免费移除 PDF 限制和密码保护。", heroDescription: "一键移除 PDF 的打印、复制、编辑限制——无需密码。或输入密码解除完整保护。全程在浏览器中完成。", primaryActionLabel: "移除限制", stats: [["价格", "免费"], ["输入", "受限 PDF"], ["输出", "解锁的 PDF"], ["安全", "浏览器本地"]], upload: { title: "上传有限制或密码保护的 PDF", description: "拖放受限制或受密码保护的 PDF 文件，或从设备中选择。", buttonLabel: "选择 PDF", note: "移除权限限制（打印/复制/编辑）无需密码，留空直接点击即可。仅当 PDF 需要密码才能打开时，才需填写密码。一切在你的浏览器中处理。" },
     benefitsTitle: "为什么用 DockDocs 解锁 PDF",
     benefitsDescription: "快速、免费、安全地移除 PDF 密码保护——无需安装软件。",
     benefits: [
