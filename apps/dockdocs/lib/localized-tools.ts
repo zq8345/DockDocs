@@ -184,61 +184,109 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     cta: { eyebrow: "Watermark PDF", title: "Add a watermark to your PDF.", description: "Stamp text across every page — entirely in your browser.", buttonLabel: "Add watermark now" },
   },
   "compress-pdf": {
-    title: "Compress PDF Online Free | DockDocs",
+  title: "Compress PDF Online Free | DockDocs",
+  description:
+    "Compress PDF files online for free. Reduce PDF file size for email, uploads, and sharing inside the DockDocs AI document workspace.",
+  keywords: ["compress pdf", "reduce pdf size", "pdf compressor", "shrink pdf"],
+  appName: "DockDocs Compress PDF",
+  schemaName: "DockDocs Compress PDF",
+  breadcrumbName: "Compress PDF",
+  heroTitle: "Compress PDF files online — free and in your browser.",
+  heroDescription:
+    "Shrink PDFs that are too big for email or portal uploads. Compression runs entirely in your browser, so your files never leave your device — nothing to install and no sign-up.",
+  primaryActionLabel: "Compress PDF",
+  stats: [["Price", "Free"], ["Privacy", "In-browser"], ["Output", "Smaller PDF"]],
+  upload: {
+    title: "Upload a PDF to compress",
     description:
-      "Compress PDF files online, free and entirely in your browser. Reduce file size for email, uploads, and sharing — no upload to a server, no sign-up.",
-    keywords: ["compress pdf", "pdf compressor", "reduce pdf size", "compress pdf online"],
-    appName: "DockDocs Compress PDF",
-    schemaName: "DockDocs Compress PDF",
-    breadcrumbName: "Compress PDF",
-    heroTitle: "Compress PDF online free, right in your browser",
-    heroDescription:
-      "That PDF too big to email or upload? Shrink it in seconds — small enough to send, sharp enough to read — without installing anything.",
-    primaryActionLabel: "Compress PDF",
-    stats: [["Price", "Free"], ["Input", "PDF files"], ["Workspace", "AI documents"]],
-    upload: {
-      title: "Upload a PDF to compress",
-      description: "Drag and drop a PDF file here, or choose a file from your device.",
-      buttonLabel: "Choose PDF",
-      note: "PDF only. Fast, secure, and designed for office documents.",
-    },
-    benefitsTitle: "Smaller PDFs without a heavy interface",
-    benefitsDescription:
-      "Upload, compress, review the result, and download a smaller file in a clear workflow.",
-    benefits: [
-      { title: "Fast compression", description: "Move from upload to reduced file size without clutter." },
-      { title: "Office-ready", description: "Useful for portals, email limits, forms, and document handoff." },
-      { title: "Clear result state", description: "Users see the compressed result before download." },
-    ],
-    featuresTitle: "Built for modern PDF compression",
-    featuresDescription: "A consistent DockDocs light SaaS interface for everyday compression work.",
-    features: [
-      { title: "Upload PDF", description: "Start with a focused PDF upload area." },
-      { title: "Compression progress", description: "Show processing progress before the result." },
-      { title: "Download CTA", description: "Present a clear compressed PDF download action." },
-      { title: "Responsive UI", description: "Works across desktop, tablet, and mobile screens." },
-    ],
-    workflowTitle: "How PDF compression fits into document work",
-    workflowDescription:
-      "Compress PDF helps when a file is too large for email, uploads, portals, or document archives.",
-    steps: [
-      "Select a PDF file from your device.",
-      "Let DockDocs prepare the document for optimization.",
-      "Download a smaller PDF for sharing, uploading, or archiving.",
-    ],
-    faqTitle: "PDF compression questions",
-    faq: [
-      { question: "How do I compress a PDF?", answer: "Upload a PDF, review the compression state, then download the compressed result." },
-      { question: "Is the compressor free?", answer: "The page is designed as a free everyday PDF workflow." },
-      { question: "Can I use it on mobile?", answer: "Yes. DockDocs pages are responsive for mobile and desktop." },
-    ],
-    cta: {
-      eyebrow: "Compress PDF",
-      title: "Start with a smaller, easier-to-share PDF.",
-      description: "Reduce PDF size for upload limits, email, and clean document handoff.",
-      buttonLabel: "Compress PDF now",
-    },
+      "Drag and drop a PDF file here, or choose from your device.",
+    buttonLabel: "Choose PDF",
+    note: "PDF only. Compression runs in your browser — your file is never uploaded to a server.",
   },
+  benefitsTitle: "Reduce PDF size for email and uploads",
+  benefitsDescription:
+    "DockDocs Compress PDF shrinks files right in your browser, so documents fit email and upload limits without ever being sent to a server.",
+  benefits: [
+    {
+      title: "Fit email & upload limits",
+      description:
+        "Bring oversized PDFs down to a size that clears common email attachment caps and portal upload limits, so files send and submit the first time.",
+    },
+    {
+      title: "Stays on your device",
+      description:
+        "Compression happens entirely in your browser. Your PDF is never uploaded, so sensitive documents stay private.",
+    },
+    {
+      title: "Free with no watermark",
+      description:
+        "Compress as many PDFs as you need at no cost — no account, no email, and nothing stamped onto your file.",
+    },
+  ],
+  featuresTitle: "Built for modern PDF compression",
+  featuresDescription:
+    "A minimal DockDocs interface for reducing PDF file size inside document workflows.",
+  features: [
+    {
+      title: "Compress PDF files",
+      description:
+        "Reduce file size for email attachments, portal uploads, and document sharing.",
+    },
+    {
+      title: "Clean workspace",
+      description:
+        "Upload, compress, and download in one focused DockDocs interface.",
+    },
+    {
+      title: "Clear limits",
+      description:
+        "The upload card communicates supported formats, file size, and processing states.",
+    },
+    {
+      title: "Responsive DockDocs UI",
+      description:
+        "The same clean DockDocs interface works across desktop, tablet, and mobile screens.",
+    },
+  ],
+  workflowTitle: "How PDF compression fits into document work",
+  workflowDescription:
+    "Compress PDF is designed for common office moments: files are too large for email, a portal requires a size limit, or sharing needs to be faster.",
+  steps: [
+    "Select a PDF file from your device.",
+    "DockDocs compresses the file while preserving readability.",
+    "Download the compressed PDF ready for sharing.",
+  ],
+  faqTitle: "PDF compression questions",
+  faq: [
+    {
+      question: "How do I compress a PDF file online?",
+      answer:
+        "Drop a PDF onto DockDocs Compress PDF and download the smaller version. Everything runs in your browser — there is no upload, no sign-up, and nothing to install.",
+    },
+    {
+      question: "Is this PDF compressor free?",
+      answer:
+        "Yes. Compress PDF is completely free with no account or email required, and no watermark is added to your file.",
+    },
+    {
+      question: "Will compression reduce quality?",
+      answer:
+        "To shrink the file, each page is re-rendered as an optimized image, so the biggest savings come from scanned or image-heavy PDFs. Pages stay clearly readable, but text on compressed pages is no longer selectable. If a PDF is already small — for example a plain-text document — DockDocs keeps the original instead of making it larger.",
+    },
+    {
+      question: "Are my files uploaded anywhere?",
+      answer:
+        "No. Compression runs entirely inside your browser using your own device, so your PDF is never uploaded to a server and never leaves your computer.",
+    },
+  ],
+  cta: {
+    eyebrow: "Compress PDF",
+    title: "Reduce PDF file size for sharing and uploads.",
+    description:
+      "Use DockDocs to compress PDF files for email, portals, and document handoff.",
+    buttonLabel: "Compress PDF now",
+  },
+},
   "merge-pdf": {
     title: "Merge PDF Files Online Free | DockDocs",
     description:
