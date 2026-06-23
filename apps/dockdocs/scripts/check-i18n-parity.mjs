@@ -37,6 +37,8 @@ const EXCEPTIONS = new Set([
   "merge-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
   "split-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
   "password-protect-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
+  "dockdocs-vs-smallpdf", // standalone English-first GEO head-to-head comparison page — no localized variants yet by design
+  "dockdocs-vs-ilovepdf", // standalone English-first GEO head-to-head comparison page — no localized variants yet by design
 ]);
 
 function die(lines) {
