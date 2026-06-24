@@ -74,7 +74,7 @@ The first four share ONE working tree, so another window's UNCOMMITTED edits sho
 Two modes; pick by whether Joe is at the window + the change's risk. (Added 2026-06-17 to resolve the day-vs-night contradiction that caused the popup storm + the "push immediately vs commit-local" clash.)
 - **DAY / attended** (Joe online; day = features + testing):
   - **Low-risk** (UI / copy / content / SEO / i18n): `pull --rebase` → build green → commit + **push** to master directly; then report (see reporting rule).
-  - **High-risk** (payment / gating / billing / auth / data / large refactor): commit **locally only** → 总调度 reviews the diff (writer≠reviewer) → 总调度 merges. Never direct-to-prod.
+  - **High-risk** (payment / gating / billing / auth / data / large refactor) **OR public/outward-facing content** (named-competitor pages, anything published externally): do it in an **isolated git worktree** (`EnterWorktree`) — NOT commit-local on shared master. (A shared-tree local commit RIDES the next window's `git push` to prod, bypassing review — bit us twice 2026-06-24: SEO competitor pages + 功能 PWA SW both went live unreviewed.) 总调度 reviews the diff (writer≠reviewer) → merges. Never direct-to-prod.
 - **NIGHT / unattended** (Joe offline "我下班了/休息了", or 总调度 declares 夜班): **ALL work = commit locally only, NEVER push, NEVER `send_message`.** 总调度 polls `git log`, reviews (writer≠reviewer), merges. Only low-risk work at night; high-risk waits for Joe. (Why no send_message at night: each one pops an approval dialog → breaks unattended operation — the 2026-06-17 popup storm.)
 
 ## Code quality, UI verification & review (added 2026-06-16, 总调度)
@@ -86,9 +86,10 @@ Two modes; pick by whether Joe is at the window + the change's risk. (Added 2026
   - **Visual upload UX** — every upload shows a thumbnail (where feasible) + file size + clear success/reject feedback. No bare file lists, no silent rejects.
   - **Honest paywall copy** — show users plain words ("无限"); keep internal limits (fair-use soft caps) OUT of the UI; mark unbuilt features "coming / 即将", never advertise vaporware.
 - **Risk-tiered review before live:**
-  - **High-risk** (payment / gating / billing / auth / data / large refactor) → commit **locally on master only** (NOT a branch — switching branches on the shared tree disrupts every window) → 总调度 reviews the diff (writer≠reviewer, runs a code-review pass) → 总调度 merges/pushes. Never direct-to-prod.
+  - **High-risk** (payment / gating / billing / auth / data / large refactor) **or public/outward-facing content** → do it in an **isolated git worktree** (`EnterWorktree`), NOT commit-local on shared master (shared-tree local commits ride the next push to prod → review bypassed, confirmed 2026-06-24) → 总调度 reviews (writer≠reviewer + `/code-review` pass) → 总调度 merges/pushes. Never direct-to-prod.
   - **Low-risk** (UI / copy / content / SEO) → direct push to master; 总调度 reviews promptly after + 测试 verifies.
 - **Run `/code-review` before every push** (free first-party skill, zero supply-chain risk); add `/security-review` for anything touching auth / payment / billing / data. Cheapest quality gate — use it every time.
+- **⭐ PUSH-GATE (every push, every window — added 2026-06-24):** before `git push`, run `git log --oneline origin/master..master` and confirm EVERY commit that will ship is reviewed/approved. Your push carries ALL local-ahead commits — including another window's commit-local-awaiting-review (this is why high-risk/public work goes in a worktree, not commit-local). If an unreviewed high-risk/public commit is ahead, do NOT push — review it first, or have that window move it to a worktree.
 - **Completion reporting (MODE-AWARE — see "Operating modes"):**
   - **DAY / attended:** after committing (and pushing if low-risk), `send_message` 总调度 (cross-session) with the commit hash + what changed. Don't rely on a report only in your own window — Joe hears status from 总调度.
   - **NIGHT / unattended:** do **NOT** `send_message` — every one pops an approval dialog that breaks unattended operation (the 2026-06-17 popup storm). Commit locally and STOP; 总调度 polls `git log` to pick up your work.
