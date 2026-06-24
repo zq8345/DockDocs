@@ -2755,6 +2755,570 @@ export const runtimeCopy = {
       ],
     },
   },
+  de: {
+    shell: {
+      header: {
+        aria: "DockDocs-Navigation",
+        homeAria: "DockDocs-Startseite",
+        tagline: "KI-Dokumentenplattform",
+        tools: "Werkzeuge",
+        menu: "Menü",
+        closeMenu: "Menü schließen",
+        featureMenu: "Funktionsmenü",
+        utilityMenu: "Konto und Links",
+        free: "GRATIS",
+        plus: "PLUS",
+        comingSoon: "Demnächst",
+      },
+      nav: [
+        { name: "KI", href: "/de/#ai" },
+        { name: "Konvertieren", href: "/pdf-to-word", slug: "pdf-to-word" },
+        { name: "Optimieren", href: "/compress-pdf", slug: "compress-pdf" },
+        { name: "Übersicht", href: "/dashboard", slug: "dashboard" },
+        { name: "Meine Chats", href: "/my-chats" },
+        { name: "Preise", href: "/pricing" },
+        { name: "Konto", href: "/account" },
+      ],
+      brand: {
+        aria: "Markennavigation",
+        products: [
+          {
+            name: "DockDocs",
+            href: "https://dockdocs.app",
+            description: "KI-Dokumenten-Arbeitsbereich für Dateien, Zusammenfassungen, Konvertierung und Prüfung.",
+          },
+          {
+            name: "DockIMG",
+            href: "https://dockimg.app",
+            description: "KI-Bild-Arbeitsbereich für visuelle Bearbeitung, Bereinigung und Konvertierung.",
+          },
+          {
+            name: "DockSEO",
+            href: "https://dockseo.app",
+            description: "Such-Arbeitsbereich für Snippets, Metadaten und Inhaltsprüfungen.",
+          },
+          {
+            name: "DockText",
+            href: "https://docktext.app",
+            description: "KI-Schreib-Arbeitsbereich für Bereinigung, Zusammenfassungen und Formatierung.",
+          },
+        ],
+      },
+      footer: {
+        aria: "Fußzeilen-Navigation",
+        copyrightPrefix: "(c)",
+        links: [
+          { name: "Verwandte Arbeitsbereiche", href: "/de/#related-tools" },
+          { name: "DockDocs", href: "/de/" },
+          { name: "Datenschutzrichtlinie", href: "/de/privacy-policy/" },
+          { name: "AGB", href: "/de/terms/" },
+          { name: "Seitenübersicht", href: "/de/sitemap/" },
+        ],
+      },
+      relatedTools: {
+        title: "Verwandte Arbeitsbereiche",
+        description:
+          "Wechseln Sie zwischen den Dock-Produkten mit einem einheitlichen Arbeitsbereich auf Desktop und Mobilgerät.",
+      },
+      account: {
+        account: "Konto",
+        myChats: "Meine Chats",
+        signedIn: "Angemeldet",
+        logout: "Abmelden",
+        continueGoogle: "Mit Google fortfahren",
+        email: "E-Mail",
+        password: "Passwort",
+        login: "Anmelden",
+        signedOutTitle: "Arbeitsbereich-Konto",
+        signedOutDescription: "Melden Sie sich an, um Konto, Upgrade und die Einstiegspunkte des Arbeitsbereichs in einem Menü zu vereinen.",
+        upgrade: "Upgraden",
+        currentPlan: "Gratis-Arbeitsbereich",
+        actionFailed: "Konto-Aktion fehlgeschlagen.",
+      },
+      utility: {
+        accountTitle: "Konto",
+        languageTitle: "Sprache",
+        linksTitle: "Unternehmen",
+        about: "Über uns",
+        blog: "Blog",
+      },
+      toolTemplate: {
+        eyebrow: "KI-Dokumentenplattform",
+        schemaSlogan: "KI-Dokumentenplattform für echte Datei-Workflows",
+      },
+      legal: {
+        privacy: "Datenschutzrichtlinie",
+        terms: "AGB",
+        sitemap: "Seitenübersicht",
+      },
+      trust: {
+        localFirst: "Lokal zuerst",
+        exportReady: "Exportbereit",
+      },
+      metadata: {
+        title: "DockDocs – KI-Dokumenten-Arbeitsbereich",
+        description: "KI-Dokumenten-Tools für PDFs, Office-Dateien, Textbereinigung und Dokumenten-Workflows.",
+      },
+    },
+    common: {
+      upload: {
+        label: "Hochladen",
+        dragDrop: "Dokument hierher ziehen und ablegen",
+        selectedDescription: "Die Datei ist ausgewählt und für den nächsten Schritt bereit.",
+        supported: "Unterstützte Formate",
+        limit: "Maximalgröße",
+        processing: "Wird verarbeitet",
+        successMessage: "Die Oberfläche ist bereit und das Ergebnis steht unten zur Verfügung.",
+        states: {
+          empty: "Warten auf Datei",
+          idle: "Bereit zum Hochladen",
+          selected: "Datei ausgewählt",
+          processing: "Dokument wird verarbeitet",
+          success: "Dokument bereit",
+          error: "Aktion erforderlich",
+        },
+      },
+      result: {
+        states: {
+          empty: "Kein Ergebnis",
+          processing: "Wird generiert",
+          success: "Bereit",
+          error: "Fehler",
+        },
+        resultUnavailable: "Ergebnis nicht verfügbar",
+        waitingForOutput: "Warten auf Ergebnis",
+        runtimeError: "Die Laufzeitumgebung hat einen Fehlerstatus zurückgegeben.",
+        processingMessage:
+          "Die Laufzeitumgebung verarbeitet dieses Dokument. Das Ergebnis erscheint hier, sobald es bereit ist.",
+        keyPoints: "Kernpunkte",
+        nextActions: "Nächste Schritte",
+        copy: "Kopieren",
+        download: "Herunterladen",
+        startChat: "Chat starten",
+      },
+      errors: {
+        unsupportedFile: "Nicht unterstützter Dateityp. Unterstützte Formate:",
+        fileTooLarge: "Die Datei überschreitet das UI-Limit von 25 MB.",
+      },
+    },
+    chat: {
+      heroEyebrow: "Chat mit PDF (MVP)",
+      heroTitle: "Stellen Sie fundierte Fragen zu einem PDF.",
+      heroDescription:
+        "Laden Sie ein textbasiertes PDF hoch, prüfen Sie den Status des extrahierten Quelltexts und stellen Sie gezielte Fragen in einem dokumentenorientierten KI-Arbeitsbereich.",
+      primaryCta: "Chat öffnen",
+      secondaryCta: "PDF komprimieren",
+      metrics: [
+        { value: "12", label: "Seitenlimit" },
+        { value: "40k", label: "Textlimit" },
+        { value: "Live", label: "KI-Aufruf" },
+      ],
+      workspaceLabel: "DockDocs Arbeitsbereich",
+      workspaceTitle: "Chat mit PDF",
+      mvp: "MVP",
+      document: "Dokument",
+      choosePdf: "PDF auswählen",
+      uploadHelp: "Der Text wird lokal extrahiert, bevor eine Anfrage an den Anbieter gesendet wird.",
+      documentStatus: "Dokumentstatus",
+      untitled: "Unbenanntes Dokument",
+      initialStatus: "Laden Sie ein PDF hoch, um zu beginnen.",
+      pdfRequiredStatus: "PDF erforderlich.",
+      pdfRequiredError: "Bitte wählen Sie eine PDF-Datei aus.",
+      fileLimitStatus: "Dateigrößenlimit überschritten.",
+      fileLimitError: "Bitte wählen Sie ein PDF mit maximal 25 MB aus.",
+      readingStatus: "PDF-Text wird in Ihrem Browser gelesen.",
+      noTextStatus: "Kein auswählbarer Text gefunden.",
+      noTextError: "Dieses PDF enthält keinen lesbaren Text. OCR ist erforderlich, bevor der Chat ausgeführt werden kann.",
+      extractionFailedStatus: "Extraktion des PDF-Texts fehlgeschlagen.",
+      extractionFailedError: "Dieses PDF kann nicht gelesen werden.",
+      readyStatus: "Bereit: {characters} Zeichen aus {pages} Seite{plural} extrahiert.",
+      sourceWaiting: "Warten auf Quelltext",
+      sourceReady: "{characters} Zeichen bereit",
+      checks: ["Auswählbarer Text extrahiert", "Anbieter-Referenz erhalten", "Ergebnis generiert"],
+      collectionsLabel: "Sammlungen",
+      collections: [
+        { name: "Vorstandsunterlagen", count: "4 Dok." },
+        { name: "Verträge", count: "9 Dok." },
+        { name: "Forschungsnotizen", count: "6 Dok." },
+      ],
+      historyLabel: "Gesprächsverlauf",
+      defaultHistory: ["Verlängerungsrisiken prüfen", "Folgeaufgaben extrahieren", "Vertragsklauseln vergleichen"],
+      aiChat: "KI-Chat",
+      conversationTitle: "Stellen Sie eine Frage zum PDF",
+      conversationDescription:
+        "Ein fundierter KI-Arbeitsbereich für Dokumentfragen, Zusammenfassungen, Quellenangaben und nächste Schritte.",
+      messages: "Nachrichten",
+      runtime: "Laufzeitumgebung",
+      asking: "Wird gefragt",
+      starterTitle: "Beginnen Sie mit einer fundierten Frage",
+      starterDescription:
+        "Laden Sie ein PDF mit auswählbarem Text hoch und fragen Sie dann nach Fakten, Daten, Klauseln, Risiken oder Aufgaben, die im Dokument verankert sind.",
+      suggestedQuestions: [
+        "Fassen Sie die wichtigsten Entscheidungspunkte zusammen",
+        "Welche Risiken oder Hindernisse werden genannt?",
+        "Listen Sie Termine, Verantwortliche und Aufgaben auf",
+      ],
+      knowledgeCards: [
+        {
+          title: "Zusammenfassung",
+          description: "Erstellen Sie aus dem extrahierten Dokumenttext eine Kurzfassung für die Führungsebene.",
+          prompt: "Erstellen Sie eine Management-Zusammenfassung dieses PDFs.",
+        },
+        {
+          title: "Risiken",
+          description: "Decken Sie unklare Klauseln, Hindernisse, Verpflichtungen und Termine auf.",
+          prompt: "Identifizieren Sie Risiken, Hindernisse und Verpflichtungen in diesem PDF.",
+        },
+        {
+          title: "Aufgaben",
+          description: "Wandeln Sie den Dokumentinhalt in Verantwortliche, Fristen und nächste Schritte um.",
+          prompt: "Listen Sie Aufgaben, Verantwortliche und Termine aus diesem PDF auf.",
+        },
+      ],
+      you: "Sie",
+      assistant: "DockDocs",
+      questionLabel: "Frage",
+      placeholder: "Stellen Sie eine Frage zu diesem PDF",
+      ask: "Senden",
+      sourceReferences: "Quellenangaben",
+      documentText: "Dokumenttext",
+      notExtracted: "Nicht extrahiert",
+      pageContext: "Seitenkontext",
+      firstPages: "Erste {pages} Seiten",
+      pageIndexed: "{pages} Seite{plural} indexiert",
+      references: "Quellenangaben",
+      citationCount: "{count} Zitat{plural}",
+      providerResponseReceived: "Antwort des Anbieters erhalten",
+      providerCitations: "Anbieter-Zitate, sofern verfügbar",
+      provider: "Anbieter",
+      waitingForAi: "Warten auf KI-Antwort",
+      knowledgeCardsLabel: "Wissenskarten",
+      suggestedActions: "Vorgeschlagene Aktionen",
+      sideActions: ["Zusammenfassen", "Risiken finden", "Aufgaben erstellen"],
+      groundedTitle: "Nur fundierte Antworten",
+      groundedDescription:
+        "Die Chat-Anfrage verwendet den extrahierten Dokumenttext als Kontext. Wenn das PDF die Antwort nicht enthält, sollte der Anbieter dies kenntlich machen.",
+      providerFailed: "Anfrage an den Chat-Anbieter fehlgeschlagen.",
+      providerEmpty: "Der Chat-Anbieter hat keine Antwort zurückgegeben.",
+      providerUnavailable: "Der Endpunkt des Chat-Anbieters ist nicht verfügbar.",
+      unableToAnswer: "Kann nicht beantwortet werden:",
+      faqTitle: "Fragen zu Chat mit PDF",
+      faqs: [
+        {
+          question: "Was ist DockDocs Chat mit PDF?",
+          answer:
+            "Mit DockDocs Chat mit PDF können Sie ein PDF hochladen, lesbaren Text im Browser extrahieren und über einen konfigurierten KI-Anbieter Fragen stellen.",
+        },
+        {
+          question: "Antwortet es ohne KI-Anbieter?",
+          answer:
+            "Nein. Wenn der Anbieter-Endpunkt oder der API-Schlüssel nicht verfügbar ist, gibt die Seite einen echten Fehler statt einer simulierten Antwort zurück.",
+        },
+        {
+          question: "Werden gescannte PDFs unterstützt?",
+          answer:
+            "Dieses MVP liest auswählbaren PDF-Text. Gescannte PDFs benötigen OCR, bevor der Chat zu ihrem Inhalt antworten kann.",
+        },
+        {
+          question: "Ist es mit dem statischen Export kompatibel?",
+          answer:
+            "Ja. Die Seite ist mit dem statischen Export kompatibel, während Anbieter-Aufrufe bei der Bereitstellung über eine Netlify-Funktion geleitet werden.",
+        },
+      ],
+    },
+    summary: {
+      eyebrow: "KI",
+      title: "Fassen Sie Dokumente zu Entscheidungen und nächsten Schritten zusammen.",
+      description:
+        "Verwandeln Sie lange PDFs und Office-Dateien in ein prüfbares KI-Ergebnis: Zusammenfassung, Kernpunkte, Entitäten und vorgeschlagene nächste Schritte.",
+      primaryCta: "Dokument hochladen",
+      secondaryCta: "Chat starten",
+      uploadTitle: "Für KI-Zusammenfassung hochladen",
+      uploadDescription:
+        "Legen Sie hier ein Dokument ab, um einen KI-Zusammenfassungs-Workflow mit sichtbaren Limits und Statusanzeigen vorzubereiten.",
+      formats: "PDF, DOC, DOCX",
+      limit: "Bis zu 25 MB",
+      cta: "Dokument auswählen",
+      outputEyebrow: "Ergebnis",
+      outputHeading: "Ein Zusammenfassungsergebnis, das zur Prüfung und Nachverfolgung einlädt.",
+      outputDescription:
+        "Die Ergebnisansicht stellt ein lesbares KI-Ergebnis über einen reinen Erfolgsstatus und hält den nächsten Workflow nur einen Klick entfernt.",
+      runtimeUploadTitle: "Laufzeitgebundenes Hochladen für Zusammenfassung",
+      runtimeUploadDescription:
+        "Wählen Sie ein Dokument aus, um die UI-Zustände leer, ausgewählt, in Verarbeitung, Erfolg und Fehler der Zusammenfassung zu prüfen.",
+      resultEyebrow: "KI-Zusammenfassung",
+      resultTitle: "Zusammenfassung des Vorstandsberichts",
+      resultSummary:
+        "Der Umsatz ist im letzten Quartal gestiegen, aber das Aufkommen im Kundensupport und das Risiko bei Anbieterverlängerungen erfordern eine Nachverfolgung vor der nächsten Betriebsprüfung.",
+      keyPoints: [
+        "Das Supportaufkommen ist über alle Enterprise-Konten hinweg gestiegen.",
+        "Zwei Anbieterverlängerungen erfordern eine Bestätigung des Verantwortlichen.",
+        "Budgetentscheidungen sind durch fehlende Finanzdaten blockiert.",
+      ],
+      actions: ["Zusammenfassung kopieren", "Bericht herunterladen", "Folgefragen stellen"],
+      emptyMessage: "Wählen Sie ein Dokument aus, um eine Vorschau der Zusammenfassung zu erstellen.",
+    },
+    ocr: {
+      eyebrow: "KI",
+      title: "Machen Sie gescannte Dokumente durchsuchbar und KI-bereit.",
+      description:
+        "Bereiten Sie gescannte PDFs für nachgelagerte KI-Workflows vor – mit einer klaren OCR-Oberfläche für Hochladen, Verarbeitung und Ausgabe.",
+      uploadTitle: "Gescanntes PDF hochladen",
+      uploadDescription:
+        "Legen Sie hier einen Scan oder ein PDF ab, um die OCR-Extraktion vorzubereiten. Die Oberfläche zeigt unterstützte Dateien, Limits und den Verarbeitungsstatus an.",
+      formats: "PDF, PNG, JPG",
+      limit: "Bis zu 25 MB",
+      cta: "Scan auswählen",
+      outputEyebrow: "Ergebnis",
+      outputHeading: "Das OCR-Ergebnis gehört in den Arbeitsbereich, nicht in eine verborgene Datei.",
+      outputDescription:
+        "Textextraktion, Konfidenz und nächste KI-Aktionen werden gemeinsam angezeigt, damit Sie verstehen, was bereit ist.",
+      runtimeUploadTitle: "Laufzeitgebundenes OCR-Hochladen",
+      runtimeUploadDescription:
+        "Wählen Sie ein gescanntes PDF oder Bild aus, um die UI-Zustände Hochladen, Verarbeitung, Ausgabe und Fehler der OCR zu prüfen.",
+      resultEyebrow: "OCR-Text",
+      resultTitle: "Vorschau des extrahierten Texts",
+      resultSummary:
+        "Das Dokument ist zur Prüfung bereit. Abschnitte mit geringer Konfidenz werden hervorgehoben, bevor Zusammenfassungs- oder Chat-Workflows fortgesetzt werden.",
+      keyPoints: [
+        "Auswählbarer Text aus gescannten Seiten extrahiert.",
+        "Bereiche mit geringer Konfidenz bleiben zur Prüfung sichtbar.",
+        "Das Ergebnis kann in Chat mit PDF oder KI-Zusammenfassung fortgesetzt werden.",
+      ],
+      actions: ["Extrahierten Text kopieren", "Textdatei herunterladen", "Dokument zusammenfassen"],
+      emptyMessage: "Wählen Sie ein gescanntes Dokument aus, um die OCR-Ausgabe zu erstellen.",
+    },
+    compress: {
+      eyebrow: "Optimieren",
+      title: "Komprimieren Sie PDFs, ohne den Dokumenten-Arbeitsbereich zu verlassen.",
+      description:
+        "Reduzieren Sie die Dateigröße für E-Mail, Portale und die Büroweitergabe und halten Sie dabei die nächste Dokumentaktion sichtbar.",
+      primaryCta: "PDF hochladen",
+      secondaryCta: "Chat mit PDF",
+      uploadTitle: "PDF zum Komprimieren hochladen",
+      uploadDescription:
+        "Legen Sie hier ein PDF ab oder wählen Sie eine Datei von Ihrem Gerät aus. Die Oberfläche hält Limits, Status und die zu erwartende Ausgabe sichtbar.",
+      formats: "PDF",
+      limit: "Bis zu 25 MB",
+      cta: "PDF auswählen",
+      outputEyebrow: "Ergebnis",
+      outputHeading: "Komprimierungsergebnisse sollten prüfbar sein, nicht nur herunterladbar.",
+      outputDescription:
+        "Der Ergebnisbereich schafft ein einheitliches DockDocs-Muster für Dateieinsparungen, Qualitätsprüfungen und nächste KI-Dokumentaktionen.",
+      runtimeUploadTitle: "Laufzeitgebundenes Hochladen für Komprimierung",
+      runtimeUploadDescription:
+        "Wählen Sie ein PDF aus, um die UI-Zustände Hochladen, ausgewählt, in Verarbeitung, Erfolg und Fehler zu prüfen, ohne die Komprimierungslogik zu ändern.",
+      resultEyebrow: "Komprimiertes PDF",
+      resultTitle: "Bereit für die Büroweitergabe",
+      resultSummary:
+        "Die Oberfläche ist an den Zustand der ausgewählten Datei gebunden und zeigt das Komprimierungsergebnis erst an, nachdem der lokale Laufzeitzustand den Erfolg erreicht hat.",
+      keyPoints: [
+        "Die Datei ist kleiner und für Upload-Portale bereit.",
+        "Die Lesbarkeit des Dokuments bleibt das wichtigste Qualitätsmerkmal.",
+        "Nachgelagerte KI-Aktionen bleiben nah am Ergebnis.",
+      ],
+      actions: ["Komprimiertes PDF herunterladen", "An Chat mit PDF senden", "Anschließend KI-Zusammenfassung ausführen"],
+      emptyMessage: "Wählen Sie ein PDF aus, um eine Vorschau des Komprimierungsergebnisses zu erstellen.",
+      faqTitle: "Fragen zur PDF-Komprimierung",
+      faqs: [
+        {
+          question: "Was ist DockDocs PDF komprimieren?",
+          answer:
+            "DockDocs PDF komprimieren reduziert die Dateigröße als Teil eines umfassenderen Workflows der KI-Dokumentenplattform.",
+        },
+        {
+          question: "Welche Dateien werden unterstützt?",
+          answer:
+            "Diese Oberfläche ist auf das Hochladen und die Ausgabe von PDFs ausgerichtet, mit klaren Limits und Verarbeitungszuständen.",
+        },
+        {
+          question: "Kann ich nach der Komprimierung weiterarbeiten?",
+          answer:
+            "Ja. Die Ergebnisansicht führt Sie zu Download, Kopieren und weiterführenden Dokumenten-Workflows.",
+        },
+        {
+          question: "Funktioniert es auf dem Mobilgerät?",
+          answer:
+            "Ja. Der Upload-Bereich, die Limits und die Ausgabevorschau ordnen sich auf Mobilgeräten in einer einspaltigen Ansicht an.",
+        },
+      ],
+    },
+    pdfToWord: {
+      eyebrow: "Konvertieren",
+      title: "Konvertieren Sie PDFs in bearbeitbare, Word-fertige Dokumente.",
+      description:
+        "Halten Sie die Konvertierung in derselben KI-Dokumentenplattform, mit Upload-Limits, Ausgabestatus und nächsten Schritten an einem Ort.",
+      uploadTitle: "PDF zum Konvertieren hochladen",
+      uploadDescription:
+        "Legen Sie hier ein PDF ab, um einen Word-Konvertierungs-Workflow vorzubereiten, ohne die Anbieterlogik im Backend zu ändern.",
+      formats: "PDF",
+      limit: "Bis zu 25 MB",
+      cta: "PDF auswählen",
+      outputEyebrow: "Ergebnis",
+      outputHeading: "Das Konvertierungsergebnis sollte erklären, was geschehen ist.",
+      outputDescription:
+        "Die Oberfläche setzt Erwartungen rund um bearbeitbare Inhalte, die Layoutprüfung und weiterführende Dokumentaktionen.",
+      runtimeUploadTitle: "Laufzeitgebundenes Hochladen für Konvertierung",
+      runtimeUploadDescription:
+        "Wählen Sie ein PDF aus, um die UI-Zustände Hochladen, Verarbeitung, Erfolg und Fehler der Konvertierung zu prüfen, ohne die Anbieterlogik zu ändern.",
+      resultEyebrow: "Word-Ausgabe",
+      resultTitle: "Bearbeitbares Dokument bereit",
+      resultSummary:
+        "Das konvertierte Dokument ist zur Prüfung bereit, mit Layout-Hinweisen und weiterführenden Aktionen neben dem Ergebnis.",
+      keyPoints: [
+        "Der Textinhalt wird für die Bearbeitung vorbereitet.",
+        "Die Layoutprüfung bleibt vor der Weitergabe sichtbar.",
+        "Sie können mit Zusammenfassungs- oder Chat-Workflows fortfahren.",
+      ],
+      actions: ["DOCX herunterladen", "Layout-Hinweise prüfen", "KI-Zusammenfassung ausführen"],
+      emptyMessage: "Wählen Sie ein PDF aus, um eine Vorschau der Word-Ausgabe zu erstellen.",
+    },
+    pricing: {
+      metadataTitle: "Preise",
+      metadataDescription:
+        "DockDocs Gratis-, Plus- und Pro-Preisoberfläche für Workflows der KI-Dokumentenplattform.",
+      eyebrow: "Preise",
+      title: "Tarife für einen KI-Dokumenten-Arbeitsbereich.",
+      description:
+        "Starten Sie gratis und führen Sie ein Upgrade durch, wenn Dokumenten-Chat, Zusammenfassungen, OCR, Konvertierung und Teamprüfung höhere Limits erfordern.",
+      primaryCta: "Tarife vergleichen",
+      secondaryCta: "Mit Chat PDF beginnen",
+      recommended: "Empfohlen",
+      featureColumn: "Funktion",
+      comparisonEyebrow: "Funktionsvergleich",
+      comparisonTitle: "Verfügbarkeit im Arbeitsbereich vergleichen.",
+      billingNote:
+        "Nur Oberfläche: Stripe, Abrechnungs-API, Kontingentprüfung und Abonnementprüfungen sind in diesem Design noch nicht angebunden.",
+      flowEyebrow: "Upgrade-Pfad",
+      flowTitle: "Vom ersten Upload zu einem umfassenderen Dokumenten-Arbeitsbereich.",
+      flowDescription:
+        "Der Preis-Ablauf ist hier rein darstellend: Wählen Sie einen Tarif, prüfen Sie die Funktionsverfügbarkeit und fahren Sie über den Konto-Einstiegspunkt fort.",
+      flowSteps: ["Mit einer echten Datei beginnen", "KI-Arbeitsbereich-Zugang vergleichen", "Über das Kontomenü upgraden"],
+      plans: [
+        {
+          tier: "FREE",
+          name: "Gratis",
+          price: "$0",
+          description: "Für erste Uploads, leichte KI-Dokumentarbeit und grundlegende Datei-Workflows.",
+          cta: "Gratis starten",
+          href: "/chat-with-pdf/",
+          recommended: false,
+          highlights: [
+            "Chat mit PDF (MVP)",
+            "Vorschau der KI-Zusammenfassung",
+            "Einstiegspunkte für OCR, Komprimieren und PDF zu Word",
+            "Dashboard-Grundgerüst des Arbeitsbereichs",
+          ],
+        },
+        {
+          tier: "PLUS",
+          name: "Plus",
+          price: "$5",
+          description: "Für Einzelpersonen, die wöchentlich mit Dokumenten arbeiten und umfangreichere KI-Workflows benötigen.",
+          cta: "Auf Plus upgraden",
+          href: "/account/?plan=PLUS",
+          recommended: true,
+          highlights: [
+            "Höhere Limits im KI-Arbeitsbereich",
+            "Wissenskarten und Quellenprüfung",
+            "Bevorzugte Konvertierungs- und OCR-Workflows",
+            "Platzhalter für gespeicherte Gespräche",
+          ],
+        },
+        {
+          tier: "PRO",
+          name: "Pro",
+          price: "$20",
+          description: "Für Teams, die gemeinsame Muster für die Dokumentenprüfung und eine bessere Sichtbarkeit im Arbeitsbereich benötigen.",
+          cta: "Auf Pro upgraden",
+          href: "/account/?plan=PRO",
+          recommended: false,
+          highlights: [
+            "Platzhalter für Team-Arbeitsbereich-Struktur",
+            "Dashboard-Flächen für Nutzung und Aktivität",
+            "Labels für fortgeschrittene Dokumentenintelligenz",
+            "Platzhalter für Anbieterstatus und Compliance",
+          ],
+        },
+      ],
+      comparison: [
+        { feature: "Chat mit PDF", values: ["GRATIS", "PLUS", "PRO"] },
+        { feature: "KI-Zusammenfassung", values: ["GRATIS", "PLUS", "PRO"] },
+        { feature: "OCR und Extraktion", values: ["GRATIS", "PLUS", "PRO"] },
+        { feature: "PDF zu Word", values: ["GRATIS", "PLUS", "PRO"] },
+        { feature: "Wissenskarten", values: ["PLUS-Vorschau", "PLUS", "PRO"] },
+        { feature: "Arbeitsbereich-Analysen", values: ["Basis", "Nutzungs-Platzhalter", "Team-Platzhalter"] },
+        { feature: "Dokumentensammlungen", values: ["Basis", "PLUS", "PRO"] },
+      ],
+    },
+    dashboard: {
+      eyebrow: "Übersicht",
+      title: "Übersicht des Dokumenten-Arbeitsbereichs.",
+      description: "Eine Steuerzentrale für Dokumente, KI-Gespräche, Zusammenfassungen und den Workflow-Zustand.",
+      newDocument: "Neues Dokument",
+      startChat: "Chat starten",
+      workspace: "Arbeitsbereich",
+      nav: ["Dokumente", "KI", "Konvertieren", "Optimieren", "Einstellungen"],
+      stats: [
+        { label: "Dokumente", value: "18" },
+        { label: "Gespräche", value: "9" },
+        { label: "Zusammenfassungen", value: "14" },
+        { label: "Abläufe", value: "6" },
+      ],
+      overviewLabel: "Übersicht",
+      recentLabel: "Aktuelle Dokumente",
+      conversationsLabel: "Aktuelle Gespräche",
+      actionsLabel: "KI-Aktionen",
+      healthLabel: "Zustand des Arbeitsbereichs",
+      nextStepsLabel: "Empfohlene nächste Schritte",
+      emptyTitle: "Noch keine Uploads",
+      emptyDescription:
+        "Beginnen Sie mit dem Hochladen eines PDFs, Scans, Berichts oder Office-Dokuments. DockDocs hält die Datei, das KI-Ergebnis und die nächste Aktion sichtbar.",
+      continueWork: "Arbeit fortsetzen",
+      openChat: "KI-Chat öffnen",
+      upgradeCta: "Preise ansehen",
+      upgradeDescription:
+        "Benötigen Sie mehr Kapazität im Dokumenten-Arbeitsbereich? Prüfen Sie die Plus- und Pro-Optionen, ohne den Abrechnungsstatus in dieser Oberfläche zu ändern.",
+      analyticsLabel: "Analysen",
+      usageLabel: "Nutzungs-Platzhalter",
+      activityLabel: "Aktuelle Aktivität",
+      onboardingTitle: "Neu hier? Beginnen Sie mit einer Datei.",
+      onboardingDescription:
+        "Laden Sie ein Dokument hoch, stellen Sie eine fundierte Frage und kehren Sie zum Dashboard zurück, um aktuelle Dateien und nächste Schritte zu prüfen.",
+      documents: [
+        { name: "Vorstandsbericht.pdf", type: "PDF", status: "Bereit", action: "KI-Zusammenfassung" },
+        { name: "Lieferantenvertrag.pdf", type: "PDF", status: "Prüfung", action: "Chat" },
+        { name: "Gescannte-Rechnung.pdf", type: "Scan", status: "In Verarbeitung", action: "OCR" },
+      ],
+      conversations: [
+        { title: "Risiken aus dem Lieferantenvertrag extrahieren", meta: "Lieferantenvertrag.pdf", status: "2 Quellen" },
+        { title: "Aufgaben aus dem Vorstandsbericht zusammenfassen", meta: "Vorstandsbericht.pdf", status: "Bereit" },
+        { title: "Zahlungsbedingungen der Rechnung finden", meta: "Gescannte-Rechnung.pdf", status: "Zuerst OCR" },
+      ],
+      actions: [
+        { title: "Chat mit PDF", description: "Stellen Sie fundierte Fragen mit Quellkontext.", href: "/chat-with-pdf", tier: "FREE" },
+        { title: "Zusammenfassen", description: "Erstellen Sie eine Kurzfassung, Kernpunkte, Entitäten und nächste Schritte.", href: "/ai-summary", tier: "FREE" },
+        { title: "OCR", description: "Machen Sie gescannte Dokumente vor der KI-Prüfung durchsuchbar.", href: "/ocr", tier: "FREE" },
+        { title: "Konvertieren", description: "Überführen Sie PDFs in bearbeitbare, Word-fertige Workflows.", href: "/pdf-to-word", tier: "FREE" },
+        { title: "Komprimieren", description: "Reduzieren Sie die Dateigröße für E-Mail, Portale und Weitergabe.", href: "/compress-pdf", tier: "FREE" },
+      ],
+      health: [
+        { label: "Speicher", value: "Lokale Vorschau", tone: "Bereit" },
+        { label: "Verarbeitung", value: "An Laufzeitumgebung gebunden", tone: "Gesund" },
+        { label: "Anbieter", value: "In der Umgebung konfiguriert", tone: "Platzhalter" },
+      ],
+      nextSteps: [
+        "Laden Sie ein echtes PDF hoch und starten Sie ein Gespräch mit Quellen.",
+        "Erstellen Sie eine KI-Zusammenfassung, bevor Sie ein Dokument zur Prüfung senden.",
+        "Verwenden Sie OCR für Scans, bevor Sie Fragen stellen.",
+      ],
+      activity: [
+        "Zusammenfassung des Vorstandsberichts erstellt",
+        "Lieferantenvertrag in Chat mit PDF geöffnet",
+        "Gescannte Rechnung für OCR in die Warteschlange gestellt",
+      ],
+    },
+  },
 } as const;
 
 // Japanese POC: blocks present here override English via the shallow merge in
@@ -3328,8 +3892,9 @@ const runtimeCopyJa = {
   },
 };
 
-export function getRuntimeCopy(locale: RuntimeLocale | "es" | "pt" | "fr" | "ja" | "zh-Hant" = defaultLocale) {
+export function getRuntimeCopy(locale: RuntimeLocale | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant" = defaultLocale) {
   if (locale === "zh-Hant") return deepHant(runtimeCopy.zh) as unknown as typeof runtimeCopy.en;
   if (locale === "ja") return { ...runtimeCopy.en, ...runtimeCopyJa } as unknown as typeof runtimeCopy.en;
-  return runtimeCopy[locale] ?? runtimeCopy.en;
+  // de now has a full authored block in runtimeCopy (resolved below); any other unknown locale falls back to en.
+  return runtimeCopy[locale as keyof typeof runtimeCopy] ?? runtimeCopy.en;
 }

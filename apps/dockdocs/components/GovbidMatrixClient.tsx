@@ -178,6 +178,31 @@ const STR: AuthoredCopy<typeof STR_EN> = {
     filterAdvisory: "任意のみ",
     noQuote: "引用を確認できません",
   },
+  de: {
+    title: "Compliance-Matrix für Ausschreibungen",
+    eyebrow: "PRO · Einzeldokument-KI",
+    subtitle: "Laden Sie eine Ausschreibung oder ein Leistungsverzeichnis hoch – jede „shall/must“-Anforderung wird in eine nummerierte Compliance-Matrix mit Klauselverweisen extrahiert.",
+    upload: "Ziehen Sie Ihr Ausschreibungs-PDF hierher",
+    analyze: "Anforderungen extrahieren",
+    analyzing: "Ausschreibung wird analysiert…",
+    noText: "Kein lesbarer Text gefunden. Führen Sie zuerst OCR für dieses PDF aus.",
+    errPrefix: "Analyse fehlgeschlagen:",
+    retry: "Erneut versuchen",
+    privacy: "📋 Nur der extrahierte Text wird zur Analyse gesendet – die Datei selbst wird nicht hochgeladen.",
+    mandatory: "Verbindlich",
+    advisory: "Empfehlung",
+    colId: "#",
+    colSection: "Klausel",
+    colRequirement: "Anforderung",
+    colType: "Art",
+    colQuote: "Quelltext",
+    downloadCsv: "CSV herunterladen",
+    found: (n: number) => `${n} Anforderung${n === 1 ? "" : "en"} gefunden`,
+    filterAll: "Alle",
+    filterMandatory: "Nur verbindliche",
+    filterAdvisory: "Nur empfohlene",
+    noQuote: "Zitat nicht überprüfbar",
+  },
 };
 
 function exportCsv(requirements: Requirement[], t: typeof STR_EN) {
@@ -335,6 +360,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "AI 文書リソース", href: "/resources", description: "AI 文書ツール、抽出、分析の導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Was die Compliance-Matrix für Sie leistet",
+    benefitsDescription: "Die KI liest den Text Ihrer Ausschreibung und verwandelt verstreute Pflichten in eine strukturierte, exportierbare Matrix.",
+    benefits: [
+      { title: "Jedes shall/must, nichts übersehen", description: "Die KI durchsucht die gesamte Ausschreibung nach verbindlichen Formulierungen – „shall“, „must“, „ist verpflichtet“ –, damit eine auf Seite 47 vergrabene Anforderung Sie nicht den Zuschlag kostet." },
+      { title: "Jede Zeile trägt ihre Quellklausel", description: "Jede Anforderung trägt die Klauselnummer, aus der sie stammt, und den genauen Quellsatz, sofern er auffindbar ist, sodass Ihr Team jede Anforderung mit der ursprünglichen Ausschreibung abgleichen kann." },
+      { title: "Export als CSV für Ihre Angebotsantwort", description: "Übertragen Sie die nummerierte Matrix direkt in eine Tabelle und weisen Sie Verantwortliche, Status und Nachweise zu – so wird aus der Extraktion eine praktikable Compliance-Checkliste." },
+    ],
+    workflowTitle: "Vom Ausschreibungs-PDF zur Compliance-Checkliste",
+    workflowDescription: "Wenn eine Ausschreibung eintrifft und Sie jede verbindliche Anforderung herausziehen müssen, bevor die Frist zu laufen beginnt.",
+    steps: [
+      "Laden Sie das PDF der Ausschreibung oder des Leistungsverzeichnisses hoch.",
+      "Die KI analysiert den Text des Dokuments und extrahiert jede shall/must-Anforderung mit ihrem Klauselverweis.",
+      "Prüfen Sie die nummerierte Matrix und laden Sie sie als CSV für Ihre Angebotsantwort herunter.",
+    ],
+    readingTitle: "Mehr KI-Dokumentenanalyse",
+    readingDescription: "Verwandte Tools zum Lesen von Verträgen, Mietverträgen und langen Dokumenten.",
+    readingLinks: [
+      { label: "Vertrags-Risikoprüfung", href: "/contract-risk", description: "Markiert riskante Klauseln und einseitige Bedingungen in einem Vertrag, jede mit ihrer Quellstelle verknüpft." },
+      { label: "KI-Dokumenten-Arbeitsbereich", href: "/ai-workspace", description: "Stellen Sie Fragen zu einem ganzen Dokument und erhalten Sie Antworten, die auf den Text zurückführbar sind." },
+      { label: "KI-Dokumentenressourcen", href: "/resources", description: "Ein strukturierter Hub für KI-Dokumententools, Extraktion und Analysewege." },
+    ],
+  },
 };
 
 export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
@@ -379,6 +427,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
           pt: "Não foi possível ler o PDF",
           fr: "Impossible de lire le PDF",
           ja: "PDF を読み取れませんでした",
+          de: "PDF konnte nicht gelesen werden",
         };
         const readErr = locale === "zh-Hant" ? toHant(READ_ERR.zh) : READ_ERR[locale];
         const msg = encryptedPdfMessage(e, childLocale) ?? readErr;

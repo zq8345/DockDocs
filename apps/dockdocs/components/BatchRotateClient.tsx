@@ -87,6 +87,17 @@ const STR = {
     note: "各 PDF のすべてのページが選択した角度で回転されます。暗号化された PDF はスキップされます。すべてがお使いのデバイス内で完結します。",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "Stapelweise drehen",
+    subtitle: "Korrigieren Sie einen ganzen Ordner mit seitlich oder kopfüber liegenden Scans auf einmal – drehen Sie jede Seite jedes PDFs und bündeln Sie alles in einem einzigen ZIP. Die Verarbeitung läuft in Ihrem Browser; nichts wird hochgeladen.",
+    drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
+    rotate: "Drehen um",
+    run: "Alle drehen", running: "Wird gedreht", download: "ZIP herunterladen", reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`, done: "gedreht", failed: "fehlgeschlagen",
+    need: "Fügen Sie mindestens ein PDF hinzu.",
+    note: "Jede Seite jedes PDFs wird um den gewählten Winkel gedreht. Verschlüsselte PDFs werden übersprungen. Alles bleibt auf Ihrem Gerät.",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
@@ -222,6 +233,28 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum einen ganzen Ordner stapelweise drehen",
+    benefitsDescription: "Richten Sie einen ganzen Stapel seitlich oder kopfüber liegender Scans in einem Durchgang gerade, gebündelt in einem einzigen ZIP.",
+    benefits: [
+      { title: "Ein ganzer Ordner in einem Durchgang", description: "Legen Sie Dutzende PDFs – oder einen Ordner – ab, und jede Seite jeder Datei wird gemeinsam gedreht, ohne sie einzeln zu öffnen." },
+      { title: "90°, 180° oder 270° wählen", description: "Wählen Sie einen Winkel für den Stapel: 90° oder 270° für seitliche Scans, 180°, um kopfüber liegende Seiten richtig herum zu drehen." },
+      { title: "Ein ZIP zurück, Namen erhalten", description: "Jedes gedrehte PDF kommt in einem einzigen ZIP mit seinem ursprünglichen Dateinamen plus -rotated zurück, bereit zum Archivieren oder Versenden." },
+    ],
+    workflowTitle: "Wie das stapelweise Drehen in Ihre Scan-Arbeit passt",
+    workflowDescription: "Für den Fall, dass ein Einzug oder ein Handy-Scan einen Stapel PDFs ausgibt, die alle seitlich oder verdreht herauskamen, und sie einzeln zu korrigieren ewig dauern würde.",
+    steps: [
+      "Fügen Sie Ihre PDFs per Ziehen und Ablegen, über den Dateiauswähler oder durch Auswahl eines ganzen Ordners hinzu.",
+      "Wählen Sie den Drehwinkel – 90°, 180° oder 270° – der auf jede Seite angewendet wird.",
+      "Drehen Sie alle und laden Sie das einzelne ZIP mit den korrigierten PDFs herunter.",
+    ],
+    readingTitle: "Weitere Wege, die Seitenausrichtung zu korrigieren",
+    readingDescription: "Verwandte Tools und Anleitungen zum Drehen und Organisieren von PDFs.",
+    readingLinks: [
+      { label: "Ein einzelnes PDF drehen", href: "/rotate-page", description: "Drehen Sie nur ein PDF – wählen Sie bestimmte Seiten und Winkel mit einer Live-Vorschau." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
+    ],
+  },
 };
 
 export function BatchRotateClient({ locale = "en" }: { locale?: Locale }) {
@@ -291,6 +324,7 @@ export function BatchRotateClient({ locale = "en" }: { locale?: Locale }) {
         pt: "Não foi possível criar o download. Tente novamente.",
         fr: "Impossible de créer le téléchargement. Réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+        de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
       };
       setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[locale]);
     }

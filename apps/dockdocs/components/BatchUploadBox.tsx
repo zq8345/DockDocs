@@ -6,7 +6,7 @@ import { dropzoneShell } from "@/components/design";
 import { matchFiles } from "@/lib/files";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
 
 const STR = {
   en: {
@@ -50,6 +50,13 @@ const STR = {
     note: "またはファイル / フォルダをここにドロップ",
     privacy: "ローカルで処理 — アップロードされません",
     rejected: (n: number, ext: string) => `${n}件のファイルをスキップしました — ${ext} ファイルのみ対応しています`,
+  },
+  de: {
+    choose: "PDFs auswählen",
+    folder: "Stattdessen einen Ordner wählen",
+    note: "oder Dateien / einen Ordner hierher ziehen",
+    privacy: "Lokal verarbeitet – nicht hochgeladen",
+    rejected: (n: number, ext: string) => `${n} Datei${n > 1 ? "en" : ""} übersprungen – nur ${ext}-Dateien werden akzeptiert`,
   },
 };
 

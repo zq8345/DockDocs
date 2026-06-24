@@ -102,7 +102,7 @@ for (const entry of readdirSync(OUT)) {
 // Scope = every locale whose tool bodies are fully localized (verified 100%).
 // en is the source locale. zh/es/pt/fr/ja all override the body arrays for
 // every tool; ja stays noindex, but that's about indexing, not completeness.
-const BODY_LOCALES = ["zh", "es", "pt", "fr", "ja"];
+const BODY_LOCALES = ["zh", "es", "pt", "fr", "ja", "de"];
 const BODY_FIELDS = ["benefits", "features", "steps"];
 const incompleteBody = [];
 
@@ -147,7 +147,7 @@ for (const locale of BODY_LOCALES) {
 // getLocalizedToolConfig substitutes a localized FAQ from `${locale}Faq` maps;
 // any slug absent from a map falls back to the English enTools FAQ (and the
 // FAQPage JSON-LD goes out in English). Assert each locale's map covers all 31.
-const FAQ_LOCALES = ["zh", "es", "pt", "fr", "ja"];
+const FAQ_LOCALES = ["zh", "es", "pt", "fr", "ja", "de"];
 for (const locale of FAQ_LOCALES) {
   const mapStart = toolsSrc.search(new RegExp(`const ${locale}Faq\\b[^=]*=\\s*\\{`));
   if (mapStart < 0) {

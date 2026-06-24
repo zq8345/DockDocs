@@ -99,6 +99,19 @@ const STR = {
     err: "問題が発生しました: ",
     note: "抽出テキストを文単位で比較します。書式や画像は比較対象外です。",
   },
+  de: {
+    title: "Versionen vergleichen",
+    subtitle: "Laden Sie ein Original- und ein überarbeitetes PDF hoch, um genau zu sehen, was sich geändert hat – hinzugefügter Text wird hervorgehoben, entfernter Text durchgestrichen. Die meisten Tools laufen direkt in Ihrem Browser.",
+    original: "Original (v1)", revised: "Überarbeitet (v2)",
+    choose: "PDF auswählen", reading: "Wird gelesen…", change: "Ersetzen",
+    compare: "Versionen vergleichen", comparing: "Wird verglichen…", reset: "Neu beginnen",
+    dropHint: "Lokal verglichen – Ihre Dateien verlassen Ihr Gerät nicht.",
+    added: "Hinzugefügt", removed: "Entfernt", unchanged: "Keine Textänderungen gefunden.",
+    summary: (a: number, d: number) => `${a} hinzugefügt · ${d} entfernt`,
+    need: "Fügen Sie beide PDFs zum Vergleichen hinzu.",
+    err: "Etwas ist schiefgelaufen: ",
+    note: "Vergleicht den extrahierten Text Satz für Satz. Formatierung und Bilder sind nicht Teil des Vergleichs.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 async function extractText(file: File): Promise<string> {
@@ -275,6 +288,28 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
     readingLinks: [
       { label: "PDF を黒塗り", href: "/redact-pdf", description: "レビュー済みの文書を共有する前に、機密テキストを完全に黒塗りします。" },
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Warum PDFs in Ihrem Browser redlinen",
+    benefitsDescription: "Vergleichen Sie ein Original- und ein überarbeitetes PDF und sehen Sie jede Textänderung markiert – Sie müssen nicht beide nebeneinander lesen.",
+    benefits: [
+      { title: "Jede Änderung an Ort und Stelle markiert", description: "Hinzugefügter Text wird hervorgehoben und entfernter Text durchgestrichen, in einem durchgehenden Lesefluss, sodass Ihnen keine stille Umformulierung entgeht." },
+      { title: "Für lange Dokumente gemacht", description: "Ein Vergleich auf Satzebene durchläuft Hunderte von Seiten und hebt nur das hervor, was sich zwischen den beiden Versionen tatsächlich geändert hat." },
+      { title: "Eine klare Zählung von Hinzugefügtem und Entferntem", description: "Sehen Sie auf einen Blick, wie viele Passagen hinzugefügt und wie viele entfernt wurden, bevor Sie eine einzige Zeile der Markierung lesen." },
+    ],
+    workflowTitle: "Wie das Redlining in Ihre Prüfungsarbeit passt",
+    workflowDescription: "Für den Moment, in dem zwei Versionen eines Vertrags, einer Richtlinie oder eines Berichts auf Ihrem Schreibtisch landen und Sie genau wissen müssen, was sich verschoben hat.",
+    steps: [
+      "Laden Sie das Original-PDF und das überarbeitete PDF hoch, die Sie vergleichen möchten.",
+      "Führen Sie den Vergleich aus, um jede hinzugefügte und entfernte Passage rot zu markieren.",
+      "Lesen Sie das markierte Ergebnis und laden Sie das Geänderte herunter oder teilen Sie es.",
+    ],
+    readingTitle: "Weitere Wege, mit Dokumenten zu arbeiten",
+    readingDescription: "Verwandte Tools und Anleitungen zum Prüfen und Finalisieren von PDFs.",
+    readingLinks: [
+      { label: "PDF schwärzen", href: "/redact-pdf", description: "Schwärzen Sie vertraulichen Text dauerhaft, bevor Sie ein geprüftes Dokument teilen." },
+      { label: "PDF-Workflow-Ressourcen", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenwege." },
     ],
   },
 };

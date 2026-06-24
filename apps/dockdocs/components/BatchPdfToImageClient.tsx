@@ -77,6 +77,15 @@ const STR = {
     need: "PDFを少なくとも1つ追加してください。", err: "問題が発生しました: ",
     note: "各PDFのすべてのページが画像になります（2×でレンダリング）。大量のバッチは少し時間がかかります——すべてデバイス内で完結します。",
   },
+  de: {
+    title: "PDF zu Bild im Stapel",
+    subtitle: "Legen Sie einen ganzen Ordner mit PDFs ab und wandeln Sie jede Seite in ein JPG oder PNG um – alles wird in Ihrem Browser gerendert und in einem einzigen ZIP gebündelt. Die meisten Tools laufen direkt in Ihrem Browser.",
+    drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
+    format: "Format", run: "Alle umwandeln", running: "Wird umgewandelt", download: "ZIP herunterladen", reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`, pages: (n: number) => `${n} Seite${n === 1 ? "" : "n"}`, failed: "fehlgeschlagen",
+    need: "Fügen Sie mindestens ein PDF hinzu.", err: "Etwas ist schiefgelaufen: ",
+    note: "Jede Seite jedes PDFs wird zu einem Bild (mit 2× gerendert). Große Stapel dauern einen Moment – die Verarbeitung erfolgt auf Ihrem Gerät.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -210,6 +219,28 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingLinks: [
       { label: "PDF を画像に(単一)", href: "/pdf-to-image", description: "フォルダ全体が不要なときに、1 つの PDF を JPG または PNG に変換します。" },
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "PDF zu Bild im Stapel – ein ganzer Ordner auf einmal",
+    benefitsDescription: "Richten Sie es auf einen Ordner mit PDFs und erhalten Sie jede Seite als JPG oder PNG, gebündelt in einem einzigen ZIP.",
+    benefits: [
+      { title: "Einen Ordner in einem Durchgang umwandeln", description: "Legen Sie einen ganzen Ordner mit PDFs ab und wandeln Sie sie alle zusammen um – ohne die Dateien einzeln zu öffnen oder denselben Export 30-mal zu wiederholen." },
+      { title: "Jede Seite wird zu einem Bild", description: "Jede Seite jedes PDFs wird mit 2× in ein eigenes gestochen scharfes JPG oder PNG gerendert und nach der Quelldatei benannt, sodass die Reihenfolge klar bleibt." },
+      { title: "Ein aufgeräumtes ZIP zum Herunterladen", description: "Alle Bilder kommen in einem einzigen ZIP zurück, sodass ein Stapel mit 50 Seiten ein Download ist statt Hunderter loser Dateien." },
+    ],
+    workflowTitle: "Wie die Stapelumwandlung in Ihre Arbeit passt",
+    workflowDescription: "Für den Moment, in dem ein Stapel PDFs zu Bildern werden muss – Folien für eine Präsentation, Seitenvorschauen für einen Katalog oder Grafiken für ein anderes Dokument.",
+    steps: [
+      "Legen Sie einen Ordner mit PDFs ab oder wählen Sie die Dateien aus, die Sie umwandeln möchten.",
+      "Wählen Sie JPG oder PNG und wandeln Sie den gesamten Stapel auf einmal um.",
+      "Laden Sie das einzelne ZIP mit jeder Seite als Bild herunter.",
+    ],
+    readingTitle: "Weitere Wege, PDFs in Bilder umzuwandeln",
+    readingDescription: "Verwandte Tools und Anleitungen zum Umwandeln und Organisieren von PDFs.",
+    readingLinks: [
+      { label: "PDF zu Bild (einzeln)", href: "/pdf-to-image", description: "Wandeln Sie ein einzelnes PDF in JPG oder PNG um, wenn Sie keinen ganzen Ordner benötigen." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
 };

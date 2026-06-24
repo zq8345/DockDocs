@@ -133,6 +133,24 @@ const STR = {
     note: "テキストと表が編集可能なファイルに抽出されます。スキャンされたPDFや凝ったデザインのPDFは完全には変換できない場合があります。5 MBを超えるファイルは一括処理に対応していません — その場合は単一ファイル変換ツールをご利用ください。",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "PDF stapelweise zu Word / Excel",
+    subtitle:
+      "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Word- oder Excel-Dateien – jede wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt.",
+    word: "Zu Word (.docx)",
+    excel: "Zu Excel (.xlsx)",
+    run: "Alle konvertieren",
+    running: "Wird konvertiert",
+    download: "ZIP herunterladen",
+    reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`,
+    done: "fertig",
+    failed: "fehlgeschlagen",
+    need: "Fügen Sie mindestens ein PDF hinzu.",
+    tooBig: "Über 5 MB – nutzen Sie das Einzeldatei-Tool",
+    note: "Text und Tabellen werden in eine bearbeitbare Datei extrahiert. Eingescannte oder aufwendig gestaltete PDFs lassen sich möglicherweise nicht perfekt konvertieren. Dateien über 5 MB werden im Stapel nicht unterstützt – verwenden Sie dafür den Einzeldatei-Konverter.",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 // Per-target heading/subtitle (native) for the split single-format pages.
@@ -144,6 +162,7 @@ const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>
     pt: { title: "PDF para Word em lote", subtitle: "Converta uma pasta inteira de PDFs para arquivos Word (.docx) editáveis de uma vez: cada um é convertido no nosso servidor e empacotado em um único ZIP." },
     fr: { title: "PDF en Word par lots", subtitle: "Convertissez un dossier entier de PDF en fichiers Word (.docx) modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP." },
     ja: { title: "PDFをWordに一括変換", subtitle: "フォルダ内のPDFをまとめて編集可能なWord（.docx）に変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。" },
+    de: { title: "PDF stapelweise zu Word", subtitle: "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Word-Dateien (.docx) – jede wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt." },
   },
   excel: {
     en: { title: "Batch PDF to Excel", subtitle: "Convert a whole folder of PDFs to editable Excel (.xlsx) spreadsheets in one go — each is converted on our server and packaged into a single ZIP." },
@@ -152,6 +171,7 @@ const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>
     pt: { title: "PDF para Excel em lote", subtitle: "Converta uma pasta inteira de PDFs para planilhas Excel (.xlsx) editáveis de uma vez: cada uma é convertida no nosso servidor e empacotada em um único ZIP." },
     fr: { title: "PDF en Excel par lots", subtitle: "Convertissez un dossier entier de PDF en feuilles de calcul Excel (.xlsx) modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP." },
     ja: { title: "PDFをExcelに一括変換", subtitle: "フォルダ内のPDFをまとめて編集可能なExcel（.xlsx）に変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。" },
+    de: { title: "PDF stapelweise zu Excel", subtitle: "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Excel-Tabellen (.xlsx) – jede wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt." },
   },
 };
 
@@ -269,6 +289,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
         fr: "Impossible de créer le téléchargement — veuillez réessayer.",
         pt: "Não foi possível criar o download — tente novamente.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+        de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
       };
       setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[locale]);
     }
@@ -284,6 +305,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
     fr: "Converti sur notre serveur",
     pt: "Convertido no nosso servidor",
     ja: "当社のサーバーで変換",
+    de: "Auf unserem Server konvertiert",
   };
   const privacyLabel = locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[locale];
 

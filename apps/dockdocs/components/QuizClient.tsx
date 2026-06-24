@@ -85,6 +85,17 @@ const STR = {
     err: "問題が発生しました: ",
     note: "カードは文書からAIが生成します。学習前に簡単に確認してください。",
   },
+  de: {
+    title: "PDF-Lernkarten",
+    subtitle: "Laden Sie ein Lehrbuchkapitel, Vorlesungsnotizen oder ein Handbuch hoch und verwandeln Sie es in Lernkarten — Fragen und Antworten ausschließlich aus Ihrem Dokument. Drehen Sie eine Karte um, um sich selbst abzufragen.",
+    drop: "Ziehen Sie ein PDF hierher oder klicken Sie zum Auswählen",
+    choose: "PDF auswählen", reading: "Wird gelesen…", count: "Karten", change: "Ersetzen",
+    generate: "Karten generieren", generating: "Wird generiert…", reset: "Von vorn beginnen",
+    flip: "Zum Umdrehen tippen", question: "F", answer: "A",
+    noText: "In diesem PDF wurde kein Text gefunden. Falls es sich um einen Scan handelt, führen Sie zuerst OCR aus.",
+    err: "Etwas ist schiefgelaufen: ",
+    note: "Die Karten werden von der KI aus Ihrem Dokument generiert. Prüfen Sie sie kurz, bevor Sie damit lernen.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -224,6 +235,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF を要約", href: "/ai-summary", description: "カードにする前に、章を要点へとまとめます。" },
       { label: "PDF とチャット", href: "/chat-with-pdf", description: "カードでカバーしきれない点を文書に追加で質問できます。" },
       { label: "文書ワークフローのリソース", href: "/resources", description: "文書ツール、変換、AI 学習の導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Warum ein Dokument in Lernkarten verwandeln",
+    benefitsDescription: "Lernen Sie mit Karten, die direkt aus Ihrem eigenen Material erstellt werden — die KI analysiert den Text des Dokuments, um die Fragen und Antworten zu formulieren.",
+    benefits: [
+      { title: "Karten aus Ihrer eigenen Quelle", description: "Fragen und Antworten werden aus dem Dokument geschrieben, das Sie hochladen, sodass Sie genau den Stoff wiederholen, den Sie beherrschen müssen — kein generisches Kartenset." },
+      { title: "Aktives Abrufen statt erneutem Lesen", description: "Jede Karte verbirgt die Antwort, bis Sie sie umdrehen, und zwingt Sie so, sie aus dem Gedächtnis abzurufen — die Lernmethode, die wirklich haften bleibt." },
+      { title: "Wählen Sie, wie viele Sie erstellen", description: "Fordern Sie 5, 10, 15 oder 20 Karten an – passend für eine kurze Wiederholung oder ein ganzes Kapitel, in einem Durchgang aus demselben Text generiert." },
+    ],
+    workflowTitle: "Wie Lernkarten in Ihr Lernen passen",
+    workflowDescription: "Wenn Sie ein Kapitel, Vorlesungsnotizen oder ein Handbuch haben und sich selbst abfragen möchten, statt es nur erneut zu lesen.",
+    steps: [
+      "Laden Sie das PDF hoch, mit dem Sie lernen möchten.",
+      "Wählen Sie, wie viele Karten Sie möchten, und die KI entwirft Frage-Antwort-Paare aus dem Text.",
+      "Drehen Sie jede Karte um, um sich abzufragen, und prüfen Sie die Antworten kurz, bevor Sie sich auf sie verlassen.",
+    ],
+    readingTitle: "Weitere Wege, mit Ihrem Dokument zu arbeiten",
+    readingDescription: "Verwandte KI-Tools zum Lernen und Verstehen desselben Stoffs.",
+    readingLinks: [
+      { label: "Ein PDF zusammenfassen", href: "/ai-summary", description: "Verdichten Sie das Kapitel zu Kernpunkten, bevor Sie es in Karten verwandeln." },
+      { label: "Mit einem PDF chatten", href: "/chat-with-pdf", description: "Stellen Sie Folgefragen zu allem im Dokument, was die Karten nicht abdecken." },
+      { label: "Ressourcen für Dokumenten-Workflows", href: "/resources", description: "Ein strukturierter Hub für Dokumenten-Tools, Konvertierung und KI-Lernpfade." },
     ],
   },
 };

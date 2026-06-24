@@ -89,6 +89,17 @@ const STR = {
     err: "問題が発生しました: ",
     note: "各 PDF はブラウザ内で読み取られ、項目を抽出するために抽出されたテキストのみが AI に送信されます——ファイル自体はアップロードされません。項目はAIによって抽出されるため、簡単な確認が必要な場合があります。見つからない値は空欄のままになります — AIが値を作り出すことはありません。",
   },
+  de: {
+    title: "Daten stapelweise in eine Tabelle extrahieren",
+    subtitle: "Ziehen Sie einen ganzen Ordner mit Rechnungen, Angeboten oder Verträgen hierher — DockDocs zieht die wichtigsten Felder aus jeder Datei in eine einzige Tabelle, eine Zeile pro Dokument, fertig zum Download als CSV. Die KI gibt nur wieder, was tatsächlich vorhanden ist.",
+    drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen", add: "Weitere hinzufügen", reading: "Dateien werden gelesen…",
+    type: "Dokumenttyp", invoice: "Rechnungen", quote: "Angebote", contract: "Verträge",
+    extract: "Alle extrahieren", extracting: "Wird extrahiert", reset: "Neu beginnen",
+    download: "CSV herunterladen", doc: "Dokument", dash: "—",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`, needFile: "Fügen Sie mindestens ein PDF hinzu.",
+    err: "Etwas ist schiefgelaufen: ",
+    note: "Jedes PDF wird in Ihrem Browser gelesen; nur der extrahierte Text wird zum Auslesen der Felder an die KI gesendet — die Datei selbst wird nicht hochgeladen. Die Felder werden von der KI extrahiert und müssen eventuell kurz geprüft werden. Werte, die sie nicht findet, bleiben leer — sie erfindet sie nicht.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) {

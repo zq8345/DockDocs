@@ -88,6 +88,17 @@ const STR = {
     apply: "番号を追加してダウンロード", working: "番号付け中…", reset: "最初からやり直す", preview: "ライブプレビュー",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "Seitenzahlen hinzufügen",
+    subtitle: "Laden Sie ein PDF hoch, wählen Sie die Position der Zahlen, das Format und die Seiten – und sehen Sie es in der Live-Vorschau, bevor Sie es herunterladen.",
+    drop: "PDF hierher ziehen und ablegen oder zum Auswählen klicken",
+    choose: "PDF auswählen", rendering: "Vorschau wird erstellt…",
+    position: "Position", margin: "Rand", small: "Klein", medium: "Mittel", large: "Groß",
+    startAt: "Beginnen bei", format: "Format", pages: "Seiten", from: "von", to: "bis",
+    fmtN: "1", fmtPage: "Seite 1", fmtSlash: "1 / N", fmtOf: "1 von N",
+    apply: "Seitenzahlen hinzufügen und herunterladen", working: "Wird nummeriert…", reset: "Neu beginnen", preview: "Live-Vorschau",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 function makeLabel(fmt: Fmt, n: number, total: number, zh: boolean, hant = false): string {
@@ -107,6 +118,7 @@ const NO_PAGES_MSG: Record<AuthoredLocale, string> = {
   pt: "Este PDF não tem páginas.",
   fr: "Ce PDF n'a aucune page.",
   ja: "この PDF にはページがありません。",
+  de: "Dieses PDF hat keine Seiten.",
 };
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -240,6 +252,28 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingLinks: [
       { label: "PDF に透かしを入れる", href: "/watermark-pdf", description: "各ページにテキストや画像を重ねて、下書きの明示や機密ファイルの表示に使えます。" },
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Eine Nummerierung, die zum Dokument passt",
+    benefitsDescription: "Platzieren Sie Seitenzahlen genau dort, wo Sie sie haben möchten, im gewünschten Format und nur auf den von Ihnen gewählten Seiten.",
+    benefits: [
+      { title: "Beliebige Ecke oder die Mitte", description: "Setzen Sie die Zahlen an eine von sechs Stellen – oben oder unten, links, mittig oder rechts – mit kleinem, mittlerem oder großem Rand passend zu Ihrem Layout." },
+      { title: "Vier fertige Formate", description: "Wählen Sie schlicht „1“, „Seite 1“, „1 / N“ oder „1 von N“ – die passende Schreibweise für Berichte, Schriftsätze oder druckfertige Dokumente." },
+      { title: "Startnummer und Seitenbereich", description: "Beginnen Sie das Zählen bei einer beliebigen Zahl und nummerieren Sie nur die von Ihnen gewählten Seiten, sodass Titelei oder Deckblätter unberührt bleiben." },
+    ],
+    workflowTitle: "Wie Seitenzahlen in Ihre Dokumentarbeit passen",
+    workflowDescription: "Gemacht für den Moment, in dem ein Entwurf, ein Scan oder ein zusammengeführtes Dokument vor dem Versenden oder Drucken saubere, einheitliche Seitenzahlen braucht.",
+    steps: [
+      "Laden Sie das PDF hoch, das Sie nummerieren möchten.",
+      "Legen Sie Position, Format, Startnummer und Seitenbereich fest – und prüfen Sie die Live-Vorschau.",
+      "Fügen Sie die Seitenzahlen hinzu und laden Sie Ihr fertiges PDF herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, ein PDF abzuschließen",
+    readingDescription: "Verwandte Tools und Anleitungen zum Markieren und Vorbereiten von Dokumenten.",
+    readingLinks: [
+      { label: "Ein PDF mit Wasserzeichen versehen", href: "/watermark-pdf", description: "Versehen Sie jede Seite mit Text oder einem Bild, um Entwürfe zu kennzeichnen oder vertrauliche Dateien zu markieren." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
 };

@@ -35,7 +35,7 @@ export type PdfToolUpload = {
 
 export type PdfToolPageConfig = {
   slug: string;
-  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
   canonicalPath?: string;
   alternateLanguages?: Record<string, string>;
   title: string;
@@ -282,11 +282,12 @@ const templateCopy = {
   },
 } as const;
 
-type TplLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
-// templateCopy accessor: zh-Hant derives from zh via OpenCC.
+type TplLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+// templateCopy accessor: zh-Hant derives from zh via OpenCC; de falls back to en
+// (template copy not authored for de yet — GAP: de templateCopy).
 function tlCopy(locale: TplLocale): (typeof templateCopy)["en"] {
   if (locale === "zh-Hant") return deepHantTpl(templateCopy.zh) as unknown as (typeof templateCopy)["en"];
-  return templateCopy[locale] as unknown as (typeof templateCopy)["en"];
+  return (templateCopy[locale as keyof typeof templateCopy] ?? templateCopy.en) as unknown as (typeof templateCopy)["en"];
 }
 
 export function createPdfToolMetadata(config: PdfToolPageConfig): Metadata {
@@ -328,7 +329,12 @@ export function createPdfToolSchema(config: PdfToolPageConfig) {
   const pageUrl = `${siteUrl}${canonicalPath}`;
   const schemaLocale = config.locale ?? "en";
   const schemaTr = (en: string, zh: string, es: string, pt: string, fr: string, ja: string): string =>
-    schemaLocale === "zh-Hant" ? ccTpl(zh) : ({ en, zh, es, pt, fr, ja })[schemaLocale];
+    schemaLocale === "zh-Hant"
+      ? ccTpl(zh)
+      : // de has no authored schema copy → English fallback (GAP: de schema strings).
+        schemaLocale === "de"
+        ? en
+        : ({ en, zh, es, pt, fr, ja })[schemaLocale];
 
   return {
     "@context": "https://schema.org",
@@ -681,7 +687,7 @@ function RelatedPdfTools({
   useLocalePrefix = false,
 }: {
   currentSlug: string;
-  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
   useLocalePrefix?: boolean;
 }) {
   const copy = tlCopy(locale);
@@ -721,7 +727,7 @@ function RelatedPdfTools({
 }
 
 // 6-locale string picker for the tool-page "Recommended reading" card grid.
-type IndexingLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type IndexingLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
 function indexingTr(
   locale: IndexingLocale,
   en: string,
@@ -732,6 +738,8 @@ function indexingTr(
   ja: string,
 ): string {
   if (locale === "zh-Hant") return ccTpl(zh);
+  // de has no authored indexing-section copy → English fallback (GAP: de indexing strings).
+  if (locale === "de") return en;
   return ({ en, zh, es, pt, fr, ja })[locale];
 }
 
@@ -1052,7 +1060,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
   return [...(articleLinks[config.slug] ?? []), ...common];
 }
 
-function localizeTemplateHref(href: string, locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant") {
+function localizeTemplateHref(href: string, locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant") {
   const clean = href === "/" ? "" : href.replace(/\/+$/g, "");
   const path = clean ? `${clean}/` : "/";
 
@@ -1063,7 +1071,7 @@ function localizeTemplateHref(href: string, locale?: "en" | "zh" | "es" | "pt" |
   return path === "/" ? `/${locale}/` : `/${locale}${path}`;
 }
 
-function absoluteHref(href: string, locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant") {
+function absoluteHref(href: string, locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant") {
   return `${siteUrl}${localizeTemplateHref(href, locale)}`;
 }
 

@@ -129,6 +129,23 @@ const STR = {
     sourceFrom: "出典：",
     unverified: "値は見つかりましたが、正確な箇所を特定できませんでした。ご確認ください。",
   },
+  de: {
+    title: "In Excel extrahieren",
+    subtitle: "Laden Sie Rechnungen, Angebote oder Verträge hoch und ziehen Sie die wichtigsten Felder in eine saubere Tabelle – laden Sie sie anschließend als Tabelle herunter (CSV, öffnet sich in Excel und Google Sheets). Die AI meldet nur, was tatsächlich in jedem Dokument steht.",
+    drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", folder: "Ordner auswählen",
+    choose: "PDFs auswählen", add: "Weitere hinzufügen", reading: "Dateien werden gelesen…",
+    type: "Dokumenttyp", invoice: "Rechnungen", quote: "Angebote", contract: "Verträge",
+    extract: "Felder extrahieren", extracting: "Wird extrahiert…", reset: "Von vorn beginnen",
+    download: "CSV herunterladen", doc: "Dokument", notRecognized: "—",
+    files: (n: number) => `${n} Datei${n === 1 ? "" : "en"}`,
+    needFile: "Fügen Sie mindestens ein PDF hinzu.",
+    err: "Etwas ist schiefgelaufen: ",
+    note: "Die Felder werden von der AI extrahiert und benötigen ggf. eine kurze Prüfung. Werte, die sie nicht findet, bleiben leer – sie erfindet sie nicht.",
+    verifiedBadge: "✓ Mit der Quelle abgeglichen",
+    verified: "✓ Quelle",
+    sourceFrom: "Quelle:",
+    unverified: "Wert gefunden – die genaue Textstelle konnte nicht aufgefunden werden. Bitte prüfen Sie.",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
@@ -268,6 +285,29 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "文書を比較", href: "/compare", description: "複数の文書を並べて、主要な条項の違いを確認します。" },
       { label: "契約リスクを指摘", href: "/contract-risk", description: "署名する前に、契約書の異常な、または一方的な条項を洗い出します。" },
       { label: "文書ワークフローのリソース", href: "/resources", description: "PDF ツール、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Warum Dokumentdaten in eine Tabelle ziehen",
+    benefitsDescription: "Verwandeln Sie einen Stapel Rechnungen, Angebote oder Verträge in eine saubere Tabelle – die AI liest den Text jedes Dokuments und hebt die benötigten Felder heraus.",
+    benefits: [
+      { title: "Stapel rein, eine Tabelle raus", description: "Legen Sie einen ganzen Ordner voller Dokumente ab und erhalten Sie eine einzige Tabelle – eine Zeile pro Datei, dieselben Spalten über alle Dokumente hinweg ausgerichtet." },
+      { title: "Nur, was wirklich da ist", description: "Die AI meldet die Werte, die sie im Text lesen kann; Felder, die sie nicht findet, bleiben leer statt geraten zu werden, sodass eine fehlende Zahl leer bleibt und nicht erfunden wird." },
+      { title: "CSV, das sich überall öffnet", description: "Laden Sie eine CSV herunter, die sich direkt in Excel und Google Sheets öffnet – bereit zum Sortieren, Filtern oder Einfügen in Ihren eigenen Abgleich." },
+    ],
+    workflowTitle: "Wie die Extraktion in Ihre Dokumentarbeit passt",
+    workflowDescription: "Für den Moment, in dem die Zahlen und Bedingungen, die Sie brauchen, über viele PDFs verstreut sind und Sie sie nicht von Hand abtippen möchten.",
+    steps: [
+      "Fügen Sie Ihre Rechnungen, Angebote oder Verträge hinzu und wählen Sie den Dokumenttyp.",
+      "Der Text des Dokuments wird von der AI analysiert, die die wichtigsten Felder in Zeilen heraushebt.",
+      "Prüfen Sie die Tabelle und laden Sie die Tabelle als CSV herunter.",
+    ],
+    readingTitle: "Weitere Wege, Dokumente durchzuarbeiten",
+    readingDescription: "Verwandte AI-Tools zum Lesen, Vergleichen und Befragen Ihrer Dateien.",
+    readingLinks: [
+      { label: "Dokumente vergleichen", href: "/compare", description: "Stellen Sie mehrere Dokumente nebeneinander und sehen Sie, wo sich ihre wichtigsten Bedingungen unterscheiden." },
+      { label: "Vertragsrisiken markieren", href: "/contract-risk", description: "Decken Sie ungewöhnliche oder einseitige Klauseln in einem Vertrag auf, bevor Sie unterschreiben." },
+      { label: "Ressourcen für Dokument-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, Konvertierung und AI-Dokumentpfade." },
     ],
   },
 };

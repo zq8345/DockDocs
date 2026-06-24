@@ -150,6 +150,24 @@ const STR = {
     note: "各 PDF はブラウザ内で読み取られ、抽出されたテキストのみが翻訳のために送信されます。出力は PDF 1 つにつき 1 ファイルのプレーンテキスト（.txt）で、レイアウトは保持されません。スキャンされた PDF は先に OCR が必要です。1 日の AI 上限にカウントされます。",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "PDFs stapelweise übersetzen",
+    subtitle:
+      "Übersetzen Sie einen ganzen Ordner mit PDFs in einem Durchlauf in eine Sprache — der Text jedes Dokuments wird übersetzt und in einem einzigen ZIP aus .txt-Dateien gebündelt.",
+    target: "Übersetzen nach",
+    run: "Alle übersetzen",
+    running: "Wird übersetzt",
+    download: "ZIP herunterladen",
+    reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`,
+    done: "fertig",
+    failed: "fehlgeschlagen",
+    need: "Fügen Sie mindestens ein PDF hinzu.",
+    noText: "kein auswählbarer Text (Scan?)",
+    tooLong: "zu lang (über 14.000 Zeichen)",
+    note: "Jedes PDF wird in Ihrem Browser gelesen; nur der extrahierte Text wird zum Übersetzen gesendet. Die Ausgabe ist reiner Text (.txt), eine Datei pro PDF — das Layout bleibt nicht erhalten. Eingescannte PDFs benötigen zuerst eine OCR. Wird auf Ihr tägliches KI-Limit angerechnet.",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 async function extractText(file: File): Promise<string> {
@@ -306,6 +324,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "AI 文書リソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Einen ganzen Ordner auf einmal übersetzen",
+    benefitsDescription: "Richten Sie einen Durchlauf auf einen Ordner mit PDFs und lassen Sie jedes Dokument in dieselbe Zielsprache übersetzen.",
+    benefits: [
+      { title: "Ein Ordner, keine Einzeldatei", description: "Reihen Sie bis zu zehn PDFs ein und übersetzen Sie alle in einem Durchgang, statt jedes Dokument einzeln zu öffnen, zu kopieren und einzufügen." },
+      { title: "Die KI liest den Text jedes PDFs", description: "Der Text jedes Dokuments wird extrahiert und von der KI übersetzt, sodass die Formulierungen natürlich klingen und nicht wie ein Wort-für-Wort-Eintrag aus dem Wörterbuch." },
+      { title: "Ein ZIP, eine Sprache pro Durchlauf", description: "Jede Übersetzung kommt als .txt-Datei zurück, die nach ihrem PDF benannt ist und in einem einzigen ZIP gebündelt wird — wählen Sie eine andere Zielsprache und starten Sie den Ordner erneut." },
+    ],
+    workflowTitle: "Wie die Stapelübersetzung in Ihre Arbeit passt",
+    workflowDescription: "Für den Fall, dass ein Stapel PDFs — Lieferantenverträge, Forschungsarbeiten, ein Ordner voller Berichte — in einer einzigen Sprache gelesen werden muss.",
+    steps: [
+      "Legen Sie einen Ordner mit PDFs ab und wählen Sie die Sprache, in die sie übersetzt werden sollen.",
+      "Die KI extrahiert und übersetzt den Text jedes Dokuments, eines nach dem anderen.",
+      "Laden Sie das ZIP mit den .txt-Übersetzungen herunter, eine Datei pro PDF.",
+    ],
+    readingTitle: "Weitere KI-Dokumententools",
+    readingDescription: "Verwandte Wege, um Dokumente mit KI zu übersetzen und zu bearbeiten.",
+    readingLinks: [
+      { label: "Ein einzelnes PDF übersetzen", href: "/translate-pdf", description: "Die Einzeldatei-Version — übersetzen Sie ein PDF und lesen Sie das Ergebnis nebeneinander." },
+      { label: "PDFs stapelweise zusammenfassen", href: "/batch-summary", description: "Derselbe Ordner-Workflow, aber fasst jedes PDF zusammen, statt es zu übersetzen." },
+      { label: "KI-Dokumentenressourcen", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenwege." },
+    ],
+  },
 };
 
 export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
@@ -426,6 +467,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
         pt: "Não foi possível criar o download; tente novamente.",
         fr: "Impossible de créer le téléchargement ; réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+        de: "Der Download konnte nicht erstellt werden — bitte versuchen Sie es erneut.",
       };
       setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[locale]);
     }
@@ -460,6 +502,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
             pt: "Lido localmente; apenas o texto é enviado",
             fr: "Lu localement — seul le texte est envoyé",
             ja: "ローカルで読み取り、テキストのみ送信",
+            de: "Lokal gelesen — nur Text wird gesendet",
           };
           return locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[locale];
         })()} />

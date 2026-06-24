@@ -95,6 +95,17 @@ const STR = {
     reset: "最初からやり直す", preview: "ライブプレビュー", needText: "透かしのテキストを入力してください。", needImg: "画像を選択してください。",
     nonLatin: "テキスト透かしは現在ラテン文字・数字・記号のみ対応しています。", err: "問題が発生しました: ",
   },
+  de: {
+    title: "PDF mit Wasserzeichen versehen",
+    subtitle: "Laden Sie ein PDF hoch, gestalten Sie ein Text- oder Bild-Wasserzeichen, sehen Sie es live auf der Seite und stempeln Sie es dann auf die von Ihnen gewählten Seiten.",
+    drop: "PDF hierher ziehen und ablegen oder zum Auswählen klicken",
+    choose: "PDF auswählen", rendering: "Vorschau wird erstellt…",
+    text: "Text", image: "Bild", wmText: "Wasserzeichen-Text", size: "Größe", color: "Farbe",
+    chooseImg: "Bild auswählen", position: "Position", opacity: "Deckkraft", rotate: "Um 45° drehen",
+    pages: "Seiten", from: "von", to: "bis", apply: "Anwenden & herunterladen", working: "Wird gestempelt…",
+    reset: "Neu beginnen", preview: "Live-Vorschau", needText: "Geben Sie den Wasserzeichen-Text ein.", needImg: "Wählen Sie ein Bild aus.",
+    nonLatin: "Das Text-Wasserzeichen unterstützt vorerst lateinische Buchstaben/Ziffern/Symbole.", err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -237,6 +248,28 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum Sie Ihr PDF hier mit einem Wasserzeichen versehen",
+    benefitsDescription: "Stempeln Sie ein Text- oder Bild-Wasserzeichen auf jede Seite – mit voller Kontrolle über das Aussehen.",
+    benefits: [
+      { title: "Text- oder Bildmarken", description: "Stempeln Sie Vermerke wie VERTRAULICH oder ENTWURF auf oder fügen Sie Ihr eigenes Logo-Bild ein – je nachdem, was zum Dokument passt." },
+      { title: "Das genaue Aussehen einstellen", description: "Stellen Sie Größe, Farbe, Deckkraft, eine Neigung von 45° und eine von neun Ankerpositionen ein – alles in einer Live-Vorschau, bevor Sie es übernehmen." },
+      { title: "Die zu markierenden Seiten wählen", description: "Stempeln Sie die ganze Datei oder nur einen Seitenbereich, damit Deckblätter und Anhänge sauber bleiben." },
+    ],
+    workflowTitle: "Wie das Wasserzeichen in Ihre Dokumentenarbeit passt",
+    workflowDescription: "Für den Moment, in dem ein PDF vor dem Versand ein sichtbares Zeichen für Eigentum oder Status braucht – ein Entwurf, ein vertraulicher Bericht, ein Handout mit Ihrer Marke.",
+    steps: [
+      "Laden Sie das PDF hoch, das Sie markieren möchten.",
+      "Gestalten Sie das Text- oder Bild-Wasserzeichen und positionieren Sie es mit der Live-Vorschau.",
+      "Wenden Sie das Wasserzeichen an und laden Sie das gestempelte PDF herunter.",
+    ],
+    readingTitle: "Weitere Wege, ein PDF fertigzustellen",
+    readingDescription: "Verwandte Tools und Anleitungen zum Markieren und Organisieren von Dokumenten.",
+    readingLinks: [
+      { label: "Seitenzahlen hinzufügen", href: "/page-numbers", description: "Nummerieren Sie die Seiten Ihres PDFs vor dem Versand oder Druck." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-gestützte Dokumentenwege." },
+    ],
+  },
 };
 
 export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
@@ -295,6 +328,7 @@ export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
           pt: "Este PDF não tem páginas.",
           fr: "Ce PDF n'a aucune page.",
           ja: "この PDF にはページがありません。",
+          de: "Dieses PDF hat keine Seiten.",
         };
         setError(locale === "zh-Hant" ? toHant(NO_PAGES.zh) : NO_PAGES[locale]);
         setPhase("idle"); return;

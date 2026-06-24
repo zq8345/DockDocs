@@ -147,6 +147,25 @@ const STR: AuthoredCopy<{
     err: "問題が発生しました: ",
     selected: "挿入ポイント",
   },
+  de: {
+    title: "Seite hinzufügen",
+    subtitle: "Laden Sie ein PDF hoch, wählen Sie die Einfügestelle und fügen Sie dort ein weiteres PDF oder ein Bild ein. Die meisten Tools laufen in Ihrem Browser.",
+    drop: "PDF hierher ziehen und ablegen oder zum Auswählen klicken",
+    choose: "PDF auswählen",
+    rendering: "Seiten werden gerendert…",
+    pickSpot: "Wählen Sie die Einfügestelle — klicken Sie unten auf eine Position.",
+    atStart: "Ganz am Anfang",
+    afterPage: (n: number) => `Nach Seite ${n}`,
+    insertHere: "Hier einfügen ✓",
+    insertFile: "Einzufügende Datei (PDF oder Bild)",
+    chooseInsert: "Datei auswählen",
+    apply: "Einfügen & herunterladen",
+    working: "PDF wird erstellt…",
+    reset: "Von vorn beginnen",
+    needFile: "Wählen Sie ein PDF oder ein Bild zum Einfügen aus.",
+    err: "Etwas ist schiefgelaufen: ",
+    selected: "Einfügestelle",
+  },
 };
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -282,6 +301,28 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum Seiten zu einem PDF im Browser hinzufügen",
+    benefitsDescription: "Setzen Sie neue Seiten genau dorthin, wo sie hingehören, ohne das gesamte Dokument neu aufzubauen.",
+    benefits: [
+      { title: "An jeder Position einfügen", description: "Schieben Sie ein weiteres PDF oder ein Bild ganz an den Anfang, hinter eine beliebige Seite oder ans Ende ein — Sie wählen die Stelle visuell, bevor Sie erstellen." },
+      { title: "Die Seite vor dem Platzieren sehen", description: "Miniaturansichten jeder vorhandenen Seite lassen Sie die Einfügestelle mit Sicherheit wählen, statt Seitenzahlen zu erraten." },
+      { title: "Das Original bleibt unverändert", description: "Ihre vorhandenen Seiten behalten ihre ursprüngliche Reihenfolge und Qualität — die neuen Seiten werden darum herum hinzugefügt, nichts wird neu gerendert oder verkleinert." },
+    ],
+    workflowTitle: "Wie das Hinzufügen von Seiten in Ihre Dokumentenarbeit passt",
+    workflowDescription: "Für den Moment, in dem einem fertigen PDF etwas fehlt — ein Deckblatt, ein unterschriebener Nachtrag, eine eingescannte Quittung, die mitten ins Dokument gehört.",
+    steps: [
+      "Laden Sie das PDF hoch, dem Sie Seiten hinzufügen möchten.",
+      "Klicken Sie auf die Einfügestelle und wählen Sie dann das PDF oder das Bild, das dort eingefügt werden soll.",
+      "Fügen Sie ein und laden Sie das kombinierte PDF mit den neuen Seiten an Ort und Stelle herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs zusammenzustellen",
+    readingDescription: "Verwandte Tools und Anleitungen zum Erstellen und Kombinieren von Dokumenten.",
+    readingLinks: [
+      { label: "PDFs zusammenführen", href: "/merge-pdf", description: "Kombinieren Sie mehrere vollständige PDFs zu einer geordneten Datei, statt Seite für Seite einzufügen." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
+    ],
+  },
 };
 
 export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
@@ -401,6 +442,7 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
     pt: (n) => `Page ${n}`,
     fr: (n) => `Page ${n}`,
     ja: (n) => `Page ${n}`,
+    de: (n) => `Seite ${n}`,
   };
   const pageLabel = (n: number) =>
     locale === "zh-Hant" ? toHant(PAGE_LABEL.zh(n)) : PAGE_LABEL[locale](n);

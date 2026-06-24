@@ -93,6 +93,18 @@ const STR = {
     note: "各PDFを開くにはこのパスワードが必要になります。すでに暗号化されたPDFはスキップされます。すべてデバイス内で完結します。",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "Stapelweise verschlüsseln",
+    subtitle: "Legen Sie ein Passwort fest und sperren Sie einen ganzen Ordner mit PDFs – jede Datei wird in Ihrem Browser verschlüsselt und in einem einzigen ZIP gebündelt. Die meisten Tools laufen direkt in Ihrem Browser.",
+    drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
+    pw: "Passwort", pwPlaceholder: "Passwort zum Öffnen der Dateien", show: "Anzeigen", hide: "Verbergen",
+    pwRule: "4–32 Zeichen: Buchstaben, Ziffern, Unterstrich (_).",
+    run: "Alle verschlüsseln", running: "Wird verschlüsselt", download: "ZIP herunterladen", reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`, done: "verschlüsselt", failed: "fehlgeschlagen",
+    needFile: "Fügen Sie mindestens ein PDF hinzu.", needPw: "Geben Sie ein gültiges Passwort ein (4–32: Buchstaben, Ziffern, Unterstrich).",
+    note: "Jedes PDF benötigt dieses Passwort zum Öffnen. Bereits verschlüsselte PDFs werden übersprungen. Die Verarbeitung erfolgt auf Ihrem Gerät.",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -234,6 +246,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum PDFs stapelweise im Browser verschlüsseln",
+    benefitsDescription: "Sperren Sie einen ganzen Ordner mit PDFs mit einem Passwort und erhalten Sie alle zusammen als einzelnes ZIP zurück.",
+    benefits: [
+      { title: "Ein Passwort, ein ganzer Ordner", description: "Legen Sie das Passwort einmal fest und wenden Sie echte AES-256-Verschlüsselung auf jedes PDF im Stapel an – ohne die Dateien einzeln zu öffnen und neu zu speichern." },
+      { title: "In einem ZIP gebündelt", description: "Jedes verschlüsselte PDF kommt unter dem Namen des Originals in einem aufgeräumten ZIP zurück, bereit zum Weiterleiten oder Archivieren in einem einzigen Download." },
+      { title: "Für Stapel von Dateien gemacht", description: "Verarbeiten Sie bis zu 30 PDFs pro Durchlauf; bereits verschlüsselte Dateien werden automatisch übersprungen, damit nichts doppelt gesperrt wird." },
+    ],
+    workflowTitle: "Wie die Stapelverschlüsselung in Ihre Dokumentenarbeit passt",
+    workflowDescription: "Für den Moment, in dem Sie einen Ordner mit Verträgen, Kontoauszügen oder Unterlagen versenden müssen und jede Datei passwortgeschützt sein muss, bevor sie Ihre Hände verlässt.",
+    steps: [
+      "Legen Sie Ihre PDFs ab oder wählen Sie einen ganzen Ordner auf einmal aus.",
+      "Geben Sie ein Passwort ein und verschlüsseln Sie jede Datei im Stapel.",
+      "Laden Sie das einzelne ZIP mit den geschützten PDFs herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs zu schützen",
+    readingDescription: "Verwandte Tools und Anleitungen zum Sperren und Entsperren von Dokumenten.",
+    readingLinks: [
+      { label: "Ein einzelnes PDF schützen", href: "/protect-pdf", description: "Schützen Sie nur ein einzelnes PDF mit einem Passwort, wenn Sie nicht den ganzen Stapel benötigen." },
+      { label: "So entfernen Sie ein PDF-Passwort", href: "/guides/remove-password-from-pdf", description: "Der umgekehrte Weg – entfernen Sie das Passwort von einem PDF, das Ihnen bereits gehört." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
+    ],
+  },
 };
 
 export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
@@ -305,6 +340,7 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
         pt: "Não foi possível criar o download. Tente novamente.",
         fr: "Impossible de créer le téléchargement. Réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+        de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
       };
       setError(locale === "zh-Hant" ? toHant(ZIP_ERR.zh) : ZIP_ERR[locale]);
     }

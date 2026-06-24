@@ -138,6 +138,23 @@ const STR = {
     note: "ファイルはサーバーでPDFに変換され（単一ファイルツールと同じLibreOfficeエンジン）、返されます — 保存されることはありません。5 MBを超えるファイルは一括処理に対応していません。その場合は単一ファイル変換ツールをご利用ください。",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "Office stapelweise zu PDF",
+    subtitle:
+      "Konvertieren Sie einen ganzen Ordner mit Word-, PowerPoint- und Excel-Dateien in einem Durchgang zu PDF – jede Datei wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt.",
+    run: "Alle konvertieren",
+    running: "Wird konvertiert",
+    download: "ZIP herunterladen",
+    reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`,
+    done: "fertig",
+    failed: "fehlgeschlagen",
+    need: "Fügen Sie mindestens eine Office-Datei hinzu.",
+    tooBig: "Über 5 MB – nutzen Sie das Einzeldatei-Tool",
+    hint: "Word, PowerPoint, Excel",
+    note: "Die Dateien werden auf unserem Server zu PDF konvertiert (dieselbe LibreOffice-Engine wie bei den Einzeldatei-Tools) und zurückgegeben – sie werden nicht gespeichert. Dateien über 5 MB werden im Stapel nicht unterstützt; nutzen Sie dafür den Einzeldatei-Konverter.",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 type Source = "word" | "excel" | "ppt";
@@ -157,6 +174,7 @@ const PS: Record<Source, Record<CopyLocale, { title: string; subtitle: string; h
     pt: { title: "Word para PDF em lote", subtitle: "Converta uma pasta inteira de documentos Word para PDF de uma vez: cada um é convertido no nosso servidor e empacotado em um único ZIP.", hint: "Documentos Word" },
     fr: { title: "Word en PDF par lots", subtitle: "Convertissez un dossier entier de documents Word en PDF en une seule fois — chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP.", hint: "Documents Word" },
     ja: { title: "WordをPDFに一括変換", subtitle: "フォルダ内のWord文書をまとめてPDFに変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。", hint: "Word文書" },
+    de: { title: "Word stapelweise zu PDF", subtitle: "Konvertieren Sie einen ganzen Ordner mit Word-Dokumenten in einem Durchgang zu PDF – jede Datei wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt.", hint: "Word-Dokumente" },
   },
   excel: {
     en: { title: "Batch Excel to PDF", subtitle: "Convert a whole folder of Excel spreadsheets to PDF in one go — each is converted on our server and packaged into a single ZIP.", hint: "Excel spreadsheets" },
@@ -165,6 +183,7 @@ const PS: Record<Source, Record<CopyLocale, { title: string; subtitle: string; h
     pt: { title: "Excel para PDF em lote", subtitle: "Converta uma pasta inteira de planilhas Excel para PDF de uma vez: cada uma é convertida no nosso servidor e empacotada em um único ZIP.", hint: "Planilhas Excel" },
     fr: { title: "Excel en PDF par lots", subtitle: "Convertissez un dossier entier de feuilles de calcul Excel en PDF en une seule fois — chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP.", hint: "Feuilles de calcul Excel" },
     ja: { title: "ExcelをPDFに一括変換", subtitle: "フォルダ内のExcel表計算をまとめてPDFに変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。", hint: "Excel表計算" },
+    de: { title: "Excel stapelweise zu PDF", subtitle: "Konvertieren Sie einen ganzen Ordner mit Excel-Tabellen in einem Durchgang zu PDF – jede Datei wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt.", hint: "Excel-Tabellen" },
   },
   ppt: {
     en: { title: "Batch PPT to PDF", subtitle: "Convert a whole folder of PowerPoint presentations to PDF in one go — each is converted on our server and packaged into a single ZIP.", hint: "PowerPoint slides" },
@@ -173,6 +192,7 @@ const PS: Record<Source, Record<CopyLocale, { title: string; subtitle: string; h
     pt: { title: "PPT para PDF em lote", subtitle: "Converta uma pasta inteira de apresentações do PowerPoint para PDF de uma vez: cada uma é convertida no nosso servidor e empacotada em um único ZIP.", hint: "Apresentações PowerPoint" },
     fr: { title: "PPT en PDF par lots", subtitle: "Convertissez un dossier entier de présentations PowerPoint en PDF en une seule fois — chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP.", hint: "Présentations PowerPoint" },
     ja: { title: "PowerPointをPDFに一括変換", subtitle: "フォルダ内のPowerPointプレゼンテーションをまとめてPDFに変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。", hint: "PowerPointスライド" },
+    de: { title: "PPT stapelweise zu PDF", subtitle: "Konvertieren Sie einen ganzen Ordner mit PowerPoint-Präsentationen in einem Durchgang zu PDF – jede Datei wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt.", hint: "PowerPoint-Folien" },
   },
 };
 
@@ -290,6 +310,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Loc
         pt: "Não foi possível criar o download — tente novamente.",
         fr: "Impossible de créer le téléchargement — veuillez réessayer.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+        de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
       };
       setError(locale === "zh-Hant" ? toHant(ZIP_ERR.zh) : ZIP_ERR[locale]);
     }

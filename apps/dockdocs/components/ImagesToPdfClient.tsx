@@ -76,6 +76,16 @@ const STR = {
     convert: "PDFに変換", working: "PDFを生成中…", reset: "最初からやり直す",
     needOne: "少なくとも1枚の画像を追加してください。", err: "問題が発生しました: ",
   },
+  de: {
+    title: "Bild in PDF",
+    subtitle: "Fügen Sie JPG-, PNG-, WebP-, GIF- oder BMP-Bilder hinzu, ziehen Sie sie in die gewünschte Reihenfolge und fassen Sie sie zu einem PDF zusammen – ein Bild pro Seite. Vor dem Umwandeln sehen Sie jedes Bild.",
+    drop: "Bilder hierher ziehen und ablegen oder zum Auswählen klicken",
+    choose: "Bilder auswählen", add: "Mehr hinzufügen", reading: "Bilder werden gelesen…",
+    hint: "Zum Umsortieren ziehen. Jedes Bild wird von oben nach unten zu einer PDF-Seite.",
+    count: (n: number) => `${n} ${n === 1 ? "Bild" : "Bilder"}`,
+    convert: "In PDF umwandeln", working: "PDF wird erstellt…", reset: "Neu beginnen",
+    needOne: "Fügen Sie mindestens ein Bild hinzu.", err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
@@ -217,6 +227,29 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum Bilder im Browser in ein PDF umwandeln",
+    benefitsDescription: "Fassen Sie JPG- und PNG-Bilder zu einem geordneten PDF zusammen – bereit zum Versenden, Drucken oder Archivieren.",
+    benefits: [
+      { title: "Viele Bilder, ein PDF", description: "Bündeln Sie Fotos, Screenshots und Scans in einem einzigen PDF, das sich als eine saubere Datei versenden und drucken lässt." },
+      { title: "Die Seitenreihenfolge bestimmen Sie selbst", description: "Ziehen Sie die Bilder vor dem Umwandeln in die richtige Reihenfolge, sodass jede Seite genau dort landet, wo Sie sie haben möchten." },
+      { title: "Ein Bild oder mehrere pro Seite", description: "Wählen Sie ein Bild pro Seite für formatfüllende Aufnahmen oder packen Sie mehrere auf eine Seite, um das PDF kompakt zu halten." },
+    ],
+    workflowTitle: "Wie Bild zu PDF in Ihre Arbeit passt",
+    workflowDescription: "Für den Moment, in dem lose Bilder zu einem Dokument werden müssen – eine Fotoserie, ein Stapel Belege, mit dem Handy gescannte Seiten.",
+    steps: [
+      "Fügen Sie die JPG- oder PNG-Bilder, die Sie zusammenfassen möchten, per Drag-and-drop oder über die Dateiauswahl hinzu.",
+      "Ziehen Sie die Bilder in die gewünschte Reihenfolge und wählen Sie ein oder mehrere pro Seite.",
+      "Wandeln Sie um und laden Sie das einzelne zusammengefasste PDF herunter.",
+    ],
+    readingTitle: "Weitere Wege, mit Bildern und PDFs zu arbeiten",
+    readingDescription: "Verwandte Tools und Anleitungen zum Umwandeln zwischen Bildern und Dokumenten.",
+    readingLinks: [
+      { label: "PDF zu Bild", href: "/pdf-to-image", description: "Der umgekehrte Weg – wandeln Sie jede Seite eines PDFs wieder in ein JPG oder PNG um." },
+      { label: "Bilder für den Upload in PDF umwandeln", href: "/guides/convert-images-to-pdf-for-upload", description: "Warum Portale ein einzelnes PDF verlangen und wie Sie Ihre Bilder dafür vorbereiten." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
+    ],
+  },
 };
 
 export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
@@ -282,6 +315,7 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
           pt: "Nenhuma imagem legível (formatos como HEIC ainda não são suportados).",
           fr: "Aucune image lisible (les formats comme HEIC ne sont pas encore pris en charge).",
           ja: "読み取れる画像がありません（HEIC などの形式は未対応です）。",
+          de: "Keine lesbaren Bilder (Formate wie HEIC werden noch nicht unterstützt).",
         };
         throw new Error(locale === "zh-Hant" ? toHant(NONE.zh) : NONE[locale]);
       }
@@ -300,6 +334,7 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
           pt: (n) => `${n} imagem(ns) não puderam ser lidas e foram ignoradas.`,
           fr: (n) => `${n} image(s) n'ont pas pu être lues et ont été ignorées.`,
           ja: (n) => `${n} 枚の画像を読み取れず、スキップしました。`,
+          de: (n) => `${n} Bild(er) konnten nicht gelesen werden und wurden übersprungen.`,
         };
         setError(locale === "zh-Hant" ? toHant(SKIPPED.zh(failed)) : SKIPPED[locale](failed));
       }

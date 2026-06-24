@@ -2542,6 +2542,457 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
   },
 };
 
+const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: string }> }> = {
+  "chat-with-pdf": {
+    title: "Mit PDF chatten — Häufige Fragen",
+    items: [
+      { q: "Wie funktioniert es?", a: "Laden Sie ein textbasiertes PDF hoch, und DockDocs extrahiert dessen Text in Ihrem Browser. Anschließend stellen Sie Fragen, und die KI antwortet anhand des Inhalts dieses Dokuments — nicht anhand von allgemeinem Webwissen. Es ist ein fokussiertes MVP: ein Dokument auf einmal, bis zu 12 Seiten / 40.000 Zeichen / 25 MB pro Datei." },
+      { q: "Kann ich den Antworten vertrauen — beruhen sie auf meinem Dokument?", a: "Die Antworten stützen sich auf den aus Ihrem PDF extrahierten Text, und wenn die Antwort der KI mit Stellen in Ihrer Datei übereinstimmt, erscheinen diese unter dem Hinweis „✓ mit der Quelle abgeglichen“ samt den exakten Zitaten, sodass Sie sie selbst prüfen können. Quellenangaben hängen davon ab, was das Modell zurückgibt, und erscheinen nicht bei jeder Antwort; zudem kann die KI sich irren — prüfen Sie alles Wichtige im Originaldokument nach." },
+      { q: "Wird mein PDF hochgeladen oder gespeichert?", a: "Der Text wird in Ihrem Browser extrahiert; nur dieser extrahierte Text wird an den KI-Anbieter gesendet, um Ihre Frage zu beantworten, und die Datei selbst verlässt Ihr Gerät nie und wird danach nicht gespeichert." },
+      { q: "Welche PDFs funktionieren?", a: "Textbasierte (digital erstellte) PDFs. Gescannte PDFs haben keinen auswählbaren Text — führen Sie zuerst OCR aus, damit der Chat etwas zum Lesen hat. Es funktioniert auf Deutsch, Englisch, Chinesisch, Spanisch, Portugiesisch, Französisch und mehr; die Antworten folgen der Sprache, in der Sie fragen." },
+      { q: "Gibt es Grenzen?", a: "Das MVP begrenzt jede Datei auf 25 MB, 12 Seiten und 40.000 Zeichen extrahierten Text; teilen oder komprimieren Sie längere Dokumente zuvor. Es gilt ein kostenloses Tageskontingent — führen Sie ein Upgrade durch, wenn Sie mehr benötigen." },
+    ],
+  },
+  "govbid-matrix": {
+    title: "Compliance-Matrix für öffentliche Ausschreibungen — Häufige Fragen",
+    items: [
+      { q: "Was extrahiert es?", a: "Es liest eine Ausschreibung, eine Leistungsbeschreibung oder ein Vergabedokument und fasst jede verbindliche „shall/must/will“-Anforderung in einer nummerierten Compliance-Matrix zusammen — jede Zeile enthält die Anforderung, ihren Abschnittsbezug und ob sie verpflichtend oder empfehlend ist. Sie können nach ausschließlich verpflichtenden filtern und die gesamte Matrix als CSV exportieren, um sie direkt in Ihr Tracking der Angebotsantwort zu übernehmen." },
+      { q: "Kann ich jede Anforderung zur Ausschreibung zurückverfolgen?", a: "Ja — genau darum geht es. Jede Zeile zitiert den exakten Quelltext und zeigt ihren Abschnitt, sodass Sie jede Anforderung im Originaldokument prüfen können, bevor Sie sich in Ihrem Angebot darauf festlegen. Gibt die KI ein Zitat zurück, das wir in Ihrer Datei nicht finden, kennzeichnen wir es als „Zitat nicht überprüfbar“, statt eine erfundene Quellenangabe anzuzeigen. Nichts wird erfunden; was Sie nicht zurückverfolgen können, sehen Sie als nicht zurückverfolgbar." },
+      { q: "Ersetzt das, dass ich die Ausschreibung selbst lese?", a: "Nein. Es ist ein schneller erster Durchgang, um sicherzustellen, dass kein „shall/must“ durchrutscht — es ist keine Garantie für Vollständigkeit und keine Compliance- oder Rechtsberatung. Für die Compliance Ihres Angebots bleiben Sie verantwortlich; lesen Sie stets die vollständige Ausschreibung und behandeln Sie alles, was das Tool übersieht, weiterhin als verbindlich." },
+      { q: "Wird meine Ausschreibung hochgeladen oder gespeichert?", a: "Ihre Datei wird in Ihrem Browser gelesen; nur der extrahierte Text wird zur Analyse gesendet und danach nicht gespeichert. Die Datei selbst verlässt Ihr Gerät nie — was bei vertraulichen Ausschreibungen und vor der Zuschlagserteilung wichtig ist." },
+      { q: "Welche Dokumente funktionieren am besten?", a: "Textbasierte PDFs (digital erstellt). Gescannte Ausschreibungen haben keinen auswählbaren Text — führen Sie zuerst OCR aus. Es funktioniert auf Deutsch, Englisch, Chinesisch, Spanisch, Portugiesisch, Französisch und mehr; Zitate bleiben in der Originalsprache des Dokuments." },
+    ],
+  },
+  "contract-risk": {
+    title: "Vertragsrisiko-Prüfung — Häufige Fragen",
+    items: [
+      { q: "Worauf prüft es?", a: "Es durchsucht Ihren Vertrag nach Klauseln, die einen zweiten Blick verdienen — automatische Verlängerung, einseitige Kündigung oder Änderung, unbegrenzte/nicht gedeckelte Haftung, Vertragsstrafen und Verzugsgebühren, Zahlungsfallen und versteckte Kosten, zu weit gefasstes Wettbewerbsverbot sowie fehlende Standardschutzmechanismen (etwa keine Haftungsobergrenze). Jeder Befund wird rot (hoch), gelb (mittel) oder grün (niedrig) markiert, aus Ihrem Vertrag zitiert und mit einer Begründung in einfacher Sprache sowie Hinweisen versehen, was Sie vor der Unterschrift fragen sollten." },
+      { q: "Ist das eine Rechtsberatung?", a: "Nein. Es ist eine automatisierte Prüfung, die einer Person ohne juristische Ausbildung hilft, Klauseln zu erkennen, die Aufmerksamkeit verdienen — es ist keine Rechtsberatung und kein Ersatz für eine Anwältin oder einen Anwalt. Lassen Sie alles Wichtige oder Werthaltige von einer qualifizierten Anwältin oder einem qualifizierten Anwalt prüfen. Werden keine Befunde markiert, ist das keine Garantie dafür, dass der Vertrag sicher ist." },
+      { q: "Erfindet es Klauseln oder Zitate?", a: "Jedes Zitat wird mit dem tatsächlichen Text Ihres Vertrags abgeglichen — gibt die KI ein Zitat zurück, das wir in Ihrem Dokument nicht finden, verwerfen wir es, statt eine erfundene Quellenangabe anzuzeigen. Risiken durch fehlende Klauseln werden ohne Zitat und entsprechend gekennzeichnet angezeigt. Die KI kann dennoch Dinge übersehen, lesen Sie also stets den vollständigen Vertrag." },
+      { q: "Wird mein Vertrag hochgeladen oder gespeichert?", a: "Ihr Vertrag wird in Ihrem Browser gelesen; nur der extrahierte Text wird zur Analyse gesendet und danach nicht gespeichert. Die Datei selbst verlässt Ihr Gerät nie." },
+      { q: "Welche Verträge funktionieren am besten?", a: "Textbasierte PDFs (digital erstellt). Gescannte Verträge haben keinen auswählbaren Text — führen Sie zuerst OCR aus. Es funktioniert auf Deutsch, Englisch, Chinesisch und mehr; Zitate bleiben in der Originalsprache des Vertrags." },
+    ],
+  },
+  "lease-redflag": {
+    title: "Mietvertrag-Warnsignal-Prüfung — Häufige Fragen",
+    items: [
+      { q: "Was markiert es?", a: "Es durchsucht Ihren Mietvertrag nach Klauseln, die Ihnen als Mieterin oder Mieter schaden könnten — aggressive Mietsteigerungen, harte Strafen bei vorzeitiger Kündigung, unangemessene Betretungsrechte des Vermieters, unklare Aufteilung von Instandhaltungskosten, überzogene Abzüge von der Kaution, Untervermietungsbeschränkungen, unfaire Gebühren bei verspäteter Rückgabe sowie fehlende Standardschutzmechanismen (keine Nachfrist, keine Zusicherung der Bewohnbarkeit, kein Recht auf Nachbesserung vor einer Kündigung). Jeder Befund wird rot (hoch), gelb (mittel) oder grün (niedrig) markiert, aus Ihrem Mietvertrag zitiert und mit Hinweisen versehen, was Sie fragen oder verhandeln sollten." },
+      { q: "Ist das eine Rechtsberatung?", a: "Nein. Es ist eine automatisierte Prüfung, die Mieterinnen und Mietern hilft, Klauseln zu erkennen, die Aufmerksamkeit verdienen — es ist keine Rechtsberatung und kein Ersatz für eine Anwältin, einen Anwalt oder eine Mieterschutzorganisation. Wenden Sie sich bei allem Wichtigen an eine qualifizierte Anwältin oder einen qualifizierten Anwalt. Werden keine Befunde markiert, ist das keine Garantie dafür, dass der Mietvertrag fair ist." },
+      { q: "Erfindet es Zitate?", a: "Jedes Zitat wird mit dem tatsächlichen Text Ihres Mietvertrags abgeglichen — gibt die KI ein Zitat zurück, das wir in Ihrem Dokument nicht finden, verwerfen wir es, statt eine erfundene Quellenangabe anzuzeigen. Risiken durch fehlende Klauseln werden ohne Zitat und entsprechend gekennzeichnet angezeigt." },
+      { q: "Wird mein Mietvertrag hochgeladen oder gespeichert?", a: "Ihr Mietvertrag wird in Ihrem Browser gelesen; nur der extrahierte Text wird zur Analyse gesendet und danach nicht gespeichert. Die Datei selbst verlässt Ihr Gerät nie." },
+      { q: "Welche Mietvertragsformate funktionieren?", a: "Textbasierte PDFs (digital erstellt). Gescannte Mietverträge haben keinen auswählbaren Text — führen Sie zuerst OCR aus. Es funktioniert auf Deutsch, Englisch, Chinesisch und mehr; Zitate bleiben in der Originalsprache des Mietvertrags." },
+    ],
+  },
+  "batch-fix-scans": {
+    title: "Scans im Stapel bereinigen — Häufige Fragen",
+    items: [
+      { q: "Was kann das Stapel-Bereinigen von Scans?", a: "Zwei Bereinigungsaufgaben über einen ganzen Ordner voller PDFs auf einmal. „Ränder zuschneiden“ schneidet bei jeder Seite jeder Datei dieselben Kanten ab (ideal, um schwarze Scanränder oder Bindungsränder zu entfernen). „Seiten löschen“ entfernt dieselben Seitennummern aus jeder Datei (ideal, um ein Deckblatt oder eine Trennseite zu entfernen). Wählen Sie einen Modus, stellen Sie ihn einmal ein, und er wird auf den gesamten Stapel angewendet." },
+      { q: "Wie funktioniert das Zuschneiden?", a: "Verwenden Sie die Schieberegler, um jede Kante als Prozentsatz der Seite abzuschneiden; die Vorschau zeigt die erste Datei mit schattiertem zugeschnittenem Bereich. Derselbe Zuschnitt wird auf jede Seite jeder Datei im Stapel angewendet. Das Zuschneiden nutzt die PDF-Zuschnittbox, der abgeschnittene Bereich wird also ausgeblendet, nicht zerstört — er lässt sich später wiederherstellen." },
+      { q: "Wie funktioniert das Löschen von Seiten?", a: "Geben Sie die aus jeder Datei zu entfernenden Seitennummern ein, etwa 1 für ein Deckblatt oder 1,3-4 für mehrere. Diese Seiten werden aus jeder Datei im Stapel gelöscht. Würde eine Datei dadurch alle Seiten verlieren, wird sie übersprungen und markiert, damit Sie kein leeres Dokument erhalten." },
+      { q: "Gibt es eine Grenze, und werden meine Dateien hochgeladen?", a: "Bis zu 30 Dateien pro Stapel. Alles läuft vollständig in Ihrem Browser — Ihre Dateien werden nie hochgeladen, was dies für vertrauliche Scans sicher macht. Sie erhalten alle in einem einzigen ZIP zurück." },
+      { q: "Ist es kostenlos?", a: "Ja, vollständig kostenlos — kein Konto, kein Wasserzeichen, kein Tageslimit." },
+    ],
+  },
+  "batch-translate": {
+    title: "PDFs im Stapel übersetzen — Häufige Fragen",
+    items: [
+      { q: "Wie übersetze ich mehrere PDFs auf einmal?", a: "Ziehen Sie Ihre PDFs auf die Seite — oder einen ganzen Ordner —, wählen Sie die Zielsprache und klicken Sie auf „Alle übersetzen“. Jedes PDF wird in Ihrem Browser gelesen, sein Text wird nacheinander übersetzt, und Sie laden alle als ein einziges ZIP mit .txt-Dateien herunter." },
+      { q: "In welche Sprachen kann ich übersetzen?", a: "13 Sprachen, darunter Englisch, vereinfachtes und traditionelles Chinesisch, Spanisch, Französisch, Deutsch, Japanisch, Koreanisch, Portugiesisch, Italienisch, Russisch, Arabisch und Hindi. Der gesamte Stapel wird in die eine von Ihnen gewählte Sprache übersetzt." },
+      { q: "Was erhalte ich zurück — bleibt das Layout erhalten?", a: "Sie erhalten reinen Text (.txt), eine Datei pro PDF, zusammen gepackt. Die Übersetzung erfolgt nur als Text, daher bleiben das ursprüngliche Layout, Bilder und die Formatierung nicht erhalten. Sie eignet sich am besten zum Lesen und Wiederverwenden des Inhalts, nicht zum Erstellen einer formatierten Kopie." },
+      { q: "Gibt es eine Grenze, und was ist mit gescannten PDFs?", a: "Bis zu 10 PDFs pro Stapel, jeweils mit bis zu etwa 10 Seiten (14.000 Zeichen) Text. Gescannte PDFs haben keinen auswählbaren Text, führen Sie also zuerst OCR aus; andernfalls werden sie mit einem Hinweis übersprungen." },
+      { q: "Ist es privat und kostenlos?", a: "Jedes PDF wird in Ihrem Browser gelesen, und nur der extrahierte Text — nie die Datei — wird zur Übersetzung gesendet. Es ist kostenlos; die Übersetzung wird auf Ihr tägliches KI-Nutzungslimit angerechnet, das täglich zurückgesetzt wird." },
+    ],
+  },
+  "batch-office-to-pdf": {
+    title: "Office im Stapel in PDF — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich mehrere Office-Dateien auf einmal in PDF?", a: "Ziehen Sie Ihre Word-, PowerPoint- und Excel-Dateien auf die Seite — oder einen ganzen Ordner — und klicken Sie dann auf „Alle konvertieren“. Jede Datei wird nacheinander in PDF konvertiert, und wenn sie fertig sind, klicken Sie auf „ZIP herunterladen“, um sie alle in einem einzigen Archiv zu erhalten." },
+      { q: "Welche Formate kann ich konvertieren?", a: "Word (.doc, .docx), PowerPoint (.ppt, .pptx), Excel (.xls, .xlsx) sowie OpenDocument (.odt, .odp, .ods) und .rtf. Der Dateityp wird automatisch erkannt, sodass Sie Dokumente, Folien und Tabellen im selben Stapel mischen können." },
+      { q: "Sieht das PDF genauso aus wie das Original?", a: "Die Konvertierung nutzt LibreOffice — dieselbe Engine wie hinter unseren Einzeldatei-Tools für Office in PDF. Bei typischen Dokumenten ist das Ergebnis originalgetreu, aber ungewöhnliche Schriftarten, Makros oder sehr komplexe Layouts können leicht verrutschen, prüfen Sie also alles Formatierungsempfindliche." },
+      { q: "Gibt es eine Größen- oder Anzahlbegrenzung?", a: "Bis zu 20 Dateien pro Stapel, jeweils bis zu 5 MB. Verwenden Sie für eine Datei über 5 MB das Einzeldatei-Tool Word in PDF, PPT in PDF oder Excel in PDF, das größere Dateien verarbeitet." },
+      { q: "Werden meine Dateien hochgeladen, und ist es kostenlos?", a: "Es ist kostenlos und ohne Konto. Die Office-Konvertierung läuft auf unserem eigenen Server, daher wird jede Datei dorthin gesendet, in PDF konvertiert und zurückgegeben — sie wird danach nicht gespeichert oder aufbewahrt." },
+    ],
+  },
+  "batch-word-to-pdf": {
+    title: "Word im Stapel in PDF — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich mehrere Word-Dateien auf einmal in PDF?", a: "Ziehen Sie Ihre Word-Dateien auf die Seite — oder einen ganzen Ordner — und klicken Sie dann auf „Alle konvertieren“. Jede .doc- oder .docx-Datei wird nacheinander in PDF konvertiert, und wenn sie fertig sind, klicken Sie auf „ZIP herunterladen“, um sie alle in einem einzigen Archiv zu erhalten." },
+      { q: "Welche Word-Formate werden unterstützt?", a: "Sowohl das moderne .docx als auch das ältere .doc, dazu OpenDocument-Text (.odt) und .rtf. Verwenden Sie für gemischte Stapel aus Word, PowerPoint und Excel zusammen stattdessen das allgemeine Tool Office in PDF." },
+      { q: "Sieht das PDF genauso aus wie das Original?", a: "Die Konvertierung nutzt LibreOffice — dieselbe Engine wie hinter unserem Einzeldatei-Tool Word in PDF. Bei typischen Dokumenten ist das Ergebnis originalgetreu, aber ungewöhnliche Schriftarten, Makros oder sehr komplexe Layouts können leicht verrutschen, prüfen Sie also alles Formatierungsempfindliche." },
+      { q: "Gibt es eine Größen- oder Anzahlbegrenzung?", a: "Bis zu 20 Dateien pro Stapel, jeweils bis zu 5 MB. Verwenden Sie für eine Word-Datei über 5 MB das Einzeldatei-Tool Word in PDF, das größere Dateien verarbeitet." },
+      { q: "Werden meine Dateien hochgeladen, und ist es kostenlos?", a: "Es ist kostenlos und ohne Konto. Die Office-Konvertierung läuft auf unserem eigenen Server, daher wird jede Datei dorthin gesendet, in PDF konvertiert und zurückgegeben — sie wird danach nicht gespeichert oder aufbewahrt." },
+    ],
+  },
+  "batch-excel-to-pdf": {
+    title: "Excel im Stapel in PDF — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich mehrere Excel-Dateien auf einmal in PDF?", a: "Ziehen Sie Ihre Tabellen auf die Seite — oder einen ganzen Ordner — und klicken Sie dann auf „Alle konvertieren“. Jede .xls- oder .xlsx-Datei wird nacheinander in PDF konvertiert, und wenn sie fertig sind, klicken Sie auf „ZIP herunterladen“, um sie alle in einem einzigen Archiv zu erhalten." },
+      { q: "Welche Tabellenformate werden unterstützt?", a: "Sowohl das moderne .xlsx als auch das ältere .xls, dazu OpenDocument-Tabellen (.ods). Verwenden Sie für gemischte Stapel aus Word, PowerPoint und Excel zusammen stattdessen das allgemeine Tool Office in PDF." },
+      { q: "Passen breite Tabellenblätter auf die Seite?", a: "Die Konvertierung nutzt LibreOffice und folgt dem Druckbereich und der Seiteneinrichtung jedes Tabellenblatts, sodass sehr breite Tabellen über mehrere Seiten verteilt werden können, genau wie beim Drucken. Stellen Sie zuerst den Druckbereich oder die Skalierung in Excel ein, wenn alles auf eine Seite passen soll." },
+      { q: "Gibt es eine Größen- oder Anzahlbegrenzung?", a: "Bis zu 20 Dateien pro Stapel, jeweils bis zu 5 MB. Verwenden Sie für eine Excel-Datei über 5 MB das Einzeldatei-Tool Excel in PDF, das größere Dateien verarbeitet." },
+      { q: "Werden meine Dateien hochgeladen, und ist es kostenlos?", a: "Es ist kostenlos und ohne Konto. Die Office-Konvertierung läuft auf unserem eigenen Server, daher wird jede Datei dorthin gesendet, in PDF konvertiert und zurückgegeben — sie wird danach nicht gespeichert oder aufbewahrt." },
+    ],
+  },
+  "batch-ppt-to-pdf": {
+    title: "PowerPoint im Stapel in PDF — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich mehrere PowerPoint-Dateien auf einmal in PDF?", a: "Ziehen Sie Ihre PowerPoint-Dateien auf die Seite — oder einen ganzen Ordner — und klicken Sie dann auf „Alle konvertieren“. Jede .ppt- oder .pptx-Datei wird nacheinander in PDF konvertiert, und wenn sie fertig sind, klicken Sie auf „ZIP herunterladen“, um sie alle in einem einzigen Archiv zu erhalten." },
+      { q: "Welche PowerPoint-Formate werden unterstützt?", a: "Sowohl das moderne .pptx als auch das ältere .ppt, dazu OpenDocument-Präsentationen (.odp). Verwenden Sie für gemischte Stapel aus Word, PowerPoint und Excel zusammen stattdessen das allgemeine Tool Office in PDF." },
+      { q: "Wie werden die Folien im PDF dargestellt?", a: "Jede Folie wird der Reihe nach zu einer vollen PDF-Seite, mit LibreOffice — derselben Engine wie unser Einzeldatei-Tool PPT in PDF. Notizen für Vortragende und Animationen sind nicht enthalten; das PDF erfasst das endgültige Erscheinungsbild jeder Folie. Ungewöhnliche Schriftarten oder sehr komplexe Layouts können leicht verrutschen, prüfen Sie also formatierungsempfindliche Präsentationen." },
+      { q: "Gibt es eine Größen- oder Anzahlbegrenzung?", a: "Bis zu 20 Dateien pro Stapel, jeweils bis zu 5 MB. Verwenden Sie für eine PowerPoint-Datei über 5 MB das Einzeldatei-Tool PPT in PDF, das größere Dateien verarbeitet." },
+      { q: "Werden meine Dateien hochgeladen, und ist es kostenlos?", a: "Es ist kostenlos und ohne Konto. Die Office-Konvertierung läuft auf unserem eigenen Server, daher wird jede Datei dorthin gesendet, in PDF konvertiert und zurückgegeben — sie wird danach nicht gespeichert oder aufbewahrt." },
+    ],
+  },
+  "batch-pdf-to-office": {
+    title: "PDF im Stapel in Word/Excel — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich mehrere PDFs auf einmal in Word oder Excel?", a: "Ziehen Sie Ihre PDFs auf die Seite — oder einen ganzen Ordner —, wählen Sie Word oder Excel als Ziel und klicken Sie dann auf „Alle konvertieren“. Jede Datei wird nacheinander konvertiert, und wenn sie fertig sind, klicken Sie auf „ZIP herunterladen“, um sie alle in einem einzigen Archiv zurückzuerhalten." },
+      { q: "Soll ich Word oder Excel wählen?", a: "Wählen Sie Word (.docx) für Dokumente, die überwiegend aus Text und Absätzen bestehen, und Excel (.xlsx) für PDFs, die aus Tabellen aufgebaut sind — Rechnungen, Kontoauszüge, Datenblätter. Excel funktioniert am besten, wenn das PDF klare Zeilen und Spalten hat." },
+      { q: "Sieht das Layout genauso aus wie das Original?", a: "Kein Konverter kann eine pixelgenaue Kopie versprechen. Wir extrahieren den Text und die Tabellen in eine wirklich bearbeitbare Datei, was Sie zum Bearbeiten brauchen — aber gescannte PDFs oder aufwendig gestaltete Seiten erfordern danach möglicherweise eine Nachbearbeitung. Bei einem digital erstellten PDF mit normalem Text und Tabellen sind die Ergebnisse meist nah dran." },
+      { q: "Gibt es eine Größen- oder Anzahlbegrenzung?", a: "Sie können bis zu 20 PDFs pro Stapel konvertieren, jeweils bis zu 5 MB. Verwenden Sie für eine Datei über 5 MB das Einzeldatei-Tool PDF in Word oder PDF in Excel, das größere Dateien verarbeitet." },
+      { q: "Werden meine Dateien hochgeladen, und ist es kostenlos?", a: "Es ist kostenlos und ohne Konto. Anders als bei unseren reinen Browser-Tools läuft die Konvertierung in Office-Formate auf unserem eigenen Server, daher wird jedes PDF dorthin gesendet, konvertiert und zurückgegeben — es wird danach nicht gespeichert oder aufbewahrt." },
+    ],
+  },
+  "batch-pdf-to-word": {
+    title: "PDF im Stapel in Word — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich mehrere PDFs auf einmal in Word?", a: "Ziehen Sie Ihre PDFs auf die Seite — oder einen ganzen Ordner — und klicken Sie dann auf „Alle konvertieren“. Jede Datei wird nacheinander in ein bearbeitbares Word-Dokument konvertiert, und wenn sie fertig sind, klicken Sie auf „ZIP herunterladen“, um sie alle in einem einzigen Archiv zurückzuerhalten." },
+      { q: "Sieht die Word-Datei genauso aus wie das Original?", a: "Kein Konverter kann eine pixelgenaue Kopie versprechen. Wir extrahieren den Text in eine wirklich bearbeitbare .docx-Datei, was Sie zum Bearbeiten brauchen — aber gescannte PDFs oder aufwendig gestaltete Seiten erfordern danach möglicherweise eine Nachbearbeitung. Bei einem digital erstellten PDF mit normalem Text sind die Ergebnisse meist nah dran." },
+      { q: "Welche PDFs lassen sich am besten konvertieren?", a: "Textbasierte, digital erstellte PDFs lassen sich am besten konvertieren. Gescannte PDFs haben keinen auswählbaren Text — führen Sie zuerst OCR aus, sonst kommt die Word-Datei leer zurück. Ist Ihr PDF überwiegend aus Tabellen aufgebaut, liefert der Konverter PDF in Excel meist ein saubereres Ergebnis." },
+      { q: "Gibt es eine Größen- oder Anzahlbegrenzung?", a: "Sie können bis zu 20 PDFs pro Stapel konvertieren, jeweils bis zu 5 MB. Verwenden Sie für eine Datei über 5 MB das Einzeldatei-Tool PDF in Word, das größere Dateien verarbeitet." },
+      { q: "Werden meine Dateien hochgeladen, und ist es kostenlos?", a: "Es ist kostenlos und ohne Konto. Anders als bei unseren reinen Browser-Tools läuft die Konvertierung in Word auf unserem eigenen Server, daher wird jedes PDF dorthin gesendet, konvertiert und zurückgegeben — es wird danach nicht gespeichert oder aufbewahrt." },
+    ],
+  },
+  "batch-pdf-to-excel": {
+    title: "PDF im Stapel in Excel — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich mehrere PDFs auf einmal in Excel?", a: "Ziehen Sie Ihre PDFs auf die Seite — oder einen ganzen Ordner — und klicken Sie dann auf „Alle konvertieren“. Jede Datei wird nacheinander in eine bearbeitbare Excel-Tabelle konvertiert, und wenn sie fertig sind, klicken Sie auf „ZIP herunterladen“, um sie alle in einem einzigen Archiv zurückzuerhalten." },
+      { q: "Sieht die Excel-Datei genauso aus wie das Original?", a: "Kein Konverter kann eine pixelgenaue Kopie versprechen. Wir extrahieren die Tabellen und den Text in eine wirklich bearbeitbare .xlsx-Datei, was Sie zum Arbeiten mit den Zahlen brauchen — aber gescannte PDFs oder aufwendig gestaltete Seiten erfordern danach möglicherweise eine Nachbearbeitung. Bei einem digital erstellten PDF mit klaren Tabellen sind die Ergebnisse meist nah dran." },
+      { q: "Welche PDFs lassen sich am besten konvertieren?", a: "PDFs, die aus klaren Tabellen aufgebaut sind — Rechnungen, Kontoauszüge, Datenblätter —, lassen sich am besten konvertieren, weil die Zeilen und Spalten direkt in die Tabellenzellen übertragen werden. Gescannte PDFs haben keinen auswählbaren Text, führen Sie also zuerst OCR aus. Ist Ihr PDF überwiegend aus Absätzen statt aus Tabellen aufgebaut, liefert der Konverter PDF in Word meist ein saubereres Ergebnis." },
+      { q: "Gibt es eine Größen- oder Anzahlbegrenzung?", a: "Sie können bis zu 20 PDFs pro Stapel konvertieren, jeweils bis zu 5 MB. Verwenden Sie für eine Datei über 5 MB das Einzeldatei-Tool PDF in Excel, das größere Dateien verarbeitet." },
+      { q: "Werden meine Dateien hochgeladen, und ist es kostenlos?", a: "Es ist kostenlos und ohne Konto. Anders als bei unseren reinen Browser-Tools läuft die Konvertierung in Excel auf unserem eigenen Server, daher wird jedes PDF dorthin gesendet, konvertiert und zurückgegeben — es wird danach nicht gespeichert oder aufbewahrt." },
+    ],
+  },
+  "batch-compress": {
+    title: "PDF im Stapel komprimieren — Häufige Fragen",
+    items: [
+      { q: "Wie komprimiere ich mehrere PDFs auf einmal?", a: "Ziehen Sie Ihre PDFs auf die Seite — oder legen Sie einen ganzen Ordner ab oder nutzen Sie „Ordner wählen“ — und alle Nicht-PDF-Dateien in diesem Ordner werden automatisch herausgefiltert. Wählen Sie eine Komprimierungsstärke („Leicht“, „Empfohlen“ oder „Stark“) und klicken Sie dann auf „Alle komprimieren“. Jede Datei wird nacheinander verarbeitet, und wenn sie fertig ist, klicken Sie auf „ZIP herunterladen“, um sie alle in einem einzigen Archiv zurückzuerhalten." },
+      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Dies ist ein zu 100 % clientseitiges Tool: Jedes PDF wird direkt in Ihrem Browser gelesen und komprimiert, und nichts wird je an einen Server gesendet. Ihre Dateien verlassen Ihr Gerät nie, weshalb Sie es auch bei vertraulichen Dokumenten bedenkenlos verwenden können." },
+      { q: "Was erhalte ich zurück, und wie werden die Dateien benannt?", a: "Sie erhalten eine einzige ZIP-Datei (dockdocs-compressed.zip). Darin behält jedes PDF seinen ursprünglichen Namen mit dem Zusatz „-compressed“ vor der Erweiterung — aus report.pdf wird also report-compressed.pdf. Jede Zeile zeigt außerdem, wie stark diese Datei geschrumpft ist, und die Download-Schaltfläche zeigt die gesamte Größenreduzierung." },
+      { q: "Gibt es eine Grenze, wie viele Dateien oder wie groß sie sein dürfen?", a: "Sie können bis zu 30 PDFs pro Stapel hinzufügen. Es gibt keine feste Größenobergrenze pro Datei — da alles in Ihrem Browser läuft, ist die tatsächliche Grenze der Arbeitsspeicher Ihres Geräts. Große oder zahlreiche Dateien funktionieren weiterhin, brauchen auf einem schwächeren Gerät nur länger." },
+      { q: "Warum ist mein PDF kaum geschrumpft?", a: "Die Komprimierung funktioniert, indem jede Seite als Bild gerendert wird, was bei Scans und bildlastigen PDFs hervorragend ist, aber bei Dateien, die überwiegend aus reinem Text bestehen, wenig bewirkt — es gibt schlicht nicht viel herauszuholen. Ändert sich eine Datei kaum, ist das zu erwarten; versuchen Sie „Stark“ für etwas mehr, aber reine Text-PDFs sind bereits nah an ihrer Mindestgröße." },
+      { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Ja, es ist vollständig kostenlos — keine Anmeldung, kein Wasserzeichen, kein Tageslimit. Öffnen Sie einfach die Seite und beginnen Sie mit dem Komprimieren." },
+    ],
+  },
+  "batch-pdf-to-image": {
+    title: "PDF im Stapel in Bild — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich einen Stapel PDFs in Bilder?", a: "Ziehen Sie Ihre PDFs auf das Upload-Feld — oder legen Sie einen ganzen Ordner ab oder klicken Sie auf „Ordner wählen“, um einen auszuwählen. Wählen Sie JPG oder PNG und klicken Sie dann auf „Alle konvertieren“. Jede Seite jedes PDFs wird in ein Bild umgewandelt, und das Ergebnis wird als ein einziges ZIP heruntergeladen. Es gibt keine Anmeldung und kein Wasserzeichen." },
+      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Dieses Tool ist zu 100 % clientseitig: Jedes PDF wird vollständig in Ihrem Browser gelesen und in Bilder gerendert, und nichts wird je auf einen Server hochgeladen. Das ZIP, das Sie herunterladen, wird lokal auf Ihrem Gerät erstellt. Sie können es sogar offline ausführen, sobald die Seite geladen ist." },
+      { q: "Was erhalte ich zurück, und wie werden die Bilder benannt?", a: "Sie erhalten eine ZIP-Datei (mit dem Namen dockdocs-images.zip), die jede Seite als separates Bild enthält. Jede Datei wird nach ihrem Quell-PDF plus der Seitennummer benannt — aus report.pdf werden zum Beispiel report-1.jpg, report-2.jpg und so weiter. Die Seiten werden mit 2-facher Skalierung für eine gestochen scharfe, hochauflösende Ausgabe gerendert." },
+      { q: "Was ist hier der Unterschied zwischen JPG und PNG?", a: "JPG ergibt kleinere Dateien und legt jede Seite auf einen weißen Hintergrund — ideal für fotolastige oder gescannte Dokumente. PNG ist verlustfrei und bewahrt Transparenz, was bei Strichzeichnungen, Diagrammen oder Seiten, die Sie später bearbeiten, besser ist. Wählen Sie das Passende, bevor Sie auf „Alle konvertieren“ klicken; Sie können jederzeit mit dem anderen Format erneut ausführen." },
+      { q: "Wie viele Dateien oder Seiten kann ich auf einmal konvertieren?", a: "Sie können bis zu 20 PDFs pro Stapel einreihen — darüber hinausgehende Dateien werden automatisch verworfen. Es gibt keine feste Seiten- oder Größenbegrenzung, die tatsächliche Obergrenze ist also der Arbeitsspeicher Ihres Geräts: Sehr große PDFs oder enorme Seitenzahlen brauchen einfach länger und laufen auf schwächeren Geräten langsamer. Teilen Sie einen großen Auftrag in einige Stapel auf." },
+      { q: "Warum wurde eines meiner PDFs als „fehlgeschlagen“ angezeigt?", a: "Die häufigste Ursache ist ein passwortgeschütztes oder verschlüsseltes PDF — das Tool kann keine Seiten rendern, die es nicht öffnen kann, daher wird diese Datei als fehlgeschlagen markiert, während der Rest des Stapels normal konvertiert. Entfernen Sie zuerst das Passwort (unser Tool PDF entsperren hilft dabei) und fügen Sie es dann wieder hinzu. Auch beschädigte oder Nicht-PDF-Dateien können fehlschlagen; wenn Sie einen Ordner ablegen, werden Nicht-PDF-Dateien jedoch automatisch herausgefiltert, statt fehlzuschlagen." },
+    ],
+  },
+  "batch-protect-pdf": {
+    title: "PDF im Stapel verschlüsseln — Häufige Fragen",
+    items: [
+      { q: "Wie verschlüssele ich mehrere PDFs auf einmal?", a: "Ziehen Sie Ihre PDFs auf das Feld — oder legen Sie einen ganzen Ordner ab oder klicken Sie, um Dateien auszuwählen. Geben Sie ein Passwort ein (Feld „Passwort“) und klicken Sie dann auf „Alle verschlüsseln“. Jede Datei wird mit demselben Passwort gesperrt, und Sie erhalten ein einziges ZIP zurück, in dem jede Datei in „…-protected.pdf“ umbenannt ist." },
+      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Dies ist ein zu 100 % clientseitiges Tool — jedes PDF wird direkt in Ihrem Browser verschlüsselt, und nichts verlässt je Ihr Gerät. Es gibt keinen Upload, kein Konto und keine irgendwo aufbewahrte Kopie. Sie können es sogar offline ausführen, sobald die Seite geladen ist." },
+      { q: "Was erhalte ich zurück, und in welchem Format?", a: "Sie erhalten eine ZIP-Datei mit dem Namen „dockdocs-protected.zip“. Darin erscheint jedes eingegebene PDF als eigene verschlüsselte Datei mit dem Suffix „-protected.pdf“. Öffnen Sie eine davon, und Ihr Reader fragt nach dem von Ihnen festgelegten Passwort." },
+      { q: "Gibt es Regeln für das Passwort oder Grenzen für die Anzahl der Dateien?", a: "Das Passwort muss 4–32 Zeichen lang sein und darf nur Buchstaben, Ziffern und den Unterstrich (_) enthalten — das hält es sicher anwendbar über jeden PDF-Reader hinweg. Sie können bis zu 30 Dateien pro Stapel verschlüsseln; für mehr führen Sie das Tool einfach erneut aus. Es gibt keine feste Größengrenze, aber da alles in Ihrem Browser läuft, gehen sehr große Aufträge auf Geräten mit wenig Arbeitsspeicher langsamer." },
+      { q: "Was passiert mit einem PDF, das bereits passwortgeschützt ist?", a: "Es wird übersprungen. Das Tool kann eine Datei, die es nicht öffnen kann, nicht erneut sperren, daher wird jedes PDF, das bereits ein Passwort hat, aus dem ZIP ausgelassen, statt den gesamten Stapel scheitern zu lassen. Entschlüsseln Sie es zuerst (mit dem ursprünglichen Passwort), wenn Sie es hier erneut verschlüsseln möchten." },
+      { q: "Ist es wirklich kostenlos? Wasserzeichen oder Anmeldung?", a: "Ja, vollständig kostenlos, ohne Anmeldung und ohne Wasserzeichen. Die verschlüsselten PDFs sind Byte für Byte Ihre Originale plus das Passwort — DockDocs fügt ihnen nichts hinzu." },
+    ],
+  },
+  "batch-rename-pdf": {
+    title: "PDF im Stapel umbenennen — Häufige Fragen",
+    items: [
+      { q: "Wie benenne ich einen Stapel PDFs um?", a: "Ziehen Sie einen ganzen Ordner (oder eine Reihe von PDFs) auf das Upload-Feld oder klicken Sie, um Dateien auszuwählen. Wählen Sie dann einen Modus: „Nummeriert“ gibt jeder Datei einen Basisnamen plus eine fortlaufende Nummer (rechnung-01.pdf, rechnung-02.pdf …), und „Suchen & Ersetzen“ tauscht jeden Text aus, der in den bestehenden Dateinamen vorkommt. Eine Live-Vorschau zeigt jeden alten Namen durchgestrichen neben seinem neuen Namen, sodass Sie das Ergebnis prüfen können, bevor Sie es bestätigen. Wenn es passt, klicken Sie auf „Umbenanntes ZIP herunterladen“." },
+      { q: "Werden meine Dateien irgendwohin hochgeladen?", a: "Nein. Dieses Tool ist zu 100 % clientseitig — jede Datei wird in Ihrem eigenen Browser gelesen und umbenannt, und nichts wird je an einen Server gesendet. Es gibt überhaupt keinen Upload-Schritt; das Umbenennen und das ZIP werden lokal auf Ihrem Gerät erstellt. Deshalb ist es auch kostenlos, ohne Anmeldung, ohne Wasserzeichen und ohne anzulegendes Konto." },
+      { q: "Was erhalte ich zurück, und werden die PDFs verändert?", a: "Sie erhalten eine einzige ZIP-Datei (dockdocs-renamed.zip) mit Kopien Ihrer PDFs unter den neuen Dateinamen. Das Umbenennen ändert nur die Dateinamen — der Inhalt, die Seiten und die Qualität der PDFs bleiben völlig unangetastet. Auch die Originaldateien auf Ihrem Computer werden nicht verändert; Sie laden lediglich einen frisch benannten Satz herunter." },
+      { q: "Gibt es eine Grenze, wie viele Dateien ich umbenennen kann?", a: "Ja — dieses Tool verarbeitet bis zu 100 PDFs pro Stapel. Da alles in Ihrem Browser läuft, verbrauchen sehr große Stapel mehr Arbeitsspeicher und brauchen auf schwächeren Geräten etwas länger, aber innerhalb der 100-Dateien-Grenze ist es schnell. Wenn Sie mehr als 100 Dateien haben, führen Sie einfach einen zweiten Stapel aus." },
+      { q: "Kann ich einen Ordner ablegen, der Nicht-PDF-Dateien enthält?", a: "Ja. Sie können einen ganzen Ordner ablegen, und das Tool filtert automatisch alles heraus, was kein PDF ist — Bilder, Tabellen und andere Dokumente werden ignoriert, sodass nur Ihre PDFs zur Liste hinzugefügt werden. Sie müssen den Ordner nicht zuvor aufräumen." },
+      { q: "Was passiert, wenn zwei Dateien denselben Namen erhalten würden?", a: "Das fängt das Tool automatisch ab. Würde ein Nummerierungsmuster oder „Suchen & Ersetzen“ zwei identische Dateinamen erzeugen, fügt es den späteren ein Suffix -1, -2 (und so weiter) hinzu, sodass jede Datei im ZIP einen eindeutigen Namen behält. Nichts wird stillschweigend überschrieben oder geht verloren." },
+    ],
+  },
+  "batch-rotate-pdf": {
+    title: "PDF im Stapel drehen — Häufige Fragen",
+    items: [
+      { q: "Wie drehe ich einen Stapel PDFs?", a: "Ziehen Sie Ihre PDFs auf das Feld — oder legen Sie einen ganzen Ordner ab oder nutzen Sie „Ordner wählen“. Wählen Sie einen Drehwinkel (90°, 180° oder 270°) und klicken Sie dann auf „Alle drehen“. Wenn es fertig ist, klicken Sie auf „ZIP herunterladen“, um jede gedrehte Datei in einem Archiv zu erhalten. Mit der Schaltfläche „+“ können Sie vor dem Ausführen weitere PDFs hinzufügen." },
+      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Dies ist ein zu 100 % clientseitiges Tool — jedes PDF wird direkt in Ihrem Browser mit den Ressourcen Ihres eigenen Geräts geöffnet und gedreht, und auch das ZIP wird lokal zusammengestellt. Nichts wird je zu DockDocs oder anderswohin hochgeladen, Ihre Dokumente verlassen Ihren Computer also nie." },
+      { q: "Was erhalte ich zurück, und wie werden die Dateien benannt?", a: "Sie erhalten eine einzige ZIP-Datei (dockdocs-rotated.zip), die jedes erfolgreich gedrehte PDF enthält. Jede Datei behält ihren ursprünglichen Namen mit dem Zusatz „-rotated“ vor der Erweiterung — aus invoice.pdf wird zum Beispiel invoice-rotated.pdf —, sodass sich die neuen Kopien leicht von Ihren Originalen unterscheiden lassen." },
+      { q: "Was wird gedreht, und kann ich nur einige Seiten drehen?", a: "Der gewählte Winkel wird auf jede Seite jedes PDFs im Stapel angewendet — dies ist ein Werkzeug für ganze Ordner, kein seitengenauer Editor, Sie können hier also keine einzelnen Seiten drehen. Die Drehung wird zudem zu jeder bestehenden Drehung hinzugefügt, sodass das Anwenden von 90° auf eine bereits gedrehte Seite sie um weitere 90° dreht. Für seitengenaue Steuerung verwenden Sie stattdessen unser Einzeldatei-Tool zum Drehen." },
+      { q: "Gibt es Grenzen, und warum könnte ein PDF „fehlgeschlagen“ anzeigen?", a: "Sie können bis zu 50 PDFs pro Stapel hinzufügen. Es gibt keine feste Größenobergrenze — da alles in Ihrem Browser läuft, ist die tatsächliche Grenze der Arbeitsspeicher Ihres Geräts, große Aufträge auf einem schwachen Laptop oder Telefon sind also nur langsamer. Verschlüsselte oder passwortgeschützte PDFs können zum Drehen nicht geöffnet werden, daher werden sie übersprungen und als „fehlgeschlagen“ markiert; der Rest des Stapels wird trotzdem verarbeitet, und nur die erfolgreichen Dateien kommen ins ZIP. Entsperren Sie die Datei zuerst und fügen Sie sie dann erneut hinzu." },
+      { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Ja, es ist vollständig kostenlos — keine Anmeldung, kein Konto und kein Wasserzeichen auf Ihrer Ausgabe. Da die gesamte Arbeit in Ihrem Browser geschieht, gibt es nichts zu bezahlen und keinen Nutzungszähler; öffnen Sie einfach die Seite und beginnen Sie mit dem Drehen." },
+    ],
+  },
+  "batch-watermark-pdf": {
+    title: "PDFs im Stapel mit Wasserzeichen versehen — Häufige Fragen",
+    items: [
+      { q: "Wie versehe ich einen ganzen Ordner voller PDFs auf einmal mit einem Wasserzeichen?", a: "Ziehen Sie einen Ordner (oder mehrere PDFs) auf das Upload-Feld oder klicken Sie, um Dateien auszuwählen. Geben Sie Ihren Wasserzeichentext ein — zum Beispiel VERTRAULICH — und klicken Sie dann auf „Auf alle anwenden“. Jedes PDF wird nacheinander gestempelt, und wenn es fertig ist, klicken Sie auf „ZIP herunterladen“, um jede mit Wasserzeichen versehene Datei in einem einzigen Archiv zu erhalten. Wenn Sie einen Ordner abgelegt haben, werden alle darin enthaltenen Nicht-PDF-Dateien automatisch herausgefiltert, sodass Sie den Ordner nicht zuvor aufräumen müssen." },
+      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Jedes PDF wird vollständig in Ihrem Browser auf Ihrem eigenen Gerät verarbeitet — nichts wird auf einen Server hochgeladen, und es gibt kein Konto und keine Anmeldung. Ihre Dokumente verlassen Ihren Computer nie, weshalb es für vertrauliche Dateien sicher ist." },
+      { q: "Was erhalte ich zurück, und wie werden die Dateien benannt?", a: "Sie erhalten eine ZIP-Datei (dockdocs-batch.zip), die alle mit Wasserzeichen versehenen PDFs enthält. Jede Ausgabe behält ihren ursprünglichen Namen mit dem Suffix „-watermarked.pdf“ — aus report.pdf wird also report-watermarked.pdf. Ihre Originaldateien bleiben unangetastet." },
+      { q: "Gibt es eine Grenze, wie viele PDFs ich auf einmal bearbeiten kann?", a: "Dieses Stapel-Tool verarbeitet bis zu 30 PDFs pro Durchlauf. Wenn Sie mehr hinzufügen, werden nur die ersten 30 behalten. Es gibt keine feste Größenobergrenze — da alles in Ihrem Browser läuft, ist die tatsächliche Grenze der Arbeitsspeicher Ihres Geräts, sehr große Dateien oder schwache Geräte sind also einfach langsamer. Teilen Sie einen größeren Auftrag in Stapel zu je 30 auf." },
+      { q: "Ist es kostenlos? Fügt es ein eigenes Wasserzeichen oder Branding hinzu?", a: "Ja, es ist vollständig kostenlos, ohne Anmeldung, ohne Testphase und ohne Nutzungsgrenzen über die Stapelgröße von 30 Dateien pro Durchlauf hinaus. Das einzige Wasserzeichen auf Ihren PDFs ist der Text, den Sie eingeben — DockDocs stempelt nie sein eigenes Logo oder Branding auf Ihre Dateien." },
+      { q: "Kann ich wählen, wohin das Wasserzeichen kommt oder wie transparent es ist?", a: "Nicht im Stapel-Tool. Es verwendet eine feste Standardplatzierung — ein diagonales Wasserzeichen über jede Seite —, um den ganzen Ordner einheitlich zu halten. Wenn Sie eine eigene Position, Deckkraft oder Schriftgröße benötigen, verwenden Sie stattdessen das Einzeldatei-Tool für Wasserzeichen, das Ihnen die volle Kontrolle über jeweils ein Dokument gibt." },
+    ],
+  },
+  "batch-page-numbers": {
+    title: "Seitenzahlen im Stapel — Häufige Fragen",
+    items: [
+      { q: "Wie füge ich einem Stapel PDFs Seitenzahlen hinzu?", a: "Ziehen Sie Ihre PDFs auf das Upload-Feld — oder legen Sie einen ganzen Ordner ab oder nutzen Sie „Ordner wählen“, um einen auszuwählen. Das Tool fügt jedes PDF zur Liste hinzu, dann klicken Sie auf „Auf alle anwenden“. Jede Datei wird nacheinander nummeriert, und wenn es fertig ist, klicken Sie auf „ZIP herunterladen“, um sie alle in einem einzigen Archiv zu erhalten." },
+      { q: "Werden meine Dateien irgendwohin hochgeladen?", a: "Nein. Dies ist ein zu 100 % clientseitiges Tool — jedes PDF wird direkt in Ihrem Browser geöffnet und nummeriert, und nichts wird an einen Server gesendet. Ihre Dateien verlassen Ihr Gerät nie, weshalb es sogar bei vertraulichen Dokumenten funktioniert." },
+      { q: "Was erhalte ich zurück, und wie werden die Dateien benannt?", a: "Sie erhalten eine ZIP-Datei (mit dem Namen dockdocs-batch.zip), die jedes erfolgreich nummerierte PDF enthält. Jede Ausgabe behält ihren ursprünglichen Namen mit dem hinzugefügten Suffix „-numbered.pdf“ — aus report.pdf wird also report-numbered.pdf. Es sind nur Dateien enthalten, die erfolgreich verarbeitet wurden; fehlgeschlagene werden übersprungen, und der Rest kommt trotzdem durch." },
+      { q: "Gibt es eine Grenze, wie viele Dateien ich auf einmal bearbeiten kann, und kann ich einen Ordner mit Nicht-PDFs ablegen?", a: "Sie können bis zu 30 PDFs pro Stapel verarbeiten — der Zähler neben der Liste zeigt, wie viele Sie hinzugefügt haben (zum Beispiel „12 / 30 Dateien“). Es gibt keine feste Größengrenze, aber da alles in Ihrem Browser läuft, verbrauchen sehr große oder zahlreiche Dateien mehr Arbeitsspeicher und laufen auf schwächeren Geräten langsamer. Sie können bedenkenlos einen Ordner ablegen, der auch Bilder oder Word-Dokumente enthält: Das Tool behält automatisch nur die tatsächlichen PDFs und filtert alles andere heraus." },
+      { q: "Kann ich wählen, wohin die Seitenzahlen kommen, oder ihren Stil ändern?", a: "Nicht im Stapel-Tool — es verwendet eine feste Standardplatzierung, um den ganzen Ordner mit einem Klick einheitlich zu halten. Wenn Sie die Position, Schriftart oder Startnummer steuern müssen, verwenden Sie stattdessen das Einzeldatei-Tool „Seitenzahlen hinzufügen“, das Ihnen diese Optionen gibt." },
+      { q: "Ist es kostenlos? Brauche ich ein Konto, oder gibt es ein Wasserzeichen?", a: "Es ist vollständig kostenlos, ohne erforderliche Anmeldung, und es wird kein Wasserzeichen zu Ihren PDFs hinzugefügt. Da alles lokal in Ihrem Browser läuft, gibt es nichts zu bezahlen und kein Upload-Kontingent." },
+    ],
+  },
+  "batch-split-merge": {
+    title: "PDF im Stapel teilen — Häufige Fragen",
+    items: [
+      { q: "Wie teile ich einen ganzen Ordner voller PDFs auf einmal?", a: "Ziehen Sie Ihre PDFs — oder einen ganzen Ordner — per Drag-and-drop auf das Upload-Feld oder klicken Sie, um sie auszuwählen. Stellen Sie „Seiten pro Datei“ darauf ein, wie viele Seiten jedes Ausgabeteil enthalten soll (1 teilt jede Seite in eine eigene Datei), und klicken Sie dann auf „Ausführen“. Jedes PDF wird in Stücke dieser Größe geschnitten, und alles wird in ein einziges ZIP gepackt, das Sie mit „ZIP herunterladen“ herunterladen können." },
+      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Das Teilen läuft vollständig in Ihrem Browser mit einer lokalen PDF-Engine — nichts wird hochgeladen, nichts wird gespeichert, und nichts verlässt Ihr Gerät. Sie können nach dem Laden der Seite sogar die Internetverbindung trennen, und es funktioniert weiterhin. Deshalb ist es für sensible oder vertrauliche Dokumente sicher." },
+      { q: "Was erhalte ich zurück, und wie werden die Dateien benannt?", a: "Sie erhalten eine ZIP-Datei (dockdocs-split.zip). Darin wird jedes PDF in Stücke geteilt, die nach dem Original benannt sind — aus report.pdf werden zum Beispiel report-part1.pdf, report-part2.pdf und so weiter. Wenn Sie mehrere PDFs hochgeladen haben, werden alle ihre Teile zusammen in dasselbe ZIP gelegt." },
+      { q: "Kann ich einen Ordner hinzufügen, und was passiert mit Nicht-PDF-Dateien darin?", a: "Ja — Sie können einen ganzen Ordner ablegen oder auswählen. Jede Datei, die kein PDF ist, wird automatisch herausgefiltert, sodass Sie den Ordner nicht zuvor aufräumen müssen. Nur die PDFs werden zur Liste hinzugefügt und verarbeitet." },
+      { q: "Gibt es eine Grenze, wie viele oder wie große Dateien sein dürfen?", a: "Es gibt eine Obergrenze von 50 Dateien pro Stapel — wenn Sie mehr hinzufügen, werden nur die ersten 50 behalten. Es gibt keine feste Seiten- oder Größengrenze; die tatsächliche Einschränkung ist der Arbeitsspeicher Ihres Geräts, sehr große PDFs oder riesige Stapel laufen auf schwächeren Geräten also einfach langsamer. Ist ein PDF beschädigt oder passwortgeschützt, wird es als „fehlgeschlagen“ markiert und übersprungen, während der Rest trotzdem normal geteilt wird." },
+      { q: "Ist es kostenlos? Brauche ich ein Konto, oder fügt es ein Wasserzeichen hinzu?", a: "Ja, es ist vollständig kostenlos, ohne Anmeldung und ohne Wasserzeichen. Da die Arbeit auf Ihrem eigenen Gerät geschieht, müssen Sie sich um keine Nutzungsguthaben oder Grenzen kümmern — verwenden Sie es so oft Sie möchten." },
+    ],
+  },
+  "batch-summary": {
+    title: "Stapelzusammenfassung — Häufige Fragen",
+    items: [
+      { q: "Wie fasse ich mehrere PDFs auf einmal zusammen?", a: "Ziehen Sie Ihre PDFs per Drag-and-drop auf die Ablagezone oder klicken Sie auf „PDFs wählen“, um sie auszuwählen. Sie können bis zu 5 Dateien auf einmal hinzufügen. Sobald sie geladen sind, klicken Sie auf „Alle zusammenfassen“ — jedes Dokument wird der Reihe nach zusammengefasst, und Sie sehen während der Verarbeitung eine Fortschrittsanzeige wie 2/5. Wenn es fertig ist, erhalten Sie für jede Datei eine Kurzzusammenfassung sowie die wichtigsten Punkte." },
+      { q: "Wird meine Datei irgendwohin hochgeladen? Wo geschieht die Verarbeitung?", a: "Ihre PDF-Datei wird nie hochgeladen. Der Text wird direkt in Ihrem Browser extrahiert, und nur dieser extrahierte Text — nicht die Originaldatei — wird an unseren KI-Zusammenfassungsdienst gesendet, um die Zusammenfassung zu erstellen. Dies ist ein KI-Tool, daher benötigt es eine Internetverbindung, um den KI-Dienst zu erreichen, aber das Dokument selbst bleibt auf Ihrem Gerät." },
+      { q: "Bei einer meiner Dateien steht „kein extrahierbarer Text (Scan?)“. Was ist das Problem?", a: "Das bedeutet, dass das PDF keine Textebene zum Lesen hat — fast immer eine gescannte Seite oder ein als PDF gespeichertes Foto, das für das Tool nur ein Bild ist. Führen Sie zuerst unser OCR-PDF-Tool darauf aus, um eine echte Textebene hinzuzufügen, und kommen Sie dann zurück, um es hier zusammenzufassen. Verschlüsselte oder passwortgeschützte PDFs lassen sich ebenfalls nicht extrahieren; entfernen Sie zuerst das Passwort." },
+      { q: "Was erhalte ich zurück, und kann ich es speichern?", a: "Für jedes PDF erhalten Sie eine kurze Kurzzusammenfassung sowie eine Liste der wichtigsten Punkte, angezeigt als Karte auf der Seite. Sind alle Dateien fertig, klicken Sie auf „Alle herunterladen (.md)“, um alles als eine einzige Markdown-Datei (dockdocs-summaries.md) mit einem Abschnitt pro Dokument zu speichern — leicht in Ihre Notizen, ein Dokument oder ein Wiki zu übernehmen." },
+      { q: "Warum nur 5 Dateien auf einmal, und warum eine nach der anderen?", a: "Wir begrenzen jeden Durchlauf auf 5 PDFs und verarbeiten sie nacheinander, um innerhalb der Fair-Use-Grenzen zu bleiben und zuverlässige Ergebnisse zu erzielen, statt den KI-Dienst zu überlasten. Wenn Sie mehr haben, führen Sie einfach einen Stapel aus, klicken auf „Von vorn beginnen“ und laden den nächsten Satz. Fehlgeschlagene Dateien werden einzeln markiert, sodass ein fehlerhaftes PDF den Rest nicht aufhält." },
+      { q: "Die Zusammenfassungen sehen gut aus — kann ich ihnen blind vertrauen?", a: "Behandeln Sie sie als schnellen ersten Durchgang, nicht als Ersatz für das Lesen. Zusammenfassungen werden von der KI aus jedem Dokument erstellt, sie können also Nuancen übersehen oder gelegentlich ein Detail falsch wiedergeben — gleichen Sie sie immer kurz mit der Quelle ab, bevor Sie sich auf etwas Wichtiges verlassen, besonders bei Verträgen oder Berichten." },
+    ],
+  },
+  "batch-sort": {
+    title: "PDFs klassifizieren — Häufige Fragen",
+    items: [
+      { q: "Wie verwende ich es?", a: "Ziehen Sie Ihre PDFs — oder einen ganzen Ordner — per Drag-and-drop auf die Seite oder klicken Sie auf „PDFs wählen“ / „Ordner wählen“. Drücken Sie auf „Alle sortieren“, und die KI versieht jede Datei mit einer Kategorie (Rechnung, Vertrag, Lebenslauf, Bericht und so weiter). Wenn es fertig ist, klicken Sie auf „Sortiertes ZIP herunterladen“, um ein ZIP zu erhalten, in dem Ihre Dateien in Kategorieordner gruppiert sind. Sie können bis zu 30 Dateien auf einmal sortieren." },
+      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein — Ihre eigentlichen PDF-Dateien verlassen Ihr Gerät nie. Jedes PDF wird direkt in Ihrem Browser gelesen, um seinen Text herauszuziehen, und nur dieser extrahierte Text wird an unseren KI-Dienst gesendet, um die Kategorie zu bestimmen. Die Dateien selbst bleiben lokal, und das endgültige ZIP wird in Ihrem Browser aus Ihren Originalen erstellt." },
+      { q: "Funktioniert es bei gescannten PDFs oder Fotos von Dokumenten?", a: "Nicht direkt. Ein gescanntes oder reines Bild-PDF hat keine Textebene, es gibt also nichts zu lesen — diese Dateien kommen mit dem Vermerk „kein Text“ zurück und landen in einem Ordner „Nicht kategorisiert“. Führen Sie sie zuerst durch OCR (unser Tool „OCR-PDF“ fügt eine Textebene hinzu) und sortieren Sie sie dann hier." },
+      { q: "Brauche ich eine Internetverbindung?", a: "Ja. Der Text wird auf Ihrem Gerät extrahiert, aber die eigentliche Klassifizierung übernimmt unser KI-Dienst online, Sie müssen also verbunden sein. Die Textextraktion und das endgültige ZIP-Packen geschehen lokal; nur die Kategorieentscheidung benötigt das Internet." },
+      { q: "Was erhalte ich zurück, und werden meine Originaldateien verändert?", a: "Sie erhalten eine ZIP-Datei mit dem Namen dockdocs-sorted.zip mit einem Unterordner pro Kategorie und Ihren darin abgelegten Original-PDFs — unangetastet und unverändert. Würden zwei Dateien im selben Ordner denselben Namen erhalten, fügen wir ein Suffix „-1“, „-2“ hinzu, sodass nichts überschrieben wird." },
+      { q: "Wie genau sind die Kategorien?", a: "Die Kategorien werden von der KI aus dem Text jedes Dokuments vorgeschlagen, sie sind also ein starker Ausgangspunkt, aber eine kurze Prüfung wert — besonders bei ungewöhnlichen Dokumenten. Um es schnell zu halten, liest die KI nur die ersten 6 Seiten jedes PDFs, was für die meisten Dateien reichlich ist, aber bei einem Dokument, dessen Typ sich erst später zeigt, danebenliegen kann." },
+    ],
+  },
+  "flashcards": {
+    title: "PDF-Lernkarten — Häufige Fragen",
+    items: [
+      { q: "Wie verwandle ich ein PDF in Lernkarten?", a: "Legen Sie ein PDF ab — ein Lehrbuchkapitel, Vorlesungsnotizen oder ein Handbuch —, und das Tool liest den Text direkt in Ihrem Browser. Wählen Sie, wie viele Karten Sie möchten (5, 10, 15 oder 20), und drücken Sie auf „Karten erzeugen“. Sie erhalten ein Raster aus Frage-/Antwort-Karten; tippen Sie auf eine beliebige Karte, um sie umzudrehen und sich selbst abzufragen." },
+      { q: "Wird mein PDF irgendwohin hochgeladen?", a: "Ihre PDF-Datei wird nie hochgeladen. Der Text wird in Ihrem Browser extrahiert, und nur dieser reine Text (plus Ihre Kartenanzahl und Sprache) wird an unseren KI-Dienst gesendet, um die Karten zu schreiben. Die Originaldatei mit ihren Bildern, ihrem Layout und ihren Metadaten bleibt auf Ihrem Gerät." },
+      { q: "Warum erscheint „Kein Text in diesem PDF gefunden“?", a: "Ihr PDF ist ein Scan oder ein Bild — es hat keine Textebene zum Lesen, nur ein Bild der Seite. Führen Sie es zuerst durch OCR, um eine durchsuchbare Textebene hinzuzufügen, und versuchen Sie es dann erneut. Tipp: Ist das PDF passwortgeschützt, entsperren Sie es zuerst mit dem Tool „PDF entsperren“." },
+      { q: "Sind die Karten korrekt?", a: "Die Karten werden von der KI ausschließlich anhand des Textes Ihres Dokuments geschrieben — sie ist angewiesen, kein externes Wissen zu verwenden und keine Fakten zu erfinden. Dennoch kann die KI etwas falsch lesen oder zu stark vereinfachen, prüfen Sie die Karten also kurz, bevor Sie damit lernen. Das Tool erinnert Sie im Ergebnisbildschirm daran." },
+      { q: "Gibt es eine Größen- oder Nutzungsgrenze?", a: "Ja. Jeder Durchlauf nimmt bis zu etwa 16.000 Zeichen Text an — ungefähr 12 Seiten —, geben Sie ihm also jeweils ein Kapitel oder einen Abschnitt, nicht ein ganzes Buch. Es gibt außerdem eine Fair-Use-Ratenbegrenzung von etwa sechs Erzeugungen pro Minute. Wenn Sie eine der Grenzen erreichen, sehen Sie eine klare Meldung; kürzen Sie einfach den Inhalt oder warten Sie eine Minute." },
+      { q: "Ist es kostenlos, und brauche ich eine Internetverbindung?", a: "Die Nutzung ist kostenlos — kein Konto und keine Zahlung nötig. Da die Karten von einem KI-Dienst geschrieben werden, benötigen Sie eine Internetverbindung: Der Browser liest Ihr PDF offline, aber das Erzeugen der Karten löst einen kurzen Aufruf an unseren Server aus." },
+    ],
+  },
+  "compare": {
+    title: "Dokumente vergleichen — Häufige Fragen",
+    items: [
+      { q: "Wie vergleiche ich Dokumente?", a: "Laden Sie 2 bis 8 PDFs derselben Art hoch — Angebote, Rechnungen oder Verträge —, wählen Sie dann den Typ und klicken Sie auf „Felder vergleichen“. DockDocs stellt die wichtigsten Konditionen (Preis, Lieferung, Zahlung, Garantie und so weiter) nebeneinander in einer Tabelle dar und zeigt die exakte Quellzeile hinter jedem Wert, wo immer es eine finden kann (und „Nicht erkannt“, wenn ein Dokument etwas nicht angibt, nie eine Vermutung). Sie erhalten außerdem eine durch diese verglichenen Zahlen gestützte Empfehlung, welche Option gewinnt, und Sie können eine Frage über alle Dokumente auf einmal stellen." },
+      { q: "Werden meine Dateien auf Ihren Server hochgeladen?", a: "Nein — Ihre PDFs verlassen Ihr Gerät nie. DockDocs liest sie direkt in Ihrem Browser, um den Text herauszuziehen. Nur dieser extrahierte reine Text (nicht die Datei selbst) wird an unseren Server gesendet, wo die KI die Felder extrahiert und ausrichtet. Das Dokument, sein Layout und alle eingebetteten Daten bleiben also lokal; was reist, sind die Wörter auf der Seite." },
+      { q: "Warum steht bei meinem PDF „Nicht erkannt (wahrscheinlich gescannt — OCR nötig)“?", a: "Das bedeutet, dass das PDF keine auswählbare Textebene hat — meist ein Scan oder ein Foto einer Seite, es gibt also nichts zu lesen. Klicken Sie bei diesem Dokument auf „Text mit OCR extrahieren“, und DockDocs führt OCR in Ihrem Browser aus, um den Text zu erkennen (die ersten paar Seiten), danach können Sie es wie jede andere Datei vergleichen. Verschlüsselte oder passwortgeschützte PDFs lassen sich ebenfalls nicht lesen, bis sie entsperrt sind." },
+      { q: "Was erhalte ich zurück, und kann ich den Werten vertrauen?", a: "Sie erhalten eine Vergleichstabelle, in der jede Zelle den Wert plus die exakte Quellzeile zeigt, aus der er stammt — und diese Zeile ist daraufhin geprüft, dass sie tatsächlich in Ihrem Dokument vorkommt, sodass nichts erfunden wird. Klicken Sie auf eine beliebige Quellzeile, um zu einem hervorgehobenen Ausschnitt des Originaltextes zu springen. Gibt ein Dokument etwas schlicht nicht an, sehen Sie „Nicht erkannt“ statt einer Vermutung. Ein Vorbehalt: Die Gesamtempfehlung ist die Schlussfolgerung der KI über diese Zahlen und wird nicht einzeln quellengeprüft, bestätigen Sie die Zahlen in der Tabelle also, bevor Sie entscheiden." },
+      { q: "Gibt es eine Grenze für Dateianzahl oder -größe?", a: "Sie können bis zu 8 PDFs auf einmal vergleichen und benötigen mindestens 2 lesbare, damit der Vergleich läuft. Für die Funktion „über Dokumente hinweg fragen“ muss der kombinierte Text aller Dokumente unter 60.000 Zeichen und Ihre Frage unter 500 Zeichen bleiben — wenn Sie das erreichen, verwenden Sie weniger oder kürzere Dokumente. Das Tool benötigt eine Internetverbindung, da die Feldextraktion und die Empfehlung auf unserem Server laufen." },
+      { q: "Ist es kostenlos?", a: "Ja — Sie können Ihre PDFs hochladen, den Vergleich nebeneinander ausführen, die Empfehlung erhalten und Fragen über Ihre Dokumente hinweg stellen. Die OCR im Browser für gescannte Dateien ist ebenfalls kostenlos, da sie lokal auf Ihrem Gerät läuft." },
+    ],
+  },
+  "merge-pdf": {
+    title: "PDF-Dateien zusammenführen — Häufige Fragen",
+    items: [
+      { q: "Wie führe ich PDF-Dateien zusammen?", a: "Fügen Sie zwei oder mehr PDFs hinzu, ziehen Sie die Datei-Miniaturansichten in die gewünschte Reihenfolge und klicken Sie dann auf „Zusammenführen & herunterladen“. Die Seiten werden in dieser Reihenfolge von oben nach unten zu einem einzigen PDF kombiniert." },
+      { q: "Kann ich die Reihenfolge der Kombination steuern?", a: "Ja. Jede Datei zeigt eine Miniaturansicht und ein Nummern-Abzeichen — ziehen Sie sie herum, um sie vor dem Zusammenführen neu anzuordnen. Sie sehen genau, was wohin kommt, bevor Sie klicken, nicht danach." },
+      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Alles läuft lokal in Ihrem Browser — das Zusammenführen geschieht auf Ihrem Gerät, und Ihre Dateien werden nie hochgeladen oder irgendwohin gesendet. Es ist kein Konto und keine Anmeldung nötig." },
+      { q: "Gibt es eine Datei- oder Seitengrenze?", a: "Es gibt keine feste Obergrenze. Da der gesamte Auftrag in Ihrem Browser läuft, ist die praktische Grenze der Arbeitsspeicher Ihres Geräts — sehr große Dateien oder viele auf einmal können auf Geräten mit wenig RAM langsam werden." },
+      { q: "Warum wurde eines meiner PDFs übersprungen?", a: "Passwortgeschützte oder verschlüsselte PDFs lassen sich nicht lesen, daher werden sie mit einem Hinweis ausgelassen. Entsperren Sie sie oder entfernen Sie zuerst das Passwort und fügen Sie die Datei dann erneut hinzu." },
+      { q: "Ist es kostenlos?", a: "Ja — vollständig kostenlos, ohne Wasserzeichen und ohne Registrierung. Die zusammengeführte Datei wird als ein einziges PDF heruntergeladen." },
+    ],
+  },
+  "split-pdf": {
+    title: "Ein PDF teilen — Häufige Fragen",
+    items: [
+      { q: "Wie teile ich ein PDF?", a: "Laden Sie das PDF hoch und klicken Sie dann auf das ✂ zwischen zwei beliebigen Seiten, um einen Schnittpunkt zu setzen. Sie können beliebig viele Schnitte hinzufügen oder „Alle N Seiten teilen“ verwenden, um sie automatisch zu platzieren. Wenn Sie auf „Teilen & herunterladen“ klicken, wird jeder Abschnitt als eigenes PDF gespeichert, alle zusammen in einem einzigen ZIP gepackt." },
+      { q: "Woher weiß ich, was in jeder Datei landet?", a: "Vor dem Herunterladen werden die Seiten farblich getönt und mit „Datei 1“, „Datei 2“ und so weiter beschriftet, und ein Live-Zähler sagt Ihnen genau, wie viele Dateien erstellt werden — so gibt es keine Überraschungen." },
+      { q: "Wird meine Datei irgendwohin hochgeladen?", a: "Nein. Das gesamte Teilen läuft lokal in Ihrem Browser — das PDF wird auf Ihrem Gerät gelesen, geschnitten und gepackt und wird nie an einen Server gesendet. Nichts verlässt Ihr Gerät." },
+      { q: "Gibt es eine Datei- oder Seitengrenze?", a: "Es gibt keine feste Obergrenze. Da alles in Ihrem Browser läuft, ist die praktische Grenze der Arbeitsspeicher Ihres Geräts — sehr große PDFs oder solche mit vielen Seiten brauchen länger zum Rendern und können ein älteres Telefon oder Laptop belasten." },
+      { q: "Was erhalte ich tatsächlich zurück, und ist es kostenlos?", a: "Sie erhalten ein ZIP mit einem PDF pro Abschnitt (benannt wie document-part-1.pdf, document-part-2.pdf). Selbst wenn Sie nur einen Schnitt setzen, kommt die Ausgabe als ZIP. Es ist vollständig kostenlos, ohne Anmeldung oder Wasserzeichen. Hinweis: Passwortgeschützte PDFs müssen zuerst entsperrt werden." },
+    ],
+  },
+  "crop-pdf": {
+    title: "PDF zuschneiden — Häufige Fragen",
+    items: [
+      { q: "Wie schneide ich ein PDF zu?", a: "Laden Sie Ihr PDF hoch und ziehen Sie dann die Schieberegler oben, rechts, unten und links, um jede Kante zu beschneiden. Sie sehen dabei eine Live-Vorschau, passen Sie also einfach an, bis es passt, und klicken Sie auf „Zuschneiden & herunterladen“." },
+      { q: "Wird jede Seite gleich zugeschnitten?", a: "Ja. Die von Ihnen festgelegten Ränder werden einheitlich auf jede Seite angewendet, sodass das gesamte Dokument konsistent bleibt. Ein seitengenaues Zuschneiden gibt es in diesem Tool nicht." },
+      { q: "Wird der zugeschnittene Inhalt tatsächlich gelöscht?", a: "Nein. Das Zuschneiden ändert den sichtbaren Bereich (die Zuschnittbox) — die beschnittenen Teile werden ausgeblendet, nicht gelöscht. Das bedeutet, dass nichts wirklich verloren geht, aber auch, dass jemand es wiederherstellen könnte. Wenn der Inhalt endgültig weg sein soll, verwenden Sie stattdessen ein Schwärzungs-Tool." },
+      { q: "Wird meine Datei irgendwohin hochgeladen?", a: "Nein. Alles läuft lokal in Ihrem Browser — Ihr PDF verlässt Ihr Gerät nie, und nichts wird an einen Server gesendet." },
+      { q: "Gibt es eine Dateigrößengrenze?", a: "Es gibt keine feste Grenze. Da alles in Ihrem Browser geschieht, hängt die praktische Obergrenze vom Arbeitsspeicher Ihres Geräts ab — sehr große Dateien können auf schwächeren Geräten langsam werden oder den Speicher überschreiten." },
+      { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Es ist vollständig kostenlos, und es ist keine Anmeldung erforderlich. Öffnen Sie einfach die Seite und beginnen Sie mit dem Zuschneiden." },
+    ],
+  },
+  "sign-pdf": {
+    title: "PDF signieren — Häufige Fragen",
+    items: [
+      { q: "Wie signiere ich ein PDF?", a: "Laden Sie Ihr PDF hoch, zeichnen oder tippen Sie Ihre Signatur, wählen Sie die Seite, Position und Größe und klicken Sie dann auf „Signieren & herunterladen“. Sie erhalten eine neue Datei mit dem Namen …-signed.pdf." },
+      { q: "Wird meine Datei irgendwohin hochgeladen?", a: "Nein. Alles läuft in Ihrem Browser — die Seite wird gerendert, und Ihre Signatur wird lokal auf das PDF gestempelt. Ihre Datei verlässt Ihr Gerät nie, und nichts wird an einen Server gesendet." },
+      { q: "Kann ich meine Signatur zeichnen, oder muss ich sie tippen?", a: "Beides geht. Zeichnen Sie mit Maus oder Finger auf dem Feld oder wechseln Sie zu „Tippen“, um Ihren Namen in einer Schreibschrift darzustellen. Drücken Sie auf „Löschen“, um eine gezeichnete Signatur neu zu machen." },
+      { q: "Gibt es eine Dateigrößengrenze, und kostet es etwas?", a: "Es ist kostenlos und ohne Anmeldung. Es gibt keine feste Größenobergrenze, aber da alles im Arbeitsspeicher verarbeitet wird, hängen sehr große PDFs vom RAM Ihres Geräts ab — eine riesige Datei kann auf einem älteren Telefon oder Laptop langsam sein." },
+      { q: "Wohin kommt die Signatur tatsächlich, und worauf ist zu achten?", a: "Sie wird an einer von neun Ankerpositionen (Ecken, Kanten, Mitte) platziert und über den Größenregler skaliert — Sie können sie nicht pixelgenau ziehen. Sie wird jeweils auf eine Seite gestempelt, wiederholen Sie es also für jede Seite, die Sie signieren müssen. Verschlüsselte/passwortgeschützte PDFs müssen zuerst entsperrt werden." },
+      { q: "Gilt das als rechtsgültige elektronische Signatur?", a: "Die Signatur wird als Bild auf die Seite gestempelt, nicht als zertifikatsbasierte digitale Signatur. Getippte und gezeichnete elektronische Signaturen werden für viele alltägliche Dokumente akzeptiert, prüfen Sie aber die konkreten Anforderungen für Ihren Anwendungsfall." },
+    ],
+  },
+  "reorder-pages": {
+    title: "PDF-Seiten neu anordnen — Häufige Fragen",
+    items: [
+      { q: "Wie ordne ich Seiten in einem PDF neu an?", a: "Laden Sie Ihr PDF hoch, ziehen Sie dann die Seiten-Miniaturansichten in die gewünschte Reihenfolge und klicken Sie auf „Anwenden & herunterladen“. Kein Eintippen von Seitennummern — Sie ordnen sie visuell an." },
+      { q: "Kann ich dabei auch Seiten löschen?", a: "Ja. Klicken Sie auf das ✕ einer beliebigen Miniaturansicht, um diese Seite zu entfernen, und laden Sie dann herunter. Das Neuanordnen und Entfernen von Seiten geschieht im selben Schritt." },
+      { q: "Wird meine Datei irgendwohin hochgeladen?", a: "Nein. Alles läuft lokal in Ihrem Browser — Ihr PDF wird nie hochgeladen und verlässt Ihr Gerät nie." },
+      { q: "Gibt es eine Datei- oder Seitengrenze?", a: "Es gibt keine feste Grenze. Sehr große PDFs hängen einfach vom Arbeitsspeicher Ihres Geräts ab, da die gesamte Arbeit auf Ihrem Gerät geschieht." },
+      { q: "Verschlechtert das Neuanordnen die Qualität?", a: "Nein. Die Seiten behalten ihren ursprünglichen Inhalt und ihre Auflösung — nur die Reihenfolge ändert sich, nichts wird neu gerendert oder komprimiert." },
+      { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Es ist vollständig kostenlos, ohne erforderliche Anmeldung." },
+    ],
+  },
+  "delete-page": {
+    title: "PDF-Seiten löschen — Häufige Fragen",
+    items: [
+      { q: "Wie lösche ich Seiten aus einem PDF?", a: "Laden Sie Ihr PDF hoch, klicken Sie auf die Seiten, die Sie entfernen möchten (sie werden rot mit einem ✕), und klicken Sie dann auf „Löschen & herunterladen“. Ein Zähler zeigt, wie viele Seiten gelöscht werden und wie viele übrig bleiben." },
+      { q: "Was, wenn ich die falsche Seite markiere?", a: "Klicken Sie sie einfach erneut an, um sie zu behalten — die rote Markierung und das ✕ verschwinden. Sie können beliebig oft markieren und die Markierung aufheben, bevor Sie herunterladen." },
+      { q: "Wird meine Datei irgendwohin hochgeladen?", a: "Nein. Alles läuft in Ihrem Browser mit dem Arbeitsspeicher Ihres eigenen Geräts — Ihr PDF wird nie an einen Server gesendet und verlässt Ihr Gerät nie." },
+      { q: "Gibt es eine Dateigrößengrenze?", a: "Es gibt keine feste Obergrenze. Da die Arbeit lokal geschieht, ist die praktische Grenze der Arbeitsspeicher Ihres Geräts — sehr große oder bildlastige PDFs können auf schwächeren Geräten langsam sein." },
+      { q: "Was erhalte ich zurück?", a: "Ein neues PDF mit den entfernten markierten Seiten, heruntergeladen als „ihredatei-pages-removed.pdf“. Die übrigen Seiten behalten ihren ursprünglichen Inhalt und ihre Reihenfolge; Ihre Originaldatei wird nicht verändert. Sie müssen mindestens eine Seite behalten." },
+      { q: "Ist es kostenlos?", a: "Ja — vollständig kostenlos, ohne erforderliche Anmeldung oder Konto." },
+    ],
+  },
+  "rotate-page": {
+    title: "PDF-Seiten drehen — Häufige Fragen",
+    items: [
+      { q: "Wie drehe ich Seiten in einem PDF?", a: "Laden Sie das PDF hoch und klicken Sie auf eine Seite, um sie um 90° im Uhrzeigersinn zu drehen. Klicken Sie dieselbe Seite weiter an, um sie auf 180°, 270° und zurück zu drehen. Oder drücken Sie auf „Alle um 90° drehen“, um jede Seite auf einmal zu drehen, und laden Sie dann herunter." },
+      { q: "Kann ich nur eine Seite drehen oder verschiedene Seiten um unterschiedliche Beträge?", a: "Ja. Jede Seite dreht sich eigenständig, sodass Sie einen einzelnen seitwärts liegenden Scan korrigieren oder verschiedene Seiten auf verschiedene Winkel setzen können — nur die Seiten, die Sie anklicken, ändern sich." },
+      { q: "Wird meine Datei irgendwohin hochgeladen?", a: "Nein. Alles läuft lokal in Ihrem Browser — die Drehung wird auf Ihrem Gerät ins PDF geschrieben, und die Datei wird nie an einen Server gesendet und verlässt Ihr Gerät nie." },
+      { q: "Gibt es eine Datei- oder Seitengrenze?", a: "Es gibt keine feste Grenze, die wir vorgeben. Da alles in Ihrem Browser geschieht, hängt die praktische Obergrenze vom Arbeitsspeicher Ihres Geräts ab — sehr große PDFs können auf Telefonen oder Tablets mit wenig Speicher langsam werden." },
+      { q: "Verliert das Drehen Qualität oder ändert es den Inhalt?", a: "Nein. Die Drehung setzt nur das Ausrichtungsflag jeder Seite — der Text, die Bilder und die Auflösung bleiben exakt gleich. Nichts wird neu gerendert oder komprimiert." },
+      { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Es ist vollständig kostenlos, ohne Anmeldung. Öffnen Sie die Seite, drehen Sie und laden Sie herunter." },
+    ],
+  },
+  "add-page": {
+    title: "Seiten in ein PDF einfügen — Häufige Fragen",
+    items: [
+      { q: "Wie füge ich Seiten in ein PDF ein?", a: "Laden Sie Ihr PDF hoch, klicken Sie dorthin, wo Sie einfügen möchten (ganz am Anfang oder nach einer bestimmten Seite), wählen Sie dann die dort einzufügende Datei und klicken Sie auf „Einfügen & herunterladen“." },
+      { q: "Was kann ich einfügen?", a: "Ein weiteres PDF (alle seine Seiten werden an dieser Stelle eingefügt) oder ein einzelnes PNG-/JPG-Bild, das als eine neue Seite hinzugefügt wird." },
+      { q: "Wird meine Datei hochgeladen?", a: "Nein. Alles läuft lokal in Ihrem Browser mit pdf-lib — Ihre Dateien verlassen Ihr Gerät nie, und nichts wird an einen Server gesendet." },
+      { q: "Was erhalte ich zurück?", a: "Ein einziges neues PDF mit den eingefügten Seiten an ihrem Platz, heruntergeladen als „<ihre-datei>-with-insert.pdf“. Ihre Originaldatei wird nicht verändert." },
+      { q: "Gibt es eine Dateigrößengrenze?", a: "Es gibt keine feste Grenze, aber da alles in Ihrem Browser geschieht, hängen sehr große PDFs vom Arbeitsspeicher Ihres Geräts ab. Wenn eine riesige Datei Probleme macht, versuchen Sie eine kleinere." },
+      { q: "Ist es kostenlos?", a: "Ja — es ist vollständig kostenlos, ohne erforderliche Anmeldung oder Konto." },
+    ],
+  },
+  "watermark-pdf": {
+    title: "Ein Wasserzeichen zu einem PDF hinzufügen — Häufige Fragen",
+    items: [
+      { q: "Wie füge ich einem PDF ein Wasserzeichen hinzu?", a: "Laden Sie das PDF hoch, erstellen Sie ein Text- oder Bild-Wasserzeichen und passen Sie seine Position, Deckkraft und Drehung an, während Sie die Live-Vorschau beobachten. Wählen Sie, welche Seiten gestempelt werden, und klicken Sie dann auf „Anwenden & herunterladen“." },
+      { q: "Kann ich statt Text ein Bild oder Logo verwenden?", a: "Ja. Wechseln Sie in den Bildmodus, um ein Logo oder Bild als Wasserzeichen einzufügen. So oder so können Sie Position, Deckkraft und Drehung festlegen." },
+      { q: "Stempelt es jede Seite?", a: "Das entscheiden Sie. Das Wasserzeichen kommt auf die von Ihnen ausgewählten Seiten, sodass Sie das ganze Dokument oder nur bestimmte Seiten markieren können." },
+      { q: "Werden meine Dateien irgendwohin hochgeladen?", a: "Nein. Das Wasserzeichen wird direkt in Ihrem Browser angewendet — Ihr PDF verlässt Ihr Gerät nie, und nichts wird an einen Server gesendet." },
+      { q: "Gibt es eine Dateigrößengrenze?", a: "Es gibt keine feste Obergrenze. Da alles lokal läuft, sind sehr große PDFs nur durch den Arbeitsspeicher Ihres Geräts begrenzt — auf den meisten Geräten ist das reichlich." },
+      { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Es ist kostenlos, und es gibt keine Anmeldung. Öffnen Sie einfach die Seite, fügen Sie Ihr PDF hinzu und laden Sie die mit Wasserzeichen versehene Datei herunter." },
+    ],
+  },
+  "page-numbers": {
+    title: "Seitenzahlen zu einem PDF hinzufügen — Häufige Fragen",
+    items: [
+      { q: "Wie füge ich einem PDF Seitenzahlen hinzu?", a: "Laden Sie Ihr PDF hoch, wählen Sie, wohin die Zahl kommt (oben oder unten, links/Mitte/rechts), wählen Sie das Format und die Startnummer und legen Sie den Seitenbereich fest. Die Live-Vorschau zeigt genau, wie es aussieht, dann klicken Sie auf „Nummern hinzufügen & herunterladen“." },
+      { q: "Wird meine Datei irgendwohin hochgeladen?", a: "Nein. Alles läuft lokal in Ihrem Browser — das PDF wird auf Ihrem Gerät gelesen, nummeriert und gespeichert. Ihre Datei wird nie hochgeladen und verlässt Ihren Computer nie." },
+      { q: "Welche Formate und Positionen kann ich verwenden?", a: "Vier Formate: nur die Zahl (1), Seite 1, 1 / N oder 1 von N. Sechs Positionen: oben oder unten, kombiniert mit links, Mitte oder rechts. Sie können außerdem einen kleinen/mittleren/großen Rand festlegen." },
+      { q: "Kann ich bei einer bestimmten Zahl beginnen oder nur einige Seiten nummerieren?", a: "Ja. Stellen Sie „Beginnen bei“ für die erste Zahl ein (praktisch, wenn Ihr Deckblatt nicht mitzählen soll), und verwenden Sie den von/bis-Bereich, um nur einen Teil des Dokuments zu nummerieren. Die Zählung läuft über den von Ihnen gewählten Bereich weiter." },
+      { q: "Gibt es eine Dateigrößengrenze?", a: "Es gibt keine feste Obergrenze. Da die Arbeit in Ihrem Browser geschieht, sind sehr große PDFs nur durch den Arbeitsspeicher Ihres Geräts begrenzt — auf den meisten Geräten gehen typische Dokumente problemlos durch." },
+      { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Ja, es ist vollständig kostenlos, und es ist keine Anmeldung erforderlich. Öffnen Sie einfach die Seite und legen Sie los." },
+    ],
+  },
+  "images-to-pdf": {
+    title: "Bilder in PDF — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich Bilder in ein PDF?", a: "Fügen Sie Ihre Bilder hinzu, ziehen Sie die Miniaturansichten in die gewünschte Reihenfolge und klicken Sie dann auf „In PDF konvertieren“. Jedes Bild wird zu einer Seite, von oben nach unten, in einer einzigen Datei, die Sie herunterladen können." },
+      { q: "Welche Bildformate werden unterstützt?", a: "JPG, PNG, WebP, GIF und BMP. HEIC (das Format, in dem iPhones Fotos oft speichern) wird noch nicht unterstützt — konvertieren Sie diese zuerst in JPG oder ändern Sie die Kameraeinstellung Ihres iPhones auf „Maximale Kompatibilität“." },
+      { q: "Kann ich viele Bilder in einem PDF zusammenfassen?", a: "Ja. Fügen Sie beliebig viele hinzu und ziehen Sie sie zum Neuanordnen — sie werden in genau dieser Reihenfolge zu einem einzigen PDF zusammengeführt, ein Bild pro Seite." },
+      { q: "Werden meine Bilder irgendwohin hochgeladen?", a: "Nein. Alles läuft lokal in Ihrem Browser — das PDF wird auf Ihrem Gerät erstellt, und Ihre Bilder werden nie an einen Server gesendet oder irgendwo gespeichert." },
+      { q: "Gibt es eine Größen- oder Dateianzahlgrenze?", a: "Es gibt keine feste Grenze. Da alles auf Ihrem Gerät geschieht, ist die praktische Obergrenze der Arbeitsspeicher Ihres Geräts — sehr große oder sehr viele hochauflösende Bilder können ein älteres Telefon oder einen Laptop mit wenig RAM verlangsamen." },
+      { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Ja, es ist vollständig kostenlos, ohne Anmeldung, ohne Wasserzeichen und ohne erforderliche E-Mail. Öffnen Sie einfach die Seite und legen Sie los." },
+    ],
+  },
+  "pdf-to-png": {
+    title: "PDF in PNG — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich ein PDF in PNG?", a: "Legen Sie ein PDF ab, und jede Seite erscheint als Miniaturansicht. Klicken Sie Seiten an, um sie ein- oder auszuschließen (oder nutzen Sie „Alle auswählen“ / „Keine auswählen“), stellen Sie sicher, dass PNG ausgewählt ist, und dann „Konvertieren & herunterladen“. Eine einzelne Seite kommt als ein PNG herunter; mehrere Seiten werden in ein ZIP gebündelt." },
+      { q: "Wird mein PDF irgendwohin hochgeladen?", a: "Nein. Alles läuft in Ihrem Browser — das PDF wird lokal gelesen und in PNG gerendert, und der Download wird auf Ihrem Gerät erzeugt. Nichts wird an einen Server gesendet, Ihre Datei verlässt Ihr Gerät also nie." },
+      { q: "Warum PNG statt JPG wählen?", a: "PNG ist verlustfrei und hält daher Text, Strichzeichnungen, Diagramme und Screenshots gestochen scharf ohne Komprimierungsartefakte und unterstützt Transparenz. JPG-Dateien sind kleiner und für Fotos in Ordnung, aber sie weichen feine Details auf und können nicht transparent sein." },
+      { q: "Gibt es eine Datei- oder Seitengrenze?", a: "Es gibt keine feste Obergrenze und keine Anmeldung. Da alles in Ihrem Browser verarbeitet wird, ist die tatsächliche Grenze der Arbeitsspeicher Ihres Geräts — sehr große PDFs oder solche mit sehr vielen Seiten verbrauchen mehr RAM und brauchen länger, besonders auf Telefonen oder älteren Geräten." },
+      { q: "Es öffnet mein PDF nicht — was ist los?", a: "Die häufigste Ursache ist ein passwortgeschütztes oder verschlüsseltes PDF, das das Tool nicht lesen kann; entfernen Sie zuerst das Passwort und versuchen Sie es erneut. Die Ausgabe wird mit 2-facher Skalierung für scharfe Bilder gerendert, ist aber dennoch ein Bild — der Text wird zu Pixeln, Sie können ihn danach also nicht auswählen oder durchsuchen." },
+      { q: "Ist PDF in PNG kostenlos?", a: "Ja — vollständig kostenlos, kein Konto, kein Wasserzeichen, keine Grenze, wie oft Sie es verwenden." },
+    ],
+  },
+  "pdf-to-image": {
+    title: "PDF in Bild — Häufige Fragen",
+    items: [
+      { q: "Wie konvertiere ich ein PDF in JPG oder PNG?", a: "Legen Sie ein PDF ab, und jede Seite erscheint als Miniaturansicht. Klicken Sie Seiten an, um sie ein- oder auszuschließen (oder nutzen Sie „Alle auswählen“ / „Keine auswählen“), wählen Sie JPG oder PNG, und dann „Konvertieren & herunterladen“. Eine einzelne Seite kommt als ein Bild herunter; mehrere Seiten werden in ein ZIP gebündelt." },
+      { q: "Wird mein PDF irgendwohin hochgeladen?", a: "Nein. Alles läuft in Ihrem Browser — das PDF wird lokal gelesen und in Bilder gerendert, und der Download wird auf Ihrem Gerät erzeugt. Nichts wird an einen Server gesendet, Ihre Datei verlässt Ihr Gerät also nie." },
+      { q: "JPG oder PNG — welches soll ich wählen?", a: "PNG ist verlustfrei und daher am besten für scharfen Text, Strichzeichnungen und Screenshots. JPG-Dateien sind kleiner und für Fotos und Scans in Ordnung. Eines sollten Sie wissen: JPG kann nicht transparent sein, daher werden transparente Bereiche einer Seite auf einen weißen Hintergrund reduziert." },
+      { q: "Gibt es eine Datei- oder Seitengrenze?", a: "Es gibt keine feste Obergrenze und keine Anmeldung. Da alles in Ihrem Browser verarbeitet wird, ist die tatsächliche Grenze der Arbeitsspeicher Ihres Geräts — sehr große PDFs oder solche mit sehr vielen Seiten verbrauchen mehr RAM und brauchen länger, besonders auf Telefonen oder älteren Geräten." },
+      { q: "Es öffnet mein PDF nicht — was ist los?", a: "Die häufigste Ursache ist ein passwortgeschütztes oder verschlüsseltes PDF, das das Tool nicht lesen kann; entfernen Sie zuerst das Passwort und versuchen Sie es erneut. Die Ausgabe wird mit 2-facher Skalierung für scharfe Bilder gerendert, ist aber dennoch ein Bild — der Text wird zu Pixeln, Sie können ihn danach also nicht auswählen oder durchsuchen." },
+      { q: "Ist es kostenlos?", a: "Ja — vollständig kostenlos, kein Konto, kein Wasserzeichen, keine Grenze, wie oft Sie es verwenden." },
+    ],
+  },
+  "redact-pdf": {
+    title: "PDF schwärzen — Häufige Fragen",
+    items: [
+      { q: "Wie schwärze ich ein PDF?", a: "Legen Sie Ihr PDF auf der Seite ab, und DockDocs rendert jede Seite direkt in Ihrem Browser. Ziehen Sie einen Kasten über alles, was Sie verbergen möchten — einen Namen, eine Kontonummer, eine Unterschrift. DockDocs scannt außerdem automatisch nach wahrscheinlich sensiblen Elementen (E-Mails, Telefonnummern, Sozialversicherungsnummern, Kartennummern, IP-Adressen) und markiert sie vor; prüfen Sie diese Vorschläge und klicken Sie auf das ✕ jedes Kastens, den Sie nicht möchten. Wenn Sie fertig sind, drücken Sie auf „Anwenden & herunterladen“, um die geschwärzte Kopie zu erhalten." },
+      { q: "Wird der Text tatsächlich entfernt oder nur mit einem schwarzen Kasten überdeckt?", a: "Tatsächlich entfernt. Viele „Schwärzungen“ legen nur ein schwarzes Rechteck darüber — der ursprüngliche Text ist weiterhin in der Datei, und jeder kann ihn herauskopieren oder den Kasten löschen. DockDocs rendert jede Seite als flaches Bild neu, in das die schwarzen Bereiche eingebrannt sind, sodass der darunterliegende Text zerstört und für immer weg ist. Genau das macht das Ergebnis sicher zum Teilen." },
+      { q: "Werden meine Dateien irgendwohin hochgeladen?", a: "Nein. Alles läuft in Ihrem Browser auf Ihrem eigenen Gerät — das Öffnen des PDFs, das Zeichnen der Kästen und das Erstellen der geschwärzten Kopie geschehen alle lokal. Ihre Datei wird nie an einen Server gesendet und verlässt Ihren Computer nie, daher eignet sie sich gut für vertrauliche oder regulierte Dokumente." },
+      { q: "Gibt es Grenzen, und ist es kostenlos?", a: "Es ist vollständig kostenlos, ohne erforderliches Konto, E-Mail oder Installation. Es gibt keine feste Dateigrößenobergrenze, sehr große PDFs hängen jedoch vom Arbeitsspeicher Ihres Geräts ab. Die eine harte Grenze ist die Seitenzahl: Ein Dokument darf bis zu 30 Seiten haben — ist Ihres länger, teilen Sie es zuerst und schwärzen Sie jeden Teil." },
+      { q: "Wie sieht die Ausgabedatei aus?", a: "Sie erhalten ein neues PDF, in dem jede Seite ein flachgerechnetes Bild ist (etwa 158 DPI — sauber und lesbar). Da die Seiten nun Bilder sind, ist der geschwärzte Inhalt dauerhaft weg, und der übrige Text ist nicht mehr auswählbar oder durchsuchbar. Dieser Kompromiss ist der ganze Sinn: Text, den Sie nicht auswählen können, ist Text, der nicht wiederhergestellt werden kann." },
+      { q: "Sollte ich den automatisch erkannten Kästen allein vertrauen?", a: "Behandeln Sie sie als Vorsprung, nicht als Garantie. Der automatische Scan erfasst gängige Muster wie E-Mails und Nummern, kann aber in ungewöhnlichen Formaten Geschriebenes übersehen und kennt keine kontextspezifischen Geheimnisse, die nur Sie erkennen können. Lesen Sie die Seiten immer selbst durch und ziehen Sie Kästen über alles, was der Detektor nicht markiert hat, bevor Sie herunterladen." },
+    ],
+  },
+  "translate-pdf": {
+    title: "Ein PDF übersetzen — Häufige Fragen",
+    items: [
+      { q: "Wie übersetze ich ein PDF?", a: "Laden Sie Ihr PDF hoch, wählen Sie eine Zielsprache aus der Liste und klicken Sie auf „Übersetzen“. Der Text wird aus der Datei gezogen und von der KI übersetzt, dann können Sie ihn kopieren oder als .txt-Datei herunterladen." },
+      { q: "Wird meine Datei hochgeladen? Ist das privat?", a: "Das PDF wird direkt in Ihrem Browser gelesen — die Datei selbst verlässt Ihr Gerät nie. Nur der daraus extrahierte reine Text wird zur Übersetzung an die KI gesendet. Das Originaldokument, die Formatierung und die Bilder werden nie hochgeladen." },
+      { q: "Gibt es eine Größengrenze?", a: "Ja — etwa 14.000 Zeichen pro Durchlauf, ungefähr 10 Seiten. Ist Ihr Dokument länger, teilen Sie es in kleinere Stücke und übersetzen Sie sie nacheinander." },
+      { q: "In welche Sprachen kann ich übersetzen?", a: "Mehr als 18, darunter Englisch, vereinfachtes und traditionelles Chinesisch, Spanisch, Französisch, Deutsch, Japanisch, Koreanisch, Portugiesisch, Italienisch, Russisch, Arabisch, Hindi und mehr. Das Tool erkennt die Ausgangssprache automatisch, Sie wählen also nur das Ziel." },
+      { q: "Bleibt das ursprüngliche Layout erhalten? Was erhalte ich zurück?", a: "Noch nicht — diese Version übersetzt nur den Textinhalt und gibt Ihnen den übersetzten Text zum Kopieren oder Herunterladen. Eine layouterhaltende Übersetzung, die das PDF neu aufbaut, ist auf der Roadmap. Beachten Sie außerdem: Ist das PDF ein Scan oder Bild ohne auswählbaren Text, gibt es nichts zu extrahieren — führen Sie zuerst OCR darauf aus." },
+      { q: "Ist es kostenlos? Kann ich mich bei rechtlichen Dokumenten darauf verlassen?", a: "Ja, die Nutzung ist kostenlos. Die KI-Übersetzung ist hervorragend, um ein Dokument zu verstehen und einen soliden ersten Entwurf zu erhalten, aber sie ist keine beglaubigte Übersetzung — lassen Sie sie für rechtliche, offizielle oder beglaubigte Zwecke von einer qualifizierten Person prüfen oder übersetzen." },
+    ],
+  },
+  "extract-to-excel": {
+    title: "PDF-Daten in eine Tabelle extrahieren — Häufige Fragen",
+    items: [
+      { q: "Wie extrahiere ich Daten aus PDFs in eine Tabelle?", a: "Legen Sie Ihre Rechnungen, Angebote oder Verträge ab (oder wählen Sie einen ganzen Ordner, um sie im Stapel zu verarbeiten), wählen Sie den Dokumenttyp und klicken Sie auf „Extrahieren“. Die KI zieht die wichtigsten Felder — Summen, Daten, Vertragsparteien, Konditionen — in eine Tabelle, die Sie als CSV herunterladen können, das sich in Excel, Google Sheets oder Numbers öffnen lässt. Es ist kostenlos." },
+      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Das PDF selbst verlässt Ihr Gerät nie — es wird direkt in Ihrem Browser gelesen. Nur der reine Text, den es herauszieht, wird an die KI gesendet, um ihn in Spalten zu sortieren; die Originaldatei mit ihrem Layout und allen Bildern bleibt lokal. Falls dieser Schritt der Textausgabe bei sensiblen Verträgen ein Ausschlusskriterium ist, ist das vorab wissenswert." },
+      { q: "Woher weiß ich, dass die Zahlen stimmen?", a: "Jeder Wert ist mit dem exakten Satz versehen, aus dem er im Originaldokument stammt, sodass Sie ihn mit einem Blick stichprobenartig prüfen können. Kann die KI ein Feld nicht eindeutig finden, lässt sie die Zelle leer, statt zu raten — und wir verwerfen jedes Quellzitat, das nicht tatsächlich in Ihrer Datei vorkommt, sodass nichts erfunden wird." },
+      { q: "Was sind die Grenzen?", a: "Bis zu 8 Dokumente auf einmal, und der kombinierte Text ist bei etwa 60.000 Zeichen gedeckelt — ungefähr ein Stapel normaler Rechnungen, nicht ein 200-seitiger Rahmenvertrag. Verarbeiten Sie große Stapel in mehreren Durchgängen." },
+      { q: "Es wurde nichts herausgezogen — was ist passiert?", a: "Fast immer ein gescanntes oder fotografiertes PDF. Lässt sich der Text in einem normalen PDF-Reader nicht auswählen, gibt es für den Browser nichts zu lesen, und die KI erhält eine leere Seite. Führen Sie diese zuerst durch OCR. Passwortgeschützte PDFs lassen sich ebenfalls nicht lesen, bis Sie sie entsperren." },
+      { q: "Welche Dokumente funktionieren am besten?", a: "Strukturierte Unterlagen mit konsistenten Feldern — Rechnungen, Angebote und Verträge —, bei denen jedes vorgegebene Feld (Lieferant, Summe, Fälligkeitsdatum, Zahlungsbedingungen und so weiter) tatsächlich irgendwo im Dokument abgedruckt ist. Freiformige Briefe oder ungewöhnliche Layouts lassen mehr Zellen leer." },
+    ],
+  },
+  "redline": {
+    title: "PDF-Versionen vergleichen (Redline) — Häufige Fragen",
+    items: [
+      { q: "Wie vergleiche ich zwei PDF-Versionen?", a: "Laden Sie das Original (v1) und das überarbeitete (v2) PDF hoch und klicken Sie dann auf „Versionen vergleichen“. DockDocs richtet den Text aus und zeigt eine einzige markierte Ansicht — hinzugefügter Text wird grün hervorgehoben, entfernter Text rot durchgestrichen, wie bei Änderungsnachverfolgung." },
+      { q: "Werden meine Dateien irgendwohin hochgeladen?", a: "Nein. Dies ist ein clientseitiges Tool: Der Text wird vollständig in Ihrem Browser extrahiert und verglichen, Ihre Dateien verlassen Ihr Gerät also nie. Nichts wird an einen Server gesendet." },
+      { q: "Erkennt es umformulierte Sätze?", a: "Es vergleicht Satz für Satz, markiert also, welche Sätze hinzugefügt und welche entfernt wurden. Eine kleine Umformulierung erscheint als eine Löschung plus eine Hinzufügung statt als wortgenaue Änderung innerhalb des Satzes." },
+      { q: "Was vergleicht es eigentlich — prüft es Formatierung oder Bilder?", a: "Nur den extrahierten Text. Schriftarten, Layout, Farben, Bilder und Tabellen sind nicht Teil des Vergleichs, und gescannte PDFs ohne echte Textebene liefern keine brauchbaren Ergebnisse. Meldet es keine Textänderungen, ist der Wortlaut identisch, auch wenn sich das Erscheinungsbild geändert hat." },
+      { q: "Wie groß dürfen die Dokumente sein?", a: "Der gesamte Vergleich läuft in Ihrem Browser, er ist also auf Dokumente bis zu einigen tausend Sätzen ausgelegt (er ist bei 2.500 Sätzen pro Datei gedeckelt). Sehr lange Verträge oder Bücher können abgeschnitten werden oder langsam laufen." },
+      { q: "Ist es kostenlos?", a: "Ja — das Vergleichen von Versionen ist vollständig kostenlos, ohne Anmeldung und ohne Grenze für die Anzahl der Vergleiche." },
+    ],
+  },
+};
+
 // Resolve the SAME FAQ Q&A items that ToolFaqInner renders for a (tool, locale),
 // so FAQPage JSON-LD can reuse the exact visible copy (single source of truth).
 // Returns null when the tool has no FAQ for that locale (→ emit no FAQPage).
@@ -2549,12 +3000,13 @@ export function getToolFaqItems(tool: string, locale: Locale = "en"): QA[] | nul
   if (locale === "pt") return FAQS_PT[tool]?.items ?? null;
   if (locale === "fr") return FAQS_FR[tool]?.items ?? null;
   if (locale === "ja") return FAQS_JA[tool]?.items ?? null;
+  if (locale === "de") return FAQS_DE[tool]?.items ?? null;
   const data = FAQS[tool];
   if (!data) return null;
   if (locale === "zh-Hant") return deepHant(data.items.zh);
-  // Exhaustive over the remaining authored locales. A NEW route locale (e.g. "de")
-  // that has no FAQ behavior decided will fail the `never` assignment here at
-  // compile time, forcing the author to choose rather than silently inheriting en.
+  // Exhaustive over the remaining authored locales. A NEW route locale that has no
+  // FAQ behavior decided will fail the `never` assignment here at compile time,
+  // forcing the author to choose rather than silently inheriting en.
   switch (locale) {
     case "en":
     case "zh":
@@ -2607,6 +3059,8 @@ export function getFaqItems(
     items = (FAQS_FR[tool] ?? FAQS_FR[FAQ_FALLBACK[tool]])?.items;
   } else if (locale === "ja") {
     items = (FAQS_JA[tool] ?? FAQS_JA[FAQ_FALLBACK[tool]])?.items;
+  } else if (locale === "de") {
+    items = (FAQS_DE[tool] ?? FAQS_DE[FAQ_FALLBACK[tool]])?.items;
   } else {
     const data = FAQS[tool] ?? FAQS[FAQ_FALLBACK[tool]];
     if (data) {
@@ -2677,6 +3131,23 @@ function ToolFaqInner({ tool, locale = "en" }: { tool: string; locale?: Locale }
         <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{jaData.title}</h2>
         <div className="mt-6 space-y-6">
           {jaData.items.map((it) => (
+            <div key={it.q}>
+              <h3 className="text-[15px] font-medium text-[color:var(--foreground)]">{it.q}</h3>
+              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{it.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+  if (locale === "de") {
+    const deData = FAQS_DE[tool] ?? FAQS_DE[FAQ_FALLBACK[tool]];
+    if (!deData) return null;
+    return (
+      <section className="mx-auto mt-12 border-t border-[color:var(--line)] pt-10">
+        <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{deData.title}</h2>
+        <div className="mt-6 space-y-6">
+          {deData.items.map((it) => (
             <div key={it.q}>
               <h3 className="text-[15px] font-medium text-[color:var(--foreground)]">{it.q}</h3>
               <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{it.a}</p>

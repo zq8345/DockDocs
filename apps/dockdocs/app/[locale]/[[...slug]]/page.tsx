@@ -119,8 +119,8 @@ export const dynamicParams = false;
 // for all CURRENT locales is identical to the chains they replace.
 
 // ClientLocale = the full RouteLocale set; it is what every runtime *Client prop
-// expects (Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant").
-type ClientLocale = Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+// expects (Locale | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant").
+type ClientLocale = Locale | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
 
 // Identity over RouteLocale, but exhaustively enumerated so a NEW route locale
 // must be classified here (it is also a compile error to forget it).
@@ -132,6 +132,7 @@ function toClientLocale(locale: RouteLocale): ClientLocale {
     case "pt":
     case "fr":
     case "ja":
+    case "de":
     case "zh-Hant":
       return locale;
     default: {
@@ -163,6 +164,8 @@ function toAccountLocale(locale: RouteLocale): AccountLocale {
     case "ja":
       return locale;
     case "zh-Hant":
+    case "de":
+      // No Traditional/German Account/Pricing copy today → English (same fallback as zh-Hant).
       return "en";
     default: {
       const _exhaustive: never = locale;
@@ -185,6 +188,8 @@ function resolveCustomCopyField(field: Record<string, string>, locale: RouteLoca
     case "pt":
     case "fr":
     case "ja":
+    case "de":
+      // de reads its own key where authored; falls to field.en where absent (data-absence fallback).
       return field[locale] ?? field.en;
     default: {
       const _exhaustive: never = locale;
@@ -205,8 +210,37 @@ function toEnZhLocale(locale: RouteLocale): "en" | "zh" {
     case "pt":
     case "fr":
     case "ja":
+    case "de":
     case "zh-Hant":
       return "en";
+    default: {
+      const _exhaustive: never = locale;
+      return _exhaustive;
+    }
+  }
+}
+
+// LeafLocale = the union that most leaf surfaces (AboutPage / SaasInfoPage /
+// MyChatsClient / the *HubPage / Home / SitemapContent / ExtraToolJsonLd / …)
+// still accept; these components have not yet authored their own German copy, so
+// `de` maps to English here (GAP — same fallback policy as toAccountLocale). The
+// switch is exhaustive over ClientLocale, so a NEW route locale forces an explicit
+// decision per surface instead of silently shipping English. zh-Hant is preserved
+// (those leaves derive Traditional from zh internally).
+type LeafLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+function toLeafLocale(locale: ClientLocale): LeafLocale {
+  switch (locale) {
+    case "de":
+      // GAP: no German copy authored in these leaf surfaces yet → English.
+      return "en";
+    case "en":
+    case "zh":
+    case "es":
+    case "pt":
+    case "fr":
+    case "ja":
+    case "zh-Hant":
+      return locale;
     default: {
       const _exhaustive: never = locale;
       return _exhaustive;
@@ -333,6 +367,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Assinar um PDF — Assinatura eletrônica gratuita",
       fr: "Signer un PDF — Signature électronique gratuite",
       ja: "PDFに署名 — 無料オンライン電子署名",
+      de: "PDF signieren — kostenlose elektronische Unterschrift online",
       en: "Sign a PDF — Free Online E-Signature",
     },
     description: {
@@ -341,6 +376,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Assine um PDF online gratuitamente — desenhe ou escreva sua assinatura, posicione-a na página e baixe. Tudo no seu navegador.",
       fr: "Signez un PDF en ligne gratuitement — dessinez ou tapez votre signature, placez-la sur la page et téléchargez. Entièrement dans votre navigateur.",
       ja: "PDFにオンラインで無料署名：手書きまたは入力した署名をページに配置してダウンロード、すべてブラウザ内で完結。",
+      de: "Signieren Sie ein PDF kostenlos online — zeichnen oder tippen Sie Ihre Unterschrift, platzieren Sie sie auf der Seite und laden Sie sie herunter. Vollständig in Ihrem Browser.",
       en: "Sign a PDF online for free — draw or type your signature, place it on the page, and download. Entirely in your browser.",
     },
   },
@@ -351,6 +387,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Comprimir PDFs em lote — Reduzir uma pasta inteira",
       fr: "Compresser des PDF en lot — Réduire un dossier entier",
       ja: "PDF一括圧縮 — フォルダごとまとめて縮小",
+      de: "PDFs stapelweise komprimieren — einen ganzen Ordner verkleinern",
       en: "Batch Compress PDFs — Shrink a Whole Folder",
     },
     description: {
@@ -359,6 +396,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Arraste uma pasta inteira de PDFs e comprima todos de uma vez — cada um reduzido no seu navegador e empacotado em um único ZIP.",
       fr: "Déposez un dossier entier de PDFs et compressez-les tous en une seule fois — chacun réduit dans votre navigateur et empaqueté dans un ZIP.",
       ja: "PDFのフォルダをまるごとドロップして一括圧縮—各ファイルをブラウザで縮小し、1つのZIPにまとめます。",
+      de: "Ziehen Sie einen ganzen PDF-Ordner hinein und komprimieren Sie alle auf einmal — jede Datei wird in Ihrem Browser verkleinert und in einer einzigen ZIP zusammengefasst.",
       en: "Drop a whole folder of PDFs and compress them all in one go — each shrunk in your browser and packaged into a single ZIP.",
     },
   },
@@ -369,6 +407,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Resumir PDFs em lote — Resumir vários documentos de uma vez",
       fr: "Résumer des PDF en lot — Résumer plusieurs documents à la fois",
       ja: "PDF一括要約 — 複数ドキュメントをまとめてAI要約",
+      de: "PDFs stapelweise zusammenfassen — mehrere Dokumente auf einmal",
       en: "Batch Summarize PDFs — Summarize Multiple Documents",
     },
     description: {
@@ -377,6 +416,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Carregue vários relatórios, artigos ou contratos e obtenha um resumo conciso de cada um gerado por IA — resumo executivo e pontos-chave.",
       fr: "Chargez plusieurs rapports, articles ou contrats et obtenez un résumé concis de chacun généré par IA — résumé exécutif et points clés.",
       ja: "複数のレポート・論文・契約書をアップロードすると、AIが各ファイルのエグゼクティブサマリーと要点を生成します。",
+      de: "Laden Sie mehrere Berichte, Aufsätze oder Verträge hoch und erhalten Sie eine prägnante KI-Zusammenfassung von jedem — Management-Zusammenfassung und Kernpunkte.",
       en: "Upload several reports, papers, or contracts and get a concise AI summary of each — executive summary plus key points.",
     },
   },
@@ -387,6 +427,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Cartões de estudo em PDF — Crie fichas de qualquer PDF",
       fr: "Cartes mémoire PDF — Créez des fiches depuis n'importe quel PDF",
       ja: "PDFフラッシュカード作成 — 教材から問題カードを自動生成",
+      de: "PDF-Lernkarten-Generator — Karteikarten aus jedem PDF",
       en: "PDF Flashcard Maker — Study Cards from Any PDF",
     },
     description: {
@@ -395,6 +436,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Transforme um capítulo de livro, notas de aula ou manual em cartões de estudo com IA — perguntas e respostas retiradas somente do seu documento.",
       fr: "Transformez un chapitre de manuel, des notes de cours ou un guide en cartes mémoire avec l'IA — questions et réponses tirées uniquement de votre document.",
       ja: "教科書・講義ノート・マニュアルをAIでフラッシュカードに変換—問答はすべてあなたのPDFから抽出されます。",
+      de: "Verwandeln Sie ein Lehrbuchkapitel, Vorlesungsnotizen oder ein Handbuch mit KI in Lernkarten — Fragen und Antworten stammen ausschließlich aus Ihrem Dokument.",
       en: "Turn a textbook chapter, lecture notes, or manual into study flashcards with AI — questions and answers drawn only from your document.",
     },
   },
@@ -405,6 +447,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Comparar PDF — Marcar alterações entre duas versões",
       fr: "Comparer PDF — Marquer les modifications entre deux versions",
       ja: "PDFバージョン比較 / 赤線 — 2つのバージョンの変更点を確認",
+      de: "PDF-Redline — zwei PDF-Versionen kostenlos vergleichen",
       en: "PDF Redline — Compare Two PDF Versions Free",
     },
     description: {
@@ -413,6 +456,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Compare duas versões de um PDF para ver exatamente o que mudou — texto adicionado destacado, texto removido riscado. Grátis e no seu navegador.",
       fr: "Comparez deux versions d'un PDF pour voir exactement ce qui a changé — le texte ajouté surligné, le texte supprimé barré. Gratuit et dans votre navigateur.",
       ja: "2つのPDFバージョンを比較して変更内容を一目で確認—追加テキストはハイライト、削除テキストは取り消し線で表示。無料でブラウザ内で完結。",
+      de: "Vergleichen Sie zwei PDF-Versionen, um genau zu sehen, was sich geändert hat — hinzugefügter Text hervorgehoben, gelöschter Text durchgestrichen. Kostenlos und in Ihrem Browser.",
       en: "Compare two PDF versions to see exactly what changed — added text highlighted, removed text struck through. Free and in your browser.",
     },
   },
@@ -423,6 +467,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Extrair dados de PDF para planilha — Faturas, orçamentos, contratos",
       fr: "Extraire les données PDF vers un tableur — Factures, devis, contrats",
       ja: "PDFデータをスプレッドシートへ抽出 — 請求書・見積書・契約書",
+      de: "PDF-Daten in eine Tabelle extrahieren — Rechnungen, Angebote, Verträge",
       en: "Extract PDF Data to a Spreadsheet — Invoices, Quotes, Contracts",
     },
     description: {
@@ -431,6 +476,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Carregue faturas, orçamentos ou contratos e deixe a IA extrair os campos-chave em uma planilha baixável como CSV. Informa apenas o que realmente está em cada documento.",
       fr: "Chargez des factures, devis ou contrats et laissez l'IA extraire les champs clés dans un tableur téléchargeable en CSV. Elle ne rapporte que ce qui est réellement dans chaque document.",
       ja: "請求書・見積書・契約書をアップロードし、AIがキーフィールドを抽出してCSVでダウンロード。ドキュメントに実際にある内容のみを報告します。",
+      de: "Laden Sie Rechnungen, Angebote oder Verträge hoch und lassen Sie die KI die wichtigsten Felder in eine Tabelle übertragen, die Sie als CSV herunterladen können. Sie meldet nur, was tatsächlich in jedem Dokument steht.",
       en: "Upload invoices, quotes, or contracts and let AI pull the key fields into a spreadsheet you can download as CSV. It only reports what is actually in each document.",
     },
   },
@@ -441,6 +487,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Recortar PDF — Remover margens de PDF online grátis",
       fr: "Rogner un PDF — Supprimer les marges d'un PDF en ligne",
       ja: "PDFを切り抜く — 余白をオンラインで無料トリミング",
+      de: "PDF zuschneiden — PDF-Ränder kostenlos online beschneiden",
       en: "Crop PDF — Trim PDF Margins Online Free",
     },
     description: {
@@ -449,6 +496,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Recorte as margens de um PDF online gratuitamente. Remova espaços em branco de qualquer borda com visualização ao vivo — todas as páginas recortadas igualmente, tudo no seu navegador.",
       fr: "Rognez les marges d'un PDF en ligne gratuitement. Supprimez les espaces blancs de n'importe quel bord avec un aperçu en direct — toutes les pages rognées de la même façon, tout dans votre navigateur.",
       ja: "PDFの余白をオンラインで無料トリミング：ライブプレビューで四辺の空白を削除—全ページ同じ設定で、すべてブラウザ内で完結。",
+      de: "Beschneiden Sie PDF-Ränder kostenlos online. Entfernen Sie den Weißraum an jeder Kante mit einer Live-Vorschau — jede Seite gleich zugeschnitten, alles in Ihrem Browser.",
       en: "Crop PDF margins online for free. Trim whitespace from any edge with a live preview — every page cropped the same, all in your browser.",
     },
   },
@@ -459,6 +507,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Redigir PDF — Remover texto sensível permanentemente",
       fr: "Biffer un PDF — Supprimer définitivement le texte sensible",
       ja: "PDF墨消し — 機密テキストを完全に削除",
+      de: "PDF schwärzen — sensiblen Text dauerhaft online entfernen, kostenlos",
       en: "Redact PDF — Permanently Remove Sensitive Text Online Free",
     },
     description: {
@@ -467,6 +516,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Redija um PDF de verdade — destrua permanentemente o texto oculto, não apenas o cubra. Tudo no seu navegador; seu arquivo nunca sai do dispositivo.",
       fr: "Biffez un PDF pour de vrai — détruisez définitivement le texte caché, ne le couvrez pas simplement. Entièrement dans votre navigateur ; votre fichier ne quitte jamais votre appareil.",
       ja: "PDFを本当に墨消し—隠れたテキストを覆うだけでなく、永久に破壊します。すべてブラウザ内で完結；ファイルはデバイスから外に出ません。",
+      de: "Schwärzen Sie ein PDF wirklich — der verborgene Text wird dauerhaft zerstört, nicht nur überdeckt. Vollständig in Ihrem Browser; Ihre Datei verlässt Ihr Gerät nie.",
       en: "Redact a PDF for real — permanently destroy the hidden text, not just cover it. Entirely in your browser; your file never leaves your device.",
     },
   },
@@ -477,6 +527,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "PDF para imagem em lote — Converter vários PDFs em JPG/PNG grátis",
       fr: "PDF en image en lot — Convertir plusieurs PDFs en JPG/PNG",
       ja: "PDF一括画像変換 — まとめてJPG/PNG変換",
+      de: "PDF stapelweise in Bilder — viele PDFs kostenlos zu JPG/PNG konvertieren",
       en: "Batch PDF to Image — Convert Many PDFs to JPG/PNG Free",
     },
     description: {
@@ -485,6 +536,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Converta uma pasta inteira de PDFs em imagens de uma vez — cada página em JPG ou PNG, empacotadas em um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
       fr: "Convertissez un dossier entier de PDFs en images en une seule fois — chaque page en JPG ou PNG, empaquetées dans un ZIP. Entièrement dans votre navigateur.",
       ja: "PDFのフォルダをまるごと一度に画像変換—各ページをJPGまたはPNGに変換して1つのZIPにまとめます。すべてブラウザ内で完結。",
+      de: "Konvertieren Sie einen ganzen PDF-Ordner auf einmal in Bilder — jede Seite als JPG oder PNG, in einer ZIP zusammengefasst. Vollständig in Ihrem Browser; Ihre Dateien verlassen Ihr Gerät nie.",
       en: "Convert a whole folder of PDFs to images at once — every page to JPG or PNG, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
     },
   },
@@ -495,6 +547,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Criptografar PDFs em lote — Proteger vários PDFs com senha grátis",
       fr: "Chiffrer des PDF en lot — Protéger plusieurs PDFs par mot de passe",
       ja: "PDF一括パスワード保護 — まとめて暗号化",
+      de: "PDFs stapelweise verschlüsseln — viele PDFs kostenlos mit Passwort schützen",
       en: "Batch Encrypt PDF — Password-Protect Many PDFs Free",
     },
     description: {
@@ -503,6 +556,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Defina uma senha e criptografe uma pasta inteira de PDFs de uma vez, empacotados em um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
       fr: "Définissez un mot de passe et chiffrez un dossier entier de PDFs en une fois, empaquetés dans un ZIP. Entièrement dans votre navigateur.",
       ja: "1つのパスワードでフォルダ全体のPDFをまとめて暗号化—すべてブラウザ内でAES-256暗号化し、ZIPにまとめます。",
+      de: "Legen Sie ein Passwort fest und verschlüsseln Sie einen ganzen PDF-Ordner auf einmal, in einer ZIP zusammengefasst. Vollständig in Ihrem Browser; Ihre Dateien verlassen Ihr Gerät nie.",
       en: "Set one password and encrypt a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
     },
   },
@@ -513,6 +567,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Renomear PDFs em lote — Renomear arquivos por padrão grátis",
       fr: "Renommer des PDF en lot — Renommer des fichiers par motif",
       ja: "PDF一括リネーム — 番号パターンや検索置換でまとめて改名",
+      de: "PDFs stapelweise umbenennen — viele Dateien kostenlos per Muster umbenennen",
       en: "Batch Rename PDF — Rename Many Files by Pattern Free",
     },
     description: {
@@ -521,6 +576,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Renomeie uma pasta inteira de PDFs de uma vez — por padrão numerado ou localizar e substituir — e baixe um ZIP com os novos nomes. Tudo no seu navegador.",
       fr: "Renommez un dossier entier de PDFs en une fois — par modèle numéroté ou rechercher-remplacer — et téléchargez un ZIP avec les nouveaux noms. Entièrement dans votre navigateur.",
       ja: "フォルダ全体のPDFを一度にリネーム—番号パターンまたは検索置換で、新しいファイル名のZIPをダウンロード。すべてブラウザ内で完結。",
+      de: "Benennen Sie einen ganzen PDF-Ordner auf einmal um — per nummeriertem Muster oder Suchen-und-Ersetzen — und laden Sie eine ZIP mit den neuen Namen herunter. Vollständig in Ihrem Browser.",
       en: "Rename a whole folder of PDFs at once — by a numbered pattern or find-and-replace — and download a ZIP with the new names. Entirely in your browser.",
     },
   },
@@ -531,6 +587,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Marca d'água em lote — Adicionar marca ou numeração em vários PDFs",
       fr: "Filigrane en lot — Tamponner plusieurs PDFs à la fois",
       ja: "PDF一括透かし・ページ番号 — まとめてスタンプ",
+      de: "Wasserzeichen & Seitenzahlen im Stapel — viele PDFs kostenlos stempeln",
       en: "Batch Watermark & Page Numbers — Stamp Many PDFs Free",
     },
     description: {
@@ -539,6 +596,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Adicione marca d'água ou numeração de páginas a uma pasta inteira de PDFs de uma vez, empacotados em um ZIP. Tudo no seu navegador.",
       fr: "Ajoutez un filigrane ou des numéros de page à un dossier entier de PDFs en une fois, empaquetés dans un ZIP. Entièrement dans votre navigateur.",
       ja: "フォルダ全体のPDFに透かしまたはページ番号を一度に追加—1つのZIPにまとめます。すべてブラウザ内で完結。",
+      de: "Fügen Sie einem ganzen PDF-Ordner auf einmal ein Wasserzeichen oder Seitenzahlen hinzu, in einer ZIP zusammengefasst. Vollständig in Ihrem Browser; Ihre Dateien verlassen Ihr Gerät nie.",
       en: "Add a watermark or page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
     },
   },
@@ -549,6 +607,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Numerar PDFs em lote — Adicionar numeração em vários PDFs grátis",
       fr: "Numéroter des PDF en lot — Ajouter la pagination à plusieurs PDFs",
       ja: "PDF一括ページ番号追加 — まとめてページ番号を付与",
+      de: "PDFs im Stapel mit Seitenzahlen versehen — kostenlos",
       en: "Batch Add Page Numbers to PDFs — Free",
     },
     description: {
@@ -557,6 +616,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Adicione números de página a uma pasta inteira de PDFs de uma vez, empacotados em um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
       fr: "Ajoutez des numéros de page à un dossier entier de PDFs en une fois, empaquetés dans un ZIP. Entièrement dans votre navigateur.",
       ja: "フォルダ全体のPDFに一度にページ番号を追加—1つのZIPにまとめます。すべてブラウザ内で完結。",
+      de: "Fügen Sie einem ganzen PDF-Ordner auf einmal Seitenzahlen hinzu, in einer ZIP zusammengefasst. Vollständig in Ihrem Browser; Ihre Dateien verlassen Ihr Gerät nie.",
       en: "Add page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
     },
   },
@@ -567,6 +627,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Dividir e mesclar PDFs em lote — Combinar ou dividir vários PDFs grátis",
       fr: "Diviser et fusionner des PDF en lot — Combiner ou fractionner plusieurs PDFs",
       ja: "PDF一括分割・結合 — まとめて結合または分割",
+      de: "PDFs stapelweise teilen & zusammenführen — viele PDFs kostenlos kombinieren oder teilen",
       en: "Batch Split & Merge PDF — Combine or Split Many PDFs Free",
     },
     description: {
@@ -575,6 +636,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Mescle uma pasta inteira de PDFs em um, ou divida cada um em arquivos de N páginas — tudo no seu navegador, empacotado para download. Seus arquivos nunca saem do dispositivo.",
       fr: "Fusionnez un dossier entier de PDFs en un seul, ou divisez chacun en fichiers de N pages — le tout dans votre navigateur, empaqueté pour le téléchargement.",
       ja: "フォルダ全体のPDFを1つに結合、またはNページずつのファイルに分割—すべてブラウザ内で処理してダウンロード。",
+      de: "Führen Sie einen ganzen PDF-Ordner zu einem zusammen oder teilen Sie jede Datei in N-seitige Dateien auf — alles in Ihrem Browser, zum Download gebündelt. Ihre Dateien verlassen Ihr Gerät nie.",
       en: "Merge a whole folder of PDFs into one, or split each into N-page files — all in your browser, packaged for download. Your files never leave your device.",
     },
   },
@@ -585,6 +647,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Girar PDFs em lote — Corrigir digitalizações viradas grátis",
       fr: "Faire pivoter des PDF en lot — Corriger des scans de travers",
       ja: "PDF一括回転 — 横向き・逆さスキャンをまとめて修正",
+      de: "PDFs stapelweise drehen — viele schiefe Scans kostenlos korrigieren",
       en: "Batch Rotate PDF — Fix Many Sideways Scans Free",
     },
     description: {
@@ -593,6 +656,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Corrija uma pasta inteira de digitalizações viradas de uma vez — gire cada página de cada PDF e baixe um ZIP. Tudo no seu navegador.",
       fr: "Corrigez un dossier entier de scans de travers en une fois — faites pivoter chaque page de chaque PDF et téléchargez un ZIP. Entièrement dans votre navigateur.",
       ja: "フォルダ全体の横向き・逆さスキャンをまとめて修正—各PDFの全ページを回転して1つのZIPにまとめます。",
+      de: "Korrigieren Sie einen ganzen Ordner mit quer- oder kopfstehenden Scans auf einmal — drehen Sie jede Seite jedes PDFs und laden Sie eine ZIP herunter. Vollständig in Ihrem Browser.",
       en: "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF and download one ZIP. Entirely in your browser.",
     },
   },
@@ -603,6 +667,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Extrair dados em lote — Várias faturas/contratos para CSV",
       fr: "Extraire des données en lot — Plusieurs factures/contrats vers CSV",
       ja: "一括データ抽出 — 請求書・見積書・契約書をCSVへ",
+      de: "Daten stapelweise in eine Tabelle extrahieren — viele Rechnungen in CSV",
       en: "Batch Extract Data to Spreadsheet — Many Invoices to CSV",
     },
     description: {
@@ -611,6 +676,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Arraste uma pasta de faturas, orçamentos ou contratos — a IA extrai os campos-chave de cada arquivo em uma tabela (uma linha por documento) e exporta CSV. Informa apenas o que realmente está em cada um.",
       fr: "Déposez un dossier de factures, devis ou contrats — l'IA extrait les champs clés de chaque fichier dans un tableau (une ligne par document) et exporte en CSV. Elle ne rapporte que ce qui est réellement présent.",
       ja: "請求書・見積書・契約書のフォルダをドロップ—AIが各ファイルのキーフィールドを1つの表に抽出（1ドキュメント1行）してCSVにエクスポート。",
+      de: "Ziehen Sie einen ganzen Ordner mit Rechnungen, Angeboten oder Verträgen hinein — die KI überträgt die wichtigsten Felder jeder Datei in eine Tabelle (eine Zeile pro Dokument) und exportiert CSV. Sie meldet nur, was tatsächlich vorhanden ist.",
       en: "Drop a whole folder of invoices, quotes, or contracts — AI pulls the key fields from every file into one table (one row each) and exports CSV. It only reports what's actually there.",
     },
   },
@@ -621,6 +687,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Classificar PDFs em lote — Organizador de arquivos com IA grátis",
       fr: "Trier des PDF en lot — Organiseur de fichiers par IA",
       ja: "PDF一括並べ替え — AIでフォルダへ自動分類",
+      de: "PDFs stapelweise in Ordner sortieren — KI-Dateiorganizer, kostenlos",
       en: "Batch Sort PDFs into Folders — AI File Organizer Free",
     },
     description: {
@@ -629,6 +696,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Arraste uma pilha de PDFs desorganizados — a IA etiqueta cada um e os organiza em pastas dentro de um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
       fr: "Déposez une pile de PDFs en vrac — l'IA étiquette chacun et les trie dans des dossiers à l'intérieur d'un ZIP. Entièrement dans votre navigateur.",
       ja: "雑多なPDFをドロップ—AIが各ファイルをラベル付けしてZIP内のフォルダに整理。すべてブラウザ内で完結。",
+      de: "Ziehen Sie einen wilden Stapel PDFs hinein — die KI beschriftet jede Datei und sortiert sie in Ordner innerhalb einer ZIP. Vollständig in Ihrem Browser; Ihre Dateien verlassen Ihr Gerät nie.",
       en: "Drop a messy pile of PDFs — AI labels each and sorts them into folders inside one ZIP. Entirely in your browser; your files never leave your device.",
     },
   },
@@ -639,6 +707,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "PDF para Word em lote — Converter vários PDFs em Word grátis",
       fr: "PDF en Word en lot — Convertir plusieurs PDFs en Word",
       ja: "PDF一括Word変換 — まとめてDOCX変換",
+      de: "PDF stapelweise in Word — viele PDFs kostenlos in Word konvertieren",
       en: "Batch PDF to Word — Convert Many PDFs to Word Free",
     },
     description: {
@@ -647,6 +716,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Converta uma pasta inteira de PDFs em arquivos Word editáveis (.docx) de uma vez, empacotados em um ZIP.",
       fr: "Convertissez un dossier entier de PDFs en fichiers Word modifiables (.docx) en une seule fois, empaquetés dans un ZIP.",
       ja: "フォルダ全体のPDFを一度に編集可能なWord(.docx)に変換—1つのZIPにまとめます。",
+      de: "Konvertieren Sie einen ganzen PDF-Ordner auf einmal in bearbeitbare Word-Dateien (.docx), in einer ZIP zusammengefasst.",
       en: "Convert a whole folder of PDFs to editable Word (.docx) files at once, packaged into one ZIP.",
     },
   },
@@ -657,6 +727,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "PDF para Excel em lote — Converter vários PDFs em Excel grátis",
       fr: "PDF en Excel en lot — Convertir plusieurs PDFs en Excel",
       ja: "PDF一括Excel変換 — テーブルをまとめてXLSX変換",
+      de: "PDF stapelweise in Excel — viele PDFs kostenlos in Excel konvertieren",
       en: "Batch PDF to Excel — Convert Many PDFs to Excel Free",
     },
     description: {
@@ -665,6 +736,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Converta uma pasta inteira de PDFs em planilhas Excel (.xlsx) editáveis de uma vez, empacotadas em um ZIP.",
       fr: "Convertissez un dossier entier de PDFs en tableurs Excel (.xlsx) modifiables en une seule fois, empaquetés dans un ZIP.",
       ja: "フォルダ全体のPDFを一度に編集可能なExcel(.xlsx)に変換—1つのZIPにまとめます。",
+      de: "Konvertieren Sie einen ganzen PDF-Ordner auf einmal in bearbeitbare Excel-Tabellen (.xlsx), in einer ZIP zusammengefasst.",
       en: "Convert a whole folder of PDFs to editable Excel (.xlsx) spreadsheets at once, packaged into one ZIP.",
     },
   },
@@ -675,6 +747,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Word para PDF em lote — Converter vários arquivos Word grátis",
       fr: "Word en PDF en lot — Convertir plusieurs fichiers Word",
       ja: "Word一括PDF変換 — DOCXをまとめてPDF変換",
+      de: "Word stapelweise in PDF — viele Word-Dateien kostenlos konvertieren",
       en: "Batch Word to PDF — Convert Many Word Files Free",
     },
     description: {
@@ -683,6 +756,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Converta uma pasta inteira de documentos Word em PDF de uma vez, empacotados em um ZIP.",
       fr: "Convertissez un dossier entier de documents Word en PDF en une seule fois, empaquetés dans un ZIP.",
       ja: "フォルダ全体のWordドキュメントを一度にPDFに変換—1つのZIPにまとめます。",
+      de: "Konvertieren Sie einen ganzen Ordner mit Word-Dokumenten auf einmal in PDF, in einer ZIP zusammengefasst.",
       en: "Convert a whole folder of Word documents to PDF at once, packaged into one ZIP.",
     },
   },
@@ -693,6 +767,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Excel para PDF em lote — Converter várias planilhas grátis",
       fr: "Excel en PDF en lot — Convertir plusieurs feuilles de calcul",
       ja: "Excel一括PDF変換 — XLSXをまとめてPDF変換",
+      de: "Excel stapelweise in PDF — viele Tabellen kostenlos konvertieren",
       en: "Batch Excel to PDF — Convert Many Spreadsheets Free",
     },
     description: {
@@ -701,6 +776,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Converta uma pasta inteira de planilhas Excel em PDF de uma vez, empacotadas em um ZIP.",
       fr: "Convertissez un dossier entier de feuilles de calcul Excel en PDF en une seule fois, empaquetées dans un ZIP.",
       ja: "フォルダ全体のExcelスプレッドシートを一度にPDFに変換—1つのZIPにまとめます。",
+      de: "Konvertieren Sie einen ganzen Ordner mit Excel-Tabellen auf einmal in PDF, in einer ZIP zusammengefasst.",
       en: "Convert a whole folder of Excel spreadsheets to PDF at once, packaged into one ZIP.",
     },
   },
@@ -711,6 +787,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "PPT para PDF em lote — Converter várias apresentações grátis",
       fr: "PPT en PDF en lot — Convertir plusieurs présentations PowerPoint",
       ja: "PowerPoint一括PDF変換 — PPTXをまとめてPDF変換",
+      de: "PPT stapelweise in PDF — viele PowerPoints kostenlos konvertieren",
       en: "Batch PPT to PDF — Convert Many PowerPoints Free",
     },
     description: {
@@ -719,6 +796,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Converta uma pasta inteira de apresentações do PowerPoint em PDF de uma vez, empacotadas em um ZIP.",
       fr: "Convertissez un dossier entier de présentations PowerPoint en PDF en une seule fois, empaquetées dans un ZIP.",
       ja: "フォルダ全体のPowerPointプレゼンテーションを一度にPDFに変換—1つのZIPにまとめます。",
+      de: "Konvertieren Sie einen ganzen Ordner mit PowerPoint-Präsentationen auf einmal in PDF, in einer ZIP zusammengefasst.",
       en: "Convert a whole folder of PowerPoint presentations to PDF at once, packaged into one ZIP.",
     },
   },
@@ -729,6 +807,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Traduzir PDF em lote — Traduzir uma pasta inteira grátis",
       fr: "Traduction PDF par lots — Traduire un dossier entier",
       ja: "PDF を一括翻訳 — フォルダごとまとめて翻訳",
+      de: "PDFs stapelweise übersetzen — einen ganzen Ordner kostenlos übersetzen",
       en: "Batch PDF Translate — Translate a Whole Folder Free",
     },
     description: {
@@ -737,6 +816,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Traduza uma pasta inteira de PDFs para um idioma de uma vez — o texto de cada documento traduzido e empacotado em um ZIP de arquivos .txt.",
       fr: "Traduisez un dossier entier de PDFs dans une langue en une seule fois — le texte de chaque document traduit et empaqueté dans un ZIP de fichiers .txt.",
       ja: "フォルダ全体のPDFを一度に1つの言語に翻訳—各ドキュメントのテキストを翻訳して.txtのZIPにまとめます。",
+      de: "Übersetzen Sie einen ganzen PDF-Ordner auf einmal in eine Sprache — der Text jedes Dokuments wird übersetzt und in einer ZIP aus .txt-Dateien zusammengefasst.",
       en: "Translate a whole folder of PDFs into one language at once — each document's text translated and packaged into a ZIP of .txt files.",
     },
   },
@@ -747,6 +827,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Reparar digitalizações PDF em lote — Recortar ou excluir páginas grátis",
       fr: "Corriger scans PDF par lots — Rogner ou supprimer des pages en masse",
       ja: "PDF スキャンを一括補正 — 余白切り取り・ページ削除をまとめて処理",
+      de: "PDF-Scans stapelweise korrigieren — Seiten massenhaft kostenlos beschneiden oder löschen",
       en: "Batch PDF Fix Scans — Crop or Delete Pages in Bulk Free",
     },
     description: {
@@ -755,6 +836,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Limpe uma pasta inteira de PDFs digitalizados de uma vez — recorte as mesmas margens de cada página ou exclua as mesmas páginas de cada arquivo. Tudo no seu navegador, um ZIP.",
       fr: "Nettoyez un dossier entier de PDFs numérisés en une fois — rognez les mêmes marges de chaque page ou supprimez les mêmes pages de chaque fichier. Tout dans votre navigateur, un ZIP.",
       ja: "スキャンしたPDFのフォルダをまとめてクリーンアップ—各ページの同じ余白を切り取り、または各ファイルの同じページを削除。すべてブラウザ内で完結。",
+      de: "Bereinigen Sie einen ganzen Ordner mit gescannten PDFs auf einmal — schneiden Sie bei jeder Seite dieselben Ränder ab oder löschen Sie aus jeder Datei dieselben Seiten. Alles in Ihrem Browser, eine ZIP.",
       en: "Clean up a whole folder of scanned PDFs at once — crop the same margins off every page or delete the same pages from each file. All in your browser, one ZIP.",
     },
   },
@@ -765,6 +847,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Revisão de riscos em contratos — Detecte cláusulas arriscadas antes de assinar",
       fr: "Audit de risques contractuels — Repérez les clauses dangereuses avant de signer",
       ja: "契約書リスクチェック — 署名前に危険な条項を発見",
+      de: "Vertragsrisiko-Check — riskante Klauseln vor der Unterschrift erkennen",
       en: "Contract Risk Check — Spot Risky Clauses Before You Sign",
     },
     description: {
@@ -773,6 +856,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Carregue um contrato e obtenha uma lista em linguagem simples de cláusulas arriscadas, unilaterais ou ausentes — marcadas em vermelho/âmbar/verde e citadas do seu documento. Informativo, não aconselhamento jurídico.",
       fr: "Chargez un contrat et obtenez une liste en langage clair des clauses risquées, unilatérales ou manquantes — signalées en rouge/orange/vert et citées de votre document. Informatif, pas un conseil juridique.",
       ja: "契約書をアップロードすると、わかりやすい言葉でリスク・一方的・欠落条項の一覧を生成—赤・橙・緑でフラグを立て、ドキュメントから引用。参考情報であり、法的助言ではありません。",
+      de: "Laden Sie einen Vertrag hoch und erhalten Sie eine verständliche Liste riskanter, einseitiger oder fehlender Klauseln — rot/gelb/grün markiert und aus Ihrem Dokument zitiert. Zur Information, keine Rechtsberatung.",
       en: "Upload a contract and get a plain-language list of risky, one-sided, or missing clauses — flagged red/amber/green, quoted from your document. Informational, not legal advice.",
     },
   },
@@ -783,6 +867,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Revisão de contrato de locação — Detecte cláusulas de risco antes de assinar",
       fr: "Audit de bail — Repérez les clauses risquées avant de signer",
       ja: "賃貸契約書レッドフラグ確認 — 署名前に危険な条項を発見",
+      de: "Mietvertrag-Warnsignal-Check — riskante Klauseln vor der Unterschrift erkennen",
       en: "Lease Red Flag Check — Spot Risky Clauses Before You Sign",
     },
     description: {
@@ -791,6 +876,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Carregue um contrato de locação e obtenha uma lista de cláusulas injustas ou arriscadas para o locatário — marcadas em vermelho/âmbar/verde e citadas do seu documento. Informativo, não aconselhamento jurídico.",
       fr: "Chargez un bail et obtenez une liste des clauses injustes ou risquées pour le locataire — signalées en rouge/orange/vert et citées de votre document. Informatif, pas un conseil juridique.",
       ja: "賃貸契約書をアップロードすると、借主にとってリスクのある・不公平な条項の一覧を生成—赤・橙・緑でフラグを立て、ドキュメントから引用。参考情報であり、法的助言ではありません。",
+      de: "Laden Sie einen Mietvertrag hoch und erhalten Sie eine verständliche Liste riskanter, unfairer oder fehlender Mieterklauseln — rot/gelb/grün markiert und aus Ihrem Dokument zitiert. Zur Information, keine Rechtsberatung.",
       en: "Upload a lease and get a plain-language list of risky, unfair, or missing tenant clauses — flagged red/amber/green, quoted from your document. Informational, not legal advice.",
     },
   },
@@ -801,6 +887,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Matriz de conformidade de licitações — Extraia todos os requisitos shall/must",
       fr: "Matrice de conformité des appels d'offres — Extrayez toutes les exigences shall/must",
       ja: "入札コンプライアンス・マトリクス — すべてのshall/must要件を抽出",
+      de: "Compliance-Matrix für öffentliche Ausschreibungen — jede shall/must-Anforderung extrahieren",
       en: "Government Bid Compliance Matrix — Extract Every Shall/Must Requirement",
     },
     description: {
@@ -809,6 +896,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Carregue uma licitação ou solicitação e obtenha cada requisito obrigatório 'shall/must' extraído em uma matriz de conformidade numerada com referências de seção. Exporte para CSV.",
       fr: "Chargez un appel d'offres et obtenez chaque exigence obligatoire 'shall/must' extraite dans une matrice de conformité numérotée avec des références de section. Exportez en CSV.",
       ja: "RFPや入札書類をアップロードするとAIがすべての強制要件(shall/must)を条番号付きのコンプライアンス・マトリクスに抽出します。CSVでエクスポート可能。",
+      de: "Laden Sie eine RFP oder Ausschreibung hoch und lassen Sie jede verbindliche 'shall/must'-Anforderung in eine nummerierte Compliance-Matrix mit Abschnittsverweisen extrahieren. Export als CSV.",
       en: "Upload an RFP or solicitation and get every mandatory 'shall/must' requirement extracted into a numbered compliance matrix with section references. Export to CSV.",
     },
   },
@@ -820,6 +908,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Minhas conversas — DockDocs",
       fr: "Mes conversations — DockDocs",
       ja: "チャット履歴",
+      de: "Meine Chats — DockDocs",
       en: "My Chats — DockDocs",
     },
     description: {
@@ -828,6 +917,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Veja conversas salvas do Chat com PDF e metadados de documentos enviados no DockDocs.",
       fr: "Consultez les conversations Chat avec PDF sauvegardées et les métadonnées des documents chargés sur DockDocs.",
       ja: "DockDocsでこれまでに行ったすべてのAI会話を確認・再開できます。",
+      de: "Sehen Sie gespeicherte Chat-mit-PDF-Unterhaltungen und Metadaten hochgeladener Dokumente in DockDocs an.",
       en: "View saved Chat with PDF conversations and uploaded document metadata in DockDocs.",
     },
   },
@@ -838,6 +928,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Comparar documentos PDF com IA — DockDocs",
       fr: "Comparer des documents PDF avec l'IA — DockDocs",
       ja: "PDF比較・テキスト抽出 — 複数ドキュメントを並べて比較",
+      de: "PDF-Dokumente mit KI vergleichen — DockDocs",
       en: "Compare PDF Documents with AI — DockDocs",
     },
     description: {
@@ -846,6 +937,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Carregue vários PDFs, extraia o texto no seu navegador e compare os termos-chave lado a lado — com a fonte por trás de cada valor quando consegue localizá-la.",
       fr: "Chargez plusieurs PDFs, extrayez le texte dans votre navigateur et comparez les termes clés côte à côte — avec la source derrière chaque valeur lorsqu'elle peut être localisée.",
       ja: "複数のPDFをアップロードしてブラウザ内でテキスト抽出し、主要な条件を並べて比較—出典を特定できた値には原文の出典を表示します。",
+      de: "Laden Sie mehrere PDFs hoch, extrahieren Sie den Text in Ihrem Browser und stellen Sie die wichtigsten Angaben nebeneinander — mit der Quellzeile, wo sie sich finden lässt.",
       en: "Upload multiple PDFs, extract text in your browser, and line up the key terms side by side — with the source line shown wherever it can be located.",
     },
   },
@@ -857,6 +949,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Conta",
       fr: "Compte",
       ja: "アカウント",
+      de: "Konto",
       en: "Account",
     },
     description: {
@@ -865,6 +958,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Entre no DockDocs com Google, Microsoft ou e-mail. Gerencie seu espaço de trabalho e assinatura.",
       fr: "Connectez-vous à DockDocs avec Google, Microsoft ou e-mail. Gérez votre espace de travail et votre abonnement.",
       ja: "DockDocsにGoogle・Microsoft・メールでサインイン。ワークスペースとサブスクリプションを管理します。",
+      de: "Melden Sie sich bei DockDocs mit Google, Microsoft oder E-Mail an. Verwalten Sie Ihren Arbeitsbereich und Ihr Abonnement.",
       en: "Sign in to DockDocs with Google, Microsoft, or email. Manage your workspace and billing.",
     },
   },
@@ -875,6 +969,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Imagem para PDF — JPG, PNG e WebP para PDF",
       fr: "Image en PDF — JPG, PNG et WebP en PDF",
       ja: "画像をPDFに変換 — JPG・PNG・WebPをPDF化",
+      de: "Bild in PDF — JPG, PNG & WebP in PDF",
       en: "Image to PDF — JPG, PNG & WebP to PDF",
     },
     description: {
@@ -883,6 +978,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       pt: "Converta imagens JPG, PNG, WebP, GIF ou BMP em PDF online gratuitamente. Arraste para ordenar e combine em um PDF — tudo no seu navegador.",
       fr: "Convertissez des images JPG, PNG, WebP, GIF ou BMP en PDF en ligne gratuitement. Glissez pour ordonner et combinez en un PDF — tout dans votre navigateur.",
       ja: "JPG・PNG・WebP・GIF・BMP画像をオンラインで無料PDFに変換。順番を並べ替えて1つのPDFに結合—すべてブラウザ内で完結。",
+      de: "Konvertieren Sie JPG-, PNG-, WebP-, GIF- oder BMP-Bilder kostenlos online in PDF. Per Drag & Drop sortieren und zu einem PDF zusammenführen — alles in Ihrem Browser.",
       en: "Convert JPG, PNG, WebP, GIF or BMP images to PDF online for free. Drag to order and combine into one PDF — all in your browser.",
     },
   },
@@ -904,7 +1000,12 @@ async function generateMetadataInner({
   const metaLocale: ClientLocale = toMetaLocale(rawLocale);
   // zh-Hant derives from the zh string via OpenCC (no separate Traditional copy).
   const m = (en: string, zh: string, es: string, pt: string, fr: string, ja: string) =>
-    metaLocale === "zh-Hant" ? toHant(zh) : ({ en, zh, es, pt, fr, ja })[metaLocale];
+    metaLocale === "zh-Hant"
+      ? toHant(zh)
+      : // de has no authored <head> meta copy yet → English fallback (GAP: de meta strings).
+        metaLocale === "de"
+        ? en
+        : ({ en, zh, es, pt, fr, ja })[metaLocale];
 
   const programmaticGeoRoute = getLocalizedProgrammaticGeoRoute(rawSlug);
   if (programmaticGeoRoute) {
@@ -2015,7 +2116,7 @@ export default async function LocalizedRoute({
   // Indexable tools that render a custom client but aren't in toolSlugs
   // (sign-pdf is in toolSlugs and handled above; these are not): lightweight schema.
   const extraJsonLd = EXTRA_TOOL_SLUGS.includes(slug) ? (
-    <ExtraToolJsonLd slug={slug} locale={clientLocale} />
+    <ExtraToolJsonLd slug={slug} locale={toLeafLocale(clientLocale)} />
   ) : null;
 
   if (slug === "chat-with-pdf") {
@@ -2141,7 +2242,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "my-chats") {
-    return <MyChatsClient locale={clientLocale} />;
+    return <MyChatsClient locale={toLeafLocale(clientLocale)} />;
   }
 
   if (slug === "compare") {
@@ -2158,7 +2259,7 @@ export default async function LocalizedRoute({
 
   if (COMING_SOON_TOOLS[slug]) {
     const t = COMING_SOON_TOOLS[slug];
-    return <ComingSoonTool locale={clientLocale} name={t.en} nameZh={t.zh} />;
+    return <ComingSoonTool locale={toLeafLocale(clientLocale)} name={t.en} nameZh={t.zh} />;
   }
 
   if (slug === "translate-pdf") {
@@ -2268,7 +2369,7 @@ export default async function LocalizedRoute({
       return (
         <>
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema(uiLocale)) }} />
-          <AboutPage locale={clientLocale} />
+          <AboutPage locale={toLeafLocale(clientLocale)} />
         </>
       );
     }
@@ -2277,7 +2378,7 @@ export default async function LocalizedRoute({
     return (
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, slug, infoPage.title)) }} />
-        <SaasInfoPage page={infoPage} locale={clientLocale} useLocalePrefix />
+        <SaasInfoPage page={infoPage} locale={toLeafLocale(clientLocale)} useLocalePrefix />
       </>
     );
   }
@@ -2303,21 +2404,21 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "for/legal") {
-    return <LegalHubPage locale={clientLocale} useLocalePrefix />;
+    return <LegalHubPage locale={toLeafLocale(clientLocale)} useLocalePrefix />;
   }
 
   if (slug === "for/finance") {
-    return <FinanceHubPage locale={clientLocale} useLocalePrefix />;
+    return <FinanceHubPage locale={toLeafLocale(clientLocale)} useLocalePrefix />;
   }
 
   if (slug === "for/research") {
-    return <ResearchHubPage locale={clientLocale} useLocalePrefix />;
+    return <ResearchHubPage locale={toLeafLocale(clientLocale)} useLocalePrefix />;
   }
 
   return <LocalizedHome locale={clientLocale} />;
 }
 
-function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
+function LocalizedAccount({ locale }: { locale: ClientLocale }) {
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
       <div className="mx-auto max-w-md">
@@ -2349,7 +2450,10 @@ function getLocalizedProgrammaticGeoRoute(rawSlug?: string[]) {
   return null;
 }
 
-function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
+function LocalizedChatWithPdf({ locale }: { locale: ClientLocale }) {
+  // de has no authored runtime chat copy yet (getRuntimeCopy GAP → English) and
+  // ChatWithPdfClient has no de branch, so render the English UI on /de for now;
+  // the de route URL/breadcrumb item still points at /de/chat-with-pdf.
   const copy = getRuntimeCopy(locale).chat;
   const zh = locale === "zh";
   const es = locale === "es";
@@ -2411,7 +2515,7 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" 
         </p>
 
         <div className="mt-8">
-          <ChatWithPdfClient locale={locale} />
+          <ChatWithPdfClient locale={toLeafLocale(locale)} />
         </div>
       </div>
 
@@ -2420,7 +2524,10 @@ function LocalizedChatWithPdf({ locale }: { locale: Locale | "es" | "pt" | "fr" 
   );
 }
 
-function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
+function LocalizedAiSummary({ locale }: { locale: ClientLocale }) {
+  // de has no authored runtime summary copy yet (getRuntimeCopy GAP → English) and
+  // AiSummaryClient has no de branch, so render the English UI on /de for now; the
+  // de route URL/breadcrumb item still points at /de/ai-summary.
   const copy = getRuntimeCopy(locale).summary;
   const zh = locale === "zh";
   const es = locale === "es";
@@ -2486,7 +2593,7 @@ function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" | 
         </p>
 
         <div className="mt-8">
-          <AiSummaryClient locale={locale} />
+          <AiSummaryClient locale={toLeafLocale(locale)} />
         </div>
       </div>
       {"faqs" in copy && Array.isArray((copy as { faqs?: unknown }).faqs) ? (
@@ -2499,11 +2606,12 @@ function LocalizedAiSummary({ locale }: { locale: Locale | "es" | "pt" | "fr" | 
   );
 }
 
-function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
-  return <DashboardWorkspace locale={locale} />;
+function LocalizedDashboard({ locale }: { locale: ClientLocale }) {
+  // DashboardWorkspace has no de branch yet → English dashboard on /de (GAP).
+  return <DashboardWorkspace locale={toLeafLocale(locale)} />;
 }
 
-function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
+function LocalizedPricing({ locale }: { locale: ClientLocale }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(toEnZhLocale(locale))) }} />
@@ -2592,6 +2700,10 @@ const homeCopy = {
     title: "DockDocs — IA documentaire privée et vérifiable + outils PDF",
     description: "Lisez n'importe quel document et vérifiez chaque réponse : une IA documentaire qui montre le passage source derrière ses réponses et signale ce qu'elle ne peut pas tracer, pour que vous les vérifiiez, plus des outils PDF exécutés dans votre navigateur, vos fichiers ne quittent jamais l'appareil. Gratuit, sans inscription.",
   },
+  de: {
+    title: "DockDocs — private, nachvollziehbare Dokumenten-KI + PDF-Werkzeuge",
+    description: "Lesen Sie jedes Dokument und überprüfen Sie jede Antwort: eine Dokumenten-KI, die die Quellstelle hinter ihren Antworten zeigt und kenntlich macht, was sie nicht nachverfolgen kann, damit Sie es prüfen können — dazu PDF-Werkzeuge, die in Ihrem Browser laufen, sodass Ihre Dateien das Gerät nicht verlassen. Kostenlos, ohne Anmeldung.",
+  },
 } as const;
 
 const localizedTools = [
@@ -2616,13 +2728,15 @@ const localizedTools = [
   { slug: "protect-pdf", icon: "PR", tier: "FREE", group: { en: "Security", zh: "安全" }, en: "Protect PDF", zh: "加密 PDF", description: { en: "Add password protection.", zh: "为 PDF 添加密码保护。" } },
 ] as const;
 
-function LocalizedHome({ locale }: { locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
+function LocalizedHome({ locale }: { locale: ClientLocale }) {
   // ja now ships natively (homeSchema localizes Organization/WebSite/FAQ for ja),
-  // so the JSON-LD matches the Japanese page Google sees.
+  // so the JSON-LD matches the Japanese page Google sees. Home.tsx has no de branch
+  // yet → the visible homepage renders in English on /de (GAP); homeSchema takes a
+  // plain string and localizes de metadata where homeCopy.de exists.
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema(locale)) }} />
-      <HomeSections locale={locale} />
+      <HomeSections locale={toLeafLocale(locale)} />
     </main>
   );
 }
@@ -2714,6 +2828,20 @@ const aiCopy = {
       { t: "文書分析", d: "主要な条項・日付・リスク・構成を抽出し、すばやく把握できます。" },
     ],
   },
+  de: {
+    title: "KI-Arbeitsbereich für Dokumente",
+    description: "Ordnen, konvertieren, OCR und arbeiten Sie mit PDF-Dokumenten im KI-Arbeitsbereich von DockDocs.",
+    eyebrow: "KI-Arbeitsbereich",
+    heroTitle: "KI-PDF-Arbeitsbereich für OCR, Zusammenfassungen und Chat mit PDF.",
+    heroDescription:
+      "DockDocs stellt PDF-Werkzeuge an die erste Stelle. Der KI-Arbeitsbereich übernimmt, wenn ein Dokument OCR, eine Zusammenfassung, belegte Fragen und Antworten oder eine schnelle Analyse benötigt.",
+    cards: [
+      { t: "OCR", d: "Extrahieren Sie auswählbaren Text aus gescannten oder reinen Bild-PDFs." },
+      { t: "KI-Zusammenfassung", d: "Verwandeln Sie lange Berichte in wenige verwertbare Notizen." },
+      { t: "Chat mit PDF", d: "Fragen Sie nach Klauseln, Daten und Zahlen — die Antworten zeigen die belegende Stelle und weisen darauf hin, was sie nicht nachverfolgen können." },
+      { t: "Dokumentenanalyse", d: "Extrahieren Sie die wichtigsten Klauseln, Daten, Risiken und die Struktur für einen schnellen Überblick." },
+    ],
+  },
 } as const;
 
 const aiWidgetLocales = ["en", "zh", "es", "pt", "fr", "ja"] as const;
@@ -2722,11 +2850,19 @@ type AiWidgetLocale = (typeof aiWidgetLocales)[number];
 // Exhaustive copy resolver for LocalizedAiWorkspace. aiCopy is keyed by the six
 // authored locales; zh-Hant derives from zh via deepHant. Preserves behavior, but
 // a NEW route locale must add a branch here instead of silently falling to aiCopy.en.
-type AiCopy = (typeof aiCopy)[AiWidgetLocale];
+// Union of the six AiWidgetLocale copies plus the authored de copy. de is kept out
+// of aiWidgetLocales (the interactive widgets still run in English for de via
+// toAccountLocale), but its copy has the same shape and is a valid resolveAiCopy result.
+type AiCopy = (typeof aiCopy)[AiWidgetLocale] | (typeof aiCopy)["de"];
 function resolveAiCopy(locale: ClientLocale): AiCopy {
   switch (locale) {
     case "zh-Hant":
       return deepHant(aiCopy.zh);
+    case "de":
+      // aiCopy.de is authored (native German); same shape as the AiWidgetLocale
+      // copies, so it satisfies AiCopy. The interactive widgets below still run in
+      // English (toAccountLocale maps de → en) until their de copy lands.
+      return aiCopy.de;
     case "en":
     case "zh":
     case "es":
@@ -2741,8 +2877,9 @@ function resolveAiCopy(locale: ClientLocale): AiCopy {
   }
 }
 
-function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
-  // zh-Hant derives from zh via OpenCC.
+function LocalizedAiWorkspace({ locale }: { locale: ClientLocale }) {
+  // zh-Hant derives from zh via OpenCC; de renders native German header/cards copy
+  // (aiCopy.de), while the interactive widgets fall back to English (toAccountLocale).
   const copy = resolveAiCopy(locale);
   const aiLocale: AiWidgetLocale = toAccountLocale(locale);
 
@@ -2824,9 +2961,14 @@ const sitemapCopy = {
     description: "DockDocs ページのローカライズされたサイトマップ。",
     heading: "DockDocs ローカライズ・サイトマップ。",
   },
+  de: {
+    title: "Sitemap",
+    description: "Lokalisierte Sitemap der DockDocs-Seiten.",
+    heading: "Lokalisierte DockDocs-Sitemap.",
+  },
 } as const;
 
-function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
+function LocalizedSitemap({ locale }: { locale: ClientLocale }) {
   // zh-Hant derives from zh via OpenCC.
   const hant = locale === "zh-Hant";
   const h = (s: string) => (hant ? toHant(s) : s);
@@ -2891,7 +3033,7 @@ function LocalizedSitemap({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
           <h1 className="mt-4 max-w-4xl break-words text-[34px] font-normal tracking-[-0.025em] sm:text-[48px]">
             {copy.heading}
           </h1>
-          <SitemapContent locale={locale} />
+          <SitemapContent locale={toLeafLocale(locale)} />
         </Container>
       </Section>
       <Section className="bg-[color:var(--surface-subtle)]">

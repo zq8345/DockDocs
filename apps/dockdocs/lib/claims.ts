@@ -48,6 +48,7 @@ export const CITATION_SCOPE: Record<RouteLocale, string> = {
   pt: "Quando a IA consegue fundamentar uma resposta no seu documento, o DockDocs mostra o trecho de origem e sinaliza o que não pode rastrear; nem toda resposta terá uma citação.",
   fr: "Lorsque l'IA peut ancrer une réponse dans votre document, DockDocs montre le passage source et signale ce qu'elle ne peut pas tracer ; toutes les réponses n'auront pas de citation.",
   ja: "AI が回答をあなたの文書に根拠づけられる場合、DockDocs は該当する原文箇所を示し、たどれない部分は明示します——すべての回答に出典が付くわけではありません。",
+  de: "Wenn die KI eine Antwort in Ihrem Dokument verankern kann, zeigt DockDocs die zugrunde liegende Quellstelle und weist darauf hin, was sich nicht belegen lässt – nicht jede Antwort erhält eine Quellenangabe.",
 };
 
 /**
@@ -64,4 +65,5 @@ export const BRAND_SLOGAN: Record<RouteLocale, string> = {
   pt: "Verifique cada resposta.",
   fr: "Vérifiez chaque réponse.",
   ja: "すべての回答を検証。",
+  de: "Prüfen Sie jede Antwort.",
 };

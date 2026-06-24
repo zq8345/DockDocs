@@ -79,6 +79,16 @@ const STR = {
     hint: "スライダーをドラッグして各辺を切り取ります（ページに対する%）。透明な部分が残る範囲です。",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "PDF zuschneiden",
+    subtitle: "Laden Sie ein PDF hoch, schneiden Sie mit einer Live-Vorschau die Weißräume an jeder beliebigen Kante weg und laden Sie es herunter – jede Seite wird gleich zugeschnitten, komplett in Ihrem Browser.",
+    drop: "PDF hierher ziehen und ablegen oder zum Auswählen klicken",
+    choose: "PDF auswählen", rendering: "Vorschau wird erstellt…",
+    preview: "Live-Vorschau", top: "Oben", right: "Rechts", bottom: "Unten", left: "Links",
+    reset: "Kanten zurücksetzen", apply: "Zuschneiden und herunterladen", working: "Wird zugeschnitten…", start: "Neu beginnen",
+    hint: "Ziehen Sie die Regler, um jede Kante zu beschneiden (als % der Seite). Der freie Bereich ist das, was erhalten bleibt.",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -212,6 +222,28 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingLinks: [
       { label: "PDF を分割", href: "/split-pdf", description: "大きな PDF を別々のファイルやページ範囲に分けます。" },
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Warum PDFs im Browser zuschneiden",
+    benefitsDescription: "Beschneiden Sie Ränder und Weißräume, um jede Seite zu straffen – mit einer Live-Vorschau, bevor Sie es übernehmen.",
+    benefits: [
+      { title: "Den Zuschnitt sehen, bevor Sie ihn anwenden", description: "Ziehen Sie jede Kante an einer Live-Seitenvorschau, damit Sie genau wissen, was bleibt und was weggeschnitten wird – kein Rätselraten, kein erneutes Öffnen der Datei." },
+      { title: "Ränder kappen, Inhalt behalten", description: "Schneiden Sie Scan-Weißräume oder breite Druckränder ab, damit Text und Abbildungen die Seite ausfüllen und auf Bildschirmen besser lesbar sind." },
+      { title: "Ein Zuschnitt für jede Seite", description: "Die von Ihnen gesetzten Kanten werden einheitlich auf alle Seiten angewendet und ergeben in einem einzigen Durchgang ein durchgängig gleichmäßig gerahmtes Dokument." },
+    ],
+    workflowTitle: "Wo das Zuschneiden in Ihre Dokumentarbeit passt",
+    workflowDescription: "Gemacht für den Moment, in dem ein PDF mit zu viel leerem Rand ankommt – ein Scan, eine exportierte Folie oder eine für den Druck gedachte Seite, die Sie nun am Bildschirm lesen.",
+    steps: [
+      "Laden Sie das PDF hoch, das Sie aufräumen möchten.",
+      "Ziehen Sie in der Live-Vorschau die obere, rechte, untere und linke Kante, bis nur noch der gewünschte Inhalt übrig bleibt.",
+      "Schneiden Sie zu und laden Sie das beschnittene PDF herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs umzuformen",
+    readingDescription: "Verwandte Tools und Anleitungen zum Beschneiden und Neuordnen von Dokumenten.",
+    readingLinks: [
+      { label: "PDF teilen", href: "/split-pdf", description: "Zerlegen Sie ein großes PDF in einzelne Dateien oder Seitenbereiche." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
 };

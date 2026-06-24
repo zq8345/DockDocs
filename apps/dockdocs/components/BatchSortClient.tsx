@@ -77,6 +77,15 @@ const STR = {
     need: "PDF を 1 つ以上追加してください。", err: "問題が発生しました: ",
     note: "各 PDF はブラウザ内で読み取られ、分類のために抽出されたテキストのみが AI に送信されます——ファイル自体はアップロードされません。カテゴリは各ドキュメントのテキストから AI が推測したもので、確認が必要な場合があります。ZIP は元のファイルをそのまま保持し、カテゴリ別フォルダにまとめるだけです。",
   },
+  de: {
+    title: "PDFs klassifizieren",
+    subtitle: "Ziehen Sie einen unsortierten Stapel PDFs hierher — die KI versieht jedes mit einer Kategorie (Rechnung, Vertrag, Lebenslauf, Bericht…) und ordnet sie in einem einzigen ZIP in Ordner ein, sodass aus einem chaotischen Ordner sauber sortierte Dateien werden.",
+    drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen", add: "Weitere hinzufügen", reading: "Dateien werden gelesen…",
+    run: "Alle sortieren", running: "Wird sortiert", download: "Sortiertes ZIP herunterladen", reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`, uncategorized: "Nicht kategorisiert", failed: "kein Text",
+    need: "Fügen Sie mindestens ein PDF hinzu.", err: "Etwas ist schiefgelaufen: ",
+    note: "Jedes PDF wird in Ihrem Browser gelesen; nur der extrahierte Text wird zum Sortieren an die KI gesendet — die Datei selbst wird nicht hochgeladen. Die Kategorien werden von der KI aus dem Text jedes Dokuments vorgeschlagen und müssen eventuell geprüft werden. Das ZIP behält Ihre Originaldateien unverändert bei und gruppiert sie nur in Kategorieordner.",
+  },
 } satisfies AuthoredCopy<typeof STR_en>;
 
 const folderSafe = (s: string) => s.replace(/[\\/:*?"<>|]+/g, "-").trim().slice(0, 40) || "其他";
@@ -218,6 +227,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF を一括要約", href: "/batch-summary", description: "フォルダ内の PDF をまとめて AI にかけ、それぞれの短い要約を取得します。" },
       { label: "契約リスクを検出", href: "/contract-risk", description: "AI に契約書の本文を読ませ、リスクのある条項や不足している項目を指摘させます。" },
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Warum einen Ordner voller PDFs mit KI sortieren",
+    benefitsDescription: "Verwandeln Sie einen chaotischen Stapel gemischter Dokumente in einem Durchgang in Kategorieordner.",
+    benefits: [
+      { title: "Ein ganzer Ordner in einem Durchgang", description: "Legen Sie Dutzende gemischter PDFs auf einmal ab — die KI versieht jedes Dokument mit einer Kategorie und gruppiert sie in einem einzigen ZIP in Kategorieordner." },
+      { title: "Kategorien aus dem Text gelesen", description: "Der Text jedes Dokuments wird von der KI analysiert, um eine Kategorie vorzuschlagen (Rechnung, Vertrag, Lebenslauf, Bericht…), sodass die Sortierung dem tatsächlichen Inhalt folgt und nicht nur dem Dateinamen." },
+      { title: "Ihre Originale bleiben unberührt", description: "Das ZIP enthält Ihre Original-PDFs unverändert — sie werden nur in Kategorieordner verschoben, nichts wird neu geschrieben oder neu codiert." },
+    ],
+    workflowTitle: "Wie das automatische Sortieren in Ihre Dokumentenarbeit passt",
+    workflowDescription: "Für den Moment, in dem ein Download-Ordner oder ein freigegebenes Laufwerk zu einem Durcheinander unbenannter PDFs wird, die abgelegt werden müssen.",
+    steps: [
+      "Legen Sie einen Ordner mit PDFs ab oder wählen Sie die Dateien aus, die Sie organisieren möchten.",
+      "Die KI liest den Text jedes Dokuments und schlägt eine Kategorie dafür vor.",
+      "Laden Sie ein einzelnes ZIP herunter, in dem alles in Kategorieordner gruppiert ist.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs in großen Mengen zu bearbeiten",
+    readingDescription: "Verwandte KI-Tools und Anleitungen für die Arbeit mit vielen Dokumenten.",
+    readingLinks: [
+      { label: "PDFs in großen Mengen zusammenfassen", href: "/batch-summary", description: "Schicken Sie einen ganzen Ordner mit PDFs durch die KI und erhalten Sie für jedes eine kurze Zusammenfassung." },
+      { label: "Vertragsrisiken erkennen", href: "/contract-risk", description: "Lassen Sie die KI den Text eines Vertrags lesen und riskante Klauseln sowie fehlende Punkte markieren." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
 };

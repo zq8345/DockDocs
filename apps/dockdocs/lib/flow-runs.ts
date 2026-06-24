@@ -53,7 +53,7 @@ export function saveRun(run: Omit<FlowRun, "id" | "createdAt">): FlowRun {
   return next;
 }
 
-export function relativeTime(iso: string, locale: "en" | "zh" | "es" | "pt" | "fr" | "ja"): string {
+export function relativeTime(iso: string, locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de"): string {
   const diff = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diff / 60_000);
   const hours = Math.floor(diff / 3_600_000);
@@ -87,6 +87,12 @@ export function relativeTime(iso: string, locale: "en" | "zh" | "es" | "pt" | "f
     if (mins < 60) return `il y a ${mins} min`;
     if (hours < 24) return `il y a ${hours} h`;
     return `il y a ${days} jour${days > 1 ? "s" : ""}`;
+  }
+  if (locale === "de") {
+    if (mins < 1) return "gerade eben";
+    if (mins < 60) return `vor ${mins} Min.`;
+    if (hours < 24) return `vor ${hours} Std.`;
+    return `vor ${days} Tag${days > 1 ? "en" : ""}`;
   }
   if (mins < 1) return "just now";
   if (mins < 60) return `${mins}m ago`;

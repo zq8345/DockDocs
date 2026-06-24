@@ -92,6 +92,17 @@ const STR: AuthoredCopy<{
     merge: "結合してダウンロード", working: "結合中…", reset: "最初からやり直す",
     needTwo: "結合するには少なくとも2つのPDFを追加してください。", err: "問題が発生しました: ",
   },
+  de: {
+    title: "PDF zusammenführen",
+    subtitle: "Fügen Sie Ihre PDFs hinzu, ziehen Sie sie in die gewünschte Reihenfolge und kombinieren Sie sie zu einem einzigen Dokument — Sie sehen jede Datei vor dem Zusammenführen, nicht erst danach.",
+    drop: "PDFs hierher ziehen und ablegen oder zum Auswählen klicken",
+    choose: "PDFs auswählen", add: "Weitere hinzufügen", rendering: "Dateien werden gelesen…",
+    hint: "Zum Umordnen ziehen. Sie werden von oben nach unten und von links nach rechts zusammengeführt.",
+    files: (n: number, p: number) => `${n} Datei${n === 1 ? "" : "en"} · ${p} Seiten insgesamt`,
+    pagesLabel: (n: number) => `${n} Seite${n === 1 ? "" : "n"}`,
+    merge: "Zusammenführen & herunterladen", working: "Wird zusammengeführt…", reset: "Von vorn beginnen",
+    needTwo: "Fügen Sie mindestens 2 PDFs zum Zusammenführen hinzu.", err: "Etwas ist schiefgelaufen: ",
+  },
 };
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -233,6 +244,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum PDFs im Browser zusammenführen",
+    benefitsDescription: "Kombinieren Sie mehrere PDFs zu einem geordneten Dokument. Die meisten Tools laufen in Ihrem Browser.",
+    benefits: [
+      { title: "Ein Dokument aus vielen", description: "Kombinieren Sie Verträge, Scans und Berichte zu einem einzigen PDF, das sich leicht versenden, drucken oder archivieren lässt." },
+      { title: "Per Ziehen die Reihenfolge festlegen", description: "Ordnen Sie die Dateien vor dem Zusammenführen um, damit die Seiten genau in der gewünschten Reihenfolge landen." },
+      { title: "Keine Limits, kein Wasserzeichen", description: "Kombinieren Sie so viele PDFs, wie Sie brauchen — keine Dateibegrenzung, keine Anmeldung und nichts, was auf dem Ergebnis aufgedruckt wird." },
+    ],
+    workflowTitle: "Wie das Zusammenführen in Ihre Dokumentenarbeit passt",
+    workflowDescription: "Für den Moment, in dem getrennte PDFs zu einem Paket werden müssen — ein unterschriebener Vertrag, ein Bündel Quittungen, ein Bericht mit Anhängen.",
+    steps: [
+      "Fügen Sie die PDFs hinzu, die Sie kombinieren möchten — per Drag-and-drop oder über die Dateiauswahl.",
+      "Ziehen Sie die Dateien in die Reihenfolge, in der sie zusammengeführt werden sollen.",
+      "Führen Sie sie zusammen und laden Sie das eine kombinierte PDF herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs zu organisieren",
+    readingDescription: "Verwandte Tools und Anleitungen zum Kombinieren und Teilen von Dokumenten.",
+    readingLinks: [
+      { label: "Ein PDF teilen", href: "/split-pdf", description: "Der umgekehrte Weg — ein großes PDF in einzelne Dateien oder Seitenbereiche aufteilen." },
+      { label: "PDFs ohne Qualitätsverlust zusammenführen", href: "/guides/merge-pdfs-without-losing-quality", description: "Wie mehrere PDFs ohne Qualitätsverlust zu einer Datei kombiniert werden." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
+    ],
+  },
 };
 
 export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
@@ -287,6 +321,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
           pt: `${skipped.length} arquivo(s) ilegível(eis) ignorado(s): ${list}${enc ? " (alguns estão protegidos por senha; desbloqueie-os primeiro)" : ""}.`,
           fr: `${skipped.length} fichier(s) illisible(s) ignoré(s) : ${list}${enc ? " (certains sont protégés par mot de passe ; déverrouillez-les d'abord)" : ""}.`,
           ja: `読み取れなかったファイルを${skipped.length}件スキップしました：${list}${enc ? "(一部はパスワード保護されています。先に解除してください)" : ""}。`,
+          de: `${skipped.length} unlesbare Datei(en) übersprungen: ${list}${enc ? " (einige sind passwortgeschützt — entsperren Sie sie zuerst)" : ""}.`,
         };
         const msg = locale === "zh-Hant" ? toHant(MSG.zh) : MSG[locale];
         setError(msg);

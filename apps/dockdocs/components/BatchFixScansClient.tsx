@@ -151,6 +151,27 @@ const STR = {
     note: "すべてブラウザ内で処理されます — ファイルがデバイスから出ることはありません。切り取りは切り取った領域を隠すだけです（元に戻せます）。削除はそれらのページを取り除きます。",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "Gescannte PDFs stapelweise korrigieren",
+    subtitle:
+      "Bereinigen Sie einen ganzen Ordner gescannter PDFs auf einmal – schneiden Sie auf jeder Seite dieselben Ränder ab oder löschen Sie aus jeder Datei dieselben Seiten (etwa ein Deckblatt). Die Verarbeitung läuft in Ihrem Browser und wird in einem einzigen ZIP gebündelt.",
+    crop: "Ränder beschneiden",
+    del: "Seiten löschen",
+    top: "Oben", right: "Rechts", bottom: "Unten", left: "Links",
+    preview: "Vorschau (erste Datei)",
+    cropHint: "Ziehen Sie, um jede Kante zu beschneiden (% der Seite). Der freie Bereich bleibt erhalten. Wird auf jede Seite jeder Datei angewendet.",
+    delLabel: "Seiten, die aus jeder Datei gelöscht werden",
+    delPlaceholder: "z. B. 1 oder 1,3-4",
+    delHint: "Diese Seitenzahlen werden aus jeder Datei entfernt. Dateien, die dadurch alle Seiten verlieren würden, werden übersprungen.",
+    run: "Alle verarbeiten", running: "Wird verarbeitet", download: "ZIP herunterladen", reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`,
+    done: "fertig", failed: "fehlgeschlagen",
+    need: "Fügen Sie mindestens ein PDF hinzu.",
+    needCrop: "Legen Sie mindestens einen Rand zum Beschneiden fest.",
+    needDel: "Geben Sie die zu löschenden Seitenzahlen ein.",
+    note: "Die Verarbeitung läuft in Ihrem Browser – Ihre Dateien verlassen Ihr Gerät nicht. Das Beschneiden blendet den abgeschnittenen Bereich nur aus (er lässt sich wiederherstellen); das Löschen entfernt die Seiten.",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 // Exhaustive per-locale runtime messages (toasts / status). zh-Hant derived via toHant.
@@ -161,6 +182,7 @@ const SKIP_EMPTY: Record<AuthoredLocale, string> = {
   pt: "ficaria vazio, ignorado",
   fr: "serait vide, ignoré",
   ja: "空になるためスキップ",
+  de: "würde leer, übersprungen",
 };
 const ZIP_FAIL: Record<AuthoredLocale, string> = {
   en: "Could not build the download — please try again.",
@@ -169,6 +191,7 @@ const ZIP_FAIL: Record<AuthoredLocale, string> = {
   pt: "Não foi possível criar o download; tente novamente.",
   fr: "Impossible de créer le téléchargement ; réessayez.",
   ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+  de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
 };
 const skipEmptyMsg = (locale: Locale) =>
   locale === "zh-Hant" ? toHant(SKIP_EMPTY.zh) : SKIP_EMPTY[locale];
@@ -325,6 +348,29 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "単一の PDF をトリミング", href: "/crop-pdf", description: "プレビューを見ながら 1 つの PDF の余白や空白を切り取ります。" },
       { label: "スキャン PDF を OCR", href: "/ocr-pdf", description: "スキャンした PDF のテキストを選択・検索可能にします。" },
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Warum gescannte PDFs stapelweise korrigieren",
+    benefitsDescription: "Bereinigen Sie einen ganzen Ordner mit Scans auf einmal – beschneiden Sie die Ränder und entfernen Sie die leeren Seiten.",
+    benefits: [
+      { title: "Scan-Ballast beschneiden", description: "Entfernen Sie schwarze Kanten, Scanner-Schatten und übergroße Ränder von jeder Seite, damit der Inhalt sauber sitzt." },
+      { title: "Dieselben Seiten entfernen", description: "Löschen Sie ein Deckblatt, ein Trennblatt oder eine leere Rückseite in einem Durchgang aus jeder Datei des Stapels." },
+      { title: "Ein ganzer Ordner auf einmal", description: "Korrigieren Sie Dutzende gescannter PDFs in einem einzigen Durchlauf und laden Sie sie alle in einem ZIP herunter." },
+    ],
+    workflowTitle: "Wie das Korrigieren von Scans in Ihre Arbeit passt",
+    workflowDescription: "Für den Moment, in dem ein Scanner einen Ordner mit PDFs ausgibt, die alle dieselbe Bereinigung von schwarzen Rändern und Deckblatt brauchen.",
+    steps: [
+      "Legen Sie einen Ordner mit gescannten PDFs auf der Seite ab.",
+      "Legen Sie die Beschnittränder fest oder markieren Sie die aus jeder Datei zu entfernenden Seiten.",
+      "Starten Sie und laden Sie die bereinigten PDFs in einem ZIP herunter.",
+    ],
+    readingTitle: "Mehr Wege, Scans zu bereinigen",
+    readingDescription: "Verwandte Tools zum Beschneiden von Dokumenten und um Scans durchsuchbar zu machen.",
+    readingLinks: [
+      { label: "Ein einzelnes PDF beschneiden", href: "/crop-pdf", description: "Beschneiden Sie Ränder oder Weißraum eines PDFs mit visueller Vorschau." },
+      { label: "Ein gescanntes PDF per OCR", href: "/ocr-pdf", description: "Machen Sie den Text eines gescannten PDFs auswählbar und durchsuchbar." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
 };

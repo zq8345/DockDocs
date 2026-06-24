@@ -235,6 +235,21 @@ if (!DATA_LOCALES.length) {
   process.exit(1);
 }
 
+// PARTIAL locales: route locales that are deliberately NOT yet fully authored in
+// the three body/runtime/metadata sources below — they ship localized claims +
+// nav/shell-via-fallback and intentionally fall back to English for tool BODIES,
+// runtimeCopy, and catch-all SEO metadata. This MUST stay in lock-step with the
+// parity guard's BODY_LOCALES/FAQ_LOCALES (scripts/check-i18n-parity.mjs), which
+// already scopes the same locales out of body/FAQ enforcement. Their gaps are
+// still REPORTED below (full transparency) but do NOT fail the build. When a
+// partial locale's deTools/runtimeCopy.de/CUSTOM_TOOL_COPY are authored, REMOVE
+// it here and the guard re-blocks on any regression.
+// de: now FULLY REQUIRED (deTools/deFaq/runtimeCopy.de/CUSTOM_TOOL_COPY de
+// authored) — removed from this set so the guard blocks on any de gap.
+const PARTIAL_LOCALES = new Set([]);
+const BLOCKING_LOCALES = DATA_LOCALES.filter((l) => !PARTIAL_LOCALES.has(l));
+const CUSTOM_BLOCKING_LOCALES = CUSTOM_LOCALES.filter((l) => !PARTIAL_LOCALES.has(l));
+
 // Extract a `${locale}Tools` record -> Map<slug, entryObjText>
 function extractRecord(localeVar) {
   const m = toolsSrc.search(new RegExp(`const ${localeVar}Tools[^=]*=`));
@@ -535,15 +550,24 @@ function countBy(findings, locales) {
 const toolTotal = countBy(toolFindings, DATA_LOCALES);
 const copyTotal = countBy(copyFindings, DATA_LOCALES);
 const customTotal = countBy(customFindings, CUSTOM_LOCALES);
+// Blocking totals exclude PARTIAL_LOCALES (deliberately English-fallback locales,
+// kept in lock-step with the parity guard's BODY_LOCALES) — those gaps are
+// reported but do NOT fail the build.
+const toolBlocking = countBy(toolFindings, BLOCKING_LOCALES);
+const copyBlocking = countBy(copyFindings, BLOCKING_LOCALES);
+const customBlocking = countBy(customFindings, CUSTOM_BLOCKING_LOCALES);
 
 L.push("");
 L.push("  SUMMARY");
 L.push(`    Tool slugs checked: ${toolSlugs.length}   Data locales: ${DATA_LOCALES.join(", ")}   (zh-Hant derives via deepHant)`);
+if (PARTIAL_LOCALES.size) {
+  L.push(`    Partial (English-fallback, reported-not-blocking): ${[...PARTIAL_LOCALES].join(", ")}   — in lock-step with parity-guard BODY_LOCALES`);
+}
 L.push(`    lib/localized-tools.ts  gaps: ${toolTotal}`);
 L.push(`    lib/copy.ts             gaps: ${copyTotal}`);
 L.push(`    CUSTOM_TOOL_COPY        gaps: ${customTotal}   (${customEntryCount} entries × ${CUSTOM_LOCALES.length} locales)`);
 L.push(`    zh-Hant derivation wired: ${hantWired ? "YES (deepHant(zh) path present)" : "NO ⚠️  — derivation path NOT detected"}`);
-L.push(`    TOTAL gaps: ${toolTotal + copyTotal + customTotal}`);
+L.push(`    TOTAL gaps: ${toolTotal + copyTotal + customTotal}   (BLOCKING: ${toolBlocking + copyBlocking + customBlocking})`);
 
 function section(title, findings, locales) {
   L.push("");
@@ -576,14 +600,17 @@ L.push("      footer links and un-localized 'All rights reserved'.");
 L.push("    Recommendation: Phase 4 should hoist these into a checkable locale");
 L.push("    structure (like runtimeCopy.shell) so this guard can cover them.");
 L.push("");
-L.push("  Phase 3 FAIL mode: exits 1 if any gaps found above.");
+L.push("  Phase 3 FAIL mode: exits 1 if any BLOCKING-locale gaps found above.");
+if (PARTIAL_LOCALES.size) {
+  L.push(`  (Partial locales [${[...PARTIAL_LOCALES].join(", ")}] are reported but English-fallback by design — not build-blocking.)`);
+}
 L.push("════════════════════════════════════════════════════════════════════");
 L.push("");
 
 console.log(L.join("\n"));
-const totalGaps = toolTotal + copyTotal + customTotal;
-if (totalGaps > 0) {
-  console.error(`[i18n-coverage] FAIL — ${totalGaps} gap(s) found. Fix all gaps before pushing.`);
+const blockingGaps = toolBlocking + copyBlocking + customBlocking;
+if (blockingGaps > 0) {
+  console.error(`[i18n-coverage] FAIL — ${blockingGaps} blocking gap(s) found. Fix all gaps before pushing.`);
   process.exit(1);
 }
 process.exit(0);

@@ -6,7 +6,7 @@ import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 import { deepHant } from "@/lib/zh-hant";
 
 // Locales with their own copy literals (Record keys). zh-Hant derives from zh.
-type PromptLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type PromptLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de";
 type PromptLocaleInput = PromptLocale | "zh-Hant";
 
 const STR: Record<
@@ -60,6 +60,14 @@ const STR: Record<
     redir: "リダイレクト中…",
     all: "すべてのプランを見る",
     pricing: "/ja/pricing",
+  },
+  de: {
+    title: "Sie haben das heutige Gratis-Limit erreicht",
+    body: (n) => `Der kostenlose Plan erlaubt ${n}/Tag. Führen Sie ein Upgrade durch für höhere Limits und alle Premium-KI-Funktionen.`,
+    cta: "Upgrade auf Plus · $5/Monat",
+    redir: "Weiterleitung…",
+    all: "Alle Pläne ansehen",
+    pricing: "/de/pricing",
   },
 };
 

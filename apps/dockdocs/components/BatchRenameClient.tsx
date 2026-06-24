@@ -85,6 +85,17 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max}件`, preview: "プレビュー", need: "PDFを少なくとも1つ追加してください。",
     note: "名前変更はファイル名のみを変更します——PDFの内容は変わりません。すべてデバイス内で完結します。",
   },
+  de: {
+    title: "Stapelweise umbenennen",
+    subtitle: "Ziehen Sie einen ganzen Ordner hinein und benennen Sie alle Dateien auf einmal um — nach einem nummerierten Muster oder per Suchen und Ersetzen. Die Dateien selbst bleiben unverändert; Sie laden ein ZIP mit den neuen Namen herunter.",
+    drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
+    seq: "Nummeriert", rep: "Suchen und ersetzen",
+    base: "Basisname", basePlaceholder: "z. B. Rechnung", start: "Beginnen bei",
+    find: "Suchen", replace: "Ersetzen durch", findPlaceholder: "Text im Dateinamen", replacePlaceholder: "neuer Text",
+    download: "Umbenanntes ZIP herunterladen", reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`, preview: "Vorschau", need: "Fügen Sie mindestens ein PDF hinzu.",
+    note: "Das Umbenennen ändert nur die Dateinamen — der Inhalt der PDFs bleibt unverändert. Die meisten Tools laufen in Ihrem Browser.",
+  },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -220,6 +231,28 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum einen Ordner mit PDFs stapelweise umbenennen",
+    benefitsDescription: "Benennen Sie einen ganzen Ordner mit PDFs in einem Durchgang um und laden Sie die umbenannten Dateien als ein einziges ZIP herunter.",
+    benefits: [
+      { title: "Einen ganzen Ordner auf einmal umbenennen", description: "Legen Sie Dutzende oder Hunderte PDFs ab und wenden Sie eine einzige Benennungsregel auf alle an — ohne jede Datei einzeln zu öffnen und umzubenennen." },
+      { title: "Nummerierte Muster oder Suchen und Ersetzen", description: "Wählen Sie einen Basisnamen mit fortlaufendem Zähler oder ersetzen Sie einen Textabschnitt in jedem Dateinamen für sofort einheitliche Namen." },
+      { title: "Die umbenannten Dateien als ein ZIP herunterladen", description: "Jede umbenannte Datei kommt in einem einzigen ZIP zurück, der PDF-Inhalt bleibt unangetastet — nur die Dateinamen ändern sich." },
+    ],
+    workflowTitle: "Wie das stapelweise Umbenennen in Ihre Dokumentarbeit passt",
+    workflowDescription: "Für den Moment, in dem ein Ordner mit Exporten, Scans oder Rechnungen mit unordentlichen oder doppelten Namen eintrifft und ein sauberes, sortierbares Benennungsschema braucht.",
+    steps: [
+      "Legen Sie einen Ordner mit PDFs ab oder wählen Sie die Dateien aus, die Sie umbenennen möchten.",
+      "Wählen Sie ein nummeriertes Muster oder Suchen und Ersetzen und prüfen Sie die Live-Vorschau vorher/nachher.",
+      "Laden Sie die umbenannten Dateien als ein einziges ZIP herunter.",
+    ],
+    readingTitle: "Weitere Wege, PDFs zu organisieren",
+    readingDescription: "Verwandte Tools und Ressourcen für die Verwaltung von Dokumentstapeln.",
+    readingLinks: [
+      { label: "PDFs zusammenführen", href: "/merge-pdf", description: "Mehrere PDFs zu einem geordneten Dokument kombinieren." },
+      { label: "Ressourcen zu PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentwege." },
+    ],
+  },
 };
 
 export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
@@ -287,6 +320,7 @@ export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
         pt: "Não foi possível criar o download. Tente novamente.",
         fr: "Impossible de créer le téléchargement. Réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+        de: "Der Download konnte nicht erstellt werden — bitte versuchen Sie es erneut.",
       };
       setError(locale === "zh-Hant" ? toHant(FAIL.zh) : FAIL[locale]);
     }

@@ -111,6 +111,21 @@ const STR = {
     note: "既定の配置（斜めの透かし / ページ番号）を使用します。位置や不透明度をカスタマイズするには、単一ファイル用の「透かし」または「ページ番号」ツールをご利用ください。すべてがお使いのデバイス内で完結します。",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "PDFs stapelweise mit Wasserzeichen oder Seitenzahlen versehen",
+    titleWm: "Wasserzeichen im Stapel", titlePn: "Seitenzahlen im Stapel",
+    subWm: "Versehen Sie einen ganzen Ordner mit PDFs auf einmal mit einem Wasserzeichen – jede Datei wird in Ihrem Browser verarbeitet und in einem einzigen ZIP gebündelt. Es wird nichts hochgeladen.",
+    subPn: "Fügen Sie einem ganzen Ordner mit PDFs auf einmal Seitenzahlen hinzu – jede Datei wird in Ihrem Browser verarbeitet und in einem einzigen ZIP gebündelt. Es wird nichts hochgeladen.",
+    subtitle: "Versehen Sie einen ganzen Ordner mit PDFs auf einmal mit einem Wasserzeichen oder fügen Sie Seitenzahlen hinzu – jede Datei wird in Ihrem Browser verarbeitet und in einem einzigen ZIP gebündelt. Es wird nichts hochgeladen.",
+    drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
+    wm: "Wasserzeichen", pn: "Seitenzahlen",
+    wmText: "Wasserzeichen-Text", wmPlaceholder: "z. B. VERTRAULICH",
+    run: "Auf alle anwenden", running: "Wird verarbeitet", download: "ZIP herunterladen", reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`, done: "fertig", failed: "fehlgeschlagen",
+    needText: "Geben Sie den Wasserzeichen-Text ein.", needFile: "Fügen Sie mindestens ein PDF hinzu.",
+    note: "Verwendet die Standardplatzierung (diagonales Wasserzeichen / Seitenzahlen). Für eine individuelle Position oder Deckkraft nutzen Sie die Einzeldatei-Tools „Wasserzeichen“ oder „Seitenzahlen“. Alles bleibt auf Ihrem Gerät.",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 // Two section sets — this client serves batch-watermark-pdf (lockMode=watermark)
@@ -248,6 +263,28 @@ const SECTIONS_WM: AuthoredCopy<ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum PDFs stapelweise mit Wasserzeichen versehen",
+    benefitsDescription: "Versehen Sie einen ganzen Ordner mit PDFs in einem Durchgang mit demselben Wasserzeichen.",
+    benefits: [
+      { title: "Ein Zeichen, jede Datei", description: "Wenden Sie dasselbe Text- oder Bildwasserzeichen auf jede Seite jedes PDFs im Ordner an – ohne die Dateien einzeln zu öffnen." },
+      { title: "Einheitliche Platzierung", description: "Legen Sie Position, Größe, Deckkraft und Winkel einmal fest, und sie werden im gesamten Stapel identisch angewendet." },
+      { title: "Ein ZIP zurück", description: "Alle mit Wasserzeichen versehenen PDFs kommen in einem einzigen ZIP zurück, bereit zum Teilen oder Archivieren." },
+    ],
+    workflowTitle: "Wie das stapelweise Wasserzeichen in Ihre Arbeit passt",
+    workflowDescription: "Für den Moment, in dem ein Ordner mit Entwürfen, Korrekturabzügen oder vertraulichen Dateien vor dem Versand denselben Stempel braucht.",
+    steps: [
+      "Legen Sie einen Ordner mit PDFs auf der Seite ab.",
+      "Gestalten Sie das Wasserzeichen – Text oder Bild, Position, Deckkraft.",
+      "Starten Sie und laden Sie die mit Wasserzeichen versehenen PDFs als ein ZIP herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs zu kennzeichnen",
+    readingDescription: "Verwandte Tools zum Versehen von Dokumenten mit Wasserzeichen und Seitenzahlen.",
+    readingLinks: [
+      { label: "Ein einzelnes PDF mit Wasserzeichen versehen", href: "/watermark-pdf", description: "Versehen Sie ein PDF mit einer Live-Vorschau mit einem Stempel." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenwege." },
+    ],
+  },
 };
 
 const SECTIONS_PN: AuthoredCopy<ToolSectionsContent> = {
@@ -383,6 +420,28 @@ const SECTIONS_PN: AuthoredCopy<ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum PDFs stapelweise mit Seitenzahlen versehen",
+    benefitsDescription: "Fügen Sie einem ganzen Ordner mit PDFs in einem einheitlichen Durchgang Seitenzahlen hinzu.",
+    benefits: [
+      { title: "Jede Datei gleich nummeriert", description: "Wenden Sie denselben Seitenzahlenstil und dieselbe Position auf jedes PDF im Ordner auf einmal an." },
+      { title: "Format und Position wählen", description: "Wählen Sie Position, Format (1 / N) und Startnummer – einheitlich auf den gesamten Stapel angewendet." },
+      { title: "Ein ZIP zurück", description: "Alle nummerierten PDFs kommen in einem einzigen ZIP zurück, bereit zum Zusammenstellen oder Übergeben." },
+    ],
+    workflowTitle: "Wie die stapelweise Seitennummerierung in Ihre Arbeit passt",
+    workflowDescription: "Für den Moment, in dem ein Ordner mit Berichten, Kapiteln oder Anlagen vor dem Binden oder Ablegen einheitliche Seitenzahlen braucht.",
+    steps: [
+      "Legen Sie einen Ordner mit PDFs auf der Seite ab.",
+      "Wählen Sie Position, Format und Startnummer der Seitenzahlen.",
+      "Starten Sie und laden Sie die nummerierten PDFs als ein ZIP herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs abzuschließen",
+    readingDescription: "Verwandte Tools zum Nummerieren und Kennzeichnen von Dokumenten.",
+    readingLinks: [
+      { label: "Einem PDF Seitenzahlen hinzufügen", href: "/page-numbers", description: "Nummerieren Sie die Seiten eines einzelnen PDFs." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenwege." },
+    ],
+  },
 };
 
 export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
@@ -458,6 +517,7 @@ export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale;
         pt: "Não foi possível criar o download. Tente novamente.",
         fr: "Impossible de créer le téléchargement. Réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+        de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
       };
       setError(locale === "zh-Hant" ? toHant(zipErr.zh) : zipErr[locale]);
     }

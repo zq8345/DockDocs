@@ -6,7 +6,7 @@ import { dropzoneShell } from "@/components/design";
 import { formatBytes, matchFiles } from "@/lib/files";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
 
 // Multi-file / folder / rejection copy, shared with BatchUploadBox's wording so
 // the two boxes read identically. Single-file copy stays inline below.
@@ -46,6 +46,12 @@ const MORE = {
     dropMany: "またはファイルをここにドロップ",
     remove: "削除",
     rejected: (n: number, ext: string) => `${n}件のファイルをスキップしました — ${ext} ファイルのみ対応しています`,
+  },
+  de: {
+    folder: "Stattdessen einen Ordner wählen",
+    dropMany: "oder Dateien hierher ziehen",
+    remove: "Entfernen",
+    rejected: (n: number, ext: string) => `${n} Datei${n > 1 ? "en" : ""} übersprungen – nur ${ext}-Dateien werden akzeptiert`,
   },
 };
 
@@ -120,6 +126,7 @@ export function UploadDropzone({
   const es = locale === "es";
   const pt = locale === "pt";
   const fr = locale === "fr";
+  const de = locale === "de";
   const h = (s: string) => (hant ? toHant(s) : s);
   const more = hant ? deepHant(MORE.zh) : (MORE[locale] ?? MORE.en);
 
@@ -168,7 +175,7 @@ export function UploadDropzone({
           >
             {buttonLabel}
           </button>
-          <p className="mt-3 text-sm text-[color:var(--muted)]">{multiple ? more.dropMany : (zh ? h("或将文件拖放到此处") : ja ? "またはファイルをここにドロップ" : es ? "o suelta tu archivo aquí" : pt ? "ou solte seu arquivo aqui" : fr ? "ou déposez votre fichier ici" : "or drop your file here")}</p>
+          <p className="mt-3 text-sm text-[color:var(--muted)]">{multiple ? more.dropMany : (zh ? h("或将文件拖放到此处") : ja ? "またはファイルをここにドロップ" : es ? "o suelta tu archivo aquí" : pt ? "ou solte seu arquivo aqui" : fr ? "ou déposez votre fichier ici" : de ? "oder Datei hierher ziehen" : "or drop your file here")}</p>
           {folder ? (
             <button type="button" onClick={(e) => { e.stopPropagation(); folderRef.current?.click(); }} className="mt-1.5 inline-flex items-center gap-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:text-[color:var(--accent)]">
               <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"><path d="M2 4.5A1.5 1.5 0 0 1 3.5 3h3L8 4.5h4.5A1.5 1.5 0 0 1 14 6v5.5A1.5 1.5 0 0 1 12.5 13h-9A1.5 1.5 0 0 1 2 11.5z" /></svg>
@@ -176,7 +183,7 @@ export function UploadDropzone({
             </button>
           ) : null}
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-            <span>{zh ? h("支持") : ja ? "対応形式" : es ? "Admite" : pt ? "Suporta" : fr ? "Prend en charge" : "Supports"} {acceptLabel}</span>
+            <span>{zh ? h("支持") : ja ? "対応形式" : es ? "Admite" : pt ? "Suporta" : fr ? "Prend en charge" : de ? "Unterstützt" : "Supports"} {acceptLabel}</span>
             {limits ? (
               <>
                 <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
@@ -195,7 +202,7 @@ export function UploadDropzone({
                 <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
                 <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
                   <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
-                  {zh ? h("本地处理，文件不上传") : ja ? "ローカルで処理 — ファイルはアップロードされません" : es ? "Procesado localmente — nunca se sube" : pt ? "Processado localmente — nunca enviado" : fr ? "Traité localement — jamais téléversé" : "Processed locally — never uploaded"}
+                  {zh ? h("本地处理，文件不上传") : ja ? "ローカルで処理 — ファイルはアップロードされません" : es ? "Procesado localmente — nunca se sube" : pt ? "Processado localmente — nunca enviado" : fr ? "Traité localement — jamais téléversé" : de ? "Lokal verarbeitet – nicht hochgeladen" : "Processed locally — never uploaded"}
                 </span>
               </>
             ) : null}

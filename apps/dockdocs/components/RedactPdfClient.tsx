@@ -55,6 +55,7 @@ function pageLabel(locale: Locale, n: number): string {
     pt: `Page ${n}`,
     fr: `Page ${n}`,
     ja: `Page ${n}`,
+    de: `Seite ${n}`,
   };
   return MSG[locale];
 }
@@ -145,6 +146,20 @@ const STR = {
     needBox: "まず少なくとも1件の黒塗りを追加してください。",
     note: "出力は統合された画像PDFです。黒塗りした内容は完全に削除され、ページの文字は選択できなくなります——これこそが復元不可能である理由です。",
     err: "問題が発生しました: ", tooMany: `このPDFは${MAX_PAGES}ページを超えています。先に分割してから黒塗りしてください。`,
+  },
+  de: {
+    title: "PDF schwärzen",
+    subtitle: "Schwärzen Sie Namen, Nummern und beliebigen vertraulichen Text – und laden Sie anschließend eine Kopie herunter, in der er wirklich entfernt ist. Anders als bei einem schwarzen Kasten, unter dem man den Text noch herauskopieren kann, reduziert DockDocs jede Seite auf ein Bild, sodass der verborgene Text endgültig zerstört wird. Läuft in Ihrem Browser; Ihre Datei verlässt Ihr Gerät nicht.",
+    drop: "PDF hierher ziehen und ablegen oder zum Auswählen klicken",
+    choose: "PDF auswählen", rendering: "Seiten werden gerendert…",
+    hint: "Ziehen Sie auf einer Seite, um einen Bereich zu schwärzen. Automatisch vorgeschlagene Elemente sind vorab markiert – klicken Sie auf das ✕ eines Kastens, um ihn zu entfernen.",
+    autoFound: (n: number) => `${n} wahrscheinlich vertrauliche${n === 1 ? "s" : ""} Element${n === 1 ? "" : "e"} automatisch erkannt (E-Mails, Telefonnummern, SSN, Karten, IPs). Prüfen Sie sie und ergänzen Sie eigene.`,
+    autoNone: "Keine offensichtlichen E-Mails/Nummern automatisch erkannt – ziehen Sie auf den Seiten, um manuell zu schwärzen.",
+    boxes: (n: number) => `${n} Schwärzung${n === 1 ? "" : "en"}`,
+    clear: "Alle löschen", apply: "Anwenden & herunterladen", working: "Wird entfernt & reduziert…", reset: "Neu beginnen",
+    needBox: "Fügen Sie zuerst mindestens eine Schwärzung hinzu.",
+    note: "Die Ausgabe ist ein reduziertes Bild-PDF: Der geschwärzte Inhalt wird dauerhaft entfernt und der Seitentext lässt sich nicht mehr markieren – genau das macht ihn unwiederherstellbar.",
+    err: "Etwas ist schiefgelaufen: ", tooMany: `Dieses PDF hat mehr als ${MAX_PAGES} Seiten. Teilen Sie es zuerst und schwärzen Sie es dann.`,
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -285,6 +300,29 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "PDF に透かしを入れる", href: "/watermark-pdf", description: "共有前に「社外秘」「ドラフト」などのラベルをページに押します。" },
       { label: "PDF を無料で黒塗りする方法", href: "/guides/redact-pdf-free", description: "機密文字を復元できないように削除する手順を順を追って解説します。" },
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Warum PDFs in Ihrem Browser schwärzen",
+    benefitsDescription: "Schwärzen Sie vertrauliche Inhalte und laden Sie eine Kopie herunter, in der der verborgene Text wirklich verschwunden ist – nicht nur überdeckt.",
+    benefits: [
+      { title: "Der Text wird zerstört, nicht versteckt", description: "Jede Seite wird auf ein Bild reduziert, sodass sich die geschwärzten Wörter nicht kopieren, durchsuchen oder wiederherstellen lassen – anders als unter einem einfachen schwarzen Kasten." },
+      { title: "Findet die offensichtlichen Risiken automatisch", description: "E-Mails, Telefonnummern, SSN, Kartennummern und IPs werden erkannt und für Sie vorab markiert – prüfen Sie jedes einzelne und entfernen Sie Fehltreffer vor dem Anwenden." },
+      { title: "Präzise manuelle Kontrolle", description: "Ziehen Sie einen Kasten über alles, was die Erkennung übersieht – Namen, Beträge, Unterschriften, Logos – und setzen Sie genau so viele Schwärzungen, wie eine Seite braucht." },
+    ],
+    workflowTitle: "Wie das Schwärzen in Ihre Dokumentarbeit passt",
+    workflowDescription: "Für den Moment, in dem eine Datei geteilt werden muss, aber Teile davon niemals gelesen werden dürfen – ein Vertrag, eine Krankenakte, ein Beweisdokument, ein Screenshot mit personenbezogenen Daten.",
+    steps: [
+      "Laden Sie das PDF hoch, das Sie bereinigen möchten (bis zu 30 Seiten).",
+      "Bestätigen Sie die automatisch erkannten Elemente und ziehen Sie Kästen über alles Weitere, das geschwärzt werden soll.",
+      "Anwenden und eine reduzierte Kopie herunterladen, in der der geschwärzte Inhalt dauerhaft entfernt ist.",
+    ],
+    readingTitle: "Weitere Wege, PDFs zu schützen",
+    readingDescription: "Verwandte Tools und Anleitungen zum Sichern und Fertigstellen von Dokumenten.",
+    readingLinks: [
+      { label: "Ein PDF mit Wasserzeichen versehen", href: "/watermark-pdf", description: "Versehen Sie Seiten vor dem Teilen mit einem Vermerk wie VERTRAULICH oder ENTWURF." },
+      { label: "Ein PDF kostenlos schwärzen", href: "/guides/redact-pdf-free", description: "Eine Schritt-für-Schritt-Anleitung zum Entfernen vertraulichen Texts, sodass er nicht wiederhergestellt werden kann." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentpfade." },
     ],
   },
 };

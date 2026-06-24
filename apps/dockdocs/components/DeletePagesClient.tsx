@@ -77,6 +77,16 @@ const STR = {
     apply: "削除してダウンロード", working: "PDFを生成中…", reset: "最初からやり直す",
     needKeep: "少なくとも1ページは残してください。", del: "削除されます", err: "問題が発生しました: ",
   },
+  de: {
+    title: "Seiten löschen",
+    subtitle: "Laden Sie ein PDF hoch und klicken Sie auf die Seiten, die Sie entfernen möchten — sehen Sie genau, was verschwindet, bevor Sie herunterladen. Die meisten Tools laufen in Ihrem Browser.",
+    drop: "PDF hierher ziehen und ablegen oder zum Auswählen klicken",
+    choose: "PDF auswählen", rendering: "Seiten werden gerendert…",
+    hint: "Klicken Sie auf eine Seite, um sie zum Löschen zu markieren. Erneut klicken, um sie zu behalten.",
+    status: (del: number, keep: number) => `${del} zu löschen · ${keep} verbleibend`,
+    apply: "Löschen & herunterladen", working: "PDF wird erstellt…", reset: "Von vorn beginnen",
+    needKeep: "Behalten Sie mindestens eine Seite.", del: "Wird gelöscht", err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
@@ -218,6 +228,29 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum PDF-Seiten in Ihrem Browser löschen",
+    benefitsDescription: "Entfernen Sie unerwünschte Seiten aus jedem PDF — leere, doppelte oder vertrauliche — mit wenigen Klicks.",
+    benefits: [
+      { title: "Entfernen, was nicht hingehört", description: "Löschen Sie leere Scans, doppelte Seiten oder Abschnitte, die Sie nicht teilen möchten — behalten Sie nur die Seiten, die zählen." },
+      { title: "Seiten visuell auswählen", description: "Jede Seite erscheint als Miniaturansicht; klicken Sie, um die zu entfernenden zu markieren, und sehen Sie das Ergebnis vor dem Export." },
+      { title: "Der Rest bleibt unverändert", description: "Die verbleibenden Seiten behalten ihre ursprüngliche Qualität und Reihenfolge — das Löschen rendert oder verschiebt die anderen nie neu." },
+    ],
+    workflowTitle: "Wie das Löschen von Seiten in Ihre Arbeit passt",
+    workflowDescription: "Für den Moment, in dem ein PDF Seiten enthält, die es nicht sollte — ein Deckblatt, eine leere Rückseite, eine interne Notiz vor dem Teilen.",
+    steps: [
+      "Laden Sie das PDF hoch, das Sie kürzen möchten.",
+      "Klicken Sie auf die Miniaturansichten der Seiten, die Sie entfernen möchten.",
+      "Laden Sie das PDF ohne diese Seiten herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs zu organisieren",
+    readingDescription: "Verwandte Tools zum Kürzen und Neuanordnen von Dokumentseiten.",
+    readingLinks: [
+      { label: "Ein PDF teilen", href: "/split-pdf", description: "Zerlegen Sie ein großes PDF in einzelne Dateien oder Seitenbereiche." },
+      { label: "Seiten neu anordnen", href: "/reorder-pages", description: "Ändern Sie die Seitenreihenfolge eines PDFs per Ziehen." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
+    ],
+  },
 };
 
 export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
@@ -328,6 +361,7 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
                 pt: `Page ${n}`,
                 fr: `Page ${n}`,
                 ja: `Page ${n}`,
+                de: `Seite ${n}`,
               };
               const pageLabel = locale === "zh-Hant" ? toHant(PAGE_LABEL.zh) : PAGE_LABEL[locale];
               return (

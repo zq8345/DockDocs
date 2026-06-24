@@ -167,6 +167,27 @@ const STR = {
     errPrefix: "翻訳に失敗しました: ",
     privacy: "ファイルはブラウザ内で読み取られ、抽出されたテキストのみが翻訳のために送信されます。",
   },
+  de: {
+    title: "PDF übersetzen",
+    subtitle:
+      "Laden Sie ein PDF hoch, wählen Sie eine Sprache und erhalten Sie den übersetzten Text. Die KI übersetzt den Text des Dokuments — privat verarbeitet, vorerst nur Text (eine layouterhaltende Ausgabe folgt).",
+    drop: "Ziehen Sie ein PDF hierher oder klicken Sie zum Auswählen",
+    choose: "PDF auswählen",
+    extracting: "PDF wird gelesen…",
+    pagesChars: (p: number, c: number) => `${p} Seiten · ${c.toLocaleString()} Zeichen`,
+    noText: "Kein auswählbarer Text gefunden. Ist das ein gescanntes PDF? Führen Sie zuerst eine OCR durch.",
+    tooLong: `Dieses PDF enthält mehr Text als das Limit von ${MAX_CHARS.toLocaleString()} Zeichen. Verwenden Sie ein kürzeres Dokument (etwa 10 Seiten).`,
+    target: "Übersetzen nach",
+    translate: "Übersetzen",
+    translating: "Wird übersetzt…",
+    result: "Übersetzung",
+    copy: "Kopieren",
+    copied: "Kopiert!",
+    download: ".txt herunterladen",
+    reset: "Neu beginnen",
+    errPrefix: "Übersetzung fehlgeschlagen: ",
+    privacy: "Ihre Datei wird in Ihrem Browser gelesen; nur der extrahierte Text wird zum Übersetzen gesendet.",
+  },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
 type Phase = "idle" | "extracting" | "ready" | "translating" | "done";
@@ -186,6 +207,7 @@ function langLabel(l: { en: string; zh: string }, locale: Locale): string {
     case "pt":
     case "fr":
     case "ja":
+    case "de":
       return l.en;
     default: {
       const _exhaustive: never = authored;
@@ -331,6 +353,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF とチャット", href: "/chat-with-pdf", description: "文書について質問し、そのテキストに基づく回答を得ます。" },
       { label: "PDF を要約", href: "/ai-summary", description: "翻訳の前後に、長い文書を要点へ凝縮します。" },
       { label: "AI 文書リソース", href: "/resources", description: "AI 文書ツール、変換、PDF ワークフローを整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Was der PDF-Übersetzer leistet",
+    benefitsDescription: "Verwandeln Sie ein PDF aus einer Sprache in lesbaren Text in einer anderen, ohne es neu abzutippen.",
+    benefits: [
+      { title: "In 18 Sprachen übersetzen", description: "Wählen Sie aus Englisch, Chinesisch, Spanisch, Französisch, Japanisch, Arabisch, Hindi und mehr — die KI gibt den Text Ihres Dokuments in der gewählten Zielsprache wieder." },
+      { title: "Vollständiger Fließtext, nicht Wort für Wort", description: "Der extrahierte Text wird als zusammenhängende Sätze übersetzt, sodass sich das Ergebnis natürlich liest und nicht wie ein zusammengestückeltes Glossar." },
+      { title: "Kopieren oder als .txt herunterladen", description: "Erhalten Sie die Übersetzung als reinen Text, den Sie direkt in eine E-Mail kopieren oder als .txt-Datei speichern können — eine layouterhaltende Ausgabe ist geplant." },
+    ],
+    workflowTitle: "Wie die Übersetzung in Ihre Dokumentenarbeit passt",
+    workflowDescription: "Wenn ein PDF in einer Sprache eintrifft, die Ihr Team nicht liest — ein ausländischer Vertrag, das Datenblatt eines Lieferanten, eine Forschungsarbeit.",
+    steps: [
+      "Laden Sie das PDF hoch; sein Text wird in Ihrem Browser extrahiert und der Text an die KI gesendet.",
+      "Wählen Sie die Sprache, in die übersetzt werden soll, und starten Sie die Übersetzung.",
+      "Lesen Sie das Ergebnis auf dem Bildschirm und kopieren Sie es dann oder laden Sie es als .txt-Datei herunter.",
+    ],
+    readingTitle: "Weitere KI-Dokumententools",
+    readingDescription: "Verwandte Wege, um mit dem zu arbeiten, was ein Dokument aussagt, nicht nur mit seinem Format.",
+    readingLinks: [
+      { label: "Mit einem PDF chatten", href: "/chat-with-pdf", description: "Stellen Sie Fragen zu einem Dokument und erhalten Sie Antworten, die aus seinem Text stammen." },
+      { label: "Ein PDF zusammenfassen", href: "/ai-summary", description: "Verdichten Sie ein langes Dokument vor oder nach der Übersetzung auf seine Kernpunkte." },
+      { label: "KI-Dokumentenressourcen", href: "/resources", description: "Ein strukturierter Hub für KI-Dokumententools, Konvertierung und PDF-Workflows." },
     ],
   },
 };

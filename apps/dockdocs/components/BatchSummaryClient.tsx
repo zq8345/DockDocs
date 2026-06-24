@@ -87,6 +87,16 @@ const STR = {
     noText: "抽出可能なテキストがありません（スキャン？）", err: "問題が発生しました: ",
     note: "各 PDF はブラウザ内で読み取られ、要約のために抽出されたテキストのみが AI に送信されます——ファイル自体はアップロードされません。要約は各文書からAIが生成します——簡単に確認してください。制限内に収めるため1件ずつ処理します。",
   },
+  de: {
+    title: "Stapelzusammenfassung",
+    subtitle: "Laden Sie mehrere Berichte, Aufsätze oder Verträge hoch und erhalten Sie zu jedem eine prägnante KI-Zusammenfassung — Management-Zusammenfassung plus Kernpunkte. Bis zu 5 auf einmal.",
+    drop: "PDFs hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", add: "Weitere hinzufügen", reading: "Wird gelesen…",
+    run: "Alle zusammenfassen", running: "Wird zusammengefasst", reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`,
+    keyPoints: "Kernpunkte", download: "Alle herunterladen (.md)", need: "Fügen Sie mindestens ein PDF hinzu.",
+    noText: "kein extrahierbarer Text (Scan?)", err: "Etwas ist schiefgelaufen: ",
+    note: "Jedes PDF wird in Ihrem Browser gelesen; nur der extrahierte Text wird zum Zusammenfassen an die KI gesendet — die Datei selbst wird nicht hochgeladen. Die Zusammenfassungen werden von der KI aus jedem Dokument erstellt — prüfen Sie sie kurz. Sie werden einzeln verarbeitet, um innerhalb der Grenzen zu bleiben.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -226,6 +236,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "単一の PDF を要約", href: "/ai-summary", description: "1 文書版——1 つのファイルに的を絞ったエグゼクティブサマリーと要点。" },
       { label: "PDF を一括翻訳", href: "/batch-translate", description: "同じフォルダ一括方式で、文書の束を要約する代わりに翻訳します。" },
       { label: "AI ドキュメントワークスペース", href: "/ai-workspace", description: "複数の文書をまとめて質問し、横断して必要な内容を取り出します。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Einen ganzen Ordner voller Dokumente zusammenfassen",
+    benefitsDescription: "Legen Sie einen Stapel PDFs ab und erhalten Sie zu jedem eine fokussierte, von der KI erstellte Zusammenfassung.",
+    benefits: [
+      { title: "Ein Stapel Berichte in einem Durchgang", description: "Reihen Sie mehrere PDFs auf einmal ein, und die KI arbeitet sie eines nach dem anderen ab, sodass aus einem Ordner voller Verträge oder Aufsätze ein Ordner voller Zusammenfassungen wird." },
+      { title: "Management-Zusammenfassung plus die Kernpunkte", description: "Jedes Dokument kommt als kurzer Überblick gefolgt von den wichtigsten Punkten zurück, sodass Sie das Wesentliche überfliegen können, ohne jede Datei zu öffnen." },
+      { title: "Nehmen Sie die Zusammenfassungen mit", description: "Jedes Ergebnis wird in einer übersichtlichen Markdown-Datei gesammelt, die Sie herunterladen, in Notizen einfügen oder mit einer Kollegin teilen können." },
+    ],
+    workflowTitle: "Wie die Stapelzusammenfassung in Ihre Lektüre passt",
+    workflowDescription: "Für den Moment, in dem ein Stapel PDFs auf einmal bei Ihnen landet — ein Recherche-Ordner, ein Quartal an Vorstandsunterlagen, ein Stapel Lieferantenverträge.",
+    steps: [
+      "Fügen Sie per Drag-and-drop oder über die Dateiauswahl die PDFs hinzu, die Sie zusammenfassen möchten.",
+      "Starten Sie den Stapel — die KI liest den Text jedes Dokuments und schreibt der Reihe nach dessen Zusammenfassung.",
+      "Lesen Sie jede Zusammenfassung auf dem Bildschirm oder laden Sie alle als eine einzige Markdown-Datei herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, Dokumente durchzuarbeiten",
+    readingDescription: "Verwandte KI-Dokumentwerkzeuge zum Lesen und Handeln auf Basis dessen, was in Ihren Dateien steht.",
+    readingLinks: [
+      { label: "Ein einzelnes PDF zusammenfassen", href: "/ai-summary", description: "Die Ein-Dokument-Version — eine fokussierte Management-Zusammenfassung und Kernpunkte für eine einzelne Datei." },
+      { label: "PDFs im Stapel übersetzen", href: "/batch-translate", description: "Derselbe Ansatz für einen ganzen Ordner, nur dass ein Stapel Dokumente übersetzt statt zusammengefasst wird." },
+      { label: "KI-Dokumenten-Arbeitsbereich", href: "/ai-workspace", description: "Führen Sie Dokumente zusammen, um Fragen zu stellen und das herauszuziehen, was Sie über alle hinweg brauchen." },
     ],
   },
 };

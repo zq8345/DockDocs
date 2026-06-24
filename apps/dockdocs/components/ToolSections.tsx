@@ -28,10 +28,10 @@ export type ToolSectionsContent = {
 // derived via toHant in pick()). Adding a route locale (e.g. "de") without a key
 // here is a tsc error, never a silent English fallback.
 const EYEBROW = {
-  benefits: { en: "Benefits", zh: "优势", es: "Ventajas", pt: "Vantagens", fr: "Avantages", ja: "メリット" },
-  workflow: { en: "Workflow", zh: "工作流", es: "Flujo de trabajo", pt: "Fluxo de trabalho", fr: "Flux de travail", ja: "ワークフロー" },
-  reading: { en: "Recommended reading", zh: "推荐阅读", es: "Lectura recomendada", pt: "Leitura recomendada", fr: "Lecture recommandée", ja: "おすすめ記事" },
-  cont: { en: "Continue", zh: "继续阅读", es: "Continuar", pt: "Continuar", fr: "Continuer", ja: "続きを読む" },
+  benefits: { en: "Benefits", zh: "优势", es: "Ventajas", pt: "Vantagens", fr: "Avantages", ja: "メリット", de: "Vorteile" },
+  workflow: { en: "Workflow", zh: "工作流", es: "Flujo de trabajo", pt: "Fluxo de trabalho", fr: "Flux de travail", ja: "ワークフロー", de: "Arbeitsablauf" },
+  reading: { en: "Recommended reading", zh: "推荐阅读", es: "Lectura recomendada", pt: "Leitura recomendada", fr: "Lecture recommandée", ja: "おすすめ記事", de: "Empfohlene Lektüre" },
+  cont: { en: "Continue", zh: "继续阅读", es: "Continuar", pt: "Continuar", fr: "Continuer", ja: "続きを読む", de: "Weiterlesen" },
 } as const satisfies Record<string, AuthoredCopy<string>>;
 
 function pick(map: AuthoredCopy<string>, locale: Loc): string {

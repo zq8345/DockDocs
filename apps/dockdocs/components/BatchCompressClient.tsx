@@ -87,6 +87,17 @@ const STR = {
     need: "PDFを少なくとも1つ追加してください。", err: "問題が発生しました: ",
     note: "圧縮はページを画像に変換するため、テキスト主体のPDFはあまり縮小されない場合があります。すべてデバイス内で完結します。",
   },
+  de: {
+    title: "Stapelweise komprimieren",
+    subtitle: "Legen Sie einen ganzen Ordner mit PDFs ab und verkleinern Sie sie alle auf einmal – jede Datei wird in Ihrem Browser komprimiert und in einem einzigen ZIP gebündelt. Die meisten Tools laufen direkt in Ihrem Browser.",
+    drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen", reading: "Wird gelesen…",
+    level: "Komprimierung", low: "Leicht", recommended: "Empfohlen", high: "Stark",
+    run: "Alle komprimieren", running: "Wird komprimiert", download: "ZIP herunterladen", reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`, saved: "kleiner", failed: "fehlgeschlagen",
+    totalSaved: (p: number) => `insgesamt ${p}% kleiner`,
+    need: "Fügen Sie mindestens ein PDF hinzu.", err: "Etwas ist schiefgelaufen: ",
+    note: "Bei der Komprimierung werden die Seiten in Bilder umgewandelt, daher lassen sich textlastige PDFs möglicherweise nicht stark verkleinern. Die Verarbeitung erfolgt auf Ihrem Gerät.",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 // //Benefits //Workflow //Recommended-reading content (the three sections single-
@@ -232,6 +243,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum einen ganzen Ordner stapelweise komprimieren",
+    benefitsDescription: "Verkleinern Sie jedes PDF in einem Ordner in einem Durchgang – komplett in Ihrem Browser.",
+    benefits: [
+      { title: "Dutzende auf einmal komprimieren", description: "Legen Sie einen ganzen Ordner ab und komprimieren Sie jedes PDF in einem einzigen Durchlauf – ohne die Dateien einzeln zu öffnen." },
+      { title: "Nichts verlässt Ihr Gerät", description: "Jede Datei wird lokal in Ihrem Browser komprimiert und nicht hochgeladen, sodass vertrauliche Dokumente privat bleiben." },
+      { title: "Ein aufgeräumtes ZIP zurück", description: "Alle komprimierten PDFs kommen in einem einzigen ZIP zurück, bereit zum Teilen oder Archivieren." },
+    ],
+    workflowTitle: "Wie die Stapelkomprimierung in Ihre Arbeit passt",
+    workflowDescription: "Gemacht für den Moment, in dem ein Ordner mit PDFs zu groß ist, um ihn per E-Mail zu senden oder hochzuladen.",
+    steps: [
+      "Legen Sie einen Ordner oder mehrere PDFs auf der Seite ab.",
+      "Wählen Sie eine Komprimierungsstufe und starten Sie – jede Datei wird in Ihrem Browser komprimiert.",
+      "Laden Sie das einzelne ZIP mit den kleineren PDFs herunter.",
+    ],
+    readingTitle: "Weiter mit der PDF-Komprimierung",
+    readingDescription: "Verwandte Tools und Schritt-für-Schritt-Anleitungen zum Verkleinern von PDFs.",
+    readingLinks: [
+      { label: "Ein einzelnes PDF komprimieren", href: "/compress-pdf", description: "Verkleinern Sie ein PDF in Ihrem Browser – dieselbe Engine, eine Datei nach der anderen." },
+      { label: "PDF-Größe ohne Qualitätsverlust reduzieren", href: "/guides/reduce-pdf-size-without-losing-quality", description: "So verkleinern Sie ein PDF und halten Text und Bilder weiterhin lesbar." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
+    ],
+  },
 };
 
 export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
@@ -302,6 +336,7 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
         pt: "Não foi possível criar o download. Tente novamente.",
         fr: "Impossible de créer le téléchargement. Réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+        de: "Der Download konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
       };
       setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[locale]);
     }

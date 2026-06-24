@@ -105,6 +105,20 @@ const STR = {
     note: "結合はアップロード順を保持します。分割は各 PDF を N ページ単位のまとまりに分けます。すべてがお使いのデバイス内で完結します。",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "PDFs stapelweise teilen oder zusammenführen",
+    titleSplit: "Stapelweise teilen",
+    subSplit: "Teilen Sie jedes PDF eines ganzen Ordners in kleinere Dateien mit je N Seiten auf – alles in Ihrem Browser und gebündelt zum Herunterladen. Die meisten Tools laufen direkt in Ihrem Browser.",
+    subtitle: "Führen Sie einen ganzen Ordner mit PDFs zu einem zusammen oder teilen Sie jedes PDF in kleinere Dateien auf – alles in Ihrem Browser und gebündelt zum Herunterladen. Die meisten Tools laufen direkt in Ihrem Browser.",
+    drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
+    merge: "Zu einem zusammenführen", split: "Einzeln teilen",
+    every: "Seiten pro Datei", order: "Die Dateien werden in der angezeigten Reihenfolge zusammengeführt.",
+    run: "Ausführen", running: "Wird verarbeitet", dlMerge: "Zusammengeführtes PDF herunterladen", dlSplit: "ZIP herunterladen", reset: "Neu beginnen",
+    files: (n: number, max: number) => `${n} / ${max} Dateien`, parts: (n: number) => `${n} Teil${n === 1 ? "" : "e"}`, failed: "fehlgeschlagen",
+    needTwo: "Fügen Sie mindestens 2 PDFs zum Zusammenführen hinzu.", needFile: "Fügen Sie mindestens ein PDF hinzu.",
+    note: "Beim Zusammenführen bleibt die Upload-Reihenfolge erhalten. Beim Teilen wird jedes PDF in Blöcke von je N Seiten zerlegt. Die Verarbeitung erfolgt auf Ihrem Gerät.",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof STR_en>;
 
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
@@ -244,6 +258,29 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "単一の PDF を分割", href: "/split-pdf", description: "1 つの PDF を別々のファイルやページ範囲に分けます。" },
       { label: "ページ範囲で PDF を分割", href: "/guides/split-pdf-page-ranges", description: "固定ページ数ではなく、正確なページ範囲を取り出す方法。" },
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Einen ganzen Ordner mit PDFs stapelweise teilen",
+    benefitsDescription: "Zeigen Sie auf einen Ordner, teilen Sie jedes PDF auf dieselbe Weise und sammeln Sie die Ergebnisse in einem einzigen ZIP.",
+    benefits: [
+      { title: "Jede Datei in einem Durchgang", description: "Legen Sie einen ganzen Ordner ab und teilen Sie jedes PDF auf einmal – ohne die Dateien einzeln zu öffnen oder dieselben Schritte zu wiederholen." },
+      { title: "Blöcke fester Größe", description: "Legen Sie die Seiten pro Datei einmal fest und wenden Sie sie auf den gesamten Stapel an, sodass jedes PDF in dieselben Teile mit je N Seiten zerlegt wird." },
+      { title: "Ein ZIP mit klaren Namen", description: "Jeder geteilte Teil landet in einem einzigen ZIP mit vorhersehbaren Dateinamen, bereit zum Entpacken und Weitergeben." },
+    ],
+    workflowTitle: "Wie das stapelweise Teilen in Ihre Arbeit passt",
+    workflowDescription: "Für den Moment, in dem ein Stapel mehrseitiger PDFs zu vielen kleineren Dateien werden muss – einseitige Scans, Aufteilungen nach Kapiteln, Exporte je Datensatz.",
+    steps: [
+      "Legen Sie einen Ordner mit PDFs ab oder wählen Sie die Dateien aus, die Sie teilen möchten.",
+      "Legen Sie fest, wie viele Seiten jede Ausgabedatei enthalten soll, und starten Sie den Stapel.",
+      "Laden Sie ein einzelnes ZIP mit allen geteilten Teilen herunter.",
+    ],
+    readingTitle: "Weitere Wege, PDFs zu teilen",
+    readingDescription: "Verwandte Tools und Anleitungen zum Zerlegen von Dokumenten.",
+    readingLinks: [
+      { label: "Ein einzelnes PDF teilen", href: "/split-pdf", description: "Zerlegen Sie ein PDF in einzelne Dateien oder Seitenbereiche." },
+      { label: "Ein PDF nach Seitenbereichen teilen", href: "/guides/split-pdf-page-ranges", description: "So extrahieren Sie genaue Seitenbereiche statt Blöcke fester Größe." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
 };

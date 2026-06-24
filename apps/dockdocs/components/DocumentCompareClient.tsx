@@ -420,6 +420,67 @@ const STR = {
     tplDropHere: "PDF をドロップして再実行",
     retry: "再試行",
   },
+  de: {
+    badge: "Vergleichs-Engine",
+    h1: "Dokumente vergleichen",
+    intro: `Laden Sie 2–${MAX_FILES} PDFs derselben Art hoch. DockDocs liest sie in Ihrem Browser und stellt die wichtigsten Angaben nebeneinander – mit der Quellzeile, sofern sie sich finden lässt.`,
+    drop: "PDFs hierher ziehen und ablegen",
+    dropHint: "Lokal gelesen – Ihre Dateien verlassen Ihr Gerät nicht. Die Feldextraktion läuft auf unserem Server.",
+    choose: "PDFs auswählen",
+    samples: "3 Beispielangebote ausprobieren",
+    extracting: "Text wird extrahiert…",
+    typeLabel: "Art",
+    compare: "Felder vergleichen",
+    comparing: "Wird verglichen…",
+    clear: "Leeren",
+    bExtracted: "Text extrahiert",
+    bEmpty: "Nicht erkannt (vermutlich gescannt – OCR erforderlich)",
+    ocrRun: "Text mit OCR extrahieren",
+    ocrBusy: "Wird mit OCR gelesen… (das kann einige Sekunden dauern)",
+    bError: "Lesen fehlgeschlagen",
+    needTwo: "Fügen Sie mindestens 2 lesbare Dokumente zum Vergleichen hinzu.",
+    failed: "Vergleich fehlgeschlagen.",
+    comparison: "Vergleich",
+    dimension: "Merkmal",
+    notRecognized: "Nicht erkannt",
+    tableNote:
+      "Von der KI extrahiert. Jeder Wert zeigt die genaue Quellzeile, aus der er stammt (es wurde geprüft, dass sie in diesem Dokument vorkommt). „Nicht erkannt“ bedeutet, dass das Dokument dazu nichts angibt – nichts wird geraten.",
+    comingNext: "Demnächst",
+    next: [
+      "Eine Empfehlung, gestützt auf die verglichenen Zahlen (welche Option gewinnt und warum)",
+      "Auf einen beliebigen Wert klicken, um zur genauen Stelle im Original-PDF zu springen",
+      "Eigene Merkmale zum Vergleichen hinzufügen",
+    ],
+    docCount: (n: number) => `${n} ${n === 1 ? "Dokument" : "Dokumente"}`,
+    pages: (n: number) => `${n} ${n === 1 ? "Seite" : "Seiten"} · `,
+    chars: (n: number) => `${n.toLocaleString()} Zeichen`,
+    docTypes: [
+      { value: "quote", label: "Angebote" },
+      { value: "invoice", label: "Rechnungen" },
+      { value: "contract", label: "Verträge" },
+    ],
+    tplSave: "Als Vorlage speichern",
+    tplSaving: "Wird gespeichert…",
+    tplNamePlaceholder: "Vorlagenname (z. B. Lieferantenangebote)",
+    tplConfirm: "Speichern",
+    tplCancel: "Abbrechen",
+    tplMyTemplates: "Meine Vorlagen",
+    tplDelete: "Löschen",
+    tplLoaded: (name: string) => `Vorlage: ${name}`,
+    tplRerunHint: "Neue Dateien ablegen, um automatisch erneut auszuführen",
+    tplLastRun: "Zuletzt ausgeführt",
+    tplRunFiles: (n: number) => `${n} ${n === 1 ? "Datei" : "Dateien"}`,
+    tplNoRuns: "Noch keine Ausführungen",
+    tplEditDims: "Merkmale bearbeiten",
+    tplDimLabel: "Bezeichnung",
+    tplDimAdd: "+ Hinzufügen",
+    tplDimApply: "Anwenden",
+    tplDimReset: "Auf Standard zurücksetzen",
+    tplNewFiles: "Neue Dateien",
+    tplDims: "Merkmale",
+    tplDropHere: "PDFs ablegen, um erneut auszuführen",
+    retry: "Erneut versuchen",
+  },
 } as const satisfies AuthoredCopy<unknown>;
 
 const REC = {
@@ -465,6 +526,13 @@ const REC = {
     disclaimer: "この判定は、下の表の数値に基づく AI の推論です — 表の各セルとは異なり、出典を個別に照合してはいません。決定する前に、表の数値をご確認ください。",
     recError: "おすすめを読み込めませんでした — 下の比較表は引き続き正確です。",
   },
+  de: {
+    title: "Empfehlung",
+    thinking: "Optionen werden abgewogen…",
+    recommended: "Empfohlen",
+    disclaimer: "Dieses Urteil ist die Schlussfolgerung der KI aus den Zahlen in der Tabelle unten – anders als jede einzelne Tabellenzelle wird es nicht einzeln gegen die Quelle geprüft. Bestätigen Sie die Zahlen in der Tabelle, bevor Sie entscheiden.",
+    recError: "Empfehlung nicht verfügbar – die Vergleichstabelle unten ist weiterhin korrekt.",
+  },
 } as const satisfies AuthoredCopy<unknown>;
 
 const TRACE = {
@@ -474,6 +542,7 @@ const TRACE = {
   pt: { source: "Origem", notLocated: "Não foi possível localizar o trecho exato — exibindo o texto completo." },
   fr: { source: "Source", notLocated: "Impossible de localiser l'extrait exact — affichage du texte intégral." },
   ja: { source: "出典", notLocated: "該当箇所を正確に特定できませんでした — 全文を表示しています。" },
+  de: { source: "Quelle", notLocated: "Der genaue Ausschnitt ließ sich nicht finden – der vollständige Text wird angezeigt." },
 } as const satisfies AuthoredCopy<unknown>;
 
 // Localized dimension labels (the backend returns English labels).
@@ -626,6 +695,16 @@ const QA: Record<BaseLocale, {
     errTooLong: "テキストの合計が長すぎます（上限 60,000 文字）。文書の数を減らすか、短い文書をお使いください。",
     errQuestion: "質問が長すぎます（上限 500 文字）。",
   },
+  de: {
+    title: "Frage über alle diese Dokumente stellen",
+    desc: "Stellen Sie eine Frage über alle hochgeladenen Dokumente hinweg – die Antwort zeigt ihre Quelle, sofern sich eine finden lässt.",
+    placeholder: "z. B. Welches Angebot hat die kürzeste Lieferzeit?",
+    ask: "Fragen", thinking: "Wird überlegt…", sources: "Quellen",
+    noAnswer: "In diesen Dokumenten konnte keine Antwort gefunden werden.",
+    errMaxDocs: "Stellen Sie Fragen über höchstens 8 Dokumente gleichzeitig.",
+    errTooLong: "Der kombinierte Text ist zu lang (Grenze von 60.000 Zeichen). Verwenden Sie weniger oder kürzere Dokumente.",
+    errQuestion: "Die Frage ist zu lang (Grenze von 500 Zeichen).",
+  },
 };
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -767,6 +846,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Excel に抽出", href: "/extract-to-excel", description: "PDF の表や項目を、整ったスプレッドシートに抽出します。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum Dokumente mit DockDocs vergleichen",
+    benefitsDescription: "Stellen Sie zwei PDFs nebeneinander, stellen Sie Fragen, die beide umfassen, und erhalten Sie ein Urteil auf Basis dieser Zahlen – die KI liest den Text der Dokumente für Sie.",
+    benefits: [
+      { title: "Wichtige Angaben nebeneinander", description: "Die KI zieht Lieferant, Preis, Daten und Konditionen aus jedem PDF in eine Tabelle, sodass die Unterschiede zwischen zwei Dokumenten sofort ins Auge springen, statt sich über die Seiten zu verteilen." },
+      { title: "Antworten verweisen auf die Quellzeile", description: "Wenn Sie eine Frage über beide Dokumente stellen und sich die Antwort auf eine bestimmte Zeile stützt, wird sie mit dieser Quellzeile angezeigt – und der Server prüft, dass dieser Ausschnitt tatsächlich im genannten Dokument vorkommt, bevor er ihn anzeigt." },
+      { title: "Ein Urteil, das Sie überprüfen können", description: "Erhalten Sie eine Empfehlung, welche Option gewinnt und warum, wobei jede zugrunde liegende Zahl bis zur Tabelle nachvollziehbar ist – so können Sie die Zahlen bestätigen, bevor Sie entscheiden." },
+    ],
+    workflowTitle: "Wie der Vergleich in Ihre Dokumentenarbeit passt",
+    workflowDescription: "Für den Moment, in dem zwei Versionen, zwei Angebote oder zwei Verträge gegeneinander abgewogen werden müssen, ohne beide von vorne bis hinten neu zu lesen.",
+    steps: [
+      "Laden Sie die beiden PDFs hoch, die Sie vergleichen möchten.",
+      "Der Text des Dokuments wird von der KI analysiert, um Felder anzugleichen, dokumentübergreifende Fragen zu beantworten oder einen Sieger zu empfehlen.",
+      "Sehen Sie sich die Vergleichstabelle an, stellen Sie eine Frage oder lesen Sie das von Zahlen gestützte Urteil.",
+    ],
+    readingTitle: "Weitere KI-Dokumententools",
+    readingDescription: "Verwandte Wege, Ihre PDFs zu lesen, zu prüfen und Fakten daraus zu ziehen.",
+    readingLinks: [
+      { label: "Vertragsrisiko-Prüfung", href: "/contract-risk", description: "Markieren Sie riskante Klauseln in einem einzelnen Vertrag, jedes zitierte Risiko an seine Quellzeile gebunden." },
+      { label: "Ausschreibungsmatrix", href: "/govbid-matrix", description: "Verwandeln Sie ein Ausschreibungsdokument in eine strukturierte Anforderungsmatrix, mit der Sie arbeiten können." },
+      { label: "Nach Excel extrahieren", href: "/extract-to-excel", description: "Ziehen Sie Tabellen und Felder aus einem PDF in eine saubere Tabelle." },
+    ],
+  },
 };
 
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
@@ -870,7 +972,9 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         outputFileName: doc.name,
         pageRanges: "1-3",
         language: locale === "zh" || locale === "zh-Hant" ? "chi_sim" : "eng",
-        locale,
+        // OCR progress strings exist for 6 locales + zh-Hant only; de has no engine
+        // copy, so collapse de→"en" (intended English fallback, same as page.tsx).
+        locale: locale === "de" ? "en" : locale,
       });
       const text = (res.text ?? "").replace(/\s+/g, " ").trim();
       setResults((prev) => prev.map((d) => (d.id === id ? { ...d, text, chars: text.length, status: text ? "ok" : "empty", error: text ? undefined : d.error } : d)));

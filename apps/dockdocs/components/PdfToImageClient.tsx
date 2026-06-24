@@ -127,6 +127,22 @@ const STR = {
     convert: "変換してダウンロード", working: "変換中…", reset: "最初からやり直す",
     needOne: "少なくとも1ページを選択してください。", err: "問題が発生しました: ",
   },
+  de: {
+    title: "PDF in Bild",
+    subtitle: "Laden Sie ein PDF hoch, wählen Sie die gewünschten Seiten, entscheiden Sie sich für JPG oder PNG und laden Sie es herunter – Sie sehen und wählen jede Seite vor der Umwandlung.",
+    titlePng: "PDF in PNG",
+    subtitlePng: "Wandeln Sie PDF-Seiten in verlustfreie PNG-Bilder um. Laden Sie ein PDF hoch, wählen Sie die gewünschten Seiten und laden Sie es herunter – jede Seite wird direkt in Ihrem Browser gerendert.",
+    titleJpg: "PDF in JPG",
+    subtitleJpg: "Wandeln Sie PDF-Seiten in JPG-Bilder um. Laden Sie ein PDF hoch, wählen Sie die gewünschten Seiten und laden Sie es herunter – jede Seite wird direkt in Ihrem Browser gerendert.",
+    drop: "PDF hierher ziehen und ablegen oder zum Auswählen klicken",
+    choose: "PDF auswählen", rendering: "Seiten werden gerendert…",
+    hint: "Klicken Sie auf Seiten, um sie ein- oder auszuschließen. Die ausgewählten Seiten werden umgewandelt.",
+    selected: (n: number, t: number) => `${n} von ${t} Seiten ausgewählt`,
+    pageLabel: (n: number) => `Seite ${n}`,
+    all: "Alle auswählen", none: "Keine auswählen", format: "Format",
+    convert: "Umwandeln und herunterladen", working: "Wird umgewandelt…", reset: "Von vorn beginnen",
+    needOne: "Wählen Sie mindestens eine Seite aus.", err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 // Hub-only depth (the /pdf-to-image canonical). jpg/png variants render their
@@ -277,6 +293,30 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF を圧縮", href: "/compress-pdf", description: "変換の前後で PDF のサイズを縮小します。" },
       { label: "アップロード用に画像を PDF に変換", href: "/guides/convert-images-to-pdf-for-upload", description: "画像をアップロード可能な PDF にするガイド。" },
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Warum PDF-Seiten in Bilder umwandeln",
+    benefitsDescription: "Verwandeln Sie jede PDF-Seite in ein JPG oder PNG, das Sie in eine Folie, ein Dokument oder einen Beitrag einfügen können.",
+    benefits: [
+      { title: "JPG oder PNG, Sie entscheiden", description: "Wählen Sie JPG für kleine, leicht teilbare Dateien oder PNG für verlustfreien, gestochen scharfen Text und Diagramme – pro Export." },
+      { title: "Genau die Seiten auswählen", description: "Jede Seite wird als Miniaturansicht angezeigt; wandeln Sie eine Seite, einen Bereich oder das gesamte Dokument um." },
+      { title: "Gestochen scharfe 2×-Auflösung", description: "Seiten werden mit der doppelten Originalauflösung gerendert, klar am Bildschirm und druckfertig." },
+    ],
+    workflowTitle: "Wie die Umwandlung in Bilder in Ihre Arbeit passt",
+    workflowDescription: "Für den Moment, in dem eine PDF-Seite zu einem Bild werden muss – eine Grafik für eine Folie, eine Seitenvorschau, eine Miniaturansicht.",
+    steps: [
+      "Laden Sie ein PDF hoch – per Drag-and-drop oder durch Auswählen einer Datei.",
+      "Wählen Sie die Seiten und entscheiden Sie sich für JPG oder PNG.",
+      "Umwandeln und herunterladen; mehrere Seiten kommen in einem ZIP zurück.",
+    ],
+    readingTitle: "Weitere Bild- und PDF-Tools",
+    readingDescription: "Verwandte Konverter und Anleitungen für die Arbeit zwischen PDFs und Bildern.",
+    readingLinks: [
+      { label: "Bilder in PDF", href: "/images-to-pdf", description: "Der umgekehrte Weg – fügen Sie JPG-/PNG-Bilder zu einem einzigen PDF zusammen." },
+      { label: "PDF komprimieren", href: "/compress-pdf", description: "Verkleinern Sie die Dateigröße eines PDFs vor oder nach der Umwandlung." },
+      { label: "Bilder für den Upload in PDF umwandeln", href: "/guides/convert-images-to-pdf-for-upload", description: "Eine Anleitung, um Bilder in ein hochladefertiges PDF zu verwandeln." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
 };

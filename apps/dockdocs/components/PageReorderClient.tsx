@@ -111,6 +111,21 @@ const STR = {
     page: "ページ",
     err: "問題が発生しました: ",
   },
+  de: {
+    title: "Seiten neu anordnen",
+    subtitle: "Laden Sie ein PDF hoch und ziehen Sie dann die Seitenminiaturen in die gewünschte Reihenfolge. Löschen Sie Seiten, die Sie nicht brauchen. Die meisten Tools laufen in Ihrem Browser.",
+    drop: "PDF hierher ziehen und ablegen oder zum Auswählen klicken",
+    choose: "PDF auswählen",
+    rendering: "Seiten werden gerendert…",
+    hint: "Ziehen Sie eine Seite, um sie zu verschieben. Klicken Sie auf ✕, um eine Seite zu entfernen.",
+    apply: "Anwenden & herunterladen",
+    working: "PDF wird erstellt…",
+    reset: "Von vorn beginnen",
+    removed: (n: number) => `${n} Seite${n === 1 ? "" : "n"} entfernt`,
+    needOne: "Behalten Sie mindestens eine Seite.",
+    page: "Seite",
+    err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
@@ -252,6 +267,29 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum PDF-Seiten in Ihrem Browser neu anordnen",
+    benefitsDescription: "Ziehen Sie die Seiten in die richtige Reihenfolge — kein erneutes Scannen, kein erneutes Exportieren.",
+    benefits: [
+      { title: "Seiten an ihren Platz ziehen", description: "Greifen Sie eine beliebige Seitenminiatur und legen Sie sie dort ab, wo sie hingehört — korrigieren Sie einen unsortierten Scan oder verschieben Sie einen Abschnitt in Sekunden." },
+      { title: "Vor dem Speichern sehen", description: "Die neue Reihenfolge wird beim Ziehen live angezeigt, sodass Sie die Abfolge vor dem Export bestätigen können." },
+      { title: "Gleiche Seiten, neue Reihenfolge", description: "Das Neuanordnen ändert nur die Abfolge — jede Seite behält ihre ursprüngliche Qualität und ihren Inhalt unverändert bei." },
+    ],
+    workflowTitle: "Wie das Neuanordnen in Ihre Dokumentenarbeit passt",
+    workflowDescription: "Für den Moment, in dem Seiten in falscher Reihenfolge anfallen — ein Scan, der in der falschen Reihenfolge eingezogen wurde, ein Anhang, der nach vorn gehört.",
+    steps: [
+      "Laden Sie das PDF mit den neu zu ordnenden Seiten hoch.",
+      "Ziehen Sie die Seitenminiaturen in die gewünschte Reihenfolge.",
+      "Laden Sie das neu geordnete PDF herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs zu organisieren",
+    readingDescription: "Verwandte Tools zum Neuanordnen und Kürzen von Dokumentseiten.",
+    readingLinks: [
+      { label: "Seiten drehen", href: "/rotate-page", description: "Richten Sie Seiten gerade, die seitlich oder kopfüber gescannt wurden." },
+      { label: "Seiten löschen", href: "/delete-page", description: "Entfernen Sie unerwünschte Seiten aus einem PDF." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
+    ],
+  },
 };
 
 // Per-page thumbnail label. Exhaustive over AuthoredLocale so a new route locale forces
@@ -267,6 +305,7 @@ function pageLabel(locale: Locale, n: number): string {
     pt: `Page ${n}`,
     fr: `Page ${n}`,
     ja: `Page ${n}`,
+    de: `Seite ${n}`,
   };
   return labels[locale];
 }

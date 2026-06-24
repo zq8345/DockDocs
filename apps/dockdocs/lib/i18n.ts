@@ -9,7 +9,7 @@ export type Locale = (typeof locales)[number];
 // the locale, everything else falls back to English (content type stays en|zh).
 // pt-BR is being built content-first (inert ptTools/ptFaq/STR.pt/etc.); add "pt"
 // to this array to ACTIVATE it (LAST step, once content is complete).
-export const routeLocales = ["en", "zh", "es", "pt", "fr", "ja", "zh-Hant"] as const;
+export const routeLocales = ["en", "zh", "es", "pt", "fr", "ja", "de", "zh-Hant"] as const;
 export type RouteLocale = (typeof routeLocales)[number];
 
 // Locales that need their own AUTHORED copy. zh-Hant is excluded because it is
@@ -2558,7 +2558,8 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", Record<I
   },
 };
 
-export function getInfoPage(locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant", slug: InfoPageSlug) {
+export function getInfoPage(locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant", slug: InfoPageSlug) {
   if (locale === "zh-Hant") return deepHant(infoPages.zh[slug]);
+  // de has no authored infoPages entry yet → falls to infoPages.en (GAP: de infoPages content).
   return (infoPages[locale as keyof typeof infoPages] ?? infoPages.en)[slug];
 }

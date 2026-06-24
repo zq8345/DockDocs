@@ -70,6 +70,14 @@ const STR = {
     needSig: "まず署名を手書きまたは入力してください。", err: "問題が発生しました: ",
     drawHint: "マウスまたは指で書いてください。",
   },
+  de: {
+    title: "PDF signieren", subtitle: "Laden Sie ein PDF hoch, zeichnen oder tippen Sie Ihre Unterschrift, platzieren Sie sie auf der Seite und laden Sie es herunter. Die meisten Tools laufen in Ihrem Browser.",
+    drop: "PDF hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDF auswählen", rendering: "Seite wird gerendert…",
+    draw: "Zeichnen", type: "Tippen", clear: "Löschen", typed: "Namen eingeben", page: "Seite", position: "Position", size: "Größe",
+    apply: "Signieren & herunterladen", working: "Wird signiert…", reset: "Neu beginnen", preview: "Live-Vorschau", sig: "Ihre Unterschrift",
+    needSig: "Zeichnen oder tippen Sie zuerst eine Unterschrift.", err: "Etwas ist schiefgelaufen: ",
+    drawHint: "Zeichnen Sie mit der Maus oder dem Finger.",
+  },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -211,6 +219,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum PDFs im Browser signieren",
+    benefitsDescription: "Fügen Sie einem Vertrag oder Formular eine echte Unterschrift hinzu und platzieren Sie sie genau dorthin, wo sie hingehört.",
+    benefits: [
+      { title: "Zeichnen, tippen oder ein Bild verwenden", description: "Unterschreiben Sie von Hand auf dem Feld, tippen Sie Ihren Namen in einer Schreibschrift oder fügen Sie ein Unterschriftsbild ein — was am besten aussieht." },
+      { title: "Genau auf der Seite platzieren", description: "Wählen Sie die Seite, ziehen Sie die Größe und entscheiden Sie sich für eine von neun Positionen, damit die Unterschrift auf der richtigen Linie landet." },
+      { title: "Vor dem Bestätigen sehen", description: "Eine Live-Vorschau zeigt die Unterschrift auf der tatsächlichen Seite, sodass Sie ein signiertes PDF ohne Überraschungen herunterladen." },
+    ],
+    workflowTitle: "Wie das Signieren in Ihre Dokumentenarbeit passt",
+    workflowDescription: "Für den Moment, in dem ein PDF zurückkommt und Ihren Namen braucht — eine Vereinbarung, ein Angebotsschreiben, eine Einwilligungserklärung, eine Rechnungsfreigabe.",
+    steps: [
+      "Laden Sie das PDF hoch, das Sie signieren möchten.",
+      "Zeichnen, tippen oder ergänzen Sie Ihre Unterschrift, passen Sie dann die Größe an und platzieren Sie sie auf der richtigen Seite.",
+      "Signieren Sie und laden Sie das fertige PDF herunter.",
+    ],
+    readingTitle: "Weitere Wege, ein PDF abzuschließen",
+    readingDescription: "Verwandte Tools und Anleitungen zum Signieren und Schützen von Dokumenten.",
+    readingLinks: [
+      { label: "Ein PDF schwärzen", href: "/redact-pdf", description: "Schwärzen Sie sensible Details, bevor Sie das Dokument signieren oder teilen." },
+      { label: "PDF kostenlos online signieren", href: "/guides/sign-pdf-online-free", description: "Eine Schritt-für-Schritt-Anleitung zum Signieren eines PDFs, ohne etwas zu installieren." },
+      { label: "PDF-Workflow-Ressourcen", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentpfade." },
+    ],
+  },
 };
 
 const NO_PAGES_MSG: Record<AuthoredLocale, string> = {
@@ -220,6 +251,7 @@ const NO_PAGES_MSG: Record<AuthoredLocale, string> = {
   pt: "Este PDF não tem páginas.",
   fr: "Ce PDF n'a aucune page.",
   ja: "この PDF にはページがありません。",
+  de: "Dieses PDF hat keine Seiten.",
 };
 
 export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {

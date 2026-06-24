@@ -84,6 +84,17 @@ const STR = {
     reset: "最初からやり直す", needSplit: "少なくとも1つの分割ポイントを追加してください。", err: "問題が発生しました: ",
     every: "分割する間隔", everyUnit: "ページごと", everySet: "適用",
   },
+  de: {
+    title: "PDF teilen",
+    subtitle: "Laden Sie ein PDF hoch und klicken Sie zwischen den Seiten auf ✂, um es in separate Dateien zu zerlegen — Sie sehen genau, welche Seiten in welche Datei kommen, bevor Sie herunterladen.",
+    drop: "PDF hierher ziehen und ablegen, oder zum Auswählen klicken",
+    choose: "PDF auswählen", rendering: "Seiten werden gerendert…",
+    hint: "Klicken Sie nach einer Seite auf ✂, um eine neue Datei zu beginnen. Erneut klicken zum Rückgängigmachen.",
+    splitAfter: "Hier teilen", files: (n: number) => `Es ${n === 1 ? "wird" : "werden"} ${n} Datei${n === 1 ? "" : "en"} erstellt`,
+    fileN: (n: number) => `Datei ${n}`, apply: "Teilen und herunterladen", working: "Wird geteilt…",
+    reset: "Neu beginnen", needSplit: "Fügen Sie mindestens einen Teilungspunkt hinzu.", err: "Etwas ist schiefgelaufen: ",
+    every: "Teilen alle", everyUnit: "Seiten", everySet: "Anwenden",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -225,6 +236,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum ein PDF in Ihrem Browser teilen",
+    benefitsDescription: "Zerlegen Sie ein großes PDF in einzelne Dateien oder Seitenbereiche, ohne es hochzuladen.",
+    benefits: [
+      { title: "Nur die benötigten Seiten extrahieren", description: "Holen Sie eine einzelne Seite, einen Bereich oder jede Seite als eigene Datei heraus — behalten Sie nur, was zählt." },
+      { title: "Nach Bereich oder pro Seite teilen", description: "Wählen Sie exakte Seitenbereiche oder zerlegen Sie jede Seite in ein eigenes PDF, gebündelt in einem ZIP." },
+      { title: "Originalseiten, unangetastet", description: "Jede extrahierte Seite behält ihre ursprüngliche Qualität und ihr Layout — das Teilen rendert oder verschlechtert den Inhalt nie neu." },
+    ],
+    workflowTitle: "Wie das Teilen in Ihre Dokumentenarbeit passt",
+    workflowDescription: "Für den Moment, in dem ein großes PDF zu mehreren werden muss — einen gescannten Stapel trennen, ein Kapitel herausziehen, nur einen Abschnitt teilen.",
+    steps: [
+      "Laden Sie das PDF hoch, das Sie teilen möchten.",
+      "Wählen Sie Seitenbereiche oder teilen Sie jede Seite in eine eigene Datei.",
+      "Laden Sie die separaten PDFs als ein einziges ZIP herunter.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs zu organisieren",
+    readingDescription: "Verwandte Tools und Anleitungen zum Teilen und Zusammenführen von Dokumenten.",
+    readingLinks: [
+      { label: "PDFs zusammenführen", href: "/merge-pdf", description: "Der umgekehrte Weg — mehrere PDFs zu einem geordneten Dokument kombinieren." },
+      { label: "Ein PDF nach Seitenbereichen teilen", href: "/guides/split-pdf-page-ranges", description: "So extrahieren Sie bestimmte Seitenbereiche in separate PDFs." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
+    ],
+  },
 };
 
 export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
@@ -360,6 +394,7 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
                 pt: `Page ${p.idx + 1}`,
                 fr: `Page ${p.idx + 1}`,
                 ja: `Page ${p.idx + 1}`,
+                de: `Seite ${p.idx + 1}`,
               };
               const pageLabel = locale === "zh-Hant" ? toHant(pageLabelMap.zh) : pageLabelMap[locale];
               return (

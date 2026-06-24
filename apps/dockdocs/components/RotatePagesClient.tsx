@@ -71,6 +71,15 @@ const STR = {
     rotateAll: "すべて90°回転", apply: "適用してダウンロード", working: "PDFを生成中…",
     reset: "最初からやり直す", none: "まだ回転していません——ページをクリックしてください。", err: "問題が発生しました: ",
   },
+  de: {
+    title: "Seiten drehen",
+    subtitle: "Laden Sie ein PDF hoch und klicken Sie auf eine Seite, um sie zu drehen – sehen Sie zu, wie sie sich dreht, bevor Sie herunterladen. Richten Sie seitliche Scans und Querformatseiten direkt in Ihrem Browser gerade.",
+    drop: "Ziehen Sie ein PDF hierher oder klicken Sie zum Auswählen",
+    choose: "PDF auswählen", rendering: "Seiten werden gerendert…",
+    hint: "Klicken Sie auf eine Seite, um sie um 90° zu drehen. Klicken Sie weiter, um weiterzudrehen.",
+    rotateAll: "Alle um 90° drehen", apply: "Anwenden & herunterladen", working: "PDF wird erstellt…",
+    reset: "Neu beginnen", none: "Noch keine Drehungen – klicken Sie auf eine Seite.", err: "Etwas ist schiefgelaufen: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -212,6 +221,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
+  de: {
+    benefitsTitle: "Warum PDF-Seiten in Ihrem Browser drehen",
+    benefitsDescription: "Korrigieren Sie die Ausrichtung jeder beliebigen Seite – oder des ganzen Dokuments – in Sekunden.",
+    benefits: [
+      { title: "Seitliche Scans korrigieren", description: "Richten Sie Seiten gerade, die im Querformat oder kopfüber gescannt wurden, damit sich das Dokument richtig herum lesen lässt." },
+      { title: "Alle oder nur einzelne drehen", description: "Wenden Sie eine Drehung auf das gesamte PDF an oder wählen Sie einzelne Seiten aus, die eine andere Drehung benötigen." },
+      { title: "90°-Schritte, jede Richtung", description: "Drehen Sie Seiten um 90°, 180° oder 270° – im oder gegen den Uhrzeigersinn – und sehen Sie die Vorschau, bevor Sie speichern." },
+    ],
+    workflowTitle: "Wie das Drehen in Ihre Dokumentarbeit passt",
+    workflowDescription: "Für den Moment, in dem ein Scan oder Export seitlich herauskommt – ein im Querformat fotografierter Vertrag, ein verkehrt herum gescannter Stapel.",
+    steps: [
+      "Laden Sie das PDF mit den zu drehenden Seiten hoch.",
+      "Wählen Sie Seiten aus und legen Sie den Drehwinkel fest.",
+      "Anwenden und das korrigierte PDF herunterladen.",
+    ],
+    readingTitle: "Weitere Möglichkeiten, PDFs zu organisieren",
+    readingDescription: "Verwandte Tools zum Korrigieren und Neuordnen von Dokumentseiten.",
+    readingLinks: [
+      { label: "Seiten neu anordnen", href: "/reorder-pages", description: "Ändern Sie die Seitenreihenfolge eines PDFs per Ziehen." },
+      { label: "PDF zuschneiden", href: "/crop-pdf", description: "Schneiden Sie Seitenränder oder unerwünschten Weißraum weg." },
+      { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
+    ],
+  },
 };
 
 export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
@@ -225,6 +257,7 @@ export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
       pt: `Page ${n}`,
       fr: `Page ${n}`,
       ja: `Page ${n}`,
+      de: `Seite ${n}`,
     };
     return locale === "zh-Hant" ? toHant(MSG.zh) : MSG[locale];
   };
