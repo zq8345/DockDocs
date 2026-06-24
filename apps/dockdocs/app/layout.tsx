@@ -42,10 +42,9 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           (function() {
             try {
               var theme = localStorage.getItem('dockdocs-theme');
-              // Marketing/story pages (home, about) are force-dark — the brand stage.
-              var mp = window.location.pathname.replace(/^\\/(zh|en)(?=\\/|$)/,'');
-              var marketing = (mp === '' || mp === '/' || mp === '/about' || mp === '/about/' || mp === '/pricing' || mp === '/pricing/');
-              if (!marketing && (theme === 'light' || (!theme && window.matchMedia('(prefers-color-scheme: light)').matches))) {
+              // Apply the user's saved light/dark choice on every page (home/about/
+              // pricing included); default to the OS preference when unset.
+              if (theme === 'light' || (!theme && window.matchMedia('(prefers-color-scheme: light)').matches)) {
                 document.documentElement.classList.add('light');
               }
             } catch(e) {}
