@@ -36,7 +36,7 @@ const homeSchema = {
       "@id": `${siteUrl}#org`,
       name: "DockDocs",
       url: siteUrl,
-      description: "Private, verifiable document AI: read any document and verify its answers — the AI shows the source passage behind them and flags what it can't trace, so you can check it yourself. Plus ~50 PDF tools that run in your browser, so files never leave your device.",
+      description: "Private, verifiable document AI: read any document and verify its answers — the AI shows the source passage behind them and flags what it can't trace, so you can check it yourself. Plus ~50 PDF tools — most run in your browser, so those files never leave your device.",
       slogan: "Read any document. Verify every answer.",
       foundingDate: "2024",
       sameAs: [
@@ -58,7 +58,7 @@ const homeSchema = {
       url: siteUrl,
       name: "DockDocs — Private, Verifiable Document AI & PDF Tools",
       description:
-        "Read any document and check the answers: DockDocs document AI shows the exact source passage behind its answers so you can verify them, and ~50 PDF tools run in your browser so files never leave your device. Free, no sign-up.",
+        "Read any document and check the answers: DockDocs document AI shows the exact source passage behind its answers so you can verify them, and ~50 PDF tools, most running in your browser so those files never leave your device. Free, no sign-up.",
       isPartOf: { "@id": `${siteUrl}#website` },
       about: { "@id": `${siteUrl}#org` },
     },
@@ -72,7 +72,7 @@ const homeSchema = {
           name: "What is DockDocs?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "DockDocs is a private, verifiable document-AI platform. Chat with and summarize your documents; when the AI answers, it shows the exact source passage behind what it finds so you can check it instead of trusting a black box — and flags what it can't trace. It also includes ~50 PDF tools that run in your browser — no installs, and files never leave your device for those tools.",
+            text: "DockDocs is a private, verifiable document-AI platform. Chat with and summarize your documents; when the AI answers, it shows the exact source passage behind what it finds so you can check it instead of trusting a black box — and flags what it can't trace. It also includes ~50 PDF tools, most of which run in your browser — no installs, and for those, files never leave your device.",
           },
         },
         {
@@ -88,7 +88,7 @@ const homeSchema = {
           name: "Are my PDF files safe on DockDocs?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes — and you can verify it. Most PDF tools (compress, merge, split, convert, page edits) run entirely in your browser; you can open your browser's Network tab and confirm no file upload happens. For AI features and a few server-side conversions, only the text needed is sent, files are deleted after your session, and DockDocs does not use them to train its own models. DockDocs never sells or shares your documents.",
+            text: "Yes — and you can verify it. Most PDF tools (compress, merge, split, page edits) run entirely in your browser; you can open your browser's Network tab and confirm no file upload happens. For AI features and a few server-side conversions, only the text needed is sent, files are deleted after your session, and DockDocs does not use them to train its own models. DockDocs never sells or shares your documents.",
           },
         },
         {

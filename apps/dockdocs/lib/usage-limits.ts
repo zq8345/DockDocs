@@ -63,7 +63,7 @@ export const featureAliases: Record<string, UsageFeature> = {
   // endpoints pass to enforceFeatureGate — these aliases drive client/doc consistency,
   // not the server gate. Option-C split: forward $0 self-hosted-Gotenberg routes →
   // "convertFree" (high fair-use, no real cost); paid CloudConvert routes (reverse
-  // pdf→Office, >5MB fallback, protect-pdf encrypt) keep the low "convert".
+  // pdf→Office, >5MB fallback) keep the low "convert".
   convert: "convert",
   convertFree: "convertFree",
   "word-to-pdf": "convertFree",   // forward · $0 gotenberg
@@ -74,7 +74,11 @@ export const featureAliases: Record<string, UsageFeature> = {
   "pdf-to-word": "convert",       // reverse ($, OSS box + CC fallback)
   "pdf-to-excel": "convert",      // reverse ($, OSS box + CC fallback)
   "pdf-to-ppt": "convert",        // reverse ($, CloudConvert only)
-  "protect-pdf": "convert",       // CloudConvert encrypt ($) — server route is NOT pure-client
+  // ⚠️ protect-pdf is CLIENT-SIDE (@cantoo/pdf-lib pdfDoc.encrypt; pdf-runtime.ts:204/898,
+  // git 683c139). The encryption never hits a server, so this alias NEVER fires the gate —
+  // it's vestigial (kept for map completeness). It is NOT a CloudConvert route. (This stale
+  // "server route" comment was the source of the 2026-06-22 false-server-side copy regression.)
+  "protect-pdf": "convert",
 };
 
 export const featureLimits: Record<

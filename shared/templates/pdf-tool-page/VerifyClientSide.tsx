@@ -9,10 +9,6 @@
 // user data — only static same-origin asset loads (workers, fonts, wasm). Server
 // conversions (/api/cloudconvert-convert, gotenberg, reverse-convert) and AI
 // tools (which POST extracted text) are deliberately EXCLUDED.
-// 2026-06-22 red-line fix: protect-pdf and batch-protect-pdf were REMOVED from
-// this set. PDF password encryption runs on the CloudConvert server (pdf/encrypt;
-// pdf-lib cannot encrypt) — the file AND password are uploaded, so the "never
-// uploaded, verify it yourself with F12" claim this block makes would be false.
 
 // Every pure-client tool, by the value its render path gates on. Two gates share
 // this one set because the render paths never overlap:
@@ -25,9 +21,7 @@
 export const LOCAL_ONLY_SLUGS = new Set<string>([
   // template-rendered (PdfToolPage, gated on config.slug)
   "compress-pdf",
-  // protect-pdf EXCLUDED (was here until 2026-06-22): CloudConvert server-side
-  // encryption — the file + password ARE uploaded, so the "never uploaded" claim
-  // is false. Keep it out of this allowlist.
+  "protect-pdf",
   "unlock-pdf",
   "ocr-pdf",
   "pdf-to-text",
@@ -53,16 +47,15 @@ export const LOCAL_ONLY_SLUGS = new Set<string>([
   "redline",
   "watermark-pdf",
   "page-numbers",
-  // batch tools — pure-client (pdf-lib / pdfjs / canvas, zero fetch of user data;
-  // audited 2026-06-20, independently grep-verified by 总调度) EXCEPT batch-protect-pdf.
-  // Each batch client renders <ToolFaq tool="batch-…"/>, so this set gates them too.
+  // batch tools — all pure-client (pdf-lib / pdfjs / canvas, zero fetch of user
+  // data; audited 2026-06-20, independently grep-verified by 总调度). Each batch
+  // client renders <ToolFaq tool="batch-…"/>, so this set gates them too.
   // NOTE: batch-fix-scans is crop-margins / delete-page via pdf-lib — NOT OCR/AI,
   // no network. The upload batches (office↔pdf conversion, summary/sort/translate/
   // extract-sheet AI) are deliberately absent — they POST file or extracted text.
-  // batch-protect-pdf EXCLUDED 2026-06-22: it reuses the protect-pdf CloudConvert
-  // server encryption runtime (uploads each file + the password) — not pure-client.
   "batch-compress",
   "batch-pdf-to-image",
+  "batch-protect-pdf",
   "batch-rename-pdf",
   "batch-watermark-pdf",
   "batch-page-numbers",
