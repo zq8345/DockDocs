@@ -92,11 +92,16 @@ export default async (req: Request, _ctx: Context) => {
 
 export const config: Config = { path: "/api/billing/upgrade-checkout", method: ["POST"] };
 
+// Only our own origins may seed the Creem checkout redirect; non-matches return null →
+// the caller falls back to the canonical https://dockdocs.app (no off-site redirect).
+const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
+
 function sanitizeOrigin(value: unknown): string | null {
   if (typeof value !== "string") return null;
   try {
     const url = new URL(value);
-    return `${url.protocol}//${url.host}`;
+    const origin = `${url.protocol}//${url.host}`;
+    return ALLOWED_ORIGIN.test(origin) ? origin : null;
   } catch {
     return null;
   }

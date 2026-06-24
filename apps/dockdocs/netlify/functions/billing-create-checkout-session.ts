@@ -84,6 +84,11 @@ export const config: Config = {
   path: "/api/billing/create-checkout-session",
 };
 
+// Only our own origins may seed the Creem checkout success/cancel redirect; a spoofed
+// `origin` in the request body would otherwise steer the post-payment redirect off-site.
+// Non-matches return null → the caller falls back to the canonical https://dockdocs.app.
+const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
+
 function sanitizeOrigin(value: unknown) {
   if (typeof value !== "string") {
     return null;
@@ -91,7 +96,8 @@ function sanitizeOrigin(value: unknown) {
 
   try {
     const url = new URL(value);
-    return `${url.protocol}//${url.host}`;
+    const origin = `${url.protocol}//${url.host}`;
+    return ALLOWED_ORIGIN.test(origin) ? origin : null;
   } catch {
     return null;
   }

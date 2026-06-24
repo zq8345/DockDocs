@@ -27,8 +27,8 @@ export default async (req: Request, _context: Context) => {
   let runCount = 0;
   try {
     const [templates, runs] = await Promise.all([
-      dbSelect<{ id: string }>("flow_templates", `user_id=eq.${user.id}`, "id"),
-      dbSelect<{ id: string }>("flow_runs", `user_id=eq.${user.id}`, "id"),
+      dbSelect<{ id: string }>("flow_templates", `user_id=eq.${encodeURIComponent(user.id)}`, "id"),
+      dbSelect<{ id: string }>("flow_runs", `user_id=eq.${encodeURIComponent(user.id)}`, "id"),
     ]);
     templateCount = templates.length;
     runCount = runs.length;
@@ -37,8 +37,8 @@ export default async (req: Request, _context: Context) => {
   }
 
   await Promise.all([
-    dbDelete("flow_templates", `user_id=eq.${user.id}`),
-    dbDelete("flow_runs", `user_id=eq.${user.id}`),
+    dbDelete("flow_templates", `user_id=eq.${encodeURIComponent(user.id)}`),
+    dbDelete("flow_runs", `user_id=eq.${encodeURIComponent(user.id)}`),
   ]);
 
   return json({
