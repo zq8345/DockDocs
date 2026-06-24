@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
@@ -406,6 +407,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
       await markUsage(gate, "contractAnalyzer");
       setRequirements(data.requirements ?? []);
       setPhase("done");
+      trackToolRun("govbid-matrix");
     },
     [locale, t, childLocale],
   );

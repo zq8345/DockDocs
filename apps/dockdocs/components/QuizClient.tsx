@@ -1,4 +1,5 @@
 "use client";
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
@@ -277,6 +278,7 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
       if (data?.ok && Array.isArray(data.cards) && data.cards.length > 0) {
         setCards(data.cards);
         setPhase("done");
+        trackToolRun("flashcards");
         await markUsage(gate, "summary");
       } else {
         setError(t.err + (data?.message || "Could not generate cards.")); setPhase("ready");

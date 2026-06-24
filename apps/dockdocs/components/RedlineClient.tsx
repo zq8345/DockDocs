@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
@@ -290,6 +291,7 @@ export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
       const result = diff(toUnits(ta), toUnits(tb));
       setOps(result);
       setPhase("done");
+      trackToolRun("redline");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("idle");

@@ -1,4 +1,5 @@
 "use client";
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchFileCard } from "@/components/BatchFileCard";
@@ -307,6 +308,7 @@ export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url; a.download = "dockdocs-sorted.zip"; a.click();
+    trackToolRun("batch-sort");
     URL.revokeObjectURL(url);
   };
 

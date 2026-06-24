@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
@@ -285,6 +286,7 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
       a.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-pages-removed.pdf";
       a.click();
       URL.revokeObjectURL(url);
+      trackToolRun("delete-page");
       setDone(true);
       setPhase("ready");
     } catch (e) {

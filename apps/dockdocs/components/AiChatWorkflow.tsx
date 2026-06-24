@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { useEffect, useRef, useState } from "react";
 import { AiDocUpload } from "@/components/AiDocUpload";
 import {
@@ -498,6 +499,7 @@ export function AiChatWorkflow({
       }
 
       setResult(answer);
+      trackToolRun("chat-with-pdf");
       setStreamingAnswer("");
       await saveChatForCurrentUser({
         question: question.trim(),

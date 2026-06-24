@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
@@ -365,6 +366,7 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
       a.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-with-insert.pdf";
       a.click();
       URL.revokeObjectURL(url);
+      trackToolRun("add-page");
       setDone(true);
       setPhase("ready");
     } catch (e) {

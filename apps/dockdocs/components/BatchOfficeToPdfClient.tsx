@@ -1,4 +1,5 @@
 "use client";
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 
@@ -276,6 +277,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Loc
       a.href = url;
       a.download = "dockdocs-office-to-pdf.zip";
       a.click();
+      trackToolRun(source ? `batch-${source}-to-pdf` : "batch-office-to-pdf");
       URL.revokeObjectURL(url);
     } catch {
       setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download — tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement — veuillez réessayer." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");

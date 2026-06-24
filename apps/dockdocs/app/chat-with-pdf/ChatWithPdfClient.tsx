@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { useMemo, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { toHant } from "@/lib/zh-hant";
@@ -239,6 +240,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
         ...current,
         { role: "assistant", content: answer, citations },
       ]);
+      trackToolRun("chat-with-pdf");
       await markUsage(gate, "chat");
       setProviderReference({
         provider: payload.result?.provider,

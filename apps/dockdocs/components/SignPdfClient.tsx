@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
@@ -327,6 +328,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       const link = document.createElement("a");
       link.href = url; link.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-signed.pdf"; link.click();
       URL.revokeObjectURL(url);
+      trackToolRun("sign-pdf");
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, baseLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");

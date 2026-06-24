@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
@@ -384,6 +385,7 @@ export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
       a.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-watermarked.pdf";
       a.click();
       URL.revokeObjectURL(url);
+      trackToolRun("watermark-pdf");
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");

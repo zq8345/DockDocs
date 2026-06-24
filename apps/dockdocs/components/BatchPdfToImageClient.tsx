@@ -1,4 +1,5 @@
 "use client";
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
@@ -280,6 +281,7 @@ export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url; a.download = "dockdocs-images.zip"; a.click();
+    trackToolRun("batch-pdf-to-image");
     URL.revokeObjectURL(url);
   };
 

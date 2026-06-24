@@ -1,4 +1,5 @@
 "use client";
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
@@ -326,6 +327,7 @@ export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Lo
     const url = URL.createObjectURL(result.current.blob);
     const a = document.createElement("a");
     a.href = url; a.download = result.current.name; a.click();
+    trackToolRun("batch-split-merge");
     URL.revokeObjectURL(url);
   };
 

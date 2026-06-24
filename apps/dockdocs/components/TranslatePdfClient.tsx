@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
@@ -394,6 +395,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
       if (data?.ok && typeof data.translation === "string") {
         setResult(data.translation);
         setPhase("done");
+        trackToolRun("translate-pdf");
         await markUsage(gate, "translate");
       } else {
         setError(t.errPrefix + (data?.message || "Unknown error."));

@@ -1,4 +1,5 @@
 "use client";
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
@@ -412,6 +413,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url;
       a.download = `dockdocs-translated-${target}.zip`;
       a.click();
+      trackToolRun("batch-translate");
       URL.revokeObjectURL(url);
     } catch {
       setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download; tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement ; réessayez." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");

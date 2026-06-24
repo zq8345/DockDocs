@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
@@ -428,6 +429,7 @@ export function LeaseRedflagClient({ locale = "en" }: { locale?: Locale }) {
         const sorted = (data.risks as Risk[]).slice().sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
         setRisks(sorted);
         setPhase("done");
+        trackToolRun("lease-redflag");
         await markUsage(gate, "contractAnalyzer");
       } else {
         setError(t.errPrefix + (data?.message || "Unknown error."));

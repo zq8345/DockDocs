@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { useCallback, useRef, useState } from "react";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
@@ -266,6 +267,7 @@ export function CropPdfClient({ locale = "en" }: { locale?: Locale }) {
       const a = document.createElement("a");
       a.href = url; a.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-cropped.pdf"; a.click();
       URL.revokeObjectURL(url);
+      trackToolRun("crop-pdf");
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");

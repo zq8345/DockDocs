@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { useEffect, useRef, useState } from "react";
 import { dropzoneVisual } from "@/components/design";
 import {
@@ -332,6 +333,7 @@ export function DocumentAnalyzerWorkflow({
       }
 
       setAnalysis(result);
+      trackToolRun("document-analyzer");
       await recordDocumentAnalysisCompletion({
         source: result.source,
         sourceName: result.sourceName,

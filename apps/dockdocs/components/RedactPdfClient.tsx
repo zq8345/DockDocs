@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { UploadDropzone } from "@/components/UploadDropzone";
@@ -417,6 +418,7 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
       const a = document.createElement("a");
       a.href = url; a.download = (file.name.replace(/\.pdf$/i, "") || "document") + "-redacted.pdf"; a.click();
       URL.revokeObjectURL(url);
+      trackToolRun("redact-pdf");
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));

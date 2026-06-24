@@ -1,5 +1,6 @@
 "use client";
 
+import { trackToolRun } from "@/lib/track";
 import { useRef, useState } from "react";
 import { AiDocUpload } from "@/components/AiDocUpload";
 import {
@@ -289,6 +290,7 @@ export function AiSummaryWorkflow({
       }
 
       setResult(summary);
+      trackToolRun("ai-summary");
       await recordUsage(identity.id, "summary", {
         source: "ai-summary",
       });
