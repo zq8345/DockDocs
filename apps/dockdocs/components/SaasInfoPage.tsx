@@ -8,7 +8,9 @@ import { deepHant, toHant } from "@/lib/zh-hant";
 
 type SaasInfoPageProps = {
   page: InfoPageData;
-  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+  // ko renders English chrome/crawl-links via each ternary's English fallback
+  // (foundation phase) — no ko branch authored yet.
+  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
   useLocalePrefix?: boolean;
 };
 

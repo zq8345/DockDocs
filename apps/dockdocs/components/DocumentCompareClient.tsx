@@ -872,7 +872,10 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
-  const cl: BaseLocale = locale === "zh-Hant" ? "zh" : locale;
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const cl: BaseLocale = locale === "zh-Hant" ? "zh" : locale === "ko" ? "en" : locale;
+  // ko → English engine/runtime (child widgets / OCR / notices lack ko); zh-Hant preserved.
+  const childLocale = locale === "ko" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[cl];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[cl];
   const r = locale === "zh-Hant" ? deepHant(REC.zh) : REC[cl];
@@ -941,10 +944,10 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
       try { doc.destroy(); } catch { /* ignore */ }
       return { id, name: file.name, pages: numPages, chars: trimmed.length, text: trimmed, status: trimmed.length > 0 ? "ok" : "empty", file };
     } catch (e) {
-      const msg = isEncryptedPdfError(e) ? encryptedPdfNotice(locale) : e instanceof Error ? e.message : String(e);
+      const msg = isEncryptedPdfError(e) ? encryptedPdfNotice(childLocale) : e instanceof Error ? e.message : String(e);
       return { id, name: file.name, pages: 0, chars: 0, text: "", status: "error", error: msg, file };
     }
-  }, [locale]);
+  }, [childLocale]);
 
   const addFiles = useCallback(
     async (files: File[]) => {
@@ -972,9 +975,9 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         outputFileName: doc.name,
         pageRanges: "1-3",
         language: locale === "zh" || locale === "zh-Hant" ? "chi_sim" : "eng",
-        // OCR progress strings exist for 6 locales + zh-Hant only; de has no engine
-        // copy, so collapse de→"en" (intended English fallback, same as page.tsx).
-        locale: locale === "de" ? "en" : locale,
+        // OCR progress strings exist for 6 locales + zh-Hant only; de/ko have no engine
+        // copy, so collapse de/ko→"en" (intended English fallback, same as page.tsx).
+        locale: locale === "de" || locale === "ko" ? "en" : locale,
       });
       const text = (res.text ?? "").replace(/\s+/g, " ").trim();
       setResults((prev) => prev.map((d) => (d.id === id ? { ...d, text, chars: text.length, status: text ? "ok" : "empty", error: text ? undefined : d.error } : d)));
@@ -1416,7 +1419,7 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
 
       {okDocs.length >= 1 && (
         <section id="ask" className="mt-10">

@@ -246,8 +246,12 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // (zh-Hant is also collapsed here because every [al] index below is already inside a
+  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Fmt>("jpg");
@@ -300,7 +304,7 @@ export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
         try { doc.destroy(); } catch { /* ignore */ }
         updated[i] = { ...it, status: "done", pages: images.length, images };
       } catch (e) {
-        updated[i] = { ...it, status: "error", msg: encryptedPdfMessage(e, locale) ?? (e instanceof Error ? e.message : String(e)) };
+        updated[i] = { ...it, status: "error", msg: encryptedPdfMessage(e, locale === "ko" ? "en" : locale) ?? (e instanceof Error ? e.message : String(e)) };
       }
       setItems([...updated]);
     }
@@ -330,7 +334,7 @@ export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
       <input ref={folderRef} type="file" multiple className="hidden" {...({ webkitdirectory: "", directory: "" } as Record<string, string>)} onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} />
+        <BatchUploadBox locale={locale === "ko" ? "en" : locale} onFiles={addFiles} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

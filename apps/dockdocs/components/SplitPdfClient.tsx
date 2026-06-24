@@ -262,8 +262,12 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [pages, setPages] = useState<Pg[]>([]);
@@ -294,9 +298,9 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
       try { doc.destroy(); } catch { /* ignore */ }
       setPages(out); setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t, locale]);
+  }, [t, childLocale]);
 
   const toggleSplit = (afterIdx: number) => {
     setError(null);
@@ -351,9 +355,9 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
       setPhase("ready");
       trackToolRun("split-pdf");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [splits, pages, fileName, t, locale]);
+  }, [splits, pages, fileName, t, childLocale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
@@ -361,7 +365,7 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
@@ -396,7 +400,7 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
                 ja: `Page ${p.idx + 1}`,
                 de: `Seite ${p.idx + 1}`,
               };
-              const pageLabel = locale === "zh-Hant" ? toHant(pageLabelMap.zh) : pageLabelMap[locale];
+              const pageLabel = locale === "zh-Hant" ? toHant(pageLabelMap.zh) : pageLabelMap[al];
               return (
                 <div key={p.idx} className="flex items-stretch">
                   <div className={`w-[120px] rounded-[var(--radius)] border border-[color:var(--line)] p-2 ${SEG_TINTS[seg % SEG_TINTS.length]}`}>

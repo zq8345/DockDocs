@@ -119,8 +119,8 @@ export const dynamicParams = false;
 // for all CURRENT locales is identical to the chains they replace.
 
 // ClientLocale = the full RouteLocale set; it is what every runtime *Client prop
-// expects (Locale | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant").
-type ClientLocale = Locale | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+// expects (Locale | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant").
+type ClientLocale = Locale | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
 // Identity over RouteLocale, but exhaustively enumerated so a NEW route locale
 // must be classified here (it is also a compile error to forget it).
@@ -133,6 +133,7 @@ function toClientLocale(locale: RouteLocale): ClientLocale {
     case "fr":
     case "ja":
     case "de":
+    case "ko":
     case "zh-Hant":
       return locale;
     default: {
@@ -165,7 +166,8 @@ function toAccountLocale(locale: RouteLocale): AccountLocale {
       return locale;
     case "zh-Hant":
     case "de":
-      // No Traditional/German Account/Pricing copy today → English (same fallback as zh-Hant).
+    case "ko":
+      // No Traditional/German/Korean Account/Pricing copy today → English (same fallback as zh-Hant).
       return "en";
     default: {
       const _exhaustive: never = locale;
@@ -189,7 +191,9 @@ function resolveCustomCopyField(field: Record<string, string>, locale: RouteLoca
     case "fr":
     case "ja":
     case "de":
-      // de reads its own key where authored; falls to field.en where absent (data-absence fallback).
+    case "ko":
+      // de/ko read their own key where authored; fall to field.en where absent.
+      // ko has no authored CUSTOM_TOOL_COPY key yet → English (foundation phase).
       return field[locale] ?? field.en;
     default: {
       const _exhaustive: never = locale;
@@ -211,6 +215,7 @@ function toEnZhLocale(locale: RouteLocale): "en" | "zh" {
     case "fr":
     case "ja":
     case "de":
+    case "ko":
     case "zh-Hant":
       return "en";
     default: {
@@ -231,7 +236,8 @@ type LeafLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 function toLeafLocale(locale: ClientLocale): LeafLocale {
   switch (locale) {
     case "de":
-      // GAP: no German copy authored in these leaf surfaces yet → English.
+    case "ko":
+      // GAP: no German/Korean copy authored in these leaf surfaces yet → English.
       return "en";
     case "en":
     case "zh":
@@ -265,6 +271,8 @@ function toBlogLocale(locale: RouteLocale): BlogLocale {
     case "pt":
     case "fr":
     case "ja":
+    case "ko":
+      // ko has no blog chrome yet → English (foundation phase).
       return "en";
     default: {
       const _exhaustive: never = locale;
@@ -1047,8 +1055,8 @@ async function generateMetadataInner({
   const m = (en: string, zh: string, es: string, pt: string, fr: string, ja: string) =>
     metaLocale === "zh-Hant"
       ? toHant(zh)
-      : // de has no authored <head> meta copy yet → English fallback (GAP: de meta strings).
-        metaLocale === "de"
+      : // de/ko have no authored <head> meta copy yet → English fallback (GAP: de/ko meta strings).
+        metaLocale === "de" || metaLocale === "ko"
         ? en
         : ({ en, zh, es, pt, fr, ja })[metaLocale];
 
@@ -2886,6 +2894,10 @@ function resolveAiCopy(locale: ClientLocale): AiCopy {
       // copies, so it satisfies AiCopy. The interactive widgets below still run in
       // English (toAccountLocale maps de → en) until their de copy lands.
       return aiCopy.de;
+    case "ko":
+      // ko has no authored aiCopy block yet → English header/cards copy, and the
+      // interactive widgets also run in English (toAccountLocale maps ko → en).
+      return aiCopy.en;
     case "en":
     case "zh":
     case "es":
@@ -2995,7 +3007,8 @@ function LocalizedSitemap({ locale }: { locale: ClientLocale }) {
   // zh-Hant derives from zh via OpenCC.
   const hant = locale === "zh-Hant";
   const h = (s: string) => (hant ? toHant(s) : s);
-  const copy = hant ? deepHant(sitemapCopy.zh) : (sitemapCopy[locale] ?? sitemapCopy.en);
+  // ko has no sitemapCopy block yet → English via `?? sitemapCopy.en` (foundation phase).
+  const copy = hant ? deepHant(sitemapCopy.zh) : (sitemapCopy[locale as keyof typeof sitemapCopy] ?? sitemapCopy.en);
   const contentLocale: Locale = locale === "zh" || hant ? "zh" : "en";
   const groups = [
     {

@@ -9,9 +9,9 @@ import { toHant } from "./zh-hant";
 // Locales with their own bridge-copy literals (Record keys). zh-Hant is NOT a key;
 // it is derived from zh via OpenCC in the component (see BridgeLocaleInput).
 type BridgeLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
-type BridgeLocaleInput = BridgeLocale | "de" | "zh-Hant";
+type BridgeLocaleInput = BridgeLocale | "de" | "ko" | "zh-Hant";
 // Resolve a per-locale string, deriving zh-Hant from the zh value via OpenCC.
-// de has no authored bridge copy → falls to rec.en via the ?? below (GAP: de bridge copy).
+// de/ko have no authored bridge copy → fall to rec.en via the ?? below (GAP: de/ko bridge copy).
 function bridgeStr(rec: Record<BridgeLocale, string>, locale: BridgeLocaleInput): string {
   if (locale === "zh-Hant") return toHant(rec.zh);
   return rec[locale as BridgeLocale] ?? rec.en;

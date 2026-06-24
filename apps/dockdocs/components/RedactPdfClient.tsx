@@ -7,7 +7,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { deepHant, toHant } from "@/lib/zh-hant";
-import type { RouteLocale, AuthoredCopy } from "@/lib/i18n";
+import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 
 type Locale = RouteLocale;
 // Boxes are stored in NORMALIZED page fractions (0–1) so they map to any render scale.
@@ -48,6 +48,8 @@ const sizable = (b: Box) => b.w > 0.0015 && b.h > 0.0015;
 // route locale forces a translation decision rather than silently rendering English.
 function pageLabel(locale: Locale, n: number): string {
   if (locale === "zh-Hant") return toHant(`第 ${n} 页`);
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" ? "en" : locale;
   const MSG: AuthoredCopy<string> = {
     en: `Page ${n}`,
     zh: `第 ${n} 页`,
@@ -57,7 +59,7 @@ function pageLabel(locale: Locale, n: number): string {
     ja: `Page ${n}`,
     de: `Seite ${n}`,
   };
-  return MSG[locale];
+  return MSG[al];
 }
 
 const STR_EN = {
@@ -328,8 +330,12 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
 };
 
 export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [pages, setPages] = useState<Pg[]>([]);
   const [boxes, setBoxes] = useState<Box[]>([]);
@@ -397,10 +403,10 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
       setAutoMsg(auto.length ? t.autoFound(auto.length) : t.autoNone);
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("idle");
     }
-  }, [t, locale]);
+  }, [t, childLocale]);
 
   // ── Drawing on a page ──
   const norm = (e: ReactPointerEvent, el: HTMLElement) => {
@@ -477,10 +483,10 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
       trackToolRun("redact-pdf");
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("ready");
     }
-  }, [boxes, t, locale]);
+  }, [boxes, t, childLocale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
@@ -488,7 +494,7 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

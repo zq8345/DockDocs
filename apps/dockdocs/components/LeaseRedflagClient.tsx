@@ -394,12 +394,15 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function LeaseRedflagClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   // zh-Hant rendered from zh via OpenCC; child components (UploadDropzone /
   // UpgradePrompt / ToolFaq / encryptedPdfMessage) lack zh-Hant in their union,
   // so map it to "zh" for those props.
-  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  // ko has no engine/runtime copy yet → English (foundation phase); zh-Hant preserved.
+  const childLocale = locale === "ko" ? "en" : locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const [phase, setPhase] = useState<Phase>("idle");
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");

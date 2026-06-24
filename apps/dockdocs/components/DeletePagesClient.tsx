@@ -254,8 +254,12 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
 };
 
 export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -289,9 +293,9 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
       try { doc.destroy(); } catch { /* ignore */ }
       setPages(out); setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t, locale]);
+  }, [t, locale, childLocale]);
 
   const toggle = (idx: number) => {
     setError(null);
@@ -326,9 +330,9 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
       setDone(true);
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [marked, pages, fileName, t, locale]);
+  }, [marked, pages, fileName, t, locale, childLocale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
@@ -336,7 +340,7 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
@@ -363,7 +367,7 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
                 ja: `Page ${n}`,
                 de: `Seite ${n}`,
               };
-              const pageLabel = locale === "zh-Hant" ? toHant(PAGE_LABEL.zh) : PAGE_LABEL[locale];
+              const pageLabel = locale === "zh-Hant" ? toHant(PAGE_LABEL.zh) : PAGE_LABEL[al];
               return (
                 <button
                   key={p.idx}

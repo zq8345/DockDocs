@@ -350,8 +350,13 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
+  // the deepHant branch below); `childLocale` collapses only ko, since the widgets accept zh-Hant.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [target, setTarget] = useState(locale === "zh" ? "en" : "zh");
@@ -434,7 +439,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
           updated[i] = { ...it, status: "error", msg: data?.message || t.failed };
         }
       } catch (e) {
-        updated[i] = { ...it, status: "error", msg: encryptedPdfMessage(e, locale) ?? (e instanceof Error ? e.message : String(e)) };
+        updated[i] = { ...it, status: "error", msg: encryptedPdfMessage(e, childLocale) ?? (e instanceof Error ? e.message : String(e)) };
       }
       setItems([...updated]);
     }
@@ -469,7 +474,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
         de: "Der Download konnte nicht erstellt werden — bitte versuchen Sie es erneut.",
       };
-      setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[locale]);
+      setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[al]);
     }
   };
 
@@ -494,7 +499,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
       />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} privacyLabel={(() => {
+        <BatchUploadBox locale={childLocale} onFiles={addFiles} privacyLabel={(() => {
           const PRIVACY: Record<AuthoredLocale, string> = {
             en: "Read locally — only text is sent",
             zh: "文件在本地读取，仅发送文字",
@@ -504,7 +509,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
             ja: "ローカルで読み取り、テキストのみ送信",
             de: "Lokal gelesen — nur Text wird gesendet",
           };
-          return locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[locale];
+          return locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[al];
         })()} />
       ) : (
         <>
@@ -562,7 +567,7 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
         </>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
       <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="batch-translate" locale={locale} />

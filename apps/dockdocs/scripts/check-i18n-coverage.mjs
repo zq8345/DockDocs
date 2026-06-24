@@ -246,7 +246,13 @@ if (!DATA_LOCALES.length) {
 // it here and the guard re-blocks on any regression.
 // de: now FULLY REQUIRED (deTools/deFaq/runtimeCopy.de/CUSTOM_TOOL_COPY de
 // authored) — removed from this set so the guard blocks on any de gap.
-const PARTIAL_LOCALES = new Set([]);
+// ko: FOUNDATION PHASE — ko is a first-class route locale wired through every
+// type/runtime judgment, but its tool BODIES / runtimeCopy / CUSTOM_TOOL_COPY
+// still fall back to English until Korean copy lands (content phase). Listed here
+// so those gaps are REPORTED but do NOT fail the build. REMOVE "ko" when Korean
+// koTools/koFaq/runtimeCopy.ko/CUSTOM_TOOL_COPY ko are authored (and add it to the
+// parity guard's BODY_LOCALES/FAQ_LOCALES at the same time).
+const PARTIAL_LOCALES = new Set(["ko"]);
 const BLOCKING_LOCALES = DATA_LOCALES.filter((l) => !PARTIAL_LOCALES.has(l));
 const CUSTOM_BLOCKING_LOCALES = CUSTOM_LOCALES.filter((l) => !PARTIAL_LOCALES.has(l));
 

@@ -279,8 +279,12 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const hant = locale === "zh-Hant";
   const zh = locale === "zh" || locale === "zh-Hant";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
@@ -313,13 +317,13 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
       const ctx = canvas.getContext("2d");
       if (ctx) await page.render({ canvas, canvasContext: ctx, viewport }).promise;
       setPreview(canvas.toDataURL("image/jpeg", 0.8));
-      if (doc.numPages === 0) { setError(locale === "zh-Hant" ? toHant(NO_PAGES_MSG.zh) : NO_PAGES_MSG[locale]); setPhase("idle"); return; } setNumPages(doc.numPages); setFrom(1); setTo(doc.numPages);
+      if (doc.numPages === 0) { setError(locale === "zh-Hant" ? toHant(NO_PAGES_MSG.zh) : NO_PAGES_MSG[al]); setPhase("idle"); return; } setNumPages(doc.numPages); setFrom(1); setTo(doc.numPages);
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t, locale]);
+  }, [t, locale, al, childLocale]);
 
   const previewLabel = useMemo(() => makeLabel(fmt, startAt, Math.max(1, numPages), zh, hant), [fmt, startAt, numPages, zh, hant]);
   const overlayStyle = useMemo(() => {
@@ -372,9 +376,9 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
       trackToolRun("page-numbers");
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [from, to, startAt, fmt, margin, pos, fileName, zh, hant, t, locale]);
+  }, [from, to, startAt, fmt, margin, pos, fileName, zh, hant, t, locale, childLocale]);
 
   const inputCls = "h-9 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2.5 text-[13px] text-[color:var(--foreground)]";
 
@@ -384,7 +388,7 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
       ) : (
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           {/* Controls */}

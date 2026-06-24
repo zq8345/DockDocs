@@ -49,6 +49,10 @@ export const CITATION_SCOPE: Record<RouteLocale, string> = {
   fr: "Lorsque l'IA peut ancrer une réponse dans votre document, DockDocs montre le passage source et signale ce qu'elle ne peut pas tracer ; toutes les réponses n'auront pas de citation.",
   ja: "AI が回答をあなたの文書に根拠づけられる場合、DockDocs は該当する原文箇所を示し、たどれない部分は明示します——すべての回答に出典が付くわけではありません。",
   de: "Wenn die KI eine Antwort in Ihrem Dokument verankern kann, zeigt DockDocs die zugrunde liegende Quellstelle und weist darauf hin, was sich nicht belegen lässt – nicht jede Antwort erhält eine Quellenangabe.",
+  // ko: foundation phase. Korean copy not authored yet; mirrors the honest, scoped
+  // English claim until the Korean translation lands. The English wording carries the
+  // required scope marker. GAP: localize for the content phase.
+  ko: "When the AI can ground an answer in your document, DockDocs shows the source passage behind it and flags what it can't trace — a citation won't appear for every answer.",
 };
 
 /**
@@ -66,4 +70,6 @@ export const BRAND_SLOGAN: Record<RouteLocale, string> = {
   fr: "Vérifiez chaque réponse.",
   ja: "すべての回答を検証。",
   de: "Prüfen Sie jede Antwort.",
+  // ko: foundation phase — mirrors English until Korean copy lands (content phase).
+  ko: "Verify every answer.",
 };

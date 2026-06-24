@@ -25,7 +25,11 @@ const maxPages = 20;
 const maxCharacters = 24000;
 const maxFileBytes = 25 * 1024 * 1024;
 
-export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant" }) {
+export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant" }) {
+  // ko has no authored summary-client copy yet → English via the booleans/ternaries
+  // below all defaulting to English (foundation phase). childLocale collapses ko→en for
+  // child widgets (UpgradePrompt) whose prop union doesn't include ko.
+  const childLocale = locale === "ko" ? "en" : locale;
   // zh-Hant derives from zh via OpenCC: treat as zh for ternaries, then convert
   // the chosen zh string to Traditional with `h(...)`.
   const hant = locale === "zh-Hant";
@@ -170,7 +174,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
         </label>
       ) : null}
 
-      {limitHit !== null ? <UpgradePrompt locale={locale} limit={limitHit} /> : null}
+      {limitHit !== null ? <UpgradePrompt locale={childLocale} limit={limitHit} /> : null}
 
       {/* Processing */}
       {status === "extracting" || status === "summarizing" ? (

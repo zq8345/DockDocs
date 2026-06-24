@@ -115,7 +115,9 @@ export type OcrLanguage = "eng" | "chi_sim";
 
 // Full 7-locale string picker, keyed off the real config.locale. Falls back to
 // English for any locale without a translation (never leaks zh-only/en-only UI).
-type TemplateLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+// ko is a valid locale here; the tr() switch's `default` branch renders English for
+// it until Korean copy lands (content phase) — no per-callsite Korean arg needed.
+type TemplateLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 function tr(
   locale: TemplateLocale | undefined,
   en: string,

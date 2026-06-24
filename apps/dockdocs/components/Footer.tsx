@@ -8,7 +8,7 @@ import { getFooterCols } from "@/lib/footer-nav";
 
 function l(pathname: string | null): string {
   const first = (pathname ?? "/").split("/").filter(Boolean)[0];
-  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "zh-Hant" || first === "de" ? first : defaultLocale;
+  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "zh-Hant" || first === "de" || first === "ko" ? first : defaultLocale;
 }
 function href(path: string, locale: string) {
   return locale === defaultLocale ? path : `/${locale}${path}`;

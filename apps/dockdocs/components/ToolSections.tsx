@@ -36,6 +36,8 @@ const EYEBROW = {
 
 function pick(map: AuthoredCopy<string>, locale: Loc): string {
   if (locale === "zh-Hant") return toHant(map.zh);
+  // ko has no authored eyebrow yet → English (foundation phase).
+  if (locale === "ko") return map.en;
   return map[locale];
 }
 

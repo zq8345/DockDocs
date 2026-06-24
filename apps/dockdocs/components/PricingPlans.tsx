@@ -11,7 +11,7 @@ import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
 import { getUser, onAuthChange } from "@/lib/auth";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
 const copy = {
   en: {
@@ -582,13 +582,14 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   // "Most popular" badge, always Plus). Plans / compareCols / compare tiers are all
   // index-aligned [Free, Plus, Pro], so one index links the cards to the table.
   const [selectedIndex, setSelectedIndex] = useState<number>(() => {
-    const fi = (locale === "zh-Hant" ? copy.zh : (copy[locale] ?? copy.en)).plans.findIndex((p) => p.featured);
+    const fi = (locale === "zh-Hant" ? copy.zh : (copy[locale as keyof typeof copy] ?? copy.en)).plans.findIndex((p) => p.featured);
     return fi >= 0 ? fi : 1;
   });
-  // membership-ui / UpgradeFlow are typed to the 6 base membership locales (no `de`);
-  // de's billing plumbing (rare error toasts + upgrade modal) falls back to English
-  // text while every page-owned string below is native German.
-  const mLocale = locale === "de" ? "en" : locale;
+  // membership-ui / UpgradeFlow are typed to the 6 base membership locales (no `de`/`ko`);
+  // de/ko billing plumbing (rare error toasts + upgrade modal) falls back to English
+  // text. (de's page-owned strings are native German; ko's page-owned strings are still
+  // English fallback in the foundation phase.)
+  const mLocale = locale === "de" || locale === "ko" ? "en" : locale;
   // Shared in-place upgrade flow (quote → breakdown modal → discounted checkout).
   const upgrade = useUpgradeFlow(mLocale);
 
@@ -617,7 +618,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const hant = locale === "zh-Hant";
   const zh = locale === "zh" || hant;
   const h = (s: string) => (hant ? toHant(s) : s);
-  const c = hant ? deepHant(copy.zh) : (copy[locale] ?? copy.en);
+  // ko has no copy block yet → English via `?? copy.en` (foundation phase).
+  const c = hant ? deepHant(copy.zh) : (copy[locale as keyof typeof copy] ?? copy.en);
   const selectLabel = zh ? h("选择套餐") : locale === "es" ? "Seleccionar plan" : locale === "pt" ? "Selecionar plano" : locale === "fr" ? "Sélectionner le forfait" : locale === "ja" ? "プランを選択" : locale === "de" ? "Tarif auswählen" : "Select plan";
 
   // Turn a billing failure into a clear, localized message AND a console line with
@@ -858,7 +860,10 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 const canExpand = hasTools || hasFeatures;
                 // tier-config copy is keyed by the 7 base locales; for zh-Hant read
                 // zh then convert to Traditional via h(). de now has its own column.
-                const tcLocale: Exclude<Locale, "zh-Hant"> = hant ? "zh" : locale;
+                // ko has no tier-config column yet → read en (foundation phase); the
+                // per-cell `?? .en` below would also catch it, but collapsing here keeps
+                // tcLocale a valid TierValue key so the index type-checks.
+                const tcLocale: Exclude<Locale, "zh-Hant" | "ko"> = hant ? "zh" : locale === "ko" ? "en" : locale;
                 const catLabel = h(cat.label[tcLocale] ?? cat.label.en);
                 const lim = (tier: "free" | "plus" | "pro") => {
                   const v = cat.limits[tier];

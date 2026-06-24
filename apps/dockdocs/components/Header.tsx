@@ -81,10 +81,10 @@ const pageLinks = {
 
 type Locale = "en" | "zh";
 
-function stripLocale(p: string): "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant" {
+function stripLocale(p: string): "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant" {
   const s = p.split("/").filter(Boolean);
   const first = s[0];
-  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "de" || first === "zh-Hant" ? first : "en";
+  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "de" || first === "ko" || first === "zh-Hant" ? first : "en";
 }
 function lh(h: string, l: string) {
   return l === defaultLocale ? h : `/${l}${h}`;
@@ -124,7 +124,8 @@ export function Header() {
   // zh-Hant derives the entire nav from the zh source via OpenCC (deepHant),
   // mirroring ToolFaq/Home; otherwise stripLocale's "zh-Hant" falls through to en.
   const cats = getNavCategories(locale);
-  const pages = locale === "zh-Hant" ? deepHant(pageLinks.zh) : (pageLinks[locale] ?? pageLinks.en);
+  // ko has no pageLinks block yet → English via `?? pageLinks.en` (foundation phase).
+  const pages = locale === "zh-Hant" ? deepHant(pageLinks.zh) : (pageLinks[locale as keyof typeof pageLinks] ?? pageLinks.en);
 
   useEffect(() => {
     setLight(document.documentElement.classList.contains("light"));

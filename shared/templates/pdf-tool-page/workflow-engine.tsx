@@ -32,9 +32,9 @@ type WorkflowStatus =
   | "result"
   | "error";
 
-type L = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+type L = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
-const SUPPORTED_LOCALES = ["en", "zh", "es", "pt", "fr", "ja", "de", "zh-Hant"] as const;
+const SUPPORTED_LOCALES = ["en", "zh", "es", "pt", "fr", "ja", "de", "ko", "zh-Hant"] as const;
 
 function normalizeLocale(value: unknown): L {
   return (SUPPORTED_LOCALES as readonly string[]).includes(value as string)
@@ -43,8 +43,12 @@ function normalizeLocale(value: unknown): L {
 }
 
 function makeTr(loc: L) {
+  // ko → en until Korean copy lands (content phase). ko is a valid locale here so a
+  // /ko/<tool> page renders, but the per-callsite micro-copy is only authored through
+  // the 7th (de) arg today — ko falls back to the English arg without widening the
+  // ~124 tr() callsites to an 8th Korean argument.
   return (en: string, zh: string, es: string, pt: string, fr: string, ja: string, de: string): string =>
-    loc === "zh-Hant" ? toHant(zh) : ({ en, zh, es, pt, fr, ja, de })[loc];
+    loc === "zh-Hant" ? toHant(zh) : loc === "ko" ? en : ({ en, zh, es, pt, fr, ja, de })[loc];
 }
 
 export function PdfWorkflowEngine({

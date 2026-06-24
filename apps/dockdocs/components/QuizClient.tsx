@@ -263,8 +263,12 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function QuizClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
   const [count, setCount] = useState(10);
@@ -292,9 +296,9 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
       if (!trimmed) { setError(t.noText); setPhase("idle"); return; }
       setText(trimmed); setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t, locale]);
+  }, [t, childLocale]);
 
   const generate = useCallback(async () => {
     if (!text) return;
@@ -334,7 +338,7 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "reading" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "reading"} busyLabel={t.reading} privacy={false} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "reading"} busyLabel={t.reading} privacy={false} onFile={onFile} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
@@ -374,7 +378,7 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
       <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="flashcards" locale={locale} />
     </div>

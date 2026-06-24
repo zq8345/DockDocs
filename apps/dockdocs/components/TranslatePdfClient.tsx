@@ -198,7 +198,8 @@ type Phase = "idle" | "extracting" | "ready" | "translating" | "done";
 // here instead of silently falling through to the English label.
 function langLabel(l: { en: string; zh: string }, locale: Locale): string {
   if (locale === "zh-Hant") return toHant(l.zh);
-  const authored: AuthoredLocale = locale;
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const authored: AuthoredLocale = locale === "ko" ? "en" : locale;
   switch (authored) {
     case "zh":
       return l.zh;
@@ -381,8 +382,12 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [phase, setPhase] = useState<Phase>("idle");
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
@@ -437,11 +442,11 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
         try { doc.destroy(); } catch { /* ignore */ }
         setPhase("ready");
       } catch (e) {
-        setError(encryptedPdfMessage(e, locale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
+        setError(encryptedPdfMessage(e, childLocale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
         setPhase("idle");
       }
     },
-    [t, locale],
+    [t, childLocale],
   );
 
   const onTranslate = useCallback(async () => {
@@ -510,7 +515,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
 
       {/* Upload */}
       {phase === "idle" || phase === "extracting" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
       ) : (
         <div className={`${card} mt-8 p-5`}>
           <div className="flex items-center justify-between gap-3">
@@ -564,7 +569,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
 
       {/* Result */}
       {result && (

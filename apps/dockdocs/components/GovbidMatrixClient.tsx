@@ -386,11 +386,14 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   // zh-Hant rendered from zh via OpenCC; child components (UpgradePrompt /
   // ToolFaq / encryptedPdfMessage) lack zh-Hant in their union → map to "zh".
-  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  // ko has no engine/runtime copy yet → English (foundation phase); zh-Hant preserved.
+  const childLocale = locale === "ko" ? "en" : locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const [phase, setPhase] = useState<"ready" | "analyzing" | "done">("ready");
   const [error, setError] = useState<string | null>(null);
   const [requirements, setRequirements] = useState<Requirement[] | null>(null);
@@ -429,7 +432,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
           ja: "PDF を読み取れませんでした",
           de: "PDF konnte nicht gelesen werden",
         };
-        const readErr = locale === "zh-Hant" ? toHant(READ_ERR.zh) : READ_ERR[locale];
+        const readErr = locale === "zh-Hant" ? toHant(READ_ERR.zh) : READ_ERR[al];
         const msg = encryptedPdfMessage(e, childLocale) ?? readErr;
         setError(msg);
         setPhase("ready");
@@ -469,7 +472,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
       setPhase("done");
       trackToolRun("govbid-matrix");
     },
-    [locale, t, childLocale],
+    [locale, al, t, childLocale],
   );
 
   const filtered = useMemo(() => {
@@ -498,7 +501,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
       {/* Upload */}
       <div className="mt-8">
         <UploadDropzone
-          locale={locale}
+          locale={childLocale}
           accept="application/pdf"
           buttonLabel={t.upload}
           onFile={onAnalyze}

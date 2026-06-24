@@ -270,8 +270,12 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
@@ -323,13 +327,13 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
           ja: `読み取れなかったファイルを${skipped.length}件スキップしました：${list}${enc ? "(一部はパスワード保護されています。先に解除してください)" : ""}。`,
           de: `${skipped.length} unlesbare Datei(en) übersprungen: ${list}${enc ? " (einige sind passwortgeschützt — entsperren Sie sie zuerst)" : ""}.`,
         };
-        const msg = locale === "zh-Hant" ? toHant(MSG.zh) : MSG[locale];
+        const msg = locale === "zh-Hant" ? toHant(MSG.zh) : MSG[al];
         setError(msg);
       }
     } finally {
       setBusy(false);
     }
-  }, [locale]);
+  }, [locale, al]);
 
   const move = (from: number, to: number) => {
     if (from === to || from < 0 || to < 0) return;
@@ -359,11 +363,11 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       setDone(true);
       trackToolRun("merge-pdf");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
     } finally {
       setWorking(false);
     }
-  }, [items, t, locale]);
+  }, [items, t, locale, childLocale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
@@ -373,7 +377,7 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} busy={busy} busyLabel={t.rendering} />
+        <BatchUploadBox locale={childLocale} onFiles={addFiles} busy={busy} busyLabel={t.rendering} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

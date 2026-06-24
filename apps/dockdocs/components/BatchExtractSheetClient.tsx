@@ -106,7 +106,11 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
   // zh-Hant is machine-derived from zh via deepHant; after that branch `locale`
   // narrows to AuthoredLocale, so STR[locale] is total (no `?? STR.en` needed —
   // a missing route locale becomes a tsc index error, not a silent English fallback).
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // (zh-Hant is also collapsed here because the [al] index below is already inside a
+  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [docs, setDocs] = useState<Doc[]>([]);
   const [docType, setDocType] = useState<DocType>("invoice");
@@ -147,7 +151,7 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
         }
       }
       setDocs((prev) => [...prev, ...added].slice(0, maxFiles));
-      if (encrypted) setError(encryptedPdfMessage(undefined, locale) ?? t.err);
+      if (encrypted) setError(encryptedPdfMessage(undefined, locale === "ko" ? "en" : locale) ?? t.err);
     } finally {
       setBusy(false);
     }
@@ -220,7 +224,7 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
 
       {docs.length === 0 ? (
         <BatchUploadBox
-          locale={locale}
+          locale={locale === "ko" ? "en" : locale}
           onFiles={addFiles}
           busy={busy}
           busyLabel={t.reading}

@@ -322,8 +322,12 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant = "hub", content }: { locale?: Locale; defaultFormat?: Fmt; variant?: Variant; content?: ContentDepth }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   // Per-variant H1/subtitle (every locale in STR carries all three pairs).
   const heading = variant === "png" ? t.titlePng : variant === "jpg" ? t.titleJpg : t.title;
   const subheading = variant === "png" ? t.subtitlePng : variant === "jpg" ? t.subtitleJpg : t.subtitle;
@@ -362,9 +366,9 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
       setSelected(new Set(out.map((p) => p.idx)));
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t, locale]);
+  }, [t, childLocale]);
 
   const toggle = (idx: number) => setSelected((prev) => { const n = new Set(prev); if (n.has(idx)) n.delete(idx); else n.add(idx); return n; });
 
@@ -411,9 +415,9 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
       trackToolRun("pdf-to-image");
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [selected, pages, format, fileName, t, locale]);
+  }, [selected, pages, format, fileName, t, childLocale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
@@ -421,7 +425,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{subheading}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

@@ -253,8 +253,10 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
 };
 
 export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
@@ -317,7 +319,7 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
           ja: "読み取れる画像がありません（HEIC などの形式は未対応です）。",
           de: "Keine lesbaren Bilder (Formate wie HEIC werden noch nicht unterstützt).",
         };
-        throw new Error(locale === "zh-Hant" ? toHant(NONE.zh) : NONE[locale]);
+        throw new Error(locale === "zh-Hant" ? toHant(NONE.zh) : NONE[al]);
       }
       const bytes = await pdf.save();
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
@@ -336,14 +338,14 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
           ja: (n) => `${n} 枚の画像を読み取れず、スキップしました。`,
           de: (n) => `${n} Bild(er) konnten nicht gelesen werden und wurden übersprungen.`,
         };
-        setError(locale === "zh-Hant" ? toHant(SKIPPED.zh(failed)) : SKIPPED[locale](failed));
+        setError(locale === "zh-Hant" ? toHant(SKIPPED.zh(failed)) : SKIPPED[al](failed));
       }
     } catch (e) {
       setError(t.err + (e instanceof Error ? e.message : String(e)));
     } finally {
       setWorking(false);
     }
-  }, [items, locale, t]);
+  }, [items, locale, al, t]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">

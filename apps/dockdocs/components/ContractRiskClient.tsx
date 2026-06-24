@@ -396,12 +396,14 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
-  // zh-Hant is rendered from zh via OpenCC; child components below
-  // (UploadDropzone / UpgradePrompt / ToolFaq / encryptedPdfMessage) don't
-  // accept zh-Hant in their Locale union, so map it to "zh" for those props.
-  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // zh-Hant takes the deepHant branch below; collapsing it here too keeps `al` a plain AuthoredLocale.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  // Shared widgets (UploadDropzone / UpgradePrompt / encryptedPdfMessage) accept zh-Hant
+  // (Traditional derived via OpenCC) but not ko, so collapse only ko → en for those props.
+  const childLocale = locale === "ko" ? "en" : locale;
   const [phase, setPhase] = useState<Phase>("idle");
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");

@@ -315,8 +315,12 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
 };
 
 export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // childLocale collapses ONLY ko (preserves zh-Hant) for runtime fns lacking "ko".
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [a, setA] = useState<File | null>(null);
   const [b, setB] = useState<File | null>(null);
   const [phase, setPhase] = useState<"idle" | "comparing" | "done">("idle");
@@ -336,10 +340,10 @@ export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
       setPhase("done");
       trackToolRun("redline");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("idle");
     }
-  }, [a, b, t, locale]);
+  }, [a, b, t, childLocale]);
 
   const reset = () => { setA(null); setB(null); setOps([]); setPhase("idle"); setError(null); };
 

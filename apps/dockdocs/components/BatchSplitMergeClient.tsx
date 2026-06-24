@@ -10,7 +10,7 @@ import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant } from "@/lib/zh-hant";
-import type { RouteLocale, AuthoredCopy } from "@/lib/i18n";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
 type Locale = RouteLocale;
 type Mode = "merge" | "split";
@@ -286,8 +286,13 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
 };
 
 export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
+  // the deepHant branch below); `childLocale` collapses only ko, since BatchUploadBox accepts zh-Hant.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>(lockMode ?? "merge");
@@ -380,7 +385,7 @@ export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Lo
       <input ref={folderRef} type="file" multiple className="hidden" {...({ webkitdirectory: "", directory: "" } as Record<string, string>)} onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} />
+        <BatchUploadBox locale={childLocale} onFiles={addFiles} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-end justify-between gap-3">

@@ -10,7 +10,7 @@ import type { ReactNode } from "react";
 import { deepHant } from "@/lib/zh-hant";
 import { Figure, SHELL, H2, SUB, CAP, PANEL, eyebrowCls } from "@/components/design";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
 const content = {
   en: {
@@ -499,13 +499,14 @@ const Dash = () => <span className="mt-0.5 shrink-0 text-[color:var(--faint)]">â
 export function AboutPage({ locale = "en" }: { locale?: Locale }) {
   const zh = locale === "zh" || locale === "ja" || locale === "zh-Hant";
   // zh-Hant content is the Traditional conversion of the zh copy via OpenCC.
-  const c = locale === "zh-Hant" ? deepHant(content.zh) : (content[locale] ?? content.en);
+  // ko has no content block yet â†’ English via `?? content.en` (foundation phase).
+  const c = locale === "zh-Hant" ? deepHant(content.zh) : (content[locale as keyof typeof content] ?? content.en);
   const eyebrow = eyebrowCls(zh);
   const h2 = H2;
   const sub = SUB;
   const cap = CAP;
   const shell = SHELL;
-  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "zh-Hant" ? `/zh-Hant${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : locale === "de" ? `/de${slug}` : slug);
+  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "zh-Hant" ? `/zh-Hant${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : locale === "de" ? `/de${slug}` : locale === "ko" ? `/ko${slug}` : slug);
 
   return (
     <main>

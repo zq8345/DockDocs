@@ -264,8 +264,13 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
+  // the deepHant branch below); `childLocale` collapses only ko, since the widgets accept zh-Hant.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [docs, setDocs] = useState<Doc[]>([]);
   const [busy, setBusy] = useState(false);
@@ -306,7 +311,7 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
         }
       }
       setDocs((prev) => [...prev, ...added].slice(0, maxFiles));
-      if (encrypted) setError(encryptedPdfMessage(undefined, locale) ?? t.err);
+      if (encrypted) setError(encryptedPdfMessage(undefined, childLocale) ?? t.err);
     } finally {
       setBusy(false);
     }
@@ -419,7 +424,7 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
 
       {docs.length === 0 ? (
         <BatchUploadBox
-          locale={locale}
+          locale={childLocale}
           onFiles={addFiles}
           busy={busy}
           busyLabel={t.reading}
@@ -486,7 +491,7 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      {limitHit !== null && <UpgradePrompt locale={locale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
       <GroundingNote variant="summary" locale={locale} />
       <RelatedPdfTools locale={locale} exclude="/batch-summary" />
       <ToolSections locale={locale} content={sec} />

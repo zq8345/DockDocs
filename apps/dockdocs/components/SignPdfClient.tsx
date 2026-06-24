@@ -255,8 +255,12 @@ const NO_PAGES_MSG: Record<AuthoredLocale, string> = {
 };
 
 export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // childLocale collapses ONLY ko (preserves zh-Hant) for child props (e.g. UploadDropzone) lacking "ko".
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   // Child components/helpers only support en|zh|zh-Hant; map other UI locales to their content fallback.
   const baseLocale: "en" | "zh" | "zh-Hant" = locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : "en";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
@@ -282,7 +286,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
-      if (doc.numPages === 0) { setError(locale === "zh-Hant" ? toHant(NO_PAGES_MSG.zh) : NO_PAGES_MSG[locale]); setPhase("idle"); return; } setNumPages(doc.numPages);
+      if (doc.numPages === 0) { setError(locale === "zh-Hant" ? toHant(NO_PAGES_MSG.zh) : NO_PAGES_MSG[al]); setPhase("idle"); return; } setNumPages(doc.numPages);
       const p = Math.max(1, Math.min(pageNum, doc.numPages));
       const pg = await doc.getPage(p);
       const viewport = pg.getViewport({ scale: 1.1 });
@@ -387,7 +391,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
       ) : (
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <div className="order-2 lg:order-1">

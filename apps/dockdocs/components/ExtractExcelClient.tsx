@@ -10,7 +10,7 @@ import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
 import { dropzoneShell } from "@/components/design";
 import { formatBytes } from "@/lib/files";
-import type { RouteLocale, AuthoredCopy } from "@/lib/i18n";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
 type Locale = RouteLocale;
 // Authored-copy tables below are typed AuthoredCopy<T> (= Record<AuthoredLocale, T>,
@@ -313,8 +313,12 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
 };
 
 export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [docs, setDocs] = useState<Doc[]>([]);
   const [dragging, setDragging] = useState(false);
   const [docType, setDocType] = useState<DocType>("invoice");
@@ -351,11 +355,11 @@ export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
         }
       }
       setDocs((prev) => [...prev, ...added].slice(0, 8));
-      if (encrypted) setError(encryptedPdfMessage({ name: "PasswordException" }, locale) ?? t.err);
+      if (encrypted) setError(encryptedPdfMessage({ name: "PasswordException" }, childLocale) ?? t.err);
     } finally {
       setBusy(false);
     }
-  }, [locale, t]);
+  }, [locale, childLocale, t]);
 
   const reset = () => { setDocs([]); setResults([]); setDims([]); setPhase("idle"); setError(null); };
 

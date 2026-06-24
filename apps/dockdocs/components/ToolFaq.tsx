@@ -3008,6 +3008,9 @@ export function getToolFaqItems(tool: string, locale: Locale = "en"): QA[] | nul
   // FAQ behavior decided will fail the `never` assignment here at compile time,
   // forcing the author to choose rather than silently inheriting en.
   switch (locale) {
+    case "ko":
+      // ko has no authored FAQ yet → English (foundation phase).
+      return data.items.en;
     case "en":
     case "zh":
     case "es":
@@ -3071,6 +3074,10 @@ export function getFaqItems(
         // without a decided FAQ behavior fails the `never` assignment at compile
         // time instead of silently falling through to English.
         switch (locale) {
+          case "ko":
+            // ko has no authored FAQ yet → English (foundation phase).
+            items = data.items.en;
+            break;
           case "en":
           case "zh":
           case "es":
@@ -3170,6 +3177,11 @@ function ToolFaqInner({ tool, locale = "en" }: { tool: string; locale?: Locale }
     // hasn't had its FAQ rendering decided fails the `never` assignment at compile
     // time rather than silently rendering English here.
     switch (locale) {
+      case "ko":
+        // ko has no authored FAQ yet → English (foundation phase).
+        items = data.items.en;
+        title = data.title.en;
+        break;
       case "en":
       case "zh":
       case "es":

@@ -6,7 +6,7 @@ import { navCategories } from "@/components/Header";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import { Figure, SHELL, H2, SUB, CAP, PANEL, eyebrowCls } from "@/components/design";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 type Item = { name: string; slug: string };
 
 const COPY = {
@@ -506,12 +506,14 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
   const hant = locale === "zh-Hant";
   const zh = locale === "zh" || locale === "ja" || hant;
   const h = (s: string) => (hant ? toHant(s) : s);
-  const c = hant ? deepHant(COPY.zh) : (COPY[locale] ?? COPY.en);
+  // ko has no COPY block yet → English via `?? COPY.en` (foundation phase). Cast the
+  // index so the ko key (valid in Home's local Locale) doesn't trip the narrower object.
+  const c = hant ? deepHant(COPY.zh) : (COPY[locale as keyof typeof COPY] ?? COPY.en);
   // navCategories (Header.tsx) has no de/zh-Hant nav menu yet → those locales
   // fall back to the English menu via `?? navCategories.en`. Cast the index so
   // the de key (valid in Home's local Locale) doesn't trip the narrower Record.
   const cats = (hant ? deepHant(navCategories.zh) : (navCategories[locale as keyof typeof navCategories] ?? navCategories.en)).slice(0, 4);
-  const path = (slug: string) => (hant ? `/zh-Hant${slug}` : locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : locale === "de" ? `/de${slug}` : slug);
+  const path = (slug: string) => (hant ? `/zh-Hant${slug}` : locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : locale === "de" ? `/de${slug}` : locale === "ko" ? `/ko${slug}` : slug);
 
   // ── real client-side tool search over the full flatItems set across all 4 cats ──
   const heroReveal = useLineReveal(3);

@@ -197,12 +197,16 @@ const PS: Record<Source, Record<CopyLocale, { title: string; subtitle: string; h
 };
 
 export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Locale; source?: Source }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  // zh-Hant child components (BatchUploadBox / ToolFaq) lack zh-Hant → map to "zh".
-  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // (zh-Hant is also collapsed here because every [al] index below is already inside a
+  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  // zh-Hant child components (BatchUploadBox / ToolFaq) accept zh-Hant; ko → English (no Korean strings yet).
+  const childLocale = locale === "ko" ? "en" : locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const head = source
-    ? (locale === "zh-Hant" ? deepHant(PS[source].zh) : PS[source][locale])
+    ? (locale === "zh-Hant" ? deepHant(PS[source].zh) : PS[source][al])
     : { title: t.title, subtitle: t.subtitle, hint: t.hint };
   const exts = source ? SRC[source].ext : OFFICE_EXT;
   const accept = source ? SRC[source].accept : ACCEPT;
@@ -312,7 +316,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Loc
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
         de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
       };
-      setError(locale === "zh-Hant" ? toHant(ZIP_ERR.zh) : ZIP_ERR[locale]);
+      setError(locale === "zh-Hant" ? toHant(ZIP_ERR.zh) : ZIP_ERR[al]);
     }
   };
 

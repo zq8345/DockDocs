@@ -35,7 +35,7 @@ export type PdfToolUpload = {
 
 export type PdfToolPageConfig = {
   slug: string;
-  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
   canonicalPath?: string;
   alternateLanguages?: Record<string, string>;
   title: string;
@@ -302,8 +302,9 @@ const templateCopy = {
   },
 } as const;
 
-type TplLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
-// templateCopy accessor: zh-Hant derives from zh via OpenCC; de is authored natively.
+type TplLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
+// templateCopy accessor: zh-Hant derives from zh via OpenCC; de is authored natively;
+// ko has no templateCopy block yet → falls back to en (foundation phase).
 function tlCopy(locale: TplLocale): (typeof templateCopy)["en"] {
   if (locale === "zh-Hant") return deepHantTpl(templateCopy.zh) as unknown as (typeof templateCopy)["en"];
   return (templateCopy[locale as keyof typeof templateCopy] ?? templateCopy.en) as unknown as (typeof templateCopy)["en"];
@@ -350,8 +351,8 @@ export function createPdfToolSchema(config: PdfToolPageConfig) {
   const schemaTr = (en: string, zh: string, es: string, pt: string, fr: string, ja: string): string =>
     schemaLocale === "zh-Hant"
       ? ccTpl(zh)
-      : // de has no authored schema copy → English fallback (GAP: de schema strings).
-        schemaLocale === "de"
+      : // de/ko have no authored schema copy → English fallback (GAP: de/ko schema strings).
+        schemaLocale === "de" || schemaLocale === "ko"
         ? en
         : ({ en, zh, es, pt, fr, ja })[schemaLocale];
 
@@ -706,7 +707,7 @@ function RelatedPdfTools({
   useLocalePrefix = false,
 }: {
   currentSlug: string;
-  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
   useLocalePrefix?: boolean;
 }) {
   const copy = tlCopy(locale);
@@ -746,7 +747,7 @@ function RelatedPdfTools({
 }
 
 // 7-locale string picker for the tool-page "Recommended reading" card grid (zh-Hant reuses zh).
-type IndexingLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+type IndexingLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 function indexingTr(
   locale: IndexingLocale,
   en: string,
@@ -758,6 +759,9 @@ function indexingTr(
   de: string,
 ): string {
   if (locale === "zh-Hant") return ccTpl(zh);
+  // ko → en until Korean copy lands (content phase); the indexingTr callsites are not
+  // widened to an 8th Korean argument in this phase.
+  if (locale === "ko") return en;
   return ({ en, zh, es, pt, fr, ja, de })[locale];
 }
 
@@ -1099,7 +1103,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
   return [...(articleLinks[config.slug] ?? []), ...common];
 }
 
-function localizeTemplateHref(href: string, locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant") {
+function localizeTemplateHref(href: string, locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant") {
   const clean = href === "/" ? "" : href.replace(/\/+$/g, "");
   const path = clean ? `${clean}/` : "/";
 
@@ -1110,7 +1114,7 @@ function localizeTemplateHref(href: string, locale?: "en" | "zh" | "es" | "pt" |
   return path === "/" ? `/${locale}/` : `/${locale}${path}`;
 }
 
-function absoluteHref(href: string, locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant") {
+function absoluteHref(href: string, locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant") {
   return `${siteUrl}${localizeTemplateHref(href, locale)}`;
 }
 

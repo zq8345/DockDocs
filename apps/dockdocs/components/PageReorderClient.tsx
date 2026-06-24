@@ -9,7 +9,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { deepHant, toHant } from "@/lib/zh-hant";
-import type { RouteLocale, AuthoredCopy } from "@/lib/i18n";
+import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 
 // Canonical locale type — derived from RouteLocale (single source in lib/i18n.ts).
 // zh-Hant is machine-derived (deepHant/toHant), so the authored copy tables below are
@@ -298,6 +298,8 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
 // locale shows "Page N" (unchanged); zh-Hant is derived to "第 N 頁".
 function pageLabel(locale: Locale, n: number): string {
   if (locale === "zh-Hant") return `第 ${n} 頁`;
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" ? "en" : locale;
   const labels: AuthoredCopy<string> = {
     en: `Page ${n}`,
     zh: `第 ${n} 页`,
@@ -307,12 +309,16 @@ function pageLabel(locale: Locale, n: number): string {
     ja: `Page ${n}`,
     de: `Seite ${n}`,
   };
-  return labels[locale];
+  return labels[al];
 }
 
 export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -358,10 +364,10 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
       setPages(out);
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("idle");
     }
-  }, [t, locale]);
+  }, [t, childLocale]);
 
   const move = (from: number, to: number) => {
     if (from === to || from < 0 || to < 0 || from >= pages.length || to >= pages.length) return;
@@ -407,10 +413,10 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
       setDone(true);
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("ready");
     }
-  }, [pages, fileName, t, locale]);
+  }, [pages, fileName, t, childLocale]);
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
@@ -418,7 +424,7 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

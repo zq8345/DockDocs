@@ -176,12 +176,16 @@ const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>
 };
 
 export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Locale; target?: Format }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  // zh-Hant child components (BatchUploadBox / ToolFaq) lack zh-Hant → map to "zh".
-  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // (zh-Hant is also collapsed here because every [al] index below is already inside a
+  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  // zh-Hant child components (BatchUploadBox / ToolFaq) accept zh-Hant; ko → English (no Korean strings yet).
+  const childLocale = locale === "ko" ? "en" : locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const head = target
-    ? (locale === "zh-Hant" ? deepHant(PT[target].zh) : PT[target][locale])
+    ? (locale === "zh-Hant" ? deepHant(PT[target].zh) : PT[target][al])
     : { title: t.title, subtitle: t.subtitle };
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Format>(target ?? "word");
@@ -291,7 +295,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
         de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
       };
-      setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[locale]);
+      setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[al]);
     }
   };
 
@@ -307,7 +311,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
     ja: "当社のサーバーで変換",
     de: "Auf unserem Server konvertiert",
   };
-  const privacyLabel = locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[locale];
+  const privacyLabel = locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[al];
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">

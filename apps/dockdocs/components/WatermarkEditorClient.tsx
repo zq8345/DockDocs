@@ -273,8 +273,12 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
@@ -330,16 +334,16 @@ export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
           ja: "この PDF にはページがありません。",
           de: "Dieses PDF hat keine Seiten.",
         };
-        setError(locale === "zh-Hant" ? toHant(NO_PAGES.zh) : NO_PAGES[locale]);
+        setError(locale === "zh-Hant" ? toHant(NO_PAGES.zh) : NO_PAGES[al]);
         setPhase("idle"); return;
       } setNumPages(doc.numPages);
       setFrom(1); setTo(doc.numPages);
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
-  }, [t, locale]);
+  }, [t, childLocale]);
 
   // Track the on-screen width of the preview image so the overlay font can be
   // scaled to match the real stamp (size pt) instead of guessing.
@@ -441,9 +445,9 @@ export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
       trackToolRun("watermark-pdf");
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
-  }, [mode, text, size, color, pos, opacity, rotate, from, to, fileName, t, locale]);
+  }, [mode, text, size, color, pos, opacity, rotate, from, to, fileName, t, childLocale]);
 
   const inputCls = "h-9 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2.5 text-[13px] text-[color:var(--foreground)]";
 
@@ -453,7 +457,7 @@ export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} />
       ) : (
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           {/* Controls */}

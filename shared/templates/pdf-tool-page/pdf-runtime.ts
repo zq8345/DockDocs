@@ -33,7 +33,7 @@ export type PdfRuntimeSlug =
   | "pdf-to-ppt"
   | "pdf-to-html";
 
-export type RuntimeLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+export type RuntimeLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
 // 6-way string picker. Keep PDF/OCR/API/DOCX/HTML/DockDocs and other
 // brand/format names untranslated. ja: full-width punctuation 。、「」,
@@ -41,21 +41,22 @@ export type RuntimeLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh
 function makeRuntimeTr(locale: RuntimeLocale) {
   return (en: string, zh: string, es: string, pt: string, fr: string, ja: string): string => {
     if (locale === "zh-Hant") return toHant(zh);
-    // de is an authored UI/copy locale, but these runtime engine/error strings
-    // are only authored for the 6 base languages — fall de back to en (the same
-    // English fallback any unhandled non-special locale gets here).
-    if (locale === "de") return en;
+    // de/ko are authored UI/copy locales, but these runtime engine/error strings
+    // are only authored for the 6 base languages — fall them back to en (the same
+    // English fallback any unhandled non-special locale gets here). ko → en until
+    // Korean runtime copy lands.
+    if (locale === "de" || locale === "ko") return en;
     return ({ en, zh, es, pt, fr, ja })[locale];
   };
 }
 
 // Engines (OCR / CloudConvert) author copy for the original 7 locales only.
-// de is a UI/copy locale added later; for engine-facing locale args collapse it
-// to "en" (de has no engine-side strings), same as any non-special locale falls
-// to its closest engine locale. Keeps de out of a `never`/unhandled engine path.
+// de/ko are UI/copy locales added later; for engine-facing locale args collapse them
+// to "en" (no engine-side strings), same as any non-special locale falls to its
+// closest engine locale. Keeps de/ko out of a `never`/unhandled engine path.
 type EngineLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
 function toEngineLocale(locale: RuntimeLocale): EngineLocale {
-  return locale === "de" ? "en" : locale;
+  return locale === "de" || locale === "ko" ? "en" : locale;
 }
 
 export type PdfRuntimeProgress = {
@@ -1083,7 +1084,7 @@ async function pdfToHtmlDoc(
   throwIfAborted(signal);
   emitProgress(onProgress, 95, 3);
 
-  const htmlLang = { en: "en", zh: "zh", es: "es", pt: "pt", fr: "fr", ja: "ja", de: "de", "zh-Hant": "zh-Hant" }[locale] ?? "en";
+  const htmlLang = { en: "en", zh: "zh", es: "es", pt: "pt", fr: "fr", ja: "ja", de: "de", ko: "ko", "zh-Hant": "zh-Hant" }[locale] ?? "en";
   const html = `<!doctype html>
 <html lang="${htmlLang}">
 <head>

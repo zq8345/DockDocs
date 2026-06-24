@@ -326,8 +326,12 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -377,10 +381,10 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
       setInsertAfter(out.length); // default: at the end
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("idle");
     }
-  }, [t, locale]);
+  }, [t, locale, childLocale]);
 
   const apply = useCallback(async () => {
     const main = mainRef.current;
@@ -430,10 +434,10 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
       setDone(true);
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("ready");
     }
-  }, [insertAfter, fileName, t, locale]);
+  }, [insertAfter, fileName, t, locale, childLocale]);
 
   const PAGE_LABEL: AuthoredCopy<(n: number) => string> = {
     en: (n) => `Page ${n}`,
@@ -445,7 +449,7 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
     de: (n) => `Seite ${n}`,
   };
   const pageLabel = (n: number) =>
-    locale === "zh-Hant" ? toHant(PAGE_LABEL.zh(n)) : PAGE_LABEL[locale](n);
+    locale === "zh-Hant" ? toHant(PAGE_LABEL.zh(n)) : PAGE_LABEL[al](n);
 
   const Slot = ({ value, label }: { value: number; label: string }) => {
     const active = insertAfter === value;
@@ -470,7 +474,7 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

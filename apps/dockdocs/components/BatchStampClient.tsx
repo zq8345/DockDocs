@@ -445,9 +445,14 @@ const SECTIONS_PN: AuthoredCopy<ToolSectionsContent> = {
 };
 
 export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
+  // the deepHant branch below); `childLocale` collapses only ko, since BatchUploadBox accepts zh-Hant.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const SECTIONS = lockMode === "pagenum" ? SECTIONS_PN : SECTIONS_WM;
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>(lockMode ?? "watermark");
@@ -519,7 +524,7 @@ export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale;
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
         de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
       };
-      setError(locale === "zh-Hant" ? toHant(zipErr.zh) : zipErr[locale]);
+      setError(locale === "zh-Hant" ? toHant(zipErr.zh) : zipErr[al]);
     }
   };
 
@@ -534,7 +539,7 @@ export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale;
       <input ref={folderRef} type="file" multiple className="hidden" {...({ webkitdirectory: "", directory: "" } as Record<string, string>)} onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} />
+        <BatchUploadBox locale={childLocale} onFiles={addFiles} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-end justify-between gap-3">

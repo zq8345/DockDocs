@@ -11,9 +11,10 @@ import type { RouteLocale } from "@/lib/i18n";
 
 type Locale = RouteLocale;
 // Locales that need their own authored copy; zh-Hant is machine-derived (deepHant)
-// so it is excluded — adding a route locale (e.g. "de") to routeLocales makes the
-// AuthoredCopy tables below a tsc error until the new locale's copy is added.
-type AuthoredLocale = Exclude<RouteLocale, "zh-Hant">;
+// and ko is English-fallback (foundation phase), so both are excluded — mirrors the
+// global AuthoredLocale in lib/i18n.ts. Adding a route locale that needs authored
+// copy makes the AuthoredCopy tables below a tsc error until its copy is added.
+type AuthoredLocale = Exclude<RouteLocale, "zh-Hant" | "ko">;
 type Edges = { top: number; right: number; bottom: number; left: number };
 
 const _en = {
@@ -249,8 +250,13 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 };
 
 export function CropPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // zh-Hant takes the deepHant branch below; collapsing it here too keeps `al` a plain AuthoredLocale.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // UploadDropzone / encryptedPdfMessage accept zh-Hant but not ko, so collapse only ko for those.
+  const childLocale = locale === "ko" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
@@ -277,7 +283,7 @@ export function CropPdfClient({ locale = "en" }: { locale?: Locale }) {
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
   }, [t, locale]);
 
@@ -309,7 +315,7 @@ export function CropPdfClient({ locale = "en" }: { locale?: Locale }) {
       trackToolRun("crop-pdf");
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
   }, [edges, fileName, t, locale]);
 
@@ -327,7 +333,7 @@ export function CropPdfClient({ locale = "en" }: { locale?: Locale }) {
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
       ) : (
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <div className="order-2 lg:order-1">

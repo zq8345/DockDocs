@@ -9,12 +9,17 @@ export type Locale = (typeof locales)[number];
 // the locale, everything else falls back to English (content type stays en|zh).
 // pt-BR is being built content-first (inert ptTools/ptFaq/STR.pt/etc.); add "pt"
 // to this array to ACTIVATE it (LAST step, once content is complete).
-export const routeLocales = ["en", "zh", "es", "pt", "fr", "ja", "de", "zh-Hant"] as const;
+export const routeLocales = ["en", "zh", "es", "pt", "fr", "ja", "de", "ko", "zh-Hant"] as const;
 export type RouteLocale = (typeof routeLocales)[number];
 
 // Locales that need their own AUTHORED copy. zh-Hant is excluded because it is
 // machine-derived from zh via deepHant/toHant (lib/zh-hant.ts) — never hand-written.
-export type AuthoredLocale = Exclude<RouteLocale, "zh-Hant">;
+// ko is excluded FOR NOW (foundation phase): ko is a first-class route locale whose
+// CONTENT still falls back to English until the Korean copy lands (content phase).
+// Excluding it here keeps the ~40 `AuthoredCopy<T>`/`Record<AuthoredLocale,…>` tool
+// tables from demanding Korean strings (which would red-build), exactly as zh-Hant is
+// excluded. REMOVE "ko" from this Exclude when Korean tool/runtime copy is authored.
+export type AuthoredLocale = Exclude<RouteLocale, "zh-Hant" | "ko">;
 // Exhaustive copy map over authored locales. Adding a new route locale (e.g. "de")
 // makes EVERY AuthoredCopy literal a tsc error until the new key is added — this is
 // what turns a silently-English build into a red build.
@@ -229,6 +234,7 @@ export function languageAlternates(slug: RouteSlug) {
     fr: absoluteUrl(localizedPath("fr", slug)),
     ja: absoluteUrl(localizedPath("ja", slug)),
     de: absoluteUrl(localizedPath("de", slug)),
+    ko: absoluteUrl(localizedPath("ko", slug)),
     // hreflang language ATTRIBUTE keeps BCP-47 "zh-Hant" casing; localizedPath
     // lowercases only the href PATH segment (/zh-hant/) to dodge Netlify's
     // mixed-case 301. Without this key the zh-Hant pages ship no self/sibling
@@ -2922,7 +2928,8 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de", R
   },
 };
 
-export function getInfoPage(locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant", slug: InfoPageSlug) {
+export function getInfoPage(locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant", slug: InfoPageSlug) {
   if (locale === "zh-Hant") return deepHant(infoPages.zh[slug]);
+  // ko has no authored infoPages block yet → falls back to English (foundation phase).
   return (infoPages[locale as keyof typeof infoPages] ?? infoPages.en)[slug];
 }

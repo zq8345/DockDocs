@@ -194,9 +194,10 @@ const ZIP_FAIL: Record<AuthoredLocale, string> = {
   de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
 };
 const skipEmptyMsg = (locale: Locale) =>
-  locale === "zh-Hant" ? toHant(SKIP_EMPTY.zh) : SKIP_EMPTY[locale];
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  locale === "zh-Hant" ? toHant(SKIP_EMPTY.zh) : SKIP_EMPTY[locale === "ko" ? "en" : locale];
 const zipFailMsg = (locale: Locale) =>
-  locale === "zh-Hant" ? toHant(ZIP_FAIL.zh) : ZIP_FAIL[locale];
+  locale === "zh-Hant" ? toHant(ZIP_FAIL.zh) : ZIP_FAIL[locale === "ko" ? "en" : locale];
 
 // Parse "1,3-4" into a Set of 1-based page numbers.
 function parsePageList(input: string): Set<number> {
@@ -376,10 +377,15 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
 };
 
 export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
-  // zh-Hant child components (BatchUploadBox / ToolFaq / encryptedPdfMessage) lack zh-Hant → map to "zh".
-  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // (zh-Hant is also collapsed here because every [al] index below is already inside a
+  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  // zh-Hant child components (BatchUploadBox / ToolFaq / encryptedPdfMessage) accept zh-Hant;
+  // ko → English (foundation phase) since those widgets have no Korean strings yet.
+  const childLocale = locale === "ko" ? "en" : locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>("crop");
