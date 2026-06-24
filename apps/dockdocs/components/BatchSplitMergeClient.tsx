@@ -10,15 +10,15 @@ import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
+type Locale = RouteLocale;
 type Mode = "merge" | "split";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; parts?: number; msg?: string };
 
 const MAX_FILES = 50;
 
-const STR = {
-  en: {
+const STR_en = {
     title: "Batch split or merge PDFs",
     titleSplit: "Batch split",
     subSplit: "Split each PDF in a whole folder into smaller N-page files — all in your browser, packaged for download. Nothing is uploaded.",
@@ -31,7 +31,10 @@ const STR = {
     needTwo: "Add at least 2 PDFs to merge.", needFile: "Add at least one PDF.",
     note: "Merge keeps the upload order. Split breaks each PDF into chunks of N pages. Everything stays on your device.",
     err: "Something went wrong: ",
-  },
+};
+
+const STR = {
+  en: STR_en,
   zh: {
     title: "批量拆分 / 合并 PDF",
     titleSplit: "批量 PDF 拆分",
@@ -102,9 +105,9 @@ const STR = {
     note: "結合はアップロード順を保持します。分割は各 PDF を N ページ単位のまとまりに分けます。すべてがお使いのデバイス内で完結します。",
     err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof STR_en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Batch-split a whole folder of PDFs",
     benefitsDescription: "Point at a folder, split every PDF the same way, and collect the results in one ZIP.",
@@ -246,8 +249,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>(lockMode ?? "merge");
@@ -278,7 +281,7 @@ export function BatchSplitMergeClient({ locale = "en", lockMode }: { locale?: Lo
       if (items.length < 2) { setError(t.needTwo); return; }
       setPhase("running"); setProgress(0);
       try {
-        const artifact = await runPdfRuntime({ slug: "merge-pdf", files: items.map((it) => it.file), pageRanges: "", outputFileName: "merged.pdf", locale: locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : "en" });
+        const artifact = await runPdfRuntime({ slug: "merge-pdf", files: items.map((it) => it.file), pageRanges: "", outputFileName: "merged.pdf", locale });
         result.current = { blob: artifact.blob, name: "dockdocs-merged.pdf" };
         setPhase("done");
       } catch (e) {

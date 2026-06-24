@@ -9,10 +9,11 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
-// zh-Hant is derived from zh via OpenCC, so copy tables are keyed by the base locales only.
-type CopyLocale = Exclude<Locale, "zh-Hant">;
+type Locale = RouteLocale;
+// zh-Hant is derived from zh via OpenCC, so copy tables are keyed by the authored locales only.
+type CopyLocale = AuthoredLocale;
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; blob?: Blob; msg?: string };
 
@@ -32,24 +33,26 @@ function routeFor(name: string): "word-to-pdf" | "ppt-to-pdf" | "excel-to-pdf" {
   return "word-to-pdf"; // doc/docx/odt/rtf and anything else LibreOffice handles
 }
 
+const _en = {
+  title: "Batch Office to PDF",
+  subtitle:
+    "Convert a whole folder of Word, PowerPoint, and Excel files to PDF in one go — each is converted on our server and packaged into a single ZIP.",
+  run: "Convert all",
+  running: "Converting",
+  download: "Download ZIP",
+  reset: "Start over",
+  files: (n: number, max: number) => `${n} / ${max} files`,
+  done: "done",
+  failed: "failed",
+  need: "Add at least one Office file.",
+  tooBig: "Over 5 MB — use the single-file tool",
+  hint: "Word, PowerPoint, Excel",
+  note: "Files are converted to PDF on our server (the same LibreOffice engine the single-file tools use) and returned — they aren't stored. Files over 5 MB aren't supported in batch; use the single-file converter for those.",
+  err: "Something went wrong: ",
+};
+
 const STR = {
-  en: {
-    title: "Batch Office to PDF",
-    subtitle:
-      "Convert a whole folder of Word, PowerPoint, and Excel files to PDF in one go — each is converted on our server and packaged into a single ZIP.",
-    run: "Convert all",
-    running: "Converting",
-    download: "Download ZIP",
-    reset: "Start over",
-    files: (n: number, max: number) => `${n} / ${max} files`,
-    done: "done",
-    failed: "failed",
-    need: "Add at least one Office file.",
-    tooBig: "Over 5 MB — use the single-file tool",
-    hint: "Word, PowerPoint, Excel",
-    note: "Files are converted to PDF on our server (the same LibreOffice engine the single-file tools use) and returned — they aren't stored. Files over 5 MB aren't supported in batch; use the single-file converter for those.",
-    err: "Something went wrong: ",
-  },
+  en: _en,
   zh: {
     title: "批量 Office 转 PDF",
     subtitle:
@@ -135,7 +138,7 @@ const STR = {
     note: "ファイルはサーバーでPDFに変換され（単一ファイルツールと同じLibreOfficeエンジン）、返されます — 保存されることはありません。5 MBを超えるファイルは一括処理に対応していません。その場合は単一ファイル変換ツールをご利用ください。",
     err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
 type Source = "word" | "excel" | "ppt";
 
@@ -174,12 +177,12 @@ const PS: Record<Source, Record<CopyLocale, { title: string; subtitle: string; h
 };
 
 export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Locale; source?: Source }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
   // zh-Hant child components (BatchUploadBox / ToolFaq) lack zh-Hant → map to "zh".
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const head = source
-    ? (locale === "zh-Hant" ? deepHant(PS[source].zh) : (PS[source][locale as CopyLocale] ?? PS[source].en))
+    ? (locale === "zh-Hant" ? deepHant(PS[source].zh) : PS[source][locale])
     : { title: t.title, subtitle: t.subtitle, hint: t.hint };
   const exts = source ? SRC[source].ext : OFFICE_EXT;
   const accept = source ? SRC[source].accept : ACCEPT;
@@ -280,7 +283,15 @@ export function BatchOfficeToPdfClient({ locale = "en", source }: { locale?: Loc
       trackToolRun(source ? `batch-${source}-to-pdf` : "batch-office-to-pdf");
       URL.revokeObjectURL(url);
     } catch {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download — tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement — veuillez réessayer." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      const ZIP_ERR: Record<AuthoredLocale, string> = {
+        en: "Could not build the download — please try again.",
+        zh: "打包下载失败，请重试。",
+        es: "No se pudo crear la descarga; inténtalo de nuevo.",
+        pt: "Não foi possível criar o download — tente novamente.",
+        fr: "Impossible de créer le téléchargement — veuillez réessayer.",
+        ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+      };
+      setError(locale === "zh-Hant" ? toHant(ZIP_ERR.zh) : ZIP_ERR[locale]);
     }
   };
 

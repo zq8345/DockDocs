@@ -14,8 +14,9 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
+type Locale = RouteLocale;
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; translation?: string; msg?: string };
 
@@ -38,25 +39,27 @@ const LANGS: Array<{ code: string; en: string; zh: string }> = [
   { code: "hi", en: "Hindi", zh: "印地语" },
 ];
 
+const _en = {
+  title: "Batch Translate PDFs",
+  subtitle:
+    "Translate a whole folder of PDFs into one language in a single run — the text of each is translated and packaged into a single ZIP of .txt files.",
+  target: "Translate to",
+  run: "Translate all",
+  running: "Translating",
+  download: "Download ZIP",
+  reset: "Start over",
+  files: (n: number, max: number) => `${n} / ${max} files`,
+  done: "done",
+  failed: "failed",
+  need: "Add at least one PDF.",
+  noText: "No selectable text (scanned?)",
+  tooLong: "Too long (over 14k chars)",
+  note: "Each PDF is read in your browser; only the extracted text is sent for translation. Output is plain text (.txt), one file per PDF — layout is not preserved. Scanned PDFs need OCR first. Counts toward your daily AI limit.",
+  err: "Something went wrong: ",
+};
+
 const STR = {
-  en: {
-    title: "Batch Translate PDFs",
-    subtitle:
-      "Translate a whole folder of PDFs into one language in a single run — the text of each is translated and packaged into a single ZIP of .txt files.",
-    target: "Translate to",
-    run: "Translate all",
-    running: "Translating",
-    download: "Download ZIP",
-    reset: "Start over",
-    files: (n: number, max: number) => `${n} / ${max} files`,
-    done: "done",
-    failed: "failed",
-    need: "Add at least one PDF.",
-    noText: "No selectable text (scanned?)",
-    tooLong: "Too long (over 14k chars)",
-    note: "Each PDF is read in your browser; only the extracted text is sent for translation. Output is plain text (.txt), one file per PDF — layout is not preserved. Scanned PDFs need OCR first. Counts toward your daily AI limit.",
-    err: "Something went wrong: ",
-  },
+  en: _en,
   zh: {
     title: "批量翻译 PDF",
     subtitle:
@@ -147,7 +150,7 @@ const STR = {
     note: "各 PDF はブラウザ内で読み取られ、抽出されたテキストのみが翻訳のために送信されます。出力は PDF 1 つにつき 1 ファイルのプレーンテキスト（.txt）で、レイアウトは保持されません。スキャンされた PDF は先に OCR が必要です。1 日の AI 上限にカウントされます。",
     err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
 async function extractText(file: File): Promise<string> {
   const pdfjs = await import("pdfjs-dist");
@@ -164,7 +167,7 @@ async function extractText(file: File): Promise<string> {
   return out.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
 }
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Translate a whole folder at once",
     benefitsDescription: "Point one run at a folder of PDFs and get every document translated into the same target language.",
@@ -306,8 +309,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [target, setTarget] = useState(locale === "zh" ? "en" : "zh");
@@ -416,7 +419,15 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
       trackToolRun("batch-translate");
       URL.revokeObjectURL(url);
     } catch {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download; tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement ; réessayez." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      const DL_ERR: Record<AuthoredLocale, string> = {
+        en: "Could not build the download — please try again.",
+        zh: "打包下载失败，请重试。",
+        es: "No se pudo crear la descarga; inténtalo de nuevo.",
+        pt: "Não foi possível criar o download; tente novamente.",
+        fr: "Impossible de créer le téléchargement ; réessayez.",
+        ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+      };
+      setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[locale]);
     }
   };
 
@@ -441,7 +452,17 @@ export function BatchTranslateClient({ locale = "en" }: { locale?: Locale }) {
       />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale} onFiles={addFiles} privacyLabel={locale === "zh" ? "文件在本地读取，仅发送文字" : locale === "es" ? "Leído localmente; solo se envía el texto" : locale === "pt" ? "Lido localmente; apenas o texto é enviado" : locale === "fr" ? "Lu localement — seul le texte est envoyé" : locale === "ja" ? "ローカルで読み取り、テキストのみ送信" : "Read locally — only text is sent"} />
+        <BatchUploadBox locale={locale} onFiles={addFiles} privacyLabel={(() => {
+          const PRIVACY: Record<AuthoredLocale, string> = {
+            en: "Read locally — only text is sent",
+            zh: "文件在本地读取，仅发送文字",
+            es: "Leído localmente; solo se envía el texto",
+            pt: "Lido localmente; apenas o texto é enviado",
+            fr: "Lu localement — seul le texte est envoyé",
+            ja: "ローカルで読み取り、テキストのみ送信",
+          };
+          return locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[locale];
+        })()} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

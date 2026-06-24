@@ -7,8 +7,10 @@ import { authHeader } from "@/lib/supabase";
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { deepHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = RouteLocale;
 type DocType = "invoice" | "quote" | "contract";
 type Dim = { key: string; label: string };
 type Field = { value: string | null; source: string | null };
@@ -18,18 +20,20 @@ type Doc = { id: string; name: string; file: File; text: string };
 const MAX_FILES = 40;
 const CHUNK = 8; // compare-extract handles up to 8 docs per call
 
+const _en = {
+  title: "Batch extract data to one spreadsheet",
+  subtitle: "Drop a whole folder of invoices, quotes, or contracts — DockDocs pulls the key fields from every file into a single table, one row per document, ready to download as CSV. The AI only reports what's actually there.",
+  drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", add: "Add more", reading: "Reading files…",
+  type: "Document type", invoice: "Invoices", quote: "Quotes", contract: "Contracts",
+  extract: "Extract all", extracting: "Extracting", reset: "Start over",
+  download: "Download CSV", doc: "Document", dash: "—",
+  files: (n: number, max: number) => `${n} / ${max} files`, needFile: "Add at least one PDF.",
+  err: "Something went wrong: ",
+  note: "Each PDF is read in your browser; only the extracted text is sent to the AI to pull the key fields — your file itself isn't uploaded. Fields are extracted by AI and may need a quick check. Values it can't find are left blank — it won't make them up.",
+};
+
 const STR = {
-  en: {
-    title: "Batch extract data to one spreadsheet",
-    subtitle: "Drop a whole folder of invoices, quotes, or contracts — DockDocs pulls the key fields from every file into a single table, one row per document, ready to download as CSV. The AI only reports what's actually there.",
-    drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", add: "Add more", reading: "Reading files…",
-    type: "Document type", invoice: "Invoices", quote: "Quotes", contract: "Contracts",
-    extract: "Extract all", extracting: "Extracting", reset: "Start over",
-    download: "Download CSV", doc: "Document", dash: "—",
-    files: (n: number, max: number) => `${n} / ${max} files`, needFile: "Add at least one PDF.",
-    err: "Something went wrong: ",
-    note: "Each PDF is read in your browser; only the extracted text is sent to the AI to pull the key fields — your file itself isn't uploaded. Fields are extracted by AI and may need a quick check. Values it can't find are left blank — it won't make them up.",
-  },
+  en: _en,
   zh: {
     title: "批量抽取数据到一张表",
     subtitle: "拖入整个文件夹的发票、报价单或合同——DockDocs 把每份的关键字段都抽进同一张表，一份一行，可导出 CSV。AI 只报告文档里真实存在的内容。",
@@ -85,10 +89,13 @@ const STR = {
     err: "問題が発生しました: ",
     note: "各 PDF はブラウザ内で読み取られ、項目を抽出するために抽出されたテキストのみが AI に送信されます——ファイル自体はアップロードされません。項目はAIによって抽出されるため、簡単な確認が必要な場合があります。見つからない値は空欄のままになります — AIが値を作り出すことはありません。",
   },
-};
+} satisfies Record<AuthoredLocale, typeof _en>;
 
 export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  // zh-Hant is machine-derived from zh via deepHant; after that branch `locale`
+  // narrows to AuthoredLocale, so STR[locale] is total (no `?? STR.en` needed —
+  // a missing route locale becomes a tsc index error, not a silent English fallback).
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [docs, setDocs] = useState<Doc[]>([]);
   const [docType, setDocType] = useState<DocType>("invoice");

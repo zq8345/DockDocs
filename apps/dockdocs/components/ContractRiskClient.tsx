@@ -11,17 +11,17 @@ import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
 import { useCallback, useMemo, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type RiskLevel = "high" | "medium" | "low";
 type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string; missing?: boolean; unverified?: boolean };
 
 const MAX_CHARS = 24_000;
 
-const STR = {
-  en: {
+const _en = {
     title: "Contract Risk Check",
     subtitle:
       "Upload a contract and get a plain-language list of risky, one-sided, or missing clauses — each flagged red / amber / green, quoted from your document, with what to ask before you sign.",
@@ -48,7 +48,10 @@ const STR = {
     errPrefix: "Couldn't complete the review: ",
     retry: "Try again",
     privacy: "Your contract is read in your browser; only the extracted text is sent for analysis.",
-  },
+};
+
+const STR = {
+  en: _en,
   zh: {
     title: "合同风险体检",
     subtitle:
@@ -189,7 +192,7 @@ const STR = {
     retry: "再試行",
     privacy: "契約書はお使いのブラウザ内で読み込まれ、抽出されたテキストのみが分析のために送信されます。",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
 const LEVEL_ORDER: Record<RiskLevel, number> = { high: 0, medium: 1, low: 2 };
 const LEVEL_STYLE: Record<RiskLevel, { dot: string; chip: string; border: string }> = {
@@ -200,7 +203,7 @@ const LEVEL_STYLE: Record<RiskLevel, { dot: string; chip: string; border: string
 
 type Phase = "idle" | "extracting" | "ready" | "analyzing" | "done";
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "What the contract review gives you",
     benefitsDescription: "The AI reads the full contract text and surfaces the clauses worth a second look before you sign.",
@@ -342,8 +345,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   // zh-Hant is rendered from zh via OpenCC; child components below
   // (UploadDropzone / UpgradePrompt / ToolFaq / encryptedPdfMessage) don't
   // accept zh-Hant in their Locale union, so map it to "zh" for those props.

@@ -11,8 +11,9 @@ import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type Mode = "crop" | "delete";
 type Edges = { top: number; right: number; bottom: number; left: number };
 type Status = "queued" | "done" | "error";
@@ -21,8 +22,7 @@ type Item = { id: string; name: string; file: File; status: Status; blob?: Blob;
 const MAX_FILES = 30;
 const ZERO: Edges = { top: 0, right: 0, bottom: 0, left: 0 };
 
-const STR = {
-  en: {
+const _en = {
     title: "Batch PDF fix scans",
     subtitle:
       "Clean up a whole folder of scanned PDFs in one go — trim the same margins off every page, or delete the same pages (like a cover sheet) from each file. All in your browser, packaged into one ZIP.",
@@ -42,7 +42,10 @@ const STR = {
     needDel: "Enter the page numbers to delete.",
     note: "Everything runs in your browser — your files never leave your device. Cropping hides the trimmed area (it can be restored); deleting removes the pages.",
     err: "Something went wrong: ",
-  },
+};
+
+const STR = {
+  en: _en,
   zh: {
     title: "批量 PDF 修扫描",
     subtitle:
@@ -148,7 +151,29 @@ const STR = {
     note: "すべてブラウザ内で処理されます — ファイルがデバイスから出ることはありません。切り取りは切り取った領域を隠すだけです（元に戻せます）。削除はそれらのページを取り除きます。",
     err: "問題が発生しました: ",
   },
+} satisfies Record<AuthoredLocale, typeof _en>;
+
+// Exhaustive per-locale runtime messages (toasts / status). zh-Hant derived via toHant.
+const SKIP_EMPTY: Record<AuthoredLocale, string> = {
+  en: "would be empty, skipped",
+  zh: "会删空，已跳过",
+  es: "quedaría vacío, omitido",
+  pt: "ficaria vazio, ignorado",
+  fr: "serait vide, ignoré",
+  ja: "空になるためスキップ",
 };
+const ZIP_FAIL: Record<AuthoredLocale, string> = {
+  en: "Could not build the download — please try again.",
+  zh: "打包下载失败，请重试。",
+  es: "No se pudo crear la descarga; inténtalo de nuevo.",
+  pt: "Não foi possível criar o download; tente novamente.",
+  fr: "Impossible de créer le téléchargement ; réessayez.",
+  ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+};
+const skipEmptyMsg = (locale: Locale) =>
+  locale === "zh-Hant" ? toHant(SKIP_EMPTY.zh) : SKIP_EMPTY[locale];
+const zipFailMsg = (locale: Locale) =>
+  locale === "zh-Hant" ? toHant(ZIP_FAIL.zh) : ZIP_FAIL[locale];
 
 // Parse "1,3-4" into a Set of 1-based page numbers.
 function parsePageList(input: string): Set<number> {
@@ -163,7 +188,7 @@ function parsePageList(input: string): Set<number> {
   return out;
 }
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why batch-fix scanned PDFs",
     benefitsDescription: "Clean up a whole folder of scans at once — crop the margins and drop the blank pages.",
@@ -305,8 +330,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   // zh-Hant child components (BatchUploadBox / ToolFaq / encryptedPdfMessage) lack zh-Hant → map to "zh".
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
@@ -411,7 +436,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
           const total = pdf.getPageCount();
           const toRemove = [...pageSet].filter((p) => p >= 1 && p <= total);
           if (toRemove.length >= total) {
-            updated[i] = { ...it, status: "error", msg: locale === "zh" ? "会删空，已跳过" : locale === "zh-Hant" ? toHant("会删空，已跳过") : locale === "es" ? "quedaría vacío, omitido" : locale === "pt" ? "ficaria vazio, ignorado" : locale === "fr" ? "serait vide, ignoré" : locale === "ja" ? "空になるためスキップ" : "would be empty, skipped" };
+            updated[i] = { ...it, status: "error", msg: skipEmptyMsg(locale) };
             setItems([...updated]);
             continue;
           }
@@ -449,7 +474,7 @@ export function BatchFixScansClient({ locale = "en" }: { locale?: Locale }) {
       trackToolRun("batch-fix-scans");
       URL.revokeObjectURL(url);
     } catch {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download; tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement ; réessayez." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      setError(zipFailMsg(locale));
     }
   };
 

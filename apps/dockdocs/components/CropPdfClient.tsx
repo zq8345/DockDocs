@@ -7,21 +7,28 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
+import type { RouteLocale } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
+// Locales that need their own authored copy; zh-Hant is machine-derived (deepHant)
+// so it is excluded — adding a route locale (e.g. "de") to routeLocales makes the
+// AuthoredCopy tables below a tsc error until the new locale's copy is added.
+type AuthoredLocale = Exclude<RouteLocale, "zh-Hant">;
 type Edges = { top: number; right: number; bottom: number; left: number };
 
+const _en = {
+  title: "Crop PDF",
+  subtitle: "Upload a PDF, trim the whitespace from any edge with a live preview, and download — every page is cropped the same way, all in your browser.",
+  drop: "Drag & drop a PDF here, or click to choose",
+  choose: "Choose PDF", rendering: "Rendering preview…",
+  preview: "Live preview", top: "Top", right: "Right", bottom: "Bottom", left: "Left",
+  reset: "Reset edges", apply: "Crop & download", working: "Cropping…", start: "Start over",
+  hint: "Drag the sliders to trim each edge (as a % of the page). The clear area is what you keep.",
+  err: "Something went wrong: ",
+};
+
 const STR = {
-  en: {
-    title: "Crop PDF",
-    subtitle: "Upload a PDF, trim the whitespace from any edge with a live preview, and download — every page is cropped the same way, all in your browser.",
-    drop: "Drag & drop a PDF here, or click to choose",
-    choose: "Choose PDF", rendering: "Rendering preview…",
-    preview: "Live preview", top: "Top", right: "Right", bottom: "Bottom", left: "Left",
-    reset: "Reset edges", apply: "Crop & download", working: "Cropping…", start: "Start over",
-    hint: "Drag the sliders to trim each edge (as a % of the page). The clear area is what you keep.",
-    err: "Something went wrong: ",
-  },
+  en: _en,
   zh: {
     title: "PDF 裁剪",
     subtitle: "上传 PDF，用实时预览裁掉任意一边的空白，然后下载——每页按同样方式裁剪，全部在浏览器中完成。",
@@ -72,9 +79,9 @@ const STR = {
     hint: "スライダーをドラッグして各辺を切り取ります（ページに対する%）。透明な部分が残る範囲です。",
     err: "問題が発生しました: ",
   },
-};
+} satisfies Record<AuthoredLocale, typeof _en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why crop PDFs in your browser",
     benefitsDescription: "Trim margins and whitespace to tighten every page, with a live preview before you commit.",
@@ -210,8 +217,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function CropPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");

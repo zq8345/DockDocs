@@ -8,8 +8,9 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
+import type { AuthoredLocale, AuthoredCopy, RouteLocale } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type Fmt = "jpg" | "png";
 // Page variant — drives the H1/subtitle + FAQ so /pdf-to-png, /pdf-to-jpg and the
 // /pdf-to-image hub each present their own native copy from one shared component.
@@ -27,23 +28,25 @@ type ContentDepth = {
 };
 type Pg = { idx: number; thumb: string };
 
+const _en = {
+  title: "PDF to Image",
+  subtitle: "Upload a PDF, pick the pages you want, choose JPG or PNG, and download — you see and select every page before converting.",
+  titlePng: "PDF to PNG",
+  subtitlePng: "Convert PDF pages to lossless PNG images. Upload a PDF, pick the pages you want, and download — every page renders right in your browser.",
+  titleJpg: "PDF to JPG",
+  subtitleJpg: "Convert PDF pages to JPG images. Upload a PDF, pick the pages you want, and download — every page renders right in your browser.",
+  drop: "Drag & drop a PDF here, or click to choose",
+  choose: "Choose PDF", rendering: "Rendering pages…",
+  hint: "Click pages to include/exclude them. Selected pages get converted.",
+  selected: (n: number, t: number) => `${n} of ${t} pages selected`,
+  pageLabel: (n: number) => `Page ${n}`,
+  all: "Select all", none: "Select none", format: "Format",
+  convert: "Convert & download", working: "Converting…", reset: "Start over",
+  needOne: "Select at least one page.", err: "Something went wrong: ",
+};
+
 const STR = {
-  en: {
-    title: "PDF to Image",
-    subtitle: "Upload a PDF, pick the pages you want, choose JPG or PNG, and download — you see and select every page before converting.",
-    titlePng: "PDF to PNG",
-    subtitlePng: "Convert PDF pages to lossless PNG images. Upload a PDF, pick the pages you want, and download — every page renders right in your browser.",
-    titleJpg: "PDF to JPG",
-    subtitleJpg: "Convert PDF pages to JPG images. Upload a PDF, pick the pages you want, and download — every page renders right in your browser.",
-    drop: "Drag & drop a PDF here, or click to choose",
-    choose: "Choose PDF", rendering: "Rendering pages…",
-    hint: "Click pages to include/exclude them. Selected pages get converted.",
-    selected: (n: number, t: number) => `${n} of ${t} pages selected`,
-    pageLabel: (n: number) => `Page ${n}`,
-    all: "Select all", none: "Select none", format: "Format",
-    convert: "Convert & download", working: "Converting…", reset: "Start over",
-    needOne: "Select at least one page.", err: "Something went wrong: ",
-  },
+  en: _en,
   zh: {
     title: "PDF 转图片",
     subtitle: "上传 PDF，选择要转换的页面，选 JPG 或 PNG，然后下载——转换前每一页都看得到、可勾选。",
@@ -124,14 +127,14 @@ const STR = {
     convert: "変換してダウンロード", working: "変換中…", reset: "最初からやり直す",
     needOne: "少なくとも1ページを選択してください。", err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
 // Hub-only depth (the /pdf-to-image canonical). jpg/png variants render their
 // own variant-native depth via the `content` prop (left untouched); the hub had
 // no client depth, so it carries the standard ToolSections block here, giving
 // EN + all locales one shared source (replaces the old bespoke inline page.tsx
 // sections + the static "100% private" card — privacy is covered by the verify-block).
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why convert PDF pages to images",
     benefitsDescription: "Turn any PDF page into a JPG or PNG you can drop into a slide, doc, or post.",
@@ -279,8 +282,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant = "hub", content }: { locale?: Locale; defaultFormat?: Fmt; variant?: Variant; content?: ContentDepth }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   // Per-variant H1/subtitle (every locale in STR carries all three pairs).
   const heading = variant === "png" ? t.titlePng : variant === "jpg" ? t.titleJpg : t.title;
   const subheading = variant === "png" ? t.subtitlePng : variant === "jpg" ? t.subtitleJpg : t.subtitle;

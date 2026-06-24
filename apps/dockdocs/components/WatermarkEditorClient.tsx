@@ -6,10 +6,16 @@ import { ToolSections, type ToolSectionsContent } from "@/components/ToolSection
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
+// AuthoredLocale (= RouteLocale minus zh-Hant) and AuthoredCopy now come from the
+// single source in @/lib/i18n. zh-Hant is machine-derived (deepHant/toHant), so it
+// is excluded — the resolver branches it BEFORE indexing these maps. Adding a route
+// locale (e.g. "de") to routeLocales widens AuthoredLocale → every AuthoredCopy /
+// Record<AuthoredLocale,...> below becomes a tsc error until copy lands.
 type PosKey = "tl" | "tc" | "tr" | "ml" | "c" | "mr" | "bl" | "bc" | "br";
 
 // Anchor as fractions of page width / height (y measured from the BOTTOM, pdf-lib style).
@@ -20,18 +26,20 @@ const POS: Record<PosKey, { x: number; y: number }> = {
 };
 const POS_ORDER: PosKey[] = ["tl", "tc", "tr", "ml", "c", "mr", "bl", "bc", "br"];
 
+const _en = {
+  title: "Watermark PDF",
+  subtitle: "Upload a PDF, design a text or image watermark, see it live on the page, then stamp it onto the pages you choose.",
+  drop: "Drag & drop a PDF here, or click to choose",
+  choose: "Choose PDF", rendering: "Rendering preview…",
+  text: "Text", image: "Image", wmText: "Watermark text", size: "Size", color: "Color",
+  chooseImg: "Choose image", position: "Position", opacity: "Opacity", rotate: "Rotate 45°",
+  pages: "Pages", from: "from", to: "to", apply: "Apply & download", working: "Stamping…",
+  reset: "Start over", preview: "Live preview", needText: "Enter watermark text.", needImg: "Choose an image.",
+  nonLatin: "Text watermark supports Latin letters/digits/symbols for now.", err: "Something went wrong: ",
+};
+
 const STR = {
-  en: {
-    title: "Watermark PDF",
-    subtitle: "Upload a PDF, design a text or image watermark, see it live on the page, then stamp it onto the pages you choose.",
-    drop: "Drag & drop a PDF here, or click to choose",
-    choose: "Choose PDF", rendering: "Rendering preview…",
-    text: "Text", image: "Image", wmText: "Watermark text", size: "Size", color: "Color",
-    chooseImg: "Choose image", position: "Position", opacity: "Opacity", rotate: "Rotate 45°",
-    pages: "Pages", from: "from", to: "to", apply: "Apply & download", working: "Stamping…",
-    reset: "Start over", preview: "Live preview", needText: "Enter watermark text.", needImg: "Choose an image.",
-    nonLatin: "Text watermark supports Latin letters/digits/symbols for now.", err: "Something went wrong: ",
-  },
+  en: _en,
   zh: {
     title: "PDF 加水印",
     subtitle: "上传 PDF，设计文字或图片水印，在页面上实时预览，然后盖到你选择的页面范围。",
@@ -87,7 +95,7 @@ const STR = {
     reset: "最初からやり直す", preview: "ライブプレビュー", needText: "透かしのテキストを入力してください。", needImg: "画像を選択してください。",
     nonLatin: "テキスト透かしは現在ラテン文字・数字・記号のみ対応しています。", err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
 function hexToRgb(hex: string): [number, number, number] {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
@@ -96,7 +104,7 @@ function hexToRgb(hex: string): [number, number, number] {
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 }
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why watermark your PDF here",
     benefitsDescription: "Stamp a text or image watermark across every page, with full control over how it looks.",
@@ -232,8 +240,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
@@ -279,7 +287,18 @@ export function WatermarkEditorClient({ locale = "en" }: { locale?: Locale }) {
       const ctx = canvas.getContext("2d");
       if (ctx) await page.render({ canvas, canvasContext: ctx, viewport }).promise;
       setPreview(canvas.toDataURL("image/jpeg", 0.8));
-      if (doc.numPages === 0) { setError(locale === "zh" ? "该 PDF 没有页面。" : locale === "zh-Hant" ? toHant("该 PDF 没有页面。") : locale === "es" ? "Este PDF no tiene páginas." : locale === "pt" ? "Este PDF não tem páginas." : locale === "fr" ? "Ce PDF n'a aucune page." : locale === "ja" ? "この PDF にはページがありません。" : "This PDF has no pages."); setPhase("idle"); return; } setNumPages(doc.numPages);
+      if (doc.numPages === 0) {
+        const NO_PAGES: Record<AuthoredLocale, string> = {
+          en: "This PDF has no pages.",
+          zh: "该 PDF 没有页面。",
+          es: "Este PDF no tiene páginas.",
+          pt: "Este PDF não tem páginas.",
+          fr: "Ce PDF n'a aucune page.",
+          ja: "この PDF にはページがありません。",
+        };
+        setError(locale === "zh-Hant" ? toHant(NO_PAGES.zh) : NO_PAGES[locale]);
+        setPhase("idle"); return;
+      } setNumPages(doc.numPages);
       setFrom(1); setTo(doc.numPages);
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");

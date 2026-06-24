@@ -10,25 +10,28 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
+type Locale = RouteLocale;
 type Angle = 90 | 180 | 270;
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
 const MAX_FILES = 50;
 
+const _en = {
+  title: "Batch rotate",
+  subtitle: "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF, packaged into one ZIP. All in your browser; nothing is uploaded.",
+  drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
+  rotate: "Rotate by",
+  run: "Rotate all", running: "Rotating", download: "Download ZIP", reset: "Start over",
+  files: (n: number, max: number) => `${n} / ${max} files`, done: "rotated", failed: "failed",
+  need: "Add at least one PDF.",
+  note: "Every page of each PDF is rotated by the chosen angle. Encrypted PDFs are skipped. Everything stays on your device.",
+  err: "Something went wrong: ",
+};
+
 const STR = {
-  en: {
-    title: "Batch rotate",
-    subtitle: "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF, packaged into one ZIP. All in your browser; nothing is uploaded.",
-    drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
-    rotate: "Rotate by",
-    run: "Rotate all", running: "Rotating", download: "Download ZIP", reset: "Start over",
-    files: (n: number, max: number) => `${n} / ${max} files`, done: "rotated", failed: "failed",
-    need: "Add at least one PDF.",
-    note: "Every page of each PDF is rotated by the chosen angle. Encrypted PDFs are skipped. Everything stays on your device.",
-    err: "Something went wrong: ",
-  },
+  en: _en,
   zh: {
     title: "批量 PDF 旋转",
     subtitle: "一次纠正整个文件夹里横着或倒着的扫描件——把每份 PDF 的每一页都旋转，打包成一个 ZIP。全部在浏览器中完成，不上传任何文件。",
@@ -84,9 +87,9 @@ const STR = {
     note: "各 PDF のすべてのページが選択した角度で回転されます。暗号化された PDF はスキップされます。すべてがお使いのデバイス内で完結します。",
     err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why batch-rotate a whole folder",
     benefitsDescription: "Straighten an entire stack of sideways or upside-down scans in one pass, packaged into a single ZIP.",
@@ -222,8 +225,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function BatchRotateClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [angle, setAngle] = useState<Angle>(90);
@@ -281,7 +284,15 @@ export function BatchRotateClient({ locale = "en" }: { locale?: Locale }) {
       trackToolRun("batch-rotate-pdf");
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga. Inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download. Tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement. Réessayez." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      const DL_ERR: Record<AuthoredLocale, string> = {
+        en: "Could not build the download — please try again.",
+        zh: "打包下载失败，请重试。",
+        es: "No se pudo crear la descarga. Inténtalo de nuevo.",
+        pt: "Não foi possível criar o download. Tente novamente.",
+        fr: "Impossible de créer le téléchargement. Réessayez.",
+        ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+      };
+      setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[locale]);
     }
   };
 

@@ -7,8 +7,9 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type PosKey = "tl" | "tc" | "tr" | "ml" | "c" | "mr" | "bl" | "bc" | "br";
 
 const POS: Record<PosKey, { x: number; y: number }> = {
@@ -18,15 +19,17 @@ const POS: Record<PosKey, { x: number; y: number }> = {
 };
 const POS_ORDER: PosKey[] = ["tl", "tc", "tr", "ml", "c", "mr", "bl", "bc", "br"];
 
+const STR_EN = {
+  title: "Sign PDF", subtitle: "Upload a PDF, draw or type your signature, place it on the page, and download — entirely in your browser.",
+  drop: "Drag & drop a PDF here, or click to choose", choose: "Choose PDF", rendering: "Rendering page…",
+  draw: "Draw", type: "Type", clear: "Clear", typed: "Type your name", page: "Page", position: "Position", size: "Size",
+  apply: "Sign & download", working: "Signing…", reset: "Start over", preview: "Live preview", sig: "Your signature",
+  needSig: "Draw or type a signature first.", err: "Something went wrong: ",
+  drawHint: "Draw with your mouse or finger.",
+};
+
 const STR = {
-  en: {
-    title: "Sign PDF", subtitle: "Upload a PDF, draw or type your signature, place it on the page, and download — entirely in your browser.",
-    drop: "Drag & drop a PDF here, or click to choose", choose: "Choose PDF", rendering: "Rendering page…",
-    draw: "Draw", type: "Type", clear: "Clear", typed: "Type your name", page: "Page", position: "Position", size: "Size",
-    apply: "Sign & download", working: "Signing…", reset: "Start over", preview: "Live preview", sig: "Your signature",
-    needSig: "Draw or type a signature first.", err: "Something went wrong: ",
-    drawHint: "Draw with your mouse or finger.",
-  },
+  en: STR_EN,
   zh: {
     title: "PDF 签名", subtitle: "上传 PDF，手写或打字你的签名，放到页面上，然后下载——全部在浏览器中完成。",
     drop: "把 PDF 拖到这里，或点击选择", choose: "选择 PDF", rendering: "正在渲染页面…",
@@ -67,9 +70,9 @@ const STR = {
     needSig: "まず署名を手書きまたは入力してください。", err: "問題が発生しました: ",
     drawHint: "マウスまたは指で書いてください。",
   },
-};
+} satisfies AuthoredCopy<typeof STR_EN>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why sign PDFs in your browser",
     benefitsDescription: "Add a real signature to a contract or form and place it exactly where it belongs.",
@@ -210,9 +213,18 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
   },
 };
 
+const NO_PAGES_MSG: Record<AuthoredLocale, string> = {
+  en: "This PDF has no pages.",
+  zh: "该 PDF 没有页面。",
+  es: "Este PDF no tiene páginas.",
+  pt: "Este PDF não tem páginas.",
+  fr: "Ce PDF n'a aucune page.",
+  ja: "この PDF にはページがありません。",
+};
+
 export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   // Child components/helpers only support en|zh|zh-Hant; map other UI locales to their content fallback.
   const baseLocale: "en" | "zh" | "zh-Hant" = locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : "en";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
@@ -238,7 +250,7 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
-      if (doc.numPages === 0) { setError(locale === "zh" ? "该 PDF 没有页面。" : locale === "zh-Hant" ? toHant("该 PDF 没有页面。") : locale === "es" ? "Este PDF no tiene páginas." : locale === "pt" ? "Este PDF não tem páginas." : locale === "fr" ? "Ce PDF n'a aucune page." : locale === "ja" ? "この PDF にはページがありません。" : "This PDF has no pages."); setPhase("idle"); return; } setNumPages(doc.numPages);
+      if (doc.numPages === 0) { setError(locale === "zh-Hant" ? toHant(NO_PAGES_MSG.zh) : NO_PAGES_MSG[locale]); setPhase("idle"); return; } setNumPages(doc.numPages);
       const p = Math.max(1, Math.min(pageNum, doc.numPages));
       const pg = await doc.getPage(p);
       const viewport = pg.getViewport({ scale: 1.1 });

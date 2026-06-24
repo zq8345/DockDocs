@@ -6,8 +6,9 @@
 // reading-link cards). Eyebrows + "Continue" are built-in 5-lang (zh-Hant derived)
 // to stay consistent. Single source so ~40 custom tools align without re-drift.
 import { toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Loc = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
+type Loc = RouteLocale;
 
 export type ToolBenefit = { title: string; description: string };
 export type ToolReadingLink = { label: string; href: string; description: string };
@@ -23,16 +24,19 @@ export type ToolSectionsContent = {
   readingLinks: ToolReadingLink[];
 };
 
+// Each eyebrow entry is an EXHAUSTIVE AuthoredCopy<string> (zh-Hant excluded —
+// derived via toHant in pick()). Adding a route locale (e.g. "de") without a key
+// here is a tsc error, never a silent English fallback.
 const EYEBROW = {
   benefits: { en: "Benefits", zh: "优势", es: "Ventajas", pt: "Vantagens", fr: "Avantages", ja: "メリット" },
   workflow: { en: "Workflow", zh: "工作流", es: "Flujo de trabajo", pt: "Fluxo de trabalho", fr: "Flux de travail", ja: "ワークフロー" },
   reading: { en: "Recommended reading", zh: "推荐阅读", es: "Lectura recomendada", pt: "Leitura recomendada", fr: "Lecture recommandée", ja: "おすすめ記事" },
   cont: { en: "Continue", zh: "继续阅读", es: "Continuar", pt: "Continuar", fr: "Continuer", ja: "続きを読む" },
-} as const;
+} as const satisfies Record<string, AuthoredCopy<string>>;
 
-function pick(map: Record<string, string>, locale: Loc): string {
+function pick(map: AuthoredCopy<string>, locale: Loc): string {
   if (locale === "zh-Hant") return toHant(map.zh);
-  return map[locale] ?? map.en;
+  return map[locale];
 }
 
 function Intro({ eyebrow, title, description }: { eyebrow: string; title: string; description?: string }) {

@@ -10,16 +10,21 @@ import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
 import { dropzoneShell } from "@/components/design";
 import { formatBytes } from "@/lib/files";
+import type { RouteLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
+// Authored-copy tables below are typed AuthoredCopy<T> (= Record<AuthoredLocale, T>,
+// canonical in lib/i18n.ts). zh-Hant is machine-derived (deepHant) and excluded, so
+// it is never demanded as an authored key. Adding a new route locale to routeLocales
+// widens AuthoredLocale → every authored copy table here becomes a tsc error until the
+// new locale's strings are added (no more silent English fallback).
 type DocType ="invoice" | "quote" | "contract";
 type Dim = { key: string; label: string };
 type Field = { value: string | null; source: string | null };
 type DocResult = { id: string; name: string; fields: Record<string, Field> };
 type Doc = { id: string; name: string; size: number; text: string };
 
-const STR = {
-  en: {
+const _en = {
     title: "Extract to Excel",
     subtitle: "Upload invoices, quotes, or contracts and pull the key fields into a clean table — then download as a spreadsheet (CSV, opens in Excel & Google Sheets). The AI only reports what's actually in each document.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", folder: "Choose folder",
@@ -35,7 +40,10 @@ const STR = {
     verified: "✓ source",
     sourceFrom: "Source:",
     unverified: "Value found — exact passage not located. Please verify.",
-  },
+};
+
+const STR = {
+  en: _en,
   zh: {
     title: "数据抽取到表格",
     subtitle: "上传发票、报价单或合同，把关键字段抽成一张干净的表格，再导出成表格文件(CSV，可用 Excel / Google 表格打开)。AI 只报告文档里真实存在的内容。",
@@ -121,9 +129,9 @@ const STR = {
     sourceFrom: "出典：",
     unverified: "値は見つかりましたが、正確な箇所を特定できませんでした。ご確認ください。",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why pull document data into a spreadsheet",
     benefitsDescription: "Turn a stack of invoices, quotes, or contracts into one clean table — the AI reads the text of each document and lifts out the fields you need.",
@@ -265,8 +273,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function ExtractExcelClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [docs, setDocs] = useState<Doc[]>([]);
   const [dragging, setDragging] = useState(false);
   const [docType, setDocType] = useState<DocType>("invoice");

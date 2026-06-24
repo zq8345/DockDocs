@@ -6,9 +6,10 @@ import { ToolSections, type ToolSectionsContent } from "@/components/ToolSection
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { trackToolRun } from "@/lib/track";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type PosKey = "tl" | "tc" | "tr" | "bl" | "bc" | "br";
 type Fmt = "n" | "page" | "slash" | "of";
 
@@ -16,18 +17,22 @@ const POS_ORDER: PosKey[] = ["tl", "tc", "tr", "bl", "bc", "br"];
 const MARGINS = { small: 22, medium: 38, large: 56 } as const;
 type MarginKey = keyof typeof MARGINS;
 
+const _en = {
+  title: "Add Page Numbers",
+  subtitle: "Upload a PDF, choose where the numbers go, the format, and which pages — see it on the live preview before you download.",
+  drop: "Drag & drop a PDF here, or click to choose",
+  choose: "Choose PDF", rendering: "Rendering preview…",
+  position: "Position", margin: "Margin", small: "Small", medium: "Medium", large: "Large",
+  startAt: "Start at", format: "Format", pages: "Pages", from: "from", to: "to",
+  fmtN: "1", fmtPage: "Page 1", fmtSlash: "1 / N", fmtOf: "1 of N",
+  apply: "Add numbers & download", working: "Numbering…", reset: "Start over", preview: "Live preview",
+  err: "Something went wrong: ",
+};
+
+// Exhaustive over AuthoredLocale (zh-Hant excluded — derived via deepHant).
+// Adding a route locale (e.g. "de") without a copy here is a tsc error.
 const STR = {
-  en: {
-    title: "Add Page Numbers",
-    subtitle: "Upload a PDF, choose where the numbers go, the format, and which pages — see it on the live preview before you download.",
-    drop: "Drag & drop a PDF here, or click to choose",
-    choose: "Choose PDF", rendering: "Rendering preview…",
-    position: "Position", margin: "Margin", small: "Small", medium: "Medium", large: "Large",
-    startAt: "Start at", format: "Format", pages: "Pages", from: "from", to: "to",
-    fmtN: "1", fmtPage: "Page 1", fmtSlash: "1 / N", fmtOf: "1 of N",
-    apply: "Add numbers & download", working: "Numbering…", reset: "Start over", preview: "Live preview",
-    err: "Something went wrong: ",
-  },
+  en: _en,
   zh: {
     title: "PDF 添加页码",
     subtitle: "上传 PDF，选择页码位置、格式和页码范围——下载前在实时预览中看清楚。",
@@ -83,7 +88,7 @@ const STR = {
     apply: "番号を追加してダウンロード", working: "番号付け中…", reset: "最初からやり直す", preview: "ライブプレビュー",
     err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
 function makeLabel(fmt: Fmt, n: number, total: number, zh: boolean, hant = false): string {
   const conv = (s: string) => (hant ? toHant(s) : s);
@@ -93,7 +98,18 @@ function makeLabel(fmt: Fmt, n: number, total: number, zh: boolean, hant = false
   return `${n}`;
 }
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+// Exhaustive over AuthoredLocale (zh-Hant derived via toHant) so a new route
+// locale forces a translation rather than silently falling back to English.
+const NO_PAGES_MSG: Record<AuthoredLocale, string> = {
+  en: "This PDF has no pages.",
+  zh: "该 PDF 没有页面。",
+  es: "Este PDF no tiene páginas.",
+  pt: "Este PDF não tem páginas.",
+  fr: "Ce PDF n'a aucune page.",
+  ja: "この PDF にはページがありません。",
+};
+
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Numbering that fits the document",
     benefitsDescription: "Place page numbers exactly where you want them, in the format you want, on the pages you choose.",
@@ -229,8 +245,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const hant = locale === "zh-Hant";
   const zh = locale === "zh" || locale === "zh-Hant";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
@@ -263,7 +279,7 @@ export function PageNumbersClient({ locale = "en" }: { locale?: Locale }) {
       const ctx = canvas.getContext("2d");
       if (ctx) await page.render({ canvas, canvasContext: ctx, viewport }).promise;
       setPreview(canvas.toDataURL("image/jpeg", 0.8));
-      if (doc.numPages === 0) { setError(locale === "zh" ? "该 PDF 没有页面。" : locale === "zh-Hant" ? toHant("该 PDF 没有页面。") : locale === "es" ? "Este PDF no tiene páginas." : locale === "pt" ? "Este PDF não tem páginas." : locale === "fr" ? "Ce PDF n'a aucune page." : locale === "ja" ? "この PDF にはページがありません。" : "This PDF has no pages."); setPhase("idle"); return; } setNumPages(doc.numPages); setFrom(1); setTo(doc.numPages);
+      if (doc.numPages === 0) { setError(locale === "zh-Hant" ? toHant(NO_PAGES_MSG.zh) : NO_PAGES_MSG[locale]); setPhase("idle"); return; } setNumPages(doc.numPages); setFrom(1); setTo(doc.numPages);
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {

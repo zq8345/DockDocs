@@ -8,13 +8,17 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
-import { deepHant } from "@/lib/zh-hant";
+import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+// Canonical locale type — derived from RouteLocale (single source in lib/i18n.ts).
+// zh-Hant is machine-derived (deepHant/toHant), so the authored copy tables below are
+// keyed by AuthoredLocale (RouteLocale minus zh-Hant). Adding a route locale (e.g. "de")
+// makes every AuthoredCopy literal a tsc error until the new key is added — no silent en.
+type Locale = RouteLocale;
 type Pg = { idx: number; thumb: string };
 
-const STR = {
-  en: {
+const _en = {
     title: "Reorder Pages",
     subtitle: "Upload a PDF, then drag the page thumbnails into the order you want. Delete pages you don't need. Everything happens in your browser.",
     drop: "Drag & drop a PDF here, or click to choose",
@@ -28,7 +32,10 @@ const STR = {
     needOne: "Keep at least one page.",
     page: "Page",
     err: "Something went wrong: ",
-  },
+};
+
+const STR = {
+  en: _en,
   zh: {
     title: "PDF 页面排序",
     subtitle: "上传 PDF，然后把页面缩略图拖成你想要的顺序，不需要的页面可以删除。全部在浏览器中完成。",
@@ -104,9 +111,9 @@ const STR = {
     page: "ページ",
     err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why reorder PDF pages in your browser",
     benefitsDescription: "Drag pages into the right order — no re-scanning, no re-exporting.",
@@ -247,9 +254,26 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
   },
 };
 
+// Per-page thumbnail label. Exhaustive over AuthoredLocale so a new route locale forces
+// a code decision (missing key = tsc error) instead of silently rendering English.
+// Current displayed text is preserved verbatim: zh shows "第 N 页", every other authored
+// locale shows "Page N" (unchanged); zh-Hant is derived to "第 N 頁".
+function pageLabel(locale: Locale, n: number): string {
+  if (locale === "zh-Hant") return `第 ${n} 頁`;
+  const labels: AuthoredCopy<string> = {
+    en: `Page ${n}`,
+    zh: `第 ${n} 页`,
+    es: `Page ${n}`,
+    pt: `Page ${n}`,
+    fr: `Page ${n}`,
+    ja: `Page ${n}`,
+  };
+  return labels[locale];
+}
+
 export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -395,7 +419,7 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.thumb} alt={`page ${p.idx + 1}`} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
                 <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">
-                  {locale === "zh" ? `第 ${p.idx + 1} 页` : locale === "zh-Hant" ? `第 ${p.idx + 1} 頁` : `Page ${p.idx + 1}`}
+                  {pageLabel(locale, p.idx + 1)}
                 </p>
               </div>
             ))}

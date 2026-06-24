@@ -10,15 +10,15 @@ import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-t
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
+type Locale = RouteLocale;
 type Mode = "watermark" | "pagenum";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
 const MAX_FILES = 30;
 
-const STR = {
-  en: {
+const _en = {
     title: "Batch watermark or number PDFs",
     titleWm: "Batch watermark", titlePn: "Batch page numbers",
     subWm: "Stamp a watermark across a whole folder of PDFs at once — each processed in your browser and packaged into one ZIP. Nothing is uploaded.",
@@ -32,7 +32,10 @@ const STR = {
     needText: "Enter the watermark text.", needFile: "Add at least one PDF.",
     note: "Uses the default placement (diagonal watermark / page numbers). For custom position or opacity, use the single-file Watermark or Page-numbers tools. Everything stays on your device.",
     err: "Something went wrong: ",
-  },
+};
+
+const STR = {
+  en: _en,
   zh: {
     title: "批量加水印 / 页码",
     titleWm: "批量 PDF 添加水印", titlePn: "批量 PDF 添加页码",
@@ -108,11 +111,11 @@ const STR = {
     note: "既定の配置（斜めの透かし / ページ番号）を使用します。位置や不透明度をカスタマイズするには、単一ファイル用の「透かし」または「ページ番号」ツールをご利用ください。すべてがお使いのデバイス内で完結します。",
     err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
 // Two section sets — this client serves batch-watermark-pdf (lockMode=watermark)
 // AND batch-page-numbers (lockMode=pagenum); sec picks by lockMode below.
-const SECTIONS_WM: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS_WM: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why batch-watermark PDFs",
     benefitsDescription: "Stamp the same watermark across a whole folder of PDFs in one run.",
@@ -247,7 +250,7 @@ const SECTIONS_WM: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsC
   },
 };
 
-const SECTIONS_PN: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS_PN: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why batch-add page numbers",
     benefitsDescription: "Add page numbers to a whole folder of PDFs in one consistent pass.",
@@ -383,9 +386,9 @@ const SECTIONS_PN: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsC
 };
 
 export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
   const SECTIONS = lockMode === "pagenum" ? SECTIONS_PN : SECTIONS_WM;
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>(lockMode ?? "watermark");
@@ -448,7 +451,15 @@ export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale;
       trackToolRun(lockMode === "pagenum" ? "batch-page-numbers" : "batch-watermark-pdf");
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga. Inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download. Tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement. Réessayez." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      const zipErr: Record<AuthoredLocale, string> = {
+        en: "Could not build the download — please try again.",
+        zh: "打包下载失败，请重试。",
+        es: "No se pudo crear la descarga. Inténtalo de nuevo.",
+        pt: "Não foi possível criar o download. Tente novamente.",
+        fr: "Impossible de créer le téléchargement. Réessayez.",
+        ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+      };
+      setError(locale === "zh-Hant" ? toHant(zipErr.zh) : zipErr[locale]);
     }
   };
 

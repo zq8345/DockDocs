@@ -7,8 +7,9 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 // Boxes are stored in NORMALIZED page fractions (0–1) so they map to any render scale.
 type Box = { id: string; page: number; x: number; y: number; w: number; h: number; auto?: boolean };
 type Pg = { idx: number; url: string; ratio: number }; // ratio = height / width
@@ -43,21 +44,38 @@ function luhn(num: string) {
 // redacted — no thin box that shows on screen but is silently dropped on apply.
 const sizable = (b: Box) => b.w > 0.0015 && b.h > 0.0015;
 
+// Page-N label. Exhaustive over AuthoredLocale (zh-Hant derived via toHant) so a new
+// route locale forces a translation decision rather than silently rendering English.
+function pageLabel(locale: Locale, n: number): string {
+  if (locale === "zh-Hant") return toHant(`第 ${n} 页`);
+  const MSG: AuthoredCopy<string> = {
+    en: `Page ${n}`,
+    zh: `第 ${n} 页`,
+    es: `Page ${n}`,
+    pt: `Page ${n}`,
+    fr: `Page ${n}`,
+    ja: `Page ${n}`,
+  };
+  return MSG[locale];
+}
+
+const STR_EN = {
+  title: "Redact PDF",
+  subtitle: "Black out names, numbers and any sensitive text — then download a copy where it's truly gone. Unlike a black box you can copy under, DockDocs flattens each page to an image so the hidden text is destroyed for good. Runs in your browser; your file never leaves your device.",
+  drop: "Drag & drop a PDF here, or click to choose",
+  choose: "Choose PDF", rendering: "Rendering pages…",
+  hint: "Drag on a page to black out an area. Auto-suggested items are pre-marked — click any box's ✕ to remove it.",
+  autoFound: (n: number) => `Auto-detected ${n} likely sensitive item${n === 1 ? "" : "s"} (emails, phone, SSN, cards, IPs). Review and add your own.`,
+  autoNone: "No obvious emails/numbers auto-detected — drag on the pages to redact manually.",
+  boxes: (n: number) => `${n} redaction${n === 1 ? "" : "s"}`,
+  clear: "Clear all", apply: "Apply & download", working: "Removing & flattening…", reset: "Start over",
+  needBox: "Add at least one redaction first.",
+  note: "Output is a flattened image PDF: the redacted content is permanently removed and the page text is no longer selectable — that's exactly what makes it unrecoverable.",
+  err: "Something went wrong: ", tooMany: `This PDF has more than ${MAX_PAGES} pages. Split it first, then redact.`,
+};
+
 const STR = {
-  en: {
-    title: "Redact PDF",
-    subtitle: "Black out names, numbers and any sensitive text — then download a copy where it's truly gone. Unlike a black box you can copy under, DockDocs flattens each page to an image so the hidden text is destroyed for good. Runs in your browser; your file never leaves your device.",
-    drop: "Drag & drop a PDF here, or click to choose",
-    choose: "Choose PDF", rendering: "Rendering pages…",
-    hint: "Drag on a page to black out an area. Auto-suggested items are pre-marked — click any box's ✕ to remove it.",
-    autoFound: (n: number) => `Auto-detected ${n} likely sensitive item${n === 1 ? "" : "s"} (emails, phone, SSN, cards, IPs). Review and add your own.`,
-    autoNone: "No obvious emails/numbers auto-detected — drag on the pages to redact manually.",
-    boxes: (n: number) => `${n} redaction${n === 1 ? "" : "s"}`,
-    clear: "Clear all", apply: "Apply & download", working: "Removing & flattening…", reset: "Start over",
-    needBox: "Add at least one redaction first.",
-    note: "Output is a flattened image PDF: the redacted content is permanently removed and the page text is no longer selectable — that's exactly what makes it unrecoverable.",
-    err: "Something went wrong: ", tooMany: `This PDF has more than ${MAX_PAGES} pages. Split it first, then redact.`,
-  },
+  en: STR_EN,
   zh: {
     title: "PDF 智能涂黑",
     subtitle: "把姓名、号码等敏感文字涂黑，下载一份「真正删掉」的副本。不同于能从底下复制出来的假黑框，DockDocs 把每页拍平成图片、底层文字彻底销毁。全程在浏览器完成，文件不离开你的设备。",
@@ -128,9 +146,9 @@ const STR = {
     note: "出力は統合された画像PDFです。黒塗りした内容は完全に削除され、ページの文字は選択できなくなります——これこそが復元不可能である理由です。",
     err: "問題が発生しました: ", tooMany: `このPDFは${MAX_PAGES}ページを超えています。先に分割してから黒塗りしてください。`,
   },
-};
+} satisfies AuthoredCopy<typeof STR_EN>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why redact PDFs in your browser",
     benefitsDescription: "Black out sensitive content and download a copy where the hidden text is truly gone — not just covered.",
@@ -272,8 +290,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [pages, setPages] = useState<Pg[]>([]);
   const [boxes, setBoxes] = useState<Box[]>([]);
@@ -467,7 +485,7 @@ export function RedactPdfClient({ locale = "en" }: { locale?: Locale }) {
                     </div>
                   ))}
                 </div>
-                <p className="mt-1 text-center text-[11.5px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${pg.idx + 1} 页` : locale === "zh-Hant" ? toHant(`第 ${pg.idx + 1} 页`) : `Page ${pg.idx + 1}`}</p>
+                <p className="mt-1 text-center text-[11.5px] text-[color:var(--muted)]">{pageLabel(locale, pg.idx + 1)}</p>
               </div>
             ))}
           </div>

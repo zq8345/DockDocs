@@ -1,7 +1,13 @@
 import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "../../../shared/templates/pdf-tool-page/VerifyClientSide";
 import { toHant, deepHant } from "@/lib/zh-hant";
+import type { RouteLocale } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+// Use the canonical route-locale union so the prop is RouteLocale-true: adding a
+// new route locale (e.g. "de") flows into every resolver below, where the
+// exhaustive `never`-default switch forces an explicit FAQ decision for it.
+// (FAQS here is partial-by-design — many tools have no fr/ja copy and intentionally
+// fall back to generic/en — so we do NOT force AuthoredCopy on the copy tables.)
+type Locale = RouteLocale;
 type QA = { q: string; a: string };
 
 // FAQ content for the custom-client tools (which don't use the PdfToolPage template).
@@ -2546,7 +2552,19 @@ export function getToolFaqItems(tool: string, locale: Locale = "en"): QA[] | nul
   const data = FAQS[tool];
   if (!data) return null;
   if (locale === "zh-Hant") return deepHant(data.items.zh);
-  return data.items[locale as "en" | "zh" | "es"] ?? data.items.en;
+  // Exhaustive over the remaining authored locales. A NEW route locale (e.g. "de")
+  // that has no FAQ behavior decided will fail the `never` assignment here at
+  // compile time, forcing the author to choose rather than silently inheriting en.
+  switch (locale) {
+    case "en":
+    case "zh":
+    case "es":
+      return data.items[locale] ?? data.items.en;
+    default: {
+      const _exhaustive: never = locale;
+      return _exhaustive;
+    }
+  }
 }
 
 export function ToolFaq(props: { tool: string; locale?: Locale }) {
@@ -2592,10 +2610,24 @@ export function getFaqItems(
   } else {
     const data = FAQS[tool] ?? FAQS[FAQ_FALLBACK[tool]];
     if (data) {
-      items =
-        locale === "zh-Hant"
-          ? deepHant(data.items.zh)
-          : data.items[locale as "en" | "zh" | "es"] ?? data.items.en;
+      if (locale === "zh-Hant") {
+        items = deepHant(data.items.zh);
+      } else {
+        // Exhaustive over the remaining authored locales — a NEW route locale
+        // without a decided FAQ behavior fails the `never` assignment at compile
+        // time instead of silently falling through to English.
+        switch (locale) {
+          case "en":
+          case "zh":
+          case "es":
+            items = data.items[locale] ?? data.items.en;
+            break;
+          default: {
+            const _exhaustive: never = locale;
+            items = _exhaustive;
+          }
+        }
+      }
     }
   }
   if (!items) return null;
@@ -2657,8 +2689,28 @@ function ToolFaqInner({ tool, locale = "en" }: { tool: string; locale?: Locale }
   const data = FAQS[tool] ?? FAQS[FAQ_FALLBACK[tool]];
   if (!data) return null;
   // zh-Hant derives from the zh FAQ data via OpenCC.
-  const items = locale === "zh-Hant" ? deepHant(data.items.zh) : (data.items[locale as "en" | "zh" | "es"] ?? data.items.en);
-  const title = locale === "zh-Hant" ? toHant(data.title.zh) : (data.title[locale as "en" | "zh" | "es"] ?? data.title.en);
+  let items: QA[];
+  let title: string;
+  if (locale === "zh-Hant") {
+    items = deepHant(data.items.zh);
+    title = toHant(data.title.zh);
+  } else {
+    // Exhaustive over the remaining authored locales: a NEW route locale that
+    // hasn't had its FAQ rendering decided fails the `never` assignment at compile
+    // time rather than silently rendering English here.
+    switch (locale) {
+      case "en":
+      case "zh":
+      case "es":
+        items = data.items[locale] ?? data.items.en;
+        title = data.title[locale] ?? data.title.en;
+        break;
+      default: {
+        const _exhaustive: never = locale;
+        return _exhaustive;
+      }
+    }
+  }
   return (
     <section className="mx-auto mt-12 border-t border-[color:var(--line)] pt-10">
       <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{title}</h2>

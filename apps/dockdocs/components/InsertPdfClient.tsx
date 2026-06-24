@@ -8,12 +8,31 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
-import { deepHant } from "@/lib/zh-hant";
+import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type Pg = { idx: number; thumb: string };
 
-const STR = {
+const STR: AuthoredCopy<{
+  title: string;
+  subtitle: string;
+  drop: string;
+  choose: string;
+  rendering: string;
+  pickSpot: string;
+  atStart: string;
+  afterPage: (n: number) => string;
+  insertHere: string;
+  insertFile: string;
+  chooseInsert: string;
+  apply: string;
+  working: string;
+  reset: string;
+  needFile: string;
+  err: string;
+  selected: string;
+}> = {
   en: {
     title: "Add Page",
     subtitle: "Upload a PDF, pick where to insert, then add another PDF or an image at that spot. Everything happens in your browser.",
@@ -130,7 +149,7 @@ const STR = {
   },
 };
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why add pages to a PDF in your browser",
     benefitsDescription: "Drop new pages exactly where they belong, without rebuilding the whole document.",
@@ -266,8 +285,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -375,6 +394,17 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
     }
   }, [insertAfter, fileName, t, locale]);
 
+  const PAGE_LABEL: AuthoredCopy<(n: number) => string> = {
+    en: (n) => `Page ${n}`,
+    zh: (n) => `第 ${n} 页`,
+    es: (n) => `Page ${n}`,
+    pt: (n) => `Page ${n}`,
+    fr: (n) => `Page ${n}`,
+    ja: (n) => `Page ${n}`,
+  };
+  const pageLabel = (n: number) =>
+    locale === "zh-Hant" ? toHant(PAGE_LABEL.zh(n)) : PAGE_LABEL[locale](n);
+
   const Slot = ({ value, label }: { value: number; label: string }) => {
     const active = insertAfter === value;
     return (
@@ -417,7 +447,7 @@ export function InsertPdfClient({ locale = "en" }: { locale?: Locale }) {
               <div key={p.idx} className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={p.thumb} alt={`page ${p.idx + 1}`} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
-                <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${p.idx + 1} 页` : locale === "zh-Hant" ? `第 ${p.idx + 1} 頁` : `Page ${p.idx + 1}`}</p>
+                <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">{pageLabel(p.idx + 1)}</p>
                 <Slot value={p.idx + 1} label={t.afterPage(p.idx + 1)} />
               </div>
             ))}

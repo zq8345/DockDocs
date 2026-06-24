@@ -9,10 +9,11 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
-// zh-Hant is derived from zh via OpenCC, so copy tables are keyed by the base locales only.
-type CopyLocale = Exclude<Locale, "zh-Hant">;
+type Locale = RouteLocale;
+// zh-Hant is derived from zh via OpenCC, so copy tables are keyed by the authored locales only.
+type CopyLocale = AuthoredLocale;
 type Format = "word" | "excel";
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; blob?: Blob; msg?: string };
@@ -21,25 +22,27 @@ const MAX_FILES = 20;
 const MAX_BYTES = 5 * 1024 * 1024; // OSS reverse converter passes files through the Netlify function (~6 MB body cap)
 const REVERSE_API = "/api/reverse-convert";
 
+const _en = {
+  title: "Batch PDF to Word / Excel",
+  subtitle:
+    "Convert a whole folder of PDFs to editable Word or Excel files in one go — each is converted on our server and packaged into a single ZIP.",
+  word: "To Word (.docx)",
+  excel: "To Excel (.xlsx)",
+  run: "Convert all",
+  running: "Converting",
+  download: "Download ZIP",
+  reset: "Start over",
+  files: (n: number, max: number) => `${n} / ${max} files`,
+  done: "done",
+  failed: "failed",
+  need: "Add at least one PDF.",
+  tooBig: "Over 5 MB — use the single-file tool",
+  note: "Text and tables are extracted into an editable file. Scanned or heavily-designed PDFs may not convert perfectly. Files over 5 MB aren't supported in batch — use the single-file converter for those.",
+  err: "Something went wrong: ",
+};
+
 const STR = {
-  en: {
-    title: "Batch PDF to Word / Excel",
-    subtitle:
-      "Convert a whole folder of PDFs to editable Word or Excel files in one go — each is converted on our server and packaged into a single ZIP.",
-    word: "To Word (.docx)",
-    excel: "To Excel (.xlsx)",
-    run: "Convert all",
-    running: "Converting",
-    download: "Download ZIP",
-    reset: "Start over",
-    files: (n: number, max: number) => `${n} / ${max} files`,
-    done: "done",
-    failed: "failed",
-    need: "Add at least one PDF.",
-    tooBig: "Over 5 MB — use the single-file tool",
-    note: "Text and tables are extracted into an editable file. Scanned or heavily-designed PDFs may not convert perfectly. Files over 5 MB aren't supported in batch — use the single-file converter for those.",
-    err: "Something went wrong: ",
-  },
+  en: _en,
   zh: {
     title: "批量 PDF 转 Word / Excel",
     subtitle:
@@ -130,7 +133,7 @@ const STR = {
     note: "テキストと表が編集可能なファイルに抽出されます。スキャンされたPDFや凝ったデザインのPDFは完全には変換できない場合があります。5 MBを超えるファイルは一括処理に対応していません — その場合は単一ファイル変換ツールをご利用ください。",
     err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
 // Per-target heading/subtitle (native) for the split single-format pages.
 const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>> = {
@@ -153,12 +156,12 @@ const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>
 };
 
 export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Locale; target?: Format }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
   // zh-Hant child components (BatchUploadBox / ToolFaq) lack zh-Hant → map to "zh".
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const head = target
-    ? (locale === "zh-Hant" ? deepHant(PT[target].zh) : (PT[target][locale as CopyLocale] ?? PT[target].en))
+    ? (locale === "zh-Hant" ? deepHant(PT[target].zh) : PT[target][locale])
     : { title: t.title, subtitle: t.subtitle };
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Format>(target ?? "word");
@@ -259,12 +262,30 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
       trackToolRun(`batch-pdf-to-${format}`);
       URL.revokeObjectURL(url);
     } catch {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga; inténtalo de nuevo." : locale === "fr" ? "Impossible de créer le téléchargement — veuillez réessayer." : locale === "pt" ? "Não foi possível criar o download — tente novamente." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      const DL_ERR: Record<AuthoredLocale, string> = {
+        en: "Could not build the download — please try again.",
+        zh: "打包下载失败，请重试。",
+        es: "No se pudo crear la descarga; inténtalo de nuevo.",
+        fr: "Impossible de créer le téléchargement — veuillez réessayer.",
+        pt: "Não foi possível criar o download — tente novamente.",
+        ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+      };
+      setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[locale]);
     }
   };
 
   const doneCount = items.filter((it) => it.status === "done").length;
   const formats: Format[] = ["word", "excel"];
+
+  const PRIVACY: Record<AuthoredLocale, string> = {
+    en: "Converted on our server",
+    zh: "在我们的服务器转换",
+    es: "Convertido en nuestro servidor",
+    fr: "Converti sur notre serveur",
+    pt: "Convertido no nosso servidor",
+    ja: "当社のサーバーで変換",
+  };
+  const privacyLabel = locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[locale];
 
   return (
     <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
@@ -285,7 +306,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
       />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={childLocale} onFiles={addFiles} privacyLabel={locale === "zh" ? "在我们的服务器转换" : locale === "zh-Hant" ? toHant("在我们的服务器转换") : locale === "es" ? "Convertido en nuestro servidor" : locale === "fr" ? "Converti sur notre serveur" : locale === "pt" ? "Convertido no nosso servidor" : locale === "ja" ? "当社のサーバーで変換" : "Converted on our server"} />
+        <BatchUploadBox locale={childLocale} onFiles={addFiles} privacyLabel={privacyLabel} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

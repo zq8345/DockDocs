@@ -10,15 +10,15 @@ import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-t
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
+type Locale = RouteLocale;
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
 const MAX_FILES = 30;
 const PW_OK = /^[A-Za-z0-9_]{4,32}$/;
 
-const STR = {
-  en: {
+const _en = {
     title: "Batch encrypt",
     subtitle: "Set one password and lock a whole folder of PDFs — each is encrypted on our secure conversion server and packaged into a single ZIP to download.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
@@ -29,7 +29,10 @@ const STR = {
     needFile: "Add at least one PDF.", needPw: "Enter a valid password (4–32: letters, digits, underscore).",
     note: "Each PDF will require this password to open. Already-encrypted PDFs are skipped. Files are encrypted on our conversion server and removed after processing.",
     err: "Something went wrong: ",
-  },
+};
+
+const STR = {
+  en: _en,
   zh: {
     title: "批量 PDF 加密",
     subtitle: "设一个密码，给整个文件夹的 PDF 加密——每个都在我们的安全转换服务器上加密，并打包成一个 ZIP 供下载。",
@@ -90,9 +93,9 @@ const STR = {
     note: "各PDFを開くにはこのパスワードが必要になります。すでに暗号化されたPDFはスキップされます。ファイルは当社の変換サーバーで暗号化され、処理後に削除されます。",
     err: "問題が発生しました: ",
   },
-};
+} satisfies Record<AuthoredLocale, typeof _en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why batch-encrypt PDFs with DockDocs",
     benefitsDescription: "Lock an entire folder of PDFs with one password and get them all back as a single ZIP.",
@@ -234,8 +237,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [password, setPassword] = useState("");
@@ -271,7 +274,7 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
           files: [it.file],
           pageRanges: password, // protect-pdf reads the password from pageRanges
           outputFileName: it.name.replace(/\.pdf$/i, "") + "-protected.pdf",
-          locale: locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : "en",
+          locale,
         });
         updated[i] = { ...it, status: "done", blob: artifact.blob };
       } catch (e) {
@@ -295,7 +298,15 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
       trackToolRun("batch-protect-pdf");
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga. Inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download. Tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement. Réessayez." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      const ZIP_ERR: Record<AuthoredLocale, string> = {
+        en: "Could not build the download — please try again.",
+        zh: "打包下载失败，请重试。",
+        es: "No se pudo crear la descarga. Inténtalo de nuevo.",
+        pt: "Não foi possível criar o download. Tente novamente.",
+        fr: "Impossible de créer le téléchargement. Réessayez.",
+        ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+      };
+      setError(locale === "zh-Hant" ? toHant(ZIP_ERR.zh) : ZIP_ERR[locale]);
     }
   };
 

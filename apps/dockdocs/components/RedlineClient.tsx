@@ -8,12 +8,14 @@ import { ToolSections, type ToolSectionsContent } from "@/components/ToolSection
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
 import { dropzoneVisual } from "@/components/design";
+import type { AuthoredCopy, AuthoredLocale, RouteLocale } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+// Canonical route locale — derived from RouteLocale so adding a route locale
+// (e.g. "de") propagates here instead of silently falling back to English.
+type Locale = RouteLocale;
 type Op ={ type: "eq" | "del" | "ins"; text: string };
 
-const STR = {
-  en: {
+const _en = {
     title: "Compare versions",
     subtitle: "Upload an original and a revised PDF to see exactly what changed — added text is highlighted, removed text is struck through. Everything runs in your browser.",
     original: "Original (v1)", revised: "Revised (v2)",
@@ -25,7 +27,13 @@ const STR = {
     need: "Add both PDFs to compare.",
     err: "Something went wrong: ",
     note: "Compares the extracted text sentence by sentence. Formatting and images aren't part of the comparison.",
-  },
+  };
+
+// Exhaustive over AuthoredLocale: a missing route locale (e.g. "de") is a tsc
+// error here, not a silent English fallback. zh-Hant is excluded — it is derived
+// from zh via deepHant at the resolver below, never authored.
+const STR = {
+  en: _en,
   zh: {
     title: "PDF 版本对比",
     subtitle: "上传原始版和修订版 PDF，看清到底改了什么——新增文字高亮，删除文字加删除线。全部在浏览器中完成。",
@@ -91,7 +99,7 @@ const STR = {
     err: "問題が発生しました: ",
     note: "抽出テキストを文単位で比較します。書式や画像は比較対象外です。",
   },
-};
+} satisfies Record<AuthoredLocale, typeof _en>;
 
 async function extractText(file: File): Promise<string> {
   const pdfjs = await import("pdfjs-dist");
@@ -136,7 +144,7 @@ function diff(a: string[], b: string[]): Op[] {
   return ops;
 }
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why redline PDFs in your browser",
     benefitsDescription: "Compare an original and a revised PDF and see every text change marked up — no need to read both side by side.",
@@ -272,8 +280,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function RedlineClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [a, setA] = useState<File | null>(null);
   const [b, setB] = useState<File | null>(null);
   const [phase, setPhase] = useState<"idle" | "comparing" | "done">("idle");

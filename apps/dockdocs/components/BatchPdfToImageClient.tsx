@@ -11,24 +11,27 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
+type Locale = RouteLocale;
 type Fmt = "jpg" | "png";
 type Img = { name: string; data: Uint8Array };
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; pages?: number; images?: Img[]; msg?: string };
 
 const MAX_FILES = 20;
 
+const _en = {
+  title: "Batch PDF to image",
+  subtitle: "Drop a whole folder of PDFs and turn every page into a JPG or PNG — all rendered in your browser and packaged into one ZIP. Nothing is uploaded.",
+  drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
+  format: "Format", run: "Convert all", running: "Converting", download: "Download ZIP", reset: "Start over",
+  files: (n: number, max: number) => `${n} / ${max} files`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "failed",
+  need: "Add at least one PDF.", err: "Something went wrong: ",
+  note: "Every page of every PDF becomes an image (rendered at 2×). Large batches take a moment — everything stays on your device.",
+};
+
 const STR = {
-  en: {
-    title: "Batch PDF to image",
-    subtitle: "Drop a whole folder of PDFs and turn every page into a JPG or PNG — all rendered in your browser and packaged into one ZIP. Nothing is uploaded.",
-    drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
-    format: "Format", run: "Convert all", running: "Converting", download: "Download ZIP", reset: "Start over",
-    files: (n: number, max: number) => `${n} / ${max} files`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "failed",
-    need: "Add at least one PDF.", err: "Something went wrong: ",
-    note: "Every page of every PDF becomes an image (rendered at 2×). Large batches take a moment — everything stays on your device.",
-  },
+  en: _en,
   zh: {
     title: "批量 PDF 转图片",
     subtitle: "拖入整个 PDF 文件夹，把每一页都转成 JPG 或 PNG——全部在浏览器中渲染并打包成一个 ZIP。不上传任何文件。",
@@ -74,9 +77,9 @@ const STR = {
     need: "PDFを少なくとも1つ追加してください。", err: "問題が発生しました: ",
     note: "各PDFのすべてのページが画像になります（2×でレンダリング）。大量のバッチは少し時間がかかります——すべてデバイス内で完結します。",
   },
-};
+} satisfies Record<AuthoredLocale, typeof _en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Batch PDF-to-image, a whole folder at once",
     benefitsDescription: "Point it at a folder of PDFs and get every page back as a JPG or PNG, packaged into one ZIP.",
@@ -212,8 +215,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function BatchPdfToImageClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [format, setFormat] = useState<Fmt>("jpg");

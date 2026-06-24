@@ -13,22 +13,25 @@ import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "
 import { checkUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { deepHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
+type Locale = RouteLocale;
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
 
 const MAX_FILES = 30;
 
+const STR_en = {
+  title: "Classify PDFs",
+  subtitle: "Drop a messy pile of PDFs — AI labels each (invoice, contract, resume, report…) and sorts them into folders inside one ZIP, so a chaotic folder comes out neatly organized.",
+  drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", add: "Add more", reading: "Reading files…",
+  run: "Sort all", running: "Sorting", download: "Download sorted ZIP", reset: "Start over",
+  files: (n: number, max: number) => `${n} / ${max} files`, uncategorized: "Uncategorized", failed: "no text",
+  need: "Add at least one PDF.", err: "Something went wrong: ",
+  note: "Each PDF is read in your browser; only the extracted text is sent to the AI to sort it — your file itself isn't uploaded. Categories are AI-suggested from each document's text and may need a check. The ZIP keeps your original files, just grouped into category folders.",
+};
+
 const STR = {
-  en: {
-    title: "Classify PDFs",
-    subtitle: "Drop a messy pile of PDFs — AI labels each (invoice, contract, resume, report…) and sorts them into folders inside one ZIP, so a chaotic folder comes out neatly organized.",
-    drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", add: "Add more", reading: "Reading files…",
-    run: "Sort all", running: "Sorting", download: "Download sorted ZIP", reset: "Start over",
-    files: (n: number, max: number) => `${n} / ${max} files`, uncategorized: "Uncategorized", failed: "no text",
-    need: "Add at least one PDF.", err: "Something went wrong: ",
-    note: "Each PDF is read in your browser; only the extracted text is sent to the AI to sort it — your file itself isn't uploaded. Categories are AI-suggested from each document's text and may need a check. The ZIP keeps your original files, just grouped into category folders.",
-  },
+  en: STR_en,
   zh: {
     title: "PDF 智能分类",
     subtitle: "拖入一堆杂乱的 PDF——AI 给每份打上分类(发票、合同、简历、报告…)并分到一个 ZIP 里的不同文件夹，杂乱文件夹一键变整齐。",
@@ -74,11 +77,11 @@ const STR = {
     need: "PDF を 1 つ以上追加してください。", err: "問題が発生しました: ",
     note: "各 PDF はブラウザ内で読み取られ、分類のために抽出されたテキストのみが AI に送信されます——ファイル自体はアップロードされません。カテゴリは各ドキュメントのテキストから AI が推測したもので、確認が必要な場合があります。ZIP は元のファイルをそのまま保持し、カテゴリ別フォルダにまとめるだけです。",
   },
-};
+} satisfies AuthoredCopy<typeof STR_en>;
 
 const folderSafe = (s: string) => s.replace(/[\\/:*?"<>|]+/g, "-").trim().slice(0, 40) || "其他";
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why sort a folder of PDFs with AI",
     benefitsDescription: "Turn a chaotic pile of mixed documents into category folders in one pass.",
@@ -220,8 +223,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function BatchSortClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);

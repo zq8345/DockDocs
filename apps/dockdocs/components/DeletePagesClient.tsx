@@ -8,13 +8,13 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
-import { deepHant } from "@/lib/zh-hant";
+import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type Pg = { idx: number; thumb: string };
 
-const STR = {
-  en: {
+const _en = {
     title: "Delete Pages",
     subtitle: "Upload a PDF and click the pages you want to remove — see exactly what's going before you download. Everything happens in your browser.",
     drop: "Drag & drop a PDF here, or click to choose",
@@ -23,7 +23,10 @@ const STR = {
     status: (del: number, keep: number) => `${del} to delete · ${keep} remaining`,
     apply: "Delete & download", working: "Building PDF…", reset: "Start over",
     needKeep: "Keep at least one page.", del: "Will be deleted", err: "Something went wrong: ",
-  },
+};
+
+const STR = {
+  en: _en,
   zh: {
     title: "PDF 页面删除",
     subtitle: "上传 PDF，点击你想删除的页面——下载前看清楚要删哪些，不再盲删。全部在浏览器中完成。",
@@ -74,9 +77,9 @@ const STR = {
     apply: "削除してダウンロード", working: "PDFを生成中…", reset: "最初からやり直す",
     needKeep: "少なくとも1ページは残してください。", del: "削除されます", err: "問題が発生しました: ",
   },
-};
+} satisfies Record<AuthoredLocale, typeof _en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why delete PDF pages in your browser",
     benefitsDescription: "Drop unwanted pages from any PDF — blank, duplicate, or confidential — in a few clicks.",
@@ -218,8 +221,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -317,6 +320,16 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
           <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
             {pages.map((p) => {
               const isMarked = marked.has(p.idx);
+              const n = p.idx + 1;
+              const PAGE_LABEL: Record<AuthoredLocale, string> = {
+                en: `Page ${n}`,
+                zh: `第 ${n} 页`,
+                es: `Page ${n}`,
+                pt: `Page ${n}`,
+                fr: `Page ${n}`,
+                ja: `Page ${n}`,
+              };
+              const pageLabel = locale === "zh-Hant" ? toHant(PAGE_LABEL.zh) : PAGE_LABEL[locale];
               return (
                 <button
                   key={p.idx}
@@ -330,7 +343,7 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={p.thumb} alt={`page ${p.idx + 1}`} className={`h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] transition ${isMarked ? "opacity-40 grayscale" : ""}`} />
                   <p className={`mt-1.5 text-center text-[11.5px] ${isMarked ? "font-semibold text-[#f87171]" : "text-[color:var(--muted)]"}`}>
-                    {isMarked ? t.del : locale === "zh" ? `第 ${p.idx + 1} 页` : locale === "zh-Hant" ? `第 ${p.idx + 1} 頁` : `Page ${p.idx + 1}`}
+                    {isMarked ? t.del : pageLabel}
                   </p>
                 </button>
               );

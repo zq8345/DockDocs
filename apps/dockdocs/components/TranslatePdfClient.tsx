@@ -9,10 +9,11 @@ import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 
 import { useCallback, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 
 const MAX_CHARS = 14_000;
 
@@ -37,28 +38,30 @@ const LANGS: Array<{ code: string; en: string; zh: string }> = [
   { code: "tr", en: "Turkish", zh: "土耳其语" },
 ];
 
+const STR_EN = {
+  title: "Translate PDF",
+  subtitle:
+    "Upload a PDF, pick a language, and get the translated text. AI translates the document's text — processed privately, text-only for now (layout-preserving is coming).",
+  drop: "Drag & drop a PDF here, or click to choose",
+  choose: "Choose PDF",
+  extracting: "Reading PDF…",
+  pagesChars: (p: number, c: number) => `${p} pages · ${c.toLocaleString()} characters`,
+  noText: "No selectable text found. Is this a scanned PDF? Run OCR first.",
+  tooLong: `This PDF has more text than the ${MAX_CHARS.toLocaleString()}-character limit. Use a shorter document (about 10 pages).`,
+  target: "Translate to",
+  translate: "Translate",
+  translating: "Translating…",
+  result: "Translation",
+  copy: "Copy",
+  copied: "Copied!",
+  download: "Download .txt",
+  reset: "Start over",
+  errPrefix: "Translation failed: ",
+  privacy: "Your file is read in your browser; only the extracted text is sent for translation.",
+};
+
 const STR = {
-  en: {
-    title: "Translate PDF",
-    subtitle:
-      "Upload a PDF, pick a language, and get the translated text. AI translates the document's text — processed privately, text-only for now (layout-preserving is coming).",
-    drop: "Drag & drop a PDF here, or click to choose",
-    choose: "Choose PDF",
-    extracting: "Reading PDF…",
-    pagesChars: (p: number, c: number) => `${p} pages · ${c.toLocaleString()} characters`,
-    noText: "No selectable text found. Is this a scanned PDF? Run OCR first.",
-    tooLong: `This PDF has more text than the ${MAX_CHARS.toLocaleString()}-character limit. Use a shorter document (about 10 pages).`,
-    target: "Translate to",
-    translate: "Translate",
-    translating: "Translating…",
-    result: "Translation",
-    copy: "Copy",
-    copied: "Copied!",
-    download: "Download .txt",
-    reset: "Start over",
-    errPrefix: "Translation failed: ",
-    privacy: "Your file is read in your browser; only the extracted text is sent for translation.",
-  },
+  en: STR_EN,
   zh: {
     title: "PDF 翻译",
     subtitle:
@@ -164,11 +167,34 @@ const STR = {
     errPrefix: "翻訳に失敗しました: ",
     privacy: "ファイルはブラウザ内で読み取られ、抽出されたテキストのみが翻訳のために送信されます。",
   },
-};
+} satisfies AuthoredCopy<typeof STR_EN>;
 
 type Phase = "idle" | "extracting" | "ready" | "translating" | "done";
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+// Localize a language option label. LANGS carries only en/zh labels by design, so
+// every non-zh authored locale renders the English label. Written as an exhaustive
+// switch (never default) so adding a new route locale forces an explicit decision
+// here instead of silently falling through to the English label.
+function langLabel(l: { en: string; zh: string }, locale: Locale): string {
+  if (locale === "zh-Hant") return toHant(l.zh);
+  const authored: AuthoredLocale = locale;
+  switch (authored) {
+    case "zh":
+      return l.zh;
+    case "en":
+    case "es":
+    case "pt":
+    case "fr":
+    case "ja":
+      return l.en;
+    default: {
+      const _exhaustive: never = authored;
+      return _exhaustive;
+    }
+  }
+}
+
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "What the PDF translator does",
     benefitsDescription: "Turn a PDF in one language into readable text in another, without retyping it.",
@@ -310,8 +336,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [phase, setPhase] = useState<Phase>("idle");
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
@@ -469,7 +495,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
               >
                 {LANGS.map((l) => (
                   <option key={l.code} value={l.code}>
-                    {locale === "zh" ? l.zh : locale === "zh-Hant" ? toHant(l.zh) : l.en}
+                    {langLabel(l, locale)}
                   </option>
                 ))}
               </select>

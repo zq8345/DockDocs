@@ -6,26 +6,29 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
-import { deepHant } from "@/lib/zh-hant";
+import { deepHant, toHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
+import type { RouteLocale, AuthoredLocale } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type Pg = { idx: number; thumb: string };
 
 const SEG_TINTS = ["", "bg-[rgba(62,207,142,0.06)]", "bg-[rgba(52,211,153,0.07)]", "bg-[rgba(251,191,36,0.08)]", "bg-[rgba(96,165,250,0.07)]"];
 
+const _en = {
+  title: "Split PDF",
+  subtitle: "Upload a PDF and click ✂ between pages to cut it into separate files — you see exactly which pages go into each file before you download.",
+  drop: "Drag & drop a PDF here, or click to choose",
+  choose: "Choose PDF", rendering: "Rendering pages…",
+  hint: "Click ✂ after a page to start a new file. Click again to undo.",
+  splitAfter: "Split here", files: (n: number) => `${n} file${n === 1 ? "" : "s"} will be created`,
+  fileN: (n: number) => `File ${n}`, apply: "Split & download", working: "Splitting…",
+  reset: "Start over", needSplit: "Add at least one split point.", err: "Something went wrong: ",
+  every: "Split every", everyUnit: "pages", everySet: "Set",
+};
+
 const STR = {
-  en: {
-    title: "Split PDF",
-    subtitle: "Upload a PDF and click ✂ between pages to cut it into separate files — you see exactly which pages go into each file before you download.",
-    drop: "Drag & drop a PDF here, or click to choose",
-    choose: "Choose PDF", rendering: "Rendering pages…",
-    hint: "Click ✂ after a page to start a new file. Click again to undo.",
-    splitAfter: "Split here", files: (n: number) => `${n} file${n === 1 ? "" : "s"} will be created`,
-    fileN: (n: number) => `File ${n}`, apply: "Split & download", working: "Splitting…",
-    reset: "Start over", needSplit: "Add at least one split point.", err: "Something went wrong: ",
-    every: "Split every", everyUnit: "pages", everySet: "Set",
-  },
+  en: _en,
   zh: {
     title: "PDF 拆分",
     subtitle: "上传 PDF，在页面之间点 ✂ 把它切成多个文件——下载前就看清每个文件包含哪些页。",
@@ -81,9 +84,9 @@ const STR = {
     reset: "最初からやり直す", needSplit: "少なくとも1つの分割ポイントを追加してください。", err: "問題が発生しました: ",
     every: "分割する間隔", everyUnit: "ページごと", everySet: "適用",
   },
-};
+} satisfies Record<AuthoredLocale, typeof _en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why split a PDF in your browser",
     benefitsDescription: "Pull a large PDF apart into separate files or page ranges, without uploading it.",
@@ -225,8 +228,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [pages, setPages] = useState<Pg[]>([]);
@@ -350,13 +353,22 @@ export function SplitPdfClient({ locale = "en" }: { locale?: Locale }) {
               const seg = segOf(pos);
               const isLast = pos === pages.length - 1;
               const splitHere = splits.has(pos);
+              const pageLabelMap: Record<AuthoredLocale, string> = {
+                en: `Page ${p.idx + 1}`,
+                zh: `第 ${p.idx + 1} 页`,
+                es: `Page ${p.idx + 1}`,
+                pt: `Page ${p.idx + 1}`,
+                fr: `Page ${p.idx + 1}`,
+                ja: `Page ${p.idx + 1}`,
+              };
+              const pageLabel = locale === "zh-Hant" ? toHant(pageLabelMap.zh) : pageLabelMap[locale];
               return (
                 <div key={p.idx} className="flex items-stretch">
                   <div className={`w-[120px] rounded-[var(--radius)] border border-[color:var(--line)] p-2 ${SEG_TINTS[seg % SEG_TINTS.length]}`}>
                     <span className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-[color:var(--accent-strong)]">{t.fileN(seg + 1)}</span>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={p.thumb} alt={`page ${p.idx + 1}`} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
-                    <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${p.idx + 1} 页` : locale === "zh-Hant" ? `第 ${p.idx + 1} 頁` : `Page ${p.idx + 1}`}</p>
+                    <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">{pageLabel}</p>
                   </div>
                   {!isLast && (
                     <button

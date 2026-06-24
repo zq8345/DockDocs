@@ -9,12 +9,23 @@ import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { trackToolRun } from "@/lib/track";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+// Canonical route-locale alias. zh-Hant copy is machine-derived from zh via
+// deepHant/toHant (never authored by hand); the copy tables below are typed
+// AuthoredCopy<T> = Record<AuthoredLocale, T> (AuthoredLocale excludes zh-Hant),
+// so adding a new route locale (e.g. "de") without copy becomes a tsc error
+// instead of a silent English fallback.
+type Locale = RouteLocale;
 type Item = { id: string; name: string; pages: number; thumb: string; file: File };
 
-const STR = {
+const STR: AuthoredCopy<{
+  title: string; subtitle: string; drop: string; choose: string; add: string;
+  rendering: string; hint: string; files: (n: number, p: number) => string;
+  pagesLabel: (n: number) => string; merge: string; working: string; reset: string;
+  needTwo: string; err: string;
+}> = {
   en: {
     title: "Merge PDF",
     subtitle: "Add your PDFs, drag them into the order you want, and combine them into one — you see each file before you merge, not after.",
@@ -83,7 +94,7 @@ const STR = {
   },
 };
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why merge PDFs in your browser",
     benefitsDescription: "Combine several PDFs into one ordered document, without uploading anything.",
@@ -225,8 +236,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
@@ -267,21 +278,17 @@ export function MergePdfClient({ locale = "en" }: { locale?: Locale }) {
       if (skipped.length) {
         const list = skipped.join(", ");
         const enc = encryptedSkipped;
-        const zhMsg = `跳过了 ${skipped.length} 个无法读取的文件：${list}${enc ? "(含加密文件，请先解锁)" : ""}。`;
-        const msg =
-          locale === "zh"
-            ? zhMsg
-            : locale === "zh-Hant"
-            ? toHant(zhMsg)
-            : locale === "es"
-              ? `Se omitieron ${skipped.length} archivo(s) ilegible(s): ${list}${enc ? " (algunos están protegidos con contraseña; desbloquéalos primero)" : ""}.`
-              : locale === "pt"
-                ? `${skipped.length} arquivo(s) ilegível(eis) ignorado(s): ${list}${enc ? " (alguns estão protegidos por senha; desbloqueie-os primeiro)" : ""}.`
-                : locale === "fr"
-                  ? `${skipped.length} fichier(s) illisible(s) ignoré(s) : ${list}${enc ? " (certains sont protégés par mot de passe ; déverrouillez-les d'abord)" : ""}.`
-                  : locale === "ja"
-                    ? `読み取れなかったファイルを${skipped.length}件スキップしました：${list}${enc ? "(一部はパスワード保護されています。先に解除してください)" : ""}。`
-                    : `Skipped ${skipped.length} unreadable file(s): ${list}${enc ? " (some are password-protected — unlock them first)" : ""}.`;
+        // Exhaustive over AuthoredLocale so a new route locale (e.g. "de") fails
+        // tsc here instead of silently falling through to the English toast.
+        const MSG: Record<AuthoredLocale, string> = {
+          en: `Skipped ${skipped.length} unreadable file(s): ${list}${enc ? " (some are password-protected — unlock them first)" : ""}.`,
+          zh: `跳过了 ${skipped.length} 个无法读取的文件：${list}${enc ? "(含加密文件，请先解锁)" : ""}。`,
+          es: `Se omitieron ${skipped.length} archivo(s) ilegible(s): ${list}${enc ? " (algunos están protegidos con contraseña; desbloquéalos primero)" : ""}.`,
+          pt: `${skipped.length} arquivo(s) ilegível(eis) ignorado(s): ${list}${enc ? " (alguns estão protegidos por senha; desbloqueie-os primeiro)" : ""}.`,
+          fr: `${skipped.length} fichier(s) illisible(s) ignoré(s) : ${list}${enc ? " (certains sont protégés par mot de passe ; déverrouillez-les d'abord)" : ""}.`,
+          ja: `読み取れなかったファイルを${skipped.length}件スキップしました：${list}${enc ? "(一部はパスワード保護されています。先に解除してください)" : ""}。`,
+        };
+        const msg = locale === "zh-Hant" ? toHant(MSG.zh) : MSG[locale];
         setError(msg);
       }
     } finally {

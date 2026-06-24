@@ -8,15 +8,15 @@ import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
+type Locale = RouteLocale;
 type Mode = "sequence" | "replace";
 type Item = { id: string; name: string; file: File };
 
 const MAX_FILES = 100;
 
-const STR = {
-  en: {
+const STR_EN = {
     title: "Batch rename",
     subtitle: "Drop a whole folder and rename every file at once — by a numbered pattern or find-and-replace. The files themselves are untouched; you download a ZIP with the new names.",
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
@@ -26,7 +26,10 @@ const STR = {
     download: "Download renamed ZIP", reset: "Start over",
     files: (n: number, max: number) => `${n} / ${max} files`, preview: "Preview", need: "Add at least one PDF.",
     note: "Renaming changes filenames only — the PDF contents are unchanged. Everything stays on your device.",
-  },
+};
+
+const STR = {
+  en: STR_EN,
   zh: {
     title: "批量 PDF 改名",
     subtitle: "拖入整个文件夹，一次性给所有文件改名——按编号模板或查找替换。文件内容不变；你下载一个用新名字打包的 ZIP。",
@@ -82,9 +85,9 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max}件`, preview: "プレビュー", need: "PDFを少なくとも1つ追加してください。",
     note: "名前変更はファイル名のみを変更します——PDFの内容は変わりません。すべてデバイス内で完結します。",
   },
-};
+} satisfies AuthoredCopy<typeof STR_EN>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why batch-rename a folder of PDFs",
     benefitsDescription: "Rename a whole folder of PDFs in one pass and download the renamed set as a single ZIP.",
@@ -220,8 +223,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>("sequence");
@@ -277,7 +280,15 @@ export function BatchRenameClient({ locale = "en" }: { locale?: Locale }) {
       trackToolRun("batch-rename-pdf");
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga. Inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download. Tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement. Réessayez." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      const FAIL: Record<AuthoredLocale, string> = {
+        en: "Could not build the download — please try again.",
+        zh: "打包下载失败，请重试。",
+        es: "No se pudo crear la descarga. Inténtalo de nuevo.",
+        pt: "Não foi possível criar o download. Tente novamente.",
+        fr: "Impossible de créer le téléchargement. Réessayez.",
+        ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+      };
+      setError(locale === "zh-Hant" ? toHant(FAIL.zh) : FAIL[locale]);
     }
   };
 

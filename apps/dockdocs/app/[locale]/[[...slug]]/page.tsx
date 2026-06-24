@@ -109,6 +109,111 @@ import {
 
 export const dynamicParams = false;
 
+// ── correct-by-construction locale narrowers ──────────────────────────────────
+// These convert a validated RouteLocale into the narrower unions the metadata
+// helpers / *Client components accept. Each is written as an exhaustive `switch`
+// with a `never` default, NOT an `x ?? "en"` / ternary chain. The payoff: when a
+// new route locale (e.g. "de") is added to routeLocales, RouteLocale widens and
+// tsc errors at EVERY one of these (the `never` assignment fails) — forcing an
+// explicit decision per surface instead of silently shipping English. Behavior
+// for all CURRENT locales is identical to the chains they replace.
+
+// ClientLocale = the full RouteLocale set; it is what every runtime *Client prop
+// expects (Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant").
+type ClientLocale = Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+
+// Identity over RouteLocale, but exhaustively enumerated so a NEW route locale
+// must be classified here (it is also a compile error to forget it).
+function toClientLocale(locale: RouteLocale): ClientLocale {
+  switch (locale) {
+    case "en":
+    case "zh":
+    case "es":
+    case "pt":
+    case "fr":
+    case "ja":
+    case "zh-Hant":
+      return locale;
+    default: {
+      const _exhaustive: never = locale;
+      return _exhaustive;
+    }
+  }
+}
+
+// metaLocale: <head> title/description picker. zh-Hant is derived from zh copy
+// via toHant; all other route locales have their own branch in the `m()` map.
+function toMetaLocale(locale: RouteLocale): ClientLocale {
+  return toClientLocale(locale);
+}
+
+// AccountLocale: the subset AccountClient / PricingPlans accept. Preserves the
+// pre-existing mapping EXACTLY — zh → "zh", zh-Hant → "en" (this path has no
+// Traditional copy today), every other locale → itself. Exhaustive, so a NEW
+// route locale must be classified here rather than silently dropped to English.
+type AccountLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+function toAccountLocale(locale: RouteLocale): AccountLocale {
+  switch (locale) {
+    case "zh":
+      return "zh";
+    case "en":
+    case "es":
+    case "pt":
+    case "fr":
+    case "ja":
+      return locale;
+    case "zh-Hant":
+      return "en";
+    default: {
+      const _exhaustive: never = locale;
+      return _exhaustive;
+    }
+  }
+}
+
+// CUSTOM_TOOL_COPY is a loose Record<string,string> per field (data may be sparse),
+// so the `?? field.en` below is a genuine data-absence fallback. But the LOCALE
+// DISPATCH is exhaustive: zh-Hant derives from zh via toHant; every other route
+// locale reads its own key. A new locale must be classified here (not silently en).
+function resolveCustomCopyField(field: Record<string, string>, locale: RouteLocale): string {
+  switch (locale) {
+    case "zh-Hant":
+      return toHant(field.zh);
+    case "en":
+    case "zh":
+    case "es":
+    case "pt":
+    case "fr":
+    case "ja":
+      return field[locale] ?? field.en;
+    default: {
+      const _exhaustive: never = locale;
+      return _exhaustive;
+    }
+  }
+}
+
+// pricingSchema accepts en|zh only (just those two copy sets). Preserves the
+// pre-existing mapping EXACTLY — zh → "zh", everything else (including zh-Hant)
+// → "en" — but exhaustively, so a new route locale forces an explicit decision.
+function toEnZhLocale(locale: RouteLocale): "en" | "zh" {
+  switch (locale) {
+    case "zh":
+      return "zh";
+    case "en":
+    case "es":
+    case "pt":
+    case "fr":
+    case "ja":
+    case "zh-Hant":
+      return "en";
+    default: {
+      const _exhaustive: never = locale;
+      return _exhaustive;
+    }
+  }
+}
+
 // 这些工具尚未实现(原本会下载空文件)，改为"即将推出"占位，en 主路径见各自 app/<slug>/page.tsx。
 const COMING_SOON_TOOLS: Record<string, { en: string; zh: string }> = {
   "edit-pdf": { en: "Edit PDF", zh: "编辑 PDF" },
@@ -796,11 +901,7 @@ async function generateMetadataInner({
   // 6-locale picker for CUSTOM (non-template) tool/AI/vertical/batch page <title>
   // + meta description, so es/pt/fr/ja no longer leak English in <head>. (uiLocale
   // stays en/zh for blog/GEO/programmatic/info surfaces that are en/zh by design.)
-  const metaLocale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" = (
-    ["en", "zh", "es", "pt", "fr", "ja", "zh-Hant"] as const
-  ).includes(rawLocale as never)
-    ? (rawLocale as "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant")
-    : "en";
+  const metaLocale: ClientLocale = toMetaLocale(rawLocale);
   // zh-Hant derives from the zh string via OpenCC (no separate Traditional copy).
   const m = (en: string, zh: string, es: string, pt: string, fr: string, ja: string) =>
     metaLocale === "zh-Hant" ? toHant(zh) : ({ en, zh, es, pt, fr, ja })[metaLocale];
@@ -948,8 +1049,8 @@ async function generateMetadataInner({
   // robots:{index:false} overlaid on the createLocalizedMetadata base.
   const customCopy = CUSTOM_TOOL_COPY[slug];
   if (customCopy) {
-    const title = rawLocale === "zh-Hant" ? toHant(customCopy.title.zh) : (customCopy.title[rawLocale] ?? customCopy.title.en);
-    const description = rawLocale === "zh-Hant" ? toHant(customCopy.description.zh) : (customCopy.description[rawLocale] ?? customCopy.description.en);
+    const title = resolveCustomCopyField(customCopy.title, rawLocale);
+    const description = resolveCustomCopyField(customCopy.description, rawLocale);
     const meta = createLocalizedMetadata(rawLocale, slug as RouteSlug, title, description);
     return customCopy.noindex ? { ...meta, robots: { index: false, follow: true } } : meta;
   }
@@ -1817,11 +1918,11 @@ export default async function LocalizedRoute({
   // uiLocale: en|zh fallback for surfaces not yet translated (blog, geo, etc.)
   // extLocale: en|zh|es|pt for workspace components that support Spanish/Portuguese
   const uiLocale: "en" | "zh" = rawLocale === "zh" || rawLocale === "zh-Hant" ? "zh" : "en";
-  const esLocale: Locale | "es" | "pt" | "fr" = rawLocale === "zh" ? "zh" : rawLocale === "es" ? "es" : rawLocale === "pt" ? "pt" : (rawLocale as string) === "fr" ? "fr" : "en";
-  // clientLocale: locale passed to runtime *Client components. Preserves ja and
-  // zh-Hant so each client's pick/tr/t helper can branch (zh-Hant derives from zh
-  // via OpenCC inside those helpers); otherwise falls back to esLocale.
-  const clientLocale = rawLocale === "ja" ? "ja" : (rawLocale as string) === "zh-Hant" ? "zh-Hant" : esLocale;
+  // clientLocale: locale passed to every runtime *Client component. Identity over
+  // RouteLocale (each client's pick/tr/t helper branches per locale; zh-Hant derives
+  // from zh via OpenCC inside those helpers). Exhaustive — a new route locale errors
+  // here until it is classified, instead of being silently dropped to English.
+  const clientLocale: ClientLocale = toClientLocale(rawLocale);
 
   const programmaticGeoRoute = getLocalizedProgrammaticGeoRoute(rawSlug);
   if (programmaticGeoRoute) {
@@ -1903,7 +2004,7 @@ export default async function LocalizedRoute({
           : cfg;
         const visibleFaq = getFaqItems(
           VISIBLE_FAQ_TOOL[slug] ?? slug,
-          clientLocale as "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant",
+          clientLocale,
         );
         return (
           <ToolJsonLd config={visibleFaq ? { ...hubCfg, faq: visibleFaq } : hubCfg} />
@@ -1914,7 +2015,7 @@ export default async function LocalizedRoute({
   // Indexable tools that render a custom client but aren't in toolSlugs
   // (sign-pdf is in toolSlugs and handled above; these are not): lightweight schema.
   const extraJsonLd = EXTRA_TOOL_SLUGS.includes(slug) ? (
-    <ExtraToolJsonLd slug={slug} locale={clientLocale as "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant"} />
+    <ExtraToolJsonLd slug={slug} locale={clientLocale} />
   ) : null;
 
   if (slug === "chat-with-pdf") {
@@ -2220,7 +2321,7 @@ function LocalizedAccount({ locale }: { locale: Locale | "es" | "pt" | "fr" | "j
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
       <div className="mx-auto max-w-md">
-        <AccountClient locale={locale === "zh" ? "zh" : locale === "es" ? "es" : locale === "pt" ? "pt" : locale === "fr" ? "fr" : locale === "ja" ? "ja" : "en"} />
+        <AccountClient locale={toAccountLocale(locale)} />
       </div>
     </div>
   );
@@ -2405,8 +2506,8 @@ function LocalizedDashboard({ locale }: { locale: Locale | "es" | "pt" | "fr" | 
 function LocalizedPricing({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(locale === "zh" ? "zh" : "en")) }} />
-      <PricingPlans locale={locale === "zh" ? "zh" : locale === "es" ? "es" : locale === "pt" ? "pt" : locale === "fr" ? "fr" : locale === "ja" ? "ja" : "en"} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(toEnZhLocale(locale))) }} />
+      <PricingPlans locale={toAccountLocale(locale)} />
     </>
   );
 }
@@ -2618,14 +2719,32 @@ const aiCopy = {
 const aiWidgetLocales = ["en", "zh", "es", "pt", "fr", "ja"] as const;
 type AiWidgetLocale = (typeof aiWidgetLocales)[number];
 
+// Exhaustive copy resolver for LocalizedAiWorkspace. aiCopy is keyed by the six
+// authored locales; zh-Hant derives from zh via deepHant. Preserves behavior, but
+// a NEW route locale must add a branch here instead of silently falling to aiCopy.en.
+type AiCopy = (typeof aiCopy)[AiWidgetLocale];
+function resolveAiCopy(locale: ClientLocale): AiCopy {
+  switch (locale) {
+    case "zh-Hant":
+      return deepHant(aiCopy.zh);
+    case "en":
+    case "zh":
+    case "es":
+    case "pt":
+    case "fr":
+    case "ja":
+      return aiCopy[locale];
+    default: {
+      const _exhaustive: never = locale;
+      return _exhaustive;
+    }
+  }
+}
+
 function LocalizedAiWorkspace({ locale }: { locale: Locale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
   // zh-Hant derives from zh via OpenCC.
-  const copy = locale === "zh-Hant" ? deepHant(aiCopy.zh) : (aiCopy[locale] ?? aiCopy.en);
-  const aiLocale: AiWidgetLocale = (aiWidgetLocales as readonly string[]).includes(
-    locale,
-  )
-    ? (locale as AiWidgetLocale)
-    : "en";
+  const copy = resolveAiCopy(locale);
+  const aiLocale: AiWidgetLocale = toAccountLocale(locale);
 
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">

@@ -13,14 +13,16 @@ import { dropzoneShell } from "@/components/design";
 import { formatBytes } from "@/lib/files";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
 // Comparison engine UI (bilingual).
 //  D5: multi-file upload -> browser-side text extraction (pdf.js).
 //  D6: /api/compare-extract -> aligned structured fields with sources -> table.
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+// Canonical: derive from RouteLocale so adding a route locale without copy is a tsc error.
+type Locale = RouteLocale;
 // Base locales that have authored copy tables; zh-Hant is derived from zh via deepHant.
-type BaseLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type BaseLocale = AuthoredLocale;
 type DocStatus = "ok" | "empty" | "error";
 
 type DocResult = {
@@ -418,7 +420,7 @@ const STR = {
     tplDropHere: "PDF をドロップして再実行",
     retry: "再試行",
   },
-} as const;
+} as const satisfies AuthoredCopy<unknown>;
 
 const REC = {
   en: {
@@ -463,7 +465,7 @@ const REC = {
     disclaimer: "この判定は、下の表の数値に基づく AI の推論です — 表の各セルとは異なり、出典を個別に照合してはいません。決定する前に、表の数値をご確認ください。",
     recError: "おすすめを読み込めませんでした — 下の比較表は引き続き正確です。",
   },
-} as const;
+} as const satisfies AuthoredCopy<unknown>;
 
 const TRACE = {
   en: { source: "Source", notLocated: "Couldn't locate the exact snippet — showing the full text." },
@@ -472,7 +474,7 @@ const TRACE = {
   pt: { source: "Origem", notLocated: "Não foi possível localizar o trecho exato — exibindo o texto completo." },
   fr: { source: "Source", notLocated: "Impossible de localiser l'extrait exact — affichage du texte intégral." },
   ja: { source: "出典", notLocated: "該当箇所を正確に特定できませんでした — 全文を表示しています。" },
-} as const;
+} as const satisfies AuthoredCopy<unknown>;
 
 // Localized dimension labels (the backend returns English labels).
 const DIM_ZH: Record<string, string> = {
@@ -626,7 +628,7 @@ const QA: Record<BaseLocale, {
   },
 };
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why compare documents with DockDocs",
     benefitsDescription: "Line up two PDFs side by side, ask questions that span both, and get a verdict drawn from those numbers — the AI reads the documents' text for you.",
@@ -770,7 +772,7 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
   const cl: BaseLocale = locale === "zh-Hant" ? "zh" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[cl];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[cl] ?? SECTIONS.en);
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[cl];
   const r = locale === "zh-Hant" ? deepHant(REC.zh) : REC[cl];
   const tr = locale === "zh-Hant" ? deepHant(TRACE.zh) : TRACE[cl];
   const qa = locale === "zh-Hant" ? deepHant(QA.zh) : QA[cl];

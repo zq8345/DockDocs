@@ -7,14 +7,14 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
-import { deepHant } from "@/lib/zh-hant";
+import { deepHant, toHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type Pg = { idx: number; thumb: string };
 
-const STR = {
-  en: {
+const _en = {
     title: "Rotate Pages",
     subtitle: "Upload a PDF and click a page to rotate it — watch it turn before you download. Fix sideways scans and landscape pages in your browser.",
     drop: "Drag & drop a PDF here, or click to choose",
@@ -22,7 +22,10 @@ const STR = {
     hint: "Click a page to rotate it 90°. Keep clicking to keep turning.",
     rotateAll: "Rotate all 90°", apply: "Apply & download", working: "Building PDF…",
     reset: "Start over", none: "No rotations yet — click a page.", err: "Something went wrong: ",
-  },
+};
+
+const STR = {
+  en: _en,
   zh: {
     title: "PDF 页面旋转",
     subtitle: "上传 PDF，点击页面即可旋转——下载前先看它转好。在浏览器里修正横放的扫描件和页面。",
@@ -68,9 +71,9 @@ const STR = {
     rotateAll: "すべて90°回転", apply: "適用してダウンロード", working: "PDFを生成中…",
     reset: "最初からやり直す", none: "まだ回転していません——ページをクリックしてください。", err: "問題が発生しました: ",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why rotate PDF pages in your browser",
     benefitsDescription: "Fix the orientation of any page — or the whole document — in seconds.",
@@ -212,8 +215,19 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
+  const pageLabel = (n: number) => {
+    const MSG: Record<AuthoredLocale, string> = {
+      en: `Page ${n}`,
+      zh: `第 ${n} 页`,
+      es: `Page ${n}`,
+      pt: `Page ${n}`,
+      fr: `Page ${n}`,
+      ja: `Page ${n}`,
+    };
+    return locale === "zh-Hant" ? toHant(MSG.zh) : MSG[locale];
+  };
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -324,7 +338,7 @@ export function RotatePagesClient({ locale = "en" }: { locale?: Locale }) {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={p.thumb} alt={`page ${p.idx + 1}`} style={{ transform: `rotate(${deg}deg)` }} className="max-h-full max-w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] transition-transform duration-200" />
-                  <span className="absolute bottom-1 left-0 right-0 text-center text-[11px] text-[color:var(--muted)]">{locale === "zh" ? `第 ${p.idx + 1} 页` : locale === "zh-Hant" ? `第 ${p.idx + 1} 頁` : `Page ${p.idx + 1}`}</span>
+                  <span className="absolute bottom-1 left-0 right-0 text-center text-[11px] text-[color:var(--muted)]">{pageLabel(p.idx + 1)}</span>
                   <span className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[13px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100">↻</span>
                 </button>
               );

@@ -10,25 +10,28 @@ import { Spinner } from "@/components/Spinner";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja";
+type Locale = RouteLocale;
 type Level = "low" | "recommended" | "high";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; saved?: number; outSize?: number; blob?: Blob; msg?: string };
 
 const MAX_FILES = 30;
 
+const _en = {
+  title: "Batch compress",
+  subtitle: "Drop a whole folder of PDFs and shrink them all in one go — each is compressed in your browser and packaged into a single ZIP. Nothing is uploaded.",
+  drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", reading: "Reading…",
+  level: "Compression", low: "Light", recommended: "Recommended", high: "Strong",
+  run: "Compress all", running: "Compressing", download: "Download ZIP", reset: "Start over",
+  files: (n: number, max: number) => `${n} / ${max} files`, saved: "saved", failed: "failed",
+  totalSaved: (p: number) => `${p}% smaller overall`,
+  need: "Add at least one PDF.", err: "Something went wrong: ",
+  note: "Compression renders pages to images, so heavily-text PDFs may not shrink much. Everything stays on your device.",
+};
+
 const STR = {
-  en: {
-    title: "Batch compress",
-    subtitle: "Drop a whole folder of PDFs and shrink them all in one go — each is compressed in your browser and packaged into a single ZIP. Nothing is uploaded.",
-    drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", reading: "Reading…",
-    level: "Compression", low: "Light", recommended: "Recommended", high: "Strong",
-    run: "Compress all", running: "Compressing", download: "Download ZIP", reset: "Start over",
-    files: (n: number, max: number) => `${n} / ${max} files`, saved: "saved", failed: "failed",
-    totalSaved: (p: number) => `${p}% smaller overall`,
-    need: "Add at least one PDF.", err: "Something went wrong: ",
-    note: "Compression renders pages to images, so heavily-text PDFs may not shrink much. Everything stays on your device.",
-  },
+  en: _en,
   zh: {
     title: "批量 PDF 压缩",
     subtitle: "拖入整个 PDF 文件夹，一次性全部压缩——每个都在浏览器中压缩并打包成一个 ZIP。不上传任何文件。",
@@ -84,13 +87,13 @@ const STR = {
     need: "PDFを少なくとも1つ追加してください。", err: "問題が発生しました: ",
     note: "圧縮はページを画像に変換するため、テキスト主体のPDFはあまり縮小されない場合があります。すべてデバイス内で完結します。",
   },
-};
+} satisfies AuthoredCopy<typeof _en>;
 
 // //Benefits //Workflow //Recommended-reading content (the three sections single-
 // file tool pages have, brought to the batch page). zh-Hant derives from zh via
 // deepHant (recurses arrays/objects). Reading links point at the matching single-
 // file tool + a real guide + the resources hub (weight to /compress-pdf + funnel).
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why batch-compress a whole folder",
     benefitsDescription: "Shrink every PDF in a folder in one pass, entirely in your browser.",
@@ -232,8 +235,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [level, setLevel] = useState<Level>("recommended");
@@ -292,7 +295,15 @@ export function BatchCompressClient({ locale = "en" }: { locale?: Locale }) {
       trackToolRun("batch-compress");
       URL.revokeObjectURL(url);
     } catch (e) {
-      setError(locale === "zh" ? "打包下载失败，请重试。" : locale === "zh-Hant" ? toHant("打包下载失败，请重试。") : locale === "es" ? "No se pudo crear la descarga. Inténtalo de nuevo." : locale === "pt" ? "Não foi possível criar o download. Tente novamente." : locale === "fr" ? "Impossible de créer le téléchargement. Réessayez." : locale === "ja" ? "ダウンロードの作成に失敗しました。もう一度お試しください。" : "Could not build the download — please try again.");
+      const DL_ERR: Record<AuthoredLocale, string> = {
+        en: "Could not build the download — please try again.",
+        zh: "打包下载失败，请重试。",
+        es: "No se pudo crear la descarga. Inténtalo de nuevo.",
+        pt: "Não foi possível criar o download. Tente novamente.",
+        fr: "Impossible de créer le téléchargement. Réessayez.",
+        ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
+      };
+      setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[locale]);
     }
   };
 

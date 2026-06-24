@@ -9,10 +9,11 @@ import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
 import { useCallback, useMemo, useState } from "react";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type RequirementType = "mandatory" | "advisory";
 type Requirement = {
   id: string;
@@ -24,32 +25,34 @@ type Requirement = {
 
 const MAX_CHARS = 60_000;
 
-const STR = {
-  en: {
-    title: "Government Bid Compliance Matrix",
-    eyebrow: "PRO · Single-doc AI",
-    subtitle: "Upload an RFP or solicitation — get every 'shall/must' requirement extracted into a numbered compliance matrix with section references.",
-    upload: "Drop your solicitation PDF here",
-    analyze: "Extract Requirements",
-    analyzing: "Analyzing solicitation…",
-    noText: "No readable text found. Run OCR on this PDF first.",
-    errPrefix: "Analysis failed:",
-    retry: "Retry",
-    privacy: "📋 Only the extracted text is sent for analysis — your file itself isn't uploaded.",
-    mandatory: "Mandatory",
-    advisory: "Advisory",
-    colId: "#",
-    colSection: "Section",
-    colRequirement: "Requirement",
-    colType: "Type",
-    colQuote: "Source text",
-    downloadCsv: "Download CSV",
-    found: (n: number) => `${n} requirement${n === 1 ? "" : "s"} found`,
-    filterAll: "All",
-    filterMandatory: "Mandatory only",
-    filterAdvisory: "Advisory only",
-    noQuote: "Quote unverifiable",
-  },
+const STR_EN = {
+  title: "Government Bid Compliance Matrix",
+  eyebrow: "PRO · Single-doc AI",
+  subtitle: "Upload an RFP or solicitation — get every 'shall/must' requirement extracted into a numbered compliance matrix with section references.",
+  upload: "Drop your solicitation PDF here",
+  analyze: "Extract Requirements",
+  analyzing: "Analyzing solicitation…",
+  noText: "No readable text found. Run OCR on this PDF first.",
+  errPrefix: "Analysis failed:",
+  retry: "Retry",
+  privacy: "📋 Only the extracted text is sent for analysis — your file itself isn't uploaded.",
+  mandatory: "Mandatory",
+  advisory: "Advisory",
+  colId: "#",
+  colSection: "Section",
+  colRequirement: "Requirement",
+  colType: "Type",
+  colQuote: "Source text",
+  downloadCsv: "Download CSV",
+  found: (n: number) => `${n} requirement${n === 1 ? "" : "s"} found`,
+  filterAll: "All",
+  filterMandatory: "Mandatory only",
+  filterAdvisory: "Advisory only",
+  noQuote: "Quote unverifiable",
+};
+
+const STR: AuthoredCopy<typeof STR_EN> = {
+  en: STR_EN,
   zh: {
     title: "政府标书合规矩阵",
     eyebrow: "PRO · 单文档 AI",
@@ -177,7 +180,7 @@ const STR = {
   },
 };
 
-function exportCsv(requirements: Requirement[], t: typeof STR["en"]) {
+function exportCsv(requirements: Requirement[], t: typeof STR_EN) {
   const header = [t.colId, t.colSection, t.colType, t.colRequirement, t.colQuote].join(",");
   const rows = requirements.map((r) =>
     [r.id, r.section, r.type, r.requirement, r.quote ?? ""]
@@ -193,7 +196,7 @@ function exportCsv(requirements: Requirement[], t: typeof STR["en"]) {
   URL.revokeObjectURL(url);
 }
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "What the compliance matrix does for you",
     benefitsDescription: "The AI reads your solicitation's text and turns scattered obligations into one structured, exportable matrix.",
@@ -335,8 +338,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   // zh-Hant rendered from zh via OpenCC; child components (UpgradePrompt /
   // ToolFaq / encryptedPdfMessage) lack zh-Hant in their union → map to "zh".
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
@@ -369,8 +372,16 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
           text += content.items.map((i) => ("str" in i ? (i as { str?: string }).str : "") ?? "").join(" ") + "\n";
         }
       } catch (e) {
-        const zhReadErr = locale === "zh-Hant" ? toHant("无法读取 PDF") : "无法读取 PDF";
-        const msg = encryptedPdfMessage(e, childLocale) ?? (locale === "zh" || locale === "zh-Hant" ? zhReadErr : locale === "es" ? "No se pudo leer el PDF" : locale === "pt" ? "Não foi possível ler o PDF" : locale === "fr" ? "Impossible de lire le PDF" : locale === "ja" ? "PDF を読み取れませんでした" : "Could not read PDF");
+        const READ_ERR: Record<AuthoredLocale, string> = {
+          en: "Could not read PDF",
+          zh: "无法读取 PDF",
+          es: "No se pudo leer el PDF",
+          pt: "Não foi possível ler o PDF",
+          fr: "Impossible de lire le PDF",
+          ja: "PDF を読み取れませんでした",
+        };
+        const readErr = locale === "zh-Hant" ? toHant(READ_ERR.zh) : READ_ERR[locale];
+        const msg = encryptedPdfMessage(e, childLocale) ?? readErr;
         setError(msg);
         setPhase("ready");
         return;

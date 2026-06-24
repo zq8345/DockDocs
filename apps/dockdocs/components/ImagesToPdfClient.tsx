@@ -6,23 +6,26 @@ import { ToolSections, type ToolSectionsContent } from "@/components/ToolSection
 import { deepHant, toHant } from "@/lib/zh-hant";
 import { dropzoneShell } from "@/components/design";
 import { trackToolRun } from "@/lib/track";
+import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = RouteLocale;
 type Item = { id: string; name: string; url: string; file: File };
 
 const ACCEPT = "image/png,image/jpeg,image/webp,image/gif,image/bmp,.png,.jpg,.jpeg,.webp,.gif,.bmp";
 
+const _en = {
+  title: "Image to PDF",
+  subtitle: "Add JPG, PNG, WebP, GIF or BMP images, drag them into order, and combine them into one PDF — one image per page. You see every image before converting.",
+  drop: "Drag & drop images here, or click to choose",
+  choose: "Choose images", add: "Add more", reading: "Reading images…",
+  hint: "Drag to reorder. Each image becomes one PDF page, top-to-bottom.",
+  count: (n: number) => `${n} image${n === 1 ? "" : "s"}`,
+  convert: "Convert to PDF", working: "Building PDF…", reset: "Start over",
+  needOne: "Add at least one image.", err: "Something went wrong: ",
+};
+
 const STR = {
-  en: {
-    title: "Image to PDF",
-    subtitle: "Add JPG, PNG, WebP, GIF or BMP images, drag them into order, and combine them into one PDF — one image per page. You see every image before converting.",
-    drop: "Drag & drop images here, or click to choose",
-    choose: "Choose images", add: "Add more", reading: "Reading images…",
-    hint: "Drag to reorder. Each image becomes one PDF page, top-to-bottom.",
-    count: (n: number) => `${n} image${n === 1 ? "" : "s"}`,
-    convert: "Convert to PDF", working: "Building PDF…", reset: "Start over",
-    needOne: "Add at least one image.", err: "Something went wrong: ",
-  },
+  en: _en,
   zh: {
     title: "图片转 PDF",
     subtitle: "添加 JPG、PNG、WebP、GIF 或 BMP 图片，拖成顺序，合并成一个 PDF——每张图片一页。转换前每张图都看得到。",
@@ -73,9 +76,9 @@ const STR = {
     convert: "PDFに変換", working: "PDFを生成中…", reset: "最初からやり直す",
     needOne: "少なくとも1枚の画像を追加してください。", err: "問題が発生しました: ",
   },
-};
+} satisfies Record<AuthoredLocale, typeof _en>;
 
-const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsContent> = {
+const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why turn images into a PDF in your browser",
     benefitsDescription: "Combine JPG and PNG images into one ordered PDF, ready to send, print, or archive.",
@@ -217,8 +220,8 @@ const SECTIONS: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", ToolSectionsCont
 };
 
 export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : (SECTIONS[locale] ?? SECTIONS.en);
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[locale];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[locale];
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
@@ -271,7 +274,17 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
           failed++;
         }
       }
-      if (pdf.getPageCount() === 0) throw new Error(locale === "zh" ? "没有能读取的图片(HEIC 等格式暂不支持)。" : locale === "zh-Hant" ? toHant("没有能读取的图片(HEIC 等格式暂不支持)。") : locale === "es" ? "No hay imágenes legibles (formatos como HEIC aún no se admiten)." : locale === "pt" ? "Nenhuma imagem legível (formatos como HEIC ainda não são suportados)." : locale === "fr" ? "Aucune image lisible (les formats comme HEIC ne sont pas encore pris en charge)." : locale === "ja" ? "読み取れる画像がありません（HEIC などの形式は未対応です）。" : "No readable images (formats like HEIC aren't supported yet).");
+      if (pdf.getPageCount() === 0) {
+        const NONE: Record<AuthoredLocale, string> = {
+          en: "No readable images (formats like HEIC aren't supported yet).",
+          zh: "没有能读取的图片(HEIC 等格式暂不支持)。",
+          es: "No hay imágenes legibles (formatos como HEIC aún no se admiten).",
+          pt: "Nenhuma imagem legível (formatos como HEIC ainda não são suportados).",
+          fr: "Aucune image lisible (les formats comme HEIC ne sont pas encore pris en charge).",
+          ja: "読み取れる画像がありません（HEIC などの形式は未対応です）。",
+        };
+        throw new Error(locale === "zh-Hant" ? toHant(NONE.zh) : NONE[locale]);
+      }
       const bytes = await pdf.save();
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
@@ -279,7 +292,17 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
       a.href = url; a.download = "dockdocs-images.pdf"; a.click();
       URL.revokeObjectURL(url);
       trackToolRun("images-to-pdf");
-      if (failed > 0) setError((locale === "zh" ? `${failed} 张图片无法读取，已跳过。` : locale === "zh-Hant" ? toHant(`${failed} 张图片无法读取，已跳过。`) : locale === "es" ? `${failed} imagen(es) no se pudieron leer y se omitieron.` : locale === "pt" ? `${failed} imagem(ns) não puderam ser lidas e foram ignoradas.` : locale === "fr" ? `${failed} image(s) n'ont pas pu être lues et ont été ignorées.` : locale === "ja" ? `${failed} 枚の画像を読み取れず、スキップしました。` : `${failed} image(s) could not be read and were skipped.`));
+      if (failed > 0) {
+        const SKIPPED: Record<AuthoredLocale, (n: number) => string> = {
+          en: (n) => `${n} image(s) could not be read and were skipped.`,
+          zh: (n) => `${n} 张图片无法读取，已跳过。`,
+          es: (n) => `${n} imagen(es) no se pudieron leer y se omitieron.`,
+          pt: (n) => `${n} imagem(ns) não puderam ser lidas e foram ignoradas.`,
+          fr: (n) => `${n} image(s) n'ont pas pu être lues et ont été ignorées.`,
+          ja: (n) => `${n} 枚の画像を読み取れず、スキップしました。`,
+        };
+        setError(locale === "zh-Hant" ? toHant(SKIPPED.zh(failed)) : SKIPPED[locale](failed));
+      }
     } catch (e) {
       setError(t.err + (e instanceof Error ? e.message : String(e)));
     } finally {

@@ -12,6 +12,14 @@ export type Locale = (typeof locales)[number];
 export const routeLocales = ["en", "zh", "es", "pt", "fr", "ja", "zh-Hant"] as const;
 export type RouteLocale = (typeof routeLocales)[number];
 
+// Locales that need their own AUTHORED copy. zh-Hant is excluded because it is
+// machine-derived from zh via deepHant/toHant (lib/zh-hant.ts) — never hand-written.
+export type AuthoredLocale = Exclude<RouteLocale, "zh-Hant">;
+// Exhaustive copy map over authored locales. Adding a new route locale (e.g. "de")
+// makes EVERY AuthoredCopy literal a tsc error until the new key is added — this is
+// what turns a silently-English build into a red build.
+export type AuthoredCopy<T> = Record<AuthoredLocale, T>;
+
 export const allLocales = ["en", "zh", "zh-Hant", "ja", "ko", "es", "fr", "de", "pt", "it", "ru", "ar", "hi"] as const;
 export type AllLocale = (typeof allLocales)[number];
 
