@@ -19,11 +19,13 @@ import {
 } from "@/lib/subscription-runtime";
 import { StatusBadge } from "@/components/ui/Status";
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
+import type { MembershipLocale } from "@/lib/membership-ui";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
 
-const STR: Record<Locale, {
+type Strings = {
   loading: string;
   checkoutSuccess: string;
   magicLinkSent: string;
@@ -60,7 +62,12 @@ const STR: Record<Locale, {
   signInToBill: string;
   workspaceBindingTitle: string;
   workspaceBindingDescription: string;
-}> = {
+};
+
+// zh-Hant (Traditional) is derived from the zh (Simplified) arm at module load via
+// OpenCC (deepHant) — same correct-by-construction pattern as the tool copy, so it
+// never drifts. All other locales are authored directly below; de is full German.
+const AUTHORED: Record<Exclude<Locale, "zh-Hant">, Strings> = {
   en: {
     loading: "Loading account…",
     checkoutSuccess: "Checkout returned — subscription will update after Stripe syncs.",
@@ -289,21 +296,76 @@ const STR: Record<Locale, {
     workspaceBindingTitle: "ワークスペースの紐付け",
     workspaceBindingDescription: "ワークスペースの記録は現在のアカウントのストレージ ID を使用します。元の PDF は保存されません。",
   },
+  de: {
+    loading: "Konto wird geladen…",
+    checkoutSuccess: "Bezahlung abgeschlossen — das Abonnement wird aktualisiert, sobald Stripe synchronisiert hat.",
+    magicLinkSent: "Anmeldelink an Ihre E-Mail-Adresse gesendet. Klicken Sie auf den Link in der E-Mail, um sich anzumelden.",
+    errorFallback: "Die Kontoaktion ist fehlgeschlagen.",
+    currentUser: "Aktueller Nutzer",
+    loggedInUser: "Angemeldeter Nutzer",
+    anonymousBrowser: "Anonymer Browser",
+    statusLabel: "Status",
+    signedInLabel: "Angemeldet",
+    notSignedInLabel: "Nicht angemeldet",
+    planLabel: "Tarif",
+    planStatusLabel: "Tarifstatus",
+    workspaceStorage: "Workspace-Speicher",
+    signOut: "Abmelden",
+    loginTitle: "Anmelden",
+    loginDescription: "Sobald Sie angemeldet sind, gehören Ihre gespeicherten Unterhaltungen und Workspace-Metadaten zu Ihrem Konto. Anonyme Daten werden nur in diesem Browser gespeichert.",
+    continueWithGoogle: "Mit Google fortfahren",
+    continueWithMicrosoft: "Mit Microsoft fortfahren",
+    orEmail: "oder E-Mail",
+    emailSentMessage: "Anmeldelink an Ihre E-Mail-Adresse gesendet. Klicken Sie darauf, um sich anzumelden (prüfen Sie ggf. den Spam-Ordner).",
+    sendLoginLink: "Anmeldelink senden",
+    passwordlessNote: "Ohne Passwort — wir senden Ihnen einen Anmeldelink per E-Mail.",
+    planTitle: "Tarif",
+    planDescription: "Melden Sie sich an, um die Abrechnung über Stripe zu starten. Der Abonnementstatus spiegelt den letzten Stripe-Webhook wider.",
+    sourceLabel: "Quelle",
+    periodEndLabel: "Periodenende",
+    updatedAtLabel: "Aktualisiert am",
+    notSet: "Nicht festgelegt",
+    opening: "Wird geöffnet…",
+    upgradePlus: "Auf Plus upgraden",
+    upgradePro: "Auf Pro upgraden",
+    openingBilling: "Abrechnung wird geöffnet…",
+    manageBilling: "Abrechnung verwalten",
+    signInToBill: "Melden Sie sich an, um die Bezahlung zu starten oder das Kundenportal zu öffnen.",
+    workspaceBindingTitle: "Workspace-Verknüpfung",
+    workspaceBindingDescription: "Workspace-Einträge verwenden die Speicher-ID des aktuellen Kontos. Original-PDFs werden niemals gespeichert.",
+  },
+};
+
+const STR: Record<Locale, Strings> = {
+  ...AUTHORED,
+  "zh-Hant": deepHant(AUTHORED.zh),
 };
 
 function useLocale(): Locale {
   const [locale, setLocale] = useState<Locale>("zh");
   useEffect(() => {
-    const seg = window.location.pathname.split("/").filter(Boolean)[0] as Locale;
+    // URL segments are emitted lowercase (/zh-hant/, /de/), so normalize the
+    // Traditional-Chinese segment back to its BCP-47 "zh-Hant" key before lookup.
+    const raw = window.location.pathname.split("/").filter(Boolean)[0]?.toLowerCase();
+    const seg = (raw === "zh-hant" ? "zh-Hant" : raw) as Locale;
     if (seg && seg in STR) setLocale(seg);
   }, []);
   return locale;
 }
 
+// The upgrade flow (Pro-benefits list + billing-error copy) is keyed by
+// MembershipLocale, which has no authored German content. de → en here is an
+// intentional fallback, not a half-translation; the de account UI itself is
+// fully German via STR.de above.
+function asMembershipLocale(locale: Locale): MembershipLocale {
+  return locale === "de" ? "en" : locale;
+}
+
 export function CommercialAccountClient() {
   const locale = useLocale();
   const t = STR[locale];
-  const upgradeFlow = useUpgradeFlow(locale);
+  const membershipLocale = asMembershipLocale(locale);
+  const upgradeFlow = useUpgradeFlow(membershipLocale);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [account, setAccount] = useState<DockAccountState | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
@@ -402,7 +464,7 @@ export function CommercialAccountClient() {
 
   return (
     <section className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-      <UpgradeConfirmModal flow={upgradeFlow} locale={locale} />
+      <UpgradeConfirmModal flow={upgradeFlow} locale={membershipLocale} />
       <div className="grid gap-6">
         <AccountStatusCard user={user} account={account} subscription={subscription} onLogout={handleLogout} t={t} />
         {user ? null : (

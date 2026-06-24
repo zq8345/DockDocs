@@ -1,11 +1,16 @@
-import { defaultLocale, isLocale, type Locale } from "@/lib/i18n";
+import { defaultLocale, isRouteLocale, type RouteLocale } from "@/lib/i18n";
 import { deepHant } from "@/lib/zh-hant";
 
-export type RuntimeLocale = Locale;
+// RuntimeLocale spans every ROUTE locale (en/zh/es/pt/fr/ja/de/zh-Hant), not just
+// the two with a full `Locale` content bag. getRuntimeCopy resolves each one
+// (de/ja/zh-Hant included), so a /de visitor must keep "de" here — coercing to
+// `Locale` was the bug that made localeFromPathname return en for /de and made
+// HtmlLangSync/BrandNav/RelatedTools/UserAccountControls render English.
+export type RuntimeLocale = RouteLocale;
 
 export function localeFromPathname(pathname: string | null | undefined): RuntimeLocale {
   const first = (pathname ?? "/").split("/").filter(Boolean)[0];
-  return isLocale(first) ? first : defaultLocale;
+  return isRouteLocale(first) ? first : defaultLocale;
 }
 
 export const runtimeCopy = {
@@ -3892,7 +3897,7 @@ const runtimeCopyJa = {
   },
 };
 
-export function getRuntimeCopy(locale: RuntimeLocale | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant" = defaultLocale) {
+export function getRuntimeCopy(locale: RuntimeLocale = defaultLocale) {
   if (locale === "zh-Hant") return deepHant(runtimeCopy.zh) as unknown as typeof runtimeCopy.en;
   if (locale === "ja") return { ...runtimeCopy.en, ...runtimeCopyJa } as unknown as typeof runtimeCopy.en;
   // de now has a full authored block in runtimeCopy (resolved below); any other unknown locale falls back to en.

@@ -13,6 +13,13 @@ import { getNavCategories, type NavCat } from "@/lib/header-nav";
 // (P2.1): one headerStructure + navItemLabels + navCopy, type-enforced across locales
 // (a missing locale/key = tsc error). navCategories stays exported here because Home /
 // HeroFeatureGraph / SitemapContent / RelatedPdfTools consume the same per-locale list.
+// NOTE (de): the nav menu has NO authored German copy in header-nav.ts yet
+// (navItemLabels/navCopy lack a `de` key), so de is intentionally OMITTED from this
+// record — consumers coerce it to the English menu via `?? navCategories.en` (mirrors
+// Home.tsx). zh-Hant is likewise derived from zh via deepHant, never stored here. Adding
+// a `de` entry now would only store an English-labeled menu under a de key (a fake
+// half-translation); the genuine fix is authoring `de` nav copy in lib/header-nav.ts,
+// after which de resolves natively with no change here.
 export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavCat[]> = {
   en: getNavCategories("en"),
   zh: getNavCategories("zh"),
@@ -65,14 +72,21 @@ const pageLinks = {
     { name: "会社概要", href: "/about" },
     { name: "お問い合わせ", href: "/contact" },
   ],
+  de: [
+    { name: "Preise", href: "/pricing" },
+    { name: "Anleitungen", href: "/guides" },
+    { name: "Blog", href: "/blog" },
+    { name: "Über uns", href: "/about" },
+    { name: "Kontakt", href: "/contact" },
+  ],
 } as const;
 
 type Locale = "en" | "zh";
 
-function stripLocale(p: string): "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" {
+function stripLocale(p: string): "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant" {
   const s = p.split("/").filter(Boolean);
   const first = s[0];
-  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "zh-Hant" ? first : "en";
+  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "de" || first === "zh-Hant" ? first : "en";
 }
 function lh(h: string, l: string) {
   return l === defaultLocale ? h : `/${l}${h}`;
@@ -84,10 +98,10 @@ function currentSlug(pathname: string | null) {
 }
 
 const HEADER_LABELS = {
-  soon:  { en: "soon",  zh: "正在开发", "zh-Hant": "即將推出", es: "próximo",  pt: "em breve", fr: "bientôt", ja: "近日公開" },
-  more:  { en: "More",  zh: "更多",     "zh-Hant": "更多",     es: "Más",      pt: "Mais",     fr: "Plus",    ja: "その他" },
-  light: { en: "Light", zh: "浅色",     "zh-Hant": "淺色",     es: "Claro",    pt: "Claro",    fr: "Clair",   ja: "ライト" },
-  dark:  { en: "Dark",  zh: "深色",     "zh-Hant": "深色",     es: "Oscuro",   pt: "Escuro",   fr: "Sombre",  ja: "ダーク" },
+  soon:  { en: "soon",  zh: "正在开发", "zh-Hant": "即將推出", es: "próximo",  pt: "em breve", fr: "bientôt", ja: "近日公開", de: "bald" },
+  more:  { en: "More",  zh: "更多",     "zh-Hant": "更多",     es: "Más",      pt: "Mais",     fr: "Plus",    ja: "その他",   de: "Mehr" },
+  light: { en: "Light", zh: "浅色",     "zh-Hant": "淺色",     es: "Claro",    pt: "Claro",    fr: "Clair",   ja: "ライト",   de: "Hell" },
+  dark:  { en: "Dark",  zh: "深色",     "zh-Hant": "深色",     es: "Oscuro",   pt: "Escuro",   fr: "Sombre",  ja: "ダーク",   de: "Dunkel" },
 } as const;
 type HdrLabelLocale = keyof (typeof HEADER_LABELS)["soon"];
 function hdrLabel(key: keyof typeof HEADER_LABELS, locale: string): string {
@@ -198,7 +212,7 @@ export function Header() {
         <svg className="h-3 w-3 opacity-60" style={{ transform: 'rotate(90deg)' }} viewBox="0 0 12 12" fill="none">
           <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
-        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : "Language"}</span>
+        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : "Language"}</span>
       </button>
       {langOpen && (
         <div className="absolute right-full bottom-0 z-10 mr-1 min-w-[180px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
@@ -229,7 +243,7 @@ export function Header() {
         onClick={() => setLangOpen((v) => !v)}
         className="flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
       >
-        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : "Language"}</span>
+        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : "Language"}</span>
         <span className="flex items-center gap-1.5">
           <span className="text-[12px] text-[color:var(--faint)]">{localeLabels[locale as keyof typeof localeLabels] ?? locale}</span>
           <svg className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`} viewBox="0 0 12 12" fill="none">
@@ -404,8 +418,8 @@ export function Header() {
                     className="ml-auto rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
                   >
                     {authUser
-                      ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "es" ? "Cuenta" : locale === "pt" ? "Conta" : locale === "fr" ? "Compte" : locale === "ja" ? "アカウント" : "Account"))
-                      : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : locale === "pt" ? "Entrar" : locale === "fr" ? "Connexion" : locale === "ja" ? "ログイン" : "Sign in")}
+                      ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "es" ? "Cuenta" : locale === "pt" ? "Conta" : locale === "fr" ? "Compte" : locale === "ja" ? "アカウント" : locale === "de" ? "Konto" : "Account"))
+                      : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : locale === "pt" ? "Entrar" : locale === "fr" ? "Connexion" : locale === "ja" ? "ログイン" : locale === "de" ? "Anmelden" : "Sign in")}
                   </button>
                 </div>
               </div>
@@ -448,7 +462,7 @@ export function Header() {
                             item.soon ? (
                               <span key={`${item.slug}-${ii}`} className="flex w-full cursor-default items-center justify-between gap-1 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2.5 text-left text-[14px] font-medium text-[color:var(--faint)]">
                                 {item.name}
-                                <span className="text-[10px] font-semibold uppercase opacity-80">{locale === "zh" ? "正在开发" : "soon"}</span>
+                                <span className="text-[10px] font-semibold uppercase opacity-80">{hdrLabel("soon", locale)}</span>
                               </span>
                             ) : (
                               <a

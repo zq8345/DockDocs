@@ -1,12 +1,15 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { defaultLocale, isLocale } from "@/lib/i18n";
+import { defaultLocale, isRouteLocale } from "@/lib/i18n";
 
 function stripLocale(pathname: string): { locale: string; barePath: string } {
   const segments = pathname.split("/").filter(Boolean);
   const first = segments[0];
-  if (isLocale(first)) {
+  // Use isRouteLocale (en/zh/es/pt/fr/ja/de/zh-Hant), NOT isLocale (en/zh only):
+  // isLocale treated /de, /ja, /es… as bare slugs, so de's locale was lost and
+  // localizeHref dropped the /de prefix → sidebar links broke out of the locale.
+  if (isRouteLocale(first)) {
     const bare = "/" + segments.slice(1).join("/") || "/";
     return { locale: first, barePath: bare };
   }
@@ -45,6 +48,59 @@ const toolGroups: ToolGroup[] = [
   ]},
 ];
 
+// German is a first-class locale here. The sidebar's group labels + item names
+// are authored in English for the structure above; for `de` we overlay native,
+// formal-Sie German keyed by href (and by group label), mirroring the tone
+// already shipped in localized-tools.ts deTools (e.g. breadcrumbName "PDF
+// komprimieren", "PDF schützen", "OCR-PDF"). Brand/tech stay verbatim
+// (DockDocs, PDF, OCR, KI). Other non-en locales (zh/es/pt/fr/ja/zh-Hant) have
+// no authored sidebar copy and intentionally keep the English labels — that is
+// the pre-existing all-locale state, out of scope of the de-specific audit.
+const DE_GROUP_LABELS: Record<string, string> = {
+  AI: "KI",
+  Convert: "Konvertieren",
+  Organize: "Organisieren",
+  Security: "Sicherheit",
+};
+
+// Keyed by href so the German label tracks the route, not the English string.
+// Values are taken verbatim from deTools breadcrumbName where one exists; the
+// two KI-workspace tools (chat-with-pdf, ai-summary) have no deTools entry, so
+// their German is authored here in the same formal-Sie tone.
+const DE_ITEM_NAMES: Record<string, string> = {
+  "/chat-with-pdf": "Mit PDF chatten",
+  "/ai-summary": "KI-Zusammenfassung",
+  "/ocr-pdf": "OCR-PDF",
+  "/word-to-pdf": "Word in PDF",
+  "/pdf-to-word": "PDF in Word",
+  "/excel-to-pdf": "Excel in PDF",
+  "/pdf-to-excel": "PDF in Excel",
+  "/ppt-to-pdf": "PPT in PDF",
+  "/jpg-to-pdf": "JPG in PDF",
+  "/png-to-pdf": "PNG in PDF",
+  "/pdf-to-jpg": "PDF in JPG",
+  "/pdf-to-png": "PDF in PNG",
+  "/pdf-to-markdown": "PDF in Markdown",
+  "/merge-pdf": "PDF zusammenfügen",
+  "/split-pdf": "PDF teilen",
+  "/compress-pdf": "PDF komprimieren",
+  "/delete-page": "Seiten löschen",
+  "/rotate-page": "Seiten drehen",
+  "/reorder-pages": "Seiten neu anordnen",
+  "/add-page": "Seiten einfügen",
+  "/protect-pdf": "PDF schützen",
+};
+
+function localizeGroupLabel(label: string, locale: string): string {
+  if (locale === "de") return DE_GROUP_LABELS[label] ?? label;
+  return label;
+}
+
+function localizeItemName(name: string, href: string, locale: string): string {
+  if (locale === "de") return DE_ITEM_NAMES[href] ?? name;
+  return name;
+}
+
 export function SidebarNav() {
   const pathname = usePathname();
   const { locale, barePath } = stripLocale(pathname ?? "/");
@@ -57,14 +113,14 @@ export function SidebarNav() {
       <nav className="sticky top-[57px] max-h-[calc(100vh-57px)] overflow-y-auto px-3 py-4">
         {toolGroups.map((group) => (
           <div key={group.label} className="mb-5">
-            <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">{group.label}</p>
+            <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">{localizeGroupLabel(group.label, locale)}</p>
             <ul className="space-y-0.5">
               {group.items.map((item) => {
                 const isActive = barePath === item.href;
                 return (
                   <li key={item.href}>
                     <a href={localizeHref(item.href, locale)} className={`block rounded-[var(--radius-sm)] px-2 py-1.5 text-[13px] font-medium transition ${isActive ? "bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]" : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"}`}>
-                      {item.name}
+                      {localizeItemName(item.name, item.href, locale)}
                     </a>
                   </li>
                 );

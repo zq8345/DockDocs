@@ -6,7 +6,7 @@
 import { navCategories } from "@/components/Header";
 import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
 type Item = { name: string; slug: string };
 
 const PAGES: Record<Exclude<Locale, "zh-Hant">, { label: string; items: [string, string][] }> = {
@@ -16,6 +16,7 @@ const PAGES: Record<Exclude<Locale, "zh-Hant">, { label: string; items: [string,
   pt: { label: "Páginas", items: [["Início", "/"], ["Sobre", "/about"], ["Preços", "/pricing"], ["Blog", "/blog"], ["Guias", "/guides"], ["Recursos", "/resources"], ["Privacidade", "/privacy-policy"], ["Termos", "/terms"]] },
   fr: { label: "Pages", items: [["Accueil", "/"], ["À propos", "/about"], ["Tarifs", "/pricing"], ["Blog", "/blog"], ["Guides", "/guides"], ["Ressources", "/resources"], ["Confidentialité", "/privacy-policy"], ["Conditions", "/terms"]] },
   ja: { label: "ページ", items: [["ホーム", "/"], ["概要", "/about"], ["料金", "/pricing"], ["ブログ", "/blog"], ["ガイド", "/guides"], ["リソース", "/resources"], ["プライバシー", "/privacy-policy"], ["利用規約", "/terms"]] },
+  de: { label: "Seiten", items: [["Startseite", "/"], ["Über uns", "/about"], ["Preise", "/pricing"], ["Blog", "/blog"], ["Anleitungen", "/guides"], ["Ressourcen", "/resources"], ["Datenschutz", "/privacy-policy"], ["AGB", "/terms"]] },
 };
 
 function flatItems(cat: { cols: { items: Item[] }[] }): Item[] {
@@ -32,8 +33,13 @@ export function SitemapContent({ locale = "en" }: { locale?: Locale }) {
   const pt = locale === "pt";
   const fr = locale === "fr";
   const ja = locale === "ja";
-  const cats = (hant ? deepHant(navCategories.zh) : (navCategories[locale] ?? navCategories.en)).slice(0, 4);
-  const path = (slug: string) => (hant ? `/zh-Hant${slug}` : zh ? `/zh${slug}` : es ? `/es${slug}` : pt ? `/pt${slug}` : fr ? `/fr${slug}` : ja ? `/ja${slug}` : slug);
+  const de = locale === "de";
+  // navCategories has no `de` key yet → tool names fall back to English (deliberate
+  // de→en GAP, same policy as toLeafLocale; revisit if/when navCategories.de ships).
+  // `de`/`zh-Hant` are not keys of navCategories, so narrow to a valid key first.
+  const navKey = locale as keyof typeof navCategories;
+  const cats = (hant ? deepHant(navCategories.zh) : (navCategories[navKey] ?? navCategories.en)).slice(0, 4);
+  const path = (slug: string) => (hant ? `/zh-Hant${slug}` : zh ? `/zh${slug}` : es ? `/es${slug}` : pt ? `/pt${slug}` : fr ? `/fr${slug}` : ja ? `/ja${slug}` : de ? `/de${slug}` : slug);
   const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh || ja ? "" : "uppercase tracking-[0.08em]"}`;
   const link = "text-[14px] text-[color:var(--muted)] transition hover:text-[color:var(--accent-strong)]";
   const pages = hant ? deepHant(PAGES.zh) : (PAGES[locale] ?? PAGES.en);

@@ -248,6 +248,31 @@ function toLeafLocale(locale: ClientLocale): LeafLocale {
   }
 }
 
+// BlogLocale: the locale the blog frame (BlogPages.tsx) renders chrome + GEO copy
+// in. Authored in en/zh/de; the article BODY is en/zh only (lib/blog.ts), so de
+// shows German chrome over an English body. es/pt/fr/ja have no blog chrome yet →
+// English (preserves the prior uiLocale behaviour). zh-Hant derives from zh.
+// Exhaustive over RouteLocale so a new locale forces an explicit decision.
+type BlogLocale = "en" | "zh" | "zh-Hant" | "de";
+function toBlogLocale(locale: RouteLocale): BlogLocale {
+  switch (locale) {
+    case "zh":
+    case "zh-Hant":
+    case "de":
+      return locale;
+    case "en":
+    case "es":
+    case "pt":
+    case "fr":
+    case "ja":
+      return "en";
+    default: {
+      const _exhaustive: never = locale;
+      return _exhaustive;
+    }
+  }
+}
+
 // 这些工具尚未实现(原本会下载空文件)，改为"即将推出"占位，en 主路径见各自 app/<slug>/page.tsx。
 const COMING_SOON_TOOLS: Record<string, { en: string; zh: string }> = {
   "edit-pdf": { en: "Edit PDF", zh: "编辑 PDF" },
@@ -960,6 +985,26 @@ const CUSTOM_TOOL_COPY: Record<string, {
       ja: "DockDocsにGoogle・Microsoft・メールでサインイン。ワークスペースとサブスクリプションを管理します。",
       de: "Melden Sie sich bei DockDocs mit Google, Microsoft oder E-Mail an. Verwalten Sie Ihren Arbeitsbereich und Ihr Abonnement.",
       en: "Sign in to DockDocs with Google, Microsoft, or email. Manage your workspace and billing.",
+    },
+  },
+  "pdf-to-image": {
+    title: {
+      zh: "PDF 转图片 — PDF 转 JPG 或 PNG",
+      es: "PDF a imagen — Convertir PDF a JPG y PNG",
+      pt: "PDF para imagem — Converter PDF em JPG e PNG",
+      fr: "PDF en image — Convertir PDF en JPG et PNG",
+      ja: "PDFを画像に変換 — PDFをJPG・PNGに",
+      de: "PDF in Bild — PDF in JPG oder PNG umwandeln",
+      en: "PDF to Image — Convert PDF to JPG & PNG",
+    },
+    description: {
+      zh: "在浏览器里把 PDF 页面转成 JPG 或 PNG 图片：选页、选格式、下载，文件不离开你的设备。",
+      es: "Convierte páginas PDF a imágenes JPG o PNG en línea gratis. Elige las páginas, el formato y descarga — todo en tu navegador.",
+      pt: "Converta páginas PDF em imagens JPG ou PNG online gratuitamente. Escolha as páginas, o formato e baixe — tudo no seu navegador.",
+      fr: "Convertissez des pages PDF en images JPG ou PNG en ligne gratuitement. Choisissez les pages, le format et téléchargez — tout dans votre navigateur.",
+      ja: "PDFのページをオンラインで無料でJPGまたはPNG画像に変換。ページと形式を選んでダウンロード—すべてブラウザ内で完結。",
+      de: "Wandeln Sie PDF-Seiten kostenlos online in JPG- oder PNG-Bilder um. Seiten und Format wählen und herunterladen — alles in Ihrem Browser.",
+      en: "Convert PDF pages to JPG or PNG images online for free. Pick the pages, choose the format, and download — all in your browser.",
     },
   },
   "images-to-pdf": {
@@ -1919,48 +1964,9 @@ async function generateMetadataInner({
     };
   }
 
-  if (slug === "pdf-to-image") {
-    const title =
-      rawLocale === "zh" ? "PDF 转图片 — PDF 转 JPG 或 PNG"
-      : rawLocale === "es" ? "PDF a imagen — Convertir PDF a JPG y PNG"
-      : rawLocale === "pt" ? "PDF para imagem — Converter PDF em JPG e PNG"
-      : rawLocale === "fr" ? "PDF en image — Convertir PDF en JPG et PNG"
-      : "PDF to Image — Convert PDF to JPG & PNG";
-    const desc =
-      rawLocale === "zh"
-        ? "在浏览器里把 PDF 页面转成 JPG 或 PNG 图片：选页、选格式、下载，文件不离开你的设备。"
-        : rawLocale === "es"
-        ? "Convierte páginas PDF a imágenes JPG o PNG en línea gratis. Elige las páginas, el formato y descarga — todo en tu navegador."
-        : rawLocale === "pt"
-        ? "Converta páginas PDF em imagens JPG ou PNG online gratuitamente. Escolha as páginas, o formato e baixe — tudo no seu navegador."
-        : rawLocale === "fr"
-        ? "Convertissez des pages PDF en images JPG ou PNG en ligne gratuitement. Choisissez les pages, le format et téléchargez — tout dans votre navigateur."
-        : "Convert PDF pages to JPG or PNG images online for free. Pick the pages, choose the format, and download — all in your browser.";
-    return createLocalizedMetadata(rawLocale, "pdf-to-image", title, desc);
-  }
-
-  if (slug === "images-to-pdf") {
-    return createLocalizedMetadata(
-      rawLocale,
-      "images-to-pdf",
-      m(
-        "Image to PDF — JPG, PNG & WebP to PDF",
-        "图片转 PDF — JPG/PNG/WebP 转 PDF",
-        "Imagen a PDF — JPG, PNG y WebP a PDF",
-        "Imagem para PDF — JPG, PNG e WebP para PDF",
-        "Image en PDF — JPG, PNG et WebP en PDF",
-        "画像をPDFに — JPG・PNG・WebPをPDFに変換",
-      ),
-      m(
-        "Convert JPG, PNG, WebP, GIF or BMP images to PDF online for free. Drag to order and combine into one PDF — all in your browser.",
-        "把 JPG、PNG、WebP、GIF、BMP 图片合并成一个 PDF，每张一页，全程在浏览器完成。",
-        "Convierte imágenes JPG, PNG, WebP, GIF o BMP en PDF en línea gratis. Arrastra para ordenar y combina en un solo PDF, todo en tu navegador.",
-        "Converta imagens JPG, PNG, WebP, GIF ou BMP em PDF online grátis. Arraste para ordenar e combine em um único PDF, tudo no seu navegador.",
-        "Convertissez des images JPG, PNG, WebP, GIF ou BMP en PDF en ligne gratuitement. Glissez pour ordonner et combinez en un seul PDF, tout dans votre navigateur.",
-        "JPG・PNG・WebP・GIF・BMP画像を無料でオンラインでPDFに変換。ドラッグで並べ替えて1つのPDFにまとめます。すべてブラウザ内で完結。",
-      ),
-    );
-  }
+  // pdf-to-image + images-to-pdf metadata is handled above by the CUSTOM_TOOL_COPY
+  // early-return (resolveCustomCopyField gives native de + es/pt/fr/ja/zh), so no
+  // per-slug metadata block is needed here.
 
   if ((toolSlugs as readonly string[]).includes(slug)) {
     return createPdfToolMetadata(
@@ -2054,10 +2060,13 @@ export default async function LocalizedRoute({
       notFound();
     }
 
+    // Article body is en/zh (lib/blog.ts); chrome/GEO add de. zh-Hant collapses
+    // to zh here (BlogArticlePage renders the zh chrome over the zh body).
+    const blogLocale = toBlogLocale(rawLocale);
     return (
       <BlogArticlePage
         article={article}
-        locale={uiLocale}
+        locale={blogLocale === "zh-Hant" ? "zh" : blogLocale}
         useLocalePrefix
       />
     );
@@ -2357,9 +2366,10 @@ export default async function LocalizedRoute({
   if ((infoPageSlugs as readonly string[]).includes(slug)) {
     if (slug === "blog") {
       // zh-Hant: BlogIndexPage derives Traditional copy from zh internally.
+      // de: German chrome over an English index body (lib/blog.ts is en/zh only).
       return (
         <BlogIndexPage
-          locale={rawLocale === "zh-Hant" ? "zh-Hant" : uiLocale}
+          locale={toBlogLocale(rawLocale)}
           useLocalePrefix
         />
       );
@@ -2369,7 +2379,9 @@ export default async function LocalizedRoute({
       return (
         <>
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema(uiLocale)) }} />
-          <AboutPage locale={toLeafLocale(clientLocale)} />
+          {/* AboutPage authors de copy → pass clientLocale (de preserved), not
+              toLeafLocale which maps de→en for the still-English leaf surfaces. */}
+          <AboutPage locale={clientLocale} />
         </>
       );
     }
@@ -2378,7 +2390,10 @@ export default async function LocalizedRoute({
     return (
       <>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(uiLocale, slug, infoPage.title)) }} />
-        <SaasInfoPage page={infoPage} locale={toLeafLocale(clientLocale)} useLocalePrefix />
+        {/* SaasInfoPage authors de chrome (Continue-exploring / crawl links) and
+            getInfoPage returns the de body → pass clientLocale (de preserved), not
+            toLeafLocale which maps de→en for the still-English leaf surfaces. */}
+        <SaasInfoPage page={infoPage} locale={clientLocale} useLocalePrefix />
       </>
     );
   }
@@ -2615,7 +2630,9 @@ function LocalizedPricing({ locale }: { locale: ClientLocale }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(toEnZhLocale(locale))) }} />
-      <PricingPlans locale={toAccountLocale(locale)} />
+      {/* PricingPlans authors de copy (billing plumbing falls back to en) →
+          pass clientLocale (de + zh-Hant preserved), not toAccountLocale (de→en). */}
+      <PricingPlans locale={locale} />
     </>
   );
 }
@@ -2729,14 +2746,14 @@ const localizedTools = [
 ] as const;
 
 function LocalizedHome({ locale }: { locale: ClientLocale }) {
-  // ja now ships natively (homeSchema localizes Organization/WebSite/FAQ for ja),
-  // so the JSON-LD matches the Japanese page Google sees. Home.tsx has no de branch
-  // yet → the visible homepage renders in English on /de (GAP); homeSchema takes a
-  // plain string and localizes de metadata where homeCopy.de exists.
+  // ja + de now ship natively: Home.tsx authors de copy for every section, so the
+  // visible homepage renders in German on /de (pass clientLocale through, NOT
+  // toLeafLocale which maps de→en for the still-English leaf surfaces). homeSchema
+  // takes a plain string and localizes de metadata where homeCopy.de exists.
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema(locale)) }} />
-      <HomeSections locale={toLeafLocale(locale)} />
+      <HomeSections locale={locale} />
     </main>
   );
 }
@@ -2898,7 +2915,7 @@ function LocalizedAiWorkspace({ locale }: { locale: ClientLocale }) {
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <ButtonLink href={localizedPath(locale, "")}>
-              {locale === "zh" ? "进入文档工作区" : locale === "zh-Hant" ? toHant("进入文档工作区") : locale === "es" ? "Explorar herramientas PDF" : locale === "pt" ? "Explorar ferramentas PDF" : locale === "fr" ? "Parcourir les outils PDF" : locale === "ja" ? "PDFツールを見る" : "Browse PDF tools"}
+              {locale === "zh" ? "进入文档工作区" : locale === "zh-Hant" ? toHant("进入文档工作区") : locale === "es" ? "Explorar herramientas PDF" : locale === "pt" ? "Explorar ferramentas PDF" : locale === "fr" ? "Parcourir les outils PDF" : locale === "ja" ? "PDFツールを見る" : locale === "de" ? "PDF-Tools durchsuchen" : "Browse PDF tools"}
             </ButtonLink>
             <ButtonLink href={localizedPath(locale, "ocr-pdf")} variant="outline">
               OCR PDF
@@ -2976,7 +2993,7 @@ function LocalizedSitemap({ locale }: { locale: ClientLocale }) {
   const contentLocale: Locale = locale === "zh" || hant ? "zh" : "en";
   const groups = [
     {
-      title: locale === "zh" || hant ? h("博客指南") : locale === "es" ? "Guías del blog" : locale === "pt" ? "Guias do blog" : locale === "fr" ? "Guides du blog" : locale === "ja" ? "ブログガイド" : "Blog Guides",
+      title: locale === "zh" || hant ? h("博客指南") : locale === "es" ? "Guías del blog" : locale === "pt" ? "Guias do blog" : locale === "fr" ? "Guides du blog" : locale === "ja" ? "ブログガイド" : locale === "de" ? "Blog-Anleitungen" : "Blog Guides",
       links: blogArticles.map((article) => ({
         name: h(getBlogArticleContent(article, contentLocale).title),
         href: blogArticlePath(
@@ -2986,7 +3003,7 @@ function LocalizedSitemap({ locale }: { locale: ClientLocale }) {
       })),
     },
     {
-      title: locale === "zh" || hant ? h("GEO 指南页") : locale === "es" ? "Guías GEO programáticas" : locale === "pt" ? "Guias GEO programáticos" : locale === "fr" ? "Guides GEO programmatiques" : locale === "ja" ? "GEO ガイドページ" : "Programmatic GEO Guides",
+      title: locale === "zh" || hant ? h("GEO 指南页") : locale === "es" ? "Guías GEO programáticas" : locale === "pt" ? "Guias GEO programáticos" : locale === "fr" ? "Guides GEO programmatiques" : locale === "ja" ? "GEO ガイドページ" : locale === "de" ? "Programmatische GEO-Anleitungen" : "Programmatic GEO Guides",
       links: getProgrammaticGeoPageSeeds("guides").map((seed) => {
         const page = getProgrammaticGeoPage(contentLocale, seed.surface, seed.slug);
         return {
@@ -3000,7 +3017,7 @@ function LocalizedSitemap({ locale }: { locale: ClientLocale }) {
       }),
     },
     {
-      title: locale === "zh" || hant ? h("GEO 资源页") : locale === "es" ? "Recursos GEO programáticos" : locale === "pt" ? "Recursos GEO programáticos" : locale === "fr" ? "Ressources GEO programmatiques" : locale === "ja" ? "GEO リソースページ" : "Programmatic GEO Resources",
+      title: locale === "zh" || hant ? h("GEO 资源页") : locale === "es" ? "Recursos GEO programáticos" : locale === "pt" ? "Recursos GEO programáticos" : locale === "fr" ? "Ressources GEO programmatiques" : locale === "ja" ? "GEO リソースページ" : locale === "de" ? "Programmatische GEO-Ressourcen" : "Programmatic GEO Resources",
       links: getProgrammaticGeoPageSeeds("resources").map((seed) => {
         const page = getProgrammaticGeoPage(contentLocale, seed.surface, seed.slug);
         return {
@@ -3014,7 +3031,7 @@ function LocalizedSitemap({ locale }: { locale: ClientLocale }) {
       }),
     },
     {
-      title: locale === "zh" || hant ? h("GEO 资源中心") : locale === "es" ? "Centros GEO" : locale === "pt" ? "Centros GEO" : locale === "fr" ? "Hubs GEO" : locale === "ja" ? "GEO ハブ" : "GEO Hubs",
+      title: locale === "zh" || hant ? h("GEO 资源中心") : locale === "es" ? "Centros GEO" : locale === "pt" ? "Centros GEO" : locale === "fr" ? "Hubs GEO" : locale === "ja" ? "GEO ハブ" : locale === "de" ? "GEO-Hubs" : "GEO Hubs",
       links: (geoPageSlugs as readonly GeoPageSlug[]).map((geoSlug) => {
         const hub = getGeoHub(toGeoLocale(locale), geoSlug);
         return {
@@ -3029,7 +3046,7 @@ function LocalizedSitemap({ locale }: { locale: ClientLocale }) {
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
         <Container className="py-16">
-          <p className="font-mono text-[12px] text-[color:var(--faint)]">// {locale === "zh" || hant ? h("站点地图") : locale === "es" ? "mapa del sitio" : locale === "pt" ? "mapa do site" : locale === "fr" ? "plan du site" : locale === "ja" ? "サイトマップ" : "Sitemap"}</p>
+          <p className="font-mono text-[12px] text-[color:var(--faint)]">// {locale === "zh" || hant ? h("站点地图") : locale === "es" ? "mapa del sitio" : locale === "pt" ? "mapa do site" : locale === "fr" ? "plan du site" : locale === "ja" ? "サイトマップ" : locale === "de" ? "Sitemap" : "Sitemap"}</p>
           <h1 className="mt-4 max-w-4xl break-words text-[34px] font-normal tracking-[-0.025em] sm:text-[48px]">
             {copy.heading}
           </h1>

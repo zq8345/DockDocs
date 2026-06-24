@@ -6,7 +6,7 @@ import { navCategories } from "@/components/Header";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import { Figure, SHELL, H2, SUB, CAP, PANEL, eyebrowCls } from "@/components/design";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
 type Item = { name: string; slug: string };
 
 const COPY = {
@@ -250,6 +250,46 @@ const COPY = {
     cite: "原文",
     figCaption: "図 0.1 — AIが回答するとき、その根拠となる原文を示し——たどれない箇所は正直に明示します。ワンクリックで確認。",
   },
+  de: {
+    eyebrow: "// Private, überprüfbare Dokument-KI",
+    heroA: "Jedes Dokument lesen.",
+    heroB: "Jede Antwort überprüfen.",
+    heroSub: "~50 PDF-Tools, die meisten laufen in Ihrem Browser, dazu eine KI, die Ihre Dokumente liest, vergleicht und Daten extrahiert — und die Quellstelle hinter dem zeigt, was sie findet.",
+    primary: "Kostenlos nutzen",
+    secondary: "So funktioniert der Datenschutz",
+    proof: [{ t: "Die meisten Tools laufen in Ihrem Browser" }, { g: "0", t: " Uploads im Browser" }, { t: "Die KI zeigt ihre Quelle — oder sagt, wenn sie es nicht kann" }, { t: "Keine Anmeldung" }],
+    findEyebrow: "// Finden Sie Ihr Tool",
+    findHeading: "Wählen Sie ein Tool. Starten Sie mit einem Klick.",
+    capSub: "Rund 50 PDF-Tools an einem Ort — konvertieren, ordnen, signieren, schwärzen, OCR — die meisten laufen lokal in Ihrem Browser.",
+    searchPlaceholder: "~50 Tools durchsuchen — komprimieren, zusammenführen, signieren…",
+    searchNoResults: "Kein Tool passt dazu — versuchen Sie ein anderes Wort oder sehen Sie alle an.",
+    fig2Caption: "Abb. 0.2 — ~50 Tools, vier Wege hinein.",
+    aiEyebrow: "// Belegbare KI",
+    aiHeading: "Eine KI, die ihre Arbeit zeigt.",
+    aiSub: "Fragen Sie jedes Dokument; wenn die KI antwortet oder einen Befund markiert, zeigt sie die genaue Stelle, die ihn stützt — und sagt Ihnen, wenn sich etwas nicht zurückverfolgen lässt, statt eine Quelle zu erfinden. Vergleichen, extrahieren, zusammenfassen.",
+    aiCta: "Mit einem PDF chatten",
+    aiChips: ["Vergleichen", "Nach Excel extrahieren", "Zusammenfassen", "In 18 Sprachen übersetzen"],
+    fig3Caption: "Abb. 0.3 — eine belegte Antwort, zurückverfolgt bis zur genauen Stelle.",
+    jobsEyebrow: "// Was es für Sie erledigt",
+    jobsHeading: "Minuten statt Stunden.",
+    fig4Caption: "Abb. 0.4 — vier alltägliche Aufgaben, Minuten statt Stunden.",
+    browseAll: "Alle Tools durchsuchen",
+    more: (n: number) => `und ${n} weitere`,
+    tools: "Tools",
+    ctaEyebrow: "// Ausprobieren",
+    ctaHeadA: "Jedes Dokument lesen.",
+    ctaHeadB: "Jede Antwort überprüfen.",
+    ctaSub: "~50 Tools, eine KI, die ihre Quelle nennt, wenn sie kann, und Browser-Tools, die nichts hochladen. Kostenlos starten — ohne Anmeldung.",
+    viewPricing: "Preise ansehen",
+    qaQuestion: "Wie stark ist der Umsatz im 3. Quartal gewachsen?",
+    qaGrounded: "Belegte Antwort",
+    qaAnswer: "Der Umsatz im 3. Quartal wuchs um 23 % gegenüber dem Vorjahr, vor allem getrieben von APAC.",
+    qaSourcesLabel: "Quellen",
+    qaSnippets: ["Umsatz +23 % gg. Vorjahr", "APAC als Haupttreiber"],
+    aiSummary: "KI-Zusammenfassung",
+    cite: "Quelle",
+    figCaption: "Abb. 0.1 — wenn die KI antwortet, zeigt sie die Stelle dahinter — und markiert, was sie nicht zurückverfolgen kann. Mit einem Klick überprüfen.",
+  },
 } as const;
 
 // category icons (nav order: 0 PDF · 1 Batch · 2 AI · 3 Profession)
@@ -340,11 +380,11 @@ function MiniExtract({ label, locale }: { label: string; locale: Locale }) {
   const hant = locale === "zh-Hant";
   const h = (s: string) => (hant ? toHant(s) : s);
   const lines = [
-    locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : "Revenue +23% YoY",
-    locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : "APAC is the main driver",
-    locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : "Gross margin 41%",
+    locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : locale === "de" ? "Umsatz +23 % gg. Vorjahr" : "Revenue +23% YoY",
+    locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : locale === "de" ? "APAC ist der Haupttreiber" : "APAC is the main driver",
+    locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : locale === "de" ? "Bruttomarge 41 % (↑3 pp)" : "Gross margin 41%",
   ];
-  const citeLabel = locale === "zh" || hant ? h("已溯源") : locale === "es" ? "citado" : locale === "pt" ? "citado" : locale === "fr" ? "cité" : locale === "ja" ? "引用済み" : "cited";
+  const citeLabel = locale === "zh" || hant ? h("已溯源") : locale === "es" ? "citado" : locale === "pt" ? "citado" : locale === "fr" ? "cité" : locale === "ja" ? "引用済み" : locale === "de" ? "belegt" : "cited";
   return (
     <div className="flex items-center gap-2.5" onMouseEnter={start} onMouseLeave={stop}>
       <div className="relative flex h-16 w-12 flex-col gap-1 overflow-hidden rounded-md border border-[color:var(--line)] p-1.5">
@@ -432,28 +472,32 @@ const SCENARIOS = [
     es: ["Compara presupuestos, elige el mejor", "3 archivos a una hoja · ~1 h", "una elección basada en los datos · 1 min"],
     pt: ["Compare orçamentos, escolha o melhor", "3 arquivos em uma planilha · ~1h", "uma escolha baseada nos dados · 1 min"],
     fr: ["Comparez des devis, choisissez le meilleur", "3 fichiers dans un tableau · ~1h", "un choix fondé sur les chiffres · 1 min"],
-    ja: ["見積もりを比較し、最適を選ぶ", "3ファイルを表に書き写す · 約1時間", "数値に基づく選定 · 1分"] },
+    ja: ["見積もりを比較し、最適を選ぶ", "3ファイルを表に書き写す · 約1時間", "数値に基づく選定 · 1分"],
+    de: ["Angebote vergleichen, das beste wählen", "3 Dateien in eine Tabelle · ~1 Std.", "eine datenbasierte Wahl · 1 Min."] },
   { icon: <path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM13 3v4h4M8.5 14l2 2 4-4" />, href: "/redline",
     en: ["Catch the traps in a contract", "a lawyer, or sign blind", "AI flags risky & missing clauses"],
     zh: ["看穿合同里的坑", "花钱找律师，或盲签踩坑", "AI 标出风险与缺失条款"],
     es: ["Detecta las trampas de un contrato", "un abogado, o firmar a ciegas", "la IA señala cláusulas de riesgo y ausentes"],
     pt: ["Detecte as armadilhas de um contrato", "um advogado, ou assinar às cegas", "a IA sinaliza cláusulas de risco e ausentes"],
     fr: ["Repérez les pièges d'un contrat", "un juriste, ou signer en aveugle", "l'IA signale les clauses à risque et manquantes"],
-    ja: ["契約書の落とし穴を見抜く", "弁護士に頼むか、よく見ずに署名", "AIがリスク条項と欠落を指摘"] },
+    ja: ["契約書の落とし穴を見抜く", "弁護士に頼むか、よく見ずに署名", "AIがリスク条項と欠落を指摘"],
+    de: ["Die Fallen in einem Vertrag erkennen", "einen Anwalt zahlen oder blind unterschreiben", "die KI markiert riskante und fehlende Klauseln"] },
   { icon: <path d="M4 7l8-4 8 4-8 4-8-4ZM4 12l8 4 8-4M4 17l8 4 8-4" />, href: "/batch-extract-sheet",
     en: ["Process a batch of invoices", "key them in one by one · hours", "drop the batch → auto-extract"],
     zh: ["批量处理发票", "一张张录入 · 几小时", "整批丢进去 → 自动抽取"],
     es: ["Procesa un lote de facturas", "teclearlas una a una · horas", "suelta el lote → extracción automática"],
     pt: ["Processe um lote de faturas", "digitá-las uma a uma · horas", "solte o lote → extração automática"],
     fr: ["Traitez un lot de factures", "les saisir une par une · des heures", "déposez le lot → extraction automatique"],
-    ja: ["請求書をまとめて処理", "1枚ずつ手入力 · 数時間", "まとめて投入 → 自動抽出"] },
+    ja: ["請求書をまとめて処理", "1枚ずつ手入力 · 数時間", "まとめて投入 → 自動抽出"],
+    de: ["Einen Stapel Rechnungen verarbeiten", "einzeln abtippen · Stunden", "den Stapel ablegen → automatische Extraktion"] },
   { icon: <path d="M5 4h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5zM8.5 9h6M8.5 13h6" />, href: "/chat-with-pdf",
     en: ["Understand a long report fast", "read 80 pages for a few answers", "ask it → answers you can trace · 30s"],
     zh: ["快速读懂长报告", "读 80 页找几个答案", "问它 → 30 秒可追溯的答案"],
     es: ["Entiende un informe largo rápido", "leer 80 páginas por unas respuestas", "pregúntale → respuestas que puedes rastrear · 30 s"],
     pt: ["Entenda um relatório longo rápido", "ler 80 páginas por algumas respostas", "pergunte → respostas que você pode rastrear · 30s"],
     fr: ["Comprendre un long rapport rapidement", "lire 80 pages pour quelques réponses", "interrogez-le → des réponses traçables · 30s"],
-    ja: ["長い報告書を素早く理解", "数個の答えのために80ページ読む", "質問する → 追跡できる回答 · 30秒"] },
+    ja: ["長い報告書を素早く理解", "数個の答えのために80ページ読む", "質問する → 追跡できる回答 · 30秒"],
+    de: ["Einen langen Bericht schnell verstehen", "80 Seiten für ein paar Antworten lesen", "fragen Sie ihn → nachvollziehbare Antworten · 30 Sek."] },
 ];
 
 export function Home({ locale = "en" }: { locale?: Locale }) {
@@ -463,8 +507,11 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
   const zh = locale === "zh" || locale === "ja" || hant;
   const h = (s: string) => (hant ? toHant(s) : s);
   const c = hant ? deepHant(COPY.zh) : (COPY[locale] ?? COPY.en);
-  const cats = (hant ? deepHant(navCategories.zh) : (navCategories[locale] ?? navCategories.en)).slice(0, 4);
-  const path = (slug: string) => (hant ? `/zh-Hant${slug}` : locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : slug);
+  // navCategories (Header.tsx) has no de/zh-Hant nav menu yet → those locales
+  // fall back to the English menu via `?? navCategories.en`. Cast the index so
+  // the de key (valid in Home's local Locale) doesn't trip the narrower Record.
+  const cats = (hant ? deepHant(navCategories.zh) : (navCategories[locale as keyof typeof navCategories] ?? navCategories.en)).slice(0, 4);
+  const path = (slug: string) => (hant ? `/zh-Hant${slug}` : locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : locale === "de" ? `/de${slug}` : slug);
 
   // ── real client-side tool search over the full flatItems set across all 4 cats ──
   const heroReveal = useLineReveal(3);
@@ -561,10 +608,10 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
                 <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
                 <div className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--foreground)]">
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                  <span className={`tw-line min-w-0 ${heroReveal.lineCls(0)}`}>{locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : "Revenue +23% YoY"}</span>
+                  <span className={`tw-line min-w-0 ${heroReveal.lineCls(0)}`}>{locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : locale === "de" ? "Umsatz +23 % gg. Vorjahr" : "Revenue +23% YoY"}</span>
                   <span className={`tw-pill ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)] ${heroReveal.lineCls(0)}`}>{c.cite}</span>
                 </div>
-                {[locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : "APAC is the main driver", locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : "Gross margin 41% (↑3pt)"].map((b, i) => (
+                {[locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : locale === "de" ? "APAC ist der Haupttreiber" : "APAC is the main driver", locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : locale === "de" ? "Bruttomarge 41 % (↑3 pp)" : "Gross margin 41% (↑3pt)"].map((b, i) => (
                   <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--muted)] last:mb-0">
                     <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" /><span className={`tw-line ${heroReveal.lineCls(i + 1)}`}>{b}</span>
                   </div>

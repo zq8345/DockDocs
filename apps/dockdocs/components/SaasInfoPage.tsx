@@ -8,7 +8,7 @@ import { deepHant, toHant } from "@/lib/zh-hant";
 
 type SaasInfoPageProps = {
   page: InfoPageData;
-  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+  locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
   useLocalePrefix?: boolean;
 };
 
@@ -24,6 +24,7 @@ export function SaasInfoPage({
   const ja = locale === "ja";
   const es = locale === "es";
   const pt = locale === "pt";
+  const de = locale === "de";
   const zhT = (s: string) => (hant ? toHant(s) : s);
 
   // zh links (Simplified); for zh-Hant we run the same array through deepHant.
@@ -62,6 +63,13 @@ export function SaasInfoPage({
         { label: "Recursos", href: "/resources", description: "Explore recursos de PDF, OCR e conversão." },
         { label: "Guias", href: "/guides", description: "Guias passo a passo de compressão, junção e conversão." },
         { label: "FAQ", href: "/faq", description: "Veja perguntas sobre privacidade, envio, OCR e IA." },
+      ]
+    : de
+    ? [
+        { label: "PDF-Tools", href: "/", description: "Zurück zur DockDocs-Startseite." },
+        { label: "Ressourcen", href: "/resources", description: "PDF-, OCR- und Konvertierungsressourcen durchsuchen." },
+        { label: "Anleitungen", href: "/guides", description: "Schritt-für-Schritt-Anleitungen zu Komprimierung, Zusammenführung und Konvertierung." },
+        { label: "FAQ", href: "/faq", description: "Fragen zu Datenschutz, Upload, OCR und KI ansehen." },
       ]
     : [
         { label: "PDF Tools", href: "/", description: "Return to the DockDocs homepage." },
@@ -177,10 +185,10 @@ export function SaasInfoPage({
       <section className="bg-[color:var(--surface-subtle)]">
         <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-            {zh ? zhT("继续探索") : fr ? "Continuer à explorer" : ja ? "さらに探す" : es ? "Seguir explorando" : pt ? "Continuar explorando" : "Continue exploring"}
+            {zh ? zhT("继续探索") : fr ? "Continuer à explorer" : ja ? "さらに探す" : es ? "Seguir explorando" : pt ? "Continuar explorando" : de ? "Weiter entdecken" : "Continue exploring"}
           </p>
           <h2 className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
-            {zh ? zhT("相关工具、指南和支持") : fr ? "Outils, guides et assistance connexes" : ja ? "関連ツール・ガイド・サポート" : es ? "Herramientas, guías y soporte relacionados" : pt ? "Ferramentas, guias e suporte relacionados" : "Related tools, guides, and support"}
+            {zh ? zhT("相关工具、指南和支持") : fr ? "Outils, guides et assistance connexes" : ja ? "関連ツール・ガイド・サポート" : es ? "Herramientas, guías y soporte relacionados" : pt ? "Ferramentas, guias e suporte relacionados" : de ? "Verwandte Tools, Anleitungen und Support" : "Related tools, guides, and support"}
           </h2>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {crawlLinks.map((link) => (
@@ -192,7 +200,7 @@ export function SaasInfoPage({
                 <h3 className="text-[15px] font-semibold text-[color:var(--foreground)]">{link.label}</h3>
                 <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{link.description}</p>
                 <span className="mt-4 inline-block text-sm font-medium text-[color:var(--accent)] transition group-hover:translate-x-0.5">
-                  {zh ? zhT("打开页面 →") : fr ? "Ouvrir la page →" : ja ? "ページを開く →" : es ? "Abrir página →" : pt ? "Abrir página →" : "Open page →"}
+                  {zh ? zhT("打开页面 →") : fr ? "Ouvrir la page →" : ja ? "ページを開く →" : es ? "Abrir página →" : pt ? "Abrir página →" : de ? "Seite öffnen →" : "Open page →"}
                 </span>
               </a>
             ))}

@@ -16,11 +16,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Incomplete locales (tool pages still fall back to English) are excluded so
   // Google doesn't index thin/duplicate content. Remove from this set once a
   // locale's tool pages are fully localized.
+  // de is a FIRST-CLASS, fully-authored locale (deTools/deFaq + home/pricing/about/
+  // info/vertical copy all native, AuthoredCopy-exhaustive in lib/i18n.ts) — so it is
+  // enrolled with INCOMPLETE_LOCALES empty and, crucially, is NOT subject to the
+  // ja/zh-Hant isJaNativeRoute filter below: de gets the FULL indexableRoutes set at
+  // priority*0.85, the same breadth as es/pt/fr. (blog + programmatic-GEO are only
+  // generated for en/zh anyway, so de is correctly absent from those two blocks —
+  // no German content exists there to point at; see geoLocales / blogLocales below.)
   // ja and zh-Hant are partially native: tool pages + home/pricing/sitemap/info
   // pages + GEO hubs have real (ja) / OpenCC-derived (zh-Hant) copy, but blog and
   // programmatic-GEO fall back to English / aren't generated for them — so both are
   // enrolled but filtered to their native routes only (isJaNativeRoute), matching
-  // the catch-all's noindex gate.
+  // the catch-all's noindex gate. de is deliberately excluded from that filter.
   const INCOMPLETE_LOCALES = new Set<string>([]);
   const sitemapLocales = routeLocales.filter(l => !INCOMPLETE_LOCALES.has(l));
 

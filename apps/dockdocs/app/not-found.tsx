@@ -8,7 +8,7 @@ function getLocale(path: string | null) {
   return isAllLocale(seg) ? seg : defaultLocale;
 }
 
-// Localized 404 copy for every route locale (en/zh/zh-Hant/es/pt/fr/ja).
+// Localized 404 copy for every route locale (en/zh/zh-Hant/es/pt/fr/ja/de).
 // Falls back to English for any non-route locale isAllLocale may return.
 const NOT_FOUND_COPY = {
   en: { title: "Page not found", body: "The requested DockDocs page is unavailable or has been moved.", home: "Back to home" },
@@ -18,6 +18,7 @@ const NOT_FOUND_COPY = {
   pt: { title: "Página não encontrada", body: "A página do DockDocs solicitada não existe ou foi movida.", home: "Voltar ao início" },
   fr: { title: "Page introuvable", body: "La page DockDocs demandée n'existe pas ou a été déplacée.", home: "Retour à l'accueil" },
   ja: { title: "ページが見つかりません", body: "お探しの DockDocs ページは存在しないか、移動されました。", home: "ホームに戻る" },
+  de: { title: "Seite nicht gefunden", body: "Die angeforderte DockDocs-Seite ist nicht verfügbar oder wurde verschoben.", home: "Zurück zur Startseite" },
 } as const;
 
 export default function NotFound() {

@@ -21,15 +21,27 @@ import {
 } from "@/lib/i18n";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
+// Blog chrome/GEO copy is authored in en/zh/de (the German strings live inline
+// in this file's ternaries + GEO helpers). The article BODY (blogIndexCopy /
+// getBlogArticleContent in lib/blog.ts) is only en/zh, so de pages render the
+// English body with German chrome + GEO sections until lib/blog.ts gains de.
+// BlogUiLocale = the locale the chrome/GEO helpers accept; contentLocale (a
+// plain Locale, de→en) drives the lib/blog.ts data lookups.
+type BlogUiLocale = Locale | "de";
+
 type BlogPageProps = {
-  locale?: Locale;
+  locale?: BlogUiLocale;
   useLocalePrefix?: boolean;
 };
 
 // zh-Hant is an OpenCC-derived route: render the zh copy but convert it to
 // Traditional. Callers pass locale="zh-Hant"; the data lookups below use the zh
 // source (never the en fallback) so no Simplified or English leaks through.
-type BlogIndexLocale = Locale | "zh-Hant";
+type BlogIndexLocale = Locale | "zh-Hant" | "de";
+
+// Map a blog UI locale to the Locale lib/blog.ts content lookups accept (de→en).
+const toBlogContentLocale = (l: BlogIndexLocale): Locale =>
+  l === "zh" || l === "zh-Hant" ? "zh" : "en";
 
 type BlogArticlePageProps = BlogPageProps & {
   article: BlogArticle;
@@ -40,11 +52,13 @@ export function BlogIndexPage({
   useLocalePrefix = false,
 }: Omit<BlogPageProps, "locale"> & { locale?: BlogIndexLocale }) {
   const hant = rawLocale === "zh-Hant";
-  // Data lookups use zh for zh-Hant (convert via OpenCC), never the en fallback.
-  const dataLocale: Locale = hant ? "zh" : (rawLocale as Locale);
-  // The route locale drives hrefs/canonical so zh-Hant pages link within
-  // /zh-Hant (localizedPath/localizedHref accept the route-locale string).
-  const locale = rawLocale as Locale;
+  // Data lookups use zh for zh-Hant (convert via OpenCC) and en for de (lib/blog.ts
+  // has no German body yet), never leaking the wrong language into the body copy.
+  const dataLocale: Locale = toBlogContentLocale(rawLocale);
+  // The route locale drives hrefs/canonical + the de/zh chrome ternaries so
+  // zh-Hant/de pages link within /zh-Hant /de (localizedPath/localizedHref accept
+  // the route-locale string). zh-Hant renders the zh chrome, so collapse it here.
+  const locale: BlogUiLocale = hant ? "zh" : (rawLocale as BlogUiLocale);
   const routeLocale = rawLocale as string;
   // Chinese-vs-English UI ternaries below treat zh-Hant as Chinese.
   const zh = dataLocale === "zh";
@@ -95,7 +109,7 @@ export function BlogIndexPage({
           <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 shadow-[0_32px_90px_rgba(24,24,20,0.10)]">
             <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                {zh ? h("热门指南") : "Popular guides"}
+                {zh ? h("热门指南") : locale === "de" ? "Beliebte Anleitungen" : "Popular guides"}
               </p>
               <div className="mt-5 grid gap-3">
                 {blogArticles.slice(0, 4).map((article) => {
@@ -172,7 +186,7 @@ export function BlogIndexPage({
                     {content.excerpt}
                   </p>
                   <span className="mt-5 inline-block text-sm font-semibold text-[color:var(--foreground)] transition group-hover:translate-x-0.5">
-                    {zh ? h("阅读指南") : "Read guide"} -&gt;
+                    {zh ? h("阅读指南") : locale === "de" ? "Anleitung lesen" : "Read guide"} -&gt;
                   </span>
                 </a>
               );
@@ -186,7 +200,7 @@ export function BlogIndexPage({
           <div className="grid gap-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 shadow-[0_24px_60px_rgba(24,24,20,0.08)] sm:p-8 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                {zh ? h("找到合适的工具") : "Find the right tool"}
+                {zh ? h("找到合适的工具") : locale === "de" ? "Das passende Tool finden" : "Find the right tool"}
               </p>
               <h2 className="mt-4 text-3xl font-semibold leading-tight">
                 {copy.workflowTitle}
@@ -198,32 +212,32 @@ export function BlogIndexPage({
             <div className="grid gap-3 sm:grid-cols-2">
               {[
                 {
-                  label: zh ? h("压缩 PDF") : "Compress PDF",
+                  label: zh ? h("压缩 PDF") : locale === "de" ? "PDF komprimieren" : "Compress PDF",
                   href: "/compress-pdf",
                 },
                 {
-                  label: zh ? h("JPG 转 PDF") : "JPG to PDF",
+                  label: zh ? h("JPG 转 PDF") : locale === "de" ? "JPG in PDF" : "JPG to PDF",
                   href: "/jpg-to-pdf",
                 },
                 {
-                  label: zh ? h("PDF 转 Word") : "PDF to Word",
+                  label: zh ? h("PDF 转 Word") : locale === "de" ? "PDF in Word" : "PDF to Word",
                   href: "/pdf-to-word",
                 },
                 { label: "OCR PDF", href: "/ocr-pdf" },
                 {
-                  label: zh ? h("帮助与 FAQ") : "Help and FAQ",
+                  label: zh ? h("帮助与 FAQ") : locale === "de" ? "Hilfe und FAQ" : "Help and FAQ",
                   href: "/help",
                 },
                 {
-                  label: zh ? h("资源中心") : "Resources",
+                  label: zh ? h("资源中心") : locale === "de" ? "Ressourcen" : "Resources",
                   href: "/resources",
                 },
                 {
-                  label: zh ? h("PDF 指南") : "PDF Guides",
+                  label: zh ? h("PDF 指南") : locale === "de" ? "PDF-Anleitungen" : "PDF Guides",
                   href: "/guides",
                 },
                 {
-                  label: zh ? h("AI PDF 指南") : "AI PDF Guides",
+                  label: zh ? h("AI PDF 指南") : locale === "de" ? "KI-PDF-Anleitungen" : "AI PDF Guides",
                   href: "/ai-pdf-guides",
                 },
               ].map((link) => (
@@ -251,7 +265,10 @@ export function BlogArticlePage({
   locale = defaultLocale,
   useLocalePrefix = false,
 }: BlogArticlePageProps) {
-  const content = getBlogArticleContent(article, locale);
+  // Article body comes from lib/blog.ts (en/zh only) → de falls back to en.
+  // `locale` still carries de for the chrome/GEO helpers + localized hrefs.
+  const contentLocale = toBlogContentLocale(locale);
+  const content = getBlogArticleContent(article, contentLocale);
   const relatedArticles = getRelatedArticles(article);
   const canonicalPath = articleHref(article.slug, locale, useLocalePrefix);
   const articleUrl = absoluteUrl(canonicalPath);
@@ -299,19 +316,19 @@ export function BlogArticlePage({
                   variant="outline"
                   className="bg-[color:var(--surface)]"
                 >
-                  {locale === "zh" ? "查看帮助中心" : "Read help guidance"}
+                  {locale === "zh" ? "查看帮助中心" : locale === "de" ? "Hilfe-Center ansehen" : "Read help guidance"}
                 </ButtonLink>
               </div>
             </div>
             <aside className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5 shadow-sm">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                {locale === "zh" ? "文章信息" : "Article details"}
+                {locale === "zh" ? "文章信息" : locale === "de" ? "Artikeldetails" : "Article details"}
               </p>
               <dl className="mt-5 grid gap-3 text-sm">
-                <DetailRow label={locale === "zh" ? "主题" : "Topic"} value={article.category} />
-                <DetailRow label={locale === "zh" ? "阅读时间" : "Read time"} value={content.readingTime} />
-                <DetailRow label={locale === "zh" ? "更新" : "Updated"} value={article.updatedAt} />
-                <DetailRow label={locale === "zh" ? "匹配工具" : "Matching tool"} value={article.toolLabel} />
+                <DetailRow label={locale === "zh" ? "主题" : locale === "de" ? "Thema" : "Topic"} value={article.category} />
+                <DetailRow label={locale === "zh" ? "阅读时间" : locale === "de" ? "Lesezeit" : "Read time"} value={content.readingTime} />
+                <DetailRow label={locale === "zh" ? "更新" : locale === "de" ? "Aktualisiert" : "Updated"} value={article.updatedAt} />
+                <DetailRow label={locale === "zh" ? "匹配工具" : locale === "de" ? "Passendes Tool" : "Matching tool"} value={article.toolLabel} />
               </dl>
             </aside>
           </Container>
@@ -366,18 +383,18 @@ export function BlogArticlePage({
 
             <aside className="grid gap-4 lg:sticky lg:top-32">
               <SidebarCard
-                title={locale === "zh" ? "推荐工具" : "Recommended tools"}
+                title={locale === "zh" ? "推荐工具" : locale === "de" ? "Empfohlene Tools" : "Recommended tools"}
                 links={article.relatedTools}
                 locale={locale}
                 useLocalePrefix={useLocalePrefix}
               />
               <SidebarCard
-                title={locale === "zh" ? "继续阅读" : "Continue reading"}
+                title={locale === "zh" ? "继续阅读" : locale === "de" ? "Weiterlesen" : "Continue reading"}
                 links={relatedArticles.map((related) => ({
-                  label: getBlogArticleContent(related, locale).title,
+                  label: getBlogArticleContent(related, contentLocale).title,
                   href: blogArticlePath(
                     related.slug,
-                    useLocalePrefix ? locale : undefined,
+                    useLocalePrefix ? (locale as Locale) : undefined,
                   ),
                 }))}
                 locale={locale}
@@ -394,7 +411,7 @@ export function BlogArticlePage({
                 FAQ
               </p>
               <h2 className="mt-4 text-3xl font-semibold leading-tight">
-                {locale === "zh" ? "相关问题" : "Related questions"}
+                {locale === "zh" ? "相关问题" : locale === "de" ? "Verwandte Fragen" : "Related questions"}
               </h2>
             </div>
             <div className="divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
@@ -447,7 +464,7 @@ function GeoAnswerSection({
 }: {
   article: BlogArticle;
   content: ReturnType<typeof getBlogArticleContent>;
-  locale: Locale;
+  locale: BlogUiLocale;
   useLocalePrefix: boolean;
 }) {
   const steps = getGeoSteps(article, locale);
@@ -461,7 +478,7 @@ function GeoAnswerSection({
         <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
           <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5 shadow-sm sm:p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {locale === "zh" ? "快速答案" : "Quick Answer"}
+              {locale === "zh" ? "快速答案" : locale === "de" ? "Schnelle Antwort" : "Quick Answer"}
             </p>
             <h2 className="mt-4 text-2xl font-semibold leading-tight">
               {getQuickAnswerHeading(article, locale)}
@@ -474,10 +491,10 @@ function GeoAnswerSection({
 
           <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm sm:p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {locale === "zh" ? "逐步流程" : "Step-by-step"}
+              {locale === "zh" ? "逐步流程" : locale === "de" ? "Schritt für Schritt" : "Step-by-step"}
             </p>
             <h2 className="mt-4 text-2xl font-semibold leading-tight">
-              {locale === "zh" ? "推荐操作步骤" : "Recommended steps"}
+              {locale === "zh" ? "推荐操作步骤" : locale === "de" ? "Empfohlene Schritte" : "Recommended steps"}
             </h2>
             <ol className="mt-5 grid gap-3">
               {steps.map((step, index) => (
@@ -498,7 +515,7 @@ function GeoAnswerSection({
         <div className="mt-4 grid gap-4 lg:grid-cols-[0.72fr_0.28fr]">
           <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-sm sm:p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {locale === "zh" ? "最佳工作流" : "Best workflow"}
+              {locale === "zh" ? "最佳工作流" : locale === "de" ? "Bester Arbeitsablauf" : "Best workflow"}
             </p>
             <h2 className="mt-4 text-2xl font-semibold leading-tight">
               {workflow.title}
@@ -508,10 +525,10 @@ function GeoAnswerSection({
                 <thead className="bg-[color:var(--surface-subtle)] text-[color:var(--foreground)]">
                   <tr>
                     <th className="border-b border-[color:var(--line)] px-4 py-3 font-semibold">
-                      {locale === "zh" ? "情况" : "Situation"}
+                      {locale === "zh" ? "情况" : locale === "de" ? "Situation" : "Situation"}
                     </th>
                     <th className="border-b border-[color:var(--line)] px-4 py-3 font-semibold">
-                      {locale === "zh" ? "建议" : "Recommendation"}
+                      {locale === "zh" ? "建议" : locale === "de" ? "Empfehlung" : "Recommendation"}
                     </th>
                   </tr>
                 </thead>
@@ -533,7 +550,7 @@ function GeoAnswerSection({
 
           <aside className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5 shadow-sm sm:p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
-              {locale === "zh" ? "何时使用" : "When to use this tool"}
+              {locale === "zh" ? "何时使用" : locale === "de" ? "Wann dieses Tool nutzen" : "When to use this tool"}
             </p>
             <ul className="mt-5 grid gap-3">
               {useCases.map((item) => (
@@ -577,7 +594,7 @@ function SidebarCard({
 }: {
   title: string;
   links: Array<{ label: string; href: string }>;
-  locale: Locale;
+  locale: BlogUiLocale;
   useLocalePrefix: boolean;
 }) {
   return (
@@ -616,13 +633,15 @@ function articleHref(
     : blogArticlePath(slug);
 }
 
-function getQuickAnswerHeading(article: BlogArticle, locale: Locale) {
+function getQuickAnswerHeading(article: BlogArticle, locale: BlogUiLocale) {
   return locale === "zh"
     ? `${article.toolLabel} 的简短答案`
-    : `Short answer for ${article.toolLabel}`;
+    : locale === "de"
+      ? `Kurze Antwort zu ${article.toolLabel}`
+      : `Short answer for ${article.toolLabel}`;
 }
 
-function getQuickAnswer(article: BlogArticle, locale: Locale) {
+function getQuickAnswer(article: BlogArticle, locale: BlogUiLocale) {
   if (locale === "zh") {
     if (article.category === "Compress PDF") {
       return `如果目标是减小 PDF 体积，请先使用 ${article.toolLabel}，再打开导出文件检查小字、扫描页、表格和签名是否清晰。`;
@@ -652,6 +671,37 @@ function getQuickAnswer(article: BlogArticle, locale: Locale) {
       return `先列出你最常做的 PDF 任务，再对照各工具的覆盖范围和限制（水印、强制注册、文件大小），用真实文件试一遍，选能干净完成任务的那个。`;
     }
     return `如果固定 PDF 需要编辑，请使用 ${article.toolLabel} 转换为可编辑草稿，并在协作前检查格式。`;
+  }
+
+  if (locale === "de") {
+    if (article.category === "Compress PDF") {
+      return `Wenn ein PDF zu groß ist, nutzen Sie zuerst ${article.toolLabel}. Öffnen Sie anschließend die Ergebnisdatei und prüfen Sie, ob Kleingedrucktes, gescannte Seiten, Tabellen und Unterschriften klar bleiben.`;
+    }
+    if (article.category === "Merge PDF") {
+      return `Wenn aus mehreren Dateien ein geordnetes Dokumentpaket werden soll, nutzen Sie ${article.toolLabel}. Bestätigen Sie zuerst die Reihenfolge der Dateien und laden Sie dann das finale PDF herunter.`;
+    }
+    if (article.category === "Split PDF") {
+      return `Wenn Sie nur bestimmte Seiten brauchen, nutzen Sie ${article.toolLabel}, um die Seitenbereiche zu extrahieren, statt das gesamte Dokument zu komprimieren oder zu versenden.`;
+    }
+    if (article.category === "OCR PDF") {
+      return `Wenn das PDF ein Scan oder ein bildbasiertes Dokument ist, nutzen Sie ${article.toolLabel}, um durchsuchbaren, kopierbaren Text zu gewinnen. Prüfen Sie das Ergebnis, bevor Sie es verwenden.`;
+    }
+    if (article.category === "JPG to PDF") {
+      return `Wenn Sie Fotos, Belege, Screenshots oder Scans haben, nutzen Sie ${article.toolLabel}, um die Bilder in der gewünschten Reihenfolge als ein PDF-Dokument zu exportieren.`;
+    }
+    if (article.category === "Convert") {
+      return `Wenn Sie zwischen Dateiformaten umwandeln müssen, nutzen Sie ${article.toolLabel} für die Umwandlung. Öffnen Sie danach die Ergebnisdatei und prüfen Sie, ob Layout, Text und Bilder vollständig sind.`;
+    }
+    if (article.category === "Edit PDF") {
+      return `Wenn ein PDF leere, doppelte oder unerwünschte Seiten enthält, nutzen Sie ${article.toolLabel}, um diese Seiten zu entfernen. Prüfen Sie vor dem Herunterladen die Reihenfolge der verbleibenden Seiten.`;
+    }
+    if (article.category === "Chat with PDF") {
+      return `Wenn ein Dokument zu lang ist, um es vollständig zu lesen, laden Sie es hoch und stellen Sie ${article.toolLabel} direkt Fragen. Prüfen Sie jede Antwort am Originaltext, bevor Sie sich darauf verlassen.`;
+    }
+    if (article.category === "Compare") {
+      return `Listen Sie zuerst Ihre häufigsten PDF-Aufgaben auf und vergleichen Sie dann den Funktionsumfang und die Grenzen der Tools (Wasserzeichen, erzwungene Registrierung, Dateigrößenlimit). Testen Sie eine echte Datei und wählen Sie das Tool, das die Aufgabe sauber erledigt.`;
+    }
+    return `Wenn ein festes PDF bearbeitet werden muss, nutzen Sie ${article.toolLabel}, um es in einen bearbeitbaren Entwurf umzuwandeln. Prüfen Sie die Formatierung, bevor Sie zusammenarbeiten.`;
   }
 
   if (article.category === "Compress PDF") {
@@ -684,7 +734,7 @@ function getQuickAnswer(article: BlogArticle, locale: Locale) {
   return `Use ${article.toolLabel} when a fixed PDF needs editing. Convert to a Word-style draft, then review formatting before collaboration.`;
 }
 
-function getGeoSteps(article: BlogArticle, locale: Locale) {
+function getGeoSteps(article: BlogArticle, locale: BlogUiLocale) {
   if (locale === "zh") {
     if (article.category === "Compress PDF") {
       return ["上传 PDF。", "运行压缩流程。", "下载压缩结果。", "打开文件检查可读性。"];
@@ -714,6 +764,37 @@ function getGeoSteps(article: BlogArticle, locale: Locale) {
       return ["列出你最常做的 PDF 任务。", "对比各工具的覆盖范围与限制。", "用真实文件试一遍首选工具。", "选择能干净完成任务的那个。"];
     }
     return ["上传 PDF。", "转换为 Word。", "检查可编辑输出。", "下载并继续编辑。"];
+  }
+
+  if (locale === "de") {
+    if (article.category === "Compress PDF") {
+      return ["PDF hochladen.", "Komprimierung ausführen.", "Komprimiertes Ergebnis herunterladen.", "Datei öffnen und Lesbarkeit prüfen."];
+    }
+    if (article.category === "Merge PDF") {
+      return ["Mehrere PDFs hochladen.", "Reihenfolge der Dateien anordnen.", "Zu einem Dokument zusammenführen.", "Finales PDF herunterladen und prüfen."];
+    }
+    if (article.category === "Split PDF") {
+      return ["PDF hochladen.", "Seitenbereiche eingeben.", "Aufgeteiltes Ergebnis in der Vorschau prüfen.", "Seiten oder ZIP-Datei exportieren."];
+    }
+    if (article.category === "OCR PDF") {
+      return ["Gescanntes PDF hochladen.", "OCR-Erkennung ausführen.", "Extrahierten Text prüfen.", "Text kopieren oder herunterladen."];
+    }
+    if (article.category === "JPG to PDF") {
+      return ["JPG-, PNG- oder WebP-Bilder hochladen.", "Seitenreihenfolge anordnen.", "Ein PDF exportieren.", "Bei Bedarf komprimieren oder OCR anwenden."];
+    }
+    if (article.category === "Convert") {
+      return ["Quelldatei hochladen.", "Formatumwandlung ausführen.", "Umgewandeltes Ergebnis herunterladen.", "Datei öffnen und Layout sowie Inhalt prüfen."];
+    }
+    if (article.category === "Edit PDF") {
+      return ["PDF hochladen.", "Zu entfernende Seiten auswählen.", "Verbleibende Seiten in der Vorschau prüfen.", "Bearbeitetes PDF herunterladen."];
+    }
+    if (article.category === "Chat with PDF") {
+      return ["PDF hochladen.", "Frage in natürlicher Sprache stellen.", "Antwort am Dokument prüfen.", "Benötigte Inhalte kopieren oder herunterladen."];
+    }
+    if (article.category === "Compare") {
+      return ["Ihre häufigsten PDF-Aufgaben auflisten.", "Funktionsumfang und Grenzen der Tools vergleichen.", "Eine echte Datei mit Ihrem Favoriten testen.", "Das Tool wählen, das die Aufgabe sauber erledigt."];
+    }
+    return ["PDF hochladen.", "In Word umwandeln.", "Bearbeitbares Ergebnis prüfen.", "Herunterladen und weiterbearbeiten."];
   }
 
   if (article.category === "Compress PDF") {
@@ -746,7 +827,7 @@ function getGeoSteps(article: BlogArticle, locale: Locale) {
   return ["Upload the PDF.", "Convert to Word.", "Review the editable output.", "Download and continue editing."];
 }
 
-function getWhenToUse(article: BlogArticle, locale: Locale) {
+function getWhenToUse(article: BlogArticle, locale: BlogUiLocale) {
   if (locale === "zh") {
     if (article.category === "Compress PDF") {
       return ["文件超过邮件或上传限制。", "需要保留完整 PDF。", "想减小体积但仍保持可读性。"];
@@ -776,6 +857,37 @@ function getWhenToUse(article: BlogArticle, locale: Locale) {
       return ["正在几款 PDF 工具之间做选择。", "想避开水印或强制注册。", "需要一个能覆盖多种 PDF 任务的工具。"];
     }
     return ["PDF 需要修改文字。", "缺少原始 Word 文件。", "需要协作、评论或复用内容。"];
+  }
+
+  if (locale === "de") {
+    if (article.category === "Compress PDF") {
+      return ["Die Datei überschreitet das E-Mail- oder Upload-Limit.", "Das vollständige PDF muss erhalten bleiben.", "Sie brauchen eine kleinere Datei, die lesbar bleibt."];
+    }
+    if (article.category === "Merge PDF") {
+      return ["Mehrere Dateien sollen als ein Anhang verschickt werden.", "Anträge, Rechnungen oder Kundenunterlagen müssen zusammengeführt werden.", "Der Empfänger braucht ein Dokumentpaket in fester Reihenfolge."];
+    }
+    if (article.category === "Split PDF") {
+      return ["Sie brauchen nur bestimmte Seiten.", "Die vollständige Datei ist zu groß oder enthält Irrelevantes.", "Ein Kapitel oder Seitenbereich braucht einen eigenen Export."];
+    }
+    if (article.category === "OCR PDF") {
+      return ["Der PDF-Text lässt sich nicht auswählen oder durchsuchen.", "Ein Scan braucht kopierbaren Text.", "Der Inhalt soll später zusammengefasst, abgefragt oder bearbeitet werden."];
+    }
+    if (article.category === "JPG to PDF") {
+      return ["Fotos, Belege oder Screenshots sollen zu einem Dokument werden.", "Ein Portal verlangt ein PDF statt Bilddateien.", "Mehrere Bilder brauchen eine feste Seitenreihenfolge."];
+    }
+    if (article.category === "Convert") {
+      return ["Der Empfänger braucht die Datei in einem anderen Format.", "Der Inhalt soll in einer anderen App geöffnet oder bearbeitet werden.", "Sie möchten das Dateiformat wechseln und das Layout beibehalten."];
+    }
+    if (article.category === "Edit PDF") {
+      return ["Das PDF enthält leere oder doppelte Seiten.", "Vor dem Teilen müssen bestimmte Seiten entfernt werden.", "Es soll nur ein Teil des Dokuments erhalten bleiben."];
+    }
+    if (article.category === "Chat with PDF") {
+      return ["Ein Dokument ist zu lang, um es vollständig zu lesen.", "Sie brauchen schnell eine bestimmte Tatsache oder Klausel.", "Sie möchten Folgefragen zum Inhalt stellen."];
+    }
+    if (article.category === "Compare") {
+      return ["Sie entscheiden sich zwischen mehreren PDF-Tools.", "Sie möchten Wasserzeichen oder erzwungene Registrierung vermeiden.", "Sie brauchen ein Tool, das mehrere PDF-Aufgaben abdeckt."];
+    }
+    return ["Ein PDF muss im Text bearbeitet werden.", "Die ursprüngliche Word-Datei fehlt.", "Der Inhalt soll für Zusammenarbeit, Kommentare oder Wiederverwendung dienen."];
   }
 
   if (article.category === "Compress PDF") {
@@ -808,16 +920,18 @@ function getWhenToUse(article: BlogArticle, locale: Locale) {
   return ["A PDF needs text edits.", "The original Word file is missing.", "The content needs collaboration, comments, or reuse."];
 }
 
-function getBestWorkflow(article: BlogArticle, locale: Locale) {
+function getBestWorkflow(article: BlogArticle, locale: BlogUiLocale) {
   return {
     title:
       locale === "zh"
         ? `${article.toolLabel} 的推荐工作流`
-        : `Best workflow for ${article.toolLabel}`,
+        : locale === "de"
+          ? `Bester Arbeitsablauf für ${article.toolLabel}`
+          : `Best workflow for ${article.toolLabel}`,
   };
 }
 
-function getComparisonRows(article: BlogArticle, locale: Locale) {
+function getComparisonRows(article: BlogArticle, locale: BlogUiLocale) {
   if (locale === "zh") {
     return [
       { situation: "需要完成当前任务", recommendation: `使用 ${article.toolLabel}` },
@@ -834,6 +948,26 @@ function getComparisonRows(article: BlogArticle, locale: Locale) {
           article.category === "OCR PDF"
             ? "运行 OCR 并复核文本"
             : "使用 OCR PDF 提取文字",
+      },
+    ];
+  }
+
+  if (locale === "de") {
+    return [
+      { situation: "Sie müssen diese Aufgabe erledigen", recommendation: `${article.toolLabel} nutzen` },
+      {
+        situation: "Die Ausgabedatei ist zu groß",
+        recommendation:
+          article.category === "Compress PDF"
+            ? "Komprimieren und Qualität prüfen"
+            : "Nach diesem Schritt PDF komprimieren",
+      },
+      {
+        situation: "Ein Scan braucht Texterkennung",
+        recommendation:
+          article.category === "OCR PDF"
+            ? "OCR ausführen und Text prüfen"
+            : "OCR PDF zum Extrahieren von Text nutzen",
       },
     ];
   }
@@ -860,7 +994,7 @@ function getComparisonRows(article: BlogArticle, locale: Locale) {
 function getGeoFaq(
   article: BlogArticle,
   content: ReturnType<typeof getBlogArticleContent>,
-  locale: Locale,
+  locale: BlogUiLocale,
 ): BlogFaq[] {
   if (locale === "zh") {
     return [
@@ -877,6 +1011,29 @@ function getGeoFaq(
         question: `${article.toolLabel} 和 AI Workspace 有什么关系？`,
         answer:
           "DockDocs 是面向真实文件的 AI Document Platform，用于 OCR、摘要、PDF 问答和文档理解。",
+      },
+    ];
+  }
+
+  if (locale === "de") {
+    return [
+      ...content.faq,
+      {
+        question: `Wann sollte ich ${article.toolLabel} nutzen?`,
+        answer: getQuickAnswer(article, locale),
+      },
+      {
+        question: `Sollte ich ${article.toolLabel} vor einem anderen PDF-Tool nutzen?`,
+        answer: `Nutzen Sie ${article.toolLabel} zuerst, wenn das aktuelle Ziel ${article.category} ist. Fahren Sie mit Komprimierung, OCR oder PDF in Word fort, wenn das Ergebnis kleiner, durchsuchbar oder bearbeitbar sein muss.`,
+      },
+      {
+        question: `Wie fügt sich ${article.toolLabel} in einen KI-Dokumenten-Workflow ein?`,
+        answer:
+          `DockDocs ist um eine Dokumenten-KI gebaut, der Sie vertrauen können: Sie liest Ihre Datei und zeigt, wenn sie eine Frage beantwortet oder ein Ergebnis markiert, die zugrunde liegende Quellstelle an, sofern möglich – und sagt, wenn sie es nicht kann –, damit Sie es nachprüfen können. Außerdem laufen viele Tools in Ihrem Browser, sodass die Dateien Ihr Gerät nie verlassen. Nutzen Sie ${article.toolLabel} für die Dokumentaufgabe und legen Sie die KI darüber – verankert in Ihrem eigenen Dokument, nicht in den Vermutungen eines allgemeinen Modells.`,
+      },
+      {
+        question: `Was ist der beste Arbeitsablauf für ${article.toolLabel}?`,
+        answer: getGeoSteps(article, locale).join(" "),
       },
     ];
   }
@@ -916,7 +1073,7 @@ function createBlogArticleSchema({
   content: ReturnType<typeof getBlogArticleContent>;
   geoFaq: BlogFaq[];
   geoSteps: string[];
-  locale: Locale;
+  locale: BlogUiLocale;
   articleUrl: string;
   blogPath: string;
 }) {
@@ -983,7 +1140,7 @@ function createBlogArticleSchema({
       {
         "@type": "HowTo",
         "@id": `${articleUrl}#howto`,
-        name: `${content.title}: ${locale === "zh" ? "步骤" : "step-by-step workflow"}`,
+        name: `${content.title}: ${locale === "zh" ? "步骤" : locale === "de" ? "Schritt-für-Schritt-Ablauf" : "step-by-step workflow"}`,
         description: getQuickAnswer(article, locale),
         step: geoSteps.map((step, index) => ({
           "@type": "HowToStep",
@@ -1021,7 +1178,8 @@ function createBlogArticleSchema({
 
 function createBlogIndexSchema(locale: BlogIndexLocale, canonicalPath: string) {
   const hant = locale === "zh-Hant";
-  const dataLocale: Locale = hant ? "zh" : locale;
+  // Index copy is en/zh only (lib/blog.ts) → de uses the en copy for the schema.
+  const dataLocale: Locale = toBlogContentLocale(locale);
   const copy = hant ? deepHant(blogIndexCopy.zh) : blogIndexCopy[dataLocale];
   const articleTitle = (article: BlogArticle) =>
     hant

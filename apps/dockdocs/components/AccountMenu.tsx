@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { defaultLocale } from "@/lib/i18n";
+import { toHant } from "@/lib/zh-hant";
 import { signOut, type AuthUser } from "@/lib/auth";
 import {
   getSubscriptionSnapshot,
@@ -28,6 +29,10 @@ function lh(href: string, locale: string) {
 }
 
 function asMembershipLocale(locale: string): MembershipLocale {
+  // `de` is intentionally absent: MembershipLocale (lib/membership-ui.ts) has no
+  // "de" member yet, so a German visitor's plan badge / status / upgrade prompts
+  // fall back to English until that shared type+copy ships. zh-Hant IS supported.
+  if (locale === "zh-Hant") return "zh-Hant";
   return locale === "zh" || locale === "es" || locale === "pt" || locale === "fr" || locale === "ja" ? locale : "en";
 }
 
@@ -76,8 +81,26 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
     };
   }, [open]);
 
-  const t = (en: string, zh: string, es: string, pt: string, fr: string, ja: string) =>
-    loc === "zh" ? zh : loc === "es" ? es : loc === "pt" ? pt : loc === "fr" ? fr : loc === "ja" ? ja : en;
+  // Directly-authored nav copy. Keyed off the RAW route locale (not `loc`) so de
+  // and zh-Hant resolve their own copy — `loc` collapses de→en for the shared
+  // membership helpers, but these strings live here and CAN be German. de tone
+  // mirrors deTools in localized-tools.ts (formal Sie).
+  const t = (en: string, zh: string, es: string, pt: string, fr: string, ja: string, de: string) =>
+    locale === "zh"
+      ? zh
+      : locale === "zh-Hant"
+        ? toHant(zh)
+        : locale === "es"
+          ? es
+          : locale === "pt"
+            ? pt
+            : locale === "fr"
+              ? fr
+              : locale === "ja"
+                ? ja
+                : locale === "de"
+                  ? de
+                  : en;
 
   function go(href: string) {
     setOpen(false);
@@ -112,12 +135,12 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
         onClick={() => go("/account")}
         className="hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] md:inline-flex"
       >
-        {t("Sign in", "登录", "Iniciar sesión", "Entrar", "Connexion", "ログイン")}
+        {t("Sign in", "登录", "Iniciar sesión", "Entrar", "Connexion", "ログイン", "Anmelden")}
       </button>
     );
   }
 
-  const name = authUser.name ?? authUser.email ?? t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント");
+  const name = authUser.name ?? authUser.email ?? t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント", "Konto");
   const display = snapshot?.displayName ?? "Free";
   const interval = snapshot?.record.interval;
   const badge = planBadge(display, interval, loc);
@@ -130,7 +153,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-label={t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント")}
+        aria-label={t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント", "Konto")}
         className="flex items-center gap-2 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] py-1 pl-1 pr-2.5 transition hover:border-[color:var(--line-strong)]"
       >
         <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[color:var(--accent)] text-[11px] font-semibold text-[color:var(--on-accent)]">
@@ -198,13 +221,13 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
 
             {/* links */}
             <button type="button" onClick={() => go("/account")} className={linkCls}>
-              {t("Account center", "账户中心", "Centro de cuenta", "Central da conta", "Centre du compte", "アカウントセンター")}
+              {t("Account center", "账户中心", "Centro de cuenta", "Central da conta", "Centre du compte", "アカウントセンター", "Kontocenter")}
             </button>
             {isPaid && (
               <button type="button" onClick={handlePortal} disabled={billingLoading} className={`${linkCls} disabled:opacity-50`}>
                 {billingLoading
-                  ? t("Opening…", "打开中…", "Abriendo…", "Abrindo…", "Ouverture…", "開いています…")
-                  : t("Manage billing", "管理账单", "Gestionar facturación", "Gerenciar cobrança", "Gérer la facturation", "請求を管理")}
+                  ? t("Opening…", "打开中…", "Abriendo…", "Abrindo…", "Ouverture…", "開いています…", "Wird geöffnet…")
+                  : t("Manage billing", "管理账单", "Gestionar facturación", "Gerenciar cobrança", "Gérer la facturation", "請求を管理", "Abrechnung verwalten")}
               </button>
             )}
             <button
@@ -212,7 +235,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
               onClick={handleSignOut}
               className="block w-full rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[13px] font-medium text-[color:var(--error)] transition hover:bg-[color:var(--error-surface)]"
             >
-              {t("Sign out", "退出登录", "Cerrar sesión", "Sair", "Se déconnecter", "ログアウト")}
+              {t("Sign out", "退出登录", "Cerrar sesión", "Sair", "Se déconnecter", "ログアウト", "Abmelden")}
             </button>
           </div>
         </>

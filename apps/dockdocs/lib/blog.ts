@@ -110,6 +110,27 @@ export const blogIndexCopy = {
     workflowDescription:
       "每篇指南都把一个真实文档问题连接到合适的工作流、相关文章、帮助页和 FAQ。",
   },
+  // German chrome for the /de/blog index frame. Article BODIES stay en/zh by
+  // design (de→en fallback), but the hero/featured/workflow FRAME now has native
+  // de strings here so a consumer that indexes blogIndexCopy with the route
+  // locale ("de") renders a fully German chrome instead of an English hero.
+  de: {
+    title: "Blog für PDF-Workflows",
+    description:
+      "Praktische DockDocs-Anleitungen zum Komprimieren, Zusammenführen, Konvertieren, zu OCR, JPG-zu-PDF und KI-gestützten Dokumenten-Workflows.",
+    eyebrow: "DockDocs-Ressourcen",
+    heroTitle: "PDF-Workflow-Anleitungen für suchgetriebene Dokumentenarbeit.",
+    heroDescription:
+      "Mit den DockDocs-Ressourcen lernen Sie die praktischen Schritte hinter Komprimierung, Konvertierung, OCR, Bild-zu-PDF-Workflows und KI-Dokumentenproduktivität.",
+    primaryAction: "PDF-Werkzeuge durchsuchen",
+    secondaryAction: "Hilfe-Center öffnen",
+    featuredTitle: "Neueste PDF-Workflow-Anleitungen",
+    featuredDescription:
+      "Zeitlose Artikel verbinden häufige Suchfragen mit praktischen DockDocs-Werkzeugen, Support-Inhalten und verwandten Dokumenten-Workflows.",
+    workflowTitle: "Das passende Werkzeug für jede Dokumentenaufgabe finden",
+    workflowDescription:
+      "Jede Anleitung verbindet ein konkretes Nutzerproblem mit dem richtigen PDF-Werkzeug, verwandten Artikeln, Hilfe-Inhalten und FAQ-Antworten.",
+  },
 } as const;
 
 export const blogArticles: BlogArticle[] = [

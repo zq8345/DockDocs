@@ -11,7 +11,7 @@ import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
 import { getUser, onAuthChange } from "@/lib/auth";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
 
 const copy = {
   en: {
@@ -489,6 +489,85 @@ const copy = {
       { f: "チームワークスペース · 優先サポート", v: ["—", "—", "✓"] },
     ],
   },
+  de: {
+    title: "Einfache Preise. Leistungsstarke, private Dokumente.",
+    subtitle: "Kostenlos starten — ohne Konto, ohne Karte. Erst upgraden, wenn Sie KI, größere Dateien oder mehr Volumen brauchen. Jederzeit kündbar, mit zwei Klicks.",
+    monthly: "Monatlich",
+    yearly: "Jährlich",
+    save: "Sparen Sie ~40 %",
+    lifetime: "Lebenslang",
+    perOnce: "einmalig",
+    lifetimeNote: "Gründerpreis — einmal zahlen, für immer Ihres. Der Preis steigt später.",
+    perMo: "/Mon.",
+    mostPopular: "Am beliebtesten",
+    billedYearly: (v: string) => `${v} jährlich abgerechnet`,
+    trust: ["7 Tage Geld-zurück-Garantie", "Jederzeit kündbar, ohne Nachfragen", "Dateien werden nie zum Training unserer Modelle verwendet"],
+    plans: [
+      {
+        name: "Free",
+        monthlyPrice: "$0",
+        yearlyPrice: "$0",
+        tagline: "Alles, was Sie für die tägliche PDF-Arbeit brauchen.",
+        highlights: ["~50 PDF-Tools — konvertieren, komprimieren, zusammenführen, teilen", "Verschlüsseln, Seiten bearbeiten und OCR für gescannte Dokumente", "Im Browser verarbeitet — die meisten Tools laufen lokal, Dateien bleiben privat", "Für immer kostenlos, kein Konto nötig"],
+        cta: "Jetzt kostenlos starten",
+        href: "/chat-with-pdf" as RouteSlug,
+        featured: false,
+      },
+      {
+        name: "Plus",
+        monthlyPrice: "$5",
+        yearlyPrice: "$3",
+        yearlyTotal: "$36/Jahr",
+        tagline: "Die KI liest und vergleicht Ihre Dokumente — in Sekunden.",
+        valueLine: "Weniger als ein Kaffee im Monat.",
+        highlights: ["Alles aus Free", "Mit jedem PDF chatten — Antworten zeigen die Quelle, wenn sie auffindbar ist", "KI-Zusammenfassungen und Kernpunkte in Sekunden", "Mehrere Dokumente nebeneinander vergleichen", "100-MB-Dateien, Stapelverarbeitung und Priorität, ohne Werbung"],
+        cta: "Auf Plus upgraden",
+        href: "" as RouteSlug,
+        featured: true,
+      },
+      {
+        name: "Pro",
+        monthlyPrice: "$20",
+        yearlyPrice: "$12",
+        yearlyTotal: "$144/Jahr",
+        tagline: "Dokument-Workflows automatisieren und professionelle Prüfung.",
+        highlights: ["Alles aus Plus", "Stapel-Dokument-Workflows automatisieren", "Vertragsprüfung — markiert riskante und fehlende Klauseln", "API-Zugriff und automatische Klassifizierung", "Team-Arbeitsbereich und priorisierter Support"],
+        cta: "Auf Pro upgraden",
+        href: "" as RouteSlug,
+        featured: false,
+      },
+    ],
+    faqTitle: "Fragen vor dem Kauf",
+    faq: [
+      { q: "Kann ich jederzeit kündigen?", a: "Ja. Verwalten oder kündigen Sie Ihr Abonnement selbst mit ein paar Klicks — keine E-Mails, keine Halte-Tricks. Sie behalten den Zugriff bis zum Ende des bezahlten Zeitraums." },
+      { q: "Gibt es eine Rückerstattung?", a: "Ja — Plus, Pro und Lebenslang sind alle abgedeckt. Wenn ein Tarif nicht das Richtige für Sie ist, kontaktieren Sie uns innerhalb von 7 Tagen nach der Zahlung und wir erstatten Ihnen den vollen Betrag. Creem hat keinen Selbstbedienungs-Button für Rückerstattungen, melden Sie sich also einfach — über „Händler kontaktieren“ auf Ihrer Creem-Bestellseite oder per E-Mail an billing@dockdocs.app — und wir kümmern uns darum." },
+      { q: "Muss ich für DockDocs bezahlen?", a: "Nein. Alle ~50 grundlegenden PDF-Tools sind für immer kostenlos, ohne Konto. Sie zahlen nur, wenn Sie KI-Funktionen, größere Dateien oder mehr Volumen möchten." },
+      { q: "Was passiert mit meinen Dateien?", a: "Die meisten Tools verarbeiten alles in Ihrem Browser — Ihre Dateien verlassen Ihr Gerät nie. Ein paar Cloud-Konvertierungen laufen serverseitig; die temporäre Kopie wird danach automatisch gelöscht. Wir verwenden Ihre Dokumente nie zum Training unserer eigenen Modelle, und nur der für die Antwort nötige Text wird an den KI-Anbieter gesendet." },
+      { q: "Kann ich später den Tarif wechseln?", a: "Jederzeit. Upgraden, downgraden oder zwischen monatlich und jährlich wechseln, wann immer Sie möchten." },
+    ],
+    ctaTitle: "Kostenlos ausprobieren — später entscheiden.",
+    ctaDesc: "Öffnen Sie jetzt ein beliebiges Tool. Ohne Konto, ohne Karte, ohne Verpflichtung.",
+    ctaBtn: "Mit einem kostenlosen Tool starten",
+    scenariosTitle: "Was kann DockDocs für Sie lösen?",
+    scenarios: [
+      { emoji: "📊", title: "Angebote vergleichen und das beste wählen", before: "3 Dateien öffnen, Zahlen in eine Tabelle kopieren — ~1 Std.", after: "Hochladen → Vergleichstabelle + eine durch die Zahlen gestützte Empfehlung — 1 Min.", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📄", title: "Die Fallen in einem Vertrag erkennen", before: "300 $ für einen Anwalt zahlen oder blind unterschreiben und Schaden nehmen", after: "Die KI markiert riskante und fehlende Klauseln in Minuten", tier: "Pro", href: "/compare" as RouteSlug },
+      { emoji: "🧾", title: "Einen Stapel Rechnungen verarbeiten", before: "Sie einzeln eintippen — Stunden, oder Hilfe einstellen", after: "Den ganzen Stapel ablegen → automatisch extrahieren und zusammenfassen", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📕", title: "Einen langen Bericht schnell verstehen", before: "80 Seiten lesen, um ein paar Antworten zu finden — Stunden", after: "Fragen Sie alles → belegte Antworten (wo auffindbar) in 30 Sek.", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+    ],
+    compareTitle: "Tarife vergleichen",
+    compareCols: ["Free", "Plus", "Pro"],
+    compareRows: [
+      { f: "~50 PDF-Tools — konvertieren, komprimieren, zusammenführen, verschlüsseln, OCR", v: ["✓", "✓", "✓"] },
+      { f: "Mit PDF chatten · KI-Zusammenfassungen", v: ["—", "✓", "✓"] },
+      { f: "PDF mit KI übersetzen (behält das Layout)", v: ["—", "Bald", "Bald"] },
+      { f: "Mehrere Dokumente vergleichen", v: ["—", "✓", "✓"] },
+      { f: "100-MB-Dateien · Stapel · ohne Werbung", v: ["—", "✓", "✓"] },
+      { f: "Workflows automatisieren · API · Auto-Klassifizierung", v: ["—", "—", "✓"] },
+      { f: "Vertragsprüfung — Risiko- und fehlende Klauseln", v: ["—", "—", "✓"] },
+      { f: "Team-Arbeitsbereich · priorisierter Support", v: ["—", "—", "✓"] },
+    ],
+  },
 } as const;
 
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
@@ -506,8 +585,12 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
     const fi = (locale === "zh-Hant" ? copy.zh : (copy[locale] ?? copy.en)).plans.findIndex((p) => p.featured);
     return fi >= 0 ? fi : 1;
   });
+  // membership-ui / UpgradeFlow are typed to the 6 base membership locales (no `de`);
+  // de's billing plumbing (rare error toasts + upgrade modal) falls back to English
+  // text while every page-owned string below is native German.
+  const mLocale = locale === "de" ? "en" : locale;
   // Shared in-place upgrade flow (quote → breakdown modal → discounted checkout).
-  const upgrade = useUpgradeFlow(locale);
+  const upgrade = useUpgradeFlow(mLocale);
 
   useEffect(() => {
     let mounted = true;
@@ -535,7 +618,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const zh = locale === "zh" || hant;
   const h = (s: string) => (hant ? toHant(s) : s);
   const c = hant ? deepHant(copy.zh) : (copy[locale] ?? copy.en);
-  const selectLabel = zh ? h("选择套餐") : locale === "es" ? "Seleccionar plan" : locale === "pt" ? "Selecionar plano" : locale === "fr" ? "Sélectionner le forfait" : locale === "ja" ? "プランを選択" : "Select plan";
+  const selectLabel = zh ? h("选择套餐") : locale === "es" ? "Seleccionar plan" : locale === "pt" ? "Selecionar plano" : locale === "fr" ? "Sélectionner le forfait" : locale === "ja" ? "プランを選択" : locale === "de" ? "Tarif auswählen" : "Select plan";
 
   // Turn a billing failure into a clear, localized message AND a console line with
   // the precise code — never swallow it into a silent /account redirect. Only a
@@ -556,7 +639,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       void handlePortal();
       return;
     }
-    setBillingError(billingErrorCopy(code, message, locale));
+    setBillingError(billingErrorCopy(code, message, mLocale));
   }
 
   // Plain hosted checkout for a NEW subscription (Free → paid) — no credit.
@@ -586,14 +669,14 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   }
   // 账户页全站统一为 /account(无语言版本)，不要按 locale 加 /zh 前缀，否则 /zh/account 会 404
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale as RouteLocale, href) : "/account");
-  const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh || locale === "es" || locale === "fr" ? "" : "uppercase tracking-[0.08em]"}`;
+  const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh || locale === "es" || locale === "fr" || locale === "de" ? "" : "uppercase tracking-[0.08em]"}`;
   const h2 = "text-[26px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[32px]";
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
       {/* Header */}
       <div className="text-center">
-        <p className={eyebrow}>{zh ? h("// 定价") : locale === "es" ? "// Precios" : locale === "pt" ? "// Preços" : locale === "fr" ? "// Tarifs" : locale === "ja" ? "// 料金" : "// Pricing"}</p>
+        <p className={eyebrow}>{zh ? h("// 定价") : locale === "es" ? "// Precios" : locale === "pt" ? "// Preços" : locale === "fr" ? "// Tarifs" : locale === "ja" ? "// 料金" : locale === "de" ? "// Preise" : "// Pricing"}</p>
         <h1 className="mt-4 text-[34px] font-normal leading-[1.08] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[48px]">
           {c.title}
         </h1>
@@ -709,18 +792,18 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               {planKey ? (
                 ctaKind === "current" ? (
                   <span className={`${ctaCls} cursor-default opacity-60`}>
-                    {zh ? h("当前套餐") : locale === "es" ? "Plan actual" : locale === "pt" ? "Plano atual" : locale === "fr" ? "Forfait actuel" : locale === "ja" ? "現在のプラン" : "Current plan"}
+                    {zh ? h("当前套餐") : locale === "es" ? "Plan actual" : locale === "pt" ? "Plano atual" : locale === "fr" ? "Forfait actuel" : locale === "ja" ? "現在のプラン" : locale === "de" ? "Aktueller Tarif" : "Current plan"}
                   </span>
                 ) : ctaKind === "manage" ? (
                   <button type="button" onClick={handlePortal} disabled={billingLoading === "portal"} className={ctaCls}>
                     {billingLoading === "portal"
-                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : "Redirecting…")
-                      : (zh ? h("管理账单") : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : locale === "ja" ? "請求を管理" : "Manage billing")}
+                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : "Redirecting…")
+                      : (zh ? h("管理账单") : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : locale === "ja" ? "請求を管理" : locale === "de" ? "Abrechnung verwalten" : "Manage billing")}
                   </button>
                 ) : (
                   <button type="button" onClick={() => (ctaKind === "upgrade" ? upgrade.beginUpgrade(planKey, period) : plainCheckout(planKey))} disabled={ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey} className={ctaCls}>
                     {(ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey)
-                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : "Redirecting…")
+                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : "Redirecting…")
                       : plan.cta}
                   </button>
                 )
@@ -744,7 +827,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* Compare plans — driven by lib/tier-config.ts */}
       <div className="mx-auto mt-16 max-w-4xl">
-        <p className={`${eyebrow} text-center`}>{zh ? h("// 套餐对照") : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : locale === "ja" ? "// プラン比較" : "// Compare"}</p>
+        <p className={`${eyebrow} text-center`}>{zh ? h("// 套餐对照") : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : locale === "ja" ? "// プラン比較" : locale === "de" ? "// Vergleich" : "// Compare"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.compareTitle}</h2>
         <p className="mt-2 text-center text-[13px] text-[color:var(--faint)]">
           {zh ? h("点击分类展开该类所有工具")
@@ -752,6 +835,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
             : locale === "pt" ? "Clique em uma categoria para ver as ferramentas que ela inclui"
             : locale === "fr" ? "Cliquez sur une catégorie pour voir les outils qu'elle inclut"
             : locale === "ja" ? "カテゴリをクリックすると含まれるツールが表示されます"
+            : locale === "de" ? "Klicken Sie auf eine Kategorie, um die enthaltenen Tools zu sehen"
             : "Click a category to see the tools it includes"}
         </p>
         <div className="mt-8 overflow-x-auto rounded-2xl border border-[color:var(--line)]">
@@ -772,8 +856,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 const hasTools = cat.tools.length > 0;
                 const hasFeatures = (cat.features?.length ?? 0) > 0;
                 const canExpand = hasTools || hasFeatures;
-                // tier-config copy is keyed by the 6 base locales; for zh-Hant read
-                // zh then convert to Traditional via h().
+                // tier-config copy is keyed by the 7 base locales; for zh-Hant read
+                // zh then convert to Traditional via h(). de now has its own column.
                 const tcLocale: Exclude<Locale, "zh-Hant"> = hant ? "zh" : locale;
                 const catLabel = h(cat.label[tcLocale] ?? cat.label.en);
                 const lim = (tier: "free" | "plus" | "pro") => {
@@ -781,7 +865,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                   return h(v[tcLocale] ?? v.en);
                 };
                 const cellCls = (val: string) =>
-                  val.startsWith("Unlimited") || val.startsWith("无限") || val.startsWith("Ilimitado") || val.startsWith("Illimité")
+                  val.startsWith("Unlimited") || val.startsWith("无限") || val.startsWith("Ilimitado") || val.startsWith("Illimité") || val.startsWith("Unbegrenzt")
                     ? "font-medium text-[color:var(--foreground)]"
                   : val === "—" ? "text-[color:var(--faint)]"
                   : val.startsWith("✓") ? "font-medium text-[color:var(--accent)]"
@@ -849,7 +933,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                 )}
                                 {f.status === "coming" && (
                                   <span className="rounded-full border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] text-[color:var(--faint)]">
-                                    {zh ? h("即将推出") : locale === "es" ? "Pronto" : locale === "pt" ? "Em breve" : locale === "fr" ? "Bientôt" : locale === "ja" ? "近日公開" : "Coming"}
+                                    {zh ? h("即将推出") : locale === "es" ? "Pronto" : locale === "pt" ? "Em breve" : locale === "fr" ? "Bientôt" : locale === "ja" ? "近日公開" : locale === "de" ? "Bald" : "Coming"}
                                   </span>
                                 )}
                               </li>
@@ -877,6 +961,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               ? <>* Les forfaits illimités sont soumis à notre <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Politique d'utilisation équitable</a> afin de prévenir les abus.</>
               : locale === "ja"
               ? <>* 無制限プランは、不正利用を防ぐための<a href="/terms/" className="underline hover:text-[color:var(--muted)]">フェアユースポリシー</a>が適用されます。</>
+              : locale === "de"
+              ? <>* Unbegrenzte Tarife unterliegen unserer <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair-Use-Richtlinie</a>, um Missbrauch zu verhindern.</>
               : <>* Unlimited plans are subject to our <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair Use Policy</a> to prevent abuse.</>
             }
           </p>
@@ -884,7 +970,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* Solutions by scenario */}
       <div className="mx-auto mt-24 max-w-5xl">
-        <p className={`${eyebrow} text-center`}>{zh ? h("// 应用场景") : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : locale === "ja" ? "// ユースケース" : "// Use cases"}</p>
+        <p className={`${eyebrow} text-center`}>{zh ? h("// 应用场景") : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : locale === "ja" ? "// ユースケース" : locale === "de" ? "// Anwendungsfälle" : "// Use cases"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.scenariosTitle}</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {c.scenarios.map((s) => (
@@ -896,7 +982,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               <p className="mt-3 text-[13px] leading-6 text-[color:var(--muted)]">😩 {s.before}</p>
               <p className="mt-1.5 text-[13px] leading-6 text-[color:var(--foreground)]"><span className="text-[color:var(--accent)]">⚡</span> {s.after}</p>
               {s.href && (
-                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{zh ? h("去试试 →") : locale === "es" ? "Pruébalo →" : locale === "pt" ? "Experimente →" : locale === "fr" ? "Essayez →" : locale === "ja" ? "試す →" : "Try it →"}</a>
+                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{zh ? h("去试试 →") : locale === "es" ? "Pruébalo →" : locale === "pt" ? "Experimente →" : locale === "fr" ? "Essayez →" : locale === "ja" ? "試す →" : locale === "de" ? "Ausprobieren →" : "Try it →"}</a>
               )}
             </div>
           ))}
@@ -905,7 +991,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* FAQ */}
       <div className="mx-auto mt-24 max-w-3xl">
-        <p className={`${eyebrow} text-center`}>{zh ? h("// 常见问题") : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : locale === "ja" ? "// よくある質問" : "// FAQ"}</p>
+        <p className={`${eyebrow} text-center`}>{zh ? h("// 常见问题") : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : locale === "ja" ? "// よくある質問" : locale === "de" ? "// Häufige Fragen" : "// FAQ"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.faqTitle}</h2>
         <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
           {c.faq.map((item, i) => (
@@ -930,13 +1016,13 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       <div className="mx-auto mt-24 max-w-3xl text-center">
         <h2 className={h2}>{c.ctaTitle}</h2>
         <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.ctaDesc}</p>
-        <a href={zh ? h("/zh/") : locale === "es" ? "/es/" : locale === "pt" ? "/pt/" : locale === "fr" ? "/fr/" : locale === "ja" ? "/ja/" : "/"}
+        <a href={zh ? h("/zh/") : locale === "es" ? "/es/" : locale === "pt" ? "/pt/" : locale === "fr" ? "/fr/" : locale === "ja" ? "/ja/" : locale === "de" ? "/de/" : "/"}
           className="mt-8 inline-flex h-11 items-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]"
         >{c.ctaBtn}</a>
       </div>
 
       {/* Upgrade breakdown — credit is visible before the redirect (可溯源/honest). */}
-      <UpgradeConfirmModal flow={upgrade} locale={locale} />
+      <UpgradeConfirmModal flow={upgrade} locale={mLocale} />
     </div>
   );
 }

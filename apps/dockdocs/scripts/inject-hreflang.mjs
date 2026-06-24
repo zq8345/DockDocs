@@ -6,20 +6,20 @@
 // locale variants actually exist on disk AND are indexable, and link exactly
 // those — no dangling alternates, and never a link to a noindex page.
 //
-// ja is only partially native (tool pages + home/pricing/sitemap/info are
-// Japanese; GEO guide hubs + blog still fall back to English, so those ja pages
-// are noindex). Rather than hard-code that split, we read each ja page's robots
-// meta: an indexable ja variant joins the cluster, a noindex one does not. The
-// same robots check applies to every locale, so a noindex page in any locale is
-// automatically kept out of the hreflang set.
+// ja and de are only partially native (tool pages + home/pricing/sitemap/info
+// are translated; some GEO guide hubs + blog still fall back to English, so those
+// pages are noindex). Rather than hard-code that split per locale, we read each
+// variant's robots meta: an indexable variant joins the cluster, a noindex one
+// does not. The same robots check applies to every locale, so a noindex page in
+// any locale is automatically kept out of the hreflang set.
 
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const OUT = join(process.cwd(), "out");
 const BASE = "https://dockdocs.app";
-const SECONDARY = ["zh", "es", "pt", "fr", "ja", "zh-Hant"];
-const LOCALE_DIRS = new Set(["en", "zh", "es", "pt", "fr", "ja"]);
+const SECONDARY = ["zh", "es", "pt", "fr", "ja", "de", "zh-Hant"];
+const LOCALE_DIRS = new Set(["en", "zh", "es", "pt", "fr", "ja", "de", "zh-Hant"]);
 
 async function collectRoutes(base, { skipTopLevelLocaleDirs = false } = {}) {
   const set = new Set();

@@ -33,6 +33,10 @@ const HOME_FAQ: Record<string, { q: string; a: string }[]> = {
     { q: "AI が作り話をしていないと、どうすれば分かりますか？", a: "AI が回答・抽出を行うとき、あなたの文書内の該当箇所（原文）を指し示せる場合はそれを示すので、原文を開いて自分で確認できます——AI の言葉を鵜呑みにする必要はありません。ある主張をあなたのファイルから裏付けられない場合、DockDocs はそれを事実として提示せず、裏付けが取れないことを明示します。この出典までたどれること（可溯源性）こそ、汎用チャットボットとの決定的な違いです。" },
     { q: "DockDocs は他の PDF ツールや汎用 AI チャットボットと何が違いますか？", a: "汎用チャットボットには提供できない 2 つの点があります——検証できるプライバシーと、信頼できる回答です。DockDocs のほとんどのツールはお使いのブラウザ内で動作するため、機密ファイルがデバイスの外に出ることはありません。さらに文書 AI は回答の根拠となる原文箇所を示し、たどれない部分は明示するので、内容を自分で検証できます。汎用チャットボットに貼り付けられない文書——契約書・財務資料・研究資料——のために作られています。" },
   ],
+  de: [
+    { q: "Woher weiß ich, dass die KI sich nichts ausdenkt?", a: "Wenn die KI antwortet oder Daten extrahiert, verweist sie auf die genaue Quellstelle in Ihrem eigenen Dokument — Sie können das Original aufrufen und es selbst prüfen, und müssen der KI nichts blind glauben. Lässt sich eine Aussage nicht in Ihrer Datei belegen, kennzeichnet DockDocs das, statt sie als Tatsache darzustellen. Diese Nachvollziehbarkeit bis zur Quelle ist der zentrale Unterschied zu einem allgemeinen Chatbot." },
+    { q: "Was unterscheidet DockDocs von anderen PDF-Werkzeugen und von einem allgemeinen KI-Chatbot?", a: "Zwei Dinge, die ein allgemeiner KI-Chatbot nicht bieten kann: Datenschutz, den Sie überprüfen können, und Antworten, denen Sie vertrauen können. Die meisten DockDocs-Werkzeuge laufen in Ihrem Browser, sodass sensible Dateien Ihr Gerät nie verlassen. Und seine Dokumenten-KI zeigt die genaue Quellstelle hinter ihren Antworten und macht kenntlich, was sie nicht nachverfolgen kann, sodass Sie überprüfen können, was sie Ihnen sagt. Es ist für die Dokumente gemacht, die Sie nicht in einen allgemeinen Chatbot einfügen würden — Verträge, Finanzunterlagen, Forschung." },
+  ],
 };
 
 // Organization + WebSite descriptions, localized per homepage (the catch-all
@@ -45,6 +49,7 @@ const ORG_DESC: Record<string, string> = {
   pt: "IA de documentos privada e verificável: leia qualquer documento e verifique suas respostas — a IA mostra o trecho de origem por trás delas e sinaliza o que não pode rastrear, para você conferir por conta própria. Além disso, ~50 ferramentas PDF: a maioria roda no seu navegador, então esses arquivos nunca saem do seu dispositivo.",
   fr: "IA documentaire privée et vérifiable : lisez n'importe quel document et vérifiez ses réponses — l'IA montre le passage source derrière elles et signale ce qu'elle ne peut pas tracer, pour que vous le vérifiiez vous-même. Plus ~50 outils PDF, dont la plupart s'exécutent dans votre navigateur, et ces fichiers ne quittent donc jamais votre appareil.",
   ja: "プライベートで検証できる文書 AI——あらゆる文書を読み解き、その回答を検証できます。AI が回答の根拠となる原文箇所を示し、たどれない部分は明示するので、自分で確認できます。さらに、お使いの約 50 種類の PDF ツール（その多くはブラウザ内で動作）により、それらのファイルがデバイスの外に出ることはありません。",
+  de: "Private, nachvollziehbare Dokumenten-KI: Lesen Sie jedes Dokument und überprüfen Sie seine Antworten — die KI zeigt die Quellstelle dahinter und macht kenntlich, was sie nicht nachverfolgen kann. Dazu ~50 PDF-Werkzeuge — die meisten laufen in Ihrem Browser, sodass diese Dateien das Gerät nie verlassen.",
 };
 const SITE_DESC: Record<string, string> = {
   en: "Document AI that shows the source passage behind its answers, and flags what it can't trace, so you can verify them, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
@@ -53,6 +58,14 @@ const SITE_DESC: Record<string, string> = {
   pt: "IA de documentos que mostra o trecho de origem por trás de suas respostas e sinaliza o que não pode rastrear, para que você as verifique, além de ferramentas PDF privadas que rodam no seu navegador. Feita para os documentos que você não colaria num chatbot genérico.",
   fr: "IA documentaire qui montre le passage source derrière ses réponses et signale ce qu'elle ne peut pas tracer, pour que vous les vérifiiez, plus des outils PDF privés qui s'exécutent dans votre navigateur. Conçue pour les documents que vous ne colleriez pas dans un chatbot généraliste.",
   ja: "回答の根拠となる原文箇所を示し、たどれない部分は明示して検証できるようにする文書 AI と、お使いのブラウザ内で動作するプライベートな PDF ツール。汎用チャットボットに貼り付けられない文書のために作られています。",
+  de: "Dokumenten-KI, die die Quellstelle hinter ihren Antworten zeigt und kenntlich macht, was sie nicht nachverfolgen kann, damit Sie sie prüfen können — dazu private PDF-Werkzeuge, die in Ihrem Browser laufen. Gemacht für Dokumente, die Sie nicht in einen allgemeinen Chatbot einfügen würden.",
+};
+// Organization slogan, per locale (was hardcoded English for all locales until 2026-06-24).
+// Only en + de are authored; zh/es/pt/fr/ja have no vetted slogan translation yet and
+// fall back to en here (intentional — better than a half-machine-translated tagline).
+const SLOGAN: Record<string, string> = {
+  en: "Read any document. Verify every answer.",
+  de: "Jedes Dokument lesen. Jede Antwort überprüfen.",
 };
 
 export function homeSchema(locale: string = "en") {
@@ -67,7 +80,7 @@ export function homeSchema(locale: string = "en") {
         name: "DockDocs",
         url: SITE,
         description: ORG_DESC[locale] ?? ORG_DESC.en,
-        slogan: "Read any document. Verify every answer.",
+        slogan: SLOGAN[locale] ?? SLOGAN.en,
         foundingDate: "2024",
         sameAs: ["https://github.com/zq8345/dock-ai-ecosystem"],
       },
@@ -77,7 +90,7 @@ export function homeSchema(locale: string = "en") {
         name: "DockDocs",
         url: SITE,
         description: SITE_DESC[locale] ?? SITE_DESC.en,
-        inLanguage: ["en", "zh", "es", "pt", "fr", "ja"],
+        inLanguage: ["en", "zh", "es", "pt", "fr", "ja", "de"],
         publisher: { "@id": `${SITE}#org` },
       },
       {

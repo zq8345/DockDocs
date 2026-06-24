@@ -162,8 +162,66 @@ for (const locale of FAQ_LOCALES) {
   }
 }
 
-if (missing.length === 0 && unregistered.length === 0 && incompleteBody.length === 0) {
-  console.log(`[i18n-guard] OK — ${routeSlugs.length} routes present in all ${routeLocales.length} route locales (${routeLocales.join(", ")}); tool bodies + FAQ fully localized in ${BODY_LOCALES.join(", ")}.`);
+// ── Check E: marketing-page de parity (de must cover every fr surface) ──
+// The marketing pages keep their copy as per-locale literals (a `fr:` block /
+// `fr:` key for every French string). When a new locale (de) is added, it is
+// easy to translate Home but forget About/Pricing/contact — the page then
+// silently renders the English (or French) fallback for German visitors, and
+// Checks A–D (which only see tool pages + route presence) can't catch it.
+//
+// This check is deliberately simple and robust: for each marketing surface,
+// count the `fr:` occurrences and the `de:` occurrences in its source and FAIL
+// if de < fr. (The blog frame uses `locale === "de"` ternaries rather than
+// `de:` keys, so it is matched on that form instead.) An equal-or-greater de
+// count means every French surface has a German counterpart.
+const MARKETING = [
+  { label: "components/Home.tsx", file: join(APP, "components", "Home.tsx"), token: "key" },
+  { label: "components/AboutPage.tsx", file: join(APP, "components", "AboutPage.tsx"), token: "key" },
+  { label: "components/PricingPlans.tsx", file: join(APP, "components", "PricingPlans.tsx"), token: "key" },
+  // contact copy lives in lib/i18n.ts `infoPages` (there is no ContactPage.tsx);
+  // scope the count to the infoPages object so the en/zh/es/pt/fr/ja nav+footer
+  // dicts above it (which legitimately predate de and fall back) don't skew it.
+  { label: "lib/i18n.ts infoPages (contact)", file: I18N, token: "key", from: "export const infoPages" },
+  // blog frame: BlogPages.tsx localizes via `locale === "de"` ternaries, not
+  // `de:` keys — assert at least one de branch exists and it's not behind fr.
+  { label: "components/BlogPages.tsx (blog frame)", file: join(APP, "components", "BlogPages.tsx"), token: "ternary" },
+];
+
+const marketingGaps = [];
+for (const { label, file, token, from } of MARKETING) {
+  if (!existsSync(file)) {
+    marketingGaps.push(`${label} — file not found (update the guard's MARKETING list)`);
+    continue;
+  }
+  let text = readFileSync(file, "utf8");
+  if (from) {
+    const at = text.indexOf(from);
+    if (at < 0) {
+      marketingGaps.push(`${label} — could not find "${from}" (update the guard)`);
+      continue;
+    }
+    text = text.slice(at);
+  }
+  const [frRe, deRe] =
+    token === "ternary"
+      ? [/locale === "fr"/g, /locale === "de"/g]
+      : [/\bfr:/g, /\bde:/g];
+  const frCount = (text.match(frRe) || []).length;
+  const deCount = (text.match(deRe) || []).length;
+  if (deCount < frCount) {
+    marketingGaps.push(
+      `${label} — ${deCount} de vs ${frCount} fr (${frCount - deCount} German surface(s) missing → falls back to English/French). Add the de copy for every fr entry.`,
+    );
+  }
+}
+
+if (
+  missing.length === 0 &&
+  unregistered.length === 0 &&
+  incompleteBody.length === 0 &&
+  marketingGaps.length === 0
+) {
+  console.log(`[i18n-guard] OK — ${routeSlugs.length} routes present in all ${routeLocales.length} route locales (${routeLocales.join(", ")}); tool bodies + FAQ fully localized in ${BODY_LOCALES.join(", ")}; marketing pages have de parity with fr.`);
   process.exit(0);
 }
 
@@ -179,6 +237,10 @@ if (missing.length) {
 if (incompleteBody.length) {
   out.push("", "  Tool pages with un-localized body/FAQ copy (English fallback):");
   for (const b of incompleteBody) out.push(`    • ${b}`);
+}
+if (marketingGaps.length) {
+  out.push("", "  Marketing pages missing German (de) copy where French (fr) exists:");
+  for (const g of marketingGaps) out.push(`    • ${g}`);
 }
 out.push("", "  Build blocked: every feature must exist — and be fully localized — in every language.");
 die(out);

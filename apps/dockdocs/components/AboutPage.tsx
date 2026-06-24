@@ -10,7 +10,7 @@ import type { ReactNode } from "react";
 import { deepHant } from "@/lib/zh-hant";
 import { Figure, SHELL, H2, SUB, CAP, PANEL, eyebrowCls } from "@/components/design";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
 
 const content = {
   en: {
@@ -421,6 +421,74 @@ const content = {
     ctaSub: "どれかツールを開いてネットワークタブを見てください——ブラウザ内ツールなら、何も外に出ません。",
     cta1: "ツールを見る", cta2: "プライバシーの仕組みを見る",
   },
+  de: {
+    heroEyebrow: "// Über DockDocs",
+    heroPre: "Ihre Dokumente gehen niemanden etwas an außer ",
+    heroAccent: "Sie selbst.",
+    heroSub: "Die meisten DockDocs-Tools laufen vollständig in Ihrem Browser — Ihre Dateien erreichen uns nie, weil sie Sie nie verlassen. Lokal ist die Voreinstellung, keine Option, die Sie erst aktivieren müssen.",
+    heroCaption: "Abb. 0.1 — Ihre Datei und wo sie bleibt.",
+
+    flowEyebrow: "// Verfolgen Sie die Datei",
+    flowHeading: "Wohin Ihre Datei wirklich geht.",
+    flowSub: "Bei den meisten Tools geschieht die Verarbeitung auf Ihrem Gerät — und die Datei überschreitet die Linie nie.",
+    flowDevice: "Ihr Gerät",
+    flowNet: "Das Internet",
+    flowServers: "deren Server",
+    flowZero: "0 Bytes hochgeladen",
+    flowLeaves: "verlässt Ihr Gerät",
+    flowNoCross: "nichts überschreitet diese Linie",
+    flowWouldGo: "wohin Ihre Datei normalerweise ginge",
+    flowStays: "bleibt auf Ihrem Gerät",
+    flowCaption: "Abb. 0.2 — bei den meisten Tools überschreitet Ihre Datei die Grenze nie.",
+
+    proofEyebrow: "// Glauben Sie uns nicht aufs Wort",
+    proofHeading: "Vertrauen Sie uns nicht. Drücken Sie F12.",
+    proofSub: "Öffnen Sie den Netzwerk-Tab Ihres Browsers und nutzen Sie ein Browser-Tool — Sie sehen null Uploads. Schalten Sie das WLAN aus; es funktioniert weiterhin.",
+    proofZero: "0 Anfragen · 0 B übertragen",
+    proofOffline: "Funktioniert ohne WLAN.",
+    proofCallout: "das ist der ganze Beweis",
+    proofCaption: "Abb. 0.3 — ein echtes Browser-Tool, live aufgenommen. Nichts verlässt Ihr Gerät.",
+
+    tableEyebrow: "// Klar gesagt",
+    tableHeading: "Was wir tun. Was wir niemals tun.",
+    tableSub: "Kein Kleingedrucktes. Die linke Liste ist das ganze Produkt; die rechte ist alles, was wir uns weigern zu tun.",
+    doHead: "Wir tun",
+    neverHead: "Wir tun niemals",
+    doRows: ["Dateien in Ihrem Browser verarbeiten", "Temporäre Cloud-Dateien sofort löschen", "Jeden Cloud-Schritt vorab kennzeichnen", "Die Quelle einer KI-Antwort nennen — oder sagen, wenn wir es nicht können", "Sie ohne Konto starten lassen"],
+    neverRows: ["Ihre Dokumente speichern", "Unsere eigenen Modelle mit Ihren Dateien trainieren", "Ihre Daten verkaufen oder weitergeben", "Kündigungsfallen per E-Mail", "Versteckte Uploads"],
+    tableCaption: "Abb. 0.4 — die Vereinbarung, vollständig.",
+
+    cloudEyebrow: "// Ehrlich zur Cloud",
+    cloudHeading: "Wenn ein Tool die Cloud nutzt, sagt es das.",
+    cloudSub: "Ein paar Tools (Office-Konvertierung, große OCR, KI-Chat) brauchen einen Server: vor dem Start gekennzeichnet, bei der Übertragung verschlüsselt, direkt danach gelöscht. Wenn die KI eine Frage beantwortet oder einen Fund markiert, zeigt sie die genaue Textstelle dahinter — wörtlich aus Ihrer Datei zitiert und als dort vorhanden überprüft — und sagt Ihnen, wenn sich etwas nicht zurückverfolgen lässt, statt eine Quelle zu erfinden.",
+    cloudSteps: ["vorab gekennzeichnet", "bei Übertragung verschlüsselt", "verarbeitet", "Kopie gelöscht"],
+    cloudNotKept: "nicht gespeichert",
+    aiSummary: "KI-Antwort",
+    aiCite: "Quelle",
+    cloudCaption: "Abb. 0.5 — Cloud-Schritte werden gekennzeichnet und gelöscht; KI-Antworten sind nachverfolgbar.",
+
+    statsEyebrow: "// Die Zahlen, die zählen",
+    statsHeading: "Die Zahlen, die zählen, sind Nullen.",
+    statsSub: "Unabhängig entwickelt — finanziert von den Menschen, die es nutzen, nicht von Investoren. Kein Druck, Daten abzuschöpfen oder um jeden Preis zu wachsen.",
+    stats: [
+      { n: "0", l: "gespeicherte Dateien bei Browser-Tools", z: true },
+      { n: "0", l: "Dateien zum Training unserer eigenen Modelle", z: true },
+      { n: "0 €", l: "für den Start — ohne Konto", z: true },
+      { n: "~50", l: "PDF- und KI-Tools", z: false },
+    ],
+    relPoints: [
+      { t: "Zahlungen", b: "Creem, ein lizenzierter Merchant of Record — wir sehen Ihre Karte nie." },
+      { t: "Rückerstattungen", b: "7 Tage Geld-zurück, jederzeit kündbar." },
+      { t: "Keine Bindung", b: "Ihre Daten gehören Ihnen; jederzeit exportierbar." },
+      { t: "Anti-fragil", b: "Browser-Tools liefen immer schon auf Ihrem Gerät — nie als Geisel genommen." },
+    ],
+    statsCaption: "Abb. 0.6 — was wir speichern, was wir berechnen und wem wir Rechenschaft schulden.",
+
+    ctaEyebrow: "// Probieren Sie es",
+    ctaHeading: "Probieren Sie ein Tool. Kein Upload. Kein Konto.",
+    ctaSub: "Öffnen Sie ein beliebiges Tool und beobachten Sie den Netzwerk-Tab — bei den Browser-Tools verlässt nichts Ihr Gerät.",
+    cta1: "Tools durchsuchen", cta2: "So funktioniert der Datenschutz",
+  },
 } as const;
 
 const Check = () => (
@@ -437,7 +505,7 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
   const sub = SUB;
   const cap = CAP;
   const shell = SHELL;
-  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "zh-Hant" ? `/zh-Hant${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : slug);
+  const path = (slug: string) => (locale === "zh" ? `/zh${slug}` : locale === "zh-Hant" ? `/zh-Hant${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : locale === "de" ? `/de${slug}` : slug);
 
   return (
     <main>

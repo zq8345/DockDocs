@@ -227,6 +227,13 @@ export function languageAlternates(slug: RouteSlug) {
     es: absoluteUrl(localizedPath("es", slug)),
     pt: absoluteUrl(localizedPath("pt", slug)),
     fr: absoluteUrl(localizedPath("fr", slug)),
+    ja: absoluteUrl(localizedPath("ja", slug)),
+    de: absoluteUrl(localizedPath("de", slug)),
+    // hreflang language ATTRIBUTE keeps BCP-47 "zh-Hant" casing; localizedPath
+    // lowercases only the href PATH segment (/zh-hant/) to dodge Netlify's
+    // mixed-case 301. Without this key the zh-Hant pages ship no self/sibling
+    // hreflang and the en/zh/es/pt/fr/ja/de pages omit a Traditional-Chinese pointer.
+    "zh-Hant": absoluteUrl(localizedPath("zh-Hant", slug)),
     "x-default": absoluteUrl(pathForSlug(slug)),
   };
 }
@@ -234,12 +241,16 @@ export function languageAlternates(slug: RouteSlug) {
 export function splitPathname(pathname: string) {
   const segments = pathname.split("/").filter(Boolean);
   const first = segments[0];
-  const locale = isLocale(first) ? first : defaultLocale;
-  const slug = isLocale(first) ? segments.slice(1).join("/") : segments.join("/");
+  // Match ALL route locales (es/pt/fr/ja/de/zh-Hant), not just en/zh — otherwise
+  // a /de/... path is treated as having no locale prefix and silently falls back
+  // to defaultLocale, dropping the /de segment.
+  const hasPrefix = isRouteLocale(first);
+  const locale = hasPrefix ? first : defaultLocale;
+  const slug = hasPrefix ? segments.slice(1).join("/") : segments.join("/");
   return {
     locale,
     slug: (slug as RouteSlug) || "",
-    hasLocalePrefix: isLocale(first),
+    hasLocalePrefix: hasPrefix,
   };
 }
 
@@ -249,7 +260,9 @@ export function localizedHref(href: string, locale: RouteLocale | (string & {}),
   }
 
   const clean = href.replace(/^\/+|\/+$/g, "");
-  const slug = ((locales as readonly string[]).includes(clean.split("/")[0])
+  // Strip ANY route-locale prefix (es/pt/fr/ja/de/zh-Hant), not just en/zh, so a
+  // /de/... href is re-localized correctly instead of keeping a stray "de" slug.
+  const slug = ((routeLocales as readonly string[]).includes(clean.split("/")[0])
     ? clean.split("/").slice(1).join("/")
     : clean) as RouteSlug;
 
@@ -499,7 +512,7 @@ export type InfoPageData = {
   faqs?: Array<{ question: string; answer: string }>;
 };
 
-export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", Record<InfoPageSlug, InfoPageData>> = {
+export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de", Record<InfoPageSlug, InfoPageData>> = {
   en: {
     about: {
       slug: "about",
@@ -2556,10 +2569,360 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", Record<I
       ],
     },
   },
+  de: {
+    about: {
+      slug: "about",
+      title: "Über DockDocs",
+      description:
+        "Erfahren Sie mehr über DockDocs, eine datenschutzorientierte PDF-Tools-Plattform, die sich zu einem KI-Dokumenten-Workspace entwickelt.",
+      eyebrow: "Über DockDocs",
+      heroTitle: "Ein KI-Dokumenten-Workspace für echte Datei-Workflows.",
+      heroDescription:
+        "DockDocs wurde entwickelt, um die tägliche Dokumentenarbeit einfacher zu machen: komprimieren, zusammenfügen, teilen, konvertieren, OCR, zusammenfassen und Dokumente prüfen – alles in einem aufgeräumten Workspace.",
+      primaryAction: { label: "Mit JPG zu PDF starten", href: "/jpg-to-pdf" },
+      secondaryAction: { label: "KI-Workspace ansehen", href: "/ai-workspace" },
+      sections: [
+        {
+          title: "Mission",
+          description:
+            "Unsere Mission ist es, Teams, Studierenden, Sachbearbeitern und selbstständigen Fachleuten einen schnellen PDF-Workflow zu bieten, der sich nicht wie eine überladene Tool-Website anfühlt.",
+          items: [
+            {
+              title: "PDF-Tools zuerst",
+              description:
+                "DockDocs beginnt mit praktischen Aufgaben: komprimieren, zusammenfügen, teilen, konvertieren, OCR und Dateien für die Übergabe vorbereiten.",
+            },
+            {
+              title: "KI als Ergänzung",
+              description:
+                "KI wird nur dort ergänzt, wo sie das Dokumentenverständnis verbessert: OCR, Zusammenfassungen, Chat mit PDF und Workflow-Hilfe.",
+            },
+            {
+              title: "Datenschutzorientierte Philosophie",
+              description:
+                "Jedes Tool sollte klar anzeigen, was hochgeladen wird, warum und was als Nächstes passiert – bevor Sie eine Datei ablegen.",
+            },
+          ],
+        },
+        {
+          title: "Was DockDocs aufbaut",
+          description:
+            "Eine Plattform für Dokumentenarbeit, die mit praktischen PDF-Tools beginnt und KI-Ebenen dort ergänzt, wo sie Workflows wirklich verbessern.",
+          items: [
+            {
+              title: "Wesentliche PDF-Tools",
+              description:
+                "Komprimieren, zusammenfügen, teilen, drehen, zuschneiden, Seiten nummerieren, Wasserzeichen hinzufügen, signieren, Bilder extrahieren – die Tools, die Teams täglich brauchen.",
+            },
+            {
+              title: "Dokumentenkonvertierung",
+              description:
+                "JPG zu PDF, Office zu PDF, PDF zu Word – für Teams gemacht, die zwischen Dateiformaten jonglieren.",
+            },
+            {
+              title: "KI-Workflows",
+              description:
+                "KI-Zusammenfassung, Chat mit PDF, OCR, Extraktion nach Excel, Dokumentenvergleich und Versionsanmerkungen – über die reine Dateivorbereitung hinaus.",
+            },
+          ],
+        },
+      ],
+    },
+    blog: {
+      slug: "blog",
+      title: "Ressourcen und Blog | DockDocs",
+      description:
+        "DockDocs-Ressourcen zu PDF-Tools, OCR-Workflows, JPG-zu-PDF-Konvertierung und KI-Dokumentenproduktivität.",
+      eyebrow: "Ressourcen",
+      heroTitle: "Ressourcen zu PDF-Tools und KI-Dokumenten-Workflows.",
+      heroDescription:
+        "Ein Content-Hub mit praktischen Anleitungen, Workflow-Erklärungen, Produktneuigkeiten und SEO-Inhalten rund um PDF- und KI-Dokumentenproduktivität.",
+      sections: [
+        {
+          title: "Geplante Ressourcenbereiche",
+          description:
+            "Der Blog ist für nützliche, langlebige Inhalte vorgesehen – nicht für oberflächliche Ankündigungen.",
+          items: [
+            {
+              title: "Anleitungen zu PDF-Workflows",
+              description:
+                "Anleitungen zum Komprimieren, Zusammenfügen, Teilen, Konvertieren und Vorbereiten geordneter Dokumentensätze.",
+            },
+            {
+              title: "Konvertierungsressourcen",
+              description:
+                "Artikel zu JPG zu PDF, PDF zu Word, gescannten PDFs und Workflows zur Dokumentenübergabe.",
+            },
+            {
+              title: "KI-Dokumentenproduktivität",
+              description:
+                "Ressourcen zu OCR, KI-Zusammenfassung, Chat mit PDF und Mustern zur Dokumentenautomatisierung.",
+            },
+          ],
+        },
+      ],
+    },
+    help: {
+      slug: "help",
+      title: "Hilfecenter | DockDocs",
+      description:
+        "Hilfe zu DockDocs-Uploads, datenschutzorientierten PDF-Workflows, unterstützten Formaten, lokaler Verarbeitung und Grenzen der KI-Dokumentenfunktionen.",
+      eyebrow: "Hilfecenter",
+      heroTitle: "Hilfe zu Uploads, Datenschutz, Formaten und KI-Workflows.",
+      heroDescription:
+        "Auf dieser Seite erfahren Sie, wie die Tool-Seiten von DockDocs aufgebaut sind, welche Dateien jeder Workflow erwartet und wo die KI-Funktionen ansetzen.",
+      sections: [
+        {
+          title: "Upload-Verhalten und unterstützte Formate",
+          description:
+            "Jede Tool-Seite zeigt, was Sie hochladen können, was der Workflow vorbereitet und welche Export-Aktion am Ende erscheint.",
+          items: [
+            {
+              title: "Upload-Verhalten",
+              description:
+                "Wählen Sie Dateien im Upload-Bereich des gewählten Workflows aus. PDF-Tools konzentrieren sich auf PDF, während JPG zu PDF Bilddateien annimmt, um Dokumente zu erstellen.",
+            },
+            {
+              title: "Unterstützte Formate",
+              description:
+                "Die wichtigsten Workflows umfassen PDF, gescanntes PDF, JPG, PNG, WebP und die Konvertierung in bearbeitbare, Word-orientierte Dokumente.",
+            },
+            {
+              title: "Fehlerbehebung",
+              description:
+                "Wenn eine Datei zu groß oder schlecht formatiert ist, beginnen Sie mit Komprimierung oder Konvertierung, bevor Sie die KI-orientierten Workflows nutzen.",
+            },
+          ],
+        },
+        {
+          title: "Lokale Verarbeitung, datenschutzorientierter Umgang und KI-Grenzen",
+          description:
+            "DockDocs ist rund um die lokale Dokumentenvorbereitung konzipiert, wo möglich, mit datenschutzorientiertem Umgang und klaren Grenzen für KI-gestützte Funktionen.",
+          items: [
+            {
+              title: "Lokale Verarbeitung",
+              description:
+                "Wo möglich, bevorzugt DockDocs ein Workflow-Design, das im Browser und lokal läuft, sodass die einfache Dokumentenvorbereitung nah bei Ihnen erfolgt, bevor ein Cloud- oder KI-Schritt hinzukommt. Einige Konvertierungen laufen serverseitig.",
+            },
+            {
+              title: "Datenschutzorientierter Umgang",
+              description:
+                "Die Tool-Seiten sollten Upload-Erwartungen, den Zweck der Verarbeitung, die Aufbewahrungsregeln und das Löschverhalten erläutern, bevor die produktive Verarbeitung aktiviert wird.",
+            },
+            {
+              title: "KI-Grenzen",
+              description:
+                "KI-Funktionen – Zusammenfassung, OCR, Chat mit PDF – sind Produktivitätshilfen. Prüfen Sie wichtige Ergebnisse, bevor Sie sie in kritischen Workflows verwenden.",
+            },
+          ],
+        },
+      ],
+    },
+    faq: {
+      slug: "faq",
+      title: "FAQ | DockDocs",
+      description:
+        "Häufige Fragen zu DockDocs-PDF-Tools, datenschutzorientierten Workflows, OCR, KI-Zusammenfassung und Chat mit PDF.",
+      eyebrow: "Häufige Fragen",
+      heroTitle: "Fragen und Antworten zu DockDocs.",
+      heroDescription:
+        "Antworten zu PDF-Tools, Dateischutz, browserbasierten Workflows, OCR, JPG-Konvertierung, Exporten, mobiler Nutzung und KI-Dokumentenfunktionen.",
+      sections: [
+        {
+          title: "Häufige Fragen zur Website",
+          description: "Praktische Antworten auf häufige Fragen, bevor Sie Dokumente hochladen.",
+        },
+      ],
+      faqs: [
+        {
+          question: "Was ist DockDocs?",
+          answer:
+            "DockDocs ist eine datenschutzorientierte PDF-Tools-Plattform mit KI-Funktionen als zusätzlicher Produktivitätsebene.",
+        },
+        {
+          question: "Werden Dateien im Browser verarbeitet?",
+          answer:
+            "DockDocs ist auf browserbasierte, lokale Workflows ausgelegt, wo immer das möglich ist. Bei einigen Konvertierungen ist eine serverseitige Verarbeitung nötig; das wird vor dem Upload klar angezeigt.",
+        },
+        {
+          question: "Sind meine Dateien privat?",
+          answer:
+            "Die Produktrichtung ist datenschutzorientiert: klarer Upload-Zweck, transparente Verarbeitungsstatus und dokumentierte Aufbewahrungsregeln vor der produktiven Verarbeitung.",
+        },
+        {
+          question: "Wie genau ist die OCR?",
+          answer:
+            "Die OCR-Genauigkeit hängt von Scan-Qualität, Bildkontrast, Sprache und Layout ab. Prüfen Sie den extrahierten Text, bevor Sie ihn in wichtigen Workflows verwenden.",
+        },
+        {
+          question: "Kann ich JPG-Bilder in PDF umwandeln?",
+          answer:
+            "Ja. JPG zu PDF ist für JPG-, PNG- und WebP-Uploads, das Ordnen der Seiten und den Export als PDF gemacht.",
+        },
+        {
+          question: "Was können KI-Zusammenfassung und Chat mit PDF leisten?",
+          answer:
+            "KI-Funktionen können beim Zusammenfassen, Durchsuchen und Befragen von Dokumenten helfen. Sie ersetzen keine juristische, finanzielle oder fachliche Prüfung.",
+        },
+        {
+          question: "Sind Exporte endgültig?",
+          answer:
+            "Export-Vorschauen und simulierte Workflow-Status helfen Ihnen, das erwartete Ergebnis zu verstehen. Prüfen Sie die finalen Dateien, bevor Sie sie teilen.",
+        },
+        {
+          question: "Funktioniert DockDocs auf dem Smartphone?",
+          answer:
+            "Ja. Navigation, Upload-Bereiche, Karten und CTAs sind so gestaltet, dass sie auf Desktop, Tablet und Smartphone funktionieren.",
+        },
+      ],
+    },
+    contact: {
+      slug: "contact",
+      title: "Kontakt | DockDocs",
+      description:
+        "Kontaktieren Sie DockDocs bei Fragen zum Produkt, Rückmeldungen zu PDF-Workflows, Datenschutzfragen und Anfragen zum KI-Dokumenten-Workspace.",
+      eyebrow: "Kontakt",
+      heroTitle: "Kontaktieren Sie das DockDocs-Team.",
+      heroDescription:
+        "Nutzen Sie diese Seite für Produkt-Feedback, Datenschutzfragen, Anfragen zu PDF-Workflows, Ideen für den KI-Workspace und Geschäftsanfragen.",
+      primaryAction: { label: "E-Mail an DockDocs senden", href: "mailto:hello@dockdocs.app" },
+      secondaryAction: { label: "Hilfecenter besuchen", href: "/help" },
+      sections: [
+        {
+          title: "Support-Kanäle",
+          description:
+            "DockDocs hält die Kontaktmöglichkeiten einfach, während das Produkt wächst.",
+          items: [
+            {
+              title: "Support-E-Mail",
+              description:
+                "Nutzen Sie hello@dockdocs.app für Produktfragen, Fehlerberichte, Datenschutzfragen und Rückmeldungen zu Workflows.",
+            },
+            {
+              title: "Reaktionszeiten",
+              description:
+                "Support-Anfragen in der frühen Phase werden als Produkt-Feedback behandelt; dringende produktive SLAs werden künftig über Enterprise-Pläne abgedeckt.",
+            },
+            {
+              title: "Geschäftsanfragen",
+              description:
+                "Teams können uns zu PDF-Workflow-Volumen, KI-Dokumentenprüfung, Datenschutzanforderungen und Integrationsideen kontaktieren.",
+            },
+          ],
+        },
+      ],
+    },
+    "privacy-policy": {
+      slug: "privacy-policy",
+      title: "Datenschutzerklärung | DockDocs",
+      description:
+        "DockDocs-Datenschutzerklärung zu Uploads, lokalen PDF-Workflows, KI-Verarbeitung, Aufbewahrung, Cookies und Analyse.",
+      eyebrow: "Datenschutzerklärung",
+      heroTitle: "Datenschutzorientierte Dokumenten-Workflows brauchen klare Regeln.",
+      heroDescription:
+        "Dieser Richtlinienrahmen erklärt, wie DockDocs mit Uploads, lokaler Verarbeitung, künftiger KI-Verarbeitung, Aufbewahrung, Cookies und Analyse umgeht.",
+      sections: [
+        {
+          title: "Dokumentenverarbeitung",
+          description:
+            "DockDocs ist darauf ausgelegt, die Erwartungen an die Dokumentenverarbeitung klarzustellen, bevor Sie Dateien hochladen.",
+          items: [
+            {
+              title: "Uploads",
+              description:
+                "Die Tool-Seiten sollten die akzeptierten Formate, den Zweck der Verarbeitung und das erwartete Ergebnis vor dem Upload anzeigen.",
+            },
+            {
+              title: "Lokale Verarbeitung",
+              description:
+                "Wo möglich, sollte die einfache Dokumentenvorbereitung im Browser oder nah bei Ihnen erfolgen, bevor ein Cloud-Workflow hinzukommt. Einige Konvertierungen laufen serverseitig.",
+            },
+            {
+              title: "KI-Verarbeitung",
+              description:
+                "KI-Funktionen wie OCR, Zusammenfassungen und Dokumenten-Q&A können eine Modellverarbeitung erfordern. Diese Workflows sollten Grenzen und Verarbeitungsregeln klar offenlegen.",
+            },
+          ],
+        },
+        {
+          title: "Daten und Betrieb der Website",
+          description:
+            "Eine produktive SaaS-Datenschutzseite sollte Aufbewahrung, Cookies, Analyse und Kontaktkanäle definieren.",
+          items: [
+            {
+              title: "Aufbewahrung",
+              description:
+                "Produktive Aufbewahrungsfristen, das Löschverhalten und der Umgang mit temporären Dateien sollten vor dem Start dokumentiert werden.",
+            },
+            {
+              title: "Cookies",
+              description:
+                "DockDocs kann Cookies verwenden, die für den Betrieb der Website und künftige Einstellungen wie die Sprachauswahl erforderlich sind.",
+            },
+            {
+              title: "Analyse",
+              description:
+                "Wenn Analyse aktiviert ist, sollte sie dem Verständnis der aggregierten Produktnutzung dienen und nicht dazu, Dokumenteninhalte offenzulegen.",
+            },
+          ],
+        },
+      ],
+    },
+    terms: {
+      slug: "terms",
+      title: "Nutzungsbedingungen | DockDocs",
+      description:
+        "Nutzungsbedingungen für die PDF-Tools von DockDocs, KI-Dokumenten-Workflows, Einschränkungen, geistiges Eigentum und Haftung.",
+      eyebrow: "Nutzungsbedingungen",
+      heroTitle: "Nutzungsbedingungen für die PDF- und KI-Workflows von DockDocs.",
+      heroDescription:
+        "Diese Bedingungen beschreiben die zulässige Nutzung, die Verantwortung der Nutzer, KI-Grenzen, geistiges Eigentum und Haftungserwartungen.",
+      sections: [
+        {
+          title: "Nutzung von DockDocs",
+          description:
+            "Die Tools von DockDocs sind für rechtmäßige Dokumenten-Workflows gedacht: Produktivität, Konvertierung, Organisation und Prüfung.",
+          items: [
+            {
+              title: "Nutzung",
+              description:
+                "Nutzer sind dafür verantwortlich, sicherzustellen, dass sie das Recht haben, Dokumente hochzuladen, zu konvertieren, zu prüfen und zu exportieren.",
+            },
+            {
+              title: "Einschränkungen",
+              description:
+                "Dateiverarbeitung, Ausgabequalität, OCR-Genauigkeit und KI-gestützte Prüfung können je nach Quelldatei und Workflow variieren.",
+            },
+            {
+              title: "Geistiges Eigentum",
+              description:
+                "Nutzer bleiben für die von ihnen verarbeiteten Inhalte verantwortlich. Marke, Oberfläche und Produktmaterialien von DockDocs bleiben Eigentum von DockDocs.",
+            },
+          ],
+        },
+        {
+          title: "KI und Haftung",
+          description:
+            "KI-Funktionen sind Produktivitätshilfen und sollten nicht als fachliche Beratung verstanden werden.",
+          items: [
+            {
+              title: "KI-Hinweise",
+              description:
+                "KI-Zusammenfassungen, OCR-Text und Antworten aus Chat mit PDF können unvollständig oder falsch sein. Prüfen Sie wichtige Ergebnisse.",
+            },
+            {
+              title: "Haftungsbeschränkungen",
+              description:
+                "DockDocs sollte nicht als alleinige Grundlage für rechtliche, finanzielle, medizinische oder Compliance-Entscheidungen verwendet werden.",
+            },
+          ],
+        },
+      ],
+    },
+  },
 };
 
 export function getInfoPage(locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant", slug: InfoPageSlug) {
   if (locale === "zh-Hant") return deepHant(infoPages.zh[slug]);
-  // de has no authored infoPages entry yet → falls to infoPages.en (GAP: de infoPages content).
   return (infoPages[locale as keyof typeof infoPages] ?? infoPages.en)[slug];
 }
