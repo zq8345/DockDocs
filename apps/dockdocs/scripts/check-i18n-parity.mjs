@@ -21,26 +21,10 @@ const APP = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(APP, "out");
 const I18N = join(APP, "lib", "i18n.ts");
 
-// Root pages that are intentionally English-only / not user-facing in every
-// language. Add a slug here ONLY when it should deliberately NOT exist in other
-// languages — anything else is a parity bug the guard should catch.
-const EXCEPTIONS = new Set([
-  "internal", // internal dashboard, behind Basic Auth — not a public feature
-  "404", // Next.js error page, not a feature
-  "safe-to-upload-pdf", // standalone English-first GEO content page (Q&A) — no localized variants yet by design
-  "redact-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
-  "compress-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
-  "are-free-pdf-tools-safe", // standalone English-first GEO content page (Q&A) — no localized variants yet by design
-  "ai-read-pdf-without-storing", // standalone English-first GEO content page (Q&A) — no localized variants yet by design
-  "dockdocs-vs-smallpdf-vs-ilovepdf", // standalone English-first GEO comparison page — no localized variants yet by design
-  "url-to-pdf", // retired CloudConvert tool → standalone English-first GEO how-to (browser Print → Save as PDF); old localized tool routes 301'd to it
-  "merge-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
-  "split-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
-  "password-protect-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
-  "dockdocs-vs-smallpdf", // standalone English-first GEO head-to-head comparison page — no localized variants yet by design
-  "dockdocs-vs-ilovepdf", // standalone English-first GEO head-to-head comparison page — no localized variants yet by design
-  "offline", // PWA service-worker offline fallback (public/sw.js precaches /offline/) — noindex, ONE route that picks its language client-side (OfflineFallback → detectOfflineLocale over 8 locales), so it is deliberately NOT per-locale routed
-]);
+// Root pages that are intentionally English-only (no per-locale variant). The real
+// standalone PAGES are the single source `standaloneRoutes` in lib/i18n.ts (shared with
+// the zh language-redirect in app/layout.tsx, so the two never drift); "internal"/"404"
+// are framework specials. EXCEPTIONS is assembled from those just below (after pickArray).
 
 function die(lines) {
   console.error("\n" + (Array.isArray(lines) ? lines.join("\n") : lines) + "\n");
@@ -68,6 +52,14 @@ const routeLocales = pickArray("routeLocales");
 const routeSlugs = pickArray("routeSlugs");
 const routeSet = new Set(routeSlugs);
 const localeSet = new Set(allLocales);
+
+// English-only roots: the standalone pages (single source in lib/standalone-routes.ts,
+// shared with the language-redirect in app/layout.tsx) + the framework specials internal/404.
+const standaloneSrc = readFileSync(join(APP, "lib", "standalone-routes.ts"), "utf8");
+const standaloneMatch = standaloneSrc.match(/export const standaloneRoutes\s*=\s*\[([\s\S]*?)\]/);
+if (!standaloneMatch) die(`[i18n-guard] Could not parse standaloneRoutes from lib/standalone-routes.ts — update the guard.`);
+const standaloneRoutes = [...standaloneMatch[1].matchAll(/"([^"]*)"/g)].map((x) => x[1]);
+const EXCEPTIONS = new Set([...standaloneRoutes, "internal", "404"]);
 
 const hasPage = (rel) => existsSync(join(OUT, rel, "index.html"));
 

@@ -4,6 +4,7 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { PwaRuntime } from "@/components/PwaRuntime";
+import { standaloneRoutes } from "@/lib/standalone-routes";
 import { absoluteUrl, googleSiteVerification, siteUrl } from "@/shared/seo/routes";
 import "./globals.css";
 
@@ -57,9 +58,10 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
               var path = window.location.pathname;
               var seg = path.split('/').filter(Boolean)[0];
               var hasPrefix = ['en','zh','ja','ko','es','fr','de','pt','it','ru','ar','hi'].includes(seg);
-              // 'offline' has no per-locale variant (one runtime-localized PWA fallback) —
-              // redirecting it to /zh/offline would 404 (and loop while offline).
-              if (hasPrefix || seg === 'offline') return;
+              // Standalone English-only routes (GEO pages + the PWA offline fallback) have no
+              // /zh/<slug> variant — redirecting them would 404 (and /offline would loop while
+              // offline). Single source: standaloneRoutes in lib/standalone-routes.ts.
+              if (hasPrefix || ${JSON.stringify([...standaloneRoutes])}.indexOf(seg) !== -1) return;
               // Only redirect to zh — the only non-English locale with full content
               var zhLangs = {'zh':1,'zh-cn':1,'zh-tw':1,'zh-hk':1,'zh-sg':1};
               var code = lang.split('-')[0];
