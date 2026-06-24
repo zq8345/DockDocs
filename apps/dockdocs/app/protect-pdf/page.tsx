@@ -34,7 +34,7 @@ const config = {
   benefitsDescription: "Upload locally, set a password, and download an encrypted PDF instantly.",
   benefits: [
     {
-      title: "AES-128 encryption",
+      title: "AES-256 encryption",
       description: "Industry-standard encryption protects your PDF from unauthorized access.",
     },
     {
@@ -49,7 +49,7 @@ const config = {
   featuresTitle: "Built for PDF password protection",
   featuresDescription: "A minimal DockDocs interface for encrypting PDF documents with a password.",
   features: [
-    { title: "AES-128 encryption", description: "Standard encryption supported by all major PDF readers." },
+    { title: "AES-256 encryption", description: "Standard encryption supported by all major PDF readers." },
     { title: "Password required to open", description: "Recipients must enter the password to view the PDF." },
     { title: "Browser-side", description: "Uses pdf-lib for fast, local processing." },
     { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
@@ -73,7 +73,7 @@ const config = {
     },
     {
       question: "What encryption standard is used?",
-      answer: "DockDocs uses AES-128 encryption, which is supported by all major PDF readers.",
+      answer: "DockDocs uses AES-256 encryption, which is supported by all major PDF readers.",
     },
     {
       question: "Can I recover a forgotten password?",
@@ -81,7 +81,7 @@ const config = {
     },
     {
       question: "What is the difference between password-protecting and encrypting a PDF?",
-      answer: "They are two parts of the same step. The password is what a reader types to open the file; AES-128 encryption is what scrambles the file's contents so it cannot be read without that password. DockDocs does both at once — set one password and the PDF is encrypted and locked.",
+      answer: "They are two parts of the same step. The password is what a reader types to open the file; AES-256 encryption is what scrambles the file's contents so it cannot be read without that password. DockDocs does both at once — set one password and the PDF is encrypted and locked.",
     },
     {
       question: "Can I password protect a PDF on my phone?",

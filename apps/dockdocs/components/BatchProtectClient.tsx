@@ -100,7 +100,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     benefitsTitle: "Why batch-encrypt PDFs in your browser",
     benefitsDescription: "Lock an entire folder of PDFs with one password and get them all back as a single ZIP.",
     benefits: [
-      { title: "One password, a whole folder", description: "Set a single password once and apply real AES encryption to every PDF in the batch — no opening and re-saving files one at a time." },
+      { title: "One password, a whole folder", description: "Set a single password once and apply real AES-256 encryption to every PDF in the batch — no opening and re-saving files one at a time." },
       { title: "Packaged into one ZIP", description: "Every encrypted PDF comes back named after the original in one tidy ZIP, ready to forward or archive in a single download." },
       { title: "Built for stacks of files", description: "Process up to 30 PDFs in a run, with already-encrypted files skipped automatically so nothing is double-locked." },
     ],
@@ -123,7 +123,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     benefitsTitle: "为什么在浏览器里批量加密 PDF",
     benefitsDescription: "用一个密码锁住整个文件夹的 PDF，全部打包成一个 ZIP 取回。",
     benefits: [
-      { title: "一个密码，整个文件夹", description: "只需设一次密码，就对批次里的每个 PDF 应用真正的 AES 加密——不必逐个打开再另存。" },
+      { title: "一个密码，整个文件夹", description: "只需设一次密码，就对批次里的每个 PDF 应用真正的 AES-256 加密——不必逐个打开再另存。" },
       { title: "打包成一个 ZIP", description: "每个加密后的 PDF 都沿用原文件名，整齐收进一个 ZIP，一次下载即可转发或归档。" },
       { title: "为成堆文件而生", description: "单次最多处理 30 个 PDF，已加密的文件会自动跳过，绝不重复加锁。" },
     ],
@@ -146,7 +146,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     benefitsTitle: "Por qué cifrar PDF por lotes en tu navegador",
     benefitsDescription: "Bloquea una carpeta entera de PDF con una sola contraseña y recupéralos todos en un único ZIP.",
     benefits: [
-      { title: "Una contraseña, toda una carpeta", description: "Define una contraseña una sola vez y aplica cifrado AES real a cada PDF del lote, sin abrir y volver a guardar archivos uno por uno." },
+      { title: "Una contraseña, toda una carpeta", description: "Define una contraseña una sola vez y aplica cifrado AES-256 real a cada PDF del lote, sin abrir y volver a guardar archivos uno por uno." },
       { title: "Empaquetados en un solo ZIP", description: "Cada PDF cifrado vuelve con el nombre del original en un ZIP ordenado, listo para reenviar o archivar en una sola descarga." },
       { title: "Pensado para pilas de archivos", description: "Procesa hasta 30 PDF por ejecución y los archivos ya cifrados se omiten automáticamente para no bloquearlos dos veces." },
     ],
@@ -169,7 +169,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     benefitsTitle: "Por que criptografar PDF em lote no seu navegador",
     benefitsDescription: "Bloqueie uma pasta inteira de PDFs com uma só senha e receba todos de volta em um único ZIP.",
     benefits: [
-      { title: "Uma senha, uma pasta inteira", description: "Defina uma senha uma única vez e aplique criptografia AES real a cada PDF do lote, sem abrir e salvar de novo arquivo por arquivo." },
+      { title: "Uma senha, uma pasta inteira", description: "Defina uma senha uma única vez e aplique criptografia AES-256 real a cada PDF do lote, sem abrir e salvar de novo arquivo por arquivo." },
       { title: "Empacotados em um único ZIP", description: "Cada PDF criptografado volta com o nome do original em um ZIP organizado, pronto para encaminhar ou arquivar em um só download." },
       { title: "Feito para pilhas de arquivos", description: "Processe até 30 PDFs por execução, com os arquivos já criptografados ignorados automaticamente para não bloquear duas vezes." },
     ],
@@ -192,7 +192,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     benefitsTitle: "Pourquoi chiffrer des PDF par lot dans votre navigateur",
     benefitsDescription: "Verrouillez un dossier entier de PDF avec un seul mot de passe et récupérez-les tous dans un unique ZIP.",
     benefits: [
-      { title: "Un mot de passe, tout un dossier", description: "Définissez un mot de passe une seule fois et appliquez un vrai chiffrement AES à chaque PDF du lot, sans ouvrir et réenregistrer les fichiers un par un." },
+      { title: "Un mot de passe, tout un dossier", description: "Définissez un mot de passe une seule fois et appliquez un vrai chiffrement AES-256 à chaque PDF du lot, sans ouvrir et réenregistrer les fichiers un par un." },
       { title: "Regroupés dans un seul ZIP", description: "Chaque PDF chiffré revient au nom de l'original dans un ZIP bien rangé, prêt à transférer ou archiver en un seul téléchargement." },
       { title: "Conçu pour les piles de fichiers", description: "Traitez jusqu'à 30 PDF par exécution ; les fichiers déjà chiffrés sont ignorés automatiquement pour ne pas les verrouiller deux fois." },
     ],
@@ -215,7 +215,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     benefitsTitle: "ブラウザで PDF を一括暗号化する理由",
     benefitsDescription: "1 つのパスワードでフォルダ内の PDF をまとめてロックし、1 つの ZIP で受け取れます。",
     benefits: [
-      { title: "1 つのパスワードでフォルダ全体", description: "パスワードを一度設定するだけで、バッチ内のすべての PDF に本物の AES 暗号化を適用——1 ファイルずつ開いて保存し直す必要はありません。" },
+      { title: "1 つのパスワードでフォルダ全体", description: "パスワードを一度設定するだけで、バッチ内のすべての PDF に本物の AES-256 暗号化を適用——1 ファイルずつ開いて保存し直す必要はありません。" },
       { title: "1 つの ZIP にまとめて", description: "暗号化された各 PDF は元のファイル名のまま、整った 1 つの ZIP に収まり、1 回のダウンロードで転送や保管ができます。" },
       { title: "大量のファイル向けに設計", description: "1 回で最大 30 件の PDF を処理し、すでに暗号化されたファイルは自動的にスキップされるため二重ロックになりません。" },
     ],

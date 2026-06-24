@@ -895,7 +895,7 @@ function validateProtectPassword(password: string, locale: RuntimeLocale) {
   }
 }
 
-// Real client-side AES-128 encryption via @cantoo/pdf-lib (an encryption-capable
+// Real client-side AES-256 encryption via @cantoo/pdf-lib (an encryption-capable
 // pdf-lib fork). The file never leaves the browser. Requires the password to OPEN.
 async function protectPdfLocally(
   file: File,
@@ -912,7 +912,7 @@ async function protectPdfLocally(
   validateProtectPassword(password, locale);
 
   // Lazy-load the encryption-capable pdf-lib fork only when protect is actually used.
-  const { PDFDocument: EncryptablePDFDocument } = await import("@cantoo/pdf-lib");
+  const { PDFDocument: EncryptablePDFDocument, PDFHeader } = await import("@cantoo/pdf-lib");
   const sourceBytes = await file.arrayBuffer();
   emitProgress(onProgress, 25, 1);
   throwIfAborted(signal);
@@ -938,6 +938,15 @@ async function protectPdfLocally(
 
   emitProgress(onProgress, 55, 2);
   throwIfAborted(signal);
+
+  // Force AES-256 (AESV3, V5/R5). @cantoo/pdf-lib's encrypt() exposes NO algorithm option —
+  // it derives the cipher from the in-memory PDF version AT encrypt() time: 1.4/1.5 → RC4,
+  // 1.6/1.7 → AES-128 (AESV2), and ONLY "1.7ext3" → AES-256 (AESV3). Setting the version
+  // here makes every input encrypt as a consistent AES-256 (the saved file still carries a
+  // clean "%PDF-1.7" header and reparses fine — empirically verified at the /Encrypt dict:
+  // V 5 / R 5 / CFM AESV3 / Length 256). Without this, an old 1.4/1.5 upload would silently
+  // get weak RC4. (minor is typed number; "7ext3" is the literal the version switch matches.)
+  pdfDoc.context.header = PDFHeader.forVersion(1, "7ext3" as unknown as number);
 
   // Require the password to open; once opened the file is fully usable.
   pdfDoc.encrypt({

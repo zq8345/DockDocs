@@ -502,7 +502,7 @@ const CUSTOM_TOOL_COPY: Record<string, {
       es: "Establece una contraseña y cifra una carpeta entera de PDFs de una vez, empaquetados en un ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
       pt: "Defina uma senha e criptografe uma pasta inteira de PDFs de uma vez, empacotados em um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
       fr: "Définissez un mot de passe et chiffrez un dossier entier de PDFs en une fois, empaquetés dans un ZIP. Entièrement dans votre navigateur.",
-      ja: "1つのパスワードでフォルダ全体のPDFをまとめて暗号化—すべてブラウザ内でAES-128暗号化し、ZIPにまとめます。",
+      ja: "1つのパスワードでフォルダ全体のPDFをまとめて暗号化—すべてブラウザ内でAES-256暗号化し、ZIPにまとめます。",
       en: "Set one password and encrypt a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
     },
   },

@@ -173,15 +173,73 @@ if (serverSet.size > 0) {
   }
 }
 
+// ── CHECK D: the RENDERED homepage (components/Home.tsx) must not assert a site-wide
+// no-upload / "0 uploaded" claim without a scope. The per-tool CLAIM lexicon above misses
+// the homepage's trust-badge phrasing ("0 files uploaded", "nothing uploaded", "零上传") —
+// exactly the blind spot that let an unscoped blanket ship to prod. Each no-upload
+// assertion here must carry a scope word (most / browser tools / in the browser / 多数 …).
+const home = rd(join(APP, "components", "Home.tsx"));
+const HOME_NOUP = [
+  /\bfiles?\s+uploaded\b/i, /\bnothing\s+uploaded\b/i, /\bno\s+files?\s+(?:are\s+)?uploaded\b/i,
+  /文件上传/, /零上传/, /不上传/,
+  /archivos\s+subidos/i, /nada\s+se\s+sube/i, /no\s+se\s+suben/i,
+  /arquivos\s+enviados/i, /nada\s+é\s+enviado/i, /n[ãa]o\s+enviam/i,
+  /fichiers\s+envoy[ée]s/i, /rien\s+n'est\s+envoy[ée]/i, /n'envoient\s+rien/i,
+  /ファイル[^"]{0,8}アップロード/, /アップロードなし/, /送信(?:なし|しません)/,
+];
+const HOME_SCOPE = /\b(most|some|many|those|client-?side|browser tools|browser-based|in the browser|en el navegador|no navegador|del navegador|do navegador|dans le navigateur|outils navigateur|la mayor[íi]a|a maioria|la plupart)\b/i;
+const HOME_SCOPE_CJK = /多数|大多数|大部分|部分|浏览器内|浏览器工具|ブラウザ内|ブラウザツール|多く/;
+if (serverSet.size > 0 && home) {
+  // D1 — the proof "0"-upload trust stat: a `g:"0"` whose label counts uploads must scope
+  // it to browser tools, else "0 files uploaded" reads site-wide (false; ~8 tools upload).
+  // Label-precise (not windowed) so a neighbouring "browser" badge can't accidentally exempt it.
+  for (const m of home.matchAll(/g:\s*"0"\s*,\s*t:\s*"([^"]+)"/g)) {
+    const label = m[1];
+    if (!/upload|subid|enviad|envoy|アップロード|送信|上传/i.test(label)) continue;
+    if (HOME_SCOPE.test(label) || HOME_SCOPE_CJK.test(label) || /browser|navegador|navigateur|ブラウザ|浏览器/i.test(label)) continue;
+    const ln = home.slice(0, m.index).split("\n").length;
+    errors.push(`[D/home]   components/Home.tsx:${ln} — the "0 ${label.trim()}" trust stat reads site-wide, but ~8 conversion tools upload (cloudConvertRoutes). Scope the label ("0 uploads in the browser").`);
+  }
+  for (const re of HOME_NOUP) {
+    for (const m of home.matchAll(new RegExp(re.source, re.flags.includes("g") ? re.flags : re.flags + "g"))) {
+      const w = home.slice(Math.max(0, m.index - 80), m.index + m[0].length + 80);
+      if (HOME_SCOPE.test(w) || HOME_SCOPE_CJK.test(w)) continue; // scoped → honest
+      const ln = home.slice(0, m.index).split("\n").length;
+      errors.push(`[D/home]   components/Home.tsx:${ln} — unscoped no-upload claim ("${m[0]}") on the RENDERED homepage. ~8 conversion tools DO upload (cloudConvertRoutes), so scope it ("browser tools upload nothing" / "0 uploads in the browser" / "多数…").`);
+    }
+  }
+}
+
+// ── CHECK E: AES bit-length must be ONE number site-wide. The result screen once said
+// AES-256 while pages said AES-128. Scan the COPY surfaces (NOT pdf-runtime.ts, whose
+// comment legitimately names both while explaining the library) and fail on disagreement.
+const aesFiles = [
+  ["localized-tools.ts", tools], ["catch-all page.tsx", page], ["Home.tsx", home],
+  ["protect-pdf/page.tsx", rd(join(APP, "app", "protect-pdf", "page.tsx"))],
+  ["batch-protect-pdf/page.tsx", rd(join(APP, "app", "batch-protect-pdf", "page.tsx"))],
+  ["BatchProtectClient.tsx", rd(join(APP, "components", "BatchProtectClient.tsx"))],
+  ["workflow-engine.tsx", rd(join(SHARED, "workflow-engine.tsx"))],
+];
+const aesNums = new Map(); // "128"/"256" → first "file:line"
+for (const [label, src] of aesFiles) {
+  for (const m of src.matchAll(/AES[-\s]?(\d{3})\b/gi)) {
+    if (!aesNums.has(m[1])) aesNums.set(m[1], `${label}:${src.slice(0, m.index).split("\n").length}`);
+  }
+}
+if (aesNums.size > 1) {
+  errors.push(`[E/aes]    inconsistent AES bit-length across copy — ${[...aesNums.entries()].map(([n, loc]) => `AES-${n} (${loc})`).join(", ")}. The engine locks AES-256 (AESV3); use that one number everywhere.`);
+}
+
 // ── report ──────────────────────────────────────────────────────────────────
 console.log("");
 console.log("════════════════════════════════════════════════════════════════════");
-console.log("  PRIVACY-CLAIMS GUARD  (client-side claim vs engine runtime · F12 badge · blanket)");
+console.log("  PRIVACY-CLAIMS GUARD  (claim vs engine · F12 badge · blanket · homepage · AES)");
 console.log("════════════════════════════════════════════════════════════════════");
 console.log(`  Engine server-side set (pdf-runtime cloudConvertRoutes): ${[...serverSet].join(", ") || "(none?)"}`);
 console.log(`  LOCAL_ONLY_SLUGS (F12 badge): ${(localOnly ?? []).length} slugs`);
 if (!errors.length) {
-  console.log("\n  ✓ no server tool claims client-side; no server route carries the F12 badge; homepage blanket scoped.");
+  console.log(`\n  ✓ no server tool claims client-side; no server route carries the F12 badge;`);
+  console.log(`    homepage/Home.tsx no-upload claims scoped; AES bit-length consistent (${[...aesNums.keys()].map((n) => "AES-" + n).join(", ") || "none"}).`);
   console.log("════════════════════════════════════════════════════════════════════\n");
   process.exit(0);
 }
