@@ -38,7 +38,7 @@ export type GeoHubData = {
 // GeoLocale = locales with their OWN geo-hub content literals (used as Record keys
 // for workflowLinks/geoHubCopy). zh-Hant is NOT here — it is derived from zh via
 // OpenCC in getGeoHub/toGeoLocale (see GeoLocaleInput).
-export type GeoLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+export type GeoLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de";
 // Locales accepted by the geo accessors at runtime (content locales + derived zh-Hant).
 export type GeoLocaleInput = GeoLocale | "zh-Hant";
 
@@ -395,6 +395,64 @@ const workflowLinks: Record<
         label: "編集用に PDF を Word に変換",
         href: "/blog/pdf-to-word-for-editing",
         description: "固定された PDF を編集可能な文書のドラフトに変換します。",
+      },
+    ],
+  },
+  de: {
+    pdf: [
+      {
+        label: "PDF komprimieren",
+        href: "/compress-pdf",
+        description: "Reduzieren Sie die Dateigröße für E-Mail, Portale und Freigabe.",
+      },
+      {
+        label: "PDF zusammenführen",
+        href: "/merge-pdf",
+        description: "Fügen Sie mehrere PDFs zu einem geordneten Paket zusammen.",
+      },
+      {
+        label: "PDF teilen",
+        href: "/split-pdf",
+        description: "Extrahieren Sie Seiten oder Seitenbereiche aus größeren Dokumenten.",
+      },
+      {
+        label: "PDF zu Word",
+        href: "/pdf-to-word",
+        description: "Erstellen Sie aus PDFs bearbeitbare Dokument-Workflows.",
+      },
+    ],
+    ai: [
+      {
+        label: "OCR PDF",
+        href: "/ocr-pdf",
+        description: "Extrahieren Sie Text aus gescannten und bildbasierten PDFs.",
+      },
+      {
+        label: "KI-Arbeitsbereich",
+        href: "/ai-workspace",
+        description: "Nutzen Sie KI für OCR, Zusammenfassungen, Chat mit PDF und Workflows.",
+      },
+      {
+        label: "OCR-PDF zu Text online",
+        href: "/blog/ocr-pdf-to-text-online",
+        description: "Erfahren Sie, wie gescannte PDFs zu durchsuchbarem Text werden.",
+      },
+    ],
+    conversion: [
+      {
+        label: "JPG zu PDF",
+        href: "/jpg-to-pdf",
+        description: "Konvertieren Sie JPG-, PNG- und WebP-Bilder in PDF-Dokumente.",
+      },
+      {
+        label: "Bild online in PDF umwandeln",
+        href: "/blog/convert-image-to-pdf-online",
+        description: "Bereiten Sie bildbasierte Dokumente für Upload und Freigabe vor.",
+      },
+      {
+        label: "PDF zu Word zum Bearbeiten",
+        href: "/blog/pdf-to-word-for-editing",
+        description: "Verwandeln Sie feste PDFs in bearbeitbare Dokumententwürfe.",
       },
     ],
   },
@@ -911,9 +969,94 @@ export const geoHubCopy: Record<GeoLocale, Record<GeoPageSlug, GeoHubData>> = {
       ],
     },
   },
+  de: {
+    resources: {
+      slug: "resources",
+      title: "Ressourcen für PDF-Workflows | DockDocs",
+      description:
+        "DockDocs-Ressourcen für PDF-Workflows, KI-Dokument-Workflows, OCR, Konvertierung und datenschutzorientierte Dokumentenproduktivität.",
+      eyebrow: "Ressourcen",
+      heroTitle: "Von KI lesbare Ressourcen für PDF- und Dokument-Workflows.",
+      heroDescription:
+        "Ein strukturierter Hub für PDF-Tools, OCR-Workflows, Konvertierungsanleitungen, KI-Dokumentenproduktivität und praktische Hilfeinhalte.",
+      primaryAction: { label: "PDF-Tools durchsuchen", href: "/" },
+      secondaryAction: { label: "Blog-Anleitungen lesen", href: "/blog" },
+      answer:
+        "Die DockDocs-Ressourcen ordnen das Komprimieren, Zusammenführen, Teilen, Konvertieren, OCR und KI-Dokument-Workflows in kurze, extrahierbare Anleitungen für Suchmaschinen und KI-Antwortmaschinen.",
+      groups: [
+        {
+          title: "PDF-Workflows",
+          description: "Grundlegende Dokumentaufgaben für die tägliche PDF-Arbeit.",
+          links: workflowLinks.de.pdf,
+        },
+        {
+          title: "KI- und OCR-Workflows",
+          description: "KI-gestütztes Dokumentverständnis und Textextraktion.",
+          links: workflowLinks.de.ai,
+        },
+        {
+          title: "Konvertierungs-Workflows",
+          description: "Wechseln Sie zwischen Bildern, PDFs und bearbeitbaren Dokumenten.",
+          links: workflowLinks.de.conversion,
+        },
+      ],
+    },
+    guides: {
+      slug: "guides",
+      title: "PDF-Anleitungen und Tutorials | DockDocs",
+      description:
+        "Praktische DockDocs-PDF-Anleitungen zum Reduzieren der Dateigröße, Zusammenführen von Dateien, Teilen von Seiten, OCR, JPG zu PDF und PDF zu Word.",
+      eyebrow: "Anleitungen",
+      heroTitle: "Schritt-für-Schritt-PDF-Anleitungen für die tägliche Dokumentenarbeit.",
+      heroDescription:
+        "Finden Sie praktische Anweisungen, schnelle Antworten und empfohlene Workflows für gängige PDF- und Konvertierungsaufgaben.",
+      primaryAction: { label: "PDF komprimieren öffnen", href: "/compress-pdf" },
+      secondaryAction: { label: "Ressourcen ansehen", href: "/resources" },
+      answer:
+        "Die DockDocs-Anleitungen erklären, welches PDF-Tool Sie verwenden sollten, wann Sie es einsetzen und den schrittweisen Workflow für eine zuverlässige Dokumentübergabe.",
+      groups: [
+        {
+          title: "PDF-Anleitungen mit hoher Absicht",
+          description: "Anleitungen, die rund um häufige Nutzerfragen gestaltet sind.",
+          links: getTopGuides("de"),
+        },
+        {
+          title: "Tool-Workflows",
+          description: "Öffnen Sie nach dem Lesen einer Anleitung das passende DockDocs-Tool.",
+          links: workflowLinks.de.pdf,
+        },
+      ],
+    },
+    "ai-pdf-guides": {
+      slug: "ai-pdf-guides",
+      title: "KI-PDF-Anleitungen | DockDocs",
+      description:
+        "KI-PDF-Anleitungen zu OCR, Textextraktion aus gescannten PDFs, KI-Dokument-Workflows und Konvertierungs-Workflows in DockDocs.",
+      eyebrow: "KI-PDF-Anleitungen",
+      heroTitle: "KI-PDF-Anleitungen für OCR, Textextraktion und Dokument-Workflows.",
+      heroDescription:
+        "Erfahren Sie, wann Sie OCR einsetzen, wie gescannte PDFs zu Text werden und wie KI die PDF-Tool-Plattform von DockDocs ergänzt.",
+      primaryAction: { label: "OCR PDF öffnen", href: "/ocr-pdf" },
+      secondaryAction: { label: "KI-Arbeitsbereich erkunden", href: "/ai-workspace" },
+      answer:
+        "Die KI-PDF-Anleitungen von DockDocs erklären OCR, die Umwandlung gescannter PDFs in Text, die KI-fähige Konvertierung und wann KI die PDF-Tools ergänzen statt ersetzen sollte.",
+      groups: [
+        {
+          title: "OCR- und KI-Antwort-Workflows",
+          description: "Verwenden Sie diese Anleitungen, wenn Dokumente verstanden werden müssen.",
+          links: workflowLinks.de.ai,
+        },
+        {
+          title: "Konvertierung in KI-fähige Dokumente",
+          description: "Bereiten Sie Bilder und feste PDFs vor dem OCR oder der KI-Prüfung vor.",
+          links: workflowLinks.de.conversion,
+        },
+      ],
+    },
+  },
 };
 
-const geoLocales: readonly GeoLocaleInput[] = ["en", "zh", "es", "pt", "fr", "ja", "zh-Hant"];
+const geoLocales: readonly GeoLocaleInput[] = ["en", "zh", "es", "pt", "fr", "ja", "de", "zh-Hant"];
 
 // Clamp any locale string to a GEO content locale; unknown locales fall back to en.
 // zh-Hant is preserved (derived from zh by getGeoHub).

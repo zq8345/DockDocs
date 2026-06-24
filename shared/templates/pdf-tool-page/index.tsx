@@ -280,11 +280,30 @@ const templateCopy = {
     indexingDescription:
       "ツールページから DockDocs のガイド、リソース、ヘルプコンテンツへ続けて進めます。",
   },
+  de: {
+    toolEyebrow: "KI-Dokumentplattform",
+    previewWorkflow: "Workflow-Vorschau",
+    workflowEyebrow: "Tool-Workflow",
+    workflowTitle: "Ein realistischer Ablauf vom Upload bis zum Ergebnis.",
+    workflowDescription:
+      "Diese Seiten zeigen die realen Workflow-Zustände des Produkts.",
+    benefits: "Vorteile",
+    features: "Funktionen",
+    workflow: "Workflow",
+    faq: "Häufige Fragen",
+    relatedTools: "Verwandte Tools",
+    relatedTitle: "Mit einem weiteren PDF-Workflow fortfahren.",
+    relatedDescription:
+      "Wechseln Sie zwischen den PDF-Tools von DockDocs, ohne die Plattform zu verlassen.",
+    indexingEyebrow: "Empfohlene Lektüre",
+    indexingTitle: "Anleitungen und Ressourcen zu diesem Workflow.",
+    indexingDescription:
+      "Gehen Sie von der Tool-Seite weiter zu Anleitungen, Ressourcen und Hilfeinhalten von DockDocs.",
+  },
 } as const;
 
 type TplLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
-// templateCopy accessor: zh-Hant derives from zh via OpenCC; de falls back to en
-// (template copy not authored for de yet — GAP: de templateCopy).
+// templateCopy accessor: zh-Hant derives from zh via OpenCC; de is authored natively.
 function tlCopy(locale: TplLocale): (typeof templateCopy)["en"] {
   if (locale === "zh-Hant") return deepHantTpl(templateCopy.zh) as unknown as (typeof templateCopy)["en"];
   return (templateCopy[locale as keyof typeof templateCopy] ?? templateCopy.en) as unknown as (typeof templateCopy)["en"];
@@ -726,7 +745,7 @@ function RelatedPdfTools({
   );
 }
 
-// 6-locale string picker for the tool-page "Recommended reading" card grid.
+// 7-locale string picker for the tool-page "Recommended reading" card grid (zh-Hant reuses zh).
 type IndexingLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
 function indexingTr(
   locale: IndexingLocale,
@@ -736,11 +755,10 @@ function indexingTr(
   pt: string,
   fr: string,
   ja: string,
+  de: string,
 ): string {
   if (locale === "zh-Hant") return ccTpl(zh);
-  // de has no authored indexing-section copy → English fallback (GAP: de indexing strings).
-  if (locale === "de") return en;
-  return ({ en, zh, es, pt, fr, ja })[locale];
+  return ({ en, zh, es, pt, fr, ja, de })[locale];
 }
 
 function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
@@ -770,7 +788,7 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
                 {link.description}
               </p>
               <span className="mt-5 inline-block text-sm font-semibold text-[color:var(--foreground)] transition group-hover:translate-x-0.5">
-                {indexingTr(locale, "Continue", "继续阅读", "Continuar", "Continuar", "Continuer", "続きを読む")} -&gt;
+                {indexingTr(locale, "Continue", "继续阅读", "Continuar", "Continuar", "Continuer", "続きを読む", "Weiterlesen")} -&gt;
               </span>
             </a>
           ))}
@@ -782,11 +800,11 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
 
 function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
   const locale = (config.locale ?? "en") as IndexingLocale;
-  const tr = (en: string, zh: string, es: string, pt: string, fr: string, ja: string) =>
-    indexingTr(locale, en, zh, es, pt, fr, ja);
+  const tr = (en: string, zh: string, es: string, pt: string, fr: string, ja: string, de: string) =>
+    indexingTr(locale, en, zh, es, pt, fr, ja, de);
   const common = [
     {
-      label: tr("PDF workflow resources", "PDF 工作流资源", "Recursos de flujos de trabajo PDF", "Recursos de fluxos de trabalho PDF", "Ressources de flux de travail PDF", "PDF ワークフローのリソース"),
+      label: tr("PDF workflow resources", "PDF 工作流资源", "Recursos de flujos de trabajo PDF", "Recursos de fluxos de trabalho PDF", "Ressources de flux de travail PDF", "PDF ワークフローのリソース", "PDF-Workflow-Ressourcen"),
       href: "/resources",
       description: tr(
         "Explore a structured hub for PDF tools, OCR, conversion, and AI document paths.",
@@ -795,10 +813,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
         "Explore um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA.",
         "Explorez un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA.",
         "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブを見る。",
+        "Entdecken Sie einen strukturierten Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentwege.",
       ),
     },
     {
-      label: tr("PDF guides", "PDF 指南", "Guías de PDF", "Guias de PDF", "Guides PDF", "PDF ガイド"),
+      label: tr("PDF guides", "PDF 指南", "Guías de PDF", "Guias de PDF", "Guides PDF", "PDF ガイド", "PDF-Anleitungen"),
       href: "/guides",
       description: tr(
         "Read step-by-step guidance for compression, merging, splitting, conversion, and everyday document tasks.",
@@ -807,10 +826,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
         "Leia guias passo a passo de compressão, combinação, divisão, conversão e tarefas diárias com documentos.",
         "Lisez des guides étape par étape pour la compression, la fusion, la division, la conversion et les tâches documentaires courantes.",
         "圧縮、結合、分割、変換、日常的なドキュメント作業の手順ガイドを読む。",
+        "Lesen Sie Schritt-für-Schritt-Anleitungen zu Komprimierung, Zusammenführen, Teilen, Konvertierung und alltäglichen Dokumentaufgaben.",
       ),
     },
     {
-      label: tr("Help and FAQ", "帮助与 FAQ", "Ayuda y FAQ", "Ajuda e FAQ", "Aide et FAQ", "ヘルプと FAQ"),
+      label: tr("Help and FAQ", "帮助与 FAQ", "Ayuda y FAQ", "Ajuda e FAQ", "Aide et FAQ", "ヘルプと FAQ", "Hilfe und FAQ"),
       href: "/help",
       description: tr(
         "Understand uploads, privacy-first handling, local processing, AI limits, and supported formats.",
@@ -819,6 +839,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
         "Entenda os uploads, o tratamento com foco em privacidade, o processamento local, os limites da IA e os formatos suportados.",
         "Comprenez les téléversements, le traitement axé sur la confidentialité, le traitement local, les limites de l'IA et les formats pris en charge.",
         "アップロード、プライバシー優先の処理、ローカル処理、AI の制限、対応フォーマットについて理解する。",
+        "Verstehen Sie Uploads, datenschutzorientierte Verarbeitung, lokale Verarbeitung, KI-Grenzen und unterstützte Formate.",
       ),
     },
   ];
@@ -829,7 +850,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
     // tool pages no longer re-feed them to Google (and to schema significantLink).
     "compress-pdf": [
       {
-        label: tr("Reduce PDF size without losing quality", "无损压缩 PDF 体积", "Reduce el tamaño del PDF sin perder calidad", "Reduza o tamanho do PDF sem perder qualidade", "Réduisez la taille du PDF sans perte de qualité", "品質を落とさずに PDF サイズを縮小"),
+        label: tr("Reduce PDF size without losing quality", "无损压缩 PDF 体积", "Reduce el tamaño del PDF sin perder calidad", "Reduza o tamanho do PDF sem perder qualidade", "Réduisez la taille du PDF sans perte de qualité", "品質を落とさずに PDF サイズを縮小", "PDF-Größe ohne Qualitätsverlust reduzieren"),
         href: "/guides/reduce-pdf-size-without-losing-quality",
         description: tr(
           "Shrink a PDF while keeping text and images readable.",
@@ -838,10 +859,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Reduza um PDF mantendo o texto e as imagens legíveis.",
           "Réduisez un PDF tout en gardant le texte et les images lisibles.",
           "文字と画像を読みやすく保ったまま PDF を縮小します。",
+          "Verkleinern Sie ein PDF, während Text und Bilder lesbar bleiben.",
         ),
       },
       {
-        label: tr("Compress PDF for Gmail", "Gmail 压缩 PDF", "Comprimir PDF para Gmail", "Comprimir PDF para o Gmail", "Compresser un PDF pour Gmail", "Gmail 向けに PDF を圧縮"),
+        label: tr("Compress PDF for Gmail", "Gmail 压缩 PDF", "Comprimir PDF para Gmail", "Comprimir PDF para o Gmail", "Compresser un PDF pour Gmail", "Gmail 向けに PDF を圧縮", "PDF für Gmail komprimieren"),
         href: "/guides/compress-pdf-for-gmail",
         description: tr(
           "Use a Gmail-focused compression workflow before sending attachments.",
@@ -850,10 +872,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Use um fluxo de compressão voltado para o Gmail antes de enviar anexos.",
           "Utilisez un flux de compression adapté à Gmail avant d'envoyer des pièces jointes.",
           "添付ファイルを送る前に Gmail 向けの圧縮ワークフローを使います。",
+          "Nutzen Sie einen auf Gmail ausgerichteten Komprimierungs-Workflow, bevor Sie Anhänge senden.",
         ),
       },
       {
-        label: tr("Compress multiple PDFs at once", "一次批量压缩多个 PDF", "Comprimir varios PDF a la vez", "Comprimir vários PDF de uma vez", "Compresser plusieurs PDF en une fois", "複数の PDF を一度に圧縮"),
+        label: tr("Compress multiple PDFs at once", "一次批量压缩多个 PDF", "Comprimir varios PDF a la vez", "Comprimir vários PDF de uma vez", "Compresser plusieurs PDF en une fois", "複数の PDF を一度に圧縮", "Mehrere PDFs auf einmal komprimieren"),
         href: "/guides/batch-compress-pdf",
         description: tr(
           "Compress a whole folder of PDFs in one go.",
@@ -862,12 +885,13 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Comprima uma pasta inteira de PDF de uma só vez.",
           "Compressez un dossier entier de PDF en une seule fois.",
           "フォルダ内の PDF をまとめて一度に圧縮します。",
+          "Komprimieren Sie einen ganzen Ordner voller PDFs in einem Durchgang.",
         ),
       },
     ],
     "merge-pdf": [
       {
-        label: tr("How to merge PDF files online", "在线合并 PDF 文件", "Cómo combinar archivos PDF en línea", "Como combinar arquivos PDF online", "Comment fusionner des fichiers PDF en ligne", "オンラインで PDF ファイルを結合する方法"),
+        label: tr("How to merge PDF files online", "在线合并 PDF 文件", "Cómo combinar archivos PDF en línea", "Como combinar arquivos PDF online", "Comment fusionner des fichiers PDF en ligne", "オンラインで PDF ファイルを結合する方法", "PDF-Dateien online zusammenführen"),
         href: "/blog/how-to-merge-pdf-files-online",
         description: tr(
           "Learn how multiple PDFs become one organized document packet.",
@@ -876,10 +900,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Saiba como vários PDF se tornam um pacote de documentos organizado.",
           "Découvrez comment plusieurs PDF deviennent un dossier de documents organisé.",
           "複数の PDF が 1 つの整理された文書パックになる方法を学びます。",
+          "Erfahren Sie, wie aus mehreren PDFs ein geordnetes Dokumentpaket wird.",
         ),
       },
       {
-        label: tr("Merge PDFs without losing quality", "无损合并 PDF", "Combinar PDF sin perder calidad", "Combinar PDF sem perder qualidade", "Fusionner des PDF sans perte de qualité", "品質を落とさずに PDF を結合"),
+        label: tr("Merge PDFs without losing quality", "无损合并 PDF", "Combinar PDF sin perder calidad", "Combinar PDF sem perder qualidade", "Fusionner des PDF sans perte de qualité", "品質を落とさずに PDF を結合", "PDFs ohne Qualitätsverlust zusammenführen"),
         href: "/guides/merge-pdfs-without-losing-quality",
         description: tr(
           "Combine PDFs into one file without quality loss.",
@@ -888,10 +913,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Combine vários PDF em um único arquivo sem perda de qualidade.",
           "Combinez plusieurs PDF en un seul fichier sans perte de qualité.",
           "品質を損なわずに複数の PDF を 1 つのファイルに結合します。",
+          "Fügen Sie PDFs ohne Qualitätsverlust zu einer Datei zusammen.",
         ),
       },
       {
-        label: tr("Convert images to PDF for upload", "图片转 PDF 以便上传", "Convertir imágenes a PDF para subir", "Converter imagens em PDF para upload", "Convertir des images en PDF pour le téléversement", "アップロード用に画像を PDF に変換"),
+        label: tr("Convert images to PDF for upload", "图片转 PDF 以便上传", "Convertir imágenes a PDF para subir", "Converter imagens em PDF para upload", "Convertir des images en PDF pour le téléversement", "アップロード用に画像を PDF に変換", "Bilder für den Upload in PDF umwandeln"),
         href: "/guides/convert-images-to-pdf-for-upload",
         description: tr(
           "Turn multiple images into one ordered PDF packet.",
@@ -900,12 +926,13 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Transforme várias imagens em um pacote PDF ordenado.",
           "Transformez plusieurs images en un dossier PDF ordonné.",
           "複数の画像を順序付けた 1 つの PDF パックにまとめます。",
+          "Verwandeln Sie mehrere Bilder in ein geordnetes PDF-Paket.",
         ),
       },
     ],
     "split-pdf": [
       {
-        label: tr("How to split PDF pages", "如何拆分 PDF 页面", "Cómo dividir páginas de PDF", "Como dividir páginas de PDF", "Comment diviser des pages PDF", "PDF ページを分割する方法"),
+        label: tr("How to split PDF pages", "如何拆分 PDF 页面", "Cómo dividir páginas de PDF", "Como dividir páginas de PDF", "Comment diviser des pages PDF", "PDF ページを分割する方法", "PDF-Seiten teilen"),
         href: "/blog/how-to-split-pdf-pages",
         description: tr(
           "Learn how to extract page ranges and export smaller documents.",
@@ -914,10 +941,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Saiba como extrair intervalos de páginas e exportar documentos menores.",
           "Apprenez à extraire des plages de pages et à exporter des documents plus petits.",
           "ページ範囲を抽出して、より小さな文書として書き出す方法を学びます。",
+          "Erfahren Sie, wie Sie Seitenbereiche extrahieren und kleinere Dokumente exportieren.",
         ),
       },
       {
-        label: tr("Split a PDF by page ranges", "按页面范围拆分 PDF", "Dividir un PDF por rangos de páginas", "Dividir um PDF por intervalos de páginas", "Diviser un PDF par plages de pages", "ページ範囲で PDF を分割"),
+        label: tr("Split a PDF by page ranges", "按页面范围拆分 PDF", "Dividir un PDF por rangos de páginas", "Dividir um PDF por intervalos de páginas", "Diviser un PDF par plages de pages", "ページ範囲で PDF を分割", "PDF nach Seitenbereichen teilen"),
         href: "/guides/split-pdf-page-ranges",
         description: tr(
           "Extract specific page ranges into separate PDFs.",
@@ -926,10 +954,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Extraia intervalos de páginas específicos em PDF separados.",
           "Extrayez des plages de pages spécifiques dans des PDF distincts.",
           "指定したページ範囲を別々の PDF として抽出します。",
+          "Extrahieren Sie bestimmte Seitenbereiche in separate PDFs.",
         ),
       },
       {
-        label: tr("Reduce PDF size without losing quality", "无损压缩 PDF 体积", "Reduce el tamaño del PDF sin perder calidad", "Reduza o tamanho do PDF sem perder qualidade", "Réduisez la taille du PDF sans perte de qualité", "品質を落とさずに PDF サイズを縮小"),
+        label: tr("Reduce PDF size without losing quality", "无损压缩 PDF 体积", "Reduce el tamaño del PDF sin perder calidad", "Reduza o tamanho do PDF sem perder qualidade", "Réduisez la taille du PDF sans perte de qualité", "品質を落とさずに PDF サイズを縮小", "PDF-Größe ohne Qualitätsverlust reduzieren"),
         href: "/guides/reduce-pdf-size-without-losing-quality",
         description: tr(
           "Shrink the resulting files for portals and upload limits.",
@@ -938,12 +967,13 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Reduza os arquivos resultantes para portais e limites de upload.",
           "Réduisez les fichiers obtenus pour les portails et les limites de téléversement.",
           "ポータルやアップロード制限に合わせて生成ファイルを縮小します。",
+          "Verkleinern Sie die Ergebnisdateien für Portale und Upload-Grenzen.",
         ),
       },
     ],
     "pdf-to-word": [
       {
-        label: tr("PDF to Word for editing", "PDF 转 Word 编辑指南", "PDF a Word para editar", "PDF para Word para edição", "PDF en Word pour l'édition", "編集のための PDF から Word"),
+        label: tr("PDF to Word for editing", "PDF 转 Word 编辑指南", "PDF a Word para editar", "PDF para Word para edição", "PDF en Word pour l'édition", "編集のための PDF から Word", "PDF zu Word zum Bearbeiten"),
         href: "/blog/pdf-to-word-for-editing",
         description: tr(
           "Learn how to prepare fixed PDFs for editable document workflows.",
@@ -952,10 +982,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Saiba como preparar PDF fixos para fluxos de trabalho de documentos editáveis.",
           "Apprenez à préparer des PDF figés pour des flux de documents modifiables.",
           "固定された PDF を編集可能な文書ワークフロー向けに準備する方法を学びます。",
+          "Erfahren Sie, wie Sie feste PDFs für bearbeitbare Dokument-Workflows vorbereiten.",
         ),
       },
       {
-        label: tr("PDF to an editable Word document", "PDF 转可编辑 Word 文档", "PDF a un documento Word editable", "PDF para um documento Word editável", "PDF en document Word modifiable", "編集可能な Word 文書への PDF"),
+        label: tr("PDF to an editable Word document", "PDF 转可编辑 Word 文档", "PDF a un documento Word editable", "PDF para um documento Word editável", "PDF en document Word modifiable", "編集可能な Word 文書への PDF", "PDF in ein bearbeitbares Word-Dokument"),
         href: "/guides/pdf-to-word-editable-document",
         description: tr(
           "Convert a PDF into an editable .docx you can revise.",
@@ -964,10 +995,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Converta um PDF em um .docx editável que você pode revisar.",
           "Convertissez un PDF en un .docx modifiable que vous pouvez réviser.",
           "PDF を、修正できる編集可能な .docx に変換します。",
+          "Konvertieren Sie ein PDF in ein bearbeitbares .docx, das Sie überarbeiten können.",
         ),
       },
       {
-        label: tr("Extract text from a PDF with OCR", "用 OCR 从 PDF 提取文字", "Extraer texto de un PDF con OCR", "Extrair texto de um PDF com OCR", "Extraire le texte d'un PDF avec l'OCR", "OCR で PDF から文字を抽出"),
+        label: tr("Extract text from a PDF with OCR", "用 OCR 从 PDF 提取文字", "Extraer texto de un PDF con OCR", "Extrair texto de um PDF com OCR", "Extraire le texte d'un PDF avec l'OCR", "OCR で PDF から文字を抽出", "Text aus einem PDF per OCR extrahieren"),
         href: "/guides/extract-text-from-pdf-with-ocr",
         description: tr(
           "OCR a scanned PDF first when there is no selectable text.",
@@ -976,12 +1008,13 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Aplique OCR a um PDF digitalizado primeiro quando não houver texto selecionável.",
           "Appliquez d'abord l'OCR à un PDF numérisé lorsqu'il n'y a pas de texte sélectionnable.",
           "選択できる文字がない場合は、先にスキャン PDF へ OCR をかけます。",
+          "Wenden Sie zuerst OCR auf ein gescanntes PDF an, wenn es keinen auswählbaren Text gibt.",
         ),
       },
     ],
     "ocr-pdf": [
       {
-        label: tr("OCR a scanned PDF online", "在线 OCR 扫描 PDF", "Aplicar OCR a un PDF escaneado en línea", "Aplicar OCR a um PDF digitalizado online", "Appliquer l'OCR à un PDF numérisé en ligne", "オンラインでスキャン PDF を OCR"),
+        label: tr("OCR a scanned PDF online", "在线 OCR 扫描 PDF", "Aplicar OCR a un PDF escaneado en línea", "Aplicar OCR a um PDF digitalizado online", "Appliquer l'OCR à un PDF numérisé en ligne", "オンラインでスキャン PDF を OCR", "Gescanntes PDF online per OCR verarbeiten"),
         href: "/guides/ocr-scanned-pdf-online",
         description: tr(
           "Turn scanned, image-only PDFs into selectable text.",
@@ -990,10 +1023,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Transforme PDF digitalizados e apenas de imagem em texto selecionável.",
           "Transformez des PDF numérisés et uniquement composés d'images en texte sélectionnable.",
           "スキャンした画像のみの PDF を、選択できる文字に変換します。",
+          "Verwandeln Sie gescannte, reine Bild-PDFs in auswählbaren Text.",
         ),
       },
       {
-        label: tr("Extract text from a PDF with OCR", "用 OCR 从 PDF 提取文字", "Extraer texto de un PDF con OCR", "Extrair texto de um PDF com OCR", "Extraire le texte d'un PDF avec l'OCR", "OCR で PDF から文字を抽出"),
+        label: tr("Extract text from a PDF with OCR", "用 OCR 从 PDF 提取文字", "Extraer texto de un PDF con OCR", "Extrair texto de um PDF com OCR", "Extraire le texte d'un PDF avec l'OCR", "OCR で PDF から文字を抽出", "Text aus einem PDF per OCR extrahieren"),
         href: "/guides/extract-text-from-pdf-with-ocr",
         description: tr(
           "Extract copyable, searchable text from scanned pages.",
@@ -1002,10 +1036,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Extraia texto copiável e pesquisável de páginas digitalizadas.",
           "Extrayez du texte copiable et consultable à partir de pages numérisées.",
           "スキャンしたページから、コピー・検索できる文字を抽出します。",
+          "Extrahieren Sie kopierbaren, durchsuchbaren Text aus gescannten Seiten.",
         ),
       },
       {
-        label: tr("OCR workflow questions", "OCR 工作流常见问题", "Preguntas sobre el flujo de OCR", "Perguntas sobre o fluxo de OCR", "Questions sur le flux OCR", "OCR ワークフローのよくある質問"),
+        label: tr("OCR workflow questions", "OCR 工作流常见问题", "Preguntas sobre el flujo de OCR", "Perguntas sobre o fluxo de OCR", "Questions sur le flux OCR", "OCR ワークフローのよくある質問", "Fragen zum OCR-Workflow"),
         href: "/resources/ocr-pdf-workflow-questions",
         description: tr(
           "Common questions about scanning, accuracy, and OCR output.",
@@ -1014,12 +1049,13 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Perguntas frequentes sobre digitalização, precisão e saída de OCR.",
           "Questions fréquentes sur la numérisation, la précision et le résultat de l'OCR.",
           "スキャン、精度、OCR 出力に関するよくある質問。",
+          "Häufige Fragen zu Scannen, Genauigkeit und OCR-Ergebnis.",
         ),
       },
     ],
     "jpg-to-pdf": [
       {
-        label: tr("JPG to PDF on iPhone", "iPhone 上 JPG 转 PDF", "JPG a PDF en iPhone", "JPG para PDF no iPhone", "JPG en PDF sur iPhone", "iPhone で JPG を PDF に"),
+        label: tr("JPG to PDF on iPhone", "iPhone 上 JPG 转 PDF", "JPG a PDF en iPhone", "JPG para PDF no iPhone", "JPG en PDF sur iPhone", "iPhone で JPG を PDF に", "JPG zu PDF auf dem iPhone"),
         href: "/guides/jpg-to-pdf-on-iphone",
         description: tr(
           "Turn iPhone photos into upload-ready PDFs.",
@@ -1028,10 +1064,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Transforme as fotos do iPhone em PDF prontos para upload.",
           "Transformez les photos de l'iPhone en PDF prêts à téléverser.",
           "iPhone の写真を、アップロードできる PDF にします。",
+          "Verwandeln Sie iPhone-Fotos in upload-fertige PDFs.",
         ),
       },
       {
-        label: tr("Convert images to PDF for upload", "图片转 PDF 以便上传", "Convertir imágenes a PDF para subir", "Converter imagens em PDF para upload", "Convertir des images en PDF pour le téléversement", "アップロード用に画像を PDF に変換"),
+        label: tr("Convert images to PDF for upload", "图片转 PDF 以便上传", "Convertir imágenes a PDF para subir", "Converter imagens em PDF para upload", "Convertir des images en PDF pour le téléversement", "アップロード用に画像を PDF に変換", "Bilder für den Upload in PDF umwandeln"),
         href: "/guides/convert-images-to-pdf-for-upload",
         description: tr(
           "Organize photos and pages into one ordered PDF.",
@@ -1040,10 +1077,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Organize fotos e páginas em um PDF ordenado.",
           "Organisez photos et pages dans un PDF ordonné.",
           "写真とページを、順序付けた 1 つの PDF にまとめます。",
+          "Ordnen Sie Fotos und Seiten in einem geordneten PDF.",
         ),
       },
       {
-        label: tr("Image to PDF conversion questions", "图片转 PDF 常见问题", "Preguntas sobre la conversión de imagen a PDF", "Perguntas sobre a conversão de imagem em PDF", "Questions sur la conversion image vers PDF", "画像から PDF への変換のよくある質問"),
+        label: tr("Image to PDF conversion questions", "图片转 PDF 常见问题", "Preguntas sobre la conversión de imagen a PDF", "Perguntas sobre a conversão de imagem em PDF", "Questions sur la conversion image vers PDF", "画像から PDF への変換のよくある質問", "Fragen zur Bild-zu-PDF-Konvertierung"),
         href: "/resources/image-to-pdf-conversion-questions",
         description: tr(
           "Common questions about formats, order, and image-to-PDF output.",
@@ -1052,6 +1090,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Perguntas frequentes sobre formatos, ordem e saída de imagem para PDF.",
           "Questions fréquentes sur les formats, l'ordre et le résultat image vers PDF.",
           "フォーマット、順序、画像から PDF への出力に関するよくある質問。",
+          "Häufige Fragen zu Formaten, Reihenfolge und Bild-zu-PDF-Ergebnis.",
         ),
       },
     ],

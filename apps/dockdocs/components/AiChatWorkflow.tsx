@@ -31,9 +31,16 @@ type WorkflowStatus =
   | "result"
   | "error";
 
+// The chat UI authors native German copy (see copy.de below), but the AI engine
+// (askAiAboutPdf / AiChatLocale) has no "de" — a /de visitor's extracted text is
+// still answered via the en engine path (de → en fallback). ChatUiLocale widens
+// only the UI-copy locale so the German strings render, without changing what is
+// sent to the AI provider.
+type ChatUiLocale = AiChatLocale | "de";
+
 const pick = (
-  locale: AiChatLocale,
-  m: Record<AiChatLocale, string>,
+  locale: ChatUiLocale,
+  m: Record<ChatUiLocale, string>,
 ): string => m[locale];
 
 const copy = {
@@ -329,14 +336,65 @@ const copy = {
     truncated: "コンテキストはサイズ制限に合わせて切り詰められました。",
     verifiedBadge: "ソース検証済み",
   },
+  de: {
+    eyebrow: "Chat mit PDF",
+    title: "Stellen Sie Fragen zum extrahierten PDF-Text.",
+    description:
+      "DockDocs extrahiert den lesbaren PDF-Text lokal und sendet anschließend nur den ausgewählten Textkontext und Ihre Frage an den konfigurierten KI-Anbieter. Führen Sie bei gescannten PDFs zuerst die OCR aus und fügen Sie den extrahierten Text hier ein.",
+    upload: "PDF auswählen",
+    pasteLabel: "Oder OCR-/extrahierten Text einfügen",
+    pastePlaceholder:
+      "Fügen Sie hier den OCR-Text oder den aus dem PDF kopierten Text ein, wenn das PDF gescannt oder bildbasiert ist.",
+    questionLabel: "Frage",
+    questionPlaceholder:
+      "Fragen Sie nach Klauseln, Risiken, Daten, Pflichten, Tabellen oder nächsten Schritten.",
+    ask: "Frage stellen",
+    retry: "Erneut versuchen",
+    reset: "Zurücksetzen",
+    newChat: "Neuer Chat",
+    cancel: "Abbrechen",
+    source: "Quelle",
+    context: "Gesendeter Kontext",
+    provider: "Anbieter",
+    usage: "Token-Verbrauch",
+    answer: "Antwort",
+    conversation: "Konversation",
+    user: "Benutzer",
+    assistant: "Assistent",
+    references: "Belege",
+    copyReference: "Kopieren",
+    showReference: "Anzeigen",
+    hideReference: "Ausblenden",
+    templates: "Prompt-Vorlagen",
+    quota: "Heute",
+    quotaRemaining: "verbleibend",
+    quotaExceeded:
+      "Das tägliche AI-Chat-Limit für diesen Browser ist erreicht. Melden Sie sich für ein höheres lokales Kontingent an oder versuchen Sie es morgen erneut.",
+    privacyTitle: "Umgang mit dem Datenschutz",
+    privacy:
+      "Die originale PDF-Datei wird niemals an den KI-Anbieter gesendet. Es werden nur der extrahierte Text und Ihre Frage gesendet, und das erst, nachdem Sie den Chat gestartet haben.",
+    idle: "Laden Sie ein PDF hoch oder fügen Sie OCR-Text ein und stellen Sie dann eine Frage.",
+    ready: "Bereit für Ihre Frage.",
+    working: "Das Dokument wird abgefragt ...",
+    extractingStatus: "Dokumenttext wird gelesen ...",
+    sendingStatus: "Kontext wird an den KI-Anbieter gesendet ...",
+    streamingStatus: "Antwort wird gestreamt ...",
+    validatingStatus: "Belege und Token-Verbrauch werden geprüft ...",
+    fallbackStatus: "Streaming pausiert. Abschluss mit der Standardantwort ...",
+    cancelled: "Abgebrochen. Die unvollständige Antwort wurde nicht gespeichert.",
+    truncated: "Der Kontext wurde gekürzt, um das Größenlimit einzuhalten.",
+    verifiedBadge: "Quelle geprüft",
+  },
 } as const;
 
 export function AiChatWorkflow({
   locale = "en",
 }: {
-  locale?: AiChatLocale;
+  locale?: ChatUiLocale;
 }) {
   const t = copy[locale];
+  // The AI engine has no "de"; answer a /de session via the en path (de → en).
+  const engineLocale: AiChatLocale = locale === "de" ? "en" : locale;
   const abortRef = useRef<AbortController | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [pastedText, setPastedText] = useState("");
@@ -414,6 +472,7 @@ export function AiChatWorkflow({
           pt: "Envie um arquivo PDF.",
           fr: "Importez un fichier PDF.",
           ja: "PDF ファイルをアップロードしてください。",
+          de: "Laden Sie eine PDF-Datei hoch.",
         }),
       );
       setStatus("error");
@@ -455,7 +514,7 @@ export function AiChatWorkflow({
         pastedText,
         question,
         history,
-        locale,
+        locale: engineLocale,
         signal: controller.signal,
         onProgress: ({ progress: nextProgress, step }) => {
           setProgress(nextProgress);
@@ -539,6 +598,7 @@ export function AiChatWorkflow({
               pt: "O chat com PDF falhou.",
               fr: "Échec du chat avec PDF.",
               ja: "PDF とのチャットに失敗しました。",
+              de: "Chat mit PDF fehlgeschlagen.",
             });
       setError(
         message === "aborted"
@@ -549,6 +609,7 @@ export function AiChatWorkflow({
               pt: "Cancelado.",
               fr: "Annulé.",
               ja: "キャンセルしました。",
+              de: "Abgebrochen.",
             })
           : message,
       );
@@ -727,6 +788,7 @@ export function AiChatWorkflow({
                         pt: "Conectado",
                         fr: "Connecté",
                         ja: "サインイン済み",
+                        de: "Angemeldet",
                       })
                     : pick(locale, {
                         en: "Anonymous",
@@ -735,6 +797,7 @@ export function AiChatWorkflow({
                         pt: "Anônimo",
                         fr: "Anonyme",
                         ja: "匿名",
+                        de: "Anonym",
                       })}
                 </p>
               </div>

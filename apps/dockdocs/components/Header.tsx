@@ -13,20 +13,18 @@ import { getNavCategories, type NavCat } from "@/lib/header-nav";
 // (P2.1): one headerStructure + navItemLabels + navCopy, type-enforced across locales
 // (a missing locale/key = tsc error). navCategories stays exported here because Home /
 // HeroFeatureGraph / SitemapContent / RelatedPdfTools consume the same per-locale list.
-// NOTE (de): the nav menu has NO authored German copy in header-nav.ts yet
-// (navItemLabels/navCopy lack a `de` key), so de is intentionally OMITTED from this
-// record — consumers coerce it to the English menu via `?? navCategories.en` (mirrors
-// Home.tsx). zh-Hant is likewise derived from zh via deepHant, never stored here. Adding
-// a `de` entry now would only store an English-labeled menu under a de key (a fake
-// half-translation); the genuine fix is authoring `de` nav copy in lib/header-nav.ts,
-// after which de resolves natively with no change here.
-export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja", NavCat[]> = {
+// NOTE (de): German nav copy is now authored in lib/header-nav.ts
+// (navItemLabels.de + navCopy.de), so getNavCategories("de") returns native German
+// labels and de is included in this record alongside the other authored locales.
+// zh-Hant is still derived from zh via deepHant (never stored here).
+export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de", NavCat[]> = {
   en: getNavCategories("en"),
   zh: getNavCategories("zh"),
   es: getNavCategories("es"),
   pt: getNavCategories("pt"),
   fr: getNavCategories("fr"),
   ja: getNavCategories("ja"),
+  de: getNavCategories("de"),
 };
 
 const pageLinks = {

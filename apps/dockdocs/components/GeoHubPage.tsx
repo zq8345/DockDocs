@@ -138,6 +138,23 @@ const chrome: Record<
     hubTitle: "1 つのドキュメントワークフローの中で、疑問からツール、ガイドへと進みます。",
     readBlog: "ブログを読む",
   },
+  de: {
+    quickAnswer: "Schnelle Antwort",
+    steps: [
+      "Wählen Sie das gewünschte Dokumentergebnis",
+      "Öffnen Sie das passende Tool",
+      "Lesen Sie die zugehörige Anleitung",
+      "Exportieren Sie und setzen Sie den Workflow fort",
+    ],
+    clustersEyebrow: "Semantische GEO-Cluster",
+    clustersTitle: "Gelangen Sie von echten Fragen zu zugehörigen Tools und Workflows.",
+    clustersIntro:
+      "Diese Seiten sind rund um PDF-Komprimierung, OCR, Konvertierung und KI-PDF-Workflows gruppiert, damit Google und KI-Antwortmaschinen DockDocs klarer verstehen.",
+    openWorkflow: "Workflow öffnen",
+    hubEyebrow: "GEO-Content-Hub",
+    hubTitle: "Gelangen Sie von der Frage über das Tool bis zur Anleitung innerhalb eines Dokument-Workflows.",
+    readBlog: "Blog-Anleitungen lesen",
+  },
 };
 
 export function GeoHubPage({

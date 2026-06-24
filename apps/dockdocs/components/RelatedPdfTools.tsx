@@ -1,6 +1,6 @@
 "use client";
 
-import { navCategories } from "@/components/Header";
+import { getNavCategories } from "@/lib/header-nav";
 
 // Mobile-visible internal-link block for the custom (non-template) tool pages.
 // Template tool pages already ship a mobile-visible Related Tools grid; the custom
@@ -9,11 +9,12 @@ import { navCategories } from "@/components/Header";
 // closes that gap with a plain, crawlable <a href> grid that is visible at every
 // breakpoint (2 columns on phones, 3 on wider screens).
 //
-// Names come from the shared, native-authored navCategories — never hardcoded here —
-// so every locale stays native-quality and a tool that ships in nav stays in sync.
+// Names come from the shared, native-authored nav copy (getNavCategories) — never
+// hardcoded here — so every locale stays native-quality (incl. de, which the Header's
+// navCategories map does not yet expose) and a tool that ships in nav stays in sync.
 
-type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja";
-const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja"];
+type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de";
+const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja", "de"];
 
 // Curated, evergreen, real (non-`soon`) tools relevant to someone working a
 // document on an AI page. The current page's own slug is excluded at render.
@@ -35,11 +36,12 @@ const HEADING: Record<Loc, string> = {
   pt: "Mais ferramentas para documentos",
   fr: "Plus d'outils pour documents",
   ja: "その他のドキュメントツール",
+  de: "Weitere Dokument-Tools",
 };
 
 // slug -> native name for a locale, skipping any coming-soon tool.
 function nameLookup(loc: Loc): Map<string, string> {
-  const cats = navCategories[loc] ?? navCategories.en;
+  const cats = getNavCategories(loc);
   const m = new Map<string, string>();
   for (const cat of cats) {
     for (const col of cat.cols) {

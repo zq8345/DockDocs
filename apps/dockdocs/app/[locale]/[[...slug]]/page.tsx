@@ -2530,7 +2530,10 @@ function LocalizedChatWithPdf({ locale }: { locale: ClientLocale }) {
         </p>
 
         <div className="mt-8">
-          <ChatWithPdfClient locale={toLeafLocale(locale)} />
+          {/* Pass the full route locale (de-aware): the client's runtime copy falls
+              back to English for de, but the embedded RelatedPdfTools renders de
+              natively, so de must NOT be collapsed via toLeafLocale here. */}
+          <ChatWithPdfClient locale={locale} />
         </div>
       </div>
 
@@ -2608,7 +2611,10 @@ function LocalizedAiSummary({ locale }: { locale: ClientLocale }) {
         </p>
 
         <div className="mt-8">
-          <AiSummaryClient locale={toLeafLocale(locale)} />
+          {/* Pass the full route locale (de-aware): the client's runtime copy falls
+              back to English for de, but the embedded RelatedPdfTools renders de
+              natively, so de must NOT be collapsed via toLeafLocale here. */}
+          <AiSummaryClient locale={locale} />
         </div>
       </div>
       {"faqs" in copy && Array.isArray((copy as { faqs?: unknown }).faqs) ? (

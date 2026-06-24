@@ -66,8 +66,8 @@ export const LOCAL_ONLY_SLUGS = new Set<string>([
 
 import { deepHant } from "./zh-hant";
 
-type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja";
-const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja"];
+type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de";
+const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja", "de"];
 
 const COPY: Record<Loc, { title: string; body: string; how: string }> = {
   en: {
@@ -99,6 +99,11 @@ const COPY: Record<Loc, { title: string; body: string; how: string }> = {
     title: "言葉だけでなく、自分で確かめてください",
     body: "このツールはすべてブラウザ内で動作します。あなたのファイルが端末から外に出ることはなく、どのサーバーにもアップロードされません。",
     how: "ご自身で確認できます：ブラウザの開発者ツール（F12、または右クリック →「検証」）を開き →「Network / ネットワーク」タブに切り替えて → このツールを実行してみてください。処理はあなたの端末内でローカルに行われるため、ファイルがどこかにアップロードされる様子は表示されません。",
+  },
+  de: {
+    title: "Verlassen Sie sich nicht auf unser Wort – überzeugen Sie sich selbst",
+    body: "Dieses Tool läuft vollständig in Ihrem Browser. Ihre Datei verlässt niemals Ihr Gerät – sie wird auf keinen Server hochgeladen.",
+    how: "Überzeugen Sie sich selbst: Öffnen Sie die Entwicklertools Ihres Browsers (F12 oder Rechtsklick → „Untersuchen\") → den Tab „Network / Netzwerk\" → und führen Sie dann dieses Tool aus. Sie werden nicht sehen, dass Ihre Datei irgendwohin hochgeladen wird, denn die Verarbeitung findet lokal auf Ihrem Gerät statt.",
   },
 };
 

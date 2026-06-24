@@ -197,6 +197,35 @@ const copy = {
     quotaExceeded:
       "現在のプランの AI Summary 上限に達しました。続けるにはアップグレードしてください。",
   },
+  de: {
+    eyebrow: "KI-Zusammenfassung",
+    title: "Fassen Sie ein PDF zusammen, ohne die vollständige Datei an die KI zu senden.",
+    description:
+      "DockDocs extrahiert den im Browser lesbaren PDF-Text lokal und sendet anschließend nur den Text an den konfigurierten KI-Anbieter. Führen Sie bei gescannten PDFs zuerst die OCR aus und fügen Sie den extrahierten Text hier ein.",
+    upload: "PDF auswählen",
+    pasteLabel: "Oder OCR- / extrahierten Text einfügen",
+    pastePlaceholder:
+      "Fügen Sie hier den OCR-Text oder den kopierten PDF-Text ein, wenn das PDF gescannt oder bildbasiert ist.",
+    summarize: "Zusammenfassung erstellen",
+    reset: "Zurücksetzen",
+    cancel: "Abbrechen",
+    source: "Quelle",
+    characters: "Gesendete Zeichen",
+    provider: "Anbieter",
+    download: "Zusammenfassung herunterladen",
+    executive: "Zusammenfassung für die Führungsebene",
+    keyPoints: "Kernpunkte",
+    actionItems: "Maßnahmen",
+    nextSteps: "Empfohlene nächste Schritte",
+    privacyTitle: "Verhalten beim Datenschutz",
+    privacy:
+      "Die Extraktion des PDF-Texts erfolgt im Browser. Der KI-Anbieter erhält erst nach dem Start der Zusammenfassung ausschließlich den extrahierten Text. Dieser Ablauf lädt keine Dateien zum KI-Anbieter hoch.",
+    idle: "Laden Sie ein PDF hoch oder fügen Sie OCR-Text ein, um zu beginnen.",
+    ready: "Bereit zum Zusammenfassen.",
+    working: "Zusammenfassung wird erstellt ...",
+    quotaExceeded:
+      "Das AI-Summary-Limit Ihres aktuellen Tarifs ist erreicht. Führen Sie ein Upgrade durch, um fortzufahren.",
+  },
 } as const;
 
 export function AiSummaryWorkflow({

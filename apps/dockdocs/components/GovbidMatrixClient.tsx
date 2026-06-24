@@ -498,6 +498,7 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
       {/* Upload */}
       <div className="mt-8">
         <UploadDropzone
+          locale={locale}
           accept="application/pdf"
           buttonLabel={t.upload}
           onFile={onAnalyze}
