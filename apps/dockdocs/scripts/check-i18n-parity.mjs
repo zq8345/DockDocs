@@ -39,6 +39,7 @@ const EXCEPTIONS = new Set([
   "password-protect-pdf-without-uploading", // standalone English-first GEO content page (how-to) — no localized variants yet by design
   "dockdocs-vs-smallpdf", // standalone English-first GEO head-to-head comparison page — no localized variants yet by design
   "dockdocs-vs-ilovepdf", // standalone English-first GEO head-to-head comparison page — no localized variants yet by design
+  "offline", // PWA service-worker offline fallback (public/sw.js precaches /offline/) — noindex, ONE route that picks its language client-side (OfflineFallback → detectOfflineLocale over 8 locales), so it is deliberately NOT per-locale routed
 ]);
 
 function die(lines) {

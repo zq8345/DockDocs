@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { AppShell } from "@/components/AppShell";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
+import { PwaRuntime } from "@/components/PwaRuntime";
 import { absoluteUrl, googleSiteVerification, siteUrl } from "@/shared/seo/routes";
 import "./globals.css";
 
@@ -56,7 +57,9 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
               var path = window.location.pathname;
               var seg = path.split('/').filter(Boolean)[0];
               var hasPrefix = ['en','zh','ja','ko','es','fr','de','pt','it','ru','ar','hi'].includes(seg);
-              if (hasPrefix) return;
+              // 'offline' has no per-locale variant (one runtime-localized PWA fallback) —
+              // redirecting it to /zh/offline would 404 (and loop while offline).
+              if (hasPrefix || seg === 'offline') return;
               // Only redirect to zh — the only non-English locale with full content
               var zhLangs = {'zh':1,'zh-cn':1,'zh-tw':1,'zh-hk':1,'zh-sg':1};
               var code = lang.split('-')[0];
@@ -94,6 +97,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       </head>
       <body>
         <HtmlLangSync />
+        <PwaRuntime />
         <AppShell>{children}</AppShell>
       </body>
     </html>
