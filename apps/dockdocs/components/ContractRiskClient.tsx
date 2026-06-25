@@ -709,6 +709,54 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
             <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.result(risks.length)}</span>
           </div>
 
+          {/* PR-B1 summary bar: severity counts + clickable proportional overview bar.
+              Counts are derived client-side; clicking a colour segment scrolls to that
+              severity's first finding. Verdict + scoped colour legend land in a later
+              increment (with the server `summary` field, through claims-check). */}
+          {risks.length > 0 && (() => {
+            const counts = { high: 0, medium: 0, low: 0, missing: 0 };
+            risks.forEach((r) => { counts[r.level] += 1; if (r.missing) counts.missing += 1; });
+            const order: RiskLevel[] = ["high", "medium", "low"];
+            const barTotal = counts.high + counts.medium + counts.low;
+            const scrollToLevel = (lvl: RiskLevel) => {
+              const idx = risks.findIndex((r) => r.level === lvl);
+              if (idx >= 0) document.getElementById(`risk-card-${idx}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+            };
+            return (
+              <div className="mb-3">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12.5px] font-medium text-[color:var(--muted)]">
+                  {order.map((lvl) => (
+                    <span key={lvl} className="inline-flex items-center gap-1.5">
+                      <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: LEVEL_STYLE[lvl].dot }} />
+                      <span className="font-semibold text-[color:var(--foreground)]">{counts[lvl]}</span>
+                      {levelLabel[lvl]}
+                    </span>
+                  ))}
+                  {counts.missing > 0 && (
+                    <span className="inline-flex items-center gap-1 text-[color:var(--faint)]">◇ <span className="font-semibold">{counts.missing}</span></span>
+                  )}
+                </div>
+                {barTotal > 0 && (
+                  <div className="mt-2 flex h-2 overflow-hidden rounded-full bg-[color:var(--surface-subtle)]">
+                    {order.map((lvl) =>
+                      counts[lvl] > 0 ? (
+                        <button
+                          key={lvl}
+                          type="button"
+                          onClick={() => scrollToLevel(lvl)}
+                          title={`${counts[lvl]} ${levelLabel[lvl]}`}
+                          aria-label={`${counts[lvl]} ${levelLabel[lvl]}`}
+                          className="h-full cursor-pointer transition hover:opacity-80"
+                          style={{ flexGrow: counts[lvl], flexBasis: 0, backgroundColor: LEVEL_STYLE[lvl].dot }}
+                        />
+                      ) : null,
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
           {coverage && (() => {
             const total = pages || 0;
             const coveredPages =
@@ -741,7 +789,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
                 const s = LEVEL_STYLE[r.level];
                 const loc = locations[i] ?? null;
                 return (
-                  <li key={i} className="rounded-[var(--radius-lg)] border bg-[color:var(--surface)] p-4" style={{ borderColor: s.border }}>
+                  <li key={i} id={`risk-card-${i}`} className="scroll-mt-20 rounded-[var(--radius-lg)] border bg-[color:var(--surface)] p-4" style={{ borderColor: s.border }}>
                     <div className="flex items-center gap-2">
                       <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: s.dot }} />
                       <span className="rounded px-2 py-0.5 text-[11px] font-semibold" style={{ background: s.chip, color: s.dot }}>{levelLabel[r.level]}</span>
