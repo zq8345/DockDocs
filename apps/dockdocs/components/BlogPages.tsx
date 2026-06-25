@@ -771,7 +771,7 @@ function getGeoSteps(article: BlogArticle, locale: BlogUiLocale) {
       return ["PDF hochladen.", "Komprimierung ausführen.", "Komprimiertes Ergebnis herunterladen.", "Datei öffnen und Lesbarkeit prüfen."];
     }
     if (article.category === "Merge PDF") {
-      return ["Mehrere PDFs hochladen.", "Reihenfolge der Dateien anordnen.", "Zu einem Dokument zusammenführen.", "Finales PDF herunterladen und prüfen."];
+      return ["Mehrere PDFs hochladen.", "Reihenfolge der Dateien anordnen.", "Zu einem Dokument zusammenfügen.", "Finales PDF herunterladen und prüfen."];
     }
     if (article.category === "Split PDF") {
       return ["PDF hochladen.", "Seitenbereiche eingeben.", "Aufgeteiltes Ergebnis in der Vorschau prüfen.", "Seiten oder ZIP-Datei exportieren."];
@@ -864,7 +864,7 @@ function getWhenToUse(article: BlogArticle, locale: BlogUiLocale) {
       return ["Die Datei überschreitet das E-Mail- oder Upload-Limit.", "Das vollständige PDF muss erhalten bleiben.", "Sie brauchen eine kleinere Datei, die lesbar bleibt."];
     }
     if (article.category === "Merge PDF") {
-      return ["Mehrere Dateien sollen als ein Anhang verschickt werden.", "Anträge, Rechnungen oder Kundenunterlagen müssen zusammengeführt werden.", "Der Empfänger braucht ein Dokumentpaket in fester Reihenfolge."];
+      return ["Mehrere Dateien sollen als ein Anhang verschickt werden.", "Anträge, Rechnungen oder Kundenunterlagen müssen zusammengefügt werden.", "Der Empfänger braucht ein Dokumentpaket in fester Reihenfolge."];
     }
     if (article.category === "Split PDF") {
       return ["Sie brauchen nur bestimmte Seiten.", "Die vollständige Datei ist zu groß oder enthält Irrelevantes.", "Ein Kapitel oder Seitenbereich braucht einen eigenen Export."];

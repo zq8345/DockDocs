@@ -2806,14 +2806,14 @@ const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: stri
     ],
   },
   "merge-pdf": {
-    title: "PDF-Dateien zusammenführen — Häufige Fragen",
+    title: "PDF-Dateien zusammenfügen — Häufige Fragen",
     items: [
-      { q: "Wie führe ich PDF-Dateien zusammen?", a: "Fügen Sie zwei oder mehr PDFs hinzu, ziehen Sie die Datei-Miniaturansichten in die gewünschte Reihenfolge und klicken Sie dann auf „Zusammenführen & herunterladen“. Die Seiten werden in dieser Reihenfolge von oben nach unten zu einem einzigen PDF kombiniert." },
-      { q: "Kann ich die Reihenfolge der Kombination steuern?", a: "Ja. Jede Datei zeigt eine Miniaturansicht und ein Nummern-Abzeichen — ziehen Sie sie herum, um sie vor dem Zusammenführen neu anzuordnen. Sie sehen genau, was wohin kommt, bevor Sie klicken, nicht danach." },
-      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Alles läuft lokal in Ihrem Browser — das Zusammenführen geschieht auf Ihrem Gerät, und Ihre Dateien werden nie hochgeladen oder irgendwohin gesendet. Es ist kein Konto und keine Anmeldung nötig." },
+      { q: "Wie führe ich PDF-Dateien zusammen?", a: "Fügen Sie zwei oder mehr PDFs hinzu, ziehen Sie die Datei-Miniaturansichten in die gewünschte Reihenfolge und klicken Sie dann auf „Zusammenfügen & herunterladen“. Die Seiten werden in dieser Reihenfolge von oben nach unten zu einem einzigen PDF kombiniert." },
+      { q: "Kann ich die Reihenfolge der Kombination steuern?", a: "Ja. Jede Datei zeigt eine Miniaturansicht und ein Nummern-Abzeichen — ziehen Sie sie herum, um sie vor dem Zusammenfügen neu anzuordnen. Sie sehen genau, was wohin kommt, bevor Sie klicken, nicht danach." },
+      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Alles läuft lokal in Ihrem Browser — das Zusammenfügen geschieht auf Ihrem Gerät, und Ihre Dateien werden nie hochgeladen oder irgendwohin gesendet. Es ist kein Konto und keine Anmeldung nötig." },
       { q: "Gibt es eine Datei- oder Seitengrenze?", a: "Es gibt keine feste Obergrenze. Da der gesamte Auftrag in Ihrem Browser läuft, ist die praktische Grenze der Arbeitsspeicher Ihres Geräts — sehr große Dateien oder viele auf einmal können auf Geräten mit wenig RAM langsam werden." },
       { q: "Warum wurde eines meiner PDFs übersprungen?", a: "Passwortgeschützte oder verschlüsselte PDFs lassen sich nicht lesen, daher werden sie mit einem Hinweis ausgelassen. Entsperren Sie sie oder entfernen Sie zuerst das Passwort und fügen Sie die Datei dann erneut hinzu." },
-      { q: "Ist es kostenlos?", a: "Ja — vollständig kostenlos, ohne Wasserzeichen und ohne Registrierung. Die zusammengeführte Datei wird als ein einziges PDF heruntergeladen." },
+      { q: "Ist es kostenlos?", a: "Ja — vollständig kostenlos, ohne Wasserzeichen und ohne Registrierung. Die zusammengefügte Datei wird als ein einziges PDF heruntergeladen." },
     ],
   },
   "split-pdf": {
@@ -2919,7 +2919,7 @@ const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: stri
     items: [
       { q: "Wie konvertiere ich Bilder in ein PDF?", a: "Fügen Sie Ihre Bilder hinzu, ziehen Sie die Miniaturansichten in die gewünschte Reihenfolge und klicken Sie dann auf „In PDF konvertieren“. Jedes Bild wird zu einer Seite, von oben nach unten, in einer einzigen Datei, die Sie herunterladen können." },
       { q: "Welche Bildformate werden unterstützt?", a: "JPG, PNG, WebP, GIF und BMP. HEIC (das Format, in dem iPhones Fotos oft speichern) wird noch nicht unterstützt — konvertieren Sie diese zuerst in JPG oder ändern Sie die Kameraeinstellung Ihres iPhones auf „Maximale Kompatibilität“." },
-      { q: "Kann ich viele Bilder in einem PDF zusammenfassen?", a: "Ja. Fügen Sie beliebig viele hinzu und ziehen Sie sie zum Neuanordnen — sie werden in genau dieser Reihenfolge zu einem einzigen PDF zusammengeführt, ein Bild pro Seite." },
+      { q: "Kann ich viele Bilder in einem PDF zusammenfassen?", a: "Ja. Fügen Sie beliebig viele hinzu und ziehen Sie sie zum Neuanordnen — sie werden in genau dieser Reihenfolge zu einem einzigen PDF zusammengefügt, ein Bild pro Seite." },
       { q: "Werden meine Bilder irgendwohin hochgeladen?", a: "Nein. Alles läuft lokal in Ihrem Browser — das PDF wird auf Ihrem Gerät erstellt, und Ihre Bilder werden nie an einen Server gesendet oder irgendwo gespeichert." },
       { q: "Gibt es eine Größen- oder Dateianzahlgrenze?", a: "Es gibt keine feste Grenze. Da alles auf Ihrem Gerät geschieht, ist die praktische Obergrenze der Arbeitsspeicher Ihres Geräts — sehr große oder sehr viele hochauflösende Bilder können ein älteres Telefon oder einen Laptop mit wenig RAM verlangsamen." },
       { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Ja, es ist vollständig kostenlos, ohne Anmeldung, ohne Wasserzeichen und ohne erforderliche E-Mail. Öffnen Sie einfach die Seite und legen Sie los." },

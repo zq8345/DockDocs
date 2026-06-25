@@ -830,7 +830,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
         "Leia guias passo a passo de compressão, combinação, divisão, conversão e tarefas diárias com documentos.",
         "Lisez des guides étape par étape pour la compression, la fusion, la division, la conversion et les tâches documentaires courantes.",
         "圧縮、結合、分割、変換、日常的なドキュメント作業の手順ガイドを読む。",
-        "Lesen Sie Schritt-für-Schritt-Anleitungen zu Komprimierung, Zusammenführen, Teilen, Konvertierung und alltäglichen Dokumentaufgaben.",
+        "Lesen Sie Schritt-für-Schritt-Anleitungen zu Komprimierung, Zusammenfügen, Teilen, Konvertierung und alltäglichen Dokumentaufgaben.",
       ),
     },
     {
@@ -895,7 +895,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
     ],
     "merge-pdf": [
       {
-        label: tr("How to merge PDF files online", "在线合并 PDF 文件", "Cómo combinar archivos PDF en línea", "Como combinar arquivos PDF online", "Comment fusionner des fichiers PDF en ligne", "オンラインで PDF ファイルを結合する方法", "PDF-Dateien online zusammenführen"),
+        label: tr("How to merge PDF files online", "在线合并 PDF 文件", "Cómo combinar archivos PDF en línea", "Como combinar arquivos PDF online", "Comment fusionner des fichiers PDF en ligne", "オンラインで PDF ファイルを結合する方法", "PDF-Dateien online zusammenfügen"),
         href: "/blog/how-to-merge-pdf-files-online",
         description: tr(
           "Learn how multiple PDFs become one organized document packet.",
@@ -908,7 +908,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
         ),
       },
       {
-        label: tr("Merge PDFs without losing quality", "无损合并 PDF", "Combinar PDF sin perder calidad", "Combinar PDF sem perder qualidade", "Fusionner des PDF sans perte de qualité", "品質を落とさずに PDF を結合", "PDFs ohne Qualitätsverlust zusammenführen"),
+        label: tr("Merge PDFs without losing quality", "无损合并 PDF", "Combinar PDF sin perder calidad", "Combinar PDF sem perder qualidade", "Fusionner des PDF sans perte de qualité", "品質を落とさずに PDF を結合", "PDFs ohne Qualitätsverlust zusammenfügen"),
         href: "/guides/merge-pdfs-without-losing-quality",
         description: tr(
           "Combine PDFs into one file without quality loss.",

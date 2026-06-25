@@ -406,7 +406,7 @@ const workflowLinks: Record<
         description: "Reduzieren Sie die Dateigröße für E-Mail, Portale und Freigabe.",
       },
       {
-        label: "PDF zusammenführen",
+        label: "PDF zusammenfügen",
         href: "/merge-pdf",
         description: "Fügen Sie mehrere PDFs zu einem geordneten Paket zusammen.",
       },
@@ -982,7 +982,7 @@ export const geoHubCopy: Record<GeoLocale, Record<GeoPageSlug, GeoHubData>> = {
       primaryAction: { label: "PDF-Tools durchsuchen", href: "/" },
       secondaryAction: { label: "Blog-Anleitungen lesen", href: "/blog" },
       answer:
-        "Die DockDocs-Ressourcen ordnen das Komprimieren, Zusammenführen, Teilen, Konvertieren, OCR und KI-Dokument-Workflows in kurze, extrahierbare Anleitungen für Suchmaschinen und KI-Antwortmaschinen.",
+        "Die DockDocs-Ressourcen ordnen das Komprimieren, Zusammenfügen, Teilen, Konvertieren, OCR und KI-Dokument-Workflows in kurze, extrahierbare Anleitungen für Suchmaschinen und KI-Antwortmaschinen.",
       groups: [
         {
           title: "PDF-Workflows",
@@ -1005,7 +1005,7 @@ export const geoHubCopy: Record<GeoLocale, Record<GeoPageSlug, GeoHubData>> = {
       slug: "guides",
       title: "PDF-Anleitungen und Tutorials | DockDocs",
       description:
-        "Praktische DockDocs-PDF-Anleitungen zum Reduzieren der Dateigröße, Zusammenführen von Dateien, Teilen von Seiten, OCR, JPG zu PDF und PDF zu Word.",
+        "Praktische DockDocs-PDF-Anleitungen zum Reduzieren der Dateigröße, Zusammenfügen von Dateien, Teilen von Seiten, OCR, JPG zu PDF und PDF zu Word.",
       eyebrow: "Anleitungen",
       heroTitle: "Schritt-für-Schritt-PDF-Anleitungen für die tägliche Dokumentenarbeit.",
       heroDescription:

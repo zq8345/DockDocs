@@ -249,7 +249,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingTitle: "Weitere Wege, PDFs zu organisieren",
     readingDescription: "Verwandte Tools und Ressourcen für die Verwaltung von Dokumentstapeln.",
     readingLinks: [
-      { label: "PDFs zusammenführen", href: "/merge-pdf", description: "Mehrere PDFs zu einem geordneten Dokument kombinieren." },
+      { label: "PDFs zusammenfügen", href: "/merge-pdf", description: "Mehrere PDFs zu einem geordneten Dokument kombinieren." },
       { label: "Ressourcen zu PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentwege." },
     ],
   },

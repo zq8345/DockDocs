@@ -51,7 +51,7 @@ export const OFFLINE_COPY: Record<OfflineLocale, OfflineStrings> = {
   },
   de: {
     title: "Sie sind offline",
-    body: "Im Browser laufende Tools — komprimieren, zusammenführen, signieren, verschlüsseln, Seiten bearbeiten — funktionieren weiterhin, denn diese Dateien brauchten nie einen Server. KI und Dateikonvertierung benötigen eine Verbindung; stellen Sie die Verbindung wieder her, um sie zu nutzen.",
+    body: "Im Browser laufende Tools — komprimieren, zusammenfügen, signieren, verschlüsseln, Seiten bearbeiten — funktionieren weiterhin, denn diese Dateien brauchten nie einen Server. KI und Dateikonvertierung benötigen eine Verbindung; stellen Sie die Verbindung wieder her, um sie zu nutzen.",
     retry: "Erneut versuchen",
     banner: "Offline – Browser-Tools funktionieren; KI und Konvertierung benötigen eine Verbindung.",
   },

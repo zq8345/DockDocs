@@ -508,7 +508,7 @@ const copy = {
         monthlyPrice: "$0",
         yearlyPrice: "$0",
         tagline: "Alles, was Sie für die tägliche PDF-Arbeit brauchen.",
-        highlights: ["~50 PDF-Tools — konvertieren, komprimieren, zusammenführen, teilen", "Verschlüsseln, Seiten bearbeiten und OCR für gescannte Dokumente", "Im Browser verarbeitet — die meisten Tools laufen lokal, Dateien bleiben privat", "Für immer kostenlos, kein Konto nötig"],
+        highlights: ["~50 PDF-Tools — konvertieren, komprimieren, zusammenfügen, teilen", "Verschlüsseln, Seiten bearbeiten und OCR für gescannte Dokumente", "Im Browser verarbeitet — die meisten Tools laufen lokal, Dateien bleiben privat", "Für immer kostenlos, kein Konto nötig"],
         cta: "Jetzt kostenlos starten",
         href: "/chat-with-pdf" as RouteSlug,
         featured: false,
@@ -558,7 +558,7 @@ const copy = {
     compareTitle: "Tarife vergleichen",
     compareCols: ["Free", "Plus", "Pro"],
     compareRows: [
-      { f: "~50 PDF-Tools — konvertieren, komprimieren, zusammenführen, verschlüsseln, OCR", v: ["✓", "✓", "✓"] },
+      { f: "~50 PDF-Tools — konvertieren, komprimieren, zusammenfügen, verschlüsseln, OCR", v: ["✓", "✓", "✓"] },
       { f: "Mit PDF chatten · KI-Zusammenfassungen", v: ["—", "✓", "✓"] },
       { f: "PDF mit KI übersetzen (behält das Layout)", v: ["—", "Bald", "Bald"] },
       { f: "Mehrere Dokumente vergleichen", v: ["—", "✓", "✓"] },

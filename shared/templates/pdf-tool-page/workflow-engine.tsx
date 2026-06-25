@@ -702,14 +702,14 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
           "Combinando as páginas dos PDFs em um documento organizado.",
           "Fusion des pages PDF en un seul document organisé.",
           "PDF のページを 1 つの整理された文書に結合しています。",
-          "PDF-Seiten werden zu einem geordneten Dokument zusammengeführt.",
+          "PDF-Seiten werden zu einem geordneten Dokument zusammengefügt.",
         ),
         resultLabel: tr("Download merged PDF", "下载合并 PDF", "Descargar PDF combinado", "Baixar PDF combinado", "Télécharger le PDF fusionné", "結合した PDF をダウンロード", "Zusammengeführtes PDF herunterladen"),
         outputFileName: "dockdocs-merged.pdf",
         steps: [
           tr("Analyzing PDF structure...", "分析 PDF 结构...", "Analizando la estructura del PDF...", "Analisando a estrutura do PDF...", "Analyse de la structure du PDF...", "PDF の構造を解析中...", "PDF-Struktur wird analysiert..."),
           tr("Applying file order...", "应用文件顺序...", "Aplicando el orden de los archivos...", "Aplicando a ordem dos arquivos...", "Application de l'ordre des fichiers...", "ファイルの順序を適用中...", "Dateireihenfolge wird angewendet..."),
-          tr("Merging documents...", "合并文档...", "Combinando documentos...", "Combinando documentos...", "Fusion des documents...", "ドキュメントを結合中...", "Dokumente werden zusammengeführt..."),
+          tr("Merging documents...", "合并文档...", "Combinando documentos...", "Combinando documentos...", "Fusion des documents...", "ドキュメントを結合中...", "Dokumente werden zusammengefügt..."),
           S.preparingDownload,
         ],
       };
@@ -778,7 +778,7 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
           S.loadingPdf,
           S.renderingPages,
           tr("Recognizing selected pages...", "识别所选页面...", "Reconociendo las páginas seleccionadas...", "Reconhecendo as páginas selecionadas...", "Reconnaissance des pages sélectionnées...", "選択したページを認識中...", "Ausgewählte Seiten werden erkannt..."),
-          tr("Combining text output...", "合并文本输出...", "Combinando la salida de texto...", "Combinando a saída de texto...", "Combinaison de la sortie texte...", "テキスト出力を結合中...", "Textausgabe wird zusammengeführt..."),
+          tr("Combining text output...", "合并文本输出...", "Combinando la salida de texto...", "Combinando a saída de texto...", "Combinaison de la sortie texte...", "テキスト出力を結合中...", "Textausgabe wird zusammengefügt..."),
         ],
       };
     case "jpg-to-pdf":
@@ -1265,7 +1265,7 @@ function getWorkflowResult(
   switch (config.slug) {
     case "merge-pdf":
       return {
-        title: tr("PDFs merged", "PDF 已合并", "PDF combinados", "PDFs combinados", "PDF fusionnés", "PDF を結合しました", "PDFs zusammengeführt"),
+        title: tr("PDFs merged", "PDF 已合并", "PDF combinados", "PDFs combinados", "PDF fusionnés", "PDF を結合しました", "PDFs zusammengefügt"),
         description: tr(
           "Documents combined into one PDF packet, ready to save for downstream workflows.",
           "文档已合并为一个 PDF 包，可保存以备后续工作流使用。",
@@ -1273,7 +1273,7 @@ function getWorkflowResult(
           "Documentos combinados em um único PDF, prontos para salvar para fluxos de trabalho posteriores.",
           "Documents fusionnés en un seul PDF, prêts à être enregistrés pour les flux de travail ultérieurs.",
           "ドキュメントを 1 つの PDF にまとめました。後続のワークフロー用に保存できます。",
-          "Dokumente in einem PDF zusammengeführt, bereit zum Speichern für nachgelagerte Workflows.",
+          "Dokumente in einem PDF zusammengefügt, bereit zum Speichern für nachgelagerte Workflows.",
         ),
         rows: [
           [L.inputFiles, String(fileCount)],

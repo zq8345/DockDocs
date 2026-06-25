@@ -319,7 +319,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingTitle: "Weitere Möglichkeiten, PDFs zusammenzustellen",
     readingDescription: "Verwandte Tools und Anleitungen zum Erstellen und Kombinieren von Dokumenten.",
     readingLinks: [
-      { label: "PDFs zusammenführen", href: "/merge-pdf", description: "Kombinieren Sie mehrere vollständige PDFs zu einer geordneten Datei, statt Seite für Seite einzufügen." },
+      { label: "PDFs zusammenfügen", href: "/merge-pdf", description: "Kombinieren Sie mehrere vollständige PDFs zu einer geordneten Datei, statt Seite für Seite einzufügen." },
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },

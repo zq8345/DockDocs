@@ -263,7 +263,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { title: "Startnummer und Seitenbereich", description: "Beginnen Sie das Zählen bei einer beliebigen Zahl und nummerieren Sie nur die von Ihnen gewählten Seiten, sodass Titelei oder Deckblätter unberührt bleiben." },
     ],
     workflowTitle: "Wie Seitenzahlen in Ihre Dokumentarbeit passen",
-    workflowDescription: "Gemacht für den Moment, in dem ein Entwurf, ein Scan oder ein zusammengeführtes Dokument vor dem Versenden oder Drucken saubere, einheitliche Seitenzahlen braucht.",
+    workflowDescription: "Gemacht für den Moment, in dem ein Entwurf, ein Scan oder ein zusammengefügtes Dokument vor dem Versenden oder Drucken saubere, einheitliche Seitenzahlen braucht.",
     steps: [
       "Laden Sie das PDF hoch, das Sie nummerieren möchten.",
       "Legen Sie Position, Format, Startnummer und Seitenbereich fest – und prüfen Sie die Live-Vorschau.",

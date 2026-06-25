@@ -53,7 +53,7 @@ export const TIER_CATEGORIES: TierCategory[] = [
     },
     tools: [
       { slug: "compress-pdf",  en: "Compress PDF",        zh: "PDF 压缩",      es: "Comprimir PDF",            pt: "Comprimir PDF",              fr: "Compresser PDF",          ja: "PDF 圧縮",        de: "PDF komprimieren" },
-      { slug: "merge-pdf",     en: "Merge PDF",           zh: "PDF 合并",      es: "Combinar PDF",             pt: "Unir PDF",                   fr: "Fusionner PDF",           ja: "PDF 結合",        de: "PDF zusammenführen" },
+      { slug: "merge-pdf",     en: "Merge PDF",           zh: "PDF 合并",      es: "Combinar PDF",             pt: "Unir PDF",                   fr: "Fusionner PDF",           ja: "PDF 結合",        de: "PDF zusammenfügen" },
       { slug: "split-pdf",     en: "Split PDF",           zh: "PDF 拆分",      es: "Dividir PDF",              pt: "Dividir PDF",                fr: "Diviser PDF",             ja: "PDF 分割",        de: "PDF teilen" },
       { slug: "delete-page",   en: "Delete PDF Pages",    zh: "PDF 页面删除",  es: "Eliminar páginas",         pt: "Excluir páginas",            fr: "Supprimer des pages",     ja: "PDF ページ削除",  de: "PDF-Seiten löschen" },
       { slug: "rotate-page",   en: "Rotate PDF",          zh: "PDF 页面旋转",  es: "Rotar páginas",            pt: "Girar páginas",              fr: "Faire pivoter des pages", ja: "PDF ページ回転",  de: "PDF drehen" },
@@ -126,7 +126,7 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "batch-rename-pdf",    en: "Batch Rename PDF",          zh: "批量 PDF 改名",   es: "Renombrado por lotes",          pt: "Renomear em lote",                fr: "Renommage par lots",      ja: "PDF を一括リネーム",      de: "Stapel: PDF umbenennen" },
       { slug: "batch-watermark-pdf", en: "Batch Watermark & Pages",   zh: "批量水印 & 页码", es: "Marca de agua por lotes",       pt: "Marca d'água em lote",            fr: "Filigrane par lots",      ja: "一括透かし & ページ番号", de: "Stapel: Wasserzeichen & Seiten" },
       { slug: "batch-page-numbers",  en: "Batch Add Page Numbers",    zh: "批量添加页码",    es: "Números de página por lotes",   pt: "Números de página em lote",       fr: "Numéros de page par lots", ja: "ページ番号を一括追加",   de: "Stapel: Seitenzahlen hinzufügen" },
-      { slug: "batch-split-merge",   en: "Batch Split & Merge",       zh: "批量拆分合并",    es: "División por lotes",            pt: "Divisão em lote",                 fr: "Division par lots",       ja: "一括分割 & 結合",         de: "Stapel: Teilen & Zusammenführen" },
+      { slug: "batch-split-merge",   en: "Batch Split & Merge",       zh: "批量拆分合并",    es: "División por lotes",            pt: "Divisão em lote",                 fr: "Division par lots",       ja: "一括分割 & 結合",         de: "Stapel: Teilen & Zusammenfügen" },
       { slug: "batch-rotate-pdf",    en: "Batch Rotate PDF",          zh: "批量旋转 PDF",    es: "Rotación por lotes",            pt: "Rotação em lote",                 fr: "Rotation par lots",       ja: "PDF を一括回転",          de: "Stapel: PDF drehen" },
       { slug: "batch-pdf-to-word",   en: "Batch PDF to Word",         zh: "批量 PDF 转 Word", es: "PDF a Word por lotes",         pt: "PDF para Word em lote",           fr: "PDF en Word par lots",    ja: "PDF を Word に一括変換",  de: "Stapel: PDF zu Word" },
       { slug: "batch-pdf-to-excel",  en: "Batch PDF to Excel",        zh: "批量 PDF 转 Excel", es: "PDF a Excel por lotes",       pt: "PDF para Excel em lote",          fr: "PDF en Excel par lots",   ja: "PDF を Excel に一括変換", de: "Stapel: PDF zu Excel" },

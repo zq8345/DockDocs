@@ -252,9 +252,9 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       "Laden Sie die separaten PDFs als ein einziges ZIP herunter.",
     ],
     readingTitle: "Weitere Möglichkeiten, PDFs zu organisieren",
-    readingDescription: "Verwandte Tools und Anleitungen zum Teilen und Zusammenführen von Dokumenten.",
+    readingDescription: "Verwandte Tools und Anleitungen zum Teilen und Zusammenfügen von Dokumenten.",
     readingLinks: [
-      { label: "PDFs zusammenführen", href: "/merge-pdf", description: "Der umgekehrte Weg — mehrere PDFs zu einem geordneten Dokument kombinieren." },
+      { label: "PDFs zusammenfügen", href: "/merge-pdf", description: "Der umgekehrte Weg — mehrere PDFs zu einem geordneten Dokument kombinieren." },
       { label: "Ein PDF nach Seitenbereichen teilen", href: "/guides/split-pdf-page-ranges", description: "So extrahieren Sie bestimmte Seitenbereiche in separate PDFs." },
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],

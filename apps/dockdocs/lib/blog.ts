@@ -117,7 +117,7 @@ export const blogIndexCopy = {
   de: {
     title: "Blog für PDF-Workflows",
     description:
-      "Praktische DockDocs-Anleitungen zum Komprimieren, Zusammenführen, Konvertieren, zu OCR, JPG-zu-PDF und KI-gestützten Dokumenten-Workflows.",
+      "Praktische DockDocs-Anleitungen zum Komprimieren, Zusammenfügen, Konvertieren, zu OCR, JPG-zu-PDF und KI-gestützten Dokumenten-Workflows.",
     eyebrow: "DockDocs-Ressourcen",
     heroTitle: "PDF-Workflow-Anleitungen für suchgetriebene Dokumentenarbeit.",
     heroDescription:
