@@ -88,10 +88,10 @@ export function OtpVerifyForm({
         inputMode="numeric"
         autoComplete="one-time-code"
         pattern="[0-9]*"
-        maxLength={8}
+        maxLength={6}
         value={code}
-        onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 8))}
-        placeholder="••••••••"
+        onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+        placeholder="••••••"
         aria-label={t.label}
         className="w-full rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 text-center text-[20px] font-semibold tracking-[0.4em] tabular-nums outline-none transition focus:border-[color:var(--accent)]"
       />
