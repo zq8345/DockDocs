@@ -16,6 +16,7 @@ import { GeoHubPage } from "@/components/GeoHubPage";
 import { LegalHubPage } from "@/components/LegalHubPage";
 import { FinanceHubPage } from "@/components/FinanceHubPage";
 import { ResearchHubPage } from "@/components/ResearchHubPage";
+import type { VerticalLocale } from "@/components/VerticalHubPage";
 import { ProgrammaticGeoPage } from "@/components/ProgrammaticGeoPage";
 import { PricingPlans } from "@/components/PricingPlans";
 import { DocumentCompareClient } from "@/components/DocumentCompareClient";
@@ -248,6 +249,31 @@ function toLeafLocale(locale: ClientLocale): LeafLocale {
     case "fr":
     case "ja":
     case "zh-Hant":
+      return locale;
+    default: {
+      const _exhaustive: never = locale;
+      return _exhaustive;
+    }
+  }
+}
+
+// VerticalLocale: the *HubPage (finance/legal/research) surfaces author full de in
+// addition to en/zh/es/pt/fr/ja and derive zh-Hant from zh internally — so, unlike
+// toLeafLocale, they KEEP "de". Only ko (not a launch locale for the hubs) maps to
+// English. Exhaustive over ClientLocale so a new route locale forces a decision.
+function toVerticalLocale(locale: ClientLocale): VerticalLocale {
+  switch (locale) {
+    case "ko":
+      // ko has no authored hub copy yet → English.
+      return "en";
+    case "en":
+    case "zh":
+    case "es":
+    case "pt":
+    case "fr":
+    case "ja":
+    case "zh-Hant":
+    case "de":
       return locale;
     default: {
       const _exhaustive: never = locale;
@@ -2429,15 +2455,15 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "for/legal") {
-    return <LegalHubPage locale={toLeafLocale(clientLocale)} useLocalePrefix />;
+    return <LegalHubPage locale={toVerticalLocale(clientLocale)} useLocalePrefix />;
   }
 
   if (slug === "for/finance") {
-    return <FinanceHubPage locale={toLeafLocale(clientLocale)} useLocalePrefix />;
+    return <FinanceHubPage locale={toVerticalLocale(clientLocale)} useLocalePrefix />;
   }
 
   if (slug === "for/research") {
-    return <ResearchHubPage locale={toLeafLocale(clientLocale)} useLocalePrefix />;
+    return <ResearchHubPage locale={toVerticalLocale(clientLocale)} useLocalePrefix />;
   }
 
   return <LocalizedHome locale={clientLocale} />;

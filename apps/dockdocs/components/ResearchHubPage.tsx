@@ -1,14 +1,14 @@
 import { defaultLocale } from "@/lib/i18n";
 import { VerticalHubPage, type VerticalConfig } from "@/components/VerticalHubPage";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
 
 // "Research & academia" professional vertical — a thin config over VerticalHubPage.
 // Honesty gate: every card is a real, shipping tool (ai-summary, chat-with-pdf,
 // compare, ocr-pdf, extract-to-excel). The page adds no gate and advertises no
 // unbuilt quotas; the linked tools keep their own gating. The disclaimer is
 // honest about AI summaries missing nuance — verify against the source before citing.
-// Full en/zh/es/pt/fr content; other UI locales fall back to en.
+// Full en/zh/es/pt/fr/ja/de content; zh-Hant derives from zh (deepHant); ko falls back to en.
 const researchConfig: VerticalConfig = {
   vertical: "research",
   primarySlug: "ai-summary",
@@ -116,6 +116,23 @@ const researchConfig: VerticalConfig = {
         { slug: "extract-to-excel", label: "Excel に抽出", description: "PDF 内のデータ表や図を、分析できるスプレッドシートに抽出します。" },
       ],
       disclaimer: "これらのツールは、研究資料をより速く読み・検索し・整理するのを助けます。AI の要約や回答は細かなニュアンスを見落とすことがあります——引用したり依拠したりする前に、必ず原典と照合して確認してください。",
+    },
+    de: {
+      eyebrow: "Für Forschung & Wissenschaft",
+      heroTitle: "KI-Dokumenttools für Arbeiten, Berichte und Forschung",
+      heroDescription:
+        "Fassen Sie lange Arbeiten auf ihre Kernergebnisse zusammen, befragen Sie ein PDF zu seinen Methoden und Ergebnissen, vergleichen Sie mehrere Studien nebeneinander, wenden Sie OCR auf gescannte Artikel an und übertragen Sie Datentabellen in eine Tabelle — bei jeder Antwort und jedem Befund wird die zugrunde liegende Textstelle angezeigt, sodass Sie vor dem Zitieren prüfen können.",
+      primary: "Eine Arbeit zusammenfassen",
+      secondary: "Eine Arbeit befragen",
+      cardsTitle: "Tools für Forschende",
+      cards: [
+        { slug: "ai-summary", label: "KI-Zusammenfassung", description: "Verdichten Sie eine lange Arbeit oder einen Bericht auf ihre Kernergebnisse, Methoden und zentralen Aussagen." },
+        { slug: "chat-with-pdf", label: "Mit PDF chatten", description: "Befragen Sie eine Arbeit zu ihren Methoden, Ergebnissen oder Definitionen — Antworten zeigen die Textstelle, aus der sie stammen, und weisen darauf hin, was sich nicht belegen lässt." },
+        { slug: "compare", label: "Dokumente vergleichen", description: "Stellen Sie mehrere Arbeiten oder Studien nebeneinander anhand der entscheidenden Kriterien." },
+        { slug: "ocr-pdf", label: "PDF-OCR", description: "Extrahieren Sie auswählbaren Text aus gescannten Artikeln und alten PDFs, um sie durchsuchen und zitieren zu können." },
+        { slug: "extract-to-excel", label: "In Excel extrahieren", description: "Übertragen Sie Datentabellen und Abbildungen aus einem PDF in eine Tabelle, die Sie analysieren können." },
+      ],
+      disclaimer: "Diese Tools helfen Ihnen, Forschungsmaterial schneller zu lesen, zu durchsuchen und zu ordnen. KI-Zusammenfassungen und -Antworten können Nuancen übersehen — prüfen Sie immer anhand der Originalquelle, bevor Sie zitieren oder sich darauf verlassen.",
     },
   },
 };

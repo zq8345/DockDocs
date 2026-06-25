@@ -1,13 +1,13 @@
 import { defaultLocale } from "@/lib/i18n";
 import { VerticalHubPage, type VerticalConfig } from "@/components/VerticalHubPage";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
 
 // "Finance & tax" professional vertical — a thin config over VerticalHubPage.
 // Honesty gate: every card is a real, shipping tool (extract-to-excel,
 // batch-extract-sheet, pdf-to-excel, ai-summary, compare). The page adds no gate
 // and advertises no unbuilt quotas; the linked tools keep their own gating.
-// Full en/zh/es/pt/fr content; other UI locales fall back to en.
+// Full en/zh/es/pt/fr/ja/de content; zh-Hant derives from zh (deepHant); ko falls back to en.
 const financeConfig: VerticalConfig = {
   vertical: "finance",
   primarySlug: "extract-to-excel",
@@ -115,6 +115,23 @@ const financeConfig: VerticalConfig = {
         { slug: "compare", label: "ドキュメント比較", description: "見積もり・入札・請求書を、重要な条件を軸に並べて比較し、わかりやすい言葉で推奨を示します。" },
       ],
       disclaimer: "これらのツールは財務ドキュメントをより速く読み、整理するのに役立ちます。財務・税務・会計に関する助言ではありません。重要な事項については、有資格の専門家にご相談ください。",
+    },
+    de: {
+      eyebrow: "Für Finanzen & Buchhaltung",
+      heroTitle: "KI-Dokumenttools für Rechnungen, Kontoauszüge und Finanzberichte",
+      heroDescription:
+        "Übertragen Sie die Zahlen aus Rechnungen, Belegen und Kontoauszügen in eine Tabelle, fassen Sie lange Finanzberichte zusammen und vergleichen Sie Angebote nebeneinander — jeder Wert wird mit der zugehörigen Quelltextstelle aus dem Dokument angezeigt, sofern sie sich finden lässt, sodass Sie ihn prüfen können, bevor er in Ihre Bücher gelangt.",
+      primary: "In eine Tabelle extrahieren",
+      secondary: "Einen Bericht zusammenfassen",
+      cardsTitle: "Tools für Finanzteams",
+      cards: [
+        { slug: "extract-to-excel", label: "In Excel extrahieren", description: "Verwandeln Sie Rechnungen, Belege und Kontoauszüge in eine Tabelle — die KI erfasst die wichtigsten Felder und zeigt zu jedem Wert die Quelltextstelle an, sofern sie sich finden lässt." },
+        { slug: "batch-extract-sheet", label: "Stapel-Extraktion in Tabelle", description: "Laden Sie einen ganzen Stapel Rechnungen oder Belege hoch und erhalten Sie eine einzige kombinierte Tabelle, automatisch extrahiert." },
+        { slug: "pdf-to-excel", label: "PDF in Excel", description: "Konvertieren Sie Finanztabellen und Kontoauszüge aus einem PDF in eine bearbeitbare Excel-Datei." },
+        { slug: "ai-summary", label: "KI-Zusammenfassung", description: "Verdichten Sie lange Finanzberichte, Geschäftsberichte und Abschlüsse auf die wichtigsten Punkte und Kennzahlen." },
+        { slug: "compare", label: "Dokumente vergleichen", description: "Stellen Sie Angebote, Ausschreibungen oder Rechnungen anhand der entscheidenden Konditionen nebeneinander — mit einer Empfehlung in klarer Sprache." },
+      ],
+      disclaimer: "Diese Tools helfen Ihnen, Finanzdokumente schneller zu lesen und zu ordnen. Sie sind keine Finanz-, Steuer- oder Buchhaltungsberatung — ziehen Sie bei wichtigen Fragen eine qualifizierte Fachperson hinzu.",
     },
   },
 };

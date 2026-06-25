@@ -1,12 +1,12 @@
 import { defaultLocale } from "@/lib/i18n";
 import { VerticalHubPage, type VerticalConfig } from "@/components/VerticalHubPage";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
 
 // "Legal" professional vertical — now a thin config over the reusable
 // VerticalHubPage. Links to existing AI-hero tools (which keep their own gating);
-// it adds no gate and advertises no unbuilt quotas. Full en/zh/es/pt/fr content;
-// other UI locales fall back to en inside VerticalHubPage.
+// it adds no gate and advertises no unbuilt quotas. Full en/zh/es/pt/fr/ja/de
+// content; zh-Hant derives from zh (deepHant); ko falls back to en.
 const legalConfig: VerticalConfig = {
   vertical: "legal",
   primarySlug: "contract-risk",
@@ -114,6 +114,23 @@ const legalConfig: VerticalConfig = {
         { slug: "compare", label: "文書を比較", description: "重要な条件について複数の文書を並べて比較し、平易な言葉での推奨を提示します。" },
       ],
       disclaimer: "これらのツールは、注目すべき点を見つける手助けをするための自動化された一次レビューです。法的助言ではありません——重要な事項については、資格のある弁護士にご相談ください。",
+    },
+    de: {
+      eyebrow: "Für Recht & Verträge",
+      heroTitle: "KI-Dokumentprüfung für Verträge, Mietverträge und Ausschreibungen",
+      heroDescription:
+        "Fünf fokussierte Tools, die einen Vertrag, Mietvertrag oder eine Ausschreibung lesen und das Wesentliche hervorheben — riskante Klauseln, fehlende Schutzbestimmungen, Compliance-Anforderungen und was sich zwischen zwei Versionen geändert hat. Befunde, die Ihr Dokument zitieren, zeigen die genaue Textstelle, und fehlende Schutzbestimmungen werden als nicht vorhanden markiert — so können Sie prüfen, was enthalten ist, bevor Sie handeln.",
+      primary: "Vertrag prüfen",
+      secondary: "Mietvertrag scannen",
+      cardsTitle: "Tools für Rechtsteams",
+      cards: [
+        { slug: "contract-risk", label: "Vertragsrisiko-Prüfung", description: "Markiert riskante, einseitige oder fehlende Klauseln vor der Unterschrift — markierte Risiken werden aus Ihrem Vertrag zitiert, fehlende vermerkt, mit Hinweisen, was zu klären ist." },
+        { slug: "govbid-matrix", label: "Compliance-Matrix für Ausschreibungen", description: "Fasst jede verbindliche „shall/must“-Anforderung aus einer Ausschreibung in einer nummerierten Compliance-Matrix zusammen, die Sie als CSV exportieren können." },
+        { slug: "lease-redflag", label: "Mietvertrag-Warnsignal-Check", description: "Prüft einen Wohn- oder Gewerbemietvertrag vor der Unterschrift auf unfaire, riskante oder fehlende Schutzbestimmungen für Mieter." },
+        { slug: "redline", label: "Versionen vergleichen", description: "Sehen Sie genau, was sich zwischen zwei Versionen eines Vertrags oder Dokuments geändert hat — Klausel für Klausel." },
+        { slug: "compare", label: "Dokumente vergleichen", description: "Vergleichen Sie mehrere Dokumente nebeneinander anhand der entscheidenden Konditionen — mit einer Empfehlung in klarer Sprache." },
+      ],
+      disclaimer: "Diese Tools sind ein automatisierter erster Durchgang, der Ihnen hilft zu erkennen, was Aufmerksamkeit verdient. Sie sind keine Rechtsberatung — ziehen Sie bei wichtigen Fragen eine qualifizierte Anwältin oder einen qualifizierten Anwalt hinzu.",
     },
   },
 };

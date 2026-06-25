@@ -7,7 +7,7 @@ import { deepHant } from "@/lib/zh-hant";
 // gating — it does NOT add any gate or advertise unbuilt-vertical quotas. The
 // card grid mirrors GeoHubPage. Honesty gate: only mount real, shipping tools.
 
-export type VerticalLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+export type VerticalLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
 
 export type VerticalCard = { slug: string; label: string; description: string };
 
@@ -30,7 +30,7 @@ export type VerticalConfig = {
   secondarySlug: string;
   // Emoji shown before the disclaimer line (e.g. "⚖️" legal, "📊" finance).
   disclaimerIcon?: string;
-  // Full en/zh/es/pt/fr content; other UI locales fall back to en.
+  // Authored en/zh/es/pt/fr/ja/de; zh-Hant derives from zh (deepHant); ko falls back to en.
   copy: Record<string, VerticalCopy>;
 };
 
