@@ -103,5 +103,24 @@ function assert(cond, msg) {
 // normalizeForMatch sanity
 assert(normalizeForMatch("  Foo   BAR\n baz ") === "foo bar baz", "normalizeForMatch collapses + lowercases");
 
+// --- normalizeForMatch: Chinese citation grounding (the PDF-extraction-inserts-spaces bug) ---
+// Spaces inserted between Chinese characters by pdf.js must not break the match against
+// the model's space-free quote.
+assert(normalizeForMatch("本 协 议") === normalizeForMatch("本协议"), "CJK inter-char spaces collapse (extraction vs model quote)");
+assert(normalizeForMatch("甲方 应 当在 30 日内 通知") === normalizeForMatch("甲方应当在30日内通知"), "mixed CJK + digit spacing collapses");
+// Full-width vs half-width punctuation must match either way.
+assert(normalizeForMatch("责任，不超过上月费用。") === normalizeForMatch("责任,不超过上月费用."), "full-width comma/period match ASCII");
+assert(normalizeForMatch("（如适用）") === normalizeForMatch("(如适用)"), "full-width parens match ASCII");
+assert(normalizeForMatch("赔偿100％") === normalizeForMatch("赔偿100%"), "full-width percent matches ASCII");
+// A realistic haystack (extracted with spaces) must contain the model's clean quote.
+{
+  const haystack = normalizeForMatch("第 五 条  乙 方 的 责 任 应 当 不 设 上 限 ，");
+  const quote = normalizeForMatch("乙方的责任应当不设上限");
+  assert(haystack.includes(quote), "spaced Chinese haystack includes the space-free quote (groundRisks path)");
+}
+// English must NOT regress: word spaces are preserved, not stripped.
+assert(normalizeForMatch("Uncapped  Liability") === "uncapped liability", "english collapses to single space");
+assert(normalizeForMatch("the cat") !== normalizeForMatch("thecat"), "english word spaces are NOT stripped (no false merge)");
+
 console.log(failures === 0 ? "\nALL PASS" : `\n${failures} TEST(S) FAILED`);
 process.exit(failures === 0 ? 0 : 1);

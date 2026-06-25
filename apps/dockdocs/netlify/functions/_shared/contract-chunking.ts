@@ -13,10 +13,31 @@ export type MergeableRisk = {
   quote: string | null;
 };
 
-// Normalize text for substring matching: lowercase + collapse whitespace. Shared by
-// the citation-grounding check and the chunk de-dup so they agree on "same text".
+// Full-width CJK punctuation → ASCII equivalent, so a quote that transcribes a
+// punctuation mark differently than the source (very common for Chinese contracts)
+// still matches.
+const FULLWIDTH_PUNCT: Record<string, string> = {
+  "，": ",", "、": ",", "。": ".", "；": ";", "：": ":", "！": "!", "？": "?",
+  "（": "(", "）": ")", "【": "[", "】": "]", "「": '"', "」": '"', "『": '"', "』": '"',
+  "“": '"', "”": '"', "‘": "'", "’": "'", "《": "<", "》": ">", "—": "-", "～": "~", "％": "%",
+};
+
+// Normalize text for substring matching: lowercase, normalize full-width punctuation,
+// and collapse whitespace. Shared by the citation-grounding check and the chunk
+// de-dup so they agree on "same text".
+//
+// CJK fix: PDF text extraction (pdf.js items.join(" ")) often inserts spaces BETWEEN
+// Chinese characters/runs ("本 协 议"), which the model omits when it quotes verbatim
+// ("本协议"). Without stripping whitespace adjacent to CJK characters the grounding
+// check fails on almost every Chinese citation. English word spacing is untouched.
 export function normalizeForMatch(value: string): string {
-  return value.toLowerCase().replace(/\s+/g, " ").trim();
+  return value
+    .toLowerCase()
+    .replace(/[，、。；：！？（）【】「」『』“”‘’《》—～％]/g, (ch) => FULLWIDTH_PUNCT[ch] ?? ch)
+    .replace(/　/g, " ") // full-width space → normal space
+    .replace(/\s+(?=[一-鿿])|(?<=[一-鿿])\s+/g, "") // drop whitespace adjacent to CJK
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 // Split text into overlapping [start,end) ranges of <= maxChars, preferring to cut at
