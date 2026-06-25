@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { defaultLocale, isAllLocale, routeLocales, localeLabels } from "@/lib/i18n";
@@ -8,6 +8,28 @@ import { deepHant } from "@/lib/zh-hant";
 import { getUser, onAuthChange, type AuthUser } from "@/lib/auth";
 import { AccountMenu } from "@/components/AccountMenu";
 import { getNavCategories, type NavCat } from "@/lib/header-nav";
+
+// Outline icons for the consolidated ☰ menu (Joe, 2026-06-25): one consistent stroke
+// style — 16px box, stroke-width 1.5, currentColor — matching the existing menu/theme
+// glyphs, rendered left-aligned before each label. Language-neutral, so one set covers
+// all locales. Module scope so the elements aren't rebuilt on every render.
+function MenuIcon({ children }: { children: ReactNode }) {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
+      {children}
+    </svg>
+  );
+}
+const PAGE_ICONS: Record<string, ReactNode> = {
+  "/pricing": <MenuIcon><path d="M7.6 2.5H3.5a1 1 0 0 0-1 1v4.1a1 1 0 0 0 .3.7l5.4 5.4a1 1 0 0 0 1.4 0l4.1-4.1a1 1 0 0 0 0-1.4L8.3 2.8a1 1 0 0 0-.7-.3Z"/><circle cx="5.4" cy="5.4" r="0.8"/></MenuIcon>,
+  "/guides": <MenuIcon><path d="M8 4.8C8 4.8 6.4 3.5 3 3.5v8c3.4 0 5 1.3 5 1.3M8 4.8C8 4.8 9.6 3.5 13 3.5v8c-3.4 0-5 1.3-5 1.3M8 4.8v8"/></MenuIcon>,
+  "/blog": <MenuIcon><path d="M11 3.5H3.5a1 1 0 0 0-1 1v6.5A1.5 1.5 0 0 0 4 12.5h7.5"/><path d="M11 3.5v7.5a1.5 1.5 0 0 0 3 0V6.5h-3"/><path d="M4.5 6h4.5M4.5 8.3h4.5M4.5 10.6h3"/></MenuIcon>,
+  "/about": <MenuIcon><circle cx="8" cy="8" r="5.5"/><path d="M8 7.4v3.4"/><circle cx="8" cy="5.4" r="0.55" fill="currentColor" stroke="none"/></MenuIcon>,
+  "/contact": <MenuIcon><rect x="2.5" y="3.5" width="11" height="9" rx="1"/><path d="M3 4.9l5 3.6 5-3.6"/></MenuIcon>,
+};
+const GlobeIcon = <MenuIcon><circle cx="8" cy="8" r="5.5"/><path d="M2.5 8h11"/><path d="M8 2.5c1.7 1.8 1.7 9.2 0 11M8 2.5c-1.7 1.8-1.7 9.2 0 11"/></MenuIcon>;
+const SunIcon = <MenuIcon><circle cx="8" cy="8" r="2.7"/><path d="M8 1.6v1.6M8 12.8v1.6M1.6 8h1.6M12.8 8h1.6M3.6 3.6l1.1 1.1M11.3 11.3l1.1 1.1M12.4 3.6l-1.1 1.1M4.7 11.3l-1.1 1.1"/></MenuIcon>;
+const MoonIcon = <MenuIcon><path d="M13 9.6A5.5 5.5 0 1 1 6.4 3 4.4 4.4 0 0 0 13 9.6Z"/></MenuIcon>;
 
 // ── Header nav categories. Derived from the single source lib/header-nav.ts
 // (P2.1): one headerStructure + navItemLabels + navCopy, type-enforced across locales
@@ -206,12 +228,13 @@ export function Header() {
       <button
         type="button"
         onClick={() => setLangOpen((v) => !v)}
-        className="flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+        className="flex w-full items-center gap-2.5 rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
       >
-        <svg className="h-3 w-3 opacity-60" style={{ transform: 'rotate(90deg)' }} viewBox="0 0 12 12" fill="none">
-          <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
+        <span className="opacity-70">{GlobeIcon}</span>
         <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : "Language"}</span>
+        <svg className="ml-auto h-3 w-3 opacity-60" viewBox="0 0 12 12" fill="none">
+          <path d="M4.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </button>
       {langOpen && (
         <div className="absolute right-full bottom-0 z-10 mr-1 min-w-[180px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
@@ -353,9 +376,10 @@ export function Header() {
                         key={p.href}
                         href={lh(p.href, locale)}
                         onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo(p.href); setMoreOpen(false); }}
-                        className="block w-full rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+                        className="flex w-full items-center gap-2.5 rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
                       >
-                        {p.name}
+                        <span className="opacity-70">{PAGE_ICONS[p.href]}</span>
+                        <span>{p.name}</span>
                       </a>
                     ))}
                     <div className="my-1.5 border-t border-[color:var(--line)]" />
@@ -363,9 +387,9 @@ export function Header() {
                     <button
                       type="button"
                       onClick={toggleTheme}
-                      className="flex w-full items-center gap-2 rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+                      className="flex w-full items-center gap-2.5 rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
                     >
-                      <span className="text-[14px] opacity-70">{light ? "☀" : "☾"}</span>
+                      <span className="opacity-70">{light ? SunIcon : MoonIcon}</span>
                       <span>{hdrLabel(light ? "light" : "dark", locale)}</span>
                     </button>
                   </div>
