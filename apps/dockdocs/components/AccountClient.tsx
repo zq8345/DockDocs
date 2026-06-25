@@ -20,13 +20,22 @@ import { planBadge, planStatusText, upgradePrompts, type MembershipLocale } from
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
 import { supabase, authHeader } from "@/lib/supabase";
 import { trackSignUp } from "@/lib/analytics";
+import { deepHant } from "@/lib/zh-hant";
 
 type AuthView = "loading" | "signed-out" | "email-sent" | "signed-in";
 type DeleteState = "idle" | "confirm" | "deleting" | "done";
 
-type AccountLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de";
+type AccountLocale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
+// zh-Hant has no hand-authored copy: derive Traditional from the zh strings
+// (deepHant also wraps the function-valued fields so their output converts too).
+// ko has no copy yet → falls through every ternary to the English default.
 function getCopy(locale: AccountLocale) {
+  if (locale === "zh-Hant") return deepHant(accountCopy("zh"));
+  return accountCopy(locale);
+}
+
+function accountCopy(locale: Exclude<AccountLocale, "zh-Hant">) {
   const zh = locale === "zh";
   const es = locale === "es";
   const pt = locale === "pt";
@@ -136,12 +145,13 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   const t = getCopy(locale);
   const router = useRouter();
   // Membership-ui / UpgradeFlow are a separate, lib-owned locale surface whose
-  // MembershipLocale type has NO "de" arm and no authored German billing/upgrade
-  // copy (badge labels, plan status, proration breakdown). Those files are out of
-  // scope here, so the Account-owned copy above is fully German while these
-  // billing helpers stay de→en — the same coercion they would apply internally.
-  // Drop this when membership-ui.ts gains a real "de" arm.
-  const membershipLocale: MembershipLocale = locale === "de" ? "en" : locale;
+  // MembershipLocale type has NO "de"/"ko" arm and no authored German/Korean
+  // billing/upgrade copy (badge labels, plan status, proration breakdown). Those
+  // files are out of scope here, so the Account-owned copy above is fully German
+  // while these billing helpers stay de/ko→en — the same coercion they would apply
+  // internally. zh-Hant IS supported by MembershipLocale, so it passes through.
+  // Drop the de/ko coercion when membership-ui.ts gains those arms.
+  const membershipLocale: MembershipLocale = locale === "de" || locale === "ko" ? "en" : locale;
   const upgradeFlow = useUpgradeFlow(membershipLocale);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
