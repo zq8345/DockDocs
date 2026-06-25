@@ -3,7 +3,7 @@ import { languageAlternates } from "@/lib/i18n";
 import { ResearchHubPage } from "@/components/ResearchHubPage";
 
 export const metadata: Metadata = {
-  title: "Research AI: summarize, search & compare papers — DockDocs",
+  title: "Research AI: summarize, search & compare papers",
   description:
     "AI tools for researchers: summarize papers, ask a PDF about its methods, compare studies, OCR scanned articles, and extract data tables — with answers traced to their source where the AI can, so you verify before you cite.",
   keywords: [

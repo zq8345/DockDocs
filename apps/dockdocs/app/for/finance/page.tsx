@@ -3,7 +3,7 @@ import { languageAlternates } from "@/lib/i18n";
 import { FinanceHubPage } from "@/components/FinanceHubPage";
 
 export const metadata: Metadata = {
-  title: "Finance AI: invoice, statement & report tools — DockDocs",
+  title: "Finance AI: invoice, statement & report tools",
   description:
     "AI tools for finance teams: extract invoices and statements to a spreadsheet, summarize financial reports, and compare quotes — every figure traceable to your document. Informational, not financial advice.",
   keywords: [

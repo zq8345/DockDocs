@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { MyChatsClient } from "@/components/MyChatsClient";
 
 export const metadata: Metadata = {
-  title: "My Chats — DockDocs",
+  title: "My Chats",
   description:
     "View saved Chat with PDF conversations and uploaded document metadata in DockDocs.",
   alternates: {

@@ -351,11 +351,12 @@ function createLocalizedMetadata(
   description: string,
 ): Metadata {
   const canonical = localizedPath(locale, slug);
-  // Strip any baked-in " | DockDocs" / " — DockDocs" / " – DockDocs" suffix so the
-  // layout title template ("%s — DockDocs") adds exactly one. Previously only the
-  // pipe form was stripped, so em-dash-suffixed titles (for/*, my-chats, compare, …)
-  // doubled to "… — DockDocs — DockDocs" in every locale.
-  const pageTitle = title.replace(/\s*[|—–-]\s*DockDocs\s*$/u, "");
+  // Strip any baked-in trailing brand ("… | DockDocs", "… — DockDocs", or a bare
+  // "… DockDocs" with no separator like "About DockDocs"/"关于 DockDocs") so the
+  // layout title template ("%s — DockDocs") adds exactly one. The separator is
+  // optional; previously only the pipe form was stripped, so the others doubled to
+  // "… DockDocs — DockDocs" in every locale.
+  const pageTitle = title.replace(/\s*(?:[|—–-]\s*)?DockDocs\s*$/u, "");
 
   return {
     title: pageTitle,
@@ -1998,7 +1999,8 @@ async function generateMetadataInner({
       "近日公開",
     );
     return {
-      title: `${comingSoonName} — ${comingSoonLabel} | DockDocs`,
+      // No baked brand — the layout title template ("%s — DockDocs") adds it once.
+      title: `${comingSoonName} — ${comingSoonLabel}`,
       alternates: { canonical: localizedPath(rawLocale, slug as RouteSlug) },
       robots: { index: false, follow: true },
     };

@@ -3,7 +3,7 @@ import { languageAlternates } from "@/lib/i18n";
 import { AboutPage } from "@/components/AboutPage";
 
 export const metadata: Metadata = {
-  title: "About DockDocs",
+  title: "About",
   description:
     "DockDocs is a privacy-first AI document platform with ~50 PDF tools, AI chat, OCR, and document workflows — built for teams, students, and professionals worldwide.",
   alternates: {

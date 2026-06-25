@@ -8,7 +8,7 @@ import { groundingFaq } from "@/components/GroundingNote";
 const summaryGrounding = groundingFaq("summary", "en");
 
 export const metadata: Metadata = {
-  title: "AI PDF Summarizer — Summarize Documents Free Online | DockDocs",
+  title: "AI PDF Summarizer — Summarize Documents Free Online",
   description: "Upload any PDF or document and get an AI-powered summary with key points, action items, and next steps in seconds. Free, no account needed.",
   keywords: [
     "ai pdf summarizer",

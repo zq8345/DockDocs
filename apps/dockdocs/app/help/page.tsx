@@ -5,7 +5,7 @@ import { infoPages, languageAlternates } from "@/lib/i18n";
 const page = infoPages.en.help;
 
 export const metadata: Metadata = {
-  title: page.title,
+  title: page.title.replace(/\s*\|\s*DockDocs\s*$/u, ""),
   description: page.description,
   alternates: {
     canonical: "/help/",

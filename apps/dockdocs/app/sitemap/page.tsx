@@ -4,7 +4,7 @@ import { SitemapContent } from "@/components/SitemapContent";
 import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
-  title: "Sitemap — DockDocs",
+  title: "Sitemap",
   description: "Complete sitemap of all DockDocs PDF tools, AI workflows, and pages.",
   alternates: { canonical: "/sitemap/", languages: languageAlternates("sitemap") },
 };

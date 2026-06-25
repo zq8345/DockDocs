@@ -6,7 +6,7 @@ import { languageAlternates, siteUrl } from "@/lib/i18n";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 
 export const metadata: Metadata = {
-  title: "Chat with PDF & AI Document Workspace — Free | DockDocs",
+  title: "Chat with PDF & AI Document Workspace — Free",
   description:
     "Chat with any PDF, summarize documents, run OCR, and analyze contracts — all in one AI workspace. Upload a PDF and start asking questions in seconds. Free, no signup.",
   keywords: [

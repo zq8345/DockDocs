@@ -3,7 +3,7 @@ import { languageAlternates } from "@/lib/i18n";
 import { PricingPlans } from "@/components/PricingPlans";
 
 export const metadata: Metadata = {
-  title: "Pricing — DockDocs",
+  title: "Pricing",
   description:
     "Choose the plan that fits your document volume. Free core tools, Pro for teams and heavy workflows. From $0 to $20/month.",
   alternates: { canonical: "/pricing/", languages: languageAlternates("pricing") },
