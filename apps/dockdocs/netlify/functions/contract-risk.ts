@@ -232,12 +232,19 @@ function groundRisks(risks: Risk[], text: string): Risk[] {
 }
 
 async function callProvider(provider: ProviderConfig, body: Record<string, unknown>): Promise<string> {
-  const res = await fetch(provider.apiUrl, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${provider.apiKey}`, "Content-Type": "application/json" },
-    // DeepSeek V4 defaults to thinking mode → force non-thinking for clean JSON.
-    body: JSON.stringify(provider.model?.startsWith("deepseek") ? { ...body, thinking: { type: "disabled" } } : body),
-  });
+  // OpenRouter is OpenAI-compatible, so the same request body works. We send the
+  // recommended attribution headers and never set any logging field — OpenRouter
+  // does not store prompts/completions unless logging is explicitly opted in.
+  const isOpenRouter = /openrouter\.ai/i.test(provider.apiUrl);
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${provider.apiKey}`,
+    "Content-Type": "application/json",
+  };
+  if (isOpenRouter) {
+    headers["HTTP-Referer"] = "https://dockdocs.app";
+    headers["X-Title"] = "DockDocs Contract Risk";
+  }
+  const res = await fetch(provider.apiUrl, { method: "POST", headers, body: JSON.stringify(body) });
   const responseText = await res.text();
   if (!res.ok) {
     throw new Error(`AI provider failed with status ${res.status}. ${redact(responseText)}`);
@@ -246,19 +253,21 @@ async function callProvider(provider: ProviderConfig, body: Record<string, unkno
 }
 
 function getProvider(): ProviderConfig | null {
-  const deepSeekKey =
-    Netlify.env.get("DEEPSEEK_API_KEY")?.trim() || Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_KEY")?.trim();
-  const openAiKey = Netlify.env.get("OPENAI_API_KEY")?.trim();
-  if (deepSeekKey) {
+  // Primary: OpenRouter (OpenAI-compatible gateway) → Claude Haiku 4.5. China-payable
+  // for Joe, zero data retention by default; we never enable OpenRouter request
+  // logging (that would authorize commercial use of the contract text). Endpoint,
+  // key, and model are env-configurable so the gateway/model can change without a
+  // code change. DeepSeek (dropped 2026-06-12) is intentionally NOT a provider.
+  const openRouterKey = Netlify.env.get("OPENROUTER_API_KEY")?.trim();
+  if (openRouterKey) {
     return {
-      apiKey: deepSeekKey,
-      apiUrl: normalizeChatEndpoint(
-        Netlify.env.get("DEEPSEEK_BASE_URL") || Netlify.env.get("DEEPSEEK_API_URL") || Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_URL"),
-        "https://api.deepseek.com",
-      ),
-      model: Netlify.env.get("DEEPSEEK_MODEL")?.trim() || Netlify.env.get("DOCKDOCS_AI_SUMMARY_MODEL")?.trim() || "deepseek-v4-flash",
+      apiKey: openRouterKey,
+      apiUrl: normalizeChatEndpoint(Netlify.env.get("OPENROUTER_BASE_URL"), "https://openrouter.ai/api/v1"),
+      model: Netlify.env.get("OPENROUTER_MODEL")?.trim() || "anthropic/claude-haiku-4.5",
     };
   }
+  // Fallback: a direct OpenAI-compatible endpoint, if configured.
+  const openAiKey = Netlify.env.get("OPENAI_API_KEY")?.trim();
   if (openAiKey) {
     return {
       apiKey: openAiKey,
