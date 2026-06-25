@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { toHant } from "@/lib/zh-hant";
+import { toHant, deepHant } from "@/lib/zh-hant";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { trackToolRun } from "@/lib/track";
 import { dropzoneShell } from "@/components/design";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { GroundingNote } from "@/components/GroundingNote";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
+import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
+import type { AuthoredLocale } from "@/lib/i18n";
 
 type SummaryData = {
   executiveSummary: string;
@@ -25,6 +27,177 @@ const maxPages = 20;
 const maxCharacters = 24000;
 const maxFileBytes = 25 * 1024 * 1024;
 
+const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
+  en: {
+    benefitsTitle: "What the AI summary gives you",
+    benefitsDescription: "The AI reads your document's text and condenses it into an executive summary, key points, and suggested next steps you can review at a glance.",
+    benefits: [
+      { title: "A long document, condensed", description: "Turn a long PDF or Office file into an executive summary, key points, the entities that matter, and suggested actions — the gist in a form you can actually skim." },
+      { title: "Read in your browser", description: "The text is extracted from your file in your browser; only that extracted text is sent to the AI for summarizing. The file itself is never uploaded." },
+      { title: "Grounded in your document", description: "The summary is drawn from the words in your file — it doesn't add facts that aren't there. It's a rewrite, not a word-for-word quote, so check key numbers and dates against the original." },
+    ],
+    workflowTitle: "How an AI summary fits your work",
+    workflowDescription: "For the moment a long report, contract, or deck lands in your lap and you need the gist before you commit to reading every page.",
+    steps: [
+      "Upload the PDF — up to 20 pages.",
+      "DockDocs extracts the text in your browser and sends only that text for summarizing.",
+      "The AI distills a summary, key points, and suggested next steps from your file's text.",
+      "Review the result — check the key numbers and dates against the original.",
+    ],
+    readingTitle: "More AI document tools",
+    readingDescription: "Related tools for reading, questioning, and comparing documents with traceable findings.",
+    readingLinks: [
+      { label: "Chat with your PDF", href: "/chat-with-pdf", description: "Ask questions about a document and get answers grounded in its text, with the source quoted." },
+      { label: "Contract risk check", href: "/contract-risk", description: "Have the AI flag risky, one-sided, or missing clauses in a contract, each tied to its source." },
+      { label: "Compare documents", href: "/compare", description: "Line several documents up side by side and see where their key terms differ." },
+    ],
+  },
+  zh: {
+    benefitsTitle: "这份 AI 摘要能给你什么",
+    benefitsDescription: "AI 通读文档正文,把它浓缩成可一眼审阅的执行摘要、关键要点和建议的后续步骤。",
+    benefits: [
+      { title: "把长文档浓缩成可读结果", description: "把一份很长的 PDF 或 Office 文件变成执行摘要、关键要点、值得关注的实体和建议行动——把要点整理成你真能快速浏览的形式。" },
+      { title: "在浏览器里读取", description: "文字在你的浏览器里从文件中提取,只有这段提取出的文字会发送给 AI 用于生成摘要,文件本身不会被上传。" },
+      { title: "忠于你的文档", description: "摘要只依据你文件里的文字,不会添加文档之外的事实。它是改写而非逐字引用,因此关键的数字和日期请对照原文核验。" },
+    ],
+    workflowTitle: "AI 摘要如何融入你的工作",
+    workflowDescription: "当一份很长的报告、合同或演示文稿落到你手上、你需要在通读每一页之前先抓住要点时。",
+    steps: [
+      "上传 PDF——最多 20 页。",
+      "DockDocs 在你的浏览器里提取文字,只把这段文字发送去生成摘要。",
+      "AI 从你文件的文字中提炼出摘要、关键要点和建议的后续步骤。",
+      "审阅结果——把关键的数字和日期对照原文核验。",
+    ],
+    readingTitle: "更多 AI 文档工具",
+    readingDescription: "用于阅读、提问和对比文档、结论可溯源的相关工具。",
+    readingLinks: [
+      { label: "与 PDF 对话", href: "/chat-with-pdf", description: "就一份文档提问,得到依据其正文的回答,并附上引用的原文。" },
+      { label: "合同风险体检", href: "/contract-risk", description: "让 AI 标出合同里有风险、单方面或缺失的条款,每条都对应原文出处。" },
+      { label: "对比文档", href: "/compare", description: "把多份文档并排放在一起,看出它们关键条款的差异。" },
+    ],
+  },
+  es: {
+    benefitsTitle: "Qué te da el resumen con IA",
+    benefitsDescription: "La IA lee el texto de tu documento y lo condensa en un resumen ejecutivo, puntos clave y próximos pasos sugeridos que puedes revisar de un vistazo.",
+    benefits: [
+      { title: "Un documento largo, condensado", description: "Convierte un PDF o archivo de Office extenso en un resumen ejecutivo, puntos clave, las entidades que importan y acciones sugeridas: lo esencial en un formato que de verdad puedes hojear." },
+      { title: "Leído en tu navegador", description: "El texto se extrae de tu archivo en tu navegador; solo ese texto extraído se envía a la IA para resumirlo. El archivo en sí nunca se sube." },
+      { title: "Basado en tu documento", description: "El resumen se extrae de las palabras de tu archivo, no añade datos que no estén ahí. Es una reescritura, no una cita literal, así que verifica las cifras y fechas clave con el original." },
+    ],
+    workflowTitle: "Cómo encaja el resumen con IA en tu trabajo",
+    workflowDescription: "Para cuando un informe, contrato o presentación largo llega a tus manos y necesitas lo esencial antes de comprometerte a leer cada página.",
+    steps: [
+      "Sube el PDF: hasta 20 páginas.",
+      "DockDocs extrae el texto en tu navegador y envía solo ese texto para resumirlo.",
+      "La IA destila un resumen, puntos clave y próximos pasos sugeridos del texto de tu archivo.",
+      "Revisa el resultado: verifica las cifras y fechas clave con el original.",
+    ],
+    readingTitle: "Más herramientas de documentos con IA",
+    readingDescription: "Herramientas relacionadas para leer, preguntar y comparar documentos con hallazgos rastreables.",
+    readingLinks: [
+      { label: "Chatea con tu PDF", href: "/chat-with-pdf", description: "Haz preguntas sobre un documento y obtén respuestas basadas en su texto, con la fuente citada." },
+      { label: "Revisión de riesgos de contrato", href: "/contract-risk", description: "Haz que la IA señale cláusulas riesgosas, unilaterales o ausentes en un contrato, cada una ligada a su fuente." },
+      { label: "Comparar documentos", href: "/compare", description: "Pon varios documentos uno al lado del otro y ve dónde difieren sus términos clave." },
+    ],
+  },
+  pt: {
+    benefitsTitle: "O que o resumo com IA oferece",
+    benefitsDescription: "A IA lê o texto do seu documento e o condensa em um resumo executivo, pontos principais e próximas etapas sugeridas que você pode revisar num relance.",
+    benefits: [
+      { title: "Um documento longo, condensado", description: "Transforme um PDF ou arquivo do Office extenso em um resumo executivo, pontos principais, as entidades que importam e ações sugeridas — o essencial num formato que você consegue de fato folhear." },
+      { title: "Lido no seu navegador", description: "O texto é extraído do seu arquivo no seu navegador; somente esse texto extraído é enviado à IA para resumir. O arquivo em si nunca é enviado." },
+      { title: "Fiel ao seu documento", description: "O resumo é extraído das palavras do seu arquivo — não acrescenta fatos que não estão lá. É uma reescrita, não uma citação literal, então confira os números e datas principais com o original." },
+    ],
+    workflowTitle: "Como o resumo com IA se encaixa no seu trabalho",
+    workflowDescription: "Para quando um relatório, contrato ou apresentação longo cai no seu colo e você precisa do essencial antes de se comprometer a ler cada página.",
+    steps: [
+      "Envie o PDF: até 20 páginas.",
+      "O DockDocs extrai o texto no seu navegador e envia somente esse texto para resumir.",
+      "A IA destila um resumo, pontos principais e próximas etapas sugeridas do texto do seu arquivo.",
+      "Revise o resultado: confira os números e datas principais com o original.",
+    ],
+    readingTitle: "Mais ferramentas de documentos com IA",
+    readingDescription: "Ferramentas relacionadas para ler, perguntar e comparar documentos com achados rastreáveis.",
+    readingLinks: [
+      { label: "Converse com seu PDF", href: "/chat-with-pdf", description: "Faça perguntas sobre um documento e obtenha respostas baseadas no seu texto, com a fonte citada." },
+      { label: "Análise de risco de contrato", href: "/contract-risk", description: "Faça a IA sinalizar cláusulas arriscadas, unilaterais ou ausentes em um contrato, cada uma ligada à sua fonte." },
+      { label: "Comparar documentos", href: "/compare", description: "Coloque vários documentos lado a lado e veja onde seus termos principais diferem." },
+    ],
+  },
+  fr: {
+    benefitsTitle: "Ce que le résumé par IA vous apporte",
+    benefitsDescription: "L'IA lit le texte de votre document et le condense en un résumé exécutif, des points clés et des prochaines étapes suggérées que vous pouvez parcourir d'un coup d'œil.",
+    benefits: [
+      { title: "Un long document, condensé", description: "Transformez un PDF ou un fichier Office volumineux en un résumé exécutif, des points clés, les entités qui comptent et des actions suggérées : l'essentiel sous une forme que vous pouvez réellement survoler." },
+      { title: "Lu dans votre navigateur", description: "Le texte est extrait de votre fichier dans votre navigateur ; seul ce texte extrait est envoyé à l'IA pour le résumé. Le fichier lui-même n'est jamais téléversé." },
+      { title: "Fidèle à votre document", description: "Le résumé est tiré des mots de votre fichier — il n'ajoute pas de faits qui n'y figurent pas. C'est une reformulation, pas une citation mot pour mot, alors vérifiez les chiffres et dates clés avec l'original." },
+    ],
+    workflowTitle: "Comment le résumé par IA s'intègre à votre travail",
+    workflowDescription: "Pour le moment où un long rapport, contrat ou support de présentation atterrit chez vous et où vous avez besoin de l'essentiel avant de vous engager à tout lire.",
+    steps: [
+      "Déposez le PDF : jusqu'à 20 pages.",
+      "DockDocs extrait le texte dans votre navigateur et n'envoie que ce texte pour le résumé.",
+      "L'IA distille un résumé, des points clés et des prochaines étapes suggérées à partir du texte de votre fichier.",
+      "Parcourez le résultat : vérifiez les chiffres et dates clés avec l'original.",
+    ],
+    readingTitle: "Plus d'outils documentaires par IA",
+    readingDescription: "Outils associés pour lire, interroger et comparer des documents avec des constats traçables.",
+    readingLinks: [
+      { label: "Discutez avec votre PDF", href: "/chat-with-pdf", description: "Posez des questions sur un document et obtenez des réponses fondées sur son texte, avec la source citée." },
+      { label: "Analyse des risques d'un contrat", href: "/contract-risk", description: "Faites signaler par l'IA les clauses risquées, déséquilibrées ou absentes d'un contrat, chacune liée à sa source." },
+      { label: "Comparer des documents", href: "/compare", description: "Placez plusieurs documents côte à côte et voyez où leurs termes clés diffèrent." },
+    ],
+  },
+  ja: {
+    benefitsTitle: "AI 要約で得られること",
+    benefitsDescription: "AI が文書の本文を読み取り、エグゼクティブサマリー・重要なポイント・推奨される次のステップへと凝縮し、ひと目で見直せる形にします。",
+    benefits: [
+      { title: "長い文書を凝縮", description: "長い PDF や Office ファイルを、エグゼクティブサマリー・重要なポイント・関係する固有名詞・推奨アクションに変換——要点を、実際にざっと目を通せる形にまとめます。" },
+      { title: "ブラウザ内で読み取り", description: "テキストはあなたのブラウザ内でファイルから抽出され、その抽出済みテキストだけが要約のために AI に送信されます。ファイル自体はアップロードされません。" },
+      { title: "あなたの文書に忠実", description: "要約はあなたのファイルの言葉から作られ、そこにない事実を付け足しません。逐語引用ではなく要約のため、重要な数値や日付は原文と照合してください。" },
+    ],
+    workflowTitle: "AI 要約が業務にどう役立つか",
+    workflowDescription: "長い報告書・契約書・資料が手元に来て、全ページを読み込む前に要点をつかんでおきたいとき。",
+    steps: [
+      "PDF をアップロード——最大 20 ページ。",
+      "DockDocs がブラウザ内でテキストを抽出し、そのテキストだけを要約のために送信します。",
+      "AI があなたのファイルの本文から、要約・重要なポイント・推奨される次のステップを抽出します。",
+      "結果を見直し——重要な数値や日付を原文と照合します。",
+    ],
+    readingTitle: "他の AI 文書ツール",
+    readingDescription: "文書を読み、問いかけ、比較するための、たどれる指摘付きの関連ツール。",
+    readingLinks: [
+      { label: "PDF と対話", href: "/chat-with-pdf", description: "文書について質問し、その本文に基づく回答を出典の引用付きで得られます。" },
+      { label: "契約リスクチェック", href: "/contract-risk", description: "AI に契約書のリスクのある・一方的な・欠けている条項を、それぞれ出典に紐づけて指摘させます。" },
+      { label: "文書を比較", href: "/compare", description: "複数の文書を並べて、重要な条件がどこで食い違うかを確認します。" },
+    ],
+  },
+  de: {
+    benefitsTitle: "Was Ihnen die KI-Zusammenfassung bietet",
+    benefitsDescription: "Die KI liest den Text Ihres Dokuments und verdichtet ihn zu einer Zusammenfassung für Entscheider, Kernpunkten und vorgeschlagenen nächsten Schritten, die Sie auf einen Blick prüfen können.",
+    benefits: [
+      { title: "Ein langes Dokument, verdichtet", description: "Verwandeln Sie ein langes PDF oder Office-Dokument in eine Zusammenfassung für Entscheider, Kernpunkte, die relevanten Entitäten und vorgeschlagene Maßnahmen – das Wesentliche in einer Form, die Sie tatsächlich überfliegen können." },
+      { title: "Im Browser gelesen", description: "Der Text wird in Ihrem Browser aus Ihrer Datei extrahiert; nur dieser extrahierte Text wird zur Zusammenfassung an die KI gesendet. Die Datei selbst wird nie hochgeladen." },
+      { title: "An Ihrem Dokument verankert", description: "Die Zusammenfassung stammt aus den Worten Ihrer Datei – sie fügt keine Fakten hinzu, die nicht darin stehen. Sie ist eine Umformulierung, kein wörtliches Zitat, prüfen Sie also wichtige Zahlen und Daten am Original." },
+    ],
+    workflowTitle: "Wie eine KI-Zusammenfassung in Ihre Arbeit passt",
+    workflowDescription: "Für den Moment, in dem ein langer Bericht, Vertrag oder eine Präsentation bei Ihnen landet und Sie das Wesentliche brauchen, bevor Sie sich ans Lesen jeder Seite machen.",
+    steps: [
+      "Laden Sie das PDF hoch – bis zu 20 Seiten.",
+      "DockDocs extrahiert den Text in Ihrem Browser und sendet nur diesen Text zur Zusammenfassung.",
+      "Die KI destilliert aus dem Text Ihrer Datei eine Zusammenfassung, Kernpunkte und vorgeschlagene nächste Schritte.",
+      "Prüfen Sie das Ergebnis – gleichen Sie wichtige Zahlen und Daten mit dem Original ab.",
+    ],
+    readingTitle: "Weitere KI-Dokumententools",
+    readingDescription: "Verwandte Tools zum Lesen, Befragen und Vergleichen von Dokumenten mit nachvollziehbaren Befunden.",
+    readingLinks: [
+      { label: "Mit Ihrem PDF chatten", href: "/chat-with-pdf", description: "Stellen Sie Fragen zu einem Dokument und erhalten Sie Antworten, die auf seinem Text beruhen, mit zitierter Quelle." },
+      { label: "Vertragsrisiko-Prüfung", href: "/contract-risk", description: "Lassen Sie die KI riskante, einseitige oder fehlende Klauseln in einem Vertrag markieren, jede an ihre Quelle gebunden." },
+      { label: "Dokumente vergleichen", href: "/compare", description: "Stellen Sie mehrere Dokumente nebeneinander und sehen Sie, wo ihre wichtigen Begriffe abweichen." },
+    ],
+  },
+};
+
 export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant" }) {
   // ko has no authored summary-client copy yet → English via the booleans/ternaries
   // below all defaulting to English (foundation phase). childLocale collapses ko→en for
@@ -40,6 +213,10 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
   const ja = locale === "ja";
   const de = locale === "de";
   const h = (s: string) => (hant ? toHant(s) : s);
+  // ko / zh-Hant have no authored SECTIONS → collapse to en (ko) / derive from zh (zh-Hant),
+  // mirroring ContractRiskClient's resolution exactly.
+  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [status, setStatus] = useState<Status>("idle");
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");
@@ -255,6 +432,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
         </div>
       ) : null}
 
+      <ToolSections locale={locale} content={sec} />
       <GroundingNote variant="summary" locale={locale} />
       <RelatedPdfTools locale={locale} exclude="/ai-summary" />
     </section>
