@@ -253,17 +253,21 @@ async function callProvider(provider: ProviderConfig, body: Record<string, unkno
 }
 
 function getProvider(): ProviderConfig | null {
-  // Primary: OpenRouter (OpenAI-compatible gateway) → Claude Haiku 4.5. China-payable
-  // for Joe, zero data retention by default; we never enable OpenRouter request
-  // logging (that would authorize commercial use of the contract text). Endpoint,
-  // key, and model are env-configurable so the gateway/model can change without a
-  // code change. DeepSeek (dropped 2026-06-12) is intentionally NOT a provider.
+  // Primary: OpenRouter (OpenAI-compatible gateway) → Mistral Large. Joe's China-issued
+  // card works on OpenRouter, but US providers (Anthropic/OpenAI) reject it under their
+  // regional ToS (403 "provider ToS violation"); EU/Mistral is allowed, runs cheaper
+  // than Claude Haiku, and GDPR-alignment is a plus for legal documents. Zero data
+  // retention by default; we never enable OpenRouter request logging (that would
+  // authorize commercial use of the contract text). Endpoint, key, and model are
+  // env-configurable — e.g. set OPENROUTER_MODEL=mistralai/mistral-medium-3.1 for a
+  // faster/cheaper fallback if Large is too slow for the function timeout. DeepSeek
+  // (dropped 2026-06-12) is intentionally NOT a provider.
   const openRouterKey = Netlify.env.get("OPENROUTER_API_KEY")?.trim();
   if (openRouterKey) {
     return {
       apiKey: openRouterKey,
       apiUrl: normalizeChatEndpoint(Netlify.env.get("OPENROUTER_BASE_URL"), "https://openrouter.ai/api/v1"),
-      model: Netlify.env.get("OPENROUTER_MODEL")?.trim() || "anthropic/claude-haiku-4.5",
+      model: Netlify.env.get("OPENROUTER_MODEL")?.trim() || "mistralai/mistral-large-2512",
     };
   }
   // Fallback: a direct OpenAI-compatible endpoint, if configured.
