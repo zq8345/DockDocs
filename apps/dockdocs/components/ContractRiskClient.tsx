@@ -18,8 +18,9 @@ import { useCallback, useMemo, useState } from "react";
 type Locale = RouteLocale;
 type RiskLevel = "high" | "medium" | "low";
 type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string; missing?: boolean; unverified?: boolean };
-
-const MAX_CHARS = 24_000;
+// Honest coverage of a long contract, returned by /api/contract-risk so the UI can
+// show "analyzed X/Y pages" and never imply a false "all clear".
+type Coverage = { coveredChars: number; totalChars: number; analyzedChunks: number; totalChunks: number; failedChunks: number; capped: boolean };
 
 const _en = {
     title: "Contract Risk Check",
@@ -31,7 +32,9 @@ const _en = {
     extracting: "Reading contract…",
     pagesChars: (p: number, c: number) => `${p} pages · ${c.toLocaleString()} characters`,
     noText: "No selectable text found. Is this a scanned contract? Run OCR first.",
-    tooLong: `This contract is longer than the ${MAX_CHARS.toLocaleString()}-character limit — only the first part will be reviewed.`,
+    coverageFull: (p: number) => `Analyzed the full document — all ${p} ${p === 1 ? "page" : "pages"}.`,
+    coveragePartial: (c: number, p: number) => `Analyzed about ${c} of ${p} pages. The rest is beyond the current length limit and was not reviewed — this is not a full review.`,
+    coverageFailed: "Some sections couldn't be analyzed, so this may be incomplete.",
     analyze: "Check for risks",
     analyzing: "Reviewing…",
     result: (n: number) => `${n} point${n === 1 ? "" : "s"} to review`,
@@ -62,7 +65,9 @@ const STR = {
     extracting: "正在读取合同…",
     pagesChars: (p: number, c: number) => `${p} 页 · ${c.toLocaleString()} 字符`,
     noText: "没找到可选中的文字。是扫描件吗?请先用 OCR。",
-    tooLong: `合同超过 ${MAX_CHARS.toLocaleString()} 字符上限,只会分析前面的部分。`,
+    coverageFull: (p: number) => `已分析全文 —— 共 ${p} 页。`,
+    coveragePartial: (c: number, p: number) => `已分析约 ${p} 页中的 ${c} 页;其余超出当前长度上限,未审查 —— 这不是完整审查。`,
+    coverageFailed: "部分段落分析失败,结果可能不完整。",
     analyze: "检查风险",
     analyzing: "正在审查…",
     result: (n: number) => `${n} 个需要注意的点`,
@@ -90,7 +95,9 @@ const STR = {
     extracting: "Leyendo el contrato…",
     pagesChars: (p: number, c: number) => `${p} páginas · ${c.toLocaleString()} caracteres`,
     noText: "No se encontró texto seleccionable. ¿Es un contrato escaneado? Aplica OCR primero.",
-    tooLong: `El contrato supera el límite de ${MAX_CHARS.toLocaleString()} caracteres; solo se revisará la primera parte.`,
+    coverageFull: (p: number) => `Se analizó el documento completo: ${p} ${p === 1 ? "página" : "páginas"}.`,
+    coveragePartial: (c: number, p: number) => `Se analizaron unas ${c} de ${p} páginas. El resto supera el límite de longitud actual y no se revisó: no es una revisión completa.`,
+    coverageFailed: "Algunas secciones no pudieron analizarse, por lo que puede estar incompleto.",
     analyze: "Revisar riesgos",
     analyzing: "Revisando…",
     result: (n: number) => `${n} punto${n === 1 ? "" : "s"} para revisar`,
@@ -118,7 +125,9 @@ const STR = {
     extracting: "Lendo o contrato…",
     pagesChars: (p: number, c: number) => `${p} páginas · ${c.toLocaleString()} caracteres`,
     noText: "Nenhum texto selecionável encontrado. É um contrato digitalizado? Execute o OCR primeiro.",
-    tooLong: `O contrato ultrapassa o limite de ${MAX_CHARS.toLocaleString()} caracteres; apenas a primeira parte será revisada.`,
+    coverageFull: (p: number) => `Analisado o documento inteiro: ${p} ${p === 1 ? "página" : "páginas"}.`,
+    coveragePartial: (c: number, p: number) => `Analisadas cerca de ${c} de ${p} páginas. O restante ultrapassa o limite de tamanho atual e não foi revisado: não é uma revisão completa.`,
+    coverageFailed: "Algumas seções não puderam ser analisadas, então pode estar incompleto.",
     analyze: "Verificar riscos",
     analyzing: "Revisando…",
     result: (n: number) => `${n} ponto${n === 1 ? "" : "s"} para revisar`,
@@ -146,7 +155,9 @@ const STR = {
     extracting: "Lecture du contrat…",
     pagesChars: (p: number, c: number) => `${p} page${p > 1 ? "s" : ""} · ${c.toLocaleString()} caractères`,
     noText: "Aucun texte sélectionnable trouvé. S'agit-il d'un contrat scanné ? Appliquez d'abord l'OCR.",
-    tooLong: `Ce contrat dépasse la limite de ${MAX_CHARS.toLocaleString()} caractères — seule la première partie sera analysée.`,
+    coverageFull: (p: number) => `Document entier analysé — les ${p} ${p === 1 ? "page" : "pages"}.`,
+    coveragePartial: (c: number, p: number) => `Environ ${c} pages sur ${p} analysées. Le reste dépasse la limite de longueur actuelle et n'a pas été examiné : ce n'est pas une analyse complète.`,
+    coverageFailed: "Certaines sections n'ont pas pu être analysées ; le résultat peut être incomplet.",
     analyze: "Vérifier les risques",
     analyzing: "Analyse en cours…",
     result: (n: number) => `${n} point${n > 1 ? "s" : ""} à examiner`,
@@ -174,7 +185,9 @@ const STR = {
     extracting: "契約書を読み込んでいます…",
     pagesChars: (p: number, c: number) => `${p} ページ · ${c.toLocaleString()} 文字`,
     noText: "選択できるテキストが見つかりませんでした。スキャンした契約書ですか？まず OCR を実行してください。",
-    tooLong: `この契約書は ${MAX_CHARS.toLocaleString()} 文字の上限を超えています。先頭部分のみを分析します。`,
+    coverageFull: (p: number) => `全文(${p} ページ)を分析しました。`,
+    coveragePartial: (c: number, p: number) => `${p} ページ中およそ ${c} ページを分析しました。残りは現在の文字数上限を超えており未確認です。完全なレビューではありません。`,
+    coverageFailed: "一部のセクションを分析できなかったため、結果が不完全な可能性があります。",
     analyze: "リスクを診断",
     analyzing: "確認しています…",
     result: (n: number) => `確認すべきポイント ${n} 件`,
@@ -202,7 +215,9 @@ const STR = {
     extracting: "Vertrag wird gelesen…",
     pagesChars: (p: number, c: number) => `${p} Seiten · ${c.toLocaleString()} Zeichen`,
     noText: "Kein auswählbarer Text gefunden. Ist dies ein gescannter Vertrag? Führen Sie zuerst OCR aus.",
-    tooLong: `Dieser Vertrag überschreitet das Limit von ${MAX_CHARS.toLocaleString()} Zeichen – nur der erste Teil wird geprüft.`,
+    coverageFull: (p: number) => `Das gesamte Dokument analysiert – alle ${p} ${p === 1 ? "Seite" : "Seiten"}.`,
+    coveragePartial: (c: number, p: number) => `Etwa ${c} von ${p} Seiten analysiert. Der Rest überschreitet das aktuelle Längenlimit und wurde nicht geprüft – keine vollständige Prüfung.`,
+    coverageFailed: "Einige Abschnitte konnten nicht analysiert werden, daher ist das Ergebnis möglicherweise unvollständig.",
     analyze: "Auf Risiken prüfen",
     analyzing: "Prüfung läuft…",
     result: (n: number) => `${n} Punkt${n === 1 ? "" : "e"} zur Prüfung`,
@@ -409,6 +424,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
   const [text, setText] = useState("");
   const [pages, setPages] = useState(0);
   const [risks, setRisks] = useState<Risk[] | null>(null);
+  const [coverage, setCoverage] = useState<Coverage | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [limitHit, setLimitHit] = useState<number | null>(null);
 
@@ -423,6 +439,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
     setText("");
     setPages(0);
     setRisks(null);
+    setCoverage(null);
     setError(null);
     setLimitHit(null);
   };
@@ -469,6 +486,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
     setPhase("analyzing");
     setError(null);
     setLimitHit(null);
+    setCoverage(null);
     try {
       const gate = await checkUsage("contractAnalyzer");
       if (!gate.allowed) {
@@ -486,6 +504,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
       if (data?.ok && Array.isArray(data.risks)) {
         const sorted = (data.risks as Risk[]).slice().sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
         setRisks(sorted);
+        setCoverage(data.coverage && typeof data.coverage === "object" ? (data.coverage as Coverage) : null);
         setPhase("done");
         trackToolRun("contract-risk");
         await markUsage(gate, "contractAnalyzer");
@@ -564,7 +583,6 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
             </div>
             <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
           </div>
-          {text.length > MAX_CHARS && <p className="mt-2 text-[12px] text-[#f59e0b]">{t.tooLong}</p>}
           <div className="mt-5">
             <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
               {phase === "analyzing" ? t.analyzing : t.analyze}
@@ -611,6 +629,30 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
           <div className="mb-3 flex items-center justify-between gap-3">
             <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.result(risks.length)}</span>
           </div>
+
+          {coverage && (() => {
+            const total = pages || 0;
+            const coveredPages =
+              total > 0
+                ? Math.min(total, Math.max(1, Math.round((total * coverage.coveredChars) / Math.max(1, coverage.totalChars))))
+                : 0;
+            const warn = coverage.capped || coverage.failedChunks > 0;
+            const base = coverage.capped && total > 0 ? t.coveragePartial(coveredPages, total) : t.coverageFull(total);
+            const msg = coverage.failedChunks > 0 ? `${base} ${t.coverageFailed}` : base;
+            return (
+              <p
+                className="mb-3 rounded-[var(--radius)] border px-3 py-2 text-[12px] leading-relaxed"
+                style={
+                  warn
+                    ? { borderColor: "rgba(245,158,11,0.4)", color: "#f59e0b", background: "rgba(245,158,11,0.08)" }
+                    : { borderColor: "var(--line)", color: "var(--muted)", background: "var(--surface-subtle)" }
+                }
+              >
+                {warn ? "⚠ " : "✓ "}
+                {msg}
+              </p>
+            );
+          })()}
 
           {risks.length === 0 ? (
             <div className={`${card} p-5 text-[13.5px] text-[color:var(--muted)]`}>{t.noRisks}</div>
