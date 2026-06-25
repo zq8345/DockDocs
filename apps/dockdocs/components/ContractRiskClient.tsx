@@ -18,8 +18,28 @@ import { useCallback, useMemo, useState } from "react";
 type Locale = RouteLocale;
 type RiskLevel = "high" | "medium" | "low";
 type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string; missing?: boolean; unverified?: boolean };
+// Honest coverage of a long contract, returned by /api/contract-risk so the UI can
+// show "analyzed X/Y pages" and never imply a false "all clear".
+type Coverage = { coveredChars: number; totalChars: number; analyzedChunks: number; totalChunks: number; failedChunks: number; capped: boolean };
 
-const MAX_CHARS = 24_000;
+// Locate a verified quote inside the raw contract text for the "find in source"
+// jump. Exact match first, then whitespace-tolerant (the server verifies quotes
+// after collapsing whitespace, so the raw text may differ only in spacing).
+// Returns null if it can't be placed.
+function locateQuote(text: string, quote: string): { start: number; end: number } | null {
+  const q = quote.trim();
+  if (!q) return null;
+  const exact = text.indexOf(q);
+  if (exact >= 0) return { start: exact, end: exact + q.length };
+  const pattern = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+  try {
+    const m = new RegExp(pattern, "i").exec(text);
+    if (m) return { start: m.index, end: m.index + m[0].length };
+  } catch {
+    // pathological quote → give up gracefully
+  }
+  return null;
+}
 
 const _en = {
     title: "Contract Risk Check",
@@ -31,7 +51,12 @@ const _en = {
     extracting: "Reading contract…",
     pagesChars: (p: number, c: number) => `${p} pages · ${c.toLocaleString()} characters`,
     noText: "No selectable text found. Is this a scanned contract? Run OCR first.",
-    tooLong: `This contract is longer than the ${MAX_CHARS.toLocaleString()}-character limit — only the first part will be reviewed.`,
+    coverageFull: (p: number) => `Analyzed the full document — all ${p} ${p === 1 ? "page" : "pages"}.`,
+    coveragePartial: (c: number, p: number) => `Analyzed about ${c} of ${p} pages. The rest is beyond the current length limit and was not reviewed — this is not a full review.`,
+    coverageFailed: "Some sections couldn't be analyzed, so this may be incomplete.",
+    sourceTitle: "Contract text",
+    findInSource: "Find in text",
+    approxPage: (n: number) => `≈ p.${n}`,
     analyze: "Check for risks",
     analyzing: "Reviewing…",
     result: (n: number) => `${n} point${n === 1 ? "" : "s"} to review`,
@@ -62,7 +87,12 @@ const STR = {
     extracting: "正在读取合同…",
     pagesChars: (p: number, c: number) => `${p} 页 · ${c.toLocaleString()} 字符`,
     noText: "没找到可选中的文字。是扫描件吗?请先用 OCR。",
-    tooLong: `合同超过 ${MAX_CHARS.toLocaleString()} 字符上限,只会分析前面的部分。`,
+    coverageFull: (p: number) => `已分析全文 —— 共 ${p} 页。`,
+    coveragePartial: (c: number, p: number) => `已分析约 ${p} 页中的 ${c} 页;其余超出当前长度上限,未审查 —— 这不是完整审查。`,
+    coverageFailed: "部分段落分析失败,结果可能不完整。",
+    sourceTitle: "合同原文",
+    findInSource: "在原文中定位",
+    approxPage: (n: number) => `≈ 第 ${n} 页`,
     analyze: "检查风险",
     analyzing: "正在审查…",
     result: (n: number) => `${n} 个需要注意的点`,
@@ -90,7 +120,12 @@ const STR = {
     extracting: "Leyendo el contrato…",
     pagesChars: (p: number, c: number) => `${p} páginas · ${c.toLocaleString()} caracteres`,
     noText: "No se encontró texto seleccionable. ¿Es un contrato escaneado? Aplica OCR primero.",
-    tooLong: `El contrato supera el límite de ${MAX_CHARS.toLocaleString()} caracteres; solo se revisará la primera parte.`,
+    coverageFull: (p: number) => `Se analizó el documento completo: ${p} ${p === 1 ? "página" : "páginas"}.`,
+    coveragePartial: (c: number, p: number) => `Se analizaron unas ${c} de ${p} páginas. El resto supera el límite de longitud actual y no se revisó: no es una revisión completa.`,
+    coverageFailed: "Algunas secciones no pudieron analizarse, por lo que puede estar incompleto.",
+    sourceTitle: "Texto del contrato",
+    findInSource: "Buscar en el texto",
+    approxPage: (n: number) => `≈ pág. ${n}`,
     analyze: "Revisar riesgos",
     analyzing: "Revisando…",
     result: (n: number) => `${n} punto${n === 1 ? "" : "s"} para revisar`,
@@ -118,7 +153,12 @@ const STR = {
     extracting: "Lendo o contrato…",
     pagesChars: (p: number, c: number) => `${p} páginas · ${c.toLocaleString()} caracteres`,
     noText: "Nenhum texto selecionável encontrado. É um contrato digitalizado? Execute o OCR primeiro.",
-    tooLong: `O contrato ultrapassa o limite de ${MAX_CHARS.toLocaleString()} caracteres; apenas a primeira parte será revisada.`,
+    coverageFull: (p: number) => `Analisado o documento inteiro: ${p} ${p === 1 ? "página" : "páginas"}.`,
+    coveragePartial: (c: number, p: number) => `Analisadas cerca de ${c} de ${p} páginas. O restante ultrapassa o limite de tamanho atual e não foi revisado: não é uma revisão completa.`,
+    coverageFailed: "Algumas seções não puderam ser analisadas, então pode estar incompleto.",
+    sourceTitle: "Texto do contrato",
+    findInSource: "Localizar no texto",
+    approxPage: (n: number) => `≈ pág. ${n}`,
     analyze: "Verificar riscos",
     analyzing: "Revisando…",
     result: (n: number) => `${n} ponto${n === 1 ? "" : "s"} para revisar`,
@@ -146,7 +186,12 @@ const STR = {
     extracting: "Lecture du contrat…",
     pagesChars: (p: number, c: number) => `${p} page${p > 1 ? "s" : ""} · ${c.toLocaleString()} caractères`,
     noText: "Aucun texte sélectionnable trouvé. S'agit-il d'un contrat scanné ? Appliquez d'abord l'OCR.",
-    tooLong: `Ce contrat dépasse la limite de ${MAX_CHARS.toLocaleString()} caractères — seule la première partie sera analysée.`,
+    coverageFull: (p: number) => `Document entier analysé — les ${p} ${p === 1 ? "page" : "pages"}.`,
+    coveragePartial: (c: number, p: number) => `Environ ${c} pages sur ${p} analysées. Le reste dépasse la limite de longueur actuelle et n'a pas été examiné : ce n'est pas une analyse complète.`,
+    coverageFailed: "Certaines sections n'ont pas pu être analysées ; le résultat peut être incomplet.",
+    sourceTitle: "Texte du contrat",
+    findInSource: "Trouver dans le texte",
+    approxPage: (n: number) => `≈ p. ${n}`,
     analyze: "Vérifier les risques",
     analyzing: "Analyse en cours…",
     result: (n: number) => `${n} point${n > 1 ? "s" : ""} à examiner`,
@@ -174,7 +219,12 @@ const STR = {
     extracting: "契約書を読み込んでいます…",
     pagesChars: (p: number, c: number) => `${p} ページ · ${c.toLocaleString()} 文字`,
     noText: "選択できるテキストが見つかりませんでした。スキャンした契約書ですか？まず OCR を実行してください。",
-    tooLong: `この契約書は ${MAX_CHARS.toLocaleString()} 文字の上限を超えています。先頭部分のみを分析します。`,
+    coverageFull: (p: number) => `全文(${p} ページ)を分析しました。`,
+    coveragePartial: (c: number, p: number) => `${p} ページ中およそ ${c} ページを分析しました。残りは現在の文字数上限を超えており未確認です。完全なレビューではありません。`,
+    coverageFailed: "一部のセクションを分析できなかったため、結果が不完全な可能性があります。",
+    sourceTitle: "契約書テキスト",
+    findInSource: "本文で探す",
+    approxPage: (n: number) => `≈ ${n} ページ`,
     analyze: "リスクを診断",
     analyzing: "確認しています…",
     result: (n: number) => `確認すべきポイント ${n} 件`,
@@ -202,7 +252,12 @@ const STR = {
     extracting: "Vertrag wird gelesen…",
     pagesChars: (p: number, c: number) => `${p} Seiten · ${c.toLocaleString()} Zeichen`,
     noText: "Kein auswählbarer Text gefunden. Ist dies ein gescannter Vertrag? Führen Sie zuerst OCR aus.",
-    tooLong: `Dieser Vertrag überschreitet das Limit von ${MAX_CHARS.toLocaleString()} Zeichen – nur der erste Teil wird geprüft.`,
+    coverageFull: (p: number) => `Das gesamte Dokument analysiert – alle ${p} ${p === 1 ? "Seite" : "Seiten"}.`,
+    coveragePartial: (c: number, p: number) => `Etwa ${c} von ${p} Seiten analysiert. Der Rest überschreitet das aktuelle Längenlimit und wurde nicht geprüft – keine vollständige Prüfung.`,
+    coverageFailed: "Einige Abschnitte konnten nicht analysiert werden, daher ist das Ergebnis möglicherweise unvollständig.",
+    sourceTitle: "Vertragstext",
+    findInSource: "Im Text finden",
+    approxPage: (n: number) => `≈ S. ${n}`,
     analyze: "Auf Risiken prüfen",
     analyzing: "Prüfung läuft…",
     result: (n: number) => `${n} Punkt${n === 1 ? "" : "e"} zur Prüfung`,
@@ -409,6 +464,8 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
   const [text, setText] = useState("");
   const [pages, setPages] = useState(0);
   const [risks, setRisks] = useState<Risk[] | null>(null);
+  const [coverage, setCoverage] = useState<Coverage | null>(null);
+  const [flashIdx, setFlashIdx] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [limitHit, setLimitHit] = useState<number | null>(null);
 
@@ -417,12 +474,51 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
     [t],
   );
 
+  // PR-3: locate each verified quote in the raw text so the user can jump to it.
+  const locations = useMemo(
+    () => (risks ? risks.map((r) => (r.quote ? locateQuote(text, r.quote) : null)) : []),
+    [risks, text],
+  );
+
+  // Source-text view with located quotes highlighted, so a flagged clause can be
+  // scrolled to and read in context.
+  const sourceSegments = useMemo(() => {
+    if (!text || !risks || risks.length === 0) return null;
+    const ranges = locations
+      .map((loc, i) => (loc ? { start: loc.start, end: loc.end, i } : null))
+      .filter((x): x is { start: number; end: number; i: number } => x !== null)
+      .sort((a, b) => a.start - b.start);
+    const segs: Array<{ text: string; mark: number | null }> = [];
+    let pos = 0;
+    let lastEnd = -1;
+    for (const r of ranges) {
+      if (r.start < lastEnd) continue; // skip overlapping matches
+      if (r.start > pos) segs.push({ text: text.slice(pos, r.start), mark: null });
+      segs.push({ text: text.slice(r.start, r.end), mark: r.i });
+      pos = r.end;
+      lastEnd = r.end;
+    }
+    if (pos < text.length) segs.push({ text: text.slice(pos), mark: null });
+    return segs;
+  }, [text, risks, locations]);
+
+  const findInSource = useCallback((i: number) => {
+    const el = document.getElementById(`cq-${i}`);
+    if (!el) return;
+    const details = el.closest("details");
+    if (details && !details.open) details.open = true;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    setFlashIdx(i);
+    window.setTimeout(() => setFlashIdx((cur) => (cur === i ? null : cur)), 1600);
+  }, []);
+
   const reset = () => {
     setPhase("idle");
     setFileName("");
     setText("");
     setPages(0);
     setRisks(null);
+    setCoverage(null);
     setError(null);
     setLimitHit(null);
   };
@@ -469,6 +565,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
     setPhase("analyzing");
     setError(null);
     setLimitHit(null);
+    setCoverage(null);
     try {
       const gate = await checkUsage("contractAnalyzer");
       if (!gate.allowed) {
@@ -486,6 +583,7 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
       if (data?.ok && Array.isArray(data.risks)) {
         const sorted = (data.risks as Risk[]).slice().sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
         setRisks(sorted);
+        setCoverage(data.coverage && typeof data.coverage === "object" ? (data.coverage as Coverage) : null);
         setPhase("done");
         trackToolRun("contract-risk");
         await markUsage(gate, "contractAnalyzer");
@@ -564,7 +662,6 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
             </div>
             <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
           </div>
-          {text.length > MAX_CHARS && <p className="mt-2 text-[12px] text-[#f59e0b]">{t.tooLong}</p>}
           <div className="mt-5">
             <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
               {phase === "analyzing" ? t.analyzing : t.analyze}
@@ -612,12 +709,37 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
             <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.result(risks.length)}</span>
           </div>
 
+          {coverage && (() => {
+            const total = pages || 0;
+            const coveredPages =
+              total > 0
+                ? Math.min(total, Math.max(1, Math.round((total * coverage.coveredChars) / Math.max(1, coverage.totalChars))))
+                : 0;
+            const warn = coverage.capped || coverage.failedChunks > 0;
+            const base = coverage.capped && total > 0 ? t.coveragePartial(coveredPages, total) : t.coverageFull(total);
+            const msg = coverage.failedChunks > 0 ? `${base} ${t.coverageFailed}` : base;
+            return (
+              <p
+                className="mb-3 rounded-[var(--radius)] border px-3 py-2 text-[12px] leading-relaxed"
+                style={
+                  warn
+                    ? { borderColor: "rgba(245,158,11,0.4)", color: "#f59e0b", background: "rgba(245,158,11,0.08)" }
+                    : { borderColor: "var(--line)", color: "var(--muted)", background: "var(--surface-subtle)" }
+                }
+              >
+                {warn ? "⚠ " : "✓ "}
+                {msg}
+              </p>
+            );
+          })()}
+
           {risks.length === 0 ? (
             <div className={`${card} p-5 text-[13.5px] text-[color:var(--muted)]`}>{t.noRisks}</div>
           ) : (
             <ul className="grid gap-3">
               {risks.map((r, i) => {
                 const s = LEVEL_STYLE[r.level];
+                const loc = locations[i] ?? null;
                 return (
                   <li key={i} className="rounded-[var(--radius-lg)] border bg-[color:var(--surface)] p-4" style={{ borderColor: s.border }}>
                     <div className="flex items-center gap-2">
@@ -631,16 +753,28 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
                     )}
                     {r.quote ? (
                       <div className="mt-3">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[rgba(52,211,153,0.12)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#34d399]">✓ {t.verifiedBadge}</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-[rgba(52,211,153,0.12)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#34d399]">✓ {t.verifiedBadge}</span>
+                          {loc && pages > 0 && (
+                            <span className="text-[10px] font-medium text-[color:var(--faint)]">{t.approxPage(Math.max(1, Math.ceil((loc.start / Math.max(1, text.length)) * pages)))}</span>
+                          )}
+                          {loc && (
+                            <button type="button" onClick={() => findInSource(i)} className="text-[10px] font-semibold text-[color:var(--accent)] hover:underline">{t.findInSource} ↧</button>
+                          )}
+                        </div>
                         <blockquote className="mt-2 border-l-2 border-[color:var(--line-strong)] pl-3 text-[12.5px] italic leading-relaxed text-[color:var(--muted)]">
                           <span className="mb-1 block text-[10px] font-semibold uppercase not-italic tracking-[0.1em] text-[color:var(--faint)]">{t.quoteLabel}</span>
                           “{r.quote}”
                         </blockquote>
                       </div>
                     ) : r.missing ? (
-                      <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.notLocated}</p>
+                      <p className="mt-2 inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 py-1 text-[12px] text-[color:var(--muted)]">
+                        <span className="text-[color:var(--faint)]">◇</span>{t.notLocated}
+                      </p>
                     ) : (
-                      <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.unverifiedQuote}</p>
+                      <p className="mt-2 inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] border px-2 py-1 text-[12px]" style={{ borderColor: "rgba(245,158,11,0.4)", color: "#f59e0b", background: "rgba(245,158,11,0.08)" }}>
+                        <span>⚠</span>{t.unverifiedQuote}
+                      </p>
                     )}
                   </li>
                 );
@@ -651,6 +785,34 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
           <p className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-3 text-[12px] leading-relaxed text-[color:var(--muted)]">
             ⚖️ {t.disclaimer}
           </p>
+
+          {text && sourceSegments && (
+            <details className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
+              <summary className="cursor-pointer list-none px-4 py-3 text-[13px] font-semibold text-[color:var(--foreground)]">
+                {t.sourceTitle}
+              </summary>
+              <div className="max-h-[28rem] overflow-auto whitespace-pre-wrap border-t border-[color:var(--line)] px-4 py-3 text-[12.5px] leading-relaxed text-[color:var(--muted)]">
+                {sourceSegments.map((seg, idx) =>
+                  seg.mark === null ? (
+                    <span key={idx}>{seg.text}</span>
+                  ) : (
+                    <mark
+                      key={idx}
+                      id={`cq-${seg.mark}`}
+                      className="rounded px-0.5"
+                      style={{
+                        backgroundColor: flashIdx === seg.mark ? "rgba(52,211,153,0.55)" : "rgba(52,211,153,0.18)",
+                        color: "var(--foreground)",
+                        transition: "background-color 0.4s ease",
+                      }}
+                    >
+                      {seg.text}
+                    </mark>
+                  ),
+                )}
+              </div>
+            </details>
+          )}
         </div>
       )}
 

@@ -1,6 +1,8 @@
 import type { Config, Context } from "@netlify/functions";
 import { enforceFeatureGate } from "./_shared/feature-gate";
 import { resolveAnswerLocale, answerLanguageName, type AnswerLocale } from "./_shared/answer-locale";
+import type { SubscriptionPlan } from "../../lib/subscription-runtime";
+import { chunkRangesFor, mergeAndDedupRisks, normalizeForMatch } from "./_shared/contract-chunking";
 
 declare const Netlify: {
   env: {
@@ -30,8 +32,23 @@ type Risk = {
   missing?: boolean;     // model gave no quote → a genuinely ABSENT/missing clause
   unverified?: boolean;  // model gave a quote we could NOT locate → dropped as fabricated
 };
+// Honest coverage report so the client can show "analyzed X/Y" and never imply a
+// false "all clear" when only part of a long contract was actually read.
+type Coverage = {
+  coveredChars: number;   // chars of the document actually analyzed (leading span)
+  totalChars: number;
+  analyzedChunks: number;
+  totalChunks: number;
+  failedChunks: number;   // chunks whose provider call failed → gaps in coverage
+  capped: boolean;        // some chunks skipped (per-plan or safety cap)
+};
 
-const MAX_CHARS = 24_000;
+// Long contracts are split into overlapping chunks and analyzed fully — no silent
+// truncation. MAX_CHARS is now the PER-CHUNK size, not a whole-document clip.
+const MAX_CHARS = 24_000;          // per-chunk target size
+const OVERLAP_CHARS = 1_200;       // re-include context across cuts so a clause split at a boundary still appears whole in one chunk
+const MAX_ANALYZE_CHUNKS = 12;     // safety ceiling to stay within the function timeout (~120 pages); beyond this, coverage is reported partial (never faked)
+const CHUNK_CONCURRENCY = 6;       // bounded parallel provider calls per analysis
 const MAX_TOKENS = 2500;
 const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
 
@@ -72,36 +89,94 @@ export default async (req: Request, _context: Context) => {
   if (text.length < 40) {
     return json({ ok: false, code: "NO_TEXT", message: "No contract text to analyze." }, 400);
   }
-  const clipped = text.slice(0, MAX_CHARS);
+  // Split the WHOLE contract into overlapping chunks and analyze every chunk, then
+  // merge + de-duplicate the findings. No silent 24k truncation.
+  const chunkRanges = chunkRangesFor(text, MAX_CHARS, OVERLAP_CHARS);
+  // Per-plan coverage knob (default: full document for EVERY plan). MAX_ANALYZE_CHUNKS
+  // is a hard timeout-safety ceiling regardless of plan.
+  const cap = Math.min(coverageChunkCap(gate.plan), MAX_ANALYZE_CHUNKS);
+  const analyzedRanges = chunkRanges.slice(0, cap);
 
-  const body = {
+  const { risks: rawRisks, failed } = await analyzeChunks(provider, locale, text, analyzedRanges);
+
+  // Every analyzed chunk failed → a real provider outage. Surface it, never return an
+  // empty list that would read as a false "all clear".
+  if (analyzedRanges.length > 0 && failed === analyzedRanges.length) {
+    return json({ ok: false, code: "PROVIDER_FAILED", message: "AI provider failed." }, 502);
+  }
+
+  const risks = groundRisks(mergeAndDedupRisks(rawRisks), text);
+
+  // Count usage only after a successful analysis.
+  await gate.commit();
+
+  const coverage: Coverage = {
+    coveredChars: analyzedRanges.length ? analyzedRanges[analyzedRanges.length - 1].end : 0,
+    totalChars: text.length,
+    analyzedChunks: analyzedRanges.length,
+    totalChunks: chunkRanges.length,
+    failedChunks: failed,
+    capped: chunkRanges.length > analyzedRanges.length,
+  };
+
+  return json({ ok: true, risks, coverage, provider: "configured-ai-provider", model: provider.model }, 200);
+};
+
+// ---- full-document chunking + cross-chunk merge (全文分析) ----
+// Pure chunking + merge/de-dup live in ./_shared/contract-chunking (unit-tested).
+
+// Per-plan coverage knob. DEFAULT: full document for EVERY plan — free users get
+// real whole-document analysis (the 3/day cap is the free limit, not crippled
+// coverage). Tune later (e.g. a small N for FREE) without touching the flow.
+function coverageChunkCap(_plan: SubscriptionPlan): number {
+  return Number.POSITIVE_INFINITY;
+}
+
+// Analyze each chunk independently with bounded concurrency. Per-chunk failures are
+// counted (not thrown) so one bad chunk doesn't sink the whole analysis.
+async function analyzeChunks(
+  provider: ProviderConfig,
+  locale: AnswerLocale,
+  text: string,
+  ranges: Array<{ start: number; end: number }>,
+): Promise<{ risks: Risk[]; failed: number }> {
+  const risks: Risk[] = [];
+  let failed = 0;
+  await mapWithConcurrency(ranges, CHUNK_CONCURRENCY, async (range) => {
+    try {
+      const content = await callProvider(provider, buildAnalyzeBody(provider, locale, text.slice(range.start, range.end)));
+      risks.push(...parseRisks(content));
+    } catch {
+      failed += 1;
+    }
+  });
+  return { risks, failed };
+}
+
+function buildAnalyzeBody(provider: ProviderConfig, locale: AnswerLocale, chunk: string): Record<string, unknown> {
+  return {
     model: provider.model,
     temperature: 0,
     max_tokens: MAX_TOKENS,
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: contractPrompt(locale) },
-      { role: "user", content: clipped },
+      { role: "user", content: chunk },
     ],
   };
+}
 
-  let content: string;
-  try {
-    content = await callProvider(provider, body);
-  } catch (e) {
-    return json(
-      { ok: false, code: "PROVIDER_FAILED", message: e instanceof Error ? redact(e.message) : "AI provider failed." },
-      502,
-    );
-  }
-
-  const risks = groundRisks(parseRisks(content), text);
-
-  // Count usage only after a successful analysis.
-  await gate.commit();
-
-  return json({ ok: true, risks, truncated: text.length > MAX_CHARS, provider: "configured-ai-provider", model: provider.model }, 200);
-};
+// Run an async task over items with at most `limit` in flight at once.
+async function mapWithConcurrency<T>(items: T[], limit: number, task: (item: T) => Promise<void>): Promise<void> {
+  let next = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (next < items.length) {
+      const idx = next++;
+      await task(items[idx]);
+    }
+  });
+  await Promise.all(workers);
+}
 
 function contractPrompt(locale: AnswerLocale): string {
   const lang = answerLanguageName(locale);
@@ -157,12 +232,19 @@ function groundRisks(risks: Risk[], text: string): Risk[] {
 }
 
 async function callProvider(provider: ProviderConfig, body: Record<string, unknown>): Promise<string> {
-  const res = await fetch(provider.apiUrl, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${provider.apiKey}`, "Content-Type": "application/json" },
-    // DeepSeek V4 defaults to thinking mode → force non-thinking for clean JSON.
-    body: JSON.stringify(provider.model?.startsWith("deepseek") ? { ...body, thinking: { type: "disabled" } } : body),
-  });
+  // OpenRouter is OpenAI-compatible, so the same request body works. We send the
+  // recommended attribution headers and never set any logging field — OpenRouter
+  // does not store prompts/completions unless logging is explicitly opted in.
+  const isOpenRouter = /openrouter\.ai/i.test(provider.apiUrl);
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${provider.apiKey}`,
+    "Content-Type": "application/json",
+  };
+  if (isOpenRouter) {
+    headers["HTTP-Referer"] = "https://dockdocs.app";
+    headers["X-Title"] = "DockDocs Contract Risk";
+  }
+  const res = await fetch(provider.apiUrl, { method: "POST", headers, body: JSON.stringify(body) });
   const responseText = await res.text();
   if (!res.ok) {
     throw new Error(`AI provider failed with status ${res.status}. ${redact(responseText)}`);
@@ -171,19 +253,25 @@ async function callProvider(provider: ProviderConfig, body: Record<string, unkno
 }
 
 function getProvider(): ProviderConfig | null {
-  const deepSeekKey =
-    Netlify.env.get("DEEPSEEK_API_KEY")?.trim() || Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_KEY")?.trim();
-  const openAiKey = Netlify.env.get("OPENAI_API_KEY")?.trim();
-  if (deepSeekKey) {
+  // Primary: OpenRouter (OpenAI-compatible gateway) → Mistral Large. Joe's China-issued
+  // card works on OpenRouter, but US providers (Anthropic/OpenAI) reject it under their
+  // regional ToS (403 "provider ToS violation"); EU/Mistral is allowed, runs cheaper
+  // than Claude Haiku, and GDPR-alignment is a plus for legal documents. Zero data
+  // retention by default; we never enable OpenRouter request logging (that would
+  // authorize commercial use of the contract text). Endpoint, key, and model are
+  // env-configurable — e.g. set OPENROUTER_MODEL=mistralai/mistral-medium-3.1 for a
+  // faster/cheaper fallback if Large is too slow for the function timeout. DeepSeek
+  // (dropped 2026-06-12) is intentionally NOT a provider.
+  const openRouterKey = Netlify.env.get("OPENROUTER_API_KEY")?.trim();
+  if (openRouterKey) {
     return {
-      apiKey: deepSeekKey,
-      apiUrl: normalizeChatEndpoint(
-        Netlify.env.get("DEEPSEEK_BASE_URL") || Netlify.env.get("DEEPSEEK_API_URL") || Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_URL"),
-        "https://api.deepseek.com",
-      ),
-      model: Netlify.env.get("DEEPSEEK_MODEL")?.trim() || Netlify.env.get("DOCKDOCS_AI_SUMMARY_MODEL")?.trim() || "deepseek-v4-flash",
+      apiKey: openRouterKey,
+      apiUrl: normalizeChatEndpoint(Netlify.env.get("OPENROUTER_BASE_URL"), "https://openrouter.ai/api/v1"),
+      model: Netlify.env.get("OPENROUTER_MODEL")?.trim() || "mistralai/mistral-large-2512",
     };
   }
+  // Fallback: a direct OpenAI-compatible endpoint, if configured.
+  const openAiKey = Netlify.env.get("OPENAI_API_KEY")?.trim();
   if (openAiKey) {
     return {
       apiKey: openAiKey,
@@ -203,10 +291,6 @@ function normalizeChatEndpoint(base: string | undefined, fallback: string): stri
 
 function normalizeText(value: string) {
   return value.replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
-}
-
-function normalizeForMatch(value: string) {
-  return value.toLowerCase().replace(/\s+/g, " ").trim();
 }
 
 function json(payload: Record<string, unknown>, status: number, headers?: Record<string, string>) {
