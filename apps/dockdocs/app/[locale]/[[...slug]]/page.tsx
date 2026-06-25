@@ -2604,7 +2604,7 @@ function LocalizedAiSummary({ locale }: { locale: ClientLocale }) {
   return (
     <main className="bg-[color:var(--surface)]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <div className="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+      <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
           <span>/</span>
@@ -2664,7 +2664,7 @@ function LocalizedFaq({
       aria-labelledby="faq-title"
       className="border-b border-[color:var(--line)] bg-[color:var(--surface)]"
     >
-      <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+      <div className="mx-auto max-w-5xl px-5 py-12 sm:px-6">
         <h2 id="faq-title" className="text-lg font-semibold text-[color:var(--foreground)]">
           {title}
         </h2>

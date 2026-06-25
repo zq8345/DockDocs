@@ -113,7 +113,7 @@ export default function AiSummaryPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aiSummarySchema) }}
       />
-      <div className="mx-auto max-w-3xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+      <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href="/" className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
           <span>/</span>
