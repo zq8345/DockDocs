@@ -93,4 +93,5 @@ Two modes; pick by whether Joe is at the window + the change's risk. (Added 2026
 - **⭐ 用中文沟通 (every window — added 2026-06-24, Joe 反复要求):** 工作窗口的对话、以及给 Joe / 总调度的报告正文,一律用**中文**;**不要夹整句或整段英文**。保持英文照旧的只有:代码、commit message、标识符、文件路径、纯技术术语(tsc / build / locale / PR / commit…)。最近各窗口常滑回英文 —— 报告/对话先想"这句能不能用中文说"。
 - **Completion reporting (MODE-AWARE — see "Operating modes"):**
   - **DAY / attended:** after committing (and pushing if low-risk), `send_message` 总调度 (cross-session) with the commit hash + what changed. Don't rely on a report only in your own window — Joe hears status from 总调度.
+  - **⭐ 报告对象 = 总调度,不是 Joe(2026-06-25 Joe 纠正):** 执行窗口的 send_message **和窗口内叙述**都**面向 总调度**说(或中性陈述),**别写「Joe,…」、别期待 Joe 直接响应你**。模型是 `执行窗口 → 总调度 → Joe`:Joe 只跟 cockpit(总调度)对话,他偶尔瞥你的窗口 ≠ 你在跟他汇报。状态一律由 总调度 综合后转 Joe —— 保持单 cockpit 干净,Joe 不读每个窗口的碎报告。
   - **NIGHT / unattended:** do **NOT** `send_message` — every one pops an approval dialog that breaks unattended operation (the 2026-06-17 popup storm). Commit locally and STOP; 总调度 polls `git log` to pick up your work.
