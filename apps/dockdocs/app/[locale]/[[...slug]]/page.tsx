@@ -149,10 +149,12 @@ function toMetaLocale(locale: RouteLocale): ClientLocale {
   return toClientLocale(locale);
 }
 
-// AccountLocale: the subset AccountClient / PricingPlans accept. Preserves the
-// pre-existing mapping EXACTLY — zh → "zh", zh-Hant → "en" (this path has no
-// Traditional copy today), every other locale → itself. Exhaustive, so a NEW
-// route locale must be classified here rather than silently dropped to English.
+// AccountLocale: the subset the ai-workspace interactive widgets accept (assigned to
+// AiWidgetLocale at the LocalizedAiWorkspace call below). AccountClient + PricingPlans
+// now take the raw RouteLocale and self-narrow — they author de/zh-Hant copy, so they
+// must NOT be narrowed here. Maps zh-Hant/de/ko → "en" because the widgets have no
+// Traditional/German/Korean copy yet. Exhaustive, so a NEW route locale must be
+// classified here rather than silently dropped to English.
 type AccountLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
 function toAccountLocale(locale: RouteLocale): AccountLocale {
   switch (locale) {
@@ -2445,7 +2447,7 @@ function LocalizedAccount({ locale }: { locale: ClientLocale }) {
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
       <div className="mx-auto max-w-md">
-        <AccountClient locale={toAccountLocale(locale)} />
+        <AccountClient locale={locale} />
       </div>
     </div>
   );
