@@ -462,3 +462,14 @@
 /zh/guides/reduce-pdf-size-under-5mb /410 410!
 /zh/guides/compress-scanned-pdf /410 410!
 /zh/guides/ocr-pdf-to-copyable-text /410 410!
+
+# --- /en duplicate consolidation (2026-06-24, 97% traffic) -------------------
+# /en/ is an exact alias of the root canonical (root pages always generate).
+# Google was indexing /en/<slug> SEPARATELY (GSC: 7 "Google chose a different
+# canonical"; /en/word-to-pdf had 152 impressions vs root's 33), splitting the
+# English weight across two URL sets. The canonical TAG alone didn't consolidate
+# it → force-301 every /en/<slug> back to /<slug>. Force (!) overrides the
+# generated out/en/* static files. Root pages are untouched (only the /en/ prefix
+# matches). Specific /:lng/ rules above (ocr, url-to-pdf) run first for those slugs.
+/en/*  /:splat  301!
+/en    /        301!
