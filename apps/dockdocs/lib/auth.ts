@@ -49,9 +49,18 @@ export async function signInWithMicrosoft(): Promise<void> {
   if (error) throw error;
 }
 
-// 邮箱魔法链接(免密码)：发链接到邮箱，点击即登录
+// 邮箱魔法链接(免密码)：发链接到邮箱，点击即登录。同一封邮件里也含验证码
+// （{{ .Token }}），用户可以直接点链接，或回登录页输入验证码（verifyEmailOtp）。
 export async function sendMagicLink(email: string): Promise<void> {
   const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo() } });
+  if (error) throw error;
+}
+
+// 邮箱验证码登录：verifyOtp 在客户端直接设置 session（不走 redirect 回调）。
+// type "email" 对应 signInWithOtp 发出的邮箱 OTP；成功后 onAuthStateChange 会触发，
+// 登录 UI 自动切到已登录态。错误（码错/过期/无效）原样抛出，由 UI 就地提示。
+export async function verifyEmailOtp(email: string, token: string): Promise<void> {
+  const { error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
   if (error) throw error;
 }
 

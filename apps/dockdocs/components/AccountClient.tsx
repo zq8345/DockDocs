@@ -18,6 +18,7 @@ import {
 } from "@/lib/subscription-runtime";
 import { planBadge, planStatusText, upgradePrompts, type MembershipLocale } from "@/lib/membership-ui";
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
+import { OtpVerifyForm } from "@/components/OtpVerifyForm";
 import { supabase, authHeader } from "@/lib/supabase";
 import { trackSignUp } from "@/lib/analytics";
 import { deepHant } from "@/lib/zh-hant";
@@ -303,12 +304,28 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
 
   if (view === "email-sent") {
     return (
-      <div className="mt-8 space-y-4 text-center">
+      <div className="mt-8 space-y-4">
         {header}
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[color:var(--success-surface)] text-[color:var(--success)] text-xl">✉</div>
-        <p className="text-[15px] font-semibold">{t.magicSentTitle}</p>
-        <p className="text-[13px] text-[color:var(--muted)]">{t.magicSentBody(email)}</p>
-        <button type="button" onClick={() => { setView("signed-out"); setMessage(""); }} className="text-[12px] text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.back}</button>
+        <p className="text-center text-[15px] font-semibold">{t.magicSentTitle}</p>
+        <p className="text-center text-[13px] text-[color:var(--muted)]">{t.magicSentBody(email)}</p>
+        <OtpVerifyForm
+          email={email}
+          locale={locale}
+          onVerified={async () => {
+            const u = await getUser();
+            if (u) {
+              setUser(u);
+              setView("signed-in");
+              try {
+                setSubscription(await getSubscriptionSnapshot());
+              } catch {
+                /* snapshot is non-blocking for sign-in */
+              }
+            }
+          }}
+        />
+        <button type="button" onClick={() => { setView("signed-out"); setMessage(""); }} className="block w-full text-center text-[12px] text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.back}</button>
       </div>
     );
   }

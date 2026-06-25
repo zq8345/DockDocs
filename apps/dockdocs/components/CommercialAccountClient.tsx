@@ -19,6 +19,7 @@ import {
 } from "@/lib/subscription-runtime";
 import { StatusBadge } from "@/components/ui/Status";
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
+import { OtpVerifyForm } from "@/components/OtpVerifyForm";
 import type { MembershipLocale } from "@/lib/membership-ui";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 import { deepHant } from "@/lib/zh-hant";
@@ -471,8 +472,14 @@ export function CommercialAccountClient() {
           <LoginCard
             email={email}
             emailSent={emailSent}
+            locale={locale}
             onEmailChange={setEmail}
             onMagicLink={handleMagicLink}
+            onVerified={async () => {
+              const u = await getUser();
+              if (u) setUser(u);
+              await refreshAccount();
+            }}
             onGoogle={() => handleOAuth(signInWithGoogle)}
             onMicrosoft={() => handleOAuth(signInWithMicrosoft)}
             t={t}
@@ -531,12 +538,14 @@ function AccountStatusCard({
 }
 
 function LoginCard({
-  email, emailSent, onEmailChange, onMagicLink, onGoogle, onMicrosoft, t,
+  email, emailSent, locale, onEmailChange, onMagicLink, onVerified, onGoogle, onMicrosoft, t,
 }: {
   email: string;
   emailSent: boolean;
+  locale: Locale;
   onEmailChange: (v: string) => void;
   onMagicLink: () => void;
+  onVerified: () => void | Promise<void>;
   onGoogle: () => void;
   onMicrosoft: () => void;
   t: T;
@@ -553,7 +562,10 @@ function LoginCard({
         <div className="h-px flex-1 bg-[color:var(--line)]" />
       </div>
       {emailSent ? (
-        <p className="mt-3 text-sm leading-6 text-[color:var(--success)]">{t.emailSentMessage}</p>
+        <div className="mt-3 space-y-3">
+          <p className="text-sm leading-6 text-[color:var(--success)]">{t.emailSentMessage}</p>
+          <OtpVerifyForm email={email} locale={locale} onVerified={onVerified} />
+        </div>
       ) : (
         <div className="mt-3 grid gap-2">
           <input value={email} onChange={(e) => onEmailChange(e.target.value)} placeholder="you@example.com" type="email"
