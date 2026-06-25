@@ -7947,6 +7947,8 @@ export function getLocalizedToolConfig(
       alternateLanguages: languageAlternates(slug),
     };
   }
+  const enEntry = localizedTools.en[slug];
+  const localeEntry = (localizedTools[locale as keyof typeof localizedTools] ?? localizedTools.en)[slug];
   const base = {
     slug,
     locale,
@@ -7957,7 +7959,14 @@ export function getLocalizedToolConfig(
         ? `/${CANONICAL_HUB[slug] ?? slug}/`
         : localizedPath(locale, (CANONICAL_HUB[slug] ?? slug) as RouteSlug),
     alternateLanguages: languageAlternates(slug),
-    ...(localizedTools[locale as keyof typeof localizedTools] ?? localizedTools.en)[slug],
+    ...localeEntry,
+    // The localized entries author only the upload COPY (title/description/note) and
+    // omit the language-neutral structural fields — most importantly `accept`. Without
+    // this fallback, accept is undefined on every non-en locale and the workflow engine
+    // defaults it to "application/pdf", which rejects Office files (word/ppt/excel/html
+    // → pdf) on /zh /ja /de etc. Inherit accept/multiple/fileBadge from en so localized
+    // copy wins but the file-type rules match en across all locales.
+    upload: { ...enEntry.upload, ...localeEntry.upload },
     keywords: enTools[slug].keywords, // SEO <meta> keywords: shared from en, not translated per locale
     faqTitle: enTools[slug].faqTitle, // base faqTitle (en); the ${locale}Faq substitution below overrides it for covered slugs
   };

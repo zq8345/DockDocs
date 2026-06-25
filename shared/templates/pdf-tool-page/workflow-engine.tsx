@@ -1206,29 +1206,39 @@ function validateFiles(
   return { ok: true, files: nextFiles };
 }
 
+// Known MIME types that may also be matched by file extension. Some sources (WPS
+// Office, certain OS/browser combos) report an empty or non-standard file.type for
+// Office documents, so we fall back to the extension. Keeps the existing pdf/image
+// behavior and adds the Office + HTML conversion inputs.
+const MIME_EXTENSION_FALLBACK: Record<string, string[]> = {
+  "application/pdf": [".pdf"],
+  "image/jpeg": [".jpg", ".jpeg"],
+  "image/png": [".png"],
+  "image/webp": [".webp"],
+  "application/msword": [".doc"],
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
+  "application/vnd.ms-powerpoint": [".ppt"],
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation": [".pptx"],
+  "application/vnd.ms-excel": [".xls"],
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+  "text/html": [".html", ".htm"],
+};
+
 function isAcceptedFile(file: File, accept: string) {
   const rules = accept.split(",").map((rule) => rule.trim()).filter(Boolean);
   const name = file.name.toLowerCase();
 
   return rules.some((rule) => {
     const lower = rule.toLowerCase();
-    if (lower === "application/pdf") {
-      return file.type === "application/pdf" || name.endsWith(".pdf");
-    }
-    if (lower === "image/jpeg") {
-      return file.type === "image/jpeg" || name.endsWith(".jpg") || name.endsWith(".jpeg");
-    }
-    if (lower === "image/png") {
-      return file.type === "image/png" || name.endsWith(".png");
-    }
-    if (lower === "image/webp") {
-      return file.type === "image/webp" || name.endsWith(".webp");
-    }
     if (lower.startsWith(".")) {
       return name.endsWith(lower);
     }
     if (lower.endsWith("/*")) {
       return file.type.startsWith(lower.slice(0, -1));
+    }
+    const exts = MIME_EXTENSION_FALLBACK[lower];
+    if (exts) {
+      return file.type === lower || exts.some((ext) => name.endsWith(ext));
     }
     return file.type === lower;
   });
