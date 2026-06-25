@@ -432,9 +432,9 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
         </div>
       ) : null}
 
-      <ToolSections locale={locale} content={sec} />
       <GroundingNote variant="summary" locale={locale} />
       <RelatedPdfTools locale={locale} exclude="/ai-summary" />
+      <ToolSections locale={locale} content={sec} />
     </section>
   );
 }
