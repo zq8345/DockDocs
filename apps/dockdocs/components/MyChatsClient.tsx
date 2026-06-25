@@ -27,7 +27,7 @@ import {
 } from "@/lib/workspace-runtime";
 import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+type Locale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
 const STR = {
   en: {
@@ -324,10 +324,61 @@ const STR = {
     noDocs: "まだ保存されたドキュメントのメタデータがありません。",
     docMeta: (chats: number, analyses: number) => `${chats} チャット · ${analyses} 件の分析`,
   },
+  de: {
+    eyebrow: "Meine Chats",
+    heroTitle: "Gespeicherter Verlauf von „Mit PDF chatten“.",
+    heroIntro: "Angemeldete Nutzer können den Chatverlauf und die Metadaten hochgeladener Dokumente für eine spätere Durchsicht speichern. Die originalen PDF-Dateien werden nicht gespeichert.",
+    loading: "Konto wird geladen…",
+    signInTitle: "Melden Sie sich an, um Arbeitsbereichsdaten zu trennen.",
+    signInDesc: "DockDocs kann für die anonyme Nutzung lokale Browser-Datensätze behalten und angemeldete Daten anschließend nach Konto-ID trennen. Originale PDFs werden nicht gespeichert.",
+    currentStorage: "Aktueller Speicher",
+    plan: "Tarif",
+    sessionOnly: "Nur diese Sitzung",
+    savedChats: "Gespeicherte Chats",
+    documents: "Dokumente",
+    turns: "Runden",
+    storage: "Speicher",
+    browser: "Browser",
+    signedIn: "Angemeldet",
+    workspaceStorage: "Arbeitsbereich-Speicher",
+    saved: "Gespeichert",
+    clearChats: "Konto-Chats löschen",
+    noChatsTitle: "Noch keine Konto-Chats.",
+    noChatsDesc: "Beginnen Sie angemeldet in „Mit PDF chatten“. DockDocs speichert Frage, Antwort, Quellen, Token-Verbrauch und Dokument-Metadaten.",
+    openChat: "„Mit PDF chatten“ öffnen",
+    turnsLabel: (n: number) => `${n} Runde${n === 1 ? "" : "n"}`,
+    user: "Nutzer",
+    assistant: "Assistent",
+    context: "Kontext",
+    trimmed: " · gekürzt",
+    provider: "Anbieter",
+    tokenUsage: "Token-Verbrauch",
+    totalTokens: (n: number) => `gesamt ${n}`,
+    notAvailable: "nicht verfügbar",
+    workspace: "Arbeitsbereich",
+    account: "Konto",
+    local: "Lokal",
+    todayChat: "Heutiger KI-Chat",
+    totalTokensLabel: "Token gesamt",
+    savedSessions: "Gespeicherte Sitzungen",
+    resumeWork: "Dokumentarbeit fortsetzen",
+    sessionsCount: (n: number) => `${n} Sitzung${n === 1 ? "" : "en"}`,
+    noSessions: "Noch keine gespeicherten Sitzungen.",
+    sessionMeta: (turns: number, tokens: number) => `${turns} Runden · ${tokens} Token`,
+    restore: "Wiederherstellen",
+    delete: "Löschen",
+    references: "Quellen",
+    verifiedBadge: "Quelle geprüft",
+    savedDocs: "Gespeicherte Dokumente",
+    noDocs: "Noch keine Dokument-Metadaten gespeichert.",
+    docMeta: (chats: number, analyses: number) => `${chats} Chats · ${analyses} Analysen`,
+  },
 };
 
 export function MyChatsClient({ locale = "en" }: { locale?: Locale }) {
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
+  // zh-Hant derives Traditional from zh; de is authored; ko (no STR.ko) and any
+  // other unauthored locale fall back to English via the ?? on the cast index.
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : ((STR as Record<string, typeof STR.en>)[locale] ?? STR.en);
   const [user, setUser] = useState<DockAccountUser | null>(null);
   const [chats, setChats] = useState<SavedChatRecord[]>([]);
   const [identity, setIdentity] = useState<WorkspaceIdentity | null>(null);

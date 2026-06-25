@@ -2287,7 +2287,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "my-chats") {
-    return <MyChatsClient locale={toLeafLocale(clientLocale)} />;
+    return <MyChatsClient locale={clientLocale} />;
   }
 
   if (slug === "compare") {
