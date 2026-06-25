@@ -351,7 +351,11 @@ function createLocalizedMetadata(
   description: string,
 ): Metadata {
   const canonical = localizedPath(locale, slug);
-  const pageTitle = title.replace(/\s*\|\s*DockDocs\s*$/u, "");
+  // Strip any baked-in " | DockDocs" / " — DockDocs" / " – DockDocs" suffix so the
+  // layout title template ("%s — DockDocs") adds exactly one. Previously only the
+  // pipe form was stripped, so em-dash-suffixed titles (for/*, my-chats, compare, …)
+  // doubled to "… — DockDocs — DockDocs" in every locale.
+  const pageTitle = title.replace(/\s*[|—–-]\s*DockDocs\s*$/u, "");
 
   return {
     title: pageTitle,
@@ -1178,9 +1182,9 @@ async function generateMetadataInner({
     return createLocalizedMetadata(
       rawLocale,
       slug,
-      ({ zh: "法律 AI：合同 / 租约 / 标书审查 — DockDocs", es: "IA legal: revisión de contratos, arrendamientos y licitaciones — DockDocs", pt: "IA jurídica: análise de contratos, locações e licitações — DockDocs", fr: "IA juridique : analyse de contrats, baux et appels d'offres — DockDocs" } as Record<string, string>)[rawLocale]
+      ({ zh: "法律 AI：合同 / 租约 / 标书审查 — DockDocs", es: "IA legal: revisión de contratos, arrendamientos y licitaciones — DockDocs", pt: "IA jurídica: análise de contratos, locações e licitações — DockDocs", fr: "IA juridique : analyse de contrats, baux et appels d'offres — DockDocs", de: "Rechts-KI: Prüfung von Verträgen, Mietverträgen & Ausschreibungen — DockDocs" } as Record<string, string>)[rawLocale]
         ?? "Legal AI: contract, lease & bid review — DockDocs",
-      ({ zh: "面向法律团队的 AI 工具：合同风险体检、租约红旗、标书合规矩阵、版本对比——每条结论都可溯源到你的文件原文。", es: "Herramientas de IA para equipos legales: riesgo de contratos, alertas en arrendamientos, matriz de cumplimiento de licitaciones y comparación de versiones, con cada conclusión rastreable hasta tu documento.", pt: "Ferramentas de IA para equipes jurídicas: risco de contratos, alertas em locações, matriz de conformidade de licitações e comparação de versões, com cada conclusão rastreável até seu documento.", fr: "Outils d'IA pour les équipes juridiques : risques contractuels, signaux d'alerte sur les baux, matrice de conformité des appels d'offres et comparaison de versions, chaque conclusion étant traçable jusqu'à votre document." } as Record<string, string>)[rawLocale]
+      ({ zh: "面向法律团队的 AI 工具：合同风险体检、租约红旗、标书合规矩阵、版本对比——每条结论都可溯源到你的文件原文。", es: "Herramientas de IA para equipos legales: riesgo de contratos, alertas en arrendamientos, matriz de cumplimiento de licitaciones y comparación de versiones, con cada conclusión rastreable hasta tu documento.", pt: "Ferramentas de IA para equipes jurídicas: risco de contratos, alertas em locações, matriz de conformidade de licitações e comparação de versões, com cada conclusão rastreável até seu documento.", fr: "Outils d'IA pour les équipes juridiques : risques contractuels, signaux d'alerte sur les baux, matrice de conformité des appels d'offres et comparaison de versions, chaque conclusion étant traçable jusqu'à votre document.", de: "KI-Tools für Rechtsteams: Vertragsrisiken, Warnsignale in Mietverträgen, Compliance-Matrix für Ausschreibungen und Versionsvergleich — jeder Befund rückverfolgbar zu Ihrem Dokument." } as Record<string, string>)[rawLocale]
         ?? "AI tools for legal teams: contract risk, lease red flags, gov-bid compliance, and version compare — every finding traceable to your document.",
     );
   }
@@ -1189,9 +1193,9 @@ async function generateMetadataInner({
     return createLocalizedMetadata(
       rawLocale,
       slug,
-      ({ zh: "财务 AI：发票 / 对账单 / 财报工具 — DockDocs", es: "IA financiera: herramientas de facturas, extractos e informes — DockDocs", pt: "IA financeira: ferramentas de faturas, extratos e relatórios — DockDocs", fr: "IA financière : outils pour factures, relevés et rapports — DockDocs" } as Record<string, string>)[rawLocale]
+      ({ zh: "财务 AI：发票 / 对账单 / 财报工具 — DockDocs", es: "IA financiera: herramientas de facturas, extractos e informes — DockDocs", pt: "IA financeira: ferramentas de faturas, extratos e relatórios — DockDocs", fr: "IA financière : outils pour factures, relevés et rapports — DockDocs", de: "Finanz-KI: Tools für Rechnungen, Kontoauszüge & Berichte — DockDocs" } as Record<string, string>)[rawLocale]
         ?? "Finance AI: invoice, statement & report tools — DockDocs",
-      ({ zh: "面向财务团队的 AI 工具：把发票、对账单抽取到表格，浓缩财务报告，比较多份报价——每个数字都可溯源到你的文件原文。", es: "Herramientas de IA para equipos de finanzas: extrae facturas y extractos a una hoja de cálculo, resume informes financieros y compara presupuestos, con cada cifra rastreable hasta tu documento.", pt: "Ferramentas de IA para equipes financeiras: extraia faturas e extratos para uma planilha, resuma relatórios financeiros e compare orçamentos, com cada número rastreável até seu documento.", fr: "Outils d'IA pour les équipes financières : extrayez factures et relevés vers un tableur, résumez les rapports financiers et comparez les devis, chaque chiffre étant traçable jusqu'à votre document." } as Record<string, string>)[rawLocale]
+      ({ zh: "面向财务团队的 AI 工具：把发票、对账单抽取到表格，浓缩财务报告，比较多份报价——每个数字都可溯源到你的文件原文。", es: "Herramientas de IA para equipos de finanzas: extrae facturas y extractos a una hoja de cálculo, resume informes financieros y compara presupuestos, con cada cifra rastreable hasta tu documento.", pt: "Ferramentas de IA para equipes financeiras: extraia faturas e extratos para uma planilha, resuma relatórios financeiros e compare orçamentos, com cada número rastreável até seu documento.", fr: "Outils d'IA pour les équipes financières : extrayez factures et relevés vers un tableur, résumez les rapports financiers et comparez les devis, chaque chiffre étant traçable jusqu'à votre document.", de: "KI-Tools für Finanzteams: Rechnungen und Kontoauszüge in eine Tabelle extrahieren, Finanzberichte zusammenfassen und Angebote vergleichen — jeder Wert rückverfolgbar zu Ihrem Dokument." } as Record<string, string>)[rawLocale]
         ?? "AI tools for finance teams: extract invoices and statements to a spreadsheet, summarize financial reports, and compare quotes — every figure traceable to your document.",
     );
   }
@@ -1200,9 +1204,9 @@ async function generateMetadataInner({
     return createLocalizedMetadata(
       rawLocale,
       slug,
-      ({ zh: "科研 AI：论文摘要 / 问答 / 对比工具 — DockDocs", es: "IA para investigación: resume, consulta y compara artículos — DockDocs", pt: "IA para pesquisa: resuma, consulte e compare artigos — DockDocs", fr: "IA pour la recherche : résumez, interrogez et comparez des articles — DockDocs" } as Record<string, string>)[rawLocale]
+      ({ zh: "科研 AI：论文摘要 / 问答 / 对比工具 — DockDocs", es: "IA para investigación: resume, consulta y compara artículos — DockDocs", pt: "IA para pesquisa: resuma, consulte e compare artigos — DockDocs", fr: "IA pour la recherche : résumez, interrogez et comparez des articles — DockDocs", de: "Forschungs-KI: Arbeiten zusammenfassen, durchsuchen & vergleichen — DockDocs" } as Record<string, string>)[rawLocale]
         ?? "Research AI: summarize, search & compare papers — DockDocs",
-      ({ zh: "面向研究者的 AI 工具：摘要论文、向 PDF 提问方法、对比研究、扫描件 OCR、抽取数据表——AI 力所能及时会把答案溯源到原文，引用前请核对。", es: "Herramientas de IA para investigadores: resume artículos, pregunta a un PDF sobre sus métodos, compara estudios, aplica OCR a artículos escaneados y extrae tablas de datos, con las respuestas rastreables hasta la fuente cuando la IA puede.", pt: "Ferramentas de IA para pesquisadores: resuma artigos, pergunte a um PDF sobre seus métodos, compare estudos, aplique OCR em artigos digitalizados e extraia tabelas de dados, com as respostas rastreáveis até a fonte quando a IA pode.", fr: "Outils d'IA pour les chercheurs : résumez des articles, interrogez un PDF sur ses méthodes, comparez des études, appliquez l'OCR à des articles numérisés et extrayez des tableaux de données, les réponses étant traçables jusqu'à la source quand l'IA le peut." } as Record<string, string>)[rawLocale]
+      ({ zh: "面向研究者的 AI 工具：摘要论文、向 PDF 提问方法、对比研究、扫描件 OCR、抽取数据表——AI 力所能及时会把答案溯源到原文，引用前请核对。", es: "Herramientas de IA para investigadores: resume artículos, pregunta a un PDF sobre sus métodos, compara estudios, aplica OCR a artículos escaneados y extrae tablas de datos, con las respuestas rastreables hasta la fuente cuando la IA puede.", pt: "Ferramentas de IA para pesquisadores: resuma artigos, pergunte a um PDF sobre seus métodos, compare estudos, aplique OCR em artigos digitalizados e extraia tabelas de dados, com as respostas rastreáveis até a fonte quando a IA pode.", fr: "Outils d'IA pour les chercheurs : résumez des articles, interrogez un PDF sur ses méthodes, comparez des études, appliquez l'OCR à des articles numérisés et extrayez des tableaux de données, les réponses étant traçables jusqu'à la source quand l'IA le peut.", de: "KI-Tools für Forschende: Arbeiten zusammenfassen, ein PDF zu seinen Methoden befragen, Studien vergleichen, gescannte Artikel per OCR erfassen und Datentabellen extrahieren — Antworten, sofern möglich, rückverfolgbar zur Quelle." } as Record<string, string>)[rawLocale]
         ?? "AI tools for researchers: summarize papers, ask a PDF about its methods, compare studies, OCR scanned articles, and extract data tables — with answers traced to their source where the AI can.",
     );
   }
