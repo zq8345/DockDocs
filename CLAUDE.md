@@ -26,7 +26,7 @@
 - No sidebar nav, top nav only with hover dropdowns (group-hover + pt-2 bridge)
 - Language switcher uses useRouter().push() — SPA navigation, no page reload
 - 12 UI languages (en/zh/ja/ko/es/fr/de/pt/it/ru/ar/hi), only en/zh have full content
-- No icons in nav menus, no RelatedTools cross-links
+- Consolidated ☰ menu items each carry a consistent outline icon (16px, stroke 1.5, currentColor — Joe 2026-06-25); the category nav hover-dropdowns stay icon-free. No RelatedTools cross-links
 
 ## Tool Pages
 - All tool pages use shared PdfToolPage template (shared/templates/pdf-tool-page/)
