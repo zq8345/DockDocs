@@ -252,7 +252,7 @@ if (!DATA_LOCALES.length) {
 // so those gaps are REPORTED but do NOT fail the build. REMOVE "ko" when Korean
 // koTools/koFaq/runtimeCopy.ko/CUSTOM_TOOL_COPY ko are authored (and add it to the
 // parity guard's BODY_LOCALES/FAQ_LOCALES at the same time).
-const PARTIAL_LOCALES = new Set(["ko"]);
+const PARTIAL_LOCALES = new Set(["ko"]); // ko translations in progress — remove when koTools/runtimeCopy.ko/CUSTOM_TOOL_COPY ko land
 const BLOCKING_LOCALES = DATA_LOCALES.filter((l) => !PARTIAL_LOCALES.has(l));
 const CUSTOM_BLOCKING_LOCALES = CUSTOM_LOCALES.filter((l) => !PARTIAL_LOCALES.has(l));
 
