@@ -118,10 +118,11 @@ function currentSlug(pathname: string | null) {
 }
 
 const HEADER_LABELS = {
-  soon:  { en: "soon",  zh: "正在开发", "zh-Hant": "即將推出", es: "próximo",  pt: "em breve", fr: "bientôt", ja: "近日公開", de: "bald" },
-  more:  { en: "More",  zh: "更多",     "zh-Hant": "更多",     es: "Más",      pt: "Mais",     fr: "Plus",    ja: "その他",   de: "Mehr" },
-  light: { en: "Light", zh: "浅色",     "zh-Hant": "淺色",     es: "Claro",    pt: "Claro",    fr: "Clair",   ja: "ライト",   de: "Hell" },
-  dark:  { en: "Dark",  zh: "深色",     "zh-Hant": "深色",     es: "Oscuro",   pt: "Escuro",   fr: "Sombre",  ja: "ダーク",   de: "Dunkel" },
+  soon:      { en: "soon",      zh: "正在开发", "zh-Hant": "即將推出", es: "próximo",         pt: "em breve",        fr: "bientôt",          ja: "近日公開",        de: "bald" },
+  more:      { en: "More",      zh: "更多",     "zh-Hant": "更多",     es: "Más",             pt: "Mais",            fr: "Plus",             ja: "その他",          de: "Mehr" },
+  light:     { en: "Light",     zh: "浅色",     "zh-Hant": "淺色",     es: "Claro",           pt: "Claro",           fr: "Clair",            ja: "ライト",          de: "Hell" },
+  dark:      { en: "Dark",      zh: "深色",     "zh-Hant": "深色",     es: "Oscuro",          pt: "Escuro",          fr: "Sombre",           ja: "ダーク",          de: "Dunkel" },
+  workspace: { en: "Workspace", zh: "工作台",   "zh-Hant": "工作台",   es: "Área de trabajo", pt: "Área de trabalho", fr: "Espace de travail", ja: "ワークスペース", de: "Arbeitsbereich" },
 } as const;
 type HdrLabelLocale = keyof (typeof HEADER_LABELS)["soon"];
 function hdrLabel(key: keyof typeof HEADER_LABELS, locale: string): string {
@@ -353,6 +354,15 @@ export function Header() {
 
           {/* Right actions */}
           <div className="ml-auto flex items-center gap-1.5">
+            {/* Workbench direct link — desktop only, all users, left of account menu */}
+            <a
+              href={lh("/dashboard", locale)}
+              onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/dashboard"); }}
+              className="hidden items-center rounded-[var(--radius-sm)] px-3 py-2 text-[14px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)] md:flex"
+            >
+              {hdrLabel("workspace", locale)}
+            </a>
+
             {/* Sign in / Account control (desktop) — badge + dropdown account card */}
             <AccountMenu authUser={authUser} locale={locale} />
 
@@ -445,6 +455,17 @@ export function Header() {
                       : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : locale === "pt" ? "Entrar" : locale === "fr" ? "Connexion" : locale === "ja" ? "ログイン" : locale === "de" ? "Anmelden" : "Sign in")}
                   </button>
                 </div>
+              </div>
+
+              {/* Workbench quick link — mobile */}
+              <div className="mb-4">
+                <a
+                  href={lh("/dashboard", locale)}
+                  onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/dashboard"); setMobileOpen(false); }}
+                  className="block w-full rounded-[var(--radius)] border border-[color:var(--accent)] bg-[color:var(--surface)] px-4 py-3 text-center text-[14px] font-semibold text-[color:var(--accent)] transition hover:border-[color:var(--accent-strong)]"
+                >
+                  {hdrLabel("workspace", locale)}
+                </a>
               </div>
 
               {/* Quick links — Pricing / Blog / About */}
