@@ -1,397 +1,211 @@
-import { ButtonLink } from "@dock/shared/ui";
-import { Card } from "@/components/ui/Card";
-import {
-  AccountCard,
-  ActionCard,
-  ChatCard,
-  DocumentCard,
-  MetricCard,
-} from "@/components/ui/cards";
-import { WorkspaceDashboardClient } from "@/components/WorkspaceDashboardClient";
-import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
-import { defaultLocale, localizedPath, normalizeSlug } from "@/lib/i18n";
+"use client";
 
-type DashLocale = RuntimeLocale | "es" | "pt" | "fr" | "ja" | "zh-Hant";
-type DashboardCopy = ReturnType<typeof getRuntimeCopy>["dashboard"];
+import { useEffect, useState } from "react";
+import { localizedPath, type RouteSlug } from "@/lib/i18n";
+import { getDockAccountState } from "@/lib/account-runtime";
+import { readWorkHistory, type WorkHistoryItem } from "@/lib/work-history";
+import type { RuntimeLocale } from "@/lib/copy";
 
-type DashboardWorkspaceProps = {
-  locale?: DashLocale;
+type DashLocale = RuntimeLocale | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de" | "ko";
+
+// Cast a known-valid slug string through RouteSlug so localizedPath is satisfied.
+// All slugs used in this file (contract-risk, compare-documents, chat-with-pdf,
+// ai-summary) are registered in lib/i18n.ts routeSlugs / toolSlugs.
+function lp(locale: DashLocale, slug: string): string {
+  return localizedPath(locale, slug as RouteSlug);
+}
+
+// ---------------------------------------------------------------------------
+// Copy
+// ---------------------------------------------------------------------------
+const COPY = {
+  zh: {
+    eyebrow: "你的工作台",
+    greet: (name: string) => `欢迎回来，${name}`,
+    resume: "继续上次",
+    resumeCta: "继续查看",
+    recent: "最近",
+    quick: "快捷开工",
+    tools: {
+      "contract-risk": "合同审查",
+      compare: "文档对比",
+      "chat-with-pdf": "AI 问答",
+      "ai-summary": "AI 摘要",
+    },
+    privacy: "你的分析存在浏览器里·文件不上传",
+    empty: "暂无记录，选下方工具开始工作",
+  },
+  en: {
+    eyebrow: "Your workspace",
+    greet: (name: string) => `Welcome back, ${name}`,
+    resume: "Pick up where you left off",
+    resumeCta: "Continue",
+    recent: "Recent",
+    quick: "Quick start",
+    tools: {
+      "contract-risk": "Contract review",
+      compare: "Compare docs",
+      "chat-with-pdf": "AI chat",
+      "ai-summary": "AI summary",
+    },
+    privacy: "Your analysis stays in your browser · files not uploaded",
+    empty: "No history yet — pick a tool below to get started",
+  },
 };
 
-export function DashboardWorkspace({
-  locale = defaultLocale,
-}: DashboardWorkspaceProps) {
-  const page = getRuntimeCopy(locale).dashboard;
+// ---------------------------------------------------------------------------
+// Quick-start tool list
+// ---------------------------------------------------------------------------
+const QUICK_TOOLS: { tool: WorkHistoryItem["tool"]; href: string }[] = [
+  { tool: "contract-risk", href: "contract-risk" },
+  { tool: "compare",       href: "compare" },
+  { tool: "chat-with-pdf", href: "chat-with-pdf" },
+  { tool: "ai-summary",    href: "ai-summary" },
+];
+
+// ---------------------------------------------------------------------------
+// Relative time helper
+// ---------------------------------------------------------------------------
+function formatRelativeTime(timestamp: number, isZh: boolean): string {
+  const diff = Date.now() - timestamp;
+  const m = Math.floor(diff / 60_000);
+  const h = Math.floor(diff / 3_600_000);
+  const d = Math.floor(diff / 86_400_000);
+  if (m < 2) return isZh ? "刚刚" : "just now";
+  if (h < 1) return isZh ? `${m}分钟前` : `${m}m ago`;
+  if (h < 24) return isZh ? `${h}小时前` : `${h}h ago`;
+  if (d === 1) return isZh ? "昨天" : "yesterday";
+  const zhDays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+  if (d < 7) {
+    return isZh
+      ? zhDays[new Date(timestamp).getDay()]
+      : new Date(timestamp).toLocaleDateString("en", { weekday: "short" });
+  }
+  return isZh ? `${d}天前` : `${d}d ago`;
+}
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
+export function DashboardWorkspace({ locale = "en" }: { locale?: DashLocale }) {
+  const isZh = locale === "zh" || locale === "zh-Hant";
+  const copy = isZh ? COPY.zh : COPY.en;
+
+  const [history, setHistory] = useState<WorkHistoryItem[]>([]);
+  const [userName, setUserName] = useState("…");
+
+  useEffect(() => {
+    setHistory(readWorkHistory());
+    getDockAccountState()
+      .then((state) => {
+        const raw =
+          state.user?.name ||
+          state.user?.email?.split("@")[0] ||
+          null;
+        setUserName(raw ?? (isZh ? "你" : "you"));
+      })
+      .catch(() => setUserName(isZh ? "你" : "you"));
+  }, [isZh]);
+
+  const latest = history[0] ?? null;
+  const recent = history.slice(0, 3);
 
   return (
-    <main>
-      <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-8 sm:px-6 sm:py-10 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-            {page.eyebrow}
+    <main className="mx-auto max-w-3xl px-5 py-10 sm:px-6 lg:px-8">
+      {/* ── Greeting ── */}
+      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">
+        {copy.eyebrow}
+      </p>
+      <h1 className="mt-2 text-3xl font-semibold tracking-[-0.02em]">
+        {copy.greet(userName)}
+      </h1>
+
+      {/* ── 继续上次 ── */}
+      {latest && (
+        <section className="mt-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+            {copy.resume}
           </p>
-          <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <h1 className="max-w-3xl text-2xl font-semibold leading-tight tracking-[-0.02em] sm:text-3xl">
-                {page.title}
-              </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-[color:var(--muted)] sm:text-base">
-                {page.description}
-              </p>
+          <a
+            href={lp(locale, latest.href.replace(/^\//, ""))}
+            className="mt-3 flex items-center justify-between gap-4 rounded-[var(--radius)] border border-[color:var(--accent)] bg-[color:var(--surface)] p-5 transition hover:border-[color:var(--accent-strong)] active:scale-[0.99]"
+          >
+            <div className="flex min-w-0 items-center gap-4">
+              <span className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 py-1 text-xs font-semibold text-[color:var(--muted)]">
+                {copy.tools[latest.tool]}
+              </span>
+              <div className="min-w-0">
+                <p className="truncate font-semibold">{latest.fileName}</p>
+                <p className="mt-0.5 text-sm text-[color:var(--muted)]">
+                  {latest.subtitle} · {formatRelativeTime(latest.timestamp, isZh)}
+                </p>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <ButtonLink href={localizedPath(locale, "chat-with-pdf")}>
-                {page.startChat}
-              </ButtonLink>
-              <ButtonLink href="#actions" variant="secondary">
-                {page.newDocument}
-              </ButtonLink>
-              <ButtonLink href={localizedPath(locale, "pricing")} variant="secondary">
-                {page.upgradeCta}
-              </ButtonLink>
-            </div>
+            <span className="shrink-0 text-sm font-semibold text-[color:var(--accent)]">
+              {copy.resumeCta} →
+            </span>
+          </a>
+        </section>
+      )}
+
+      {/* ── 最近 ── */}
+      {recent.length > 0 && (
+        <section className="mt-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+            {copy.recent}
+          </p>
+          <div className="mt-3 grid gap-2">
+            {recent.map((item) => (
+              <a
+                key={item.id}
+                href={lp(locale, item.href.replace(/^\//, ""))}
+                className="flex items-center gap-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-4 transition hover:border-[color:var(--line-strong)] active:scale-[0.99]"
+              >
+                <span className="w-20 shrink-0 text-xs font-semibold text-[color:var(--muted)]">
+                  {copy.tools[item.tool]}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-sm font-semibold">
+                  {item.fileName}
+                </span>
+                <span className="shrink-0 text-xs text-[color:var(--muted)]">
+                  {item.subtitle} · {formatRelativeTime(item.timestamp, isZh)}
+                </span>
+              </a>
+            ))}
           </div>
+        </section>
+      )}
+
+      {/* ── 空状态 ── */}
+      {history.length === 0 && (
+        <p className="mt-8 rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-6 text-center text-sm text-[color:var(--muted)]">
+          {copy.empty}
+        </p>
+      )}
+
+      {/* ── 快捷开工 ── */}
+      <section className="mt-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+          {copy.quick}
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {QUICK_TOOLS.map(({ tool, href }) => (
+            <a
+              key={tool}
+              href={lp(locale, href)}
+              className="flex items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-4 text-sm font-semibold transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)] active:scale-[0.99]"
+            >
+              {copy.tools[tool]}
+            </a>
+          ))}
         </div>
       </section>
 
-      <section className="px-5 py-8 sm:px-6 sm:py-10 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[260px_minmax(0,1fr)]">
-          <DashboardSidebar page={page} locale={locale} />
-          <div className="grid min-w-0 gap-6">
-            <WorkspaceDashboardClient />
-            <OverviewCards page={page} />
-            <OnboardingState page={page} locale={locale} />
-            <AnalyticsOverview page={page} />
-            <EmptyState page={page} locale={locale} />
-            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.25fr)_minmax(320px,0.75fr)]">
-              <RecentDocuments page={page} locale={locale} />
-              <RecentConversations page={page} locale={locale} />
-            </div>
-            <div className="grid gap-6 xl:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
-              <AiActions page={page} locale={locale} />
-              <WorkspaceHealth page={page} />
-            </div>
-            <RecentActivity page={page} />
-          </div>
-        </div>
-      </section>
+      {/* ── Privacy note ── */}
+      <p className="mt-8 flex items-center gap-1.5 text-xs text-[color:var(--faint)]">
+        <span aria-hidden="true">⚿</span>
+        {copy.privacy}
+      </p>
     </main>
   );
-}
-
-function DashboardSidebar({
-  page,
-  locale,
-}: {
-  page: DashboardCopy;
-  locale: DashLocale;
-}) {
-  return (
-    <Card
-      as="aside"
-      data-testid="dock-card"
-      className="p-4 lg:sticky lg:top-28 lg:self-start"
-    >
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        {page.workspace}
-      </p>
-      <nav className="mt-4 flex gap-2 overflow-x-auto pb-1 lg:grid lg:overflow-visible lg:pb-0">
-        {page.nav.map((item, index) => (
-          <a
-            key={item}
-            href={index === 0 ? localizedPath(locale, "dashboard") : `${localizedPath(locale, "")}#tools`}
-            className={
-              index === 0
-                ? "whitespace-nowrap rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-3 py-2 text-sm font-semibold text-[color:var(--accent-strong)]"
-                : "whitespace-nowrap rounded-[var(--radius-sm)] px-3 py-2 text-sm font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)] dark:hover:bg-white/10"
-            }
-          >
-            {item}
-          </a>
-        ))}
-      </nav>
-    </Card>
-  );
-}
-
-function OverviewCards({ page }: { page: DashboardCopy }) {
-  return (
-    <section aria-labelledby="dashboard-overview">
-      <div className="flex items-center justify-between gap-4">
-        <h2 id="dashboard-overview" className="text-lg font-semibold">
-          {page.overviewLabel}
-        </h2>
-      </div>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {page.stats.map((stat) => (
-          <MetricCard
-            key={stat.label}
-            badge="Local"
-            helper={page.analyticsLabel}
-            label={stat.label}
-            value={stat.value}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function OnboardingState({
-  page,
-  locale,
-}: {
-  page: DashboardCopy;
-  locale: DashLocale;
-}) {
-  return (
-    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--foreground)] p-4 text-[color:var(--background)] sm:p-5">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-xl font-semibold">{page.onboardingTitle}</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-[color:var(--background)]/75">
-            {page.onboardingDescription}
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <ButtonLink href={localizedPath(locale, "chat-with-pdf")} variant="inverse">
-            {page.startChat}
-          </ButtonLink>
-          <ButtonLink
-            href={localizedPath(locale, "pricing")}
-            variant="inverse"
-            className="bg-white/10"
-          >
-            {page.upgradeCta}
-          </ButtonLink>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function AnalyticsOverview({ page }: { page: DashboardCopy }) {
-  const items = [
-    { label: page.usageLabel, value: "Local", helper: page.stats[0]?.label ?? "" },
-    { label: page.actionsLabel, value: page.stats[3]?.value ?? "0", helper: page.stats[3]?.label ?? "" },
-    { label: page.healthLabel, value: "Ready", helper: page.health[1]?.label ?? "" },
-  ];
-
-  return (
-    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        {page.analyticsLabel}
-      </p>
-      <div className="mt-4 grid gap-3 md:grid-cols-3">
-        {items.map((item) => (
-          <AccountCard
-            key={item.label}
-            label={item.label}
-            plan={item.value}
-            usage={item.helper}
-          />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function EmptyState({
-  page,
-  locale,
-}: {
-  page: DashboardCopy;
-  locale: DashLocale;
-}) {
-  return (
-    <section className="rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-4 sm:p-5">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-lg font-semibold">{page.emptyTitle}</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-[color:var(--muted)]">
-            {page.emptyDescription}
-          </p>
-        </div>
-        <ButtonLink href={localizedPath(locale, "chat-with-pdf")}>
-          {page.startChat}
-        </ButtonLink>
-      </div>
-    </section>
-  );
-}
-
-function RecentDocuments({
-  page,
-  locale,
-}: {
-  page: DashboardCopy;
-  locale: DashLocale;
-}) {
-  const documentHrefs = ["/ai-summary", "/chat-with-pdf", "/ocr"];
-
-  return (
-    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            {page.recentLabel}
-          </p>
-          <h2 className="mt-1 text-xl font-semibold">{page.continueWork}</h2>
-        </div>
-      </div>
-      <div className="mt-5 grid gap-3">
-        {page.documents.map((doc, index) => (
-          <a
-            key={doc.name}
-            href={localizedDashboardHref(locale, documentHrefs[index] ?? "/dashboard")}
-            className="block rounded-[var(--radius-sm)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-          >
-            <DocumentCard
-              action={doc.action}
-              className="min-h-16"
-              meta={doc.type}
-              status={`${doc.status} · Example`}
-              title={doc.name}
-            />
-          </a>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function RecentActivity({ page }: { page: DashboardCopy }) {
-  return (
-    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        {page.activityLabel}
-      </p>
-      <div className="mt-4 grid gap-3 md:grid-cols-3">
-        {page.activity.map((item) => (
-          <article
-            key={item}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]"
-          >
-            {item}
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function RecentConversations({
-  page,
-  locale,
-}: {
-  page: DashboardCopy;
-  locale: DashLocale;
-}) {
-  const conversationHrefs = ["/chat-with-pdf", "/chat-with-pdf", "/ocr"];
-
-  return (
-    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        {page.conversationsLabel}
-      </p>
-      <div className="mt-4 grid gap-3">
-        {page.conversations.map((conversation, index) => (
-          <a
-            key={conversation.title}
-            href={localizedDashboardHref(locale, conversationHrefs[index] ?? "/chat-with-pdf")}
-            className="block rounded-[var(--radius-sm)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-          >
-            <ChatCard
-              className="min-h-16"
-              document={conversation.meta}
-              savedState={`${conversation.status} · Example`}
-              title={conversation.title}
-            />
-          </a>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function AiActions({
-  page,
-  locale,
-}: {
-  page: DashboardCopy;
-  locale: DashLocale;
-}) {
-  return (
-    <section id="actions" className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        {page.actionsLabel}
-      </p>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        {page.actions.map((action) => (
-          <a
-            key={action.title}
-            href={localizedDashboardHref(locale, action.href)}
-            className="block rounded-[var(--radius-sm)] active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]"
-          >
-            <ActionCard
-              actionLabel={action.tier}
-              className="min-h-36 transition hover:-translate-y-0.5"
-              description={action.description}
-              priority="Example"
-              title={action.title}
-            />
-          </a>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function WorkspaceHealth({ page }: { page: DashboardCopy }) {
-  return (
-    <section className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4 sm:p-5">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-        {page.healthLabel}
-      </p>
-      <div className="mt-4 grid gap-3">
-        {page.health.map((item) => (
-          <article
-            key={item.label}
-            className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-semibold">{item.label}</p>
-              <span className="rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] px-2 py-1 text-xs font-semibold text-[color:var(--accent-strong)]">
-                {item.tone}
-              </span>
-            </div>
-            <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-              {item.value}
-            </p>
-          </article>
-        ))}
-      </div>
-      <div className="mt-5 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3">
-        <p className="text-sm font-semibold">{page.nextStepsLabel}</p>
-        <ul className="mt-3 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
-          {page.nextSteps.map((step) => (
-            <li key={step} className="flex gap-2">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-              <span>{step}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-function localizedDashboardHref(locale: DashLocale, href: string) {
-  const slug = normalizeSlug(href);
-
-  if (!slug) {
-    return href;
-  }
-
-  return locale === defaultLocale ? href : localizedPath(locale, slug);
 }

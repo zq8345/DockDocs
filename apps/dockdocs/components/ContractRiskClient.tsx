@@ -11,6 +11,7 @@ import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
+import { appendWorkHistory } from "@/lib/work-history";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
 import { useCallback, useMemo, useState } from "react";
@@ -587,6 +588,18 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
         setPhase("done");
         trackToolRun("contract-risk");
         await markUsage(gate, "contractAnalyzer");
+        // Save to dashboard work history
+        const highCount = sorted.filter((r) => r.level === "high").length;
+        const isZhLocale = locale === "zh" || locale === "zh-Hant";
+        appendWorkHistory({
+          tool: "contract-risk",
+          fileName,
+          subtitle: isZhLocale
+            ? `发现${sorted.length}处风险(高${highCount})`
+            : `${sorted.length} risk${sorted.length === 1 ? "" : "s"} (${highCount} high)`,
+          href: "/contract-risk",
+          timestamp: Date.now(),
+        });
       } else {
         setError(t.errPrefix + (data?.message || "Unknown error."));
         setPhase("ready");
