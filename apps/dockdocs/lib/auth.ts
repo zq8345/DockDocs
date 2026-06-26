@@ -60,6 +60,7 @@ export async function sendMagicLink(email: string): Promise<void> {
 // type "email" 对应 signInWithOtp 发出的邮箱 OTP；成功后 onAuthStateChange 会触发，
 // 登录 UI 自动切到已登录态。错误（码错/过期/无效）原样抛出，由 UI 就地提示。
 export async function verifyEmailOtp(email: string, token: string): Promise<void> {
+  email = email.trim();
   const { error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
   if (error) throw error;
 }

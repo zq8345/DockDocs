@@ -416,8 +416,8 @@ export function CommercialAccountClient() {
       await sendMagicLink(email.trim());
       setEmailSent(true);
       setMessage(t.magicLinkSent);
-    } catch (e) {
-      setError(getErrorMessage(e, t.errorFallback));
+    } catch {
+      setError(t.errorFallback);
     }
   }
 

@@ -229,7 +229,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
       setView("email-sent");
       trackSignUp("email");
     } catch (err) {
-      setError(err instanceof Error ? err.message : t.sendFailed);
+      setError(t.sendFailed);
     } finally {
       setBusy("");
     }
