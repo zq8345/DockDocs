@@ -32,6 +32,9 @@ type Risk = {
   missing?: boolean;     // model gave no quote → a genuinely ABSENT/missing clause
   unverified?: boolean;  // model gave a quote we could NOT locate → dropped as fabricated
 };
+type ContractTypeInfo = { detected: string; confidence: "high" | "medium" | "low" };
+type TypeSpecificItem = { item: string; found: boolean; note?: string };
+
 // Honest coverage report so the client can show "analyzed X/Y" and never imply a
 // false "all clear" when only part of a long contract was actually read.
 type Coverage = {
@@ -50,6 +53,7 @@ const OVERLAP_CHARS = 1_200;       // re-include context across cuts so a clause
 const MAX_ANALYZE_CHUNKS = 12;     // safety ceiling to stay within the function timeout (~120 pages); beyond this, coverage is reported partial (never faked)
 const CHUNK_CONCURRENCY = 6;       // bounded parallel provider calls per analysis
 const MAX_TOKENS = 2500;
+const MAX_TOKENS_FIRST_CHUNK = 3000; // extra budget for contractType + typeSpecificItems
 const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
 
 export default async (req: Request, _context: Context) => {
@@ -97,7 +101,7 @@ export default async (req: Request, _context: Context) => {
   const cap = Math.min(coverageChunkCap(gate.plan), MAX_ANALYZE_CHUNKS);
   const analyzedRanges = chunkRanges.slice(0, cap);
 
-  const { risks: rawRisks, failed } = await analyzeChunks(provider, locale, text, analyzedRanges);
+  const { risks: rawRisks, contractType, typeSpecificItems, failed } = await analyzeChunks(provider, locale, text, analyzedRanges);
 
   // Every analyzed chunk failed → a real provider outage. Surface it, never return an
   // empty list that would read as a false "all clear".
@@ -119,7 +123,7 @@ export default async (req: Request, _context: Context) => {
     capped: chunkRanges.length > analyzedRanges.length,
   };
 
-  return json({ ok: true, risks, coverage, provider: "configured-ai-provider", model: provider.model }, 200);
+  return json({ ok: true, risks, coverage, contractType, typeSpecificItems, provider: "configured-ai-provider", model: provider.model }, 200);
 };
 
 // ---- full-document chunking + cross-chunk merge (全文分析) ----
@@ -139,28 +143,38 @@ async function analyzeChunks(
   locale: AnswerLocale,
   text: string,
   ranges: Array<{ start: number; end: number }>,
-): Promise<{ risks: Risk[]; failed: number }> {
+): Promise<{ risks: Risk[]; contractType: ContractTypeInfo | null; typeSpecificItems: TypeSpecificItem[]; failed: number }> {
   const risks: Risk[] = [];
   let failed = 0;
+  let contractType: ContractTypeInfo | null = null;
+  let typeSpecificItems: TypeSpecificItem[] = [];
   await mapWithConcurrency(ranges, CHUNK_CONCURRENCY, async (range) => {
+    const isFirst = range.start === 0;
     try {
-      const content = await callProvider(provider, buildAnalyzeBody(provider, locale, text.slice(range.start, range.end)));
-      risks.push(...parseRisks(content));
+      const content = await callProvider(provider, buildAnalyzeBody(provider, locale, text.slice(range.start, range.end), isFirst));
+      if (isFirst) {
+        const parsed = parseFirstChunk(content);
+        contractType = parsed.contractType;
+        typeSpecificItems = parsed.typeSpecificItems;
+        risks.push(...parsed.risks);
+      } else {
+        risks.push(...parseRisks(content));
+      }
     } catch {
       failed += 1;
     }
   });
-  return { risks, failed };
+  return { risks, contractType, typeSpecificItems, failed };
 }
 
-function buildAnalyzeBody(provider: ProviderConfig, locale: AnswerLocale, chunk: string): Record<string, unknown> {
+function buildAnalyzeBody(provider: ProviderConfig, locale: AnswerLocale, chunk: string, isFirst = false): Record<string, unknown> {
   return {
     model: provider.model,
     temperature: 0,
-    max_tokens: MAX_TOKENS,
+    max_tokens: isFirst ? MAX_TOKENS_FIRST_CHUNK : MAX_TOKENS,
     response_format: { type: "json_object" },
     messages: [
-      { role: "system", content: contractPrompt(locale) },
+      { role: "system", content: contractPrompt(locale, isFirst) },
       { role: "user", content: chunk },
     ],
   };
@@ -178,8 +192,23 @@ async function mapWithConcurrency<T>(items: T[], limit: number, task: (item: T) 
   await Promise.all(workers);
 }
 
-function contractPrompt(locale: AnswerLocale): string {
+function contractPrompt(locale: AnswerLocale, isFirst = false): string {
   const lang = answerLanguageName(locale);
+  if (isFirst) {
+    return [
+      "You review a contract for a NON-lawyer reader. First detect the contract type and list type-specific key clauses, then flag risky or problematic clauses.",
+      `Return ONLY valid JSON, no markdown or prose: {"contractType":{"detected":"<type in ${lang}>","confidence":"high|medium|low"},"typeSpecificItems":[{"item":"<clause in ${lang}>","found":boolean,"note":"<brief note in ${lang}, optional>"}],"risks":[{"type":"","level":"high|medium|low","quote":"","why":"","suggestion":""}]}`,
+      `Step 1 — contractType: classify into one of these types: Employment Contract, NDA / Confidentiality Agreement, Service / Outsourcing Agreement, Purchase / Procurement Contract, Commercial Lease, Equity / Investment Agreement, Partnership Agreement, Other. Translate the chosen type name to ${lang} for the "detected" field. Set confidence based on how clearly the text matches.`,
+      `Step 2 — typeSpecificItems: list 4–8 key clauses that SHOULD appear in this contract type. Examples by type — Employment: probation period, salary structure, non-compete, confidentiality, notice period, liquidated damages; NDA: duration, scope, unilateral vs mutual, breach liability, exceptions; Service/Outsourcing: deliverable definition, acceptance criteria, SLA, IP ownership, termination clause, liability cap; Purchase: specifications, acceptance process, payment terms, warranty period, force majeure; Commercial Lease: lease term, deposit, maintenance responsibilities, permitted use, renewal option, early termination; Equity/Investment: valuation, anti-dilution, liquidation preference, information rights, exit mechanism; Other: breach penalties, dispute resolution, governing law. For each, set found=true if present in this text, found=false if absent. Write item and note in ${lang}.`,
+      "Step 3 — risks: flag risky, one-sided, or missing clauses. Look for: auto-renewal, unilateral termination or change by one side, uncapped/unlimited liability, penalties or late fees, payment traps and hidden costs, one-sided indemnity, overbroad non-compete or confidentiality, AND missing standard protections.",
+      "quote MUST be copied VERBATIM from the contract text. For a MISSING-clause risk, set quote to an empty string.",
+      "level: high = real financial or legal harm; medium = unfavorable, worth negotiating; low = minor, worth noting.",
+      "Do NOT invent clauses. Only flag what the text actually supports, or a clearly-absent standard protection.",
+      `Write type, why, and suggestion in ${lang}; keep quote in the contract's original language.`,
+      "why = plain-language explanation of the risk. suggestion = what to ask for or negotiate.",
+      "This is informational only, not legal advice. Return at most 12 risks, most important first.",
+    ].join("\n");
+  }
   return [
     "You review a contract and flag risky, one-sided, or missing clauses for a NON-lawyer reader.",
     'Return ONLY valid JSON, no markdown or prose: {"risks":[{"type":"","level":"high|medium|low","quote":"","why":"","suggestion":""}]}',
@@ -191,6 +220,47 @@ function contractPrompt(locale: AnswerLocale): string {
     "why = a plain-language explanation of the risk. suggestion = what to ask for or negotiate.",
     "This is informational only, not legal advice. Return at most 12 risks, most important first.",
   ].join("\n");
+}
+
+function parseFirstChunk(responseText: string): {
+  contractType: ContractTypeInfo | null;
+  typeSpecificItems: TypeSpecificItem[];
+  risks: Risk[];
+} {
+  const payload = safeJson(responseText);
+  const content = payload?.choices?.[0]?.message?.content;
+  const obj = typeof content === "string" ? parseJsonLikeContent(content) : payload;
+
+  let contractType: ContractTypeInfo | null = null;
+  let typeSpecificItems: TypeSpecificItem[] = [];
+
+  if (isRecord(obj)) {
+    const ct = (obj as Record<string, unknown>).contractType;
+    if (isRecord(ct)) {
+      const det = (ct as Record<string, unknown>).detected;
+      const conf = (ct as Record<string, unknown>).confidence;
+      if (typeof det === "string" && det.trim()) {
+        contractType = {
+          detected: det.trim(),
+          confidence: conf === "high" || conf === "medium" || conf === "low" ? conf : "medium",
+        };
+      }
+    }
+    const rawItems = (obj as Record<string, unknown>).typeSpecificItems;
+    if (Array.isArray(rawItems)) {
+      for (const raw of rawItems) {
+        if (!isRecord(raw)) continue;
+        const r = raw as Record<string, unknown>;
+        const itemName = typeof r.item === "string" ? r.item.trim() : "";
+        if (!itemName) continue;
+        const entry: TypeSpecificItem = { item: itemName, found: Boolean(r.found) };
+        if (typeof r.note === "string" && r.note.trim()) entry.note = r.note.trim();
+        typeSpecificItems.push(entry);
+      }
+    }
+  }
+
+  return { contractType, typeSpecificItems, risks: parseRisks(responseText) };
 }
 
 function parseRisks(responseText: string): Risk[] {

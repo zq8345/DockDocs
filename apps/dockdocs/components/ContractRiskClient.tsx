@@ -19,6 +19,8 @@ import { useCallback, useMemo, useState } from "react";
 type Locale = RouteLocale;
 type RiskLevel = "high" | "medium" | "low";
 type Risk = { type: string; level: RiskLevel; quote: string | null; why: string; suggestion: string; missing?: boolean; unverified?: boolean };
+type ContractTypeInfo = { detected: string; confidence: "high" | "medium" | "low" };
+type TypeSpecificItem = { item: string; found: boolean; note?: string };
 // Honest coverage of a long contract, returned by /api/contract-risk so the UI can
 // show "analyzed X/Y pages" and never imply a false "all clear".
 type Coverage = { coveredChars: number; totalChars: number; analyzedChunks: number; totalChunks: number; failedChunks: number; capped: boolean };
@@ -75,6 +77,10 @@ const _en = {
     retry: "Try again",
     exportBtn: "Export report",
     privacy: "Your contract is read in your browser; only the extracted text is sent for analysis.",
+    confidenceHigh: "high confidence",
+    confidenceMedium: "medium confidence",
+    confidenceLow: "low confidence",
+    typeChecklist: "Type-specific checklist",
 };
 
 const STR = {
@@ -112,6 +118,10 @@ const STR = {
     retry: "重试",
     exportBtn: "导出报告",
     privacy: "合同在你的浏览器中读取,只有提取出的文字会被发送去分析。",
+    confidenceHigh: "高置信度",
+    confidenceMedium: "中置信度",
+    confidenceLow: "低置信度",
+    typeChecklist: "类型专属检查清单",
   },
   es: {
     title: "Revisión de riesgos del contrato",
@@ -146,6 +156,10 @@ const STR = {
     retry: "Reintentar",
     exportBtn: "Exportar informe",
     privacy: "Tu contrato se lee en tu navegador; solo se envía el texto extraído para analizarlo.",
+    confidenceHigh: "confianza alta",
+    confidenceMedium: "confianza media",
+    confidenceLow: "confianza baja",
+    typeChecklist: "Lista de verificación por tipo",
   },
   pt: {
     title: "Verificação de riscos do contrato",
@@ -180,6 +194,10 @@ const STR = {
     retry: "Tentar novamente",
     exportBtn: "Exportar relatório",
     privacy: "Seu contrato é lido no seu navegador; apenas o texto extraído é enviado para análise.",
+    confidenceHigh: "alta confiança",
+    confidenceMedium: "confiança média",
+    confidenceLow: "baixa confiança",
+    typeChecklist: "Lista de verificação por tipo",
   },
   fr: {
     title: "Analyse des risques du contrat",
@@ -214,6 +232,10 @@ const STR = {
     retry: "Réessayer",
     exportBtn: "Exporter le rapport",
     privacy: "Votre contrat est lu dans votre navigateur ; seul le texte extrait est transmis pour l'analyse.",
+    confidenceHigh: "haute confiance",
+    confidenceMedium: "confiance moyenne",
+    confidenceLow: "faible confiance",
+    typeChecklist: "Liste de vérification par type",
   },
   ja: {
     title: "契約リスク診断",
@@ -248,6 +270,10 @@ const STR = {
     retry: "再試行",
     exportBtn: "レポートを書き出す",
     privacy: "契約書はお使いのブラウザ内で読み込まれ、抽出されたテキストのみが分析のために送信されます。",
+    confidenceHigh: "確度：高",
+    confidenceMedium: "確度：中",
+    confidenceLow: "確度：低",
+    typeChecklist: "種別別チェックリスト",
   },
   de: {
     title: "Vertrags-Risikoprüfung",
@@ -282,6 +308,10 @@ const STR = {
     retry: "Erneut versuchen",
     exportBtn: "Bericht exportieren",
     privacy: "Ihr Vertrag wird in Ihrem Browser gelesen; nur der extrahierte Text wird zur Analyse gesendet.",
+    confidenceHigh: "hohe Gewissheit",
+    confidenceMedium: "mittlere Gewissheit",
+    confidenceLow: "niedrige Gewissheit",
+    typeChecklist: "Typspezifische Checkliste",
   },
 } satisfies AuthoredCopy<typeof _en>;
 
@@ -476,6 +506,8 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
   const [flashIdx, setFlashIdx] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [limitHit, setLimitHit] = useState<number | null>(null);
+  const [contractType, setContractType] = useState<ContractTypeInfo | null>(null);
+  const [typeSpecificItems, setTypeSpecificItems] = useState<TypeSpecificItem[]>([]);
 
   const levelLabel = useMemo(
     () => ({ high: t.levelHigh, medium: t.levelMedium, low: t.levelLow }),
@@ -529,6 +561,8 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
     setCoverage(null);
     setError(null);
     setLimitHit(null);
+    setContractType(null);
+    setTypeSpecificItems([]);
   };
 
   const handleExport = () => {
@@ -640,6 +674,8 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
         const sorted = (data.risks as Risk[]).slice().sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
         setRisks(sorted);
         setCoverage(data.coverage && typeof data.coverage === "object" ? (data.coverage as Coverage) : null);
+        setContractType(data.contractType && typeof data.contractType === "object" ? (data.contractType as ContractTypeInfo) : null);
+        setTypeSpecificItems(Array.isArray(data.typeSpecificItems) ? (data.typeSpecificItems as TypeSpecificItem[]) : []);
         setPhase("done");
         trackToolRun("contract-risk");
         await markUsage(gate, "contractAnalyzer");
@@ -787,6 +823,17 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
             </button>
           </div>
 
+          {contractType && (
+            <div className="mb-3">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1 text-[12.5px] text-[color:var(--muted)]">
+                <span aria-hidden="true">📋</span>
+                <span className="font-semibold text-[color:var(--foreground)]">{contractType.detected}</span>
+                <span aria-hidden="true" className="text-[color:var(--faint)]">·</span>
+                <span>{contractType.confidence === "high" ? t.confidenceHigh : contractType.confidence === "medium" ? t.confidenceMedium : t.confidenceLow}</span>
+              </span>
+            </div>
+          )}
+
           {/* PR-B1 summary bar: severity counts + clickable proportional overview bar.
               Counts are derived client-side; clicking a colour segment scrolls to that
               severity's first finding. Verdict + scoped colour legend land in a later
@@ -834,6 +881,26 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
               </div>
             );
           })()}
+
+          {typeSpecificItems.length > 0 && (
+            <details className="mb-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
+              <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3">
+                <span className="text-[13px] font-semibold text-[color:var(--foreground)]">{t.typeChecklist}</span>
+                <span className="text-[11px] text-[color:var(--faint)]">{typeSpecificItems.filter((i) => i.found).length}/{typeSpecificItems.length}</span>
+              </summary>
+              <ul className="divide-y divide-[color:var(--line)] border-t border-[color:var(--line)]">
+                {typeSpecificItems.map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3 px-4 py-2.5">
+                    <span className="mt-0.5 shrink-0 text-[13px]">{item.found ? "✅" : "❌"}</span>
+                    <div className="min-w-0 flex-1">
+                      <span className={`text-[13px] font-medium ${item.found ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}`}>{item.item}</span>
+                      {item.note && <p className="mt-0.5 text-[12px] text-[color:var(--faint)]">{item.note}</p>}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
 
           {coverage && (() => {
             const total = pages || 0;
