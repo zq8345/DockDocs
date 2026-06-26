@@ -22,4 +22,5 @@ export const standaloneRoutes = [
   "dockdocs-vs-smallpdf",
   "dockdocs-vs-ilovepdf",
   "offline",
+  "ai-contract-risk-analysis",
 ] as const;
