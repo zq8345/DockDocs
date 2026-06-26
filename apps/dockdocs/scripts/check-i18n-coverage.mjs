@@ -252,7 +252,7 @@ if (!DATA_LOCALES.length) {
 // so those gaps are REPORTED but do NOT fail the build. REMOVE "ko" when Korean
 // koTools/koFaq/runtimeCopy.ko/CUSTOM_TOOL_COPY ko are authored (and add it to the
 // parity guard's BODY_LOCALES/FAQ_LOCALES at the same time).
-const PARTIAL_LOCALES = new Set(["ko"]); // ko partial: faqTitle×31 + runtimeCopy.ko still pending (2026-06-25)
+const PARTIAL_LOCALES = new Set([]); // ko landed: koTools + runtimeCopyKo + CUSTOM_TOOL_COPY ko complete (2026-06-26)
 const BLOCKING_LOCALES = DATA_LOCALES.filter((l) => !PARTIAL_LOCALES.has(l));
 const CUSTOM_BLOCKING_LOCALES = CUSTOM_LOCALES.filter((l) => !PARTIAL_LOCALES.has(l));
 
@@ -287,7 +287,9 @@ function faqMapSlugs(localeVar) {
   const obj = balanced(toolsSrc, eq, "{", "}");
   return new Set([...topLevelKeys(obj).keys()]);
 }
-const faqCoverage = Object.fromEntries(DATA_LOCALES.map((l) => [l, faqMapSlugs(l) ?? new Set()]));
+// null = no faqMap exists for this locale (not in FAQ_LOCALES by design, e.g. ko)
+// → faqTitle inherits en by design, not a leak; skip faqTitle checks for null
+const faqCoverage = Object.fromEntries(DATA_LOCALES.map((l) => [l, faqMapSlugs(l)]));
 
 // Per-tool top-level fields we want to verify are localized (string scalars).
 const SCALAR_FIELDS = [
@@ -341,9 +343,10 @@ for (const locale of DATA_LOCALES) {
 
     // scalar fields
     for (const f of SCALAR_FIELDS) {
-      // faqTitle is substituted at runtime from `${locale}Faq` when the slug is
-      // covered — not a record-level leak in that case.
-      if (f === "faqTitle" && faqCoverage[locale]?.has(slug)) continue;
+      // faqTitle is substituted at runtime from `${locale}Faq` when covered.
+      // null faqCoverage = locale has no faqMap (e.g. ko not in FAQ_LOCALES)
+      // → faqTitle inherits en by design; suppress blocking for that locale.
+      if (f === "faqTitle" && (faqCoverage[locale] === null || faqCoverage[locale]?.has(slug))) continue;
       const en = fieldOverride(enEntry, f);
       if (!en.present || en.value == null) continue; // en doesn't define it as a plain string
       const loc = fieldOverride(locEntry, f);
@@ -403,6 +406,7 @@ for (const locale of DATA_LOCALES) copyFindings[locale] = [];
 //   zh-Hant         -> deepHant(runtimeCopy.zh)  (derived; not checked here)
 let copyLocales = {};
 let jaCopyTop = null; // top-level keys present in runtimeCopyJa
+let koCopyTop = null; // top-level keys present in runtimeCopyKo (overlay like ja)
 {
   const m = copySrc.search(/export const runtimeCopy\s*=/);
   if (m < 0) {
@@ -414,6 +418,8 @@ let jaCopyTop = null; // top-level keys present in runtimeCopyJa
   }
   const jm = copySrc.search(/const runtimeCopyJa\s*=/);
   if (jm >= 0) jaCopyTop = topLevelKeys(balanced(copySrc, jm, "{", "}"));
+  const km = copySrc.search(/const runtimeCopyKo\s*=/);
+  if (km >= 0) koCopyTop = topLevelKeys(balanced(copySrc, km, "{", "}"));
 }
 
 // Flatten an object-literal text into a Map<keyPath, stringValue>, recursing
@@ -479,6 +485,18 @@ for (const locale of DATA_LOCALES) {
         jaInheritedBlocks.add(block); // whole block inherits en -> every leaf leaks
       }
     }
+  } else if (locale === "ko") {
+    // ko = shallow merge of en + runtimeCopyKo (same overlay pattern as ja)
+    if (!koCopyTop) { copyFindings.ko.push("(could not parse runtimeCopyKo)"); continue; }
+    jaInheritedBlocks = new Set(); // reuse same variable to suppress inherited-block leaks
+    const enTop = topLevelKeys(copyLocales.en);
+    for (const [block, { raw }] of enTop) {
+      if (koCopyTop.has(block)) {
+        flattenStrings(koCopyTop.get(block).raw, block, flat); // ko overrides this block
+      } else {
+        jaInheritedBlocks.add(block); // whole block inherits en -> expected fallback for ko
+      }
+    }
   } else {
     if (!copyLocales[locale]) { copyFindings[locale].push(`(runtimeCopy has no "${locale}" block)`); continue; }
     flattenStrings(copyLocales[locale], "", flat);
@@ -487,7 +505,7 @@ for (const locale of DATA_LOCALES) {
   for (const [path, enVal] of enCopyFlat) {
     const structural = isStructuralPath(path);
     if (jaInheritedBlocks && jaInheritedBlocks.has(topBlockOf(path))) {
-      if (!structural && !isTriviallyIdentical(enVal)) copyFindings.ja.push(`${path} — LEAK (block inherits en: "${trunc(enVal)}")`);
+      if (!structural && !isTriviallyIdentical(enVal)) copyFindings[locale].push(`${path} — LEAK (block inherits en: "${trunc(enVal)}")`);
       continue;
     }
     if (!flat.has(path)) { copyFindings[locale].push(`${path} — MISSING`); continue; }
