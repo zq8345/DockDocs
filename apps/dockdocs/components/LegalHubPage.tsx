@@ -34,7 +34,7 @@ const WORKFLOW: Record<"zh" | "en", WorkflowCopy> = {
     title: "三步完成合同审查",
     steps: [
       { label: "上传合同", desc: "PDF 或 Word 文件拖入即可，浏览器里解析，不经服务器" },
-      { label: "AI 风险体检", desc: "AI 标注风险条款，能引用原文的直接附上出处，无法定位的不虚构" },
+      { label: "AI 风险体检", desc: "AI 标注风险条款——违约金、排他条款、单方解约权、无限责任等——能引用原文的直接附上出处，无法定位的不虚构" },
       { label: "导出风险报告", desc: "风险汇总表可导出，带进律师会谈或内部审查" },
     ],
     cta: { text: "开始体检", href: "/contract-risk" },
@@ -43,7 +43,7 @@ const WORKFLOW: Record<"zh" | "en", WorkflowCopy> = {
     title: "Review a contract in three steps",
     steps: [
       { label: "Upload the contract", desc: "Drop a PDF or Word file — parsed in your browser, not on our servers" },
-      { label: "AI risk scan", desc: "AI flags risky clauses and quotes the exact source passage — nothing fabricated when it can't locate a finding" },
+      { label: "AI risk scan", desc: "AI flags risky clauses — unlimited liability, unilateral termination, exclusivity, missing caps — and quotes the exact source passage" },
       { label: "Export the report", desc: "Export a risk summary table to bring into legal review or share with counsel" },
     ],
     cta: { text: "Check a contract", href: "/contract-risk" },
@@ -111,6 +111,48 @@ const FAQ_COPY: Record<"zh" | "en", FaqCopy> = {
         a: "English and Chinese contracts work best. Other languages can be analyzed but accuracy may vary.",
       },
     ],
+  },
+};
+
+// ─── Sample annotation copy (zh + en) ────────────────────────────────────────
+
+const SAMPLE: Record<"zh" | "en", {
+  title: string; badge: string;
+  risk1: { tag: string; sourceLabel: string; source: string; aiLabel: string; ai: string };
+  risk2: { tag: string; ai: string };
+  grounding: string;
+}> = {
+  zh: {
+    title: "真实标注示例（已脱敏）",
+    badge: "已脱敏样例",
+    risk1: {
+      tag: "高风险 · 第12条 违约赔偿",
+      sourceLabel: "原文：",
+      source: "「乙方因任何原因给甲方造成的损失，应予全额赔偿，无上限。」",
+      aiLabel: "AI 标注：",
+      ai: "无上限赔偿条款，极端风险。建议修改为「不超过合同总价的合理比例」，并明确触发条件。",
+    },
+    risk2: {
+      tag: "缺失 · 保密条款",
+      ai: "合同未包含保密条款。建议签前补充：保密范围、有效期及违约责任，避免商业信息外泄。",
+    },
+    grounding: "◇ 标注附合同原句，无法定位的标为缺失，不虚构引用。",
+  },
+  en: {
+    title: "What a real annotation looks like",
+    badge: "Anonymized sample",
+    risk1: {
+      tag: "High risk · Clause 12 — Liability",
+      sourceLabel: "Source: ",
+      source: "\"Party B shall compensate Party A in full for any and all losses, without limitation.\"",
+      aiLabel: "AI flag: ",
+      ai: "Unlimited liability clause — extreme risk. Recommend capping at a defined percentage of contract value with explicit trigger conditions.",
+    },
+    risk2: {
+      tag: "Missing · Confidentiality clause",
+      ai: "No confidentiality clause found. Recommend adding before signing: scope, duration, and breach consequences.",
+    },
+    grounding: "Findings that can be located quote the exact passage; those that can't are flagged as missing — never fabricated.",
   },
 };
 
@@ -269,6 +311,8 @@ export function LegalHubPage({
   const wf: WorkflowCopy = locale === "zh-Hant" ? deepHant(WORKFLOW.zh) : WORKFLOW[wfLang];
   const priv: PrivacyCopy = locale === "zh-Hant" ? deepHant(PRIVACY.zh) : PRIVACY[wfLang];
   const faq: FaqCopy = locale === "zh-Hant" ? deepHant(FAQ_COPY.zh) : FAQ_COPY[wfLang];
+  const sampleLang: "zh" | "en" = locale === "zh" || locale === "zh-Hant" ? "zh" : "en";
+  const sample = locale === "zh-Hant" ? deepHant(SAMPLE.zh) : SAMPLE[sampleLang];
 
   const canonicalPath = useLocalePrefix
     ? `/${locale}/for/legal/`
@@ -359,6 +403,36 @@ export function LegalHubPage({
               {t.secondary}
             </ButtonLink>
           </div>
+        </Container>
+      </Section>
+
+      {/* ── Sample annotation ───────────────────────────────────────────── */}
+      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
+        <Container>
+          <div className="flex flex-wrap items-center gap-3">
+            <h2 className="text-xl font-semibold tracking-[-0.02em] sm:text-2xl">{sample.title}</h2>
+            <span className="rounded-full border border-[color:var(--line)] px-3 py-0.5 text-xs text-[color:var(--muted)]">
+              {sample.badge}
+            </span>
+          </div>
+          <div className="mt-6 space-y-3">
+            <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+              <p className="text-sm font-semibold text-red-400">❗ {sample.risk1.tag}</p>
+              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                <span className="font-medium text-[color:var(--foreground)]">{sample.risk1.sourceLabel}</span>
+                {sample.risk1.source}
+              </p>
+              <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+                <span className="font-medium text-[color:var(--foreground)]">{sample.risk1.aiLabel}</span>
+                {sample.risk1.ai}
+              </p>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
+              <p className="text-sm font-semibold text-yellow-400">◇ {sample.risk2.tag}</p>
+              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{sample.risk2.ai}</p>
+            </div>
+          </div>
+          <p className="mt-4 text-xs text-[color:var(--faint)]">{sample.grounding}</p>
         </Container>
       </Section>
 
