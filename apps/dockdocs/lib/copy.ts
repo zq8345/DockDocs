@@ -3897,9 +3897,140 @@ const runtimeCopyJa = {
   },
 };
 
+const runtimeCopyKo = {
+  shell: {
+    header: {
+      aria: "DockDocs 탐색",
+      homeAria: "DockDocs 홈",
+      tagline: "AI 문서 플랫폼",
+      tools: "도구",
+      menu: "메뉴",
+      closeMenu: "메뉴 닫기",
+      featureMenu: "기능 메뉴",
+      utilityMenu: "계정 및 링크",
+      free: "무료",
+      plus: "PLUS",
+      comingSoon: "출시 예정",
+    },
+    nav: [
+      { name: "AI", href: "/#ai" },
+      { name: "변환", href: "/pdf-to-word", slug: "pdf-to-word" },
+      { name: "최적화", href: "/compress-pdf", slug: "compress-pdf" },
+      { name: "대시보드", href: "/dashboard", slug: "dashboard" },
+      { name: "내 채팅", href: "/my-chats" },
+      { name: "요금제", href: "/pricing" },
+      { name: "계정", href: "/account" },
+    ],
+    brand: {
+      aria: "브랜드 탐색",
+      products: [
+        { name: "DockDocs", href: "https://dockdocs.app", description: "파일, 요약, 변환 및 검토를 위한 AI 문서 작업 공간." },
+        { name: "DockIMG", href: "https://dockimg.app", description: "시각적 편집, 정리 및 변환을 위한 AI 이미지 작업 공간." },
+        { name: "DockSEO", href: "https://dockseo.app", description: "스니펫, 메타데이터 및 콘텐츠 검사를 위한 검색 작업 공간." },
+        { name: "DockText", href: "https://docktext.app", description: "정리, 요약 및 서식 지정을 위한 AI 글쓰기 작업 공간." },
+      ],
+    },
+    footer: {
+      aria: "푸터 탐색",
+      copyrightPrefix: "(c)",
+      links: [
+        { name: "관련 작업 공간", href: "/#related-tools" },
+        { name: "DockDocs", href: "/" },
+        { name: "개인정보 처리방침", href: "/privacy-policy" },
+        { name: "이용 약관", href: "/terms" },
+        { name: "사이트맵", href: "/sitemap" },
+      ],
+    },
+    relatedTools: {
+      title: "관련 작업 공간",
+      description: "데스크톱과 모바일 모두에서 일관된 작업 공간 패턴으로 Dock 제품 간을 이동하세요.",
+    },
+    account: {
+      account: "계정",
+      myChats: "내 채팅",
+      signedIn: "로그인됨",
+      logout: "로그아웃",
+      continueGoogle: "Google로 계속",
+      email: "이메일",
+      password: "비밀번호",
+      login: "로그인",
+      signedOutTitle: "작업 공간 계정",
+      signedOutDescription: "계정, 업그레이드 및 작업 공간 진입점을 한 메뉴에서 관리하려면 로그인하세요.",
+      upgrade: "업그레이드",
+      currentPlan: "무료 작업 공간",
+      actionFailed: "계정 작업에 실패했습니다.",
+    },
+    utility: {
+      accountTitle: "계정",
+      languageTitle: "언어",
+      linksTitle: "회사",
+      about: "소개",
+      blog: "블로그",
+    },
+    toolTemplate: {
+      eyebrow: "AI 문서 플랫폼",
+      schemaSlogan: "실제 파일 워크플로를 위한 AI 문서 플랫폼",
+    },
+    legal: {
+      privacy: "개인정보 처리방침",
+      terms: "이용 약관",
+      sitemap: "사이트맵",
+    },
+    trust: {
+      localFirst: "로컬 우선",
+      exportReady: "내보내기 준비 완료",
+    },
+    metadata: {
+      title: "DockDocs AI 문서 작업 공간",
+      description: "PDF, 오피스 파일, 문서 워크플로를 위한 AI 문서 도구.",
+    },
+  },
+  common: {
+    upload: {
+      label: "업로드",
+      dragDrop: "문서를 끌어다 놓기",
+      selectedDescription: "파일이 선택되어 다음 단계 준비가 완료되었습니다.",
+      supported: "지원 형식",
+      limit: "제한",
+      processing: "처리 중",
+      successMessage: "런타임 UI 상태가 준비되었으며 출력이 아래에 표시됩니다.",
+      states: {
+        empty: "파일 대기 중",
+        idle: "업로드 준비 완료",
+        selected: "파일 선택됨",
+        processing: "문서 처리 중",
+        success: "문서 준비 완료",
+        error: "주의 필요",
+      },
+    },
+    result: {
+      states: {
+        empty: "결과 없음",
+        processing: "생성 중",
+        success: "준비 완료",
+        error: "오류",
+      },
+      resultUnavailable: "결과를 사용할 수 없음",
+      waitingForOutput: "출력 대기 중",
+      runtimeError: "런타임에서 오류 상태가 반환되었습니다.",
+      processingMessage: "런타임이 이 문서를 처리 중입니다. 준비되면 출력이 여기에 표시됩니다.",
+      keyPoints: "핵심 포인트",
+      nextActions: "다음 작업",
+      copy: "복사",
+      download: "다운로드",
+      startChat: "채팅 시작",
+    },
+    errors: {
+      unsupportedFile: "지원하지 않는 파일 형식입니다. 지원 형식:",
+      fileTooLarge: "파일이 25MB UI 제한을 초과합니다.",
+    },
+  },
+};
+
 export function getRuntimeCopy(locale: RuntimeLocale = defaultLocale) {
   if (locale === "zh-Hant") return deepHant(runtimeCopy.zh) as unknown as typeof runtimeCopy.en;
   if (locale === "ja") return { ...runtimeCopy.en, ...runtimeCopyJa } as unknown as typeof runtimeCopy.en;
+  if (locale === "ko") return { ...runtimeCopy.en, ...runtimeCopyKo } as unknown as typeof runtimeCopy.en;
   // de now has a full authored block in runtimeCopy (resolved below); any other unknown locale falls back to en.
   return runtimeCopy[locale as keyof typeof runtimeCopy] ?? runtimeCopy.en;
 }

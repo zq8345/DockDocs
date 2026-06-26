@@ -95,7 +95,7 @@ for (const entry of readdirSync(OUT)) {
 // Scope = every locale whose tool bodies are fully localized (verified 100%).
 // en is the source locale. zh/es/pt/fr/ja all override the body arrays for
 // every tool; ja stays noindex, but that's about indexing, not completeness.
-const BODY_LOCALES = ["zh", "es", "pt", "fr", "ja", "de"];
+const BODY_LOCALES = ["zh", "es", "pt", "fr", "ja", "de", "ko"];
 const BODY_FIELDS = ["benefits", "features", "steps"];
 const incompleteBody = [];
 
