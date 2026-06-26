@@ -12,7 +12,12 @@ import { deepHant } from "@/lib/zh-hant";
 
 const RESEND_SECONDS = 60;
 
-function buildCopy(locale: string) {
+type OtpCopy = {
+  label: string; verify: string; verifying: string;
+  resend: string; resendIn: (n: number) => string;
+  fallback: string; error: string;
+};
+function buildCopy(locale: string): OtpCopy {
   const zh = locale === "zh";
   const es = locale === "es";
   const pt = locale === "pt";
