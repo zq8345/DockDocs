@@ -1,12 +1,121 @@
-import { defaultLocale } from "@/lib/i18n";
-import { VerticalHubPage, type VerticalConfig } from "@/components/VerticalHubPage";
+import { ButtonLink, Container, Section } from "@dock/shared/ui";
+import { absoluteUrl, defaultLocale, localizedHref, siteUrl } from "@/lib/i18n";
+import { deepHant } from "@/lib/zh-hant";
+import { type VerticalConfig, type VerticalLocale } from "@/components/VerticalHubPage";
+
+// LegalHubPage — bespoke implementation for /for/legal.
+// Extends the two-section pattern from VerticalHubPage with:
+//   1. Workflow narrative section (three-step contract review)
+//   2. Privacy assurance section (honest scope: file stays local, AI gets text only)
+//   3. Inline FAQ section (4 Q&A items, zh/en authored, other locales fall back to en)
+//
+// Honesty red-line: PDF parsing is client-side; AI analysis sends extracted text
+// to the server. Copy NEVER claims "全程不上传" — only "文件不上传、只发文本片段".
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
 
-// "Legal" professional vertical — now a thin config over the reusable
-// VerticalHubPage. Links to existing AI-hero tools (which keep their own gating);
-// it adds no gate and advertises no unbuilt quotas. Full en/zh/es/pt/fr/ja/de
-// content; zh-Hant derives from zh (deepHant); ko falls back to en.
+// ─── Step / Privacy copy (zh + en; other locales fall back to en) ─────────────
+
+type StepItem = { label: string; desc: string };
+type WorkflowCopy = {
+  title: string;
+  steps: [StepItem, StepItem, StepItem];
+  cta: { text: string; href: string };
+};
+type PrivacyCopy = {
+  title: string;
+  points: [string, string, string];
+};
+type FaqItem = { q: string; a: string };
+type FaqCopy = { title: string; items: FaqItem[] };
+
+const WORKFLOW: Record<"zh" | "en", WorkflowCopy> = {
+  zh: {
+    title: "三步完成合同审查",
+    steps: [
+      { label: "上传合同", desc: "PDF 或 Word 文件拖入即可，浏览器里解析，不经服务器" },
+      { label: "AI 风险体检", desc: "AI 标注风险条款，能引用原文的直接附上出处，无法定位的不虚构" },
+      { label: "导出风险报告", desc: "风险汇总表可导出，带进律师会谈或内部审查" },
+    ],
+    cta: { text: "开始体检", href: "/contract-risk" },
+  },
+  en: {
+    title: "Review a contract in three steps",
+    steps: [
+      { label: "Upload the contract", desc: "Drop a PDF or Word file — parsed in your browser, not on our servers" },
+      { label: "AI risk scan", desc: "AI flags risky clauses and quotes the exact source passage — nothing fabricated when it can't locate a finding" },
+      { label: "Export the report", desc: "Export a risk summary table to bring into legal review or share with counsel" },
+    ],
+    cta: { text: "Check a contract", href: "/contract-risk" },
+  },
+};
+
+const PRIVACY: Record<"zh" | "en", PrivacyCopy> = {
+  zh: {
+    title: "合同文件不离本机",
+    points: [
+      "PDF 在浏览器里解析，文件本身不上传服务器",
+      "AI 分析只发送提取的文本片段，不是整份文件",
+      "服务器没有你的文件副本，断网后仍可解析 PDF",
+    ],
+  },
+  en: {
+    title: "Your contract file stays on your device",
+    points: [
+      "PDF is parsed in your browser — the file itself is never uploaded",
+      "AI analysis sends only the extracted text, not the full document",
+      "No file copies on our servers — disconnect and PDF parsing still works",
+    ],
+  },
+};
+
+const FAQ_COPY: Record<"zh" | "en", FaqCopy> = {
+  zh: {
+    title: "常见问题",
+    items: [
+      {
+        q: "AI 分析结果准确吗？",
+        a: "能引用到原文的风险条款，AI 会附上合同原句，你可以直接核对。无法定位的条款不会虚构引用。所有结果建议律师复核，不构成法律意见。",
+      },
+      {
+        q: "合同文件会被保存吗？",
+        a: "不会。PDF 在浏览器内解析，AI 分析只传输提取的文本，服务器不留文件副本。",
+      },
+      {
+        q: "支持哪些文件格式？",
+        a: "支持 PDF 和 Word（.docx），单文件建议 10MB 以内。",
+      },
+      {
+        q: "支持哪些语言的合同？",
+        a: "中英文合同效果最佳；其他语言合同也可分析，但准确率可能有所降低。",
+      },
+    ],
+  },
+  en: {
+    title: "Frequently asked questions",
+    items: [
+      {
+        q: "How accurate is the AI analysis?",
+        a: "When the AI can locate a risky clause, it quotes the exact passage from your contract so you can check it yourself. When it can't locate a finding, it says so rather than fabricating a quote. All results should be reviewed by qualified legal counsel — these tools are not legal advice.",
+      },
+      {
+        q: "Is my contract file stored anywhere?",
+        a: "No. The PDF is parsed in your browser; AI analysis transmits only the extracted text. No file copies are stored on our servers.",
+      },
+      {
+        q: "What file formats are supported?",
+        a: "PDF and Word (.docx) files are supported. Files should be under 10 MB for best results.",
+      },
+      {
+        q: "What contract languages are supported?",
+        a: "English and Chinese contracts work best. Other languages can be analyzed but accuracy may vary.",
+      },
+    ],
+  },
+};
+
+// ─── Vertical config (hero + cards) ──────────────────────────────────────────
+
 const legalConfig: VerticalConfig = {
   vertical: "legal",
   primarySlug: "contract-risk",
@@ -125,7 +234,7 @@ const legalConfig: VerticalConfig = {
       cardsTitle: "Tools für Rechtsteams",
       cards: [
         { slug: "contract-risk", label: "Vertragsrisiko-Prüfung", description: "Markiert riskante, einseitige oder fehlende Klauseln vor der Unterschrift — markierte Risiken werden aus Ihrem Vertrag zitiert, fehlende vermerkt, mit Hinweisen, was zu klären ist." },
-        { slug: "govbid-matrix", label: "Compliance-Matrix für Ausschreibungen", description: "Fasst jede verbindliche „shall/must“-Anforderung aus einer Ausschreibung in einer nummerierten Compliance-Matrix zusammen, die Sie als CSV exportieren können." },
+        { slug: "govbid-matrix", label: "Compliance-Matrix für Ausschreibungen", description: "Fasst jede verbindliche 'shall/must'-Anforderung aus einer Ausschreibung in einer nummerierten Compliance-Matrix zusammen, die Sie als CSV exportieren können." },
         { slug: "lease-redflag", label: "Mietvertrag-Warnsignal-Check", description: "Prüft einen Wohn- oder Gewerbemietvertrag vor der Unterschrift auf unfaire, riskante oder fehlende Schutzbestimmungen für Mieter." },
         { slug: "redline", label: "Versionen vergleichen", description: "Sehen Sie genau, was sich zwischen zwei Versionen eines Vertrags oder Dokuments geändert hat — Klausel für Klausel." },
         { slug: "compare", label: "Dokumente vergleichen", description: "Vergleichen Sie mehrere Dokumente nebeneinander anhand der entscheidenden Konditionen — mit einer Empfehlung in klarer Sprache." },
@@ -135,6 +244,12 @@ const legalConfig: VerticalConfig = {
   },
 };
 
+// ─── JSON-LD breadcrumb label ─────────────────────────────────────────────────
+
+const VERTICAL_CRUMB = "Legal AI";
+
+// ─── Component ───────────────────────────────────────────────────────────────
+
 export function LegalHubPage({
   locale = defaultLocale,
   useLocalePrefix = false,
@@ -142,5 +257,211 @@ export function LegalHubPage({
   locale?: Locale;
   useLocalePrefix?: boolean;
 }) {
-  return <VerticalHubPage config={legalConfig} locale={locale} useLocalePrefix={useLocalePrefix} />;
+  // Resolve copy — zh-Hant derives from zh via deepHant
+  const t =
+    locale === "zh-Hant"
+      ? deepHant(legalConfig.copy.zh ?? legalConfig.copy.en)
+      : (legalConfig.copy[locale] ?? legalConfig.copy.en);
+
+  // Workflow + Privacy + FAQ: zh/en authored; zh-Hant derives from zh via deepHant;
+  // all other locales fall back to en (matches VerticalHubPage convention).
+  const wfLang: "zh" | "en" = locale === "zh" || locale === "zh-Hant" ? "zh" : "en";
+  const wf: WorkflowCopy = locale === "zh-Hant" ? deepHant(WORKFLOW.zh) : WORKFLOW[wfLang];
+  const priv: PrivacyCopy = locale === "zh-Hant" ? deepHant(PRIVACY.zh) : PRIVACY[wfLang];
+  const faq: FaqCopy = locale === "zh-Hant" ? deepHant(FAQ_COPY.zh) : FAQ_COPY[wfLang];
+
+  const canonicalPath = useLocalePrefix
+    ? `/${locale}/for/legal/`
+    : `/for/legal/`;
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${absoluteUrl(canonicalPath)}#webpage`,
+        url: absoluteUrl(canonicalPath),
+        name: t.heroTitle,
+        description: t.heroDescription,
+        inLanguage: locale,
+        isPartOf: { "@type": "WebSite", name: "DockDocs", url: siteUrl },
+        publisher: { "@type": "Organization", "@id": `${siteUrl}#org` },
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${absoluteUrl(canonicalPath)}#itemlist`,
+        name: t.cardsTitle,
+        itemListElement: t.cards.map((card, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: card.label,
+          url: absoluteUrl(`/${card.slug}/`),
+        })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${absoluteUrl(canonicalPath)}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "DockDocs",
+            item: absoluteUrl(useLocalePrefix ? `/${locale}/` : "/"),
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: VERTICAL_CRUMB,
+            item: absoluteUrl(canonicalPath),
+          },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${absoluteUrl(canonicalPath)}#faq`,
+        mainEntity: faq.items.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
+      },
+    ],
+  };
+
+  return (
+    <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)] py-0">
+        <Container className="py-16 lg:py-24">
+          <p className="inline-flex rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)] shadow-sm">
+            {t.eyebrow}
+          </p>
+          <h1 className="mt-6 max-w-4xl break-words text-2xl font-semibold leading-tight tracking-[-0.02em] sm:text-4xl">
+            {t.heroTitle}
+          </h1>
+          <p className="mt-6 max-w-3xl text-base leading-8 text-[color:var(--muted)] sm:text-lg">
+            {t.heroDescription}
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <ButtonLink href={localizedHref(`/${legalConfig.primarySlug}`, locale, useLocalePrefix)}>
+              {t.primary}
+            </ButtonLink>
+            <ButtonLink
+              href={localizedHref(`/${legalConfig.secondarySlug}`, locale, useLocalePrefix)}
+              variant="outline"
+              className="bg-[color:var(--surface)]"
+            >
+              {t.secondary}
+            </ButtonLink>
+          </div>
+        </Container>
+      </Section>
+
+      {/* ── Workflow narrative ───────────────────────────────────────────── */}
+      <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
+        <Container>
+          <h2 className="text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
+            {wf.title}
+          </h2>
+          <div className="mt-8 grid gap-6 sm:grid-cols-3">
+            {wf.steps.map((step, idx) => (
+              <div
+                key={idx}
+                className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-6"
+              >
+                <div className="flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--accent)] text-sm font-semibold text-[color:var(--accent)]">
+                  {idx + 1}
+                </div>
+                <h3 className="mt-4 text-base font-semibold text-[color:var(--foreground)]">
+                  {step.label}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                  {step.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8">
+            <ButtonLink href={localizedHref(wf.cta.href, locale, useLocalePrefix)}>
+              {wf.cta.text}
+            </ButtonLink>
+          </div>
+        </Container>
+      </Section>
+
+      {/* ── Tool cards ──────────────────────────────────────────────────── */}
+      <Section className="bg-[color:var(--surface-subtle)]">
+        <Container>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--muted)]">
+            {t.cardsTitle}
+          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {t.cards.map((card) => (
+              <a
+                key={card.slug}
+                href={localizedHref(`/${card.slug}`, locale, useLocalePrefix)}
+                className="group rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 transition hover:border-[color:var(--foreground)] hover:shadow-sm"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <h2 className="font-semibold text-[color:var(--foreground)]">{card.label}</h2>
+                  <span
+                    aria-hidden="true"
+                    className="text-[color:var(--muted)] transition group-hover:translate-x-0.5"
+                  >
+                    -&gt;
+                  </span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{card.description}</p>
+              </a>
+            ))}
+          </div>
+          <p className="mt-8 max-w-3xl text-xs leading-6 text-[color:var(--faint)]">
+            {legalConfig.disclaimerIcon ? `${legalConfig.disclaimerIcon} ` : ""}
+            {t.disclaimer}
+          </p>
+        </Container>
+      </Section>
+
+      {/* ── Privacy assurance ───────────────────────────────────────────── */}
+      <Section className="border-t border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
+        <Container>
+          <h2 className="text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
+            {priv.title}
+          </h2>
+          <div className="mt-6 space-y-4">
+            {priv.points.map((point, idx) => (
+              <div key={idx} className="flex items-start gap-3">
+                <span className="mt-0.5 text-[color:var(--accent)] text-lg leading-none" aria-hidden="true">
+                  ✓
+                </span>
+                <p className="text-sm leading-6 text-[color:var(--muted)]">{point}</p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      {/* ── FAQ ─────────────────────────────────────────────────────────── */}
+      <Section className="border-t border-[color:var(--line)] bg-[color:var(--surface)]">
+        <Container>
+          <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">
+            {faq.title}
+          </h2>
+          <div className="mt-6 space-y-6">
+            {faq.items.map((item) => (
+              <div key={item.q}>
+                <h3 className="text-[15px] font-medium text-[color:var(--foreground)]">{item.q}</h3>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </Section>
+    </main>
+  );
 }
