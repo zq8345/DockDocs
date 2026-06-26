@@ -73,6 +73,7 @@ const _en = {
     reset: "Check another",
     errPrefix: "Couldn't complete the review: ",
     retry: "Try again",
+    exportBtn: "Export report",
     privacy: "Your contract is read in your browser; only the extracted text is sent for analysis.",
 };
 
@@ -109,6 +110,7 @@ const STR = {
     reset: "检查另一份",
     errPrefix: "审查未能完成:",
     retry: "重试",
+    exportBtn: "导出报告",
     privacy: "合同在你的浏览器中读取,只有提取出的文字会被发送去分析。",
   },
   es: {
@@ -142,6 +144,7 @@ const STR = {
     reset: "Revisar otro",
     errPrefix: "No se pudo completar la revisión: ",
     retry: "Reintentar",
+    exportBtn: "Exportar informe",
     privacy: "Tu contrato se lee en tu navegador; solo se envía el texto extraído para analizarlo.",
   },
   pt: {
@@ -175,6 +178,7 @@ const STR = {
     reset: "Verificar outro",
     errPrefix: "Não foi possível concluir a revisão: ",
     retry: "Tentar novamente",
+    exportBtn: "Exportar relatório",
     privacy: "Seu contrato é lido no seu navegador; apenas o texto extraído é enviado para análise.",
   },
   fr: {
@@ -208,6 +212,7 @@ const STR = {
     reset: "Analyser un autre",
     errPrefix: "Impossible de terminer l'analyse : ",
     retry: "Réessayer",
+    exportBtn: "Exporter le rapport",
     privacy: "Votre contrat est lu dans votre navigateur ; seul le texte extrait est transmis pour l'analyse.",
   },
   ja: {
@@ -241,6 +246,7 @@ const STR = {
     reset: "別の契約書を診断",
     errPrefix: "レビューを完了できませんでした: ",
     retry: "再試行",
+    exportBtn: "レポートを書き出す",
     privacy: "契約書はお使いのブラウザ内で読み込まれ、抽出されたテキストのみが分析のために送信されます。",
   },
   de: {
@@ -274,6 +280,7 @@ const STR = {
     reset: "Weiteren prüfen",
     errPrefix: "Die Prüfung konnte nicht abgeschlossen werden: ",
     retry: "Erneut versuchen",
+    exportBtn: "Bericht exportieren",
     privacy: "Ihr Vertrag wird in Ihrem Browser gelesen; nur der extrahierte Text wird zur Analyse gesendet.",
   },
 } satisfies AuthoredCopy<typeof _en>;
@@ -524,6 +531,54 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
     setLimitHit(null);
   };
 
+  const handleExport = () => {
+    if (!risks) return;
+    const isZh = locale === "zh" || locale === "zh-Hant";
+    const now = new Date().toLocaleString(isZh ? "zh-CN" : "en-US");
+    const groups: Record<RiskLevel, Risk[]> = { high: [], medium: [], low: [] };
+    risks.forEach((r) => groups[r.level].push(r));
+    const missing = risks.filter((r) => r.missing);
+    const fmtRisk = (r: Risk): string => {
+      const lines: string[] = [`- **${r.type}**`];
+      if (r.quote) lines.push(`  > "${r.quote}"`);
+      if (r.why) lines.push(`  ${isZh ? "原因" : "Why"}: ${r.why}`);
+      if (r.suggestion) lines.push(`  ${isZh ? "建议" : "Suggestion"}: ${r.suggestion}`);
+      return lines.join("\n");
+    };
+    const sec = (title: string, items: Risk[]) =>
+      items.length > 0 ? `\n## ${title}\n\n${items.map(fmtRisk).join("\n\n")}` : "";
+    const md = isZh
+      ? [
+          `# 合同风险报告`,
+          `文件：${fileName}`,
+          `扫描时间：${now}`,
+          sec(`高风险条款（${groups.high.length} 条）`, groups.high),
+          sec(`中风险条款（${groups.medium.length} 条）`, groups.medium),
+          sec(`低风险条款（${groups.low.length} 条）`, groups.low),
+          missing.length > 0 ? sec(`缺失条款（${missing.length} 条）`, missing) : "",
+          `\n---\n本报告由 DockDocs 合同风险体检生成，仅供参考，不构成法律意见。`,
+        ].join("\n")
+      : [
+          `# Contract Risk Report`,
+          `File: ${fileName}`,
+          `Scanned: ${now}`,
+          sec(`High Risk (${groups.high.length})`, groups.high),
+          sec(`Medium Risk (${groups.medium.length})`, groups.medium),
+          sec(`Low Risk (${groups.low.length})`, groups.low),
+          missing.length > 0 ? sec(`Missing Clauses (${missing.length})`, missing) : "",
+          `\n---\nReviewed with DockDocs Contract Risk Check — findings are verified against source text.\nThis report is for reference only and is not legal advice.`,
+        ].join("\n");
+    const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `contract-risk-${fileName.replace(/\.pdf$/i, "")}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const onFile = useCallback(
     async (file: File) => {
       if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
@@ -720,6 +775,16 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
         <div className="mt-6">
           <div className="mb-3 flex items-center justify-between gap-3">
             <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.result(risks.length)}</span>
+            <button
+              type="button"
+              onClick={handleExport}
+              className="flex items-center gap-1.5 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-[12px] font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+            >
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0">
+                <path d="M8 2v8M5 7l3 3 3-3M3 12h10" />
+              </svg>
+              {t.exportBtn}
+            </button>
           </div>
 
           {/* PR-B1 summary bar: severity counts + clickable proportional overview bar.
