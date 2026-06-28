@@ -1,8 +1,27 @@
 "use client";
 
+import type { ReactNode } from "react";
 import type { RuntimeLocale } from "@/lib/copy";
 import { PdfToolPageEmbedded } from "../../../shared/templates/pdf-tool-page";
 import type { PdfToolPageConfig } from "../../../shared/templates/pdf-tool-page";
+import { PdfToImageClient } from "@/components/PdfToImageClient";
+import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
+import { CropPdfClient } from "@/components/CropPdfClient";
+import { RedactPdfClient } from "@/components/RedactPdfClient";
+import { SignPdfClient } from "@/components/SignPdfClient";
+import { BatchCompressClient } from "@/components/BatchCompressClient";
+import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
+import { BatchProtectClient } from "@/components/BatchProtectClient";
+import { BatchRenameClient } from "@/components/BatchRenameClient";
+import { BatchStampClient } from "@/components/BatchStampClient";
+import { BatchSplitMergeClient } from "@/components/BatchSplitMergeClient";
+import { BatchRotateClient } from "@/components/BatchRotateClient";
+import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
+import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
+import { BatchTranslateClient } from "@/components/BatchTranslateClient";
+import { BatchFixScansClient } from "@/components/BatchFixScansClient";
+import { BatchSummaryClient } from "@/components/BatchSummaryClient";
+import { BatchSortClient } from "@/components/BatchSortClient";
 
 type L = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
@@ -168,6 +187,33 @@ function makeConfig(slug: string, loc: L): PdfToolPageConfig {
   };
 }
 
+// Custom client renderers for the 22 tools that have real clients but aren't in PdfWorkflowEngine.
+// Each entry is a factory (locale) => ReactNode so extra props (lockMode, target, source) can be passed.
+const CUSTOM_RENDERERS: Record<string, (loc: L) => ReactNode> = {
+  "pdf-to-image":      (loc) => <PdfToImageClient locale={loc} />,
+  "images-to-pdf":     (loc) => <ImagesToPdfClient locale={loc} />,
+  "crop-pdf":          (loc) => <CropPdfClient locale={loc} />,
+  "redact-pdf":        (loc) => <RedactPdfClient locale={loc} />,
+  "sign-pdf":          (loc) => <SignPdfClient locale={loc} />,
+  "batch-compress":    (loc) => <BatchCompressClient locale={loc} />,
+  "batch-pdf-to-image":(loc) => <BatchPdfToImageClient locale={loc} />,
+  "batch-protect-pdf": (loc) => <BatchProtectClient locale={loc} />,
+  "batch-rename-pdf":  (loc) => <BatchRenameClient locale={loc} />,
+  "batch-watermark-pdf":(loc) => <BatchStampClient locale={loc} lockMode="watermark" />,
+  "batch-page-numbers":(loc) => <BatchStampClient locale={loc} lockMode="pagenum" />,
+  "batch-split-merge": (loc) => <BatchSplitMergeClient locale={loc} />,
+  "batch-rotate-pdf":  (loc) => <BatchRotateClient locale={loc} />,
+  "batch-pdf-to-word": (loc) => <BatchPdfToOfficeClient locale={loc} target="word" />,
+  "batch-pdf-to-excel":(loc) => <BatchPdfToOfficeClient locale={loc} target="excel" />,
+  "batch-word-to-pdf": (loc) => <BatchOfficeToPdfClient locale={loc} source="word" />,
+  "batch-excel-to-pdf":(loc) => <BatchOfficeToPdfClient locale={loc} source="excel" />,
+  "batch-ppt-to-pdf":  (loc) => <BatchOfficeToPdfClient locale={loc} source="ppt" />,
+  "batch-translate":   (loc) => <BatchTranslateClient locale={loc} />,
+  "batch-fix-scans":   (loc) => <BatchFixScansClient locale={loc} />,
+  "batch-summary":     (loc) => <BatchSummaryClient locale={loc} />,
+  "batch-sort":        (loc) => <BatchSortClient locale={loc} />,
+};
+
 // Fallback copy for unsupported-in-workspace tools
 const FALLBACK_LABEL: Partial<Record<L, [string, string]>> = {
   zh: ["完整工具页面即将支持", "在完整页面中打开 →"],
@@ -181,19 +227,29 @@ const FALLBACK_LABEL: Partial<Record<L, [string, string]>> = {
 
 export function WorkspacePdfTool({ slug, locale = "en" }: { slug: string; locale?: RuntimeLocale }) {
   const loc = toL(locale);
-  if (!WORKFLOW_ENGINE_SLUGS.has(slug)) {
-    const [msg, link] = FALLBACK_LABEL[loc] ?? ["Full workspace support coming soon.", "Open full page →"];
-    return (
-      <div className="flex min-h-[360px] flex-col items-center justify-center gap-4 text-center">
-        <p className="text-[14px] text-[color:var(--muted)]">{msg}</p>
-        <a
-          href={`/${slug}/`}
-          className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] px-5 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
-        >
-          {link}
-        </a>
-      </div>
-    );
+
+  // Path 1: PdfWorkflowEngine handles 27 slugs natively
+  if (WORKFLOW_ENGINE_SLUGS.has(slug)) {
+    return <PdfToolPageEmbedded key={slug} config={makeConfig(slug, loc)} />;
   }
-  return <PdfToolPageEmbedded key={slug} config={makeConfig(slug, loc)} />;
+
+  // Path 2: custom client — 22 slugs with real implementations
+  const renderer = CUSTOM_RENDERERS[slug];
+  if (renderer) {
+    return <div key={slug} className="w-full">{renderer(loc)}</div>;
+  }
+
+  // Path 3: genuine fallback (should never be reached for known sidebar slugs)
+  const [msg, link] = FALLBACK_LABEL[loc] ?? ["Full workspace support coming soon.", "Open full page →"];
+  return (
+    <div className="flex min-h-[360px] flex-col items-center justify-center gap-4 text-center">
+      <p className="text-[14px] text-[color:var(--muted)]">{msg}</p>
+      <a
+        href={`/${slug}/`}
+        className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] px-5 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
+      >
+        {link}
+      </a>
+    </div>
+  );
 }
