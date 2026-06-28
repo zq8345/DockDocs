@@ -14,7 +14,7 @@ import { trackToolRun } from "@/lib/track";
 import { appendWorkHistory } from "@/lib/work-history";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 type Locale = RouteLocale;
 type RiskLevel = "high" | "medium" | "low";
@@ -508,6 +508,8 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const [limitHit, setLimitHit] = useState<number | null>(null);
   const [contractType, setContractType] = useState<ContractTypeInfo | null>(null);
   const [typeSpecificItems, setTypeSpecificItems] = useState<TypeSpecificItem[]>([]);
+  const wsInputRef = useRef<HTMLInputElement>(null);
+  const [wsDragging, setWsDragging] = useState(false);
 
   const levelLabel = useMemo(
     () => ({ high: t.levelHigh, medium: t.levelMedium, low: t.levelLow }),
@@ -747,7 +749,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   };
 
   return (
-    <div className={embedded ? "px-4 py-4" : "mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"}>
+    <div className={embedded ? "mx-auto max-w-2xl px-6 py-5" : "mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"}>
       {!embedded && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />}
       {!embedded && (
         <>
@@ -760,9 +762,55 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       )}
 
       {phase === "idle" || phase === "extracting" ? (
-        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
+        embedded ? (
+          <div
+            className={`mt-3 flex cursor-pointer select-none flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed transition ${
+              wsDragging
+                ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
+                : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
+            }`}
+            style={{ minHeight: 200 }}
+            onClick={() => wsInputRef.current?.click()}
+            onDragOver={(e) => { e.preventDefault(); setWsDragging(true); }}
+            onDragLeave={() => setWsDragging(false)}
+            onDrop={(e) => { e.preventDefault(); setWsDragging(false); const f = e.dataTransfer.files[0]; if (f) onFile(f); }}
+          >
+            {phase === "extracting" ? (
+              <div className="flex flex-col items-center gap-2 py-8">
+                <svg className="h-5 w-5 animate-spin text-[color:var(--accent)]" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                <p className="text-[13px] text-[color:var(--muted)]">{t.extracting}</p>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center py-8 text-center">
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); wsInputRef.current?.click(); }}
+                  className="inline-flex h-9 items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-4 text-[13px] font-semibold text-white transition hover:opacity-90"
+                >
+                  {t.choose}
+                </button>
+                <p className="mt-2.5 text-[12.5px] text-[color:var(--muted)]">
+                  {locale === "zh" || locale === "zh-Hant" ? "或将文件拖放到此处" : locale === "ja" ? "またはここにドロップ" : locale === "es" ? "o suelta aquí" : locale === "pt" ? "ou solte aqui" : locale === "fr" ? "ou déposez ici" : locale === "de" ? "oder hierher ziehen" : locale === "ko" ? "또는 여기에 드래그" : "or drag & drop here"}
+                </p>
+                <p className="mt-1.5 text-[11px] text-[color:var(--faint)]">PDF</p>
+              </div>
+            )}
+            <input
+              ref={wsInputRef}
+              type="file"
+              className="hidden"
+              accept="application/pdf,.pdf"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.currentTarget.value = ""; }}
+            />
+          </div>
+        ) : (
+          <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
+        )
       ) : (
-        <div className={`${card} mt-8 p-5`}>
+        <div className={`${card} ${embedded ? "mt-3" : "mt-8"} p-5`}>
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>

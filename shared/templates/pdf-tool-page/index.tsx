@@ -530,6 +530,16 @@ function tStat(text: string, zh: boolean): string {
   return STAT_ZH[text] ?? text;
 }
 
+// Workspace-embedded skin: skip JSON-LD/hero/marketing sections, render only the
+// functional upload engine in a compact container.
+export function PdfToolPageEmbedded({ config }: { config: PdfToolPageConfig }) {
+  return (
+    <div className="mx-auto w-full max-w-2xl px-6 py-5">
+      <PdfWorkflowEngine config={config} />
+    </div>
+  );
+}
+
 export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
   const schema = createPdfToolSchema(config);
   const zh = (config.locale ?? "en") === "zh";

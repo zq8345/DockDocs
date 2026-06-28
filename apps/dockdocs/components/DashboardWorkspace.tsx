@@ -29,6 +29,14 @@ const AccountEmbedded = dynamic(
   () => import("@/components/AccountClient").then((m) => m.AccountClient),
   { ssr: false },
 );
+const WorkspacePdfToolEmbedded = dynamic(
+  () => import("@/components/WorkspacePdfTool").then((m) => m.WorkspacePdfTool),
+  { ssr: false },
+);
+
+// PDF conversion tools served via the workspace PDF engine (sample: pdf-to-word).
+// Batch-expanded to all 43 slugs after sample approval.
+const WORKSPACE_PDF_SLUGS = new Set(["/pdf-to-word"]);
 
 type NavLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
@@ -137,6 +145,8 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
           <div className="mx-auto w-full max-w-md px-8 py-10">
             <AccountEmbedded locale={locale} />
           </div>
+        ) : activeTool && WORKSPACE_PDF_SLUGS.has(activeTool) ? (
+          <WorkspacePdfToolEmbedded slug={activeTool.slice(1)} locale={locale} />
         ) : activeTool === "/contract-risk" ? (
           <ContractRiskEmbedded locale={locale} embedded />
         ) : activeTool === "/chat-with-pdf" ? (
