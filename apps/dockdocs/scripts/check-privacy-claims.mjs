@@ -119,7 +119,7 @@ if (cloudConvertRoutes && localOnly) {
 // Extract per-slug copy from localized-tools.ts (every `"<slug>": { … }` block in any
 // table/faq map) + catch-all CUSTOM_TOOL_COPY. Scan only the server slugs.
 const tools = rd(join(APP, "lib", "localized-tools.ts"));
-const page = rd(join(APP, "app", "[locale]", "[[...slug]]", "page.tsx"));
+const page = rd(join(APP, "app", "(site)", "[locale]", "[[...slug]]", "page.tsx"));
 function blocksForSlug(src, slug) {
   const out = [];
   let from = 0;

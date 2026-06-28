@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
-import { AppShell } from "@/components/AppShell";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { PwaRuntime } from "@/components/PwaRuntime";
 import { standaloneRoutes } from "@/lib/standalone-routes";
@@ -100,7 +99,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body>
         <HtmlLangSync />
         <PwaRuntime />
-        <AppShell>{children}</AppShell>
+        {children}
       </body>
     </html>
   );

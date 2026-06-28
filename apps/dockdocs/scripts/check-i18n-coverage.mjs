@@ -32,7 +32,7 @@ const APP = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const TOOLS = join(APP, "lib", "localized-tools.ts");
 const COPY = join(APP, "lib", "copy.ts");
 const I18N = join(APP, "lib", "i18n.ts");
-const PAGE = join(APP, "app", "[locale]", "[[...slug]]", "page.tsx");
+const PAGE = join(APP, "app", "(site)", "[locale]", "[[...slug]]", "page.tsx");
 
 // ── locales ────────────────────────────────────────────────────────────────
 const SOURCE = "en";
