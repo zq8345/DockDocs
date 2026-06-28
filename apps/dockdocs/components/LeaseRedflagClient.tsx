@@ -513,7 +513,10 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
       )}
 
       {phase === "idle" || phase === "extracting" ? (
-        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
+        <>
+          <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
+          {embedded && <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">⚿ {t.privacy}</p>}
+        </>
       ) : (
         <div className={`${card} mt-8 p-5`}>
           <div className="flex items-center justify-between gap-3">

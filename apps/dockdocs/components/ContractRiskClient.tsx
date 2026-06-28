@@ -763,6 +763,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
 
       {phase === "idle" || phase === "extracting" ? (
         embedded ? (
+          <>
           <div
             className={`mt-3 flex cursor-pointer select-none flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed transition ${
               wsDragging
@@ -806,6 +807,8 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
               onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); e.currentTarget.value = ""; }}
             />
           </div>
+          <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">⚿ {t.privacy}</p>
+          </>
         ) : (
           <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
         )
