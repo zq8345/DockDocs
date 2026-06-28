@@ -169,6 +169,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.75,
     },
+    {
+      url: absoluteUrl("/private-pdf-ai/"),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
+    },
+    {
+      url: absoluteUrl("/verifiable-document-ai/"),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
+    },
+    {
+      url: absoluteUrl("/client-side-pdf-processing/"),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
+    },
   ];
 
   return Array.from(

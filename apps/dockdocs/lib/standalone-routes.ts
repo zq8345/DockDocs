@@ -23,4 +23,7 @@ export const standaloneRoutes = [
   "dockdocs-vs-ilovepdf",
   "offline",
   "ai-contract-risk-analysis",
+  "private-pdf-ai",
+  "verifiable-document-ai",
+  "client-side-pdf-processing",
 ] as const;
