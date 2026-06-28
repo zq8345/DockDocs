@@ -17,6 +17,10 @@ const STATIC_CACHE = `dockdocs-static-${VERSION}`;
 const PAGES_CACHE = `dockdocs-pages-${VERSION}`;
 const OFFLINE_URL = "/offline/";
 
+// Dev mode: skip all caching so HMR chunk updates are always fresh.
+// Production cache-first behavior is untouched.
+const IS_DEV = self.location.hostname === "localhost" || self.location.hostname === "127.0.0.1";
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
@@ -70,7 +74,9 @@ self.addEventListener("fetch", (event) => {
   if (isNetworkOnly(url)) return; // API / functions / analytics → straight to network
 
   // Immutable static assets → cache-first (revalidate in the background on miss).
+  // Dev: skip caching entirely so HMR chunk updates are always fetched fresh.
   if (url.pathname.startsWith("/_next/static/") || STATIC_ASSET.test(url.pathname)) {
+    if (IS_DEV) return;
     event.respondWith(
       caches.match(req).then(
         (hit) =>
@@ -88,7 +94,9 @@ self.addEventListener("fetch", (event) => {
   }
 
   // HTML navigations → network-first, fall back to cache, then the offline page.
+  // Dev: always network so page changes are immediate.
   if (req.mode === "navigate" || (req.headers.get("accept") || "").includes("text/html")) {
+    if (IS_DEV) return;
     event.respondWith(
       fetch(req)
         .then((res) => {

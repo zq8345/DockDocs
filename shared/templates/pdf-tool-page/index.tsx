@@ -535,6 +535,7 @@ function tStat(text: string, zh: boolean): string {
 export function PdfToolPageEmbedded({ config }: { config: PdfToolPageConfig }) {
   return (
     <div className="mx-auto w-full max-w-3xl px-8 pb-10 pt-4">
+      <p className="mb-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{config.heroDescription}</p>
       <PdfWorkflowEngine config={config} />
     </div>
   );

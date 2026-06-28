@@ -49,6 +49,34 @@ This `<header>` becomes the app's title bar area. On desktop:
 - The 48px height is already comfortable for all platforms
 - The sidebar logo row aligns with topbar — creating a single top rail across the whole shell
 
+## Tool Consistency Rule (client + engine tools must match)
+
+Any tool opened in the workspace must present identically:
+
+```
+[sticky topbar — tool title, 48px]
+[subtitle — one sentence of value copy, text-[color:var(--muted)]]
+[upload zone — max-w-3xl centered (before upload), moderate not full-width]
+[trust row — privacy / size limit]
+```
+
+**Engine tools** (`WORKFLOW_ENGINE_SLUGS` → `PdfToolPageEmbedded`):
+- Subtitle: `config.heroDescription` — same field used by the public HeroSection
+- Upload zone: already max-w-3xl (no change needed)
+
+**Client tools** (`CUSTOM_RENDERERS` → `*Client.tsx`):
+- Subtitle: `t.subtitle` from the tool's copy — guard it from `{!embedded && ...}` removal; always show
+- Upload zone: `<UploadDropzone ... constrained={embedded} />` — adds `mx-auto max-w-3xl` wrapper when in workspace
+- After upload (thumbnail grid, result area): outer `max-w-5xl` stays; grid needs column width
+
+**Why constrained only on upload zone, not outer container:**
+After upload the client tool renders a thumbnail grid that needs `max-w-5xl` for comfortable column widths. The outer container stays wide; only the idle-state `UploadDropzone` is narrowed via the `constrained` prop.
+
+**WatermarkEditorClient — special case:**
+Uses vertical stack (preview top + form below). Form centered with `mx-auto max-w-[360px]`. Preview width is aspect-ratio aware: portrait `max-w-[360px]`, landscape `max-w-[560px]`. Watermark overlay uses column-based anchor: left column → left-align, center → center, right → right-align, preventing text from overflowing document boundary.
+
+---
+
 **Adding a new embedded tool:**
 1. Create the client component with `embedded?: boolean = false` prop
 2. Guard: `{!embedded && <h1>}`, `{!embedded && <ToolSections>}`, `{!embedded && <ToolFaq>}`

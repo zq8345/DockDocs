@@ -86,12 +86,16 @@ export function UploadDropzone({
   onFile,
   onFiles,
   onRemove,
+  constrained,
 }: {
   locale?: Locale;
   accept?: string;
   acceptLabel?: string;
   buttonLabel: string;
   privacy?: boolean;
+  // When true (embedded workspace), constrains upload zone to max-w-3xl centered
+  // so width matches engine tools. Result area (thumbnails) remains wide.
+  constrained?: boolean;
   // Custom processing note (already localized by the caller) shown in the meta row.
   // When provided it REPLACES the default green "never uploaded" privacy line — use
   // it for tools whose real behavior is NOT "never uploaded" (e.g. AI tools that send
@@ -150,7 +154,7 @@ export function UploadDropzone({
     onFile?.(matched[0]);
   };
 
-  return (
+  const dropzone = (
     <div
       className={`mt-8 ${dropzoneShell(dragging)}`}
       onClick={() => inputRef.current?.click()}
@@ -262,4 +266,5 @@ export function UploadDropzone({
       ) : null}
     </div>
   );
+  return constrained ? <div className="mx-auto max-w-3xl">{dropzone}</div> : dropzone;
 }

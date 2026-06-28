@@ -297,6 +297,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
   const [error, setError] = useState<string | null>(null);
   const [pageWpt, setPageWpt] = useState(0);
   const [dispW, setDispW] = useState(0);
+  const [pageAR, setPageAR] = useState(1); // width/height; > 1 = landscape
 
   const mainRef = useRef<File | null>(null);
   const imgRef = useRef<File | null>(null);
@@ -319,6 +320,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
       const page = await doc.getPage(1);
       const viewport = page.getViewport({ scale: 1.1 });
       setPageWpt(viewport.width / 1.1);
+      setPageAR(viewport.width / viewport.height);
       const canvas = document.createElement("canvas");
       canvas.width = viewport.width; canvas.height = viewport.height;
       const ctx = canvas.getContext("2d");
@@ -357,11 +359,15 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
   // CSS overlay style approximating the watermark on the preview.
   const overlayStyle = useMemo(() => {
     const p = POS[pos];
+    // Column 0=left, 1=center, 2=right. Non-rotated text anchors to column edge so
+    // corner positions never overflow the document boundary.
+    const col = POS_ORDER.indexOf(pos) % 3;
+    const hShift = rotate ? "-50%" : col === 0 ? "0%" : col === 2 ? "-100%" : "-50%";
     const style: CSSProperties = {
       position: "absolute",
       left: `${p.x * 100}%`,
       top: `${(1 - p.y) * 100}%`,
-      transform: `translate(-50%, -50%) rotate(${rotate ? -45 : 0}deg)`,
+      transform: `translate(${hShift}, -50%) rotate(${rotate ? -45 : 0}deg)`,
       opacity,
       pointerEvents: "none",
       whiteSpace: "nowrap",
@@ -411,8 +417,10 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
         if (mode === "text" && font) {
           const tw = font.widthOfTextAtSize(mark, size);
           const off = rotate ? (tw / 2) * Math.cos(rad) : 0;
+          const col = POS_ORDER.indexOf(pos) % 3; // 0=left, 1=center, 2=right
+          const xOff = rotate ? off : col === 0 ? 0 : col === 2 ? tw : tw / 2;
           page.drawText(mark, {
-            x: ax - (rotate ? off : tw / 2),
+            x: ax - xOff,
             y: ay - (rotate ? off : 0),
             size,
             font,
@@ -464,7 +472,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
           <div>
             <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
             <div className="flex justify-center">
-              <div className="relative w-full max-w-[360px] overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white" style={{ maxHeight: "50vh" }}>
+              <div className="relative w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white" style={{ maxWidth: pageAR > 1 ? "560px" : "360px", maxHeight: "50vh" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {preview && <img ref={previewImgRef} onLoad={(e) => setDispW(e.currentTarget.clientWidth)} src={preview} alt="page 1" className="block h-auto w-full rounded-[var(--radius)]" />}
                 {mode === "text" ? (
@@ -479,8 +487,8 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
             </div>
           </div>
 
-          {/* Controls below */}
-          <div>
+          {/* Controls below — centered, moderate width */}
+          <div className="mx-auto max-w-[360px]">
             <div className="flex items-center justify-between gap-3">
               <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
               <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
