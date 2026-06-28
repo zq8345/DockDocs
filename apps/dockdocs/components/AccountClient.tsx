@@ -143,6 +143,43 @@ function accountCopy(locale: Exclude<AccountLocale, "zh-Hant">) {
   };
 }
 
+// Per-plan feature lists shown in the entitlements section.
+// Only list shipped, real features — no vaporware.
+const PLAN_FEATURES: Record<"pro" | "plus", Record<Exclude<AccountLocale, "zh-Hant">, string[]>> = {
+  pro: {
+    en:  ["Contract risk review", "Multi-doc compare", "Batch workflows", "AI chat (unlimited)", "Summaries (unlimited)", "Data extraction", "Knowledge cards", "All PDF tools"],
+    zh:  ["合同风险审查", "多文档对比", "批量工作流", "AI 问答（无限）", "摘要提取（无限）", "数据抽取", "知识卡片", "全部 PDF 工具"],
+    es:  ["Revisión riesgo contractual", "Comparación multi-doc", "Flujos por lotes", "Chat IA (ilimitado)", "Resúmenes (ilimitados)", "Extracción de datos", "Tarjetas de conocimiento", "Todas las herr. PDF"],
+    pt:  ["Revisão risco contratual", "Comparação multi-doc", "Fluxos em lote", "Chat IA (ilimitado)", "Resumos (ilimitados)", "Extração de dados", "Cartões de conhecimento", "Todas as ferr. PDF"],
+    fr:  ["Risques contractuels", "Comparaison multi-doc", "Flux par lots", "Chat IA (illimité)", "Résumés (illimités)", "Extraction données", "Fiches de connaissance", "Tous les outils PDF"],
+    ja:  ["契約リスクレビュー", "複数書類比較", "バッチワークフロー", "AI チャット（無制限）", "要約（無制限）", "データ抽出", "ナレッジカード", "全 PDF ツール"],
+    de:  ["Vertragsrisikoprüfung", "Mehr-Dok.-Vergleich", "Stapelworkflows", "KI-Chat (unbegrenzt)", "Zusammenfassungen (unbegrenzt)", "Datenextraktion", "Wissenskarten", "Alle PDF-Tools"],
+    ko:  ["계약 위험 검토", "다중 문서 비교", "배치 워크플로", "AI 채팅 (무제한)", "요약 (무제한)", "데이터 추출", "지식 카드", "모든 PDF 도구"],
+  },
+  plus: {
+    en:  ["AI chat (working volume)", "Summaries", "Multi-doc compare", "Batch workflows", "All PDF tools"],
+    zh:  ["AI 问答（实用量）", "摘要提取", "多文档对比", "批量工作流", "全部 PDF 工具"],
+    es:  ["Chat IA (volumen práctico)", "Resúmenes", "Comparación multi-doc", "Flujos por lotes", "Todas las herr. PDF"],
+    pt:  ["Chat IA (volume prático)", "Resumos", "Comparação multi-doc", "Fluxos em lote", "Todas as ferr. PDF"],
+    fr:  ["Chat IA (volume utile)", "Résumés", "Comparaison multi-doc", "Flux par lots", "Tous les outils PDF"],
+    ja:  ["AI チャット（実用量）", "要約", "複数書類比較", "バッチワークフロー", "全 PDF ツール"],
+    de:  ["KI-Chat (Praxisvolumen)", "Zusammenfassungen", "Mehr-Dok.-Vergleich", "Stapelworkflows", "Alle PDF-Tools"],
+    ko:  ["AI 채팅 (실용적인 양)", "요약", "다중 문서 비교", "배치 워크플로", "모든 PDF 도구"],
+  },
+};
+
+// Privacy & traceability rights shown for paid plans — the brand moat, always visible.
+const PLAN_RIGHTS: Record<Exclude<AccountLocale, "zh-Hant">, { privacy: string; trace: string }> = {
+  en:  { privacy: "Files processed locally · never uploaded to cloud",         trace: "Source-traceable · AI answers linked to source pages" },
+  zh:  { privacy: "文件本地处理 · 不上传云端",                                  trace: "可溯源引证 · AI 回答标注来源页码" },
+  es:  { privacy: "Archivos procesados localmente · nunca en la nube",          trace: "Rastreable · respuestas IA vinculadas a páginas fuente" },
+  pt:  { privacy: "Arquivos processados localmente · nunca na nuvem",            trace: "Rastreável · respostas IA vinculadas a páginas de origem" },
+  fr:  { privacy: "Fichiers traités localement · jamais dans le cloud",          trace: "Traçable · réponses IA liées aux pages sources" },
+  ja:  { privacy: "ファイルはローカル処理 · クラウドに送信しない",               trace: "可溯源引用 · AI回答に出典ページを明示" },
+  de:  { privacy: "Dateien lokal verarbeitet · nie in der Cloud",                trace: "Nachverfolgbar · KI-Antworten mit Quellenangabe" },
+  ko:  { privacy: "파일은 로컬에서 처리 · 클라우드에 업로드되지 않음",           trace: "추적 가능 · AI 답변에 출처 페이지 표시" },
+};
+
 export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   const t = getCopy(locale);
   const router = useRouter();
@@ -387,6 +424,11 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   const prompts = subscription ? upgradePrompts(display, interval, membershipLocale) : [];
   const isPaid = subscription?.isPaidPlaceholder ?? false;
   const included = display === "Pro" ? t.includedPro : display === "Plus" ? t.includedPlus : t.includedFree;
+  const planLocale = locale === "zh-Hant" ? "zh" : (locale as Exclude<AccountLocale, "zh-Hant">);
+  const planFeatures = display === "Pro"
+    ? (PLAN_FEATURES.pro[planLocale] ?? PLAN_FEATURES.pro.en)
+    : (PLAN_FEATURES.plus[planLocale] ?? PLAN_FEATURES.plus.en);
+  const rights = PLAN_RIGHTS[planLocale] ?? PLAN_RIGHTS.en;
 
   return (
     <div className="mt-8 space-y-6">
@@ -458,12 +500,53 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
         </div>
       )}
 
-      {/* Usage & entitlements (lightweight — live metering ships later) */}
+      {/* Entitlements — feature grid + rights for paid; simple line for Free */}
       {subscription && (
         <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{t.usageTitle}</p>
-          <p className="mt-3 text-[13px] leading-5 text-[color:var(--foreground)]">{included}</p>
-          <p className="mt-2 text-[12px] leading-5 text-[color:var(--muted)]">{t.fairUse}</p>
+
+          {(display === "Pro" || display === "Plus") ? (
+            <>
+              {/* Feature checklist — 2-col grid */}
+              <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">
+                {planFeatures.map((feat) => (
+                  <li key={feat} className="flex items-center gap-1.5 text-[12px] text-[color:var(--foreground)]">
+                    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[color:var(--accent)]">
+                      <path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {feat}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Privacy + traceability rights — the brand moat */}
+              <div className="mt-4 space-y-1.5 border-t border-[color:var(--line)] pt-3">
+                <p className="flex items-start gap-1.5 text-[12px] text-[color:var(--muted)]">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="mt-px shrink-0 text-[color:var(--accent)]" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="7" width="10" height="8" rx="1.5" />
+                    <path d="M5 7V5a3 3 0 0 1 6 0v2" />
+                  </svg>
+                  {rights.privacy}
+                </p>
+                <p className="flex items-start gap-1.5 text-[12px] text-[color:var(--muted)]">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="mt-px shrink-0 text-[color:var(--accent)]" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 2h6l4 4v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z" />
+                    <path d="M10 2v4h4M6 9h4M6 12h2" />
+                  </svg>
+                  {rights.trace}
+                </p>
+              </div>
+
+              {/* Usage placeholder — metering ships later */}
+              <p className="mt-3 text-[11px] text-[color:var(--faint)]">{t.fairUse}</p>
+            </>
+          ) : (
+            /* Free plan — keep it simple */
+            <>
+              <p className="mt-3 text-[13px] leading-5 text-[color:var(--foreground)]">{included}</p>
+              <p className="mt-2 text-[12px] leading-5 text-[color:var(--muted)]">{t.fairUse}</p>
+            </>
+          )}
         </div>
       )}
 
