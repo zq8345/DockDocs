@@ -105,6 +105,20 @@ const STR: AuthoredCopy<{
   },
 };
 
+// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
+// copy lives in standalone *_KO objects selected explicitly in the resolver below.
+const STR_KO: (typeof STR)["en"] = {
+  title: "PDF 병합",
+  subtitle: "PDF를 추가하고 원하는 순서로 드래그해 하나로 합치세요 — 합친 뒤가 아니라 합치기 전에 각 파일을 미리 확인할 수 있습니다.",
+  drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+  choose: "PDF 선택", add: "더 추가", rendering: "파일을 읽는 중…",
+  hint: "드래그해서 순서를 바꾸세요. 위에서 아래로, 왼쪽에서 오른쪽 순으로 병합됩니다.",
+  files: (n: number, p: number) => `${n}개 파일 · 총 ${p}페이지`,
+  pagesLabel: (n: number) => `${n}페이지`,
+  merge: "병합하고 다운로드", working: "병합 중…", reset: "다시 시작",
+  needTwo: "병합하려면 PDF를 2개 이상 추가하세요.", err: "문제가 발생했습니다: ",
+};
+
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why merge PDFs in your browser",
@@ -269,13 +283,37 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "브라우저에서 PDF를 병합하는 이유",
+  benefitsDescription: "아무것도 업로드하지 않고 여러 PDF를 순서대로 하나의 문서로 합칩니다.",
+  benefits: [
+    { title: "여러 개를 하나로", description: "계약서, 스캔본, 보고서를 하나의 PDF로 합쳐 보내기, 인쇄, 보관이 쉬워집니다." },
+    { title: "드래그로 순서 지정", description: "병합하기 전에 파일을 재정렬해 페이지가 정확히 원하는 순서대로 들어가게 하세요." },
+    { title: "제한 없음, 워터마크 없음", description: "필요한 만큼 PDF를 합치세요 — 파일 수 제한도, 가입도 없고 결과물에 아무것도 찍히지 않습니다." },
+  ],
+  workflowTitle: "병합이 문서 작업에 어떻게 들어맞는가",
+  workflowDescription: "여러 개의 PDF를 하나의 묶음으로 만들어야 할 때 — 서명된 계약서, 영수증 묶음, 부록이 딸린 보고서.",
+  steps: [
+    "합칠 PDF를 드래그 앤 드롭하거나 파일 선택기로 추가합니다.",
+    "병합하려는 순서대로 파일을 드래그합니다.",
+    "병합한 뒤 하나로 합쳐진 PDF를 다운로드합니다.",
+  ],
+  readingTitle: "PDF를 정리하는 더 많은 방법",
+  readingDescription: "문서를 합치고 나누는 관련 도구와 가이드.",
+  readingLinks: [
+    { label: "PDF 분할", href: "/split-pdf", description: "반대 작업 — 큰 PDF를 여러 파일이나 페이지 범위로 나눕니다." },
+    { label: "품질 손실 없이 PDF 병합", href: "/guides/merge-pdfs-without-losing-quality", description: "여러 PDF가 품질 저하 없이 하나의 파일로 합쳐지는 방법." },
+    { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+  ],
+};
+
 export function MergePdfClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale === "ko" ? "en" : locale;
   // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
   const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
@@ -327,7 +365,8 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
           ja: `読み取れなかったファイルを${skipped.length}件スキップしました：${list}${enc ? "(一部はパスワード保護されています。先に解除してください)" : ""}。`,
           de: `${skipped.length} unlesbare Datei(en) übersprungen: ${list}${enc ? " (einige sind passwortgeschützt — entsperren Sie sie zuerst)" : ""}.`,
         };
-        const msg = locale === "zh-Hant" ? toHant(MSG.zh) : MSG[al];
+        const koMsg = `읽을 수 없는 파일 ${skipped.length}개를 건너뛰었습니다: ${list}${enc ? " (일부는 비밀번호로 보호되어 있습니다 — 먼저 잠금을 해제하세요)" : ""}.`;
+        const msg = locale === "zh-Hant" ? toHant(MSG.zh) : locale === "ko" ? koMsg : MSG[al];
         setError(msg);
       }
     } finally {
