@@ -6,7 +6,7 @@
 
 import { toHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
 /** True if the error is pdf.js / pdf-lib refusing a password-protected PDF. */
 export function isEncryptedPdfError(e: unknown): boolean {
@@ -30,6 +30,7 @@ export function encryptedPdfNotice(locale: Locale): string {
   if (locale === "fr") return "Ce PDF est protégé par un mot de passe et ne peut pas être ouvert. Supprimez d'abord la protection avec l'outil « Déverrouiller PDF », puis réessayez.";
   if (locale === "ja") return "この PDF はパスワードで保護されているため、開くことができません。まず「PDF のパスワードを解除」ツールで保護を解除してから、もう一度お試しください。";
   if (locale === "de") return "Dieses PDF ist passwortgeschützt und kann nicht geöffnet werden. Entfernen Sie den Schutz zuerst mit dem Tool „PDF entsperren“ und versuchen Sie es dann erneut.";
+  if (locale === "ko") return "이 PDF는 비밀번호로 보호되어 있어 열 수 없습니다. 먼저 「PDF 잠금 해제」 도구로 보호를 해제한 다음 다시 시도하세요.";
   return "This PDF is password-protected, so it can't be opened. Remove the protection first with the \"Unlock PDF\" tool, then come back and try again.";
 }
 

@@ -66,8 +66,8 @@ export const LOCAL_ONLY_SLUGS = new Set<string>([
 
 import { deepHant } from "./zh-hant";
 
-type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de";
-const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja", "de"];
+type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
+const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja", "de", "ko"];
 
 const COPY: Record<Loc, { title: string; body: string; how: string }> = {
   en: {
@@ -104,6 +104,11 @@ const COPY: Record<Loc, { title: string; body: string; how: string }> = {
     title: "Verlassen Sie sich nicht auf unser Wort – überzeugen Sie sich selbst",
     body: "Dieses Tool läuft vollständig in Ihrem Browser. Ihre Datei verlässt niemals Ihr Gerät – sie wird auf keinen Server hochgeladen.",
     how: "Überzeugen Sie sich selbst: Öffnen Sie die Entwicklertools Ihres Browsers (F12 oder Rechtsklick → „Untersuchen\") → den Tab „Network / Netzwerk\" → und führen Sie dann dieses Tool aus. Sie werden nicht sehen, dass Ihre Datei irgendwohin hochgeladen wird, denn die Verarbeitung findet lokal auf Ihrem Gerät statt.",
+  },
+  ko: {
+    title: "우리 말만 믿지 마세요 — 직접 확인하세요",
+    body: "이 도구는 전적으로 브라우저에서 실행됩니다. 파일은 기기를 벗어나지 않으며 어떤 서버에도 업로드되지 않습니다.",
+    how: "직접 확인해 보세요: 브라우저 개발자 도구(F12 또는 마우스 오른쪽 클릭 → 검사)를 열고 → 「Network / 네트워크」 탭으로 이동한 다음 → 이 도구를 실행해 보세요. 처리가 기기에서 로컬로 이루어지기 때문에 파일이 어디로도 업로드되지 않는 것을 확인할 수 있습니다.",
   },
 };
 

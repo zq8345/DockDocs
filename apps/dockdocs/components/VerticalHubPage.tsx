@@ -7,7 +7,7 @@ import { deepHant } from "@/lib/zh-hant";
 // gating — it does NOT add any gate or advertise unbuilt-vertical quotas. The
 // card grid mirrors GeoHubPage. Honesty gate: only mount real, shipping tools.
 
-export type VerticalLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
+export type VerticalLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de" | "ko";
 
 export type VerticalCard = { slug: string; label: string; description: string };
 

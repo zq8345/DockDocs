@@ -1,7 +1,7 @@
 import { defaultLocale } from "@/lib/i18n";
 import { VerticalHubPage, type VerticalConfig } from "@/components/VerticalHubPage";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de" | "ko";
 
 // "Finance & tax" professional vertical — a thin config over VerticalHubPage.
 // Honesty gate: every card is a real, shipping tool (extract-to-excel,
@@ -132,6 +132,23 @@ const financeConfig: VerticalConfig = {
         { slug: "compare", label: "Dokumente vergleichen", description: "Stellen Sie Angebote, Ausschreibungen oder Rechnungen anhand der entscheidenden Konditionen nebeneinander — mit einer Empfehlung in klarer Sprache." },
       ],
       disclaimer: "Diese Tools helfen Ihnen, Finanzdokumente schneller zu lesen und zu ordnen. Sie sind keine Finanz-, Steuer- oder Buchhaltungsberatung — ziehen Sie bei wichtigen Fragen eine qualifizierte Fachperson hinzu.",
+    },
+    ko: {
+      eyebrow: "재무 / 회계",
+      heroTitle: "청구서, 명세서, 재무 보고서를 위한 AI 문서 도구",
+      heroDescription:
+        "청구서·영수증·명세서에서 숫자를 뽑아 스프레드시트로 정리하고, 긴 재무 보고서를 요약하며, 여러 견적을 나란히 비교하세요 — 위치를 찾을 수 있는 경우 각 수치는 문서 속 출처 텍스트와 함께 표시되므로 장부에 반영하기 전에 직접 확인할 수 있습니다.",
+      primary: "스프레드시트로 추출",
+      secondary: "보고서 요약",
+      cardsTitle: "재무팀을 위한 도구",
+      cards: [
+        { slug: "extract-to-excel", label: "Excel로 추출", description: "청구서·영수증·명세서를 스프레드시트로 변환합니다 — AI가 핵심 항목을 뽑아내고, 위치를 찾을 수 있는 경우 각 값의 출처 텍스트를 보여 줍니다." },
+        { slug: "batch-extract-sheet", label: "시트로 일괄 추출", description: "청구서나 영수증을 한꺼번에 올리면 자동으로 추출해 하나의 스프레드시트로 합쳐 줍니다." },
+        { slug: "pdf-to-excel", label: "PDF를 Excel로", description: "PDF 속 재무 표와 명세서를 편집 가능한 Excel 파일로 변환합니다." },
+        { slug: "ai-summary", label: "AI 요약", description: "길고 복잡한 재무 보고서, 공시 자료, 실적 문서를 핵심 사항과 수치로 압축합니다." },
+        { slug: "compare", label: "문서 비교", description: "견적·입찰·청구서를 중요한 조건 기준으로 나란히 비교하고 쉬운 말로 추천을 제시합니다." },
+      ],
+      disclaimer: "이 도구들은 재무 문서를 더 빠르게 읽고 정리하도록 돕습니다. 재무·세무·회계 자문이 아니므로 중요한 사안은 자격을 갖춘 전문가와 상담하세요.",
     },
   },
 };

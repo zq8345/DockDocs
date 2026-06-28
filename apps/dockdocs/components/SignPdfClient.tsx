@@ -293,8 +293,6 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   // ko copy lives in STR_KO/SECTIONS_KO (selected below); al collapses ko→en only
   // for the AuthoredLocale-typed tables ko is intentionally excluded from.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  // childLocale collapses ONLY ko (preserves zh-Hant) for child props (e.g. UploadDropzone) lacking "ko".
-  const childLocale = locale === "ko" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   // Child components/helpers only support en|zh|zh-Hant; map other UI locales to their content fallback.
@@ -427,7 +425,7 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} />
+        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} />
       ) : (
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <div className="order-2 lg:order-1">
@@ -499,7 +497,7 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
       {!embedded && <ToolSections locale={locale} content={sec} />}
-      {!embedded && <ToolFaq tool="sign-pdf" locale={baseLocale} />}
+      {!embedded && <ToolFaq tool="sign-pdf" locale={locale} />}
     </div>
   );
 }

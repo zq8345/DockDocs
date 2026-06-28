@@ -1,7 +1,7 @@
 import { defaultLocale } from "@/lib/i18n";
 import { VerticalHubPage, type VerticalConfig } from "@/components/VerticalHubPage";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de" | "ko";
 
 // "Research & academia" professional vertical — a thin config over VerticalHubPage.
 // Honesty gate: every card is a real, shipping tool (ai-summary, chat-with-pdf,
@@ -133,6 +133,23 @@ const researchConfig: VerticalConfig = {
         { slug: "extract-to-excel", label: "In Excel extrahieren", description: "Übertragen Sie Datentabellen und Abbildungen aus einem PDF in eine Tabelle, die Sie analysieren können." },
       ],
       disclaimer: "Diese Tools helfen Ihnen, Forschungsmaterial schneller zu lesen, zu durchsuchen und zu ordnen. KI-Zusammenfassungen und -Antworten können Nuancen übersehen — prüfen Sie immer anhand der Originalquelle, bevor Sie zitieren oder sich darauf verlassen.",
+    },
+    ko: {
+      eyebrow: "연구 / 학술",
+      heroTitle: "논문, 보고서, 연구를 위한 AI 문서 도구",
+      heroDescription:
+        "긴 논문을 핵심 발견으로 요약하고, PDF에 방법과 결과를 질문하고, 여러 연구를 나란히 비교하고, 스캔한 논문에 OCR을 적용하고, 데이터 표를 스프레드시트로 추출하세요 — 답변하거나 발견을 표시할 때 그 근거가 된 구절을 함께 보여 주므로, 인용하기 전에 직접 확인할 수 있습니다.",
+      primary: "논문 요약",
+      secondary: "논문에 질문",
+      cardsTitle: "연구자를 위한 도구",
+      cards: [
+        { slug: "ai-summary", label: "AI 요약", description: "긴 논문이나 보고서를 핵심 발견·방법·요점으로 압축합니다." },
+        { slug: "chat-with-pdf", label: "PDF와 대화", description: "논문에 방법·결과·정의를 질문하세요 — 답변은 그 출처가 된 구절을 보여 주고, 출처를 찾을 수 없는 부분은 표시합니다." },
+        { slug: "compare", label: "문서 비교", description: "여러 논문이나 연구를 중요한 기준에 따라 나란히 비교합니다." },
+        { slug: "ocr-pdf", label: "PDF OCR", description: "스캔한 논문과 오래된 PDF에서 선택 가능한 텍스트를 추출해 검색하고 인용할 수 있게 합니다." },
+        { slug: "extract-to-excel", label: "Excel로 추출", description: "PDF 속 데이터 표와 도표를 분석할 수 있는 스프레드시트로 추출합니다." },
+      ],
+      disclaimer: "이 도구들은 연구 자료를 더 빠르게 읽고, 검색하고, 정리하도록 돕습니다. AI 요약과 답변은 미묘한 뉘앙스를 놓칠 수 있으므로, 인용하거나 근거로 삼기 전에 반드시 원본 출처와 대조해 확인하세요.",
     },
   },
 };

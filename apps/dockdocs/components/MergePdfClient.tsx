@@ -416,7 +416,7 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={childLocale} onFiles={addFiles} busy={busy} busyLabel={t.rendering} />
+        <BatchUploadBox locale={locale} onFiles={addFiles} busy={busy} busyLabel={t.rendering} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

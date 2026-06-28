@@ -34,10 +34,18 @@ const EYEBROW = {
   cont: { en: "Continue", zh: "继续阅读", es: "Continuar", pt: "Continuar", fr: "Continuer", ja: "続きを読む", de: "Weiterlesen" },
 } as const satisfies Record<string, AuthoredCopy<string>>;
 
-function pick(map: AuthoredCopy<string>, locale: Loc): string {
+// ko eyebrows live in a parallel map (AuthoredCopy<string> excludes ko by design,
+// like zh-Hant). Keyed by the same EYEBROW keys.
+const EYEBROW_KO: Record<keyof typeof EYEBROW, string> = {
+  benefits: "장점",
+  workflow: "워크플로",
+  reading: "추천 읽을거리",
+  cont: "계속 읽기",
+};
+
+function pick(map: AuthoredCopy<string>, locale: Loc, koKey?: keyof typeof EYEBROW): string {
   if (locale === "zh-Hant") return toHant(map.zh);
-  // ko has no authored eyebrow yet → English (foundation phase).
-  if (locale === "ko") return map.en;
+  if (locale === "ko") return koKey ? EYEBROW_KO[koKey] : map.en;
   return map[locale];
 }
 
@@ -59,7 +67,7 @@ export function ToolSections({ locale = "en", content }: { locale?: Loc; content
     <div className="mx-auto mt-16 max-w-5xl space-y-16 border-t border-[color:var(--line)] pt-12">
       {/* Benefits */}
       <section>
-        <Intro eyebrow={pick(EYEBROW.benefits, locale)} title={c.benefitsTitle} description={c.benefitsDescription} />
+        <Intro eyebrow={pick(EYEBROW.benefits, locale, "benefits")} title={c.benefitsTitle} description={c.benefitsDescription} />
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
           {c.benefits.map((b) => (
             <div key={b.title} className="h-full rounded-[var(--radius)] border border-[color:var(--line)] bg-black/20 p-5 transition hover:border-[color:var(--foreground)]">
@@ -72,7 +80,7 @@ export function ToolSections({ locale = "en", content }: { locale?: Loc; content
 
       {/* Workflow */}
       <section>
-        <Intro eyebrow={pick(EYEBROW.workflow, locale)} title={c.workflowTitle} description={c.workflowDescription} />
+        <Intro eyebrow={pick(EYEBROW.workflow, locale, "workflow")} title={c.workflowTitle} description={c.workflowDescription} />
         <ol className="mt-10 grid gap-4 sm:grid-cols-3">
           {c.steps.map((step, index) => (
             <li key={step}>
@@ -89,7 +97,7 @@ export function ToolSections({ locale = "en", content }: { locale?: Loc; content
 
       {/* Recommended reading (crawlable internal links) */}
       <section>
-        <Intro eyebrow={pick(EYEBROW.reading, locale)} title={c.readingTitle} description={c.readingDescription} />
+        <Intro eyebrow={pick(EYEBROW.reading, locale, "reading")} title={c.readingTitle} description={c.readingDescription} />
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {c.readingLinks.map((link) => (
             <a
@@ -100,7 +108,7 @@ export function ToolSections({ locale = "en", content }: { locale?: Loc; content
               <h3 className="font-normal text-[color:var(--foreground)]">{link.label}</h3>
               <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{link.description}</p>
               <span className="mt-5 inline-block text-sm font-semibold text-[color:var(--foreground)] transition group-hover:translate-x-0.5">
-                {pick(EYEBROW.cont, locale)} -&gt;
+                {pick(EYEBROW.cont, locale, "cont")} -&gt;
               </span>
             </a>
           ))}

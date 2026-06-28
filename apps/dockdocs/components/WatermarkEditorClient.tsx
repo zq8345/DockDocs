@@ -504,7 +504,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} />
+        <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} />
       ) : (
         <div className="mt-6 space-y-6">
           {/* Preview on top, centered */}

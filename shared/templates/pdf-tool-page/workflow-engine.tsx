@@ -43,12 +43,12 @@ function normalizeLocale(value: unknown): L {
 }
 
 function makeTr(loc: L) {
-  // ko → en until Korean copy lands (content phase). ko is a valid locale here so a
-  // /ko/<tool> page renders, but the per-callsite micro-copy is only authored through
-  // the 7th (de) arg today — ko falls back to the English arg without widening the
-  // ~124 tr() callsites to an 8th Korean argument.
-  return (en: string, zh: string, es: string, pt: string, fr: string, ja: string, de: string): string =>
-    loc === "zh-Hant" ? toHant(zh) : loc === "ko" ? en : ({ en, zh, es, pt, fr, ja, de })[loc];
+  // ko: a callsite may supply an 8th Korean argument; where it doesn't, ko falls back
+  // to the English arg (most of the ~124 tr() callsites are not widened). ko is a valid
+  // locale here so a /ko/<tool> page renders. The high-visibility idle-state strings
+  // (e.g. the dropzone hint) DO pass a ko arg so they don't leak English.
+  return (en: string, zh: string, es: string, pt: string, fr: string, ja: string, de: string, ko?: string): string =>
+    loc === "zh-Hant" ? toHant(zh) : loc === "ko" ? (ko ?? en) : ({ en, zh, es, pt, fr, ja, de })[loc];
 }
 
 export function PdfWorkflowEngine({
@@ -426,18 +426,18 @@ export function PdfWorkflowEngine({
                   {config.upload.buttonLabel}
                 </button>
                 <p className="mt-3 text-sm text-[color:var(--muted)]">
-                  {tr("or drop your file here", "或将文件拖放到此处", "o suelta tu archivo aquí", "ou solte o seu arquivo aqui", "ou déposez votre fichier ici", "またはファイルをここにドロップ", "oder Datei hierher ziehen")}
+                  {tr("or drop your file here", "或将文件拖放到此处", "o suelta tu archivo aquí", "ou solte o seu arquivo aqui", "ou déposez votre fichier ici", "またはファイルをここにドロップ", "oder Datei hierher ziehen", "또는 여기에 파일을 끌어다 놓으세요")}
                 </p>
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-                  <span>{tr("Supports", "支持格式", "Admite", "Aceita", "Prend en charge", "対応形式", "Unterstützt")} {spec.acceptedLabel}</span>
+                  <span>{tr("Supports", "支持格式", "Admite", "Aceita", "Prend en charge", "対応形式", "Unterstützt", "지원 형식")} {spec.acceptedLabel}</span>
                   <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
                   {runsLocally ? (
                     <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
                       <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
-                      {tr("Processed locally — never uploaded", "本地处理，文件不上传", "Procesado localmente — nunca se sube", "Processado localmente — nunca enviado", "Traité localement — jamais téléversé", "ローカルで処理 — アップロードされません", "Lokal verarbeitet – nicht hochgeladen")}
+                      {tr("Processed locally — never uploaded", "本地处理，文件不上传", "Procesado localmente — nunca se sube", "Processado localmente — nunca enviado", "Traité localement — jamais téléversé", "ローカルで処理 — アップロードされません", "Lokal verarbeitet – nicht hochgeladen", "기기에서 처리 — 업로드되지 않습니다")}
                     </span>
                   ) : (
-                    <span>{tr("Up to 100MB", "最大 100MB", "Hasta 100 MB", "Até 100 MB", "Jusqu'à 100 Mo", "最大 100MB", "Bis zu 100 MB")}</span>
+                    <span>{tr("Up to 100MB", "最大 100MB", "Hasta 100 MB", "Até 100 MB", "Jusqu'à 100 Mo", "最大 100MB", "Bis zu 100 MB", "최대 100MB")}</span>
                   )}
                 </div>
               </>
@@ -564,20 +564,20 @@ export function PdfWorkflowEngine({
 
         {/* Hint line */}
         <p className="mt-4 text-sm text-[color:var(--muted)]">
-          {tr("or drop your file here", "或将文件拖放到此处", "o suelta tu archivo aquí", "ou solte o seu arquivo aqui", "ou déposez votre fichier ici", "またはファイルをここにドロップ", "oder Datei hierher ziehen")}
+          {tr("or drop your file here", "或将文件拖放到此处", "o suelta tu archivo aquí", "ou solte o seu arquivo aqui", "ou déposez votre fichier ici", "またはファイルをここにドロップ", "oder Datei hierher ziehen", "또는 여기에 파일을 끌어다 놓으세요")}
         </p>
 
         {/* Accepted types + privacy */}
         <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-          <span>{tr("Supports", "支持格式", "Admite", "Aceita", "Prend en charge", "対応形式", "Unterstützt")} {spec.acceptedLabel}</span>
+          <span>{tr("Supports", "支持格式", "Admite", "Aceita", "Prend en charge", "対応形式", "Unterstützt", "지원 형식")} {spec.acceptedLabel}</span>
           <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
           {runsLocallyMulti ? (
             <span className="inline-flex items-center gap-1 text-[color:var(--accent)]">
               <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
-              {tr("Processed locally — never uploaded", "本地处理，文件不上传", "Procesado localmente — nunca se sube", "Processado localmente — nunca enviado", "Traité localement — jamais téléversé", "ローカルで処理 — アップロードされません", "Lokal verarbeitet – nicht hochgeladen")}
+              {tr("Processed locally — never uploaded", "本地处理，文件不上传", "Procesado localmente — nunca se sube", "Processado localmente — nunca enviado", "Traité localement — jamais téléversé", "ローカルで処理 — アップロードされません", "Lokal verarbeitet – nicht hochgeladen", "기기에서 처리 — 업로드되지 않습니다")}
             </span>
           ) : (
-            <span>{tr("Up to 100MB", "最大 100MB", "Hasta 100 MB", "Até 100 MB", "Jusqu'à 100 Mo", "最大 100MB", "Bis zu 100 MB")}</span>
+            <span>{tr("Up to 100MB", "最大 100MB", "Hasta 100 MB", "Até 100 MB", "Jusqu'à 100 Mo", "最大 100MB", "Bis zu 100 MB", "최대 100MB")}</span>
           )}
         </div>
 

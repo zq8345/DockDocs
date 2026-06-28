@@ -309,6 +309,26 @@ const templateCopy = {
     indexingDescription:
       "Gehen Sie von der Tool-Seite weiter zu Anleitungen, Ressourcen und Hilfeinhalten von DockDocs.",
   },
+  ko: {
+    toolEyebrow: "AI 문서 플랫폼",
+    previewWorkflow: "워크플로 미리보기",
+    workflowEyebrow: "도구 워크플로",
+    workflowTitle: "업로드부터 결과까지 실제 흐름.",
+    workflowDescription:
+      "이 페이지는 제품의 실제 워크플로 상태를 보여줍니다.",
+    benefits: "장점",
+    features: "기능",
+    workflow: "워크플로",
+    faq: "자주 묻는 질문",
+    relatedTools: "관련 도구",
+    relatedTitle: "다른 PDF 워크플로를 계속 이용하세요.",
+    relatedDescription:
+      "플랫폼을 벗어나지 않고 DockDocs PDF 도구 사이를 이동하세요.",
+    indexingEyebrow: "추천 읽을거리",
+    indexingTitle: "이 워크플로와 관련된 가이드와 지원 자료.",
+    indexingDescription:
+      "도구 페이지에서 DockDocs 가이드, 자료, 도움말, AI가 읽을 수 있는 워크플로 허브로 이어집니다.",
+  },
 } as const;
 
 type TplLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
@@ -781,11 +801,13 @@ function indexingTr(
   fr: string,
   ja: string,
   de: string,
+  ko?: string,
 ): string {
   if (locale === "zh-Hant") return ccTpl(zh);
-  // ko → en until Korean copy lands (content phase); the indexingTr callsites are not
-  // widened to an 8th Korean argument in this phase.
-  if (locale === "ko") return en;
+  // ko: use the authored Korean string when the callsite supplies one; the
+  // recommended-reading link cards point at en-only /guides|/blog targets, so any
+  // callsite still without a ko arg falls back to en (matches the en-only target).
+  if (locale === "ko") return ko ?? en;
   return ({ en, zh, es, pt, fr, ja, de })[locale];
 }
 
@@ -816,7 +838,7 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
                 {link.description}
               </p>
               <span className="mt-5 inline-block text-sm font-semibold text-[color:var(--foreground)] transition group-hover:translate-x-0.5">
-                {indexingTr(locale, "Continue", "继续阅读", "Continuar", "Continuar", "Continuer", "続きを読む", "Weiterlesen")} -&gt;
+                {indexingTr(locale, "Continue", "继续阅读", "Continuar", "Continuar", "Continuer", "続きを読む", "Weiterlesen", "계속 읽기")} -&gt;
               </span>
             </a>
           ))}
@@ -828,11 +850,11 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
 
 function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
   const locale = (config.locale ?? "en") as IndexingLocale;
-  const tr = (en: string, zh: string, es: string, pt: string, fr: string, ja: string, de: string) =>
-    indexingTr(locale, en, zh, es, pt, fr, ja, de);
+  const tr = (en: string, zh: string, es: string, pt: string, fr: string, ja: string, de: string, ko?: string) =>
+    indexingTr(locale, en, zh, es, pt, fr, ja, de, ko);
   const common = [
     {
-      label: tr("PDF workflow resources", "PDF 工作流资源", "Recursos de flujos de trabajo PDF", "Recursos de fluxos de trabalho PDF", "Ressources de flux de travail PDF", "PDF ワークフローのリソース", "PDF-Workflow-Ressourcen"),
+      label: tr("PDF workflow resources", "PDF 工作流资源", "Recursos de flujos de trabajo PDF", "Recursos de fluxos de trabalho PDF", "Ressources de flux de travail PDF", "PDF ワークフローのリソース", "PDF-Workflow-Ressourcen", "PDF 워크플로 자료"),
       href: "/resources",
       description: tr(
         "Explore a structured hub for PDF tools, OCR, conversion, and AI document paths.",
@@ -842,10 +864,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
         "Explorez un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA.",
         "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブを見る。",
         "Entdecken Sie einen strukturierten Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentwege.",
+        "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 허브를 살펴보세요.",
       ),
     },
     {
-      label: tr("PDF guides", "PDF 指南", "Guías de PDF", "Guias de PDF", "Guides PDF", "PDF ガイド", "PDF-Anleitungen"),
+      label: tr("PDF guides", "PDF 指南", "Guías de PDF", "Guias de PDF", "Guides PDF", "PDF ガイド", "PDF-Anleitungen", "PDF 가이드"),
       href: "/guides",
       description: tr(
         "Read step-by-step guidance for compression, merging, splitting, conversion, and everyday document tasks.",
@@ -855,10 +878,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
         "Lisez des guides étape par étape pour la compression, la fusion, la division, la conversion et les tâches documentaires courantes.",
         "圧縮、結合、分割、変換、日常的なドキュメント作業の手順ガイドを読む。",
         "Lesen Sie Schritt-für-Schritt-Anleitungen zu Komprimierung, Zusammenfügen, Teilen, Konvertierung und alltäglichen Dokumentaufgaben.",
+        "압축, 병합, 분할, 변환, 일상적인 문서 작업의 단계별 가이드를 읽어보세요.",
       ),
     },
     {
-      label: tr("Help and FAQ", "帮助与 FAQ", "Ayuda y FAQ", "Ajuda e FAQ", "Aide et FAQ", "ヘルプと FAQ", "Hilfe und FAQ"),
+      label: tr("Help and FAQ", "帮助与 FAQ", "Ayuda y FAQ", "Ajuda e FAQ", "Aide et FAQ", "ヘルプと FAQ", "Hilfe und FAQ", "도움말 및 FAQ"),
       href: "/help",
       description: tr(
         "Understand uploads, privacy-first handling, local processing, AI limits, and supported formats.",
@@ -868,6 +892,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
         "Comprenez les téléversements, le traitement axé sur la confidentialité, le traitement local, les limites de l'IA et les formats pris en charge.",
         "アップロード、プライバシー優先の処理、ローカル処理、AI の制限、対応フォーマットについて理解する。",
         "Verstehen Sie Uploads, datenschutzorientierte Verarbeitung, lokale Verarbeitung, KI-Grenzen und unterstützte Formate.",
+        "업로드, 프라이버시 우선 처리, 로컬 처리, AI 한계, 지원 형식을 알아보세요.",
       ),
     },
   ];
@@ -878,7 +903,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
     // tool pages no longer re-feed them to Google (and to schema significantLink).
     "compress-pdf": [
       {
-        label: tr("Reduce PDF size without losing quality", "无损压缩 PDF 体积", "Reduce el tamaño del PDF sin perder calidad", "Reduza o tamanho do PDF sem perder qualidade", "Réduisez la taille du PDF sans perte de qualité", "品質を落とさずに PDF サイズを縮小", "PDF-Größe ohne Qualitätsverlust reduzieren"),
+        label: tr("Reduce PDF size without losing quality", "无损压缩 PDF 体积", "Reduce el tamaño del PDF sin perder calidad", "Reduza o tamanho do PDF sem perder qualidade", "Réduisez la taille du PDF sans perte de qualité", "品質を落とさずに PDF サイズを縮小", "PDF-Größe ohne Qualitätsverlust reduzieren", "품질 저하 없이 PDF 용량 줄이기"),
         href: "/guides/reduce-pdf-size-without-losing-quality",
         description: tr(
           "Shrink a PDF while keeping text and images readable.",
@@ -888,10 +913,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Réduisez un PDF tout en gardant le texte et les images lisibles.",
           "文字と画像を読みやすく保ったまま PDF を縮小します。",
           "Verkleinern Sie ein PDF, während Text und Bilder lesbar bleiben.",
+          "텍스트와 이미지를 읽기 좋게 유지하면서 PDF 용량을 줄입니다.",
         ),
       },
       {
-        label: tr("Compress PDF for Gmail", "Gmail 压缩 PDF", "Comprimir PDF para Gmail", "Comprimir PDF para o Gmail", "Compresser un PDF pour Gmail", "Gmail 向けに PDF を圧縮", "PDF für Gmail komprimieren"),
+        label: tr("Compress PDF for Gmail", "Gmail 压缩 PDF", "Comprimir PDF para Gmail", "Comprimir PDF para o Gmail", "Compresser un PDF pour Gmail", "Gmail 向けに PDF を圧縮", "PDF für Gmail komprimieren", "Gmail용 PDF 압축"),
         href: "/guides/compress-pdf-for-gmail",
         description: tr(
           "Use a Gmail-focused compression workflow before sending attachments.",
@@ -901,10 +927,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Utilisez un flux de compression adapté à Gmail avant d'envoyer des pièces jointes.",
           "添付ファイルを送る前に Gmail 向けの圧縮ワークフローを使います。",
           "Nutzen Sie einen auf Gmail ausgerichteten Komprimierungs-Workflow, bevor Sie Anhänge senden.",
+          "첨부 파일을 보내기 전에 Gmail에 맞춘 압축 워크플로를 사용하세요.",
         ),
       },
       {
-        label: tr("Compress multiple PDFs at once", "一次批量压缩多个 PDF", "Comprimir varios PDF a la vez", "Comprimir vários PDF de uma vez", "Compresser plusieurs PDF en une fois", "複数の PDF を一度に圧縮", "Mehrere PDFs auf einmal komprimieren"),
+        label: tr("Compress multiple PDFs at once", "一次批量压缩多个 PDF", "Comprimir varios PDF a la vez", "Comprimir vários PDF de uma vez", "Compresser plusieurs PDF en une fois", "複数の PDF を一度に圧縮", "Mehrere PDFs auf einmal komprimieren", "여러 PDF를 한 번에 압축"),
         href: "/guides/batch-compress-pdf",
         description: tr(
           "Compress a whole folder of PDFs in one go.",
@@ -914,12 +941,13 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Compressez un dossier entier de PDF en une seule fois.",
           "フォルダ内の PDF をまとめて一度に圧縮します。",
           "Komprimieren Sie einen ganzen Ordner voller PDFs in einem Durchgang.",
+          "폴더 전체의 PDF를 한 번에 압축합니다.",
         ),
       },
     ],
     "merge-pdf": [
       {
-        label: tr("How to merge PDF files online", "在线合并 PDF 文件", "Cómo combinar archivos PDF en línea", "Como combinar arquivos PDF online", "Comment fusionner des fichiers PDF en ligne", "オンラインで PDF ファイルを結合する方法", "PDF-Dateien online zusammenfügen"),
+        label: tr("How to merge PDF files online", "在线合并 PDF 文件", "Cómo combinar archivos PDF en línea", "Como combinar arquivos PDF online", "Comment fusionner des fichiers PDF en ligne", "オンラインで PDF ファイルを結合する方法", "PDF-Dateien online zusammenfügen", "온라인에서 PDF 파일 병합하는 방법"),
         href: "/blog/how-to-merge-pdf-files-online",
         description: tr(
           "Learn how multiple PDFs become one organized document packet.",
@@ -929,10 +957,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Découvrez comment plusieurs PDF deviennent un dossier de documents organisé.",
           "複数の PDF が 1 つの整理された文書パックになる方法を学びます。",
           "Erfahren Sie, wie aus mehreren PDFs ein geordnetes Dokumentpaket wird.",
+          "여러 PDF가 하나의 정리된 문서 묶음이 되는 과정을 알아보세요.",
         ),
       },
       {
-        label: tr("Merge PDFs without losing quality", "无损合并 PDF", "Combinar PDF sin perder calidad", "Combinar PDF sem perder qualidade", "Fusionner des PDF sans perte de qualité", "品質を落とさずに PDF を結合", "PDFs ohne Qualitätsverlust zusammenfügen"),
+        label: tr("Merge PDFs without losing quality", "无损合并 PDF", "Combinar PDF sin perder calidad", "Combinar PDF sem perder qualidade", "Fusionner des PDF sans perte de qualité", "品質を落とさずに PDF を結合", "PDFs ohne Qualitätsverlust zusammenfügen", "품질 저하 없이 PDF 병합"),
         href: "/guides/merge-pdfs-without-losing-quality",
         description: tr(
           "Combine PDFs into one file without quality loss.",
@@ -942,10 +971,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Combinez plusieurs PDF en un seul fichier sans perte de qualité.",
           "品質を損なわずに複数の PDF を 1 つのファイルに結合します。",
           "Fügen Sie PDFs ohne Qualitätsverlust zu einer Datei zusammen.",
+          "품질 손실 없이 여러 PDF를 하나의 파일로 합칩니다.",
         ),
       },
       {
-        label: tr("Convert images to PDF for upload", "图片转 PDF 以便上传", "Convertir imágenes a PDF para subir", "Converter imagens em PDF para upload", "Convertir des images en PDF pour le téléversement", "アップロード用に画像を PDF に変換", "Bilder für den Upload in PDF umwandeln"),
+        label: tr("Convert images to PDF for upload", "图片转 PDF 以便上传", "Convertir imágenes a PDF para subir", "Converter imagens em PDF para upload", "Convertir des images en PDF pour le téléversement", "アップロード用に画像を PDF に変換", "Bilder für den Upload in PDF umwandeln", "업로드용 이미지를 PDF로 변환"),
         href: "/guides/convert-images-to-pdf-for-upload",
         description: tr(
           "Turn multiple images into one ordered PDF packet.",
@@ -955,12 +985,13 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Transformez plusieurs images en un dossier PDF ordonné.",
           "複数の画像を順序付けた 1 つの PDF パックにまとめます。",
           "Verwandeln Sie mehrere Bilder in ein geordnetes PDF-Paket.",
+          "여러 이미지를 순서가 정해진 하나의 PDF 묶음으로 만듭니다.",
         ),
       },
     ],
     "split-pdf": [
       {
-        label: tr("How to split PDF pages", "如何拆分 PDF 页面", "Cómo dividir páginas de PDF", "Como dividir páginas de PDF", "Comment diviser des pages PDF", "PDF ページを分割する方法", "PDF-Seiten teilen"),
+        label: tr("How to split PDF pages", "如何拆分 PDF 页面", "Cómo dividir páginas de PDF", "Como dividir páginas de PDF", "Comment diviser des pages PDF", "PDF ページを分割する方法", "PDF-Seiten teilen", "PDF 페이지 분할하는 방법"),
         href: "/blog/how-to-split-pdf-pages",
         description: tr(
           "Learn how to extract page ranges and export smaller documents.",
@@ -970,10 +1001,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Apprenez à extraire des plages de pages et à exporter des documents plus petits.",
           "ページ範囲を抽出して、より小さな文書として書き出す方法を学びます。",
           "Erfahren Sie, wie Sie Seitenbereiche extrahieren und kleinere Dokumente exportieren.",
+          "페이지 범위를 추출해 더 작은 문서로 내보내는 방법을 알아보세요.",
         ),
       },
       {
-        label: tr("Split a PDF by page ranges", "按页面范围拆分 PDF", "Dividir un PDF por rangos de páginas", "Dividir um PDF por intervalos de páginas", "Diviser un PDF par plages de pages", "ページ範囲で PDF を分割", "PDF nach Seitenbereichen teilen"),
+        label: tr("Split a PDF by page ranges", "按页面范围拆分 PDF", "Dividir un PDF por rangos de páginas", "Dividir um PDF por intervalos de páginas", "Diviser un PDF par plages de pages", "ページ範囲で PDF を分割", "PDF nach Seitenbereichen teilen", "페이지 범위로 PDF 분할"),
         href: "/guides/split-pdf-page-ranges",
         description: tr(
           "Extract specific page ranges into separate PDFs.",
@@ -983,10 +1015,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Extrayez des plages de pages spécifiques dans des PDF distincts.",
           "指定したページ範囲を別々の PDF として抽出します。",
           "Extrahieren Sie bestimmte Seitenbereiche in separate PDFs.",
+          "특정 페이지 범위를 별도의 PDF로 추출합니다.",
         ),
       },
       {
-        label: tr("Reduce PDF size without losing quality", "无损压缩 PDF 体积", "Reduce el tamaño del PDF sin perder calidad", "Reduza o tamanho do PDF sem perder qualidade", "Réduisez la taille du PDF sans perte de qualité", "品質を落とさずに PDF サイズを縮小", "PDF-Größe ohne Qualitätsverlust reduzieren"),
+        label: tr("Reduce PDF size without losing quality", "无损压缩 PDF 体积", "Reduce el tamaño del PDF sin perder calidad", "Reduza o tamanho do PDF sem perder qualidade", "Réduisez la taille du PDF sans perte de qualité", "品質を落とさずに PDF サイズを縮小", "PDF-Größe ohne Qualitätsverlust reduzieren", "품질 저하 없이 PDF 용량 줄이기"),
         href: "/guides/reduce-pdf-size-without-losing-quality",
         description: tr(
           "Shrink the resulting files for portals and upload limits.",
@@ -996,12 +1029,13 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Réduisez les fichiers obtenus pour les portails et les limites de téléversement.",
           "ポータルやアップロード制限に合わせて生成ファイルを縮小します。",
           "Verkleinern Sie die Ergebnisdateien für Portale und Upload-Grenzen.",
+          "포털과 업로드 한도에 맞춰 결과 파일 용량을 줄입니다.",
         ),
       },
     ],
     "pdf-to-word": [
       {
-        label: tr("PDF to Word for editing", "PDF 转 Word 编辑指南", "PDF a Word para editar", "PDF para Word para edição", "PDF en Word pour l'édition", "編集のための PDF から Word", "PDF zu Word zum Bearbeiten"),
+        label: tr("PDF to Word for editing", "PDF 转 Word 编辑指南", "PDF a Word para editar", "PDF para Word para edição", "PDF en Word pour l'édition", "編集のための PDF から Word", "PDF zu Word zum Bearbeiten", "편집을 위한 PDF에서 Word로"),
         href: "/blog/pdf-to-word-for-editing",
         description: tr(
           "Learn how to prepare fixed PDFs for editable document workflows.",
@@ -1011,10 +1045,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Apprenez à préparer des PDF figés pour des flux de documents modifiables.",
           "固定された PDF を編集可能な文書ワークフロー向けに準備する方法を学びます。",
           "Erfahren Sie, wie Sie feste PDFs für bearbeitbare Dokument-Workflows vorbereiten.",
+          "고정된 PDF를 편집 가능한 문서 워크플로에 맞게 준비하는 방법을 알아보세요.",
         ),
       },
       {
-        label: tr("PDF to an editable Word document", "PDF 转可编辑 Word 文档", "PDF a un documento Word editable", "PDF para um documento Word editável", "PDF en document Word modifiable", "編集可能な Word 文書への PDF", "PDF in ein bearbeitbares Word-Dokument"),
+        label: tr("PDF to an editable Word document", "PDF 转可编辑 Word 文档", "PDF a un documento Word editable", "PDF para um documento Word editável", "PDF en document Word modifiable", "編集可能な Word 文書への PDF", "PDF in ein bearbeitbares Word-Dokument", "편집 가능한 Word 문서로 PDF 변환"),
         href: "/guides/pdf-to-word-editable-document",
         description: tr(
           "Convert a PDF into an editable .docx you can revise.",
@@ -1024,10 +1059,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Convertissez un PDF en un .docx modifiable que vous pouvez réviser.",
           "PDF を、修正できる編集可能な .docx に変換します。",
           "Konvertieren Sie ein PDF in ein bearbeitbares .docx, das Sie überarbeiten können.",
+          "PDF를 수정할 수 있는 편집 가능한 .docx로 변환합니다.",
         ),
       },
       {
-        label: tr("Extract text from a PDF with OCR", "用 OCR 从 PDF 提取文字", "Extraer texto de un PDF con OCR", "Extrair texto de um PDF com OCR", "Extraire le texte d'un PDF avec l'OCR", "OCR で PDF から文字を抽出", "Text aus einem PDF per OCR extrahieren"),
+        label: tr("Extract text from a PDF with OCR", "用 OCR 从 PDF 提取文字", "Extraer texto de un PDF con OCR", "Extrair texto de um PDF com OCR", "Extraire le texte d'un PDF avec l'OCR", "OCR で PDF から文字を抽出", "Text aus einem PDF per OCR extrahieren", "OCR로 PDF에서 텍스트 추출"),
         href: "/guides/extract-text-from-pdf-with-ocr",
         description: tr(
           "OCR a scanned PDF first when there is no selectable text.",
@@ -1037,6 +1073,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Appliquez d'abord l'OCR à un PDF numérisé lorsqu'il n'y a pas de texte sélectionnable.",
           "選択できる文字がない場合は、先にスキャン PDF へ OCR をかけます。",
           "Wenden Sie zuerst OCR auf ein gescanntes PDF an, wenn es keinen auswählbaren Text gibt.",
+          "선택 가능한 텍스트가 없으면 먼저 스캔한 PDF에 OCR을 적용하세요.",
         ),
       },
     ],

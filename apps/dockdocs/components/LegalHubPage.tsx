@@ -12,7 +12,7 @@ import { type VerticalConfig, type VerticalLocale } from "@/components/VerticalH
 // Honesty red-line: PDF parsing is client-side; AI analysis sends extracted text
 // to the server. Copy NEVER claims "全程不上传" — only "文件不上传、只发文本片段".
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de" | "ko";
 
 // ─── Step / Privacy copy (zh + en; other locales fall back to en) ─────────────
 
@@ -29,7 +29,7 @@ type PrivacyCopy = {
 type FaqItem = { q: string; a: string };
 type FaqCopy = { title: string; items: FaqItem[] };
 
-const WORKFLOW: Record<"zh" | "en", WorkflowCopy> = {
+const WORKFLOW: Record<"zh" | "en" | "ko", WorkflowCopy> = {
   zh: {
     title: "三步完成合同审查",
     steps: [
@@ -48,9 +48,18 @@ const WORKFLOW: Record<"zh" | "en", WorkflowCopy> = {
     ],
     cta: { text: "Check a contract", href: "/contract-risk" },
   },
+  ko: {
+    title: "세 단계로 계약서 검토하기",
+    steps: [
+      { label: "계약서 업로드", desc: "PDF 또는 Word 파일을 끌어다 놓으세요 — 서버가 아니라 브라우저에서 분석됩니다" },
+      { label: "AI 위험 점검", desc: "AI가 위험 조항 — 무제한 책임, 일방적 해지, 독점, 상한 누락 — 을 표시하고 그 근거가 된 원문 구절을 인용합니다" },
+      { label: "보고서 내보내기", desc: "위험 요약표를 내보내 법무 검토에 활용하거나 변호사와 공유하세요" },
+    ],
+    cta: { text: "계약서 점검하기", href: "/contract-risk" },
+  },
 };
 
-const PRIVACY: Record<"zh" | "en", PrivacyCopy> = {
+const PRIVACY: Record<"zh" | "en" | "ko", PrivacyCopy> = {
   zh: {
     title: "合同文件不离本机",
     points: [
@@ -67,9 +76,17 @@ const PRIVACY: Record<"zh" | "en", PrivacyCopy> = {
       "No file copies on our servers — disconnect and PDF parsing still works",
     ],
   },
+  ko: {
+    title: "계약서 파일은 기기에 남습니다",
+    points: [
+      "PDF는 브라우저에서 분석됩니다 — 파일 자체는 업로드되지 않습니다",
+      "AI 분석에는 전체 문서가 아니라 추출된 텍스트만 전송됩니다",
+      "서버에 파일 사본이 남지 않습니다 — 인터넷을 끊어도 PDF 분석은 동작합니다",
+    ],
+  },
 };
 
-const FAQ_COPY: Record<"zh" | "en", FaqCopy> = {
+const FAQ_COPY: Record<"zh" | "en" | "ko", FaqCopy> = {
   zh: {
     title: "常见问题",
     items: [
@@ -112,11 +129,32 @@ const FAQ_COPY: Record<"zh" | "en", FaqCopy> = {
       },
     ],
   },
+  ko: {
+    title: "자주 묻는 질문",
+    items: [
+      {
+        q: "AI 분석은 얼마나 정확한가요?",
+        a: "AI가 위험 조항의 위치를 찾을 수 있을 때는 계약서의 정확한 구절을 인용하여 직접 확인할 수 있게 합니다. 위치를 찾을 수 없을 때는 인용을 지어내지 않고 그렇다고 알려 줍니다. 모든 결과는 자격을 갖춘 법률 전문가의 검토를 받아야 하며, 이 도구는 법률 자문이 아닙니다.",
+      },
+      {
+        q: "계약서 파일이 어딘가에 저장되나요?",
+        a: "아니요. PDF는 브라우저에서 분석되며, AI 분석에는 추출된 텍스트만 전송됩니다. 서버에 파일 사본이 저장되지 않습니다.",
+      },
+      {
+        q: "어떤 파일 형식을 지원하나요?",
+        a: "PDF와 Word(.docx) 파일을 지원합니다. 가장 좋은 결과를 위해 파일은 10MB 이하를 권장합니다.",
+      },
+      {
+        q: "어떤 언어의 계약서를 지원하나요?",
+        a: "영어와 중국어 계약서에서 가장 잘 작동합니다. 다른 언어 계약서도 분석할 수 있지만 정확도는 달라질 수 있습니다.",
+      },
+    ],
+  },
 };
 
 // ─── Sample annotation copy (zh + en) ────────────────────────────────────────
 
-const SAMPLE: Record<"zh" | "en", {
+const SAMPLE: Record<"zh" | "en" | "ko", {
   title: string; badge: string;
   risk1: { tag: string; sourceLabel: string; source: string; aiLabel: string; ai: string };
   risk2: { tag: string; ai: string };
@@ -153,6 +191,22 @@ const SAMPLE: Record<"zh" | "en", {
       ai: "No confidentiality clause found. Recommend adding before signing: scope, duration, and breach consequences.",
     },
     grounding: "Findings that can be located quote the exact passage; those that can't are flagged as missing — never fabricated.",
+  },
+  ko: {
+    title: "실제 주석 예시",
+    badge: "익명화 샘플",
+    risk1: {
+      tag: "고위험 · 제12조 — 손해배상",
+      sourceLabel: "원문: ",
+      source: "「을은 어떠한 원인으로든 갑에게 발생한 모든 손해를 상한 없이 전액 배상한다.」",
+      aiLabel: "AI 표시: ",
+      ai: "상한 없는 무제한 배상 조항 — 극도로 위험합니다. 계약 금액의 일정 비율로 상한을 두고 명확한 발동 조건을 정할 것을 권합니다.",
+    },
+    risk2: {
+      tag: "누락 · 비밀유지 조항",
+      ai: "비밀유지 조항이 없습니다. 서명 전에 보호 범위, 유효 기간, 위반 시 책임을 추가할 것을 권합니다.",
+    },
+    grounding: "위치를 찾을 수 있는 결과는 정확한 구절을 인용하고, 찾을 수 없는 것은 「누락」으로 표시합니다 — 절대 지어내지 않습니다.",
   },
 };
 
@@ -283,6 +337,23 @@ const legalConfig: VerticalConfig = {
       ],
       disclaimer: "Diese Tools sind ein automatisierter erster Durchgang, der Ihnen hilft zu erkennen, was Aufmerksamkeit verdient. Sie sind keine Rechtsberatung — ziehen Sie bei wichtigen Fragen eine qualifizierte Anwältin oder einen qualifizierten Anwalt hinzu.",
     },
+    ko: {
+      eyebrow: "법률 / 계약",
+      heroTitle: "계약서, 임대차, 입찰을 위한 AI 문서 검토",
+      heroDescription:
+        "계약서·임대차 계약·입찰 문서를 읽고 핵심을 짚어 주는 다섯 가지 전문 도구입니다 — 위험 조항, 빠진 보호 장치, 규정 준수 요건, 그리고 두 버전 사이에 바뀐 점까지. 문서에서 인용할 수 있는 결과는 정확한 구절을 보여 주고, 빠진 보호 장치는 「누락」으로 표시하므로, 행동하기 전에 무엇이 있는지 확인할 수 있습니다.",
+      primary: "계약서 검토",
+      secondary: "임대차 계약 스캔",
+      cardsTitle: "법무팀을 위한 도구",
+      cards: [
+        { slug: "contract-risk", label: "계약 위험 점검", description: "서명하기 전에 위험하거나 한쪽에 치우치거나 빠진 조항을 표시합니다 — 표시된 위험은 계약서에서 인용하고, 빠진 부분은 기록하며, 무엇을 물어야 할지 알려 줍니다." },
+        { slug: "govbid-matrix", label: "정부 입찰 준수 매트릭스", description: "입찰 문서에서 구속력 있는 모든 'shall/must' 요건을 뽑아 번호가 매겨진 준수 매트릭스로 만들어 CSV로 내보냅니다." },
+        { slug: "lease-redflag", label: "임대차 위험 신호 점검", description: "서명하기 전에 주거용 또는 상업용 임대차 계약에서 불공정하거나 위험하거나 빠진 임차인 보호 조항을 검사합니다." },
+        { slug: "redline", label: "버전 비교", description: "계약서나 문서의 두 버전 사이에 정확히 무엇이 바뀌었는지 조항별로 확인합니다." },
+        { slug: "compare", label: "문서 비교", description: "여러 문서를 중요한 조건 기준으로 나란히 비교하고 쉬운 말로 추천을 제시합니다." },
+      ],
+      disclaimer: "이 도구들은 주의가 필요한 부분을 찾도록 돕는 자동화된 1차 검토입니다. 법률 자문이 아니므로 중요한 사안은 자격을 갖춘 변호사와 상담하세요.",
+    },
   },
 };
 
@@ -307,12 +378,13 @@ export function LegalHubPage({
 
   // Workflow + Privacy + FAQ: zh/en authored; zh-Hant derives from zh via deepHant;
   // all other locales fall back to en (matches VerticalHubPage convention).
-  const wfLang: "zh" | "en" = locale === "zh" || locale === "zh-Hant" ? "zh" : "en";
+  // zh/zh-Hant → zh copy (Traditional derived via deepHant); ko → authored Korean;
+  // every other locale falls back to en (matches VerticalHubPage convention).
+  const wfLang: "zh" | "en" | "ko" = locale === "zh" || locale === "zh-Hant" ? "zh" : locale === "ko" ? "ko" : "en";
   const wf: WorkflowCopy = locale === "zh-Hant" ? deepHant(WORKFLOW.zh) : WORKFLOW[wfLang];
   const priv: PrivacyCopy = locale === "zh-Hant" ? deepHant(PRIVACY.zh) : PRIVACY[wfLang];
   const faq: FaqCopy = locale === "zh-Hant" ? deepHant(FAQ_COPY.zh) : FAQ_COPY[wfLang];
-  const sampleLang: "zh" | "en" = locale === "zh" || locale === "zh-Hant" ? "zh" : "en";
-  const sample = locale === "zh-Hant" ? deepHant(SAMPLE.zh) : SAMPLE[sampleLang];
+  const sample = locale === "zh-Hant" ? deepHant(SAMPLE.zh) : SAMPLE[wfLang];
 
   const canonicalPath = useLocalePrefix
     ? `/${locale}/for/legal/`

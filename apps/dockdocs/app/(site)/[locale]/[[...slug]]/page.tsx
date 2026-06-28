@@ -256,15 +256,11 @@ function toLeafLocale(locale: ClientLocale): LeafLocale {
   }
 }
 
-// VerticalLocale: the *HubPage (finance/legal/research) surfaces author full de in
-// addition to en/zh/es/pt/fr/ja and derive zh-Hant from zh internally — so, unlike
-// toLeafLocale, they KEEP "de". Only ko (not a launch locale for the hubs) maps to
-// English. Exhaustive over ClientLocale so a new route locale forces a decision.
+// VerticalLocale: the *HubPage (finance/legal/research) surfaces author full de + ko
+// in addition to en/zh/es/pt/fr/ja and derive zh-Hant from zh internally. Identity
+// over the whole set. Exhaustive over ClientLocale so a new route locale forces a decision.
 function toVerticalLocale(locale: ClientLocale): VerticalLocale {
   switch (locale) {
-    case "ko":
-      // ko has no authored hub copy yet → English.
-      return "en";
     case "en":
     case "zh":
     case "es":
@@ -273,6 +269,7 @@ function toVerticalLocale(locale: ClientLocale): VerticalLocale {
     case "ja":
     case "zh-Hant":
     case "de":
+    case "ko":
       return locale;
     default: {
       const _exhaustive: never = locale;
@@ -2964,6 +2961,20 @@ const aiCopy = {
       { t: "Dokumentenanalyse", d: "Extrahieren Sie die wichtigsten Klauseln, Daten, Risiken und die Struktur für einen schnellen Überblick." },
     ],
   },
+  ko: {
+    title: "AI 문서 워크스페이스",
+    description: "DockDocs AI 문서 워크스페이스에서 PDF 문서를 정리하고, 변환하고, OCR하고, 작업하세요.",
+    eyebrow: "AI 워크스페이스",
+    heroTitle: "OCR, 요약, PDF와 대화를 위한 AI PDF 워크스페이스.",
+    heroDescription:
+      "DockDocs는 PDF 도구를 우선합니다. 문서에 OCR, 요약, 근거 있는 질의응답, 빠른 분석이 필요할 때 AI 워크스페이스가 나섭니다.",
+    cards: [
+      { t: "OCR", d: "스캔본이나 이미지로만 된 PDF에서 선택 가능한 텍스트를 뽑아냅니다." },
+      { t: "AI 요약", d: "길고 복잡한 보고서와 자료를 몇 가지 실용적인 메모로 바꿉니다." },
+      { t: "PDF와 대화", d: "조항·날짜·수치를 질문하세요 — 답변은 그 근거가 된 구절을 보여 주고, 추적할 수 없는 부분은 표시합니다." },
+      { t: "문서 분석", d: "핵심 조항, 날짜, 위험, 구조를 뽑아내 빠르게 훑어볼 수 있게 합니다." },
+    ],
+  },
 } as const;
 
 const aiWidgetLocales = ["en", "zh", "es", "pt", "fr", "ja"] as const;
@@ -2975,7 +2986,7 @@ type AiWidgetLocale = (typeof aiWidgetLocales)[number];
 // Union of the six AiWidgetLocale copies plus the authored de copy. de is kept out
 // of aiWidgetLocales (the interactive widgets still run in English for de via
 // toAccountLocale), but its copy has the same shape and is a valid resolveAiCopy result.
-type AiCopy = (typeof aiCopy)[AiWidgetLocale] | (typeof aiCopy)["de"];
+type AiCopy = (typeof aiCopy)[AiWidgetLocale] | (typeof aiCopy)["de"] | (typeof aiCopy)["ko"];
 function resolveAiCopy(locale: ClientLocale): AiCopy {
   switch (locale) {
     case "zh-Hant":
@@ -2986,9 +2997,9 @@ function resolveAiCopy(locale: ClientLocale): AiCopy {
       // English (toAccountLocale maps de → en) until their de copy lands.
       return aiCopy.de;
     case "ko":
-      // ko has no authored aiCopy block yet → English header/cards copy, and the
-      // interactive widgets also run in English (toAccountLocale maps ko → en).
-      return aiCopy.en;
+      // aiCopy.ko is authored (native Korean) for the header/cards. The interactive
+      // widgets author their own ko copy and self-narrow (see aiLocale below).
+      return aiCopy.ko;
     case "en":
     case "zh":
     case "es":

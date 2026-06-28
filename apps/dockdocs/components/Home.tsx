@@ -513,7 +513,8 @@ const SCENARIOS = [
     pt: ["Compare orçamentos, escolha o melhor", "3 arquivos em uma planilha · ~1h", "uma escolha baseada nos dados · 1 min"],
     fr: ["Comparez des devis, choisissez le meilleur", "3 fichiers dans un tableau · ~1h", "un choix fondé sur les chiffres · 1 min"],
     ja: ["見積もりを比較し、最適を選ぶ", "3ファイルを表に書き写す · 約1時間", "数値に基づく選定 · 1分"],
-    de: ["Angebote vergleichen, das beste wählen", "3 Dateien in eine Tabelle · ~1 Std.", "eine datenbasierte Wahl · 1 Min."] },
+    de: ["Angebote vergleichen, das beste wählen", "3 Dateien in eine Tabelle · ~1 Std.", "eine datenbasierte Wahl · 1 Min."],
+    ko: ["견적을 비교해 최선을 고르세요", "3개 파일을 표로 옮겨 적기 · 약 1시간", "데이터 기반 선택 · 1분"] },
   { icon: <path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM13 3v4h4M8.5 14l2 2 4-4" />, href: "/redline",
     en: ["Catch the traps in a contract", "a lawyer, or sign blind", "AI flags risky & missing clauses"],
     zh: ["看穿合同里的坑", "花钱找律师，或盲签踩坑", "AI 标出风险与缺失条款"],
@@ -521,7 +522,8 @@ const SCENARIOS = [
     pt: ["Detecte as armadilhas de um contrato", "um advogado, ou assinar às cegas", "a IA sinaliza cláusulas de risco e ausentes"],
     fr: ["Repérez les pièges d'un contrat", "un juriste, ou signer en aveugle", "l'IA signale les clauses à risque et manquantes"],
     ja: ["契約書の落とし穴を見抜く", "弁護士に頼むか、よく見ずに署名", "AIがリスク条項と欠落を指摘"],
-    de: ["Die Fallen in einem Vertrag erkennen", "einen Anwalt zahlen oder blind unterschreiben", "die KI markiert riskante und fehlende Klauseln"] },
+    de: ["Die Fallen in einem Vertrag erkennen", "einen Anwalt zahlen oder blind unterschreiben", "die KI markiert riskante und fehlende Klauseln"],
+    ko: ["계약서 속 함정을 잡아내세요", "변호사 비용을 내거나, 모른 채 서명하기", "AI가 위험·누락 조항을 표시"] },
   { icon: <path d="M4 7l8-4 8 4-8 4-8-4ZM4 12l8 4 8-4M4 17l8 4 8-4" />, href: "/batch-extract-sheet",
     en: ["Process a batch of invoices", "key them in one by one · hours", "drop the batch → auto-extract"],
     zh: ["批量处理发票", "一张张录入 · 几小时", "整批丢进去 → 自动抽取"],
@@ -529,7 +531,8 @@ const SCENARIOS = [
     pt: ["Processe um lote de faturas", "digitá-las uma a uma · horas", "solte o lote → extração automática"],
     fr: ["Traitez un lot de factures", "les saisir une par une · des heures", "déposez le lot → extraction automatique"],
     ja: ["請求書をまとめて処理", "1枚ずつ手入力 · 数時間", "まとめて投入 → 自動抽出"],
-    de: ["Einen Stapel Rechnungen verarbeiten", "einzeln abtippen · Stunden", "den Stapel ablegen → automatische Extraktion"] },
+    de: ["Einen Stapel Rechnungen verarbeiten", "einzeln abtippen · Stunden", "den Stapel ablegen → automatische Extraktion"],
+    ko: ["청구서를 한꺼번에 처리하세요", "한 장씩 입력 · 수 시간", "통째로 올리면 → 자동 추출"] },
   { icon: <path d="M5 4h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5zM8.5 9h6M8.5 13h6" />, href: "/chat-with-pdf",
     en: ["Understand a long report fast", "read 80 pages for a few answers", "ask it → answers you can trace · 30s"],
     zh: ["快速读懂长报告", "读 80 页找几个答案", "问它 → 30 秒可追溯的答案"],
@@ -537,7 +540,8 @@ const SCENARIOS = [
     pt: ["Entenda um relatório longo rápido", "ler 80 páginas por algumas respostas", "pergunte → respostas que você pode rastrear · 30s"],
     fr: ["Comprendre un long rapport rapidement", "lire 80 pages pour quelques réponses", "interrogez-le → des réponses traçables · 30s"],
     ja: ["長い報告書を素早く理解", "数個の答えのために80ページ読む", "質問する → 追跡できる回答 · 30秒"],
-    de: ["Einen langen Bericht schnell verstehen", "80 Seiten für ein paar Antworten lesen", "fragen Sie ihn → nachvollziehbare Antworten · 30 Sek."] },
+    de: ["Einen langen Bericht schnell verstehen", "80 Seiten für ein paar Antworten lesen", "fragen Sie ihn → nachvollziehbare Antworten · 30 Sek."],
+    ko: ["긴 보고서를 빠르게 이해하세요", "답 몇 개를 위해 80페이지 읽기", "물어보면 → 추적 가능한 답변 · 30초"] },
 ];
 
 export function Home({ locale = "en" }: { locale?: Locale }) {
@@ -650,10 +654,10 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
                 <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
                 <div className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--foreground)]">
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                  <span className={`tw-line min-w-0 ${heroReveal.lineCls(0)}`}>{locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : locale === "de" ? "Umsatz +23 % gg. Vorjahr" : "Revenue +23% YoY"}</span>
+                  <span className={`tw-line min-w-0 ${heroReveal.lineCls(0)}`}>{locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : locale === "de" ? "Umsatz +23 % gg. Vorjahr" : locale === "ko" ? "매출 전년 대비 +23%" : "Revenue +23% YoY"}</span>
                   <span className={`tw-pill ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)] ${heroReveal.lineCls(0)}`}>{c.cite}</span>
                 </div>
-                {[locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : locale === "de" ? "APAC ist der Haupttreiber" : "APAC is the main driver", locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : locale === "de" ? "Bruttomarge 41 % (↑3 pp)" : "Gross margin 41% (↑3pt)"].map((b, i) => (
+                {[locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : locale === "de" ? "APAC ist der Haupttreiber" : locale === "ko" ? "APAC가 주요 견인 요인" : "APAC is the main driver", locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : locale === "de" ? "Bruttomarge 41 % (↑3 pp)" : locale === "ko" ? "매출총이익률 41%（↑3pt）" : "Gross margin 41% (↑3pt)"].map((b, i) => (
                   <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--muted)] last:mb-0">
                     <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" /><span className={`tw-line ${heroReveal.lineCls(i + 1)}`}>{b}</span>
                   </div>
@@ -794,7 +798,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
           <Figure className="mt-10" glow="20%">
             <div className="grid gap-4 sm:grid-cols-2">
               {SCENARIOS.map((s) => {
-                const t = hant ? deepHant(s.zh) : locale === "zh" ? s.zh : locale === "es" ? s.es : locale === "pt" ? s.pt : locale === "fr" ? s.fr : locale === "ja" ? s.ja : s.en;
+                const t = hant ? deepHant(s.zh) : locale === "zh" ? s.zh : locale === "es" ? s.es : locale === "pt" ? s.pt : locale === "fr" ? s.fr : locale === "ja" ? s.ja : locale === "de" ? s.de : locale === "ko" ? s.ko : s.en;
                 return (
                   <a key={t[0]} href={path(s.href)} className={`${PANEL} block transition-colors hover:border-[color:var(--line-strong)]`}>
                     <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[color:var(--line)] text-[color:var(--accent)]">
