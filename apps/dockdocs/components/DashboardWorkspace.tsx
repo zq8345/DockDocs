@@ -25,6 +25,10 @@ const AiSummaryEmbedded = dynamic(
   () => import("@/app/(site)/ai-summary/AiSummaryClient").then((m) => m.AiSummaryClient),
   { ssr: false },
 );
+const AccountEmbedded = dynamic(
+  () => import("@/components/AccountClient").then((m) => m.AccountClient),
+  { ssr: false },
+);
 
 type NavLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
@@ -106,9 +110,13 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
   const labels = navItemLabels[navLocale] as Record<string, string>;
   const dash = getRuntimeCopy(locale).dashboard as unknown as Record<string, string>;
 
-  // Breadcrumb: resolve active tool's display label from headerStructure
+  // Breadcrumb: resolve active tool's display label
   const toolLabel = activeTool
     ? (() => {
+        if (activeTool === "/workspace-account") {
+          const acctLabel: Record<string, string> = { zh: "账户", "zh-Hant": "帳戶", es: "Cuenta", pt: "Conta", fr: "Compte", ja: "アカウント", de: "Konto", ko: "계정" };
+          return acctLabel[locale] ?? "Account";
+        }
         type NavItem = { key: string; slug: string };
         const item = headerStructure
           .flatMap((cat) => cat.cols.flatMap((col) => col.items as unknown as NavItem[]))
@@ -125,7 +133,11 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
       <main className="flex flex-1 flex-col overflow-hidden">
         <WorkspaceTopbar locale={locale} activeTool={activeTool} toolLabel={toolLabel} />
         <div className="flex flex-1 flex-col overflow-y-auto">
-        {activeTool === "/contract-risk" ? (
+        {activeTool === "/workspace-account" ? (
+          <div className="mx-auto w-full max-w-md px-8 py-10">
+            <AccountEmbedded locale={locale} />
+          </div>
+        ) : activeTool === "/contract-risk" ? (
           <ContractRiskEmbedded locale={locale} embedded />
         ) : activeTool === "/chat-with-pdf" ? (
           <ChatWithPdfEmbedded locale={locale} embedded />

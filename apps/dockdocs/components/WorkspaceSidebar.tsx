@@ -307,10 +307,11 @@ export function WorkspaceSidebar({
 
       {/* ── ④ Bottom: two rows ── */}
       <div className="shrink-0 border-t border-[color:var(--line)] px-3 py-2.5">
-        {/* Row 1: avatar + name + plan badge */}
-        <a
-          href="/account"
-          className="mb-2 flex min-w-0 items-center gap-2 rounded px-1 py-1 transition hover:bg-[color:var(--surface-subtle)]"
+        {/* Row 1: avatar + name + plan badge — opens Zone ⑤ account panel (no navigation) */}
+        <button
+          type="button"
+          onClick={() => onToolSelect?.("/workspace-account")}
+          className="mb-2 flex w-full min-w-0 items-center gap-2 rounded px-1 py-1 text-left transition hover:bg-[color:var(--surface-subtle)]"
         >
           <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
             {authUser?.pictureUrl ? (
@@ -337,7 +338,7 @@ export function WorkspaceSidebar({
           >
             {planLabel}
           </span>
-        </a>
+        </button>
 
         {/* Row 2: language switcher + theme toggle */}
         <div className="flex items-center gap-1.5">
