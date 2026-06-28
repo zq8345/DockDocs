@@ -22,8 +22,8 @@ export function WorkspaceTopbar({
 
   return (
     <header
-      className="flex shrink-0 items-center border-b border-[color:var(--line)] px-4"
-      style={{ height: 48, background: "#1a1a1a" }}
+      className="flex shrink-0 items-center border-b border-[color:var(--line)] bg-[color:var(--surface)] px-4"
+      style={{ height: 48 }}
     >
       <nav className="flex items-center gap-1.5 text-[13px]">
         <span
@@ -37,7 +37,17 @@ export function WorkspaceTopbar({
         </span>
         {activeTool && toolLabel && (
           <>
-            <span className="select-none text-[color:var(--faint)]">/</span>
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-3 w-3 text-[color:var(--faint)]"
+            >
+              <path d="M6 3l5 5-5 5" />
+            </svg>
             <span className="text-[color:var(--foreground)]">{toolLabel}</span>
           </>
         )}

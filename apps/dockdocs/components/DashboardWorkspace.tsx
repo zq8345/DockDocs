@@ -203,7 +203,7 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
             <div
               className={`mt-6 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border-2 border-dashed px-6 py-10 text-center transition ${
                 dragOver
-                  ? "border-[color:var(--accent)] bg-[rgba(62,207,142,0.06)]"
+                  ? "border-[color:var(--accent)] bg-[color:var(--surface-subtle)]"
                   : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"
               }`}
             >

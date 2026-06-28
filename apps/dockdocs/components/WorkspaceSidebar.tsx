@@ -128,8 +128,8 @@ export function WorkspaceSidebar({
 
   return (
     <nav
-      className="flex h-full shrink-0 flex-col overflow-hidden border-r border-[color:var(--line)]"
-      style={{ width: 260, background: "#1a1a1a" }}
+      className="flex h-full shrink-0 flex-col overflow-hidden border-r border-[color:var(--line)] bg-[color:var(--surface)]"
+      style={{ width: 260 }}
     >
       {/* ── ① Logo ── */}
       <div
@@ -283,7 +283,7 @@ export function WorkspaceSidebar({
           <span className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.06em] ${
             planLabel === "Free"
               ? "bg-[color:var(--surface)] text-[color:var(--faint)]"
-              : "bg-[rgba(62,207,142,0.12)] text-[#3ecf8e]"
+              : "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
           }`}>
             {planLabel}
           </span>
@@ -309,7 +309,7 @@ export function WorkspaceSidebar({
             {langOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
-                <div className="absolute bottom-full left-0 z-50 mb-1 w-44 overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[#1a1a1a] py-1 shadow-lg">
+                <div className="absolute bottom-full left-0 z-50 mb-1 w-44 overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] py-1 shadow-lg">
                   {SHOWN_LOCALES.map((l) => (
                     <button
                       key={l}
