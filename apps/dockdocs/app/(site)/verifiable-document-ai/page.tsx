@@ -140,9 +140,9 @@ const page = {
         "Verifiable document AI surfaces the source passage from your document alongside each answer or finding, so you can confirm the AI's interpretation is grounded in what the document actually says. The key characteristic is that citations are real (traceable to actual document text) and the tool tells you when it can't find a source rather than generating a confident-sounding uncited answer.",
     },
     {
-      question: "Can AI always cite its sources from a document?",
+      question: "Can AI cite a source for every answer?",
       answer:
-        "No. Language models synthesize across passages, paraphrase, and sometimes infer beyond what's explicitly stated. A tool that claims to always cite sources is either limiting what it will answer to cases where it found a clear source, or generating citation-shaped text that may not reliably point to the right thing. The honest version: \"I show the source when I can locate it\" — which makes the citations you do see trustworthy.",
+        "No. Language models synthesize across passages, paraphrase, and sometimes infer beyond what's explicitly stated. A tool that claims to cite a source for every answer is either limiting what it will answer to cases where it found a clear source, or generating citation-shaped text that may not reliably point to the right thing. The honest version: \"I show the source when I can locate it\" — which makes the citations you do see trustworthy.",
     },
     {
       question: "How is this different from AI that just summarizes a document?",
