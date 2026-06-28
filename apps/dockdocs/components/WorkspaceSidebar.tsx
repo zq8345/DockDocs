@@ -17,6 +17,7 @@ export function WorkspaceSidebar({ locale = "en" }: { locale?: RuntimeLocale }) 
     "AI analysis": true,
     "By profession": true,
   });
+  const [openDocSubs, setOpenDocSubs] = useState<Record<string, boolean>>({});
   const [history, setHistory] = useState<WorkHistoryItem[]>([]);
 
   useEffect(() => {
@@ -31,6 +32,9 @@ export function WorkspaceSidebar({ locale = "en" }: { locale?: RuntimeLocale }) 
 
   const toggle = (catKey: string) =>
     setOpenCats((prev) => ({ ...prev, [catKey]: !(prev[catKey] ?? true) }));
+
+  const toggleDocSub = (key: string) =>
+    setOpenDocSubs((prev) => ({ ...prev, [key]: !(prev[key] ?? false) }));
 
   return (
     <nav
@@ -74,15 +78,54 @@ export function WorkspaceSidebar({ locale = "en" }: { locale?: RuntimeLocale }) 
                     if (cat.catKey === "Document tools") {
                       if (!maybeHeading) return null;
                       const colLabel = copy[maybeHeading] ?? maybeHeading;
-                      const firstSlug = col.items[0]?.slug ?? "/";
+                      const isSubOpen = openDocSubs[maybeHeading] ?? false;
                       return (
-                        <a
-                          key={colIdx}
-                          href={firstSlug}
-                          className="flex items-center rounded px-3 py-1.5 text-[13px] text-[color:var(--muted)] transition hover:bg-[color:var(--surface)] hover:text-[color:var(--foreground)]"
-                        >
-                          {colLabel}
-                        </a>
+                        <div key={colIdx}>
+                          <button
+                            type="button"
+                            onClick={() => toggleDocSub(maybeHeading)}
+                            className="flex w-full items-center justify-between rounded px-3 py-1.5 text-left text-[13px] text-[color:var(--muted)] transition hover:bg-[color:var(--surface)] hover:text-[color:var(--foreground)]"
+                          >
+                            <span>{colLabel}</span>
+                            <svg
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className={`h-3 w-3 shrink-0 text-[color:var(--faint)] transition-transform ${isSubOpen ? "" : "-rotate-90"}`}
+                            >
+                              <path d="M4 6l4 4 4-4" />
+                            </svg>
+                          </button>
+                          {isSubOpen && (
+                            <div className="pb-1 pl-3">
+                              {col.items.map((item) => {
+                                const label = labels[item.key] ?? item.key;
+                                const soon = (item as { soon?: boolean }).soon;
+                                return (
+                                  <a
+                                    key={item.key}
+                                    href={item.slug}
+                                    className={`flex items-center justify-between rounded px-2 py-1.5 text-[12.5px] transition hover:bg-[color:var(--surface)] ${
+                                      soon
+                                        ? "text-[color:var(--faint)]"
+                                        : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
+                                    }`}
+                                  >
+                                    <span>{label}</span>
+                                    {soon && (
+                                      <span className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[color:var(--faint)]">
+                                        soon
+                                      </span>
+                                    )}
+                                  </a>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
                       );
                     }
 
