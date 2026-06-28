@@ -251,9 +251,6 @@ export function WorkspaceSidebar({
           );
         })}
 
-        {/* Divider */}
-        <div className="my-2 border-t border-[color:var(--line-subtle)]" />
-
         {/* AI analysis + By profession */}
         {otherCats.map((cat) => {
           const catLabel = copy[cat.catKey] ?? cat.catKey;
