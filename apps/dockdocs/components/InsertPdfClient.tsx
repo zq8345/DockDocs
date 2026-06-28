@@ -168,6 +168,28 @@ const STR: AuthoredCopy<{
   },
 };
 
+// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
+// copy lives in standalone *_KO objects selected explicitly in the resolver below.
+const STR_KO: (typeof STR)["en"] = {
+  title: "페이지 삽입",
+  subtitle: "PDF를 업로드하고 삽입할 위치를 고른 뒤, 그 자리에 다른 PDF나 이미지를 추가하세요. 모든 작업은 브라우저에서 이루어집니다.",
+  drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+  choose: "PDF 선택",
+  rendering: "페이지를 렌더링하는 중…",
+  pickSpot: "삽입할 위치를 고르세요 — 아래 자리를 클릭하세요.",
+  atStart: "맨 앞에",
+  afterPage: (n: number) => `${n}페이지 뒤에`,
+  insertHere: "여기에 삽입 ✓",
+  insertFile: "삽입할 파일 (PDF 또는 이미지)",
+  chooseInsert: "파일 선택",
+  apply: "삽입하고 다운로드",
+  working: "PDF를 생성하는 중…",
+  reset: "다시 시작",
+  needFile: "삽입할 PDF 또는 이미지를 선택하세요.",
+  err: "문제가 발생했습니다: ",
+  selected: "삽입 지점",
+};
+
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why add pages to a PDF in your browser",
@@ -325,13 +347,36 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "브라우저에서 PDF에 페이지를 추가하는 이유",
+  benefitsDescription: "문서 전체를 다시 만들지 않고 새 페이지를 있어야 할 자리에 정확히 넣으세요.",
+  benefits: [
+    { title: "어느 위치에든 삽입", description: "다른 PDF나 이미지를 맨 앞, 임의의 페이지 뒤, 또는 맨 끝에 끼워 넣으세요 — 생성하기 전에 자리를 눈으로 보고 고릅니다." },
+    { title: "넣기 전에 페이지 확인", description: "기존 모든 페이지의 썸네일로 페이지 번호를 어림짐작하지 않고 삽입 지점을 확실하게 고를 수 있습니다." },
+    { title: "원본은 그대로 유지", description: "기존 페이지는 원래 순서와 품질을 유지합니다 — 새 페이지는 그 사이에 추가될 뿐, 무엇도 다시 렌더링되거나 축소되지 않습니다." },
+  ],
+  workflowTitle: "페이지 추가가 문서 작업에 어떻게 들어맞는가",
+  workflowDescription: "완성된 PDF에 무언가 빠졌을 때 — 표지, 서명된 추가 합의서, 문서 중간에 들어가야 할 스캔한 영수증.",
+  steps: [
+    "페이지를 추가할 PDF를 업로드합니다.",
+    "삽입 지점을 클릭한 뒤, 그곳에 넣을 PDF나 이미지를 선택합니다.",
+    "새 페이지가 들어간 결합 PDF를 삽입하고 다운로드합니다.",
+  ],
+  readingTitle: "PDF를 조립하는 더 많은 방법",
+  readingDescription: "문서를 구성하고 합치는 관련 도구와 가이드.",
+  readingLinks: [
+    { label: "PDF 병합", href: "/merge-pdf", description: "한 페이지씩 삽입하는 대신 여러 개의 완전한 PDF를 하나의 순서가 있는 파일로 합칩니다." },
+    { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+  ],
+};
+
 export function InsertPdfClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
   const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -449,7 +494,7 @@ export function InsertPdfClient({ locale = "en", embedded = false }: { locale?: 
     de: (n) => `Seite ${n}`,
   };
   const pageLabel = (n: number) =>
-    locale === "zh-Hant" ? toHant(PAGE_LABEL.zh(n)) : PAGE_LABEL[al](n);
+    locale === "zh-Hant" ? toHant(PAGE_LABEL.zh(n)) : locale === "ko" ? `${n}페이지` : PAGE_LABEL[al](n);
 
   const Slot = ({ value, label }: { value: number; label: string }) => {
     const active = insertAfter === value;

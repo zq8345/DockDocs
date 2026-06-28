@@ -82,6 +82,18 @@ const STR = {
   },
 } satisfies AuthoredCopy<typeof _en>;
 
+// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
+// copy lives in standalone *_KO objects selected explicitly in the resolver below.
+const STR_KO: (typeof STR)["en"] = {
+  title: "페이지 회전",
+  subtitle: "PDF를 업로드하고 페이지를 클릭해 회전하세요 — 다운로드하기 전에 돌아가는 모습을 확인할 수 있습니다. 옆으로 누운 스캔본과 가로 페이지를 브라우저에서 바로잡으세요.",
+  drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+  choose: "PDF 선택", rendering: "페이지를 렌더링하는 중…",
+  hint: "페이지를 클릭하면 90° 회전합니다. 계속 클릭하면 계속 돌아갑니다.",
+  rotateAll: "모두 90° 회전", apply: "적용하고 다운로드", working: "PDF를 생성하는 중…",
+  reset: "다시 시작", none: "아직 회전한 페이지가 없습니다 — 페이지를 클릭하세요.", err: "문제가 발생했습니다: ",
+};
+
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why rotate PDF pages in your browser",
@@ -246,13 +258,37 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "브라우저에서 PDF 페이지를 회전하는 이유",
+  benefitsDescription: "어느 한 페이지든 — 또는 문서 전체의 — 방향을 몇 초 만에 바로잡습니다.",
+  benefits: [
+    { title: "옆으로 누운 스캔 바로잡기", description: "가로나 거꾸로 스캔된 페이지를 똑바로 세워 문서가 바른 방향으로 읽히게 합니다." },
+    { title: "전체 또는 일부만 회전", description: "PDF 전체에 회전을 적용하거나, 다른 방향이 필요한 개별 페이지를 골라 회전하세요." },
+    { title: "90° 단위, 어느 방향이든", description: "페이지를 90°, 180°, 270°로 — 시계 방향이든 반시계 방향이든 — 돌리고 저장하기 전에 미리 확인하세요." },
+  ],
+  workflowTitle: "회전이 문서 작업에 어떻게 들어맞는가",
+  workflowDescription: "스캔이나 내보내기가 옆으로 나왔을 때 — 가로로 촬영한 계약서, 방향이 뒤집힌 채 스캔된 묶음.",
+  steps: [
+    "회전할 페이지가 있는 PDF를 업로드합니다.",
+    "페이지를 선택하고 회전 각도를 고릅니다.",
+    "적용하고 바로잡은 PDF를 다운로드합니다.",
+  ],
+  readingTitle: "PDF를 정리하는 더 많은 방법",
+  readingDescription: "문서 페이지를 바로잡고 재배열하는 관련 도구.",
+  readingLinks: [
+    { label: "페이지 재정렬", href: "/reorder-pages", description: "끌어서 PDF의 페이지 순서를 바꿉니다." },
+    { label: "PDF 자르기", href: "/crop-pdf", description: "페이지 여백이나 불필요한 빈 공간을 잘라냅니다." },
+    { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+  ],
+};
+
 export function RotatePagesClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
   const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const pageLabel = (n: number) => {
     const MSG: Record<AuthoredLocale, string> = {
       en: `Page ${n}`,
@@ -263,7 +299,7 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
       ja: `Page ${n}`,
       de: `Seite ${n}`,
     };
-    return locale === "zh-Hant" ? toHant(MSG.zh) : MSG[al];
+    return locale === "zh-Hant" ? toHant(MSG.zh) : locale === "ko" ? `${n}페이지` : MSG[al];
   };
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);

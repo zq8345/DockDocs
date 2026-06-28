@@ -89,6 +89,19 @@ const STR = {
   },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
+// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
+// copy lives in standalone *_KO objects selected explicitly in the resolver below.
+const STR_KO: (typeof STR)["en"] = {
+  title: "페이지 삭제",
+  subtitle: "PDF를 업로드하고 제거할 페이지를 클릭하세요 — 다운로드하기 전에 무엇이 사라지는지 정확히 확인할 수 있습니다. 모든 작업은 브라우저에서 이루어집니다.",
+  drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+  choose: "PDF 선택", rendering: "페이지를 렌더링하는 중…",
+  hint: "페이지를 클릭하면 삭제 대상으로 표시됩니다. 다시 클릭하면 유지합니다.",
+  status: (del: number, keep: number) => `삭제 ${del}개 · 남는 페이지 ${keep}개`,
+  apply: "삭제하고 다운로드", working: "PDF를 생성하는 중…", reset: "다시 시작",
+  needKeep: "최소한 한 페이지는 남기세요.", del: "삭제됩니다", err: "문제가 발생했습니다: ",
+};
+
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why delete PDF pages in your browser",
@@ -253,13 +266,37 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   },
 };
 
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "브라우저에서 PDF 페이지를 삭제하는 이유",
+  benefitsDescription: "빈 페이지, 중복 페이지, 기밀 페이지 등 원치 않는 페이지를 몇 번의 클릭으로 PDF에서 제거하세요.",
+  benefits: [
+    { title: "필요 없는 것은 제거", description: "빈 스캔, 중복 페이지, 공유하고 싶지 않은 부분을 삭제하세요 — 중요한 페이지만 남깁니다." },
+    { title: "페이지를 눈으로 보고 선택", description: "모든 페이지가 썸네일로 표시됩니다. 제거할 페이지를 클릭으로 표시하고 내보내기 전에 결과를 확인하세요." },
+    { title: "나머지는 그대로", description: "남은 페이지는 원래 품질과 순서를 유지합니다 — 삭제는 다른 페이지를 다시 렌더링하거나 옮기지 않습니다." },
+  ],
+  workflowTitle: "페이지 삭제가 작업에 어떻게 들어맞는가",
+  workflowDescription: "PDF에 있어선 안 될 페이지가 들어 있을 때 — 표지, 빈 뒷면, 공유하기 전에 빼야 할 내부 메모.",
+  steps: [
+    "정리하려는 PDF를 업로드합니다.",
+    "제거할 페이지 썸네일을 클릭합니다.",
+    "해당 페이지가 빠진 PDF를 다운로드합니다.",
+  ],
+  readingTitle: "PDF를 정리하는 더 많은 방법",
+  readingDescription: "문서 페이지를 정리하고 재배열하는 관련 도구.",
+  readingLinks: [
+    { label: "PDF 분할", href: "/split-pdf", description: "큰 PDF를 별도의 파일이나 페이지 범위로 나눕니다." },
+    { label: "페이지 재정렬", href: "/reorder-pages", description: "끌어서 PDF의 페이지 순서를 바꿉니다." },
+    { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+  ],
+};
+
 export function DeletePagesClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
   const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -367,7 +404,7 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
                 ja: `Page ${n}`,
                 de: `Seite ${n}`,
               };
-              const pageLabel = locale === "zh-Hant" ? toHant(PAGE_LABEL.zh) : PAGE_LABEL[al];
+              const pageLabel = locale === "zh-Hant" ? toHant(PAGE_LABEL.zh) : locale === "ko" ? `${n}페이지` : PAGE_LABEL[al];
               return (
                 <button
                   key={p.idx}

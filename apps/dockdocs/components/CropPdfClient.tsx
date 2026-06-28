@@ -92,6 +92,19 @@ const STR = {
   },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
+// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
+// copy lives in standalone *_KO objects selected explicitly in the resolver below.
+const STR_KO: (typeof STR)["en"] = {
+  title: "PDF 자르기",
+  subtitle: "PDF를 업로드하고 실시간 미리보기로 어느 가장자리든 여백을 잘라낸 뒤 다운로드하세요 — 모든 페이지가 동일하게 잘리며, 전부 브라우저에서 처리됩니다.",
+  drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+  choose: "PDF 선택", rendering: "미리보기를 렌더링하는 중…",
+  preview: "실시간 미리보기", top: "위", right: "오른쪽", bottom: "아래", left: "왼쪽",
+  reset: "여백 초기화", apply: "자르고 다운로드", working: "자르는 중…", start: "다시 시작",
+  hint: "슬라이더를 끌어 각 가장자리를 잘라냅니다(페이지 대비 %). 비어 있는 영역이 남는 부분입니다.",
+  err: "문제가 발생했습니다: ",
+};
+
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why crop PDFs in your browser",
@@ -249,14 +262,37 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "브라우저에서 PDF를 자르는 이유",
+  benefitsDescription: "여백과 빈 공간을 잘라 모든 페이지를 더 알차게 만드세요. 적용하기 전에 실시간 미리보기로 확인할 수 있습니다.",
+  benefits: [
+    { title: "적용하기 전에 결과를 확인", description: "실시간 페이지 미리보기 위에서 각 가장자리를 끌면, 무엇이 남고 무엇이 잘리는지 정확히 알 수 있습니다 — 어림짐작도, 파일을 다시 열 필요도 없습니다." },
+    { title: "여백은 잘라내고 내용은 유지", description: "스캔의 빈 공간이나 넓은 인쇄 여백을 잘라내면 글과 도표가 페이지를 가득 채워 화면에서 더 잘 읽힙니다." },
+    { title: "모든 페이지에 동일한 자르기", description: "설정한 가장자리가 모든 페이지에 똑같이 적용되어, 한 번에 테두리가 일정하고 정돈된 문서를 얻습니다." },
+  ],
+  workflowTitle: "자르기가 문서 작업에 어떻게 들어맞는가",
+  workflowDescription: "빈 테두리가 너무 많은 PDF를 만났을 때 — 스캔본, 내보낸 슬라이드, 인쇄용이었지만 이제는 화면으로 보는 페이지.",
+  steps: [
+    "정리하려는 PDF를 업로드합니다.",
+    "실시간 미리보기에서 위·오른쪽·아래·왼쪽 가장자리를 끌어 원하는 내용만 남깁니다.",
+    "잘라낸 PDF를 다운로드합니다.",
+  ],
+  readingTitle: "PDF를 다시 다듬는 더 많은 방법",
+  readingDescription: "문서를 잘라내고 재정리하는 관련 도구와 가이드.",
+  readingLinks: [
+    { label: "PDF 분할", href: "/split-pdf", description: "큰 PDF를 별도의 파일이나 페이지 범위로 나눕니다." },
+    { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+  ],
+};
+
 export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // zh-Hant takes the deepHant branch below; collapsing it here too keeps `al` a plain AuthoredLocale.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // UploadDropzone / encryptedPdfMessage accept zh-Hant but not ko, so collapse only ko for those.
   const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
