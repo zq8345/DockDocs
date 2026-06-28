@@ -261,7 +261,7 @@ const COPY = {
     findEyebrow: "// Finden Sie Ihr Tool",
     findHeading: "Wählen Sie ein Tool. Starten Sie mit einem Klick.",
     capSub: "Rund 50 PDF-Tools an einem Ort — konvertieren, ordnen, signieren, schwärzen, OCR — die meisten laufen lokal in Ihrem Browser.",
-    searchPlaceholder: "~50 Tools durchsuchen — komprimieren, zusammenführen, signieren…",
+    searchPlaceholder: "~50 Tools durchsuchen — komprimieren, zusammenfügen, signieren…",
     searchNoResults: "Kein Tool passt dazu — versuchen Sie ein anderes Wort oder sehen Sie alle an.",
     fig2Caption: "Abb. 0.2 — ~50 Tools, vier Wege hinein.",
     aiEyebrow: "// Belegbare KI",
@@ -289,6 +289,46 @@ const COPY = {
     aiSummary: "KI-Zusammenfassung",
     cite: "Quelle",
     figCaption: "Abb. 0.1 — wenn die KI antwortet, zeigt sie die Stelle dahinter — und markiert, was sie nicht zurückverfolgen kann. Mit einem Klick überprüfen.",
+  },
+  ko: {
+    eyebrow: "// 비공개 · 검증 가능한 문서 AI",
+    heroA: "어떤 문서든 읽어내고,",
+    heroB: "모든 답변을 검증하세요.",
+    heroSub: "약 50개의 PDF 도구, 대부분은 브라우저에서 실행됩니다. 여기에 문서를 읽고, 비교하고, 추출하는 AI가 더해집니다 — 그리고 찾아낸 내용의 근거가 되는 원문 구절을 보여 줍니다.",
+    primary: "무료로 사용하기",
+    secondary: "프라이버시 작동 방식 보기",
+    proof: [{ t: "대부분의 도구는 브라우저에서 실행됩니다" }, { g: "0", t: " 브라우저 내 업로드" }, { t: "AI는 출처를 보여 주거나, 그럴 수 없으면 그렇다고 알립니다" }, { t: "가입 불필요" }],
+    findEyebrow: "// 도구 찾기",
+    findHeading: "도구를 고르세요. 한 번의 클릭으로 시작합니다.",
+    capSub: "약 50개의 PDF 도구가 한곳에 — 변환, 정리, 서명, 가림 처리, OCR — 대부분 브라우저에서 로컬로 실행됩니다.",
+    searchPlaceholder: "약 50개 도구 검색 — 압축, 병합, 서명…",
+    searchNoResults: "일치하는 도구가 없습니다 — 다른 단어로 검색하거나 전체를 둘러보세요.",
+    fig2Caption: "그림 0.2 — 약 50개 도구, 네 가지 진입 방식.",
+    aiEyebrow: "// 근거를 제시하는 AI",
+    aiHeading: "근거를 보여 주는 AI.",
+    aiSub: "어떤 문서에도 질문하세요. AI가 답하거나 발견한 점을 표시할 때, 그 근거가 되는 정확한 구절을 보여 줍니다 — 그리고 출처를 만들어 내는 대신, 추적할 수 없을 때는 그렇다고 알립니다. 비교, 추출, 요약.",
+    aiCta: "PDF와 대화하기",
+    aiChips: ["비교", "Excel로 추출", "요약", "18개 언어 번역"],
+    fig3Caption: "그림 0.3 — 근거 있는 하나의 답변, 정확한 구절까지 추적.",
+    jobsEyebrow: "// 당신을 위해 해내는 일",
+    jobsHeading: "몇 시간이 아니라, 몇 분 만에.",
+    fig4Caption: "그림 0.4 — 일상의 네 가지 작업, 몇 시간 대신 몇 분.",
+    browseAll: "전체 도구 둘러보기",
+    more: (n: number) => `외 ${n}개`,
+    tools: "개 도구",
+    ctaEyebrow: "// 사용해 보기",
+    ctaHeadA: "어떤 문서든 읽어내고,",
+    ctaHeadB: "모든 답변을 검증하세요.",
+    ctaSub: "약 50개 도구, 가능할 때 출처를 제시하는 AI, 그리고 아무것도 업로드하지 않는 브라우저 도구. 무료로 시작 — 가입 불필요.",
+    viewPricing: "요금 보기",
+    qaQuestion: "3분기 매출은 얼마나 성장했나요?",
+    qaGrounded: "근거 있는 답변",
+    qaAnswer: "3분기 매출은 전년 대비 23% 성장했으며, 주로 APAC가 견인했습니다.",
+    qaSourcesLabel: "출처",
+    qaSnippets: ["매출 전년 대비 +23%", "APAC가 주요 견인 요인"],
+    aiSummary: "AI 요약",
+    cite: "원문",
+    figCaption: "그림 0.1 — AI가 답할 때, 그 근거가 되는 구절을 보여 주고 — 추적할 수 없는 부분은 그렇다고 표시합니다. 한 번의 클릭으로 검증.",
   },
 } as const;
 
@@ -380,11 +420,11 @@ function MiniExtract({ label, locale }: { label: string; locale: Locale }) {
   const hant = locale === "zh-Hant";
   const h = (s: string) => (hant ? toHant(s) : s);
   const lines = [
-    locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : locale === "de" ? "Umsatz +23 % gg. Vorjahr" : "Revenue +23% YoY",
-    locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : locale === "de" ? "APAC ist der Haupttreiber" : "APAC is the main driver",
-    locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : locale === "de" ? "Bruttomarge 41 % (↑3 pp)" : "Gross margin 41%",
+    locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : locale === "de" ? "Umsatz +23 % gg. Vorjahr" : locale === "ko" ? "매출 전년 대비 +23%" : "Revenue +23% YoY",
+    locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : locale === "de" ? "APAC ist der Haupttreiber" : locale === "ko" ? "APAC가 주요 견인 요인" : "APAC is the main driver",
+    locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : locale === "de" ? "Bruttomarge 41 % (↑3 pp)" : locale === "ko" ? "매출총이익률 41% (↑3pt)" : "Gross margin 41%",
   ];
-  const citeLabel = locale === "zh" || hant ? h("已溯源") : locale === "es" ? "citado" : locale === "pt" ? "citado" : locale === "fr" ? "cité" : locale === "ja" ? "引用済み" : locale === "de" ? "belegt" : "cited";
+  const citeLabel = locale === "zh" || hant ? h("已溯源") : locale === "es" ? "citado" : locale === "pt" ? "citado" : locale === "fr" ? "cité" : locale === "ja" ? "引用済み" : locale === "de" ? "belegt" : locale === "ko" ? "출처 확인됨" : "cited";
   return (
     <div className="flex items-center gap-2.5" onMouseEnter={start} onMouseLeave={stop}>
       <div className="relative flex h-16 w-12 flex-col gap-1 overflow-hidden rounded-md border border-[color:var(--line)] p-1.5">
