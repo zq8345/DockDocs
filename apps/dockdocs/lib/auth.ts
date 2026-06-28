@@ -33,26 +33,26 @@ export function onAuthChange(cb: (user: AuthUser | null) => void): () => void {
   return () => data.subscription.unsubscribe();
 }
 
-// 登录后跳回当前页(/account 与 /zh/account 均已是真实路由，按语言原样返回)
-function redirectTo(): string | undefined {
+// 登录后跳回当前页。传入 preferredPath 可明确指定落地路径（含 ?panel=account 等恢复参数）。
+function buildRedirectTo(preferredPath?: string): string | undefined {
   if (typeof window === "undefined") return undefined;
-  return window.location.origin + window.location.pathname;
+  return window.location.origin + (preferredPath ?? window.location.pathname);
 }
 
-export async function signInWithGoogle(): Promise<void> {
-  const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: redirectTo() } });
+export async function signInWithGoogle(preferredPath?: string): Promise<void> {
+  const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: buildRedirectTo(preferredPath) } });
   if (error) throw error;
 }
 
-export async function signInWithMicrosoft(): Promise<void> {
-  const { error } = await supabase.auth.signInWithOAuth({ provider: "azure", options: { scopes: "email openid profile", redirectTo: redirectTo() } });
+export async function signInWithMicrosoft(preferredPath?: string): Promise<void> {
+  const { error } = await supabase.auth.signInWithOAuth({ provider: "azure", options: { scopes: "email openid profile", redirectTo: buildRedirectTo(preferredPath) } });
   if (error) throw error;
 }
 
 // 邮箱魔法链接(免密码)：发链接到邮箱，点击即登录。同一封邮件里也含验证码
 // （{{ .Token }}），用户可以直接点链接，或回登录页输入验证码（verifyEmailOtp）。
-export async function sendMagicLink(email: string): Promise<void> {
-  const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo() } });
+export async function sendMagicLink(email: string, preferredPath?: string): Promise<void> {
+  const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: buildRedirectTo(preferredPath) } });
   if (error) throw error;
 }
 

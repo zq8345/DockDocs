@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
 import { WorkspaceTopbar } from "@/components/WorkspaceTopbar";
+import { WorkspaceNavContext } from "@/components/WorkspaceNavContext";
 import { headerStructure, navItemLabels } from "@/lib/header-nav";
 import { readWorkHistory, type WorkHistoryItem } from "@/lib/work-history";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
@@ -101,6 +102,16 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
 
   useEffect(() => {
     setHistory(readWorkHistory().slice(0, 8));
+    // Open account panel if redirected back from Supabase magic-link flow with ?panel=account
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("panel") === "account") {
+        setActiveTool("/workspace-account");
+        // Remove param from URL without reload
+        const clean = window.location.pathname;
+        window.history.replaceState({}, "", clean);
+      }
+    }
   }, []);
 
   const handleDrop = useCallback(
@@ -134,6 +145,7 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
     : undefined;
 
   return (
+    <WorkspaceNavContext.Provider value={setActiveTool}>
     <div className="flex h-screen overflow-hidden bg-[color:var(--background)]">
       <WorkspaceSidebar locale={locale} activeTool={activeTool} onToolSelect={setActiveTool} />
 
@@ -252,5 +264,6 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
         </div>
       </main>
     </div>
+    </WorkspaceNavContext.Provider>
   );
 }

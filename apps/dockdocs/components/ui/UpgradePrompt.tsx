@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createBillingCheckoutSession } from "@/lib/subscription-runtime";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 import { deepHant } from "@/lib/zh-hant";
+import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
 
 // Locales with their own copy literals (Record keys). zh-Hant derives from zh.
 type PromptLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de";
@@ -84,12 +85,13 @@ export function UpgradePrompt({
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const [loading, setLoading] = useState<PaidSubscriptionPlan | "">("");
 
+  const wsNav = useWorkspaceNav();
   async function upgrade(plan: PaidSubscriptionPlan) {
     setLoading(plan);
     try {
       await createBillingCheckoutSession(plan); // redirects to checkout on success
     } catch {
-      if (typeof window !== "undefined") window.location.href = "/account";
+      if (wsNav) { wsNav("/workspace-account"); } else if (typeof window !== "undefined") { window.location.href = "/account"; }
     }
   }
 

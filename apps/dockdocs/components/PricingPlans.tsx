@@ -8,6 +8,7 @@ import { createBillingCheckoutSession, createBillingPortalSession, getSubscripti
 import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
 import { billingErrorCopy } from "@/lib/membership-ui";
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
+import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
 import { getUser, onAuthChange } from "@/lib/auth";
 import { deepHant, toHant } from "@/lib/zh-hant";
 
@@ -622,6 +623,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const c = hant ? deepHant(copy.zh) : (copy[locale as keyof typeof copy] ?? copy.en);
   const selectLabel = zh ? h("选择套餐") : locale === "es" ? "Seleccionar plan" : locale === "pt" ? "Selecionar plano" : locale === "fr" ? "Sélectionner le forfait" : locale === "ja" ? "プランを選択" : locale === "de" ? "Tarif auswählen" : "Select plan";
 
+  const wsNav = useWorkspaceNav();
   // Turn a billing failure into a clear, localized message AND a console line with
   // the precise code — never swallow it into a silent /account redirect. Only a
   // genuine auth failure (401) sends the user to sign in.
@@ -633,7 +635,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
     // Genuine not-signed-in → send to sign in.
     if (e?.status === 401 || code === "UNAUTHORIZED" || code === "UNAUTHENTICATED") {
-      if (typeof window !== "undefined") window.location.href = "/account";
+      if (wsNav) { wsNav("/workspace-account"); } else if (typeof window !== "undefined") { window.location.href = "/account"; }
       return;
     }
     // The change isn't an in-place upgrade (e.g. a downgrade) → open the portal.

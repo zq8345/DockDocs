@@ -280,7 +280,8 @@ export function WorkspaceSidebar({
                               <button
                                 type="button"
                                 onClick={() => onToolSelect(item.slug)}
-                                className={`w-full text-left ${subItemCls(isActive, false)}`}
+                                className={subItemCls(isActive, false)}
+                                style={{ width: "100%", textAlign: "left" }}
                               >
                                 <span>{label}</span>
                               </button>

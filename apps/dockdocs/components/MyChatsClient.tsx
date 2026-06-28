@@ -15,6 +15,7 @@ import {
   type SubscriptionSnapshot,
 } from "@/lib/subscription-runtime";
 import { StatusBadge } from "@/components/ui/Status";
+import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
 import {
   deleteSavedSession,
   queueSessionRestore,
@@ -388,6 +389,7 @@ export function MyChatsClient({ locale = "en" }: { locale?: Locale }) {
   const [analytics, setAnalytics] = useState<WorkspaceAnalytics | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
   const [loading, setLoading] = useState(true);
+  const wsNav = useWorkspaceNav();
 
   useEffect(() => {
     let mounted = true;
@@ -448,7 +450,7 @@ export function MyChatsClient({ locale = "en" }: { locale?: Locale }) {
 
   function handleRestoreSession(session: SavedWorkspaceSession) {
     queueSessionRestore(session);
-    window.location.href = "/ai-workspace/#chat-with-pdf";
+    if (wsNav) { wsNav("/chat-with-pdf"); } else { window.location.href = "/ai-workspace/#chat-with-pdf"; }
   }
 
   const planName = subscription?.displayName ?? "Free";
@@ -548,12 +550,22 @@ export function MyChatsClient({ locale = "en" }: { locale?: Locale }) {
                 <div className="rounded-xl border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-8">
                   <h2 className="text-2xl font-semibold">{t.noChatsTitle}</h2>
                   <p className="mt-3 max-w-2xl text-sm leading-6 text-[color:var(--muted)]">{t.noChatsDesc}</p>
-                  <a
-                    href="/ai-workspace/#chat-with-pdf"
-                    className="mt-5 inline-flex min-h-11 items-center rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white"
-                  >
-                    {t.openChat}
-                  </a>
+                  {wsNav ? (
+                    <button
+                      type="button"
+                      onClick={() => wsNav("/chat-with-pdf")}
+                      className="mt-5 inline-flex min-h-11 items-center rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white"
+                    >
+                      {t.openChat}
+                    </button>
+                  ) : (
+                    <a
+                      href="/ai-workspace/#chat-with-pdf"
+                      className="mt-5 inline-flex min-h-11 items-center rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white"
+                    >
+                      {t.openChat}
+                    </a>
+                  )}
                 </div>
               ) : (
                 <div className="grid gap-4">
