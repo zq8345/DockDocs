@@ -96,10 +96,49 @@ const WORKFLOW_ENGINE_SLUGS = new Set([
   "jpg-to-pdf",   "png-to-pdf",
 ]);
 
+// "Convert to PDF" reused by several *-to-pdf tools
+const _TO_PDF: Record<L, string> = {
+  en: "Convert to PDF", zh: "转换为 PDF", "zh-Hant": "轉換為 PDF",
+  es: "Convertir a PDF", pt: "Converter para PDF", fr: "Convertir en PDF",
+  ja: "PDF に変換", de: "Zu PDF konvertieren", ko: "Convert to PDF",
+};
+// Action button label shown AFTER upload (before conversion starts). Separate from upload button.
+const PRIMARY_ACTION: Record<string, Record<L, string>> = {
+  "compress-pdf":    { en: "Compress PDF",        zh: "压缩 PDF",       "zh-Hant": "壓縮 PDF",      es: "Comprimir PDF",         pt: "Comprimir PDF",          fr: "Compresser le PDF",      ja: "PDF を圧縮",       de: "PDF komprimieren",         ko: "Compress PDF" },
+  "merge-pdf":       { en: "Merge PDFs",           zh: "合并 PDF",       "zh-Hant": "合併 PDF",      es: "Combinar PDFs",         pt: "Combinar PDFs",          fr: "Fusionner les PDFs",     ja: "PDF を結合",       de: "PDFs zusammenführen",      ko: "Merge PDFs" },
+  "split-pdf":       { en: "Split PDF",            zh: "拆分 PDF",       "zh-Hant": "分割 PDF",      es: "Dividir PDF",           pt: "Dividir PDF",            fr: "Diviser le PDF",         ja: "PDF を分割",       de: "PDF aufteilen",            ko: "Split PDF" },
+  "pdf-to-word":     { en: "Convert to Word",      zh: "转换为 Word",    "zh-Hant": "轉換為 Word",   es: "Convertir a Word",      pt: "Converter para Word",    fr: "Convertir en Word",      ja: "Word に変換",      de: "Zu Word konvertieren",     ko: "Convert to Word" },
+  "ocr-pdf":         { en: "Run OCR",              zh: "识别文字",       "zh-Hant": "識別文字",      es: "Ejecutar OCR",          pt: "Executar OCR",           fr: "Lancer l'OCR",           ja: "OCR を実行",       de: "OCR starten",              ko: "Run OCR" },
+  "pdf-to-html":     { en: "Convert to HTML",      zh: "转换为 HTML",    "zh-Hant": "轉換為 HTML",   es: "Convertir a HTML",      pt: "Converter para HTML",    fr: "Convertir en HTML",      ja: "HTML に変換",      de: "Zu HTML konvertieren",     ko: "Convert to HTML" },
+  "html-to-pdf":     _TO_PDF,
+  "pdf-to-markdown": { en: "Convert to Markdown",  zh: "转换为 Markdown","zh-Hant": "轉換為 Markdown",es: "Convertir a Markdown",  pt: "Converter para Markdown",fr: "Convertir en Markdown",  ja: "Markdown に変換",  de: "Zu Markdown konvertieren", ko: "Convert to Markdown" },
+  "word-to-pdf":     _TO_PDF,
+  "excel-to-pdf":    _TO_PDF,
+  "ppt-to-pdf":      _TO_PDF,
+  "pdf-to-pdfa":     { en: "Convert to PDF/A",     zh: "转换为 PDF/A",   "zh-Hant": "轉換為 PDF/A",  es: "Convertir a PDF/A",     pt: "Converter para PDF/A",   fr: "Convertir en PDF/A",     ja: "PDF/A に変換",     de: "Zu PDF/A konvertieren",    ko: "Convert to PDF/A" },
+  "pdf-to-ppt":      { en: "Convert to PPTX",      zh: "转换为 PPT",     "zh-Hant": "轉換為 PPTX",   es: "Convertir a PPTX",      pt: "Converter para PPTX",    fr: "Convertir en PPTX",      ja: "PPTX に変換",      de: "Zu PPTX konvertieren",     ko: "Convert to PPTX" },
+  "pdf-to-excel":    { en: "Convert to Excel",      zh: "转换为 Excel",   "zh-Hant": "轉換為 Excel",  es: "Convertir a Excel",     pt: "Converter para Excel",   fr: "Convertir en Excel",     ja: "Excel に変換",     de: "Zu Excel konvertieren",    ko: "Convert to Excel" },
+  "delete-page":     { en: "Delete Pages",          zh: "删除页面",       "zh-Hant": "刪除頁面",      es: "Eliminar páginas",      pt: "Excluir páginas",        fr: "Supprimer les pages",    ja: "ページを削除",     de: "Seiten löschen",           ko: "Delete Pages" },
+  "rotate-page":     { en: "Rotate Pages",          zh: "旋转页面",       "zh-Hant": "旋轉頁面",      es: "Girar páginas",         pt: "Girar páginas",          fr: "Pivoter les pages",      ja: "ページを回転",     de: "Seiten drehen",            ko: "Rotate Pages" },
+  "reorder-pages":   { en: "Reorder Pages",         zh: "重新排列",       "zh-Hant": "重新排列",      es: "Reordenar páginas",     pt: "Reorganizar páginas",    fr: "Réorganiser les pages",  ja: "ページを並べ替え", de: "Seiten neu ordnen",        ko: "Reorder Pages" },
+  "add-page":        { en: "Add Page",              zh: "添加页面",       "zh-Hant": "新增頁面",      es: "Añadir página",         pt: "Adicionar página",       fr: "Ajouter une page",       ja: "ページを追加",     de: "Seite hinzufügen",         ko: "Add Page" },
+  "protect-pdf":     { en: "Protect PDF",           zh: "加密 PDF",       "zh-Hant": "保護 PDF",      es: "Proteger PDF",          pt: "Proteger PDF",           fr: "Protéger le PDF",        ja: "PDF を保護",       de: "PDF schützen",             ko: "Protect PDF" },
+  "watermark-pdf":   { en: "Add Watermark",         zh: "添加水印",       "zh-Hant": "新增浮水印",    es: "Añadir marca de agua",  pt: "Adicionar marca d'água", fr: "Ajouter un filigrane",   ja: "透かしを追加",     de: "Wasserzeichen hinzufügen", ko: "Add Watermark" },
+  "page-numbers":    { en: "Add Page Numbers",      zh: "添加页码",       "zh-Hant": "新增頁碼",      es: "Añadir núms. de página",pt: "Adicionar núm. de pág.", fr: "Ajouter des numéros",    ja: "ページ番号を追加", de: "Seitenzahlen hinzufügen",  ko: "Add Page Numbers" },
+  "unlock-pdf":      { en: "Unlock PDF",            zh: "解锁 PDF",       "zh-Hant": "解鎖 PDF",      es: "Desbloquear PDF",       pt: "Desbloquear PDF",        fr: "Déverrouiller le PDF",   ja: "PDF をロック解除", de: "PDF entsperren",           ko: "Unlock PDF" },
+  "pdf-to-text":     { en: "Extract Text",          zh: "提取文字",       "zh-Hant": "擷取文字",      es: "Extraer texto",         pt: "Extrair texto",          fr: "Extraire le texte",      ja: "テキストを抽出",   de: "Text extrahieren",         ko: "Extract Text" },
+  "pdf-to-jpg":      { en: "Convert to JPG",        zh: "转换为 JPG",     "zh-Hant": "轉換為 JPG",    es: "Convertir a JPG",       pt: "Converter para JPG",     fr: "Convertir en JPG",       ja: "JPG に変換",       de: "Zu JPG konvertieren",      ko: "Convert to JPG" },
+  "pdf-to-png":      { en: "Convert to PNG",        zh: "转换为 PNG",     "zh-Hant": "轉換為 PNG",    es: "Convertir a PNG",       pt: "Converter para PNG",     fr: "Convertir en PNG",        ja: "PNG に変換",      de: "Zu PNG konvertieren",      ko: "Convert to PNG" },
+  "jpg-to-pdf":      _TO_PDF,
+  "png-to-pdf":      _TO_PDF,
+};
+
 function makeConfig(slug: string, loc: L): PdfToolPageConfig {
   const defaultBtn = CHOOSE[loc] ?? CHOOSE.en;
   const ov = UPLOAD_OVERRIDES[slug];
-  const btn = ov?.btn ? (ov.btn[loc] ?? defaultBtn) : defaultBtn;
+  const uploadBtn = ov?.btn ? (ov.btn[loc] ?? defaultBtn) : defaultBtn;
+  const actionMap = PRIMARY_ACTION[slug];
+  const primaryActionLabel = actionMap ? (actionMap[loc] ?? actionMap.en) : uploadBtn;
   return {
     slug,
     locale: loc,
@@ -111,9 +150,9 @@ function makeConfig(slug: string, loc: L): PdfToolPageConfig {
     breadcrumbName: slug,
     heroTitle: slug,
     heroDescription: "",
-    primaryActionLabel: btn,
+    primaryActionLabel,
     stats: [],
-    upload: { title: slug, description: "", buttonLabel: btn, multiple: ov?.multiple, accept: ov?.accept },
+    upload: { title: slug, description: "", buttonLabel: uploadBtn, multiple: ov?.multiple, accept: ov?.accept },
     benefits: [],
     benefitsTitle: "",
     benefitsDescription: "",
@@ -156,5 +195,5 @@ export function WorkspacePdfTool({ slug, locale = "en" }: { slug: string; locale
       </div>
     );
   }
-  return <PdfToolPageEmbedded config={makeConfig(slug, loc)} />;
+  return <PdfToolPageEmbedded key={slug} config={makeConfig(slug, loc)} />;
 }
