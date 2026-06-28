@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
@@ -312,7 +312,7 @@ function pageLabel(locale: Locale, n: number): string {
   return labels[al];
 }
 
-export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
+export function PageReorderClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
@@ -419,12 +419,12 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
   }, [pages, fileName, t, childLocale]);
 
   return (
-    <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
-      <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
+    <div className={`mx-auto max-w-5xl px-5 pb-16 sm:px-6 sm:pb-20 ${embedded ? "pt-4" : "pt-12 sm:pt-16"}`}>
+      {!embedded && <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>}
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
@@ -462,7 +462,7 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
                   ✕
                 </button>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.thumb} alt={`page ${p.idx + 1}`} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
+                <img src={p.thumb} alt={`page ${p.idx + 1}`} className={`w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] ${embedded ? "max-h-[150px] object-contain" : "h-auto"}`} />
                 <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">
                   {pageLabel(locale, p.idx + 1)}
                 </p>
@@ -480,8 +480,8 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
           <ToolBridge slug="reorder-pages" locale={locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="reorder-pages" locale={locale} />
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="reorder-pages" locale={locale} />}
     </div>
   );
 }

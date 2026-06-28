@@ -35,10 +35,34 @@ const WorkspacePdfToolEmbedded = dynamic(
   () => import("@/components/WorkspacePdfTool").then((m) => m.WorkspacePdfTool),
   { ssr: false },
 );
+const RedlineEmbedded = dynamic(
+  () => import("@/components/RedlineClient").then((m) => m.RedlineClient),
+  { ssr: false },
+);
+const LeaseRedflagEmbedded = dynamic(
+  () => import("@/components/LeaseRedflagClient").then((m) => m.LeaseRedflagClient),
+  { ssr: false },
+);
+const GovbidMatrixEmbedded = dynamic(
+  () => import("@/components/GovbidMatrixClient").then((m) => m.GovbidMatrixClient),
+  { ssr: false },
+);
+const ExtractExcelEmbedded = dynamic(
+  () => import("@/components/ExtractExcelClient").then((m) => m.ExtractExcelClient),
+  { ssr: false },
+);
+const QuizEmbedded = dynamic(
+  () => import("@/components/QuizClient").then((m) => m.QuizClient),
+  { ssr: false },
+);
 
-// PDF conversion tools served via the workspace PDF engine (sample: pdf-to-word).
-// Batch-expanded to all 43 slugs after sample approval.
-const WORKSPACE_PDF_SLUGS = new Set(["/pdf-to-word"]);
+// All PDF tool slugs from the "Document tools" nav category — served via WorkspacePdfTool.
+// Derived from headerStructure so adding a new tool auto-expands the set.
+const WORKSPACE_PDF_SLUGS: Set<string> = new Set([
+  ...(headerStructure.find((c) => c.catKey === "Document tools")?.cols ?? [])
+    .flatMap((col) => col.items.map((item) => item.slug)),
+  "/ocr-pdf",
+]);
 
 type NavLocale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
@@ -155,6 +179,15 @@ export function DashboardWorkspace() {
       })()
     : undefined;
 
+  // One-line value subtitle — reuse existing quickstart card copy for the 4 AI tools
+  const toolDescriptionMap: Record<string, string> = {
+    "/chat-with-pdf":  dash.cardChatDesc     ?? "",
+    "/compare":        dash.cardCompareDesc  ?? "",
+    "/ai-summary":     dash.cardSummaryDesc  ?? "",
+    "/contract-risk":  dash.cardContractDesc ?? "",
+  };
+  const toolDescription = activeTool ? (toolDescriptionMap[activeTool] ?? "") : "";
+
   if (!hydrated) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -170,22 +203,48 @@ export function DashboardWorkspace() {
 
       {/* ── Right column (topbar + content) ── */}
       <main className="flex flex-1 flex-col overflow-hidden">
-        <WorkspaceTopbar locale={locale} activeTool={activeTool} toolLabel={toolLabel} />
+        {/* ── Sticky topbar: height = sidebar logo (48px), always visible ── */}
+        <header
+          className="flex shrink-0 items-center border-b border-[color:var(--line)] bg-[color:var(--background)] px-6"
+          style={{ height: 48 }}
+        >
+          {activeTool && toolLabel && (
+            <h1 className="truncate text-[14px] font-semibold leading-none text-[color:var(--foreground)]">
+              {toolLabel}
+            </h1>
+          )}
+        </header>
+
         <div className="flex flex-1 flex-col overflow-y-auto">
-        {activeTool === "/workspace-account" ? (
-          <div className="mx-auto w-full max-w-md px-8 py-10">
-            <AccountEmbedded locale={locale} />
+        {activeTool ? (
+          /* ── Tool active: content starts at top of scroll area ── */
+          <div className="flex min-h-full flex-col items-center">
+            {activeTool === "/workspace-account" ? (
+              <div className="mx-auto w-full max-w-md px-8 pb-10">
+                <AccountEmbedded locale={locale} />
+              </div>
+            ) : WORKSPACE_PDF_SLUGS.has(activeTool) ? (
+              <WorkspacePdfToolEmbedded slug={activeTool.slice(1)} locale={locale} />
+            ) : activeTool === "/contract-risk" ? (
+              <ContractRiskEmbedded locale={locale} embedded />
+            ) : activeTool === "/chat-with-pdf" ? (
+              <ChatWithPdfEmbedded locale={locale} embedded />
+            ) : activeTool === "/compare" ? (
+              <DocumentCompareEmbedded locale={locale} embedded />
+            ) : activeTool === "/ai-summary" ? (
+              <AiSummaryEmbedded locale={locale} embedded />
+            ) : activeTool === "/redline" ? (
+              <RedlineEmbedded locale={locale} embedded />
+            ) : activeTool === "/extract-to-excel" ? (
+              <ExtractExcelEmbedded locale={locale} embedded />
+            ) : activeTool === "/flashcards" ? (
+              <QuizEmbedded locale={locale} embedded />
+            ) : activeTool === "/lease-redflag" ? (
+              <LeaseRedflagEmbedded locale={locale} embedded />
+            ) : activeTool === "/govbid-matrix" ? (
+              <GovbidMatrixEmbedded locale={locale} embedded />
+            ) : null}
           </div>
-        ) : activeTool && WORKSPACE_PDF_SLUGS.has(activeTool) ? (
-          <WorkspacePdfToolEmbedded slug={activeTool.slice(1)} locale={locale} />
-        ) : activeTool === "/contract-risk" ? (
-          <ContractRiskEmbedded locale={locale} embedded />
-        ) : activeTool === "/chat-with-pdf" ? (
-          <ChatWithPdfEmbedded locale={locale} embedded />
-        ) : activeTool === "/compare" ? (
-          <DocumentCompareEmbedded locale={locale} embedded />
-        ) : activeTool === "/ai-summary" ? (
-          <AiSummaryEmbedded locale={locale} embedded />
         ) : history.length > 0 ? (
           /* ── ③ Recent docs (returning user) ── */
           <div className="mx-auto w-full max-w-2xl px-8 py-12">

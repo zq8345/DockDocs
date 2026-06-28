@@ -15,7 +15,16 @@ function toNavLocale(locale: RuntimeLocale): NavLocale {
 }
 
 const SHOWN_LOCALES = routeLocales as readonly string[];
-const EMBEDDED_SLUGS = new Set(["/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk"]);
+const _DOC_TOOL_SLUGS = [
+  ...(headerStructure.find((c) => c.catKey === "Document tools")?.cols ?? [])
+    .flatMap((col) => col.items.map((item) => item.slug)),
+  "/ocr-pdf",
+];
+const EMBEDDED_SLUGS = new Set([
+  "/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk",
+  "/redline", "/extract-to-excel", "/flashcards", "/lease-redflag", "/govbid-matrix",
+  ..._DOC_TOOL_SLUGS,
+]);
 
 // ── Chevron (module-level to avoid remount) ──────────────────────────────────
 function ChevronIcon({ open }: { open: boolean }) {
@@ -172,7 +181,7 @@ export function WorkspaceSidebar({
     >
       {/* ── ① Logo ── */}
       <div
-        className="flex shrink-0 items-center border-b border-[color:var(--line)] px-4"
+        className="flex shrink-0 items-center px-4"
         style={{ height: 48 }}
       >
         <button
@@ -215,15 +224,24 @@ export function WorkspaceSidebar({
                 <div className="mt-0.5 space-y-px pb-1">
                   {col.items.map((item) => {
                     const label = labels[item.key] ?? item.key;
-                    const soon = !!(item as { soon?: boolean }).soon;
                     const isActive = activeTool === item.slug;
                     return (
                       <div key={item.key} className="relative">
                         <NavItemBar isActive={isActive} />
-                        <a href={item.slug} className={subItemCls(isActive, soon)}>
-                          <span>{label}</span>
-                          {soon && <SoonBadge />}
-                        </a>
+                        {!!onToolSelect ? (
+                          <button
+                            type="button"
+                            onClick={() => onToolSelect(item.slug)}
+                            className={subItemCls(isActive, false)}
+                            style={{ width: "100%", textAlign: "left" }}
+                          >
+                            <span>{label}</span>
+                          </button>
+                        ) : (
+                          <a href={item.slug} className={subItemCls(isActive, false)}>
+                            <span>{label}</span>
+                          </a>
+                        )}
                       </div>
                     );
                   })}
@@ -232,9 +250,6 @@ export function WorkspaceSidebar({
             </div>
           );
         })}
-
-        {/* Divider */}
-        <div className="my-2 border-t border-[color:var(--line-subtle)]" />
 
         {/* AI analysis + By profession */}
         {otherCats.map((cat) => {
@@ -263,7 +278,7 @@ export function WorkspaceSidebar({
                     const maybeHeading = (col as { headingKey?: string }).headingKey;
                     return (
                       <div key={colIdx}>
-                        {maybeHeading && (
+                        {maybeHeading && cat.catKey !== "By profession" && (
                           <p className="mb-0.5 mt-2 px-3 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">
                             {copy[maybeHeading] ?? maybeHeading}
                           </p>

@@ -262,7 +262,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
-export function QuizClient({ locale = "en" }: { locale?: Locale }) {
+export function QuizClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
@@ -333,12 +333,19 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
   const toggle = (i: number) => setFlipped((p) => { const n = new Set(p); if (n.has(i)) n.delete(i); else n.add(i); return n; });
 
   return (
-    <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
-      <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : "mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"}>
+      {!embedded && (
+        <>
+          <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
+          <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+        </>
+      )}
 
       {phase === "idle" || phase === "reading" ? (
-        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "reading"} busyLabel={t.reading} privacy={false} onFile={onFile} />
+        <>
+          <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "reading"} busyLabel={t.reading} privacy={false} onFile={onFile} />
+          {embedded && <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">⚿ {locale === "zh" || locale === "zh-Hant" ? "文件在浏览器中本地处理 · 不上传至服务器" : locale === "ja" ? "ファイルはブラウザで処理 · アップロードなし" : locale === "es" ? "Archivos procesados en tu navegador · nunca cargados" : locale === "pt" ? "Arquivos processados no seu navegador · nunca enviados" : locale === "fr" ? "Fichiers traités dans votre navigateur · jamais téléversés" : locale === "de" ? "Dateien im Browser verarbeitet · werden nie hochgeladen" : "Files processed in your browser · never uploaded"}</p>}
+        </>
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
@@ -379,8 +386,8 @@ export function QuizClient({ locale = "en" }: { locale?: Locale }) {
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
       {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="flashcards" locale={locale} />
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="flashcards" locale={locale} />}
     </div>
   );
 }

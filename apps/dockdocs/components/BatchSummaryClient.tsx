@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
@@ -263,7 +263,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
-export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
+export function BatchSummaryClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
   // the deepHant branch below); `childLocale` collapses only ko, since the widgets accept zh-Hant.
@@ -415,9 +415,9 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
+    <div className={`mx-auto max-w-5xl px-5 pb-16 sm:px-6 sm:pb-20 ${embedded ? "pt-4" : "pt-12 sm:pt-16"}`}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
+      {!embedded && <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>}
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       <input ref={inputRef} type="file" accept="application/pdf,.pdf" multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
@@ -494,8 +494,8 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
       {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
       <GroundingNote variant="summary" locale={locale} />
       <RelatedPdfTools locale={locale} exclude="/batch-summary" />
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="batch-summary" locale={locale} />
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="batch-summary" locale={locale} />}
     </div>
   );
 }

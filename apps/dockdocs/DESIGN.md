@@ -1,6 +1,6 @@
 # DockDocs 设计规范（统一标尺）
 
-> 工作台 / 官网 / PWA / 桌面版**共用这一把尺**。新增任何 UI 前先读本文，做完对照 §六 验收。
+> 工作台 / 官网 / PWA / 桌面版**共用这一把尺**。新增任何 UI 前先读本文，做完对照 §七 验收。
 > 目的：避免每页各自为政、每次新增重说一遍；未来所有形态保持一致。
 
 ---
@@ -62,13 +62,11 @@
 
 **工作台工具页 ≠ 官网工具页。** 官网面向 SEO 来的未决策陌生人（任务＝说服：benefits / steps / FAQ / social proof）；工作台面向已进来干活的人（任务＝帮他快速干完）。所以工作台工具页**只传 3 层信息，不堆营销**：
 
-1. **价值** — 工具名（h1）+ **一句价值副标题**（这工具做什么 + 关键价值，一句话替代官网整块 benefits）
+1. **价值** — 工具名（顶栏标题，见 §八）+ **一句价值副标题**（这工具做什么 + 关键价值，一句话替代官网整块 benefits）
 2. **操作** — 上传区（按 §三 框规格，居中适中）
 3. **信任** — 隐私 / 可溯源一行（本地处理不上传 / 可溯源 badge），护城河，工作台也要露出
 
 **绝不放**：benefits 三卡 / steps 教程 / FAQ / social proof —— 那是官网说服未决策者用的。
-
-**布局**：整体**垂直居中** + 限宽（内容块 max-w ~560），留白均匀＝呼吸。（"太空"的真因不是信息少，是内容偏上、下方留白不平衡 → 垂直居中解决。）
 
 **渐进式信息密度**（按需出现，不一刀切）：
 - 新用户 / 空账户：极简（标题 + 副标题 + 上传 + 信任）
@@ -80,13 +78,68 @@
 ## 七、验收 checklist（每个组件 / 页面过一遍）
 
 - [ ] **对标**：到 Resend / Linear 那个级别了吗？
-- [ ] **工具页**：3 层信息（价值副标题 + 操作 + 信任）齐、垂直居中、无官网营销块？
+- [ ] **工具页**：3 层信息（价值副标题 + 操作 + 信任）齐、无官网营销块？
 - [ ] **框**：居中 + max-w 上限 + 高度适中（没有 `flex-1` 铺满）？
 - [ ] **明暗**：浅色、深色**都**层次清晰 + 对比足够？
-- [ ] **一致**：字号 / 间距 / 颜色都走了阶 / token，没有随手值？
+- [ ] **一致**：字号 / 间距 / 颜色都走了阶 / token，没有随手值？两类工具（client + 引擎）副标题/宽度一致（§九）？
 - [ ] **克制**：能删的删了？accent 没滥用？留白够？
 - [ ] **状态**：选中 / hover / 空状态 / loading 都设计了？
 - [ ] **零跳出**（工作台内）：点了之后人还在工作台里？
+
+---
+
+## 八、工作台 App Shell — Sticky 顶栏（2026-06-28 落地）
+
+**目的**：工具名始终显示（上传前 / 处理中 / 出结果后），用户永不丢失上下文。
+
+**结构**：
+```
+┌─ WorkspaceSidebar (240px) ─ | ── main (flex-1, flex-col, overflow-hidden) ──┐
+│  logo (48px high)           │  <header> sticky 顶栏 (48px, shrink-0)         │
+│  nav items                  │  ──────────────────────────────────────────────│
+│                             │  <div flex-1 overflow-y-auto> 工具内容 / 滚动   │
+└─────────────────────────────┴─────────────────────────────────────────────────┘
+```
+
+**规则**：
+- `<header>` 是 `<main>` 第一个子元素（在滚动 div 之前），`shrink-0`
+- 高度 `48px` —— 与侧栏 logo 行对齐，LOGO + 标题成一条横轨
+- 背景 `bg-[color:var(--background)]` 不透明（滚动内容被它遮，不溢出）
+- `border-b border-[color:var(--line)]`，`px-6`
+- 顶栏内标题 `<h1>`：`text-[14px] font-semibold leading-none truncate`，仅 `activeTool && toolLabel` 时显示
+- 滚动 div：`flex-1 overflow-y-auto` —— 内容独立滚动，顶栏固定不动
+
+**未来 PWA / 桌面版（Electron/Tauri）**：此 `<header>` 即 app 标题栏区域。macOS 设 `titlebar-area-*` env var、红绿灯在顶栏左侧；Windows 顶栏做拖拽区。48px 已适配各平台；侧栏 logo 行与顶栏对齐 = 全壳单一顶轨。
+
+---
+
+## 九、工具一致性（client + 引擎工具必须长一样）
+
+任意工具在工作台打开，呈现结构必须完全一致：
+```
+[sticky 顶栏 — 工具标题, 48px (§八)]
+[副标题 — 一句价值文案, text-[color:var(--muted)]]
+[上传区 — max-w-3xl 居中 (上传前), 适中非铺满]
+[信任行 — 隐私 / 大小限制]
+```
+
+**引擎工具**（`WORKFLOW_ENGINE_SLUGS` → `PdfToolPageEmbedded`）：
+- 副标题用 `config.heroDescription`（与官网 HeroSection 同字段）
+- 上传区已 `max-w-3xl`
+
+**Client 工具**（`CUSTOM_RENDERERS` → `*Client.tsx`）：
+- 副标题用工具自己的 `t.subtitle`，`{!embedded && ...}` 隐藏营销时**别误伤副标题**，始终显示
+- 上传区 `<UploadDropzone ... constrained={embedded} />` —— embedded 时加 `mx-auto max-w-3xl`
+- 上传**后**（缩略图网格 / 结果区）外层 `max-w-5xl` 保留（网格需要列宽）；只收窄 idle 态上传框
+
+**WatermarkEditorClient 特例**：竖排（预览上 + 表单下）。表单 `mx-auto max-w-[360px]` 居中。预览按宽高比：竖版 `max-w-[360px]`、横版 `max-w-[560px]`。水印 overlay 按列锚定（左列左对齐 / 中列居中 / 右列右对齐），防止文字溢出文档边界。
+
+**新增 embedded 工具的步骤**：
+1. client 组件加 `embedded?: boolean = false` prop
+2. guard：`{!embedded && <h1>}`、`{!embedded && <ToolSections>}`、`{!embedded && <ToolFaq>}`
+3. padding：`${embedded ? "pt-4" : "pt-12 sm:pt-16"}`
+4. `WorkspacePdfTool.tsx` 的 `CUSTOM_RENDERERS` 注册，传 `embedded`
+5. 顶栏 `toolLabel` 自动从 `headerStructure` 取
 
 ---
 

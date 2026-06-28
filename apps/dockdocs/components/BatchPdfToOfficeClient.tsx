@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
@@ -175,7 +175,7 @@ const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>
   },
 };
 
-export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Locale; target?: Format }) {
+export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false }: { locale?: Locale; target?: Format; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // (zh-Hant is also collapsed here because every [al] index below is already inside a
   // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
@@ -314,8 +314,8 @@ export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Loc
   const privacyLabel = locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[al];
 
   return (
-    <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
-      <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{head.title}</h1>
+    <div className={`mx-auto max-w-5xl px-5 pb-16 sm:px-6 sm:pb-20 ${embedded ? "pt-4" : "pt-12 sm:pt-16"}`}>
+      {!embedded && <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{head.title}</h1>}
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{head.subtitle}</p>
 
       <input

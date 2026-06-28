@@ -326,14 +326,14 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
   const nextSteps = summary?.suggestedNextSteps ?? summary?.nextSteps ?? [];
 
   return (
-    <section className={embedded ? "flex flex-1 flex-col" : "mx-auto max-w-5xl"}>
+    <section className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : "mx-auto max-w-5xl"}>
       {/* Upload */}
       {status === "idle" || status === "error" ? (
         <label
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
           onDrop={handleDrop}
-          className={embedded ? `${dropzoneShell(dragging)} flex-1 overflow-y-auto` : `${dropzoneShell(dragging)} overflow-y-auto`}
+          className={embedded ? `${dropzoneShell(dragging)} min-h-[360px] overflow-y-auto` : `${dropzoneShell(dragging)} overflow-y-auto`}
         >
           <span className="inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
             {zh ? h("选择 PDF") : ja ? "PDF を選択" : es ? "Elegir PDF" : pt ? "Escolher PDF" : fr ? "Choisir un PDF" : de ? "PDF auswählen" : "Choose PDF"}
@@ -350,6 +350,12 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
           <input type="file" accept="application/pdf,.pdf" className="sr-only" onChange={handleFile} />
         </label>
       ) : null}
+
+      {(status === "idle" || status === "error") && embedded && (
+        <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">
+          ⚿ {zh ? h("文件在浏览器中本地处理 · 不上传至服务器") : ja ? "ファイルはブラウザで処理 · アップロードなし" : es ? "Archivos procesados en tu navegador · nunca cargados" : pt ? "Arquivos processados no seu navegador · nunca enviados" : fr ? "Fichiers traités dans votre navigateur · jamais téléversés" : de ? "Dateien im Browser verarbeitet · werden nie hochgeladen" : "Files processed in your browser · never uploaded"}
+        </p>
+      )}
 
       {limitHit !== null ? <UpgradePrompt locale={childLocale} limit={limitHit} /> : null}
 

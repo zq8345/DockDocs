@@ -78,10 +78,10 @@
 html.light {
   color-scheme: light;
 
-  --background: #eef0f3;
-  --surface: #ffffff;
-  --surface-subtle: #e8eaed;
-  --surface-raised: #f5f6f8;
+  --background: #ffffff;
+  --surface: #f6f7f8;
+  --surface-subtle: #eef0f3;
+  --surface-raised: #f0f1f3;
 
   --foreground: #0d1117;
   --muted: #374151;
