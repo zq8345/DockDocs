@@ -569,6 +569,85 @@ const copy = {
       { f: "Team-Arbeitsbereich · priorisierter Support", v: ["—", "—", "✓"] },
     ],
   },
+  ko: {
+    title: "간단한 요금제. 강력하고 안전한 문서 작업.",
+    subtitle: "무료로 시작하세요 — 계정도, 카드도 필요 없습니다. AI, 더 큰 파일, 더 많은 작업량이 필요할 때만 업그레이드하세요. 언제든 클릭 두 번으로 해지할 수 있습니다.",
+    monthly: "월간",
+    yearly: "연간",
+    save: "약 40% 절약",
+    lifetime: "평생",
+    perOnce: "1회 결제",
+    lifetimeNote: "창립 기념가 — 한 번 결제하면 평생 사용. 가격은 추후 인상됩니다.",
+    perMo: "/월",
+    mostPopular: "가장 인기",
+    billedYearly: (v: string) => `연간 ${v} 청구`,
+    trust: ["7일 환불 보장", "언제든 해지, 묻지 않습니다", "파일을 자사 모델 학습에 절대 사용하지 않습니다"],
+    plans: [
+      {
+        name: "Free",
+        monthlyPrice: "$0",
+        yearlyPrice: "$0",
+        tagline: "일상적인 PDF 작업에 필요한 모든 것.",
+        highlights: ["약 50가지 PDF 도구 — 변환, 압축, 병합, 분할", "암호화, 페이지 편집, 스캔 문서 OCR", "브라우저에서 처리 — 파일은 안전하게 보관됩니다", "계정 없이 평생 무료"],
+        cta: "지금 무료로 시작",
+        href: "/chat-with-pdf" as RouteSlug,
+        featured: false,
+      },
+      {
+        name: "Plus",
+        monthlyPrice: "$5",
+        yearlyPrice: "$3",
+        yearlyTotal: "$36/년",
+        tagline: "AI가 문서를 읽고 비교합니다 — 단 몇 초 만에.",
+        valueLine: "한 달에 커피 한 잔 값도 안 됩니다.",
+        highlights: ["Free의 모든 기능", "어떤 PDF와도 대화 — 위치를 찾을 수 있으면 답변에 출처를 표시", "AI 요약과 핵심 정리를 몇 초 만에", "여러 문서를 나란히 비교", "100MB 파일, 일괄 처리와 우선 처리, 광고 없음"],
+        cta: "Plus로 업그레이드",
+        href: "" as RouteSlug,
+        featured: true,
+      },
+      {
+        name: "Pro",
+        monthlyPrice: "$20",
+        yearlyPrice: "$12",
+        yearlyTotal: "$144/년",
+        tagline: "문서 워크플로 자동화와 전문가급 검토.",
+        highlights: ["Plus의 모든 기능", "일괄 문서 워크플로 자동화", "계약서 검토 — 위험 조항과 누락 조항을 표시", "API 접근과 자동 분류", "팀 워크스페이스와 우선 지원"],
+        cta: "Pro로 업그레이드",
+        href: "" as RouteSlug,
+        featured: false,
+      },
+    ],
+    faqTitle: "구매 전 자주 묻는 질문",
+    faq: [
+      { q: "언제든 해지할 수 있나요?", a: "네. 클릭 몇 번으로 직접 구독을 관리하거나 해지할 수 있습니다 — 이메일도, 붙잡는 절차도 없습니다. 결제하신 기간이 끝날 때까지는 계속 이용하실 수 있습니다." },
+      { q: "환불이 되나요?", a: "네 — Plus, Pro, 평생 요금제 모두 해당됩니다. 요금제가 맞지 않으면 결제 후 7일 이내에 문의해 주시면 전액 환불해 드립니다. Creem에는 셀프 환불 버튼이 없으니 Creem 주문 페이지의 '판매자에게 문의'를 이용하시거나 billing@dockdocs.app으로 이메일을 보내 주세요. 바로 처리해 드립니다." },
+      { q: "DockDocs를 쓰려면 결제해야 하나요?", a: "아니요. 약 50가지 핵심 PDF 도구는 계정 없이 평생 무료입니다. AI 기능, 더 큰 파일, 더 많은 작업량이 필요할 때만 결제하시면 됩니다." },
+      { q: "제 파일은 어떻게 되나요?", a: "대부분의 도구는 브라우저에서 완전히 처리됩니다 — 파일이 기기를 벗어나지 않습니다. 클라우드 변환은 처리 후 임시 사본이 자동으로 삭제됩니다. 고객님의 문서를 자사 모델 학습에 절대 사용하지 않으며, 답변에 필요한 텍스트만 AI 제공업체에 전송됩니다." },
+      { q: "나중에 요금제를 변경할 수 있나요?", a: "언제든 가능합니다. 원하실 때 업그레이드, 다운그레이드하거나 월간과 연간 사이를 전환할 수 있습니다." },
+    ],
+    ctaTitle: "무료로 사용해 보고 — 나중에 결정하세요.",
+    ctaDesc: "지금 바로 아무 도구나 열어 보세요. 계정도, 카드도, 약정도 없습니다.",
+    ctaBtn: "무료 도구로 시작하기",
+    scenariosTitle: "DockDocs가 무엇을 해결해 드릴까요?",
+    scenarios: [
+      { emoji: "📊", title: "견적을 비교해 최선을 선택", before: "파일 3개를 열고 숫자를 시트에 옮겨 적기 — 약 1시간", after: "업로드 → 나란히 비교표 + 숫자에 근거한 추천 — 1분", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📄", title: "계약서 속 함정 찾아내기", before: "변호사에게 $300을 내거나, 모르고 서명했다가 손해", after: "AI가 몇 분 만에 위험 조항과 누락 조항을 표시", tier: "Pro", href: "/compare" as RouteSlug },
+      { emoji: "🧾", title: "송장 묶음 처리하기", before: "하나씩 입력 — 몇 시간, 아니면 사람을 고용", after: "묶음째 넣으면 → 자동으로 추출·요약", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📕", title: "긴 보고서를 빠르게 파악", before: "답 몇 개를 찾으려 80쪽을 읽기 — 몇 시간", after: "무엇이든 질문 → 30초 만에 출처가 있는 답변(위치를 찾을 수 있는 경우)", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+    ],
+    compareTitle: "요금제 비교",
+    compareCols: ["Free", "Plus", "Pro"],
+    compareRows: [
+      { f: "약 50가지 PDF 도구 — 변환, 압축, 병합, 암호화, OCR", v: ["✓", "✓", "✓"] },
+      { f: "PDF와 대화 · AI 요약", v: ["—", "✓", "✓"] },
+      { f: "AI PDF 번역(레이아웃 유지)", v: ["—", "곧 제공", "곧 제공"] },
+      { f: "여러 문서 비교", v: ["—", "✓", "✓"] },
+      { f: "100MB 파일 · 일괄 처리 · 광고 없음", v: ["—", "✓", "✓"] },
+      { f: "워크플로 자동화 · API · 자동 분류", v: ["—", "—", "✓"] },
+      { f: "계약서 검토 — 위험 조항과 누락 조항", v: ["—", "—", "✓"] },
+      { f: "팀 워크스페이스 · 우선 지원", v: ["—", "—", "✓"] },
+    ],
+  },
 } as const;
 
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
@@ -619,9 +698,9 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const hant = locale === "zh-Hant";
   const zh = locale === "zh" || hant;
   const h = (s: string) => (hant ? toHant(s) : s);
-  // ko has no copy block yet → English via `?? copy.en` (foundation phase).
+  // ko now has a full authored copy block (read directly); zh-Hant derives from zh.
   const c = hant ? deepHant(copy.zh) : (copy[locale as keyof typeof copy] ?? copy.en);
-  const selectLabel = zh ? h("选择套餐") : locale === "es" ? "Seleccionar plan" : locale === "pt" ? "Selecionar plano" : locale === "fr" ? "Sélectionner le forfait" : locale === "ja" ? "プランを選択" : locale === "de" ? "Tarif auswählen" : "Select plan";
+  const selectLabel = zh ? h("选择套餐") : locale === "es" ? "Seleccionar plan" : locale === "pt" ? "Selecionar plano" : locale === "fr" ? "Sélectionner le forfait" : locale === "ja" ? "プランを選択" : locale === "de" ? "Tarif auswählen" : locale === "ko" ? "요금제 선택" : "Select plan";
 
   const wsNav = useWorkspaceNav();
   // Turn a billing failure into a clear, localized message AND a console line with
@@ -680,7 +759,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
       {/* Header */}
       <div className="text-center">
-        <p className={eyebrow}>{zh ? h("// 定价") : locale === "es" ? "// Precios" : locale === "pt" ? "// Preços" : locale === "fr" ? "// Tarifs" : locale === "ja" ? "// 料金" : locale === "de" ? "// Preise" : "// Pricing"}</p>
+        <p className={eyebrow}>{zh ? h("// 定价") : locale === "es" ? "// Precios" : locale === "pt" ? "// Preços" : locale === "fr" ? "// Tarifs" : locale === "ja" ? "// 料金" : locale === "de" ? "// Preise" : locale === "ko" ? "// 요금제" : "// Pricing"}</p>
         <h1 className="mt-4 text-[34px] font-normal leading-[1.08] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[48px]">
           {c.title}
         </h1>
@@ -796,18 +875,18 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               {planKey ? (
                 ctaKind === "current" ? (
                   <span className={`${ctaCls} cursor-default opacity-60`}>
-                    {zh ? h("当前套餐") : locale === "es" ? "Plan actual" : locale === "pt" ? "Plano atual" : locale === "fr" ? "Forfait actuel" : locale === "ja" ? "現在のプラン" : locale === "de" ? "Aktueller Tarif" : "Current plan"}
+                    {zh ? h("当前套餐") : locale === "es" ? "Plan actual" : locale === "pt" ? "Plano atual" : locale === "fr" ? "Forfait actuel" : locale === "ja" ? "現在のプラン" : locale === "de" ? "Aktueller Tarif" : locale === "ko" ? "현재 요금제" : "Current plan"}
                   </span>
                 ) : ctaKind === "manage" ? (
                   <button type="button" onClick={handlePortal} disabled={billingLoading === "portal"} className={ctaCls}>
                     {billingLoading === "portal"
-                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : "Redirecting…")
-                      : (zh ? h("管理账单") : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : locale === "ja" ? "請求を管理" : locale === "de" ? "Abrechnung verwalten" : "Manage billing")}
+                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : locale === "ko" ? "이동 중…" : "Redirecting…")
+                      : (zh ? h("管理账单") : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : locale === "ja" ? "請求を管理" : locale === "de" ? "Abrechnung verwalten" : locale === "ko" ? "결제 관리" : "Manage billing")}
                   </button>
                 ) : (
                   <button type="button" onClick={() => (ctaKind === "upgrade" ? upgrade.beginUpgrade(planKey, period) : plainCheckout(planKey))} disabled={ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey} className={ctaCls}>
                     {(ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey)
-                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : "Redirecting…")
+                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : locale === "ko" ? "이동 중…" : "Redirecting…")
                       : plan.cta}
                   </button>
                 )
@@ -831,7 +910,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* Compare plans — driven by lib/tier-config.ts */}
       <div className="mx-auto mt-16 max-w-4xl">
-        <p className={`${eyebrow} text-center`}>{zh ? h("// 套餐对照") : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : locale === "ja" ? "// プラン比較" : locale === "de" ? "// Vergleich" : "// Compare"}</p>
+        <p className={`${eyebrow} text-center`}>{zh ? h("// 套餐对照") : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : locale === "ja" ? "// プラン比較" : locale === "de" ? "// Vergleich" : locale === "ko" ? "// 요금제 비교" : "// Compare"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.compareTitle}</h2>
         <p className="mt-2 text-center text-[13px] text-[color:var(--faint)]">
           {zh ? h("点击分类展开该类所有工具")
@@ -840,6 +919,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
             : locale === "fr" ? "Cliquez sur une catégorie pour voir les outils qu'elle inclut"
             : locale === "ja" ? "カテゴリをクリックすると含まれるツールが表示されます"
             : locale === "de" ? "Klicken Sie auf eine Kategorie, um die enthaltenen Tools zu sehen"
+            : locale === "ko" ? "카테고리를 클릭하면 포함된 도구가 표시됩니다"
             : "Click a category to see the tools it includes"}
         </p>
         <div className="mt-8 overflow-x-auto rounded-2xl border border-[color:var(--line)]">
@@ -940,7 +1020,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                                 )}
                                 {f.status === "coming" && (
                                   <span className="rounded-full border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] text-[color:var(--faint)]">
-                                    {zh ? h("即将推出") : locale === "es" ? "Pronto" : locale === "pt" ? "Em breve" : locale === "fr" ? "Bientôt" : locale === "ja" ? "近日公開" : locale === "de" ? "Bald" : "Coming"}
+                                    {zh ? h("即将推出") : locale === "es" ? "Pronto" : locale === "pt" ? "Em breve" : locale === "fr" ? "Bientôt" : locale === "ja" ? "近日公開" : locale === "de" ? "Bald" : locale === "ko" ? "곧 제공" : "Coming"}
                                   </span>
                                 )}
                               </li>
@@ -970,6 +1050,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               ? <>* 無制限プランは、不正利用を防ぐための<a href="/terms/" className="underline hover:text-[color:var(--muted)]">フェアユースポリシー</a>が適用されます。</>
               : locale === "de"
               ? <>* Unbegrenzte Tarife unterliegen unserer <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair-Use-Richtlinie</a>, um Missbrauch zu verhindern.</>
+              : locale === "ko"
+              ? <>* 무제한 요금제는 악용을 방지하기 위해 <a href="/terms/" className="underline hover:text-[color:var(--muted)]">공정 이용 정책</a>이 적용됩니다.</>
               : <>* Unlimited plans are subject to our <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair Use Policy</a> to prevent abuse.</>
             }
           </p>
@@ -977,7 +1059,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* Solutions by scenario */}
       <div className="mx-auto mt-24 max-w-5xl">
-        <p className={`${eyebrow} text-center`}>{zh ? h("// 应用场景") : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : locale === "ja" ? "// ユースケース" : locale === "de" ? "// Anwendungsfälle" : "// Use cases"}</p>
+        <p className={`${eyebrow} text-center`}>{zh ? h("// 应用场景") : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : locale === "ja" ? "// ユースケース" : locale === "de" ? "// Anwendungsfälle" : locale === "ko" ? "// 활용 사례" : "// Use cases"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.scenariosTitle}</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {c.scenarios.map((s) => (
@@ -989,7 +1071,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               <p className="mt-3 text-[13px] leading-6 text-[color:var(--muted)]">😩 {s.before}</p>
               <p className="mt-1.5 text-[13px] leading-6 text-[color:var(--foreground)]"><span className="text-[color:var(--accent)]">⚡</span> {s.after}</p>
               {s.href && (
-                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{zh ? h("去试试 →") : locale === "es" ? "Pruébalo →" : locale === "pt" ? "Experimente →" : locale === "fr" ? "Essayez →" : locale === "ja" ? "試す →" : locale === "de" ? "Ausprobieren →" : "Try it →"}</a>
+                <a href={toolHref(s.href)} className="mt-3 inline-block text-[13px] font-medium text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{zh ? h("去试试 →") : locale === "es" ? "Pruébalo →" : locale === "pt" ? "Experimente →" : locale === "fr" ? "Essayez →" : locale === "ja" ? "試す →" : locale === "de" ? "Ausprobieren →" : locale === "ko" ? "사용해 보기 →" : "Try it →"}</a>
               )}
             </div>
           ))}
@@ -998,7 +1080,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* FAQ */}
       <div className="mx-auto mt-24 max-w-3xl">
-        <p className={`${eyebrow} text-center`}>{zh ? h("// 常见问题") : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : locale === "ja" ? "// よくある質問" : locale === "de" ? "// Häufige Fragen" : "// FAQ"}</p>
+        <p className={`${eyebrow} text-center`}>{zh ? h("// 常见问题") : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : locale === "ja" ? "// よくある質問" : locale === "de" ? "// Häufige Fragen" : locale === "ko" ? "// 자주 묻는 질문" : "// FAQ"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.faqTitle}</h2>
         <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
           {c.faq.map((item, i) => (
@@ -1023,7 +1105,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       <div className="mx-auto mt-24 max-w-3xl text-center">
         <h2 className={h2}>{c.ctaTitle}</h2>
         <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.ctaDesc}</p>
-        <a href={zh ? h("/zh/") : locale === "es" ? "/es/" : locale === "pt" ? "/pt/" : locale === "fr" ? "/fr/" : locale === "ja" ? "/ja/" : locale === "de" ? "/de/" : "/"}
+        <a href={zh ? h("/zh/") : locale === "es" ? "/es/" : locale === "pt" ? "/pt/" : locale === "fr" ? "/fr/" : locale === "ja" ? "/ja/" : locale === "de" ? "/de/" : locale === "ko" ? "/ko/" : "/"}
           className="mt-8 inline-flex h-11 items-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]"
         >{c.ctaBtn}</a>
       </div>
