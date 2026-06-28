@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useRef, useState } from "react";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
@@ -321,7 +321,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
-export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant = "hub", content }: { locale?: Locale; defaultFormat?: Fmt; variant?: Variant; content?: ContentDepth }) {
+export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant = "hub", content, embedded = false }: { locale?: Locale; defaultFormat?: Fmt; variant?: Variant; content?: ContentDepth; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
@@ -508,8 +508,8 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
         </div>
       )}
 
-      {variant === "hub" && <ToolSections locale={locale} content={sec} />}
-      <ToolFaq tool={faqTool} locale={locale} />
+      {!embedded && variant === "hub" && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool={faqTool} locale={locale} />}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { trackToolRun } from "@/lib/track";
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
@@ -254,7 +254,7 @@ const NO_PAGES_MSG: Record<AuthoredLocale, string> = {
   de: "Dieses PDF hat keine Seiten.",
 };
 
-export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
+export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props (e.g. UploadDropzone) lacking "ko".
@@ -462,8 +462,8 @@ export function SignPdfClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="sign-pdf" locale={baseLocale} />
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="sign-pdf" locale={baseLocale} />}
     </div>
   );
 }

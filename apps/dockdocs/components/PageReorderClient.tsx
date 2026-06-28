@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
@@ -312,7 +312,7 @@ function pageLabel(locale: Locale, n: number): string {
   return labels[al];
 }
 
-export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
+export function PageReorderClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
@@ -480,8 +480,8 @@ export function PageReorderClient({ locale = "en" }: { locale?: Locale }) {
           <ToolBridge slug="reorder-pages" locale={locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="reorder-pages" locale={locale} />
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="reorder-pages" locale={locale} />}
     </div>
   );
 }

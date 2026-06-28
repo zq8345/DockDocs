@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
@@ -263,7 +263,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
-export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
+export function BatchSummaryClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
   // the deepHant branch below); `childLocale` collapses only ko, since the widgets accept zh-Hant.
@@ -494,8 +494,8 @@ export function BatchSummaryClient({ locale = "en" }: { locale?: Locale }) {
       {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
       <GroundingNote variant="summary" locale={locale} />
       <RelatedPdfTools locale={locale} exclude="/batch-summary" />
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="batch-summary" locale={locale} />
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="batch-summary" locale={locale} />}
     </div>
   );
 }

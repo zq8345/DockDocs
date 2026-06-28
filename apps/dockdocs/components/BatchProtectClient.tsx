@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
@@ -271,7 +271,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
-export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
+export function BatchProtectClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // (zh-Hant is also collapsed here because every [al] index below is already inside a
   // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
@@ -407,8 +407,8 @@ export function BatchProtectClient({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="batch-protect-pdf" locale={locale} />
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="batch-protect-pdf" locale={locale} />}
     </div>
   );
 }

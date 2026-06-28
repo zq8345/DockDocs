@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useRef, useState } from "react";
 import { ToolFaq } from "@/components/ToolFaq";
@@ -252,7 +252,7 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   },
 };
 
-export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
+export function ImagesToPdfClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
@@ -410,8 +410,8 @@ export function ImagesToPdfClient({ locale = "en" }: { locale?: Locale }) {
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
 
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="images-to-pdf" locale={locale} />
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="images-to-pdf" locale={locale} />}
     </div>
   );
 }

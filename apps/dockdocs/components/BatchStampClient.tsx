@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
@@ -444,7 +444,7 @@ const SECTIONS_PN: AuthoredCopy<ToolSectionsContent> = {
   },
 };
 
-export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale; lockMode?: Mode }) {
+export function BatchStampClient({ locale = "en", lockMode, embedded = false }: { locale?: Locale; lockMode?: Mode; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
   // the deepHant branch below); `childLocale` collapses only ko, since BatchUploadBox accepts zh-Hant.
@@ -587,8 +587,8 @@ export function BatchStampClient({ locale = "en", lockMode }: { locale?: Locale;
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool={lockMode === "pagenum" ? "batch-page-numbers" : "batch-watermark-pdf"} locale={locale} />
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool={lockMode === "pagenum" ? "batch-page-numbers" : "batch-watermark-pdf"} locale={locale} />}
     </div>
   );
 }

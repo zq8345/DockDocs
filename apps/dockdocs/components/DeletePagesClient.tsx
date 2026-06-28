@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
@@ -253,7 +253,7 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   },
 };
 
-export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
+export function DeletePagesClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
@@ -396,8 +396,8 @@ export function DeletePagesClient({ locale = "en" }: { locale?: Locale }) {
           <ToolBridge slug="delete-page" locale={locale} useLocalePrefix={locale !== "en"} />
         </div>
       )}
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="delete-page" locale={locale} />
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="delete-page" locale={locale} />}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
@@ -175,7 +175,7 @@ const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>
   },
 };
 
-export function BatchPdfToOfficeClient({ locale = "en", target }: { locale?: Locale; target?: Format }) {
+export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false }: { locale?: Locale; target?: Format; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // (zh-Hant is also collapsed here because every [al] index below is already inside a
   // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)

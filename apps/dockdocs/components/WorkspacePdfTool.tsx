@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { ReactNode } from "react";
 import type { RuntimeLocale } from "@/lib/copy";
@@ -56,40 +56,40 @@ const WORKFLOW_ENGINE_SLUGS = new Set<string>([
 // Tools with specialized client UIs — mirror official catch-all exactly (props included).
 const CUSTOM_RENDERERS: Record<string, (loc: L) => ReactNode> = {
   // Page-editing tools (moved from engine: official site uses dedicated clients)
-  "merge-pdf":          (loc) => <MergePdfClient locale={loc} />,
-  "split-pdf":          (loc) => <SplitPdfClient locale={loc} />,
-  "delete-page":        (loc) => <DeletePagesClient locale={loc} />,
-  "rotate-page":        (loc) => <RotatePagesClient locale={loc} />,
-  "reorder-pages":      (loc) => <PageReorderClient locale={loc} />,
-  "add-page":           (loc) => <InsertPdfClient locale={loc} />,
-  "watermark-pdf":      (loc) => <WatermarkEditorClient locale={loc} />,
-  "page-numbers":       (loc) => <PageNumbersClient locale={loc} />,
+  "merge-pdf":          (loc) => <MergePdfClient locale={loc} embedded />,
+  "split-pdf":          (loc) => <SplitPdfClient locale={loc} embedded />,
+  "delete-page":        (loc) => <DeletePagesClient locale={loc} embedded />,
+  "rotate-page":        (loc) => <RotatePagesClient locale={loc} embedded />,
+  "reorder-pages":      (loc) => <PageReorderClient locale={loc} embedded />,
+  "add-page":           (loc) => <InsertPdfClient locale={loc} embedded />,
+  "watermark-pdf":      (loc) => <WatermarkEditorClient locale={loc} embedded />,
+  "page-numbers":       (loc) => <PageNumbersClient locale={loc} embedded />,
 
   // Image/utility tools
-  "pdf-to-image":       (loc) => <PdfToImageClient locale={loc} defaultFormat="jpg" variant="hub" />,
-  "images-to-pdf":      (loc) => <ImagesToPdfClient locale={loc} />,
-  "crop-pdf":           (loc) => <CropPdfClient locale={loc} />,
-  "redact-pdf":         (loc) => <RedactPdfClient locale={loc} />,
-  "sign-pdf":           (loc) => <SignPdfClient locale={loc} />,
+  "pdf-to-image":       (loc) => <PdfToImageClient locale={loc} defaultFormat="jpg" variant="hub" embedded />,
+  "images-to-pdf":      (loc) => <ImagesToPdfClient locale={loc} embedded />,
+  "crop-pdf":           (loc) => <CropPdfClient locale={loc} embedded />,
+  "redact-pdf":         (loc) => <RedactPdfClient locale={loc} embedded />,
+  "sign-pdf":           (loc) => <SignPdfClient locale={loc} embedded />,
 
   // Batch tools
-  "batch-compress":     (loc) => <BatchCompressClient locale={loc} />,
-  "batch-pdf-to-image": (loc) => <BatchPdfToImageClient locale={loc} />,
-  "batch-protect-pdf":  (loc) => <BatchProtectClient locale={loc} />,
-  "batch-rename-pdf":   (loc) => <BatchRenameClient locale={loc} />,
-  "batch-watermark-pdf":(loc) => <BatchStampClient locale={loc} lockMode="watermark" />,
-  "batch-page-numbers": (loc) => <BatchStampClient locale={loc} lockMode="pagenum" />,
-  "batch-split-merge":  (loc) => <BatchSplitMergeClient locale={loc} lockMode="split" />,
-  "batch-rotate-pdf":   (loc) => <BatchRotateClient locale={loc} />,
-  "batch-pdf-to-word":  (loc) => <BatchPdfToOfficeClient locale={loc} target="word" />,
-  "batch-pdf-to-excel": (loc) => <BatchPdfToOfficeClient locale={loc} target="excel" />,
-  "batch-word-to-pdf":  (loc) => <BatchOfficeToPdfClient locale={loc} source="word" />,
-  "batch-excel-to-pdf": (loc) => <BatchOfficeToPdfClient locale={loc} source="excel" />,
-  "batch-ppt-to-pdf":   (loc) => <BatchOfficeToPdfClient locale={loc} source="ppt" />,
-  "batch-translate":    (loc) => <BatchTranslateClient locale={loc} />,
-  "batch-fix-scans":    (loc) => <BatchFixScansClient locale={loc} />,
-  "batch-summary":      (loc) => <BatchSummaryClient locale={loc} />,
-  "batch-sort":         (loc) => <BatchSortClient locale={loc} />,
+  "batch-compress":     (loc) => <BatchCompressClient locale={loc} embedded />,
+  "batch-pdf-to-image": (loc) => <BatchPdfToImageClient locale={loc} embedded />,
+  "batch-protect-pdf":  (loc) => <BatchProtectClient locale={loc} embedded />,
+  "batch-rename-pdf":   (loc) => <BatchRenameClient locale={loc} embedded />,
+  "batch-watermark-pdf":(loc) => <BatchStampClient locale={loc} lockMode="watermark" embedded />,
+  "batch-page-numbers": (loc) => <BatchStampClient locale={loc} lockMode="pagenum" embedded />,
+  "batch-split-merge":  (loc) => <BatchSplitMergeClient locale={loc} lockMode="split" embedded />,
+  "batch-rotate-pdf":   (loc) => <BatchRotateClient locale={loc} embedded />,
+  "batch-pdf-to-word":  (loc) => <BatchPdfToOfficeClient locale={loc} target="word" embedded />,
+  "batch-pdf-to-excel": (loc) => <BatchPdfToOfficeClient locale={loc} target="excel" embedded />,
+  "batch-word-to-pdf":  (loc) => <BatchOfficeToPdfClient locale={loc} source="word" embedded />,
+  "batch-excel-to-pdf": (loc) => <BatchOfficeToPdfClient locale={loc} source="excel" embedded />,
+  "batch-ppt-to-pdf":   (loc) => <BatchOfficeToPdfClient locale={loc} source="ppt" embedded />,
+  "batch-translate":    (loc) => <BatchTranslateClient locale={loc} embedded />,
+  "batch-fix-scans":    (loc) => <BatchFixScansClient locale={loc} embedded />,
+  "batch-summary":      (loc) => <BatchSummaryClient locale={loc} embedded />,
+  "batch-sort":         (loc) => <BatchSortClient locale={loc} embedded />,
 };
 
 const FALLBACK_LABEL: Partial<Record<L, [string, string]>> = {
