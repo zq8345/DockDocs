@@ -315,6 +315,46 @@ const STR = {
   },
 } satisfies AuthoredCopy<typeof _en>;
 
+// ko authored separately (AuthoredLocale excludes ko, like zh-Hant).
+const STR_KO: typeof _en = {
+  title: "계약 위험 점검",
+  subtitle:
+    "계약서를 업로드하면 위험하거나 한쪽에 치우치거나 빠진 조항을 쉬운 말로 정리한 목록을 받습니다 — 각 항목은 빨강/노랑/초록으로 표시되고, 문서에서 인용되며, 서명 전에 무엇을 물어야 할지 알려 줍니다.",
+  proBadge: "PRO",
+  drop: "계약서 PDF를 여기로 끌어다 놓거나 클릭해 선택하세요",
+  choose: "계약서 PDF 선택",
+  extracting: "계약서를 읽는 중…",
+  pagesChars: (p: number, c: number) => `${p}페이지 · ${c.toLocaleString()}자`,
+  noText: "선택 가능한 텍스트를 찾을 수 없습니다. 스캔한 계약서인가요? 먼저 OCR을 실행하세요.",
+  coverageFull: (p: number) => `전체 문서를 분석했습니다 — 총 ${p}페이지.`,
+  coveragePartial: (c: number, p: number) => `약 ${p}페이지 중 ${c}페이지를 분석했습니다. 나머지는 현재 길이 한도를 넘어 검토되지 않았습니다 — 완전한 검토가 아닙니다.`,
+  coverageFailed: "일부 구간을 분석하지 못해 결과가 불완전할 수 있습니다.",
+  sourceTitle: "계약서 원문",
+  findInSource: "원문에서 찾기",
+  approxPage: (n: number) => `≈ ${n}페이지`,
+  analyze: "위험 점검",
+  analyzing: "검토 중…",
+  result: (n: number) => `검토할 항목 ${n}개`,
+  noRisks: "뚜렷한 위험 조항은 표시되지 않았습니다. 그렇다고 계약이 안전하다는 보장은 아니니 전문을 읽어 보세요.",
+  disclaimer: "이것은 주의가 필요한 조항을 찾도록 돕는 자동 검토입니다. 법률 자문이 아닙니다. 중요한 사안은 변호사와 상담하세요.",
+  levelHigh: "높음", levelMedium: "중간", levelLow: "낮음",
+  quoteLabel: "계약서에서 인용",
+  verifiedBadge: "원문과 대조 확인됨",
+  notLocated: "누락된/없는 보호 조항으로 표시됨(인용 없음).",
+  unverifiedQuote: "인용한 구절을 문서에서 찾을 수 없어 숨겼습니다.",
+  whyLabel: "왜 중요한가",
+  suggestionLabel: "무엇을 물어야 하나",
+  reset: "다른 계약서 점검",
+  errPrefix: "검토를 완료하지 못했습니다: ",
+  retry: "다시 시도",
+  exportBtn: "보고서 내보내기",
+  privacy: "계약서는 브라우저에서 읽으며, 추출된 텍스트만 분석을 위해 전송됩니다.",
+  confidenceHigh: "높은 신뢰도",
+  confidenceMedium: "중간 신뢰도",
+  confidenceLow: "낮은 신뢰도",
+  typeChecklist: "유형별 점검 목록",
+};
+
 const LEVEL_ORDER: Record<RiskLevel, number> = { high: 0, medium: 1, low: 2 };
 const LEVEL_STYLE: Record<RiskLevel, { dot: string; chip: string; border: string }> = {
   high: { dot: "#f87171", chip: "rgba(248,113,113,0.14)", border: "rgba(248,113,113,0.4)" },
@@ -488,12 +528,36 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+// ko authored separately (AuthoredLocale excludes ko, like zh-Hant).
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "계약서 검토가 무엇을 제공하나요",
+  benefitsDescription: "AI가 계약서 전문을 읽고 서명 전에 한 번 더 살펴볼 가치가 있는 조항을 짚어 줍니다.",
+  benefits: [
+    { title: "위험 조항을 쉬운 말로", description: "자동 갱신, 일방적 면책, 무제한 책임, 한쪽에 치우친 해지 — 이례적이거나 공격적인 조항을 법률 용어가 아니라 일상 언어로 설명합니다." },
+    { title: "모든 표시는 해당 조항을 가리킵니다", description: "각 결과는 그 출처가 된 정확한 구절과 함께 표시되고 문서와 대조해 확인됩니다. 인용을 본문에서 찾을 수 없으면 추측하지 않고 숨깁니다." },
+    { title: "빨강 / 노랑 / 초록 분류", description: "결과는 심각도순으로 정렬되고, 서명 전에 물어볼 구체적인 질문이 함께 제시되어 무엇부터 협상할지 알 수 있습니다." },
+  ],
+  workflowTitle: "계약서 점검이 업무에 어떻게 맞물리나요",
+  workflowDescription: "계약서가 서명을 위해 책상에 오기 전에, 어디에 함정이 있는지 알아야 하는 순간을 위한 기능입니다.",
+  steps: [
+    "계약서 PDF를 업로드하세요 — 텍스트가 추출되어 분석을 위해 전송됩니다.",
+    "AI가 위험하거나 한쪽에 치우치거나 빠진 조항을 표시합니다 — 문서에서 찾을 수 있는 것은 인용하고, 빠진 것은 기록합니다.",
+    "각 항목마다 제기할 질문과 함께 빨강/노랑/초록 목록을 검토하세요.",
+  ],
+  readingTitle: "더 많은 AI 문서 검토 도구",
+  readingDescription: "계약서, 임대차, 입찰 문서를 추적 가능한 결과와 함께 읽기 위한 관련 도구입니다.",
+  readingLinks: [
+    { label: "임대차 위험 신호 점검", href: "/lease-redflag", description: "임대차 계약에 맞춘 동일한 조항별 검토." },
+    { label: "정부 입찰 분석", href: "/govbid-matrix", description: "입찰 문서를 실행 가능한 구조화된 요건 매트릭스로 바꿉니다." },
+    { label: "AI 문서 자료", href: "/resources", description: "AI 검토, OCR, 변환 등 문서 워크플로를 정리한 허브입니다." },
+  ],
+};
+
 export function ContractRiskClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  // zh-Hant takes the deepHant branch below; collapsing it here too keeps `al` a plain AuthoredLocale.
+  // ko authored in STR_KO/SECTIONS_KO; zh-Hant derives from zh via deepHant.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   // Shared widgets (UploadDropzone / UpgradePrompt / encryptedPdfMessage) accept zh-Hant
   // (Traditional derived via OpenCC) but not ko, so collapse only ko → en for those props.
   const childLocale = locale === "ko" ? "en" : locale;
@@ -810,7 +874,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
           <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">⚿ {t.privacy}</p>
           </>
         ) : (
-          <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
+          <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
         )
       ) : (
         <div className={`${card} ${embedded ? "mt-3" : "mt-8"} p-5`}>
@@ -1067,7 +1131,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       {!embedded && <GroundingNote variant="contract" locale={locale} />}
       {!embedded && <RelatedPdfTools locale={locale} exclude="/contract-risk" />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
-      {!embedded && <ToolFaq tool="contract-risk" locale={childLocale} />}
+      {!embedded && <ToolFaq tool="contract-risk" locale={locale} />}
     </div>
   );
 }

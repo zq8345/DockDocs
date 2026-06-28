@@ -100,6 +100,19 @@ const STR = {
   },
 } satisfies AuthoredCopy<typeof _en>;
 
+// ko authored separately (AuthoredLocale excludes ko, like zh-Hant).
+const STR_KO: typeof _en = {
+  title: "일괄 압축",
+  subtitle: "PDF 폴더 전체를 끌어다 놓고 한 번에 모두 줄이세요 — 각 파일은 브라우저에서 압축되어 하나의 ZIP으로 묶입니다. 아무것도 업로드되지 않습니다.",
+  drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택", reading: "읽는 중…",
+  level: "압축 강도", low: "약하게", recommended: "권장", high: "강하게",
+  run: "전체 압축", running: "압축 중", download: "ZIP 다운로드", reset: "다시 시작",
+  files: (n: number, max: number) => `${n} / ${max}개`, saved: "감소", failed: "실패",
+  totalSaved: (p: number) => `전체 ${p}% 감소`,
+  need: "PDF를 최소 한 개 추가하세요.", err: "문제가 발생했습니다: ",
+  note: "압축은 페이지를 이미지로 변환하므로 텍스트 위주의 PDF는 많이 줄지 않을 수 있습니다. 모든 작업은 기기에서 처리됩니다.",
+};
+
 // //Benefits //Workflow //Recommended-reading content (the three sections single-
 // file tool pages have, brought to the batch page). zh-Hant derives from zh via
 // deepHant (recurses arrays/objects). Reading links point at the matching single-
@@ -268,13 +281,36 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+// ko authored separately (AuthoredLocale excludes ko, like zh-Hant).
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "폴더 전체를 일괄 압축하는 이유",
+  benefitsDescription: "폴더 안의 모든 PDF를 한 번에 줄이세요 — 전적으로 브라우저에서 처리됩니다.",
+  benefits: [
+    { title: "수십 개를 한 번에 압축", description: "폴더 전체를 끌어다 놓고 모든 PDF를 한 번에 압축하세요 — 파일을 하나씩 열 필요가 없습니다." },
+    { title: "기기를 벗어나지 않음", description: "모든 파일은 브라우저에서 로컬로 압축되고 업로드되지 않으므로 기밀 문서가 비공개로 유지됩니다." },
+    { title: "깔끔한 ZIP 하나로", description: "압축된 모든 PDF가 하나의 ZIP으로 돌아와 공유하거나 보관할 준비가 됩니다." },
+  ],
+  workflowTitle: "일괄 압축이 업무에 어떻게 맞물리나요",
+  workflowDescription: "PDF 폴더가 이메일이나 업로드하기에 너무 클 때를 위한 기능입니다.",
+  steps: [
+    "폴더나 여러 PDF를 페이지에 끌어다 놓으세요.",
+    "압축 강도를 고르고 실행하세요 — 각 파일이 브라우저에서 압축됩니다.",
+    "더 작아진 PDF가 담긴 ZIP 하나를 다운로드하세요.",
+  ],
+  readingTitle: "PDF 압축 계속하기",
+  readingDescription: "PDF를 줄이기 위한 관련 도구와 단계별 가이드입니다.",
+  readingLinks: [
+    { label: "단일 PDF 압축", href: "/compress-pdf", description: "브라우저에서 PDF 한 개를 줄이세요 — 같은 엔진, 한 번에 한 파일." },
+    { label: "품질 저하 없이 PDF 용량 줄이기", href: "/guides/reduce-pdf-size-without-losing-quality", description: "텍스트와 이미지를 읽기 좋게 유지하면서 PDF를 줄이는 방법." },
+    { label: "PDF 워크플로 자료", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 허브입니다." },
+  ],
+};
+
 export function BatchCompressClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  // (zh-Hant is also collapsed here because every [al] index below is already inside a
-  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
+  // ko authored in STR_KO/SECTIONS_KO; zh-Hant derives from zh via deepHant.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [level, setLevel] = useState<Level>("recommended");
@@ -365,7 +401,7 @@ export function BatchCompressClient({ locale = "en", embedded = false }: { local
       <input ref={folderRef} type="file" multiple className="hidden" {...({ webkitdirectory: "", directory: "" } as Record<string, string>)} onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale === "ko" ? "en" : locale} onFiles={addFiles} />
+        <BatchUploadBox locale={locale} onFiles={addFiles} />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

@@ -39,7 +39,7 @@ const MoonIcon = <MenuIcon><path d="M13 9.6A5.5 5.5 0 1 1 6.4 3 4.4 4.4 0 0 0 13
 // (navItemLabels.de + navCopy.de), so getNavCategories("de") returns native German
 // labels and de is included in this record alongside the other authored locales.
 // zh-Hant is still derived from zh via deepHant (never stored here).
-export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de", NavCat[]> = {
+export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko", NavCat[]> = {
   en: getNavCategories("en"),
   zh: getNavCategories("zh"),
   es: getNavCategories("es"),
@@ -47,6 +47,7 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de
   fr: getNavCategories("fr"),
   ja: getNavCategories("ja"),
   de: getNavCategories("de"),
+  ko: getNavCategories("ko"),
 };
 
 const pageLinks = {

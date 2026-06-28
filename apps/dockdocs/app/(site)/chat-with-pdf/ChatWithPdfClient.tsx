@@ -199,12 +199,37 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+// ko authored separately (AuthoredLocale excludes ko, like zh-Hant).
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "PDF와 대화하면 무엇이 좋은가요",
+  benefitsDescription: "한 문서에 집중된 질문을 던지고, 모델의 일반 지식이 아니라 그 문서의 텍스트에서 만들어진 답변을 받으세요.",
+  benefits: [
+    { title: "추측이 아니라 문서에서 나온 답변", description: "AI는 당신이 추출한 텍스트를 읽고 그것을 근거로 답하므로, 모델이 우연히 기억하는 내용이 아니라 PDF가 실제로 말하는 내용을 다루게 됩니다." },
+    { title: "가능할 때는 원문에 근거", description: "AI가 답변의 근거가 된 구절을 찾을 수 있을 때는 그 뒷받침 인용을 보여 주고 원문과 대조해 확인했음을 표시합니다. 모든 답변에 인용할 출처가 있는 것은 아니며, 추적할 수 없을 때는 AI가 그렇다고 알려 줍니다." },
+    { title: "파일은 브라우저에 남습니다", description: "텍스트는 브라우저에서 로컬로 추출되며, 선택된 텍스트 맥락과 질문만 AI 제공업체로 전송됩니다. PDF 파일 자체는 업로드되지 않습니다." },
+  ],
+  workflowTitle: "PDF 대화가 업무에 어떻게 맞물리나요",
+  workflowDescription: "긴 PDF와 구체적인 질문이 있는데, 처음부터 끝까지 훑기보다 바로 물어보고 싶을 때를 위한 기능입니다.",
+  steps: [
+    "선택 가능한 텍스트가 있는 PDF를 업로드하세요 — 텍스트가 브라우저에서 추출됩니다.",
+    "문서에 대해 집중된 질문을 하세요.",
+    "뒷받침 인용과 함께 답변을 읽으세요 — 원문에서 추적할 수 없는 부분은 추측 대신 「확인 불가」로 표시됩니다.",
+  ],
+  readingTitle: "더 많은 AI 문서 도구",
+  readingDescription: "문서를 읽고, 검토하고, 비교하며 결과를 추적할 수 있는 관련 도구입니다.",
+  readingLinks: [
+    { label: "AI 요약", href: "/ai-summary", description: "긴 문서를 몇 초 만에 훑어볼 수 있는 구조화된 요약으로 압축합니다." },
+    { label: "계약 위험 검토", href: "/contract-risk", description: "위험하거나 한쪽에 치우치거나 빠진 조항을 표시합니다 — 계약서에서 인용합니다." },
+    { label: "문서 비교", href: "/compare", description: "여러 문서에 같은 질문을 던지고 답변이 어떻게 다른지 확인합니다." },
+  ],
+};
+
 export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?: RuntimeLocale | "es" | "pt" | "fr" | "ja" | "zh-Hant"; embedded?: boolean }) {
   const copy = getRuntimeCopy(locale).chat;
-  // Rich //Benefits //Workflow //Reading sections. ko + zh-Hant have no authored
-  // block: ko → en, zh-Hant → derived from zh via deepHant (mirrors ContractRiskClient).
+  // Rich //Benefits //Workflow //Reading sections. ko authored in SECTIONS_KO;
+  // zh-Hant → derived from zh via deepHant (mirrors ContractRiskClient).
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [fileName, setFileName] = useState("");
   const [documentText, setDocumentText] = useState("");
   const [question, setQuestion] = useState("");

@@ -198,10 +198,35 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+// ko authored separately (AuthoredLocale excludes ko, like zh-Hant).
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "AI 요약이 무엇을 제공하나요",
+  benefitsDescription: "AI가 문서의 텍스트를 읽고 한눈에 검토할 수 있는 핵심 요약, 주요 항목, 권장 다음 단계로 압축합니다.",
+  benefits: [
+    { title: "긴 문서를 압축", description: "길고 복잡한 PDF나 Office 파일을 핵심 요약, 주요 항목, 중요한 대상, 권장 조치로 바꿉니다 — 실제로 훑어볼 수 있는 형태의 요지입니다." },
+    { title: "브라우저에서 읽기", description: "텍스트는 브라우저에서 파일로부터 추출되며, 추출된 그 텍스트만 요약을 위해 AI로 전송됩니다. 파일 자체는 업로드되지 않습니다." },
+    { title: "문서에 근거", description: "요약은 파일 속 단어에서 뽑아내며, 거기 없는 사실을 더하지 않습니다. 그대로 옮긴 인용이 아니라 바꿔 쓴 것이므로 핵심 숫자와 날짜는 원본과 대조해 확인하세요." },
+  ],
+  workflowTitle: "AI 요약이 업무에 어떻게 맞물리나요",
+  workflowDescription: "긴 보고서, 계약서, 발표 자료가 손에 들어왔을 때 모든 페이지를 읽기 전에 요지를 파악해야 하는 순간을 위한 기능입니다.",
+  steps: [
+    "PDF를 업로드하세요 — 최대 20페이지.",
+    "DockDocs가 브라우저에서 텍스트를 추출하고 그 텍스트만 요약을 위해 전송합니다.",
+    "AI가 파일의 텍스트에서 요약, 주요 항목, 권장 다음 단계를 뽑아냅니다.",
+    "결과를 검토하세요 — 핵심 숫자와 날짜는 원본과 대조해 확인하세요.",
+  ],
+  readingTitle: "더 많은 AI 문서 도구",
+  readingDescription: "문서를 읽고, 질문하고, 비교하며 결과를 추적할 수 있는 관련 도구입니다.",
+  readingLinks: [
+    { label: "PDF와 대화", href: "/chat-with-pdf", description: "문서에 대해 질문하고 그 텍스트에 근거한 답변을 출처 인용과 함께 받으세요." },
+    { label: "계약 위험 검토", href: "/contract-risk", description: "AI가 계약서의 위험하거나 한쪽에 치우치거나 빠진 조항을 각각 출처와 함께 표시하게 하세요." },
+    { label: "문서 비교", href: "/compare", description: "여러 문서를 나란히 놓고 핵심 조건이 어디서 다른지 확인하세요." },
+  ],
+};
+
 export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant"; embedded?: boolean }) {
-  // ko has no authored summary-client copy yet → English via the booleans/ternaries
-  // below all defaulting to English (foundation phase). childLocale collapses ko→en for
-  // child widgets (UpgradePrompt) whose prop union doesn't include ko.
+  // childLocale collapses ko→en for child widgets (UpgradePrompt) whose prop union
+  // doesn't include ko. The page's own copy is authored ko (booleans + SECTIONS_KO).
   const childLocale = locale === "ko" ? "en" : locale;
   // zh-Hant derives from zh via OpenCC: treat as zh for ternaries, then convert
   // the chosen zh string to Traditional with `h(...)`.
@@ -212,11 +237,11 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
   const fr = locale === "fr";
   const ja = locale === "ja";
   const de = locale === "de";
+  const ko = locale === "ko";
   const h = (s: string) => (hant ? toHant(s) : s);
-  // ko / zh-Hant have no authored SECTIONS → collapse to en (ko) / derive from zh (zh-Hant),
-  // mirroring ContractRiskClient's resolution exactly.
+  // ko authored in SECTIONS_KO; zh-Hant derives from zh (deepHant); mirrors ChatWithPdfClient.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [status, setStatus] = useState<Status>("idle");
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");
@@ -242,12 +267,12 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
     setLimitHit(null);
 
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
-      setError(zh ? h("请上传 PDF 文件。") : ja ? "PDF ファイルをアップロードしてください。" : es ? "Por favor, sube un archivo PDF." : pt ? "Por favor, envie um arquivo PDF." : fr ? "Veuillez téléverser un fichier PDF." : de ? "Bitte laden Sie eine PDF-Datei hoch." : "Please upload a PDF file.");
+      setError(zh ? h("请上传 PDF 文件。") : ja ? "PDF ファイルをアップロードしてください。" : es ? "Por favor, sube un archivo PDF." : pt ? "Por favor, envie um arquivo PDF." : fr ? "Veuillez téléverser un fichier PDF." : de ? "Bitte laden Sie eine PDF-Datei hoch." : ko ? "PDF 파일을 업로드하세요." : "Please upload a PDF file.");
       setStatus("error");
       return;
     }
     if (file.size > maxFileBytes) {
-      setError(zh ? h("文件超过 25 MB 限制。") : ja ? "ファイルが 25 MB の上限を超えています。" : es ? "El archivo supera el límite de 25 MB." : pt ? "O arquivo ultrapassa o limite de 25 MB." : fr ? "Le fichier dépasse la limite de 25 Mo." : de ? "Die Datei überschreitet das Limit von 25 MB." : "File exceeds the 25 MB limit.");
+      setError(zh ? h("文件超过 25 MB 限制。") : ja ? "ファイルが 25 MB の上限を超えています。" : es ? "El archivo supera el límite de 25 MB." : pt ? "O arquivo ultrapassa o limite de 25 MB." : fr ? "Le fichier dépasse la limite de 25 Mo." : de ? "Die Datei überschreitet das Limit von 25 MB." : ko ? "파일이 25MB 한도를 초과합니다." : "File exceeds the 25 MB limit.");
       setStatus("error");
       return;
     }
@@ -276,7 +301,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
 
       const text = pages.join("\n\n").slice(0, maxCharacters);
       if (!text.trim()) {
-        setError(zh ? h("无法从该 PDF 提取文字，可能是扫描件。") : ja ? "この PDF からテキストを抽出できませんでした。スキャンされた PDF の可能性があります。" : es ? "No se pudo extraer texto — puede ser un PDF escaneado." : pt ? "Não foi possível extrair texto — pode ser um PDF digitalizado." : fr ? "Aucun texte n'a pu être extrait — il s'agit peut-être d'un PDF numérisé." : de ? "Aus diesem PDF konnte kein Text extrahiert werden – es ist möglicherweise ein gescanntes PDF." : "No text could be extracted — it may be a scanned PDF.");
+        setError(zh ? h("无法从该 PDF 提取文字，可能是扫描件。") : ja ? "この PDF からテキストを抽出できませんでした。スキャンされた PDF の可能性があります。" : es ? "No se pudo extraer texto — puede ser un PDF escaneado." : pt ? "Não foi possível extrair texto — pode ser um PDF digitalizado." : fr ? "Aucun texte n'a pu être extrait — il s'agit peut-être d'un PDF numérisé." : de ? "Aus diesem PDF konnte kein Text extrahiert werden – es ist möglicherweise ein gescanntes PDF." : ko ? "이 PDF에서 텍스트를 추출할 수 없습니다 — 스캔한 PDF일 수 있습니다." : "No text could be extracted — it may be a scanned PDF.");
         setStatus("error");
         return;
       }
@@ -301,7 +326,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
       if (!payload?.ok || !payload.summary) {
         throw new Error(
           payload?.message ||
-            (zh ? h("AI 摘要服务暂不可用。") : ja ? "AI 要約サービスは現在利用できません。" : es ? "El servicio de resumen IA no está disponible." : pt ? "O serviço de Resumo IA está indisponível." : fr ? "Le service de résumé IA est indisponible." : de ? "Der KI-Zusammenfassungsdienst ist derzeit nicht verfügbar." : "AI Summary service is unavailable."),
+            (zh ? h("AI 摘要服务暂不可用。") : ja ? "AI 要約サービスは現在利用できません。" : es ? "El servicio de resumen IA no está disponible." : pt ? "O serviço de Resumo IA está indisponível." : fr ? "Le service de résumé IA est indisponible." : de ? "Der KI-Zusammenfassungsdienst ist derzeit nicht verfügbar." : ko ? "AI 요약 서비스를 현재 사용할 수 없습니다." : "AI Summary service is unavailable."),
         );
       }
 
@@ -310,7 +335,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
       trackToolRun("ai-summary");
       await markUsage(gate, "summary");
     } catch (err) {
-      setError(err instanceof Error ? err.message : zh ? h("处理失败。") : ja ? "処理に失敗しました。" : es ? "Error al procesar." : pt ? "Falha ao processar." : fr ? "Échec du traitement." : de ? "Verarbeitung fehlgeschlagen." : "Processing failed.");
+      setError(err instanceof Error ? err.message : zh ? h("处理失败。") : ja ? "処理に失敗しました。" : es ? "Error al procesar." : pt ? "Falha ao processar." : fr ? "Échec du traitement." : de ? "Verarbeitung fehlgeschlagen." : ko ? "처리에 실패했습니다." : "Processing failed.");
       setStatus("error");
     }
   }
@@ -336,13 +361,13 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
           className={embedded ? `${dropzoneShell(dragging)} min-h-[360px] overflow-y-auto` : `${dropzoneShell(dragging)} overflow-y-auto`}
         >
           <span className="inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
-            {zh ? h("选择 PDF") : ja ? "PDF を選択" : es ? "Elegir PDF" : pt ? "Escolher PDF" : fr ? "Choisir un PDF" : de ? "PDF auswählen" : "Choose PDF"}
+            {zh ? h("选择 PDF") : ja ? "PDF を選択" : es ? "Elegir PDF" : pt ? "Escolher PDF" : fr ? "Choisir un PDF" : de ? "PDF auswählen" : ko ? "PDF 선택" : "Choose PDF"}
           </span>
           <span className="mt-4 text-sm text-[color:var(--muted)]">
-            {zh ? h("或将文件拖放到此处，最多 20 页") : ja ? "またはファイルをここにドラッグ＆ドロップ" : es ? "o arrastra tu archivo aquí. Máx. 20 páginas" : pt ? "ou arraste o arquivo aqui. Máx. 20 páginas" : fr ? "ou déposez votre fichier ici. 20 pages max." : de ? "oder legen Sie Ihre Datei hier ab. Max. 20 Seiten" : "or drop your file here. Up to 20 pages"}
+            {zh ? h("或将文件拖放到此处，最多 20 页") : ja ? "またはファイルをここにドラッグ＆ドロップ" : es ? "o arrastra tu archivo aquí. Máx. 20 páginas" : pt ? "ou arraste o arquivo aqui. Máx. 20 páginas" : fr ? "ou déposez votre fichier ici. 20 pages max." : de ? "oder legen Sie Ihre Datei hier ab. Max. 20 Seiten" : ko ? "또는 여기에 파일을 끌어다 놓으세요. 최대 20페이지" : "or drop your file here. Up to 20 pages"}
           </span>
           <span className="mt-1.5 text-xs text-[color:var(--faint)]">
-            {zh ? h("请上传不超过 25 MB 的文件") : ja ? "最大20ページ・25MBまで" : es ? "Sube un archivo de hasta 25 MB" : pt ? "Envie um arquivo de até 25 MB" : fr ? "Fichier jusqu'à 25 Mo" : de ? "Laden Sie eine Datei mit bis zu 25 MB hoch" : "Please upload a file up to 25 MB"}
+            {zh ? h("请上传不超过 25 MB 的文件") : ja ? "最大20ページ・25MBまで" : es ? "Sube un archivo de hasta 25 MB" : pt ? "Envie um arquivo de até 25 MB" : fr ? "Fichier jusqu'à 25 Mo" : de ? "Laden Sie eine Datei mit bis zu 25 MB hoch" : ko ? "최대 25MB 파일을 업로드하세요" : "Please upload a file up to 25 MB"}
           </span>
           {status === "error" && error ? (
             <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
@@ -353,7 +378,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
 
       {(status === "idle" || status === "error") && embedded && (
         <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">
-          ⚿ {zh ? h("文件在浏览器中本地处理 · 不上传至服务器") : ja ? "ファイルはブラウザで処理 · アップロードなし" : es ? "Archivos procesados en tu navegador · nunca cargados" : pt ? "Arquivos processados no seu navegador · nunca enviados" : fr ? "Fichiers traités dans votre navigateur · jamais téléversés" : de ? "Dateien im Browser verarbeitet · werden nie hochgeladen" : "Files processed in your browser · never uploaded"}
+          ⚿ {zh ? h("文件在浏览器中本地处理 · 不上传至服务器") : ja ? "ファイルはブラウザで処理 · アップロードなし" : es ? "Archivos procesados en tu navegador · nunca cargados" : pt ? "Arquivos processados no seu navegador · nunca enviados" : fr ? "Fichiers traités dans votre navigateur · jamais téléversés" : de ? "Dateien im Browser verarbeitet · werden nie hochgeladen" : ko ? "파일은 브라우저에서 처리 · 업로드되지 않습니다" : "Files processed in your browser · never uploaded"}
         </p>
       )}
 
@@ -368,8 +393,8 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
           </svg>
           <p className="mt-4 text-sm font-semibold text-[color:var(--foreground)]">
             {status === "extracting"
-              ? zh ? h("正在读取 PDF…") : ja ? "PDF を読み取り中…" : es ? "Leyendo el PDF…" : pt ? "Lendo o PDF…" : fr ? "Lecture du PDF…" : de ? "PDF wird gelesen…" : "Reading PDF…"
-              : zh ? h("AI 正在生成摘要…") : ja ? "AI が要約を作成中…" : es ? "La IA está resumiendo…" : pt ? "A IA está resumindo…" : fr ? "L'IA résume…" : de ? "Die KI fasst zusammen…" : "AI is summarizing…"}
+              ? zh ? h("正在读取 PDF…") : ja ? "PDF を読み取り中…" : es ? "Leyendo el PDF…" : pt ? "Lendo o PDF…" : fr ? "Lecture du PDF…" : de ? "PDF wird gelesen…" : ko ? "PDF를 읽는 중…" : "Reading PDF…"
+              : zh ? h("AI 正在生成摘要…") : ja ? "AI が要約を作成中…" : es ? "La IA está resumiendo…" : pt ? "A IA está resumindo…" : fr ? "L'IA résume…" : de ? "Die KI fasst zusammen…" : ko ? "AI가 요약하는 중…" : "AI is summarizing…"}
           </p>
           <p className="mt-1 break-words text-xs text-[color:var(--muted)]">{fileName}</p>
         </div>
@@ -382,23 +407,23 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[color:var(--success)] text-sm text-white">✓</div>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <p className="text-xs text-[color:var(--muted)]">{zh ? h("摘要已生成") : ja ? "要約を生成しました" : es ? "Resumen generado" : pt ? "Resumo gerado" : fr ? "Résumé généré" : de ? "Zusammenfassung erstellt" : "Summary generated"}</p>
+              <p className="text-xs text-[color:var(--muted)]">{zh ? h("摘要已生成") : ja ? "要約を生成しました" : es ? "Resumen generado" : pt ? "Resumo gerado" : fr ? "Résumé généré" : de ? "Zusammenfassung erstellt" : ko ? "요약이 생성되었습니다" : "Summary generated"}</p>
             </div>
             <button
               type="button"
               onClick={reset}
               className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
             >
-              {zh ? h("新文档") : ja ? "新しいドキュメント" : es ? "Nuevo documento" : pt ? "Novo documento" : fr ? "Nouveau document" : de ? "Neues Dokument" : "New document"}
+              {zh ? h("新文档") : ja ? "新しいドキュメント" : es ? "Nuevo documento" : pt ? "Novo documento" : fr ? "Nouveau document" : de ? "Neues Dokument" : ko ? "새 문서" : "New document"}
             </button>
           </div>
 
-          <SummaryBlock title={zh ? h("执行摘要") : ja ? "エグゼクティブサマリー" : es ? "Resumen ejecutivo" : pt ? "Resumo executivo" : fr ? "Résumé exécutif" : de ? "Zusammenfassung für Entscheider" : "Executive Summary"}>
+          <SummaryBlock title={zh ? h("执行摘要") : ja ? "エグゼクティブサマリー" : es ? "Resumen ejecutivo" : pt ? "Resumo executivo" : fr ? "Résumé exécutif" : de ? "Zusammenfassung für Entscheider" : ko ? "핵심 요약" : "Executive Summary"}>
             <p className="text-sm leading-7 text-[color:var(--muted)]">{summary.executiveSummary}</p>
           </SummaryBlock>
 
           {summary.keyPoints?.length > 0 && (
-            <SummaryBlock title={zh ? h("关键要点") : ja ? "重要なポイント" : es ? "Puntos clave" : pt ? "Pontos principais" : fr ? "Points clés" : de ? "Wichtigste Punkte" : "Key Points"}>
+            <SummaryBlock title={zh ? h("关键要点") : ja ? "重要なポイント" : es ? "Puntos clave" : pt ? "Pontos principais" : fr ? "Points clés" : de ? "Wichtigste Punkte" : ko ? "주요 항목" : "Key Points"}>
               <ul className="space-y-2">
                 {summary.keyPoints.map((point, i) => (
                   <li key={i} className="flex gap-2.5 text-sm leading-6 text-[color:var(--muted)]">
@@ -411,7 +436,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
           )}
 
           {summary.actionItems?.length > 0 && (
-            <SummaryBlock title={zh ? h("行动项") : ja ? "アクションアイテム" : es ? "Acciones a realizar" : pt ? "Itens de ação" : fr ? "Points d'action" : de ? "Aufgaben" : "Action Items"}>
+            <SummaryBlock title={zh ? h("行动项") : ja ? "アクションアイテム" : es ? "Acciones a realizar" : pt ? "Itens de ação" : fr ? "Points d'action" : de ? "Aufgaben" : ko ? "실행 항목" : "Action Items"}>
               <ul className="space-y-2">
                 {summary.actionItems.map((item, i) => (
                   <li key={i} className="flex gap-2.5 text-sm leading-6 text-[color:var(--muted)]">
@@ -424,7 +449,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
           )}
 
           {nextSteps.length > 0 && (
-            <SummaryBlock title={zh ? h("后续步骤") : ja ? "推奨される次のステップ" : es ? "Próximos pasos sugeridos" : pt ? "Próximas etapas sugeridas" : fr ? "Prochaines étapes suggérées" : de ? "Empfohlene nächste Schritte" : "Suggested Next Steps"}>
+            <SummaryBlock title={zh ? h("后续步骤") : ja ? "推奨される次のステップ" : es ? "Próximos pasos sugeridos" : pt ? "Próximas etapas sugeridas" : fr ? "Prochaines étapes suggérées" : de ? "Empfohlene nächste Schritte" : ko ? "권장 다음 단계" : "Suggested Next Steps"}>
               <ul className="space-y-2">
                 {nextSteps.map((step, i) => (
                   <li key={i} className="flex gap-2.5 text-sm leading-6 text-[color:var(--muted)]">
