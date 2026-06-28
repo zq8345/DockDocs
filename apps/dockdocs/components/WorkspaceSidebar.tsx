@@ -8,10 +8,10 @@ import { routeLocales, localeLabels, isRouteLocale } from "@/lib/i18n";
 import { getUser, onAuthChange, type AuthUser } from "@/lib/auth";
 import { getSubscriptionSnapshot } from "@/lib/subscription-runtime";
 
-type NavLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
+type NavLocale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
 function toNavLocale(locale: RuntimeLocale): NavLocale {
-  return locale === "zh-Hant" ? "zh" : (locale as NavLocale);
+  return locale as NavLocale;
 }
 
 const SHOWN_LOCALES = routeLocales as readonly string[];

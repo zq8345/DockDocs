@@ -40,10 +40,10 @@ const WorkspacePdfToolEmbedded = dynamic(
 // Batch-expanded to all 43 slugs after sample approval.
 const WORKSPACE_PDF_SLUGS = new Set(["/pdf-to-word"]);
 
-type NavLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
+type NavLocale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
 function toNavLocale(locale: RuntimeLocale): NavLocale {
-  return locale === "zh-Hant" ? "zh" : (locale as NavLocale);
+  return locale as NavLocale;
 }
 
 // ── Quick-start tool card definitions ──────────────────────────────────────
