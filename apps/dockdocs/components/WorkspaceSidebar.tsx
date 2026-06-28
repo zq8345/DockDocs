@@ -215,15 +215,24 @@ export function WorkspaceSidebar({
                 <div className="mt-0.5 space-y-px pb-1">
                   {col.items.map((item) => {
                     const label = labels[item.key] ?? item.key;
-                    const soon = !!(item as { soon?: boolean }).soon;
                     const isActive = activeTool === item.slug;
                     return (
                       <div key={item.key} className="relative">
                         <NavItemBar isActive={isActive} />
-                        <a href={item.slug} className={subItemCls(isActive, soon)}>
-                          <span>{label}</span>
-                          {soon && <SoonBadge />}
-                        </a>
+                        {!!onToolSelect ? (
+                          <button
+                            type="button"
+                            onClick={() => onToolSelect(item.slug)}
+                            className={subItemCls(isActive, false)}
+                            style={{ width: "100%", textAlign: "left" }}
+                          >
+                            <span>{label}</span>
+                          </button>
+                        ) : (
+                          <a href={item.slug} className={subItemCls(isActive, false)}>
+                            <span>{label}</span>
+                          </a>
+                        )}
                       </div>
                     );
                   })}

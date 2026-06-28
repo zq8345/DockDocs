@@ -36,9 +36,12 @@ const WorkspacePdfToolEmbedded = dynamic(
   { ssr: false },
 );
 
-// PDF conversion tools served via the workspace PDF engine (sample: pdf-to-word).
-// Batch-expanded to all 43 slugs after sample approval.
-const WORKSPACE_PDF_SLUGS = new Set(["/pdf-to-word"]);
+// All PDF tool slugs from the "Document tools" nav category — served via WorkspacePdfTool.
+// Derived from headerStructure so adding a new tool auto-expands the set.
+const WORKSPACE_PDF_SLUGS: Set<string> = new Set(
+  (headerStructure.find((c) => c.catKey === "Document tools")?.cols ?? [])
+    .flatMap((col) => col.items.map((item) => item.slug))
+);
 
 type NavLocale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
