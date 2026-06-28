@@ -15,7 +15,16 @@ function toNavLocale(locale: RuntimeLocale): NavLocale {
 }
 
 const SHOWN_LOCALES = routeLocales as readonly string[];
-const EMBEDDED_SLUGS = new Set(["/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk", "/ocr-pdf", "/redline", "/extract-to-excel", "/flashcards", "/lease-redflag", "/govbid-matrix"]);
+const _DOC_TOOL_SLUGS = [
+  ...(headerStructure.find((c) => c.catKey === "Document tools")?.cols ?? [])
+    .flatMap((col) => col.items.map((item) => item.slug)),
+  "/ocr-pdf",
+];
+const EMBEDDED_SLUGS = new Set([
+  "/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk",
+  "/redline", "/extract-to-excel", "/flashcards", "/lease-redflag", "/govbid-matrix",
+  ..._DOC_TOOL_SLUGS,
+]);
 
 // ── Chevron (module-level to avoid remount) ──────────────────────────────────
 function ChevronIcon({ open }: { open: boolean }) {
