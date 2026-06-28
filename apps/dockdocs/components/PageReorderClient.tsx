@@ -462,7 +462,7 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
                   ✕
                 </button>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.thumb} alt={`page ${p.idx + 1}`} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
+                <img src={p.thumb} alt={`page ${p.idx + 1}`} className={`w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] ${embedded ? "max-h-[150px] object-contain" : "h-auto"}`} />
                 <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">
                   {pageLabel(locale, p.idx + 1)}
                 </p>

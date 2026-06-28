@@ -203,16 +203,22 @@ export function DashboardWorkspace() {
 
       {/* ── Right column (topbar + content) ── */}
       <main className="flex flex-1 flex-col overflow-hidden">
+        {/* ── Sticky topbar: height = sidebar logo (48px), always visible ── */}
+        <header
+          className="flex shrink-0 items-center border-b border-[color:var(--line)] bg-[color:var(--background)] px-6"
+          style={{ height: 48 }}
+        >
+          {activeTool && toolLabel && (
+            <h1 className="truncate text-[14px] font-semibold leading-none text-[color:var(--foreground)]">
+              {toolLabel}
+            </h1>
+          )}
+        </header>
+
         <div className="flex flex-1 flex-col overflow-y-auto">
         {activeTool ? (
-          /* ── Tool active: vertically centred column (§六) ── */
-          <div className="flex min-h-full flex-col items-center justify-center">
-            {toolLabel && (
-              <div className="w-full max-w-3xl px-8 pt-8 pb-4">
-                <h1 className="text-[22px] font-medium text-[color:var(--foreground)]">{toolLabel}</h1>
-                {toolDescription && <p className="mt-1 text-[13px] leading-[1.5] text-[color:var(--muted)]">{toolDescription}</p>}
-              </div>
-            )}
+          /* ── Tool active: content starts at top of scroll area ── */
+          <div className="flex min-h-full flex-col items-center">
             {activeTool === "/workspace-account" ? (
               <div className="mx-auto w-full max-w-md px-8 pb-10">
                 <AccountEmbedded locale={locale} />

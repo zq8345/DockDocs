@@ -379,7 +379,7 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
                     <span className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-[#f87171] text-[15px] font-bold text-white">✕</span>
                   )}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.thumb} alt={`page ${p.idx + 1}`} className={`h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] transition ${isMarked ? "opacity-40 grayscale" : ""}`} />
+                  <img src={p.thumb} alt={`page ${p.idx + 1}`} className={`w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] transition ${embedded ? "max-h-[150px] object-contain" : "h-auto"} ${isMarked ? "opacity-40 grayscale" : ""}`} />
                   <p className={`mt-1.5 text-center text-[11.5px] ${isMarked ? "font-semibold text-[#f87171]" : "text-[color:var(--muted)]"}`}>
                     {isMarked ? t.del : pageLabel}
                   </p>
