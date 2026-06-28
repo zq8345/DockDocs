@@ -173,10 +173,14 @@ export function DashboardWorkspace() {
 
       {/* ── Right column (topbar + content) ── */}
       <main className="flex flex-1 flex-col overflow-hidden">
-        <WorkspaceTopbar locale={locale} activeTool={activeTool} toolLabel={toolLabel} />
         <div className="flex flex-1 flex-col overflow-y-auto">
+        {activeTool && toolLabel && (
+          <div className="px-8 pt-8 pb-4">
+            <h1 className="text-[22px] font-medium text-[color:var(--foreground)]">{toolLabel}</h1>
+          </div>
+        )}
         {activeTool === "/workspace-account" ? (
-          <div className="mx-auto w-full max-w-md px-8 py-10">
+          <div className="mx-auto w-full max-w-md px-8 pb-10">
             <AccountEmbedded locale={locale} />
           </div>
         ) : activeTool && WORKSPACE_PDF_SLUGS.has(activeTool) ? (
