@@ -74,7 +74,7 @@ export function WorkspaceSidebar({
 
   return (
     <nav
-      className="flex h-screen shrink-0 flex-col overflow-hidden border-r border-[color:var(--line)]"
+      className="flex h-full shrink-0 flex-col overflow-hidden border-r border-[color:var(--line)]"
       style={{ width: 260, background: "#1a1a1a" }}
     >
       {/* ── ① Logo ── */}

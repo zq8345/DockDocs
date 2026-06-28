@@ -112,13 +112,13 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
     : undefined;
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-[color:var(--background)]">
-      <WorkspaceTopbar locale={locale} activeTool={activeTool} toolLabel={toolLabel} />
-      <div className="flex flex-1 overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-[color:var(--background)]">
       <WorkspaceSidebar locale={locale} activeTool={activeTool} onToolSelect={setActiveTool} />
 
-      {/* ── ⑤ Right panel ── */}
-      <main className="flex flex-1 flex-col overflow-y-auto">
+      {/* ── Right column (topbar + content) ── */}
+      <main className="flex flex-1 flex-col overflow-hidden">
+        <WorkspaceTopbar locale={locale} activeTool={activeTool} toolLabel={toolLabel} />
+        <div className="flex flex-1 flex-col overflow-y-auto">
         {activeTool === "/contract-risk" ? (
           <ContractRiskEmbedded locale={locale} embedded />
         ) : activeTool === "/chat-with-pdf" ? (
@@ -200,8 +200,8 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
             </p>
           </div>
         )}
+        </div>
       </main>
-      </div>
     </div>
   );
 }
