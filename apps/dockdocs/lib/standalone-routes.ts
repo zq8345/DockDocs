@@ -26,4 +26,7 @@ export const standaloneRoutes = [
   "private-pdf-ai",
   "verifiable-document-ai",
   "client-side-pdf-processing",
+  "ai-contract-review",
+  "sensitive-document-redaction",
+  "ai-due-diligence-document-review",
 ] as const;
