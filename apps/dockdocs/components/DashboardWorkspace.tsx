@@ -1,211 +1,148 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { localizedPath, type RouteSlug } from "@/lib/i18n";
-import { getDockAccountState } from "@/lib/account-runtime";
-import { readWorkHistory, type WorkHistoryItem } from "@/lib/work-history";
-import type { RuntimeLocale } from "@/lib/copy";
+import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
+import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
 
-type DashLocale = RuntimeLocale | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de" | "ko";
-
-// Cast a known-valid slug string through RouteSlug so localizedPath is satisfied.
-// All slugs used in this file (contract-risk, compare-documents, chat-with-pdf,
-// ai-summary) are registered in lib/i18n.ts routeSlugs / toolSlugs.
-function lp(locale: DashLocale, slug: string): string {
-  return localizedPath(locale, slug as RouteSlug);
-}
-
-// ---------------------------------------------------------------------------
-// Copy
-// ---------------------------------------------------------------------------
-const COPY = {
-  zh: {
-    eyebrow: "你的工作台",
-    greet: (name: string) => `欢迎回来，${name}`,
-    resume: "继续上次",
-    resumeCta: "继续查看",
-    recent: "最近",
-    quick: "快捷开工",
-    tools: {
-      "contract-risk": "合同审查",
-      compare: "文档对比",
-      "chat-with-pdf": "AI 问答",
-      "ai-summary": "AI 摘要",
-    },
-    privacy: "你的分析存在浏览器里·文件不上传",
-    empty: "暂无记录，选下方工具开始工作",
+// ── Quick-start tool cards ──────────────────────────────────────────────────
+const TOOLS = [
+  {
+    key: "contract-risk",
+    href: "/contract-risk",
+    label: "Contract Review",
+    desc: "Flag risky clauses, verified against source",
+    icon: (
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+        <path d="M5 3h10a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+        <path d="M7 8h6M7 12h4" />
+        <circle cx="14" cy="14.5" r="2.5" />
+        <path d="m16 16.5 1.5 1.5" />
+      </svg>
+    ),
   },
-  en: {
-    eyebrow: "Your workspace",
-    greet: (name: string) => `Welcome back, ${name}`,
-    resume: "Pick up where you left off",
-    resumeCta: "Continue",
-    recent: "Recent",
-    quick: "Quick start",
-    tools: {
-      "contract-risk": "Contract review",
-      compare: "Compare docs",
-      "chat-with-pdf": "AI chat",
-      "ai-summary": "AI summary",
-    },
-    privacy: "Your analysis stays in your browser · files not uploaded",
-    empty: "No history yet — pick a tool below to get started",
+  {
+    key: "chat-with-pdf",
+    href: "/chat-with-pdf",
+    label: "AI Chat",
+    desc: "Ask questions, get grounded answers",
+    icon: (
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+        <path d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H7l-4 3V4Z" />
+      </svg>
+    ),
   },
-};
+  {
+    key: "compare",
+    href: "/compare",
+    label: "Compare Docs",
+    desc: "Side-by-side diff with AI explanation",
+    icon: (
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+        <rect x="2" y="3" width="7" height="14" rx="1" />
+        <rect x="11" y="3" width="7" height="14" rx="1" />
+        <path d="M9 10h2" />
+      </svg>
+    ),
+  },
+  {
+    key: "ai-summary",
+    href: "/ai-summary",
+    label: "AI Summary",
+    desc: "Extract key points from any document",
+    icon: (
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+        <path d="M4 5h12M4 9h8M4 13h10M4 17h6" />
+      </svg>
+    ),
+  },
+] as const;
 
-// ---------------------------------------------------------------------------
-// Quick-start tool list
-// ---------------------------------------------------------------------------
-const QUICK_TOOLS: { tool: WorkHistoryItem["tool"]; href: string }[] = [
-  { tool: "contract-risk", href: "contract-risk" },
-  { tool: "compare",       href: "compare" },
-  { tool: "chat-with-pdf", href: "chat-with-pdf" },
-  { tool: "ai-summary",    href: "ai-summary" },
-];
+// ── Component ───────────────────────────────────────────────────────────────
+export function DashboardWorkspace() {
+  const router = useRouter();
+  const [dragOver, setDragOver] = useState(false);
 
-// ---------------------------------------------------------------------------
-// Relative time helper
-// ---------------------------------------------------------------------------
-function formatRelativeTime(timestamp: number, isZh: boolean): string {
-  const diff = Date.now() - timestamp;
-  const m = Math.floor(diff / 60_000);
-  const h = Math.floor(diff / 3_600_000);
-  const d = Math.floor(diff / 86_400_000);
-  if (m < 2) return isZh ? "刚刚" : "just now";
-  if (h < 1) return isZh ? `${m}分钟前` : `${m}m ago`;
-  if (h < 24) return isZh ? `${h}小时前` : `${h}h ago`;
-  if (d === 1) return isZh ? "昨天" : "yesterday";
-  const zhDays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
-  if (d < 7) {
-    return isZh
-      ? zhDays[new Date(timestamp).getDay()]
-      : new Date(timestamp).toLocaleDateString("en", { weekday: "short" });
-  }
-  return isZh ? `${d}天前` : `${d}d ago`;
-}
-
-// ---------------------------------------------------------------------------
-// Component
-// ---------------------------------------------------------------------------
-export function DashboardWorkspace({ locale = "en" }: { locale?: DashLocale }) {
-  const isZh = locale === "zh" || locale === "zh-Hant";
-  const copy = isZh ? COPY.zh : COPY.en;
-
-  const [history, setHistory] = useState<WorkHistoryItem[]>([]);
-  const [userName, setUserName] = useState("…");
-
-  useEffect(() => {
-    setHistory(readWorkHistory());
-    getDockAccountState()
-      .then((state) => {
-        const raw =
-          state.user?.name ||
-          state.user?.email?.split("@")[0] ||
-          null;
-        setUserName(raw ?? (isZh ? "你" : "you"));
-      })
-      .catch(() => setUserName(isZh ? "你" : "you"));
-  }, [isZh]);
-
-  const latest = history[0] ?? null;
-  const recent = history.slice(0, 3);
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragOver(false);
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+      router.push("/chat-with-pdf");
+    },
+    [router],
+  );
 
   return (
-    <main className="mx-auto max-w-3xl px-5 py-10 sm:px-6 lg:px-8">
-      {/* ── Greeting ── */}
-      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[color:var(--accent)]">
-        {copy.eyebrow}
-      </p>
-      <h1 className="mt-2 text-3xl font-semibold tracking-[-0.02em]">
-        {copy.greet(userName)}
-      </h1>
+    <div className="flex h-screen overflow-hidden bg-[color:var(--background)]">
+      <WorkspaceSidebar />
 
-      {/* ── 继续上次 ── */}
-      {latest && (
-        <section className="mt-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
-            {copy.resume}
-          </p>
-          <a
-            href={lp(locale, latest.href.replace(/^\//, ""))}
-            className="mt-3 flex items-center justify-between gap-4 rounded-[var(--radius)] border border-[color:var(--accent)] bg-[color:var(--surface)] p-5 transition hover:border-[color:var(--accent-strong)] active:scale-[0.99]"
-          >
-            <div className="flex min-w-0 items-center gap-4">
-              <span className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 py-1 text-xs font-semibold text-[color:var(--muted)]">
-                {copy.tools[latest.tool]}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate font-semibold">{latest.fileName}</p>
-                <p className="mt-0.5 text-sm text-[color:var(--muted)]">
-                  {latest.subtitle} · {formatRelativeTime(latest.timestamp, isZh)}
-                </p>
-              </div>
-            </div>
-            <span className="shrink-0 text-sm font-semibold text-[color:var(--accent)]">
-              {copy.resumeCta} →
-            </span>
-          </a>
-        </section>
-      )}
+      {/* ── Right panel ── */}
+      <main
+        className="flex flex-1 flex-col overflow-y-auto"
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={handleDrop}
+      >
+        <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-8 py-12">
 
-      {/* ── 最近 ── */}
-      {recent.length > 0 && (
-        <section className="mt-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
-            {copy.recent}
+          {/* Heading */}
+          <p className="mb-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
+            Quick start
           </p>
-          <div className="mt-3 grid gap-2">
-            {recent.map((item) => (
+
+          {/* Tool cards — 2×2 grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {TOOLS.map((tool) => (
               <a
-                key={item.id}
-                href={lp(locale, item.href.replace(/^\//, ""))}
-                className="flex items-center gap-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-4 transition hover:border-[color:var(--line-strong)] active:scale-[0.99]"
+                key={tool.key}
+                href={tool.href}
+                className="group flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 transition hover:border-[color:var(--accent)]"
               >
-                <span className="w-20 shrink-0 text-xs font-semibold text-[color:var(--muted)]">
-                  {copy.tools[item.tool]}
+                <span className="text-[color:var(--muted)] transition group-hover:text-[color:var(--accent)]">
+                  {tool.icon}
                 </span>
-                <span className="min-w-0 flex-1 truncate text-sm font-semibold">
-                  {item.fileName}
-                </span>
-                <span className="shrink-0 text-xs text-[color:var(--muted)]">
-                  {item.subtitle} · {formatRelativeTime(item.timestamp, isZh)}
-                </span>
+                <div>
+                  <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{tool.label}</p>
+                  <p className="mt-0.5 text-[12.5px] leading-relaxed text-[color:var(--muted)]">{tool.desc}</p>
+                </div>
               </a>
             ))}
           </div>
-        </section>
-      )}
 
-      {/* ── 空状态 ── */}
-      {history.length === 0 && (
-        <p className="mt-8 rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-6 text-center text-sm text-[color:var(--muted)]">
-          {copy.empty}
-        </p>
-      )}
-
-      {/* ── 快捷开工 ── */}
-      <section className="mt-8">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
-          {copy.quick}
-        </p>
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {QUICK_TOOLS.map(({ tool, href }) => (
-            <a
-              key={tool}
-              href={lp(locale, href)}
-              className="flex items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-4 text-sm font-semibold transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)] active:scale-[0.99]"
+          {/* Drop zone */}
+          <div
+            className={`mt-6 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border-2 border-dashed px-6 py-10 text-center transition ${
+              dragOver
+                ? "border-[color:var(--accent)] bg-[rgba(62,207,142,0.06)]"
+                : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"
+            }`}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mb-3 h-8 w-8 text-[color:var(--faint)]"
             >
-              {copy.tools[tool]}
-            </a>
-          ))}
-        </div>
-      </section>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <p className="text-[14px] font-medium text-[color:var(--muted)]">
+              {dragOver ? "Drop to open with AI Chat" : "Drop a document here"}
+            </p>
+            <p className="mt-1 text-[12px] text-[color:var(--faint)]">PDF · Word · Excel · PowerPoint</p>
+          </div>
 
-      {/* ── Privacy note ── */}
-      <p className="mt-8 flex items-center gap-1.5 text-xs text-[color:var(--faint)]">
-        <span aria-hidden="true">⚿</span>
-        {copy.privacy}
-      </p>
-    </main>
+          {/* Privacy note */}
+          <p className="mt-auto pt-8 text-center text-[11.5px] text-[color:var(--faint)]">
+            ⚿ Your files are processed in your browser · never uploaded to a server
+          </p>
+        </div>
+      </main>
+    </div>
   );
 }
