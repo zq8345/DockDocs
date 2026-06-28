@@ -83,6 +83,7 @@ Two modes; pick by whether Joe is at the window + the change's risk. (Added 2026
 - **Standing quality bars (every relevant change):**
   - **可溯源 visible** where the tool has it (a "✓ verified against source" badge) — it's the brand moat, never bury it.
   - **Native i18n** — a locale user must NEVER see English in core UI (nav, tool UI, pricing, FAQ). Ship new user-facing strings in all active locales (en/zh/es/pt/fr) or hand the locales to 多语言. Multilingual is the core wedge.
+  - **⭐ i18n「完成」的唯一证据是渲染验证，不是 guard 绿（2026-06-27 ko 仅 20-25% 事故 · 总调度失职复盘）。** i18n-coverage guard 只扫 localized-tools.ts / copy.ts / CUSTOM_TOOL_COPY 三源；**盲区** = Footer(footer-nav.ts)、Pricing(PricingPlans.tsx)、infoPages(lib/i18n.ts: Contact/About…)、~30 个 *Client.tsx 内联 STR/SECTIONS、ToolFaq.tsx FAQS —— 全走 `AuthoredLocale` + `?? .en`，guard 报绿而该 locale 实际全英文兜底。**两条铁律：** (1) 新 locale **必须进 `AuthoredLocale` 类型**，用 tsc 强制每个 `Record<AuthoredLocale>` 组件补齐（覆盖所有用该类型处，比 guard 可靠）—— **绝不以「省类型工程 / 零内容增益」为由把 locale 排除在 AuthoredLocale 外，那正是 ko 烂尾的根因**；(2) 审 / 推任何 locale 工作前，总调度**必须实际打开 `/<locale>/` 的 Footer + Pricing + 一个工具页 + Contact 看渲染**，眼见无英文兜底才算完成。**guard 绿 + tsc 绿 ≠ 完成；只有渲染干净才算完成。**
   - **Visual upload UX** — every upload shows a thumbnail (where feasible) + file size + clear success/reject feedback. No bare file lists, no silent rejects.
   - **Honest paywall copy** — show users plain words ("无限"); keep internal limits (fair-use soft caps) OUT of the UI; mark unbuilt features "coming / 即将", never advertise vaporware.
 - **Risk-tiered review before live:**
