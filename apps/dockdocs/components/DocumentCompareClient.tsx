@@ -871,7 +871,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
-export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
+export function DocumentCompareClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const cl: BaseLocale = locale === "zh-Hant" ? "zh" : locale === "ko" ? "en" : locale;
   // ko → English engine/runtime (child widgets / OCR / notices lack ko); zh-Hant preserved.
@@ -1183,14 +1183,19 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
     }
   };
 
+  const Wrapper: "main" | "div" = embedded ? "div" : "main";
   return (
-    <main className="mx-auto max-w-5xl px-5 py-14 sm:px-6 lg:px-8">
-      <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
-        <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
-        {t.badge}
-      </div>
-      <h1 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">{t.h1}</h1>
-      <p className="mt-3 max-w-4xl text-[color:var(--muted)]">{t.intro}</p>
+    <Wrapper className={embedded ? "px-4 py-4" : "mx-auto max-w-5xl px-5 py-14 sm:px-6 lg:px-8"}>
+      {!embedded && (
+        <>
+          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />
+            {t.badge}
+          </div>
+          <h1 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-4xl">{t.h1}</h1>
+          <p className="mt-3 max-w-4xl text-[color:var(--muted)]">{t.intro}</p>
+        </>
+      )}
 
       {templates.length > 0 && (
         <div className="mt-6">
@@ -1668,8 +1673,8 @@ export function DocumentCompareClient({ locale = "en" }: { locale?: Locale }) {
             </div>
           );
         })()}
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="compare" locale={locale} />
-    </main>
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="compare" locale={locale} />}
+    </Wrapper>
   );
 }

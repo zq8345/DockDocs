@@ -488,7 +488,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
-export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
+export function ContractRiskClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // zh-Hant takes the deepHant branch below; collapsing it here too keeps `al` a plain AuthoredLocale.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
@@ -747,13 +747,17 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <div className="flex items-center gap-2">
-        <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
-        <span className="rounded-full border border-[color:var(--accent)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[color:var(--accent)]">{t.proBadge}</span>
-      </div>
-      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+    <div className={embedded ? "px-4 py-4" : "mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"}>
+      {!embedded && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />}
+      {!embedded && (
+        <>
+          <div className="flex items-center gap-2">
+            <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>
+            <span className="rounded-full border border-[color:var(--accent)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[color:var(--accent)]">{t.proBadge}</span>
+          </div>
+          <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+        </>
+      )}
 
       {phase === "idle" || phase === "extracting" ? (
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
@@ -1009,10 +1013,10 @@ export function ContractRiskClient({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
-      <GroundingNote variant="contract" locale={locale} />
-      <RelatedPdfTools locale={locale} exclude="/contract-risk" />
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="contract-risk" locale={childLocale} />
+      {!embedded && <GroundingNote variant="contract" locale={locale} />}
+      {!embedded && <RelatedPdfTools locale={locale} exclude="/contract-risk" />}
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="contract-risk" locale={childLocale} />}
     </div>
   );
 }

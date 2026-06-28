@@ -15,6 +15,7 @@ function toNavLocale(locale: RuntimeLocale): NavLocale {
 }
 
 const SHOWN_LOCALES = (routeLocales as readonly string[]).filter((l) => l !== "zh-Hant");
+const EMBEDDED_SLUGS = new Set(["/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk"]);
 
 export function WorkspaceSidebar({
   locale = "en",
@@ -193,17 +194,28 @@ export function WorkspaceSidebar({
                           const label = labels[item.key] ?? item.key;
                           const soon = (item as { soon?: boolean }).soon;
                           const isActive = activeTool === item.slug;
-                          return (
+                          const canEmbed = !!onToolSelect && !soon && EMBEDDED_SLUGS.has(item.slug);
+                          const itemClass = `flex w-full items-center justify-between rounded px-3 py-1.5 text-left text-[13px] transition hover:bg-[color:var(--surface)] ${
+                            isActive
+                              ? "bg-[color:var(--surface)] text-[color:var(--accent)]"
+                              : soon
+                              ? "text-[color:var(--faint)]"
+                              : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
+                          }`;
+                          return canEmbed ? (
+                            <button
+                              key={item.key}
+                              type="button"
+                              onClick={() => onToolSelect(item.slug)}
+                              className={itemClass}
+                            >
+                              <span>{label}</span>
+                            </button>
+                          ) : (
                             <a
                               key={item.key}
                               href={item.slug}
-                              className={`flex items-center justify-between rounded px-3 py-1.5 text-[13px] transition hover:bg-[color:var(--surface)] ${
-                                isActive
-                                  ? "bg-[color:var(--surface)] text-[color:var(--accent)]"
-                                  : soon
-                                  ? "text-[color:var(--faint)]"
-                                  : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
-                              }`}
+                              className={itemClass}
                             >
                               <span>{label}</span>
                               {soon && (

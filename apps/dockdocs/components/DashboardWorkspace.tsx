@@ -1,11 +1,29 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
 import { WorkspaceTopbar } from "@/components/WorkspaceTopbar";
 import { headerStructure, navItemLabels } from "@/lib/header-nav";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
+
+// ── Lazy-loaded embedded AI tools ──────────────────────────────────────────
+const ContractRiskEmbedded = dynamic(
+  () => import("@/components/ContractRiskClient").then((m) => m.ContractRiskClient),
+  { ssr: false },
+);
+const ChatWithPdfEmbedded = dynamic(
+  () => import("@/app/(site)/chat-with-pdf/ChatWithPdfClient").then((m) => m.ChatWithPdfClient),
+  { ssr: false },
+);
+const DocumentCompareEmbedded = dynamic(
+  () => import("@/components/DocumentCompareClient").then((m) => m.DocumentCompareClient),
+  { ssr: false },
+);
+const AiSummaryEmbedded = dynamic(
+  () => import("@/app/(site)/ai-summary/AiSummaryClient").then((m) => m.AiSummaryClient),
+  { ssr: false },
+);
 
 type NavLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
@@ -64,7 +82,6 @@ const CARDS = [
 
 // ── Component ───────────────────────────────────────────────────────────────
 export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }) {
-  const router = useRouter();
   const [dragOver, setDragOver] = useState(false);
   const [activeTool, setActiveTool] = useState<string | null>(null);
 
@@ -74,9 +91,9 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
       setDragOver(false);
       const file = e.dataTransfer.files[0];
       if (!file) return;
-      router.push("/chat-with-pdf");
+      setActiveTool("/chat-with-pdf");
     },
-    [router],
+    [],
   );
 
   const navLocale = toNavLocale(locale);
@@ -100,79 +117,89 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
       <div className="flex flex-1 overflow-hidden">
       <WorkspaceSidebar locale={locale} activeTool={activeTool} onToolSelect={setActiveTool} />
 
-      {/* ── Right panel ── */}
-      <main
-        className="flex flex-1 flex-col overflow-y-auto"
-        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-        onDragLeave={() => setDragOver(false)}
-        onDrop={handleDrop}
-      >
-        <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-8 py-12">
-
-          {/* Heading */}
-          <p className="mb-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
-            {dash.quickStart ?? "Quick start"}
-          </p>
-
-          {/* Tool cards — 2×2 grid */}
-          <div className="grid grid-cols-2 gap-3">
-            {CARDS.map((card) => (
-              <a
-                key={card.navKey}
-                href={card.href}
-                className="group flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 transition hover:border-[color:var(--accent)]"
-              >
-                <span className="text-[color:var(--muted)] transition group-hover:text-[color:var(--accent)]">
-                  {card.icon}
-                </span>
-                <div>
-                  <p className="text-[14px] font-semibold text-[color:var(--foreground)]">
-                    {labels[card.navKey] ?? card.navKey}
-                  </p>
-                  <p className="mt-0.5 text-[12.5px] leading-relaxed text-[color:var(--muted)]">
-                    {dash[card.descKey] ?? ""}
-                  </p>
-                </div>
-              </a>
-            ))}
-          </div>
-
-          {/* Drop zone */}
+      {/* ── ⑤ Right panel ── */}
+      <main className="flex flex-1 flex-col overflow-y-auto">
+        {activeTool === "/contract-risk" ? (
+          <ContractRiskEmbedded locale={locale} embedded />
+        ) : activeTool === "/chat-with-pdf" ? (
+          <ChatWithPdfEmbedded locale={locale} embedded />
+        ) : activeTool === "/compare" ? (
+          <DocumentCompareEmbedded locale={locale} embedded />
+        ) : activeTool === "/ai-summary" ? (
+          <AiSummaryEmbedded locale={locale} embedded />
+        ) : (
           <div
-            className={`mt-6 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border-2 border-dashed px-6 py-10 text-center transition ${
-              dragOver
-                ? "border-[color:var(--accent)] bg-[rgba(62,207,142,0.06)]"
-                : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"
-            }`}
+            className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-8 py-12"
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="mb-3 h-8 w-8 text-[color:var(--faint)]"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="17 8 12 3 7 8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
-            </svg>
-            <p className="text-[14px] font-medium text-[color:var(--muted)]">
-              {dragOver
-                ? (dash.dropActive ?? "Drop to open with AI Chat")
-                : (dash.dropHere ?? "Drop a document here")}
+            {/* Heading */}
+            <p className="mb-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
+              {dash.quickStart ?? "Quick start"}
             </p>
-            <p className="mt-1 text-[12px] text-[color:var(--faint)]">
-              {dash.fileTypes ?? "PDF · Word · Excel · PowerPoint"}
+
+            {/* Tool cards — 2×2 grid */}
+            <div className="grid grid-cols-2 gap-3">
+              {CARDS.map((card) => (
+                <button
+                  key={card.navKey}
+                  type="button"
+                  onClick={() => setActiveTool(card.href)}
+                  className="group flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 text-left transition hover:border-[color:var(--accent)]"
+                >
+                  <span className="text-[color:var(--muted)] transition group-hover:text-[color:var(--accent)]">
+                    {card.icon}
+                  </span>
+                  <div>
+                    <p className="text-[14px] font-semibold text-[color:var(--foreground)]">
+                      {labels[card.navKey] ?? card.navKey}
+                    </p>
+                    <p className="mt-0.5 text-[12.5px] leading-relaxed text-[color:var(--muted)]">
+                      {dash[card.descKey] ?? ""}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Drop zone */}
+            <div
+              className={`mt-6 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border-2 border-dashed px-6 py-10 text-center transition ${
+                dragOver
+                  ? "border-[color:var(--accent)] bg-[rgba(62,207,142,0.06)]"
+                  : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"
+              }`}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="mb-3 h-8 w-8 text-[color:var(--faint)]"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              <p className="text-[14px] font-medium text-[color:var(--muted)]">
+                {dragOver
+                  ? (dash.dropActive ?? "Drop to open with AI Chat")
+                  : (dash.dropHere ?? "Drop a document here")}
+              </p>
+              <p className="mt-1 text-[12px] text-[color:var(--faint)]">
+                {dash.fileTypes ?? "PDF · Word · Excel · PowerPoint"}
+              </p>
+            </div>
+
+            {/* Privacy note */}
+            <p className="mt-auto pt-8 text-center text-[11.5px] text-[color:var(--faint)]">
+              ⚿ {dash.privacyNote ?? "Files processed in your browser · never uploaded"}
             </p>
           </div>
-
-          {/* Privacy note */}
-          <p className="mt-auto pt-8 text-center text-[11.5px] text-[color:var(--faint)]">
-            ⚿ {dash.privacyNote ?? "Files processed in your browser · never uploaded"}
-          </p>
-        </div>
+        )}
       </main>
       </div>
     </div>

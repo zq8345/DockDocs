@@ -199,7 +199,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
-export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | "es" | "pt" | "fr" | "ja" | "zh-Hant" }) {
+export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?: RuntimeLocale | "es" | "pt" | "fr" | "ja" | "zh-Hant"; embedded?: boolean }) {
   const copy = getRuntimeCopy(locale).chat;
   // Rich //Benefits //Workflow //Reading sections. ko + zh-Hant have no authored
   // block: ko → en, zh-Hant → derived from zh via deepHant (mirrors ContractRiskClient).
@@ -447,7 +447,7 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
       id="workspace"
       aria-label={copy.workspaceTitle}
       data-testid="chat-workspace"
-      className="mx-auto max-w-5xl"
+      className={embedded ? "flex flex-1 flex-col" : "mx-auto max-w-5xl"}
     >
       {/* ── Upload zone (shown when no document) ── */}
       {!documentText && !isExtracting ? (
@@ -639,9 +639,9 @@ export function ChatWithPdfClient({ locale = "en" }: { locale?: RuntimeLocale | 
         </div>
       ) : null}
     </section>
-    <GroundingNote variant="chat" locale={locale} />
-    <RelatedPdfTools locale={locale} exclude="/chat-with-pdf" />
-    <ToolSections locale={locale} content={sec} />
+    {!embedded && <GroundingNote variant="chat" locale={locale} />}
+    {!embedded && <RelatedPdfTools locale={locale} exclude="/chat-with-pdf" />}
+    {!embedded && <ToolSections locale={locale} content={sec} />}
     </>
   );
 }

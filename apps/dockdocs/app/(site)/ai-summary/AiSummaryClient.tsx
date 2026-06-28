@@ -198,7 +198,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
-export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant" }) {
+export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant"; embedded?: boolean }) {
   // ko has no authored summary-client copy yet → English via the booleans/ternaries
   // below all defaulting to English (foundation phase). childLocale collapses ko→en for
   // child widgets (UpgradePrompt) whose prop union doesn't include ko.
@@ -326,7 +326,7 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
   const nextSteps = summary?.suggestedNextSteps ?? summary?.nextSteps ?? [];
 
   return (
-    <section className="mx-auto max-w-5xl">
+    <section className={embedded ? "px-4 py-4" : "mx-auto max-w-5xl"}>
       {/* Upload */}
       {status === "idle" || status === "error" ? (
         <label
@@ -432,9 +432,9 @@ export function AiSummaryClient({ locale = "en" }: { locale?: "en" | "zh" | "es"
         </div>
       ) : null}
 
-      <GroundingNote variant="summary" locale={locale} />
-      <RelatedPdfTools locale={locale} exclude="/ai-summary" />
-      <ToolSections locale={locale} content={sec} />
+      {!embedded && <GroundingNote variant="summary" locale={locale} />}
+      {!embedded && <RelatedPdfTools locale={locale} exclude="/ai-summary" />}
+      {!embedded && <ToolSections locale={locale} content={sec} />}
     </section>
   );
 }
