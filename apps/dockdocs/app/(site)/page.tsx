@@ -36,6 +36,7 @@ const homeSchema = {
       "@id": `${siteUrl}#org`,
       name: "DockDocs",
       url: siteUrl,
+      logo: { "@type": "ImageObject", url: `${siteUrl}/icon-512.png`, width: 512, height: 512 },
       description: "Private, verifiable document AI: read any document and verify its answers — the AI shows the source passage behind them and flags what it can't trace, so you can check it yourself. Plus ~50 PDF tools — most run in your browser, so those files never leave your device.",
       slogan: "Read any document. Verify every answer.",
       foundingDate: "2024",
@@ -49,7 +50,7 @@ const homeSchema = {
       name: "DockDocs",
       url: siteUrl,
       description: "Document AI that shows the source passage behind its answers so you can verify them, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
-      inLanguage: ["en", "zh"],
+      inLanguage: ["en", "zh", "es", "pt", "fr", "ja", "de"],
       publisher: { "@id": `${siteUrl}#org` },
     },
     {

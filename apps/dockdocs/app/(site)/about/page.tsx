@@ -21,10 +21,11 @@ const aboutSchema = {
       "@id": "https://dockdocs.app#org",
       name: "DockDocs",
       url: "https://dockdocs.app",
+      logo: { "@type": "ImageObject", url: "https://dockdocs.app/icon-512.png", width: 512, height: 512 },
       description:
         "DockDocs is a privacy-first AI document platform with ~50 PDF tools including compress, merge, split, convert, OCR, AI chat, and AI summarization. Built for teams, students, and professionals worldwide.",
       foundingDate: "2024",
-      slogan: "AI document platform for real file workflows",
+      slogan: "Read any document. Verify every answer.",
       sameAs: ["https://github.com/zq8345/dock-ai-ecosystem"],
     },
     {
