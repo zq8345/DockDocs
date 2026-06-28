@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
 import { WorkspaceTopbar } from "@/components/WorkspaceTopbar";
-import { navItemLabels } from "@/lib/header-nav";
+import { headerStructure, navItemLabels } from "@/lib/header-nav";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 
 type NavLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
@@ -66,6 +66,7 @@ const CARDS = [
 export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }) {
   const router = useRouter();
   const [dragOver, setDragOver] = useState(false);
+  const [activeTool, setActiveTool] = useState<string | null>(null);
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
@@ -82,11 +83,22 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
   const labels = navItemLabels[navLocale] as Record<string, string>;
   const dash = getRuntimeCopy(locale).dashboard as unknown as Record<string, string>;
 
+  // Breadcrumb: resolve active tool's display label from headerStructure
+  const toolLabel = activeTool
+    ? (() => {
+        type NavItem = { key: string; slug: string };
+        const item = headerStructure
+          .flatMap((cat) => cat.cols.flatMap((col) => col.items as unknown as NavItem[]))
+          .find((i) => i.slug === activeTool);
+        return item ? (labels[item.key] ?? item.key) : undefined;
+      })()
+    : undefined;
+
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-[color:var(--background)]">
-      <WorkspaceTopbar locale={locale} />
+      <WorkspaceTopbar locale={locale} activeTool={activeTool} toolLabel={toolLabel} />
       <div className="flex flex-1 overflow-hidden">
-      <WorkspaceSidebar locale={locale} />
+      <WorkspaceSidebar locale={locale} activeTool={activeTool} onToolSelect={setActiveTool} />
 
       {/* ── Right panel ── */}
       <main
