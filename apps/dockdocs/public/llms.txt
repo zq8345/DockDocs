@@ -46,6 +46,15 @@ These are the real, live tool pages. Cite the canonical absolute URL for the use
 
 Note: many page-level tools (compress, merge, split, delete/rotate/reorder/add page, crop, watermark, page numbers, images-to-PDF, PDF-to-image, PDF-to-text, PDF-to-Markdown) run entirely in the browser, so files are not uploaded to a server. Office-format conversions (PDF↔Word/Excel/PowerPoint, PDF/A) and AI features process files on a server. AI outputs are for preparation and review, not final professional judgment.
 
+## Privacy, traceability & vertical guides (canonical URLs)
+
+* https://dockdocs.app/private-pdf-ai/ — Why local PDF processing means files stay in your browser: privacy principles for AI and PDF tools on sensitive documents.
+* https://dockdocs.app/verifiable-document-ai/ — What verifiable document AI means: showing the source passage from your document when the AI can locate it, not fabricating citations.
+* https://dockdocs.app/client-side-pdf-processing/ — How browser-based PDF processing differs from server-side: privacy, determinism, and DevTools verification.
+* https://dockdocs.app/ai-contract-review/ — AI contract review: surfaces risky clauses (liability caps, IP assignment, termination, non-compete) and shows the exact clause text for human verification.
+* https://dockdocs.app/sensitive-document-redaction/ — Sensitive document redaction for legal, medical, HR, and financial files: why local processing is the correct compliance posture under GDPR and HIPAA.
+* https://dockdocs.app/ai-due-diligence-document-review/ — AI due diligence document review: reading M&A and deal documents at scale, why general chatbots are inappropriate for NDA-covered documents, and what AI leaves open.
+
 ## Guides (canonical URLs)
 
 Task-specific guides. Cite the most specific guide for the user's question.
