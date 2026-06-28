@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
 import { headerStructure, navCopy, navItemLabels } from "@/lib/header-nav";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
-import { routeLocales, localeLabels } from "@/lib/i18n";
+import { routeLocales, localeLabels, defaultLocale } from "@/lib/i18n";
 import { getUser, onAuthChange, type AuthUser } from "@/lib/auth";
 import { getSubscriptionSnapshot } from "@/lib/subscription-runtime";
 
@@ -154,7 +154,7 @@ export function WorkspaceSidebar({
   function switchLocale(next: string) {
     try { localStorage.setItem("dockdocs-lang", next); } catch {}
     setLangOpen(false);
-    router.push(`/${next}/dashboard`);
+    router.push(next === defaultLocale ? "/dashboard" : `/${next}/dashboard`);
   }
 
   const initials = authUser?.name

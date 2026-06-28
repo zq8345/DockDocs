@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { isRouteLocale } from "@/lib/i18n";
+import { isRouteLocale, defaultLocale } from "@/lib/i18n";
 
 export function DashboardRedirect() {
   const router = useRouter();
@@ -12,7 +12,7 @@ export function DashboardRedirect() {
       const saved = localStorage.getItem("dockdocs-lang");
       if (saved && isRouteLocale(saved)) locale = saved;
     } catch {}
-    router.replace(`/${locale}/dashboard`);
+    router.replace(locale === defaultLocale ? "/dashboard" : `/${locale}/dashboard`);
   }, [router]);
   return null;
 }

@@ -78,20 +78,20 @@
 html.light {
   color-scheme: light;
 
-  --background: #f8f9fa;
+  --background: #eef0f3;
   --surface: #ffffff;
-  --surface-subtle: #f3f4f6;
-  --surface-raised: #f9fafb;
+  --surface-subtle: #e8eaed;
+  --surface-raised: #f5f6f8;
 
-  --foreground: #111827;
-  --muted: #4b5563;
-  --faint: #6b7280;
+  --foreground: #0d1117;
+  --muted: #374151;
+  --faint: #4b5563;
 
-  --line: #e5e7eb;
-  --line-strong: #d1d5db;
-  --line-subtle: #f3f4f6;
-  --skeleton: #e5e7eb;
-  --ink-soft: #9ca3af;
+  --line: #d1d5db;
+  --line-strong: #9ca3af;
+  --line-subtle: #e5e7eb;
+  --skeleton: #d1d5db;
+  --ink-soft: #6b7280;
 
   --accent: #1a9c66;
   --accent-strong: #0f7a4f;
