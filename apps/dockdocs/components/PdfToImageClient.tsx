@@ -145,6 +145,25 @@ const STR = {
   },
 } satisfies AuthoredCopy<typeof _en>;
 
+// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
+// copy lives in standalone *_KO objects selected explicitly in the resolver below.
+const STR_KO: typeof _en = {
+  title: "PDF를 이미지로",
+  subtitle: "PDF를 업로드하고 원하는 페이지를 고른 뒤 JPG 또는 PNG를 선택해 다운로드하세요 — 변환하기 전에 모든 페이지를 보고 선택할 수 있습니다.",
+  titlePng: "PDF를 PNG로",
+  subtitlePng: "PDF 페이지를 무손실 PNG 이미지로 변환하세요. PDF를 업로드하고 원하는 페이지를 고른 뒤 다운로드하세요 — 모든 페이지가 브라우저 안에서 렌더링됩니다.",
+  titleJpg: "PDF를 JPG로",
+  subtitleJpg: "PDF 페이지를 JPG 이미지로 변환하세요. PDF를 업로드하고 원하는 페이지를 고른 뒤 다운로드하세요 — 모든 페이지가 브라우저 안에서 렌더링됩니다.",
+  drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+  choose: "PDF 선택", rendering: "페이지를 렌더링하는 중…",
+  hint: "페이지를 클릭해 포함하거나 제외하세요. 선택한 페이지가 변환됩니다.",
+  selected: (n: number, t: number) => `${t}페이지 중 ${n}페이지 선택됨`,
+  pageLabel: (n: number) => `${n}페이지`,
+  all: "모두 선택", none: "선택 해제", format: "형식",
+  convert: "변환하고 다운로드", working: "변환 중…", reset: "다시 시작",
+  needOne: "페이지를 최소 한 개 선택하세요.", err: "문제가 발생했습니다: ",
+};
+
 // Hub-only depth (the /pdf-to-image canonical). jpg/png variants render their
 // own variant-native depth via the `content` prop (left untouched); the hub had
 // no client depth, so it carries the standard ToolSections block here, giving
@@ -321,13 +340,39 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "PDF 페이지를 이미지로 변환하는 이유",
+  benefitsDescription: "어떤 PDF 페이지든 슬라이드, 문서, 게시물에 넣을 수 있는 JPG나 PNG로 바꾸세요.",
+  benefits: [
+    { title: "JPG 또는 PNG, 선택은 자유", description: "공유하기 쉬운 작은 파일은 JPG, 무손실로 선명한 텍스트와 도표는 PNG — 내보낼 때마다 선택하세요." },
+    { title: "원하는 페이지만 정확히 선택", description: "모든 페이지가 썸네일로 표시됩니다. 한 페이지, 일정 범위, 또는 문서 전체를 변환하세요." },
+    { title: "선명한 2배 해상도", description: "페이지가 원본의 두 배 해상도로 렌더링되어 화면에서 또렷하고 인쇄에도 적합합니다." },
+  ],
+  workflowTitle: "이미지 변환이 작업에 어떻게 들어맞는가",
+  workflowDescription: "PDF 페이지를 이미지로 만들어야 할 때 — 슬라이드용 도표, 페이지 미리보기, 썸네일.",
+  steps: [
+    "PDF를 업로드합니다 — 드래그 앤 드롭하거나 파일을 선택하세요.",
+    "페이지를 선택하고 JPG 또는 PNG를 고릅니다.",
+    "변환한 뒤 다운로드합니다. 여러 페이지는 하나의 ZIP으로 받습니다.",
+  ],
+  readingTitle: "더 많은 이미지·PDF 도구",
+  readingDescription: "PDF와 이미지 사이에서 작업하는 관련 변환 도구와 가이드.",
+  readingLinks: [
+    { label: "이미지를 PDF로", href: "/images-to-pdf", description: "반대 작업 — JPG/PNG 이미지를 하나의 PDF로 합칩니다." },
+    { label: "PDF 압축", href: "/compress-pdf", description: "변환 전후로 PDF 파일 크기를 줄입니다." },
+    { label: "업로드용으로 이미지를 PDF로 변환", href: "/guides/convert-images-to-pdf-for-upload", description: "이미지를 업로드 가능한 PDF로 만드는 가이드." },
+    { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+  ],
+};
+
 export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant = "hub", content, embedded = false }: { locale?: Locale; defaultFormat?: Fmt; variant?: Variant; content?: ContentDepth; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // ko copy lives in STR_KO/SECTIONS_KO (selected below); al collapses ko→en only
+  // for the AuthoredLocale-typed tables ko is intentionally excluded from.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
   const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   // Per-variant H1/subtitle (every locale in STR carries all three pairs).
   const heading = variant === "png" ? t.titlePng : variant === "jpg" ? t.titleJpg : t.title;
   const subheading = variant === "png" ? t.subtitlePng : variant === "jpg" ? t.subtitleJpg : t.subtitle;

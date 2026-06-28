@@ -88,6 +88,19 @@ const STR = {
   },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
+// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
+// copy lives in standalone *_KO objects selected explicitly in the resolver below.
+const STR_KO: typeof _en = {
+  title: "이미지를 PDF로",
+  subtitle: "JPG, PNG, WebP, GIF, BMP 이미지를 추가하고 드래그해 순서를 정한 뒤 하나의 PDF로 합치세요 — 이미지 한 장이 한 페이지가 됩니다. 변환하기 전에 모든 이미지를 미리 확인할 수 있습니다.",
+  drop: "여기에 이미지를 끌어다 놓거나 클릭해서 선택하세요",
+  choose: "이미지 선택", add: "더 추가", reading: "이미지를 읽는 중…",
+  hint: "드래그해서 순서를 바꾸세요. 각 이미지는 위에서 아래 순으로 하나의 PDF 페이지가 됩니다.",
+  count: (n: number) => `이미지 ${n}장`,
+  convert: "PDF로 변환", working: "PDF를 만드는 중…", reset: "다시 시작",
+  needOne: "이미지를 최소 한 장 추가하세요.", err: "문제가 발생했습니다: ",
+};
+
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why turn images into a PDF in your browser",
@@ -252,11 +265,36 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   },
 };
 
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "브라우저에서 이미지를 PDF로 만드는 이유",
+  benefitsDescription: "아무것도 업로드하지 않고 JPG와 PNG 이미지를 순서대로 하나의 PDF로 합쳐 보내기, 인쇄, 보관이 쉬워집니다.",
+  benefits: [
+    { title: "여러 이미지를 하나의 PDF로", description: "사진, 스크린샷, 스캔본을 하나의 PDF로 묶어 깔끔한 한 파일로 보내고 인쇄하세요." },
+    { title: "페이지 순서를 직접 지정", description: "변환하기 전에 이미지를 순서대로 드래그해, 각 페이지가 정확히 원하는 위치에 들어가게 하세요." },
+    { title: "한 페이지에 한 장 또는 여러 장", description: "큰 사진은 한 페이지에 한 장으로, 여러 장을 한 페이지에 모으면 PDF를 더 작게 유지할 수 있습니다." },
+  ],
+  workflowTitle: "이미지-PDF 변환이 작업에 어떻게 들어맞는가",
+  workflowDescription: "흩어진 이미지를 하나의 문서로 만들어야 할 때 — 사진 모음, 영수증 묶음, 휴대폰으로 찍은 스캔 페이지.",
+  steps: [
+    "합칠 JPG 또는 PNG 이미지를 드래그 앤 드롭하거나 파일 선택기로 추가합니다.",
+    "이미지를 원하는 순서로 드래그하고, 페이지당 한 장 또는 여러 장을 선택합니다.",
+    "변환한 뒤 하나로 합쳐진 PDF를 다운로드합니다.",
+  ],
+  readingTitle: "이미지와 PDF를 다루는 더 많은 방법",
+  readingDescription: "이미지와 문서를 서로 변환하는 관련 도구와 가이드.",
+  readingLinks: [
+    { label: "PDF를 이미지로", href: "/pdf-to-image", description: "반대 작업 — PDF의 각 페이지를 다시 JPG나 PNG로 바꿉니다." },
+    { label: "업로드용으로 이미지를 PDF로 변환", href: "/guides/convert-images-to-pdf-for-upload", description: "왜 많은 사이트가 하나의 PDF를 요구하는지, 그에 맞게 이미지를 준비하는 방법." },
+    { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+  ],
+};
+
 export function ImagesToPdfClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // ko copy lives in STR_KO/SECTIONS_KO (selected below); al collapses ko→en only
+  // for the AuthoredLocale-typed tables ko is intentionally excluded from.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
@@ -319,7 +357,8 @@ export function ImagesToPdfClient({ locale = "en", embedded = false }: { locale?
           ja: "読み取れる画像がありません（HEIC などの形式は未対応です）。",
           de: "Keine lesbaren Bilder (Formate wie HEIC werden noch nicht unterstützt).",
         };
-        throw new Error(locale === "zh-Hant" ? toHant(NONE.zh) : NONE[al]);
+        const koNone = "읽을 수 있는 이미지가 없습니다(HEIC 등의 형식은 아직 지원되지 않습니다).";
+        throw new Error(locale === "zh-Hant" ? toHant(NONE.zh) : locale === "ko" ? koNone : NONE[al]);
       }
       const bytes = await pdf.save();
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
@@ -338,7 +377,8 @@ export function ImagesToPdfClient({ locale = "en", embedded = false }: { locale?
           ja: (n) => `${n} 枚の画像を読み取れず、スキップしました。`,
           de: (n) => `${n} Bild(er) konnten nicht gelesen werden und wurden übersprungen.`,
         };
-        setError(locale === "zh-Hant" ? toHant(SKIPPED.zh(failed)) : SKIPPED[al](failed));
+        const koSkipped = `이미지 ${failed}장을 읽을 수 없어 건너뛰었습니다.`;
+        setError(locale === "zh-Hant" ? toHant(SKIPPED.zh(failed)) : locale === "ko" ? koSkipped : SKIPPED[al](failed));
       }
     } catch (e) {
       setError(t.err + (e instanceof Error ? e.message : String(e)));

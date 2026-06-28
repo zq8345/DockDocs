@@ -190,6 +190,30 @@ const STR = {
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
+// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
+// copy lives in standalone *_KO objects selected explicitly in the resolver below.
+const STR_KO: typeof STR_EN = {
+  title: "PDF 번역",
+  subtitle:
+    "PDF를 업로드하고 언어를 선택하면 번역된 텍스트를 받을 수 있습니다. AI가 문서의 텍스트를 번역하며 — 비공개로 처리되고, 지금은 텍스트만 지원합니다(레이아웃 유지는 곧 제공됩니다).",
+  drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+  choose: "PDF 선택",
+  extracting: "PDF를 읽는 중…",
+  pagesChars: (p: number, c: number) => `${p}페이지 · ${c.toLocaleString()}자`,
+  noText: "선택할 수 있는 텍스트를 찾지 못했습니다. 스캔된 PDF인가요? 먼저 OCR을 실행하세요.",
+  tooLong: `이 PDF는 ${MAX_CHARS.toLocaleString()}자 제한을 초과하는 텍스트를 담고 있습니다. 더 짧은 문서(약 10페이지)를 사용하세요.`,
+  target: "번역 대상",
+  translate: "번역",
+  translating: "번역하는 중…",
+  result: "번역",
+  copy: "복사",
+  copied: "복사했습니다!",
+  download: ".txt 다운로드",
+  reset: "다시 시작",
+  errPrefix: "번역에 실패했습니다: ",
+  privacy: "파일은 브라우저에서 읽으며, 추출된 텍스트만 번역을 위해 전송됩니다.",
+};
+
 type Phase = "idle" | "extracting" | "ready" | "translating" | "done";
 
 // Localize a language option label. LANGS carries only en/zh labels by design, so
@@ -381,13 +405,38 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "PDF 번역기가 하는 일",
+  benefitsDescription: "한 언어로 된 PDF를 다시 입력할 필요 없이 다른 언어의 읽을 수 있는 텍스트로 바꿉니다.",
+  benefits: [
+    { title: "18개 언어로 번역", description: "영어, 중국어, 스페인어, 프랑스어, 일본어, 아랍어, 힌디어 등에서 선택하세요 — AI가 문서의 텍스트를 선택한 대상 언어로 옮깁니다." },
+    { title: "단어별이 아닌 온전한 문장", description: "추출된 텍스트가 이어진 문장으로 번역되므로, 짜깁기한 용어집이 아니라 자연스럽게 읽힙니다." },
+    { title: "복사하거나 .txt로 다운로드", description: "번역을 일반 텍스트로 받아 이메일에 바로 붙여 넣거나 .txt 파일로 저장할 수 있습니다 — 레이아웃을 유지하는 출력은 로드맵에 있습니다." },
+  ],
+  workflowTitle: "번역이 문서 작업에 어떻게 들어맞는가",
+  workflowDescription: "팀이 읽지 못하는 언어로 된 PDF가 도착했을 때 — 외국어 계약서, 공급업체 사양서, 연구 논문.",
+  steps: [
+    "PDF를 업로드합니다. 텍스트는 브라우저에서 추출되어 AI로 전송됩니다.",
+    "번역할 언어를 선택하고 번역을 시작합니다.",
+    "화면에서 결과를 확인한 뒤 복사하거나 .txt 파일로 다운로드합니다.",
+  ],
+  readingTitle: "더 많은 AI 문서 도구",
+  readingDescription: "형식뿐 아니라 문서가 말하는 내용을 다루는 관련 방법.",
+  readingLinks: [
+    { label: "PDF와 대화", href: "/chat-with-pdf", description: "문서에 대해 질문하고 그 텍스트에서 끌어온 답을 받으세요." },
+    { label: "PDF 요약", href: "/ai-summary", description: "번역 전후로 긴 문서를 핵심으로 압축하세요." },
+    { label: "AI 문서 리소스", href: "/resources", description: "AI 문서 도구, 변환, PDF 워크플로를 정리한 구조화된 허브." },
+  ],
+};
+
 export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // ko copy lives in STR_KO/SECTIONS_KO (selected below); al collapses ko→en only
+  // for the AuthoredLocale-typed tables ko is intentionally excluded from.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
   const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [phase, setPhase] = useState<Phase>("idle");
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");

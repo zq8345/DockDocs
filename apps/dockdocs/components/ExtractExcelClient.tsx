@@ -148,6 +148,26 @@ const STR = {
   },
 } satisfies AuthoredCopy<typeof _en>;
 
+// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
+// copy lives in standalone *_KO objects selected explicitly in the resolver below.
+const STR_KO: typeof _en = {
+  title: "Excel로 추출",
+  subtitle: "송장, 견적서, 계약서를 업로드하면 핵심 항목을 깔끔한 표로 뽑아내고, 스프레드시트(CSV, Excel·Google Sheets에서 열림)로 다운로드할 수 있습니다. AI는 각 문서에 실제로 있는 내용만 보고합니다.",
+  drop: "여기에 PDF(또는 폴더)를 끌어다 놓거나 클릭해서 선택하세요", folder: "폴더 선택",
+  choose: "PDF 선택", add: "더 추가", reading: "파일을 읽는 중…",
+  type: "문서 종류", invoice: "송장", quote: "견적서", contract: "계약서",
+  extract: "항목 추출", extracting: "추출하는 중…", reset: "다시 시작",
+  download: "CSV 다운로드", doc: "문서", notRecognized: "—",
+  files: (n: number) => `파일 ${n}개`,
+  needFile: "PDF를 최소 한 개 추가하세요.",
+  err: "문제가 발생했습니다: ",
+  note: "항목은 AI가 추출하므로 간단한 확인이 필요할 수 있습니다. 찾지 못한 값은 비워 두며, 지어내지 않습니다.",
+  verifiedBadge: "✓ 원문과 대조 확인",
+  verified: "✓ 원문",
+  sourceFrom: "원문:",
+  unverified: "값은 찾았지만 정확한 구절을 찾지 못했습니다. 직접 확인해 주세요.",
+};
+
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why pull document data into a spreadsheet",
@@ -312,13 +332,38 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   },
 };
 
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "문서 데이터를 스프레드시트로 뽑아내는 이유",
+  benefitsDescription: "한 무더기의 송장, 견적서, 계약서를 하나의 깔끔한 표로 바꾸세요 — AI가 각 문서의 텍스트를 읽고 필요한 항목을 뽑아냅니다.",
+  benefits: [
+    { title: "여러 개를 넣으면 표 하나로", description: "문서 폴더 전체를 넣으면 스프레드시트 하나가 나옵니다 — 파일마다 한 행씩, 모든 문서에서 같은 열이 나란히 정렬됩니다." },
+    { title: "실제로 있는 내용만", description: "AI는 텍스트에서 읽을 수 있는 값만 보고합니다. 찾지 못한 항목은 추측하지 않고 비워 두므로, 없는 숫자는 지어내지 않고 빈칸으로 남습니다." },
+    { title: "어디서나 열리는 CSV", description: "CSV로 다운로드해 Excel과 Google Sheets에서 바로 열 수 있습니다 — 정렬, 필터링하거나 직접 만든 대조표에 붙여 넣을 수 있습니다." },
+  ],
+  workflowTitle: "추출이 문서 작업에 어떻게 들어맞는가",
+  workflowDescription: "필요한 숫자와 조건이 여러 PDF에 흩어져 있어 손으로 다시 입력하고 싶지 않을 때.",
+  steps: [
+    "송장, 견적서, 계약서를 추가하고 문서 종류를 선택합니다.",
+    "문서의 텍스트를 AI가 분석해 핵심 항목을 행으로 뽑아냅니다.",
+    "표를 검토하고 스프레드시트를 CSV로 다운로드합니다.",
+  ],
+  readingTitle: "문서를 처리하는 더 많은 방법",
+  readingDescription: "파일을 읽고, 비교하고, 질문하는 관련 AI 도구.",
+  readingLinks: [
+    { label: "문서 비교", href: "/compare", description: "여러 문서를 나란히 놓고 핵심 조건이 어디서 다른지 확인하세요." },
+    { label: "계약 위험 표시", href: "/contract-risk", description: "서명하기 전에 계약서의 이례적이거나 일방적인 조항을 찾아내세요." },
+    { label: "문서 워크플로 리소스", href: "/resources", description: "PDF 도구, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+  ],
+};
+
 export function ExtractExcelClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // ko copy lives in STR_KO/SECTIONS_KO (selected below); al collapses ko→en only
+  // for the AuthoredLocale-typed tables ko is intentionally excluded from.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
   const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [docs, setDocs] = useState<Doc[]>([]);
   const [dragging, setDragging] = useState(false);
   const [docType, setDocType] = useState<DocType>("invoice");
@@ -438,7 +483,7 @@ export function ExtractExcelClient({ locale = "en", embedded = false }: { locale
             </div>
           )}
         </div>
-        {embedded && <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">⚿ {locale === "zh" || locale === "zh-Hant" ? "文件在浏览器中本地处理 · 不上传至服务器" : locale === "ja" ? "ファイルはブラウザで処理 · アップロードなし" : locale === "es" ? "Archivos procesados en tu navegador · nunca cargados" : locale === "pt" ? "Arquivos processados no seu navegador · nunca enviados" : locale === "fr" ? "Fichiers traités dans votre navigateur · jamais téléversés" : locale === "de" ? "Dateien im Browser verarbeitet · werden nie hochgeladen" : "Files processed in your browser · never uploaded"}</p>}
+        {embedded && <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">⚿ {locale === "zh" || locale === "zh-Hant" ? "文件在浏览器中本地处理 · 不上传至服务器" : locale === "ja" ? "ファイルはブラウザで処理 · アップロードなし" : locale === "ko" ? "파일은 브라우저에서 처리 · 업로드되지 않음" : locale === "es" ? "Archivos procesados en tu navegador · nunca cargados" : locale === "pt" ? "Arquivos processados no seu navegador · nunca enviados" : locale === "fr" ? "Fichiers traités dans votre navigateur · jamais téléversés" : locale === "de" ? "Dateien im Browser verarbeitet · werden nie hochgeladen" : "Files processed in your browser · never uploaded"}</p>}
         </>
       ) : (
         <>
