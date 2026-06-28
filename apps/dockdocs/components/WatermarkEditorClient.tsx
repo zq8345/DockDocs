@@ -464,7 +464,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
           <div>
             <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
             <div className="flex justify-center">
-              <div className="relative w-full max-w-[360px] rounded-[var(--radius)] border border-[color:var(--line)] bg-white">
+              <div className="relative w-full max-w-[360px] overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white" style={{ maxHeight: "50vh" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {preview && <img ref={previewImgRef} onLoad={(e) => setDispW(e.currentTarget.clientWidth)} src={preview} alt="page 1" className="block h-auto w-full rounded-[var(--radius)]" />}
                 {mode === "text" ? (
