@@ -749,7 +749,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   };
 
   return (
-    <div className={embedded ? "mx-auto w-full max-w-2xl px-6 py-5 flex flex-col" : "mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"}>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : "mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"}>
       {!embedded && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />}
       {!embedded && (
         <>
@@ -764,12 +764,12 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       {phase === "idle" || phase === "extracting" ? (
         embedded ? (
           <div
-            className={`mt-3 flex-1 flex cursor-pointer select-none flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed transition ${
+            className={`mt-3 flex cursor-pointer select-none flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed transition ${
               wsDragging
                 ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
                 : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
             }`}
-            style={{ minHeight: 260 }}
+            style={{ minHeight: 360 }}
             onClick={() => wsInputRef.current?.click()}
             onDragOver={(e) => { e.preventDefault(); setWsDragging(true); }}
             onDragLeave={() => setWsDragging(false)}

@@ -15,7 +15,7 @@ function toNavLocale(locale: RuntimeLocale): NavLocale {
 }
 
 const SHOWN_LOCALES = routeLocales as readonly string[];
-const EMBEDDED_SLUGS = new Set(["/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk"]);
+const EMBEDDED_SLUGS = new Set(["/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk", "/ocr-pdf", "/redline", "/extract-to-excel", "/flashcards", "/lease-redflag", "/govbid-matrix"]);
 
 // ── Chevron (module-level to avoid remount) ──────────────────────────────────
 function ChevronIcon({ open }: { open: boolean }) {

@@ -35,13 +35,34 @@ const WorkspacePdfToolEmbedded = dynamic(
   () => import("@/components/WorkspacePdfTool").then((m) => m.WorkspacePdfTool),
   { ssr: false },
 );
+const RedlineEmbedded = dynamic(
+  () => import("@/components/RedlineClient").then((m) => m.RedlineClient),
+  { ssr: false },
+);
+const LeaseRedflagEmbedded = dynamic(
+  () => import("@/components/LeaseRedflagClient").then((m) => m.LeaseRedflagClient),
+  { ssr: false },
+);
+const GovbidMatrixEmbedded = dynamic(
+  () => import("@/components/GovbidMatrixClient").then((m) => m.GovbidMatrixClient),
+  { ssr: false },
+);
+const ExtractExcelEmbedded = dynamic(
+  () => import("@/components/ExtractExcelClient").then((m) => m.ExtractExcelClient),
+  { ssr: false },
+);
+const QuizEmbedded = dynamic(
+  () => import("@/components/QuizClient").then((m) => m.QuizClient),
+  { ssr: false },
+);
 
 // All PDF tool slugs from the "Document tools" nav category — served via WorkspacePdfTool.
 // Derived from headerStructure so adding a new tool auto-expands the set.
-const WORKSPACE_PDF_SLUGS: Set<string> = new Set(
-  (headerStructure.find((c) => c.catKey === "Document tools")?.cols ?? [])
-    .flatMap((col) => col.items.map((item) => item.slug))
-);
+const WORKSPACE_PDF_SLUGS: Set<string> = new Set([
+  ...(headerStructure.find((c) => c.catKey === "Document tools")?.cols ?? [])
+    .flatMap((col) => col.items.map((item) => item.slug)),
+  "/ocr-pdf",
+]);
 
 type NavLocale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
@@ -193,6 +214,16 @@ export function DashboardWorkspace() {
           <DocumentCompareEmbedded locale={locale} embedded />
         ) : activeTool === "/ai-summary" ? (
           <AiSummaryEmbedded locale={locale} embedded />
+        ) : activeTool === "/redline" ? (
+          <RedlineEmbedded locale={locale} embedded />
+        ) : activeTool === "/extract-to-excel" ? (
+          <ExtractExcelEmbedded locale={locale} embedded />
+        ) : activeTool === "/flashcards" ? (
+          <QuizEmbedded locale={locale} embedded />
+        ) : activeTool === "/lease-redflag" ? (
+          <LeaseRedflagEmbedded locale={locale} embedded />
+        ) : activeTool === "/govbid-matrix" ? (
+          <GovbidMatrixEmbedded locale={locale} embedded />
         ) : history.length > 0 ? (
           /* ── ③ Recent docs (returning user) ── */
           <div className="mx-auto w-full max-w-2xl px-8 py-12">

@@ -447,7 +447,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
       id="workspace"
       aria-label={copy.workspaceTitle}
       data-testid="chat-workspace"
-      className={embedded ? "flex flex-1 flex-col" : "mx-auto max-w-5xl"}
+      className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : "mx-auto max-w-5xl"}
     >
       {/* ── Upload zone (shown when no document) ── */}
       {!documentText && !isExtracting ? (
@@ -456,7 +456,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
           onDrop={handleDrop}
-          className={embedded ? `${dropzoneShell(dragging)} flex-1` : dropzoneShell(dragging)}
+          className={embedded ? `${dropzoneShell(dragging)} min-h-[360px]` : dropzoneShell(dragging)}
         >
           <span className="inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
             {copy.choosePdf}

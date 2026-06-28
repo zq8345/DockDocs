@@ -385,7 +385,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
-export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
+export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
@@ -489,14 +489,18 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
     return <span className={`${base} bg-[rgba(251,191,36,0.12)] text-[#fbbf24]`}>{t.advisory}</span>;
   };
 
+  const Wrapper: "main" | "div" = embedded ? "div" : "main";
   return (
-    <main className="mx-auto max-w-5xl px-5 py-12">
-      {/* Header */}
-      <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-[color:var(--faint)]">{t.eyebrow}</p>
-      <h1 className="mt-2 text-[32px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[40px]">
-        {t.title}
-      </h1>
-      <p className="mt-3 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+    <Wrapper className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : "mx-auto max-w-5xl px-5 py-12"}>
+      {!embedded && (
+        <>
+          <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-[color:var(--faint)]">{t.eyebrow}</p>
+          <h1 className="mt-2 text-[32px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[40px]">
+            {t.title}
+          </h1>
+          <p className="mt-3 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+        </>
+      )}
 
       {/* Upload */}
       <div className="mt-8">
@@ -618,8 +622,8 @@ export function GovbidMatrixClient({ locale = "en" }: { locale?: Locale }) {
       {/* Privacy notice */}
       <p className="mt-8 text-[12px] text-[color:var(--faint)]">{t.privacy}</p>
 
-      <ToolSections locale={locale} content={sec} />
-      <ToolFaq tool="govbid-matrix" locale={childLocale} />
-    </main>
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+      {!embedded && <ToolFaq tool="govbid-matrix" locale={childLocale} />}
+    </Wrapper>
   );
 }
