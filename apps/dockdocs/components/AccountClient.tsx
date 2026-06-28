@@ -186,7 +186,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   const wsNav = useWorkspaceNav();
   // When embedded in the workspace, magic-link redirects should land on the dashboard
   // with ?panel=account so the account panel reopens automatically.
-  const authRedirectPath = wsNav ? `/${locale === "en" ? "en" : locale}/dashboard?panel=account` : undefined;
+  const authRedirectPath = wsNav ? "/dashboard?panel=account" : undefined;
   // Membership-ui / UpgradeFlow are a separate, lib-owned locale surface whose
   // MembershipLocale type has NO "de"/"ko" arm and no authored German/Korean
   // billing/upgrade copy (badge labels, plan status, proration breakdown). Those

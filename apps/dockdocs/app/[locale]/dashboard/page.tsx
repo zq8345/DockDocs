@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { routeLocales, type RouteLocale } from "@/lib/i18n";
 import { getRuntimeCopy } from "@/lib/copy";
-import { DashboardWorkspace } from "@/components/DashboardWorkspace";
+import { LocaleDashboardRedirect } from "./LocaleDashboardRedirect";
 
 export function generateStaticParams() {
   return routeLocales.map((locale) => ({ locale }));
@@ -29,5 +29,5 @@ export default async function LocaleDashboardPage({
 }) {
   const { locale } = await params;
   const resolvedLocale = (routeLocales.includes(locale as RouteLocale) ? locale : "en") as RouteLocale;
-  return <DashboardWorkspace locale={resolvedLocale} />;
+  return <LocaleDashboardRedirect locale={resolvedLocale} />;
 }

@@ -8,6 +8,7 @@ import { WorkspaceNavContext } from "@/components/WorkspaceNavContext";
 import { headerStructure, navItemLabels } from "@/lib/header-nav";
 import { readWorkHistory, type WorkHistoryItem } from "@/lib/work-history";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
+import { isRouteLocale } from "@/lib/i18n";
 
 // ── Lazy-loaded embedded AI tools ──────────────────────────────────────────
 const ContractRiskEmbedded = dynamic(
@@ -95,23 +96,33 @@ const CARDS = [
 ] as const;
 
 // ── Component ───────────────────────────────────────────────────────────────
-export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }) {
+export function DashboardWorkspace() {
+  const [locale, setLocale] = useState<RuntimeLocale>("en");
+  const [hydrated, setHydrated] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [activeTool, setActiveTool] = useState<string | null>(null);
   const [history, setHistory] = useState<WorkHistoryItem[]>([]);
 
   useEffect(() => {
+    try {
+      const saved = localStorage.getItem("dockdocs-lang");
+      if (saved && isRouteLocale(saved)) setLocale(saved as RuntimeLocale);
+    } catch {}
+    setHydrated(true);
     setHistory(readWorkHistory().slice(0, 8));
-    // Open account panel if redirected back from Supabase magic-link flow with ?panel=account
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       if (params.get("panel") === "account") {
         setActiveTool("/workspace-account");
-        // Remove param from URL without reload
         const clean = window.location.pathname;
         window.history.replaceState({}, "", clean);
       }
     }
+  }, []);
+
+  const handleLocaleChange = useCallback((next: RuntimeLocale) => {
+    setLocale(next);
+    try { localStorage.setItem("dockdocs-lang", next); } catch {}
   }, []);
 
   const handleDrop = useCallback(
@@ -144,10 +155,18 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
       })()
     : undefined;
 
+  if (!hydrated) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-5 w-5 animate-spin rounded-full border-2 border-[color:var(--line)] border-t-[color:var(--accent)]" />
+      </div>
+    );
+  }
+
   return (
     <WorkspaceNavContext.Provider value={setActiveTool}>
     <div className="flex h-screen overflow-hidden bg-[color:var(--background)]">
-      <WorkspaceSidebar locale={locale} activeTool={activeTool} onToolSelect={setActiveTool} />
+      <WorkspaceSidebar locale={locale} activeTool={activeTool} onToolSelect={setActiveTool} onLocaleChange={handleLocaleChange} />
 
       {/* ── Right column (topbar + content) ── */}
       <main className="flex flex-1 flex-col overflow-hidden">

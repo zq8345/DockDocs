@@ -356,7 +356,7 @@ export function Header() {
           <div className="ml-auto flex items-center gap-1.5">
             {/* Workbench direct link — desktop only, all users, left of account menu */}
             <a
-              href={lh("/dashboard", locale)}
+              href="/dashboard"
               onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/dashboard"); }}
               className="hidden items-center rounded-[var(--radius-sm)] px-3 py-2 text-[14px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)] md:flex"
             >
@@ -460,7 +460,7 @@ export function Header() {
               {/* Workbench quick link — mobile */}
               <div className="mb-4">
                 <a
-                  href={lh("/dashboard", locale)}
+                  href="/dashboard"
                   onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/dashboard"); setMobileOpen(false); }}
                   className="block w-full rounded-[var(--radius)] border border-[color:var(--accent)] bg-[color:var(--surface)] px-4 py-3 text-center text-[14px] font-semibold text-[color:var(--accent)] transition hover:border-[color:var(--accent-strong)]"
                 >
