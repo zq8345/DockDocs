@@ -3,14 +3,21 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
+import { navItemLabels } from "@/lib/header-nav";
+import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 
-// ── Quick-start tool cards ──────────────────────────────────────────────────
-const TOOLS = [
+type NavLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
+
+function toNavLocale(locale: RuntimeLocale): NavLocale {
+  return locale === "zh-Hant" ? "zh" : (locale as NavLocale);
+}
+
+// ── Quick-start tool card definitions ──────────────────────────────────────
+const CARDS = [
   {
-    key: "contract-risk",
+    navKey: "Contract risk check",
     href: "/contract-risk",
-    label: "Contract Review",
-    desc: "Flag risky clauses, verified against source",
+    descKey: "cardContractDesc",
     icon: (
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
         <path d="M5 3h10a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
@@ -21,10 +28,9 @@ const TOOLS = [
     ),
   },
   {
-    key: "chat-with-pdf",
+    navKey: "Chat with PDF",
     href: "/chat-with-pdf",
-    label: "AI Chat",
-    desc: "Ask questions, get grounded answers",
+    descKey: "cardChatDesc",
     icon: (
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
         <path d="M3 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H7l-4 3V4Z" />
@@ -32,10 +38,9 @@ const TOOLS = [
     ),
   },
   {
-    key: "compare",
+    navKey: "Compare documents",
     href: "/compare",
-    label: "Compare Docs",
-    desc: "Side-by-side diff with AI explanation",
+    descKey: "cardCompareDesc",
     icon: (
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
         <rect x="2" y="3" width="7" height="14" rx="1" />
@@ -45,10 +50,9 @@ const TOOLS = [
     ),
   },
   {
-    key: "ai-summary",
+    navKey: "PDF Summary",
     href: "/ai-summary",
-    label: "AI Summary",
-    desc: "Extract key points from any document",
+    descKey: "cardSummaryDesc",
     icon: (
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
         <path d="M4 5h12M4 9h8M4 13h10M4 17h6" />
@@ -58,7 +62,7 @@ const TOOLS = [
 ] as const;
 
 // ── Component ───────────────────────────────────────────────────────────────
-export function DashboardWorkspace() {
+export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }) {
   const router = useRouter();
   const [dragOver, setDragOver] = useState(false);
 
@@ -73,9 +77,13 @@ export function DashboardWorkspace() {
     [router],
   );
 
+  const navLocale = toNavLocale(locale);
+  const labels = navItemLabels[navLocale] as Record<string, string>;
+  const dash = getRuntimeCopy(locale).dashboard as unknown as Record<string, string>;
+
   return (
     <div className="flex h-screen overflow-hidden bg-[color:var(--background)]">
-      <WorkspaceSidebar />
+      <WorkspaceSidebar locale={locale} />
 
       {/* ── Right panel ── */}
       <main
@@ -88,23 +96,27 @@ export function DashboardWorkspace() {
 
           {/* Heading */}
           <p className="mb-6 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
-            Quick start
+            {dash.quickStart ?? "Quick start"}
           </p>
 
           {/* Tool cards — 2×2 grid */}
           <div className="grid grid-cols-2 gap-3">
-            {TOOLS.map((tool) => (
+            {CARDS.map((card) => (
               <a
-                key={tool.key}
-                href={tool.href}
+                key={card.navKey}
+                href={card.href}
                 className="group flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 transition hover:border-[color:var(--accent)]"
               >
                 <span className="text-[color:var(--muted)] transition group-hover:text-[color:var(--accent)]">
-                  {tool.icon}
+                  {card.icon}
                 </span>
                 <div>
-                  <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{tool.label}</p>
-                  <p className="mt-0.5 text-[12.5px] leading-relaxed text-[color:var(--muted)]">{tool.desc}</p>
+                  <p className="text-[14px] font-semibold text-[color:var(--foreground)]">
+                    {labels[card.navKey] ?? card.navKey}
+                  </p>
+                  <p className="mt-0.5 text-[12.5px] leading-relaxed text-[color:var(--muted)]">
+                    {dash[card.descKey] ?? ""}
+                  </p>
                 </div>
               </a>
             ))}
@@ -132,14 +144,18 @@ export function DashboardWorkspace() {
               <line x1="12" y1="3" x2="12" y2="15" />
             </svg>
             <p className="text-[14px] font-medium text-[color:var(--muted)]">
-              {dragOver ? "Drop to open with AI Chat" : "Drop a document here"}
+              {dragOver
+                ? (dash.dropActive ?? "Drop to open with AI Chat")
+                : (dash.dropHere ?? "Drop a document here")}
             </p>
-            <p className="mt-1 text-[12px] text-[color:var(--faint)]">PDF · Word · Excel · PowerPoint</p>
+            <p className="mt-1 text-[12px] text-[color:var(--faint)]">
+              {dash.fileTypes ?? "PDF · Word · Excel · PowerPoint"}
+            </p>
           </div>
 
           {/* Privacy note */}
           <p className="mt-auto pt-8 text-center text-[11.5px] text-[color:var(--faint)]">
-            ⚿ Your files are processed in your browser · never uploaded to a server
+            ⚿ {dash.privacyNote ?? "Files processed in your browser · never uploaded"}
           </p>
         </div>
       </main>

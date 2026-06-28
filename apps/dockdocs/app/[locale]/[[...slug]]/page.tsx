@@ -2735,7 +2735,7 @@ function LocalizedAiSummary({ locale }: { locale: ClientLocale }) {
 
 function LocalizedDashboard({ locale }: { locale: ClientLocale }) {
   // DashboardWorkspace has no de branch yet → English dashboard on /de (GAP).
-  return <DashboardWorkspace />;
+  return <DashboardWorkspace locale={locale} />;
 }
 
 function LocalizedPricing({ locale }: { locale: ClientLocale }) {

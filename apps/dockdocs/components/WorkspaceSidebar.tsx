@@ -3,10 +3,15 @@
 import { useState, useEffect } from "react";
 import { headerStructure, navCopy, navItemLabels } from "@/lib/header-nav";
 import { readWorkHistory, type WorkHistoryItem } from "@/lib/work-history";
+import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 
-const LOC = "en" as const;
+type NavLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
-export function WorkspaceSidebar() {
+function toNavLocale(locale: RuntimeLocale): NavLocale {
+  return locale === "zh-Hant" ? "zh" : (locale as NavLocale);
+}
+
+export function WorkspaceSidebar({ locale = "en" }: { locale?: RuntimeLocale }) {
   const [openCats, setOpenCats] = useState<Record<string, boolean>>({
     "Document tools": true,
     "AI analysis": true,
@@ -18,8 +23,11 @@ export function WorkspaceSidebar() {
     setHistory(readWorkHistory().slice(0, 5));
   }, []);
 
-  const copy = navCopy[LOC] as Record<string, string>;
-  const labels = navItemLabels[LOC] as Record<string, string>;
+  const navLocale = toNavLocale(locale);
+  const copy = navCopy[navLocale] as Record<string, string>;
+  const labels = navItemLabels[navLocale] as Record<string, string>;
+  const dash = getRuntimeCopy(locale).dashboard as unknown as Record<string, string>;
+  const recentLabel = dash.recentShort ?? "Recent";
 
   const toggle = (catKey: string) =>
     setOpenCats((prev) => ({ ...prev, [catKey]: !(prev[catKey] ?? true) }));
@@ -90,11 +98,9 @@ export function WorkspaceSidebar() {
               {isOpen && (
                 <div className="mt-0.5 space-y-0.5 pb-1">
                   {cat.cols.map((col, colIdx) => {
-                    // Cast to access optional headingKey safely
                     const maybeHeading = (col as { headingKey?: string }).headingKey;
 
                     if (cat.catKey === "Document tools") {
-                      // Show each column as a single sub-category link (first item's slug)
                       if (!maybeHeading) return null;
                       const colLabel = copy[maybeHeading] ?? maybeHeading;
                       const firstSlug = col.items[0]?.slug ?? "/";
@@ -109,7 +115,6 @@ export function WorkspaceSidebar() {
                       );
                     }
 
-                    // Other categories: show items, optionally preceded by heading label
                     return (
                       <div key={colIdx}>
                         {maybeHeading && (
@@ -152,7 +157,7 @@ export function WorkspaceSidebar() {
         {history.length > 0 && (
           <div className="mt-2 border-t border-[color:var(--line)] pt-2">
             <p className="px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">
-              Recent
+              {recentLabel}
             </p>
             {history.map((item) => (
               <a
