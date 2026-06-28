@@ -459,9 +459,28 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} />
       ) : (
-        <div className="mt-6 grid gap-6 lg:grid-cols-2">
-          {/* Controls */}
-          <div className="order-2 lg:order-1">
+        <div className="mt-6 space-y-6">
+          {/* Preview on top, centered */}
+          <div>
+            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
+            <div className="flex justify-center">
+              <div className="relative w-full max-w-[360px] rounded-[var(--radius)] border border-[color:var(--line)] bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {preview && <img ref={previewImgRef} onLoad={(e) => setDispW(e.currentTarget.clientWidth)} src={preview} alt="page 1" className="block h-auto w-full rounded-[var(--radius)]" />}
+                {mode === "text" ? (
+                  <span style={overlayStyle} className="font-bold">
+                    <span style={{ color, fontSize: Math.max(8, pageWpt > 0 && dispW > 0 ? size * (dispW / pageWpt) : size * 0.5) }}>{text || "CONFIDENTIAL"}</span>
+                  </span>
+                ) : imgPreview ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={imgPreview} alt="watermark" style={{ ...overlayStyle, width: "30%" }} />
+                ) : null}
+              </div>
+            </div>
+          </div>
+
+          {/* Controls below */}
+          <div>
             <div className="flex items-center justify-between gap-3">
               <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
               <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
@@ -517,23 +536,6 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
             <button type="button" onClick={apply} disabled={phase === "working"} className="mt-6 inline-flex h-11 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
               {phase === "working" ? t.working : t.apply}
             </button>
-          </div>
-
-          {/* Preview */}
-          <div className="order-1 lg:order-2">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
-            <div className="relative inline-block max-w-full rounded-[var(--radius)] border border-[color:var(--line)] bg-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              {preview && <img ref={previewImgRef} onLoad={(e) => setDispW(e.currentTarget.clientWidth)} src={preview} alt="page 1" className="block h-auto w-full rounded-[var(--radius)]" />}
-              {mode === "text" ? (
-                <span style={overlayStyle} className="font-bold" >
-                  <span style={{ color, fontSize: Math.max(8, pageWpt > 0 && dispW > 0 ? size * (dispW / pageWpt) : size * 0.5) }}>{text || "CONFIDENTIAL"}</span>
-                </span>
-              ) : imgPreview ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={imgPreview} alt="watermark" style={{ ...overlayStyle, width: "30%" }} />
-              ) : null}
-            </div>
           </div>
         </div>
       )}
