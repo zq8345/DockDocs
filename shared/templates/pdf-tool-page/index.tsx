@@ -534,7 +534,7 @@ function tStat(text: string, zh: boolean): string {
 // functional upload engine in a compact container.
 export function PdfToolPageEmbedded({ config }: { config: PdfToolPageConfig }) {
   return (
-    <div className="mx-auto w-full max-w-2xl px-6 py-5">
+    <div className="mx-auto w-full max-w-3xl px-8 py-10">
       <PdfWorkflowEngine config={config} />
     </div>
   );
