@@ -179,6 +179,15 @@ export function DashboardWorkspace() {
       })()
     : undefined;
 
+  // One-line value subtitle — reuse existing quickstart card copy for the 4 AI tools
+  const toolDescriptionMap: Record<string, string> = {
+    "/chat-with-pdf":  dash.cardChatDesc     ?? "",
+    "/compare":        dash.cardCompareDesc  ?? "",
+    "/ai-summary":     dash.cardSummaryDesc  ?? "",
+    "/contract-risk":  dash.cardContractDesc ?? "",
+  };
+  const toolDescription = activeTool ? (toolDescriptionMap[activeTool] ?? "") : "";
+
   if (!hydrated) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -195,35 +204,41 @@ export function DashboardWorkspace() {
       {/* ── Right column (topbar + content) ── */}
       <main className="flex flex-1 flex-col overflow-hidden">
         <div className="flex flex-1 flex-col overflow-y-auto">
-        {activeTool && toolLabel && (
-          <div className="px-8 pt-8 pb-4">
-            <h1 className="text-[22px] font-medium text-[color:var(--foreground)]">{toolLabel}</h1>
+        {activeTool ? (
+          /* ── Tool active: vertically centred column (§六) ── */
+          <div className="flex min-h-full flex-col items-center justify-center">
+            {toolLabel && (
+              <div className="w-full max-w-3xl px-8 pt-8 pb-4">
+                <h1 className="text-[22px] font-medium text-[color:var(--foreground)]">{toolLabel}</h1>
+                {toolDescription && <p className="mt-1 text-[13px] leading-[1.5] text-[color:var(--muted)]">{toolDescription}</p>}
+              </div>
+            )}
+            {activeTool === "/workspace-account" ? (
+              <div className="mx-auto w-full max-w-md px-8 pb-10">
+                <AccountEmbedded locale={locale} />
+              </div>
+            ) : WORKSPACE_PDF_SLUGS.has(activeTool) ? (
+              <WorkspacePdfToolEmbedded slug={activeTool.slice(1)} locale={locale} />
+            ) : activeTool === "/contract-risk" ? (
+              <ContractRiskEmbedded locale={locale} embedded />
+            ) : activeTool === "/chat-with-pdf" ? (
+              <ChatWithPdfEmbedded locale={locale} embedded />
+            ) : activeTool === "/compare" ? (
+              <DocumentCompareEmbedded locale={locale} embedded />
+            ) : activeTool === "/ai-summary" ? (
+              <AiSummaryEmbedded locale={locale} embedded />
+            ) : activeTool === "/redline" ? (
+              <RedlineEmbedded locale={locale} embedded />
+            ) : activeTool === "/extract-to-excel" ? (
+              <ExtractExcelEmbedded locale={locale} embedded />
+            ) : activeTool === "/flashcards" ? (
+              <QuizEmbedded locale={locale} embedded />
+            ) : activeTool === "/lease-redflag" ? (
+              <LeaseRedflagEmbedded locale={locale} embedded />
+            ) : activeTool === "/govbid-matrix" ? (
+              <GovbidMatrixEmbedded locale={locale} embedded />
+            ) : null}
           </div>
-        )}
-        {activeTool === "/workspace-account" ? (
-          <div className="mx-auto w-full max-w-md px-8 pb-10">
-            <AccountEmbedded locale={locale} />
-          </div>
-        ) : activeTool && WORKSPACE_PDF_SLUGS.has(activeTool) ? (
-          <WorkspacePdfToolEmbedded slug={activeTool.slice(1)} locale={locale} />
-        ) : activeTool === "/contract-risk" ? (
-          <ContractRiskEmbedded locale={locale} embedded />
-        ) : activeTool === "/chat-with-pdf" ? (
-          <ChatWithPdfEmbedded locale={locale} embedded />
-        ) : activeTool === "/compare" ? (
-          <DocumentCompareEmbedded locale={locale} embedded />
-        ) : activeTool === "/ai-summary" ? (
-          <AiSummaryEmbedded locale={locale} embedded />
-        ) : activeTool === "/redline" ? (
-          <RedlineEmbedded locale={locale} embedded />
-        ) : activeTool === "/extract-to-excel" ? (
-          <ExtractExcelEmbedded locale={locale} embedded />
-        ) : activeTool === "/flashcards" ? (
-          <QuizEmbedded locale={locale} embedded />
-        ) : activeTool === "/lease-redflag" ? (
-          <LeaseRedflagEmbedded locale={locale} embedded />
-        ) : activeTool === "/govbid-matrix" ? (
-          <GovbidMatrixEmbedded locale={locale} embedded />
         ) : history.length > 0 ? (
           /* ── ③ Recent docs (returning user) ── */
           <div className="mx-auto w-full max-w-2xl px-8 py-12">
