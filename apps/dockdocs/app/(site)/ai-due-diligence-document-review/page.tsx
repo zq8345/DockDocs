@@ -45,7 +45,7 @@ const page = {
   heroDescription:
     "A typical M&A due diligence process produces hundreds of documents — contracts, financial statements, employment agreements, IP assignments, regulatory filings, permits, litigation records. No team reads all of them carefully. AI due diligence document review changes the economics: it can surface the provisions and facts that warrant attention across a full document set, so human review is concentrated where it matters most.",
   primaryAction: { label: "Try AI document review", href: "/contract-risk" },
-  secondaryAction: { label: "About DockDocs", href: "/about" },
+  secondaryAction: { label: "AI contract review", href: "/ai-contract-review" },
   sections: [
     {
       title: "The volume problem in due diligence",

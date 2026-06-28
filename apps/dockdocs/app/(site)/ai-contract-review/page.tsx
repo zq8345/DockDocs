@@ -44,7 +44,7 @@ const page = {
   heroDescription:
     "AI contract review reads a contract and surfaces the provisions that carry risk — unlimited liability, missing indemnification carve-outs, broad IP assignments, one-sided termination rights. What distinguishes useful AI contract review from a summary: when the AI flags a clause, it shows you the exact language from your contract so you can read the actual provision, not just the AI's paraphrase of it.",
   primaryAction: { label: "Try AI contract review", href: "/contract-risk" },
-  secondaryAction: { label: "About DockDocs", href: "/about" },
+  secondaryAction: { label: "AI due diligence review", href: "/ai-due-diligence-document-review" },
   sections: [
     {
       title: "What AI contract review does — and what it doesn't",
