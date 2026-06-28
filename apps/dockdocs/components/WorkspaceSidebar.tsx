@@ -18,7 +18,7 @@ function toNavLocale(locale: RuntimeLocale): NavLocale {
 const SHOWN_LOCALES = (routeLocales as readonly string[]).filter((l) => l !== "zh-Hant");
 const EMBEDDED_SLUGS = new Set(["/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk"]);
 
-// Module-level to avoid remount on every render
+// ── Chevron (module-level to avoid remount) ──────────────────────────────────
 function ChevronIcon({ open }: { open: boolean }) {
   return (
     <svg
@@ -35,6 +35,63 @@ function ChevronIcon({ open }: { open: boolean }) {
   );
 }
 
+// ── Category icons (Tabler-style, 24-viewBox, stroke 1.5) ────────────────────
+const CAT_ICONS: Record<string, React.ReactNode> = {
+  "PDF conversion": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[15px] w-[15px]">
+      <path d="M14 3H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8l-5-5Z" />
+      <path d="M14 3v5h5" />
+      <path d="M9 13h6m0 0-2-2m2 2-2 2" />
+    </svg>
+  ),
+  "PDF editing": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[15px] w-[15px]">
+      <path d="M11 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" />
+      <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L13 14l-4 1 1-4 8.5-8.5Z" />
+    </svg>
+  ),
+  "Batch": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[15px] w-[15px]">
+      <path d="M12 2 2 7l10 5 10-5-10-5Z" />
+      <path d="M2 12l10 5 10-5" />
+      <path d="M2 17l10 5 10-5" />
+    </svg>
+  ),
+  "AI analysis": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[15px] w-[15px]">
+      <path d="M12 3 9.5 9.5 3 12l6.5 2.5L12 21l2.5-6.5L21 12l-6.5-2.5L12 3Z" />
+    </svg>
+  ),
+  "By profession": (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[15px] w-[15px]">
+      <rect x="2" y="7" width="20" height="14" rx="2" />
+      <path d="M8 7V5a2 2 0 0 1 4 0v2" />
+    </svg>
+  ),
+};
+
+// ── Sub-item: shared active-bar wrapper ──────────────────────────────────────
+function NavItemBar({ isActive }: { isActive: boolean }) {
+  if (!isActive) return null;
+  return <div className="absolute inset-y-1 left-0 w-0.5 rounded-full bg-[color:var(--accent)]" />;
+}
+
+const subItemCls = (isActive: boolean, soon: boolean) =>
+  `flex items-center justify-between rounded-[var(--radius)] py-1.5 pl-[34px] pr-3 text-[12.5px] transition ${
+    isActive
+      ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
+      : soon
+      ? "cursor-default text-[color:var(--faint)]"
+      : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+  }`;
+
+const SoonBadge = () => (
+  <span className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[color:var(--faint)]">
+    soon
+  </span>
+);
+
+// ── Main component ───────────────────────────────────────────────────────────
 export function WorkspaceSidebar({
   locale = "en",
   activeTool = null,
@@ -45,7 +102,6 @@ export function WorkspaceSidebar({
   onToolSelect?: (slug: string | null) => void;
 }) {
   const router = useRouter();
-  // ⑤ Flat: Document tools' 3 cols + AI analysis + By profession at same level
   const [openCats, setOpenCats] = useState<Record<string, boolean>>({
     "PDF conversion": false,
     "PDF editing": false,
@@ -71,11 +127,11 @@ export function WorkspaceSidebar({
       .catch(() => {});
   }, []);
 
-  // ② Init theme from localStorage / OS preference
   useEffect(() => {
     try {
       const stored = localStorage.getItem("dockdocs-theme");
-      const isLight = stored === "light" ||
+      const isLight =
+        stored === "light" ||
         (!stored && window.matchMedia("(prefers-color-scheme: light)").matches);
       setLight(isLight);
     } catch {}
@@ -107,24 +163,8 @@ export function WorkspaceSidebar({
   const displayName = authUser?.name ?? authUser?.email ?? "";
   const langLabel = (localeLabels as Record<string, string>)[locale] ?? locale.toUpperCase();
 
-  // ⑤ Build flat render list
   const docToolsCat = headerStructure.find((c) => c.catKey === "Document tools");
   const otherCats = headerStructure.filter((c) => c.catKey !== "Document tools");
-
-  const itemCls = (isActive: boolean, soon: boolean) =>
-    `flex w-full items-center justify-between rounded px-3 py-1.5 text-left text-[13px] transition hover:bg-[color:var(--surface)] ${
-      isActive
-        ? "bg-[color:var(--surface)] text-[color:var(--accent)]"
-        : soon
-        ? "text-[color:var(--faint)]"
-        : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
-    }`;
-
-  const SoonBadge = () => (
-    <span className="text-[9px] font-semibold uppercase tracking-[0.1em] text-[color:var(--faint)]">
-      soon
-    </span>
-  );
 
   return (
     <nav
@@ -146,47 +186,46 @@ export function WorkspaceSidebar({
         </button>
       </div>
 
-      {/* ── ③ Nav sections (⑤ flat 5 categories) ── */}
-      <div className="flex-1 overflow-y-auto px-2 py-3">
-        {/* Document tools: 3 cols promoted to top-level */}
+      {/* ── ③⑤ Nav ── */}
+      <div className="flex-1 overflow-y-auto px-2 py-2">
+
+        {/* Document tools → 3 promoted flat categories */}
         {docToolsCat?.cols.map((col) => {
           const heading = (col as { headingKey?: string }).headingKey;
           if (!heading) return null;
           const catLabel = copy[heading] ?? heading;
           const isOpen = openCats[heading] ?? false;
           return (
-            <div key={heading} className="mb-1">
+            <div key={heading} className="mb-0.5">
+              {/* Category row */}
               <button
                 type="button"
                 onClick={() => toggle(heading)}
-                className="flex w-full items-center justify-between rounded px-2 py-1.5 text-left transition hover:bg-[color:var(--surface)]"
+                className="group flex w-full items-center gap-2.5 rounded-[var(--radius)] px-3 py-2 text-left transition hover:bg-[color:var(--surface-subtle)]"
               >
-                <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">
+                <span className="shrink-0 text-[color:var(--faint)] transition group-hover:text-[color:var(--muted)]">
+                  {CAT_ICONS[heading]}
+                </span>
+                <span className="flex-1 text-[12px] font-semibold text-[color:var(--foreground)]">
                   {catLabel}
                 </span>
                 <ChevronIcon open={isOpen} />
               </button>
+              {/* Sub-items */}
               {isOpen && (
-                <div className="mt-0.5 space-y-0.5 pb-1">
+                <div className="mt-0.5 space-y-px pb-1">
                   {col.items.map((item) => {
                     const label = labels[item.key] ?? item.key;
                     const soon = !!(item as { soon?: boolean }).soon;
                     const isActive = activeTool === item.slug;
                     return (
-                      <a
-                        key={item.key}
-                        href={item.slug}
-                        className={`flex items-center justify-between rounded px-3 py-1.5 text-[12.5px] transition hover:bg-[color:var(--surface)] ${
-                          isActive
-                            ? "bg-[color:var(--surface)] text-[color:var(--accent)]"
-                            : soon
-                            ? "text-[color:var(--faint)]"
-                            : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"
-                        }`}
-                      >
-                        <span>{label}</span>
-                        {soon && <SoonBadge />}
-                      </a>
+                      <div key={item.key} className="relative">
+                        <NavItemBar isActive={isActive} />
+                        <a href={item.slug} className={subItemCls(isActive, soon)}>
+                          <span>{label}</span>
+                          {soon && <SoonBadge />}
+                        </a>
+                      </div>
                     );
                   })}
                 </div>
@@ -195,30 +234,38 @@ export function WorkspaceSidebar({
           );
         })}
 
+        {/* Divider */}
+        <div className="my-2 border-t border-[color:var(--line-subtle)]" />
+
         {/* AI analysis + By profession */}
         {otherCats.map((cat) => {
           const catLabel = copy[cat.catKey] ?? cat.catKey;
           const isOpen = openCats[cat.catKey] ?? true;
           return (
-            <div key={cat.catKey} className="mb-1">
+            <div key={cat.catKey} className="mb-0.5">
+              {/* Category row */}
               <button
                 type="button"
                 onClick={() => toggle(cat.catKey)}
-                className="flex w-full items-center justify-between rounded px-2 py-1.5 text-left transition hover:bg-[color:var(--surface)]"
+                className="group flex w-full items-center gap-2.5 rounded-[var(--radius)] px-3 py-2 text-left transition hover:bg-[color:var(--surface-subtle)]"
               >
-                <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">
+                <span className="shrink-0 text-[color:var(--faint)] transition group-hover:text-[color:var(--muted)]">
+                  {CAT_ICONS[cat.catKey]}
+                </span>
+                <span className="flex-1 text-[12px] font-semibold text-[color:var(--foreground)]">
                   {catLabel}
                 </span>
                 <ChevronIcon open={isOpen} />
               </button>
+              {/* Sub-items */}
               {isOpen && (
-                <div className="mt-0.5 space-y-0.5 pb-1">
+                <div className="mt-0.5 space-y-px pb-1">
                   {cat.cols.map((col, colIdx) => {
                     const maybeHeading = (col as { headingKey?: string }).headingKey;
                     return (
                       <div key={colIdx}>
                         {maybeHeading && (
-                          <p className="mb-0.5 mt-1.5 px-3 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">
+                          <p className="mb-0.5 mt-2 px-3 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">
                             {copy[maybeHeading] ?? maybeHeading}
                           </p>
                         )}
@@ -228,23 +275,24 @@ export function WorkspaceSidebar({
                           const isActive = activeTool === item.slug;
                           const canEmbed = !!onToolSelect && !soon && EMBEDDED_SLUGS.has(item.slug);
                           return canEmbed ? (
-                            <button
-                              key={item.key}
-                              type="button"
-                              onClick={() => onToolSelect(item.slug)}
-                              className={itemCls(isActive, soon)}
-                            >
-                              <span>{label}</span>
-                            </button>
+                            <div key={item.key} className="relative">
+                              <NavItemBar isActive={isActive} />
+                              <button
+                                type="button"
+                                onClick={() => onToolSelect(item.slug)}
+                                className={`w-full text-left ${subItemCls(isActive, false)}`}
+                              >
+                                <span>{label}</span>
+                              </button>
+                            </div>
                           ) : (
-                            <a
-                              key={item.key}
-                              href={item.slug}
-                              className={itemCls(isActive, soon)}
-                            >
-                              <span>{label}</span>
-                              {soon && <SoonBadge />}
-                            </a>
+                            <div key={item.key} className="relative">
+                              <NavItemBar isActive={isActive} />
+                              <a href={item.slug} className={subItemCls(isActive, soon)}>
+                                <span>{label}</span>
+                                {soon && <SoonBadge />}
+                              </a>
+                            </div>
                           );
                         })}
                       </div>
@@ -262,9 +310,9 @@ export function WorkspaceSidebar({
         {/* Row 1: avatar + name + plan badge */}
         <a
           href="/account"
-          className="mb-2 flex min-w-0 items-center gap-2 rounded px-1 py-1 transition hover:bg-[color:var(--surface)]"
+          className="mb-2 flex min-w-0 items-center gap-2 rounded px-1 py-1 transition hover:bg-[color:var(--surface-subtle)]"
         >
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[color:var(--line)] bg-[color:var(--surface)]">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)]">
             {authUser?.pictureUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={authUser.pictureUrl} alt="" className="h-full w-full object-cover" />
@@ -280,11 +328,13 @@ export function WorkspaceSidebar({
           <span className="min-w-0 flex-1 truncate text-[12px] text-[color:var(--muted)]">
             {displayName || "Account"}
           </span>
-          <span className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.06em] ${
-            planLabel === "Free"
-              ? "bg-[color:var(--surface)] text-[color:var(--faint)]"
-              : "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
-          }`}>
+          <span
+            className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.06em] ${
+              planLabel === "Free"
+                ? "bg-[color:var(--surface-subtle)] text-[color:var(--faint)]"
+                : "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
+            }`}
+          >
             {planLabel}
           </span>
         </a>
@@ -295,7 +345,7 @@ export function WorkspaceSidebar({
             <button
               type="button"
               onClick={() => setLangOpen((v) => !v)}
-              className="flex h-7 w-full items-center gap-1.5 rounded border border-[color:var(--line)] bg-[color:var(--surface)] px-2 text-[11px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
+              className="flex h-7 w-full items-center gap-1.5 rounded border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 text-[11px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
             >
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3 shrink-0 text-[color:var(--muted)]">
                 <circle cx="8" cy="8" r="6.5" />
@@ -315,7 +365,7 @@ export function WorkspaceSidebar({
                       key={l}
                       type="button"
                       onClick={() => switchLocale(l)}
-                      className={`flex w-full items-center justify-between px-3 py-1.5 text-left text-[13px] transition hover:bg-[color:var(--surface)] ${
+                      className={`flex w-full items-center justify-between px-3 py-1.5 text-left text-[13px] transition hover:bg-[color:var(--surface-subtle)] ${
                         l === locale ? "text-[color:var(--accent)]" : "text-[color:var(--muted)]"
                       }`}
                     >
@@ -337,7 +387,7 @@ export function WorkspaceSidebar({
             type="button"
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded border border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
           >
             {light ? (
               <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
