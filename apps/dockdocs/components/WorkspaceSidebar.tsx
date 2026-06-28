@@ -15,7 +15,7 @@ function toNavLocale(locale: RuntimeLocale): NavLocale {
   return locale === "zh-Hant" ? "zh" : (locale as NavLocale);
 }
 
-const SHOWN_LOCALES = (routeLocales as readonly string[]).filter((l) => l !== "zh-Hant");
+const SHOWN_LOCALES = routeLocales as readonly string[];
 const EMBEDDED_SLUGS = new Set(["/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk"]);
 
 // ── Chevron (module-level to avoid remount) ──────────────────────────────────
