@@ -28,7 +28,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // programmatic-GEO fall back to English / aren't generated for them — so both are
   // enrolled but filtered to their native routes only (isJaNativeRoute), matching
   // the catch-all's noindex gate. de is deliberately excluded from that filter.
-  const INCOMPLETE_LOCALES = new Set<string>([]);
+  // ⚠️ TEMP ko exclusion (20-25% English fallback) — REMOVE when ko fully
+  // translated so /ko/ re-enters the sitemap. Pairs with the catch-all's TEMP
+  // ko noindex gate. 见交接文档 §5.
+  const INCOMPLETE_LOCALES = new Set<string>(["ko"]);
   const sitemapLocales = routeLocales.filter(l => !INCOMPLETE_LOCALES.has(l));
 
   // Generate routes for all locales

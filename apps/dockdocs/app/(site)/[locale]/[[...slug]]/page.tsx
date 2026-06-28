@@ -403,6 +403,16 @@ export async function generateMetadata(args: {
 }): Promise<Metadata> {
   const { locale, slug: rawSlug } = await args.params;
   const meta = await generateMetadataInner(args);
+  // ⚠️ TEMP ko noindex (20-25% English fallback) — REMOVE when ko fully
+  // translated so /ko/ pages re-enter the index. ko ships index:true by default
+  // (not in the ja/zh-Hant gate below), so without this every /ko/ route is the
+  // worst case: live + sitemap-advertised + indexed while mostly English. Blanket
+  // noindex (all ko routes, not slug-gated) is the only lever that REMOVES the
+  // already-indexed half-English pages; follow:true preserves link equity.
+  // Pairs with the TEMP ko exclusion in app/sitemap.ts. 见交接文档 §5.
+  if (locale === "ko") {
+    return { ...meta, robots: { index: false, follow: true } };
+  }
   // ja and zh-Hant are partially-native locales: they ship index:true on the
   // surfaces with real (ja) / OpenCC-derived-from-zh (zh-Hant) content — tools,
   // home, pricing, sitemap, ai-workspace, info pages, GEO guide hubs
