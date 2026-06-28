@@ -518,7 +518,7 @@ export type InfoPageData = {
   faqs?: Array<{ question: string; answer: string }>;
 };
 
-export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de", Record<InfoPageSlug, InfoPageData>> = {
+export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko", Record<InfoPageSlug, InfoPageData>> = {
   en: {
     about: {
       slug: "about",
@@ -2926,10 +2926,356 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de", R
       ],
     },
   },
+  ko: {
+    about: {
+      slug: "about",
+      title: "DockDocs 소개",
+      description:
+        "프라이버시를 우선하는 PDF 도구 플랫폼에서 AI 문서 워크플로 워크스페이스로 발전하고 있는 DockDocs를 소개합니다.",
+      eyebrow: "DockDocs 소개",
+      heroTitle: "실제 파일 작업을 위한 AI 문서 워크스페이스.",
+      heroDescription:
+        "DockDocs는 일상적인 문서 작업을 더 간단하게 만들기 위해 만들어졌습니다. 압축, 병합, 분할, 변환, OCR, 요약, 검토를 깔끔한 하나의 워크스페이스에서 처리하세요.",
+      primaryAction: { label: "JPG를 PDF로 시작하기", href: "/jpg-to-pdf" },
+      secondaryAction: { label: "AI 워크스페이스 보기", href: "/ai-workspace" },
+      sections: [
+        {
+          title: "미션",
+          description:
+            "우리의 미션은 팀, 학생, 실무자, 그리고 1인 전문가에게 잡다한 유틸리티 사이트처럼 느껴지지 않는 빠른 PDF 워크플로를 제공하는 것입니다.",
+          items: [
+            {
+              title: "PDF 도구가 먼저",
+              description:
+                "DockDocs는 실용적인 작업에서 출발합니다. 압축, 병합, 분할, 변환, OCR, 그리고 전달을 위한 파일 준비.",
+            },
+            {
+              title: "AI는 보조 수단으로",
+              description:
+                "AI는 OCR, 요약, PDF와 대화, 워크플로 안내처럼 문서 이해를 높이는 곳에만 더해집니다.",
+            },
+            {
+              title: "프라이버시 우선 철학",
+              description:
+                "제품 방향은 명확한 업로드 안내, 투명한 처리 상태, 최소한의 데이터 노출을 지향합니다.",
+            },
+          ],
+        },
+        {
+          title: "제품 방향",
+          description:
+            "DockDocs는 개별 PDF 도구에서 전 세계 생산성을 위한 더 넓은 AI 문서 워크스페이스로 발전하고 있습니다.",
+          items: [
+            {
+              title: "지원하는 워크플로",
+              description:
+                "PDF 압축, PDF 병합, PDF 분할, PDF를 Word로, PDF OCR, JPG를 PDF로, AI 요약, 문서 질의응답.",
+            },
+            {
+              title: "워크스페이스 비전",
+              description:
+                "장기적인 방향은 문서 콘텐츠를 정리하고, 변환하고, 이해하고, 재사용하는 단 하나의 공간입니다.",
+            },
+          ],
+        },
+      ],
+    },
+    blog: {
+      slug: "blog",
+      title: "리소스 및 블로그 | DockDocs",
+      description:
+        "PDF 도구, OCR 워크플로, JPG를 PDF로 변환, AI 문서 생산성에 관한 DockDocs 리소스.",
+      eyebrow: "리소스",
+      heroTitle: "PDF 도구와 AI 문서 워크플로 리소스.",
+      heroDescription:
+        "PDF와 AI 문서 생산성을 둘러싼 실용 가이드, 워크플로 설명, 제품 업데이트, 그리고 향후 SEO 리소스를 위한 콘텐츠 허브입니다.",
+      sections: [
+        {
+          title: "예정된 리소스 영역",
+          description:
+            "이 블로그는 가벼운 공지가 아니라 오래도록 유용한 콘텐츠를 위해 준비되어 있습니다.",
+          items: [
+            {
+              title: "PDF 워크플로 가이드",
+              description:
+                "압축, 병합, 분할, 변환, 그리고 깔끔한 문서 묶음 준비를 위한 가이드.",
+            },
+            {
+              title: "변환 리소스",
+              description:
+                "JPG를 PDF로, PDF를 Word로, 스캔 PDF, 문서 전달 워크플로에 관한 글.",
+            },
+            {
+              title: "AI 문서 생산성",
+              description:
+                "OCR, AI 요약, PDF와 대화, 문서 자동화 패턴에 관한 리소스.",
+            },
+          ],
+        },
+      ],
+    },
+    help: {
+      slug: "help",
+      title: "도움말 센터 | DockDocs",
+      description:
+        "DockDocs 업로드, 프라이버시 우선 PDF 워크플로, 지원 형식, 로컬 처리, AI 문서 제한에 관한 도움말.",
+      eyebrow: "도움말 센터",
+      heroTitle: "업로드, 프라이버시, 형식, AI 워크플로에 관한 도움말.",
+      heroDescription:
+        "이 페이지에서 DockDocs 도구 페이지가 어떻게 구성되어 있는지, 각 워크플로가 어떤 파일을 기대하는지, AI 기능이 어디에 들어가는지 확인하세요.",
+      sections: [
+        {
+          title: "업로드 동작과 지원 형식",
+          description:
+            "각 도구 페이지는 사용자가 무엇을 업로드할 수 있는지, 워크플로가 무엇을 준비하는지, 마지막에 어떤 내보내기 동작이 나타나는지 안내합니다.",
+          items: [
+            {
+              title: "업로드 동작",
+              description:
+                "선택한 워크플로의 업로드 카드에서 파일을 고르세요. PDF 도구는 PDF 중심이며, JPG를 PDF로는 문서 생성을 위해 이미지 파일을 받습니다.",
+            },
+            {
+              title: "지원 형식",
+              description:
+                "핵심 워크플로는 PDF, 스캔 PDF, JPG, PNG, WebP, 그리고 편집 가능한 Word 중심 문서 변환을 다룹니다.",
+            },
+            {
+              title: "문제 해결",
+              description:
+                "파일이 너무 크거나 형식이 맞지 않으면, AI 중심 워크플로를 쓰기 전에 먼저 압축이나 변환부터 시작하세요.",
+            },
+          ],
+        },
+        {
+          title: "로컬 처리, 프라이버시 우선 처리, AI 제한",
+          description:
+            "DockDocs는 가능한 한 로컬 우선 문서 준비, 프라이버시 우선 처리, AI 지원 기능에 대한 명확한 제한을 중심으로 설계되었습니다.",
+          items: [
+            {
+              title: "로컬 처리",
+              description:
+                "가능한 경우 DockDocs는 브라우저 우선·로컬 우선 워크플로 설계를 선호합니다. 향후 클라우드나 AI 단계가 도입되기 전에 간단한 문서 준비를 사용자 가까이에서 처리할 수 있도록 합니다.",
+            },
+            {
+              title: "프라이버시 우선 처리",
+              description:
+                "도구 페이지는 실제 처리를 활성화하기 전에 업로드 안내, 처리 목적, 보관 정책, 삭제 동작을 설명해야 합니다.",
+            },
+            {
+              title: "AI의 한계",
+              description:
+                "OCR, 요약, PDF와 대화는 문서 검토에 도움이 되지만, 사용자는 제출·서명·공유 전에 중요한 결과를 직접 확인해야 합니다.",
+            },
+          ],
+        },
+      ],
+    },
+    faq: {
+      slug: "faq",
+      title: "자주 묻는 질문 | DockDocs",
+      description:
+        "DockDocs PDF 도구, 프라이버시 우선 워크플로, OCR, AI 요약, PDF와 대화에 관한 자주 묻는 질문.",
+      eyebrow: "자주 묻는 질문",
+      heroTitle: "DockDocs 질문과 답변.",
+      heroDescription:
+        "PDF 도구, 파일 프라이버시, 브라우저 우선 워크플로, OCR, JPG 변환, 내보내기, 모바일 사용, AI 문서 기능에 대한 답변.",
+      sections: [
+        {
+          title: "사이트 전반 FAQ",
+          description: "문서를 업로드하기 전에 자주 묻는 질문에 대한 실용적인 답변입니다.",
+        },
+      ],
+      faqs: [
+        {
+          question: "DockDocs란 무엇인가요?",
+          answer:
+            "DockDocs는 프라이버시를 우선하는 PDF 도구 플랫폼이며, AI 기능을 보조적인 생산성 계층으로 더한 서비스입니다.",
+        },
+        {
+          question: "파일이 브라우저에서 처리되나요?",
+          answer:
+            "DockDocs는 가능한 한 브라우저 우선·로컬 우선 워크플로를 지향하도록 설계되었습니다. 향후 클라우드 처리나 AI 처리가 있을 경우 업로드 전에 명확히 안내해야 합니다.",
+        },
+        {
+          question: "제 파일은 얼마나 안전한가요?",
+          answer:
+            "제품 방향은 프라이버시 우선입니다. 명확한 업로드 목적, 투명한 처리 상태, 그리고 실제 처리 전에 문서화된 보관 규칙을 제공합니다.",
+        },
+        {
+          question: "OCR은 얼마나 정확한가요?",
+          answer:
+            "OCR 정확도는 스캔 품질, 이미지 대비, 언어, 페이지 레이아웃에 따라 달라집니다. 중요한 작업에 사용하기 전에 추출된 텍스트를 확인하세요.",
+        },
+        {
+          question: "JPG 이미지를 PDF로 변환할 수 있나요?",
+          answer:
+            "네. JPG를 PDF로는 JPG, PNG, WebP 업로드, 페이지 순서 지정, PDF 내보내기를 위해 설계되었습니다.",
+        },
+        {
+          question: "AI 요약과 PDF와 대화는 무엇을 할 수 있나요?",
+          answer:
+            "AI 기능은 문서를 요약하고, 검색하고, 질문하는 데 도움이 됩니다. 다만 법률·재무·전문가의 검토를 대체하지는 않습니다.",
+        },
+        {
+          question: "내보낸 파일은 최종본인가요?",
+          answer:
+            "내보내기 미리보기와 시뮬레이션된 워크플로 상태는 의도한 결과를 이해하는 데 도움이 됩니다. 공유하기 전에 최종 파일을 확인하세요.",
+        },
+        {
+          question: "DockDocs는 모바일에서도 작동하나요?",
+          answer:
+            "네. 내비게이션, 업로드 영역, 카드, CTA는 데스크톱, 태블릿, 모바일 화면에서 모두 작동하도록 설계되었습니다.",
+        },
+      ],
+    },
+    contact: {
+      slug: "contact",
+      title: "문의 | DockDocs",
+      description:
+        "제품 문의, PDF 워크플로 피드백, 프라이버시 관련 질문, AI 문서 워크스페이스 문의는 DockDocs에 연락하세요.",
+      eyebrow: "문의",
+      heroTitle: "DockDocs 팀에 문의하기.",
+      heroDescription:
+        "이 페이지는 제품 피드백, 프라이버시 관련 질문, PDF 워크플로 요청, AI 워크스페이스 아이디어, 비즈니스 문의에 사용하세요.",
+      primaryAction: { label: "DockDocs에 이메일 보내기", href: "mailto:hello@dockdocs.app" },
+      secondaryAction: { label: "도움말 센터 방문", href: "/help" },
+      sections: [
+        {
+          title: "지원 경로",
+          description:
+            "DockDocs는 제품이 성장하는 동안 연락 방법을 간단하게 유지합니다.",
+          items: [
+            {
+              title: "지원 이메일",
+              description:
+                "제품 문의, 버그 신고, 프라이버시 관련 질문, 워크플로 피드백은 hello@dockdocs.app으로 보내 주세요.",
+            },
+            {
+              title: "응답 안내",
+              description:
+                "초기 단계의 지원 요청은 제품 피드백으로 검토됩니다. 긴급한 운영 SLA는 향후 비즈니스 플랜을 통해 처리될 예정입니다.",
+            },
+            {
+              title: "기업 문의",
+              description:
+                "팀은 PDF 워크플로 처리량, AI 문서 검토, 프라이버시 요구사항, 연동 아이디어에 대해 문의할 수 있습니다.",
+            },
+          ],
+        },
+      ],
+    },
+    "privacy-policy": {
+      slug: "privacy-policy",
+      title: "개인정보 처리방침 | DockDocs",
+      description:
+        "DockDocs 업로드, 로컬 우선 PDF 워크플로, AI 처리, 보관, 쿠키, 분석에 관한 개인정보 처리방침.",
+      eyebrow: "개인정보 처리방침",
+      heroTitle: "프라이버시 우선 문서 워크플로에는 명확한 규칙이 필요합니다.",
+      heroDescription:
+        "이 방침은 DockDocs가 업로드, 로컬 처리, 향후 AI 처리, 보관, 쿠키, 분석에 어떻게 접근하는지 설명합니다.",
+      sections: [
+        {
+          title: "문서 처리",
+          description:
+            "DockDocs는 사용자가 파일을 업로드하기 전에 처리에 대한 기대를 명확히 알 수 있도록 설계되었습니다.",
+          items: [
+            {
+              title: "업로드",
+              description:
+                "도구 페이지는 업로드 전에 허용 형식, 처리 목적, 예상 결과를 안내해야 합니다.",
+            },
+            {
+              title: "로컬 처리",
+              description:
+                "가능한 경우 간단한 문서 준비는 클라우드 워크플로가 도입되기 전에 브라우저나 사용자 가까이에서 처리되어야 합니다.",
+            },
+            {
+              title: "AI 처리",
+              description:
+                "OCR, 요약, 문서 질의응답 같은 AI 기능은 모델 처리가 필요할 수 있습니다. 이러한 워크플로는 제한과 처리 규칙을 명확히 안내해야 합니다.",
+            },
+          ],
+        },
+        {
+          title: "데이터 및 사이트 운영",
+          description:
+            "실제 운영되는 SaaS의 개인정보 페이지는 보관, 쿠키, 분석, 연락 경로를 정의해야 합니다.",
+          items: [
+            {
+              title: "보관",
+              description:
+                "운영 단계의 보관 기간, 삭제 동작, 임시 파일 처리는 출시 전에 문서화되어야 합니다.",
+            },
+            {
+              title: "쿠키",
+              description:
+                "DockDocs는 사이트 운영과 언어 선택 같은 향후 환경설정을 위해 필수 쿠키를 사용할 수 있습니다.",
+            },
+            {
+              title: "분석",
+              description:
+                "분석이 활성화되는 경우, 문서 내용을 노출하기 위해서가 아니라 전체적인 제품 사용을 파악하기 위해 사용되어야 합니다.",
+            },
+          ],
+        },
+      ],
+    },
+    terms: {
+      slug: "terms",
+      title: "이용약관 | DockDocs",
+      description:
+        "DockDocs PDF 도구, AI 문서 워크플로, 제한사항, 지식재산권, 책임에 관한 이용약관.",
+      eyebrow: "이용약관",
+      heroTitle: "DockDocs PDF 및 AI 워크플로 이용약관.",
+      heroDescription:
+        "이 약관은 허용되는 사용, 사용자 책임, AI의 한계, 지식재산권, 책임에 대한 기대를 설명합니다.",
+      sections: [
+        {
+          title: "DockDocs 사용",
+          description:
+            "DockDocs 도구는 합법적인 문서 워크플로, 생산성, 변환, 정리, 검토를 위한 것입니다.",
+          items: [
+            {
+              title: "사용",
+              description:
+                "사용자는 문서를 업로드, 변환, 검토, 내보낼 권리가 있는지 직접 확인할 책임이 있습니다.",
+            },
+            {
+              title: "제한사항",
+              description:
+                "파일 처리, 결과 품질, OCR 정확도, AI 지원 검토는 원본 파일과 워크플로에 따라 달라질 수 있습니다.",
+            },
+            {
+              title: "지식재산권",
+              description:
+                "사용자는 자신이 처리하는 콘텐츠에 대한 책임을 집니다. DockDocs의 브랜드, 인터페이스, 제품 자료는 DockDocs의 자산으로 유지됩니다.",
+            },
+          ],
+        },
+        {
+          title: "AI 및 책임",
+          description:
+            "AI 기능은 생산성 보조 도구이며 전문적인 조언으로 간주해서는 안 됩니다.",
+          items: [
+            {
+              title: "AI 면책 고지",
+              description:
+                "AI 요약, OCR 텍스트, PDF와 대화의 답변은 불완전하거나 부정확할 수 있습니다. 중요한 결과는 사용자가 직접 확인해야 합니다.",
+            },
+            {
+              title: "책임의 제한",
+              description:
+                "DockDocs는 법률·재무·의료·규정 준수 결정의 유일한 근거로 사용해서는 안 됩니다.",
+            },
+          ],
+        },
+      ],
+    },
+  },
 };
 
 export function getInfoPage(locale: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant", slug: InfoPageSlug) {
   if (locale === "zh-Hant") return deepHant(infoPages.zh[slug]);
-  // ko has no authored infoPages block yet → falls back to English (foundation phase).
+  // ko now has a full authored infoPages block; any unknown locale → English.
   return (infoPages[locale as keyof typeof infoPages] ?? infoPages.en)[slug];
 }

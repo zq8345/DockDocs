@@ -8,8 +8,7 @@ import { deepHant, toHant } from "@/lib/zh-hant";
 
 type SaasInfoPageProps = {
   page: InfoPageData;
-  // ko renders English chrome/crawl-links via each ternary's English fallback
-  // (foundation phase) — no ko branch authored yet.
+  // ko now renders native Korean chrome/crawl-links (see the ko branches below).
   locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
   useLocalePrefix?: boolean;
 };
@@ -27,6 +26,7 @@ export function SaasInfoPage({
   const es = locale === "es";
   const pt = locale === "pt";
   const de = locale === "de";
+  const ko = locale === "ko";
   const zhT = (s: string) => (hant ? toHant(s) : s);
 
   // zh links (Simplified); for zh-Hant we run the same array through deepHant.
@@ -72,6 +72,13 @@ export function SaasInfoPage({
         { label: "Ressourcen", href: "/resources", description: "PDF-, OCR- und Konvertierungsressourcen durchsuchen." },
         { label: "Anleitungen", href: "/guides", description: "Schritt-für-Schritt-Anleitungen zu Komprimierung, Zusammenführung und Konvertierung." },
         { label: "FAQ", href: "/faq", description: "Fragen zu Datenschutz, Upload, OCR und KI ansehen." },
+      ]
+    : ko
+    ? [
+        { label: "PDF 도구", href: "/", description: "DockDocs 홈으로 돌아갑니다." },
+        { label: "리소스", href: "/resources", description: "PDF·OCR·변환 리소스를 둘러보세요." },
+        { label: "가이드", href: "/guides", description: "압축·병합·변환 단계별 가이드." },
+        { label: "자주 묻는 질문", href: "/faq", description: "프라이버시·업로드·OCR·AI 관련 질문을 확인하세요." },
       ]
     : [
         { label: "PDF Tools", href: "/", description: "Return to the DockDocs homepage." },
@@ -187,10 +194,10 @@ export function SaasInfoPage({
       <section className="bg-[color:var(--surface-subtle)]">
         <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-            {zh ? zhT("继续探索") : fr ? "Continuer à explorer" : ja ? "さらに探す" : es ? "Seguir explorando" : pt ? "Continuar explorando" : de ? "Weiter entdecken" : "Continue exploring"}
+            {zh ? zhT("继续探索") : fr ? "Continuer à explorer" : ja ? "さらに探す" : es ? "Seguir explorando" : pt ? "Continuar explorando" : de ? "Weiter entdecken" : ko ? "계속 살펴보기" : "Continue exploring"}
           </p>
           <h2 className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
-            {zh ? zhT("相关工具、指南和支持") : fr ? "Outils, guides et assistance connexes" : ja ? "関連ツール・ガイド・サポート" : es ? "Herramientas, guías y soporte relacionados" : pt ? "Ferramentas, guias e suporte relacionados" : de ? "Verwandte Tools, Anleitungen und Support" : "Related tools, guides, and support"}
+            {zh ? zhT("相关工具、指南和支持") : fr ? "Outils, guides et assistance connexes" : ja ? "関連ツール・ガイド・サポート" : es ? "Herramientas, guías y soporte relacionados" : pt ? "Ferramentas, guias e suporte relacionados" : de ? "Verwandte Tools, Anleitungen und Support" : ko ? "관련 도구, 가이드, 지원" : "Related tools, guides, and support"}
           </h2>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             {crawlLinks.map((link) => (
@@ -202,7 +209,7 @@ export function SaasInfoPage({
                 <h3 className="text-[15px] font-semibold text-[color:var(--foreground)]">{link.label}</h3>
                 <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{link.description}</p>
                 <span className="mt-4 inline-block text-sm font-medium text-[color:var(--accent)] transition group-hover:translate-x-0.5">
-                  {zh ? zhT("打开页面 →") : fr ? "Ouvrir la page →" : ja ? "ページを開く →" : es ? "Abrir página →" : pt ? "Abrir página →" : de ? "Seite öffnen →" : "Open page →"}
+                  {zh ? zhT("打开页面 →") : fr ? "Ouvrir la page →" : ja ? "ページを開く →" : es ? "Abrir página →" : pt ? "Abrir página →" : de ? "Seite öffnen →" : ko ? "페이지 열기 →" : "Open page →"}
                 </span>
               </a>
             ))}
