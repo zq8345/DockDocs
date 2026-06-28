@@ -80,6 +80,17 @@ const STR = {
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
+// ko is excluded from AuthoredLocale (English-fallback foundation phase); ko copy
+// lives in standalone *_KO objects chosen explicitly in the resolver.
+const STR_KO: typeof STR_EN = {
+  title: "PDF 서명", subtitle: "PDF를 업로드하고 서명을 직접 그리거나 입력해 페이지에 배치한 뒤 다운로드하세요 — 전 과정이 브라우저에서 이뤄집니다.",
+  drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요", choose: "PDF 선택", rendering: "페이지를 렌더링하는 중…",
+  draw: "그리기", type: "입력", clear: "지우기", typed: "이름을 입력하세요", page: "페이지", position: "위치", size: "크기",
+  apply: "서명하고 다운로드", working: "서명 중…", reset: "다시 시작", preview: "실시간 미리보기", sig: "내 서명",
+  needSig: "먼저 서명을 그리거나 입력하세요.", err: "문제가 발생했습니다: ",
+  drawHint: "마우스나 손가락으로 그리세요.",
+};
+
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   en: {
     benefitsTitle: "Why sign PDFs in your browser",
@@ -244,6 +255,30 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
   },
 };
 
+const SECTIONS_KO: ToolSectionsContent = {
+  benefitsTitle: "브라우저에서 PDF에 서명하는 이유",
+  benefitsDescription: "계약서나 양식에 실제 서명을 더해 정확히 들어갈 자리에 배치하세요.",
+  benefits: [
+    { title: "그리기, 입력, 또는 이미지 사용", description: "패드에 손으로 서명하거나, 필기체로 이름을 입력하거나, 서명 이미지를 끌어다 놓으세요 — 가장 잘 어울리는 방식으로." },
+    { title: "페이지에 정확히 배치", description: "페이지를 고르고 크기를 드래그한 뒤 아홉 가지 위치 중 하나를 선택해 서명이 정확한 줄에 들어가게 하세요." },
+    { title: "확정 전에 미리 확인", description: "실시간 미리보기로 실제 페이지 위의 서명을 보여 주므로, 예상치 못한 결과 없이 서명된 PDF를 다운로드합니다." },
+  ],
+  workflowTitle: "서명이 문서 작업에 어떻게 들어맞는가",
+  workflowDescription: "이름이 필요한 PDF가 돌아왔을 때 — 합의서, 채용 제안서, 동의서, 청구서 승인.",
+  steps: [
+    "서명할 PDF를 업로드합니다.",
+    "서명을 그리거나 입력하거나 추가한 뒤, 크기를 맞춰 알맞은 페이지에 배치합니다.",
+    "서명하고 완성된 PDF를 다운로드합니다.",
+  ],
+  readingTitle: "PDF를 마무리하는 더 많은 방법",
+  readingDescription: "문서 서명과 보호를 위한 관련 도구와 가이드.",
+  readingLinks: [
+    { label: "PDF 텍스트 지우기", href: "/redact-pdf", description: "문서에 서명하거나 공유하기 전에 민감한 정보를 가리세요." },
+    { label: "PDF에 온라인 무료 서명하는 법", href: "/guides/sign-pdf-online-free", description: "아무것도 설치하지 않고 PDF에 서명하는 단계별 안내." },
+    { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+  ],
+};
+
 const NO_PAGES_MSG: Record<AuthoredLocale, string> = {
   en: "This PDF has no pages.",
   zh: "该 PDF 没有页面。",
@@ -255,12 +290,13 @@ const NO_PAGES_MSG: Record<AuthoredLocale, string> = {
 };
 
 export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
+  // ko copy lives in STR_KO/SECTIONS_KO (selected below); al collapses ko→en only
+  // for the AuthoredLocale-typed tables ko is intentionally excluded from.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props (e.g. UploadDropzone) lacking "ko".
   const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   // Child components/helpers only support en|zh|zh-Hant; map other UI locales to their content fallback.
   const baseLocale: "en" | "zh" | "zh-Hant" = locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : "en";
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
@@ -286,7 +322,7 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
-      if (doc.numPages === 0) { setError(locale === "zh-Hant" ? toHant(NO_PAGES_MSG.zh) : NO_PAGES_MSG[al]); setPhase("idle"); return; } setNumPages(doc.numPages);
+      if (doc.numPages === 0) { setError(locale === "zh-Hant" ? toHant(NO_PAGES_MSG.zh) : locale === "ko" ? "이 PDF에는 페이지가 없습니다." : NO_PAGES_MSG[al]); setPhase("idle"); return; } setNumPages(doc.numPages);
       const p = Math.max(1, Math.min(pageNum, doc.numPages));
       const pg = await doc.getPage(p);
       const viewport = pg.getViewport({ scale: 1.1 });
