@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
+import { WorkspaceTopbar } from "@/components/WorkspaceTopbar";
 import { navItemLabels } from "@/lib/header-nav";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 
@@ -82,7 +83,9 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
   const dash = getRuntimeCopy(locale).dashboard as unknown as Record<string, string>;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[color:var(--background)]">
+    <div className="flex h-screen flex-col overflow-hidden bg-[color:var(--background)]">
+      <WorkspaceTopbar locale={locale} />
+      <div className="flex flex-1 overflow-hidden">
       <WorkspaceSidebar locale={locale} />
 
       {/* ── Right panel ── */}
@@ -159,6 +162,7 @@ export function DashboardWorkspace({ locale = "en" }: { locale?: RuntimeLocale }
           </p>
         </div>
       </main>
+      </div>
     </div>
   );
 }

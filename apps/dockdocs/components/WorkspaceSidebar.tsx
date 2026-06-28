@@ -37,35 +37,6 @@ export function WorkspaceSidebar({ locale = "en" }: { locale?: RuntimeLocale }) 
       className="flex h-screen shrink-0 flex-col overflow-hidden border-r border-[color:var(--line)]"
       style={{ width: 260, background: "#1a1a1a" }}
     >
-      {/* ── Logo + account ── */}
-      <div className="flex items-center justify-between border-b border-[color:var(--line)] px-4 py-3">
-        <a
-          href="/"
-          className="text-[14px] font-bold tracking-[-0.02em] text-[color:var(--foreground)]"
-          style={{ fontFamily: "var(--font-brand, inherit)" }}
-        >
-          DockDocs
-        </a>
-        <a
-          href="/account"
-          title="Account"
-          className="flex h-7 w-7 items-center justify-center rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
-        >
-          <svg
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-3.5 w-3.5"
-          >
-            <circle cx="8" cy="5.5" r="2.5" />
-            <path d="M2.5 13.5c0-2.76 2.46-5 5.5-5s5.5 2.24 5.5 5" />
-          </svg>
-        </a>
-      </div>
-
       {/* ── Nav sections ── */}
       <div className="flex-1 overflow-y-auto px-2 py-3">
         {headerStructure.map((cat) => {

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DashboardWorkspace } from "@/components/DashboardWorkspace";
+import { DashboardRedirect } from "@/components/DashboardRedirect";
 import { getRuntimeCopy } from "@/lib/copy";
 
 const dashboardCopy = getRuntimeCopy("en").dashboard;
@@ -17,5 +17,5 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardPage() {
-  return <DashboardWorkspace locale="en" />;
+  return <DashboardRedirect />;
 }
