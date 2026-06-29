@@ -2656,7 +2656,7 @@ function LocalizedAiSummary({ locale }: { locale: ClientLocale }) {
   const url = `https://dockdocs.app${localizedPath(locale, "ai-summary")}`;
   const summaryFaqs =
     "faqs" in copy && Array.isArray((copy as { faqs?: unknown }).faqs)
-      ? (copy as { faqs: Array<{ question: string; answer: string }> }).faqs
+      ? (copy as { faqs: ReadonlyArray<{ question: string; answer: string }> }).faqs
       : [];
   const schema = {
     "@context": "https://schema.org",
@@ -2721,7 +2721,7 @@ function LocalizedAiSummary({ locale }: { locale: ClientLocale }) {
       {"faqs" in copy && Array.isArray((copy as { faqs?: unknown }).faqs) ? (
         <LocalizedFaq
           title={(copy as { faqTitle?: string }).faqTitle ?? ""}
-          faqs={[...((copy as { faqs: Array<{ question: string; answer: string }> }).faqs)]}
+          faqs={[...((copy as { faqs: ReadonlyArray<{ question: string; answer: string }> }).faqs)]}
         />
       ) : null}
     </main>

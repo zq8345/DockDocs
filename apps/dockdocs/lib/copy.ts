@@ -316,6 +316,34 @@ export const runtimeCopy = {
       ],
       actions: ["Copy summary", "Download brief", "Ask follow-up questions"],
       emptyMessage: "Select a document to generate a summary preview.",
+      faqTitle: "AI PDF summary questions",
+      faqs: [
+        {
+          question: "How do I summarize a PDF with AI?",
+          answer:
+            "Upload your PDF or document file, then click Summarize. The AI reads the full document and returns a concise summary with key points, action items, and important details — usually in under 30 seconds.",
+        },
+        {
+          question: "Is the AI PDF summarizer free?",
+          answer:
+            "Yes. Summarizing PDFs with AI is free on DockDocs. No account is required to get a summary.",
+        },
+        {
+          question: "What types of documents can I summarize?",
+          answer:
+            "The AI summarizer works with PDFs and handles reports, research papers, contracts, meeting notes, and long-form articles. The AI extracts key points regardless of document length.",
+        },
+        {
+          question: "Is my PDF kept private?",
+          answer:
+            "Only the text needed to generate the summary is sent to our AI provider. DockDocs does not store your document after your session and does not use your files to train its own models. No account, no history.",
+        },
+        {
+          question: "What is the difference between AI Summary and AI Workspace?",
+          answer:
+            "AI Summary gives you a one-shot structured summary — key points, action items, and takeaways. AI Workspace lets you have a full conversation with your document: ask follow-up questions, drill into sections, or extract specific data. Use Summary for a quick overview; use Workspace for deep research.",
+        },
+      ],
     },
     ocr: {
       eyebrow: "AI",
@@ -869,6 +897,34 @@ export const runtimeCopy = {
       keyPoints: ["企业客户支持量增加。", "两个供应商续约需要确认负责人。", "预算决策受缺失的财务输入阻塞。"],
       actions: ["复制摘要", "下载简报", "继续追问"],
       emptyMessage: "请选择文档以生成摘要预览。",
+      faqTitle: "AI 摘要常见问题",
+      faqs: [
+        {
+          question: "如何用 AI 总结 PDF?",
+          answer:
+            "上传你的 PDF 或文档文件,然后点击生成摘要按钮。AI 会读取整篇文档,返回包含要点、待办事项和关键细节的简洁摘要——通常在 30 秒内完成。",
+        },
+        {
+          question: "AI PDF 摘要功能免费吗?",
+          answer:
+            "免费。在 DockDocs 上用 AI 总结 PDF 完全免费,无需注册即可获取摘要。",
+        },
+        {
+          question: "可以总结哪些类型的文档?",
+          answer:
+            "AI 摘要支持 PDF,可处理报告、研究论文、合同、会议记录和长篇文章。无论文档多长,AI 都能提取核心要点。",
+        },
+        {
+          question: "我的 PDF 会被保密吗?",
+          answer:
+            "只有生成摘要所需的文本会发送给我们的 AI 提供方。DockDocs 在会话结束后不会保存你的文档,也不会用你的文件训练自有模型。无需账户,不留历史记录。",
+        },
+        {
+          question: "AI 摘要和 AI 工作区有什么区别?",
+          answer:
+            "AI 摘要一次性生成结构化总结——要点、待办事项和关键结论。AI 工作区则让你与文档完整对话:追问细节、深入特定章节或提取具体数据。快速概览用摘要,深度研究用工作区。",
+        },
+      ],
     },
     ocr: {
       eyebrow: "AI",
@@ -1390,6 +1446,34 @@ export const runtimeCopy = {
       ],
       actions: ["Copiar resumen", "Descargar informe", "Hacer preguntas de seguimiento"],
       emptyMessage: "Selecciona un documento para generar una vista previa del resumen.",
+      faqTitle: "Preguntas sobre el resumen con IA",
+      faqs: [
+        {
+          question: "¿Cómo resumo un PDF con IA?",
+          answer:
+            "Sube tu archivo PDF o documento y haz clic en Resumir. La IA lee el documento completo y devuelve un resumen conciso con puntos clave, tareas pendientes y detalles importantes, normalmente en menos de 30 segundos.",
+        },
+        {
+          question: "¿El resumidor de PDF con IA es gratis?",
+          answer:
+            "Sí. Resumir PDF con IA es gratis en DockDocs. No se necesita cuenta para obtener un resumen.",
+        },
+        {
+          question: "¿Qué tipos de documentos puedo resumir?",
+          answer:
+            "El resumidor con IA funciona con PDF y admite informes, artículos de investigación, contratos, actas de reuniones y artículos extensos. La IA extrae los puntos clave sin importar la longitud del documento.",
+        },
+        {
+          question: "¿Se mantiene privado mi PDF?",
+          answer:
+            "Solo se envía a nuestro proveedor de IA el texto necesario para generar el resumen. DockDocs no almacena tu documento después de la sesión ni usa tus archivos para entrenar sus propios modelos. Sin cuenta, sin historial.",
+        },
+        {
+          question: "¿Cuál es la diferencia entre Resumen IA y Espacio de trabajo IA?",
+          answer:
+            "El Resumen IA te da un resumen estructurado de una sola vez: puntos clave, tareas y conclusiones. El Espacio de trabajo IA te permite mantener una conversación completa con tu documento: hacer preguntas de seguimiento, profundizar en secciones o extraer datos concretos. Usa Resumen para una vista rápida; usa Espacio de trabajo para investigación a fondo.",
+        },
+      ],
     },
     ocr: {
       eyebrow: "IA",
@@ -1964,6 +2048,34 @@ export const runtimeCopy = {
       ],
       actions: ["Copiar resumo", "Baixar relatório", "Fazer perguntas de acompanhamento"],
       emptyMessage: "Selecione um documento para gerar uma prévia do resumo.",
+      faqTitle: "Perguntas sobre o resumo com IA",
+      faqs: [
+        {
+          question: "Como resumo um PDF com IA?",
+          answer:
+            "Envie seu arquivo PDF ou documento e clique em Resumir. A IA lê o documento inteiro e devolve um resumo conciso com pontos principais, itens de ação e detalhes importantes — normalmente em menos de 30 segundos.",
+        },
+        {
+          question: "O resumidor de PDF com IA é gratuito?",
+          answer:
+            "Sim. Resumir PDF com IA é gratuito no DockDocs. Não é preciso conta para obter um resumo.",
+        },
+        {
+          question: "Que tipos de documentos posso resumir?",
+          answer:
+            "O resumidor com IA funciona com PDF e lida com relatórios, artigos de pesquisa, contratos, atas de reunião e artigos longos. A IA extrai os pontos principais independentemente do tamanho do documento.",
+        },
+        {
+          question: "Meu PDF é mantido privado?",
+          answer:
+            "Apenas o texto necessário para gerar o resumo é enviado ao nosso provedor de IA. O DockDocs não armazena seu documento após a sessão e não usa seus arquivos para treinar os próprios modelos. Sem conta, sem histórico.",
+        },
+        {
+          question: "Qual é a diferença entre Resumo IA e Espaço de trabalho IA?",
+          answer:
+            "O Resumo IA oferece um resumo estruturado de uma só vez — pontos principais, itens de ação e conclusões. O Espaço de trabalho IA permite uma conversa completa com seu documento: fazer perguntas de acompanhamento, aprofundar em seções ou extrair dados específicos. Use o Resumo para uma visão rápida; use o Espaço de trabalho para pesquisa aprofundada.",
+        },
+      ],
     },
     ocr: {
       eyebrow: "IA",
@@ -2538,6 +2650,34 @@ export const runtimeCopy = {
       ],
       actions: ["Copier le résumé", "Télécharger le rapport", "Poser des questions de suivi"],
       emptyMessage: "Sélectionnez un document pour générer un aperçu du résumé.",
+      faqTitle: "Questions sur le résumé par IA",
+      faqs: [
+        {
+          question: "Comment résumer un PDF avec l'IA ?",
+          answer:
+            "Importez votre fichier PDF ou document, puis cliquez sur Résumer. L'IA lit l'intégralité du document et renvoie un résumé concis avec les points clés, les actions à mener et les détails importants — généralement en moins de 30 secondes.",
+        },
+        {
+          question: "Le résumeur de PDF par IA est-il gratuit ?",
+          answer:
+            "Oui. Résumer des PDF avec l'IA est gratuit sur DockDocs. Aucun compte n'est nécessaire pour obtenir un résumé.",
+        },
+        {
+          question: "Quels types de documents puis-je résumer ?",
+          answer:
+            "Le résumeur par IA fonctionne avec les PDF et prend en charge les rapports, articles de recherche, contrats, comptes rendus de réunion et articles longs. L'IA extrait les points clés quelle que soit la longueur du document.",
+        },
+        {
+          question: "Mon PDF reste-t-il confidentiel ?",
+          answer:
+            "Seul le texte nécessaire à la génération du résumé est envoyé à notre fournisseur d'IA. DockDocs ne conserve pas votre document après la session et n'utilise pas vos fichiers pour entraîner ses propres modèles. Sans compte, sans historique.",
+        },
+        {
+          question: "Quelle est la différence entre Résumé IA et Espace de travail IA ?",
+          answer:
+            "Le Résumé IA vous donne un résumé structuré en une seule fois — points clés, actions et conclusions. L'Espace de travail IA vous permet d'avoir une conversation complète avec votre document : poser des questions de suivi, approfondir des sections ou extraire des données précises. Utilisez le Résumé pour un aperçu rapide ; utilisez l'Espace de travail pour une recherche approfondie.",
+        },
+      ],
     },
     ocr: {
       eyebrow: "IA",
@@ -3112,6 +3252,34 @@ export const runtimeCopy = {
       ],
       actions: ["Zusammenfassung kopieren", "Bericht herunterladen", "Folgefragen stellen"],
       emptyMessage: "Wählen Sie ein Dokument aus, um eine Vorschau der Zusammenfassung zu erstellen.",
+      faqTitle: "Fragen zur KI-Zusammenfassung",
+      faqs: [
+        {
+          question: "Wie fasse ich ein PDF mit KI zusammen?",
+          answer:
+            "Laden Sie Ihre PDF- oder Dokumentdatei hoch und klicken Sie auf Zusammenfassen. Die KI liest das gesamte Dokument und liefert eine prägnante Zusammenfassung mit Kernpunkten, Aufgaben und wichtigen Details – meist in unter 30 Sekunden.",
+        },
+        {
+          question: "Ist der KI-PDF-Zusammenfasser kostenlos?",
+          answer:
+            "Ja. PDFs mit KI zusammenzufassen ist auf DockDocs kostenlos. Für eine Zusammenfassung ist kein Konto erforderlich.",
+        },
+        {
+          question: "Welche Arten von Dokumenten kann ich zusammenfassen?",
+          answer:
+            "Der KI-Zusammenfasser arbeitet mit PDFs und verarbeitet Berichte, Forschungsarbeiten, Verträge, Besprechungsnotizen und lange Artikel. Die KI extrahiert die Kernpunkte unabhängig von der Dokumentlänge.",
+        },
+        {
+          question: "Bleibt mein PDF privat?",
+          answer:
+            "Nur der zur Erstellung der Zusammenfassung nötige Text wird an unseren KI-Anbieter gesendet. DockDocs speichert Ihr Dokument nach der Sitzung nicht und verwendet Ihre Dateien nicht, um eigene Modelle zu trainieren. Kein Konto, kein Verlauf.",
+        },
+        {
+          question: "Was ist der Unterschied zwischen KI-Zusammenfassung und KI-Arbeitsbereich?",
+          answer:
+            "Die KI-Zusammenfassung liefert Ihnen einmalig eine strukturierte Zusammenfassung – Kernpunkte, Aufgaben und Erkenntnisse. Der KI-Arbeitsbereich ermöglicht ein vollständiges Gespräch mit Ihrem Dokument: Rückfragen stellen, in Abschnitte eintauchen oder bestimmte Daten extrahieren. Nutzen Sie die Zusammenfassung für einen schnellen Überblick und den Arbeitsbereich für tiefgehende Recherche.",
+        },
+      ],
     },
     ocr: {
       eyebrow: "KI",
@@ -3771,6 +3939,34 @@ const runtimeCopyJa = {
     ],
     actions: ["要約をコピー", "概要をダウンロード", "追加の質問をする"],
     emptyMessage: "文書を選択して要約のプレビューを生成します。",
+    faqTitle: "AI 要約に関する質問",
+    faqs: [
+      {
+        question: "AI で PDF を要約するにはどうすればよいですか?",
+        answer:
+          "PDF または文書ファイルをアップロードし、「要約」をクリックします。AI が文書全体を読み取り、要点・アクション項目・重要な詳細をまとめた簡潔な要約を返します。通常 30 秒以内に完了します。",
+      },
+      {
+        question: "AI PDF 要約ツールは無料ですか?",
+        answer:
+          "無料です。DockDocs では AI による PDF 要約を無料で利用でき、要約の取得にアカウントは必要ありません。",
+      },
+      {
+        question: "どんな種類の文書を要約できますか?",
+        answer:
+          "AI 要約ツールは PDF に対応し、レポート、研究論文、契約書、議事録、長文記事を処理できます。文書の長さにかかわらず、AI が要点を抽出します。",
+      },
+      {
+        question: "私の PDF のプライバシーは守られますか?",
+        answer:
+          "要約の生成に必要なテキストのみが当社の AI プロバイダーに送信されます。DockDocs はセッション終了後に文書を保存せず、お客様のファイルを自社モデルの学習に使用することもありません。アカウント不要、履歴も残りません。",
+      },
+      {
+        question: "AI 要約と AI ワークスペースの違いは何ですか?",
+        answer:
+          "AI 要約は、要点・アクション項目・結論を一度に構造化してまとめます。AI ワークスペースでは文書と本格的に対話でき、追加の質問をしたり、特定のセクションを深掘りしたり、必要なデータを抽出したりできます。手早い概要には要約を、深い調査にはワークスペースをお使いください。",
+      },
+    ],
   },
   ocr: {
     eyebrow: "AI",
@@ -4241,6 +4437,34 @@ const runtimeCopyKo = {
     ],
     actions: ["요약 복사", "요약 다운로드", "후속 질문"],
     emptyMessage: "요약 미리보기를 생성하려면 문서를 선택하세요.",
+    faqTitle: "AI 요약 질문",
+    faqs: [
+      {
+        question: "AI로 PDF를 요약하려면 어떻게 하나요?",
+        answer:
+          "PDF 또는 문서 파일을 업로드한 다음 요약을 클릭하세요. AI가 문서 전체를 읽고 핵심 요점, 실행 항목, 중요한 세부 정보를 담은 간결한 요약을 반환합니다. 보통 30초 이내에 완료됩니다.",
+      },
+      {
+        question: "AI PDF 요약 도구는 무료인가요?",
+        answer:
+          "네. DockDocs에서 AI로 PDF를 요약하는 것은 무료입니다. 요약을 받는 데 계정이 필요하지 않습니다.",
+      },
+      {
+        question: "어떤 종류의 문서를 요약할 수 있나요?",
+        answer:
+          "AI 요약 도구는 PDF를 지원하며 보고서, 연구 논문, 계약서, 회의록, 긴 글을 처리합니다. 문서 길이와 관계없이 AI가 핵심 요점을 추출합니다.",
+      },
+      {
+        question: "제 PDF는 비공개로 유지되나요?",
+        answer:
+          "요약을 생성하는 데 필요한 텍스트만 당사 AI 제공업체로 전송됩니다. DockDocs는 세션이 끝난 후 문서를 저장하지 않으며, 귀하의 파일을 자체 모델 학습에 사용하지 않습니다. 계정도 기록도 없습니다.",
+      },
+      {
+        question: "AI 요약과 AI 워크스페이스의 차이점은 무엇인가요?",
+        answer:
+          "AI 요약은 핵심 요점, 실행 항목, 결론을 한 번에 구조화해 제공합니다. AI 워크스페이스에서는 문서와 완전한 대화를 나눌 수 있어 추가 질문을 하거나, 특정 섹션을 깊이 살펴보거나, 원하는 데이터를 추출할 수 있습니다. 빠른 개요에는 요약을, 심층 조사에는 워크스페이스를 사용하세요.",
+      },
+    ],
   },
   ocr: {
     eyebrow: "AI",
