@@ -22,7 +22,7 @@ type Source = { docId: string; name: string; snippet: string };
 const MAX_DOCS = 8;
 const MAX_TOTAL_CHARS = 60_000;
 const MAX_QUESTION = 500;
-const MAX_TOKENS = 1200;
+const MAX_TOKENS = 2500;
 const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
 
 export default async (req: Request, _context: Context) => {

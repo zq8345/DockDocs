@@ -42,7 +42,7 @@ type ProviderSummaryResult = {
 };
 
 const maxSummaryCharacters = 24_000;
-const aiSummaryMaxTokens = 1600;
+const aiSummaryMaxTokens = 3000;
 
 const pick = (
   locale: AnswerLocale,
@@ -533,12 +533,7 @@ function normalizeSummary(value: unknown): AiSummary | null {
   const actionItems = asStringArray(value.actionItems);
   const nextSteps = asStringArray(value.suggestedNextSteps ?? value.nextSteps);
 
-  if (
-    !executiveSummary ||
-    keyPoints.length === 0 ||
-    actionItems.length === 0 ||
-    nextSteps.length === 0
-  ) {
+  if (!executiveSummary) {
     return null;
   }
 

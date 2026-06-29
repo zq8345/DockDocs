@@ -31,7 +31,7 @@ type Recommendation = {
 type ProviderConfig = { apiUrl: string; apiKey: string; model: string };
 
 const MAX_DOCS = 8;
-const MAX_TOKENS = 1500;
+const MAX_TOKENS = 2500;
 const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
 
 export default async (req: Request, _context: Context) => {
