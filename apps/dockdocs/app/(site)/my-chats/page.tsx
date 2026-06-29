@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/my-chats/",
   },
+  robots: { index: false, follow: false },
 };
 
 export default function MyChatsPage() {
