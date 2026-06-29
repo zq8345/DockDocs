@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchRenameClient } from "@/components/BatchRenameClient";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Batch Rename PDF — Rename Many Files by Pattern Online Free",
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchRenamePdfPage() {
-  return <BatchRenameClient />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-rename-pdf", "Batch Rename PDF — Rename Many Files by Pattern Online Free")) }} /><BatchRenameClient /></>;
 }

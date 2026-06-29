@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchRotateClient } from "@/components/BatchRotateClient";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Batch Rotate PDF — Fix Many Sideways Scans Online Free",
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchRotatePdfPage() {
-  return <BatchRotateClient />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-rotate-pdf", "Batch Rotate PDF — Fix Many Sideways Scans Online Free")) }} /><BatchRotateClient /></>;
 }

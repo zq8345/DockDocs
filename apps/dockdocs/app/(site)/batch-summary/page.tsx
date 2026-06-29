@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchSummaryClient } from "@/components/BatchSummaryClient";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Batch Summarize PDFs — Summarize Multiple Documents",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchSummaryPage() {
-  return <BatchSummaryClient />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-summary", "Batch Summarize PDFs — Summarize Multiple Documents")) }} /><BatchSummaryClient /></>;
 }

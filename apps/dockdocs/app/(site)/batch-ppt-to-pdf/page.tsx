@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Batch PPT to PDF — Convert Many PowerPoints Free",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchPptToPdfPage() {
-  return <BatchOfficeToPdfClient source="ppt" />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-ppt-to-pdf", "Batch PPT to PDF — Convert Many PowerPoints Free")) }} /><BatchOfficeToPdfClient source="ppt" /></>;
 }

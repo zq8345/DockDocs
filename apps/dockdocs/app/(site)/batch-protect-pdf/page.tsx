@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchProtectClient } from "@/components/BatchProtectClient";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Batch Encrypt PDF — Password-Protect Many PDFs Online Free",
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchProtectPdfPage() {
-  return <BatchProtectClient />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-protect-pdf", "Batch Encrypt PDF — Password-Protect Many PDFs Online Free")) }} /><BatchProtectClient /></>;
 }

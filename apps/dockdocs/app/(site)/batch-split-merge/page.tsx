@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchSplitMergeClient } from "@/components/BatchSplitMergeClient";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Batch Split PDF — Split Many PDFs at Once",
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchSplitMergePage() {
-  return <BatchSplitMergeClient lockMode="split" />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-split-merge", "Batch Split PDF — Split Many PDFs at Once")) }} /><BatchSplitMergeClient lockMode="split" /></>;
 }

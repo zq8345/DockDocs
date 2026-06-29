@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Batch Excel to PDF — Convert Many Spreadsheets Free",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchExcelToPdfPage() {
-  return <BatchOfficeToPdfClient source="excel" />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-excel-to-pdf", "Batch Excel to PDF — Convert Many Spreadsheets Free")) }} /><BatchOfficeToPdfClient source="excel" /></>;
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Batch PDF to Image — Convert Many PDFs to JPG/PNG Online Free",
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchPdfToImagePage() {
-  return <BatchPdfToImageClient />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-pdf-to-image", "Batch PDF to Image — Convert Many PDFs to JPG/PNG Online Free")) }} /><BatchPdfToImageClient /></>;
 }

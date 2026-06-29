@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchStampClient } from "@/components/BatchStampClient";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Batch Add Page Numbers to PDFs — Online Free",
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchPageNumbersPage() {
-  return <BatchStampClient lockMode="pagenum" />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-page-numbers", "Batch Add Page Numbers to PDFs — Online Free")) }} /><BatchStampClient lockMode="pagenum" /></>;
 }

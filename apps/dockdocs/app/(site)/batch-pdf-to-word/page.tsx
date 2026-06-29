@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Batch PDF to Word — Convert Many PDFs to Word Free",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchPdfToWordPage() {
-  return <BatchPdfToOfficeClient target="word" />;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-pdf-to-word", "Batch PDF to Word — Convert Many PDFs to Word Free")) }} /><BatchPdfToOfficeClient target="word" /></>;
 }
