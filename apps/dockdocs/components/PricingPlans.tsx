@@ -36,7 +36,7 @@ const copy = {
         tagline: "Everything you need for everyday PDF work.",
         highlights: ["~50 PDF tools — convert, compress, merge, split", "Encrypt, edit pages & OCR scanned docs", "Most tools run in your browser — files stay private", "Free forever, no account needed"],
         cta: "Start free now",
-        href: "/chat-with-pdf" as RouteSlug,
+        href: "chat-with-pdf" as RouteSlug,
         featured: false,
       },
       {
@@ -66,9 +66,9 @@ const copy = {
     ctaBtn: "Start with a free tool",
     scenariosTitle: "What can DockDocs solve for you?",
     scenarios: [
-      { emoji: "📊", title: "Compare quotes & pick the best", before: "Open 3 files, copy numbers into a sheet — ~1 hour", after: "Upload → side-by-side table + a pick backed by the numbers — 1 min", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "📄", title: "Catch the traps in a contract", before: "Pay a lawyer $300, or sign blind and get burned", after: "AI flags risky & missing clauses in minutes", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "Process a batch of invoices", before: "Key them in one by one — hours, or hire help", after: "Drop the whole batch → auto-extract & summarize", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📊", title: "Compare quotes & pick the best", before: "Open 3 files, copy numbers into a sheet — ~1 hour", after: "Upload → side-by-side table + a pick backed by the numbers — 1 min", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "📄", title: "Catch the traps in a contract", before: "Pay a lawyer $300, or sign blind and get burned", after: "AI flags risky & missing clauses in minutes", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "🧾", title: "Process a batch of invoices", before: "Key them in one by one — hours, or hire help", after: "Drop the whole batch → auto-extract & summarize", tier: "Pro", href: "extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "Understand a long report fast", before: "Read 80 pages to find a few answers — hours", after: "Ask it anything → sourced answers (where located) in 30s", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Compare plans",
@@ -104,7 +104,7 @@ const copy = {
         tagline: "日常 PDF 工作所需的一切。",
         highlights: ["~50 PDF 工具：转换、压缩、合并、拆分", "加密、页面编辑、扫描件 OCR", "大多数工具在浏览器本地处理——文件保持私密", "永久免费，无需注册"],
         cta: "立即免费开始",
-        href: "/chat-with-pdf" as RouteSlug,
+        href: "chat-with-pdf" as RouteSlug,
         featured: false,
       },
       {
@@ -134,9 +134,9 @@ const copy = {
     ctaBtn: "从一个免费工具开始",
     scenariosTitle: "DockDocs 能替你解决什么？",
     scenarios: [
-      { emoji: "📊", title: "比报价，选最优", before: "开 3 个文件抄数字进表格 —— 约 1 小时", after: "上传 → 并排对比表 + 基于并排数据的推荐 —— 1 分钟", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "📄", title: "看穿合同里的坑", before: "花 $300 找律师，或盲签踩坑", after: "AI 几分钟标出风险与缺失条款", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "批量处理发票", before: "一张张录入几小时，或雇人", after: "整批丢进去 → 自动抽取汇总", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📊", title: "比报价，选最优", before: "开 3 个文件抄数字进表格 —— 约 1 小时", after: "上传 → 并排对比表 + 基于并排数据的推荐 —— 1 分钟", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "📄", title: "看穿合同里的坑", before: "花 $300 找律师，或盲签踩坑", after: "AI 几分钟标出风险与缺失条款", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "🧾", title: "批量处理发票", before: "一张张录入几小时，或雇人", after: "整批丢进去 → 自动抽取汇总", tier: "Pro", href: "extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "快速读懂长报告", before: "读 80 页找几个答案 —— 几小时", after: "问它任何问题 → 30 秒得到答案，能定位时带出处", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "套餐对照",
@@ -172,7 +172,7 @@ const copy = {
         tagline: "Todo lo que necesitas para el trabajo diario con PDF.",
         highlights: ["~50 herramientas PDF — convertir, comprimir, unir, dividir", "Encriptar, editar páginas y OCR de docs escaneados", "La mayoría de herramientas se procesan en tu navegador — los archivos permanecen privados", "Gratis para siempre, sin cuenta necesaria"],
         cta: "Empieza gratis ahora",
-        href: "/chat-with-pdf" as RouteSlug,
+        href: "chat-with-pdf" as RouteSlug,
         featured: false,
       },
       {
@@ -202,9 +202,9 @@ const copy = {
     ctaBtn: "Empieza con una herramienta gratuita",
     scenariosTitle: "¿Qué puede resolver DockDocs para ti?",
     scenarios: [
-      { emoji: "📊", title: "Compara presupuestos y elige el mejor", before: "Abrir 3 archivos, copiar números en una hoja — ~1 hora", after: "Subir → tabla comparativa + recomendación basada en los datos — 1 min", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "📄", title: "Detecta las trampas en un contrato", before: "Pagar $300 a un abogado, o firmar a ciegas y salir perdiendo", after: "La IA detecta cláusulas arriesgadas y faltantes en minutos", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "Procesa un lote de facturas", before: "Introducirlas una por una — horas, o contratar ayuda", after: "Sube el lote completo → extracción y resumen automático", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📊", title: "Compara presupuestos y elige el mejor", before: "Abrir 3 archivos, copiar números en una hoja — ~1 hora", after: "Subir → tabla comparativa + recomendación basada en los datos — 1 min", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "📄", title: "Detecta las trampas en un contrato", before: "Pagar $300 a un abogado, o firmar a ciegas y salir perdiendo", after: "La IA detecta cláusulas arriesgadas y faltantes en minutos", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "🧾", title: "Procesa un lote de facturas", before: "Introducirlas una por una — horas, o contratar ayuda", after: "Sube el lote completo → extracción y resumen automático", tier: "Pro", href: "extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "Entiende un informe largo rápidamente", before: "Leer 80 páginas para encontrar unas respuestas — horas", after: "Pregúntale lo que sea → respuestas con su fuente cuando se localiza, en 30s", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Comparar planes",
@@ -240,7 +240,7 @@ const copy = {
         tagline: "Tudo que você precisa para o trabalho diário com PDF.",
         highlights: ["~50 ferramentas PDF — converter, comprimir, mesclar, dividir", "Criptografar, editar páginas e OCR de docs digitalizados", "A maioria das ferramentas processa no seu navegador — arquivos ficam privados", "Grátis para sempre, sem conta necessária"],
         cta: "Comece grátis agora",
-        href: "/chat-with-pdf" as RouteSlug,
+        href: "chat-with-pdf" as RouteSlug,
         featured: false,
       },
       {
@@ -270,9 +270,9 @@ const copy = {
     ctaBtn: "Comece com uma ferramenta gratuita",
     scenariosTitle: "O que o DockDocs pode resolver para você?",
     scenarios: [
-      { emoji: "📊", title: "Compare orçamentos e escolha o melhor", before: "Abrir 3 arquivos, copiar números numa planilha — ~1 hora", after: "Carregar → tabela comparativa + recomendação baseada nos dados — 1 min", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "📄", title: "Detecte as armadilhas em um contrato", before: "Pagar $300 a um advogado, ou assinar às cegas e se arrepender", after: "A IA detecta cláusulas arriscadas e ausentes em minutos", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "Processe um lote de faturas", before: "Inserir uma a uma — horas, ou contratar ajuda", after: "Envie o lote inteiro → extração e resumo automáticos", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📊", title: "Compare orçamentos e escolha o melhor", before: "Abrir 3 arquivos, copiar números numa planilha — ~1 hora", after: "Carregar → tabela comparativa + recomendação baseada nos dados — 1 min", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "📄", title: "Detecte as armadilhas em um contrato", before: "Pagar $300 a um advogado, ou assinar às cegas e se arrepender", after: "A IA detecta cláusulas arriscadas e ausentes em minutos", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "🧾", title: "Processe um lote de faturas", before: "Inserir uma a uma — horas, ou contratar ajuda", after: "Envie o lote inteiro → extração e resumo automáticos", tier: "Pro", href: "extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "Entenda um relatório longo rapidamente", before: "Ler 80 páginas para encontrar algumas respostas — horas", after: "Pergunte o que quiser → respostas com a fonte quando localizável, em 30s", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Comparar planos",
@@ -308,7 +308,7 @@ const copy = {
         tagline: "Tout ce dont vous avez besoin pour le travail quotidien avec les PDF.",
         highlights: ["~50 outils PDF — convertir, compresser, fusionner, diviser", "Chiffrer, modifier les pages et OCR sur documents numérisés", "La plupart des outils fonctionnent dans votre navigateur — fichiers privés", "Gratuit pour toujours, sans compte nécessaire"],
         cta: "Commencer gratuitement",
-        href: "/chat-with-pdf" as RouteSlug,
+        href: "chat-with-pdf" as RouteSlug,
         featured: false,
       },
       {
@@ -338,9 +338,9 @@ const copy = {
     ctaBtn: "Commencer avec un outil gratuit",
     scenariosTitle: "Que peut résoudre DockDocs pour vous ?",
     scenarios: [
-      { emoji: "📊", title: "Comparez des devis et choisissez le meilleur", before: "Ouvrir 3 fichiers, copier les chiffres dans un tableau — ~1h", after: "Charger → tableau comparatif + recommandation fondée sur les chiffres — 1 min", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "📄", title: "Repérez les pièges d'un contrat", before: "Payer 300 $ un juriste, ou signer en aveugle et le regretter", after: "L'IA détecte les clauses à risque et manquantes en quelques minutes", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "Traitez un lot de factures", before: "Les saisir une par une — des heures, ou embaucher de l'aide", after: "Déposez le lot entier → extraction et résumé automatiques", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📊", title: "Comparez des devis et choisissez le meilleur", before: "Ouvrir 3 fichiers, copier les chiffres dans un tableau — ~1h", after: "Charger → tableau comparatif + recommandation fondée sur les chiffres — 1 min", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "📄", title: "Repérez les pièges d'un contrat", before: "Payer 300 $ un juriste, ou signer en aveugle et le regretter", after: "L'IA détecte les clauses à risque et manquantes en quelques minutes", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "🧾", title: "Traitez un lot de factures", before: "Les saisir une par une — des heures, ou embaucher de l'aide", after: "Déposez le lot entier → extraction et résumé automatiques", tier: "Pro", href: "extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "Comprenez un long rapport rapidement", before: "Lire 80 pages pour quelques réponses — des heures", after: "Posez vos questions → réponses avec leur source quand localisable, en 30s", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Comparer les forfaits",
@@ -376,7 +376,7 @@ const copy = {
         tagline: "日常のPDF作業に必要なすべて。",
         highlights: ["約50のPDFツール — 変換、圧縮、結合、分割", "暗号化、ページ編集、スキャン文書のOCR", "ほとんどのツールはブラウザ内で処理 — ファイルは非公開のまま", "永久無料、アカウント不要"],
         cta: "今すぐ無料で始める",
-        href: "/chat-with-pdf" as RouteSlug,
+        href: "chat-with-pdf" as RouteSlug,
         featured: false,
       },
       {
@@ -406,9 +406,9 @@ const copy = {
     ctaBtn: "無料ツールから始める",
     scenariosTitle: "DockDocsはあなたの何を解決できる？",
     scenarios: [
-      { emoji: "📊", title: "見積もりを比較して最適なものを選ぶ", before: "3つのファイルを開いて数字をシートにコピー — 約1時間", after: "アップロード → 並列比較表 + 数値に基づくおすすめ — 1分", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "📄", title: "契約書の落とし穴を見抜く", before: "弁護士に$300払うか、よく見ずに署名して痛い目に遭う", after: "AIが数分でリスクや欠落条項を指摘", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "請求書を一括処理する", before: "1枚ずつ入力 — 数時間、または人を雇う", after: "バッチごと投入 → 自動で抽出・要約", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📊", title: "見積もりを比較して最適なものを選ぶ", before: "3つのファイルを開いて数字をシートにコピー — 約1時間", after: "アップロード → 並列比較表 + 数値に基づくおすすめ — 1分", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "📄", title: "契約書の落とし穴を見抜く", before: "弁護士に$300払うか、よく見ずに署名して痛い目に遭う", after: "AIが数分でリスクや欠落条項を指摘", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "🧾", title: "請求書を一括処理する", before: "1枚ずつ入力 — 数時間、または人を雇う", after: "バッチごと投入 → 自動で抽出・要約", tier: "Pro", href: "extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "長いレポートを素早く理解する", before: "80ページを読んでいくつかの答えを探す — 数時間", after: "何でも質問 → 30秒で回答（特定できる場合は出典付き）", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "プランを比較",
@@ -444,7 +444,7 @@ const copy = {
         tagline: "Alles, was Sie für die tägliche PDF-Arbeit brauchen.",
         highlights: ["~50 PDF-Tools — konvertieren, komprimieren, zusammenfügen, teilen", "Verschlüsseln, Seiten bearbeiten und OCR für gescannte Dokumente", "Im Browser verarbeitet — die meisten Tools laufen lokal, Dateien bleiben privat", "Für immer kostenlos, kein Konto nötig"],
         cta: "Jetzt kostenlos starten",
-        href: "/chat-with-pdf" as RouteSlug,
+        href: "chat-with-pdf" as RouteSlug,
         featured: false,
       },
       {
@@ -474,9 +474,9 @@ const copy = {
     ctaBtn: "Mit einem kostenlosen Tool starten",
     scenariosTitle: "Was kann DockDocs für Sie lösen?",
     scenarios: [
-      { emoji: "📊", title: "Angebote vergleichen und das beste wählen", before: "3 Dateien öffnen, Zahlen in eine Tabelle kopieren — ~1 Std.", after: "Hochladen → Vergleichstabelle + eine durch die Zahlen gestützte Empfehlung — 1 Min.", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "📄", title: "Die Fallen in einem Vertrag erkennen", before: "300 $ für einen Anwalt zahlen oder blind unterschreiben und Schaden nehmen", after: "Die KI markiert riskante und fehlende Klauseln in Minuten", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "Einen Stapel Rechnungen verarbeiten", before: "Sie einzeln eintippen — Stunden, oder Hilfe einstellen", after: "Den ganzen Stapel ablegen → automatisch extrahieren und zusammenfassen", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📊", title: "Angebote vergleichen und das beste wählen", before: "3 Dateien öffnen, Zahlen in eine Tabelle kopieren — ~1 Std.", after: "Hochladen → Vergleichstabelle + eine durch die Zahlen gestützte Empfehlung — 1 Min.", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "📄", title: "Die Fallen in einem Vertrag erkennen", before: "300 $ für einen Anwalt zahlen oder blind unterschreiben und Schaden nehmen", after: "Die KI markiert riskante und fehlende Klauseln in Minuten", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "🧾", title: "Einen Stapel Rechnungen verarbeiten", before: "Sie einzeln eintippen — Stunden, oder Hilfe einstellen", after: "Den ganzen Stapel ablegen → automatisch extrahieren und zusammenfassen", tier: "Pro", href: "extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "Einen langen Bericht schnell verstehen", before: "80 Seiten lesen, um ein paar Antworten zu finden — Stunden", after: "Fragen Sie alles → belegte Antworten (wo auffindbar) in 30 Sek.", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Tarife vergleichen",
@@ -512,7 +512,7 @@ const copy = {
         tagline: "일상적인 PDF 작업에 필요한 모든 것.",
         highlights: ["약 50가지 PDF 도구 — 변환, 압축, 병합, 분할", "암호화, 페이지 편집, 스캔 문서 OCR", "대부분의 도구는 브라우저에서 처리 — 파일은 안전하게 보관됩니다", "계정 없이 평생 무료"],
         cta: "지금 무료로 시작",
-        href: "/chat-with-pdf" as RouteSlug,
+        href: "chat-with-pdf" as RouteSlug,
         featured: false,
       },
       {
@@ -542,9 +542,9 @@ const copy = {
     ctaBtn: "무료 도구로 시작하기",
     scenariosTitle: "DockDocs가 무엇을 해결해 드릴까요?",
     scenarios: [
-      { emoji: "📊", title: "견적을 비교해 최선을 선택", before: "파일 3개를 열고 숫자를 시트에 옮겨 적기 — 약 1시간", after: "업로드 → 나란히 비교표 + 숫자에 근거한 추천 — 1분", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "📄", title: "계약서 속 함정 찾아내기", before: "변호사에게 $300을 내거나, 모르고 서명했다가 손해", after: "AI가 몇 분 만에 위험 조항과 누락 조항을 표시", tier: "Pro", href: "/compare" as RouteSlug },
-      { emoji: "🧾", title: "송장 묶음 처리하기", before: "하나씩 입력 — 몇 시간, 아니면 사람을 고용", after: "묶음째 넣으면 → 자동으로 추출·요약", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
+      { emoji: "📊", title: "견적을 비교해 최선을 선택", before: "파일 3개를 열고 숫자를 시트에 옮겨 적기 — 약 1시간", after: "업로드 → 나란히 비교표 + 숫자에 근거한 추천 — 1분", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "📄", title: "계약서 속 함정 찾아내기", before: "변호사에게 $300을 내거나, 모르고 서명했다가 손해", after: "AI가 몇 분 만에 위험 조항과 누락 조항을 표시", tier: "Pro", href: "compare" as RouteSlug },
+      { emoji: "🧾", title: "송장 묶음 처리하기", before: "하나씩 입력 — 몇 시간, 아니면 사람을 고용", after: "묶음째 넣으면 → 자동으로 추출·요약", tier: "Pro", href: "extract-to-excel" as RouteSlug },
       { emoji: "📕", title: "긴 보고서를 빠르게 파악", before: "답 몇 개를 찾으려 80쪽을 읽기 — 몇 시간", after: "무엇이든 질문 → 30초 만에 출처가 있는 답변(위치를 찾을 수 있는 경우)", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "요금제 비교",
@@ -924,7 +924,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                   ...(isOpen ? toolItems.map((tool) => (
                     <tr key={`tool-${tool.slug}`} className="bg-[color:var(--surface)] transition-colors hover:bg-[color:var(--surface-subtle)]">
                       <td className="border-b border-[color:var(--line)] py-2 pl-10 pr-4">
-                        <a href={localizedPath(locale as RouteLocale, tool.slug as RouteSlug)} className="text-[13px] text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
+                        <a href={localizedPath(locale as RouteLocale, tool.slug.replace(/^\//, "") as RouteSlug)} className="text-[13px] text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
                           {h(items[tool.key as keyof typeof navItemLabels.en] ?? navItemLabels.en[tool.key as keyof typeof navItemLabels.en] ?? tool.key)}
                         </a>
                       </td>
