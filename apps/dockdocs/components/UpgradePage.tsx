@@ -372,7 +372,7 @@ export function UpgradePage() {
               key={interval}
               type="button"
               onClick={() => setSelected(interval)}
-              className={`relative flex flex-col rounded-[var(--radius)] border p-5 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] ${
+              className={`relative flex min-h-[330px] flex-col rounded-[var(--radius)] border px-5 py-7 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] ${
                 isSelected
                   ? "border-[color:var(--accent)] bg-[color:var(--surface)]"
                   : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--line-strong)]"
@@ -406,7 +406,7 @@ export function UpgradePage() {
               <p className="text-[11px] text-[color:var(--faint)]">{sub}</p>
 
               {/* Features */}
-              <ul className="mt-4 flex-1 space-y-1.5">
+              <ul className="mt-4 flex-1 space-y-3">
                 {c.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-[12px] text-[color:var(--foreground)]">
                     <svg width="12" height="12" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0 text-[color:var(--accent)]">
@@ -429,9 +429,9 @@ export function UpgradePage() {
       </div>
 
       {/* Unified CTA button */}
-      <div className="mt-6">
+      <div className="mt-6 flex flex-col items-center">
         {selectedIsCurrent ? (
-          <div className="inline-flex items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] px-8 py-3 text-[14px] font-medium text-[color:var(--muted)]">
+          <div className="flex w-full max-w-sm items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] px-8 py-3 text-[14px] font-medium text-[color:var(--muted)]">
             {c.currentPlan}
           </div>
         ) : (
@@ -439,7 +439,7 @@ export function UpgradePage() {
             type="button"
             onClick={() => void handleCheckout()}
             disabled={!canCheckout || checkoutLoading}
-            className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-8 py-3 text-[14px] font-semibold text-[color:var(--on-accent)] transition hover:opacity-90 disabled:opacity-50"
+            className="inline-flex w-full max-w-sm items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-8 py-3 text-[14px] font-semibold text-[color:var(--on-accent)] transition hover:opacity-90 disabled:opacity-50"
           >
             {checkoutLoading ? (
               <>
@@ -457,7 +457,7 @@ export function UpgradePage() {
       </div>
 
       {/* Trust row */}
-      <div className="mt-4 flex flex-wrap items-center gap-x-1 gap-y-1 text-[11px] text-[color:var(--faint)]">
+      <div className="mt-3 flex items-center justify-center gap-1.5 text-center text-[11px] text-[color:var(--faint)]">
         <svg width="10" height="10" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[color:var(--accent)]">
           <path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
