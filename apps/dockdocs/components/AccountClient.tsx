@@ -425,7 +425,10 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   }
 
   // signed-in — membership center
-  const display = subscription?.displayName ?? "Free";
+  // trial is tracked in subscription.trial, NOT in subscription.record.status
+  const isTrial = subscription?.trial?.status === "trialing";
+  // During trial, treat the user as Pro for display purposes (entitlements, features, prompts)
+  const display = isTrial ? "Pro" : (subscription?.displayName ?? "Free");
   const interval = subscription?.record.interval;
   const badge = planBadge(display, interval, membershipLocale);
   const prompts = subscription ? upgradePrompts(display, interval, membershipLocale) : [];
@@ -467,13 +470,19 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
           <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <p className="text-[18px] font-semibold">{subscription.displayName}</p>
+                <p className="text-[18px] font-semibold">
+                  {isTrial
+                    ? (locale === "zh" || locale === "zh-Hant" ? "Pro 试用" : locale === "es" ? "Prueba Pro" : locale === "pt" ? "Teste Pro" : locale === "fr" ? "Essai Pro" : locale === "ja" ? "Pro トライアル" : locale === "de" ? "Pro Testversion" : locale === "ko" ? "Pro 체험" : "Pro Trial")
+                    : subscription.displayName}
+                </p>
                 <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${badge.className}`}>{badge.label}</span>
               </div>
-              <p className="mt-1 text-[12px] text-[color:var(--muted)]">
-                {planStatusText({ displayName: display, interval, status: subscription.record.status, currentPeriodEnd: subscription.record.currentPeriodEnd, cancelAtPeriodEnd: subscription.record.cancelAtPeriodEnd }, membershipLocale)}
-              </p>
-              {subscription.record.status === "trialing" && subscription.trial?.status === "trialing" && (
+              {!isTrial && (
+                <p className="mt-1 text-[12px] text-[color:var(--muted)]">
+                  {planStatusText({ displayName: display, interval, status: subscription.record.status, currentPeriodEnd: subscription.record.currentPeriodEnd, cancelAtPeriodEnd: subscription.record.cancelAtPeriodEnd }, membershipLocale)}
+                </p>
+              )}
+              {subscription.trial?.status === "trialing" && (
                 <p className="mt-1.5 text-[12px] font-medium text-[color:var(--accent-strong)]">
                   {locale === "zh" || locale === "zh-Hant"
                     ? `试用剩余 ${subscription.trial.daysRemaining} 天 · 到期自动回免费版`
