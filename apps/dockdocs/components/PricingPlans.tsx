@@ -25,7 +25,6 @@ const copy = {
     perOnce: "one-time",
     lifetimeNote: "Founding rate — pay once, yours forever. Price rises later.",
     perMo: "/mo",
-    mostPopular: "Most popular",
     billedYearly: (v: string) => `${v} billed yearly`,
     // trust bar
     trust: ["7-day money-back guarantee", "Cancel anytime, no questions", "Files never used to train our models", "7-day free trial — no credit card needed"],
@@ -95,7 +94,6 @@ const copy = {
     perOnce: "一次性",
     lifetimeNote: "创始价——一次买断，永久使用，之后上调。",
     perMo: "/月",
-    mostPopular: "最受欢迎",
     billedYearly: (v: string) => `按年计费 ${v}`,
     trust: ["7 天无理由退款", "随时取消，绝不刁难", "绝不用文件训练我们自己的模型", "7 天免费试用——无需信用卡"],
     plans: [
@@ -164,7 +162,6 @@ const copy = {
     perOnce: "pago único",
     lifetimeNote: "Precio fundador: paga una vez, tuyo para siempre. Subirá después.",
     perMo: "/mes",
-    mostPopular: "Más popular",
     billedYearly: (v: string) => `${v} facturado anualmente`,
     trust: ["Garantía de devolución de 7 días", "Cancela en cualquier momento, sin preguntas", "Tus archivos nunca se usan para entrenar nuestros propios modelos", "7 días de prueba gratis — sin tarjeta de crédito"],
     plans: [
@@ -233,7 +230,6 @@ const copy = {
     perOnce: "pagamento único",
     lifetimeNote: "Preço fundador: pague uma vez, seu para sempre. O preço sobe depois.",
     perMo: "/mês",
-    mostPopular: "Mais popular",
     billedYearly: (v: string) => `${v} cobrado anualmente`,
     trust: ["Garantia de reembolso de 7 dias", "Cancele a qualquer momento, sem perguntas", "Seus arquivos nunca são usados para treinar nossos próprios modelos", "7 dias de teste grátis — sem cartão de crédito"],
     plans: [
@@ -302,7 +298,6 @@ const copy = {
     perOnce: "paiement unique",
     lifetimeNote: "Tarif fondateur — payez une fois, à vous pour toujours. Le prix augmentera ensuite.",
     perMo: "/mois",
-    mostPopular: "Le plus populaire",
     billedYearly: (v: string) => `${v} facturé annuellement`,
     trust: ["Garantie de remboursement 7 jours", "Annulez à tout moment, sans question", "Vos fichiers ne sont jamais utilisés pour entraîner nos propres modèles", "7 jours d'essai gratuit — sans carte bancaire"],
     plans: [
@@ -371,7 +366,6 @@ const copy = {
     perOnce: "一回限り",
     lifetimeNote: "創設者価格 — 一度の支払いで永久に利用可能。価格は今後上がります。",
     perMo: "/月",
-    mostPopular: "人気No.1",
     billedYearly: (v: string) => `年額 ${v} で請求`,
     trust: ["7日間返金保証", "いつでも解約可能、理由不要", "ファイルは自社モデルの学習に使用しません", "7日間無料トライアル — クレジットカード不要"],
     plans: [
@@ -440,7 +434,6 @@ const copy = {
     perOnce: "einmalig",
     lifetimeNote: "Gründerpreis — einmal zahlen, für immer Ihres. Der Preis steigt später.",
     perMo: "/Mon.",
-    mostPopular: "Am beliebtesten",
     billedYearly: (v: string) => `${v} jährlich abgerechnet`,
     trust: ["7 Tage Geld-zurück-Garantie", "Jederzeit kündbar, ohne Nachfragen", "Dateien werden nie zum Training unserer Modelle verwendet", "7 Tage kostenlose Testversion — keine Kreditkarte nötig"],
     plans: [
@@ -509,7 +502,6 @@ const copy = {
     perOnce: "1회 결제",
     lifetimeNote: "창립 기념가 — 한 번 결제하면 평생 사용. 가격은 추후 인상됩니다.",
     perMo: "/월",
-    mostPopular: "가장 인기",
     billedYearly: (v: string) => `연간 ${v} 청구`,
     trust: ["7일 환불 보장", "언제든 해지, 묻지 않습니다", "파일을 자사 모델 학습에 절대 사용하지 않습니다", "7일 무료 체험 — 신용카드 불필요"],
     plans: [
@@ -573,6 +565,7 @@ const copy = {
 // 5 nav categories for the comparison table — mirrors workspace sidebar + headerStructure
 type L8 = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 const FREE_L8: Record<L8, string> = { en: "Free", zh: "免费", es: "Gratis", pt: "Grátis", fr: "Gratuit", ja: "無料", de: "Kostenlos", ko: "무료" };
+const UNLIMITED_L8: Record<L8, string> = { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限", de: "Unbegrenzt", ko: "무제한" };
 const COMPARE_CATS: {
   id: string;
   navKey: string;
@@ -582,7 +575,7 @@ const COMPARE_CATS: {
   proTier: Record<L8, string>;
 }[] = [
   { id: "pdf-conversion", navKey: "PDF conversion", catNavKey: "Document tools", colIndex: 0, freeTier: FREE_L8, proTier: FREE_L8 },
-  { id: "pdf-editing",    navKey: "PDF editing",    catNavKey: "Document tools", colIndex: 1, freeTier: FREE_L8, proTier: FREE_L8 },
+  { id: "pdf-editing",    navKey: "PDF editing",    catNavKey: "Document tools", colIndex: 1, freeTier: UNLIMITED_L8, proTier: UNLIMITED_L8 },
   {
     id: "batch", navKey: "Batch", catNavKey: "Document tools", colIndex: 2,
     freeTier: { en: "3 runs/day",          zh: "3批/天",          es: "3 lotes/día",         pt: "3 lotes/dia",         fr: "3 lots/jour",         ja: "3バッチ/日",          de: "3 Stapel/Tag",        ko: "3배치/일" },
@@ -809,9 +802,6 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                   : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"
               }${featured ? " lg:-mt-2 lg:mb-2" : ""}`}
             >
-              {featured && (
-                <span className="mb-3 self-start rounded-full bg-[color:var(--accent)] px-3 py-1 text-[11px] font-medium">{c.mostPopular}</span>
-              )}
               <h2 className="text-[20px] font-normal text-[color:var(--foreground)]">{plan.name}</h2>
 
               <div className="mt-4">
