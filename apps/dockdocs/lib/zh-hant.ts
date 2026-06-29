@@ -15,16 +15,17 @@ function converter(): (s: string) => string {
   return _converter;
 }
 
-// Sense-dependent terms resolved on the SIMPLIFIED input, BEFORE OpenCC — at this
-// point 文件 vs 文档 are still distinct (after conversion they collapse, so it must
-// be done here). Domain-validated for this PDF tool (verified across the zh source):
-// 文件 is always "file", 文档 always "document", 支持 always software "support".
-// Order matters: 文件→檔案 runs before 文档→文件 (distinct keys, no collision) so
-// file-sense lands on 檔案 and document-sense on 文件.
+// Sense-dependent / software terms. OpenCC twp ALREADY maps 文件→檔案 (file),
+// 文档→文件 (document, TW), and 支持→支援 (support) correctly on its own, so the
+// pre-step keeps only the redundant-but-harmless file/support entries.
+// ⚠️ REMOVED the old 文档→文件 pre-entry: it pre-converted Simplified 文档 to
+// Simplified 文件, which OpenCC then re-converted 文件→檔案 — mislabeling EVERY
+// "文档" (document) as 檔案 (file), incl. the brand "AI 文档平台" rendering as
+// "AI 檔案平台" (File Platform). Letting OpenCC handle 文档→文件 fixes it; verified
+// across 224 文档 occurrences in the zh source.
 const TW_PRE: Array<[string, string]> = [
-  ["文件", "檔案"], // file → 檔案
-  ["文档", "文件"], // document (mainland 文档) → TW 文件
-  ["支持", "支援"], // software support → 支援
+  ["文件", "檔案"], // file → 檔案 (matches OpenCC; explicit)
+  ["支持", "支援"], // software support → 支援 (matches OpenCC; explicit)
 ];
 
 function applyTwPre(s: string): string {
