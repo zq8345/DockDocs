@@ -385,6 +385,55 @@ const copy = {
     truncated: "Der Kontext wurde gekürzt, um das Größenlimit einzuhalten.",
     verifiedBadge: "Quelle geprüft",
   },
+  ko: {
+    eyebrow: "Chat with PDF",
+    title: "추출한 PDF 텍스트에 대해 질문하세요.",
+    description:
+      "DockDocs는 읽을 수 있는 PDF 텍스트를 브라우저에서 추출한 뒤, 선택된 텍스트 컨텍스트와 질문만 설정된 AI 제공업체로 전송합니다. 스캔한 PDF는 먼저 OCR을 실행한 후 추출한 텍스트를 여기에 붙여넣으세요.",
+    upload: "PDF 선택",
+    pasteLabel: "또는 OCR / 추출한 텍스트 붙여넣기",
+    pastePlaceholder:
+      "PDF가 스캔본이거나 이미지 기반일 때 OCR 텍스트나 복사한 PDF 텍스트를 여기에 붙여넣으세요.",
+    questionLabel: "질문",
+    questionPlaceholder:
+      "조항, 위험, 날짜, 의무, 표 또는 다음 단계에 대해 질문하세요.",
+    ask: "질문하기",
+    retry: "다시 시도",
+    reset: "초기화",
+    newChat: "새 채팅",
+    cancel: "취소",
+    source: "출처",
+    context: "전송된 컨텍스트",
+    provider: "제공업체",
+    usage: "토큰 사용량",
+    answer: "답변",
+    conversation: "대화",
+    user: "사용자",
+    assistant: "어시스턴트",
+    references: "참고",
+    copyReference: "복사",
+    showReference: "표시",
+    hideReference: "숨기기",
+    templates: "프롬프트 템플릿",
+    quota: "오늘",
+    quotaRemaining: "남음",
+    quotaExceeded:
+      "이 브라우저의 오늘 AI 채팅 한도에 도달했습니다. 로그인하면 로컬 한도가 늘어나며, 그렇지 않으면 내일 다시 시도하세요.",
+    privacyTitle: "개인정보 처리 방식",
+    privacy:
+      "원본 PDF 파일은 AI 제공업체로 전송되지 않습니다. 추출한 텍스트와 질문만, 그리고 채팅을 시작한 후에만 전송됩니다.",
+    idle: "PDF를 업로드하거나 OCR 텍스트를 붙여넣은 다음 질문하세요.",
+    ready: "질문할 준비가 되었습니다.",
+    working: "문서에 질문하는 중...",
+    extractingStatus: "문서 텍스트를 읽는 중...",
+    sendingStatus: "AI 제공업체로 컨텍스트를 전송하는 중...",
+    streamingStatus: "답변을 스트리밍하는 중...",
+    validatingStatus: "참고 자료와 토큰 사용량을 확인하는 중...",
+    fallbackStatus: "스트리밍이 일시 중지되었습니다. 표준 응답으로 마무리하는 중...",
+    cancelled: "취소되었습니다. 부분 답변은 저장되지 않았습니다.",
+    truncated: "크기 제한에 맞추기 위해 컨텍스트가 잘렸습니다.",
+    verifiedBadge: "출처 확인됨",
+  },
 } as const;
 
 export function AiChatWorkflow({
@@ -472,6 +521,7 @@ export function AiChatWorkflow({
           pt: "Envie um arquivo PDF.",
           fr: "Importez un fichier PDF.",
           ja: "PDF ファイルをアップロードしてください。",
+          ko: "PDF 파일을 업로드하세요.",
           de: "Laden Sie eine PDF-Datei hoch.",
         }),
       );
@@ -598,6 +648,7 @@ export function AiChatWorkflow({
               pt: "O chat com PDF falhou.",
               fr: "Échec du chat avec PDF.",
               ja: "PDF とのチャットに失敗しました。",
+              ko: "Chat with PDF에 실패했습니다.",
               de: "Chat mit PDF fehlgeschlagen.",
             });
       setError(
@@ -609,6 +660,7 @@ export function AiChatWorkflow({
               pt: "Cancelado.",
               fr: "Annulé.",
               ja: "キャンセルしました。",
+              ko: "취소되었습니다.",
               de: "Abgebrochen.",
             })
           : message,
@@ -788,6 +840,7 @@ export function AiChatWorkflow({
                         pt: "Conectado",
                         fr: "Connecté",
                         ja: "サインイン済み",
+                        ko: "로그인됨",
                         de: "Angemeldet",
                       })
                     : pick(locale, {
@@ -797,6 +850,7 @@ export function AiChatWorkflow({
                         pt: "Anônimo",
                         fr: "Anonyme",
                         ja: "匿名",
+                        ko: "익명",
                         de: "Anonym",
                       })}
                 </p>

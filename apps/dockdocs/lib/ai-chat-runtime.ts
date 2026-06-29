@@ -1,4 +1,4 @@
-export type AiChatLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+export type AiChatLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "ko";
 
 const pick = (
   locale: AiChatLocale,
@@ -98,6 +98,7 @@ export async function askAiAboutPdf({
         pt: "Faça uma pergunta mais específica.",
         fr: "Posez une question plus précise.",
         ja: "もっと具体的な質問を入力してください。",
+        ko: "더 구체적인 질문을 입력하세요.",
       }),
     );
   }
@@ -129,6 +130,7 @@ export async function askAiAboutPdf({
       pt: "Enviando o texto extraído e a pergunta...",
       fr: "Envoi du texte extrait et de la question...",
       ja: "抽出したテキストと質問を送信しています...",
+      ko: "추출한 텍스트와 질문을 전송하는 중...",
     }),
   );
 
@@ -159,6 +161,7 @@ export async function askAiAboutPdf({
       pt: "A resposta está pronta.",
       fr: "La réponse est prête.",
       ja: "回答の準備ができました。",
+      ko: "답변이 준비되었습니다.",
     }),
   );
 
@@ -194,6 +197,7 @@ export async function extractAiDocumentText({
     pt: "Texto colado",
     fr: "Texte collé",
     ja: "貼り付けたテキスト",
+    ko: "붙여넣은 텍스트",
   });
 
   throwIfAborted(signal);
@@ -208,6 +212,7 @@ export async function extractAiDocumentText({
           pt: "Envie um arquivo PDF.",
           fr: "Importez un fichier PDF.",
           ja: "PDF ファイルをアップロードしてください。",
+          ko: "PDF 파일을 업로드하세요.",
         }),
       );
     }
@@ -221,6 +226,7 @@ export async function extractAiDocumentText({
           pt: "O Chat with PDF suporta atualmente PDFs de até 10 MB. Divida ou comprima o arquivo primeiro.",
           fr: "Chat with PDF prend actuellement en charge les PDF jusqu'à 10 Mo. Divisez ou compressez d'abord le fichier.",
           ja: "Chat with PDF は現在最大 10 MB の PDF に対応しています。先にファイルを分割または圧縮してください。",
+          ko: "Chat with PDF는 현재 최대 10MB PDF를 지원합니다. 파일을 먼저 분할하거나 압축하세요.",
         }),
       );
     }
@@ -235,6 +241,7 @@ export async function extractAiDocumentText({
         pt: "Lendo o texto do PDF...",
         fr: "Lecture du texte du PDF...",
         ja: "PDF のテキストを読み込んでいます...",
+        ko: "PDF 텍스트를 읽는 중...",
       }),
     );
     sourceText = await extractPdfText(file, locale, signal, onProgress);
@@ -252,6 +259,7 @@ export async function extractAiDocumentText({
         pt: "Não foi encontrado texto suficiente para o chat. Para PDFs digitalizados, execute primeiro o OCR PDF e cole o texto extraído aqui.",
         fr: "Texte insuffisant pour le chat. Pour les PDF numérisés, lancez d'abord OCR PDF, puis collez le texte extrait ici.",
         ja: "問い合わせに十分なテキストが見つかりませんでした。スキャンされた PDF の場合は、先に OCR PDF を実行し、抽出したテキストをここに貼り付けてください。",
+        ko: "채팅에 사용할 텍스트가 충분하지 않습니다. 스캔한 PDF는 먼저 OCR PDF를 실행한 뒤 추출한 텍스트를 여기에 붙여넣으세요.",
       }),
     );
   }
@@ -414,6 +422,7 @@ async function requestAiChatStream({
                   pt: "O provedor do Chat with PDF está indisponível no momento.",
                   fr: "Le fournisseur Chat with PDF est actuellement indisponible.",
                   ja: "Chat with PDF プロバイダーは現在利用できません。",
+                  ko: "Chat with PDF 제공업체를 현재 사용할 수 없습니다.",
                 }),
           );
         }
@@ -429,6 +438,7 @@ async function requestAiChatStream({
           pt: "A resposta em streaming foi interrompida. Refaça a pergunta.",
           fr: "La réponse en streaming a été interrompue. Reposez la question.",
           ja: "ストリーミング回答が中断されました。質問をやり直してください。",
+          ko: "스트리밍 답변이 중단되었습니다. 질문을 다시 시도하세요.",
         }),
       );
     }
@@ -452,6 +462,7 @@ async function requestAiChatStream({
         pt: "A resposta em streaming foi interrompida. Refaça a pergunta.",
         fr: "La réponse en streaming a été interrompue. Reposez la question.",
         ja: "ストリーミング回答が中断されました。質問をやり直してください。",
+        ko: "스트리밍 답변이 중단되었습니다. 질문을 다시 시도하세요.",
       }),
     );
   }
@@ -498,6 +509,7 @@ function assertAiChatPayload(
           pt: "O provedor do Chat with PDF está indisponível no momento.",
           fr: "Le fournisseur Chat with PDF est actuellement indisponible.",
           ja: "Chat with PDF プロバイダーは現在利用できません。",
+          ko: "Chat with PDF 제공업체를 현재 사용할 수 없습니다.",
         }),
     );
   }
@@ -547,6 +559,7 @@ async function extractPdfText(
           pt: `Extraindo texto da página ${pageNumber} de ${pagesToRead}...`,
           fr: `Extraction du texte de la page ${pageNumber} sur ${pagesToRead}...`,
           ja: `${pagesToRead} ページ中 ${pageNumber} ページ目のテキストを抽出しています...`,
+          ko: `${pagesToRead}페이지 중 ${pageNumber}페이지 텍스트를 추출하는 중...`,
         }),
       );
 

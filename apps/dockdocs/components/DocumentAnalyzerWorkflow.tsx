@@ -213,6 +213,37 @@ const copy = {
     noSavedContext: "保存済みのチャットコンテキストはまだありません。",
     notFound: "見つかりません",
   },
+  ko: {
+    eyebrow: "문서 분석",
+    title: "질문을 시작하기 전에 문서를 분석하세요.",
+    description:
+      "PDF를 업로드하거나 OCR 텍스트를 붙여넣거나 저장된 채팅 컨텍스트를 분석하세요. DockDocs는 추출한 텍스트만 AI 제공업체로 전송하고 구조화된 작업 노트를 반환합니다.",
+    upload: "PDF 선택",
+    pasteLabel: "OCR 텍스트 또는 채팅 컨텍스트",
+    pastePlaceholder:
+      "추출한 OCR 텍스트, 복사한 PDF 텍스트 또는 채팅 컨텍스트를 여기에 붙여넣으세요.",
+    analyze: "문서 분석",
+    analyzing: "분석 중...",
+    reset: "초기화",
+    latestContext: "최근 저장된 채팅 컨텍스트 사용",
+    source: "출처",
+    context: "분석된 컨텍스트",
+    usage: "토큰 사용량",
+    provider: "제공업체",
+    summary: "문서 요약",
+    keyDates: "주요 날짜",
+    keyAmounts: "주요 금액",
+    people: "인물 / 조직",
+    risks: "위험",
+    actionItems: "실행 항목",
+    references: "참고",
+    verifiedBadge: "출처 확인됨",
+    idle: "PDF를 업로드하거나 텍스트를 붙여넣어 시작하세요.",
+    ready: "분석할 준비가 되었습니다.",
+    truncated: "크기 제한에 맞추기 위해 컨텍스트가 잘렸습니다.",
+    noSavedContext: "아직 저장된 채팅 컨텍스트가 없습니다.",
+    notFound: "찾을 수 없음",
+  },
 } as const;
 
 export function DocumentAnalyzerWorkflow({
@@ -275,6 +306,7 @@ export function DocumentAnalyzerWorkflow({
           pt: "Envie um arquivo PDF.",
           fr: "Importez un fichier PDF.",
           ja: "PDF ファイルをアップロードしてください。",
+          ko: "PDF 파일을 업로드하세요.",
         }),
       );
       setStatus("error");
@@ -357,6 +389,7 @@ export function DocumentAnalyzerWorkflow({
               pt: "A análise do documento falhou.",
               fr: "Échec de l'analyse du document.",
               ja: "文書分析に失敗しました。",
+              ko: "문서 분석에 실패했습니다.",
             }),
       );
       setStatus("error");

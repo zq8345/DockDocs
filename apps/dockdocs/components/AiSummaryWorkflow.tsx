@@ -226,6 +226,35 @@ const copy = {
     quotaExceeded:
       "Das AI-Summary-Limit Ihres aktuellen Tarifs ist erreicht. Führen Sie ein Upgrade durch, um fortzufahren.",
   },
+  ko: {
+    eyebrow: "AI 요약",
+    title: "전체 파일을 AI로 보내지 않고 PDF를 요약하세요.",
+    description:
+      "DockDocs는 브라우저에서 읽을 수 있는 PDF 텍스트를 로컬에서 추출한 뒤, 설정된 AI 제공업체로 텍스트만 전송합니다. 스캔한 PDF는 먼저 OCR을 실행한 후 추출한 텍스트를 여기에 붙여넣으세요.",
+    upload: "PDF 선택",
+    pasteLabel: "또는 OCR / 추출한 텍스트 붙여넣기",
+    pastePlaceholder:
+      "PDF가 스캔본이거나 이미지 기반일 때 OCR 텍스트나 복사한 PDF 텍스트를 여기에 붙여넣으세요.",
+    summarize: "요약 생성",
+    reset: "초기화",
+    cancel: "취소",
+    source: "출처",
+    characters: "전송된 문자 수",
+    provider: "제공업체",
+    download: "요약 다운로드",
+    executive: "핵심 요약",
+    keyPoints: "주요 내용",
+    actionItems: "실행 항목",
+    nextSteps: "제안된 다음 단계",
+    privacyTitle: "개인정보 처리 방식",
+    privacy:
+      "PDF 텍스트 추출은 브라우저에서 실행됩니다. AI 제공업체는 요약을 시작한 후에만 추출한 텍스트를 받습니다. 이 워크플로는 파일을 AI 제공업체로 업로드하지 않습니다.",
+    idle: "PDF를 업로드하거나 OCR 텍스트를 붙여넣어 시작하세요.",
+    ready: "요약할 준비가 되었습니다.",
+    working: "요약을 생성하는 중...",
+    quotaExceeded:
+      "현재 요금제의 AI 요약 한도에 도달했습니다. 계속하려면 업그레이드하세요.",
+  },
 } as const;
 
 export function AiSummaryWorkflow({
@@ -267,6 +296,7 @@ export function AiSummaryWorkflow({
           pt: "Envie um arquivo PDF.",
           fr: "Importez un fichier PDF.",
           ja: "PDF ファイルをアップロードしてください。",
+          ko: "PDF 파일을 업로드하세요.",
         }),
       );
       setStatus("error");
@@ -340,6 +370,7 @@ export function AiSummaryWorkflow({
               pt: "O resumo com IA falhou.",
               fr: "Échec du résumé par IA.",
               ja: "AI 要約に失敗しました。",
+              ko: "AI 요약에 실패했습니다.",
             });
       setError(
         message === "aborted"
@@ -350,6 +381,7 @@ export function AiSummaryWorkflow({
               pt: "Cancelado.",
               fr: "Annulé.",
               ja: "キャンセルしました。",
+              ko: "취소되었습니다.",
             })
           : message,
       );

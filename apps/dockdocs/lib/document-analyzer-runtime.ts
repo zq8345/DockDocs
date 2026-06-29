@@ -75,6 +75,7 @@ export async function analyzeDocument({
       pt: "Preparando o texto do documento...",
       fr: "Préparation du texte du document...",
       ja: "文書テキストを準備しています...",
+      ko: "문서 텍스트를 준비하는 중...",
     }),
   });
 
@@ -107,6 +108,7 @@ export async function analyzeDocument({
       pt: "Gerando a análise do documento...",
       fr: "Génération de l'analyse du document...",
       ja: "文書分析を生成しています...",
+      ko: "문서 분석을 생성하는 중...",
     }),
   });
 
@@ -134,6 +136,7 @@ export async function analyzeDocument({
       pt: "A análise está pronta.",
       fr: "L'analyse est prête.",
       ja: "分析の準備ができました。",
+      ko: "분석이 준비되었습니다.",
     }),
   });
 
@@ -195,6 +198,7 @@ async function requestAnalyzer({
           pt: "O Document Analyzer está indisponível no momento.",
           fr: "Document Analyzer est actuellement indisponible.",
           ja: "Document Analyzer は現在利用できません。",
+          ko: "Document Analyzer를 현재 사용할 수 없습니다.",
         }),
     );
   }

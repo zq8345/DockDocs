@@ -2977,16 +2977,17 @@ const aiCopy = {
   },
 } as const;
 
-const aiWidgetLocales = ["en", "zh", "es", "pt", "fr", "ja"] as const;
+const aiWidgetLocales = ["en", "zh", "es", "pt", "fr", "ja", "ko"] as const;
 type AiWidgetLocale = (typeof aiWidgetLocales)[number];
 
 // Exhaustive copy resolver for LocalizedAiWorkspace. aiCopy is keyed by the six
 // authored locales; zh-Hant derives from zh via deepHant. Preserves behavior, but
 // a NEW route locale must add a branch here instead of silently falling to aiCopy.en.
-// Union of the six AiWidgetLocale copies plus the authored de copy. de is kept out
-// of aiWidgetLocales (the interactive widgets still run in English for de via
-// toAccountLocale), but its copy has the same shape and is a valid resolveAiCopy result.
-type AiCopy = (typeof aiCopy)[AiWidgetLocale] | (typeof aiCopy)["de"] | (typeof aiCopy)["ko"];
+// Union of the AiWidgetLocale copies (now incl. ko) plus the authored de copy. de
+// is kept out of aiWidgetLocales (the interactive widgets still run in English for
+// de via toAccountLocale), but its copy has the same shape and is a valid
+// resolveAiCopy result.
+type AiCopy = (typeof aiCopy)[AiWidgetLocale] | (typeof aiCopy)["de"];
 function resolveAiCopy(locale: ClientLocale): AiCopy {
   switch (locale) {
     case "zh-Hant":
@@ -2997,8 +2998,9 @@ function resolveAiCopy(locale: ClientLocale): AiCopy {
       // English (toAccountLocale maps de → en) until their de copy lands.
       return aiCopy.de;
     case "ko":
-      // aiCopy.ko is authored (native Korean) for the header/cards. The interactive
-      // widgets author their own ko copy and self-narrow (see aiLocale below).
+      // aiCopy.ko is authored (native Korean) for the header/cards; the interactive
+      // widgets also author their own ko copy now, so aiLocale below passes ko
+      // through (no longer collapsed to en).
       return aiCopy.ko;
     case "en":
     case "zh":
@@ -3018,7 +3020,10 @@ function LocalizedAiWorkspace({ locale }: { locale: ClientLocale }) {
   // zh-Hant derives from zh via OpenCC; de renders native German header/cards copy
   // (aiCopy.de), while the interactive widgets fall back to English (toAccountLocale).
   const copy = resolveAiCopy(locale);
-  const aiLocale: AiWidgetLocale = toAccountLocale(locale);
+  // ko widgets are now authored (AiChat/AiSummary/DocumentAnalyzer ship native
+  // Korean copy), so pass ko through instead of collapsing to en via
+  // toAccountLocale. de still runs the widgets in English until its widget copy lands.
+  const aiLocale: AiWidgetLocale = locale === "ko" ? "ko" : toAccountLocale(locale);
 
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">

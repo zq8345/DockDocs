@@ -1,4 +1,4 @@
-export type AiSummaryLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+export type AiSummaryLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "ko";
 
 const pick = (
   locale: AiSummaryLocale,
@@ -66,6 +66,7 @@ export async function generateAiSummary({
     pt: "Texto colado",
     fr: "Texte collé",
     ja: "貼り付けたテキスト",
+    ko: "붙여넣은 텍스트",
   });
 
   throwIfAborted(signal);
@@ -80,6 +81,7 @@ export async function generateAiSummary({
           pt: "Envie um arquivo PDF.",
           fr: "Importez un fichier PDF.",
           ja: "PDF ファイルをアップロードしてください。",
+          ko: "PDF 파일을 업로드하세요.",
         }),
       );
     }
@@ -93,6 +95,7 @@ export async function generateAiSummary({
           pt: "O AI Summary suporta atualmente PDFs de até 10 MB. Divida ou comprima o arquivo primeiro.",
           fr: "AI Summary prend actuellement en charge les PDF jusqu'à 10 Mo. Divisez ou compressez d'abord le fichier.",
           ja: "AI Summary は現在最大 10 MB の PDF に対応しています。先にファイルを分割または圧縮してください。",
+          ko: "AI Summary는 현재 최대 10MB PDF를 지원합니다. 파일을 먼저 분할하거나 압축하세요.",
         }),
       );
     }
@@ -107,6 +110,7 @@ export async function generateAiSummary({
         pt: "Lendo o texto do PDF...",
         fr: "Lecture du texte du PDF...",
         ja: "PDF のテキストを読み込んでいます...",
+        ko: "PDF 텍스트를 읽는 중...",
       }),
     );
     sourceText = await extractPdfText(file, locale, signal, onProgress);
@@ -125,6 +129,7 @@ export async function generateAiSummary({
         pt: "Não foi encontrado texto suficiente para resumir. Para PDFs digitalizados, execute primeiro o OCR PDF e cole o texto extraído no AI Summary.",
         fr: "Texte insuffisant pour générer un résumé. Pour les PDF numérisés, lancez d'abord OCR PDF, puis collez le texte extrait dans AI Summary.",
         ja: "要約に十分なテキストが見つかりませんでした。スキャンされた PDF の場合は、先に OCR PDF を実行し、抽出したテキストを AI Summary に貼り付けてください。",
+        ko: "요약에 사용할 텍스트가 충분하지 않습니다. 스캔한 PDF는 먼저 OCR PDF를 실행한 뒤 추출한 텍스트를 AI Summary에 붙여넣으세요.",
       }),
     );
   }
@@ -140,6 +145,7 @@ export async function generateAiSummary({
       pt: "Enviando o texto extraído ao provedor do AI Summary...",
       fr: "Envoi du texte extrait au fournisseur AI Summary...",
       ja: "抽出したテキストを AI 要約プロバイダーに送信しています...",
+      ko: "추출한 텍스트를 AI 요약 제공업체로 전송하는 중...",
     }),
   );
 
@@ -176,6 +182,7 @@ export async function generateAiSummary({
           pt: "O provedor do AI Summary está indisponível no momento.",
           fr: "Le fournisseur AI Summary est actuellement indisponible.",
           ja: "AI 要約プロバイダーは現在利用できません。",
+          ko: "AI 요약 제공업체를 현재 사용할 수 없습니다.",
         }),
     );
   }
@@ -190,6 +197,7 @@ export async function generateAiSummary({
       pt: "O resumo está pronto.",
       fr: "Le résumé est prêt.",
       ja: "要約の準備ができました。",
+      ko: "요약이 준비되었습니다.",
     }),
   );
 
@@ -230,6 +238,7 @@ async function extractPdfText(
           pt: `Extraindo texto da página ${pageNumber} de ${pagesToRead}...`,
           fr: `Extraction du texte de la page ${pageNumber} sur ${pagesToRead}...`,
           ja: `${pagesToRead} ページ中 ${pageNumber} ページ目のテキストを抽出しています...`,
+          ko: `${pagesToRead}페이지 중 ${pageNumber}페이지 텍스트를 추출하는 중...`,
         }),
       );
 
