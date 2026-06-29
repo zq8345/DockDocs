@@ -334,7 +334,7 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
       <input ref={folderRef} type="file" multiple className="hidden" {...({ webkitdirectory: "", directory: "" } as Record<string, string>)} onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale === "ko" ? "en" : locale} onFiles={addFiles} />
+        <BatchUploadBox locale={locale === "ko" ? "en" : locale} onFiles={addFiles} embedded={embedded} valueZone="client" />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

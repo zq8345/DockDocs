@@ -7,6 +7,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
+import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import { dropzoneVisual } from "@/components/design";
 import type { AuthoredCopy, AuthoredLocale, RouteLocale } from "@/lib/i18n";
 
@@ -388,6 +389,7 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
       </div>
 
       <p className="mt-3 text-xs text-[color:var(--muted)]">{t.dropHint}</p>
+      {embedded && !a && !b && <WorkspaceValueZone type="client" locale={locale} />}
 
       <div className="mt-5 flex items-center gap-2">
         <button type="button" onClick={compare} disabled={!a || !b || phase === "comparing"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 py-2.5 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "comparing" ? (<><Spinner /> {t.comparing}</>) : t.compare}</button>

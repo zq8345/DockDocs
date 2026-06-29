@@ -558,7 +558,7 @@ export function BatchFixScansClient({ locale = "en", embedded = false }: { local
       />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={childLocale} onFiles={addFiles} />
+        <BatchUploadBox locale={childLocale} onFiles={addFiles} embedded={embedded} valueZone="client" />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

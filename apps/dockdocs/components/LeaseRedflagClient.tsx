@@ -4,6 +4,7 @@ import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
@@ -516,7 +517,7 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
       {phase === "idle" || phase === "extracting" ? (
         <>
           <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "extracting"} busyLabel={t.extracting} privacy={false} onFile={onFile} />
-          {embedded && <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">⚿ {t.privacy}</p>}
+          {embedded && <WorkspaceValueZone type="ai" locale={childLocale} />}
         </>
       ) : (
         <div className={`${card} mt-8 p-5`}>

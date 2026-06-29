@@ -3,6 +3,7 @@ import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
@@ -345,7 +346,7 @@ export function QuizClient({ locale = "en", embedded = false }: { locale?: Local
       {phase === "idle" || phase === "reading" ? (
         <>
           <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "reading"} busyLabel={t.reading} privacy={false} onFile={onFile} />
-          {embedded && <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">⚿ {locale === "zh" || locale === "zh-Hant" ? "文件在浏览器中本地处理 · 不上传至服务器" : locale === "ja" ? "ファイルはブラウザで処理 · アップロードなし" : locale === "es" ? "Archivos procesados en tu navegador · nunca cargados" : locale === "pt" ? "Arquivos processados no seu navegador · nunca enviados" : locale === "fr" ? "Fichiers traités dans votre navigateur · jamais téléversés" : locale === "de" ? "Dateien im Browser verarbeitet · werden nie hochgeladen" : "Files processed in your browser · never uploaded"}</p>}
+          {embedded && <WorkspaceValueZone type="ai" locale={locale} />}
         </>
       ) : (
         <>

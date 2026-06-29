@@ -5,6 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { dropzoneShell } from "@/components/design";
 import { matchFiles } from "@/lib/files";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { WorkspaceValueZone, type ValueZoneType } from "@/components/WorkspaceValueZone";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
@@ -82,6 +83,8 @@ export function BatchUploadBox({
   chooseLabel,
   hint,
   privacyLabel,
+  embedded = false,
+  valueZone,
 }: {
   locale?: Locale;
   onFiles: (files: File[]) => void;
@@ -92,6 +95,8 @@ export function BatchUploadBox({
   chooseLabel?: string;
   hint?: string;
   privacyLabel?: string | null;
+  embedded?: boolean;
+  valueZone?: ValueZoneType;
 }) {
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : (STR[locale] ?? STR.en);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -116,6 +121,7 @@ export function BatchUploadBox({
     "inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-[color:var(--on-accent)] shadow-[0_4px_14px_rgba(62,207,142,0.32)] transition hover:opacity-90";
 
   return (
+    <>
     <div
       className={`mt-8 gap-3 ${dropzoneShell(dragging)}`}
       onClick={() => fileRef.current?.click()}
@@ -176,5 +182,7 @@ export function BatchUploadBox({
         onChange={(e) => { take(e.target.files, true); e.currentTarget.value = ""; }}
       />
     </div>
+    {embedded && valueZone && <WorkspaceValueZone type={valueZone} locale={locale} />}
+    </>
   );
 }

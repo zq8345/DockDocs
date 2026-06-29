@@ -7,6 +7,7 @@ import { ToolSections, type ToolSectionsContent } from "@/components/ToolSection
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
+import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import { trackToolRun } from "@/lib/track";
 import { dropzoneShell } from "@/components/design";
 import { formatBytes } from "@/lib/files";
@@ -484,7 +485,7 @@ export function ExtractExcelClient({ locale = "en", embedded = false }: { locale
             </div>
           )}
         </div>
-        {embedded && <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">⚿ {locale === "zh" || locale === "zh-Hant" ? "文件在浏览器中本地处理 · 不上传至服务器" : locale === "ja" ? "ファイルはブラウザで処理 · アップロードなし" : locale === "ko" ? "파일은 브라우저에서 처리 · 업로드되지 않음" : locale === "es" ? "Archivos procesados en tu navegador · nunca cargados" : locale === "pt" ? "Arquivos processados no seu navegador · nunca enviados" : locale === "fr" ? "Fichiers traités dans votre navigateur · jamais téléversés" : locale === "de" ? "Dateien im Browser verarbeitet · werden nie hochgeladen" : "Files processed in your browser · never uploaded"}</p>}
+        {embedded && <WorkspaceValueZone type="ai" locale={locale} />}
         </>
       ) : (
         <>

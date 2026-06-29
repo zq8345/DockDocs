@@ -5,6 +5,7 @@ import type { RuntimeLocale } from "@/lib/copy";
 import type { RouteLocale, ToolSlug } from "@/lib/i18n";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { PdfToolPageEmbedded } from "../../../shared/templates/pdf-tool-page";
+import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 
 // Specialized clients — page-editing tools
 import { MergePdfClient } from "@/components/MergePdfClient";
@@ -51,6 +52,15 @@ const WORKFLOW_ENGINE_SLUGS = new Set<string>([
   "pdf-to-pdfa",     "pdf-to-html",    "pdf-to-markdown", "word-to-pdf",
   "excel-to-pdf",    "ppt-to-pdf",     "html-to-pdf",    "protect-pdf",
   "unlock-pdf",      "ocr-pdf",
+]);
+
+// Subset of WORKFLOW_ENGINE_SLUGS where files are sent to our server (CloudConvert
+// or Gotenberg). Cannot claim "zero upload" — show "server" value zone instead.
+// Source of truth: CloudConvertRoute in shared/templates/pdf-tool-page/cloudconvert-runtime.ts
+const CLOUD_CONVERT_ENGINE_SLUGS = new Set<string>([
+  "pdf-to-word", "pdf-to-excel", "pdf-to-ppt", "pdf-to-pdfa",
+  "word-to-pdf", "excel-to-pdf", "ppt-to-pdf", "html-to-pdf",
+  "protect-pdf",
 ]);
 
 // Tools with specialized client UIs — mirror official catch-all exactly (props included).
@@ -107,10 +117,12 @@ export function WorkspacePdfTool({ slug, locale = "en" }: { slug: string; locale
 
   // Path 1: PdfToolPage-template tools — use real localized config (same as official site)
   if (WORKFLOW_ENGINE_SLUGS.has(slug)) {
+    const vzType = CLOUD_CONVERT_ENGINE_SLUGS.has(slug) ? "server" : "client";
     return (
       <PdfToolPageEmbedded
         key={slug}
         config={getLocalizedToolConfig(loc, slug as ToolSlug)}
+        valueZone={<WorkspaceValueZone type={vzType} locale={loc} />}
       />
     );
   }

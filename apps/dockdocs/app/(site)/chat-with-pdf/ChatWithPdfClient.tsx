@@ -11,6 +11,7 @@ import { GroundingNote } from "@/components/GroundingNote";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { dropzoneShell } from "@/components/design";
+import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import type { AuthoredLocale } from "@/lib/i18n";
 
 type ChatMessage = {
@@ -500,6 +501,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
           />
         </label>
       ) : null}
+      {embedded && !documentText && !isExtracting && <WorkspaceValueZone type="ai" locale={locale} />}
 
       {/* ── Extracting state ── */}
       {isExtracting ? (

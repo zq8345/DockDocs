@@ -432,6 +432,8 @@ export function BatchSummaryClient({ locale = "en", embedded = false }: { locale
           extensions={[".pdf"]}
           chooseLabel={t.choose}
           privacyLabel={null}
+          embedded={embedded}
+          valueZone="ai"
         />
       ) : (
         <>

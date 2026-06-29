@@ -519,7 +519,7 @@ export function InsertPdfClient({ locale = "en", embedded = false }: { locale?: 
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} constrained={embedded} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} constrained={embedded} valueZone="client" />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

@@ -5,6 +5,7 @@ import { Spinner } from "@/components/Spinner";
 import { dropzoneShell } from "@/components/design";
 import { formatBytes, matchFiles } from "@/lib/files";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { WorkspaceValueZone, type ValueZoneType } from "@/components/WorkspaceValueZone";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
@@ -93,6 +94,7 @@ export function UploadDropzone({
   onFiles,
   onRemove,
   constrained,
+  valueZone,
 }: {
   locale?: Locale;
   accept?: string;
@@ -122,6 +124,9 @@ export function UploadDropzone({
   onFile?: (file: File) => void;
   onFiles?: (files: File[]) => void;
   onRemove?: (index: number) => void;
+  // When set and constrained=true, renders a WorkspaceValueZone of the given type
+  // below the upload box (shows verifiability/trust copy in the workspace idle state).
+  valueZone?: ValueZoneType;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const folderRef = useRef<HTMLInputElement>(null);
@@ -273,5 +278,13 @@ export function UploadDropzone({
       ) : null}
     </div>
   );
-  return constrained ? <div className="mx-auto max-w-3xl">{dropzone}</div> : dropzone;
+  if (constrained) {
+    return (
+      <>
+        <div className="mx-auto max-w-3xl">{dropzone}</div>
+        {valueZone && <WorkspaceValueZone type={valueZone} locale={locale} />}
+      </>
+    );
+  }
+  return dropzone;
 }

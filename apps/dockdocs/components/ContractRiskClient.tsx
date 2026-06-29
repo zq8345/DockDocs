@@ -833,6 +833,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
           busyLabel={t.extracting}
           privacy={false}
           note={t.privacy}
+          valueZone={embedded ? "ai" : undefined}
           onFile={onFile}
         />
       ) : (

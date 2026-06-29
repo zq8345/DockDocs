@@ -5,6 +5,7 @@ import { toHant, deepHant } from "@/lib/zh-hant";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { trackToolRun } from "@/lib/track";
 import { dropzoneShell } from "@/components/design";
+import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { GroundingNote } from "@/components/GroundingNote";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
@@ -382,9 +383,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
       ) : null}
 
       {(status === "idle" || status === "error") && embedded && (
-        <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">
-          ⚿ {zh ? h("文件在浏览器中本地处理 · 不上传至服务器") : ja ? "ファイルはブラウザで処理 · アップロードなし" : es ? "Archivos procesados en tu navegador · nunca cargados" : pt ? "Arquivos processados no seu navegador · nunca enviados" : fr ? "Fichiers traités dans votre navigateur · jamais téléversés" : de ? "Dateien im Browser verarbeitet · werden nie hochgeladen" : ko ? "파일은 브라우저에서 처리 · 업로드되지 않습니다" : "Files processed in your browser · never uploaded"}
-        </p>
+        <WorkspaceValueZone type="ai" locale={locale} />
       )}
 
       {limitHit !== null ? <UpgradePrompt locale={childLocale} limit={limitHit} /> : null}

@@ -510,7 +510,7 @@ export function BatchTranslateClient({ locale = "en", embedded = false }: { loca
             de: "Lokal gelesen — nur Text wird gesendet",
           };
           return locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[al];
-        })()} />
+        })()} embedded={embedded} valueZone="ai" />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

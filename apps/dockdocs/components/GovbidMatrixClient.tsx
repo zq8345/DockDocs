@@ -511,6 +511,8 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
           buttonLabel={t.upload}
           onFile={onAnalyze}
           busy={phase === "analyzing"}
+          constrained={embedded}
+          valueZone="ai"
         />
       </div>
 

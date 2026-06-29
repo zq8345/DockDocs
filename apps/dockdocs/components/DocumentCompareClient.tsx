@@ -13,6 +13,7 @@ import { dropzoneShell } from "@/components/design";
 import { formatBytes } from "@/lib/files";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
 // Comparison engine UI (bilingual).
@@ -1299,6 +1300,7 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
       </div>
 
       {busy && <p className="mt-4 text-sm text-[color:var(--muted)]">{t.extracting}</p>}
+      {embedded && results.length === 0 && <WorkspaceValueZone type="ai" locale={childLocale} />}
 
       {results.length > 0 && (
         <div className="mt-8 space-y-3">

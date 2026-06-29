@@ -348,6 +348,8 @@ export function BatchOfficeToPdfClient({ locale = "en", source, embedded = false
           extensions={exts}
           hint={head.hint}
           privacyLabel={null}
+          embedded={embedded}
+          valueZone="server"
         />
       ) : (
         <>

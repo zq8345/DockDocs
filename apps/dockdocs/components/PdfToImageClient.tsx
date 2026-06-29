@@ -470,7 +470,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{subheading}</p>
 
       {phase === "idle" || phase === "rendering" ? (
-        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} />
+        <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

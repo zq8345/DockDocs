@@ -332,7 +332,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
       />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={childLocale} onFiles={addFiles} privacyLabel={privacyLabel} />
+        <BatchUploadBox locale={childLocale} onFiles={addFiles} privacyLabel={privacyLabel} embedded={embedded} valueZone="server" />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
