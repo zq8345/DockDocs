@@ -2166,12 +2166,31 @@ export default async function LocalizedRoute({
     // Article body is en/zh (lib/blog.ts); chrome/GEO add de. zh-Hant collapses
     // to zh here (BlogArticlePage renders the zh chrome over the zh body).
     const blogLocale = toBlogLocale(rawLocale);
+    const blogContentLocale = blogLocale === "zh-Hant" ? "zh" : blogLocale;
+    const blogContent = getBlogArticleContent(article, blogContentLocale);
+    const blogCanonical = blogArticlePath(article.slug, rawLocale as never);
+    const blogSchema = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "@id": `https://dockdocs.app${blogCanonical}#article`,
+      headline: blogContent.title,
+      description: blogContent.description,
+      url: `https://dockdocs.app${blogCanonical}`,
+      datePublished: article.publishedAt,
+      dateModified: article.updatedAt ?? article.publishedAt,
+      inLanguage: rawLocale,
+      publisher: { "@type": "Organization", "@id": "https://dockdocs.app#org", name: "DockDocs", url: "https://dockdocs.app" },
+      isPartOf: { "@type": "Blog", "@id": "https://dockdocs.app/blog/#blog", name: "DockDocs Blog", url: "https://dockdocs.app/blog/" },
+    };
     return (
-      <BlogArticlePage
-        article={article}
-        locale={blogLocale === "zh-Hant" ? "zh" : blogLocale}
-        useLocalePrefix
-      />
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }} />
+        <BlogArticlePage
+          article={article}
+          locale={blogContentLocale}
+          useLocalePrefix
+        />
+      </>
     );
   }
 
