@@ -242,6 +242,13 @@ export function DashboardWorkspace() {
       })()
     : undefined;
 
+  // Workspace root label — used in breadcrumb (home title + breadcrumb root)
+  const WS_LABEL: Record<string, string> = {
+    zh: "工作台", "zh-Hant": "工作台", es: "Área de trabajo", pt: "Área de trabalho",
+    fr: "Espace de travail", ja: "ワークスペース", de: "Arbeitsbereich", ko: "작업 공간",
+  };
+  const wsLabel = WS_LABEL[locale] ?? "Workspace";
+
   // One-line value subtitle — reuse existing quickstart card copy for the 4 AI tools
   const toolDescriptionMap: Record<string, string> = {
     "/chat-with-pdf":  dash.cardChatDesc     ?? "",
@@ -271,9 +278,21 @@ export function DashboardWorkspace() {
           className="flex shrink-0 items-center border-b border-[color:var(--line)] bg-[color:var(--background)] px-6"
           style={{ height: 48 }}
         >
-          {activeTool && toolLabel && (
-            <h1 className="truncate text-[14px] font-semibold leading-none text-[color:var(--foreground)]">
-              {toolLabel}
+          {activeTool && toolLabel ? (
+            <nav className="flex min-w-0 items-center gap-1.5 text-[14px] leading-none">
+              <button
+                type="button"
+                onClick={() => setActiveTool(null)}
+                className="shrink-0 text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
+              >
+                {wsLabel}
+              </button>
+              <span className="shrink-0 select-none text-[color:var(--faint)]">›</span>
+              <span className="min-w-0 truncate font-semibold text-[color:var(--foreground)]">{toolLabel}</span>
+            </nav>
+          ) : (
+            <h1 className="text-[14px] font-semibold leading-none text-[color:var(--foreground)]">
+              {wsLabel}
             </h1>
           )}
         </header>
