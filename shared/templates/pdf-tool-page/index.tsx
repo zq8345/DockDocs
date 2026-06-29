@@ -378,13 +378,10 @@ export function createPdfToolSchema(config: PdfToolPageConfig) {
   const pageUrl = `${siteUrl}${canonicalPath}`;
   const toolDate = toolDates[config.slug] ?? {};
   const schemaLocale = config.locale ?? "en";
-  const schemaTr = (en: string, zh: string, es: string, pt: string, fr: string, ja: string): string =>
+  const schemaTr = (en: string, zh: string, es: string, pt: string, fr: string, ja: string, de: string, ko: string): string =>
     schemaLocale === "zh-Hant"
       ? ccTpl(zh)
-      : // de/ko have no authored schema copy → English fallback (GAP: de/ko schema strings).
-        schemaLocale === "de" || schemaLocale === "ko"
-        ? en
-        : ({ en, zh, es, pt, fr, ja })[schemaLocale];
+      : ({ en, zh, es, pt, fr, ja, de, ko })[schemaLocale] ?? en;
 
   return {
     "@context": "https://schema.org",
@@ -436,6 +433,8 @@ export function createPdfToolSchema(config: PdfToolPageConfig) {
             "Plataforma de documentos com IA para fluxos de trabalho de arquivos reais",
             "Plateforme documentaire IA pour les vrais flux de travail sur fichiers",
             "実際のファイル業務のための AI ドキュメントプラットフォーム",
+            "KI-Dokumentenplattform für reale Datei-Workflows",
+            "실제 파일 작업을 위한 AI 문서 플랫폼",
           ),
         },
         offers: {
@@ -454,6 +453,8 @@ export function createPdfToolSchema(config: PdfToolPageConfig) {
           `Como usar ${config.appName}`,
           `Comment utiliser ${config.appName}`,
           `${config.appName} の使い方`,
+          `${config.appName} verwenden`,
+          `${config.appName} 사용 방법`,
         ),
         description: config.workflowDescription,
         step: config.steps.map((step, index) => ({
