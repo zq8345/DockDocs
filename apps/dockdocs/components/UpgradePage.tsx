@@ -241,6 +241,7 @@ export function UpgradePage() {
     }).catch(() => {
       setAuthUser(null);
       setSnapshot(null);
+      router.replace(lh("/account", getLocale()));
     });
   }, [router]);
 
@@ -271,7 +272,7 @@ export function UpgradePage() {
     ? planStatusText({
         displayName: isTrial ? "Pro" : snapshot.displayName,
         interval: snapshot.record.interval,
-        status: snapshot.record.status,
+        status: isTrial ? "trialing" : snapshot.record.status,
         currentPeriodEnd: snapshot.record.currentPeriodEnd,
         cancelAtPeriodEnd: snapshot.record.cancelAtPeriodEnd,
         daysRemaining: trialDaysRemaining,
