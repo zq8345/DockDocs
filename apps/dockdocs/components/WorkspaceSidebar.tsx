@@ -146,7 +146,7 @@ export function WorkspaceSidebar({
 
   useEffect(() => {
     getSubscriptionSnapshot()
-      .then((snap) => setPlanLabel(snap.displayName))
+      .then((snap) => setPlanLabel(snap.trial?.status === "trialing" ? "Pro" : snap.displayName))
       .catch(() => {});
   }, []);
 
