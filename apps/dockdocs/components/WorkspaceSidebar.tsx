@@ -131,7 +131,6 @@ export function WorkspaceSidebar({
     "Batch": false,
     "AI analysis": true,
     "By profession": true,
-    "legal-domain": true,
   });
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const [planLabel, setPlanLabel] = useState<"Free" | "Pro">("Free");
@@ -271,21 +270,14 @@ export function WorkspaceSidebar({
           const catLabel = copy[cat.catKey] ?? cat.catKey;
           const isOpen = openCats[cat.catKey] ?? true;
 
-          // ── "By profession" gets a custom domain tree ──────────────────────
+          // ── "By profession" gets symmetric 3-row domain entries ──────────────
           if (cat.catKey === "By profession") {
             const domLang = LEGAL_DOMAINS[navLocale] ?? LEGAL_DOMAINS.en;
-            const isLegalOpen = openCats["legal-domain"] ?? true;
             const legalActive =
               activeTool === "/workspace-legal" ||
               activeTool === "/contract-risk" ||
               activeTool === "/lease-redflag" ||
               activeTool === "/govbid-matrix";
-
-            const LEGAL_TOOLS: { key: string; slug: string }[] = [
-              { key: "Contract risk check", slug: "/contract-risk" },
-              { key: "Lease red flag scan",  slug: "/lease-redflag" },
-              { key: "Gov Bid Compliance",   slug: "/govbid-matrix" },
-            ];
 
             return (
               <div key={cat.catKey} className="mb-0.5">
@@ -307,86 +299,46 @@ export function WorkspaceSidebar({
                 {isOpen && (
                   <div className="mt-0.5 space-y-px pb-1">
 
-                    {/* ── Legal / Contracts (expandable) ── */}
-                    <div>
-                      <div className={`flex w-full items-center rounded-[var(--radius)] text-[13px] transition ${
+                    {/* ── Legal / Contracts → workspace-legal hub (live) ── */}
+                    <button
+                      type="button"
+                      onClick={() => onToolSelect?.("/workspace-legal")}
+                      className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[13px] transition ${
                         legalActive
                           ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
                           : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
-                      }`}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (!isLegalOpen) toggle("legal-domain");
-                            onToolSelect?.("/workspace-legal");
-                          }}
-                          className="flex-1 py-1.5 pl-3 text-left"
-                        >
-                          {domLang.legal}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => toggle("legal-domain")}
-                          className="px-2 py-1.5"
-                          aria-label="toggle legal subtree"
-                        >
-                          <ChevronIcon open={isLegalOpen} />
-                        </button>
-                      </div>
+                      }`}
+                    >
+                      <span>{domLang.legal}</span>
+                    </button>
 
-                      {isLegalOpen && (
-                        <div className="mt-0.5 space-y-px pl-2.5 pb-1">
-                          {LEGAL_TOOLS.map((item) => {
-                            const isActive = activeTool === item.slug;
-                            return (
-                              <div key={item.slug} className="relative">
-                                <NavItemBar isActive={isActive} />
-                                <button
-                                  type="button"
-                                  onClick={() => onToolSelect?.(item.slug)}
-                                  className={subItemCls(isActive, false)}
-                                  style={{ width: "100%", textAlign: "left" }}
-                                >
-                                  <span>{labels[item.key] ?? item.key}</span>
-                                </button>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
+                    {/* ── Finance / Tax → workspace-finance hub (soon) ── */}
+                    <button
+                      type="button"
+                      onClick={() => onToolSelect?.("/workspace-finance")}
+                      className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[13px] transition ${
+                        activeTool === "/workspace-finance"
+                          ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
+                          : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+                      }`}
+                    >
+                      <span>{domLang.finance}</span>
+                      <SoonBadge />
+                    </button>
 
-                    {/* ── Finance / Tax (soon) ── */}
-                    <div className="relative">
-                      <button
-                        type="button"
-                        onClick={() => onToolSelect?.("/workspace-finance")}
-                        className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[13px] transition ${
-                          activeTool === "/workspace-finance"
-                            ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
-                            : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
-                        }`}
-                      >
-                        <span>{domLang.finance}</span>
-                        <SoonBadge />
-                      </button>
-                    </div>
-
-                    {/* ── Research / Academic (soon) ── */}
-                    <div className="relative">
-                      <button
-                        type="button"
-                        onClick={() => onToolSelect?.("/workspace-research")}
-                        className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[13px] transition ${
-                          activeTool === "/workspace-research"
-                            ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
-                            : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
-                        }`}
-                      >
-                        <span>{domLang.research}</span>
-                        <SoonBadge />
-                      </button>
-                    </div>
+                    {/* ── Research / Academic → workspace-research hub (soon) ── */}
+                    <button
+                      type="button"
+                      onClick={() => onToolSelect?.("/workspace-research")}
+                      className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[13px] transition ${
+                        activeTool === "/workspace-research"
+                          ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
+                          : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+                      }`}
+                    >
+                      <span>{domLang.research}</span>
+                      <SoonBadge />
+                    </button>
 
                   </div>
                 )}
