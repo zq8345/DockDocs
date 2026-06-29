@@ -14,7 +14,29 @@ export function PwaRuntime() {
     setLoc(detectOfflineLocale());
 
     if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {});
+      // When a new SW takes control (after SKIP_WAITING), reload so the page
+      // gets fresh chunks immediately rather than mixing old cache with new HTML.
+      let reloading = false;
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (!reloading) {
+          reloading = true;
+          window.location.reload();
+        }
+      });
+
+      navigator.serviceWorker.register("/sw.js").then((reg) => {
+        // When a new SW installs alongside an active one, tell it to skip
+        // the waiting phase and take over immediately so open tabs update.
+        reg.addEventListener("updatefound", () => {
+          const newSw = reg.installing;
+          if (!newSw) return;
+          newSw.addEventListener("statechange", () => {
+            if (newSw.state === "installed" && navigator.serviceWorker.controller) {
+              newSw.postMessage("SKIP_WAITING");
+            }
+          });
+        });
+      }).catch(() => {});
     }
 
     const sync = () => setOffline(typeof navigator !== "undefined" && !navigator.onLine);

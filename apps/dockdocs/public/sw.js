@@ -3,30 +3,26 @@
  * Conservative + honest, by design:
  *  - NEVER caches /api/*, /.netlify/* or analytics → AI & file-conversion tools always hit
  *    the network (they upload; offline they fail honestly, never from a poisoned cache).
- *  - Immutable static assets (/_next/static, fonts, wasm, images, css/js) → cache-first,
- *    so a client-side tool page + its pdf-lib / pdfjs / tesseract wasm work fully offline.
- *  - HTML navigations → network-first with cache fallback (a fresh deploy always wins;
- *    offline serves the last-seen page, or the /offline/ fallback).
- *  - Versioned caches; every non-current cache is purged on activate, so a deploy can
- *    never get "stuck" serving stale chunks (the classic service-worker footgun).
- *
- * Bump VERSION on any change to this file's caching behaviour.
+ *  - Hashed Next bundle (/_next/static/) → cache-first (immutable; new hash = new file).
+ *  - Same-name mutable assets (root icons, pdf.worker, *.wasm) → stale-while-revalidate
+ *    so they're always fresh after a deploy, not frozen at first-load.
+ *  - HTML navigations → network-first with cache fallback.
+ *  - VERSION is stamped at build time by scripts/inject-sw-version.mjs
+ *    (__SW_VERSION__ → git short hash or epoch); changes every deploy → activate
+ *    always clears stale caches. Never bump manually.
  */
-const VERSION = "v1";
+const VERSION = "__SW_VERSION__";
 const STATIC_CACHE = `dockdocs-static-${VERSION}`;
 const PAGES_CACHE = `dockdocs-pages-${VERSION}`;
 const OFFLINE_URL = "/offline/";
 
-// Dev mode: skip all caching so HMR chunk updates are always fresh.
-// Production cache-first behavior is untouched.
 const IS_DEV = self.location.hostname === "localhost" || self.location.hostname === "127.0.0.1";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(PAGES_CACHE)
-      // Resilient: a missing/failed offline page must not abort the whole SW install
-      // (we'd just lose the offline fallback, not all offline support).
+      // Resilient: a missing/failed offline page must not abort the whole SW install.
       .then((cache) => cache.add(OFFLINE_URL).catch(() => {}))
       .then(() => self.skipWaiting()),
   );
@@ -47,6 +43,11 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// Let the page prompt a waiting SW to take over immediately (keeps open tabs current).
+self.addEventListener("message", (event) => {
+  if (event.data === "SKIP_WAITING") self.skipWaiting();
+});
+
 // Server-only: must always go to the network, never the cache.
 function isNetworkOnly(url) {
   return (
@@ -59,7 +60,11 @@ function isNetworkOnly(url) {
   );
 }
 
-const STATIC_ASSET = /\.(?:js|mjs|css|woff2?|ttf|otf|wasm|png|jpe?g|svg|webp|gif|ico)$/;
+// Content-hashed Next bundle is truly immutable → safe for cache-first forever.
+const IMMUTABLE_HASHED = /^\/_next\/static\//;
+// Root icons, /pdf.worker.min.mjs, /ocr/*.wasm keep the same filename across deploys
+// but their content can change → stale-while-revalidate, never cache-first-forever.
+const REVALIDATE_ASSET = /\.(?:js|mjs|css|woff2?|ttf|otf|wasm|png|jpe?g|svg|webp|gif|ico)$/;
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
@@ -70,12 +75,11 @@ self.addEventListener("fetch", (event) => {
   } catch {
     return;
   }
-  if (url.origin !== self.location.origin) return; // cross-origin → browser default
-  if (isNetworkOnly(url)) return; // API / functions / analytics → straight to network
+  if (url.origin !== self.location.origin) return;
+  if (isNetworkOnly(url)) return;
 
-  // Immutable static assets → cache-first (revalidate in the background on miss).
-  // Dev: skip caching entirely so HMR chunk updates are always fetched fresh.
-  if (url.pathname.startsWith("/_next/static/") || STATIC_ASSET.test(url.pathname)) {
+  // Hashed Next bundle → cache-first (immutable; new content = new filename + hash).
+  if (IMMUTABLE_HASHED.test(url.pathname)) {
     if (IS_DEV) return;
     event.respondWith(
       caches.match(req).then(
@@ -93,8 +97,27 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Same-name-but-mutable assets → stale-while-revalidate: serve cache for perf/offline,
+  // always fetch fresh in background so the next load gets the post-deploy version.
+  if (REVALIDATE_ASSET.test(url.pathname)) {
+    if (IS_DEV) return;
+    event.respondWith(
+      caches.open(STATIC_CACHE).then((cache) =>
+        cache.match(req).then((hit) => {
+          const network = fetch(req)
+            .then((res) => {
+              if (res.ok) cache.put(req, res.clone());
+              return res;
+            })
+            .catch(() => hit);
+          return hit || network;
+        }),
+      ),
+    );
+    return;
+  }
+
   // HTML navigations → network-first, fall back to cache, then the offline page.
-  // Dev: always network so page changes are immediate.
   if (req.mode === "navigate" || (req.headers.get("accept") || "").includes("text/html")) {
     if (IS_DEV) return;
     event.respondWith(
@@ -111,6 +134,5 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Everything else → cache, then network.
   event.respondWith(caches.match(req).then((hit) => hit || fetch(req)));
 });

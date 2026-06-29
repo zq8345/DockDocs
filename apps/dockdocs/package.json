@@ -6,7 +6,7 @@
     "dev": "next dev",
     "prebuild": "node scripts/gen-tool-dates.mjs",
     "build": "next build",
-    "postbuild": "node scripts/check-i18n-parity.mjs && node scripts/i18n-locale-guard.mjs && node scripts/check-i18n-coverage.mjs && node scripts/check-claims.mjs && node scripts/check-privacy-claims.mjs && node scripts/fix-html-lang.mjs && node scripts/inject-hreflang.mjs && node scripts/indexnow-postbuild.mjs",
+    "postbuild": "node scripts/inject-sw-version.mjs && node scripts/check-i18n-parity.mjs && node scripts/i18n-locale-guard.mjs && node scripts/check-i18n-coverage.mjs && node scripts/check-claims.mjs && node scripts/check-privacy-claims.mjs && node scripts/fix-html-lang.mjs && node scripts/inject-hreflang.mjs && node scripts/indexnow-postbuild.mjs",
     "start": "next start",
     "mission-control:generate": "node scripts/generate-mission-control-data.mjs",
     "task-queue:generate": "node scripts/generate-task-queue-from-pmo.mjs",
