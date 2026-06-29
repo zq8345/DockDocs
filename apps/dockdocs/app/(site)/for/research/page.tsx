@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { ResearchHubPage } from "@/components/ResearchHubPage";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Research AI: summarize, search & compare papers",
@@ -20,5 +21,10 @@ export const metadata: Metadata = {
 };
 
 export default function ForResearchPage() {
-  return <ResearchHubPage />;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "for/research", "Research AI: summarize, search & compare papers")) }} />
+      <ResearchHubPage />
+    </>
+  );
 }

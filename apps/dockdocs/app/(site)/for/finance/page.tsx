@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { FinanceHubPage } from "@/components/FinanceHubPage";
+import { webPageSchema } from "@/lib/page-schema";
 
 export const metadata: Metadata = {
   title: "Finance AI: invoice, statement & report tools",
@@ -20,5 +21,10 @@ export const metadata: Metadata = {
 };
 
 export default function ForFinancePage() {
-  return <FinanceHubPage />;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "for/finance", "Finance AI: invoice, statement & report tools")) }} />
+      <FinanceHubPage />
+    </>
+  );
 }
