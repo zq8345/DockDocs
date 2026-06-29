@@ -303,7 +303,7 @@ export function WorkspaceSidebar({
                     <button
                       type="button"
                       onClick={() => onToolSelect?.("/workspace-legal")}
-                      className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[13px] transition ${
+                      className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-[34px] pr-3 text-[13px] transition ${
                         legalActive
                           ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
                           : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
@@ -316,7 +316,7 @@ export function WorkspaceSidebar({
                     <button
                       type="button"
                       onClick={() => onToolSelect?.("/workspace-finance")}
-                      className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[13px] transition ${
+                      className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-[34px] pr-3 text-[13px] transition ${
                         activeTool === "/workspace-finance"
                           ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
                           : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
@@ -330,7 +330,7 @@ export function WorkspaceSidebar({
                     <button
                       type="button"
                       onClick={() => onToolSelect?.("/workspace-research")}
-                      className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[13px] transition ${
+                      className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-[34px] pr-3 text-[13px] transition ${
                         activeTool === "/workspace-research"
                           ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
                           : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
