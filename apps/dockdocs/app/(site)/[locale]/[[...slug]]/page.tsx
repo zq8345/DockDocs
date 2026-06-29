@@ -96,7 +96,7 @@ import { toHant, deepHant } from "@/lib/zh-hant";
 import { homeSchema, aboutSchema, pricingSchema, webPageSchema } from "@/lib/page-schema";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { isJaNativeRoute } from "@/shared/seo/routes";
-import { ExtraToolJsonLd, EXTRA_TOOL_SLUGS } from "@/lib/extra-tool-schema";
+import { ExtraToolJsonLd, EXTRA_TOOL_SLUGS, type Loc as ExtraToolLoc } from "@/lib/extra-tool-schema";
 import { getFaqItems } from "@/components/ToolFaq";
 import { groundingFaq } from "@/components/GroundingNote";
 import {
@@ -2246,8 +2246,9 @@ export default async function LocalizedRoute({
 
   // Indexable tools that render a custom client but aren't in toolSlugs
   // (sign-pdf is in toolSlugs and handled above; these are not): lightweight schema.
+  // Pass clientLocale directly (not toLeafLocale) so de/ko use their authored labels.
   const extraJsonLd = EXTRA_TOOL_SLUGS.includes(slug) ? (
-    <ExtraToolJsonLd slug={slug} locale={toLeafLocale(clientLocale)} faqLocale={clientLocale} />
+    <ExtraToolJsonLd slug={slug} locale={clientLocale as ExtraToolLoc} faqLocale={clientLocale} />
   ) : null;
 
   if (slug === "chat-with-pdf") {

@@ -7,7 +7,7 @@ import { getToolFaqItems } from "@/components/ToolFaq";
 // PdfToolPageConfig and never went through createPdfToolSchema. This keeps GEO /
 // structured-data coverage complete across both render paths (the non-prefixed
 // app/<slug>/page.tsx and the /zh|/es catch-all). en/zh authored; es → en.
-type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+export type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 type Label = { name: string; description: string; crumb: string };
 
 const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
@@ -48,6 +48,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       description:
         "PDF の余白を無料でオンライントリミング。ライブプレビューを見ながらどの辺の余白も削除でき、全ページを同じ範囲でトリミング。すべてブラウザ内で完結します。",
     },
+    de: {
+      name: "DockDocs PDF zuschneiden",
+      crumb: "PDF zuschneiden",
+      description:
+        "PDF-Ränder kostenlos online zuschneiden. Schneiden Sie Leerraum von beliebigen Seiten mit Live-Vorschau ab – alle Seiten gleich zugeschnitten, ganz in Ihrem Browser.",
+    },
+    ko: {
+      name: "DockDocs PDF 여백 자르기",
+      crumb: "PDF 여백 자르기",
+      description:
+        "PDF 여백을 무료로 온라인에서 자르세요. 실시간 미리보기로 모든 가장자리 여백 제거 — 모든 페이지를 동일하게, 전부 브라우저에서 처리됩니다.",
+    },
   },
   "redact-pdf": {
     en: {
@@ -85,6 +97,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "PDF 黒塗り墨消し",
       description:
         "PDF を本当に黒塗りします。隠した文字を上から覆うだけでなく、永久に削除します。すべてブラウザ内で処理し、ファイルが端末から外に出ることはありません。",
+    },
+    de: {
+      name: "DockDocs PDF schwärzen",
+      crumb: "PDF schwärzen",
+      description:
+        "Echte PDF-Schwärzung — verborgener Text wird dauerhaft gelöscht, nicht nur verdeckt. Vollständig in Ihrem Browser; Ihre Datei verlässt Ihr Gerät nicht.",
+    },
+    ko: {
+      name: "DockDocs PDF 개인정보 삭제",
+      crumb: "PDF 개인정보 삭제",
+      description:
+        "진짜 PDF 개인정보 삭제 — 숨겨진 텍스트를 단순히 가리는 것이 아니라 영구적으로 제거합니다. 완전히 브라우저에서 처리, 파일이 기기 밖으로 나가지 않습니다.",
     },
   },
   redline: {
@@ -124,6 +148,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       description:
         "2 つのバージョンの PDF を比較して、変更点を正確に把握。追加されたテキストはハイライト、削除されたテキストは取り消し線で表示。無料、ブラウザ内で完結します。",
     },
+    de: {
+      name: "DockDocs PDF Redline",
+      crumb: "PDF Redline",
+      description:
+        "Vergleichen Sie zwei PDF-Versionen, um genau zu sehen, was sich geändert hat – hinzugefügter Text hervorgehoben, entfernter Text durchgestrichen. Kostenlos und in Ihrem Browser.",
+    },
+    ko: {
+      name: "DockDocs PDF 변경사항 추적",
+      crumb: "PDF 비교",
+      description:
+        "두 PDF 버전을 비교해 정확히 무엇이 바뀌었는지 확인 — 추가된 텍스트는 하이라이트, 삭제된 텍스트는 취소선 표시. 무료, 브라우저에서 처리됩니다.",
+    },
   },
   "extract-to-excel": {
     en: {
@@ -161,6 +197,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "Excel への抽出",
       description:
         "請求書・見積書・契約書をアップロードすると、AI が主要な項目を表に抽出し、CSV としてダウンロードできます。各文書に実際に書かれている内容だけを報告します。",
+    },
+    de: {
+      name: "DockDocs Daten in Excel extrahieren",
+      crumb: "In Excel extrahieren",
+      description:
+        "Laden Sie Rechnungen, Angebote oder Verträge hoch und lassen Sie die KI die wichtigsten Felder in eine CSV-Tabelle extrahieren. Es werden nur Daten aus dem jeweiligen Dokument gemeldet.",
+    },
+    ko: {
+      name: "DockDocs Excel로 데이터 추출",
+      crumb: "Excel로 추출",
+      description:
+        "청구서, 견적서, 계약서를 업로드하면 AI가 핵심 항목을 스프레드시트에 추출해 CSV로 다운로드할 수 있습니다. 각 문서에 실제로 있는 내용만 보고합니다.",
     },
   },
   "ai-workspace": {
@@ -200,6 +248,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       description:
         "OCR、要約、PDF とのチャット、複数ステップのドキュメント処理を行う AI 文書ワークスペース。すべてブラウザ内で完結します。",
     },
+    de: {
+      name: "DockDocs KI-Dokumentarbeitsbereich",
+      crumb: "KI-Arbeitsbereich",
+      description:
+        "KI-PDF-Arbeitsbereich für OCR, Zusammenfassungen, Chat mit PDF und mehrstufige Dokumenten-Workflows – alles in Ihrem Browser.",
+    },
+    ko: {
+      name: "DockDocs AI 문서 작업 공간",
+      crumb: "AI 작업 공간",
+      description:
+        "OCR, 요약, PDF 채팅, 다단계 문서 워크플로를 위한 AI PDF 작업 공간 — 모두 브라우저에서 처리됩니다.",
+    },
   },
   compare: {
     en: {
@@ -237,6 +297,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "PDF比較",
       description:
         "複数のPDFをアップロードしてブラウザ内でテキスト抽出し、主要な条件を並べて比較—出典を特定できた値には原文の出典も表示します。",
+    },
+    de: {
+      name: "DockDocs PDF vergleichen",
+      crumb: "PDF vergleichen",
+      description:
+        "Laden Sie mehrere PDFs hoch, extrahieren Sie Text im Browser und vergleichen Sie die wichtigsten Bedingungen nebeneinander — mit Quellenangaben, wenn die KI diese lokalisieren kann.",
+    },
+    ko: {
+      name: "DockDocs PDF 비교",
+      crumb: "PDF 비교",
+      description:
+        "여러 PDF를 업로드해 브라우저에서 텍스트를 추출하고 핵심 조항을 나란히 비교 — AI가 출처를 찾을 수 있을 때 원문 출처도 함께 표시됩니다.",
     },
   },
   "govbid-matrix": {
@@ -276,6 +348,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       description:
         "RFPや入札書類をアップロードするとAIがすべての強制要件(shall/must)を条番号付きのコンプライアンス・マトリクスに抽出します。CSVでエクスポート可能。",
     },
+    de: {
+      name: "DockDocs Angebots-Compliance-Matrix",
+      crumb: "Angebots-Compliance-Matrix",
+      description:
+        "Laden Sie eine Ausschreibung hoch und erhalten Sie alle Pflichtanforderungen (shall/must) in einer nummerierten Compliance-Matrix mit Abschnittsreferenzen. Export als CSV.",
+    },
+    ko: {
+      name: "DockDocs 입찰 적합성 매트릭스",
+      crumb: "입찰 적합성 매트릭스",
+      description:
+        "RFP나 입찰 요청서를 업로드하면 AI가 모든 필수 요건(shall/must)을 섹션 참조와 함께 번호 매긴 적합성 매트릭스로 추출합니다. CSV 내보내기 지원.",
+    },
   },
   "lease-redflag": {
     en: {
@@ -313,6 +397,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "賃貸契約レッドフラグ確認",
       description:
         "賃貸契約書をアップロードすると、借主にとってリスクのある・不公平な条項の一覧を生成—赤・橙・緑でフラグを立て、ドキュメントから引用。参考情報であり、法的助言ではありません。",
+    },
+    de: {
+      name: "DockDocs Mietvertrag-Risikocheck",
+      crumb: "Mietvertrag-Risikocheck",
+      description:
+        "Laden Sie einen Mietvertrag hoch und erhalten Sie eine Klartextliste riskanter, unfairer oder fehlender Klauseln – rot/gelb/grün markiert und aus Ihrem Dokument zitiert. Informativ, kein Rechtsrat.",
+    },
+    ko: {
+      name: "DockDocs 임대차 계약서 위험 조항 검토",
+      crumb: "임대차 위험 조항 검토",
+      description:
+        "임대차 계약서를 업로드하면 불공정하거나 위험한 조항 목록을 쉬운 말로 정리해 드립니다 — 빨간색/황색/녹색으로 표시하고 원문에서 인용합니다. 참고용이며 법적 조언이 아닙니다.",
     },
   },
   flashcards: {
@@ -352,6 +448,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       description:
         "教科書・講義ノート・マニュアルをAIでフラッシュカードに変換—問答はすべてあなたのPDFから抽出されます。",
     },
+    de: {
+      name: "DockDocs PDF-Lernkarten",
+      crumb: "PDF-Lernkarten",
+      description:
+        "Verwandeln Sie ein Buchkapitel, Vorlesungsnotizen oder ein Handbuch mit KI in Lernkarten – Fragen und Antworten stammen ausschließlich aus Ihrem Dokument.",
+    },
+    ko: {
+      name: "DockDocs PDF 플래시카드",
+      crumb: "PDF 플래시카드",
+      description:
+        "교재 챕터, 강의 노트, 매뉴얼을 AI로 플래시카드 문답으로 변환 — 문제와 답은 모두 내 문서에서만 추출됩니다.",
+    },
   },
   "batch-sort": {
     en: {
@@ -389,6 +497,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "PDF一括並べ替え",
       description:
         "雑多なPDFをドロップ—AIが各ファイルをラベル付けしてZIP内のフォルダに整理。すべてブラウザ内で完結。",
+    },
+    de: {
+      name: "DockDocs PDFs stapelweise sortieren",
+      crumb: "PDFs stapelweise sortieren",
+      description:
+        "Legen Sie einen ungeordneten Stapel PDFs ab – die KI beschriftet jedes (Rechnung, Vertrag, Lebenslauf …) und sortiert sie in Ordner innerhalb einer ZIP-Datei. Alles im Browser.",
+    },
+    ko: {
+      name: "DockDocs PDF 일괄 분류",
+      crumb: "PDF 일괄 분류",
+      description:
+        "정리되지 않은 PDF 더미를 끌어다 놓으면 AI가 각 파일을 분류해(청구서, 계약서, 이력서…) ZIP 파일 내 폴더에 정리해 줍니다. 모두 브라우저에서 처리됩니다.",
     },
   },
   "batch-compress": {
@@ -428,6 +548,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       description:
         "PDFのフォルダをまるごとドロップして一括圧縮—各ファイルをブラウザで縮小し、1つのZIPにまとめます。",
     },
+    de: {
+      name: "DockDocs PDFs stapelweise komprimieren",
+      crumb: "PDFs stapelweise komprimieren",
+      description:
+        "Legen Sie einen ganzen Ordner mit PDFs ab und komprimieren Sie alle auf einmal – jede wird im Browser verkleinert und in einer ZIP-Datei verpackt. Keine Uploads.",
+    },
+    ko: {
+      name: "DockDocs PDF 일괄 압축",
+      crumb: "PDF 일괄 압축",
+      description:
+        "PDF 폴더 전체를 한꺼번에 드롭해 일괄 압축 — 각 파일을 브라우저에서 압축해 하나의 ZIP으로 패키징합니다. 파일이 업로드되지 않습니다.",
+    },
   },
   "batch-translate": {
     en: {
@@ -465,6 +597,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "PDF一括翻訳",
       description:
         "フォルダ全体のPDFを一度に1つの言語に翻訳—各ドキュメントのテキストを翻訳して.txtのZIPにまとめます。",
+    },
+    de: {
+      name: "DockDocs PDFs stapelweise übersetzen",
+      crumb: "PDFs stapelweise übersetzen",
+      description:
+        "Übersetzen Sie einen ganzen Ordner mit PDFs in einem Durchgang in eine Sprache – der Text jedes Dokuments wird übersetzt und als ZIP mit .txt-Dateien verpackt.",
+    },
+    ko: {
+      name: "DockDocs PDF 일괄 번역",
+      crumb: "PDF 일괄 번역",
+      description:
+        "PDF 폴더 전체를 한 번에 한 언어로 번역 — 각 문서의 텍스트를 번역해 .txt 파일의 ZIP으로 패키징합니다.",
     },
   },
   "batch-fix-scans": {
@@ -504,6 +648,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       description:
         "スキャンしたPDFのフォルダをまとめてクリーンアップ—各ページの同じ余白を切り取り、または各ファイルの同じページを削除。すべてブラウザ内で完結。",
     },
+    de: {
+      name: "DockDocs Scans stapelweise bereinigen",
+      crumb: "Scans stapelweise bereinigen",
+      description:
+        "Bereinigen Sie einen ganzen Ordner mit gescannten PDFs auf einmal – schneiden Sie dieselben Ränder von jeder Seite ab oder löschen Sie dieselben Seiten aus jeder Datei. Alles im Browser, eine ZIP.",
+    },
+    ko: {
+      name: "DockDocs 스캔 일괄 수정",
+      crumb: "스캔 일괄 수정",
+      description:
+        "스캔된 PDF 폴더 전체를 한꺼번에 정리 — 모든 페이지에서 동일한 여백을 자르거나 각 파일에서 동일한 페이지를 삭제합니다. 모두 브라우저에서, 하나의 ZIP으로.",
+    },
   },
   "batch-extract-sheet": {
     en: {
@@ -541,6 +697,18 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "一括データ抽出",
       description:
         "請求書・見積書・契約書のフォルダをドロップ—AIが各ファイルのキーフィールドを1つの表に抽出（1ドキュメント1行）してCSVにエクスポート。",
+    },
+    de: {
+      name: "DockDocs Daten stapelweise in Tabelle extrahieren",
+      crumb: "Stapelweise in Tabelle extrahieren",
+      description:
+        "Legen Sie einen ganzen Ordner mit Rechnungen, Angeboten oder Verträgen ab – die KI extrahiert die Schlüsselfelder aller Dateien in eine Tabelle (eine Zeile pro Datei) und exportiert als CSV.",
+    },
+    ko: {
+      name: "DockDocs 일괄 스프레드시트 추출",
+      crumb: "일괄 데이터 추출",
+      description:
+        "청구서, 견적서, 계약서 폴더를 드롭하면 AI가 모든 파일의 핵심 항목을 하나의 표로 추출(파일당 한 행)해 CSV로 내보냅니다.",
     },
   },
 };
