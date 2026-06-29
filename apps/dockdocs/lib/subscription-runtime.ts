@@ -59,6 +59,11 @@ export type SubscriptionSnapshot = {
     email?: string;
   } | null;
   serverBacked: boolean;
+  trial?: {
+    daysRemaining: number;
+    expiresAt: string;
+    status: "trialing" | "expired";
+  } | null;
 };
 
 // Error thrown by the billing actions, carrying the backend's code + HTTP status
@@ -114,6 +119,7 @@ export async function getSubscriptionSnapshot(): Promise<SubscriptionSnapshot> {
     isPaidPlaceholder: record.plan !== "FREE",
     customer: serverSnapshot?.customer ?? null,
     serverBacked: Boolean(serverSnapshot),
+    trial: serverSnapshot?.trial ?? null,
   };
 }
 
@@ -537,6 +543,11 @@ async function readServerSubscription() {
             stripeCustomerId?: string;
             email?: string;
           } | null;
+          trial?: {
+            daysRemaining: number;
+            expiresAt: string;
+            status: "trialing" | "expired";
+          } | null;
         }
       | null;
 
@@ -553,6 +564,7 @@ async function readServerSubscription() {
     return {
       record,
       customer: payload.customer ?? null,
+      trial: payload.trial ?? null,
     };
   } catch {
     return null;

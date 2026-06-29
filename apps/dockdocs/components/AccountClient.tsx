@@ -473,6 +473,25 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
               <p className="mt-1 text-[12px] text-[color:var(--muted)]">
                 {planStatusText({ displayName: display, interval, status: subscription.record.status, currentPeriodEnd: subscription.record.currentPeriodEnd, cancelAtPeriodEnd: subscription.record.cancelAtPeriodEnd }, membershipLocale)}
               </p>
+              {subscription.record.status === "trialing" && subscription.trial?.status === "trialing" && (
+                <p className="mt-1.5 text-[12px] font-medium text-[color:var(--accent-strong)]">
+                  {locale === "zh" || locale === "zh-Hant"
+                    ? `试用剩余 ${subscription.trial.daysRemaining} 天 · 到期自动回免费版`
+                    : locale === "es"
+                      ? `${subscription.trial.daysRemaining} días restantes de prueba · Vuelve al gratuito al vencer`
+                      : locale === "pt"
+                        ? `${subscription.trial.daysRemaining} dias restantes de teste · Retorna ao gratuito ao expirar`
+                        : locale === "fr"
+                          ? `${subscription.trial.daysRemaining} jours d'essai restants · Retour au gratuit à l'expiration`
+                          : locale === "ja"
+                            ? `トライアル残り ${subscription.trial.daysRemaining} 日 · 期限後は自動的に無料版へ`
+                            : locale === "de"
+                              ? `${subscription.trial.daysRemaining} Testtage verbleibend · Läuft automatisch ab`
+                              : locale === "ko"
+                                ? `체험 ${subscription.trial.daysRemaining}일 남음 · 만료 후 자동으로 무료 버전 전환`
+                                : `${subscription.trial.daysRemaining} trial days remaining · Reverts to Free when it ends`}
+                </p>
+              )}
             </div>
             {isPaid && (
               <button type="button" onClick={handlePortal} disabled={billingLoading === "portal"} className="rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-1.5 text-[12px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] disabled:opacity-50">
