@@ -28,24 +28,14 @@ export type ToolSectionsContent = {
 // derived via toHant in pick()). Adding a route locale (e.g. "de") without a key
 // here is a tsc error, never a silent English fallback.
 const EYEBROW = {
-  benefits: { en: "Benefits", zh: "优势", es: "Ventajas", pt: "Vantagens", fr: "Avantages", ja: "メリット", de: "Vorteile" },
-  workflow: { en: "Workflow", zh: "工作流", es: "Flujo de trabajo", pt: "Fluxo de trabalho", fr: "Flux de travail", ja: "ワークフロー", de: "Arbeitsablauf" },
-  reading: { en: "Recommended reading", zh: "推荐阅读", es: "Lectura recomendada", pt: "Leitura recomendada", fr: "Lecture recommandée", ja: "おすすめ記事", de: "Empfohlene Lektüre" },
-  cont: { en: "Continue", zh: "继续阅读", es: "Continuar", pt: "Continuar", fr: "Continuer", ja: "続きを読む", de: "Weiterlesen" },
+  benefits: { en: "Benefits", zh: "优势", es: "Ventajas", pt: "Vantagens", fr: "Avantages", ja: "メリット", de: "Vorteile", ko: "장점" },
+  workflow: { en: "Workflow", zh: "工作流", es: "Flujo de trabajo", pt: "Fluxo de trabalho", fr: "Flux de travail", ja: "ワークフロー", de: "Arbeitsablauf", ko: "워크플로" },
+  reading: { en: "Recommended reading", zh: "推荐阅读", es: "Lectura recomendada", pt: "Leitura recomendada", fr: "Lecture recommandée", ja: "おすすめ記事", de: "Empfohlene Lektüre", ko: "추천 읽을거리" },
+  cont: { en: "Continue", zh: "继续阅读", es: "Continuar", pt: "Continuar", fr: "Continuer", ja: "続きを読む", de: "Weiterlesen", ko: "계속 읽기" },
 } as const satisfies Record<string, AuthoredCopy<string>>;
 
-// ko eyebrows live in a parallel map (AuthoredCopy<string> excludes ko by design,
-// like zh-Hant). Keyed by the same EYEBROW keys.
-const EYEBROW_KO: Record<keyof typeof EYEBROW, string> = {
-  benefits: "장점",
-  workflow: "워크플로",
-  reading: "추천 읽을거리",
-  cont: "계속 읽기",
-};
-
-function pick(map: AuthoredCopy<string>, locale: Loc, koKey?: keyof typeof EYEBROW): string {
+function pick(map: AuthoredCopy<string>, locale: Loc, _koKey?: keyof typeof EYEBROW): string {
   if (locale === "zh-Hant") return toHant(map.zh);
-  if (locale === "ko") return koKey ? EYEBROW_KO[koKey] : map.en;
   return map[locale];
 }
 

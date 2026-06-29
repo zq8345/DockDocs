@@ -97,6 +97,16 @@ const STR = {
     noText: "kein extrahierbarer Text (Scan?)", err: "Etwas ist schiefgelaufen: ",
     note: "Jedes PDF wird in Ihrem Browser gelesen; nur der extrahierte Text wird zum Zusammenfassen an die KI gesendet — die Datei selbst wird nicht hochgeladen. Die Zusammenfassungen werden von der KI aus jedem Dokument erstellt — prüfen Sie sie kurz. Sie werden einzeln verarbeitet, um innerhalb der Grenzen zu bleiben.",
   },
+  ko: {
+    title: "일괄 요약",
+    subtitle: "여러 보고서, 논문, 계약서를 업로드하면 각 문서의 간결한 AI 요약 — 핵심 요약과 주요 포인트 — 을 받습니다. 한 번에 최대 5개.",
+    drop: "PDF를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", add: "더 추가", reading: "읽는 중…",
+    run: "전체 요약", running: "요약 중", reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개`,
+    keyPoints: "주요 포인트", download: "전체 다운로드 (.md)", need: "PDF를 최소 한 개 추가하세요.",
+    noText: "추출 가능한 텍스트 없음(스캔본?)", err: "문제가 발생했습니다: ",
+    note: "각 PDF는 브라우저에서 읽히며, 요약을 위해 추출된 텍스트만 AI로 전송됩니다 — 파일 자체는 업로드되지 않습니다. 요약은 각 문서로부터 AI가 생성하므로 간단히 확인해 보세요. 한도 내에서 처리하기 위해 한 번에 하나씩 처리됩니다.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -261,14 +271,37 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "KI-Dokumenten-Arbeitsbereich", href: "/ai-workspace", description: "Führen Sie Dokumente zusammen, um Fragen zu stellen und das herauszuziehen, was Sie über alle hinweg brauchen." },
     ],
   },
+  ko: {
+    benefitsTitle: "문서 폴더 전체를 요약하세요",
+    benefitsDescription: "PDF 더미를 끌어다 놓으면 AI가 각 문서에 초점을 맞춘 요약을 생성합니다.",
+    benefits: [
+      { title: "보고서 더미를 한 번에", description: "여러 PDF를 한 번에 대기열에 넣으면 AI가 하나씩 처리하여, 계약서나 논문 폴더가 요약 폴더로 바뀝니다." },
+      { title: "핵심 요약과 주요 포인트", description: "각 문서는 짧은 개요에 이어 핵심 포인트로 돌아오므로, 모든 파일을 열지 않고도 중요한 내용을 훑어볼 수 있습니다." },
+      { title: "요약을 가지고 다니세요", description: "모든 결과가 하나의 정돈된 Markdown 파일로 모여, 다운로드하거나 메모에 붙여넣거나 동료와 공유할 수 있습니다." },
+    ],
+    workflowTitle: "일괄 요약이 읽기 작업에 어떻게 맞물리나요",
+    workflowDescription: "조사 폴더, 한 분기의 이사회 자료, 공급업체 계약서 더미처럼 PDF 한 무더기가 한꺼번에 닥칠 때를 위한 기능입니다.",
+    steps: [
+      "끌어다 놓기나 파일 선택기로 요약할 PDF를 추가하세요.",
+      "배치를 실행하면 AI가 각 문서의 텍스트를 읽고 차례로 요약을 작성합니다.",
+      "각 요약을 화면에서 읽거나 모두 하나의 Markdown 파일로 다운로드하세요.",
+    ],
+    readingTitle: "문서를 처리하는 더 많은 방법",
+    readingDescription: "파일 안의 내용을 읽고 그에 따라 행동하기 위한 관련 AI 문서 도구입니다.",
+    readingLinks: [
+      { label: "단일 PDF 요약", href: "/ai-summary", description: "한 문서 버전 — 파일 하나에 초점을 맞춘 핵심 요약과 주요 포인트." },
+      { label: "PDF 일괄 번역", href: "/batch-translate", description: "같은 폴더 단위 방식으로, 문서 더미를 요약하는 대신 번역합니다." },
+      { label: "AI 문서 작업 공간", href: "/ai-workspace", description: "여러 문서를 모아 질문하고 문서 전반에서 필요한 내용을 끌어냅니다." },
+    ],
+  },
 };
 
 export function BatchSummaryClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
-  // the deepHant branch below); `childLocale` collapses only ko, since the widgets accept zh-Hant.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const childLocale = locale === "ko" ? "en" : locale;
+  // ko is fully authored (Korean strings live in STR.ko/SECTIONS.ko). `al` collapses only
+  // zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes the deepHant branch below);
+  // ko indexes its own [al] entry. `childLocale` collapses ko since the widgets have no ko.
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
@@ -493,7 +526,7 @@ export function BatchSummaryClient({ locale = "en", embedded = false }: { locale
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
       <GroundingNote variant="summary" locale={locale} />
       <RelatedPdfTools locale={locale} exclude="/batch-summary" />
       {!embedded && <ToolSections locale={locale} content={sec} />}

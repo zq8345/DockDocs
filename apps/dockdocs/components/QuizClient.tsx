@@ -97,6 +97,17 @@ const STR = {
     err: "Etwas ist schiefgelaufen: ",
     note: "Die Karten werden von der KI aus Ihrem Dokument generiert. Prüfen Sie sie kurz, bevor Sie damit lernen.",
   },
+  ko: {
+    title: "PDF 플래시카드",
+    subtitle: "교과서 단원, 강의 노트, 매뉴얼을 업로드해 학습용 플래시카드로 바꾸세요 — 문제와 답은 오직 당신의 문서에서만 만들어집니다. 카드를 뒤집어 스스로 확인하세요.",
+    drop: "여기에 PDF를 끌어다 놓거나 클릭해 선택하세요",
+    choose: "PDF 선택", reading: "읽는 중…", count: "카드 수", change: "교체",
+    generate: "카드 생성", generating: "생성 중…", reset: "처음부터 다시",
+    flip: "탭하여 뒤집기", question: "문", answer: "답",
+    noText: "이 PDF에서 텍스트를 찾지 못했습니다. 스캔본이면 먼저 OCR을 실행하세요.",
+    err: "문제가 발생했습니다: ",
+    note: "카드는 AI가 당신의 문서에서 생성합니다. 학습 전에 한 번 빠르게 확인하세요.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -261,13 +272,36 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Ressourcen für Dokumenten-Workflows", href: "/resources", description: "Ein strukturierter Hub für Dokumenten-Tools, Konvertierung und KI-Lernpfade." },
     ],
   },
+  ko: {
+    benefitsTitle: "문서를 플래시카드로 만드는 이유",
+    benefitsDescription: "당신의 자료에서 바로 만든 카드로 학습하세요 — AI가 문서의 텍스트를 분석해 문제와 답을 작성합니다.",
+    benefits: [
+      { title: "당신의 자료에서 만든 카드", description: "문제와 답은 업로드한 문서를 바탕으로 작성되므로, 일반적인 카드 묶음이 아니라 꼭 알아야 할 바로 그 내용을 복습합니다." },
+      { title: "다시 읽기가 아닌 능동적 회상", description: "각 카드는 뒤집기 전까지 답을 숨겨, 기억에서 끄집어내도록 합니다 — 실제로 오래 남는 학습법입니다." },
+      { title: "만들 개수를 선택", description: "빠른 복습부터 한 단원 전체까지, 5·10·15·20장 중에서 골라 같은 텍스트에서 한 번에 생성합니다." },
+    ],
+    workflowTitle: "플래시카드가 학습에 어떻게 맞물리나요",
+    workflowDescription: "단원, 강의 노트, 매뉴얼을 그저 다시 읽는 대신 스스로 시험해 보고 싶을 때를 위한 기능입니다.",
+    steps: [
+      "학습에 쓸 PDF를 업로드하세요.",
+      "원하는 카드 수를 고르면 AI가 텍스트에서 문제와 답 쌍을 작성합니다.",
+      "각 카드를 뒤집어 스스로 시험하고, 답에 의존하기 전에 한 번 빠르게 확인하세요.",
+    ],
+    readingTitle: "문서를 활용하는 더 많은 방법",
+    readingDescription: "같은 자료를 학습하고 이해하기 위한 관련 AI 도구입니다.",
+    readingLinks: [
+      { label: "PDF 요약", href: "/ai-summary", description: "카드로 만들기 전에 단원을 핵심 요점으로 간추립니다." },
+      { label: "PDF와 대화", href: "/chat-with-pdf", description: "카드가 다루지 못한 부분을 문서에 이어서 질문하세요." },
+      { label: "문서 워크플로 자료", href: "/resources", description: "문서 도구, 변환, AI 학습 경로를 정리한 구조화된 허브입니다." },
+    ],
+  },
 };
 
 export function QuizClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko is fully authored (STR/SECTIONS carry Korean). zh-Hant derives from zh via deepHant.
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
-  const childLocale = locale === "ko" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [fileName, setFileName] = useState("");
@@ -387,7 +421,7 @@ export function QuizClient({ locale = "en", embedded = false }: { locale?: Local
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="flashcards" locale={locale} />}
     </div>

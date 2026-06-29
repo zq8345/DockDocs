@@ -151,6 +151,24 @@ const STR = {
     note: "Text und Tabellen werden in eine bearbeitbare Datei extrahiert. Eingescannte oder aufwendig gestaltete PDFs lassen sich möglicherweise nicht perfekt konvertieren. Dateien über 5 MB werden im Stapel nicht unterstützt – verwenden Sie dafür den Einzeldatei-Konverter.",
     err: "Etwas ist schiefgelaufen: ",
   },
+  ko: {
+    title: "PDF를 Word / Excel로 일괄 변환",
+    subtitle:
+      "폴더 안의 PDF를 한 번에 편집 가능한 Word나 Excel 파일로 변환하세요. 각 파일은 서버에서 변환되어 하나의 ZIP으로 묶입니다.",
+    word: "Word로 변환 (.docx)",
+    excel: "Excel로 변환 (.xlsx)",
+    run: "전체 변환",
+    running: "변환 중",
+    download: "ZIP 다운로드",
+    reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개 파일`,
+    done: "완료",
+    failed: "실패",
+    need: "PDF를 하나 이상 추가해 주세요.",
+    tooBig: "5MB 초과 — 단일 파일 도구를 이용하세요",
+    note: "텍스트와 표가 편집 가능한 파일로 추출됩니다. 스캔본이나 디자인이 복잡한 PDF는 완벽하게 변환되지 않을 수 있습니다. 5MB가 넘는 파일은 일괄 처리에서 지원되지 않으니, 그런 파일은 단일 파일 변환기를 이용하세요.",
+    err: "문제가 발생했습니다: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 // Per-target heading/subtitle (native) for the split single-format pages.
@@ -163,6 +181,7 @@ const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>
     fr: { title: "PDF en Word par lots", subtitle: "Convertissez un dossier entier de PDF en fichiers Word (.docx) modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP." },
     ja: { title: "PDFをWordに一括変換", subtitle: "フォルダ内のPDFをまとめて編集可能なWord（.docx）に変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。" },
     de: { title: "PDF stapelweise zu Word", subtitle: "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Word-Dateien (.docx) – jede wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt." },
+    ko: { title: "PDF를 Word로 일괄 변환", subtitle: "폴더 안의 PDF를 한 번에 편집 가능한 Word(.docx) 파일로 변환하세요. 각 파일은 서버에서 변환되어 하나의 ZIP으로 묶입니다." },
   },
   excel: {
     en: { title: "Batch PDF to Excel", subtitle: "Convert a whole folder of PDFs to editable Excel (.xlsx) spreadsheets in one go — each is converted on our server and packaged into a single ZIP." },
@@ -172,6 +191,7 @@ const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>
     fr: { title: "PDF en Excel par lots", subtitle: "Convertissez un dossier entier de PDF en feuilles de calcul Excel (.xlsx) modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP." },
     ja: { title: "PDFをExcelに一括変換", subtitle: "フォルダ内のPDFをまとめて編集可能なExcel（.xlsx）に変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。" },
     de: { title: "PDF stapelweise zu Excel", subtitle: "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Excel-Tabellen (.xlsx) – jede wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt." },
+    ko: { title: "PDF를 Excel로 일괄 변환", subtitle: "폴더 안의 PDF를 한 번에 편집 가능한 Excel(.xlsx) 파일로 변환하세요. 각 파일은 서버에서 변환되어 하나의 ZIP으로 묶입니다." },
   },
 };
 
@@ -182,7 +202,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   // zh-Hant child components (BatchUploadBox / ToolFaq) accept zh-Hant; ko → English (no Korean strings yet).
-  const childLocale = locale === "ko" ? "en" : locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const head = target
     ? (locale === "zh-Hant" ? deepHant(PT[target].zh) : PT[target][al])
@@ -294,6 +314,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
         pt: "Não foi possível criar o download — tente novamente.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
         de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
+        ko: "다운로드를 생성하지 못했습니다. 다시 시도해 주세요.",
       };
       setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[al]);
     }
@@ -310,6 +331,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
     pt: "Convertido no nosso servidor",
     ja: "当社のサーバーで変換",
     de: "Auf unserem Server konvertiert",
+    ko: "당사 서버에서 변환",
   };
   const privacyLabel = locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[al];
 

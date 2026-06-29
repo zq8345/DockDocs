@@ -172,6 +172,27 @@ const STR = {
     note: "Die Verarbeitung läuft in Ihrem Browser – Ihre Dateien verlassen Ihr Gerät nicht. Das Beschneiden blendet den abgeschnittenen Bereich nur aus (er lässt sich wiederherstellen); das Löschen entfernt die Seiten.",
     err: "Etwas ist schiefgelaufen: ",
   },
+  ko: {
+    title: "스캔본 PDF 일괄 보정",
+    subtitle:
+      "스캔한 PDF가 담긴 폴더를 한 번에 정리하세요 — 모든 페이지에서 같은 여백을 잘라내거나, 각 파일에서 같은 페이지(예: 표지)를 삭제할 수 있습니다. 모두 브라우저에서 처리되어 하나의 ZIP으로 묶입니다.",
+    crop: "여백 자르기",
+    del: "페이지 삭제",
+    top: "위", right: "오른쪽", bottom: "아래", left: "왼쪽",
+    preview: "미리보기(첫 번째 파일)",
+    cropHint: "끌어서 각 가장자리를 잘라내세요(페이지 대비 %). 투명한 영역이 남는 부분입니다. 모든 파일의 모든 페이지에 적용됩니다.",
+    delLabel: "각 파일에서 삭제할 페이지",
+    delPlaceholder: "예: 1 또는 1,3-4",
+    delHint: "이 페이지 번호가 모든 파일에서 제거됩니다. 모든 페이지가 사라지게 되는 파일은 건너뜁니다.",
+    run: "전체 처리", running: "처리 중", download: "ZIP 다운로드", reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개 파일`,
+    done: "완료", failed: "실패",
+    need: "PDF를 하나 이상 추가해 주세요.",
+    needCrop: "잘라낼 여백을 하나 이상 설정하세요.",
+    needDel: "삭제할 페이지 번호를 입력하세요.",
+    note: "모든 작업이 브라우저에서 실행됩니다 — 파일은 기기를 벗어나지 않습니다. 자르기는 잘린 영역을 숨길 뿐이며(복원 가능), 삭제는 해당 페이지를 제거합니다.",
+    err: "문제가 발생했습니다: ",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 // Exhaustive per-locale runtime messages (toasts / status). zh-Hant derived via toHant.
@@ -183,6 +204,7 @@ const SKIP_EMPTY: Record<AuthoredLocale, string> = {
   fr: "serait vide, ignoré",
   ja: "空になるためスキップ",
   de: "würde leer, übersprungen",
+  ko: "비게 되어 건너뜀",
 };
 const ZIP_FAIL: Record<AuthoredLocale, string> = {
   en: "Could not build the download — please try again.",
@@ -192,6 +214,7 @@ const ZIP_FAIL: Record<AuthoredLocale, string> = {
   fr: "Impossible de créer le téléchargement ; réessayez.",
   ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
   de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
+  ko: "다운로드를 생성하지 못했습니다. 다시 시도해 주세요.",
 };
 const skipEmptyMsg = (locale: Locale) =>
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
@@ -374,6 +397,29 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
+  ko: {
+    benefitsTitle: "스캔본 PDF를 일괄 보정하는 이유",
+    benefitsDescription: "스캔본이 담긴 폴더를 한 번에 정리하세요 — 여백을 자르고 빈 페이지를 없앱니다.",
+    benefits: [
+      { title: "스캔 잡티 잘라내기", description: "각 페이지의 검은 가장자리, 스캐너 그림자, 지나치게 넓은 여백을 잘라내 내용이 깔끔하게 자리잡게 하세요." },
+      { title: "같은 페이지 없애기", description: "배치 안 모든 파일에서 표지, 구분지, 빈 뒷면을 한 번에 제거하세요." },
+      { title: "폴더 전체를 한 번에", description: "수십 개의 스캔본 PDF를 한 번에 보정하고 모두 하나의 ZIP으로 다운로드하세요." },
+    ],
+    workflowTitle: "스캔 보정이 작업에 어떻게 어울리는지",
+    workflowDescription: "스캐너가 검은 테두리와 표지가 있는 PDF를 폴더째 쏟아내고, 모두 같은 정리가 필요할 때를 위한 기능입니다.",
+    steps: [
+      "스캔한 PDF 폴더를 페이지에 끌어다 놓으세요.",
+      "자를 여백을 설정하거나, 각 파일에서 제거할 페이지를 표시하세요.",
+      "실행하고 정리된 PDF를 하나의 ZIP으로 다운로드하세요.",
+    ],
+    readingTitle: "스캔본을 정리하는 더 많은 방법",
+    readingDescription: "문서를 자르고 스캔본을 검색 가능하게 만드는 관련 도구.",
+    readingLinks: [
+      { label: "단일 PDF 자르기", href: "/crop-pdf", description: "시각적 미리보기로 PDF 하나의 여백이나 공백을 잘라내세요." },
+      { label: "스캔본 PDF OCR", href: "/ocr-pdf", description: "스캔한 PDF의 텍스트를 선택하고 검색할 수 있게 만드세요." },
+      { label: "PDF 작업 흐름 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+    ],
+  },
 };
 
 export function BatchFixScansClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
@@ -385,7 +431,7 @@ export function BatchFixScansClient({ locale = "en", embedded = false }: { local
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   // zh-Hant child components (BatchUploadBox / ToolFaq / encryptedPdfMessage) accept zh-Hant;
   // ko → English (foundation phase) since those widgets have no Korean strings yet.
-  const childLocale = locale === "ko" ? "en" : locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
   const [items, setItems] = useState<Item[]>([]);
   const [mode, setMode] = useState<Mode>("crop");

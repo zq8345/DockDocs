@@ -95,6 +95,17 @@ const STR = {
     reset: "Neu beginnen", needSplit: "Fügen Sie mindestens einen Teilungspunkt hinzu.", err: "Etwas ist schiefgelaufen: ",
     every: "Teilen alle", everyUnit: "Seiten", everySet: "Anwenden",
   },
+  ko: {
+    title: "PDF 분할",
+    subtitle: "PDF를 업로드하고 페이지 사이의 ✂를 클릭해 여러 파일로 잘라내세요 — 다운로드하기 전에 각 파일에 어떤 페이지가 들어가는지 정확히 확인할 수 있습니다.",
+    drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+    choose: "PDF 선택", rendering: "페이지를 렌더링하는 중…",
+    hint: "어떤 페이지 뒤의 ✂를 클릭하면 새 파일이 시작됩니다. 다시 클릭하면 취소됩니다.",
+    splitAfter: "여기서 분할", files: (n: number) => `${n}개 파일이 생성됩니다`,
+    fileN: (n: number) => `파일 ${n}`, apply: "분할하고 다운로드", working: "분할 중…",
+    reset: "다시 시작", needSplit: "분할 지점을 하나 이상 추가하세요.", err: "문제가 발생했습니다: ",
+    every: "분할 간격", everyUnit: "페이지마다", everySet: "적용",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 // ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
@@ -273,6 +284,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
+  ko: {
+    benefitsTitle: "브라우저에서 PDF를 분할하는 이유",
+    benefitsDescription: "큰 PDF를 별도의 파일이나 페이지 범위로 나눕니다. 업로드하지 않습니다.",
+    benefits: [
+      { title: "필요한 페이지만 추출", description: "한 페이지, 특정 범위, 또는 모든 페이지를 각각 별도 파일로 빼내세요 — 필요한 것만 남깁니다." },
+      { title: "범위별 또는 페이지별 분할", description: "정확한 페이지 범위를 고르거나, 모든 페이지를 각각의 PDF로 나눠 하나의 ZIP으로 묶습니다." },
+      { title: "원본 페이지 그대로", description: "추출된 각 페이지는 원래 품질과 레이아웃을 유지합니다 — 분할은 내용을 다시 렌더링하거나 손상시키지 않습니다." },
+    ],
+    workflowTitle: "분할이 문서 작업에 어떻게 들어맞는가",
+    workflowDescription: "하나의 큰 PDF를 여러 개로 나눠야 할 때 — 스캔한 묶음을 분리하거나, 한 장(章)을 빼내거나, 한 섹션만 공유할 때.",
+    steps: [
+      "분할하려는 PDF를 업로드합니다.",
+      "페이지 범위를 고르거나, 모든 페이지를 각각의 파일로 분할합니다.",
+      "나뉜 PDF들을 하나의 ZIP으로 다운로드합니다.",
+    ],
+    readingTitle: "PDF를 정리하는 더 많은 방법",
+    readingDescription: "문서를 나누고 합치는 관련 도구와 가이드.",
+    readingLinks: [
+      { label: "PDF 병합", href: "/merge-pdf", description: "반대 작업 — 여러 PDF를 하나의 순서가 있는 문서로 합칩니다." },
+      { label: "페이지 범위로 PDF 분할", href: "/guides/split-pdf-page-ranges", description: "특정 페이지 범위를 별도의 PDF로 추출하는 방법." },
+      { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+    ],
+  },
 };
 
 const SECTIONS_KO: ToolSectionsContent = {
@@ -303,7 +337,7 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
-  const childLocale = locale === "ko" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
@@ -437,6 +471,7 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
                 fr: `Page ${p.idx + 1}`,
                 ja: `Page ${p.idx + 1}`,
                 de: `Seite ${p.idx + 1}`,
+                ko: `${p.idx + 1}페이지`,
               };
               const pageLabel = locale === "zh-Hant" ? toHant(pageLabelMap.zh) : locale === "ko" ? `${p.idx + 1}페이지` : pageLabelMap[al];
               return (

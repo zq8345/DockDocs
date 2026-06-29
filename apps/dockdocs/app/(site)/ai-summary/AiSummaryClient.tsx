@@ -197,33 +197,32 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Dokumente vergleichen", href: "/compare", description: "Stellen Sie mehrere Dokumente nebeneinander und sehen Sie, wo ihre wichtigen Begriffe abweichen." },
     ],
   },
+  ko: {
+    benefitsTitle: "AI 요약이 무엇을 제공하나요",
+    benefitsDescription: "AI가 문서의 텍스트를 읽고 한눈에 검토할 수 있는 핵심 요약, 주요 항목, 권장 다음 단계로 압축합니다.",
+    benefits: [
+      { title: "긴 문서를 압축", description: "길고 복잡한 PDF나 Office 파일을 핵심 요약, 주요 항목, 중요한 대상, 권장 조치로 바꿉니다 — 실제로 훑어볼 수 있는 형태의 요지입니다." },
+      { title: "브라우저에서 읽기", description: "텍스트는 브라우저에서 파일로부터 추출되며, 추출된 그 텍스트만 요약을 위해 AI로 전송됩니다. 파일 자체는 업로드되지 않습니다." },
+      { title: "문서에 근거", description: "요약은 파일 속 단어에서 뽑아내며, 거기 없는 사실을 더하지 않습니다. 그대로 옮긴 인용이 아니라 바꿔 쓴 것이므로 핵심 숫자와 날짜는 원본과 대조해 확인하세요." },
+    ],
+    workflowTitle: "AI 요약이 업무에 어떻게 맞물리나요",
+    workflowDescription: "긴 보고서, 계약서, 발표 자료가 손에 들어왔을 때 모든 페이지를 읽기 전에 요지를 파악해야 하는 순간을 위한 기능입니다.",
+    steps: [
+      "PDF를 업로드하세요 — 최대 20페이지.",
+      "DockDocs가 브라우저에서 텍스트를 추출하고 그 텍스트만 요약을 위해 전송합니다.",
+      "AI가 파일의 텍스트에서 요약, 주요 항목, 권장 다음 단계를 뽑아냅니다.",
+      "결과를 검토하세요 — 핵심 숫자와 날짜는 원본과 대조해 확인하세요.",
+    ],
+    readingTitle: "더 많은 AI 문서 도구",
+    readingDescription: "문서를 읽고, 질문하고, 비교하며 결과를 추적할 수 있는 관련 도구입니다.",
+    readingLinks: [
+      { label: "PDF와 대화", href: "/chat-with-pdf", description: "문서에 대해 질문하고 그 텍스트에 근거한 답변을 출처 인용과 함께 받으세요." },
+      { label: "계약 위험 검토", href: "/contract-risk", description: "AI가 계약서의 위험하거나 한쪽에 치우치거나 빠진 조항을 각각 출처와 함께 표시하게 하세요." },
+      { label: "문서 비교", href: "/compare", description: "여러 문서를 나란히 놓고 핵심 조건이 어디서 다른지 확인하세요." },
+    ],
+},
 };
 
-// ko authored separately (AuthoredLocale excludes ko, like zh-Hant).
-const SECTIONS_KO: ToolSectionsContent = {
-  benefitsTitle: "AI 요약이 무엇을 제공하나요",
-  benefitsDescription: "AI가 문서의 텍스트를 읽고 한눈에 검토할 수 있는 핵심 요약, 주요 항목, 권장 다음 단계로 압축합니다.",
-  benefits: [
-    { title: "긴 문서를 압축", description: "길고 복잡한 PDF나 Office 파일을 핵심 요약, 주요 항목, 중요한 대상, 권장 조치로 바꿉니다 — 실제로 훑어볼 수 있는 형태의 요지입니다." },
-    { title: "브라우저에서 읽기", description: "텍스트는 브라우저에서 파일로부터 추출되며, 추출된 그 텍스트만 요약을 위해 AI로 전송됩니다. 파일 자체는 업로드되지 않습니다." },
-    { title: "문서에 근거", description: "요약은 파일 속 단어에서 뽑아내며, 거기 없는 사실을 더하지 않습니다. 그대로 옮긴 인용이 아니라 바꿔 쓴 것이므로 핵심 숫자와 날짜는 원본과 대조해 확인하세요." },
-  ],
-  workflowTitle: "AI 요약이 업무에 어떻게 맞물리나요",
-  workflowDescription: "긴 보고서, 계약서, 발표 자료가 손에 들어왔을 때 모든 페이지를 읽기 전에 요지를 파악해야 하는 순간을 위한 기능입니다.",
-  steps: [
-    "PDF를 업로드하세요 — 최대 20페이지.",
-    "DockDocs가 브라우저에서 텍스트를 추출하고 그 텍스트만 요약을 위해 전송합니다.",
-    "AI가 파일의 텍스트에서 요약, 주요 항목, 권장 다음 단계를 뽑아냅니다.",
-    "결과를 검토하세요 — 핵심 숫자와 날짜는 원본과 대조해 확인하세요.",
-  ],
-  readingTitle: "더 많은 AI 문서 도구",
-  readingDescription: "문서를 읽고, 질문하고, 비교하며 결과를 추적할 수 있는 관련 도구입니다.",
-  readingLinks: [
-    { label: "PDF와 대화", href: "/chat-with-pdf", description: "문서에 대해 질문하고 그 텍스트에 근거한 답변을 출처 인용과 함께 받으세요." },
-    { label: "계약 위험 검토", href: "/contract-risk", description: "AI가 계약서의 위험하거나 한쪽에 치우치거나 빠진 조항을 각각 출처와 함께 표시하게 하세요." },
-    { label: "문서 비교", href: "/compare", description: "여러 문서를 나란히 놓고 핵심 조건이 어디서 다른지 확인하세요." },
-  ],
-};
 
 export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant"; embedded?: boolean }) {
   // childLocale collapses ko→en for child widgets (UpgradePrompt) whose prop union
@@ -241,8 +240,8 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
   const ko = locale === "ko";
   const h = (s: string) => (hant ? toHant(s) : s);
   // ko authored in SECTIONS_KO; zh-Hant derives from zh (deepHant); mirrors ChatWithPdfClient.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [status, setStatus] = useState<Status>("idle");
   const [fileName, setFileName] = useState("");
   const [error, setError] = useState("");

@@ -119,6 +119,20 @@ const STR = {
     note: "Beim Zusammenfügen bleibt die Upload-Reihenfolge erhalten. Beim Teilen wird jedes PDF in Blöcke von je N Seiten zerlegt. Die Verarbeitung erfolgt auf Ihrem Gerät.",
     err: "Etwas ist schiefgelaufen: ",
   },
+  ko: {
+    title: "PDF 일괄 분할 / 병합",
+    titleSplit: "일괄 분할",
+    subSplit: "폴더 전체의 각 PDF를 N페이지 단위의 작은 파일로 분할하세요 — 모두 브라우저에서 처리되어 다운로드용으로 묶입니다. 아무것도 업로드되지 않습니다.",
+    subtitle: "PDF 폴더 전체를 하나로 병합하거나 각 PDF를 작은 파일로 분할하세요 — 모두 브라우저에서 처리되어 다운로드용으로 묶입니다. 아무것도 업로드되지 않습니다.",
+    drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
+    merge: "하나로 병합", split: "각각 분할",
+    every: "파일당 페이지 수", order: "파일은 표시된 순서대로 병합됩니다.",
+    run: "실행", running: "처리 중", dlMerge: "병합된 PDF 다운로드", dlSplit: "ZIP 다운로드", reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개`, parts: (n: number) => `${n}개`, failed: "실패",
+    needTwo: "병합하려면 PDF를 2개 이상 추가하세요.", needFile: "PDF를 최소 한 개 추가하세요.",
+    note: "병합은 업로드 순서를 유지합니다. 분할은 각 PDF를 N페이지 단위로 나눕니다. 모든 작업은 기기에서 처리됩니다.",
+    err: "문제가 발생했습니다: ",
+  },
 } satisfies AuthoredCopy<typeof STR_en>;
 
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
@@ -283,14 +297,37 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
+  ko: {
+    benefitsTitle: "PDF 폴더 전체를 일괄 분할",
+    benefitsDescription: "폴더를 지정하고 모든 PDF를 같은 방식으로 분할해, 결과를 하나의 ZIP으로 모으세요.",
+    benefits: [
+      { title: "모든 파일을 한 번에", description: "폴더 전체를 끌어다 놓으면 각 PDF가 한 번에 분할됩니다 — 파일을 하나씩 열거나 같은 단계를 반복할 필요가 없습니다." },
+      { title: "고정 크기로 나누기", description: "파일당 페이지 수를 한 번만 설정하면 배치 전체에 적용되어, 모든 PDF가 동일한 N페이지 단위로 잘립니다." },
+      { title: "이름이 명확한 ZIP 하나", description: "분할된 모든 부분이 파일별로 예측 가능한 이름과 함께 하나의 ZIP에 담겨, 바로 풀어서 전달할 수 있습니다." },
+    ],
+    workflowTitle: "일괄 분할이 작업에 어떻게 맞물리나요",
+    workflowDescription: "여러 페이지짜리 PDF 더미를 많은 작은 파일로 만들어야 할 때 — 한 페이지 스캔, 챕터별 분할, 레코드별 내보내기 등.",
+    steps: [
+      "PDF 폴더를 끌어다 놓거나 분할할 파일을 선택하세요.",
+      "출력 파일 하나에 담을 페이지 수를 설정한 뒤 배치를 실행하세요.",
+      "분할된 모든 부분이 담긴 ZIP 하나를 다운로드하세요.",
+    ],
+    readingTitle: "PDF를 분할하는 더 많은 방법",
+    readingDescription: "문서를 나누기 위한 관련 도구와 가이드입니다.",
+    readingLinks: [
+      { label: "단일 PDF 분할", href: "/split-pdf", description: "PDF 하나를 별도 파일이나 페이지 범위로 나눕니다." },
+      { label: "페이지 범위로 PDF 분할", href: "/guides/split-pdf-page-ranges", description: "고정 크기가 아니라 정확한 페이지 범위를 뽑아내는 방법." },
+      { label: "PDF 워크플로 자료", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 허브입니다." },
+    ],
+  },
 };
 
 export function BatchSplitMergeClient({ locale = "en", lockMode, embedded = false }: { locale?: Locale; lockMode?: Mode; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
-  // the deepHant branch below); `childLocale` collapses only ko, since BatchUploadBox accepts zh-Hant.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const childLocale = locale === "ko" ? "en" : locale;
+  // ko is fully authored (Korean strings live in STR.ko/SECTIONS.ko). `al` collapses only
+  // zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes the deepHant branch below);
+  // ko indexes its own [al] entry. `childLocale` collapses ko since BatchUploadBox has no ko.
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());

@@ -126,6 +126,21 @@ const STR = {
     note: "Verwendet die Standardplatzierung (diagonales Wasserzeichen / Seitenzahlen). Für eine individuelle Position oder Deckkraft nutzen Sie die Einzeldatei-Tools „Wasserzeichen“ oder „Seitenzahlen“. Alles bleibt auf Ihrem Gerät.",
     err: "Etwas ist schiefgelaufen: ",
   },
+  ko: {
+    title: "PDF 일괄 워터마크 / 페이지 번호",
+    titleWm: "PDF 일괄 워터마크", titlePn: "PDF 일괄 페이지 번호",
+    subWm: "폴더 안의 PDF에 한 번에 워터마크를 찍으세요. 각 파일은 브라우저에서 처리되어 하나의 ZIP으로 묶입니다. 아무것도 업로드되지 않습니다.",
+    subPn: "폴더 안의 PDF에 한 번에 페이지 번호를 추가하세요. 각 파일은 브라우저에서 처리되어 하나의 ZIP으로 묶입니다. 아무것도 업로드되지 않습니다.",
+    subtitle: "폴더 안의 PDF에 한 번에 워터마크를 찍거나 페이지 번호를 추가하세요. 각 파일은 브라우저에서 처리되어 하나의 ZIP으로 묶입니다. 아무것도 업로드되지 않습니다.",
+    drop: "여기에 PDF(또는 폴더)를 끌어다 놓거나 클릭하여 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
+    wm: "워터마크", pn: "페이지 번호",
+    wmText: "워터마크 텍스트", wmPlaceholder: "예: CONFIDENTIAL",
+    run: "전체 적용", running: "처리 중", download: "ZIP 다운로드", reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개 파일`, done: "완료", failed: "실패",
+    needText: "워터마크 텍스트를 입력하세요.", needFile: "PDF를 하나 이상 추가해 주세요.",
+    note: "기본 배치(대각선 워터마크 / 페이지 번호)를 사용합니다. 위치나 불투명도를 직접 지정하려면 단일 파일 「워터마크」 또는 「페이지 번호」 도구를 이용하세요. 모든 작업이 기기 안에서 이루어집니다.",
+    err: "문제가 발생했습니다: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 // Two section sets — this client serves batch-watermark-pdf (lockMode=watermark)
@@ -285,6 +300,28 @@ const SECTIONS_WM: AuthoredCopy<ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenwege." },
     ],
   },
+  ko: {
+    benefitsTitle: "PDF에 일괄로 워터마크를 찍는 이유",
+    benefitsDescription: "폴더 안의 모든 PDF에 같은 워터마크를 한 번에 찍습니다.",
+    benefits: [
+      { title: "워터마크 하나로 모든 파일에", description: "같은 텍스트 또는 이미지 워터마크를 폴더 안 모든 PDF의 모든 페이지에 적용하세요. 파일을 하나씩 열 필요가 없습니다." },
+      { title: "일관된 배치", description: "위치, 크기, 불투명도, 각도를 한 번 설정하면 배치 전체에 동일하게 적용됩니다." },
+      { title: "ZIP 하나로 반환", description: "워터마크를 찍은 모든 PDF가 하나의 ZIP으로 돌아와 공유하거나 보관하기 좋습니다." },
+    ],
+    workflowTitle: "일괄 워터마크가 작업에 어떻게 어울리는지",
+    workflowDescription: "초안, 교정본, 기밀 파일이 담긴 폴더가 발송 전에 같은 도장을 모두 필요로 할 때를 위한 기능입니다.",
+    steps: [
+      "PDF 폴더를 페이지에 끌어다 놓으세요.",
+      "워터마크를 디자인하세요 — 텍스트 또는 이미지, 위치, 불투명도.",
+      "실행하고 워터마크를 찍은 PDF를 하나의 ZIP으로 다운로드하세요.",
+    ],
+    readingTitle: "PDF에 표시를 남기는 더 많은 방법",
+    readingDescription: "문서에 워터마크와 페이지 번호를 넣는 관련 도구.",
+    readingLinks: [
+      { label: "단일 PDF에 워터마크", href: "/watermark-pdf", description: "실시간 미리보기로 PDF 하나에 도장을 찍으세요." },
+      { label: "PDF 작업 흐름 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+    ],
+  },
 };
 
 const SECTIONS_PN: AuthoredCopy<ToolSectionsContent> = {
@@ -442,6 +479,28 @@ const SECTIONS_PN: AuthoredCopy<ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenwege." },
     ],
   },
+  ko: {
+    benefitsTitle: "PDF에 일괄로 페이지 번호를 넣는 이유",
+    benefitsDescription: "폴더 안의 모든 PDF에 일관된 페이지 번호를 한 번에 추가합니다.",
+    benefits: [
+      { title: "모든 파일을 동일하게 번호 매기기", description: "같은 페이지 번호 스타일과 위치를 폴더 안 모든 PDF에 한 번에 적용하세요." },
+      { title: "형식과 위치 선택", description: "위치, 형식(1 / N), 시작 번호를 선택하면 배치 전체에 균일하게 적용됩니다." },
+      { title: "ZIP 하나로 반환", description: "번호를 매긴 모든 PDF가 하나의 ZIP으로 돌아와 정리하거나 전달하기 좋습니다." },
+    ],
+    workflowTitle: "일괄 페이지 번호 매기기가 작업에 어떻게 어울리는지",
+    workflowDescription: "보고서, 챕터, 첨부 자료가 담긴 폴더가 제본하거나 철하기 전에 일관된 페이지 번호를 모두 필요로 할 때를 위한 기능입니다.",
+    steps: [
+      "PDF 폴더를 페이지에 끌어다 놓으세요.",
+      "페이지 번호의 위치, 형식, 시작 번호를 선택하세요.",
+      "실행하고 번호를 매긴 PDF를 하나의 ZIP으로 다운로드하세요.",
+    ],
+    readingTitle: "PDF를 마무리하는 더 많은 방법",
+    readingDescription: "문서에 번호를 매기고 표시를 남기는 관련 도구.",
+    readingLinks: [
+      { label: "PDF 하나에 페이지 번호 추가", href: "/page-numbers", description: "단일 PDF의 페이지에 번호를 매기세요." },
+      { label: "PDF 작업 흐름 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+    ],
+  },
 };
 
 export function BatchStampClient({ locale = "en", lockMode, embedded = false }: { locale?: Locale; lockMode?: Mode; embedded?: boolean }) {
@@ -449,7 +508,7 @@ export function BatchStampClient({ locale = "en", lockMode, embedded = false }: 
   // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
   // the deepHant branch below); `childLocale` collapses only ko, since BatchUploadBox accepts zh-Hant.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const childLocale = locale === "ko" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const SECTIONS = lockMode === "pagenum" ? SECTIONS_PN : SECTIONS_WM;
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
@@ -523,6 +582,7 @@ export function BatchStampClient({ locale = "en", lockMode, embedded = false }: 
         fr: "Impossible de créer le téléchargement. Réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
         de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
+        ko: "다운로드를 생성하지 못했습니다. 다시 시도해 주세요.",
       };
       setError(locale === "zh-Hant" ? toHant(zipErr.zh) : zipErr[al]);
     }

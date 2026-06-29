@@ -86,6 +86,15 @@ const STR = {
     need: "Fügen Sie mindestens ein PDF hinzu.", err: "Etwas ist schiefgelaufen: ",
     note: "Jede Seite jedes PDFs wird zu einem Bild (mit 2× gerendert). Große Stapel dauern einen Moment – die Verarbeitung erfolgt auf Ihrem Gerät.",
   },
+  ko: {
+    title: "일괄 PDF를 이미지로",
+    subtitle: "PDF 폴더 전체를 끌어다 놓고 모든 페이지를 JPG 또는 PNG로 변환하세요 — 모두 브라우저에서 렌더링되어 하나의 ZIP으로 묶입니다. 아무것도 업로드되지 않습니다.",
+    drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
+    format: "형식", run: "전체 변환", running: "변환 중", download: "ZIP 다운로드", reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개`, pages: (n: number) => `${n}페이지`, failed: "실패",
+    need: "PDF를 최소 한 개 추가하세요.", err: "문제가 발생했습니다: ",
+    note: "모든 PDF의 모든 페이지가 이미지로 변환됩니다(2×로 렌더링). 대량 배치는 잠시 걸립니다 — 모든 작업은 기기에서 처리됩니다.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -243,13 +252,35 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
+  ko: {
+    benefitsTitle: "일괄 PDF를 이미지로, 폴더 전체를 한 번에",
+    benefitsDescription: "PDF 폴더를 지정하면 모든 페이지가 JPG 또는 PNG로 돌아와 하나의 ZIP으로 묶입니다.",
+    benefits: [
+      { title: "폴더를 한 번에 변환", description: "PDF 폴더 전체를 끌어다 놓고 모두 함께 변환하세요 — 파일을 하나씩 열거나 같은 내보내기를 30번 반복할 필요가 없습니다." },
+      { title: "모든 페이지가 이미지로", description: "각 PDF의 각 페이지가 2×로 렌더링되어 선명한 JPG 또는 PNG가 되며, 원본 파일명이 붙어 순서가 분명하게 유지됩니다." },
+      { title: "정돈된 ZIP 하나로 다운로드", description: "모든 이미지가 하나의 ZIP으로 돌아오므로, 50페이지 배치도 수백 개의 낱개 파일이 아니라 한 번의 다운로드로 끝납니다." },
+    ],
+    workflowTitle: "일괄 변환이 작업에 어떻게 맞물리나요",
+    workflowDescription: "PDF 더미를 이미지로 만들어야 할 때 — 발표용 슬라이드, 카탈로그의 페이지 미리보기, 다른 문서에 넣을 그래픽 등.",
+    steps: [
+      "PDF 폴더를 끌어다 놓거나 변환할 파일을 선택하세요.",
+      "JPG 또는 PNG를 고르고 배치 전체를 한 번에 변환하세요.",
+      "모든 페이지가 이미지로 담긴 ZIP 하나를 다운로드하세요.",
+    ],
+    readingTitle: "PDF를 이미지로 바꾸는 더 많은 방법",
+    readingDescription: "PDF 변환과 정리를 위한 관련 도구와 가이드입니다.",
+    readingLinks: [
+      { label: "PDF를 이미지로(단일)", href: "/pdf-to-image", description: "폴더 전체가 필요 없을 때 PDF 하나를 JPG 또는 PNG로 변환합니다." },
+      { label: "PDF 워크플로 자료", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 허브입니다." },
+    ],
+  },
 };
 
 export function BatchPdfToImageClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  // (zh-Hant is also collapsed here because every [al] index below is already inside a
-  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko is fully authored (Korean strings live in STR.ko/SECTIONS.ko); it indexes its own [al]
+  // entry. zh-Hant is collapsed here because every [al] index below is already inside a
+  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
@@ -334,7 +365,7 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
       <input ref={folderRef} type="file" multiple className="hidden" {...({ webkitdirectory: "", directory: "" } as Record<string, string>)} onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale === "ko" ? "en" : locale} onFiles={addFiles} embedded={embedded} valueZone="client" />
+        <BatchUploadBox locale={locale} onFiles={addFiles} embedded={embedded} valueZone="client" />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

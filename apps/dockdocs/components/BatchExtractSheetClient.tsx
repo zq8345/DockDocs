@@ -100,6 +100,17 @@ const STR = {
     err: "Etwas ist schiefgelaufen: ",
     note: "Jedes PDF wird in Ihrem Browser gelesen; nur der extrahierte Text wird zum Auslesen der Felder an die KI gesendet — die Datei selbst wird nicht hochgeladen. Die Felder werden von der KI extrahiert und müssen eventuell kurz geprüft werden. Werte, die sie nicht findet, bleiben leer — sie erfindet sie nicht.",
   },
+  ko: {
+    title: "데이터를 하나의 스프레드시트로 일괄 추출",
+    subtitle: "송장, 견적서, 계약서가 담긴 폴더를 통째로 끌어다 놓으면, DockDocs가 각 파일에서 핵심 항목을 하나의 표로 뽑아냅니다. 문서 하나당 한 행이며, CSV로 바로 다운로드할 수 있습니다. AI는 실제로 존재하는 내용만 보고합니다.",
+    drop: "여기에 PDF(또는 폴더)를 끌어다 놓거나 클릭하여 선택하세요", choose: "PDF 선택", folder: "폴더 선택", add: "더 추가", reading: "파일 읽는 중…",
+    type: "문서 유형", invoice: "송장", quote: "견적서", contract: "계약서",
+    extract: "전체 추출", extracting: "추출 중", reset: "다시 시작",
+    download: "CSV 다운로드", doc: "문서", dash: "—",
+    files: (n: number, max: number) => `${n} / ${max}개 파일`, needFile: "PDF를 하나 이상 추가해 주세요.",
+    err: "문제가 발생했습니다: ",
+    note: "각 PDF는 브라우저에서 읽히며, 항목을 뽑아내기 위해 추출된 텍스트만 AI로 전송됩니다 — 파일 자체는 업로드되지 않습니다. 항목은 AI가 추출하므로 간단한 확인이 필요할 수 있습니다. 찾지 못한 값은 빈칸으로 남으며, AI가 임의로 지어내지 않습니다.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) {

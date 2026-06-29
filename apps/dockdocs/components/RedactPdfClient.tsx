@@ -58,6 +58,7 @@ function pageLabel(locale: Locale, n: number): string {
     fr: `Page ${n}`,
     ja: `Page ${n}`,
     de: `Seite ${n}`,
+    ko: `${n}페이지`,
   };
   return MSG[al];
 }
@@ -162,6 +163,20 @@ const STR = {
     needBox: "Fügen Sie zuerst mindestens eine Schwärzung hinzu.",
     note: "Die Ausgabe ist ein reduziertes Bild-PDF: Der geschwärzte Inhalt wird dauerhaft entfernt und der Seitentext lässt sich nicht mehr markieren – genau das macht ihn unwiederherstellbar.",
     err: "Etwas ist schiefgelaufen: ", tooMany: `Dieses PDF hat mehr als ${MAX_PAGES} Seiten. Teilen Sie es zuerst und schwärzen Sie es dann.`,
+  },
+  ko: {
+    title: "PDF 텍스트 지우기",
+    subtitle: "이름, 번호 등 민감한 텍스트를 가린 뒤, 그 내용이 진짜로 사라진 사본을 다운로드하세요. 아래로 복사할 수 있는 가짜 검은 상자와 달리, DockDocs는 각 페이지를 이미지로 평탄화해 숨겨진 텍스트를 완전히 없앱니다. 브라우저에서 실행되며, 파일은 기기를 벗어나지 않습니다.",
+    drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+    choose: "PDF 선택", rendering: "페이지를 렌더링하는 중…",
+    hint: "페이지 위를 드래그해 영역을 가리세요. 자동으로 찾은 항목은 미리 표시되어 있습니다 — 상자의 ✕를 클릭하면 제거됩니다.",
+    autoFound: (n: number) => `민감할 수 있는 항목 ${n}개를 자동으로 찾았습니다(이메일, 전화번호, SSN, 카드번호, IP). 검토하고 직접 추가하세요.`,
+    autoNone: "뚜렷한 이메일/번호를 자동으로 찾지 못했습니다 — 페이지 위를 드래그해 직접 가리세요.",
+    boxes: (n: number) => `${n}곳 가림`,
+    clear: "모두 지우기", apply: "적용하고 다운로드", working: "삭제하고 평탄화하는 중…", reset: "다시 시작",
+    needBox: "먼저 가릴 영역을 최소 한 곳 추가하세요.",
+    note: "결과물은 평탄화된 이미지 PDF입니다. 가린 내용은 영구히 삭제되고 페이지 텍스트는 더 이상 선택할 수 없습니다 — 바로 이 점이 복구를 불가능하게 만듭니다.",
+    err: "문제가 발생했습니다: ", tooMany: `이 PDF는 ${MAX_PAGES}페이지를 넘습니다. 먼저 분할한 뒤 가리세요.`,
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -344,6 +359,29 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentpfade." },
     ],
   },
+  ko: {
+    benefitsTitle: "브라우저에서 PDF를 가리는 이유",
+    benefitsDescription: "민감한 내용을 가리고, 숨긴 텍스트가 단지 덮인 게 아니라 진짜로 사라진 사본을 다운로드하세요.",
+    benefits: [
+      { title: "텍스트가 숨겨지는 게 아니라 사라집니다", description: "각 페이지를 이미지로 평탄화하므로, 단순한 검은 상자 아래와 달리 가린 단어를 복사·검색·복구할 수 없습니다." },
+      { title: "뻔한 위험을 자동으로 찾습니다", description: "이메일, 전화번호, SSN, 카드번호, IP를 감지해 미리 표시해 드립니다 — 각 항목을 검토하고 적용 전에 오탐을 제거하세요." },
+      { title: "정밀한 수동 제어", description: "감지기가 놓친 것은 무엇이든 — 이름, 금액, 서명, 로고 — 상자를 드래그해 가리고, 페이지에 필요한 만큼 정확히 표시하세요." },
+    ],
+    workflowTitle: "가리기가 문서 작업에 어떻게 들어맞는가",
+    workflowDescription: "파일을 공유해야 하지만 일부는 절대 읽혀선 안 될 때 — 계약서, 진료 기록, 증거 문서, 개인정보가 담긴 스크린샷.",
+    steps: [
+      "정리할 PDF를 업로드합니다(최대 30페이지).",
+      "자동으로 감지된 항목을 확인하고, 그 밖에 가릴 부분은 상자를 드래그합니다.",
+      "적용하고, 가린 내용이 영구히 삭제된 평탄화 사본을 다운로드합니다.",
+    ],
+    readingTitle: "PDF를 보호하는 더 많은 방법",
+    readingDescription: "문서를 보호하고 마무리하는 관련 도구와 가이드.",
+    readingLinks: [
+      { label: "PDF 워터마크", href: "/watermark-pdf", description: "공유하기 전에 CONFIDENTIAL이나 DRAFT 같은 표시를 페이지에 찍으세요." },
+      { label: "PDF를 무료로 가리는 법", href: "/guides/redact-pdf-free", description: "복구할 수 없도록 민감한 텍스트를 제거하는 단계별 안내." },
+      { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+    ],
+  },
 };
 
 const SECTIONS_KO: ToolSectionsContent = {
@@ -375,7 +413,7 @@ export function RedactPdfClient({ locale = "en", embedded = false }: { locale?: 
   // for the AuthoredLocale-typed tables ko is intentionally excluded from.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
-  const childLocale = locale === "ko" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");

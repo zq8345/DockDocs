@@ -203,6 +203,31 @@ const STR: AuthoredCopy<typeof STR_EN> = {
     filterAdvisory: "Nur empfohlene",
     noQuote: "Zitat nicht überprüfbar",
   },
+  ko: {
+    title: "정부 입찰 컴플라이언스 매트릭스",
+    eyebrow: "PRO · 단일 문서 AI",
+    subtitle: "RFP나 입찰 공고를 업로드하면 모든 'shall/must' 요건을 조항 참조가 붙은 번호 매긴 컴플라이언스 매트릭스로 추출합니다.",
+    upload: "입찰 공고 PDF를 여기에 놓으세요",
+    analyze: "요건 추출",
+    analyzing: "입찰 공고 분석 중…",
+    noText: "읽을 수 있는 텍스트를 찾지 못했습니다. 이 PDF에 먼저 OCR을 실행하세요.",
+    errPrefix: "분석 실패:",
+    retry: "다시 시도",
+    privacy: "📋 분석에는 추출된 텍스트만 전송됩니다 — 파일 자체는 업로드되지 않습니다.",
+    mandatory: "필수",
+    advisory: "권고",
+    colId: "#",
+    colSection: "조항",
+    colRequirement: "요건",
+    colType: "유형",
+    colQuote: "출처 텍스트",
+    downloadCsv: "CSV 다운로드",
+    found: (n: number) => `요건 ${n}개 발견`,
+    filterAll: "전체",
+    filterMandatory: "필수만",
+    filterAdvisory: "권고만",
+    noQuote: "인용 확인 불가",
+  },
 };
 
 function exportCsv(requirements: Requirement[], t: typeof STR_EN) {
@@ -383,17 +408,40 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "KI-Dokumentenressourcen", href: "/resources", description: "Ein strukturierter Hub für KI-Dokumententools, Extraktion und Analysewege." },
     ],
   },
+  ko: {
+    benefitsTitle: "컴플라이언스 매트릭스가 해 주는 일",
+    benefitsDescription: "AI가 입찰 문서의 텍스트를 읽고, 흩어진 의무를 하나의 구조화된 내보내기 가능한 매트릭스로 정리합니다.",
+    benefits: [
+      { title: "모든 shall/must, 하나도 놓치지 않음", description: "AI가 입찰 문서 전체에서 구속력 있는 표현 — 'shall', 'must', '~해야 한다' — 을 훑어내므로, 47페이지에 묻힌 요건 때문에 낙찰을 놓치지 않습니다." },
+      { title: "각 줄에 출처 조항이 붙습니다", description: "각 요건에는 출처 조항 번호가 붙고, 위치를 찾을 수 있을 때는 정확한 출처 문장도 함께 표시되어, 팀이 원본 RFP와 하나씩 대조해 확인할 수 있습니다." },
+      { title: "제안용으로 CSV 내보내기", description: "번호 매긴 매트릭스를 곧바로 스프레드시트로 옮겨 담당자, 상태, 증빙을 배정하세요 — 추출 결과가 실제로 쓰는 컴플라이언스 체크리스트가 됩니다." },
+    ],
+    workflowTitle: "입찰 PDF에서 컴플라이언스 체크리스트까지",
+    workflowDescription: "입찰 건이 도착하고, 마감 카운트다운이 시작되기 전에 모든 구속력 있는 요건을 뽑아내야 할 때를 위한 기능입니다.",
+    steps: [
+      "RFP나 입찰 공고 PDF를 업로드하세요.",
+      "AI가 문서의 텍스트를 분석해 각 shall/must 요건을 조항 참조와 함께 추출합니다.",
+      "번호 매긴 매트릭스를 검토하고, 입찰 응답용으로 CSV로 다운로드하세요.",
+    ],
+    readingTitle: "더 많은 AI 문서 분석",
+    readingDescription: "계약서, 임대차, 긴 문서를 읽기 위한 관련 도구입니다.",
+    readingLinks: [
+      { label: "계약 위험 검토", href: "/contract-risk", description: "계약서의 위험 조항과 한쪽에 치우친 조건을 표시하고, 각각을 출처 구절에 연결합니다." },
+      { label: "AI 문서 작업 공간", href: "/ai-workspace", description: "문서 전체에 질문하고, 본문까지 추적되는 답변을 받아 보세요." },
+      { label: "AI 문서 자료", href: "/resources", description: "AI 문서 도구, 추출, 분석 경로를 정리한 구조화된 허브입니다." },
+    ],
+  },
 };
 
 export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko is fully authored (STR/SECTIONS/READ_ERR carry Korean). zh-Hant derives from zh via deepHant.
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   // zh-Hant rendered from zh via OpenCC; child components (UpgradePrompt /
   // ToolFaq / encryptedPdfMessage) lack zh-Hant in their union → map to "zh".
   // ko has no engine/runtime copy yet → English (foundation phase); zh-Hant preserved.
-  const childLocale = locale === "ko" ? "en" : locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const [phase, setPhase] = useState<"ready" | "analyzing" | "done">("ready");
   const [error, setError] = useState<string | null>(null);
   const [requirements, setRequirements] = useState<Requirement[] | null>(null);
@@ -431,6 +479,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
           fr: "Impossible de lire le PDF",
           ja: "PDF を読み取れませんでした",
           de: "PDF konnte nicht gelesen werden",
+          ko: "PDF를 읽을 수 없습니다",
         };
         const readErr = locale === "zh-Hant" ? toHant(READ_ERR.zh) : READ_ERR[al];
         const msg = encryptedPdfMessage(e, childLocale) ?? readErr;
@@ -517,7 +566,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
       </div>
 
       {/* Limit hit */}
-      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
 
       {/* Error */}
       {error && (

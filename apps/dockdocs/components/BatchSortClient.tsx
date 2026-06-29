@@ -86,6 +86,15 @@ const STR = {
     need: "Fügen Sie mindestens ein PDF hinzu.", err: "Etwas ist schiefgelaufen: ",
     note: "Jedes PDF wird in Ihrem Browser gelesen; nur der extrahierte Text wird zum Sortieren an die KI gesendet — die Datei selbst wird nicht hochgeladen. Die Kategorien werden von der KI aus dem Text jedes Dokuments vorgeschlagen und müssen eventuell geprüft werden. Das ZIP behält Ihre Originaldateien unverändert bei und gruppiert sie nur in Kategorieordner.",
   },
+  ko: {
+    title: "PDF 분류",
+    subtitle: "지저분하게 쌓인 PDF를 끌어다 놓으면 — AI가 각각에 라벨(청구서, 계약서, 이력서, 보고서…)을 붙여 하나의 ZIP 안 폴더로 분류해, 어수선한 폴더가 말끔히 정리되어 나옵니다.",
+    drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택", add: "더 추가", reading: "파일을 읽는 중…",
+    run: "전체 분류", running: "분류 중", download: "분류된 ZIP 다운로드", reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개`, uncategorized: "미분류", failed: "텍스트 없음",
+    need: "PDF를 최소 한 개 추가하세요.", err: "문제가 발생했습니다: ",
+    note: "각 PDF는 브라우저에서 읽히며, 분류를 위해 추출된 텍스트만 AI로 전송됩니다 — 파일 자체는 업로드되지 않습니다. 카테고리는 각 문서의 텍스트로부터 AI가 제안한 것이라 확인이 필요할 수 있습니다. ZIP은 원본 파일을 그대로 유지하고 카테고리 폴더로 묶기만 합니다.",
+  },
 } satisfies AuthoredCopy<typeof STR_en>;
 
 const folderSafe = (s: string) => s.replace(/[\\/:*?"<>|]+/g, "-").trim().slice(0, 40) || "其他";
@@ -252,14 +261,37 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
+  ko: {
+    benefitsTitle: "AI로 PDF 폴더를 분류하는 이유",
+    benefitsDescription: "뒤섞인 문서 더미를 한 번의 처리로 카테고리 폴더로 정리하세요.",
+    benefits: [
+      { title: "폴더 전체를 한 번에", description: "뒤섞인 PDF 수십 개를 한 번에 끌어다 놓으면 — AI가 모든 문서에 라벨을 붙여 하나의 ZIP 안 카테고리 폴더로 묶습니다." },
+      { title: "텍스트로 카테고리를 판단", description: "각 문서의 텍스트를 AI가 분석해 라벨(청구서, 계약서, 이력서, 보고서…)을 제안하므로, 파일명만이 아니라 실제 내용에 따라 분류됩니다." },
+      { title: "원본은 그대로", description: "ZIP에는 원본 PDF가 변경 없이 담깁니다 — 카테고리 폴더로 옮겨질 뿐, 다시 쓰거나 재인코딩하지 않습니다." },
+    ],
+    workflowTitle: "자동 분류가 문서 작업에 어떻게 맞물리나요",
+    workflowDescription: "다운로드 폴더나 공유 드라이브가 정리해야 할 이름 없는 PDF 더미로 변할 때를 위한 기능입니다.",
+    steps: [
+      "PDF 폴더를 끌어다 놓거나 정리할 파일을 선택하세요.",
+      "AI가 각 문서의 텍스트를 읽고 카테고리를 제안합니다.",
+      "모든 파일이 카테고리 폴더로 묶인 ZIP 하나를 다운로드하세요.",
+    ],
+    readingTitle: "PDF를 대량으로 처리하는 더 많은 방법",
+    readingDescription: "여러 문서를 가로질러 작업하기 위한 관련 AI 도구와 가이드입니다.",
+    readingLinks: [
+      { label: "PDF 대량 요약", href: "/batch-summary", description: "PDF 폴더 전체를 AI에 돌려 각각의 짧은 요약을 받습니다." },
+      { label: "계약 위험 찾기", href: "/contract-risk", description: "AI가 계약서 텍스트를 읽고 위험한 조항과 누락된 조건을 표시하게 하세요." },
+      { label: "PDF 워크플로 자료", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 허브입니다." },
+    ],
+  },
 };
 
 export function BatchSortClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
-  // the deepHant branch below); `childLocale` collapses only ko, since the widgets accept zh-Hant.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const childLocale = locale === "ko" ? "en" : locale;
+  // ko is fully authored (Korean strings live in STR.ko/SECTIONS.ko). `al` collapses only
+  // zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes the deepHant branch below);
+  // ko indexes its own [al] entry. `childLocale` collapses ko since the widgets have no ko.
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
@@ -419,7 +451,7 @@ export function BatchSortClient({ locale = "en", embedded = false }: { locale?: 
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="batch-sort" locale={locale} />}
     </div>

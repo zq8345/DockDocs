@@ -96,6 +96,17 @@ const STR = {
     files: (n: number, max: number) => `${n} / ${max} Dateien`, preview: "Vorschau", need: "Fügen Sie mindestens ein PDF hinzu.",
     note: "Das Umbenennen ändert nur die Dateinamen — der Inhalt der PDFs bleibt unverändert. Die meisten Tools laufen in Ihrem Browser.",
   },
+  ko: {
+    title: "일괄 이름 변경",
+    subtitle: "폴더 전체를 끌어다 놓고 모든 파일의 이름을 한 번에 바꾸세요 — 번호 패턴이나 찾기·바꾸기로. 파일 자체는 그대로이며, 새 이름이 적용된 ZIP을 다운로드합니다.",
+    drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
+    seq: "번호", rep: "찾기·바꾸기",
+    base: "기본 이름", basePlaceholder: "예: invoice", start: "시작 번호",
+    find: "찾기", replace: "바꿀 내용", findPlaceholder: "파일명 속 텍스트", replacePlaceholder: "새 텍스트",
+    download: "이름 변경된 ZIP 다운로드", reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개`, preview: "미리보기", need: "PDF를 최소 한 개 추가하세요.",
+    note: "이름 변경은 파일명만 바꿉니다 — PDF 내용은 변하지 않습니다. 모든 작업은 기기에서 처리됩니다.",
+  },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -253,13 +264,35 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Ressourcen zu PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentwege." },
     ],
   },
+  ko: {
+    benefitsTitle: "PDF 폴더를 일괄로 이름 변경하는 이유",
+    benefitsDescription: "PDF 폴더 전체를 한 번에 이름 변경하고, 이름이 바뀐 묶음을 하나의 ZIP으로 다운로드하세요.",
+    benefits: [
+      { title: "폴더 전체를 한 번에 이름 변경", description: "수십, 수백 개의 PDF를 끌어다 놓고 하나의 명명 규칙을 모두에 적용하세요 — 파일을 하나씩 열어 이름을 바꿀 필요가 없습니다." },
+      { title: "번호 패턴 또는 찾기·바꾸기", description: "순차 카운터가 붙은 기본 이름을 고르거나, 모든 파일명에서 일부 텍스트를 바꿔 즉시 일관된 이름으로 만드세요." },
+      { title: "이름이 바뀐 묶음을 ZIP 하나로", description: "이름이 바뀐 모든 파일이 하나의 ZIP으로 돌아오며, 원본 PDF 내용은 그대로입니다 — 바뀌는 것은 파일명뿐입니다." },
+    ],
+    workflowTitle: "일괄 이름 변경이 문서 작업에 어떻게 맞물리나요",
+    workflowDescription: "내보내기, 스캔, 청구서 폴더가 지저분하거나 중복된 이름으로 도착해 깔끔하고 정렬 가능한 명명 체계가 필요한 순간을 위한 기능입니다.",
+    steps: [
+      "PDF 폴더를 끌어다 놓거나 이름을 바꿀 파일을 선택하세요.",
+      "번호 패턴 또는 찾기·바꾸기를 고르고 실시간 변경 전/후 미리보기를 확인하세요.",
+      "이름이 바뀐 묶음을 ZIP 하나로 다운로드하세요.",
+    ],
+    readingTitle: "PDF를 정리하는 더 많은 방법",
+    readingDescription: "여러 문서를 묶음으로 관리하기 위한 관련 도구와 자료입니다.",
+    readingLinks: [
+      { label: "PDF 병합", href: "/merge-pdf", description: "여러 PDF를 순서가 잡힌 하나의 문서로 합칩니다." },
+      { label: "PDF 워크플로 자료", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 허브입니다." },
+    ],
+  },
 };
 
 export function BatchRenameClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  // (zh-Hant is also collapsed here because every [al] index below is already inside a
-  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko is fully authored (Korean strings live in STR.ko/SECTIONS.ko); it indexes its own [al]
+  // entry. zh-Hant is collapsed here because every [al] index below is already inside a
+  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
@@ -325,6 +358,7 @@ export function BatchRenameClient({ locale = "en", embedded = false }: { locale?
         fr: "Impossible de créer le téléchargement. Réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
         de: "Der Download konnte nicht erstellt werden — bitte versuchen Sie es erneut.",
+        ko: "다운로드를 만들지 못했습니다 — 다시 시도해 주세요.",
       };
       setError(locale === "zh-Hant" ? toHant(FAIL.zh) : FAIL[al]);
     }
@@ -341,7 +375,7 @@ export function BatchRenameClient({ locale = "en", embedded = false }: { locale?
       <input ref={folderRef} type="file" multiple className="hidden" {...({ webkitdirectory: "", directory: "" } as Record<string, string>)} onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale === "ko" ? "en" : locale} onFiles={addFiles} embedded={embedded} valueZone="client" />
+        <BatchUploadBox locale={locale} onFiles={addFiles} embedded={embedded} valueZone="client" />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-end justify-between gap-3">

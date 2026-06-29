@@ -44,14 +44,15 @@ function accountCopy(locale: Exclude<AccountLocale, "zh-Hant">) {
   const fr = locale === "fr";
   const ja = locale === "ja";
   const de = locale === "de";
+  const ko = locale === "ko";
   return {
-    redirecting: (label: string) => (zh ? `正在跳转到${label}…` : es ? `Redirigiendo a ${label}…` : pt ? `Redirecionando para ${label}…` : fr ? `Redirection vers ${label}…` : ja ? `${label}にリダイレクトしています…` : de ? `Weiterleitung zu ${label}…` : `Redirecting to ${label}…`),
-    oauthFailed: (label: string) => (zh ? `${label}登录失败` : es ? `Error al iniciar sesión con ${label}` : pt ? `Falha ao entrar com ${label}` : fr ? `Échec de connexion avec ${label}` : ja ? `${label}でのサインインに失敗しました` : de ? `Anmeldung mit ${label} fehlgeschlagen` : `${label} sign-in failed`),
-    sendFailed: zh ? "发送失败，请重试" : es ? "Error al enviar, inténtalo de nuevo" : pt ? "Falha ao enviar, tente novamente" : fr ? "Échec d'envoi, veuillez réessayer" : ja ? "送信に失敗しました。もう一度お試しください" : de ? "Senden fehlgeschlagen, bitte versuchen Sie es erneut" : "Failed to send, please try again",
-    signOutFailed: zh ? "退出失败" : es ? "Error al cerrar sesión" : pt ? "Falha ao sair" : fr ? "Échec de la déconnexion" : ja ? "サインアウトに失敗しました" : de ? "Abmeldung fehlgeschlagen" : "Sign out failed",
-    checkoutFailed: zh ? "结算失败" : es ? "Error en el pago" : pt ? "Falha no pagamento" : fr ? "Échec du paiement" : ja ? "決済に失敗しました" : de ? "Zahlung fehlgeschlagen" : "Checkout failed",
-    portalFailed: zh ? "账单管理打开失败" : es ? "No se pudo abrir el portal de facturación" : pt ? "Não foi possível abrir o portal de cobrança" : fr ? "Impossible d'ouvrir le portail de facturation" : ja ? "請求管理を開けませんでした" : de ? "Abrechnungsportal konnte nicht geöffnet werden" : "Couldn't open billing portal",
-    magicSentTitle: zh ? "登录链接已发送" : es ? "Enlace de acceso enviado" : pt ? "Link de acesso enviado" : fr ? "Lien de connexion envoyé" : ja ? "サインインリンクを送信しました" : de ? "Anmeldelink gesendet" : "Magic link sent",
+    redirecting: (label: string) => (zh ? `正在跳转到${label}…` : es ? `Redirigiendo a ${label}…` : pt ? `Redirecionando para ${label}…` : fr ? `Redirection vers ${label}…` : ja ? `${label}にリダイレクトしています…` : de ? `Weiterleitung zu ${label}…` : ko ? `${label}(으)로 이동하고 있어요…` : `Redirecting to ${label}…`),
+    oauthFailed: (label: string) => (zh ? `${label}登录失败` : es ? `Error al iniciar sesión con ${label}` : pt ? `Falha ao entrar com ${label}` : fr ? `Échec de connexion avec ${label}` : ja ? `${label}でのサインインに失敗しました` : de ? `Anmeldung mit ${label} fehlgeschlagen` : ko ? `${label} 로그인에 실패했어요` : `${label} sign-in failed`),
+    sendFailed: zh ? "发送失败，请重试" : es ? "Error al enviar, inténtalo de nuevo" : pt ? "Falha ao enviar, tente novamente" : fr ? "Échec d'envoi, veuillez réessayer" : ja ? "送信に失敗しました。もう一度お試しください" : de ? "Senden fehlgeschlagen, bitte versuchen Sie es erneut" : ko ? "전송에 실패했어요. 다시 시도해 주세요" : "Failed to send, please try again",
+    signOutFailed: zh ? "退出失败" : es ? "Error al cerrar sesión" : pt ? "Falha ao sair" : fr ? "Échec de la déconnexion" : ja ? "サインアウトに失敗しました" : de ? "Abmeldung fehlgeschlagen" : ko ? "로그아웃에 실패했어요" : "Sign out failed",
+    checkoutFailed: zh ? "结算失败" : es ? "Error en el pago" : pt ? "Falha no pagamento" : fr ? "Échec du paiement" : ja ? "決済に失敗しました" : de ? "Zahlung fehlgeschlagen" : ko ? "결제에 실패했어요" : "Checkout failed",
+    portalFailed: zh ? "账单管理打开失败" : es ? "No se pudo abrir el portal de facturación" : pt ? "Não foi possível abrir o portal de cobrança" : fr ? "Impossible d'ouvrir le portail de facturation" : ja ? "請求管理を開けませんでした" : de ? "Abrechnungsportal konnte nicht geöffnet werden" : ko ? "결제 관리를 열 수 없었어요" : "Couldn't open billing portal",
+    magicSentTitle: zh ? "登录链接已发送" : es ? "Enlace de acceso enviado" : pt ? "Link de acesso enviado" : fr ? "Lien de connexion envoyé" : ja ? "サインインリンクを送信しました" : de ? "Anmeldelink gesendet" : ko ? "로그인 링크를 보냈어요" : "Magic link sent",
     magicSentBody: (email: string) =>
       zh
         ? `我们已把登录链接发到 ${email}，点击邮件里的链接即可登录(可能在垃圾箱)。`
@@ -65,28 +66,30 @@ function accountCopy(locale: Exclude<AccountLocale, "zh-Hant">) {
         ? `${email} にサインインリンクを送信しました。メール内のリンクをクリックしてサインインしてください（迷惑メールフォルダもご確認ください）。`
         : de
         ? `Wir haben einen Anmeldelink an ${email} gesendet. Klicken Sie darauf, um sich anzumelden (prüfen Sie auch den Spam-Ordner).`
+        : ko
+        ? `${email} 주소로 로그인 링크를 보냈어요. 이메일의 링크를 클릭하면 로그인됩니다 (스팸함도 확인해 주세요).`
         : `We've sent a sign-in link to ${email}. Click it to sign in (check spam too).`,
-    back: zh ? "← 返回" : es ? "← Volver" : pt ? "← Voltar" : fr ? "← Retour" : ja ? "← 戻る" : de ? "← Zurück" : "← Back",
-    continueGoogle: zh ? "使用 Google 继续" : es ? "Continuar con Google" : pt ? "Continuar com Google" : fr ? "Continuer avec Google" : ja ? "Google で続ける" : de ? "Mit Google fortfahren" : "Continue with Google",
-    continueMicrosoft: zh ? "使用 Microsoft 继续" : es ? "Continuar con Microsoft" : pt ? "Continuar com Microsoft" : fr ? "Continuer avec Microsoft" : ja ? "Microsoft で続ける" : de ? "Mit Microsoft fortfahren" : "Continue with Microsoft",
-    orEmail: zh ? "或邮箱" : es ? "o correo" : pt ? "ou e-mail" : fr ? "ou e-mail" : ja ? "またはメール" : de ? "oder E-Mail" : "or email",
-    sending: zh ? "发送中…" : es ? "Enviando…" : pt ? "Enviando…" : fr ? "Envoi en cours…" : ja ? "送信中…" : de ? "Wird gesendet…" : "Sending…",
-    sendMagic: zh ? "发送登录链接" : es ? "Enviar enlace de acceso" : pt ? "Enviar link de acesso" : fr ? "Envoyer le lien de connexion" : ja ? "サインインリンクを送信" : de ? "Anmeldelink senden" : "Send magic link",
-    emailHint: zh ? "无需密码，我们会发一封登录邮件给你" : es ? "Sin contraseña — te enviaremos un enlace de acceso" : pt ? "Sem senha — enviaremos um link de acesso por e-mail" : fr ? "Sans mot de passe — nous vous enverrons un lien de connexion" : ja ? "パスワード不要 — サインインリンクをメールでお送りします" : de ? "Kein Passwort — wir senden Ihnen einen Anmeldelink per E-Mail" : "No password — we'll email you a sign-in link",
-    appleSoon: zh ? "即将支持 Apple 登录" : es ? "Apple Sign-in próximamente" : pt ? "Apple Sign-in em breve" : fr ? "Connexion Apple bientôt disponible" : ja ? "Apple サインインは近日対応" : de ? "Apple-Anmeldung folgt in Kürze" : "Apple sign-in coming soon",
-    signedIn: zh ? "已登录" : es ? "Sesión iniciada" : pt ? "Sessão iniciada" : fr ? "Connecté" : ja ? "サインイン済み" : de ? "Angemeldet" : "Signed in",
-    planBilling: zh ? "套餐与账单" : es ? "Plan y facturación" : pt ? "Plano e cobrança" : fr ? "Forfait et facturation" : ja ? "プランと請求" : de ? "Tarif & Abrechnung" : "Plan & billing",
-    manageBilling: zh ? "管理账单" : es ? "Gestionar facturación" : pt ? "Gerenciar cobrança" : fr ? "Gérer la facturation" : ja ? "請求を管理" : de ? "Abrechnung verwalten" : "Manage billing",
-    manageBillingHint: zh ? "更改付款方式、取消或下载发票 — 由 Creem 安全托管，诚实无套路。" : es ? "Cambia tu método de pago, cancela o descarga facturas — gestionado de forma segura por Creem, sin trucos." : pt ? "Altere sua forma de pagamento, cancele ou baixe faturas — gerenciado com segurança pela Creem, sem pegadinhas." : fr ? "Modifiez votre moyen de paiement, annulez ou téléchargez vos factures — géré en toute sécurité par Creem, sans pièges." : ja ? "お支払い方法の変更・解約・請求書のダウンロード — Creem が安全に処理、隠れた仕掛けはありません。" : de ? "Zahlungsmethode ändern, kündigen oder Rechnungen herunterladen — sicher über Creem abgewickelt, ohne versteckte Tricks." : "Change payment, cancel, or download invoices — securely handled by Creem, no tricks.",
-    usageTitle: zh ? "用量与权益" : es ? "Uso y beneficios" : pt ? "Uso e benefícios" : fr ? "Utilisation et avantages" : ja ? "使用量と特典" : de ? "Nutzung & Leistungen" : "Usage & entitlements",
-    includedFree: zh ? "PDF 基础工具无限使用 · AI 工具可浅尝" : es ? "Herramientas PDF básicas ilimitadas · una muestra de las herramientas de IA" : pt ? "Ferramentas PDF básicas ilimitadas · uma amostra das ferramentas de IA" : fr ? "Outils PDF de base illimités · un aperçu des outils d'IA" : ja ? "基本 PDF ツールは無制限 · AI ツールはお試し利用" : de ? "Unbegrenzte grundlegende PDF-Tools · ein Vorgeschmack auf die KI-Tools" : "Unlimited core PDF tools · a taste of AI tools",
-    includedPlus: zh ? "涵盖免费版 · AI 与批量工具可用量 · 公平用量" : es ? "Todo lo de Free · IA y herramientas por lotes con volumen de trabajo · uso justo" : pt ? "Tudo do Free · IA e ferramentas em lote com volume de trabalho · uso justo" : fr ? "Tout le forfait gratuit · IA et outils par lots à volume de travail · usage équitable" : ja ? "Free のすべて · AI・一括ツールを実用的な量まで · フェアユース" : de ? "Alles aus Free · KI- und Stapel-Tools in praktischem Umfang · faire Nutzung" : "Everything in Free · AI & batch tools at working volume · fair use",
-    includedPro: zh ? "涵盖 Plus · 专业级精准 · 无限公平用量" : es ? "Todo lo de Plus · precisión profesional · uso justo ilimitado" : pt ? "Tudo do Plus · precisão profissional · uso justo ilimitado" : fr ? "Tout Plus · précision professionnelle · usage équitable illimité" : ja ? "Plus のすべて · プロ級の精度 · 無制限のフェアユース" : de ? "Alles aus Plus · Präzision auf Profi-Niveau · unbegrenzte faire Nutzung" : "Everything in Plus · pro-grade precision · unlimited fair use",
-    fairUse: zh ? "公平用量上限仅用于防止滥用，正常使用不会触及；门控上线后这里会显示实时用量。" : es ? "Los límites de uso justo solo evitan abusos; el uso normal nunca los alcanza. El uso en tiempo real aparecerá aquí pronto." : pt ? "Os limites de uso justo só evitam abusos; o uso normal nunca os atinge. O uso em tempo real aparecerá aqui em breve." : fr ? "Les limites d'usage équitable ne servent qu'à éviter les abus ; un usage normal ne les atteint jamais. L'utilisation en temps réel s'affichera bientôt ici." : ja ? "フェアユース上限は不正利用を防ぐためだけのもので、通常のご利用で達することはありません。計測機能の提供後、ここにリアルタイムの使用量が表示されます。" : de ? "Faire-Nutzung-Grenzen schützen nur vor Missbrauch — bei normaler Nutzung werden sie nie erreicht. Die Echtzeit-Nutzung erscheint hier, sobald die Messung verfügbar ist." : "Fair-use limits only guard against abuse — normal use never hits them. Live usage will appear here once metering ships.",
-    trustLine: zh ? "你的文档从不用于训练我们的模型；多数工具在浏览器本地运行。" : es ? "Tus documentos nunca se usan para entrenar nuestros modelos; la mayoría de las herramientas se ejecutan localmente en tu navegador." : pt ? "Seus documentos nunca são usados para treinar nossos modelos; a maioria das ferramentas roda localmente no seu navegador." : fr ? "Vos documents ne servent jamais à entraîner nos modèles ; la plupart des outils s'exécutent localement dans votre navigateur." : ja ? "あなたの文書がモデルの学習に使われることは一切ありません。ほとんどのツールはブラウザ内でローカルに動作します。" : de ? "Ihre Dokumente werden niemals zum Training unserer Modelle verwendet; die meisten Tools laufen lokal in Ihrem Browser." : "Your documents are never used to train our models — most tools run locally in your browser.",
-    loading: zh ? "加载…" : es ? "Cargando…" : pt ? "Carregando…" : fr ? "Chargement…" : ja ? "読み込み中…" : de ? "Wird geladen…" : "Loading…",
-    signOut: zh ? "退出登录" : es ? "Cerrar sesión" : pt ? "Sair" : fr ? "Se déconnecter" : ja ? "サインアウト" : de ? "Abmelden" : "Sign out",
-    privateSpace: zh ? "私密工作区" : es ? "Espacio privado" : pt ? "Espaço privado" : fr ? "Espace privé" : ja ? "プライベートワークスペース" : de ? "Privater Bereich" : "Private Space",
+    back: zh ? "← 返回" : es ? "← Volver" : pt ? "← Voltar" : fr ? "← Retour" : ja ? "← 戻る" : de ? "← Zurück" : ko ? "← 뒤로" : "← Back",
+    continueGoogle: zh ? "使用 Google 继续" : es ? "Continuar con Google" : pt ? "Continuar com Google" : fr ? "Continuer avec Google" : ja ? "Google で続ける" : de ? "Mit Google fortfahren" : ko ? "Google 계정으로 계속하기" : "Continue with Google",
+    continueMicrosoft: zh ? "使用 Microsoft 继续" : es ? "Continuar con Microsoft" : pt ? "Continuar com Microsoft" : fr ? "Continuer avec Microsoft" : ja ? "Microsoft で続ける" : de ? "Mit Microsoft fortfahren" : ko ? "Microsoft 계정으로 계속하기" : "Continue with Microsoft",
+    orEmail: zh ? "或邮箱" : es ? "o correo" : pt ? "ou e-mail" : fr ? "ou e-mail" : ja ? "またはメール" : de ? "oder E-Mail" : ko ? "또는 이메일" : "or email",
+    sending: zh ? "发送中…" : es ? "Enviando…" : pt ? "Enviando…" : fr ? "Envoi en cours…" : ja ? "送信中…" : de ? "Wird gesendet…" : ko ? "전송 중…" : "Sending…",
+    sendMagic: zh ? "发送登录链接" : es ? "Enviar enlace de acceso" : pt ? "Enviar link de acesso" : fr ? "Envoyer le lien de connexion" : ja ? "サインインリンクを送信" : de ? "Anmeldelink senden" : ko ? "로그인 링크 보내기" : "Send magic link",
+    emailHint: zh ? "无需密码，我们会发一封登录邮件给你" : es ? "Sin contraseña — te enviaremos un enlace de acceso" : pt ? "Sem senha — enviaremos um link de acesso por e-mail" : fr ? "Sans mot de passe — nous vous enverrons un lien de connexion" : ja ? "パスワード不要 — サインインリンクをメールでお送りします" : de ? "Kein Passwort — wir senden Ihnen einen Anmeldelink per E-Mail" : ko ? "비밀번호 없이 — 로그인 링크를 이메일로 보내드려요" : "No password — we'll email you a sign-in link",
+    appleSoon: zh ? "即将支持 Apple 登录" : es ? "Apple Sign-in próximamente" : pt ? "Apple Sign-in em breve" : fr ? "Connexion Apple bientôt disponible" : ja ? "Apple サインインは近日対応" : de ? "Apple-Anmeldung folgt in Kürze" : ko ? "Apple 로그인 곧 지원 예정" : "Apple sign-in coming soon",
+    signedIn: zh ? "已登录" : es ? "Sesión iniciada" : pt ? "Sessão iniciada" : fr ? "Connecté" : ja ? "サインイン済み" : de ? "Angemeldet" : ko ? "로그인됨" : "Signed in",
+    planBilling: zh ? "套餐与账单" : es ? "Plan y facturación" : pt ? "Plano e cobrança" : fr ? "Forfait et facturation" : ja ? "プランと請求" : de ? "Tarif & Abrechnung" : ko ? "요금제 및 결제" : "Plan & billing",
+    manageBilling: zh ? "管理账单" : es ? "Gestionar facturación" : pt ? "Gerenciar cobrança" : fr ? "Gérer la facturation" : ja ? "請求を管理" : de ? "Abrechnung verwalten" : ko ? "결제 관리" : "Manage billing",
+    manageBillingHint: zh ? "更改付款方式、取消或下载发票 — 由 Creem 安全托管，诚实无套路。" : es ? "Cambia tu método de pago, cancela o descarga facturas — gestionado de forma segura por Creem, sin trucos." : pt ? "Altere sua forma de pagamento, cancele ou baixe faturas — gerenciado com segurança pela Creem, sem pegadinhas." : fr ? "Modifiez votre moyen de paiement, annulez ou téléchargez vos factures — géré en toute sécurité par Creem, sans pièges." : ja ? "お支払い方法の変更・解約・請求書のダウンロード — Creem が安全に処理、隠れた仕掛けはありません。" : de ? "Zahlungsmethode ändern, kündigen oder Rechnungen herunterladen — sicher über Creem abgewickelt, ohne versteckte Tricks." : ko ? "결제 수단 변경, 해지 또는 영수증 다운로드 — Creem이 안전하게 처리하며, 숨은 함정은 없어요." : "Change payment, cancel, or download invoices — securely handled by Creem, no tricks.",
+    usageTitle: zh ? "用量与权益" : es ? "Uso y beneficios" : pt ? "Uso e benefícios" : fr ? "Utilisation et avantages" : ja ? "使用量と特典" : de ? "Nutzung & Leistungen" : ko ? "사용량 및 혜택" : "Usage & entitlements",
+    includedFree: zh ? "PDF 基础工具无限使用 · AI 工具可浅尝" : es ? "Herramientas PDF básicas ilimitadas · una muestra de las herramientas de IA" : pt ? "Ferramentas PDF básicas ilimitadas · uma amostra das ferramentas de IA" : fr ? "Outils PDF de base illimités · un aperçu des outils d'IA" : ja ? "基本 PDF ツールは無制限 · AI ツールはお試し利用" : de ? "Unbegrenzte grundlegende PDF-Tools · ein Vorgeschmack auf die KI-Tools" : ko ? "기본 PDF 도구 무제한 · AI 도구 맛보기" : "Unlimited core PDF tools · a taste of AI tools",
+    includedPlus: zh ? "涵盖免费版 · AI 与批量工具可用量 · 公平用量" : es ? "Todo lo de Free · IA y herramientas por lotes con volumen de trabajo · uso justo" : pt ? "Tudo do Free · IA e ferramentas em lote com volume de trabalho · uso justo" : fr ? "Tout le forfait gratuit · IA et outils par lots à volume de travail · usage équitable" : ja ? "Free のすべて · AI・一括ツールを実用的な量まで · フェアユース" : de ? "Alles aus Free · KI- und Stapel-Tools in praktischem Umfang · faire Nutzung" : ko ? "Free의 모든 기능 · AI·배치 도구를 실용적인 양까지 · 공정 사용" : "Everything in Free · AI & batch tools at working volume · fair use",
+    includedPro: zh ? "涵盖 Plus · 专业级精准 · 无限公平用量" : es ? "Todo lo de Plus · precisión profesional · uso justo ilimitado" : pt ? "Tudo do Plus · precisão profissional · uso justo ilimitado" : fr ? "Tout Plus · précision professionnelle · usage équitable illimité" : ja ? "Plus のすべて · プロ級の精度 · 無制限のフェアユース" : de ? "Alles aus Plus · Präzision auf Profi-Niveau · unbegrenzte faire Nutzung" : ko ? "Plus의 모든 기능 · 전문가급 정밀도 · 무제한 공정 사용" : "Everything in Plus · pro-grade precision · unlimited fair use",
+    fairUse: zh ? "公平用量上限仅用于防止滥用，正常使用不会触及；门控上线后这里会显示实时用量。" : es ? "Los límites de uso justo solo evitan abusos; el uso normal nunca los alcanza. El uso en tiempo real aparecerá aquí pronto." : pt ? "Os limites de uso justo só evitam abusos; o uso normal nunca os atinge. O uso em tempo real aparecerá aqui em breve." : fr ? "Les limites d'usage équitable ne servent qu'à éviter les abus ; un usage normal ne les atteint jamais. L'utilisation en temps réel s'affichera bientôt ici." : ja ? "フェアユース上限は不正利用を防ぐためだけのもので、通常のご利用で達することはありません。計測機能の提供後、ここにリアルタイムの使用量が表示されます。" : de ? "Faire-Nutzung-Grenzen schützen nur vor Missbrauch — bei normaler Nutzung werden sie nie erreicht. Die Echtzeit-Nutzung erscheint hier, sobald die Messung verfügbar ist." : ko ? "공정 사용 한도는 남용을 막기 위한 것일 뿐, 일반적인 사용으로는 도달하지 않아요. 사용량 측정이 도입되면 여기에 실시간 사용량이 표시됩니다." : "Fair-use limits only guard against abuse — normal use never hits them. Live usage will appear here once metering ships.",
+    trustLine: zh ? "你的文档从不用于训练我们的模型；多数工具在浏览器本地运行。" : es ? "Tus documentos nunca se usan para entrenar nuestros modelos; la mayoría de las herramientas se ejecutan localmente en tu navegador." : pt ? "Seus documentos nunca são usados para treinar nossos modelos; a maioria das ferramentas roda localmente no seu navegador." : fr ? "Vos documents ne servent jamais à entraîner nos modèles ; la plupart des outils s'exécutent localement dans votre navigateur." : ja ? "あなたの文書がモデルの学習に使われることは一切ありません。ほとんどのツールはブラウザ内でローカルに動作します。" : de ? "Ihre Dokumente werden niemals zum Training unserer Modelle verwendet; die meisten Tools laufen lokal in Ihrem Browser." : ko ? "당신의 문서는 저희 모델 학습에 절대 사용되지 않으며, 대부분의 도구는 브라우저 안에서 로컬로 실행돼요." : "Your documents are never used to train our models — most tools run locally in your browser.",
+    loading: zh ? "加载…" : es ? "Cargando…" : pt ? "Carregando…" : fr ? "Chargement…" : ja ? "読み込み中…" : de ? "Wird geladen…" : ko ? "불러오는 중…" : "Loading…",
+    signOut: zh ? "退出登录" : es ? "Cerrar sesión" : pt ? "Sair" : fr ? "Se déconnecter" : ja ? "サインアウト" : de ? "Abmelden" : ko ? "로그아웃" : "Sign out",
+    privateSpace: zh ? "私密工作区" : es ? "Espacio privado" : pt ? "Espaço privado" : fr ? "Espace privé" : ja ? "プライベートワークスペース" : de ? "Privater Bereich" : ko ? "비공개 작업 공간" : "Private Space",
     privateDesc: zh
       ? "启用后，你的流程模板和执行记录将加密同步到云端，跨设备访问，随时可删除。"
       : es
@@ -99,12 +102,14 @@ function accountCopy(locale: Exclude<AccountLocale, "zh-Hant">) {
       ? "有効にすると、フローのテンプレートと実行履歴が暗号化されてクラウドに同期され、デバイス間でアクセスできます。いつでも削除できます。"
       : de
       ? "Wenn aktiviert, werden Ihre Flow-Vorlagen und Ihr Ausführungsverlauf AES-256-verschlüsselt in die Cloud synchronisiert, für den Zugriff über mehrere Geräte. Sie können sie jederzeit löschen."
+      : ko
+      ? "활성화하면 플로우 템플릿과 실행 기록이 암호화되어 클라우드에 동기화되며, 여러 기기에서 접근할 수 있어요. 언제든지 삭제할 수 있습니다."
       : "When enabled, your flow templates and run history sync encrypted to the cloud for cross-device access. You can delete them at any time.",
-    privateOn: zh ? "已启用" : es ? "Activado" : pt ? "Ativado" : fr ? "Activé" : ja ? "有効" : de ? "Aktiviert" : "Enabled",
-    privateOff: zh ? "未启用" : es ? "Desactivado" : pt ? "Desativado" : fr ? "Désactivé" : ja ? "無効" : de ? "Deaktiviert" : "Disabled",
-    enableSync: zh ? "启用同步" : es ? "Activar sincronización" : pt ? "Ativar sincronização" : fr ? "Activer la synchronisation" : ja ? "同期を有効化" : de ? "Synchronisierung aktivieren" : "Enable sync",
-    disableSync: zh ? "停用同步" : es ? "Desactivar sincronización" : pt ? "Desativar sincronização" : fr ? "Désactiver la synchronisation" : ja ? "同期を無効化" : de ? "Synchronisierung deaktivieren" : "Disable sync",
-    deleteData: zh ? "删除所有数据" : es ? "Eliminar todos los datos" : pt ? "Excluir todos os dados" : fr ? "Supprimer toutes les données" : ja ? "すべてのデータを削除" : de ? "Alle Daten löschen" : "Delete all data",
+    privateOn: zh ? "已启用" : es ? "Activado" : pt ? "Ativado" : fr ? "Activé" : ja ? "有効" : de ? "Aktiviert" : ko ? "활성화됨" : "Enabled",
+    privateOff: zh ? "未启用" : es ? "Desactivado" : pt ? "Desativado" : fr ? "Désactivé" : ja ? "無効" : de ? "Deaktiviert" : ko ? "비활성화됨" : "Disabled",
+    enableSync: zh ? "启用同步" : es ? "Activar sincronización" : pt ? "Ativar sincronização" : fr ? "Activer la synchronisation" : ja ? "同期を有効化" : de ? "Synchronisierung aktivieren" : ko ? "동기화 켜기" : "Enable sync",
+    disableSync: zh ? "停用同步" : es ? "Desactivar sincronización" : pt ? "Desativar sincronização" : fr ? "Désactiver la synchronisation" : ja ? "同期を無効化" : de ? "Synchronisierung deaktivieren" : ko ? "동기화 끄기" : "Disable sync",
+    deleteData: zh ? "删除所有数据" : es ? "Eliminar todos los datos" : pt ? "Excluir todos os dados" : fr ? "Supprimer toutes les données" : ja ? "すべてのデータを削除" : de ? "Alle Daten löschen" : ko ? "모든 데이터 삭제" : "Delete all data",
     deleteConfirm: zh
       ? "确认删除？此操作不可撤销。"
       : es
@@ -117,9 +122,11 @@ function accountCopy(locale: Exclude<AccountLocale, "zh-Hant">) {
       ? "削除しますか？この操作は取り消せません。"
       : de
       ? "Löschen bestätigen? Dieser Vorgang kann nicht rückgängig gemacht werden."
+      : ko
+      ? "삭제하시겠어요? 이 작업은 되돌릴 수 없어요."
       : "Confirm delete? This cannot be undone.",
-    deleteCancel: zh ? "取消" : es ? "Cancelar" : pt ? "Cancelar" : fr ? "Annuler" : ja ? "キャンセル" : de ? "Abbrechen" : "Cancel",
-    deleting: zh ? "删除中…" : es ? "Eliminando…" : pt ? "Excluindo…" : fr ? "Suppression…" : ja ? "削除中…" : de ? "Wird gelöscht…" : "Deleting…",
+    deleteCancel: zh ? "取消" : es ? "Cancelar" : pt ? "Cancelar" : fr ? "Annuler" : ja ? "キャンセル" : de ? "Abbrechen" : ko ? "취소" : "Cancel",
+    deleting: zh ? "删除中…" : es ? "Eliminando…" : pt ? "Excluindo…" : fr ? "Suppression…" : ja ? "削除中…" : de ? "Wird gelöscht…" : ko ? "삭제 중…" : "Deleting…",
     deleteOk: (t: number, r: number) =>
       zh
         ? `已删除 ${t} 个模板，${r} 条运行记录。`
@@ -133,13 +140,15 @@ function accountCopy(locale: Exclude<AccountLocale, "zh-Hant">) {
         ? `テンプレート ${t} 件、実行履歴 ${r} 件を削除しました。`
         : de
         ? `${t} Vorlage(n) und ${r} Ausführung(en) gelöscht.`
+        : ko
+        ? `템플릿 ${t}개, 실행 기록 ${r}개를 삭제했어요.`
         : `Deleted ${t} template(s) and ${r} run(s).`,
-    saving: zh ? "保存中…" : es ? "Guardando…" : pt ? "Salvando…" : fr ? "Enregistrement…" : ja ? "保存中…" : de ? "Wird gespeichert…" : "Saving…",
-    eyebrow: zh ? "账户" : es ? "Cuenta" : pt ? "Conta" : fr ? "Compte" : ja ? "アカウント" : de ? "Konto" : "Account",
-    headSignedOut: zh ? "登录 DockDocs" : es ? "Iniciar sesión en DockDocs" : pt ? "Entrar no DockDocs" : fr ? "Connexion à DockDocs" : ja ? "DockDocs にサインイン" : de ? "Bei DockDocs anmelden" : "Sign in to DockDocs",
-    headSignedIn: zh ? "你的账户" : es ? "Tu cuenta" : pt ? "Sua conta" : fr ? "Votre compte" : ja ? "アカウント" : de ? "Ihr Konto" : "Your account",
-    subSignedOut: zh ? "访问你的工作区、管理订阅，并跨设备保留文档记录。" : es ? "Accede a tu área de trabajo, gestiona la facturación y mantén el historial de documentos en todos tus dispositivos." : pt ? "Acesse seu espaço de trabalho, gerencie assinaturas e mantenha o histórico de documentos em todos os seus dispositivos." : fr ? "Accédez à votre espace de travail, gérez la facturation et conservez l'historique de vos documents sur tous vos appareils." : ja ? "ワークスペースにアクセスし、請求を管理し、文書の履歴をデバイス間で保持できます。" : de ? "Greifen Sie auf Ihren Arbeitsbereich zu, verwalten Sie die Abrechnung und behalten Sie Ihren Dokumentenverlauf über alle Geräte hinweg." : "Access your workspace, manage billing, and keep your document history across devices.",
-    subSignedIn: zh ? "管理你的套餐、账单与工作区。" : es ? "Gestiona tu plan, facturación y área de trabajo." : pt ? "Gerencie seu plano, cobrança e espaço de trabalho." : fr ? "Gérez votre forfait, votre facturation et votre espace de travail." : ja ? "プラン・請求・ワークスペースを管理します。" : de ? "Verwalten Sie Ihren Tarif, Ihre Abrechnung und Ihren Arbeitsbereich." : "Manage your plan, billing, and workspace.",
+    saving: zh ? "保存中…" : es ? "Guardando…" : pt ? "Salvando…" : fr ? "Enregistrement…" : ja ? "保存中…" : de ? "Wird gespeichert…" : ko ? "저장 중…" : "Saving…",
+    eyebrow: zh ? "账户" : es ? "Cuenta" : pt ? "Conta" : fr ? "Compte" : ja ? "アカウント" : de ? "Konto" : ko ? "계정" : "Account",
+    headSignedOut: zh ? "登录 DockDocs" : es ? "Iniciar sesión en DockDocs" : pt ? "Entrar no DockDocs" : fr ? "Connexion à DockDocs" : ja ? "DockDocs にサインイン" : de ? "Bei DockDocs anmelden" : ko ? "DockDocs에 로그인" : "Sign in to DockDocs",
+    headSignedIn: zh ? "你的账户" : es ? "Tu cuenta" : pt ? "Sua conta" : fr ? "Votre compte" : ja ? "アカウント" : de ? "Ihr Konto" : ko ? "내 계정" : "Your account",
+    subSignedOut: zh ? "访问你的工作区、管理订阅，并跨设备保留文档记录。" : es ? "Accede a tu área de trabajo, gestiona la facturación y mantén el historial de documentos en todos tus dispositivos." : pt ? "Acesse seu espaço de trabalho, gerencie assinaturas e mantenha o histórico de documentos em todos os seus dispositivos." : fr ? "Accédez à votre espace de travail, gérez la facturation et conservez l'historique de vos documents sur tous vos appareils." : ja ? "ワークスペースにアクセスし、請求を管理し、文書の履歴をデバイス間で保持できます。" : de ? "Greifen Sie auf Ihren Arbeitsbereich zu, verwalten Sie die Abrechnung und behalten Sie Ihren Dokumentenverlauf über alle Geräte hinweg." : ko ? "작업 공간에 접근하고, 결제를 관리하며, 문서 기록을 여러 기기에서 유지하세요." : "Access your workspace, manage billing, and keep your document history across devices.",
+    subSignedIn: zh ? "管理你的套餐、账单与工作区。" : es ? "Gestiona tu plan, facturación y área de trabajo." : pt ? "Gerencie seu plano, cobrança e espaço de trabalho." : fr ? "Gérez votre forfait, votre facturation et votre espace de travail." : ja ? "プラン・請求・ワークスペースを管理します。" : de ? "Verwalten Sie Ihren Tarif, Ihre Abrechnung und Ihren Arbeitsbereich." : ko ? "요금제, 결제, 작업 공간을 관리하세요." : "Manage your plan, billing, and workspace.",
   };
 }
 

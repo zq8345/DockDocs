@@ -106,6 +106,17 @@ const STR = {
     reset: "Neu beginnen", preview: "Live-Vorschau", needText: "Geben Sie den Wasserzeichen-Text ein.", needImg: "Wählen Sie ein Bild aus.",
     nonLatin: "Das Text-Wasserzeichen unterstützt vorerst lateinische Buchstaben/Ziffern/Symbole.", err: "Etwas ist schiefgelaufen: ",
   },
+  ko: {
+    title: "PDF에 워터마크",
+    subtitle: "PDF를 업로드하고 텍스트 또는 이미지 워터마크를 디자인해 페이지에서 실시간으로 확인한 뒤, 선택한 페이지에 찍으세요.",
+    drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+    choose: "PDF 선택", rendering: "미리보기를 렌더링하는 중…",
+    text: "텍스트", image: "이미지", wmText: "워터마크 텍스트", size: "크기", color: "색상",
+    chooseImg: "이미지 선택", position: "위치", opacity: "불투명도", rotate: "45° 회전",
+    pages: "페이지", from: "시작", to: "끝", apply: "적용하고 다운로드", working: "찍는 중…",
+    reset: "다시 시작", preview: "실시간 미리보기", needText: "워터마크 텍스트를 입력하세요.", needImg: "이미지를 선택하세요.",
+    nonLatin: "텍스트 워터마크는 현재 라틴 문자·숫자·기호만 지원합니다.", err: "문제가 발생했습니다: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 // ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
@@ -284,6 +295,28 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-gestützte Dokumentenwege." },
     ],
   },
+  ko: {
+    benefitsTitle: "여기서 PDF에 워터마크를 넣는 이유",
+    benefitsDescription: "텍스트 또는 이미지 워터마크를 모든 페이지에 찍고, 그 모습을 세밀하게 제어하세요.",
+    benefits: [
+      { title: "텍스트 또는 이미지 표시", description: "기밀이나 초안 같은 문구를 찍거나 직접 만든 로고 이미지를 넣으세요 — 문서에 맞는 쪽을 선택하면 됩니다." },
+      { title: "원하는 모습으로 정확히 조정", description: "크기, 색상, 불투명도, 45° 기울기, 그리고 아홉 개 기준점 위치를, 적용하기 전에 실시간 미리보기에서 모두 조정하세요." },
+      { title: "표시할 페이지 선택", description: "파일 전체에 찍거나 특정 페이지 범위만 찍어, 표지와 부록은 깔끔하게 둘 수 있습니다." },
+    ],
+    workflowTitle: "워터마크가 문서 작업에 어떻게 들어맞는가",
+    workflowDescription: "PDF를 내보내기 전에 소유나 상태를 나타내는 표시가 필요할 때 — 초안, 기밀 보고서, 브랜드가 들어간 배포 자료.",
+    steps: [
+      "표시할 PDF를 업로드합니다.",
+      "텍스트 또는 이미지 워터마크를 디자인하고 실시간 미리보기로 위치를 정합니다.",
+      "워터마크를 적용하고 찍힌 PDF를 다운로드합니다.",
+    ],
+    readingTitle: "PDF를 마무리하는 더 많은 방법",
+    readingDescription: "문서에 표시하고 정리하는 관련 도구와 가이드.",
+    readingLinks: [
+      { label: "페이지 번호 추가", href: "/page-numbers", description: "보내거나 인쇄하기 전에 PDF 페이지에 번호를 매기세요." },
+      { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+    ],
+  },
 };
 
 const SECTIONS_KO: ToolSectionsContent = {
@@ -314,7 +347,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
   // for the AuthoredLocale-typed tables ko is intentionally excluded from.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
-  const childLocale = locale === "ko" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
@@ -373,6 +406,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
           fr: "Ce PDF n'a aucune page.",
           ja: "この PDF にはページがありません。",
           de: "Dieses PDF hat keine Seiten.",
+          ko: "이 PDF에는 페이지가 없습니다.",
         };
         const koNoPages = "이 PDF에는 페이지가 없습니다.";
         setError(locale === "zh-Hant" ? toHant(NO_PAGES.zh) : locale === "ko" ? koNoPages : NO_PAGES[al]);

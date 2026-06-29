@@ -290,7 +290,7 @@ export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   // zh-Hant takes the deepHant branch below; collapsing it here too keeps `al` a plain AuthoredLocale.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
   // UploadDropzone / encryptedPdfMessage accept zh-Hant but not ko, so collapse only ko for those.
-  const childLocale = locale === "ko" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");

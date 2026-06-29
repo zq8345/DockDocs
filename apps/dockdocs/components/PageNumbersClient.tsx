@@ -99,21 +99,18 @@ const STR = {
     apply: "Seitenzahlen hinzufügen und herunterladen", working: "Wird nummeriert…", reset: "Neu beginnen", preview: "Live-Vorschau",
     err: "Etwas ist schiefgelaufen: ",
   },
+  ko: {
+    title: "페이지 번호 추가",
+    subtitle: "PDF를 업로드하고 번호가 들어갈 위치, 형식, 대상 페이지를 고르세요 — 다운로드하기 전에 실시간 미리보기로 확인할 수 있습니다.",
+    drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+    choose: "PDF 선택", rendering: "미리보기를 렌더링하는 중…",
+    position: "위치", margin: "여백", small: "작게", medium: "보통", large: "크게",
+    startAt: "시작 번호", format: "형식", pages: "페이지", from: "부터", to: "까지",
+    fmtN: "1", fmtPage: "1페이지", fmtSlash: "1 / N", fmtOf: "전체 N 중 1",
+    apply: "번호 추가하고 다운로드", working: "번호를 매기는 중…", reset: "다시 시작", preview: "실시간 미리보기",
+    err: "문제가 발생했습니다: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
-
-// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
-// copy lives in standalone *_KO objects selected explicitly in the resolver below.
-const STR_KO: (typeof STR)["en"] = {
-  title: "페이지 번호 추가",
-  subtitle: "PDF를 업로드하고 번호가 들어갈 위치, 형식, 대상 페이지를 고르세요 — 다운로드하기 전에 실시간 미리보기로 확인할 수 있습니다.",
-  drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
-  choose: "PDF 선택", rendering: "미리보기를 렌더링하는 중…",
-  position: "위치", margin: "여백", small: "작게", medium: "보통", large: "크게",
-  startAt: "시작 번호", format: "형식", pages: "페이지", from: "부터", to: "까지",
-  fmtN: "1", fmtPage: "1페이지", fmtSlash: "1 / N", fmtOf: "전체 N 중 1",
-  apply: "번호 추가하고 다운로드", working: "번호를 매기는 중…", reset: "다시 시작", preview: "실시간 미리보기",
-  err: "문제가 발생했습니다: ",
-};
 
 function makeLabel(fmt: Fmt, n: number, total: number, zh: boolean, hant = false, ko = false): string {
   const conv = (s: string) => (hant ? toHant(s) : s);
@@ -133,6 +130,7 @@ const NO_PAGES_MSG: Record<AuthoredLocale, string> = {
   fr: "Ce PDF n'a aucune page.",
   ja: "この PDF にはページがありません。",
   de: "Dieses PDF hat keine Seiten.",
+  ko: "이 PDF에는 페이지가 없습니다.",
 };
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -290,38 +288,37 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
-};
-
-const SECTIONS_KO: ToolSectionsContent = {
-  benefitsTitle: "문서에 꼭 맞는 번호 매기기",
-  benefitsDescription: "페이지 번호를 원하는 위치에, 원하는 형식으로, 선택한 페이지에만 넣으세요.",
-  benefits: [
-    { title: "모서리든 가운데든 선택", description: "위 또는 아래의 왼쪽·가운데·오른쪽 중 여섯 위치 중 한 곳에 번호를 넣고, 작게·보통·크게 여백으로 레이아웃에 맞추세요." },
-    { title: "바로 쓰는 네 가지 형식", description: "「1」, 「1페이지」, 「1 / N」, 「전체 N 중 1」 중에서 선택하세요 — 보고서, 서면, 인쇄용 문서에 알맞은 표기입니다." },
-    { title: "시작 번호와 페이지 범위", description: "원하는 번호부터 세기 시작하고 선택한 페이지에만 번호를 매겨, 표지나 앞부분은 그대로 둘 수 있습니다." },
-  ],
-  workflowTitle: "페이지 번호가 문서 작업에 어떻게 들어맞는가",
-  workflowDescription: "초안, 스캔본, 합쳐진 문서를 보내거나 인쇄하기 전에 깔끔하고 일관된 페이지 번호가 필요할 때.",
-  steps: [
-    "번호를 매길 PDF를 업로드합니다.",
-    "위치·형식·시작 번호·페이지 범위를 설정하고 실시간 미리보기로 확인합니다.",
-    "번호를 추가하고 완성된 PDF를 다운로드합니다.",
-  ],
-  readingTitle: "PDF를 마무리하는 더 많은 방법",
-  readingDescription: "문서에 표시를 넣고 준비하는 관련 도구와 가이드.",
-  readingLinks: [
-    { label: "PDF에 워터마크 추가", href: "/watermark-pdf", description: "모든 페이지에 텍스트나 이미지를 찍어 초안을 표시하거나 기밀 파일임을 나타냅니다." },
-    { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
-  ],
+  ko: {
+    benefitsTitle: "문서에 꼭 맞는 번호 매기기",
+    benefitsDescription: "페이지 번호를 원하는 위치에, 원하는 형식으로, 선택한 페이지에만 넣으세요.",
+    benefits: [
+      { title: "모서리든 가운데든 선택", description: "위 또는 아래의 왼쪽·가운데·오른쪽 중 여섯 위치 중 한 곳에 번호를 넣고, 작게·보통·크게 여백으로 레이아웃에 맞추세요." },
+      { title: "바로 쓰는 네 가지 형식", description: "「1」, 「1페이지」, 「1 / N」, 「전체 N 중 1」 중에서 선택하세요 — 보고서, 서면, 인쇄용 문서에 알맞은 표기입니다." },
+      { title: "시작 번호와 페이지 범위", description: "원하는 번호부터 세기 시작하고 선택한 페이지에만 번호를 매겨, 표지나 앞부분은 그대로 둘 수 있습니다." },
+    ],
+    workflowTitle: "페이지 번호가 문서 작업에 어떻게 들어맞는가",
+    workflowDescription: "초안, 스캔본, 합쳐진 문서를 보내거나 인쇄하기 전에 깔끔하고 일관된 페이지 번호가 필요할 때.",
+    steps: [
+      "번호를 매길 PDF를 업로드합니다.",
+      "위치·형식·시작 번호·페이지 범위를 설정하고 실시간 미리보기로 확인합니다.",
+      "번호를 추가하고 완성된 PDF를 다운로드합니다.",
+    ],
+    readingTitle: "PDF를 마무리하는 더 많은 방법",
+    readingDescription: "문서에 표시를 넣고 준비하는 관련 도구와 가이드.",
+    readingLinks: [
+      { label: "PDF에 워터마크 추가", href: "/watermark-pdf", description: "모든 페이지에 텍스트나 이미지를 찍어 초안을 표시하거나 기밀 파일임을 나타냅니다." },
+      { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+    ],
+  },
 };
 
 export function PageNumbersClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  // ko → English engine/runtime (child widgets lack ko); zh-Hant preserved.
-  const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
+  // ko is a fully authored locale → resolves through STR[al]/SECTIONS[al] like any other.
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
+  // Child props/runtime fns accept the full RouteLocale (incl. ko + zh-Hant) → pass through.
+  const childLocale = locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const hant = locale === "zh-Hant";
   const zh = locale === "zh" || locale === "zh-Hant";
   const ko = locale === "ko";
@@ -355,7 +352,7 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
       const ctx = canvas.getContext("2d");
       if (ctx) await page.render({ canvas, canvasContext: ctx, viewport }).promise;
       setPreview(canvas.toDataURL("image/jpeg", 0.8));
-      if (doc.numPages === 0) { setError(locale === "zh-Hant" ? toHant(NO_PAGES_MSG.zh) : locale === "ko" ? "이 PDF에는 페이지가 없습니다." : NO_PAGES_MSG[al]); setPhase("idle"); return; } setNumPages(doc.numPages); setFrom(1); setTo(doc.numPages);
+      if (doc.numPages === 0) { setError(locale === "zh-Hant" ? toHant(NO_PAGES_MSG.zh) : NO_PAGES_MSG[al]); setPhase("idle"); return; } setNumPages(doc.numPages); setFrom(1); setTo(doc.numPages);
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {

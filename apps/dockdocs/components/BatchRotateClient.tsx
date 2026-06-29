@@ -98,6 +98,17 @@ const STR = {
     note: "Jede Seite jedes PDFs wird um den gewählten Winkel gedreht. Verschlüsselte PDFs werden übersprungen. Alles bleibt auf Ihrem Gerät.",
     err: "Etwas ist schiefgelaufen: ",
   },
+  ko: {
+    title: "일괄 회전",
+    subtitle: "옆으로 눕거나 거꾸로 된 스캔이 가득한 폴더를 한 번에 바로잡으세요 — 모든 PDF의 모든 페이지를 회전해 하나의 ZIP으로 묶습니다. 모두 브라우저에서 처리되며 아무것도 업로드되지 않습니다.",
+    drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
+    rotate: "회전 각도",
+    run: "전체 회전", running: "회전 중", download: "ZIP 다운로드", reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개`, done: "회전됨", failed: "실패",
+    need: "PDF를 최소 한 개 추가하세요.",
+    note: "각 PDF의 모든 페이지가 선택한 각도로 회전됩니다. 암호화된 PDF는 건너뜁니다. 모든 작업은 기기에서 처리됩니다.",
+    err: "문제가 발생했습니다: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
@@ -255,14 +266,36 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
+  ko: {
+    benefitsTitle: "폴더 전체를 일괄 회전하는 이유",
+    benefitsDescription: "옆으로 눕거나 거꾸로 된 스캔 더미를 한 번에 바로잡아 하나의 ZIP으로 묶으세요.",
+    benefits: [
+      { title: "폴더 전체를 한 번에", description: "수십 개의 PDF — 또는 폴더 — 를 끌어다 놓으면 모든 파일의 모든 페이지가 함께 회전됩니다. 하나씩 열 필요가 없습니다." },
+      { title: "90°, 180°, 270° 중 선택", description: "배치에 적용할 각도 하나를 고르세요: 옆으로 누운 스캔은 90° 또는 270°, 거꾸로 된 페이지는 180°로 바로 세웁니다." },
+      { title: "이름은 그대로, ZIP 하나로", description: "회전된 각 PDF는 원래 파일명에 -rotated를 붙여 하나의 ZIP으로 돌아오며, 바로 보관하거나 보낼 수 있습니다." },
+    ],
+    workflowTitle: "일괄 회전이 스캔 작업에 어떻게 맞물리나요",
+    workflowDescription: "급지기나 휴대폰 스캔이 전부 옆으로 눕거나 뒤집힌 PDF 더미를 쏟아내, 하나씩 고치면 시간이 한참 걸릴 때를 위한 기능입니다.",
+    steps: [
+      "끌어다 놓기, 파일 선택기, 또는 폴더 전체 선택으로 PDF를 추가하세요.",
+      "모든 페이지에 적용할 회전 각도 — 90°, 180°, 270° — 를 고르세요.",
+      "전체 회전 후 바로잡힌 PDF가 담긴 ZIP 하나를 다운로드하세요.",
+    ],
+    readingTitle: "페이지 방향을 바로잡는 더 많은 방법",
+    readingDescription: "PDF 회전과 정리를 위한 관련 도구와 가이드입니다.",
+    readingLinks: [
+      { label: "단일 PDF 회전", href: "/rotate-page", description: "PDF 하나만 회전하세요 — 실시간 미리보기로 특정 페이지와 각도를 선택할 수 있습니다." },
+      { label: "PDF 워크플로 자료", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 허브입니다." },
+    ],
+  },
 };
 
 export function BatchRotateClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
-  // the deepHant branch below); `childLocale` collapses only ko, since BatchUploadBox accepts zh-Hant.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const childLocale = locale === "ko" ? "en" : locale;
+  // ko is fully authored (Korean strings live in STR.ko/SECTIONS.ko). `al` collapses only
+  // zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes the deepHant branch below);
+  // ko indexes its own [al] entry. `childLocale` collapses ko since BatchUploadBox has no ko.
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
@@ -330,6 +363,7 @@ export function BatchRotateClient({ locale = "en", embedded = false }: { locale?
         fr: "Impossible de créer le téléchargement. Réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
         de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
+        ko: "다운로드를 만들지 못했습니다 — 다시 시도해 주세요.",
       };
       setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[al]);
     }

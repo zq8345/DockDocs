@@ -219,6 +219,34 @@ const STR = {
     retry: "Erneut versuchen",
     privacy: "Ihr Mietvertrag wird in Ihrem Browser gelesen; nur der extrahierte Text wird zur Analyse gesendet.",
   },
+  ko: {
+    title: "임대차 위험 신호 점검",
+    subtitle:
+      "주거용이든 상업용이든 임대차 계약서를 업로드하면 위험하거나 불공정하거나 빠진 조항을 쉬운 말로 정리한 목록을 받습니다 — 빨강/노랑/초록으로 표시되고, 문서에서 인용되며, 서명 전에 무엇을 물어야 할지 알려 줍니다.",
+    proBadge: "PRO",
+    drop: "임대차 계약서 PDF를 여기로 끌어다 놓거나 클릭해 선택하세요",
+    choose: "임대차 계약서 PDF 선택",
+    extracting: "임대차 계약서를 읽는 중…",
+    pagesChars: (p: number, c: number) => `${p}페이지 · ${c.toLocaleString()}자`,
+    noText: "선택 가능한 텍스트를 찾을 수 없습니다. 스캔한 계약서인가요? 먼저 OCR을 실행하세요.",
+    tooLong: `이 계약서는 ${MAX_CHARS.toLocaleString()}자 한도를 넘어 — 앞부분만 검토됩니다.`,
+    analyze: "위험 신호 점검",
+    analyzing: "검토 중…",
+    result: (n: number) => `검토할 항목 ${n}개`,
+    noRisks: "뚜렷한 위험 신호는 발견되지 않았습니다. 그렇다고 계약이 공정하다는 보장은 아니니 전문을 읽고 변호사 검토도 고려하세요.",
+    disclaimer: "이것은 임차인이 주의할 조항을 찾도록 돕는 자동 검토입니다. 법률 자문이 아닙니다. 중요한 사안은 변호사나 임차인 권익 단체와 상담하세요.",
+    levelHigh: "높음", levelMedium: "중간", levelLow: "낮음",
+    quoteLabel: "임대차 계약서에서 인용",
+    verifiedBadge: "원문과 대조 확인됨",
+    notLocated: "누락된/없는 보호 조항으로 표시됨(인용 없음).",
+    unverifiedQuote: "인용한 구절을 임대차 계약서에서 찾을 수 없어 숨겼습니다.",
+    whyLabel: "왜 중요한가",
+    suggestionLabel: "무엇을 물어야 하나",
+    reset: "다른 계약서 점검",
+    errPrefix: "점검을 완료하지 못했습니다: ",
+    retry: "다시 시도",
+    privacy: "임대차 계약서는 브라우저에서 읽으며, 추출된 텍스트만 분석을 위해 전송됩니다.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const LEVEL_ORDER: Record<RiskLevel, number> = { high: 0, medium: 1, low: 2 };
@@ -392,18 +420,41 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Dokumenten-Ressourcen-Hub", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, Konvertierung und KI-Dokumenten-Workflows." },
     ],
   },
+  ko: {
+    benefitsTitle: "임대차 점검이 무엇을 제공하나요",
+    benefitsDescription: "AI가 임대차 계약서를 읽고, 서명 전에 한 번 더 살펴볼 가치가 있는 조항을 짚어 줍니다.",
+    benefits: [
+      { title: "위험 조항을 쉬운 말로 표시", description: "AI가 계약서 전체를 읽고 불공정하거나 한쪽에 치우치거나 이례적인 조건 — 자동 갱신 함정, 전면적 수선 책임, 불균형한 위약금 — 을 변호사 없이도 이해할 수 있는 말로 짚어 줍니다." },
+      { title: "심각도에 따라 빨강 / 노랑 / 초록으로 정렬", description: "각 결과는 높음·중간·낮음으로 평가되어, 어떤 조항이 치명적이고 어떤 조항이 한 번 물어볼 만한 수준인지 한눈에 알 수 있습니다." },
+      { title: "각 위험 신호가 해당 출처 조항을 가리킵니다", description: "AI가 정확한 문구를 찾을 수 있으면 인용 구절을 「원문과 대조 확인됨」 배지와 함께 표시합니다. 위치를 특정할 수 없는 인용은 추측하지 않고 숨깁니다." },
+    ],
+    workflowTitle: "임대차 점검이 서명 전 흐름에 어떻게 맞물리나요",
+    workflowDescription: "임대인이 계약서를 건넸는데, 무엇을 다시 협상할지 몇 주가 아니라 며칠 안에 정해야 하는 순간을 위한 기능입니다.",
+    steps: [
+      "임대차 계약서 PDF를 업로드하세요 — 주거용이든 상업용이든.",
+      "AI가 문서의 텍스트를 분석해 위험하거나 불공정하거나 빠진 조항을 표시합니다.",
+      "평가된 결과, 인용된 출처 조항, 서명 전에 물어볼 점을 읽어 보세요.",
+    ],
+    readingTitle: "더 많은 AI 문서 검토 도구",
+    readingDescription: "관련 AI 검토 도구와, 문서를 더 잘 활용하기 위한 자료 허브입니다.",
+    readingLinks: [
+      { label: "계약 위험 검토", href: "/contract-risk", description: "임대차뿐 아니라 어떤 계약서에도 동일한 조항별 위험 검토를 실행합니다." },
+      { label: "입찰·제안 매트릭스", href: "/govbid-matrix", description: "입찰서나 RFP를 항목별로 답할 수 있는 구조화된 요건 매트릭스로 바꿉니다." },
+      { label: "문서 자료 허브", href: "/resources", description: "PDF 도구, 변환, AI 문서 워크플로를 정리한 구조화된 허브입니다." },
+    ],
+  },
 };
 
 export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko is fully authored (STR/SECTIONS carry Korean). zh-Hant derives from zh via deepHant.
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   // zh-Hant rendered from zh via OpenCC; child components (UploadDropzone /
   // UpgradePrompt / ToolFaq / encryptedPdfMessage) lack zh-Hant in their union,
   // so map it to "zh" for those props.
   // ko has no engine/runtime copy yet → English (foundation phase); zh-Hant preserved.
-  const childLocale = locale === "ko" ? "en" : locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const [phase, setPhase] = useState<Phase>("idle");
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
@@ -549,7 +600,7 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
         </div>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
 
       {phase === "analyzing" && (
         <div className="mt-6 space-y-3" aria-busy="true">

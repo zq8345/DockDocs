@@ -105,6 +105,18 @@ const STR = {
     note: "Jedes PDF benötigt dieses Passwort zum Öffnen. Bereits verschlüsselte PDFs werden übersprungen. Die Verarbeitung erfolgt auf Ihrem Gerät.",
     err: "Etwas ist schiefgelaufen: ",
   },
+  ko: {
+    title: "일괄 암호화",
+    subtitle: "비밀번호 하나를 설정해 PDF 폴더 전체를 잠그세요 — 각 파일은 브라우저에서 암호화되어 하나의 ZIP으로 묶입니다. 아무것도 업로드되지 않습니다.",
+    drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
+    pw: "비밀번호", pwPlaceholder: "파일을 열 비밀번호", show: "표시", hide: "숨기기",
+    pwRule: "4~32자: 영문, 숫자, 밑줄(_).",
+    run: "전체 암호화", running: "암호화 중", download: "ZIP 다운로드", reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개`, done: "암호화됨", failed: "실패",
+    needFile: "PDF를 최소 한 개 추가하세요.", needPw: "유효한 비밀번호를 입력하세요(4~32자: 영문, 숫자, 밑줄).",
+    note: "각 PDF를 열려면 이 비밀번호가 필요합니다. 이미 암호화된 PDF는 건너뜁니다. 모든 작업은 기기에서 처리됩니다.",
+    err: "문제가 발생했습니다: ",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
@@ -269,13 +281,36 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
+  ko: {
+    benefitsTitle: "브라우저에서 PDF를 일괄 암호화하는 이유",
+    benefitsDescription: "비밀번호 하나로 PDF 폴더 전체를 잠그고 모두 하나의 ZIP으로 받으세요.",
+    benefits: [
+      { title: "비밀번호 하나, 폴더 전체", description: "비밀번호를 한 번만 설정하면 배치의 모든 PDF에 실제 AES-256 암호화가 적용됩니다 — 파일을 하나씩 열어 다시 저장할 필요가 없습니다." },
+      { title: "하나의 ZIP으로 묶음", description: "암호화된 각 PDF는 원본 이름 그대로 정돈된 ZIP 하나에 담겨, 한 번의 다운로드로 전달하거나 보관할 수 있습니다." },
+      { title: "대량 파일을 위해 설계", description: "한 번에 최대 30개의 PDF를 처리하며, 이미 암호화된 파일은 자동으로 건너뛰어 이중으로 잠기지 않습니다." },
+    ],
+    workflowTitle: "일괄 암호화가 문서 작업에 어떻게 맞물리나요",
+    workflowDescription: "계약서, 명세서, 기록 폴더를 보내야 하는데 손을 떠나기 전에 모든 파일을 비밀번호로 보호해야 하는 순간을 위한 기능입니다.",
+    steps: [
+      "PDF를 끌어다 놓거나 폴더 전체를 한 번에 선택하세요.",
+      "비밀번호 하나를 입력해 배치의 모든 파일을 암호화하세요.",
+      "보호된 PDF가 담긴 ZIP 하나를 다운로드하세요.",
+    ],
+    readingTitle: "PDF를 보호하는 더 많은 방법",
+    readingDescription: "문서를 잠그고 푸는 데 도움이 되는 관련 도구와 가이드입니다.",
+    readingLinks: [
+      { label: "단일 PDF 보호", href: "/protect-pdf", description: "배치 전체가 필요 없을 때 PDF 하나에만 비밀번호를 설정합니다." },
+      { label: "PDF 비밀번호 제거 방법", href: "/guides/remove-password-from-pdf", description: "반대 작업 — 이미 보유한 PDF에서 비밀번호를 제거합니다." },
+      { label: "PDF 워크플로 자료", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 허브입니다." },
+    ],
+  },
 };
 
 export function BatchProtectClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  // (zh-Hant is also collapsed here because every [al] index below is already inside a
-  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko is fully authored (Korean strings live in STR.ko/SECTIONS.ko); it indexes its own [al]
+  // entry. zh-Hant is collapsed here because every [al] index below is already inside a
+  // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
@@ -345,6 +380,7 @@ export function BatchProtectClient({ locale = "en", embedded = false }: { locale
         fr: "Impossible de créer le téléchargement. Réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
         de: "Der Download konnte nicht erstellt werden – bitte versuchen Sie es erneut.",
+        ko: "다운로드를 만들지 못했습니다 — 다시 시도해 주세요.",
       };
       setError(locale === "zh-Hant" ? toHant(ZIP_ERR.zh) : ZIP_ERR[al]);
     }
@@ -361,7 +397,7 @@ export function BatchProtectClient({ locale = "en", embedded = false }: { locale
       <input ref={folderRef} type="file" multiple className="hidden" {...({ webkitdirectory: "", directory: "" } as Record<string, string>)} onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={locale === "ko" ? "en" : locale} onFiles={addFiles} embedded={embedded} valueZone="client" />
+        <BatchUploadBox locale={locale} onFiles={addFiles} embedded={embedded} valueZone="client" />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-end justify-between gap-3">

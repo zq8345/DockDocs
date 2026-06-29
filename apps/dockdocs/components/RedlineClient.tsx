@@ -113,6 +113,19 @@ const STR = {
     err: "Etwas ist schiefgelaufen: ",
     note: "Vergleicht den extrahierten Text Satz für Satz. Formatierung und Bilder sind nicht Teil des Vergleichs.",
   },
+  ko: {
+    title: "버전 비교",
+    subtitle: "원본 PDF와 수정본 PDF를 업로드하면 무엇이 바뀌었는지 정확히 보여 줍니다 — 추가된 텍스트는 강조되고 삭제된 텍스트는 취소선으로 표시됩니다. 모든 처리는 브라우저에서 이뤄집니다.",
+    original: "원본 (v1)", revised: "수정본 (v2)",
+    choose: "PDF 선택", reading: "읽는 중…", change: "교체",
+    compare: "버전 비교", comparing: "비교 중…", reset: "처음부터 다시",
+    dropHint: "로컬에서 비교합니다 — 파일은 기기를 벗어나지 않습니다.",
+    added: "추가됨", removed: "삭제됨", unchanged: "텍스트 변경 사항을 찾지 못했습니다.",
+    summary: (a: number, d: number) => `추가 ${a} · 삭제 ${d}`,
+    need: "비교하려면 PDF 두 개를 모두 추가하세요.",
+    err: "문제가 발생했습니다: ",
+    note: "추출된 텍스트를 문장 단위로 비교합니다. 서식과 이미지는 비교 대상이 아닙니다.",
+  },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
 async function extractText(file: File): Promise<string> {
@@ -313,13 +326,35 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "PDF-Workflow-Ressourcen", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenwege." },
     ],
   },
+  ko: {
+    benefitsTitle: "브라우저에서 PDF를 비교 표시하는 이유",
+    benefitsDescription: "원본 PDF와 수정본 PDF를 비교해 모든 텍스트 변경을 표시합니다 — 두 문서를 나란히 읽을 필요가 없습니다.",
+    benefits: [
+      { title: "모든 수정을 제자리에 표시", description: "추가된 텍스트는 강조되고 삭제된 텍스트는 취소선으로 한 흐름에 이어 읽히므로, 미묘한 표현 변화도 놓치지 않습니다." },
+      { title: "긴 문서를 위해 설계", description: "문장 단위 비교가 수백 페이지를 훑어, 두 버전 사이에서 실제로 바뀐 부분만 드러냅니다." },
+      { title: "추가/삭제 건수를 한눈에", description: "표시된 내용을 한 줄도 읽기 전에 몇 군데가 추가되고 삭제되었는지 먼저 확인할 수 있습니다." },
+    ],
+    workflowTitle: "비교 표시가 검토 작업에 어떻게 맞물리나요",
+    workflowDescription: "계약서, 정책, 보고서의 두 버전이 책상에 올라와 정확히 무엇이 바뀌었는지 알아야 하는 순간을 위한 기능입니다.",
+    steps: [
+      "비교하려는 원본 PDF와 수정본 PDF를 업로드하세요.",
+      "비교를 실행해 추가·삭제된 모든 부분을 빨간 줄로 표시합니다.",
+      "표시된 결과를 읽고 바뀐 내용을 다운로드하거나 공유하세요.",
+    ],
+    readingTitle: "문서를 다루는 더 많은 방법",
+    readingDescription: "PDF를 검토하고 마무리하는 관련 도구와 가이드입니다.",
+    readingLinks: [
+      { label: "PDF 가리기", href: "/redact-pdf", description: "검토한 문서를 공유하기 전에 민감한 텍스트를 영구적으로 가립니다." },
+      { label: "PDF 워크플로 자료", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 허브입니다." },
+    ],
+  },
 };
 
 export function RedlineClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  // ko is fully authored (STR/SECTIONS carry Korean). zh-Hant derives from zh via deepHant.
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for runtime fns lacking "ko".
-  const childLocale = locale === "ko" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [a, setA] = useState<File | null>(null);

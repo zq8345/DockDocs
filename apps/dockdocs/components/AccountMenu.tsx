@@ -85,7 +85,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
   // and zh-Hant resolve their own copy — `loc` collapses de→en for the shared
   // membership helpers, but these strings live here and CAN be German. de tone
   // mirrors deTools in localized-tools.ts (formal Sie).
-  const t = (en: string, zh: string, es: string, pt: string, fr: string, ja: string, de: string) =>
+  const t = (en: string, zh: string, es: string, pt: string, fr: string, ja: string, de: string, ko: string) =>
     locale === "zh"
       ? zh
       : locale === "zh-Hant"
@@ -100,7 +100,9 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
                 ? ja
                 : locale === "de"
                   ? de
-                  : en;
+                  : locale === "ko"
+                    ? ko
+                    : en;
 
   function go(href: string) {
     setOpen(false);
@@ -135,12 +137,12 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
         onClick={() => go("/account")}
         className="hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)] md:inline-flex"
       >
-        {t("Sign in", "登录", "Iniciar sesión", "Entrar", "Connexion", "ログイン", "Anmelden")}
+        {t("Sign in", "登录", "Iniciar sesión", "Entrar", "Connexion", "ログイン", "Anmelden", "로그인")}
       </button>
     );
   }
 
-  const name = authUser.name ?? authUser.email ?? t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント", "Konto");
+  const name = authUser.name ?? authUser.email ?? t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント", "Konto", "계정");
   const display = snapshot?.displayName ?? "Free";
   const interval = snapshot?.record.interval;
   const badge = planBadge(display, interval, loc);
@@ -153,7 +155,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-label={t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント", "Konto")}
+        aria-label={t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント", "Konto", "계정")}
         className="flex items-center gap-2 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] py-1 pl-1 pr-2.5 transition hover:border-[color:var(--line-strong)]"
       >
         <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[color:var(--accent)] text-[11px] font-semibold text-[color:var(--on-accent)]">
@@ -221,13 +223,13 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
 
             {/* links */}
             <button type="button" onClick={() => go("/account")} className={linkCls}>
-              {t("Account center", "账户中心", "Centro de cuenta", "Central da conta", "Centre du compte", "アカウントセンター", "Kontocenter")}
+              {t("Account center", "账户中心", "Centro de cuenta", "Central da conta", "Centre du compte", "アカウントセンター", "Kontocenter", "계정 센터")}
             </button>
             {isPaid && (
               <button type="button" onClick={handlePortal} disabled={billingLoading} className={`${linkCls} disabled:opacity-50`}>
                 {billingLoading
-                  ? t("Opening…", "打开中…", "Abriendo…", "Abrindo…", "Ouverture…", "開いています…", "Wird geöffnet…")
-                  : t("Manage billing", "管理账单", "Gestionar facturación", "Gerenciar cobrança", "Gérer la facturation", "請求を管理", "Abrechnung verwalten")}
+                  ? t("Opening…", "打开中…", "Abriendo…", "Abrindo…", "Ouverture…", "開いています…", "Wird geöffnet…", "여는 중…")
+                  : t("Manage billing", "管理账单", "Gestionar facturación", "Gerenciar cobrança", "Gérer la facturation", "請求を管理", "Abrechnung verwalten", "결제 관리")}
               </button>
             )}
             <button
@@ -235,7 +237,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
               onClick={handleSignOut}
               className="block w-full rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[13px] font-medium text-[color:var(--error)] transition hover:bg-[color:var(--error-surface)]"
             >
-              {t("Sign out", "退出登录", "Cerrar sesión", "Sair", "Se déconnecter", "ログアウト", "Abmelden")}
+              {t("Sign out", "退出登录", "Cerrar sesión", "Sair", "Se déconnecter", "ログアウト", "Abmelden", "로그아웃")}
             </button>
           </div>
         </>

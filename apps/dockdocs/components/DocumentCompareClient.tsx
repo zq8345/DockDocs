@@ -482,6 +482,67 @@ const STR = {
     tplDropHere: "PDFs ablegen, um erneut auszuführen",
     retry: "Erneut versuchen",
   },
+  ko: {
+    badge: "비교 엔진",
+    h1: "문서 비교",
+    intro: `같은 종류의 PDF를 2~${MAX_FILES}개 업로드하세요. DockDocs가 브라우저에서 읽어 주요 항목을 나란히 정리합니다 — 출처를 찾을 수 있는 값에는 원문 줄을 함께 표시합니다.`,
+    drop: "여기에 PDF를 끌어다 놓으세요",
+    dropHint: "로컬에서 읽습니다 — 파일은 기기를 벗어나지 않습니다. 필드 추출은 서버에서 실행됩니다.",
+    choose: "PDF 선택",
+    samples: "샘플 견적서 3개 사용해 보기",
+    extracting: "텍스트 추출 중…",
+    typeLabel: "종류",
+    compare: "필드 비교",
+    comparing: "비교 중…",
+    clear: "지우기",
+    bExtracted: "텍스트 추출됨",
+    bEmpty: "인식 안 됨(스캔본일 가능성 — OCR 필요)",
+    ocrRun: "OCR로 텍스트 추출",
+    ocrBusy: "OCR로 읽는 중… (몇 초 걸릴 수 있습니다)",
+    bError: "읽기 실패",
+    needTwo: "비교하려면 읽을 수 있는 문서를 2개 이상 추가하세요.",
+    failed: "비교에 실패했습니다.",
+    comparison: "비교 결과",
+    dimension: "항목",
+    notRecognized: "인식 안 됨",
+    tableNote:
+      "AI가 추출했습니다. 각 값에는 그 값이 나온 정확한 원문 줄이 표시됩니다(해당 문서에 실제로 나타나는지 확인됨). 「인식 안 됨」은 문서에 명시되지 않았다는 뜻이며 — 어떤 것도 추측하지 않습니다.",
+    comingNext: "곧 제공",
+    next: [
+      "비교한 수치에 근거한 추천(어느 쪽이 우수한지, 그 이유)",
+      "값을 클릭하면 원본 PDF의 정확한 위치로 이동",
+      "비교할 항목을 직접 추가",
+    ],
+    docCount: (n: number) => `문서 ${n}개`,
+    pages: (n: number) => `${n}페이지 · `,
+    chars: (n: number) => `${n.toLocaleString()}자`,
+    docTypes: [
+      { value: "quote", label: "견적서" },
+      { value: "invoice", label: "청구서" },
+      { value: "contract", label: "계약서" },
+    ],
+    tplSave: "템플릿으로 저장",
+    tplSaving: "저장 중…",
+    tplNamePlaceholder: "템플릿 이름(예: 공급업체 견적서)",
+    tplConfirm: "저장",
+    tplCancel: "취소",
+    tplMyTemplates: "내 템플릿",
+    tplDelete: "삭제",
+    tplLoaded: (name: string) => `템플릿: ${name}`,
+    tplRerunHint: "새 파일을 끌어다 놓으면 자동으로 다시 실행됩니다",
+    tplLastRun: "최근 실행",
+    tplRunFiles: (n: number) => `파일 ${n}개`,
+    tplNoRuns: "아직 실행 기록이 없습니다",
+    tplEditDims: "항목 편집",
+    tplDimLabel: "라벨",
+    tplDimAdd: "+ 추가",
+    tplDimApply: "적용",
+    tplDimReset: "기본값으로 재설정",
+    tplNewFiles: "새 파일",
+    tplDims: "개 항목",
+    tplDropHere: "PDF를 놓아 다시 실행",
+    retry: "다시 시도",
+  },
 } as const satisfies AuthoredCopy<unknown>;
 
 const REC = {
@@ -534,6 +595,13 @@ const REC = {
     disclaimer: "Dieses Urteil ist die Schlussfolgerung der KI aus den Zahlen in der Tabelle unten – anders als jede einzelne Tabellenzelle wird es nicht einzeln gegen die Quelle geprüft. Bestätigen Sie die Zahlen in der Tabelle, bevor Sie entscheiden.",
     recError: "Empfehlung nicht verfügbar – die Vergleichstabelle unten ist weiterhin korrekt.",
   },
+  ko: {
+    title: "추천",
+    thinking: "여러 선택지를 따져 보는 중…",
+    recommended: "추천",
+    disclaimer: "이 판단은 아래 표의 수치를 바탕으로 한 AI의 추론입니다 — 표의 각 셀과 달리 출처를 개별적으로 대조하지는 않았습니다. 결정하기 전에 표의 수치를 확인하세요.",
+    recError: "추천을 불러올 수 없습니다 — 아래 비교 표는 여전히 정확합니다.",
+  },
 } as const satisfies AuthoredCopy<unknown>;
 
 const TRACE = {
@@ -544,6 +612,7 @@ const TRACE = {
   fr: { source: "Source", notLocated: "Impossible de localiser l'extrait exact — affichage du texte intégral." },
   ja: { source: "出典", notLocated: "該当箇所を正確に特定できませんでした — 全文を表示しています。" },
   de: { source: "Quelle", notLocated: "Der genaue Ausschnitt ließ sich nicht finden – der vollständige Text wird angezeigt." },
+  ko: { source: "출처", notLocated: "정확한 구절을 찾지 못했습니다 — 전체 텍스트를 표시합니다." },
 } as const satisfies AuthoredCopy<unknown>;
 
 // Localized dimension labels (the backend returns English labels).
@@ -705,6 +774,16 @@ const QA: Record<BaseLocale, {
     errMaxDocs: "Stellen Sie Fragen über höchstens 8 Dokumente gleichzeitig.",
     errTooLong: "Der kombinierte Text ist zu lang (Grenze von 60.000 Zeichen). Verwenden Sie weniger oder kürzere Dokumente.",
     errQuestion: "Die Frage ist zu lang (Grenze von 500 Zeichen).",
+  },
+  ko: {
+    title: "이 문서들에 대해 질문하기",
+    desc: "업로드한 모든 문서에 하나의 질문을 던지세요 — 출처를 찾을 수 있을 때 답변에 출처가 표시됩니다.",
+    placeholder: "예: 어느 견적서의 납기가 가장 짧나요?",
+    ask: "질문", thinking: "생각 중…", sources: "출처",
+    noAnswer: "이 문서들에서 답을 찾을 수 없었습니다.",
+    errMaxDocs: "한 번에 최대 8개 문서까지 질문할 수 있습니다.",
+    errTooLong: "합쳐진 텍스트가 너무 깁니다(60,000자 제한). 문서 수를 줄이거나 더 짧은 문서를 사용하세요.",
+    errQuestion: "질문이 너무 깁니다(500자 제한).",
   },
 };
 
@@ -870,13 +949,36 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Nach Excel extrahieren", href: "/extract-to-excel", description: "Ziehen Sie Tabellen und Felder aus einem PDF in eine saubere Tabelle." },
     ],
   },
+  ko: {
+    benefitsTitle: "DockDocs로 문서를 비교하는 이유",
+    benefitsDescription: "두 PDF를 나란히 놓고, 둘 모두에 걸친 질문을 던지고, 그 수치에서 도출된 판단을 받아 보세요 — AI가 문서의 텍스트를 대신 읽어 줍니다.",
+    benefits: [
+      { title: "주요 항목을 나란히 정렬", description: "AI가 각 PDF에서 공급업체, 가격, 날짜, 조건을 하나의 표로 뽑아내, 두 문서의 차이가 여러 페이지에 흩어지지 않고 한눈에 드러납니다." },
+      { title: "답변이 출처 줄을 가리킵니다", description: "두 문서에 걸친 질문을 했을 때 답변이 특정 줄에 근거하면, 그 출처 줄과 함께 표시됩니다 — 그리고 서버는 해당 구절이 지정된 문서에 실제로 나타나는지 확인한 뒤에야 보여 줍니다." },
+      { title: "확인할 수 있는 판단", description: "어느 선택지가 우수한지와 그 이유를 추천받되, 근거가 된 각 수치는 표까지 추적할 수 있습니다 — 결정 전에 수치를 확인할 수 있습니다." },
+    ],
+    workflowTitle: "비교가 문서 작업에 어떻게 맞물리나요",
+    workflowDescription: "두 버전, 두 견적서, 두 계약서를 양쪽 모두 처음부터 끝까지 다시 읽지 않고 서로 견주어 봐야 하는 순간을 위한 기능입니다.",
+    steps: [
+      "비교하려는 두 PDF를 업로드하세요.",
+      "AI가 문서의 텍스트를 분석해 필드를 정렬하고, 문서 간 질문에 답하거나, 우수한 쪽을 추천합니다.",
+      "나란히 놓인 비교 표를 검토하고, 질문을 하거나, 데이터에 근거한 판단을 읽어 보세요.",
+    ],
+    readingTitle: "더 많은 AI 문서 도구",
+    readingDescription: "PDF를 읽고, 확인하고, 사실을 뽑아내는 관련 방법들입니다.",
+    readingLinks: [
+      { label: "계약 위험 검토", href: "/contract-risk", description: "한 계약서의 위험 조항을 표시하고, 인용된 각 위험을 출처 줄과 연결합니다." },
+      { label: "정부 입찰 매트릭스", href: "/govbid-matrix", description: "입찰 문서를 실행 가능한 구조화된 요건 매트릭스로 바꿉니다." },
+      { label: "Excel로 추출", href: "/extract-to-excel", description: "PDF의 표와 필드를 깔끔한 스프레드시트로 뽑아냅니다." },
+    ],
+  },
 };
 
 export function DocumentCompareClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  const cl: BaseLocale = locale === "zh-Hant" ? "zh" : locale === "ko" ? "en" : locale;
+  // ko is fully authored (STR/REC/TRACE/QA/SECTIONS all carry Korean). zh-Hant derives from zh.
+  const cl: BaseLocale = locale === "zh-Hant" ? "zh" : locale;
   // ko → English engine/runtime (child widgets / OCR / notices lack ko); zh-Hant preserved.
-  const childLocale = locale === "ko" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[cl];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[cl];
   const r = locale === "zh-Hant" ? deepHant(REC.zh) : REC[cl];
@@ -1249,7 +1351,7 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
                   </p>
                   {lastRun ? (
                     <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">
-                      {t.tplLastRun}: {relativeTime(lastRun.createdAt, cl)} · {t.tplRunFiles(lastRun.fileNames.length)}
+                      {t.tplLastRun}: {relativeTime(lastRun.createdAt, cl === "ko" ? "en" : cl)} · {t.tplRunFiles(lastRun.fileNames.length)}
                     </p>
                   ) : (
                     <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">{t.tplNoRuns}</p>
@@ -1427,7 +1529,7 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
         </div>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
 
       {okDocs.length >= 1 && (
         <section id="ask" className="mt-10">

@@ -168,6 +168,24 @@ const STR = {
     note: "Jedes PDF wird in Ihrem Browser gelesen; nur der extrahierte Text wird zum Übersetzen gesendet. Die Ausgabe ist reiner Text (.txt), eine Datei pro PDF — das Layout bleibt nicht erhalten. Eingescannte PDFs benötigen zuerst eine OCR. Wird auf Ihr tägliches KI-Limit angerechnet.",
     err: "Etwas ist schiefgelaufen: ",
   },
+  ko: {
+    title: "PDF 일괄 번역",
+    subtitle:
+      "폴더 안의 PDF를 한 번에 한 가지 언어로 번역하세요. 각 파일의 텍스트가 번역되어 .txt 파일들이 담긴 하나의 ZIP으로 묶입니다.",
+    target: "번역할 언어",
+    run: "전체 번역",
+    running: "번역 중",
+    download: "ZIP 다운로드",
+    reset: "다시 시작",
+    files: (n: number, max: number) => `${n} / ${max}개 파일`,
+    done: "완료",
+    failed: "실패",
+    need: "PDF를 하나 이상 추가해 주세요.",
+    noText: "선택 가능한 텍스트 없음(스캔본인가요?)",
+    tooLong: "너무 깁니다(14,000자 초과)",
+    note: "각 PDF는 브라우저에서 읽히며, 추출된 텍스트만 번역을 위해 전송됩니다. 출력은 일반 텍스트(.txt)이며 PDF 하나당 한 파일로, 레이아웃은 유지되지 않습니다. 스캔본 PDF는 먼저 OCR이 필요합니다. 일일 AI 한도에 포함됩니다.",
+    err: "문제가 발생했습니다: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
 
 async function extractText(file: File): Promise<string> {
@@ -347,6 +365,29 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "KI-Dokumentenressourcen", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenwege." },
     ],
   },
+  ko: {
+    benefitsTitle: "폴더 전체를 한 번에 번역",
+    benefitsDescription: "PDF가 담긴 폴더를 대상으로 한 번만 실행하면 모든 문서가 같은 대상 언어로 번역됩니다.",
+    benefits: [
+      { title: "파일이 아니라 폴더 단위", description: "최대 10개의 PDF를 대기열에 넣어 한 번에 번역하세요. 문서를 하나씩 열어 복사하고 붙여넣을 필요가 없습니다." },
+      { title: "AI가 각 PDF의 텍스트를 읽습니다", description: "각 문서의 텍스트를 추출해 AI가 번역하므로, 사전에서 단어를 바꾼 듯한 직역이 아니라 자연스럽게 읽힙니다." },
+      { title: "실행 한 번에 ZIP 하나, 언어 하나", description: "각 번역본은 원본 PDF의 이름을 딴 .txt 파일로 반환되어 하나의 ZIP으로 묶입니다. 다른 대상 언어를 골라 폴더를 다시 실행하세요." },
+    ],
+    workflowTitle: "일괄 번역이 작업에 어떻게 어울리는지",
+    workflowDescription: "공급업체 계약서, 연구 논문, 보고서 폴더처럼 한 무더기의 PDF를 모두 한 가지 언어로 읽어야 할 때를 위한 기능입니다.",
+    steps: [
+      "PDF가 담긴 폴더를 넣고 번역할 언어를 선택하세요.",
+      "AI가 각 문서의 텍스트를 차례대로 추출하고 번역합니다.",
+      ".txt 번역본이 담긴 ZIP을 다운로드하세요. PDF 하나당 한 파일입니다.",
+    ],
+    readingTitle: "더 많은 AI 문서 도구",
+    readingDescription: "AI로 문서를 번역하고 처리하는 관련 방법.",
+    readingLinks: [
+      { label: "단일 PDF 번역", href: "/translate-pdf", description: "한 파일 버전 — PDF 하나를 번역하고 결과를 나란히 읽어 보세요." },
+      { label: "PDF 일괄 요약", href: "/batch-summary", description: "같은 폴더 작업 흐름이지만, 각 PDF를 번역하는 대신 요약합니다." },
+      { label: "AI 문서 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+    ],
+  },
 };
 
 export function BatchTranslateClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
@@ -354,7 +395,7 @@ export function BatchTranslateClient({ locale = "en", embedded = false }: { loca
   // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
   // the deepHant branch below); `childLocale` collapses only ko, since the widgets accept zh-Hant.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  const childLocale = locale === "ko" ? "en" : locale;
+  const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
@@ -473,6 +514,7 @@ export function BatchTranslateClient({ locale = "en", embedded = false }: { loca
         fr: "Impossible de créer le téléchargement ; réessayez.",
         ja: "ダウンロードの作成に失敗しました。もう一度お試しください。",
         de: "Der Download konnte nicht erstellt werden — bitte versuchen Sie es erneut.",
+        ko: "다운로드를 생성하지 못했습니다. 다시 시도해 주세요.",
       };
       setError(locale === "zh-Hant" ? toHant(DL_ERR.zh) : DL_ERR[al]);
     }
@@ -508,6 +550,7 @@ export function BatchTranslateClient({ locale = "en", embedded = false }: { loca
             fr: "Lu localement — seul le texte est envoyé",
             ja: "ローカルで読み取り、テキストのみ送信",
             de: "Lokal gelesen — nur Text wird gesendet",
+            ko: "로컬에서 읽음 — 텍스트만 전송",
           };
           return locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[al];
         })()} embedded={embedded} valueZone="ai" />
@@ -567,7 +610,7 @@ export function BatchTranslateClient({ locale = "en", embedded = false }: { loca
         </>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="batch-translate" locale={locale} />}

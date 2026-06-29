@@ -126,25 +126,22 @@ const STR = {
     page: "Seite",
     err: "Etwas ist schiefgelaufen: ",
   },
+  ko: {
+    title: "페이지 재정렬",
+    subtitle: "PDF를 업로드한 다음 페이지 썸네일을 원하는 순서로 끌어 옮기세요. 필요 없는 페이지는 삭제할 수 있습니다. 모든 작업은 브라우저에서 이루어집니다.",
+    drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
+    choose: "PDF 선택",
+    rendering: "페이지를 렌더링하는 중…",
+    hint: "페이지를 끌어 옮기세요. ✕를 클릭하면 페이지가 제거됩니다.",
+    apply: "적용하고 다운로드",
+    working: "PDF를 생성하는 중…",
+    reset: "다시 시작",
+    removed: (n: number) => `${n}페이지 제거됨`,
+    needOne: "최소한 한 페이지는 남기세요.",
+    page: "페이지",
+    err: "문제가 발생했습니다: ",
+  },
 } satisfies AuthoredCopy<typeof _en>;
-
-// ko is excluded from AuthoredLocale (English-fallback foundation phase), so its
-// copy lives in standalone *_KO objects selected explicitly in the resolver below.
-const STR_KO: (typeof STR)["en"] = {
-  title: "페이지 재정렬",
-  subtitle: "PDF를 업로드한 다음 페이지 썸네일을 원하는 순서로 끌어 옮기세요. 필요 없는 페이지는 삭제할 수 있습니다. 모든 작업은 브라우저에서 이루어집니다.",
-  drop: "여기에 PDF를 끌어다 놓거나 클릭해서 선택하세요",
-  choose: "PDF 선택",
-  rendering: "페이지를 렌더링하는 중…",
-  hint: "페이지를 끌어 옮기세요. ✕를 클릭하면 페이지가 제거됩니다.",
-  apply: "적용하고 다운로드",
-  working: "PDF를 생성하는 중…",
-  reset: "다시 시작",
-  removed: (n: number) => `${n}페이지 제거됨`,
-  needOne: "최소한 한 페이지는 남기세요.",
-  page: "페이지",
-  err: "문제가 발생했습니다: ",
-};
 
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
   en: {
@@ -308,40 +305,38 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
   },
-};
-
-const SECTIONS_KO: ToolSectionsContent = {
-  benefitsTitle: "브라우저에서 PDF 페이지를 재정렬하는 이유",
-  benefitsDescription: "페이지를 알맞은 순서로 끌어 옮기세요 — 다시 스캔할 필요도, 다시 내보낼 필요도 없습니다.",
-  benefits: [
-    { title: "끌어서 제자리에", description: "아무 페이지 썸네일이나 잡아 있어야 할 곳에 놓으세요 — 순서가 어긋난 스캔을 바로잡거나 한 섹션을 몇 초 만에 옮길 수 있습니다." },
-    { title: "저장하기 전에 확인", description: "끌어 옮기는 동안 새 순서가 실시간으로 표시되므로, 내보내기 전에 순서를 확인할 수 있습니다." },
-    { title: "같은 페이지, 새 순서", description: "재정렬은 순서만 바꿉니다 — 모든 페이지는 원래 품질과 내용을 그대로 유지합니다." },
-  ],
-  workflowTitle: "재정렬이 문서 작업에 어떻게 들어맞는가",
-  workflowDescription: "페이지 순서가 어긋났을 때 — 잘못된 순서로 들어간 스캔, 앞쪽에 와야 할 부록.",
-  steps: [
-    "순서를 바꿀 페이지가 있는 PDF를 업로드합니다.",
-    "페이지 썸네일을 원하는 순서로 끌어 옮깁니다.",
-    "재정렬한 PDF를 다운로드합니다.",
-  ],
-  readingTitle: "PDF를 정리하는 더 많은 방법",
-  readingDescription: "문서 페이지를 재배열하고 정리하는 관련 도구.",
-  readingLinks: [
-    { label: "페이지 회전", href: "/rotate-page", description: "옆으로 또는 거꾸로 스캔된 페이지를 똑바로 세웁니다." },
-    { label: "페이지 삭제", href: "/delete-page", description: "PDF에서 원치 않는 페이지를 제거합니다." },
-    { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
-  ],
+  ko: {
+    benefitsTitle: "브라우저에서 PDF 페이지를 재정렬하는 이유",
+    benefitsDescription: "페이지를 알맞은 순서로 끌어 옮기세요 — 다시 스캔할 필요도, 다시 내보낼 필요도 없습니다.",
+    benefits: [
+      { title: "끌어서 제자리에", description: "아무 페이지 썸네일이나 잡아 있어야 할 곳에 놓으세요 — 순서가 어긋난 스캔을 바로잡거나 한 섹션을 몇 초 만에 옮길 수 있습니다." },
+      { title: "저장하기 전에 확인", description: "끌어 옮기는 동안 새 순서가 실시간으로 표시되므로, 내보내기 전에 순서를 확인할 수 있습니다." },
+      { title: "같은 페이지, 새 순서", description: "재정렬은 순서만 바꿉니다 — 모든 페이지는 원래 품질과 내용을 그대로 유지합니다." },
+    ],
+    workflowTitle: "재정렬이 문서 작업에 어떻게 들어맞는가",
+    workflowDescription: "페이지 순서가 어긋났을 때 — 잘못된 순서로 들어간 스캔, 앞쪽에 와야 할 부록.",
+    steps: [
+      "순서를 바꿀 페이지가 있는 PDF를 업로드합니다.",
+      "페이지 썸네일을 원하는 순서로 끌어 옮깁니다.",
+      "재정렬한 PDF를 다운로드합니다.",
+    ],
+    readingTitle: "PDF를 정리하는 더 많은 방법",
+    readingDescription: "문서 페이지를 재배열하고 정리하는 관련 도구.",
+    readingLinks: [
+      { label: "페이지 회전", href: "/rotate-page", description: "옆으로 또는 거꾸로 스캔된 페이지를 똑바로 세웁니다." },
+      { label: "페이지 삭제", href: "/delete-page", description: "PDF에서 원치 않는 페이지를 제거합니다." },
+      { label: "PDF 워크플로 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
+    ],
+  },
 };
 
 // Per-page thumbnail label. Exhaustive over AuthoredLocale so a new route locale forces
 // a code decision (missing key = tsc error) instead of silently rendering English.
-// Current displayed text is preserved verbatim: zh shows "第 N 页", every other authored
-// locale shows "Page N" (unchanged); zh-Hant is derived to "第 N 頁".
+// Current displayed text is preserved verbatim: zh shows "第 N 页", ko shows "N페이지",
+// every other authored locale shows "Page N" (unchanged); zh-Hant is derived to "第 N 頁".
 function pageLabel(locale: Locale, n: number): string {
   if (locale === "zh-Hant") return `第 ${n} 頁`;
-  if (locale === "ko") return `${n}페이지`;
-  // zh-Hant and ko handled above → locale is now a plain AuthoredLocale.
+  // zh-Hant handled above → locale is now a plain AuthoredLocale.
   const al: AuthoredLocale = locale;
   const labels: AuthoredCopy<string> = {
     en: `Page ${n}`,
@@ -351,17 +346,18 @@ function pageLabel(locale: Locale, n: number): string {
     fr: `Page ${n}`,
     ja: `Page ${n}`,
     de: `Seite ${n}`,
+    ko: `${n}페이지`,
   };
   return labels[al];
 }
 
 export function PageReorderClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
-  // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
-  const childLocale = locale === "ko" ? "en" : locale;
-  const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
-  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
+  // ko is a fully authored locale → resolves through STR[al]/SECTIONS[al] like any other.
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
+  // Child props/runtime fns accept the full RouteLocale (incl. ko + zh-Hant) → pass through.
+  const childLocale = locale;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
+  const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
   const [done, setDone] = useState(false);
   const [fileName, setFileName] = useState("");

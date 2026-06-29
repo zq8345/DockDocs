@@ -14,12 +14,11 @@ export type RouteLocale = (typeof routeLocales)[number];
 
 // Locales that need their own AUTHORED copy. zh-Hant is excluded because it is
 // machine-derived from zh via deepHant/toHant (lib/zh-hant.ts) — never hand-written.
-// ko is excluded FOR NOW (foundation phase): ko is a first-class route locale whose
-// CONTENT still falls back to English until the Korean copy lands (content phase).
-// Excluding it here keeps the ~40 `AuthoredCopy<T>`/`Record<AuthoredLocale,…>` tool
-// tables from demanding Korean strings (which would red-build), exactly as zh-Hant is
-// excluded. REMOVE "ko" from this Exclude when Korean tool/runtime copy is authored.
-export type AuthoredLocale = Exclude<RouteLocale, "zh-Hant" | "ko">;
+// ko is now a FULLY AUTHORED locale (Korean tool/runtime copy landed 2026-06-28) —
+// it is in AuthoredLocale so every `AuthoredCopy<T>`/`Record<AuthoredLocale,…>` table
+// is tsc-forced to carry Korean strings (no silent English fallback). Only zh-Hant
+// stays excluded (machine-derived from zh).
+export type AuthoredLocale = Exclude<RouteLocale, "zh-Hant">;
 // Exhaustive copy map over authored locales. Adding a new route locale (e.g. "de")
 // makes EVERY AuthoredCopy literal a tsc error until the new key is added — this is
 // what turns a silently-English build into a red build.
