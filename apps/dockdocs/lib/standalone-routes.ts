@@ -32,4 +32,5 @@ export const standaloneRoutes = [
   "ai-document-chat",
   "ai-document-summarization",
   "upgrade",
+  "download",
 ] as const;
