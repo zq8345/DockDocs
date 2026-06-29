@@ -29,11 +29,8 @@ function lh(href: string, locale: string) {
 }
 
 function asMembershipLocale(locale: string): MembershipLocale {
-  // `de` is intentionally absent: MembershipLocale (lib/membership-ui.ts) has no
-  // "de" member yet, so a German visitor's plan badge / status / upgrade prompts
-  // fall back to English until that shared type+copy ships. zh-Hant IS supported.
-  if (locale === "zh-Hant") return "zh-Hant";
-  return locale === "zh" || locale === "es" || locale === "pt" || locale === "fr" || locale === "ja" ? locale : "en";
+  const supported: MembershipLocale[] = ["en", "zh", "es", "pt", "fr", "ja", "zh-Hant", "de", "ko"];
+  return supported.includes(locale as MembershipLocale) ? (locale as MembershipLocale) : "en";
 }
 
 const linkCls =
@@ -146,6 +143,9 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
   const isTrial = snapshot?.trial?.status === "trialing";
   const display = isTrial ? "Pro" : (snapshot?.displayName ?? "Free");
   const interval = snapshot?.record.interval;
+  const trialDaysRemaining = isTrial && snapshot?.trial?.expiresAt
+    ? Math.max(0, Math.ceil((new Date(snapshot.trial.expiresAt).getTime() - Date.now()) / 86400000))
+    : undefined;
   const badge = planBadge(display, interval, loc);
   const prompts = snapshot ? upgradePrompts(display, interval, loc) : [];
   const isPaid = snapshot?.isPaidPlaceholder ?? false;
@@ -191,6 +191,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
                       status: snapshot.record.status,
                       currentPeriodEnd: snapshot.record.currentPeriodEnd,
                       cancelAtPeriodEnd: snapshot.record.cancelAtPeriodEnd,
+                      daysRemaining: trialDaysRemaining,
                     },
                     loc,
                   )}

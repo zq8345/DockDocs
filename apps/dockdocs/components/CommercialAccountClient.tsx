@@ -354,12 +354,8 @@ function useLocale(): Locale {
   return locale;
 }
 
-// The upgrade flow (Pro-benefits list + billing-error copy) is keyed by
-// MembershipLocale, which has no authored German content. de → en here is an
-// intentional fallback, not a half-translation; the de account UI itself is
-// fully German via STR.de above.
 function asMembershipLocale(locale: Locale): MembershipLocale {
-  return locale === "de" ? "en" : locale;
+  return locale;
 }
 
 export function CommercialAccountClient() {

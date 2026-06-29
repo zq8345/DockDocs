@@ -58,7 +58,7 @@ function formatDate(iso: string | undefined, locale: MembershipLocale): string {
 }
 
 // Human status line: "Active · renews <date>" / "Lifetime · never expires" /
-// "Canceled · active until <date>" / "Past due" / "Free plan".
+// "Canceled · active until <date>" / "Past due" / "Free plan" / "Pro Trial · N days left".
 export function planStatusText(
   opts: {
     displayName: PlanDisplayName;
@@ -66,10 +66,11 @@ export function planStatusText(
     status: string;
     currentPeriodEnd?: string;
     cancelAtPeriodEnd?: boolean;
+    daysRemaining?: number;
   },
   locale: MembershipLocale,
 ): string {
-  const { displayName, interval, status, currentPeriodEnd, cancelAtPeriodEnd } = opts;
+  const { displayName, interval, status, currentPeriodEnd, cancelAtPeriodEnd, daysRemaining } = opts;
   const date = formatDate(currentPeriodEnd, locale);
 
   if (displayName === "Free") {
@@ -77,6 +78,22 @@ export function planStatusText(
   }
   if (interval === "lifetime") {
     return pick(locale, "Lifetime · never expires", "终身永久 · 永不过期", "De por vida · nunca caduca", "Vitalício · nunca expira", "À vie · n'expire jamais", "買い切り · 無期限", "Lebenslang · läuft nie ab", "평생 · 만료 없음");
+  }
+  if (status === "trialing") {
+    if (typeof daysRemaining === "number") {
+      const n = daysRemaining;
+      return pick(locale,
+        `Pro Trial · ${n} day${n === 1 ? "" : "s"} left`,
+        `Pro 试用 · 剩余 ${n} 天`,
+        `Prueba Pro · quedan ${n} día${n === 1 ? "" : "s"}`,
+        `Teste Pro · faltam ${n} dia${n === 1 ? "" : "s"}`,
+        `Essai Pro · ${n} jour${n === 1 ? "" : "s"} restant${n === 1 ? "" : "s"}`,
+        `Pro トライアル · 残り ${n} 日`,
+        `Pro Testversion · noch ${n} Tag${n === 1 ? "" : "e"}`,
+        `Pro 체험 · ${n}일 남음`,
+      );
+    }
+    return pick(locale, "Pro Trial", "Pro 试用", "Prueba Pro", "Teste Pro", "Essai Pro", "Pro トライアル", "Pro Testversion", "Pro 체험");
   }
   if (status === "past_due") {
     return pick(locale, "Past due · update your payment method", "续费失败 · 请更新付款方式", "Pago vencido · actualiza tu método de pago", "Pagamento vencido · atualize sua forma de pagamento", "Paiement en retard · mettez à jour votre moyen de paiement", "支払い遅延 · お支払い方法を更新してください", "Überfällig · bitte Zahlungsmethode aktualisieren", "결제 기한 초과 · 결제 수단을 업데이트해 주세요");
