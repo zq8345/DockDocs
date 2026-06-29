@@ -22,12 +22,14 @@ const _en = {
     original: "Original (v1)", revised: "Revised (v2)",
     choose: "Choose PDF", reading: "Reading…", change: "Replace",
     compare: "Compare versions", comparing: "Comparing…", reset: "Start over",
+    tryExample: "Try example",
     dropHint: "Compared locally — your files never leave your device.",
     added: "Added", removed: "Removed", unchanged: "No textual changes found.",
     summary: (a: number, d: number) => `${a} added · ${d} removed`,
     need: "Add both PDFs to compare.",
     err: "Something went wrong: ",
     note: "Compares the extracted text sentence by sentence. Formatting and images aren't part of the comparison.",
+    previewCaption: "See additions in green and deletions in red before you upload.",
   };
 
 // Exhaustive over AuthoredLocale: a missing route locale (e.g. "de") is a tsc
@@ -41,6 +43,7 @@ const STR = {
     original: "原始版 (v1)", revised: "修订版 (v2)",
     choose: "选择 PDF", reading: "读取中…", change: "替换",
     compare: "对比版本", comparing: "对比中…", reset: "重新开始",
+    tryExample: "查看示例", previewCaption: "上传前先看看输出效果——绿色高亮新增，红色删除线表示删除。",
     dropHint: "在本地对比——文件不离开你的设备。",
     added: "新增", removed: "删除", unchanged: "未发现文字差异。",
     summary: (a: number, d: number) => `新增 ${a} · 删除 ${d}`,
@@ -54,6 +57,7 @@ const STR = {
     original: "Original (v1)", revised: "Revisado (v2)",
     choose: "Elegir PDF", reading: "Leyendo…", change: "Reemplazar",
     compare: "Comparar versiones", comparing: "Comparando…", reset: "Empezar de nuevo",
+    tryExample: "Ver ejemplo", previewCaption: "Mira cómo se ve el resultado antes de subir: verde para añadido, tachado rojo para eliminado.",
     dropHint: "Se comparan localmente: tus archivos nunca salen de tu dispositivo.",
     added: "Añadido", removed: "Eliminado", unchanged: "No se encontraron cambios de texto.",
     summary: (a: number, d: number) => `${a} añadido · ${d} eliminado`,
@@ -67,6 +71,7 @@ const STR = {
     original: "Original (v1)", revised: "Revisado (v2)",
     choose: "Escolher PDF", reading: "Lendo…", change: "Substituir",
     compare: "Comparar versões", comparing: "Comparando…", reset: "Recomeçar",
+    tryExample: "Ver exemplo", previewCaption: "Veja como fica o resultado antes de enviar: verde para adicionado, tachado vermelho para removido.",
     dropHint: "Comparados localmente: seus arquivos nunca saem do seu dispositivo.",
     added: "Adicionado", removed: "Removido", unchanged: "Nenhuma alteração textual encontrada.",
     summary: (a: number, d: number) => `${a} adicionado · ${d} removido`,
@@ -80,6 +85,7 @@ const STR = {
     original: "Original (v1)", revised: "Révisé (v2)",
     choose: "Choisir un PDF", reading: "Lecture…", change: "Remplacer",
     compare: "Comparer les versions", comparing: "Comparaison…", reset: "Recommencer",
+    tryExample: "Voir un exemple", previewCaption: "Voyez le résultat avant d'importer : vert pour ajouté, barré rouge pour supprimé.",
     dropHint: "Comparaison locale — vos fichiers ne quittent jamais votre appareil.",
     added: "Ajouté", removed: "Supprimé", unchanged: "Aucune modification textuelle détectée.",
     summary: (a: number, d: number) => `${a} ajouté · ${d} supprimé`,
@@ -93,6 +99,7 @@ const STR = {
     original: "元版 (v1)", revised: "改訂版 (v2)",
     choose: "PDFを選択", reading: "読み取り中…", change: "差し替え",
     compare: "バージョンを比較", comparing: "比較中…", reset: "最初からやり直す",
+    tryExample: "サンプルを試す", previewCaption: "アップロード前に出力を確認：緑が追加、赤の取り消し線が削除。",
     dropHint: "ローカルで比較 — ファイルがデバイスから出ることはありません。",
     added: "追加", removed: "削除", unchanged: "テキストの変更は見つかりませんでした。",
     summary: (a: number, d: number) => `${a}件追加 · ${d}件削除`,
@@ -106,6 +113,7 @@ const STR = {
     original: "Original (v1)", revised: "Überarbeitet (v2)",
     choose: "PDF auswählen", reading: "Wird gelesen…", change: "Ersetzen",
     compare: "Versionen vergleichen", comparing: "Wird verglichen…", reset: "Neu beginnen",
+    tryExample: "Beispiel ansehen", previewCaption: "Sehen Sie das Ergebnis vor dem Upload: Grün für hinzugefügt, rot durchgestrichen für entfernt.",
     dropHint: "Lokal verglichen – Ihre Dateien verlassen Ihr Gerät nicht.",
     added: "Hinzugefügt", removed: "Entfernt", unchanged: "Keine Textänderungen gefunden.",
     summary: (a: number, d: number) => `${a} hinzugefügt · ${d} entfernt`,
@@ -119,6 +127,7 @@ const STR = {
     original: "원본 (v1)", revised: "수정본 (v2)",
     choose: "PDF 선택", reading: "읽는 중…", change: "교체",
     compare: "버전 비교", comparing: "비교 중…", reset: "처음부터 다시",
+    tryExample: "예시 보기", previewCaption: "업로드 전에 결과를 미리 확인하세요: 초록색은 추가, 빨간색 취소선은 삭제.",
     dropHint: "로컬에서 비교합니다 — 파일은 기기를 벗어나지 않습니다.",
     added: "추가됨", removed: "삭제됨", unchanged: "텍스트 변경 사항을 찾지 못했습니다.",
     summary: (a: number, d: number) => `추가 ${a} · 삭제 ${d}`,
@@ -127,6 +136,17 @@ const STR = {
     note: "추출된 텍스트를 문장 단위로 비교합니다. 서식과 이미지는 비교 대상이 아닙니다.",
   },
 } satisfies Record<AuthoredLocale, typeof _en>;
+
+const EXAMPLE_OPS: Op[] = [
+  { type: "eq", text: "This Agreement is entered into as of January 1, 2025 between Lessor and Lessee. " },
+  { type: "del", text: "The lease term shall be 12 months." },
+  { type: "ins", text: "The lease term shall be 24 months, with one renewal option." },
+  { type: "eq", text: " Monthly rent is due on the first of each month. " },
+  { type: "del", text: "Late fees of $25 apply after a 5-day grace period." },
+  { type: "ins", text: "Late fees of $50 apply after a 3-day grace period." },
+  { type: "eq", text: " Either party may terminate with 30 days written notice. " },
+  { type: "ins", text: "A force majeure clause applies to events beyond reasonable control." },
+];
 
 async function extractText(file: File): Promise<string> {
   const pdfjs = await import("pdfjs-dist");
@@ -382,6 +402,7 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
   }, [a, b, t, childLocale]);
 
   const reset = () => { setA(null); setB(null); setOps([]); setPhase("idle"); setError(null); };
+  const loadExample = () => { setOps(EXAMPLE_OPS); setPhase("done"); setError(null); };
 
   const counts = { ins: ops.filter((o) => o.type === "ins").length, del: ops.filter((o) => o.type === "del").length };
 
@@ -418,6 +439,41 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
       )}
       {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>}
 
+      {/* Result preview illustration — shown only before any file is loaded */}
+      {phase === "idle" && !a && !b && !embedded && (
+        <div className="mt-8 overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]">
+          <div className="flex min-h-[140px] items-stretch">
+            {/* Left: input V1 + V2 stacked */}
+            <div className="flex w-[42%] flex-col justify-center gap-2 p-4">
+              {(["V1", "V2"] as const).map((label) => (
+                <div key={label} className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2">
+                  <p className="mb-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">{label}</p>
+                  <div className="space-y-1">
+                    {[1, 0.75, 1, 0.6].map((w, i) => (
+                      <div key={i} className="h-1.5 rounded-full bg-[color:var(--line)]" style={{ width: `${w * 100}%` }} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Arrow */}
+            <div className="flex w-[12%] items-center justify-center text-[color:var(--faint)]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </div>
+            {/* Right: diff output preview */}
+            <div className="flex flex-1 flex-col justify-center gap-1 border-l border-[color:var(--line)] p-4 text-[11.5px]">
+              <div className="rounded bg-[rgba(52,211,153,0.12)] px-2 py-0.5 text-[color:var(--accent)]">+ term shall be 24 months.</div>
+              <div className="rounded bg-[rgba(248,113,113,0.12)] px-2 py-0.5 text-[#f87171] line-through">term shall be 12 months.</div>
+              <div className="px-2 py-0.5 text-[color:var(--faint)]">Monthly rent due on the 1st.</div>
+              <div className="rounded bg-[rgba(52,211,153,0.12)] px-2 py-0.5 text-[color:var(--accent)]">+ Force majeure clause added.</div>
+            </div>
+          </div>
+          <div className="border-t border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-center text-[11.5px] text-[color:var(--faint)]">
+            {t.previewCaption}
+          </div>
+        </div>
+      )}
+
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {slot(a, setA, aRef, t.original, "a")}
         {slot(b, setB, bRef, t.revised, "b")}
@@ -430,9 +486,12 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
       </p>
       {embedded && !a && !b && <WorkspaceValueZone type="client" locale={locale} />}
 
-      <div className="mt-5 flex items-center gap-2">
+      <div className="mt-5 flex flex-wrap items-center gap-2">
         <button type="button" onClick={compare} disabled={!a || !b || phase === "comparing"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 py-2.5 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "comparing" ? (<><Spinner /> {t.comparing}</>) : t.compare}</button>
-        {(a || b) && <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2.5 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>}
+        {!a && !b && phase !== "done" && (
+          <button type="button" onClick={loadExample} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2.5 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.tryExample}</button>
+        )}
+        {(a || b || phase === "done") && <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2.5 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>}
       </div>
 
       {phase === "done" && (
