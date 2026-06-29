@@ -233,7 +233,7 @@ export function languageAlternates(slug: RouteSlug) {
     fr: absoluteUrl(localizedPath("fr", slug)),
     ja: absoluteUrl(localizedPath("ja", slug)),
     de: absoluteUrl(localizedPath("de", slug)),
-    // ko omitted: noindex until full translation; restore when ko complete
+    ko: absoluteUrl(localizedPath("ko", slug)),
     // hreflang language ATTRIBUTE keeps BCP-47 "zh-Hant" casing; localizedPath
     // lowercases only the href PATH segment (/zh-hant/) to dodge Netlify's
     // mixed-case 301. Without this key the zh-Hant pages ship no self/sibling
