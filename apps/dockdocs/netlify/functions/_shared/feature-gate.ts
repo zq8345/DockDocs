@@ -1,5 +1,6 @@
 import { json, readBillingUser } from "./billing-auth";
 import { readSubscriptionByUserId } from "./billing-store";
+import { isTrialActive, readTrialByUserId } from "./trial-store";
 import { incrementUsageCount, readUsageCount } from "./usage-store";
 import { recordPaywallHit } from "./paywall-store";
 import {
@@ -77,6 +78,14 @@ export async function enforceFeatureGate(
         if (sub?.plan) {
           plan = sub.plan;
         }
+        // If still FREE, check for an active trial (lazy expiry — no cron needed).
+        // A trial that has passed expiresAt simply falls through to FREE.
+        if (plan === "FREE") {
+          const trial = await readTrialByUserId(user.id);
+          if (trial && isTrialActive(trial)) {
+            plan = "PRO";
+          }
+        }
       }
     }
   } catch {
@@ -152,8 +161,8 @@ export function clientIp(req: Request): string {
 function upgradeMessage(plan: SubscriptionPlan, period: "day" | "month"): string {
   if (plan === "FREE") {
     return period === "day"
-      ? "You've reached today's free limit for this feature. Upgrade to Plus or Pro for higher limits."
-      : "You've reached the free limit for this feature. Upgrade to Plus or Pro for higher limits.";
+      ? "You've reached today's free limit for this feature. Start a free trial or upgrade to Pro for higher limits."
+      : "You've reached the free limit for this feature. Start a free trial or upgrade to Pro for higher limits.";
   }
-  return "You've reached your plan's limit for this feature this month. Upgrade to Pro for higher limits, or it resets at the start of next month.";
+  return "You've reached your plan's limit for this feature this month. It resets at the start of next month.";
 }
