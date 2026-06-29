@@ -2541,11 +2541,21 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "for/finance") {
-    return <FinanceHubPage locale={toVerticalLocale(clientLocale)} useLocalePrefix />;
+    return (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(rawLocale, "for/finance", "Finance AI: invoice, statement & report tools")) }} />
+        <FinanceHubPage locale={toVerticalLocale(clientLocale)} useLocalePrefix />
+      </>
+    );
   }
 
   if (slug === "for/research") {
-    return <ResearchHubPage locale={toVerticalLocale(clientLocale)} useLocalePrefix />;
+    return (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema(rawLocale, "for/research", "Research AI: summarize, search & compare papers")) }} />
+        <ResearchHubPage locale={toVerticalLocale(clientLocale)} useLocalePrefix />
+      </>
+    );
   }
 
   return <LocalizedHome locale={clientLocale} />;
