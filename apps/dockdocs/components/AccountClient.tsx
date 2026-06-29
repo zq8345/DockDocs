@@ -196,14 +196,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   // When embedded in the workspace, magic-link redirects should land on the dashboard
   // with ?panel=account so the account panel reopens automatically.
   const authRedirectPath = wsNav ? "/dashboard?panel=account" : undefined;
-  // Membership-ui / UpgradeFlow are a separate, lib-owned locale surface whose
-  // MembershipLocale type has NO "de"/"ko" arm and no authored German/Korean
-  // billing/upgrade copy (badge labels, plan status, proration breakdown). Those
-  // files are out of scope here, so the Account-owned copy above is fully German
-  // while these billing helpers stay de/ko→en — the same coercion they would apply
-  // internally. zh-Hant IS supported by MembershipLocale, so it passes through.
-  // Drop the de/ko coercion when membership-ui.ts gains those arms.
-  const membershipLocale: MembershipLocale = locale === "de" || locale === "ko" ? "en" : locale;
+  const membershipLocale: MembershipLocale = locale;
   const upgradeFlow = useUpgradeFlow(membershipLocale);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);

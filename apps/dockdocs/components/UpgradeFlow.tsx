@@ -87,13 +87,13 @@ export function useUpgradeFlow(locale: MembershipLocale): UpgradeFlow {
 
 function intervalLabel(interval: string, locale: MembershipLocale): string {
   const h = (s: string) => (locale === "zh-Hant" ? toHant(s) : s);
-  if (interval === "lifetime") return locale === "zh" || locale === "zh-Hant" ? h("终身") : locale === "es" ? "De por vida" : locale === "pt" ? "Vitalício" : locale === "fr" ? "À vie" : locale === "ja" ? "買い切り" : "Lifetime";
-  if (interval === "annual") return locale === "zh" || locale === "zh-Hant" ? h("年付") : locale === "es" ? "Anual" : locale === "pt" ? "Anual" : locale === "fr" ? "Annuel" : locale === "ja" ? "年額" : "Yearly";
-  return locale === "zh" || locale === "zh-Hant" ? h("月付") : locale === "es" ? "Mensual" : locale === "pt" ? "Mensal" : locale === "fr" ? "Mensuel" : locale === "ja" ? "月額" : "Monthly";
+  if (interval === "lifetime") return locale === "zh" || locale === "zh-Hant" ? h("终身") : locale === "es" ? "De por vida" : locale === "pt" ? "Vitalício" : locale === "fr" ? "À vie" : locale === "ja" ? "買い切り" : locale === "de" ? "Lebenslang" : locale === "ko" ? "평생" : "Lifetime";
+  if (interval === "annual") return locale === "zh" || locale === "zh-Hant" ? h("年付") : locale === "es" ? "Anual" : locale === "pt" ? "Anual" : locale === "fr" ? "Annuel" : locale === "ja" ? "年額" : locale === "de" ? "Jährlich" : locale === "ko" ? "연간" : "Yearly";
+  return locale === "zh" || locale === "zh-Hant" ? h("月付") : locale === "es" ? "Mensual" : locale === "pt" ? "Mensal" : locale === "fr" ? "Mensuel" : locale === "ja" ? "月額" : locale === "de" ? "Monatlich" : locale === "ko" ? "월간" : "Monthly";
 }
 
 // Headline benefits per (target) tier — shown when upgrading to a higher tier.
-// Keyed by the 6 base content locales; zh-Hant derives from zh via OpenCC.
+// Keyed by the 8 authored locales (en/zh/es/pt/fr/ja/de/ko); zh-Hant derives from zh via OpenCC.
 const PRO_BENEFITS: Record<Exclude<MembershipLocale, "zh-Hant">, string[]> = {
   en: ["Contract risk review", "Batch workflow automation", "API access", "Team workspace"],
   zh: ["合同风险审查", "批量工作流自动化", "API 接入", "团队工作区"],
@@ -101,6 +101,8 @@ const PRO_BENEFITS: Record<Exclude<MembershipLocale, "zh-Hant">, string[]> = {
   pt: ["Revisão de riscos de contratos", "Automação de fluxos em lote", "Acesso à API", "Espaço de equipe"],
   fr: ["Analyse des risques de contrats", "Automatisation des flux par lots", "Accès API", "Espace d'équipe"],
   ja: ["契約リスクレビュー", "一括ワークフロー自動化", "API アクセス", "チームワークスペース"],
+  de: ["Vertragsrisikoprüfung", "Batch-Workflow-Automatisierung", "API-Zugang", "Team-Arbeitsbereich"],
+  ko: ["계약 리스크 검토", "일괄 워크플로 자동화", "API 접근", "팀 워크스페이스"],
 };
 
 // The breakdown confirmation modal — "new price − unused credit = you pay" — shown

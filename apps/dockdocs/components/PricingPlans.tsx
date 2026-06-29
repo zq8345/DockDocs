@@ -5,7 +5,7 @@ import { headerStructure, navItemLabels, navCopy } from "@/lib/header-nav";
 import { localizedPath, type RouteSlug, type RouteLocale } from "@/lib/i18n";
 import { createBillingCheckoutSession, createBillingPortalSession, getSubscriptionSnapshot, startBillingTrial, BillingError, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
 import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
-import { billingErrorCopy } from "@/lib/membership-ui";
+import { billingErrorCopy, type MembershipLocale } from "@/lib/membership-ui";
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
 import { H2 as H2_CLS, eyebrowCls } from "@/components/design";
 import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
@@ -603,11 +603,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [billingLoading, setBillingLoading] = useState("");
   const [billingError, setBillingError] = useState("");
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
-  // membership-ui / UpgradeFlow are typed to the 6 base membership locales (no `de`/`ko`);
-  // de/ko billing plumbing (rare error toasts + upgrade modal) falls back to English
-  // text. (de's page-owned strings are native German; ko's page-owned strings are still
-  // English fallback in the foundation phase.)
-  const mLocale = locale === "de" || locale === "ko" ? "en" : locale;
+  const mLocale = locale as MembershipLocale;
   // Shared in-place upgrade flow (quote → breakdown modal → discounted checkout).
   const upgrade = useUpgradeFlow(mLocale);
 
