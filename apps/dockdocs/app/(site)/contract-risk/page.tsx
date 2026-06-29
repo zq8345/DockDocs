@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { ContractRiskClient } from "@/components/ContractRiskClient";
+import { ExtraToolJsonLd } from "@/lib/extra-tool-schema";
 
 export const metadata: Metadata = {
   title: "Contract Risk Check — Spot Risky Clauses Before You Sign",
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function ContractRiskPage() {
-  return <ContractRiskClient />;
+  return <><ExtraToolJsonLd slug="contract-risk" locale="en" /><ContractRiskClient /></>;
 }

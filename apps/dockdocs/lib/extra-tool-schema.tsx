@@ -711,6 +711,56 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
         "청구서, 견적서, 계약서 폴더를 드롭하면 AI가 모든 파일의 핵심 항목을 하나의 표로 추출(파일당 한 행)해 CSV로 내보냅니다.",
     },
   },
+  "contract-risk": {
+    en: {
+      name: "DockDocs Contract Risk Check",
+      crumb: "Contract Risk Check",
+      description:
+        "Upload a contract and get a plain-language list of risky, one-sided, or missing clauses — flagged red/amber/green, quoted from your document. Informational, not legal advice.",
+    },
+    zh: {
+      name: "DockDocs 合同风险体检",
+      crumb: "合同风险体检",
+      description:
+        "上传合同,得到白话的风险清单:风险/单边/缺失条款,红黄绿标注、引用原文、附该问什么。仅供参考,非法律意见。",
+    },
+    es: {
+      name: "DockDocs Revisión de riesgos en contratos",
+      crumb: "Revisión de contratos",
+      description:
+        "Sube un contrato y obtén una lista en lenguaje claro de cláusulas arriesgadas, unilaterales o ausentes — marcadas en rojo/ámbar/verde y citadas de tu documento. Orientativo, no asesoramiento legal.",
+    },
+    pt: {
+      name: "DockDocs Revisão de riscos em contratos",
+      crumb: "Revisão de contratos",
+      description:
+        "Carregue um contrato e obtenha uma lista em linguagem simples de cláusulas arriscadas, unilaterais ou ausentes — marcadas em vermelho/âmbar/verde e citadas do seu documento. Informativo, não aconselhamento jurídico.",
+    },
+    fr: {
+      name: "DockDocs Audit de risques contractuels",
+      crumb: "Audit de contrats",
+      description:
+        "Chargez un contrat et obtenez une liste en langage clair des clauses risquées, unilatérales ou manquantes — signalées en rouge/orange/vert et citées de votre document. Informatif, pas un conseil juridique.",
+    },
+    ja: {
+      name: "DockDocs 契約書リスクチェック",
+      crumb: "契約書リスクチェック",
+      description:
+        "契約書をアップロードすると、わかりやすい言葉でリスク・一方的・欠落条項の一覧を生成—赤・橙・緑でフラグを立て、ドキュメントから引用。参考情報であり、法的助言ではありません。",
+    },
+    de: {
+      name: "DockDocs Vertragsrisiko-Check",
+      crumb: "Vertragsrisiko-Check",
+      description:
+        "Laden Sie einen Vertrag hoch und erhalten Sie eine verständliche Liste riskanter, einseitiger oder fehlender Klauseln — rot/gelb/grün markiert und aus Ihrem Dokument zitiert. Zur Information, keine Rechtsberatung.",
+    },
+    ko: {
+      name: "DockDocs 계약서 위험 체크",
+      crumb: "계약서 위험 체크",
+      description:
+        "계약서를 업로드하면 위험하거나 일방적이거나 누락된 조항의 목록을 쉬운 언어로 얻습니다 — 빨강/주황/초록으로 표시되고 문서에서 인용됩니다. 정보 제공용이며 법적 조언이 아닙니다.",
+    },
+  },
 };
 
 function pathFor(slug: string, locale: Loc): string {
