@@ -1,8 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
-import { TIER_CATEGORIES } from "@/lib/tier-config";
-import type { FeatureItem } from "@/lib/tier-config";
+import { headerStructure, navItemLabels, navCopy } from "@/lib/header-nav";
 import { localizedPath, type RouteSlug, type RouteLocale } from "@/lib/i18n";
 import { createBillingCheckoutSession, createBillingPortalSession, getSubscriptionSnapshot, startBillingTrial, BillingError, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
 import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
@@ -570,20 +569,46 @@ const copy = {
   },
 } as const;
 
+// 5 nav categories for the comparison table — mirrors workspace sidebar + headerStructure
+type L8 = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
+const FREE_L8: Record<L8, string> = { en: "Free", zh: "免费", es: "Gratis", pt: "Grátis", fr: "Gratuit", ja: "無料", de: "Kostenlos", ko: "무료" };
+const COMPARE_CATS: {
+  id: string;
+  navKey: string;
+  catNavKey: string;
+  colIndex: number;
+  freeTier: Record<L8, string>;
+  proTier: Record<L8, string>;
+}[] = [
+  { id: "pdf-conversion", navKey: "PDF conversion", catNavKey: "Document tools", colIndex: 0, freeTier: FREE_L8, proTier: FREE_L8 },
+  { id: "pdf-editing",    navKey: "PDF editing",    catNavKey: "Document tools", colIndex: 1, freeTier: FREE_L8, proTier: FREE_L8 },
+  {
+    id: "batch", navKey: "Batch", catNavKey: "Document tools", colIndex: 2,
+    freeTier: { en: "3 runs/day",          zh: "3批/天",          es: "3 lotes/día",         pt: "3 lotes/dia",         fr: "3 lots/jour",         ja: "3バッチ/日",          de: "3 Stapel/Tag",        ko: "3배치/일" },
+    proTier:  { en: "50 files · unlimited",zh: "50文件/批 · 无限次", es: "50 archivos · ilimitado", pt: "50 arquivos · ilimitado", fr: "50 fichiers · illimité", ja: "50ファイル · 無制限",   de: "50 Dateien · unbegrenzt", ko: "50파일 · 무제한" },
+  },
+  {
+    id: "ai-analysis", navKey: "AI analysis", catNavKey: "AI analysis", colIndex: 0,
+    freeTier: { en: "10 / day",  zh: "10次/天", es: "10/día", pt: "10/dia", fr: "10/jour", ja: "10回/日", de: "10/Tag",     ko: "10/일" },
+    proTier:  { en: "Unlimited", zh: "无限",    es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限",  de: "Unbegrenzt", ko: "무제한" },
+  },
+  {
+    id: "by-profession", navKey: "By profession", catNavKey: "By profession", colIndex: 0,
+    freeTier: { en: "3 / day",   zh: "3次/天", es: "3/día", pt: "3/dia", fr: "3/jour", ja: "3回/日", de: "3/Tag",     ko: "3/일" },
+    proTier:  { en: "Unlimited", zh: "无限",   es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限",  de: "Unbegrenzt", ko: "무제한" },
+  },
+];
+
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [period, setPeriod] = useState<"monthly" | "annual" | "lifetime">("annual"); // default annual per pricing spec
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [openCat, setOpenCat] = useState<string | null>(null);
-  const [billingLoading, setBillingLoading] = useState("");
-  const [billingError, setBillingError] = useState("");
-  const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
-  // Which plan column is "selected" — drives the green frame + filled CTA on the card
-  // and the highlighted compare-table column. Plans / compareCols / compare tiers are
-  // index-aligned [Free, Pro], so one index links the cards to the table.
   const [selectedIndex, setSelectedIndex] = useState<number>(() => {
     const fi = (locale === "zh-Hant" ? copy.zh : (copy[locale as keyof typeof copy] ?? copy.en)).plans.findIndex((p) => p.featured);
     return fi >= 0 ? fi : 1;
   });
+  const [billingLoading, setBillingLoading] = useState("");
+  const [billingError, setBillingError] = useState("");
+  const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
   // membership-ui / UpgradeFlow are typed to the 6 base membership locales (no `de`/`ko`);
   // de/ko billing plumbing (rare error toasts + upgrade modal) falls back to English
   // text. (de's page-owned strings are native German; ko's page-owned strings are still
@@ -853,8 +878,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         ))}
       </div>
 
-      {/* Compare plans — driven by lib/tier-config.ts */}
-      <div className="mx-auto mt-16 max-w-4xl">
+      {/* Compare plans — 5 nav categories, collapsible accordion */}
+      <div className="mx-auto mt-16 max-w-6xl">
         <p className={`${eyebrow} text-center`}>{zh ? h("// 套餐对照") : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : locale === "ja" ? "// プラン比較" : locale === "de" ? "// Vergleich" : locale === "ko" ? "// 요금제 비교" : "// Compare"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.compareTitle}</h2>
         <p className="mt-2 text-center text-[13px] text-[color:var(--faint)]">
@@ -870,138 +895,82 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         <div className="mt-8 overflow-x-auto rounded-2xl border border-[color:var(--line)]">
           <table className="w-full border-collapse text-[14px]">
             <thead>
-              <tr>
-                <th className="border-b border-[color:var(--line)] px-4 py-3 text-left" />
-                {c.compareCols.map((col, i) => (
-                  <th key={col} className={`border-b border-l border-[color:var(--line)] p-1 text-center ${i === selectedIndex ? "bg-[color:var(--soft-accent)]" : ""}`}>
-                    <button type="button" onClick={() => setSelectedIndex(i)} aria-pressed={i === selectedIndex} aria-label={`${selectLabel}: ${col}`} className={`w-full rounded-md px-3 py-2 text-[13px] font-normal transition ${i === selectedIndex ? "font-medium text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)] hover:text-[color:var(--accent-strong)]"}`}>{col}</button>
-                  </th>
-                ))}
+              <tr className="bg-[color:var(--surface-subtle)]">
+                <th className="border-b border-[color:var(--line)] px-4 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.08em] text-[color:var(--faint)]">
+                  {zh ? h("功能") : locale === "es" ? "Herramienta" : locale === "pt" ? "Ferramenta" : locale === "fr" ? "Outil" : locale === "ja" ? "ツール" : locale === "de" ? "Tool" : locale === "ko" ? "도구" : "Tool"}
+                </th>
+                <th className="border-b border-l border-[color:var(--line)] px-5 py-3 text-center text-[12px] font-semibold uppercase tracking-[0.08em] text-[color:var(--faint)]">Free</th>
+                <th className="border-b border-l border-[color:var(--line)] px-5 py-3 text-center text-[12px] font-semibold uppercase tracking-[0.08em] text-[color:var(--faint)]">Pro</th>
               </tr>
             </thead>
             <tbody>
-              {TIER_CATEGORIES.flatMap((cat) => {
+              {COMPARE_CATS.flatMap((cat) => {
                 const isOpen = openCat === cat.id;
-                const hasTools = cat.tools.length > 0;
-                const hasFeatures = (cat.features?.length ?? 0) > 0;
-                const canExpand = hasTools || hasFeatures;
-                // tier-config copy is keyed by the 8 authored locales; for zh-Hant read
-                // zh then convert to Traditional via h(). de + ko now have their own
-                // column. The per-cell `?? .en` below still guards any absent key.
-                const tcLocale: Exclude<Locale, "zh-Hant"> = hant ? "zh" : locale;
-                const catLabel = h(cat.label[tcLocale] ?? cat.label.en);
-                const lim = (tier: "free" | "plus" | "pro") => {
-                  const v = cat.limits[tier];
-                  return h(v[tcLocale] ?? v.en);
-                };
-                const cellCls = (val: string) =>
-                  val.startsWith("Unlimited") || val.startsWith("无限") || val.startsWith("Ilimitado") || val.startsWith("Illimité") || val.startsWith("Unbegrenzt")
-                    ? "font-medium text-[color:var(--foreground)]"
-                  : val === "—" ? "text-[color:var(--faint)]"
-                  : val.startsWith("✓") ? "font-medium text-[color:var(--accent)]"
-                  : "text-[12px] text-[color:var(--muted)]";
-
-                const rows = [
+                const navLoc = locale as "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
+                const t8 = (hant ? "zh" : locale) as L8;
+                const chrome = navCopy[navLoc] ?? navCopy.en;
+                const items = navItemLabels[navLoc] ?? navItemLabels.en;
+                const catLabel = h(chrome[cat.navKey as keyof typeof navCopy.en] ?? navCopy.en[cat.navKey as keyof typeof navCopy.en]);
+                const freeLabel = h(cat.freeTier[t8] ?? cat.freeTier.en);
+                const proLabel = h(cat.proTier[t8] ?? cat.proTier.en);
+                const structCat = headerStructure.find((sc) => sc.catKey === cat.catNavKey);
+                const col = structCat?.cols[cat.colIndex];
+                const toolItems = col?.items ?? [];
+                return [
                   <tr
-                    key={`row-${cat.id}`}
-                    onClick={() => canExpand && setOpenCat(isOpen ? null : cat.id)}
-                    className={`${canExpand ? "cursor-pointer hover:bg-[color:var(--surface-subtle)]" : ""} transition-colors`}
+                    key={`cat-${cat.id}`}
+                    onClick={() => setOpenCat(isOpen ? null : cat.id)}
+                    className="cursor-pointer transition-colors hover:bg-[color:var(--surface-subtle)]"
                   >
                     <td className="border-b border-[color:var(--line)] px-4 py-3">
                       <span className="flex items-center gap-2">
-                        {canExpand ? (
-                          <svg className={`h-3 w-3 shrink-0 opacity-40 transition-transform ${isOpen ? "rotate-90" : ""}`} viewBox="0 0 12 12" fill="none">
-                            <path d="M4 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                          </svg>
-                        ) : (
-                          <span className="inline-block w-3" />
-                        )}
-                        <span className="text-[color:var(--foreground)]">{catLabel}</span>
+                        <svg className={`h-3 w-3 shrink-0 opacity-40 transition-transform ${isOpen ? "rotate-90" : ""}`} viewBox="0 0 12 12" fill="none">
+                          <path d="M4 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                        </svg>
+                        <span className="font-medium text-[color:var(--foreground)]">{catLabel}</span>
                       </span>
                     </td>
-                    {(["free", "pro"] as const).map((tier, ti) => {
-                      const val = lim(tier);
-                      return (
-                        <td key={tier} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center ${ti === selectedIndex ? "bg-[color:var(--soft-accent)] " : ""}${cellCls(val)}`}>{val}</td>
-                      );
-                    })}
+                    <td className="border-b border-l border-[color:var(--line)] px-5 py-3 text-center text-[12.5px] text-[color:var(--muted)]">{freeLabel}</td>
+                    <td className="border-b border-l border-[color:var(--line)] px-5 py-3 text-center text-[12.5px] font-medium text-[color:var(--foreground)]">{proLabel}</td>
                   </tr>,
-                ];
-
-                if (isOpen && canExpand) {
-                  rows.push(
-                    <tr key={`tools-${cat.id}`}>
-                      <td colSpan={3} className="border-b border-[color:var(--line)] bg-[color:var(--surface)] px-6 pb-4 pt-2">
-                        {hasTools && (
-                          <div className="flex flex-wrap gap-2">
-                            {cat.tools.map((tool) => (
-                              <a
-                                key={tool.slug}
-                                href={`/${tool.slug}/`}
-                                className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
-                              >
-                                {h(tool[tcLocale] ?? tool.en)}
-                              </a>
-                            ))}
-                          </div>
-                        )}
-                        {hasFeatures && (
-                          <ul className={`space-y-1.5 ${hasTools ? "mt-3" : ""}`}>
-                            {(cat.features as FeatureItem[]).map((f, i) => (
-                              <li key={i} className="flex items-center gap-2 text-[12.5px]">
-                                <span className={f.status === "live" ? "text-[color:var(--accent)]" : "text-[color:var(--faint)]"}>
-                                  {f.status === "live" ? "✓" : "○"}
-                                </span>
-                                {f.href ? (
-                                  <a href={f.href} className="text-[color:var(--foreground)] underline-offset-2 hover:underline">
-                                    {h(f[tcLocale] ?? f.en)}
-                                  </a>
-                                ) : (
-                                  <span className={f.status === "live" ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}>
-                                    {h(f[tcLocale] ?? f.en)}
-                                  </span>
-                                )}
-                                {f.status === "coming" && (
-                                  <span className="rounded-full border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] text-[color:var(--faint)]">
-                                    {zh ? h("即将推出") : locale === "es" ? "Pronto" : locale === "pt" ? "Em breve" : locale === "fr" ? "Bientôt" : locale === "ja" ? "近日公開" : locale === "de" ? "Bald" : locale === "ko" ? "곧 제공" : "Coming"}
-                                  </span>
-                                )}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
+                  ...(isOpen ? toolItems.map((tool) => (
+                    <tr key={`tool-${tool.slug}`} className="bg-[color:var(--surface)] transition-colors hover:bg-[color:var(--surface-subtle)]">
+                      <td className="border-b border-[color:var(--line)] py-2 pl-10 pr-4">
+                        <a href={localizedPath(locale as RouteLocale, tool.slug as RouteSlug)} className="text-[13px] text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
+                          {h(items[tool.key as keyof typeof navItemLabels.en] ?? navItemLabels.en[tool.key as keyof typeof navItemLabels.en] ?? tool.key)}
+                        </a>
                       </td>
+                      <td className="border-b border-l border-[color:var(--line)] px-5 py-2 text-center text-[12px] text-[color:var(--faint)]">{freeLabel}</td>
+                      <td className="border-b border-l border-[color:var(--line)] px-5 py-2 text-center text-[12px] text-[color:var(--muted)]">{proLabel}</td>
                     </tr>
-                  );
-                }
-
-                return rows;
+                  )) : []),
+                ];
               })}
             </tbody>
           </table>
         </div>
-          <p className="mt-3 px-4 text-[11.5px] text-[color:var(--faint)]">
-            {zh
-              ? <>{h("* 无限套餐遵循合理使用政策，仅用于防止异常滥用。")}<a href="/terms/" className="underline hover:text-[color:var(--muted)]">{h("查看条款")}</a></>
-              : locale === "es"
-              ? <>* Los planes ilimitados están sujetos a nuestra <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Política de Uso Razonable</a> para evitar abusos.</>
-              : locale === "pt"
-              ? <>* Os planos ilimitados estão sujeitos à nossa <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Política de Uso Justo</a> para evitar abusos.</>
-              : locale === "fr"
-              ? <>* Les forfaits illimités sont soumis à notre <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Politique d'utilisation équitable</a> afin de prévenir les abus.</>
-              : locale === "ja"
-              ? <>* 無制限プランは、不正利用を防ぐための<a href="/terms/" className="underline hover:text-[color:var(--muted)]">フェアユースポリシー</a>が適用されます。</>
-              : locale === "de"
-              ? <>* Unbegrenzte Tarife unterliegen unserer <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair-Use-Richtlinie</a>, um Missbrauch zu verhindern.</>
-              : locale === "ko"
-              ? <>* 무제한 요금제는 악용을 방지하기 위해 <a href="/terms/" className="underline hover:text-[color:var(--muted)]">공정 이용 정책</a>이 적용됩니다.</>
-              : <>* Unlimited plans are subject to our <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair Use Policy</a> to prevent abuse.</>
-            }
-          </p>
+        <p className="mt-3 px-4 text-[11.5px] text-[color:var(--faint)]">
+          {zh
+            ? <>{h("* 无限套餐遵循合理使用政策，仅用于防止异常滥用。")}<a href="/terms/" className="underline hover:text-[color:var(--muted)]">{h("查看条款")}</a></>
+            : locale === "es"
+            ? <>* Los planes ilimitados están sujetos a nuestra <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Política de Uso Razonable</a> para evitar abusos.</>
+            : locale === "pt"
+            ? <>* Os planos ilimitados estão sujeitos à nossa <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Política de Uso Justo</a> para evitar abusos.</>
+            : locale === "fr"
+            ? <>* Les forfaits illimités sont soumis à notre <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Politique d'utilisation équitable</a> afin de prévenir les abus.</>
+            : locale === "ja"
+            ? <>* 無制限プランは、不正利用を防ぐための<a href="/terms/" className="underline hover:text-[color:var(--muted)]">フェアユースポリシー</a>が適用されます。</>
+            : locale === "de"
+            ? <>* Unbegrenzte Tarife unterliegen unserer <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair-Use-Richtlinie</a>, um Missbrauch zu verhindern.</>
+            : locale === "ko"
+            ? <>* 무제한 요금제는 악용을 방지하기 위해 <a href="/terms/" className="underline hover:text-[color:var(--muted)]">공정 이용 정책</a>이 적용됩니다.</>
+            : <>* Unlimited plans are subject to our <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair Use Policy</a> to prevent abuse.</>
+          }
+        </p>
       </div>
 
       {/* Solutions by scenario */}
-      <div className="mx-auto mt-24 max-w-5xl">
+      <div className="mx-auto mt-24 max-w-6xl">
         <p className={`${eyebrow} text-center`}>{zh ? h("// 应用场景") : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : locale === "ja" ? "// ユースケース" : locale === "de" ? "// Anwendungsfälle" : locale === "ko" ? "// 활용 사례" : "// Use cases"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.scenariosTitle}</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -1021,31 +990,22 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         </div>
       </div>
 
-      {/* FAQ */}
-      <div className="mx-auto mt-24 max-w-3xl">
+      {/* FAQ — always open, consistent with other site FAQ pages */}
+      <div className="mx-auto mt-24 max-w-6xl">
         <p className={`${eyebrow} text-center`}>{zh ? h("// 常见问题") : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : locale === "ja" ? "// よくある質問" : locale === "de" ? "// Häufige Fragen" : locale === "ko" ? "// 자주 묻는 질문" : "// FAQ"}</p>
         <h2 className={`mt-3 text-center ${h2}`}>{c.faqTitle}</h2>
         <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
-          {c.faq.map((item, i) => (
-            <div key={item.q}>
-              <button type="button" onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="flex w-full items-center justify-between gap-4 py-5 text-left"
-              >
-                <span className="text-[15px] font-normal text-[color:var(--foreground)]">{item.q}</span>
-                <span className={`shrink-0 text-[color:var(--muted)] transition ${openFaq === i ? "rotate-45" : ""}`}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                </span>
-              </button>
-              {openFaq === i && (
-                <p className="pb-5 text-[14px] leading-7 text-[color:var(--muted)]">{item.a}</p>
-              )}
+          {c.faq.map((item) => (
+            <div key={item.q} className="py-6">
+              <p className="text-[15px] font-normal text-[color:var(--foreground)]">{item.q}</p>
+              <p className="mt-3 text-[14px] leading-7 text-[color:var(--muted)]">{item.a}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Bottom CTA */}
-      <div className="mx-auto mt-24 max-w-3xl text-center">
+      <div className="mx-auto mt-24 max-w-6xl text-center">
         <h2 className={h2}>{c.ctaTitle}</h2>
         <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.ctaDesc}</p>
         <a href={zh ? h("/zh/") : locale === "es" ? "/es/" : locale === "pt" ? "/pt/" : locale === "fr" ? "/fr/" : locale === "ja" ? "/ja/" : locale === "de" ? "/de/" : locale === "ko" ? "/ko/" : "/"}
