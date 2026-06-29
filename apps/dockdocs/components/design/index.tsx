@@ -34,7 +34,7 @@ export const dropzoneVisual = (active = false) =>
 // aspect/width. Lives inside the page max-w-5xl shell; callers prepend their
 // own margin (e.g. `mt-8`) and any extra flex gap.
 export const dropzoneShell = (active = false) =>
-  `flex min-h-[260px] w-full cursor-pointer flex-col items-center justify-center px-6 py-8 text-center sm:min-h-[300px] ${dropzoneVisual(active)}`;
+  `flex min-h-[300px] w-full cursor-pointer flex-col items-center justify-center px-6 py-8 text-center sm:min-h-[360px] ${dropzoneVisual(active)}`;
 
 // ── Figure ────────────────────────────────────────────────────────────────
 // Depth/weight treatment shared across About + Home (and all future v2 pages):
