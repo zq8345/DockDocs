@@ -460,12 +460,12 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
             <div className="flex w-[12%] items-center justify-center text-[color:var(--faint)]">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
             </div>
-            {/* Right: diff output preview */}
-            <div className="flex flex-1 flex-col justify-center gap-1 border-l border-[color:var(--line)] p-4 text-[11.5px]">
-              <div className="rounded bg-[rgba(52,211,153,0.12)] px-2 py-0.5 text-[color:var(--accent)]">+ term shall be 24 months.</div>
-              <div className="rounded bg-[rgba(248,113,113,0.12)] px-2 py-0.5 text-[#f87171] line-through">term shall be 12 months.</div>
-              <div className="px-2 py-0.5 text-[color:var(--faint)]">Monthly rent due on the 1st.</div>
-              <div className="rounded bg-[rgba(52,211,153,0.12)] px-2 py-0.5 text-[color:var(--accent)]">+ Force majeure clause added.</div>
+            {/* Right: diff output preview — mirrors the real block-level output */}
+            <div className="flex flex-1 flex-col justify-center divide-y divide-[color:var(--line)] overflow-hidden border-l border-[color:var(--line)] text-[11px]">
+              <div className="bg-[rgba(52,211,153,0.10)] px-3 py-1.5 text-[color:var(--foreground)]"><span className="mr-1.5 font-mono text-[9px] font-bold opacity-60">+</span>term shall be 24 months.</div>
+              <div className="bg-[rgba(248,113,113,0.09)] px-3 py-1.5 text-[#b91c1c] line-through"><span className="mr-1.5 font-mono text-[9px] font-bold opacity-60">−</span>term shall be 12 months.</div>
+              <div className="px-3 py-1.5 text-[color:var(--faint)]">Monthly rent due on the 1st.</div>
+              <div className="bg-[rgba(52,211,153,0.10)] px-3 py-1.5 text-[color:var(--foreground)]"><span className="mr-1.5 font-mono text-[9px] font-bold opacity-60">+</span>Force majeure clause added.</div>
             </div>
           </div>
           <div className="border-t border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-center text-[11.5px] text-[color:var(--faint)]">
@@ -504,20 +504,25 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
           {counts.ins === 0 && counts.del === 0 ? (
             <p className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-4 text-[14px] text-[color:var(--muted)]">{t.unchanged}</p>
           ) : (
-            <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 text-[14px] leading-7">
+            <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] divide-y divide-[color:var(--line)] overflow-hidden text-[13.5px]">
               {ops.map((o, i) => (
-                <span
+                <div
                   key={i}
                   className={
                     o.type === "ins"
-                      ? "rounded-sm bg-[rgba(52,211,153,0.18)] text-[color:var(--foreground)]"
+                      ? "bg-[rgba(52,211,153,0.10)] px-4 py-2 text-[color:var(--foreground)]"
                       : o.type === "del"
-                        ? "rounded-sm bg-[rgba(248,113,113,0.16)] text-[#b91c1c] line-through"
-                        : "text-[color:var(--muted)]"
+                        ? "bg-[rgba(248,113,113,0.09)] px-4 py-2 text-[#b91c1c] line-through"
+                        : "px-4 py-2 text-[color:var(--muted)]"
                   }
                 >
-                  {o.text}{" "}
-                </span>
+                  {o.type !== "eq" && (
+                    <span className="mr-2 select-none font-mono text-[11px] font-bold opacity-60">
+                      {o.type === "ins" ? "+" : "−"}
+                    </span>
+                  )}
+                  {o.text}
+                </div>
               ))}
             </div>
           )}
