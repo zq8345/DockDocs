@@ -55,7 +55,7 @@ const copy = {
     ],
     faqTitle: "Questions before you buy",
     faq: [
-      { q: "Is there a free trial?", a: "Yes — 7 days of full Pro access, no credit card required. Start from the pricing page or your account. One trial per account, ever. After the trial you stay on Free unless you subscribe." },
+      { q: "Is there a free trial?", a: "Yes — sign in and your 7-day full Pro trial starts automatically. No credit card needed. One trial per account, ever. After the trial you stay on Free unless you subscribe." },
       { q: "Can I cancel anytime?", a: "Yes. Manage or cancel your subscription yourself in a couple of clicks — no emails, no retention games. You keep access until the end of the period you paid for." },
       { q: "Is there a refund?", a: "Yes — Pro and lifetime are both covered. If a plan isn't right for you, contact us within 7 days of payment and we'll refund it in full. Creem has no self-serve refund button, so just reach out — use 'Contact merchant' on your Creem order page, or email billing@dockdocs.app — and we'll handle it." },
       { q: "Do I need to pay to use DockDocs?", a: "No. All ~50 core PDF tools are free forever, with no account required. You only pay if you want AI features, larger files, or higher volume." },
@@ -124,7 +124,7 @@ const copy = {
     ],
     faqTitle: "购买前的疑问",
     faq: [
-      { q: "有免费试用期吗？", a: "有——7 天完整 Pro 权限，无需信用卡。从定价页或账户页开启试用。每个账户仅可试用一次，试用结束后自动回到免费版，除非你订阅。" },
+      { q: "有免费试用期吗？", a: "有——登录后 7 天完整 Pro 试用自动开始，无需信用卡。每个账户仅可试用一次，试用结束后自动回到免费版，除非你订阅。" },
       { q: "可以随时取消吗？", a: "可以。你自己几次点击即可管理或取消订阅——无需发邮件，没有挽留套路。在你已付费的周期结束前，仍可正常使用。" },
       { q: "支持退款吗？", a: "支持——Pro 和终身均适用。如果某个套餐不适合你，在付款后 7 天内联系我们，我们为你全额退款。Creem 没有自助退款按钮，你联系一下即可——通过 Creem 订单页的「联系商家」，或邮件 billing@dockdocs.app——我们来处理。" },
       { q: "使用 DockDocs 必须付费吗？", a: "不必。全部 ~50 核心 PDF 工具永久免费，且无需注册。只有在你需要 AI 功能、更大文件或更高用量时才需付费。" },
@@ -193,7 +193,7 @@ const copy = {
     ],
     faqTitle: "Preguntas antes de comprar",
     faq: [
-      { q: "¿Hay una prueba gratuita?", a: "Sí — 7 días de acceso completo a Pro, sin tarjeta de crédito. Inicia la prueba desde la página de precios o tu cuenta. Una prueba por cuenta. Después vuelves al plan Gratis a menos que te suscribas." },
+      { q: "¿Hay una prueba gratuita?", a: "Sí — inicia sesión y tu prueba de 7 días de Pro completo comienza automáticamente. Sin tarjeta de crédito. Una prueba por cuenta. Después vuelves al plan Gratis a menos que te suscribas." },
       { q: "¿Puedo cancelar en cualquier momento?", a: "Sí. Gestiona o cancela tu suscripción tú mismo en un par de clics — sin correos, sin trucos de retención. Mantienes el acceso hasta el final del período que pagaste." },
       { q: "¿Hay reembolsos?", a: "Sí: Pro y de por vida están cubiertos. Si un plan no es lo que buscas, contáctanos dentro de los 7 días del pago y te lo reembolsamos por completo. Creem no tiene un botón de reembolso automático, así que solo escríbenos — con «Contactar al comerciante» en tu página de pedido de Creem, o por correo a billing@dockdocs.app — y lo gestionamos." },
       { q: "¿Necesito pagar para usar DockDocs?", a: "No. Las ~50 herramientas PDF básicas son gratuitas para siempre, sin necesidad de cuenta. Solo pagas si quieres funciones de IA, archivos más grandes o mayor volumen." },
@@ -262,7 +262,7 @@ const copy = {
     ],
     faqTitle: "Perguntas antes de comprar",
     faq: [
-      { q: "Há um período de teste?", a: "Sim — 7 dias de acesso completo ao Pro, sem cartão de crédito. Inicie o teste na página de preços ou na sua conta. Um teste por conta. Depois você volta ao plano Grátis a menos que assine." },
+      { q: "Há um período de teste?", a: "Sim — entre com sua conta e seu teste de 7 dias do Pro completo começa automaticamente. Sem cartão de crédito. Um teste por conta. Depois você volta ao plano Grátis a menos que assine." },
       { q: "Posso cancelar a qualquer momento?", a: "Sim. Gerencie ou cancele sua assinatura você mesmo em alguns cliques — sem e-mails, sem truques de retenção. Você mantém o acesso até o final do período pago." },
       { q: "Há reembolso?", a: "Sim — Pro e vitalício estão cobertos. Se um plano não for o certo para você, entre em contato dentro de 7 dias do pagamento e devolvemos o valor integral. A Creem não tem botão de reembolso automático, então é só falar conosco — pelo «Contatar comerciante» na sua página de pedido da Creem, ou por e-mail para billing@dockdocs.app — que cuidamos disso." },
       { q: "Preciso pagar para usar o DockDocs?", a: "Não. Todas as ~50 ferramentas PDF básicas são gratuitas para sempre, sem necessidade de conta. Você só paga se quiser recursos de IA, arquivos maiores ou maior volume." },
@@ -331,7 +331,7 @@ const copy = {
     ],
     faqTitle: "Questions avant d'acheter",
     faq: [
-      { q: "Y a-t-il un essai gratuit ?", a: "Oui — 7 jours d'accès complet à Pro, sans carte bancaire. Lancez l'essai depuis la page des tarifs ou votre compte. Un essai par compte. Après l'essai, vous revenez au forfait Gratuit, sauf si vous vous abonnez." },
+      { q: "Y a-t-il un essai gratuit ?", a: "Oui — connectez-vous et votre essai de 7 jours Pro complet démarre automatiquement. Sans carte bancaire. Un essai par compte. Après l'essai, vous revenez au forfait Gratuit sauf abonnement." },
       { q: "Puis-je annuler à tout moment ?", a: "Oui. Gérez ou annulez votre abonnement vous-même en quelques clics — sans e-mail, sans artifices de rétention. Vous conservez l'accès jusqu'à la fin de la période payée." },
       { q: "Y a-t-il un remboursement ?", a: "Oui — Pro et à vie sont couverts. Si une formule ne vous convient pas, contactez-nous dans les 7 jours suivant le paiement et nous vous remboursons intégralement. Creem n'a pas de bouton de remboursement en libre-service, écrivez-nous simplement — via « Contacter le marchand » sur votre page de commande Creem, ou par e-mail à billing@dockdocs.app — et nous nous en occupons." },
       { q: "Dois-je payer pour utiliser DockDocs ?", a: "Non. Tous les ~50 outils PDF de base sont gratuits pour toujours, sans compte nécessaire. Vous ne payez que si vous souhaitez des fonctionnalités IA, des fichiers plus volumineux ou un volume plus élevé." },
@@ -400,7 +400,7 @@ const copy = {
     ],
     faqTitle: "購入前のよくある質問",
     faq: [
-      { q: "無料トライアルはありますか？", a: "はい — クレジットカード不要で7日間のPro全機能をご利用いただけます。料金ページまたはアカウントページからトライアルを開始できます。アカウントごとに1回のみです。トライアル終了後、サブスクリプションを開始しない場合は無料プランに戻ります。" },
+      { q: "無料トライアルはありますか？", a: "はい — サインインすると7日間のPro全機能トライアルが自動的に始まります。クレジットカード不要。アカウントごとに1回のみ。トライアル終了後、サブスクリプションを開始しない場合は無料プランに戻ります。" },
       { q: "いつでも解約できますか？", a: "はい。数クリックでご自身でサブスクリプションを管理・解約できます — メール不要、引き止めの仕掛けもありません。お支払い済みの期間の終了までは引き続きご利用いただけます。" },
       { q: "返金はありますか？", a: "はい。Proがご希望に合わない場合は、お支払いから7日以内に返金をリクエストいただければ返金いたします。" },
       { q: "DockDocsの利用に支払いは必要ですか？", a: "いいえ。約50のコアPDFツールはすべて永久無料で、アカウントも不要です。AI機能、より大きなファイル、より多い処理量が必要な場合のみお支払いいただきます。" },
@@ -469,7 +469,7 @@ const copy = {
     ],
     faqTitle: "Fragen vor dem Kauf",
     faq: [
-      { q: "Gibt es eine kostenlose Testphase?", a: "Ja — 7 Tage vollständiger Pro-Zugang, keine Kreditkarte nötig. Starten Sie den Test auf der Preisseite oder in Ihrem Konto. Einmal pro Konto. Nach dem Test kehren Sie zum kostenlosen Tarif zurück, sofern Sie kein Abonnement abschließen." },
+      { q: "Gibt es eine kostenlose Testphase?", a: "Ja — melden Sie sich an und Ihr 7-tägiger Pro-Testzeitraum startet automatisch. Keine Kreditkarte nötig. Einmal pro Konto. Nach dem Test kehren Sie zum kostenlosen Tarif zurück, sofern Sie kein Abonnement abschließen." },
       { q: "Kann ich jederzeit kündigen?", a: "Ja. Verwalten oder kündigen Sie Ihr Abonnement selbst mit ein paar Klicks — keine E-Mails, keine Halte-Tricks. Sie behalten den Zugriff bis zum Ende des bezahlten Zeitraums." },
       { q: "Gibt es eine Rückerstattung?", a: "Ja — Pro und Lebenslang sind beide abgedeckt. Wenn ein Tarif nicht das Richtige für Sie ist, kontaktieren Sie uns innerhalb von 7 Tagen nach der Zahlung und wir erstatten Ihnen den vollen Betrag. Creem hat keinen Selbstbedienungs-Button für Rückerstattungen, melden Sie sich also einfach — über 'Händler kontaktieren' auf Ihrer Creem-Bestellseite oder per E-Mail an billing@dockdocs.app — und wir kümmern uns darum." },
       { q: "Muss ich für DockDocs bezahlen?", a: "Nein. Alle ~50 grundlegenden PDF-Tools sind für immer kostenlos, ohne Konto. Sie zahlen nur, wenn Sie KI-Funktionen, größere Dateien oder mehr Volumen möchten." },
@@ -538,7 +538,7 @@ const copy = {
     ],
     faqTitle: "구매 전 자주 묻는 질문",
     faq: [
-      { q: "무료 체험이 있나요?", a: "네 — 신용카드 없이 7일간 Pro 전체 기능을 사용해 볼 수 있습니다. 요금제 페이지 또는 계정 페이지에서 시작하세요. 계정당 1회만 가능합니다. 체험 후 구독하지 않으면 무료 요금제로 돌아갑니다." },
+      { q: "무료 체험이 있나요?", a: "네 — 로그인하면 7일간 Pro 전체 기능 체험이 자동으로 시작됩니다. 신용카드 불필요. 계정당 1회만 가능합니다. 체험 후 구독하지 않으면 무료 요금제로 돌아갑니다." },
       { q: "언제든 해지할 수 있나요?", a: "네. 클릭 몇 번으로 직접 구독을 관리하거나 해지할 수 있습니다 — 이메일도, 붙잡는 절차도 없습니다. 결제하신 기간이 끝날 때까지는 계속 이용하실 수 있습니다." },
       { q: "환불이 되나요?", a: "네 — Pro, 평생 요금제 모두 해당됩니다. 요금제가 맞지 않으면 결제 후 7일 이내에 문의해 주시면 전액 환불해 드립니다. Creem에는 셀프 환불 버튼이 없으니 Creem 주문 페이지의 '판매자에게 문의'를 이용하시거나 billing@dockdocs.app으로 이메일을 보내 주세요. 바로 처리해 드립니다." },
       { q: "DockDocs를 쓰려면 결제해야 하나요?", a: "아니요. 약 50가지 핵심 PDF 도구는 계정 없이 평생 무료입니다. AI 기능, 더 큰 파일, 더 많은 작업량이 필요할 때만 결제하시면 됩니다." },
@@ -620,6 +620,10 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   // ko now has a full authored copy block (read directly); zh-Hant derives from zh.
   const c = hant ? deepHant(copy.zh) : (copy[locale as keyof typeof copy] ?? copy.en);
   const selectLabel = zh ? h("选择套餐") : locale === "es" ? "Seleccionar plan" : locale === "pt" ? "Selecionar plano" : locale === "fr" ? "Sélectionner le forfait" : locale === "ja" ? "プランを選択" : locale === "de" ? "Tarif auswählen" : locale === "ko" ? "요금제 선택" : "Select plan";
+
+  // For non-signed-in visitors the Pro CTA emphasises signing in to unlock the trial,
+  // rather than a standalone "start trial" action.
+  const guestProCta = zh ? h("登录，免费用 7 天 Pro") : locale === "es" ? "Iniciar sesión — 7 días Pro gratis" : locale === "pt" ? "Entrar — 7 dias Pro grátis" : locale === "fr" ? "Se connecter — 7 jours Pro gratuits" : locale === "ja" ? "ログインして 7日間 Pro 無料体験" : locale === "de" ? "Anmelden — 7 Tage Pro kostenlos" : locale === "ko" ? "로그인 — 7일 Pro 무료 체험" : "Sign in — free 7 days of Pro";
 
   const wsNav = useWorkspaceNav();
   // Turn a billing failure into a clear, localized message AND a console line with
@@ -828,7 +832,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                   <button type="button" onClick={() => (ctaKind === "upgrade" ? upgrade.beginUpgrade(planKey, period) : handleTrialOrCheckout(planKey))} disabled={ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey} className={ctaCls}>
                     {(ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey)
                       ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : locale === "ko" ? "이동 중…" : "Redirecting…")
-                      : plan.cta}
+                      : !subscription ? guestProCta : plan.cta}
                   </button>
                 )
               ) : (
