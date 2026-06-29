@@ -341,8 +341,9 @@ export function UpgradePage() {
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {CARDS.map(({ interval, name, price, sub, badge, highlighted }) => {
           const rank = INTERVAL_RANK[interval];
-          const isCurrent = interval === currentInterval;
-          const canUpgrade = rank > currentRank;
+          // Trial users haven't paid yet — all intervals are fresh checkout options.
+          const isCurrent = !isTrial && interval === currentInterval;
+          const canUpgrade = isTrial || isFree || rank > currentRank;
           const isLoading = checkoutLoading === interval;
           const anyLoading = checkoutLoading !== null;
 
