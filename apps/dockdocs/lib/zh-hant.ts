@@ -56,6 +56,12 @@ const TW_VOCAB: Record<string, string> = {
   點擊: "點選",
   智能: "智慧",
   文檔: "文件",
+  自定義: "自訂", // customize → 自訂 (TW); mainland 自定義
+  模板: "範本", // template → 範本 (TW)
+  拖拽: "拖曳", // drag → 拖曳 (TW); mainland 拖拽
+  郵箱: "信箱", // email → 信箱 (TW); mainland 郵箱
+  搜索: "搜尋", // search → 搜尋 (TW); mainland 搜索
+  賬: "帳", // account char: 賬號/賬戶/賬單 → 帳號/帳戶/帳單 (TW standard 帳, not 賬)
   // Fix an OpenCC mis-conversion: 面向 (orient/face) wrongly becomes 麵向.
   麵向: "面向",
 };
