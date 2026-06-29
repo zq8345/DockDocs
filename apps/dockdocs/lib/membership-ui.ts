@@ -7,7 +7,7 @@ import { toHant } from "@/lib/zh-hant";
 // display + copy — never touches entitlement logic.
 
 export type MembershipLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
-export type PlanDisplayName = "Free" | "Plus" | "Pro";
+export type PlanDisplayName = "Free" | "Pro";
 
 function pick(
   locale: MembershipLocale,
@@ -35,10 +35,6 @@ export function planBadge(
   if (displayName === "Pro") {
     // Brightest — solid accent fill.
     return { label: `Pro${suffix}`, className: "bg-[color:var(--accent)] text-[color:var(--on-accent)]" };
-  }
-  if (displayName === "Plus") {
-    // Green, softer than Pro.
-    return { label: `Plus${suffix}`, className: "bg-[color:var(--soft-accent)] text-[color:var(--accent-strong)]" };
   }
   // Free — neutral gray pill.
   return { label: "Free", className: "border border-[color:var(--line)] bg-[color:var(--surface-subtle)] text-[color:var(--muted)]" };
@@ -119,20 +115,6 @@ export function upgradePrompts(
   if (interval === "lifetime") return [];
   const curInterval: BillingInterval = interval ?? "monthly";
 
-  if (displayName === "Plus") {
-    const prompts: UpgradePrompt[] = [
-      // Raise the tier, keep the current billing term.
-      { label: pick(locale, "Upgrade to Pro", "升级 Pro 专业精准", "Mejora a Pro", "Faça upgrade para Pro", "Passer à Pro", "Pro にアップグレード"), primary: true, target: { plan: "PRO", interval: curInterval } },
-    ];
-    if (curInterval !== "annual") {
-      prompts.push({
-        label: pick(locale, "Switch to yearly — save 40%", "切年付 · 省 40%", "Cambia a anual — ahorra 40%", "Mude para anual — economize 40%", "Passez à l'annuel — −40 %", "年額に切り替え — 40% お得"),
-        primary: false,
-        target: { plan: "PRO", interval: "annual" },
-      });
-    }
-    return prompts;
-  }
   // Pro on a recurring plan → lifetime.
   return [
     { label: pick(locale, "Get lifetime — pay once", "切终身 · 一次买断永久", "Hazlo de por vida — pago único", "Mude para vitalício — pague uma vez", "Passez à vie — paiement unique", "買い切りにする — 一度の支払い"), primary: true, target: { plan: "PRO", interval: "lifetime" } },

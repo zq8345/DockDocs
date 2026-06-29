@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { getSubscriptionSnapshot, type SubscriptionPlan } from "@/lib/subscription-runtime";
 
 // ── Per-batch FILE cap (published tier-config "batch" row) ───────────────────
-// free 3 / plus 20 / pro 50. The effective cap a tool applies is
+// free 3 / pro 50. The effective cap a tool applies is
 // min(PLAN_BATCH_FILE_CAP[plan], that tool's own technical MAX_FILES) — so the
 // AI / cost-heavy batches keep their smaller per-tool ceilings.
 export const PLAN_BATCH_FILE_CAP: Record<SubscriptionPlan, number> = {
@@ -105,7 +105,7 @@ export async function checkAndRecordBatchRun(): Promise<BatchRunGate> {
 export function batchLimitMessage(locale: string): string {
   switch (locale) {
     case "zh":
-      return `已达免费每日批量上限（每天 ${FREE_DAILY_BATCH_RUNS} 批）。升级 Plus/Pro 可不限次——到「账户」页升级。`;
+      return `已达免费每日批量上限（每天 ${FREE_DAILY_BATCH_RUNS} 批）。升级 Pro 可不限次——到「账户」页升级。`;
     case "es":
       return `Alcanzaste el límite diario gratuito de lotes (${FREE_DAILY_BATCH_RUNS}/día). Mejora a Plus/Pro para lotes ilimitados.`;
     case "pt":
@@ -113,6 +113,6 @@ export function batchLimitMessage(locale: string): string {
     case "fr":
       return `Vous avez atteint la limite quotidienne gratuite de lots (${FREE_DAILY_BATCH_RUNS}/jour). Passez à Plus/Pro pour des lots illimités.`;
     default:
-      return `You've reached the free daily batch limit (${FREE_DAILY_BATCH_RUNS}/day). Upgrade to Plus/Pro for unlimited batches.`;
+      return `You've reached the free daily batch limit (${FREE_DAILY_BATCH_RUNS}/day). Upgrade to Pro for unlimited batches.`;
   }
 }
