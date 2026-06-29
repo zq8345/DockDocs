@@ -130,7 +130,10 @@ const HEADER_LABELS = {
   more:      { en: "More",      zh: "更多",     "zh-Hant": "更多",     es: "Más",             pt: "Mais",            fr: "Plus",             ja: "その他",          de: "Mehr",             ko: "더 보기" },
   light:     { en: "Light",     zh: "浅色",     "zh-Hant": "淺色",     es: "Claro",           pt: "Claro",           fr: "Clair",            ja: "ライト",          de: "Hell",             ko: "라이트" },
   dark:      { en: "Dark",      zh: "深色",     "zh-Hant": "深色",     es: "Oscuro",          pt: "Escuro",          fr: "Sombre",           ja: "ダーク",          de: "Dunkel",           ko: "다크" },
-  workspace: { en: "Workspace", zh: "工作台",   "zh-Hant": "工作台",   es: "Área de trabajo", pt: "Área de trabalho", fr: "Espace de travail", ja: "ワークスペース", de: "Arbeitsbereich", ko: "워크스페이스" },
+  workspace: { en: "Workspace",  zh: "工作台",    "zh-Hant": "工作台",   es: "Área de trabajo",    pt: "Área de trabalho",  fr: "Espace de travail", ja: "ワークスペース", de: "Arbeitsbereich",    ko: "워크스페이스" },
+  allTools:  { en: "All Tools",  zh: "全部工具",  "zh-Hant": "全部工具", es: "Herramientas",       pt: "Ferramentas",       fr: "Outils",            ja: "全ツール",        de: "Alle Tools",        ko: "전체 도구" },
+  pricing:   { en: "Pricing",    zh: "定价",      "zh-Hant": "定價",     es: "Precios",            pt: "Preços",            fr: "Tarifs",            ja: "料金",            de: "Preise",            ko: "요금제" },
+  download:  { en: "Download",   zh: "下载",      "zh-Hant": "下載",     es: "Descargar",          pt: "Baixar",            fr: "Télécharger",       ja: "ダウンロード",    de: "Herunterladen",     ko: "다운로드" },
 } as const;
 type HdrLabelLocale = keyof (typeof HEADER_LABELS)["soon"];
 function hdrLabel(key: keyof typeof HEADER_LABELS, locale: string): string {
@@ -304,73 +307,87 @@ export function Header() {
     </div>
   );
 
+  // Build the 5-column "All Tools" mega-menu from existing locale-aware category data.
+  // Col order: AI analysis, By profession, PDF conversion, PDF editing, Batch.
+  const allToolsCols = [
+    { heading: cats[1]?.label,            items: cats[1]?.cols[0]?.items ?? [],               accent: true  },
+    { heading: cats[2]?.label,            items: (cats[2]?.cols ?? []).flatMap(c => c.items), accent: true  },
+    { heading: cats[0]?.cols[0]?.heading, items: cats[0]?.cols[0]?.items ?? [],               accent: false },
+    { heading: cats[0]?.cols[1]?.heading, items: cats[0]?.cols[1]?.items ?? [],               accent: false },
+    { heading: cats[0]?.cols[2]?.heading, items: cats[0]?.cols[2]?.items ?? [],               accent: false },
+  ];
+
   return (
     <>
       {/* ── Fixed header bar ── */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-[color:var(--line)] bg-[color:var(--background)]/90 backdrop-blur-xl">
-        <div className="mx-auto flex h-[52px] max-w-6xl items-center px-4 lg:px-6">
+        <div className="relative mx-auto flex h-[52px] max-w-6xl items-center px-4 lg:px-6">
           {/* Logo */}
           <a href={lh("/", locale)} className="mr-3 shrink-0">
             <BrandMark />
           </a>
 
-          {/* Desktop nav — 4 category dropdowns */}
-          <nav className="hidden flex-1 items-center justify-center gap-x-6 lg:gap-x-10 md:flex">
-            {cats.map((cat) => (
-              <div key={cat.label} className="relative group">
-                <span className={trigger}>
-                  {cat.label}
-                  <svg className="h-3 w-3 opacity-60 transition group-hover:rotate-180" viewBox="0 0 12 12" fill="none">
-                    <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                </span>
-                <div className="absolute left-0 top-full z-50 hidden w-max pt-2 group-hover:block">
-                  <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-4 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
-                    <div
-                      className="grid gap-x-7 gap-y-3"
-                      style={{ gridTemplateColumns: `repeat(${cat.cols.length}, auto)` }}
-                    >
-                      {cat.cols.map((col, ci) => (
-                        <div key={col.heading ?? ci} className="min-w-[168px]">
-                          {col.heading && (
-                            <p className="mb-2 text-[12.5px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
-                              {col.heading}
-                            </p>
+          {/* Desktop nav — All Tools mega-menu + Pricing + Download + Workspace */}
+          <nav className="hidden flex-1 items-center justify-center gap-x-1 lg:gap-x-2 md:flex">
+
+            {/* All Tools — single 5-column mega-menu anchored to header container */}
+            <div className="group">
+              <span className={trigger}>
+                {hdrLabel("allTools", locale)}
+                <svg className="h-3 w-3 opacity-60 transition group-hover:rotate-180" viewBox="0 0 12 12" fill="none">
+                  <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </span>
+              <div className="absolute left-4 right-4 top-[52px] z-50 hidden pt-2 group-hover:block">
+                <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-4 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+                  <div className="grid gap-x-6 gap-y-3" style={{ gridTemplateColumns: "repeat(5, auto)" }}>
+                    {allToolsCols.map((col, ci) => (
+                      <div key={col.heading ?? ci}>
+                        {col.heading && (
+                          <p className={`mb-2 text-[12.5px] font-semibold uppercase tracking-[0.14em] ${col.accent ? "text-[color:var(--accent)]" : "text-[color:var(--faint)]"}`}>
+                            {col.heading}
+                          </p>
+                        )}
+                        <div className="space-y-0.5">
+                          {col.items.map((item, ii) =>
+                            item.soon ? (
+                              <span key={`${item.slug}-${ii}`} className="flex w-full cursor-default items-center justify-between gap-3 whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[14.5px] font-medium text-[color:var(--faint)]">
+                                {item.name}
+                                <span className="text-[10px] font-semibold uppercase opacity-80">{hdrLabel("soon", locale)}</span>
+                              </span>
+                            ) : (
+                              <a key={`${item.slug}-${ii}`} href={lh(item.slug, locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo(item.slug); }} className={itemCls}>
+                                {item.name}
+                              </a>
+                            ),
                           )}
-                          <div className="space-y-0.5">
-                            {col.items.map((item, ii) =>
-                              item.soon ? (
-                                <span key={`${item.slug}-${ii}`} className="flex w-full cursor-default items-center justify-between gap-3 whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[14.5px] font-medium text-[color:var(--faint)]">
-                                  {item.name}
-                                  <span className="text-[10px] font-semibold uppercase opacity-80">{hdrLabel("soon", locale)}</span>
-                                </span>
-                              ) : (
-                                <a key={`${item.slug}-${ii}`} href={lh(item.slug, locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo(item.slug); }} className={itemCls}>
-                                  {item.name}
-                                </a>
-                              ),
-                            )}
-                          </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Pricing */}
+            <a href={lh("/pricing", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/pricing"); }} className={trigger}>
+              {hdrLabel("pricing", locale)}
+            </a>
+
+            {/* Download — placeholder (exe/PWA coming) */}
+            <span className={`${trigger} cursor-not-allowed opacity-50`} aria-disabled="true">
+              {hdrLabel("download", locale)}
+            </span>
+
+            {/* Workspace */}
+            <a href={lh("/dashboard", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/dashboard"); }} className={trigger}>
+              {hdrLabel("workspace", locale)}
+            </a>
+
           </nav>
 
           {/* Right actions */}
           <div className="ml-auto flex items-center gap-1.5">
-            {/* Workbench direct link — desktop only, all users, left of account menu */}
-            <a
-              href="/dashboard"
-              onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/dashboard"); }}
-              className="hidden items-center rounded-[var(--radius-sm)] px-3 py-2 text-[14px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)] md:flex"
-            >
-              {hdrLabel("workspace", locale)}
-            </a>
-
             {/* Sign in / Account control (desktop) — badge + dropdown account card */}
             <AccountMenu authUser={authUser} locale={locale} />
 
@@ -476,7 +493,7 @@ export function Header() {
                 </a>
               </div>
 
-              {/* Quick links — Pricing / Blog / About */}
+              {/* Quick links — Pricing / Blog / About + Download placeholder */}
               <div className="mb-5">
                 <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
                   {hdrLabel("more", locale)}
@@ -492,6 +509,9 @@ export function Header() {
                       {p.name}
                     </a>
                   ))}
+                  <span className="cursor-not-allowed rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2 text-[14px] font-medium text-[color:var(--faint)] opacity-50">
+                    {hdrLabel("download", locale)}
+                  </span>
                 </div>
               </div>
 
