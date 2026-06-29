@@ -192,6 +192,20 @@ export function DownloadPage() {
           The web app already works offline and covers all functionality — the desktop app adds OS-level integration.
         </p>
       </section>
+
+      {/* Privacy bar */}
+      <div className="mt-8 flex items-start gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-5 py-4">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="mt-px shrink-0 text-[color:var(--accent)]">
+          <path d="M8 1.5L2 4v4c0 3.3 2.5 6.4 6 7 3.5-.6 6-3.7 6-7V4L8 1.5z" stroke="currentColor" strokeWidth="1.25" strokeLinejoin="round"/>
+        </svg>
+        <p className="text-[12px] leading-relaxed text-[color:var(--muted)]">
+          <span className="font-semibold text-[color:var(--foreground)]">Privacy: </span>
+          Most DockDocs tools process your files locally in your browser — nothing is uploaded to our servers.
+          A small number of conversion tools (Word↔PDF, Excel, PPT) use our secure conversion service.
+          Your files are never stored.{" "}
+          <a href="/privacy-policy" className="text-[color:var(--accent)] hover:underline">Privacy policy →</a>
+        </p>
+      </div>
     </div>
   );
 }
