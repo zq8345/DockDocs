@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import { routeLocales, type RouteLocale } from "@/lib/i18n";
 import { LocaleUpgradeRedirect } from "./LocaleUpgradeRedirect";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export function generateStaticParams() {
   return routeLocales.map((locale) => ({ locale }));
