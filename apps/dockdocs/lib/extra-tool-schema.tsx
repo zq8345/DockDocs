@@ -555,7 +555,11 @@ function pathFor(slug: string, locale: Loc): string {
 // intentionally excluded.
 const FAQ_PAGE_SLUGS = new Set(["compare", "extract-to-excel", "redline", "redact-pdf"]);
 
-export function extraToolSchema(slug: string, locale: Loc) {
+// faqLocale is the real route locale (e.g. "de"/"ko") used ONLY for FAQ item
+// lookup — the FAQ copy in FAQS_DE/FAQS_KO is already authored even though the
+// leaf-surface UI still falls back to English via toLeafLocale. `locale` continues
+// to drive the WebApplication label and URL path.
+export function extraToolSchema(slug: string, locale: Loc, faqLocale?: string) {
   const entry = EXTRA_TOOL_LABELS[slug];
   if (!entry) return null;
   // zh-Hant derives from zh via OpenCC.
@@ -590,7 +594,9 @@ export function extraToolSchema(slug: string, locale: Loc) {
   // structured data never drifts from the visible FAQ. Only for slugs with a
   // real visible FAQ in this locale.
   if (FAQ_PAGE_SLUGS.has(slug)) {
-    const faqItems = getToolFaqItems(slug, locale);
+    // Use faqLocale (real route locale) when available so de/ko get their authored
+    // FAQS_DE/FAQS_KO content; fall back to locale for the remaining leaf locales.
+    const faqItems = getToolFaqItems(slug, (faqLocale ?? locale) as Parameters<typeof getToolFaqItems>[1]);
     if (faqItems && faqItems.length > 0) {
       graph.push({
         "@type": "FAQPage",
@@ -610,8 +616,8 @@ export function extraToolSchema(slug: string, locale: Loc) {
   };
 }
 
-export function ExtraToolJsonLd({ slug, locale }: { slug: string; locale: Loc }) {
-  const schema = extraToolSchema(slug, locale);
+export function ExtraToolJsonLd({ slug, locale, faqLocale }: { slug: string; locale: Loc; faqLocale?: string }) {
+  const schema = extraToolSchema(slug, locale, faqLocale);
   if (!schema) return null;
   return (
     <script

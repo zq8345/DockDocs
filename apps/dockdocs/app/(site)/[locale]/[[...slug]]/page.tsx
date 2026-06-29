@@ -2230,7 +2230,7 @@ export default async function LocalizedRoute({
   // Indexable tools that render a custom client but aren't in toolSlugs
   // (sign-pdf is in toolSlugs and handled above; these are not): lightweight schema.
   const extraJsonLd = EXTRA_TOOL_SLUGS.includes(slug) ? (
-    <ExtraToolJsonLd slug={slug} locale={toLeafLocale(clientLocale)} />
+    <ExtraToolJsonLd slug={slug} locale={toLeafLocale(clientLocale)} faqLocale={clientLocale} />
   ) : null;
 
   if (slug === "chat-with-pdf") {
