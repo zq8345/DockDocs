@@ -472,7 +472,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
               <div className="flex items-center gap-2">
                 <p className="text-[18px] font-semibold">
                   {isTrial
-                    ? (locale === "zh" || locale === "zh-Hant" ? "Pro 试用" : locale === "es" ? "Prueba Pro" : locale === "pt" ? "Teste Pro" : locale === "fr" ? "Essai Pro" : locale === "ja" ? "Pro トライアル" : locale === "de" ? "Pro Testversion" : locale === "ko" ? "Pro 체험" : "Pro Trial")
+                    ? (locale === "zh" ? "Pro 试用" : locale === "zh-Hant" ? "Pro 試用" : locale === "es" ? "Prueba Pro" : locale === "pt" ? "Teste Pro" : locale === "fr" ? "Essai Pro" : locale === "ja" ? "Pro トライアル" : locale === "de" ? "Pro Testversion" : locale === "ko" ? "Pro 체험" : "Pro Trial")
                     : subscription.displayName}
                 </p>
                 <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${badge.className}`}>{badge.label}</span>
@@ -484,8 +484,10 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
               )}
               {subscription.trial?.status === "trialing" && (
                 <p className="mt-1.5 text-[12px] font-medium text-[color:var(--accent-strong)]">
-                  {locale === "zh" || locale === "zh-Hant"
+                  {locale === "zh"
                     ? `试用剩余 ${subscription.trial.daysRemaining} 天 · 到期自动回免费版`
+                    : locale === "zh-Hant"
+                      ? `試用剩餘 ${subscription.trial.daysRemaining} 天 · 到期自動回免費版`
                     : locale === "es"
                       ? `${subscription.trial.daysRemaining} días restantes de prueba · Vuelve al gratuito al vencer`
                       : locale === "pt"
