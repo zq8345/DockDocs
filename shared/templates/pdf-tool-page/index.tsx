@@ -1080,7 +1080,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
     ],
     "ocr-pdf": [
       {
-        label: tr("OCR a scanned PDF online", "在线 OCR 扫描 PDF", "Aplicar OCR a un PDF escaneado en línea", "Aplicar OCR a um PDF digitalizado online", "Appliquer l'OCR à un PDF numérisé en ligne", "オンラインでスキャン PDF を OCR", "Gescanntes PDF online per OCR verarbeiten"),
+        label: tr("OCR a scanned PDF online", "在线 OCR 扫描 PDF", "Aplicar OCR a un PDF escaneado en línea", "Aplicar OCR a um PDF digitalizado online", "Appliquer l'OCR à un PDF numérisé en ligne", "オンラインでスキャン PDF を OCR", "Gescanntes PDF online per OCR verarbeiten", "스캔 PDF 온라인 OCR 처리"),
         href: "/guides/ocr-scanned-pdf-online",
         description: tr(
           "Turn scanned, image-only PDFs into selectable text.",
@@ -1090,10 +1090,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Transformez des PDF numérisés et uniquement composés d'images en texte sélectionnable.",
           "スキャンした画像のみの PDF を、選択できる文字に変換します。",
           "Verwandeln Sie gescannte, reine Bild-PDFs in auswählbaren Text.",
+          "스캔된 이미지 전용 PDF를 선택 가능한 텍스트로 변환합니다.",
         ),
       },
       {
-        label: tr("Extract text from a PDF with OCR", "用 OCR 从 PDF 提取文字", "Extraer texto de un PDF con OCR", "Extrair texto de um PDF com OCR", "Extraire le texte d'un PDF avec l'OCR", "OCR で PDF から文字を抽出", "Text aus einem PDF per OCR extrahieren"),
+        label: tr("Extract text from a PDF with OCR", "用 OCR 从 PDF 提取文字", "Extraer texto de un PDF con OCR", "Extrair texto de um PDF com OCR", "Extraire le texte d'un PDF avec l'OCR", "OCR で PDF から文字を抽出", "Text aus einem PDF per OCR extrahieren", "OCR로 PDF에서 텍스트 추출"),
         href: "/guides/extract-text-from-pdf-with-ocr",
         description: tr(
           "Extract copyable, searchable text from scanned pages.",
@@ -1103,10 +1104,11 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Extrayez du texte copiable et consultable à partir de pages numérisées.",
           "スキャンしたページから、コピー・検索できる文字を抽出します。",
           "Extrahieren Sie kopierbaren, durchsuchbaren Text aus gescannten Seiten.",
+          "스캔 페이지에서 복사·검색 가능한 텍스트를 추출합니다.",
         ),
       },
       {
-        label: tr("OCR workflow questions", "OCR 工作流常见问题", "Preguntas sobre el flujo de OCR", "Perguntas sobre o fluxo de OCR", "Questions sur le flux OCR", "OCR ワークフローのよくある質問", "Fragen zum OCR-Workflow"),
+        label: tr("OCR workflow questions", "OCR 工作流常见问题", "Preguntas sobre el flujo de OCR", "Perguntas sobre o fluxo de OCR", "Questions sur le flux OCR", "OCR ワークフローのよくある質問", "Fragen zum OCR-Workflow", "OCR 워크플로 자주 묻는 질문"),
         href: "/resources/ocr-pdf-workflow-questions",
         description: tr(
           "Common questions about scanning, accuracy, and OCR output.",
@@ -1116,6 +1118,7 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Questions fréquentes sur la numérisation, la précision et le résultat de l'OCR.",
           "スキャン、精度、OCR 出力に関するよくある質問。",
           "Häufige Fragen zu Scannen, Genauigkeit und OCR-Ergebnis.",
+          "스캔, 정확도, OCR 출력에 관한 자주 묻는 질문.",
         ),
       },
     ],
