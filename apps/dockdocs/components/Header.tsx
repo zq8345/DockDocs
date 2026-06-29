@@ -147,11 +147,14 @@ export function Header() {
   const router = useRouter();
   const [light, setLight] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [megaOpen, setMegaOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const mobileBtnRef = useRef<HTMLButtonElement>(null);
   const mobilePanelRef = useRef<HTMLDivElement>(null);
+  const megaRef = useRef<HTMLDivElement>(null);
+  const megaCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const moreRef = useRef<HTMLDivElement>(null);
   const moreCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const locale = stripLocale(pathname ?? "/");
@@ -207,8 +210,17 @@ export function Header() {
     };
   }, [moreOpen]);
 
-  // Unmount cleanup for the hover close-timer.
+  // Unmount cleanup for hover close-timers.
+  useEffect(() => { return () => { if (megaCloseTimer.current) clearTimeout(megaCloseTimer.current); }; }, []);
   useEffect(() => { return () => { if (moreCloseTimer.current) clearTimeout(moreCloseTimer.current); }; }, []);
+
+  function openMega() {
+    if (megaCloseTimer.current) clearTimeout(megaCloseTimer.current);
+    setMegaOpen(true);
+  }
+  function closeMega() {
+    megaCloseTimer.current = setTimeout(() => setMegaOpen(false), 150);
+  }
 
   function openMore() {
     if (moreCloseTimer.current) clearTimeout(moreCloseTimer.current);
@@ -343,14 +355,14 @@ export function Header() {
           <nav className="hidden flex-1 items-center justify-center gap-x-1 lg:gap-x-2 md:flex">
 
             {/* All Tools — single 5-column mega-menu anchored to header container */}
-            <div className="group">
+            <div ref={megaRef} onMouseEnter={openMega} onMouseLeave={closeMega}>
               <span className={trigger}>
                 {hdrLabel("allTools", locale)}
-                <svg className="h-3 w-3 opacity-60 transition group-hover:rotate-180" viewBox="0 0 12 12" fill="none">
+                <svg className={`h-3 w-3 opacity-60 transition ${megaOpen ? "rotate-180" : ""}`} viewBox="0 0 12 12" fill="none">
                   <path d="M3 5l3 3 3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
                 </svg>
               </span>
-              <div className="absolute left-4 right-4 top-[52px] z-50 hidden pt-2 group-hover:block">
+              {megaOpen && <div className="absolute left-4 right-4 top-[52px] z-50 pt-2">
                 <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-4 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                   <div className="grid gap-x-6 gap-y-3" style={{ gridTemplateColumns: "repeat(5, auto)" }}>
                     {allToolsCols.map((col, ci) => (
@@ -378,7 +390,7 @@ export function Header() {
                     ))}
                   </div>
                 </div>
-              </div>
+              </div>}
             </div>
 
             {/* Pricing */}
