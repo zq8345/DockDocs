@@ -39,6 +39,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
   const loc = asMembershipLocale(locale);
   const [open, setOpen] = useState(false);
   const [snapshot, setSnapshot] = useState<SubscriptionSnapshot | null>(null);
+  const [snapshotLoading, setSnapshotLoading] = useState(false);
   const [billingLoading, setBillingLoading] = useState(false);
   const [imgFailed, setImgFailed] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -48,13 +49,17 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
     let mounted = true;
     if (!authUser) {
       setSnapshot(null);
+      setSnapshotLoading(false);
       return;
     }
+    setSnapshotLoading(true);
     getSubscriptionSnapshot()
       .then((s) => {
-        if (mounted) setSnapshot(s);
+        if (mounted) { setSnapshot(s); setSnapshotLoading(false); }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (mounted) setSnapshotLoading(false);
+      });
     return () => {
       mounted = false;
     };
@@ -193,23 +198,29 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
               {authUser.email && <p className="truncate text-[11px] text-[color:var(--muted)]">{authUser.email}</p>}
             </div>
 
-            {/* plan + status */}
+            {/* plan + status — skeleton while snapshot is loading to avoid Free flash */}
             <div className="mx-1 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2.5 py-2">
-              <span className={`inline-block rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${badge.className}`}>{badge.label}</span>
-              {snapshot && (
-                <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--muted)]">
-                  {planStatusText(
-                    {
-                      displayName: display,
-                      interval,
-                      status: isTrial ? "trialing" : snapshot.record.status,
-                      currentPeriodEnd: snapshot.record.currentPeriodEnd,
-                      cancelAtPeriodEnd: snapshot.record.cancelAtPeriodEnd,
-                      daysRemaining: trialDaysRemaining,
-                    },
-                    loc,
+              {snapshotLoading ? (
+                <div className="h-[18px] w-10 animate-pulse rounded-full bg-[color:var(--line)]" />
+              ) : (
+                <>
+                  <span className={`inline-block rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${badge.className}`}>{badge.label}</span>
+                  {snapshot && (
+                    <p className="mt-1.5 text-[11px] leading-snug text-[color:var(--muted)]">
+                      {planStatusText(
+                        {
+                          displayName: display,
+                          interval,
+                          status: isTrial ? "trialing" : snapshot.record.status,
+                          currentPeriodEnd: snapshot.record.currentPeriodEnd,
+                          cancelAtPeriodEnd: snapshot.record.cancelAtPeriodEnd,
+                          daysRemaining: trialDaysRemaining,
+                        },
+                        loc,
+                      )}
+                    </p>
                   )}
-                </p>
+                </>
               )}
             </div>
 
