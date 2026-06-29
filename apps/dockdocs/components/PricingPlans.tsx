@@ -7,6 +7,7 @@ import { createBillingCheckoutSession, createBillingPortalSession, getSubscripti
 import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
 import { billingErrorCopy } from "@/lib/membership-ui";
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
+import { H2 as H2_CLS, eyebrowCls } from "@/components/design";
 import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
 import { getUser, onAuthChange } from "@/lib/auth";
 import { deepHant, toHant } from "@/lib/zh-hant";
@@ -723,18 +724,15 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   }
   // 账户页全站统一为 /account(无语言版本)，不要按 locale 加 /zh 前缀，否则 /zh/account 会 404
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale as RouteLocale, href) : "/account");
-  const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh || locale === "es" || locale === "fr" || locale === "de" ? "" : "uppercase tracking-[0.08em]"}`;
-  const h2 = "text-[26px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[32px]";
-
   return (
     <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
-      {/* Header */}
-      <div className="text-center">
-        <p className={eyebrow}>{zh ? h("// 定价") : locale === "es" ? "// Precios" : locale === "pt" ? "// Preços" : locale === "fr" ? "// Tarifs" : locale === "ja" ? "// 料金" : locale === "de" ? "// Preise" : locale === "ko" ? "// 요금제" : "// Pricing"}</p>
-        <h1 className="mt-4 text-[34px] font-normal leading-[1.08] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[48px]">
+      {/* Hero — left-aligned, matching Home / About design baseline */}
+      <div>
+        <p className={eyebrowCls(zh)}>{zh ? h("// 定价") : locale === "es" ? "// Precios" : locale === "pt" ? "// Preços" : locale === "fr" ? "// Tarifs" : locale === "ja" ? "// 料金" : locale === "de" ? "// Preise" : locale === "ko" ? "// 요금제" : "// Pricing"}</p>
+        <h1 className="mt-4 max-w-[28ch] text-[40px] font-medium leading-[1.05] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[60px]">
           {c.title}
         </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]">
+        <p className="mt-5 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]">
           {c.subtitle}
         </p>
 
@@ -880,9 +878,9 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* Compare plans — 5 nav categories, collapsible accordion */}
       <div className="mx-auto mt-16 max-w-6xl">
-        <p className={`${eyebrow} text-center`}>{zh ? h("// 套餐对照") : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : locale === "ja" ? "// プラン比較" : locale === "de" ? "// Vergleich" : locale === "ko" ? "// 요금제 비교" : "// Compare"}</p>
-        <h2 className={`mt-3 text-center ${h2}`}>{c.compareTitle}</h2>
-        <p className="mt-2 text-center text-[13px] text-[color:var(--faint)]">
+        <p className={eyebrowCls(zh)}>{zh ? h("// 套餐对照") : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : locale === "ja" ? "// プラン比較" : locale === "de" ? "// Vergleich" : locale === "ko" ? "// 요금제 비교" : "// Compare"}</p>
+        <h2 className={`mt-4 ${H2_CLS}`}>{c.compareTitle}</h2>
+        <p className="mt-2 text-[13px] text-[color:var(--faint)]">
           {zh ? h("点击分类展开该类所有工具")
             : locale === "es" ? "Haz clic en una categoría para ver las herramientas que incluye"
             : locale === "pt" ? "Clique em uma categoria para ver as ferramentas que ela inclui"
@@ -971,8 +969,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* Solutions by scenario */}
       <div className="mx-auto mt-24 max-w-6xl">
-        <p className={`${eyebrow} text-center`}>{zh ? h("// 应用场景") : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : locale === "ja" ? "// ユースケース" : locale === "de" ? "// Anwendungsfälle" : locale === "ko" ? "// 활용 사례" : "// Use cases"}</p>
-        <h2 className={`mt-3 text-center ${h2}`}>{c.scenariosTitle}</h2>
+        <p className={eyebrowCls(zh)}>{zh ? h("// 应用场景") : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : locale === "ja" ? "// ユースケース" : locale === "de" ? "// Anwendungsfälle" : locale === "ko" ? "// 활용 사례" : "// Use cases"}</p>
+        <h2 className={`mt-4 ${H2_CLS}`}>{c.scenariosTitle}</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
           {c.scenarios.map((s) => (
             <div key={s.title} className="rounded-2xl border border-[color:var(--line)] p-5 transition-colors hover:border-[color:var(--line-strong)]">
@@ -992,8 +990,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* FAQ — always open, consistent with other site FAQ pages */}
       <div className="mx-auto mt-24 max-w-6xl">
-        <p className={`${eyebrow} text-center`}>{zh ? h("// 常见问题") : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : locale === "ja" ? "// よくある質問" : locale === "de" ? "// Häufige Fragen" : locale === "ko" ? "// 자주 묻는 질문" : "// FAQ"}</p>
-        <h2 className={`mt-3 text-center ${h2}`}>{c.faqTitle}</h2>
+        <p className={eyebrowCls(zh)}>{zh ? h("// 常见问题") : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : locale === "ja" ? "// よくある質問" : locale === "de" ? "// Häufige Fragen" : locale === "ko" ? "// 자주 묻는 질문" : "// FAQ"}</p>
+        <h2 className={`mt-4 ${H2_CLS}`}>{c.faqTitle}</h2>
         <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
           {c.faq.map((item) => (
             <div key={item.q} className="py-6">
@@ -1005,9 +1003,9 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Bottom CTA */}
-      <div className="mx-auto mt-24 max-w-6xl text-center">
-        <h2 className={h2}>{c.ctaTitle}</h2>
-        <p className="mx-auto mt-4 max-w-xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.ctaDesc}</p>
+      <div className="mx-auto mt-24 max-w-6xl">
+        <h2 className={H2_CLS}>{c.ctaTitle}</h2>
+        <p className="mt-4 max-w-xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.ctaDesc}</p>
         <a href={zh ? h("/zh/") : locale === "es" ? "/es/" : locale === "pt" ? "/pt/" : locale === "fr" ? "/fr/" : locale === "ja" ? "/ja/" : locale === "de" ? "/de/" : locale === "ko" ? "/ko/" : "/"}
           className="mt-8 inline-flex h-11 items-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]"
         >{c.ctaBtn}</a>
