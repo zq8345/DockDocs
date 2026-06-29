@@ -95,7 +95,8 @@ export default async function handler(req: Request, _ctx: Context) {
       (u.period === "month" && u.periodKey === month);
     if (!isCurrent) continue;
     const plan = subjectPlan(u.subjectId, planByUser);
-    const limit = featureLimits[plan]?.[u.feature]?.limit;
+    const gatePlan = plan === "PLUS" ? "PRO" : plan; // PLUS is a legacy alias with no active users
+    const limit = featureLimits[gatePlan]?.[u.feature]?.limit;
     if (!limit || !Number.isFinite(limit)) continue;
     const k = `${u.feature}|${plan}`;
     const row = cap.get(k) ?? { feature: u.feature, plan, atOrOverCap: 0, near80pct: 0 };

@@ -28,20 +28,12 @@ export const billingPlanConfigs: BillingPlanConfig[] = [
     checkoutEnabled: false,
   },
   {
-    plan: "PLUS",
-    name: "Plus",
-    price: "$5/month",
-    description: "Higher monthly usage for individual document work.",
-    checkoutEnabled: true,
-    priceEnvName: "DOCKDOCS_STRIPE_PLUS_PRICE_ID",
-  },
-  {
     plan: "PRO",
     name: "Pro",
-    price: "$20/month",
-    description: "High-volume document workspace usage.",
+    price: "$9/month",
+    description: "Full-access document workspace.",
     checkoutEnabled: true,
-    priceEnvName: "DOCKDOCS_STRIPE_PRO_PRICE_ID",
+    priceEnvName: "CREEM_PRO_PRODUCT_ID",
   },
 ];
 
@@ -53,12 +45,13 @@ export const paidBillingPlans = billingPlanConfigs.filter(
 export function isPaidSubscriptionPlan(
   plan: unknown,
 ): plan is PaidSubscriptionPlan {
-  return plan === "PLUS" || plan === "PRO";
+  // PLUS is a legacy alias with no active users; only PRO is the live paid tier.
+  return plan === "PRO";
 }
 
 // Ranks for upgrade comparisons (higher = more). Shared by the pricing CTA and
 // the server-side upgrade-checkout guard so client and server agree on "upgrade".
-const PLAN_RANK: Record<string, number> = { FREE: 0, PLUS: 1, PRO: 2 };
+const PLAN_RANK: Record<string, number> = { FREE: 0, PRO: 1 };
 const INTERVAL_RANK: Record<BillingInterval, number> = { monthly: 0, annual: 1, lifetime: 2 };
 
 // An UPGRADE means the target is ≥ on BOTH dimensions — plan tier (Plus < Pro)
@@ -85,10 +78,10 @@ export function isPlanUpgrade(
 
 // Server-authoritative price per (plan, interval) in CENTS — the single source of
 // truth for proration credit and the discount amount. NEVER trust the client.
-// Founding pricing: Plus $5/$36/$99, Pro $20/$144/$399 (see the pricing spec).
+// Single paid tier: PRO at $9/$72/$149 (monthly/annual/lifetime) via Creem.
+// Interval upgrades (monthly→annual→lifetime) use proration.ts; no cross-plan upgrades.
 const PLAN_PRICE_CENTS: Record<string, Record<BillingInterval, number>> = {
-  PLUS: { monthly: 500, annual: 3600, lifetime: 9900 },
-  PRO: { monthly: 2000, annual: 14400, lifetime: 39900 },
+  PRO: { monthly: 900, annual: 7200, lifetime: 14900 },
 };
 
 export function planPriceCents(plan: string, interval: BillingInterval): number {

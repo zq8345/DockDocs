@@ -1,16 +1,18 @@
 // Creem (Merchant of Record) integration helpers — raw REST, no SDK.
 // Reads everything from Netlify env vars so the code is inert until configured:
-//   CREEM_API_KEY            creem_test_... (test) or creem_... (live) — base URL derived from prefix
-//   CREEM_PLUS_PRODUCT_ID    prod_... for the $5/mo Plus subscription
-//   CREEM_PRO_PRODUCT_ID     prod_... for the $20/mo Pro subscription
-//   CREEM_WEBHOOK_SECRET     signing secret from the Creem webhook settings
+//   CREEM_API_KEY                  creem_test_... (test) or creem_... (live) — base URL derived from prefix
+//   CREEM_PRO_PRODUCT_ID           prod_... for the $9/mo Pro subscription
+//   CREEM_PRO_ANNUAL_PRODUCT_ID    prod_... for the $72/yr Pro annual
+//   CREEM_PRO_LIFETIME_PRODUCT_ID  prod_... for the $149 Pro lifetime
+//   CREEM_WEBHOOK_SECRET           signing secret from the Creem webhook settings
 // Docs: https://docs.creem.io  (POST /v1/checkouts ; webhook header `creem-signature`, HMAC-SHA256 over raw body)
 
 declare const Netlify: {
   env: { get(name: string): string | undefined };
 };
 
-export type CreemPlan = "PLUS" | "PRO";
+// Single active paid tier: PRO ($9/mo). Three products in Creem: monthly / annual / lifetime.
+export type CreemPlan = "PRO";
 // monthly/annual = recurring; lifetime = one-time (never expires).
 export type CreemInterval = "monthly" | "annual" | "lifetime";
 
@@ -26,21 +28,20 @@ export function creemApiBase(): string {
 }
 
 export function creemProductIdForPlan(plan: CreemPlan, interval: CreemInterval = "monthly"): string {
-  // Env names: monthly = CREEM_PLUS_PRODUCT_ID / CREEM_PRO_PRODUCT_ID (pre-existing);
-  // annual = CREEM_{PLAN}_ANNUAL_PRODUCT_ID; lifetime = CREEM_{PLAN}_LIFETIME_PRODUCT_ID.
+  // Env names: monthly = CREEM_PRO_PRODUCT_ID;
+  // annual = CREEM_PRO_ANNUAL_PRODUCT_ID; lifetime = CREEM_PRO_LIFETIME_PRODUCT_ID.
   const seg = interval === "monthly" ? "" : `${interval.toUpperCase()}_`;
   return Netlify.env.get(`CREEM_${plan}_${seg}PRODUCT_ID`)?.trim() || "";
 }
 
-// Map a product id seen in a webhook back to our (plan, interval). Checks all six
-// SKUs (plus/pro × monthly/annual/lifetime). Unset env vars return "" so they
-// never false-match a real product id.
+// Map a product id seen in a webhook back to our (plan, interval). Checks all three
+// PRO SKUs (monthly/annual/lifetime). Unset env vars return "" so they never false-match.
 export function planAndIntervalForCreemProductId(
   productId: string | undefined | null,
 ): { plan: CreemPlan; interval: CreemInterval } | null {
   const id = (productId || "").trim();
   if (!id) return null;
-  const plans: CreemPlan[] = ["PLUS", "PRO"];
+  const plans: CreemPlan[] = ["PRO"];
   const intervals: CreemInterval[] = ["monthly", "annual", "lifetime"];
   for (const plan of plans) {
     for (const interval of intervals) {

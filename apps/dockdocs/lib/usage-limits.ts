@@ -81,8 +81,10 @@ export const featureAliases: Record<string, UsageFeature> = {
   "protect-pdf": "convert",
 };
 
+// Two active tiers: FREE and PRO. PLUS is a legacy plan alias with no active users;
+// readFeatureLimit maps it to PRO so any stale Blob data degrades gracefully.
 export const featureLimits: Record<
-  SubscriptionPlan,
+  "FREE" | "PRO",
   Record<UsageFeature, { limit: number; period: UsagePeriod }>
 > = {
   FREE: {
@@ -107,20 +109,6 @@ export const featureLimits: Record<
     // cost nothing, so the cap only bounds scripted abuse; effectively "unlimited"
     // for any human (Option C — stops the dishonest 15/day on free $0 conversions).
     convertFree: { limit: 60, period: "day" },
-  },
-  PLUS: {
-    // ai-standard (chat/summary/translate/analyzer) = 200/day per tier-config;
-    // ai-hero (contractAnalyzer/compare) = 500/month; ocr/compress/convert unchanged.
-    chat: { limit: 200, period: "day" },
-    summary: { limit: 200, period: "day" },
-    translate: { limit: 200, period: "day" },
-    ocr: { limit: 500, period: "month" },
-    compress: { limit: 1000, period: "month" },
-    analyzer: { limit: 200, period: "day" },
-    contractAnalyzer: { limit: 500, period: "month" },
-    compare: { limit: 500, period: "month" },
-    convert: { limit: 1500, period: "month" },
-    convertFree: { limit: 2000, period: "month" },
   },
   PRO: {
     // ai-standard = Unlimited (fair use): a high fair-use ceiling that bounds only
@@ -148,7 +136,9 @@ export function normalizeUsageFeature(feature: string): UsageFeature | null {
 }
 
 export function readFeatureLimit(plan: SubscriptionPlan, feature: UsageFeature) {
-  return featureLimits[plan][feature];
+  // PLUS is a legacy plan with no active users; treat same as PRO.
+  const effectivePlan = plan === "PLUS" ? "PRO" : plan;
+  return featureLimits[effectivePlan][feature];
 }
 
 // UTC-keyed period buckets — identical math on client and server so the two
