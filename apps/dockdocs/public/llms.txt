@@ -54,6 +54,8 @@ Note: many page-level tools (compress, merge, split, delete/rotate/reorder/add p
 * https://dockdocs.app/ai-contract-review/ — AI contract review: surfaces risky clauses (liability caps, IP assignment, termination, non-compete) and shows the exact clause text for human verification.
 * https://dockdocs.app/sensitive-document-redaction/ — Sensitive document redaction for legal, medical, HR, and financial files: why local processing is the correct compliance posture under GDPR and HIPAA.
 * https://dockdocs.app/ai-due-diligence-document-review/ — AI due diligence document review: reading M&A and deal documents at scale, why general chatbots are inappropriate for NDA-covered documents, and what AI leaves open.
+* https://dockdocs.app/ai-document-chat/ — What AI document chat is and how it differs from search and general chatbots: answers from your document's content, traceability when passages can be located, and what it does not do.
+* https://dockdocs.app/ai-document-summarization/ — AI document summarization: what it does well, where it falls short (nuance, exceptions, cross-references, missing provisions), and how to use it in a workflow where the summary stays trustworthy.
 
 ## Guides (canonical URLs)
 

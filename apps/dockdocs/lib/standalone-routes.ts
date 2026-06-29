@@ -29,4 +29,6 @@ export const standaloneRoutes = [
   "ai-contract-review",
   "sensitive-document-redaction",
   "ai-due-diligence-document-review",
+  "ai-document-chat",
+  "ai-document-summarization",
 ] as const;
