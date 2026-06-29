@@ -124,11 +124,17 @@ export type UpgradePrompt = { label: string; primary: boolean; target?: UpgradeT
 // breakdown + checkout (no dumping the user onto /pricing to re-find it). Free users
 // have no sub to prorate → no target → /pricing. Returns [] for lifetime owners.
 export function upgradePrompts(
-  _displayName: PlanDisplayName,
+  displayName: PlanDisplayName,
   interval: BillingInterval | undefined,
   locale: MembershipLocale,
 ): UpgradePrompt[] {
   if (interval === "lifetime") return [];
+  // Recurring Pro users are already Pro — direct them to plan management, not "upgrade".
+  if (displayName === "Pro" && interval != null) {
+    return [
+      { label: pick(locale, "Manage plan", "管理套餐", "Gestionar suscripción", "Gerenciar plano", "Gérer l'abonnement", "プランを管理", "Abo verwalten", "플랜 관리"), primary: true },
+    ];
+  }
   return [
     { label: pick(locale, "Upgrade to Pro", "升级到 Pro", "Actualizar a Pro", "Atualizar para Pro", "Passer à Pro", "Pro にアップグレード", "Auf Pro upgraden", "Pro로 업그레이드"), primary: true },
   ];
