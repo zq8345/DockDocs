@@ -426,7 +426,7 @@ export function BatchFixScansClient({ locale = "en", embedded = false }: { local
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // (zh-Hant is also collapsed here because every [al] index below is already inside a
   // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   // zh-Hant child components (BatchUploadBox / ToolFaq / encryptedPdfMessage) accept zh-Hant;

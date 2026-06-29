@@ -199,7 +199,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // (zh-Hant is also collapsed here because every [al] index below is already inside a
   // `locale === "zh-Hant" ? deepHant(…) :` ternary, so the zh-Hant case never reaches [al].)
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   // zh-Hant child components (BatchUploadBox / ToolFaq) accept zh-Hant; ko → English (no Korean strings yet).
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)

@@ -306,8 +306,8 @@ function toBlogLocale(locale: RouteLocale): BlogLocale {
 }
 
 // 这些工具尚未实现(原本会下载空文件)，改为"即将推出"占位，en 主路径见各自 app/<slug>/page.tsx。
-const COMING_SOON_TOOLS: Record<string, { en: string; zh: string }> = {
-  "edit-pdf": { en: "Edit PDF", zh: "编辑 PDF" },
+const COMING_SOON_TOOLS: Record<string, { en: string; zh: string; ko: string }> = {
+  "edit-pdf": { en: "Edit PDF", zh: "编辑 PDF", ko: "PDF 편집" },
 };
 
 type PageParams = {
@@ -2369,7 +2369,7 @@ export default async function LocalizedRoute({
 
   if (COMING_SOON_TOOLS[slug]) {
     const t = COMING_SOON_TOOLS[slug];
-    return <ComingSoonTool locale={toLeafLocale(clientLocale)} name={t.en} nameZh={t.zh} />;
+    return <ComingSoonTool locale={clientLocale === "ko" ? "ko" : toLeafLocale(clientLocale)} name={t.en} nameZh={t.zh} nameKo={t.ko} />;
   }
 
   if (slug === "translate-pdf") {

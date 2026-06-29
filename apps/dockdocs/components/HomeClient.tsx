@@ -1,6 +1,6 @@
 "use client";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "ko";
 
 const STR = {
   en: {
@@ -163,6 +163,33 @@ const STR = {
       wordToPdf: { name: "Word を PDF に", desc: "DOCX を高精度な PDF に変換します。" },
       pdfToWord: { name: "PDF を Word に", desc: "内容を編集可能な Word に抽出します。" },
       splitPdf: { name: "PDF を分割", desc: "ページを抽出するか範囲で分割します。" },
+    },
+  },
+  ko: {
+    heroTitle1: "PDF 도구",
+    heroTitle2: "실제 업무를 위해 만들었습니다.",
+    heroSubtitle: "병합, 압축, 변환, AI와 대화 — 필요한 PDF 도구를 모두, 무료로.",
+    ctaStart: "무료로 시작",
+    ctaBrowse: "도구 둘러보기 →",
+    featFastTitle: "빠르고 무료",
+    featFastDesc: "모든 도구가 무료입니다. 계정도, 워터마크도, 제한도 없습니다.",
+    featPrivacyTitle: "프라이버시 우선",
+    featPrivacyDesc: "파일은 브라우저에서 처리됩니다. 서버에 아무것도 저장되지 않습니다.",
+    featAiTitle: "AI 기반",
+    featAiDesc: "문서와 대화하고, 요약하고, 번역하고, 인사이트를 추출합니다.",
+    featGlobalTitle: "글로벌",
+    featGlobalDesc: "12개 언어. 5개 도시의 팀. 전 세계 3,000만 명 이상의 사용자.",
+    mostUsed: "가장 많이 사용",
+    startWith: "여기서 시작하세요.",
+    viewAll: "26개 도구 전체 보기 →",
+    isNew: "신규",
+    tools: {
+      mergePdf: { name: "PDF 병합", desc: "원하는 순서로 PDF를 결합합니다." },
+      compressPdf: { name: "PDF 압축", desc: "품질을 유지하며 파일 크기를 줄입니다." },
+      chatWithPdf: { name: "PDF와 대화", desc: "문서에 근거해 질문할 수 있습니다." },
+      wordToPdf: { name: "Word를 PDF로", desc: "DOCX를 고품질 PDF로 변환합니다." },
+      pdfToWord: { name: "PDF를 Word로", desc: "내용을 편집 가능한 Word로 추출합니다." },
+      splitPdf: { name: "PDF 분할", desc: "페이지를 추출하거나 범위로 분할합니다." },
     },
   },
 };

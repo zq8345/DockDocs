@@ -507,7 +507,7 @@ export function BatchStampClient({ locale = "en", lockMode, embedded = false }: 
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // `al` (body copy) also collapses zh-Hant so it stays a plain AuthoredLocale (zh-Hant takes
   // the deepHant branch below); `childLocale` collapses only ko, since BatchUploadBox accepts zh-Hant.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const SECTIONS = lockMode === "pagenum" ? SECTIONS_PN : SECTIONS_WM;

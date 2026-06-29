@@ -13,8 +13,8 @@ import { getNavCategories } from "@/lib/header-nav";
 // hardcoded here — so every locale stays native-quality (incl. de, which the Header's
 // navCategories map does not yet expose) and a tool that ships in nav stays in sync.
 
-type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de";
-const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja", "de"];
+type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
+const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja", "de", "ko"];
 
 // Curated, evergreen, real (non-`soon`) tools relevant to someone working a
 // document on an AI page. The current page's own slug is excluded at render.
@@ -37,6 +37,7 @@ const HEADING: Record<Loc, string> = {
   fr: "Plus d'outils pour documents",
   ja: "その他のドキュメントツール",
   de: "Weitere Dokument-Tools",
+  ko: "더 많은 문서 도구",
 };
 
 // slug -> native name for a locale, skipping any coming-soon tool.

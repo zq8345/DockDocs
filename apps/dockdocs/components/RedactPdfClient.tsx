@@ -411,7 +411,7 @@ const SECTIONS_KO: ToolSectionsContent = {
 export function RedactPdfClient({ locale = "en", embedded = false }: { locale?: Locale; embedded?: boolean }) {
   // ko copy lives in STR_KO/SECTIONS_KO (selected below); al collapses ko→en only
   // for the AuthoredLocale-typed tables ko is intentionally excluded from.
-  const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
+  const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   // childLocale collapses ONLY ko (preserves zh-Hant) for child props/runtime fns lacking "ko".
   const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
