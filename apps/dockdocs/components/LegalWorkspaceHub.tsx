@@ -3,7 +3,7 @@
 import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
 import type { RuntimeLocale } from "@/lib/copy";
 
-type L = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+type L = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
 const COPY: Record<L, {
   eyebrow: string;
@@ -28,6 +28,22 @@ const COPY: Record<L, {
       { title: "Gov Bid Compliance Matrix", desc: "Check whether your proposal meets every requirement in a government tender or RFP.", slug: "/govbid-matrix" },
     ],
     privacy: "File is read locally in your browser; only extracted text is sent for analysis.",
+  },
+  ko: {
+    eyebrow: "전문 · 법률",
+    h1: "법률 문서 작업 공간",
+    subtitle: "계약서, 임대차 계약서, 입찰 문서를 읽고 — 위험 조항, 누락된 보호 장치, 규정 준수 요건을 표시하고 버전 간 변경 사항을 확인하세요.",
+    anchors: [
+      { title: "깊이", body: "계약 검토, 임대차 위험 신호, 정부 입찰 규정 준수를 다루는 3가지 전문 법률 도구." },
+      { title: "추적 가능", body: "모든 위험은 출처 조항에 연결됩니다 — 클릭해 확인하세요. AI의 추측이 아니라, 텍스트를 찾을 수 있을 때 근거를 제시합니다." },
+      { title: "균형 잡힌 시각", body: "변호사를 대체하지는 않지만, 서명하기 전에 무엇을 물어야 할지 알도록 돕습니다." },
+    ],
+    cards: [
+      { title: "계약 위험 검토", desc: "계약서, NDA, 서비스 계약서에서 위험한 조항과 누락된 보호 장치를 표시합니다.", slug: "/contract-risk" },
+      { title: "임대차 위험 신호 스캔", desc: "임대차 계약서에서 불공정한 조건, 숨은 수수료, 누락된 세입자 보호를 찾아냅니다.", slug: "/lease-redflag" },
+      { title: "정부 입찰 규정 준수 매트릭스", desc: "제안서가 정부 입찰 또는 RFP의 모든 요건을 충족하는지 확인합니다.", slug: "/govbid-matrix" },
+    ],
+    privacy: "파일은 브라우저에서 로컬로 읽으며, 추출된 텍스트만 분석을 위해 전송됩니다.",
   },
   zh: {
     eyebrow: "专业领域 · 法律",
