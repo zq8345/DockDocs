@@ -279,11 +279,11 @@ export function DashboardWorkspace() {
           style={{ height: 48 }}
         >
           {activeTool && toolLabel ? (
-            <nav className="flex min-w-0 items-center gap-1.5 text-[14px] leading-none">
+            <nav className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden text-[14px] leading-none">
               <button
                 type="button"
                 onClick={() => setActiveTool(null)}
-                className="shrink-0 text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
+                className="shrink-0 whitespace-nowrap text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
               >
                 {wsLabel}
               </button>
