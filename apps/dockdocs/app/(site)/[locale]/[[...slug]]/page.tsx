@@ -411,6 +411,14 @@ export async function generateMetadata(args: {
       return { ...meta, robots: { index: false, follow: true } };
     }
   }
+  // ko: geo hub pages (resources/guides/ai-pdf-guides) have no authored ko copy
+  // and fall back to English — noindex to avoid thin duplicate content.
+  if (locale === "ko") {
+    const s = normalizeSlug(rawSlug);
+    if (s !== null && (geoPageSlugs as readonly string[]).includes(s)) {
+      return { ...meta, robots: { index: false, follow: true } };
+    }
+  }
   return locale === "en" ? normalizeEnCanonical(meta) : meta;
 }
 
