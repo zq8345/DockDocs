@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { infoPages, languageAlternates } from "@/lib/i18n";
+import { webPageSchema } from "@/lib/page-schema";
 
 const page = infoPages.en.help;
 
@@ -14,5 +15,10 @@ export const metadata: Metadata = {
 };
 
 export default function HelpPage() {
-  return <SaasInfoPage page={page} />;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "help", page.title)) }} />
+      <SaasInfoPage page={page} />
+    </>
+  );
 }

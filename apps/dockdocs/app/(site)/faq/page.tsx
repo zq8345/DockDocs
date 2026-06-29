@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SaasInfoPage } from "@/components/SaasInfoPage";
 import { infoPages, languageAlternates } from "@/lib/i18n";
+import { webPageSchema } from "@/lib/page-schema";
 
 const page = infoPages.en.faq;
 
@@ -14,5 +15,10 @@ export const metadata: Metadata = {
 };
 
 export default function FaqPage() {
-  return <SaasInfoPage page={page} />;
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "faq", page.title)) }} />
+      <SaasInfoPage page={page} />
+    </>
+  );
 }
