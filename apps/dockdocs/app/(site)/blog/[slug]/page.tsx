@@ -63,6 +63,8 @@ export async function generateMetadata({
   };
 }
 
+const siteUrl = "https://dockdocs.app";
+
 export default async function BlogArticleRoute({
   params,
 }: {
@@ -75,5 +77,25 @@ export default async function BlogArticleRoute({
     notFound();
   }
 
-  return <BlogArticlePage article={article} />;
+  const content = getBlogArticleContent(article, "en");
+  const canonical = blogArticlePath(article.slug);
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${siteUrl}${canonical}#article`,
+    headline: content.title,
+    description: content.description,
+    url: `${siteUrl}${canonical}`,
+    datePublished: article.publishedAt,
+    dateModified: article.updatedAt ?? article.publishedAt,
+    publisher: { "@type": "Organization", "@id": `${siteUrl}#org`, name: "DockDocs", url: siteUrl },
+    isPartOf: { "@type": "Blog", "@id": `${siteUrl}/blog/#blog`, name: "DockDocs Blog", url: `${siteUrl}/blog/` },
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+      <BlogArticlePage article={article} />
+    </>
+  );
 }
