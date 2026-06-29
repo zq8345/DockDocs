@@ -143,7 +143,8 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
   }
 
   const name = authUser.name ?? authUser.email ?? t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント", "Konto", "계정");
-  const display = snapshot?.displayName ?? "Free";
+  const isTrial = snapshot?.trial?.status === "trialing";
+  const display = isTrial ? "Pro" : (snapshot?.displayName ?? "Free");
   const interval = snapshot?.record.interval;
   const badge = planBadge(display, interval, loc);
   const prompts = snapshot ? upgradePrompts(display, interval, loc) : [];
