@@ -15,6 +15,7 @@ export const metadata: Metadata = {
       fr: "https://dockdocs.app/fr/",
       ja: "https://dockdocs.app/ja/",
       de: "https://dockdocs.app/de/",
+      ko: "https://dockdocs.app/ko/",
       "zh-Hant": "https://dockdocs.app/zh-hant/",
       "x-default": "https://dockdocs.app/",
     },
@@ -54,7 +55,7 @@ const homeSchema = {
       name: "DockDocs",
       url: siteUrl,
       description: "Document AI that shows the source passage behind its answers so you can verify them, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
-      inLanguage: ["en", "zh", "es", "pt", "fr", "ja", "de"],
+      inLanguage: ["en", "zh", "es", "pt", "fr", "ja", "de", "ko", "zh-Hant"],
       publisher: { "@id": `${siteUrl}#org` },
     },
     {
@@ -85,7 +86,7 @@ const homeSchema = {
           name: "Is DockDocs free to use?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes. DockDocs core PDF tools — compress, merge, split, convert, OCR, and more — are completely free. No account required for most tools. Plus plan ($5/month) adds AI features like Chat with PDF and AI Summarization.",
+            text: "Yes. DockDocs core PDF tools — compress, merge, split, convert, OCR, and more — are completely free. No account required for most tools. Plus plan ($9/month) adds AI features like Chat with PDF and AI Summarization.",
           },
         },
         {

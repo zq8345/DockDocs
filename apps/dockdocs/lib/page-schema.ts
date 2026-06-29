@@ -37,6 +37,14 @@ const HOME_FAQ: Record<string, { q: string; a: string }[]> = {
     { q: "Woher weiß ich, dass die KI sich nichts ausdenkt?", a: "Wenn die KI antwortet oder Daten extrahiert, verweist sie auf die genaue Quellstelle in Ihrem eigenen Dokument — Sie können das Original aufrufen und es selbst prüfen, und müssen der KI nichts blind glauben. Lässt sich eine Aussage nicht in Ihrer Datei belegen, kennzeichnet DockDocs das, statt sie als Tatsache darzustellen. Diese Nachvollziehbarkeit bis zur Quelle ist der zentrale Unterschied zu einem allgemeinen Chatbot." },
     { q: "Was unterscheidet DockDocs von anderen PDF-Werkzeugen und von einem allgemeinen KI-Chatbot?", a: "Zwei Dinge, die ein allgemeiner KI-Chatbot nicht bieten kann: Datenschutz, den Sie überprüfen können, und Antworten, denen Sie vertrauen können. Die meisten DockDocs-Werkzeuge laufen in Ihrem Browser, sodass sensible Dateien Ihr Gerät nie verlassen. Und seine Dokumenten-KI zeigt die genaue Quellstelle hinter ihren Antworten und macht kenntlich, was sie nicht nachverfolgen kann, sodass Sie überprüfen können, was sie Ihnen sagt. Es ist für die Dokumente gemacht, die Sie nicht in einen allgemeinen Chatbot einfügen würden — Verträge, Finanzunterlagen, Forschung." },
   ],
+  ko: [
+    { q: "AI가 꾸며낸 내용이 아님을 어떻게 알 수 있나요?", a: "AI가 답변하거나 추출할 때, 내 문서의 정확한 원문 구절을 가리켜 줘서 원본을 열어 직접 확인할 수 있습니다 — AI의 말을 그냥 믿을 필요가 없습니다. 파일에서 근거를 찾을 수 없는 주장은 DockDocs가 사실인 것처럼 제시하는 대신 명확히 표시합니다. 이 출처 추적 가능성이 바로 일반 챗봇과의 핵심 차이입니다." },
+    { q: "DockDocs는 다른 PDF 도구나 일반 AI 챗봇과 어떻게 다른가요?", a: "일반 AI 챗봇이 제공할 수 없는 두 가지: 검증 가능한 개인정보 보호와 신뢰할 수 있는 답변입니다. DockDocs의 대부분 도구는 브라우저에서 실행되므로 민감한 파일이 내 기기 밖으로 나가지 않습니다. 그리고 문서 AI는 답변 뒤의 정확한 원문 구절을 보여주고, 추적할 수 없는 부분을 명시해서 직접 검증할 수 있습니다. 계약서, 재무 자료, 연구 자료처럼 일반 챗봇에 붙여넣기 어려운 문서를 위해 만들어졌습니다." },
+  ],
+  "zh-Hant": [
+    { q: "我怎麼知道 AI 不是在瞎編？", a: "AI 回答或抽取時，會指回你文檔中確切的原文段落，你可以點開原文自己核對——無需盲信 AI。當某個說法無法在你的文件中找到依據時，DockDocs 會標記出來，而不是當作事實呈現。這種可溯源正是它與通用聊天機器人的核心區別。" },
+    { q: "DockDocs 與其他 PDF 工具、與通用 AI 聊天機器人有何不同？", a: "通用 AI 聊天機器人給不了的兩點：可驗證的隱私，和可信賴的答案。DockDocs 大多數工具在你的瀏覽器中運行，敏感文件不離開你的設備；它的文檔 AI 會為答案展示背後的原文出處、並標出無法溯源的部分，讓你自己核對。它為那些你不敢貼進通用聊天機器人的文檔而生——合同、財務、研究資料。" },
+  ],
 };
 
 // Organization + WebSite descriptions, localized per homepage (the catch-all
@@ -50,6 +58,8 @@ const ORG_DESC: Record<string, string> = {
   fr: "IA documentaire privée et vérifiable : lisez n'importe quel document et vérifiez ses réponses — l'IA montre le passage source derrière elles et signale ce qu'elle ne peut pas tracer, pour que vous le vérifiiez vous-même. Plus ~50 outils PDF, dont la plupart s'exécutent dans votre navigateur, et ces fichiers ne quittent donc jamais votre appareil.",
   ja: "プライベートで検証できる文書 AI——あらゆる文書を読み解き、その回答を検証できます。AI が回答の根拠となる原文箇所を示し、たどれない部分は明示するので、自分で確認できます。さらに、お使いの約 50 種類の PDF ツール（その多くはブラウザ内で動作）により、それらのファイルがデバイスの外に出ることはありません。",
   de: "Private, nachvollziehbare Dokumenten-KI: Lesen Sie jedes Dokument und überprüfen Sie seine Antworten — die KI zeigt die Quellstelle dahinter und macht kenntlich, was sie nicht nachverfolgen kann. Dazu ~50 PDF-Werkzeuge — die meisten laufen in Ihrem Browser, sodass diese Dateien das Gerät nie verlassen.",
+  ko: "개인 정보를 보호하며 검증 가능한 문서 AI: 모든 문서를 읽고 답변을 확인하세요 — AI는 출처 구절을 보여주고 추적할 수 없는 부분을 명시해서 직접 확인할 수 있습니다. 약 50개의 PDF 도구 포함 — 대부분 브라우저에서 실행되므로 파일이 기기 밖으로 나가지 않습니다.",
+  "zh-Hant": "私密、可溯源的文檔 AI：讀懂任意文檔、逐一核驗它的答案——AI 會展示答案背後的原文出處、並標出無法溯源的部分，讓你自己核對。另有約 50 個 PDF 工具——多數在瀏覽器內運行，這些文件不離開你的設備。",
 };
 const SITE_DESC: Record<string, string> = {
   en: "Document AI that shows the source passage behind its answers, and flags what it can't trace, so you can verify them, plus private PDF tools that run in your browser. Built for documents you can't paste into a general chatbot.",
@@ -59,6 +69,8 @@ const SITE_DESC: Record<string, string> = {
   fr: "IA documentaire qui montre le passage source derrière ses réponses et signale ce qu'elle ne peut pas tracer, pour que vous les vérifiiez, plus des outils PDF privés qui s'exécutent dans votre navigateur. Conçue pour les documents que vous ne colleriez pas dans un chatbot généraliste.",
   ja: "回答の根拠となる原文箇所を示し、たどれない部分は明示して検証できるようにする文書 AI と、お使いのブラウザ内で動作するプライベートな PDF ツール。汎用チャットボットに貼り付けられない文書のために作られています。",
   de: "Dokumenten-KI, die die Quellstelle hinter ihren Antworten zeigt und kenntlich macht, was sie nicht nachverfolgen kann, damit Sie sie prüfen können — dazu private PDF-Werkzeuge, die in Ihrem Browser laufen. Gemacht für Dokumente, die Sie nicht in einen allgemeinen Chatbot einfügen würden.",
+  ko: "답변 뒤의 원문 구절을 보여주고 추적할 수 없는 부분을 명시하여 검증할 수 있는 문서 AI와 브라우저에서 실행되는 개인 PDF 도구. 일반 챗봇에 붙여넣기 어려운 문서를 위해 만들어졌습니다.",
+  "zh-Hant": "會展示答案背後原文出處、並標出無法溯源的部分、讓你能核實的文檔 AI，外加在瀏覽器內運行的私密 PDF 工具。專為那些你不敢貼進通用聊天機器人的文檔而生。",
 };
 // Organization slogan, per locale (was hardcoded English for all locales until 2026-06-24).
 // Only en + de are authored; zh/es/pt/fr/ja have no vetted slogan translation yet and
@@ -91,7 +103,7 @@ export function homeSchema(locale: string = "en") {
         name: "DockDocs",
         url: SITE,
         description: SITE_DESC[locale] ?? SITE_DESC.en,
-        inLanguage: ["en", "zh", "es", "pt", "fr", "ja", "de"],
+        inLanguage: ["en", "zh", "es", "pt", "fr", "ja", "de", "ko", "zh-Hant"],
         publisher: { "@id": `${SITE}#org` },
       },
       {
