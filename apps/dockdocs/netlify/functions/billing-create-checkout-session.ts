@@ -46,7 +46,7 @@ export default async (req: Request, _context: Context) => {
       {
         ok: false,
         code: "INVALID_PLAN",
-        message: "Choose PLUS or PRO.",
+        message: "Choose Pro.",
       },
       400,
     );

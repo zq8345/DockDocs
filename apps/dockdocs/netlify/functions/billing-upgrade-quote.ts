@@ -26,7 +26,7 @@ export default async (req: Request, _ctx: Context) => {
   }
 
   if (!isPaidSubscriptionPlan(payload.plan)) {
-    return json({ ok: false, code: "INVALID_PLAN", message: "Choose PLUS or PRO." }, 400);
+    return json({ ok: false, code: "INVALID_PLAN", message: "Choose Pro." }, 400);
   }
   if (!isBillingInterval(payload.interval)) {
     return json({ ok: false, code: "INVALID_INTERVAL", message: "Choose monthly, annual, or lifetime." }, 400);
