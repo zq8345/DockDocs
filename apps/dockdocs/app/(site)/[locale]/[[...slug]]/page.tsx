@@ -2781,6 +2781,10 @@ const homeCopy = {
     title: "DockDocs — AIドキュメントプラットフォーム",
     description: "PDFツール、AIチャット、OCR、圧縮、変換など。ブラウザ内でプライベートかつ高速に文書を処理。",
   },
+  ko: {
+    title: "DockDocs — 비공개·추적 가능한 문서 AI와 PDF 도구",
+    description: "PDF 도구, AI 채팅, OCR, 압축, 변환 등. 문서를 브라우저에서 비공개로 빠르고 안전하게 처리합니다.",
+  },
   en: {
     title: "DockDocs — AI Document Platform",
     description: "PDF tools, AI chat, OCR, compression, conversion and more. Process documents in your browser, privately and fast.",
