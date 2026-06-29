@@ -18,7 +18,7 @@ import {
   type SubscriptionSnapshot,
 } from "@/lib/subscription-runtime";
 import { planBadge, planStatusText, upgradePrompts, type MembershipLocale } from "@/lib/membership-ui";
-import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
+
 import { OtpVerifyForm } from "@/components/OtpVerifyForm";
 import { supabase, authHeader } from "@/lib/supabase";
 import { trackSignUp } from "@/lib/analytics";
@@ -197,7 +197,6 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   // with ?panel=account so the account panel reopens automatically.
   const authRedirectPath = wsNav ? "/dashboard?panel=account" : undefined;
   const membershipLocale: MembershipLocale = locale;
-  const upgradeFlow = useUpgradeFlow(membershipLocale);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
   const [view, setView] = useState<AuthView>("loading");
@@ -320,10 +319,8 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
     }
   }
 
-  // Free users (no recurring sub to prorate) → the pricing page to pick a plan.
-  // Recurring users invoke the in-place upgrade flow instead (prompt.target set).
-  function goPricing() {
-    router.push(locale === "en" ? "/pricing" : `/${locale}/pricing`);
+  function goUpgrade() {
+    router.push(locale === "en" ? "/upgrade" : `/${locale}/upgrade`);
   }
   async function handlePortal() {
     setBillingLoading("portal"); setError("");
@@ -437,7 +434,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
     <div className="mt-8 space-y-6">
       {header}
 
-      <UpgradeConfirmModal flow={upgradeFlow} locale={membershipLocale} />
+
 
       {/* Identity */}
       <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
@@ -512,8 +509,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
                 <button
                   key={i}
                   type="button"
-                  disabled={upgradeFlow.loading}
-                  onClick={() => (p.target ? upgradeFlow.beginUpgrade(p.target.plan, p.target.interval) : goPricing())}
+                  onClick={() => goUpgrade()}
                   className={
                     p.primary
                       ? "rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 py-1.5 text-[12px] font-semibold text-[color:var(--on-accent)] transition hover:bg-[color:var(--accent-hover)] disabled:opacity-50"
@@ -633,7 +629,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
       {/* Trust reminder — the north-star promise */}
       <p className="px-1 text-center text-[12px] leading-5 text-[color:var(--faint)]">{t.trustLine}</p>
 
-      {(error || upgradeFlow.error) && <p className="rounded-[var(--radius-sm)] bg-[color:var(--error-surface)] px-3 py-2 text-[13px] text-[color:var(--error)]">{error || upgradeFlow.error}</p>}
+      {error && <p className="rounded-[var(--radius-sm)] bg-[color:var(--error-surface)] px-3 py-2 text-[13px] text-[color:var(--error)]">{error}</p>}
 
       <button type="button" onClick={handleSignOut} className="w-full rounded-[var(--radius)] border border-[color:var(--error-line)] px-4 py-2.5 text-[13px] font-medium text-[color:var(--error)] transition hover:bg-[color:var(--error-surface)]">
         {t.signOut}

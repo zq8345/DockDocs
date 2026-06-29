@@ -124,21 +124,13 @@ export type UpgradePrompt = { label: string; primary: boolean; target?: UpgradeT
 // breakdown + checkout (no dumping the user onto /pricing to re-find it). Free users
 // have no sub to prorate → no target → /pricing. Returns [] for lifetime owners.
 export function upgradePrompts(
-  displayName: PlanDisplayName,
+  _displayName: PlanDisplayName,
   interval: BillingInterval | undefined,
   locale: MembershipLocale,
 ): UpgradePrompt[] {
-  if (displayName === "Free") {
-    return [
-      { label: pick(locale, "Unlock AI & Pro precision", "升级解锁 AI 与专业精准", "Desbloquea IA y precisión Pro", "Desbloqueie IA e precisão Pro", "Débloquez l'IA et la précision Pro", "AI とプロ精度をアンロック", "KI & Pro-Präzision freischalten", "AI와 Pro 정밀도 잠금 해제"), primary: true },
-    ];
-  }
   if (interval === "lifetime") return [];
-  const curInterval: BillingInterval = interval ?? "monthly";
-
-  // Pro on a recurring plan → lifetime.
   return [
-    { label: pick(locale, "Get lifetime — pay once", "切终身 · 一次买断永久", "Hazlo de por vida — pago único", "Mude para vitalício — pague uma vez", "Passez à vie — paiement unique", "買い切りにする — 一度の支払い", "Lebenslang — einmalig zahlen", "평생으로 전환 — 한 번만 결제"), primary: true, target: { plan: "PRO", interval: "lifetime" } },
+    { label: pick(locale, "Upgrade to Pro", "升级到 Pro", "Actualizar a Pro", "Atualizar para Pro", "Passer à Pro", "Pro にアップグレード", "Auf Pro upgraden", "Pro로 업그레이드"), primary: true },
   ];
 }
 
