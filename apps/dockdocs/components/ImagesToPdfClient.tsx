@@ -4,8 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { deepHant, toHant } from "@/lib/zh-hant";
-import { dropzoneShell } from "@/components/design";
-import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
+import { UploadDropzone } from "@/components/UploadDropzone";
 import { trackToolRun } from "@/lib/track";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
@@ -333,7 +332,6 @@ export function ImagesToPdfClient({ locale = "en", embedded = false }: { locale?
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dragFrom = useRef<number | null>(null);
 
@@ -431,19 +429,19 @@ export function ImagesToPdfClient({ locale = "en", embedded = false }: { locale?
       <input ref={inputRef} type="file" accept={ACCEPT} multiple className="hidden" onChange={(e) => { const fs = Array.from(e.target.files || []); if (fs.length) addFiles(fs); e.currentTarget.value = ""; }} />
 
       {items.length === 0 ? (
-        <>
-          <div
-            className={`mt-8 ${dropzoneShell(dragging)}`}
-            onClick={() => inputRef.current?.click()}
-            onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-            onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
-            onDrop={(e) => { e.preventDefault(); setDragging(false); const fs = Array.from(e.dataTransfer.files || []); if (fs.length) addFiles(fs); }}
-          >
-            <p className="text-[15px] font-medium text-[color:var(--foreground)]">{busy ? t.reading : t.drop}</p>
-            {!busy && <button type="button" className="mt-4 inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-[14px] font-semibold text-white transition hover:opacity-90">{t.choose}</button>}
-          </div>
-          {embedded && <WorkspaceValueZone type="client" locale={locale} />}
-        </>
+        <UploadDropzone
+          locale={locale}
+          accept={ACCEPT}
+          acceptLabel="JPG / PNG / WebP / GIF / BMP"
+          buttonLabel={t.choose}
+          multiple
+          privacy
+          busy={busy}
+          busyLabel={t.reading}
+          onFiles={addFiles}
+          constrained={embedded}
+          valueZone="client"
+        />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
