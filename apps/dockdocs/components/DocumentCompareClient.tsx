@@ -1389,6 +1389,9 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
         onDrop={onDrop}
         className={`mt-8 ${dropzoneShell(dragOver)}`}
       >
+        <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--accent)]">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4M7 9l5-5 5 5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></svg>
+        </span>
         <p className="text-sm font-medium text-[color:var(--foreground)]">{t.drop}</p>
         <p className="mt-1 text-xs text-[color:var(--muted)]">{t.dropHint}</p>
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
@@ -1398,6 +1401,11 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
           <button type="button" onClick={(e) => { e.stopPropagation(); loadSamples(); }} disabled={busy} className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-5 text-sm font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)] disabled:opacity-50">
             {t.samples}
           </button>
+        </div>
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-[color:var(--faint)]">
+          <span>{locale === "zh" || locale === "zh-Hant" ? "支持" : locale === "ja" ? "対応形式" : locale === "de" ? "Unterstützt" : locale === "ko" ? "지원 형식" : "Supports"} PDF</span>
+          <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
+          <span className="text-[color:var(--muted)]">{locale === "zh" || locale === "zh-Hant" ? "本地读取 · 内容服务端分析" : locale === "ja" ? "ローカルで読み取り · サーバーで分析" : locale === "es" ? "Leído localmente · análisis en servidor" : locale === "pt" ? "Lido localmente · análise no servidor" : locale === "fr" ? "Lu localement · analyse côté serveur" : locale === "de" ? "Lokal gelesen · Analyse auf Server" : locale === "ko" ? "로컬에서 읽기 · 서버에서 분석" : "File read locally · analyzed on server"}</span>
         </div>
       </div>
 

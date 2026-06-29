@@ -365,15 +365,20 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
           onDrop={handleDrop}
           className={`${dropzoneShell(dragging)} overflow-y-auto`}
         >
+          <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--accent)]">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4M7 9l5-5 5 5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></svg>
+          </span>
           <span className="inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
             {zh ? h("选择 PDF") : ja ? "PDF を選択" : es ? "Elegir PDF" : pt ? "Escolher PDF" : fr ? "Choisir un PDF" : de ? "PDF auswählen" : ko ? "PDF 선택" : "Choose PDF"}
           </span>
           <span className="mt-4 text-sm text-[color:var(--muted)]">
             {zh ? h("或将文件拖放到此处，最多 20 页") : ja ? "またはファイルをここにドラッグ＆ドロップ" : es ? "o arrastra tu archivo aquí. Máx. 20 páginas" : pt ? "ou arraste o arquivo aqui. Máx. 20 páginas" : fr ? "ou déposez votre fichier ici. 20 pages max." : de ? "oder legen Sie Ihre Datei hier ab. Max. 20 Seiten" : ko ? "또는 여기에 파일을 끌어다 놓으세요. 최대 20페이지" : "or drop your file here. Up to 20 pages"}
           </span>
-          <span className="mt-1.5 text-xs text-[color:var(--faint)]">
-            {zh ? h("请上传不超过 25 MB 的文件") : ja ? "最大20ページ・25MBまで" : es ? "Sube un archivo de hasta 25 MB" : pt ? "Envie um arquivo de até 25 MB" : fr ? "Fichier jusqu'à 25 Mo" : de ? "Laden Sie eine Datei mit bis zu 25 MB hoch" : ko ? "최대 25MB 파일을 업로드하세요" : "Please upload a file up to 25 MB"}
-          </span>
+          <div className="mt-1.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-[color:var(--faint)]">
+            <span>{zh ? h("最多 20 页 · 25 MB") : ja ? "最大20ページ · 25MBまで" : es ? "Máx. 25 MB" : pt ? "Máx. 25 MB" : fr ? "25 Mo max." : de ? "Max. 25 MB" : ko ? "최대 25MB" : "Up to 25 MB"}</span>
+            <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
+            <span className="text-[color:var(--muted)]">{zh ? h("本地读取 · 文字发至AI") : ja ? "ローカルで読み取り · テキストをAIへ送信" : es ? "Leído localmente · texto enviado a IA" : pt ? "Lido localmente · texto enviado a IA" : fr ? "Lu localement · texte envoyé à l'IA" : de ? "Lokal gelesen · Text an KI gesendet" : ko ? "로컬에서 읽기 · 텍스트 AI로 전송" : "File read locally · text sent to AI"}</span>
+          </div>
           {status === "error" && error ? (
             <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
           ) : null}

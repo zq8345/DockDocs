@@ -484,10 +484,18 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
           onDrop={handleDrop}
           className={dropzoneShell(dragging)}
         >
+          <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--accent)]">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4M7 9l5-5 5 5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></svg>
+          </span>
           <span className="inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
             {copy.choosePdf}
           </span>
           <span className="mt-4 text-sm text-[color:var(--muted)]">{copy.uploadHelp}</span>
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
+            <span>{locale === "zh" || locale === "zh-Hant" ? "支持" : locale === "ja" ? "対応形式" : locale === "de" ? "Unterstützt" : locale === "ko" ? "지원 형식" : "Supports"} PDF</span>
+            <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
+            <span className="text-[color:var(--muted)]">{locale === "zh" || locale === "zh-Hant" ? "本地读取 · 文字发至AI" : locale === "ja" ? "ローカルで読み取り · テキストをAIへ送信" : locale === "es" ? "Leído localmente · texto enviado a IA" : locale === "pt" ? "Lido localmente · texto enviado a IA" : locale === "fr" ? "Lu localement · texte envoyé à l'IA" : locale === "de" ? "Lokal gelesen · Text an KI gesendet" : locale === "ko" ? "로컬에서 읽기 · 텍스트 AI로 전송" : "File read locally · text sent to AI"}</span>
+          </div>
           {documentState === "error" && error && (
             <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
           )}
