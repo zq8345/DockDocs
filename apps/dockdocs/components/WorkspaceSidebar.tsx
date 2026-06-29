@@ -134,7 +134,7 @@ export function WorkspaceSidebar({
     "legal-domain": true,
   });
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
-  const [planLabel, setPlanLabel] = useState<"Free" | "Plus" | "Pro">("Free");
+  const [planLabel, setPlanLabel] = useState<"Free" | "Pro">("Free");
   const [langOpen, setLangOpen] = useState(false);
   const [light, setLight] = useState(false);
 
