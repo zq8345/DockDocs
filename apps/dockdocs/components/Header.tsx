@@ -100,6 +100,13 @@ const pageLinks = {
     { name: "Über uns", href: "/about" },
     { name: "Kontakt", href: "/contact" },
   ],
+  ko: [
+    { name: "요금제", href: "/pricing" },
+    { name: "가이드", href: "/guides" },
+    { name: "블로그", href: "/blog" },
+    { name: "회사 소개", href: "/about" },
+    { name: "문의하기", href: "/contact" },
+  ],
 } as const;
 
 type Locale = "en" | "zh";
@@ -119,11 +126,11 @@ function currentSlug(pathname: string | null) {
 }
 
 const HEADER_LABELS = {
-  soon:      { en: "soon",      zh: "正在开发", "zh-Hant": "即將推出", es: "próximo",         pt: "em breve",        fr: "bientôt",          ja: "近日公開",        de: "bald" },
-  more:      { en: "More",      zh: "更多",     "zh-Hant": "更多",     es: "Más",             pt: "Mais",            fr: "Plus",             ja: "その他",          de: "Mehr" },
-  light:     { en: "Light",     zh: "浅色",     "zh-Hant": "淺色",     es: "Claro",           pt: "Claro",           fr: "Clair",            ja: "ライト",          de: "Hell" },
-  dark:      { en: "Dark",      zh: "深色",     "zh-Hant": "深色",     es: "Oscuro",          pt: "Escuro",          fr: "Sombre",           ja: "ダーク",          de: "Dunkel" },
-  workspace: { en: "Workspace", zh: "工作台",   "zh-Hant": "工作台",   es: "Área de trabajo", pt: "Área de trabalho", fr: "Espace de travail", ja: "ワークスペース", de: "Arbeitsbereich" },
+  soon:      { en: "soon",      zh: "正在开发", "zh-Hant": "即將推出", es: "próximo",         pt: "em breve",        fr: "bientôt",          ja: "近日公開",        de: "bald",             ko: "준비 중" },
+  more:      { en: "More",      zh: "更多",     "zh-Hant": "更多",     es: "Más",             pt: "Mais",            fr: "Plus",             ja: "その他",          de: "Mehr",             ko: "더 보기" },
+  light:     { en: "Light",     zh: "浅色",     "zh-Hant": "淺色",     es: "Claro",           pt: "Claro",           fr: "Clair",            ja: "ライト",          de: "Hell",             ko: "라이트" },
+  dark:      { en: "Dark",      zh: "深色",     "zh-Hant": "深色",     es: "Oscuro",          pt: "Escuro",          fr: "Sombre",           ja: "ダーク",          de: "Dunkel",           ko: "다크" },
+  workspace: { en: "Workspace", zh: "工作台",   "zh-Hant": "工作台",   es: "Área de trabajo", pt: "Área de trabalho", fr: "Espace de travail", ja: "ワークスペース", de: "Arbeitsbereich", ko: "워크스페이스" },
 } as const;
 type HdrLabelLocale = keyof (typeof HEADER_LABELS)["soon"];
 function hdrLabel(key: keyof typeof HEADER_LABELS, locale: string): string {
@@ -148,7 +155,7 @@ export function Header() {
   // zh-Hant derives the entire nav from the zh source via OpenCC (deepHant),
   // mirroring ToolFaq/Home; otherwise stripLocale's "zh-Hant" falls through to en.
   const cats = getNavCategories(locale);
-  // ko has no pageLinks block yet → English via `?? pageLinks.en` (foundation phase).
+  // Per-locale page links; zh-Hant derives from zh. `?? pageLinks.en` guards an unknown locale.
   const pages = locale === "zh-Hant" ? deepHant(pageLinks.zh) : (pageLinks[locale as keyof typeof pageLinks] ?? pageLinks.en);
 
   useEffect(() => {
@@ -233,7 +240,7 @@ export function Header() {
         className="flex w-full items-center gap-2.5 rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
       >
         <span className="opacity-70">{GlobeIcon}</span>
-        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : "Language"}</span>
+        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : locale === "ko" ? "언어" : "Language"}</span>
         <svg className="ml-auto h-3 w-3 opacity-60" viewBox="0 0 12 12" fill="none">
           <path d="M4.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -267,7 +274,7 @@ export function Header() {
         onClick={() => setLangOpen((v) => !v)}
         className="flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
       >
-        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : "Language"}</span>
+        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : locale === "ko" ? "언어" : "Language"}</span>
         <span className="flex items-center gap-1.5">
           <span className="text-[12px] text-[color:var(--faint)]">{localeLabels[locale as keyof typeof localeLabels] ?? locale}</span>
           <svg className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`} viewBox="0 0 12 12" fill="none">
@@ -452,8 +459,8 @@ export function Header() {
                     className="ml-auto rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
                   >
                     {authUser
-                      ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "es" ? "Cuenta" : locale === "pt" ? "Conta" : locale === "fr" ? "Compte" : locale === "ja" ? "アカウント" : locale === "de" ? "Konto" : "Account"))
-                      : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : locale === "pt" ? "Entrar" : locale === "fr" ? "Connexion" : locale === "ja" ? "ログイン" : locale === "de" ? "Anmelden" : "Sign in")}
+                      ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "es" ? "Cuenta" : locale === "pt" ? "Conta" : locale === "fr" ? "Compte" : locale === "ja" ? "アカウント" : locale === "de" ? "Konto" : locale === "ko" ? "계정" : "Account"))
+                      : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : locale === "pt" ? "Entrar" : locale === "fr" ? "Connexion" : locale === "ja" ? "ログイン" : locale === "de" ? "Anmelden" : locale === "ko" ? "로그인" : "Sign in")}
                   </button>
                 </div>
               </div>

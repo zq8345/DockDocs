@@ -940,12 +940,10 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 const hasTools = cat.tools.length > 0;
                 const hasFeatures = (cat.features?.length ?? 0) > 0;
                 const canExpand = hasTools || hasFeatures;
-                // tier-config copy is keyed by the 7 base locales; for zh-Hant read
-                // zh then convert to Traditional via h(). de now has its own column.
-                // ko has no tier-config column yet → read en (foundation phase); the
-                // per-cell `?? .en` below would also catch it, but collapsing here keeps
-                // tcLocale a valid TierValue key so the index type-checks.
-                const tcLocale: Exclude<Locale, "zh-Hant" | "ko"> = hant ? "zh" : locale === "ko" ? "en" : locale;
+                // tier-config copy is keyed by the 8 authored locales; for zh-Hant read
+                // zh then convert to Traditional via h(). de + ko now have their own
+                // column. The per-cell `?? .en` below still guards any absent key.
+                const tcLocale: Exclude<Locale, "zh-Hant"> = hant ? "zh" : locale;
                 const catLabel = h(cat.label[tcLocale] ?? cat.label.en);
                 const lim = (tier: "free" | "plus" | "pro") => {
                   const v = cat.limits[tier];
