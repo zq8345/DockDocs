@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { HtmlLangSync } from "@/components/HtmlLangSync";
 import { PwaRuntime } from "@/components/PwaRuntime";
+import { AutoTrialRuntime } from "@/components/AutoTrialRuntime";
 import { standaloneRoutes } from "@/lib/standalone-routes";
 import { absoluteUrl, googleSiteVerification, siteUrl } from "@/shared/seo/routes";
 import "./globals.css";
@@ -99,6 +100,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <body>
         <HtmlLangSync />
         <PwaRuntime />
+        <AutoTrialRuntime />
         {children}
       </body>
     </html>
