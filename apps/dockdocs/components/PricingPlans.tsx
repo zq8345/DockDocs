@@ -800,7 +800,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 selected
                   ? "border-[color:var(--accent)] ring-1 ring-[color:var(--accent)]"
                   : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"
-              }${featured ? " lg:-mt-2 lg:mb-2" : ""}`}
+              }`}
             >
               <h2 className="text-[20px] font-normal text-[color:var(--foreground)]">{plan.name}</h2>
 
