@@ -192,13 +192,23 @@ export function Header() {
       document.removeEventListener("keydown", onKey);
     };
   }, [mobileOpen]);
-  // Escape closes the hover More menu for keyboard accessibility.
+  // Click-outside + Escape close the More menu (touch screens need click-outside to dismiss).
   useEffect(() => {
     if (!moreOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+    };
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMoreOpen(false); };
+    document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
   }, [moreOpen]);
+
+  // Unmount cleanup for the hover close-timer.
+  useEffect(() => { return () => { if (moreCloseTimer.current) clearTimeout(moreCloseTimer.current); }; }, []);
 
   function openMore() {
     if (moreCloseTimer.current) clearTimeout(moreCloseTimer.current);
@@ -397,6 +407,7 @@ export function Header() {
             <div ref={moreRef} className="relative hidden md:block" onMouseEnter={openMore} onMouseLeave={closeMore}>
               <button
                 type="button"
+                onClick={() => setMoreOpen((v) => !v)}
                 aria-label={hdrLabel("more", locale)}
                 aria-expanded={moreOpen}
                 className={iconBtn}

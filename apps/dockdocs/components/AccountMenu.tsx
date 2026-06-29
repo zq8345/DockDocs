@@ -60,13 +60,23 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
     };
   }, [authUser]);
 
-  // Escape closes the hover menu for keyboard accessibility.
+  // Click-outside + Escape close the menu (touch screens need click-outside to dismiss).
   useEffect(() => {
     if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpen(false);
+    };
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
   }, [open]);
+
+  // Unmount cleanup for the hover close-timer.
+  useEffect(() => { return () => { if (closeTimer.current) clearTimeout(closeTimer.current); }; }, []);
 
   function openMenu() {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -152,6 +162,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
     <div ref={menuRef} className="relative hidden md:block" onMouseEnter={openMenu} onMouseLeave={closeMenu}>
       <button
         type="button"
+        onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント", "Konto", "계정")}
         className="flex items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] p-1 transition hover:border-[color:var(--line-strong)]"
