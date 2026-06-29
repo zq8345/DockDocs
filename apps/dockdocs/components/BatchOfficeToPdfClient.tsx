@@ -391,7 +391,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source, embedded = false
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      <ToolFaq tool={source ? `batch-${source}-to-pdf` : "batch-office-to-pdf"} locale={childLocale} />
+      {!embedded && <ToolFaq tool={source ? `batch-${source}-to-pdf` : "batch-office-to-pdf"} locale={childLocale} />}
     </div>
   );
 }
