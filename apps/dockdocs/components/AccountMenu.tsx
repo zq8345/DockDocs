@@ -40,6 +40,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
   const [open, setOpen] = useState(false);
   const [snapshot, setSnapshot] = useState<SubscriptionSnapshot | null>(null);
   const [billingLoading, setBillingLoading] = useState(false);
+  const [imgFailed, setImgFailed] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -154,17 +155,21 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント", "Konto", "계정")}
-        className="flex items-center gap-2 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] py-1 pl-1 pr-2.5 transition hover:border-[color:var(--line-strong)]"
+        className="flex items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] p-1 transition hover:border-[color:var(--line-strong)]"
       >
         <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[color:var(--accent)] text-[11px] font-semibold text-[color:var(--on-accent)]">
-          {authUser.pictureUrl ? (
-            <img src={authUser.pictureUrl} alt="" className="h-full w-full object-cover" />
+          {authUser.pictureUrl && !imgFailed ? (
+            <img
+              src={authUser.pictureUrl}
+              alt=""
+              referrerPolicy="no-referrer"
+              className="h-full w-full object-cover"
+              onError={() => setImgFailed(true)}
+            />
           ) : (
             name.charAt(0).toUpperCase()
           )}
         </span>
-        <span className="max-w-[120px] truncate text-[13px] font-medium text-[color:var(--foreground)]">{name}</span>
-        <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${badge.className}`}>{badge.label}</span>
       </button>
 
       {open && (
