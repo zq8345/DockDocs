@@ -5,6 +5,25 @@ import {
   readCustomerByUserId,
   readSubscriptionByUserId,
 } from "./_shared/billing-store";
+import { readTrialByUserId, type TrialRecord } from "./_shared/trial-store";
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+// Compute a trial summary with date-derived status (not the stored status field,
+// which may be stale) and a pre-computed daysRemaining for the UI.
+function trialSummary(trial: TrialRecord | null) {
+  if (!trial) return null;
+  const now = Date.now();
+  const expiresMs = new Date(trial.expiresAt).getTime();
+  const active = expiresMs > now;
+  return {
+    plan: trial.plan,
+    status: active ? ("trialing" as const) : ("expired" as const),
+    startedAt: trial.startedAt,
+    expiresAt: trial.expiresAt,
+    daysRemaining: active ? Math.ceil((expiresMs - now) / MS_PER_DAY) : 0,
+  };
+}
 
 export default async (req: Request, _context: Context) => {
   if (req.method !== "GET") {
@@ -27,12 +46,14 @@ export default async (req: Request, _context: Context) => {
       userId: "anonymous",
       subscription: createFreeSubscription("anonymous"),
       customer: null,
+      trial: null,
     });
   }
 
-  const [customer, subscription] = await Promise.all([
+  const [customer, subscription, trial] = await Promise.all([
     readCustomerByUserId(user.id),
     readSubscriptionByUserId(user.id),
+    readTrialByUserId(user.id),
   ]);
 
   return json({
@@ -46,6 +67,7 @@ export default async (req: Request, _context: Context) => {
           email: customer.email,
         }
       : null,
+    trial: trialSummary(trial),
   });
 };
 
