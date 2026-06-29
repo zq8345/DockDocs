@@ -42,6 +42,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
   const [billingLoading, setBillingLoading] = useState(false);
   const [imgFailed, setImgFailed] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -59,22 +60,21 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
     };
   }, [authUser]);
 
-  // Close on a click outside the menu (button + dropdown) or on Escape.
+  // Escape closes the hover menu for keyboard accessibility.
   useEffect(() => {
     if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", onDown);
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("keydown", onKey);
-    };
+    return () => document.removeEventListener("keydown", onKey);
   }, [open]);
+
+  function openMenu() {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setOpen(true);
+  }
+  function closeMenu() {
+    closeTimer.current = setTimeout(() => setOpen(false), 150);
+  }
 
   // Directly-authored nav copy. Keyed off the RAW route locale (not `loc`) so de
   // and zh-Hant resolve their own copy — `loc` collapses de→en for the shared
@@ -149,10 +149,9 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
   const isPaid = snapshot?.isPaidPlaceholder ?? false;
 
   return (
-    <div ref={menuRef} className="relative hidden md:block">
+    <div ref={menuRef} className="relative hidden md:block" onMouseEnter={openMenu} onMouseLeave={closeMenu}>
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-label={t("Account", "账户", "Cuenta", "Conta", "Compte", "アカウント", "Konto", "계정")}
         className="flex items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] p-1 transition hover:border-[color:var(--line-strong)]"
@@ -174,7 +173,9 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
 
       {open && (
         <>
-          <div className="absolute right-0 top-full z-50 mt-1.5 w-[264px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+          {/* pt-2 bridge prevents the 6px hover gap from triggering mouseleave */}
+          <div className="absolute right-0 top-full z-50 w-[264px] pt-2">
+          <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
             {/* identity */}
             <div className="px-2.5 pb-2 pt-1.5">
               <p className="truncate text-[13px] font-semibold text-[color:var(--foreground)]">{name}</p>
@@ -241,6 +242,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
             >
               {t("Sign out", "退出登录", "Cerrar sesión", "Sair", "Se déconnecter", "ログアウト", "Abmelden", "로그아웃")}
             </button>
+          </div>
           </div>
         </>
       )}
