@@ -1,5 +1,9 @@
 # /ocr was a fake placeholder (simulated OCR, FAQ falsely claimed real Tesseract);
 # the real tool is /ocr-pdf. 301 the en root + every locale variant to it.
+# /dashboard renamed to /workspace (2026-06-29); preserve bookmarks for trial users.
+/dashboard /workspace 301!
+/:lng/dashboard /:lng/workspace 301!
+
 /ocr /ocr-pdf 301!
 /:lng/ocr /:lng/ocr-pdf 301!
 

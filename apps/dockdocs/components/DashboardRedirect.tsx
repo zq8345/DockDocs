@@ -12,7 +12,7 @@ export function DashboardRedirect() {
       const saved = localStorage.getItem("dockdocs-lang");
       if (saved && isRouteLocale(saved)) locale = saved;
     } catch {}
-    router.replace(locale === defaultLocale ? "/dashboard" : `/${locale}/dashboard`);
+    router.replace(locale === defaultLocale ? "/workspace" : `/${locale}/workspace`);
   }, [router]);
   return null;
 }

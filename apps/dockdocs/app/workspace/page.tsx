@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { getRuntimeCopy } from "@/lib/copy";
 import { DashboardWorkspace } from "@/components/DashboardWorkspace";
 
-const dashboardCopy = getRuntimeCopy("en").dashboard;
+const workspaceCopy = getRuntimeCopy("en").dashboard;
 
 export const metadata: Metadata = {
-  title: "Dashboard",
-  description: dashboardCopy.description,
+  title: "Workspace",
+  description: workspaceCopy.description,
   alternates: {
-    canonical: "/dashboard/",
+    canonical: "/workspace/",
   },
   robots: {
     index: false,
@@ -16,6 +16,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DashboardPage() {
+export default function WorkspacePage() {
   return <DashboardWorkspace />;
 }

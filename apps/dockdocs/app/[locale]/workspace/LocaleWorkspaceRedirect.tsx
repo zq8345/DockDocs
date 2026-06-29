@@ -3,11 +3,11 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export function LocaleDashboardRedirect({ locale }: { locale: string }) {
+export function LocaleWorkspaceRedirect({ locale }: { locale: string }) {
   const router = useRouter();
   useEffect(() => {
     try { localStorage.setItem("dockdocs-lang", locale); } catch {}
-    router.replace("/dashboard");
+    router.replace("/workspace");
   }, [router, locale]);
 
   return (

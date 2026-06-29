@@ -153,6 +153,7 @@ export function Header() {
   const mobileBtnRef = useRef<HTMLButtonElement>(null);
   const mobilePanelRef = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
+  const moreCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const locale = stripLocale(pathname ?? "/");
 
   // zh-Hant derives the entire nav from the zh source via OpenCC (deepHant),
@@ -191,20 +192,21 @@ export function Header() {
       document.removeEventListener("keydown", onKey);
     };
   }, [mobileOpen]);
-  // Close the desktop "More" menu on a click outside it or on Escape.
+  // Escape closes the hover More menu for keyboard accessibility.
   useEffect(() => {
     if (!moreOpen) return;
-    const onDown = (e: MouseEvent) => {
-      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
-    };
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setMoreOpen(false); };
-    document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("keydown", onKey);
-    };
+    return () => document.removeEventListener("keydown", onKey);
   }, [moreOpen]);
+
+  function openMore() {
+    if (moreCloseTimer.current) clearTimeout(moreCloseTimer.current);
+    setMoreOpen(true);
+  }
+  function closeMore() {
+    moreCloseTimer.current = setTimeout(() => setMoreOpen(false), 150);
+  }
 
   function toggleTheme() {
     const n = !light;
@@ -380,7 +382,7 @@ export function Header() {
             </span>
 
             {/* Workspace */}
-            <a href={lh("/dashboard", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/dashboard"); }} className={trigger}>
+            <a href={lh("/workspace", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/workspace"); }} className={trigger}>
               {hdrLabel("workspace", locale)}
             </a>
 
@@ -392,10 +394,9 @@ export function Header() {
             <AccountMenu authUser={authUser} locale={locale} />
 
             {/* Consolidated "More" menu (desktop) — Pricing/Blog/About + language + theme */}
-            <div ref={moreRef} className="relative hidden md:block">
+            <div ref={moreRef} className="relative hidden md:block" onMouseEnter={openMore} onMouseLeave={closeMore}>
               <button
                 type="button"
-                onClick={() => setMoreOpen((v) => !v)}
                 aria-label={hdrLabel("more", locale)}
                 aria-expanded={moreOpen}
                 className={iconBtn}
@@ -405,7 +406,8 @@ export function Header() {
                 </svg>
               </button>
               {moreOpen && (
-                <div className="absolute right-0 top-full z-50 mt-1.5 w-[160px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+                <div className="absolute right-0 top-full z-50 w-[160px] pt-2">
+                <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
                     {pages.map((p) => (
                       <a
                         key={p.href}
@@ -428,6 +430,7 @@ export function Header() {
                       <span>{hdrLabel(light ? "light" : "dark", locale)}</span>
                     </button>
                   </div>
+                </div>
               )}
             </div>
 
@@ -485,8 +488,8 @@ export function Header() {
               {/* Workbench quick link — mobile */}
               <div className="mb-4">
                 <a
-                  href="/dashboard"
-                  onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/dashboard"); setMobileOpen(false); }}
+                  href="/workspace"
+                  onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/workspace"); setMobileOpen(false); }}
                   className="block w-full rounded-[var(--radius)] border border-[color:var(--accent)] bg-[color:var(--surface)] px-4 py-3 text-center text-[14px] font-semibold text-[color:var(--accent)] transition hover:border-[color:var(--accent-strong)]"
                 >
                   {hdrLabel("workspace", locale)}

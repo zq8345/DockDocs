@@ -104,7 +104,7 @@ function localizeItemName(name: string, href: string, locale: string): string {
 export function SidebarNav() {
   const pathname = usePathname();
   const { locale, barePath } = stripLocale(pathname ?? "/");
-  const alwaysShowPaths = ["/dashboard", "/pricing"];
+  const alwaysShowPaths = ["/workspace", "/pricing"];
   const isToolPage = barePath === "/" || toolGroups.some((g) => g.items.some((item) => barePath.startsWith(item.href))) || alwaysShowPaths.some((p) => barePath.startsWith(p));
   if (!isToolPage) return null;
 

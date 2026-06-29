@@ -110,7 +110,7 @@ export const routeSlugs = [
   "batch-fix-scans",
   "batch-extract-sheet",
   "batch-sort",
-  "dashboard",
+  "workspace",
   "pricing",
   "account",
   "resources",

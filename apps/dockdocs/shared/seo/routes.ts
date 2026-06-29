@@ -60,7 +60,7 @@ type RouteMeta = {
 const NOINDEX_SLUGS = new Set<RouteSlug>([
   "edit-pdf", // Coming-soon placeholder (COMING_SOON_TOOLS) — index:false
   "my-chats", // Saved user conversations — index:false
-  "dashboard", // Signed-in workspace — index:false
+  "workspace", // Signed-in workspace — index:false
   "account", // Auth / billing — index:false
 ]);
 

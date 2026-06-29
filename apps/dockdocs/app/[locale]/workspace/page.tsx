@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { routeLocales, type RouteLocale } from "@/lib/i18n";
 import { getRuntimeCopy } from "@/lib/copy";
-import { LocaleDashboardRedirect } from "./LocaleDashboardRedirect";
+import { LocaleWorkspaceRedirect } from "./LocaleWorkspaceRedirect";
 
 export function generateStaticParams() {
   return routeLocales.map((locale) => ({ locale }));
@@ -14,20 +14,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const copy = getRuntimeCopy((routeLocales.includes(locale as RouteLocale) ? locale : "en") as RouteLocale);
-  const dash = copy.dashboard;
   return {
-    title: "Dashboard",
-    description: dash.description,
+    title: "Workspace",
+    description: copy.dashboard.description,
     robots: { index: false, follow: false },
   };
 }
 
-export default async function LocaleDashboardPage({
+export default async function LocaleWorkspacePage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
   const resolvedLocale = (routeLocales.includes(locale as RouteLocale) ? locale : "en") as RouteLocale;
-  return <LocaleDashboardRedirect locale={resolvedLocale} />;
+  return <LocaleWorkspaceRedirect locale={resolvedLocale} />;
 }

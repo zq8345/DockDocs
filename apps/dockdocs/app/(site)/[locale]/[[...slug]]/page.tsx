@@ -318,7 +318,7 @@ type PageParams = {
 export function generateStaticParams() {
   const standardRoutes = routeLocales.flatMap((locale) =>
     routeSlugs
-      .filter((slug) => slug !== "dashboard")
+      .filter((slug) => slug !== "workspace")
       .map((slug) => ({
         locale,
         slug: slug ? slug.split("/") : [],
