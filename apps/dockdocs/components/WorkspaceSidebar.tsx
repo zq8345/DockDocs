@@ -50,7 +50,7 @@ function ChevronIcon({ open }: { open: boolean }) {
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={`h-3 w-3 shrink-0 text-[color:var(--faint)] transition-transform ${open ? "" : "-rotate-90"}`}
+      className={`h-3.5 w-3.5 shrink-0 text-[color:var(--faint)] transition-transform ${open ? "" : "-rotate-90"}`}
     >
       <path d="M4 6l4 4 4-4" />
     </svg>
@@ -60,32 +60,32 @@ function ChevronIcon({ open }: { open: boolean }) {
 // ── Category icons (Tabler-style, 24-viewBox, stroke 1.5) ────────────────────
 const CAT_ICONS: Record<string, React.ReactNode> = {
   "PDF conversion": (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[15px] w-[15px]">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[17px] w-[17px]">
       <path d="M14 3H6a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8l-5-5Z" />
       <path d="M14 3v5h5" />
       <path d="M9 13h6m0 0-2-2m2 2-2 2" />
     </svg>
   ),
   "PDF editing": (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[15px] w-[15px]">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[17px] w-[17px]">
       <path d="M11 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" />
       <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L13 14l-4 1 1-4 8.5-8.5Z" />
     </svg>
   ),
   "Batch": (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[15px] w-[15px]">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[17px] w-[17px]">
       <path d="M12 2 2 7l10 5 10-5-10-5Z" />
       <path d="M2 12l10 5 10-5" />
       <path d="M2 17l10 5 10-5" />
     </svg>
   ),
   "AI analysis": (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[15px] w-[15px]">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[17px] w-[17px]">
       <path d="M12 3 9.5 9.5 3 12l6.5 2.5L12 21l2.5-6.5L21 12l-6.5-2.5L12 3Z" />
     </svg>
   ),
   "By profession": (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[15px] w-[15px]">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-[17px] w-[17px]">
       <rect x="2" y="7" width="20" height="14" rx="2" />
       <path d="M8 7V5a2 2 0 0 1 4 0v2" />
     </svg>
@@ -99,7 +99,7 @@ function NavItemBar({ isActive }: { isActive: boolean }) {
 }
 
 const subItemCls = (isActive: boolean, soon: boolean) =>
-  `flex items-center justify-between rounded-[var(--radius)] py-1.5 pl-[34px] pr-3 text-[12.5px] transition ${
+  `flex items-center justify-between rounded-[var(--radius)] py-1.5 pl-[34px] pr-3 text-[13px] transition ${
     isActive
       ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
       : soon
@@ -229,7 +229,7 @@ export function WorkspaceSidebar({
                 <span className="shrink-0 text-[color:var(--faint)] transition group-hover:text-[color:var(--muted)]">
                   {CAT_ICONS[heading]}
                 </span>
-                <span className="flex-1 text-[12px] font-semibold text-[color:var(--foreground)]">
+                <span className="flex-1 text-[13px] font-semibold text-[color:var(--foreground)]">
                   {catLabel}
                 </span>
                 <ChevronIcon open={isOpen} />
@@ -298,7 +298,7 @@ export function WorkspaceSidebar({
                   <span className="shrink-0 text-[color:var(--faint)] transition group-hover:text-[color:var(--muted)]">
                     {CAT_ICONS["By profession"]}
                   </span>
-                  <span className="flex-1 text-[12px] font-semibold text-[color:var(--foreground)]">
+                  <span className="flex-1 text-[13px] font-semibold text-[color:var(--foreground)]">
                     {catLabel}
                   </span>
                   <ChevronIcon open={isOpen} />
@@ -309,7 +309,7 @@ export function WorkspaceSidebar({
 
                     {/* ── Legal / Contracts (expandable) ── */}
                     <div>
-                      <div className={`flex w-full items-center rounded-[var(--radius)] text-[12.5px] transition ${
+                      <div className={`flex w-full items-center rounded-[var(--radius)] text-[13px] transition ${
                         legalActive
                           ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
                           : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
@@ -361,7 +361,7 @@ export function WorkspaceSidebar({
                       <button
                         type="button"
                         onClick={() => onToolSelect?.("/workspace-finance")}
-                        className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[12.5px] transition ${
+                        className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[13px] transition ${
                           activeTool === "/workspace-finance"
                             ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
                             : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
@@ -377,7 +377,7 @@ export function WorkspaceSidebar({
                       <button
                         type="button"
                         onClick={() => onToolSelect?.("/workspace-research")}
-                        className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[12.5px] transition ${
+                        className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[13px] transition ${
                           activeTool === "/workspace-research"
                             ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
                             : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
@@ -406,7 +406,7 @@ export function WorkspaceSidebar({
                 <span className="shrink-0 text-[color:var(--faint)] transition group-hover:text-[color:var(--muted)]">
                   {CAT_ICONS[cat.catKey]}
                 </span>
-                <span className="flex-1 text-[12px] font-semibold text-[color:var(--foreground)]">
+                <span className="flex-1 text-[13px] font-semibold text-[color:var(--foreground)]">
                   {catLabel}
                 </span>
                 <ChevronIcon open={isOpen} />

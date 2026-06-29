@@ -281,7 +281,7 @@ export function UploadDropzone({
   if (constrained) {
     return (
       <>
-        <div className="mx-auto max-w-3xl">{dropzone}</div>
+        {dropzone}
         {valueZone && <WorkspaceValueZone type={valueZone} locale={locale} />}
       </>
     );

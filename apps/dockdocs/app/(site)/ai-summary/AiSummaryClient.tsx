@@ -363,7 +363,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
           onDrop={handleDrop}
-          className={embedded ? `${dropzoneShell(dragging)} min-h-[360px] overflow-y-auto` : `${dropzoneShell(dragging)} overflow-y-auto`}
+          className={`${dropzoneShell(dragging)} overflow-y-auto`}
         >
           <span className="inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
             {zh ? h("选择 PDF") : ja ? "PDF を選択" : es ? "Elegir PDF" : pt ? "Escolher PDF" : fr ? "Choisir un PDF" : de ? "PDF auswählen" : ko ? "PDF 선택" : "Choose PDF"}
