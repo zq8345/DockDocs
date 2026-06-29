@@ -246,7 +246,7 @@ export function Header() {
         </svg>
       </button>
       {langOpen && (
-        <div className="absolute right-full bottom-0 z-10 mr-1 min-w-[180px] rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
+        <div className="absolute right-full top-0 z-10 mr-1 min-w-[180px] max-h-[calc(100vh-56px)] overflow-y-auto rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
           {(routeLocales as readonly string[]).map((l) => (
             <button
               key={l}
