@@ -44,8 +44,10 @@ type UpgradeCopy = {
   limitedBadge: string;
   currentBadge: string;
   features: [string, string, string, string];
-  cta: string;
+  subscribePro: string;
+  currentPlan: string;
   billedAnnually: string;
+  trust: string;
   error: string;
 };
 
@@ -66,8 +68,10 @@ const COPY: Record<AuthoredLocale, UpgradeCopy> = {
     limitedBadge: `${ANNUAL_LIMIT} lifetime slots`,
     currentBadge: "Current",
     features: ["Contract risk & AI Q&A", "Batch workflow automation", "All PDF tools", "7-day refund"],
-    cta: "Get Pro",
+    subscribePro: "Subscribe to Pro",
+    currentPlan: "Current plan",
     billedAnnually: "billed annually",
+    trust: "7-day refund · cancel anytime · Secure checkout by Creem",
     error: "Something went wrong. Please try again.",
   },
   zh: {
@@ -86,8 +90,10 @@ const COPY: Record<AuthoredLocale, UpgradeCopy> = {
     limitedBadge: `限 ${ANNUAL_LIMIT} 个终身名额`,
     currentBadge: "当前",
     features: ["合同风险审查 & AI 问答", "批量工作流自动化", "全部 PDF 工具", "7 天无理由退款"],
-    cta: "获取 Pro",
+    subscribePro: "订阅 Pro 会员",
+    currentPlan: "当前套餐",
     billedAnnually: "按年计费",
+    trust: "7 天退款 · 随时取消 · 由 Creem 安全结账",
     error: "出现错误，请重试。",
   },
   es: {
@@ -106,8 +112,10 @@ const COPY: Record<AuthoredLocale, UpgradeCopy> = {
     limitedBadge: `${ANNUAL_LIMIT} cupos de por vida`,
     currentBadge: "Actual",
     features: ["Revisión de contratos & IA", "Automatización por lotes", "Todas las herramientas PDF", "Reembolso de 7 días"],
-    cta: "Obtener Pro",
+    subscribePro: "Suscribirse a Pro",
+    currentPlan: "Plan actual",
     billedAnnually: "facturado anualmente",
+    trust: "Reembolso de 7 días · cancela cuando quieras · Pago seguro con Creem",
     error: "Algo salió mal. Inténtalo de nuevo.",
   },
   pt: {
@@ -126,8 +134,10 @@ const COPY: Record<AuthoredLocale, UpgradeCopy> = {
     limitedBadge: `${ANNUAL_LIMIT} vagas vitalícias`,
     currentBadge: "Atual",
     features: ["Revisão de contratos & IA", "Automação em lote", "Todas as ferramentas PDF", "Reembolso em 7 dias"],
-    cta: "Obter Pro",
+    subscribePro: "Assinar o Pro",
+    currentPlan: "Plano atual",
     billedAnnually: "cobrado anualmente",
+    trust: "Reembolso em 7 dias · cancele quando quiser · Checkout seguro com Creem",
     error: "Algo deu errado. Tente novamente.",
   },
   fr: {
@@ -146,8 +156,10 @@ const COPY: Record<AuthoredLocale, UpgradeCopy> = {
     limitedBadge: `${ANNUAL_LIMIT} accès à vie`,
     currentBadge: "Actuel",
     features: ["Révision de contrats & IA", "Automatisation par lot", "Tous les outils PDF", "Remboursement 7 jours"],
-    cta: "Obtenir Pro",
+    subscribePro: "S'abonner à Pro",
+    currentPlan: "Forfait actuel",
     billedAnnually: "facturé annuellement",
+    trust: "Remboursement 7 jours · annulation à tout moment · Paiement sécurisé par Creem",
     error: "Une erreur s'est produite. Réessayez.",
   },
   ja: {
@@ -166,8 +178,10 @@ const COPY: Record<AuthoredLocale, UpgradeCopy> = {
     limitedBadge: `終身 ${ANNUAL_LIMIT} 枠限定`,
     currentBadge: "現在",
     features: ["契約リスク審査 & AI 問答", "一括ワークフロー自動化", "全 PDF ツール", "7日間返金"],
-    cta: "Pro を取得",
+    subscribePro: "Pro を購読する",
+    currentPlan: "現在のプラン",
     billedAnnually: "年払い",
+    trust: "7日間返金 · いつでもキャンセル可 · Creem による安全なチェックアウト",
     error: "エラーが発生しました。再度お試しください。",
   },
   de: {
@@ -186,8 +200,10 @@ const COPY: Record<AuthoredLocale, UpgradeCopy> = {
     limitedBadge: `${ANNUAL_LIMIT} Lebenszeit-Plätze`,
     currentBadge: "Aktuell",
     features: ["Vertragsrisiko & KI-Fragen", "Batch-Workflow-Automatisierung", "Alle PDF-Tools", "7 Tage Rückerstattung"],
-    cta: "Pro erhalten",
+    subscribePro: "Pro abonnieren",
+    currentPlan: "Aktueller Tarif",
     billedAnnually: "jährlich abgerechnet",
+    trust: "7 Tage Rückerstattung · jederzeit kündbar · Sichere Zahlung über Creem",
     error: "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
   },
   ko: {
@@ -206,8 +222,10 @@ const COPY: Record<AuthoredLocale, UpgradeCopy> = {
     limitedBadge: `평생 슬롯 ${ANNUAL_LIMIT}개`,
     currentBadge: "현재",
     features: ["계약 리스크 & AI 질문", "일괄 워크플로 자동화", "모든 PDF 도구", "7일 환불"],
-    cta: "Pro 시작",
+    subscribePro: "Pro 구독하기",
+    currentPlan: "현재 플랜",
     billedAnnually: "연간 청구",
+    trust: "7일 환불 · 언제든지 취소 · Creem 안전 결제",
     error: "문제가 발생했습니다. 다시 시도해 주세요.",
   },
 };
@@ -229,7 +247,8 @@ export function UpgradePage() {
   const [locale, setLocale] = useState<RouteLocale>("en");
   const [authUser, setAuthUser] = useState<AuthUser | null | "loading">("loading");
   const [snapshot, setSnapshot] = useState<SubscriptionSnapshot | null | "loading">("loading");
-  const [checkoutLoading, setCheckoutLoading] = useState<BillingInterval | null>(null);
+  const [selected, setSelected] = useState<BillingInterval>("annual");
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -279,20 +298,24 @@ export function UpgradePage() {
       }, mloc)
     : "";
 
-  async function handleCheckout(interval: BillingInterval) {
-    if (checkoutLoading) return;
-    setCheckoutLoading(interval);
+  // Bottom CTA logic based on selected card + user state.
+  const selectedIsCurrent = !isTrial && selected === currentInterval;
+  const canCheckout = isTrial || isFree || INTERVAL_RANK[selected] > currentRank;
+
+  async function handleCheckout() {
+    if (checkoutLoading || selectedIsCurrent) return;
+    setCheckoutLoading(true);
     setError("");
     try {
       if (isTrial || isFree) {
-        await createBillingCheckoutSession("PRO", interval);
+        await createBillingCheckoutSession("PRO", selected);
       } else {
-        await startUpgradeCheckout("PRO", interval);
+        await startUpgradeCheckout("PRO", selected);
       }
     } catch (err) {
       const msg = err instanceof BillingError ? err.message : c.error;
       setError(msg);
-      setCheckoutLoading(null);
+      setCheckoutLoading(false);
     }
   }
 
@@ -338,23 +361,21 @@ export function UpgradePage() {
         </div>
       )}
 
-      {/* Plan cards */}
+      {/* Plan cards — click to select */}
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {CARDS.map(({ interval, name, price, sub, badge, highlighted }) => {
-          const rank = INTERVAL_RANK[interval];
-          // Trial users haven't paid yet — all intervals are fresh checkout options.
+          const isSelected = selected === interval;
           const isCurrent = !isTrial && interval === currentInterval;
-          const canUpgrade = isTrial || isFree || rank > currentRank;
-          const isLoading = checkoutLoading === interval;
-          const anyLoading = checkoutLoading !== null;
 
           return (
-            <div
+            <button
               key={interval}
-              className={`relative flex flex-col rounded-[var(--radius)] border p-5 transition ${
-                highlighted
+              type="button"
+              onClick={() => setSelected(interval)}
+              className={`relative flex flex-col rounded-[var(--radius)] border p-5 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] ${
+                isSelected
                   ? "border-[color:var(--accent)] bg-[color:var(--surface)]"
-                  : "border-[color:var(--line)] bg-[color:var(--surface-subtle)]"
+                  : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--line-strong)]"
               }`}
             >
               {/* Popular badge */}
@@ -396,42 +417,51 @@ export function UpgradePage() {
                 ))}
               </ul>
 
-              {/* CTA */}
-              <div className="mt-5">
-                {isCurrent ? (
-                  <div className="flex items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] py-2 text-[13px] font-medium text-[color:var(--muted)]">
-                    {c.currentBadge}
-                  </div>
-                ) : canUpgrade ? (
-                  <button
-                    type="button"
-                    onClick={() => void handleCheckout(interval)}
-                    disabled={anyLoading}
-                    className={`w-full rounded-[var(--radius-sm)] py-2 text-[13px] font-semibold transition disabled:opacity-50 ${
-                      highlighted
-                        ? "bg-[color:var(--accent)] text-[color:var(--on-accent)] hover:bg-[color:var(--accent-hover)]"
-                        : "border border-[color:var(--line)] bg-[color:var(--background)] text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]"
-                    }`}
-                  >
-                    {isLoading ? c.redirecting : c.cta}
-                  </button>
-                ) : null}
-              </div>
-            </div>
+              {/* "Current" label inside card if this interval matches user's active plan */}
+              {isCurrent && (
+                <div className="mt-4 rounded-[var(--radius-sm)] border border-[color:var(--line)] py-1.5 text-center text-[12px] text-[color:var(--muted)]">
+                  {c.currentBadge}
+                </div>
+              )}
+            </button>
           );
         })}
       </div>
 
+      {/* Unified CTA button */}
+      <div className="mt-6">
+        {selectedIsCurrent ? (
+          <div className="inline-flex items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] px-8 py-3 text-[14px] font-medium text-[color:var(--muted)]">
+            {c.currentPlan}
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => void handleCheckout()}
+            disabled={!canCheckout || checkoutLoading}
+            className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-8 py-3 text-[14px] font-semibold text-[color:var(--on-accent)] transition hover:opacity-90 disabled:opacity-50"
+          >
+            {checkoutLoading ? (
+              <>
+                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                </svg>
+                {c.redirecting}
+              </>
+            ) : (
+              c.subscribePro
+            )}
+          </button>
+        )}
+      </div>
+
       {/* Trust row */}
-      <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-[color:var(--faint)]">
-        {["7-day refund · cancel anytime · Secure checkout by Creem"].map((s) => (
-          <span key={s} className="flex items-center gap-1">
-            <svg width="10" height="10" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[color:var(--accent)]">
-              <path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            {s}
-          </span>
-        ))}
+      <div className="mt-4 flex flex-wrap items-center gap-x-1 gap-y-1 text-[11px] text-[color:var(--faint)]">
+        <svg width="10" height="10" viewBox="0 0 16 16" fill="none" className="shrink-0 text-[color:var(--accent)]">
+          <path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <span>{c.trust}</span>
       </div>
 
       {error && (
