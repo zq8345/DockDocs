@@ -122,7 +122,7 @@ export async function createBillingCheckoutSession(
   interval: BillingInterval = "monthly",
 ) {
   if (!isPaidSubscriptionPlan(plan)) {
-    throw new Error("Choose Plus or Pro.");
+    throw new Error("Choose Pro.");
   }
 
   const auth = await authHeader();
@@ -154,6 +154,26 @@ export async function createBillingCheckoutSession(
   return payload.url;
 }
 
+export async function startBillingTrial(): Promise<
+  | { ok: true; trial: { plan: "PRO"; startedAt: string; expiresAt: string; status: "trialing" } }
+  | { ok: false; code: string; message: string }
+> {
+  const auth = await authHeader();
+  const response = await fetch("/api/billing/start-trial", {
+    method: "POST",
+    headers: auth,
+  });
+  const payload = await response.json().catch(() => null);
+  if (response.ok && payload?.ok) {
+    return { ok: true, trial: payload.trial };
+  }
+  return {
+    ok: false,
+    code: payload?.code ?? (response.status === 401 ? "UNAUTHENTICATED" : "UNKNOWN"),
+    message: payload?.message ?? "Could not start trial.",
+  };
+}
+
 export type UpgradeQuote = {
   currentPlan: string;
   currentInterval: BillingInterval;
@@ -170,7 +190,7 @@ export async function getUpgradeQuote(
   interval: BillingInterval,
 ): Promise<UpgradeQuote> {
   if (!isPaidSubscriptionPlan(plan)) {
-    throw new Error("Choose Plus or Pro.");
+    throw new Error("Choose Pro.");
   }
   const auth = await authHeader();
   const response = await fetch("/api/billing/upgrade-quote", {
@@ -214,7 +234,7 @@ export async function getUpgradeQuote(
 // change-plan, which Creem couldn't do across billing intervals.)
 export async function startUpgradeCheckout(plan: PaidSubscriptionPlan, interval: BillingInterval) {
   if (!isPaidSubscriptionPlan(plan)) {
-    throw new Error("Choose Plus or Pro.");
+    throw new Error("Choose Pro.");
   }
   const auth = await authHeader();
   const response = await fetch("/api/billing/upgrade-checkout", {

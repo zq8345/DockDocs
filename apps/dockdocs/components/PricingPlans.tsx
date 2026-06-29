@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { TIER_CATEGORIES } from "@/lib/tier-config";
 import type { FeatureItem } from "@/lib/tier-config";
 import { localizedPath, type RouteSlug, type RouteLocale } from "@/lib/i18n";
-import { createBillingCheckoutSession, createBillingPortalSession, getSubscriptionSnapshot, BillingError, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
+import { createBillingCheckoutSession, createBillingPortalSession, getSubscriptionSnapshot, startBillingTrial, BillingError, type SubscriptionSnapshot } from "@/lib/subscription-runtime";
 import { isPlanUpgrade, type PaidSubscriptionPlan } from "@/lib/billing-config";
 import { billingErrorCopy } from "@/lib/membership-ui";
 import { useUpgradeFlow, UpgradeConfirmModal } from "@/components/UpgradeFlow";
@@ -28,7 +28,7 @@ const copy = {
     mostPopular: "Most popular",
     billedYearly: (v: string) => `${v} billed yearly`,
     // trust bar
-    trust: ["7-day money-back guarantee", "Cancel anytime, no questions", "Files never used to train our models"],
+    trust: ["7-day money-back guarantee", "Cancel anytime, no questions", "Files never used to train our models", "7-day free trial — no credit card needed"],
     plans: [
       {
         name: "Free",
@@ -41,33 +41,23 @@ const copy = {
         featured: false,
       },
       {
-        name: "Plus",
-        monthlyPrice: "$5",
-        yearlyPrice: "$3",
-        yearlyTotal: "$36/yr",
-        tagline: "AI reads and compares your documents — in seconds.",
+        name: "Pro",
+        monthlyPrice: "$9",
+        yearlyPrice: "$6",
+        yearlyTotal: "$72/yr",
+        tagline: "AI reads, compares & reviews your documents — in seconds.",
         valueLine: "Less than a coffee a month.",
-        highlights: ["Everything in Free", "Chat with any PDF — answers show their source when it can be located", "AI summaries & key points in seconds", "Compare multiple documents side by side", "100 MB files, batch & priority, no ads"],
-        cta: "Upgrade to Plus",
+        highlights: ["Everything in Free", "Chat with any PDF — answers show their source when it can be located", "AI summaries & key points in seconds", "Compare multiple documents side by side", "100 MB files, batch & priority, no ads", "Automate batch document workflows", "Contract review — flags risky & missing clauses", "API access & auto-classification", "Team workspace & priority support"],
+        cta: "Try free for 7 days",
         href: "" as RouteSlug,
         featured: true,
-      },
-      {
-        name: "Pro",
-        monthlyPrice: "$20",
-        yearlyPrice: "$12",
-        yearlyTotal: "$144/yr",
-        tagline: "Automate document workflows & professional review.",
-        highlights: ["Everything in Plus", "Automate batch document workflows", "Contract review — flags risky & missing clauses", "API access & auto-classification", "Team workspace & priority support"],
-        cta: "Upgrade to Pro",
-        href: "" as RouteSlug,
-        featured: false,
       },
     ],
     faqTitle: "Questions before you buy",
     faq: [
+      { q: "Is there a free trial?", a: "Yes — 7 days of full Pro access, no credit card required. Start from the pricing page or your account. One trial per account, ever. After the trial you stay on Free unless you subscribe." },
       { q: "Can I cancel anytime?", a: "Yes. Manage or cancel your subscription yourself in a couple of clicks — no emails, no retention games. You keep access until the end of the period you paid for." },
-      { q: "Is there a refund?", a: "Yes — Plus, Pro, and lifetime are all covered. If a plan isn't right for you, contact us within 7 days of payment and we'll refund it in full. Creem has no self-serve refund button, so just reach out — use 'Contact merchant' on your Creem order page, or email billing@dockdocs.app — and we'll handle it." },
+      { q: "Is there a refund?", a: "Yes — Pro and lifetime are both covered. If a plan isn't right for you, contact us within 7 days of payment and we'll refund it in full. Creem has no self-serve refund button, so just reach out — use 'Contact merchant' on your Creem order page, or email billing@dockdocs.app — and we'll handle it." },
       { q: "Do I need to pay to use DockDocs?", a: "No. All ~50 core PDF tools are free forever, with no account required. You only pay if you want AI features, larger files, or higher volume." },
       { q: "What happens to my files?", a: "Most tools process entirely in your browser — your files never leave your device. Cloud conversions are processed and the temporary copy is deleted automatically. We never use your documents to train our own models, and only the text needed to answer is sent to the AI provider." },
       { q: "Can I switch plans later?", a: "Anytime. Upgrade, downgrade, or move between monthly and yearly whenever you like." },
@@ -77,22 +67,22 @@ const copy = {
     ctaBtn: "Start with a free tool",
     scenariosTitle: "What can DockDocs solve for you?",
     scenarios: [
-      { emoji: "📊", title: "Compare quotes & pick the best", before: "Open 3 files, copy numbers into a sheet — ~1 hour", after: "Upload → side-by-side table + a pick backed by the numbers — 1 min", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📊", title: "Compare quotes & pick the best", before: "Open 3 files, copy numbers into a sheet — ~1 hour", after: "Upload → side-by-side table + a pick backed by the numbers — 1 min", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "📄", title: "Catch the traps in a contract", before: "Pay a lawyer $300, or sign blind and get burned", after: "AI flags risky & missing clauses in minutes", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "🧾", title: "Process a batch of invoices", before: "Key them in one by one — hours, or hire help", after: "Drop the whole batch → auto-extract & summarize", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
-      { emoji: "📕", title: "Understand a long report fast", before: "Read 80 pages to find a few answers — hours", after: "Ask it anything → sourced answers (where located) in 30s", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+      { emoji: "📕", title: "Understand a long report fast", before: "Read 80 pages to find a few answers — hours", after: "Ask it anything → sourced answers (where located) in 30s", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Compare plans",
-    compareCols: ["Free", "Plus", "Pro"],
+    compareCols: ["Free", "Pro"],
     compareRows: [
-      { f: "~50 PDF tools — convert, compress, merge, encrypt, OCR", v: ["✓", "✓", "✓"] },
-      { f: "Chat with PDF · AI summaries", v: ["—", "✓", "✓"] },
-      { f: "AI translate PDF (keeps layout)", v: ["—", "Soon", "Soon"] },
-      { f: "Compare multiple documents", v: ["—", "✓", "✓"] },
-      { f: "100 MB files · batch · no ads", v: ["—", "✓", "✓"] },
-      { f: "Automate workflows · API · auto-classify", v: ["—", "—", "✓"] },
-      { f: "Contract review — risk & missing clauses", v: ["—", "—", "✓"] },
-      { f: "Team workspace · priority support", v: ["—", "—", "✓"] },
+      { f: "~50 PDF tools — convert, compress, merge, encrypt, OCR", v: ["✓", "✓"] },
+      { f: "Chat with PDF · AI summaries", v: ["—", "✓"] },
+      { f: "AI translate PDF (keeps layout)", v: ["—", "Soon"] },
+      { f: "Compare multiple documents", v: ["—", "✓"] },
+      { f: "100 MB files · batch · no ads", v: ["—", "✓"] },
+      { f: "Automate workflows · API · auto-classify", v: ["—", "✓"] },
+      { f: "Contract review — risk & missing clauses", v: ["—", "✓"] },
+      { f: "Team workspace · priority support", v: ["—", "✓"] },
     ],
   },
   zh: {
@@ -107,7 +97,7 @@ const copy = {
     perMo: "/月",
     mostPopular: "最受欢迎",
     billedYearly: (v: string) => `按年计费 ${v}`,
-    trust: ["7 天无理由退款", "随时取消，绝不刁难", "绝不用文件训练我们自己的模型"],
+    trust: ["7 天无理由退款", "随时取消，绝不刁难", "绝不用文件训练我们自己的模型", "7 天免费试用——无需信用卡"],
     plans: [
       {
         name: "免费",
@@ -120,33 +110,23 @@ const copy = {
         featured: false,
       },
       {
-        name: "Plus",
-        monthlyPrice: "$5",
-        yearlyPrice: "$3",
-        yearlyTotal: "$36/年",
-        tagline: "AI 替你读懂、横比文档——几秒搞定。",
+        name: "Pro",
+        monthlyPrice: "$9",
+        yearlyPrice: "$6",
+        yearlyTotal: "$72/年",
+        tagline: "AI 替你读、比、审文档——几秒搞定。",
         valueLine: "每月不到一杯咖啡的钱。",
-        highlights: ["包含「免费」全部功能", "和任意 PDF 对话——能定位到原文时带出处", "AI 摘要与要点，几秒搞定", "多份文档并排对比", "100MB 大文件、批量与优先、无广告"],
-        cta: "升级到 Plus",
+        highlights: ["包含「免费」全部功能", "和任意 PDF 对话——能定位到原文时带出处", "AI 摘要与要点，几秒搞定", "多份文档并排对比", "100MB 大文件、批量与优先、无广告", "批量文档工作流自动化", "合同审查——标出风险与缺失条款", "API 接入与自动分类", "团队工作区与优先支持"],
+        cta: "免费试用 7 天",
         href: "" as RouteSlug,
         featured: true,
-      },
-      {
-        name: "Pro",
-        monthlyPrice: "$20",
-        yearlyPrice: "$12",
-        yearlyTotal: "$144/年",
-        tagline: "自动跑文档流程 + 专业领域审查。",
-        highlights: ["包含「Plus」全部功能", "批量文档工作流自动化", "合同审查——标出风险与缺失条款", "API 接入与自动分类", "团队工作区与优先支持"],
-        cta: "升级到 Pro",
-        href: "" as RouteSlug,
-        featured: false,
       },
     ],
     faqTitle: "购买前的疑问",
     faq: [
+      { q: "有免费试用期吗？", a: "有——7 天完整 Pro 权限，无需信用卡。从定价页或账户页开启试用。每个账户仅可试用一次，试用结束后自动回到免费版，除非你订阅。" },
       { q: "可以随时取消吗？", a: "可以。你自己几次点击即可管理或取消订阅——无需发邮件，没有挽留套路。在你已付费的周期结束前，仍可正常使用。" },
-      { q: "支持退款吗？", a: "支持——Plus、Pro 和终身均适用。如果某个套餐不适合你，在付款后 7 天内联系我们，我们为你全额退款。Creem 没有自助退款按钮，你联系一下即可——通过 Creem 订单页的「联系商家」，或邮件 billing@dockdocs.app——我们来处理。" },
+      { q: "支持退款吗？", a: "支持——Pro 和终身均适用。如果某个套餐不适合你，在付款后 7 天内联系我们，我们为你全额退款。Creem 没有自助退款按钮，你联系一下即可——通过 Creem 订单页的「联系商家」，或邮件 billing@dockdocs.app——我们来处理。" },
       { q: "使用 DockDocs 必须付费吗？", a: "不必。全部 ~50 核心 PDF 工具永久免费，且无需注册。只有在你需要 AI 功能、更大文件或更高用量时才需付费。" },
       { q: "我的文件会怎样？", a: "大多数工具完全在你的浏览器中处理——文件绝不离开你的设备。云端转换处理后会自动删除临时副本。我们绝不会用你的文档训练我们自己的模型。" },
       { q: "之后可以更换套餐吗？", a: "随时可以。升级、降级，或在按月与按年之间切换，随你心意。" },
@@ -156,22 +136,22 @@ const copy = {
     ctaBtn: "从一个免费工具开始",
     scenariosTitle: "DockDocs 能替你解决什么？",
     scenarios: [
-      { emoji: "📊", title: "比报价，选最优", before: "开 3 个文件抄数字进表格 —— 约 1 小时", after: "上传 → 并排对比表 + 基于并排数据的推荐 —— 1 分钟", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📊", title: "比报价，选最优", before: "开 3 个文件抄数字进表格 —— 约 1 小时", after: "上传 → 并排对比表 + 基于并排数据的推荐 —— 1 分钟", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "📄", title: "看穿合同里的坑", before: "花 $300 找律师，或盲签踩坑", after: "AI 几分钟标出风险与缺失条款", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "🧾", title: "批量处理发票", before: "一张张录入几小时，或雇人", after: "整批丢进去 → 自动抽取汇总", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
-      { emoji: "📕", title: "快速读懂长报告", before: "读 80 页找几个答案 —— 几小时", after: "问它任何问题 → 30 秒得到答案，能定位时带出处", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+      { emoji: "📕", title: "快速读懂长报告", before: "读 80 页找几个答案 —— 几小时", after: "问它任何问题 → 30 秒得到答案，能定位时带出处", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "套餐对照",
-    compareCols: ["免费", "Plus", "Pro"],
+    compareCols: ["免费", "Pro"],
     compareRows: [
-      { f: "~50 PDF 工具(转换/压缩/合并/加密/OCR)", v: ["✓", "✓", "✓"] },
-      { f: "和 PDF 对话 · AI 摘要", v: ["—", "✓", "✓"] },
-      { f: "AI 翻译 PDF(保留版式)", v: ["—", "即将", "即将"] },
-      { f: "多文档对比", v: ["—", "✓", "✓"] },
-      { f: "100MB 大文件 · 批量 · 无广告", v: ["—", "✓", "✓"] },
-      { f: "工作流自动化 · API · 自动分类", v: ["—", "—", "✓"] },
-      { f: "合同审查(风险与缺失条款)", v: ["—", "—", "✓"] },
-      { f: "团队工作区 · 优先支持", v: ["—", "—", "✓"] },
+      { f: "~50 PDF 工具(转换/压缩/合并/加密/OCR)", v: ["✓", "✓"] },
+      { f: "和 PDF 对话 · AI 摘要", v: ["—", "✓"] },
+      { f: "AI 翻译 PDF(保留版式)", v: ["—", "即将"] },
+      { f: "多文档对比", v: ["—", "✓"] },
+      { f: "100MB 大文件 · 批量 · 无广告", v: ["—", "✓"] },
+      { f: "工作流自动化 · API · 自动分类", v: ["—", "✓"] },
+      { f: "合同审查(风险与缺失条款)", v: ["—", "✓"] },
+      { f: "团队工作区 · 优先支持", v: ["—", "✓"] },
     ],
   },
   es: {
@@ -186,7 +166,7 @@ const copy = {
     perMo: "/mes",
     mostPopular: "Más popular",
     billedYearly: (v: string) => `${v} facturado anualmente`,
-    trust: ["Garantía de devolución de 7 días", "Cancela en cualquier momento, sin preguntas", "Tus archivos nunca se usan para entrenar nuestros propios modelos"],
+    trust: ["Garantía de devolución de 7 días", "Cancela en cualquier momento, sin preguntas", "Tus archivos nunca se usan para entrenar nuestros propios modelos", "7 días de prueba gratis — sin tarjeta de crédito"],
     plans: [
       {
         name: "Gratis",
@@ -199,33 +179,23 @@ const copy = {
         featured: false,
       },
       {
-        name: "Plus",
-        monthlyPrice: "$5",
-        yearlyPrice: "$3",
-        yearlyTotal: "$36/año",
-        tagline: "La IA lee y compara tus documentos — en segundos.",
+        name: "Pro",
+        monthlyPrice: "$9",
+        yearlyPrice: "$6",
+        yearlyTotal: "$72/año",
+        tagline: "La IA lee, compara y revisa tus documentos — en segundos.",
         valueLine: "Menos que un café al mes.",
-        highlights: ["Todo lo de Gratis", "Chatea con cualquier PDF — las respuestas muestran su fuente cuando puede localizarse", "Resúmenes e ideas clave de IA en segundos", "Compara múltiples documentos lado a lado", "Archivos de 100 MB, lotes y prioridad, sin anuncios"],
-        cta: "Actualizar a Plus",
+        highlights: ["Todo lo de Gratis", "Chatea con cualquier PDF — las respuestas muestran su fuente cuando puede localizarse", "Resúmenes e ideas clave de IA en segundos", "Compara múltiples documentos lado a lado", "Archivos de 100 MB, lotes y prioridad, sin anuncios", "Automatiza flujos de trabajo de documentos en lote", "Revisión de contratos — detecta cláusulas arriesgadas y faltantes", "Acceso a API y clasificación automática", "Espacio de trabajo en equipo y soporte prioritario"],
+        cta: "Prueba gratis 7 días",
         href: "" as RouteSlug,
         featured: true,
-      },
-      {
-        name: "Pro",
-        monthlyPrice: "$20",
-        yearlyPrice: "$12",
-        yearlyTotal: "$144/año",
-        tagline: "Automatiza flujos de trabajo y revisión profesional.",
-        highlights: ["Todo lo de Plus", "Automatiza flujos de trabajo de documentos en lote", "Revisión de contratos — detecta cláusulas arriesgadas y faltantes", "Acceso a API y clasificación automática", "Espacio de trabajo en equipo y soporte prioritario"],
-        cta: "Actualizar a Pro",
-        href: "" as RouteSlug,
-        featured: false,
       },
     ],
     faqTitle: "Preguntas antes de comprar",
     faq: [
+      { q: "¿Hay una prueba gratuita?", a: "Sí — 7 días de acceso completo a Pro, sin tarjeta de crédito. Inicia la prueba desde la página de precios o tu cuenta. Una prueba por cuenta. Después vuelves al plan Gratis a menos que te suscribas." },
       { q: "¿Puedo cancelar en cualquier momento?", a: "Sí. Gestiona o cancela tu suscripción tú mismo en un par de clics — sin correos, sin trucos de retención. Mantienes el acceso hasta el final del período que pagaste." },
-      { q: "¿Hay reembolsos?", a: "Sí: Plus, Pro y de por vida están todos cubiertos. Si un plan no es lo que buscas, contáctanos dentro de los 7 días del pago y te lo reembolsamos por completo. Creem no tiene un botón de reembolso automático, así que solo escríbenos — con «Contactar al comerciante» en tu página de pedido de Creem, o por correo a billing@dockdocs.app — y lo gestionamos." },
+      { q: "¿Hay reembolsos?", a: "Sí: Pro y de por vida están cubiertos. Si un plan no es lo que buscas, contáctanos dentro de los 7 días del pago y te lo reembolsamos por completo. Creem no tiene un botón de reembolso automático, así que solo escríbenos — con «Contactar al comerciante» en tu página de pedido de Creem, o por correo a billing@dockdocs.app — y lo gestionamos." },
       { q: "¿Necesito pagar para usar DockDocs?", a: "No. Las ~50 herramientas PDF básicas son gratuitas para siempre, sin necesidad de cuenta. Solo pagas si quieres funciones de IA, archivos más grandes o mayor volumen." },
       { q: "¿Qué pasa con mis archivos?", a: "La mayoría de herramientas procesan completamente en tu navegador — tus archivos nunca salen de tu dispositivo. Las conversiones en la nube se procesan y la copia temporal se elimina automáticamente. Nunca usamos tus documentos para entrenar nuestros propios modelos." },
       { q: "¿Puedo cambiar de plan después?", a: "En cualquier momento. Actualiza, baja de plan o cambia entre mensual y anual cuando quieras." },
@@ -235,22 +205,22 @@ const copy = {
     ctaBtn: "Empieza con una herramienta gratuita",
     scenariosTitle: "¿Qué puede resolver DockDocs para ti?",
     scenarios: [
-      { emoji: "📊", title: "Compara presupuestos y elige el mejor", before: "Abrir 3 archivos, copiar números en una hoja — ~1 hora", after: "Subir → tabla comparativa + recomendación basada en los datos — 1 min", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📊", title: "Compara presupuestos y elige el mejor", before: "Abrir 3 archivos, copiar números en una hoja — ~1 hora", after: "Subir → tabla comparativa + recomendación basada en los datos — 1 min", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "📄", title: "Detecta las trampas en un contrato", before: "Pagar $300 a un abogado, o firmar a ciegas y salir perdiendo", after: "La IA detecta cláusulas arriesgadas y faltantes en minutos", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "🧾", title: "Procesa un lote de facturas", before: "Introducirlas una por una — horas, o contratar ayuda", after: "Sube el lote completo → extracción y resumen automático", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
-      { emoji: "📕", title: "Entiende un informe largo rápidamente", before: "Leer 80 páginas para encontrar unas respuestas — horas", after: "Pregúntale lo que sea → respuestas con su fuente cuando se localiza, en 30s", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+      { emoji: "📕", title: "Entiende un informe largo rápidamente", before: "Leer 80 páginas para encontrar unas respuestas — horas", after: "Pregúntale lo que sea → respuestas con su fuente cuando se localiza, en 30s", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Comparar planes",
-    compareCols: ["Gratis", "Plus", "Pro"],
+    compareCols: ["Gratis", "Pro"],
     compareRows: [
-      { f: "~50 herramientas PDF — convertir, comprimir, unir, encriptar, OCR", v: ["✓", "✓", "✓"] },
-      { f: "Chat con PDF · Resúmenes de IA", v: ["—", "✓", "✓"] },
-      { f: "Traducir PDF con IA (mantiene el formato)", v: ["—", "Pronto", "Pronto"] },
-      { f: "Comparar múltiples documentos", v: ["—", "✓", "✓"] },
-      { f: "Archivos de 100 MB · lotes · sin anuncios", v: ["—", "✓", "✓"] },
-      { f: "Automatizar flujos · API · auto-clasificar", v: ["—", "—", "✓"] },
-      { f: "Revisión de contratos — riesgos y cláusulas faltantes", v: ["—", "—", "✓"] },
-      { f: "Espacio de equipo · soporte prioritario", v: ["—", "—", "✓"] },
+      { f: "~50 herramientas PDF — convertir, comprimir, unir, encriptar, OCR", v: ["✓", "✓"] },
+      { f: "Chat con PDF · Resúmenes de IA", v: ["—", "✓"] },
+      { f: "Traducir PDF con IA (mantiene el formato)", v: ["—", "Pronto"] },
+      { f: "Comparar múltiples documentos", v: ["—", "✓"] },
+      { f: "Archivos de 100 MB · lotes · sin anuncios", v: ["—", "✓"] },
+      { f: "Automatizar flujos · API · auto-clasificar", v: ["—", "✓"] },
+      { f: "Revisión de contratos — riesgos y cláusulas faltantes", v: ["—", "✓"] },
+      { f: "Espacio de equipo · soporte prioritario", v: ["—", "✓"] },
     ],
   },
   pt: {
@@ -265,7 +235,7 @@ const copy = {
     perMo: "/mês",
     mostPopular: "Mais popular",
     billedYearly: (v: string) => `${v} cobrado anualmente`,
-    trust: ["Garantia de reembolso de 7 dias", "Cancele a qualquer momento, sem perguntas", "Seus arquivos nunca são usados para treinar nossos próprios modelos"],
+    trust: ["Garantia de reembolso de 7 dias", "Cancele a qualquer momento, sem perguntas", "Seus arquivos nunca são usados para treinar nossos próprios modelos", "7 dias de teste grátis — sem cartão de crédito"],
     plans: [
       {
         name: "Grátis",
@@ -278,33 +248,23 @@ const copy = {
         featured: false,
       },
       {
-        name: "Plus",
-        monthlyPrice: "$5",
-        yearlyPrice: "$3",
-        yearlyTotal: "$36/ano",
-        tagline: "A IA lê e compara seus documentos — em segundos.",
+        name: "Pro",
+        monthlyPrice: "$9",
+        yearlyPrice: "$6",
+        yearlyTotal: "$72/ano",
+        tagline: "A IA lê, compara e revisa seus documentos — em segundos.",
         valueLine: "Menos que um café por mês.",
-        highlights: ["Tudo do Grátis", "Converse com qualquer PDF — respostas mostram a fonte quando pode ser localizada", "Resumos e pontos-chave com IA em segundos", "Compare vários documentos lado a lado", "Arquivos de 100 MB, lote e prioridade, sem anúncios"],
-        cta: "Fazer upgrade para Plus",
+        highlights: ["Tudo do Grátis", "Converse com qualquer PDF — respostas mostram a fonte quando pode ser localizada", "Resumos e pontos-chave com IA em segundos", "Compare vários documentos lado a lado", "Arquivos de 100 MB, lote e prioridade, sem anúncios", "Automatize fluxos de trabalho de documentos em lote", "Revisão de contratos — detecta cláusulas arriscadas e ausentes", "Acesso à API e classificação automática", "Espaço de trabalho em equipe e suporte prioritário"],
+        cta: "Experimente grátis 7 dias",
         href: "" as RouteSlug,
         featured: true,
-      },
-      {
-        name: "Pro",
-        monthlyPrice: "$20",
-        yearlyPrice: "$12",
-        yearlyTotal: "$144/ano",
-        tagline: "Automatize fluxos de documentos e revisão profissional.",
-        highlights: ["Tudo do Plus", "Automatize fluxos de trabalho de documentos em lote", "Revisão de contratos — detecta cláusulas arriscadas e ausentes", "Acesso à API e classificação automática", "Espaço de trabalho em equipe e suporte prioritário"],
-        cta: "Fazer upgrade para Pro",
-        href: "" as RouteSlug,
-        featured: false,
       },
     ],
     faqTitle: "Perguntas antes de comprar",
     faq: [
+      { q: "Há um período de teste?", a: "Sim — 7 dias de acesso completo ao Pro, sem cartão de crédito. Inicie o teste na página de preços ou na sua conta. Um teste por conta. Depois você volta ao plano Grátis a menos que assine." },
       { q: "Posso cancelar a qualquer momento?", a: "Sim. Gerencie ou cancele sua assinatura você mesmo em alguns cliques — sem e-mails, sem truques de retenção. Você mantém o acesso até o final do período pago." },
-      { q: "Há reembolso?", a: "Sim — Plus, Pro e vitalício estão todos cobertos. Se um plano não for o certo para você, entre em contato dentro de 7 dias do pagamento e devolvemos o valor integral. A Creem não tem botão de reembolso automático, então é só falar conosco — pelo «Contatar comerciante» na sua página de pedido da Creem, ou por e-mail para billing@dockdocs.app — que cuidamos disso." },
+      { q: "Há reembolso?", a: "Sim — Pro e vitalício estão cobertos. Se um plano não for o certo para você, entre em contato dentro de 7 dias do pagamento e devolvemos o valor integral. A Creem não tem botão de reembolso automático, então é só falar conosco — pelo «Contatar comerciante» na sua página de pedido da Creem, ou por e-mail para billing@dockdocs.app — que cuidamos disso." },
       { q: "Preciso pagar para usar o DockDocs?", a: "Não. Todas as ~50 ferramentas PDF básicas são gratuitas para sempre, sem necessidade de conta. Você só paga se quiser recursos de IA, arquivos maiores ou maior volume." },
       { q: "O que acontece com meus arquivos?", a: "A maioria das ferramentas processa inteiramente no seu navegador — seus arquivos nunca saem do seu dispositivo. Conversões em nuvem são processadas e a cópia temporária é excluída automaticamente. Nunca usamos seus documentos para treinar nossos próprios modelos." },
       { q: "Posso trocar de plano depois?", a: "A qualquer momento. Faça upgrade, downgrade ou mude entre mensal e anual quando quiser." },
@@ -314,22 +274,22 @@ const copy = {
     ctaBtn: "Comece com uma ferramenta gratuita",
     scenariosTitle: "O que o DockDocs pode resolver para você?",
     scenarios: [
-      { emoji: "📊", title: "Compare orçamentos e escolha o melhor", before: "Abrir 3 arquivos, copiar números numa planilha — ~1 hora", after: "Carregar → tabela comparativa + recomendação baseada nos dados — 1 min", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📊", title: "Compare orçamentos e escolha o melhor", before: "Abrir 3 arquivos, copiar números numa planilha — ~1 hora", after: "Carregar → tabela comparativa + recomendação baseada nos dados — 1 min", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "📄", title: "Detecte as armadilhas em um contrato", before: "Pagar $300 a um advogado, ou assinar às cegas e se arrepender", after: "A IA detecta cláusulas arriscadas e ausentes em minutos", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "🧾", title: "Processe um lote de faturas", before: "Inserir uma a uma — horas, ou contratar ajuda", after: "Envie o lote inteiro → extração e resumo automáticos", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
-      { emoji: "📕", title: "Entenda um relatório longo rapidamente", before: "Ler 80 páginas para encontrar algumas respostas — horas", after: "Pergunte o que quiser → respostas com a fonte quando localizável, em 30s", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+      { emoji: "📕", title: "Entenda um relatório longo rapidamente", before: "Ler 80 páginas para encontrar algumas respostas — horas", after: "Pergunte o que quiser → respostas com a fonte quando localizável, em 30s", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Comparar planos",
-    compareCols: ["Grátis", "Plus", "Pro"],
+    compareCols: ["Grátis", "Pro"],
     compareRows: [
-      { f: "~50 ferramentas PDF — converter, comprimir, mesclar, criptografar, OCR", v: ["✓", "✓", "✓"] },
-      { f: "Chat com PDF · Resumos de IA", v: ["—", "✓", "✓"] },
-      { f: "Traduzir PDF com IA (mantém o formato)", v: ["—", "Em breve", "Em breve"] },
-      { f: "Comparar vários documentos", v: ["—", "✓", "✓"] },
-      { f: "Arquivos de 100 MB · lote · sem anúncios", v: ["—", "✓", "✓"] },
-      { f: "Automatizar fluxos · API · auto-classificar", v: ["—", "—", "✓"] },
-      { f: "Revisão de contratos — riscos e cláusulas ausentes", v: ["—", "—", "✓"] },
-      { f: "Espaço de equipe · suporte prioritário", v: ["—", "—", "✓"] },
+      { f: "~50 ferramentas PDF — converter, comprimir, mesclar, criptografar, OCR", v: ["✓", "✓"] },
+      { f: "Chat com PDF · Resumos de IA", v: ["—", "✓"] },
+      { f: "Traduzir PDF com IA (mantém o formato)", v: ["—", "Em breve"] },
+      { f: "Comparar vários documentos", v: ["—", "✓"] },
+      { f: "Arquivos de 100 MB · lote · sem anúncios", v: ["—", "✓"] },
+      { f: "Automatizar fluxos · API · auto-classificar", v: ["—", "✓"] },
+      { f: "Revisão de contratos — riscos e cláusulas ausentes", v: ["—", "✓"] },
+      { f: "Espaço de equipe · suporte prioritário", v: ["—", "✓"] },
     ],
   },
   fr: {
@@ -344,7 +304,7 @@ const copy = {
     perMo: "/mois",
     mostPopular: "Le plus populaire",
     billedYearly: (v: string) => `${v} facturé annuellement`,
-    trust: ["Garantie de remboursement 7 jours", "Annulez à tout moment, sans question", "Vos fichiers ne sont jamais utilisés pour entraîner nos propres modèles"],
+    trust: ["Garantie de remboursement 7 jours", "Annulez à tout moment, sans question", "Vos fichiers ne sont jamais utilisés pour entraîner nos propres modèles", "7 jours d'essai gratuit — sans carte bancaire"],
     plans: [
       {
         name: "Gratuit",
@@ -357,33 +317,23 @@ const copy = {
         featured: false,
       },
       {
-        name: "Plus",
-        monthlyPrice: "$5",
-        yearlyPrice: "$3",
-        yearlyTotal: "$36/an",
-        tagline: "L'IA lit et compare vos documents — en quelques secondes.",
+        name: "Pro",
+        monthlyPrice: "$9",
+        yearlyPrice: "$6",
+        yearlyTotal: "$72/an",
+        tagline: "L'IA lit, compare et révise vos documents — en quelques secondes.",
         valueLine: "Moins qu'un café par mois.",
-        highlights: ["Tout du Gratuit", "Discutez avec n'importe quel PDF — les réponses montrent leur source lorsqu'elle peut être localisée", "Résumés et points clés IA en quelques secondes", "Comparez plusieurs documents côte à côte", "Fichiers 100 Mo, lot et priorité, sans publicités"],
-        cta: "Passer à Plus",
+        highlights: ["Tout du Gratuit", "Discutez avec n'importe quel PDF — les réponses montrent leur source lorsqu'elle peut être localisée", "Résumés et points clés IA en quelques secondes", "Comparez plusieurs documents côte à côte", "Fichiers 100 Mo, lot et priorité, sans publicités", "Automatisez les flux de traitement de documents par lots", "Révision de contrats — détecte les clauses à risque et manquantes", "Accès API et classification automatique", "Espace de travail d'équipe et support prioritaire"],
+        cta: "Essai gratuit 7 jours",
         href: "" as RouteSlug,
         featured: true,
-      },
-      {
-        name: "Pro",
-        monthlyPrice: "$20",
-        yearlyPrice: "$12",
-        yearlyTotal: "$144/an",
-        tagline: "Automatisez les flux de documents et la révision professionnelle.",
-        highlights: ["Tout du Plus", "Automatisez les flux de traitement de documents par lots", "Révision de contrats — détecte les clauses à risque et manquantes", "Accès API et classification automatique", "Espace de travail d'équipe et support prioritaire"],
-        cta: "Passer à Pro",
-        href: "" as RouteSlug,
-        featured: false,
       },
     ],
     faqTitle: "Questions avant d'acheter",
     faq: [
+      { q: "Y a-t-il un essai gratuit ?", a: "Oui — 7 jours d'accès complet à Pro, sans carte bancaire. Lancez l'essai depuis la page des tarifs ou votre compte. Un essai par compte. Après l'essai, vous revenez au forfait Gratuit, sauf si vous vous abonnez." },
       { q: "Puis-je annuler à tout moment ?", a: "Oui. Gérez ou annulez votre abonnement vous-même en quelques clics — sans e-mail, sans artifices de rétention. Vous conservez l'accès jusqu'à la fin de la période payée." },
-      { q: "Y a-t-il un remboursement ?", a: "Oui — Plus, Pro et à vie sont tous couverts. Si une formule ne vous convient pas, contactez-nous dans les 7 jours suivant le paiement et nous vous remboursons intégralement. Creem n'a pas de bouton de remboursement en libre-service, écrivez-nous simplement — via « Contacter le marchand » sur votre page de commande Creem, ou par e-mail à billing@dockdocs.app — et nous nous en occupons." },
+      { q: "Y a-t-il un remboursement ?", a: "Oui — Pro et à vie sont couverts. Si une formule ne vous convient pas, contactez-nous dans les 7 jours suivant le paiement et nous vous remboursons intégralement. Creem n'a pas de bouton de remboursement en libre-service, écrivez-nous simplement — via « Contacter le marchand » sur votre page de commande Creem, ou par e-mail à billing@dockdocs.app — et nous nous en occupons." },
       { q: "Dois-je payer pour utiliser DockDocs ?", a: "Non. Tous les ~50 outils PDF de base sont gratuits pour toujours, sans compte nécessaire. Vous ne payez que si vous souhaitez des fonctionnalités IA, des fichiers plus volumineux ou un volume plus élevé." },
       { q: "Que se passe-t-il avec mes fichiers ?", a: "La plupart des outils traitent entièrement dans votre navigateur — vos fichiers ne quittent jamais votre appareil. Les conversions cloud sont traitées et la copie temporaire est supprimée automatiquement. Nous n'utilisons jamais vos documents pour entraîner nos propres modèles." },
       { q: "Puis-je changer de forfait par la suite ?", a: "À tout moment. Passez à un forfait supérieur, inférieur ou changez entre mensuel et annuel quand vous le souhaitez." },
@@ -393,22 +343,22 @@ const copy = {
     ctaBtn: "Commencer avec un outil gratuit",
     scenariosTitle: "Que peut résoudre DockDocs pour vous ?",
     scenarios: [
-      { emoji: "📊", title: "Comparez des devis et choisissez le meilleur", before: "Ouvrir 3 fichiers, copier les chiffres dans un tableau — ~1h", after: "Charger → tableau comparatif + recommandation fondée sur les chiffres — 1 min", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📊", title: "Comparez des devis et choisissez le meilleur", before: "Ouvrir 3 fichiers, copier les chiffres dans un tableau — ~1h", after: "Charger → tableau comparatif + recommandation fondée sur les chiffres — 1 min", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "📄", title: "Repérez les pièges d'un contrat", before: "Payer 300 $ un juriste, ou signer en aveugle et le regretter", after: "L'IA détecte les clauses à risque et manquantes en quelques minutes", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "🧾", title: "Traitez un lot de factures", before: "Les saisir une par une — des heures, ou embaucher de l'aide", after: "Déposez le lot entier → extraction et résumé automatiques", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
-      { emoji: "📕", title: "Comprenez un long rapport rapidement", before: "Lire 80 pages pour quelques réponses — des heures", after: "Posez vos questions → réponses avec leur source quand localisable, en 30s", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+      { emoji: "📕", title: "Comprenez un long rapport rapidement", before: "Lire 80 pages pour quelques réponses — des heures", after: "Posez vos questions → réponses avec leur source quand localisable, en 30s", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Comparer les forfaits",
-    compareCols: ["Gratuit", "Plus", "Pro"],
+    compareCols: ["Gratuit", "Pro"],
     compareRows: [
-      { f: "~50 outils PDF — convertir, compresser, fusionner, chiffrer, OCR", v: ["✓", "✓", "✓"] },
-      { f: "Chat avec PDF · Résumés IA", v: ["—", "✓", "✓"] },
-      { f: "Traduire PDF avec IA (conserve le format)", v: ["—", "Bientôt", "Bientôt"] },
-      { f: "Comparer plusieurs documents", v: ["—", "✓", "✓"] },
-      { f: "Fichiers 100 Mo · lot · sans publicités", v: ["—", "✓", "✓"] },
-      { f: "Automatiser les flux · API · auto-classer", v: ["—", "—", "✓"] },
-      { f: "Révision de contrats — risques et clauses manquantes", v: ["—", "—", "✓"] },
-      { f: "Espace d'équipe · support prioritaire", v: ["—", "—", "✓"] },
+      { f: "~50 outils PDF — convertir, compresser, fusionner, chiffrer, OCR", v: ["✓", "✓"] },
+      { f: "Chat avec PDF · Résumés IA", v: ["—", "✓"] },
+      { f: "Traduire PDF avec IA (conserve le format)", v: ["—", "Bientôt"] },
+      { f: "Comparer plusieurs documents", v: ["—", "✓"] },
+      { f: "Fichiers 100 Mo · lot · sans publicités", v: ["—", "✓"] },
+      { f: "Automatiser les flux · API · auto-classer", v: ["—", "✓"] },
+      { f: "Révision de contrats — risques et clauses manquantes", v: ["—", "✓"] },
+      { f: "Espace d'équipe · support prioritaire", v: ["—", "✓"] },
     ],
   },
   ja: {
@@ -423,7 +373,7 @@ const copy = {
     perMo: "/月",
     mostPopular: "人気No.1",
     billedYearly: (v: string) => `年額 ${v} で請求`,
-    trust: ["7日間返金保証", "いつでも解約可能、理由不要", "ファイルは自社モデルの学習に使用しません"],
+    trust: ["7日間返金保証", "いつでも解約可能、理由不要", "ファイルは自社モデルの学習に使用しません", "7日間無料トライアル — クレジットカード不要"],
     plans: [
       {
         name: "Free",
@@ -436,33 +386,23 @@ const copy = {
         featured: false,
       },
       {
-        name: "Plus",
-        monthlyPrice: "$5",
-        yearlyPrice: "$3",
-        yearlyTotal: "$36/年",
-        tagline: "AIがあなたのドキュメントを読んで比較 — 数秒で。",
+        name: "Pro",
+        monthlyPrice: "$9",
+        yearlyPrice: "$6",
+        yearlyTotal: "$72/年",
+        tagline: "AIがあなたのドキュメントを読み、比較し、審査します — 数秒で。",
         valueLine: "月にコーヒー1杯以下。",
-        highlights: ["Freeのすべて", "あらゆるPDFと対話 — 特定できる場合は回答に出典を表示", "AIによる要約と要点を数秒で", "複数のドキュメントを並べて比較", "100MBのファイル、一括処理と優先、広告なし"],
-        cta: "Plusにアップグレード",
+        highlights: ["Freeのすべて", "あらゆるPDFと対話 — 特定できる場合は回答に出典を表示", "AIによる要約と要点を数秒で", "複数のドキュメントを並べて比較", "100MBのファイル、一括処理と優先、広告なし", "一括ドキュメントワークフローを自動化", "契約書レビュー — リスクや欠落条項を指摘", "APIアクセスと自動分類", "チームワークスペースと優先サポート"],
+        cta: "7日間無料で試す",
         href: "" as RouteSlug,
         featured: true,
-      },
-      {
-        name: "Pro",
-        monthlyPrice: "$20",
-        yearlyPrice: "$12",
-        yearlyTotal: "$144/年",
-        tagline: "ドキュメントワークフローの自動化とプロ向けレビュー。",
-        highlights: ["Plusのすべて", "一括ドキュメントワークフローを自動化", "契約書レビュー — リスクや欠落条項を指摘", "APIアクセスと自動分類", "チームワークスペースと優先サポート"],
-        cta: "Proにアップグレード",
-        href: "" as RouteSlug,
-        featured: false,
       },
     ],
     faqTitle: "購入前のよくある質問",
     faq: [
+      { q: "無料トライアルはありますか？", a: "はい — クレジットカード不要で7日間のPro全機能をご利用いただけます。料金ページまたはアカウントページからトライアルを開始できます。アカウントごとに1回のみです。トライアル終了後、サブスクリプションを開始しない場合は無料プランに戻ります。" },
       { q: "いつでも解約できますか？", a: "はい。数クリックでご自身でサブスクリプションを管理・解約できます — メール不要、引き止めの仕掛けもありません。お支払い済みの期間の終了までは引き続きご利用いただけます。" },
-      { q: "返金はありますか？", a: "はい。PlusまたはProがご希望に合わない場合は、お支払いから7日以内に返金をリクエストいただければ返金いたします。" },
+      { q: "返金はありますか？", a: "はい。Proがご希望に合わない場合は、お支払いから7日以内に返金をリクエストいただければ返金いたします。" },
       { q: "DockDocsの利用に支払いは必要ですか？", a: "いいえ。約50のコアPDFツールはすべて永久無料で、アカウントも不要です。AI機能、より大きなファイル、より多い処理量が必要な場合のみお支払いいただきます。" },
       { q: "私のファイルはどうなりますか？", a: "ほとんどのツールは完全にブラウザ内で処理されます — ファイルがお使いのデバイスから出ることはありません。クラウド変換は処理後、一時コピーが自動的に削除されます。お客様のドキュメントを自社モデルの学習に使用することは一切なく、回答に必要なテキストのみがAIプロバイダーに送信されます。" },
       { q: "後でプランを変更できますか？", a: "いつでも可能です。アップグレード、ダウングレード、月額と年額の切り替えをいつでもお好きに行えます。" },
@@ -472,22 +412,22 @@ const copy = {
     ctaBtn: "無料ツールから始める",
     scenariosTitle: "DockDocsはあなたの何を解決できる？",
     scenarios: [
-      { emoji: "📊", title: "見積もりを比較して最適なものを選ぶ", before: "3つのファイルを開いて数字をシートにコピー — 約1時間", after: "アップロード → 並列比較表 + 数値に基づくおすすめ — 1分", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📊", title: "見積もりを比較して最適なものを選ぶ", before: "3つのファイルを開いて数字をシートにコピー — 約1時間", after: "アップロード → 並列比較表 + 数値に基づくおすすめ — 1分", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "📄", title: "契約書の落とし穴を見抜く", before: "弁護士に$300払うか、よく見ずに署名して痛い目に遭う", after: "AIが数分でリスクや欠落条項を指摘", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "🧾", title: "請求書を一括処理する", before: "1枚ずつ入力 — 数時間、または人を雇う", after: "バッチごと投入 → 自動で抽出・要約", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
-      { emoji: "📕", title: "長いレポートを素早く理解する", before: "80ページを読んでいくつかの答えを探す — 数時間", after: "何でも質問 → 30秒で回答（特定できる場合は出典付き）", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+      { emoji: "📕", title: "長いレポートを素早く理解する", before: "80ページを読んでいくつかの答えを探す — 数時間", after: "何でも質問 → 30秒で回答（特定できる場合は出典付き）", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "プランを比較",
-    compareCols: ["Free", "Plus", "Pro"],
+    compareCols: ["Free", "Pro"],
     compareRows: [
-      { f: "約50のPDFツール — 変換、圧縮、結合、暗号化、OCR", v: ["✓", "✓", "✓"] },
-      { f: "PDFと対話 · AI要約", v: ["—", "✓", "✓"] },
-      { f: "AIでPDFを翻訳（レイアウト保持）", v: ["—", "近日", "近日"] },
-      { f: "複数のドキュメントを比較", v: ["—", "✓", "✓"] },
-      { f: "100MBのファイル · 一括処理 · 広告なし", v: ["—", "✓", "✓"] },
-      { f: "ワークフロー自動化 · API · 自動分類", v: ["—", "—", "✓"] },
-      { f: "契約書レビュー — リスクと欠落条項", v: ["—", "—", "✓"] },
-      { f: "チームワークスペース · 優先サポート", v: ["—", "—", "✓"] },
+      { f: "約50のPDFツール — 変換、圧縮、結合、暗号化、OCR", v: ["✓", "✓"] },
+      { f: "PDFと対話 · AI要約", v: ["—", "✓"] },
+      { f: "AIでPDFを翻訳（レイアウト保持）", v: ["—", "近日"] },
+      { f: "複数のドキュメントを比較", v: ["—", "✓"] },
+      { f: "100MBのファイル · 一括処理 · 広告なし", v: ["—", "✓"] },
+      { f: "ワークフロー自動化 · API · 自動分類", v: ["—", "✓"] },
+      { f: "契約書レビュー — リスクと欠落条項", v: ["—", "✓"] },
+      { f: "チームワークスペース · 優先サポート", v: ["—", "✓"] },
     ],
   },
   de: {
@@ -502,7 +442,7 @@ const copy = {
     perMo: "/Mon.",
     mostPopular: "Am beliebtesten",
     billedYearly: (v: string) => `${v} jährlich abgerechnet`,
-    trust: ["7 Tage Geld-zurück-Garantie", "Jederzeit kündbar, ohne Nachfragen", "Dateien werden nie zum Training unserer Modelle verwendet"],
+    trust: ["7 Tage Geld-zurück-Garantie", "Jederzeit kündbar, ohne Nachfragen", "Dateien werden nie zum Training unserer Modelle verwendet", "7 Tage kostenlose Testversion — keine Kreditkarte nötig"],
     plans: [
       {
         name: "Free",
@@ -515,33 +455,23 @@ const copy = {
         featured: false,
       },
       {
-        name: "Plus",
-        monthlyPrice: "$5",
-        yearlyPrice: "$3",
-        yearlyTotal: "$36/Jahr",
-        tagline: "Die KI liest und vergleicht Ihre Dokumente — in Sekunden.",
+        name: "Pro",
+        monthlyPrice: "$9",
+        yearlyPrice: "$6",
+        yearlyTotal: "$72/Jahr",
+        tagline: "Die KI liest, vergleicht und prüft Ihre Dokumente — in Sekunden.",
         valueLine: "Weniger als ein Kaffee im Monat.",
-        highlights: ["Alles aus Free", "Mit jedem PDF chatten — Antworten zeigen die Quelle, wenn sie auffindbar ist", "KI-Zusammenfassungen und Kernpunkte in Sekunden", "Mehrere Dokumente nebeneinander vergleichen", "100-MB-Dateien, Stapelverarbeitung und Priorität, ohne Werbung"],
-        cta: "Auf Plus upgraden",
+        highlights: ["Alles aus Free", "Mit jedem PDF chatten — Antworten zeigen die Quelle, wenn sie auffindbar ist", "KI-Zusammenfassungen und Kernpunkte in Sekunden", "Mehrere Dokumente nebeneinander vergleichen", "100-MB-Dateien, Stapelverarbeitung und Priorität, ohne Werbung", "Stapel-Dokument-Workflows automatisieren", "Vertragsprüfung — markiert riskante und fehlende Klauseln", "API-Zugriff und automatische Klassifizierung", "Team-Arbeitsbereich und priorisierter Support"],
+        cta: "7 Tage kostenlos testen",
         href: "" as RouteSlug,
         featured: true,
-      },
-      {
-        name: "Pro",
-        monthlyPrice: "$20",
-        yearlyPrice: "$12",
-        yearlyTotal: "$144/Jahr",
-        tagline: "Dokument-Workflows automatisieren und professionelle Prüfung.",
-        highlights: ["Alles aus Plus", "Stapel-Dokument-Workflows automatisieren", "Vertragsprüfung — markiert riskante und fehlende Klauseln", "API-Zugriff und automatische Klassifizierung", "Team-Arbeitsbereich und priorisierter Support"],
-        cta: "Auf Pro upgraden",
-        href: "" as RouteSlug,
-        featured: false,
       },
     ],
     faqTitle: "Fragen vor dem Kauf",
     faq: [
+      { q: "Gibt es eine kostenlose Testphase?", a: "Ja — 7 Tage vollständiger Pro-Zugang, keine Kreditkarte nötig. Starten Sie den Test auf der Preisseite oder in Ihrem Konto. Einmal pro Konto. Nach dem Test kehren Sie zum kostenlosen Tarif zurück, sofern Sie kein Abonnement abschließen." },
       { q: "Kann ich jederzeit kündigen?", a: "Ja. Verwalten oder kündigen Sie Ihr Abonnement selbst mit ein paar Klicks — keine E-Mails, keine Halte-Tricks. Sie behalten den Zugriff bis zum Ende des bezahlten Zeitraums." },
-      { q: "Gibt es eine Rückerstattung?", a: "Ja — Plus, Pro und Lebenslang sind alle abgedeckt. Wenn ein Tarif nicht das Richtige für Sie ist, kontaktieren Sie uns innerhalb von 7 Tagen nach der Zahlung und wir erstatten Ihnen den vollen Betrag. Creem hat keinen Selbstbedienungs-Button für Rückerstattungen, melden Sie sich also einfach — über „Händler kontaktieren“ auf Ihrer Creem-Bestellseite oder per E-Mail an billing@dockdocs.app — und wir kümmern uns darum." },
+      { q: "Gibt es eine Rückerstattung?", a: "Ja — Pro und Lebenslang sind beide abgedeckt. Wenn ein Tarif nicht das Richtige für Sie ist, kontaktieren Sie uns innerhalb von 7 Tagen nach der Zahlung und wir erstatten Ihnen den vollen Betrag. Creem hat keinen Selbstbedienungs-Button für Rückerstattungen, melden Sie sich also einfach — über 'Händler kontaktieren' auf Ihrer Creem-Bestellseite oder per E-Mail an billing@dockdocs.app — und wir kümmern uns darum." },
       { q: "Muss ich für DockDocs bezahlen?", a: "Nein. Alle ~50 grundlegenden PDF-Tools sind für immer kostenlos, ohne Konto. Sie zahlen nur, wenn Sie KI-Funktionen, größere Dateien oder mehr Volumen möchten." },
       { q: "Was passiert mit meinen Dateien?", a: "Die meisten Tools verarbeiten alles in Ihrem Browser — Ihre Dateien verlassen Ihr Gerät nie. Ein paar Cloud-Konvertierungen laufen serverseitig; die temporäre Kopie wird danach automatisch gelöscht. Wir verwenden Ihre Dokumente nie zum Training unserer eigenen Modelle, und nur der für die Antwort nötige Text wird an den KI-Anbieter gesendet." },
       { q: "Kann ich später den Tarif wechseln?", a: "Jederzeit. Upgraden, downgraden oder zwischen monatlich und jährlich wechseln, wann immer Sie möchten." },
@@ -551,22 +481,22 @@ const copy = {
     ctaBtn: "Mit einem kostenlosen Tool starten",
     scenariosTitle: "Was kann DockDocs für Sie lösen?",
     scenarios: [
-      { emoji: "📊", title: "Angebote vergleichen und das beste wählen", before: "3 Dateien öffnen, Zahlen in eine Tabelle kopieren — ~1 Std.", after: "Hochladen → Vergleichstabelle + eine durch die Zahlen gestützte Empfehlung — 1 Min.", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📊", title: "Angebote vergleichen und das beste wählen", before: "3 Dateien öffnen, Zahlen in eine Tabelle kopieren — ~1 Std.", after: "Hochladen → Vergleichstabelle + eine durch die Zahlen gestützte Empfehlung — 1 Min.", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "📄", title: "Die Fallen in einem Vertrag erkennen", before: "300 $ für einen Anwalt zahlen oder blind unterschreiben und Schaden nehmen", after: "Die KI markiert riskante und fehlende Klauseln in Minuten", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "🧾", title: "Einen Stapel Rechnungen verarbeiten", before: "Sie einzeln eintippen — Stunden, oder Hilfe einstellen", after: "Den ganzen Stapel ablegen → automatisch extrahieren und zusammenfassen", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
-      { emoji: "📕", title: "Einen langen Bericht schnell verstehen", before: "80 Seiten lesen, um ein paar Antworten zu finden — Stunden", after: "Fragen Sie alles → belegte Antworten (wo auffindbar) in 30 Sek.", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+      { emoji: "📕", title: "Einen langen Bericht schnell verstehen", before: "80 Seiten lesen, um ein paar Antworten zu finden — Stunden", after: "Fragen Sie alles → belegte Antworten (wo auffindbar) in 30 Sek.", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "Tarife vergleichen",
-    compareCols: ["Free", "Plus", "Pro"],
+    compareCols: ["Free", "Pro"],
     compareRows: [
-      { f: "~50 PDF-Tools — konvertieren, komprimieren, zusammenfügen, verschlüsseln, OCR", v: ["✓", "✓", "✓"] },
-      { f: "Mit PDF chatten · KI-Zusammenfassungen", v: ["—", "✓", "✓"] },
-      { f: "PDF mit KI übersetzen (behält das Layout)", v: ["—", "Bald", "Bald"] },
-      { f: "Mehrere Dokumente vergleichen", v: ["—", "✓", "✓"] },
-      { f: "100-MB-Dateien · Stapel · ohne Werbung", v: ["—", "✓", "✓"] },
-      { f: "Workflows automatisieren · API · Auto-Klassifizierung", v: ["—", "—", "✓"] },
-      { f: "Vertragsprüfung — Risiko- und fehlende Klauseln", v: ["—", "—", "✓"] },
-      { f: "Team-Arbeitsbereich · priorisierter Support", v: ["—", "—", "✓"] },
+      { f: "~50 PDF-Tools — konvertieren, komprimieren, zusammenfügen, verschlüsseln, OCR", v: ["✓", "✓"] },
+      { f: "Mit PDF chatten · KI-Zusammenfassungen", v: ["—", "✓"] },
+      { f: "PDF mit KI übersetzen (behält das Layout)", v: ["—", "Bald"] },
+      { f: "Mehrere Dokumente vergleichen", v: ["—", "✓"] },
+      { f: "100-MB-Dateien · Stapel · ohne Werbung", v: ["—", "✓"] },
+      { f: "Workflows automatisieren · API · Auto-Klassifizierung", v: ["—", "✓"] },
+      { f: "Vertragsprüfung — Risiko- und fehlende Klauseln", v: ["—", "✓"] },
+      { f: "Team-Arbeitsbereich · priorisierter Support", v: ["—", "✓"] },
     ],
   },
   ko: {
@@ -581,7 +511,7 @@ const copy = {
     perMo: "/월",
     mostPopular: "가장 인기",
     billedYearly: (v: string) => `연간 ${v} 청구`,
-    trust: ["7일 환불 보장", "언제든 해지, 묻지 않습니다", "파일을 자사 모델 학습에 절대 사용하지 않습니다"],
+    trust: ["7일 환불 보장", "언제든 해지, 묻지 않습니다", "파일을 자사 모델 학습에 절대 사용하지 않습니다", "7일 무료 체험 — 신용카드 불필요"],
     plans: [
       {
         name: "Free",
@@ -594,33 +524,23 @@ const copy = {
         featured: false,
       },
       {
-        name: "Plus",
-        monthlyPrice: "$5",
-        yearlyPrice: "$3",
-        yearlyTotal: "$36/년",
-        tagline: "AI가 문서를 읽고 비교합니다 — 단 몇 초 만에.",
+        name: "Pro",
+        monthlyPrice: "$9",
+        yearlyPrice: "$6",
+        yearlyTotal: "$72/년",
+        tagline: "AI가 문서를 읽고 비교하고 검토합니다 — 단 몇 초 만에.",
         valueLine: "한 달에 커피 한 잔 값도 안 됩니다.",
-        highlights: ["Free의 모든 기능", "어떤 PDF와도 대화 — 위치를 찾을 수 있으면 답변에 출처를 표시", "AI 요약과 핵심 정리를 몇 초 만에", "여러 문서를 나란히 비교", "100MB 파일, 일괄 처리와 우선 처리, 광고 없음"],
-        cta: "Plus로 업그레이드",
+        highlights: ["Free의 모든 기능", "어떤 PDF와도 대화 — 위치를 찾을 수 있으면 답변에 출처를 표시", "AI 요약과 핵심 정리를 몇 초 만에", "여러 문서를 나란히 비교", "100MB 파일, 일괄 처리와 우선 처리, 광고 없음", "일괄 문서 워크플로 자동화", "계약서 검토 — 위험 조항과 누락 조항을 표시", "API 접근과 자동 분류", "팀 워크스페이스와 우선 지원"],
+        cta: "7일 무료 체험",
         href: "" as RouteSlug,
         featured: true,
-      },
-      {
-        name: "Pro",
-        monthlyPrice: "$20",
-        yearlyPrice: "$12",
-        yearlyTotal: "$144/년",
-        tagline: "문서 워크플로 자동화와 전문가급 검토.",
-        highlights: ["Plus의 모든 기능", "일괄 문서 워크플로 자동화", "계약서 검토 — 위험 조항과 누락 조항을 표시", "API 접근과 자동 분류", "팀 워크스페이스와 우선 지원"],
-        cta: "Pro로 업그레이드",
-        href: "" as RouteSlug,
-        featured: false,
       },
     ],
     faqTitle: "구매 전 자주 묻는 질문",
     faq: [
+      { q: "무료 체험이 있나요?", a: "네 — 신용카드 없이 7일간 Pro 전체 기능을 사용해 볼 수 있습니다. 요금제 페이지 또는 계정 페이지에서 시작하세요. 계정당 1회만 가능합니다. 체험 후 구독하지 않으면 무료 요금제로 돌아갑니다." },
       { q: "언제든 해지할 수 있나요?", a: "네. 클릭 몇 번으로 직접 구독을 관리하거나 해지할 수 있습니다 — 이메일도, 붙잡는 절차도 없습니다. 결제하신 기간이 끝날 때까지는 계속 이용하실 수 있습니다." },
-      { q: "환불이 되나요?", a: "네 — Plus, Pro, 평생 요금제 모두 해당됩니다. 요금제가 맞지 않으면 결제 후 7일 이내에 문의해 주시면 전액 환불해 드립니다. Creem에는 셀프 환불 버튼이 없으니 Creem 주문 페이지의 '판매자에게 문의'를 이용하시거나 billing@dockdocs.app으로 이메일을 보내 주세요. 바로 처리해 드립니다." },
+      { q: "환불이 되나요?", a: "네 — Pro, 평생 요금제 모두 해당됩니다. 요금제가 맞지 않으면 결제 후 7일 이내에 문의해 주시면 전액 환불해 드립니다. Creem에는 셀프 환불 버튼이 없으니 Creem 주문 페이지의 '판매자에게 문의'를 이용하시거나 billing@dockdocs.app으로 이메일을 보내 주세요. 바로 처리해 드립니다." },
       { q: "DockDocs를 쓰려면 결제해야 하나요?", a: "아니요. 약 50가지 핵심 PDF 도구는 계정 없이 평생 무료입니다. AI 기능, 더 큰 파일, 더 많은 작업량이 필요할 때만 결제하시면 됩니다." },
       { q: "제 파일은 어떻게 되나요?", a: "대부분의 도구는 브라우저에서 완전히 처리됩니다 — 파일이 기기를 벗어나지 않습니다. 클라우드 변환은 처리 후 임시 사본이 자동으로 삭제됩니다. 고객님의 문서를 자사 모델 학습에 절대 사용하지 않으며, 답변에 필요한 텍스트만 AI 제공업체에 전송됩니다." },
       { q: "나중에 요금제를 변경할 수 있나요?", a: "언제든 가능합니다. 원하실 때 업그레이드, 다운그레이드하거나 월간과 연간 사이를 전환할 수 있습니다." },
@@ -630,22 +550,22 @@ const copy = {
     ctaBtn: "무료 도구로 시작하기",
     scenariosTitle: "DockDocs가 무엇을 해결해 드릴까요?",
     scenarios: [
-      { emoji: "📊", title: "견적을 비교해 최선을 선택", before: "파일 3개를 열고 숫자를 시트에 옮겨 적기 — 약 1시간", after: "업로드 → 나란히 비교표 + 숫자에 근거한 추천 — 1분", tier: "Plus", href: "/compare" as RouteSlug },
+      { emoji: "📊", title: "견적을 비교해 최선을 선택", before: "파일 3개를 열고 숫자를 시트에 옮겨 적기 — 약 1시간", after: "업로드 → 나란히 비교표 + 숫자에 근거한 추천 — 1분", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "📄", title: "계약서 속 함정 찾아내기", before: "변호사에게 $300을 내거나, 모르고 서명했다가 손해", after: "AI가 몇 분 만에 위험 조항과 누락 조항을 표시", tier: "Pro", href: "/compare" as RouteSlug },
       { emoji: "🧾", title: "송장 묶음 처리하기", before: "하나씩 입력 — 몇 시간, 아니면 사람을 고용", after: "묶음째 넣으면 → 자동으로 추출·요약", tier: "Pro", href: "/extract-to-excel" as RouteSlug },
-      { emoji: "📕", title: "긴 보고서를 빠르게 파악", before: "답 몇 개를 찾으려 80쪽을 읽기 — 몇 시간", after: "무엇이든 질문 → 30초 만에 출처가 있는 답변(위치를 찾을 수 있는 경우)", tier: "Plus", href: "/chat-with-pdf" as RouteSlug },
+      { emoji: "📕", title: "긴 보고서를 빠르게 파악", before: "답 몇 개를 찾으려 80쪽을 읽기 — 몇 시간", after: "무엇이든 질문 → 30초 만에 출처가 있는 답변(위치를 찾을 수 있는 경우)", tier: "Pro", href: "/chat-with-pdf" as RouteSlug },
     ],
     compareTitle: "요금제 비교",
-    compareCols: ["Free", "Plus", "Pro"],
+    compareCols: ["Free", "Pro"],
     compareRows: [
-      { f: "약 50가지 PDF 도구 — 변환, 압축, 병합, 암호화, OCR", v: ["✓", "✓", "✓"] },
-      { f: "PDF와 대화 · AI 요약", v: ["—", "✓", "✓"] },
-      { f: "AI PDF 번역(레이아웃 유지)", v: ["—", "곧 제공", "곧 제공"] },
-      { f: "여러 문서 비교", v: ["—", "✓", "✓"] },
-      { f: "100MB 파일 · 일괄 처리 · 광고 없음", v: ["—", "✓", "✓"] },
-      { f: "워크플로 자동화 · API · 자동 분류", v: ["—", "—", "✓"] },
-      { f: "계약서 검토 — 위험 조항과 누락 조항", v: ["—", "—", "✓"] },
-      { f: "팀 워크스페이스 · 우선 지원", v: ["—", "—", "✓"] },
+      { f: "약 50가지 PDF 도구 — 변환, 압축, 병합, 암호화, OCR", v: ["✓", "✓"] },
+      { f: "PDF와 대화 · AI 요약", v: ["—", "✓"] },
+      { f: "AI PDF 번역(레이아웃 유지)", v: ["—", "곧 제공"] },
+      { f: "여러 문서 비교", v: ["—", "✓"] },
+      { f: "100MB 파일 · 일괄 처리 · 광고 없음", v: ["—", "✓"] },
+      { f: "워크플로 자동화 · API · 자동 분류", v: ["—", "✓"] },
+      { f: "계약서 검토 — 위험 조항과 누락 조항", v: ["—", "✓"] },
+      { f: "팀 워크스페이스 · 우선 지원", v: ["—", "✓"] },
     ],
   },
 } as const;
@@ -658,9 +578,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [billingError, setBillingError] = useState("");
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
   // Which plan column is "selected" — drives the green frame + filled CTA on the card
-  // and the highlighted compare-table column. Independent of `featured` (the static
-  // "Most popular" badge, always Plus). Plans / compareCols / compare tiers are all
-  // index-aligned [Free, Plus, Pro], so one index links the cards to the table.
+  // and the highlighted compare-table column. Plans / compareCols / compare tiers are
+  // index-aligned [Free, Pro], so one index links the cards to the table.
   const [selectedIndex, setSelectedIndex] = useState<number>(() => {
     const fi = (locale === "zh-Hant" ? copy.zh : (copy[locale as keyof typeof copy] ?? copy.en)).plans.findIndex((p) => p.featured);
     return fi >= 0 ? fi : 1;
@@ -750,6 +669,29 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       setBillingLoading("");
     }
   }
+  // Trial-first checkout: try 7-day free trial; on TRIAL_USED fall through to
+  // regular checkout so paid users are never blocked. On auth failure send to
+  // sign-in so the user can get a session before we write the trial record.
+  async function handleTrialOrCheckout(plan: PaidSubscriptionPlan) {
+    setBillingLoading(plan);
+    setBillingError("");
+    try {
+      const result = await startBillingTrial();
+      if (result.ok || result.code === "ALREADY_PAID") {
+        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = "/account";
+        return;
+      }
+      if (result.code === "UNAUTHENTICATED") {
+        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = "/account";
+        return;
+      }
+      // TRIAL_USED — user already trialed; fall through to paid checkout.
+      await createBillingCheckoutSession(plan, period);
+    } catch (err) {
+      handleBillingError(err);
+      setBillingLoading("");
+    }
+  }
   // 账户页全站统一为 /account(无语言版本)，不要按 locale 加 /zh 前缀，否则 /zh/account 会 404
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale as RouteLocale, href) : "/account");
   const eyebrow = `font-mono text-[12px] text-[color:var(--faint)] ${zh || locale === "es" || locale === "fr" || locale === "de" ? "" : "uppercase tracking-[0.08em]"}`;
@@ -789,15 +731,14 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       )}
 
       {/* Plans */}
-      <div className="mt-12 grid gap-4 lg:grid-cols-3">
+      <div className="mt-12 grid gap-4 lg:grid-cols-2">
         {c.plans.map((plan, idx) => {
           const isFree = plan.monthlyPrice === "$0";
           const price = isFree
             ? plan.monthlyPrice
-            // Lifetime is USD-constant (founding rate; pricing spec) — Plus $99 /
-            // Pro $399 — so it lives here, not in each locale's plan data.
+            // Lifetime is USD-constant (founding rate; pricing spec) — $149 (Pro only).
             : period === "lifetime"
-              ? (plan.featured ? "$99" : "$399")
+              ? "$149"
               : period === "annual"
                 ? plan.yearlyPrice
                 : plan.monthlyPrice;
@@ -884,7 +825,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                       : (zh ? h("管理账单") : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : locale === "ja" ? "請求を管理" : locale === "de" ? "Abrechnung verwalten" : locale === "ko" ? "결제 관리" : "Manage billing")}
                   </button>
                 ) : (
-                  <button type="button" onClick={() => (ctaKind === "upgrade" ? upgrade.beginUpgrade(planKey, period) : plainCheckout(planKey))} disabled={ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey} className={ctaCls}>
+                  <button type="button" onClick={() => (ctaKind === "upgrade" ? upgrade.beginUpgrade(planKey, period) : handleTrialOrCheckout(planKey))} disabled={ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey} className={ctaCls}>
                     {(ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey)
                       ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : locale === "ko" ? "이동 중…" : "Redirecting…")
                       : plan.cta}
@@ -974,7 +915,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                         <span className="text-[color:var(--foreground)]">{catLabel}</span>
                       </span>
                     </td>
-                    {(["free", "plus", "pro"] as const).map((tier, ti) => {
+                    {(["free", "pro"] as const).map((tier, ti) => {
                       const val = lim(tier);
                       return (
                         <td key={tier} className={`border-b border-l border-[color:var(--line)] px-4 py-3 text-center ${ti === selectedIndex ? "bg-[color:var(--soft-accent)] " : ""}${cellCls(val)}`}>{val}</td>
@@ -986,7 +927,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 if (isOpen && canExpand) {
                   rows.push(
                     <tr key={`tools-${cat.id}`}>
-                      <td colSpan={4} className="border-b border-[color:var(--line)] bg-[color:var(--surface)] px-6 pb-4 pt-2">
+                      <td colSpan={3} className="border-b border-[color:var(--line)] bg-[color:var(--surface)] px-6 pb-4 pt-2">
                         {hasTools && (
                           <div className="flex flex-wrap gap-2">
                             {cat.tools.map((tool) => (
