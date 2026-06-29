@@ -64,7 +64,7 @@ type NormalizedHistoryTurn = {
 
 const maxContextCharacters = 24_000;
 const minContextCharacters = 80;
-const aiChatMaxTokens = 1400;
+const aiChatMaxTokens = 3000;
 
 const pick = (
   locale: AnswerLocale,
@@ -555,7 +555,7 @@ async function generateProviderAnswer({
           context,
           locale,
         );
-        const unsupportedEvidence = getUnsupportedEvidence(
+        const unsupportedEvidence = getRepairUnsupportedEvidence(
           normalizedRepairedResult,
           context,
         );
@@ -606,7 +606,7 @@ async function generateProviderAnswer({
     ? completeOcrFieldAnswer(repairedResult, question, context, locale)
     : null;
   const unsupportedEvidence = normalizedRepairedResult
-    ? getUnsupportedEvidence(normalizedRepairedResult, context)
+    ? getRepairUnsupportedEvidence(normalizedRepairedResult, context)
     : null;
   if (!normalizedRepairedResult || unsupportedEvidence) {
     return {
@@ -687,7 +687,7 @@ async function generateProviderAnswerStream({
           context,
           locale,
         );
-        const unsupportedEvidence = getUnsupportedEvidence(
+        const unsupportedEvidence = getRepairUnsupportedEvidence(
           normalizedRepairedResult,
           context,
         );
@@ -738,7 +738,7 @@ async function generateProviderAnswerStream({
     ? completeOcrFieldAnswer(repairedResult, question, context, locale)
     : null;
   const unsupportedEvidence = normalizedRepairedResult
-    ? getUnsupportedEvidence(normalizedRepairedResult, context)
+    ? getRepairUnsupportedEvidence(normalizedRepairedResult, context)
     : null;
   if (!normalizedRepairedResult || unsupportedEvidence) {
     return {
@@ -1183,7 +1183,7 @@ function normalizeAnswer(value: unknown): AiChatAnswer | null {
     "sources",
     "source",
   ]);
-  if (!answer || references.length === 0) {
+  if (!answer) {
     return null;
   }
 
@@ -1383,6 +1383,14 @@ function getUnsupportedEvidence(result: AiChatAnswer, context: string) {
     references,
     entities,
   };
+}
+
+// Repair-path validation: only check references, skip entity re-check.
+// Avoids hitting the same entity-hallucination wall twice on the second attempt.
+function getRepairUnsupportedEvidence(result: AiChatAnswer, context: string) {
+  const references = getUnsupportedReferences(result.references, context);
+  if (references.length === 0) return null;
+  return { references, entities: [] as string[] };
 }
 
 function isUnsupportedRefusal(answer: string) {
