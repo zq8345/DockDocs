@@ -112,9 +112,9 @@ export function UpgradeConfirmModal({ flow, locale }: { flow: UpgradeFlow; local
   const tt = (en: string, zh: string, es: string, pt: string, fr: string, ja: string) =>
     locale === "zh-Hant" ? toHant(zh) : locale === "zh" ? zh : locale === "es" ? es : locale === "pt" ? pt : locale === "fr" ? fr : locale === "ja" ? ja : en;
   const money = (cents: number) => `$${(cents / 100).toFixed(2)}`;
-  const targetName = c.plan === "PLUS" ? "Plus" : "Pro";
-  const curName = q.currentPlan === "PRO" ? "Pro" : q.currentPlan === "PLUS" ? "Plus" : q.currentPlan;
-  const isTierUp = c.plan === "PRO" && q.currentPlan === "PLUS";
+  const targetName = "Pro";
+  const curName = q.currentPlan === "PRO" ? "Pro" : "Free";
+  const isTierUp = false; // single paid tier; only interval upgrades exist
 
   return (
     <div

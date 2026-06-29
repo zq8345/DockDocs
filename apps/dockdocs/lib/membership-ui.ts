@@ -128,7 +128,7 @@ export function upgradePrompts(
       prompts.push({
         label: pick(locale, "Switch to yearly — save 40%", "切年付 · 省 40%", "Cambia a anual — ahorra 40%", "Mude para anual — economize 40%", "Passez à l'annuel — −40 %", "年額に切り替え — 40% お得"),
         primary: false,
-        target: { plan: "PLUS", interval: "annual" },
+        target: { plan: "PRO", interval: "annual" },
       });
     }
     return prompts;

@@ -430,7 +430,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   const badge = planBadge(display, interval, membershipLocale);
   const prompts = subscription ? upgradePrompts(display, interval, membershipLocale) : [];
   const isPaid = subscription?.isPaidPlaceholder ?? false;
-  const included = display === "Pro" ? t.includedPro : display === "Plus" ? t.includedPlus : t.includedFree;
+  const included = display === "Pro" ? t.includedPro : t.includedFree;
   const planLocale = locale === "zh-Hant" ? "zh" : (locale as Exclude<AccountLocale, "zh-Hant">);
   const planFeatures = display === "Pro"
     ? (PLAN_FEATURES.pro[planLocale] ?? PLAN_FEATURES.pro.en)
@@ -512,7 +512,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
         <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">{t.usageTitle}</p>
 
-          {(display === "Pro" || display === "Plus") ? (
+          {(display === "Pro") ? (
             <>
               {/* Feature checklist — 2-col grid */}
               <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5">

@@ -803,7 +803,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 : plan.monthlyPrice;
           const featured = plan.featured;
           const selected = idx === selectedIndex;
-          const planKey: PaidSubscriptionPlan | null = isFree ? null : featured ? "PLUS" : "PRO";
+          const planKey: PaidSubscriptionPlan | null = isFree ? null : "PRO";
           const curPlan = subscription ? subscription.displayName.toUpperCase() : "FREE";
           const curInterval = subscription?.record.interval;
           // CTA kind for this paid card at the selected period. "current" = user

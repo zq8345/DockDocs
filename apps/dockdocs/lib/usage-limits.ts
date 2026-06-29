@@ -136,9 +136,7 @@ export function normalizeUsageFeature(feature: string): UsageFeature | null {
 }
 
 export function readFeatureLimit(plan: SubscriptionPlan, feature: UsageFeature) {
-  // PLUS is a legacy plan with no active users; treat same as PRO.
-  const effectivePlan = plan === "PLUS" ? "PRO" : plan;
-  return featureLimits[effectivePlan][feature];
+  return featureLimits[plan][feature];
 }
 
 // UTC-keyed period buckets — identical math on client and server so the two

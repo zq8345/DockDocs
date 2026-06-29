@@ -444,7 +444,7 @@ export function CommercialAccountClient() {
       void upgradeFlow.beginUpgrade(plan, interval);
       return;
     }
-    setBillingAction(plan === "PLUS" ? "checkout-plus" : "checkout-pro");
+    setBillingAction("checkout-pro");
     try { const url = await createBillingCheckoutSession(plan); window.location.assign(url); }
     catch (e) { setError(getErrorMessage(e, t.errorFallback)); } finally { setBillingAction(""); }
   }
@@ -616,10 +616,7 @@ function PlanCard({
         </div>
       </dl>
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        <button type="button" onClick={() => onCheckout("PLUS")} disabled={!signedIn || billingAction !== ""} className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
-          {billingAction === "checkout-plus" ? t.opening : t.upgradePlus}
-        </button>
-        <button type="button" onClick={() => onCheckout("PRO")} disabled={!signedIn || billingAction !== ""} className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50">
+        <button type="button" onClick={() => onCheckout("PRO")} disabled={!signedIn || billingAction !== ""} className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-4 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
           {billingAction === "checkout-pro" ? t.opening : t.upgradePro}
         </button>
         <button type="button" onClick={onPortal} disabled={!signedIn || billingAction !== ""} className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] px-4 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-50 sm:col-span-2">

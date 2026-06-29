@@ -35,11 +35,6 @@ const workspacePlanCopy: Record<
     summary:
       "Basic document AI with local workspace records and daily usage limits.",
   },
-  PLUS: {
-    badge: "Expanded workspace",
-    summary:
-      "Higher monthly limits for recurring document review and saved workspace history.",
-  },
   PRO: {
     badge: "Premium workspace",
     summary:
@@ -102,10 +97,6 @@ export function getWorkspacePlanCapabilities(
 export function getWorkspacePlanLabel(
   plan: SubscriptionPlan,
 ): WorkspacePlanCapabilities["label"] {
-  if (plan === "PLUS") {
-    return "Plus";
-  }
-
   if (plan === "PRO") {
     return "Pro";
   }
@@ -118,15 +109,11 @@ export function getWorkspaceUpgradeMessage(plan: SubscriptionPlan) {
     return "Pro workspace is active. Premium workspace capabilities are available.";
   }
 
-  if (plan === "PLUS") {
-    return "Upgrade to Pro for higher workspace limits and premium review flows.";
-  }
-
-  return "Upgrade to Plus or Pro for higher AI usage and a stronger workspace history experience.";
+  return "Upgrade to Pro for higher AI usage and a stronger workspace history experience.";
 }
 
 function normalizePlan(plan: SubscriptionPlan): SubscriptionPlan {
-  if (plan === "PLUS" || plan === "PRO") {
+  if (plan === "PRO") {
     return plan;
   }
 
@@ -136,10 +123,6 @@ function normalizePlan(plan: SubscriptionPlan): SubscriptionPlan {
 function capabilityTone(plan: SubscriptionPlan): WorkspaceCapability["tone"] {
   if (plan === "PRO") {
     return "premium";
-  }
-
-  if (plan === "PLUS") {
-    return "standard";
   }
 
   return "basic";

@@ -13,7 +13,7 @@ async function authHeader(): Promise<Record<string, string>> {
   }
 }
 
-export type SubscriptionPlan = "FREE" | "PLUS" | "PRO";
+export type SubscriptionPlan = "FREE" | "PRO";
 
 export type SubscriptionStatus =
   | "free"
@@ -51,7 +51,7 @@ export type SubscriptionSnapshot = {
   userId: string;
   signedIn: boolean;
   record: SubscriptionRecord;
-  displayName: "Free" | "Plus" | "Pro";
+  displayName: "Free" | "Pro";
   statusLabel: string;
   isPaidPlaceholder: boolean;
   customer?: {
@@ -346,10 +346,6 @@ export function isDevelopmentProAccountEmail(email: string | null | undefined) {
 }
 
 export function planDisplayName(plan: SubscriptionPlan) {
-  if (plan === "PLUS") {
-    return "Plus";
-  }
-
   if (plan === "PRO") {
     return "Pro";
   }
@@ -437,7 +433,9 @@ function normalizeSubscriptionRecord(
 }
 
 function normalizePlan(value: unknown): SubscriptionPlan | null {
-  return value === "FREE" || value === "PLUS" || value === "PRO" ? value : null;
+  // PLUS is a legacy plan with no active users; treated as PRO in the gate.
+  if (value === "PLUS") return "PRO";
+  return value === "FREE" || value === "PRO" ? value : null;
 }
 
 function normalizeStatus(value: unknown): SubscriptionStatus | null {

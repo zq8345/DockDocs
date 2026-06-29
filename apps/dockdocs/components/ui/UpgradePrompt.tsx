@@ -102,11 +102,11 @@ export function UpgradePrompt({
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <button
           type="button"
-          onClick={() => upgrade("PLUS")}
-          disabled={loading === "PLUS"}
+          onClick={() => upgrade("PRO")}
+          disabled={loading === "PRO"}
           className="inline-flex h-10 items-center justify-center rounded-full bg-[color:var(--accent)] px-5 text-[13.5px] font-medium transition hover:bg-[color:var(--accent-hover)] disabled:opacity-60"
         >
-          {loading === "PLUS" ? t.redir : t.cta}
+          {loading === "PRO" ? t.redir : t.cta}
         </button>
         <a
           href={t.pricing}

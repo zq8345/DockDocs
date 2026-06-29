@@ -14,7 +14,6 @@ import { getSubscriptionSnapshot, type SubscriptionPlan } from "@/lib/subscripti
 // AI / cost-heavy batches keep their smaller per-tool ceilings.
 export const PLAN_BATCH_FILE_CAP: Record<SubscriptionPlan, number> = {
   FREE: 3,
-  PLUS: 20,
   PRO: 50,
 };
 
