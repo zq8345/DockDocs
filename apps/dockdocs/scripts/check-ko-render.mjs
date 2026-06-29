@@ -93,6 +93,10 @@ const WHITELIST = [
   "Creem", "Supabase", "Netlify", "Pro", "Plus", "Free", "FREE", "PRO",
   "AES", "AES-256", "DocSend", "GEO", "SaaS", "docx", "xlsx", "pptx", "v2",
   "Office", "iLovePDF", "Smallpdf", "Adobe",
+  // Upper-case file-format codes (UploadDropzone acceptLabel "Supports XLSX XLS",
+  // "PPTX", "DOCX DOC" etc.) — technical tokens English by design, same as the
+  // lower-case docx/xlsx/pptx and PDF/Word/Excel already above.
+  "XLSX", "XLS", "PPTX", "DOCX", "DOC",
 ];
 
 // Language-switcher native names + brand standalone lines + pure punctuation:
