@@ -190,7 +190,7 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
                     {
                       displayName: display,
                       interval,
-                      status: snapshot.record.status,
+                      status: isTrial ? "trialing" : snapshot.record.status,
                       currentPeriodEnd: snapshot.record.currentPeriodEnd,
                       cancelAtPeriodEnd: snapshot.record.cancelAtPeriodEnd,
                       daysRemaining: trialDaysRemaining,
