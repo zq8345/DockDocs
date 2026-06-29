@@ -76,7 +76,10 @@ export async function enforceFeatureGate(
       } else {
         const sub = await readSubscriptionByUserId(user.id);
         if (sub?.plan) {
-          plan = sub.plan;
+          // Normalize: only FREE/PRO are valid keys in featureLimits.
+          // Any legacy value (e.g. "PLUS" from stale Blob) falls to FREE
+          // rather than producing undefined["chat"] and throwing.
+          plan = (sub.plan === "FREE" || sub.plan === "PRO") ? sub.plan : "FREE";
         }
         // If still FREE, check for an active trial (lazy expiry — no cron needed).
         // A trial that has passed expiresAt simply falls through to FREE.

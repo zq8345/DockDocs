@@ -81,8 +81,8 @@ export const featureAliases: Record<string, UsageFeature> = {
   "protect-pdf": "convert",
 };
 
-// Two active tiers: FREE and PRO. PLUS is a legacy plan alias with no active users;
-// readFeatureLimit maps it to PRO so any stale Blob data degrades gracefully.
+// Two active tiers: FREE and PRO. PLUS has no active users; feature-gate.ts
+// normalizes any unknown plan value to FREE before calling readFeatureLimit.
 export const featureLimits: Record<
   "FREE" | "PRO",
   Record<UsageFeature, { limit: number; period: UsagePeriod }>
