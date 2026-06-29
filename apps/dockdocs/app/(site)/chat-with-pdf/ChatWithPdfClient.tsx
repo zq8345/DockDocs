@@ -474,6 +474,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
       data-testid="chat-workspace"
       className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : "mx-auto max-w-5xl"}
     >
+      {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{copy.heroTitle}</p>}
       {/* ── Upload zone (shown when no document) ── */}
       {!documentText && !isExtracting ? (
         <label

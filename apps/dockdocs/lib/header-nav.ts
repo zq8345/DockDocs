@@ -117,8 +117,8 @@ export const headerStructure = [
         "headingKey": "Industry",
         "items": [
           { "key": "Legal & contracts",   "slug": "/for/legal" },
-          { "key": "Finance & tax",       "slug": "/for/finance",  "soon": true },
-          { "key": "Research & academia", "slug": "/for/research", "soon": true }
+          { "key": "Finance & tax",       "slug": "/for/finance" },
+          { "key": "Research & academia", "slug": "/for/research" }
         ]
       }
     ]

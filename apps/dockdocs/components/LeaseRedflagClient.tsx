@@ -511,6 +511,7 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
           <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
         </>
       )}
+      {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>}
 
       {phase === "idle" || phase === "extracting" ? (
         <>

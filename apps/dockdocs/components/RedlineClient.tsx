@@ -380,6 +380,7 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
           <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
         </>
       )}
+      {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>}
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {slot(a, setA, aRef, t.original, "a")}

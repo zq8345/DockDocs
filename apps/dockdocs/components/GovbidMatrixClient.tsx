@@ -501,6 +501,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
           <p className="mt-3 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
         </>
       )}
+      {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>}
 
       {/* Upload */}
       <div className="mt-8">

@@ -1196,6 +1196,7 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
           <p className="mt-3 max-w-4xl text-[color:var(--muted)]">{t.intro}</p>
         </>
       )}
+      {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.intro}</p>}
 
       {templates.length > 0 && (
         <div className="mt-6">
