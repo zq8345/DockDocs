@@ -379,7 +379,7 @@ export function QuizClient({ locale = "en", embedded = false }: { locale?: Local
 
       {phase === "idle" || phase === "reading" ? (
         <>
-          <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "reading"} busyLabel={t.reading} privacy={false} note={childLocale === "zh" || childLocale === "zh-Hant" ? "本地读取 · 文字发至AI" : childLocale === "ja" ? "ローカルで読み取り · テキストをAIへ送信" : childLocale === "es" ? "Leído localmente · texto enviado a IA" : childLocale === "pt" ? "Lido localmente · texto enviado a IA" : childLocale === "fr" ? "Lu localement · texte envoyé à l'IA" : childLocale === "de" ? "Lokal gelesen · Text an KI gesendet" : childLocale === "ko" ? "로컬에서 읽기 · 텍스트 AI로 전송" : "File read locally · text sent to AI"} onFile={onFile} />
+          <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "reading"} busyLabel={t.reading} privacy={false} note={childLocale === "zh-Hant" ? deepHant("本地读取 · 文字发至AI") : childLocale === "zh" ? "本地读取 · 文字发至AI" : childLocale === "ja" ? "ローカルで読み取り · テキストをAIへ送信" : childLocale === "es" ? "Leído localmente · texto enviado a IA" : childLocale === "pt" ? "Lido localmente · texto enviado a IA" : childLocale === "fr" ? "Lu localement · texte envoyé à l'IA" : childLocale === "de" ? "Lokal gelesen · Text an KI gesendet" : childLocale === "ko" ? "로컬에서 읽기 · 텍스트 AI로 전송" : "File read locally · text sent to AI"} onFile={onFile} />
           {embedded && <WorkspaceValueZone type="ai" locale={locale} />}
         </>
       ) : (

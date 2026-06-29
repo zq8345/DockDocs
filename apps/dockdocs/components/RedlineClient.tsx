@@ -482,7 +482,7 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
       <p className="mt-3 text-xs text-[color:var(--muted)]">{t.dropHint}</p>
       <p className="mt-1.5 flex items-center justify-center gap-1 text-[11.5px] text-[color:var(--accent)]">
         <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="3" y="7" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4" /><path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.4" /></svg>
-        {locale === "zh" || locale === "zh-Hant" ? "本地处理，文件不上传" : locale === "ja" ? "ローカルで処理 — ファイルはアップロードされません" : locale === "es" ? "Procesado localmente — nunca se sube" : locale === "pt" ? "Processado localmente — nunca enviado" : locale === "fr" ? "Traité localement — jamais téléversé" : locale === "de" ? "Lokal verarbeitet – nicht hochgeladen" : locale === "ko" ? "기기에서 처리 — 업로드되지 않습니다" : "Processed locally — never uploaded"}
+        {locale === "zh-Hant" ? deepHant("本地处理，文件不上传") : locale === "zh" ? "本地处理，文件不上传" : locale === "ja" ? "ローカルで処理 — ファイルはアップロードされません" : locale === "es" ? "Procesado localmente — nunca se sube" : locale === "pt" ? "Processado localmente — nunca enviado" : locale === "fr" ? "Traité localement — jamais téléversé" : locale === "de" ? "Lokal verarbeitet – nicht hochgeladen" : locale === "ko" ? "기기에서 처리 — 업로드되지 않습니다" : "Processed locally — never uploaded"}
       </p>
       {embedded && !a && !b && <WorkspaceValueZone type="client" locale={locale} />}
 
