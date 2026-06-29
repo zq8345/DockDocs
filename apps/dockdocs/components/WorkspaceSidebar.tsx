@@ -23,8 +23,22 @@ const _DOC_TOOL_SLUGS = [
 const EMBEDDED_SLUGS = new Set([
   "/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk",
   "/redline", "/extract-to-excel", "/flashcards", "/lease-redflag", "/govbid-matrix",
+  "/workspace-legal", "/workspace-finance", "/workspace-research",
   ..._DOC_TOOL_SLUGS,
 ]);
+
+// Domain group labels for the "By profession" tree
+const LEGAL_DOMAINS: Record<string, { legal: string; finance: string; research: string }> = {
+  en:       { legal: "Legal / Contracts",    finance: "Finance / Tax",       research: "Research / Academic" },
+  zh:       { legal: "法律 / 合同",           finance: "财务 / 税务",          research: "科研 / 学术" },
+  "zh-Hant":{ legal: "法律 / 合約",           finance: "財務 / 稅務",          research: "學術 / 研究" },
+  es:       { legal: "Legal / Contratos",    finance: "Finanzas / Impuestos", research: "Investigación" },
+  pt:       { legal: "Jurídico / Contratos", finance: "Finanças / Impostos",  research: "Pesquisa" },
+  fr:       { legal: "Juridique / Contrats", finance: "Finance / Fiscalité",  research: "Recherche" },
+  ja:       { legal: "法務・契約",            finance: "財務・税務",           research: "研究・学術" },
+  de:       { legal: "Recht / Verträge",     finance: "Finanzen / Steuern",   research: "Forschung" },
+  ko:       { legal: "법률 / 계약",           finance: "재무 / 세금",          research: "연구 / 학술" },
+};
 
 // ── Chevron (module-level to avoid remount) ──────────────────────────────────
 function ChevronIcon({ open }: { open: boolean }) {
@@ -117,6 +131,7 @@ export function WorkspaceSidebar({
     "Batch": false,
     "AI analysis": true,
     "By profession": true,
+    "legal-domain": true,
   });
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const [planLabel, setPlanLabel] = useState<"Free" | "Plus" | "Pro">("Free");
@@ -255,6 +270,131 @@ export function WorkspaceSidebar({
         {otherCats.map((cat) => {
           const catLabel = copy[cat.catKey] ?? cat.catKey;
           const isOpen = openCats[cat.catKey] ?? true;
+
+          // ── "By profession" gets a custom domain tree ──────────────────────
+          if (cat.catKey === "By profession") {
+            const domLang = LEGAL_DOMAINS[navLocale] ?? LEGAL_DOMAINS.en;
+            const isLegalOpen = openCats["legal-domain"] ?? true;
+            const legalActive =
+              activeTool === "/workspace-legal" ||
+              activeTool === "/contract-risk" ||
+              activeTool === "/lease-redflag" ||
+              activeTool === "/govbid-matrix";
+
+            const LEGAL_TOOLS: { key: string; slug: string }[] = [
+              { key: "Contract risk check", slug: "/contract-risk" },
+              { key: "Lease red flag scan",  slug: "/lease-redflag" },
+              { key: "Gov Bid Compliance",   slug: "/govbid-matrix" },
+            ];
+
+            return (
+              <div key={cat.catKey} className="mb-0.5">
+                {/* Category header */}
+                <button
+                  type="button"
+                  onClick={() => toggle(cat.catKey)}
+                  className="group flex w-full items-center gap-2.5 rounded-[var(--radius)] px-3 py-2 text-left transition hover:bg-[color:var(--surface-subtle)]"
+                >
+                  <span className="shrink-0 text-[color:var(--faint)] transition group-hover:text-[color:var(--muted)]">
+                    {CAT_ICONS["By profession"]}
+                  </span>
+                  <span className="flex-1 text-[12px] font-semibold text-[color:var(--foreground)]">
+                    {catLabel}
+                  </span>
+                  <ChevronIcon open={isOpen} />
+                </button>
+
+                {isOpen && (
+                  <div className="mt-0.5 space-y-px pb-1">
+
+                    {/* ── Legal / Contracts (expandable) ── */}
+                    <div>
+                      <div className={`flex w-full items-center rounded-[var(--radius)] text-[12.5px] transition ${
+                        legalActive
+                          ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
+                          : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+                      }`}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!isLegalOpen) toggle("legal-domain");
+                            onToolSelect?.("/workspace-legal");
+                          }}
+                          className="flex-1 py-1.5 pl-3 text-left"
+                        >
+                          {domLang.legal}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => toggle("legal-domain")}
+                          className="px-2 py-1.5"
+                          aria-label="toggle legal subtree"
+                        >
+                          <ChevronIcon open={isLegalOpen} />
+                        </button>
+                      </div>
+
+                      {isLegalOpen && (
+                        <div className="mt-0.5 space-y-px pl-2.5 pb-1">
+                          {LEGAL_TOOLS.map((item) => {
+                            const isActive = activeTool === item.slug;
+                            return (
+                              <div key={item.slug} className="relative">
+                                <NavItemBar isActive={isActive} />
+                                <button
+                                  type="button"
+                                  onClick={() => onToolSelect?.(item.slug)}
+                                  className={subItemCls(isActive, false)}
+                                  style={{ width: "100%", textAlign: "left" }}
+                                >
+                                  <span>{labels[item.key] ?? item.key}</span>
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* ── Finance / Tax (soon) ── */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => onToolSelect?.("/workspace-finance")}
+                        className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[12.5px] transition ${
+                          activeTool === "/workspace-finance"
+                            ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
+                            : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+                        }`}
+                      >
+                        <span>{domLang.finance}</span>
+                        <SoonBadge />
+                      </button>
+                    </div>
+
+                    {/* ── Research / Academic (soon) ── */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => onToolSelect?.("/workspace-research")}
+                        className={`flex w-full items-center justify-between rounded-[var(--radius)] py-1.5 pl-3 pr-3 text-[12.5px] transition ${
+                          activeTool === "/workspace-research"
+                            ? "bg-[color:var(--surface-subtle)] text-[color:var(--accent)]"
+                            : "text-[color:var(--muted)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
+                        }`}
+                      >
+                        <span>{domLang.research}</span>
+                        <SoonBadge />
+                      </button>
+                    </div>
+
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          // ── Generic rendering for "AI analysis" ────────────────────────────
           return (
             <div key={cat.catKey} className="mb-0.5">
               {/* Category row */}
@@ -278,7 +418,7 @@ export function WorkspaceSidebar({
                     const maybeHeading = (col as { headingKey?: string }).headingKey;
                     return (
                       <div key={colIdx}>
-                        {maybeHeading && cat.catKey !== "By profession" && (
+                        {maybeHeading && (
                           <p className="mb-0.5 mt-2 px-3 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">
                             {copy[maybeHeading] ?? maybeHeading}
                           </p>

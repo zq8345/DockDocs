@@ -55,6 +55,57 @@ const QuizEmbedded = dynamic(
   () => import("@/components/QuizClient").then((m) => m.QuizClient),
   { ssr: false },
 );
+const LegalHubEmbedded = dynamic(
+  () => import("@/components/LegalWorkspaceHub").then((m) => m.LegalWorkspaceHub),
+  { ssr: false },
+);
+
+// Coming-soon panel for domain workspaces not yet built
+const DOMAIN_SOON_COPY: Record<string, { en: { h: string; sub: string; preview: string[] }; zh: { h: string; sub: string; preview: string[] } }> = {
+  finance: {
+    en: {
+      h: "Finance / Tax — Coming Soon",
+      sub: "Tools for reviewing financial documents, extracting invoice data, and checking tax compliance.",
+      preview: ["Invoice data extraction to spreadsheet", "Financial report summarization", "Tax document compliance review"],
+    },
+    zh: {
+      h: "财务 / 税务 — 即将推出",
+      sub: "用于审阅财务文件、提取发票数据、检查税务合规的专业工具。",
+      preview: ["发票数据提取到表格", "财务报告摘要提取", "税务文件合规审查"],
+    },
+  },
+  research: {
+    en: {
+      h: "Research / Academic — Coming Soon",
+      sub: "Tools for summarizing papers, extracting citations, and comparing scientific documents.",
+      preview: ["Research paper summarization", "Citation and reference extraction", "Multi-paper comparison and synthesis"],
+    },
+    zh: {
+      h: "科研 / 学术 — 即将推出",
+      sub: "用于摘要论文、提取引文、对比学术文献的专业工具。",
+      preview: ["论文摘要提取", "引文和参考文献提取", "多篇论文对比综合"],
+    },
+  },
+};
+
+function DomainSoonPanel({ domain, locale }: { domain: "finance" | "research"; locale: RuntimeLocale }) {
+  const langKey = (locale === "zh" || locale === "zh-Hant") ? "zh" : "en";
+  const c = DOMAIN_SOON_COPY[domain][langKey];
+  return (
+    <div className="mx-auto w-full max-w-2xl px-8 py-12 text-center">
+      <h1 className="mb-3 text-[18px] font-[400] text-[color:var(--foreground)]">{c.h}</h1>
+      <p className="mb-8 text-[13.5px] leading-[1.65] text-[color:var(--muted)]">{c.sub}</p>
+      <ul className="space-y-2 text-left inline-block">
+        {c.preview.map((item, i) => (
+          <li key={i} className="flex items-center gap-2.5 text-[13px] text-[color:var(--muted)]">
+            <span className="text-[color:var(--faint)]">·</span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 // All PDF tool slugs from the "Document tools" nav category — served via WorkspacePdfTool.
 // Derived from headerStructure so adding a new tool auto-expands the set.
@@ -171,6 +222,18 @@ export function DashboardWorkspace() {
           const acctLabel: Record<string, string> = { zh: "账户", "zh-Hant": "帳戶", es: "Cuenta", pt: "Conta", fr: "Compte", ja: "アカウント", de: "Konto", ko: "계정" };
           return acctLabel[locale] ?? "Account";
         }
+        if (activeTool === "/workspace-legal") {
+          const legalLabel: Record<string, string> = { zh: "法律文档工作区", "zh-Hant": "法律文件工作區", es: "Espacio de trabajo legal", pt: "Espaço jurídico", fr: "Espace juridique", ja: "法務ワークスペース", de: "Rechts-Arbeitsbereich", ko: "법률 워크스페이스" };
+          return legalLabel[locale] ?? "Legal Document Workspace";
+        }
+        if (activeTool === "/workspace-finance") {
+          const finLabel: Record<string, string> = { zh: "财务 / 税务", "zh-Hant": "財務 / 稅務", es: "Finanzas / Impuestos", pt: "Finanças / Impostos", fr: "Finance / Fiscalité", ja: "財務・税務", de: "Finanzen / Steuern", ko: "재무 / 세금" };
+          return finLabel[locale] ?? "Finance / Tax";
+        }
+        if (activeTool === "/workspace-research") {
+          const resLabel: Record<string, string> = { zh: "科研 / 学术", "zh-Hant": "學術 / 研究", es: "Investigación / Académico", pt: "Pesquisa / Académico", fr: "Recherche / Académique", ja: "研究・学術", de: "Forschung / Akademisch", ko: "연구 / 학술" };
+          return resLabel[locale] ?? "Research / Academic";
+        }
         type NavItem = { key: string; slug: string };
         const item = headerStructure
           .flatMap((cat) => cat.cols.flatMap((col) => col.items as unknown as NavItem[]))
@@ -243,6 +306,12 @@ export function DashboardWorkspace() {
               <LeaseRedflagEmbedded locale={locale} embedded />
             ) : activeTool === "/govbid-matrix" ? (
               <GovbidMatrixEmbedded locale={locale} embedded />
+            ) : activeTool === "/workspace-legal" ? (
+              <LegalHubEmbedded locale={locale} />
+            ) : activeTool === "/workspace-finance" ? (
+              <DomainSoonPanel domain="finance" locale={locale} />
+            ) : activeTool === "/workspace-research" ? (
+              <DomainSoonPanel domain="research" locale={locale} />
             ) : null}
           </div>
         ) : history.length > 0 ? (
