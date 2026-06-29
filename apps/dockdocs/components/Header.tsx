@@ -398,10 +398,10 @@ export function Header() {
               {hdrLabel("pricing", locale)}
             </a>
 
-            {/* Download — placeholder (exe/PWA coming) */}
-            <span className={`${trigger} cursor-not-allowed opacity-50`} aria-disabled="true">
+            {/* Download */}
+            <a href={lh("/download", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/download"); }} className={trigger}>
               {hdrLabel("download", locale)}
-            </span>
+            </a>
 
             {/* Workspace */}
             <a href={lh("/workspace", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/workspace"); }} className={trigger}>
