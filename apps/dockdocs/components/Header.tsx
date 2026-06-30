@@ -255,7 +255,7 @@ export function Header() {
 
   const trigger =
     "flex items-center gap-1 rounded-[var(--radius-sm)] px-3 py-2 text-[15px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--accent)] cursor-pointer";
-  const activeCls = "border-b-2 border-[color:var(--accent)] text-[color:var(--foreground)]";
+  const activeCls = "border-b-2 border-[color:var(--accent)] !text-white";
   const isActive = (href: string) => currentSlug(pathname) === href.replace(/^\//, "");
   const itemCls =
     "block w-full whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[14.5px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]";
@@ -271,7 +271,7 @@ export function Header() {
         className="flex w-full items-center gap-2.5 rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
       >
         <span className="opacity-70">{GlobeIcon}</span>
-        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : locale === "ko" ? "언어" : "Language"}</span>
+        <span>{locale === "zh" ? "语言" : locale === "zh-Hant" ? "語言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : locale === "ko" ? "언어" : "Language"}</span>
         <svg className="ml-auto h-3 w-3 opacity-60" viewBox="0 0 12 12" fill="none">
           <path d="M4.5 3l3 3-3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -305,7 +305,7 @@ export function Header() {
         onClick={() => setLangOpen((v) => !v)}
         className="flex w-full items-center justify-between rounded-[var(--radius-sm)] px-3 py-2 text-left text-[13px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]"
       >
-        <span>{locale === "zh" ? "语言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : locale === "ko" ? "언어" : "Language"}</span>
+        <span>{locale === "zh" ? "语言" : locale === "zh-Hant" ? "語言" : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : locale === "ko" ? "언어" : "Language"}</span>
         <span className="flex items-center gap-1.5">
           <span className="text-[12px] text-[color:var(--faint)]">{localeLabels[locale as keyof typeof localeLabels] ?? locale}</span>
           <svg className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`} viewBox="0 0 12 12" fill="none">
@@ -510,8 +510,8 @@ export function Header() {
                     className="ml-auto rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1.5 text-[13px] font-semibold text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
                   >
                     {authUser
-                      ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "es" ? "Cuenta" : locale === "pt" ? "Conta" : locale === "fr" ? "Compte" : locale === "ja" ? "アカウント" : locale === "de" ? "Konto" : locale === "ko" ? "계정" : "Account"))
-                      : (locale === "zh" ? "登录" : locale === "es" ? "Iniciar sesión" : locale === "pt" ? "Entrar" : locale === "fr" ? "Connexion" : locale === "ja" ? "ログイン" : locale === "de" ? "Anmelden" : locale === "ko" ? "로그인" : "Sign in")}
+                      ? (authUser.name ?? authUser.email ?? (locale === "zh" ? "账户" : locale === "zh-Hant" ? "帳戶" : locale === "es" ? "Cuenta" : locale === "pt" ? "Conta" : locale === "fr" ? "Compte" : locale === "ja" ? "アカウント" : locale === "de" ? "Konto" : locale === "ko" ? "계정" : "Account"))
+                      : (locale === "zh" ? "登录" : locale === "zh-Hant" ? "登錄" : locale === "es" ? "Iniciar sesión" : locale === "pt" ? "Entrar" : locale === "fr" ? "Connexion" : locale === "ja" ? "ログイン" : locale === "de" ? "Anmelden" : locale === "ko" ? "로그인" : "Sign in")}
                   </button>
                 </div>
               </div>
