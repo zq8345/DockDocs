@@ -741,9 +741,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const subscribeLabel = zh ? h("订阅") : locale === "es" ? "Suscribirse" : locale === "pt" ? "Assinar" : locale === "fr" ? "S'abonner" : locale === "ja" ? "登録" : locale === "de" ? "Abonnieren" : locale === "ko" ? "구독" : "Subscribe";
   const buyLabel = zh ? h("购买") : locale === "es" ? "Comprar" : locale === "pt" ? "Comprar" : locale === "fr" ? "Acheter" : locale === "ja" ? "購入" : locale === "de" ? "Kaufen" : locale === "ko" ? "구매" : "Buy";
   const trialCtaText = zh ? h("免费试用 7 天 Pro · 无需信用卡") : locale === "es" ? "Prueba Pro 7 días gratis · Sin tarjeta" : locale === "pt" ? "Experimente Pro 7 dias grátis · Sem cartão" : locale === "fr" ? "Essai Pro 7 jours gratuits · Sans carte" : locale === "ja" ? "Pro を7日間無料で試す · カード不要" : locale === "de" ? "Pro 7 Tage kostenlos · Keine Kreditkarte" : locale === "ko" ? "7일 Pro 무료 체험 · 신용카드 불필요" : "Start free 7-day Pro trial · No credit card";
-  const panelPrivacyNote = zh ? h("本地读取 · 文字发至 AI") : locale === "es" ? "Los documentos se leen localmente — solo el texto extraído se envía a la IA." : locale === "pt" ? "Os documentos são lidos localmente — apenas o texto extraído é enviado à IA." : locale === "fr" ? "Les documents sont lus localement — seul le texte extrait est envoyé à l'IA." : locale === "ja" ? "文書はローカルで読み取り——抽出テキストのみ AI に送信されます。" : locale === "de" ? "Dokumente werden lokal gelesen — nur der extrahierte Text wird an die KI gesendet." : locale === "ko" ? "문서는 로컬에서 읽힙니다 — 추출된 텍스트만 AI로 전송됩니다." : "Documents are read locally — only the extracted text is sent to AI.";
   const proUnlocksEyebrow = zh ? h("// PRO 解锁") : locale === "es" ? "// Pro desbloquea" : locale === "pt" ? "// Pro desbloqueia" : locale === "fr" ? "// Pro déverrouille" : locale === "ja" ? "// Pro で解放" : locale === "de" ? "// Pro schaltet frei" : locale === "ko" ? "// Pro 잠금 해제" : "// Pro unlocks";
-  const diffEyebrow = zh ? h("// 一眼看清差别") : locale === "es" ? "// Free vs Pro de un vistazo" : locale === "pt" ? "// Free vs Pro em um relance" : locale === "fr" ? "// Free vs Pro en un coup d'œil" : locale === "ja" ? "// Free vs Pro を一目で比較" : locale === "de" ? "// Free vs. Pro auf einen Blick" : locale === "ko" ? "// Free vs Pro 한눈에 보기" : "// Free vs Pro at a glance";
   // Capability grid short labels (4 items × locale)
   const CAP_GRID = [
     {
@@ -914,7 +912,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                   onClick={(e) => { e.stopPropagation(); void handleCardCta(interval); }}
                   disabled={isCurrentInterval || billingLoading === "PRO" || (pricingCtaKind === "upgrade" && upgrade.loading)}
                   className={`w-full rounded-full py-2 text-[13px] font-medium transition disabled:opacity-60 ${
-                    highlighted
+                    isSelected
                       ? "bg-[color:var(--accent)] text-[color:var(--on-accent)] hover:opacity-90"
                       : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--accent)]"
                   }`}
@@ -987,49 +985,6 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         </div>
       </div>
 
-      {/* ② Free→Pro comparison panel */}
-      <div className={`mx-auto mt-20 ${LAYOUT.content}`}>
-        <p className={eyebrowCls(zh)}>{diffEyebrow}</p>
-        <div className="mt-8 grid items-stretch" style={{ gridTemplateColumns: "1fr 48px 1fr" }}>
-          {/* Left: Free */}
-          <div className="rounded-l-xl border border-[color:var(--line)] bg-[#141414] px-5 py-6">
-            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[color:var(--faint)]">Free</p>
-            {[0, 1, 3, 6, 5].map((ri) => {
-              const row = c.compareRows[ri];
-              if (!row) return null;
-              return (
-                <div key={ri} className="flex items-start gap-3 border-b border-[color:var(--line)]/40 py-3 last:border-0">
-                  <span className={`mt-0.5 shrink-0 text-[13px] font-medium ${row.v[0] === "✓" ? "text-[color:var(--accent)]" : "text-[color:var(--faint)]"}`}>{row.v[0]}</span>
-                  <span className="text-[13px] leading-5 text-[color:var(--muted)]">{row.f}</span>
-                </div>
-              );
-            })}
-          </div>
-          {/* Center arrow */}
-          <div className="flex items-center justify-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--accent)] shadow-[0_0_16px_rgba(62,207,142,0.3)]">
-              <svg className="hidden sm:block" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              <svg className="block sm:hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
-            </div>
-          </div>
-          {/* Right: Pro */}
-          <div className="rounded-r-xl border border-l-2 border-[color:var(--accent)] bg-[color:var(--accent)]/[0.04] px-5 py-6">
-            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[color:var(--accent)]">Pro</p>
-            {[0, 1, 3, 6, 5].map((ri) => {
-              const row = c.compareRows[ri];
-              if (!row) return null;
-              return (
-                <div key={ri} className="flex items-start gap-3 border-b border-[color:var(--accent)]/10 py-3 last:border-0">
-                  <span className={`mt-0.5 shrink-0 text-[13px] font-medium ${row.v[1] === "✓" ? "text-[color:var(--accent)]" : "text-[color:var(--faint)]"}`}>{row.v[1]}</span>
-                  <span className={`text-[13px] leading-5 ${row.v[1] === "✓" ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}`}>{row.f}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <p className="mt-3 text-[11.5px] text-[color:var(--faint)]">{panelPrivacyNote}</p>
-      </div>
-
       {/* Compare plans — 5 nav categories, collapsible accordion */}
       <div className={`mx-auto mt-16 ${LAYOUT.content}`}>
         <p className={eyebrowCls(zh)}>{zh ? h("// 套餐对照") : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : locale === "ja" ? "// プラン比較" : locale === "de" ? "// Vergleich" : locale === "ko" ? "// 요금제 비교" : "// Compare"}</p>
@@ -1088,7 +1043,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                       </span>
                     </td>
                     <td className="border-b border-l border-[color:var(--line)] px-5 py-3 text-center text-[12.5px] text-[color:var(--muted)]">{freeLabel}</td>
-                    <td className="border-b border-l border-[color:var(--line)] px-5 py-3 text-center text-[12.5px] font-medium text-[color:var(--foreground)]">{proLabel}</td>
+                    <td className="border-b border-l border-[color:var(--line)] px-5 py-3 text-center text-[12.5px] font-medium text-[color:var(--accent)]">{proLabel}</td>
                   </tr>,
                   ...(isOpen ? toolItems.map((tool) => (
                     <tr key={`tool-${tool.slug}`} className="bg-[color:var(--surface)] transition-colors hover:bg-[color:var(--surface-subtle)]">
@@ -1098,7 +1053,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                         </a>
                       </td>
                       <td className="border-b border-l border-[color:var(--line)] px-5 py-2 text-center text-[12px] text-[color:var(--faint)]">{freeLabel}</td>
-                      <td className="border-b border-l border-[color:var(--line)] px-5 py-2 text-center text-[12px] text-[color:var(--muted)]">{proLabel}</td>
+                      <td className="border-b border-l border-[color:var(--line)] px-5 py-2 text-center text-[12px] text-[color:var(--accent)]">{proLabel}</td>
                     </tr>
                   )) : []),
                 ];
