@@ -118,6 +118,7 @@ export async function analyzeDocument({
   const payload = await requestAnalyzer({
     context: selectedContext.context,
     locale,
+    answerLocale,
     sourceName: extracted.sourceName,
     truncated: selectedContext.truncated,
     signal,
@@ -162,12 +163,14 @@ export async function analyzeDocument({
 async function requestAnalyzer({
   context,
   locale,
+  answerLocale,
   sourceName,
   truncated,
   signal,
 }: {
   context: string;
   locale: AiChatLocale;
+  answerLocale?: string;
   sourceName: string;
   truncated: boolean;
   signal?: AbortSignal;
