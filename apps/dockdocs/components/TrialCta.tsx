@@ -335,20 +335,22 @@ export function TrialCta(props: TrialCtaProps) {
   if (props.variant === "hero") {
     const privacyHref = (!props.locale || props.locale === "en") ? "/privacy-policy" : `/${props.locale}/privacy-policy`;
     return (
-      <div className="flex flex-col gap-4">
-        <p className="max-w-lg text-[15px] leading-relaxed text-[color:var(--foreground)]">
-          {c.heroTitle}
-        </p>
-        <div className="flex flex-wrap items-center gap-3">
-          <GreenButton label={c.btnHero} loading={ctaLoading} onClick={handleCta} />
-          <a
-            href={privacyHref}
-            className="inline-flex h-11 items-center justify-center rounded-full border border-[color:var(--line)] px-6 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
-          >
-            {c.heroPrivacy}
-          </a>
+      <div className="mx-auto max-w-6xl px-6 py-14">
+        <div className="flex flex-col gap-5 rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-7 py-8 sm:px-10 sm:py-9">
+          <p className="max-w-xl text-[16px] font-medium leading-relaxed text-[color:var(--foreground)]">
+            {c.heroTitle}
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <GreenButton label={c.btnHero} loading={ctaLoading} onClick={handleCta} />
+            <a
+              href={privacyHref}
+              className="inline-flex h-11 items-center justify-center rounded-full border border-[color:var(--line)] px-6 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
+            >
+              {c.heroPrivacy}
+            </a>
+          </div>
+          <NoTricks items={c.noTricks} />
         </div>
-        <NoTricks items={c.noTricks} />
       </div>
     );
   }

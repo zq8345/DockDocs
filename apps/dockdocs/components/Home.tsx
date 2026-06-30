@@ -569,12 +569,8 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
         </div>
       </section>
 
-      {/* ── 1b · Trial CTA band ── */}
-      <section>
-        <div className={SHELL}>
-          <TrialCta variant="hero" locale={locale} />
-        </div>
-      </section>
+      {/* ── 1b · Trial CTA band — no SHELL wrapper; TrialCta owns its container so null = zero footprint ── */}
+      <TrialCta variant="hero" locale={locale} />
 
       {/* ── 2 · Find your tool — bento promoted high + a REAL client-side search (funnel-critical) ── */}
       <section>
