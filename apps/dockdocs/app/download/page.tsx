@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AppShell } from "@/components/AppShell";
 import { DownloadPage } from "@/components/DownloadPage";
 
 export const metadata: Metadata = {
@@ -9,5 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function DownloadRoute() {
-  return <DownloadPage />;
+  return (
+    <AppShell>
+      <DownloadPage />
+    </AppShell>
+  );
 }
