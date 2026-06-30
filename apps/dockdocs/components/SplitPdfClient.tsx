@@ -467,10 +467,10 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
               const pageLabelMap: Record<AuthoredLocale, string> = {
                 en: `Page ${p.idx + 1}`,
                 zh: `第 ${p.idx + 1} 页`,
-                es: `Page ${p.idx + 1}`,
-                pt: `Page ${p.idx + 1}`,
+                es: `Página ${p.idx + 1}`,
+                pt: `Página ${p.idx + 1}`,
                 fr: `Page ${p.idx + 1}`,
-                ja: `Page ${p.idx + 1}`,
+                ja: `${p.idx + 1}ページ`,
                 de: `Seite ${p.idx + 1}`,
                 ko: `${p.idx + 1}페이지`,
               };

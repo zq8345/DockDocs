@@ -395,10 +395,10 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
               const PAGE_LABEL: Record<AuthoredLocale, string> = {
                 en: `Page ${n}`,
                 zh: `第 ${n} 页`,
-                es: `Page ${n}`,
-                pt: `Page ${n}`,
+                es: `Página ${n}`,
+                pt: `Página ${n}`,
                 fr: `Page ${n}`,
-                ja: `Page ${n}`,
+                ja: `${n}ページ`,
                 de: `Seite ${n}`,
                 ko: `${n}페이지`,
               };
