@@ -127,6 +127,7 @@ export const routeSlugs = [
   "privacy-policy",
   "terms",
   "sitemap",
+  "download",
 ] as const;
 
 export type RouteSlug = (typeof routeSlugs)[number];

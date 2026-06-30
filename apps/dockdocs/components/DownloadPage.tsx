@@ -271,21 +271,23 @@ function Chevron({ open }: { open: boolean }) {
   );
 }
 
-export function DownloadPage() {
+export function DownloadPage({ locale: localeProp }: { locale?: Locale } = {}) {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installed, setInstalled] = useState(false);
   const [browser, setBrowser] = useState<Browser>("other");
-  const [locale, setLocale] = useState<Locale>("en");
+  const [locale, setLocale] = useState<Locale>(localeProp ?? "en");
   const [openSection, setOpenSection] = useState<"chromium" | "safari" | "other" | null>(null);
 
   useEffect(() => {
-    // Detect locale from stored preference (language switcher writes dockdocs-lang).
-    try {
-      const stored = localStorage.getItem("dockdocs-lang");
-      if (stored && AUTHORED_LOCALES.includes(stored as Locale)) {
-        setLocale(stored as Locale);
-      }
-    } catch { /* localStorage unavailable */ }
+    // Detect locale from stored preference only when not passed as a prop (standalone English route).
+    if (!localeProp) {
+      try {
+        const stored = localStorage.getItem("dockdocs-lang");
+        if (stored && AUTHORED_LOCALES.includes(stored as Locale)) {
+          setLocale(stored as Locale);
+        }
+      } catch { /* localStorage unavailable */ }
+    }
 
     // Detect browser for default-open step section.
     const ua = navigator.userAgent;
@@ -355,8 +357,8 @@ export function DownloadPage() {
     <div className="mx-auto max-w-3xl px-6 pb-20 pt-16">
 
       {/* ── Hero ── */}
-      <div className="mb-10 text-center">
-        <span className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--accent)]">
+      <div className="mb-10">
+        <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--accent)]">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 16V4M7 11l5 5 5-5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" />
           </svg>

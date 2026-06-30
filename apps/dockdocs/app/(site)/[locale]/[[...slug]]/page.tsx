@@ -60,6 +60,7 @@ import { ContractRiskClient } from "@/components/ContractRiskClient";
 import { LeaseRedflagClient } from "@/components/LeaseRedflagClient";
 import { GovbidMatrixClient } from "@/components/GovbidMatrixClient";
 import { SignPdfClient } from "@/components/SignPdfClient";
+import { DownloadPage } from "@/components/DownloadPage";
 import { ButtonLink, Container, Section } from "@dock/shared/ui";
 import {
   blogArticleAlternates,
@@ -2558,6 +2559,10 @@ export default async function LocalizedRoute({
         <ResearchHubPage locale={toVerticalLocale(clientLocale)} useLocalePrefix />
       </>
     );
+  }
+
+  if (slug === "download") {
+    return <DownloadPage locale={clientLocale} />;
   }
 
   return <LocalizedHome locale={clientLocale} />;
