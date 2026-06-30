@@ -33,5 +33,6 @@ export const standaloneRoutes = [
   "ai-document-summarization",
   "sign-pdf-without-uploading",
   "watermark-pdf-without-uploading",
+  "rotate-pdf-without-uploading",
   "upgrade",
 ] as const;
