@@ -53,56 +53,48 @@ export const navCategories: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de
 
 const pageLinks = {
   en: [
-    { name: "Pricing", href: "/pricing" },
     { name: "Guides", href: "/guides" },
     { name: "Blog", href: "/blog" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ],
   zh: [
-    { name: "定价", href: "/pricing" },
     { name: "指南", href: "/guides" },
     { name: "博客", href: "/blog" },
     { name: "关于", href: "/about" },
     { name: "联系", href: "/contact" },
   ],
   es: [
-    { name: "Precios", href: "/pricing" },
     { name: "Guías", href: "/guides" },
     { name: "Blog", href: "/blog" },
     { name: "Acerca de", href: "/about" },
     { name: "Contacto", href: "/contact" },
   ],
   pt: [
-    { name: "Preços", href: "/pricing" },
     { name: "Guias", href: "/guides" },
     { name: "Blog", href: "/blog" },
     { name: "Sobre", href: "/about" },
     { name: "Contato", href: "/contact" },
   ],
   fr: [
-    { name: "Tarifs", href: "/pricing" },
     { name: "Guides", href: "/guides" },
     { name: "Blog", href: "/blog" },
     { name: "À propos", href: "/about" },
     { name: "Contact", href: "/contact" },
   ],
   ja: [
-    { name: "料金", href: "/pricing" },
     { name: "ガイド", href: "/guides" },
     { name: "ブログ", href: "/blog" },
     { name: "会社概要", href: "/about" },
     { name: "お問い合わせ", href: "/contact" },
   ],
   de: [
-    { name: "Preise", href: "/pricing" },
     { name: "Anleitungen", href: "/guides" },
     { name: "Blog", href: "/blog" },
     { name: "Über uns", href: "/about" },
     { name: "Kontakt", href: "/contact" },
   ],
   ko: [
-    { name: "요금제", href: "/pricing" },
     { name: "가이드", href: "/guides" },
     { name: "블로그", href: "/blog" },
     { name: "회사 소개", href: "/about" },

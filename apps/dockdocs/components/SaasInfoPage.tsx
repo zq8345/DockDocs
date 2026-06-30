@@ -193,7 +193,7 @@ export function SaasInfoPage({
 
       {/* Continue exploring */}
       <section className="bg-[color:var(--surface-subtle)]">
-        <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+        <div className={`mx-auto ${LAYOUT.content} px-5 py-12 sm:px-6`}>
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
             {zh ? zhT("继续探索") : fr ? "Continuer à explorer" : ja ? "さらに探す" : es ? "Seguir explorando" : pt ? "Continuar explorando" : de ? "Weiter entdecken" : ko ? "계속 살펴보기" : "Continue exploring"}
           </p>
