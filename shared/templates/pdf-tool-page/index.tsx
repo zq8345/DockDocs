@@ -990,6 +990,20 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "여러 이미지를 순서가 정해진 하나의 PDF 묶음으로 만듭니다.",
         ),
       },
+      {
+        label: tr("Add pages to a PDF", "在 PDF 中插入页面", "Agregar páginas a un PDF", "Adicionar páginas a um PDF", "Ajouter des pages à un PDF", "PDF にページを追加", "Seiten in ein PDF einfügen", "PDF에 페이지 추가"),
+        href: "/add-page",
+        description: tr(
+          "Insert blank pages anywhere in a PDF before or after merging.",
+          "合并前后随意在 PDF 任意位置插入空白页。",
+          "Inserta páginas en blanco en cualquier parte de un PDF antes o después de combinar.",
+          "Insira páginas em branco em qualquer parte de um PDF antes ou depois de mesclar.",
+          "Insérez des pages vierges n'importe où dans un PDF avant ou après la fusion.",
+          "結合の前後に PDF の任意の場所へ空白ページを挿入します。",
+          "Fügen Sie leere Seiten an beliebiger Stelle in ein PDF ein — vor oder nach dem Zusammenführen.",
+          "병합 전후에 PDF의 어느 위치에나 빈 페이지를 삽입합니다.",
+        ),
+      },
     ],
     "split-pdf": [
       {
@@ -1078,6 +1092,20 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "선택 가능한 텍스트가 없으면 먼저 스캔한 PDF에 OCR을 적용하세요.",
         ),
       },
+      {
+        label: tr("Compare two PDF versions with Redline", "用 Redline 对比两个 PDF 版本", "Comparar dos versiones de PDF con Redline", "Comparar duas versões de PDF com Redline", "Comparer deux versions de PDF avec Redline", "Redline で 2 つの PDF バージョンを比較", "Zwei PDF-Versionen mit Redline vergleichen", "Redline으로 두 PDF 버전 비较"),
+        href: "/redline",
+        description: tr(
+          "After editing a converted Word file, compare the original and revised PDF side by side.",
+          "将转换的 Word 文件编辑后，并排对比原版与修改版 PDF。",
+          "Después de editar el archivo Word convertido, compara el PDF original y el revisado en paralelo.",
+          "Depois de editar o arquivo Word convertido, compare o PDF original e o revisado lado a lado.",
+          "Après avoir modifié le fichier Word converti, comparez le PDF original et le PDF révisé côte à côte.",
+          "変換した Word ファイルを編集した後、元の PDF と修正版 PDF を並べて比較します。",
+          "Vergleichen Sie nach der Bearbeitung der konvertierten Word-Datei Original- und überarbeitetes PDF nebeneinander.",
+          "변환된 Word 파일을 편집한 후 원본 PDF와 수정된 PDF를 나란히 비교합니다.",
+        ),
+      },
     ],
     "ocr-pdf": [
       {
@@ -1161,6 +1189,22 @@ function getIndexingLinks(config: PdfToolPageConfig): IndexingLink[] {
           "Questions fréquentes sur les formats, l'ordre et le résultat image vers PDF.",
           "フォーマット、順序、画像から PDF への出力に関するよくある質問。",
           "Häufige Fragen zu Formaten, Reihenfolge und Bild-zu-PDF-Ergebnis.",
+        ),
+      },
+    ],
+    "word-to-pdf": [
+      {
+        label: tr("Batch Word to PDF — convert a whole folder", "批量 Word 转 PDF — 整文件夹一次转", "Word a PDF por lote — convierte una carpeta entera", "Word para PDF em lote — converta uma pasta inteira", "Word en PDF par lot — convertissez un dossier entier", "Word を一括 PDF 変換 — フォルダごと変換", "Word zu PDF im Stapel — ganzen Ordner konvertieren", "Word를 일괄 PDF로 — 폴더 전체 변환"),
+        href: "/batch-word-to-pdf",
+        description: tr(
+          "Upload multiple .doc or .docx files at once and download a ZIP of converted PDFs.",
+          "一次上传多份 .doc/.docx 文件，下载整包 ZIP 转换结果。",
+          "Sube varios archivos .doc o .docx a la vez y descarga un ZIP de PDFs convertidos.",
+          "Faça upload de vários arquivos .doc ou .docx de uma vez e baixe um ZIP com os PDFs convertidos.",
+          "Téléversez plusieurs fichiers .doc ou .docx à la fois et téléchargez un ZIP de PDF convertis.",
+          "複数の .doc または .docx ファイルを一度にアップロードし、変換された PDF の ZIP をダウンロードします。",
+          "Laden Sie mehrere .doc- oder .docx-Dateien auf einmal hoch und laden Sie eine ZIP-Datei mit konvertierten PDFs herunter.",
+          "여러 .doc 또는 .docx 파일을 한 번에 업로드하고 변환된 PDF의 ZIP을 다운로드합니다.",
         ),
       },
     ],

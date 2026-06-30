@@ -809,6 +809,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Contract risk review", href: "/contract-risk", description: "Flag risky clauses in a single contract, each quoted risk tied to its source line." },
       { label: "Government bid matrix", href: "/govbid-matrix", description: "Turn a tender document into a structured requirements matrix you can act on." },
       { label: "Extract to Excel", href: "/extract-to-excel", description: "Pull tables and fields out of a PDF into a clean spreadsheet." },
+      { label: "Redline — compare two PDF versions", href: "/redline", description: "Spot what changed between document drafts or contract versions." },
     ],
   },
   zh: {
@@ -832,6 +833,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "合同风险审阅", href: "/contract-risk", description: "标记单份合同里的高风险条款，引用到的每条风险都对应原文出处。" },
       { label: "政府招标矩阵", href: "/govbid-matrix", description: "把招标文件转成可执行的结构化需求矩阵。" },
       { label: "抽取到 Excel", href: "/extract-to-excel", description: "把 PDF 里的表格和字段抽取成一张干净的表格。" },
+      { label: "Redline — 对比两个 PDF 版本", href: "/redline", description: "快速定位文档草稿或合同版本之间的变化。" },
     ],
   },
   es: {
@@ -855,6 +857,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Revisión de riesgos de contrato", href: "/contract-risk", description: "Marca cláusulas de riesgo en un solo contrato, cada riesgo citado ligado a su línea de origen." },
       { label: "Matriz de licitaciones", href: "/govbid-matrix", description: "Convierte un pliego de licitación en una matriz de requisitos estructurada y accionable." },
       { label: "Extraer a Excel", href: "/extract-to-excel", description: "Extrae tablas y campos de un PDF a una hoja de cálculo limpia." },
+      { label: "Redline — comparar dos versiones de PDF", href: "/redline", description: "Detecta qué cambió entre borradores de documentos o versiones de contrato." },
     ],
   },
   pt: {
@@ -878,6 +881,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Análise de risco de contrato", href: "/contract-risk", description: "Sinalize cláusulas arriscadas em um único contrato, cada risco citado ligado à sua linha de origem." },
       { label: "Matriz de licitações", href: "/govbid-matrix", description: "Transforme um edital em uma matriz de requisitos estruturada e acionável." },
       { label: "Extrair para Excel", href: "/extract-to-excel", description: "Extraia tabelas e campos de um PDF para uma planilha limpa." },
+      { label: "Redline — comparar duas versões de PDF", href: "/redline", description: "Identifique o que mudou entre rascunhos de documentos ou versões de contrato." },
     ],
   },
   fr: {
@@ -901,6 +905,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Analyse des risques d'un contrat", href: "/contract-risk", description: "Repérez les clauses à risque d'un seul contrat, chaque risque cité lié à sa ligne source." },
       { label: "Matrice d'appel d'offres", href: "/govbid-matrix", description: "Transformez un dossier d'appel d'offres en une matrice d'exigences structurée et exploitable." },
       { label: "Extraire vers Excel", href: "/extract-to-excel", description: "Extrayez les tableaux et champs d'un PDF vers une feuille de calcul propre." },
+      { label: "Redline — comparer deux versions de PDF", href: "/redline", description: "Repérez ce qui a changé entre des ébauches de documents ou des versions de contrat." },
     ],
   },
   ja: {
@@ -924,6 +929,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "契約リスクレビュー", href: "/contract-risk", description: "1 件の契約書のリスク条項を抽出し、引用できた各リスクを出典の一文に紐づけます。" },
       { label: "入札要件マトリクス", href: "/govbid-matrix", description: "入札文書を、実行できる構造化された要件マトリクスに変換します。" },
       { label: "Excel に抽出", href: "/extract-to-excel", description: "PDF の表や項目を、整ったスプレッドシートに抽出します。" },
+      { label: "Redline — 2 つの PDF バージョンを比較", href: "/redline", description: "文書の草稿や契約書バージョン間の変更点を素早く確認します。" },
     ],
   },
   de: {
@@ -947,6 +953,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Vertragsrisiko-Prüfung", href: "/contract-risk", description: "Markieren Sie riskante Klauseln in einem einzelnen Vertrag, jedes zitierte Risiko an seine Quellzeile gebunden." },
       { label: "Ausschreibungsmatrix", href: "/govbid-matrix", description: "Verwandeln Sie ein Ausschreibungsdokument in eine strukturierte Anforderungsmatrix, mit der Sie arbeiten können." },
       { label: "Nach Excel extrahieren", href: "/extract-to-excel", description: "Ziehen Sie Tabellen und Felder aus einem PDF in eine saubere Tabelle." },
+      { label: "Redline — zwei PDF-Versionen vergleichen", href: "/redline", description: "Finden Sie heraus, was sich zwischen Dokumententwürfen oder Vertragsversionen geändert hat." },
     ],
   },
   ko: {
@@ -970,6 +977,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "계약 위험 검토", href: "/contract-risk", description: "한 계약서의 위험 조항을 표시하고, 인용된 각 위험을 출처 줄과 연결합니다." },
       { label: "정부 입찰 매트릭스", href: "/govbid-matrix", description: "입찰 문서를 실행 가능한 구조화된 요건 매트릭스로 바꿉니다." },
       { label: "Excel로 추출", href: "/extract-to-excel", description: "PDF의 표와 필드를 깔끔한 스프레드시트로 뽑아냅니다." },
+      { label: "Redline — 두 PDF 버전 비교", href: "/redline", description: "문서 초안 또는 계약 버전 간의 변경 사항을 확인합니다." },
     ],
   },
 };

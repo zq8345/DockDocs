@@ -58,6 +58,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "AI summary", href: "/ai-summary", description: "Condense a long document into a structured summary you can scan in seconds." },
       { label: "Contract risk check", href: "/contract-risk", description: "Flag risky, one-sided, or missing clauses — quoted from your contract." },
       { label: "Compare documents", href: "/compare", description: "Ask one question across several documents and see how their answers differ." },
+      { label: "AI Document Workspace", href: "/ai-workspace", description: "Analyze multiple documents at once — chat, summarize, and compare across your whole library." },
     ],
   },
   zh: {
@@ -81,6 +82,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "AI 摘要", href: "/ai-summary", description: "把一份长文档浓缩成可在数秒内扫读的结构化摘要。" },
       { label: "合同风险体检", href: "/contract-risk", description: "标出有风险、单方面或缺失的条款——逐条引用你的合同原文。" },
       { label: "多文档对比", href: "/compare", description: "用同一个问题横向问多份文档,看它们的答案有何不同。" },
+      { label: "AI 文档工作台", href: "/ai-workspace", description: "同时处理多份文档——跨文档对话、摘要和比较一站搞定。" },
     ],
   },
   es: {
@@ -104,6 +106,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Resumen con IA", href: "/ai-summary", description: "Condensa un documento largo en un resumen estructurado que puedes escanear en segundos." },
       { label: "Revisión de riesgos del contrato", href: "/contract-risk", description: "Marca cláusulas riesgosas, unilaterales o ausentes, citadas de tu contrato." },
       { label: "Comparar documentos", href: "/compare", description: "Haz una pregunta a varios documentos y observa cómo difieren sus respuestas." },
+      { label: "Espacio de trabajo IA", href: "/ai-workspace", description: "Analiza varios documentos a la vez — chat, resumen y comparación en una sola interfaz." },
     ],
   },
   pt: {
@@ -127,6 +130,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Resumo com IA", href: "/ai-summary", description: "Condense um documento longo em um resumo estruturado que você lê em segundos." },
       { label: "Verificação de riscos do contrato", href: "/contract-risk", description: "Sinalize cláusulas arriscadas, unilaterais ou ausentes, citadas do seu contrato." },
       { label: "Comparar documentos", href: "/compare", description: "Faça uma pergunta a vários documentos e veja como as respostas diferem." },
+      { label: "Área de trabalho de IA", href: "/ai-workspace", description: "Analise vários documentos de uma vez — chat, resumo e comparação em um só lugar." },
     ],
   },
   fr: {
@@ -150,6 +154,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "Résumé IA", href: "/ai-summary", description: "Condensez un long document en un résumé structuré que vous parcourez en quelques secondes." },
       { label: "Analyse des risques du contrat", href: "/contract-risk", description: "Signalez les clauses risquées, déséquilibrées ou absentes, citées depuis votre contrat." },
       { label: "Comparer des documents", href: "/compare", description: "Posez une question à plusieurs documents et voyez en quoi leurs réponses diffèrent." },
+      { label: "Espace de travail IA", href: "/ai-workspace", description: "Analysez plusieurs documents à la fois — chat, résumé et comparaison en une seule interface." },
     ],
   },
   ja: {
@@ -173,6 +178,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "AI 要約", href: "/ai-summary", description: "長い文書を、数秒で目を通せる構造化された要約に凝縮します。" },
       { label: "契約リスク診断", href: "/contract-risk", description: "リスクのある・一方的な・欠けている条項を、契約書から引用して指摘します。" },
       { label: "文書を比較", href: "/compare", description: "複数の文書に同じ質問を投げ、回答の違いを確認します。" },
+      { label: "AI ドキュメントワークスペース", href: "/ai-workspace", description: "複数の文書を同時に処理——ライブラリ全体にわたるチャット・要約・比較を 1 か所で。" },
     ],
   },
   de: {
@@ -196,6 +202,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "KI-Zusammenfassung", href: "/ai-summary", description: "Verdichten Sie ein langes Dokument zu einer strukturierten Zusammenfassung, die Sie in Sekunden überfliegen." },
       { label: "Vertrags-Risikoprüfung", href: "/contract-risk", description: "Markieren Sie riskante, einseitige oder fehlende Klauseln – aus Ihrem Vertrag zitiert." },
       { label: "Dokumente vergleichen", href: "/compare", description: "Stellen Sie mehreren Dokumenten eine Frage und sehen Sie, wie sich ihre Antworten unterscheiden." },
+      { label: "KI-Dokumentarbeitsbereich", href: "/ai-workspace", description: "Analysieren Sie mehrere Dokumente gleichzeitig — Chat, Zusammenfassung und Vergleich in einer Oberfläche." },
     ],
   },
   ko: {
@@ -219,6 +226,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "AI 요약", href: "/ai-summary", description: "긴 문서를 몇 초 만에 훑어볼 수 있는 구조화된 요약으로 압축합니다." },
       { label: "계약 위험 검토", href: "/contract-risk", description: "위험하거나 한쪽에 치우치거나 빠진 조항을 표시합니다 — 계약서에서 인용합니다." },
       { label: "문서 비교", href: "/compare", description: "여러 문서에 같은 질문을 던지고 답변이 어떻게 다른지 확인합니다." },
+      { label: "AI 문서 워크스페이스", href: "/ai-workspace", description: "여러 문서를 한 번에 분석 — 전체 라이브러리에 걸쳐 채팅, 요약, 비교를 한 곳에서." },
     ],
 },
 };
