@@ -1,6 +1,7 @@
 "use client";
 
 import { trackToolRun } from "@/lib/track";
+import { TrialCta } from "@/components/TrialCta";
 import { useEffect, useRef, useState } from "react";
 import { AiDocUpload } from "@/components/AiDocUpload";
 import {
@@ -749,6 +750,24 @@ export function AiChatWorkflow({
         <p className="mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
           {t.description}
         </p>
+
+        <div className="mt-6">
+          <TrialCta
+            variant="tool-pro"
+            locale={locale}
+            hookTitle={
+              locale === "zh"
+                ? "上传这份文档，7 天内免费向它提无限问题"
+                : locale === "es" ? "Este documento — 7 días para hacerle preguntas ilimitadas con IA."
+                : locale === "pt" ? "Este documento — 7 dias para fazer perguntas ilimitadas com IA."
+                : locale === "fr" ? "Ce document — 7 jours pour poser des questions illimitées par IA."
+                : locale === "ja" ? "この文書——7日間、AIに何でも質問し放題。"
+                : locale === "de" ? "Dieses Dokument — 7 Tage lang unbegrenzte KI-Fragen."
+                : locale === "ko" ? "이 문서——7일 동안 AI에게 무제한 질문하세요."
+                : "This document — 7 days to ask it unlimited AI questions."
+            }
+          />
+        </div>
 
         <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
           <AiDocUpload

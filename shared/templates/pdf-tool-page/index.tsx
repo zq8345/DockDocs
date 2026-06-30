@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ButtonLink, Container, Section } from "../../ui";
 import { LAYOUT } from "@/lib/layout-constants";
 import { PdfWorkflowEngine } from "./workflow-engine";
+import { ToolZoneWithTrial } from "./ToolZoneWithTrial";
 import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "./VerifyClientSide";
 // zh-Hant copy is derived from zh via OpenCC (Simplified->Traditional).
 import { toHant as ccTpl, deepHant as deepHantTpl } from "./zh-hant";
@@ -586,9 +587,9 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
             {config.heroDescription}
           </p>
 
-          {/* Upload engine */}
+          {/* Upload engine + post-success trial nudge */}
           <div className="mt-8">
-            <PdfWorkflowEngine config={config} />
+            <ToolZoneWithTrial config={config} />
           </div>
         </div>
       </section>

@@ -12,6 +12,7 @@ import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
 import { appendWorkHistory } from "@/lib/work-history";
+import { TrialCta } from "@/components/TrialCta";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 
@@ -820,6 +821,26 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         </>
       )}
       {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>}
+
+      {!embedded && (
+        <div className="mt-6">
+          <TrialCta
+            variant="tool-pro"
+            locale={locale}
+            hookTitle={
+              locale === "zh" || locale === "zh-Hant"
+                ? "这份合同，先免费把风险查出来"
+                : locale === "es" ? "Este contrato — que la IA identifique los riesgos antes de firmar."
+                : locale === "pt" ? "Este contrato — que a IA identifique os riscos antes de assinar."
+                : locale === "fr" ? "Ce contrat — que l'IA identifie les risques avant de signer."
+                : locale === "ja" ? "この契約書——署名前にAIがリスクを洗い出します。"
+                : locale === "de" ? "Dieser Vertrag — KI erkennt die Risiken, bevor Sie unterschreiben."
+                : locale === "ko" ? "이 계약서——서명 전에 AI가 위험을 찾아드립니다."
+                : "This contract — let AI flag the risks before you sign."
+            }
+          />
+        </div>
+      )}
 
       {phase === "idle" || phase === "extracting" ? (
         <UploadDropzone

@@ -5,6 +5,8 @@ import type { CSSProperties, ReactNode } from "react";
 import { navCategories } from "@/components/Header";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import { Figure, SHELL, H2, SUB, CAP, PANEL, eyebrowCls } from "@/components/design";
+import { ProductDemoHero } from "@/components/ProductDemoHero";
+import { TrialCta } from "@/components/TrialCta";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 type Item = { name: string; slug: string };
@@ -487,9 +489,6 @@ const CARDS: { visual: "thumbs" | "batch" | "extract" | "secure" }[] = [
   { visual: "secure" },
 ];
 
-// section-3 capability chips link to their tool pages (funnel: link-bearing per spec)
-const AICHIP_SLUGS = ["/compare", "/extract-to-excel", "/ai-summary", "/translate-pdf"];
-
 // concrete jobs DockDocs does — old way → DockDocs (low text, scannable)
 const SCENARIOS = [
   { icon: <path d="M4 13h3v6H4zM10 9h3v10h-3zM16 5h3v14h-3z" />, href: "/compare",
@@ -549,8 +548,6 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
   const path = (slug: string) => (hant ? `/zh-Hant${slug}` : locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : locale === "de" ? `/de${slug}` : locale === "ko" ? `/ko${slug}` : slug);
 
   // ── real client-side tool search over the full flatItems set across all 4 cats ──
-  const heroReveal = useLineReveal(3);
-
   const [q, setQ] = useState("");
   const query = q.trim().toLowerCase();
   const allTools: Item[] = (() => {
@@ -620,36 +617,12 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
             <span className="text-[13px] text-[color:var(--faint)]">{c.nosignup}</span>
           </div>
 
-          {/* Demo card — hero main act: grounded AI interface, report → AI summary + source strip. */}
-          <Figure className="mt-14" glow="24%">
-            <div className="hfg-in flex items-stretch gap-4" onMouseEnter={heroReveal.start} onMouseLeave={heroReveal.stop}>
-              <div className="flex w-[34%] flex-col gap-1.5 rounded-lg border border-[color:var(--line)] bg-black/20 p-4">
-                {[80, 60, 70, 50, 65, 55].map((w, i) => <span key={i} className={`h-[3px] rounded-full ${i === 2 ? "bg-[color:var(--accent)]" : "bg-[color:var(--skeleton)]"}`} style={{ width: `${w}%`, opacity: i === 2 ? 0.9 : 1 }} />)}
-                <span className="mt-1 text-[10px] text-[color:var(--faint)]">report.pdf</span>
-              </div>
-              <div className="flex items-center text-[color:var(--accent)]">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </div>
-              <div className="flex-1 rounded-lg border border-[color:var(--line)] bg-black/20 p-4">
-                <p className="mb-2 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">{c.aiSummary}</p>
-                <div className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--foreground)]">
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent)]" />
-                  <span className={`tw-line min-w-0 ${heroReveal.lineCls(0)}`}>{locale === "zh" || hant ? h("营收同比 +23%") : locale === "es" ? "Ingresos +23% interanual" : locale === "pt" ? "Receita +23% ano a ano" : locale === "fr" ? "Revenus +23% sur un an" : locale === "ja" ? "売上 前年比+23%" : locale === "de" ? "Umsatz +23 % gg. Vorjahr" : locale === "ko" ? "매출 전년 대비 +23%" : "Revenue +23% YoY"}</span>
-                  <span className={`tw-pill ml-auto inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[9px] font-medium text-[color:var(--accent)] ${heroReveal.lineCls(0)}`}>{c.cite}</span>
-                </div>
-                {[locale === "zh" || hant ? h("亚太区为主要驱动") : locale === "es" ? "APAC es el motor principal" : locale === "pt" ? "APAC é o motor principal" : locale === "fr" ? "L'APAC est le principal moteur" : locale === "ja" ? "APACが主な牽引役" : locale === "de" ? "APAC ist der Haupttreiber" : locale === "ko" ? "APAC가 주요 견인 요인" : "APAC is the main driver", locale === "zh" || hant ? h("毛利率 41%（↑3pt）") : locale === "es" ? "Margen bruto 41% (↑3pt)" : locale === "pt" ? "Margem bruta 41% (↑3pt)" : locale === "fr" ? "Marge brute 41% (↑3pt)" : locale === "ja" ? "粗利率41%（↑3pt）" : locale === "de" ? "Bruttomarge 41 % (↑3 pp)" : locale === "ko" ? "매출총이익률 41%（↑3pt）" : "Gross margin 41% (↑3pt)"].map((b, i) => (
-                  <div key={b} className="mb-1.5 flex items-center gap-1.5 text-[13px] text-[color:var(--muted)] last:mb-0">
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" /><span className={`tw-line ${heroReveal.lineCls(i + 1)}`}>{b}</span>
-                  </div>
-                ))}
-                {/* Source citation strip — adds height + reinforces traceability */}
-                <div className="mt-3 flex items-center gap-2 rounded border border-[color:var(--soft-accent)] bg-[color:var(--soft-accent)] px-2.5 py-2">
-                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none" className="shrink-0 text-[color:var(--accent)]"><path d="M2 6.5l2.5 2.5L10 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  <span className="text-[10px] text-[color:var(--accent-strong)]">{c.cite} — report.pdf p.12</span>
-                </div>
-              </div>
-            </div>
-          </Figure>
+          <div className="mt-8">
+            <TrialCta variant="hero" locale={locale} />
+          </div>
+          <div className="mt-14">
+            <ProductDemoHero locale={locale} />
+          </div>
         </div>
       </section>
 
@@ -731,50 +704,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
         </div>
       </section>
 
-      {/* ── 3 · Grounded AI (moat) — CTA + chips BEFORE the figure so the funnel link isn't buried ── */}
-      <section>
-        <div className={SHELL}>
-          <p className={eyebrowCls(zh)}>{c.aiEyebrow}</p>
-          <h2 className={`mt-4 ${H2}`}>{c.aiHeading}</h2>
-          <p className={SUB}>{c.aiSub}</p>
-          <a href={path("/chat-with-pdf")} className="mt-6 inline-flex items-center gap-1.5 text-[14px] font-medium text-[color:var(--accent)] transition hover:gap-2.5">
-            {c.aiCta}
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          </a>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {c.aiChips.map((chip, i) => (
-              <a key={chip} href={path(AICHIP_SLUGS[i])} className="rounded-full border border-[color:var(--line)] px-3 py-1 text-[12px] text-[color:var(--muted)] transition-colors hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">{chip}</a>
-            ))}
-          </div>
-
-          {/* grounded Q&A: a question, then an answer that cites VERBATIM SNIPPETS (what the product really returns — not page numbers) */}
-          <Figure className="mt-10" glow="32%">
-            <div>
-              <div className="flex justify-end">
-                <span className="max-w-[80%] rounded-2xl rounded-br-md border border-[color:var(--line)] bg-[color:var(--background)] px-3.5 py-2 text-[12.5px] leading-[1.45] text-[color:var(--foreground)]">{c.qaQuestion}</span>
-              </div>
-              <div className={`mt-3 ${PANEL}`}>
-                <div className="mb-2.5 flex items-center gap-1.5 text-[10px] font-normal uppercase tracking-[0.12em] text-[color:var(--faint)]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--accent)]" />{c.qaGrounded}
-                </div>
-                <p className="mb-3 text-[12.5px] leading-[1.5] text-[color:var(--foreground)]">{c.qaAnswer}</p>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-[10px] text-[color:var(--faint)]">{c.qaSourcesLabel}</span>
-                  {c.qaSnippets.map((snip) => (
-                    <span key={snip} className="inline-flex items-center gap-1 rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] font-medium text-[color:var(--accent)] transition-colors hover:border-[color:var(--accent)]">
-                      <svg width="9" height="9" viewBox="0 0 16 16" fill="none"><path d="M5 4H3v3h2zM10 4H8v3h2z" fill="currentColor" /></svg>
-                      “{snip}”
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </Figure>
-          <p className={CAP}>{c.fig3Caption}</p>
-        </div>
-      </section>
-
-      {/* ── 4 · What it does for you — 4 jobs in one Figure ── */}
+      {/* ── 3 · What it does for you — 4 jobs in one Figure ── */}
       <section>
         <div className={SHELL}>
           <p className={eyebrowCls(zh)}>{c.jobsEyebrow}</p>
@@ -812,6 +742,9 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a href={path("/chat-with-pdf")} className="inline-flex h-11 items-center justify-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]">{c.primary}</a>
             <a href={path("/pricing")} className="inline-flex h-11 items-center justify-center rounded-full border border-[color:var(--line-strong)] px-6 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)]">{c.viewPricing}</a>
+          </div>
+          <div className="mt-8">
+            <TrialCta variant="hero" locale={locale} />
           </div>
         </div>
       </section>

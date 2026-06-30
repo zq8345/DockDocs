@@ -1,6 +1,7 @@
 "use client";
 
 import { trackToolRun } from "@/lib/track";
+import { TrialCta } from "@/components/TrialCta";
 import { useRef, useState } from "react";
 import { AiDocUpload } from "@/components/AiDocUpload";
 import {
@@ -429,6 +430,24 @@ export function AiSummaryWorkflow({
         <p className="mt-4 text-sm leading-7 text-[color:var(--muted)] sm:text-base">
           {t.description}
         </p>
+
+        <div className="mt-6">
+          <TrialCta
+            variant="tool-pro"
+            locale={locale}
+            hookTitle={
+              locale === "zh"
+                ? "这份文档，先免费让 AI 给你一份完整摘要"
+                : locale === "es" ? "Este documento — que la IA genere un resumen completo gratis."
+                : locale === "pt" ? "Este documento — que a IA gere um resumo completo grátis."
+                : locale === "fr" ? "Ce document — que l'IA génère un résumé complet gratuitement."
+                : locale === "ja" ? "この文書——AIが完全な要約を無料で生成します。"
+                : locale === "de" ? "Dieses Dokument — KI erstellt eine vollständige Zusammenfassung kostenlos."
+                : locale === "ko" ? "이 문서——AI가 무료로 전체 요약을 생성합니다."
+                : "This document — let AI generate a full summary for free."
+            }
+          />
+        </div>
 
         <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
           <AiDocUpload

@@ -9,6 +9,7 @@ import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { TrialCta } from "@/components/TrialCta";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 
@@ -552,6 +553,26 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
         </>
       )}
       {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>}
+
+      {!embedded && (
+        <div className="mt-6">
+          <TrialCta
+            variant="tool-pro"
+            locale={locale}
+            hookTitle={
+              locale === "zh" || locale === "zh-Hant"
+                ? "这份招标文件，先免费查一遍合规要求"
+                : locale === "es" ? "Esta licitación — que la IA identifique los requisitos de cumplimiento."
+                : locale === "pt" ? "Este edital — que a IA identifique os requisitos de conformidade."
+                : locale === "fr" ? "Cet appel d'offres — que l'IA identifie les exigences de conformité."
+                : locale === "ja" ? "この入札文書——AIが要件を洗い出します。"
+                : locale === "de" ? "Diese Ausschreibung — KI prüft die Compliance-Anforderungen."
+                : locale === "ko" ? "이 입찰 문서——AI가 준수 요건을 찾아드립니다."
+                : "This bid document — let AI check the compliance requirements."
+            }
+          />
+        </div>
+      )}
 
       {/* Upload */}
       <div className="mt-8">

@@ -53,8 +53,10 @@ function makeTr(loc: L) {
 
 export function PdfWorkflowEngine({
   config,
+  onSuccess,
 }: {
   config: PdfToolPageConfig;
+  onSuccess?: () => void;
 }) {
   const loc = normalizeLocale(config.locale);
   const tr = makeTr(loc);
@@ -246,6 +248,7 @@ export function PdfWorkflowEngine({
       setProgress(100);
       setStepIndex(spec.steps.length - 1);
       setStatus("result");
+      onSuccess?.();
       // North-star activation: fire tool_run ONLY for REAL tool runs. Simulated/
       // placeholder tools (the non-real branch above) must not inflate the
       // weekly-activated count — vanity pollution the console explicitly rejects.

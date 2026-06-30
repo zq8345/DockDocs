@@ -10,6 +10,7 @@ import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
+import { TrialCta } from "@/components/TrialCta";
 import type { RouteLocale, AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 
@@ -565,6 +566,26 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
         </>
       )}
       {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>}
+
+      {!embedded && (
+        <div className="mt-6">
+          <TrialCta
+            variant="tool-pro"
+            locale={locale}
+            hookTitle={
+              locale === "zh" || locale === "zh-Hant"
+                ? "这份租约，先免费把红旗条款标出来"
+                : locale === "es" ? "Este arrendamiento — que la IA identifique las cláusulas problemáticas."
+                : locale === "pt" ? "Este contrato de arrendamento — que a IA identifique cláusulas problemáticas."
+                : locale === "fr" ? "Ce bail — que l'IA identifie les clauses problématiques."
+                : locale === "ja" ? "この賃貸契約書——AIが問題条項を洗い出します。"
+                : locale === "de" ? "Dieser Mietvertrag — KI markiert die problematischen Klauseln."
+                : locale === "ko" ? "이 임대계약서——AI가 위험 조항을 찾아드립니다."
+                : "This lease — let AI flag the problematic clauses before you sign."
+            }
+          />
+        </div>
+      )}
 
       {phase === "idle" || phase === "extracting" ? (
         <>
