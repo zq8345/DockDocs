@@ -1,8 +1,9 @@
 "use client";
 
 import { LAYOUT } from "@/lib/layout-constants";
+import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "ko";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "ko" | "de" | "zh-Hant";
 
 const STR = {
   en: {
@@ -194,6 +195,33 @@ const STR = {
       splitPdf: { name: "PDF 분할", desc: "페이지를 추출하거나 범위로 분할합니다." },
     },
   },
+  de: {
+    heroTitle1: "PDF-Tools",
+    heroTitle2: "für echte Arbeit gemacht.",
+    heroSubtitle: "Zusammenführen, komprimieren, konvertieren, mit KI chatten — alle PDF-Tools, die Sie brauchen, völlig kostenlos.",
+    ctaStart: "Kostenlos starten",
+    ctaBrowse: "Tools ansehen →",
+    featFastTitle: "Schnell und kostenlos",
+    featFastDesc: "Alle Tools sind kostenlos. Kein Konto, kein Wasserzeichen, keine Einschränkungen.",
+    featPrivacyTitle: "Datenschutz zuerst",
+    featPrivacyDesc: "Dateien werden im Browser verarbeitet. Nichts wird auf Servern gespeichert.",
+    featAiTitle: "KI-gestützt",
+    featAiDesc: "Chatten, zusammenfassen, übersetzen und Erkenntnisse aus Dokumenten gewinnen.",
+    featGlobalTitle: "Global",
+    featGlobalDesc: "12 Sprachen. Teams in 5 Städten. Über 30 Millionen Nutzer weltweit.",
+    mostUsed: "Am häufigsten genutzt",
+    startWith: "Hier starten.",
+    viewAll: "Alle 26 Tools anzeigen →",
+    isNew: "Neu",
+    tools: {
+      mergePdf: { name: "PDF zusammenführen", desc: "PDFs in der gewünschten Reihenfolge zusammenführen." },
+      compressPdf: { name: "PDF komprimieren", desc: "Dateigröße reduzieren und Qualität optimieren." },
+      chatWithPdf: { name: "Mit PDF chatten", desc: "Fragen zu Ihrem Dokument stellen." },
+      wordToPdf: { name: "Word zu PDF", desc: "DOCX in hochauflösendes PDF umwandeln." },
+      pdfToWord: { name: "PDF zu Word", desc: "Inhalte in bearbeitbares Word extrahieren." },
+      splitPdf: { name: "PDF aufteilen", desc: "Seiten extrahieren oder nach Bereich aufteilen." },
+    },
+  },
 };
 
 const toolIcons: Record<string, string> = {
@@ -209,7 +237,7 @@ const toolIcons: Record<string, string> = {
 type ToolCard = { name: string; href: string; category: string; isNew?: boolean; desc: string };
 
 export function HomeClient({ locale = "en" }: { locale?: Locale }) {
-  const t = STR[locale] ?? STR.en;
+  const t = locale === "zh-Hant" ? deepHant(STR.zh) : ((STR as Record<string, typeof STR.en>)[locale] ?? STR.en);
 
   const highlightTools: ToolCard[] = [
     { name: t.tools.mergePdf.name, href: "/merge-pdf", category: "popular", desc: t.tools.mergePdf.desc },

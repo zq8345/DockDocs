@@ -24,7 +24,7 @@ import type { MembershipLocale } from "@/lib/membership-ui";
 import type { PaidSubscriptionPlan } from "@/lib/billing-config";
 import { deepHant } from "@/lib/zh-hant";
 
-type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "zh-Hant";
+type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
 type Strings = {
   loading: string;
@@ -334,6 +334,44 @@ const AUTHORED: Record<Exclude<Locale, "zh-Hant">, Strings> = {
     signInToBill: "Melden Sie sich an, um die Bezahlung zu starten oder das Kundenportal zu öffnen.",
     workspaceBindingTitle: "Workspace-Verknüpfung",
     workspaceBindingDescription: "Workspace-Einträge verwenden die Speicher-ID des aktuellen Kontos. Original-PDFs werden niemals gespeichert.",
+  },
+  ko: {
+    loading: "계정 불러오는 중…",
+    checkoutSuccess: "결제가 완료되었습니다. Stripe 동기화 후 구독이 업데이트됩니다.",
+    magicLinkSent: "로그인 링크가 이메일로 전송되었습니다. 이메일의 링크를 클릭하여 로그인하세요.",
+    errorFallback: "계정 작업에 실패했습니다.",
+    currentUser: "현재 사용자",
+    loggedInUser: "로그인한 사용자",
+    anonymousBrowser: "익명 브라우저",
+    statusLabel: "상태",
+    signedInLabel: "로그인됨",
+    notSignedInLabel: "로그인되지 않음",
+    planLabel: "플랜",
+    planStatusLabel: "플랜 상태",
+    workspaceStorage: "워크스페이스 저장소",
+    signOut: "로그아웃",
+    loginTitle: "로그인",
+    loginDescription: "로그인하면 저장된 대화와 워크스페이스 메타데이터가 계정에 귀속됩니다. 익명 데이터는 이 브라우저에만 저장됩니다.",
+    continueWithGoogle: "Google로 계속",
+    continueWithMicrosoft: "Microsoft로 계속",
+    orEmail: "또는 이메일",
+    emailSentMessage: "로그인 링크가 이메일로 전송되었습니다. 클릭하여 로그인하세요(스팸함도 확인해 주세요).",
+    sendLoginLink: "로그인 링크 전송",
+    passwordlessNote: "비밀번호 불필요 — 로그인 링크를 이메일로 보내드립니다.",
+    planTitle: "플랜",
+    planDescription: "로그인하면 Stripe 결제를 시작할 수 있습니다. 구독 상태는 최신 Stripe webhook을 반영합니다.",
+    sourceLabel: "출처",
+    periodEndLabel: "기간 종료",
+    updatedAtLabel: "업데이트 시간",
+    notSet: "설정되지 않음",
+    opening: "열리는 중…",
+    upgradePlus: "Plus로 업그레이드",
+    upgradePro: "Pro로 업그레이드",
+    openingBilling: "결제 열리는 중…",
+    manageBilling: "결제 관리",
+    signInToBill: "로그인하여 결제를 시작하거나 고객 포털을 여세요.",
+    workspaceBindingTitle: "워크스페이스 연결",
+    workspaceBindingDescription: "워크스페이스 기록은 현재 계정의 저장소 ID를 사용합니다. 원본 PDF는 저장되지 않습니다.",
   },
 };
 
