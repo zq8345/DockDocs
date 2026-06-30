@@ -442,7 +442,6 @@ export function AiSummaryWorkflow({
                 : locale === "pt" ? "Este documento — que a IA gere um resumo completo grátis."
                 : locale === "fr" ? "Ce document — que l'IA génère un résumé complet gratuitement."
                 : locale === "ja" ? "この文書——AIが完全な要約を無料で生成します。"
-                : locale === "de" ? "Dieses Dokument — KI erstellt eine vollständige Zusammenfassung kostenlos."
                 : locale === "ko" ? "이 문서——AI가 무료로 전체 요약을 생성합니다."
                 : "This document — let AI generate a full summary for free."
             }

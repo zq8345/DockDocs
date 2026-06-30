@@ -762,7 +762,6 @@ export function AiChatWorkflow({
                 : locale === "pt" ? "Este documento — 7 dias para fazer perguntas ilimitadas com IA."
                 : locale === "fr" ? "Ce document — 7 jours pour poser des questions illimitées par IA."
                 : locale === "ja" ? "この文書——7日間、AIに何でも質問し放題。"
-                : locale === "de" ? "Dieses Dokument — 7 Tage lang unbegrenzte KI-Fragen."
                 : locale === "ko" ? "이 문서——7일 동안 AI에게 무제한 질문하세요."
                 : "This document — 7 days to ask it unlimited AI questions."
             }
