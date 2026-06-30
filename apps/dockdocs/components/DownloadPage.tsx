@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { deepHant } from "@/lib/zh-hant";
 import type { AuthoredLocale } from "@/lib/i18n";
+import { ProductDemoHero } from "@/components/ProductDemoHero";
 
 // Non-standard browser API: exists at runtime in Chrome/Edge.
 interface BeforeInstallPromptEvent extends Event {
@@ -369,6 +370,11 @@ export function DownloadPage({ locale: localeProp }: { locale?: Locale } = {}) {
         <p className="mt-3 text-[15px] leading-relaxed text-[color:var(--muted)]">
           {t.subtitle}
         </p>
+      </div>
+
+      {/* ── Product demo ── */}
+      <div className="mb-12">
+        <ProductDemoHero locale={locale} />
       </div>
 
       {/* ── PWA card ── */}
