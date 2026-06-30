@@ -40,7 +40,7 @@ export function AutoTrialRuntime() {
         try {
           const snap = await getSubscriptionSnapshot();
           // Skip if already on a paid plan or currently trialing.
-          if (snap.isPaidPlaceholder || snap.record.status === "trialing") return;
+          if (snap.isPaidPlaceholder || snap.record.status === "trialing" || snap.trial?.status === "trialing") return;
 
           const result = await startBillingTrial();
           if (result.ok && mounted) {

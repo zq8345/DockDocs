@@ -283,7 +283,7 @@ export function TrialCta(props: TrialCtaProps) {
       .then((snap) => {
         if (!mounted) return;
         setSignedIn(snap.signedIn);
-        setShouldHide(snap.isPaidPlaceholder || snap.record.status === "trialing");
+        setShouldHide(snap.isPaidPlaceholder || snap.record.status === "trialing" || snap.trial?.status === "trialing");
         setSubLoaded(true);
       })
       .catch(() => {
