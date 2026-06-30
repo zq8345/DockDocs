@@ -610,7 +610,6 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
           <h1 className="max-w-[20ch] font-normal text-[48px] leading-[1.04] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[68px] sm:leading-[1.02] sm:tracking-[-0.03em] lg:text-[88px] lg:leading-[1.0] lg:tracking-[-0.04em]">
             {c.heroA}<br /><span className="text-[color:var(--muted)]">{c.heroB}</span>
           </h1>
-          <p className={SUB}>{c.heroSub}</p>
           <div className="mt-9">
             <TrialCta variant="hero" locale={locale} />
           </div>

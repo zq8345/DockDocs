@@ -281,7 +281,7 @@ export function ProductDemoHero({ locale: localeProp }: { locale?: Locale } = {}
           </div>
 
           {/* ── Right: analysis ── */}
-          <div className="min-h-[200px] p-4 sm:p-5">
+          <div className="min-h-[400px] p-4 sm:p-5">
             {/* Header row */}
             <div className="mb-3.5 flex items-center justify-between">
               <span className="text-[11px] font-semibold text-[color:var(--muted)]">
@@ -358,17 +358,6 @@ export function ProductDemoHero({ locale: localeProp }: { locale?: Locale } = {}
         </div>
       </div>
 
-      {/* Feature bullets */}
-      <ul className="mt-5 space-y-2.5">
-        {[t.feat1, t.feat2, t.feat3].map((feat, i) => (
-          <li key={i} className="flex items-start gap-2.5 text-[13px] leading-snug text-[color:var(--muted)]">
-            <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[color:var(--accent)]/15 text-[color:var(--accent)]">
-              <CheckIcon />
-            </span>
-            {feat}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
