@@ -654,7 +654,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
                           onClick={() => setExpandedQuote(expandedQuote === r.id ? null : r.id)}
                           className="ml-2 text-[11px] text-[color:var(--accent)] hover:underline"
                         >
-                          {expandedQuote === r.id ? "▲" : "▼ source"}
+                          {expandedQuote === r.id ? "▲" : `▼ ${locale === "zh" || locale === "zh-Hant" ? "原文" : locale === "es" ? "fuente" : locale === "pt" ? "fonte" : locale === "ja" ? "出典" : locale === "de" ? "Quelle" : locale === "ko" ? "출처" : "source"}`}
                         </button>
                       )}
                       {expandedQuote === r.id && r.quote && (

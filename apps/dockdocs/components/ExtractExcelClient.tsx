@@ -486,7 +486,7 @@ export function ExtractExcelClient({ locale = "en", embedded = false }: { locale
           )}
           {!busy && (
             <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-[color:var(--faint)]">
-              <span>{locale === "zh-Hant" ? deepHant("支持") : locale === "zh" ? "支持" : locale === "ja" ? "対応形式" : locale === "de" ? "Unterstützt" : locale === "ko" ? "지원 형식" : "Supports"} PDF</span>
+              <span>{locale === "zh-Hant" ? deepHant("支持") : locale === "zh" ? "支持" : locale === "ja" ? "対応形式" : locale === "de" ? "Unterstützt" : locale === "ko" ? "지원 형식" : locale === "es" ? "Admite" : locale === "pt" ? "Suporta" : locale === "fr" ? "Prend en charge" : "Supports"} PDF</span>
               <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
               <span className="text-[color:var(--muted)]">{locale === "zh-Hant" ? deepHant("本地读取 · 内容服务端分析") : locale === "zh" ? "本地读取 · 内容服务端分析" : locale === "ja" ? "ローカルで読み取り · サーバーで分析" : locale === "es" ? "Leído localmente · análisis en servidor" : locale === "pt" ? "Lido localmente · análise no servidor" : locale === "fr" ? "Lu localement · analyse côté serveur" : locale === "de" ? "Lokal gelesen · Analyse auf Server" : locale === "ko" ? "로컬에서 읽기 · 서버에서 분석" : "File read locally · analyzed on server"}</span>
             </div>
