@@ -597,10 +597,7 @@ const COMPARE_CATS: {
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [period, setPeriod] = useState<"monthly" | "annual" | "lifetime">("annual"); // default annual per pricing spec
   const [openCat, setOpenCat] = useState<string | null>(null);
-  const [selectedIndex, setSelectedIndex] = useState<number>(() => {
-    const fi = (locale === "zh-Hant" ? copy.zh : (copy[locale as keyof typeof copy] ?? copy.en)).plans.findIndex((p) => p.featured);
-    return fi >= 0 ? fi : 1;
-  });
+
   const [billingLoading, setBillingLoading] = useState("");
   const [billingError, setBillingError] = useState("");
   const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null);
@@ -714,6 +711,30 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   }
   // 账户页全站统一为 /account(无语言版本)，不要按 locale 加 /zh 前缀，否则 /zh/account 会 404
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale as RouteLocale, href) : "/account");
+  // 3 billing-option card layout — Pro only; Free de-emphasised as a note below.
+  const proPlan = c.plans.find((p) => p.featured) ?? c.plans[c.plans.length - 1];
+  const pricingCtaKind = ((): "current" | "checkout" | "upgrade" | "manage" => {
+    if (!subscription) return "checkout";
+    const cur = subscription.displayName.toUpperCase();
+    const curInt = subscription.record.interval;
+    const pk: PaidSubscriptionPlan = "PRO";
+    if (cur === "FREE") return "checkout";
+    if (curInt === "lifetime") return cur === pk ? "current" : "manage";
+    if (cur === pk && curInt === period) return "current";
+    return isPlanUpgrade(cur, curInt, pk, period) ? "upgrade" : "manage";
+  })();
+  const billingLimitedNote = zh ? h("500 席 · 创始价") : locale === "es" ? "500 cupos · precio fundador" : locale === "pt" ? "500 vagas · preço fundador" : locale === "fr" ? "500 places · tarif fondateur" : locale === "ja" ? "500枠 · 創設者価格" : locale === "de" ? "500 Plätze · Gründerpreis" : locale === "ko" ? "500석 · 창립 기념가" : "500 slots · founding rate";
+  const billingFreeNote = zh ? h("或继续使用免费版——约 50 个工具，无需注册。") : locale === "es" ? "O continúa gratis — ~50 herramientas, sin registro." : locale === "pt" ? "Ou continue grátis — ~50 ferramentas, sem cadastro." : locale === "fr" ? "Ou continuez gratuitement — ~50 outils, sans inscription." : locale === "ja" ? "または無料プランを継続——約50ツール、登録不要。" : locale === "de" ? "Oder kostenlos weiternutzen — ~50 Tools, keine Anmeldung nötig." : locale === "ko" ? "또는 무료로 계속 이용 — 약 50개 도구, 가입 불필요." : "Or continue with Free — ~50 tools, no sign-up needed.";
+  const billingPopularLabel = zh ? h("最受欢迎") : locale === "es" ? "Más popular" : locale === "pt" ? "Mais popular" : locale === "fr" ? "Plus populaire" : locale === "ja" ? "人気" : locale === "de" ? "Beliebt" : locale === "ko" ? "인기" : "Popular";
+  const billingRedirecting = zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : locale === "ko" ? "이동 중…" : "Redirecting…";
+  const billingCurrentLabel = zh ? h("当前套餐") : locale === "es" ? "Plan actual" : locale === "pt" ? "Plano atual" : locale === "fr" ? "Forfait actuel" : locale === "ja" ? "現在のプラン" : locale === "de" ? "Aktueller Tarif" : locale === "ko" ? "현재 요금제" : "Current plan";
+  const billingManageLabel = zh ? h("管理账单") : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : locale === "ja" ? "請求を管理" : locale === "de" ? "Abrechnung verwalten" : locale === "ko" ? "결제 관리" : "Manage billing";
+  type ICard = { interval: "monthly" | "annual" | "lifetime"; label: string; price: string; sub: string; badge: string | null; highlighted: boolean };
+  const BILLING_CARDS: ICard[] = [
+    { interval: "monthly", label: c.monthly, price: proPlan.monthlyPrice, sub: `${proPlan.monthlyPrice}${c.perMo}`, badge: null, highlighted: false },
+    { interval: "annual", label: c.yearly, price: proPlan.yearlyPrice, sub: c.billedYearly("yearlyTotal" in proPlan ? proPlan.yearlyTotal ?? "" : ""), badge: c.save, highlighted: true },
+    { interval: "lifetime", label: c.lifetime, price: "$149", sub: c.perOnce, badge: billingLimitedNote, highlighted: false },
+  ];
   return (
     <div className={`mx-auto ${LAYOUT.content} px-5 py-20 sm:py-24`}>
       {/* Hero — left-aligned, matching Home / About design baseline */}
@@ -726,18 +747,6 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
           {c.subtitle}
         </p>
 
-        {/* Monthly / Yearly / Lifetime toggle */}
-        <div className="mt-8 inline-flex items-center gap-1 rounded-full border border-[color:var(--line)] p-1">
-          <button type="button" onClick={() => setPeriod("monthly")}
-            className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition ${period === "monthly" ? "bg-[color:var(--accent)]" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
-          >{c.monthly}</button>
-          <button type="button" onClick={() => setPeriod("annual")}
-            className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition ${period === "annual" ? "bg-[color:var(--accent)]" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
-          >{c.yearly} <span className={`ml-1 text-[11px] ${period === "annual" ? "text-[color:var(--on-accent)]" : "text-[color:var(--accent-strong)]"}`}>{c.save}</span></button>
-          <button type="button" onClick={() => setPeriod("lifetime")}
-            className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition ${period === "lifetime" ? "bg-[color:var(--accent)]" : "text-[color:var(--muted)] hover:text-[color:var(--foreground)]"}`}
-          >{c.lifetime}</button>
-        </div>
       </div>
 
       {/* Billing error — surfaced, never silently swallowed into a redirect */}
@@ -747,111 +756,83 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
-      {/* Plans */}
-      <div className="mt-12 grid gap-4 lg:grid-cols-2">
-        {c.plans.map((plan, idx) => {
-          const isFree = plan.monthlyPrice === "$0";
-          const price = isFree
-            ? plan.monthlyPrice
-            // Lifetime is USD-constant (founding rate; pricing spec) — $149 (Pro only).
-            : period === "lifetime"
-              ? "$149"
-              : period === "annual"
-                ? plan.yearlyPrice
-                : plan.monthlyPrice;
-          const featured = plan.featured;
-          const selected = idx === selectedIndex;
-          const planKey: PaidSubscriptionPlan | null = isFree ? null : "PRO";
-          const curPlan = subscription ? subscription.displayName.toUpperCase() : "FREE";
-          const curInterval = subscription?.record.interval;
-          // CTA kind for this paid card at the selected period. "current" = user
-          // already has exactly this (plan+interval, or owns this plan via
-          // lifetime). "change" = in-place recurring upgrade (Creem proration).
-          // "checkout" = brand-new sub or an upgrade to lifetime. "manage" =
-          // downgrade / lateral → billing portal (no auto double-charge).
-          // "checkout" = brand-new sub (Free→paid), plain hosted checkout, no credit.
-          // "upgrade"  = user already has a recurring sub → proration upgrade-checkout
-          //              (recurring→recurring OR recurring→lifetime; pays the difference).
-          // "manage"   = downgrade / lateral → billing portal. "current" = exact match
-          //              (or lifetime owner on their own plan).
-          const ctaKind: "current" | "checkout" | "upgrade" | "manage" =
-            !planKey || !subscription || curPlan === "FREE"
-              ? "checkout"
-              : curInterval === "lifetime"
-                ? (curPlan === planKey ? "current" : "manage")
-                : curPlan === planKey && curInterval === period
-                  ? "current"
-                  : isPlanUpgrade(curPlan, curInterval, planKey, period)
-                    ? "upgrade"
-                    : "manage";
-          const ctaCls = `mt-6 flex h-11 w-full items-center justify-center rounded-full text-[14px] font-medium transition ${selected ? "bg-[color:var(--accent)] hover:bg-[color:var(--accent-hover)]" : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--foreground)]"}`;
+      {/* Pro — value headline + 3 billing-option cards (Monthly / Annual / Lifetime) */}
+      <p className="mt-10 max-w-2xl text-[18px] font-medium leading-[1.5] text-[color:var(--foreground)]">
+        {zh ? h("AI 替你啃最重要的文件——合同风险、报价对比、长报告，省几十小时。")
+          : locale === "es" ? "La IA analiza sus documentos más importantes — contratos, licitaciones, informes largos. Se ahorra horas."
+          : locale === "pt" ? "A IA lê seus documentos mais importantes — contratos, licitações, relatórios longos. Economize horas."
+          : locale === "fr" ? "L'IA lit vos documents les plus importants — contrats, appels d'offres, rapports longs. Des heures gagnées."
+          : locale === "ja" ? "AIが最重要書類を代わりに読みます——契約リスク・見積比較・長文レポート。何時間も節約できます。"
+          : locale === "de" ? "KI liest Ihre wichtigsten Dokumente — Vertragsrisiken, Angebotsvergleiche, lange Berichte. Stunden gespart."
+          : locale === "ko" ? "AI가 중요한 문서를 대신 읽습니다 — 계약 위험, 견적 비교, 긴 보고서. 몇 시간을 절약하세요."
+          : "AI reads your most important documents for you — contract risk, bid comparison, long reports. Hours saved."}
+      </p>
+
+      {/* Same Pro, three ways to pay — card layout mirrors UpgradePage */}
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        {BILLING_CARDS.map(({ interval, label, price, sub, badge, highlighted }) => {
+          const isSelected = period === interval;
           return (
-            <article key={plan.name}
-              role="button"
-              tabIndex={0}
-              aria-pressed={selected}
-              aria-label={`${selectLabel}: ${plan.name}`}
-              onClick={() => setSelectedIndex(idx)}
-              onKeyDown={(e) => { if (e.target !== e.currentTarget) return; if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedIndex(idx); } }}
-              className={`relative flex cursor-pointer flex-col rounded-2xl border p-6 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--background)] ${
-                selected
-                  ? "border-[color:var(--accent)] ring-1 ring-[color:var(--accent)]"
-                  : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"
+            <button
+              key={interval}
+              type="button"
+              onClick={() => setPeriod(interval)}
+              className={`relative flex flex-col rounded-[var(--radius)] border px-5 py-6 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] ${
+                isSelected
+                  ? "border-[color:var(--accent)] bg-[color:var(--surface)]"
+                  : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--line-strong)]"
               }`}
             >
-              <h2 className="text-[20px] font-normal text-[color:var(--foreground)]">{plan.name}</h2>
-
-              <div className="mt-4">
-                <p className="text-[44px] font-normal leading-none tracking-tight text-[color:var(--foreground)]">
-                  {price}<span className="text-[16px] text-[color:var(--muted)]">{isFree ? "" : period === "lifetime" ? ` ${c.perOnce}` : c.perMo}</span>
-                </p>
-                {period === "annual" && !isFree && "yearlyTotal" in plan && plan.yearlyTotal && (
-                  <p className="mt-1.5 text-[13px] text-[color:var(--muted)]">{c.billedYearly(plan.yearlyTotal)}</p>
-                )}
-                {period === "lifetime" && !isFree && (
-                  <p className="mt-1.5 text-[13px] text-[color:var(--accent-strong)]">{c.lifetimeNote}</p>
-                )}
-                {period === "monthly" && "valueLine" in plan && plan.valueLine && (
-                  <p className="mt-1.5 text-[13px] text-[color:var(--accent-strong)]">{plan.valueLine}</p>
-                )}
-              </div>
-
-              <p className="mt-4 text-[14px] leading-[1.5] text-[color:var(--muted)]">{plan.tagline}</p>
-
-              <ul className="mt-6 flex-1 space-y-3">
-                {plan.highlights.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5 text-[14px] leading-[1.45] text-[color:var(--foreground)]">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0 text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-
-              {planKey ? (
-                ctaKind === "current" ? (
-                  <span className={`${ctaCls} cursor-default opacity-60`}>
-                    {zh ? h("当前套餐") : locale === "es" ? "Plan actual" : locale === "pt" ? "Plano atual" : locale === "fr" ? "Forfait actuel" : locale === "ja" ? "現在のプラン" : locale === "de" ? "Aktueller Tarif" : locale === "ko" ? "현재 요금제" : "Current plan"}
-                  </span>
-                ) : ctaKind === "manage" ? (
-                  <button type="button" onClick={handlePortal} disabled={billingLoading === "portal"} className={ctaCls}>
-                    {billingLoading === "portal"
-                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : locale === "ko" ? "이동 중…" : "Redirecting…")
-                      : (zh ? h("管理账单") : locale === "es" ? "Gestionar facturación" : locale === "pt" ? "Gerenciar cobrança" : locale === "fr" ? "Gérer la facturation" : locale === "ja" ? "請求を管理" : locale === "de" ? "Abrechnung verwalten" : locale === "ko" ? "결제 관리" : "Manage billing")}
-                  </button>
-                ) : (
-                  <button type="button" onClick={() => (ctaKind === "upgrade" ? upgrade.beginUpgrade(planKey, period) : handleTrialOrCheckout(planKey))} disabled={ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey} className={ctaCls}>
-                    {(ctaKind === "upgrade" ? upgrade.loading : billingLoading === planKey)
-                      ? (zh ? h("跳转中…") : locale === "es" ? "Redirigiendo…" : locale === "pt" ? "Redirecionando…" : locale === "fr" ? "Redirection…" : locale === "ja" ? "リダイレクト中…" : locale === "de" ? "Weiterleitung…" : locale === "ko" ? "이동 중…" : "Redirecting…")
-                      : !subscription ? guestProCta : plan.cta}
-                  </button>
-                )
-              ) : (
-                <a href={toolHref(plan.href)} className={ctaCls}>{plan.cta}</a>
+              {highlighted && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[color:var(--accent)] px-2.5 py-0.5 text-[10px] font-semibold text-[color:var(--on-accent)]">
+                  {billingPopularLabel}
+                </span>
               )}
-            </article>
+              {badge && !highlighted && (
+                <span className="mb-2 inline-block rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] text-[color:var(--muted)]">
+                  {badge}
+                </span>
+              )}
+              {badge && highlighted && (
+                <span className="mb-2 inline-block rounded bg-[color:var(--accent)]/15 px-1.5 py-0.5 text-[10px] font-semibold text-[color:var(--accent)]">
+                  {badge}
+                </span>
+              )}
+              <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[color:var(--muted)]">{label}</p>
+              <p className="mt-1.5 text-[32px] font-semibold tracking-[-0.02em] text-[color:var(--foreground)]">{price}</p>
+              <p className="text-[11px] text-[color:var(--faint)]">{sub}</p>
+            </button>
           );
         })}
       </div>
+
+      {/* Unified CTA — action adapts to auth + subscription state for the selected interval */}
+      <div className="mt-6 flex flex-col items-center gap-2">
+        {pricingCtaKind === "current" ? (
+          <div className="flex w-full max-w-sm items-center justify-center rounded-full border border-[color:var(--line)] px-8 py-3 text-[14px] font-medium text-[color:var(--muted)]">
+            {billingCurrentLabel}
+          </div>
+        ) : pricingCtaKind === "manage" ? (
+          <button type="button" onClick={() => void handlePortal()} disabled={billingLoading === "portal"}
+            className="flex h-11 w-full max-w-sm items-center justify-center rounded-full bg-[color:var(--accent)] text-[14px] font-medium text-[color:var(--on-accent)] transition hover:opacity-90 disabled:opacity-60">
+            {billingLoading === "portal" ? billingRedirecting : billingManageLabel}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => void (pricingCtaKind === "upgrade" ? upgrade.beginUpgrade("PRO", period) : handleTrialOrCheckout("PRO"))}
+            disabled={pricingCtaKind === "upgrade" ? upgrade.loading : billingLoading === "PRO"}
+            className="flex h-11 w-full max-w-sm items-center justify-center rounded-full bg-[color:var(--accent)] text-[14px] font-medium text-[color:var(--on-accent)] transition hover:opacity-90 disabled:opacity-60"
+          >
+            {(pricingCtaKind === "upgrade" ? upgrade.loading : billingLoading === "PRO")
+              ? billingRedirecting
+              : !subscription ? guestProCta : proPlan.cta}
+          </button>
+        )}
+      </div>
+
+      {/* Free tier — one line, de-emphasised below the pro offer */}
+      <p className="mt-5 text-center text-[13px] text-[color:var(--muted)]">{billingFreeNote}</p>
 
       {/* Trust bar */}
       <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
