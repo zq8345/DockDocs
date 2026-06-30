@@ -494,11 +494,13 @@ function MiniSecure() {
   );
 }
 
-const CARDS: { nav: number; span: number; visual: "thumbs" | "extract" | "batch" | "secure" }[] = [
-  { nav: 0, span: 2, visual: "thumbs" },
-  { nav: 2, span: 1, visual: "extract" },
-  { nav: 1, span: 2, visual: "batch" },
-  { nav: 3, span: 1, visual: "secure" },
+// Slot order matches ICONS (0 PDF · 1 Batch · 2 AI · 3 Profession).
+// Batch (slot 1) is a virtual cat derived from cats[0].cols[2] — not a top-level navCategory.
+const CARDS: { visual: "thumbs" | "batch" | "extract" | "secure" }[] = [
+  { visual: "thumbs" },
+  { visual: "batch" },
+  { visual: "extract" },
+  { visual: "secure" },
 ];
 
 // section-3 capability chips link to their tool pages (funnel: link-bearing per spec)
@@ -557,6 +559,9 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
   // fall back to the English menu via `?? navCategories.en`. Cast the index so
   // the de key (valid in Home's local Locale) doesn't trip the narrower Record.
   const cats = (hant ? deepHant(navCategories.zh) : (navCategories[locale as keyof typeof navCategories] ?? navCategories.en)).slice(0, 4);
+  // Batch is col[2] of Document tools — synthesize a virtual 4th cat for the home grid.
+  const batchCat = { label: cats[0]?.cols[2]?.heading ?? "Batch", cols: [{ items: cats[0]?.cols[2]?.items ?? [] }] };
+  const allCats = [cats[0], batchCat, cats[1], cats[2]];
   const path = (slug: string) => (hant ? `/zh-Hant${slug}` : locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : locale === "de" ? `/de${slug}` : locale === "ko" ? `/ko${slug}` : slug);
 
   // ── real client-side tool search over the full flatItems set across all 4 cats ──
@@ -701,19 +706,19 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
             )
           ) : (
             <Figure className="mt-8" glow="30%">
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                {CARDS.map(({ nav, span, visual }) => {
-                  const cat = cats[nav];
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {CARDS.map(({ visual }, idx) => {
+                  const cat = allCats[idx];
                   if (!cat) return null;
                   const tools = flatItems(cat as { cols: { items: Item[] }[] });
                   const chips = tools.slice(0, 4);
                   const more = tools.length - chips.length;
                   return (
-                    <div key={nav} className={`group relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-black/20 p-5 transition-colors duration-200 hover:border-[color:var(--line-strong)] ${span === 2 ? "md:col-span-2" : "md:col-span-1"}`}>
+                    <div key={idx} className="group relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-black/20 p-5 transition-colors duration-200 hover:border-[color:var(--line-strong)]">
                       <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={GLOW} />
                       <div className="relative flex h-full flex-col">
                         <div className="flex items-center gap-3">
-                          <Icon i={nav} />
+                          <Icon i={idx} />
                           <h3 className="text-[18px] font-normal text-[color:var(--foreground)] sm:text-[20px]">{cat.label}</h3>
                           <span className="ml-auto text-[12px] text-[color:var(--faint)]">{tools.length} {c.tools}</span>
                         </div>
