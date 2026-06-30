@@ -3,11 +3,13 @@
 // TEXT is localized — citations/verbatim snippets, JSON schema, field/column names,
 // and traceability markers stay as-is (the calling function controls those).
 //
-// Scope (2026-06-19): en/zh/es/pt/fr/ja. An unknown/absent locale falls back to English.
+// Scope: en/zh/es/pt/fr/ja/de/ko/zh-Hant (2026-06-29: de/ko/zh-Hant added so AI
+// answers match the now-localized UI for those locales — previously they fell
+// back to English answers). An unknown/absent locale falls back to English.
 
-export type AnswerLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja";
+export type AnswerLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
-const SUPPORTED: ReadonlySet<string> = new Set(["en", "zh", "es", "pt", "fr", "ja"]);
+const SUPPORTED: ReadonlySet<string> = new Set(["en", "zh", "es", "pt", "fr", "ja", "de", "ko", "zh-Hant"]);
 
 // Normalize an untrusted client-supplied locale to a supported AnswerLocale.
 export function resolveAnswerLocale(raw: unknown): AnswerLocale {
@@ -27,6 +29,12 @@ export function answerLanguageName(locale: AnswerLocale): string {
       return "French";
     case "ja":
       return "Japanese";
+    case "de":
+      return "German";
+    case "ko":
+      return "Korean";
+    case "zh-Hant":
+      return "Traditional Chinese (Taiwan)";
     default:
       return "English";
   }
