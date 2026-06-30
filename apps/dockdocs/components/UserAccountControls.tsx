@@ -32,7 +32,6 @@ export function UserAccountControls() {
   const pathname = usePathname();
   const locale = localeFromPathname(pathname);
   const copy = getRuntimeCopy(locale).shell.account;
-  const isZh = locale === "zh";
   const [state, setState] = useState<AccountState>({
     user: null,
     subscription: null,
@@ -98,7 +97,7 @@ export function UserAccountControls() {
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">{copy.signedIn}</p>
           <p className="mt-1 max-w-[240px] truncate text-sm font-semibold">{state.user.name || state.user.email || copy.signedIn}</p>
           <div className="mt-2">
-            <StatusBadge label={`Plan: ${state.subscription?.displayName ?? "Free"}`} status="Saved" />
+            <StatusBadge label={`${copy.planLabel}: ${state.subscription?.displayName ?? "Free"}`} status="Saved" />
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -120,11 +119,7 @@ export function UserAccountControls() {
           <div>
             <p className="font-semibold">{copy.signedOutTitle}</p>
             <p className="mt-1 text-xs leading-5 text-[color:var(--muted)]">
-              {isZh
-                ? "登录后可按账户隔离我的对话和工作区记录。"
-                : locale === "de"
-                  ? "Melden Sie sich an, um Meine Chats und Arbeitsbereich-Verläufe pro Konto zu trennen."
-                  : "Sign in to isolate My Chats and workspace records by account."}
+              {copy.isolateDesc}
             </p>
           </div>
           <StatusBadge className="shrink-0 text-[10px]" label={state.subscription?.displayName ?? copy.currentPlan} status="Session-only" />
@@ -135,7 +130,7 @@ export function UserAccountControls() {
           {copy.continueGoogle}
         </button>
         <button type="button" onClick={() => handleOAuth(signInWithMicrosoft)} className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--foreground)] transition hover:bg-black/5 active:scale-[0.99]">
-          {isZh ? "Microsoft" : "Microsoft"}
+          Microsoft
         </button>
         <button type="button" onClick={() => setState((s) => ({ ...s, emailOpen: !s.emailOpen, emailSent: false }))} className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)] active:scale-[0.99]">
           {copy.email}
@@ -145,11 +140,7 @@ export function UserAccountControls() {
         <div className="grid w-full gap-2 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 shadow-sm sm:w-72">
           {state.emailSent ? (
             <p className="text-xs leading-5 text-[color:var(--success)]">
-              {isZh
-                ? "登录链接已发送到邮箱，点击邮件中的链接即可登录。"
-                : locale === "de"
-                  ? "Anmeldelink gesendet – prüfen Sie Ihr Postfach, um sich anzumelden."
-                  : "Magic link sent — check your email to sign in."}
+              {copy.emailSent}
             </p>
           ) : (
             <>
@@ -161,9 +152,9 @@ export function UserAccountControls() {
                 className="min-h-11 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-sm outline-none focus:border-[color:var(--accent)]"
               />
               <button type="button" onClick={handleMagicLink} disabled={!state.email} className="min-h-11 rounded-[var(--radius-sm)] bg-[color:var(--accent)] px-3 text-sm font-semibold text-white transition active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50">
-                {isZh ? "发送登录链接" : locale === "de" ? "Anmeldelink senden" : "Send magic link"}
+                {copy.sendMagicLink}
               </button>
-              <p className="text-[11px] leading-4 text-[color:var(--faint)]">{isZh ? "免密码，我们会发一封登录邮件" : locale === "de" ? "Kein Passwort – wir senden Ihnen einen Anmeldelink per E-Mail" : "No password — we'll email you a sign-in link"}</p>
+              <p className="text-[11px] leading-4 text-[color:var(--faint)]">{copy.magicLinkNote}</p>
             </>
           )}
           {state.error ? <p className="text-xs leading-5 text-[color:var(--error)]">{state.error}</p> : null}
