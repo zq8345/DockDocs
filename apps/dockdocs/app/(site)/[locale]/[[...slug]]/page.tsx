@@ -3126,9 +3126,9 @@ function LocalizedAiWorkspace({ locale }: { locale: ClientLocale }) {
           </div>
         </div>
       </Section>
-      <AiSummaryWorkflow locale={aiLocale} />
-      <DocumentAnalyzerWorkflow locale={aiLocale} />
-      <AiChatWorkflow locale={aiLocale} />
+      <AiSummaryWorkflow locale={aiLocale} answerLocale={locale} />
+      <DocumentAnalyzerWorkflow locale={aiLocale} answerLocale={locale} />
+      <AiChatWorkflow locale={aiLocale} answerLocale={locale} />
     </main>
   );
 }

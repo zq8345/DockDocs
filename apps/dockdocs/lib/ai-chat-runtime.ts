@@ -38,6 +38,9 @@ type GenerateAiChatInput = {
   question: string;
   history?: AiChatHistoryTurn[];
   locale: AiChatLocale;
+  // Route locale for the ANSWER language (de/zh-Hant), separate from the engine
+  // `locale`. Forwarded to the server, which prefers it for the answer language.
+  answerLocale?: string;
   signal?: AbortSignal;
   onProgress?: (progress: AiChatProgress) => void;
   onAnswerDelta?: (text: string) => void;
@@ -83,6 +86,7 @@ export async function askAiAboutPdf({
   question,
   history,
   locale,
+  answerLocale,
   signal,
   onProgress,
   onAnswerDelta,
@@ -139,6 +143,7 @@ export async function askAiAboutPdf({
     question: normalizedQuestion,
     history: normalizeHistory(history),
     locale,
+    answerLocale,
     sourceName: extractedDocument.sourceName,
     truncated: selectedContext.truncated,
   };

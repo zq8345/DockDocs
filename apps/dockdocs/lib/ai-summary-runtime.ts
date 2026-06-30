@@ -26,6 +26,8 @@ type GenerateAiSummaryInput = {
   file?: File | null;
   pastedText?: string;
   locale: AiSummaryLocale;
+  // Route locale for the ANSWER language; forwarded to the server.
+  answerLocale?: string;
   signal?: AbortSignal;
   onProgress?: (progress: AiSummaryProgress) => void;
 };
@@ -53,6 +55,7 @@ export async function generateAiSummary({
   file,
   pastedText,
   locale,
+  answerLocale,
   signal,
   onProgress,
 }: GenerateAiSummaryInput): Promise<AiSummaryResult> {
@@ -157,6 +160,7 @@ export async function generateAiSummary({
     body: JSON.stringify({
       text: trimmedText,
       locale,
+      answerLocale,
       sourceName,
     }),
     signal,

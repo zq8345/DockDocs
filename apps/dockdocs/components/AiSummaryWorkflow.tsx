@@ -259,8 +259,11 @@ const copy = {
 
 export function AiSummaryWorkflow({
   locale = "en",
+  answerLocale,
 }: {
   locale?: AiSummaryLocale;
+  // Raw route locale for the ANSWER language; separate from the engine locale.
+  answerLocale?: string;
 }) {
   const t = copy[locale];
   const abortRef = useRef<AbortController | null>(null);
@@ -336,6 +339,7 @@ export function AiSummaryWorkflow({
         file,
         pastedText,
         locale,
+        answerLocale,
         signal: controller.signal,
         onProgress: ({ progress: nextProgress, step }) => {
           setProgress(nextProgress);

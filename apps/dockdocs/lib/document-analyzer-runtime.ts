@@ -11,6 +11,8 @@ export type DocumentAnalyzerInput = {
   chatContext?: string;
   chatContextName?: string;
   locale: AiChatLocale;
+  // Route locale for the ANSWER language; forwarded to /api/ai-chat.
+  answerLocale?: string;
   signal?: AbortSignal;
   onProgress?: (progress: AiChatProgress) => void;
 };
@@ -63,6 +65,7 @@ export async function analyzeDocument({
   chatContext,
   chatContextName,
   locale,
+  answerLocale,
   signal,
   onProgress,
 }: DocumentAnalyzerInput): Promise<DocumentAnalysis> {
@@ -179,6 +182,7 @@ async function requestAnalyzer({
       question: createAnalyzerPrompt(locale),
       history: [],
       locale,
+      answerLocale,
       sourceName,
       truncated,
     }),

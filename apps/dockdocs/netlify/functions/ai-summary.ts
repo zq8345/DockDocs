@@ -11,6 +11,8 @@ declare const Netlify: {
 type AiSummaryPayload = {
   text?: string;
   locale?: AnswerLocale;
+  // Route locale for the ANSWER language; falls back to `locale` when absent.
+  answerLocale?: AnswerLocale;
   sourceName?: string;
 };
 
@@ -130,7 +132,7 @@ export default async (req: Request, _context: Context) => {
   }
 
   const text = normalizeText(payload.text ?? "");
-  const locale = resolveAnswerLocale(payload.locale);
+  const locale = resolveAnswerLocale(payload.answerLocale ?? payload.locale);
 
   if (text.length < 80) {
     return json(

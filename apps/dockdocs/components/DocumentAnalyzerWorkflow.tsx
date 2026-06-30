@@ -248,8 +248,11 @@ const copy = {
 
 export function DocumentAnalyzerWorkflow({
   locale = "en",
+  answerLocale,
 }: {
   locale?: AiChatLocale;
+  // Raw route locale for the ANSWER language; separate from the engine locale.
+  answerLocale?: string;
 }) {
   const t = copy[locale];
   const inputRef = useRef<HTMLInputElement>(null);
@@ -353,6 +356,7 @@ export function DocumentAnalyzerWorkflow({
         chatContext,
         chatContextName,
         locale,
+        answerLocale,
         signal: controller.signal,
         onProgress: (nextProgress) => {
           setProgress(nextProgress);

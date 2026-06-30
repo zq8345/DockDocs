@@ -13,6 +13,9 @@ type AiChatPayload = {
   question?: string;
   history?: AiChatHistoryTurn[];
   locale?: AnswerLocale;
+  // Route locale for the ANSWER language (de/zh-Hant), separate from `locale`
+  // which the client may collapse to an engine locale. Falls back to `locale`.
+  answerLocale?: AnswerLocale;
   sourceName?: string;
   truncated?: boolean;
   stream?: boolean;
@@ -152,7 +155,7 @@ export default async (req: Request, _context: Context) => {
     );
   }
 
-  const locale = resolveAnswerLocale(payload.locale);
+  const locale = resolveAnswerLocale(payload.answerLocale ?? payload.locale);
   const context = normalizeText(payload.context ?? "");
   const question = normalizeText(payload.question ?? "");
   const history = normalizeHistory(payload.history);

@@ -438,8 +438,12 @@ const copy = {
 
 export function AiChatWorkflow({
   locale = "en",
+  answerLocale,
 }: {
   locale?: ChatUiLocale;
+  // Raw route locale for the ANSWER language (de/zh-Hant), separate from the
+  // engine `locale` which may be collapsed to en.
+  answerLocale?: string;
 }) {
   const t = copy[locale];
   // The AI engine has no "de"; answer a /de session via the en path (de → en).
@@ -565,6 +569,7 @@ export function AiChatWorkflow({
         question,
         history,
         locale: engineLocale,
+        answerLocale,
         signal: controller.signal,
         onProgress: ({ progress: nextProgress, step }) => {
           setProgress(nextProgress);
