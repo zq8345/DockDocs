@@ -11,13 +11,12 @@ type Item = { name: string; slug: string };
 
 const COPY = {
   en: {
-    eyebrow: "// Private · verifiable document AI",
     heroA: "Read any document.",
     heroB: "Verify every answer.",
-    heroSub: "~50 PDF tools, most running in your browser, plus AI that reads, compares and extracts your documents — and shows the source passage behind what it finds.",
+    heroSub: "~50 PDF tools + AI that reads your files — every answer points back to the source when it can locate it.",
     primary: "Use it free",
     secondary: "See how privacy works",
-    proof: [{ t: "Most tools run in your browser" }, { g: "0", t: " uploads in the browser" }, { t: "AI shows its source — or says it can't" }, { t: "No sign-up" }],
+    nosignup: "No sign-up",
     findEyebrow: "// Find your tool",
     findHeading: "Pick a tool. Start in one click.",
     capSub: "About 50 PDF tools in one place — convert, organize, sign, redact, OCR — most running locally in your browser.",
@@ -48,16 +47,14 @@ const COPY = {
     qaSnippets: ["revenue +23% YoY", "APAC the main driver"],
     aiSummary: "AI summary",
     cite: "source",
-    figCaption: "Fig 0.1 — when the AI answers, it shows the passage behind it — and flags what it can't trace. One click to verify.",
   },
   zh: {
-    eyebrow: "// 私密 · 可溯源的文档 AI",
     heroA: "读懂任意文档，",
     heroB: "逐一核验答案。",
-    heroSub: "约 50 个 PDF 工具，多数在浏览器内运行，AI 读懂、对比、抽取你的文档——并展示它所发现内容背后的原文出处。",
+    heroSub: "约 50 个 PDF 工具 + 读懂你文档的 AI——找得到时，每个答案都能点回原文。",
     primary: "免费使用",
     secondary: "看隐私怎么做到",
-    proof: [{ t: "多数工具在浏览器内处理" }, { g: "0", t: " 浏览器内上传" }, { t: "答案标注出处，无法溯源会说明" }, { t: "无需注册" }],
+    nosignup: "无需注册",
     findEyebrow: "// 找到你的工具",
     findHeading: "选个工具，一键开始。",
     capSub: "约 50 个 PDF 工具集中一处——转换、整理、签名、脱敏、OCR——大多在浏览器本地完成。",
@@ -88,16 +85,14 @@ const COPY = {
     qaSnippets: ["营收同比 +23%", "亚太区为主要驱动"],
     aiSummary: "AI 摘要",
     cite: "原文",
-    figCaption: "图 0.1 — AI 回答时，会展示支撑它的原文——无法溯源的会如实标出。一键即可核对。",
   },
   es: {
-    eyebrow: "// IA documental privada y verificable",
     heroA: "Lee cualquier documento.",
     heroB: "Verifica cada respuesta.",
-    heroSub: "~50 herramientas PDF, la mayoría se ejecuta en tu navegador, más una IA que lee, compara y extrae tus documentos — y muestra el pasaje de origen detrás de lo que encuentra.",
+    heroSub: "~50 herramientas PDF + IA que lee tus archivos — cada respuesta apunta al origen cuando puede.",
     primary: "Úsalo gratis",
     secondary: "Mira cómo funciona la privacidad",
-    proof: [{ t: "La mayoría se procesa en tu navegador" }, { g: "0", t: " subidas en el navegador" }, { t: "La IA cita su fuente, o avisa si no puede" }, { t: "Sin registro" }],
+    nosignup: "Sin registro",
     findEyebrow: "// Encuentra tu herramienta",
     findHeading: "Elige una herramienta. Empieza en un clic.",
     capSub: "Cerca de 50 herramientas PDF en un solo lugar — convertir, organizar, firmar, redactar, OCR — la mayoría se ejecutan localmente en tu navegador.",
@@ -128,16 +123,14 @@ const COPY = {
     qaSnippets: ["ingresos +23% interanual", "APAC, motor principal"],
     aiSummary: "Resumen de IA",
     cite: "fuente",
-    figCaption: "Fig 0.1 — cuando la IA responde, muestra el pasaje que lo respalda — y señala lo que no puede rastrear. Verifícalo con un clic.",
   },
   pt: {
-    eyebrow: "// IA de documentos privada e verificável",
     heroA: "Leia qualquer documento.",
     heroB: "Verifique cada resposta.",
-    heroSub: "~50 ferramentas PDF, a maioria roda no seu navegador, mais uma IA que lê, compara e extrai seus documentos — e mostra o trecho de origem por trás do que encontra.",
+    heroSub: "~50 ferramentas PDF + IA que lê seus arquivos — cada resposta aponta para a fonte quando possível.",
     primary: "Use gratuitamente",
     secondary: "Veja como a privacidade funciona",
-    proof: [{ t: "A maioria é processada no navegador" }, { g: "0", t: " envios no navegador" }, { t: "A IA cita a fonte, ou avisa quando não dá" }, { t: "Sem cadastro" }],
+    nosignup: "Sem cadastro",
     findEyebrow: "// Encontre sua ferramenta",
     findHeading: "Escolha uma ferramenta. Comece em um clique.",
     capSub: "Cerca de 50 ferramentas PDF em um só lugar — converter, organizar, assinar, redigir, OCR — a maioria roda localmente no seu navegador.",
@@ -168,16 +161,14 @@ const COPY = {
     qaSnippets: ["receita +23% A/A", "APAC, motor principal"],
     aiSummary: "Resumo de IA",
     cite: "fonte",
-    figCaption: "Fig 0.1 — quando a IA responde, mostra o trecho por trás — e sinaliza o que não pode rastrear. Verifique com um clique.",
   },
   fr: {
-    eyebrow: "// IA documentaire privée et vérifiable",
     heroA: "Lisez n'importe quel document.",
     heroB: "Vérifiez chaque réponse.",
-    heroSub: "~50 outils PDF, dont la plupart s'exécutent dans votre navigateur, plus une IA qui lit, compare et extrait vos documents — et montre le passage source derrière ce qu'elle trouve.",
+    heroSub: "~50 outils PDF + IA qui lit vos fichiers — chaque réponse renvoie à la source quand elle peut.",
     primary: "Utiliser gratuitement",
     secondary: "Voir comment fonctionne la confidentialité",
-    proof: [{ t: "La plupart traité dans votre navigateur" }, { g: "0", t: " envoi dans le navigateur" }, { t: "L'IA cite sa source, ou le signale sinon" }, { t: "Sans inscription" }],
+    nosignup: "Sans inscription",
     findEyebrow: "// Trouvez votre outil",
     findHeading: "Choisissez un outil. Commencez en un clic.",
     capSub: "Environ 50 outils PDF en un seul endroit — convertir, organiser, signer, caviarder, OCR — la plupart s'exécutent localement dans votre navigateur.",
@@ -208,16 +199,14 @@ const COPY = {
     qaSnippets: ["revenus +23% sur un an", "APAC, principal moteur"],
     aiSummary: "Résumé IA",
     cite: "source",
-    figCaption: "Fig 0.1 — quand l'IA répond, elle montre le passage derrière — et signale ce qu'elle ne peut pas tracer. Vérifiez d'un clic.",
   },
   ja: {
-    eyebrow: "// プライベート・検証可能なドキュメントAI",
     heroA: "あらゆる文書を読み解く。",
     heroB: "すべての回答を検証。",
-    heroSub: "約50のPDFツール（その多くはブラウザ内で動作）。AIが文書を読み・比較・抽出し、見つけた内容の根拠となる原文箇所まで示します。",
+    heroSub: "約50のPDFツール＋ファイルを読むAI——たどれるとき、すべての回答が原文に戻れます。",
     primary: "無料で使う",
     secondary: "プライバシーの仕組みを見る",
-    proof: [{ t: "多くはブラウザ内で処理" }, { g: "0", t: " ブラウザ内の送信" }, { t: "根拠を提示、無理なら明示" }, { t: "登録不要" }],
+    nosignup: "登録不要",
     findEyebrow: "// ツールを探す",
     findHeading: "ツールを選んで、ワンクリックで開始。",
     capSub: "約50のPDFツールを一か所に——変換・整理・署名・墨消し・OCR——その多くはブラウザ内でローカルに動作します。",
@@ -248,16 +237,14 @@ const COPY = {
     qaSnippets: ["売上 前年比+23%", "APACが主な牽引役"],
     aiSummary: "AI要約",
     cite: "原文",
-    figCaption: "図 0.1 — AIが回答するとき、その根拠となる原文を示し——たどれない箇所は正直に明示します。ワンクリックで確認。",
   },
   de: {
-    eyebrow: "// Private, überprüfbare Dokument-KI",
     heroA: "Jedes Dokument lesen.",
     heroB: "Jede Antwort überprüfen.",
-    heroSub: "~50 PDF-Tools, die meisten laufen in Ihrem Browser, dazu eine KI, die Ihre Dokumente liest, vergleicht und Daten extrahiert — und die Quellstelle hinter dem zeigt, was sie findet.",
+    heroSub: "~50 PDF-Tools + KI, die Ihre Dateien liest — jede Antwort führt zur Quelle zurück, wenn möglich.",
     primary: "Kostenlos nutzen",
     secondary: "So funktioniert der Datenschutz",
-    proof: [{ t: "Die meisten Tools laufen in Ihrem Browser" }, { g: "0", t: " Uploads im Browser" }, { t: "Die KI zeigt ihre Quelle — oder sagt, wenn sie es nicht kann" }, { t: "Keine Anmeldung" }],
+    nosignup: "Ohne Anmeldung",
     findEyebrow: "// Finden Sie Ihr Tool",
     findHeading: "Wählen Sie ein Tool. Starten Sie mit einem Klick.",
     capSub: "Rund 50 PDF-Tools an einem Ort — konvertieren, ordnen, signieren, schwärzen, OCR — die meisten laufen lokal in Ihrem Browser.",
@@ -288,16 +275,14 @@ const COPY = {
     qaSnippets: ["Umsatz +23 % gg. Vorjahr", "APAC als Haupttreiber"],
     aiSummary: "KI-Zusammenfassung",
     cite: "Quelle",
-    figCaption: "Abb. 0.1 — wenn die KI antwortet, zeigt sie die Stelle dahinter — und markiert, was sie nicht zurückverfolgen kann. Mit einem Klick überprüfen.",
   },
   ko: {
-    eyebrow: "// 비공개 · 검증 가능한 문서 AI",
     heroA: "어떤 문서든 읽어내고,",
     heroB: "모든 답변을 검증하세요.",
-    heroSub: "약 50개의 PDF 도구, 대부분은 브라우저에서 실행됩니다. 여기에 문서를 읽고, 비교하고, 추출하는 AI가 더해집니다 — 그리고 찾아낸 내용의 근거가 되는 원문 구절을 보여 줍니다.",
+    heroSub: "~50가지 PDF 도구 + 파일을 읽는 AI — 찾을 수 있을 때, 모든 답변이 원문으로 돌아갑니다.",
     primary: "무료로 사용하기",
     secondary: "프라이버시 작동 방식 보기",
-    proof: [{ t: "대부분의 도구는 브라우저에서 실행됩니다" }, { g: "0", t: " 브라우저 내 업로드" }, { t: "AI는 출처를 보여 주거나, 그럴 수 없으면 그렇다고 알립니다" }, { t: "가입 불필요" }],
+    nosignup: "가입 불필요",
     findEyebrow: "// 도구 찾기",
     findHeading: "도구를 고르세요. 한 번의 클릭으로 시작합니다.",
     capSub: "약 50개의 PDF 도구가 한곳에 — 변환, 정리, 서명, 가림 처리, OCR — 대부분 브라우저에서 로컬로 실행됩니다.",
@@ -328,7 +313,6 @@ const COPY = {
     qaSnippets: ["매출 전년 대비 +23%", "APAC가 주요 견인 요인"],
     aiSummary: "AI 요약",
     cite: "원문",
-    figCaption: "그림 0.1 — AI가 답할 때, 그 근거가 되는 구절을 보여 주고 — 추적할 수 없는 부분은 그렇다고 표시합니다. 한 번의 클릭으로 검증.",
   },
 } as const;
 
@@ -623,30 +607,21 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
         @media (prefers-reduced-motion:reduce){.hfg-in,.batch-bar,.ms-bar,.mt-tile,.mx-scan,.mx-row,.ms-stack,.mc-file,.mc-progress,.ms-label,.sec-tag,.sec-prof{animation:none!important;transition:none!important}.tw-line,.tw-pill{animation:none!important;opacity:1!important;clip-path:none!important}.mc-badge{animation:none!important;opacity:1!important;transform:translateX(-50%)!important}.ms-label,.sec-tag,.sec-prof{opacity:1!important;transform:none!important}}
       `}</style>
 
-      {/* ── 1 · Hero — left-aligned anchor, mirroring About §1 (eyebrow → big H1 → sub → CTAs → trust pills → weighty wide Figure → caption) ── */}
+      {/* ── 1 · Hero ── */}
       <section>
         <div className={SHELL}>
-          <p className={eyebrowCls(zh)}>{c.eyebrow}</p>
-          <h1 className="mt-4 max-w-[20ch] font-medium text-[40px] leading-[1.05] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[60px] sm:leading-[1.03] sm:tracking-[-0.03em] lg:text-[80px] lg:leading-[1.0] lg:tracking-[-0.04em]">
+          <h1 className="max-w-[20ch] font-medium text-[48px] leading-[1.04] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[68px] sm:leading-[1.02] sm:tracking-[-0.03em] lg:text-[88px] lg:leading-[1.0] lg:tracking-[-0.04em]">
             {c.heroA}<br /><span className="text-[color:var(--muted)]">{c.heroB}</span>
           </h1>
           <p className={SUB}>{c.heroSub}</p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <a href={path("/chat-with-pdf")} className="inline-flex h-12 items-center justify-center rounded-full bg-[color:var(--accent)] px-6 text-[15px] font-medium transition hover:bg-[color:var(--accent-hover)]">{c.primary}</a>
             <a href={path("/privacy-policy")} className="inline-flex h-12 items-center justify-center rounded-full border border-[color:var(--line)] px-6 text-[15px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{c.secondary}</a>
-          </div>
-          <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[color:var(--faint)]">
-            {c.proof.map((f, i) => (
-              <span key={i} className="inline-flex items-center gap-1.5">
-                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="text-[color:var(--accent)]"><path d="M3 8.5l3.2 3.2L13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                {"g" in f && f.g ? <span className="font-medium text-[color:var(--accent)]">{f.g}</span> : null}
-                <span className="text-[color:var(--foreground)]">{f.t}</span>
-              </span>
-            ))}
+            <span className="text-[13px] text-[color:var(--faint)]">{c.nosignup}</span>
           </div>
 
-          {/* product as art: a real grounded-AI interface — report → AI summary, with a citation. Full About-weight Figure, wide. */}
-          <Figure className="mt-12" glow="24%">
+          {/* Demo card — hero main act: grounded AI interface, report → AI summary + source strip. */}
+          <Figure className="mt-14" glow="24%">
             <div className="hfg-in flex items-stretch gap-4" onMouseEnter={heroReveal.start} onMouseLeave={heroReveal.stop}>
               <div className="flex w-[34%] flex-col gap-1.5 rounded-lg border border-[color:var(--line)] bg-black/20 p-4">
                 {[80, 60, 70, 50, 65, 55].map((w, i) => <span key={i} className={`h-[3px] rounded-full ${i === 2 ? "bg-[color:var(--accent)]" : "bg-[color:var(--skeleton)]"}`} style={{ width: `${w}%`, opacity: i === 2 ? 0.9 : 1 }} />)}
@@ -667,10 +642,14 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
                     <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--ink-soft)]" /><span className={`tw-line ${heroReveal.lineCls(i + 1)}`}>{b}</span>
                   </div>
                 ))}
+                {/* Source citation strip — adds height + reinforces traceability */}
+                <div className="mt-3 flex items-center gap-2 rounded border border-[color:var(--soft-accent)] bg-[color:var(--soft-accent)] px-2.5 py-2">
+                  <svg width="11" height="11" viewBox="0 0 12 12" fill="none" className="shrink-0 text-[color:var(--accent)]"><path d="M2 6.5l2.5 2.5L10 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  <span className="text-[10px] text-[color:var(--accent-strong)]">{c.cite} — report.pdf p.12</span>
+                </div>
               </div>
             </div>
           </Figure>
-          <p className={CAP}>{c.figCaption}</p>
         </div>
       </section>
 
