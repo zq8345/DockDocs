@@ -31,5 +31,6 @@ export const standaloneRoutes = [
   "ai-due-diligence-document-review",
   "ai-document-chat",
   "ai-document-summarization",
+  "sign-pdf-without-uploading",
   "upgrade",
 ] as const;

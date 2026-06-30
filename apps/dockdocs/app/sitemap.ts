@@ -212,6 +212,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.75,
     },
     {
+      url: absoluteUrl("/sign-pdf-without-uploading/"),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+    {
       url: absoluteUrl("/ai-document-summarization/"),
       lastModified: now,
       changeFrequency: "monthly" as const,
