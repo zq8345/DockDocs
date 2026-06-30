@@ -35,6 +35,7 @@ const STR: Record<AuthoredLocale, {
   exportBtn: string; noDiffs: string; tipLabel: string; disclaimer: string;
   additions: string; deletions: string;
   sev: Record<string, string>; dir: Record<string, string>; pairsCapped: string;
+  backBtn: string; resetBtn: string; genericError: string;
 }> = {
   en: {
     title: "Contract Review", sub: "Upload two versions of a contract to see what changed — then get an AI explanation of each change and why it matters.",
@@ -47,6 +48,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "High Risk", medium: "Medium", low: "Low" },
     dir: { added: "Added", removed: "Removed", modified: "Modified" },
     pairsCapped: "Analysis covers the first 40 changes.",
+    backBtn: "← Back", resetBtn: "↩ Reset", genericError: "Something went wrong. Please try again.",
   },
   zh: {
     title: "合同版本对比", sub: "上传合同的两个版本，查看改动内容——并获取 AI 对每条改动及其影响的解析。",
@@ -59,6 +61,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "高风险", medium: "中等", low: "低" },
     dir: { added: "新增", removed: "删除", modified: "修改" },
     pairsCapped: "分析涵盖最多 40 处改动。",
+    backBtn: "← 返回", resetBtn: "↩ 重置", genericError: "操作失败，请重试。",
   },
   es: {
     title: "Revisión de contratos", sub: "Sube dos versiones de un contrato para ver qué cambió — luego obtén una explicación de IA de cada cambio.",
@@ -71,6 +74,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Alto riesgo", medium: "Medio", low: "Bajo" },
     dir: { added: "Añadido", removed: "Eliminado", modified: "Modificado" },
     pairsCapped: "El análisis cubre hasta 40 cambios.",
+    backBtn: "← Volver", resetBtn: "↩ Restablecer", genericError: "Algo salió mal. Inténtalo de nuevo.",
   },
   pt: {
     title: "Revisão de contratos", sub: "Carregue duas versões de um contrato para ver o que mudou — e obtenha uma explicação de IA para cada alteração.",
@@ -83,6 +87,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Alto risco", medium: "Médio", low: "Baixo" },
     dir: { added: "Adicionado", removed: "Removido", modified: "Modificado" },
     pairsCapped: "A análise cobre até 40 alterações.",
+    backBtn: "← Voltar", resetBtn: "↩ Redefinir", genericError: "Algo deu errado. Tente novamente.",
   },
   fr: {
     title: "Révision de contrats", sub: "Téléchargez deux versions d'un contrat pour voir ce qui a changé — puis obtenez une explication IA de chaque modification.",
@@ -95,6 +100,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Risque élevé", medium: "Moyen", low: "Faible" },
     dir: { added: "Ajouté", removed: "Supprimé", modified: "Modifié" },
     pairsCapped: "L'analyse couvre jusqu'à 40 modifications.",
+    backBtn: "← Retour", resetBtn: "↩ Réinitialiser", genericError: "Une erreur est survenue. Veuillez réessayer.",
   },
   ja: {
     title: "契約書バージョン比較", sub: "契約書の2つのバージョンをアップロードして変更点を確認し、各変更の影響をAIで解説します。",
@@ -107,6 +113,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "高リスク", medium: "中程度", low: "低" },
     dir: { added: "追加", removed: "削除", modified: "変更" },
     pairsCapped: "最大40件の変更を分析します。",
+    backBtn: "← 戻る", resetBtn: "↩ リセット", genericError: "エラーが発生しました。もう一度お試しください。",
   },
   de: {
     title: "Vertragsversionsvergleich", sub: "Laden Sie zwei Vertragsversionen hoch, um Änderungen zu sehen — und erhalten Sie KI-Erklärungen zu jeder Änderung.",
@@ -119,6 +126,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Hohes Risiko", medium: "Mittel", low: "Niedrig" },
     dir: { added: "Hinzugefügt", removed: "Entfernt", modified: "Geändert" },
     pairsCapped: "Die Analyse umfasst bis zu 40 Änderungen.",
+    backBtn: "← Zurück", resetBtn: "↩ Zurücksetzen", genericError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
   },
   ko: {
     title: "계약서 버전 비교", sub: "계약서의 두 버전을 업로드하여 변경된 내용을 확인하고 AI로 각 변경의 의미를 파악하세요.",
@@ -131,6 +139,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "고위험", medium: "중간", low: "낮음" },
     dir: { added: "추가됨", removed: "삭제됨", modified: "변경됨" },
     pairsCapped: "최대 40개 변경 사항을 분석합니다.",
+    backBtn: "← 뒤로", resetBtn: "↩ 초기화", genericError: "오류가 발생했습니다. 다시 시도해 주세요.",
   },
 };
 
@@ -230,7 +239,7 @@ export function ContractReviewClient() {
       setOps(result);
       setPhase("diff-ready");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to compare files.");
+      setError(e instanceof Error ? e.message : s.genericError);
       setPhase("idle");
     }
   }
@@ -253,13 +262,13 @@ export function ContractReviewClient() {
         body: JSON.stringify({ pairs, locale }),
       });
       const data: { ok: boolean; changes?: ChangeCard[]; message?: string } = await res.json();
-      if (!data.ok) throw new Error(data.message || "Analysis failed.");
+      if (!data.ok) throw new Error(data.message || s.genericError);
       await markUsage(gate, "contractAnalyzer");
       trackToolRun("contract-review");
       setChanges(data.changes ?? []);
       setPhase("done");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Analysis failed.");
+      setError(e instanceof Error ? e.message : s.genericError);
       setPhase("diff-ready");
     }
   }
@@ -303,7 +312,7 @@ export function ContractReviewClient() {
 
   if (showUpgrade) return (
     <div className="mx-auto max-w-4xl px-5 py-12 sm:px-6 lg:px-8">
-      <button onClick={() => setShowUpgrade(false)} className="mb-4 text-[13px] text-[color:var(--muted)] hover:text-[color:var(--foreground)]">← Back</button>
+      <button onClick={() => setShowUpgrade(false)} className="mb-4 text-[13px] text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{T(s.backBtn)}</button>
       <UpgradePrompt locale={locale === "ko" ? "en" : locale} limit={upgradeLimit} />
     </div>
   );
@@ -347,7 +356,7 @@ export function ContractReviewClient() {
               onClick={() => { setFileA(null); setFileB(null); setPhase("idle"); setOps([]); setChanges([]); setError(""); }}
               className="ml-auto text-[12px] text-[color:var(--muted)] underline underline-offset-2 hover:text-[color:var(--foreground)]"
             >
-              ↩ Reset
+              {T(s.resetBtn)}
             </button>
           )}
         </div>
