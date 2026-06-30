@@ -45,7 +45,7 @@ const config = {
     },
     {
       question: "How do I convert docs to PDF (multiple Word files)?",
-      answer: "DockDocs converts one document at a time. Upload your first doc, download the PDF, then repeat for additional files. For batch jobs, you can use DockDocs' PDF merge tool to combine multiple PDFs afterward.",
+      answer: "Use Batch Word to PDF to convert a whole folder of .doc and .docx files at once — upload multiple files and download a single ZIP of converted PDFs. This page converts one file at a time.",
     },
     {
       question: "Will my Word formatting survive the conversion?",
