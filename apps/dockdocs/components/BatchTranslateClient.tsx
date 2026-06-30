@@ -39,6 +39,15 @@ const LANGS: Array<{ code: string; en: string; zh: string }> = [
   { code: "hi", en: "Hindi", zh: "印地语" },
 ];
 
+function localLangName(code: string, inLocale: string): string {
+  try {
+    const bcp = code === "zh-Hant" ? "zh-TW" : code;
+    return new Intl.DisplayNames([inLocale], { type: "language" }).of(bcp) ?? code;
+  } catch {
+    return code;
+  }
+}
+
 const _en = {
   title: "Batch Translate PDFs",
   subtitle:
@@ -568,7 +577,7 @@ export function BatchTranslateClient({ locale = "en", embedded = false }: { loca
                   className="h-9 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2.5 text-[13px] text-[color:var(--foreground)]"
                 >
                   {LANGS.map((l) => (
-                    <option key={l.code} value={l.code}>{locale === "zh" ? l.zh : locale === "zh-Hant" ? toHant(l.zh) : l.en}</option>
+                    <option key={l.code} value={l.code}>{locale === "zh" ? l.zh : locale === "zh-Hant" ? toHant(l.zh) : localLangName(l.code, locale)}</option>
                   ))}
                 </select>
               </label>
