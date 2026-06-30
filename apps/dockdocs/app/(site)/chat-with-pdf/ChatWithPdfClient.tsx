@@ -500,7 +500,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
           </span>
           <span className="mt-4 text-sm text-[color:var(--muted)]">{copy.uploadHelp}</span>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-            <span>{locale === "zh-Hant" ? deepHant("支持") : locale === "zh" ? "支持" : locale === "ja" ? "対応形式" : locale === "de" ? "Unterstützt" : locale === "ko" ? "지원 형식" : "Supports"} PDF</span>
+            <span>{locale === "zh-Hant" ? deepHant("支持") : locale === "zh" ? "支持" : locale === "ja" ? "対応形式" : locale === "de" ? "Unterstützt" : locale === "ko" ? "지원 형식" : locale === "es" ? "Admite" : locale === "pt" ? "Suporta" : locale === "fr" ? "Prend en charge" : "Supports"} PDF</span>
             <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
             <span className="text-[color:var(--muted)]">{locale === "zh-Hant" ? deepHant("本地读取 · 文字发至AI") : locale === "zh" ? "本地读取 · 文字发至AI" : locale === "ja" ? "ローカルで読み取り · テキストをAIへ送信" : locale === "es" ? "Leído localmente · texto enviado a IA" : locale === "pt" ? "Lido localmente · texto enviado a IA" : locale === "fr" ? "Lu localement · texte envoyé à l'IA" : locale === "de" ? "Lokal gelesen · Text an KI gesendet" : locale === "ko" ? "로컬에서 읽기 · 텍스트 AI로 전송" : "File read locally · text sent to AI"}</span>
           </div>
@@ -606,6 +606,10 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
                           ? `${message.citations.length} verificado${message.citations.length > 1 ? "s" : ""} na fonte`
                           : locale === "fr"
                           ? `${message.citations.length} vérifié${message.citations.length > 1 ? "s" : ""} dans la source`
+                          : locale === "de"
+                          ? `${message.citations.length} mit der Quelle abgeglichen`
+                          : locale === "ko"
+                          ? `${message.citations.length}건 출처와 대조 확인`
                           : `${message.citations.length} verified against source`}
                       </p>
                       <ul className="space-y-1">
