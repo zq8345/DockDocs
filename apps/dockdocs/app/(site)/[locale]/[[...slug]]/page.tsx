@@ -2166,7 +2166,8 @@ export default async function LocalizedRoute({
     // Article body is en/zh (lib/blog.ts); chrome/GEO add de. zh-Hant collapses
     // to zh here (BlogArticlePage renders the zh chrome over the zh body).
     const blogLocale = toBlogLocale(rawLocale);
-    const blogContentLocale = blogLocale === "zh-Hant" ? "zh" : blogLocale;
+    // Blog body exists only in en/zh (lib/blog.ts); de (+ any chrome-only locale) falls back to en body.
+    const blogContentLocale: "en" | "zh" = blogLocale === "zh" || blogLocale === "zh-Hant" ? "zh" : "en";
     const blogContent = getBlogArticleContent(article, blogContentLocale);
     const blogCanonical = blogArticlePath(article.slug, rawLocale as never);
     const blogSchema = {
