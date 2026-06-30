@@ -17,7 +17,7 @@ type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 const copy = {
   en: {
     title: "Simple pricing. Powerful, private documents.",
-    subtitle: "Start free — no account, no card. Upgrade only when you need AI, bigger files, or higher volume. Cancel anytime, in two clicks.",
+    subtitle: "Powerful document AI, fully unlocked with Pro — chat with any document, compare side by side, review contract risk, automate in batches. A few dollars a month, for hours back.",
     monthly: "Monthly",
     yearly: "Yearly",
     save: "Save ~40%",
@@ -86,7 +86,7 @@ const copy = {
   },
   zh: {
     title: "定价简单，文档强大且私密。",
-    subtitle: "免费开始——无需注册、无需信用卡。只在你需要 AI、更大文件或更高用量时才升级。随时取消，两次点击搞定。",
+    subtitle: "强大的文档 AI，Pro 一次解锁——和任意文档对话、并排比对、合同风险审查、批量自动化。每月几美元，换回你大把时间。",
     monthly: "按月",
     yearly: "按年",
     save: "省约 40%",
@@ -154,7 +154,7 @@ const copy = {
   },
   es: {
     title: "Precios simples. Documentos potentes y privados.",
-    subtitle: "Empieza gratis — sin cuenta, sin tarjeta. Actualiza solo cuando necesites IA, archivos más grandes o mayor volumen. Cancela en cualquier momento, en dos clics.",
+    subtitle: "IA documental potente, completamente desbloqueada con Pro — chatea con cualquier documento, compara en paralelo, revisa riesgos contractuales, automatiza en lote. Unos pocos dólares al mes, a cambio de horas recuperadas.",
     monthly: "Mensual",
     yearly: "Anual",
     save: "Ahorra ~40%",
@@ -222,7 +222,7 @@ const copy = {
   },
   pt: {
     title: "Preços simples. Documentos poderosos e privados.",
-    subtitle: "Comece grátis — sem conta, sem cartão. Faça upgrade só quando precisar de IA, arquivos maiores ou maior volume. Cancele a qualquer momento, em dois cliques.",
+    subtitle: "IA documental poderosa, completamente desbloqueada com Pro — converse com qualquer documento, compare lado a lado, analise riscos contratuais, automatize em lote. Poucos dólares por mês, de volta em horas poupadas.",
     monthly: "Mensal",
     yearly: "Anual",
     save: "Economize ~40%",
@@ -290,7 +290,7 @@ const copy = {
   },
   fr: {
     title: "Des tarifs simples. Des documents puissants et privés.",
-    subtitle: "Commencez gratuitement — sans compte, sans carte. Passez à un forfait supérieur uniquement si vous avez besoin d'IA, de fichiers plus volumineux ou d'un volume plus élevé. Annulez à tout moment, en deux clics.",
+    subtitle: "Une IA documentaire puissante, entièrement débloquée avec Pro — dialoguez avec n'importe quel document, comparez côte à côte, analysez les risques contractuels, automatisez en lot. Quelques dollars par mois, des heures de retrouvées.",
     monthly: "Mensuel",
     yearly: "Annuel",
     save: "Économisez ~40%",
@@ -358,7 +358,7 @@ const copy = {
   },
   ja: {
     title: "シンプルな料金。強力でプライベートなドキュメント。",
-    subtitle: "無料で開始 — アカウント不要、カード不要。AI、より大きなファイル、より多い処理量が必要なときだけアップグレード。いつでも2クリックで解約可能。",
+    subtitle: "Pro で全機能が開放される強力なドキュメント AI — 任意の資料とチャット、並列比較、契約リスク審査、バッチ自動化。月数ドルで、何時間もの時間を取り戻せます。",
     monthly: "月額",
     yearly: "年額",
     save: "約40%お得",
@@ -426,7 +426,7 @@ const copy = {
   },
   de: {
     title: "Einfache Preise. Leistungsstarke, private Dokumente.",
-    subtitle: "Kostenlos starten — ohne Konto, ohne Karte. Erst upgraden, wenn Sie KI, größere Dateien oder mehr Volumen brauchen. Jederzeit kündbar, mit zwei Klicks.",
+    subtitle: "Leistungsstarke Dokumenten-KI, mit Pro vollständig freigeschaltet — mit beliebigen Dokumenten chatten, nebeneinander vergleichen, Vertragsrisiken prüfen, stapelweise automatisieren. Wenige Dollar im Monat, dafür Stunden zurückgewonnen.",
     monthly: "Monatlich",
     yearly: "Jährlich",
     save: "Sparen Sie ~40 %",
@@ -494,7 +494,7 @@ const copy = {
   },
   ko: {
     title: "간단한 요금제. 강력하고 안전한 문서 작업.",
-    subtitle: "무료로 시작하세요 — 계정도, 카드도 필요 없습니다. AI, 더 큰 파일, 더 많은 작업량이 필요할 때만 업그레이드하세요. 언제든 클릭 두 번으로 해지할 수 있습니다.",
+    subtitle: "Pro로 완전히 잠금 해제되는 강력한 문서 AI — 모든 문서와 대화, 나란히 비교, 계약 위험 검토, 대량 자동화. 한 달에 몇 달러로, 몇 시간을 되찾으세요.",
     monthly: "월간",
     yearly: "연간",
     save: "약 40% 절약",
