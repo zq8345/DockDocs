@@ -13,18 +13,14 @@ type Item = { name: string; slug: string };
 
 const COPY = {
   en: {
-    heroA: "Read any document.",
-    heroB: "Verify every answer.",
-    heroSub: "~50 PDF tools + AI that reads your files — every answer points back to the source when it can locate it.",
+    heroA: "Verifiable answers.",
+    heroB: "Documents stay local.",
+    heroSub: "AI that reads your documents and cites the source when it can locate it.",
+    heroDisclosure: "Your file is read locally — only the extracted text is sent to AI.",
     primary: "Use it free",
-    secondary: "See how privacy works",
-    nosignup: "No sign-up",
     findEyebrow: "// Find your tool",
     findHeading: "Pick a tool. Start in one click.",
     capSub: "About 50 PDF tools in one place — convert, organize, sign, redact, OCR — most running locally in your browser.",
-    searchPlaceholder: "Search ~50 tools — compress, merge, sign…",
-    searchNoResults: "No tool matches that — try another word, or browse all.",
-    fig2Caption: "Fig 0.2 — ~50 tools, four ways in.",
     aiEyebrow: "// Grounded AI",
     aiHeading: "AI that shows its work.",
     aiSub: "Ask any document; when it answers or flags a finding, it shows the exact passage behind it — and tells you when something can't be traced, instead of inventing a source. Compare, extract, summarize.",
@@ -33,13 +29,12 @@ const COPY = {
     fig3Caption: "Fig 0.3 — one grounded answer, traced to the exact passage.",
     jobsEyebrow: "// What it does for you",
     jobsHeading: "Minutes, not hours.",
-    fig4Caption: "Fig 0.4 — four everyday jobs, minutes instead of hours.",
     browseAll: "Browse all tools",
     more: (n: number) => `and ${n} more`,
     tools: "tools",
     ctaEyebrow: "// Try it",
-    ctaHeadA: "Read any document.",
-    ctaHeadB: "Verify every answer.",
+    ctaHeadA: "Start reading,",
+    ctaHeadB: "answers you can check.",
     ctaSub: "~50 tools, AI that cites its source when it can, and browser tools that upload nothing. Free to start — no sign-up.",
     viewPricing: "View pricing",
     qaQuestion: "How much did Q3 revenue grow?",
@@ -51,18 +46,14 @@ const COPY = {
     cite: "source",
   },
   zh: {
-    heroA: "读懂任意文档，",
-    heroB: "逐一核验答案。",
-    heroSub: "约 50 个 PDF 工具 + 读懂你文档的 AI——找得到时，每个答案都能点回原文。",
+    heroA: "答案可核验，",
+    heroB: "文档在本地。",
+    heroSub: "读懂你的文件，找得到时指回原文。",
+    heroDisclosure: "本地读取 · 文字发至 AI",
     primary: "免费使用",
-    secondary: "看隐私怎么做到",
-    nosignup: "无需注册",
     findEyebrow: "// 找到你的工具",
     findHeading: "选个工具，一键开始。",
     capSub: "约 50 个 PDF 工具集中一处——转换、整理、签名、脱敏、OCR——大多在浏览器本地完成。",
-    searchPlaceholder: "搜索约 50 个工具——压缩、合并、签名……",
-    searchNoResults: "没有匹配的工具——换个词，或浏览全部。",
-    fig2Caption: "图 0.2 — 约 50 个工具，四种入口。",
     aiEyebrow: "// AI · 可溯源",
     aiHeading: "会给你看依据的 AI。",
     aiSub: "向任意文档提问；AI 回答问题或标出某项发现时，会展示支撑它的原文原句——若有内容无法溯源，它会如实说明，而不是编造一个出处。对比、抽取、摘要。",
@@ -71,13 +62,12 @@ const COPY = {
     fig3Caption: "图 0.3 — 一个有据回答，追溯到确切的原文。",
     jobsEyebrow: "// 能替你做什么",
     jobsHeading: "几分钟，搞定原本要几小时的事。",
-    fig4Caption: "图 0.4 — 四件日常事，几分钟而非几小时。",
     browseAll: "浏览全部工具",
     more: (n: number) => `还有 ${n} 个`,
     tools: "个工具",
     ctaEyebrow: "// 试试看",
-    ctaHeadA: "读懂任意文档，",
-    ctaHeadB: "逐一核验答案。",
+    ctaHeadA: "开始阅读，",
+    ctaHeadB: "答案一一可查。",
     ctaSub: "约 50 个工具，会尽量给你看依据的 AI，浏览器工具零上传。免费开始，无需注册。",
     viewPricing: "查看定价",
     qaQuestion: "第 3 季度营收增长了多少？",
@@ -89,18 +79,14 @@ const COPY = {
     cite: "原文",
   },
   es: {
-    heroA: "Lee cualquier documento.",
-    heroB: "Verifica cada respuesta.",
-    heroSub: "~50 herramientas PDF + IA que lee tus archivos — cada respuesta apunta al origen cuando puede.",
+    heroA: "Respuestas verificables.",
+    heroB: "Documentos locales.",
+    heroSub: "IA que lee tus documentos y cita la fuente cuando puede localizarla.",
+    heroDisclosure: "Tu archivo se lee localmente — solo el texto extraído se envía a la IA.",
     primary: "Úsalo gratis",
-    secondary: "Mira cómo funciona la privacidad",
-    nosignup: "Sin registro",
     findEyebrow: "// Encuentra tu herramienta",
     findHeading: "Elige una herramienta. Empieza en un clic.",
     capSub: "Cerca de 50 herramientas PDF en un solo lugar — convertir, organizar, firmar, redactar, OCR — la mayoría se ejecutan localmente en tu navegador.",
-    searchPlaceholder: "Busca ~50 herramientas — comprimir, combinar, firmar…",
-    searchNoResults: "Ninguna herramienta coincide — prueba otra palabra o explora todas.",
-    fig2Caption: "Fig 0.2 — ~50 herramientas, cuatro vías de entrada.",
     aiEyebrow: "// IA fundamentada",
     aiHeading: "Una IA que muestra su trabajo.",
     aiSub: "Pregunta a cualquier documento; cuando responde o señala un hallazgo, te muestra el pasaje exacto que lo respalda — y te avisa cuando algo no se puede rastrear, en lugar de inventarse una fuente. Compara, extrae, resume.",
@@ -109,13 +95,12 @@ const COPY = {
     fig3Caption: "Fig 0.3 — una respuesta fundamentada, rastreada al pasaje exacto.",
     jobsEyebrow: "// Lo que hace por ti",
     jobsHeading: "Minutos, no horas.",
-    fig4Caption: "Fig 0.4 — cuatro tareas cotidianas, minutos en vez de horas.",
     browseAll: "Ver todas las herramientas",
     more: (n: number) => `y ${n} más`,
     tools: "herramientas",
     ctaEyebrow: "// Pruébalo",
-    ctaHeadA: "Lee cualquier documento.",
-    ctaHeadB: "Verifica cada respuesta.",
+    ctaHeadA: "Empieza a leer,",
+    ctaHeadB: "respuestas que puedes verificar.",
     ctaSub: "~50 herramientas, IA que cita su fuente cuando puede, y herramientas del navegador que no suben nada. Gratis para empezar — sin registro.",
     viewPricing: "Ver precios",
     qaQuestion: "¿Cuánto crecieron los ingresos del 3.er trimestre?",
@@ -127,18 +112,14 @@ const COPY = {
     cite: "fuente",
   },
   pt: {
-    heroA: "Leia qualquer documento.",
-    heroB: "Verifique cada resposta.",
-    heroSub: "~50 ferramentas PDF + IA que lê seus arquivos — cada resposta aponta para a fonte quando possível.",
+    heroA: "Respostas verificáveis.",
+    heroB: "Documentos ficam locais.",
+    heroSub: "IA que lê seus documentos e cita a fonte quando consegue localizá-la.",
+    heroDisclosure: "Seu arquivo é lido localmente — apenas o texto extraído é enviado à IA.",
     primary: "Use gratuitamente",
-    secondary: "Veja como a privacidade funciona",
-    nosignup: "Sem cadastro",
     findEyebrow: "// Encontre sua ferramenta",
     findHeading: "Escolha uma ferramenta. Comece em um clique.",
     capSub: "Cerca de 50 ferramentas PDF em um só lugar — converter, organizar, assinar, redigir, OCR — a maioria roda localmente no seu navegador.",
-    searchPlaceholder: "Buscar ~50 ferramentas — comprimir, juntar, assinar…",
-    searchNoResults: "Nenhuma ferramenta corresponde — tente outra palavra ou veja todas.",
-    fig2Caption: "Fig 0.2 — ~50 ferramentas, quatro formas de entrar.",
     aiEyebrow: "// IA embasada",
     aiHeading: "Uma IA que mostra seu trabalho.",
     aiSub: "Pergunte a qualquer documento; quando responde ou aponta uma constatação, ela mostra o trecho exato que a fundamenta — e avisa quando algo não pode ser rastreado, em vez de inventar uma fonte. Compare, extraia, resuma.",
@@ -147,13 +128,12 @@ const COPY = {
     fig3Caption: "Fig 0.3 — uma resposta embasada, rastreada ao trecho exato.",
     jobsEyebrow: "// O que faz por você",
     jobsHeading: "Minutos, não horas.",
-    fig4Caption: "Fig 0.4 — quatro tarefas do dia a dia, minutos em vez de horas.",
     browseAll: "Ver todas as ferramentas",
     more: (n: number) => `e mais ${n}`,
     tools: "ferramentas",
     ctaEyebrow: "// Experimente",
-    ctaHeadA: "Leia qualquer documento.",
-    ctaHeadB: "Verifique cada resposta.",
+    ctaHeadA: "Comece a ler,",
+    ctaHeadB: "respostas que você pode verificar.",
     ctaSub: "~50 ferramentas, IA que cita a fonte quando dá, e ferramentas do navegador que não enviam nada. Grátis para começar — sem cadastro.",
     viewPricing: "Ver preços",
     qaQuestion: "Quanto cresceu a receita do 3.º trimestre?",
@@ -165,18 +145,14 @@ const COPY = {
     cite: "fonte",
   },
   fr: {
-    heroA: "Lisez n'importe quel document.",
-    heroB: "Vérifiez chaque réponse.",
-    heroSub: "~50 outils PDF + IA qui lit vos fichiers — chaque réponse renvoie à la source quand elle peut.",
+    heroA: "Réponses vérifiables.",
+    heroB: "Documents restent locaux.",
+    heroSub: "IA qui lit vos documents et cite la source quand elle peut la localiser.",
+    heroDisclosure: "Votre fichier est lu localement — seul le texte extrait est envoyé à l'IA.",
     primary: "Utiliser gratuitement",
-    secondary: "Voir comment fonctionne la confidentialité",
-    nosignup: "Sans inscription",
     findEyebrow: "// Trouvez votre outil",
     findHeading: "Choisissez un outil. Commencez en un clic.",
     capSub: "Environ 50 outils PDF en un seul endroit — convertir, organiser, signer, caviarder, OCR — la plupart s'exécutent localement dans votre navigateur.",
-    searchPlaceholder: "Rechercher ~50 outils — compresser, fusionner, signer…",
-    searchNoResults: "Aucun outil ne correspond — essayez un autre mot, ou voyez tous.",
-    fig2Caption: "Fig 0.2 — ~50 outils, quatre portes d'entrée.",
     aiEyebrow: "// IA fondée sur des preuves",
     aiHeading: "Une IA qui montre son travail.",
     aiSub: "Interrogez n'importe quel document ; quand l'IA répond ou relève un élément, elle montre le passage exact qui l'appuie — et vous indique quand quelque chose ne peut pas être tracé, au lieu d'inventer une source. Comparez, extrayez, résumez.",
@@ -185,13 +161,12 @@ const COPY = {
     fig3Caption: "Fig 0.3 — une réponse fondée, retracée jusqu'au passage exact.",
     jobsEyebrow: "// Ce qu'il fait pour vous",
     jobsHeading: "Des minutes, pas des heures.",
-    fig4Caption: "Fig 0.4 — quatre tâches du quotidien, des minutes au lieu d'heures.",
     browseAll: "Voir tous les outils",
     more: (n: number) => `et ${n} de plus`,
     tools: "outils",
     ctaEyebrow: "// Essayez",
-    ctaHeadA: "Lisez n'importe quel document.",
-    ctaHeadB: "Vérifiez chaque réponse.",
+    ctaHeadA: "Commencez à lire,",
+    ctaHeadB: "des réponses vérifiables.",
     ctaSub: "~50 outils, IA qui cite sa source quand elle le peut, et des outils navigateur qui n'envoient rien. Gratuit pour commencer — sans inscription.",
     viewPricing: "Voir les tarifs",
     qaQuestion: "De combien les revenus du T3 ont-ils augmenté ?",
@@ -203,18 +178,14 @@ const COPY = {
     cite: "source",
   },
   ja: {
-    heroA: "あらゆる文書を読み解く。",
-    heroB: "すべての回答を検証。",
-    heroSub: "約50のPDFツール＋ファイルを読むAI——たどれるとき、すべての回答が原文に戻れます。",
+    heroA: "答えは検証できる。",
+    heroB: "文書はここに。",
+    heroSub: "文書を読むAI——たどれるとき、答えが原文に戻れます。",
+    heroDisclosure: "ファイルはローカルで読み取り——抽出テキストのみAIに送信されます。",
     primary: "無料で使う",
-    secondary: "プライバシーの仕組みを見る",
-    nosignup: "登録不要",
     findEyebrow: "// ツールを探す",
     findHeading: "ツールを選んで、ワンクリックで開始。",
     capSub: "約50のPDFツールを一か所に——変換・整理・署名・墨消し・OCR——その多くはブラウザ内でローカルに動作します。",
-    searchPlaceholder: "約50のツールを検索——圧縮、結合、署名…",
-    searchNoResults: "一致するツールがありません——別の語を試すか、すべて表示してください。",
-    fig2Caption: "図 0.2 — 約50ツール、4つの入口。",
     aiEyebrow: "// 根拠を示すAI",
     aiHeading: "根拠を示すAI。",
     aiSub: "どんな文書にも質問できます。AIは回答や指摘の根拠となる原文箇所を示し、たどれない場合は出典を作らず正直に伝えます。比較・抽出・要約。",
@@ -223,13 +194,12 @@ const COPY = {
     fig3Caption: "図 0.3 — 根拠ある回答が、正確な原文まで辿れる。",
     jobsEyebrow: "// あなたの代わりにできること",
     jobsHeading: "数時間ではなく、数分で。",
-    fig4Caption: "図 0.4 — 日常の4つの作業が、数時間ではなく数分に。",
     browseAll: "すべてのツールを見る",
     more: (n: number) => `他${n}件`,
     tools: "ツール",
     ctaEyebrow: "// 試してみる",
-    ctaHeadA: "あらゆる文書を読み解く。",
-    ctaHeadB: "すべての回答を検証。",
+    ctaHeadA: "読み始めよう、",
+    ctaHeadB: "検証できる答えで。",
     ctaSub: "約50のツール、可能な限り根拠を示すAI、ブラウザツールはアップロードなし。無料で開始——登録不要。",
     viewPricing: "料金を見る",
     qaQuestion: "第3四半期の売上はどれくらい伸びましたか？",
@@ -241,18 +211,14 @@ const COPY = {
     cite: "原文",
   },
   de: {
-    heroA: "Jedes Dokument lesen.",
-    heroB: "Jede Antwort überprüfen.",
-    heroSub: "~50 PDF-Tools + KI, die Ihre Dateien liest — jede Antwort führt zur Quelle zurück, wenn möglich.",
+    heroA: "Prüfbare Antworten.",
+    heroB: "Dokumente bleiben lokal.",
+    heroSub: "KI, die Ihre Dokumente liest und die Quelle zitiert, wenn sie sie finden kann.",
+    heroDisclosure: "Ihre Datei wird lokal gelesen — nur der extrahierte Text wird an die KI gesendet.",
     primary: "Kostenlos nutzen",
-    secondary: "So funktioniert der Datenschutz",
-    nosignup: "Ohne Anmeldung",
     findEyebrow: "// Finden Sie Ihr Tool",
     findHeading: "Wählen Sie ein Tool. Starten Sie mit einem Klick.",
     capSub: "Rund 50 PDF-Tools an einem Ort — konvertieren, ordnen, signieren, schwärzen, OCR — die meisten laufen lokal in Ihrem Browser.",
-    searchPlaceholder: "~50 Tools durchsuchen — komprimieren, zusammenfügen, signieren…",
-    searchNoResults: "Kein Tool passt dazu — versuchen Sie ein anderes Wort oder sehen Sie alle an.",
-    fig2Caption: "Abb. 0.2 — ~50 Tools, vier Wege hinein.",
     aiEyebrow: "// Belegbare KI",
     aiHeading: "Eine KI, die ihre Arbeit zeigt.",
     aiSub: "Fragen Sie jedes Dokument; wenn die KI antwortet oder einen Befund markiert, zeigt sie die genaue Stelle, die ihn stützt — und sagt Ihnen, wenn sich etwas nicht zurückverfolgen lässt, statt eine Quelle zu erfinden. Vergleichen, extrahieren, zusammenfassen.",
@@ -261,13 +227,12 @@ const COPY = {
     fig3Caption: "Abb. 0.3 — eine belegte Antwort, zurückverfolgt bis zur genauen Stelle.",
     jobsEyebrow: "// Was es für Sie erledigt",
     jobsHeading: "Minuten statt Stunden.",
-    fig4Caption: "Abb. 0.4 — vier alltägliche Aufgaben, Minuten statt Stunden.",
     browseAll: "Alle Tools durchsuchen",
     more: (n: number) => `und ${n} weitere`,
     tools: "Tools",
     ctaEyebrow: "// Ausprobieren",
-    ctaHeadA: "Jedes Dokument lesen.",
-    ctaHeadB: "Jede Antwort überprüfen.",
+    ctaHeadA: "Anfangen zu lesen,",
+    ctaHeadB: "prüfbare Antworten.",
     ctaSub: "~50 Tools, eine KI, die ihre Quelle nennt, wenn sie kann, und Browser-Tools, die nichts hochladen. Kostenlos starten — ohne Anmeldung.",
     viewPricing: "Preise ansehen",
     qaQuestion: "Wie stark ist der Umsatz im 3. Quartal gewachsen?",
@@ -279,18 +244,14 @@ const COPY = {
     cite: "Quelle",
   },
   ko: {
-    heroA: "어떤 문서든 읽어내고,",
-    heroB: "모든 답변을 검증하세요.",
-    heroSub: "~50가지 PDF 도구 + 파일을 읽는 AI — 찾을 수 있을 때, 모든 답변이 원문으로 돌아갑니다.",
+    heroA: "검증 가능한 답변,",
+    heroB: "문서는 로컬에.",
+    heroSub: "문서를 읽는 AI — 찾을 수 있을 때 출처로 돌아갑니다.",
+    heroDisclosure: "파일은 로컬에서 읽힙니다 — 추출된 텍스트만 AI로 전송됩니다.",
     primary: "무료로 사용하기",
-    secondary: "프라이버시 작동 방식 보기",
-    nosignup: "가입 불필요",
     findEyebrow: "// 도구 찾기",
     findHeading: "도구를 고르세요. 한 번의 클릭으로 시작합니다.",
     capSub: "약 50개의 PDF 도구가 한곳에 — 변환, 정리, 서명, 가림 처리, OCR — 대부분 브라우저에서 로컬로 실행됩니다.",
-    searchPlaceholder: "약 50개 도구 검색 — 압축, 병합, 서명…",
-    searchNoResults: "일치하는 도구가 없습니다 — 다른 단어로 검색하거나 전체를 둘러보세요.",
-    fig2Caption: "그림 0.2 — 약 50개 도구, 네 가지 진입 방식.",
     aiEyebrow: "// 근거를 제시하는 AI",
     aiHeading: "근거를 보여 주는 AI.",
     aiSub: "어떤 문서에도 질문하세요. AI가 답하거나 발견한 점을 표시할 때, 그 근거가 되는 정확한 구절을 보여 줍니다 — 그리고 출처를 만들어 내는 대신, 추적할 수 없을 때는 그렇다고 알립니다. 비교, 추출, 요약.",
@@ -299,13 +260,12 @@ const COPY = {
     fig3Caption: "그림 0.3 — 근거 있는 하나의 답변, 정확한 구절까지 추적.",
     jobsEyebrow: "// 당신을 위해 해내는 일",
     jobsHeading: "몇 시간이 아니라, 몇 분 만에.",
-    fig4Caption: "그림 0.4 — 일상의 네 가지 작업, 몇 시간 대신 몇 분.",
     browseAll: "전체 도구 둘러보기",
     more: (n: number) => `외 ${n}개`,
     tools: "개 도구",
     ctaEyebrow: "// 사용해 보기",
-    ctaHeadA: "어떤 문서든 읽어내고,",
-    ctaHeadB: "모든 답변을 검증하세요.",
+    ctaHeadA: "지금 읽기 시작하세요,",
+    ctaHeadB: "확인할 수 있는 답변.",
     ctaSub: "약 50개 도구, 가능할 때 출처를 제시하는 AI, 그리고 아무것도 업로드하지 않는 브라우저 도구. 무료로 시작 — 가입 불필요.",
     viewPricing: "요금 보기",
     qaQuestion: "3분기 매출은 얼마나 성장했나요?",
@@ -489,44 +449,44 @@ const CARDS: { visual: "thumbs" | "batch" | "extract" | "secure" }[] = [
   { visual: "secure" },
 ];
 
-// concrete jobs DockDocs does — old way → DockDocs (low text, scannable)
+// 你给什么 → AI怎么做 → 你得到什么 (t[0]=title, t[1]=input, t[2]=output)
 const SCENARIOS = [
   { icon: <path d="M4 13h3v6H4zM10 9h3v10h-3zM16 5h3v14h-3z" />, href: "/compare",
-    en: ["Compare quotes, pick the best", "3 files into a sheet · ~1h", "a data-backed pick · 1 min"],
-    zh: ["比报价，选最优", "开 3 个文件抄进表格 · 约 1 小时", "基于数据的推荐 · 1 分钟"],
-    es: ["Compara presupuestos, elige el mejor", "3 archivos a una hoja · ~1 h", "una elección basada en los datos · 1 min"],
-    pt: ["Compare orçamentos, escolha o melhor", "3 arquivos em uma planilha · ~1h", "uma escolha baseada nos dados · 1 min"],
-    fr: ["Comparez des devis, choisissez le meilleur", "3 fichiers dans un tableau · ~1h", "un choix fondé sur les chiffres · 1 min"],
-    ja: ["見積もりを比較し、最適を選ぶ", "3ファイルを表に書き写す · 約1時間", "数値に基づく選定 · 1分"],
-    de: ["Angebote vergleichen, das beste wählen", "3 Dateien in eine Tabelle · ~1 Std.", "eine datenbasierte Wahl · 1 Min."],
-    ko: ["견적을 비교해 최선을 고르세요", "3개 파일을 표로 옮겨 적기 · 약 1시간", "데이터 기반 선택 · 1분"] },
+    en: ["Compare quotes, pick the best in 1 min", "A few quote PDFs", "AI pulls a comparison table, flags the winner"],
+    zh: ["比报价，1 分钟拿决定", "几份报价 PDF", "AI 抽对比表、标出最优"],
+    es: ["Compara presupuestos, decide en 1 minuto", "Unos PDFs de presupuestos", "AI genera tabla comparativa y señala el ganador"],
+    pt: ["Compare orçamentos, decida em 1 minuto", "Alguns PDFs de orçamentos", "AI monta tabela comparativa e indica o melhor"],
+    fr: ["Comparez des devis, décidez en 1 minute", "Quelques PDF de devis", "L'IA dresse un tableau comparatif et signale le meilleur"],
+    ja: ["見積もりを比較し、1分で決断", "いくつかの見積PDFを", "AIが比較表を作成し最良を示す"],
+    de: ["Angebote vergleichen, in 1 Min. entscheiden", "Einige Angebots-PDFs", "KI erstellt Vergleichstabelle und markiert das Beste"],
+    ko: ["견적을 비교해 1분 만에 결정", "견적 PDF 몇 개를", "AI가 비교표 생성·최선 표시"] },
   { icon: <path d="M6 3h7l4 4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM13 3v4h4M8.5 14l2 2 4-4" />, href: "/redline",
-    en: ["Catch the traps in a contract", "a lawyer, or sign blind", "AI flags risky & missing clauses"],
-    zh: ["看穿合同里的坑", "花钱找律师，或盲签踩坑", "AI 标出风险与缺失条款"],
-    es: ["Detecta las trampas de un contrato", "un abogado, o firmar a ciegas", "la IA señala cláusulas de riesgo y ausentes"],
-    pt: ["Detecte as armadilhas de um contrato", "um advogado, ou assinar às cegas", "a IA sinaliza cláusulas de risco e ausentes"],
-    fr: ["Repérez les pièges d'un contrat", "un juriste, ou signer en aveugle", "l'IA signale les clauses à risque et manquantes"],
-    ja: ["契約書の落とし穴を見抜く", "弁護士に頼むか、よく見ずに署名", "AIがリスク条項と欠落を指摘"],
-    de: ["Die Fallen in einem Vertrag erkennen", "einen Anwalt zahlen oder blind unterschreiben", "die KI markiert riskante und fehlende Klauseln"],
-    ko: ["계약서 속 함정을 잡아내세요", "변호사 비용을 내거나, 모른 채 서명하기", "AI가 위험·누락 조항을 표시"] },
+    en: ["Review a contract before signing", "Upload the contract", "AI flags every high-risk clause, links to the exact text"],
+    zh: ["看合同，签字前心里有数", "上传合同", "AI 逐条标高危+引到原文"],
+    es: ["Revisa un contrato antes de firmar", "Sube el contrato", "AI marca cada cláusula de riesgo con referencia al texto"],
+    pt: ["Revise um contrato antes de assinar", "Suba o contrato", "AI marca cada cláusula de risco com link ao texto"],
+    fr: ["Relisez un contrat avant de signer", "Téléversez le contrat", "L'IA signale chaque clause à risque avec renvoi au texte"],
+    ja: ["契約書を署名前に確認", "契約書をアップロード", "AIが高リスク条項を逐条マーク+原文に誘導"],
+    de: ["Vertrag vor der Unterschrift prüfen", "Vertrag hochladen", "KI markiert jede Risikoklausel mit Verweis auf den Text"],
+    ko: ["서명 전 계약서 검토", "계약서 업로드", "AI가 고위험 조항 표시+원문 연결"] },
   { icon: <path d="M4 7l8-4 8 4-8 4-8-4ZM4 12l8 4 8-4M4 17l8 4 8-4" />, href: "/batch-extract-sheet",
-    en: ["Process a batch of invoices", "key them in one by one · hours", "drop the batch → auto-extract"],
-    zh: ["批量处理发票", "一张张录入 · 几小时", "整批丢进去 → 自动抽取"],
-    es: ["Procesa un lote de facturas", "teclearlas una a una · horas", "suelta el lote → extracción automática"],
-    pt: ["Processe um lote de faturas", "digitá-las uma a uma · horas", "solte o lote → extração automática"],
-    fr: ["Traitez un lot de factures", "les saisir une par une · des heures", "déposez le lot → extraction automatique"],
-    ja: ["請求書をまとめて処理", "1枚ずつ手入力 · 数時間", "まとめて投入 → 自動抽出"],
-    de: ["Einen Stapel Rechnungen verarbeiten", "einzeln abtippen · Stunden", "den Stapel ablegen → automatische Extraktion"],
-    ko: ["청구서를 한꺼번에 처리하세요", "한 장씩 입력 · 수 시간", "통째로 올리면 → 자동 추출"] },
+    en: ["Process a batch of invoices", "Invoices in bulk", "AI extracts amount, date, and vendor — automatically"],
+    zh: ["批发票，几分钟一摞", "整批发票", "AI 自动抽出金额/日期/抬头"],
+    es: ["Procesa facturas en lote", "Facturas a granel", "AI extrae importe, fecha y emisor automáticamente"],
+    pt: ["Processe faturas em lote", "Faturas em volume", "AI extrai valor, data e fornecedor automaticamente"],
+    fr: ["Traitez des factures en lot", "Des factures en vrac", "L'IA extrait montant, date et émetteur automatiquement"],
+    ja: ["請求書をまとめて処理", "まとめて請求書を", "AIが金額・日付・発行元を自動抽出"],
+    de: ["Rechnungen stapelweise verarbeiten", "Rechnungen in Menge", "KI extrahiert Betrag, Datum und Aussteller automatisch"],
+    ko: ["청구서 일괄 처리", "청구서 묶음을", "AI가 금액·날짜·거래처 자동 추출"] },
   { icon: <path d="M5 4h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5zM8.5 9h6M8.5 13h6" />, href: "/chat-with-pdf",
-    en: ["Understand a long report fast", "read 80 pages for a few answers", "ask it → answers you can trace · 30s"],
-    zh: ["快速读懂长报告", "读 80 页找几个答案", "问它 → 30 秒可追溯的答案"],
-    es: ["Entiende un informe largo rápido", "leer 80 páginas por unas respuestas", "pregúntale → respuestas que puedes rastrear · 30 s"],
-    pt: ["Entenda um relatório longo rápido", "ler 80 páginas por algumas respostas", "pergunte → respostas que você pode rastrear · 30s"],
-    fr: ["Comprendre un long rapport rapidement", "lire 80 pages pour quelques réponses", "interrogez-le → des réponses traçables · 30s"],
-    ja: ["長い報告書を素早く理解", "数個の答えのために80ページ読む", "質問する → 追跡できる回答 · 30秒"],
-    de: ["Einen langen Bericht schnell verstehen", "80 Seiten für ein paar Antworten lesen", "fragen Sie ihn → nachvollziehbare Antworten · 30 Sek."],
-    ko: ["긴 보고서를 빠르게 이해하세요", "답 몇 개를 위해 80페이지 읽기", "물어보면 → 추적 가능한 답변 · 30초"] },
+    en: ["Understand a long report in 30 seconds", "An 80-page upload", "Ask one question → an answer with a source"],
+    zh: ["读长报告，30 秒有答案", "上传 80 页", "问一句 → 带出处的答案"],
+    es: ["Entiende un informe largo en 30 segundos", "Un PDF de 80 páginas", "Haz una pregunta → respuesta con fuente"],
+    pt: ["Entenda um relatório longo em 30 segundos", "Um PDF de 80 páginas", "Faça uma pergunta → resposta com fonte"],
+    fr: ["Comprenez un long rapport en 30 secondes", "Un PDF de 80 pages", "Posez une question → réponse avec source"],
+    ja: ["長い報告書を30秒で理解", "80ページのPDF", "一問するだけ → 出典付きの回答"],
+    de: ["Langen Bericht in 30 Sek. verstehen", "Ein 80-seitiges PDF", "Eine Frage stellen → Antwort mit Quellenangabe"],
+    ko: ["긴 보고서를 30초에 이해", "80페이지 PDF를", "질문 하나 → 출처 있는 답변"] },
 ];
 
 export function Home({ locale = "en" }: { locale?: Locale }) {
@@ -547,15 +507,6 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
   const allCats = [cats[0], batchCat, cats[1], cats[2]];
   const path = (slug: string) => (hant ? `/zh-Hant${slug}` : locale === "zh" ? `/zh${slug}` : locale === "es" ? `/es${slug}` : locale === "pt" ? `/pt${slug}` : locale === "fr" ? `/fr${slug}` : locale === "ja" ? `/ja${slug}` : locale === "de" ? `/de${slug}` : locale === "ko" ? `/ko${slug}` : slug);
 
-  // ── real client-side tool search over the full flatItems set across all 4 cats ──
-  const [q, setQ] = useState("");
-  const query = q.trim().toLowerCase();
-  const allTools: Item[] = (() => {
-    const seen = new Set<string>(); const out: Item[] = [];
-    for (const cat of cats) { if (!cat) continue; for (const it of flatItems(cat as { cols: { items: Item[] }[] })) { if (!seen.has(it.slug)) { seen.add(it.slug); out.push(it); } } }
-    return out;
-  })();
-  const matches = query ? allTools.filter((t) => t.name.toLowerCase().includes(query)) : [];
 
   return (
     <>
@@ -610,12 +561,18 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
           <h1 className="max-w-[20ch] font-normal text-[48px] leading-[1.04] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[68px] sm:leading-[1.02] sm:tracking-[-0.03em] lg:text-[88px] lg:leading-[1.0] lg:tracking-[-0.04em]">
             {c.heroA}<br /><span className="text-[color:var(--muted)]">{c.heroB}</span>
           </h1>
-          <div className="mt-9">
-            <TrialCta variant="hero" locale={locale} />
-          </div>
+          <p className="mt-5 max-w-[52ch] text-[17px] leading-[1.6] text-[color:var(--muted)] sm:text-[19px]">{c.heroSub}</p>
           <div className="mt-14">
             <ProductDemoHero locale={locale} />
           </div>
+          <p className="mt-4 text-[12px] text-[color:var(--faint)]">{c.heroDisclosure}</p>
+        </div>
+      </section>
+
+      {/* ── 1b · Trial CTA band ── */}
+      <section>
+        <div className={SHELL}>
+          <TrialCta variant="hero" locale={locale} />
         </div>
       </section>
 
@@ -626,74 +583,48 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
           <h2 className={`mt-4 ${H2}`}>{c.findHeading}</h2>
           <p className={SUB}>{c.capSub}</p>
 
-          {/* contained search pill — never a full-width hairline */}
-          <div className="relative mt-8 max-w-xl">
-            <svg aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[color:var(--faint)]" width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" /><path d="M20 20l-3.2-3.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
-            <input
-              type="text"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder={c.searchPlaceholder}
-              aria-label={c.searchPlaceholder}
-              className="h-12 w-full rounded-full border border-[color:var(--line-strong)] bg-[color:var(--surface)] pl-11 pr-4 text-[15px] text-[color:var(--foreground)] outline-none transition-colors placeholder:text-[color:var(--faint)] focus:border-[color:var(--accent)]"
-            />
-          </div>
-
-          {query ? (
-            matches.length ? (
-              <div className="mt-6 flex flex-wrap gap-2">
-                {matches.map((t) => (
-                  <a key={t.slug} href={path(t.slug)} className="rounded-full border border-[color:var(--line)] px-3 py-1.5 text-[13px] text-[color:var(--muted)] transition-colors hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">{t.name}</a>
-                ))}
-              </div>
-            ) : (
-              <p className="mt-6 text-[14px] text-[color:var(--faint)]">{c.searchNoResults}</p>
-            )
-          ) : (
-            <Figure className="mt-8" glow="30%">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {CARDS.map(({ visual }, idx) => {
-                  const cat = allCats[idx];
-                  if (!cat) return null;
-                  const tools = flatItems(cat as { cols: { items: Item[] }[] });
-                  const chips = tools.slice(0, 4);
-                  const more = tools.length - chips.length;
-                  return (
-                    <div key={idx} className="group relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-black/20 p-5 transition-colors duration-200 hover:border-[color:var(--line-strong)]">
-                      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={GLOW} />
-                      <div className="relative flex h-full flex-col">
-                        <div className="flex items-center gap-3">
-                          <Icon i={idx} />
-                          <h3 className="text-[18px] font-normal text-[color:var(--foreground)] sm:text-[20px]">{cat.label}</h3>
-                          <span className="ml-auto text-[12px] text-[color:var(--faint)]">{tools.length} {c.tools}</span>
-                        </div>
-                        <div className="mt-5">
-                          {visual === "thumbs" && <MiniThumbs />}
-                          {visual === "extract" && <MiniExtract label={c.aiSummary} locale={locale} />}
-                          {visual === "batch" && <MiniBatch />}
-                          {visual === "secure" && <MiniSecure />}
-                        </div>
-                        <div className="mt-5 flex flex-wrap items-center gap-2">
-                          {chips.map((t) => (
-                            <a key={t.slug} href={path(t.slug)} className="rounded-full border border-[color:var(--line-strong)] bg-[color:var(--surface)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--foreground)]">{t.name}</a>
-                          ))}
-                          {more > 0 && (
-                            <a href={path("/workspace")} className="inline-flex items-center gap-1 px-1 text-[12px] text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{c.more(more)} →</a>
-                          )}
-                        </div>
+          <Figure className="mt-8" glow="30%">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {CARDS.map(({ visual }, idx) => {
+                const cat = allCats[idx];
+                if (!cat) return null;
+                const tools = flatItems(cat as { cols: { items: Item[] }[] });
+                const chips = tools.slice(0, 4);
+                const more = tools.length - chips.length;
+                return (
+                  <div key={idx} className="group relative overflow-hidden rounded-xl border border-[color:var(--line)] bg-black/20 p-5 transition-colors duration-200 hover:border-[color:var(--line-strong)]">
+                    <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={GLOW} />
+                    <div className="relative flex h-full flex-col">
+                      <div className="flex items-center gap-3">
+                        <Icon i={idx} />
+                        <h3 className="text-[18px] font-normal text-[color:var(--foreground)] sm:text-[20px]">{cat.label}</h3>
+                        <span className="ml-auto text-[12px] text-[color:var(--faint)]">{tools.length} {c.tools}</span>
+                      </div>
+                      <div className="mt-5">
+                        {visual === "thumbs" && <MiniThumbs />}
+                        {visual === "extract" && <MiniExtract label={c.aiSummary} locale={locale} />}
+                        {visual === "batch" && <MiniBatch />}
+                        {visual === "secure" && <MiniSecure />}
+                      </div>
+                      <div className="mt-5 flex flex-wrap items-center gap-2">
+                        {chips.map((t) => (
+                          <a key={t.slug} href={path(t.slug)} className="rounded-full border border-[color:var(--line-strong)] bg-[color:var(--surface)] px-2.5 py-1 text-[12px] text-[color:var(--muted)] transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--foreground)]">{t.name}</a>
+                        ))}
+                        {more > 0 && (
+                          <a href={path("/workspace")} className="inline-flex items-center gap-1 px-1 text-[12px] text-[color:var(--accent)] transition hover:text-[color:var(--accent-strong)]">{c.more(more)} →</a>
+                        )}
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            </Figure>
-          )}
+                  </div>
+                );
+              })}
+            </div>
+          </Figure>
 
           <a href={path("/workspace")} className="mt-8 inline-flex items-center gap-1.5 text-[14px] font-medium text-[color:var(--accent)] transition hover:gap-2.5">
             {c.browseAll}
             <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h9M8 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </a>
-          <p className={CAP}>{c.fig2Caption}</p>
         </div>
       </section>
 
@@ -722,7 +653,6 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
               })}
             </div>
           </Figure>
-          <p className={CAP}>{c.fig4Caption}</p>
         </div>
       </section>
 
@@ -735,9 +665,6 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a href={path("/chat-with-pdf")} className="inline-flex h-11 items-center justify-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]">{c.primary}</a>
             <a href={path("/pricing")} className="inline-flex h-11 items-center justify-center rounded-full border border-[color:var(--line-strong)] px-6 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--foreground)]">{c.viewPricing}</a>
-          </div>
-          <div className="mt-8">
-            <TrialCta variant="hero" locale={locale} />
           </div>
         </div>
       </section>
