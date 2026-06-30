@@ -36,5 +36,6 @@ export const standaloneRoutes = [
   "rotate-pdf-without-uploading",
   "lease-agreement-red-flags",
   "compare-two-versions-of-a-document",
+  "how-to-properly-redact-a-pdf",
   "upgrade",
 ] as const;

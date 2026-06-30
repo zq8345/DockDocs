@@ -247,6 +247,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.75,
     },
+    {
+      url: absoluteUrl("/how-to-properly-redact-a-pdf/"),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
+    },
   ];
 
   return Array.from(
