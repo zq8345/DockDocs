@@ -26,7 +26,7 @@
 - No sidebar nav, top nav only with hover dropdowns (group-hover + pt-2 bridge)
 - Language switcher uses useRouter().push() — SPA navigation, no page reload
 - 12 UI languages (en/zh/ja/ko/es/fr/de/pt/it/ru/ar/hi), only en/zh have full content
-- Consolidated ☰ menu items each carry a consistent outline icon (16px, stroke 1.5, currentColor — Joe 2026-06-25); the category nav hover-dropdowns stay icon-free. No RelatedTools cross-links
+- Consolidated ☰ menu items each carry a consistent outline icon (16px, stroke 1.5, currentColor — Joe 2026-06-25); the category nav hover-dropdowns stay icon-free. RelatedTools cross-links ARE standard and wanted: `relatedTools`/`readingLinks` sections (AI clients) + IndexingLinks/articleLinks (tool template) cross-link contextually, and `geo-qa-check` REQUIRES `relatedTools` per page. (Joe 2026-06-29: contextual cross-linking is necessary for SEO/navigation — NOT avoided; this corrects the earlier stale "no cross-links" note.)
 
 ## Tool Pages
 - All tool pages use shared PdfToolPage template (shared/templates/pdf-tool-page/)
