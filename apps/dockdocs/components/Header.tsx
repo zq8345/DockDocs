@@ -113,7 +113,9 @@ type Locale = "en" | "zh";
 
 function stripLocale(p: string): "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant" {
   const s = p.split("/").filter(Boolean);
-  const first = s[0];
+  // URLs emit zh-Hant lowercase (/zh-hant/, see localizedPath); normalize it back to
+  // the canonical "zh-Hant" so the nav localizes (else it falls back to English).
+  const first = s[0]?.toLowerCase() === "zh-hant" ? "zh-Hant" : s[0];
   return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "de" || first === "ko" || first === "zh-Hant" ? first : "en";
 }
 function lh(h: string, l: string) {
@@ -121,7 +123,9 @@ function lh(h: string, l: string) {
 }
 function currentSlug(pathname: string | null) {
   const segs = (pathname ?? "/").split("/").filter(Boolean);
-  const rest = isAllLocale(segs[0]) ? segs.slice(1) : segs;
+  // zh-Hant's URL segment is lowercase (/zh-hant/) and isn't in allLocales ("zh-Hant").
+  const firstIsLocale = segs[0]?.toLowerCase() === "zh-hant" || isAllLocale(segs[0]);
+  const rest = firstIsLocale ? segs.slice(1) : segs;
   return rest.join("/");
 }
 
@@ -244,7 +248,9 @@ export function Header() {
   function switchLang(target: string) {
     if (target === locale) return;
     const slug = currentSlug(pathname);
-    const href = target === defaultLocale ? `/${slug}` : `/${target}/${slug}`;
+    // Emit zh-Hant as lowercase /zh-hant/ (canonical; avoids a Netlify case 301).
+    const seg = target === "zh-Hant" ? "zh-hant" : target;
+    const href = target === defaultLocale ? `/${slug}` : `/${seg}/${slug}`;
     try { localStorage.setItem("dockdocs-lang", target); } catch {}
     setMoreOpen(false);
     setMobileOpen(false);
