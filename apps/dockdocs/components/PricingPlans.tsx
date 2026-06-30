@@ -878,7 +878,12 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
             : "Click a category to see the tools it includes"}
         </p>
         <div className="mt-8 overflow-x-auto rounded-2xl border border-[color:var(--line)]">
-          <table className="w-full border-collapse text-[14px]">
+          <table className="w-full table-fixed border-collapse text-[14px]">
+            <colgroup>
+              <col className="w-[60%]" />
+              <col className="w-[20%]" />
+              <col className="w-[20%]" />
+            </colgroup>
             <thead>
               <tr className="bg-[color:var(--surface-subtle)]">
                 <th className="border-b border-[color:var(--line)] px-4 py-3 text-left text-[12px] font-semibold uppercase tracking-[0.08em] text-[color:var(--faint)]">
