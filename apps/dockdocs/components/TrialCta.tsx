@@ -247,17 +247,19 @@ function GreenButton({
   label,
   loading,
   onClick,
+  className = "",
 }: {
   label: string;
   loading: boolean;
   onClick: () => void;
+  className?: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={loading}
-      className="inline-flex items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 py-2.5 text-[14px] font-semibold text-[color:var(--on-accent)] shadow-[0_4px_20px_color-mix(in_srgb,var(--accent)_28%,transparent)] transition hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
+      className={`inline-flex items-center justify-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-6 py-2.5 text-[14px] font-semibold text-[color:var(--on-accent)] shadow-[0_4px_20px_color-mix(in_srgb,var(--accent)_28%,transparent)] transition hover:opacity-90 active:scale-[0.98] disabled:opacity-60${className ? ` ${className}` : ""}`}
     >
       {loading && <Spinner />}
       {label}
@@ -326,21 +328,14 @@ export function TrialCta(props: TrialCtaProps) {
   if (props.variant === "tool-free" && !props.visible) return null;
 
   if (props.variant === "hero") {
-    const privacyHref = (!props.locale || props.locale === "en") ? "/privacy-policy" : `/${props.locale}/privacy-policy`;
     return (
       <div className={`mx-auto ${LAYOUT.content} px-6 py-14`}>
         <div className="flex flex-col items-center gap-5 rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-7 py-8 text-center sm:px-10 sm:py-9">
           <p className="text-[16px] font-medium leading-relaxed text-[color:var(--foreground)]">
             {c.heroTitle}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <GreenButton label={c.btnHero} loading={ctaLoading} onClick={handleCta} />
-            <a
-              href={privacyHref}
-              className="inline-flex h-11 items-center justify-center rounded-full border border-[color:var(--line)] px-6 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
-            >
-              {c.heroPrivacy}
-            </a>
+          <div className="flex items-center justify-center">
+            <GreenButton label={c.btnHero} loading={ctaLoading} onClick={handleCta} className="min-w-[220px] sm:min-w-[260px]" />
           </div>
           <NoTricks items={c.noTricks} />
         </div>

@@ -308,7 +308,7 @@ export function ProductDemoHero({ locale: localeProp }: { locale?: Locale } = {}
               SERVICE AGREEMENT
             </p>
 
-            <div className="space-y-2 overflow-y-auto max-h-[340px] pr-1">
+            <div className="space-y-2 pr-1">
               {/* §7.1 normal */}
               <div className="pl-3">
                 <p className="mb-0.5 text-[9.5px] font-semibold text-[color:var(--faint)]">§7.1</p>
@@ -370,7 +370,7 @@ export function ProductDemoHero({ locale: localeProp }: { locale?: Locale } = {}
           </div>
 
           {/* ── Right: analysis ── */}
-          <div className="min-h-[400px] flex flex-col p-4 sm:p-5">
+          <div className="flex flex-col p-4 sm:p-5">
             {phase === 0 ? (
               /* Upload / reading phase */
               <div className="flex h-full flex-col items-center justify-center gap-3">
