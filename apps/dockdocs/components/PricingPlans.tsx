@@ -709,8 +709,102 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       setBillingLoading("");
     }
   }
+  // Per-card checkout: same Creem flow as main CTA but with explicit interval (avoids state async issue)
+  async function handleCardCta(inv: "monthly" | "annual" | "lifetime") {
+    setPeriod(inv);
+    if (pricingCtaKind === "current") return;
+    if (pricingCtaKind === "manage") { void handlePortal(); return; }
+    setBillingLoading("PRO");
+    setBillingError("");
+    try {
+      if (pricingCtaKind === "upgrade") { await upgrade.beginUpgrade("PRO", inv); return; }
+      const result = await startBillingTrial();
+      if (result.ok || result.code === "ALREADY_PAID") {
+        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = "/account";
+        return;
+      }
+      if (result.code === "UNAUTHENTICATED") {
+        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = "/account";
+        return;
+      }
+      await createBillingCheckoutSession("PRO", inv);
+    } catch (err) {
+      handleBillingError(err);
+      setBillingLoading("");
+    }
+  }
+
   // 账户页全站统一为 /account(无语言版本)，不要按 locale 加 /zh 前缀，否则 /zh/account 会 404
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale as RouteLocale, href) : "/account");
+
+  // ── New locale strings (pricing v2) ──
+  const subscribeLabel = zh ? h("订阅") : locale === "es" ? "Suscribirse" : locale === "pt" ? "Assinar" : locale === "fr" ? "S'abonner" : locale === "ja" ? "登録" : locale === "de" ? "Abonnieren" : locale === "ko" ? "구독" : "Subscribe";
+  const buyLabel = zh ? h("购买") : locale === "es" ? "Comprar" : locale === "pt" ? "Comprar" : locale === "fr" ? "Acheter" : locale === "ja" ? "購入" : locale === "de" ? "Kaufen" : locale === "ko" ? "구매" : "Buy";
+  const trialCtaText = zh ? h("免费试用 7 天 Pro · 无需信用卡") : locale === "es" ? "Prueba Pro 7 días gratis · Sin tarjeta" : locale === "pt" ? "Experimente Pro 7 dias grátis · Sem cartão" : locale === "fr" ? "Essai Pro 7 jours gratuits · Sans carte" : locale === "ja" ? "Pro を7日間無料で試す · カード不要" : locale === "de" ? "Pro 7 Tage kostenlos · Keine Kreditkarte" : locale === "ko" ? "7일 Pro 무료 체험 · 신용카드 불필요" : "Start free 7-day Pro trial · No credit card";
+  const panelPrivacyNote = zh ? h("本地读取 · 文字发至 AI") : locale === "es" ? "Los documentos se leen localmente — solo el texto extraído se envía a la IA." : locale === "pt" ? "Os documentos são lidos localmente — apenas o texto extraído é enviado à IA." : locale === "fr" ? "Les documents sont lus localement — seul le texte extrait est envoyé à l'IA." : locale === "ja" ? "文書はローカルで読み取り——抽出テキストのみ AI に送信されます。" : locale === "de" ? "Dokumente werden lokal gelesen — nur der extrahierte Text wird an die KI gesendet." : locale === "ko" ? "문서는 로컬에서 읽힙니다 — 추출된 텍스트만 AI로 전송됩니다." : "Documents are read locally — only the extracted text is sent to AI.";
+  const proUnlocksEyebrow = zh ? h("// PRO 解锁") : locale === "es" ? "// Pro desbloquea" : locale === "pt" ? "// Pro desbloqueia" : locale === "fr" ? "// Pro déverrouille" : locale === "ja" ? "// Pro で解放" : locale === "de" ? "// Pro schaltet frei" : locale === "ko" ? "// Pro 잠금 해제" : "// Pro unlocks";
+  const diffEyebrow = zh ? h("// 一眼看清差别") : locale === "es" ? "// Free vs Pro de un vistazo" : locale === "pt" ? "// Free vs Pro em um relance" : locale === "fr" ? "// Free vs Pro en un coup d'œil" : locale === "ja" ? "// Free vs Pro を一目で比較" : locale === "de" ? "// Free vs. Pro auf einen Blick" : locale === "ko" ? "// Free vs Pro 한눈에 보기" : "// Free vs Pro at a glance";
+  // Capability grid short labels (4 items × locale)
+  const CAP_GRID = [
+    {
+      label: zh ? h("对话") : locale === "es" ? "Chat" : locale === "pt" ? "Chat" : locale === "fr" ? "Chat" : locale === "ja" ? "チャット" : locale === "de" ? "Chat" : locale === "ko" ? "대화" : "Chat",
+    },
+    {
+      label: zh ? h("对比") : locale === "es" ? "Comparar" : locale === "pt" ? "Comparar" : locale === "fr" ? "Comparer" : locale === "ja" ? "比較" : locale === "de" ? "Vergleich" : locale === "ko" ? "비교" : "Compare",
+    },
+    {
+      label: zh ? h("合同") : locale === "es" ? "Contratos" : locale === "pt" ? "Contratos" : locale === "fr" ? "Contrats" : locale === "ja" ? "契約" : locale === "de" ? "Verträge" : locale === "ko" ? "계약" : "Contracts",
+    },
+    {
+      label: zh ? h("批量") : locale === "es" ? "Lote" : locale === "pt" ? "Lote" : locale === "fr" ? "Lot" : locale === "ja" ? "一括" : locale === "de" ? "Stapel" : locale === "ko" ? "일괄" : "Batch",
+    },
+  ];
+  // Capability cards for ① PRO section (4 cards, 8 locales)
+  const CAP_CARDS = [
+    {
+      label: zh ? h("和任意文档对话") : locale === "es" ? "Chatea con cualquier documento" : locale === "pt" ? "Converse com qualquer documento" : locale === "fr" ? "Chattez avec n'importe quel document" : locale === "ja" ? "あらゆる文書とチャット" : locale === "de" ? "Mit jedem Dokument chatten" : locale === "ko" ? "모든 문서와 대화" : "Chat with any document",
+      sub: zh ? h("提问即答，能定位时附原文出处") : locale === "es" ? "Pregunta lo que quieras — con fuente cuando el texto puede localizarse" : locale === "pt" ? "Pergunte o que quiser — com fonte quando o texto pode ser localizado" : locale === "fr" ? "Posez toute question — avec source quand le texte peut être localisé" : locale === "ja" ? "何でも質問——特定できる場合は出典付きで回答" : locale === "de" ? "Fragen Sie alles — mit Quelle, wenn der Text auffindbar ist" : locale === "ko" ? "무엇이든 질문 — 찾을 수 있으면 출처 포함" : "Ask anything — sourced when the text can be located",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 3a9 9 0 0 1 8.7 11.5L21 21l-5.5-.3A9 9 0 1 1 12 3z"/>
+          <path d="M8 12h.01M12 12h.01M16 12h.01"/>
+        </svg>
+      ),
+    },
+    {
+      label: zh ? h("多份文档并排比对") : locale === "es" ? "Comparar docs en paralelo" : locale === "pt" ? "Comparar docs lado a lado" : locale === "fr" ? "Comparer les docs côte à côte" : locale === "ja" ? "並べてドキュメントを比較" : locale === "de" ? "Dokumente nebeneinander vergleichen" : locale === "ko" ? "문서 나란히 비교" : "Compare docs side by side",
+      sub: zh ? h("差异一栏看清，附数据支撑的推荐") : locale === "es" ? "Detecta diferencias de un vistazo — con una recomendación basada en datos" : locale === "pt" ? "Veja diferenças rapidamente — com recomendação baseada em dados" : locale === "fr" ? "Repérez les différences d'un coup d'œil — avec recommandation basée sur les données" : locale === "ja" ? "違いを一目で確認——データに基づくおすすめ付き" : locale === "de" ? "Unterschiede auf einen Blick — mit datenbasierter Empfehlung" : locale === "ko" ? "차이점 한눈에 파악 — 데이터 기반 추천 포함" : "Spot differences at a glance — backed by a data recommendation",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="5" width="7" height="14" rx="1"/>
+          <rect x="14" y="5" width="7" height="14" rx="1"/>
+        </svg>
+      ),
+    },
+    {
+      label: zh ? h("合同风险审查") : locale === "es" ? "Revisión de riesgos en contratos" : locale === "pt" ? "Revisão de riscos em contratos" : locale === "fr" ? "Audit des risques contractuels" : locale === "ja" ? "契約リスク審査" : locale === "de" ? "Vertragsrisiko-Prüfung" : locale === "ko" ? "계약 위험 검토" : "Contract risk review",
+      sub: zh ? h("标出风险与缺失条款，指向具体出处") : locale === "es" ? "Detecta cláusulas arriesgadas y faltantes — enlaza al texto exacto" : locale === "pt" ? "Detecta cláusulas arriscadas e ausentes — links para o texto exato" : locale === "fr" ? "Détecte les clauses à risque et manquantes — pointe vers le texte exact" : locale === "ja" ? "リスクや欠落条項を検出——該当テキストに直接リンク" : locale === "de" ? "Erkennt riskante und fehlende Klauseln — verlinkt den genauen Text" : locale === "ko" ? "위험 조항과 누락 조항 표시 — 정확한 텍스트로 링크" : "Flags risky and missing clauses — links to the exact text",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 3L4 7v5c0 4.418 3.582 8.418 8 10 4.418-1.582 8-5.582 8-10V7z"/>
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M14.12 14.12l2 2"/>
+        </svg>
+      ),
+    },
+    {
+      label: zh ? h("批量自动化") : locale === "es" ? "Automatización por lotes" : locale === "pt" ? "Automação em lote" : locale === "fr" ? "Automatisation par lot" : locale === "ja" ? "バッチ自動化" : locale === "de" ? "Stapelautomatisierung" : locale === "ko" ? "일괄 자동화" : "Batch automation",
+      sub: zh ? h("整批文档一次抽取、汇总、归类") : locale === "es" ? "Extrae, resume y clasifica un lote entero de una vez" : locale === "pt" ? "Extraia, resuma e classifique um lote inteiro de uma vez" : locale === "fr" ? "Extrait, résume et classe un lot entier en une opération" : locale === "ja" ? "バッチ全体を一度で抽出・要約・分類" : locale === "de" ? "Ganzen Stapel auf einmal extrahieren, zusammenfassen und klassifizieren" : locale === "ko" ? "전체 묶음을 한 번에 추출, 요약, 분류" : "Extract, summarize, and classify an entire batch at once",
+      icon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2l9 4.5-9 4.5-9-4.5z"/>
+          <path d="M3 11.5l9 4.5 9-4.5"/>
+          <path d="M3 16.5l9 4.5 9-4.5"/>
+        </svg>
+      ),
+    },
+  ];
+
   // 3 billing-option card layout — Pro only; Free de-emphasised as a note below.
   const proPlan = c.plans.find((p) => p.featured) ?? c.plans[c.plans.length - 1];
   const pricingCtaKind = ((): "current" | "checkout" | "upgrade" | "manage" => {
@@ -732,7 +826,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   type ICard = { interval: "monthly" | "annual" | "lifetime"; label: string; price: string; sub: string; badge: string | null; highlighted: boolean };
   const BILLING_CARDS: ICard[] = [
     { interval: "monthly", label: c.monthly, price: proPlan.monthlyPrice, sub: `${proPlan.monthlyPrice}${c.perMo}`, badge: null, highlighted: false },
-    { interval: "annual", label: c.yearly, price: proPlan.yearlyPrice, sub: c.billedYearly("yearlyTotal" in proPlan ? proPlan.yearlyTotal ?? "" : ""), badge: c.save, highlighted: true },
+    { interval: "annual", label: c.yearly, price: proPlan.yearlyPrice, sub: c.billedYearly("yearlyTotal" in proPlan ? proPlan.yearlyTotal ?? "" : ""), badge: null, highlighted: true },
     { interval: "lifetime", label: c.lifetime, price: "$149", sub: c.perOnce, badge: billingLimitedNote, highlighted: false },
   ];
   return (
@@ -768,16 +862,16 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
           : "AI reads your most important documents for you — contract risk, bid comparison, long reports. Hours saved."}
       </p>
 
-      {/* Same Pro, three ways to pay — card layout mirrors UpgradePage */}
+      {/* Same Pro, three ways to pay — card layout */}
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        {BILLING_CARDS.map(({ interval, label, price, sub, badge, highlighted }) => {
+        {BILLING_CARDS.map(({ interval, label, price, sub, highlighted }) => {
           const isSelected = period === interval;
+          const isCurrentInterval = !!subscription && subscription.displayName.toUpperCase() === "PRO" && subscription.record.interval === interval;
           return (
-            <button
+            <div
               key={interval}
-              type="button"
               onClick={() => setPeriod(interval)}
-              className={`relative flex flex-col rounded-[var(--radius)] border px-5 py-6 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] ${
+              className={`relative flex cursor-pointer flex-col rounded-[var(--radius)] border px-5 py-6 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent)] ${
                 isSelected
                   ? "border-[color:var(--accent)] bg-[color:var(--surface)]"
                   : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--line-strong)]"
@@ -788,33 +882,61 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                   {billingPopularLabel}
                 </span>
               )}
-              {badge && !highlighted && (
-                <span className="mb-2 inline-block rounded border border-[color:var(--line)] px-1.5 py-0.5 text-[10px] text-[color:var(--muted)]">
-                  {badge}
-                </span>
-              )}
-              {badge && highlighted && (
-                <span className="mb-2 inline-block rounded bg-[color:var(--accent)]/15 px-1.5 py-0.5 text-[10px] font-semibold text-[color:var(--accent)]">
-                  {badge}
-                </span>
-              )}
               <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[color:var(--muted)]">{label}</p>
               <p className="mt-1.5 text-[32px] font-semibold tracking-[-0.02em] text-[color:var(--foreground)]">{price}</p>
               <p className="text-[11px] text-[color:var(--faint)]">{sub}</p>
-            </button>
+
+              {/* 1px hairline + 2×2 capability grid */}
+              <div className="my-4 h-px bg-[color:var(--line)]" />
+              <div className="grid grid-cols-2 gap-1">
+                {CAP_GRID.map((cap, i) => (
+                  <div key={i} className={`flex items-center gap-1.5 rounded-md px-2 py-1.5 text-[11px] transition ${isSelected ? "bg-[color:var(--accent)]/5 text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}`}>
+                    <span className={isSelected ? "text-[color:var(--accent)]" : "text-[color:var(--muted)]"}>
+                      {i === 0 && <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a9 9 0 0 1 8.7 11.5L21 21l-5.5-.3A9 9 0 1 1 12 3z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>}
+                      {i === 1 && <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="5" width="7" height="14" rx="1"/><rect x="14" y="5" width="7" height="14" rx="1"/></svg>}
+                      {i === 2 && <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3L4 7v5c0 4.418 3.582 8.418 8 10 4.418-1.582 8-5.582 8-10V7z"/><circle cx="12" cy="12" r="2.5"/><path d="M13.8 13.8l1.7 1.7"/></svg>}
+                      {i === 3 && <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l9 4.5-9 4.5-9-4.5z"/><path d="M3 11.5l9 4.5 9-4.5"/><path d="M3 16.5l9 4.5 9-4.5"/></svg>}
+                    </span>
+                    {cap.label}
+                  </div>
+                ))}
+              </div>
+
+              {/* Per-card CTA button */}
+              <div className="mt-auto pt-4">
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); void handleCardCta(interval); }}
+                  disabled={isCurrentInterval || billingLoading === "PRO" || (pricingCtaKind === "upgrade" && upgrade.loading)}
+                  className={`w-full rounded-full py-2 text-[13px] font-medium transition disabled:opacity-60 ${
+                    highlighted
+                      ? "bg-[color:var(--accent)] text-[color:var(--on-accent)] hover:opacity-90"
+                      : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--accent)]"
+                  }`}
+                >
+                  {isCurrentInterval
+                    ? billingCurrentLabel
+                    : (billingLoading === "PRO" || (pricingCtaKind === "upgrade" && upgrade.loading))
+                      ? billingRedirecting
+                      : interval === "lifetime"
+                        ? buyLabel
+                        : subscribeLabel}
+                </button>
+              </div>
+            </div>
           );
         })}
       </div>
 
-      {/* Unified CTA — action adapts to auth + subscription state for the selected interval */}
-      <div className="mt-6 flex flex-col items-center gap-2">
+      {/* Main trial CTA — big green button + free note */}
+      <div className="mt-8 flex flex-col items-center gap-3">
         {pricingCtaKind === "current" ? (
           <div className="flex w-full max-w-sm items-center justify-center rounded-full border border-[color:var(--line)] px-8 py-3 text-[14px] font-medium text-[color:var(--muted)]">
             {billingCurrentLabel}
           </div>
         ) : pricingCtaKind === "manage" ? (
           <button type="button" onClick={() => void handlePortal()} disabled={billingLoading === "portal"}
-            className="flex h-11 w-full max-w-sm items-center justify-center rounded-full bg-[color:var(--accent)] text-[14px] font-medium text-[color:var(--on-accent)] transition hover:opacity-90 disabled:opacity-60">
+            className="flex h-12 w-full max-w-sm items-center justify-center rounded-full bg-[color:var(--accent)] text-[15px] font-semibold text-[color:var(--on-accent)] transition hover:opacity-90 disabled:opacity-60">
             {billingLoading === "portal" ? billingRedirecting : billingManageLabel}
           </button>
         ) : (
@@ -822,17 +944,15 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
             type="button"
             onClick={() => void (pricingCtaKind === "upgrade" ? upgrade.beginUpgrade("PRO", period) : handleTrialOrCheckout("PRO"))}
             disabled={pricingCtaKind === "upgrade" ? upgrade.loading : billingLoading === "PRO"}
-            className="flex h-11 w-full max-w-sm items-center justify-center rounded-full bg-[color:var(--accent)] text-[14px] font-medium text-[color:var(--on-accent)] transition hover:opacity-90 disabled:opacity-60"
+            className="flex h-12 w-full max-w-sm items-center justify-center rounded-full bg-[color:var(--accent)] text-[15px] font-semibold text-[color:var(--on-accent)] transition hover:opacity-90 disabled:opacity-60"
           >
             {(pricingCtaKind === "upgrade" ? upgrade.loading : billingLoading === "PRO")
               ? billingRedirecting
-              : !subscription ? guestProCta : proPlan.cta}
+              : trialCtaText}
           </button>
         )}
+        <p className="text-center text-[13px] text-[color:var(--muted)]">{billingFreeNote}</p>
       </div>
-
-      {/* Free tier — one line, de-emphasised below the pro offer */}
-      <p className="mt-5 text-center text-[13px] text-[color:var(--muted)]">{billingFreeNote}</p>
 
       {/* Trust bar */}
       <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
@@ -842,6 +962,67 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
             {t}
           </span>
         ))}
+      </div>
+
+      {/* ① Pro capability cards */}
+      <div className={`mx-auto mt-20 ${LAYOUT.content}`}>
+        <p className={eyebrowCls(zh)}>{proUnlocksEyebrow}</p>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          {CAP_CARDS.map((cap, i) => (
+            <div key={i} className="flex gap-4 rounded-xl border border-[color:var(--line)] p-5 transition-colors hover:border-[color:var(--line-strong)]">
+              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--accent)]/10 text-[color:var(--accent)]">
+                {cap.icon}
+              </div>
+              <div>
+                <p className="text-[15px] font-medium text-[color:var(--foreground)]">{cap.label}</p>
+                <p className="mt-1.5 text-[13px] leading-6 text-[color:var(--muted)]">{cap.sub}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ② Free→Pro comparison panel */}
+      <div className={`mx-auto mt-20 ${LAYOUT.content}`}>
+        <p className={eyebrowCls(zh)}>{diffEyebrow}</p>
+        <div className="mt-8 grid items-stretch" style={{ gridTemplateColumns: "1fr 48px 1fr" }}>
+          {/* Left: Free */}
+          <div className="rounded-l-xl border border-[color:var(--line)] bg-[#141414] px-5 py-6">
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[color:var(--faint)]">Free</p>
+            {[0, 1, 3, 6, 5].map((ri) => {
+              const row = c.compareRows[ri];
+              if (!row) return null;
+              return (
+                <div key={ri} className="flex items-start gap-3 border-b border-[color:var(--line)]/40 py-3 last:border-0">
+                  <span className={`mt-0.5 shrink-0 text-[13px] font-medium ${row.v[0] === "✓" ? "text-[color:var(--accent)]" : "text-[color:var(--faint)]"}`}>{row.v[0]}</span>
+                  <span className="text-[13px] leading-5 text-[color:var(--muted)]">{row.f}</span>
+                </div>
+              );
+            })}
+          </div>
+          {/* Center arrow */}
+          <div className="flex items-center justify-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--accent)] shadow-[0_0_16px_rgba(62,207,142,0.3)]">
+              <svg className="hidden sm:block" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <svg className="block sm:hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+            </div>
+          </div>
+          {/* Right: Pro */}
+          <div className="rounded-r-xl border border-l-2 border-[color:var(--accent)] bg-[color:var(--accent)]/[0.04] px-5 py-6">
+            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.1em] text-[color:var(--accent)]">Pro</p>
+            {[0, 1, 3, 6, 5].map((ri) => {
+              const row = c.compareRows[ri];
+              if (!row) return null;
+              return (
+                <div key={ri} className="flex items-start gap-3 border-b border-[color:var(--accent)]/10 py-3 last:border-0">
+                  <span className={`mt-0.5 shrink-0 text-[13px] font-medium ${row.v[1] === "✓" ? "text-[color:var(--accent)]" : "text-[color:var(--faint)]"}`}>{row.v[1]}</span>
+                  <span className={`text-[13px] leading-5 ${row.v[1] === "✓" ? "text-[color:var(--foreground)]" : "text-[color:var(--muted)]"}`}>{row.f}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <p className="mt-3 text-[11.5px] text-[color:var(--faint)]">{panelPrivacyNote}</p>
       </div>
 
       {/* Compare plans — 5 nav categories, collapsible accordion */}
@@ -861,9 +1042,9 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         <div className="mt-8 overflow-x-auto rounded-2xl border border-[color:var(--line)]">
           <table className="w-full table-fixed border-collapse text-[14px]">
             <colgroup>
-              <col className="w-[60%]" />
-              <col className="w-[20%]" />
-              <col className="w-[20%]" />
+              <col className="w-1/3" />
+              <col className="w-1/3" />
+              <col className="w-1/3" />
             </colgroup>
             <thead>
               <tr className="bg-[color:var(--surface-subtle)]">
