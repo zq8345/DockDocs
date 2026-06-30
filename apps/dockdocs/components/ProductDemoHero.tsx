@@ -6,8 +6,8 @@ import { deepHant } from "@/lib/zh-hant";
 
 type Locale = AuthoredLocale | "zh-Hant";
 
-// Phase durations (ms): 0=uploading, 1=analyzing, 2=risk1, 3=risk2, 4=sug1, 5=sug2, 6=hold
-const PHASE_MS = [1500, 1800, 900, 850, 850, 850, 2200];
+// Phase durations (ms): 0=uploading, 1=analyzing, 2=risk1, 3=sug1, 4=risk2, 5=sug2, 6=hold
+const PHASE_MS = [700, 1000, 900, 800, 850, 800, 2200];
 
 /* ── Copy ─────────────────────────────────────────────────────────────────── */
 
@@ -349,7 +349,7 @@ export function ProductDemoHero({ locale: localeProp }: { locale?: Locale } = {}
               <div
                 className="pl-3"
                 style={{
-                  borderLeft: show(3) ? "2px solid rgba(245,158,11,0.6)" : "2px solid transparent",
+                  borderLeft: show(4) ? "2px solid rgba(245,158,11,0.6)" : "2px solid transparent",
                   transition: "border-color 0.5s ease",
                 }}
               >
@@ -413,7 +413,7 @@ export function ProductDemoHero({ locale: localeProp }: { locale?: Locale } = {}
                   </div>
                   <div
                     className="rounded-[var(--radius-sm)] border border-[color:var(--accent)]/20 bg-[color:var(--accent)]/5 p-2.5"
-                    style={{ opacity: show(4) ? 1 : 0, transition: "opacity 0.4s ease" }}
+                    style={{ opacity: show(3) ? 1 : 0, transition: "opacity 0.4s ease" }}
                   >
                     <p className="text-[10px] leading-snug text-[color:var(--accent)]">→ {t.sug1}</p>
                   </div>
@@ -422,8 +422,8 @@ export function ProductDemoHero({ locale: localeProp }: { locale?: Locale } = {}
                 {/* Risk 2 + suggestion 2 */}
                 <div
                   style={{
-                    opacity: show(3) ? 1 : 0,
-                    transform: show(3) ? "none" : "translateY(6px)",
+                    opacity: show(4) ? 1 : 0,
+                    transform: show(4) ? "none" : "translateY(6px)",
                     transition: "opacity 0.3s ease, transform 0.3s ease",
                   }}
                 >
