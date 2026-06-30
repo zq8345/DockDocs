@@ -280,15 +280,8 @@ export function DownloadPage({ locale: localeProp }: { locale?: Locale } = {}) {
   const [openSection, setOpenSection] = useState<"chromium" | "safari" | "other" | null>(null);
 
   useEffect(() => {
-    // Detect locale from stored preference only when not passed as a prop (standalone English route).
-    if (!localeProp) {
-      try {
-        const stored = localStorage.getItem("dockdocs-lang");
-        if (stored && AUTHORED_LOCALES.includes(stored as Locale)) {
-          setLocale(stored as Locale);
-        }
-      } catch { /* localStorage unavailable */ }
-    }
+    // /download is always English (no locale switching here). Localized versions are
+    // served at /[locale]/download/ where the locale prop is passed server-side.
 
     // Detect browser for default-open step section.
     const ua = navigator.userAgent;
