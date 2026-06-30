@@ -143,6 +143,9 @@ const ROUTE_META: Partial<Record<RouteSlug, RouteMeta>> = {
   "redact-pdf": { name: "Redact PDF — Permanently Remove Sensitive Text", changeFrequency: w, priority: 0.8 },
   "translate-pdf": { name: "Translate PDF — AI Document Translation", changeFrequency: w, priority: 0.78 },
 
+  // Product / download
+  download: { name: "Download DockDocs — PDF Tools & Document AI App", changeFrequency: m, priority: 0.7 },
+
   // Batch tools
   "batch-compress": { name: "Batch Compress PDFs — Shrink a Whole Folder", changeFrequency: w, priority: 0.7 },
   "batch-pdf-to-image": { name: "Batch PDF to Image — Convert Many PDFs to JPG/PNG", changeFrequency: w, priority: 0.7 },

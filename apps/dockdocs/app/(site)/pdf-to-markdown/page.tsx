@@ -8,10 +8,10 @@ import { languageAlternates } from "@/lib/i18n";
 const config = {
   slug: "pdf-to-markdown",
   alternateLanguages: languageAlternates("pdf-to-markdown"),
-  title: "PDF to Markdown — Convert PDF to MD Free",
+  title: "PDF to Markdown — Convert PDF to .md for LLM & AI Pipelines",
   description:
-    "Convert PDF to Markdown (MD) online free. Extract clean, structured Markdown text from any PDF — page headings included, all in your browser.",
-  keywords: ["pdf to markdown", "pdf to md", "convert pdf to markdown", "extract pdf text markdown"],
+    "Convert PDF to Markdown (.md) free in your browser — structured ## headings per page, ready for ChatGPT, Claude, RAG pipelines, Obsidian, Notion, or GitHub. No upload.",
+  keywords: ["pdf to markdown", "pdf to md", "convert pdf to markdown", "pdf to md for llm", "pdf to markdown llm", "pdf to md ai"],
   appName: "DockDocs PDF to Markdown",
   schemaName: "DockDocs PDF to Markdown Converter",
   breadcrumbName: "PDF to Markdown",
