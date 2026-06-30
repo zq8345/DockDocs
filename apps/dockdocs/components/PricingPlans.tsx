@@ -864,7 +864,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
       {/* Same Pro, three ways to pay — card layout */}
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        {BILLING_CARDS.map(({ interval, label, price, sub, highlighted }) => {
+        {BILLING_CARDS.map(({ interval, label, price, sub, badge, highlighted }) => {
           const isSelected = period === interval;
           const isCurrentInterval = !!subscription && subscription.displayName.toUpperCase() === "PRO" && subscription.record.interval === interval;
           return (
@@ -880,6 +880,11 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
               {highlighted && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[color:var(--accent)] px-2.5 py-0.5 text-[10px] font-semibold text-[color:var(--on-accent)]">
                   {billingPopularLabel}
+                </span>
+              )}
+              {badge && (
+                <span className="absolute -top-3 right-4 rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-2.5 py-0.5 text-[10px] font-medium text-[color:var(--muted)]">
+                  {badge}
                 </span>
               )}
               <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[color:var(--muted)]">{label}</p>
