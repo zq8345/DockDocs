@@ -1233,7 +1233,7 @@ export const runtimeCopy = {
         upgrade: "Mejorar plan",
         currentPlan: "Espacio de trabajo gratuito",
         actionFailed: "La acción de cuenta falló.",
-        planLabel: "Plan",
+        planLabel: "Suscripción",
         isolateDesc: "Inicia sesión para aislar Mis chats y los registros del área de trabajo por cuenta.",
         emailSent: "Enlace mágico enviado — revisa tu correo para iniciar sesión.",
         sendMagicLink: "Enviar enlace mágico",
