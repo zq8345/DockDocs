@@ -351,22 +351,22 @@ export function DownloadPage({ locale: localeProp }: { locale?: Locale } = {}) {
     <div className="mx-auto max-w-6xl px-6 pb-20 pt-16">
 
       {/* ── Hero ── */}
-      <div className="mb-10">
+      <div className="mb-14">
         <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--accent)]">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 16V4M7 11l5 5 5-5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" />
           </svg>
         </span>
-        <h1 className="mt-4 text-[30px] font-normal leading-[1.15] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[38px]">
+        <h1 className="mt-4 text-[40px] font-normal leading-[1.1] tracking-[-0.03em] text-[color:var(--foreground)] sm:text-[52px]">
           {t.title}
         </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-[color:var(--muted)]">
+        <p className="mt-4 text-[15px] leading-relaxed text-[color:var(--muted)]">
           {t.subtitle}
         </p>
       </div>
 
       {/* ── Product demo ── */}
-      <div className="mb-12">
+      <div className="mb-14">
         <ProductDemoHero locale={locale} />
       </div>
 

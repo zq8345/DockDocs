@@ -255,6 +255,8 @@ export function Header() {
 
   const trigger =
     "flex items-center gap-1 rounded-[var(--radius-sm)] px-3 py-2 text-[15px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--accent)] cursor-pointer";
+  const activeCls = "border-b-2 border-[color:var(--accent)] text-[color:var(--foreground)]";
+  const isActive = (href: string) => currentSlug(pathname) === href.replace(/^\//, "");
   const itemCls =
     "block w-full whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[14.5px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]";
   const iconBtn =
@@ -400,17 +402,17 @@ export function Header() {
             </div>
 
             {/* Pricing */}
-            <a href={lh("/pricing", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/pricing"); }} className={trigger}>
+            <a href={lh("/pricing", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/pricing"); }} className={`${trigger} ${isActive("/pricing") ? activeCls : ""}`}>
               {hdrLabel("pricing", locale)}
             </a>
 
             {/* Download */}
-            <a href={lh("/download", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/download"); }} className={trigger}>
+            <a href={lh("/download", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/download"); }} className={`${trigger} ${isActive("/download") ? activeCls : ""}`}>
               {hdrLabel("download", locale)}
             </a>
 
             {/* Workspace */}
-            <a href={lh("/workspace", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/workspace"); }} className={trigger}>
+            <a href={lh("/workspace", locale)} onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/workspace"); }} className={`${trigger} ${isActive("/workspace") ? activeCls : ""}`}>
               {hdrLabel("workspace", locale)}
             </a>
 
