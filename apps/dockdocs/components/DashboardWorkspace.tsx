@@ -115,6 +115,12 @@ const WORKSPACE_PDF_SLUGS: Set<string> = new Set([
   "/ocr-pdf",
 ]);
 
+const WORKSPACE_AI_SLUGS: Set<string> = new Set([
+  "/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk",
+  "/redline", "/extract-to-excel", "/flashcards", "/lease-redflag", "/govbid-matrix",
+  "/workspace-legal", "/workspace-finance", "/workspace-research", "/workspace-account",
+]);
+
 type NavLocale = "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 
 function toNavLocale(locale: RuntimeLocale): NavLocale {
@@ -187,10 +193,20 @@ export function DashboardWorkspace() {
     setHistory(readWorkHistory().slice(0, 8));
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      if (params.get("panel") === "account") {
+      let consumed = false;
+      const toolParam = params.get("tool");
+      if (toolParam) {
+        const slug = "/" + toolParam;
+        if (WORKSPACE_PDF_SLUGS.has(slug) || WORKSPACE_AI_SLUGS.has(slug)) {
+          setActiveTool(slug);
+        }
+        consumed = true;
+      } else if (params.get("panel") === "account") {
         setActiveTool("/workspace-account");
-        const clean = window.location.pathname;
-        window.history.replaceState({}, "", clean);
+        consumed = true;
+      }
+      if (consumed) {
+        window.history.replaceState({}, "", window.location.pathname);
       }
     }
   }, []);
