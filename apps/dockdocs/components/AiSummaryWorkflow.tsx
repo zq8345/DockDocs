@@ -12,6 +12,7 @@ import {
 import { canUseFeature, recordUsage } from "@/lib/usage-runtime";
 import { getWorkspaceIdentity } from "@/lib/workspace-runtime";
 import { LAYOUT } from "@/lib/layout-constants";
+import { deepHant } from "@/lib/zh-hant";
 
 type WorkflowStatus =
   | "idle"
@@ -21,10 +22,12 @@ type WorkflowStatus =
   | "result"
   | "error";
 
+type SummaryUiLocale = AiSummaryLocale | "de" | "zh-Hant";
+
 const pick = (
-  locale: AiSummaryLocale,
-  m: Record<AiSummaryLocale, string>,
-): string => m[locale];
+  locale: SummaryUiLocale,
+  m: Record<AiSummaryLocale | "de", string>,
+): string => locale === "zh-Hant" ? m["zh"] : m[locale as AiSummaryLocale | "de"];
 
 const copy = {
   en: {
@@ -263,11 +266,13 @@ export function AiSummaryWorkflow({
   locale = "en",
   answerLocale,
 }: {
-  locale?: AiSummaryLocale;
+  locale?: SummaryUiLocale;
   // Raw route locale for the ANSWER language; separate from the engine locale.
   answerLocale?: string;
 }) {
-  const t = copy[locale];
+  const t = locale === "zh-Hant" ? (deepHant(copy.zh) as unknown as typeof copy.en) : copy[locale as Exclude<SummaryUiLocale, "zh-Hant">];
+  // The AI engine has no "de"/"zh-Hant"; collapse de→en, zh-Hant→zh for engine calls.
+  const engineLocale: AiSummaryLocale = locale === "de" ? "en" : locale === "zh-Hant" ? "zh" : locale;
   const abortRef = useRef<AbortController | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [pastedText, setPastedText] = useState("");
@@ -302,6 +307,7 @@ export function AiSummaryWorkflow({
           fr: "Importez un fichier PDF.",
           ja: "PDF ファイルをアップロードしてください。",
           ko: "PDF 파일을 업로드하세요.",
+          de: "Laden Sie eine PDF-Datei hoch.",
         }),
       );
       setStatus("error");
@@ -340,7 +346,7 @@ export function AiSummaryWorkflow({
       const summary = await generateAiSummary({
         file,
         pastedText,
-        locale,
+        locale: engineLocale,
         answerLocale,
         signal: controller.signal,
         onProgress: ({ progress: nextProgress, step }) => {
@@ -377,6 +383,7 @@ export function AiSummaryWorkflow({
               fr: "Échec du résumé par IA.",
               ja: "AI 要約に失敗しました。",
               ko: "AI 요약에 실패했습니다.",
+              de: "KI-Zusammenfassung fehlgeschlagen.",
             });
       setError(
         message === "aborted"
@@ -388,6 +395,7 @@ export function AiSummaryWorkflow({
               fr: "Annulé.",
               ja: "キャンセルしました。",
               ko: "취소되었습니다.",
+              de: "Abgebrochen.",
             })
           : message,
       );
@@ -551,7 +559,7 @@ export function AiSummaryWorkflow({
 
               <button
                 type="button"
-                onClick={() => downloadSummary(result, locale)}
+                onClick={() => downloadSummary(result, engineLocale)}
                 className="mt-5 inline-flex min-h-11 items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-3 text-sm font-semibold text-[color:var(--on-accent)] transition hover:opacity-90"
               >
                 {t.download}

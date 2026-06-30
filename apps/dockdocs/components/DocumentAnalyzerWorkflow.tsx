@@ -8,6 +8,7 @@ import {
   type DocumentAnalysis,
 } from "@/lib/document-analyzer-runtime";
 import type { AiChatLocale, AiChatProgress } from "@/lib/ai-chat-runtime";
+import { deepHant } from "@/lib/zh-hant";
 import {
   readWorkspaceSnapshot,
   recordDocumentAnalysisCompletion,
@@ -23,10 +24,12 @@ type AnalyzerStatus =
   | "result"
   | "error";
 
+type AnalyzerUiLocale = AiChatLocale | "de" | "zh-Hant";
+
 const pick = (
-  locale: AiChatLocale,
-  m: Record<AiChatLocale, string>,
-): string => m[locale];
+  locale: AnalyzerUiLocale,
+  m: Record<AiChatLocale | "de", string>,
+): string => locale === "zh-Hant" ? m["zh"] : m[locale as AiChatLocale | "de"];
 
 const copy = {
   en: {
@@ -245,17 +248,50 @@ const copy = {
     noSavedContext: "아직 저장된 채팅 컨텍스트가 없습니다.",
     notFound: "찾을 수 없음",
   },
+  de: {
+    eyebrow: "Dokumentanalyse",
+    title: "Analysieren Sie ein Dokument, bevor Sie Fragen stellen.",
+    description:
+      "Laden Sie ein PDF hoch, fügen Sie OCR-Text ein oder analysieren Sie einen gespeicherten Chat-Kontext. DockDocs sendet nur den extrahierten Text an den KI-Anbieter und gibt strukturierte Arbeitsnotizen zurück.",
+    upload: "PDF auswählen",
+    pasteLabel: "OCR-Text oder Chat-Kontext",
+    pastePlaceholder:
+      "Fügen Sie hier extrahierten OCR-Text, kopierten PDF-Text oder einen Chat-Kontext ein.",
+    analyze: "Dokument analysieren",
+    analyzing: "Wird analysiert ...",
+    reset: "Zurücksetzen",
+    latestContext: "Letzten gespeicherten Chat-Kontext verwenden",
+    source: "Quelle",
+    context: "Analysierter Kontext",
+    usage: "Token-Verbrauch",
+    provider: "Anbieter",
+    summary: "Dokumentzusammenfassung",
+    keyDates: "Wichtige Daten",
+    keyAmounts: "Wichtige Beträge",
+    people: "Personen / Organisationen",
+    risks: "Risiken",
+    actionItems: "Maßnahmen",
+    references: "Belege",
+    verifiedBadge: "Quelle geprüft",
+    idle: "Laden Sie ein PDF hoch oder fügen Sie Text ein, um zu beginnen.",
+    ready: "Bereit zur Analyse.",
+    truncated: "Der Kontext wurde gekürzt, um das Größenlimit einzuhalten.",
+    noSavedContext: "Noch kein Chat-Kontext gespeichert.",
+    notFound: "Nicht gefunden",
+  },
 } as const;
 
 export function DocumentAnalyzerWorkflow({
   locale = "en",
   answerLocale,
 }: {
-  locale?: AiChatLocale;
+  locale?: AnalyzerUiLocale;
   // Raw route locale for the ANSWER language; separate from the engine locale.
   answerLocale?: string;
 }) {
-  const t = copy[locale];
+  const t = locale === "zh-Hant" ? (deepHant(copy.zh) as unknown as typeof copy.en) : copy[locale as Exclude<AnalyzerUiLocale, "zh-Hant">];
+  // The AI engine has no "de"/"zh-Hant"; collapse de→en, zh-Hant→zh for engine calls.
+  const engineLocale: AiChatLocale = locale === "de" ? "en" : locale === "zh-Hant" ? "zh" : locale;
   const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -311,6 +347,7 @@ export function DocumentAnalyzerWorkflow({
           fr: "Importez un fichier PDF.",
           ja: "PDF ファイルをアップロードしてください。",
           ko: "PDF 파일을 업로드하세요.",
+          de: "Laden Sie eine PDF-Datei hoch.",
         }),
       );
       setStatus("error");
@@ -356,7 +393,7 @@ export function DocumentAnalyzerWorkflow({
         pastedText: nextText,
         chatContext,
         chatContextName,
-        locale,
+        locale: engineLocale,
         answerLocale,
         signal: controller.signal,
         onProgress: (nextProgress) => {
@@ -395,6 +432,7 @@ export function DocumentAnalyzerWorkflow({
               fr: "Échec de l'analyse du document.",
               ja: "文書分析に失敗しました。",
               ko: "문서 분석에 실패했습니다.",
+              de: "Dokumentanalyse fehlgeschlagen.",
             }),
       );
       setStatus("error");

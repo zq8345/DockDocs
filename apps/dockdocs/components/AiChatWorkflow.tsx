@@ -3,6 +3,7 @@
 import { trackToolRun } from "@/lib/track";
 import { TrialCta } from "@/components/TrialCta";
 import { useEffect, useRef, useState } from "react";
+import { deepHant } from "@/lib/zh-hant";
 import { AiDocUpload } from "@/components/AiDocUpload";
 import {
   askAiAboutPdf,
@@ -38,12 +39,12 @@ type WorkflowStatus =
 // still answered via the en engine path (de → en fallback). ChatUiLocale widens
 // only the UI-copy locale so the German strings render, without changing what is
 // sent to the AI provider.
-type ChatUiLocale = AiChatLocale | "de";
+type ChatUiLocale = AiChatLocale | "de" | "zh-Hant";
 
 const pick = (
   locale: ChatUiLocale,
-  m: Record<ChatUiLocale, string>,
-): string => m[locale];
+  m: Record<AiChatLocale | "de", string>,
+): string => locale === "zh-Hant" ? m["zh"] : m[locale as AiChatLocale | "de"];
 
 const copy = {
   en: {
@@ -447,9 +448,9 @@ export function AiChatWorkflow({
   // engine `locale` which may be collapsed to en.
   answerLocale?: string;
 }) {
-  const t = copy[locale];
-  // The AI engine has no "de"; answer a /de session via the en path (de → en).
-  const engineLocale: AiChatLocale = locale === "de" ? "en" : locale;
+  const t = locale === "zh-Hant" ? (deepHant(copy.zh) as unknown as typeof copy.en) : copy[locale as Exclude<ChatUiLocale, "zh-Hant">];
+  // The AI engine has no "de"/"zh-Hant"; collapse de→en, zh-Hant→zh for engine calls.
+  const engineLocale: AiChatLocale = locale === "de" ? "en" : locale === "zh-Hant" ? "zh" : locale;
   const abortRef = useRef<AbortController | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [pastedText, setPastedText] = useState("");
@@ -756,13 +757,14 @@ export function AiChatWorkflow({
             variant="tool-pro"
             locale={locale}
             hookTitle={
-              locale === "zh"
-                ? "上传这份文档，7 天内免费向它提无限问题"
+              locale === "zh" ? "上传这份文档，7 天内免费向它提无限问题"
+                : locale === "zh-Hant" ? "上傳這份文件，7 天內免費向它提無限問題"
                 : locale === "es" ? "Este documento — 7 días para hacerle preguntas ilimitadas con IA."
                 : locale === "pt" ? "Este documento — 7 dias para fazer perguntas ilimitadas com IA."
                 : locale === "fr" ? "Ce document — 7 jours pour poser des questions illimitées par IA."
                 : locale === "ja" ? "この文書——7日間、AIに何でも質問し放題。"
                 : locale === "ko" ? "이 문서——7일 동안 AI에게 무제한 질문하세요."
+                : locale === "de" ? "Dieses Dokument — 7 Tage, um es unbegrenzt per KI zu befragen."
                 : "This document — 7 days to ask it unlimited AI questions."
             }
           />

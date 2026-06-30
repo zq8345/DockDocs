@@ -3039,17 +3039,13 @@ const aiCopy = {
   },
 } as const;
 
-const aiWidgetLocales = ["en", "zh", "es", "pt", "fr", "ja", "ko"] as const;
+const aiWidgetLocales = ["en", "zh", "es", "pt", "fr", "ja", "ko", "de", "zh-Hant"] as const;
 type AiWidgetLocale = (typeof aiWidgetLocales)[number];
 
-// Exhaustive copy resolver for LocalizedAiWorkspace. aiCopy is keyed by the six
-// authored locales; zh-Hant derives from zh via deepHant. Preserves behavior, but
-// a NEW route locale must add a branch here instead of silently falling to aiCopy.en.
-// Union of the AiWidgetLocale copies (now incl. ko) plus the authored de copy. de
-// is kept out of aiWidgetLocales (the interactive widgets still run in English for
-// de via toAccountLocale), but its copy has the same shape and is a valid
-// resolveAiCopy result.
-type AiCopy = (typeof aiCopy)[AiWidgetLocale] | (typeof aiCopy)["de"];
+// Exhaustive copy resolver for LocalizedAiWorkspace. aiCopy is keyed by all authored
+// locales; zh-Hant derives from zh via deepHant. A NEW route locale must add a branch
+// here instead of silently falling to aiCopy.en.
+type AiCopy = (typeof aiCopy)[keyof typeof aiCopy];
 function resolveAiCopy(locale: ClientLocale): AiCopy {
   switch (locale) {
     case "zh-Hant":
@@ -3082,10 +3078,12 @@ function LocalizedAiWorkspace({ locale }: { locale: ClientLocale }) {
   // zh-Hant derives from zh via OpenCC; de renders native German header/cards copy
   // (aiCopy.de), while the interactive widgets fall back to English (toAccountLocale).
   const copy = resolveAiCopy(locale);
-  // ko widgets are now authored (AiChat/AiSummary/DocumentAnalyzer ship native
-  // Korean copy), so pass ko through instead of collapsing to en via
-  // toAccountLocale. de still runs the widgets in English until its widget copy lands.
-  const aiLocale: AiWidgetLocale = locale === "ko" ? "ko" : toAccountLocale(locale);
+  // de/ko/zh-Hant widgets now have native copy; pass them through directly.
+  const aiLocale: AiWidgetLocale =
+    locale === "ko" ? "ko" :
+    locale === "de" ? "de" :
+    locale === "zh-Hant" ? "zh-Hant" :
+    toAccountLocale(locale);
 
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
