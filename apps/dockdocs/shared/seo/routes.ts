@@ -24,7 +24,7 @@ export type SeoRoute = {
 export function isJaNativeRoute(slug: string): boolean {
   if (slug === "") return true; // home
   if ((toolSlugs as readonly string[]).includes(slug)) return true;
-  if (slug === "pricing" || slug === "sitemap" || slug === "ai-workspace") return true;
+  if (slug === "pricing" || slug === "sitemap" || slug === "ai-workspace" || slug === "download") return true;
   if ((infoPageSlugs as readonly string[]).includes(slug) && slug !== "blog") return true;
   if ((geoPageSlugs as readonly string[]).includes(slug)) return true;
   return false;
