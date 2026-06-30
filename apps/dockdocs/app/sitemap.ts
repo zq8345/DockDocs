@@ -259,6 +259,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.75,
     },
+    {
+      url: absoluteUrl("/nda-what-to-look-for/"),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
+    },
   ];
 
   return Array.from(
