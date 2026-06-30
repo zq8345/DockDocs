@@ -131,7 +131,7 @@ const HEADER_LABELS = {
   light:     { en: "Light",     zh: "浅色",     "zh-Hant": "淺色",     es: "Claro",           pt: "Claro",           fr: "Clair",            ja: "ライト",          de: "Hell",             ko: "라이트" },
   dark:      { en: "Dark",      zh: "深色",     "zh-Hant": "深色",     es: "Oscuro",          pt: "Escuro",          fr: "Sombre",           ja: "ダーク",          de: "Dunkel",           ko: "다크" },
   workspace: { en: "Workspace",  zh: "工作台",    "zh-Hant": "工作台",   es: "Área de trabajo",    pt: "Área de trabalho",  fr: "Espace de travail", ja: "ワークスペース", de: "Arbeitsbereich",    ko: "워크스페이스" },
-  allTools:  { en: "All Tools",  zh: "全部工具",  "zh-Hant": "全部工具", es: "Herramientas",       pt: "Ferramentas",       fr: "Outils",            ja: "全ツール",        de: "Alle Tools",        ko: "전체 도구" },
+  allTools:  { en: "Products",   zh: "产品",      "zh-Hant": "產品",     es: "Productos",          pt: "Produtos",          fr: "Produits",          ja: "製品",            de: "Produkte",          ko: "제품" },
   pricing:   { en: "Pricing",    zh: "定价",      "zh-Hant": "定價",     es: "Precios",            pt: "Preços",            fr: "Tarifs",            ja: "料金",            de: "Preise",            ko: "요금제" },
   download:  { en: "Download",   zh: "下载",      "zh-Hant": "下載",     es: "Descargar",          pt: "Baixar",            fr: "Télécharger",       ja: "ダウンロード",    de: "Herunterladen",     ko: "다운로드" },
 } as const;
@@ -252,7 +252,7 @@ export function Header() {
   }
 
   const trigger =
-    "flex items-center gap-1 rounded-[var(--radius-sm)] px-3 py-2 text-[15px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)] cursor-pointer";
+    "flex items-center gap-1 rounded-[var(--radius-sm)] px-3 py-2 text-[15px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--accent)] cursor-pointer";
   const itemCls =
     "block w-full whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[14.5px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]";
   const iconBtn =
@@ -334,8 +334,8 @@ export function Header() {
   // Build the 5-column "All Tools" mega-menu from existing locale-aware category data.
   // Col order: AI analysis, By profession, PDF conversion, PDF editing, Batch.
   const allToolsCols = [
-    { heading: cats[1]?.label,            items: cats[1]?.cols[0]?.items ?? [],               accent: true  },
-    { heading: cats[2]?.label,            items: (cats[2]?.cols ?? []).flatMap(c => c.items), accent: true  },
+    { heading: cats[1]?.label,            items: cats[1]?.cols[0]?.items ?? [],               accent: false },
+    { heading: cats[2]?.label,            items: (cats[2]?.cols ?? []).flatMap(c => c.items), accent: false },
     { heading: cats[0]?.cols[0]?.heading, items: cats[0]?.cols[0]?.items ?? [],               accent: false },
     { heading: cats[0]?.cols[1]?.heading, items: cats[0]?.cols[1]?.items ?? [],               accent: false },
     { heading: cats[0]?.cols[2]?.heading, items: cats[0]?.cols[2]?.items ?? [],               accent: false },

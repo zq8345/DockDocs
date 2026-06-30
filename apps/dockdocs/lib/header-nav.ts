@@ -78,8 +78,6 @@ export const headerStructure = [
           { "key": "Batch PPT to PDF",       "slug": "/batch-ppt-to-pdf" },
           { "key": "Batch PDF translate",    "slug": "/batch-translate" },
           { "key": "Batch PDF fix scans",    "slug": "/batch-fix-scans" },
-          { "key": "Batch summary",          "slug": "/batch-summary" },
-          { "key": "Classify PDFs",          "slug": "/batch-sort" }
         ]
       }
     ]
@@ -96,7 +94,9 @@ export const headerStructure = [
           { "key": "Compare documents", "slug": "/compare" },
           { "key": "Compare versions",  "slug": "/redline" },
           { "key": "Extract to Excel",  "slug": "/extract-to-excel" },
-          { "key": "Flashcards",        "slug": "/flashcards" }
+          { "key": "Flashcards",        "slug": "/flashcards" },
+          { "key": "Batch summary",     "slug": "/batch-summary" },
+          { "key": "Classify PDFs",     "slug": "/batch-sort" }
         ]
       }
     ]
