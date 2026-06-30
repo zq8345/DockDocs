@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
-import { defaultLocale, isAllLocale, routeLocales, localeLabels } from "@/lib/i18n";
+import { defaultLocale, isAllLocale, routeLocales, localeLabels, routeLocaleFromSegment } from "@/lib/i18n";
 import { deepHant } from "@/lib/zh-hant";
 import { getUser, onAuthChange, type AuthUser } from "@/lib/auth";
 import { AccountMenu } from "@/components/AccountMenu";
@@ -111,21 +111,17 @@ const pageLinks = {
 
 type Locale = "en" | "zh";
 
-function stripLocale(p: string): "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant" {
-  const s = p.split("/").filter(Boolean);
-  // URLs emit zh-Hant lowercase (/zh-hant/, see localizedPath); normalize it back to
-  // the canonical "zh-Hant" so the nav localizes (else it falls back to English).
-  const first = s[0]?.toLowerCase() === "zh-hant" ? "zh-Hant" : s[0];
-  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "de" || first === "ko" || first === "zh-Hant" ? first : "en";
+function stripLocale(p: string) {
+  return routeLocaleFromSegment(p.split("/").filter(Boolean)[0]);
 }
 function lh(h: string, l: string) {
   return l === defaultLocale ? h : `/${l}${h}`;
 }
 function currentSlug(pathname: string | null) {
   const segs = (pathname ?? "/").split("/").filter(Boolean);
-  // zh-Hant's URL segment is lowercase (/zh-hant/) and isn't in allLocales ("zh-Hant").
-  const firstIsLocale = segs[0]?.toLowerCase() === "zh-hant" || isAllLocale(segs[0]);
-  const rest = firstIsLocale ? segs.slice(1) : segs;
+  // Normalize zh-hant → zh-Hant before isAllLocale (allLocales has "zh-Hant", not "zh-hant").
+  const firstNorm = segs[0]?.toLowerCase() === "zh-hant" ? "zh-Hant" : segs[0];
+  const rest = isAllLocale(firstNorm) ? segs.slice(1) : segs;
   return rest.join("/");
 }
 
@@ -248,8 +244,8 @@ export function Header() {
   function switchLang(target: string) {
     if (target === locale) return;
     const slug = currentSlug(pathname);
-    // Emit zh-Hant as lowercase /zh-hant/ (canonical; avoids a Netlify case 301).
-    const seg = target === "zh-Hant" ? "zh-hant" : target;
+    // Use lowercase path segment so zh-Hant → /zh-hant/ (Netlify rewrites /zh-Hant/ → /zh-hant/).
+    const seg = target.toLowerCase();
     const href = target === defaultLocale ? `/${slug}` : `/${seg}/${slug}`;
     try { localStorage.setItem("dockdocs-lang", target); } catch {}
     setMoreOpen(false);
@@ -362,8 +358,10 @@ export function Header() {
           {/* Desktop nav — centered between the two flex-1 wings */}
           <nav className="hidden items-center gap-x-1 lg:gap-x-2 md:flex">
 
-            {/* All Tools — single 5-column mega-menu anchored to header container */}
-            <div ref={megaRef} onMouseEnter={openMega} onMouseLeave={closeMega}>
+            {/* All Tools — single 5-column mega-menu anchored to header container.
+                h-[52px] + flex items-center fills the full header height so megaRef's
+                bounding-box bottom edge == panel top-[52px] → zero dead zone. */}
+            <div ref={megaRef} onMouseEnter={openMega} onMouseLeave={closeMega} className="flex h-[52px] items-center">
               <span className={trigger}>
                 {hdrLabel("allTools", locale)}
                 <svg className={`h-3 w-3 opacity-60 transition ${megaOpen ? "rotate-180" : ""}`} viewBox="0 0 12 12" fill="none">

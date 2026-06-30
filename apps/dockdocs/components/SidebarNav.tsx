@@ -1,17 +1,16 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { defaultLocale, isRouteLocale } from "@/lib/i18n";
+import { defaultLocale, isRouteLocale, routeLocaleFromSegment } from "@/lib/i18n";
 
 function stripLocale(pathname: string): { locale: string; barePath: string } {
   const segments = pathname.split("/").filter(Boolean);
   const first = segments[0];
-  // Use isRouteLocale (en/zh/es/pt/fr/ja/de/zh-Hant), NOT isLocale (en/zh only):
-  // isLocale treated /de, /ja, /es… as bare slugs, so de's locale was lost and
-  // localizeHref dropped the /de prefix → sidebar links broke out of the locale.
-  if (isRouteLocale(first)) {
+  // Normalize zh-hant (URL) → zh-Hant (identifier) before the RouteLocale check.
+  const firstNorm = first?.toLowerCase() === "zh-hant" ? "zh-Hant" : first;
+  if (isRouteLocale(firstNorm)) {
     const bare = "/" + segments.slice(1).join("/") || "/";
-    return { locale: first, barePath: bare };
+    return { locale: firstNorm, barePath: bare };
   }
   return { locale: defaultLocale, barePath: pathname || "/" };
 }

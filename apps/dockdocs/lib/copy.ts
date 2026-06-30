@@ -1,4 +1,4 @@
-import { defaultLocale, isRouteLocale, type RouteLocale } from "@/lib/i18n";
+import { defaultLocale, routeLocaleFromSegment, type RouteLocale } from "@/lib/i18n";
 import { deepHant } from "@/lib/zh-hant";
 
 // RuntimeLocale spans every ROUTE locale (en/zh/es/pt/fr/ja/de/zh-Hant), not just
@@ -10,7 +10,7 @@ export type RuntimeLocale = RouteLocale;
 
 export function localeFromPathname(pathname: string | null | undefined): RuntimeLocale {
   const first = (pathname ?? "/").split("/").filter(Boolean)[0];
-  return isRouteLocale(first) ? first : defaultLocale;
+  return routeLocaleFromSegment(first);
 }
 
 export const runtimeCopy = {

@@ -196,6 +196,15 @@ export function isAllLocale(value: string | undefined): value is AllLocale {
   return (allLocales as readonly string[]).includes(value ?? "");
 }
 
+/** Normalize a URL path segment to a RouteLocale.
+ * URL paths are always lowercase (/zh-hant/) but the locale identifier is "zh-Hant".
+ * Use this everywhere a pathname segment is parsed to derive a locale at runtime. */
+export function routeLocaleFromSegment(seg: string | undefined): RouteLocale {
+  if (!seg) return defaultLocale;
+  const normalized: string = seg.toLowerCase() === "zh-hant" ? "zh-Hant" : seg;
+  return isRouteLocale(normalized) ? normalized : defaultLocale;
+}
+
 export function normalizeSlug(slug?: string[] | string): RouteSlug | null {
   const value = Array.isArray(slug) ? slug.join("/") : slug ?? "";
   const clean = value.replace(/^\/+|\/+$/g, "");
@@ -250,8 +259,10 @@ export function splitPathname(pathname: string) {
   // Match ALL route locales (es/pt/fr/ja/de/zh-Hant), not just en/zh — otherwise
   // a /de/... path is treated as having no locale prefix and silently falls back
   // to defaultLocale, dropping the /de segment.
-  const hasPrefix = isRouteLocale(first);
-  const locale = hasPrefix ? first : defaultLocale;
+  // Normalize zh-hant (URL segment) → zh-Hant (identifier) before the RouteLocale check.
+  const firstNorm = first ? (first.toLowerCase() === "zh-hant" ? "zh-Hant" : first) : undefined;
+  const hasPrefix = isRouteLocale(firstNorm);
+  const locale: RouteLocale = hasPrefix ? (firstNorm as RouteLocale) : defaultLocale;
   const slug = hasPrefix ? segments.slice(1).join("/") : segments.join("/");
   return {
     locale,
@@ -268,7 +279,10 @@ export function localizedHref(href: string, locale: RouteLocale | (string & {}),
   const clean = href.replace(/^\/+|\/+$/g, "");
   // Strip ANY route-locale prefix (es/pt/fr/ja/de/zh-Hant), not just en/zh, so a
   // /de/... href is re-localized correctly instead of keeping a stray "de" slug.
-  const slug = ((routeLocales as readonly string[]).includes(clean.split("/")[0])
+  // Normalize zh-hant → zh-Hant before the includes check.
+  const cleanFirst = clean.split("/")[0];
+  const cleanFirstNorm = cleanFirst.toLowerCase() === "zh-hant" ? "zh-Hant" : cleanFirst;
+  const slug = ((routeLocales as readonly string[]).includes(cleanFirstNorm)
     ? clean.split("/").slice(1).join("/")
     : clean) as RouteSlug;
 

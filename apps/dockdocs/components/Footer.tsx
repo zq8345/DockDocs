@@ -2,13 +2,13 @@
 
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
-import { defaultLocale } from "@/lib/i18n";
+import { defaultLocale, routeLocaleFromSegment } from "@/lib/i18n";
 import { deepHant } from "@/lib/zh-hant";
 import { getFooterCols } from "@/lib/footer-nav";
 
 function l(pathname: string | null): string {
   const first = (pathname ?? "/").split("/").filter(Boolean)[0];
-  return first === "zh" || first === "es" || first === "pt" || first === "fr" || first === "ja" || first === "zh-Hant" || first === "de" || first === "ko" ? first : defaultLocale;
+  return routeLocaleFromSegment(first);
 }
 function href(path: string, locale: string) {
   return locale === defaultLocale ? path : `/${locale}${path}`;
