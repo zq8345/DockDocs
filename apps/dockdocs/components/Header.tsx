@@ -346,13 +346,15 @@ export function Header() {
       {/* ── Fixed header bar ── */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-[color:var(--line)] bg-[color:var(--background)]/90 backdrop-blur-xl">
         <div className="relative mx-auto flex h-[52px] max-w-6xl items-center px-4 lg:px-6">
-          {/* Logo */}
-          <a href={lh("/", locale)} className="mr-3 shrink-0">
-            <BrandMark />
-          </a>
+          {/* Logo — left flex-1 keeps it balanced against the right actions */}
+          <div className="flex flex-1 items-center">
+            <a href={lh("/", locale)} className="shrink-0">
+              <BrandMark />
+            </a>
+          </div>
 
-          {/* Desktop nav — All Tools mega-menu + Pricing + Download + Workspace */}
-          <nav className="hidden flex-1 items-center justify-center gap-x-1 lg:gap-x-2 md:flex">
+          {/* Desktop nav — centered between the two flex-1 wings */}
+          <nav className="hidden items-center gap-x-1 lg:gap-x-2 md:flex">
 
             {/* All Tools — single 5-column mega-menu anchored to header container */}
             <div ref={megaRef} onMouseEnter={openMega} onMouseLeave={closeMega}>
@@ -410,8 +412,8 @@ export function Header() {
 
           </nav>
 
-          {/* Right actions */}
-          <div className="ml-auto flex items-center gap-1.5">
+          {/* Right actions — right flex-1 balances the logo wing */}
+          <div className="flex flex-1 items-center justify-end gap-1.5">
             {/* Sign in / Account control (desktop) — badge + dropdown account card */}
             <AccountMenu authUser={authUser} locale={locale} />
 
