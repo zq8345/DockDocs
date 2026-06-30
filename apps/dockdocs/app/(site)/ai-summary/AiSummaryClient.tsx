@@ -11,6 +11,7 @@ import { GroundingNote } from "@/components/GroundingNote";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import type { AuthoredLocale } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type SummaryData = {
   executiveSummary: string;
@@ -351,7 +352,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
   const nextSteps = summary?.suggestedNextSteps ?? summary?.nextSteps ?? [];
 
   return (
-    <section className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : "mx-auto max-w-5xl"}>
+    <section className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : `mx-auto ${LAYOUT.content}`}>
       {embedded && (
         <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">
           {zh ? h("把 PDF 浓缩成执行摘要、关键要点和后续步骤。") : ja ? "PDFを要約・重要点・次のステップへ変換します。" : es ? "Convierte un PDF en resumen ejecutivo, puntos clave y próximos pasos." : pt ? "Transforme um PDF em resumo executivo, pontos-chave e próximos passos." : fr ? "Transformez un PDF en résumé, points clés et prochaines étapes." : de ? "Fassen Sie ein PDF in Zusammenfassung, Kernpunkte und nächste Schritte zusammen." : ko ? "PDF를 요약, 핵심 포인트, 다음 단계로 변환하세요." : "Turn a PDF into an executive summary, key points, and next steps."}

@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
+import { LAYOUT } from "@/lib/layout-constants";
 
 // ── Class-string constants — About v2 / Home v2 design baseline ──────────
-export const SHELL = "mx-auto max-w-6xl px-6 py-24";
+export const SHELL = `mx-auto ${LAYOUT.content} px-6 py-24`;
 export const H2 = "text-[28px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[36px]";
 export const SUB = "mt-4 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]";
 export const CAP = "mt-4 font-mono text-[12px] text-[color:var(--faint)]";

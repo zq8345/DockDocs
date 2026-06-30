@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { deepHant } from "@/lib/zh-hant";
 import type { AuthoredLocale } from "@/lib/i18n";
 import { ProductDemoHero } from "@/components/ProductDemoHero";
+import { LAYOUT } from "@/lib/layout-constants";
 
 // Non-standard browser API: exists at runtime in Chrome/Edge.
 interface BeforeInstallPromptEvent extends Event {
@@ -348,7 +349,7 @@ export function DownloadPage({ locale: localeProp }: { locale?: Locale } = {}) {
     "flex w-full items-center justify-between rounded-[var(--radius-sm)] px-4 py-3 text-left text-[13px] font-semibold text-[color:var(--foreground)] transition hover:bg-[color:var(--surface-subtle)]";
 
   return (
-    <div className="mx-auto max-w-6xl px-6 pb-20 pt-16">
+    <div className={`mx-auto ${LAYOUT.content} px-6 pb-20 pt-16`}>
 
       {/* ── Hero ── */}
       <div className="mb-14">

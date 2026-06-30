@@ -8,6 +8,7 @@ import { deepHant } from "@/lib/zh-hant";
 import { getUser, onAuthChange, type AuthUser } from "@/lib/auth";
 import { AccountMenu } from "@/components/AccountMenu";
 import { getNavCategories, type NavCat } from "@/lib/header-nav";
+import { LAYOUT } from "@/lib/layout-constants";
 
 // Outline icons for the consolidated ☰ menu (Joe, 2026-06-25): one consistent stroke
 // style — 16px box, stroke-width 1.5, currentColor — matching the existing menu/theme
@@ -349,7 +350,7 @@ export function Header() {
     <>
       {/* ── Fixed header bar ── */}
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-[color:var(--line)] bg-[color:var(--background)]/90 backdrop-blur-xl">
-        <div className="relative mx-auto flex h-[52px] max-w-6xl items-center px-4 lg:px-6">
+        <div className={`relative mx-auto flex h-[52px] ${LAYOUT.content} items-center px-4 lg:px-6`}>
           {/* Logo — left flex-1 keeps it balanced against the right actions */}
           <div className="flex flex-1 items-center">
             <a href={lh("/", locale)} className="shrink-0">

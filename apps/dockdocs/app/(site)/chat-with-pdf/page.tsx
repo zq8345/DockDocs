@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { ChatWithPdfClient } from "./ChatWithPdfClient";
 import { groundingFaq } from "@/components/GroundingNote";
+import { LAYOUT } from "@/lib/layout-constants";
 
 export const metadata: Metadata = {
   title: "Chat with PDF — AI Q&A with Your Documents",
@@ -81,7 +82,7 @@ export default function ChatWithPdfPage() {
   return (
     <main className="bg-[color:var(--surface)]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA) }} />
-      <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+      <div className={`mx-auto ${LAYOUT.content} px-5 pb-12 pt-12 sm:px-6 sm:pt-16`}>
         {/* Breadcrumb */}
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href="/" className="transition hover:text-[color:var(--foreground)]">DockDocs</a>

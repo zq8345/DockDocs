@@ -8,6 +8,7 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type Locale = RouteLocale;
 // Boxes are stored in NORMALIZED page fractions (0–1) so they map to any render scale.
@@ -569,7 +570,7 @@ export function RedactPdfClient({ locale = "en", embedded = false }: { locale?: 
   }, [boxes, t, childLocale]);
 
   return (
-    <div className={`${embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : "mx-auto max-w-5xl px-5 pb-16 sm:px-6 sm:pb-20 pt-12 sm:pt-16"}`}>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 pb-16 sm:px-6 sm:pb-20 pt-12 sm:pt-16`}>
       {!embedded && <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>}
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 

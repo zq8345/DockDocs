@@ -65,6 +65,7 @@ export const LOCAL_ONLY_SLUGS = new Set<string>([
 ]);
 
 import { deepHant } from "./zh-hant";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type Loc = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 const LOCS: readonly Loc[] = ["en", "zh", "es", "pt", "fr", "ja", "de", "ko"];
@@ -125,7 +126,7 @@ export function VerifyClientSide({ locale = "en", divider = true }: { locale?: s
   // other content sections (it was a too-narrow 3xl).
   return (
     <section className={divider ? "mt-12 border-t border-[color:var(--line)] pt-8" : "mt-10"}>
-      <div className="mx-auto max-w-5xl px-5">
+      <div className={`mx-auto ${LAYOUT.content} px-5`}>
         <h2 className="text-[15px] font-semibold text-[color:var(--foreground)]">{c.title}</h2>
         <p className="mt-3 text-[13.5px] leading-relaxed text-[color:var(--muted)]">{c.body}</p>
         <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--faint)]">{c.how}</p>

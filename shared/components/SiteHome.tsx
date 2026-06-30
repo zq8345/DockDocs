@@ -2,6 +2,7 @@ import type { DockBrandKey } from "../config";
 import { dockBrands, getDockBrand } from "../config";
 import { ButtonLink } from "../ui";
 import { RelatedTools } from "./RelatedTools";
+import { LAYOUT } from "../../apps/dockdocs/lib/layout-constants";
 
 type SiteHomeProps = {
   brandKey: DockBrandKey;
@@ -23,7 +24,7 @@ export function SiteHome({
   return (
     <main>
       <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto flex min-h-[68vh] max-w-6xl flex-col justify-center px-5 py-20 sm:px-6 lg:px-8">
+        <div className={`mx-auto flex min-h-[68vh] ${LAYOUT.content} flex-col justify-center px-5 py-20 sm:px-6 lg:px-8`}>
           <p className="mb-5 text-sm font-medium uppercase tracking-[0.16em] text-[color:var(--muted)]">
             {brand.name} - {brand.tagline}
           </p>

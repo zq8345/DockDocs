@@ -11,6 +11,7 @@ import { H2 as H2_CLS, eyebrowCls } from "@/components/design";
 import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
 import { getUser, onAuthChange } from "@/lib/auth";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
@@ -714,7 +715,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   // 账户页全站统一为 /account(无语言版本)，不要按 locale 加 /zh 前缀，否则 /zh/account 会 404
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale as RouteLocale, href) : "/account");
   return (
-    <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+    <div className={`mx-auto ${LAYOUT.content} px-5 py-20 sm:py-24`}>
       {/* Hero — left-aligned, matching Home / About design baseline */}
       <div>
         <p className={eyebrowCls(zh)}>{zh ? h("// 定价") : locale === "es" ? "// Precios" : locale === "pt" ? "// Preços" : locale === "fr" ? "// Tarifs" : locale === "ja" ? "// 料金" : locale === "de" ? "// Preise" : locale === "ko" ? "// 요금제" : "// Pricing"}</p>
@@ -863,7 +864,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Compare plans — 5 nav categories, collapsible accordion */}
-      <div className="mx-auto mt-16 max-w-6xl">
+      <div className={`mx-auto mt-16 ${LAYOUT.content}`}>
         <p className={eyebrowCls(zh)}>{zh ? h("// 套餐对照") : locale === "es" ? "// Comparar" : locale === "pt" ? "// Comparar" : locale === "fr" ? "// Comparer" : locale === "ja" ? "// プラン比較" : locale === "de" ? "// Vergleich" : locale === "ko" ? "// 요금제 비교" : "// Compare"}</p>
         <h2 className={`mt-4 ${H2_CLS}`}>{c.compareTitle}</h2>
         <p className="mt-2 text-[13px] text-[color:var(--faint)]">
@@ -954,7 +955,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Solutions by scenario */}
-      <div className="mx-auto mt-24 max-w-6xl">
+      <div className={`mx-auto mt-24 ${LAYOUT.content}`}>
         <p className={eyebrowCls(zh)}>{zh ? h("// 应用场景") : locale === "es" ? "// Casos de uso" : locale === "pt" ? "// Casos de uso" : locale === "fr" ? "// Cas d'usage" : locale === "ja" ? "// ユースケース" : locale === "de" ? "// Anwendungsfälle" : locale === "ko" ? "// 활용 사례" : "// Use cases"}</p>
         <h2 className={`mt-4 ${H2_CLS}`}>{c.scenariosTitle}</h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
@@ -975,7 +976,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* FAQ — always open, consistent with other site FAQ pages */}
-      <div className="mx-auto mt-24 max-w-6xl">
+      <div className={`mx-auto mt-24 ${LAYOUT.content}`}>
         <p className={eyebrowCls(zh)}>{zh ? h("// 常见问题") : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : locale === "ja" ? "// よくある質問" : locale === "de" ? "// Häufige Fragen" : locale === "ko" ? "// 자주 묻는 질문" : "// FAQ"}</p>
         <h2 className={`mt-4 ${H2_CLS}`}>{c.faqTitle}</h2>
         <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
@@ -989,7 +990,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       </div>
 
       {/* Bottom CTA */}
-      <div className="mx-auto mt-24 max-w-6xl">
+      <div className={`mx-auto mt-24 ${LAYOUT.content}`}>
         <h2 className={H2_CLS}>{c.ctaTitle}</h2>
         <p className="mt-4 max-w-xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.ctaDesc}</p>
         <a href={zh ? h("/zh/") : locale === "es" ? "/es/" : locale === "pt" ? "/pt/" : locale === "fr" ? "/fr/" : locale === "ja" ? "/ja/" : locale === "de" ? "/de/" : locale === "ko" ? "/ko/" : "/"}

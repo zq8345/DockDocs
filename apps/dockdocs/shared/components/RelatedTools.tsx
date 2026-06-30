@@ -1,4 +1,5 @@
 import { dockBrands } from "../config";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type RelatedToolsProps = {
   compact?: boolean;
@@ -11,7 +12,7 @@ export function RelatedTools({ compact = false }: RelatedToolsProps) {
       aria-labelledby={compact ? "footer-related-tools" : "related-tools-title"}
       className={compact ? "px-5 py-10 sm:px-6 lg:px-8" : "px-5 py-16 sm:px-6 lg:px-8"}
     >
-      <div className="mx-auto max-w-6xl">
+      <div className={`mx-auto ${LAYOUT.content}`}>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2

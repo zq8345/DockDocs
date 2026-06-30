@@ -26,6 +26,7 @@ import {
 import observerReport from "@/docs/observer-report.json";
 import dispatcherReport from "@/docs/dispatcher-report.json";
 import runnerExecutionReport from "@/docs/runner-execution-report.json";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type MissionControlPanelProps = {
   snapshot: MissionControlSnapshot;
@@ -95,7 +96,7 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
         className="min-h-screen bg-[color:var(--background)] text-[color:var(--foreground)]"
       >
         <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-6 sm:px-6 lg:px-8">
-          <div className="mx-auto grid max-w-7xl gap-5 xl:grid-cols-[minmax(0,1fr)_390px] xl:items-end">
+          <div className={`mx-auto grid ${LAYOUT.appShell} gap-5 xl:grid-cols-[minmax(0,1fr)_390px] xl:items-end`}>
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
                 DockDocs · 内部控制台
@@ -145,7 +146,7 @@ export function MissionControlPanel({ snapshot }: MissionControlPanelProps) {
         </section>
 
         <section className="px-5 py-6 sm:px-6 lg:px-8">
-          <div className="mx-auto grid max-w-7xl gap-6">
+          <div className={`mx-auto grid ${LAYOUT.appShell} gap-6`}>
             <OwnerBriefing snapshot={snapshot} />
             <ObserverReportSummary />
             <DispatcherSummary />

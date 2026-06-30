@@ -16,6 +16,7 @@ import {
 } from "@/lib/subscription-runtime";
 import { StatusBadge } from "@/components/ui/Status";
 import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
+import { LAYOUT } from "@/lib/layout-constants";
 import {
   deleteSavedSession,
   queueSessionRestore,
@@ -458,7 +459,7 @@ export function MyChatsClient({ locale = "en" }: { locale?: Locale }) {
   return (
     <main>
       <section className="border-b border-[color:var(--line)] px-5 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+        <div className={`mx-auto ${LAYOUT.appShell}`}>
           <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">{t.eyebrow}</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">{t.heroTitle}</h1>
           <p className="mt-4 max-w-2xl leading-7 text-[color:var(--muted)]">{t.heroIntro}</p>
@@ -466,7 +467,7 @@ export function MyChatsClient({ locale = "en" }: { locale?: Locale }) {
       </section>
 
       <section className="px-5 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+        <div className={`mx-auto ${LAYOUT.appShell}`}>
           {loading ? (
             <section className="rounded-xl border border-[color:var(--line)] bg-[color:var(--surface)] p-6">
               <StatusBadge label={t.loading} status="Idle" />

@@ -15,6 +15,7 @@ import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 // Comparison engine UI (bilingual).
 //  D5: multi-file upload -> browser-side text extraction (pdf.js).
@@ -1296,7 +1297,7 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
 
   const Wrapper: "main" | "div" = embedded ? "div" : "main";
   return (
-    <Wrapper className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : "mx-auto max-w-5xl px-5 py-14 sm:px-6 lg:px-8"}>
+    <Wrapper className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 py-14 sm:px-6 lg:px-8`}>
       {!embedded && (
         <>
           <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 py-1 text-xs font-semibold text-[color:var(--muted)]">

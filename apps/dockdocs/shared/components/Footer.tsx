@@ -1,6 +1,7 @@
 import type { DockBrandKey } from "../config";
 import { getDockBrand } from "../config";
 import { RelatedTools } from "./RelatedTools";
+import { LAYOUT } from "../../lib/layout-constants";
 
 const footerLinks = [
   { name: "Related Tools", href: "#related-tools" },
@@ -20,7 +21,7 @@ export function Footer({ brandKey }: FooterProps) {
   return (
     <footer className="border-t border-[color:var(--line)]">
       <RelatedTools compact />
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 border-t border-[color:var(--line)] px-5 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+      <div className={`mx-auto flex ${LAYOUT.content} flex-col gap-6 border-t border-[color:var(--line)] px-5 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8`}>
         <p className="text-sm text-[color:var(--muted)]">
           (c) {new Date().getFullYear()} {brand.name}
         </p>

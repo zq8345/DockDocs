@@ -5,6 +5,7 @@ import { BrandMark } from "@/components/BrandMark";
 import { defaultLocale, routeLocaleFromSegment } from "@/lib/i18n";
 import { deepHant } from "@/lib/zh-hant";
 import { getFooterCols } from "@/lib/footer-nav";
+import { LAYOUT } from "@/lib/layout-constants";
 
 function l(pathname: string | null): string {
   const first = (pathname ?? "/").split("/").filter(Boolean)[0];
@@ -20,7 +21,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-[color:var(--line)] bg-[color:var(--background)]">
-      <div className="mx-auto max-w-6xl px-5 py-8 sm:px-6 lg:px-8">
+      <div className={`mx-auto ${LAYOUT.content} px-5 py-8 sm:px-6 lg:px-8`}>
         {/* Top: logo + columns */}
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-1">

@@ -12,6 +12,7 @@ import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 
 import { useCallback, useState } from "react";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type Locale = RouteLocale;
 
@@ -551,7 +552,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
     "rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]";
 
   return (
-    <div className="mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20">
+    <div className={`mx-auto ${LAYOUT.content} px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20`}>
       <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">
         {t.title}
       </h1>

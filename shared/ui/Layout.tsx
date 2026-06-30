@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from "react";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type ContainerProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode;
@@ -19,7 +20,7 @@ type SectionHeaderProps = {
 export function Container({ children, className = "", ...props }: ContainerProps) {
   return (
     <div
-      className={`mx-auto max-w-6xl px-5 sm:px-6 lg:px-8 ${className}`.trim()}
+      className={`mx-auto ${LAYOUT.content} px-5 sm:px-6 lg:px-8 ${className}`.trim()}
       {...props}
     >
       {children}

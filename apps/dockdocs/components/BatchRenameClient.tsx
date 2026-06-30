@@ -9,6 +9,7 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type Locale = RouteLocale;
 type Mode = "sequence" | "replace";
@@ -367,7 +368,7 @@ export function BatchRenameClient({ locale = "en", embedded = false }: { locale?
   const inputCls = "h-9 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-[13.5px] text-[color:var(--foreground)]";
 
   return (
-    <div className={`${embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : "mx-auto max-w-5xl px-5 pb-16 sm:px-6 sm:pb-20 pt-12 sm:pt-16"}`}>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 pb-16 sm:px-6 sm:pb-20 pt-12 sm:pt-16`}>
       {!embedded && <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>}
       <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
 

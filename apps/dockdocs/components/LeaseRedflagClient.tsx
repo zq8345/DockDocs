@@ -11,6 +11,7 @@ import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 import { useCallback, useMemo, useState } from "react";
 
@@ -553,7 +554,7 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
   const card = "rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]";
 
   return (
-    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : "mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"}>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20`}>
       {!embedded && (
         <>
           <div className="flex items-center gap-2">

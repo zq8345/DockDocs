@@ -10,6 +10,7 @@ import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 import { useCallback, useMemo, useState } from "react";
 
@@ -540,7 +541,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
 
   const Wrapper: "main" | "div" = embedded ? "div" : "main";
   return (
-    <Wrapper className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : "mx-auto max-w-5xl px-5 py-12"}>
+    <Wrapper className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 py-12`}>
       {!embedded && (
         <>
           <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-[color:var(--faint)]">{t.eyebrow}</p>

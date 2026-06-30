@@ -1,5 +1,7 @@
 "use client";
 
+import { LAYOUT } from "@/lib/layout-constants";
+
 type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "ko";
 
 const STR = {
@@ -229,7 +231,7 @@ export function HomeClient({ locale = "en" }: { locale?: Locale }) {
     <>
       {/* Hero */}
       <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:py-28 lg:grid-cols-2 lg:py-36">
+        <div className={`mx-auto grid ${LAYOUT.content} items-center gap-12 px-5 py-20 sm:py-28 lg:grid-cols-2 lg:py-36`}>
           <div>
             <h1 className="text-[40px] font-semibold leading-[1.04] tracking-[-0.022em] sm:text-[52px] sm:leading-[1.02]">
               {t.heroTitle1}<br /><span className="text-[color:var(--accent-strong)]">{t.heroTitle2}</span>
@@ -256,7 +258,7 @@ export function HomeClient({ locale = "en" }: { locale?: Locale }) {
 
       {/* Features */}
       <section className="border-b border-[color:var(--line)]">
-        <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+        <div className={`mx-auto ${LAYOUT.content} px-5 py-20 sm:py-24`}>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((f) => (
               <div key={f.title} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 transition hover:border-[color:var(--line-strong)]">
@@ -271,7 +273,7 @@ export function HomeClient({ locale = "en" }: { locale?: Locale }) {
 
       {/* Popular tools */}
       <section id="tools" className="border-b border-[color:var(--line)]">
-        <div className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+        <div className={`mx-auto ${LAYOUT.content} px-5 py-20 sm:py-24`}>
           <p className="text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">{t.mostUsed}</p>
           <h2 className="mt-3 text-center text-[28px] font-semibold tracking-[-0.014em]">{t.startWith}</h2>
           <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

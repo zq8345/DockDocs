@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { siteUrl } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 // Standalone English-first GEO comparison page. Custom layout (not SaasInfoPage)
 // because it needs a comparison table + an inline source link on every competitor
@@ -176,7 +177,7 @@ export default function DockDocsVsComparisonPage() {
       <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
         {/* Hero */}
         <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-          <div className="mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
+          <div className={`mx-auto ${LAYOUT.content} px-5 py-14 sm:px-6 sm:py-20`}>
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
               Comparison
             </p>
@@ -213,7 +214,7 @@ export default function DockDocsVsComparisonPage() {
 
         {/* Comparison table */}
         <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-          <div className="mx-auto max-w-5xl px-5 py-12 sm:px-6">
+          <div className={`mx-auto ${LAYOUT.content} px-5 py-12 sm:px-6`}>
             <h2 className="text-xl font-semibold leading-snug tracking-tight text-[color:var(--foreground)]">
               File-handling comparison
             </h2>

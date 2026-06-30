@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { AiSummaryClient } from "./AiSummaryClient";
 import { groundingFaq } from "@/components/GroundingNote";
+import { LAYOUT } from "@/lib/layout-constants";
 
 // Source-grounding fact (shown as prose by GroundingNote in the client) folded into
 // the FAQ schema so the citable "summaries stay grounded" statement is structured data.
@@ -113,7 +114,7 @@ export default function AiSummaryPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aiSummarySchema) }}
       />
-      <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+      <div className={`mx-auto ${LAYOUT.content} px-5 pb-12 pt-12 sm:px-6 sm:pt-16`}>
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href="/" className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
           <span>/</span>

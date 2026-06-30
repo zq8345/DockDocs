@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { languageAlternates } from "@/lib/i18n";
 import { SitemapContent } from "@/components/SitemapContent";
 import { webPageSchema } from "@/lib/page-schema";
+import { LAYOUT } from "@/lib/layout-constants";
 
 export const metadata: Metadata = {
   title: "Sitemap",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function SitemapPage() {
   return (
-    <main className="mx-auto max-w-6xl px-5 py-20 sm:py-24">
+    <main className={`mx-auto ${LAYOUT.content} px-5 py-20 sm:py-24`}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "sitemap", "Sitemap")) }} />
       <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-[color:var(--faint)]">// Sitemap</p>
       <h1 className="mt-4 text-[34px] font-normal tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[44px]">Every tool, every page.</h1>

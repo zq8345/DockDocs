@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AccountClient } from "@/components/AccountClient";
+import { LAYOUT } from "@/lib/layout-constants";
 
 export const metadata: Metadata = {
   title: "Account",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function AccountPage() {
   return (
-    <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
+    <div className={`mx-auto ${LAYOUT.content} px-5 py-20 sm:py-28`}>
       <div className="mx-auto max-w-md">
         <AccountClient />
       </div>

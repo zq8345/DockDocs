@@ -13,6 +13,7 @@ import {
 import { planPriceCents, type BillingInterval } from "@/lib/billing-config";
 import { planBadge, planStatusText, type MembershipLocale } from "@/lib/membership-ui";
 import { type AuthoredLocale, type RouteLocale, routeLocales, defaultLocale } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 import { deepHant } from "@/lib/zh-hant";
 
 // Derived from the single price source — never hardcoded.
@@ -347,7 +348,7 @@ export function UpgradePage() {
   ];
 
   return (
-    <div className="mx-auto min-h-screen max-w-4xl px-6 py-12">
+    <div className={`mx-auto min-h-screen ${LAYOUT.appShell} px-6 py-12`}>
       <h1 className="text-[28px] font-semibold tracking-[-0.02em] text-[color:var(--foreground)]">
         {c.heading}
       </h1>

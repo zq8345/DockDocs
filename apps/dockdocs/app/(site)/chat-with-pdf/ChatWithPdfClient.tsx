@@ -13,6 +13,7 @@ import { ToolSections, type ToolSectionsContent } from "@/components/ToolSection
 import { dropzoneShell } from "@/components/design";
 import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import type { AuthoredLocale } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -480,7 +481,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
       id="workspace"
       aria-label={copy.workspaceTitle}
       data-testid="chat-workspace"
-      className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : "mx-auto max-w-5xl"}
+      className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : `mx-auto ${LAYOUT.content}`}
     >
       {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{copy.heroTitle}</p>}
       {/* ── Upload zone (shown when no document) ── */}

@@ -10,6 +10,7 @@ import {
   relativeCN,
   num,
 } from "@/lib/mission-control-v2";
+import { LAYOUT } from "@/lib/layout-constants";
 
 /* ── 颜色映射 ── */
 const SYS_META: Record<SystemStatus, { label: string; box: string; text: string; dot: string }> = {
@@ -70,7 +71,7 @@ function MetricCard({ label, value, sub, accent = "text-[color:var(--foreground)
 
 function Skeleton() {
   return (
-    <div className="mx-auto max-w-6xl space-y-6 px-5 py-10">
+    <div className={`mx-auto ${LAYOUT.content} space-y-6 px-5 py-10`}>
       <div className="mx-auto h-9 w-56 rounded bg-[color:var(--line)] animate-pulse" />
       <div className="h-16 rounded-[var(--radius-lg)] bg-[color:var(--line)] animate-pulse" />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -135,7 +136,7 @@ export function MissionControlV2() {
   const gscConnected = mt.gscImpressions != null;
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-10">
+    <div className={`mx-auto ${LAYOUT.content} px-5 py-10`}>
       {/* 1 · 居中标题 + 北京时间 */}
       <header className="text-center">
         <h1 className="text-[28px] font-semibold tracking-tight text-[color:var(--foreground)]">DockDocs 控制台</h1>

@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { isAllLocale, defaultLocale } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 function getLocale(path: string | null) {
   const seg = (path ?? "/").split("/").filter(Boolean)[0];
@@ -30,7 +31,7 @@ export default function NotFound() {
   const homeHref = locale !== defaultLocale && locale in NOT_FOUND_COPY ? `/${locale}/` : "/";
 
   return (
-    <main className="mx-auto min-h-[60vh] max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
+    <main className={`mx-auto min-h-[60vh] ${LAYOUT.content} px-4 py-20 sm:px-6 lg:px-8`}>
       <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
         404
       </p>

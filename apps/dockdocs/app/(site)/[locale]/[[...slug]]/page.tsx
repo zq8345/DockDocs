@@ -107,6 +107,7 @@ import {
   programmaticGeoPath,
   type ProgrammaticGeoSurface,
 } from "@/lib/programmatic-geo";
+import { LAYOUT } from "@/lib/layout-constants";
 
 export const dynamicParams = false;
 
@@ -2593,7 +2594,7 @@ export default async function LocalizedRoute({
 
 function LocalizedAccount({ locale }: { locale: ClientLocale }) {
   return (
-    <div className="mx-auto max-w-6xl px-5 py-20 sm:py-28">
+    <div className={`mx-auto ${LAYOUT.content} px-5 py-20 sm:py-28`}>
       <div className="mx-auto max-w-md">
         <AccountClient locale={locale} />
       </div>
@@ -2673,7 +2674,7 @@ function LocalizedChatWithPdf({ locale }: { locale: ClientLocale }) {
   return (
     <main className="bg-[color:var(--surface)]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+      <div className={`mx-auto ${LAYOUT.content} px-5 pb-12 pt-12 sm:px-6 sm:pt-16`}>
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
           <span>/</span>
@@ -2754,7 +2755,7 @@ function LocalizedAiSummary({ locale }: { locale: ClientLocale }) {
   return (
     <main className="bg-[color:var(--surface)]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 sm:pt-16">
+      <div className={`mx-auto ${LAYOUT.content} px-5 pb-12 pt-12 sm:px-6 sm:pt-16`}>
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
           <span>/</span>
@@ -2809,7 +2810,7 @@ function LocalizedFaq({
       aria-labelledby="faq-title"
       className="border-b border-[color:var(--line)] bg-[color:var(--surface)]"
     >
-      <div className="mx-auto max-w-5xl px-5 py-12 sm:px-6">
+      <div className={`mx-auto ${LAYOUT.content} px-5 py-12 sm:px-6`}>
         <h2 id="faq-title" className="text-lg font-semibold text-[color:var(--foreground)]">
           {title}
         </h2>
@@ -3089,7 +3090,7 @@ function LocalizedAiWorkspace({ locale }: { locale: ClientLocale }) {
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
       <Section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
+        <div className={`mx-auto ${LAYOUT.content} px-5 sm:px-6 lg:px-8`}>
           <p className="font-mono text-[12px] uppercase tracking-[0.1em] text-[color:var(--faint)]">
             {copy.eyebrow}
           </p>
@@ -3110,7 +3111,7 @@ function LocalizedAiWorkspace({ locale }: { locale: ClientLocale }) {
         </div>
       </Section>
       <Section className="bg-[color:var(--surface-subtle)]">
-        <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
+        <div className={`mx-auto ${LAYOUT.content} px-5 sm:px-6 lg:px-8`}>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {copy.cards.map((card) => (
               <article

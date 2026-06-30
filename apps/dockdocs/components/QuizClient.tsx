@@ -13,6 +13,7 @@ import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { deepHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type Locale = RouteLocale;
 type Card ={ q: string; a: string };
@@ -368,7 +369,7 @@ export function QuizClient({ locale = "en", embedded = false }: { locale?: Local
   const toggle = (i: number) => setFlipped((p) => { const n = new Set(p); if (n.has(i)) n.delete(i); else n.add(i); return n; });
 
   return (
-    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : "mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"}>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20`}>
       {!embedded && (
         <>
           <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>

@@ -13,6 +13,7 @@ import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
 import { appendWorkHistory } from "@/lib/work-history";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 import { useCallback, useMemo, useState } from "react";
 
@@ -807,7 +808,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   };
 
   return (
-    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : "mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"}>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : `mx-auto ${LAYOUT.content} px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20`}>
       {!embedded && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />}
       {!embedded && (
         <>

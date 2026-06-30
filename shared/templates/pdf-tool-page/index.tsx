@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { ButtonLink, Container, Section } from "../../ui";
+import { LAYOUT } from "@/lib/layout-constants";
 import { PdfWorkflowEngine } from "./workflow-engine";
 import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "./VerifyClientSide";
 // zh-Hant copy is derived from zh via OpenCC (Simplified->Traditional).
@@ -576,7 +577,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
 
       {/* ── Hero + Upload ── */}
       <section>
-        <div className="mx-auto max-w-5xl px-5 pb-12 pt-12 sm:px-6 lg:px-8 sm:pt-16">
+        <div className={`mx-auto ${LAYOUT.content} px-5 pb-12 pt-12 sm:px-6 lg:px-8 sm:pt-16`}>
           {/* Title */}
           <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">
             {config.breadcrumbName}
@@ -599,7 +600,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       {/* ── FAQ (collapsed, clean) ── */}
       {config.faq.length > 0 && (
         <section>
-          <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6 lg:px-8">
+          <div className={`mx-auto ${LAYOUT.content} px-5 py-10 sm:px-6 lg:px-8`}>
             <h2 className="text-[22px] font-normal tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[26px]">{config.faqTitle}</h2>
             <div className="mt-6 space-y-6">
               {config.faq.map((item) => (
@@ -616,7 +617,7 @@ export function PdfToolPage({ config }: { config: PdfToolPageConfig }) {
       {/* ── Verifiable-trust proof: only on tools that upload nothing (gated) ── */}
       {LOCAL_ONLY_SLUGS.has(config.slug) && (
         <Section bordered={false}>
-          <Container className="!max-w-5xl">
+          <Container className={`!${LAYOUT.content}`}>
             <VerifyClientSide locale={config.locale ?? "en"} />
           </Container>
         </Section>
@@ -682,7 +683,7 @@ function BenefitsSection({ config }: { config: PdfToolPageConfig }) {
 
   return (
     <Section bordered={false}>
-      <Container className="!max-w-5xl">
+      <Container className={`!${LAYOUT.content}`}>
         <SectionIntro
           eyebrow={copy.benefits}
           title={config.benefitsTitle}
@@ -703,7 +704,7 @@ function FeaturesSection({ config }: { config: PdfToolPageConfig }) {
 
   return (
     <Section id="features" bordered={false}>
-      <Container className="!max-w-5xl">
+      <Container className={`!${LAYOUT.content}`}>
         <SectionIntro
           eyebrow={copy.features}
           title={config.featuresTitle}
@@ -724,7 +725,7 @@ function HowItWorksSection({ config }: { config: PdfToolPageConfig }) {
 
   return (
     <Section bordered={false}>
-      <Container className="!max-w-5xl">
+      <Container className={`!${LAYOUT.content}`}>
         <SectionIntro
           eyebrow={copy.workflow}
           title={config.workflowTitle}
@@ -762,7 +763,7 @@ function RelatedPdfTools({
 
   return (
     <Section id="related-tools" bordered={false}>
-      <Container className="!max-w-5xl">
+      <Container className={`!${LAYOUT.content}`}>
         <SectionIntro
           eyebrow={copy.relatedTools}
           title={copy.relatedTitle}
@@ -820,7 +821,7 @@ function IndexingLinksSection({ config }: { config: PdfToolPageConfig }) {
 
   return (
     <Section bordered={false}>
-      <Container className="!max-w-5xl">
+      <Container className={`!${LAYOUT.content}`}>
         <SectionIntro
           eyebrow={copy.indexingEyebrow}
           title={copy.indexingTitle}

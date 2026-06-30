@@ -8,6 +8,7 @@ import { trackToolRun } from "@/lib/track";
 import { deepHant } from "@/lib/zh-hant";
 import { routeLocaleFromSegment } from "@/lib/i18n";
 import { extractText, toUnits, diff, changePairs, type Op } from "@/lib/redline-core";
+import { LAYOUT } from "@/lib/layout-constants";
 import { dropzoneVisual } from "@/components/design";
 import type { AuthoredLocale } from "@/lib/i18n";
 
@@ -311,14 +312,14 @@ export function ContractReviewClient() {
   const hunks = diffReady ? toHunks(ops).slice(0, 150) : [];
 
   if (showUpgrade) return (
-    <div className="mx-auto max-w-4xl px-5 py-12 sm:px-6 lg:px-8">
+    <div className={`mx-auto ${LAYOUT.content} px-5 py-12 sm:px-6 lg:px-8`}>
       <button onClick={() => setShowUpgrade(false)} className="mb-4 text-[13px] text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{T(s.backBtn)}</button>
       <UpgradePrompt locale={locale === "ko" ? "en" : locale} limit={upgradeLimit} />
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-4xl px-5 py-12 sm:px-6 lg:px-8">
+    <div className={`mx-auto ${LAYOUT.content} px-5 py-12 sm:px-6 lg:px-8`}>
       {/* Header */}
       <div className="mb-8">
         <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[color:var(--faint)]">PRO</span>

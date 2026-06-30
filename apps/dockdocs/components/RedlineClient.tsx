@@ -10,6 +10,7 @@ import { deepHant } from "@/lib/zh-hant";
 import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import { dropzoneVisual } from "@/components/design";
 import type { AuthoredCopy, AuthoredLocale, RouteLocale } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 // Canonical route locale — derived from RouteLocale so adding a route locale
 // (e.g. "de") propagates here instead of silently falling back to English.
@@ -430,7 +431,7 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
   );
 
   return (
-    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : "mx-auto max-w-5xl px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20"}>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20`}>
       {!embedded && (
         <>
           <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>

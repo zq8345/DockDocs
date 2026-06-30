@@ -1,4 +1,5 @@
 import { siteUrl } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 // Reusable head-to-head comparison page (DockDocs vs ONE named competitor).
 // Used by the standalone /dockdocs-vs-<competitor>/ GEO pages. Every competitor
@@ -93,7 +94,7 @@ export function ComparisonPage(props: ComparisonPageProps) {
       <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
         {/* Hero */}
         <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-          <div className="mx-auto max-w-5xl px-5 py-14 sm:px-6 sm:py-20">
+          <div className={`mx-auto ${LAYOUT.content} px-5 py-14 sm:px-6 sm:py-20`}>
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">Comparison</p>
             <h1 className="mt-4 text-2xl font-semibold leading-tight tracking-[-0.02em] text-[color:var(--foreground)] sm:text-4xl">
               {props.heroTitle}
@@ -121,7 +122,7 @@ export function ComparisonPage(props: ComparisonPageProps) {
 
         {/* Table */}
         <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-          <div className="mx-auto max-w-5xl px-5 py-12 sm:px-6">
+          <div className={`mx-auto ${LAYOUT.content} px-5 py-12 sm:px-6`}>
             <h2 className="text-xl font-semibold leading-snug tracking-tight text-[color:var(--foreground)]">
               DockDocs vs {props.competitorName}: file handling
             </h2>

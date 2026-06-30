@@ -20,6 +20,7 @@ import {
   type UsageQuota,
   type WorkspaceFeatureFlags,
 } from "@/lib/workspace-runtime";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type WorkflowStatus =
   | "idle"
@@ -738,7 +739,7 @@ export function AiChatWorkflow({
       data-ai-chat-status={status}
       className="border-b border-[color:var(--line)] bg-[color:var(--surface-subtle)] py-16"
     >
-      <div className="mx-auto max-w-5xl px-5 sm:px-6 lg:px-8">
+      <div className={`mx-auto ${LAYOUT.content} px-5 sm:px-6 lg:px-8`}>
         <p className="text-sm font-mono uppercase tracking-[0.1em] text-[color:var(--faint)]">
           {t.eyebrow}
         </p>

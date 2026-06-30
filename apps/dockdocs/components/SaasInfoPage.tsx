@@ -5,6 +5,7 @@ import {
   type Locale,
 } from "@/lib/i18n";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { LAYOUT } from "@/lib/layout-constants";
 
 type SaasInfoPageProps = {
   page: InfoPageData;
@@ -109,7 +110,7 @@ export function SaasInfoPage({
       ) : null}
       {/* Hero */}
       <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-        <div className="mx-auto max-w-3xl px-5 py-14 sm:px-6 sm:py-20">
+        <div className={`mx-auto ${LAYOUT.content} px-5 py-14 sm:px-6 sm:py-20`}>
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
             {page.eyebrow}
           </p>
@@ -145,7 +146,7 @@ export function SaasInfoPage({
       {/* Content sections */}
       {page.sections.map((section) => (
         <section key={section.title} className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-          <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+          <div className={`mx-auto ${LAYOUT.content} px-5 py-12 sm:px-6`}>
             <h2 className="text-xl font-semibold leading-snug tracking-tight text-[color:var(--foreground)]">
               {section.title}
             </h2>
@@ -172,7 +173,7 @@ export function SaasInfoPage({
       {/* FAQ */}
       {page.faqs?.length ? (
         <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
-          <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+          <div className={`mx-auto ${LAYOUT.content} px-5 py-12 sm:px-6`}>
             <div className="divide-y divide-[color:var(--line)]">
               {page.faqs.map((faq) => (
                 <details key={faq.question} className="group py-4">
