@@ -573,7 +573,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
                   key={`${message.role}-${index}`}
                   className={
                     message.role === "user"
-                      ? "ml-auto max-w-[85%] rounded-[var(--radius-lg)] bg-[color:var(--accent)] px-4 py-2.5 text-white"
+                      ? "ml-auto w-fit max-w-[75%] rounded-[var(--radius-lg)] bg-[color:var(--accent)] px-4 py-2.5 text-white"
                       : "mr-auto max-w-[85%] rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-2.5"
                   }
                 >
