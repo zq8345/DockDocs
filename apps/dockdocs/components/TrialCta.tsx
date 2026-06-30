@@ -28,8 +28,7 @@ type CtaL10n = {
 
 const L: Record<AuthoredLocale, CtaL10n> = {
   en: {
-    heroTitle:
-      "In 7 days, use AI to work through all your important documents — contracts, quotes, long reports. Saves you dozens of hours.",
+    heroTitle: "7 days free Pro — let AI read your contracts, quotes, and reports.",
     heroPrivacy: "See how privacy works",
     freeIntro: "This document — let AI understand it next.",
     freeOutcome:
@@ -42,8 +41,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
     noTricks: ["No credit card", "No auto-charge", "Drops to free tier when it ends"],
   },
   zh: {
-    heroTitle:
-      "7 天里，把你所有重要文件用 AI 啃一遍——合同、报价、长报告，省你几十小时",
+    heroTitle: "7 天 Pro，AI 替你读遍合同、报价、长报告。",
     heroPrivacy: "看隐私怎么做到",
     freeIntro: "这份文档，接下来让 AI 读懂它",
     freeOutcome:
@@ -55,8 +53,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
     noTricks: ["不要卡", "不自动扣费", "到期不锁死，掉回免费版继续用"],
   },
   es: {
-    heroTitle:
-      "En 7 días, usa IA para revisar todos tus documentos importantes — contratos, presupuestos, informes largos. Ahorra decenas de horas.",
+    heroTitle: "7 días Pro gratis — IA analiza contratos, presupuestos e informes por ti.",
     heroPrivacy: "Mira cómo funciona la privacidad",
     freeIntro: "Este documento — que la IA lo entienda después.",
     freeOutcome:
@@ -73,8 +70,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
     ],
   },
   pt: {
-    heroTitle:
-      "Em 7 dias, use IA para analisar todos os seus documentos importantes — contratos, propostas, relatórios. Economize dezenas de horas.",
+    heroTitle: "7 dias Pro grátis — deixe a IA analisar contratos, propostas e relatórios.",
     heroPrivacy: "Veja como a privacidade funciona",
     freeIntro: "Este documento — deixe a IA entendê-lo depois.",
     freeOutcome:
@@ -91,8 +87,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
     ],
   },
   fr: {
-    heroTitle:
-      "En 7 jours, utilisez l'IA pour analyser tous vos documents importants — contrats, devis, longs rapports. Gagnez des dizaines d'heures.",
+    heroTitle: "7 jours Pro offerts — l'IA analyse vos contrats, devis et rapports.",
     heroPrivacy: "Voir comment fonctionne la confidentialité",
     freeIntro: "Ce document — laissez l'IA le comprendre ensuite.",
     freeOutcome:
@@ -109,8 +104,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
     ],
   },
   ja: {
-    heroTitle:
-      "7日間、AIであなたの重要書類をすべて読み込む——契約書、見積書、長い報告書。何十時間もの節約になります。",
+    heroTitle: "7日間Proを無料で——AIが契約書・見積書・報告書を読み込みます。",
     heroPrivacy: "プライバシーの仕組みを見る",
     freeIntro: "この書類——次はAIに読み込ませてみてください。",
     freeOutcome:
@@ -122,8 +116,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
     noTricks: ["カード不要", "自動課金なし", "期限後は自動的に無料版へ"],
   },
   de: {
-    heroTitle:
-      "In 7 Tagen alle wichtigen Dokumente mit KI durcharbeiten — Verträge, Angebote, lange Berichte. Spart Dutzende Stunden.",
+    heroTitle: "7 Tage Pro kostenlos — KI liest Verträge, Angebote und Berichte für Sie.",
     heroPrivacy: "So funktioniert der Datenschutz",
     freeIntro: "Dieses Dokument — als Nächstes von der KI verstehen lassen.",
     freeOutcome:
@@ -140,8 +133,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
     ],
   },
   ko: {
-    heroTitle:
-      "7일 동안 AI로 중요한 모든 문서를 처리하세요——계약서, 견적서, 긴 보고서. 수십 시간을 절약할 수 있습니다.",
+    heroTitle: "7일 Pro 무료 — AI가 계약서, 견적서, 보고서를 대신 읽어드립니다.",
     heroPrivacy: "프라이버시 작동 방식 보기",
     freeIntro: "이 문서——다음은 AI가 이해할 차례입니다.",
     freeOutcome:
@@ -337,11 +329,11 @@ export function TrialCta(props: TrialCtaProps) {
     const privacyHref = (!props.locale || props.locale === "en") ? "/privacy-policy" : `/${props.locale}/privacy-policy`;
     return (
       <div className={`mx-auto ${LAYOUT.content} px-6 py-14`}>
-        <div className="flex flex-col gap-5 rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-7 py-8 sm:px-10 sm:py-9">
-          <p className="max-w-xl text-[16px] font-medium leading-relaxed text-[color:var(--foreground)]">
+        <div className="flex flex-col items-center gap-5 rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-7 py-8 text-center sm:px-10 sm:py-9">
+          <p className="text-[16px] font-medium leading-relaxed text-[color:var(--foreground)]">
             {c.heroTitle}
           </p>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             <GreenButton label={c.btnHero} loading={ctaLoading} onClick={handleCta} />
             <a
               href={privacyHref}

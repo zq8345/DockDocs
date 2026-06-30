@@ -48,7 +48,7 @@ const COPY = {
   zh: {
     heroA: "答案可核验，",
     heroB: "文档在本地。",
-    heroSub: "读懂你的文件，找得到时指回原文。",
+    heroSub: "AI 读你的文件——找得到时，指回原文出处。",
     heroDisclosure: "本地读取 · 文字发至 AI",
     primary: "免费使用",
     findEyebrow: "// 找到你的工具",
@@ -180,7 +180,7 @@ const COPY = {
   ja: {
     heroA: "答えは検証できる。",
     heroB: "文書はここに。",
-    heroSub: "文書を読むAI——たどれるとき、答えが原文に戻れます。",
+    heroSub: "AIが文書を読み——たどれるとき、原文の出典を示します。",
     heroDisclosure: "ファイルはローカルで読み取り——抽出テキストのみAIに送信されます。",
     primary: "無料で使う",
     findEyebrow: "// ツールを探す",
@@ -246,7 +246,7 @@ const COPY = {
   ko: {
     heroA: "검증 가능한 답변,",
     heroB: "문서는 로컬에.",
-    heroSub: "문서를 읽는 AI — 찾을 수 있을 때 출처로 돌아갑니다.",
+    heroSub: "AI가 문서를 읽고——찾을 수 있을 때 원문 출처를 알려드립니다.",
     heroDisclosure: "파일은 로컬에서 읽힙니다 — 추출된 텍스트만 AI로 전송됩니다.",
     primary: "무료로 사용하기",
     findEyebrow: "// 도구 찾기",
@@ -422,20 +422,27 @@ function MiniBatch() {
 }
 function MiniSecure() {
   return (
-    <div className="relative flex h-full w-full flex-col gap-2 rounded-md border border-[color:var(--line)] p-3">
-      {/* Rotating profession label */}
-      <div className="relative h-5 overflow-hidden">
-        {(["Legal", "Finance", "Research"] as const).map((lb, i) => (
-          <span key={i} className={`sec-prof sec-prof-${i} absolute left-0 top-0 inline-flex items-center rounded-full border border-[color:var(--line)] px-2 py-px text-[9px] text-[color:var(--muted)]`}>{lb}</span>
-        ))}
-      </div>
-      {/* Risk-annotated contract lines (red/yellow/green) */}
-      {(["#ef4444", "#f59e0b", "#3ecf8e"] as const).map((color, i) => (
-        <div key={i} className="flex items-center gap-1.5">
-          <span className="sec-tag h-2 w-2 shrink-0 rounded-full" style={{ background: color, ["--i"]: i } as CSSProperties} />
+    <div className="space-y-2.5">
+      <div className="rounded-md border border-[color:var(--line)] bg-[color:var(--surface)] p-3">
+        <div className="mb-2 flex items-center gap-2">
+          <span className="rounded px-1.5 py-0.5 text-[8.5px] font-semibold" style={{ background: "rgba(239,68,68,0.12)", color: "rgb(248,113,113)" }}>HIGH RISK</span>
           <span className="h-[3px] flex-1 rounded-full bg-[color:var(--skeleton)]" />
         </div>
-      ))}
+        {([["#ef4444", 80], ["#ef4444", 65], ["#f59e0b", 72], ["#3ecf8e", 88]] as [string, number][]).map(([color, w], i) => (
+          <div key={i} className="sec-item mb-1.5 flex items-center gap-2 last:mb-0" style={{ ["--i"]: i } as CSSProperties}>
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: color }} />
+            <span className="h-[3px] rounded-full bg-[color:var(--skeleton)]" style={{ width: `${w}%` }} />
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {(["Legal", "Finance", "Research"] as const).map((lb, i) => (
+          <span key={i} className="inline-flex items-center gap-1 rounded-full border border-[color:var(--line)] px-2 py-0.5 text-[9px] text-[color:var(--muted)]">
+            <span className="h-1 w-1 rounded-full" style={{ background: i === 0 ? "rgb(62,207,142)" : "color-mix(in srgb, var(--skeleton) 100%, transparent)" }} />
+            {lb}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -544,14 +551,9 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
         @keyframes msLabelIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
         .ms-label{opacity:0}
         .group:hover .ms-label{animation:msLabelIn .35s ease both;animation-delay:calc(var(--i)*.2s + .5s)}
-        /* MiniSecure: risk annotation dots + rotating profession label */
-        @keyframes secTagIn{from{opacity:0;transform:translateX(-5px)}to{opacity:1;transform:none}}
-        @keyframes secRotate{0%,15%{opacity:0;transform:translateY(4px)}22%,65%{opacity:1;transform:none}72%,100%{opacity:0;transform:translateY(-3px)}}
-        .sec-tag{opacity:0}.sec-prof{opacity:0}
-        .group:hover .sec-tag{animation:secTagIn .35s ease both;animation-delay:calc(var(--i)*.22s + .15s)}
-        .group:hover .sec-prof-0{animation:secRotate 2.4s ease 0s infinite}
-        .group:hover .sec-prof-1{animation:secRotate 2.4s ease .8s infinite}
-        .group:hover .sec-prof-2{animation:secRotate 2.4s ease 1.6s infinite}
+        /* MiniSecure: risk items stagger-slide on hover */
+        @keyframes secItemIn{from{opacity:.35;transform:translateX(-4px)}to{opacity:1;transform:none}}
+        .group:hover .sec-item{animation:secItemIn .3s ease both;animation-delay:calc(var(--i)*.08s)}
         @media (prefers-reduced-motion:reduce){.hfg-in,.batch-bar,.ms-bar,.mt-tile,.mx-scan,.mx-row,.ms-stack,.mc-file,.mc-progress,.ms-label,.sec-tag,.sec-prof{animation:none!important;transition:none!important}.tw-line,.tw-pill{animation:none!important;opacity:1!important;clip-path:none!important}.mc-badge{animation:none!important;opacity:1!important;transform:translateX(-50%)!important}.ms-label,.sec-tag,.sec-prof{opacity:1!important;transform:none!important}}
       `}</style>
 
