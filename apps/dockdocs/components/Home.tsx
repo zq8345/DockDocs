@@ -611,13 +611,7 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
             {c.heroA}<br /><span className="text-[color:var(--muted)]">{c.heroB}</span>
           </h1>
           <p className={SUB}>{c.heroSub}</p>
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <a href={path("/chat-with-pdf")} className="inline-flex h-12 items-center justify-center rounded-full bg-[color:var(--accent)] px-6 text-[15px] font-medium transition hover:bg-[color:var(--accent-hover)]">{c.primary}</a>
-            <a href={path("/privacy-policy")} className="inline-flex h-12 items-center justify-center rounded-full border border-[color:var(--line)] px-6 text-[15px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{c.secondary}</a>
-            <span className="text-[13px] text-[color:var(--faint)]">{c.nosignup}</span>
-          </div>
-
-          <div className="mt-8">
+          <div className="mt-9">
             <TrialCta variant="hero" locale={locale} />
           </div>
           <div className="mt-14">

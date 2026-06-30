@@ -15,6 +15,7 @@ export type TrialCtaProps =
 
 type CtaL10n = {
   heroTitle: string;
+  heroPrivacy: string;
   freeIntro: string;
   freeOutcome: string;
   proBody: string;
@@ -28,6 +29,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
   en: {
     heroTitle:
       "In 7 days, use AI to work through all your important documents — contracts, quotes, long reports. Saves you dozens of hours.",
+    heroPrivacy: "See how privacy works",
     freeIntro: "This document — let AI understand it next.",
     freeOutcome:
       "7 days free Pro: let AI work through it and all your important documents — contract risks, quote comparisons, long report summaries. Saves dozens of hours.",
@@ -41,6 +43,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
   zh: {
     heroTitle:
       "7 天里，把你所有重要文件用 AI 啃一遍——合同、报价、长报告，省你几十小时",
+    heroPrivacy: "看隐私怎么做到",
     freeIntro: "这份文档，接下来让 AI 读懂它",
     freeOutcome:
       "7 天免费 Pro：把它和你其它重要文件用 AI 啃一遍——合同风险、报价对比、长报告摘要，省你几十小时",
@@ -53,6 +56,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
   es: {
     heroTitle:
       "En 7 días, usa IA para revisar todos tus documentos importantes — contratos, presupuestos, informes largos. Ahorra decenas de horas.",
+    heroPrivacy: "Mira cómo funciona la privacidad",
     freeIntro: "Este documento — que la IA lo entienda después.",
     freeOutcome:
       "7 días de Pro gratis: deja que la IA analice este y todos tus documentos importantes — riesgos en contratos, comparativas de presupuestos, resúmenes de informes. Ahorra decenas de horas.",
@@ -70,6 +74,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
   pt: {
     heroTitle:
       "Em 7 dias, use IA para analisar todos os seus documentos importantes — contratos, propostas, relatórios. Economize dezenas de horas.",
+    heroPrivacy: "Veja como a privacidade funciona",
     freeIntro: "Este documento — deixe a IA entendê-lo depois.",
     freeOutcome:
       "7 dias de Pro gratuito: deixe a IA analisar este e todos os seus documentos importantes — riscos em contratos, comparações de propostas, resumos de relatórios. Economize dezenas de horas.",
@@ -87,6 +92,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
   fr: {
     heroTitle:
       "En 7 jours, utilisez l'IA pour analyser tous vos documents importants — contrats, devis, longs rapports. Gagnez des dizaines d'heures.",
+    heroPrivacy: "Voir comment fonctionne la confidentialité",
     freeIntro: "Ce document — laissez l'IA le comprendre ensuite.",
     freeOutcome:
       "7 jours de Pro gratuit : laissez l'IA analyser ce document et tous vos documents importants — risques contractuels, comparaisons de devis, résumés de rapports. Gagnez des dizaines d'heures.",
@@ -104,6 +110,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
   ja: {
     heroTitle:
       "7日間、AIであなたの重要書類をすべて読み込む——契約書、見積書、長い報告書。何十時間もの節約になります。",
+    heroPrivacy: "プライバシーの仕組みを見る",
     freeIntro: "この書類——次はAIに読み込ませてみてください。",
     freeOutcome:
       "7日間Proを無料体験：この書類とほかの重要書類をAIで分析——契約リスク、見積比較、報告書の要約。何十時間も節約できます。",
@@ -116,6 +123,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
   de: {
     heroTitle:
       "In 7 Tagen alle wichtigen Dokumente mit KI durcharbeiten — Verträge, Angebote, lange Berichte. Spart Dutzende Stunden.",
+    heroPrivacy: "So funktioniert der Datenschutz",
     freeIntro: "Dieses Dokument — als Nächstes von der KI verstehen lassen.",
     freeOutcome:
       "7 Tage Pro kostenlos: Lass die KI dieses und alle wichtigen Dokumente analysieren — Vertragsrisiken, Angebotsvergleiche, Berichtszusammenfassungen. Spart Dutzende Stunden.",
@@ -133,6 +141,7 @@ const L: Record<AuthoredLocale, CtaL10n> = {
   ko: {
     heroTitle:
       "7일 동안 AI로 중요한 모든 문서를 처리하세요——계약서, 견적서, 긴 보고서. 수십 시간을 절약할 수 있습니다.",
+    heroPrivacy: "프라이버시 작동 방식 보기",
     freeIntro: "이 문서——다음은 AI가 이해할 차례입니다.",
     freeOutcome:
       "7일 Pro 무료 체험: AI로 이 문서와 모든 중요한 문서 분석——계약 위험, 견적 비교, 긴 보고서 요약. 수십 시간을 절약하세요.",
@@ -324,15 +333,21 @@ export function TrialCta(props: TrialCtaProps) {
   if (props.variant === "tool-free" && !props.visible) return null;
 
   if (props.variant === "hero") {
+    const privacyHref = (!props.locale || props.locale === "en") ? "/privacy-policy" : `/${props.locale}/privacy-policy`;
     return (
       <div className="flex flex-col gap-4">
-        <span className="inline-flex w-fit items-center rounded bg-[color:var(--accent)]/15 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[color:var(--accent)]">
-          Pro
-        </span>
         <p className="max-w-lg text-[15px] leading-relaxed text-[color:var(--foreground)]">
           {c.heroTitle}
         </p>
-        <GreenButton label={c.btnHero} loading={ctaLoading} onClick={handleCta} />
+        <div className="flex flex-wrap items-center gap-3">
+          <GreenButton label={c.btnHero} loading={ctaLoading} onClick={handleCta} />
+          <a
+            href={privacyHref}
+            className="inline-flex h-11 items-center justify-center rounded-full border border-[color:var(--line)] px-6 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
+          >
+            {c.heroPrivacy}
+          </a>
+        </div>
         <NoTricks items={c.noTricks} />
       </div>
     );
