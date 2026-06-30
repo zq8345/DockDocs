@@ -57,6 +57,7 @@ export const featureAliases: Record<string, UsageFeature> = {
   contractAnalyzer: "contractAnalyzer",
   "contract-analyzer": "contractAnalyzer",
   "contract-risk": "contractAnalyzer",
+  "contract-review": "contractAnalyzer",
   compare: "compare",
   "compare-docs": "compare",
   // Conversion meters. NOTE: server enforcement is by the literal feature key the 3

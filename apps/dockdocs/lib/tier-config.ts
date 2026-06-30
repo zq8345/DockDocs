@@ -213,6 +213,7 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "govbid-matrix",    en: "Gov Bid Compliance",     zh: "政府标书合规矩阵", es: "Matriz de cumplimiento de licitación", pt: "Matriz de conformidade de licitação",  fr: "Matrice de conformité d'appel d'offres", ja: "入札コンプライアンス",   de: "Ausschreibungs-Compliance", ko: "정부 입찰 적합성" },
       { slug: "extract-to-excel", en: "Extract to Excel",       zh: "数据抽取到表格",   es: "Extraer a Excel",                      pt: "Extrair para Excel",                   fr: "Extraire vers Excel",                   ja: "Excel に抽出",            de: "Nach Excel extrahieren", ko: "Excel로 추출" },
       { slug: "lease-redflag",    en: "Lease Red Flag Check",   zh: "租约红旗扫描",     es: "Análisis de riesgos del arrendamiento", pt: "Análise de riscos do arrendamento",   fr: "Signaux d'alerte du bail",              ja: "リース契約の注意点チェック", de: "Mietvertrag-Warnsignale", ko: "임대차 위험 스캔" },
+      { slug: "contract-review",  en: "Contract Review",        zh: "合同版本对比",     es: "Revisión de contratos",                 pt: "Revisão de contratos",                fr: "Révision de contrats",                  ja: "契約書バージョン比較",    de: "Vertragsversionsvergleich", ko: "계약서 버전 비교" },
     ],
     limits: {
       free: { en: "3 / day",    zh: "3次/天",  es: "3/día",   pt: "3/dia",   fr: "3/jour", ja: "3 回/日", de: "3 / Tag", ko: "3 / 일" },
