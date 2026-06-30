@@ -100,15 +100,14 @@ export const featureLimits: Record<
     analyzer: { limit: 10, period: "day" },
     contractAnalyzer: { limit: 3, period: "day" },
     compare: { limit: 3, period: "day" },
-    // CloudConvert costs real money per conversion (the only metered cost left after
-    // self-hosting). Free callers (mostly anonymous, counted by IP) get a modest daily
-    // cap so scrapers can't burn credits; most conversions run $0 on the self-hosted
-    // box and never reach this gate. ADJUSTABLE — Joe's call on the exact numbers.
-    convert: { limit: 15, period: "day" },
-    // Forward $0 self-hosted conversions (Gotenberg) — high fair-use bucket. These
-    // cost nothing, so the cap only bounds scripted abuse; effectively "unlimited"
-    // for any human (Option C — stops the dishonest 15/day on free $0 conversions).
-    convertFree: { limit: 60, period: "day" },
+    // UI shows "Unlimited" for conversions (Joe 2026-06-29). Backend retains a
+    // monthly fair-use soft cap: high enough that no real user ever hits it, low
+    // enough to stop scripted abuse. pdf-to-ppt still uses CloudConvert (real cost)
+    // until self-hosted migration (task #25) is done; cap absorbs the short-term
+    // cost exposure while keeping the honest "unlimited" promise to users.
+    convert: { limit: 1000, period: "month" },
+    // Forward $0 self-hosted conversions (Gotenberg) — high fair-use monthly bucket.
+    convertFree: { limit: 5000, period: "month" },
   },
   PRO: {
     // ai-standard = Unlimited (fair use): a high fair-use ceiling that bounds only

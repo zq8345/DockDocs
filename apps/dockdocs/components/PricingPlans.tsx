@@ -574,7 +574,7 @@ const COMPARE_CATS: {
   freeTier: Record<L8, string>;
   proTier: Record<L8, string>;
 }[] = [
-  { id: "pdf-conversion", navKey: "PDF conversion", catNavKey: "Document tools", colIndex: 0, freeTier: FREE_L8, proTier: FREE_L8 },
+  { id: "pdf-conversion", navKey: "PDF conversion", catNavKey: "Document tools", colIndex: 0, freeTier: UNLIMITED_L8, proTier: UNLIMITED_L8 },
   { id: "pdf-editing",    navKey: "PDF editing",    catNavKey: "Document tools", colIndex: 1, freeTier: UNLIMITED_L8, proTier: UNLIMITED_L8 },
   {
     id: "batch", navKey: "Batch", catNavKey: "Document tools", colIndex: 2,
