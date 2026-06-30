@@ -189,8 +189,8 @@ export function AccountMenu({ authUser, locale }: { authUser: AuthUser | null; l
 
       {open && (
         <>
-          {/* pt-2 bridge prevents the 6px hover gap from triggering mouseleave */}
-          <div className="absolute right-0 top-full z-50 w-[264px] pt-2">
+          {/* pt-[18px] bridge: button-bottom at 42px + 18px = 60px, aligns with mega-menu card top */}
+          <div className="absolute right-0 top-full z-50 w-[264px] pt-[18px]">
           <div className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--background)] p-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.4)]">
             {/* identity */}
             <div className="px-2.5 pb-2 pt-1.5">
