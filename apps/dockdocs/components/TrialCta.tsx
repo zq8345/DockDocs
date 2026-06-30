@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { onAuthChange, signInWithGoogle } from "@/lib/auth";
 import { getSubscriptionSnapshot, startBillingTrial } from "@/lib/subscription-runtime";
 import type { AuthoredLocale } from "@/lib/i18n";
+import { LAYOUT } from "@/lib/layout-constants";
 
 export type TrialCtaVariant = "hero" | "tool-pro" | "tool-free";
 
@@ -335,7 +336,7 @@ export function TrialCta(props: TrialCtaProps) {
   if (props.variant === "hero") {
     const privacyHref = (!props.locale || props.locale === "en") ? "/privacy-policy" : `/${props.locale}/privacy-policy`;
     return (
-      <div className="mx-auto max-w-6xl px-6 py-14">
+      <div className={`mx-auto ${LAYOUT.content} px-6 py-14`}>
         <div className="flex flex-col gap-5 rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-7 py-8 sm:px-10 sm:py-9">
           <p className="max-w-xl text-[16px] font-medium leading-relaxed text-[color:var(--foreground)]">
             {c.heroTitle}
