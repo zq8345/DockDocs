@@ -57,7 +57,7 @@ function FileThumb({ file, className = "h-12 w-10" }: { file: File; className?: 
   );
 }
 
-// Aspect-ratio-correct big preview card for the workspace embedded view.
+// Aspect-ratio-correct big preview card for all single-file conversion tools (bigPreview=true path).
 // Renders the PDF first page via PDF.js and uses paddingBottom to preserve the
 // document's true portrait/landscape orientation — no fixed h/w frame.
 function BigPreviewCard({ file, onRemove, locale }: { file: File; onRemove: () => void; locale: TemplateLocale | undefined }) {
