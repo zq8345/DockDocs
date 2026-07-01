@@ -26,7 +26,7 @@ const _en = {
   position: "Position", margin: "Margin", small: "Small", medium: "Medium", large: "Large",
   startAt: "Start at", format: "Format", pages: "Pages", from: "from", to: "to",
   fmtN: "1", fmtPage: "Page 1", fmtSlash: "1 / N", fmtOf: "1 of N",
-  apply: "Add numbers & download", working: "Numbering…", reset: "Start over", preview: "Live preview",
+  apply: "Add numbers & download", working: "Numbering…", reset: "Start over", remove: "Remove", preview: "Live preview",
   err: "Something went wrong: ",
 };
 
@@ -42,7 +42,7 @@ const STR = {
     position: "位置", margin: "边距", small: "小", medium: "中", large: "大",
     startAt: "起始数字", format: "格式", pages: "页码范围", from: "从", to: "到",
     fmtN: "1", fmtPage: "第 1 页", fmtSlash: "1 / N", fmtOf: "1 / 共 N",
-    apply: "添加页码并下载", working: "正在添加…", reset: "重新开始", preview: "实时预览",
+    apply: "添加页码并下载", working: "正在添加…", reset: "重新开始", remove: "移除", preview: "实时预览",
     err: "出错了：",
   },
   es: {
@@ -53,7 +53,7 @@ const STR = {
     position: "Posición", margin: "Margen", small: "Pequeño", medium: "Mediano", large: "Grande",
     startAt: "Empezar en", format: "Formato", pages: "Páginas", from: "desde", to: "hasta",
     fmtN: "1", fmtPage: "Página 1", fmtSlash: "1 / N", fmtOf: "1 de N",
-    apply: "Agregar números y descargar", working: "Numerando…", reset: "Empezar de nuevo", preview: "Vista previa en vivo",
+    apply: "Agregar números y descargar", working: "Numerando…", reset: "Empezar de nuevo", remove: "Quitar", preview: "Vista previa en vivo",
     err: "Algo salió mal: ",
   },
   pt: {
@@ -64,7 +64,7 @@ const STR = {
     position: "Posição", margin: "Margem", small: "Pequena", medium: "Média", large: "Grande",
     startAt: "Começar em", format: "Formato", pages: "Páginas", from: "de", to: "até",
     fmtN: "1", fmtPage: "Página 1", fmtSlash: "1 / N", fmtOf: "1 de N",
-    apply: "Adicionar números e baixar", working: "Numerando…", reset: "Recomeçar", preview: "Pré-visualização ao vivo",
+    apply: "Adicionar números e baixar", working: "Numerando…", reset: "Recomeçar", remove: "Remover", preview: "Pré-visualização ao vivo",
     err: "Algo deu errado: ",
   },
   fr: {
@@ -75,7 +75,7 @@ const STR = {
     position: "Position", margin: "Marge", small: "Petite", medium: "Moyenne", large: "Grande",
     startAt: "Commencer à", format: "Format", pages: "Pages", from: "de", to: "à",
     fmtN: "1", fmtPage: "Page 1", fmtSlash: "1 / N", fmtOf: "1 sur N",
-    apply: "Ajouter les numéros et télécharger", working: "Numérotation…", reset: "Recommencer", preview: "Aperçu en direct",
+    apply: "Ajouter les numéros et télécharger", working: "Numérotation…", reset: "Recommencer", remove: "Retirer", preview: "Aperçu en direct",
     err: "Une erreur est survenue : ",
   },
   ja: {
@@ -86,7 +86,7 @@ const STR = {
     position: "位置", margin: "余白", small: "小", medium: "中", large: "大",
     startAt: "開始番号", format: "書式", pages: "ページ", from: "開始", to: "終了",
     fmtN: "1", fmtPage: "1 ページ", fmtSlash: "1 / N", fmtOf: "N 中 1",
-    apply: "番号を追加してダウンロード", working: "番号付け中…", reset: "最初からやり直す", preview: "ライブプレビュー",
+    apply: "番号を追加してダウンロード", working: "番号付け中…", reset: "最初からやり直す", remove: "削除", preview: "ライブプレビュー",
     err: "問題が発生しました: ",
   },
   de: {
@@ -97,7 +97,7 @@ const STR = {
     position: "Position", margin: "Rand", small: "Klein", medium: "Mittel", large: "Groß",
     startAt: "Beginnen bei", format: "Format", pages: "Seiten", from: "von", to: "bis",
     fmtN: "1", fmtPage: "Seite 1", fmtSlash: "1 / N", fmtOf: "1 von N",
-    apply: "Seitenzahlen hinzufügen und herunterladen", working: "Wird nummeriert…", reset: "Neu beginnen", preview: "Live-Vorschau",
+    apply: "Seitenzahlen hinzufügen und herunterladen", working: "Wird nummeriert…", reset: "Neu beginnen", remove: "Entfernen", preview: "Live-Vorschau",
     err: "Etwas ist schiefgelaufen: ",
   },
   ko: {
@@ -108,7 +108,7 @@ const STR = {
     position: "위치", margin: "여백", small: "작게", medium: "보통", large: "크게",
     startAt: "시작 번호", format: "형식", pages: "페이지", from: "부터", to: "까지",
     fmtN: "1", fmtPage: "1페이지", fmtSlash: "1 / N", fmtOf: "전체 N 중 1",
-    apply: "번호 추가하고 다운로드", working: "번호를 매기는 중…", reset: "다시 시작", preview: "실시간 미리보기",
+    apply: "번호 추가하고 다운로드", working: "번호를 매기는 중…", reset: "다시 시작", remove: "제거", preview: "실시간 미리보기",
     err: "문제가 발생했습니다: ",
   },
 } satisfies AuthoredCopy<typeof _en>;
@@ -327,7 +327,6 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
   const [numPages, setNumPages] = useState(0);
-  const [pageAR, setPageAR] = useState(0);
 
   const [pos, setPos] = useState<PosKey>("bc");
   const [margin, setMargin] = useState<MarginKey>("medium");
@@ -338,7 +337,7 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<File | null>(null);
 
-  const reset = () => { setPhase("idle"); setFileName(""); setPreview(""); setNumPages(0); setPageAR(0); setError(null); fileRef.current = null; };
+  const reset = () => { setPhase("idle"); setFileName(""); setPreview(""); setNumPages(0); setError(null); fileRef.current = null; };
 
   const onFile = useCallback(async (file: File) => {
     if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
@@ -349,7 +348,6 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
       const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
       const page = await doc.getPage(1);
       const viewport = page.getViewport({ scale: 1.1 });
-      setPageAR(viewport.width / viewport.height);
       const canvas = document.createElement("canvas");
       canvas.width = viewport.width; canvas.height = viewport.height;
       const ctx = canvas.getContext("2d");
@@ -431,17 +429,17 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
         <div className="mt-6">
           {/* Preview — top, centered, large, direction-adaptive */}
           <div className="flex justify-center">
-            <div
-              className="relative w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white"
-              style={{ maxWidth: pageAR > 1 ? "560px" : "360px", maxHeight: "50vh" }}
-            >
+            <div className="relative mx-auto w-fit overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              {preview && <img src={preview} alt="page 1" className="block h-auto w-full" />}
+              {preview && <img src={preview} alt="page 1"
+                style={{ maxHeight: "50vh", maxWidth: "560px", display: "block" }}
+                className="h-auto w-auto"
+              />}
               <span style={overlayStyle}>{previewLabel}</span>
               <button
                 type="button"
                 onClick={reset}
-                aria-label={t.reset}
+                aria-label={t.remove}
                 className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]"
               >
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">

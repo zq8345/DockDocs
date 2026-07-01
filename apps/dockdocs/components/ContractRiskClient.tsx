@@ -76,6 +76,7 @@ const _en = {
     whyLabel: "Why it matters",
     suggestionLabel: "What to ask",
     reset: "Check another",
+    remove: "Remove",
     errPrefix: "Couldn't complete the review: ",
     errServer: "Server error — please try again.",
     progressSending: "Sending to AI…",
@@ -120,6 +121,7 @@ const STR = {
     whyLabel: "为什么要注意",
     suggestionLabel: "该问什么",
     reset: "检查另一份",
+    remove: "移除",
     errPrefix: "审查未能完成:",
     errServer: "服务器错误，请稍后重试。",
     progressSending: "发送给 AI…",
@@ -161,6 +163,7 @@ const STR = {
     whyLabel: "Por qué importa",
     suggestionLabel: "Qué preguntar",
     reset: "Revisar otro",
+    remove: "Quitar",
     errPrefix: "No se pudo completar la revisión: ",
     errServer: "Error del servidor — inténtalo de nuevo.",
     progressSending: "Enviando a IA…",
@@ -202,6 +205,7 @@ const STR = {
     whyLabel: "Por que importa",
     suggestionLabel: "O que perguntar",
     reset: "Verificar outro",
+    remove: "Remover",
     errPrefix: "Não foi possível concluir a revisão: ",
     errServer: "Erro no servidor — tente novamente.",
     progressSending: "Enviando à IA…",
@@ -243,6 +247,7 @@ const STR = {
     whyLabel: "Pourquoi c'est important",
     suggestionLabel: "Ce qu'il faut demander",
     reset: "Analyser un autre",
+    remove: "Retirer",
     errPrefix: "Impossible de terminer l'analyse : ",
     errServer: "Erreur serveur — veuillez réessayer.",
     progressSending: "Envoi à l'IA…",
@@ -284,6 +289,7 @@ const STR = {
     whyLabel: "重要な理由",
     suggestionLabel: "確認すべきこと",
     reset: "別の契約書を診断",
+    remove: "削除",
     errPrefix: "レビューを完了できませんでした: ",
     errServer: "サーバーエラーが発生しました。再度お試しください。",
     progressSending: "AIに送信中…",
@@ -325,6 +331,7 @@ const STR = {
     whyLabel: "Warum es wichtig ist",
     suggestionLabel: "Was Sie fragen sollten",
     reset: "Weiteren prüfen",
+    remove: "Entfernen",
     errPrefix: "Die Prüfung konnte nicht abgeschlossen werden: ",
     errServer: "Serverfehler — bitte erneut versuchen.",
     progressSending: "An KI senden…",
@@ -366,6 +373,7 @@ const STR = {
     whyLabel: "왜 중요한가",
     suggestionLabel: "무엇을 물어야 하나",
     reset: "다른 계약서 점검",
+    remove: "제거",
     errPrefix: "검토를 완료하지 못했습니다: ",
     errServer: "서버 오류 — 다시 시도해 주세요.",
     progressSending: "AI에 전송 중…",
@@ -930,7 +938,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         />
       ) : (
         <div className={`${card} ${embedded ? "mt-3" : "mt-8"} p-5`}>
-          {file && <DocPreview file={file} max={480} onRemove={reset} removeLabel={t.reset} />}
+          {file && <DocPreview file={file} max={480} onRemove={reset} removeLabel={t.remove} />}
           <div className="mt-5 flex justify-center">
             <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
               {phase === "analyzing" ? t.analyzing : t.analyze}

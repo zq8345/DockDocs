@@ -499,7 +499,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
                     src={p.thumb}
                     alt={`page ${p.idx + 1}`}
                     style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
-                    className="h-auto w-auto rounded-[var(--radius-sm)] border border-[color:var(--line)]"
+                    className="h-auto w-auto max-w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]"
                   />
                   <span className="mt-1 block text-center text-[11px] text-[color:var(--muted)]">{t.pageLabel(p.idx + 1)}</span>
                 </button>
