@@ -378,8 +378,14 @@ function getProviderChain(): ModelEntry[] {
       "https://openrouter.ai/api/v1",
     );
     // The env var can override the primary model (e.g. for A/B or regional availability).
-    // Code defaults: medium-3.5 is the fast primary; large-2512 is the proven backup.
-    const DEFAULT_PRIMARY = "mistralai/mistral-medium-3.5";
+    // Code defaults: medium-3-5 is the fast primary; large-2512 is the proven backup.
+    // ⚠️ OpenRouter naming is inconsistent: mistral-medium-3-5 uses a HYPHEN, not a dot.
+    // mistral-medium-3.5 (dot) does not exist on OpenRouter and silently fails with
+    // model-not-found. Verified against OpenRouter /api/v1/models on 2026-07-01.
+    // This is exactly the failure mode failover is designed to rescue: if the env var
+    // points at a deprecated or mis-spelled model, the chain falls to large-2512 instead
+    // of hanging the entire endpoint. (Lesson from the 2026-07-01 outage.)
+    const DEFAULT_PRIMARY = "mistralai/mistral-medium-3-5";
     const DEFAULT_BACKUP = "mistralai/mistral-large-2512";
     const envModel = Netlify.env.get("OPENROUTER_MODEL")?.trim() || null;
     const primary = envModel ?? DEFAULT_PRIMARY;
