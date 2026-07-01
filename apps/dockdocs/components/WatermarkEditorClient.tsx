@@ -557,6 +557,17 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={imgPreview} alt="watermark" style={{ ...overlayStyle, width: "30%" }} />
                 ) : null}
+                {/* × remove file button — top-right corner of live preview */}
+                <button
+                  type="button"
+                  onClick={reset}
+                  aria-label={t.reset}
+                  className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]"
+                >
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
