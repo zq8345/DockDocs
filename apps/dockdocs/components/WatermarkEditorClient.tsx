@@ -37,6 +37,7 @@ const _en = {
   pages: "Pages", from: "from", to: "to", apply: "Apply & download", working: "Stamping…",
   reset: "Start over", preview: "Live preview", needText: "Enter watermark text.", needImg: "Choose an image.",
   nonLatin: "Text watermark supports Latin letters/digits/symbols for now.", err: "Something went wrong: ",
+  remove: "Remove",
 };
 
 const STR = {
@@ -50,7 +51,7 @@ const STR = {
     chooseImg: "选择图片", position: "位置", opacity: "透明度", rotate: "旋转 45°",
     pages: "页码范围", from: "从", to: "到", apply: "应用并下载", working: "正在盖水印…",
     reset: "重新开始", preview: "实时预览", needText: "请输入水印文字。", needImg: "请选择图片。",
-    nonLatin: "文字水印目前仅支持拉丁字母/数字/符号。", err: "出错了：",
+    nonLatin: "文字水印目前仅支持拉丁字母/数字/符号。", err: "出错了：", remove: "移除",
   },
   es: {
     title: "Marca de agua en PDF",
@@ -61,7 +62,7 @@ const STR = {
     chooseImg: "Elegir imagen", position: "Posición", opacity: "Opacidad", rotate: "Girar 45°",
     pages: "Páginas", from: "desde", to: "hasta", apply: "Aplicar y descargar", working: "Estampando…",
     reset: "Empezar de nuevo", preview: "Vista previa en vivo", needText: "Escribe el texto de la marca de agua.", needImg: "Elige una imagen.",
-    nonLatin: "La marca de agua de texto admite por ahora letras/dígitos/símbolos latinos.", err: "Algo salió mal: ",
+    nonLatin: "La marca de agua de texto admite por ahora letras/dígitos/símbolos latinos.", err: "Algo salió mal: ", remove: "Quitar",
   },
   pt: {
     title: "Marca d'água em PDF",
@@ -72,7 +73,7 @@ const STR = {
     chooseImg: "Escolher imagem", position: "Posição", opacity: "Opacidade", rotate: "Girar 45°",
     pages: "Páginas", from: "de", to: "até", apply: "Aplicar e baixar", working: "Aplicando…",
     reset: "Recomeçar", preview: "Pré-visualização ao vivo", needText: "Digite o texto da marca d'água.", needImg: "Escolha uma imagem.",
-    nonLatin: "A marca d'água de texto suporta por enquanto letras/dígitos/símbolos latinos.", err: "Algo deu errado: ",
+    nonLatin: "A marca d'água de texto suporta por enquanto letras/dígitos/símbolos latinos.", err: "Algo deu errado: ", remove: "Remover",
   },
   fr: {
     title: "Filigrane PDF",
@@ -83,7 +84,7 @@ const STR = {
     chooseImg: "Choisir une image", position: "Position", opacity: "Opacité", rotate: "Pivoter 45°",
     pages: "Pages", from: "de", to: "à", apply: "Appliquer et télécharger", working: "Application en cours…",
     reset: "Recommencer", preview: "Aperçu en direct", needText: "Saisissez le texte du filigrane.", needImg: "Choisissez une image.",
-    nonLatin: "Le filigrane texte prend en charge pour l'instant les lettres/chiffres/symboles latins.", err: "Une erreur est survenue : ",
+    nonLatin: "Le filigrane texte prend en charge pour l'instant les lettres/chiffres/symboles latins.", err: "Une erreur est survenue : ", remove: "Retirer",
   },
   ja: {
     title: "PDFに透かし",
@@ -94,7 +95,7 @@ const STR = {
     chooseImg: "画像を選択", position: "位置", opacity: "不透明度", rotate: "45°回転",
     pages: "ページ", from: "開始", to: "終了", apply: "適用してダウンロード", working: "押印中…",
     reset: "最初からやり直す", preview: "ライブプレビュー", needText: "透かしのテキストを入力してください。", needImg: "画像を選択してください。",
-    nonLatin: "テキスト透かしは現在ラテン文字・数字・記号のみ対応しています。", err: "問題が発生しました: ",
+    nonLatin: "テキスト透かしは現在ラテン文字・数字・記号のみ対応しています。", err: "問題が発生しました: ", remove: "削除",
   },
   de: {
     title: "PDF mit Wasserzeichen versehen",
@@ -105,7 +106,7 @@ const STR = {
     chooseImg: "Bild auswählen", position: "Position", opacity: "Deckkraft", rotate: "Um 45° drehen",
     pages: "Seiten", from: "von", to: "bis", apply: "Anwenden & herunterladen", working: "Wird gestempelt…",
     reset: "Neu beginnen", preview: "Live-Vorschau", needText: "Geben Sie den Wasserzeichen-Text ein.", needImg: "Wählen Sie ein Bild aus.",
-    nonLatin: "Das Text-Wasserzeichen unterstützt vorerst lateinische Buchstaben/Ziffern/Symbole.", err: "Etwas ist schiefgelaufen: ",
+    nonLatin: "Das Text-Wasserzeichen unterstützt vorerst lateinische Buchstaben/Ziffern/Symbole.", err: "Etwas ist schiefgelaufen: ", remove: "Entfernen",
   },
   ko: {
     title: "PDF에 워터마크",
@@ -116,7 +117,7 @@ const STR = {
     chooseImg: "이미지 선택", position: "위치", opacity: "불투명도", rotate: "45° 회전",
     pages: "페이지", from: "시작", to: "끝", apply: "적용하고 다운로드", working: "찍는 중…",
     reset: "다시 시작", preview: "실시간 미리보기", needText: "워터마크 텍스트를 입력하세요.", needImg: "이미지를 선택하세요.",
-    nonLatin: "텍스트 워터마크는 현재 라틴 문자·숫자·기호만 지원합니다.", err: "문제가 발생했습니다: ",
+    nonLatin: "텍스트 워터마크는 현재 라틴 문자·숫자·기호만 지원합니다.", err: "문제가 발생했습니다: ", remove: "제거",
   },
 } satisfies AuthoredCopy<typeof _en>;
 
@@ -131,7 +132,7 @@ const STR_KO: typeof _en = {
   chooseImg: "이미지 선택", position: "위치", opacity: "불투명도", rotate: "45° 회전",
   pages: "페이지", from: "시작", to: "끝", apply: "적용하고 다운로드", working: "찍는 중…",
   reset: "다시 시작", preview: "실시간 미리보기", needText: "워터마크 텍스트를 입력하세요.", needImg: "이미지를 선택하세요.",
-  nonLatin: "텍스트 워터마크는 현재 라틴 문자·숫자·기호만 지원합니다.", err: "문제가 발생했습니다: ",
+  nonLatin: "텍스트 워터마크는 현재 라틴 문자·숫자·기호만 지원합니다.", err: "문제가 발생했습니다: ", remove: "제거",
 };
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -559,7 +560,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
               <button
                 type="button"
                 onClick={reset}
-                aria-label={t.reset}
+                aria-label={t.remove}
                 className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]"
               >
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
