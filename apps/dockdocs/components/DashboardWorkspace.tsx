@@ -55,6 +55,14 @@ const QuizEmbedded = dynamic(
   () => import("@/components/QuizClient").then((m) => m.QuizClient),
   { ssr: false },
 );
+const BatchSummaryEmbedded = dynamic(
+  () => import("@/components/BatchSummaryClient").then((m) => m.BatchSummaryClient),
+  { ssr: false },
+);
+const BatchSortEmbedded = dynamic(
+  () => import("@/components/BatchSortClient").then((m) => m.BatchSortClient),
+  { ssr: false },
+);
 const LegalHubEmbedded = dynamic(
   () => import("@/components/LegalWorkspaceHub").then((m) => m.LegalWorkspaceHub),
   { ssr: false },
@@ -117,7 +125,8 @@ const WORKSPACE_PDF_SLUGS: Set<string> = new Set([
 
 const WORKSPACE_AI_SLUGS: Set<string> = new Set([
   "/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk",
-  "/redline", "/extract-to-excel", "/flashcards", "/lease-redflag", "/govbid-matrix",
+  "/redline", "/extract-to-excel", "/flashcards", "/batch-summary", "/batch-sort",
+  "/lease-redflag", "/govbid-matrix",
   "/workspace-legal", "/workspace-finance", "/workspace-research", "/workspace-account",
 ]);
 
@@ -375,6 +384,10 @@ export function DashboardWorkspace({ initialTool }: { initialTool?: string | nul
               <ExtractExcelEmbedded locale={locale} embedded />
             ) : activeTool === "/flashcards" ? (
               <QuizEmbedded locale={locale} embedded />
+            ) : activeTool === "/batch-summary" ? (
+              <BatchSummaryEmbedded locale={locale} embedded />
+            ) : activeTool === "/batch-sort" ? (
+              <BatchSortEmbedded locale={locale} embedded />
             ) : activeTool === "/lease-redflag" ? (
               <LeaseRedflagEmbedded locale={locale} embedded />
             ) : activeTool === "/govbid-matrix" ? (
