@@ -745,7 +745,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
             canvas.height = vp.height;
             const ctx = canvas.getContext("2d");
             if (ctx) {
-              await pg.render({ canvasContext: ctx, viewport: vp }).promise;
+              await pg.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
               urls.push(canvas.toDataURL("image/jpeg", 0.65));
             }
           } catch { /* individual page render failure is non-fatal */ }
