@@ -11,6 +11,7 @@ import { extractText, toUnits, diff, changePairs, type Op } from "@/lib/redline-
 import { LAYOUT } from "@/lib/layout-constants";
 import { dropzoneVisual } from "@/components/design";
 import type { AuthoredLocale } from "@/lib/i18n";
+import { LegalWorkspaceBanner } from "@/components/LegalWorkspaceBanner";
 
 type ChangeCard = {
   category: string;
@@ -355,6 +356,8 @@ export function ContractReviewClient() {
         </h1>
         <p className="mt-3 max-w-2xl text-[15px] leading-[1.6] text-[color:var(--muted)]">{T(s.sub)}</p>
       </div>
+
+      <LegalWorkspaceBanner />
 
       {/* Upload row */}
       {phase === "idle" && (

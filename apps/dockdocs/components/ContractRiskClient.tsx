@@ -19,6 +19,7 @@ import { DocPreview } from "../../../shared/templates/pdf-tool-page/doc-preview"
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLegalSession, type LegalRisk } from "@/lib/legal-session";
+import { LegalWorkspaceBanner } from "@/components/LegalWorkspaceBanner";
 
 type Locale = RouteLocale;
 type RiskLevel = "high" | "medium" | "low";
@@ -942,6 +943,8 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
           />
         </div>
       )}
+
+      {!embedded && <LegalWorkspaceBanner />}
 
       {phase === "idle" || phase === "extracting" ? (
         <UploadDropzone

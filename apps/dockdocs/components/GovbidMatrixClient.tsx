@@ -16,6 +16,7 @@ import { DocPreview } from "../../../shared/templates/pdf-tool-page/doc-preview"
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLegalSession } from "@/lib/legal-session";
+import { LegalWorkspaceBanner } from "@/components/LegalWorkspaceBanner";
 
 type Locale = RouteLocale;
 type RequirementType = "mandatory" | "advisory";
@@ -628,6 +629,8 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
           />
         </div>
       )}
+
+      {!embedded && <LegalWorkspaceBanner />}
 
       {/* Upload */}
       <div className="mt-8">
