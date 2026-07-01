@@ -199,6 +199,16 @@ function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+const SAFE_LEVELS = new Set(["high", "medium", "low"]);
+function safeLevel(v: string): "high" | "medium" | "low" {
+  return SAFE_LEVELS.has(v) ? (v as "high" | "medium" | "low") : "low";
+}
+
+const SAFE_REQ_TYPES = new Set(["mandatory", "advisory"]);
+function safeReqType(v: string): "mandatory" | "advisory" {
+  return SAFE_REQ_TYPES.has(v) ? (v as "mandatory" | "advisory") : "advisory";
+}
+
 function StatusIcon({ status }: { status: RunStatus }) {
   if (status === "done") return <span className="text-[12px] font-semibold text-emerald-500">✓</span>;
   if (status === "running") return <span className="animate-pulse text-[12px] text-[color:var(--muted)]">⏳</span>;
@@ -209,9 +219,9 @@ function StatusIcon({ status }: { status: RunStatus }) {
 function buildMergedReport(session: LegalSession, cardTitles: [string, string, string]): string {
   const { results, fileName } = session;
   const riskHtml = (risks: LegalRisk[]) =>
-    risks.map(r => `<div class="rc ${r.level}"><div class="rh"><span class="lb ${r.level}">${r.level.toUpperCase()}</span><strong>${esc(r.type)}</strong></div>${r.quote ? `<blockquote>${esc(r.quote)}</blockquote>` : ""}<p>${esc(r.why)}</p><p class="sg">${esc(r.suggestion)}</p></div>`).join("");
+    risks.map(r => { const sl = safeLevel(r.level); return `<div class="rc ${sl}"><div class="rh"><span class="lb ${sl}">${sl.toUpperCase()}</span><strong>${esc(r.type)}</strong></div>${r.quote ? `<blockquote>${esc(r.quote)}</blockquote>` : ""}<p>${esc(r.why)}</p><p class="sg">${esc(r.suggestion)}</p></div>`; }).join("");
   const reqHtml = (reqs: LegalRequirement[]) =>
-    `<table><thead><tr><th>#</th><th>Section</th><th>Requirement</th><th>Type</th></tr></thead><tbody>${reqs.map(r => `<tr><td>${esc(r.id)}</td><td>${esc(r.section)}</td><td>${esc(r.requirement)}${r.quote ? `<br><em>"${esc(r.quote)}"</em>` : ""}</td><td class="${r.type}">${r.type}</td></tr>`).join("")}</tbody></table>`;
+    `<table><thead><tr><th>#</th><th>Section</th><th>Requirement</th><th>Type</th></tr></thead><tbody>${reqs.map(r => { const st = safeReqType(r.type); return `<tr><td>${esc(r.id)}</td><td>${esc(r.section)}</td><td>${esc(r.requirement)}${r.quote ? `<br><em>"${esc(r.quote)}"</em>` : ""}</td><td class="${st}">${esc(r.type)}</td></tr>`; }).join("")}</tbody></table>`;
   const parts: string[] = [];
   if (results.contractRisk?.length) parts.push(`<h2>${esc(cardTitles[0])}</h2>${riskHtml(results.contractRisk)}`);
   if (results.leaseRedflag?.length) parts.push(`<h2>${esc(cardTitles[1])}</h2>${riskHtml(results.leaseRedflag)}`);
@@ -328,7 +338,7 @@ export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale })
     if (!session) return;
     const titles: [string, string, string] = [c.cards[0].title, c.cards[1].title, c.cards[2].title];
     const html = buildMergedReport(session, titles);
-    const win = window.open("", "_blank");
+    const win = window.open("", "_blank", "noopener,noreferrer");
     if (!win) return;
     win.document.write(html);
     win.document.close();
