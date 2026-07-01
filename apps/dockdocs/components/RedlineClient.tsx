@@ -445,7 +445,7 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
         <div className="mt-3 flex items-start gap-3">
           {(slotKey === "a" ? thumbA : thumbB) && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={(slotKey === "a" ? thumbA : thumbB)!} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
+            <img src={(slotKey === "a" ? thumbA : thumbB)!} alt="Page 1" className="block shrink-0 rounded border border-[color:var(--line)] object-contain" style={{ maxHeight: "180px", maxWidth: "180px" }} />
           )}
           <div className="min-w-0 flex-1">
             <span className="block truncate text-[13.5px] font-medium text-[color:var(--foreground)]" title={file.name}>{file.name}</span>

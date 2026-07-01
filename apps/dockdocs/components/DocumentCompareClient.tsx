@@ -1532,13 +1532,8 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
               <div key={r.id} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
                 <div className="flex items-start gap-3">
                   {r.thumbnailUrl && (
-                    <div
-                      className={`relative shrink-0 overflow-hidden rounded border border-[color:var(--line)] bg-[color:var(--surface)] ${r.thumbRatio && r.thumbRatio < 1 ? "w-36" : "w-20"}`}
-                      style={r.thumbRatio ? { paddingBottom: `${r.thumbRatio * 100}%` } : { paddingBottom: "141%" }}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={r.thumbnailUrl} alt="Page 1" className="absolute inset-0 h-full w-full object-contain" />
-                    </div>
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={r.thumbnailUrl} alt="Page 1" className="block shrink-0 rounded border border-[color:var(--line)] object-contain" style={{ maxHeight: "180px", maxWidth: "180px" }} />
                   )}
                   <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center justify-between gap-2">

@@ -216,7 +216,7 @@ function FileSlot({
         <div className="flex items-start gap-3 text-left" onClick={(e) => e.stopPropagation()}>
           {thumb && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={thumb} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
+            <img src={thumb} alt="Page 1" className="block shrink-0 rounded border border-[color:var(--line)] object-contain" style={{ maxHeight: "180px", maxWidth: "180px" }} />
           )}
           <div className="min-w-0">
             <p className="truncate text-[13px] font-medium text-[color:var(--foreground)]">{file.name}</p>
