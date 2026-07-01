@@ -95,35 +95,42 @@ export default async (req: Request, _context: Context) => {
   }
   // Split the WHOLE contract into overlapping chunks and analyze every chunk, then
   // merge + de-duplicate the findings. No silent 24k truncation.
-  const chunkRanges = chunkRangesFor(text, MAX_CHARS, OVERLAP_CHARS);
-  // Per-plan coverage knob (default: full document for EVERY plan). MAX_ANALYZE_CHUNKS
-  // is a hard timeout-safety ceiling regardless of plan.
-  const cap = Math.min(coverageChunkCap(gate.plan), MAX_ANALYZE_CHUNKS);
-  const analyzedRanges = chunkRanges.slice(0, cap);
+  try {
+    const chunkRanges = chunkRangesFor(text, MAX_CHARS, OVERLAP_CHARS);
+    // Per-plan coverage knob (default: full document for EVERY plan). MAX_ANALYZE_CHUNKS
+    // is a hard timeout-safety ceiling regardless of plan.
+    const cap = Math.min(coverageChunkCap(gate.plan), MAX_ANALYZE_CHUNKS);
+    const analyzedRanges = chunkRanges.slice(0, cap);
 
-  const { risks: rawRisks, contractType, typeSpecificItems, failed } = await analyzeChunks(provider, locale, text, analyzedRanges);
+    const { risks: rawRisks, contractType, typeSpecificItems, failed } = await analyzeChunks(provider, locale, text, analyzedRanges);
 
-  // Every analyzed chunk failed → a real provider outage. Surface it, never return an
-  // empty list that would read as a false "all clear".
-  if (analyzedRanges.length > 0 && failed === analyzedRanges.length) {
-    return json({ ok: false, code: "PROVIDER_FAILED", message: "AI provider failed." }, 502);
+    // Every analyzed chunk failed → a real provider outage. Surface it, never return an
+    // empty list that would read as a false "all clear".
+    if (analyzedRanges.length > 0 && failed === analyzedRanges.length) {
+      return json({ ok: false, code: "PROVIDER_FAILED", message: "AI provider failed — please try again in a moment." }, 502);
+    }
+
+    const risks = groundRisks(mergeAndDedupRisks(rawRisks), text);
+
+    // Count usage only after a successful analysis.
+    await gate.commit();
+
+    const coverage: Coverage = {
+      coveredChars: analyzedRanges.length ? analyzedRanges[analyzedRanges.length - 1].end : 0,
+      totalChars: text.length,
+      analyzedChunks: analyzedRanges.length,
+      totalChunks: chunkRanges.length,
+      failedChunks: failed,
+      capped: chunkRanges.length > analyzedRanges.length,
+    };
+
+    return json({ ok: true, risks, coverage, contractType, typeSpecificItems, provider: "configured-ai-provider", model: provider.model }, 200);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message.slice(0, 200) : String(err).slice(0, 200);
+    // Log internally (Netlify function logs) but never leak internals to the client.
+    console.error("[contract-risk] unexpected error:", msg);
+    return json({ ok: false, code: "INTERNAL_ERROR", message: "Analysis failed — please try again." }, 500);
   }
-
-  const risks = groundRisks(mergeAndDedupRisks(rawRisks), text);
-
-  // Count usage only after a successful analysis.
-  await gate.commit();
-
-  const coverage: Coverage = {
-    coveredChars: analyzedRanges.length ? analyzedRanges[analyzedRanges.length - 1].end : 0,
-    totalChars: text.length,
-    analyzedChunks: analyzedRanges.length,
-    totalChunks: chunkRanges.length,
-    failedChunks: failed,
-    capped: chunkRanges.length > analyzedRanges.length,
-  };
-
-  return json({ ok: true, risks, coverage, contractType, typeSpecificItems, provider: "configured-ai-provider", model: provider.model }, 200);
 };
 
 // ---- full-document chunking + cross-chunk merge (全文分析) ----

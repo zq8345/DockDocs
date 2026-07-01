@@ -76,6 +76,9 @@ const _en = {
     suggestionLabel: "What to ask",
     reset: "Check another",
     errPrefix: "Couldn't complete the review: ",
+    errServer: "Server error — please try again.",
+    progressSending: "Sending to AI…",
+    progressAnalyzing: "AI analyzing…",
     retry: "Try again",
     exportBtn: "Export report",
     privacy: "Your contract is read in your browser; only the extracted text is sent for analysis.",
@@ -117,6 +120,9 @@ const STR = {
     suggestionLabel: "该问什么",
     reset: "检查另一份",
     errPrefix: "审查未能完成:",
+    errServer: "服务器错误，请稍后重试。",
+    progressSending: "发送给 AI…",
+    progressAnalyzing: "AI 分析中…",
     retry: "重试",
     exportBtn: "导出报告",
     privacy: "合同在你的浏览器中读取,只有提取出的文字会被发送去分析。",
@@ -155,6 +161,9 @@ const STR = {
     suggestionLabel: "Qué preguntar",
     reset: "Revisar otro",
     errPrefix: "No se pudo completar la revisión: ",
+    errServer: "Error del servidor — inténtalo de nuevo.",
+    progressSending: "Enviando a IA…",
+    progressAnalyzing: "IA analizando…",
     retry: "Reintentar",
     exportBtn: "Exportar informe",
     privacy: "Tu contrato se lee en tu navegador; solo se envía el texto extraído para analizarlo.",
@@ -193,6 +202,9 @@ const STR = {
     suggestionLabel: "O que perguntar",
     reset: "Verificar outro",
     errPrefix: "Não foi possível concluir a revisão: ",
+    errServer: "Erro no servidor — tente novamente.",
+    progressSending: "Enviando à IA…",
+    progressAnalyzing: "IA analisando…",
     retry: "Tentar novamente",
     exportBtn: "Exportar relatório",
     privacy: "Seu contrato é lido no seu navegador; apenas o texto extraído é enviado para análise.",
@@ -231,6 +243,9 @@ const STR = {
     suggestionLabel: "Ce qu'il faut demander",
     reset: "Analyser un autre",
     errPrefix: "Impossible de terminer l'analyse : ",
+    errServer: "Erreur serveur — veuillez réessayer.",
+    progressSending: "Envoi à l'IA…",
+    progressAnalyzing: "Analyse IA en cours…",
     retry: "Réessayer",
     exportBtn: "Exporter le rapport",
     privacy: "Votre contrat est lu dans votre navigateur ; seul le texte extrait est transmis pour l'analyse.",
@@ -269,6 +284,9 @@ const STR = {
     suggestionLabel: "確認すべきこと",
     reset: "別の契約書を診断",
     errPrefix: "レビューを完了できませんでした: ",
+    errServer: "サーバーエラーが発生しました。再度お試しください。",
+    progressSending: "AIに送信中…",
+    progressAnalyzing: "AI分析中…",
     retry: "再試行",
     exportBtn: "レポートを書き出す",
     privacy: "契約書はお使いのブラウザ内で読み込まれ、抽出されたテキストのみが分析のために送信されます。",
@@ -307,6 +325,9 @@ const STR = {
     suggestionLabel: "Was Sie fragen sollten",
     reset: "Weiteren prüfen",
     errPrefix: "Die Prüfung konnte nicht abgeschlossen werden: ",
+    errServer: "Serverfehler — bitte erneut versuchen.",
+    progressSending: "An KI senden…",
+    progressAnalyzing: "KI analysiert…",
     retry: "Erneut versuchen",
     exportBtn: "Bericht exportieren",
     privacy: "Ihr Vertrag wird in Ihrem Browser gelesen; nur der extrahierte Text wird zur Analyse gesendet.",
@@ -345,6 +366,9 @@ const STR = {
     suggestionLabel: "무엇을 물어야 하나",
     reset: "다른 계약서 점검",
     errPrefix: "검토를 완료하지 못했습니다: ",
+    errServer: "서버 오류 — 다시 시도해 주세요.",
+    progressSending: "AI에 전송 중…",
+    progressAnalyzing: "AI 분석 중…",
     retry: "다시 시도",
     exportBtn: "보고서 내보내기",
     privacy: "계약서는 브라우저에서 읽으며, 추출된 텍스트만 분석을 위해 전송됩니다.",
@@ -570,6 +594,10 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const [limitHit, setLimitHit] = useState<number | null>(null);
   const [contractType, setContractType] = useState<ContractTypeInfo | null>(null);
   const [typeSpecificItems, setTypeSpecificItems] = useState<TypeSpecificItem[]>([]);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+  const [fileSizeMb, setFileSizeMb] = useState<number>(0);
+  const [pageDataUrls, setPageDataUrls] = useState<string[]>([]);
+  const [progressStep, setProgressStep] = useState<string>("");
 
   const levelLabel = useMemo(
     () => ({ high: t.levelHigh, medium: t.levelMedium, low: t.levelLow }),
@@ -625,6 +653,10 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
     setLimitHit(null);
     setContractType(null);
     setTypeSpecificItems([]);
+    setThumbnailUrl(null);
+    setFileSizeMb(0);
+    setPageDataUrls([]);
+    setProgressStep("");
   };
 
   const handleExport = () => {
@@ -681,7 +713,10 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       setError(null);
       setRisks(null);
       setLimitHit(null);
+      setThumbnailUrl(null);
+      setPageDataUrls([]);
       setFileName(file.name);
+      setFileSizeMb(Math.round((file.size / 1024 / 1024) * 100) / 100);
       setPhase("extracting");
       try {
         const pdfjs = await import("pdfjs-dist");
@@ -696,6 +731,30 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         }
         const trimmed = out.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
         setPages(doc.numPages);
+
+        // Render page thumbnails (up to 20 pages) for the upload card preview and
+        // the two-column results view. Capture before destroy().
+        const pageLimit = Math.min(doc.numPages, 20);
+        const urls: string[] = [];
+        for (let i = 1; i <= pageLimit; i++) {
+          try {
+            const pg = await doc.getPage(i);
+            const vp = pg.getViewport({ scale: 0.35 });
+            const canvas = document.createElement("canvas");
+            canvas.width = vp.width;
+            canvas.height = vp.height;
+            const ctx = canvas.getContext("2d");
+            if (ctx) {
+              await pg.render({ canvasContext: ctx, viewport: vp }).promise;
+              urls.push(canvas.toDataURL("image/jpeg", 0.65));
+            }
+          } catch { /* individual page render failure is non-fatal */ }
+        }
+        if (urls.length > 0) {
+          setThumbnailUrl(urls[0]);
+          setPageDataUrls(urls);
+        }
+
         try { doc.destroy(); } catch { /* ignore */ }
         if (!trimmed) {
           setError(t.noText);
@@ -709,7 +768,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         setPhase("idle");
       }
     },
-    [t, locale, childLocale],
+    [t, childLocale],
   );
 
   const onAnalyze = useCallback(async () => {
@@ -718,11 +777,13 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
     setError(null);
     setLimitHit(null);
     setCoverage(null);
+    setProgressStep(t.progressSending);
     try {
       const gate = await checkUsage("contractAnalyzer");
       if (!gate.allowed) {
         setLimitHit(gate.limit);
         setPhase("ready");
+        setProgressStep("");
         return;
       }
       const auth = await authHeader();
@@ -731,13 +792,28 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         headers: { "Content-Type": "application/json", ...auth },
         body: JSON.stringify({ text, locale }),
       });
-      const data = await res.json().catch(() => ({}));
+      setProgressStep(t.progressAnalyzing);
+      // null on JSON parse failure (HTML 500 from Netlify crash) — distinguish from {}
+      const data = await res.json().catch(() => null);
+      if (data === null) {
+        setError(t.errPrefix + t.errServer);
+        setPhase("ready");
+        setProgressStep("");
+        return;
+      }
+      if (data?.code === "UPGRADE_REQUIRED") {
+        setLimitHit(data?.limit ?? 0);
+        setPhase("ready");
+        setProgressStep("");
+        return;
+      }
       if (data?.ok && Array.isArray(data.risks)) {
         const sorted = (data.risks as Risk[]).slice().sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
         setRisks(sorted);
         setCoverage(data.coverage && typeof data.coverage === "object" ? (data.coverage as Coverage) : null);
         setContractType(data.contractType && typeof data.contractType === "object" ? (data.contractType as ContractTypeInfo) : null);
         setTypeSpecificItems(Array.isArray(data.typeSpecificItems) ? (data.typeSpecificItems as TypeSpecificItem[]) : []);
+        setProgressStep("");
         setPhase("done");
         trackToolRun("contract-risk");
         await markUsage(gate, "contractAnalyzer");
@@ -754,12 +830,14 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
           timestamp: Date.now(),
         });
       } else {
-        setError(t.errPrefix + (data?.message || "Unknown error."));
+        setError(t.errPrefix + (data?.message || t.errServer));
         setPhase("ready");
+        setProgressStep("");
       }
     } catch (e) {
       setError(t.errPrefix + (e instanceof Error ? e.message : String(e)));
       setPhase("ready");
+      setProgressStep("");
     }
   }, [text, locale, t]);
 
@@ -856,10 +934,23 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         />
       ) : (
         <div className={`${card} ${embedded ? "mt-3" : "mt-8"} p-5`}>
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <p className="text-[12.5px] text-[color:var(--muted)]">{t.pagesChars(pages, text.length)}</p>
+          <div className="flex items-start justify-between gap-3">
+            {/* Thumbnail + file meta */}
+            <div className="flex min-w-0 items-start gap-3">
+              {thumbnailUrl && (
+                <img
+                  src={thumbnailUrl}
+                  alt="Page 1"
+                  className="h-16 w-auto shrink-0 rounded border border-[color:var(--line)] object-cover shadow-sm"
+                />
+              )}
+              <div className="min-w-0">
+                <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
+                <p className="text-[12.5px] text-[color:var(--muted)]">{t.pagesChars(pages, text.length)}</p>
+                {fileSizeMb > 0 && (
+                  <p className="text-[11.5px] text-[color:var(--faint)]">{fileSizeMb} MB</p>
+                )}
+              </div>
             </div>
             <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
           </div>
@@ -886,26 +977,51 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
 
       {phase === "analyzing" && (
-        <div className="mt-6 space-y-3" aria-busy="true">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="animate-pulse rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-              <div className="flex items-center gap-2">
-                <div className="h-2.5 w-2.5 rounded-full bg-[color:var(--surface-subtle)]" />
-                <div className="h-5 w-14 rounded bg-[color:var(--surface-subtle)]" />
-                <div className="h-5 w-32 rounded bg-[color:var(--surface-subtle)]" />
-              </div>
-              <div className="mt-3 space-y-2">
-                <div className="h-3.5 w-full rounded bg-[color:var(--surface-subtle)]" />
-                <div className="h-3.5 w-4/5 rounded bg-[color:var(--surface-subtle)]" />
-              </div>
-              <div className="mt-3 h-12 rounded bg-[color:var(--surface-subtle)] opacity-60" />
+        <div className="mt-6" aria-busy="true">
+          {/* Progress label */}
+          {progressStep && (
+            <div className="mb-4 flex items-center gap-2.5 text-[13px] text-[color:var(--muted)]">
+              <svg className="h-4 w-4 animate-spin shrink-0 text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+              </svg>
+              <span>{progressStep}</span>
             </div>
-          ))}
+          )}
+          <div className="space-y-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="animate-pulse rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
+                <div className="flex items-center gap-2">
+                  <div className="h-2.5 w-2.5 rounded-full bg-[color:var(--surface-subtle)]" />
+                  <div className="h-5 w-14 rounded bg-[color:var(--surface-subtle)]" />
+                  <div className="h-5 w-32 rounded bg-[color:var(--surface-subtle)]" />
+                </div>
+                <div className="mt-3 space-y-2">
+                  <div className="h-3.5 w-full rounded bg-[color:var(--surface-subtle)]" />
+                  <div className="h-3.5 w-4/5 rounded bg-[color:var(--surface-subtle)]" />
+                </div>
+                <div className="mt-3 h-12 rounded bg-[color:var(--surface-subtle)] opacity-60" />
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {risks && (
-        <div className="mt-6">
+        <div className={`mt-6 ${pageDataUrls.length > 0 ? "lg:grid lg:grid-cols-[200px_1fr] lg:gap-6 lg:items-start" : ""}`}>
+          {/* Left column: page previews strip (only shown when we have thumbnails) */}
+          {pageDataUrls.length > 0 && (
+            <div className="hidden lg:flex lg:flex-col lg:gap-1.5 lg:overflow-y-auto lg:max-h-[calc(100vh-160px)] lg:sticky lg:top-4">
+              {pageDataUrls.map((url, idx) => (
+                <div key={idx} className="rounded border border-[color:var(--line)] overflow-hidden bg-[color:var(--surface)]">
+                  <img src={url} alt={`Page ${idx + 1}`} className="w-full block" />
+                  <p className="text-center text-[9px] text-[color:var(--faint)] py-0.5 font-medium">{idx + 1}</p>
+                </div>
+              ))}
+            </div>
+          )}
+          {/* Right column: risk findings */}
+          <div>
           <div className="mb-3 flex items-center justify-between gap-3">
             <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.result(risks.length)}</span>
             <button
@@ -1103,6 +1219,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
               </div>
             </details>
           )}
+          </div>{/* end right column */}
         </div>
       )}
 
