@@ -57,6 +57,94 @@ function FileThumb({ file, className = "h-12 w-10" }: { file: File; className?: 
   );
 }
 
+// Aspect-ratio-correct big preview card for the workspace embedded view.
+// Renders the PDF first page via PDF.js and uses paddingBottom to preserve the
+// document's true portrait/landscape orientation — no fixed h/w frame.
+function BigPreviewCard({ file, onRemove, locale }: { file: File; onRemove: () => void; locale: TemplateLocale | undefined }) {
+  const [url, setUrl] = useState<string | null>(null);
+  const [ratio, setRatio] = useState<number | null>(null);
+  const [numPages, setNumPages] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    let objUrl: string | null = null;
+    (async () => {
+      const isImg = /^image\//.test(file.type) || /\.(png|jpe?g|webp|gif|bmp)$/i.test(file.name);
+      const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
+      if (isImg) {
+        objUrl = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => { if (!cancelled) { setRatio(img.naturalHeight / img.naturalWidth); setUrl(objUrl!); } };
+        img.src = objUrl;
+        return;
+      }
+      if (!isPdf) return;
+      try {
+        const pdfjs = await import("pdfjs-dist");
+        pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+        const data = new Uint8Array(await file.arrayBuffer());
+        const doc = await pdfjs.getDocument({ data }).promise;
+        if (!cancelled) setNumPages(doc.numPages);
+        const page = await doc.getPage(1);
+        const vp = page.getViewport({ scale: 1.4 });
+        const canvas = document.createElement("canvas");
+        canvas.width = vp.width; canvas.height = vp.height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) await page.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
+        if (!cancelled) {
+          setRatio(vp.height / vp.width);
+          setUrl(canvas.toDataURL("image/jpeg", 0.85));
+        }
+        try { doc.destroy(); } catch { /* ignore */ }
+      } catch { /* badge fallback */ }
+    })();
+    return () => {
+      cancelled = true;
+      if (objUrl) URL.revokeObjectURL(objUrl);
+    };
+  }, [file]);
+
+  const isLandscape = ratio !== null && ratio < 1;
+  const sizeMb = (file.size / 1024 / 1024).toFixed(2);
+  const meta = [numPages !== null ? `${numPages}p` : null, `${sizeMb} MB`].filter(Boolean).join(" · ");
+  const removeLabel = tr(locale, "Remove", "移除", "Quitar", "Remover", "Retirer", "削除", "Entfernen");
+
+  return (
+    <div className="flex w-full flex-col items-center gap-3">
+      {/* Preview — width constrained by orientation, height derived from ratio */}
+      <div
+        className={`relative w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] ${isLandscape ? "max-w-[520px]" : "max-w-[280px]"}`}
+        style={{ paddingBottom: ratio ? `${ratio * 100}%` : "141%" }}
+      >
+        {url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={url} alt="preview" className="absolute inset-0 h-full w-full object-contain" />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[color:var(--accent-strong)]">
+            {file.name.split(".").pop()?.toUpperCase().slice(0, 3) ?? "PDF"}
+          </div>
+        )}
+        {/* × icon remove button — overlay top-right corner */}
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label={removeLabel}
+          className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--foreground)]"
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+            <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
+      </div>
+      {/* Filename · pages · size */}
+      <div className="text-center">
+        <p className="max-w-[20rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{file.name}</p>
+        {meta && <p className="mt-0.5 text-xs text-[color:var(--muted)]">{meta}</p>}
+      </div>
+    </div>
+  );
+}
+
 // Password input with a show/hide eye toggle.
 function PasswordField({ value, onChange, placeholder, maxLength, locale }: { value: string; onChange: (v: string) => void; placeholder: string; maxLength: number; locale: TemplateLocale }) {
   const [show, setShow] = useState(false);
@@ -229,13 +317,12 @@ export function ReadyWorkflowState({
     <div className={bigPreview ? "flex w-full flex-1 flex-col gap-4" : bare ? "space-y-3" : "mt-4 space-y-3"}>
       {/* File list */}
       {bigPreview && previewFile ? (
-        <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center">
-          <FileThumb file={previewFile.file} className={hasOptions ? "h-36 w-28 sm:h-52 sm:w-40" : "h-48 w-36 sm:h-72 sm:w-56"} />
-          <div>
-            <p className="max-w-[20rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{previewFile.file.name}</p>
-            <p className="mt-0.5 text-xs text-[color:var(--muted)]">{formatBytes(previewFile.file.size)}</p>
-          </div>
-          <button type="button" onClick={() => onRemoveFile(previewFile.id)} className="text-xs text-[color:var(--muted)] underline transition hover:text-[color:var(--foreground)]">{tr(locale, "Remove", "移除", "Quitar", "Remover", "Retirer", "削除", "Entfernen")}</button>
+        <div className="flex w-full flex-1 flex-col items-center justify-center gap-4">
+          <BigPreviewCard
+            file={previewFile.file}
+            onRemove={() => onRemoveFile(previewFile.id)}
+            locale={locale}
+          />
         </div>
       ) : (
       <ul className="space-y-2">
