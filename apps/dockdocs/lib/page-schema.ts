@@ -79,6 +79,28 @@ const SLOGAN: Record<string, string> = {
   en: "Read any document. Verify every answer.",
   de: "Jedes Dokument lesen. Jede Antwort überprüfen.",
 };
+const PRICING_DESC: Record<string, string> = {
+  en: "Free online PDF tools with ~50 document processing features. AI-powered chat, OCR, compression, and conversion.",
+  zh: "免费在线 PDF 工具，约 50 项文档处理功能，含 AI 问答、OCR、压缩和格式转换。",
+  es: "Herramientas PDF en línea gratuitas con ~50 funciones de procesamiento de documentos. Chat, OCR, compresión y conversión con IA.",
+  pt: "Ferramentas PDF online gratuitas com ~50 recursos de processamento de documentos. Chat, OCR, compressão e conversão com IA.",
+  fr: "Outils PDF en ligne gratuits avec ~50 fonctionnalités de traitement de documents. Chat IA, OCR, compression et conversion.",
+  ja: "オンライン PDF ツール（約 50 種）——AI チャット、OCR、圧縮、変換など多彩な文書処理機能を無料提供。",
+  de: "Kostenlose Online-PDF-Werkzeuge mit ~50 Dokumentverarbeitungsfunktionen. KI-Chat, OCR, Komprimierung und Konvertierung.",
+  ko: "무료 온라인 PDF 도구, 약 50가지 문서 처리 기능. AI 채팅, OCR, 압축 및 변환.",
+  "zh-Hant": "免費線上 PDF 工具，約 50 項文件處理功能，含 AI 問答、OCR、壓縮和格式轉換。",
+};
+const PRICING_CRUMB: Record<string, string> = {
+  en: "Pricing",
+  zh: "定价",
+  es: "Precios",
+  pt: "Preços",
+  fr: "Tarifs",
+  ja: "料金",
+  de: "Preise",
+  ko: "요금제",
+  "zh-Hant": "定價",
+};
 
 export function homeSchema(locale: string = "en") {
   // Organization + WebSite + FAQPage all localized per homepage (catch-all renders homeSchema(locale)).
@@ -124,7 +146,7 @@ export function aboutSchema(locale: string) {
   return {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Organization", "@id": `${SITE}#org`, name: "DockDocs", url: SITE, logo: { "@type": "ImageObject", url: `${SITE}/icon-512.png`, width: 512, height: 512 }, slogan: "Read any document. Verify every answer.", sameAs: ["https://github.com/zq8345/dock-ai-ecosystem"] },
+      { "@type": "Organization", "@id": `${SITE}#org`, name: "DockDocs", url: SITE, logo: { "@type": "ImageObject", url: `${SITE}/icon-512.png`, width: 512, height: 512 }, slogan: SLOGAN[locale] ?? SLOGAN.en, sameAs: ["https://github.com/zq8345/dock-ai-ecosystem"] },
       {
         "@type": "AboutPage",
         "@id": `${url}#webpage`,
@@ -149,17 +171,18 @@ export function pricingSchema(locale: string) {
         applicationCategory: "BusinessApplication",
         operatingSystem: "Web",
         url: SITE,
-        description: "Free online PDF tools with ~50 document processing features. AI-powered chat, OCR, compression, and conversion.",
+        description: PRICING_DESC[locale] ?? PRICING_DESC.en,
         offers: {
           "@type": "AggregateOffer",
           priceCurrency: "USD",
           lowPrice: "0",
-          highPrice: "20",
-          offerCount: "3",
+          highPrice: "149",
+          offerCount: "4",
           offers: [
             { "@type": "Offer", name: "Free", price: "0", priceCurrency: "USD" },
-            { "@type": "Offer", name: "Plus", price: "5", priceCurrency: "USD" },
-            { "@type": "Offer", name: "Pro", price: "20", priceCurrency: "USD" },
+            { "@type": "Offer", name: "Plus — Monthly", price: "9", priceCurrency: "USD" },
+            { "@type": "Offer", name: "Plus — Annual", price: "72", priceCurrency: "USD" },
+            { "@type": "Offer", name: "Lifetime", price: "149", priceCurrency: "USD" },
           ],
         },
       },
@@ -176,7 +199,7 @@ export function pricingSchema(locale: string) {
         "@id": `${url}#breadcrumb`,
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "DockDocs", item: `${baseFor(locale)}/` },
-          { "@type": "ListItem", position: 2, name: "Pricing", item: url },
+          { "@type": "ListItem", position: 2, name: PRICING_CRUMB[locale] ?? PRICING_CRUMB.en, item: url },
         ],
       },
     ],
