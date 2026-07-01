@@ -36,7 +36,7 @@ const STR: Record<AuthoredLocale, {
   exportBtn: string; noDiffs: string; tipLabel: string; disclaimer: string;
   additions: string; deletions: string;
   sev: Record<string, string>; dir: Record<string, string>; pairsCapped: string;
-  backBtn: string; resetBtn: string; genericError: string;
+  backBtn: string; resetBtn: string; genericError: string; pageOne: string;
 }> = {
   en: {
     title: "Contract Review", sub: "Upload two versions of a contract to see what changed — then get an AI explanation of each change and why it matters.",
@@ -49,7 +49,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "High Risk", medium: "Medium", low: "Low" },
     dir: { added: "Added", removed: "Removed", modified: "Modified" },
     pairsCapped: "Analysis covers the first 40 changes.",
-    backBtn: "← Back", resetBtn: "↩ Reset", genericError: "Something went wrong. Please try again.",
+    backBtn: "← Back", resetBtn: "↩ Reset", genericError: "Something went wrong. Please try again.", pageOne: "Page 1",
   },
   zh: {
     title: "合同版本对比", sub: "上传合同的两个版本，查看改动内容——并获取 AI 对每条改动及其影响的解析。",
@@ -62,7 +62,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "高风险", medium: "中等", low: "低" },
     dir: { added: "新增", removed: "删除", modified: "修改" },
     pairsCapped: "分析涵盖最多 40 处改动。",
-    backBtn: "← 返回", resetBtn: "↩ 重置", genericError: "操作失败，请重试。",
+    backBtn: "← 返回", resetBtn: "↩ 重置", genericError: "操作失败，请重试。", pageOne: "第 1 页",
   },
   es: {
     title: "Revisión de contratos", sub: "Sube dos versiones de un contrato para ver qué cambió — luego obtén una explicación de IA de cada cambio.",
@@ -75,7 +75,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Alto riesgo", medium: "Medio", low: "Bajo" },
     dir: { added: "Añadido", removed: "Eliminado", modified: "Modificado" },
     pairsCapped: "El análisis cubre hasta 40 cambios.",
-    backBtn: "← Volver", resetBtn: "↩ Restablecer", genericError: "Algo salió mal. Inténtalo de nuevo.",
+    backBtn: "← Volver", resetBtn: "↩ Restablecer", genericError: "Algo salió mal. Inténtalo de nuevo.", pageOne: "Página 1",
   },
   pt: {
     title: "Revisão de contratos", sub: "Carregue duas versões de um contrato para ver o que mudou — e obtenha uma explicação de IA para cada alteração.",
@@ -88,7 +88,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Alto risco", medium: "Médio", low: "Baixo" },
     dir: { added: "Adicionado", removed: "Removido", modified: "Modificado" },
     pairsCapped: "A análise cobre até 40 alterações.",
-    backBtn: "← Voltar", resetBtn: "↩ Redefinir", genericError: "Algo deu errado. Tente novamente.",
+    backBtn: "← Voltar", resetBtn: "↩ Redefinir", genericError: "Algo deu errado. Tente novamente.", pageOne: "Página 1",
   },
   fr: {
     title: "Révision de contrats", sub: "Téléchargez deux versions d'un contrat pour voir ce qui a changé — puis obtenez une explication IA de chaque modification.",
@@ -101,7 +101,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Risque élevé", medium: "Moyen", low: "Faible" },
     dir: { added: "Ajouté", removed: "Supprimé", modified: "Modifié" },
     pairsCapped: "L'analyse couvre jusqu'à 40 modifications.",
-    backBtn: "← Retour", resetBtn: "↩ Réinitialiser", genericError: "Une erreur est survenue. Veuillez réessayer.",
+    backBtn: "← Retour", resetBtn: "↩ Réinitialiser", genericError: "Une erreur est survenue. Veuillez réessayer.", pageOne: "Page 1",
   },
   ja: {
     title: "契約書バージョン比較", sub: "契約書の2つのバージョンをアップロードして変更点を確認し、各変更の影響をAIで解説します。",
@@ -114,7 +114,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "高リスク", medium: "中程度", low: "低" },
     dir: { added: "追加", removed: "削除", modified: "変更" },
     pairsCapped: "最大40件の変更を分析します。",
-    backBtn: "← 戻る", resetBtn: "↩ リセット", genericError: "エラーが発生しました。もう一度お試しください。",
+    backBtn: "← 戻る", resetBtn: "↩ リセット", genericError: "エラーが発生しました。もう一度お試しください。", pageOne: "1ページ目",
   },
   de: {
     title: "Vertragsversionsvergleich", sub: "Laden Sie zwei Vertragsversionen hoch, um Änderungen zu sehen — und erhalten Sie KI-Erklärungen zu jeder Änderung.",
@@ -127,7 +127,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Hohes Risiko", medium: "Mittel", low: "Niedrig" },
     dir: { added: "Hinzugefügt", removed: "Entfernt", modified: "Geändert" },
     pairsCapped: "Die Analyse umfasst bis zu 40 Änderungen.",
-    backBtn: "← Zurück", resetBtn: "↩ Zurücksetzen", genericError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+    backBtn: "← Zurück", resetBtn: "↩ Zurücksetzen", genericError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.", pageOne: "1페이지",
   },
   ko: {
     title: "계약서 버전 비교", sub: "계약서의 두 버전을 업로드하여 변경된 내용을 확인하고 AI로 각 변경의 의미를 파악하세요.",
@@ -140,7 +140,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "고위험", medium: "중간", low: "낮음" },
     dir: { added: "추가됨", removed: "삭제됨", modified: "변경됨" },
     pairsCapped: "최대 40개 변경 사항을 분석합니다.",
-    backBtn: "← 뒤로", resetBtn: "↩ 초기화", genericError: "오류가 발생했습니다. 다시 시도해 주세요.",
+    backBtn: "← 뒤로", resetBtn: "↩ 초기화", genericError: "오류가 발생했습니다. 다시 시도해 주세요.", pageOne: "1페이지",
   },
 };
 
@@ -165,12 +165,12 @@ function toHunks(ops: Op[]) {
 }
 
 function FileSlot({
-  label, file, onFile, dragging, onDragOver, onDrop, onDragLeave, inputRef, disabled,
+  label, file, onFile, dragging, onDragOver, onDrop, onDragLeave, inputRef, disabled, altThumb,
 }: {
   label: string; file: File | null; onFile: (f: File) => void;
   dragging: boolean; onDragOver: (e: React.DragEvent) => void;
   onDrop: (e: React.DragEvent) => void; onDragLeave: () => void;
-  inputRef: React.RefObject<HTMLInputElement | null>; disabled?: boolean;
+  inputRef: React.RefObject<HTMLInputElement | null>; disabled?: boolean; altThumb?: string;
 }) {
   const [thumb, setThumb] = useState<string | null>(null);
   useEffect(() => {
@@ -216,7 +216,7 @@ function FileSlot({
         <div className="flex items-start gap-3 text-left" onClick={(e) => e.stopPropagation()}>
           {thumb && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={thumb} alt="Page 1" className="block shrink-0 rounded border border-[color:var(--line)] object-contain" style={{ maxHeight: "180px", maxWidth: "180px" }} />
+            <img src={thumb} alt={altThumb ?? "Page 1"} className="block shrink-0 rounded border border-[color:var(--line)] object-contain" style={{ maxHeight: "180px", maxWidth: "180px" }} />
           )}
           <div className="min-w-0">
             <p className="truncate text-[13px] font-medium text-[color:var(--foreground)]">{file.name}</p>
@@ -361,11 +361,11 @@ export function ContractReviewClient() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <p className="mb-2 text-[12px] font-semibold text-[color:var(--muted)]">{T(s.v1)}</p>
-            <FileSlot label={T(s.drop)} file={fileA} onFile={setFileA} dragging={dragA} {...makeDragHandlers("a")} inputRef={refA} />
+            <FileSlot label={T(s.drop)} file={fileA} onFile={setFileA} dragging={dragA} {...makeDragHandlers("a")} inputRef={refA} altThumb={T(s.pageOne)} />
           </div>
           <div>
             <p className="mb-2 text-[12px] font-semibold text-[color:var(--muted)]">{T(s.v2)}</p>
-            <FileSlot label={T(s.drop)} file={fileB} onFile={setFileB} dragging={dragB} {...makeDragHandlers("b")} inputRef={refB} />
+            <FileSlot label={T(s.drop)} file={fileB} onFile={setFileB} dragging={dragB} {...makeDragHandlers("b")} inputRef={refB} altThumb={T(s.pageOne)} />
           </div>
         </div>
       )}

@@ -22,7 +22,7 @@ const _en = {
   hint: "Drag to reorder. Each image becomes one PDF page, top-to-bottom.",
   count: (n: number) => `${n} image${n === 1 ? "" : "s"}`,
   convert: "Convert to PDF", working: "Building PDF…", reset: "Start over",
-  needOne: "Add at least one image.", err: "Something went wrong: ",
+  needOne: "Add at least one image.", err: "Something went wrong: ", remove: "Remove",
 };
 
 const STR = {
@@ -35,7 +35,7 @@ const STR = {
     hint: "拖动调整顺序。每张图片占一页，按从上到下排列。",
     count: (n: number) => `${n} 张图片`,
     convert: "转换为 PDF", working: "正在生成 PDF…", reset: "重新开始",
-    needOne: "至少添加一张图片。", err: "出错了：",
+    needOne: "至少添加一张图片。", err: "出错了：", remove: "移除",
   },
   es: {
     title: "Imagen a PDF",
@@ -45,7 +45,7 @@ const STR = {
     hint: "Arrastra para reordenar. Cada imagen se convierte en una página del PDF, de arriba a abajo.",
     count: (n: number) => `${n} ${n === 1 ? "imagen" : "imágenes"}`,
     convert: "Convertir a PDF", working: "Generando PDF…", reset: "Empezar de nuevo",
-    needOne: "Agrega al menos una imagen.", err: "Algo salió mal: ",
+    needOne: "Agrega al menos una imagen.", err: "Algo salió mal: ", remove: "Quitar",
   },
   pt: {
     title: "Imagem para PDF",
@@ -55,7 +55,7 @@ const STR = {
     hint: "Arraste para reordenar. Cada imagem vira uma página do PDF, de cima para baixo.",
     count: (n: number) => `${n} ${n === 1 ? "imagem" : "imagens"}`,
     convert: "Converter para PDF", working: "Gerando PDF…", reset: "Recomeçar",
-    needOne: "Adicione pelo menos uma imagem.", err: "Algo deu errado: ",
+    needOne: "Adicione pelo menos uma imagem.", err: "Algo deu errado: ", remove: "Remover",
   },
   fr: {
     title: "Images en PDF",
@@ -65,7 +65,7 @@ const STR = {
     hint: "Faites glisser pour réorganiser. Chaque image devient une page du PDF, de haut en bas.",
     count: (n: number) => `${n} ${n === 1 ? "image" : "images"}`,
     convert: "Convertir en PDF", working: "Création du PDF…", reset: "Recommencer",
-    needOne: "Ajoutez au moins une image.", err: "Une erreur est survenue : ",
+    needOne: "Ajoutez au moins une image.", err: "Une erreur est survenue : ", remove: "Retirer",
   },
   ja: {
     title: "画像をPDFに",
@@ -75,7 +75,7 @@ const STR = {
     hint: "ドラッグして並べ替え。各画像が上から下の順に1つのPDFページになります。",
     count: (n: number) => `${n}枚の画像`,
     convert: "PDFに変換", working: "PDFを生成中…", reset: "最初からやり直す",
-    needOne: "少なくとも1枚の画像を追加してください。", err: "問題が発生しました: ",
+    needOne: "少なくとも1枚の画像を追加してください。", err: "問題が発生しました: ", remove: "削除",
   },
   de: {
     title: "Bild in PDF",
@@ -85,7 +85,7 @@ const STR = {
     hint: "Zum Umsortieren ziehen. Jedes Bild wird von oben nach unten zu einer PDF-Seite.",
     count: (n: number) => `${n} ${n === 1 ? "Bild" : "Bilder"}`,
     convert: "In PDF umwandeln", working: "PDF wird erstellt…", reset: "Neu beginnen",
-    needOne: "Fügen Sie mindestens ein Bild hinzu.", err: "Etwas ist schiefgelaufen: ",
+    needOne: "Fügen Sie mindestens ein Bild hinzu.", err: "Etwas ist schiefgelaufen: ", remove: "Entfernen",
   },
   ko: {
     title: "이미지를 PDF로",
@@ -95,7 +95,7 @@ const STR = {
     hint: "드래그해서 순서를 바꾸세요. 각 이미지는 위에서 아래 순으로 하나의 PDF 페이지가 됩니다.",
     count: (n: number) => `이미지 ${n}장`,
     convert: "PDF로 변환", working: "PDF를 만드는 중…", reset: "다시 시작",
-    needOne: "이미지를 최소 한 장 추가하세요.", err: "문제가 발생했습니다: ",
+    needOne: "이미지를 최소 한 장 추가하세요.", err: "문제가 발생했습니다: ", remove: "제거",
   },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
@@ -109,7 +109,7 @@ const STR_KO: typeof _en = {
   hint: "드래그해서 순서를 바꾸세요. 각 이미지는 위에서 아래 순으로 하나의 PDF 페이지가 됩니다.",
   count: (n: number) => `이미지 ${n}장`,
   convert: "PDF로 변환", working: "PDF를 만드는 중…", reset: "다시 시작",
-  needOne: "이미지를 최소 한 장 추가하세요.", err: "문제가 발생했습니다: ",
+  needOne: "이미지를 최소 한 장 추가하세요.", err: "문제가 발생했습니다: ", remove: "제거",
 };
 
 const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
@@ -469,7 +469,7 @@ export function ImagesToPdfClient({ locale = "en", embedded = false }: { locale?
                 className="group relative flex aspect-[3/4] cursor-grab items-center justify-center overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2 transition hover:border-[color:var(--accent)] active:cursor-grabbing"
               >
                 <span className="absolute left-2 top-2 z-10 flex h-6 min-w-6 items-center justify-center rounded-full bg-[color:var(--accent)] px-1.5 text-[12px] font-bold text-white">{pos + 1}</span>
-                <button type="button" onClick={() => remove(it.id)} className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white" aria-label="Remove">✕</button>
+                <button type="button" onClick={() => remove(it.id)} className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white" aria-label={t.remove}>✕</button>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={it.url} alt={it.name} className="max-h-full max-w-full rounded-[var(--radius-sm)] object-contain" />
               </div>

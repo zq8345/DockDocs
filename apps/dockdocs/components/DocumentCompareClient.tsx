@@ -118,6 +118,7 @@ const STR = {
     tplDims: "dims",
     tplDropHere: "Drop PDFs to rerun",
     retry: "Try again",
+    pageOne: "Page 1",
   },
   zh: {
     badge: "对比引擎",
@@ -179,6 +180,7 @@ const STR = {
     tplDims: "个维度",
     tplDropHere: "拖入 PDF 即重跑",
     retry: "重试",
+    pageOne: "第 1 页",
   },
   es: {
     badge: "Motor de comparación",
@@ -240,6 +242,7 @@ const STR = {
     tplDims: "dims.",
     tplDropHere: "Suelta PDFs para volver a ejecutar",
     retry: "Reintentar",
+    pageOne: "Página 1",
   },
   pt: {
     badge: "Motor de comparação",
@@ -301,6 +304,7 @@ const STR = {
     tplDims: "dims.",
     tplDropHere: "Solte PDFs para reexecutar",
     retry: "Tentar novamente",
+    pageOne: "Página 1",
   },
   fr: {
     badge: "Moteur de comparaison",
@@ -362,6 +366,7 @@ const STR = {
     tplDims: "dims.",
     tplDropHere: "Déposez des PDF pour relancer",
     retry: "Réessayer",
+    pageOne: "Page 1",
   },
   ja: {
     badge: "比較エンジン",
@@ -423,6 +428,7 @@ const STR = {
     tplDims: "項目",
     tplDropHere: "PDF をドロップして再実行",
     retry: "再試行",
+    pageOne: "1ページ目",
   },
   de: {
     badge: "Vergleichs-Engine",
@@ -484,6 +490,7 @@ const STR = {
     tplDims: "Merkmale",
     tplDropHere: "PDFs ablegen, um erneut auszuführen",
     retry: "Erneut versuchen",
+    pageOne: "1페이지",
   },
   ko: {
     badge: "비교 엔진",
@@ -545,6 +552,7 @@ const STR = {
     tplDims: "개 항목",
     tplDropHere: "PDF를 놓아 다시 실행",
     retry: "다시 시도",
+    pageOne: "1페이지",
   },
 } as const satisfies AuthoredCopy<unknown>;
 
@@ -608,14 +616,14 @@ const REC = {
 } as const satisfies AuthoredCopy<unknown>;
 
 const TRACE = {
-  en: { source: "Source", notLocated: "Couldn't locate the exact snippet — showing the full text." },
-  zh: { source: "原文出处", notLocated: "未能精确定位片段——显示全文。" },
-  es: { source: "Origen", notLocated: "No se pudo localizar el fragmento exacto: se muestra el texto completo." },
-  pt: { source: "Origem", notLocated: "Não foi possível localizar o trecho exato — exibindo o texto completo." },
-  fr: { source: "Source", notLocated: "Impossible de localiser l'extrait exact — affichage du texte intégral." },
-  ja: { source: "出典", notLocated: "該当箇所を正確に特定できませんでした — 全文を表示しています。" },
-  de: { source: "Quelle", notLocated: "Der genaue Ausschnitt ließ sich nicht finden – der vollständige Text wird angezeigt." },
-  ko: { source: "출처", notLocated: "정확한 구절을 찾지 못했습니다 — 전체 텍스트를 표시합니다." },
+  en: { source: "Source", notLocated: "Couldn't locate the exact snippet — showing the full text.", close: "Close" },
+  zh: { source: "原文出处", notLocated: "未能精确定位片段——显示全文。", close: "关闭" },
+  es: { source: "Origen", notLocated: "No se pudo localizar el fragmento exacto: se muestra el texto completo.", close: "Cerrar" },
+  pt: { source: "Origem", notLocated: "Não foi possível localizar o trecho exato — exibindo o texto completo.", close: "Fechar" },
+  fr: { source: "Source", notLocated: "Impossible de localiser l'extrait exact — affichage du texte intégral.", close: "Fermer" },
+  ja: { source: "出典", notLocated: "該当箇所を正確に特定できませんでした — 全文を表示しています。", close: "閉じる" },
+  de: { source: "Quelle", notLocated: "Der genaue Ausschnitt ließ sich nicht finden – der vollständige Text wird angezeigt.", close: "Schließen" },
+  ko: { source: "출처", notLocated: "정확한 구절을 찾지 못했습니다 — 전체 텍스트를 표시합니다.", close: "닫기" },
 } as const satisfies AuthoredCopy<unknown>;
 
 // Localized dimension labels (the backend returns English labels).
@@ -1533,7 +1541,7 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
                 <div className="flex items-start gap-3">
                   {r.thumbnailUrl && (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={r.thumbnailUrl} alt="Page 1" className="block shrink-0 rounded border border-[color:var(--line)] object-contain" style={{ maxHeight: "180px", maxWidth: "180px" }} />
+                    <img src={r.thumbnailUrl} alt={t.pageOne} className="block shrink-0 rounded border border-[color:var(--line)] object-contain" style={{ maxHeight: "180px", maxWidth: "180px" }} />
                   )}
                   <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1797,7 +1805,7 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
                   <p id="trace-dialog-title" className="text-sm font-semibold text-[color:var(--foreground)]">
                     {tr.source} · {trace.docName}
                   </p>
-                  <button type="button" onClick={() => setTrace(null)} autoFocus aria-label="Close" className="text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
+                  <button type="button" onClick={() => setTrace(null)} autoFocus aria-label={tr.close} className="text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]">
                     ✕
                   </button>
                 </div>

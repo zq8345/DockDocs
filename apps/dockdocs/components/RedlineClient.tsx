@@ -31,6 +31,7 @@ const _en = {
     err: "Something went wrong: ",
     note: "Compares the extracted text sentence by sentence. Formatting and images aren't part of the comparison.",
     previewCaption: "See additions in green and deletions in red before you upload.",
+    pageOne: "Page 1",
   };
 
 // Exhaustive over AuthoredLocale: a missing route locale (e.g. "de") is a tsc
@@ -51,6 +52,7 @@ const STR = {
     need: "请添加两份 PDF。",
     err: "出错了：",
     note: "按句子逐句对比抽取出的文字。排版和图片不在对比范围内。",
+    pageOne: "第 1 页",
   },
   es: {
     title: "Comparar versiones",
@@ -65,6 +67,7 @@ const STR = {
     need: "Agrega ambos PDF para comparar.",
     err: "Algo salió mal: ",
     note: "Compara el texto extraído oración por oración. El formato y las imágenes no forman parte de la comparación.",
+    pageOne: "Página 1",
   },
   pt: {
     title: "Comparar versões",
@@ -79,6 +82,7 @@ const STR = {
     need: "Adicione ambos os PDFs para comparar.",
     err: "Algo deu errado: ",
     note: "Compara o texto extraído frase por frase. Formatação e imagens não fazem parte da comparação.",
+    pageOne: "Página 1",
   },
   fr: {
     title: "Comparer les versions",
@@ -93,6 +97,7 @@ const STR = {
     need: "Ajoutez les deux PDF pour comparer.",
     err: "Une erreur est survenue : ",
     note: "Compare le texte extrait phrase par phrase. La mise en forme et les images ne font pas partie de la comparaison.",
+    pageOne: "Page 1",
   },
   ja: {
     title: "バージョンを比較",
@@ -107,6 +112,7 @@ const STR = {
     need: "比較するには両方のPDFを追加してください。",
     err: "問題が発生しました: ",
     note: "抽出テキストを文単位で比較します。書式や画像は比較対象外です。",
+    pageOne: "1ページ目",
   },
   de: {
     title: "Versionen vergleichen",
@@ -121,6 +127,7 @@ const STR = {
     need: "Fügen Sie beide PDFs zum Vergleichen hinzu.",
     err: "Etwas ist schiefgelaufen: ",
     note: "Vergleicht den extrahierten Text Satz für Satz. Formatierung und Bilder sind nicht Teil des Vergleichs.",
+    pageOne: "Seite 1",
   },
   ko: {
     title: "버전 비교",
@@ -135,6 +142,7 @@ const STR = {
     need: "비교하려면 PDF 두 개를 모두 추가하세요.",
     err: "문제가 발생했습니다: ",
     note: "추출된 텍스트를 문장 단위로 비교합니다. 서식과 이미지는 비교 대상이 아닙니다.",
+    pageOne: "1페이지",
   },
 } satisfies Record<AuthoredLocale, typeof _en>;
 
@@ -445,7 +453,7 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
         <div className="mt-3 flex items-start gap-3">
           {(slotKey === "a" ? thumbA : thumbB) && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={(slotKey === "a" ? thumbA : thumbB)!} alt="Page 1" className="block shrink-0 rounded border border-[color:var(--line)] object-contain" style={{ maxHeight: "180px", maxWidth: "180px" }} />
+            <img src={(slotKey === "a" ? thumbA : thumbB)!} alt={t.pageOne} className="block shrink-0 rounded border border-[color:var(--line)] object-contain" style={{ maxHeight: "180px", maxWidth: "180px" }} />
           )}
           <div className="min-w-0 flex-1">
             <span className="block truncate text-[13.5px] font-medium text-[color:var(--foreground)]" title={file.name}>{file.name}</span>

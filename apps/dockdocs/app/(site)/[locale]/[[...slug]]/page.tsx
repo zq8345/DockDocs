@@ -206,29 +206,6 @@ function resolveCustomCopyField(field: Record<string, string>, locale: RouteLoca
   }
 }
 
-// pricingSchema accepts en|zh only (just those two copy sets). Preserves the
-// pre-existing mapping EXACTLY — zh → "zh", everything else (including zh-Hant)
-// → "en" — but exhaustively, so a new route locale forces an explicit decision.
-function toEnZhLocale(locale: RouteLocale): "en" | "zh" {
-  switch (locale) {
-    case "zh":
-      return "zh";
-    case "en":
-    case "es":
-    case "pt":
-    case "fr":
-    case "ja":
-    case "de":
-    case "ko":
-    case "zh-Hant":
-      return "en";
-    default: {
-      const _exhaustive: never = locale;
-      return _exhaustive;
-    }
-  }
-}
-
 // LeafLocale = the union that most leaf surfaces (AboutPage / SaasInfoPage /
 // MyChatsClient / the *HubPage / Home / SitemapContent / ExtraToolJsonLd / …)
 // still accept; these components have not yet authored their own German copy, so
@@ -2523,7 +2500,7 @@ export default async function LocalizedRoute({
     if (slug === "about") {
       return (
         <>
-          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema(uiLocale)) }} />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema(clientLocale)) }} />
           {/* AboutPage authors de copy → pass clientLocale (de preserved), not
               toLeafLocale which maps de→en for the still-English leaf surfaces. */}
           <AboutPage locale={clientLocale} />
@@ -2789,7 +2766,7 @@ function LocalizedAiSummary({ locale }: { locale: ClientLocale }) {
 function LocalizedPricing({ locale }: { locale: ClientLocale }) {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(toEnZhLocale(locale))) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema(locale)) }} />
       {/* PricingPlans authors de copy (billing plumbing falls back to en) →
           pass clientLocale (de + zh-Hant preserved), not toAccountLocale (de→en). */}
       <PricingPlans locale={locale} />

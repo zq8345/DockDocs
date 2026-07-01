@@ -33,6 +33,7 @@ const _en = {
     needOne: "Keep at least one page.",
     page: "Page",
     err: "Something went wrong: ",
+    removePage: "Remove page",
 };
 
 const STR = {
@@ -51,6 +52,7 @@ const STR = {
     needOne: "至少保留一页。",
     page: "第",
     err: "出错了：",
+    removePage: "删除该页",
   },
   es: {
     title: "Reordenar páginas",
@@ -66,6 +68,7 @@ const STR = {
     needOne: "Conserva al menos una página.",
     page: "Página",
     err: "Algo salió mal: ",
+    removePage: "Eliminar página",
   },
   pt: {
     title: "Reordenar páginas",
@@ -81,6 +84,7 @@ const STR = {
     needOne: "Mantenha pelo menos uma página.",
     page: "Página",
     err: "Algo deu errado: ",
+    removePage: "Excluir página",
   },
   fr: {
     title: "Réorganiser les pages",
@@ -96,6 +100,7 @@ const STR = {
     needOne: "Conservez au moins une page.",
     page: "Page",
     err: "Une erreur est survenue : ",
+    removePage: "Supprimer la page",
   },
   ja: {
     title: "ページを並べ替え",
@@ -111,6 +116,7 @@ const STR = {
     needOne: "少なくとも1ページは残してください。",
     page: "ページ",
     err: "問題が発生しました: ",
+    removePage: "ページを削除",
   },
   de: {
     title: "Seiten neu anordnen",
@@ -126,6 +132,7 @@ const STR = {
     needOne: "Behalten Sie mindestens eine Seite.",
     page: "Seite",
     err: "Etwas ist schiefgelaufen: ",
+    removePage: "Seite entfernen",
   },
   ko: {
     title: "페이지 재정렬",
@@ -141,6 +148,7 @@ const STR = {
     needOne: "최소한 한 페이지는 남기세요.",
     page: "페이지",
     err: "문제가 발생했습니다: ",
+    removePage: "페이지 제거",
   },
 } satisfies AuthoredCopy<typeof _en>;
 
@@ -510,12 +518,12 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
                     type="button"
                     onClick={() => remove(pos)}
                     className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[10px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white"
-                    aria-label="Remove page"
+                    aria-label={t.removePage}
                   >
                     ✕
                   </button>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.thumb} alt={`page ${p.idx + 1}`}
+                  <img src={p.thumb} alt={pageLabel(locale, p.idx + 1)}
                     style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
                     className="h-auto w-auto max-w-full" />
                 </div>
