@@ -37,6 +37,7 @@ type DocResult = {
   error?: string;
   file?: File; // kept so a scanned doc can be re-read with OCR
   thumbnailUrl?: string;
+  thumbRatio?: number;
 };
 
 type CmpField = { value: string | null; source: string | null };
@@ -1055,17 +1056,21 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
       const trimmed = text.replace(/\s+/g, " ").trim();
       const numPages = doc.numPages;
       let thumbnailUrl: string | undefined;
+      let thumbRatio: number | undefined;
       try {
         const thumbPage = await doc.getPage(1);
-        const vp = thumbPage.getViewport({ scale: 0.4 });
+        const vp = thumbPage.getViewport({ scale: 0.8 });
         const thumbCanvas = document.createElement("canvas");
         thumbCanvas.width = vp.width; thumbCanvas.height = vp.height;
         const ctx = thumbCanvas.getContext("2d");
-        if (ctx) await thumbPage.render({ canvas: thumbCanvas, canvasContext: ctx, viewport: vp }).promise;
-        thumbnailUrl = thumbCanvas.toDataURL("image/jpeg", 0.7);
+        if (ctx) {
+          await thumbPage.render({ canvas: thumbCanvas, canvasContext: ctx, viewport: vp }).promise;
+          thumbnailUrl = thumbCanvas.toDataURL("image/jpeg", 0.8);
+          thumbRatio = vp.height / vp.width;
+        }
       } catch { /* non-critical */ }
       try { doc.destroy(); } catch { /* ignore */ }
-      return { id, name: file.name, pages: numPages, chars: trimmed.length, text: trimmed, status: trimmed.length > 0 ? "ok" : "empty", file, thumbnailUrl };
+      return { id, name: file.name, pages: numPages, chars: trimmed.length, text: trimmed, status: trimmed.length > 0 ? "ok" : "empty", file, thumbnailUrl, thumbRatio };
     } catch (e) {
       const msg = isEncryptedPdfError(e) ? encryptedPdfNotice(childLocale) : e instanceof Error ? e.message : String(e);
       return { id, name: file.name, pages: 0, chars: 0, text: "", status: "error", error: msg, file };
@@ -1527,8 +1532,13 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
               <div key={r.id} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
                 <div className="flex items-start gap-3">
                   {r.thumbnailUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={r.thumbnailUrl} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
+                    <div
+                      className={`relative shrink-0 overflow-hidden rounded border border-[color:var(--line)] bg-[color:var(--surface)] ${r.thumbRatio && r.thumbRatio < 1 ? "w-36" : "w-20"}`}
+                      style={r.thumbRatio ? { paddingBottom: `${r.thumbRatio * 100}%` } : { paddingBottom: "141%" }}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={r.thumbnailUrl} alt="Page 1" className="absolute inset-0 h-full w-full object-contain" />
+                    </div>
                   )}
                   <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center justify-between gap-2">
