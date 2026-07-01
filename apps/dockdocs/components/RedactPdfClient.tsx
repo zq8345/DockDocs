@@ -578,18 +578,29 @@ export function RedactPdfClient({ locale = "en", embedded = false }: { locale?: 
         <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
         <>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          {/* Toolbar v2: card bar */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
             <div className="min-w-0">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.boxes(boxes.filter(sizable).length)}</p>
-              <p className="text-[12.5px] text-[color:var(--muted)]">{t.hint}</p>
-              {fileRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{fileRef.current.name} · {pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
+              <div className="flex items-center gap-2">
+                <p className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileRef.current?.name ?? ""}</p>
+                <button type="button" aria-label={t.reset} onClick={reset}
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
+                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <p className="mt-0.5 text-[12px] text-[color:var(--muted)]">
+                <span className="font-medium text-[color:var(--accent)]">{t.boxes(boxes.filter(sizable).length)}</span>
+                {fileRef.current && <> · {pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</>}
+              </p>
             </div>
             <div className="flex shrink-0 gap-2">
-              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.reset}</button>
               <button type="button" onClick={() => setBoxes([])} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.clear}</button>
               <button type="button" onClick={apply} disabled={phase === "working"} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "working" ? t.working : t.apply}</button>
             </div>
           </div>
+          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
           {autoMsg && <p className="mt-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-2.5 text-[12.5px] text-[color:var(--muted)]">{autoMsg}</p>}
 

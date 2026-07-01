@@ -374,39 +374,54 @@ export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
-        <div className="mt-6 grid gap-6 lg:grid-cols-2">
-          <div className="order-2 lg:order-1">
-            <div className="flex items-center justify-between gap-3">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.start}</button>
+        <>
+          {/* Toolbar v2: card bar */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <p className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
+                <button type="button" aria-label={t.start} onClick={reset}
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
+                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              {numPages > 0 && fileRef.current && <p className="mt-0.5 text-[12px] text-[color:var(--muted)]">{numPages}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
             </div>
-            {numPages > 0 && fileRef.current && <p className="mt-1 text-[11.5px] text-[color:var(--faint)]">{numPages}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
-            <p className="mt-2 text-[12.5px] leading-relaxed text-[color:var(--faint)]">{t.hint}</p>
-            <div className="mt-4 space-y-3">
-              {slider("top", t.top)}
-              {slider("right", t.right)}
-              {slider("bottom", t.bottom)}
-              {slider("left", t.left)}
-            </div>
-            <div className="mt-5 flex items-center gap-2">
-              <button type="button" onClick={() => setEdges({ top: 0, right: 0, bottom: 0, left: 0 })} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
-              <button type="button" onClick={apply} disabled={phase === "working" || !hasCrop} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "working" ? t.working : t.apply}</button>
-            </div>
+            <button type="button" onClick={apply} disabled={phase === "working" || !hasCrop} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+              {phase === "working" ? t.working : t.apply}
+            </button>
           </div>
+          <p className="mt-2 text-[12px] leading-relaxed text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="order-1 lg:order-2">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
-            <div className="relative inline-block max-w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              {preview && <img src={preview} alt="page 1" className="block h-auto w-full" />}
-              {/* shaded crop margins */}
-              <div className="pointer-events-none absolute inset-x-0 top-0 bg-black/45" style={{ height: `${edges.top}%` }} />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-black/45" style={{ height: `${edges.bottom}%` }} />
-              <div className="pointer-events-none absolute inset-y-0 left-0 bg-black/45" style={{ width: `${edges.left}%` }} />
-              <div className="pointer-events-none absolute inset-y-0 right-0 bg-black/45" style={{ width: `${edges.right}%` }} />
+          <div className="mt-4 grid gap-6 lg:grid-cols-[5fr_6fr]">
+            <div className="order-2 lg:order-1">
+              <div className="space-y-3">
+                {slider("top", t.top)}
+                {slider("right", t.right)}
+                {slider("bottom", t.bottom)}
+                {slider("left", t.left)}
+              </div>
+              <div className="mt-5">
+                <button type="button" onClick={() => setEdges({ top: 0, right: 0, bottom: 0, left: 0 })} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
+              </div>
+            </div>
+
+            <div className="order-1 lg:order-2">
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
+              <div className="relative inline-block max-w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {preview && <img src={preview} alt="page 1" className="block h-auto w-full" />}
+                {/* shaded crop margins */}
+                <div className="pointer-events-none absolute inset-x-0 top-0 bg-black/45" style={{ height: `${edges.top}%` }} />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-black/45" style={{ height: `${edges.bottom}%` }} />
+                <div className="pointer-events-none absolute inset-y-0 left-0 bg-black/45" style={{ width: `${edges.left}%` }} />
+                <div className="pointer-events-none absolute inset-y-0 right-0 bg-black/45" style={{ width: `${edges.right}%` }} />
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
