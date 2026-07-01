@@ -57,6 +57,7 @@ import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
 import { BatchTranslateClient } from "@/components/BatchTranslateClient";
 import { BatchFixScansClient } from "@/components/BatchFixScansClient";
 import { ContractRiskClient } from "@/components/ContractRiskClient";
+import { ContractReviewClient } from "@/components/ContractReviewClient";
 import { LeaseRedflagClient } from "@/components/LeaseRedflagClient";
 import { GovbidMatrixClient } from "@/components/GovbidMatrixClient";
 import { SignPdfClient } from "@/components/SignPdfClient";
@@ -2370,6 +2371,10 @@ export default async function LocalizedRoute({
 
   if (slug === "govbid-matrix") {
     return <>{extraJsonLd}<GovbidMatrixClient locale={clientLocale} /></>;
+  }
+
+  if (slug === "contract-review") {
+    return <ContractReviewClient />;
   }
 
   if (slug === "my-chats") {
