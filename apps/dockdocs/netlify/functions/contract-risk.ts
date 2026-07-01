@@ -344,7 +344,7 @@ function getProvider(): ProviderConfig | null {
     return {
       apiKey: openRouterKey,
       apiUrl: normalizeChatEndpoint(Netlify.env.get("OPENROUTER_BASE_URL"), "https://openrouter.ai/api/v1"),
-      model: Netlify.env.get("OPENROUTER_MODEL")?.trim() || "mistralai/mistral-large-2512",
+      model: Netlify.env.get("OPENROUTER_MODEL")?.trim() || "mistralai/mistral-medium-3.5",
     };
   }
   // Fallback: a direct OpenAI-compatible endpoint, if configured.

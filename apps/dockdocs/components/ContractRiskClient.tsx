@@ -106,8 +106,8 @@ const STR = {
     sourceTitle: "合同原文",
     findInSource: "在原文中定位",
     approxPage: (n: number) => `≈ 第 ${n} 页`,
-    analyze: "检查风险",
-    analyzing: "正在审查…",
+    analyze: "审查风险",
+    analyzing: "审查中，请稍后",
     result: (n: number) => `${n} 个需要注意的点`,
     noRisks: "没有标出明显的风险条款。这不代表合同一定安全——请完整阅读。",
     disclaimer: "这是帮你发现值得注意条款的自动审查,不构成法律意见。重要事项请咨询律师。",
@@ -941,7 +941,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
                 <img
                   src={thumbnailUrl}
                   alt="Page 1"
-                  className="h-16 w-auto shrink-0 rounded border border-[color:var(--line)] object-cover shadow-sm"
+                  className="h-24 w-auto shrink-0 rounded border border-[color:var(--line)] object-cover shadow-sm"
                 />
               )}
               <div className="min-w-0">
@@ -978,16 +978,6 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
 
       {phase === "analyzing" && (
         <div className="mt-6" aria-busy="true">
-          {/* Progress label */}
-          {progressStep && (
-            <div className="mb-4 flex items-center gap-2.5 text-[13px] text-[color:var(--muted)]">
-              <svg className="h-4 w-4 animate-spin shrink-0 text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-              </svg>
-              <span>{progressStep}</span>
-            </div>
-          )}
           <div className="space-y-3">
             {[0, 1, 2].map((i) => (
               <div key={i} className="animate-pulse rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
