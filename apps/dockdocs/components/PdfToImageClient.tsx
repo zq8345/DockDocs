@@ -488,7 +488,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
             </div>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 justify-items-center">
+          <div className="mt-5 grid gap-4 justify-items-center" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))" }}>
             {pages.map((p) => {
               const on = selected.has(p.idx);
               return (
