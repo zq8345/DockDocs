@@ -15,6 +15,7 @@ import { appendWorkHistory } from "@/lib/work-history";
 import { TrialCta } from "@/components/TrialCta";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
+import { DocPreview } from "../../../shared/templates/pdf-tool-page/doc-preview";
 
 import { useCallback, useMemo, useState } from "react";
 
@@ -594,11 +595,8 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const [limitHit, setLimitHit] = useState<number | null>(null);
   const [contractType, setContractType] = useState<ContractTypeInfo | null>(null);
   const [typeSpecificItems, setTypeSpecificItems] = useState<TypeSpecificItem[]>([]);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
-  const [fileSizeMb, setFileSizeMb] = useState<number>(0);
+  const [file, setFile] = useState<File | null>(null);
   const [pageDataUrls, setPageDataUrls] = useState<string[]>([]);
-  const [bigThumbUrl, setBigThumbUrl] = useState<string | null>(null);
-  const [thumbRatio, setThumbRatio] = useState<number | null>(null);
   const [progressStep, setProgressStep] = useState<string>("");
 
   const levelLabel = useMemo(
@@ -655,11 +653,8 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
     setLimitHit(null);
     setContractType(null);
     setTypeSpecificItems([]);
-    setThumbnailUrl(null);
-    setFileSizeMb(0);
+    setFile(null);
     setPageDataUrls([]);
-    setBigThumbUrl(null);
-    setThumbRatio(null);
     setProgressStep("");
   };
 
@@ -717,12 +712,9 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       setError(null);
       setRisks(null);
       setLimitHit(null);
-      setThumbnailUrl(null);
+      setFile(file);
       setPageDataUrls([]);
-      setBigThumbUrl(null);
-      setThumbRatio(null);
       setFileName(file.name);
-      setFileSizeMb(Math.round((file.size / 1024 / 1024) * 100) / 100);
       setPhase("extracting");
       try {
         const pdfjs = await import("pdfjs-dist");
@@ -738,22 +730,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         const trimmed = out.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
         setPages(doc.numPages);
 
-        // Big preview card: first page at scale 1.4, capture aspect ratio.
-        try {
-          const fp = await doc.getPage(1);
-          const bvp = fp.getViewport({ scale: 1.4 });
-          const bigC = document.createElement("canvas");
-          bigC.width = bvp.width; bigC.height = bvp.height;
-          const bigCtx = bigC.getContext("2d");
-          if (bigCtx) {
-            await fp.render({ canvas: bigC, canvasContext: bigCtx, viewport: bvp }).promise;
-            setThumbRatio(bvp.height / bvp.width);
-            setBigThumbUrl(bigC.toDataURL("image/jpeg", 0.85));
-          }
-        } catch { /* non-critical */ }
-
-        // Render page thumbnails (up to 20 pages) for the upload card preview and
-        // the two-column results view. Capture before destroy().
+        // Render page thumbnails (up to 20 pages) for the two-column results view.
         const pageLimit = Math.min(doc.numPages, 20);
         const urls: string[] = [];
         for (let i = 1; i <= pageLimit; i++) {
@@ -771,7 +748,6 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
           } catch { /* individual page render failure is non-fatal */ }
         }
         if (urls.length > 0) {
-          setThumbnailUrl(urls[0]);
           setPageDataUrls(urls);
         }
 
@@ -954,42 +930,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         />
       ) : (
         <div className={`${card} ${embedded ? "mt-3" : "mt-8"} p-5`}>
-          <div className="flex flex-col items-center gap-3">
-            {bigThumbUrl && thumbRatio !== null ? (
-              <>
-                <div
-                  className={`relative w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] ${thumbRatio < 1 ? "max-w-[520px]" : "max-w-[280px]"}`}
-                  style={{ paddingBottom: `${thumbRatio * 100}%` }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={bigThumbUrl} alt="preview" className="absolute inset-0 h-full w-full object-contain" />
-                  <button
-                    type="button"
-                    onClick={reset}
-                    aria-label={t.reset}
-                    className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--foreground)]"
-                  >
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                      <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                    </svg>
-                  </button>
-                </div>
-                <div className="text-center">
-                  <p className="max-w-[20rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{fileName}</p>
-                  <p className="mt-0.5 text-xs text-[color:var(--muted)]">{pages}p · {fileSizeMb} MB</p>
-                </div>
-              </>
-            ) : (
-              <div className="flex w-full items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-                  <p className="text-[12.5px] text-[color:var(--muted)]">{t.pagesChars(pages, text.length)}</p>
-                  {fileSizeMb > 0 && <p className="text-[11.5px] text-[color:var(--faint)]">{fileSizeMb} MB</p>}
-                </div>
-                <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
-              </div>
-            )}
-          </div>
+          {file && <DocPreview file={file} max={480} onRemove={reset} removeLabel={t.reset} />}
           <div className="mt-5">
             <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
               {phase === "analyzing" ? t.analyzing : t.analyze}
