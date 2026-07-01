@@ -464,6 +464,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
       setPhase("done");
       return;
     }
+    if (embedded || phase !== "ready") return;
     // auto-analyze with hub-extracted text, skipping file re-upload
     void (async () => {
       setPhase("analyzing");

@@ -17,6 +17,15 @@ const COPY: Record<L, {
   anchors: { title: string; body: string }[];
   cards: { title: string; desc: string; slug: string }[];
   privacy: string;
+  uploadTitle: string;
+  uploadHint: string;
+  extracting: string;
+  removeFile: string;
+  runAll: string;
+  running: string;
+  exportReport: string;
+  errRead: string;
+  errExtract: string;
 }> = {
   en: {
     eyebrow: "Professional · Legal",
@@ -33,6 +42,15 @@ const COPY: Record<L, {
       { title: "Gov Bid Compliance Matrix", desc: "Check whether your proposal meets every requirement in a government tender or RFP.", slug: "/govbid-matrix" },
     ],
     privacy: "File is read locally in your browser; only extracted text is sent for analysis.",
+    uploadTitle: "Upload your legal document (PDF)",
+    uploadHint: "Drop here or click · runs locally in your browser",
+    extracting: "Extracting…",
+    removeFile: "Remove file",
+    runAll: "Run All",
+    running: "Running…",
+    exportReport: "Export Report",
+    errRead: "Could not read PDF.",
+    errExtract: "Could not extract text from this PDF.",
   },
   ko: {
     eyebrow: "전문 · 법률",
@@ -49,6 +67,15 @@ const COPY: Record<L, {
       { title: "정부 입찰 규정 준수 매트릭스", desc: "제안서가 정부 입찰 또는 RFP의 모든 요건을 충족하는지 확인합니다.", slug: "/govbid-matrix" },
     ],
     privacy: "파일은 브라우저에서 로컬로 읽으며, 추출된 텍스트만 분석을 위해 전송됩니다.",
+    uploadTitle: "법률 문서 업로드 (PDF)",
+    uploadHint: "드래그하거나 클릭 · 브라우저에서 처리",
+    extracting: "추출 중…",
+    removeFile: "파일 제거",
+    runAll: "전체 분석",
+    running: "분석 중…",
+    exportReport: "보고서 내보내기",
+    errRead: "PDF를 읽을 수 없습니다.",
+    errExtract: "이 PDF에서 텍스트를 추출할 수 없습니다.",
   },
   zh: {
     eyebrow: "专业领域 · 法律",
@@ -65,6 +92,15 @@ const COPY: Record<L, {
       { title: "政府标书合规矩阵", desc: "核查你的方案是否满足政府招标或 RFP 的每一项要求。", slug: "/govbid-matrix" },
     ],
     privacy: "文件在浏览器本地读取，仅提取的文字发去分析。",
+    uploadTitle: "上传法律文档（PDF）",
+    uploadHint: "拖拽或点击上传 · 文件在浏览器本地读取",
+    extracting: "正在提取…",
+    removeFile: "移除文件",
+    runAll: "一键运行",
+    running: "运行中…",
+    exportReport: "导出报告",
+    errRead: "无法读取 PDF 文件。",
+    errExtract: "无法从此 PDF 提取文字。",
   },
   es: {
     eyebrow: "Profesional · Legal",
@@ -81,6 +117,15 @@ const COPY: Record<L, {
       { title: "Matriz de cumplimiento de licitación", desc: "Verifica si tu propuesta cumple todos los requisitos de una licitación gubernamental.", slug: "/govbid-matrix" },
     ],
     privacy: "El archivo se lee localmente en tu navegador; solo se envía el texto extraído para el análisis.",
+    uploadTitle: "Sube tu documento legal (PDF)",
+    uploadHint: "Arrastra o haz clic · se procesa en tu navegador",
+    extracting: "Extrayendo…",
+    removeFile: "Quitar archivo",
+    runAll: "Analizar todo",
+    running: "Analizando…",
+    exportReport: "Exportar informe",
+    errRead: "No se pudo leer el PDF.",
+    errExtract: "No se pudo extraer texto de este PDF.",
   },
   pt: {
     eyebrow: "Profissional · Jurídico",
@@ -97,6 +142,15 @@ const COPY: Record<L, {
       { title: "Matriz de conformidade em licitação", desc: "Verifique se sua proposta atende a todos os requisitos de uma licitação governamental.", slug: "/govbid-matrix" },
     ],
     privacy: "O arquivo é lido localmente no seu navegador; apenas o texto extraído é enviado para análise.",
+    uploadTitle: "Envie seu documento jurídico (PDF)",
+    uploadHint: "Arraste ou clique · processado no seu navegador",
+    extracting: "Extraindo…",
+    removeFile: "Remover arquivo",
+    runAll: "Analisar tudo",
+    running: "Analisando…",
+    exportReport: "Exportar relatório",
+    errRead: "Não foi possível ler o PDF.",
+    errExtract: "Não foi possível extrair texto deste PDF.",
   },
   fr: {
     eyebrow: "Professionnel · Juridique",
@@ -113,6 +167,15 @@ const COPY: Record<L, {
       { title: "Matrice de conformité des appels d'offres", desc: "Vérifiez si votre proposition répond à tous les critères d'un appel d'offres public.", slug: "/govbid-matrix" },
     ],
     privacy: "Le fichier est lu localement dans votre navigateur ; seul le texte extrait est envoyé pour analyse.",
+    uploadTitle: "Chargez votre document juridique (PDF)",
+    uploadHint: "Glissez ou cliquez · traité dans votre navigateur",
+    extracting: "Extraction…",
+    removeFile: "Supprimer le fichier",
+    runAll: "Tout analyser",
+    running: "En cours…",
+    exportReport: "Exporter le rapport",
+    errRead: "Impossible de lire le PDF.",
+    errExtract: "Impossible d'extraire le texte de ce PDF.",
   },
   ja: {
     eyebrow: "専門領域・法務",
@@ -129,6 +192,15 @@ const COPY: Record<L, {
       { title: "入札コンプライアンスマトリクス", desc: "提案が政府入札・RFP のすべての要件を満たしているか確認します。", slug: "/govbid-matrix" },
     ],
     privacy: "ファイルはブラウザ内でローカルに読み込まれます。分析に送信されるのは抽出されたテキストのみです。",
+    uploadTitle: "法律文書をアップロード（PDF）",
+    uploadHint: "ドラッグまたはクリック · ブラウザ内で処理",
+    extracting: "抽出中…",
+    removeFile: "ファイルを削除",
+    runAll: "一括分析",
+    running: "分析中…",
+    exportReport: "レポートをエクスポート",
+    errRead: "PDF を読み込めませんでした。",
+    errExtract: "この PDF からテキストを抽出できませんでした。",
   },
   de: {
     eyebrow: "Professionell · Recht",
@@ -145,6 +217,15 @@ const COPY: Record<L, {
       { title: "Ausschreibungs-Compliance-Matrix", desc: "Prüfen Sie, ob Ihr Angebot alle Anforderungen einer öffentlichen Ausschreibung erfüllt.", slug: "/govbid-matrix" },
     ],
     privacy: "Die Datei wird lokal in Ihrem Browser verarbeitet; nur der extrahierte Text wird zur Analyse gesendet.",
+    uploadTitle: "Rechtsdokument hochladen (PDF)",
+    uploadHint: "Ziehen oder klicken · wird im Browser verarbeitet",
+    extracting: "Extrahiere…",
+    removeFile: "Datei entfernen",
+    runAll: "Alles analysieren",
+    running: "Läuft…",
+    exportReport: "Bericht exportieren",
+    errRead: "PDF konnte nicht gelesen werden.",
+    errExtract: "Text konnte nicht aus diesem PDF extrahiert werden.",
   },
   "zh-Hant": {
     eyebrow: "專業領域・法律",
@@ -161,6 +242,15 @@ const COPY: Record<L, {
       { title: "政府標案合規矩陣", desc: "核查你的提案是否符合政府招標或 RFP 的每一項要求。", slug: "/govbid-matrix" },
     ],
     privacy: "文件在瀏覽器本地讀取，僅提取的文字發送分析。",
+    uploadTitle: "上傳法律文件（PDF）",
+    uploadHint: "拖曳或點擊上傳 · 文件在瀏覽器本地讀取",
+    extracting: "正在提取…",
+    removeFile: "移除文件",
+    runAll: "一鍵執行",
+    running: "執行中…",
+    exportReport: "匯出報告",
+    errRead: "無法讀取 PDF 文件。",
+    errExtract: "無法從此 PDF 提取文字。",
   },
 };
 
@@ -272,11 +362,11 @@ export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale })
       }
       const trimmed = text.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
       try { doc.destroy(); } catch { /* ignore */ }
-      if (!trimmed) { setUploadError("Could not extract text from this PDF."); setUploading(false); return; }
+      if (!trimmed) { setUploadError(c.errExtract); setUploading(false); return; }
       legalCtx?.setSessionFile(file, trimmed, thumbnails, doc.numPages);
       setRunStatus({ contractRisk: "idle", leaseRedflag: "idle", govbidMatrix: "idle" });
     } catch (e) {
-      setUploadError(e instanceof Error ? e.message : "Could not read PDF.");
+      setUploadError(e instanceof Error ? e.message : c.errRead);
     }
     setUploading(false);
   }, [legalCtx]);
@@ -372,15 +462,15 @@ export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale })
             <input type="file" accept=".pdf,application/pdf" className="sr-only"
               onChange={(e) => { const f = e.target.files?.[0]; if (f) void onFile(f); e.target.value = ""; }} />
             {uploading ? (
-              <span className="animate-pulse text-[13px] text-[color:var(--muted)]">Extracting…</span>
+              <span className="animate-pulse text-[13px] text-[color:var(--muted)]">{c.extracting}</span>
             ) : (
               <>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7 text-[color:var(--muted)]">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
                   <line x1="12" y1="12" x2="12" y2="18" /><line x1="9" y1="15" x2="15" y2="15" />
                 </svg>
-                <p className="text-[13px] font-medium text-[color:var(--foreground)]">Upload your legal document (PDF)</p>
-                <p className="text-[12px] text-[color:var(--muted)]">Drop here or click · runs locally in your browser</p>
+                <p className="text-[13px] font-medium text-[color:var(--foreground)]">{c.uploadTitle}</p>
+                <p className="text-[12px] text-[color:var(--muted)]">{c.uploadHint}</p>
               </>
             )}
           </label>
@@ -395,7 +485,7 @@ export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale })
             </svg>
             <span className="flex-1 truncate text-[13px] font-medium text-[color:var(--foreground)]">{session.fileName}</span>
             <span className="text-[11.5px] text-[color:var(--muted)]">{session.pageCount}p</span>
-            <button type="button" aria-label="Remove file"
+            <button type="button" aria-label={c.removeFile}
               onClick={() => { legalCtx?.clearSession(); setRunStatus({ contractRisk: "idle", leaseRedflag: "idle", govbidMatrix: "idle" }); }}
               className="ml-1 text-[11.5px] text-[color:var(--muted)] hover:text-[color:var(--foreground)] transition-colors">✕</button>
           </div>
@@ -412,7 +502,7 @@ export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale })
           <div className="flex items-center gap-2.5">
             <button type="button" disabled={anyRunning} onClick={() => void runAll()}
               className="rounded-[var(--radius)] bg-[color:var(--accent)] px-3.5 py-1.5 text-[12.5px] font-medium text-[color:var(--on-accent)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
-              {anyRunning ? "Running…" : "Run All"}
+              {anyRunning ? c.running : c.runAll}
             </button>
             {hasResults && (
               <button type="button" onClick={exportReport}
@@ -420,7 +510,7 @@ export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale })
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
                   <path d="M8 1v10M3 7l5 5 5-5M1 13h14" />
                 </svg>
-                Export Report
+                {c.exportReport}
               </button>
             )}
           </div>
