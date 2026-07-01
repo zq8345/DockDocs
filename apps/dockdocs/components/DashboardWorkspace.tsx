@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { WorkspaceSidebar } from "@/components/WorkspaceSidebar";
 import { WorkspaceTopbar } from "@/components/WorkspaceTopbar";
 import { WorkspaceNavContext } from "@/components/WorkspaceNavContext";
+import { LegalSessionProvider } from "@/components/LegalSessionProvider";
 import { headerStructure, navItemLabels } from "@/lib/header-nav";
 import { readWorkHistory, type WorkHistoryItem } from "@/lib/work-history";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
@@ -330,6 +331,7 @@ export function DashboardWorkspace({ initialTool }: { initialTool?: string | nul
   }
 
   return (
+    <LegalSessionProvider>
     <WorkspaceNavContext.Provider value={setActiveTool}>
     <div className="flex h-screen overflow-hidden bg-[color:var(--background)]">
       <WorkspaceSidebar locale={locale} activeTool={activeTool} onToolSelect={setActiveTool} onLocaleChange={handleLocaleChange} />
@@ -498,5 +500,6 @@ export function DashboardWorkspace({ initialTool }: { initialTool?: string | nul
       </main>
     </div>
     </WorkspaceNavContext.Provider>
+    </LegalSessionProvider>
   );
 }

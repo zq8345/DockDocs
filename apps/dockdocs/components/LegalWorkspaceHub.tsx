@@ -1,6 +1,11 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
+import { useLegalSession, type LegalRisk, type LegalRequirement, type LegalSession } from "@/lib/legal-session";
+import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { authHeader } from "@/lib/supabase";
+import { trackToolRun } from "@/lib/track";
 import type { RuntimeLocale } from "@/lib/copy";
 
 type L = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
@@ -185,9 +190,153 @@ function getLang(locale: RuntimeLocale): L {
   return l in COPY ? l : "en";
 }
 
+const LEVEL_ORDER: Record<"high" | "medium" | "low", number> = { high: 0, medium: 1, low: 2 };
+const MAX_GOVBID_CHARS = 60_000;
+type RunKey = "contractRisk" | "leaseRedflag" | "govbidMatrix";
+type RunStatus = "idle" | "running" | "done" | "error";
+
+function esc(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function StatusIcon({ status }: { status: RunStatus }) {
+  if (status === "done") return <span className="text-[12px] font-semibold text-emerald-500">✓</span>;
+  if (status === "running") return <span className="animate-pulse text-[12px] text-[color:var(--muted)]">⏳</span>;
+  if (status === "error") return <span className="text-[12px] text-red-500">⊘</span>;
+  return <span className="text-[12px] text-[color:var(--faint)]">–</span>;
+}
+
+function buildMergedReport(session: LegalSession, cardTitles: [string, string, string]): string {
+  const { results, fileName } = session;
+  const riskHtml = (risks: LegalRisk[]) =>
+    risks.map(r => `<div class="rc ${r.level}"><div class="rh"><span class="lb ${r.level}">${r.level.toUpperCase()}</span><strong>${esc(r.type)}</strong></div>${r.quote ? `<blockquote>${esc(r.quote)}</blockquote>` : ""}<p>${esc(r.why)}</p><p class="sg">${esc(r.suggestion)}</p></div>`).join("");
+  const reqHtml = (reqs: LegalRequirement[]) =>
+    `<table><thead><tr><th>#</th><th>Section</th><th>Requirement</th><th>Type</th></tr></thead><tbody>${reqs.map(r => `<tr><td>${esc(r.id)}</td><td>${esc(r.section)}</td><td>${esc(r.requirement)}${r.quote ? `<br><em>"${esc(r.quote)}"</em>` : ""}</td><td class="${r.type}">${r.type}</td></tr>`).join("")}</tbody></table>`;
+  const parts: string[] = [];
+  if (results.contractRisk?.length) parts.push(`<h2>${esc(cardTitles[0])}</h2>${riskHtml(results.contractRisk)}`);
+  if (results.leaseRedflag?.length) parts.push(`<h2>${esc(cardTitles[1])}</h2>${riskHtml(results.leaseRedflag)}`);
+  if (results.govbidMatrix?.length) parts.push(`<h2>${esc(cardTitles[2])}</h2>${reqHtml(results.govbidMatrix)}`);
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Legal Analysis — ${esc(fileName)}</title><style>body{font-family:system-ui,sans-serif;max-width:800px;margin:2rem auto;padding:0 1rem;color:#1a1a1a}h1{font-size:1.4rem;margin-bottom:.25rem}.meta{color:#666;font-size:.85rem;margin-bottom:2rem}h2{font-size:1.1rem;border-bottom:1px solid #e0e0e0;padding-bottom:.4rem;margin:2rem 0 1rem}.rc{border:1px solid #e0e0e0;border-radius:6px;padding:12px 14px;margin-bottom:10px}.rc.high{border-left:3px solid #dc2626}.rc.medium{border-left:3px solid #ea580c}.rc.low{border-left:3px solid #ca8a04}.rh{display:flex;align-items:center;gap:8px;margin-bottom:6px}.lb{font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px}.lb.high{background:#fee2e2;color:#dc2626}.lb.medium{background:#ffedd5;color:#ea580c}.lb.low{background:#fef9c3;color:#ca8a04}blockquote{font-style:italic;color:#555;border-left:3px solid #d4d4d4;margin:8px 0;padding-left:10px}.sg{font-size:.85rem;color:#4b5563;margin-top:6px}table{width:100%;border-collapse:collapse;font-size:.85rem}th,td{border:1px solid #e0e0e0;padding:6px 8px;text-align:left;vertical-align:top}th{background:#f5f5f5;font-weight:600}.mandatory{color:#dc2626;font-weight:500}.advisory{color:#ca8a04}@media print{body{margin:0}}</style></head><body><h1>Legal Analysis Report</h1><p class="meta">Document: ${esc(fileName)} · DockDocs Legal Workspace</p>${parts.join("")}</body></html>`;
+}
+
 export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale }) {
   const nav = useWorkspaceNav();
+  const legalCtx = useLegalSession();
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [runStatus, setRunStatus] = useState<Record<RunKey, RunStatus>>({
+    contractRisk: "idle", leaseRedflag: "idle", govbidMatrix: "idle",
+  });
   const c = COPY[getLang(locale)];
+  const session = legalCtx?.session;
+  const hasFile = !!session?.extractedText;
+
+  function getStatus(key: RunKey): RunStatus {
+    if (session?.results[key]) return "done";
+    return runStatus[key];
+  }
+
+  const onFile = useCallback(async (file: File) => {
+    if (!file || (!file.type.includes("pdf") && !file.name.toLowerCase().endsWith(".pdf"))) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const pdfjs = await import("pdfjs-dist");
+      pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+      const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+      const THUMB_PAGES = Math.min(doc.numPages, 20);
+      const thumbnails: string[] = [];
+      let text = "";
+      for (let i = 1; i <= doc.numPages; i++) {
+        const page = await doc.getPage(i);
+        if (i <= THUMB_PAGES) {
+          const vp = page.getViewport({ scale: 0.35 });
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(vp.width); canvas.height = Math.round(vp.height);
+          const ctx2d = canvas.getContext("2d");
+          if (ctx2d) await page.render({ canvas, canvasContext: ctx2d, viewport: vp }).promise;
+          thumbnails.push(canvas.toDataURL("image/jpeg", 0.7));
+        }
+        const content = await page.getTextContent();
+        text += content.items.map((it) => ("str" in it ? (it as { str: string }).str : "")).join(" ") + "\n\n";
+      }
+      const trimmed = text.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+      try { doc.destroy(); } catch { /* ignore */ }
+      if (!trimmed) { setUploadError("Could not extract text from this PDF."); setUploading(false); return; }
+      legalCtx?.setSessionFile(file, trimmed, thumbnails, doc.numPages);
+      setRunStatus({ contractRisk: "idle", leaseRedflag: "idle", govbidMatrix: "idle" });
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : "Could not read PDF.");
+    }
+    setUploading(false);
+  }, [legalCtx]);
+
+  const runAll = useCallback(async () => {
+    const text = session?.extractedText;
+    if (!text) return;
+    setRunStatus({ contractRisk: "running", leaseRedflag: "running", govbidMatrix: "running" });
+    await Promise.all([
+      (async () => {
+        try {
+          const gate = await checkUsage("contractAnalyzer");
+          if (!gate.allowed) { setRunStatus(p => ({ ...p, contractRisk: "error" })); return; }
+          const auth = await authHeader();
+          const res = await fetch("/api/contract-risk", { method: "POST", headers: { "Content-Type": "application/json", ...auth }, body: JSON.stringify({ text, locale }) });
+          const data = await res.json().catch(() => ({}));
+          if (data?.ok && Array.isArray(data.risks)) {
+            const sorted = (data.risks as LegalRisk[]).slice().sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
+            legalCtx?.setResult("contractRisk", sorted);
+            await markUsage(gate, "contractAnalyzer");
+            trackToolRun("contract-risk");
+          } else { setRunStatus(p => ({ ...p, contractRisk: "error" })); }
+        } catch { setRunStatus(p => ({ ...p, contractRisk: "error" })); }
+      })(),
+      (async () => {
+        try {
+          const gate = await checkUsage("contractAnalyzer");
+          if (!gate.allowed) { setRunStatus(p => ({ ...p, leaseRedflag: "error" })); return; }
+          const auth = await authHeader();
+          const res = await fetch("/api/lease-redflag", { method: "POST", headers: { "Content-Type": "application/json", ...auth }, body: JSON.stringify({ text, locale }) });
+          const data = await res.json().catch(() => ({}));
+          if (data?.ok && Array.isArray(data.risks)) {
+            const sorted = (data.risks as LegalRisk[]).slice().sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
+            legalCtx?.setResult("leaseRedflag", sorted);
+            await markUsage(gate, "contractAnalyzer");
+            trackToolRun("lease-redflag");
+          } else { setRunStatus(p => ({ ...p, leaseRedflag: "error" })); }
+        } catch { setRunStatus(p => ({ ...p, leaseRedflag: "error" })); }
+      })(),
+      (async () => {
+        try {
+          const gate = await checkUsage("contractAnalyzer");
+          if (!gate.allowed) { setRunStatus(p => ({ ...p, govbidMatrix: "error" })); return; }
+          const auth = await authHeader();
+          const res = await fetch("/api/govbid-matrix", { method: "POST", headers: { "Content-Type": "application/json", ...auth }, body: JSON.stringify({ text: text.slice(0, MAX_GOVBID_CHARS), locale }) });
+          const data = await res.json().catch(() => ({}));
+          if (data?.ok) {
+            const reqs: LegalRequirement[] = data.requirements ?? [];
+            legalCtx?.setResult("govbidMatrix", reqs);
+            await markUsage(gate, "contractAnalyzer");
+            trackToolRun("govbid-matrix");
+          } else { setRunStatus(p => ({ ...p, govbidMatrix: "error" })); }
+        } catch { setRunStatus(p => ({ ...p, govbidMatrix: "error" })); }
+      })(),
+    ]);
+  }, [session?.extractedText, locale, legalCtx]);
+
+  const exportReport = useCallback(() => {
+    if (!session) return;
+    const titles: [string, string, string] = [c.cards[0].title, c.cards[1].title, c.cards[2].title];
+    const html = buildMergedReport(session, titles);
+    const win = window.open("", "_blank");
+    if (!win) return;
+    win.document.write(html);
+    win.document.close();
+    win.print();
+  }, [session, c]);
+
+  const hasResults = !!(session?.results.contractRisk || session?.results.leaseRedflag || session?.results.govbidMatrix);
+  const anyRunning = (["contractRisk", "leaseRedflag", "govbidMatrix"] as RunKey[]).some(k => runStatus[k] === "running");
 
   return (
     <div className="mx-auto w-full max-w-2xl px-8 py-10">
@@ -202,6 +351,72 @@ export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale })
         {c.subtitle}
       </p>
 
+      {/* Upload / session panel */}
+      {!hasFile ? (
+        <div className="mb-8">
+          <label
+            className="flex flex-col items-center justify-center gap-2 rounded-[var(--radius-lg)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-10 cursor-pointer hover:border-[color:var(--accent)] transition-colors"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) void onFile(f); }}
+          >
+            <input type="file" accept=".pdf,application/pdf" className="sr-only"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) void onFile(f); e.target.value = ""; }} />
+            {uploading ? (
+              <span className="animate-pulse text-[13px] text-[color:var(--muted)]">Extracting…</span>
+            ) : (
+              <>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7 text-[color:var(--muted)]">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
+                  <line x1="12" y1="12" x2="12" y2="18" /><line x1="9" y1="15" x2="15" y2="15" />
+                </svg>
+                <p className="text-[13px] font-medium text-[color:var(--foreground)]">Upload your legal document (PDF)</p>
+                <p className="text-[12px] text-[color:var(--muted)]">Drop here or click · runs locally in your browser</p>
+              </>
+            )}
+          </label>
+          {uploadError && <p className="mt-2 text-[12px] text-red-500">{uploadError}</p>}
+        </div>
+      ) : (
+        <div className="mb-8 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
+          {/* File info row */}
+          <div className="mb-4 flex items-center gap-2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0 text-[color:var(--accent)]">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
+            </svg>
+            <span className="flex-1 truncate text-[13px] font-medium text-[color:var(--foreground)]">{session.fileName}</span>
+            <span className="text-[11.5px] text-[color:var(--muted)]">{session.pageCount}p</span>
+            <button type="button" aria-label="Remove file"
+              onClick={() => { legalCtx?.clearSession(); setRunStatus({ contractRisk: "idle", leaseRedflag: "idle", govbidMatrix: "idle" }); }}
+              className="ml-1 text-[11.5px] text-[color:var(--muted)] hover:text-[color:var(--foreground)] transition-colors">✕</button>
+          </div>
+          {/* Per-tool status */}
+          <div className="mb-4 flex flex-col gap-1.5">
+            {(["contractRisk", "leaseRedflag", "govbidMatrix"] as RunKey[]).map((key, i) => (
+              <div key={key} className="flex items-center gap-2">
+                <StatusIcon status={getStatus(key)} />
+                <span className="text-[12.5px] text-[color:var(--foreground)]">{c.cards[i].title}</span>
+              </div>
+            ))}
+          </div>
+          {/* Actions */}
+          <div className="flex items-center gap-2.5">
+            <button type="button" disabled={anyRunning} onClick={() => void runAll()}
+              className="rounded-[var(--radius)] bg-[color:var(--accent)] px-3.5 py-1.5 text-[12.5px] font-medium text-[color:var(--on-accent)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+              {anyRunning ? "Running…" : "Run All"}
+            </button>
+            {hasResults && (
+              <button type="button" onClick={exportReport}
+                className="flex items-center gap-1.5 rounded-[var(--radius)] border border-[color:var(--line)] px-3.5 py-1.5 text-[12.5px] font-medium text-[color:var(--foreground)] transition hover:bg-[color:var(--surface)]">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
+                  <path d="M8 1v10M3 7l5 5 5-5M1 13h14" />
+                </svg>
+                Export Report
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Value anchors */}
       <div className="mb-8 flex flex-col gap-4 border border-[color:var(--line)] rounded-[var(--radius)] p-5">
         {c.anchors.map((anchor, i) => (
@@ -215,28 +430,27 @@ export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale })
         ))}
       </div>
 
-      {/* Tool cards */}
+      {/* Tool cards with status badges */}
       <div className="mb-8 flex flex-col gap-2.5">
-        {c.cards.map((card) => (
-          <button
-            key={card.slug}
-            type="button"
-            onClick={() => nav?.(card.slug)}
-            className="group flex w-full items-start gap-4 rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-3.5 text-left transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-subtle)]"
-          >
-            <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-medium text-[color:var(--foreground)] group-hover:text-[color:var(--accent)] transition-colors">
-                {card.title}
-              </p>
-              <p className="mt-0.5 text-[12px] leading-[1.5] text-[color:var(--muted)]">
-                {card.desc}
-              </p>
-            </div>
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--faint)] transition group-hover:text-[color:var(--accent)] group-hover:translate-x-0.5">
-              <path d="M3 8h10M9 4l4 4-4 4" />
-            </svg>
-          </button>
-        ))}
+        {c.cards.map((card) => {
+          const key = card.slug === "/contract-risk" ? "contractRisk" : card.slug === "/lease-redflag" ? "leaseRedflag" : "govbidMatrix" as RunKey;
+          const status = getStatus(key);
+          return (
+            <button key={card.slug} type="button" onClick={() => nav?.(card.slug)}
+              className="group flex w-full items-start gap-4 rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-3.5 text-left transition hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-subtle)]">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <p className="text-[13px] font-medium text-[color:var(--foreground)] group-hover:text-[color:var(--accent)] transition-colors">{card.title}</p>
+                  {status === "done" && <span className="text-[11px] font-semibold text-emerald-500">✓</span>}
+                </div>
+                <p className="mt-0.5 text-[12px] leading-[1.5] text-[color:var(--muted)]">{card.desc}</p>
+              </div>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[color:var(--faint)] transition group-hover:text-[color:var(--accent)] group-hover:translate-x-0.5">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </button>
+          );
+        })}
       </div>
 
       {/* Privacy note */}

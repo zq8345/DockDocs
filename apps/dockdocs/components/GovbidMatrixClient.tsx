@@ -14,7 +14,8 @@ import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 import { DocPreview } from "../../../shared/templates/pdf-tool-page/doc-preview";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLegalSession } from "@/lib/legal-session";
 
 type Locale = RouteLocale;
 type RequirementType = "mandatory" | "advisory";
@@ -445,6 +446,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
   // ToolFaq / encryptedPdfMessage) lack zh-Hant in their union → map to "zh".
   // ko has no engine/runtime copy yet → English (foundation phase); zh-Hant preserved.
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  const legalCtx = useLegalSession();
   const [phase, setPhase] = useState<"ready" | "analyzing" | "done">("ready");
   const [error, setError] = useState<string | null>(null);
   const [requirements, setRequirements] = useState<Requirement[] | null>(null);
@@ -452,6 +454,54 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
   const [filter, setFilter] = useState<"all" | "mandatory" | "advisory">("all");
   const [limitHit, setLimitHit] = useState<number | null>(null);
   const [expandedQuote, setExpandedQuote] = useState<string | null>(null);
+
+  useEffect(() => {
+    const s = legalCtx?.session;
+    if (!s?.extractedText) return;
+    if (s.results.govbidMatrix) {
+      setRequirements(s.results.govbidMatrix as Requirement[]);
+      setPhase("done");
+      return;
+    }
+    // auto-analyze with hub-extracted text, skipping file re-upload
+    void (async () => {
+      setPhase("analyzing");
+      setError(null);
+      setRequirements(null);
+      setLimitHit(null);
+      setExpandedQuote(null);
+      const textSlice = s.extractedText.slice(0, MAX_CHARS);
+      const gate = await checkUsage("contractAnalyzer");
+      if (!gate.allowed) {
+        setLimitHit(gate.limit);
+        setPhase("ready");
+        return;
+      }
+      const auth = await authHeader();
+      try {
+        const res = await fetch("/api/govbid-matrix", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", ...auth },
+          body: JSON.stringify({ text: textSlice, locale }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) {
+          setError((t.errPrefix + " " + (data.message ?? res.status)).trim());
+          setPhase("ready");
+          return;
+        }
+        await markUsage(gate, "contractAnalyzer");
+        const reqs: Requirement[] = data.requirements ?? [];
+        setRequirements(reqs);
+        setPhase("done");
+        legalCtx?.setResult("govbidMatrix", reqs);
+        trackToolRun("govbid-matrix");
+      } catch (e) {
+        setError(t.errPrefix + (e instanceof Error ? e.message : String(e)));
+        setPhase("ready");
+      }
+    })();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onAnalyze = useCallback(
     async (file: File) => {
@@ -522,8 +572,10 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
       }
 
       await markUsage(gate, "contractAnalyzer");
-      setRequirements(data.requirements ?? []);
+      const reqs: Requirement[] = data.requirements ?? [];
+      setRequirements(reqs);
       setPhase("done");
+      legalCtx?.setResult("govbidMatrix", reqs);
       trackToolRun("govbid-matrix");
     },
     [locale, al, t, childLocale],

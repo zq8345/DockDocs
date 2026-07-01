@@ -17,7 +17,8 @@ import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 import { DocPreview } from "../../../shared/templates/pdf-tool-page/doc-preview";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLegalSession, type LegalRisk } from "@/lib/legal-session";
 
 type Locale = RouteLocale;
 type RiskLevel = "high" | "medium" | "low";
@@ -592,6 +593,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   // Shared widgets (UploadDropzone / UpgradePrompt / encryptedPdfMessage) accept zh-Hant
   // (Traditional derived via OpenCC) but not ko, so collapse only ko → en for those props.
   const childLocale = locale;
+  const legalCtx = useLegalSession();
   const [phase, setPhase] = useState<Phase>("idle");
   const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
@@ -606,6 +608,22 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const [file, setFile] = useState<File | null>(null);
   const [pageDataUrls, setPageDataUrls] = useState<string[]>([]);
   const [progressStep, setProgressStep] = useState<string>("");
+
+  useEffect(() => {
+    const s = legalCtx?.session;
+    if (!s?.extractedText || phase !== "idle") return;
+    setText(s.extractedText);
+    if (s.file) setFile(s.file);
+    if (s.fileName) setFileName(s.fileName);
+    if (s.pageThumbnails.length) setPageDataUrls(s.pageThumbnails);
+    setPages(s.pageCount);
+    if (s.results.contractRisk) {
+      setRisks(s.results.contractRisk as Risk[]);
+      setPhase("done");
+    } else {
+      setPhase("ready");
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const levelLabel = useMemo(
     () => ({ high: t.levelHigh, medium: t.levelMedium, low: t.levelLow }),
@@ -819,6 +837,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         setTypeSpecificItems(Array.isArray(data.typeSpecificItems) ? (data.typeSpecificItems as TypeSpecificItem[]) : []);
         setProgressStep("");
         setPhase("done");
+        legalCtx?.setResult("contractRisk", sorted);
         trackToolRun("contract-risk");
         await markUsage(gate, "contractAnalyzer");
         // Save to dashboard work history

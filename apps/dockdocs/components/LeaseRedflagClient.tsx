@@ -15,7 +15,8 @@ import type { RouteLocale, AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 import { DocPreview } from "../../../shared/templates/pdf-tool-page/doc-preview";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLegalSession, type LegalRisk } from "@/lib/legal-session";
 
 type Locale = RouteLocale;
 type RiskLevel = "high" | "medium" | "low";
@@ -458,12 +459,26 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
   // so map it to "zh" for those props.
   // ko has no engine/runtime copy yet → English (foundation phase); zh-Hant preserved.
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  const legalCtx = useLegalSession();
   const fileRef = useRef<File | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [text, setText] = useState("");
   const [risks, setRisks] = useState<Risk[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [limitHit, setLimitHit] = useState<number | null>(null);
+
+  useEffect(() => {
+    const s = legalCtx?.session;
+    if (!s?.extractedText || phase !== "idle") return;
+    setText(s.extractedText);
+    if (s.file) fileRef.current = s.file;
+    if (s.results.leaseRedflag) {
+      setRisks(s.results.leaseRedflag as Risk[]);
+      setPhase("done");
+    } else {
+      setPhase("ready");
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const levelLabel = useMemo(
     () => ({ high: t.levelHigh, medium: t.levelMedium, low: t.levelLow }),
@@ -538,6 +553,7 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
         const sorted = (data.risks as Risk[]).slice().sort((a, b) => LEVEL_ORDER[a.level] - LEVEL_ORDER[b.level]);
         setRisks(sorted);
         setPhase("done");
+        legalCtx?.setResult("leaseRedflag", sorted);
         trackToolRun("lease-redflag");
         await markUsage(gate, "contractAnalyzer");
       } else {
