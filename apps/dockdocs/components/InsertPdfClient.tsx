@@ -520,24 +520,36 @@ export function InsertPdfClient({ locale = "en", embedded = false }: { locale?: 
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} constrained={embedded} valueZone="client" />
       ) : (
         <>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <p className="text-[12.5px] text-[color:var(--muted)]">{t.pickSpot}</p>
-              {mainRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{pages.length}p · {(mainRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
+          {/* Toolbar v2: card bar */}
+          <div className="mt-6 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
+            <div className="flex items-center gap-2">
+              <p className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
+              <button type="button" onClick={reset} aria-label={t.reset}
+                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
+                <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
             </div>
-            <button type="button" onClick={reset} className="shrink-0 rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
+            {mainRef.current && (
+              <p className="mt-0.5 text-[12px] text-[color:var(--muted)]">{pages.length}p · {(mainRef.current.size / 1024 / 1024).toFixed(2)} MB</p>
+            )}
           </div>
+          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.pickSpot}</p>
 
           <div className="mt-4">
             <Slot value={0} label={t.atStart} />
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+          <div className="mt-4 flex flex-wrap justify-center gap-4">
             {pages.map((p) => (
-              <div key={p.idx} className="rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.thumb} alt={`page ${p.idx + 1}`} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
-                <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">{pageLabel(p.idx + 1)}</p>
+              <div key={p.idx} className="flex w-fit flex-col items-center">
+                <div className="relative overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={p.thumb} alt={`page ${p.idx + 1}`}
+                    style={{ maxHeight: "160px", maxWidth: "120px", display: "block" }}
+                    className="h-auto w-auto max-w-full" />
+                </div>
+                <p className="mt-1 text-center text-[11px] text-[color:var(--muted)]">{pageLabel(p.idx + 1)}</p>
                 <Slot value={p.idx + 1} label={t.afterPage(p.idx + 1)} />
               </div>
             ))}

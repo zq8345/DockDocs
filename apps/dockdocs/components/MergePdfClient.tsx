@@ -416,18 +416,26 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
         <BatchUploadBox locale={locale} onFiles={addFiles} busy={busy} busyLabel={t.rendering} embedded={embedded} valueZone="client" />
       ) : (
         <>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          {/* Toolbar v2: card bar */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
             <div className="min-w-0">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, totalPages)}</p>
-              <p className="text-[12.5px] text-[color:var(--muted)]">{t.hint}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-[15px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, totalPages)}</p>
+                <button type="button" onClick={reset} aria-label={t.reset}
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
+                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
             </div>
-            <div className="flex shrink-0 gap-2">
-              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
-              <button type="button" onClick={merge} disabled={working || items.length < 2} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{working ? t.working : t.merge}</button>
-            </div>
+            <button type="button" onClick={merge} disabled={working || items.length < 2} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+              {working ? t.working : t.merge}
+            </button>
           </div>
+          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+          <div className="mt-5 flex flex-wrap justify-center gap-4">
             {items.map((it, pos) => (
               <div
                 key={it.id}
@@ -436,20 +444,24 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
                 onDragEnd={() => (dragFrom.current = null)}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => { e.preventDefault(); if (dragFrom.current != null) move(dragFrom.current, pos); dragFrom.current = null; }}
-                className="group relative cursor-grab rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2 transition hover:border-[color:var(--accent)] active:cursor-grabbing"
+                className="group flex w-fit cursor-grab flex-col items-center rounded-[var(--radius)] p-1.5 transition active:cursor-grabbing"
               >
-                <span className="absolute left-2 top-2 z-10 flex h-6 min-w-6 items-center justify-center rounded-full bg-[color:var(--accent)] px-1.5 text-[12px] font-bold text-white">{pos + 1}</span>
-                <button type="button" onClick={() => remove(it.id)} className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white" aria-label="Remove">✕</button>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={it.thumb} alt={it.name} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
-                <p className="mt-1.5 truncate text-center text-[11.5px] font-medium text-[color:var(--foreground)]" title={it.name}>{it.name}</p>
-                <p className="text-center text-[11px] text-[color:var(--muted)]">{t.pagesLabel(it.pages)}</p>
+                <div className="relative overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] transition group-hover:border-[color:var(--accent)]">
+                  <span className="absolute left-1.5 top-1.5 z-10 flex h-5 min-w-5 items-center justify-center rounded-full bg-[color:var(--accent)] px-1 text-[11px] font-bold text-white">{pos + 1}</span>
+                  <button type="button" onClick={() => remove(it.id)} className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[10px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white" aria-label="Remove">✕</button>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={it.thumb} alt={it.name}
+                    style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
+                    className="h-auto w-auto max-w-full" />
+                </div>
+                <span className="mt-1 block max-w-[120px] truncate text-center text-[11px] font-medium text-[color:var(--foreground)]" title={it.name}>{it.name}</span>
+                <span className="block text-center text-[10px] text-[color:var(--muted)]">{t.pagesLabel(it.pages)}</span>
               </div>
             ))}
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="flex min-h-[140px] flex-col items-center justify-center gap-2 rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+              className="flex h-[180px] w-[115px] flex-col items-center justify-center gap-2 rounded-[var(--radius)] border border-dashed border-[color:var(--line)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
               aria-label={t.add}
             >
               <span className="text-[30px] font-light leading-none">+</span>
