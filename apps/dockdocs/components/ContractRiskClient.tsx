@@ -941,7 +941,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
                 <img
                   src={thumbnailUrl}
                   alt="Page 1"
-                  className="h-24 w-auto shrink-0 rounded border border-[color:var(--line)] object-cover shadow-sm"
+                  className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]"
                 />
               )}
               <div className="min-w-0">
