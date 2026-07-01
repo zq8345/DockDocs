@@ -469,24 +469,39 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
         <>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          {/* Toolbar v2: card bar */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
+            {/* Left: filename + × clear + meta */}
             <div className="min-w-0">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <p className="text-[12.5px] text-[color:var(--muted)]">{t.selected(selected.size, pages.length)} · {t.hint}</p>
-              {fileRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
+              <div className="flex items-center gap-2">
+                <p className="truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
+                <button type="button" onClick={reset} aria-label={t.reset}
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
+                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <p className="mt-0.5 text-[12.5px] text-[color:var(--muted)]">
+                {pages.length}p{fileRef.current ? ` · ${(fileRef.current.size / 1024 / 1024).toFixed(2)} MB` : ""} · <span className="font-medium text-[color:var(--accent)]">{t.selected(selected.size, pages.length)}</span>
+              </p>
             </div>
+            {/* Right: [JPG|PNG] segmented + 全选/全不选 + 转换并下载 */}
             <div className="flex shrink-0 flex-wrap items-center gap-2">
-              <button type="button" onClick={() => setSelected(new Set(pages.map((p) => p.idx)))} className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-2 text-[12.5px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.all}</button>
-              <button type="button" onClick={() => setSelected(new Set())} className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-2 text-[12.5px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.none}</button>
               <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
                 {(["jpg", "png"] as const).map((f) => (
                   <button key={f} type="button" onClick={() => setFormat(f)} className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-[12.5px] font-semibold uppercase transition ${format === f ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>{f}</button>
                 ))}
               </div>
-              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-2 text-[12.5px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.reset}</button>
-              <button type="button" onClick={convert} disabled={phase === "working" || selected.size === 0} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "working" ? t.working : t.convert}</button>
+              <button type="button" onClick={() => setSelected(new Set(pages.map((p) => p.idx)))} className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-1.5 text-[12.5px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.all}</button>
+              <button type="button" onClick={() => setSelected(new Set())} className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-1.5 text-[12.5px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.none}</button>
+              <button type="button" onClick={convert} disabled={phase === "working" || selected.size === 0} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+                {phase === "working" ? t.working : t.convert}
+              </button>
             </div>
           </div>
+          {/* Hint: outside toolbar, small caption */}
+          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
           <div className="mt-5 flex flex-wrap gap-4 justify-center">
             {pages.map((p) => {
