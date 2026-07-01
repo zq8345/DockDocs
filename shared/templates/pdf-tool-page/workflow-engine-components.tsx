@@ -411,51 +411,66 @@ export function ReadyWorkflowState({
         </>
       )}
 
-      {config.slug === "compress-pdf" && (
-        <div className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            {tr(locale, "Compression level", "压缩级别", "Nivel de compresión", "Nível de compressão", "Niveau de compression", "圧縮レベル", "Komprimierungsstufe")}
-          </span>
-          <div className="mt-2 grid grid-cols-3 gap-2">
-            {[
-              { key: "low", label: ["Light", "轻度", "Ligera", "Leve", "Légère", "弱", "Leicht"], desc: ["Best quality", "质量优先", "Mejor calidad", "Melhor qualidade", "Meilleure qualité", "品質優先", "Beste Qualität"] },
-              { key: "recommended", label: ["Recommended", "推荐", "Recomendada", "Recomendada", "Recommandé", "推奨", "Empfohlen"], desc: ["Balanced", "均衡", "Equilibrada", "Equilibrada", "Équilibré", "バランス", "Ausgewogen"] },
-              { key: "high", label: ["Strong", "高压缩", "Fuerte", "Forte", "Forte", "強", "Stark"], desc: ["Smallest size", "体积最小", "Tamaño más pequeño", "Menor tamanho", "Taille minimale", "最小サイズ", "Kleinste Größe"] },
-            ].map((opt) => {
-              const current = ["low", "recommended", "high"].includes(pageRanges) ? pageRanges : "recommended";
-              const active = current === opt.key;
-              return (
-                <button
-                  key={opt.key}
-                  type="button"
-                  onClick={() => onPageRangesChange(opt.key)}
-                  className={`rounded-[var(--radius-sm)] border px-3 py-2.5 text-center transition ${
-                    active
-                      ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
-                      : "border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--line-strong)]"
-                  }`}
-                >
-                  <span className={`block text-sm font-semibold ${active ? "text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)]"}`}>
-                    {tr(locale, opt.label[0], opt.label[1], opt.label[2], opt.label[3], opt.label[4], opt.label[5], opt.label[6])}
-                  </span>
-                  <span className="mt-0.5 block text-[11px] text-[color:var(--muted)]">
-                    {tr(locale, opt.desc[0], opt.desc[1], opt.desc[2], opt.desc[3], opt.desc[4], opt.desc[5], opt.desc[6])}
-                  </span>
-                </button>
-              );
-            })}
+      {config.slug === "compress-pdf" && (() => {
+        const current = ["low", "recommended", "high"].includes(pageRanges) ? pageRanges : "recommended";
+        const ratio = current === "low" ? 0.8 : current === "high" ? 0.3 : 0.5;
+        const rawSize = files[0]?.file?.size;
+        const est = rawSize ? formatBytes(Math.round(rawSize * ratio)) : null;
+        return (
+          <div className="mx-auto w-full max-w-[400px] rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] p-[18px]">
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+              {tr(locale, "Compression level", "压缩级别", "Nivel de compresión", "Nível de compressão", "Niveau de compression", "圧縮レベル", "Komprimierungsstufe")}
+            </span>
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              {[
+                { key: "low", label: ["Light", "轻度", "Ligera", "Leve", "Légère", "弱", "Leicht"], desc: ["Best quality", "质量优先", "Mejor calidad", "Melhor qualidade", "Meilleure qualité", "品質優先", "Beste Qualität"] },
+                { key: "recommended", label: ["Recommended", "推荐", "Recomendada", "Recomendada", "Recommandé", "推奨", "Empfohlen"], desc: ["Balanced", "均衡", "Equilibrada", "Equilibrada", "Équilibré", "バランス", "Ausgewogen"] },
+                { key: "high", label: ["Strong", "高压缩", "Fuerte", "Forte", "Forte", "強", "Stark"], desc: ["Smallest size", "体积最小", "Tamaño más pequeño", "Menor tamanho", "Taille minimale", "最小サイズ", "Kleinste Größe"] },
+              ].map((opt) => {
+                const active = current === opt.key;
+                return (
+                  <button
+                    key={opt.key}
+                    type="button"
+                    onClick={() => onPageRangesChange(opt.key)}
+                    className={`rounded-[var(--radius-sm)] border px-3 py-2.5 text-center transition ${
+                      active
+                        ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
+                        : "border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--line-strong)]"
+                    }`}
+                  >
+                    <span className={`block text-sm font-semibold ${active ? "text-[color:var(--accent-strong)]" : "text-[color:var(--foreground)]"}`}>
+                      {tr(locale, opt.label[0], opt.label[1], opt.label[2], opt.label[3], opt.label[4], opt.label[5], opt.label[6])}
+                    </span>
+                    <span className="mt-0.5 block text-[11px] text-[color:var(--muted)]">
+                      {tr(locale, opt.desc[0], opt.desc[1], opt.desc[2], opt.desc[3], opt.desc[4], opt.desc[5], opt.desc[6])}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            {est && (
+              <p className="mt-3 text-[12px] font-semibold text-[color:var(--accent-strong)]">
+                ~{est} — {tr(locale, "estimate, varies by content", "估算，实际因内容而异", "estimado, varía según el contenido", "estimado, varia conforme o conteúdo", "estimé, varie selon le contenu", "推定値、内容によって異なります", "Schätzung, abhängig vom Inhalt")}
+              </p>
+            )}
+            <p className="mt-2 text-xs text-[color:var(--muted)]">
+              {tr(locale, "Note: compression rasterizes pages to images; text will no longer be selectable.", "提示：压缩会将页面重绘为图像，文字将不可再选中。", "Nota: la compresión rasteriza las páginas a imágenes; el texto ya no se podrá seleccionar.", "Nota: a compressão rasteriza as páginas em imagens; o texto não poderá mais ser selecionado.", "Remarque : la compression convertit les pages en images ; le texte ne sera plus sélectionnable.", "注意: 圧縮するとページが画像化され、テキストは選択できなくなります。", "Hinweis: Die Komprimierung rastert Seiten zu Bildern; Text ist danach nicht mehr auswählbar.")}
+            </p>
+            <PrimaryButton onClick={onStart} className="mt-4 w-full">
+              {config.primaryActionLabel}
+            </PrimaryButton>
           </div>
-          <p className="mt-2 text-xs text-[color:var(--muted)]">
-            {tr(locale, "Note: compression rasterizes pages to images; text will no longer be selectable.", "提示：压缩会将页面重绘为图像，文字将不可再选中。", "Nota: la compresión rasteriza las páginas a imágenes; el texto ya no se podrá seleccionar.", "Nota: a compressão rasteriza as páginas em imagens; o texto não poderá mais ser selecionado.", "Remarque : la compression convertit les pages en images ; le texte ne sera plus sélectionnable.", "注意: 圧縮するとページが画像化され、テキストは選択できなくなります。", "Hinweis: Die Komprimierung rastert Seiten zu Bildern; Text ist danach nicht mehr auswählbar.")}
-          </p>
-        </div>
-      )}
+        );
+      })()}
       </div>
 
-      {/* Start button */}
-      <PrimaryButton onClick={onStart} className={bigPreview ? "mt-auto w-full self-center sm:w-1/2" : "w-full"}>
-        {config.primaryActionLabel}
-      </PrimaryButton>
+      {/* Start button (compress-pdf renders its own button inside the card above) */}
+      {config.slug !== "compress-pdf" && (
+        <PrimaryButton onClick={onStart} className={bigPreview ? "mt-auto w-full self-center sm:w-1/2" : "w-full"}>
+          {config.primaryActionLabel}
+        </PrimaryButton>
+      )}
     </div>
   );
 }
