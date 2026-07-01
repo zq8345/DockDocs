@@ -441,26 +441,37 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
         <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
         <>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          {/* Toolbar v2: card bar */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
             <div className="min-w-0">
-              <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(segCount)}</p>
-              <p className="text-[12.5px] text-[color:var(--muted)]">{t.hint}</p>
-              {fileRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{fileName} · {pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
+              <div className="flex items-center gap-2">
+                <p className="truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
+                <button type="button" onClick={reset} aria-label={t.reset}
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
+                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <p className="mt-0.5 text-[12.5px] text-[color:var(--muted)]">
+                {pages.length}p{fileRef.current ? ` · ${(fileRef.current.size / 1024 / 1024).toFixed(2)} MB` : ""} · <span className="font-medium text-[color:var(--accent)]">{t.files(segCount)}</span>
+              </p>
             </div>
-            <div className="flex shrink-0 gap-2">
-              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
-              <button type="button" onClick={apply} disabled={phase === "working" || splits.size === 0} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "working" ? t.working : t.apply}</button>
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
+              <div className="flex items-center gap-1.5 text-[12.5px] text-[color:var(--muted)]">
+                <span>{t.every}</span>
+                <input type="number" min={1} max={Math.max(1, pages.length - 1)} value={everyN} onChange={(e) => setEveryN(Math.max(1, +e.target.value || 1))} className="h-7 w-12 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-1.5 text-center text-[12.5px] text-[color:var(--foreground)]" />
+                <span>{t.everyUnit}</span>
+                <button type="button" onClick={() => splitEvery(everyN)} className="rounded-[var(--radius)] border border-[color:var(--line)] px-2.5 py-1 text-[12.5px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.everySet}</button>
+              </div>
+              <button type="button" onClick={apply} disabled={phase === "working" || splits.size === 0} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+                {phase === "working" ? t.working : t.apply}
+              </button>
             </div>
           </div>
+          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-[12.5px] text-[color:var(--muted)]">
-            <span>{t.every}</span>
-            <input type="number" min={1} max={Math.max(1, pages.length - 1)} value={everyN} onChange={(e) => setEveryN(Math.max(1, +e.target.value || 1))} className="h-8 w-16 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-2 text-[13px] text-[color:var(--foreground)]" />
-            <span>{t.everyUnit}</span>
-            <button type="button" onClick={() => splitEvery(everyN)} className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-1.5 text-[12.5px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.everySet}</button>
-          </div>
-
-          <div className="mt-5 flex flex-wrap items-stretch gap-y-3">
+          <div className="mt-5 flex flex-wrap items-center gap-3">
             {pages.map((p, pos) => {
               const seg = segOf(pos);
               const isLast = pos === pages.length - 1;
@@ -477,19 +488,23 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
               };
               const pageLabel = locale === "zh-Hant" ? toHant(pageLabelMap.zh) : locale === "ko" ? `${p.idx + 1}페이지` : pageLabelMap[al];
               return (
-                <div key={p.idx} className="flex items-stretch">
-                  <div className={`w-[120px] rounded-[var(--radius)] border border-[color:var(--line)] p-2 ${SEG_TINTS[seg % SEG_TINTS.length]}`}>
+                <div key={p.idx} className="flex items-center">
+                  <div className={`flex w-fit flex-col items-center rounded-[var(--radius)] p-1.5 ${SEG_TINTS[seg % SEG_TINTS.length]}`}>
                     <span className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-[color:var(--accent-strong)]">{t.fileN(seg + 1)}</span>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.thumb} alt={`page ${p.idx + 1}`} className="h-auto w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
-                    <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">{pageLabel}</p>
+                    <div className="relative overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={p.thumb} alt={`page ${p.idx + 1}`}
+                        style={{ maxHeight: "160px", maxWidth: "110px", display: "block" }}
+                        className="h-auto w-auto max-w-full" />
+                    </div>
+                    <span className="mt-1 block text-center text-[11px] text-[color:var(--muted)]">{pageLabel}</span>
                   </div>
                   {!isLast && (
                     <button
                       type="button"
                       onClick={() => toggleSplit(pos)}
                       title={t.splitAfter}
-                      className={`mx-0.5 flex w-7 shrink-0 flex-col items-center justify-center rounded-[var(--radius-sm)] text-[15px] transition ${splitHere ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--faint)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--accent)]"}`}
+                      className={`mx-0.5 flex h-12 w-7 shrink-0 items-center justify-center rounded-[var(--radius-sm)] text-[15px] transition ${splitHere ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--faint)] hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--accent)]"}`}
                     >
                       ✂
                     </button>

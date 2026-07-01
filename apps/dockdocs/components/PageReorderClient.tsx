@@ -467,19 +467,30 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
         <>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          {/* Toolbar v2: card bar */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
             <div className="min-w-0">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <p className="text-[12.5px] text-[color:var(--muted)]">{t.hint}{removed > 0 ? ` · ${t.removed(removed)}` : ""}</p>
-              {fileRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
+              <div className="flex items-center gap-2">
+                <p className="truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
+                <button type="button" onClick={reset} aria-label={t.reset}
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
+                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <p className="mt-0.5 text-[12.5px] text-[color:var(--muted)]">
+                {pages.length}p{fileRef.current ? ` · ${(fileRef.current.size / 1024 / 1024).toFixed(2)} MB` : ""}
+                {removed > 0 && <span className="ml-1 font-medium text-[color:var(--accent)]">· {t.removed(removed)}</span>}
+              </p>
             </div>
-            <div className="flex shrink-0 gap-2">
-              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
-              <button type="button" onClick={apply} disabled={phase === "working"} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">{phase === "working" ? t.working : t.apply}</button>
-            </div>
+            <button type="button" onClick={apply} disabled={phase === "working"} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
+              {phase === "working" ? t.working : t.apply}
+            </button>
           </div>
+          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+          <div className="mt-5 flex flex-wrap justify-center gap-4">
             {pages.map((p, pos) => (
               <div
                 key={p.idx}
@@ -492,21 +503,25 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
                   if (dragFrom.current != null) move(dragFrom.current, pos);
                   dragFrom.current = null;
                 }}
-                className="group relative cursor-grab rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2 transition hover:border-[color:var(--accent)] active:cursor-grabbing"
+                className="group flex w-fit cursor-grab flex-col items-center rounded-[var(--radius)] p-1.5 transition active:cursor-grabbing"
               >
-                <button
-                  type="button"
-                  onClick={() => remove(pos)}
-                  className="absolute right-1 top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white"
-                  aria-label="Remove page"
-                >
-                  ✕
-                </button>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={p.thumb} alt={`page ${p.idx + 1}`} className={`w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] ${embedded ? "max-h-[150px] object-contain" : "h-auto"}`} />
-                <p className="mt-1.5 text-center text-[11.5px] text-[color:var(--muted)]">
+                <div className="relative overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] transition group-hover:border-[color:var(--accent)]">
+                  <button
+                    type="button"
+                    onClick={() => remove(pos)}
+                    className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[10px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white"
+                    aria-label="Remove page"
+                  >
+                    ✕
+                  </button>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={p.thumb} alt={`page ${p.idx + 1}`}
+                    style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
+                    className="h-auto w-auto max-w-full" />
+                </div>
+                <span className="mt-1 block text-center text-[11px] text-[color:var(--muted)]">
                   {pageLabel(locale, p.idx + 1)}
-                </p>
+                </span>
               </div>
             ))}
           </div>

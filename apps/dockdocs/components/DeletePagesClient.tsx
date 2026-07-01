@@ -377,19 +377,29 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
         <>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          {/* Toolbar v2: card bar */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
             <div className="min-w-0">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <p className="text-[12.5px] text-[color:var(--muted)]">{t.hint} · {t.status(marked.size, pages.length - marked.size)}</p>
-              {fileRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
+              <div className="flex items-center gap-2">
+                <p className="truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
+                <button type="button" onClick={reset} aria-label={t.reset}
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
+                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <p className="mt-0.5 text-[12.5px] text-[color:var(--muted)]">
+                {pages.length}p{fileRef.current ? ` · ${(fileRef.current.size / 1024 / 1024).toFixed(2)} MB` : ""} · <span className="font-medium text-[color:var(--accent)]">{t.status(marked.size, pages.length - marked.size)}</span>
+              </p>
             </div>
-            <div className="flex shrink-0 gap-2">
-              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
-              <button type="button" onClick={apply} disabled={phase === "working" || marked.size === 0} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "working" ? t.working : t.apply}</button>
-            </div>
+            <button type="button" onClick={apply} disabled={phase === "working" || marked.size === 0} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+              {phase === "working" ? t.working : t.apply}
+            </button>
           </div>
+          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+          <div className="mt-5 flex flex-wrap justify-center gap-4">
             {pages.map((p) => {
               const isMarked = marked.has(p.idx);
               const n = p.idx + 1;
@@ -409,16 +419,21 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
                   key={p.idx}
                   type="button"
                   onClick={() => toggle(p.idx)}
-                  className={`relative rounded-[var(--radius)] border p-2 text-left transition ${isMarked ? "border-[#f87171] bg-[rgba(248,113,113,0.08)]" : "border-[color:var(--line)] bg-[color:var(--surface)] hover:border-[color:var(--accent)]"}`}
+                  className={`group flex w-fit flex-col items-center rounded-[var(--radius)] p-1.5 transition ${isMarked ? "bg-[rgba(248,113,113,0.08)]" : "opacity-60 hover:opacity-100"}`}
                 >
-                  {isMarked && (
-                    <span className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-[#f87171] text-[15px] font-bold text-white">✕</span>
-                  )}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.thumb} alt={`page ${p.idx + 1}`} className={`w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] transition ${embedded ? "max-h-[150px] object-contain" : "h-auto"} ${isMarked ? "opacity-40 grayscale" : ""}`} />
-                  <p className={`mt-1.5 text-center text-[11.5px] ${isMarked ? "font-semibold text-[#f87171]" : "text-[color:var(--muted)]"}`}>
+                  <div className={`relative overflow-hidden rounded-[var(--radius-sm)] border ${isMarked ? "border-[#f87171]" : "border-[color:var(--line)]"}`}>
+                    {isMarked && (
+                      <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[#f87171] text-[11px] font-bold text-white">✕</span>
+                    )}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.thumb} alt={`page ${p.idx + 1}`}
+                      style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
+                      className={`h-auto w-auto max-w-full transition ${isMarked ? "opacity-40 grayscale" : ""}`}
+                    />
+                  </div>
+                  <span className={`mt-1 block text-center text-[11px] ${isMarked ? "font-semibold text-[#f87171]" : "text-[color:var(--muted)]"}`}>
                     {isMarked ? t.del : pageLabel}
-                  </p>
+                  </span>
                 </button>
               );
             })}

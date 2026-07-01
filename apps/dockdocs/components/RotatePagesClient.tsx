@@ -379,6 +379,12 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
     return next;
   });
 
+  const rotateAllCCW = () => setRot((prev) => {
+    const next: Record<number, number> = {};
+    pages.forEach((p) => { next[p.idx] = ((prev[p.idx] || 0) + 270) % 360; });
+    return next;
+  });
+
   const count = Object.values(rot).filter((d) => d % 360 !== 0).length;
 
   const apply = useCallback(async () => {
@@ -421,33 +427,60 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
         <>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+          {/* Toolbar v2: card bar */}
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
             <div className="min-w-0">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <p className="text-[12.5px] text-[color:var(--muted)]">{count > 0 ? t.hint : t.none}</p>
-              {fileRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
+              <div className="flex items-center gap-2">
+                <p className="truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
+                <button type="button" onClick={reset} aria-label={t.reset}
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
+                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </div>
+              <p className="mt-0.5 text-[12.5px] text-[color:var(--muted)]">
+                {pages.length}p{fileRef.current ? ` · ${(fileRef.current.size / 1024 / 1024).toFixed(2)} MB` : ""}
+                {count > 0 && <span className="ml-1 font-medium text-[color:var(--accent)]">· {count} ↻</span>}
+              </p>
             </div>
-            <div className="flex shrink-0 gap-2">
-              <button type="button" onClick={rotateAll} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">↻ {t.rotateAll}</button>
-              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
-              <button type="button" onClick={apply} disabled={phase === "working" || count === 0} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "working" ? t.working : t.apply}</button>
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
+              <button type="button" onClick={rotateAllCCW}
+                className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]" title={t.rotateAll}>
+                ↺
+              </button>
+              <button type="button" onClick={rotateAll}
+                className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">
+                ↻ {t.rotateAll}
+              </button>
+              <button type="button" onClick={apply} disabled={phase === "working" || count === 0} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+                {phase === "working" ? t.working : t.apply}
+              </button>
             </div>
           </div>
+          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{count > 0 ? t.hint : t.none}</p>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+          <div className="mt-5 flex flex-wrap justify-center gap-4">
             {pages.map((p) => {
               const deg = rot[p.idx] || 0;
+              const rotated = deg % 360 !== 0;
               return (
                 <button
                   key={p.idx}
                   type="button"
                   onClick={() => rotateOne(p.idx)}
-                  className={`group relative flex aspect-[3/4] items-center justify-center overflow-hidden rounded-[var(--radius)] border p-2 transition ${deg % 360 !== 0 ? "border-[color:var(--accent)]" : "border-[color:var(--line)] hover:border-[color:var(--accent)]"} bg-[color:var(--surface)]`}
+                  className={`group flex w-fit flex-col items-center rounded-[var(--radius)] p-1.5 transition ${rotated ? "bg-[color:var(--soft-accent)]" : "opacity-60 hover:opacity-100"}`}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.thumb} alt={`page ${p.idx + 1}`} style={{ transform: `rotate(${deg}deg)` }} className="max-h-full max-w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] transition-transform duration-200" />
-                  <span className="absolute bottom-1 left-0 right-0 text-center text-[11px] text-[color:var(--muted)]">{pageLabel(p.idx + 1)}</span>
-                  <span className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[13px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100">↻</span>
+                  <div className={`relative flex h-[128px] w-[128px] items-center justify-center overflow-hidden rounded-[var(--radius-sm)] border ${rotated ? "border-[color:var(--accent)]" : "border-[color:var(--line)]"}`}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.thumb} alt={`page ${p.idx + 1}`}
+                      style={{ transform: `rotate(${deg}deg)` }}
+                      className="max-h-full max-w-full transition-transform duration-200" />
+                    <span className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[11px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100">↻</span>
+                  </div>
+                  <span className={`mt-1 block text-center text-[11px] ${rotated ? "font-medium text-[color:var(--accent)]" : "text-[color:var(--muted)]"}`}>
+                    {pageLabel(p.idx + 1)}
+                  </span>
                 </button>
               );
             })}
