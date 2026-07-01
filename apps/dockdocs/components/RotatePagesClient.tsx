@@ -425,6 +425,7 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
             <div className="min-w-0">
               <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
               <p className="text-[12.5px] text-[color:var(--muted)]">{count > 0 ? t.hint : t.none}</p>
+              {fileRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
             </div>
             <div className="flex shrink-0 gap-2">
               <button type="button" onClick={rotateAll} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">↻ {t.rotateAll}</button>

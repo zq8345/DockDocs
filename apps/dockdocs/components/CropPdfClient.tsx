@@ -299,9 +299,10 @@ export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const [preview, setPreview] = useState("");
   const [edges, setEdges] = useState<Edges>({ top: 0, right: 0, bottom: 0, left: 0 });
   const [error, setError] = useState<string | null>(null);
+  const [numPages, setNumPages] = useState(0);
   const fileRef = useRef<File | null>(null);
 
-  const reset = () => { setPhase("idle"); setFileName(""); setPreview(""); setEdges({ top: 0, right: 0, bottom: 0, left: 0 }); setError(null); fileRef.current = null; };
+  const reset = () => { setPhase("idle"); setFileName(""); setPreview(""); setNumPages(0); setEdges({ top: 0, right: 0, bottom: 0, left: 0 }); setError(null); fileRef.current = null; };
 
   const onFile = useCallback(async (file: File) => {
     if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
@@ -317,6 +318,7 @@ export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       const ctx = canvas.getContext("2d");
       if (ctx) await page.render({ canvas, canvasContext: ctx, viewport }).promise;
       setPreview(canvas.toDataURL("image/jpeg", 0.8));
+      setNumPages(doc.numPages);
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {
@@ -378,6 +380,7 @@ export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
               <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.start}</button>
             </div>
+            {numPages > 0 && fileRef.current && <p className="mt-1 text-[11.5px] text-[color:var(--faint)]">{numPages}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
             <p className="mt-2 text-[12.5px] leading-relaxed text-[color:var(--faint)]">{t.hint}</p>
             <div className="mt-4 space-y-3">
               {slider("top", t.top)}

@@ -433,6 +433,7 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
               <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
               <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
             </div>
+            {numPages > 0 && fileRef.current && <p className="mt-1 text-[11.5px] text-[color:var(--faint)]">{numPages}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
 
             <div className="mt-5">
               <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.position}</span>

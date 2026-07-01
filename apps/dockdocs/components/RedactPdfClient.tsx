@@ -582,6 +582,7 @@ export function RedactPdfClient({ locale = "en", embedded = false }: { locale?: 
             <div className="min-w-0">
               <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.boxes(boxes.filter(sizable).length)}</p>
               <p className="text-[12.5px] text-[color:var(--muted)]">{t.hint}</p>
+              {fileRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{fileRef.current.name} · {pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
             </div>
             <div className="flex shrink-0 gap-2">
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.reset}</button>

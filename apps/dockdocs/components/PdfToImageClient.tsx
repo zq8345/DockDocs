@@ -473,6 +473,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
             <div className="min-w-0">
               <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
               <p className="text-[12.5px] text-[color:var(--muted)]">{t.selected(selected.size, pages.length)} · {t.hint}</p>
+              {fileRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               <button type="button" onClick={() => setSelected(new Set(pages.map((p) => p.idx)))} className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-2 text-[12.5px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">{t.all}</button>

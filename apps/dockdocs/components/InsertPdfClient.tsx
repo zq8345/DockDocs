@@ -524,6 +524,7 @@ export function InsertPdfClient({ locale = "en", embedded = false }: { locale?: 
             <div className="min-w-0">
               <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
               <p className="text-[12.5px] text-[color:var(--muted)]">{t.pickSpot}</p>
+              {mainRef.current && <p className="text-[11.5px] text-[color:var(--faint)]">{pages.length}p · {(mainRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
             </div>
             <button type="button" onClick={reset} className="shrink-0 rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
           </div>
