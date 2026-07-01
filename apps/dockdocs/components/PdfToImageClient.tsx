@@ -488,11 +488,11 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
             </div>
           </div>
 
-          <div className="mt-5 grid gap-4 justify-items-center" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))" }}>
+          <div className="mt-5 flex flex-wrap gap-4 justify-center">
             {pages.map((p) => {
               const on = selected.has(p.idx);
               return (
-                <button key={p.idx} type="button" onClick={() => toggle(p.idx)} className={`group flex flex-col items-center rounded-[var(--radius)] p-1.5 transition ${on ? "bg-[color:var(--soft-accent)]" : "opacity-60 hover:opacity-100"}`}>
+                <button key={p.idx} type="button" onClick={() => toggle(p.idx)} className={`group flex w-fit flex-col items-center rounded-[var(--radius)] p-1.5 transition ${on ? "bg-[color:var(--soft-accent)]" : "opacity-60 hover:opacity-100"}`}>
                   {/* aspect-box: border frames only the image, label is outside */}
                   <div className={`relative overflow-hidden rounded-[var(--radius-sm)] border ${on ? "border-[color:var(--accent)]" : "border-[color:var(--line)]"}`}>
                     {on && <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--accent)] text-[11px] font-bold text-white">✓</span>}
