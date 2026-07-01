@@ -111,8 +111,8 @@ function BigPreviewCard({ file, onRemove, locale }: { file: File; onRemove: () =
           <img
             src={url}
             alt="preview"
-            style={{ maxHeight: "460px", display: "block" }}
-            className="h-auto w-auto max-w-full"
+            style={{ maxHeight: "480px", maxWidth: "480px", display: "block" }}
+            className="h-auto w-auto"
           />
         ) : (
           <div className="flex h-48 w-36 items-center justify-center text-[10px] font-bold text-[color:var(--accent-strong)]">
