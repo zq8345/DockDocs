@@ -541,95 +541,109 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onMain} constrained={embedded} valueZone="client" />
       ) : (
-        <div className="mt-6 space-y-6">
-          {/* Preview on top, centered */}
-          <div>
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
-            <div className="flex justify-center">
-              <div className="relative w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white" style={{ maxWidth: pageAR > 1 ? "560px" : "360px", maxHeight: "50vh" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                {preview && <img ref={previewImgRef} onLoad={(e) => setDispW(e.currentTarget.clientWidth)} src={preview} alt="page 1" className="block h-auto w-full rounded-[var(--radius)]" />}
-                {mode === "text" ? (
-                  <span style={overlayStyle} className="font-bold">
-                    <span style={{ color, fontSize: Math.max(8, pageWpt > 0 && dispW > 0 ? size * (dispW / pageWpt) : size * 0.5) }}>{text || "CONFIDENTIAL"}</span>
-                  </span>
-                ) : imgPreview ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={imgPreview} alt="watermark" style={{ ...overlayStyle, width: "30%" }} />
-                ) : null}
-                {/* × remove file button — top-right corner of live preview */}
-                <button
-                  type="button"
-                  onClick={reset}
-                  aria-label={t.reset}
-                  className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]"
-                >
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                  </svg>
-                </button>
-              </div>
+        <div className="mt-6 space-y-5">
+          {/* Preview on top, centered, direction-adaptive */}
+          <div className="flex justify-center">
+            <div className="relative w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white" style={{ maxWidth: pageAR > 1 ? "560px" : "360px", maxHeight: "50vh" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {preview && <img ref={previewImgRef} onLoad={(e) => setDispW(e.currentTarget.clientWidth)} src={preview} alt="page 1" className="block h-auto w-full rounded-[var(--radius)]" />}
+              {mode === "text" ? (
+                <span style={overlayStyle} className="font-bold">
+                  <span style={{ color, fontSize: Math.max(8, pageWpt > 0 && dispW > 0 ? size * (dispW / pageWpt) : size * 0.5) }}>{text || "CONFIDENTIAL"}</span>
+                </span>
+              ) : imgPreview ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={imgPreview} alt="watermark" style={{ ...overlayStyle, width: "30%" }} />
+              ) : null}
+              {/* × remove file */}
+              <button
+                type="button"
+                onClick={reset}
+                aria-label={t.reset}
+                className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]"
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
             </div>
           </div>
 
-          {/* Controls below — centered, moderate width */}
-          <div className="mx-auto max-w-[360px]">
-            <div className="flex items-center justify-between gap-3">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
-            </div>
-            {numPages > 0 && mainRef.current && <p className="mt-1 text-[11.5px] text-[color:var(--faint)]">{numPages}p · {(mainRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
+          {/* Filename · pages · size caption */}
+          <p className="text-center text-[12px] text-[color:var(--faint)]">
+            {[fileName, numPages > 0 ? `${numPages}p` : null, mainRef.current ? `${(mainRef.current.size / 1024 / 1024).toFixed(2)} MB` : null].filter(Boolean).join(" · ")}
+          </p>
 
-            <div className="mt-4 inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
-              {(["text", "image"] as const).map((m) => (
-                <button key={m} type="button" onClick={() => setMode(m)} className={`rounded-[var(--radius-sm)] px-4 py-1.5 text-[13px] font-medium transition ${mode === m ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>
-                  {m === "text" ? t.text : t.image}
-                </button>
-              ))}
-            </div>
+          {/* Settings panel card */}
+          <div className="mx-auto max-w-[400px] rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] p-[18px]">
+            <div className="flex flex-col gap-[15px]">
 
-            {mode === "text" ? (
-              <div className="mt-4 space-y-3">
-                <input value={text} onChange={(e) => setText(e.target.value)} maxLength={40} placeholder="CONFIDENTIAL" className={`${inputCls} w-full`} />
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2 text-[12.5px] text-[color:var(--muted)]">{t.size}<input type="range" min={12} max={120} value={size} onChange={(e) => setSize(+e.target.value)} /></label>
-                  <label className="flex items-center gap-2 text-[12.5px] text-[color:var(--muted)]">{t.color}<input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-7 w-10 rounded border border-[color:var(--line)]" /></label>
+              {/* Mode toggle: centered */}
+              <div className="flex justify-center">
+                <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
+                  {(["text", "image"] as const).map((m) => (
+                    <button key={m} type="button" onClick={() => setMode(m)} className={`rounded-[var(--radius-sm)] px-4 py-1.5 text-[13px] font-medium transition ${mode === m ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>
+                      {m === "text" ? t.text : t.image}
+                    </button>
+                  ))}
                 </div>
               </div>
-            ) : (
-              <div className="mt-4">
-                <button type="button" onClick={() => imgInputRef.current?.click()} className="inline-flex h-9 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">
-                  {imgRef.current?.name || t.chooseImg}
-                </button>
-                <input ref={imgInputRef} type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { imgRef.current = f; setImgPreview(URL.createObjectURL(f)); setError(null); } }} />
+
+              {/* Main input: text + color inline, or image picker */}
+              {mode === "text" ? (
+                <div className="flex items-center gap-2">
+                  <input value={text} onChange={(e) => setText(e.target.value)} maxLength={40} placeholder="CONFIDENTIAL" className={`${inputCls} flex-1`} />
+                  <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-9 w-10 cursor-pointer rounded border border-[color:var(--line)] bg-transparent" title={t.color} />
+                </div>
+              ) : (
+                <div>
+                  <button type="button" onClick={() => imgInputRef.current?.click()} className="inline-flex h-9 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">
+                    {imgRef.current?.name || t.chooseImg}
+                  </button>
+                  <input ref={imgInputRef} type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { imgRef.current = f; setImgPreview(URL.createObjectURL(f)); setError(null); } }} />
+                </div>
+              )}
+
+              {/* Position grid (left) + size/opacity/rotate stacked (right) */}
+              <div className="flex items-start gap-5">
+                <div>
+                  <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.position}</span>
+                  <div className="grid w-[108px] grid-cols-3 gap-1">
+                    {POS_ORDER.map((k) => (
+                      <button key={k} type="button" onClick={() => setPos(k)} className={`h-8 rounded-[var(--radius-sm)] border transition ${pos === k ? "border-[color:var(--accent)] bg-[color:var(--accent)]" : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"}`} aria-label={k} />
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-1 flex-col gap-3 pt-6">
+                  {mode === "text" && (
+                    <label className="flex items-center justify-between gap-2 text-[12.5px] text-[color:var(--muted)]">
+                      <span className="shrink-0">{t.size}</span>
+                      <input type="range" min={12} max={120} value={size} onChange={(e) => setSize(+e.target.value)} className="flex-1" />
+                    </label>
+                  )}
+                  <label className="flex items-center justify-between gap-2 text-[12.5px] text-[color:var(--muted)]">
+                    <span className="shrink-0">{t.opacity}</span>
+                    <input type="range" min={5} max={100} value={Math.round(opacity * 100)} onChange={(e) => setOpacity(+e.target.value / 100)} className="flex-1" />
+                  </label>
+                  <label className="flex cursor-pointer items-center gap-2 text-[12.5px] text-[color:var(--muted)]">
+                    <input type="checkbox" checked={rotate} onChange={(e) => setRotate(e.target.checked)} className="h-4 w-4 accent-[color:var(--accent)]" />{t.rotate}
+                  </label>
+                </div>
               </div>
-            )}
 
-            {/* Position grid */}
-            <div className="mt-5">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.position}</span>
-              <div className="grid w-[108px] grid-cols-3 gap-1">
-                {POS_ORDER.map((k) => (
-                  <button key={k} type="button" onClick={() => setPos(k)} className={`h-8 rounded-[var(--radius-sm)] border transition ${pos === k ? "border-[color:var(--accent)] bg-[color:var(--accent)]" : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"}`} aria-label={k} />
-                ))}
+              {/* Page range: centered */}
+              <div className="flex items-center justify-center gap-2 text-[12.5px] text-[color:var(--muted)]">
+                <span>{t.pages}</span>
+                <span>{t.from}</span><input type="number" min={1} max={numPages} value={from} onChange={(e) => setFrom(+e.target.value)} className={`${inputCls} w-16`} />
+                <span>{t.to}</span><input type="number" min={1} max={numPages} value={to} onChange={(e) => setTo(+e.target.value)} className={`${inputCls} w-16`} />
+                <span className="text-[color:var(--faint)]">/ {numPages}</span>
               </div>
-            </div>
 
-            <div className="mt-5 flex flex-wrap items-center gap-4">
-              <label className="flex items-center gap-2 text-[12.5px] text-[color:var(--muted)]">{t.opacity}<input type="range" min={5} max={100} value={Math.round(opacity * 100)} onChange={(e) => setOpacity(+e.target.value / 100)} /></label>
-              <label className="flex items-center gap-2 text-[12.5px] text-[color:var(--muted)]"><input type="checkbox" checked={rotate} onChange={(e) => setRotate(e.target.checked)} className="h-4 w-4 accent-[color:var(--accent)]" />{t.rotate}</label>
+              {/* Apply button: full width, green */}
+              <button type="button" onClick={apply} disabled={phase === "working"} className="h-11 w-full rounded-[var(--radius)] bg-[color:var(--accent)] text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
+                {phase === "working" ? t.working : t.apply}
+              </button>
             </div>
-
-            <div className="mt-4 flex items-center gap-2 text-[12.5px] text-[color:var(--muted)]">
-              <span>{t.pages}</span>
-              <span>{t.from}</span><input type="number" min={1} max={numPages} value={from} onChange={(e) => setFrom(+e.target.value)} className={`${inputCls} w-16`} />
-              <span>{t.to}</span><input type="number" min={1} max={numPages} value={to} onChange={(e) => setTo(+e.target.value)} className={`${inputCls} w-16`} />
-              <span className="text-[color:var(--faint)]">/ {numPages}</span>
-            </div>
-
-            <button type="button" onClick={apply} disabled={phase === "working"} className="mt-6 inline-flex h-11 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
-              {phase === "working" ? t.working : t.apply}
-            </button>
           </div>
         </div>
       )}
