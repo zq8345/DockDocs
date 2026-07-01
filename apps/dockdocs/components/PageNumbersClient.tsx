@@ -327,6 +327,7 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
   const [fileName, setFileName] = useState("");
   const [preview, setPreview] = useState("");
   const [numPages, setNumPages] = useState(0);
+  const [pageAR, setPageAR] = useState(0);
 
   const [pos, setPos] = useState<PosKey>("bc");
   const [margin, setMargin] = useState<MarginKey>("medium");
@@ -337,7 +338,7 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<File | null>(null);
 
-  const reset = () => { setPhase("idle"); setFileName(""); setPreview(""); setNumPages(0); setError(null); fileRef.current = null; };
+  const reset = () => { setPhase("idle"); setFileName(""); setPreview(""); setNumPages(0); setPageAR(0); setError(null); fileRef.current = null; };
 
   const onFile = useCallback(async (file: File) => {
     if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
@@ -348,6 +349,7 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
       const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
       const page = await doc.getPage(1);
       const viewport = page.getViewport({ scale: 1.1 });
+      setPageAR(viewport.width / viewport.height);
       const canvas = document.createElement("canvas");
       canvas.width = viewport.width; canvas.height = viewport.height;
       const ctx = canvas.getContext("2d");
@@ -426,13 +428,32 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
-        <div className="mt-6 grid gap-6 lg:grid-cols-2">
-          {/* Controls */}
-          <div className="order-2 lg:order-1">
-            <div className="flex items-center justify-between gap-3">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
+        <div className="mt-6">
+          {/* Preview — top, centered, large, direction-adaptive */}
+          <div className="flex justify-center">
+            <div
+              className="relative w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white"
+              style={{ maxWidth: pageAR > 1 ? "560px" : "360px", maxHeight: "50vh" }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {preview && <img src={preview} alt="page 1" className="block h-auto w-full" />}
+              <span style={overlayStyle}>{previewLabel}</span>
+              <button
+                type="button"
+                onClick={reset}
+                aria-label={t.reset}
+                className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]"
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                  <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
             </div>
+          </div>
+
+          {/* Controls — below, single column, centered */}
+          <div className="mx-auto mt-6 max-w-[360px]">
+            <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
             {numPages > 0 && fileRef.current && <p className="mt-1 text-[11.5px] text-[color:var(--faint)]">{numPages}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</p>}
 
             <div className="mt-5">
@@ -473,16 +494,6 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
             <button type="button" onClick={apply} disabled={phase === "working"} className="mt-6 inline-flex h-11 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
               {phase === "working" ? t.working : t.apply}
             </button>
-          </div>
-
-          {/* Preview */}
-          <div className="order-1 lg:order-2">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
-            <div className="relative inline-block max-w-full rounded-[var(--radius)] border border-[color:var(--line)] bg-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              {preview && <img src={preview} alt="page 1" className="block h-auto w-full rounded-[var(--radius)]" />}
-              <span style={overlayStyle}>{previewLabel}</span>
-            </div>
           </div>
         </div>
       )}
