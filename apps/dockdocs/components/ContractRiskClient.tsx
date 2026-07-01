@@ -931,12 +931,12 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       ) : (
         <div className={`${card} ${embedded ? "mt-3" : "mt-8"} p-5`}>
           {file && <DocPreview file={file} max={480} onRemove={reset} removeLabel={t.reset} />}
-          <div className="mt-5">
+          <div className="mt-5 flex justify-center">
             <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
               {phase === "analyzing" ? t.analyzing : t.analyze}
             </button>
           </div>
-          <p className="mt-3 text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
+          <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
         </div>
       )}
 
