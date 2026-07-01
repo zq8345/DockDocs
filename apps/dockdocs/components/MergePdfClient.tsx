@@ -25,7 +25,7 @@ const STR: AuthoredCopy<{
   title: string; subtitle: string; drop: string; choose: string; add: string;
   rendering: string; hint: string; files: (n: number, p: number) => string;
   pagesLabel: (n: number) => string; merge: string; working: string; reset: string;
-  needTwo: string; err: string;
+  needTwo: string; err: string; remove: string;
 }> = {
   en: {
     title: "Merge PDF",
@@ -36,7 +36,7 @@ const STR: AuthoredCopy<{
     files: (n: number, p: number) => `${n} file${n === 1 ? "" : "s"} · ${p} pages total`,
     pagesLabel: (n: number) => `${n} page${n === 1 ? "" : "s"}`,
     merge: "Merge & download", working: "Merging…", reset: "Start over",
-    needTwo: "Add at least 2 PDFs to merge.", err: "Something went wrong: ",
+    needTwo: "Add at least 2 PDFs to merge.", err: "Something went wrong: ", remove: "Remove",
   },
   zh: {
     title: "批量 PDF 合并",
@@ -47,7 +47,7 @@ const STR: AuthoredCopy<{
     files: (n: number, p: number) => `${n} 个文件 · 共 ${p} 页`,
     pagesLabel: (n: number) => `${n} 页`,
     merge: "合并并下载", working: "正在合并…", reset: "重新开始",
-    needTwo: "至少添加 2 个 PDF 才能合并。", err: "出错了：",
+    needTwo: "至少添加 2 个 PDF 才能合并。", err: "出错了：", remove: "移除",
   },
   es: {
     title: "Unir PDF",
@@ -58,7 +58,7 @@ const STR: AuthoredCopy<{
     files: (n: number, p: number) => `${n} archivo${n === 1 ? "" : "s"} · ${p} páginas en total`,
     pagesLabel: (n: number) => `${n} página${n === 1 ? "" : "s"}`,
     merge: "Unir y descargar", working: "Uniendo…", reset: "Empezar de nuevo",
-    needTwo: "Agrega al menos 2 PDF para unirlos.", err: "Algo salió mal: ",
+    needTwo: "Agrega al menos 2 PDF para unirlos.", err: "Algo salió mal: ", remove: "Quitar",
   },
   pt: {
     title: "Unir PDF",
@@ -69,7 +69,7 @@ const STR: AuthoredCopy<{
     files: (n: number, p: number) => `${n} arquivo${n === 1 ? "" : "s"} · ${p} páginas no total`,
     pagesLabel: (n: number) => `${n} página${n === 1 ? "" : "s"}`,
     merge: "Unir e baixar", working: "Unindo…", reset: "Recomeçar",
-    needTwo: "Adicione pelo menos 2 PDFs para uni-los.", err: "Algo deu errado: ",
+    needTwo: "Adicione pelo menos 2 PDFs para uni-los.", err: "Algo deu errado: ", remove: "Remover",
   },
   fr: {
     title: "Fusionner des PDF",
@@ -80,7 +80,7 @@ const STR: AuthoredCopy<{
     files: (n: number, p: number) => `${n} fichier${n === 1 ? "" : "s"} · ${p} page${p === 1 ? "" : "s"} au total`,
     pagesLabel: (n: number) => `${n} page${n === 1 ? "" : "s"}`,
     merge: "Fusionner et télécharger", working: "Fusion en cours…", reset: "Recommencer",
-    needTwo: "Ajoutez au moins 2 PDF pour les fusionner.", err: "Une erreur est survenue : ",
+    needTwo: "Ajoutez au moins 2 PDF pour les fusionner.", err: "Une erreur est survenue : ", remove: "Retirer",
   },
   ja: {
     title: "PDFを結合",
@@ -91,7 +91,7 @@ const STR: AuthoredCopy<{
     files: (n: number, p: number) => `${n}個のファイル · 合計${p}ページ`,
     pagesLabel: (n: number) => `${n}ページ`,
     merge: "結合してダウンロード", working: "結合中…", reset: "最初からやり直す",
-    needTwo: "結合するには少なくとも2つのPDFを追加してください。", err: "問題が発生しました: ",
+    needTwo: "結合するには少なくとも2つのPDFを追加してください。", err: "問題が発生しました: ", remove: "削除",
   },
   de: {
     title: "PDF zusammenfügen",
@@ -102,7 +102,7 @@ const STR: AuthoredCopy<{
     files: (n: number, p: number) => `${n} Datei${n === 1 ? "" : "en"} · ${p} Seiten insgesamt`,
     pagesLabel: (n: number) => `${n} Seite${n === 1 ? "" : "n"}`,
     merge: "Zusammenfügen & herunterladen", working: "Wird zusammengefügt…", reset: "Von vorn beginnen",
-    needTwo: "Fügen Sie mindestens 2 PDFs zum Zusammenfügen hinzu.", err: "Etwas ist schiefgelaufen: ",
+    needTwo: "Fügen Sie mindestens 2 PDFs zum Zusammenfügen hinzu.", err: "Etwas ist schiefgelaufen: ", remove: "Entfernen",
   },
   ko: {
     title: "PDF 병합",
@@ -113,7 +113,7 @@ const STR: AuthoredCopy<{
     files: (n: number, p: number) => `${n}개 파일 · 총 ${p}페이지`,
     pagesLabel: (n: number) => `${n}페이지`,
     merge: "병합하고 다운로드", working: "병합 중…", reset: "다시 시작",
-    needTwo: "병합하려면 PDF를 2개 이상 추가하세요.", err: "문제가 발생했습니다: ",
+    needTwo: "병합하려면 PDF를 2개 이상 추가하세요.", err: "문제가 발생했습니다: ", remove: "제거",
   },
 };
 
@@ -448,7 +448,7 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
               >
                 <div className="relative overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] transition group-hover:border-[color:var(--accent)]">
                   <span className="absolute left-1.5 top-1.5 z-10 flex h-5 min-w-5 items-center justify-center rounded-full bg-[color:var(--accent)] px-1 text-[11px] font-bold text-white">{pos + 1}</span>
-                  <button type="button" onClick={() => remove(it.id)} className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[10px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white" aria-label="Remove">✕</button>
+                  <button type="button" onClick={() => remove(it.id)} className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[10px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white" aria-label={t.remove}>✕</button>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={it.thumb} alt={it.name}
                     style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}

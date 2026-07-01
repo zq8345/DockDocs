@@ -480,66 +480,62 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
             </button>
           </div>
 
-          <div className="mt-4 grid gap-6 lg:grid-cols-[5fr_6fr]">
-            <div className="order-2 lg:order-1">
-              <span className="mt-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.sig}</span>
-            <div className="mt-2 inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
-              {(["draw", "type"] as const).map((m) => (
-                <button key={m} type="button" onClick={() => { setMode(m); setSig(""); }} className={`rounded-[var(--radius-sm)] px-4 py-1.5 text-[13px] font-medium transition ${mode === m ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>{m === "draw" ? t.draw : t.type}</button>
-              ))}
+          <div className="mt-4 space-y-5">
+            <div className="flex justify-center">
+              <div className="relative w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white" style={{ maxWidth: "480px", maxHeight: "60vh" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {preview && <img src={preview} alt={`page ${page}`} className="block h-auto w-full rounded-[var(--radius)]" />}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {sig && <img src={sig} alt="signature" style={overlayStyle} />}
+              </div>
             </div>
-
-            {mode === "draw" ? (
-              <div className="mt-3">
-                <canvas
-                  ref={padRef}
-                  width={600}
-                  height={180}
-                  onPointerDown={padDown}
-                  onPointerMove={padMove}
-                  onPointerUp={padUp}
-                  onPointerLeave={padUp}
-                  className="w-full touch-none rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-white"
-                  style={{ aspectRatio: "600 / 180" }}
-                />
-                <div className="mt-2 flex items-center justify-between">
-                  <span className="text-[12px] text-[color:var(--faint)]">{t.drawHint}</span>
-                  <button type="button" onClick={clearPad} className="text-[12.5px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.clear}</button>
+            <div className="mx-auto max-w-[480px] rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] p-[18px]">
+              <div className="flex flex-col gap-4">
+                <span className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.sig}</span>
+                <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
+                  {(["draw", "type"] as const).map((m) => (
+                    <button key={m} type="button" onClick={() => { setMode(m); setSig(""); }} className={`rounded-[var(--radius-sm)] px-4 py-1.5 text-[13px] font-medium transition ${mode === m ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>{m === "draw" ? t.draw : t.type}</button>
+                  ))}
+                </div>
+                {mode === "draw" ? (
+                  <div>
+                    <canvas
+                      ref={padRef}
+                      width={600}
+                      height={180}
+                      onPointerDown={padDown}
+                      onPointerMove={padMove}
+                      onPointerUp={padUp}
+                      onPointerLeave={padUp}
+                      className="w-full touch-none rounded-[var(--radius)] border border-dashed border-[color:var(--line)] bg-white"
+                      style={{ aspectRatio: "600 / 180" }}
+                    />
+                    <div className="mt-2 flex items-center justify-between">
+                      <span className="text-[12px] text-[color:var(--faint)]">{t.drawHint}</span>
+                      <button type="button" onClick={clearPad} className="text-[12.5px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.clear}</button>
+                    </div>
+                  </div>
+                ) : (
+                  <input value={typed} onChange={(e) => setTyped(e.target.value)} maxLength={40} placeholder={t.typed} className={`${inputCls} w-full`} />
+                )}
+                <div className="flex flex-wrap items-end gap-4">
+                  <label className="block">
+                    <span className="mb-1 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.page}</span>
+                    <input type="number" min={1} max={numPages} value={page} onChange={(e) => { const v = Math.max(1, Math.min(numPages, +e.target.value || 1)); setPage(v); if (fileRef.current) renderPage(fileRef.current, v); }} className={`${inputCls} w-20`} />
+                  </label>
+                  <label className="flex items-center gap-2 text-[12.5px] text-[color:var(--muted)]">{t.size}<input type="range" min={12} max={60} value={size} onChange={(e) => setSize(+e.target.value)} className="accent-[color:var(--accent)]" /></label>
+                </div>
+                <div>
+                  <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.position}</span>
+                  <div className="grid w-[108px] grid-cols-3 gap-1">
+                    {POS_ORDER.map((k) => (
+                      <button key={k} type="button" onClick={() => setPos(k)} className={`h-8 rounded-[var(--radius-sm)] border transition ${pos === k ? "border-[color:var(--accent)] bg-[color:var(--accent)]" : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"}`} aria-label={k} />
+                    ))}
+                  </div>
                 </div>
               </div>
-            ) : (
-              <input value={typed} onChange={(e) => setTyped(e.target.value)} maxLength={40} placeholder={t.typed} className={`${inputCls} mt-3 w-full`} />
-            )}
-
-            <div className="mt-5 flex flex-wrap items-end gap-4">
-              <label className="block">
-                <span className="mb-1 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.page}</span>
-                <input type="number" min={1} max={numPages} value={page} onChange={(e) => { const v = Math.max(1, Math.min(numPages, +e.target.value || 1)); setPage(v); if (fileRef.current) renderPage(fileRef.current, v); }} className={`${inputCls} w-20`} />
-              </label>
-              <label className="flex items-center gap-2 text-[12.5px] text-[color:var(--muted)]">{t.size}<input type="range" min={12} max={60} value={size} onChange={(e) => setSize(+e.target.value)} className="accent-[color:var(--accent)]" /></label>
-            </div>
-
-            <div className="mt-5">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.position}</span>
-              <div className="grid w-[108px] grid-cols-3 gap-1">
-                {POS_ORDER.map((k) => (
-                  <button key={k} type="button" onClick={() => setPos(k)} className={`h-8 rounded-[var(--radius-sm)] border transition ${pos === k ? "border-[color:var(--accent)] bg-[color:var(--accent)]" : "border-[color:var(--line)] hover:border-[color:var(--line-strong)]"}`} aria-label={k} />
-                ))}
-              </div>
-            </div>
-
-          </div>
-
-          <div className="order-1 lg:order-2">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
-            <div className="relative inline-block max-w-full rounded-[var(--radius)] border border-[color:var(--line)] bg-white">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              {preview && <img src={preview} alt={`page ${page}`} className="block h-auto w-full rounded-[var(--radius)]" />}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              {sig && <img src={sig} alt="signature" style={overlayStyle} />}
             </div>
           </div>
-        </div>
         </>
       )}
 

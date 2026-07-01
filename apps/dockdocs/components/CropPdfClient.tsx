@@ -395,8 +395,19 @@ export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Lo
           </div>
           <p className="mt-2 text-[12px] leading-relaxed text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-4 grid gap-6 lg:grid-cols-[5fr_6fr]">
-            <div className="order-2 lg:order-1">
+          <div className="mt-4 space-y-5">
+            <div className="flex justify-center">
+              <div className="relative w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white" style={{ maxWidth: "480px", maxHeight: "60vh" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {preview && <img src={preview} alt="page 1" className="block h-auto w-full" />}
+                {/* shaded crop margins */}
+                <div className="pointer-events-none absolute inset-x-0 top-0 bg-black/45" style={{ height: `${edges.top}%` }} />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-black/45" style={{ height: `${edges.bottom}%` }} />
+                <div className="pointer-events-none absolute inset-y-0 left-0 bg-black/45" style={{ width: `${edges.left}%` }} />
+                <div className="pointer-events-none absolute inset-y-0 right-0 bg-black/45" style={{ width: `${edges.right}%` }} />
+              </div>
+            </div>
+            <div className="mx-auto max-w-[400px] rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] p-[18px]">
               <div className="space-y-3">
                 {slider("top", t.top)}
                 {slider("right", t.right)}
@@ -405,19 +416,6 @@ export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               </div>
               <div className="mt-5">
                 <button type="button" onClick={() => setEdges({ top: 0, right: 0, bottom: 0, left: 0 })} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
-              </div>
-            </div>
-
-            <div className="order-1 lg:order-2">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
-              <div className="relative inline-block max-w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                {preview && <img src={preview} alt="page 1" className="block h-auto w-full" />}
-                {/* shaded crop margins */}
-                <div className="pointer-events-none absolute inset-x-0 top-0 bg-black/45" style={{ height: `${edges.top}%` }} />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-black/45" style={{ height: `${edges.bottom}%` }} />
-                <div className="pointer-events-none absolute inset-y-0 left-0 bg-black/45" style={{ width: `${edges.left}%` }} />
-                <div className="pointer-events-none absolute inset-y-0 right-0 bg-black/45" style={{ width: `${edges.right}%` }} />
               </div>
             </div>
           </div>
