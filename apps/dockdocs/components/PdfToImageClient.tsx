@@ -488,15 +488,15 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
             </div>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
+          <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {pages.map((p) => {
               const on = selected.has(p.idx);
               return (
-                <button key={p.idx} type="button" onClick={() => toggle(p.idx)} className={`group relative flex aspect-[3/4] flex-col items-center justify-center rounded-[var(--radius)] border p-2 transition ${on ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]" : "border-[color:var(--line)] bg-[color:var(--surface)] opacity-60 hover:opacity-100"}`}>
+                <button key={p.idx} type="button" onClick={() => toggle(p.idx)} className={`group relative flex flex-col rounded-[var(--radius)] border p-1.5 transition ${on ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]" : "border-[color:var(--line)] bg-[color:var(--surface)] opacity-60 hover:opacity-100"}`}>
                   {on && <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--accent)] text-[11px] font-bold text-white">✓</span>}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.thumb} alt={`page ${p.idx + 1}`} className="max-h-full max-w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
-                  <span className="absolute bottom-1 left-0 right-0 text-center text-[11px] text-[color:var(--muted)]">{t.pageLabel(p.idx + 1)}</span>
+                  <img src={p.thumb} alt={`page ${p.idx + 1}`} className="w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]" />
+                  <span className="mt-1 block text-center text-[11px] text-[color:var(--muted)]">{t.pageLabel(p.idx + 1)}</span>
                 </button>
               );
             })}
