@@ -12,8 +12,9 @@ import { deepHant, toHant } from "@/lib/zh-hant";
 import { TrialCta } from "@/components/TrialCta";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
+import { DocPreview } from "../../../shared/templates/pdf-tool-page/doc-preview";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 type Locale = RouteLocale;
 type RequirementType = "mandatory" | "advisory";
@@ -447,23 +448,19 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
   const [phase, setPhase] = useState<"ready" | "analyzing" | "done">("ready");
   const [error, setError] = useState<string | null>(null);
   const [requirements, setRequirements] = useState<Requirement[] | null>(null);
+  const fileRef = useRef<File | null>(null);
   const [filter, setFilter] = useState<"all" | "mandatory" | "advisory">("all");
   const [limitHit, setLimitHit] = useState<number | null>(null);
   const [expandedQuote, setExpandedQuote] = useState<string | null>(null);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
-  const [fileSizeMb, setFileSizeMb] = useState<number>(0);
-  const [analyzedFileName, setAnalyzedFileName] = useState<string>("");
 
   const onAnalyze = useCallback(
     async (file: File) => {
+      fileRef.current = file;
       setPhase("analyzing");
       setError(null);
       setRequirements(null);
       setLimitHit(null);
       setExpandedQuote(null);
-      setAnalyzedFileName(file.name);
-      setFileSizeMb(Math.round((file.size / 1024 / 1024) * 100) / 100);
-      setThumbnailUrl(null);
 
       // Extract text client-side
       const { getDocument } = await import("pdfjs-dist");
@@ -473,15 +470,6 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
       try {
         const ab = await file.arrayBuffer();
         const pdf = await getDocument({ data: ab }).promise;
-        try {
-          const thumb = await pdf.getPage(1);
-          const vp = thumb.getViewport({ scale: 0.4 });
-          const thumbCanvas = document.createElement("canvas");
-          thumbCanvas.width = vp.width; thumbCanvas.height = vp.height;
-          const ctx = thumbCanvas.getContext("2d");
-          if (ctx) await thumb.render({ canvas: thumbCanvas, canvasContext: ctx, viewport: vp }).promise;
-          setThumbnailUrl(thumbCanvas.toDataURL("image/jpeg", 0.7));
-        } catch { /* non-critical */ }
         for (let p = 1; p <= pdf.numPages && text.length < MAX_CHARS; p++) {
           const page = await pdf.getPage(p);
           const content = await page.getTextContent();
@@ -635,16 +623,9 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
       {/* Results */}
       {requirements && phase === "done" && (
         <div className="mt-8">
-          {analyzedFileName && (
-            <div className="mb-4 flex items-start gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2.5">
-              {thumbnailUrl && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={thumbnailUrl} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{analyzedFileName}</p>
-                {fileSizeMb > 0 && <p className="text-[11.5px] text-[color:var(--faint)]">{fileSizeMb} MB</p>}
-              </div>
+          {fileRef.current && (
+            <div className="mb-6">
+              <DocPreview file={fileRef.current} max={480} onRemove={() => { fileRef.current = null; setPhase("ready"); setRequirements(null); setError(null); setLimitHit(null); setFilter("all"); setExpandedQuote(null); }} removeLabel={t.retry} />
             </div>
           )}
           {/* Toolbar */}

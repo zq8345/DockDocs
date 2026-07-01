@@ -13,8 +13,9 @@ import { deepHant } from "@/lib/zh-hant";
 import { TrialCta } from "@/components/TrialCta";
 import type { RouteLocale, AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
+import { DocPreview } from "../../../shared/templates/pdf-tool-page/doc-preview";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 type Locale = RouteLocale;
 type RiskLevel = "high" | "medium" | "low";
@@ -457,15 +458,12 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
   // so map it to "zh" for those props.
   // ko has no engine/runtime copy yet → English (foundation phase); zh-Hant preserved.
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
+  const fileRef = useRef<File | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
-  const [fileName, setFileName] = useState("");
   const [text, setText] = useState("");
-  const [pages, setPages] = useState(0);
   const [risks, setRisks] = useState<Risk[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [limitHit, setLimitHit] = useState<number | null>(null);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
-  const [fileSizeMb, setFileSizeMb] = useState<number>(0);
 
   const levelLabel = useMemo(
     () => ({ high: t.levelHigh, medium: t.levelMedium, low: t.levelLow }),
@@ -473,15 +471,12 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
   );
 
   const reset = () => {
+    fileRef.current = null;
     setPhase("idle");
-    setFileName("");
     setText("");
-    setPages(0);
     setRisks(null);
     setError(null);
     setLimitHit(null);
-    setThumbnailUrl(null);
-    setFileSizeMb(0);
   };
 
   const onFile = useCallback(
@@ -490,23 +485,13 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
       setError(null);
       setRisks(null);
       setLimitHit(null);
-      setFileName(file.name);
-      setFileSizeMb(Math.round((file.size / 1024 / 1024) * 100) / 100);
+      fileRef.current = file;
       setPhase("extracting");
       try {
         const pdfjs = await import("pdfjs-dist");
         pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
         const data = new Uint8Array(await file.arrayBuffer());
         const doc = await pdfjs.getDocument({ data }).promise;
-        try {
-          const thumb = await doc.getPage(1);
-          const vp = thumb.getViewport({ scale: 0.4 });
-          const thumbCanvas = document.createElement("canvas");
-          thumbCanvas.width = vp.width; thumbCanvas.height = vp.height;
-          const ctx = thumbCanvas.getContext("2d");
-          if (ctx) await thumb.render({ canvas: thumbCanvas, canvasContext: ctx, viewport: vp }).promise;
-          setThumbnailUrl(thumbCanvas.toDataURL("image/jpeg", 0.7));
-        } catch { /* non-critical */ }
         let out = "";
         for (let i = 1; i <= doc.numPages; i++) {
           const page = await doc.getPage(i);
@@ -514,7 +499,6 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
           out += content.items.map((it) => ("str" in it ? it.str : "")).join(" ") + "\n\n";
         }
         const trimmed = out.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
-        setPages(doc.numPages);
         try { doc.destroy(); } catch { /* ignore */ }
         if (!trimmed) {
           setError(t.noText);
@@ -608,27 +592,14 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
         </>
       ) : (
         <div className={`${card} mt-8 p-5`}>
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex min-w-0 items-start gap-3">
-              {thumbnailUrl && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={thumbnailUrl} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
-              )}
-              <div className="min-w-0">
-                <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-                <p className="text-[12.5px] text-[color:var(--muted)]">{t.pagesChars(pages, text.length)}</p>
-                {fileSizeMb > 0 && <p className="text-[11.5px] text-[color:var(--faint)]">{fileSizeMb} MB</p>}
-              </div>
-            </div>
-            <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
-          </div>
+          {fileRef.current && <DocPreview file={fileRef.current} max={480} onRemove={reset} removeLabel={t.reset} />}
           {text.length > MAX_CHARS && <p className="mt-2 text-[12px] text-[#f59e0b]">{t.tooLong}</p>}
-          <div className="mt-5">
+          <div className="mt-5 flex justify-center">
             <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
               {phase === "analyzing" ? t.analyzing : t.analyze}
             </button>
           </div>
-          <p className="mt-3 text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
+          <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
         </div>
       )}
 
