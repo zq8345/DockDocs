@@ -26,6 +26,8 @@ const COPY: Record<L, {
   exportReport: string;
   errRead: string;
   errExtract: string;
+  compareHint: string;
+  compareLink: string;
 }> = {
   en: {
     eyebrow: "Professional · Legal",
@@ -51,6 +53,8 @@ const COPY: Record<L, {
     exportReport: "Export Report",
     errRead: "Could not read PDF.",
     errExtract: "Could not extract text from this PDF.",
+    compareHint: "Need to compare two contract versions?",
+    compareLink: "Contract Version Compare →",
   },
   ko: {
     eyebrow: "전문 · 법률",
@@ -76,6 +80,8 @@ const COPY: Record<L, {
     exportReport: "보고서 내보내기",
     errRead: "PDF를 읽을 수 없습니다.",
     errExtract: "이 PDF에서 텍스트를 추출할 수 없습니다.",
+    compareHint: "두 계약서 버전을 비교해야 하나요?",
+    compareLink: "계약서 버전 비교 →",
   },
   zh: {
     eyebrow: "专业领域 · 法律",
@@ -101,6 +107,8 @@ const COPY: Record<L, {
     exportReport: "导出报告",
     errRead: "无法读取 PDF 文件。",
     errExtract: "无法从此 PDF 提取文字。",
+    compareHint: "需要对比两个合同版本？",
+    compareLink: "合同版本对比 →",
   },
   es: {
     eyebrow: "Profesional · Legal",
@@ -126,6 +134,8 @@ const COPY: Record<L, {
     exportReport: "Exportar informe",
     errRead: "No se pudo leer el PDF.",
     errExtract: "No se pudo extraer texto de este PDF.",
+    compareHint: "¿Necesita comparar dos versiones del contrato?",
+    compareLink: "Comparar versiones de contrato →",
   },
   pt: {
     eyebrow: "Profissional · Jurídico",
@@ -151,6 +161,8 @@ const COPY: Record<L, {
     exportReport: "Exportar relatório",
     errRead: "Não foi possível ler o PDF.",
     errExtract: "Não foi possível extrair texto deste PDF.",
+    compareHint: "Precisa comparar duas versões do contrato?",
+    compareLink: "Comparar versões do contrato →",
   },
   fr: {
     eyebrow: "Professionnel · Juridique",
@@ -176,6 +188,8 @@ const COPY: Record<L, {
     exportReport: "Exporter le rapport",
     errRead: "Impossible de lire le PDF.",
     errExtract: "Impossible d'extraire le texte de ce PDF.",
+    compareHint: "Besoin de comparer deux versions d'un contrat ?",
+    compareLink: "Comparer les versions du contrat →",
   },
   ja: {
     eyebrow: "専門領域・法務",
@@ -201,6 +215,8 @@ const COPY: Record<L, {
     exportReport: "レポートをエクスポート",
     errRead: "PDF を読み込めませんでした。",
     errExtract: "この PDF からテキストを抽出できませんでした。",
+    compareHint: "2 つの契約書バージョンを比較しますか？",
+    compareLink: "契約書バージョン比較 →",
   },
   de: {
     eyebrow: "Professionell · Recht",
@@ -226,6 +242,8 @@ const COPY: Record<L, {
     exportReport: "Bericht exportieren",
     errRead: "PDF konnte nicht gelesen werden.",
     errExtract: "Text konnte nicht aus diesem PDF extrahiert werden.",
+    compareHint: "Möchten Sie zwei Vertragsversionen vergleichen?",
+    compareLink: "Vertragsversionenvergleich →",
   },
   "zh-Hant": {
     eyebrow: "專業領域・法律",
@@ -251,6 +269,8 @@ const COPY: Record<L, {
     exportReport: "匯出報告",
     errRead: "無法讀取 PDF 文件。",
     errExtract: "無法從此 PDF 提取文字。",
+    compareHint: "需要對比兩個合約版本？",
+    compareLink: "合約版本對比 →",
   },
 };
 
@@ -552,6 +572,15 @@ export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale })
           );
         })}
       </div>
+
+      {/* Contract Review — separate two-file tool, lightweight link only */}
+      <p className="mb-4 text-center text-[12px] text-[color:var(--muted)]">
+        {c.compareHint}{" "}
+        <button type="button" onClick={() => nav?.("/contract-review")}
+          className="text-[color:var(--accent)] hover:underline">
+          {c.compareLink}
+        </button>
+      </p>
 
       {/* Privacy note */}
       <p className="text-center text-[11.5px] leading-[1.55] text-[color:var(--muted)]">
