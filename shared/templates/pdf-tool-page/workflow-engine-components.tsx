@@ -5,6 +5,7 @@ import type { PdfToolPageConfig } from "./index";
 import type { PdfRuntimeArtifact } from "./pdf-runtime";
 import { ToolBridge, hasToolBridge } from "./ToolBridge";
 import { toHant as ccTr } from "./zh-hant";
+import { DocPreview } from "./doc-preview";
 
 // Visual preview of an uploaded file: first-page thumbnail for PDFs, the image
 // itself for images. Falls back to a small type badge while rendering / on error.
@@ -57,87 +58,11 @@ function FileThumb({ file, className = "h-12 w-10" }: { file: File; className?: 
   );
 }
 
-// Big preview card for all single-file conversion tools (bigPreview=true path).
-// img renders at natural size (max-height 460px cap), container wraps tight to
-// the image — border hugs the document whether portrait or landscape, no fixed frame.
+// BigPreviewCard delegates to the shared DocPreview primitive (doc-preview.tsx).
+// locale→removeLabel computed here so tr() stays in this file.
 function BigPreviewCard({ file, onRemove, locale }: { file: File; onRemove: () => void; locale: TemplateLocale | undefined }) {
-  const [url, setUrl] = useState<string | null>(null);
-  const [numPages, setNumPages] = useState<number | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    let objUrl: string | null = null;
-    (async () => {
-      const isImg = /^image\//.test(file.type) || /\.(png|jpe?g|webp|gif|bmp)$/i.test(file.name);
-      const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
-      if (isImg) {
-        objUrl = URL.createObjectURL(file);
-        if (!cancelled) setUrl(objUrl);
-        return;
-      }
-      if (!isPdf) return;
-      try {
-        const pdfjs = await import("pdfjs-dist");
-        pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-        const data = new Uint8Array(await file.arrayBuffer());
-        const doc = await pdfjs.getDocument({ data }).promise;
-        if (!cancelled) setNumPages(doc.numPages);
-        const page = await doc.getPage(1);
-        const vp = page.getViewport({ scale: 1.4 });
-        const canvas = document.createElement("canvas");
-        canvas.width = vp.width; canvas.height = vp.height;
-        const ctx = canvas.getContext("2d");
-        if (ctx) await page.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
-        if (!cancelled) setUrl(canvas.toDataURL("image/jpeg", 0.85));
-        try { doc.destroy(); } catch { /* ignore */ }
-      } catch { /* badge fallback */ }
-    })();
-    return () => {
-      cancelled = true;
-      if (objUrl) URL.revokeObjectURL(objUrl);
-    };
-  }, [file]);
-
-  const sizeMb = (file.size / 1024 / 1024).toFixed(2);
-  const meta = [numPages !== null ? `${numPages}p` : null, `${sizeMb} MB`].filter(Boolean).join(" · ");
   const removeLabel = tr(locale, "Remove", "移除", "Quitar", "Remover", "Retirer", "削除", "Entfernen");
-
-  return (
-    <div className="flex w-full flex-col items-center gap-3">
-      {/* Container wraps tight to image's natural rendered size; border hugs the document */}
-      <div className="relative mx-auto w-fit overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
-        {url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={url}
-            alt="preview"
-            style={{ maxHeight: "480px", maxWidth: "480px", display: "block" }}
-            className="h-auto w-auto"
-          />
-        ) : (
-          <div className="flex h-48 w-36 items-center justify-center text-[10px] font-bold text-[color:var(--accent-strong)]">
-            {file.name.split(".").pop()?.toUpperCase().slice(0, 3) ?? "PDF"}
-          </div>
-        )}
-        {/* × remove button — top-right corner of document, hover:red */}
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label={removeLabel}
-          className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]"
-        >
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-            <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-          </svg>
-        </button>
-      </div>
-      {/* Filename · pages · size */}
-      <div className="text-center">
-        <p className="max-w-[20rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{file.name}</p>
-        {meta && <p className="mt-0.5 text-xs text-[color:var(--muted)]">{meta}</p>}
-      </div>
-    </div>
-  );
+  return <DocPreview file={file} max={480} onRemove={onRemove} removeLabel={removeLabel} />;
 }
 
 // Password input with a show/hide eye toggle.
