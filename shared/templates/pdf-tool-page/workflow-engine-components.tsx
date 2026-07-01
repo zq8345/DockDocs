@@ -57,12 +57,11 @@ function FileThumb({ file, className = "h-12 w-10" }: { file: File; className?: 
   );
 }
 
-// Aspect-ratio-correct big preview card for all single-file conversion tools (bigPreview=true path).
-// Renders the PDF first page via PDF.js and uses paddingBottom to preserve the
-// document's true portrait/landscape orientation — no fixed h/w frame.
+// Big preview card for all single-file conversion tools (bigPreview=true path).
+// img renders at natural size (max-height 460px cap), container wraps tight to
+// the image — border hugs the document whether portrait or landscape, no fixed frame.
 function BigPreviewCard({ file, onRemove, locale }: { file: File; onRemove: () => void; locale: TemplateLocale | undefined }) {
   const [url, setUrl] = useState<string | null>(null);
-  const [ratio, setRatio] = useState<number | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
 
   useEffect(() => {
@@ -73,9 +72,7 @@ function BigPreviewCard({ file, onRemove, locale }: { file: File; onRemove: () =
       const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
       if (isImg) {
         objUrl = URL.createObjectURL(file);
-        const img = new Image();
-        img.onload = () => { if (!cancelled) { setRatio(img.naturalHeight / img.naturalWidth); setUrl(objUrl!); } };
-        img.src = objUrl;
+        if (!cancelled) setUrl(objUrl);
         return;
       }
       if (!isPdf) return;
@@ -91,10 +88,7 @@ function BigPreviewCard({ file, onRemove, locale }: { file: File; onRemove: () =
         canvas.width = vp.width; canvas.height = vp.height;
         const ctx = canvas.getContext("2d");
         if (ctx) await page.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
-        if (!cancelled) {
-          setRatio(vp.height / vp.width);
-          setUrl(canvas.toDataURL("image/jpeg", 0.85));
-        }
+        if (!cancelled) setUrl(canvas.toDataURL("image/jpeg", 0.85));
         try { doc.destroy(); } catch { /* ignore */ }
       } catch { /* badge fallback */ }
     })();
@@ -104,32 +98,33 @@ function BigPreviewCard({ file, onRemove, locale }: { file: File; onRemove: () =
     };
   }, [file]);
 
-  const isLandscape = ratio !== null && ratio < 1;
   const sizeMb = (file.size / 1024 / 1024).toFixed(2);
   const meta = [numPages !== null ? `${numPages}p` : null, `${sizeMb} MB`].filter(Boolean).join(" · ");
   const removeLabel = tr(locale, "Remove", "移除", "Quitar", "Remover", "Retirer", "削除", "Entfernen");
 
   return (
     <div className="flex w-full flex-col items-center gap-3">
-      {/* Preview — width constrained by orientation, height derived from ratio */}
-      <div
-        className={`relative w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] ${isLandscape ? "max-w-[520px]" : "max-w-[280px]"}`}
-        style={{ paddingBottom: ratio ? `${ratio * 100}%` : "141%" }}
-      >
+      {/* Container wraps tight to image's natural rendered size; border hugs the document */}
+      <div className="relative mx-auto w-fit overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
         {url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={url} alt="preview" className="absolute inset-0 h-full w-full object-contain" />
+          <img
+            src={url}
+            alt="preview"
+            style={{ maxHeight: "460px", display: "block" }}
+            className="h-auto w-auto max-w-full"
+          />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[color:var(--accent-strong)]">
+          <div className="flex h-48 w-36 items-center justify-center text-[10px] font-bold text-[color:var(--accent-strong)]">
             {file.name.split(".").pop()?.toUpperCase().slice(0, 3) ?? "PDF"}
           </div>
         )}
-        {/* × icon remove button — overlay top-right corner */}
+        {/* × remove button — top-right corner of document, hover:red */}
         <button
           type="button"
           onClick={onRemove}
           aria-label={removeLabel}
-          className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--foreground)]"
+          className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]"
         >
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
             <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
