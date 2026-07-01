@@ -492,15 +492,18 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
             {pages.map((p) => {
               const on = selected.has(p.idx);
               return (
-                <button key={p.idx} type="button" onClick={() => toggle(p.idx)} className={`group relative flex flex-col items-center rounded-[var(--radius)] border p-1.5 transition ${on ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]" : "border-[color:var(--line)] bg-[color:var(--surface)] opacity-60 hover:opacity-100"}`}>
-                  {on && <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--accent)] text-[11px] font-bold text-white">✓</span>}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={p.thumb}
-                    alt={`page ${p.idx + 1}`}
-                    style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
-                    className="h-auto w-auto max-w-full rounded-[var(--radius-sm)] border border-[color:var(--line)]"
-                  />
+                <button key={p.idx} type="button" onClick={() => toggle(p.idx)} className={`group flex flex-col items-center rounded-[var(--radius)] p-1.5 transition ${on ? "bg-[color:var(--soft-accent)]" : "opacity-60 hover:opacity-100"}`}>
+                  {/* aspect-box: border frames only the image, label is outside */}
+                  <div className={`relative overflow-hidden rounded-[var(--radius-sm)] border ${on ? "border-[color:var(--accent)]" : "border-[color:var(--line)]"}`}>
+                    {on && <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--accent)] text-[11px] font-bold text-white">✓</span>}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={p.thumb}
+                      alt={`page ${p.idx + 1}`}
+                      style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
+                      className="h-auto w-auto max-w-full"
+                    />
+                  </div>
                   <span className="mt-1 block text-center text-[11px] text-[color:var(--muted)]">{t.pageLabel(p.idx + 1)}</span>
                 </button>
               );
