@@ -453,6 +453,9 @@ export function AiChatWorkflow({
   const engineLocale: AiChatLocale = locale === "de" ? "en" : locale === "zh-Hant" ? "zh" : locale;
   const abortRef = useRef<AbortController | null>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+  const [fileSizeMb, setFileSizeMb] = useState<number>(0);
+  const [pageCount, setPageCount] = useState<number>(0);
   const [pastedText, setPastedText] = useState("");
   const [question, setQuestion] = useState("");
   const [status, setStatus] = useState<WorkflowStatus>("idle");
@@ -537,7 +540,24 @@ export function AiChatWorkflow({
     }
 
     setFile(selected);
+    setFileSizeMb(Math.round((selected.size / 1024 / 1024) * 100) / 100);
     setStatus(question.trim() ? "ready" : "idle");
+    (async () => {
+      try {
+        const pdfjs = await import("pdfjs-dist");
+        pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+        const doc = await pdfjs.getDocument({ data: new Uint8Array(await selected.arrayBuffer()) }).promise;
+        setPageCount(doc.numPages);
+        const thumb = await doc.getPage(1);
+        const vp = thumb.getViewport({ scale: 0.4 });
+        const canvas = document.createElement("canvas");
+        canvas.width = vp.width; canvas.height = vp.height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) await thumb.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
+        setThumbnailUrl(canvas.toDataURL("image/jpeg", 0.7));
+        doc.destroy();
+      } catch { /* non-critical */ }
+    })();
   }
 
   async function startChat() {
@@ -691,6 +711,9 @@ export function AiChatWorkflow({
   function reset() {
     abortRef.current?.abort();
     setFile(null);
+    setThumbnailUrl(null);
+    setFileSizeMb(0);
+    setPageCount(0);
     setPastedText("");
     setQuestion("");
     setStatus("idle");
@@ -787,6 +810,9 @@ export function AiChatWorkflow({
             inputData={{ "data-ai-chat-input": "pdf" }}
             fileName={file?.name}
             idleText={t.idle}
+            thumbnailUrl={thumbnailUrl ?? undefined}
+            fileSizeMb={fileSizeMb || undefined}
+            pageCount={pageCount || undefined}
             disabled={isWorking}
             onFiles={chooseFile}
             onReset={reset}

@@ -450,6 +450,9 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
   const [filter, setFilter] = useState<"all" | "mandatory" | "advisory">("all");
   const [limitHit, setLimitHit] = useState<number | null>(null);
   const [expandedQuote, setExpandedQuote] = useState<string | null>(null);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+  const [fileSizeMb, setFileSizeMb] = useState<number>(0);
+  const [analyzedFileName, setAnalyzedFileName] = useState<string>("");
 
   const onAnalyze = useCallback(
     async (file: File) => {
@@ -458,6 +461,9 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
       setRequirements(null);
       setLimitHit(null);
       setExpandedQuote(null);
+      setAnalyzedFileName(file.name);
+      setFileSizeMb(Math.round((file.size / 1024 / 1024) * 100) / 100);
+      setThumbnailUrl(null);
 
       // Extract text client-side
       const { getDocument } = await import("pdfjs-dist");
@@ -467,6 +473,15 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
       try {
         const ab = await file.arrayBuffer();
         const pdf = await getDocument({ data: ab }).promise;
+        try {
+          const thumb = await pdf.getPage(1);
+          const vp = thumb.getViewport({ scale: 0.4 });
+          const thumbCanvas = document.createElement("canvas");
+          thumbCanvas.width = vp.width; thumbCanvas.height = vp.height;
+          const ctx = thumbCanvas.getContext("2d");
+          if (ctx) await thumb.render({ canvas: thumbCanvas, canvasContext: ctx, viewport: vp }).promise;
+          setThumbnailUrl(thumbCanvas.toDataURL("image/jpeg", 0.7));
+        } catch { /* non-critical */ }
         for (let p = 1; p <= pdf.numPages && text.length < MAX_CHARS; p++) {
           const page = await pdf.getPage(p);
           const content = await page.getTextContent();
@@ -620,6 +635,18 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
       {/* Results */}
       {requirements && phase === "done" && (
         <div className="mt-8">
+          {analyzedFileName && (
+            <div className="mb-4 flex items-start gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2.5">
+              {thumbnailUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={thumbnailUrl} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{analyzedFileName}</p>
+                {fileSizeMb > 0 && <p className="text-[11.5px] text-[color:var(--faint)]">{fileSizeMb} MB</p>}
+              </div>
+            </div>
+          )}
           {/* Toolbar */}
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <p className="text-[13px] text-[color:var(--muted)]">{t.found(requirements.length)}</p>

@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -172,6 +172,28 @@ function FileSlot({
   onDrop: (e: React.DragEvent) => void; onDragLeave: () => void;
   inputRef: React.RefObject<HTMLInputElement | null>; disabled?: boolean;
 }) {
+  const [thumb, setThumb] = useState<string | null>(null);
+  useEffect(() => {
+    if (!file) { setThumb(null); return; }
+    let cancelled = false;
+    (async () => {
+      try {
+        const pdfjs = await import("pdfjs-dist");
+        pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+        const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+        const page = await doc.getPage(1);
+        const vp = page.getViewport({ scale: 0.4 });
+        const canvas = document.createElement("canvas");
+        canvas.width = vp.width; canvas.height = vp.height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) await page.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
+        if (!cancelled) setThumb(canvas.toDataURL("image/jpeg", 0.7));
+        doc.destroy();
+      } catch { /* non-critical */ }
+    })();
+    return () => { cancelled = true; };
+  }, [file]);
+
   return (
     <div
       role="button"
@@ -191,11 +213,16 @@ function FileSlot({
         onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }}
       />
       {file ? (
-        <>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[color:var(--accent)]"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-          <span className="max-w-[180px] truncate text-[13px] font-medium text-[color:var(--foreground)]">{file.name}</span>
-          <span className="text-[11px] text-[color:var(--faint)]">{(file.size / 1024).toFixed(0)} KB</span>
-        </>
+        <div className="flex items-start gap-3 text-left" onClick={(e) => e.stopPropagation()}>
+          {thumb && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={thumb} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
+          )}
+          <div className="min-w-0">
+            <p className="truncate text-[13px] font-medium text-[color:var(--foreground)]">{file.name}</p>
+            <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+          </div>
+        </div>
       ) : (
         <>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[color:var(--faint)]"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>

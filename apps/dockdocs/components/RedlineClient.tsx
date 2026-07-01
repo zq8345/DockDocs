@@ -386,6 +386,29 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
   const [draggingSlot, setDraggingSlot] = useState<"a" | "b" | null>(null);
   const aRef = useRef<HTMLInputElement>(null);
   const bRef = useRef<HTMLInputElement>(null);
+  const [thumbA, setThumbA] = useState<string | null>(null);
+  const [sizeMbA, setSizeMbA] = useState<number>(0);
+  const [thumbB, setThumbB] = useState<string | null>(null);
+  const [sizeMbB, setSizeMbB] = useState<number>(0);
+
+  const extractAndSetThumb = async (slotKey: "a" | "b", f: File) => {
+    const setThumb = slotKey === "a" ? setThumbA : setThumbB;
+    const setSizeMb = slotKey === "a" ? setSizeMbA : setSizeMbB;
+    setSizeMb(Math.round((f.size / 1024 / 1024) * 100) / 100);
+    try {
+      const pdfjs = await import("pdfjs-dist");
+      pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+      const doc = await pdfjs.getDocument({ data: new Uint8Array(await f.arrayBuffer()) }).promise;
+      const thumb = await doc.getPage(1);
+      const vp = thumb.getViewport({ scale: 0.4 });
+      const canvas = document.createElement("canvas");
+      canvas.width = vp.width; canvas.height = vp.height;
+      const ctx = canvas.getContext("2d");
+      if (ctx) await thumb.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
+      setThumb(canvas.toDataURL("image/jpeg", 0.7));
+      doc.destroy();
+    } catch { /* non-critical */ }
+  };
 
   const compare = useCallback(async () => {
     if (!a || !b) { setError(t.need); return; }
@@ -402,25 +425,32 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
     }
   }, [a, b, t, childLocale]);
 
-  const reset = () => { setA(null); setB(null); setOps([]); setPhase("idle"); setError(null); };
+  const reset = () => { setA(null); setB(null); setThumbA(null); setSizeMbA(0); setThumbB(null); setSizeMbB(0); setOps([]); setPhase("idle"); setError(null); };
   const loadExample = () => { setOps(EXAMPLE_OPS); setPhase("done"); setError(null); };
 
   const counts = { ins: ops.filter((o) => o.type === "ins").length, del: ops.filter((o) => o.type === "del").length };
 
   const slot = (file: File | null, set: (f: File | null) => void, ref: React.RefObject<HTMLInputElement | null>, label: string, slotKey: "a" | "b") => (
     <>
-      <input ref={ref} type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { set(f); setPhase("idle"); setError(null); } }} />
+      <input ref={ref} type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { set(f); setPhase("idle"); setError(null); void extractAndSetThumb(slotKey, f); } }} />
       <div
         onClick={() => ref.current?.click()}
       onDragOver={(e) => { e.preventDefault(); setDraggingSlot(slotKey); }}
       onDragLeave={(e) => { if (e.currentTarget === e.target) setDraggingSlot(null); }}
-      onDrop={(e) => { e.preventDefault(); setDraggingSlot(null); const f = e.dataTransfer.files?.[0]; if (f) { set(f); setPhase("idle"); setError(null); } }}
+      onDrop={(e) => { e.preventDefault(); setDraggingSlot(null); const f = e.dataTransfer.files?.[0]; if (f) { set(f); setPhase("idle"); setError(null); void extractAndSetThumb(slotKey, f); } }}
       className={`${dropzoneVisual(draggingSlot === slotKey)} cursor-pointer p-5`}
     >
       <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{label}</p>
       {file ? (
-        <div className="mt-3 flex items-center justify-between gap-2">
-          <span className="truncate text-[13.5px] font-medium text-[color:var(--foreground)]" title={file.name}>{file.name}</span>
+        <div className="mt-3 flex items-start gap-3">
+          {(slotKey === "a" ? thumbA : thumbB) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={(slotKey === "a" ? thumbA : thumbB)!} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
+          )}
+          <div className="min-w-0 flex-1">
+            <span className="block truncate text-[13.5px] font-medium text-[color:var(--foreground)]" title={file.name}>{file.name}</span>
+            {(slotKey === "a" ? sizeMbA : sizeMbB) > 0 && <p className="text-[11px] text-[color:var(--faint)]">{slotKey === "a" ? sizeMbA : sizeMbB} MB</p>}
+          </div>
           <button type="button" onClick={(e) => { e.stopPropagation(); ref.current?.click(); }} className="shrink-0 text-[12.5px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.change}</button>
         </div>
       ) : (

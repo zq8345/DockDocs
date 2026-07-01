@@ -27,13 +27,13 @@ function PdfThumb({ file }: { file: File }) {
 
   if (!url)
     return (
-      <div className="flex h-12 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-[10px] font-bold text-[color:var(--accent-strong)]">
+      <div className="flex h-14 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-[10px] font-bold text-[color:var(--accent-strong)]">
         PDF
       </div>
     );
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={url} alt="" className="h-12 w-10 shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-white object-contain" />
+    <img src={url} alt="" className="h-14 w-11 shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-white object-contain" />
   );
 }
 
@@ -46,7 +46,7 @@ function OfficeIcon({ ext }: { ext: string }) {
     ["#8a8a8a", (e.slice(0, 3) || "?").toUpperCase()];
   return (
     <div
-      className="flex h-12 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] text-[13px] font-bold"
+      className="flex h-14 w-11 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] text-[13px] font-bold"
       style={{ color, backgroundColor: `${color}22` }}
     >
       {label}

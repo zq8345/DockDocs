@@ -33,6 +33,9 @@ export function AiDocUpload({
   onFiles,
   onReset,
   children,
+  thumbnailUrl,
+  fileSizeMb,
+  pageCount,
 }: {
   buttonLabel: string;
   resetLabel: string;
@@ -52,6 +55,10 @@ export function AiDocUpload({
   // chat's question field, etc.).
   children?: ReactNode;
   locale?: Locale;
+  // Optional file preview metadata — parent computes via PDF.js and passes in.
+  thumbnailUrl?: string;
+  fileSizeMb?: number;
+  pageCount?: number;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -94,9 +101,21 @@ export function AiDocUpload({
         // (the parents used to do this via their own inputRef; that ref is gone now).
         onChange={(event) => { onFiles(event.target.files); event.currentTarget.value = ""; }}
       />
-      <p className="mt-4 break-words text-sm font-semibold text-[color:var(--foreground)]">
-        {fileName ?? idleText}
-      </p>
+      {thumbnailUrl ? (
+        <div className="mt-4 flex items-start gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={thumbnailUrl} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
+          <div className="min-w-0">
+            <p className="break-words text-sm font-semibold text-[color:var(--foreground)]">{fileName ?? idleText}</p>
+            {pageCount != null && pageCount > 0 && <p className="mt-0.5 text-[12px] text-[color:var(--muted)]">{pageCount}p</p>}
+            {fileSizeMb != null && fileSizeMb > 0 && <p className="text-[11px] text-[color:var(--faint)]">{fileSizeMb} MB</p>}
+          </div>
+        </div>
+      ) : (
+        <p className="mt-4 break-words text-sm font-semibold text-[color:var(--foreground)]">
+          {fileName ?? idleText}
+        </p>
+      )}
       {children}
     </div>
   );

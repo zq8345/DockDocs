@@ -464,6 +464,8 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
   const [risks, setRisks] = useState<Risk[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [limitHit, setLimitHit] = useState<number | null>(null);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+  const [fileSizeMb, setFileSizeMb] = useState<number>(0);
 
   const levelLabel = useMemo(
     () => ({ high: t.levelHigh, medium: t.levelMedium, low: t.levelLow }),
@@ -478,6 +480,8 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
     setRisks(null);
     setError(null);
     setLimitHit(null);
+    setThumbnailUrl(null);
+    setFileSizeMb(0);
   };
 
   const onFile = useCallback(
@@ -487,12 +491,22 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
       setRisks(null);
       setLimitHit(null);
       setFileName(file.name);
+      setFileSizeMb(Math.round((file.size / 1024 / 1024) * 100) / 100);
       setPhase("extracting");
       try {
         const pdfjs = await import("pdfjs-dist");
         pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
         const data = new Uint8Array(await file.arrayBuffer());
         const doc = await pdfjs.getDocument({ data }).promise;
+        try {
+          const thumb = await doc.getPage(1);
+          const vp = thumb.getViewport({ scale: 0.4 });
+          const thumbCanvas = document.createElement("canvas");
+          thumbCanvas.width = vp.width; thumbCanvas.height = vp.height;
+          const ctx = thumbCanvas.getContext("2d");
+          if (ctx) await thumb.render({ canvas: thumbCanvas, canvasContext: ctx, viewport: vp }).promise;
+          setThumbnailUrl(thumbCanvas.toDataURL("image/jpeg", 0.7));
+        } catch { /* non-critical */ }
         let out = "";
         for (let i = 1; i <= doc.numPages; i++) {
           const page = await doc.getPage(i);
@@ -594,10 +608,17 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
         </>
       ) : (
         <div className={`${card} mt-8 p-5`}>
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <p className="text-[12.5px] text-[color:var(--muted)]">{t.pagesChars(pages, text.length)}</p>
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 items-start gap-3">
+              {thumbnailUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={thumbnailUrl} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
+              )}
+              <div className="min-w-0">
+                <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
+                <p className="text-[12.5px] text-[color:var(--muted)]">{t.pagesChars(pages, text.length)}</p>
+                {fileSizeMb > 0 && <p className="text-[11.5px] text-[color:var(--faint)]">{fileSizeMb} MB</p>}
+              </div>
             </div>
             <button type="button" onClick={reset} className="shrink-0 text-[13px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.reset}</button>
           </div>

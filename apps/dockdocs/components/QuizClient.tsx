@@ -313,14 +313,26 @@ export function QuizClient({ locale = "en", embedded = false }: { locale?: Local
   const [flipped, setFlipped] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [limitHit, setLimitHit] = useState<number | null>(null);
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+  const [fileSizeMb, setFileSizeMb] = useState<number>(0);
 
   const onFile = useCallback(async (file: File) => {
     if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
     setError(null); setCards([]); setFlipped(new Set()); setFileName(file.name); setPhase("reading");
+    setFileSizeMb(Math.round((file.size / 1024 / 1024) * 100) / 100);
     try {
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+      try {
+        const thumb = await doc.getPage(1);
+        const vp = thumb.getViewport({ scale: 0.4 });
+        const thumbCanvas = document.createElement("canvas");
+        thumbCanvas.width = vp.width; thumbCanvas.height = vp.height;
+        const ctx = thumbCanvas.getContext("2d");
+        if (ctx) await thumb.render({ canvas: thumbCanvas, canvasContext: ctx, viewport: vp }).promise;
+        setThumbnailUrl(thumbCanvas.toDataURL("image/jpeg", 0.7));
+      } catch { /* non-critical */ }
       let out = "";
       for (let i = 1; i <= doc.numPages; i++) {
         const page = await doc.getPage(i);
@@ -365,7 +377,7 @@ export function QuizClient({ locale = "en", embedded = false }: { locale?: Local
     }
   }, [text, count, locale, t]);
 
-  const reset = () => { setFileName(""); setText(""); setCards([]); setFlipped(new Set()); setPhase("idle"); setError(null); setLimitHit(null); };
+  const reset = () => { setFileName(""); setText(""); setCards([]); setFlipped(new Set()); setPhase("idle"); setError(null); setLimitHit(null); setThumbnailUrl(null); setFileSizeMb(0); };
   const toggle = (i: number) => setFlipped((p) => { const n = new Set(p); if (n.has(i)) n.delete(i); else n.add(i); return n; });
 
   return (
@@ -386,9 +398,16 @@ export function QuizClient({ locale = "en", embedded = false }: { locale?: Local
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-3">
-              <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]" title={fileName}>{fileName}</p>
-              <button type="button" onClick={reset} className="text-[12.5px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.change}</button>
+            <div className="flex items-start gap-3">
+              {thumbnailUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={thumbnailUrl} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
+              )}
+              <div className="min-w-0">
+                <p className="truncate text-[14px] font-semibold text-[color:var(--foreground)]" title={fileName}>{fileName}</p>
+                {fileSizeMb > 0 && <p className="text-[11.5px] text-[color:var(--faint)]">{fileSizeMb} MB</p>}
+              </div>
+              <button type="button" onClick={reset} className="shrink-0 text-[12.5px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{t.change}</button>
             </div>
             <div className="flex shrink-0 items-center gap-3">
               <label className="flex items-center gap-2 text-[12.5px] text-[color:var(--muted)]">

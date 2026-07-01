@@ -36,6 +36,7 @@ type DocResult = {
   status: DocStatus;
   error?: string;
   file?: File; // kept so a scanned doc can be re-read with OCR
+  thumbnailUrl?: string;
 };
 
 type CmpField = { value: string | null; source: string | null };
@@ -1053,8 +1054,18 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
       }
       const trimmed = text.replace(/\s+/g, " ").trim();
       const numPages = doc.numPages;
+      let thumbnailUrl: string | undefined;
+      try {
+        const thumbPage = await doc.getPage(1);
+        const vp = thumbPage.getViewport({ scale: 0.4 });
+        const thumbCanvas = document.createElement("canvas");
+        thumbCanvas.width = vp.width; thumbCanvas.height = vp.height;
+        const ctx = thumbCanvas.getContext("2d");
+        if (ctx) await thumbPage.render({ canvas: thumbCanvas, canvasContext: ctx, viewport: vp }).promise;
+        thumbnailUrl = thumbCanvas.toDataURL("image/jpeg", 0.7);
+      } catch { /* non-critical */ }
       try { doc.destroy(); } catch { /* ignore */ }
-      return { id, name: file.name, pages: numPages, chars: trimmed.length, text: trimmed, status: trimmed.length > 0 ? "ok" : "empty", file };
+      return { id, name: file.name, pages: numPages, chars: trimmed.length, text: trimmed, status: trimmed.length > 0 ? "ok" : "empty", file, thumbnailUrl };
     } catch (e) {
       const msg = isEncryptedPdfError(e) ? encryptedPdfNotice(childLocale) : e instanceof Error ? e.message : String(e);
       return { id, name: file.name, pages: 0, chars: 0, text: "", status: "error", error: msg, file };
@@ -1514,6 +1525,12 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
             const b = badge(r.status);
             return (
               <div key={r.id} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
+                <div className="flex items-start gap-3">
+                  {r.thumbnailUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={r.thumbnailUrl} alt="Page 1" className="h-24 max-w-[160px] w-auto object-contain shrink-0 rounded border border-[color:var(--line)]" />
+                  )}
+                  <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-semibold text-[color:var(--foreground)]">{r.name}</p>
                   <span className={`rounded-full border px-2 py-0.5 text-[11px] font-medium ${b.cls}`}>{b.label}</span>
@@ -1531,6 +1548,8 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
                 {r.status === "empty" && !ocrBusy.has(r.id) && r.error && (
                   <p className="mt-1 text-[11px] text-amber-400/80">{r.error}</p>
                 )}
+                  </div>
+                </div>
               </div>
             );
           })}
