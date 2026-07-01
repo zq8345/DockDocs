@@ -20,7 +20,7 @@ declare const Netlify: {
 // advice; the prompt and the client copy both say so.
 
 type ContractRiskPayload = { text?: string; locale?: AnswerLocale };
-type ProviderConfig = { apiUrl: string; apiKey: string; model: string };
+type ModelEntry = { apiUrl: string; apiKey: string; model: string };
 type RiskLevel = "high" | "medium" | "low";
 type Risk = {
   type: string;
@@ -70,14 +70,22 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many requests — please wait a minute and try again." }, 429);
   }
 
+  // Internal health-check bypass: monitor function sends X-Monitor-Key matching
+  // MONITOR_SECRET env var → skip the feature gate so no user quota is burned.
+  const monitorSecret = Netlify.env.get("MONITOR_SECRET")?.trim();
+  const isMonitorPing = Boolean(monitorSecret && req.headers.get("x-monitor-key") === monitorSecret);
+
   // Server-side plan/usage gate (authoritative). contractAnalyzer is a PRO-tier feature.
-  const gate = await enforceFeatureGate(req, "contractAnalyzer");
-  if (!gate.ok) {
-    return gate.response;
+  let gate: Awaited<ReturnType<typeof enforceFeatureGate>> | null = null;
+  if (!isMonitorPing) {
+    gate = await enforceFeatureGate(req, "contractAnalyzer");
+    if (!gate.ok) {
+      return gate.response;
+    }
   }
 
-  const provider = getProvider();
-  if (!provider) {
+  const chain = getProviderChain();
+  if (chain.length === 0) {
     return json({ ok: false, code: "NOT_CONFIGURED", message: "AI provider is not configured." }, 503);
   }
 
@@ -99,10 +107,10 @@ export default async (req: Request, _context: Context) => {
     const chunkRanges = chunkRangesFor(text, MAX_CHARS, OVERLAP_CHARS);
     // Per-plan coverage knob (default: full document for EVERY plan). MAX_ANALYZE_CHUNKS
     // is a hard timeout-safety ceiling regardless of plan.
-    const cap = Math.min(coverageChunkCap(gate.plan), MAX_ANALYZE_CHUNKS);
+    const cap = Math.min(coverageChunkCap(gate?.plan ?? "FREE"), MAX_ANALYZE_CHUNKS);
     const analyzedRanges = chunkRanges.slice(0, cap);
 
-    const { risks: rawRisks, contractType, typeSpecificItems, failed } = await analyzeChunks(provider, locale, text, analyzedRanges);
+    const { risks: rawRisks, contractType, typeSpecificItems, failed, modelUsed } = await analyzeChunks(chain, locale, text, analyzedRanges);
 
     // Every analyzed chunk failed → a real provider outage. Surface it, never return an
     // empty list that would read as a false "all clear".
@@ -112,8 +120,8 @@ export default async (req: Request, _context: Context) => {
 
     const risks = groundRisks(mergeAndDedupRisks(rawRisks), text);
 
-    // Count usage only after a successful analysis.
-    await gate.commit();
+    // Count usage only after a successful analysis (never for internal monitor pings).
+    if (gate) await gate.commit();
 
     const coverage: Coverage = {
       coveredChars: analyzedRanges.length ? analyzedRanges[analyzedRanges.length - 1].end : 0,
@@ -124,7 +132,7 @@ export default async (req: Request, _context: Context) => {
       capped: chunkRanges.length > analyzedRanges.length,
     };
 
-    return json({ ok: true, risks, coverage, contractType, typeSpecificItems, provider: "configured-ai-provider", model: provider.model }, 200);
+    return json({ ok: true, risks, coverage, contractType, typeSpecificItems, provider: "configured-ai-provider", model: modelUsed }, 200);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message.slice(0, 200) : String(err).slice(0, 200);
     // Log internally (Netlify function logs) but never leak internals to the client.
@@ -146,19 +154,22 @@ function coverageChunkCap(_plan: SubscriptionPlan): number {
 // Analyze each chunk independently with bounded concurrency. Per-chunk failures are
 // counted (not thrown) so one bad chunk doesn't sink the whole analysis.
 async function analyzeChunks(
-  provider: ProviderConfig,
+  chain: ModelEntry[],
   locale: AnswerLocale,
   text: string,
   ranges: Array<{ start: number; end: number }>,
-): Promise<{ risks: Risk[]; contractType: ContractTypeInfo | null; typeSpecificItems: TypeSpecificItem[]; failed: number }> {
+): Promise<{ risks: Risk[]; contractType: ContractTypeInfo | null; typeSpecificItems: TypeSpecificItem[]; failed: number; modelUsed: string }> {
   const risks: Risk[] = [];
   let failed = 0;
   let contractType: ContractTypeInfo | null = null;
   let typeSpecificItems: TypeSpecificItem[] = [];
+  let modelUsed = chain[0]?.model ?? "unknown";
   await mapWithConcurrency(ranges, CHUNK_CONCURRENCY, async (range) => {
     const isFirst = range.start === 0;
     try {
-      const content = await callProvider(provider, buildAnalyzeBody(provider, locale, text.slice(range.start, range.end), isFirst));
+      const bodyTemplate = buildAnalyzeBody(locale, text.slice(range.start, range.end), isFirst);
+      const { text: content, model } = await callProviderWithFallback(chain, bodyTemplate);
+      if (isFirst) modelUsed = model;
       if (isFirst) {
         const parsed = parseFirstChunk(content);
         contractType = parsed.contractType;
@@ -171,12 +182,11 @@ async function analyzeChunks(
       failed += 1;
     }
   });
-  return { risks, contractType, typeSpecificItems, failed };
+  return { risks, contractType, typeSpecificItems, failed, modelUsed };
 }
 
-function buildAnalyzeBody(provider: ProviderConfig, locale: AnswerLocale, chunk: string, isFirst = false): Record<string, unknown> {
+function buildAnalyzeBody(locale: AnswerLocale, chunk: string, isFirst = false): Record<string, unknown> {
   return {
-    model: provider.model,
     temperature: 0,
     max_tokens: isFirst ? MAX_TOKENS_FIRST_CHUNK : MAX_TOKENS,
     response_format: { type: "json_object" },
@@ -308,55 +318,94 @@ function groundRisks(risks: Risk[], text: string): Risk[] {
   });
 }
 
-async function callProvider(provider: ProviderConfig, body: Record<string, unknown>): Promise<string> {
-  // OpenRouter is OpenAI-compatible, so the same request body works. We send the
-  // recommended attribution headers and never set any logging field — OpenRouter
-  // does not store prompts/completions unless logging is explicitly opted in.
-  const isOpenRouter = /openrouter\.ai/i.test(provider.apiUrl);
+// Low-level: try a single model entry. Throws on non-200.
+async function callOneModel(entry: ModelEntry, body: Record<string, unknown>): Promise<string> {
+  // OpenRouter is OpenAI-compatible. We send the recommended attribution headers and never
+  // set any logging field — OpenRouter does not store prompts/completions unless opted in.
+  const isOpenRouter = /openrouter\.ai/i.test(entry.apiUrl);
   const headers: Record<string, string> = {
-    Authorization: `Bearer ${provider.apiKey}`,
+    Authorization: `Bearer ${entry.apiKey}`,
     "Content-Type": "application/json",
   };
   if (isOpenRouter) {
     headers["HTTP-Referer"] = "https://dockdocs.app";
     headers["X-Title"] = "DockDocs Contract Risk";
   }
-  const res = await fetch(provider.apiUrl, { method: "POST", headers, body: JSON.stringify(body) });
+  const res = await fetch(entry.apiUrl, { method: "POST", headers, body: JSON.stringify(body) });
   const responseText = await res.text();
   if (!res.ok) {
-    throw new Error(`AI provider failed with status ${res.status}. ${redact(responseText)}`);
+    throw new Error(`Model ${entry.model} returned status ${res.status}. ${redact(responseText)}`);
   }
   return responseText;
 }
 
-function getProvider(): ProviderConfig | null {
-  // Primary: OpenRouter (OpenAI-compatible gateway) → Mistral Large. Joe's China-issued
-  // card works on OpenRouter, but US providers (Anthropic/OpenAI) reject it under their
-  // regional ToS (403 "provider ToS violation"); EU/Mistral is allowed, runs cheaper
-  // than Claude Haiku, and GDPR-alignment is a plus for legal documents. Zero data
-  // retention by default; we never enable OpenRouter request logging (that would
-  // authorize commercial use of the contract text). Endpoint, key, and model are
-  // env-configurable — e.g. set OPENROUTER_MODEL=mistralai/mistral-medium-3.1 for a
-  // faster/cheaper fallback if Large is too slow for the function timeout. DeepSeek
-  // (dropped 2026-06-12) is intentionally NOT a provider.
+// High-level: try the ordered chain until one model succeeds. Returns the response text
+// AND which model was actually used (for logging / the `model` response field).
+// Failover is intentionally fast-fail per model (no retry within one model) so the total
+// latency budget stays bounded. Primary model handles normal traffic; failover rescues
+// model-not-found / deprecation errors, not timeouts.
+async function callProviderWithFallback(
+  chain: ModelEntry[],
+  bodyTemplate: Record<string, unknown>,
+): Promise<{ text: string; model: string }> {
+  let lastErr: Error | undefined;
+  for (const entry of chain) {
+    try {
+      const text = await callOneModel(entry, { ...bodyTemplate, model: entry.model });
+      if (chain.indexOf(entry) > 0) {
+        console.warn(`[contract-risk] failover: using ${entry.model} after earlier model(s) failed`);
+      }
+      return { text, model: entry.model };
+    } catch (err) {
+      lastErr = err instanceof Error ? err : new Error(String(err));
+      console.warn(`[contract-risk] model ${entry.model} failed — ${lastErr.message.slice(0, 120)}`);
+    }
+  }
+  throw lastErr ?? new Error("All models in the failover chain failed.");
+}
+
+// Returns an ordered list of model entries to try, fastest/most-reliable first.
+// The env var OPENROUTER_MODEL (if set) takes the primary slot; the two code-default
+// models always appear as fallbacks so a stale/deprecated env override can never leave
+// the function with zero working models. DeepSeek (dropped 2026-06-12) is never added.
+function getProviderChain(): ModelEntry[] {
+  const chain: ModelEntry[] = [];
+
   const openRouterKey = Netlify.env.get("OPENROUTER_API_KEY")?.trim();
   if (openRouterKey) {
-    return {
-      apiKey: openRouterKey,
-      apiUrl: normalizeChatEndpoint(Netlify.env.get("OPENROUTER_BASE_URL"), "https://openrouter.ai/api/v1"),
-      model: Netlify.env.get("OPENROUTER_MODEL")?.trim() || "mistralai/mistral-medium-3.5",
-    };
+    const apiUrl = normalizeChatEndpoint(
+      Netlify.env.get("OPENROUTER_BASE_URL"),
+      "https://openrouter.ai/api/v1",
+    );
+    // The env var can override the primary model (e.g. for A/B or regional availability).
+    // Code defaults: medium-3.5 is the fast primary; large-2512 is the proven backup.
+    const DEFAULT_PRIMARY = "mistralai/mistral-medium-3.5";
+    const DEFAULT_BACKUP = "mistralai/mistral-large-2512";
+    const envModel = Netlify.env.get("OPENROUTER_MODEL")?.trim() || null;
+    const primary = envModel ?? DEFAULT_PRIMARY;
+    chain.push({ apiKey: openRouterKey, apiUrl, model: primary });
+    // Always add both code defaults as fallbacks (skip if they're already the primary).
+    for (const fallback of [DEFAULT_PRIMARY, DEFAULT_BACKUP]) {
+      if (fallback !== primary) {
+        chain.push({ apiKey: openRouterKey, apiUrl, model: fallback });
+      }
+    }
   }
-  // Fallback: a direct OpenAI-compatible endpoint, if configured.
+
+  // Last-resort: a direct OpenAI-compatible endpoint (gpt-4o-mini is cheap + fast).
   const openAiKey = Netlify.env.get("OPENAI_API_KEY")?.trim();
   if (openAiKey) {
-    return {
+    chain.push({
       apiKey: openAiKey,
-      apiUrl: normalizeChatEndpoint(Netlify.env.get("OPENAI_BASE_URL"), "https://api.openai.com/v1"),
+      apiUrl: normalizeChatEndpoint(
+        Netlify.env.get("OPENAI_BASE_URL"),
+        "https://api.openai.com/v1",
+      ),
       model: Netlify.env.get("OPENAI_MODEL")?.trim() || "gpt-4o-mini",
-    };
+    });
   }
-  return null;
+
+  return chain;
 }
 
 function normalizeChatEndpoint(base: string | undefined, fallback: string): string {
