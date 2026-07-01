@@ -471,7 +471,7 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
           </div>
           <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-5 flex flex-wrap items-center gap-3">
+          <div className="mt-5 flex flex-wrap items-center gap-4">
             {pages.map((p, pos) => {
               const seg = segOf(pos);
               const isLast = pos === pages.length - 1;
@@ -494,7 +494,7 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
                     <div className="relative overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)]">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={p.thumb} alt={`page ${p.idx + 1}`}
-                        style={{ maxHeight: "160px", maxWidth: "110px", display: "block" }}
+                        style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
                         className="h-auto w-auto max-w-full" />
                     </div>
                     <span className="mt-1 block text-center text-[11px] text-[color:var(--muted)]">{pageLabel}</span>

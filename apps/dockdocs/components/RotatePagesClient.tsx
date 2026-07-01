@@ -13,7 +13,7 @@ import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 
 type Locale = RouteLocale;
-type Pg = { idx: number; thumb: string };
+type Pg = { idx: number; thumb: string; w: number; h: number };
 
 const _en = {
     title: "Rotate Pages",
@@ -363,7 +363,7 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
         canvas.width = viewport.width; canvas.height = viewport.height;
         const ctx = canvas.getContext("2d");
         if (ctx) await page.render({ canvas, canvasContext: ctx, viewport }).promise;
-        out.push({ idx: i - 1, thumb: canvas.toDataURL("image/jpeg", 0.7) });
+        out.push({ idx: i - 1, thumb: canvas.toDataURL("image/jpeg", 0.7), w: canvas.width, h: canvas.height });
       }
       try { doc.destroy(); } catch { /* ignore */ }
       setPages(out); setPhase("ready");
@@ -379,11 +379,6 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
     return next;
   });
 
-  const rotateAllCCW = () => setRot((prev) => {
-    const next: Record<number, number> = {};
-    pages.forEach((p) => { next[p.idx] = ((prev[p.idx] || 0) + 270) % 360; });
-    return next;
-  });
 
   const count = Object.values(rot).filter((d) => d % 360 !== 0).length;
 
@@ -445,10 +440,7 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
               </p>
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
-              <button type="button" onClick={rotateAllCCW}
-                className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]" title={t.rotateAll}>
-                ↺
-              </button>
+
               <button type="button" onClick={rotateAll}
                 className="rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-1.5 text-[13px] font-medium text-[color:var(--foreground)] hover:border-[color:var(--line-strong)]">
                 ↻ {t.rotateAll}
@@ -464,6 +456,14 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
             {pages.map((p) => {
               const deg = rot[p.idx] || 0;
               const rotated = deg % 360 !== 0;
+              const swapped = deg === 90 || deg === 270;
+              const visW = swapped ? p.h : p.w;
+              const visH = swapped ? p.w : p.h;
+              const sc = 180 / Math.max(visW, visH);
+              const cW = Math.round(visW * sc);
+              const cH = Math.round(visH * sc);
+              const iW = Math.round(p.w * sc);
+              const iH = Math.round(p.h * sc);
               return (
                 <button
                   key={p.idx}
@@ -471,12 +471,20 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
                   onClick={() => rotateOne(p.idx)}
                   className={`group flex w-fit flex-col items-center rounded-[var(--radius)] p-1.5 transition ${rotated ? "bg-[color:var(--soft-accent)]" : "opacity-60 hover:opacity-100"}`}
                 >
-                  <div className={`relative flex h-[128px] w-[128px] items-center justify-center overflow-hidden rounded-[var(--radius-sm)] border ${rotated ? "border-[color:var(--accent)]" : "border-[color:var(--line)]"}`}>
+                  <div
+                    className={`relative overflow-hidden rounded-[var(--radius-sm)] border transition-all duration-200 ${rotated ? "border-[color:var(--accent)]" : "border-[color:var(--line)]"}`}
+                    style={{ width: cW, height: cH }}
+                  >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={p.thumb} alt={`page ${p.idx + 1}`}
-                      style={{ transform: `rotate(${deg}deg)` }}
-                      className="max-h-full max-w-full transition-transform duration-200" />
-                    <span className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[11px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100">↻</span>
+                      style={{
+                        position: "absolute", top: "50%", left: "50%",
+                        width: iW, height: iH,
+                        transform: `translate(-50%, -50%) rotate(${deg}deg)`,
+                      }}
+                      className="transition-transform duration-200"
+                    />
+                    <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[11px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100">↻</span>
                   </div>
                   <span className={`mt-1 block text-center text-[11px] ${rotated ? "font-medium text-[color:var(--accent)]" : "text-[color:var(--muted)]"}`}>
                     {pageLabel(p.idx + 1)}
