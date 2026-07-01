@@ -18,7 +18,7 @@ type Locale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 const copy = {
   en: {
     title: "Simple pricing. Powerful, private documents.",
-    subtitle: "Powerful document AI, fully unlocked with Pro — chat with any document, compare side by side, review contract risk, automate in batches. A few dollars a month, for hours back.",
+    subtitle: "Powerful document AI, fully unlocked with Pro — chat with any document, compare side by side, review contract risk, automate in batches, saving you dozens of hours.",
     monthly: "Monthly",
     yearly: "Yearly",
     save: "Save ~40%",
@@ -87,7 +87,7 @@ const copy = {
   },
   zh: {
     title: "定价简单，文档强大且私密。",
-    subtitle: "强大的文档 AI，Pro 一次解锁——和任意文档对话、并排比对、合同风险审查、批量自动化。每月几美元，换回你大把时间。",
+    subtitle: "强大的文档 AI，Pro 一次解锁——和任意文档对话、并排比对、合同风险审查、批量自动化，替你省下几十小时。",
     monthly: "按月",
     yearly: "按年",
     save: "省约 40%",
@@ -155,7 +155,7 @@ const copy = {
   },
   es: {
     title: "Precios simples. Documentos potentes y privados.",
-    subtitle: "IA documental potente, completamente desbloqueada con Pro — chatea con cualquier documento, compara en paralelo, revisa riesgos contractuales, automatiza en lote. Unos pocos dólares al mes, a cambio de horas recuperadas.",
+    subtitle: "IA documental potente, completamente desbloqueada con Pro — chatea con cualquier documento, compara en paralelo, revisa riesgos contractuales, automatiza en lote, ahorrándote decenas de horas.",
     monthly: "Mensual",
     yearly: "Anual",
     save: "Ahorra ~40%",
@@ -223,7 +223,7 @@ const copy = {
   },
   pt: {
     title: "Preços simples. Documentos poderosos e privados.",
-    subtitle: "IA documental poderosa, completamente desbloqueada com Pro — converse com qualquer documento, compare lado a lado, analise riscos contratuais, automatize em lote. Poucos dólares por mês, de volta em horas poupadas.",
+    subtitle: "IA documental poderosa, completamente desbloqueada com Pro — converse com qualquer documento, compare lado a lado, analise riscos contratuais, automatize em lote, economizando dezenas de horas.",
     monthly: "Mensal",
     yearly: "Anual",
     save: "Economize ~40%",
@@ -291,7 +291,7 @@ const copy = {
   },
   fr: {
     title: "Des tarifs simples. Des documents puissants et privés.",
-    subtitle: "Une IA documentaire puissante, entièrement débloquée avec Pro — dialoguez avec n'importe quel document, comparez côte à côte, analysez les risques contractuels, automatisez en lot. Quelques dollars par mois, des heures de retrouvées.",
+    subtitle: "Une IA documentaire puissante, entièrement débloquée avec Pro — dialoguez avec n'importe quel document, comparez côte à côte, analysez les risques contractuels, automatisez en lot, et gagnez des dizaines d'heures.",
     monthly: "Mensuel",
     yearly: "Annuel",
     save: "Économisez ~40%",
@@ -359,7 +359,7 @@ const copy = {
   },
   ja: {
     title: "シンプルな料金。強力でプライベートなドキュメント。",
-    subtitle: "Pro で全機能が開放される強力なドキュメント AI — 任意の資料とチャット、並列比較、契約リスク審査、バッチ自動化。月数ドルで、何時間もの時間を取り戻せます。",
+    subtitle: "Pro で全機能が開放される強力なドキュメント AI — 任意の資料とチャット、並列比較、契約リスク審査、バッチ自動化で、何十時間も節約できます。",
     monthly: "月額",
     yearly: "年額",
     save: "約40%お得",
@@ -427,7 +427,7 @@ const copy = {
   },
   de: {
     title: "Einfache Preise. Leistungsstarke, private Dokumente.",
-    subtitle: "Leistungsstarke Dokumenten-KI, mit Pro vollständig freigeschaltet — mit beliebigen Dokumenten chatten, nebeneinander vergleichen, Vertragsrisiken prüfen, stapelweise automatisieren. Wenige Dollar im Monat, dafür Stunden zurückgewonnen.",
+    subtitle: "Leistungsstarke Dokumenten-KI, mit Pro vollständig freigeschaltet — mit beliebigen Dokumenten chatten, nebeneinander vergleichen, Vertragsrisiken prüfen, stapelweise automatisieren und dabei Dutzende Stunden sparen.",
     monthly: "Monatlich",
     yearly: "Jährlich",
     save: "Sparen Sie ~40 %",
@@ -495,7 +495,7 @@ const copy = {
   },
   ko: {
     title: "간단한 요금제. 강력하고 안전한 문서 작업.",
-    subtitle: "Pro로 완전히 잠금 해제되는 강력한 문서 AI — 모든 문서와 대화, 나란히 비교, 계약 위험 검토, 대량 자동화. 한 달에 몇 달러로, 몇 시간을 되찾으세요.",
+    subtitle: "Pro로 완전히 잠금 해제되는 강력한 문서 AI — 모든 문서와 대화, 나란히 비교, 계약 위험 검토, 대량 자동화로 수십 시간을 절약하세요.",
     monthly: "월간",
     yearly: "연간",
     save: "약 40% 절약",
@@ -738,9 +738,8 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const toolHref = (href: RouteSlug) => (href ? localizedPath(locale as RouteLocale, href) : "/account");
 
   // ── New locale strings (pricing v2) ──
-  const subscribeLabel = zh ? h("订阅") : locale === "es" ? "Suscribirse" : locale === "pt" ? "Assinar" : locale === "fr" ? "S'abonner" : locale === "ja" ? "登録" : locale === "de" ? "Abonnieren" : locale === "ko" ? "구독" : "Subscribe";
-  const buyLabel = zh ? h("购买") : locale === "es" ? "Comprar" : locale === "pt" ? "Comprar" : locale === "fr" ? "Acheter" : locale === "ja" ? "購入" : locale === "de" ? "Kaufen" : locale === "ko" ? "구매" : "Buy";
-  const trialCtaText = zh ? h("免费试用 7 天 Pro · 无需信用卡") : locale === "es" ? "Prueba Pro 7 días gratis · Sin tarjeta" : locale === "pt" ? "Experimente Pro 7 dias grátis · Sem cartão" : locale === "fr" ? "Essai Pro 7 jours gratuits · Sans carte" : locale === "ja" ? "Pro を7日間無料で試す · カード不要" : locale === "de" ? "Pro 7 Tage kostenlos · Keine Kreditkarte" : locale === "ko" ? "7일 Pro 무료 체험 · 신용카드 불필요" : "Start free 7-day Pro trial · No credit card";
+  const subscribeProLabel = zh ? h("订阅 Pro 会员") : locale === "es" ? "Suscribirse a Pro" : locale === "pt" ? "Assinar Pro" : locale === "fr" ? "S'abonner à Pro" : locale === "ja" ? "Proに登録" : locale === "de" ? "Pro abonnieren" : locale === "ko" ? "Pro 구독" : "Subscribe to Pro";
+  const trialLinkLabel = zh ? h("先免费试用 7 天 Pro 会员") : locale === "es" ? "Primero prueba Pro 7 días gratis" : locale === "pt" ? "Primeiro experimente Pro 7 dias grátis" : locale === "fr" ? "D'abord essayer Pro 7 jours gratuit" : locale === "ja" ? "まずProを7日間無料で試す" : locale === "de" ? "Zuerst Pro 7 Tage gratis testen" : locale === "ko" ? "먼저 Pro 7일 무료 체험" : "Start free 7-day Pro trial first";
   const proUnlocksEyebrow = zh ? h("// PRO 解锁") : locale === "es" ? "// Pro desbloquea" : locale === "pt" ? "// Pro desbloqueia" : locale === "fr" ? "// Pro déverrouille" : locale === "ja" ? "// Pro で解放" : locale === "de" ? "// Pro schaltet frei" : locale === "ko" ? "// Pro 잠금 해제" : "// Pro unlocks";
   // Capability grid short labels (4 items × locale)
   const CAP_GRID = [
@@ -848,18 +847,6 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
-      {/* Pro — value headline + 3 billing-option cards (Monthly / Annual / Lifetime) */}
-      <p className="mt-10 max-w-2xl text-[18px] font-medium leading-[1.5] text-[color:var(--foreground)]">
-        {zh ? h("AI 替你啃最重要的文件——合同风险、报价对比、长报告，省几十小时。")
-          : locale === "es" ? "La IA analiza sus documentos más importantes — contratos, licitaciones, informes largos. Se ahorra horas."
-          : locale === "pt" ? "A IA lê seus documentos mais importantes — contratos, licitações, relatórios longos. Economize horas."
-          : locale === "fr" ? "L'IA lit vos documents les plus importants — contrats, appels d'offres, rapports longs. Des heures gagnées."
-          : locale === "ja" ? "AIが最重要書類を代わりに読みます——契約リスク・見積比較・長文レポート。何時間も節約できます。"
-          : locale === "de" ? "KI liest Ihre wichtigsten Dokumente — Vertragsrisiken, Angebotsvergleiche, lange Berichte. Stunden gespart."
-          : locale === "ko" ? "AI가 중요한 문서를 대신 읽습니다 — 계약 위험, 견적 비교, 긴 보고서. 몇 시간을 절약하세요."
-          : "AI reads your most important documents for you — contract risk, bid comparison, long reports. Hours saved."}
-      </p>
-
       {/* Same Pro, three ways to pay — card layout */}
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         {BILLING_CARDS.map(({ interval, label, price, sub, badge, highlighted }) => {
@@ -905,33 +892,12 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 ))}
               </div>
 
-              {/* Per-card CTA button */}
-              <div className="mt-auto pt-4">
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); void handleCardCta(interval); }}
-                  disabled={isCurrentInterval || billingLoading === "PRO" || (pricingCtaKind === "upgrade" && upgrade.loading)}
-                  className={`w-full rounded-full py-2 text-[13px] font-medium transition disabled:opacity-60 ${
-                    isSelected
-                      ? "bg-[color:var(--accent)] text-[color:var(--on-accent)] hover:opacity-90"
-                      : "border border-[color:var(--line-strong)] text-[color:var(--foreground)] hover:border-[color:var(--accent)]"
-                  }`}
-                >
-                  {isCurrentInterval
-                    ? billingCurrentLabel
-                    : (billingLoading === "PRO" || (pricingCtaKind === "upgrade" && upgrade.loading))
-                      ? billingRedirecting
-                      : interval === "lifetime"
-                        ? buyLabel
-                        : subscribeLabel}
-                </button>
-              </div>
             </div>
           );
         })}
       </div>
 
-      {/* Main trial CTA — big green button + free note */}
+      {/* Main CTA — big subscribe button + optional trial link + free note */}
       <div className="mt-8 flex flex-col items-center gap-3">
         {pricingCtaKind === "current" ? (
           <div className="flex w-full max-w-sm items-center justify-center rounded-full border border-[color:var(--line)] px-8 py-3 text-[14px] font-medium text-[color:var(--muted)]">
@@ -945,13 +911,23 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         ) : (
           <button
             type="button"
-            onClick={() => void (pricingCtaKind === "upgrade" ? upgrade.beginUpgrade("PRO", period) : handleTrialOrCheckout("PRO"))}
-            disabled={pricingCtaKind === "upgrade" ? upgrade.loading : billingLoading === "PRO"}
+            onClick={() => void handleCardCta(period)}
+            disabled={billingLoading === "PRO" || (pricingCtaKind === "upgrade" && upgrade.loading)}
             className="flex h-12 w-full max-w-sm items-center justify-center rounded-full bg-[color:var(--accent)] text-[15px] font-semibold text-[color:var(--on-accent)] transition hover:opacity-90 disabled:opacity-60"
           >
-            {(pricingCtaKind === "upgrade" ? upgrade.loading : billingLoading === "PRO")
+            {(billingLoading === "PRO" || (pricingCtaKind === "upgrade" && upgrade.loading))
               ? billingRedirecting
-              : trialCtaText}
+              : subscribeProLabel}
+          </button>
+        )}
+        {pricingCtaKind === "checkout" && (
+          <button
+            type="button"
+            onClick={() => void handleTrialOrCheckout("PRO")}
+            disabled={billingLoading === "PRO"}
+            className="text-[13px] text-[color:var(--muted)] underline-offset-2 hover:underline disabled:opacity-60"
+          >
+            {trialLinkLabel}
           </button>
         )}
         <p className="text-center text-[13px] text-[color:var(--muted)]">{billingFreeNote}</p>
