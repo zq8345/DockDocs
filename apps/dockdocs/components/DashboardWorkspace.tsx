@@ -177,13 +177,14 @@ const CARDS = [
 ] as const;
 
 // ── Component ───────────────────────────────────────────────────────────────
-export function DashboardWorkspace() {
+export function DashboardWorkspace({ initialTool }: { initialTool?: string | null }) {
   const [locale, setLocale] = useState<RuntimeLocale>("en");
   const [hydrated, setHydrated] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [activeTool, setActiveTool] = useState<string | null>(null);
   const [history, setHistory] = useState<WorkHistoryItem[]>([]);
 
+  // Mount: restore locale, set initial tool (from path or legacy ?tool= param)
   useEffect(() => {
     try {
       const saved = localStorage.getItem("dockdocs-lang");
@@ -191,24 +192,61 @@ export function DashboardWorkspace() {
     } catch {}
     setHydrated(true);
     setHistory(readWorkHistory().slice(0, 8));
-    if (typeof window !== "undefined") {
+
+    if (initialTool) {
+      // Path-based: e.g. /workspace/chat-with-pdf/ → initialTool = "/chat-with-pdf"
+      if (WORKSPACE_PDF_SLUGS.has(initialTool) || WORKSPACE_AI_SLUGS.has(initialTool)) {
+        setActiveTool(initialTool);
+      }
+      // URL is already correct from the path — no replaceState needed
+    } else if (typeof window !== "undefined") {
+      // Backward compat: legacy ?tool= and ?panel= query params
       const params = new URLSearchParams(window.location.search);
-      let consumed = false;
       const toolParam = params.get("tool");
       if (toolParam) {
         const slug = "/" + toolParam;
         if (WORKSPACE_PDF_SLUGS.has(slug) || WORKSPACE_AI_SLUGS.has(slug)) {
           setActiveTool(slug);
+          // Upgrade URL to new path form
+          window.history.replaceState({}, "", `/workspace/${toolParam}/`);
+        } else {
+          window.history.replaceState({}, "", window.location.pathname);
         }
-        consumed = true;
       } else if (params.get("panel") === "account") {
         setActiveTool("/workspace-account");
-        consumed = true;
-      }
-      if (consumed) {
-        window.history.replaceState({}, "", window.location.pathname);
+        window.history.replaceState({}, "", "/workspace/");
       }
     }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // URL sync: push a history entry whenever the active tool changes
+  useEffect(() => {
+    if (!hydrated) return;
+    const target =
+      activeTool && !activeTool.startsWith("/workspace-")
+        ? `/workspace${activeTool}/`
+        : "/workspace/";
+    if (window.location.pathname !== target) {
+      window.history.pushState({ activeTool: activeTool ?? "" }, "", target);
+    }
+  }, [activeTool, hydrated]);
+
+  // Popstate: sync active tool when browser back/forward is used
+  useEffect(() => {
+    const onPop = () => {
+      const path = window.location.pathname;
+      const match = /^\/workspace\/([^/]+)\/?$/.exec(path);
+      if (match) {
+        const slug = "/" + match[1];
+        if (WORKSPACE_PDF_SLUGS.has(slug) || WORKSPACE_AI_SLUGS.has(slug)) {
+          setActiveTool(slug);
+          return;
+        }
+      }
+      setActiveTool(null);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
   }, []);
 
   const handleLocaleChange = useCallback((next: RuntimeLocale) => {
