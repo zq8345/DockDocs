@@ -35,7 +35,7 @@ const _en = {
     delLabel: "Pages to delete from each file",
     delPlaceholder: "e.g. 1 or 1,3-4",
     delHint: "These page numbers are removed from every file. Files that would lose all pages are skipped.",
-    run: "Process all", running: "Processing", download: "Download ZIP", reset: "Start over",
+    run: "Process all", running: "Processing", download: "Download ZIP", reset: "Start over", remove: "Remove",
     files: (n: number, max: number) => `${n} / ${max} files`,
     done: "done", failed: "failed",
     need: "Add at least one PDF.",
@@ -59,7 +59,7 @@ const STR = {
     delLabel: "从每个文件删除的页",
     delPlaceholder: "如 1 或 1,3-4",
     delHint: "这些页码会从每个文件中删除。会被删空的文件将被跳过。",
-    run: "全部处理", running: "处理中", download: "下载 ZIP", reset: "重新开始",
+    run: "全部处理", running: "处理中", download: "下载 ZIP", reset: "重新开始", remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`,
     done: "完成", failed: "失败",
     need: "至少添加一份 PDF。",
@@ -80,7 +80,7 @@ const STR = {
     delLabel: "Páginas a eliminar de cada archivo",
     delPlaceholder: "ej. 1 o 1,3-4",
     delHint: "Estos números de página se eliminan de cada archivo. Los archivos que perderían todas las páginas se omiten.",
-    run: "Procesar todo", running: "Procesando", download: "Descargar ZIP", reset: "Empezar de nuevo",
+    run: "Procesar todo", running: "Procesando", download: "Descargar ZIP", reset: "Empezar de nuevo", remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`,
     done: "listo", failed: "falló",
     need: "Agrega al menos un PDF.",
@@ -101,7 +101,7 @@ const STR = {
     delLabel: "Páginas a excluir de cada arquivo",
     delPlaceholder: "ex.: 1 ou 1,3-4",
     delHint: "Esses números de página são removidos de cada arquivo. Arquivos que ficariam sem páginas são ignorados.",
-    run: "Processar tudo", running: "Processando", download: "Baixar ZIP", reset: "Recomeçar",
+    run: "Processar tudo", running: "Processando", download: "Baixar ZIP", reset: "Recomeçar", remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`,
     done: "pronto", failed: "falhou",
     need: "Adicione pelo menos um PDF.",
@@ -122,7 +122,7 @@ const STR = {
     delLabel: "Pages à supprimer de chaque fichier",
     delPlaceholder: "ex. : 1 ou 1,3-4",
     delHint: "Ces numéros de page sont supprimés de chaque fichier. Les fichiers qui se retrouveraient sans pages sont ignorés.",
-    run: "Tout traiter", running: "Traitement en cours", download: "Télécharger le ZIP", reset: "Recommencer",
+    run: "Tout traiter", running: "Traitement en cours", download: "Télécharger le ZIP", reset: "Recommencer", remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`,
     done: "terminé", failed: "échoué",
     need: "Ajoutez au moins un PDF.",
@@ -143,7 +143,7 @@ const STR = {
     delLabel: "各ファイルから削除するページ",
     delPlaceholder: "例: 1 または 1,3-4",
     delHint: "これらのページ番号がすべてのファイルから削除されます。すべてのページが失われるファイルはスキップされます。",
-    run: "すべて処理", running: "処理中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    run: "すべて処理", running: "処理中", download: "ZIPをダウンロード", reset: "最初からやり直す", remove: "削除",
     files: (n: number, max: number) => `${n} / ${max} ファイル`,
     done: "完了", failed: "失敗",
     need: "PDFを1つ以上追加してください。",
@@ -164,7 +164,7 @@ const STR = {
     delLabel: "Seiten, die aus jeder Datei gelöscht werden",
     delPlaceholder: "z. B. 1 oder 1,3-4",
     delHint: "Diese Seitenzahlen werden aus jeder Datei entfernt. Dateien, die dadurch alle Seiten verlieren würden, werden übersprungen.",
-    run: "Alle verarbeiten", running: "Wird verarbeitet", download: "ZIP herunterladen", reset: "Neu beginnen",
+    run: "Alle verarbeiten", running: "Wird verarbeitet", download: "ZIP herunterladen", reset: "Neu beginnen", remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`,
     done: "fertig", failed: "fehlgeschlagen",
     need: "Fügen Sie mindestens ein PDF hinzu.",
@@ -185,7 +185,7 @@ const STR = {
     delLabel: "각 파일에서 삭제할 페이지",
     delPlaceholder: "예: 1 또는 1,3-4",
     delHint: "이 페이지 번호가 모든 파일에서 제거됩니다. 모든 페이지가 사라지게 되는 파일은 건너뜁니다.",
-    run: "전체 처리", running: "처리 중", download: "ZIP 다운로드", reset: "다시 시작",
+    run: "전체 처리", running: "처리 중", download: "ZIP 다운로드", reset: "다시 시작", remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개 파일`,
     done: "완료", failed: "실패",
     need: "PDF를 하나 이상 추가해 주세요.",
@@ -691,6 +691,7 @@ export function BatchFixScansClient({ locale = "en", embedded = false }: { local
                 }
                 doneLabel={t.done}
                 failLabel={t.failed}
+                removeLabel={t.remove}
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}

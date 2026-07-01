@@ -24,7 +24,7 @@ const _en = {
   subtitle: "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF, packaged into one ZIP. All in your browser; nothing is uploaded.",
   drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
   rotate: "Rotate by",
-  run: "Rotate all", running: "Rotating", download: "Download ZIP", reset: "Start over",
+  run: "Rotate all", running: "Rotating", download: "Download ZIP", reset: "Start over", remove: "Remove",
   files: (n: number, max: number) => `${n} / ${max} files`, done: "rotated", failed: "failed",
   need: "Add at least one PDF.",
   note: "Every page of each PDF is rotated by the chosen angle. Encrypted PDFs are skipped. Everything stays on your device.",
@@ -38,7 +38,7 @@ const STR = {
     subtitle: "一次纠正整个文件夹里横着或倒着的扫描件——把每份 PDF 的每一页都旋转，打包成一个 ZIP。全部在浏览器中完成，不上传任何文件。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹",
     rotate: "旋转角度",
-    run: "全部旋转", running: "旋转中", download: "下载 ZIP", reset: "重新开始",
+    run: "全部旋转", running: "旋转中", download: "下载 ZIP", reset: "重新开始", remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`, done: "已旋转", failed: "失败",
     need: "至少添加一份 PDF。",
     note: "每份 PDF 的每一页都按所选角度旋转。已加密的 PDF 会被跳过。全部在你的设备上完成。",
@@ -49,7 +49,7 @@ const STR = {
     subtitle: "Corrige de una sola vez toda una carpeta de escaneos torcidos o al revés: gira cada página de cada PDF y empaquétalo todo en un solo ZIP. Todo en tu navegador; no se sube nada.",
     drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
     rotate: "Girar",
-    run: "Girar todo", running: "Girando", download: "Descargar ZIP", reset: "Empezar de nuevo",
+    run: "Girar todo", running: "Girando", download: "Descargar ZIP", reset: "Empezar de nuevo", remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`, done: "girado", failed: "falló",
     need: "Agrega al menos un PDF.",
     note: "Cada página de cada PDF se gira según el ángulo elegido. Los PDF cifrados se omiten. Todo permanece en tu dispositivo.",
@@ -60,7 +60,7 @@ const STR = {
     subtitle: "Corrija de uma vez uma pasta inteira de digitalizações tortas ou de cabeça para baixo: gire cada página de cada PDF e empacote tudo em um único ZIP. Tudo no seu navegador; nada é enviado.",
     drop: "Arraste e solte PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta",
     rotate: "Girar",
-    run: "Girar tudo", running: "Girando", download: "Baixar ZIP", reset: "Recomeçar",
+    run: "Girar tudo", running: "Girando", download: "Baixar ZIP", reset: "Recomeçar", remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`, done: "girado", failed: "falhou",
     need: "Adicione pelo menos um PDF.",
     note: "Cada página de cada PDF é girada pelo ângulo escolhido. PDFs criptografados são ignorados. Tudo permanece no seu dispositivo.",
@@ -71,7 +71,7 @@ const STR = {
     subtitle: "Corrigez en une seule fois tout un dossier de scans de travers ou à l'envers : faites pivoter chaque page de chaque PDF et regroupez le tout dans un seul ZIP. Tout se passe dans votre navigateur ; rien n'est envoyé.",
     drop: "Déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
     rotate: "Rotation de",
-    run: "Tout faire pivoter", running: "Rotation en cours", download: "Télécharger le ZIP", reset: "Recommencer",
+    run: "Tout faire pivoter", running: "Rotation en cours", download: "Télécharger le ZIP", reset: "Recommencer", remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`, done: "pivoté", failed: "échec",
     need: "Ajoutez au moins un PDF.",
     note: "Chaque page de chaque PDF est pivotée selon l'angle choisi. Les PDF chiffrés sont ignorés. Tout reste sur votre appareil.",
@@ -82,7 +82,7 @@ const STR = {
     subtitle: "横向きや上下逆のスキャンが入ったフォルダを一度に修正——各 PDF のすべてのページを回転し、1 つの ZIP にまとめます。すべてブラウザ内で処理され、何もアップロードされません。",
     drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
     rotate: "回転角度",
-    run: "すべて回転", running: "回転中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    run: "すべて回転", running: "回転中", download: "ZIPをダウンロード", reset: "最初からやり直す", remove: "削除",
     files: (n: number, max: number) => `${n} / ${max} ファイル`, done: "回転済み", failed: "失敗",
     need: "PDF を 1 つ以上追加してください。",
     note: "各 PDF のすべてのページが選択した角度で回転されます。暗号化された PDF はスキップされます。すべてがお使いのデバイス内で完結します。",
@@ -93,7 +93,7 @@ const STR = {
     subtitle: "Korrigieren Sie einen ganzen Ordner mit seitlich oder kopfüber liegenden Scans auf einmal – drehen Sie jede Seite jedes PDFs und bündeln Sie alles in einem einzigen ZIP. Die Verarbeitung läuft in Ihrem Browser; nichts wird hochgeladen.",
     drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
     rotate: "Drehen um",
-    run: "Alle drehen", running: "Wird gedreht", download: "ZIP herunterladen", reset: "Neu beginnen",
+    run: "Alle drehen", running: "Wird gedreht", download: "ZIP herunterladen", reset: "Neu beginnen", remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`, done: "gedreht", failed: "fehlgeschlagen",
     need: "Fügen Sie mindestens ein PDF hinzu.",
     note: "Jede Seite jedes PDFs wird um den gewählten Winkel gedreht. Verschlüsselte PDFs werden übersprungen. Alles bleibt auf Ihrem Gerät.",
@@ -104,7 +104,7 @@ const STR = {
     subtitle: "옆으로 눕거나 거꾸로 된 스캔이 가득한 폴더를 한 번에 바로잡으세요 — 모든 PDF의 모든 페이지를 회전해 하나의 ZIP으로 묶습니다. 모두 브라우저에서 처리되며 아무것도 업로드되지 않습니다.",
     drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
     rotate: "회전 각도",
-    run: "전체 회전", running: "회전 중", download: "ZIP 다운로드", reset: "다시 시작",
+    run: "전체 회전", running: "회전 중", download: "ZIP 다운로드", reset: "다시 시작", remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개`, done: "회전됨", failed: "실패",
     need: "PDF를 최소 한 개 추가하세요.",
     note: "각 PDF의 모든 페이지가 선택한 각도로 회전됩니다. 암호화된 PDF는 건너뜁니다. 모든 작업은 기기에서 처리됩니다.",
@@ -414,6 +414,7 @@ export function BatchRotateClient({ locale = "en", embedded = false }: { locale?
                 errorMsg={it.msg}
                 doneLabel={t.done}
                 failLabel={t.failed}
+                removeLabel={t.remove}
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}

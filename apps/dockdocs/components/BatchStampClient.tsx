@@ -28,7 +28,7 @@ const _en = {
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
     wm: "Watermark", pn: "Page numbers",
     wmText: "Watermark text", wmPlaceholder: "e.g. CONFIDENTIAL",
-    run: "Apply to all", running: "Processing", download: "Download ZIP", reset: "Start over",
+    run: "Apply to all", running: "Processing", download: "Download ZIP", reset: "Start over", remove: "Remove",
     files: (n: number, max: number) => `${n} / ${max} files`, done: "done", failed: "failed",
     needText: "Enter the watermark text.", needFile: "Add at least one PDF.",
     note: "Uses the default placement (diagonal watermark / page numbers). For custom position or opacity, use the single-file Watermark or Page-numbers tools. Everything stays on your device.",
@@ -46,7 +46,7 @@ const STR = {
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹",
     wm: "水印", pn: "页码",
     wmText: "水印文字", wmPlaceholder: "如 机密 / CONFIDENTIAL",
-    run: "全部应用", running: "处理中", download: "下载 ZIP", reset: "重新开始",
+    run: "全部应用", running: "处理中", download: "下载 ZIP", reset: "重新开始", remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`, done: "完成", failed: "失败",
     needText: "请输入水印文字。", needFile: "至少添加一份 PDF。",
     note: "使用默认排版(对角水印 / 页码)。需要自定义位置或透明度，请用单文件的「加水印」或「加页码」工具。全部在你的设备上完成。",
@@ -61,7 +61,7 @@ const STR = {
     drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
     wm: "Marca de agua", pn: "Números de página",
     wmText: "Texto de la marca de agua", wmPlaceholder: "p. ej. CONFIDENCIAL",
-    run: "Aplicar a todos", running: "Procesando", download: "Descargar ZIP", reset: "Empezar de nuevo",
+    run: "Aplicar a todos", running: "Procesando", download: "Descargar ZIP", reset: "Empezar de nuevo", remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`, done: "listo", failed: "error",
     needText: "Ingresa el texto de la marca de agua.", needFile: "Agrega al menos un PDF.",
     note: "Usa la disposición predeterminada (marca de agua diagonal / números de página). Para una posición u opacidad personalizadas, usa las herramientas individuales de Marca de agua o Números de página. Todo permanece en tu dispositivo.",
@@ -76,7 +76,7 @@ const STR = {
     drop: "Arraste e solte PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta",
     wm: "Marca d'água", pn: "Números de página",
     wmText: "Texto da marca d'água", wmPlaceholder: "ex.: CONFIDENCIAL",
-    run: "Aplicar a todos", running: "Processando", download: "Baixar ZIP", reset: "Recomeçar",
+    run: "Aplicar a todos", running: "Processando", download: "Baixar ZIP", reset: "Recomeçar", remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`, done: "pronto", failed: "erro",
     needText: "Insira o texto da marca d'água.", needFile: "Adicione pelo menos um PDF.",
     note: "Usa o posicionamento padrão (marca d'água diagonal / números de página). Para posição ou opacidade personalizadas, use as ferramentas individuais de Marca d'água ou Números de página. Tudo permanece no seu dispositivo.",
@@ -91,7 +91,7 @@ const STR = {
     drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour sélectionner", choose: "Choisir des PDF", folder: "Choisir un dossier",
     wm: "Filigrane", pn: "Numéros de page",
     wmText: "Texte du filigrane", wmPlaceholder: "ex. : CONFIDENTIEL",
-    run: "Appliquer à tous", running: "Traitement en cours", download: "Télécharger le ZIP", reset: "Recommencer",
+    run: "Appliquer à tous", running: "Traitement en cours", download: "Télécharger le ZIP", reset: "Recommencer", remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`, done: "terminé", failed: "échec",
     needText: "Veuillez saisir le texte du filigrane.", needFile: "Ajoutez au moins un PDF.",
     note: "Utilise le positionnement par défaut (filigrane en diagonale / numéros de page). Pour une position ou une opacité personnalisées, utilisez les outils individuels Filigrane ou Numéros de page. Tout reste sur votre appareil.",
@@ -106,7 +106,7 @@ const STR = {
     drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
     wm: "透かし", pn: "ページ番号",
     wmText: "透かしのテキスト", wmPlaceholder: "例: CONFIDENTIAL",
-    run: "すべてに適用", running: "処理中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    run: "すべてに適用", running: "処理中", download: "ZIPをダウンロード", reset: "最初からやり直す", remove: "削除",
     files: (n: number, max: number) => `${n} / ${max} ファイル`, done: "完了", failed: "失敗",
     needText: "透かしのテキストを入力してください。", needFile: "PDF を 1 つ以上追加してください。",
     note: "既定の配置（斜めの透かし / ページ番号）を使用します。位置や不透明度をカスタマイズするには、単一ファイル用の「透かし」または「ページ番号」ツールをご利用ください。すべてがお使いのデバイス内で完結します。",
@@ -121,7 +121,7 @@ const STR = {
     drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
     wm: "Wasserzeichen", pn: "Seitenzahlen",
     wmText: "Wasserzeichen-Text", wmPlaceholder: "z. B. VERTRAULICH",
-    run: "Auf alle anwenden", running: "Wird verarbeitet", download: "ZIP herunterladen", reset: "Neu beginnen",
+    run: "Auf alle anwenden", running: "Wird verarbeitet", download: "ZIP herunterladen", reset: "Neu beginnen", remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`, done: "fertig", failed: "fehlgeschlagen",
     needText: "Geben Sie den Wasserzeichen-Text ein.", needFile: "Fügen Sie mindestens ein PDF hinzu.",
     note: "Verwendet die Standardplatzierung (diagonales Wasserzeichen / Seitenzahlen). Für eine individuelle Position oder Deckkraft nutzen Sie die Einzeldatei-Tools „Wasserzeichen“ oder „Seitenzahlen“. Alles bleibt auf Ihrem Gerät.",
@@ -136,7 +136,7 @@ const STR = {
     drop: "여기에 PDF(또는 폴더)를 끌어다 놓거나 클릭하여 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
     wm: "워터마크", pn: "페이지 번호",
     wmText: "워터마크 텍스트", wmPlaceholder: "예: CONFIDENTIAL",
-    run: "전체 적용", running: "처리 중", download: "ZIP 다운로드", reset: "다시 시작",
+    run: "전체 적용", running: "처리 중", download: "ZIP 다운로드", reset: "다시 시작", remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개 파일`, done: "완료", failed: "실패",
     needText: "워터마크 텍스트를 입력하세요.", needFile: "PDF를 하나 이상 추가해 주세요.",
     note: "기본 배치(대각선 워터마크 / 페이지 번호)를 사용합니다. 위치나 불투명도를 직접 지정하려면 단일 파일 「워터마크」 또는 「페이지 번호」 도구를 이용하세요. 모든 작업이 기기 안에서 이루어집니다.",
@@ -639,6 +639,7 @@ export function BatchStampClient({ locale = "en", lockMode, embedded = false }: 
                 errorMsg={it.msg}
                 doneLabel={t.done}
                 failLabel={t.failed}
+                removeLabel={t.remove}
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}

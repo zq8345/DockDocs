@@ -25,7 +25,7 @@ const _en = {
   title: "Batch PDF to image",
   subtitle: "Drop a whole folder of PDFs and turn every page into a JPG or PNG — all rendered in your browser and packaged into one ZIP. Nothing is uploaded.",
   drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
-  format: "Format", run: "Convert all", running: "Converting", download: "Download ZIP", reset: "Start over",
+  format: "Format", run: "Convert all", running: "Converting", download: "Download ZIP", reset: "Start over", remove: "Remove",
   files: (n: number, max: number) => `${n} / ${max} files`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "failed",
   need: "Add at least one PDF.", err: "Something went wrong: ",
   note: "Every page of every PDF becomes an image (rendered at 2×). Large batches take a moment — everything stays on your device.",
@@ -37,7 +37,7 @@ const STR = {
     title: "批量 PDF 转图片",
     subtitle: "拖入整个 PDF 文件夹，把每一页都转成 JPG 或 PNG——全部在浏览器中渲染并打包成一个 ZIP。不上传任何文件。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹",
-    format: "格式", run: "全部转换", running: "转换中", download: "下载 ZIP", reset: "重新开始",
+    format: "格式", run: "全部转换", running: "转换中", download: "下载 ZIP", reset: "重新开始", remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`, pages: (n: number) => `${n} 页`, failed: "失败",
     need: "至少添加一份 PDF。", err: "出错了：",
     note: "每份 PDF 的每一页都会转成一张图片(2× 渲染)。文件多时稍慢——全部在你的设备上完成。",
@@ -46,7 +46,7 @@ const STR = {
     title: "PDF a imagen por lotes",
     subtitle: "Suelta una carpeta entera de PDF y convierte cada página en JPG o PNG: todo se procesa en tu navegador y se empaqueta en un solo ZIP. No se sube nada.",
     drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
-    format: "Formato", run: "Convertir todo", running: "Convirtiendo", download: "Descargar ZIP", reset: "Empezar de nuevo",
+    format: "Formato", run: "Convertir todo", running: "Convirtiendo", download: "Descargar ZIP", reset: "Empezar de nuevo", remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`, pages: (n: number) => `${n} página${n === 1 ? "" : "s"}`, failed: "falló",
     need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
     note: "Cada página de cada PDF se convierte en una imagen (procesada a 2×). Los lotes grandes tardan un momento: todo permanece en tu dispositivo.",
@@ -55,7 +55,7 @@ const STR = {
     title: "PDF para imagem em lote",
     subtitle: "Solte uma pasta inteira de PDFs e converta cada página em JPG ou PNG: tudo é processado no seu navegador e empacotado em um único ZIP. Nada é enviado.",
     drop: "Arraste e solte PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta",
-    format: "Formato", run: "Converter tudo", running: "Convertendo", download: "Baixar ZIP", reset: "Recomeçar",
+    format: "Formato", run: "Converter tudo", running: "Convertendo", download: "Baixar ZIP", reset: "Recomeçar", remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`, pages: (n: number) => `${n} página${n === 1 ? "" : "s"}`, failed: "falhou",
     need: "Adicione pelo menos um PDF.", err: "Algo deu errado: ",
     note: "Cada página de cada PDF vira uma imagem (renderizada a 2×). Lotes grandes demoram um momento — tudo permanece no seu dispositivo.",
@@ -64,7 +64,7 @@ const STR = {
     title: "PDF en images en lot",
     subtitle: "Déposez un dossier entier de PDF et convertissez chaque page en JPG ou PNG — tout est traité dans votre navigateur et regroupé dans un seul ZIP. Rien n'est téléversé.",
     drop: "Faites glisser des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
-    format: "Format", run: "Tout convertir", running: "Conversion en cours", download: "Télécharger le ZIP", reset: "Recommencer",
+    format: "Format", run: "Tout convertir", running: "Conversion en cours", download: "Télécharger le ZIP", reset: "Recommencer", remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichier${n === 1 ? "" : "s"}`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "échec",
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
     note: "Chaque page de chaque PDF est convertie en image (rendue à 2×). Les grands lots prennent un moment — tout reste sur votre appareil.",
@@ -73,7 +73,7 @@ const STR = {
     title: "一括PDFを画像に",
     subtitle: "PDFのフォルダごとドロップして、すべてのページをJPGまたはPNGに変換——すべてブラウザ内でレンダリングされ、1つのZIPにまとめられます。アップロードは一切ありません。",
     drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
-    format: "形式", run: "すべて変換", running: "変換中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    format: "形式", run: "すべて変換", running: "変換中", download: "ZIPをダウンロード", reset: "最初からやり直す", remove: "削除",
     files: (n: number, max: number) => `${n} / ${max}件`, pages: (n: number) => `${n}ページ`, failed: "失敗",
     need: "PDFを少なくとも1つ追加してください。", err: "問題が発生しました: ",
     note: "各PDFのすべてのページが画像になります（2×でレンダリング）。大量のバッチは少し時間がかかります——すべてデバイス内で完結します。",
@@ -82,7 +82,7 @@ const STR = {
     title: "PDF zu Bild im Stapel",
     subtitle: "Legen Sie einen ganzen Ordner mit PDFs ab und wandeln Sie jede Seite in ein JPG oder PNG um – alles wird in Ihrem Browser gerendert und in einem einzigen ZIP gebündelt. Die meisten Tools laufen direkt in Ihrem Browser.",
     drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
-    format: "Format", run: "Alle umwandeln", running: "Wird umgewandelt", download: "ZIP herunterladen", reset: "Neu beginnen",
+    format: "Format", run: "Alle umwandeln", running: "Wird umgewandelt", download: "ZIP herunterladen", reset: "Neu beginnen", remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`, pages: (n: number) => `${n} Seite${n === 1 ? "" : "n"}`, failed: "fehlgeschlagen",
     need: "Fügen Sie mindestens ein PDF hinzu.", err: "Etwas ist schiefgelaufen: ",
     note: "Jede Seite jedes PDFs wird zu einem Bild (mit 2× gerendert). Große Stapel dauern einen Moment – die Verarbeitung erfolgt auf Ihrem Gerät.",
@@ -91,7 +91,7 @@ const STR = {
     title: "일괄 PDF를 이미지로",
     subtitle: "PDF 폴더 전체를 끌어다 놓고 모든 페이지를 JPG 또는 PNG로 변환하세요 — 모두 브라우저에서 렌더링되어 하나의 ZIP으로 묶입니다. 아무것도 업로드되지 않습니다.",
     drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
-    format: "형식", run: "전체 변환", running: "변환 중", download: "ZIP 다운로드", reset: "다시 시작",
+    format: "형식", run: "전체 변환", running: "변환 중", download: "ZIP 다운로드", reset: "다시 시작", remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개`, pages: (n: number) => `${n}페이지`, failed: "실패",
     need: "PDF를 최소 한 개 추가하세요.", err: "문제가 발생했습니다: ",
     note: "모든 PDF의 모든 페이지가 이미지로 변환됩니다(2×로 렌더링). 대량 배치는 잠시 걸립니다 — 모든 작업은 기기에서 처리됩니다.",
@@ -403,6 +403,7 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
                     : undefined
                 }
                 failLabel={t.failed}
+                removeLabel={t.remove}
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}

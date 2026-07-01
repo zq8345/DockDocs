@@ -33,6 +33,7 @@ const _en = {
   running: "Converting",
   download: "Download ZIP",
   reset: "Start over",
+  remove: "Remove",
   files: (n: number, max: number) => `${n} / ${max} files`,
   done: "done",
   failed: "failed",
@@ -54,6 +55,7 @@ const STR = {
     running: "转换中",
     download: "下载 ZIP",
     reset: "重新开始",
+    remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`,
     done: "完成",
     failed: "失败",
@@ -72,6 +74,7 @@ const STR = {
     running: "Convirtiendo",
     download: "Descargar ZIP",
     reset: "Empezar de nuevo",
+    remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`,
     done: "listo",
     failed: "falló",
@@ -90,6 +93,7 @@ const STR = {
     running: "Convertendo",
     download: "Baixar ZIP",
     reset: "Recomeçar",
+    remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`,
     done: "pronto",
     failed: "falhou",
@@ -108,6 +112,7 @@ const STR = {
     running: "Conversion en cours",
     download: "Télécharger le ZIP",
     reset: "Recommencer",
+    remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`,
     done: "terminé",
     failed: "échec",
@@ -126,6 +131,7 @@ const STR = {
     running: "変換中",
     download: "ZIPをダウンロード",
     reset: "最初からやり直す",
+    remove: "削除",
     files: (n: number, max: number) => `${n} / ${max} ファイル`,
     done: "完了",
     failed: "失敗",
@@ -144,6 +150,7 @@ const STR = {
     running: "Wird konvertiert",
     download: "ZIP herunterladen",
     reset: "Neu beginnen",
+    remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`,
     done: "fertig",
     failed: "fehlgeschlagen",
@@ -162,6 +169,7 @@ const STR = {
     running: "변환 중",
     download: "ZIP 다운로드",
     reset: "다시 시작",
+    remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개 파일`,
     done: "완료",
     failed: "실패",
@@ -405,6 +413,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
                 }
                 doneLabel={t.done}
                 failLabel={t.failed}
+                removeLabel={t.remove}
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}

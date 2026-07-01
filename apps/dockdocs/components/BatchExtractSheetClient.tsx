@@ -26,7 +26,7 @@ const _en = {
   subtitle: "Drop a whole folder of invoices, quotes, or contracts — DockDocs pulls the key fields from every file into a single table, one row per document, ready to download as CSV. The AI only reports what's actually there.",
   drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", add: "Add more", reading: "Reading files…",
   type: "Document type", invoice: "Invoices", quote: "Quotes", contract: "Contracts",
-  extract: "Extract all", extracting: "Extracting", reset: "Start over",
+  extract: "Extract all", extracting: "Extracting", reset: "Start over", remove: "Remove",
   download: "Download CSV", doc: "Document", dash: "—",
   files: (n: number, max: number) => `${n} / ${max} files`, needFile: "Add at least one PDF.",
   err: "Something went wrong: ",
@@ -40,7 +40,7 @@ const STR = {
     subtitle: "拖入整个文件夹的发票、报价单或合同——DockDocs 把每份的关键字段都抽进同一张表，一份一行，可导出 CSV。AI 只报告文档里真实存在的内容。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹", add: "继续添加", reading: "正在读取文件…",
     type: "文档类型", invoice: "发票", quote: "报价单", contract: "合同",
-    extract: "全部抽取", extracting: "抽取中", reset: "重新开始",
+    extract: "全部抽取", extracting: "抽取中", reset: "重新开始", remove: "移除",
     download: "下载 CSV", doc: "文档", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} 份`, needFile: "至少添加一个 PDF。",
     err: "出错了：",
@@ -51,7 +51,7 @@ const STR = {
     subtitle: "Arrastra toda una carpeta de facturas, presupuestos o contratos — DockDocs extrae los campos clave de cada archivo en una sola tabla, una fila por documento, lista para descargar como CSV. La IA solo informa lo que realmente está ahí.",
     drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta", add: "Agregar más", reading: "Leyendo archivos…",
     type: "Tipo de documento", invoice: "Facturas", quote: "Presupuestos", contract: "Contratos",
-    extract: "Extraer todo", extracting: "Extrayendo", reset: "Empezar de nuevo",
+    extract: "Extraer todo", extracting: "Extrayendo", reset: "Empezar de nuevo", remove: "Quitar",
     download: "Descargar CSV", doc: "Documento", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} archivos`, needFile: "Agrega al menos un PDF.",
     err: "Algo salió mal: ",
@@ -62,7 +62,7 @@ const STR = {
     subtitle: "Arraste uma pasta inteira de faturas, orçamentos ou contratos — o DockDocs extrai os campos-chave de cada arquivo em uma única tabela, uma linha por documento, pronta para baixar como CSV. A IA relata apenas o que realmente está lá.",
     drop: "Arraste e solte PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta", add: "Adicionar mais", reading: "Lendo arquivos…",
     type: "Tipo de documento", invoice: "Faturas", quote: "Orçamentos", contract: "Contratos",
-    extract: "Extrair tudo", extracting: "Extraindo", reset: "Recomeçar",
+    extract: "Extrair tudo", extracting: "Extraindo", reset: "Recomeçar", remove: "Remover",
     download: "Baixar CSV", doc: "Documento", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} arquivos`, needFile: "Adicione pelo menos um PDF.",
     err: "Algo deu errado: ",
@@ -73,7 +73,7 @@ const STR = {
     subtitle: "Déposez tout un dossier de factures, devis ou contrats — DockDocs extrait les champs clés de chaque fichier dans un tableau unique, une ligne par document, prêt à télécharger en CSV. L'IA ne rapporte que ce qui est réellement présent.",
     drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier", add: "Ajouter d'autres", reading: "Lecture des fichiers…",
     type: "Type de document", invoice: "Factures", quote: "Devis", contract: "Contrats",
-    extract: "Tout extraire", extracting: "Extraction en cours", reset: "Recommencer",
+    extract: "Tout extraire", extracting: "Extraction en cours", reset: "Recommencer", remove: "Retirer",
     download: "Télécharger le CSV", doc: "Document", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} fichiers`, needFile: "Ajoutez au moins un PDF.",
     err: "Une erreur est survenue : ",
@@ -84,7 +84,7 @@ const STR = {
     subtitle: "請求書、見積書、契約書のフォルダをまるごとドロップすると、DockDocsが各ファイルから主要な項目を1つの表に抽出します。1ドキュメントにつき1行で、CSVとしてダウンロードできます。AIは実際に存在する内容のみを報告します。",
     drop: "ここにPDF（またはフォルダ）をドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択", add: "さらに追加", reading: "ファイルを読み取り中…",
     type: "ドキュメントの種類", invoice: "請求書", quote: "見積書", contract: "契約書",
-    extract: "すべて抽出", extracting: "抽出中", reset: "最初からやり直す",
+    extract: "すべて抽出", extracting: "抽出中", reset: "最初からやり直す", remove: "削除",
     download: "CSVをダウンロード", doc: "ドキュメント", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} ファイル`, needFile: "PDFを1つ以上追加してください。",
     err: "問題が発生しました: ",
@@ -95,7 +95,7 @@ const STR = {
     subtitle: "Ziehen Sie einen ganzen Ordner mit Rechnungen, Angeboten oder Verträgen hierher — DockDocs zieht die wichtigsten Felder aus jeder Datei in eine einzige Tabelle, eine Zeile pro Dokument, fertig zum Download als CSV. Die KI gibt nur wieder, was tatsächlich vorhanden ist.",
     drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen", add: "Weitere hinzufügen", reading: "Dateien werden gelesen…",
     type: "Dokumenttyp", invoice: "Rechnungen", quote: "Angebote", contract: "Verträge",
-    extract: "Alle extrahieren", extracting: "Wird extrahiert", reset: "Neu beginnen",
+    extract: "Alle extrahieren", extracting: "Wird extrahiert", reset: "Neu beginnen", remove: "Entfernen",
     download: "CSV herunterladen", doc: "Dokument", dash: "—",
     files: (n: number, max: number) => `${n} / ${max} Dateien`, needFile: "Fügen Sie mindestens ein PDF hinzu.",
     err: "Etwas ist schiefgelaufen: ",
@@ -106,7 +106,7 @@ const STR = {
     subtitle: "송장, 견적서, 계약서가 담긴 폴더를 통째로 끌어다 놓으면, DockDocs가 각 파일에서 핵심 항목을 하나의 표로 뽑아냅니다. 문서 하나당 한 행이며, CSV로 바로 다운로드할 수 있습니다. AI는 실제로 존재하는 내용만 보고합니다.",
     drop: "여기에 PDF(또는 폴더)를 끌어다 놓거나 클릭하여 선택하세요", choose: "PDF 선택", folder: "폴더 선택", add: "더 추가", reading: "파일 읽는 중…",
     type: "문서 유형", invoice: "송장", quote: "견적서", contract: "계약서",
-    extract: "전체 추출", extracting: "추출 중", reset: "다시 시작",
+    extract: "전체 추출", extracting: "추출 중", reset: "다시 시작", remove: "제거",
     download: "CSV 다운로드", doc: "문서", dash: "—",
     files: (n: number, max: number) => `${n} / ${max}개 파일`, needFile: "PDF를 하나 이상 추가해 주세요.",
     err: "문제가 발생했습니다: ",
@@ -269,6 +269,7 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
                 key={d.id}
                 file={d.file}
                 status="queued"
+                removeLabel={t.remove}
                 onRemove={phase === "idle" ? () => setDocs((prev) => prev.filter((x) => x.id !== d.id)) : undefined}
               />
             ))}

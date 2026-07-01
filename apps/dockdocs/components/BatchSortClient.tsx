@@ -25,7 +25,7 @@ const STR_en = {
   title: "Classify PDFs",
   subtitle: "Drop a messy pile of PDFs — AI labels each (invoice, contract, resume, report…) and sorts them into folders inside one ZIP, so a chaotic folder comes out neatly organized.",
   drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", add: "Add more", reading: "Reading files…",
-  run: "Sort all", running: "Sorting", download: "Download sorted ZIP", reset: "Start over",
+  run: "Sort all", running: "Sorting", download: "Download sorted ZIP", reset: "Start over", remove: "Remove",
   files: (n: number, max: number) => `${n} / ${max} files`, uncategorized: "Uncategorized", failed: "no text",
   need: "Add at least one PDF.", err: "Something went wrong: ",
   note: "Each PDF is read in your browser; only the extracted text is sent to the AI to sort it — your file itself isn't uploaded. Categories are AI-suggested from each document's text and may need a check. The ZIP keeps your original files, just grouped into category folders.",
@@ -37,7 +37,7 @@ const STR = {
     title: "PDF 智能分类",
     subtitle: "拖入一堆杂乱的 PDF——AI 给每份打上分类(发票、合同、简历、报告…)并分到一个 ZIP 里的不同文件夹，杂乱文件夹一键变整齐。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹", add: "继续添加", reading: "正在读取文件…",
-    run: "全部分类", running: "分类中", download: "下载归档 ZIP", reset: "重新开始",
+    run: "全部分类", running: "分类中", download: "下载归档 ZIP", reset: "重新开始", remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`, uncategorized: "未分类", failed: "无文字",
     need: "至少添加一份 PDF。", err: "出错了：",
     note: "每份 PDF 在你的浏览器中读取，只有提取的文本会发送给 AI 用于分类——文件本身不会上传。类别由 AI 从每份文档文字推断，建议核对。ZIP 保留你的原文件，只是按类别分到不同文件夹。",
@@ -46,7 +46,7 @@ const STR = {
     title: "Clasificar PDF",
     subtitle: "Suelta un montón desordenado de PDF: la IA etiqueta cada uno (factura, contrato, currículum, informe…) y los ordena en carpetas dentro de un solo ZIP, para que una carpeta caótica quede prolijamente organizada.",
     drop: "Arrastra y suelta los PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta", add: "Agregar más", reading: "Leyendo archivos…",
-    run: "Ordenar todo", running: "Ordenando", download: "Descargar ZIP ordenado", reset: "Empezar de nuevo",
+    run: "Ordenar todo", running: "Ordenando", download: "Descargar ZIP ordenado", reset: "Empezar de nuevo", remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`, uncategorized: "Sin categoría", failed: "sin texto",
     need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
     note: "Cada PDF se lee en tu navegador; solo el texto extraído se envía a la IA para clasificarlo: el archivo en sí no se sube. Las categorías las sugiere la IA a partir del texto de cada documento y conviene revisarlas. El ZIP conserva tus archivos originales, solo los agrupa en carpetas por categoría.",
@@ -55,7 +55,7 @@ const STR = {
     title: "Classificar PDFs",
     subtitle: "Solte uma pilha desorganizada de PDFs: a IA rotula cada um (fatura, contrato, currículo, relatório…) e os organiza em pastas dentro de um único ZIP, transformando uma pasta caótica em algo bem organizado.",
     drop: "Arraste e solte os PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta", add: "Adicionar mais", reading: "Lendo arquivos…",
-    run: "Classificar tudo", running: "Classificando", download: "Baixar ZIP classificado", reset: "Recomeçar",
+    run: "Classificar tudo", running: "Classificando", download: "Baixar ZIP classificado", reset: "Recomeçar", remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`, uncategorized: "Sem categoria", failed: "sem texto",
     need: "Adicione pelo menos um PDF.", err: "Algo deu errado: ",
     note: "Cada PDF é lido no seu navegador; apenas o texto extraído é enviado à IA para classificá-lo — o arquivo em si não é enviado. As categorias são sugeridas pela IA a partir do texto de cada documento e podem precisar de revisão. O ZIP mantém seus arquivos originais, apenas agrupados em pastas por categoria.",
@@ -64,7 +64,7 @@ const STR = {
     title: "Classer des PDF",
     subtitle: "Déposez un tas de PDF en vrac — l'IA attribue une catégorie à chacun (facture, contrat, CV, rapport…) et les range dans des dossiers au sein d'un seul ZIP, transformant un dossier chaotique en fichiers bien organisés.",
     drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier", add: "Ajouter d'autres", reading: "Lecture des fichiers…",
-    run: "Tout classer", running: "Classement en cours", download: "Télécharger le ZIP classé", reset: "Recommencer",
+    run: "Tout classer", running: "Classement en cours", download: "Télécharger le ZIP classé", reset: "Recommencer", remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`, uncategorized: "Non classé", failed: "aucun texte",
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
     note: "Chaque PDF est lu dans votre navigateur ; seul le texte extrait est envoyé à l'IA pour le classer — le fichier lui-même n'est pas téléversé. Les catégories sont suggérées par l'IA à partir du texte de chaque document et peuvent nécessiter une vérification. Le ZIP conserve vos fichiers d'origine, simplement regroupés dans des dossiers par catégorie.",
@@ -73,7 +73,7 @@ const STR = {
     title: "PDF を分類",
     subtitle: "雑然とした PDF の山をドロップ——AI が各ファイルにラベルを付け（請求書、契約書、履歴書、レポートなど）、1 つの ZIP 内のフォルダに振り分けるので、散らかったフォルダがきれいに整理されます。",
     drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択", add: "追加", reading: "ファイルを読み取り中…",
-    run: "すべて分類", running: "分類中", download: "分類済み ZIP をダウンロード", reset: "最初からやり直す",
+    run: "すべて分類", running: "分類中", download: "分類済み ZIP をダウンロード", reset: "最初からやり直す", remove: "削除",
     files: (n: number, max: number) => `${n} / ${max} ファイル`, uncategorized: "未分類", failed: "テキストなし",
     need: "PDF を 1 つ以上追加してください。", err: "問題が発生しました: ",
     note: "各 PDF はブラウザ内で読み取られ、分類のために抽出されたテキストのみが AI に送信されます——ファイル自体はアップロードされません。カテゴリは各ドキュメントのテキストから AI が推測したもので、確認が必要な場合があります。ZIP は元のファイルをそのまま保持し、カテゴリ別フォルダにまとめるだけです。",
@@ -82,7 +82,7 @@ const STR = {
     title: "PDFs klassifizieren",
     subtitle: "Ziehen Sie einen unsortierten Stapel PDFs hierher — die KI versieht jedes mit einer Kategorie (Rechnung, Vertrag, Lebenslauf, Bericht…) und ordnet sie in einem einzigen ZIP in Ordner ein, sodass aus einem chaotischen Ordner sauber sortierte Dateien werden.",
     drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen", add: "Weitere hinzufügen", reading: "Dateien werden gelesen…",
-    run: "Alle sortieren", running: "Wird sortiert", download: "Sortiertes ZIP herunterladen", reset: "Neu beginnen",
+    run: "Alle sortieren", running: "Wird sortiert", download: "Sortiertes ZIP herunterladen", reset: "Neu beginnen", remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`, uncategorized: "Nicht kategorisiert", failed: "kein Text",
     need: "Fügen Sie mindestens ein PDF hinzu.", err: "Etwas ist schiefgelaufen: ",
     note: "Jedes PDF wird in Ihrem Browser gelesen; nur der extrahierte Text wird zum Sortieren an die KI gesendet — die Datei selbst wird nicht hochgeladen. Die Kategorien werden von der KI aus dem Text jedes Dokuments vorgeschlagen und müssen eventuell geprüft werden. Das ZIP behält Ihre Originaldateien unverändert bei und gruppiert sie nur in Kategorieordner.",
@@ -91,7 +91,7 @@ const STR = {
     title: "PDF 분류",
     subtitle: "지저분하게 쌓인 PDF를 끌어다 놓으면 — AI가 각각에 라벨(청구서, 계약서, 이력서, 보고서…)을 붙여 하나의 ZIP 안 폴더로 분류해, 어수선한 폴더가 말끔히 정리되어 나옵니다.",
     drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택", add: "더 추가", reading: "파일을 읽는 중…",
-    run: "전체 분류", running: "분류 중", download: "분류된 ZIP 다운로드", reset: "다시 시작",
+    run: "전체 분류", running: "분류 중", download: "분류된 ZIP 다운로드", reset: "다시 시작", remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개`, uncategorized: "미분류", failed: "텍스트 없음",
     need: "PDF를 최소 한 개 추가하세요.", err: "문제가 발생했습니다: ",
     note: "각 PDF는 브라우저에서 읽히며, 분류를 위해 추출된 텍스트만 AI로 전송됩니다 — 파일 자체는 업로드되지 않습니다. 카테고리는 각 문서의 텍스트로부터 AI가 제안한 것이라 확인이 필요할 수 있습니다. ZIP은 원본 파일을 그대로 유지하고 카테고리 폴더로 묶기만 합니다.",
@@ -443,6 +443,7 @@ export function BatchSortClient({ locale = "en", embedded = false }: { locale?: 
                 }
                 doneLabel={t.failed}
                 failLabel={t.failed}
+                removeLabel={t.remove}
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}

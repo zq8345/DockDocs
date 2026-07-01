@@ -29,7 +29,7 @@ const _en = {
   title: "Batch summary",
   subtitle: "Upload several reports, papers, or contracts and get a concise AI summary of each — executive summary plus key points. Up to 5 at a time.",
   drop: "Drag & drop PDFs here, or click to choose", choose: "Choose PDFs", add: "Add more", reading: "Reading…",
-  run: "Summarize all", running: "Summarizing", reset: "Start over",
+  run: "Summarize all", running: "Summarizing", reset: "Start over", remove: "Remove",
   files: (n: number, max: number) => `${n} / ${max} files`,
   keyPoints: "Key points", download: "Download all (.md)", need: "Add at least one PDF.",
   noText: "no extractable text (scan?)", err: "Something went wrong: ",
@@ -42,7 +42,7 @@ const STR = {
     title: "批量摘要",
     subtitle: "上传多份报告、论文或合同，AI 为每一份生成简明摘要——执行摘要 + 关键要点。一次最多 5 份。",
     drop: "把 PDF 拖到这里，或点击选择", choose: "选择 PDF", add: "继续添加", reading: "读取中…",
-    run: "全部摘要", running: "摘要中", reset: "重新开始",
+    run: "全部摘要", running: "摘要中", reset: "重新开始", remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`,
     keyPoints: "关键要点", download: "下载全部 (.md)", need: "至少添加一份 PDF。",
     noText: "无可提取文字(扫描件？)", err: "出错了：",
@@ -52,7 +52,7 @@ const STR = {
     title: "Resumen por lotes",
     subtitle: "Sube varios informes, artículos o contratos y obtén un resumen conciso de cada uno generado por IA: resumen ejecutivo más puntos clave. Hasta 5 a la vez.",
     drop: "Arrastra y suelta los PDF aquí, o haz clic para elegir", choose: "Elegir PDF", add: "Agregar más", reading: "Leyendo…",
-    run: "Resumir todo", running: "Resumiendo", reset: "Empezar de nuevo",
+    run: "Resumir todo", running: "Resumiendo", reset: "Empezar de nuevo", remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`,
     keyPoints: "Puntos clave", download: "Descargar todo (.md)", need: "Agrega al menos un PDF.",
     noText: "sin texto extraíble (¿escaneado?)", err: "Algo salió mal: ",
@@ -62,7 +62,7 @@ const STR = {
     title: "Resumo em lote",
     subtitle: "Envie vários relatórios, artigos ou contratos e receba um resumo conciso de cada um gerado por IA — resumo executivo mais pontos-chave. Até 5 de uma vez.",
     drop: "Arraste e solte PDFs aqui, ou clique para escolher", choose: "Escolher PDFs", add: "Adicionar mais", reading: "Lendo…",
-    run: "Resumir tudo", running: "Resumindo", reset: "Recomeçar",
+    run: "Resumir tudo", running: "Resumindo", reset: "Recomeçar", remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`,
     keyPoints: "Pontos-chave", download: "Baixar tudo (.md)", need: "Adicione pelo menos um PDF.",
     noText: "sem texto extraível (digitalizado?)", err: "Algo deu errado: ",
@@ -72,7 +72,7 @@ const STR = {
     title: "Résumé par lot",
     subtitle: "Importez plusieurs rapports, articles ou contrats et obtenez un résumé concis de chacun généré par IA — résumé exécutif et points clés. Jusqu'à 5 à la fois.",
     drop: "Glissez-déposez des PDF ici, ou cliquez pour choisir", choose: "Choisir des PDF", add: "Ajouter d'autres", reading: "Lecture en cours…",
-    run: "Tout résumer", running: "Résumé en cours", reset: "Recommencer",
+    run: "Tout résumer", running: "Résumé en cours", reset: "Recommencer", remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`,
     keyPoints: "Points clés", download: "Tout télécharger (.md)", need: "Ajoutez au moins un PDF.",
     noText: "aucun texte extractible (document scanné ?)", err: "Une erreur est survenue : ",
@@ -82,7 +82,7 @@ const STR = {
     title: "一括要約",
     subtitle: "複数のレポート、論文、契約書をアップロードすると、各文書のAIによる簡潔な要約——要点をまとめたエグゼクティブサマリー——が得られます。一度に最大5件まで。",
     drop: "PDFをここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", add: "追加", reading: "読み取り中…",
-    run: "すべて要約", running: "要約中", reset: "最初からやり直す",
+    run: "すべて要約", running: "要約中", reset: "最初からやり直す", remove: "削除",
     files: (n: number, max: number) => `${n} / ${max}件`,
     keyPoints: "要点", download: "すべてダウンロード (.md)", need: "PDFを少なくとも1つ追加してください。",
     noText: "抽出可能なテキストがありません（スキャン？）", err: "問題が発生しました: ",
@@ -92,7 +92,7 @@ const STR = {
     title: "Stapelzusammenfassung",
     subtitle: "Laden Sie mehrere Berichte, Aufsätze oder Verträge hoch und erhalten Sie zu jedem eine prägnante KI-Zusammenfassung — Management-Zusammenfassung plus Kernpunkte. Bis zu 5 auf einmal.",
     drop: "PDFs hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", add: "Weitere hinzufügen", reading: "Wird gelesen…",
-    run: "Alle zusammenfassen", running: "Wird zusammengefasst", reset: "Neu beginnen",
+    run: "Alle zusammenfassen", running: "Wird zusammengefasst", reset: "Neu beginnen", remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`,
     keyPoints: "Kernpunkte", download: "Alle herunterladen (.md)", need: "Fügen Sie mindestens ein PDF hinzu.",
     noText: "kein extrahierbarer Text (Scan?)", err: "Etwas ist schiefgelaufen: ",
@@ -102,7 +102,7 @@ const STR = {
     title: "일괄 요약",
     subtitle: "여러 보고서, 논문, 계약서를 업로드하면 각 문서의 간결한 AI 요약 — 핵심 요약과 주요 포인트 — 을 받습니다. 한 번에 최대 5개.",
     drop: "PDF를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", add: "더 추가", reading: "읽는 중…",
-    run: "전체 요약", running: "요약 중", reset: "다시 시작",
+    run: "전체 요약", running: "요약 중", reset: "다시 시작", remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개`,
     keyPoints: "주요 포인트", download: "전체 다운로드 (.md)", need: "PDF를 최소 한 개 추가하세요.",
     noText: "추출 가능한 텍스트 없음(스캔본?)", err: "문제가 발생했습니다: ",
@@ -486,6 +486,7 @@ export function BatchSummaryClient({ locale = "en", embedded = false }: { locale
                 key={d.id}
                 file={d.file}
                 status="queued"
+                removeLabel={t.remove}
                 onRemove={phase === "idle" ? () => setDocs((prev) => prev.filter((x) => x.id !== d.id)) : undefined}
               />
             ))}

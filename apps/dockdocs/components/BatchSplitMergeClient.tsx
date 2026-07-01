@@ -27,7 +27,7 @@ const STR_en = {
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
     merge: "Merge into one", split: "Split each",
     every: "Pages per file", order: "Files merge in the order shown.",
-    run: "Run", running: "Working", dlMerge: "Download merged PDF", dlSplit: "Download ZIP", reset: "Start over",
+    run: "Run", running: "Working", dlMerge: "Download merged PDF", dlSplit: "Download ZIP", reset: "Start over", remove: "Remove",
     files: (n: number, max: number) => `${n} / ${max} files`, parts: (n: number) => `${n} part${n === 1 ? "" : "s"}`, failed: "failed",
     needTwo: "Add at least 2 PDFs to merge.", needFile: "Add at least one PDF.",
     note: "Merge keeps the upload order. Split breaks each PDF into chunks of N pages. Everything stays on your device.",
@@ -44,7 +44,7 @@ const STR = {
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹",
     merge: "合并成一个", split: "逐个拆分",
     every: "每个文件页数", order: "按显示顺序合并。",
-    run: "开始", running: "处理中", dlMerge: "下载合并后的 PDF", dlSplit: "下载 ZIP", reset: "重新开始",
+    run: "开始", running: "处理中", dlMerge: "下载合并后的 PDF", dlSplit: "下载 ZIP", reset: "重新开始", remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`, parts: (n: number) => `${n} 份`, failed: "失败",
     needTwo: "合并至少需要 2 份 PDF。", needFile: "至少添加一份 PDF。",
     note: "合并保持上传顺序。拆分把每份 PDF 按 N 页切成若干份。全部在你的设备上完成。",
@@ -58,7 +58,7 @@ const STR = {
     drop: "Arrastra y suelta los PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
     merge: "Combinar en uno", split: "Dividir cada uno",
     every: "Páginas por archivo", order: "Los archivos se combinan en el orden que se muestra.",
-    run: "Ejecutar", running: "Procesando", dlMerge: "Descargar PDF combinado", dlSplit: "Descargar ZIP", reset: "Empezar de nuevo",
+    run: "Ejecutar", running: "Procesando", dlMerge: "Descargar PDF combinado", dlSplit: "Descargar ZIP", reset: "Empezar de nuevo", remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`, parts: (n: number) => `${n} parte${n === 1 ? "" : "s"}`, failed: "falló",
     needTwo: "Agrega al menos 2 PDF para combinar.", needFile: "Agrega al menos un PDF.",
     note: "Al combinar se mantiene el orden de carga. La división separa cada PDF en bloques de N páginas. Todo permanece en tu dispositivo.",
@@ -72,7 +72,7 @@ const STR = {
     drop: "Arraste e solte os PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta",
     merge: "Combinar em um", split: "Dividir cada um",
     every: "Páginas por arquivo", order: "Os arquivos são combinados na ordem exibida.",
-    run: "Executar", running: "Processando", dlMerge: "Baixar PDF combinado", dlSplit: "Baixar ZIP", reset: "Recomeçar",
+    run: "Executar", running: "Processando", dlMerge: "Baixar PDF combinado", dlSplit: "Baixar ZIP", reset: "Recomeçar", remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`, parts: (n: number) => `${n} parte${n === 1 ? "" : "s"}`, failed: "falhou",
     needTwo: "Adicione pelo menos 2 PDFs para combinar.", needFile: "Adicione pelo menos um PDF.",
     note: "Ao combinar, a ordem de carregamento é mantida. A divisão separa cada PDF em blocos de N páginas. Tudo permanece no seu dispositivo.",
@@ -86,7 +86,7 @@ const STR = {
     drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
     merge: "Fusionner en un seul", split: "Diviser chacun",
     every: "Pages par fichier", order: "Les fichiers sont fusionnés dans l'ordre affiché.",
-    run: "Lancer", running: "Traitement en cours", dlMerge: "Télécharger le PDF fusionné", dlSplit: "Télécharger le ZIP", reset: "Recommencer",
+    run: "Lancer", running: "Traitement en cours", dlMerge: "Télécharger le PDF fusionné", dlSplit: "Télécharger le ZIP", reset: "Recommencer", remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`, parts: (n: number) => `${n} partie${n === 1 ? "" : "s"}`, failed: "échoué",
     needTwo: "Ajoutez au moins 2 PDF à fusionner.", needFile: "Ajoutez au moins un PDF.",
     note: "La fusion conserve l'ordre de chargement. La division découpe chaque PDF en blocs de N pages. Tout reste sur votre appareil.",
@@ -100,7 +100,7 @@ const STR = {
     drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
     merge: "1 つに結合", split: "個別に分割",
     every: "ファイルごとのページ数", order: "ファイルは表示順に結合されます。",
-    run: "実行", running: "処理中", dlMerge: "結合した PDF をダウンロード", dlSplit: "ZIPをダウンロード", reset: "最初からやり直す",
+    run: "実行", running: "処理中", dlMerge: "結合した PDF をダウンロード", dlSplit: "ZIPをダウンロード", reset: "最初からやり直す", remove: "削除",
     files: (n: number, max: number) => `${n} / ${max} ファイル`, parts: (n: number) => `${n} 個`, failed: "失敗",
     needTwo: "結合するには PDF を 2 つ以上追加してください。", needFile: "PDF を 1 つ以上追加してください。",
     note: "結合はアップロード順を保持します。分割は各 PDF を N ページ単位のまとまりに分けます。すべてがお使いのデバイス内で完結します。",
@@ -114,7 +114,7 @@ const STR = {
     drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
     merge: "Zu einem zusammenfügen", split: "Einzeln teilen",
     every: "Seiten pro Datei", order: "Die Dateien werden in der angezeigten Reihenfolge zusammengefügt.",
-    run: "Ausführen", running: "Wird verarbeitet", dlMerge: "Zusammengeführtes PDF herunterladen", dlSplit: "ZIP herunterladen", reset: "Neu beginnen",
+    run: "Ausführen", running: "Wird verarbeitet", dlMerge: "Zusammengeführtes PDF herunterladen", dlSplit: "ZIP herunterladen", reset: "Neu beginnen", remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`, parts: (n: number) => `${n} Teil${n === 1 ? "" : "e"}`, failed: "fehlgeschlagen",
     needTwo: "Fügen Sie mindestens 2 PDFs zum Zusammenfügen hinzu.", needFile: "Fügen Sie mindestens ein PDF hinzu.",
     note: "Beim Zusammenfügen bleibt die Upload-Reihenfolge erhalten. Beim Teilen wird jedes PDF in Blöcke von je N Seiten zerlegt. Die Verarbeitung erfolgt auf Ihrem Gerät.",
@@ -128,7 +128,7 @@ const STR = {
     drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
     merge: "하나로 병합", split: "각각 분할",
     every: "파일당 페이지 수", order: "파일은 표시된 순서대로 병합됩니다.",
-    run: "실행", running: "처리 중", dlMerge: "병합된 PDF 다운로드", dlSplit: "ZIP 다운로드", reset: "다시 시작",
+    run: "실행", running: "처리 중", dlMerge: "병합된 PDF 다운로드", dlSplit: "ZIP 다운로드", reset: "다시 시작", remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개`, parts: (n: number) => `${n}개`, failed: "실패",
     needTwo: "병합하려면 PDF를 2개 이상 추가하세요.", needFile: "PDF를 최소 한 개 추가하세요.",
     note: "병합은 업로드 순서를 유지합니다. 분할은 각 PDF를 N페이지 단위로 나눕니다. 모든 작업은 기기에서 처리됩니다.",
@@ -468,6 +468,7 @@ export function BatchSplitMergeClient({ locale = "en", lockMode, embedded = fals
                     ? <span className="text-[12.5px] text-[#f87171]" title={it.msg}>{t.failed}</span>
                     : undefined
                 }
+                removeLabel={t.remove}
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}

@@ -24,7 +24,7 @@ const _en = {
   subtitle: "Drop a whole folder of PDFs and shrink them all in one go — each is compressed in your browser and packaged into a single ZIP. Nothing is uploaded.",
   drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder", reading: "Reading…",
   level: "Compression", low: "Light", recommended: "Recommended", high: "Strong",
-  run: "Compress all", running: "Compressing", download: "Download ZIP", reset: "Start over",
+  run: "Compress all", running: "Compressing", download: "Download ZIP", reset: "Start over", remove: "Remove",
   files: (n: number, max: number) => `${n} / ${max} files`, saved: "saved", failed: "failed",
   totalSaved: (p: number) => `${p}% smaller overall`,
   need: "Add at least one PDF.", err: "Something went wrong: ",
@@ -38,7 +38,7 @@ const STR = {
     subtitle: "拖入整个 PDF 文件夹，一次性全部压缩——每个都在浏览器中压缩并打包成一个 ZIP。不上传任何文件。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹", reading: "读取中…",
     level: "压缩强度", low: "轻度", recommended: "推荐", high: "强力",
-    run: "全部压缩", running: "压缩中", download: "下载 ZIP", reset: "重新开始",
+    run: "全部压缩", running: "压缩中", download: "下载 ZIP", reset: "重新开始", remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`, saved: "已减", failed: "失败",
     totalSaved: (p: number) => `整体减小 ${p}%`,
     need: "至少添加一份 PDF。", err: "出错了：",
@@ -49,7 +49,7 @@ const STR = {
     subtitle: "Arrastra una carpeta entera de PDF y redúcelos todos de una vez: cada uno se comprime en tu navegador y se empaqueta en un solo ZIP. No se sube nada.",
     drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta", reading: "Leyendo…",
     level: "Compresión", low: "Ligera", recommended: "Recomendada", high: "Fuerte",
-    run: "Comprimir todo", running: "Comprimiendo", download: "Descargar ZIP", reset: "Empezar de nuevo",
+    run: "Comprimir todo", running: "Comprimiendo", download: "Descargar ZIP", reset: "Empezar de nuevo", remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`, saved: "reducido", failed: "falló",
     totalSaved: (p: number) => `${p}% más pequeño en total`,
     need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
@@ -60,7 +60,7 @@ const STR = {
     subtitle: "Arraste uma pasta inteira de PDFs e reduza todos de uma vez: cada um é comprimido no seu navegador e empacotado em um único ZIP. Nada é enviado.",
     drop: "Arraste e solte PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta", reading: "Lendo…",
     level: "Compressão", low: "Leve", recommended: "Recomendada", high: "Forte",
-    run: "Comprimir tudo", running: "Comprimindo", download: "Baixar ZIP", reset: "Recomeçar",
+    run: "Comprimir tudo", running: "Comprimindo", download: "Baixar ZIP", reset: "Recomeçar", remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`, saved: "reduzido", failed: "falhou",
     totalSaved: (p: number) => `${p}% menor no total`,
     need: "Adicione pelo menos um PDF.", err: "Algo deu errado: ",
@@ -71,7 +71,7 @@ const STR = {
     subtitle: "Déposez un dossier entier de PDF et réduisez-les tous en une seule fois : chaque fichier est compressé dans votre navigateur et regroupé dans un seul ZIP. Rien n'est envoyé.",
     drop: "Glissez-déposez des PDF (ou un dossier) ici, ou cliquez pour sélectionner", choose: "Choisir des PDF", folder: "Choisir un dossier", reading: "Lecture…",
     level: "Compression", low: "Légère", recommended: "Recommandée", high: "Forte",
-    run: "Tout compresser", running: "Compression en cours", download: "Télécharger le ZIP", reset: "Recommencer",
+    run: "Tout compresser", running: "Compression en cours", download: "Télécharger le ZIP", reset: "Recommencer", remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`, saved: "économisé", failed: "échec",
     totalSaved: (p: number) => `${p}% de réduction au total`,
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
@@ -82,7 +82,7 @@ const STR = {
     subtitle: "PDFのフォルダごとドロップして一度にすべて縮小——各ファイルはブラウザ内で圧縮され、1つのZIPにまとめられます。アップロードは一切ありません。",
     drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択", reading: "読み取り中…",
     level: "圧縮", low: "弱", recommended: "推奨", high: "強",
-    run: "すべて圧縮", running: "圧縮中", download: "ZIPをダウンロード", reset: "最初からやり直す",
+    run: "すべて圧縮", running: "圧縮中", download: "ZIPをダウンロード", reset: "最初からやり直す", remove: "削除",
     files: (n: number, max: number) => `${n} / ${max}件`, saved: "削減", failed: "失敗",
     totalSaved: (p: number) => `全体で${p}%小さく`,
     need: "PDFを少なくとも1つ追加してください。", err: "問題が発生しました: ",
@@ -93,7 +93,7 @@ const STR = {
     subtitle: "Legen Sie einen ganzen Ordner mit PDFs ab und verkleinern Sie sie alle auf einmal – jede Datei wird in Ihrem Browser komprimiert und in einem einzigen ZIP gebündelt. Die meisten Tools laufen direkt in Ihrem Browser.",
     drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen", reading: "Wird gelesen…",
     level: "Komprimierung", low: "Leicht", recommended: "Empfohlen", high: "Stark",
-    run: "Alle komprimieren", running: "Wird komprimiert", download: "ZIP herunterladen", reset: "Neu beginnen",
+    run: "Alle komprimieren", running: "Wird komprimiert", download: "ZIP herunterladen", reset: "Neu beginnen", remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`, saved: "kleiner", failed: "fehlgeschlagen",
     totalSaved: (p: number) => `insgesamt ${p}% kleiner`,
     need: "Fügen Sie mindestens ein PDF hinzu.", err: "Etwas ist schiefgelaufen: ",
@@ -104,7 +104,7 @@ const STR = {
     subtitle: "PDF 폴더 전체를 끌어다 놓고 한 번에 모두 줄이세요 — 각 파일은 브라우저에서 압축되어 하나의 ZIP으로 묶입니다. 아무것도 업로드되지 않습니다.",
     drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택", reading: "읽는 중…",
     level: "압축 강도", low: "약하게", recommended: "권장", high: "강하게",
-    run: "전체 압축", running: "압축 중", download: "ZIP 다운로드", reset: "다시 시작",
+    run: "전체 압축", running: "압축 중", download: "ZIP 다운로드", reset: "다시 시작", remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개`, saved: "감소", failed: "실패",
     totalSaved: (p: number) => `전체 ${p}% 감소`,
     need: "PDF를 최소 한 개 추가하세요.", err: "문제가 발생했습니다: ",
@@ -436,6 +436,7 @@ export function BatchCompressClient({ locale = "en", embedded = false }: { local
                     ? <span className="text-[12.5px] text-[#f87171]">{t.failed}</span>
                     : undefined
                 }
+                removeLabel={t.remove}
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}
