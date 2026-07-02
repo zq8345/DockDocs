@@ -1,6 +1,12 @@
 [build]
   command = "npm run build"
   publish = "out"
+  # Override Netlify's monorepo auto-skip (base dir = apps/dockdocs): the app
+  # imports shared/templates/* from the repo root, so shared-only commits MUST
+  # build too (2026-07-02: two shared-only deploys were auto-canceled and had to
+  # be triggered by hand). cwd here is the base dir; ../../ = repo root.
+  # git diff --quiet exits 0 when nothing changed → build is skipped.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ../../shared ../../package-lock.json ../../package.json"
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
