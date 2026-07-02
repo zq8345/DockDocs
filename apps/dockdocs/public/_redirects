@@ -471,6 +471,26 @@
 # /en/ is an exact alias of the root canonical (root pages always generate).
 # Google was indexing /en/<slug> SEPARATELY (GSC: 7 "Google chose a different
 # canonical"; /en/word-to-pdf had 152 impressions vs root's 33), splitting the
+# batch-fix-scans + batch-watermark-pdf permanently removed (2026-07-02)
+/batch-fix-scans /410 410!
+/zh/batch-fix-scans /410 410!
+/zh-Hant/batch-fix-scans /410 410!
+/es/batch-fix-scans /410 410!
+/pt/batch-fix-scans /410 410!
+/fr/batch-fix-scans /410 410!
+/ja/batch-fix-scans /410 410!
+/de/batch-fix-scans /410 410!
+/ko/batch-fix-scans /410 410!
+/batch-watermark-pdf /410 410!
+/zh/batch-watermark-pdf /410 410!
+/zh-Hant/batch-watermark-pdf /410 410!
+/es/batch-watermark-pdf /410 410!
+/pt/batch-watermark-pdf /410 410!
+/fr/batch-watermark-pdf /410 410!
+/ja/batch-watermark-pdf /410 410!
+/de/batch-watermark-pdf /410 410!
+/ko/batch-watermark-pdf /410 410!
+
 # English weight across two URL sets. The canonical TAG alone didn't consolidate
 # it → force-301 every /en/<slug> back to /<slug>. Force (!) overrides the
 # generated out/en/* static files. Root pages are untouched (only the /en/ prefix

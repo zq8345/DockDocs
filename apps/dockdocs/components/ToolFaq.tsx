@@ -1,4 +1,4 @@
-import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "../../../shared/templates/pdf-tool-page/VerifyClientSide";
+﻿import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "../../../shared/templates/pdf-tool-page/VerifyClientSide";
 import { toHant, deepHant } from "@/lib/zh-hant";
 import type { RouteLocale } from "@/lib/i18n";
 
@@ -113,32 +113,6 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
         { q: "¿Inventa citas?", a: "Cada cita se verifica contra el texto real de tu contrato: si la IA devuelve una cita que no encontramos en tu documento, la descartamos. Los riesgos por cláusula ausente se muestran sin cita y se etiquetan como tales." },
         { q: "¿Se sube o almacena mi arrendamiento?", a: "Tu arrendamiento se lee en tu navegador; solo se envía el texto extraído para analizarlo y no se almacena. El archivo nunca sale de tu dispositivo." },
         { q: "¿Qué formatos funcionan?", a: "PDF basados en texto (digitales de origen). Los escaneados necesitan OCR primero. Funciona en español, inglés, chino y más; las citas se mantienen en el idioma original del arrendamiento." },
-      ],
-    },
-  },
-  "batch-fix-scans": {
-    title: { en: "Batch fix scans — FAQ", zh: "批量修扫描常见问题", es: "Arreglar escaneos por lotes — preguntas frecuentes" },
-    items: {
-      en: [
-        { q: "What can Batch Fix Scans do?", a: "Two clean-up jobs across a whole folder of PDFs at once. Crop margins trims the same edges off every page of every file (great for removing black scan borders or binding margins). Delete pages removes the same page numbers from each file (great for stripping a cover sheet or separator page). Pick one mode, set it once, and it applies to the whole batch." },
-        { q: "How does cropping work?", a: "Use the sliders to trim each edge as a percentage of the page; the preview shows the first file with the trimmed area shaded. The same crop is applied to every page of every file in the batch. Cropping uses the PDF crop box, so the trimmed area is hidden, not destroyed — it can be restored later." },
-        { q: "How does delete pages work?", a: "Enter the page numbers to remove from each file, like 1 for a cover or 1,3-4 for several. Those pages are deleted from every file in the batch. If a file would lose all its pages, it is skipped and flagged so you don't get an empty document." },
-        { q: "Is there a limit, and are my files uploaded?", a: "Up to 30 files per batch. Everything runs entirely in your browser — your files are never uploaded, which makes this safe for confidential scans. You get them all back in a single ZIP." },
-        { q: "Is it free?", a: "Yes, completely free — no account, no watermark, no daily limit." },
-      ],
-      zh: [
-        { q: "批量修扫描能做什么？", a: "一次对整个文件夹的 PDF 做两类清理：「裁剪页边」给每个文件的每一页裁掉相同的边（适合去掉扫描黑边或装订线），「删除页面」从每个文件删掉相同的页码（适合去掉封面或分隔页）。选一种模式，设一次，应用到整批。" },
-        { q: "裁剪是怎么工作的？", a: "用滑块按页面百分比裁掉每一边；预览显示第一个文件、被裁区域加阴影。同样的裁剪会应用到整批每个文件的每一页。裁剪使用 PDF 裁剪框，所以被裁区域是隐藏而非销毁——以后可以还原。" },
-        { q: "删除页面怎么用？", a: "输入要从每个文件删除的页码，如 1 删封面，或 1,3-4 删多页。这些页会从整批每个文件中删除。如果某个文件会被删空，它会被跳过并标注，避免得到空文档。" },
-        { q: "有限制吗？文件会被上传吗？", a: "每批最多 30 个文件。全部在你的浏览器中完成——文件绝不上传，所以处理机密扫描件也安全。最后打包成一个 ZIP 拿回。" },
-        { q: "免费吗？", a: "完全免费——无需注册、没有水印、也没有每日次数限制。" },
-      ],
-      es: [
-        { q: "¿Qué puede hacer Arreglar escaneos por lotes?", a: "Dos tareas de limpieza sobre una carpeta entera de PDF a la vez. Recortar márgenes recorta los mismos bordes de cada página de cada archivo (ideal para quitar bordes negros de escaneo o márgenes de encuadernación). Eliminar páginas quita los mismos números de página de cada archivo (ideal para quitar una portada o página separadora). Elige un modo, configúralo una vez y se aplica a todo el lote." },
-        { q: "¿Cómo funciona el recorte?", a: "Usa los controles para recortar cada borde como porcentaje de la página; la vista previa muestra el primer archivo con el área recortada sombreada. El mismo recorte se aplica a cada página de cada archivo del lote. El recorte usa el cuadro de recorte del PDF, así que el área recortada se oculta, no se destruye, y puede restaurarse después." },
-        { q: "¿Cómo funciona eliminar páginas?", a: "Introduce los números de página a quitar de cada archivo, como 1 para una portada o 1,3-4 para varias. Esas páginas se eliminan de cada archivo del lote. Si un archivo perdería todas sus páginas, se omite y se marca para que no obtengas un documento vacío." },
-        { q: "¿Hay un límite y se suben mis archivos?", a: "Hasta 30 archivos por lote. Todo se ejecuta enteramente en tu navegador; tus archivos nunca se suben, lo que lo hace seguro para escaneos confidenciales. Los recibes todos en un solo ZIP." },
-        { q: "¿Es gratis?", a: "Sí, completamente gratis: sin cuenta, sin marca de agua, sin límite diario." },
       ],
     },
   },
@@ -492,35 +466,6 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
         { q: "¿Qué se rota y puedo rotar solo algunas páginas?", a: "El ángulo elegido se aplica a todas las páginas de cada PDF del lote: esto es un corrector de carpetas enteras, no un editor por página, así que aquí no puedes rotar páginas individuales. La rotación además se suma a cualquier rotación existente, de modo que aplicar 90° a una página ya rotada la gira otros 90°. Para un control por página, usa nuestra herramienta de rotación de un solo archivo." },
         { q: "¿Hay límites y por qué un PDF podría decir «fallido»?", a: "Puedes añadir hasta 50 PDF por lote. No hay un tope de tamaño fijo: como todo se ejecuta en tu navegador, el límite real es la memoria de tu dispositivo, así que los trabajos grandes en una laptop o teléfono poco potente solo van más lentos. Los PDF cifrados o protegidos con contraseña no pueden abrirse para rotarse, así que se omiten y se marcan como «fallido»; el resto del lote sigue procesándose y solo los archivos correctos entran en el ZIP. Desbloquea primero el archivo y vuelve a añadirlo." },
         { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Sí, es completamente gratis: sin registro, sin cuenta y sin marca de agua en tu resultado. Como todo el trabajo ocurre en tu navegador, no hay nada que pagar ni medidor de uso; solo abre la página y empieza a rotar." },
-      ],
-    },
-  },
-  "batch-watermark-pdf": {
-    title: { en: "Batch watermark PDFs — FAQ", zh: "批量 PDF 添加水印常见问题", es: "Marca de agua en PDF por lotes — preguntas frecuentes" },
-    items: {
-      en: [
-        { q: "How do I watermark a whole folder of PDFs at once?", a: "Drag a folder (or several PDFs) onto the upload box, or click to pick files. Type your watermark text — for example CONFIDENTIAL — then click \"Apply to all\". Each PDF is stamped one by one, and when it finishes you click \"Download ZIP\" to get every watermarked file in a single archive. If you dropped a folder, any non-PDF files inside it are filtered out automatically, so you don't have to clean the folder first." },
-        { q: "Are my files uploaded to a server?", a: "No. Every PDF is processed entirely in your browser, on your own device — nothing is uploaded to any server, and there's no account or sign-in. Your documents never leave your computer, which is exactly why it's safe for confidential files." },
-        { q: "What do I get back, and how are the files named?", a: "You get one ZIP file (dockdocs-batch.zip) containing all the watermarked PDFs. Each output keeps its original name with a \"-watermarked.pdf\" suffix — so report.pdf becomes report-watermarked.pdf. Your original files are left untouched." },
-        { q: "Is there a limit on how many PDFs I can do at once?", a: "This batch tool processes up to 30 PDFs per run. If you add more, only the first 30 are kept. There's no fixed file-size cap — since everything runs in your browser, the real limit is your device's memory, so very large files or weak machines will simply be slower. For a bigger job, split it into batches of 30." },
-        { q: "Is it free? Does it add its own watermark or branding?", a: "Yes, it's completely free with no signup, no trial, and no usage limits beyond the 30-files-per-run batch size. The only watermark on your PDFs is the text you type — DockDocs never stamps its own logo or branding onto your files." },
-        { q: "Can I choose where the watermark goes or how transparent it is?", a: "Not in the batch tool. It uses a fixed default placement — a diagonal watermark across each page — to keep the whole folder consistent. If you need a custom position, opacity, or font size, use the single-file Watermark tool instead, which gives you full control over one document at a time." },
-      ],
-      zh: [
-        { q: "怎么给整个文件夹的 PDF 一次性加水印？", a: "把文件夹(或多份 PDF)拖到上传框，或点击选择文件。输入水印文字——比如「机密」或「CONFIDENTIAL」——再点「全部应用」。每份 PDF 会被逐个加上水印，完成后点「下载 ZIP」就能把所有加好水印的文件打包成一个压缩包拿到手。如果你拖进来的是文件夹，里面的非 PDF 文件会被自动过滤掉，不用提前清理。" },
-        { q: "我的文件会被上传到服务器吗？", a: "不会。每份 PDF 都完全在你的浏览器、你自己的设备上处理——不上传任何文件到服务器，也不需要注册或登录。你的文档从不离开本机，所以处理机密文件也很安全。" },
-        { q: "处理完我拿到的是什么？文件怎么命名？", a: "你会拿到一个 ZIP 压缩包(dockdocs-batch.zip)，里面是所有加好水印的 PDF。每个输出文件保留原文件名并加上「-watermarked.pdf」后缀——比如 report.pdf 会变成 report-watermarked.pdf。原始文件不会被改动。" },
-        { q: "一次最多能处理多少份 PDF？", a: "这个批量工具每次最多处理 30 份 PDF。多加的部分只会保留前 30 份。文件大小没有固定上限——因为全部在浏览器里运行，真正的限制是设备内存，所以文件很大或机器较弱时只是会慢一些。任务更大时，把它拆成每批 30 份处理即可。" },
-        { q: "免费吗？会加上它自己的水印或品牌标识吗？", a: "完全免费，无需注册、无试用、除了每次 30 份的批量上限外没有任何使用限制。你的 PDF 上唯一的水印就是你自己输入的文字——DockDocs 绝不会在你的文件上打上自己的 logo 或品牌标识。" },
-        { q: "能自定义水印的位置或透明度吗？", a: "批量工具里不行。它使用固定的默认排版——每页一条对角水印——以保证整个文件夹效果一致。如果需要自定义位置、透明度或字号，请改用单文件的「加水印」工具，它能对单份文档进行完整控制。" },
-      ],
-      es: [
-        { q: "¿Cómo pongo una marca de agua a toda una carpeta de PDF a la vez?", a: "Arrastra una carpeta (o varios PDF) a la casilla de carga, o haz clic para elegir archivos. Escribe el texto de tu marca de agua —por ejemplo, CONFIDENCIAL— y luego haz clic en «Aplicar a todo». Cada PDF se sella uno por uno y, al terminar, haces clic en «Descargar ZIP» para obtener todos los archivos con marca de agua en un solo archivo comprimido. Si soltaste una carpeta, los archivos que no sean PDF que haya dentro se descartan automáticamente, así que no tienes que limpiarla primero." },
-        { q: "¿Mis archivos se suben a un servidor?", a: "No. Cada PDF se procesa por completo en tu navegador, en tu propio dispositivo: nada se sube a ningún servidor y no hay cuenta ni inicio de sesión. Tus documentos jamás salen de tu equipo, que es justo por lo que es seguro para archivos confidenciales." },
-        { q: "¿Qué recibo de vuelta y cómo se nombran los archivos?", a: "Recibes un archivo ZIP (dockdocs-batch.zip) con todos los PDF marcados. Cada salida conserva su nombre original con el sufijo «-watermarked.pdf», así que report.pdf se convierte en report-watermarked.pdf. Tus archivos originales quedan intactos." },
-        { q: "¿Hay un límite de cuántos PDF puedo hacer a la vez?", a: "Esta herramienta por lotes procesa hasta 30 PDF por ejecución. Si añades más, solo se conservan los primeros 30. No hay un tope de tamaño fijo: como todo se ejecuta en tu navegador, el límite real es la memoria de tu dispositivo, así que los archivos muy grandes o las máquinas poco potentes simplemente irán más lentos. Para un trabajo mayor, divídelo en lotes de 30." },
-        { q: "¿Es gratis? ¿Añade su propia marca de agua o branding?", a: "Sí, es completamente gratis, sin registro, sin prueba y sin límites de uso más allá del tamaño de lote de 30 archivos por ejecución. La única marca de agua en tus PDF es el texto que escribes; DockDocs nunca estampa su propio logotipo ni branding en tus archivos." },
-        { q: "¿Puedo elegir dónde va la marca de agua o lo transparente que es?", a: "En la herramienta por lotes, no. Usa una ubicación predeterminada fija —una marca de agua diagonal sobre cada página— para mantener toda la carpeta coherente. Si necesitas una posición, opacidad o tamaño de fuente personalizados, usa la herramienta de marca de agua de un solo archivo, que te da control total sobre un documento a la vez." },
       ],
     },
   },
@@ -1232,16 +1177,6 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Quais formatos funcionam?", a: "PDFs com texto (nativos digitais). Contratos digitalizados precisam de OCR primeiro. Funciona em português, inglês, espanhol e outros; as citações permanecem no idioma original do contrato." },
     ],
   },
-  "batch-fix-scans": {
-    title: "Corrigir digitalizações em lote — perguntas frequentes",
-    items: [
-      { q: "O que o Corrigir digitalizações em lote faz?", a: "Duas tarefas de limpeza em uma pasta inteira de PDFs de uma vez. Cortar margens apara as mesmas bordas de cada página de cada arquivo (ótimo para remover bordas pretas de digitalização ou margens de encadernação). Excluir páginas remove os mesmos números de página de cada arquivo (ótimo para remover uma capa ou página separadora). Escolha um modo, configure uma vez e ele se aplica a todo o lote." },
-      { q: "Como funciona o corte?", a: "Use os controles deslizantes para aparar cada borda como porcentagem da página; a pré-visualização mostra o primeiro arquivo com a área aparada sombreada. O mesmo corte é aplicado a cada página de cada arquivo do lote. O corte usa a caixa de corte do PDF, então a área aparada fica oculta, não destruída — pode ser restaurada depois." },
-      { q: "Como funciona a exclusão de páginas?", a: "Digite os números das páginas a remover de cada arquivo, como 1 para uma capa ou 1,3-4 para várias. Essas páginas são excluídas de cada arquivo do lote. Se um arquivo ficasse sem páginas, ele é ignorado e sinalizado para você não receber um documento vazio." },
-      { q: "Há um limite e meus arquivos são enviados?", a: "Até 30 arquivos por lote. Tudo é executado inteiramente no seu navegador — seus arquivos nunca são enviados, o que torna isso seguro para digitalizações confidenciais. Você recebe tudo de volta em um único ZIP." },
-      { q: "É gratuito?", a: "Sim, completamente gratuito — sem conta, sem marca d'água, sem limite diário." },
-    ],
-  },
   "batch-translate": {
     title: "Traduzir PDFs em lote — perguntas frequentes",
     items: [
@@ -1375,17 +1310,6 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "O que é rotacionado e posso rotacionar apenas algumas páginas?", a: "O ângulo escolhido é aplicado a todas as páginas de cada PDF do lote — esta é uma ferramenta de correção de pasta inteira, não um editor por página, então você não pode rotacionar páginas individuais aqui. A rotação também se soma a qualquer rotação existente, então aplicar 90° a uma página já rotacionada a gira mais 90°. Para controle por página, use nossa ferramenta de rotação de arquivo único." },
       { q: "Há limites e por que um PDF pode dizer «falhou»?", a: "Você pode adicionar até 50 PDFs por lote. Não há limite fixo de tamanho de arquivo — como tudo é executado no seu navegador, o limite real é a memória do seu dispositivo, então trabalhos grandes em um notebook ou celular mais fraco simplesmente ficam mais lentos. PDFs criptografados ou protegidos por senha não podem ser abertos para rotação, então são ignorados e marcados como «falhou»; o restante do lote ainda processa e apenas os arquivos bem-sucedidos entram no ZIP. Desbloqueie o arquivo primeiro e adicione-o novamente." },
       { q: "É gratuito? Preciso de uma conta?", a: "Sim, é completamente gratuito — sem cadastro, sem conta e sem marca d'água no seu resultado. Como todo o trabalho acontece no seu navegador, não há nada a pagar nem medidor de uso; basta abrir a página e começar a rotacionar." },
-    ],
-  },
-  "batch-watermark-pdf": {
-    title: "Marca d'água em PDFs em lote — perguntas frequentes",
-    items: [
-      { q: "Como adiciono marca d'água a uma pasta inteira de PDFs de uma vez?", a: "Arraste uma pasta (ou vários PDFs) para a caixa de upload, ou clique para escolher arquivos. Digite o texto da sua marca d'água — por exemplo, CONFIDENCIAL — e clique em «Aplicar a todos». Cada PDF é carimbado um por um e, quando terminar, clique em «Baixar ZIP» para obter todos os arquivos com marca d'água em um único arquivo compactado. Se você soltou uma pasta, quaisquer arquivos que não sejam PDF dentro dela são filtrados automaticamente, então você não precisa limpá-la primeiro." },
-      { q: "Meus arquivos são enviados a um servidor?", a: "Não. Cada PDF é processado inteiramente no seu navegador, no seu próprio dispositivo — nada é enviado a qualquer servidor e não há conta ou login. Seus documentos nunca saem do seu computador, que é exatamente o motivo pelo qual é seguro para arquivos confidenciais." },
-      { q: "O que recebo de volta e como os arquivos são nomeados?", a: "Você recebe um arquivo ZIP (dockdocs-batch.zip) com todos os PDFs com marca d'água. Cada saída mantém seu nome original com o sufixo «-watermarked.pdf» — então report.pdf se torna report-watermarked.pdf. Seus arquivos originais ficam intactos." },
-      { q: "Há um limite de quantos PDFs posso fazer de uma vez?", a: "Esta ferramenta em lote processa até 30 PDFs por execução. Se você adicionar mais, apenas os primeiros 30 são mantidos. Não há limite fixo de tamanho de arquivo — como tudo é executado no seu navegador, o limite real é a memória do seu dispositivo, então arquivos muito grandes ou máquinas mais fracas simplesmente serão mais lentos. Para um trabalho maior, divida-o em lotes de 30." },
-      { q: "É gratuito? Adiciona sua própria marca d'água ou marca?", a: "Sim, é completamente gratuito, sem cadastro, sem avaliação e sem limites de uso além do tamanho de lote de 30 arquivos por execução. A única marca d'água nos seus PDFs é o texto que você digita — o DockDocs nunca carimba seu próprio logotipo ou marca nos seus arquivos." },
-      { q: "Posso escolher onde a marca d'água vai ou quão transparente ela é?", a: "Não na ferramenta em lote. Ela usa um posicionamento padrão fixo — uma marca d'água diagonal em cada página — para manter toda a pasta consistente. Se você precisar de posição, opacidade ou tamanho de fonte personalizados, use a ferramenta de Marca d'água de arquivo único, que lhe dá controle total sobre um documento de cada vez." },
     ],
   },
   "batch-page-numbers": {
@@ -1683,16 +1607,6 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Quels formats fonctionnent ?", a: "Les PDF basés sur du texte (nés numériquement). Les baux scannés nécessitent d'abord un OCR. Fonctionne en français, anglais, espagnol et plus ; les citations restent dans la langue originale du bail." },
     ],
   },
-  "batch-fix-scans": {
-    title: "Corriger les scans par lot — foire aux questions",
-    items: [
-      { q: "Que peut faire Corriger les scans par lot ?", a: "Deux opérations de nettoyage sur un dossier entier de PDF en une seule fois. Rogner les marges supprime les mêmes bords de chaque page de chaque fichier (idéal pour éliminer les bordures noires de scan ou les marges de reliure). Supprimer des pages retire les mêmes numéros de page de chaque fichier (idéal pour supprimer une page de couverture ou une page de séparation). Choisissez un mode, configurez-le une fois, et il s'applique à tout le lot." },
-      { q: "Comment fonctionne le rognage ?", a: "Utilisez les curseurs pour rogner chaque bord en pourcentage de la page ; l'aperçu affiche le premier fichier avec la zone rognée en grisé. Le même rognage est appliqué à chaque page de chaque fichier du lot. Le rognage utilise la zone de rognage du PDF, donc la partie rognée est masquée, pas détruite — elle peut être restaurée ultérieurement." },
-      { q: "Comment fonctionne la suppression de pages ?", a: "Saisissez les numéros des pages à supprimer de chaque fichier, par exemple 1 pour une couverture ou 1,3-4 pour plusieurs. Ces pages sont supprimées de chaque fichier du lot. Si un fichier se retrouvait sans aucune page, il est ignoré et signalé pour éviter d'obtenir un document vide." },
-      { q: "Y a-t-il une limite et mes fichiers sont-ils téléversés ?", a: "Jusqu'à 30 fichiers par lot. Tout s'exécute entièrement dans votre navigateur — vos fichiers ne sont jamais téléversés, ce qui le rend sûr pour les scans confidentiels. Vous les récupérez tous dans un seul ZIP." },
-      { q: "Est-ce gratuit ?", a: "Oui, entièrement gratuit — sans compte, sans filigrane, sans limite quotidienne." },
-    ],
-  },
   "batch-translate": {
     title: "Traduire des PDF par lot — foire aux questions",
     items: [
@@ -1826,17 +1740,6 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Qu'est-ce qui est pivoté et puis-je ne faire pivoter que certaines pages ?", a: "L'angle choisi est appliqué à chaque page de chaque PDF du lot — c'est un correcteur pour dossier entier, pas un éditeur page par page, donc vous ne pouvez pas faire pivoter des pages individuelles ici. La rotation s'ajoute également à toute rotation existante, donc appliquer 90° à une page déjà pivotée la tourne de 90° supplémentaires. Pour un contrôle page par page, utilisez plutôt notre outil de rotation pour fichier unique." },
       { q: "Y a-t-il des limites et pourquoi un PDF peut-il afficher « échoué » ?", a: "Vous pouvez ajouter jusqu'à 50 PDF par lot. Il n'y a pas de limite de taille fixe — comme tout s'exécute dans votre navigateur, la vraie limite est la mémoire de votre appareil, donc les grands travaux sur un ordinateur portable ou un téléphone peu puissant sont simplement plus lents. Les PDF chiffrés ou protégés par mot de passe ne peuvent pas être ouverts pour la rotation, ils sont donc ignorés et marqués « échoué » ; le reste du lot continue à être traité et seuls les fichiers réussis vont dans le ZIP. Déverrouillez d'abord le fichier, puis rajoutez-le." },
       { q: "Est-ce gratuit ? Ai-je besoin d'un compte ?", a: "Oui, entièrement gratuit — sans inscription, sans compte et sans filigrane sur votre résultat. Comme tout le travail se passe dans votre navigateur, il n'y a rien à payer ni compteur d'utilisation ; ouvrez simplement la page et commencez à faire pivoter." },
-    ],
-  },
-  "batch-watermark-pdf": {
-    title: "Filigrane sur des PDF par lot — foire aux questions",
-    items: [
-      { q: "Comment ajouter un filigrane à un dossier entier de PDF en une seule fois ?", a: "Faites glisser un dossier (ou plusieurs PDF) vers la zone de dépôt, ou cliquez pour choisir des fichiers. Saisissez votre texte de filigrane — par exemple CONFIDENTIEL — puis cliquez sur « Appliquer à tous ». Chaque PDF est estampillé l'un après l'autre et, une fois terminé, cliquez sur « Télécharger le ZIP » pour obtenir tous les fichiers avec filigrane dans une seule archive. Si vous avez déposé un dossier, les fichiers non-PDF qu'il contient sont filtrés automatiquement, vous n'avez donc pas à nettoyer le dossier au préalable." },
-      { q: "Mes fichiers sont-ils envoyés à un serveur ?", a: "Non. Chaque PDF est traité entièrement dans votre navigateur, sur votre propre appareil — rien n'est envoyé à un serveur et il n'y a pas de compte ni de connexion. Vos documents ne quittent jamais votre ordinateur, c'est exactement pourquoi c'est sûr pour les fichiers confidentiels." },
-      { q: "Que reçois-je et comment les fichiers sont-ils nommés ?", a: "Vous recevez un fichier ZIP (dockdocs-batch.zip) contenant tous les PDF avec filigrane. Chaque sortie conserve son nom d'origine avec le suffixe « -watermarked.pdf » — ainsi report.pdf devient report-watermarked.pdf. Vos fichiers originaux restent intacts." },
-      { q: "Y a-t-il une limite sur le nombre de PDF que je peux traiter à la fois ?", a: "Cet outil par lot traite jusqu'à 30 PDF par exécution. Si vous en ajoutez plus, seuls les 30 premiers sont conservés. Il n'y a pas de limite de taille fixe — comme tout s'exécute dans votre navigateur, la vraie limite est la mémoire de votre appareil, donc les fichiers très volumineux ou les machines peu puissantes seront simplement plus lents. Pour un travail plus important, divisez-le en lots de 30." },
-      { q: "Est-ce gratuit ? Ajoute-t-il son propre filigrane ou sa marque ?", a: "Oui, entièrement gratuit, sans inscription, sans essai et sans limites d'utilisation au-delà de la taille de lot de 30 fichiers par exécution. Le seul filigrane sur vos PDF est le texte que vous saisissez — DockDocs n'appose jamais son propre logo ou sa marque sur vos fichiers." },
-      { q: "Puis-je choisir où va le filigrane ou son niveau de transparence ?", a: "Pas dans l'outil par lot. Il utilise un placement par défaut fixe — un filigrane diagonal sur chaque page — pour maintenir la cohérence de tout le dossier. Si vous avez besoin d'une position, d'une opacité ou d'une taille de police personnalisées, utilisez plutôt l'outil Filigrane pour fichier unique, qui vous donne un contrôle total sur un document à la fois." },
     ],
   },
   "batch-page-numbers": {
@@ -2340,16 +2243,6 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "条項や引用を作り出すことはありますか？", a: "すべての引用は実際の契約書本文と照合します——AI が返した引用が文書内に見つからない場合は、事実と異なる出典を表示するのではなく、その引用を破棄します。欠落している条項のリスクは引用なしで、その旨を明記して表示します。AI が見落とす可能性は残るため、契約書は必ず全文をお読みください。" },
     ],
   },
-  "batch-fix-scans": {
-    title: "スキャン一括補正 — よくある質問",
-    items: [
-      { q: "スキャン一括補正では何ができますか？", a: "PDFのフォルダ全体に対して2種類のクリーンアップを一度に行えます。「余白をトリミング」は、すべてのファイルのすべてのページから同じ縁を切り詰めます（スキャンの黒枠や綴じ代を取り除くのに最適）。「ページを削除」は、各ファイルから同じページ番号を取り除きます（表紙や区切りページを外すのに最適）。どちらかのモードを選び、一度設定すれば、バッチ全体に適用されます。" },
-      { q: "トリミングはどのように動作しますか？", a: "スライダーで各辺をページに対する割合で切り詰めます。プレビューには最初のファイルが表示され、切り詰める領域に影が付きます。同じトリミングがバッチ内のすべてのファイルのすべてのページに適用されます。トリミングはPDFのクロップボックスを使うため、切り詰めた領域は隠れるだけで消去されず、後から復元できます。" },
-      { q: "ページの削除はどのように動作しますか？", a: "各ファイルから取り除くページ番号を入力します。表紙なら 1、複数なら 1,3-4 のように指定します。それらのページがバッチ内のすべてのファイルから削除されます。あるファイルで全ページが失われる場合は、空の文書にならないようスキップして印を付けます。" },
-      { q: "制限はありますか？ファイルはアップロードされますか？", a: "1バッチあたり最大30ファイルです。すべてブラウザ内で完結し、ファイルがアップロードされることはありません——だから機密スキャンでも安全です。処理後は1つのZIPでまとめて受け取れます。" },
-      { q: "無料ですか？", a: "はい、完全無料です——アカウント不要、透かしなし、1日あたりの制限もありません。" },
-    ],
-  },
   "batch-translate": {
     title: "PDF一括翻訳 — よくある質問",
     items: [
@@ -2485,17 +2378,6 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "無料ですか？アカウントは必要ですか？", a: "はい、完全無料です——登録もアカウントも不要で、出力に透かしも付きません。すべての処理がブラウザ内で行われるため、支払うものも利用メーターもありません。ページを開いてそのまま回転を始められます。" },
     ],
   },
-  "batch-watermark-pdf": {
-    title: "PDF一括透かし — よくある質問",
-    items: [
-      { q: "PDFのフォルダ全体に一度に透かしを入れるには？", a: "フォルダ（または複数のPDF）をアップロードボックスにドラッグするか、クリックしてファイルを選択します。透かしのテキスト——たとえば CONFIDENTIAL ——を入力し、「すべてに適用」をクリックします。各PDFが1つずつスタンプされ、完了したら「ZIPをダウンロード」をクリックして透かし入りのすべてのファイルを1つのアーカイブで受け取ります。フォルダをドロップした場合、その中のPDF以外のファイルは自動的に除外されるので、先にフォルダを整理する必要はありません。" },
-      { q: "ファイルはサーバーにアップロードされますか？", a: "いいえ。すべてのPDFはあなた自身のデバイス上のブラウザ内で完全に処理されます——サーバーへ何かがアップロードされることはなく、アカウントもサインインもありません。文書がコンピューターから出ることはなく、まさにそれが機密ファイルでも安全な理由です。" },
-      { q: "何が得られますか？ファイル名はどうなりますか？", a: "透かし入りのすべてのPDFを含む1つのZIPファイル（dockdocs-batch.zip）が得られます。各出力は元の名前を保ち、「-watermarked.pdf」の接尾辞が付きます——つまり report.pdf は report-watermarked.pdf になります。元ファイルはそのまま残ります。" },
-      { q: "一度に処理できるPDFの数に制限はありますか？", a: "このバッチツールは1回あたり最大30件のPDFを処理します。それ以上追加した場合、最初の30件だけが残ります。ファイルサイズの固定上限はありません——すべてブラウザ内で動作するため実際の上限はデバイスのメモリで、非常に大きなファイルや非力なマシンでは単に遅くなります。より大きな処理は30件ずつのバッチに分けてください。" },
-      { q: "無料ですか？独自の透かしやブランディングが付きますか？", a: "はい、完全無料で、登録も試用もなく、1回あたり30ファイルというバッチサイズ以外の利用制限もありません。PDFに付く透かしは、あなたが入力したテキストだけです——DockDocsが自社のロゴやブランディングをファイルにスタンプすることは決してありません。" },
-      { q: "透かしの位置や透明度を選べますか？", a: "バッチツールではできません。フォルダ全体を一貫させるため、固定のデフォルト配置——各ページを横切る斜めの透かし——を使います。位置・不透明度・フォントサイズをカスタマイズしたい場合は、1つの文書を一度に完全に制御できる単一ファイル版の透かしツールをお使いください。" },
-    ],
-  },
   "batch-page-numbers": {
     title: "PDF一括ページ番号 — よくある質問",
     items: [
@@ -2581,16 +2463,6 @@ const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Erfindet es Zitate?", a: "Jedes Zitat wird mit dem tatsächlichen Text Ihres Mietvertrags abgeglichen — gibt die KI ein Zitat zurück, das wir in Ihrem Dokument nicht finden, verwerfen wir es, statt eine erfundene Quellenangabe anzuzeigen. Risiken durch fehlende Klauseln werden ohne Zitat und entsprechend gekennzeichnet angezeigt." },
       { q: "Wird mein Mietvertrag hochgeladen oder gespeichert?", a: "Ihr Mietvertrag wird in Ihrem Browser gelesen; nur der extrahierte Text wird zur Analyse gesendet und danach nicht gespeichert. Die Datei selbst verlässt Ihr Gerät nie." },
       { q: "Welche Mietvertragsformate funktionieren?", a: "Textbasierte PDFs (digital erstellt). Gescannte Mietverträge haben keinen auswählbaren Text — führen Sie zuerst OCR aus. Es funktioniert auf Deutsch, Englisch, Chinesisch und mehr; Zitate bleiben in der Originalsprache des Mietvertrags." },
-    ],
-  },
-  "batch-fix-scans": {
-    title: "Scans im Stapel bereinigen — Häufige Fragen",
-    items: [
-      { q: "Was kann das Stapel-Bereinigen von Scans?", a: "Zwei Bereinigungsaufgaben über einen ganzen Ordner voller PDFs auf einmal. „Ränder zuschneiden“ schneidet bei jeder Seite jeder Datei dieselben Kanten ab (ideal, um schwarze Scanränder oder Bindungsränder zu entfernen). „Seiten löschen“ entfernt dieselben Seitennummern aus jeder Datei (ideal, um ein Deckblatt oder eine Trennseite zu entfernen). Wählen Sie einen Modus, stellen Sie ihn einmal ein, und er wird auf den gesamten Stapel angewendet." },
-      { q: "Wie funktioniert das Zuschneiden?", a: "Verwenden Sie die Schieberegler, um jede Kante als Prozentsatz der Seite abzuschneiden; die Vorschau zeigt die erste Datei mit schattiertem zugeschnittenem Bereich. Derselbe Zuschnitt wird auf jede Seite jeder Datei im Stapel angewendet. Das Zuschneiden nutzt die PDF-Zuschnittbox, der abgeschnittene Bereich wird also ausgeblendet, nicht zerstört — er lässt sich später wiederherstellen." },
-      { q: "Wie funktioniert das Löschen von Seiten?", a: "Geben Sie die aus jeder Datei zu entfernenden Seitennummern ein, etwa 1 für ein Deckblatt oder 1,3-4 für mehrere. Diese Seiten werden aus jeder Datei im Stapel gelöscht. Würde eine Datei dadurch alle Seiten verlieren, wird sie übersprungen und markiert, damit Sie kein leeres Dokument erhalten." },
-      { q: "Gibt es eine Grenze, und werden meine Dateien hochgeladen?", a: "Bis zu 30 Dateien pro Stapel. Alles läuft vollständig in Ihrem Browser — Ihre Dateien werden nie hochgeladen, was dies für vertrauliche Scans sicher macht. Sie erhalten alle in einem einzigen ZIP zurück." },
-      { q: "Ist es kostenlos?", a: "Ja, vollständig kostenlos — kein Konto, kein Wasserzeichen, kein Tageslimit." },
     ],
   },
   "batch-translate": {
@@ -2726,17 +2598,6 @@ const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Was wird gedreht, und kann ich nur einige Seiten drehen?", a: "Der gewählte Winkel wird auf jede Seite jedes PDFs im Stapel angewendet — dies ist ein Werkzeug für ganze Ordner, kein seitengenauer Editor, Sie können hier also keine einzelnen Seiten drehen. Die Drehung wird zudem zu jeder bestehenden Drehung hinzugefügt, sodass das Anwenden von 90° auf eine bereits gedrehte Seite sie um weitere 90° dreht. Für seitengenaue Steuerung verwenden Sie stattdessen unser Einzeldatei-Tool zum Drehen." },
       { q: "Gibt es Grenzen, und warum könnte ein PDF „fehlgeschlagen“ anzeigen?", a: "Sie können bis zu 50 PDFs pro Stapel hinzufügen. Es gibt keine feste Größenobergrenze — da alles in Ihrem Browser läuft, ist die tatsächliche Grenze der Arbeitsspeicher Ihres Geräts, große Aufträge auf einem schwachen Laptop oder Telefon sind also nur langsamer. Verschlüsselte oder passwortgeschützte PDFs können zum Drehen nicht geöffnet werden, daher werden sie übersprungen und als „fehlgeschlagen“ markiert; der Rest des Stapels wird trotzdem verarbeitet, und nur die erfolgreichen Dateien kommen ins ZIP. Entsperren Sie die Datei zuerst und fügen Sie sie dann erneut hinzu." },
       { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Ja, es ist vollständig kostenlos — keine Anmeldung, kein Konto und kein Wasserzeichen auf Ihrer Ausgabe. Da die gesamte Arbeit in Ihrem Browser geschieht, gibt es nichts zu bezahlen und keinen Nutzungszähler; öffnen Sie einfach die Seite und beginnen Sie mit dem Drehen." },
-    ],
-  },
-  "batch-watermark-pdf": {
-    title: "PDFs im Stapel mit Wasserzeichen versehen — Häufige Fragen",
-    items: [
-      { q: "Wie versehe ich einen ganzen Ordner voller PDFs auf einmal mit einem Wasserzeichen?", a: "Ziehen Sie einen Ordner (oder mehrere PDFs) auf das Upload-Feld oder klicken Sie, um Dateien auszuwählen. Geben Sie Ihren Wasserzeichentext ein — zum Beispiel VERTRAULICH — und klicken Sie dann auf „Auf alle anwenden“. Jedes PDF wird nacheinander gestempelt, und wenn es fertig ist, klicken Sie auf „ZIP herunterladen“, um jede mit Wasserzeichen versehene Datei in einem einzigen Archiv zu erhalten. Wenn Sie einen Ordner abgelegt haben, werden alle darin enthaltenen Nicht-PDF-Dateien automatisch herausgefiltert, sodass Sie den Ordner nicht zuvor aufräumen müssen." },
-      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Jedes PDF wird vollständig in Ihrem Browser auf Ihrem eigenen Gerät verarbeitet — nichts wird auf einen Server hochgeladen, und es gibt kein Konto und keine Anmeldung. Ihre Dokumente verlassen Ihren Computer nie, weshalb es für vertrauliche Dateien sicher ist." },
-      { q: "Was erhalte ich zurück, und wie werden die Dateien benannt?", a: "Sie erhalten eine ZIP-Datei (dockdocs-batch.zip), die alle mit Wasserzeichen versehenen PDFs enthält. Jede Ausgabe behält ihren ursprünglichen Namen mit dem Suffix „-watermarked.pdf“ — aus report.pdf wird also report-watermarked.pdf. Ihre Originaldateien bleiben unangetastet." },
-      { q: "Gibt es eine Grenze, wie viele PDFs ich auf einmal bearbeiten kann?", a: "Dieses Stapel-Tool verarbeitet bis zu 30 PDFs pro Durchlauf. Wenn Sie mehr hinzufügen, werden nur die ersten 30 behalten. Es gibt keine feste Größenobergrenze — da alles in Ihrem Browser läuft, ist die tatsächliche Grenze der Arbeitsspeicher Ihres Geräts, sehr große Dateien oder schwache Geräte sind also einfach langsamer. Teilen Sie einen größeren Auftrag in Stapel zu je 30 auf." },
-      { q: "Ist es kostenlos? Fügt es ein eigenes Wasserzeichen oder Branding hinzu?", a: "Ja, es ist vollständig kostenlos, ohne Anmeldung, ohne Testphase und ohne Nutzungsgrenzen über die Stapelgröße von 30 Dateien pro Durchlauf hinaus. Das einzige Wasserzeichen auf Ihren PDFs ist der Text, den Sie eingeben — DockDocs stempelt nie sein eigenes Logo oder Branding auf Ihre Dateien." },
-      { q: "Kann ich wählen, wohin das Wasserzeichen kommt oder wie transparent es ist?", a: "Nicht im Stapel-Tool. Es verwendet eine feste Standardplatzierung — ein diagonales Wasserzeichen über jede Seite —, um den ganzen Ordner einheitlich zu halten. Wenn Sie eine eigene Position, Deckkraft oder Schriftgröße benötigen, verwenden Sie stattdessen das Einzeldatei-Tool für Wasserzeichen, das Ihnen die volle Kontrolle über jeweils ein Dokument gibt." },
     ],
   },
   "batch-page-numbers": {
@@ -3034,16 +2895,6 @@ const FAQS_KO: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "어떤 임대차 계약서 형식이 작동하나요?", a: "텍스트 기반 PDF(디지털로 생성된 것)입니다. 스캔한 임대차 계약서는 선택 가능한 텍스트가 없으니 먼저 OCR을 실행하세요. 영어, 중국어 등에서 작동하며, 인용문은 임대차 계약서의 원래 언어로 유지됩니다." },
     ],
   },
-  "batch-fix-scans": {
-    title: "스캔본 일괄 정리 — 자주 묻는 질문",
-    items: [
-      { q: "스캔본 일괄 정리는 무엇을 할 수 있나요?", a: "PDF가 가득한 폴더 전체에 두 가지 정리 작업을 한 번에 적용합니다. 「여백 자르기」는 모든 파일의 모든 페이지에서 같은 가장자리를 잘라냅니다(검은 스캔 테두리나 제본 여백을 없애기에 좋습니다). 「페이지 삭제」는 모든 파일에서 같은 페이지 번호를 제거합니다(표지나 간지를 없애기에 좋습니다). 모드를 선택하고 한 번만 설정하면 전체 묶음에 적용됩니다." },
-      { q: "자르기는 어떻게 작동하나요?", a: "슬라이더로 각 가장자리를 페이지의 비율만큼 잘라내며, 미리보기는 잘리는 영역이 음영 처리된 첫 번째 파일을 보여줍니다. 동일한 자르기가 묶음 속 모든 파일의 모든 페이지에 적용됩니다. 자르기는 PDF 자르기 상자를 사용하므로 잘린 영역은 파괴되지 않고 숨겨질 뿐이며, 나중에 복원할 수 있습니다." },
-      { q: "페이지 삭제는 어떻게 작동하나요?", a: "각 파일에서 제거할 페이지 번호를 입력하면 됩니다. 예를 들어 표지를 없애려면 1, 여러 페이지면 1,3-4처럼 입력합니다. 해당 페이지들이 묶음 속 모든 파일에서 삭제됩니다. 어떤 파일이 이로 인해 모든 페이지를 잃게 되면 빈 문서가 만들어지지 않도록 건너뛰고 표시합니다." },
-      { q: "제한이 있나요? 제 파일이 업로드되나요?", a: "묶음당 최대 30개 파일입니다. 모든 작업은 전적으로 브라우저 안에서 실행되며 — 파일이 절대 업로드되지 않으므로 기밀 스캔본에도 안전합니다. 결과는 하나의 ZIP으로 받습니다." },
-      { q: "무료인가요?", a: "네, 완전 무료입니다 — 계정도, 워터마크도, 일일 제한도 없습니다." },
-    ],
-  },
   "batch-translate": {
     title: "PDF 일괄 번역 — 자주 묻는 질문",
     items: [
@@ -3177,17 +3028,6 @@ const FAQS_KO: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "무엇이 회전되며, 일부 페이지만 회전할 수 있나요?", a: "선택한 각도가 묶음 속 모든 PDF의 모든 페이지에 적용됩니다 — 이것은 폴더 전체를 위한 도구이지 페이지 단위 편집기가 아니므로 여기서 개별 페이지를 회전할 수는 없습니다. 또한 회전은 기존 회전에 더해지므로, 이미 회전된 페이지에 90°를 적용하면 90°가 더 돌아갑니다. 페이지 단위 제어가 필요하면 대신 단일 파일 회전 도구를 사용하세요." },
       { q: "제한이 있나요? PDF가 「실패」로 표시될 수 있는 이유는 무엇인가요?", a: "묶음당 최대 50개 PDF를 추가할 수 있습니다. 고정된 크기 상한은 없으며 — 모든 작업이 브라우저 안에서 실행되므로 실제 한계는 기기의 메모리입니다. 따라서 성능이 낮은 노트북이나 휴대폰에서 큰 작업은 더 느릴 뿐입니다. 암호화되었거나 암호로 보호된 PDF는 회전을 위해 열 수 없으므로 건너뛰고 「실패」로 표시되며, 나머지 묶음은 그대로 처리되어 성공한 파일만 ZIP에 들어갑니다. 먼저 파일의 잠금을 해제한 뒤 다시 추가하세요." },
       { q: "무료인가요? 계정이 필요한가요?", a: "네, 완전 무료입니다 — 가입도, 계정도, 출력물에 워터마크도 없습니다. 모든 작업이 브라우저 안에서 이루어지므로 결제할 것도, 사용량 카운터도 없습니다. 그냥 페이지를 열고 회전을 시작하세요." },
-    ],
-  },
-  "batch-watermark-pdf": {
-    title: "PDF 일괄 워터마크 — 자주 묻는 질문",
-    items: [
-      { q: "PDF가 가득한 폴더 전체에 한 번에 워터마크를 넣으려면 어떻게 하나요?", a: "폴더(또는 여러 PDF)를 업로드 영역에 끌어다 놓거나 클릭해 파일을 고르세요. 워터마크 텍스트를 입력하고 — 예를 들어 대외비 — 「모두 적용」을 클릭하세요. 각 PDF가 차례로 찍히고, 완료되면 「ZIP 내려받기」를 클릭해 워터마크가 들어간 각 파일을 하나의 압축 파일로 받습니다. 폴더를 끌어다 놓았다면 그 안의 PDF가 아닌 파일은 모두 자동으로 걸러지므로 미리 폴더를 정리할 필요가 없습니다." },
-      { q: "제 파일이 서버에 업로드되나요?", a: "아니요. 각 PDF는 귀하 기기의 브라우저 안에서 전적으로 처리됩니다 — 어떤 것도 서버로 업로드되지 않으며, 계정도, 가입도 없습니다. 문서가 컴퓨터를 절대 벗어나지 않으므로 기밀 파일에도 안전합니다." },
-      { q: "무엇을 받게 되며 파일 이름은 어떻게 되나요?", a: "워터마크가 들어간 모든 PDF를 담은 ZIP 파일(dockdocs-batch.zip)을 받습니다. 각 출력물은 「-watermarked.pdf」 접미사가 붙은 원래 이름을 유지합니다 — 즉 report.pdf는 report-watermarked.pdf가 됩니다. 원본 파일은 그대로 유지됩니다." },
-      { q: "한 번에 처리할 수 있는 PDF 개수에 제한이 있나요?", a: "이 일괄 도구는 한 번에 최대 30개 PDF를 처리합니다. 더 추가하면 처음 30개만 유지됩니다. 고정된 크기 상한은 없으며 — 모든 작업이 브라우저 안에서 실행되므로 실제 한계는 기기의 메모리입니다. 따라서 매우 큰 파일이나 성능이 낮은 기기는 더 느릴 뿐입니다. 더 큰 작업은 한 번에 30개씩 묶음으로 나누세요." },
-      { q: "무료인가요? 자체 워터마크나 브랜딩을 추가하나요?", a: "네, 완전 무료이며 가입도, 체험판도, 한 번에 30개 파일이라는 묶음 크기 외의 사용 제한도 없습니다. 귀하의 PDF에 들어가는 유일한 워터마크는 귀하가 입력한 텍스트입니다 — DockDocs는 자사 로고나 브랜딩을 귀하의 파일에 절대 찍지 않습니다." },
-      { q: "워터마크의 위치나 투명도를 선택할 수 있나요?", a: "일괄 도구에서는 안 됩니다. 폴더 전체를 일관되게 유지하기 위해 고정된 기본 배치 — 각 페이지를 가로지르는 대각선 워터마크 — 를 사용합니다. 위치, 불투명도, 글꼴 크기를 직접 지정해야 한다면 한 번에 한 문서에 대해 완전한 제어를 제공하는 단일 파일 워터마크 도구를 대신 사용하세요." },
     ],
   },
   "batch-page-numbers": {

@@ -126,7 +126,6 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "batch-pdf-to-image",  en: "Batch PDF to Image",        zh: "批量 PDF 转图片", es: "PDF a imagen por lotes",        pt: "PDF para imagem em lote",         fr: "PDF en image par lots",   ja: "PDF を画像に一括変換",    de: "Stapel: PDF zu Bild", ko: "PDF 일괄 이미지 변환" },
       { slug: "batch-protect-pdf",   en: "Batch Encrypt PDF",         zh: "批量 PDF 加密",   es: "Cifrado por lotes",             pt: "Criptografia em lote",            fr: "Chiffrement par lots",    ja: "PDF を一括暗号化",        de: "Stapel: PDF verschlüsseln", ko: "PDF 일괄 암호화" },
       { slug: "batch-rename-pdf",    en: "Batch Rename PDF",          zh: "批量 PDF 改名",   es: "Renombrado por lotes",          pt: "Renomear em lote",                fr: "Renommage par lots",      ja: "PDF を一括リネーム",      de: "Stapel: PDF umbenennen", ko: "PDF 일괄 이름 변경" },
-      { slug: "batch-watermark-pdf", en: "Batch Watermark & Pages",   zh: "批量水印 & 页码", es: "Marca de agua por lotes",       pt: "Marca d'água em lote",            fr: "Filigrane par lots",      ja: "一括透かし & ページ番号", de: "Stapel: Wasserzeichen & Seiten", ko: "일괄 워터마크 & 페이지 번호" },
       { slug: "batch-page-numbers",  en: "Batch Add Page Numbers",    zh: "批量添加页码",    es: "Números de página por lotes",   pt: "Números de página em lote",       fr: "Numéros de page par lots", ja: "ページ番号を一括追加",   de: "Stapel: Seitenzahlen hinzufügen", ko: "일괄 페이지 번호 추가" },
       { slug: "batch-split-merge",   en: "Batch Split & Merge",       zh: "批量拆分合并",    es: "División por lotes",            pt: "Divisão em lote",                 fr: "Division par lots",       ja: "一括分割 & 結合",         de: "Stapel: Teilen & Zusammenfügen", ko: "일괄 분할 & 병합" },
       { slug: "batch-rotate-pdf",    en: "Batch Rotate PDF",          zh: "批量旋转 PDF",    es: "Rotación por lotes",            pt: "Rotação em lote",                 fr: "Rotation par lots",       ja: "PDF を一括回転",          de: "Stapel: PDF drehen", ko: "PDF 일괄 회전" },
@@ -136,7 +135,6 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "batch-excel-to-pdf",  en: "Batch Excel to PDF",        zh: "批量 Excel 转 PDF", es: "Excel a PDF por lotes",       pt: "Excel para PDF em lote",          fr: "Excel en PDF par lots",   ja: "Excel を PDF に一括変換", de: "Stapel: Excel zu PDF", ko: "Excel 일괄 PDF 변환" },
       { slug: "batch-ppt-to-pdf",    en: "Batch PPT to PDF",          zh: "批量 PPT 转 PDF", es: "PPT a PDF por lotes",           pt: "PPT para PDF em lote",            fr: "PPT en PDF par lots",     ja: "PPT を PDF に一括変換",   de: "Stapel: PPT zu PDF", ko: "PPT 일괄 PDF 변환" },
       { slug: "batch-translate",     en: "Batch Translate",           zh: "批量翻译",        es: "Traducir por lotes",            pt: "Traduzir em lote",                fr: "Traduction par lots",     ja: "一括翻訳",                de: "Stapel-Übersetzung", ko: "일괄 번역" },
-      { slug: "batch-fix-scans",     en: "Batch Fix Scans",           zh: "批量修扫描",      es: "Arreglar escaneos por lotes",   pt: "Corrigir digitalizações em lote", fr: "Corriger scans par lots", ja: "スキャンを一括補正",      de: "Stapel: Scans korrigieren", ko: "스캔 일괄 보정" },
     ],
     limits: {
       free: {

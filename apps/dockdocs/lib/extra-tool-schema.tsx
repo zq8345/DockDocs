@@ -611,56 +611,6 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
         "PDF 폴더 전체를 한 번에 한 언어로 번역 — 각 문서의 텍스트를 번역해 .txt 파일의 ZIP으로 패키징합니다.",
     },
   },
-  "batch-fix-scans": {
-    en: {
-      name: "DockDocs Batch Fix Scans",
-      crumb: "Batch Fix Scans",
-      description:
-        "Clean up a whole folder of scanned PDFs at once — trim the same margins off every page or delete the same pages from each file. All in your browser, one ZIP.",
-    },
-    zh: {
-      name: "DockDocs 批量修扫描",
-      crumb: "批量修扫描",
-      description:
-        "一次清理整个文件夹的扫描件：给每页裁掉相同页边，或从每个文件删相同页，全部在浏览器中完成、打包 ZIP。",
-    },
-    es: {
-      name: "DockDocs Reparar escaneos en lote",
-      crumb: "Reparar escaneos en lote",
-      description:
-        "Limpia una carpeta entera de PDFs escaneados de una vez — recorta los mismos márgenes de cada página o elimina las mismas páginas de cada archivo. Todo en tu navegador, un ZIP.",
-    },
-    pt: {
-      name: "DockDocs Reparar digitalizações em lote",
-      crumb: "Reparar digitalizações em lote",
-      description:
-        "Limpe uma pasta inteira de PDFs digitalizados de uma vez — recorte as mesmas margens de cada página ou exclua as mesmas páginas de cada arquivo. Tudo no seu navegador, um ZIP.",
-    },
-    fr: {
-      name: "DockDocs Réparer des scans en lot",
-      crumb: "Réparer des scans en lot",
-      description:
-        "Nettoyez un dossier entier de PDFs numérisés en une fois — rognez les mêmes marges de chaque page ou supprimez les mêmes pages de chaque fichier. Tout dans votre navigateur, un ZIP.",
-    },
-    ja: {
-      name: "DockDocs スキャン一括修正",
-      crumb: "スキャン一括修正",
-      description:
-        "スキャンしたPDFのフォルダをまとめてクリーンアップ—各ページの同じ余白を切り取り、または各ファイルの同じページを削除。すべてブラウザ内で完結。",
-    },
-    de: {
-      name: "DockDocs Scans stapelweise bereinigen",
-      crumb: "Scans stapelweise bereinigen",
-      description:
-        "Bereinigen Sie einen ganzen Ordner mit gescannten PDFs auf einmal – schneiden Sie dieselben Ränder von jeder Seite ab oder löschen Sie dieselben Seiten aus jeder Datei. Alles im Browser, eine ZIP.",
-    },
-    ko: {
-      name: "DockDocs 스캔 일괄 수정",
-      crumb: "스캔 일괄 수정",
-      description:
-        "스캔된 PDF 폴더 전체를 한꺼번에 정리 — 모든 페이지에서 동일한 여백을 자르거나 각 파일에서 동일한 페이지를 삭제합니다. 모두 브라우저에서, 하나의 ZIP으로.",
-    },
-  },
   "batch-extract-sheet": {
     en: {
       name: "DockDocs Batch Extract to Spreadsheet",

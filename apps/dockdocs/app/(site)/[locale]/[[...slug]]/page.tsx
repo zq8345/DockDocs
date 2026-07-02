@@ -55,7 +55,6 @@ import { BatchCompressClient } from "@/components/BatchCompressClient";
 import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
 import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
 import { BatchTranslateClient } from "@/components/BatchTranslateClient";
-import { BatchFixScansClient } from "@/components/BatchFixScansClient";
 import { ContractRiskClient } from "@/components/ContractRiskClient";
 import { ContractReviewClient } from "@/components/ContractReviewClient";
 import { LeaseRedflagClient } from "@/components/LeaseRedflagClient";
@@ -654,28 +653,6 @@ const CUSTOM_TOOL_COPY: Record<string, {
       en: "Rename a whole folder of PDFs at once — by a numbered pattern or find-and-replace — and download a ZIP with the new names. Entirely in your browser.",
     },
   },
-  "batch-watermark-pdf": {
-    title: {
-      zh: "批量加水印 / 页码 — 整批 PDF 一次加水印或页码",
-      es: "Marca de agua en lote — Estampar marca o numeración en varios PDFs",
-      pt: "Marca d'água em lote — Adicionar marca ou numeração em vários PDFs",
-      fr: "Filigrane en lot — Tamponner plusieurs PDFs à la fois",
-      ja: "PDF一括透かし・ページ番号 — まとめてスタンプ",
-      de: "Wasserzeichen & Seitenzahlen im Stapel — viele PDFs kostenlos stempeln",
-      ko: "PDF 일괄 워터마크 및 페이지 번호 — 여러 PDF에 스탬프 무료",
-      en: "Batch Watermark & Page Numbers — Stamp Many PDFs Free",
-    },
-    description: {
-      zh: "给整个文件夹的 PDF 一次性加水印或加页码，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。",
-      es: "Añade una marca de agua o números de página a una carpeta entera de PDFs de una vez, empaquetados en un ZIP. Todo en tu navegador.",
-      pt: "Adicione marca d'água ou numeração de páginas a uma pasta inteira de PDFs de uma vez, empacotados em um ZIP. Tudo no seu navegador.",
-      fr: "Ajoutez un filigrane ou des numéros de page à un dossier entier de PDFs en une fois, empaquetés dans un ZIP. Entièrement dans votre navigateur.",
-      ja: "フォルダ全体のPDFに透かしまたはページ番号を一度に追加—1つのZIPにまとめます。すべてブラウザ内で完結。",
-      de: "Fügen Sie einem ganzen PDF-Ordner auf einmal ein Wasserzeichen oder Seitenzahlen hinzu, in einer ZIP zusammengefasst. Vollständig in Ihrem Browser; Ihre Dateien verlassen Ihr Gerät nie.",
-      ko: "PDF 폴더 전체에 워터마크 또는 페이지 번호를 한 번에 추가합니다. 하나의 ZIP으로 패키징. 브라우저에서 처리.",
-      en: "Add a watermark or page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
-    },
-  },
   "batch-page-numbers": {
     title: {
       zh: "批量 PDF 添加页码 — 整批 PDF 一次加页码",
@@ -916,28 +893,6 @@ const CUSTOM_TOOL_COPY: Record<string, {
       de: "Übersetzen Sie einen ganzen PDF-Ordner auf einmal in eine Sprache — der Text jedes Dokuments wird übersetzt und in einer ZIP aus .txt-Dateien zusammengefasst.",
       ko: "PDF 폴더 전체를 한 번에 하나의 언어로 번역합니다 — 각 문서의 텍스트를 번역하여 .txt 파일의 ZIP으로 패키징.",
       en: "Translate a whole folder of PDFs into one language at once — each document's text translated and packaged into a ZIP of .txt files.",
-    },
-  },
-  "batch-fix-scans": {
-    title: {
-      zh: "批量 PDF 修扫描 — 整批裁页边/删页",
-      es: "Reparar escaneos PDF por lotes — Recortar o eliminar páginas gratis",
-      pt: "Reparar digitalizações PDF em lote — Recortar ou excluir páginas grátis",
-      fr: "Corriger scans PDF par lots — Rogner ou supprimer des pages en masse",
-      ja: "PDF スキャンを一括補正 — 余白切り取り・ページ削除をまとめて処理",
-      de: "PDF-Scans stapelweise korrigieren — Seiten massenhaft kostenlos beschneiden oder löschen",
-      ko: "PDF 스캔 일괄 수정 — 여백 잘라내기 또는 페이지 삭제 무료",
-      en: "Batch PDF Fix Scans — Crop or Delete Pages in Bulk Free",
-    },
-    description: {
-      zh: "一次清理整个文件夹的扫描件：给每页裁掉相同页边，或从每个文件删相同页，全部在浏览器中完成、打包 ZIP。",
-      es: "Limpia una carpeta entera de PDFs escaneados de una vez — recorta los mismos márgenes de cada página o elimina las mismas páginas de cada archivo. Todo en tu navegador, un ZIP.",
-      pt: "Limpe uma pasta inteira de PDFs digitalizados de uma vez — recorte as mesmas margens de cada página ou exclua as mesmas páginas de cada arquivo. Tudo no seu navegador, um ZIP.",
-      fr: "Nettoyez un dossier entier de PDFs numérisés en une fois — rognez les mêmes marges de chaque page ou supprimez les mêmes pages de chaque fichier. Tout dans votre navigateur, un ZIP.",
-      ja: "スキャンしたPDFのフォルダをまとめてクリーンアップ—各ページの同じ余白を切り取り、または各ファイルの同じページを削除。すべてブラウザ内で完結。",
-      de: "Bereinigen Sie einen ganzen Ordner mit gescannten PDFs auf einmal — schneiden Sie bei jeder Seite dieselben Ränder ab oder löschen Sie aus jeder Datei dieselben Seiten. Alles in Ihrem Browser, eine ZIP.",
-      ko: "스캔된 PDF 폴더 전체를 한 번에 정리합니다 — 모든 페이지에서 동일한 여백을 잘라내거나 각 파일에서 동일한 페이지를 삭제합니다. 브라우저에서 처리, 하나의 ZIP.",
-      en: "Clean up a whole folder of scanned PDFs at once — crop the same margins off every page or delete the same pages from each file. All in your browser, one ZIP.",
     },
   },
   "contract-risk": {
@@ -1558,31 +1513,6 @@ async function generateMetadataInner({
     };
   }
 
-  if (slug === "batch-watermark-pdf") {
-    return {
-      title: m(
-        "Batch Watermark & Page Numbers — Stamp Many PDFs Free",
-        "批量加水印 / 页码 — 整批 PDF 一次加水印或页码",
-        "Marca de agua y números de página en lote — Sella muchos PDF gratis",
-        "Marca d'água e números de página em lote — Carimbe muitos PDFs grátis",
-        "Filigrane et numéros de page par lot — Marquez plusieurs PDF gratuitement",
-        "透かし・ページ番号を一括追加 — 複数PDFに無料でスタンプ",
-      ),
-      description: m(
-        "Add a watermark or page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
-        "给整个文件夹的 PDF 一次性加水印或加页码，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。",
-        "Añade una marca de agua o números de página a una carpeta entera de PDF de una vez, empaquetados en un único ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
-        "Adicione uma marca d'água ou números de página a uma pasta inteira de PDFs de uma vez, empacotados em um único ZIP. Tudo no seu navegador; seus arquivos nunca saem do seu dispositivo.",
-        "Ajoutez un filigrane ou des numéros de page à un dossier entier de PDF en une fois, regroupés dans un seul ZIP. Entièrement dans votre navigateur ; vos fichiers ne quittent jamais votre appareil.",
-        "PDFのフォルダ全体に透かしやページ番号を一度に追加し、1つのZIPにまとめます。すべてブラウザ内で完結し、ファイルが端末から出ることはありません。",
-      ),
-      alternates: {
-        canonical: localizedPath(rawLocale, "batch-watermark-pdf"),
-        languages: languageAlternates("batch-watermark-pdf"),
-      },
-    };
-  }
-
   if (slug === "batch-page-numbers") {
     return {
       title: m(
@@ -1854,31 +1784,6 @@ async function generateMetadataInner({
       alternates: {
         canonical: localizedPath(rawLocale, "batch-translate"),
         languages: languageAlternates("batch-translate"),
-      },
-    };
-  }
-
-  if (slug === "batch-fix-scans") {
-    return {
-      title: m(
-        "Batch PDF Fix Scans — Crop or Delete Pages in Bulk Free",
-        "批量 PDF 修扫描 — 整批裁页边/删页",
-        "Corregir escaneos PDF por lotes — Recorta o elimina páginas en masa gratis",
-        "Corrigir digitalizações PDF em lote — Recorte ou exclua páginas em massa grátis",
-        "Corriger scans PDF par lots — Rognez ou supprimez des pages en masse gratuitement",
-        "PDF スキャンを一括補正 — ページの一括トリミング/削除（無料）",
-      ),
-      description: m(
-        "Clean up a whole folder of scanned PDFs at once — crop the same margins off every page or delete the same pages from each file. All in your browser, one ZIP.",
-        "一次清理整个文件夹的扫描件：给每页裁掉相同页边，或从每个文件删相同页，全部在浏览器中完成、打包 ZIP。",
-        "Limpia una carpeta entera de PDF escaneados de una vez: recorta los mismos márgenes en cada página o elimina las mismas páginas de cada archivo. Todo en tu navegador, un único ZIP.",
-        "Limpe uma pasta inteira de PDFs digitalizados de uma vez: recorte as mesmas margens em cada página ou exclua as mesmas páginas de cada arquivo. Tudo no seu navegador, um único ZIP.",
-        "Nettoyez un dossier entier de PDF numérisés en une fois : rognez les mêmes marges sur chaque page ou supprimez les mêmes pages de chaque fichier. Tout dans votre navigateur, un seul ZIP.",
-        "スキャンしたPDFのフォルダ全体を一度に整理：各ページから同じ余白をトリミング、または各ファイルから同じページを削除。すべてブラウザ内で完結し、1つのZIPに。",
-      ),
-      alternates: {
-        canonical: localizedPath(rawLocale, "batch-fix-scans"),
-        languages: languageAlternates("batch-fix-scans"),
       },
     };
   }
@@ -2307,10 +2212,6 @@ export default async function LocalizedRoute({
     return <BatchRenameClient locale={clientLocale} />;
   }
 
-  if (slug === "batch-watermark-pdf") {
-    return <BatchStampClient locale={clientLocale} lockMode="watermark" />;
-  }
-
   if (slug === "batch-page-numbers") {
     return <BatchStampClient locale={clientLocale} lockMode="pagenum" />;
   }
@@ -2353,10 +2254,6 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-translate") {
     return <>{extraJsonLd}<BatchTranslateClient locale={clientLocale} /></>;
-  }
-
-  if (slug === "batch-fix-scans") {
-    return <>{extraJsonLd}<BatchFixScansClient locale={clientLocale} /></>;
   }
 
   if (slug === "contract-risk") {

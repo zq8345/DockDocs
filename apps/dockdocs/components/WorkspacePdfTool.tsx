@@ -35,7 +35,6 @@ import { BatchRotateClient } from "@/components/BatchRotateClient";
 import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
 import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
 import { BatchTranslateClient } from "@/components/BatchTranslateClient";
-import { BatchFixScansClient } from "@/components/BatchFixScansClient";
 import { BatchSummaryClient } from "@/components/BatchSummaryClient";
 import { BatchSortClient } from "@/components/BatchSortClient";
 
@@ -87,7 +86,6 @@ const CUSTOM_RENDERERS: Record<string, (loc: L) => ReactNode> = {
   "batch-pdf-to-image": (loc) => <BatchPdfToImageClient locale={loc} embedded />,
   "batch-protect-pdf":  (loc) => <BatchProtectClient locale={loc} embedded />,
   "batch-rename-pdf":   (loc) => <BatchRenameClient locale={loc} embedded />,
-  "batch-watermark-pdf":(loc) => <BatchStampClient locale={loc} lockMode="watermark" embedded />,
   "batch-page-numbers": (loc) => <BatchStampClient locale={loc} lockMode="pagenum" embedded />,
   "batch-split-merge":  (loc) => <BatchSplitMergeClient locale={loc} lockMode="split" embedded />,
   "batch-rotate-pdf":   (loc) => <BatchRotateClient locale={loc} embedded />,
@@ -97,7 +95,6 @@ const CUSTOM_RENDERERS: Record<string, (loc: L) => ReactNode> = {
   "batch-excel-to-pdf": (loc) => <BatchOfficeToPdfClient locale={loc} source="excel" embedded />,
   "batch-ppt-to-pdf":   (loc) => <BatchOfficeToPdfClient locale={loc} source="ppt" embedded />,
   "batch-translate":    (loc) => <BatchTranslateClient locale={loc} embedded />,
-  "batch-fix-scans":    (loc) => <BatchFixScansClient locale={loc} embedded />,
   "batch-summary":      (loc) => <BatchSummaryClient locale={loc} embedded />,
   "batch-sort":         (loc) => <BatchSortClient locale={loc} embedded />,
 };
