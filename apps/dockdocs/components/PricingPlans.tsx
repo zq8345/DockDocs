@@ -740,7 +740,6 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   // ── New locale strings (pricing v2) ──
   const subscribeProLabel = zh ? h("订阅 Pro 会员") : locale === "es" ? "Suscribirse a Pro" : locale === "pt" ? "Assinar Pro" : locale === "fr" ? "S'abonner à Pro" : locale === "ja" ? "Proに登録" : locale === "de" ? "Pro abonnieren" : locale === "ko" ? "Pro 구독" : "Subscribe to Pro";
   const trialLinkLabel = zh ? h("先免费试用 7 天 Pro 会员") : locale === "es" ? "Primero prueba Pro 7 días gratis" : locale === "pt" ? "Primeiro experimente Pro 7 dias grátis" : locale === "fr" ? "D'abord essayer Pro 7 jours gratuit" : locale === "ja" ? "まずProを7日間無料で試す" : locale === "de" ? "Zuerst Pro 7 Tage gratis testen" : locale === "ko" ? "먼저 Pro 7일 무료 체험" : "Start free 7-day Pro trial first";
-  const proUnlocksEyebrow = zh ? h("// PRO 解锁") : locale === "es" ? "// Pro desbloquea" : locale === "pt" ? "// Pro desbloqueia" : locale === "fr" ? "// Pro déverrouille" : locale === "ja" ? "// Pro で解放" : locale === "de" ? "// Pro schaltet frei" : locale === "ko" ? "// Pro 잠금 해제" : "// Pro unlocks";
   // Capability grid short labels (4 items × locale)
   const CAP_GRID = [
     {
@@ -756,52 +755,6 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       label: zh ? h("批量") : locale === "es" ? "Lote" : locale === "pt" ? "Lote" : locale === "fr" ? "Lot" : locale === "ja" ? "一括" : locale === "de" ? "Stapel" : locale === "ko" ? "일괄" : "Batch",
     },
   ];
-  // Capability cards for ① PRO section (4 cards, 8 locales)
-  const CAP_CARDS = [
-    {
-      label: zh ? h("和任意文档对话") : locale === "es" ? "Chatea con cualquier documento" : locale === "pt" ? "Converse com qualquer documento" : locale === "fr" ? "Chattez avec n'importe quel document" : locale === "ja" ? "あらゆる文書とチャット" : locale === "de" ? "Mit jedem Dokument chatten" : locale === "ko" ? "모든 문서와 대화" : "Chat with any document",
-      sub: zh ? h("提问即答，能定位时附原文出处") : locale === "es" ? "Pregunta lo que quieras — con fuente cuando el texto puede localizarse" : locale === "pt" ? "Pergunte o que quiser — com fonte quando o texto pode ser localizado" : locale === "fr" ? "Posez toute question — avec source quand le texte peut être localisé" : locale === "ja" ? "何でも質問——特定できる場合は出典付きで回答" : locale === "de" ? "Fragen Sie alles — mit Quelle, wenn der Text auffindbar ist" : locale === "ko" ? "무엇이든 질문 — 찾을 수 있으면 출처 포함" : "Ask anything — sourced when the text can be located",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 3a9 9 0 0 1 8.7 11.5L21 21l-5.5-.3A9 9 0 1 1 12 3z"/>
-          <path d="M8 12h.01M12 12h.01M16 12h.01"/>
-        </svg>
-      ),
-    },
-    {
-      label: zh ? h("多份文档并排比对") : locale === "es" ? "Comparar docs en paralelo" : locale === "pt" ? "Comparar docs lado a lado" : locale === "fr" ? "Comparer les docs côte à côte" : locale === "ja" ? "並べてドキュメントを比較" : locale === "de" ? "Dokumente nebeneinander vergleichen" : locale === "ko" ? "문서 나란히 비교" : "Compare docs side by side",
-      sub: zh ? h("差异一栏看清，附数据支撑的推荐") : locale === "es" ? "Detecta diferencias de un vistazo — con una recomendación basada en datos" : locale === "pt" ? "Veja diferenças rapidamente — com recomendação baseada em dados" : locale === "fr" ? "Repérez les différences d'un coup d'œil — avec recommandation basée sur les données" : locale === "ja" ? "違いを一目で確認——データに基づくおすすめ付き" : locale === "de" ? "Unterschiede auf einen Blick — mit datenbasierter Empfehlung" : locale === "ko" ? "차이점 한눈에 파악 — 데이터 기반 추천 포함" : "Spot differences at a glance — backed by a data recommendation",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="5" width="7" height="14" rx="1"/>
-          <rect x="14" y="5" width="7" height="14" rx="1"/>
-        </svg>
-      ),
-    },
-    {
-      label: zh ? h("合同风险审查") : locale === "es" ? "Revisión de riesgos en contratos" : locale === "pt" ? "Revisão de riscos em contratos" : locale === "fr" ? "Audit des risques contractuels" : locale === "ja" ? "契約リスク審査" : locale === "de" ? "Vertragsrisiko-Prüfung" : locale === "ko" ? "계약 위험 검토" : "Contract risk review",
-      sub: zh ? h("标出风险与缺失条款，指向具体出处") : locale === "es" ? "Detecta cláusulas arriesgadas y faltantes — enlaza al texto exacto" : locale === "pt" ? "Detecta cláusulas arriscadas e ausentes — links para o texto exato" : locale === "fr" ? "Détecte les clauses à risque et manquantes — pointe vers le texte exact" : locale === "ja" ? "リスクや欠落条項を検出——該当テキストに直接リンク" : locale === "de" ? "Erkennt riskante und fehlende Klauseln — verlinkt den genauen Text" : locale === "ko" ? "위험 조항과 누락 조항 표시 — 정확한 텍스트로 링크" : "Flags risky and missing clauses — links to the exact text",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 3L4 7v5c0 4.418 3.582 8.418 8 10 4.418-1.582 8-5.582 8-10V7z"/>
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M14.12 14.12l2 2"/>
-        </svg>
-      ),
-    },
-    {
-      label: zh ? h("批量自动化") : locale === "es" ? "Automatización por lotes" : locale === "pt" ? "Automação em lote" : locale === "fr" ? "Automatisation par lot" : locale === "ja" ? "バッチ自動化" : locale === "de" ? "Stapelautomatisierung" : locale === "ko" ? "일괄 자동화" : "Batch automation",
-      sub: zh ? h("整批文档一次抽取、汇总、归类") : locale === "es" ? "Extrae, resume y clasifica un lote entero de una vez" : locale === "pt" ? "Extraia, resuma e classifique um lote inteiro de uma vez" : locale === "fr" ? "Extrait, résume et classe un lot entier en une opération" : locale === "ja" ? "バッチ全体を一度で抽出・要約・分類" : locale === "de" ? "Ganzen Stapel auf einmal extrahieren, zusammenfassen und klassifizieren" : locale === "ko" ? "전체 묶음을 한 번에 추출, 요약, 분류" : "Extract, summarize, and classify an entire batch at once",
-      icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2l9 4.5-9 4.5-9-4.5z"/>
-          <path d="M3 11.5l9 4.5 9-4.5"/>
-          <path d="M3 16.5l9 4.5 9-4.5"/>
-        </svg>
-      ),
-    },
-  ];
-
   // 3 billing-option card layout — Pro only; Free de-emphasised as a note below.
   const proPlan = c.plans.find((p) => p.featured) ?? c.plans[c.plans.length - 1];
   const pricingCtaKind = ((): "current" | "checkout" | "upgrade" | "manage" => {
@@ -941,24 +894,6 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
             {t}
           </span>
         ))}
-      </div>
-
-      {/* ① Pro capability cards */}
-      <div className={`mx-auto mt-20 ${LAYOUT.content}`}>
-        <p className={eyebrowCls(zh)}>{proUnlocksEyebrow}</p>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          {CAP_CARDS.map((cap, i) => (
-            <div key={i} className="flex gap-4 rounded-xl border border-[color:var(--line)] p-5 transition-colors hover:border-[color:var(--line-strong)]">
-              <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[color:var(--accent)]/10 text-[color:var(--accent)]">
-                {cap.icon}
-              </div>
-              <div>
-                <p className="text-[15px] font-medium text-[color:var(--foreground)]">{cap.label}</p>
-                <p className="mt-1.5 text-[13px] leading-6 text-[color:var(--muted)]">{cap.sub}</p>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Compare plans — 5 nav categories, collapsible accordion */}
