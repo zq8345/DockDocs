@@ -1,8 +1,23 @@
 # Auto-HTTPS (Let's Encrypt) for your subdomain + a shared-secret gate.
 # Only requests carrying the X-DockDocs-Key header (sent by the Netlify function)
 # get through; everything else gets 403. Services are never exposed directly.
+#
+# /upload/* is excluded from the key gate — those paths use per-request HMAC
+# token auth instead (validated by the FastAPI endpoint). This lets the browser
+# direct-upload large files (5–100 MB) without routing them through Netlify.
 {$GOTENBERG_DOMAIN} {
-	@unauthorized not header X-DockDocs-Key {$GOTENBERG_SECRET}
+	# @unauthorized fires only for paths that are NOT /upload/* AND lack the key.
+	# /upload/* requests bypass this check; their HMAC token is verified in FastAPI.
+	@unauthorized {
+		not header X-DockDocs-Key {$GOTENBERG_SECRET}
+		not path /upload/*
+	}
+
+	# @upload_preflight matches CORS preflight for the direct-upload endpoint.
+	@upload_preflight {
+		method OPTIONS
+		path /upload/*
+	}
 
 	# route{} forces top-to-bottom evaluation so the 403 gate runs BEFORE the
 	# reverse_proxy handlers. Without it, Caddy's default directive order placed
@@ -11,6 +26,25 @@
 	# backend. Verified 2026-07-02: no-key/wrong-key now return 403 on all routes.
 	route {
 		respond @unauthorized "Forbidden" 403
+
+		# OPTIONS preflight for browser direct-upload: no proxy, just CORS headers.
+		handle @upload_preflight {
+			header Access-Control-Allow-Origin "https://dockdocs.app"
+			header Access-Control-Allow-Methods "POST, OPTIONS"
+			header Access-Control-Allow-Headers "Content-Type, X-DockDocs-Upload-Token"
+			header Access-Control-Max-Age "3600"
+			respond "" 204
+		}
+
+		# Browser direct-upload POST → FastAPI which validates the HMAC token.
+		# CORS header is also added here so the browser accepts the PDF response.
+		handle /upload/* {
+			header Access-Control-Allow-Origin "https://dockdocs.app"
+			header Access-Control-Allow-Methods "POST, OPTIONS"
+			header Access-Control-Allow-Headers "Content-Type, X-DockDocs-Upload-Token"
+			header Access-Control-Max-Age "3600"
+			reverse_proxy reverse:4000
+		}
 
 		# Reverse-convert service: /reverse/* → FastAPI on port 4000
 		handle /reverse/* {
