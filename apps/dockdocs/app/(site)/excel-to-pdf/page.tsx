@@ -1,4 +1,4 @@
-import { createPdfToolMetadata, PdfToolPage, type PdfToolPageConfig } from "../../../../../shared/templates/pdf-tool-page";
+﻿import { createPdfToolMetadata, PdfToolPage, type PdfToolPageConfig } from "../../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 
 const config = {
@@ -11,7 +11,7 @@ const config = {
   schemaName: "DockDocs Excel to PDF Converter",
   breadcrumbName: "Excel to PDF",
   heroTitle: "Convert Excel spreadsheets to PDF online.",
-  heroDescription: "Upload an XLSX file and download a print-ready PDF. Powered by CloudConvert.",
+  heroDescription: "Upload an XLSX file and download a print-ready PDF. Powered by a professional conversion engine.",
   primaryActionLabel: "Convert to PDF",
   stats: [["Price", "Free"], ["Input", "XLSX / XLS"], ["Output", "PDF"]],
   upload: { title: "Upload an Excel file", description: "Drag and drop a .xlsx file here, or choose from your device.", buttonLabel: "Choose Excel file", accept: ".xlsx,.xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileBadge: "XLS", note: "XLSX and XLS supported. Max 100 MB." },
@@ -23,7 +23,7 @@ const config = {
     { title: "No Excel needed", description: "Recipients can view the PDF without spreadsheet software." },
   ],
   featuresTitle: "Built for Excel to PDF workflows",
-  featuresDescription: "A minimal DockDocs interface powered by CloudConvert.",
+  featuresDescription: "A minimal DockDocs interface backed by a professional conversion engine.",
   features: [
     { title: "XLSX and XLS support", description: "Works with modern and legacy Excel formats." },
     { title: "Chart preservation", description: "Charts and tables are included in the PDF output." },
@@ -32,7 +32,7 @@ const config = {
   ],
   workflowTitle: "How Excel to PDF fits into document work",
   workflowDescription: "Common uses: sharing reports, printing budgets, archiving financial data.",
-  steps: ["Upload an XLSX or XLS file.", "CloudConvert converts it to PDF.", "Download the result."],
+  steps: ["Upload an XLSX or XLS file.", "Converts to PDF.", "Download the result."],
   faqTitle: "Excel to PDF questions",
   faq: [
     { question: "How do I convert Excel to PDF?", answer: "Upload an XLSX file and download the converted PDF." },

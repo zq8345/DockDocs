@@ -1,4 +1,4 @@
-import { createPdfToolMetadata, PdfToolPage, type PdfToolPageConfig } from "../../../../../shared/templates/pdf-tool-page";
+﻿import { createPdfToolMetadata, PdfToolPage, type PdfToolPageConfig } from "../../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 
 const config = {
@@ -11,28 +11,28 @@ const config = {
   schemaName: "DockDocs HTML to PDF Converter",
   breadcrumbName: "HTML to PDF",
   heroTitle: "Convert HTML files to PDF online.",
-  heroDescription: "Upload an .html file and download a clean, print-ready PDF. Powered by CloudConvert for browser-grade rendering.",
+  heroDescription: "Upload an .html file and download a clean, print-ready PDF. Powered by a professional conversion engine for browser-grade rendering.",
   primaryActionLabel: "Convert to PDF",
   stats: [["Price", "Free"], ["Input", "HTML"], ["Output", "PDF"]],
   upload: { title: "Upload an HTML file", description: "Drag and drop an .html or .htm file here, or choose from your device.", buttonLabel: "Choose HTML file", accept: ".html,.htm,text/html", fileBadge: "HTML", note: "HTML and HTM supported. Max 100 MB." },
   benefitsTitle: "Turn HTML into a shareable PDF",
-  benefitsDescription: "CloudConvert renders your HTML with a real browser engine, so headings, tables, and styles carry over.",
+  benefitsDescription: "Rendered with a real browser engine, so headings, tables, and styles carry over.",
   benefits: [
     { title: "Faithful rendering", description: "Headings, tables, lists, and inline styles are preserved in the PDF." },
     { title: "Fast conversion", description: "Most files convert in under 30 seconds." },
     { title: "No software needed", description: "Convert directly in your browser — no installs." },
   ],
   featuresTitle: "Built for HTML to PDF workflows",
-  featuresDescription: "A minimal DockDocs interface powered by CloudConvert.",
+  featuresDescription: "A minimal DockDocs interface backed by a professional conversion engine.",
   features: [
     { title: "HTML and HTM support", description: "Works with standard .html and .htm files." },
-    { title: "Browser-grade rendering", description: "CloudConvert uses a real rendering engine for accurate output." },
+    { title: "Browser-grade rendering", description: "Uses a real rendering engine for accurate output." },
     { title: "Up to 100 MB", description: "Handles large, standalone HTML files." },
     { title: "Responsive UI", description: "Works across desktop, tablet, and mobile." },
   ],
   workflowTitle: "How HTML to PDF fits into document work",
   workflowDescription: "Common uses: saving invoices, reports, and exported web pages as PDFs.",
-  steps: ["Upload an .html or .htm file.", "CloudConvert converts it to PDF.", "Download the result."],
+  steps: ["Upload an .html or .htm file.", "Converts to PDF.", "Download the result."],
   faqTitle: "HTML to PDF questions",
   faq: [
     { question: "How do I convert HTML to PDF?", answer: "Upload an .html file and download the converted PDF." },

@@ -1,4 +1,4 @@
-import { createPdfToolMetadata, PdfToolPage, type PdfToolPageConfig } from "../../../../../shared/templates/pdf-tool-page";
+﻿import { createPdfToolMetadata, PdfToolPage, type PdfToolPageConfig } from "../../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 
 const config = {
@@ -11,22 +11,22 @@ const config = {
   schemaName: "DockDocs Word to PDF Converter",
   breadcrumbName: "Word & Doc to PDF Converter",
   heroTitle: "Convert Word DOC and DOCX files to PDF — free, online.",
-  heroDescription: "Convert any doc to PDF — upload a Word document and download a pixel-perfect PDF in seconds. Fonts, tables, columns, and images are preserved. Powered by CloudConvert.",
+  heroDescription: "Convert any doc to PDF — upload a Word document and download a pixel-perfect PDF in seconds. Fonts, tables, columns, and images are preserved. Powered by a professional conversion engine.",
   primaryActionLabel: "Convert to PDF",
   stats: [["Price", "Free"], ["Input", "DOCX / DOC"], ["Output", "PDF"]],
   upload: { title: "Upload a Word document", description: "Drag and drop a .doc or .docx file here, or choose from your device.", buttonLabel: "Choose Word file", accept: ".docx,.doc,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document", fileBadge: "DOC", note: "DOCX and DOC supported. Max 100 MB." },
   benefitsTitle: "Convert docs to PDF without losing a single pixel",
-  benefitsDescription: "CloudConvert renders your Word document through LibreOffice — the same engine used by enterprise converters — so every font, table, and column lands exactly where it should.",
+  benefitsDescription: "Rendered through LibreOffice — the same engine used by enterprise converters — so every font, table, and column lands exactly where it should.",
   benefits: [
     { title: "Pixel-accurate layout", description: "Fonts, tables, multi-column layouts, images, and page margins are preserved in the output PDF." },
     { title: "Fast — under 30 seconds", description: "Most DOC and DOCX files convert in under 30 seconds, even with complex formatting." },
     { title: "No install, no signup", description: "Convert doc to PDF directly in your browser — no Word, Acrobat, or account required." },
   ],
   featuresTitle: "Built for doc-to-PDF workflows",
-  featuresDescription: "A clean DockDocs interface powered by CloudConvert's LibreOffice engine.",
+  featuresDescription: "A clean DockDocs interface powered by the LibreOffice engine.",
   features: [
     { title: "DOCX and DOC support", description: "Works with modern .docx and legacy .doc Word formats." },
-    { title: "LibreOffice rendering", description: "CloudConvert uses LibreOffice for accurate, high-fidelity PDF output." },
+    { title: "LibreOffice rendering", description: "Uses LibreOffice for accurate, high-fidelity PDF output." },
     { title: "Up to 100 MB", description: "Handles contracts, reports, and multi-page business documents." },
     { title: "Works everywhere", description: "Runs in any modern browser — Mac, Windows, iPhone, or Android." },
   ],
@@ -34,7 +34,7 @@ const config = {
   workflowDescription: "Three steps — upload, convert, download. No software to install, no account to create.",
   steps: [
     "Click 'Choose Word file' and select a .doc or .docx file from your device (up to 100 MB).",
-    "DockDocs sends it to CloudConvert, which renders it with LibreOffice — preserving fonts, tables, and layout.",
+    "DockDocs converts it with LibreOffice — preserving fonts, tables, and layout.",
     "Download your finished PDF. Open it on any device without needing Word installed.",
   ],
   faqTitle: "Doc to PDF — common questions",
@@ -49,7 +49,7 @@ const config = {
     },
     {
       question: "Will my Word formatting survive the conversion?",
-      answer: "Yes. CloudConvert uses LibreOffice to render your Word document, so fonts, tables, bullet lists, multi-column layouts, headers, footers, and images are preserved in the output PDF. This is the same engine used by enterprise document conversion services.",
+      answer: "Yes. LibreOffice renders your Word document, so fonts, tables, bullet lists, multi-column layouts, headers, footers, and images are preserved in the output PDF. This is the same engine used by enterprise document conversion services.",
     },
     {
       question: "Can I convert Word to PDF on a Mac or iPhone?",
@@ -61,7 +61,7 @@ const config = {
     },
     {
       question: "Is my Word document private when I convert it?",
-      answer: "Word to PDF runs on a secure conversion server (CloudConvert), because faithful rendering needs a full office engine. Your file is encrypted in transit, converted, and the temporary copy is deleted automatically right after — we don't store it. If you need fully on-device processing, DockDocs' page tools like merge, split, and compress run entirely in your browser.",
+      answer: "Word to PDF runs on a secure conversion server, because faithful rendering needs a full office engine. Your file is encrypted in transit, converted, and the temporary copy is deleted automatically right after — we don't store it. If you need fully on-device processing, DockDocs' page tools like merge, split, and compress run entirely in your browser.",
     },
     {
       question: "Is the doc to PDF conversion free?",

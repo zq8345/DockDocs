@@ -1,4 +1,4 @@
-import { createPdfToolMetadata, PdfToolPage, type PdfToolPageConfig } from "../../../../../shared/templates/pdf-tool-page";
+﻿import { createPdfToolMetadata, PdfToolPage, type PdfToolPageConfig } from "../../../../../shared/templates/pdf-tool-page";
 import { languageAlternates } from "@/lib/i18n";
 
 const config = {
@@ -11,19 +11,19 @@ const config = {
   schemaName: "DockDocs PDF to Excel Converter",
   breadcrumbName: "PDF to Excel",
   heroTitle: "Convert PDF tables to Excel spreadsheets.",
-  heroDescription: "Extract table data from PDF files and download a structured XLSX spreadsheet. Powered by CloudConvert.",
+  heroDescription: "Extract table data from PDF files and download a structured XLSX spreadsheet. Powered by a professional conversion engine.",
   primaryActionLabel: "Convert to Excel",
   stats: [["Price", "Free"], ["Input", "PDF"], ["Output", "XLSX"]],
   upload: { title: "Upload a PDF to convert", description: "Drag and drop a PDF file here, or choose from your device.", buttonLabel: "Choose PDF", note: "PDF with tables works best. Max 100 MB." },
   benefitsTitle: "Extract PDF table data into editable Excel",
   benefitsDescription: "Stop manually copying data from PDFs into spreadsheets.",
   benefits: [
-    { title: "Table extraction", description: "CloudConvert identifies and extracts table structures from the PDF." },
+    { title: "Table extraction", description: "Identifies and extracts table structures from the PDF." },
     { title: "Editable output", description: "Download as XLSX and edit in Excel, Google Sheets, or Numbers." },
     { title: "Saves time", description: "Automate data extraction instead of copy-pasting from PDFs." },
   ],
   featuresTitle: "Built for PDF to Excel workflows",
-  featuresDescription: "A minimal DockDocs interface powered by CloudConvert.",
+  featuresDescription: "A minimal DockDocs interface backed by a professional conversion engine.",
   features: [
     { title: "Table recognition", description: "Identifies and extracts table structures from PDFs." },
     { title: "XLSX output", description: "Downloads as a standard Excel file." },
@@ -32,7 +32,7 @@ const config = {
   ],
   workflowTitle: "How PDF to Excel fits into document work",
   workflowDescription: "Common uses: extracting financial data, tables from reports, invoice data.",
-  steps: ["Upload a PDF containing tables.", "CloudConvert extracts the data.", "Download the XLSX file."],
+  steps: ["Upload a PDF containing tables.", "Extracts the table data.", "Download the XLSX file."],
   faqTitle: "PDF to Excel questions",
   faq: [
     { question: "How do I convert PDF to Excel?", answer: "Upload a PDF with tables and download the converted XLSX file. Most documents convert in under 30 seconds, and the result opens in Excel, Google Sheets, or Numbers." },
