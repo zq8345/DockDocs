@@ -469,35 +469,6 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
       ],
     },
   },
-  "batch-summary": {
-    title: { en: "Batch summary — FAQ", zh: "批量摘要常见问题", es: "Resumen por lotes — preguntas frecuentes" },
-    items: {
-      en: [
-        { q: "How do I summarize several PDFs at once?", a: "Drag and drop your PDFs onto the drop zone, or click \"Choose PDFs\" to pick them. You can add up to 5 files at a time. Once they're loaded, click \"Summarize all\" — each document is summarized in turn, and you'll see a progress count like 2/5 while it works. When it finishes you get an executive summary plus key points for every file." },
-        { q: "Is my file uploaded anywhere? Where does the work happen?", a: "Your PDF file is never uploaded. The text is extracted right inside your browser, and only that extracted text — not the original file — is sent to our AI summary service to generate the summary. This is an AI tool, so it does need an internet connection to reach the AI service, but the document itself stays on your device." },
-        { q: "It says \"no extractable text (scan?)\" for one of my files. What's wrong?", a: "That means the PDF has no text layer to read — it's almost always a scanned page or a photo saved as PDF, which is just an image to the tool. Run our OCR PDF tool on it first to add a real text layer, then come back and summarize it here. PDFs that are encrypted or password-protected also won't extract; remove the password first." },
-        { q: "What do I get back, and can I save it?", a: "For each PDF you get a short executive summary plus a list of key points, shown as a card on the page. Once all files are done, click \"Download all (.md)\" to save everything as a single Markdown file (dockdocs-summaries.md) with one section per document — easy to drop into your notes, a doc, or a wiki." },
-        { q: "Why only 5 files at a time, and why one at a time?", a: "We cap each run at 5 PDFs and process them one after another to stay within fair-use limits and keep results reliable rather than overloading the AI service. If you have more, just run a batch, click \"Start over\", and load the next set. Files that fail are marked individually, so one bad PDF won't stop the rest." },
-        { q: "The summaries look good — can I trust them blindly?", a: "Treat them as a fast first pass, not a substitute for reading. Summaries are AI-generated from each document, so they can miss nuance or occasionally get a detail wrong — always give them a quick check against the source before you rely on anything important, especially in contracts or reports." },
-      ],
-      zh: [
-        { q: "怎么一次给多份 PDF 生成摘要？", a: "把 PDF 拖到上传区，或点击「选择 PDF」挑选文件——一次最多 5 份。文件加载好后点「全部摘要」，工具会逐份处理，期间会显示像 2/5 这样的进度。完成后，每份文件都会给出执行摘要 + 关键要点。" },
-        { q: "我的文件会被上传吗？处理在哪里进行？", a: "你的 PDF 文件不会被上传。文字是在你的浏览器里就地提取的，只有提取出来的文本——而不是原始文件——才会发送到我们的 AI 摘要服务来生成摘要。这是一款 AI 工具，需要联网才能访问 AI 服务，但文档本身始终留在你的设备上。" },
-        { q: "某份文件显示「无可提取文字(扫描件？)」是怎么回事？", a: "这表示该 PDF 没有可读取的文字层——多半是扫描件，或把照片存成了 PDF，对工具来说它只是一张图片。请先用我们的「OCR PDF」工具给它加上真正的文字层，再回到这里生成摘要。加密或带密码的 PDF 同样无法提取文字——请先解除密码。" },
-        { q: "我会得到什么结果？能保存吗？", a: "每份 PDF 都会得到一段简短的执行摘要，外加一组关键要点，以卡片形式显示在页面上。全部处理完后，点「下载全部 (.md)」即可把所有结果存成一个 Markdown 文件(dockdocs-summaries.md)，每份文档一节——方便直接粘进笔记、文档或知识库。" },
-        { q: "为什么一次只能 5 份，而且要逐份处理？", a: "每次最多 5 份、并且逐份依次处理——这是为了符合合理用量限制，让结果稳定可靠，而不至于让 AI 服务过载。文件更多时，跑完一批后点「重新开始」再加载下一批即可。处理失败的文件会单独标记出来，所以一份坏 PDF 不会拖垮其余的。" },
-        { q: "摘要看起来不错，可以完全照搬吗？", a: "请把它当作快速的初步速览，而不是替代通读。摘要由 AI 从每份文档生成，可能漏掉细微之处，偶尔也会弄错某个细节——在依赖任何重要内容之前(尤其是合同或报告)，建议对照原文快速核对一遍。" },
-      ],
-      es: [
-        { q: "¿Cómo resumo varios PDF a la vez?", a: "Arrastra y suelta tus PDF en la zona de carga, o haz clic en «Elegir PDF» para escogerlos. Puedes añadir hasta 5 archivos a la vez. Una vez cargados, haz clic en «Resumir todo»: cada documento se resume por turnos y verás un recuento de progreso como 2/5 mientras trabaja. Al terminar obtienes un resumen ejecutivo más puntos clave de cada archivo." },
-        { q: "¿Mi archivo se sube a algún sitio? ¿Dónde ocurre el trabajo?", a: "Tu archivo PDF nunca se sube. El texto se extrae dentro de tu navegador y solo ese texto extraído —no el archivo original— se envía a nuestro servicio de resumen con IA para generar el resumen. Es una herramienta de IA, así que sí necesita conexión a internet para llegar al servicio de IA, pero el documento en sí permanece en tu dispositivo." },
-        { q: "Dice «sin texto extraíble (¿escaneado?)» en uno de mis archivos. ¿Qué pasa?", a: "Significa que el PDF no tiene una capa de texto que leer; casi siempre es una página escaneada o una foto guardada como PDF, que para la herramienta es solo una imagen. Pásalo primero por nuestra herramienta OCR PDF para añadir una capa de texto real, y luego vuelve y resúmelo aquí. Los PDF cifrados o protegidos con contraseña tampoco se pueden extraer; quita primero la contraseña." },
-        { q: "¿Qué recibo de vuelta y puedo guardarlo?", a: "Por cada PDF obtienes un breve resumen ejecutivo más una lista de puntos clave, mostrados como una tarjeta en la página. Una vez terminados todos los archivos, haz clic en «Descargar todo (.md)» para guardarlo todo como un único archivo Markdown (dockdocs-summaries.md) con una sección por documento, fácil de pegar en tus notas, un documento o un wiki." },
-        { q: "¿Por qué solo 5 archivos a la vez y por qué de uno en uno?", a: "Limitamos cada ejecución a 5 PDF y los procesamos uno tras otro para mantenernos dentro de los límites de uso justo y que los resultados sean fiables, en lugar de saturar el servicio de IA. Si tienes más, ejecuta un lote, haz clic en «Empezar de nuevo» y carga el siguiente conjunto. Los archivos que fallan se marcan de forma individual, así que un PDF defectuoso no detiene al resto." },
-        { q: "Los resúmenes se ven bien; ¿puedo confiar en ellos a ciegas?", a: "Trátalos como una primera pasada rápida, no como un sustituto de la lectura. Los resúmenes se generan con IA a partir de cada documento, así que pueden pasar por alto matices o, de vez en cuando, equivocarse en un detalle: revísalos siempre rápidamente contra la fuente antes de fiarte de algo importante, sobre todo en contratos o informes." },
-      ],
-    },
-  },
   "batch-sort": {
     title: { en: "Classify PDFs — FAQ", zh: "PDF 智能分类常见问题", es: "Clasificar PDF — preguntas frecuentes" },
     items: {
@@ -1254,17 +1225,6 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "É gratuito? Preciso de uma conta ou ele adiciona marca d'água?", a: "Sim, é completamente gratuito, sem cadastro e sem marca d'água. Como o trabalho acontece no seu próprio dispositivo, não há créditos de uso ou limites com os quais se preocupar — use quantas vezes quiser." },
     ],
   },
-  "batch-summary": {
-    title: "Resumo em lote — perguntas frequentes",
-    items: [
-      { q: "Como resumo vários PDFs de uma vez?", a: "Arraste e solte seus PDFs na zona de soltar, ou clique em «Escolher PDFs» para selecioná-los. Você pode adicionar até 5 arquivos de uma vez. Depois de carregados, clique em «Resumir tudo» — cada documento é resumido por vez e você verá uma contagem de progresso como 2/5 enquanto trabalha. Quando terminar, você obtém um resumo executivo mais pontos principais de cada arquivo." },
-      { q: "Meu arquivo é enviado para algum lugar? Onde o trabalho acontece?", a: "Seu arquivo PDF nunca é enviado. O texto é extraído dentro do seu navegador e apenas esse texto extraído — não o arquivo original — é enviado ao nosso serviço de resumo de IA para gerar o resumo. Esta é uma ferramenta de IA, então precisa de conexão à internet para acessar o serviço de IA, mas o documento em si fica no seu dispositivo." },
-      { q: "Diz «sem texto extraível (digitalização?)» em um dos meus arquivos. O que aconteceu?", a: "Isso significa que o PDF não tem uma camada de texto para ler — quase sempre é uma página digitalizada ou uma foto salva como PDF, que é apenas uma imagem para a ferramenta. Execute nossa ferramenta PDF OCR nela primeiro para adicionar uma camada de texto real e, em seguida, volte e resuma aqui. PDFs criptografados ou protegidos por senha também não extraem; remova a senha primeiro." },
-      { q: "O que recebo de volta e posso salvar?", a: "Para cada PDF você obtém um breve resumo executivo mais uma lista de pontos principais, mostrados como um cartão na página. Depois que todos os arquivos estiverem prontos, clique em «Baixar tudo (.md)» para salvar tudo como um único arquivo Markdown (dockdocs-summaries.md) com uma seção por documento — fácil de colocar em suas notas, um documento ou um wiki." },
-      { q: "Por que apenas 5 arquivos de uma vez e por que um de cada vez?", a: "Limitamos cada execução a 5 PDFs e os processamos um após o outro para permanecer dentro dos limites de uso justo e manter os resultados confiáveis em vez de sobrecarregar o serviço de IA. Se você tiver mais, execute um lote, clique em «Recomeçar» e carregue o próximo conjunto. Arquivos que falham são marcados individualmente, então um PDF ruim não impede o restante." },
-      { q: "Os resumos parecem bons — posso confiar neles cegamente?", a: "Trate-os como uma primeira passagem rápida, não como substituto da leitura. Os resumos são gerados por IA de cada documento, então podem perder nuances ou ocasionalmente errar um detalhe — sempre faça uma verificação rápida com a fonte antes de confiar em qualquer coisa importante, especialmente em contratos ou relatórios." },
-    ],
-  },
   "batch-sort": {
     title: "Classificar PDFs — perguntas frequentes",
     items: [
@@ -1660,17 +1620,6 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Puis-je ajouter un dossier et que se passe-t-il avec les fichiers non-PDF qu'il contient ?", a: "Oui — vous pouvez déposer ou choisir un dossier entier. Tout fichier non-PDF est filtré automatiquement, vous n'avez donc pas besoin de nettoyer le dossier au préalable. Seuls les PDF sont ajoutés à la liste et traités." },
       { q: "Y a-t-il une limite sur le nombre ou la taille des fichiers ?", a: "Il y a un plafond de 50 fichiers par lot — si vous en ajoutez plus, seuls les 50 premiers sont conservés. Il n'y a pas de limite fixe de pages ou de taille de fichier ; la vraie contrainte est la mémoire de votre appareil, donc les PDF très volumineux ou les grands lots seront simplement plus lents sur les machines moins puissantes. Si un PDF est corrompu ou protégé par mot de passe, il est marqué « échoué » et ignoré, tandis que le reste se divise normalement." },
       { q: "Est-ce gratuit ? Ai-je besoin d'un compte ou y aura-t-il un filigrane ?", a: "Oui, entièrement gratuit, sans inscription et sans filigrane. Comme le travail se passe sur votre propre appareil, il n'y a pas de crédits d'utilisation ni de limites à craindre — utilisez-le autant que vous le souhaitez." },
-    ],
-  },
-  "batch-summary": {
-    title: "Résumé par lot — foire aux questions",
-    items: [
-      { q: "Comment résumer plusieurs PDF à la fois ?", a: "Faites glisser et déposez vos PDF dans la zone de dépôt, ou cliquez sur « Choisir des PDF » pour les sélectionner. Vous pouvez ajouter jusqu'à 5 fichiers à la fois. Une fois chargés, cliquez sur « Tout résumer » — chaque document est résumé à son tour et vous verrez un compteur de progression comme 2/5 pendant le traitement. Une fois terminé, vous obtenez un résumé exécutif plus les points clés pour chaque fichier." },
-      { q: "Mon fichier est-il téléversé quelque part ? Où le traitement se fait-il ?", a: "Votre fichier PDF n'est jamais téléversé. Le texte est extrait directement dans votre navigateur, et seul ce texte extrait — pas le fichier original — est envoyé à notre service de résumé IA pour générer le résumé. Il s'agit d'un outil IA, il nécessite donc une connexion internet pour accéder au service IA, mais le document lui-même reste sur votre appareil." },
-      { q: "Il affiche « aucun texte extractible (scan ?) » pour l'un de mes fichiers. Que se passe-t-il ?", a: "Cela signifie que le PDF n'a pas de couche de texte à lire — c'est presque toujours une page scannée ou une photo enregistrée en PDF, qui n'est qu'une image pour l'outil. Passez-la d'abord par notre outil OCR PDF pour ajouter une vraie couche de texte, puis revenez ici pour la résumer. Les PDF chiffrés ou protégés par mot de passe n'extraient pas non plus ; supprimez d'abord le mot de passe." },
-      { q: "Que reçois-je et puis-je l'enregistrer ?", a: "Pour chaque PDF, vous obtenez un bref résumé exécutif plus une liste de points clés, affichés sous forme de carte sur la page. Une fois tous les fichiers traités, cliquez sur « Tout télécharger (.md) » pour tout enregistrer dans un seul fichier Markdown (dockdocs-summaries.md) avec une section par document — facile à coller dans vos notes, un document ou un wiki." },
-      { q: "Pourquoi seulement 5 fichiers à la fois et pourquoi un par un ?", a: "Nous limitons chaque exécution à 5 PDF et les traitons l'un après l'autre pour rester dans les limites d'utilisation raisonnable et garder des résultats fiables plutôt que de surcharger le service IA. Si vous en avez plus, lancez un lot, cliquez sur « Recommencer » et chargez l'ensemble suivant. Les fichiers qui échouent sont marqués individuellement, donc un mauvais PDF n'arrête pas les autres." },
-      { q: "Les résumés semblent bons — puis-je leur faire entièrement confiance ?", a: "Traitez-les comme une première passe rapide, pas comme un substitut à la lecture. Les résumés sont générés par IA à partir de chaque document, ils peuvent donc manquer des nuances ou parfois se tromper sur un détail — vérifiez-les toujours rapidement par rapport à la source avant de vous fier à quoi que ce soit d'important, en particulier dans les contrats ou les rapports." },
     ],
   },
   "batch-sort": {
@@ -2276,17 +2225,6 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "無料ですか？アカウントは必要ですか？透かしは付きますか？", a: "はい、完全無料で、登録も透かしもありません。処理はあなた自身のデバイスで行われるため、気にすべき利用クレジットや制限はありません——好きなだけお使いください。" },
     ],
   },
-  "batch-summary": {
-    title: "一括要約 — よくある質問",
-    items: [
-      { q: "複数のPDFを一度に要約するには？", a: "PDFをドロップゾーンにドラッグ＆ドロップするか、「PDFを選択」をクリックして選びます。一度に最大5ファイルまで追加できます。読み込まれたら「すべて要約」をクリックします——各文書が順に要約され、処理中は 2/5 のような進捗カウントが表示されます。完了すると、各ファイルのエグゼクティブサマリーと要点が得られます。" },
-      { q: "ファイルはどこかにアップロードされますか？処理はどこで行われますか？", a: "PDFファイルがアップロードされることはありません。テキストはブラウザ内で抽出され、その抽出テキストのみ（元ファイルではなく）が要約を生成するために当社のAI要約サービスに送られます。これはAIツールのため、AIサービスに到達するインターネット接続は必要ですが、文書自体はデバイスに留まります。" },
-      { q: "あるファイルに「抽出可能なテキストがありません（スキャン？）」と出ます。何が問題ですか？", a: "そのPDFに読み取るテキスト層がないということです——ほぼ必ず、スキャンページかPDFとして保存された写真で、ツールにとっては単なる画像です。先に当社のOCR PDFツールをかけて実際のテキスト層を追加してから、ここに戻って要約してください。暗号化・パスワード保護されたPDFも抽出できません。先にパスワードを解除してください。" },
-      { q: "何が得られますか？保存できますか？", a: "各PDFについて、短いエグゼクティブサマリーと要点のリストがページ上のカードとして表示されます。すべてのファイルが完了したら、「すべてダウンロード（.md）」をクリックして、文書ごとに1セクションを持つ1つのMarkdownファイル（dockdocs-summaries.md）として保存できます——ノート・文書・wikiに簡単に貼り込めます。" },
-      { q: "なぜ一度に5ファイルだけ、しかも1つずつなのですか？", a: "公正利用の範囲内に収め、AIサービスに過負荷をかけず結果を確実に保つため、1回の実行を5件のPDFに制限し、1つずつ順番に処理します。それ以上ある場合は、1バッチ実行し「最初からやり直す」をクリックして次のセットを読み込んでください。失敗したファイルは個別に印が付くので、1つの不良PDFが残りを止めることはありません。" },
-      { q: "要約はよさそうですが、全面的に信頼できますか？", a: "読むことの代わりではなく、素早い一次チェックとして扱ってください。要約は各文書からAIが生成するため、ニュアンスを見落としたり、ときに細部を誤ることがあります——重要なことに頼る前に、特に契約書や報告書では、必ず元の文書とざっと照合してください。" },
-    ],
-  },
   "batch-sort": {
     title: "PDF分類 — よくある質問",
     items: [
@@ -2474,17 +2412,6 @@ const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Kann ich einen Ordner hinzufügen, und was passiert mit Nicht-PDF-Dateien darin?", a: "Ja — Sie können einen ganzen Ordner ablegen oder auswählen. Jede Datei, die kein PDF ist, wird automatisch herausgefiltert, sodass Sie den Ordner nicht zuvor aufräumen müssen. Nur die PDFs werden zur Liste hinzugefügt und verarbeitet." },
       { q: "Gibt es eine Grenze, wie viele oder wie große Dateien sein dürfen?", a: "Es gibt eine Obergrenze von 50 Dateien pro Stapel — wenn Sie mehr hinzufügen, werden nur die ersten 50 behalten. Es gibt keine feste Seiten- oder Größengrenze; die tatsächliche Einschränkung ist der Arbeitsspeicher Ihres Geräts, sehr große PDFs oder riesige Stapel laufen auf schwächeren Geräten also einfach langsamer. Ist ein PDF beschädigt oder passwortgeschützt, wird es als „fehlgeschlagen“ markiert und übersprungen, während der Rest trotzdem normal geteilt wird." },
       { q: "Ist es kostenlos? Brauche ich ein Konto, oder fügt es ein Wasserzeichen hinzu?", a: "Ja, es ist vollständig kostenlos, ohne Anmeldung und ohne Wasserzeichen. Da die Arbeit auf Ihrem eigenen Gerät geschieht, müssen Sie sich um keine Nutzungsguthaben oder Grenzen kümmern — verwenden Sie es so oft Sie möchten." },
-    ],
-  },
-  "batch-summary": {
-    title: "Stapelzusammenfassung — Häufige Fragen",
-    items: [
-      { q: "Wie fasse ich mehrere PDFs auf einmal zusammen?", a: "Ziehen Sie Ihre PDFs per Drag-and-drop auf die Ablagezone oder klicken Sie auf „PDFs wählen“, um sie auszuwählen. Sie können bis zu 5 Dateien auf einmal hinzufügen. Sobald sie geladen sind, klicken Sie auf „Alle zusammenfassen“ — jedes Dokument wird der Reihe nach zusammengefasst, und Sie sehen während der Verarbeitung eine Fortschrittsanzeige wie 2/5. Wenn es fertig ist, erhalten Sie für jede Datei eine Kurzzusammenfassung sowie die wichtigsten Punkte." },
-      { q: "Wird meine Datei irgendwohin hochgeladen? Wo geschieht die Verarbeitung?", a: "Ihre PDF-Datei wird nie hochgeladen. Der Text wird direkt in Ihrem Browser extrahiert, und nur dieser extrahierte Text — nicht die Originaldatei — wird an unseren KI-Zusammenfassungsdienst gesendet, um die Zusammenfassung zu erstellen. Dies ist ein KI-Tool, daher benötigt es eine Internetverbindung, um den KI-Dienst zu erreichen, aber das Dokument selbst bleibt auf Ihrem Gerät." },
-      { q: "Bei einer meiner Dateien steht „kein extrahierbarer Text (Scan?)“. Was ist das Problem?", a: "Das bedeutet, dass das PDF keine Textebene zum Lesen hat — fast immer eine gescannte Seite oder ein als PDF gespeichertes Foto, das für das Tool nur ein Bild ist. Führen Sie zuerst unser OCR-PDF-Tool darauf aus, um eine echte Textebene hinzuzufügen, und kommen Sie dann zurück, um es hier zusammenzufassen. Verschlüsselte oder passwortgeschützte PDFs lassen sich ebenfalls nicht extrahieren; entfernen Sie zuerst das Passwort." },
-      { q: "Was erhalte ich zurück, und kann ich es speichern?", a: "Für jedes PDF erhalten Sie eine kurze Kurzzusammenfassung sowie eine Liste der wichtigsten Punkte, angezeigt als Karte auf der Seite. Sind alle Dateien fertig, klicken Sie auf „Alle herunterladen (.md)“, um alles als eine einzige Markdown-Datei (dockdocs-summaries.md) mit einem Abschnitt pro Dokument zu speichern — leicht in Ihre Notizen, ein Dokument oder ein Wiki zu übernehmen." },
-      { q: "Warum nur 5 Dateien auf einmal, und warum eine nach der anderen?", a: "Wir begrenzen jeden Durchlauf auf 5 PDFs und verarbeiten sie nacheinander, um innerhalb der Fair-Use-Grenzen zu bleiben und zuverlässige Ergebnisse zu erzielen, statt den KI-Dienst zu überlasten. Wenn Sie mehr haben, führen Sie einfach einen Stapel aus, klicken auf „Von vorn beginnen“ und laden den nächsten Satz. Fehlgeschlagene Dateien werden einzeln markiert, sodass ein fehlerhaftes PDF den Rest nicht aufhält." },
-      { q: "Die Zusammenfassungen sehen gut aus — kann ich ihnen blind vertrauen?", a: "Behandeln Sie sie als schnellen ersten Durchgang, nicht als Ersatz für das Lesen. Zusammenfassungen werden von der KI aus jedem Dokument erstellt, sie können also Nuancen übersehen oder gelegentlich ein Detail falsch wiedergeben — gleichen Sie sie immer kurz mit der Quelle ab, bevor Sie sich auf etwas Wichtiges verlassen, besonders bei Verträgen oder Berichten." },
     ],
   },
   "batch-sort": {
@@ -2882,17 +2809,6 @@ const FAQS_KO: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "폴더를 추가해도 되고, 그 안의 PDF가 아닌 파일은 어떻게 되나요?", a: "네 — 폴더 전체를 끌어다 놓거나 선택할 수 있습니다. PDF가 아닌 모든 파일은 자동으로 걸러지므로 미리 폴더를 정리할 필요가 없습니다. PDF만 목록에 추가되어 처리됩니다." },
       { q: "파일의 개수나 크기에 제한이 있나요?", a: "묶음당 50개 파일의 상한이 있습니다 — 더 추가하면 처음 50개만 유지됩니다. 고정된 페이지나 크기 제한은 없으며, 실제 제약은 기기의 메모리이므로 매우 큰 PDF나 거대한 묶음은 성능이 낮은 기기에서 더 느릴 뿐입니다. PDF가 손상되었거나 암호로 보호되어 있으면 「실패」로 표시되어 건너뛰고, 나머지는 그대로 정상적으로 분할됩니다." },
       { q: "무료인가요? 계정이 필요하거나 워터마크를 추가하나요?", a: "네, 완전 무료이며 가입도, 워터마크도 없습니다. 작업이 귀하 기기에서 이루어지므로 사용량 크레딧이나 제한을 걱정할 필요가 없습니다 — 원하는 만큼 사용하세요." },
-    ],
-  },
-  "batch-summary": {
-    title: "일괄 요약 — 자주 묻는 질문",
-    items: [
-      { q: "여러 PDF를 한 번에 요약하려면 어떻게 하나요?", a: "PDF를 드롭 영역에 끌어다 놓거나 「PDF 선택」을 클릭해 고르세요. 한 번에 최대 5개 파일을 추가할 수 있습니다. 로드되면 「모두 요약」을 클릭하세요 — 각 문서가 차례로 요약되며, 처리 중에 2/5 같은 진행 표시를 볼 수 있습니다. 완료되면 각 파일에 대한 짧은 요약과 핵심 요점을 받습니다." },
-      { q: "제 파일이 어딘가에 업로드되나요? 처리는 어디서 이루어지나요?", a: "PDF 파일은 절대 업로드되지 않습니다. 텍스트는 브라우저 안에서 직접 추출되며, 원본 파일이 아니라 추출된 텍스트만 요약을 만들기 위해 저희 AI 요약 서비스로 전송됩니다. 이것은 AI 도구이므로 AI 서비스에 접속하려면 인터넷 연결이 필요하지만, 문서 자체는 귀하의 기기에 남습니다." },
-      { q: "제 파일 중 하나에 「추출 가능한 텍스트 없음(스캔?)」이라고 나옵니다. 무엇이 문제인가요?", a: "그것은 PDF에 읽을 텍스트 레이어가 없다는 뜻으로, 거의 항상 스캔한 페이지이거나 PDF로 저장된 사진이며 도구에는 그저 이미지일 뿐입니다. 먼저 저희 OCR PDF 도구를 실행해 실제 텍스트 레이어를 추가한 뒤 다시 돌아와 여기서 요약하세요. 암호화되었거나 암호로 보호된 PDF도 추출되지 않으니 먼저 암호를 제거하세요." },
-      { q: "무엇을 받게 되며 저장할 수 있나요?", a: "각 PDF에 대해 짧은 요약과 핵심 요점 목록을 페이지의 카드로 받습니다. 모든 파일이 완료되면 「모두 내려받기(.md)」를 클릭해 문서당 한 섹션으로 된 하나의 마크다운 파일(dockdocs-summaries.md)로 모두 저장하세요 — 메모, 문서, 위키에 쉽게 옮길 수 있습니다." },
-      { q: "왜 한 번에 5개 파일만, 그리고 왜 하나씩 처리하나요?", a: "AI 서비스에 과부하를 주는 대신 공정 사용 한도 안에 머물고 신뢰할 수 있는 결과를 내기 위해 실행당 5개 PDF로 제한하고 차례로 처리합니다. 더 많으면 한 묶음을 실행한 뒤 「처음부터 다시 시작」을 클릭하고 다음 묶음을 올리면 됩니다. 실패한 파일은 개별적으로 표시되므로 문제 있는 PDF 하나가 나머지를 막지 않습니다." },
-      { q: "요약이 좋아 보입니다 — 그대로 믿어도 되나요?", a: "읽기를 대신하는 것이 아니라 빠른 1차 훑기로 다루세요. 요약은 AI가 각 문서에서 만드는 것이므로 뉘앙스를 놓치거나 가끔 세부 사항을 잘못 옮길 수 있습니다 — 특히 계약서나 보고서에서는 중요한 것에 의존하기 전에 항상 원문과 잠깐 대조하세요." },
     ],
   },
   "batch-sort": {

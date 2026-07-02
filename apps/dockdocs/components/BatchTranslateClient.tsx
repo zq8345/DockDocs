@@ -241,7 +241,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingDescription: "Related ways to translate and work through documents with AI.",
     readingLinks: [
       { label: "Translate a single PDF", href: "/translate-pdf", description: "The one-file version — translate a single PDF and read the result side by side." },
-      { label: "Batch summarize PDFs", href: "/batch-summary", description: "Same folder workflow, but summarize each PDF instead of translating it." },
       { label: "AI document resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
     ],
   },
@@ -264,7 +263,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingDescription: "用 AI 翻译和处理文档的相关方式。",
     readingLinks: [
       { label: "翻译单个 PDF", href: "/translate-pdf", description: "单文件版本——翻译一份 PDF 并并排查看结果。" },
-      { label: "批量总结 PDF", href: "/batch-summary", description: "同样的文件夹工作流，只是把每份 PDF 总结而不是翻译。" },
       { label: "AI 文档资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
     ],
   },
@@ -287,7 +285,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingDescription: "Otras formas de traducir y trabajar documentos con IA.",
     readingLinks: [
       { label: "Traducir un solo PDF", href: "/translate-pdf", description: "La versión de un archivo: traduce un PDF y lee el resultado en paralelo." },
-      { label: "Resumir PDF por lotes", href: "/batch-summary", description: "El mismo flujo de carpeta, pero resume cada PDF en vez de traducirlo." },
       { label: "Recursos de documentos con IA", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
     ],
   },
@@ -310,7 +307,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingDescription: "Outras formas de traduzir e trabalhar documentos com IA.",
     readingLinks: [
       { label: "Traduzir um único PDF", href: "/translate-pdf", description: "A versão de um arquivo — traduza um PDF e leia o resultado lado a lado." },
-      { label: "Resumir PDFs em lote", href: "/batch-summary", description: "O mesmo fluxo de pasta, mas resume cada PDF em vez de traduzir." },
       { label: "Recursos de documentos com IA", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
     ],
   },
@@ -333,7 +329,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingDescription: "D'autres façons de traduire et de traiter des documents avec l'IA.",
     readingLinks: [
       { label: "Traduire un seul PDF", href: "/translate-pdf", description: "La version mono-fichier — traduisez un PDF et lisez le résultat côte à côte." },
-      { label: "Résumer des PDF en lot", href: "/batch-summary", description: "Le même flux de dossier, mais résume chaque PDF au lieu de le traduire." },
       { label: "Ressources documents IA", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
     ],
   },
@@ -356,7 +351,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingDescription: "AI で文書を翻訳・処理する関連の方法。",
     readingLinks: [
       { label: "単一の PDF を翻訳", href: "/translate-pdf", description: "1 ファイル版——1 つの PDF を翻訳し、結果を並べて読めます。" },
-      { label: "PDF を一括要約", href: "/batch-summary", description: "同じフォルダのワークフローで、翻訳の代わりに各 PDF を要約します。" },
       { label: "AI 文書リソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
   },
@@ -379,7 +373,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingDescription: "Verwandte Wege, um Dokumente mit KI zu übersetzen und zu bearbeiten.",
     readingLinks: [
       { label: "Ein einzelnes PDF übersetzen", href: "/translate-pdf", description: "Die Einzeldatei-Version — übersetzen Sie ein PDF und lesen Sie das Ergebnis nebeneinander." },
-      { label: "PDFs stapelweise zusammenfassen", href: "/batch-summary", description: "Derselbe Ordner-Workflow, aber fasst jedes PDF zusammen, statt es zu übersetzen." },
       { label: "KI-Dokumentenressourcen", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenwege." },
     ],
   },
@@ -402,7 +395,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingDescription: "AI로 문서를 번역하고 처리하는 관련 방법.",
     readingLinks: [
       { label: "단일 PDF 번역", href: "/translate-pdf", description: "한 파일 버전 — PDF 하나를 번역하고 결과를 나란히 읽어 보세요." },
-      { label: "PDF 일괄 요약", href: "/batch-summary", description: "같은 폴더 작업 흐름이지만, 각 PDF를 번역하는 대신 요약합니다." },
       { label: "AI 문서 리소스", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 구조화된 허브." },
     ],
   },

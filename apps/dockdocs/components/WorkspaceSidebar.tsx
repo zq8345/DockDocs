@@ -22,7 +22,7 @@ const _DOC_TOOL_SLUGS = [
 ];
 const EMBEDDED_SLUGS = new Set([
   "/chat-with-pdf", "/compare", "/ai-summary", "/contract-risk",
-  "/redline", "/extract-to-excel", "/flashcards", "/batch-summary", "/batch-sort",
+  "/redline", "/extract-to-excel", "/flashcards", "/batch-sort",
   "/lease-redflag", "/govbid-matrix",
   "/workspace-legal", "/workspace-finance", "/workspace-research",
   ..._DOC_TOOL_SLUGS,

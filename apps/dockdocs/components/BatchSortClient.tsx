@@ -119,7 +119,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingTitle: "More ways to handle PDFs in bulk",
     readingDescription: "Related AI tools and guides for working across many documents.",
     readingLinks: [
-      { label: "Summarize PDFs in bulk", href: "/batch-summary", description: "Run a whole folder of PDFs through AI and get a short summary for each." },
       { label: "Spot contract risks", href: "/contract-risk", description: "Have AI read a contract's text and flag risky clauses and missing terms." },
       { label: "PDF workflow resources", href: "/resources", description: "A structured hub for PDF tools, OCR, conversion, and AI document paths." },
     ],
@@ -142,7 +141,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingTitle: "更多批量处理 PDF 的方式",
     readingDescription: "跨多份文档处理的相关 AI 工具和指南。",
     readingLinks: [
-      { label: "批量总结 PDF", href: "/batch-summary", description: "把一整个文件夹的 PDF 交给 AI，为每份生成简短摘要。" },
       { label: "识别合同风险", href: "/contract-risk", description: "让 AI 阅读合同正文，标出有风险的条款和缺失的条目。" },
       { label: "PDF 工作流资源", href: "/resources", description: "按工作流整理 PDF 工具、OCR、转换和 AI 文档路径。" },
     ],
@@ -165,7 +163,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingTitle: "Más formas de manejar PDF en bloque",
     readingDescription: "Herramientas de IA y guías relacionadas para trabajar con muchos documentos.",
     readingLinks: [
-      { label: "Resumir PDF en bloque", href: "/batch-summary", description: "Pasa una carpeta entera de PDF por la IA y obtén un breve resumen de cada uno." },
       { label: "Detectar riesgos de contrato", href: "/contract-risk", description: "Haz que la IA lea el texto de un contrato y señale cláusulas riesgosas y términos faltantes." },
       { label: "Recursos de flujos de trabajo PDF", href: "/resources", description: "Un centro estructurado de herramientas PDF, OCR, conversión y rutas de documentos con IA." },
     ],
@@ -188,7 +185,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingTitle: "Mais formas de lidar com PDFs em massa",
     readingDescription: "Ferramentas de IA e guias relacionados para trabalhar com muitos documentos.",
     readingLinks: [
-      { label: "Resumir PDFs em massa", href: "/batch-summary", description: "Passe uma pasta inteira de PDFs pela IA e obtenha um resumo curto de cada um." },
       { label: "Detectar riscos de contrato", href: "/contract-risk", description: "Faça a IA ler o texto de um contrato e sinalizar cláusulas arriscadas e termos faltantes." },
       { label: "Recursos de fluxos de trabalho PDF", href: "/resources", description: "Um hub estruturado de ferramentas PDF, OCR, conversão e fluxos de documentos com IA." },
     ],
@@ -211,7 +207,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingTitle: "Plus de façons de gérer les PDF en masse",
     readingDescription: "Outils d'IA et guides associés pour travailler sur de nombreux documents.",
     readingLinks: [
-      { label: "Résumer des PDF en masse", href: "/batch-summary", description: "Passez un dossier entier de PDF dans l'IA et obtenez un court résumé pour chacun." },
       { label: "Repérer les risques d'un contrat", href: "/contract-risk", description: "Faites lire le texte d'un contrat par l'IA pour signaler les clauses à risque et les termes manquants." },
       { label: "Ressources de flux de travail PDF", href: "/resources", description: "Un hub structuré d'outils PDF, d'OCR, de conversion et de parcours documentaires IA." },
     ],
@@ -234,7 +229,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingTitle: "PDF を一括処理する他の方法",
     readingDescription: "多くの文書をまたいで扱うための関連 AI ツールとガイド。",
     readingLinks: [
-      { label: "PDF を一括要約", href: "/batch-summary", description: "フォルダ内の PDF をまとめて AI にかけ、それぞれの短い要約を取得します。" },
       { label: "契約リスクを検出", href: "/contract-risk", description: "AI に契約書の本文を読ませ、リスクのある条項や不足している項目を指摘させます。" },
       { label: "PDF ワークフローのリソース", href: "/resources", description: "PDF ツール、OCR、変換、AI ドキュメントの導線を整理したハブ。" },
     ],
@@ -257,7 +251,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingTitle: "Weitere Möglichkeiten, PDFs in großen Mengen zu bearbeiten",
     readingDescription: "Verwandte KI-Tools und Anleitungen für die Arbeit mit vielen Dokumenten.",
     readingLinks: [
-      { label: "PDFs in großen Mengen zusammenfassen", href: "/batch-summary", description: "Schicken Sie einen ganzen Ordner mit PDFs durch die KI und erhalten Sie für jedes eine kurze Zusammenfassung." },
       { label: "Vertragsrisiken erkennen", href: "/contract-risk", description: "Lassen Sie die KI den Text eines Vertrags lesen und riskante Klauseln sowie fehlende Punkte markieren." },
       { label: "Ressourcen für PDF-Workflows", href: "/resources", description: "Ein strukturierter Hub für PDF-Tools, OCR, Konvertierung und KI-Dokumentenpfade." },
     ],
@@ -280,7 +273,6 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     readingTitle: "PDF를 대량으로 처리하는 더 많은 방법",
     readingDescription: "여러 문서를 가로질러 작업하기 위한 관련 AI 도구와 가이드입니다.",
     readingLinks: [
-      { label: "PDF 대량 요약", href: "/batch-summary", description: "PDF 폴더 전체를 AI에 돌려 각각의 짧은 요약을 받습니다." },
       { label: "계약 위험 찾기", href: "/contract-risk", description: "AI가 계약서 텍스트를 읽고 위험한 조항과 누락된 조건을 표시하게 하세요." },
       { label: "PDF 워크플로 자료", href: "/resources", description: "PDF 도구, OCR, 변환, AI 문서 경로를 정리한 허브입니다." },
     ],
