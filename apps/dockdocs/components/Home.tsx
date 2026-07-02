@@ -560,8 +560,8 @@ export function Home({ locale = "en" }: { locale?: Locale }) {
       {/* ── 1 · Hero ── */}
       <section>
         <div className={SHELL}>
-          <h1 className="max-w-[20ch] font-normal text-[48px] leading-[1.04] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[68px] sm:leading-[1.02] sm:tracking-[-0.03em] lg:text-[88px] lg:leading-[1.0] lg:tracking-[-0.04em]">
-            {c.heroA}<br /><span className="text-[color:var(--muted)]">{c.heroB}</span>
+          <h1 className="max-w-[28ch] font-medium text-[40px] leading-[1.05] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[60px]">
+            {c.heroA}{locale === "zh" || locale === "zh-Hant" || locale === "ja" ? "" : " "}<span className="text-[color:var(--muted)]">{c.heroB}</span>
           </h1>
           <p className="mt-5 max-w-[52ch] text-[17px] leading-[1.6] text-[color:var(--muted)] sm:text-[19px]">{c.heroSub}</p>
           <div className="mt-14">

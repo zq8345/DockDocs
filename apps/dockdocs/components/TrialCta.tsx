@@ -305,14 +305,21 @@ export function TrialCta(props: TrialCtaProps) {
     }
 
     setCtaLoading(true);
+    let started = false;
     try {
-      await startBillingTrial();
+      const result = await startBillingTrial();
+      started = result.ok;
     } catch {
-      // Network failure — navigate to workspace anyway
+      // Network failure — treat as not started
     } finally {
       setCtaLoading(false);
     }
-    router.push("/workspace");
+    // Trial can fail for an already-used-trial or already-paid account (button is
+    // still shown to them since the client can't distinguish "never trialed" from
+    // "trialed and expired" — see billing-start-trial.ts). Route them to pricing
+    // instead of silently dropping them in a plain Free workspace after promising
+    // 7 days of Pro.
+    router.push(started ? "/workspace" : "/pricing");
   };
 
   if (!subLoaded || shouldHide) return null;
