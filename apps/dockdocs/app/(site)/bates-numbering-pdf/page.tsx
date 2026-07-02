@@ -45,7 +45,7 @@ const page = {
   heroTitle: "Bates numbering: the standard for legal document production",
   heroDescription:
     "Bates numbering is the convention for uniquely identifying every page in a document production — in litigation discovery, arbitration, regulatory proceedings, and deposition exhibits. Each page gets a unique sequential number, typically prefixed with a party identifier: ABC000001, ABC000002, and so on. The number stays with that page for the life of the case, letting every party, attorney, and court refer to a specific document page unambiguously regardless of how documents are reorganized, excerpted, or cited.",
-  primaryAction: { label: "Number every page across a PDF set", href: "/batch-page-numbers" },
+  primaryAction: { label: "Add page numbers to a PDF", href: "/page-numbers" },
   secondaryAction: { label: "Redact before producing", href: "/redact-pdf-locally" },
   sections: [
     {

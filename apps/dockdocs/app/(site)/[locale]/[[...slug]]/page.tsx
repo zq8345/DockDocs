@@ -42,7 +42,6 @@ import { RedactPdfClient } from "@/components/RedactPdfClient";
 import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
 import { BatchProtectClient } from "@/components/BatchProtectClient";
 import { BatchRenameClient } from "@/components/BatchRenameClient";
-import { BatchStampClient } from "@/components/BatchStampClient";
 import { BatchSplitMergeClient } from "@/components/BatchSplitMergeClient";
 import { BatchRotateClient } from "@/components/BatchRotateClient";
 import { BatchExtractSheetClient } from "@/components/BatchExtractSheetClient";
@@ -651,28 +650,6 @@ const CUSTOM_TOOL_COPY: Record<string, {
       de: "Benennen Sie einen ganzen PDF-Ordner auf einmal um — per nummeriertem Muster oder Suchen-und-Ersetzen — und laden Sie eine ZIP mit den neuen Namen herunter. Vollständig in Ihrem Browser.",
       ko: "PDF 폴더 전체를 한 번에 이름 변경합니다 — 번호 패턴 또는 찾기-바꾸기로 — 새 이름이 적용된 ZIP을 다운로드합니다. 브라우저에서 처리.",
       en: "Rename a whole folder of PDFs at once — by a numbered pattern or find-and-replace — and download a ZIP with the new names. Entirely in your browser.",
-    },
-  },
-  "batch-page-numbers": {
-    title: {
-      zh: "批量 PDF 添加页码 — 整批 PDF 一次加页码",
-      es: "Numerar PDFs en lote — Añadir número de página a varios PDFs gratis",
-      pt: "Numerar PDFs em lote — Adicionar numeração em vários PDFs grátis",
-      fr: "Numéroter des PDF en lot — Ajouter la pagination à plusieurs PDFs",
-      ja: "PDF一括ページ番号追加 — まとめてページ番号を付与",
-      de: "PDFs im Stapel mit Seitenzahlen versehen — kostenlos",
-      ko: "PDF에 페이지 번호 일괄 추가 — 무료",
-      en: "Batch Add Page Numbers to PDFs — Free",
-    },
-    description: {
-      zh: "给整个文件夹的 PDF 一次性加页码，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。",
-      es: "Añade números de página a una carpeta entera de PDFs de una vez, empaquetados en un ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
-      pt: "Adicione números de página a uma pasta inteira de PDFs de uma vez, empacotados em um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
-      fr: "Ajoutez des numéros de page à un dossier entier de PDFs en une fois, empaquetés dans un ZIP. Entièrement dans votre navigateur.",
-      ja: "フォルダ全体のPDFに一度にページ番号を追加—1つのZIPにまとめます。すべてブラウザ内で完結。",
-      de: "Fügen Sie einem ganzen PDF-Ordner auf einmal Seitenzahlen hinzu, in einer ZIP zusammengefasst. Vollständig in Ihrem Browser; Ihre Dateien verlassen Ihr Gerät nie.",
-      ko: "PDF 폴더 전체에 페이지 번호를 한 번에 추가합니다. 하나의 ZIP으로 패키징. 브라우저에서 처리.",
-      en: "Add page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
     },
   },
   "batch-split-merge": {
@@ -1513,31 +1490,6 @@ async function generateMetadataInner({
     };
   }
 
-  if (slug === "batch-page-numbers") {
-    return {
-      title: m(
-        "Batch Add Page Numbers to PDFs — Free",
-        "批量 PDF 添加页码 — 整批 PDF 一次加页码",
-        "Añadir números de página a PDF en lote — Gratis",
-        "Adicionar números de página a PDFs em lote — Grátis",
-        "Ajouter des numéros de page aux PDF par lot — Gratuit",
-        "PDFにページ番号を一括追加 — 無料",
-      ),
-      description: m(
-        "Add page numbers to a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
-        "给整个文件夹的 PDF 一次性加页码，打包成一个 ZIP，全部在浏览器中完成，文件不外泄。",
-        "Añade números de página a una carpeta entera de PDF de una vez, empaquetados en un único ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
-        "Adicione números de página a uma pasta inteira de PDFs de uma vez, empacotados em um único ZIP. Tudo no seu navegador; seus arquivos nunca saem do seu dispositivo.",
-        "Ajoutez des numéros de page à un dossier entier de PDF en une fois, regroupés dans un seul ZIP. Entièrement dans votre navigateur ; vos fichiers ne quittent jamais votre appareil.",
-        "PDFのフォルダ全体に一度にページ番号を追加し、1つのZIPにまとめます。すべてブラウザ内で完結し、ファイルが端末から出ることはありません。",
-      ),
-      alternates: {
-        canonical: localizedPath(rawLocale, "batch-page-numbers"),
-        languages: languageAlternates("batch-page-numbers"),
-      },
-    };
-  }
-
   if (slug === "batch-split-merge") {
     return {
       title: m(
@@ -2210,10 +2162,6 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-rename-pdf") {
     return <BatchRenameClient locale={clientLocale} />;
-  }
-
-  if (slug === "batch-page-numbers") {
-    return <BatchStampClient locale={clientLocale} />;
   }
 
   if (slug === "batch-split-merge") {

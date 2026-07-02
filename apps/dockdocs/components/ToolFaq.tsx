@@ -1,4 +1,4 @@
-﻿import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "../../../shared/templates/pdf-tool-page/VerifyClientSide";
+import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "../../../shared/templates/pdf-tool-page/VerifyClientSide";
 import { toHant, deepHant } from "@/lib/zh-hant";
 import type { RouteLocale } from "@/lib/i18n";
 
@@ -466,35 +466,6 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
         { q: "¿Qué se rota y puedo rotar solo algunas páginas?", a: "El ángulo elegido se aplica a todas las páginas de cada PDF del lote: esto es un corrector de carpetas enteras, no un editor por página, así que aquí no puedes rotar páginas individuales. La rotación además se suma a cualquier rotación existente, de modo que aplicar 90° a una página ya rotada la gira otros 90°. Para un control por página, usa nuestra herramienta de rotación de un solo archivo." },
         { q: "¿Hay límites y por qué un PDF podría decir «fallido»?", a: "Puedes añadir hasta 50 PDF por lote. No hay un tope de tamaño fijo: como todo se ejecuta en tu navegador, el límite real es la memoria de tu dispositivo, así que los trabajos grandes en una laptop o teléfono poco potente solo van más lentos. Los PDF cifrados o protegidos con contraseña no pueden abrirse para rotarse, así que se omiten y se marcan como «fallido»; el resto del lote sigue procesándose y solo los archivos correctos entran en el ZIP. Desbloquea primero el archivo y vuelve a añadirlo." },
         { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Sí, es completamente gratis: sin registro, sin cuenta y sin marca de agua en tu resultado. Como todo el trabajo ocurre en tu navegador, no hay nada que pagar ni medidor de uso; solo abre la página y empieza a rotar." },
-      ],
-    },
-  },
-  "batch-page-numbers": {
-    title: { en: "Batch page numbers — FAQ", zh: "批量 PDF 添加页码常见问题", es: "Números de página por lotes — preguntas frecuentes" },
-    items: {
-      en: [
-        { q: "How do I add page numbers to a batch of PDFs?", a: "Drag your PDFs onto the upload box — or drop a whole folder, or use \"Choose folder\" to pick one. The tool adds each PDF to the list, then click \"Apply to all\". Every file is numbered one by one, and when it finishes you click \"Download ZIP\" to get them all in a single archive." },
-        { q: "Are my files uploaded anywhere?", a: "No. This is a 100% client-side tool — every PDF is opened and numbered right inside your browser, and nothing is sent to any server. Your files never leave your device, which is why it works even on confidential documents." },
-        { q: "What do I get back, and how are the files named?", a: "You get one ZIP file (named dockdocs-batch.zip) containing every successfully numbered PDF. Each output keeps its original name with a \"-numbered.pdf\" suffix added — so report.pdf becomes report-numbered.pdf. Only files that processed successfully are included; any that failed are skipped and the rest still come through." },
-        { q: "Is there a limit on how many files I can do at once, and can I drop a folder with non-PDFs in it?", a: "You can process up to 30 PDFs per batch — the counter next to the list shows how many you've added (for example \"12 / 30 files\"). There's no hard size limit, but since everything runs in your browser, very large or numerous files use more memory and run slower on weaker devices. You can safely drop a folder that also contains images or Word docs: the tool automatically keeps only the actual PDFs and filters everything else out." },
-        { q: "Can I choose where the page numbers go or change their style?", a: "Not in the batch tool — it uses a fixed default placement to keep the whole folder consistent in one click. If you need to control the position, font, or starting number, use the single-file \"Add page numbers\" tool instead, which gives you those options." },
-        { q: "Is it free? Do I need an account or will there be a watermark?", a: "It's completely free with no signup required, and there's no watermark added to your PDFs. Because everything runs locally in your browser, there's nothing to pay for and no upload quota." },
-      ],
-      zh: [
-        { q: "怎么给一批 PDF 批量加页码？", a: "把 PDF 拖到上传框里——也可以直接拖入整个文件夹，或用「选择文件夹」来挑选。工具会把每份 PDF 加进列表，然后点「全部应用」。文件会一份份依次加上页码，完成后点「下载 ZIP」，所有文件会打包在一个压缩包里。" },
-        { q: "我的文件会被上传吗？", a: "不会。这是一个 100% 在本地运行的工具——每份 PDF 都在你的浏览器里打开并加页码，不会发送到任何服务器。文件始终留在你的设备上，所以处理机密文档也很放心。" },
-        { q: "处理完拿到的是什么？文件怎么命名？", a: "你会得到一个 ZIP 压缩包(名为 dockdocs-batch.zip)，里面是每份成功加好页码的 PDF。每个输出文件保留原文件名，并加上「-numbered.pdf」后缀——比如 report.pdf 会变成 report-numbered.pdf。只有处理成功的文件会被打包，个别失败的会被跳过，其余照常输出。" },
-        { q: "一次最多能处理多少份？文件夹里混了非 PDF 也能拖进来吗？", a: "一次最多 30 份 PDF——列表旁的计数会显示已添加的数量(例如「12 / 30 份」)。没有严格的大小上限，但因为全部在浏览器里运行，文件过大或过多会占用更多内存，在性能较弱的设备上会慢一些。文件夹里混了图片、Word 文档也没关系——工具会自动只保留真正的 PDF，其余全部过滤掉。" },
-        { q: "能选择页码的位置或样式吗？", a: "批量工具里不行——它使用固定的默认排版，好让整个文件夹一键处理、风格统一。如果需要控制位置、字体或起始页码，请改用单文件的「加页码」工具，那里提供这些选项。" },
-        { q: "免费吗？需要注册吗？会加水印吗？", a: "完全免费，无需注册，也不会给你的 PDF 加任何水印。因为一切都在你的浏览器本地完成，所以没有付费项目，也没有上传配额限制。" },
-      ],
-      es: [
-        { q: "¿Cómo añado números de página a un lote de PDF?", a: "Arrastra tus PDF a la casilla de carga —o suelta una carpeta entera, o usa «Elegir carpeta» para escoger una—. La herramienta añade cada PDF a la lista; luego haz clic en «Aplicar a todo». Cada archivo se numera uno por uno y, al terminar, haces clic en «Descargar ZIP» para obtenerlos todos en un solo archivo comprimido." },
-        { q: "¿Mis archivos se suben a algún sitio?", a: "No. Es una herramienta 100 % del lado del cliente: cada PDF se abre y se numera dentro de tu propio navegador, y nada se envía a ningún servidor. Tus archivos jamás salen de tu dispositivo, y por eso funciona incluso con documentos confidenciales." },
-        { q: "¿Qué recibo de vuelta y cómo se nombran los archivos?", a: "Recibes un archivo ZIP (llamado dockdocs-batch.zip) con cada PDF numerado correctamente. Cada salida conserva su nombre original con el sufijo «-numbered.pdf» añadido, así que report.pdf se convierte en report-numbered.pdf. Solo se incluyen los archivos que se procesaron correctamente; los que fallaron se omiten y el resto sí pasa." },
-        { q: "¿Hay un límite de cuántos archivos puedo hacer a la vez y puedo soltar una carpeta con archivos que no sean PDF?", a: "Puedes procesar hasta 30 PDF por lote; el contador junto a la lista muestra cuántos has añadido (por ejemplo, «12 / 30 archivos»). No hay un límite estricto de tamaño, pero como todo se ejecuta en tu navegador, los archivos muy grandes o numerosos usan más memoria y van más lentos en dispositivos poco potentes. Puedes soltar sin problema una carpeta que también contenga imágenes o documentos de Word: la herramienta conserva automáticamente solo los PDF reales y descarta todo lo demás." },
-        { q: "¿Puedo elegir dónde van los números de página o cambiar su estilo?", a: "En la herramienta por lotes, no: usa una ubicación predeterminada fija para mantener toda la carpeta coherente con un solo clic. Si necesitas controlar la posición, la fuente o el número inicial, usa la herramienta de un solo archivo «Añadir números de página», que te ofrece esas opciones." },
-        { q: "¿Es gratis? ¿Necesito una cuenta o habrá una marca de agua?", a: "Es completamente gratis, sin registro necesario, y no se añade ninguna marca de agua a tus PDF. Como todo se ejecuta localmente en tu navegador, no hay nada que pagar ni cuota de carga." },
       ],
     },
   },
@@ -1312,17 +1283,6 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "É gratuito? Preciso de uma conta?", a: "Sim, é completamente gratuito — sem cadastro, sem conta e sem marca d'água no seu resultado. Como todo o trabalho acontece no seu navegador, não há nada a pagar nem medidor de uso; basta abrir a página e começar a rotacionar." },
     ],
   },
-  "batch-page-numbers": {
-    title: "Numeração de páginas em lote — perguntas frequentes",
-    items: [
-      { q: "Como adiciono números de página a um lote de PDFs?", a: "Arraste seus PDFs para a caixa de upload — ou solte uma pasta inteira, ou use «Escolher pasta». A ferramenta adiciona cada PDF à lista; em seguida, clique em «Aplicar a todos». Cada arquivo é numerado um por um e, quando terminar, clique em «Baixar ZIP» para obtê-los todos em um único arquivo compactado." },
-      { q: "Meus arquivos são enviados para algum lugar?", a: "Não. É uma ferramenta 100% do lado do cliente — cada PDF é aberto e numerado dentro do seu próprio navegador, e nada é enviado a qualquer servidor. Seus arquivos nunca saem do seu dispositivo, e é por isso que funciona mesmo com documentos confidenciais." },
-      { q: "O que recebo de volta e como os arquivos são nomeados?", a: "Você recebe um arquivo ZIP (chamado dockdocs-batch.zip) com cada PDF numerado com sucesso. Cada saída mantém seu nome original com o sufixo «-numbered.pdf» adicionado — então report.pdf se torna report-numbered.pdf. Apenas os arquivos que processaram com sucesso são incluídos; os que falharam são ignorados e o restante ainda passa." },
-      { q: "Há limite de quantos arquivos posso fazer de uma vez e posso soltar uma pasta com arquivos não-PDF?", a: "Você pode processar até 30 PDFs por lote — o contador ao lado da lista mostra quantos você adicionou (por exemplo, «12 / 30 arquivos»). Não há limite rígido de tamanho, mas como tudo é executado no seu navegador, arquivos muito grandes ou numerosos usam mais memória e ficam mais lentos em dispositivos mais fracos. Você pode soltar com segurança uma pasta que também contenha imagens ou documentos do Word: a ferramenta mantém automaticamente apenas os PDFs reais e filtra todo o resto." },
-      { q: "Posso escolher onde vão os números de página ou mudar o estilo?", a: "Não na ferramenta em lote — ela usa um posicionamento padrão fixo para manter toda a pasta consistente com um clique. Se você precisar controlar a posição, a fonte ou o número inicial, use a ferramenta de arquivo único «Adicionar números de página», que oferece essas opções." },
-      { q: "É gratuito? Preciso de uma conta ou haverá marca d'água?", a: "É completamente gratuito, sem cadastro necessário, e nenhuma marca d'água é adicionada aos seus PDFs. Como tudo é executado localmente no seu navegador, não há nada a pagar nem cota de upload." },
-    ],
-  },
   "batch-split-merge": {
     title: "Dividir PDFs em lote — perguntas frequentes",
     items: [
@@ -1740,17 +1700,6 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Qu'est-ce qui est pivoté et puis-je ne faire pivoter que certaines pages ?", a: "L'angle choisi est appliqué à chaque page de chaque PDF du lot — c'est un correcteur pour dossier entier, pas un éditeur page par page, donc vous ne pouvez pas faire pivoter des pages individuelles ici. La rotation s'ajoute également à toute rotation existante, donc appliquer 90° à une page déjà pivotée la tourne de 90° supplémentaires. Pour un contrôle page par page, utilisez plutôt notre outil de rotation pour fichier unique." },
       { q: "Y a-t-il des limites et pourquoi un PDF peut-il afficher « échoué » ?", a: "Vous pouvez ajouter jusqu'à 50 PDF par lot. Il n'y a pas de limite de taille fixe — comme tout s'exécute dans votre navigateur, la vraie limite est la mémoire de votre appareil, donc les grands travaux sur un ordinateur portable ou un téléphone peu puissant sont simplement plus lents. Les PDF chiffrés ou protégés par mot de passe ne peuvent pas être ouverts pour la rotation, ils sont donc ignorés et marqués « échoué » ; le reste du lot continue à être traité et seuls les fichiers réussis vont dans le ZIP. Déverrouillez d'abord le fichier, puis rajoutez-le." },
       { q: "Est-ce gratuit ? Ai-je besoin d'un compte ?", a: "Oui, entièrement gratuit — sans inscription, sans compte et sans filigrane sur votre résultat. Comme tout le travail se passe dans votre navigateur, il n'y a rien à payer ni compteur d'utilisation ; ouvrez simplement la page et commencez à faire pivoter." },
-    ],
-  },
-  "batch-page-numbers": {
-    title: "Numérotation de pages par lot — foire aux questions",
-    items: [
-      { q: "Comment ajouter des numéros de page à un lot de PDF ?", a: "Faites glisser vos PDF vers la zone de dépôt — ou déposez un dossier entier, ou utilisez « Choisir un dossier ». L'outil ajoute chaque PDF à la liste, puis cliquez sur « Appliquer à tous ». Chaque fichier est numéroté l'un après l'autre et, une fois terminé, cliquez sur « Télécharger le ZIP » pour les obtenir tous dans une seule archive." },
-      { q: "Mes fichiers sont-ils téléversés quelque part ?", a: "Non. Il s'agit d'un outil 100 % côté client — chaque PDF est ouvert et numéroté directement dans votre navigateur, et rien n'est envoyé à un serveur. Vos fichiers ne quittent jamais votre appareil, c'est pourquoi cela fonctionne même sur des documents confidentiels." },
-      { q: "Que reçois-je et comment les fichiers sont-ils nommés ?", a: "Vous recevez un fichier ZIP (nommé dockdocs-batch.zip) contenant chaque PDF numéroté avec succès. Chaque sortie conserve son nom d'origine avec le suffixe « -numbered.pdf » ajouté — ainsi report.pdf devient report-numbered.pdf. Seuls les fichiers traités avec succès sont inclus ; ceux qui ont échoué sont ignorés et les autres passent quand même." },
-      { q: "Y a-t-il une limite sur le nombre de fichiers traités à la fois et puis-je déposer un dossier avec des fichiers non-PDF ?", a: "Vous pouvez traiter jusqu'à 30 PDF par lot — le compteur à côté de la liste indique combien vous en avez ajouté (par exemple « 12 / 30 fichiers »). Il n'y a pas de limite stricte de taille, mais comme tout s'exécute dans votre navigateur, les fichiers très volumineux ou nombreux utilisent plus de mémoire et ralentissent sur les appareils peu puissants. Vous pouvez déposer sans problème un dossier contenant également des images ou des documents Word : l'outil ne conserve automatiquement que les vrais PDF et filtre tout le reste." },
-      { q: "Puis-je choisir où vont les numéros de page ou modifier leur style ?", a: "Pas dans l'outil par lot — il utilise un placement par défaut fixe pour maintenir la cohérence de tout le dossier en un seul clic. Si vous avez besoin de contrôler la position, la police ou le numéro de départ, utilisez l'outil fichier unique « Ajouter des numéros de page », qui propose ces options." },
-      { q: "Est-ce gratuit ? Ai-je besoin d'un compte ou y aura-t-il un filigrane ?", a: "C'est entièrement gratuit, sans inscription requise, et aucun filigrane n'est ajouté à vos PDF. Comme tout s'exécute localement dans votre navigateur, il n'y a rien à payer ni quota de téléversement." },
     ],
   },
   "batch-split-merge": {
@@ -2378,17 +2327,6 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "無料ですか？アカウントは必要ですか？", a: "はい、完全無料です——登録もアカウントも不要で、出力に透かしも付きません。すべての処理がブラウザ内で行われるため、支払うものも利用メーターもありません。ページを開いてそのまま回転を始められます。" },
     ],
   },
-  "batch-page-numbers": {
-    title: "PDF一括ページ番号 — よくある質問",
-    items: [
-      { q: "PDFのバッチにページ番号を付けるには？", a: "PDFをアップロードボックスにドラッグ——フォルダ全体をドロップするか「フォルダを選択」を使ってもOK——します。ツールが各PDFをリストに追加するので、「すべてに適用」をクリックします。各ファイルが1つずつ番号付けされ、完了したら「ZIPをダウンロード」をクリックして1つのアーカイブにまとめて受け取ります。" },
-      { q: "ファイルはどこかにアップロードされますか？", a: "いいえ。これは100%クライアントサイドのツールです——すべてのPDFはブラウザ内で開かれ番号付けされ、サーバーへ何かが送られることはありません。ファイルがデバイスから出ることはなく、だからこそ機密文書でも動作します。" },
-      { q: "何が得られますか？ファイル名はどうなりますか？", a: "番号付けに成功したすべてのPDFを含む1つのZIPファイル（dockdocs-batch.zip）が得られます。各出力は元の名前を保ち、「-numbered.pdf」の接尾辞が付きます——つまり report.pdf は report-numbered.pdf になります。正常に処理されたファイルのみが含まれ、失敗したものはスキップされ残りはそのまま得られます。" },
-      { q: "一度に処理できるファイル数に制限はありますか？PDF以外を含むフォルダをドロップできますか？", a: "1バッチあたり最大30件のPDFを処理できます——リスト横のカウンターが追加した数を表示します（たとえば「12 / 30 files」）。厳密なサイズ上限はありませんが、すべてブラウザ内で動作するため、非常に大きい・多数のファイルはより多くのメモリを使い非力なデバイスでは遅くなります。画像やWord文書も含むフォルダを安全にドロップできます。ツールが実際のPDFだけを残し、それ以外を自動的に除外します。" },
-      { q: "ページ番号の位置やスタイルを選べますか？", a: "バッチツールではできません——フォルダ全体をワンクリックで一貫させるため、固定のデフォルト配置を使います。位置・フォント・開始番号を制御したい場合は、それらのオプションがある単一ファイル版の「ページ番号を追加」ツールをお使いください。" },
-      { q: "無料ですか？アカウントは必要ですか？透かしは付きますか？", a: "登録不要で完全無料、PDFに透かしも付きません。すべてブラウザ内でローカルに動作するため、支払うものもアップロード枠もありません。" },
-    ],
-  },
   "batch-split-merge": {
     title: "PDF一括分割 — よくある質問",
     items: [
@@ -2598,17 +2536,6 @@ const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Was wird gedreht, und kann ich nur einige Seiten drehen?", a: "Der gewählte Winkel wird auf jede Seite jedes PDFs im Stapel angewendet — dies ist ein Werkzeug für ganze Ordner, kein seitengenauer Editor, Sie können hier also keine einzelnen Seiten drehen. Die Drehung wird zudem zu jeder bestehenden Drehung hinzugefügt, sodass das Anwenden von 90° auf eine bereits gedrehte Seite sie um weitere 90° dreht. Für seitengenaue Steuerung verwenden Sie stattdessen unser Einzeldatei-Tool zum Drehen." },
       { q: "Gibt es Grenzen, und warum könnte ein PDF „fehlgeschlagen“ anzeigen?", a: "Sie können bis zu 50 PDFs pro Stapel hinzufügen. Es gibt keine feste Größenobergrenze — da alles in Ihrem Browser läuft, ist die tatsächliche Grenze der Arbeitsspeicher Ihres Geräts, große Aufträge auf einem schwachen Laptop oder Telefon sind also nur langsamer. Verschlüsselte oder passwortgeschützte PDFs können zum Drehen nicht geöffnet werden, daher werden sie übersprungen und als „fehlgeschlagen“ markiert; der Rest des Stapels wird trotzdem verarbeitet, und nur die erfolgreichen Dateien kommen ins ZIP. Entsperren Sie die Datei zuerst und fügen Sie sie dann erneut hinzu." },
       { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Ja, es ist vollständig kostenlos — keine Anmeldung, kein Konto und kein Wasserzeichen auf Ihrer Ausgabe. Da die gesamte Arbeit in Ihrem Browser geschieht, gibt es nichts zu bezahlen und keinen Nutzungszähler; öffnen Sie einfach die Seite und beginnen Sie mit dem Drehen." },
-    ],
-  },
-  "batch-page-numbers": {
-    title: "Seitenzahlen im Stapel — Häufige Fragen",
-    items: [
-      { q: "Wie füge ich einem Stapel PDFs Seitenzahlen hinzu?", a: "Ziehen Sie Ihre PDFs auf das Upload-Feld — oder legen Sie einen ganzen Ordner ab oder nutzen Sie „Ordner wählen“, um einen auszuwählen. Das Tool fügt jedes PDF zur Liste hinzu, dann klicken Sie auf „Auf alle anwenden“. Jede Datei wird nacheinander nummeriert, und wenn es fertig ist, klicken Sie auf „ZIP herunterladen“, um sie alle in einem einzigen Archiv zu erhalten." },
-      { q: "Werden meine Dateien irgendwohin hochgeladen?", a: "Nein. Dies ist ein zu 100 % clientseitiges Tool — jedes PDF wird direkt in Ihrem Browser geöffnet und nummeriert, und nichts wird an einen Server gesendet. Ihre Dateien verlassen Ihr Gerät nie, weshalb es sogar bei vertraulichen Dokumenten funktioniert." },
-      { q: "Was erhalte ich zurück, und wie werden die Dateien benannt?", a: "Sie erhalten eine ZIP-Datei (mit dem Namen dockdocs-batch.zip), die jedes erfolgreich nummerierte PDF enthält. Jede Ausgabe behält ihren ursprünglichen Namen mit dem hinzugefügten Suffix „-numbered.pdf“ — aus report.pdf wird also report-numbered.pdf. Es sind nur Dateien enthalten, die erfolgreich verarbeitet wurden; fehlgeschlagene werden übersprungen, und der Rest kommt trotzdem durch." },
-      { q: "Gibt es eine Grenze, wie viele Dateien ich auf einmal bearbeiten kann, und kann ich einen Ordner mit Nicht-PDFs ablegen?", a: "Sie können bis zu 30 PDFs pro Stapel verarbeiten — der Zähler neben der Liste zeigt, wie viele Sie hinzugefügt haben (zum Beispiel „12 / 30 Dateien“). Es gibt keine feste Größengrenze, aber da alles in Ihrem Browser läuft, verbrauchen sehr große oder zahlreiche Dateien mehr Arbeitsspeicher und laufen auf schwächeren Geräten langsamer. Sie können bedenkenlos einen Ordner ablegen, der auch Bilder oder Word-Dokumente enthält: Das Tool behält automatisch nur die tatsächlichen PDFs und filtert alles andere heraus." },
-      { q: "Kann ich wählen, wohin die Seitenzahlen kommen, oder ihren Stil ändern?", a: "Nicht im Stapel-Tool — es verwendet eine feste Standardplatzierung, um den ganzen Ordner mit einem Klick einheitlich zu halten. Wenn Sie die Position, Schriftart oder Startnummer steuern müssen, verwenden Sie stattdessen das Einzeldatei-Tool „Seitenzahlen hinzufügen“, das Ihnen diese Optionen gibt." },
-      { q: "Ist es kostenlos? Brauche ich ein Konto, oder gibt es ein Wasserzeichen?", a: "Es ist vollständig kostenlos, ohne erforderliche Anmeldung, und es wird kein Wasserzeichen zu Ihren PDFs hinzugefügt. Da alles lokal in Ihrem Browser läuft, gibt es nichts zu bezahlen und kein Upload-Kontingent." },
     ],
   },
   "batch-split-merge": {
@@ -3028,17 +2955,6 @@ const FAQS_KO: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "무엇이 회전되며, 일부 페이지만 회전할 수 있나요?", a: "선택한 각도가 묶음 속 모든 PDF의 모든 페이지에 적용됩니다 — 이것은 폴더 전체를 위한 도구이지 페이지 단위 편집기가 아니므로 여기서 개별 페이지를 회전할 수는 없습니다. 또한 회전은 기존 회전에 더해지므로, 이미 회전된 페이지에 90°를 적용하면 90°가 더 돌아갑니다. 페이지 단위 제어가 필요하면 대신 단일 파일 회전 도구를 사용하세요." },
       { q: "제한이 있나요? PDF가 「실패」로 표시될 수 있는 이유는 무엇인가요?", a: "묶음당 최대 50개 PDF를 추가할 수 있습니다. 고정된 크기 상한은 없으며 — 모든 작업이 브라우저 안에서 실행되므로 실제 한계는 기기의 메모리입니다. 따라서 성능이 낮은 노트북이나 휴대폰에서 큰 작업은 더 느릴 뿐입니다. 암호화되었거나 암호로 보호된 PDF는 회전을 위해 열 수 없으므로 건너뛰고 「실패」로 표시되며, 나머지 묶음은 그대로 처리되어 성공한 파일만 ZIP에 들어갑니다. 먼저 파일의 잠금을 해제한 뒤 다시 추가하세요." },
       { q: "무료인가요? 계정이 필요한가요?", a: "네, 완전 무료입니다 — 가입도, 계정도, 출력물에 워터마크도 없습니다. 모든 작업이 브라우저 안에서 이루어지므로 결제할 것도, 사용량 카운터도 없습니다. 그냥 페이지를 열고 회전을 시작하세요." },
-    ],
-  },
-  "batch-page-numbers": {
-    title: "일괄 페이지 번호 — 자주 묻는 질문",
-    items: [
-      { q: "PDF 묶음에 페이지 번호를 추가하려면 어떻게 하나요?", a: "PDF를 업로드 영역에 끌어다 놓거나 — 폴더 전체를 끌어다 놓거나 「폴더 선택」을 사용해 하나를 고르세요. 도구가 각 PDF를 목록에 추가하면 「모두 적용」을 클릭하세요. 각 파일에 차례로 번호가 매겨지고, 완료되면 「ZIP 내려받기」를 클릭해 하나의 압축 파일로 모두 받습니다." },
-      { q: "제 파일이 어딘가에 업로드되나요?", a: "아니요. 이것은 100% 클라이언트 측 도구입니다 — 각 PDF는 브라우저 안에서 직접 열리고 번호가 매겨지며, 어떤 것도 서버로 전송되지 않습니다. 파일이 기기를 절대 벗어나지 않으므로 기밀 문서에도 작동합니다." },
-      { q: "무엇을 받게 되며 파일 이름은 어떻게 되나요?", a: "성공적으로 번호가 매겨진 각 PDF를 담은 ZIP 파일(dockdocs-batch.zip)을 받습니다. 각 출력물은 「-numbered.pdf」 접미사가 붙은 원래 이름을 유지합니다 — 즉 report.pdf는 report-numbered.pdf가 됩니다. 성공적으로 처리된 파일만 포함되며, 실패한 파일은 건너뛰고 나머지는 그대로 통과합니다." },
-      { q: "한 번에 처리할 수 있는 파일 개수에 제한이 있고, PDF가 아닌 파일이 든 폴더를 끌어다 놓아도 되나요?", a: "묶음당 최대 30개 PDF를 처리할 수 있으며 — 목록 옆의 카운터가 몇 개를 추가했는지 보여줍니다(예: 「12 / 30 파일」). 고정된 크기 제한은 없지만, 모든 작업이 브라우저 안에서 실행되므로 매우 크거나 많은 파일은 메모리를 더 쓰고 성능이 낮은 기기에서 더 느리게 실행됩니다. 이미지나 Word 문서가 함께 든 폴더를 마음 놓고 끌어다 놓으세요. 도구가 실제 PDF만 자동으로 유지하고 나머지는 모두 걸러냅니다." },
-      { q: "페이지 번호의 위치를 선택하거나 스타일을 바꿀 수 있나요?", a: "일괄 도구에서는 안 됩니다 — 폴더 전체를 한 번의 클릭으로 일관되게 유지하기 위해 고정된 기본 배치를 사용합니다. 위치, 글꼴, 시작 번호를 제어해야 한다면 그러한 옵션을 제공하는 단일 파일 「페이지 번호 추가」 도구를 대신 사용하세요." },
-      { q: "무료인가요? 계정이 필요하거나 워터마크가 있나요?", a: "완전 무료이며 가입이 필요 없고, 귀하의 PDF에 워터마크도 추가되지 않습니다. 모든 작업이 브라우저 안에서 로컬로 실행되므로 결제할 것도, 업로드 사용량도 없습니다." },
     ],
   },
   "batch-split-merge": {

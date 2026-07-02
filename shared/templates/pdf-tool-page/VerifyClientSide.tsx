@@ -56,7 +56,6 @@ export const LOCAL_ONLY_SLUGS = new Set<string>([
   "batch-pdf-to-image",
   "batch-protect-pdf",
   "batch-rename-pdf",
-  "batch-page-numbers",
   "batch-split-merge",
   "batch-rotate-pdf",
 ]);

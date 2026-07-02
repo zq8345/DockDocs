@@ -490,6 +490,15 @@
 /ja/batch-watermark-pdf /410 410!
 /de/batch-watermark-pdf /410 410!
 /ko/batch-watermark-pdf /410 410!
+/batch-page-numbers /410 410!
+/zh/batch-page-numbers /410 410!
+/zh-Hant/batch-page-numbers /410 410!
+/es/batch-page-numbers /410 410!
+/pt/batch-page-numbers /410 410!
+/fr/batch-page-numbers /410 410!
+/ja/batch-page-numbers /410 410!
+/de/batch-page-numbers /410 410!
+/ko/batch-page-numbers /410 410!
 
 # English weight across two URL sets. The canonical TAG alone didn't consolidate
 # it → force-301 every /en/<slug> back to /<slug>. Force (!) overrides the
