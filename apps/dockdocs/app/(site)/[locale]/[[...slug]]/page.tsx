@@ -41,8 +41,6 @@ import { CropPdfClient } from "@/components/CropPdfClient";
 import { RedactPdfClient } from "@/components/RedactPdfClient";
 import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
 import { BatchProtectClient } from "@/components/BatchProtectClient";
-import { BatchSplitMergeClient } from "@/components/BatchSplitMergeClient";
-import { BatchRotateClient } from "@/components/BatchRotateClient";
 import { BatchSortClient } from "@/components/BatchSortClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
@@ -1371,55 +1369,6 @@ async function generateMetadataInner({
     };
   }
 
-  if (slug === "batch-split-merge") {
-    return {
-      title: m(
-        "Batch Split & Merge PDF — Combine or Split Many PDFs Free",
-        "批量拆分 / 合并 PDF — 整批合并或按页拆分",
-        "Dividir y unir PDF en lote — Combina o divide muchos PDF gratis",
-        "Dividir e unir PDF em lote — Combine ou divida muitos PDFs grátis",
-        "Diviser et fusionner des PDF par lot — Combinez ou divisez plusieurs PDF gratuitement",
-        "PDFを一括で分割・結合 — 複数PDFをまとめて無料で結合または分割",
-      ),
-      description: m(
-        "Merge a whole folder of PDFs into one, or split each into N-page files — all in your browser, packaged for download. Your files never leave your device.",
-        "把整个文件夹的 PDF 合并成一个，或把每份按 N 页拆分，全部在浏览器中完成、打包下载，文件不外泄。",
-        "Une una carpeta entera de PDF en uno solo, o divide cada uno en archivos de N páginas: todo en tu navegador, empaquetado para descargar. Tus archivos nunca salen de tu dispositivo.",
-        "Una uma pasta inteira de PDFs em um só, ou divida cada um em arquivos de N páginas: tudo no seu navegador, empacotado para baixar. Seus arquivos nunca saem do seu dispositivo.",
-        "Fusionnez un dossier entier de PDF en un seul, ou divisez chacun en fichiers de N pages : tout dans votre navigateur, prêt à télécharger. Vos fichiers ne quittent jamais votre appareil.",
-        "PDFのフォルダ全体を1つに結合、または各ファイルをNページごとに分割。すべてブラウザ内で完結し、ダウンロード用にまとめます。ファイルが端末から出ることはありません。",
-      ),
-      alternates: {
-        canonical: localizedPath(rawLocale, "batch-split-merge"),
-        languages: languageAlternates("batch-split-merge"),
-      },
-    };
-  }
-
-  if (slug === "batch-rotate-pdf") {
-    return {
-      title: m(
-        "Batch Rotate PDF — Fix Many Sideways Scans Free",
-        "批量旋转 PDF — 整批纠正横/倒扫描件",
-        "Rotar PDF en lote — Corrige muchos escaneos torcidos gratis",
-        "Girar PDF em lote — Corrija muitas digitalizações tortas grátis",
-        "Pivoter des PDF par lot — Corrigez plusieurs scans de travers gratuitement",
-        "PDFを一括回転 — 横向き・逆向きのスキャンをまとめて無料補正",
-      ),
-      description: m(
-        "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF and download one ZIP. Entirely in your browser.",
-        "一次纠正整个文件夹横着或倒着的扫描件：把每份 PDF 每页旋转，打包 ZIP，全部在浏览器中完成，文件不外泄。",
-        "Corrige una carpeta entera de escaneos torcidos o boca abajo de una vez: rota cada página de cada PDF y descarga un único ZIP. Todo en tu navegador.",
-        "Corrija uma pasta inteira de digitalizações tortas ou de cabeça para baixo de uma vez: gire cada página de cada PDF e baixe um único ZIP. Tudo no seu navegador.",
-        "Corrigez un dossier entier de scans de travers ou à l'envers en une fois : pivotez chaque page de chaque PDF et téléchargez un seul ZIP. Entièrement dans votre navigateur.",
-        "横向きや逆向きのスキャンのフォルダ全体を一度に補正：各PDFの全ページを回転させ、1つのZIPでダウンロード。すべてブラウザ内で完結します。",
-      ),
-      alternates: {
-        canonical: localizedPath(rawLocale, "batch-rotate-pdf"),
-        languages: languageAlternates("batch-rotate-pdf"),
-      },
-    };
-  }
 
   if (slug === "batch-sort") {
     return {
@@ -2012,13 +1961,6 @@ export default async function LocalizedRoute({
     return <BatchProtectClient locale={clientLocale} />;
   }
 
-  if (slug === "batch-split-merge") {
-    return <BatchSplitMergeClient locale={clientLocale} lockMode="split" />;
-  }
-
-  if (slug === "batch-rotate-pdf") {
-    return <BatchRotateClient locale={clientLocale} />;
-  }
 
   if (slug === "batch-sort") {
     return <>{extraJsonLd}<BatchSortClient locale={clientLocale} /></>;

@@ -533,3 +533,21 @@
 # matches). Specific /:lng/ rules above (ocr, url-to-pdf) run first for those slugs.
 /en/*  /:splat  301!
 /en    /        301!
+/batch-split-merge /410 410!
+/zh/batch-split-merge /410 410!
+/zh-Hant/batch-split-merge /410 410!
+/es/batch-split-merge /410 410!
+/pt/batch-split-merge /410 410!
+/fr/batch-split-merge /410 410!
+/ja/batch-split-merge /410 410!
+/de/batch-split-merge /410 410!
+/ko/batch-split-merge /410 410!
+/batch-rotate-pdf /410 410!
+/zh/batch-rotate-pdf /410 410!
+/zh-Hant/batch-rotate-pdf /410 410!
+/es/batch-rotate-pdf /410 410!
+/pt/batch-rotate-pdf /410 410!
+/fr/batch-rotate-pdf /410 410!
+/ja/batch-rotate-pdf /410 410!
+/de/batch-rotate-pdf /410 410!
+/ko/batch-rotate-pdf /410 410!

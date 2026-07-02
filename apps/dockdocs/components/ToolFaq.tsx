@@ -411,65 +411,7 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
       ],
     },
   },
-  "batch-rotate-pdf": {
-    title: { en: "Batch rotate PDF — FAQ", zh: "批量 PDF 旋转常见问题", es: "Rotar PDF por lotes — preguntas frecuentes" },
-    items: {
-      en: [
-        { q: "How do I rotate a batch of PDFs?", a: "Drag your PDFs onto the box — or drop a whole folder, or use \"Choose folder\". Pick a rotation angle (90°, 180° or 270°), then click \"Rotate all\". When it finishes, click \"Download ZIP\" to get every rotated file in one archive. You can also use the \"+\" button to add more PDFs before running." },
-        { q: "Are my files uploaded to a server?", a: "No. This is a 100% client-side tool — every PDF is opened and rotated right inside your browser using your device's own resources, and the ZIP is assembled locally too. Nothing is ever uploaded to DockDocs or anywhere else, so your documents never leave your computer." },
-        { q: "What do I get back, and how are the files named?", a: "You get a single ZIP file (dockdocs-rotated.zip) containing every successfully rotated PDF. Each file keeps its original name with \"-rotated\" added before the extension — for example invoice.pdf becomes invoice-rotated.pdf — so it's easy to tell the new copies from your originals." },
-        { q: "What gets rotated, and can I rotate only some pages?", a: "The chosen angle is applied to every page of every PDF in the batch — this is a whole-folder fixer, not a per-page editor, so you can't rotate individual pages here. The rotation also adds to any existing rotation, so applying 90° to an already-rotated page turns it a further 90°. For per-page control, use our single-file rotate tool instead." },
-        { q: "Are there limits, and why might a PDF say \"failed\"?", a: "You can add up to 50 PDFs per batch. There's no fixed file-size cap — because everything runs in your browser, the real limit is your device's memory, so big jobs on a weak laptop or phone are just slower. Encrypted or password-protected PDFs can't be opened for rotation, so they're skipped and marked \"failed\"; the rest of the batch still processes and only the successful files go into the ZIP. Unlock the file first, then add it again." },
-        { q: "Is it free? Do I need an account?", a: "Yes, it's completely free — no signup, no account, and no watermark on your output. Because all the work happens in your browser, there's nothing to pay for and no usage meter; just open the page and start rotating." },
-      ],
-      zh: [
-        { q: "怎么批量旋转 PDF？", a: "把 PDF 拖到上传框里——也可以直接拖入整个文件夹，或用「选择文件夹」。选好旋转角度（90°、180° 或 270°），再点「全部旋转」。完成后点「下载 ZIP」，所有旋转好的文件会打包在一个压缩包里。开始前还能用「+」按钮继续添加 PDF。" },
-        { q: "我的文件会被上传到服务器吗？", a: "不会。这是一个 100% 在本地完成的工具——每份 PDF 都在你的浏览器里、用你自己设备的资源打开并旋转，连 ZIP 也是在本地打包的。任何文件都不会上传到 DockDocs 或别处，文档自始至终不会离开你的电脑。" },
-        { q: "我会得到什么？文件怎么命名？", a: "你会得到一个 ZIP 压缩包（dockdocs-rotated.zip），里面是所有成功旋转的 PDF。每份文件保留原文件名，只在扩展名前加上「-rotated」——例如 invoice.pdf 会变成 invoice-rotated.pdf——这样很容易把新文件和原件区分开。" },
-        { q: "会旋转哪些内容？能只转部分页面吗？", a: "所选角度会应用到批次中每份 PDF 的每一页——它是用来一次性纠正整个文件夹的工具，而不是逐页编辑器，所以这里没法只旋转某几页。旋转还会叠加在已有的旋转角度上，比如对一页已经转过的页面再加 90°，它会再转 90°。需要逐页控制的话，请改用我们的单文件旋转工具。" },
-        { q: "有数量限制吗？为什么有文件显示「失败」？", a: "每个批次最多可以添加 50 份 PDF。文件大小没有固定上限——因为全部在浏览器里运行，真正的限制是你设备的内存，所以在性能较弱的笔记本或手机上处理大批量只是会慢一些。已加密或设了密码的 PDF 无法被打开旋转，会被跳过并标记为「失败」；批次里其余文件照常处理，只有成功的文件会进入 ZIP。先解除密码，再重新添加即可。" },
-        { q: "是免费的吗？需要注册账号吗？", a: "是的，完全免费——无需注册、无需账号，输出也不带水印。因为所有处理都在你的浏览器里完成，既没有任何费用，也没有使用次数限制；打开页面就能直接旋转。" },
-      ],
-      es: [
-        { q: "¿Cómo roto un lote de PDF?", a: "Arrastra tus PDF a la casilla —o suelta una carpeta entera, o usa «Elegir carpeta»—. Elige un ángulo de rotación (90°, 180° o 270°) y luego haz clic en «Rotar todo». Cuando termine, haz clic en «Descargar ZIP» para obtener todos los archivos rotados en un solo archivo comprimido. También puedes usar el botón «+» para añadir más PDF antes de ejecutar." },
-        { q: "¿Mis archivos se suben a un servidor?", a: "No. Es una herramienta 100 % del lado del cliente: cada PDF se abre y se rota dentro de tu propio navegador usando los recursos de tu dispositivo, y el ZIP también se monta localmente. Nada se sube nunca a DockDocs ni a ningún otro sitio, así que tus documentos jamás salen de tu equipo." },
-        { q: "¿Qué recibo de vuelta y cómo se nombran los archivos?", a: "Recibes un único archivo ZIP (dockdocs-rotated.zip) con cada PDF rotado correctamente. Cada archivo conserva su nombre original con «-rotated» añadido antes de la extensión —por ejemplo, factura.pdf se convierte en factura-rotated.pdf—, así es fácil distinguir las copias nuevas de tus originales." },
-        { q: "¿Qué se rota y puedo rotar solo algunas páginas?", a: "El ángulo elegido se aplica a todas las páginas de cada PDF del lote: esto es un corrector de carpetas enteras, no un editor por página, así que aquí no puedes rotar páginas individuales. La rotación además se suma a cualquier rotación existente, de modo que aplicar 90° a una página ya rotada la gira otros 90°. Para un control por página, usa nuestra herramienta de rotación de un solo archivo." },
-        { q: "¿Hay límites y por qué un PDF podría decir «fallido»?", a: "Puedes añadir hasta 50 PDF por lote. No hay un tope de tamaño fijo: como todo se ejecuta en tu navegador, el límite real es la memoria de tu dispositivo, así que los trabajos grandes en una laptop o teléfono poco potente solo van más lentos. Los PDF cifrados o protegidos con contraseña no pueden abrirse para rotarse, así que se omiten y se marcan como «fallido»; el resto del lote sigue procesándose y solo los archivos correctos entran en el ZIP. Desbloquea primero el archivo y vuelve a añadirlo." },
-        { q: "¿Es gratis? ¿Necesito una cuenta?", a: "Sí, es completamente gratis: sin registro, sin cuenta y sin marca de agua en tu resultado. Como todo el trabajo ocurre en tu navegador, no hay nada que pagar ni medidor de uso; solo abre la página y empieza a rotar." },
-      ],
-    },
-  },
-  "batch-split-merge": {
-    title: { en: "Batch split PDF — FAQ", zh: "批量 PDF 拆分常见问题", es: "Dividir PDF por lotes — preguntas frecuentes" },
-    items: {
-      en: [
-        { q: "How do I split a whole folder of PDFs at once?", a: "Drag and drop your PDFs — or a whole folder — onto the upload box, or click to choose them. Set \"Pages per file\" to how many pages each output piece should contain (1 splits every page into its own file), then click \"Run\". Each PDF is cut into chunks of that size and everything is packaged into a single ZIP you can download with \"Download ZIP\"." },
-        { q: "Are my files uploaded to a server?", a: "No. Splitting runs entirely in your browser using a local PDF engine — nothing is uploaded, nothing is stored, and nothing leaves your device. You can even disconnect from the internet after the page loads and it still works. That is why it is safe for sensitive or confidential documents." },
-        { q: "What do I get back, and how are the files named?", a: "You get one ZIP file (dockdocs-split.zip). Inside, every PDF is split into pieces named after the original — for example report.pdf becomes report-part1.pdf, report-part2.pdf, and so on. If you uploaded several PDFs, all of their parts are flattened together into the same ZIP." },
-        { q: "Can I add a folder, and what happens to non-PDF files in it?", a: "Yes — you can drop or choose an entire folder. Any file that is not a PDF is filtered out automatically, so you do not have to clean the folder first. Only the PDFs are added to the list and processed." },
-        { q: "Is there a limit on how many or how large the files can be?", a: "There is a cap of 50 files per batch — if you add more, only the first 50 are kept. There is no fixed page or file-size limit; the real constraint is your device's memory, so very large PDFs or huge batches will simply run slower on weaker machines. If one PDF is corrupt or password-protected it is marked \"failed\" and skipped, while the rest still split normally." },
-        { q: "Is it free? Do I need an account or will it add a watermark?", a: "Yes, it is completely free with no sign-up and no watermark. Because the work happens on your own device, there are no usage credits or limits to worry about — use it as often as you like." },
-      ],
-      zh: [
-        { q: "怎么一次拆分整个文件夹的 PDF？", a: "把 PDF——或整个文件夹——拖到上传框，或点击选择。把「每个文件页数」设成每份输出包含多少页(填 1 就是每页拆成一份)，然后点「开始」。每份 PDF 都会按这个页数切成若干块，全部打包进一个 ZIP，点「下载 ZIP」即可保存。" },
-        { q: "我的文件会上传到服务器吗？", a: "不会。拆分完全在你的浏览器里用本地 PDF 引擎完成——不上传、不存储，任何文件都不会离开你的设备。页面加载完后即使断网也照样能用。所以处理敏感或机密文档很安全。" },
-        { q: "我会拿到什么？文件怎么命名？", a: "你会得到一个 ZIP 文件(dockdocs-split.zip)。里面每份 PDF 都按原名拆成若干块——比如 report.pdf 会变成 report-part1.pdf、report-part2.pdf 等等。如果你上传了多份 PDF，所有切出来的部分会一起放进同一个 ZIP。" },
-        { q: "可以直接选文件夹吗？里面的非 PDF 文件怎么办？", a: "可以——你可以拖入或选择整个文件夹。其中所有非 PDF 文件会被自动过滤掉，无需事先清理文件夹。只有 PDF 会被加入列表并处理。" },
-        { q: "文件数量或大小有限制吗？", a: "单次最多 50 份——超出的部分只保留前 50 份。页数和文件大小没有固定上限，真正的限制是设备内存，所以超大 PDF 或超大批量在性能较弱的机器上只会更慢一些。如果某份 PDF 损坏或加了密码，它会被标为「失败」并跳过——其余文件照常拆分。" },
-        { q: "免费吗？需要注册吗？会加水印吗？", a: "完全免费，无需注册，也不加水印。因为所有处理都在你自己的设备上完成，没有任何用量额度或次数限制——想用多少次都可以。" },
-      ],
-      es: [
-        { q: "¿Cómo divido toda una carpeta de PDF a la vez?", a: "Arrastra y suelta tus PDF —o una carpeta entera— en la casilla de carga, o haz clic para elegirlos. Configura «Páginas por archivo» con cuántas páginas debe contener cada parte de salida (1 divide cada página en su propio archivo) y luego haz clic en «Ejecutar». Cada PDF se corta en bloques de ese tamaño y todo se empaqueta en un único ZIP que puedes descargar con «Descargar ZIP»." },
-        { q: "¿Mis archivos se suben a un servidor?", a: "No. La división se ejecuta por completo en tu navegador usando un motor PDF local: nada se sube, nada se almacena y nada sale de tu dispositivo. Incluso puedes desconectarte de internet después de que la página cargue y seguirá funcionando. Por eso es seguro para documentos sensibles o confidenciales." },
-        { q: "¿Qué recibo de vuelta y cómo se nombran los archivos?", a: "Recibes un archivo ZIP (dockdocs-split.zip). Dentro, cada PDF se divide en partes nombradas a partir del original; por ejemplo, report.pdf se convierte en report-part1.pdf, report-part2.pdf, y así sucesivamente. Si subiste varios PDF, todas sus partes se agrupan juntas en el mismo ZIP." },
-        { q: "¿Puedo añadir una carpeta y qué ocurre con los archivos que no sean PDF que haya en ella?", a: "Sí: puedes soltar o elegir una carpeta entera. Cualquier archivo que no sea PDF se descarta automáticamente, así que no tienes que limpiar la carpeta primero. Solo los PDF se añaden a la lista y se procesan." },
-        { q: "¿Hay un límite de cuántos o de qué tamaño pueden ser los archivos?", a: "Hay un tope de 50 archivos por lote; si añades más, solo se conservan los primeros 50. No hay un límite fijo de páginas o tamaño de archivo; la restricción real es la memoria de tu dispositivo, así que los PDF muy grandes o los lotes enormes simplemente irán más lentos en máquinas poco potentes. Si un PDF está dañado o protegido con contraseña, se marca como «fallido» y se omite, mientras que el resto se divide con normalidad." },
-        { q: "¿Es gratis? ¿Necesito una cuenta o añadirá una marca de agua?", a: "Sí, es completamente gratis, sin registro y sin marca de agua. Como el trabajo ocurre en tu propio dispositivo, no hay créditos ni límites de uso de los que preocuparse: úsala tantas veces como quieras." },
-      ],
-    },
-  },
-  "batch-sort": {
+      "batch-sort": {
     title: { en: "Classify PDFs — FAQ", zh: "PDF 智能分类常见问题", es: "Clasificar PDF — preguntas frecuentes" },
     items: {
       en: [
@@ -1203,29 +1145,7 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "É realmente gratuito? Tem marca d'água ou exige cadastro?", a: "Sim, completamente gratuito, sem cadastro e sem marca d'água. Os PDFs criptografados são byte a byte seus originais mais a senha — o DockDocs não adiciona nada a eles." },
     ],
   },
-  "batch-rotate-pdf": {
-    title: "Rotacionar PDFs em lote — perguntas frequentes",
-    items: [
-      { q: "Como rotaciono um lote de PDFs?", a: "Arraste seus PDFs para a caixa — ou solte uma pasta inteira, ou use «Escolher pasta». Escolha um ângulo de rotação (90°, 180° ou 270°) e clique em «Rotacionar tudo». Quando terminar, clique em «Baixar ZIP» para obter todos os arquivos rotacionados em um único arquivo. Você também pode usar o botão «+» para adicionar mais PDFs antes de executar." },
-      { q: "Meus arquivos são enviados a um servidor?", a: "Não. É uma ferramenta 100% do lado do cliente — cada PDF é aberto e rotacionado dentro do seu próprio navegador usando os recursos do seu dispositivo, e o ZIP também é montado localmente. Nada é jamais enviado ao DockDocs ou a qualquer outro lugar, então seus documentos nunca saem do seu computador." },
-      { q: "O que recebo de volta e como os arquivos são nomeados?", a: "Você recebe um único arquivo ZIP (dockdocs-rotated.zip) contendo cada PDF rotacionado com sucesso. Cada arquivo mantém seu nome original com «-rotated» adicionado antes da extensão — por exemplo, fatura.pdf se torna fatura-rotated.pdf — então é fácil distinguir as novas cópias dos seus originais." },
-      { q: "O que é rotacionado e posso rotacionar apenas algumas páginas?", a: "O ângulo escolhido é aplicado a todas as páginas de cada PDF do lote — esta é uma ferramenta de correção de pasta inteira, não um editor por página, então você não pode rotacionar páginas individuais aqui. A rotação também se soma a qualquer rotação existente, então aplicar 90° a uma página já rotacionada a gira mais 90°. Para controle por página, use nossa ferramenta de rotação de arquivo único." },
-      { q: "Há limites e por que um PDF pode dizer «falhou»?", a: "Você pode adicionar até 50 PDFs por lote. Não há limite fixo de tamanho de arquivo — como tudo é executado no seu navegador, o limite real é a memória do seu dispositivo, então trabalhos grandes em um notebook ou celular mais fraco simplesmente ficam mais lentos. PDFs criptografados ou protegidos por senha não podem ser abertos para rotação, então são ignorados e marcados como «falhou»; o restante do lote ainda processa e apenas os arquivos bem-sucedidos entram no ZIP. Desbloqueie o arquivo primeiro e adicione-o novamente." },
-      { q: "É gratuito? Preciso de uma conta?", a: "Sim, é completamente gratuito — sem cadastro, sem conta e sem marca d'água no seu resultado. Como todo o trabalho acontece no seu navegador, não há nada a pagar nem medidor de uso; basta abrir a página e começar a rotacionar." },
-    ],
-  },
-  "batch-split-merge": {
-    title: "Dividir PDFs em lote — perguntas frequentes",
-    items: [
-      { q: "Como divido uma pasta inteira de PDFs de uma vez?", a: "Arraste e solte seus PDFs — ou uma pasta inteira — na caixa de upload, ou clique para escolhê-los. Defina «Páginas por arquivo» com quantas páginas cada parte de saída deve conter (1 divide cada página em seu próprio arquivo) e clique em «Executar». Cada PDF é cortado em blocos desse tamanho e tudo é empacotado em um único ZIP que você pode baixar com «Baixar ZIP»." },
-      { q: "Meus arquivos são enviados a um servidor?", a: "Não. A divisão é executada inteiramente no seu navegador usando um mecanismo PDF local — nada é enviado, nada é armazenado e nada sai do seu dispositivo. Você pode até desconectar-se da internet depois que a página carregar e ainda funciona. É por isso que é seguro para documentos sensíveis ou confidenciais." },
-      { q: "O que recebo de volta e como os arquivos são nomeados?", a: "Você recebe um arquivo ZIP (dockdocs-split.zip). Dentro, cada PDF é dividido em partes nomeadas a partir do original — por exemplo, report.pdf se torna report-part1.pdf, report-part2.pdf, e assim por diante. Se você enviou vários PDFs, todas as suas partes são agrupadas juntas no mesmo ZIP." },
-      { q: "Posso adicionar uma pasta e o que acontece com arquivos não-PDF nela?", a: "Sim — você pode soltar ou escolher uma pasta inteira. Qualquer arquivo que não seja PDF é filtrado automaticamente, então você não precisa limpar a pasta primeiro. Apenas os PDFs são adicionados à lista e processados." },
-      { q: "Há limite de quantos ou de tamanho dos arquivos?", a: "Há um limite de 50 arquivos por lote — se você adicionar mais, apenas os primeiros 50 são mantidos. Não há limite fixo de páginas ou tamanho de arquivo; a restrição real é a memória do seu dispositivo, então PDFs muito grandes ou lotes enormes simplesmente ficam mais lentos em máquinas mais fracas. Se um PDF estiver corrompido ou protegido por senha, ele é marcado como «falhou» e ignorado, enquanto o restante ainda divide normalmente." },
-      { q: "É gratuito? Preciso de uma conta ou ele adiciona marca d'água?", a: "Sim, é completamente gratuito, sem cadastro e sem marca d'água. Como o trabalho acontece no seu próprio dispositivo, não há créditos de uso ou limites com os quais se preocupar — use quantas vezes quiser." },
-    ],
-  },
-  "batch-sort": {
+      "batch-sort": {
     title: "Classificar PDFs — perguntas frequentes",
     items: [
       { q: "Como usar?", a: "Arraste e solte seus PDFs — ou uma pasta inteira — na página, ou clique em «Escolher PDFs» / «Escolher pasta». Pressione «Classificar tudo» e a IA rotula cada arquivo com uma categoria (fatura, contrato, currículo, relatório, etc.). Quando terminar, clique em «Baixar ZIP classificado» para obter um ZIP com seus arquivos agrupados em pastas de categoria. Você pode classificar até 30 arquivos de uma vez." },
@@ -1600,29 +1520,7 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Est-ce vraiment gratuit ? Y a-t-il un filigrane ou une inscription requise ?", a: "Oui, entièrement gratuit, sans inscription et sans filigrane. Les PDF chiffrés sont octet par octet vos originaux plus le mot de passe — DockDocs n'y ajoute rien." },
     ],
   },
-  "batch-rotate-pdf": {
-    title: "Faire pivoter des PDF par lot — foire aux questions",
-    items: [
-      { q: "Comment faire pivoter un lot de PDF ?", a: "Faites glisser vos PDF dans la zone — ou déposez un dossier entier, ou utilisez « Choisir un dossier ». Choisissez un angle de rotation (90°, 180° ou 270°), puis cliquez sur « Tout faire pivoter ». Une fois terminé, cliquez sur « Télécharger le ZIP » pour obtenir tous les fichiers pivotés dans une seule archive. Vous pouvez également utiliser le bouton « + » pour ajouter d'autres PDF avant d'exécuter." },
-      { q: "Mes fichiers sont-ils envoyés à un serveur ?", a: "Non. Il s'agit d'un outil 100 % côté client — chaque PDF est ouvert et pivoté directement dans votre navigateur en utilisant les ressources de votre appareil, et le ZIP est également assemblé localement. Rien n'est jamais envoyé à DockDocs ou ailleurs, donc vos documents ne quittent jamais votre ordinateur." },
-      { q: "Que reçois-je et comment les fichiers sont-ils nommés ?", a: "Vous recevez un seul fichier ZIP (dockdocs-rotated.zip) contenant chaque PDF pivoté avec succès. Chaque fichier conserve son nom d'origine avec « -rotated » ajouté avant l'extension — par exemple facture.pdf devient facture-rotated.pdf — ce qui permet de distinguer facilement les nouvelles copies de vos originaux." },
-      { q: "Qu'est-ce qui est pivoté et puis-je ne faire pivoter que certaines pages ?", a: "L'angle choisi est appliqué à chaque page de chaque PDF du lot — c'est un correcteur pour dossier entier, pas un éditeur page par page, donc vous ne pouvez pas faire pivoter des pages individuelles ici. La rotation s'ajoute également à toute rotation existante, donc appliquer 90° à une page déjà pivotée la tourne de 90° supplémentaires. Pour un contrôle page par page, utilisez plutôt notre outil de rotation pour fichier unique." },
-      { q: "Y a-t-il des limites et pourquoi un PDF peut-il afficher « échoué » ?", a: "Vous pouvez ajouter jusqu'à 50 PDF par lot. Il n'y a pas de limite de taille fixe — comme tout s'exécute dans votre navigateur, la vraie limite est la mémoire de votre appareil, donc les grands travaux sur un ordinateur portable ou un téléphone peu puissant sont simplement plus lents. Les PDF chiffrés ou protégés par mot de passe ne peuvent pas être ouverts pour la rotation, ils sont donc ignorés et marqués « échoué » ; le reste du lot continue à être traité et seuls les fichiers réussis vont dans le ZIP. Déverrouillez d'abord le fichier, puis rajoutez-le." },
-      { q: "Est-ce gratuit ? Ai-je besoin d'un compte ?", a: "Oui, entièrement gratuit — sans inscription, sans compte et sans filigrane sur votre résultat. Comme tout le travail se passe dans votre navigateur, il n'y a rien à payer ni compteur d'utilisation ; ouvrez simplement la page et commencez à faire pivoter." },
-    ],
-  },
-  "batch-split-merge": {
-    title: "Diviser des PDF par lot — foire aux questions",
-    items: [
-      { q: "Comment diviser un dossier entier de PDF à la fois ?", a: "Faites glisser et déposez vos PDF — ou un dossier entier — dans la zone de dépôt, ou cliquez pour les choisir. Définissez « Pages par fichier » avec le nombre de pages que chaque partie de sortie doit contenir (1 divise chaque page dans son propre fichier), puis cliquez sur « Exécuter ». Chaque PDF est découpé en blocs de cette taille et tout est empaqueté dans un seul ZIP que vous pouvez télécharger avec « Télécharger le ZIP »." },
-      { q: "Mes fichiers sont-ils envoyés à un serveur ?", a: "Non. La division s'exécute entièrement dans votre navigateur en utilisant un moteur PDF local — rien n'est téléversé, rien n'est stocké et rien ne quitte votre appareil. Vous pouvez même vous déconnecter d'internet après le chargement de la page et cela fonctionne toujours. C'est pourquoi c'est sûr pour les documents sensibles ou confidentiels." },
-      { q: "Que reçois-je et comment les fichiers sont-ils nommés ?", a: "Vous recevez un fichier ZIP (dockdocs-split.zip). À l'intérieur, chaque PDF est divisé en parties nommées d'après l'original — par exemple report.pdf devient report-part1.pdf, report-part2.pdf, etc. Si vous avez téléversé plusieurs PDF, toutes leurs parties sont regroupées dans le même ZIP." },
-      { q: "Puis-je ajouter un dossier et que se passe-t-il avec les fichiers non-PDF qu'il contient ?", a: "Oui — vous pouvez déposer ou choisir un dossier entier. Tout fichier non-PDF est filtré automatiquement, vous n'avez donc pas besoin de nettoyer le dossier au préalable. Seuls les PDF sont ajoutés à la liste et traités." },
-      { q: "Y a-t-il une limite sur le nombre ou la taille des fichiers ?", a: "Il y a un plafond de 50 fichiers par lot — si vous en ajoutez plus, seuls les 50 premiers sont conservés. Il n'y a pas de limite fixe de pages ou de taille de fichier ; la vraie contrainte est la mémoire de votre appareil, donc les PDF très volumineux ou les grands lots seront simplement plus lents sur les machines moins puissantes. Si un PDF est corrompu ou protégé par mot de passe, il est marqué « échoué » et ignoré, tandis que le reste se divise normalement." },
-      { q: "Est-ce gratuit ? Ai-je besoin d'un compte ou y aura-t-il un filigrane ?", a: "Oui, entièrement gratuit, sans inscription et sans filigrane. Comme le travail se passe sur votre propre appareil, il n'y a pas de crédits d'utilisation ni de limites à craindre — utilisez-le autant que vous le souhaitez." },
-    ],
-  },
-  "batch-sort": {
+      "batch-sort": {
     title: "Classer des PDF — foire aux questions",
     items: [
       { q: "Comment l'utiliser ?", a: "Faites glisser et déposez vos PDF — ou un dossier entier — sur la page, ou cliquez sur « Choisir des PDF » / « Choisir un dossier ». Appuyez sur « Tout classer » et l'IA étiquette chaque fichier avec une catégorie (facture, contrat, CV, rapport, etc.). Une fois terminé, cliquez sur « Télécharger le ZIP classé » pour obtenir un ZIP avec vos fichiers regroupés dans des dossiers par catégorie. Vous pouvez classer jusqu'à 30 fichiers à la fois." },
@@ -2203,29 +2101,7 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "本当に無料ですか？透かしや登録はありますか？", a: "はい、完全無料で、登録も透かしもありません。暗号化されたPDFはバイト単位であなたの元ファイルにパスワードを加えたものです——DockDocsは何も追加しません。" },
     ],
   },
-  "batch-rotate-pdf": {
-    title: "PDF一括回転 — よくある質問",
-    items: [
-      { q: "PDFのバッチを回転するには？", a: "PDFをボックスにドラッグ——フォルダ全体をドロップするか「フォルダを選択」を使ってもOK——します。回転角度（90°、180°、270°）を選び、「すべて回転」をクリックします。完了したら「ZIPをダウンロード」をクリックして、回転後のすべてのファイルを1つのアーカイブで受け取ります。実行前に「+」ボタンでPDFを追加することもできます。" },
-      { q: "ファイルはサーバーにアップロードされますか？", a: "いいえ。これは100%クライアントサイドのツールです——すべてのPDFはあなたのデバイス自身のリソースを使ってブラウザ内で開かれ回転され、ZIPもローカルで組み立てられます。DockDocsやその他どこにもアップロードされることはなく、文書がコンピューターから出ることはありません。" },
-      { q: "何が得られますか？ファイル名はどうなりますか？", a: "回転に成功したすべてのPDFを含む1つのZIPファイル（dockdocs-rotated.zip）が得られます。各ファイルは元の名前を保ち、拡張子の前に「-rotated」が付きます——たとえば invoice.pdf は invoice-rotated.pdf になります——ので、新しいコピーと元ファイルを簡単に区別できます。" },
-      { q: "何が回転しますか？一部のページだけ回転できますか？", a: "選んだ角度がバッチ内のすべてのPDFのすべてのページに適用されます——これはフォルダ全体を直すツールであり、ページごとのエディターではないため、ここで個々のページを回転することはできません。回転は既存の回転に加算されるので、すでに回転したページに90°を適用するとさらに90°回ります。ページごとの制御には、単一ファイル版の回転ツールをお使いください。" },
-      { q: "制限はありますか？なぜPDFが「失敗」と表示されることがありますか？", a: "1バッチあたり最大50件のPDFを追加できます。ファイルサイズの固定上限はありません——すべてブラウザ内で動作するため実際の上限はデバイスのメモリで、非力なノートPCやスマホでの大きな処理は遅くなるだけです。暗号化・パスワード保護されたPDFは回転のために開けないため、スキップされ「失敗」と印が付きます。バッチの残りは処理され、成功したファイルだけがZIPに入ります。先にファイルのロックを解除してから、もう一度追加してください。" },
-      { q: "無料ですか？アカウントは必要ですか？", a: "はい、完全無料です——登録もアカウントも不要で、出力に透かしも付きません。すべての処理がブラウザ内で行われるため、支払うものも利用メーターもありません。ページを開いてそのまま回転を始められます。" },
-    ],
-  },
-  "batch-split-merge": {
-    title: "PDF一括分割 — よくある質問",
-    items: [
-      { q: "PDFのフォルダ全体を一度に分割するには？", a: "PDF——またはフォルダ全体——をアップロードボックスにドラッグ＆ドロップするか、クリックして選択します。「ファイルあたりのページ数」に各出力の断片に含めるページ数を設定し（1にすると全ページを個別ファイルに分割）、「実行」をクリックします。各PDFがそのサイズの塊に切り分けられ、すべてが1つのZIPにまとめられて「ZIPをダウンロード」で取得できます。" },
-      { q: "ファイルはサーバーにアップロードされますか？", a: "いいえ。分割はローカルのPDFエンジンを使ってすべてブラウザ内で動作します——アップロードも保存もなく、何もデバイスから出ません。ページが読み込まれた後はインターネットを切断しても動作します。だからこそ機密文書でも安全です。" },
-      { q: "何が得られますか？ファイル名はどうなりますか？", a: "1つのZIPファイル（dockdocs-split.zip）が得られます。その中で各PDFは元の名前にちなんだ断片に分割されます——たとえば report.pdf は report-part1.pdf、report-part2.pdf のようになります。複数のPDFをアップロードした場合、それらの断片はすべて同じZIPにまとめて入ります。" },
-      { q: "フォルダを追加できますか？その中のPDF以外のファイルはどうなりますか？", a: "はい——フォルダ全体をドロップまたは選択できます。PDF以外のファイルは自動的に除外されるので、先にフォルダを整理する必要はありません。PDFだけがリストに追加され処理されます。" },
-      { q: "ファイル数やサイズに制限はありますか？", a: "1バッチあたり50ファイルの上限があります——それ以上追加した場合、最初の50件だけが残ります。ページ数やファイルサイズの固定上限はなく、実際の制約はデバイスのメモリです。非常に大きなPDFや膨大なバッチは非力なマシンでは単に遅くなります。あるPDFが破損していたりパスワード保護されている場合は「失敗」と印が付きスキップされ、残りは通常どおり分割されます。" },
-      { q: "無料ですか？アカウントは必要ですか？透かしは付きますか？", a: "はい、完全無料で、登録も透かしもありません。処理はあなた自身のデバイスで行われるため、気にすべき利用クレジットや制限はありません——好きなだけお使いください。" },
-    ],
-  },
-  "batch-sort": {
+      "batch-sort": {
     title: "PDF分類 — よくある質問",
     items: [
       { q: "どのように使いますか？", a: "PDF——またはフォルダ全体——をページにドラッグ＆ドロップするか、「PDFを選択」/「フォルダを選択」をクリックします。「すべて分類」を押すと、AIが各ファイルにカテゴリー（請求書、契約書、履歴書、報告書など）のラベルを付けます。完了したら「分類済みZIPをダウンロード」をクリックして、ファイルがカテゴリーフォルダにまとめられた1つのZIPを取得します。一度に最大30ファイルまで分類できます。" },
@@ -2392,29 +2268,7 @@ const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Ist es wirklich kostenlos? Wasserzeichen oder Anmeldung?", a: "Ja, vollständig kostenlos, ohne Anmeldung und ohne Wasserzeichen. Die verschlüsselten PDFs sind Byte für Byte Ihre Originale plus das Passwort — DockDocs fügt ihnen nichts hinzu." },
     ],
   },
-  "batch-rotate-pdf": {
-    title: "PDF im Stapel drehen — Häufige Fragen",
-    items: [
-      { q: "Wie drehe ich einen Stapel PDFs?", a: "Ziehen Sie Ihre PDFs auf das Feld — oder legen Sie einen ganzen Ordner ab oder nutzen Sie „Ordner wählen“. Wählen Sie einen Drehwinkel (90°, 180° oder 270°) und klicken Sie dann auf „Alle drehen“. Wenn es fertig ist, klicken Sie auf „ZIP herunterladen“, um jede gedrehte Datei in einem Archiv zu erhalten. Mit der Schaltfläche „+“ können Sie vor dem Ausführen weitere PDFs hinzufügen." },
-      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Dies ist ein zu 100 % clientseitiges Tool — jedes PDF wird direkt in Ihrem Browser mit den Ressourcen Ihres eigenen Geräts geöffnet und gedreht, und auch das ZIP wird lokal zusammengestellt. Nichts wird je zu DockDocs oder anderswohin hochgeladen, Ihre Dokumente verlassen Ihren Computer also nie." },
-      { q: "Was erhalte ich zurück, und wie werden die Dateien benannt?", a: "Sie erhalten eine einzige ZIP-Datei (dockdocs-rotated.zip), die jedes erfolgreich gedrehte PDF enthält. Jede Datei behält ihren ursprünglichen Namen mit dem Zusatz „-rotated“ vor der Erweiterung — aus invoice.pdf wird zum Beispiel invoice-rotated.pdf —, sodass sich die neuen Kopien leicht von Ihren Originalen unterscheiden lassen." },
-      { q: "Was wird gedreht, und kann ich nur einige Seiten drehen?", a: "Der gewählte Winkel wird auf jede Seite jedes PDFs im Stapel angewendet — dies ist ein Werkzeug für ganze Ordner, kein seitengenauer Editor, Sie können hier also keine einzelnen Seiten drehen. Die Drehung wird zudem zu jeder bestehenden Drehung hinzugefügt, sodass das Anwenden von 90° auf eine bereits gedrehte Seite sie um weitere 90° dreht. Für seitengenaue Steuerung verwenden Sie stattdessen unser Einzeldatei-Tool zum Drehen." },
-      { q: "Gibt es Grenzen, und warum könnte ein PDF „fehlgeschlagen“ anzeigen?", a: "Sie können bis zu 50 PDFs pro Stapel hinzufügen. Es gibt keine feste Größenobergrenze — da alles in Ihrem Browser läuft, ist die tatsächliche Grenze der Arbeitsspeicher Ihres Geräts, große Aufträge auf einem schwachen Laptop oder Telefon sind also nur langsamer. Verschlüsselte oder passwortgeschützte PDFs können zum Drehen nicht geöffnet werden, daher werden sie übersprungen und als „fehlgeschlagen“ markiert; der Rest des Stapels wird trotzdem verarbeitet, und nur die erfolgreichen Dateien kommen ins ZIP. Entsperren Sie die Datei zuerst und fügen Sie sie dann erneut hinzu." },
-      { q: "Ist es kostenlos? Brauche ich ein Konto?", a: "Ja, es ist vollständig kostenlos — keine Anmeldung, kein Konto und kein Wasserzeichen auf Ihrer Ausgabe. Da die gesamte Arbeit in Ihrem Browser geschieht, gibt es nichts zu bezahlen und keinen Nutzungszähler; öffnen Sie einfach die Seite und beginnen Sie mit dem Drehen." },
-    ],
-  },
-  "batch-split-merge": {
-    title: "PDF im Stapel teilen — Häufige Fragen",
-    items: [
-      { q: "Wie teile ich einen ganzen Ordner voller PDFs auf einmal?", a: "Ziehen Sie Ihre PDFs — oder einen ganzen Ordner — per Drag-and-drop auf das Upload-Feld oder klicken Sie, um sie auszuwählen. Stellen Sie „Seiten pro Datei“ darauf ein, wie viele Seiten jedes Ausgabeteil enthalten soll (1 teilt jede Seite in eine eigene Datei), und klicken Sie dann auf „Ausführen“. Jedes PDF wird in Stücke dieser Größe geschnitten, und alles wird in ein einziges ZIP gepackt, das Sie mit „ZIP herunterladen“ herunterladen können." },
-      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein. Das Teilen läuft vollständig in Ihrem Browser mit einer lokalen PDF-Engine — nichts wird hochgeladen, nichts wird gespeichert, und nichts verlässt Ihr Gerät. Sie können nach dem Laden der Seite sogar die Internetverbindung trennen, und es funktioniert weiterhin. Deshalb ist es für sensible oder vertrauliche Dokumente sicher." },
-      { q: "Was erhalte ich zurück, und wie werden die Dateien benannt?", a: "Sie erhalten eine ZIP-Datei (dockdocs-split.zip). Darin wird jedes PDF in Stücke geteilt, die nach dem Original benannt sind — aus report.pdf werden zum Beispiel report-part1.pdf, report-part2.pdf und so weiter. Wenn Sie mehrere PDFs hochgeladen haben, werden alle ihre Teile zusammen in dasselbe ZIP gelegt." },
-      { q: "Kann ich einen Ordner hinzufügen, und was passiert mit Nicht-PDF-Dateien darin?", a: "Ja — Sie können einen ganzen Ordner ablegen oder auswählen. Jede Datei, die kein PDF ist, wird automatisch herausgefiltert, sodass Sie den Ordner nicht zuvor aufräumen müssen. Nur die PDFs werden zur Liste hinzugefügt und verarbeitet." },
-      { q: "Gibt es eine Grenze, wie viele oder wie große Dateien sein dürfen?", a: "Es gibt eine Obergrenze von 50 Dateien pro Stapel — wenn Sie mehr hinzufügen, werden nur die ersten 50 behalten. Es gibt keine feste Seiten- oder Größengrenze; die tatsächliche Einschränkung ist der Arbeitsspeicher Ihres Geräts, sehr große PDFs oder riesige Stapel laufen auf schwächeren Geräten also einfach langsamer. Ist ein PDF beschädigt oder passwortgeschützt, wird es als „fehlgeschlagen“ markiert und übersprungen, während der Rest trotzdem normal geteilt wird." },
-      { q: "Ist es kostenlos? Brauche ich ein Konto, oder fügt es ein Wasserzeichen hinzu?", a: "Ja, es ist vollständig kostenlos, ohne Anmeldung und ohne Wasserzeichen. Da die Arbeit auf Ihrem eigenen Gerät geschieht, müssen Sie sich um keine Nutzungsguthaben oder Grenzen kümmern — verwenden Sie es so oft Sie möchten." },
-    ],
-  },
-  "batch-sort": {
+      "batch-sort": {
     title: "PDFs klassifizieren — Häufige Fragen",
     items: [
       { q: "Wie verwende ich es?", a: "Ziehen Sie Ihre PDFs — oder einen ganzen Ordner — per Drag-and-drop auf die Seite oder klicken Sie auf „PDFs wählen“ / „Ordner wählen“. Drücken Sie auf „Alle sortieren“, und die KI versieht jede Datei mit einer Kategorie (Rechnung, Vertrag, Lebenslauf, Bericht und so weiter). Wenn es fertig ist, klicken Sie auf „Sortiertes ZIP herunterladen“, um ein ZIP zu erhalten, in dem Ihre Dateien in Kategorieordner gruppiert sind. Sie können bis zu 30 Dateien auf einmal sortieren." },
@@ -2789,29 +2643,7 @@ const FAQS_KO: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "정말 무료인가요? 워터마크나 가입이 있나요?", a: "네, 완전 무료이며 가입도, 워터마크도 없습니다. 암호화된 PDF는 바이트 단위로 귀하의 원본에 암호가 더해진 것입니다 — DockDocs는 거기에 어떤 것도 추가하지 않습니다." },
     ],
   },
-  "batch-rotate-pdf": {
-    title: "PDF 일괄 회전 — 자주 묻는 질문",
-    items: [
-      { q: "PDF 묶음을 회전하려면 어떻게 하나요?", a: "PDF를 영역에 끌어다 놓거나 — 폴더 전체를 끌어다 놓거나 「폴더 선택」을 사용하세요. 회전 각도(90°, 180°, 270°)를 선택한 뒤 「모두 회전」을 클릭하세요. 완료되면 「ZIP 내려받기」를 클릭해 회전된 각 파일을 하나의 압축 파일로 받습니다. 「+」 버튼으로 실행 전에 PDF를 더 추가할 수 있습니다." },
-      { q: "제 파일이 서버에 업로드되나요?", a: "아니요. 이것은 100% 클라이언트 측 도구입니다 — 각 PDF는 귀하 기기의 자원을 사용해 브라우저 안에서 직접 열리고 회전되며, ZIP도 로컬에서 만들어집니다. 어떤 것도 DockDocs나 다른 어디로도 업로드되지 않으므로 문서가 컴퓨터를 절대 벗어나지 않습니다." },
-      { q: "무엇을 받게 되며 파일 이름은 어떻게 되나요?", a: "성공적으로 회전된 각 PDF를 담은 하나의 ZIP 파일(dockdocs-rotated.zip)을 받습니다. 각 파일은 확장자 앞에 「-rotated」가 붙은 원래 이름을 유지합니다 — 예를 들어 invoice.pdf는 invoice-rotated.pdf가 됩니다 — 그래서 새 사본을 원본과 쉽게 구분할 수 있습니다." },
-      { q: "무엇이 회전되며, 일부 페이지만 회전할 수 있나요?", a: "선택한 각도가 묶음 속 모든 PDF의 모든 페이지에 적용됩니다 — 이것은 폴더 전체를 위한 도구이지 페이지 단위 편집기가 아니므로 여기서 개별 페이지를 회전할 수는 없습니다. 또한 회전은 기존 회전에 더해지므로, 이미 회전된 페이지에 90°를 적용하면 90°가 더 돌아갑니다. 페이지 단위 제어가 필요하면 대신 단일 파일 회전 도구를 사용하세요." },
-      { q: "제한이 있나요? PDF가 「실패」로 표시될 수 있는 이유는 무엇인가요?", a: "묶음당 최대 50개 PDF를 추가할 수 있습니다. 고정된 크기 상한은 없으며 — 모든 작업이 브라우저 안에서 실행되므로 실제 한계는 기기의 메모리입니다. 따라서 성능이 낮은 노트북이나 휴대폰에서 큰 작업은 더 느릴 뿐입니다. 암호화되었거나 암호로 보호된 PDF는 회전을 위해 열 수 없으므로 건너뛰고 「실패」로 표시되며, 나머지 묶음은 그대로 처리되어 성공한 파일만 ZIP에 들어갑니다. 먼저 파일의 잠금을 해제한 뒤 다시 추가하세요." },
-      { q: "무료인가요? 계정이 필요한가요?", a: "네, 완전 무료입니다 — 가입도, 계정도, 출력물에 워터마크도 없습니다. 모든 작업이 브라우저 안에서 이루어지므로 결제할 것도, 사용량 카운터도 없습니다. 그냥 페이지를 열고 회전을 시작하세요." },
-    ],
-  },
-  "batch-split-merge": {
-    title: "PDF 일괄 분할 — 자주 묻는 질문",
-    items: [
-      { q: "PDF가 가득한 폴더 전체를 한 번에 분할하려면 어떻게 하나요?", a: "PDF를 — 또는 폴더 전체를 — 업로드 영역에 끌어다 놓거나 클릭해 고르세요. 「파일당 페이지 수」를 각 출력 조각이 담을 페이지 수로 설정하고(1은 각 페이지를 자체 파일로 나눕니다) 「실행」을 클릭하세요. 각 PDF가 그 크기의 조각으로 잘리고, 모든 것이 하나의 ZIP으로 묶여 「ZIP 내려받기」로 받을 수 있습니다." },
-      { q: "제 파일이 서버에 업로드되나요?", a: "아니요. 분할은 로컬 PDF 엔진으로 전적으로 브라우저 안에서 실행됩니다 — 어떤 것도 업로드되지 않고, 저장되지 않으며, 기기를 벗어나지 않습니다. 페이지가 로드된 뒤에는 인터넷 연결을 끊어도 계속 작동합니다. 그래서 민감하거나 기밀인 문서에 안전합니다." },
-      { q: "무엇을 받게 되며 파일 이름은 어떻게 되나요?", a: "하나의 ZIP 파일(dockdocs-split.zip)을 받습니다. 그 안에서 각 PDF가 원본 이름을 딴 조각으로 나뉩니다 — 예를 들어 report.pdf는 report-part1.pdf, report-part2.pdf 등이 됩니다. 여러 PDF를 업로드했다면 모든 조각이 같은 ZIP 안에 함께 담깁니다." },
-      { q: "폴더를 추가해도 되고, 그 안의 PDF가 아닌 파일은 어떻게 되나요?", a: "네 — 폴더 전체를 끌어다 놓거나 선택할 수 있습니다. PDF가 아닌 모든 파일은 자동으로 걸러지므로 미리 폴더를 정리할 필요가 없습니다. PDF만 목록에 추가되어 처리됩니다." },
-      { q: "파일의 개수나 크기에 제한이 있나요?", a: "묶음당 50개 파일의 상한이 있습니다 — 더 추가하면 처음 50개만 유지됩니다. 고정된 페이지나 크기 제한은 없으며, 실제 제약은 기기의 메모리이므로 매우 큰 PDF나 거대한 묶음은 성능이 낮은 기기에서 더 느릴 뿐입니다. PDF가 손상되었거나 암호로 보호되어 있으면 「실패」로 표시되어 건너뛰고, 나머지는 그대로 정상적으로 분할됩니다." },
-      { q: "무료인가요? 계정이 필요하거나 워터마크를 추가하나요?", a: "네, 완전 무료이며 가입도, 워터마크도 없습니다. 작업이 귀하 기기에서 이루어지므로 사용량 크레딧이나 제한을 걱정할 필요가 없습니다 — 원하는 만큼 사용하세요." },
-    ],
-  },
-  "batch-sort": {
+      "batch-sort": {
     title: "PDF 분류 — 자주 묻는 질문",
     items: [
       { q: "어떻게 사용하나요?", a: "PDF를 — 또는 폴더 전체를 — 페이지에 끌어다 놓거나 「PDF 선택」 / 「폴더 선택」을 클릭하세요. 「모두 분류」를 누르면 AI가 각 파일에 카테고리(청구서, 계약서, 이력서, 보고서 등)를 붙입니다. 완료되면 「분류된 ZIP 내려받기」를 클릭해 파일이 카테고리 폴더로 묶인 ZIP을 받습니다. 한 번에 최대 30개 파일을 분류할 수 있습니다." },
