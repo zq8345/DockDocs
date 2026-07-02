@@ -225,6 +225,23 @@ const page = {
         "Yes. Open the PDF and try selecting text in the redacted regions — proper redaction returns no selectable text. Run the PDF through a text extraction tool and search the output for what should have been redacted. If you find the supposedly redacted content in either test, the redaction was not done correctly and the underlying text is accessible. This verification takes about two minutes and should be standard practice before accepting a redacted document as genuinely sanitized.",
     },
   ],
+  readingLinks: [
+    {
+      label: "How to share a PDF securely",
+      href: "/how-to-share-a-pdf-securely/",
+      description: "After redacting sensitive content, sharing the result securely: password protection, access controls, expiring links, and verifying the document hasn't been altered in transit.",
+    },
+    {
+      label: "Sensitive document redaction",
+      href: "/sensitive-document-redaction/",
+      description: "Redaction in context: privacy regulations that require it, what information typically needs permanent removal, and when client-side tools are the appropriate choice.",
+    },
+    {
+      label: "Compare two versions of a document",
+      href: "/compare-two-versions-of-a-document/",
+      description: "After redacting, verify your redacted version matches expectations by comparing it against the original — and confirm the redacted areas contain no extractable text.",
+    },
+  ],
 };
 
 const schema = {

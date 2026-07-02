@@ -170,6 +170,28 @@ const page = {
         "It depends on the tool. Tools that upload your file to a server expose the contract to third-party storage and processing. DockDocs extracts the text from your contract in your browser and sends that text to the AI model — the original file doesn't leave your device. For contracts containing sensitive commercial terms, NDA-protected information, or personal data, the processing model matters.",
     },
   ],
+  readingLinks: [
+    {
+      label: "How to read a contract",
+      href: "/how-to-read-a-contract/",
+      description: "Before using AI review, understand the structure of a contract: how clauses interact, which sections carry the most risk, and what to focus attention on.",
+    },
+    {
+      label: "Lease agreement red flags",
+      href: "/lease-agreement-red-flags/",
+      description: "The specific provisions that frequently harm tenants in commercial and residential lease agreements — useful context when reviewing a lease with AI tools.",
+    },
+    {
+      label: "Employment contract red flags",
+      href: "/employment-contract-red-flags/",
+      description: "Non-compete scope, IP assignment breadth, at-will exceptions, and other employment contract provisions AI review commonly flags.",
+    },
+    {
+      label: "Vendor contract red flags",
+      href: "/vendor-contract-red-flags/",
+      description: "Pricing change rights, data ownership, liability caps, and auto-renewal traps — the vendor agreement provisions most often surfaced by contract analysis.",
+    },
+  ],
 };
 
 const schema = {

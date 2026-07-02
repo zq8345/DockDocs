@@ -527,6 +527,7 @@ export type InfoPageData = {
     items?: Array<{ title: string; description: string }>;
   }>;
   faqs?: Array<{ question: string; answer: string }>;
+  readingLinks?: Array<{ label: string; href: string; description: string }>;
 };
 
 export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko", Record<InfoPageSlug, InfoPageData>> = {

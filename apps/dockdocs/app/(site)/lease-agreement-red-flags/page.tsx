@@ -222,6 +222,28 @@ const page = {
         "Generally no, for fixed-term leases — the rent amount is locked for the lease term unless the lease itself includes an escalation clause that permits mid-term increases. If the lease includes a rent escalation clause (whether tied to CPI, a fixed percentage, or the landlord's discretion), review it carefully: how much notice is required, what triggers the increase, and whether there's a cap. At renewal, in most jurisdictions without rent stabilization laws, the landlord can offer a new rent amount and the tenant can accept or decline.",
     },
   ],
+  readingLinks: [
+    {
+      label: "How to read a contract",
+      href: "/how-to-read-a-contract/",
+      description: "A systematic approach to reading any contract: understanding structure, how defined terms control meaning, which sections to read first, and the language patterns that carry the most risk.",
+    },
+    {
+      label: "Employment contract red flags",
+      href: "/employment-contract-red-flags/",
+      description: "Key provisions to review before signing an employment agreement: non-compete scope, IP assignment, at-will exceptions, equity documentation, and compensation structure.",
+    },
+    {
+      label: "NDA provisions to review",
+      href: "/nda-what-to-look-for/",
+      description: "What to check before signing a non-disclosure agreement: one-way vs. mutual scope, definition breadth, residuals clauses, term length, and post-relationship obligations.",
+    },
+    {
+      label: "How to share a PDF securely",
+      href: "/how-to-share-a-pdf-securely/",
+      description: "Methods for sharing sensitive lease documents: password protection, access controls, expiring links, and how to verify that shared documents haven't been altered.",
+    },
+  ],
 };
 
 const schema = {

@@ -239,6 +239,28 @@ const page = {
         "AI-assisted NDA review extracts the key provisions — confidential information definition, carve-outs, term, permitted disclosures, remedies, forum selection — and flags clauses that deviate from standard practice or create unusual obligations. The output identifies which sections warrant attention and explains in plain language why each flagged clause is notable. This is useful for quickly identifying the high-priority areas in a dense document before deciding whether to sign, request changes, or seek legal counsel. AI review is informational — for significant concerns, or for NDAs that will govern substantial commercial relationships, an attorney familiar with your jurisdiction is the appropriate resource.",
     },
   ],
+  readingLinks: [
+    {
+      label: "How to read a contract",
+      href: "/how-to-read-a-contract/",
+      description: "A systematic approach to reading any agreement: how contracts are structured, why definitions matter, which sections carry the most risk, and language patterns to watch for.",
+    },
+    {
+      label: "Employment contract red flags",
+      href: "/employment-contract-red-flags/",
+      description: "NDAs are often part of an employment package. Employment agreement red flags: non-compete scope, IP assignment breadth, arbitration clauses, and equity documentation.",
+    },
+    {
+      label: "Vendor contract red flags",
+      href: "/vendor-contract-red-flags/",
+      description: "Supplier and vendor agreements frequently include confidentiality provisions alongside the commercial terms. What else to review in vendor agreements.",
+    },
+    {
+      label: "Software license agreement red flags",
+      href: "/software-license-agreement-red-flags/",
+      description: "SaaS and software agreements include confidentiality provisions alongside data rights, termination access, and audit rights provisions worth reviewing.",
+    },
+  ],
 };
 
 const schema = {

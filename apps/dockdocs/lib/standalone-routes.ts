@@ -41,5 +41,12 @@ export const standaloneRoutes = [
   "nda-what-to-look-for",
   "vendor-contract-red-flags",
   "freelance-contract-red-flags",
+  "how-to-share-a-pdf-securely",
+  "how-to-extract-text-from-pdf",
+  "how-to-read-a-contract",
+  "software-license-agreement-red-flags",
+  "due-diligence-checklist-what-to-review",
+  "redact-pdf-locally",
+  "bates-numbering-pdf",
   "upgrade",
 ] as const;

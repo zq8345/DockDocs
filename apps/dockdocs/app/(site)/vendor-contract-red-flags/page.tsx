@@ -249,6 +249,28 @@ const page = {
         "AI-assisted contract review reads the agreement and flags provisions that match patterns associated with risk: narrow liability caps, overbroad damage exclusions, auto-renewal with short notice windows, SLA structures with credit caps but no termination rights, vague security obligations, and data use provisions that grant the vendor rights beyond serving your account. The output highlights which sections warrant attention, quotes the relevant language, and explains what makes each clause notable. This is useful for quickly identifying the negotiating priorities in a long agreement. AI review is informational — for contracts that will govern significant vendor relationships, legal review by counsel who knows your regulatory environment is the appropriate follow-on step.",
     },
   ],
+  readingLinks: [
+    {
+      label: "How to read a contract",
+      href: "/how-to-read-a-contract/",
+      description: "A systematic approach to reading any agreement before signing: structure, definitions, which sections carry the most risk, and the language patterns that matter most.",
+    },
+    {
+      label: "Software license agreement red flags",
+      href: "/software-license-agreement-red-flags/",
+      description: "SaaS and software vendor agreements introduce additional risks: data rights, post-termination access, usage restrictions, audit rights, and indemnification asymmetries.",
+    },
+    {
+      label: "NDA provisions to review",
+      href: "/nda-what-to-look-for/",
+      description: "Vendor agreements typically include confidentiality provisions. What to check in NDA and confidentiality sections: scope, carve-outs, term, and permitted disclosure.",
+    },
+    {
+      label: "Freelance contract red flags",
+      href: "/freelance-contract-red-flags/",
+      description: "Independent contractor agreements share many characteristics with vendor contracts: IP ownership, payment terms, scope of work definition, and termination rights.",
+    },
+  ],
 };
 
 const schema = {

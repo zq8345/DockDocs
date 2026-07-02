@@ -176,6 +176,28 @@ const page = {
         "目前对中文和英文合同效果最好，两者均有相对成熟的法律术语语料支持。日文合同可用但精度稍低；其他语言建议先小范围测试再正式用于实际审查。",
     },
   ],
+  readingLinks: [
+    {
+      label: "How to read a contract",
+      href: "/how-to-read-a-contract/",
+      description: "A guide to contract structure before doing a risk analysis: defined terms, conditions precedent, and which clause types create the most exposure.",
+    },
+    {
+      label: "Vendor contract red flags",
+      href: "/vendor-contract-red-flags/",
+      description: "The vendor agreement provisions most commonly flagged in risk analysis: unilateral pricing changes, auto-renewal, data ownership, and liability caps.",
+    },
+    {
+      label: "Software license agreement red flags",
+      href: "/software-license-agreement-red-flags/",
+      description: "SaaS and software buyer risk: data rights, termination and data access, usage restrictions, and audit rights clauses to scrutinize.",
+    },
+    {
+      label: "Lease agreement red flags",
+      href: "/lease-agreement-red-flags/",
+      description: "Commercial and residential lease provisions that frequently surface in contract risk analysis — maintenance allocation, exit rights, and personal guarantees.",
+    },
+  ],
 };
 
 const schema = {

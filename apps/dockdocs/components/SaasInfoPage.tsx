@@ -191,6 +191,35 @@ export function SaasInfoPage({
         </section>
       ) : null}
 
+      {/* Related reading — cluster internal links (legal/contract cluster, etc.) */}
+      {page.readingLinks?.length ? (
+        <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
+          <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
+              Related reading
+            </p>
+            <h2 className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
+              More guides on this topic
+            </h2>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {page.readingLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="group rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5 transition hover:border-[color:var(--line-strong)]"
+                >
+                  <h3 className="text-[15px] font-semibold text-[color:var(--foreground)]">{link.label}</h3>
+                  <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{link.description}</p>
+                  <span className="mt-4 inline-block text-sm font-medium text-[color:var(--accent)] transition group-hover:translate-x-0.5">
+                    Read guide →
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {/* Continue exploring */}
       <section className="bg-[color:var(--surface-subtle)]">
         <div className={`mx-auto ${LAYOUT.content} px-5 py-12 sm:px-6`}>

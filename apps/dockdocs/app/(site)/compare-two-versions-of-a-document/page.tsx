@@ -211,6 +211,28 @@ const page = {
         "Run a PDF redline comparison between your last approved draft and the final version sent for signature. Any differences will appear as additions (green) or deletions (red). Pay particular attention to: defined terms (a changed definition in Section 1 can alter the meaning of every clause that uses that term); liability and indemnification sections; payment terms and amounts; and notice and termination clauses. If differences appear that weren't discussed or agreed, raise them before signing — not after.",
     },
   ],
+  readingLinks: [
+    {
+      label: "How to read a contract",
+      href: "/how-to-read-a-contract/",
+      description: "Once you've compared versions, understanding the contract itself: structure, defined terms, which sections carry the most risk, and how to interpret changes in context.",
+    },
+    {
+      label: "Lease agreement red flags",
+      href: "/lease-agreement-red-flags/",
+      description: "When comparing lease agreement versions, knowing what the high-risk provisions are helps you spot meaningful changes vs. cosmetic edits.",
+    },
+    {
+      label: "Vendor contract red flags",
+      href: "/vendor-contract-red-flags/",
+      description: "Vendor agreement comparison often surfaces changes to pricing, liability caps, and termination rights. What to look for in the differences.",
+    },
+    {
+      label: "How to share a PDF securely",
+      href: "/how-to-share-a-pdf-securely/",
+      description: "After comparing and finalizing a document, sharing it securely: password protection, access controls, and verifying document integrity before sending.",
+    },
+  ],
 };
 
 const schema = {

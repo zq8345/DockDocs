@@ -188,6 +188,28 @@ const page = {
         "AI due diligence review leaves open: materiality judgment (whether a flagged provision actually matters to this deal), negative diligence (confirming that standard provisions are present, not just finding what's there), cross-document dependencies (how provisions in different contracts interact), and anything that isn't in the documents — oral agreements, side letters, undisclosed arrangements. It's a first-pass tool that changes where human attention is concentrated, not a replacement for human diligence.",
     },
   ],
+  readingLinks: [
+    {
+      label: "Due diligence document checklist",
+      href: "/due-diligence-checklist-what-to-review/",
+      description: "What documents are typically reviewed in M&A and investment due diligence — corporate structure, contracts, IP, employment, and compliance.",
+    },
+    {
+      label: "Employment contract red flags",
+      href: "/employment-contract-red-flags/",
+      description: "In people diligence, employment contracts reveal IP assignment scope, non-compete exposure, and key-person retention risks.",
+    },
+    {
+      label: "NDA: what to look for",
+      href: "/nda-what-to-look-for/",
+      description: "Due diligence involves reviewing confidentiality agreements. What NDA provisions matter for a buyer: residuals clauses, definition scope, and permitted disclosures.",
+    },
+    {
+      label: "How to share a PDF securely",
+      href: "/how-to-share-a-pdf-securely/",
+      description: "Due diligence document sharing: data room basics, password protection, and how to transmit sensitive deal documents without exposing them to unauthorized parties.",
+    },
+  ],
 };
 
 const schema = {

@@ -234,6 +234,28 @@ const page = {
         "AI-assisted contract review extracts and flags clauses that match patterns associated with risk — overbroad non-competes, expansive IP assignment, mandatory arbitration, clawback provisions, discretionary bonus language — and provides a plain-language explanation of what each flagged clause means. The result is a structured list of the clauses that warrant closer attention, with the relevant contract text quoted. This is useful for identifying which sections of a long contract need focused review, and for generating specific questions to ask the employer's HR team or legal counsel before signing. AI review is informational — it identifies what's there and explains the patterns, but for significant concerns, an employment attorney who practices in your jurisdiction is the appropriate resource.",
     },
   ],
+  readingLinks: [
+    {
+      label: "How to read a contract",
+      href: "/how-to-read-a-contract/",
+      description: "A systematic approach to reading any agreement before signing: structure, defined terms, which sections carry the most risk, and how to read the operative provisions in context.",
+    },
+    {
+      label: "NDA provisions to review",
+      href: "/nda-what-to-look-for/",
+      description: "Non-disclosure agreements are often presented alongside employment agreements. What to check: scope of confidential information, residuals clauses, term, and post-employment restrictions.",
+    },
+    {
+      label: "Freelance contract red flags",
+      href: "/freelance-contract-red-flags/",
+      description: "Contractors and freelancers face similar IP assignment and non-compete risks in client agreements. Key differences from employment contracts and what to watch for.",
+    },
+    {
+      label: "Due diligence document checklist",
+      href: "/due-diligence-checklist-what-to-review/",
+      description: "If you're evaluating a company before joining — reviewing offer equity — understanding what M&A due diligence looks for in employment agreements is useful context.",
+    },
+  ],
 };
 
 const schema = {

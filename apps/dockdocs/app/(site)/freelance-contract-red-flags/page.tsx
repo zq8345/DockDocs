@@ -244,6 +244,28 @@ const page = {
         "AI-assisted contract review reads a freelance agreement and flags provisions that commonly create problems for independent contractors: payment terms that favor the client, IP transfer before payment, unlimited revision language, vague scope definitions, low or flat kill fees, and non-compete or exclusivity provisions. The output highlights flagged clauses with the actual contract language and a plain-language explanation of what makes each clause notable. This is useful for quickly identifying what to push back on before negotiations and for understanding the risk profile of an agreement before you sign. AI review is informational — for high-value engagements or contracts with complex IP provisions, legal review by an attorney familiar with freelancer rights in your jurisdiction is worthwhile.",
     },
   ],
+  readingLinks: [
+    {
+      label: "How to read a contract",
+      href: "/how-to-read-a-contract/",
+      description: "Understanding contract structure and language before you negotiate. How defined terms control the whole agreement and which sections to read first.",
+    },
+    {
+      label: "Vendor contract red flags",
+      href: "/vendor-contract-red-flags/",
+      description: "If your freelance work is for a business client, their standard vendor agreement may apply. Additional red flags in commercial agreements beyond the standard freelancer provisions.",
+    },
+    {
+      label: "NDA provisions to review",
+      href: "/nda-what-to-look-for/",
+      description: "Freelance clients often require NDAs alongside the engagement agreement. What to check in the confidentiality provisions before signing.",
+    },
+    {
+      label: "Employment contract red flags",
+      href: "/employment-contract-red-flags/",
+      description: "Comparing freelance and employment terms helps clarify the tradeoffs. Employment agreements include non-competes, IP assignment, and equity provisions that differ from contractor terms.",
+    },
+  ],
 };
 
 const schema = {
