@@ -1,4 +1,4 @@
-import {
+﻿import {
   absoluteUrl,
   defaultLocale,
   localizedPath,
@@ -1728,7 +1728,7 @@ export const blogArticles: BlogArticle[] = [
             paragraphs: [
               "Smallpdf's free tier historically limits users to two PDF tasks per hour (or per day, depending on when you check — their limits have changed over time). Some tools require a free account. The paid plan starts at around $9–12/month and removes the limits. The free experience is intentionally friction-heavy to encourage upgrades.",
               "iLovePDF offers a free tier with more generous tool access, but some tools (like PDF signing and certain conversions) require a free account. File size limits and batch processing caps apply. Paid plans start from around $4/month.",
-              "DockDocs offers its browser-side tools — compression, merging, splitting, image conversion, page manipulation, OCR, PDF to Markdown, and more — with no daily limits and no account required. You can compress ten PDFs in a row without logging in or hitting a rate limit. The tools that do require a server (high-fidelity Word-to-PDF via CloudConvert, AI features like Chat with PDF) have usage tiers, but the wide client-side toolkit is genuinely unlimited and free.",
+              "DockDocs offers its browser-side tools — compression, merging, splitting, image conversion, page manipulation, OCR, PDF to Markdown, and more — with no daily limits and no account required. You can compress ten PDFs in a row without logging in or hitting a rate limit. The tools that do require a server (high-fidelity Word-to-PDF, AI features like Chat with PDF) have usage tiers, but the wide client-side toolkit is genuinely unlimited and free.",
               "Verdict on free tier: DockDocs wins for no-account, unlimited access to the broadest set of tools. iLovePDF is a good runner-up. Smallpdf's free tier is the most restrictive of the three.",
             ],
             links: [
@@ -1816,7 +1816,7 @@ export const blogArticles: BlogArticle[] = [
             paragraphs: [
               "Smallpdf 的免费套餐历史上限制用户每小时（或每天）只能执行两次 PDF 任务（限额随时间有所调整）。部分工具需要注册免费账号。付费计划从约 9–12 美元/月起，才能解除限额。其免费体验刻意制造摩擦以推动付费升级。",
               "iLovePDF 的免费套餐工具访问相对宽松，但签名、部分转换功能需要免费账号。有文件大小限制和批量处理上限。付费计划从约 4 美元/月起。",
-              "DockDocs 的浏览器端工具——压缩、合并、拆分、图片转换、页面操作、OCR、PDF 转 Markdown 等——无每日限额，无需账号。你可以连续压缩十份 PDF，不用登录，也不会触发速率限制。需要服务器的功能（高保真 Word 转 PDF via CloudConvert、AI 功能如 PDF 问答）有使用配额，但广泛的客户端工具集是真正无限免费的。",
+              "DockDocs 的浏览器端工具——压缩、合并、拆分、图片转换、页面操作、OCR、PDF 转 Markdown 等——无每日限额，无需账号。你可以连续压缩十份 PDF，不用登录，也不会触发速率限制。需要服务器的功能（高保真 Word 转 PDF、AI 功能如 PDF 问答）有使用配额，但广泛的客户端工具集是真正无限免费的。",
               "免费额度结论：DockDocs 在无需账号、最广工具集无限访问方面获胜。iLovePDF 是不错的第二名。Smallpdf 免费套餐限制最多。",
             ],
             links: [
