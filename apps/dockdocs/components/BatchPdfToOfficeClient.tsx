@@ -6,6 +6,8 @@ import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
+import { runCloudConvert } from "../../../shared/templates/pdf-tool-page/cloudconvert-runtime";
+import type { CloudLocale } from "../../../shared/templates/pdf-tool-page/cloudconvert-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
@@ -20,13 +22,11 @@ type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; blob?: Blob; msg?: string };
 
 const MAX_FILES = 20;
-const MAX_BYTES = 5 * 1024 * 1024; // OSS reverse converter passes files through the Netlify function (~6 MB body cap)
-const REVERSE_API = "/api/reverse-convert";
 
 const _en = {
   title: "Batch PDF to Word / Excel",
   subtitle:
-    "Convert a whole folder of PDFs to editable Word or Excel files in one go — each is converted on our server and packaged into a single ZIP.",
+    "Convert a whole folder of PDFs to editable Word or Excel files in one go — each is converted and packaged into a single ZIP.",
   word: "To Word (.docx)",
   excel: "To Excel (.xlsx)",
   run: "Convert all",
@@ -38,8 +38,7 @@ const _en = {
   done: "done",
   failed: "failed",
   need: "Add at least one PDF.",
-  tooBig: "Over 5 MB — use the single-file tool",
-  note: "Text and tables are extracted into an editable file. Scanned or heavily-designed PDFs may not convert perfectly. Files over 5 MB aren't supported in batch — use the single-file converter for those.",
+  note: "Text and tables are extracted into an editable file. Scanned or heavily-designed PDFs may not convert perfectly.",
   err: "Something went wrong: ",
 };
 
@@ -48,7 +47,7 @@ const STR = {
   zh: {
     title: "批量 PDF 转 Word / Excel",
     subtitle:
-      "把整个文件夹的 PDF 一次性转成可编辑的 Word 或 Excel——每个在服务器转换并打包成一个 ZIP。",
+      "把整个文件夹的 PDF 一次性转成可编辑的 Word 或 Excel，打包成一个 ZIP。",
     word: "转 Word (.docx)",
     excel: "转 Excel (.xlsx)",
     run: "全部转换",
@@ -60,14 +59,13 @@ const STR = {
     done: "完成",
     failed: "失败",
     need: "至少添加一份 PDF。",
-    tooBig: "超过 5MB，请用单文件工具",
-    note: "转换会把文字和表格提取成可编辑文件。扫描件或排版复杂的 PDF 可能转换得不完美。批量不支持超过 5MB 的文件——这类请用单文件转换器。",
+    note: "转换会把文字和表格提取成可编辑文件。扫描件或排版复杂的 PDF 可能转换得不完美。",
     err: "出错了：",
   },
   es: {
     title: "PDF a Word / Excel por lotes",
     subtitle:
-      "Convierte una carpeta entera de PDF a archivos Word o Excel editables de una vez: cada uno se convierte en nuestro servidor y se empaqueta en un solo ZIP.",
+      "Convierte una carpeta entera de PDF a archivos Word o Excel editables de una vez: cada uno se convierte y se empaqueta en un solo ZIP.",
     word: "A Word (.docx)",
     excel: "A Excel (.xlsx)",
     run: "Convertir todo",
@@ -79,14 +77,13 @@ const STR = {
     done: "listo",
     failed: "falló",
     need: "Agrega al menos un PDF.",
-    tooBig: "Más de 5 MB — usa la herramienta de un solo archivo",
-    note: "El texto y las tablas se extraen en un archivo editable. Los PDF escaneados o con mucho diseño pueden no convertirse perfectamente. Los archivos de más de 5 MB no se admiten por lotes; usa el convertidor de un solo archivo para esos.",
+    note: "El texto y las tablas se extraen en un archivo editable. Los PDF escaneados o con mucho diseño pueden no convertirse perfectamente.",
     err: "Algo salió mal: ",
   },
   pt: {
     title: "PDF para Word / Excel em lote",
     subtitle:
-      "Converta uma pasta inteira de PDFs para arquivos Word ou Excel editáveis de uma vez: cada um é convertido no nosso servidor e empacotado em um único ZIP.",
+      "Converta uma pasta inteira de PDFs para arquivos Word ou Excel editáveis de uma vez: cada um é convertido e empacotado em um único ZIP.",
     word: "Para Word (.docx)",
     excel: "Para Excel (.xlsx)",
     run: "Converter tudo",
@@ -98,14 +95,13 @@ const STR = {
     done: "pronto",
     failed: "falhou",
     need: "Adicione pelo menos um PDF.",
-    tooBig: "Mais de 5 MB — use a ferramenta de arquivo único",
-    note: "O texto e as tabelas são extraídos para um arquivo editável. PDFs digitalizados ou com muito design podem não converter perfeitamente. Arquivos acima de 5 MB não são suportados em lote — use o conversor de arquivo único para esses.",
+    note: "O texto e as tabelas são extraídos para um arquivo editável. PDFs digitalizados ou com muito design podem não converter perfeitamente.",
     err: "Algo deu errado: ",
   },
   fr: {
     title: "PDF en Word / Excel en lot",
     subtitle:
-      "Convertissez un dossier entier de PDF en fichiers Word ou Excel modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP.",
+      "Convertissez un dossier entier de PDF en fichiers Word ou Excel modifiables en une seule fois : chaque fichier est converti et regroupé dans un seul ZIP.",
     word: "En Word (.docx)",
     excel: "En Excel (.xlsx)",
     run: "Tout convertir",
@@ -117,14 +113,13 @@ const STR = {
     done: "terminé",
     failed: "échec",
     need: "Ajoutez au moins un PDF.",
-    tooBig: "Plus de 5 Mo — utilisez l'outil fichier unique",
-    note: "Le texte et les tableaux sont extraits dans un fichier modifiable. Les PDF numérisés ou très mis en page peuvent ne pas se convertir parfaitement. Les fichiers de plus de 5 Mo ne sont pas pris en charge en lot — utilisez le convertisseur fichier unique pour ceux-là.",
+    note: "Le texte et les tableaux sont extraits dans un fichier modifiable. Les PDF numérisés ou très mis en page peuvent ne pas se convertir parfaitement.",
     err: "Une erreur est survenue : ",
   },
   ja: {
     title: "PDFをWord / Excelに一括変換",
     subtitle:
-      "フォルダ内のPDFをまとめて編集可能なWordまたはExcelファイルに変換します。各ファイルはサーバーで変換され、1つのZIPにまとめられます。",
+      "フォルダ内のPDFをまとめて編集可能なWordまたはExcelファイルに変換し、1つのZIPにまとめます。",
     word: "Wordに変換 (.docx)",
     excel: "Excelに変換 (.xlsx)",
     run: "すべて変換",
@@ -136,14 +131,13 @@ const STR = {
     done: "完了",
     failed: "失敗",
     need: "PDFを1つ以上追加してください。",
-    tooBig: "5 MB超 — 単一ファイルツールをご利用ください",
-    note: "テキストと表が編集可能なファイルに抽出されます。スキャンされたPDFや凝ったデザインのPDFは完全には変換できない場合があります。5 MBを超えるファイルは一括処理に対応していません — その場合は単一ファイル変換ツールをご利用ください。",
+    note: "テキストと表が編集可能なファイルに抽出されます。スキャンされたPDFや凝ったデザインのPDFは完全には変換できない場合があります。",
     err: "問題が発生しました: ",
   },
   de: {
     title: "PDF stapelweise zu Word / Excel",
     subtitle:
-      "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Word- oder Excel-Dateien – jede wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt.",
+      "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Word- oder Excel-Dateien – jede wird konvertiert und in einem einzigen ZIP gebündelt.",
     word: "Zu Word (.docx)",
     excel: "Zu Excel (.xlsx)",
     run: "Alle konvertieren",
@@ -155,14 +149,13 @@ const STR = {
     done: "fertig",
     failed: "fehlgeschlagen",
     need: "Fügen Sie mindestens ein PDF hinzu.",
-    tooBig: "Über 5 MB – nutzen Sie das Einzeldatei-Tool",
-    note: "Text und Tabellen werden in eine bearbeitbare Datei extrahiert. Eingescannte oder aufwendig gestaltete PDFs lassen sich möglicherweise nicht perfekt konvertieren. Dateien über 5 MB werden im Stapel nicht unterstützt – verwenden Sie dafür den Einzeldatei-Konverter.",
+    note: "Text und Tabellen werden in eine bearbeitbare Datei extrahiert. Eingescannte oder aufwendig gestaltete PDFs lassen sich möglicherweise nicht perfekt konvertieren.",
     err: "Etwas ist schiefgelaufen: ",
   },
   ko: {
     title: "PDF를 Word / Excel로 일괄 변환",
     subtitle:
-      "폴더 안의 PDF를 한 번에 편집 가능한 Word나 Excel 파일로 변환하세요. 각 파일은 서버에서 변환되어 하나의 ZIP으로 묶입니다.",
+      "폴더 안의 PDF를 한 번에 편집 가능한 Word나 Excel 파일로 변환하여 하나의 ZIP으로 묶습니다.",
     word: "Word로 변환 (.docx)",
     excel: "Excel로 변환 (.xlsx)",
     run: "전체 변환",
@@ -174,8 +167,7 @@ const STR = {
     done: "완료",
     failed: "실패",
     need: "PDF를 하나 이상 추가해 주세요.",
-    tooBig: "5MB 초과 — 단일 파일 도구를 이용하세요",
-    note: "텍스트와 표가 편집 가능한 파일로 추출됩니다. 스캔본이나 디자인이 복잡한 PDF는 완벽하게 변환되지 않을 수 있습니다. 5MB가 넘는 파일은 일괄 처리에서 지원되지 않으니, 그런 파일은 단일 파일 변환기를 이용하세요.",
+    note: "텍스트와 표가 편집 가능한 파일로 추출됩니다. 스캔본이나 디자인이 복잡한 PDF는 완벽하게 변환되지 않을 수 있습니다.",
     err: "문제가 발생했습니다: ",
   },
 } satisfies AuthoredCopy<typeof _en>;
@@ -183,24 +175,24 @@ const STR = {
 // Per-target heading/subtitle (native) for the split single-format pages.
 const PT: Record<Format, Record<CopyLocale, { title: string; subtitle: string }>> = {
   word: {
-    en: { title: "Batch PDF to Word", subtitle: "Convert a whole folder of PDFs to editable Word (.docx) files in one go — each is converted on our server and packaged into a single ZIP." },
-    zh: { title: "批量 PDF 转 Word", subtitle: "把整个文件夹的 PDF 一次性转成可编辑的 Word(.docx)——每个在服务器转换并打包成一个 ZIP。" },
-    es: { title: "PDF a Word por lotes", subtitle: "Convierte una carpeta entera de PDF a archivos Word (.docx) editables de una vez: cada uno se convierte en nuestro servidor y se empaqueta en un solo ZIP." },
-    pt: { title: "PDF para Word em lote", subtitle: "Converta uma pasta inteira de PDFs para arquivos Word (.docx) editáveis de uma vez: cada um é convertido no nosso servidor e empacotado em um único ZIP." },
-    fr: { title: "PDF en Word par lots", subtitle: "Convertissez un dossier entier de PDF en fichiers Word (.docx) modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP." },
-    ja: { title: "PDFをWordに一括変換", subtitle: "フォルダ内のPDFをまとめて編集可能なWord（.docx）に変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。" },
-    de: { title: "PDF stapelweise zu Word", subtitle: "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Word-Dateien (.docx) – jede wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt." },
-    ko: { title: "PDF를 Word로 일괄 변환", subtitle: "폴더 안의 PDF를 한 번에 편집 가능한 Word(.docx) 파일로 변환하세요. 각 파일은 서버에서 변환되어 하나의 ZIP으로 묶입니다." },
+    en: { title: "Batch PDF to Word", subtitle: "Convert a whole folder of PDFs to editable Word (.docx) files in one go — each is converted and packaged into a single ZIP." },
+    zh: { title: "批量 PDF 转 Word", subtitle: "把整个文件夹的 PDF 一次性转成可编辑的 Word(.docx)，打包成一个 ZIP。" },
+    es: { title: "PDF a Word por lotes", subtitle: "Convierte una carpeta entera de PDF a archivos Word (.docx) editables de una vez: cada uno se convierte y se empaqueta en un solo ZIP." },
+    pt: { title: "PDF para Word em lote", subtitle: "Converta uma pasta inteira de PDFs para arquivos Word (.docx) editáveis de uma vez: cada um é convertido e empacotado em um único ZIP." },
+    fr: { title: "PDF en Word par lots", subtitle: "Convertissez un dossier entier de PDF en fichiers Word (.docx) modifiables en une seule fois : chaque fichier est converti et regroupé dans un seul ZIP." },
+    ja: { title: "PDFをWordに一括変換", subtitle: "フォルダ内のPDFをまとめて編集可能なWord（.docx）に変換し、1つのZIPにまとめます。" },
+    de: { title: "PDF stapelweise zu Word", subtitle: "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Word-Dateien (.docx) – jede wird konvertiert und in einem einzigen ZIP gebündelt." },
+    ko: { title: "PDF를 Word로 일괄 변환", subtitle: "폴더 안의 PDF를 한 번에 편집 가능한 Word(.docx) 파일로 변환하여 하나의 ZIP으로 묶습니다." },
   },
   excel: {
-    en: { title: "Batch PDF to Excel", subtitle: "Convert a whole folder of PDFs to editable Excel (.xlsx) spreadsheets in one go — each is converted on our server and packaged into a single ZIP." },
-    zh: { title: "批量 PDF 转 Excel", subtitle: "把整个文件夹的 PDF 一次性转成可编辑的 Excel(.xlsx)——每个在服务器转换并打包成一个 ZIP。" },
-    es: { title: "PDF a Excel por lotes", subtitle: "Convierte una carpeta entera de PDF a hojas de cálculo Excel (.xlsx) editables de una vez: cada una se convierte en nuestro servidor y se empaqueta en un solo ZIP." },
-    pt: { title: "PDF para Excel em lote", subtitle: "Converta uma pasta inteira de PDFs para planilhas Excel (.xlsx) editáveis de uma vez: cada uma é convertida no nosso servidor e empacotada em um único ZIP." },
-    fr: { title: "PDF en Excel par lots", subtitle: "Convertissez un dossier entier de PDF en feuilles de calcul Excel (.xlsx) modifiables en une seule fois : chaque fichier est converti sur notre serveur et regroupé dans un seul ZIP." },
-    ja: { title: "PDFをExcelに一括変換", subtitle: "フォルダ内のPDFをまとめて編集可能なExcel（.xlsx）に変換します——各ファイルはサーバーで変換され、1つのZIPにまとめられます。" },
-    de: { title: "PDF stapelweise zu Excel", subtitle: "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Excel-Tabellen (.xlsx) – jede wird auf unserem Server konvertiert und in einem einzigen ZIP gebündelt." },
-    ko: { title: "PDF를 Excel로 일괄 변환", subtitle: "폴더 안의 PDF를 한 번에 편집 가능한 Excel(.xlsx) 파일로 변환하세요. 각 파일은 서버에서 변환되어 하나의 ZIP으로 묶입니다." },
+    en: { title: "Batch PDF to Excel", subtitle: "Convert a whole folder of PDFs to editable Excel (.xlsx) spreadsheets in one go — each is converted and packaged into a single ZIP." },
+    zh: { title: "批量 PDF 转 Excel", subtitle: "把整个文件夹的 PDF 一次性转成可编辑的 Excel(.xlsx)，打包成一个 ZIP。" },
+    es: { title: "PDF a Excel por lotes", subtitle: "Convierte una carpeta entera de PDF a hojas de cálculo Excel (.xlsx) editables de una vez: cada una se convierte y se empaqueta en un solo ZIP." },
+    pt: { title: "PDF para Excel em lote", subtitle: "Converta uma pasta inteira de PDFs para planilhas Excel (.xlsx) editáveis de uma vez: cada uma é convertida e empacotada em um único ZIP." },
+    fr: { title: "PDF en Excel par lots", subtitle: "Convertissez un dossier entier de PDF en feuilles de calcul Excel (.xlsx) modifiables en une seule fois : chaque fichier est converti et regroupé dans un seul ZIP." },
+    ja: { title: "PDFをExcelに一括変換", subtitle: "フォルダ内のPDFをまとめて編集可能なExcel（.xlsx）に変換し、1つのZIPにまとめます。" },
+    de: { title: "PDF stapelweise zu Excel", subtitle: "Konvertieren Sie einen ganzen Ordner mit PDFs auf einmal in bearbeitbare Excel-Tabellen (.xlsx) – jede wird konvertiert und in einem einzigen ZIP gebündelt." },
+    ko: { title: "PDF를 Excel로 일괄 변환", subtitle: "폴더 안의 PDF를 한 번에 편집 가능한 Excel(.xlsx) 파일로 변환하여 하나의 ZIP으로 묶습니다." },
   },
 };
 
@@ -259,40 +251,27 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
     setError(null);
     setProgress(0);
     const route = format === "word" ? "pdf-to-word" : "pdf-to-excel";
+    const ext = format === "word" ? ".docx" : ".xlsx";
     const updated = [...items];
     for (let i = 0; i < updated.length; i++) {
       setProgress(i + 1);
       const it = updated[i];
-      if (it.file.size > MAX_BYTES) {
-        updated[i] = { ...it, status: "error", msg: t.tooBig };
-        setItems([...updated]);
-        continue;
-      }
       try {
-        const fd = new FormData();
-        fd.append("route", route);
-        fd.append("file", it.file, it.file.name || "source.pdf");
-        const res = await fetch(REVERSE_API, { method: "POST", body: fd });
-        if (!res.ok) {
-          let msg = t.failed;
-          try {
-            const j = await res.json();
-            if (j?.message) msg = j.message;
-          } catch {
-            /* non-JSON error body */
-          }
-          updated[i] = { ...it, status: "error", msg };
-        } else {
-          const blob = await res.blob();
-          updated[i] = blob.size === 0 ? { ...it, status: "error", msg: t.failed } : { ...it, status: "done", blob };
-        }
+        const outputFileName = it.name.replace(/\.pdf$/i, ext);
+        const artifact = await runCloudConvert({
+          file: it.file,
+          route,
+          outputFileName,
+          locale: locale as CloudLocale,
+        });
+        updated[i] = { ...it, status: "done", blob: artifact.blob };
       } catch (e) {
         updated[i] = { ...it, status: "error", msg: e instanceof Error ? e.message : String(e) };
       }
       setItems([...updated]);
     }
     setPhase("done");
-  }, [items, format, t]);
+  }, [items, format, t, locale]);
 
   const download = async () => {
     const ext = format === "word" ? "docx" : "xlsx";
@@ -332,18 +311,6 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
   const doneCount = items.filter((it) => it.status === "done").length;
   const formats: Format[] = ["word", "excel"];
 
-  const PRIVACY: Record<AuthoredLocale, string> = {
-    en: "Converted on our server",
-    zh: "在我们的服务器转换",
-    es: "Convertido en nuestro servidor",
-    fr: "Converti sur notre serveur",
-    pt: "Convertido no nosso servidor",
-    ja: "当社のサーバーで変換",
-    de: "Auf unserem Server konvertiert",
-    ko: "당사 서버에서 변환",
-  };
-  const privacyLabel = locale === "zh-Hant" ? toHant(PRIVACY.zh) : PRIVACY[al];
-
   return (
     <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 pb-16 sm:px-6 sm:pb-20 pt-12 sm:pt-16`}>
       {!embedded && <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{head.title}</h1>}
@@ -363,7 +330,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
       />
 
       {items.length === 0 ? (
-        <BatchUploadBox locale={childLocale} onFiles={addFiles} privacyLabel={privacyLabel} embedded={embedded} valueZone="server" />
+        <BatchUploadBox locale={childLocale} onFiles={addFiles} privacyLabel={null} embedded={embedded} valueZone="server" />
       ) : (
         <>
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">

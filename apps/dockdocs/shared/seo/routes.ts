@@ -101,8 +101,6 @@ const ROUTE_META: Partial<Record<RouteSlug, RouteMeta>> = {
   "govbid-matrix": { name: "Gov Bid Compliance Matrix — AI Requirement Extraction", changeFrequency: w, priority: 0.85 },
   redline: { name: "PDF Redline — Compare Two PDF Versions", changeFrequency: w, priority: 0.78 },
   flashcards: { name: "PDF Flashcard Maker — Study Cards from Any PDF", changeFrequency: w, priority: 0.75 },
-  "batch-summary": { name: "Batch Summarize PDFs — Multiple Documents", changeFrequency: w, priority: 0.7 },
-
   // Convert — PDF to X
   "pdf-to-word": { name: "PDF to Word — Free Online Converter", changeFrequency: w, priority: 0.85 },
   "pdf-to-excel": { name: "PDF to Excel — Extract Data", changeFrequency: w, priority: 0.85 },

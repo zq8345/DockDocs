@@ -47,7 +47,6 @@ import { BatchSortClient } from "@/components/BatchSortClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
-import { BatchSummaryClient } from "@/components/BatchSummaryClient";
 import { BatchCompressClient } from "@/components/BatchCompressClient";
 import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
 import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
@@ -450,28 +449,6 @@ const CUSTOM_TOOL_COPY: Record<string, {
       de: "Ziehen Sie einen ganzen PDF-Ordner hinein und komprimieren Sie alle auf einmal — jede Datei wird in Ihrem Browser verkleinert und in einer einzigen ZIP zusammengefasst.",
       ko: "PDF 폴더 전체를 한 번에 압축합니다 — 각 파일을 브라우저에서 압축하여 하나의 ZIP으로 패키징합니다.",
       en: "Drop a whole folder of PDFs and compress them all in one go — each shrunk in your browser and packaged into a single ZIP.",
-    },
-  },
-  "batch-summary": {
-    title: {
-      zh: "批量摘要 PDF — 一次总结多份文档",
-      es: "Resumir PDFs en lote — Resumir varios documentos a la vez",
-      pt: "Resumir PDFs em lote — Resumir vários documentos de uma vez",
-      fr: "Résumer des PDF en lot — Résumer plusieurs documents à la fois",
-      ja: "PDF一括要約 — 複数ドキュメントをまとめてAI要約",
-      de: "PDFs stapelweise zusammenfassen — mehrere Dokumente auf einmal",
-      ko: "PDF 일괄 요약 — 여러 문서를 한 번에 요약",
-      en: "Batch Summarize PDFs — Summarize Multiple Documents",
-    },
-    description: {
-      zh: "上传多份报告/论文/合同，AI 为每份生成执行摘要和关键要点，一次最多 5 份。",
-      es: "Sube varios informes, artículos o contratos y obtén un resumen conciso de cada uno generado por IA — resumen ejecutivo y puntos clave.",
-      pt: "Carregue vários relatórios, artigos ou contratos e obtenha um resumo conciso de cada um gerado por IA — resumo executivo e pontos-chave.",
-      fr: "Chargez plusieurs rapports, articles ou contrats et obtenez un résumé concis de chacun généré par IA — résumé exécutif et points clés.",
-      ja: "複数のレポート・論文・契約書をアップロードすると、AIが各ファイルのエグゼクティブサマリーと要点を生成します。",
-      de: "Laden Sie mehrere Berichte, Aufsätze oder Verträge hoch und erhalten Sie eine prägnante KI-Zusammenfassung von jedem — Management-Zusammenfassung und Kernpunkte.",
-      ko: "여러 보고서, 논문, 계약서를 업로드하면 AI가 각각의 간결한 요약을 생성합니다 — 핵심 요약 및 주요 항목.",
-      en: "Upload several reports, papers, or contracts and get a concise AI summary of each — executive summary plus key points.",
     },
   },
   "flashcards": {
@@ -1215,31 +1192,6 @@ async function generateMetadataInner({
       alternates: {
         canonical: localizedPath(rawLocale, "batch-compress"),
         languages: languageAlternates("batch-compress"),
-      },
-    };
-  }
-
-  if (slug === "batch-summary") {
-    return {
-      title: m(
-        "Batch Summarize PDFs — Summarize Multiple Documents",
-        "批量摘要 PDF — 一次总结多份文档",
-        "Resumir PDF en lote — Resume varios documentos a la vez",
-        "Resumir PDF em lote — Resuma vários documentos de uma vez",
-        "Résumer des PDF par lot — Résumez plusieurs documents à la fois",
-        "PDFを一括要約 — 複数の文書をまとめて要約",
-      ),
-      description: m(
-        "Upload several reports, papers, or contracts and get a concise AI summary of each — executive summary plus key points.",
-        "上传多份报告/论文/合同，AI 为每份生成执行摘要和关键要点，一次最多 5 份。",
-        "Sube varios informes, artículos o contratos y obtén un resumen conciso de cada uno con IA: resumen ejecutivo y puntos clave.",
-        "Envie vários relatórios, artigos ou contratos e obtenha um resumo conciso de cada um com IA: resumo executivo e pontos-chave.",
-        "Importez plusieurs rapports, articles ou contrats et obtenez un résumé concis de chacun par IA : synthèse et points clés.",
-        "複数のレポート・論文・契約書をアップロードすると、AIが各文書の簡潔な要約（エグゼクティブサマリーと要点）を生成します。",
-      ),
-      alternates: {
-        canonical: localizedPath(rawLocale, "batch-summary"),
-        languages: languageAlternates("batch-summary"),
       },
     };
   }
@@ -2027,10 +1979,6 @@ export default async function LocalizedRoute({
 
   if (slug === "batch-compress") {
     return <>{extraJsonLd}<BatchCompressClient locale={clientLocale} /></>;
-  }
-
-  if (slug === "batch-summary") {
-    return <BatchSummaryClient locale={clientLocale} />;
   }
 
   if (slug === "flashcards") {
