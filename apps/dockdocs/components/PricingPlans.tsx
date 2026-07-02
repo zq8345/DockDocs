@@ -1017,7 +1017,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       <div className={`mx-auto mt-24 ${LAYOUT.content}`}>
         <p className={eyebrowCls(zh)}>{zh ? h("// 常见问题") : locale === "es" ? "// Preguntas frecuentes" : locale === "pt" ? "// Perguntas frequentes" : locale === "fr" ? "// FAQ" : locale === "ja" ? "// よくある質問" : locale === "de" ? "// Häufige Fragen" : locale === "ko" ? "// 자주 묻는 질문" : "// FAQ"}</p>
         <h2 className={`mt-4 ${H2_CLS}`}>{c.faqTitle}</h2>
-        <div className="mt-8 divide-y divide-[color:var(--line)] border-y border-[color:var(--line)]">
+        <div className="mt-8">
           {c.faq.map((item) => (
             <div key={item.q} className="py-6">
               <p className="text-[15px] font-normal text-[color:var(--foreground)]">{item.q}</p>
@@ -1025,15 +1025,6 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Bottom CTA */}
-      <div className={`mx-auto mt-24 ${LAYOUT.content}`}>
-        <h2 className={H2_CLS}>{c.ctaTitle}</h2>
-        <p className="mt-4 max-w-xl text-[16px] leading-[1.55] text-[color:var(--muted)]">{c.ctaDesc}</p>
-        <a href={zh ? h("/zh/") : locale === "es" ? "/es/" : locale === "pt" ? "/pt/" : locale === "fr" ? "/fr/" : locale === "ja" ? "/ja/" : locale === "de" ? "/de/" : locale === "ko" ? "/ko/" : "/"}
-          className="mt-8 inline-flex h-11 items-center rounded-full bg-[color:var(--accent)] px-6 text-[14px] font-medium transition hover:bg-[color:var(--accent-hover)]"
-        >{c.ctaBtn}</a>
       </div>
 
       {/* Upgrade breakdown — credit is visible before the redirect (可溯源/honest). */}
