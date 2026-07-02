@@ -38,7 +38,12 @@
 
 		# Browser direct-upload POST → FastAPI which validates the HMAC token.
 		# CORS header is also added here so the browser accepts the PDF response.
+		# request_body cap: Caddy rejects oversized bodies before FastAPI buffers them,
+		# so an attacker without a valid token can't force the box to absorb 100 MB.
 		handle /upload/* {
+			request_body {
+				max_size 105MB
+			}
 			header Access-Control-Allow-Origin "https://dockdocs.app"
 			header Access-Control-Allow-Methods "POST, OPTIONS"
 			header Access-Control-Allow-Headers "Content-Type, X-DockDocs-Upload-Token"
