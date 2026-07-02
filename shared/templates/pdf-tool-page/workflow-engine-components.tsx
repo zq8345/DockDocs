@@ -673,7 +673,7 @@ export function ResultPreview({ type, text, blob }: { type: WorkflowResult["prev
     // badge (W/X/P) the upload preview uses, so input and output stay consistent.
     return (
       <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)]">
-        <OfficeFallback name={text ?? ""} max={240} />
+        <OfficeFallback name={text ?? ""} />
       </div>
     );
   }

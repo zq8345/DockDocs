@@ -36,7 +36,10 @@ export async function renderPdfFirstPageDataUrl(source: File | Blob): Promise<st
   }
 }
 
-export function OfficeFallback({ name, max }: { name: string; max: number }) {
+// Office type badge (W/X/P). Fixed 240×180 (w×h) per Joe 2026-07-02 — office files
+// can't render a real first page client-side, so the badge uses one landscape
+// card size everywhere (upload preview + conversion result preview).
+export function OfficeFallback({ name }: { name: string }) {
   const ext = name.split(".").pop()?.toLowerCase() ?? "";
   const [color, label]: [string, string] =
     ["doc", "docx", "odt", "rtf"].includes(ext) ? ["#2b7cd3", "W"] :
@@ -45,7 +48,7 @@ export function OfficeFallback({ name, max }: { name: string; max: number }) {
     ["#8a8a8a", (ext.slice(0, 3) || "?").toUpperCase()];
   return (
     <div
-      style={{ width: `${max}px`, height: `${max}px`, color, backgroundColor: `${color}18` }}
+      style={{ width: "240px", height: "180px", color, backgroundColor: `${color}18` }}
       className="flex items-center justify-center text-[64px] font-bold"
     >
       {label}
@@ -123,7 +126,7 @@ export function DocPreview({
             className="h-auto w-auto"
           />
         ) : (
-          <OfficeFallback name={file.name} max={max} />
+          <OfficeFallback name={file.name} />
         )}
         {/* × remove button — top-right corner of document preview, hover:red */}
         <button
