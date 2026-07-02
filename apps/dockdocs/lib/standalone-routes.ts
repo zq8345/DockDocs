@@ -48,5 +48,7 @@ export const standaloneRoutes = [
   "due-diligence-checklist-what-to-review",
   "redact-pdf-locally",
   "bates-numbering-pdf",
+  "ai-contract-risk-for-legal-teams",
+  "ai-document-workspace",
   "upgrade",
 ] as const;

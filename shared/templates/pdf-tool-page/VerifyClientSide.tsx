@@ -55,8 +55,6 @@ export const LOCAL_ONLY_SLUGS = new Set<string>([
   "batch-compress",
   "batch-pdf-to-image",
   "batch-protect-pdf",
-  "batch-split-merge",
-  "batch-rotate-pdf",
 ]);
 
 import { deepHant } from "./zh-hant";
