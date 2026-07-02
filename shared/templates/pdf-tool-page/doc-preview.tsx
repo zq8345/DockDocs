@@ -11,15 +11,8 @@ function OfficeFallback({ file, max }: { file: File; max: number }) {
     ["#8a8a8a", (ext.slice(0, 3) || "?").toUpperCase()];
   return (
     <div
-      style={{
-        maxWidth: `${max}px`,
-        maxHeight: `${max}px`,
-        width: `${Math.round(max * 0.6)}px`,
-        height: `${max}px`,
-        color,
-        backgroundColor: `${color}18`,
-      }}
-      className="flex items-center justify-center text-[28px] font-bold"
+      style={{ maxWidth: `${max}px`, maxHeight: `${max}px`, color, backgroundColor: `${color}18` }}
+      className="flex items-center justify-center p-8 text-[28px] font-bold"
     >
       {label}
     </div>
