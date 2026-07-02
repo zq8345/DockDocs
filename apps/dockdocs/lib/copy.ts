@@ -479,8 +479,6 @@ export const runtimeCopy = {
       featureColumn: "Feature",
       comparisonEyebrow: "Feature comparison",
       comparisonTitle: "Compare workspace availability.",
-      billingNote:
-        "UI only: Stripe, billing API, quota enforcement, and subscription checks are not connected in this design pass.",
       flowEyebrow: "Upgrade path",
       flowTitle: "Move from first upload to a wider document workspace.",
       flowDescription:
@@ -1020,7 +1018,6 @@ export const runtimeCopy = {
       featureColumn: "功能",
       comparisonEyebrow: "功能对比",
       comparisonTitle: "比较工作区可用能力。",
-      billingNote: "仅 UI：本次设计不接 Stripe、Billing API、额度校验或订阅检查。",
       flowEyebrow: "升级路径",
       flowTitle: "从首次上传扩展到更完整的文档工作区。",
       flowDescription: "这里的价格流程只做前端展示：选择方案、查看功能可用性，然后从账户入口继续。",
@@ -1619,8 +1616,6 @@ export const runtimeCopy = {
       featureColumn: "Función",
       comparisonEyebrow: "Comparación de funciones",
       comparisonTitle: "Compara la disponibilidad del espacio de trabajo.",
-      billingNote:
-        "Solo interfaz: Stripe, la API de facturación, la aplicación de cuotas y las verificaciones de suscripción no están conectados en este diseño.",
       flowEyebrow: "Ruta de mejora",
       flowTitle: "Pasa de la primera carga a un espacio de trabajo de documentos más amplio.",
       flowDescription:
@@ -2226,8 +2221,6 @@ export const runtimeCopy = {
       featureColumn: "Funcionalidade",
       comparisonEyebrow: "Comparação de funcionalidades",
       comparisonTitle: "Compare a disponibilidade do espaço de trabalho.",
-      billingNote:
-        "Somente interface: Stripe, a API de faturamento, a aplicação de cotas e as verificações de assinatura não estão conectados neste design.",
       flowEyebrow: "Caminho de upgrade",
       flowTitle: "Passe do primeiro envio a um espaço de trabalho de documentos mais amplo.",
       flowDescription:
@@ -2833,8 +2826,6 @@ export const runtimeCopy = {
       featureColumn: "Fonctionnalité",
       comparisonEyebrow: "Comparaison des fonctionnalités",
       comparisonTitle: "Comparez la disponibilité de l'espace de travail.",
-      billingNote:
-        "Interface uniquement : Stripe, l'API de facturation, l'application des quotas et les vérifications d'abonnement ne sont pas connectés dans ce design.",
       flowEyebrow: "Parcours de mise à niveau",
       flowTitle: "Du premier envoi à un espace de travail documentaire plus large.",
       flowDescription:
@@ -3440,8 +3431,6 @@ export const runtimeCopy = {
       featureColumn: "Funktion",
       comparisonEyebrow: "Funktionsvergleich",
       comparisonTitle: "Verfügbarkeit im Arbeitsbereich vergleichen.",
-      billingNote:
-        "Nur Oberfläche: Stripe, Abrechnungs-API, Kontingentprüfung und Abonnementprüfungen sind in diesem Design noch nicht angebunden.",
       flowEyebrow: "Upgrade-Pfad",
       flowTitle: "Vom ersten Upload zu einem umfassenderen Dokumenten-Arbeitsbereich.",
       flowDescription:
@@ -4132,8 +4121,6 @@ const runtimeCopyJa = {
     featureColumn: "機能",
     comparisonEyebrow: "機能比較",
     comparisonTitle: "ワークスペースの利用範囲を比較。",
-    billingNote:
-      "UI のみ：Stripe、課金 API、利用上限の適用、サブスクリプションの確認は、今回のデザインでは接続されていません。",
     flowEyebrow: "アップグレードの流れ",
     flowTitle: "最初のアップロードから、より広い文書ワークスペースへ。",
     flowDescription:
@@ -4614,7 +4601,6 @@ const runtimeCopyKo = {
     featureColumn: "기능",
     comparisonEyebrow: "기능 비교",
     comparisonTitle: "작업 공간 가용성을 비교하세요.",
-    billingNote: "UI 전용: Stripe, 결제 API, 할당량 적용 및 구독 확인은 이 디자인 패스에서 연결되지 않습니다.",
     flowEyebrow: "업그레이드 경로",
     flowTitle: "첫 번째 업로드에서 더 광범위한 문서 작업 공간으로 이동하세요.",
     flowDescription: "요금 플로우는 여기서 프레젠테이션용입니다: 플랜 선택, 기능 가용성 검토, 그런 다음 계정 진입점을 통해 계속하세요.",
