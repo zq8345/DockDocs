@@ -389,7 +389,7 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
             </div>
           </div>
 
-          <ul className="mt-4 grid gap-2">
+          <div className="mt-4 grid gap-2">
             {items.map((it) => (
               <BatchFileCard
                 key={it.id}
@@ -407,7 +407,7 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}
-          </ul>
+          </div>
           <p className="mt-3 text-[12px] text-[color:var(--faint)]">{t.note}</p>
         </>
       )}

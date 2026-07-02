@@ -263,7 +263,7 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
             </div>
           </div>
 
-          <ul className="mt-4 grid gap-2">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {docs.map((d) => (
               <BatchFileCard
                 key={d.id}
@@ -273,7 +273,7 @@ export function BatchExtractSheetClient({ locale = "en" }: { locale?: Locale }) 
                 onRemove={phase === "idle" ? () => setDocs((prev) => prev.filter((x) => x.id !== d.id)) : undefined}
               />
             ))}
-          </ul>
+          </div>
 
           {phase === "done" && dims.length > 0 && (
             <div className="mt-6">

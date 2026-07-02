@@ -2,6 +2,30 @@
 
 import { useEffect, useState } from "react";
 
+function OfficeFallback({ file, max }: { file: File; max: number }) {
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  const [color, label]: [string, string] =
+    ["doc", "docx", "odt", "rtf"].includes(ext) ? ["#2b7cd3", "W"] :
+    ["xls", "xlsx", "ods"].includes(ext) ? ["#217346", "X"] :
+    ["ppt", "pptx", "odp"].includes(ext) ? ["#d24726", "P"] :
+    ["#8a8a8a", (ext.slice(0, 3) || "?").toUpperCase()];
+  return (
+    <div
+      style={{
+        maxWidth: `${max}px`,
+        maxHeight: `${max}px`,
+        width: `${Math.round(max * 0.6)}px`,
+        height: `${max}px`,
+        color,
+        backgroundColor: `${color}18`,
+      }}
+      className="flex items-center justify-center text-[28px] font-bold"
+    >
+      {label}
+    </div>
+  );
+}
+
 /**
  * Shared primitive: renders a PDF or image file's first page as a bordered
  * preview that hugs the document's natural shape (portrait stays tall, landscape
@@ -72,9 +96,7 @@ export function DocPreview({
             className="h-auto w-auto"
           />
         ) : (
-          <div className="flex h-48 w-36 items-center justify-center text-[10px] font-bold text-[color:var(--accent-strong)]">
-            {file.name.split(".").pop()?.toUpperCase().slice(0, 3) ?? "PDF"}
-          </div>
+          <OfficeFallback file={file} max={max} />
         )}
         {/* × remove button — top-right corner of document preview, hover:red */}
         <button

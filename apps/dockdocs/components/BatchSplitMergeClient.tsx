@@ -455,7 +455,7 @@ export function BatchSplitMergeClient({ locale = "en", lockMode, embedded = fals
             </div>
           </div>
 
-          <ul className="mt-4 grid gap-2">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {items.map((it) => (
               <BatchFileCard
                 key={it.id}
@@ -472,7 +472,7 @@ export function BatchSplitMergeClient({ locale = "en", lockMode, embedded = fals
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}
-          </ul>
+          </div>
           <p className="mt-3 text-[12px] text-[color:var(--faint)]">{t.note}</p>
         </>
       )}

@@ -480,7 +480,7 @@ export function BatchSummaryClient({ locale = "en", embedded = false }: { locale
             </div>
           </div>
 
-          <ul className="mt-4 grid gap-2">
+          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {docs.map((d) => (
               <BatchFileCard
                 key={d.id}
@@ -490,7 +490,7 @@ export function BatchSummaryClient({ locale = "en", embedded = false }: { locale
                 onRemove={phase === "idle" ? () => setDocs((prev) => prev.filter((x) => x.id !== d.id)) : undefined}
               />
             ))}
-          </ul>
+          </div>
 
           {results.length > 0 && (
             <div className="mt-6">

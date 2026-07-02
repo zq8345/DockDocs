@@ -13,6 +13,7 @@ import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
+import { DocPreview } from "../../../shared/templates/pdf-tool-page/doc-preview";
 
 type Locale = RouteLocale;
 type Mode = "crop" | "delete";
@@ -438,7 +439,6 @@ export function BatchFixScansClient({ locale = "en", embedded = false }: { local
   const [mode, setMode] = useState<Mode>("crop");
   const [edges, setEdges] = useState<Edges>(ZERO);
   const [delPages, setDelPages] = useState("");
-  const [preview, setPreview] = useState("");
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -462,40 +462,11 @@ export function BatchFixScansClient({ locale = "en", embedded = false }: { local
     );
   }, []);
 
-  // Render page 1 of the first file as a crop preview.
-  useEffect(() => {
-    let cancelled = false;
-    if (!items.length) {
-      setPreview("");
-      return;
-    }
-    (async () => {
-      try {
-        const pdfjs = await import("pdfjs-dist");
-        pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-        const doc = await pdfjs.getDocument({ data: new Uint8Array(await items[0].file.arrayBuffer()) }).promise;
-        const page = await doc.getPage(1);
-        const viewport = page.getViewport({ scale: 1 });
-        const canvas = document.createElement("canvas");
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const ctx = canvas.getContext("2d");
-        if (ctx) await page.render({ canvas, canvasContext: ctx, viewport }).promise;
-        if (!cancelled) setPreview(canvas.toDataURL("image/jpeg", 0.7));
-        try { doc.destroy(); } catch { /* ignore */ }
-      } catch {
-        if (!cancelled) setPreview("");
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [items]);
-
   const reset = () => {
     setItems([]);
     setMode("crop");
     setEdges(ZERO);
     setDelPages("");
-    setPreview("");
     setPhase("idle");
     setProgress(0);
     setError(null);
@@ -632,35 +603,28 @@ export function BatchFixScansClient({ locale = "en", embedded = false }: { local
             </div>
           </div>
 
+          {/* DocPreview: proportional to document shape; × removes this file from the batch */}
+          <div className="mt-6">
+            <DocPreview
+              file={items[0].file}
+              max={480}
+              onRemove={() => { if (phase !== "running") setItems(prev => prev.filter(x => x.id !== items[0].id)); }}
+              removeLabel={t.remove}
+            />
+          </div>
+
           {mode === "crop" ? (
-            <div className="mt-5 grid gap-6 lg:grid-cols-2">
-              <div className="order-2 lg:order-1">
-                <p className="text-[12.5px] leading-relaxed text-[color:var(--faint)]">{t.cropHint}</p>
-                <div className="mt-4 space-y-3">
-                  {slider("top", t.top)}
-                  {slider("right", t.right)}
-                  {slider("bottom", t.bottom)}
-                  {slider("left", t.left)}
-                </div>
-              </div>
-              <div className="order-1 lg:order-2">
-                <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.preview}</span>
-                <div className="relative inline-block max-w-full overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-white">
-                  {preview ? (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img src={preview} alt="preview" className="block h-auto w-full" />
-                  ) : (
-                    <div className="flex h-64 items-center justify-center"><Spinner /></div>
-                  )}
-                  <div className="pointer-events-none absolute inset-x-0 top-0 bg-black/45" style={{ height: `${edges.top}%` }} />
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-black/45" style={{ height: `${edges.bottom}%` }} />
-                  <div className="pointer-events-none absolute inset-y-0 left-0 bg-black/45" style={{ width: `${edges.left}%` }} />
-                  <div className="pointer-events-none absolute inset-y-0 right-0 bg-black/45" style={{ width: `${edges.right}%` }} />
-                </div>
+            <div className="mt-5 mx-auto max-w-md">
+              <p className="text-[12.5px] leading-relaxed text-[color:var(--faint)]">{t.cropHint}</p>
+              <div className="mt-4 space-y-3">
+                {slider("top", t.top)}
+                {slider("right", t.right)}
+                {slider("bottom", t.bottom)}
+                {slider("left", t.left)}
               </div>
             </div>
           ) : (
-            <div className="mt-5 max-w-md">
+            <div className="mt-5 mx-auto max-w-md">
               <label className="block">
                 <span className="mb-1 block text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.delLabel}</span>
                 <input
@@ -675,7 +639,7 @@ export function BatchFixScansClient({ locale = "en", embedded = false }: { local
             </div>
           )}
 
-          <ul className="mt-5 grid gap-2">
+          <div className="mt-5 grid gap-2">
             {items.map((it) => (
               <BatchFileCard
                 key={it.id}
@@ -695,7 +659,7 @@ export function BatchFixScansClient({ locale = "en", embedded = false }: { local
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}
-          </ul>
+          </div>
           <p className="mt-3 text-[12px] text-[color:var(--faint)]">{t.note}</p>
         </>
       )}

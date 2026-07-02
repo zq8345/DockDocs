@@ -58,11 +58,18 @@ function FileThumb({ file, className = "h-12 w-10" }: { file: File; className?: 
   );
 }
 
+const OFFICE_EXTS = new Set(["doc","docx","odt","rtf","xls","xlsx","ods","ppt","pptx","odp"]);
+function isOfficeFile(file: File) {
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  return OFFICE_EXTS.has(ext);
+}
+
 // BigPreviewCard delegates to the shared DocPreview primitive (doc-preview.tsx).
-// locale→removeLabel computed here so tr() stays in this file.
+// Office files can't be rendered → cap at 240 (colored badge). PDF/image → 480 (real render).
 function BigPreviewCard({ file, onRemove, locale }: { file: File; onRemove: () => void; locale: TemplateLocale | undefined }) {
   const removeLabel = tr(locale, "Remove", "移除", "Quitar", "Remover", "Retirer", "削除", "Entfernen");
-  return <DocPreview file={file} max={480} onRemove={onRemove} removeLabel={removeLabel} />;
+  const max = isOfficeFile(file) ? 240 : 480;
+  return <DocPreview file={file} max={max} onRemove={onRemove} removeLabel={removeLabel} />;
 }
 
 // Password input with a show/hide eye toggle.
