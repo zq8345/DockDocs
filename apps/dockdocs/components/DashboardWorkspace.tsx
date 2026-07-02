@@ -7,7 +7,6 @@ import { WorkspaceTopbar } from "@/components/WorkspaceTopbar";
 import { WorkspaceNavContext } from "@/components/WorkspaceNavContext";
 import { LegalSessionProvider } from "@/components/LegalSessionProvider";
 import { headerStructure, navItemLabels } from "@/lib/header-nav";
-import { readWorkHistory, type WorkHistoryItem } from "@/lib/work-history";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { isRouteLocale } from "@/lib/i18n";
 
@@ -192,7 +191,6 @@ export function DashboardWorkspace({ initialTool }: { initialTool?: string | nul
   const [hydrated, setHydrated] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [activeTool, setActiveTool] = useState<string | null>(null);
-  const [history, setHistory] = useState<WorkHistoryItem[]>([]);
 
   // Mount: restore locale, set initial tool (from path or legacy ?tool= param)
   useEffect(() => {
@@ -201,7 +199,6 @@ export function DashboardWorkspace({ initialTool }: { initialTool?: string | nul
       if (saved && isRouteLocale(saved)) setLocale(saved as RuntimeLocale);
     } catch {}
     setHydrated(true);
-    setHistory(readWorkHistory().slice(0, 8));
 
     if (initialTool) {
       // Path-based: e.g. /workspace/chat-with-pdf/ → initialTool = "/chat-with-pdf"
@@ -402,38 +399,8 @@ export function DashboardWorkspace({ initialTool }: { initialTool?: string | nul
               <DomainSoonPanel domain="research" locale={locale} />
             ) : null}
           </div>
-        ) : history.length > 0 ? (
-          /* ── ③ Recent docs (returning user) ── */
-          <div className="mx-auto w-full max-w-2xl px-8 py-12">
-            <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-[color:var(--faint)]">
-              {dash.recentShort ?? "Recent"}
-            </p>
-            <div className="space-y-1">
-              {history.map((item) => (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  className="flex min-w-0 items-center gap-3 rounded-[var(--radius)] border border-transparent px-3 py-2.5 transition hover:border-[color:var(--line)] hover:bg-[color:var(--surface)]"
-                >
-                  <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0 text-[color:var(--faint)]">
-                    <path d="M5 3h8l4 4v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
-                    <path d="M13 3v4h4" />
-                  </svg>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-medium text-[color:var(--foreground)]">
-                      {item.fileName}
-                    </p>
-                    <p className="text-[11px] text-[color:var(--faint)]">{item.subtitle}</p>
-                  </div>
-                </a>
-              ))}
-            </div>
-            <p className="mt-8 text-center text-[11.5px] text-[color:var(--faint)]">
-              ⚿ {dash.privacyNote ?? "Files processed in your browser · never uploaded"}
-            </p>
-          </div>
         ) : (
-          /* ── ③ Quick start (new user) ── */
+          /* ── ③ Quick start ── */
           <div
             className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-8 py-12"
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
