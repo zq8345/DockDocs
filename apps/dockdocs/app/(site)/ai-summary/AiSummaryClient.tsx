@@ -12,6 +12,7 @@ import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import type { AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
+import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type SummaryData = {
   executiveSummary: string;
@@ -23,7 +24,16 @@ type SummaryData = {
   model?: string;
 };
 
-type Status = "idle" | "extracting" | "summarizing" | "done" | "error";
+type CardStatus = "pending" | "extracting" | "summarizing" | "done" | "error";
+
+type FileCard = {
+  id: string;
+  file: File;
+  status: CardStatus;
+  summary: SummaryData | null;
+  error: string;
+  expanded: boolean;
+};
 
 const maxPages = 20;
 const maxCharacters = 24000;
@@ -41,7 +51,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     workflowTitle: "How an AI summary fits your work",
     workflowDescription: "For the moment a long report, contract, or deck lands in your lap and you need the gist before you commit to reading every page.",
     steps: [
-      "Upload the PDF — up to 20 pages.",
+      "Upload one or more PDFs — up to 20 pages each.",
       "DockDocs extracts the text in your browser and sends only that text for summarizing.",
       "The AI distills a summary, key points, and suggested next steps from your file's text.",
       "Review the result — check the key numbers and dates against the original.",
@@ -65,7 +75,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     workflowTitle: "AI 摘要如何融入你的工作",
     workflowDescription: "当一份很长的报告、合同或演示文稿落到你手上、你需要在通读每一页之前先抓住要点时。",
     steps: [
-      "上传 PDF——最多 20 页。",
+      "上传一个或多个 PDF——每个最多 20 页。",
       "DockDocs 在你的浏览器里提取文字,只把这段文字发送去生成摘要。",
       "AI 从你文件的文字中提炼出摘要、关键要点和建议的后续步骤。",
       "审阅结果——把关键的数字和日期对照原文核验。",
@@ -89,7 +99,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     workflowTitle: "Cómo encaja el resumen con IA en tu trabajo",
     workflowDescription: "Para cuando un informe, contrato o presentación largo llega a tus manos y necesitas lo esencial antes de comprometerte a leer cada página.",
     steps: [
-      "Sube el PDF: hasta 20 páginas.",
+      "Sube uno o más PDF: hasta 20 páginas cada uno.",
       "DockDocs extrae el texto en tu navegador y envía solo ese texto para resumirlo.",
       "La IA destila un resumen, puntos clave y próximos pasos sugeridos del texto de tu archivo.",
       "Revisa el resultado: verifica las cifras y fechas clave con el original.",
@@ -113,7 +123,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     workflowTitle: "Como o resumo com IA se encaixa no seu trabalho",
     workflowDescription: "Para quando um relatório, contrato ou apresentação longo cai no seu colo e você precisa do essencial antes de se comprometer a ler cada página.",
     steps: [
-      "Envie o PDF: até 20 páginas.",
+      "Envie um ou mais PDFs: até 20 páginas cada.",
       "O DockDocs extrai o texto no seu navegador e envia somente esse texto para resumir.",
       "A IA destila um resumo, pontos principais e próximas etapas sugeridas do texto do seu arquivo.",
       "Revise o resultado: confira os números e datas principais com o original.",
@@ -137,7 +147,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     workflowTitle: "Comment le résumé par IA s'intègre à votre travail",
     workflowDescription: "Pour le moment où un long rapport, contrat ou support de présentation atterrit chez vous et où vous avez besoin de l'essentiel avant de vous engager à tout lire.",
     steps: [
-      "Déposez le PDF : jusqu'à 20 pages.",
+      "Déposez un ou plusieurs PDF : jusqu'à 20 pages chacun.",
       "DockDocs extrait le texte dans votre navigateur et n'envoie que ce texte pour le résumé.",
       "L'IA distille un résumé, des points clés et des prochaines étapes suggérées à partir du texte de votre fichier.",
       "Parcourez le résultat : vérifiez les chiffres et dates clés avec l'original.",
@@ -161,7 +171,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     workflowTitle: "AI 要約が業務にどう役立つか",
     workflowDescription: "長い報告書・契約書・資料が手元に来て、全ページを読み込む前に要点をつかんでおきたいとき。",
     steps: [
-      "PDF をアップロード——最大 20 ページ。",
+      "PDF を 1 つ以上アップロード——各最大 20 ページ。",
       "DockDocs がブラウザ内でテキストを抽出し、そのテキストだけを要約のために送信します。",
       "AI があなたのファイルの本文から、要約・重要なポイント・推奨される次のステップを抽出します。",
       "結果を見直し——重要な数値や日付を原文と照合します。",
@@ -185,7 +195,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     workflowTitle: "Wie eine KI-Zusammenfassung in Ihre Arbeit passt",
     workflowDescription: "Für den Moment, in dem ein langer Bericht, Vertrag oder eine Präsentation bei Ihnen landet und Sie das Wesentliche brauchen, bevor Sie sich ans Lesen jeder Seite machen.",
     steps: [
-      "Laden Sie das PDF hoch – bis zu 20 Seiten.",
+      "Laden Sie eine oder mehrere PDFs hoch – bis zu 20 Seiten je Datei.",
       "DockDocs extrahiert den Text in Ihrem Browser und sendet nur diesen Text zur Zusammenfassung.",
       "Die KI destilliert aus dem Text Ihrer Datei eine Zusammenfassung, Kernpunkte und vorgeschlagene nächste Schritte.",
       "Prüfen Sie das Ergebnis – gleichen Sie wichtige Zahlen und Daten mit dem Original ab.",
@@ -209,7 +219,7 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
     workflowTitle: "AI 요약이 업무에 어떻게 맞물리나요",
     workflowDescription: "긴 보고서, 계약서, 발표 자료가 손에 들어왔을 때 모든 페이지를 읽기 전에 요지를 파악해야 하는 순간을 위한 기능입니다.",
     steps: [
-      "PDF를 업로드하세요 — 최대 20페이지.",
+      "PDF를 하나 이상 업로드하세요 — 각각 최대 20페이지.",
       "DockDocs가 브라우저에서 텍스트를 추출하고 그 텍스트만 요약을 위해 전송합니다.",
       "AI가 파일의 텍스트에서 요약, 주요 항목, 권장 다음 단계를 뽑아냅니다.",
       "결과를 검토하세요 — 핵심 숫자와 날짜는 원본과 대조해 확인하세요.",
@@ -221,16 +231,12 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
       { label: "계약 위험 검토", href: "/contract-risk", description: "AI가 계약서의 위험하거나 한쪽에 치우치거나 빠진 조항을 각각 출처와 함께 표시하게 하세요." },
       { label: "문서 비교", href: "/compare", description: "여러 문서를 나란히 놓고 핵심 조건이 어디서 다른지 확인하세요." },
     ],
-},
+  },
 };
 
 
 export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant"; embedded?: boolean }) {
-  // childLocale collapses ko→en for child widgets (UpgradePrompt) whose prop union
-  // doesn't include ko. The page's own copy is authored ko (booleans + SECTIONS_KO).
   const childLocale = locale === "ko" ? "en" : locale;
-  // zh-Hant derives from zh via OpenCC: treat as zh for ternaries, then convert
-  // the chosen zh string to Traditional with `h(...)`.
   const hant = locale === "zh-Hant";
   const zh = locale === "zh" || hant;
   const es = locale === "es";
@@ -240,46 +246,56 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
   const de = locale === "de";
   const ko = locale === "ko";
   const h = (s: string) => (hant ? toHant(s) : s);
-  // ko authored in SECTIONS_KO; zh-Hant derives from zh (deepHant); mirrors ChatWithPdfClient.
   const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
-  const [status, setStatus] = useState<Status>("idle");
-  const [fileName, setFileName] = useState("");
-  const [error, setError] = useState("");
-  const [summary, setSummary] = useState<SummaryData | null>(null);
+
+  const fileCap = usePlanBatchFileCap();
+  const [cards, setCards] = useState<FileCard[]>([]);
+  const [processing, setProcessing] = useState(false);
   const [limitHit, setLimitHit] = useState<number | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [capNote, setCapNote] = useState("");
 
-  function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (file) void processFile(file);
+  function updateCard(id: string, patch: Partial<FileCard>) {
+    setCards(prev => prev.map(c => c.id === id ? { ...c, ...patch } : c));
   }
 
-  function handleDrop(event: React.DragEvent) {
-    event.preventDefault();
-    setDragging(false);
-    const file = event.dataTransfer.files?.[0];
-    if (file) void processFile(file);
-  }
-
-  async function processFile(file: File) {
-    setError("");
-    setSummary(null);
+  async function startProcessing(files: File[]) {
+    const capped = files.slice(0, fileCap);
+    const initial: FileCard[] = capped.map((file, i) => ({
+      id: `${i}-${file.name}-${file.size}`,
+      file,
+      status: "pending" as CardStatus,
+      summary: null,
+      error: "",
+      expanded: true,
+    }));
+    setCards(initial);
     setLimitHit(null);
+    setCapNote(
+      files.length > fileCap
+        ? zh ? h(`已选 ${files.length} 个文件，本计划最多 ${fileCap} 个，只处理前 ${fileCap} 个。`) : ja ? `${files.length} 件選択されましたが、このプランは最大 ${fileCap} 件です。最初の ${fileCap} 件のみ処理します。` : es ? `Se seleccionaron ${files.length} archivos; este plan admite hasta ${fileCap}. Solo se procesarán los primeros ${fileCap}.` : pt ? `${files.length} arquivos selecionados; este plano suporta até ${fileCap}. Apenas os primeiros ${fileCap} serão processados.` : fr ? `${files.length} fichiers sélectionnés ; ce plan prend en charge ${fileCap} au maximum. Seuls les ${fileCap} premiers seront traités.` : de ? `${files.length} Dateien ausgewählt; dieser Plan unterstützt bis zu ${fileCap}. Nur die ersten ${fileCap} werden verarbeitet.` : ko ? `${files.length}개 선택됨; 이 플랜은 최대 ${fileCap}개를 지원합니다. 처음 ${fileCap}개만 처리됩니다.` : `${files.length} files selected; this plan supports up to ${fileCap}. Processing the first ${fileCap} only.`
+        : ""
+    );
+    setProcessing(true);
+    for (const card of initial) {
+      const ok = await runOneCard(card.id, card.file);
+      if (!ok) break;
+    }
+    setProcessing(false);
+  }
 
+  async function runOneCard(id: string, file: File): Promise<boolean> {
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
-      setError(zh ? h("请上传 PDF 文件。") : ja ? "PDF ファイルをアップロードしてください。" : es ? "Por favor, sube un archivo PDF." : pt ? "Por favor, envie um arquivo PDF." : fr ? "Veuillez téléverser un fichier PDF." : de ? "Bitte laden Sie eine PDF-Datei hoch." : ko ? "PDF 파일을 업로드하세요." : "Please upload a PDF file.");
-      setStatus("error");
-      return;
+      updateCard(id, { status: "error", error: zh ? h("请上传 PDF 文件。") : ja ? "PDF ファイルをアップロードしてください。" : es ? "Por favor, sube un archivo PDF." : pt ? "Por favor, envie um arquivo PDF." : fr ? "Veuillez téléverser un fichier PDF." : de ? "Bitte laden Sie eine PDF-Datei hoch." : ko ? "PDF 파일을 업로드하세요." : "Please upload a PDF file." });
+      return true;
     }
     if (file.size > maxFileBytes) {
-      setError(zh ? h("文件超过 25 MB 限制。") : ja ? "ファイルが 25 MB の上限を超えています。" : es ? "El archivo supera el límite de 25 MB." : pt ? "O arquivo ultrapassa o limite de 25 MB." : fr ? "Le fichier dépasse la limite de 25 Mo." : de ? "Die Datei überschreitet das Limit von 25 MB." : ko ? "파일이 25MB 한도를 초과합니다." : "File exceeds the 25 MB limit.");
-      setStatus("error");
-      return;
+      updateCard(id, { status: "error", error: zh ? h("文件超过 25 MB 限制。") : ja ? "ファイルが 25 MB の上限を超えています。" : es ? "El archivo supera el límite de 25 MB." : pt ? "O arquivo ultrapassa o limite de 25 MB." : fr ? "Le fichier dépasse la limite de 25 Mo." : de ? "Die Datei überschreitet das Limit von 25 MB." : ko ? "파일이 25MB 한도를 초과합니다." : "File exceeds the 25 MB limit." });
+      return true;
     }
 
-    setFileName(file.name);
-    setStatus("extracting");
+    updateCard(id, { status: "extracting" });
 
     try {
       const pdfjs = await import("pdfjs-dist");
@@ -288,32 +304,26 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
       const pdf = await pdfjs.getDocument({ data: buffer }).promise;
       const pageCount = Math.min(pdf.numPages, maxPages);
       const pages: string[] = [];
-
-      for (let p = 1; p <= pageCount; p += 1) {
+      for (let p = 1; p <= pageCount; p++) {
         const page = await pdf.getPage(p);
         const content = await page.getTextContent();
-        pages.push(
-          content.items
-            .map((item) => (item as { str?: string }).str ?? "")
-            .filter(Boolean)
-            .join(" "),
-        );
+        pages.push(content.items.map((item) => (item as { str?: string }).str ?? "").filter(Boolean).join(" "));
       }
-
       const text = pages.join("\n\n").slice(0, maxCharacters);
       if (!text.trim()) {
-        setError(zh ? h("无法从该 PDF 提取文字，可能是扫描件。") : ja ? "この PDF からテキストを抽出できませんでした。スキャンされた PDF の可能性があります。" : es ? "No se pudo extraer texto — puede ser un PDF escaneado." : pt ? "Não foi possível extrair texto — pode ser um PDF digitalizado." : fr ? "Aucun texte n'a pu être extrait — il s'agit peut-être d'un PDF numérisé." : de ? "Aus diesem PDF konnte kein Text extrahiert werden – es ist möglicherweise ein gescanntes PDF." : ko ? "이 PDF에서 텍스트를 추출할 수 없습니다 — 스캔한 PDF일 수 있습니다." : "No text could be extracted — it may be a scanned PDF.");
-        setStatus("error");
-        return;
+        updateCard(id, { status: "error", error: zh ? h("无法从该 PDF 提取文字，可能是扫描件。") : ja ? "この PDF からテキストを抽出できませんでした。スキャンされた PDF の可能性があります。" : es ? "No se pudo extraer texto — puede ser un PDF escaneado." : pt ? "Não foi possível extrair texto — pode ser um PDF digitalizado." : fr ? "Aucun texte n'a pu être extrait — il s'agit peut-être d'un PDF numérisé." : de ? "Aus diesem PDF konnte kein Text extrahiert werden – es ist möglicherweise ein gescanntes PDF." : ko ? "이 PDF에서 텍스트를 추출할 수 없습니다 — 스캔한 PDF일 수 있습니다." : "No text could be extracted — it may be a scanned PDF." });
+        return true;
       }
 
-      setStatus("summarizing");
+      updateCard(id, { status: "summarizing" });
 
       const gate = await checkUsage("summary");
       if (!gate.allowed) {
+        const limitMsg = zh ? h("已达到 AI 使用上限。") : ja ? "AI の使用上限に達しました。" : es ? "Has alcanzado el límite de uso de IA." : pt ? "Você atingiu o limite de uso de IA." : fr ? "Vous avez atteint la limite d'utilisation de l'IA." : de ? "Sie haben das KI-Nutzungslimit erreicht." : ko ? "AI 사용 한도에 도달했습니다." : "AI usage limit reached.";
         setLimitHit(gate.limit);
-        setStatus("error");
-        return;
+        updateCard(id, { status: "error", error: limitMsg });
+        setCards(prev => prev.map(c => c.status === "pending" ? { ...c, status: "error" as CardStatus, error: limitMsg } : c));
+        return false;
       }
 
       const response = await fetch("/api/ai-summary", {
@@ -321,45 +331,109 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, locale, sourceName: file.name }),
       });
-
       const payload = await response.json().catch(() => null);
-
       if (!payload?.ok || !payload.summary) {
-        throw new Error(
-          payload?.message ||
-            (zh ? h("AI 摘要服务暂不可用。") : ja ? "AI 要約サービスは現在利用できません。" : es ? "El servicio de resumen IA no está disponible." : pt ? "O serviço de Resumo IA está indisponível." : fr ? "Le service de résumé IA est indisponible." : de ? "Der KI-Zusammenfassungsdienst ist derzeit nicht verfügbar." : ko ? "AI 요약 서비스를 현재 사용할 수 없습니다." : "AI Summary service is unavailable."),
-        );
+        throw new Error(payload?.message || (zh ? h("AI 摘要服务暂不可用。") : ja ? "AI 要約サービスは現在利用できません。" : es ? "El servicio de resumen IA no está disponible." : pt ? "O serviço de Resumo IA está indisponível." : fr ? "Le service de résumé IA est indisponible." : de ? "Der KI-Zusammenfassungsdienst ist derzeit nicht verfügbar." : ko ? "AI 요약 서비스를 현재 사용할 수 없습니다." : "AI Summary service is unavailable."));
       }
-
-      setSummary(payload.summary as SummaryData);
-      setStatus("done");
+      updateCard(id, { status: "done", summary: payload.summary as SummaryData });
       trackToolRun("ai-summary");
       await markUsage(gate, "summary");
+      return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : zh ? h("处理失败。") : ja ? "処理に失敗しました。" : es ? "Error al procesar." : pt ? "Falha ao processar." : fr ? "Échec du traitement." : de ? "Verarbeitung fehlgeschlagen." : ko ? "처리에 실패했습니다." : "Processing failed.");
-      setStatus("error");
+      updateCard(id, { status: "error", error: err instanceof Error ? err.message : zh ? h("处理失败。") : ja ? "処理に失敗しました。" : es ? "Error al procesar." : pt ? "Falha ao processar." : fr ? "Échec du traitement." : de ? "Verarbeitung fehlgeschlagen." : ko ? "처리에 실패했습니다." : "Processing failed." });
+      return true;
     }
   }
 
-  function reset() {
-    setStatus("idle");
-    setFileName("");
-    setError("");
-    setSummary(null);
-    setLimitHit(null);
+  function handleFileInput(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = event.target.files;
+    if (files && files.length > 0) void startProcessing(Array.from(files));
+    event.target.value = "";
   }
 
-  const nextSteps = summary?.suggestedNextSteps ?? summary?.nextSteps ?? [];
+  function handleDrop(event: React.DragEvent) {
+    event.preventDefault();
+    setDragging(false);
+    const files = event.dataTransfer.files;
+    if (files && files.length > 0) void startProcessing(Array.from(files));
+  }
+
+  function reset() {
+    setCards([]);
+    setProcessing(false);
+    setLimitHit(null);
+    setCapNote("");
+  }
+
+  function toggleExpanded(id: string) {
+    setCards(prev => prev.map(c => c.id === id ? { ...c, expanded: !c.expanded } : c));
+  }
+
+  function formatCardText(card: FileCard): string {
+    if (!card.summary) return "";
+    const nextSteps = card.summary.suggestedNextSteps ?? card.summary.nextSteps ?? [];
+    const execLabel = zh ? h("执行摘要") : ja ? "エグゼクティブサマリー" : es ? "Resumen ejecutivo" : pt ? "Resumo executivo" : fr ? "Résumé exécutif" : de ? "Zusammenfassung für Entscheider" : ko ? "핵심 요약" : "Executive Summary";
+    const keyLabel = zh ? h("关键要点") : ja ? "重要なポイント" : es ? "Puntos clave" : pt ? "Pontos principais" : fr ? "Points clés" : de ? "Wichtigste Punkte" : ko ? "주요 항목" : "Key Points";
+    const actLabel = zh ? h("行动项") : ja ? "アクションアイテム" : es ? "Acciones a realizar" : pt ? "Itens de ação" : fr ? "Points d'action" : de ? "Aufgaben" : ko ? "실행 항목" : "Action Items";
+    const nxtLabel = zh ? h("后续步骤") : ja ? "推奨される次のステップ" : es ? "Próximos pasos sugeridos" : pt ? "Próximas etapas sugeridas" : fr ? "Prochaines étapes suggérées" : de ? "Empfohlene nächste Schritte" : ko ? "권장 다음 단계" : "Suggested Next Steps";
+    const lines: string[] = [`=== ${card.file.name} ===`, "", execLabel, card.summary.executiveSummary];
+    if (card.summary.keyPoints?.length) {
+      lines.push("", keyLabel);
+      card.summary.keyPoints.forEach((p, i) => lines.push(`${i + 1}. ${p}`));
+    }
+    if (card.summary.actionItems?.length) {
+      lines.push("", actLabel);
+      card.summary.actionItems.forEach((item, i) => lines.push(`${i + 1}. ${item}`));
+    }
+    if (nextSteps.length) {
+      lines.push("", nxtLabel);
+      nextSteps.forEach((step, i) => lines.push(`${i + 1}. ${step}`));
+    }
+    return lines.join("\n");
+  }
+
+  function copyCard(card: FileCard) {
+    void navigator.clipboard.writeText(formatCardText(card));
+  }
+
+  function downloadCard(card: FileCard) {
+    const text = formatCardText(card);
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = card.file.name.replace(/\.pdf$/i, "") + "-summary.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadAll() {
+    const done = cards.filter(c => c.status === "done" && c.summary);
+    if (!done.length) return;
+    const sep = "\n\n" + "─".repeat(60) + "\n\n";
+    const text = done.map(c => formatCardText(c)).join(sep);
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "summaries.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const doneCount = cards.filter(c => c.status === "done").length;
+  const allDone = cards.length > 0 && !processing;
 
   return (
     <section className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : `mx-auto ${LAYOUT.content}`}>
       {embedded && (
         <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">
-          {zh ? h("把 PDF 浓缩成执行摘要、关键要点和后续步骤。") : ja ? "PDFを要約・重要点・次のステップへ変換します。" : es ? "Convierte un PDF en resumen ejecutivo, puntos clave y próximos pasos." : pt ? "Transforme um PDF em resumo executivo, pontos-chave e próximos passos." : fr ? "Transformez un PDF en résumé, points clés et prochaines étapes." : de ? "Fassen Sie ein PDF in Zusammenfassung, Kernpunkte und nächste Schritte zusammen." : ko ? "PDF를 요약, 핵심 포인트, 다음 단계로 변환하세요." : "Turn a PDF into an executive summary, key points, and next steps."}
+          {zh ? h("把 PDF 浓缩成执行摘要、关键要点和后续步骤。") : ja ? "PDF を要約・重要点・次のステップへ変換します。" : es ? "Convierte PDF en resumen ejecutivo, puntos clave y próximos pasos." : pt ? "Transforme PDFs em resumo executivo, pontos-chave e próximos passos." : fr ? "Transformez des PDF en résumé, points clés et prochaines étapes." : de ? "Fassen Sie PDFs in Zusammenfassung, Kernpunkte und nächste Schritte zusammen." : ko ? "PDF를 요약, 핵심 포인트, 다음 단계로 변환하세요." : "Turn PDFs into executive summaries, key points, and next steps."}
         </p>
       )}
-      {/* Upload */}
-      {status === "idle" || status === "error" ? (
+
+      {/* Upload zone — visible only before any files are loaded */}
+      {cards.length === 0 ? (
         <label
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
@@ -370,63 +444,139 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4M7 9l5-5 5 5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></svg>
           </span>
           <span className="inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
-            {zh ? h("选择 PDF") : ja ? "PDF を選択" : es ? "Elegir PDF" : pt ? "Escolher PDF" : fr ? "Choisir un PDF" : de ? "PDF auswählen" : ko ? "PDF 선택" : "Choose PDF"}
+            {zh ? h("选择 PDF") : ja ? "PDF を選択" : es ? "Elegir PDF" : pt ? "Escolher PDF" : fr ? "Choisir des PDF" : de ? "PDFs auswählen" : ko ? "PDF 선택" : "Choose PDFs"}
           </span>
           <span className="mt-4 text-sm text-[color:var(--muted)]">
-            {zh ? h("或将文件拖放到此处，最多 20 页") : ja ? "またはファイルをここにドラッグ＆ドロップ" : es ? "o arrastra tu archivo aquí. Máx. 20 páginas" : pt ? "ou arraste o arquivo aqui. Máx. 20 páginas" : fr ? "ou déposez votre fichier ici. 20 pages max." : de ? "oder legen Sie Ihre Datei hier ab. Max. 20 Seiten" : ko ? "또는 여기에 파일을 끌어다 놓으세요. 최대 20페이지" : "or drop your file here. Up to 20 pages"}
+            {zh ? h("或将文件拖放到此处，每个最多 20 页") : ja ? "またはファイルをここにドラッグ＆ドロップ（各最大 20 ページ）" : es ? "o arrastra los archivos aquí. Máx. 20 páginas cada uno" : pt ? "ou arraste os arquivos aqui. Máx. 20 páginas cada" : fr ? "ou déposez vos fichiers ici. 20 pages max. par fichier" : de ? "oder Dateien hier ablegen. Max. 20 Seiten je Datei" : ko ? "또는 파일을 여기에 끌어다 놓으세요. 파일당 최대 20페이지" : "or drop your files here. Up to 20 pages each"}
           </span>
           <div className="mt-1.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-[color:var(--faint)]">
-            <span>{zh ? h("最多 20 页 · 25 MB") : ja ? "最大20ページ · 25MBまで" : es ? "Máx. 25 MB" : pt ? "Máx. 25 MB" : fr ? "25 Mo max." : de ? "Max. 25 MB" : ko ? "최대 25MB" : "Up to 25 MB"}</span>
+            <span>{zh ? h(`最多 ${fileCap} 个文件 · 25 MB`) : ja ? `最大 ${fileCap} ファイル · 25 MB まで` : es ? `Máx. ${fileCap} archivos · 25 MB` : pt ? `Máx. ${fileCap} arquivos · 25 MB` : fr ? `${fileCap} fichiers max. · 25 Mo` : de ? `Max. ${fileCap} Dateien · 25 MB` : ko ? `최대 ${fileCap}개 파일 · 25 MB` : `Up to ${fileCap} files · 25 MB`}</span>
             <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
-            <span className="text-[color:var(--muted)]">{zh ? h("本地读取 · 文字发至AI") : ja ? "ローカルで読み取り · テキストをAIへ送信" : es ? "Leído localmente · texto enviado a IA" : pt ? "Lido localmente · texto enviado a IA" : fr ? "Lu localement · texte envoyé à l'IA" : de ? "Lokal gelesen · Text an KI gesendet" : ko ? "로컬에서 읽기 · 텍스트 AI로 전송" : "File read locally · text sent to AI"}</span>
+            <span className="text-[color:var(--muted)]">{zh ? h("本地读取 · 文字发至 AI") : ja ? "ローカルで読み取り · テキストを AI へ送信" : es ? "Leído localmente · texto enviado a IA" : pt ? "Lido localmente · texto enviado a IA" : fr ? "Lu localement · texte envoyé à l'IA" : de ? "Lokal gelesen · Text an KI gesendet" : ko ? "로컬에서 읽기 · 텍스트 AI로 전송" : "Files read locally · text sent to AI"}</span>
           </div>
-          {status === "error" && error ? (
-            <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
-          ) : null}
-          <input type="file" accept="application/pdf,.pdf" className="sr-only" onChange={handleFile} />
+          <input type="file" accept="application/pdf,.pdf" className="sr-only" onChange={handleFileInput} multiple />
         </label>
       ) : null}
 
-      {(status === "idle" || status === "error") && embedded && (
+      {cards.length === 0 && embedded && (
         <WorkspaceValueZone type="ai" locale={locale} />
       )}
 
       {limitHit !== null ? <UpgradePrompt locale={childLocale} limit={limitHit} /> : null}
 
-      {/* Processing */}
-      {status === "extracting" || status === "summarizing" ? (
-        <div className="flex aspect-[16/9] w-full flex-col items-center justify-center rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center">
-          <svg className="mx-auto h-10 w-10 animate-spin text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-            <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <p className="mt-4 text-sm font-semibold text-[color:var(--foreground)]">
-            {status === "extracting"
-              ? zh ? h("正在读取 PDF…") : ja ? "PDF を読み取り中…" : es ? "Leyendo el PDF…" : pt ? "Lendo o PDF…" : fr ? "Lecture du PDF…" : de ? "PDF wird gelesen…" : ko ? "PDF를 읽는 중…" : "Reading PDF…"
-              : zh ? h("AI 正在生成摘要…") : ja ? "AI が要約を作成中…" : es ? "La IA está resumiendo…" : pt ? "A IA está resumindo…" : fr ? "L'IA résume…" : de ? "Die KI fasst zusammen…" : ko ? "AI가 요약하는 중…" : "AI is summarizing…"}
-          </p>
-          <p className="mt-1 break-words text-xs text-[color:var(--muted)]">{fileName}</p>
+      {capNote ? (
+        <p className="mt-2 text-sm text-[color:var(--muted)]">{capNote}</p>
+      ) : null}
+
+      {/* Cards */}
+      {cards.length > 0 ? (
+        <div className="mx-auto w-full max-w-3xl space-y-4">
+          {cards.map(card => (
+            <SummaryCard
+              key={card.id}
+              card={card}
+              zh={zh} ja={ja} es={es} pt={pt} fr={fr} de={de} ko={ko}
+              h={h}
+              onToggle={() => toggleExpanded(card.id)}
+              onCopy={() => copyCard(card)}
+              onDownload={() => downloadCard(card)}
+            />
+          ))}
+
+          {allDone && (
+            <div className="flex flex-wrap items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={reset}
+                className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
+              >
+                {zh ? h("新批次") : ja ? "新しいバッチ" : es ? "Nueva selección" : pt ? "Nova seleção" : fr ? "Nouveau lot" : de ? "Neue Auswahl" : ko ? "새 배치" : "New batch"}
+              </button>
+              {doneCount > 1 && (
+                <button
+                  type="button"
+                  onClick={downloadAll}
+                  className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-2 text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
+                >
+                  {zh ? h("打包下载全部") : ja ? "まとめてダウンロード" : es ? "Descargar todo" : pt ? "Baixar tudo" : fr ? "Tout télécharger" : de ? "Alle herunterladen" : ko ? "모두 다운로드" : "Download all"}
+                </button>
+              )}
+            </div>
+          )}
         </div>
       ) : null}
 
-      {/* Result */}
-      {status === "done" && summary ? (
-        <div className="mx-auto max-w-3xl space-y-4">
-          <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)] px-4 py-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[color:var(--success)] text-sm text-white">✓</div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-[color:var(--foreground)]">{fileName}</p>
-              <p className="text-xs text-[color:var(--muted)]">{zh ? h("摘要已生成") : ja ? "要約を生成しました" : es ? "Resumen generado" : pt ? "Resumo gerado" : fr ? "Résumé généré" : de ? "Zusammenfassung erstellt" : ko ? "요약이 생성되었습니다" : "Summary generated"}</p>
-            </div>
-            <button
-              type="button"
-              onClick={reset}
-              className="shrink-0 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
-            >
-              {zh ? h("新文档") : ja ? "新しいドキュメント" : es ? "Nuevo documento" : pt ? "Novo documento" : fr ? "Nouveau document" : de ? "Neues Dokument" : ko ? "새 문서" : "New document"}
+      {!embedded && <GroundingNote variant="summary" locale={locale} />}
+      {!embedded && <RelatedPdfTools locale={locale} exclude="/ai-summary" />}
+      {!embedded && <ToolSections locale={locale} content={sec} />}
+    </section>
+  );
+}
+
+function SummaryCard({
+  card, zh, ja, es, pt, fr, de, ko, h, onToggle, onCopy, onDownload,
+}: {
+  card: FileCard;
+  zh: boolean; ja: boolean; es: boolean; pt: boolean; fr: boolean; de: boolean; ko: boolean;
+  h: (s: string) => string;
+  onToggle: () => void;
+  onCopy: () => void;
+  onDownload: () => void;
+}) {
+  const { summary } = card;
+  const nextSteps = summary?.suggestedNextSteps ?? summary?.nextSteps ?? [];
+  const spinning = card.status === "pending" || card.status === "extracting" || card.status === "summarizing";
+
+  const statusLabel =
+    card.status === "pending" ? (zh ? h("等待中…") : ja ? "待機中…" : es ? "En espera…" : pt ? "Aguardando…" : fr ? "En attente…" : de ? "Warte…" : ko ? "대기 중…" : "Pending…") :
+    card.status === "extracting" ? (zh ? h("正在读取 PDF…") : ja ? "PDF を読み取り中…" : es ? "Leyendo el PDF…" : pt ? "Lendo o PDF…" : fr ? "Lecture du PDF…" : de ? "PDF wird gelesen…" : ko ? "PDF를 읽는 중…" : "Reading PDF…") :
+    card.status === "summarizing" ? (zh ? h("AI 正在生成摘要…") : ja ? "AI が要約を作成中…" : es ? "La IA está resumiendo…" : pt ? "A IA está resumindo…" : fr ? "L'IA résume…" : de ? "Die KI fasst zusammen…" : ko ? "AI가 요약하는 중…" : "AI is summarizing…") :
+    card.status === "done" ? (zh ? h("摘要已生成") : ja ? "要約を生成しました" : es ? "Resumen generado" : pt ? "Resumo gerado" : fr ? "Résumé généré" : de ? "Zusammenfassung erstellt" : ko ? "요약이 생성되었습니다" : "Summary generated") :
+    card.error || (zh ? h("处理失败") : ja ? "処理に失敗しました" : es ? "Error al procesar" : pt ? "Falha ao processar" : fr ? "Échec du traitement" : de ? "Verarbeitung fehlgeschlagen" : ko ? "처리 실패" : "Processing failed");
+
+  return (
+    <div className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]">
+      <div className="flex items-center gap-3 px-4 py-3">
+        {card.status === "done" ? (
+          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[color:var(--success)] text-xs font-bold text-white">✓</div>
+        ) : card.status === "error" ? (
+          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[color:var(--error)] text-xs text-[color:var(--error)]">✗</div>
+        ) : (
+          <div className="h-6 w-6 shrink-0 rounded-full border border-[color:var(--line)] bg-[color:var(--surface)]" />
+        )}
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-[color:var(--foreground)]">{card.file.name}</p>
+          <p className="text-xs text-[color:var(--muted)]">{statusLabel}</p>
+        </div>
+        {card.status === "done" && summary ? (
+          <div className="flex shrink-0 items-center gap-1.5">
+            <button type="button" onClick={onCopy}
+              className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
+              {zh ? h("复制") : ja ? "コピー" : es ? "Copiar" : pt ? "Copiar" : fr ? "Copier" : de ? "Kopieren" : ko ? "복사" : "Copy"}
+            </button>
+            <button type="button" onClick={onDownload}
+              className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
+              {zh ? h("导出") : ja ? "エクスポート" : es ? "Exportar" : pt ? "Exportar" : fr ? "Exporter" : de ? "Exportieren" : ko ? "내보내기" : "Export"}
+            </button>
+            <button type="button" onClick={onToggle}
+              className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
+              {card.expanded ? (zh ? h("收起") : ja ? "閉じる" : es ? "Contraer" : pt ? "Recolher" : fr ? "Réduire" : de ? "Einklappen" : ko ? "접기" : "Collapse") : (zh ? h("展开") : ja ? "展開" : es ? "Expandir" : pt ? "Expandir" : fr ? "Développer" : de ? "Aufklappen" : ko ? "펼치기" : "Expand")}
             </button>
           </div>
+        ) : spinning ? (
+          <svg className="h-4 w-4 shrink-0 animate-spin text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+            <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+        ) : null}
+      </div>
 
+      {card.status === "error" && card.error ? (
+        <p className="px-4 pb-3 text-sm text-[color:var(--error)]">{card.error}</p>
+      ) : null}
+
+      {card.status === "done" && summary && card.expanded ? (
+        <div className="space-y-3 border-t border-[color:var(--line)] px-4 pb-4 pt-3">
           <SummaryBlock title={zh ? h("执行摘要") : ja ? "エグゼクティブサマリー" : es ? "Resumen ejecutivo" : pt ? "Resumo executivo" : fr ? "Résumé exécutif" : de ? "Zusammenfassung für Entscheider" : ko ? "핵심 요약" : "Executive Summary"}>
             <p className="text-sm leading-7 text-[color:var(--muted)]">{summary.executiveSummary}</p>
           </SummaryBlock>
@@ -471,11 +621,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
           )}
         </div>
       ) : null}
-
-      {!embedded && <GroundingNote variant="summary" locale={locale} />}
-      {!embedded && <RelatedPdfTools locale={locale} exclude="/ai-summary" />}
-      {!embedded && <ToolSections locale={locale} content={sec} />}
-    </section>
+    </div>
   );
 }
 
