@@ -35,7 +35,7 @@ const MoonIcon = <MenuIcon><path d="M13 9.6A5.5 5.5 0 1 1 6.4 3 4.4 4.4 0 0 0 13
 // ── Header nav categories. Derived from the single source lib/header-nav.ts
 // (P2.1): one headerStructure + navItemLabels + navCopy, type-enforced across locales
 // (a missing locale/key = tsc error). navCategories stays exported here because Home /
-// HeroFeatureGraph / SitemapContent / RelatedPdfTools consume the same per-locale list.
+// SitemapContent / RelatedPdfTools consume the same per-locale list.
 // NOTE (de): German nav copy is now authored in lib/header-nav.ts
 // (navItemLabels.de + navCopy.de), so getNavCategories("de") returns native German
 // labels and de is included in this record alongside the other authored locales.

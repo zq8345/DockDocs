@@ -1,6 +1,6 @@
 "use client";
 
-// Email verification-code (OTP) step, shared by AccountClient + CommercialAccountClient.
+// Email verification-code (OTP) step, used by AccountClient.
 // After sendMagicLink() the email carries BOTH a sign-in link and a 6-digit code; this
 // form lets the user paste/type the code and verifies it client-side (verifyEmailOtp →
 // supabase.auth.verifyOtp, which sets the session without a redirect round-trip). The
