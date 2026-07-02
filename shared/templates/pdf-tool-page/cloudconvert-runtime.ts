@@ -37,7 +37,7 @@ const ROUTE_META: Record<
   "protect-pdf": { outputMime: "application/pdf", outputType: "pdf" },
 };
 
-export type CloudLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+export type CloudLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
 
 type CloudConvertRuntimeInput = {
   file: File;
@@ -49,7 +49,7 @@ type CloudConvertRuntimeInput = {
   onProgress?: (progress: PdfRuntimeProgress) => void;
 };
 
-// 6-way string picker. Brand/format names (PDF, DOCX, Word, Excel, PowerPoint,
+// 7-way string picker. Brand/format names (PDF, DOCX, Word, Excel, PowerPoint,
 // CloudConvert, OCR) stay untranslated inside the strings. ja uses full-width
 // punctuation with a half-width space around Latin tokens.
 function tr(
@@ -60,6 +60,7 @@ function tr(
   pt: string,
   fr: string,
   ja: string,
+  de: string,
 ): string {
   switch (locale) {
     case "zh-Hant":
@@ -74,6 +75,8 @@ function tr(
       return fr;
     case "ja":
       return ja;
+    case "de":
+      return de;
     default:
       return en;
   }
@@ -105,6 +108,7 @@ export async function runCloudConvert({
         `O arquivo é muito grande (máx. 100 MB). Seu arquivo: ${size} MB.`,
         `Le fichier est trop volumineux (max. 100 Mo). Votre fichier : ${size} Mo.`,
         `ファイルが大きすぎます（最大 100 MB）。現在のファイル：${size} MB。`,
+        `Datei zu groß (max. 100 MB). Ihre Datei: ${size} MB.`,
       ),
     );
   }
@@ -173,6 +177,7 @@ export async function runCloudConvert({
         "Falha no envio. Verifique sua conexão e tente novamente.",
         "Échec de l’envoi. Vérifiez votre connexion et réessayez.",
         "アップロードに失敗しました。ネットワークを確認して再試行してください。",
+        "Upload fehlgeschlagen. Bitte Verbindung prüfen und erneut versuchen.",
       ),
     );
   }
@@ -186,6 +191,7 @@ export async function runCloudConvert({
         "Não foi possível concluir o envio. Tente novamente.",
         "L’envoi n’a pas pu être terminé. Veuillez réessayer.",
         "アップロードを完了できませんでした。再試行してください。",
+        "Upload konnte nicht abgeschlossen werden. Bitte erneut versuchen.",
       ),
     );
   }
@@ -212,6 +218,7 @@ export async function runCloudConvert({
           "A conversão falhou: o formato pode não ter suporte ou o arquivo está corrompido.",
           "Échec de la conversion : le format n’est peut-être pas pris en charge ou le fichier est corrompu.",
           "変換に失敗しました：形式がサポートされていないか、ファイルが破損している可能性があります。",
+          "Konvertierung fehlgeschlagen: Format wird möglicherweise nicht unterstützt oder Datei ist beschädigt.",
         ),
       );
     }
@@ -237,6 +244,7 @@ export async function runCloudConvert({
         "A conversão expirou. Tente novamente ou use um arquivo menor.",
         "Délai de conversion dépassé. Réessayez ou utilisez un fichier plus petit.",
         "変換がタイムアウトしました。後で再試行するか、より小さいファイルをお使いください。",
+        "Zeitüberschreitung bei der Konvertierung. Erneut versuchen oder kleinere Datei verwenden.",
       ),
     );
   }
@@ -267,6 +275,7 @@ export async function runCloudConvert({
         "O arquivo convertido veio vazio. Tente novamente.",
         "Le fichier converti est revenu vide. Veuillez réessayer.",
         "変換されたファイルが空でした。再試行してください。",
+        "Die konvertierte Datei ist leer – bitte erneut versuchen.",
       ),
     );
   }
@@ -511,6 +520,7 @@ function msgCreating(locale: CloudLocale): string {
     "Criando a tarefa de conversão...",
     "Création de la tâche de conversion...",
     "変換タスクを作成しています...",
+    "Konvertierungsauftrag wird erstellt...",
   );
 }
 
@@ -523,6 +533,7 @@ function msgUploading(locale: CloudLocale): string {
     "Enviando o arquivo...",
     "Envoi du fichier...",
     "ファイルをアップロードしています...",
+    "Datei wird hochgeladen...",
   );
 }
 
@@ -535,6 +546,7 @@ function msgConverting(locale: CloudLocale): string {
     "Convertendo...",
     "Conversion en cours...",
     "変換しています...",
+    "Konvertierung läuft...",
   );
 }
 
@@ -547,6 +559,7 @@ function msgDownloading(locale: CloudLocale): string {
     "Baixando o resultado...",
     "Téléchargement du résultat...",
     "結果をダウンロードしています...",
+    "Ergebnis wird heruntergeladen...",
   );
 }
 
@@ -559,6 +572,7 @@ function msgDownloadFailed(locale: CloudLocale): string {
     "Não foi possível baixar o arquivo convertido.",
     "Impossible de télécharger le fichier converti.",
     "変換されたファイルをダウンロードできませんでした。",
+    "Konvertierte Datei konnte nicht heruntergeladen werden.",
   );
 }
 
@@ -576,6 +590,7 @@ function mapCreateError(
       "O serviço de conversão não está configurado (falta a chave de API do CloudConvert).",
       "Le service de conversion n’est pas configuré (clé d’API CloudConvert manquante).",
       "変換サービスが設定されていません（CloudConvert API キーがありません）。",
+      "Konvertierungsdienst nicht konfiguriert (fehlender API-Schlüssel).",
     );
   }
   if (body.code === "INVALID_PASSWORD") {
@@ -587,6 +602,7 @@ function mapCreateError(
       "A senha deve ter pelo menos 4 caracteres.",
       "Le mot de passe doit comporter au moins 4 caractères.",
       "パスワードは 4 文字以上で入力してください。",
+      "Das Passwort muss mindestens 4 Zeichen enthalten.",
     );
   }
   return (
@@ -599,6 +615,7 @@ function mapCreateError(
       "Não foi possível iniciar a tarefa de conversão. Tente novamente.",
       "Impossible de démarrer la tâche de conversion. Veuillez réessayer.",
       "変換タスクを開始できませんでした。再試行してください。",
+      "Konvertierungsauftrag konnte nicht gestartet werden. Bitte erneut versuchen.",
     )
   );
 }
@@ -627,6 +644,7 @@ async function postJson(
         "Erro de rede — não foi possível conectar ao serviço de conversão.",
         "Erreur réseau — impossible de joindre le service de conversion.",
         "ネットワークエラー — 変換サービスに接続できませんでした。",
+        "Netzwerkfehler – Konvertierungsdienst nicht erreichbar.",
       ),
     );
   }

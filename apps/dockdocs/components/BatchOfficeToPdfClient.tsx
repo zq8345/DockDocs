@@ -136,7 +136,7 @@ const STR = {
     failed: "失敗",
     need: "Officeファイルを1つ以上追加してください。",
     hint: "Word、PowerPoint、Excel",
-    note: "ファイルはPDFに変換されて返されます — 保存されることはありません。主要なOfficeフォーマットすべてに対応しています。",
+    note: "ファイルはPDFに変換後に返却されます。保存はされません。主要なOfficeフォーマットすべてに対応しています。",
     err: "問題が発生しました: ",
   },
   de: {
@@ -201,7 +201,7 @@ const PS: Record<Source, Record<CopyLocale, { title: string; subtitle: string; h
     es: { title: "Excel a PDF por lotes", subtitle: "Convierte una carpeta entera de hojas de cálculo Excel a PDF de una vez: cada una se convierte y se empaqueta en un solo ZIP.", hint: "Hojas de cálculo Excel" },
     pt: { title: "Excel para PDF em lote", subtitle: "Converta uma pasta inteira de planilhas Excel para PDF de uma vez: cada uma é convertida e empacotada em um único ZIP.", hint: "Planilhas Excel" },
     fr: { title: "Excel en PDF par lots", subtitle: "Convertissez un dossier entier de feuilles de calcul Excel en PDF en une seule fois — chaque fichier est converti et regroupé dans un seul ZIP.", hint: "Feuilles de calcul Excel" },
-    ja: { title: "ExcelをPDFに一括変換", subtitle: "フォルダ内のExcel表計算をまとめてPDFに変換し、1つのZIPにまとめます。", hint: "Excel表計算" },
+    ja: { title: "ExcelをPDFに一括変換", subtitle: "フォルダ内のExcelスプレッドシートをまとめてPDFに変換し、1つのZIPにまとめます。", hint: "Excelスプレッドシート" },
     de: { title: "Excel stapelweise zu PDF", subtitle: "Konvertieren Sie einen ganzen Ordner mit Excel-Tabellen in einem Durchgang zu PDF – jede Datei wird konvertiert und in einem einzigen ZIP gebündelt.", hint: "Excel-Tabellen" },
     ko: { title: "Excel을 PDF로 일괄 변환", subtitle: "폴더 안의 Excel 스프레드시트를 한 번에 PDF로 변환하여 하나의 ZIP으로 묶습니다.", hint: "Excel 스프레드시트" },
   },

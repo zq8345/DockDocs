@@ -50,13 +50,11 @@ function makeRuntimeTr(locale: RuntimeLocale) {
   };
 }
 
-// Engines (OCR / CloudConvert) author copy for the original 7 locales only.
-// de/ko are UI/copy locales added later; for engine-facing locale args collapse them
-// to "en" (no engine-side strings), same as any non-special locale falls to its
-// closest engine locale. Keeps de/ko out of a `never`/unhandled engine path.
-type EngineLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant";
+// CloudConvert now authors de copy (CloudLocale includes "de").
+// ko is not yet authored — collapses to "en" for all engines until Korean runtime copy lands.
+type EngineLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";
 function toEngineLocale(locale: RuntimeLocale): EngineLocale {
-  return locale === "de" || locale === "ko" ? "en" : locale;
+  return locale === "ko" ? "en" : locale;
 }
 
 export type PdfRuntimeProgress = {
@@ -165,8 +163,9 @@ export async function runPdfRuntime({
       outputFileName,
       pageRanges,
       language: ocrLanguage,
-      // ocr-runtime supports the original 7 locales; de collapses to "en" for the engine.
-      locale: toEngineLocale(locale),
+      // OCR locale: de passes through toEngineLocale but makeRuntimeTr already falls de→en for strings.
+      // Cast to the 7-locale OcrLocale since OCR engine was not authored for de.
+      locale: toEngineLocale(locale) as "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant",
       signal,
       onProgress,
     });
@@ -178,7 +177,7 @@ export async function runPdfRuntime({
       file: files[0],
       route: slug as CloudConvertRoute,
       outputFileName,
-      // cloudconvert-runtime supports the original 7 locales; de collapses to "en" for the engine.
+      // cloudconvert-runtime now supports de natively (CloudLocale includes "de").
       locale: toEngineLocale(locale),
       signal,
       onProgress,
