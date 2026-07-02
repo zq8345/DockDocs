@@ -28,7 +28,6 @@ import { SignPdfClient } from "@/components/SignPdfClient";
 import { BatchCompressClient } from "@/components/BatchCompressClient";
 import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
 import { BatchProtectClient } from "@/components/BatchProtectClient";
-import { BatchRenameClient } from "@/components/BatchRenameClient";
 import { BatchSplitMergeClient } from "@/components/BatchSplitMergeClient";
 import { BatchRotateClient } from "@/components/BatchRotateClient";
 import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
@@ -84,7 +83,6 @@ const CUSTOM_RENDERERS: Record<string, (loc: L) => ReactNode> = {
   "batch-compress":     (loc) => <BatchCompressClient locale={loc} embedded />,
   "batch-pdf-to-image": (loc) => <BatchPdfToImageClient locale={loc} embedded />,
   "batch-protect-pdf":  (loc) => <BatchProtectClient locale={loc} embedded />,
-  "batch-rename-pdf":   (loc) => <BatchRenameClient locale={loc} embedded />,
   "batch-split-merge":  (loc) => <BatchSplitMergeClient locale={loc} lockMode="split" embedded />,
   "batch-rotate-pdf":   (loc) => <BatchRotateClient locale={loc} embedded />,
   "batch-pdf-to-word":  (loc) => <BatchPdfToOfficeClient locale={loc} target="word" embedded />,

@@ -41,7 +41,6 @@ import { CropPdfClient } from "@/components/CropPdfClient";
 import { RedactPdfClient } from "@/components/RedactPdfClient";
 import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
 import { BatchProtectClient } from "@/components/BatchProtectClient";
-import { BatchRenameClient } from "@/components/BatchRenameClient";
 import { BatchSplitMergeClient } from "@/components/BatchSplitMergeClient";
 import { BatchRotateClient } from "@/components/BatchRotateClient";
 import { BatchSortClient } from "@/components/BatchSortClient";
@@ -629,28 +628,6 @@ const CUSTOM_TOOL_COPY: Record<string, {
       en: "Set one password and encrypt a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
     },
   },
-  "batch-rename-pdf": {
-    title: {
-      zh: "批量重命名 PDF — 整批按编号或查找替换改名",
-      es: "Renombrar PDF en lote — Renombrar archivos por patrón gratis",
-      pt: "Renomear PDFs em lote — Renomear arquivos por padrão grátis",
-      fr: "Renommer des PDF en lot — Renommer des fichiers par motif",
-      ja: "PDF一括リネーム — 番号パターンや検索置換でまとめて改名",
-      de: "PDFs stapelweise umbenennen — viele Dateien kostenlos per Muster umbenennen",
-      ko: "PDF 일괄 이름 변경 — 패턴으로 여러 파일 이름 변경 무료",
-      en: "Batch Rename PDF — Rename Many Files by Pattern Free",
-    },
-    description: {
-      zh: "一次给整个文件夹的 PDF 改名：按编号模板或查找替换，下载用新名字打包的 ZIP，全部在浏览器中完成。",
-      es: "Renombra una carpeta entera de PDFs de una vez — por patrón numerado o buscar y reemplazar — y descarga un ZIP con los nuevos nombres. Todo en tu navegador.",
-      pt: "Renomeie uma pasta inteira de PDFs de uma vez — por padrão numerado ou localizar e substituir — e baixe um ZIP com os novos nomes. Tudo no seu navegador.",
-      fr: "Renommez un dossier entier de PDFs en une fois — par modèle numéroté ou rechercher-remplacer — et téléchargez un ZIP avec les nouveaux noms. Entièrement dans votre navigateur.",
-      ja: "フォルダ全体のPDFを一度にリネーム—番号パターンまたは検索置換で、新しいファイル名のZIPをダウンロード。すべてブラウザ内で完結。",
-      de: "Benennen Sie einen ganzen PDF-Ordner auf einmal um — per nummeriertem Muster oder Suchen-und-Ersetzen — und laden Sie eine ZIP mit den neuen Namen herunter. Vollständig in Ihrem Browser.",
-      ko: "PDF 폴더 전체를 한 번에 이름 변경합니다 — 번호 패턴 또는 찾기-바꾸기로 — 새 이름이 적용된 ZIP을 다운로드합니다. 브라우저에서 처리.",
-      en: "Rename a whole folder of PDFs at once — by a numbered pattern or find-and-replace — and download a ZIP with the new names. Entirely in your browser.",
-    },
-  },
   "batch-split-merge": {
     title: {
       zh: "批量拆分 / 合并 PDF — 整批合并或按页拆分",
@@ -693,28 +670,6 @@ const CUSTOM_TOOL_COPY: Record<string, {
       de: "Korrigieren Sie einen ganzen Ordner mit quer- oder kopfstehenden Scans auf einmal — drehen Sie jede Seite jedes PDFs und laden Sie eine ZIP herunter. Vollständig in Ihrem Browser.",
       ko: "가로 또는 뒤집힌 스캔 파일 폴더 전체를 한 번에 수정합니다 — 모든 PDF의 모든 페이지를 회전하여 하나의 ZIP으로 다운로드.",
       en: "Fix a whole folder of sideways or upside-down scans at once — rotate every page of every PDF and download one ZIP. Entirely in your browser.",
-    },
-  },
-  "batch-extract-sheet": {
-    title: {
-      zh: "批量抽取数据到一张表 — 整批发票/报价/合同 → CSV",
-      es: "Extraer datos en lote — Varias facturas/contratos a CSV",
-      pt: "Extrair dados em lote — Várias faturas/contratos para CSV",
-      fr: "Extraire des données en lot — Plusieurs factures/contrats vers CSV",
-      ja: "一括データ抽出 — 請求書・見積書・契約書をCSVへ",
-      de: "Daten stapelweise in eine Tabelle extrahieren — viele Rechnungen in CSV",
-      ko: "스프레드시트로 일괄 데이터 추출 — 여러 청구서를 CSV로",
-      en: "Batch Extract Data to Spreadsheet — Many Invoices to CSV",
-    },
-    description: {
-      zh: "拖入整个文件夹的发票/报价/合同，AI 把每份的关键字段抽进同一张表(一份一行)，导出 CSV。AI 只报告真实存在的内容。",
-      es: "Arrastra una carpeta de facturas, cotizaciones o contratos — la IA extrae los campos clave de cada archivo en una tabla (una fila por documento) y exporta CSV. Solo informa lo que realmente está en cada uno.",
-      pt: "Arraste uma pasta de faturas, orçamentos ou contratos — a IA extrai os campos-chave de cada arquivo em uma tabela (uma linha por documento) e exporta CSV. Informa apenas o que realmente está em cada um.",
-      fr: "Déposez un dossier de factures, devis ou contrats — l'IA extrait les champs clés de chaque fichier dans un tableau (une ligne par document) et exporte en CSV. Elle ne rapporte que ce qui est réellement présent.",
-      ja: "請求書・見積書・契約書のフォルダをドロップ—AIが各ファイルのキーフィールドを1つの表に抽出（1ドキュメント1行）してCSVにエクスポート。",
-      de: "Ziehen Sie einen ganzen Ordner mit Rechnungen, Angeboten oder Verträgen hinein — die KI überträgt die wichtigsten Felder jeder Datei in eine Tabelle (eine Zeile pro Dokument) und exportiert CSV. Sie meldet nur, was tatsächlich vorhanden ist.",
-      ko: "청구서, 견적서, 계약서 폴더 전체를 드롭합니다 — AI가 모든 파일에서 주요 필드를 하나의 표에 추출(문서당 한 행)하여 CSV로 내보냅니다.",
-      en: "Drop a whole folder of invoices, quotes, or contracts — AI pulls the key fields from every file into one table (one row each) and exports CSV. It only reports what's actually there.",
     },
   },
   "batch-sort": {
@@ -1464,31 +1419,6 @@ async function generateMetadataInner({
     };
   }
 
-  if (slug === "batch-rename-pdf") {
-    return {
-      title: m(
-        "Batch Rename PDF — Rename Many Files by Pattern Free",
-        "批量重命名 PDF — 整批按编号或查找替换改名",
-        "Renombrar PDF en lote — Renombra muchos archivos por patrón gratis",
-        "Renomear PDF em lote — Renomeie muitos arquivos por padrão grátis",
-        "Renommer des PDF par lot — Renommez plusieurs fichiers selon un modèle gratuitement",
-        "PDFを一括リネーム — 複数ファイルをパターンで無料改名",
-      ),
-      description: m(
-        "Rename a whole folder of PDFs at once — by a numbered pattern or find-and-replace — and download a ZIP with the new names. Entirely in your browser.",
-        "一次给整个文件夹的 PDF 改名：按编号模板或查找替换，下载用新名字打包的 ZIP，全部在浏览器中完成。",
-        "Renombra una carpeta entera de PDF de una vez, mediante un patrón numerado o buscar y reemplazar, y descarga un ZIP con los nuevos nombres. Todo en tu navegador.",
-        "Renomeie uma pasta inteira de PDFs de uma vez, por padrão numerado ou localizar e substituir, e baixe um ZIP com os novos nomes. Tudo no seu navegador.",
-        "Renommez un dossier entier de PDF en une fois, selon un modèle numéroté ou par rechercher-remplacer, et téléchargez un ZIP avec les nouveaux noms. Entièrement dans votre navigateur.",
-        "PDFのフォルダ全体を一度にリネーム：連番パターンまたは検索置換で改名し、新しい名前のZIPをダウンロード。すべてブラウザ内で完結します。",
-      ),
-      alternates: {
-        canonical: localizedPath(rawLocale, "batch-rename-pdf"),
-        languages: languageAlternates("batch-rename-pdf"),
-      },
-    };
-  }
-
   if (slug === "batch-split-merge") {
     return {
       title: m(
@@ -1535,31 +1465,6 @@ async function generateMetadataInner({
       alternates: {
         canonical: localizedPath(rawLocale, "batch-rotate-pdf"),
         languages: languageAlternates("batch-rotate-pdf"),
-      },
-    };
-  }
-
-  if (slug === "batch-extract-sheet") {
-    return {
-      title: m(
-        "Batch Extract Data to Spreadsheet — Many Invoices to CSV",
-        "批量抽取数据到一张表 — 整批发票/报价/合同 → CSV",
-        "Extraer datos en lote a una hoja de cálculo — Muchas facturas a CSV",
-        "Extrair dados em lote para uma planilha — Muitas faturas para CSV",
-        "Extraire des données par lot vers un tableur — Plusieurs factures en CSV",
-        "データを一括で表計算に抽出 — 複数の請求書をCSVへ",
-      ),
-      description: m(
-        "Drop a whole folder of invoices, quotes, or contracts — AI pulls the key fields from every file into one table (one row each) and exports CSV. It only reports what's actually there.",
-        "拖入整个文件夹的发票/报价/合同，AI 把每份的关键字段抽进同一张表(一份一行)，导出 CSV。AI 只报告真实存在的内容。",
-        "Arrastra una carpeta entera de facturas, presupuestos o contratos: la IA extrae los campos clave de cada archivo a una sola tabla y exporta CSV.",
-        "Arraste uma pasta inteira de faturas, orçamentos ou contratos: a IA extrai os campos-chave de cada arquivo para uma única tabela e exporta CSV.",
-        "Déposez un dossier entier de factures, devis ou contrats : l'IA extrait les champs clés de chaque fichier dans un seul tableau et exporte en CSV.",
-        "請求書・見積書・契約書のフォルダ全体をドロップすると、AIが各ファイルの主要項目を1つの表（各ファイル1行）に抽出してCSVで出力。実際に存在する内容のみを報告します。",
-      ),
-      alternates: {
-        canonical: localizedPath(rawLocale, "batch-extract-sheet"),
-        languages: languageAlternates("batch-extract-sheet"),
       },
     };
   }
@@ -2159,20 +2064,12 @@ export default async function LocalizedRoute({
     return <BatchProtectClient locale={clientLocale} />;
   }
 
-  if (slug === "batch-rename-pdf") {
-    return <BatchRenameClient locale={clientLocale} />;
-  }
-
   if (slug === "batch-split-merge") {
     return <BatchSplitMergeClient locale={clientLocale} lockMode="split" />;
   }
 
   if (slug === "batch-rotate-pdf") {
     return <BatchRotateClient locale={clientLocale} />;
-  }
-
-  if (slug === "batch-extract-sheet") {
-    return <>{extraJsonLd}<ExtractExcelClient locale={clientLocale} /></>;
   }
 
   if (slug === "batch-sort") {

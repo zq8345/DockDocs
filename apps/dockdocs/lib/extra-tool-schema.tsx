@@ -611,56 +611,6 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
         "PDF 폴더 전체를 한 번에 한 언어로 번역 — 각 문서의 텍스트를 번역해 .txt 파일의 ZIP으로 패키징합니다.",
     },
   },
-  "batch-extract-sheet": {
-    en: {
-      name: "DockDocs Batch Extract to Spreadsheet",
-      crumb: "Batch Extract to Spreadsheet",
-      description:
-        "Drop a whole folder of invoices, quotes, or contracts — AI pulls the key fields from every file into one table (one row each) and exports CSV. It only reports what's actually there.",
-    },
-    zh: {
-      name: "DockDocs 批量抽取数据",
-      crumb: "批量抽取数据",
-      description:
-        "拖入整个文件夹的发票/报价/合同，AI 把每份的关键字段抽进同一张表(一份一行)，导出 CSV。AI 只报告真实存在的内容。",
-    },
-    es: {
-      name: "DockDocs Extraer datos en lote",
-      crumb: "Extraer datos en lote",
-      description:
-        "Arrastra una carpeta de facturas, cotizaciones o contratos — la IA extrae los campos clave de cada archivo en una tabla (una fila por documento) y exporta CSV. Solo informa lo que realmente está en cada uno.",
-    },
-    pt: {
-      name: "DockDocs Extrair dados em lote",
-      crumb: "Extrair dados em lote",
-      description:
-        "Arraste uma pasta de faturas, orçamentos ou contratos — a IA extrai os campos-chave de cada arquivo em uma tabela (uma linha por documento) e exporta CSV. Informa apenas o que realmente está em cada um.",
-    },
-    fr: {
-      name: "DockDocs Extraire des données en lot",
-      crumb: "Extraire des données en lot",
-      description:
-        "Déposez un dossier de factures, devis ou contrats — l'IA extrait les champs clés de chaque fichier dans un tableau (une ligne par document) et exporte en CSV. Elle ne rapporte que ce qui est réellement présent.",
-    },
-    ja: {
-      name: "DockDocs 一括データ抽出",
-      crumb: "一括データ抽出",
-      description:
-        "請求書・見積書・契約書のフォルダをドロップ—AIが各ファイルのキーフィールドを1つの表に抽出（1ドキュメント1行）してCSVにエクスポート。",
-    },
-    de: {
-      name: "DockDocs Daten stapelweise in Tabelle extrahieren",
-      crumb: "Stapelweise in Tabelle extrahieren",
-      description:
-        "Legen Sie einen ganzen Ordner mit Rechnungen, Angeboten oder Verträgen ab – die KI extrahiert die Schlüsselfelder aller Dateien in eine Tabelle (eine Zeile pro Datei) und exportiert als CSV.",
-    },
-    ko: {
-      name: "DockDocs 일괄 스프레드시트 추출",
-      crumb: "일괄 데이터 추출",
-      description:
-        "청구서, 견적서, 계약서 폴더를 드롭하면 AI가 모든 파일의 핵심 항목을 하나의 표로 추출(파일당 한 행)해 CSV로 내보냅니다.",
-    },
-  },
   "contract-risk": {
     en: {
       name: "DockDocs Contract Risk Check",

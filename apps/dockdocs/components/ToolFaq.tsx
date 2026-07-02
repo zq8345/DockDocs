@@ -1,4 +1,4 @@
-import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "../../../shared/templates/pdf-tool-page/VerifyClientSide";
+﻿import { VerifyClientSide, LOCAL_ONLY_SLUGS } from "../../../shared/templates/pdf-tool-page/VerifyClientSide";
 import { toHant, deepHant } from "@/lib/zh-hant";
 import type { RouteLocale } from "@/lib/i18n";
 
@@ -408,35 +408,6 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
         { q: "¿Hay reglas para la contraseña o límites de cuántos archivos?", a: "La contraseña debe tener entre 4 y 32 caracteres usando solo letras, dígitos y el guion bajo (_); así es seguro aplicarla en cualquier lector de PDF. Puedes cifrar hasta 30 archivos por lote; para más, vuelve a ejecutar la herramienta. No hay un límite estricto de tamaño, pero como todo se ejecuta en tu navegador, los trabajos muy grandes van más lentos en dispositivos con poca memoria." },
         { q: "¿Qué ocurre con un PDF que ya está protegido con contraseña?", a: "Se omite. La herramienta no puede volver a bloquear un archivo que no puede abrir, así que cualquier PDF que ya tenga contraseña queda fuera del ZIP en lugar de hacer fallar todo el lote. Descífralo primero (con la contraseña original) si quieres volver a cifrarlo aquí." },
         { q: "¿De verdad es gratis? ¿Lleva marca de agua o requiere registro?", a: "Sí, completamente gratis, sin registro y sin marca de agua. Los PDF cifrados son byte a byte tus originales más la contraseña; DockDocs no les añade nada." },
-      ],
-    },
-  },
-  "batch-rename-pdf": {
-    title: { en: "Batch rename PDF — FAQ", zh: "批量 PDF 改名常见问题", es: "Renombrar PDF por lotes — preguntas frecuentes" },
-    items: {
-      en: [
-        { q: "How do I rename a batch of PDFs?", a: "Drag a whole folder (or a set of PDFs) onto the upload box, or click to choose files. Then pick a mode: \"Numbered\" gives every file a base name plus a sequence number (invoice-01.pdf, invoice-02.pdf…), and \"Find & replace\" swaps any text that appears in the existing filenames. A live preview shows each old name struck through next to its new name, so you can check the result before you commit. When it looks right, click \"Download renamed ZIP\"." },
-        { q: "Are my files uploaded anywhere?", a: "No. This tool is 100% client-side — every file is read and renamed inside your own browser, and nothing is ever sent to a server. There is no upload step at all; the renaming and the ZIP are built locally on your device. That is also why it is free, with no signup, no watermark, and no account to create." },
-        { q: "What do I get back, and are the PDFs modified?", a: "You get a single ZIP file (dockdocs-renamed.zip) containing copies of your PDFs with the new filenames. Renaming changes the filenames only — the PDF contents, pages, and quality are left completely untouched. The original files on your computer are not altered either; you just download a freshly named set." },
-        { q: "Is there a limit on how many files I can rename?", a: "Yes — this tool handles up to 100 PDFs per batch. Because everything runs in your browser, very large batches use more memory and take a little longer on weaker machines, but well within the 100-file limit it is fast. If you have more than 100 files, just run a second batch." },
-        { q: "Can I drop a folder that has non-PDF files in it?", a: "Yes. You can drop an entire folder, and the tool automatically filters out anything that is not a PDF — images, spreadsheets, and other documents are ignored, so only your PDFs are added to the list. You do not need to clean up the folder first." },
-        { q: "What happens if two files would end up with the same name?", a: "The tool catches that automatically. If a numbered pattern or find-and-replace would produce two identical filenames, it adds a -1, -2 (and so on) suffix to the later ones so every file in the ZIP keeps a unique name. Nothing gets silently overwritten or lost." },
-      ],
-      zh: [
-        { q: "怎么批量给 PDF 改名？", a: "把整个文件夹（或一批 PDF）拖到上传框里，或点击选择文件。然后选一种模式：「编号」会给每个文件一个基础名加上序号（invoice-01.pdf、invoice-02.pdf……），「查找替换」则替换原文件名里出现的任意文字。预览区会把每个旧名字（带删除线）和它的新名字并排显示，你可以在确认前先核对结果。看起来没问题后，点击「下载改名后的 ZIP」即可。" },
-        { q: "我的文件会被上传到哪里吗？", a: "不会。本工具 100% 在本地运行——每个文件都在你自己的浏览器里读取和改名，绝不会发送到任何服务器。整个过程根本没有上传这一步；改名和打包 ZIP 都在你的设备上本地完成。这也是为什么它免费——无需注册、无水印，也不用创建账号。" },
-        { q: "我拿回来的是什么？PDF 内容会被改动吗？", a: "你会得到一个 ZIP 文件（dockdocs-renamed.zip），里面是用新文件名打包好的 PDF 副本。重命名只改文件名——PDF 的内容、页面和清晰度完全不变。你电脑上的原始文件也不会被改动，你只是下载了一套重新命名的文件。" },
-        { q: "能改名的文件数量有上限吗？", a: "有——本工具每批最多处理 100 份 PDF。因为全部在浏览器里运行，超大批次会占用更多内存，在配置较弱的机器上会稍慢一些，但在 100 份以内速度很快。如果文件超过 100 份，再跑一批即可。" },
-        { q: "文件夹里混有非 PDF 文件可以直接拖进来吗？", a: "可以。你能直接拖入整个文件夹，工具会自动过滤掉所有非 PDF 的文件——图片、表格和其他文档都会被忽略，只有 PDF 才会被加入列表。你不需要事先清理文件夹。" },
-        { q: "如果两个文件改名后重名了会怎样？", a: "工具会自动处理。如果编号模板或查找替换会产生两个相同的文件名，它会给靠后的那些加上 -1、-2（以此类推）的后缀，保证 ZIP 里每个文件名都唯一。不会有任何文件被悄悄覆盖或丢失。" },
-      ],
-      es: [
-        { q: "¿Cómo renombro un lote de PDF?", a: "Arrastra una carpeta entera (o un conjunto de PDF) a la casilla de carga, o haz clic para elegir archivos. Luego elige un modo: «Numerado» da a cada archivo un nombre base más un número de secuencia (factura-01.pdf, factura-02.pdf…), y «Buscar y reemplazar» sustituye cualquier texto que aparezca en los nombres actuales. Una vista previa en vivo muestra cada nombre antiguo tachado junto a su nombre nuevo, para que compruebes el resultado antes de confirmar. Cuando se vea bien, haz clic en «Descargar ZIP renombrado»." },
-        { q: "¿Mis archivos se suben a algún sitio?", a: "No. Esta herramienta es 100 % del lado del cliente: cada archivo se lee y se renombra dentro de tu propio navegador, y nada se envía jamás a un servidor. No hay ningún paso de carga; el renombrado y el ZIP se generan localmente en tu dispositivo. Por eso también es gratis, sin registro, sin marca de agua y sin cuenta que crear." },
-        { q: "¿Qué recibo de vuelta y se modifican los PDF?", a: "Recibes un único archivo ZIP (dockdocs-renamed.zip) con copias de tus PDF y los nuevos nombres. Renombrar cambia únicamente los nombres de archivo; el contenido, las páginas y la calidad de los PDF quedan totalmente intactos. Los archivos originales de tu equipo tampoco se modifican; solo descargas un conjunto recién nombrado." },
-        { q: "¿Hay un límite de cuántos archivos puedo renombrar?", a: "Sí: esta herramienta procesa hasta 100 PDF por lote. Como todo se ejecuta en tu navegador, los lotes muy grandes usan más memoria y tardan un poco más en máquinas menos potentes, pero dentro del límite de 100 archivos es rápido. Si tienes más de 100 archivos, ejecuta un segundo lote." },
-        { q: "¿Puedo soltar una carpeta que tenga archivos que no sean PDF?", a: "Sí. Puedes soltar una carpeta entera y la herramienta descarta automáticamente todo lo que no sea PDF: imágenes, hojas de cálculo y otros documentos se ignoran, de modo que solo tus PDF se añaden a la lista. No necesitas limpiar la carpeta primero." },
-        { q: "¿Qué ocurre si dos archivos acabaran con el mismo nombre?", a: "La herramienta lo detecta automáticamente. Si un patrón numerado o un buscar y reemplazar produjera dos nombres idénticos, añade un sufijo -1, -2 (y así sucesivamente) a los posteriores, de modo que cada archivo del ZIP mantenga un nombre único. Nada se sobrescribe ni se pierde de forma silenciosa." },
       ],
     },
   },
@@ -1261,17 +1232,6 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "É realmente gratuito? Tem marca d'água ou exige cadastro?", a: "Sim, completamente gratuito, sem cadastro e sem marca d'água. Os PDFs criptografados são byte a byte seus originais mais a senha — o DockDocs não adiciona nada a eles." },
     ],
   },
-  "batch-rename-pdf": {
-    title: "Renomear PDFs em lote — perguntas frequentes",
-    items: [
-      { q: "Como renomeio um lote de PDFs?", a: "Arraste uma pasta inteira (ou um conjunto de PDFs) para a caixa de upload, ou clique para escolher arquivos. Em seguida, escolha um modo: «Numerado» dá a cada arquivo um nome base mais um número de sequência (fatura-01.pdf, fatura-02.pdf…), e «Localizar e substituir» troca qualquer texto que apareça nos nomes de arquivo atuais. Uma pré-visualização ao vivo mostra cada nome antigo riscado ao lado do seu novo nome, para que você verifique o resultado antes de confirmar. Quando parecer correto, clique em «Baixar ZIP renomeado»." },
-      { q: "Meus arquivos são enviados para algum lugar?", a: "Não. Esta ferramenta é 100% do lado do cliente — cada arquivo é lido e renomeado dentro do seu próprio navegador, e nada é jamais enviado a um servidor. Não há etapa de upload; a renomeação e o ZIP são gerados localmente no seu dispositivo. É por isso que também é gratuito, sem cadastro, sem marca d'água e sem conta a criar." },
-      { q: "O que recebo de volta e os PDFs são modificados?", a: "Você recebe um único arquivo ZIP (dockdocs-renamed.zip) contendo cópias dos seus PDFs com os novos nomes de arquivo. Renomear muda apenas os nomes de arquivo — o conteúdo, as páginas e a qualidade dos PDFs ficam completamente intactos. Os arquivos originais no seu computador também não são alterados; você apenas baixa um conjunto recém-nomeado." },
-      { q: "Há um limite de quantos arquivos posso renomear?", a: "Sim — esta ferramenta processa até 100 PDFs por lote. Como tudo é executado no seu navegador, lotes muito grandes usam mais memória e demoram um pouco mais em máquinas mais fracas, mas dentro do limite de 100 arquivos é rápido. Se você tiver mais de 100 arquivos, execute um segundo lote." },
-      { q: "Posso soltar uma pasta que tenha arquivos que não sejam PDF?", a: "Sim. Você pode soltar uma pasta inteira e a ferramenta descarta automaticamente qualquer coisa que não seja PDF — imagens, planilhas e outros documentos são ignorados, então apenas seus PDFs são adicionados à lista. Você não precisa limpar a pasta primeiro." },
-      { q: "O que acontece se dois arquivos ficassem com o mesmo nome?", a: "A ferramenta detecta isso automaticamente. Se um padrão numerado ou localizar e substituir produziria dois nomes de arquivo idênticos, ele adiciona um sufixo -1, -2 (e assim por diante) aos posteriores para que cada arquivo no ZIP mantenha um nome único. Nada é silenciosamente sobrescrito ou perdido." },
-    ],
-  },
   "batch-rotate-pdf": {
     title: "Rotacionar PDFs em lote — perguntas frequentes",
     items: [
@@ -1678,17 +1638,6 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Y a-t-il des règles pour le mot de passe ou des limites sur le nombre de fichiers ?", a: "Le mot de passe doit comporter entre 4 et 32 caractères en utilisant uniquement des lettres, des chiffres et le tiret bas (_) — cela garantit sa compatibilité avec tous les lecteurs PDF. Vous pouvez chiffrer jusqu'à 30 fichiers par lot ; pour plus, relancez simplement l'outil. Il n'y a pas de limite de taille stricte, mais comme tout s'exécute dans votre navigateur, les très grands travaux ralentissent sur les appareils avec peu de mémoire." },
       { q: "Que se passe-t-il avec un PDF déjà protégé par mot de passe ?", a: "Il est ignoré. L'outil ne peut pas reverrouiller un fichier qu'il ne peut pas ouvrir, donc tout PDF déjà protégé est exclu du ZIP plutôt que de faire échouer l'ensemble du lot. Déchiffrez-le d'abord (avec le mot de passe d'origine) si vous souhaitez le rechiffrer ici." },
       { q: "Est-ce vraiment gratuit ? Y a-t-il un filigrane ou une inscription requise ?", a: "Oui, entièrement gratuit, sans inscription et sans filigrane. Les PDF chiffrés sont octet par octet vos originaux plus le mot de passe — DockDocs n'y ajoute rien." },
-    ],
-  },
-  "batch-rename-pdf": {
-    title: "Renommer des PDF par lot — foire aux questions",
-    items: [
-      { q: "Comment renommer un lot de PDF ?", a: "Faites glisser un dossier entier (ou un ensemble de PDF) dans la zone de dépôt, ou cliquez pour choisir des fichiers. Choisissez ensuite un mode : « Numéroté » donne à chaque fichier un nom de base plus un numéro de séquence (facture-01.pdf, facture-02.pdf…), et « Rechercher et remplacer » substitue tout texte apparaissant dans les noms de fichiers existants. Un aperçu en direct affiche chaque ancien nom barré à côté de son nouveau nom, vous permettant de vérifier le résultat avant de valider. Quand tout semble bon, cliquez sur « Télécharger le ZIP renommé »." },
-      { q: "Mes fichiers sont-ils téléversés quelque part ?", a: "Non. Cet outil est 100 % côté client — chaque fichier est lu et renommé dans votre propre navigateur, et rien n'est jamais envoyé à un serveur. Il n'y a aucune étape de téléversement ; le renommage et le ZIP sont générés localement sur votre appareil. C'est aussi pourquoi c'est gratuit, sans inscription, sans filigrane et sans compte à créer." },
-      { q: "Que reçois-je et les PDF sont-ils modifiés ?", a: "Vous recevez un seul fichier ZIP (dockdocs-renamed.zip) contenant des copies de vos PDF avec les nouveaux noms de fichiers. Le renommage ne modifie que les noms de fichiers — le contenu, les pages et la qualité des PDF restent entièrement intacts. Les fichiers originaux sur votre ordinateur ne sont pas non plus modifiés ; vous téléchargez simplement un ensemble fraîchement renommé." },
-      { q: "Y a-t-il une limite sur le nombre de fichiers que je peux renommer ?", a: "Oui — cet outil traite jusqu'à 100 PDF par lot. Comme tout s'exécute dans votre navigateur, les très grands lots utilisent plus de mémoire et prennent un peu plus de temps sur les machines moins puissantes, mais dans la limite de 100 fichiers c'est rapide. Si vous avez plus de 100 fichiers, lancez un deuxième lot." },
-      { q: "Puis-je déposer un dossier contenant des fichiers non-PDF ?", a: "Oui. Vous pouvez déposer un dossier entier et l'outil filtre automatiquement tout ce qui n'est pas un PDF — les images, les feuilles de calcul et les autres documents sont ignorés, seuls vos PDF sont ajoutés à la liste. Vous n'avez pas besoin de nettoyer le dossier au préalable." },
-      { q: "Que se passe-t-il si deux fichiers portaient le même nom ?", a: "L'outil le détecte automatiquement. Si un modèle numéroté ou un remplacement produisait deux noms de fichiers identiques, il ajoute un suffixe -1, -2 (et ainsi de suite) aux suivants afin que chaque fichier du ZIP conserve un nom unique. Rien n'est silencieusement écrasé ou perdu." },
     ],
   },
   "batch-rotate-pdf": {
@@ -2305,17 +2254,6 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "本当に無料ですか？透かしや登録はありますか？", a: "はい、完全無料で、登録も透かしもありません。暗号化されたPDFはバイト単位であなたの元ファイルにパスワードを加えたものです——DockDocsは何も追加しません。" },
     ],
   },
-  "batch-rename-pdf": {
-    title: "PDF一括リネーム — よくある質問",
-    items: [
-      { q: "PDFのバッチの名前を変更するには？", a: "フォルダ全体（またはPDFのセット）をアップロードボックスにドラッグするか、クリックしてファイルを選択します。次にモードを選びます。「連番」はすべてのファイルにベース名＋連番を付け（invoice-01.pdf、invoice-02.pdf…）、「検索と置換」は既存のファイル名に現れる任意のテキストを置き換えます。ライブプレビューでは各旧名に取り消し線が引かれ、その横に新名が表示されるので、確定する前に結果を確認できます。問題なければ「リネーム済みZIPをダウンロード」をクリックします。" },
-      { q: "ファイルはどこかにアップロードされますか？", a: "いいえ。このツールは100%クライアントサイドです——すべてのファイルはあなた自身のブラウザ内で読み取られ名前変更され、サーバーへ送られることはありません。アップロードの工程はまったくなく、リネームもZIPもデバイス上でローカルに作られます。だからこそ無料で、登録も透かしも作成するアカウントもありません。" },
-      { q: "何が得られますか？PDFは変更されますか？", a: "新しいファイル名が付いたPDFのコピーを含む1つのZIPファイル（dockdocs-renamed.zip）が得られます。リネームはファイル名のみを変えるもので——PDFの中身・ページ・品質はまったく手を加えません。あなたのコンピューター上の元ファイルも変更されず、新しく名前を付けたセットをダウンロードするだけです。" },
-      { q: "名前を変更できるファイル数に制限はありますか？", a: "はい——このツールは1バッチあたり最大100件のPDFを扱います。すべてブラウザ内で動作するため、非常に大きなバッチは非力なマシンではより多くのメモリを使い少し時間がかかりますが、100ファイルの上限内であれば高速です。100ファイルを超える場合は、2回目のバッチを実行してください。" },
-      { q: "PDF以外のファイルが含まれるフォルダをドロップできますか？", a: "はい。フォルダ全体をドロップでき、ツールがPDF以外のものを自動的に除外します——画像・表計算・その他の文書は無視され、PDFだけがリストに追加されます。先にフォルダを整理する必要はありません。" },
-      { q: "2つのファイルが同じ名前になってしまう場合はどうなりますか？", a: "ツールが自動的に検知します。連番パターンや検索と置換で同一のファイル名が2つできてしまう場合、後のほうに -1、-2 などの接尾辞を付け、ZIP内のすべてのファイルが一意の名前を保つようにします。何も黙って上書きされたり失われたりしません。" },
-    ],
-  },
   "batch-rotate-pdf": {
     title: "PDF一括回転 — よくある質問",
     items: [
@@ -2514,17 +2452,6 @@ const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Gibt es Regeln für das Passwort oder Grenzen für die Anzahl der Dateien?", a: "Das Passwort muss 4–32 Zeichen lang sein und darf nur Buchstaben, Ziffern und den Unterstrich (_) enthalten — das hält es sicher anwendbar über jeden PDF-Reader hinweg. Sie können bis zu 30 Dateien pro Stapel verschlüsseln; für mehr führen Sie das Tool einfach erneut aus. Es gibt keine feste Größengrenze, aber da alles in Ihrem Browser läuft, gehen sehr große Aufträge auf Geräten mit wenig Arbeitsspeicher langsamer." },
       { q: "Was passiert mit einem PDF, das bereits passwortgeschützt ist?", a: "Es wird übersprungen. Das Tool kann eine Datei, die es nicht öffnen kann, nicht erneut sperren, daher wird jedes PDF, das bereits ein Passwort hat, aus dem ZIP ausgelassen, statt den gesamten Stapel scheitern zu lassen. Entschlüsseln Sie es zuerst (mit dem ursprünglichen Passwort), wenn Sie es hier erneut verschlüsseln möchten." },
       { q: "Ist es wirklich kostenlos? Wasserzeichen oder Anmeldung?", a: "Ja, vollständig kostenlos, ohne Anmeldung und ohne Wasserzeichen. Die verschlüsselten PDFs sind Byte für Byte Ihre Originale plus das Passwort — DockDocs fügt ihnen nichts hinzu." },
-    ],
-  },
-  "batch-rename-pdf": {
-    title: "PDF im Stapel umbenennen — Häufige Fragen",
-    items: [
-      { q: "Wie benenne ich einen Stapel PDFs um?", a: "Ziehen Sie einen ganzen Ordner (oder eine Reihe von PDFs) auf das Upload-Feld oder klicken Sie, um Dateien auszuwählen. Wählen Sie dann einen Modus: „Nummeriert“ gibt jeder Datei einen Basisnamen plus eine fortlaufende Nummer (rechnung-01.pdf, rechnung-02.pdf …), und „Suchen & Ersetzen“ tauscht jeden Text aus, der in den bestehenden Dateinamen vorkommt. Eine Live-Vorschau zeigt jeden alten Namen durchgestrichen neben seinem neuen Namen, sodass Sie das Ergebnis prüfen können, bevor Sie es bestätigen. Wenn es passt, klicken Sie auf „Umbenanntes ZIP herunterladen“." },
-      { q: "Werden meine Dateien irgendwohin hochgeladen?", a: "Nein. Dieses Tool ist zu 100 % clientseitig — jede Datei wird in Ihrem eigenen Browser gelesen und umbenannt, und nichts wird je an einen Server gesendet. Es gibt überhaupt keinen Upload-Schritt; das Umbenennen und das ZIP werden lokal auf Ihrem Gerät erstellt. Deshalb ist es auch kostenlos, ohne Anmeldung, ohne Wasserzeichen und ohne anzulegendes Konto." },
-      { q: "Was erhalte ich zurück, und werden die PDFs verändert?", a: "Sie erhalten eine einzige ZIP-Datei (dockdocs-renamed.zip) mit Kopien Ihrer PDFs unter den neuen Dateinamen. Das Umbenennen ändert nur die Dateinamen — der Inhalt, die Seiten und die Qualität der PDFs bleiben völlig unangetastet. Auch die Originaldateien auf Ihrem Computer werden nicht verändert; Sie laden lediglich einen frisch benannten Satz herunter." },
-      { q: "Gibt es eine Grenze, wie viele Dateien ich umbenennen kann?", a: "Ja — dieses Tool verarbeitet bis zu 100 PDFs pro Stapel. Da alles in Ihrem Browser läuft, verbrauchen sehr große Stapel mehr Arbeitsspeicher und brauchen auf schwächeren Geräten etwas länger, aber innerhalb der 100-Dateien-Grenze ist es schnell. Wenn Sie mehr als 100 Dateien haben, führen Sie einfach einen zweiten Stapel aus." },
-      { q: "Kann ich einen Ordner ablegen, der Nicht-PDF-Dateien enthält?", a: "Ja. Sie können einen ganzen Ordner ablegen, und das Tool filtert automatisch alles heraus, was kein PDF ist — Bilder, Tabellen und andere Dokumente werden ignoriert, sodass nur Ihre PDFs zur Liste hinzugefügt werden. Sie müssen den Ordner nicht zuvor aufräumen." },
-      { q: "Was passiert, wenn zwei Dateien denselben Namen erhalten würden?", a: "Das fängt das Tool automatisch ab. Würde ein Nummerierungsmuster oder „Suchen & Ersetzen“ zwei identische Dateinamen erzeugen, fügt es den späteren ein Suffix -1, -2 (und so weiter) hinzu, sodass jede Datei im ZIP einen eindeutigen Namen behält. Nichts wird stillschweigend überschrieben oder geht verloren." },
     ],
   },
   "batch-rotate-pdf": {
@@ -2933,17 +2860,6 @@ const FAQS_KO: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "암호 규칙이나 파일 개수 제한이 있나요?", a: "암호는 4~32자여야 하며 문자, 숫자, 밑줄(_)만 포함할 수 있습니다 — 이는 어떤 PDF 리더에서도 안정적으로 작동하도록 유지합니다. 묶음당 최대 30개 파일을 암호화할 수 있으며, 더 많으면 도구를 다시 실행하면 됩니다. 고정된 크기 제한은 없지만, 모든 작업이 브라우저 안에서 실행되므로 메모리가 적은 기기에서는 매우 큰 작업이 더 느리게 진행됩니다." },
       { q: "이미 암호로 보호된 PDF는 어떻게 되나요?", a: "건너뜁니다. 도구는 열 수 없는 파일을 다시 잠글 수 없으므로, 이미 암호가 있는 PDF는 전체 묶음을 실패시키는 대신 ZIP에서 제외됩니다. 여기서 다시 암호화하려면 먼저 (원래 암호로) 복호화하세요." },
       { q: "정말 무료인가요? 워터마크나 가입이 있나요?", a: "네, 완전 무료이며 가입도, 워터마크도 없습니다. 암호화된 PDF는 바이트 단위로 귀하의 원본에 암호가 더해진 것입니다 — DockDocs는 거기에 어떤 것도 추가하지 않습니다." },
-    ],
-  },
-  "batch-rename-pdf": {
-    title: "PDF 일괄 이름 변경 — 자주 묻는 질문",
-    items: [
-      { q: "PDF 묶음의 이름을 바꾸려면 어떻게 하나요?", a: "폴더 전체(또는 여러 PDF)를 업로드 영역에 끌어다 놓거나 클릭해 파일을 고르세요. 그런 다음 모드를 선택하세요. 「번호 매기기」는 각 파일에 기본 이름과 일련번호를 붙이고(invoice-01.pdf, invoice-02.pdf …), 「찾기 및 바꾸기」는 기존 파일 이름에 나타나는 텍스트를 교체합니다. 실시간 미리보기가 각 옛 이름에 취소선을 그어 새 이름과 나란히 보여주므로, 확정하기 전에 결과를 확인할 수 있습니다. 마음에 들면 「이름 변경된 ZIP 내려받기」를 클릭하세요." },
-      { q: "제 파일이 어딘가에 업로드되나요?", a: "아니요. 이 도구는 100% 클라이언트 측입니다 — 각 파일은 귀하의 브라우저 안에서 읽히고 이름이 바뀌며, 어떤 것도 서버로 전송되지 않습니다. 업로드 단계 자체가 없으며, 이름 변경과 ZIP 생성이 기기에서 로컬로 이루어집니다. 그래서 무료이며 가입도, 워터마크도, 만들어야 할 계정도 없습니다." },
-      { q: "무엇을 받게 되며 PDF가 변경되나요?", a: "새 파일 이름으로 된 PDF 사본이 담긴 하나의 ZIP 파일(dockdocs-renamed.zip)을 받습니다. 이름 변경은 파일 이름만 바꿀 뿐, PDF의 내용, 페이지, 품질은 전혀 손대지 않습니다. 컴퓨터의 원본 파일도 변경되지 않으며, 새로 이름이 붙은 묶음을 내려받을 뿐입니다." },
-      { q: "이름을 바꿀 수 있는 파일 개수에 제한이 있나요?", a: "네 — 이 도구는 묶음당 최대 100개 PDF를 처리합니다. 모든 작업이 브라우저 안에서 실행되므로 매우 큰 묶음은 메모리를 더 쓰고 성능이 낮은 기기에서 다소 시간이 걸리지만, 100개 한도 안에서는 빠릅니다. 100개를 넘으면 두 번째 묶음을 실행하면 됩니다." },
-      { q: "PDF가 아닌 파일이 포함된 폴더를 끌어다 놓아도 되나요?", a: "네. 폴더 전체를 끌어다 놓으면 도구가 PDF가 아닌 모든 것을 자동으로 걸러냅니다 — 이미지, 스프레드시트, 기타 문서는 무시되고 PDF만 목록에 추가됩니다. 미리 폴더를 정리할 필요가 없습니다." },
-      { q: "두 파일이 같은 이름을 갖게 되면 어떻게 되나요?", a: "도구가 자동으로 처리합니다. 번호 매기기 패턴이나 「찾기 및 바꾸기」가 동일한 파일 이름 두 개를 만들게 되면, 나중 것에 -1, -2(등)의 접미사를 붙여 ZIP 안의 각 파일이 고유한 이름을 유지하도록 합니다. 어떤 것도 조용히 덮어쓰이거나 사라지지 않습니다." },
     ],
   },
   "batch-rotate-pdf": {

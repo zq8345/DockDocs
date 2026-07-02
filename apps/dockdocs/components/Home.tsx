@@ -476,7 +476,7 @@ const SCENARIOS = [
     ja: ["契約書を署名前に確認", "契約書をアップロード", "AIが高リスク条項を逐条マーク+原文に誘導"],
     de: ["Vertrag vor der Unterschrift prüfen", "Vertrag hochladen", "KI markiert jede Risikoklausel mit Verweis auf den Text"],
     ko: ["서명 전 계약서 검토", "계약서 업로드", "AI가 고위험 조항 표시+원문 연결"] },
-  { icon: <path d="M4 7l8-4 8 4-8 4-8-4ZM4 12l8 4 8-4M4 17l8 4 8-4" />, href: "/batch-extract-sheet",
+  { icon: <path d="M4 7l8-4 8 4-8 4-8-4ZM4 12l8 4 8-4M4 17l8 4 8-4" />, href: "/extract-to-excel",
     en: ["Process a batch of invoices", "Invoices in bulk", "AI extracts amount, date, and vendor — automatically"],
     zh: ["批发票，几分钟一摞", "整批发票", "AI 自动抽出金额/日期/抬头"],
     es: ["Procesa facturas en lote", "Facturas a granel", "AI extrae importe, fecha y emisor automáticamente"],

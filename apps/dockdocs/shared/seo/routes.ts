@@ -150,10 +150,8 @@ const ROUTE_META: Partial<Record<RouteSlug, RouteMeta>> = {
   "batch-compress": { name: "Batch Compress PDFs — Shrink a Whole Folder", changeFrequency: w, priority: 0.7 },
   "batch-pdf-to-image": { name: "Batch PDF to Image — Convert Many PDFs to JPG/PNG", changeFrequency: w, priority: 0.7 },
   "batch-protect-pdf": { name: "Batch Encrypt PDF — Password-Protect Many PDFs", changeFrequency: w, priority: 0.7 },
-  "batch-rename-pdf": { name: "Batch Rename PDF — Rename Many Files by Pattern", changeFrequency: w, priority: 0.68 },
   "batch-split-merge": { name: "Batch Split & Merge PDF", changeFrequency: w, priority: 0.7 },
   "batch-rotate-pdf": { name: "Batch Rotate PDF — Fix Many Sideways Scans", changeFrequency: w, priority: 0.68 },
-  "batch-extract-sheet": { name: "Batch Extract Data to a Spreadsheet — Many Invoices to CSV", changeFrequency: w, priority: 0.7 },
   "batch-sort": { name: "Batch Sort PDFs into Folders — AI File Organizer", changeFrequency: w, priority: 0.68 },
 };
 

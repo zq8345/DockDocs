@@ -499,6 +499,24 @@
 /ja/batch-page-numbers /410 410!
 /de/batch-page-numbers /410 410!
 /ko/batch-page-numbers /410 410!
+/batch-rename-pdf /410 410!
+/zh/batch-rename-pdf /410 410!
+/zh-Hant/batch-rename-pdf /410 410!
+/es/batch-rename-pdf /410 410!
+/pt/batch-rename-pdf /410 410!
+/fr/batch-rename-pdf /410 410!
+/ja/batch-rename-pdf /410 410!
+/de/batch-rename-pdf /410 410!
+/ko/batch-rename-pdf /410 410!
+/batch-extract-sheet /410 410!
+/zh/batch-extract-sheet /410 410!
+/zh-Hant/batch-extract-sheet /410 410!
+/es/batch-extract-sheet /410 410!
+/pt/batch-extract-sheet /410 410!
+/fr/batch-extract-sheet /410 410!
+/ja/batch-extract-sheet /410 410!
+/de/batch-extract-sheet /410 410!
+/ko/batch-extract-sheet /410 410!
 
 # English weight across two URL sets. The canonical TAG alone didn't consolidate
 # it → force-301 every /en/<slug> back to /<slug>. Force (!) overrides the
