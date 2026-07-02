@@ -14,6 +14,16 @@ services:
       - --api-timeout=120s         # allow big/complex documents
       - --libreoffice-restart-after=10   # contain LibreOffice memory growth
       - --chromium-restart-after=10      # contain Chromium url-route memory leak
+      # SSRF defence: block Chromium from fetching cloud metadata IPs and RFC-1918
+      # ranges that HTML payloads could embed (e.g. <img src="http://100.100.100.200/...">).
+      # This flag REPLACES Gotenberg's default (^file:///[^/]+), so the file:// pattern
+      # is retained here explicitly.  Regex alternatives (| = OR):
+      #   ^file:///[^/]+            — default: block file:// URIs with a host component
+      #   169.254.*                 — link-local / AWS + Aliyun metadata (169.254.169.254)
+      #   100.100.100.200           — Aliyun instance metadata endpoint
+      #   127.*                     — loopback
+      #   10.*  172.16-31.*  192.168.*  — RFC-1918 private ranges
+      - '--chromium-deny-list=^file:///[^/]+|^https?://(169\.254\.|100\.100\.100\.200|127\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)'
     expose:
       - "3000"                     # internal only — never published to the internet directly
     networks: [edge]
