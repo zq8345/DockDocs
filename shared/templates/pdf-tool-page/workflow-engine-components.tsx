@@ -5,7 +5,7 @@ import type { PdfToolPageConfig } from "./index";
 import type { PdfRuntimeArtifact } from "./pdf-runtime";
 import { ToolBridge, hasToolBridge } from "./ToolBridge";
 import { toHant as ccTr } from "./zh-hant";
-import { DocPreview, renderPdfFirstPageDataUrl } from "./doc-preview";
+import { DocPreview, renderPdfFirstPageDataUrl, OfficeFallback } from "./doc-preview";
 
 // Visual preview of an uploaded file: first-page thumbnail for PDFs, the image
 // itself for images. Falls back to a small type badge while rendering / on error.
@@ -121,7 +121,7 @@ export type WorkflowResult = {
   title: string;
   description: string;
   rows: Array<[string, string]>;
-  preview?: "text" | "document" | "image-order" | "ranges" | "pdf";
+  preview?: "text" | "document" | "image-order" | "ranges" | "pdf" | "office";
   previewText?: string;
   previewBlob?: Blob;
 };
@@ -667,6 +667,15 @@ function PdfResultPreview({ blob }: { blob?: Blob }) {
 export function ResultPreview({ type, text, blob }: { type: WorkflowResult["preview"]; text?: string; blob?: Blob }) {
   if (type === "pdf") {
     return <PdfResultPreview blob={blob} />;
+  }
+  if (type === "office") {
+    // Output is an Office file (pdf→word/excel/ppt) — show the same colored type
+    // badge (W/X/P) the upload preview uses, so input and output stay consistent.
+    return (
+      <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)]">
+        <OfficeFallback name={text ?? ""} max={240} />
+      </div>
+    );
   }
   if (type === "text") {
     return (

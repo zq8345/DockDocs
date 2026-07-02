@@ -1377,6 +1377,9 @@ function getWorkflowResult(
           [L.outputSize, formatBytes(outputSize)],
           [L.output, outputName],
         ],
+        // Output is a DOCX — show the same blue "W" badge the upload preview uses.
+        preview: artifact ? "office" : undefined,
+        previewText: artifact ? outputName : undefined,
       };
     case "jpg-to-pdf":
     case "png-to-pdf":
@@ -1554,10 +1557,18 @@ function getWorkflowResult(
           [L.outputSize, formatBytes(outputSize)],
           [L.output, outputName],
         ],
-        // First-page thumbnail when the OUTPUT is a PDF (office→PDF, pdf-to-pdfa).
-        // Reverse routes output non-PDF (pdf-to-ppt→pptx, pdf-to-excel→xlsx) → no thumbnail.
-        preview: artifact && outputName.toLowerCase().endsWith(".pdf") ? "pdf" : undefined,
+        // Output visual: PDF output → first-page thumbnail; Office output
+        // (pdf-to-ppt→pptx, pdf-to-excel→xlsx) → the same colored type badge the
+        // upload preview uses, so input and output previews stay consistent.
+        preview: !artifact
+          ? undefined
+          : outputName.toLowerCase().endsWith(".pdf")
+          ? "pdf"
+          : /\.(docx?|pptx?|xlsx?|odt|odp|ods|rtf)$/i.test(outputName)
+          ? "office"
+          : undefined,
         previewBlob: artifact && outputName.toLowerCase().endsWith(".pdf") ? artifact.blob : undefined,
+        previewText: artifact && /\.(docx?|pptx?|xlsx?|odt|odp|ods|rtf)$/i.test(outputName) ? outputName : undefined,
       };
     default:
       return {

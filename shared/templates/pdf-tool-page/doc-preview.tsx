@@ -36,8 +36,8 @@ export async function renderPdfFirstPageDataUrl(source: File | Blob): Promise<st
   }
 }
 
-function OfficeFallback({ file, max }: { file: File; max: number }) {
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+export function OfficeFallback({ name, max }: { name: string; max: number }) {
+  const ext = name.split(".").pop()?.toLowerCase() ?? "";
   const [color, label]: [string, string] =
     ["doc", "docx", "odt", "rtf"].includes(ext) ? ["#2b7cd3", "W"] :
     ["xls", "xlsx", "ods"].includes(ext) ? ["#217346", "X"] :
@@ -123,7 +123,7 @@ export function DocPreview({
             className="h-auto w-auto"
           />
         ) : (
-          <OfficeFallback file={file} max={max} />
+          <OfficeFallback name={file.name} max={max} />
         )}
         {/* × remove button — top-right corner of document preview, hover:red */}
         <button
