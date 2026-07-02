@@ -1554,6 +1554,10 @@ function getWorkflowResult(
           [L.outputSize, formatBytes(outputSize)],
           [L.output, outputName],
         ],
+        // First-page thumbnail when the OUTPUT is a PDF (office→PDF, pdf-to-pdfa).
+        // Reverse routes output non-PDF (pdf-to-ppt→pptx, pdf-to-excel→xlsx) → no thumbnail.
+        preview: artifact && outputName.toLowerCase().endsWith(".pdf") ? "pdf" : undefined,
+        previewBlob: artifact && outputName.toLowerCase().endsWith(".pdf") ? artifact.blob : undefined,
       };
     default:
       return {

@@ -2,6 +2,40 @@
 
 import { useEffect, useState } from "react";
 
+/**
+ * Shared primitive: render page 1 of a PDF (given as a File or Blob) to a JPEG
+ * data URL via pdfjs-dist, at natural aspect ratio (no forced square / stretch /
+ * crop). Returns null on any failure or if the input is not a PDF so callers can
+ * fall back gracefully. The <img> that shows the URL caps its long edge at 480px.
+ */
+export async function renderPdfFirstPageDataUrl(source: File | Blob): Promise<string | null> {
+  const type = source.type;
+  const name = "name" in source ? (source as File).name : "";
+  const isPdf = type === "application/pdf" || /\.pdf$/i.test(name);
+  if (!isPdf) return null;
+  try {
+    const pdfjs = await import("pdfjs-dist");
+    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+    const data = new Uint8Array(await source.arrayBuffer());
+    const doc = await pdfjs.getDocument({ data }).promise;
+    try {
+      const page = await doc.getPage(1);
+      const vp = page.getViewport({ scale: 1.4 });
+      const canvas = document.createElement("canvas");
+      canvas.width = vp.width;
+      canvas.height = vp.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return null;
+      await page.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
+      return canvas.toDataURL("image/jpeg", 0.85);
+    } finally {
+      try { doc.destroy(); } catch { /* ignore */ }
+    }
+  } catch {
+    return null;
+  }
+}
+
 function OfficeFallback({ file, max }: { file: File; max: number }) {
   const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
   const [color, label]: [string, string] =

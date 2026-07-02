@@ -109,22 +109,26 @@ export async function runCloudConvert({
     );
   }
 
-  // ── Fast path: self-hosted Gotenberg for forward conversions (marginal $0). ──
-  // Falls back to CloudConvert on any failure, oversized file, or reverse route.
-  const viaGotenberg = await tryGotenbergConvert({ file, route, outputFileName, locale, signal, onProgress });
-  if (viaGotenberg) return viaGotenberg;
+  // ── Self-hosted convert box PARKED 2026-07-02 (SELF_HOSTED_CONVERT_ENABLED). ──
+  // The 4 GB burstable box is too slow for real Office files (3.3 MB PPT ≈ 15 s;
+  // 27 MB+ hangs), so every conversion now goes straight to CloudConvert. The
+  // three attempts below are preserved (dead) behind the flag — flip it to true
+  // to re-enable the box when it runs on stronger hardware.
+  if (SELF_HOSTED_CONVERT_ENABLED) {
+    // Fast path: self-hosted Gotenberg for forward conversions (marginal $0).
+    // Falls back to CloudConvert on any failure, oversized file, or reverse route.
+    const viaGotenberg = await tryGotenbergConvert({ file, route, outputFileName, locale, signal, onProgress });
+    if (viaGotenberg) return viaGotenberg;
 
-  // ── Direct upload: browser sends large files (>5 MB) straight to the convert ──
-  // box — bypassing Netlify's 6 MB proxy cap. An HMAC token signed by the S2
-  // Netlify function authorises the upload without exposing the box secret to
-  // the client. Falls back to CloudConvert on any failure (token, network, 5xx).
-  const viaDirect = await tryGotenbergDirectUpload({ file, route, outputFileName, locale, signal, onProgress });
-  if (viaDirect) return viaDirect;
+    // Direct upload: browser sends large files (>5 MB) straight to the convert
+    // box — bypassing Netlify's 6 MB proxy cap, authorised by an S2 HMAC token.
+    const viaDirect = await tryGotenbergDirectUpload({ file, route, outputFileName, locale, signal, onProgress });
+    if (viaDirect) return viaDirect;
 
-  // ── Fast path: OSS reverse converter (pdf2docx + pdfplumber) on Aliyun box. ──
-  // Free unlimited; no PDF/PPTX OSS option so that falls through to CloudConvert.
-  const viaOss = await tryOssReverse({ file, route, outputFileName, locale, signal, onProgress });
-  if (viaOss) return viaOss;
+    // Fast path: OSS reverse converter (pdf2docx + pdfplumber) on the Aliyun box.
+    const viaOss = await tryOssReverse({ file, route, outputFileName, locale, signal, onProgress });
+    if (viaOss) return viaOss;
+  }
 
   // ── 1. Ask our function to create a CloudConvert job ──
   emitProgress(onProgress, 6, 0, msgCreating(locale));
@@ -284,6 +288,12 @@ export async function runCloudConvert({
 // Self-hosted Gotenberg fast path
 // ---------------------------------------------------------------------------
 const GOTENBERG_API = "/api/gotenberg-convert";
+// Master switch for the self-hosted convert box. PARKED false 2026-07-02: the
+// 4 GB burstable box is too slow (3.3 MB PPT ≈ 15 s; 27 MB+ hangs) so all 8
+// office↔PDF routes go straight to CloudConvert. Flip to true (and confirm the
+// box is on strong hardware) to re-enable the tryGotenberg*/tryOssReverse paths.
+const SELF_HOSTED_CONVERT_ENABLED = false;
+
 const GOTENBERG_ROUTES = new Set<CloudConvertRoute>([
   "word-to-pdf",
   "ppt-to-pdf",

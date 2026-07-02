@@ -5,7 +5,7 @@ import type { PdfToolPageConfig } from "./index";
 import type { PdfRuntimeArtifact } from "./pdf-runtime";
 import { ToolBridge, hasToolBridge } from "./ToolBridge";
 import { toHant as ccTr } from "./zh-hant";
-import { DocPreview } from "./doc-preview";
+import { DocPreview, renderPdfFirstPageDataUrl } from "./doc-preview";
 
 // Visual preview of an uploaded file: first-page thumbnail for PDFs, the image
 // itself for images. Falls back to a small type badge while rendering / on error.
@@ -121,8 +121,9 @@ export type WorkflowResult = {
   title: string;
   description: string;
   rows: Array<[string, string]>;
-  preview?: "text" | "document" | "image-order" | "ranges";
+  preview?: "text" | "document" | "image-order" | "ranges" | "pdf";
   previewText?: string;
+  previewBlob?: Blob;
 };
 
 export type UploadedFile = { id: string; file: File };
@@ -599,7 +600,7 @@ export function WorkflowResultState({
       {/* Preview */}
       {result.preview && (
         <div className="border-b border-[color:var(--success-line)] px-5 py-3">
-          <ResultPreview type={result.preview} text={result.previewText} />
+          <ResultPreview type={result.preview} text={result.previewText} blob={result.previewBlob} />
         </div>
       )}
 
@@ -633,7 +634,40 @@ export function WorkflowResultState({
 // ---------------------------------------------------------------------------
 // Result preview
 // ---------------------------------------------------------------------------
-export function ResultPreview({ type, text }: { type: WorkflowResult["preview"]; text?: string }) {
+// Output PDF first-page thumbnail for conversion results (office→PDF, pdf-to-pdfa).
+// Renders nothing until ready and nothing on failure — graceful by design. The
+// long edge is capped at 480px; the short edge scales to keep the true aspect ratio.
+function PdfResultPreview({ blob }: { blob?: Blob }) {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!blob) return;
+    (async () => {
+      const dataUrl = await renderPdfFirstPageDataUrl(blob);
+      if (!cancelled) setUrl(dataUrl);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [blob]);
+  if (!url) return null;
+  return (
+    <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)]">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={url}
+        alt="preview"
+        style={{ maxHeight: "480px", maxWidth: "480px", display: "block" }}
+        className="h-auto w-auto"
+      />
+    </div>
+  );
+}
+
+export function ResultPreview({ type, text, blob }: { type: WorkflowResult["preview"]; text?: string; blob?: Blob }) {
+  if (type === "pdf") {
+    return <PdfResultPreview blob={blob} />;
+  }
   if (type === "text") {
     return (
       <textarea
