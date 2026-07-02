@@ -11,6 +11,7 @@
  */
 import type { Context } from "@netlify/functions";
 import crypto from "node:crypto";
+import { enforceFeatureGate } from "./_shared/feature-gate";
 
 declare const Netlify: {
   env: { get(name: string): string | undefined };
@@ -88,6 +89,11 @@ export default async (req: Request, _context: Context) => {
     );
   }
 
+  // Per-plan conversion quota — reads only the Authorization header, safe before req.json().
+  // Mirrors gotenberg-convert.ts: same "convertFree" key (self-hosted Gotenberg, $0 cost).
+  const gate = await enforceFeatureGate(req, "convertFree");
+  if (!gate.ok) return gate.response;
+
   let body: unknown;
   try {
     body = await req.json();
@@ -124,12 +130,14 @@ export default async (req: Request, _context: Context) => {
   const mac = crypto.createHmac("sha256", secret).update(msg).digest("hex");
   const token = `${ts}:${nonce}:${mac}`;
 
-  return json({
+  const response = json({
     ok: true,
     token,
     uploadUrl: `${uploadBase}/upload/convert`,
     expiresAt: Number(ts) + TOKEN_TTL_SECS,
   });
+  await gate.commit();
+  return response;
 };
 
 function json(body: unknown, status = 200) {
