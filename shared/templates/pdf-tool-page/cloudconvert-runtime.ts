@@ -114,6 +114,13 @@ export async function runCloudConvert({
   const viaGotenberg = await tryGotenbergConvert({ file, route, outputFileName, locale, signal, onProgress });
   if (viaGotenberg) return viaGotenberg;
 
+  // ── Direct upload: browser sends large files (>5 MB) straight to the convert ──
+  // box — bypassing Netlify's 6 MB proxy cap. An HMAC token signed by the S2
+  // Netlify function authorises the upload without exposing the box secret to
+  // the client. Falls back to CloudConvert on any failure (token, network, 5xx).
+  const viaDirect = await tryGotenbergDirectUpload({ file, route, outputFileName, locale, signal, onProgress });
+  if (viaDirect) return viaDirect;
+
   // ── Fast path: OSS reverse converter (pdf2docx + pdfplumber) on Aliyun box. ──
   // Free unlimited; no PDF/PPTX OSS option so that falls through to CloudConvert.
   const viaOss = await tryOssReverse({ file, route, outputFileName, locale, signal, onProgress });
@@ -285,6 +292,7 @@ const GOTENBERG_ROUTES = new Set<CloudConvertRoute>([
   "pdf-to-pdfa",
 ]);
 const GOTENBERG_MAX_BYTES = 5 * 1024 * 1024; // stay under Netlify's ~6 MB function body limit
+const GOTENBERG_UPLOAD_TOKEN_API = "/api/gotenberg-upload-token";
 
 // Try the self-hosted converter first. Returns the artifact on success, or null
 // to signal "fall back to CloudConvert" (oversized file, reverse pdf->office
@@ -331,6 +339,87 @@ async function tryGotenbergConvert({
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") throw err;
     return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Direct-upload fast path (5–100 MB forward conversions, HMAC token auth)
+// ---------------------------------------------------------------------------
+// For files that exceed the Netlify proxy body limit (>5 MB) on the same 5
+// forward routes handled by tryGotenbergConvert. The browser:
+//   1. Fetches a short-lived HMAC token from our Netlify function.
+//   2. POSTs the file directly to convert.dockdocs.app/upload/convert.
+// Any failure (token 4xx/5xx, network error, box 5xx) returns null so the
+// caller falls through to CloudConvert — CloudConvert is never disabled here.
+async function tryGotenbergDirectUpload({
+  file,
+  route,
+  outputFileName,
+  locale,
+  signal,
+  onProgress,
+}: CloudConvertRuntimeInput): Promise<PdfRuntimeArtifact | null> {
+  // Only forward routes, only files >5 MB (≤5 MB handled by tryGotenbergConvert).
+  if (!GOTENBERG_ROUTES.has(route) || file.size <= GOTENBERG_MAX_BYTES) return null;
+  try {
+    // Step 1: get a signed HMAC upload token (no file bytes involved, fast).
+    emitProgress(onProgress, 10, 0, msgCreating(locale));
+    const tokenRes = await fetch(GOTENBERG_UPLOAD_TOKEN_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ route }),
+      signal,
+    });
+    if (!tokenRes.ok) return null;
+    const tokenData = await tokenRes.json().catch(() => null) as {
+      ok?: boolean; token?: string; uploadUrl?: string;
+    } | null;
+    if (!tokenData?.ok || !tokenData.token || !tokenData.uploadUrl) return null;
+
+    // Step 2: POST file directly to the convert box (bypasses Netlify size limit).
+    emitProgress(onProgress, 20, 1, msgUploading(locale));
+    throwIfAborted(signal);
+
+    const form = new FormData();
+    form.append("route", route);
+    form.append("file", file, file.name || "source");
+
+    // Animate progress while waiting — upload + conversion is one long request.
+    emitProgress(onProgress, 35, 2, msgConverting(locale));
+    let tick = 35;
+    const ticker = setInterval(() => {
+      tick = Math.min(tick + 3, 90);
+      emitProgress(onProgress, tick, 2, msgConverting(locale));
+    }, 1000);
+
+    let res: Response | null = null;
+    try {
+      res = await fetch(tokenData.uploadUrl, {
+        method: "POST",
+        headers: { "X-DockDocs-Upload-Token": tokenData.token },
+        body: form,
+        signal,
+      });
+    } finally {
+      clearInterval(ticker);
+    }
+
+    if (!res || !res.ok) return null;
+    const bytes = await res.arrayBuffer();
+    if (bytes.byteLength === 0) return null;
+
+    const { outputMime, outputType } = ROUTE_META[route];
+    emitProgress(onProgress, 100, 3);
+    return {
+      fileName: outputFileName,
+      blob: new Blob([bytes], { type: outputMime }),
+      outputType,
+      pageCount: undefined,
+      fileCount: 1,
+    };
+  } catch (err) {
+    if (err instanceof Error && err.name === "AbortError") throw err;
+    return null; // any failure → fall through to CloudConvert
   }
 }
 
