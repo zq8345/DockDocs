@@ -86,7 +86,7 @@ const CUSTOM_RENDERERS: Record<string, (loc: L) => ReactNode> = {
   "batch-pdf-to-image": (loc) => <BatchPdfToImageClient locale={loc} embedded />,
   "batch-protect-pdf":  (loc) => <BatchProtectClient locale={loc} embedded />,
   "batch-rename-pdf":   (loc) => <BatchRenameClient locale={loc} embedded />,
-  "batch-page-numbers": (loc) => <BatchStampClient locale={loc} lockMode="pagenum" embedded />,
+  "batch-page-numbers": (loc) => <BatchStampClient locale={loc} embedded />,
   "batch-split-merge":  (loc) => <BatchSplitMergeClient locale={loc} lockMode="split" embedded />,
   "batch-rotate-pdf":   (loc) => <BatchRotateClient locale={loc} embedded />,
   "batch-pdf-to-word":  (loc) => <BatchPdfToOfficeClient locale={loc} target="word" embedded />,

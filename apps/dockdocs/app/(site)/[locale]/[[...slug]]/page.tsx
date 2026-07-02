@@ -2213,7 +2213,7 @@ export default async function LocalizedRoute({
   }
 
   if (slug === "batch-page-numbers") {
-    return <BatchStampClient locale={clientLocale} lockMode="pagenum" />;
+    return <BatchStampClient locale={clientLocale} />;
   }
 
   if (slug === "batch-split-merge") {

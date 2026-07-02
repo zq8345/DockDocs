@@ -12,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function BatchPageNumbersPage() {
-  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-page-numbers", "Batch Add Page Numbers to PDFs — Online Free")) }} /><BatchStampClient lockMode="pagenum" /></>;
+  return <><script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema("en", "batch-page-numbers", "Batch Add Page Numbers to PDFs — Online Free")) }} /><BatchStampClient /></>;
 }
