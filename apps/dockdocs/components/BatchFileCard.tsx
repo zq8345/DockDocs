@@ -71,6 +71,7 @@ export function BatchFileCard({
   onRemove,
   orderBadge,
   subtitle,
+  pagesLabel = "p",
 }: {
   file: File;
   status: string;
@@ -84,6 +85,8 @@ export function BatchFileCard({
   orderBadge?: React.ReactNode;
   /** Secondary line below the filename. Defaults to formatted file size. */
   subtitle?: string;
+  /** Localized unit word for page count, e.g. "pages" / "页". Defaults to "p". */
+  pagesLabel?: string;
 }) {
   const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
   const ext = file.name.split(".").pop() ?? "";
@@ -114,7 +117,7 @@ export function BatchFileCard({
         </p>
         <p className="mt-0.5 text-[10px] text-[color:var(--faint)]">
           {subtitle ?? (isPdf && pdfPageCount != null
-            ? `${formatBytes(file.size)} · ${pdfPageCount}p`
+            ? `${formatBytes(file.size)} · ${pdfPageCount} ${pagesLabel}`
             : formatBytes(file.size))}
         </p>
         {statusBadge && <div className="mt-1.5">{statusBadge}</div>}

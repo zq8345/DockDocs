@@ -567,6 +567,7 @@ const copy = {
 type L8 = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
 const FREE_L8: Record<L8, string> = { en: "Free", zh: "免费", es: "Gratis", pt: "Grátis", fr: "Gratuit", ja: "無料", de: "Kostenlos", ko: "무료" };
 const UNLIMITED_L8: Record<L8, string> = { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限", de: "Unbegrenzt", ko: "무제한" };
+const TEN_PER_DAY_L8: Record<L8, string> = { en: "10 / day", zh: "10次/天", es: "10/día", pt: "10/dia", fr: "10/jour", ja: "10回/日", de: "10/Tag", ko: "10/일" };
 const COMPARE_CATS: {
   id: string;
   navKey: string;
@@ -575,12 +576,12 @@ const COMPARE_CATS: {
   freeTier: Record<L8, string>;
   proTier: Record<L8, string>;
 }[] = [
-  { id: "pdf-conversion", navKey: "PDF conversion", catNavKey: "Document tools", colIndex: 0, freeTier: UNLIMITED_L8, proTier: UNLIMITED_L8 },
+  { id: "pdf-conversion", navKey: "PDF conversion", catNavKey: "Document tools", colIndex: 0, freeTier: TEN_PER_DAY_L8, proTier: UNLIMITED_L8 },
   { id: "pdf-editing",    navKey: "PDF editing",    catNavKey: "Document tools", colIndex: 1, freeTier: UNLIMITED_L8, proTier: UNLIMITED_L8 },
   {
     id: "batch", navKey: "Batch", catNavKey: "Document tools", colIndex: 2,
     freeTier: { en: "3 runs/day",          zh: "3批/天",          es: "3 lotes/día",         pt: "3 lotes/dia",         fr: "3 lots/jour",         ja: "3バッチ/日",          de: "3 Stapel/Tag",        ko: "3배치/일" },
-    proTier:  { en: "50 files · unlimited",zh: "50文件/批 · 无限次", es: "50 archivos · ilimitado", pt: "50 arquivos · ilimitado", fr: "50 fichiers · illimité", ja: "50ファイル · 無制限",   de: "50 Dateien · unbegrenzt", ko: "50파일 · 무제한" },
+    proTier:  UNLIMITED_L8,
   },
   {
     id: "ai-analysis", navKey: "AI analysis", catNavKey: "AI analysis", colIndex: 0,

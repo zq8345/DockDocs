@@ -30,6 +30,7 @@ const _en = {
   totalSaved: (p: number) => `${p}% smaller overall`,
   need: "Add at least one PDF.", err: "Something went wrong: ",
   note: "Compression renders pages to images, so heavily-text PDFs may not shrink much. Everything stays on your device.",
+  pagesLabel: "pages",
 };
 
 const STR = {
@@ -44,6 +45,7 @@ const STR = {
     totalSaved: (p: number) => `整体减小 ${p}%`,
     need: "至少添加一份 PDF。", err: "出错了：",
     note: "压缩会把页面渲染成图片，纯文字 PDF 可能压不了多少。全部在你的设备上完成。",
+    pagesLabel: "页",
   },
   es: {
     title: "Comprimir por lotes",
@@ -55,6 +57,7 @@ const STR = {
     totalSaved: (p: number) => `${p}% más pequeño en total`,
     need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
     note: "La compresión convierte las páginas en imágenes, por lo que los PDF con mucho texto quizá no se reduzcan demasiado. Todo permanece en tu dispositivo.",
+    pagesLabel: "páginas",
   },
   pt: {
     title: "Comprimir em lote",
@@ -66,6 +69,7 @@ const STR = {
     totalSaved: (p: number) => `${p}% menor no total`,
     need: "Adicione pelo menos um PDF.", err: "Algo deu errado: ",
     note: "A compressão converte as páginas em imagens, por isso PDFs com muito texto podem não encolher muito. Tudo permanece no seu dispositivo.",
+    pagesLabel: "páginas",
   },
   fr: {
     title: "Compression par lot",
@@ -77,6 +81,7 @@ const STR = {
     totalSaved: (p: number) => `${p}% de réduction au total`,
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
     note: "La compression convertit les pages en images ; les PDF très textuels ne seront peut-être pas beaucoup réduits. Tout reste sur votre appareil.",
+    pagesLabel: "pages",
   },
   ja: {
     title: "一括圧縮",
@@ -88,6 +93,7 @@ const STR = {
     totalSaved: (p: number) => `全体で${p}%小さく`,
     need: "PDFを少なくとも1つ追加してください。", err: "問題が発生しました: ",
     note: "圧縮はページを画像に変換するため、テキスト主体のPDFはあまり縮小されない場合があります。すべてデバイス内で完結します。",
+    pagesLabel: "ページ",
   },
   de: {
     title: "Stapelweise komprimieren",
@@ -99,6 +105,7 @@ const STR = {
     totalSaved: (p: number) => `insgesamt ${p}% kleiner`,
     need: "Fügen Sie mindestens ein PDF hinzu.", err: "Etwas ist schiefgelaufen: ",
     note: "Bei der Komprimierung werden die Seiten in Bilder umgewandelt, daher lassen sich textlastige PDFs möglicherweise nicht stark verkleinern. Die Verarbeitung erfolgt auf Ihrem Gerät.",
+    pagesLabel: "Seiten",
   },
   ko: {
     title: "일괄 압축",
@@ -110,6 +117,7 @@ const STR = {
     totalSaved: (p: number) => `전체 ${p}% 감소`,
     need: "PDF를 최소 한 개 추가하세요.", err: "문제가 발생했습니다: ",
     note: "압축은 페이지를 이미지로 변환하므로 텍스트 위주의 PDF는 많이 줄지 않을 수 있습니다. 모든 작업은 기기에서 처리됩니다.",
+    pagesLabel: "페이지",
   },
 } satisfies AuthoredCopy<typeof _en>;
 
@@ -448,10 +456,24 @@ export function BatchCompressClient({ locale = "en", embedded = false }: { local
                     ? <span className="text-[12.5px] text-[#f87171]">{t.failed}</span>
                     : undefined
                 }
+                pagesLabel={t.pagesLabel}
                 removeLabel={t.remove}
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}
+            {items.length < maxFiles && (
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                aria-label={t.choose}
+                className="flex min-h-[180px] flex-col items-center justify-center gap-1.5 rounded-[var(--radius)] border-2 border-dashed border-[color:var(--line)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+              >
+                <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                <span className="text-[11px]">{t.choose}</span>
+              </button>
+            )}
           </div>
           <p className="mt-3 text-[12px] text-[color:var(--faint)]">{t.note}</p>
         </>
