@@ -9,8 +9,7 @@ export type CloudConvertRoute =
   | "pdf-to-word"
   | "html-to-pdf"
   | "pdf-to-pdfa"
-  | "pdf-to-ppt"
-  | "protect-pdf";
+  | "pdf-to-ppt";
 
 // No 6 MB limit anymore — the file is uploaded directly to CloudConvert,
 // not through the Netlify function. We keep a generous sanity cap.
@@ -34,7 +33,6 @@ const ROUTE_META: Record<
   "html-to-pdf": { outputMime: "application/pdf", outputType: "pdf" },
   "pdf-to-ppt": { outputMime: "application/vnd.openxmlformats-officedocument.presentationml.presentation", outputType: "pptx" },
   "pdf-to-pdfa": { outputMime: "application/pdf", outputType: "pdf" },
-  "protect-pdf": { outputMime: "application/pdf", outputType: "pdf" },
 };
 
 export type CloudLocale = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "zh-Hant" | "de";

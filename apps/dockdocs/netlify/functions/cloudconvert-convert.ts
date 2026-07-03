@@ -24,7 +24,6 @@ const SUPPORTED_CONVERSIONS = {
 
 type ConversionRoute = keyof typeof SUPPORTED_CONVERSIONS;
 
-const ENCRYPT_ROUTE = "protect-pdf";
 const CLOUDCONVERT_API = "https://api.cloudconvert.com/v2";
 
 // Map a failed CloudConvert /jobs status to a clearer, user-safe reason.
@@ -199,39 +198,23 @@ export default async (req: Request, _context: Context) => {
 
   // ── CREATE: build a job and return the direct-upload form ──
   const route = body.route?.trim();
-  const isEncrypt = route === ENCRYPT_ROUTE;
-  if (!route || (!isEncrypt && !(route in SUPPORTED_CONVERSIONS))) {
+  if (!route || !(route in SUPPORTED_CONVERSIONS)) {
     return json({
       ok: false,
       code: "INVALID_ROUTE",
-      message: `Route must be one of: ${Object.keys(SUPPORTED_CONVERSIONS).join(", ")}, ${ENCRYPT_ROUTE}`,
+      message: `Route must be one of: ${Object.keys(SUPPORTED_CONVERSIONS).join(", ")}`,
     }, 400);
   }
 
-  const password = body.password?.trim() ?? "";
-  if (isEncrypt && password.length < 4) {
-    return json({ ok: false, code: "INVALID_PASSWORD", message: "Password must be at least 4 characters." }, 400);
-  }
+  const { inputFormat, outputFormat, outputExt } = SUPPORTED_CONVERSIONS[route as ConversionRoute];
 
-  const conv = isEncrypt
-    ? { inputFormat: "pdf", outputFormat: "pdf", outputExt: "pdf" }
-    : SUPPORTED_CONVERSIONS[route as ConversionRoute];
-  const { inputFormat, outputFormat, outputExt } = conv;
-
-  const processingTask = isEncrypt
-    ? {
-        operation: "pdf/encrypt",
-        input: "upload-file",
-        password,
-        owner_password: password,
-      }
-    : {
-        operation: "convert",
-        input: "upload-file",
-        input_format: inputFormat,
-        output_format: outputFormat,
-        ...(outputFormat === "pdf" ? { pdf_a: route === "pdf-to-pdfa", optimize_print: false } : {}),
-      };
+  const processingTask = {
+    operation: "convert",
+    input: "upload-file",
+    input_format: inputFormat,
+    output_format: outputFormat,
+    ...(outputFormat === "pdf" ? { pdf_a: route === "pdf-to-pdfa", optimize_print: false } : {}),
+  };
 
   try {
     const jobRes = await fetch(`${CLOUDCONVERT_API}/jobs`, {
