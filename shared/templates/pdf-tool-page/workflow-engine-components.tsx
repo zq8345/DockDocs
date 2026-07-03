@@ -507,18 +507,6 @@ export function WorkflowProgress({
 }) {
   return (
     <div className={bare ? "text-center" : "mt-4 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center"}>
-      {/* Spinner */}
-      <div className="mx-auto flex h-14 w-14 items-center justify-center">
-        {animated ? (
-          <svg className="h-10 w-10 animate-spin text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-            <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-        ) : (
-          <div className="h-10 w-10 rounded-full bg-[color:var(--soft-accent)]" />
-        )}
-      </div>
-
       <h3 className="mt-4 text-lg font-semibold text-[color:var(--foreground)]">{title}</h3>
       <p className="mt-1.5 text-sm text-[color:var(--muted)]">{description}</p>
 
