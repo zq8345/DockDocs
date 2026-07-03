@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState, type CSSProperties } from "reac
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
@@ -335,6 +336,7 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
   const [from, setFrom] = useState(1);
   const [to, setTo] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const fileRef = useRef<File | null>(null);
 
   const reset = () => { setPhase("idle"); setFileName(""); setPreview(""); setNumPages(0); setError(null); fileRef.current = null; };
@@ -377,10 +379,11 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
   const apply = useCallback(async () => {
     const file = fileRef.current;
     if (!file) return;
-    setPhase("working"); setError(null);
+    setPhase("working"); setError(null); setProgress(5);
     try {
       const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
       const pdf = await PDFDocument.load(await file.arrayBuffer());
+      setProgress(35);
       const font = await pdf.embedFont(StandardFonts.Helvetica);
       const pages = pdf.getPages();
       const lo = Math.max(1, Math.min(from, to));
@@ -403,13 +406,16 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
         const y = isTop ? height - m - size : m;
         page.drawText(label, { x, y, size, font, color: rgb(0.2, 0.2, 0.2) });
       });
+      setProgress(75);
       const bytes = await pdf.save();
+      setProgress(95);
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url; a.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-numbered.pdf"; a.click();
       URL.revokeObjectURL(url);
       trackToolRun("page-numbers");
+      setProgress(100);
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
@@ -492,6 +498,12 @@ export function PageNumbersClient({ locale = "en", embedded = false }: { locale?
             <button type="button" onClick={apply} disabled={phase === "working"} className="mt-6 inline-flex h-11 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-7 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
               {phase === "working" ? t.working : t.apply}
             </button>
+
+            {phase === "working" && (
+              <div className="mx-auto mt-6 max-w-[200px]">
+                <CircularProgress bare progress={progress} title={t.working} />
+              </div>
+            )}
           </div>
         </div>
       )}

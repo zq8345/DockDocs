@@ -4,6 +4,8 @@ import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { PageCard } from "@/components/PageCard";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
@@ -300,6 +302,7 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
   const [pages, setPages] = useState<Pg[]>([]);
   const [marked, setMarked] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const fileRef = useRef<File | null>(null);
 
   const reset = () => { setDone(false);
@@ -344,15 +347,18 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
     const file = fileRef.current;
     if (!file) return;
     if (marked.size >= pages.length) { setError(t.needKeep); return; }
-    setPhase("working"); setError(null);
+    setPhase("working"); setError(null); setProgress(5);
     try {
       const { PDFDocument } = await import("pdf-lib");
       const src = await PDFDocument.load(await file.arrayBuffer());
+      setProgress(30);
       const out = await PDFDocument.create();
       const keepIdx = pages.map((p) => p.idx).filter((i) => !marked.has(i));
       const copied = await out.copyPages(src, keepIdx);
       copied.forEach((p) => out.addPage(p));
+      setProgress(75);
       const bytes = await out.save();
+      setProgress(95);
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -361,6 +367,7 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
       a.click();
       URL.revokeObjectURL(url);
       trackToolRun("delete-page");
+      setProgress(100);
       setDone(true);
       setPhase("ready");
     } catch (e) {
@@ -399,7 +406,13 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
           </div>
           <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-5 flex flex-wrap justify-center gap-4">
+          {phase === "working" && (
+            <div className="mx-auto mt-6 max-w-[200px]">
+              <CircularProgress bare progress={progress} title={t.working} />
+            </div>
+          )}
+
+          <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
             {pages.map((p) => {
               const isMarked = marked.has(p.idx);
               const n = p.idx + 1;
@@ -415,26 +428,18 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
               };
               const pageLabel = locale === "zh-Hant" ? toHant(PAGE_LABEL.zh) : PAGE_LABEL[al];
               return (
-                <button
+                <PageCard
                   key={p.idx}
-                  type="button"
-                  onClick={() => toggle(p.idx)}
-                  className={`group flex w-fit flex-col items-center rounded-[var(--radius)] p-1.5 transition ${isMarked ? "bg-[rgba(248,113,113,0.08)]" : "opacity-60 hover:opacity-100"}`}
-                >
-                  <div className={`relative overflow-hidden rounded-[var(--radius-sm)] border ${isMarked ? "border-[#f87171]" : "border-[color:var(--line)]"}`}>
-                    {isMarked && (
-                      <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[#f87171] text-[11px] font-bold text-white">✕</span>
-                    )}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.thumb} alt={`page ${p.idx + 1}`}
-                      style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
-                      className={`h-auto w-auto max-w-full transition ${isMarked ? "opacity-40 grayscale" : ""}`}
-                    />
-                  </div>
-                  <span className={`mt-1 block text-center text-[11px] ${isMarked ? "font-semibold text-[#f87171]" : "text-[color:var(--muted)]"}`}>
-                    {isMarked ? t.del : pageLabel}
-                  </span>
-                </button>
+                  src={p.thumb}
+                  alt={`page ${p.idx + 1}`}
+                  pageLabel={isMarked ? t.del : pageLabel}
+                  selected={isMarked}
+                  tone="danger"
+                  dim={!isMarked}
+                  imgClassName={isMarked ? "opacity-40 grayscale transition" : "transition group-hover:opacity-100"}
+                  labelClassName={isMarked ? "font-semibold text-[#f87171]" : undefined}
+                  onSelect={() => toggle(p.idx)}
+                />
               );
             })}
           </div>

@@ -3,6 +3,7 @@
 import { trackToolRun } from "@/lib/track";
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
@@ -342,6 +343,7 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const [pos, setPos] = useState<PosKey>("br");
   const [size, setSize] = useState(28); // % of page width
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
 
   const fileRef = useRef<File | null>(null);
@@ -426,26 +428,31 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     const file = fileRef.current;
     if (!file) return;
     if (!sig) { setError(t.needSig); return; }
-    setPhase("working"); setError(null);
+    setPhase("working"); setError(null); setProgress(5);
     try {
       const { PDFDocument } = await import("pdf-lib");
       const pdf = await PDFDocument.load(await file.arrayBuffer());
+      setProgress(35);
       const pages = pdf.getPages();
       const target = pages[Math.max(0, Math.min(page - 1, pages.length - 1))];
       const { width, height } = target.getSize();
       const pngBytes = await (await fetch(sig)).arrayBuffer();
       const img = await pdf.embedPng(pngBytes);
+      setProgress(60);
       const sw = (size / 100) * width;
       const sh = sw * (img.height / img.width);
       const a = POS[pos];
       target.drawImage(img, { x: a.x * width - sw / 2, y: a.y * height - sh / 2, width: sw, height: sh });
+      setProgress(75);
       const bytes = await pdf.save();
+      setProgress(95);
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url; link.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-signed.pdf"; link.click();
       URL.revokeObjectURL(url);
       trackToolRun("sign-pdf");
+      setProgress(100);
       setDone(true);
       setPhase("ready");
     } catch (e) {
@@ -482,6 +489,12 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               {phase === "working" ? t.working : t.apply}
             </button>
           </div>
+
+          {phase === "working" && (
+            <div className="mx-auto mt-6 max-w-[200px]">
+              <CircularProgress bare progress={progress} title={t.working} />
+            </div>
+          )}
 
           <div className="mt-4 space-y-5">
             <div className="flex justify-center">

@@ -3,6 +3,8 @@
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { PageCard } from "@/components/PageCard";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
@@ -341,6 +343,7 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
   const [pages, setPages] = useState<Pg[]>([]);
   const [rot, setRot] = useState<Record<number, number>>({});
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const fileRef = useRef<File | null>(null);
 
   const reset = () => { setDone(false);
@@ -385,10 +388,11 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
   const apply = useCallback(async () => {
     const file = fileRef.current;
     if (!file) return;
-    setPhase("working"); setError(null);
+    setPhase("working"); setError(null); setProgress(5);
     try {
       const { PDFDocument, degrees } = await import("pdf-lib");
       const pdf = await PDFDocument.load(await file.arrayBuffer());
+      setProgress(30);
       const docPages = pdf.getPages();
       docPages.forEach((p, i) => {
         const delta = rot[i] || 0;
@@ -396,8 +400,10 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
           const cur = p.getRotation().angle || 0;
           p.setRotation(degrees((cur + delta) % 360));
         }
+        setProgress(30 + Math.round(((i + 1) / docPages.length) * 45));
       });
       const bytes = await pdf.save();
+      setProgress(95);
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -406,6 +412,7 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
       a.click();
       URL.revokeObjectURL(url);
       trackToolRun("rotate-page");
+      setProgress(100);
       setDone(true);
       setPhase("ready");
     } catch (e) {
@@ -452,44 +459,32 @@ export function RotatePagesClient({ locale = "en", embedded = false }: { locale?
           </div>
           <p className="mt-2 text-[12px] text-[color:var(--faint)]">{count > 0 ? t.hint : t.none}</p>
 
-          <div className="mt-5 flex flex-wrap justify-center gap-4">
+          {phase === "working" && (
+            <div className="mx-auto mt-6 max-w-[200px]">
+              <CircularProgress bare progress={progress} title={t.working} />
+            </div>
+          )}
+
+          <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
             {pages.map((p) => {
               const deg = rot[p.idx] || 0;
               const rotated = deg % 360 !== 0;
-              const swapped = deg === 90 || deg === 270;
-              const visW = swapped ? p.h : p.w;
-              const visH = swapped ? p.w : p.h;
-              const sc = 180 / Math.max(visW, visH);
-              const cW = Math.round(visW * sc);
-              const cH = Math.round(visH * sc);
-              const iW = Math.round(p.w * sc);
-              const iH = Math.round(p.h * sc);
               return (
-                <button
+                <PageCard
                   key={p.idx}
-                  type="button"
-                  onClick={() => rotateOne(p.idx)}
-                  className={`group flex w-fit flex-col items-center rounded-[var(--radius)] p-1.5 transition ${rotated ? "bg-[color:var(--soft-accent)]" : "opacity-60 hover:opacity-100"}`}
-                >
-                  <div
-                    className={`relative overflow-hidden rounded-[var(--radius-sm)] border transition-all duration-200 ${rotated ? "border-[color:var(--accent)]" : "border-[color:var(--line)]"}`}
-                    style={{ width: cW, height: cH }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.thumb} alt={`page ${p.idx + 1}`}
-                      style={{
-                        position: "absolute", top: "50%", left: "50%",
-                        width: iW, height: iH,
-                        transform: `translate(-50%, -50%) rotate(${deg}deg)`,
-                      }}
-                      className="transition-transform duration-200"
-                    />
+                  src={p.thumb}
+                  alt={`page ${p.idx + 1}`}
+                  pageLabel={pageLabel(p.idx + 1)}
+                  selected={rotated}
+                  dim={!rotated}
+                  imgClassName={rotated ? "transition-all duration-200" : "transition-all duration-200 group-hover:opacity-100"}
+                  imgStyle={{ transform: `rotate(${deg}deg)` }}
+                  labelClassName={rotated ? "font-medium text-[color:var(--accent)]" : undefined}
+                  topRight={
                     <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[11px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100">↻</span>
-                  </div>
-                  <span className={`mt-1 block text-center text-[11px] ${rotated ? "font-medium text-[color:var(--accent)]" : "text-[color:var(--muted)]"}`}>
-                    {pageLabel(p.idx + 1)}
-                  </span>
-                </button>
+                  }
+                  onSelect={() => rotateOne(p.idx)}
+                />
               );
             })}
           </div>

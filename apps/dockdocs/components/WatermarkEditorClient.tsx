@@ -4,6 +4,7 @@ import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
@@ -369,6 +370,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
   const [from, setFrom] = useState(1);
   const [to, setTo] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
   const [pageWpt, setPageWpt] = useState(0);
   const [dispW, setDispW] = useState(0);
@@ -461,10 +463,11 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
       if (/[^\u0000-ÿ]/.test(mark)) { setError(t.nonLatin); return; }
     } else if (!imgRef.current) { setError(t.needImg); return; }
 
-    setPhase("working"); setError(null);
+    setPhase("working"); setError(null); setProgress(5);
     try {
       const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
       const pdf = await PDFDocument.load(await main.arrayBuffer());
+      setProgress(35);
       const pages = pdf.getPages();
       const lo = Math.max(1, Math.min(from, to));
       const hi = Math.min(pages.length, Math.max(from, to));
@@ -518,8 +521,10 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
           });
         }
       });
+      setProgress(75);
 
       const bytes = await pdf.save();
+      setProgress(95);
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -528,6 +533,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
       a.click();
       URL.revokeObjectURL(url);
       trackToolRun("watermark-pdf");
+      setProgress(100);
       setDone(true);
       setPhase("ready");
     } catch (e) {
@@ -647,6 +653,12 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
               <button type="button" onClick={apply} disabled={phase === "working"} className="h-11 w-full rounded-[var(--radius)] bg-[color:var(--accent)] text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
                 {phase === "working" ? t.working : t.apply}
               </button>
+
+              {phase === "working" && (
+                <div className="mx-auto max-w-[200px]">
+                  <CircularProgress bare progress={progress} title={t.working} />
+                </div>
+              )}
             </div>
           </div>
         </div>
