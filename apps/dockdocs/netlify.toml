@@ -1,3 +1,14 @@
+# ── Security headers (applied to every response) ──
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Allow JSON-LD inline scripts (dangerouslySetInnerHTML in Next page.tsx files)
+    # and the Umami analytics snippet (analytics.dockdocs.app).
+    # 'unsafe-inline' is required for JSON-LD; tighten to nonces when Next supports it.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://analytics.dockdocs.app https://www.googletagmanager.com https://clarity.ms; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+
 [build]
   command = "npm run build"
   publish = "out"
