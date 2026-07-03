@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ButtonHTMLAttributes } from "react";
+import { useEffect, useRef, useState, type ButtonHTMLAttributes } from "react";
 import type { PdfToolPageConfig } from "./index";
 import type { PdfRuntimeArtifact } from "./pdf-runtime";
 import { ToolBridge, hasToolBridge } from "./ToolBridge";
@@ -495,7 +495,6 @@ export function WorkflowProgress({
   onCancel,
   cancelLabel,
   bare = false,
-  noSpinner = false,
 }: {
   title: string;
   description: string;
@@ -505,24 +504,19 @@ export function WorkflowProgress({
   onCancel?: () => void;
   cancelLabel?: string;
   bare?: boolean;
-  // Prototype flag: hides the spinner and adds a sweep shimmer on the progress
-  // bar fill so the bar signals "alive" instead. Active on 4 tool prototypes.
-  noSpinner?: boolean;
 }) {
   return (
     <div className={bare ? "text-center" : "mt-4 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center"}>
-      {!noSpinner && (
-        <div className="mx-auto flex h-14 w-14 items-center justify-center">
-          {animated ? (
-            <svg className="h-10 w-10 animate-spin text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-              <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-          ) : (
-            <div className="h-10 w-10 rounded-full bg-[color:var(--soft-accent)]" />
-          )}
-        </div>
-      )}
+      <div className="mx-auto flex h-14 w-14 items-center justify-center">
+        {animated ? (
+          <svg className="h-10 w-10 animate-spin text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+            <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+        ) : (
+          <div className="h-10 w-10 rounded-full bg-[color:var(--soft-accent)]" />
+        )}
+      </div>
       <h3 className="mt-4 text-lg font-semibold text-[color:var(--foreground)]">{title}</h3>
       <p className="mt-1.5 text-sm text-[color:var(--muted)]">{description}</p>
 
@@ -530,19 +524,105 @@ export function WorkflowProgress({
       <div className="mx-auto mt-5 max-w-xs">
         <div className="h-1.5 overflow-hidden rounded-full bg-[color:var(--line)]">
           <div
-            className="relative h-full rounded-full bg-[color:var(--accent)] transition-all duration-300"
+            className="h-full rounded-full bg-[color:var(--accent)] transition-all duration-300"
             style={{ width: `${progress}%` }}
-          >
-            {noSpinner && animated && (
-              <div className="absolute inset-0 overflow-hidden rounded-full">
-                <div className="absolute inset-y-0 left-0 w-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-              </div>
-            )}
-          </div>
+          />
         </div>
         <p className="mt-2 text-xs font-semibold text-[color:var(--muted)]">{Math.round(progress)}%</p>
       </div>
 
+      {onCancel && (
+        <button
+          type="button"
+          onClick={onCancel}
+          className="mt-4 text-sm font-medium text-[color:var(--muted)] underline transition hover:text-[color:var(--foreground)]"
+        >
+          {cancelLabel ?? "Cancel"}
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Circular progress ring for the 5 RING_SLUGS prototype tools.
+// Replaces the spinner + linear bar with a single visual indicator.
+// Built-in deceleration ticker prevents the display from freezing between
+// real progress events: shown += (ceiling - shown) * 0.05 every 200ms.
+export function CircularProgress({
+  progress,
+  title,
+  description,
+  onCancel,
+  cancelLabel,
+  bare = false,
+}: {
+  progress: number; // ceiling from real runtime events (0–100)
+  title: string;
+  description?: string;
+  onCancel?: () => void;
+  cancelLabel?: string;
+  bare?: boolean;
+}) {
+  const ceilRef = useRef(0);
+  const [shown, setShown] = useState(0);
+
+  useEffect(() => {
+    if (progress >= 100) {
+      ceilRef.current = 100;
+      setShown(100);
+    } else if (progress > ceilRef.current) {
+      ceilRef.current = progress;
+    }
+  }, [progress]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setShown((prev) => {
+        const c = ceilRef.current;
+        return prev < c ? prev + (c - prev) * 0.05 : prev;
+      });
+    }, 200);
+    return () => clearInterval(id);
+  }, []);
+
+  const pct = Math.min(shown, 100);
+  const R = 38;
+  const C = 2 * Math.PI * R;
+  const offset = C * (1 - pct / 100);
+
+  return (
+    <div
+      className={
+        bare
+          ? "text-center"
+          : "mt-4 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center"
+      }
+    >
+      <div className="relative mx-auto h-[88px] w-[88px]">
+        <svg width="88" height="88" viewBox="0 0 88 88" className="-rotate-90" aria-hidden="true">
+          <circle cx="44" cy="44" r={R} fill="none" stroke="var(--line)" strokeWidth="5" />
+          <circle
+            cx="44"
+            cy="44"
+            r={R}
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth="5"
+            strokeDasharray={C}
+            strokeDashoffset={offset}
+            style={{ transition: "stroke-dashoffset 300ms ease-out" }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-[17px] font-bold leading-none text-[color:var(--foreground)]">
+            {Math.round(pct)}%
+          </span>
+        </div>
+      </div>
+      <h3 className="mt-4 text-base font-semibold text-[color:var(--foreground)]">{title}</h3>
+      {description && (
+        <p className="mt-1.5 text-sm text-[color:var(--muted)]">{description}</p>
+      )}
       {onCancel && (
         <button
           type="button"

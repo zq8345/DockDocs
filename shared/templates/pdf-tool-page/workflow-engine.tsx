@@ -10,6 +10,7 @@ import {
   type PdfRuntimeArtifact,
 } from "./pdf-runtime";
 import {
+  CircularProgress,
   ReadyWorkflowState,
   WorkflowActionButton,
   WorkflowProgress,
@@ -35,6 +36,8 @@ type WorkflowStatus =
 type L = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
 const SUPPORTED_LOCALES = ["en", "zh", "es", "pt", "fr", "ja", "de", "ko", "zh-Hant"] as const;
+
+const RING_SLUGS = new Set(["word-to-pdf", "pdf-to-word", "ocr-pdf", "compress-pdf", "batch-compress"]);
 
 function normalizeLocale(value: unknown): L {
   return (SUPPORTED_LOCALES as readonly string[]).includes(value as string)
@@ -446,7 +449,13 @@ export function PdfWorkflowEngine({
               </>
             ) : null}
 
-            {status === "uploading" ? (
+            {status === "uploading" && RING_SLUGS.has(config.slug) ? (
+              <CircularProgress
+                bare
+                progress={progress}
+                title={tr("Reading file…", "正在读取文件…", "Leyendo el archivo…", "Lendo o arquivo…", "Lecture du fichier…", "ファイルを読み込み中…", "Datei wird gelesen…")}
+              />
+            ) : status === "uploading" ? (
               <WorkflowProgress
                 bare
                 title={tr("Reading file…", "正在读取文件…", "Leyendo el archivo…", "Lendo o arquivo…", "Lecture du fichier…", "ファイルを読み込み中…", "Datei wird gelesen…")}
@@ -475,14 +484,22 @@ export function PdfWorkflowEngine({
               />
             ) : null}
 
-            {status === "processing" ? (
+            {status === "processing" && RING_SLUGS.has(config.slug) ? (
+              <CircularProgress
+                bare
+                progress={progress}
+                title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
+                description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，处理时间可能稍长", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります", " · große Datei – kann etwas dauern") : spec.processLabel}
+                onCancel={resetWorkflow}
+                cancelLabel={tr("Cancel", "取消", "Cancelar", "Cancelar", "Annuler", "キャンセル", "Abbrechen")}
+              />
+            ) : status === "processing" ? (
               <WorkflowProgress
                 bare
                 title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
                 description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，处理时间可能稍长", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります", " · große Datei – kann etwas dauern") : spec.processLabel}
                 progress={progress}
                 statusText={tr("Processing", "处理中", "Procesando", "Processando", "Traitement", "処理中", "Wird verarbeitet")}
-                noSpinner={["word-to-pdf", "ocr-pdf", "compress-pdf"].includes(config.slug)}
                 animated
                 onCancel={resetWorkflow}
                 cancelLabel={tr("Cancel", "取消", "Cancelar", "Cancelar", "Annuler", "キャンセル", "Abbrechen")}
@@ -600,7 +617,12 @@ export function PdfWorkflowEngine({
       {/* hidden a11y title */}
       <h2 id="workflow-upload-title" className="sr-only">{config.upload.title}</h2>
 
-      {status === "uploading" ? (
+      {status === "uploading" && RING_SLUGS.has(config.slug) ? (
+        <CircularProgress
+          progress={progress}
+          title={tr("Reading file…", "正在读取文件…", "Leyendo el archivo…", "Lendo o arquivo…", "Lecture du fichier…", "ファイルを読み込み中…", "Datei wird gelesen…")}
+        />
+      ) : status === "uploading" ? (
         <WorkflowProgress
           title={tr("Reading file…", "正在读取文件…", "Leyendo el archivo…", "Lendo o arquivo…", "Lecture du fichier…", "ファイルを読み込み中…", "Datei wird gelesen…")}
           description={tr("Preparing the workflow.", "正在准备工作流。", "Preparando el flujo de trabajo.", "Preparando o fluxo de trabalho.", "Préparation du flux de travail.", "ワークフローを準備しています。", "Workflow wird vorbereitet.")}
@@ -626,13 +648,20 @@ export function PdfWorkflowEngine({
         />
       ) : null}
 
-      {status === "processing" ? (
+      {status === "processing" && RING_SLUGS.has(config.slug) ? (
+        <CircularProgress
+          progress={progress}
+          title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
+          description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，处理时间可能稍长", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります", " · große Datei – kann etwas dauern") : spec.processLabel}
+          onCancel={resetWorkflow}
+          cancelLabel={tr("Cancel", "取消", "Cancelar", "Cancelar", "Annuler", "キャンセル", "Abbrechen")}
+        />
+      ) : status === "processing" ? (
         <WorkflowProgress
           title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
           description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，处理时间可能稍长", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります", " · große Datei – kann etwas dauern") : spec.processLabel}
           progress={progress}
           statusText={tr("Processing", "处理中", "Procesando", "Processando", "Traitement", "処理中", "Wird verarbeitet")}
-          noSpinner={["word-to-pdf", "ocr-pdf", "compress-pdf"].includes(config.slug)}
           animated
           onCancel={resetWorkflow}
           cancelLabel={tr("Cancel", "取消", "Cancelar", "Cancelar", "Annuler", "キャンセル", "Abbrechen")}

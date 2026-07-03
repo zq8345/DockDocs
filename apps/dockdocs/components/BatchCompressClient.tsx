@@ -7,6 +7,7 @@ import { BatchFileCard } from "@/components/BatchFileCard";
 
 import { useCallback, useRef, useState } from "react";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
@@ -417,23 +418,19 @@ export function BatchCompressClient({ locale = "en", embedded = false }: { local
               {phase === "done" ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}{totalSaved > 0 ? ` · ${t.totalSaved(totalSaved)}` : ""}</button>
               ) : (
-                <button type="button" onClick={run} disabled={phase === "running"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "running" ? `${t.running} ${progress}/${items.length}` : t.run}</button>
+                <button type="button" onClick={run} disabled={phase === "running"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "running" ? t.running : t.run}</button>
               )}
             </div>
           </div>
 
           {phase === "running" && (
-            <div className="mt-4">
-              <div className="relative h-1.5 overflow-hidden rounded-full bg-[color:var(--line)]">
-                <div
-                  className="relative h-full rounded-full bg-[color:var(--accent)] transition-all duration-500"
-                  style={{ width: `${items.length > 0 ? Math.round((progress / items.length) * 100) : 0}%` }}
-                >
-                  <div className="absolute inset-0 overflow-hidden rounded-full">
-                    <div className="absolute inset-y-0 left-0 w-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                  </div>
-                </div>
-              </div>
+            <div className="mx-auto mt-6 max-w-[200px]">
+              <CircularProgress
+                bare
+                progress={items.length > 0 ? (progress / items.length) * 100 : 0}
+                title={t.running}
+                description={`${progress} / ${items.length}`}
+              />
             </div>
           )}
 
