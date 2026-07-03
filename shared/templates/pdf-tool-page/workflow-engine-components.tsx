@@ -5,7 +5,7 @@ import type { PdfToolPageConfig } from "./index";
 import type { PdfRuntimeArtifact } from "./pdf-runtime";
 import { ToolBridge, hasToolBridge } from "./ToolBridge";
 import { toHant as ccTr } from "./zh-hant";
-import { DocPreview, renderPdfFirstPageDataUrl, OfficeFallback } from "./doc-preview";
+import { DocPreview, renderPdfFirstPageDataUrl, OfficeFallback, FilePreviewLayout } from "./doc-preview";
 
 // Visual preview of an uploaded file: first-page thumbnail for PDFs, the image
 // itself for images. Falls back to a small type badge while rendering / on error.
@@ -124,6 +124,8 @@ export type WorkflowResult = {
   preview?: "text" | "document" | "image-order" | "ranges" | "pdf" | "office";
   previewText?: string;
   previewBlob?: Blob;
+  outputName?: string;
+  outputSize?: string;
 };
 
 export type UploadedFile = { id: string; file: File };
@@ -228,7 +230,7 @@ export function ReadyWorkflowState({
   const locale = (config.locale ?? "en") as TemplateLocale;
   const reorderable = config.slug === "merge-pdf" || config.slug === "jpg-to-pdf" || config.slug === "png-to-pdf";
   const previewFile = files[0];
-  const hasOptions = ["split-pdf", "delete-page", "rotate-page", "reorder-pages", "add-page", "protect-pdf", "watermark-pdf", "unlock-pdf", "pdf-to-jpg", "pdf-to-png", "pdf-to-markdown", "pdf-to-text", "pdf-to-html", "compress-pdf"].includes(config.slug);
+  const hasOptions = ["split-pdf", "delete-page", "rotate-page", "reorder-pages", "add-page", "protect-pdf", "watermark-pdf", "unlock-pdf", "pdf-to-jpg", "pdf-to-png", "pdf-to-markdown", "pdf-to-text", "compress-pdf"].includes(config.slug);
 
   const inputCls =
     "mt-2 h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--accent)]";
@@ -381,7 +383,7 @@ export function ReadyWorkflowState({
         </label>
       )}
 
-      {(config.slug === "pdf-to-jpg" || config.slug === "pdf-to-png" || config.slug === "pdf-to-markdown" || config.slug === "pdf-to-text" || config.slug === "pdf-to-html") && (
+      {(config.slug === "pdf-to-jpg" || config.slug === "pdf-to-png" || config.slug === "pdf-to-markdown" || config.slug === "pdf-to-text") && (
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "Page range (optional)", "页面范围（可选）", "Rango de páginas (opcional)", "Intervalo de páginas (opcional)", "Plage de pages (facultatif)", "ページ範囲（任意）", "Seitenbereich (optional)")}</span>
           <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={tr(locale, "Blank = all pages", "留空 = 全部页面", "Vacío = todas las páginas", "Vazio = todas as páginas", "Vide = toutes les pages", "空欄 = 全ページ", "Leer = alle Seiten")} className={inputCls} />
@@ -648,6 +650,25 @@ export function OcrLiveText({
   );
 }
 
+// Raw PDF-blob → first-page img element (no container). Used inside FilePreviewLayout.
+function PdfResultImgOnly({ blob }: { blob?: Blob }) {
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    if (!blob) return;
+    (async () => {
+      const u = await renderPdfFirstPageDataUrl(blob);
+      if (!cancelled && u) setUrl(u);
+    })();
+    return () => { cancelled = true; };
+  }, [blob]);
+  if (!url) return null;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={url} alt="preview" style={{ maxHeight: "480px", maxWidth: "480px", display: "block" }} className="h-auto w-auto" />
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Result state — download ready
 // ---------------------------------------------------------------------------
@@ -676,6 +697,57 @@ export function WorkflowResultState({
 }) {
   const locale = (config.locale ?? "en") as TemplateLocale;
 
+  // ── Preview-first layout for single-file conversion results (pdf / office output) ──
+  if (result.preview === "pdf" || result.preview === "office") {
+    return (
+      <div className={bare ? "overflow-hidden" : "mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]"}>
+        {/* Header */}
+        <div className="flex items-center gap-3 border-b border-[color:var(--line)] px-5 py-4">
+          <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[color:var(--accent)] text-[color:var(--on-accent)] text-[10px] font-bold">✓</div>
+          <div>
+            <p className="text-sm font-semibold text-[color:var(--foreground)]">{result.title}</p>
+            <p className="text-xs text-[color:var(--muted)]">{result.description}</p>
+          </div>
+        </div>
+
+        {/* Large preview + name / size below */}
+        <div className="border-b border-[color:var(--line)] py-5">
+          <FilePreviewLayout
+            previewContent={
+              result.preview === "pdf"
+                ? <PdfResultImgOnly blob={result.previewBlob} />
+                : <OfficeFallback name={result.outputName ?? result.previewText ?? ""} />
+            }
+            name={result.outputName ?? ""}
+            meta={result.outputSize ?? ""}
+          />
+        </div>
+
+        {/* Actions */}
+        <div className="flex flex-col items-center gap-2 px-5 py-4 sm:flex-row sm:justify-center">
+          <PrimaryButton onClick={onPrimary}>↓ {primaryLabel}</PrimaryButton>
+          {secondaryLabel && onSecondary ? (
+            <OutlineButton onClick={onSecondary}>{secondaryLabel}</OutlineButton>
+          ) : null}
+          <button
+            onClick={onReset}
+            className="text-sm text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
+          >
+            {tr(locale, "Start over", "重新开始", "Empezar de nuevo", "Recomeçar", "Recommencer", "やり直す", "Neu starten")}
+          </button>
+        </div>
+
+        {/* Post-result conversion bridge */}
+        {hasToolBridge(config.slug) && (
+          <div className="border-t border-[color:var(--line)] px-5 py-4">
+            <ToolBridge slug={config.slug} locale={config.locale ?? "en"} useLocalePrefix={(config.locale ?? "en") !== "en"} />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── Default layout for non-conversion tools (text / ranges / image-order / no preview) ──
   return (
     <div className={bare ? "overflow-hidden" : "mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]"}>
       {/* Header */}
@@ -699,7 +771,7 @@ export function WorkflowResultState({
         </div>
       )}
 
-      {/* Preview */}
+      {/* Preview for text / image-order / ranges */}
       {result.preview && (
         <div className="border-b border-[color:var(--line)] px-5 py-3">
           <ResultPreview type={result.preview} text={result.previewText} blob={result.previewBlob} />

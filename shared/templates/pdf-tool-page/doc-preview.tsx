@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 /**
  * Shared primitive: render page 1 of a PDF (given as a File or Blob) to a JPEG
@@ -52,6 +52,47 @@ export function OfficeFallback({ name }: { name: string }) {
       className="flex items-center justify-center text-[64px] font-bold"
     >
       {label}
+    </div>
+  );
+}
+
+// Shared layout primitive: bordered preview container + name/meta below.
+// Used by DocPreview (upload/ready state) and result state (output file)
+// so both show the same "large preview + info" card.
+export function FilePreviewLayout({
+  previewContent,
+  name,
+  meta,
+  onRemove,
+  removeLabel,
+}: {
+  previewContent: ReactNode;
+  name: string;
+  meta: string;
+  onRemove?: () => void;
+  removeLabel?: string;
+}) {
+  return (
+    <div className="flex w-full flex-col items-center gap-3">
+      <div className="relative mx-auto w-fit overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
+        {previewContent}
+        {onRemove && (
+          <button
+            type="button"
+            onClick={onRemove}
+            aria-label={removeLabel}
+            className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]"
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+              <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            </svg>
+          </button>
+        )}
+      </div>
+      <div className="text-center">
+        <p className="max-w-[20rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{name}</p>
+        {meta && <p className="mt-0.5 text-xs text-[color:var(--muted)]">{meta}</p>}
+      </div>
     </div>
   );
 }
@@ -114,10 +155,9 @@ export function DocPreview({
   const meta = [numPages !== null ? `${numPages}p` : null, `${sizeMb} MB`].filter(Boolean).join(" · ");
 
   return (
-    <div className="flex w-full flex-col items-center gap-3">
-      {/* Container wraps tight to image's rendered size; border hugs the document */}
-      <div className="relative mx-auto w-fit overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
-        {url ? (
+    <FilePreviewLayout
+      previewContent={
+        url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={url}
@@ -127,24 +167,12 @@ export function DocPreview({
           />
         ) : (
           <OfficeFallback name={file.name} />
-        )}
-        {/* × remove button — top-right corner of document preview, hover:red */}
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label={removeLabel}
-          className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]"
-        >
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-            <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-          </svg>
-        </button>
-      </div>
-      {/* Filename · pages · size */}
-      <div className="text-center">
-        <p className="max-w-[20rem] truncate text-sm font-semibold text-[color:var(--foreground)]">{file.name}</p>
-        {meta && <p className="mt-0.5 text-xs text-[color:var(--muted)]">{meta}</p>}
-      </div>
-    </div>
+        )
+      }
+      name={file.name}
+      meta={meta}
+      onRemove={onRemove}
+      removeLabel={removeLabel}
+    />
   );
 }

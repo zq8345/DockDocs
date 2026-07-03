@@ -1605,6 +1605,8 @@ function getWorkflowResult(
           : undefined,
         previewBlob: artifact && outputName.toLowerCase().endsWith(".pdf") ? artifact.blob : undefined,
         previewText: artifact && /\.(docx?|pptx?|xlsx?|odt|odp|ods|rtf)$/i.test(outputName) ? outputName : undefined,
+        outputName,
+        outputSize: formatBytes(outputSize),
       };
     default:
       return {
