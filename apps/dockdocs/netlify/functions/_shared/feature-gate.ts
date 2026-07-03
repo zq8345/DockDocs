@@ -103,10 +103,10 @@ export async function enforceFeatureGate(
     used = await readUsageCount(subjectId, feature, period, periodKey);
   } catch {
     // FAIL OPEN by default — a Blobs hiccup must never take all AI features offline.
-    // EXCEPTION: anonymous CloudConvert spends real money per call, so FAIL CLOSED for
-    // convert + ip: subjects (degrade, don't hand a scraper unlimited free conversions
-    // on a transient store error). Logged-in users still fail open.
-    used = feature === "convert" && subjectId.startsWith("ip:") ? limit : 0;
+    // EXCEPTION: CloudConvert spends real money per call, so FAIL CLOSED for ALL
+    // convert subjects (anonymous AND logged-in) on a store error. A transient Blobs
+    // outage must not hand anyone unlimited free conversions.
+    used = feature === "convert" ? limit : 0;
   }
 
   if (used >= limit) {
