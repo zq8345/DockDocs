@@ -6,13 +6,13 @@
 // draws on top of the original document.
 
 import { trackToolRun } from "@/lib/track";
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { deepHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
-import { elementPages, type EditorElement, type PageInfo, type TextElement } from "./editor-types";
+import { elementPages, pageInfoOf, type EditorElement, type PageInfo, type PageRef, type TextElement } from "./editor-types";
 import { editorReducer, initialEditorState } from "./editor-store";
 import {
   DEFAULT_HIGHLIGHT_COLOR,
@@ -83,6 +83,10 @@ const STR_EN = {
   redactBakeNote: "Pages with redactions are flattened to images on download, so the covered text is truly destroyed.",
   addPageNum: "Page numbers",
   startAt: "Start at",
+  insertBlank: "Blank page",
+  insertPdf: "Insert PDF",
+  rotatePage: "Rotate page",
+  deletePage: "Delete page",
 };
 
 const STR = {
@@ -134,6 +138,10 @@ const STR = {
     redactBakeNote: "含涂黑的页面在下载时会整页转为图片,被盖住的文字被真正销毁。",
     addPageNum: "页码",
     startAt: "起始页码",
+    insertBlank: "空白页",
+    insertPdf: "插入 PDF",
+    rotatePage: "旋转页面",
+    deletePage: "删除页面",
   },
   es: {
     title: "Editar PDF",
@@ -182,6 +190,10 @@ const STR = {
     redactBakeNote: "Las páginas con censuras se aplanan como imágenes al descargar, así el texto cubierto se destruye de verdad.",
     addPageNum: "Números de página",
     startAt: "Empezar en",
+    insertBlank: "Página en blanco",
+    insertPdf: "Insertar PDF",
+    rotatePage: "Girar página",
+    deletePage: "Eliminar página",
   },
   pt: {
     title: "Editar PDF",
@@ -230,6 +242,10 @@ const STR = {
     redactBakeNote: "Páginas com redações são achatadas como imagens ao baixar, então o texto coberto é realmente destruído.",
     addPageNum: "Números de página",
     startAt: "Começar em",
+    insertBlank: "Página em branco",
+    insertPdf: "Inserir PDF",
+    rotatePage: "Girar página",
+    deletePage: "Excluir página",
   },
   fr: {
     title: "Modifier un PDF",
@@ -278,6 +294,10 @@ const STR = {
     redactBakeNote: "Les pages caviardées sont aplaties en images au téléchargement : le texte masqué est réellement détruit.",
     addPageNum: "Numéros de page",
     startAt: "Commencer à",
+    insertBlank: "Page vierge",
+    insertPdf: "Insérer un PDF",
+    rotatePage: "Pivoter la page",
+    deletePage: "Supprimer la page",
   },
   ja: {
     title: "PDFを編集",
@@ -326,6 +346,10 @@ const STR = {
     redactBakeNote: "黒塗りを含むページはダウンロード時に画像化され、隠された文字は完全に破棄されます。",
     addPageNum: "ページ番号",
     startAt: "開始番号",
+    insertBlank: "白紙ページ",
+    insertPdf: "PDFを挿入",
+    rotatePage: "ページを回転",
+    deletePage: "ページを削除",
   },
   de: {
     title: "PDF bearbeiten",
@@ -374,6 +398,10 @@ const STR = {
     redactBakeNote: "Seiten mit Schwärzungen werden beim Download zu Bildern reduziert – der verdeckte Text wird wirklich zerstört.",
     addPageNum: "Seitenzahlen",
     startAt: "Beginnen bei",
+    insertBlank: "Leere Seite",
+    insertPdf: "PDF einfügen",
+    rotatePage: "Seite drehen",
+    deletePage: "Seite löschen",
   },
   ko: {
     title: "PDF 편집",
@@ -422,6 +450,10 @@ const STR = {
     redactBakeNote: "가림이 있는 페이지는 다운로드 시 이미지로 평탄화되어, 가려진 텍스트가 완전히 삭제됩니다.",
     addPageNum: "페이지 번호",
     startAt: "시작 번호",
+    insertBlank: "빈 페이지",
+    insertPdf: "PDF 삽입",
+    rotatePage: "페이지 회전",
+    deletePage: "페이지 삭제",
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -430,7 +462,6 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
 
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
-  const [pages, setPages] = useState<PageInfo[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [inkMode, setInkMode] = useState(false);
   const [redactMode, setRedactMode] = useState(false);
@@ -438,9 +469,16 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const [bakeDone, setBakeDone] = useState<{ done: number; total: number } | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [state, dispatch] = useReducer(editorReducer, initialEditorState);
+  // Page infos derive from the editable page list (page management source).
+  const pages = useMemo(() => state.pageList.map(pageInfoOf), [state.pageList]);
 
   const fileRef = useRef<File | null>(null);
+  // Inserted-PDF sources: bytes for the bake, pdf.js docs for rasters.
+  const extraSourcesRef = useRef<Record<string, ArrayBuffer>>({});
+  const extraJsDocs = useRef<Map<string, { getPage: (n: number) => Promise<unknown>; destroy: () => Promise<void> }>>(new Map());
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const pageInsertInputRef = useRef<HTMLInputElement>(null);
+  const insertPdfAtRef = useRef(0);
   // pdf.js document proxy, kept alive for lazy page rasters until reset.
   const docRef = useRef<{ getPage: (n: number) => Promise<unknown>; destroy: () => Promise<void> } | null>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
@@ -452,10 +490,13 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     docRef.current?.destroy().catch(() => {});
     docRef.current = null;
     fileRef.current = null;
+    for (const d of extraJsDocs.current.values()) d.destroy().catch(() => {});
+    extraJsDocs.current.clear();
+    extraSourcesRef.current = {};
     visiblePages.current.clear();
-    setPages([]);
     setError(null);
     setInkMode(false);
+    setRedactMode(false);
     setPhase("idle");
     dispatch({ type: "reset" });
   }, []);
@@ -463,12 +504,13 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   useEffect(() => () => { docRef.current?.destroy().catch(() => {}); }, []);
 
   // Unsaved-work guard (A1 persistence decision: warn on close, no autosave).
+  const dirty = state.elements.length > 0 || state.past.length > 0;
   useEffect(() => {
-    if (state.elements.length === 0) return;
+    if (!dirty) return;
     const warn = (e: BeforeUnloadEvent) => { e.preventDefault(); };
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
-  }, [state.elements.length > 0]);
+  }, [dirty]);
 
   const onFile = useCallback(async (file: File) => {
     if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
@@ -479,14 +521,14 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
-      const infos: PageInfo[] = [];
+      const refs: PageRef[] = [];
       for (let i = 1; i <= doc.numPages; i++) {
         const page = await doc.getPage(i);
         const vp = page.getViewport({ scale: 1 });
-        infos.push({ index: i - 1, wPt: vp.width, hPt: vp.height, ratio: vp.height / vp.width });
+        refs.push({ src: { doc: "main", page: i - 1 }, rotate: 0, wPt: vp.width, hPt: vp.height });
       }
       docRef.current = doc as unknown as typeof docRef.current;
-      setPages(infos);
+      dispatch({ type: "setPages", pageList: refs });
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
@@ -494,30 +536,57 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     }
   }, [t, locale]);
 
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const pagesRef = useRef(pages);
+  pagesRef.current = pages;
+
   // Lazy per-page raster at the frame's real width (no display-scale constant).
   // targetWidth (CSS px) overrides for thumbnails, which render well below 1×.
   const renderBitmap = useCallback((pageIndex: number, targetWidth?: number): Promise<string | null> => {
     const job = renderChain.current.then(async () => {
-      const doc = docRef.current;
+      const ref = stateRef.current.pageList[pageIndex];
+      if (!ref) return null;
+      const containerW = targetWidth ?? viewerRef.current?.clientWidth ?? 800;
+      const dpr = window.devicePixelRatio || 1;
+      const finish = (canvas: HTMLCanvasElement) => {
+        const url = canvas.toDataURL("image/jpeg", 0.85);
+        canvas.width = 0;
+        canvas.height = 0;
+        return url;
+      };
+      if (!ref.src) {
+        // Blank page — plain white ground.
+        const scale = Math.min(3, Math.max(targetWidth ? 0.05 : 1, (containerW * dpr) / ref.wPt));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(ref.wPt * scale);
+        canvas.height = Math.ceil(ref.hPt * scale);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return null;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        return finish(canvas);
+      }
+      const doc = ref.src.doc === "main" ? docRef.current : extraJsDocs.current.get(ref.src.doc);
       if (!doc) return null;
-      const page = (await doc.getPage(pageIndex + 1)) as {
-        getViewport: (o: { scale: number }) => { width: number; height: number };
+      const page = (await doc.getPage(ref.src.page + 1)) as {
+        rotate?: number;
+        getViewport: (o: { scale: number; rotation?: number }) => { width: number; height: number };
         render: (o: unknown) => { promise: Promise<void> };
       };
-      const base = page.getViewport({ scale: 1 });
-      const containerW = targetWidth ?? viewerRef.current?.clientWidth ?? 800;
-      const scale = Math.min(3, Math.max(targetWidth ? 0.05 : 1, (containerW * (window.devicePixelRatio || 1)) / base.width));
-      const viewport = page.getViewport({ scale });
+      // pdf.js viewport rotation is ABSOLUTE — compose the source page's own
+      // /Rotate with the user's extra page rotation.
+      const rotation = (((page.rotate ?? 0) + ref.rotate) % 360 + 360) % 360;
+      const base = page.getViewport({ scale: 1, rotation });
+      const scale = Math.min(3, Math.max(targetWidth ? 0.05 : 1, (containerW * dpr) / base.width));
+      const viewport = page.getViewport({ scale, rotation });
       const canvas = document.createElement("canvas");
       canvas.width = Math.ceil(viewport.width);
       canvas.height = Math.ceil(viewport.height);
       const ctx = canvas.getContext("2d");
       if (!ctx) return null;
       await page.render({ canvas, canvasContext: ctx, viewport }).promise;
-      const url = canvas.toDataURL("image/jpeg", 0.85);
-      canvas.width = 0;
-      canvas.height = 0;
-      return url;
+      return finish(canvas);
     }).catch(() => null);
     renderChain.current = job;
     return job;
@@ -668,6 +737,39 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     dispatch({ type: "add", el });
   }, [pages]);
 
+  // ── page management (ThumbRail actions) ──
+  const pageKeyOf = (ref: PageRef, i: number) =>
+    `${i}:${ref.src ? `${ref.src.doc}/${ref.src.page}` : "blank"}:${ref.rotate}`;
+
+  const insertBlankAfter = useCallback((at: number) => {
+    const nb = stateRef.current.pageList[at];
+    dispatch({
+      type: "insertPages",
+      at: at + 1,
+      refs: [{ src: null, rotate: 0, wPt: nb?.wPt ?? 612, hPt: nb?.hPt ?? 792 }],
+    });
+  }, []);
+
+  const insertPdfAfter = useCallback(async (at: number, file: File) => {
+    try {
+      const bytes = await file.arrayBuffer();
+      const id = crypto.randomUUID();
+      const pdfjs = await import("pdfjs-dist");
+      pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+      const doc = await pdfjs.getDocument({ data: new Uint8Array(bytes.slice(0)) }).promise;
+      const refs: PageRef[] = [];
+      for (let i = 1; i <= doc.numPages; i++) {
+        const vp = (await doc.getPage(i)).getViewport({ scale: 1 });
+        refs.push({ src: { doc: id, page: i - 1 }, rotate: 0, wPt: vp.width, hPt: vp.height });
+      }
+      extraSourcesRef.current[id] = bytes;
+      extraJsDocs.current.set(id, doc as unknown as { getPage: (n: number) => Promise<unknown>; destroy: () => Promise<void> });
+      dispatch({ type: "insertPages", at: at + 1, refs });
+    } catch (e) {
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+    }
+  }, [t, locale]);
+
   const onRedactRect = useCallback((pageIndex: number, rect: { x: number; y: number; w: number; h: number }) => {
     if (rect.w < 0.002 || rect.h < 0.002) return;
     const el: EditorElement = {
@@ -771,10 +873,6 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   }, [pages]);
 
   // Keyboard: delete / nudge / undo / redo (skipped while typing in the box).
-  const stateRef = useRef(state);
-  stateRef.current = state;
-  const pagesRef = useRef(pages);
-  pagesRef.current = pages;
   const inkModeRef = useRef(inkMode);
   inkModeRef.current = inkMode;
   const redactModeRef = useRef(redactMode);
@@ -822,8 +920,13 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     setError(null);
     setBakeDone({ done: 0, total: state.elements.length });
     try {
-      const bytes = await bakePdf(await file.arrayBuffer(), pages, state.elements, (done, total) =>
-        setBakeDone({ done, total }),
+      const bytes = await bakePdf(
+        await file.arrayBuffer(),
+        pages,
+        state.elements,
+        (done, total) => setBakeDone({ done, total }),
+        state.pageList,
+        extraSourcesRef.current,
       );
       const blob = new Blob([bytes as unknown as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
@@ -840,7 +943,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     } finally {
       setBakeDone(null);
     }
-  }, [pages, state.elements, t, locale]);
+  }, [pages, state.elements, state.pageList, t, locale]);
 
   const selected = state.elements.find((el) => el.id === state.selectedId) ?? null;
 
@@ -867,11 +970,23 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
           {/* Left: page-thumbnail navigation (own scroll; hidden on mobile) */}
           <ThumbRail
             pages={pages}
+            pageKeys={state.pageList.map(pageKeyOf)}
             currentPage={currentPage}
             onJump={jumpToPage}
             renderBitmap={renderBitmap}
-            pageLabel={t.page}
-            ariaLabel={t.thumbsAria}
+            labels={{
+              aria: t.thumbsAria,
+              insertBlank: t.insertBlank,
+              insertPdf: t.insertPdf,
+              rotatePage: t.rotatePage,
+              deletePage: t.deletePage,
+              pageLabel: t.page,
+            }}
+            onInsertBlank={insertBlankAfter}
+            onInsertPdf={(at) => { insertPdfAtRef.current = at; pageInsertInputRef.current?.click(); }}
+            onRotatePage={(i) => dispatch({ type: "rotatePage", at: i })}
+            onDeletePage={(i) => dispatch({ type: "removePage", at: i })}
+            onMovePage={(from, to) => dispatch({ type: "movePage", from, to })}
           />
 
           {/* Right: toolbar pinned at top, canvas scrolls beneath it */}
@@ -988,12 +1103,23 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               e.target.value = "";
             }}
           />
+          <input
+            ref={pageInsertInputRef}
+            type="file"
+            accept="application/pdf,.pdf"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) void insertPdfAfter(insertPdfAtRef.current, f);
+              e.target.value = "";
+            }}
+          />
 
           <div ref={scrollRef} className="isolate mt-3 min-h-0 flex-1 overflow-y-auto">
             <div ref={viewerRef} className="mx-auto w-full max-w-3xl space-y-4 pb-6">
               {pages.map((pg) => (
                 <PageCanvas
-                  key={pg.index}
+                  key={pageKeyOf(state.pageList[pg.index], pg.index)}
                   page={pg}
                   elements={state.elements.filter((el) => elementPages(el, pages.length).includes(pg.index))}
                   selectedId={state.selectedId}

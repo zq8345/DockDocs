@@ -11,7 +11,7 @@
 //     Rotated pages also take this path so one well-tested transform
 //     (placeOnPage) covers all four /Rotate cases.
 
-import { elementPages, expandPageTemplate, type EditorElement, type InkElement, type PageInfo } from "./editor-types";
+import { elementPages, expandPageTemplate, type EditorElement, type InkElement, type PageInfo, type PageRef } from "./editor-types";
 import {
   BASELINE,
   FONT_STACK,
@@ -33,10 +33,40 @@ export async function bakePdf(
   pages: PageInfo[],
   elements: EditorElement[],
   onProgress?: (done: number, total: number) => void,
+  pageList?: PageRef[],
+  /** Bytes of PDFs inserted via page management, keyed by their doc id. */
+  extraSources?: Record<string, ArrayBuffer>,
 ): Promise<Uint8Array> {
   const pdfLib = await import("pdf-lib");
   const { PDFDocument, StandardFonts, degrees, rgb, BlendMode, LineCapStyle } = pdfLib;
-  const pdf = await PDFDocument.load(srcBytes);
+  const srcMain = await PDFDocument.load(srcBytes);
+  // Untouched page structure → keep the original document object (preserves
+  // metadata/outline). Any insert/delete/rotate/reorder → assemble a fresh
+  // document with copyPages (the InsertPdfClient engine, generalized).
+  const trivial =
+    !pageList ||
+    (pageList.length === srcMain.getPageCount() &&
+      pageList.every((r, i) => r.src?.doc === "main" && r.src.page === i && r.rotate === 0));
+  let pdf: import("pdf-lib").PDFDocument;
+  if (trivial) {
+    pdf = srcMain;
+  } else {
+    pdf = await PDFDocument.create();
+    const extDocs: Record<string, import("pdf-lib").PDFDocument> = {};
+    for (const ref of pageList!) {
+      if (!ref.src) {
+        pdf.addPage([ref.wPt, ref.hPt]);
+        continue;
+      }
+      const srcDoc =
+        ref.src.doc === "main"
+          ? srcMain
+          : (extDocs[ref.src.doc] ??= await PDFDocument.load(extraSources![ref.src.doc]));
+      const [p] = await pdf.copyPages(srcDoc, [ref.src.page]);
+      pdf.addPage(p);
+      if (ref.rotate) p.setRotation(degrees((p.getRotation().angle + ref.rotate) % 360));
+    }
+  }
   const helv = await pdf.embedFont(StandardFonts.Helvetica);
   const helvBold = await pdf.embedFont(StandardFonts.HelveticaBold);
   let pdfPages = pdf.getPages();
@@ -60,22 +90,62 @@ export async function bakePdf(
   if (redactByPage.size) {
     const pdfjs = await import("pdfjs-dist");
     pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-    // getDocument transfers the buffer — hand it a copy.
-    const srcDoc = await pdfjs.getDocument({ data: new Uint8Array(srcBytes.slice(0)) }).promise;
+    // Lazy pdf.js docs per source (main + inserted PDFs); getDocument
+    // transfers its buffer — always hand it a copy.
+    type JsDoc = {
+      getPage: (n: number) => Promise<{
+        rotate: number;
+        getViewport: (o: { scale: number; rotation?: number }) => { width: number; height: number };
+        render: (o: unknown) => { promise: Promise<void> };
+      }>;
+      destroy: () => void;
+    };
+    const jsDocs = new Map<string, JsDoc>();
+    const jsDocFor = async (docId: "main" | string) => {
+      let d = jsDocs.get(docId);
+      if (!d) {
+        const bytes = docId === "main" ? srcBytes : extraSources![docId];
+        d = (await pdfjs.getDocument({ data: new Uint8Array(bytes.slice(0)) }).promise) as unknown as JsDoc;
+        jsDocs.set(docId, d);
+      }
+      return d;
+    };
     try {
       for (const pi of [...redactByPage.keys()].sort((a, b) => a - b)) {
         onProgress?.(done++, total);
         await new Promise((r) => setTimeout(r, 0));
         const old = pdfPages[pi];
         if (!old) continue;
-        const jsPage = await srcDoc.getPage(pi + 1);
-        const viewport = jsPage.getViewport({ scale: REDACT_OUTPUT_SCALE });
+        const ref: PageRef = pageList?.[pi] ?? {
+          src: { doc: "main", page: pi },
+          rotate: 0,
+          wPt: pages[pi]?.wPt ?? 612,
+          hPt: pages[pi]?.hPt ?? 792,
+        };
         const canvas = document.createElement("canvas");
-        canvas.width = Math.ceil(viewport.width);
-        canvas.height = Math.ceil(viewport.height);
-        const ctx = canvas.getContext("2d", { alpha: false });
-        if (!ctx) continue;
-        await jsPage.render({ canvas, canvasContext: ctx, viewport }).promise;
+        const ctx0 = () => canvas.getContext("2d", { alpha: false });
+        let ctx: CanvasRenderingContext2D | null;
+        if (ref.src) {
+          const jsDoc = await jsDocFor(ref.src.doc);
+          const jsPage = await jsDoc.getPage(ref.src.page + 1);
+          const viewport = jsPage.getViewport({
+            scale: REDACT_OUTPUT_SCALE,
+            rotation: (jsPage.rotate + ref.rotate) % 360,
+          });
+          canvas.width = Math.ceil(viewport.width);
+          canvas.height = Math.ceil(viewport.height);
+          ctx = ctx0();
+          if (!ctx) continue;
+          await jsPage.render({ canvas, canvasContext: ctx, viewport }).promise;
+        } else {
+          // Blank page — white ground at the same output scale.
+          canvas.width = Math.ceil(ref.wPt * REDACT_OUTPUT_SCALE);
+          canvas.height = Math.ceil(ref.hPt * REDACT_OUTPUT_SCALE);
+          ctx = ctx0();
+          if (!ctx) continue;
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
         ctx.save();
         ctx.globalAlpha = 1;
         ctx.globalCompositeOperation = "source-over";
@@ -89,22 +159,23 @@ export async function bakePdf(
           );
         }
         ctx.restore();
+        // Capture the view size BEFORE zeroing the canvas for GC — /Rotate
+        // (and any user page rotation) is baked into the raster, so the new
+        // page is upright.
+        const vw = canvas.width / REDACT_OUTPUT_SCALE;
+        const vh = canvas.height / REDACT_OUTPUT_SCALE;
         const blob: Blob = await new Promise((res, rej) =>
           canvas.toBlob((bl) => (bl ? res(bl) : rej(new Error("encode failed"))), "image/jpeg", 0.9),
         );
         canvas.width = 0;
         canvas.height = 0;
         const img = await pdf.embedJpg(await blob.arrayBuffer());
-        // Replacement page uses the VIEW size (viewport at scale 1) — /Rotate
-        // is baked into the raster, so the new page is upright.
-        const vw = viewport.width / REDACT_OUTPUT_SCALE;
-        const vh = viewport.height / REDACT_OUTPUT_SCALE;
         pdf.removePage(pi);
         const np = pdf.insertPage(pi, [vw, vh]);
         np.drawImage(img, { x: 0, y: 0, width: vw, height: vh });
       }
     } finally {
-      try { srcDoc.destroy(); } catch { /* ignore */ }
+      for (const d of jsDocs.values()) { try { d.destroy(); } catch { /* ignore */ } }
     }
     pdfPages = pdf.getPages();
   }

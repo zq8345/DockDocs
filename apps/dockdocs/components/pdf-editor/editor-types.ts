@@ -154,3 +154,29 @@ export type PageInfo = {
   /** hPt / wPt — reserves layout space before the lazy raster arrives. */
   ratio: number;
 };
+
+/** One entry in the editable page list (page management: insert/delete/
+ *  rotate/reorder — the InsertPdfClient copyPages engine generalized).
+ *  `src: null` is a blank page. `rotate` is the user's extra view rotation
+ *  (CW degrees, on top of the source page's own /Rotate). wPt/hPt are the
+ *  CURRENT view size (rotation already applied). */
+export type PageRef = {
+  src: { doc: "main" | string; page: number } | null;
+  rotate: 0 | 90 | 180 | 270;
+  wPt: number;
+  hPt: number;
+};
+
+export const pageInfoOf = (ref: PageRef, index: number): PageInfo => ({
+  index,
+  wPt: ref.wPt,
+  hPt: ref.hPt,
+  ratio: ref.hPt / ref.wPt,
+});
+
+/** Rotate a normalized view rect (top-left origin) by 90° CW — used when the
+ *  USER rotates a page so its elements visually follow. Derivation: point
+ *  (x,y) → (1−y, x); a rect's new top-left is its old bottom-left mapped. */
+export function rotateRectCW(r: { x: number; y: number; w: number; h: number }): { x: number; y: number; w: number; h: number } {
+  return { x: 1 - r.y - r.h, y: r.x, w: r.h, h: r.w };
+}
