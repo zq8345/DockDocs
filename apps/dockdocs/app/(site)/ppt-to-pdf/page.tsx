@@ -10,7 +10,7 @@ const config = {
   appName: "DockDocs PPT to PDF",
   schemaName: "DockDocs PowerPoint to PDF Converter",
   breadcrumbName: "PPT to PDF",
-  heroTitle: "Convert PowerPoint presentations to PDF online.",
+  heroTitle: "PowerPoint to PDF",
   heroDescription: "Upload a PPTX file and download a presentation-ready PDF. Powered by a professional conversion engine.",
   primaryActionLabel: "Convert to PDF",
   stats: [["Price", "Free"], ["Input", "PPTX / PPT"], ["Output", "PDF"]],

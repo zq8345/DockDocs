@@ -10,7 +10,7 @@ const config = {
   appName: "DockDocs PDF to PDF/A",
   schemaName: "DockDocs PDF to PDF/A Converter",
   breadcrumbName: "PDF to PDF/A",
-  heroTitle: "Convert PDF to PDF/A for archiving.",
+  heroTitle: "PDF to PDF/A",
   heroDescription: "Upload a PDF and download a PDF/A file built for long-term archiving and compliance. Powered by a professional conversion engine.",
   primaryActionLabel: "Convert to PDF/A",
   stats: [["Price", "Free"], ["Input", "PDF"], ["Output", "PDF/A"]],

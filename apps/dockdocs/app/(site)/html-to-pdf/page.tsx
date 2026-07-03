@@ -10,7 +10,7 @@ const config = {
   appName: "DockDocs HTML to PDF",
   schemaName: "DockDocs HTML to PDF Converter",
   breadcrumbName: "HTML to PDF",
-  heroTitle: "Convert HTML files to PDF online.",
+  heroTitle: "HTML to PDF",
   heroDescription: "Upload an .html file and download a clean, print-ready PDF. Powered by a professional conversion engine for browser-grade rendering.",
   primaryActionLabel: "Convert to PDF",
   stats: [["Price", "Free"], ["Input", "HTML"], ["Output", "PDF"]],

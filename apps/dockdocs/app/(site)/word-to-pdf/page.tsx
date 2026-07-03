@@ -10,7 +10,7 @@ const config = {
   appName: "DockDocs Word to PDF",
   schemaName: "DockDocs Word to PDF Converter",
   breadcrumbName: "Word & Doc to PDF Converter",
-  heroTitle: "Convert Word DOC and DOCX files to PDF — free, online.",
+  heroTitle: "Word to PDF",
   heroDescription: "Convert any doc to PDF — upload a Word document and download a pixel-perfect PDF in seconds. Fonts, tables, columns, and images are preserved. Powered by a professional conversion engine.",
   primaryActionLabel: "Convert to PDF",
   stats: [["Price", "Free"], ["Input", "DOCX / DOC"], ["Output", "PDF"]],

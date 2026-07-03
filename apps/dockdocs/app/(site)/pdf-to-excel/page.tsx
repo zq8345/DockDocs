@@ -10,7 +10,7 @@ const config = {
   appName: "DockDocs PDF to Excel",
   schemaName: "DockDocs PDF to Excel Converter",
   breadcrumbName: "PDF to Excel",
-  heroTitle: "Convert PDF tables to Excel spreadsheets.",
+  heroTitle: "PDF to Excel",
   heroDescription: "Extract table data from PDF files and download a structured XLSX spreadsheet. Powered by a professional conversion engine.",
   primaryActionLabel: "Convert to Excel",
   stats: [["Price", "Free"], ["Input", "PDF"], ["Output", "XLSX"]],

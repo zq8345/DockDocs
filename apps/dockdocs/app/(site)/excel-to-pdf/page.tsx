@@ -10,7 +10,7 @@ const config = {
   appName: "DockDocs Excel to PDF",
   schemaName: "DockDocs Excel to PDF Converter",
   breadcrumbName: "Excel to PDF",
-  heroTitle: "Convert Excel spreadsheets to PDF online.",
+  heroTitle: "Excel to PDF",
   heroDescription: "Upload an XLSX file and download a print-ready PDF. Powered by a professional conversion engine.",
   primaryActionLabel: "Convert to PDF",
   stats: [["Price", "Free"], ["Input", "XLSX / XLS"], ["Output", "PDF"]],

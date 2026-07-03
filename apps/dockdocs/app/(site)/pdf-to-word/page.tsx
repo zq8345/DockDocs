@@ -15,7 +15,7 @@ const config = {
   appName: "DockDocs PDF to Word",
   schemaName: "DockDocs PDF to Word Converter",
   breadcrumbName: "PDF to Word",
-  heroTitle: "Convert PDF to editable Word documents online.",
+  heroTitle: "PDF to Word",
   heroDescription:
     "Upload a PDF and prepare it for Word workflows. Powered by DockDocs AI document workspace for PDF tools and document automation.",
   primaryActionLabel: "Convert to Word",
