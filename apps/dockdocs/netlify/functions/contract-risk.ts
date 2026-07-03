@@ -19,7 +19,7 @@ declare const Netlify: {
 // it (no fabricated citations). This is a "points to review" tool, NOT legal
 // advice; the prompt and the client copy both say so.
 
-type ContractRiskPayload = { text?: string; locale?: AnswerLocale };
+type ContractRiskPayload = { text?: string; locale?: AnswerLocale; stream?: boolean };
 type ModelEntry = { apiUrl: string; apiKey: string; model: string };
 type RiskLevel = "high" | "medium" | "low";
 type Risk = {
@@ -101,6 +101,15 @@ export default async (req: Request, _context: Context) => {
   if (text.length < 40) {
     return json({ ok: false, code: "NO_TEXT", message: "No contract text to analyze." }, 400);
   }
+
+  // ── Streaming branch (stream:true): NDJSON events — real per-chunk progress,
+  // per-chunk grounded risks as PREVIEW, then the authoritative merged result.
+  // The client replaces the preview list wholesale when "result" arrives, so
+  // overlap-duplicate previews can never persist.
+  if (payload.stream) {
+    return streamContractRisk({ chain, locale, text, gate });
+  }
+
   // Split the WHOLE contract into overlapping chunks and analyze every chunk, then
   // merge + de-duplicate the findings. No silent 24k truncation.
   try {
@@ -141,6 +150,91 @@ export default async (req: Request, _context: Context) => {
   }
 };
 
+// ── NDJSON streaming variant of the analysis (same gate/coverage/merge semantics
+// as the JSON path — only the transport differs). Events:
+//   {type:"start", totalChunks}                     analysis begins
+//   {type:"progress", done, total}                  a chunk finished (real progress)
+//   {type:"risk", risk}                             grounded per-chunk finding (preview)
+//   {type:"result", ok:true, risks, coverage, ...}  authoritative merged list — replaces previews
+//   {type:"error", ok:false, code, message}         total provider failure
+function streamContractRisk({
+  chain,
+  locale,
+  text,
+  gate,
+}: {
+  chain: ModelEntry[];
+  locale: AnswerLocale;
+  text: string;
+  // Narrowed: the handler only reaches here after `if (!gate.ok) return`.
+  gate: Extract<Awaited<ReturnType<typeof enforceFeatureGate>>, { ok: true }> | null;
+}) {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const send = (event: Record<string, unknown>) => {
+        controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
+      };
+      try {
+        const chunkRanges = chunkRangesFor(text, MAX_CHARS, OVERLAP_CHARS);
+        const cap = Math.min(coverageChunkCap(gate?.plan ?? "FREE"), MAX_ANALYZE_CHUNKS);
+        const analyzedRanges = chunkRanges.slice(0, cap);
+        send({ type: "start", totalChunks: analyzedRanges.length });
+
+        let done = 0;
+        const { risks: rawRisks, contractType, typeSpecificItems, failed, modelUsed } = await analyzeChunks(
+          chain,
+          locale,
+          text,
+          analyzedRanges,
+          (chunkRisks) => {
+            done += 1;
+            send({ type: "progress", done, total: analyzedRanges.length });
+            // Preview findings: individually grounded now so a quote the client
+            // renders mid-stream is already verified against the source.
+            for (const risk of groundRisks(chunkRisks, text)) {
+              send({ type: "risk", risk });
+            }
+          },
+        );
+
+        if (analyzedRanges.length > 0 && failed === analyzedRanges.length) {
+          send({ type: "error", ok: false, code: "PROVIDER_FAILED", message: "AI provider failed — please try again in a moment." });
+          return;
+        }
+
+        const risks = groundRisks(mergeAndDedupRisks(rawRisks), text);
+        if (gate) await gate.commit();
+
+        const coverage: Coverage = {
+          coveredChars: analyzedRanges.length ? analyzedRanges[analyzedRanges.length - 1].end : 0,
+          totalChars: text.length,
+          analyzedChunks: analyzedRanges.length,
+          totalChunks: chunkRanges.length,
+          failedChunks: failed,
+          capped: chunkRanges.length > analyzedRanges.length,
+        };
+        send({ type: "result", ok: true, risks, coverage, contractType, typeSpecificItems, provider: "configured-ai-provider", model: modelUsed });
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message.slice(0, 200) : String(err).slice(0, 200);
+        console.error("[contract-risk] stream error:", msg);
+        send({ type: "error", ok: false, code: "INTERNAL_ERROR", message: "Analysis failed — please try again." });
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/x-ndjson; charset=utf-8",
+      "Cache-Control": "no-store",
+      "X-Accel-Buffering": "no",
+    },
+  });
+}
+
 // ---- full-document chunking + cross-chunk merge (全文分析) ----
 // Pure chunking + merge/de-dup live in ./_shared/contract-chunking (unit-tested).
 
@@ -158,6 +252,9 @@ async function analyzeChunks(
   locale: AnswerLocale,
   text: string,
   ranges: Array<{ start: number; end: number }>,
+  // Streaming hook: fired once per finished chunk (success OR failure — failures
+  // report an empty list so progress still advances) with that chunk's raw risks.
+  onChunkDone?: (chunkRisks: Risk[]) => void,
 ): Promise<{ risks: Risk[]; contractType: ContractTypeInfo | null; typeSpecificItems: TypeSpecificItem[]; failed: number; modelUsed: string }> {
   const risks: Risk[] = [];
   let failed = 0;
@@ -170,16 +267,20 @@ async function analyzeChunks(
       const bodyTemplate = buildAnalyzeBody(locale, text.slice(range.start, range.end), isFirst);
       const { text: content, model } = await callProviderWithFallback(chain, bodyTemplate);
       if (isFirst) modelUsed = model;
+      let chunkRisks: Risk[];
       if (isFirst) {
         const parsed = parseFirstChunk(content);
         contractType = parsed.contractType;
         typeSpecificItems = parsed.typeSpecificItems;
-        risks.push(...parsed.risks);
+        chunkRisks = parsed.risks;
       } else {
-        risks.push(...parseRisks(content));
+        chunkRisks = parseRisks(content);
       }
+      risks.push(...chunkRisks);
+      onChunkDone?.(chunkRisks);
     } catch {
       failed += 1;
+      onChunkDone?.([]);
     }
   });
   return { risks, contractType, typeSpecificItems, failed, modelUsed };

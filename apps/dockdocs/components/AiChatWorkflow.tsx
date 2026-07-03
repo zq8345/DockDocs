@@ -5,6 +5,8 @@ import { TrialCta } from "@/components/TrialCta";
 import { useEffect, useRef, useState } from "react";
 import { deepHant } from "@/lib/zh-hant";
 import { AiDocUpload } from "@/components/AiDocUpload";
+import { StreamingProgressBar } from "@/components/ai-shell/StreamingOutput";
+import { GroundedAnswer } from "@/components/ai-shell/GroundedAnswer";
 import {
   askAiAboutPdf,
   type AiChatHistoryTurn,
@@ -937,19 +939,7 @@ export function AiChatWorkflow({
               ) : null}
             </div>
 
-            {isWorking ? (
-              <div className="mt-4">
-                <div className="h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
-                  <div
-                    className="h-full rounded-full bg-[color:var(--foreground)] transition-all"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <p className="mt-3 text-sm font-medium text-[color:var(--muted)]">
-                  {progressStep}
-                </p>
-              </div>
-            ) : null}
+            {isWorking ? <StreamingProgressBar progress={progress} step={progressStep} /> : null}
 
             {error ? (
               <div
@@ -1029,59 +1019,30 @@ export function AiChatWorkflow({
                 </p>
               ) : null}
 
-              <section className="mt-6 border-t border-[color:var(--line)] pt-5">
-                <h3 className="text-lg font-semibold text-[color:var(--foreground)]">{t.answer}</h3>
-                <p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-[color:var(--muted)]">
-                  {result?.answer ?? streamingAnswer}
-                </p>
-              </section>
-              {result ? (
-                <section className="mt-6 border-t border-[color:var(--line)] pt-5">
-                  <h3 className="text-lg font-semibold text-[color:var(--foreground)]">
-                    {t.references}
-                  </h3>
-                  <ul className="mt-3 grid gap-2 text-sm leading-6 text-[color:var(--muted)]">
-                    {result.references.map((reference) => {
-                      const expanded = Boolean(expandedReferences[reference]);
-                      const canCollapse =
-                        featureFlags.citationViewer && reference.length > 180;
-                      return (
-                        <li
-                          key={reference}
-                          className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
-                        >
-                          <span className="mb-2 inline-flex items-center gap-1 rounded-full bg-[rgba(62,207,142,0.1)] px-2 py-0.5 text-[11px] font-semibold text-[color:var(--accent)]">
-                            ✓ {t.verifiedBadge}
-                          </span>
-                          <p className={`mt-1 text-sm ${expanded || !canCollapse ? "" : "line-clamp-3"}`}>
-                            {reference}
-                          </p>
-                          {featureFlags.citationViewer ? (
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              <button
-                                type="button"
-                                onClick={() => copyReference(reference)}
-                                className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--foreground)]"
-                              >
-                                {t.copyReference}
-                              </button>
-                              {canCollapse ? (
-                                <button
-                                  type="button"
-                                  onClick={() => toggleReference(reference)}
-                                  className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--foreground)]"
-                                >
-                                  {expanded ? t.hideReference : t.showReference}
-                                </button>
-                              ) : null}
-                            </div>
-                          ) : null}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </section>
-              ) : null}
+              <GroundedAnswer
+                heading={t.answer}
+                body={result?.answer ?? streamingAnswer}
+                citationsHeading={t.references}
+                citations={
+                  result
+                    ? result.references.map((reference) => ({ quote: reference }))
+                    : undefined
+                }
+                chip={{
+                  labels: {
+                    verified: t.verifiedBadge,
+                    copy: t.copyReference,
+                    show: t.showReference,
+                    hide: t.hideReference,
+                  },
+                  showActions: featureFlags.citationViewer,
+                  isExpanded: (quote) => Boolean(expandedReferences[quote]),
+                  canCollapse: (quote) =>
+                    featureFlags.citationViewer && quote.length > 180,
+                  onCopy: copyReference,
+                  onToggle: toggleReference,
+                }}
+              />
               {result?.usage ? (
                 <p className="mt-5 text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
                   {t.usage}:{" "}

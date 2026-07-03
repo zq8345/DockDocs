@@ -3,7 +3,12 @@
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
-import { GroundingNote, groundingFaq } from "@/components/GroundingNote";
+import { groundingFaq } from "@/components/GroundingNote";
+import { AiToolShell, type AiShellStatus } from "@/components/ai-shell/AiToolShell";
+import { DocContextBar } from "@/components/ai-shell/DocContextBar";
+import { StreamingProgressBar } from "@/components/ai-shell/StreamingOutput";
+import { CitationChip } from "@/components/ai-shell/GroundedAnswer";
+import { GroundedExplainer } from "@/components/ai-shell/GroundedExplainer";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
@@ -610,6 +615,8 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const [file, setFile] = useState<File | null>(null);
   const [pageDataUrls, setPageDataUrls] = useState<string[]>([]);
   const [progressStep, setProgressStep] = useState<string>("");
+  const [analyzeProgress, setAnalyzeProgress] = useState(0);
+  const [previewRisks, setPreviewRisks] = useState<Risk[]>([]);
 
   useEffect(() => {
     const s = legalCtx?.session;
@@ -801,6 +808,8 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
     setError(null);
     setLimitHit(null);
     setCoverage(null);
+    setAnalyzeProgress(0);
+    setPreviewRisks([]);
     setProgressStep(t.progressSending);
     try {
       const gate = await checkUsage("contractAnalyzer");
@@ -813,12 +822,54 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       const auth = await authHeader();
       const res = await fetch("/api/contract-risk", {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...auth },
-        body: JSON.stringify({ text, locale }),
+        headers: { "Content-Type": "application/json", Accept: "application/x-ndjson", ...auth },
+        body: JSON.stringify({ text, locale, stream: true }),
       });
       setProgressStep(t.progressAnalyzing);
-      // null on JSON parse failure (HTML 500 from Netlify crash) — distinguish from {}
-      const data = await res.json().catch(() => null);
+
+      // Streaming path: real per-chunk progress + grounded preview findings that
+      // land as they're found; the final "result" event replaces the previews
+      // wholesale. Non-NDJSON responses (gate errors, old servers) drop through
+      // to the JSON branch unchanged.
+      let data: Record<string, unknown> | null = null;
+      const contentType = res.headers.get("content-type") ?? "";
+      if (contentType.includes("application/x-ndjson") && res.body) {
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        const handleLine = (line: string) => {
+          const trimmed = line.trim();
+          if (!trimmed) return;
+          let event: { type?: string; done?: number; total?: number; risk?: Risk } & Record<string, unknown>;
+          try {
+            event = JSON.parse(trimmed) as typeof event;
+          } catch {
+            return;
+          }
+          if (event.type === "start") {
+            setAnalyzeProgress(4);
+          } else if (event.type === "progress" && typeof event.done === "number" && typeof event.total === "number" && event.total > 0) {
+            setAnalyzeProgress(Math.round((event.done / event.total) * 100));
+          } else if (event.type === "risk" && event.risk) {
+            const risk = event.risk;
+            setPreviewRisks((current) => [...current, risk]);
+          } else if (event.type === "result" || event.type === "error") {
+            data = event;
+          }
+        };
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split(/\r?\n/);
+          buffer = lines.pop() ?? "";
+          for (const line of lines) handleLine(line);
+        }
+        if (buffer) handleLine(buffer);
+      } else {
+        // null on JSON parse failure (HTML 500 from Netlify crash) — distinguish from {}
+        data = await res.json().catch(() => null);
+      }
       if (data === null) {
         setError(t.errPrefix + t.errServer);
         setPhase("ready");
@@ -826,7 +877,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         return;
       }
       if (data?.code === "UPGRADE_REQUIRED") {
-        setLimitHit(data?.limit ?? 0);
+        setLimitHit(typeof data?.limit === "number" ? data.limit : 0);
         setPhase("ready");
         setProgressStep("");
         return;
@@ -838,6 +889,8 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         setContractType(data.contractType && typeof data.contractType === "object" ? (data.contractType as ContractTypeInfo) : null);
         setTypeSpecificItems(Array.isArray(data.typeSpecificItems) ? (data.typeSpecificItems as TypeSpecificItem[]) : []);
         setProgressStep("");
+        setPreviewRisks([]);
+        setAnalyzeProgress(0);
         setPhase("done");
         legalCtx?.setResult("contractRisk", sorted);
         trackToolRun("contract-risk");
@@ -855,18 +908,27 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
           timestamp: Date.now(),
         });
       } else {
-        setError(t.errPrefix + (data?.message || t.errServer));
+        setError(t.errPrefix + ((data?.message as string) || t.errServer));
         setPhase("ready");
         setProgressStep("");
+        setPreviewRisks([]);
       }
     } catch (e) {
       setError(t.errPrefix + (e instanceof Error ? e.message : String(e)));
       setPhase("ready");
       setProgressStep("");
+      setPreviewRisks([]);
     }
   }, [text, locale, t]);
 
   const card = "rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]";
+
+  const shellStatus: AiShellStatus =
+    phase === "extracting" || phase === "analyzing" ? "working"
+    : error ? "error"
+    : phase === "done" ? "result"
+    : phase === "ready" ? "ready"
+    : "idle";
 
   // JSON-LD for both the en (/contract-risk/) and localized (/zh|/es… ) routes —
   // this page has no shared-template config, so the schema is emitted here so it
@@ -947,29 +1009,51 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
 
       {!embedded && <LegalWorkspaceBanner />}
 
-      {phase === "idle" || phase === "extracting" ? (
-        <UploadDropzone
-          locale={locale}
-          constrained={embedded}
-          buttonLabel={t.choose}
-          busy={phase === "extracting"}
-          busyLabel={t.extracting}
-          privacy={false}
-          note={t.privacy}
-          valueZone={embedded ? "ai" : undefined}
-          onFile={onFile}
-        />
-      ) : (
-        <div className={`${card} ${embedded ? "mt-3" : "mt-8"} p-5`}>
-          {file && <DocPreview file={file} max={480} onRemove={reset} removeLabel={t.remove} />}
-          <div className="mt-5 flex justify-center">
-            <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
-              {phase === "analyzing" ? t.analyzing : t.analyze}
-            </button>
-          </div>
-          <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
-        </div>
-      )}
+      <AiToolShell
+        mode="oneshot"
+        status={shellStatus}
+        docIntake={
+          phase === "idle" || phase === "extracting" ? (
+            <UploadDropzone
+              locale={locale}
+              constrained={embedded}
+              buttonLabel={t.choose}
+              busy={phase === "extracting"}
+              busyLabel={t.extracting}
+              privacy={false}
+              note={t.privacy}
+              valueZone={embedded ? "ai" : undefined}
+              onFile={onFile}
+            />
+          ) : null
+        }
+        contextBar={
+          phase !== "idle" && phase !== "extracting" ? (
+            <DocContextBar
+              fileName={fileName || t.choose}
+              meta={pages ? `${pages}p` : undefined}
+              statusLabel={phase === "analyzing" ? t.analyzing : undefined}
+              onReset={reset}
+              resetLabel={t.remove}
+              disabled={phase === "analyzing"}
+            />
+          ) : null
+        }
+        actionRegion={
+          phase !== "idle" && phase !== "extracting" ? (
+            <div className={`${card} ${embedded ? "mt-3" : "mt-4"} p-5`}>
+              {file && <DocPreview file={file} max={480} onRemove={reset} removeLabel={t.remove} />}
+              <div className="mt-5 flex justify-center">
+                <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
+                  {phase === "analyzing" ? t.analyzing : t.analyze}
+                </button>
+              </div>
+              <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
+            </div>
+          ) : null
+        }
+        resultRegion={
+          <>
 
       {error && (
         <div role="alert" className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">
@@ -986,25 +1070,52 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
 
       {phase === "analyzing" && (
         <div className="mt-6" aria-busy="true">
-          {progressStep && (
-            <p className="mb-3 text-center text-xs text-[color:var(--muted)]">{progressStep}</p>
-          )}
-          <div className="space-y-3">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="animate-pulse rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
-                <div className="flex items-center gap-2">
-                  <div className="h-2.5 w-2.5 rounded-full bg-[color:var(--surface-subtle)]" />
-                  <div className="h-5 w-14 rounded bg-[color:var(--surface-subtle)]" />
-                  <div className="h-5 w-32 rounded bg-[color:var(--surface-subtle)]" />
-                </div>
-                <div className="mt-3 space-y-2">
-                  <div className="h-3.5 w-full rounded bg-[color:var(--surface-subtle)]" />
-                  <div className="h-3.5 w-4/5 rounded bg-[color:var(--surface-subtle)]" />
-                </div>
-                <div className="mt-3 h-12 rounded bg-[color:var(--surface-subtle)] opacity-60" />
-              </div>
-            ))}
+          <div className="mx-auto max-w-sm">
+            <StreamingProgressBar progress={analyzeProgress} step={progressStep} />
           </div>
+          {previewRisks.length > 0 ? (
+            /* Findings land live as each chunk finishes — grounded server-side
+               before they're sent, replaced wholesale by the merged final list. */
+            <div className="mt-5 space-y-3">
+              {previewRisks.map((r, i) => (
+                <div key={i} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="h-2.5 w-2.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: r.level === "high" ? "#f87171" : r.level === "medium" ? "#fbbf24" : "#34d399" }}
+                    />
+                    <span className="text-[11px] font-bold uppercase tracking-wide text-[color:var(--muted)]">{levelLabel[r.level]}</span>
+                    <span className="text-[13.5px] font-semibold text-[color:var(--foreground)]">{r.type}</span>
+                  </div>
+                  {(r.quote || r.missing) && (
+                    <ul className="mt-3 grid gap-2">
+                      <CitationChip
+                        citation={{ quote: r.quote, missing: r.missing, unverified: r.unverified }}
+                        labels={{ verified: t.verifiedBadge, missing: t.notLocated, unverified: t.unverifiedQuote }}
+                      />
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-5 space-y-3">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="animate-pulse rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2.5 w-2.5 rounded-full bg-[color:var(--surface-subtle)]" />
+                    <div className="h-5 w-14 rounded bg-[color:var(--surface-subtle)]" />
+                    <div className="h-5 w-32 rounded bg-[color:var(--surface-subtle)]" />
+                  </div>
+                  <div className="mt-3 space-y-2">
+                    <div className="h-3.5 w-full rounded bg-[color:var(--surface-subtle)]" />
+                    <div className="h-3.5 w-4/5 rounded bg-[color:var(--surface-subtle)]" />
+                  </div>
+                  <div className="mt-3 h-12 rounded bg-[color:var(--surface-subtle)] opacity-60" />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -1223,9 +1334,12 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
           </div>{/* end right column */}
         </div>
       )}
+          </>
+        }
+      />
 
       {!embedded && <ToolBridge slug="contract-risk" locale={locale} useLocalePrefix={locale !== "en"} />}
-      <GroundingNote variant="contract" locale={locale} />
+      <GroundedExplainer variant="contract" locale={locale} />
       {!embedded && <RelatedPdfTools locale={locale} exclude="/contract-risk" />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="contract-risk" locale={locale} />}

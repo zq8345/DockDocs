@@ -1,13 +1,18 @@
 "use client";
 
 import { trackToolRun } from "@/lib/track";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { toHant, deepHant } from "@/lib/zh-hant";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { authHeader } from "@/lib/supabase";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
-import { GroundingNote } from "@/components/GroundingNote";
+import { AiToolShell, type AiShellStatus } from "@/components/ai-shell/AiToolShell";
+import { DocContextBar } from "@/components/ai-shell/DocContextBar";
+import { StreamingProgressBar } from "@/components/ai-shell/StreamingOutput";
+import { CitationChip } from "@/components/ai-shell/GroundedAnswer";
+import { GroundedExplainer } from "@/components/ai-shell/GroundedExplainer";
+import { resolveAiToolCopy, type AiToolCopyTable } from "@/components/ai-shell/AiToolCopy";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { dropzoneShell } from "@/components/design";
@@ -22,11 +27,6 @@ type ChatMessage = {
 };
 
 type RuntimeState = "empty" | "selected" | "processing" | "success" | "error";
-type ProviderReference = {
-  provider?: string;
-  model?: string;
-  citations: unknown[];
-};
 
 const maxPages = 12;
 const maxCharacters = 40000;
@@ -232,6 +232,68 @@ const SECTIONS: Record<AuthoredLocale, ToolSectionsContent> = {
 },
 };
 
+// Shell copy for the AI 壳 atoms this page renders (chip labels, cancel, …).
+// Typed AiToolCopyTable → a missing locale is a tsc error (the ko lesson).
+// Keys the page doesn't render yet (answer/references headings for oneshot
+// tools) are still authored so the contract stays exhaustive.
+const CHAT_SHELL_COPY: AiToolCopyTable<{ cancelled: string }> = {
+  en: {
+    ask: "Ask", working: "Thinking…", cancel: "Stop", retry: "Try again", ready: "Ready.",
+    answer: "Answer", references: "Source passages", verifiedBadge: "Verified against source",
+    unverifiedBadge: "Can't verify", missingBadge: "Missing", copyReference: "Copy",
+    showReference: "Show more", hideReference: "Show less", copyAnswer: "Copy answer",
+    repick: "Choose another PDF", reset: "Start over", cancelled: "Stopped.",
+  },
+  zh: {
+    ask: "提问", working: "思考中…", cancel: "停止", retry: "重试", ready: "就绪。",
+    answer: "回答", references: "原文段落", verifiedBadge: "已与原文核对",
+    unverifiedBadge: "无法核实", missingBadge: "缺失", copyReference: "复制",
+    showReference: "展开", hideReference: "收起", copyAnswer: "复制回答",
+    repick: "换一份 PDF", reset: "重新开始", cancelled: "已停止。",
+  },
+  es: {
+    ask: "Preguntar", working: "Pensando…", cancel: "Detener", retry: "Reintentar", ready: "Listo.",
+    answer: "Respuesta", references: "Pasajes de la fuente", verifiedBadge: "Verificado con la fuente",
+    unverifiedBadge: "No se puede verificar", missingBadge: "Ausente", copyReference: "Copiar",
+    showReference: "Ver más", hideReference: "Ver menos", copyAnswer: "Copiar respuesta",
+    repick: "Elegir otro PDF", reset: "Empezar de nuevo", cancelled: "Detenido.",
+  },
+  pt: {
+    ask: "Perguntar", working: "Pensando…", cancel: "Parar", retry: "Tentar novamente", ready: "Pronto.",
+    answer: "Resposta", references: "Trechos da fonte", verifiedBadge: "Verificado na fonte",
+    unverifiedBadge: "Não é possível verificar", missingBadge: "Ausente", copyReference: "Copiar",
+    showReference: "Ver mais", hideReference: "Ver menos", copyAnswer: "Copiar resposta",
+    repick: "Escolher outro PDF", reset: "Recomeçar", cancelled: "Interrompido.",
+  },
+  fr: {
+    ask: "Demander", working: "Réflexion…", cancel: "Arrêter", retry: "Réessayer", ready: "Prêt.",
+    answer: "Réponse", references: "Passages de la source", verifiedBadge: "Vérifié dans la source",
+    unverifiedBadge: "Invérifiable", missingBadge: "Manquant", copyReference: "Copier",
+    showReference: "Voir plus", hideReference: "Voir moins", copyAnswer: "Copier la réponse",
+    repick: "Choisir un autre PDF", reset: "Recommencer", cancelled: "Arrêté.",
+  },
+  ja: {
+    ask: "質問する", working: "考えています…", cancel: "停止", retry: "再試行", ready: "準備完了。",
+    answer: "回答", references: "出典の箇所", verifiedBadge: "出典と照合済み",
+    unverifiedBadge: "検証できません", missingBadge: "欠落", copyReference: "コピー",
+    showReference: "もっと見る", hideReference: "閉じる", copyAnswer: "回答をコピー",
+    repick: "別の PDF を選ぶ", reset: "最初からやり直す", cancelled: "停止しました。",
+  },
+  de: {
+    ask: "Fragen", working: "Denke nach…", cancel: "Stopp", retry: "Erneut versuchen", ready: "Bereit.",
+    answer: "Antwort", references: "Quellstellen", verifiedBadge: "Mit der Quelle abgeglichen",
+    unverifiedBadge: "Nicht überprüfbar", missingBadge: "Fehlt", copyReference: "Kopieren",
+    showReference: "Mehr anzeigen", hideReference: "Weniger anzeigen", copyAnswer: "Antwort kopieren",
+    repick: "Anderes PDF wählen", reset: "Von vorn beginnen", cancelled: "Gestoppt.",
+  },
+  ko: {
+    ask: "질문하기", working: "생각 중…", cancel: "중지", retry: "다시 시도", ready: "준비 완료.",
+    answer: "답변", references: "출처 구절", verifiedBadge: "출처와 대조 확인",
+    unverifiedBadge: "확인 불가", missingBadge: "누락", copyReference: "복사",
+    showReference: "더 보기", hideReference: "접기", copyAnswer: "답변 복사",
+    repick: "다른 PDF 선택", reset: "다시 시작", cancelled: "중지되었습니다.",
+  },
+};
 
 export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?: RuntimeLocale | "es" | "pt" | "fr" | "ja" | "zh-Hant"; embedded?: boolean }) {
   const copy = getRuntimeCopy(locale).chat;
@@ -245,14 +307,17 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<string>(copy.initialStatus);
   const [pageCount, setPageCount] = useState(0);
-  const [providerReference, setProviderReference] = useState<ProviderReference>({
-    citations: [],
-  });
   const [isExtracting, setIsExtracting] = useState(false);
   const [isAsking, setIsAsking] = useState(false);
   const [error, setError] = useState("");
   const [limitHit, setLimitHit] = useState<number | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [streamingAnswer, setStreamingAnswer] = useState("");
+  const [extractProgress, setExtractProgress] = useState(0);
+  const [expandedCitations, setExpandedCitations] = useState<Record<string, boolean>>({});
+  const abortRef = useRef<AbortController | null>(null);
+  const repickRef = useRef<HTMLInputElement | null>(null);
+  const shellCopy = resolveAiToolCopy(CHAT_SHELL_COPY, locale);
 
   const canAsk = useMemo(
     () => documentText.trim().length > 0 && question.trim().length > 0 && !isAsking,
@@ -303,7 +368,6 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
     setMessages([]);
     setDocumentText("");
     setPageCount(0);
-    setProviderReference({ citations: [] });
 
     if (!file) {
       setFileName("");
@@ -327,6 +391,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
 
     setFileName(file.name);
     setIsExtracting(true);
+    setExtractProgress(5);
     setStatus(copy.readingStatus);
 
     try {
@@ -335,6 +400,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
 
       const buffer = await file.arrayBuffer();
       const pdf = await pdfjs.getDocument({ data: buffer }).promise;
+      setExtractProgress(15);
       const pageCount = Math.min(pdf.numPages, maxPages);
       const pages: string[] = [];
 
@@ -350,6 +416,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
           .join(" ");
 
         pages.push(pageText);
+        setExtractProgress(15 + Math.round((pageNumber / pageCount) * 85));
       }
 
       const extracted = pages.join("\n\n").slice(0, maxCharacters);
@@ -399,32 +466,89 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
     }
 
     setMessages((current) => [...current, { role: "user", content: userQuestion }]);
+    setStreamingAnswer("");
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    type ChatPayload = {
+      ok?: boolean;
+      code?: string;
+      limit?: number;
+      message?: string;
+      result?: { answer?: string; references?: unknown[]; provider?: string; model?: string };
+    };
 
     try {
       // Gated, authoritative endpoint (server-side plan/usage enforcement +
-      // grounded citations). Replaces the legacy ungated /.netlify/functions/chat-with-pdf.
+      // grounded citations). stream:true → NDJSON token deltas + final result
+      // (the same protocol ai-workspace consumes); non-NDJSON responses (gate
+      // errors, stream-less fallback) drop through to the JSON branch.
       const auth = await authHeader();
+      // Prior completed turns so the model sees the conversation, not just the
+      // last question (last 8, mirroring the workspace behavior).
+      const history = messages
+        .reduce<{ question: string; answer: string }[]>((turns, message, index) => {
+          const next = messages[index + 1];
+          if (message.role === "user" && next?.role === "assistant") {
+            turns.push({ question: message.content, answer: next.content });
+          }
+          return turns;
+        }, [])
+        .slice(-8);
       const response = await fetch("/api/ai-chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/x-ndjson",
           ...auth,
         },
         body: JSON.stringify({
           context: documentText,
           question: userQuestion,
+          history,
           sourceName: fileName,
           locale,
+          stream: true,
         }),
+        signal: controller.signal,
       });
 
-      const payload = (await response.json().catch(() => null)) as {
-        ok?: boolean;
-        code?: string;
-        limit?: number;
-        message?: string;
-        result?: { answer?: string; references?: unknown[]; provider?: string; model?: string };
-      } | null;
+      let payload: ChatPayload | null = null;
+      const contentType = response.headers.get("content-type") ?? "";
+
+      if (contentType.includes("application/x-ndjson") && response.body) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        const handleLine = (line: string) => {
+          const trimmed = line.trim();
+          if (!trimmed) return;
+          let event: ({ type?: string; text?: string } & ChatPayload) | null = null;
+          try {
+            event = JSON.parse(trimmed) as { type?: string; text?: string } & ChatPayload;
+          } catch {
+            return;
+          }
+          if (event.type === "delta" && typeof event.text === "string") {
+            const text = event.text;
+            setStreamingAnswer((current) => current + text);
+          } else if (event.type === "result" || event.type === "error") {
+            payload = event;
+          }
+        };
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split(/\r?\n/);
+          buffer = lines.pop() ?? "";
+          for (const line of lines) handleLine(line);
+        }
+        if (buffer) handleLine(buffer);
+      } else {
+        payload = (await response.json().catch(() => null)) as ChatPayload | null;
+      }
 
       // Server gate hit (authoritative) — show the upgrade prompt and stop.
       if (response.status === 402 || payload?.code === "UPGRADE_REQUIRED") {
@@ -451,18 +575,16 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
       ]);
       trackToolRun("chat-with-pdf");
       await markUsage(gate, "chat");
-      setProviderReference({
-        provider: payload.result?.provider,
-        model: payload.result?.model,
-        citations: [],
-      });
     } catch (caughtError) {
+      if (controller.signal.aborted) {
+        // User pressed Stop: keep their question, drop the pending answer quietly.
+        return;
+      }
       const message =
         caughtError instanceof Error
           ? caughtError.message
           : copy.providerUnavailable;
       setError(message);
-      setProviderReference({ citations: [] });
       setMessages((current) => [
         ...current,
         {
@@ -471,9 +593,26 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
         },
       ]);
     } finally {
+      setStreamingAnswer("");
       setIsAsking(false);
     }
   }
+
+  function cancelAsk() {
+    abortRef.current?.abort();
+  }
+
+  function toggleCitation(key: string) {
+    setExpandedCitations((current) => ({ ...current, [key]: !current[key] }));
+  }
+
+  const activeDoc = Boolean(documentText) && !isExtracting;
+  const shellStatus: AiShellStatus =
+    isExtracting || isAsking ? "working"
+    : error && !activeDoc ? "error"
+    : resultGenerated ? "result"
+    : activeDoc ? "ready"
+    : "idle";
 
   return (
     <>
@@ -484,75 +623,79 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
       className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : `mx-auto ${LAYOUT.content}`}
     >
       {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{copy.heroTitle}</p>}
-      {/* ── Upload zone (shown when no document) ── */}
-      {!documentText && !isExtracting ? (
-        <label
-          data-testid="upload-panel"
-          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
-          onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
-          onDrop={handleDrop}
-          className={dropzoneShell(dragging)}
-        >
-          <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--accent)]">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4M7 9l5-5 5 5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></svg>
-          </span>
-          <span className="inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
-            {copy.choosePdf}
-          </span>
-          <span className="mt-4 text-sm text-[color:var(--muted)]">{copy.uploadHelp}</span>
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
-            <span>{locale === "zh-Hant" ? deepHant("支持") : locale === "zh" ? "支持" : locale === "ja" ? "対応形式" : locale === "de" ? "Unterstützt" : locale === "ko" ? "지원 형식" : locale === "es" ? "Admite" : locale === "pt" ? "Suporta" : locale === "fr" ? "Prend en charge" : "Supports"} PDF</span>
-            <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
-            <span className="text-[color:var(--muted)]">{locale === "zh-Hant" ? deepHant("本地读取 · 文字发至AI") : locale === "zh" ? "本地读取 · 文字发至AI" : locale === "ja" ? "ローカルで読み取り · テキストをAIへ送信" : locale === "es" ? "Leído localmente · texto enviado a IA" : locale === "pt" ? "Lido localmente · texto enviado a IA" : locale === "fr" ? "Lu localement · texte envoyé à l'IA" : locale === "de" ? "Lokal gelesen · Text an KI gesendet" : locale === "ko" ? "로컬에서 읽기 · 텍스트 AI로 전송" : "File read locally · text sent to AI"}</span>
-          </div>
-          {documentState === "error" && error && (
-            <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
-          )}
-          <input
-            data-testid="upload-input"
-            type="file"
-            accept="application/pdf,.pdf"
-            className="sr-only"
-            onChange={handleFileChange}
-          />
-        </label>
-      ) : null}
-      {embedded && !documentText && !isExtracting && <WorkspaceValueZone type="ai" locale={locale} />}
+      <AiToolShell
+        mode="conversational"
+        status={shellStatus}
+        docIntake={
+          <>
+            {/* ── Upload zone (shown when no document) ── */}
+            {!documentText && !isExtracting ? (
+              <label
+                data-testid="upload-panel"
+                onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+                onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
+                onDrop={handleDrop}
+                className={dropzoneShell(dragging)}
+              >
+                <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full border border-[color:var(--line)] text-[color:var(--accent)]">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V4M7 9l5-5 5 5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></svg>
+                </span>
+                <span className="inline-flex h-12 w-full max-w-[280px] items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-8 text-[15px] font-semibold text-white shadow-[0_4px_14px_rgba(62,207,142,0.35)] transition hover:opacity-90">
+                  {copy.choosePdf}
+                </span>
+                <span className="mt-4 text-sm text-[color:var(--muted)]">{copy.uploadHelp}</span>
+                <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
+                  <span>{locale === "zh-Hant" ? deepHant("支持") : locale === "zh" ? "支持" : locale === "ja" ? "対応形式" : locale === "de" ? "Unterstützt" : locale === "ko" ? "지원 형식" : locale === "es" ? "Admite" : locale === "pt" ? "Suporta" : locale === "fr" ? "Prend en charge" : "Supports"} PDF</span>
+                  <span className="hidden h-3 w-px bg-[color:var(--line)] sm:inline-block" />
+                  <span className="text-[color:var(--muted)]">{locale === "zh-Hant" ? deepHant("本地读取 · 文字发至AI") : locale === "zh" ? "本地读取 · 文字发至AI" : locale === "ja" ? "ローカルで読み取り · テキストをAIへ送信" : locale === "es" ? "Leído localmente · texto enviado a IA" : locale === "pt" ? "Lido localmente · texto enviado a IA" : locale === "fr" ? "Lu localement · texte envoyé à l'IA" : locale === "de" ? "Lokal gelesen · Text an KI gesendet" : locale === "ko" ? "로컬에서 읽기 · 텍스트 AI로 전송" : "File read locally · text sent to AI"}</span>
+                </div>
+                {documentState === "error" && error && (
+                  <span className="mt-4 text-sm text-[color:var(--error)]">{error}</span>
+                )}
+                <input
+                  data-testid="upload-input"
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  className="sr-only"
+                  onChange={handleFileChange}
+                />
+              </label>
+            ) : null}
+            {embedded && !documentText && !isExtracting && <WorkspaceValueZone type="ai" locale={locale} />}
 
-      {/* ── Extracting state ── */}
-      {isExtracting ? (
-        <div className="rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface)] p-10 text-center">
-          <svg className="mx-auto h-10 w-10 animate-spin text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
-            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-            <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          <p className="mt-4 text-sm font-semibold text-[color:var(--foreground)]">{copy.readingStatus}</p>
-          <p className="mt-1 break-words text-xs text-[color:var(--muted)]">{activeDocumentName}</p>
-        </div>
-      ) : null}
-
-      {/* ── Active document chat ── */}
-      {documentText && !isExtracting ? (
-        <div className="mx-auto max-w-3xl space-y-4">
-          {/* Document bar */}
-          <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-[color:var(--soft-accent)] text-[10px] font-bold text-[color:var(--accent-strong)]">
-              PDF
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-[color:var(--foreground)]">{activeDocumentName}</p>
-              <p className="text-xs text-[color:var(--muted)]">
-                {pageCount
+            {/* ── Extracting: real per-page progress instead of a blind spinner ── */}
+            {isExtracting ? (
+              <div className="rounded-[var(--radius-xl)] border border-[color:var(--line)] bg-[color:var(--surface)] p-10">
+                <div className="mx-auto max-w-sm">
+                  <StreamingProgressBar progress={extractProgress} step={copy.readingStatus} />
+                  <p className="mt-2 break-words text-center text-xs text-[color:var(--muted)]">{activeDocumentName}</p>
+                </div>
+              </div>
+            ) : null}
+          </>
+        }
+        contextBar={
+          activeDoc ? (
+            <div className="mx-auto max-w-3xl">
+              <DocContextBar
+                fileName={activeDocumentName}
+                meta={pageCount
                   ? copy.pageIndexed.replace("{pages}", String(pageCount)).replace("{plural}", pageCount === 1 ? "" : "s")
                   : sourceStats}
-
-              </p>
+                statusLabel={isAsking ? shellCopy.working : undefined}
+                onRepick={() => repickRef.current?.click()}
+                repickLabel={copy.choosePdf}
+                onReset={() => void processFile(undefined)}
+                resetLabel={shellCopy.reset}
+                disabled={isAsking}
+              />
+              <input ref={repickRef} type="file" accept="application/pdf,.pdf" className="sr-only" onChange={handleFileChange} />
             </div>
-            <label className="shrink-0 cursor-pointer rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
-              {copy.choosePdf}
-              <input type="file" accept="application/pdf,.pdf" className="sr-only" onChange={handleFileChange} />
-            </label>
-          </div>
+          ) : null
+        }
+        resultRegion={
+          activeDoc ? (
+            <div className="mx-auto mt-4 max-w-3xl">
 
           {/* Conversation */}
           <div
@@ -613,11 +756,23 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
                           ? `${message.citations.length}건 출처와 대조 확인`
                           : `${message.citations.length} verified against source`}
                       </p>
-                      <ul className="space-y-1">
+                      <ul className="grid gap-2">
                         {message.citations.map((c, i) => (
-                          <li key={i} className="rounded-[var(--radius-sm)] border-l-2 border-[color:var(--accent)] bg-[color:var(--surface)] px-2.5 py-1.5 text-[11.5px] leading-[1.55] text-[color:var(--muted)] italic">
-                            &ldquo;{c}&rdquo;
-                          </li>
+                          <CitationChip
+                            key={`${index}-${i}`}
+                            citation={{ quote: c }}
+                            labels={{
+                              verified: shellCopy.verifiedBadge,
+                              copy: shellCopy.copyReference,
+                              show: shellCopy.showReference,
+                              hide: shellCopy.hideReference,
+                            }}
+                            expanded={Boolean(expandedCitations[`${index}:${i}`])}
+                            canCollapse={c.length > 180}
+                            showActions
+                            onCopy={(quote) => void navigator.clipboard?.writeText(quote).catch(() => undefined)}
+                            onToggle={() => toggleCitation(`${index}:${i}`)}
+                          />
                         ))}
                       </ul>
                     </div>
@@ -626,11 +781,18 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
               ))
             )}
             {isAsking ? (
-              <div className="mr-auto flex max-w-[85%] items-center gap-2 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-3">
-                <span className="h-2 w-2 animate-bounce rounded-full bg-[color:var(--muted)]" style={{ animationDelay: "0ms" }} />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-[color:var(--muted)]" style={{ animationDelay: "150ms" }} />
-                <span className="h-2 w-2 animate-bounce rounded-full bg-[color:var(--muted)]" style={{ animationDelay: "300ms" }} />
-              </div>
+              streamingAnswer ? (
+                /* Tokens stream into a live assistant bubble — no more black-box wait. */
+                <article className="mr-auto max-w-[85%] rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-2.5">
+                  <p className="whitespace-pre-wrap text-sm leading-6 text-[color:var(--foreground)]">{streamingAnswer}</p>
+                </article>
+              ) : (
+                <div className="mr-auto flex max-w-[85%] items-center gap-2 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-3">
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-[color:var(--muted)]" style={{ animationDelay: "0ms" }} />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-[color:var(--muted)]" style={{ animationDelay: "150ms" }} />
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-[color:var(--muted)]" style={{ animationDelay: "300ms" }} />
+                </div>
+              )
             ) : null}
             {error && messages.length > 0 ? (
               <div data-testid="chat-error-state" className="rounded-[var(--radius-sm)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-3 text-sm leading-6 text-[color:var(--error)]">
@@ -639,55 +801,73 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
             ) : null}
           </div>
 
-          {limitHit !== null ? (
-            <UpgradePrompt locale={locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : locale === "es" ? "es" : locale === "pt" ? "pt" : "en"} limit={limitHit} />
-          ) : null}
-
-          {/* Input */}
-          <form onSubmit={askQuestion} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2">
-            <div className="flex items-end gap-2">
-              <textarea
-                data-testid="chat-input"
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                placeholder={copy.placeholder}
-                rows={1}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    if (canAsk) askQuestion(e as unknown as React.FormEvent<HTMLFormElement>);
-                  }
-                }}
-                className="max-h-32 min-h-[44px] flex-1 resize-none rounded-[var(--radius-sm)] bg-transparent px-3 py-2.5 text-sm leading-6 outline-none placeholder:text-[color:var(--muted)]"
-              />
-              <button
-                data-testid="ask-button"
-                type="submit"
-                disabled={!canAsk}
-                className="inline-flex h-11 shrink-0 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                {isAsking ? copy.asking : copy.ask}
-              </button>
+              {limitHit !== null ? (
+                <div className="mt-4">
+                  <UpgradePrompt locale={locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : locale === "es" ? "es" : locale === "pt" ? "pt" : "en"} limit={limitHit} />
+                </div>
+              ) : null}
             </div>
-          </form>
+          ) : null
+        }
+        actionRegion={
+          activeDoc ? (
+            <div className="mx-auto mt-4 max-w-3xl">
+              {/* Input */}
+              <form onSubmit={askQuestion} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2">
+                <div className="flex items-end gap-2">
+                  <textarea
+                    data-testid="chat-input"
+                    value={question}
+                    onChange={(event) => setQuestion(event.target.value)}
+                    placeholder={copy.placeholder}
+                    rows={1}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        if (canAsk) askQuestion(e as unknown as React.FormEvent<HTMLFormElement>);
+                      }
+                    }}
+                    className="max-h-32 min-h-[44px] flex-1 resize-none rounded-[var(--radius-sm)] bg-transparent px-3 py-2.5 text-sm leading-6 outline-none placeholder:text-[color:var(--muted)]"
+                  />
+                  {isAsking ? (
+                    <button
+                      type="button"
+                      onClick={cancelAsk}
+                      className="inline-flex h-11 shrink-0 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 text-sm font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
+                    >
+                      {shellCopy.cancel}
+                    </button>
+                  ) : null}
+                  <button
+                    data-testid="ask-button"
+                    type="submit"
+                    disabled={!canAsk}
+                    className="inline-flex h-11 shrink-0 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {isAsking ? copy.asking : copy.ask}
+                  </button>
+                </div>
+              </form>
 
-          {/* Quick actions */}
-          <div className="flex flex-wrap gap-2">
-            {copy.knowledgeCards.map((card) => (
-              <button
-                key={card.title}
-                type="button"
-                onClick={() => setQuestion(card.prompt)}
-                className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3.5 py-1.5 text-xs font-medium text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--foreground)]"
-              >
-                {card.title}
-              </button>
-            ))}
-          </div>
-        </div>
-      ) : null}
+              {/* Quick actions */}
+              <div className="mt-4 flex flex-wrap gap-2">
+                {copy.knowledgeCards.map((card) => (
+                  <button
+                    key={card.title}
+                    type="button"
+                    onClick={() => setQuestion(card.prompt)}
+                    className="rounded-full border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3.5 py-1.5 text-xs font-medium text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--foreground)]"
+                  >
+                    {card.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null
+        }
+      />
     </section>
-    <GroundingNote variant="chat" locale={locale} />
+    <GroundedExplainer variant="chat" locale={locale} />
     {!embedded && <RelatedPdfTools locale={locale} exclude="/chat-with-pdf" />}
     {!embedded && <ToolSections locale={locale} content={sec} />}
     </>
