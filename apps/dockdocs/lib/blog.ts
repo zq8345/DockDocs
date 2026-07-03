@@ -6,6 +6,7 @@
   type Locale,
 } from "@/lib/i18n";
 import { batch2Articles } from "@/lib/blog-batch2";
+import { batch3Articles } from "@/lib/blog-batch3";
 
 export const blogArticleSlugs = [
   "how-to-compress-pdf-for-email",
@@ -2569,6 +2570,7 @@ export const blogArticles: BlogArticle[] = [
     },
   },
   ...batch2Articles,
+  ...batch3Articles,
 ];
 
 const articleMap = new Map(blogArticles.map((article) => [article.slug, article]));
