@@ -45,12 +45,16 @@ const HANDLES: Array<{ key: HandleKey; left: string; top: string; cursor: string
 ];
 
 type Gesture = {
-  mode: "move" | "resize";
+  mode: "move" | "resize" | "rotate";
   handle?: HandleKey;
   startClientX: number;
   startClientY: number;
   startRect: { x: number; y: number; w: number; h: number };
   startSizePt: number;
+  startRotation: number;
+  /** Element center in client px at gesture start (rotate / rotated-resize). */
+  centerPx: { x: number; y: number };
+  startPointerAngle: number;
   pageRect: DOMRect;
 };
 
@@ -94,21 +98,30 @@ export function PageCanvas({
   const [stroke, setStroke] = useState<Array<[number, number]> | null>(null);
   const strokeRef = useRef<Array<[number, number]> | null>(null);
 
-  // Lazy raster: render when the page approaches the viewport, once.
+  // Lazy raster with release-on-exit: render as the page approaches the
+  // viewport, drop the bitmap once it scrolls far away — long documents keep
+  // a bounded number of page bitmaps in memory (the raster is idempotent).
   useEffect(() => {
     const el = frameRef.current;
     if (!el) return;
+    let cancelled = false;
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting || requested.current) return;
-        requested.current = true;
-        io.disconnect();
-        renderBitmap(page.index).then((url) => { if (url) setBitmap(url); });
+        if (entry.isIntersecting) {
+          if (requested.current) return;
+          requested.current = true;
+          renderBitmap(page.index).then((url) => {
+            if (!cancelled && url && requested.current) setBitmap(url);
+          });
+        } else if (requested.current) {
+          requested.current = false;
+          setBitmap(null);
+        }
       },
-      { rootMargin: "600px 0px" },
+      { rootMargin: "1200px 0px" },
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => { cancelled = true; io.disconnect(); };
   }, [page.index, renderBitmap]);
 
   // Visibility tracking (which page the toolbar's add-buttons should target).
@@ -302,17 +315,25 @@ function ElementView({
     if (!interactive || editing) return;
     e.stopPropagation();
     const pageRect = (e.currentTarget.parentElement as HTMLElement).getBoundingClientRect();
-    const handle = (e.target as HTMLElement).dataset?.handle as HandleKey | undefined;
+    const handleRaw = (e.target as HTMLElement).dataset?.handle;
+    const handle = handleRaw !== "rot" ? (handleRaw as HandleKey | undefined) : undefined;
+    const centerPx = {
+      x: pageRect.left + (el.x + el.w / 2) * pageRect.width,
+      y: pageRect.top + (el.y + el.h / 2) * pageRect.height,
+    };
     dispatch({ type: "select", id: el.id });
     dispatch({ type: "snapshot" });
     e.currentTarget.setPointerCapture(e.pointerId);
     gesture.current = {
-      mode: handle ? "resize" : "move",
+      mode: handleRaw === "rot" ? "rotate" : handle ? "resize" : "move",
       handle,
       startClientX: e.clientX,
       startClientY: e.clientY,
       startRect: { x: el.x, y: el.y, w: el.w, h: el.h },
       startSizePt: el.type === "text" ? el.sizePt : 0,
+      startRotation: el.rotation,
+      centerPx,
+      startPointerAngle: Math.atan2(e.clientY - centerPx.y, e.clientX - centerPx.x),
       pageRect,
     };
   };
@@ -335,9 +356,30 @@ function ElementView({
       });
       return;
     }
+    if (g.mode === "rotate") {
+      // Screen atan2 grows clockwise (y down) — matches CSS rotate().
+      const a = Math.atan2(e.clientY - g.centerPx.y, e.clientX - g.centerPx.x);
+      let deg = g.startRotation + ((a - g.startPointerAngle) * 180) / Math.PI;
+      if (e.shiftKey) deg = Math.round(deg / 15) * 15;
+      deg = ((deg + 180) % 360 + 360) % 360 - 180;
+      dispatch({ type: "update", id: el.id, transient: true, patch: { rotation: Math.round(deg * 10) / 10 } });
+      return;
+    }
     const h = g.handle!;
-    const px = (e.clientX - pageRect.left) / pageRect.width;
-    const py = (e.clientY - pageRect.top) / pageRect.height;
+    // For rotated elements, un-rotate the pointer about the element center in
+    // px space (normalized space is anisotropic) so the factor math runs in
+    // the element's local frame.
+    let cx = e.clientX;
+    let cy = e.clientY;
+    if (g.startRotation !== 0) {
+      const r = (-g.startRotation * Math.PI) / 180;
+      const dx = e.clientX - g.centerPx.x;
+      const dy = e.clientY - g.centerPx.y;
+      cx = g.centerPx.x + dx * Math.cos(r) - dy * Math.sin(r);
+      cy = g.centerPx.y + dx * Math.sin(r) + dy * Math.cos(r);
+    }
+    const px = (cx - pageRect.left) / pageRect.width;
+    const py = (cy - pageRect.top) / pageRect.height;
     let fx = 1;
     let fy = 1;
     if (h.includes("e")) fx = (px - startRect.x) / startRect.w;
@@ -346,12 +388,15 @@ function ElementView({
     else if (h.includes("n")) fy = (startRect.y + startRect.h - py) / startRect.h;
     fx = Math.max(fx, 0.02);
     fy = Math.max(fy, 0.02);
-    dispatch({
-      type: "update",
-      id: el.id,
-      transient: true,
-      patch: resizePatch(el, page, h, startRect, g.startSizePt, fx, fy),
-    });
+    const patch = resizePatch(el, page, h, startRect, g.startSizePt, fx, fy);
+    if (g.startRotation !== 0 && patch.w != null && patch.h != null) {
+      // Rotated resize keeps the CENTER fixed (opposite-corner anchoring in
+      // page axes doesn't survive a rotated frame); no [0,1] clamp — a
+      // rotated box legitimately overhangs its unrotated bounds.
+      patch.x = startRect.x + startRect.w / 2 - patch.w / 2;
+      patch.y = startRect.y + startRect.h / 2 - patch.h / 2;
+    }
+    dispatch({ type: "update", id: el.id, transient: true, patch });
   };
 
   const onPointerUp = () => { gesture.current = null; };
@@ -380,6 +425,7 @@ function ElementView({
         zIndex: el.z,
         outline,
         outlineOffset: 2,
+        transform: el.rotation ? `rotate(${el.rotation}deg)` : undefined,
         cursor: editing ? "text" : interactive ? "move" : undefined,
         pointerEvents: interactive ? undefined : "none",
       }}
@@ -400,6 +446,18 @@ function ElementView({
               style={{ left: h.left, top: h.top, transform: "translate(-50%, -50%)", cursor: h.cursor }}
             />
           ))}
+          {/* rotate handle: stem + grab knob above the top edge */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 w-px -translate-x-1/2 bg-[color:var(--accent)]"
+            style={{ top: -14, height: 12 }}
+          />
+          <div
+            data-handle="rot"
+            className="absolute left-1/2 h-3.5 w-3.5 -translate-x-1/2 cursor-grab rounded-full border border-[color:var(--accent)] bg-white"
+            style={{ top: -22 }}
+            title={`${Math.round(el.rotation)}°`}
+          />
           <button
             type="button"
             aria-label="delete"

@@ -20,6 +20,7 @@ import {
   hexToRgb01,
   measureTextBlock,
   placeOnPage,
+  withElementRotation,
   type PdfPlacement,
 } from "./editor-geometry";
 
@@ -30,6 +31,7 @@ export async function bakePdf(
   srcBytes: ArrayBuffer,
   pages: PageInfo[],
   elements: EditorElement[],
+  onProgress?: (done: number, total: number) => void,
 ): Promise<Uint8Array> {
   const pdfLib = await import("pdf-lib");
   const { PDFDocument, StandardFonts, degrees, rgb, BlendMode, LineCapStyle } = pdfLib;
@@ -38,7 +40,12 @@ export async function bakePdf(
   const helvBold = await pdf.embedFont(StandardFonts.HelveticaBold);
   const pdfPages = pdf.getPages();
 
-  for (const el of [...elements].sort((a, b) => a.z - b.z)) {
+  const sorted = [...elements].sort((a, b) => a.z - b.z);
+  let done = 0;
+  for (const el of sorted) {
+    onProgress?.(done++, sorted.length);
+    // Yield to the event loop so the progress paint lands between elements.
+    await new Promise((r) => setTimeout(r, 0));
     const page = pdfPages[el.page];
     const info = pages[el.page];
     if (!page || !info) continue;
@@ -46,13 +53,17 @@ export async function bakePdf(
     // user-space frame our normalized view coords map onto.
     const box = page.getCropBox();
     const rot = ((page.getRotation().angle % 360) + 360) % 360;
-    const placement = placeOnPage(el, rot, box);
+    // Page /Rotate placement composed with the element's own screen rotation.
+    const placement = withElementRotation(placeOnPage(el, rot, box), el.rotation);
     const rotate = degrees(placement.rotateDeg);
+    // Vector text/ink baselines are derived top-down; any rotation (page or
+    // element) routes those to the raster path so one transform covers all.
+    const upright = rot === 0 && el.rotation === 0;
 
     switch (el.type) {
       case "text": {
         const font = el.bold ? helvBold : helv;
-        if (rot === 0 && isWinAnsiEncodable(font, el.text)) {
+        if (upright && isWinAnsiEncodable(font, el.text)) {
           const [r, g, b] = hexToRgb01(el.color);
           const top = placement.y + placement.h;
           const lines = el.text.split("\n");
@@ -120,7 +131,7 @@ export async function bakePdf(
         break;
       }
       case "ink": {
-        if (rot === 0) {
+        if (upright) {
           // Vector path; drawSvgPath's path space is y-down from (x, y) = top-left,
           // which matches our view-space points directly.
           const [r, g, b] = hexToRgb01(el.color);
@@ -148,6 +159,7 @@ export async function bakePdf(
       }
     }
   }
+  onProgress?.(sorted.length, sorted.length);
 
   return pdf.save();
 }
