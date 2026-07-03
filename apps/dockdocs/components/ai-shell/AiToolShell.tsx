@@ -166,8 +166,20 @@ export function AiToolShell({
     <div data-ai-shell-mode={mode} data-ai-shell-status={status} className="contents">
       {docIntake}
       {contextBar}
-      {actionRegion}
-      {resultRegion}
+      {/* Conversational reads top-down: transcript first, input below it (a chat
+          composer sits under the messages). Oneshot acts first: button above
+          the artifact it produces. */}
+      {mode === "conversational" ? (
+        <>
+          {resultRegion}
+          {actionRegion}
+        </>
+      ) : (
+        <>
+          {actionRegion}
+          {resultRegion}
+        </>
+      )}
       {explainer}
       {relatedTools}
     </div>
