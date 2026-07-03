@@ -13,9 +13,10 @@ import { authHeader } from "@/lib/supabase";
 import { checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { checkUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
-import { deepHant } from "@/lib/zh-hant";
+import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
+import { PAGES_LABEL } from "@/lib/batch-pages-label";
 
 type Locale = RouteLocale;
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
@@ -424,7 +425,7 @@ export function BatchSortClient({ locale = "en", embedded = false }: { locale?: 
             </div>
           )}
 
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
             {items.map((it) => (
               <BatchFileCard
                 key={it.id}
@@ -448,9 +449,21 @@ export function BatchSortClient({ locale = "en", embedded = false }: { locale?: 
                 doneLabel={t.failed}
                 failLabel={t.failed}
                 removeLabel={t.remove}
+                pagesLabel={locale === "zh-Hant" ? toHant(PAGES_LABEL.zh) : PAGES_LABEL[al]}
                 onRemove={phase !== "running" ? () => setItems(prev => prev.filter(x => x.id !== it.id)) : undefined}
               />
             ))}
+            {items.length < maxFiles && (
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                className="flex min-h-[180px] flex-col items-center justify-center gap-1.5 rounded-[var(--radius)] border-2 border-dashed border-[color:var(--line)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+              >
+                <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </button>
+            )}
           </div>
           <p className="mt-3 text-[12px] text-[color:var(--faint)]">{t.note}</p>
         </>
