@@ -81,10 +81,13 @@ type RenderedPage = {
 
 const maxOcrPdfSize = 25 * 1024 * 1024;
 const maxRenderPixels = 4_000_000;
-// A PDF counts as having a real, extractable text layer when its pages carry at
-// least this many characters. Scanned/image-only PDFs yield ~0 characters, so
-// this cleanly separates the fast text-extraction path from the OCR path.
+// A PDF counts as having a real, extractable text layer when it passes BOTH:
+//  1. minTextLayerChars total (gates out true image-only PDFs with 0 text)
+//  2. minTextLayerDensity chars/page (gates out scanned PDFs that only carry
+//     a page footer/watermark — those yield 10-30 chars/page; born-digital
+//     pages carry 200-3000 chars/page)
 const minTextLayerChars = 24;
+const minTextLayerDensity = 100; // chars per page
 
 const localOcrAssets = {
   pdfWorker: "/ocr/pdfjs/pdf.worker.mjs",
@@ -131,7 +134,8 @@ export async function runOcrPdfFirstPage({
     // needs no OCR model download. Only true scans/image PDFs fall through to OCR. ──
     emitProgress(onProgress, 8, 0, tr(locale, "Checking for a text layer...", "正在检测文本层...", "Comprobando la capa de texto...", "Verificando a camada de texto...", "Vérification de la couche de texte...", "テキストレイヤーを確認中..."));
     const textLayer = await extractTextLayer(pdf, signal);
-    if (textLayer && textLayer.length >= minTextLayerChars) {
+    const densityOk = pdf.numPages === 0 || textLayer.length / pdf.numPages >= minTextLayerDensity;
+    if (textLayer && textLayer.length >= minTextLayerChars && densityOk) {
       emitProgress(onProgress, 100, 3, tr(locale, "Text extracted.", "文字提取完成。", "Texto extraído.", "Texto extraído.", "Texte extrait.", "テキストを抽出しました。"));
       const blob = new Blob([textLayer], { type: "text/plain;charset=utf-8" });
       return {
