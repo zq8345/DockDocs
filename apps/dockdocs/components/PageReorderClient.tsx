@@ -341,8 +341,6 @@ const SECTIONS: AuthoredCopy<ToolSectionsContent> = {
 
 // Per-page thumbnail label. Exhaustive over AuthoredLocale so a new route locale forces
 // a code decision (missing key = tsc error) instead of silently rendering English.
-// Current displayed text is preserved verbatim: zh shows "第 N 页", ko shows "N페이지",
-// every other authored locale shows "Page N" (unchanged); zh-Hant is derived to "第 N 頁".
 function pageLabel(locale: Locale, n: number): string {
   if (locale === "zh-Hant") return `第 ${n} 頁`;
   // zh-Hant handled above → locale is now a plain AuthoredLocale.
@@ -350,10 +348,10 @@ function pageLabel(locale: Locale, n: number): string {
   const labels: AuthoredCopy<string> = {
     en: `Page ${n}`,
     zh: `第 ${n} 页`,
-    es: `Page ${n}`,
-    pt: `Page ${n}`,
+    es: `Página ${n}`,
+    pt: `Página ${n}`,
     fr: `Page ${n}`,
-    ja: `Page ${n}`,
+    ja: `${n}ページ`,
     de: `Seite ${n}`,
     ko: `${n}페이지`,
   };

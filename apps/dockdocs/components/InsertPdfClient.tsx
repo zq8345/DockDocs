@@ -484,10 +484,10 @@ export function InsertPdfClient({ locale = "en", embedded = false }: { locale?: 
   const PAGE_LABEL: AuthoredCopy<(n: number) => string> = {
     en: (n) => `Page ${n}`,
     zh: (n) => `第 ${n} 页`,
-    es: (n) => `Page ${n}`,
-    pt: (n) => `Page ${n}`,
+    es: (n) => `Página ${n}`,
+    pt: (n) => `Página ${n}`,
     fr: (n) => `Page ${n}`,
-    ja: (n) => `Page ${n}`,
+    ja: (n) => `${n}ページ`,
     de: (n) => `Seite ${n}`,
     ko: (n) => `${n}페이지`,
   };
