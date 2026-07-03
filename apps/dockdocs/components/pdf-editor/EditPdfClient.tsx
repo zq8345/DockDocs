@@ -13,7 +13,7 @@ import { deepHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 import type { EditorElement, PageInfo, TextElement } from "./editor-types";
-import { editorReducer, initialEditorState, nextZ } from "./editor-store";
+import { editorReducer, initialEditorState } from "./editor-store";
 import {
   DEFAULT_HIGHLIGHT_COLOR,
   DEFAULT_HIGHLIGHT_OPACITY,
@@ -64,6 +64,7 @@ const STR_EN = {
   stroke: "Border",
   width: "Width",
   opacity: "Opacity",
+  remove: "Remove",
 };
 
 const STR = {
@@ -98,6 +99,7 @@ const STR = {
     stroke: "描边",
     width: "粗细",
     opacity: "不透明度",
+    remove: "删除",
   },
   es: {
     title: "Editar PDF",
@@ -129,6 +131,7 @@ const STR = {
     stroke: "Borde",
     width: "Grosor",
     opacity: "Opacidad",
+    remove: "Eliminar",
   },
   pt: {
     title: "Editar PDF",
@@ -160,6 +163,7 @@ const STR = {
     stroke: "Borda",
     width: "Espessura",
     opacity: "Opacidade",
+    remove: "Remover",
   },
   fr: {
     title: "Modifier un PDF",
@@ -191,6 +195,7 @@ const STR = {
     stroke: "Bordure",
     width: "Épaisseur",
     opacity: "Opacité",
+    remove: "Supprimer",
   },
   ja: {
     title: "PDFを編集",
@@ -222,6 +227,7 @@ const STR = {
     stroke: "枠線",
     width: "太さ",
     opacity: "不透明度",
+    remove: "削除",
   },
   de: {
     title: "PDF bearbeiten",
@@ -253,6 +259,7 @@ const STR = {
     stroke: "Rand",
     width: "Stärke",
     opacity: "Deckkraft",
+    remove: "Entfernen",
   },
   ko: {
     title: "PDF 편집",
@@ -284,6 +291,7 @@ const STR = {
     stroke: "테두리",
     width: "굵기",
     opacity: "불투명도",
+    remove: "삭제",
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -389,6 +397,8 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const targetPage = () =>
     visiblePages.current.size ? Math.min(...visiblePages.current) : 0;
 
+  // z is advisory — the reducer's "add" reassigns it against current state,
+  // so stale closures (concurrent image loads) can't collide.
   const baseEl = (pageIndex: number, w: number, h: number, cx?: number, cy?: number) => ({
     id: crypto.randomUUID(),
     page: pageIndex,
@@ -397,7 +407,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     w,
     h,
     rotation: 0,
-    z: nextZ(state.elements),
+    z: 0,
   });
 
   const addText = useCallback((pageIndex: number, cx?: number, cy?: number) => {
@@ -415,7 +425,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     };
     dispatch({ type: "add", el });
     dispatch({ type: "edit", id: el.id });
-  }, [pages, state.elements]);
+  }, [pages]);
 
   const addShape = useCallback(() => {
     const el: EditorElement = {
@@ -427,7 +437,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       opacity: 1,
     };
     dispatch({ type: "add", el });
-  }, [state.elements]);
+  }, []);
 
   const addHighlight = useCallback(() => {
     const el: EditorElement = {
@@ -437,24 +447,30 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       opacity: DEFAULT_HIGHLIGHT_OPACITY,
     };
     dispatch({ type: "add", el });
-  }, [state.elements]);
+  }, []);
 
   const onImageFile = useCallback((file: File) => {
     const mime = file.type === "image/png" ? "image/png" : file.type === "image/jpeg" ? "image/jpeg" : null;
     if (!mime) return;
+    // Capture the target page NOW — the user may scroll while the file loads.
+    const pageIndex = targetPage();
     const reader = new FileReader();
     reader.onload = () => {
       const src = String(reader.result);
       const img = new Image();
       img.onload = () => {
-        const pageIndex = targetPage();
         const page = pages[pageIndex];
         if (!page) return;
         const ratio = img.naturalHeight / Math.max(1, img.naturalWidth);
-        const w = 0.4;
-        const h = (w * ratio * page.wPt) / page.hPt;
+        // Fit within 40% width AND 90% height, preserving aspect.
+        let w = 0.4;
+        let h = (w * ratio * page.wPt) / page.hPt;
+        if (h > 0.9) {
+          w *= 0.9 / h;
+          h = 0.9;
+        }
         const el: EditorElement = {
-          ...baseEl(pageIndex, w, Math.min(h, 0.9)),
+          ...baseEl(pageIndex, w, h),
           type: "image",
           src,
           mime,
@@ -465,7 +481,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       img.src = src;
     };
     reader.readAsDataURL(file);
-  }, [pages, state.elements]);
+  }, [pages]);
 
   const onInkStroke = useCallback((pageIndex: number, points: Array<[number, number]>) => {
     const page = pages[pageIndex];
@@ -480,13 +496,13 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       w: b.w,
       h: b.h,
       rotation: 0,
-      z: nextZ(state.elements),
+      z: 0, // reassigned by the reducer
       points: b.points,
       color: DEFAULT_INK_COLOR,
       strokeWidthPt: DEFAULT_STROKE_WIDTH_PT,
     };
     dispatch({ type: "add", el });
-  }, [pages, state.elements]);
+  }, [pages]);
 
   // Keyboard: delete / nudge / undo / redo (skipped while typing in the box).
   const stateRef = useRef(state);
@@ -592,12 +608,12 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 </p>
               </div>
               <div className="flex shrink-0 flex-wrap items-center gap-2">
-                <button type="button" aria-label={t.undo} title={t.undo} onClick={() => dispatch({ type: "undo" })} disabled={state.past.length === 0} className={iconBtn}>
+                <button type="button" aria-label={t.undo} title={t.undo} onClick={() => dispatch({ type: "undo" })} disabled={state.past.length === 0 || phase === "working"} className={iconBtn}>
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M6 3L2.5 6.5 6 10M3 6.5h7a3.5 3.5 0 010 7H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </button>
-                <button type="button" aria-label={t.redo} title={t.redo} onClick={() => dispatch({ type: "redo" })} disabled={state.future.length === 0} className={iconBtn}>
+                <button type="button" aria-label={t.redo} title={t.redo} onClick={() => dispatch({ type: "redo" })} disabled={state.future.length === 0 || phase === "working"} className={iconBtn}>
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M10 3l3.5 3.5L10 10M13 6.5H6a3.5 3.5 0 000 7h2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -621,7 +637,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 </button>
                 <span className="h-5 w-px bg-[color:var(--line)]" aria-hidden="true" />
                 <button type="button" onClick={download} disabled={phase === "working" || state.elements.length === 0}
-                  className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+                  className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
                   {phase === "working"
                     ? bakeDone && bakeDone.total > 1
                       ? `${t.working} ${Math.min(bakeDone.done + 1, bakeDone.total)}/${bakeDone.total}`
@@ -666,6 +682,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 onInkStroke={onInkStroke}
                 pageLabel={t.page(pg.index + 1)}
                 editPlaceholder={t.placeholder}
+                removeLabel={t.remove}
               />
             ))}
           </div>
@@ -698,10 +715,12 @@ function PropertyPanel({
     dispatch({ type: "update", id: el.id, transient: true, patch: p });
 
   const label = "flex items-center gap-1.5 text-[12px] text-[color:var(--muted)]";
+  const focusRing =
+    "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[color:var(--accent)]";
   const colorInput =
-    "h-7 w-9 cursor-pointer rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-transparent p-0.5";
+    `h-7 w-9 cursor-pointer rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-transparent p-0.5 ${focusRing}`;
   const numInput =
-    "h-7 w-14 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-1.5 text-[12.5px] text-[color:var(--foreground)]";
+    `h-7 w-14 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-1.5 text-[12.5px] text-[color:var(--foreground)] ${focusRing}`;
 
   return (
     <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[color:var(--line)] pt-3">

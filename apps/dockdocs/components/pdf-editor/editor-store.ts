@@ -51,14 +51,19 @@ function pushPast(state: EditorState): Pick<EditorState, "past" | "future"> {
 
 export function editorReducer(state: EditorState, action: EditorAction): EditorState {
   switch (action.type) {
-    case "add":
+    case "add": {
+      // z is assigned HERE, against current state — callers may hold stale
+      // closures (e.g. two concurrent image loads), so caller-supplied z is
+      // advisory only.
+      const el = { ...action.el, z: nextZ(state.elements) } as EditorElement;
       return {
         ...state,
         ...pushPast(state),
-        elements: [...state.elements, action.el],
-        selectedId: action.el.id,
+        elements: [...state.elements, el],
+        selectedId: el.id,
         editingId: null,
       };
+    }
     case "update": {
       const elements = state.elements.map((el) =>
         el.id === action.id ? ({ ...el, ...action.patch } as EditorElement) : el,

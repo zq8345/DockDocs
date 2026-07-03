@@ -74,6 +74,7 @@ export function PageCanvas({
   onInkStroke,
   pageLabel,
   editPlaceholder,
+  removeLabel,
 }: {
   page: PageInfo;
   elements: EditorElement[];
@@ -91,6 +92,8 @@ export function PageCanvas({
   onInkStroke: (pageIndex: number, points: Array<[number, number]>) => void;
   pageLabel: string;
   editPlaceholder: string;
+  /** Localized label for the element delete button (aria/tooltip). */
+  removeLabel: string;
 }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [bitmap, setBitmap] = useState<string | null>(null);
@@ -146,9 +149,10 @@ export function PageCanvas({
 
   // Double-click on blank page area → new text element at the pointer.
   // Element views stopPropagation on their own double-clicks, so anything
-  // reaching the frame is blank page / bitmap.
+  // reaching the frame is blank page / bitmap. Skipped while another element
+  // is in edit mode — its blur must resolve first (one edit at a time).
   const onBgDoubleClick = (e: React.MouseEvent) => {
-    if (inkMode) return;
+    if (inkMode || editingId !== null) return;
     const p = framePoint(e);
     onAddTextAt(page.index, p.x, p.y);
   };
@@ -218,6 +222,7 @@ export function PageCanvas({
             interactive={!inkMode}
             dispatch={dispatch}
             placeholder={editPlaceholder}
+            removeLabel={removeLabel}
           />
         ))}
         {stroke && stroke.length > 1 && (
@@ -300,6 +305,7 @@ function ElementView({
   interactive,
   dispatch,
   placeholder,
+  removeLabel,
 }: {
   el: EditorElement;
   page: PageInfo;
@@ -308,6 +314,7 @@ function ElementView({
   interactive: boolean;
   dispatch: Dispatch<EditorAction>;
   placeholder: string;
+  removeLabel: string;
 }) {
   const gesture = useRef<Gesture | null>(null);
 
@@ -438,13 +445,18 @@ function ElementView({
 
       {selected && !editing && interactive && (
         <>
+          {/* 20px hit shell around an 8px visual knob — finger-usable without
+              visual bulk (inner div is pointer-events-none so dataset.handle
+              always resolves on the shell). */}
           {HANDLES.map((h) => (
             <div
               key={h.key}
               data-handle={h.key}
-              className="absolute h-2 w-2 rounded-[2px] border border-[color:var(--accent)] bg-white"
+              className="absolute flex h-5 w-5 items-center justify-center"
               style={{ left: h.left, top: h.top, transform: "translate(-50%, -50%)", cursor: h.cursor }}
-            />
+            >
+              <div className="pointer-events-none h-2 w-2 rounded-[2px] border border-[color:var(--accent)] bg-white" />
+            </div>
           ))}
           {/* rotate handle: stem + grab knob above the top edge */}
           <div
@@ -460,7 +472,8 @@ function ElementView({
           />
           <button
             type="button"
-            aria-label="delete"
+            aria-label={removeLabel}
+            title={removeLabel}
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => { e.stopPropagation(); dispatch({ type: "remove", id: el.id }); }}
             className="absolute -right-2.5 -top-2.5 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--accent)] text-[11px] font-bold text-white"
