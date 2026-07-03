@@ -17,7 +17,7 @@ import {
   type Dispatch,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import type { EditorElement, PageInfo, TextElement } from "./editor-types";
+import { expandPageTemplate, type EditorElement, type PageInfo, type TextElement } from "./editor-types";
 import type { EditorAction } from "./editor-store";
 import {
   FONT_STACK,
@@ -315,11 +315,13 @@ function resizePatch(
   let w: number, h: number;
   const extra: Record<string, number> = {};
 
-  const textLike = el.type === "text" || (el.type === "watermark" && el.mode === "text");
+  const textLike = el.type === "text" || (el.type === "watermark" && el.mode === "text") || el.type === "pagenum";
   if (textLike) {
     const f = corner ? Math.max(fx, fy) : handle === "n" || handle === "s" ? fy : fx;
     const sizePt = clamp(startSizePt * f, MIN_SIZE_PT, MAX_SIZE_PT);
-    const sized = sizeTextElement({ text: el.text, sizePt, bold: el.type === "text" && el.bold }, page);
+    // Page numbers measure their WIDEST expansion so the frame fits every page.
+    const text = el.type === "pagenum" ? expandPageTemplate(el, Math.max(el.pageFrom, el.pageTo)) : el.text;
+    const sized = sizeTextElement({ text, sizePt, bold: el.type === "text" && el.bold }, page);
     w = sized.w;
     h = sized.h;
     extra.sizePt = sizePt;
@@ -385,7 +387,7 @@ function ElementView({
       startClientX: e.clientX,
       startClientY: e.clientY,
       startRect: { x: el.x, y: el.y, w: el.w, h: el.h },
-      startSizePt: el.type === "text" || el.type === "watermark" ? el.sizePt : 0,
+      startSizePt: el.type === "text" || el.type === "watermark" || el.type === "pagenum" ? el.sizePt : 0,
       startRotation: el.rotation,
       centerPx,
       startPointerAngle: Math.atan2(e.clientY - centerPx.y, e.clientX - centerPx.x),
@@ -608,6 +610,22 @@ function ElementContent({
           className="pointer-events-none h-full w-full"
           style={{ background: "rgba(0,0,0,0.82)", outline: "1.5px solid rgba(251,191,36,0.9)" }}
         />
+      );
+    case "pagenum":
+      return (
+        <div
+          className="pointer-events-none"
+          style={{
+            fontSize: fontSizeCqw(el.sizePt, page),
+            lineHeight: LINE_HEIGHT,
+            fontFamily: FONT_STACK,
+            fontWeight: 400,
+            color: el.color,
+            whiteSpace: "pre",
+          }}
+        >
+          {expandPageTemplate(el, page.index)}
+        </div>
       );
     case "ink": {
       const w = el.w * page.wPt;

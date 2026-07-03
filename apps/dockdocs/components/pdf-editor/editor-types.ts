@@ -6,7 +6,7 @@
 // module that converts between spaces (screen ↔ normalized ↔ PDF pt) — never
 // convert inline in a component.
 
-export type ElementType = "text" | "image" | "signature" | "watermark" | "redact" | "shape" | "highlight" | "ink";
+export type ElementType = "text" | "image" | "signature" | "watermark" | "pagenum" | "redact" | "shape" | "highlight" | "ink";
 
 export type BaseElement = {
   id: string;
@@ -69,6 +69,29 @@ export type WatermarkElement = BaseElement & {
   pageTo: number;
 };
 
+/** Page-number stamp repeating across [pageFrom, pageTo]. The template's
+ *  {page} expands to startAt + offset-within-range and {total} to the range
+ *  length — classic "Page X of Y" when the range is the whole document.
+ *  Same rect on every page (PageNumbersClient anchoring generalized to free
+ *  placement). */
+export type PageNumberElement = BaseElement & {
+  type: "pagenum";
+  template: string;
+  startAt: number;
+  sizePt: number;
+  color: string;
+  pageFrom: number;
+  pageTo: number;
+};
+
+export function expandPageTemplate(el: PageNumberElement, pageIndex: number): string {
+  const from = Math.min(el.pageFrom, el.pageTo);
+  const to = Math.max(el.pageFrom, el.pageTo);
+  return el.template
+    .replaceAll("{page}", String(el.startAt + (pageIndex - from)))
+    .replaceAll("{total}", String(to - from + 1));
+}
+
 /** True redaction box. At bake, every page carrying one is DESTRUCTIVELY
  *  rasterized (full-page image with opaque black painted over each box) so
  *  the text underneath is destroyed, not covered — the RedactPdfClient
@@ -106,14 +129,15 @@ export type EditorElement =
   | ImageElement
   | SignatureElement
   | WatermarkElement
+  | PageNumberElement
   | RedactElement
   | ShapeElement
   | HighlightElement
   | InkElement;
 
-/** Pages an element renders/bakes on (watermarks span a range). */
+/** Pages an element renders/bakes on (watermarks and page numbers span a range). */
 export function elementPages(el: EditorElement, pageCount: number): number[] {
-  if (el.type !== "watermark") return [el.page];
+  if (el.type !== "watermark" && el.type !== "pagenum") return [el.page];
   const from = Math.max(0, Math.min(el.pageFrom, el.pageTo));
   const to = Math.min(pageCount - 1, Math.max(el.pageFrom, el.pageTo));
   const out: number[] = [];

@@ -81,6 +81,8 @@ const STR_EN = {
   addRedact: "Redact",
   redactHint: "Redact mode — drag to black out an area, or click a word to box it. Press Esc to exit.",
   redactBakeNote: "Pages with redactions are flattened to images on download, so the covered text is truly destroyed.",
+  addPageNum: "Page numbers",
+  startAt: "Start at",
 };
 
 const STR = {
@@ -130,6 +132,8 @@ const STR = {
     addRedact: "涂黑",
     redactHint: "涂黑模式——拖动框住一块区域,或点击某个词自动框住。按 Esc 退出。",
     redactBakeNote: "含涂黑的页面在下载时会整页转为图片,被盖住的文字被真正销毁。",
+    addPageNum: "页码",
+    startAt: "起始页码",
   },
   es: {
     title: "Editar PDF",
@@ -176,6 +180,8 @@ const STR = {
     addRedact: "Censurar",
     redactHint: "Modo censura: arrastra para tachar un área, o haz clic en una palabra para enmarcarla. Pulsa Esc para salir.",
     redactBakeNote: "Las páginas con censuras se aplanan como imágenes al descargar, así el texto cubierto se destruye de verdad.",
+    addPageNum: "Números de página",
+    startAt: "Empezar en",
   },
   pt: {
     title: "Editar PDF",
@@ -222,6 +228,8 @@ const STR = {
     addRedact: "Redigir",
     redactHint: "Modo de redação — arraste para ocultar uma área, ou clique em uma palavra para enquadrá-la. Pressione Esc para sair.",
     redactBakeNote: "Páginas com redações são achatadas como imagens ao baixar, então o texto coberto é realmente destruído.",
+    addPageNum: "Números de página",
+    startAt: "Começar em",
   },
   fr: {
     title: "Modifier un PDF",
@@ -268,6 +276,8 @@ const STR = {
     addRedact: "Caviarder",
     redactHint: "Mode caviardage — faites glisser pour noircir une zone, ou cliquez sur un mot pour l'encadrer. Appuyez sur Échap pour quitter.",
     redactBakeNote: "Les pages caviardées sont aplaties en images au téléchargement : le texte masqué est réellement détruit.",
+    addPageNum: "Numéros de page",
+    startAt: "Commencer à",
   },
   ja: {
     title: "PDFを編集",
@@ -314,6 +324,8 @@ const STR = {
     addRedact: "黒塗り",
     redactHint: "黒塗りモード——ドラッグで範囲を黒塗り、または単語をクリックで自動枠。Escで終了。",
     redactBakeNote: "黒塗りを含むページはダウンロード時に画像化され、隠された文字は完全に破棄されます。",
+    addPageNum: "ページ番号",
+    startAt: "開始番号",
   },
   de: {
     title: "PDF bearbeiten",
@@ -360,6 +372,8 @@ const STR = {
     addRedact: "Schwärzen",
     redactHint: "Schwärzungsmodus – ziehen Sie, um einen Bereich zu schwärzen, oder klicken Sie auf ein Wort. Esc zum Beenden.",
     redactBakeNote: "Seiten mit Schwärzungen werden beim Download zu Bildern reduziert – der verdeckte Text wird wirklich zerstört.",
+    addPageNum: "Seitenzahlen",
+    startAt: "Beginnen bei",
   },
   ko: {
     title: "PDF 편집",
@@ -406,6 +420,8 @@ const STR = {
     addRedact: "가리기",
     redactHint: "가리기 모드 — 드래그해 영역을 가리거나, 단어를 클릭해 자동으로 상자를 만드세요. Esc로 종료합니다.",
     redactBakeNote: "가림이 있는 페이지는 다운로드 시 이미지로 평탄화되어, 가려진 텍스트가 완전히 삭제됩니다.",
+    addPageNum: "페이지 번호",
+    startAt: "시작 번호",
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -631,6 +647,26 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     };
     dispatch({ type: "add", el });
   }, [pages, t]);
+
+  const addPageNum = useCallback(() => {
+    const pageIndex = targetPage();
+    const page = pages[pageIndex];
+    if (!page) return;
+    const template = "{page} / {total}";
+    const widest = template.replaceAll("{page}", String(pages.length)).replaceAll("{total}", String(pages.length));
+    const { w, h } = sizeTextElement({ text: widest, sizePt: 11, bold: false }, page);
+    const el: EditorElement = {
+      ...baseEl(pageIndex, w, h, 0.5, 0.955),
+      type: "pagenum",
+      template,
+      startAt: 1,
+      sizePt: 11,
+      color: "#374151",
+      pageFrom: 0,
+      pageTo: pages.length - 1,
+    };
+    dispatch({ type: "add", el });
+  }, [pages]);
 
   const onRedactRect = useCallback((pageIndex: number, rect: { x: number; y: number; w: number; h: number }) => {
     if (rect.w < 0.002 || rect.h < 0.002) return;
@@ -874,6 +910,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 <button type="button" onClick={addShape} className={toolBtn}>{t.addBox}</button>
                 <button type="button" onClick={addHighlight} className={toolBtn}>{t.addHighlight}</button>
                 <button type="button" onClick={addWatermark} className={toolBtn}>{t.addWatermark}</button>
+                <button type="button" onClick={addPageNum} className={toolBtn}>{t.addPageNum}</button>
                 <button
                   type="button"
                   onClick={() => setSignOpen((v) => !v)}
@@ -1062,6 +1099,79 @@ function PropertyPanel({
           {t.opacity}
           <input type="range" min={0.1} max={1} step={0.05} value={el.opacity} onPointerDown={snap} onChange={(e) => patch({ opacity: Number(e.target.value) })} className="w-28 accent-[color:var(--accent)]" />
         </label>
+      )}
+
+      {el.type === "pagenum" && (
+        <>
+          <input
+            type="text"
+            value={el.template}
+            onFocus={snap}
+            onChange={(e) => {
+              const template = e.target.value;
+              const page = pages[el.page];
+              const widest = template
+                .replaceAll("{page}", String(el.startAt + Math.abs(el.pageTo - el.pageFrom)))
+                .replaceAll("{total}", String(Math.abs(el.pageTo - el.pageFrom) + 1));
+              const sized = page ? sizeTextElement({ text: widest, sizePt: el.sizePt, bold: false }, page) : null;
+              patch(sized ? ({ template, w: sized.w, h: sized.h } as Partial<EditorElement>) : ({ template } as Partial<EditorElement>));
+            }}
+            className={`${numInput} w-36 font-mono`}
+            title="{page} {total}"
+          />
+          <label className={label}>
+            {t.startAt}
+            <input
+              type="number"
+              min={1}
+              value={el.startAt}
+              onFocus={snap}
+              onChange={(e) => patch({ startAt: Math.max(1, Number(e.target.value) || 1) } as Partial<EditorElement>)}
+              className={`${numInput} w-14`}
+            />
+          </label>
+          <label className={label}>
+            {t.size}
+            <input
+              type="number"
+              min={MIN_SIZE_PT}
+              max={MAX_SIZE_PT}
+              value={Math.round(el.sizePt)}
+              onFocus={snap}
+              onChange={(e) => {
+                const sizePt = Math.min(MAX_SIZE_PT, Math.max(MIN_SIZE_PT, Number(e.target.value) || MIN_SIZE_PT));
+                patch({ sizePt } as Partial<EditorElement>);
+              }}
+              className={numInput}
+            />
+          </label>
+          <label className={label}>
+            {t.color}
+            <input type="color" value={el.color} onFocus={snap} onChange={(e) => patch({ color: e.target.value } as Partial<EditorElement>)} className={colorInput} />
+          </label>
+          <label className={label}>
+            {t.pageRange}
+            <input
+              type="number"
+              min={1}
+              max={pages.length}
+              value={Math.min(el.pageFrom, el.pageTo) + 1}
+              onFocus={snap}
+              onChange={(e) => patch({ pageFrom: Math.min(pages.length, Math.max(1, Number(e.target.value) || 1)) - 1 } as Partial<EditorElement>)}
+              className={`${numInput} w-14`}
+            />
+            <span className="text-[color:var(--faint)]">–</span>
+            <input
+              type="number"
+              min={1}
+              max={pages.length}
+              value={Math.max(el.pageFrom, el.pageTo) + 1}
+              onFocus={snap}
+              onChange={(e) => patch({ pageTo: Math.min(pages.length, Math.max(1, Number(e.target.value) || pages.length)) - 1 } as Partial<EditorElement>)}
+              className={`${numInput} w-14`}
+            />
+          </label>
+        </>
       )}
 
       {el.type === "watermark" && (

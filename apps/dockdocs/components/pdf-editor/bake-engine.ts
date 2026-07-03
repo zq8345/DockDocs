@@ -11,7 +11,7 @@
 //     Rotated pages also take this path so one well-tested transform
 //     (placeOnPage) covers all four /Rotate cases.
 
-import { elementPages, type EditorElement, type InkElement, type PageInfo } from "./editor-types";
+import { elementPages, expandPageTemplate, type EditorElement, type InkElement, type PageInfo } from "./editor-types";
 import {
   BASELINE,
   FONT_STACK,
@@ -181,6 +181,43 @@ export async function bakePdf(
           if (!png) continue;
           const img = await pdf.embedPng(png);
           page.drawImage(img, { x: placement.x, y: placement.y, width: placement.w, height: placement.h, rotate });
+        }
+        break;
+      }
+      case "pagenum": {
+        // Per-page expansion — text differs page to page ("1/12" … "12/12"),
+        // so each page draws (or rasterizes) its own string at its TRUE
+        // measured size; the element rect is only the UI selection frame.
+        for (const pi of elementPages(el, pdfPages.length)) {
+          const p2 = pdfPages[pi];
+          if (!p2) continue;
+          const box2 = p2.getCropBox();
+          const rot2 = ((p2.getRotation().angle % 360) + 360) % 360;
+          const pl2 = withElementRotation(placeOnPage(el, rot2, box2), el.rotation);
+          const text = expandPageTemplate(el, pi);
+          if (!text) continue;
+          if (rot2 === 0 && el.rotation === 0 && isWinAnsiEncodable(helv, text)) {
+            const [r, g, b] = hexToRgb01(el.color);
+            p2.drawText(text, {
+              x: pl2.x,
+              y: pl2.y + pl2.h - BASELINE * el.sizePt,
+              size: el.sizePt,
+              font: helv,
+              color: rgb(r, g, b),
+            });
+          } else {
+            const png = await rasterTextPng({ text, sizePt: el.sizePt, bold: false, color: el.color });
+            if (!png) continue;
+            const img = await pdf.embedPng(png);
+            const m = measureTextBlock(text, el.sizePt, false);
+            p2.drawImage(img, {
+              x: pl2.x,
+              y: pl2.y + pl2.h - m.hPt,
+              width: m.wPt,
+              height: m.hPt,
+              rotate: degrees(pl2.rotateDeg),
+            });
+          }
         }
         break;
       }
