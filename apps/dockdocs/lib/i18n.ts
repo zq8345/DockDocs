@@ -767,53 +767,52 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
       slug: "privacy-policy",
       title: "Privacy Policy | DockDocs",
       description:
-        "Privacy policy for DockDocs uploads, local-first PDF workflows, AI processing, retention, cookies, and analytics.",
+        "How DockDocs handles your files and data — every statement can be verified in your browser's developer tools.",
       eyebrow: "Privacy Policy",
-      heroTitle: "Privacy-first document workflows need clear rules.",
+      heroTitle: "What happens to your files and data — exactly.",
       heroDescription:
-        "This policy structure explains how DockDocs approaches uploads, local processing, future AI processing, retention, cookies, and analytics.",
+        "Every statement can be verified in your browser's developer tools (F12). DockDocs is operated by Dock Group Limited.",
       sections: [
         {
-          title: "Document handling",
-          description:
-            "DockDocs is designed to make document processing expectations clear before users upload files.",
+          title: "Your files",
+          description: "How each tool handles the files you work with.",
           items: [
             {
-              title: "Uploads",
+              title: "Local tools",
               description:
-                "Tool pages should state accepted formats, processing purpose, and expected output before upload.",
+                "Most tools — compress, merge, split, rotate, watermark, redact, sign, protect, OCR — run entirely in your browser. Your file never leaves your device.",
             },
             {
-              title: "Local processing",
+              title: "Conversion tools",
               description:
-                "Where possible, simple document preparation should happen in the browser or close to the user before any cloud workflow is introduced.",
+                "Eight tools (Word/Excel/PowerPoint/HTML → PDF; PDF → Word/Excel/PowerPoint; PDF/A) upload your file to CloudConvert (Germany) via TLS. Files are automatically deleted after processing, typically within 24 hours.",
             },
             {
-              title: "AI processing",
+              title: "AI tools",
               description:
-                "AI features such as OCR, summaries, and document Q&A may require model processing. Those workflows should clearly disclose limits and handling rules.",
+                "AI features (Chat with PDF, AI Summary, contract risk review) extract text in your browser and send it to AI models via OpenRouter. We don't store your document text on our servers. Chat history is saved locally in your browser.",
             },
           ],
         },
         {
-          title: "Data and site operations",
+          title: "Account, analytics & your rights",
           description:
-            "A production SaaS privacy page should define retention, cookies, analytics, and contact routes.",
+            "How we handle account data, what analytics we use, and your privacy rights.",
           items: [
             {
-              title: "Retention",
+              title: "Account & payments",
               description:
-                "Production retention windows, deletion behavior, and temporary file handling should be documented before launch.",
-            },
-            {
-              title: "Cookies",
-              description:
-                "DockDocs may use essential cookies for site operation and future preference settings such as language selection.",
+                "If you create an account, we store your email via Supabase. Payments are processed by Creem — we never see your card number. You can delete your account at any time from your account page.",
             },
             {
               title: "Analytics",
               description:
-                "If analytics are enabled, they should be used to understand aggregate product usage and not to expose document contents.",
+                "We use self-hosted umami analytics — cookie-free, no cross-site profiles, no advertising trackers.",
+            },
+            {
+              title: "Your rights & contact",
+              description:
+                "GDPR rights (EEA/UK) and CCPA rights (California) apply where relevant. Contact: hello@dockdocs.app",
             },
           ],
         },
@@ -1113,53 +1112,52 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
       slug: "privacy-policy",
       title: "プライバシーポリシー | DockDocs",
       description:
-        "DockDocs のアップロード、ローカル優先のPDFワークフロー、AI処理、保持、Cookie、アナリティクスに関するプライバシーポリシー。",
+        "DockDocs がファイルとデータをどのように扱うか。すべての説明はブラウザの開発者ツールで確認できます。",
       eyebrow: "プライバシーポリシー",
-      heroTitle: "プライバシー優先の文書ワークフローには明確なルールが必要です。",
+      heroTitle: "ファイルとデータに何が起きるか、正確にお伝えします。",
       heroDescription:
-        "このポリシーの構成は、DockDocs がアップロード、ローカル処理、将来のAI処理、保持、Cookie、アナリティクスにどう向き合うかを説明します。",
+        "以下の説明はすべてブラウザの開発者ツール（F12）で検証できます。DockDocs は Dock Group Limited が運営しています。",
       sections: [
         {
-          title: "文書の取り扱い",
-          description:
-            "DockDocs は、ユーザーがファイルをアップロードする前に、文書処理の想定を明確にするよう設計されています。",
+          title: "ファイルの取り扱い",
+          description: "各ツールがファイルをどう処理するかを説明します。",
           items: [
             {
-              title: "アップロード",
+              title: "ローカルツール",
               description:
-                "ツールページは、アップロード前に対応形式、処理の目的、想定される出力を示すべきです。",
+                "圧縮・結合・分割・回転・透かし・墨消し・署名・保護・OCRなど、ほとんどのツールはブラウザ内で完結します。ファイルはデバイスの外に出ません。",
             },
             {
-              title: "ローカル処理",
+              title: "変換ツール",
               description:
-                "可能な限り、クラウドのワークフローが入る前に、簡単な文書準備はブラウザ内またはユーザーの手元で行うべきです。",
+                "Word/Excel/PowerPoint/HTML→PDF、PDF→Word/Excel/PowerPoint、PDF/A の8ツールは、TLS通信でドイツのCloudConvertにファイルをアップロードします。ファイルは処理後に自動削除され、通常24時間以内に消去されます。",
             },
             {
-              title: "AI処理",
+              title: "AIツール",
               description:
-                "OCR・要約・文書Q&AなどのAI機能はモデル処理を必要とする場合があります。それらのワークフローは制限と取り扱いルールを明確に開示すべきです。",
+                "AIチャット・AI要約・契約リスク確認などは、ブラウザ上でテキストを抽出し、OpenRouter経由でAIモデルに送信します。文書テキストはサーバーに保存されません。チャット履歴はブラウザのローカルストレージに保存されます。",
             },
           ],
         },
         {
-          title: "データとサイト運用",
+          title: "アカウント・分析・あなたの権利",
           description:
-            "本番のSaaSプライバシーページは、保持、Cookie、アナリティクス、連絡経路を定義すべきです。",
+            "アカウントデータの取り扱い、使用するアナリティクス、プライバシーに関する権利について説明します。",
           items: [
             {
-              title: "保持",
+              title: "アカウントと支払い",
               description:
-                "本番の保持期間、削除の挙動、一時ファイルの取り扱いは、公開前に文書化すべきです。",
-            },
-            {
-              title: "Cookie",
-              description:
-                "DockDocs は、サイト運用や言語選択などの今後の設定のために、必須Cookieを使用する場合があります。",
+                "アカウントを作成した場合、メールアドレスをSupabase経由で保存します。決済はCreemが処理しており、カード番号をDockDocsが受け取ることはありません。アカウントはいつでもアカウントページから削除できます。",
             },
             {
               title: "アナリティクス",
               description:
-                "アナリティクスを有効にする場合は、文書の内容を露出させるためではなく、集計的な製品利用の把握のために使うべきです。",
+                "自社サーバーで運用するumamiアナリティクスを使用しています。Cookie不要、クロスサイトプロファイルなし、広告トラッカーなしです。",
+            },
+            {
+              title: "権利とお問い合わせ",
+              description:
+                "EEA/英国ユーザーはGDPR、カリフォルニア州ユーザーはCCPAの権利が適用されます。お問い合わせ: hello@dockdocs.app",
             },
           ],
         },
@@ -1443,48 +1441,54 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
     },
     "privacy-policy": {
       slug: "privacy-policy",
-      title: "隐私政策",
-      description: "DockDocs 关于上传、本地优先文档工作流、AI 处理、保留、Cookie 和分析的隐私政策。",
+      title: "隐私政策 | DockDocs",
+      description:
+        "DockDocs 如何处理您的文件和数据——每项说明均可通过浏览器开发者工具验证。",
       eyebrow: "隐私政策",
-      heroTitle: "隐私优先的文档工作流需要清楚规则。",
+      heroTitle: "您的文件和数据究竟发生了什么——如实告知。",
       heroDescription:
-        "本政策结构说明 DockDocs 对上传、本地处理、未来 AI 处理、保留、Cookie 和分析的处理原则。",
+        "以下每项内容均可通过浏览器开发者工具（F12）验证。DockDocs 由 Dock Group Limited 运营。",
       sections: [
         {
-          title: "文档处理",
-          description: "DockDocs 的设计目标是在用户上传前清楚说明处理预期。",
+          title: "文件处理方式",
+          description: "各工具如何处理您的文件。",
           items: [
             {
-              title: "上传",
-              description: "工具页应说明接受格式、处理目的和预期输出。",
+              title: "本地工具",
+              description:
+                "大多数工具——压缩、合并、拆分、旋转、水印、涂黑、签名、加密、OCR——在您的浏览器内完整运行，文件不会离开您的设备。",
             },
             {
-              title: "本地处理",
+              title: "转换工具",
               description:
-                "在可行的情况下，简单文档准备应尽量在浏览器或接近用户的位置完成。",
+                "Word/Excel/PowerPoint/HTML→PDF、PDF→Word/Excel/PowerPoint 及 PDF/A 共 8 个工具会通过 TLS 将文件上传至德国 CloudConvert 处理。文件处理后由 CloudConvert 自动删除，通常在 24 小时内。",
             },
             {
-              title: "AI 处理",
+              title: "AI 工具",
               description:
-                "OCR、摘要和文档问答可能需要模型处理，这些工作流应明确说明限制和处理规则。",
+                "AI 对话、AI 摘要、合同风险审查等功能在浏览器内提取文本，再通过 OpenRouter 发送至 AI 模型。我们不在服务器上存储您的文档文本。聊天记录保存在浏览器本地存储中。",
             },
           ],
         },
         {
-          title: "数据与站点运营",
-          description: "正式 SaaS 隐私页应定义保留、Cookie、分析和联系路径。",
+          title: "账户、分析与您的权利",
+          description:
+            "我们如何处理账户数据、使用何种分析工具以及您的隐私权利。",
           items: [
             {
-              title: "保留",
-              description: "生产环境应明确临时文件保留时间、删除行为和处理窗口。",
+              title: "账户与付款",
+              description:
+                "注册账户后，我们通过 Supabase 存储您的邮箱。付款由 Creem 处理，我们从不获取您的银行卡号。您可随时在账户页面删除账户。",
             },
             {
-              title: "Cookie",
-              description: "DockDocs 可使用必要 Cookie 支持站点运行和语言偏好等设置。",
+              title: "分析统计",
+              description:
+                "我们使用自托管的 umami 统计工具——无 Cookie、不构建跨站画像、不接入广告追踪器。",
             },
             {
-              title: "分析",
-              description: "如启用分析，应只用于理解聚合产品使用情况，不暴露文档内容。",
+              title: "您的权利与联系方式",
+              description:
+                "EEA/英国用户享有 GDPR 权利，加州用户享有 CCPA 权利。联系邮箱：hello@dockdocs.app",
             },
           ],
         },
@@ -1780,53 +1784,52 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
       slug: "privacy-policy",
       title: "Política de privacidad | DockDocs",
       description:
-        "Política de privacidad de DockDocs sobre cargas, flujos de trabajo de PDF locales, procesamiento con IA, retención, cookies y analítica.",
+        "Cómo DockDocs maneja sus archivos y datos — cada afirmación puede verificarse en las herramientas de desarrollo del navegador.",
       eyebrow: "Política de privacidad",
-      heroTitle: "Los flujos de documentos centrados en la privacidad necesitan reglas claras.",
+      heroTitle: "Exactamente qué ocurre con sus archivos y datos.",
       heroDescription:
-        "Esta estructura de política explica cómo DockDocs aborda las cargas, el procesamiento local, el futuro procesamiento con IA, la retención, las cookies y la analítica.",
+        "Cada afirmación puede verificarse en las herramientas de desarrollo de su navegador (F12). DockDocs es operado por Dock Group Limited.",
       sections: [
         {
-          title: "Manejo de documentos",
-          description:
-            "DockDocs está diseñado para dejar claras las expectativas de procesamiento de documentos antes de que los usuarios carguen archivos.",
+          title: "Sus archivos",
+          description: "Cómo gestiona cada herramienta los archivos con los que trabaja.",
           items: [
             {
-              title: "Cargas",
+              title: "Herramientas locales",
               description:
-                "Las páginas de herramientas deben indicar los formatos aceptados, el propósito del procesamiento y el resultado esperado antes de la carga.",
+                "La mayoría de las herramientas —comprimir, fusionar, dividir, rotar, marca de agua, redactar, firmar, proteger, OCR— se ejecutan completamente en su navegador. El archivo nunca sale de su dispositivo.",
             },
             {
-              title: "Procesamiento local",
+              title: "Herramientas de conversión",
               description:
-                "Cuando es posible, la preparación sencilla de documentos debe ocurrir en el navegador o cerca del usuario antes de introducir cualquier flujo de trabajo en la nube.",
+                "Ocho herramientas (Word/Excel/PowerPoint/HTML→PDF; PDF→Word/Excel/PowerPoint; PDF/A) suben su archivo a CloudConvert (Alemania) mediante TLS. Los archivos son eliminados automáticamente por CloudConvert tras el procesamiento, normalmente en 24 horas.",
             },
             {
-              title: "Procesamiento con IA",
+              title: "Herramientas de IA",
               description:
-                "Las funciones de IA, como el OCR, los resúmenes y las preguntas y respuestas sobre documentos, pueden requerir procesamiento por modelos. Esos flujos de trabajo deben divulgar claramente los límites y las reglas de manejo.",
+                "Las funciones de IA (chat con PDF, resumen de IA, revisión de contratos) extraen texto en su navegador y lo envían a modelos de IA a través de OpenRouter. No almacenamos el texto de su documento en nuestros servidores. El historial de chat se guarda localmente en su navegador.",
             },
           ],
         },
         {
-          title: "Datos y operación del sitio",
+          title: "Cuenta, analítica y sus derechos",
           description:
-            "Una página de privacidad de un SaaS en producción debe definir la retención, las cookies, la analítica y las vías de contacto.",
+            "Cómo gestionamos los datos de cuenta, qué analítica usamos y sus derechos de privacidad.",
           items: [
             {
-              title: "Retención",
+              title: "Cuenta y pagos",
               description:
-                "Las ventanas de retención en producción, el comportamiento de eliminación y el manejo de archivos temporales deben documentarse antes del lanzamiento.",
-            },
-            {
-              title: "Cookies",
-              description:
-                "DockDocs puede usar cookies esenciales para la operación del sitio y futuras preferencias, como la selección de idioma.",
+                "Si crea una cuenta, almacenamos su correo electrónico a través de Supabase. Los pagos los procesa Creem; nunca vemos su número de tarjeta. Puede eliminar su cuenta en cualquier momento desde la página de cuenta.",
             },
             {
               title: "Analítica",
               description:
-                "Si se habilita la analítica, debe usarse para entender el uso agregado del producto y no para exponer el contenido de los documentos.",
+                "Usamos umami de análisis alojado en nuestros propios servidores: sin cookies, sin perfiles entre sitios, sin rastreadores publicitarios.",
+            },
+            {
+              title: "Sus derechos y contacto",
+              description:
+                "Se aplican los derechos del RGPD (EEE/Reino Unido) y la CCPA (California). Contacto: hello@dockdocs.app",
             },
           ],
         },
@@ -2126,53 +2129,52 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
       slug: "privacy-policy",
       title: "Política de privacidade | DockDocs",
       description:
-        "Política de privacidade do DockDocs sobre envios, fluxos de trabalho de PDF locais, processamento com IA, retenção, cookies e análises.",
+        "Como o DockDocs lida com seus arquivos e dados — cada afirmação pode ser verificada nas ferramentas de desenvolvedor do navegador.",
       eyebrow: "Política de privacidade",
-      heroTitle: "Os fluxos de documentos centrados em privacidade precisam de regras claras.",
+      heroTitle: "Exatamente o que acontece com seus arquivos e dados.",
       heroDescription:
-        "Esta estrutura de política explica como o DockDocs aborda os envios, o processamento local, o futuro processamento com IA, a retenção, os cookies e as análises.",
+        "Cada afirmação abaixo pode ser verificada nas ferramentas de desenvolvedor do seu navegador (F12). O DockDocs é operado pela Dock Group Limited.",
       sections: [
         {
-          title: "Tratamento de documentos",
-          description:
-            "O DockDocs é projetado para deixar claras as expectativas de processamento de documentos antes que os usuários enviem arquivos.",
+          title: "Seus arquivos",
+          description: "Como cada ferramenta lida com os arquivos com que você trabalha.",
           items: [
             {
-              title: "Envios",
+              title: "Ferramentas locais",
               description:
-                "As páginas de ferramentas devem indicar os formatos aceitos, o propósito do processamento e o resultado esperado antes do envio.",
+                "A maioria das ferramentas — compressão, união, divisão, rotação, marca d'água, redação, assinatura, proteção, OCR — funciona inteiramente no seu navegador. O arquivo nunca sai do seu dispositivo.",
             },
             {
-              title: "Processamento local",
+              title: "Ferramentas de conversão",
               description:
-                "Quando possível, a preparação simples de documentos deve ocorrer no navegador ou próxima ao usuário antes de introduzir qualquer fluxo de trabalho na nuvem.",
+                "Oito ferramentas (Word/Excel/PowerPoint/HTML→PDF; PDF→Word/Excel/PowerPoint; PDF/A) enviam seu arquivo ao CloudConvert (Alemanha) via TLS. Os arquivos são excluídos automaticamente pelo CloudConvert após o processamento, normalmente em até 24 horas.",
             },
             {
-              title: "Processamento com IA",
+              title: "Ferramentas de IA",
               description:
-                "As funcionalidades de IA, como OCR, resumos e perguntas e respostas sobre documentos, podem exigir processamento por modelos. Esses fluxos de trabalho devem divulgar claramente os limites e as regras de tratamento.",
+                "Os recursos de IA (chat com PDF, resumo por IA, revisão de contratos) extraem texto no seu navegador e enviam ao OpenRouter. Não armazenamos o texto do seu documento. O histórico de chat é salvo localmente no navegador.",
             },
           ],
         },
         {
-          title: "Dados e operação do site",
+          title: "Conta, análise e seus direitos",
           description:
-            "Uma página de privacidade de um SaaS em produção deve definir retenção, cookies, análises e canais de contato.",
+            "Como tratamos os dados de conta, que análise usamos e seus direitos de privacidade.",
           items: [
             {
-              title: "Retenção",
+              title: "Conta e pagamentos",
               description:
-                "Os períodos de retenção em produção, o comportamento de exclusão e o tratamento de arquivos temporários devem ser documentados antes do lançamento.",
+                "Se você criar uma conta, armazenamos seu e-mail via Supabase. Os pagamentos são processados pelo Creem — nunca vemos o número do seu cartão. Você pode excluir sua conta a qualquer momento na página de conta.",
             },
             {
-              title: "Cookies",
+              title: "Análise",
               description:
-                "O DockDocs pode usar cookies essenciais para a operação do site e futuras preferências, como seleção de idioma.",
+                "Usamos o umami de análise auto-hospedado — sem cookies, sem perfis entre sites, sem rastreadores de publicidade.",
             },
             {
-              title: "Análises",
+              title: "Seus direitos e contato",
               description:
-                "Se análises forem habilitadas, devem ser usadas para entender o uso agregado do produto e não para expor o conteúdo dos documentos.",
+                "Direitos do RGPD (EEE/Reino Unido) e CCPA (Califórnia) se aplicam conforme o caso. Contato: hello@dockdocs.app",
             },
           ],
         },
@@ -2477,53 +2479,52 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
       slug: "privacy-policy",
       title: "Politique de confidentialité | DockDocs",
       description:
-        "Politique de confidentialité DockDocs sur les envois, les flux PDF locaux, le traitement IA, la rétention, les cookies et les analyses.",
+        "Comment DockDocs gère vos fichiers et données — chaque affirmation peut être vérifiée dans les outils de développement du navigateur.",
       eyebrow: "Politique de confidentialité",
-      heroTitle: "Les flux documentaires axés sur la confidentialité exigent des règles claires.",
+      heroTitle: "Ce qui arrive exactement à vos fichiers et à vos données.",
       heroDescription:
-        "Ce cadre de politique explique comment DockDocs aborde les envois, le traitement local, le futur traitement IA, la rétention, les cookies et les analyses.",
+        "Chaque affirmation peut être vérifiée dans les outils de développement de votre navigateur (F12). DockDocs est opéré par Dock Group Limited.",
       sections: [
         {
-          title: "Traitement des documents",
-          description:
-            "DockDocs est conçu pour clarifier les attentes de traitement documentaire avant que les utilisateurs n'envoient des fichiers.",
+          title: "Vos fichiers",
+          description: "Comment chaque outil traite les fichiers avec lesquels vous travaillez.",
           items: [
             {
-              title: "Envois",
+              title: "Outils locaux",
               description:
-                "Les pages d'outils doivent indiquer les formats acceptés, l'objet du traitement et le résultat attendu avant l'envoi.",
+                "La plupart des outils — compression, fusion, division, rotation, filigrane, caviardage, signature, protection, OCR — s'exécutent entièrement dans votre navigateur. Le fichier ne quitte jamais votre appareil.",
             },
             {
-              title: "Traitement local",
+              title: "Outils de conversion",
               description:
-                "Lorsque c'est possible, la préparation simple de documents doit se faire dans le navigateur ou près de l'utilisateur avant d'introduire tout flux cloud.",
+                "Huit outils (Word/Excel/PowerPoint/HTML→PDF ; PDF→Word/Excel/PowerPoint ; PDF/A) téléversent votre fichier vers CloudConvert (Allemagne) via TLS. Les fichiers sont automatiquement supprimés par CloudConvert après traitement, généralement sous 24 heures.",
             },
             {
-              title: "Traitement IA",
+              title: "Outils IA",
               description:
-                "Les fonctionnalités IA comme l'OCR, les résumés et le Q&R documentaire peuvent nécessiter un traitement par des modèles. Ces flux doivent clairement divulguer les limites et les règles de traitement.",
+                "Les fonctionnalités IA (chat PDF, résumé IA, analyse de contrat) extraient le texte dans votre navigateur et l'envoient à des modèles via OpenRouter. Nous ne stockons pas le texte de votre document. L'historique de chat est enregistré localement dans votre navigateur.",
             },
           ],
         },
         {
-          title: "Données et fonctionnement du site",
+          title: "Compte, analytique et vos droits",
           description:
-            "Une page de confidentialité SaaS en production doit définir la rétention, les cookies, les analyses et les canaux de contact.",
+            "Comment nous gérons les données de compte, quelle analytique nous utilisons et vos droits en matière de confidentialité.",
           items: [
             {
-              title: "Rétention",
+              title: "Compte et paiements",
               description:
-                "Les périodes de rétention en production, le comportement de suppression et la gestion des fichiers temporaires doivent être documentés avant le lancement.",
+                "Si vous créez un compte, nous stockons votre e-mail via Supabase. Les paiements sont traités par Creem — nous ne voyons jamais votre numéro de carte. Vous pouvez supprimer votre compte à tout moment depuis la page de compte.",
             },
             {
-              title: "Cookies",
+              title: "Analytique",
               description:
-                "DockDocs peut utiliser des cookies essentiels au fonctionnement du site et aux préférences futures comme la sélection de langue.",
+                "Nous utilisons umami, une solution d'analyse auto-hébergée — sans cookie, sans profil intersite, sans traqueur publicitaire.",
             },
             {
-              title: "Analyses",
+              title: "Vos droits et contact",
               description:
-                "Si des analyses sont activées, elles doivent servir à comprendre l'utilisation agrégée du produit et non à exposer le contenu des documents.",
+                "Les droits RGPD (EEE/Royaume-Uni) et CCPA (Californie) s'appliquent selon votre situation. Contact : hello@dockdocs.app",
             },
           ],
         },
@@ -2828,53 +2829,52 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
       slug: "privacy-policy",
       title: "Datenschutzerklärung | DockDocs",
       description:
-        "DockDocs-Datenschutzerklärung zu Uploads, lokalen PDF-Workflows, KI-Verarbeitung, Aufbewahrung, Cookies und Analyse.",
+        "Wie DockDocs mit Ihren Dateien und Daten umgeht — jede Aussage lässt sich in den Browser-Entwicklertools überprüfen.",
       eyebrow: "Datenschutzerklärung",
-      heroTitle: "Datenschutzorientierte Dokumenten-Workflows brauchen klare Regeln.",
+      heroTitle: "Genau was mit Ihren Dateien und Daten passiert.",
       heroDescription:
-        "Dieser Richtlinienrahmen erklärt, wie DockDocs mit Uploads, lokaler Verarbeitung, künftiger KI-Verarbeitung, Aufbewahrung, Cookies und Analyse umgeht.",
+        "Jede Aussage unten lässt sich in den Browser-Entwicklertools (F12) überprüfen. DockDocs wird von Dock Group Limited betrieben.",
       sections: [
         {
-          title: "Dokumentenverarbeitung",
-          description:
-            "DockDocs ist darauf ausgelegt, die Erwartungen an die Dokumentenverarbeitung klarzustellen, bevor Sie Dateien hochladen.",
+          title: "Ihre Dateien",
+          description: "Wie jedes Tool mit Ihren Dateien umgeht.",
           items: [
             {
-              title: "Uploads",
+              title: "Lokale Tools",
               description:
-                "Die Tool-Seiten sollten die akzeptierten Formate, den Zweck der Verarbeitung und das erwartete Ergebnis vor dem Upload anzeigen.",
+                "Die meisten Tools — Komprimieren, Zusammenführen, Aufteilen, Drehen, Wasserzeichen, Schwärzen, Signieren, Schützen, OCR — laufen vollständig in Ihrem Browser. Die Datei verlässt Ihr Gerät nie.",
             },
             {
-              title: "Lokale Verarbeitung",
+              title: "Konvertierungs-Tools",
               description:
-                "Wo möglich, sollte die einfache Dokumentenvorbereitung im Browser oder nah bei Ihnen erfolgen, bevor ein Cloud-Workflow hinzukommt. Einige Konvertierungen laufen serverseitig.",
+                "Acht Tools (Word/Excel/PowerPoint/HTML→PDF; PDF→Word/Excel/PowerPoint; PDF/A) übertragen Ihre Datei per TLS an CloudConvert (Deutschland) zur Verarbeitung. Dateien werden von CloudConvert nach der Verarbeitung automatisch gelöscht, in der Regel innerhalb von 24 Stunden.",
             },
             {
-              title: "KI-Verarbeitung",
+              title: "KI-Tools",
               description:
-                "KI-Funktionen wie OCR, Zusammenfassungen und Dokumenten-Q&A können eine Modellverarbeitung erfordern. Diese Workflows sollten Grenzen und Verarbeitungsregeln klar offenlegen.",
+                "KI-Funktionen (Chat mit PDF, KI-Zusammenfassung, Vertragsrisikoprüfung) extrahieren Text im Browser und senden ihn über OpenRouter an KI-Modelle. Ihr Dokumenttext wird nicht auf unseren Servern gespeichert. Der Chat-Verlauf wird lokal in Ihrem Browser gespeichert.",
             },
           ],
         },
         {
-          title: "Daten und Betrieb der Website",
+          title: "Konto, Analyse und Ihre Rechte",
           description:
-            "Eine produktive SaaS-Datenschutzseite sollte Aufbewahrung, Cookies, Analyse und Kontaktkanäle definieren.",
+            "Wie wir mit Kontodaten umgehen, welche Analysedienste wir nutzen und Ihre Datenschutzrechte.",
           items: [
             {
-              title: "Aufbewahrung",
+              title: "Konto und Zahlungen",
               description:
-                "Produktive Aufbewahrungsfristen, das Löschverhalten und der Umgang mit temporären Dateien sollten vor dem Start dokumentiert werden.",
-            },
-            {
-              title: "Cookies",
-              description:
-                "DockDocs kann Cookies verwenden, die für den Betrieb der Website und künftige Einstellungen wie die Sprachauswahl erforderlich sind.",
+                "Wenn Sie ein Konto erstellen, speichern wir Ihre E-Mail-Adresse über Supabase. Zahlungen werden von Creem abgewickelt — wir sehen Ihre Kartennummer nie. Sie können Ihr Konto jederzeit über die Kontoseite löschen.",
             },
             {
               title: "Analyse",
               description:
-                "Wenn Analyse aktiviert ist, sollte sie dem Verständnis der aggregierten Produktnutzung dienen und nicht dazu, Dokumenteninhalte offenzulegen.",
+                "Wir verwenden selbst gehostetes umami-Analytics — ohne Cookies, ohne seitenübergreifende Profile, ohne Werbe-Tracker.",
+            },
+            {
+              title: "Ihre Rechte und Kontakt",
+              description:
+                "DSGVO-Rechte (EWR/UK) und CCPA-Rechte (Kalifornien) gelten je nach Wohnsitz. Kontakt: hello@dockdocs.app",
             },
           ],
         },
@@ -3174,53 +3174,52 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
       slug: "privacy-policy",
       title: "개인정보 처리방침 | DockDocs",
       description:
-        "DockDocs 업로드, 로컬 우선 PDF 워크플로, AI 처리, 보관, 쿠키, 분석에 관한 개인정보 처리방침.",
+        "DockDocs가 파일과 데이터를 처리하는 방식 — 모든 내용은 브라우저 개발자 도구에서 직접 확인할 수 있습니다.",
       eyebrow: "개인정보 처리방침",
-      heroTitle: "프라이버시 우선 문서 워크플로에는 명확한 규칙이 필요합니다.",
+      heroTitle: "파일과 데이터에 정확히 무슨 일이 일어나는지 알려드립니다.",
       heroDescription:
-        "이 방침은 DockDocs가 업로드, 로컬 처리, 향후 AI 처리, 보관, 쿠키, 분석에 어떻게 접근하는지 설명합니다.",
+        "아래 내용은 모두 브라우저 개발자 도구(F12)에서 직접 확인할 수 있습니다. DockDocs는 Dock Group Limited가 운영합니다.",
       sections: [
         {
-          title: "문서 처리",
-          description:
-            "DockDocs는 사용자가 파일을 업로드하기 전에 처리에 대한 기대를 명확히 알 수 있도록 설계되었습니다.",
+          title: "파일 처리 방식",
+          description: "각 도구가 파일을 어떻게 처리하는지 설명합니다.",
           items: [
             {
-              title: "업로드",
+              title: "로컬 도구",
               description:
-                "도구 페이지는 업로드 전에 허용 형식, 처리 목적, 예상 결과를 안내해야 합니다.",
+                "압축, 병합, 분할, 회전, 워터마크, 개인정보 삭제, 서명, 보호, OCR 등 대부분의 도구는 브라우저에서 완전히 실행됩니다. 파일이 기기 밖으로 나가지 않습니다.",
             },
             {
-              title: "로컬 처리",
+              title: "변환 도구",
               description:
-                "가능한 경우 간단한 문서 준비는 클라우드 워크플로가 도입되기 전에 브라우저나 사용자 가까이에서 처리되어야 합니다.",
+                "Word/Excel/PowerPoint/HTML→PDF, PDF→Word/Excel/PowerPoint, PDF/A 등 8개 도구는 파일을 TLS를 통해 독일의 CloudConvert에 전송합니다. 파일은 처리 후 CloudConvert에 의해 자동 삭제되며, 일반적으로 24시간 이내에 삭제됩니다.",
             },
             {
-              title: "AI 처리",
+              title: "AI 도구",
               description:
-                "OCR, 요약, 문서 질의응답 같은 AI 기능은 모델 처리가 필요할 수 있습니다. 이러한 워크플로는 제한과 처리 규칙을 명확히 안내해야 합니다.",
+                "AI 채팅, AI 요약, 계약 위험 검토 등 AI 기능은 브라우저에서 텍스트를 추출하여 OpenRouter를 통해 AI 모델에 전송합니다. 문서 텍스트는 서버에 저장하지 않으며, 채팅 기록은 브라우저 로컬 스토리지에만 저장됩니다.",
             },
           ],
         },
         {
-          title: "데이터 및 사이트 운영",
+          title: "계정, 분석 및 이용자 권리",
           description:
-            "실제 운영되는 SaaS의 개인정보 페이지는 보관, 쿠키, 분석, 연락 경로를 정의해야 합니다.",
+            "계정 데이터 처리 방식, 사용하는 분석 도구, 개인정보 관련 권리를 안내합니다.",
           items: [
             {
-              title: "보관",
+              title: "계정 및 결제",
               description:
-                "운영 단계의 보관 기간, 삭제 동작, 임시 파일 처리는 출시 전에 문서화되어야 합니다.",
-            },
-            {
-              title: "쿠키",
-              description:
-                "DockDocs는 사이트 운영과 언어 선택 같은 향후 환경설정을 위해 필수 쿠키를 사용할 수 있습니다.",
+                "계정을 생성하면 이메일 주소를 Supabase를 통해 저장합니다. 결제는 Creem이 처리하며, 카드 번호는 DockDocs에 전달되지 않습니다. 계정 페이지에서 언제든지 계정을 삭제할 수 있습니다.",
             },
             {
               title: "분석",
               description:
-                "분석이 활성화되는 경우, 문서 내용을 노출하기 위해서가 아니라 전체적인 제품 사용을 파악하기 위해 사용되어야 합니다.",
+                "자체 서버에서 운영하는 umami 분석 도구를 사용합니다. 쿠키 없음, 크로스 사이트 프로파일링 없음, 광고 추적기 없음입니다.",
+            },
+            {
+              title: "이용자 권리 및 문의",
+              description:
+                "EEA/영국 이용자는 GDPR 권리, 캘리포니아 이용자는 CCPA 권리가 적용됩니다. 문의: hello@dockdocs.app",
             },
           ],
         },
