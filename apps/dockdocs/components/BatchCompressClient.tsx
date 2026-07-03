@@ -18,7 +18,7 @@ type Locale = RouteLocale;
 type Level = "low" | "recommended" | "high";
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; saved?: number; outSize?: number; blob?: Blob; msg?: string };
 
-const MAX_FILES = 30;
+const MAX_FILES = 20;
 
 const _en = {
   title: "Batch compress",
@@ -435,7 +435,7 @@ export function BatchCompressClient({ locale = "en", embedded = false }: { local
             </div>
           )}
 
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
             {items.map((it) => (
               <BatchFileCard
                 key={it.id}

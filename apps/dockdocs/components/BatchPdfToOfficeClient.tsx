@@ -10,7 +10,7 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { runCloudConvert } from "../../../shared/templates/pdf-tool-page/cloudconvert-runtime";
 import type { CloudLocale } from "../../../shared/templates/pdf-tool-page/cloudconvert-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
-import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
@@ -205,7 +205,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   // zh-Hant child components (BatchUploadBox / ToolFaq) accept zh-Hant; ko → English (no Korean strings yet).
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
-  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
+  const maxFiles = MAX_FILES;
   const head = target
     ? (locale === "zh-Hant" ? deepHant(PT[target].zh) : PT[target][al])
     : { title: t.title, subtitle: t.subtitle };

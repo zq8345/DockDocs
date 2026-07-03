@@ -1,42 +1,9 @@
 "use client";
 
-// Plan-based limits for the batch tools. These are CLIENT-SIDE soft caps / UX
-// nudges only: the real per-file COST (CloudConvert conversions, AI calls) is
-// already enforced server-side by enforceFeatureGate on the underlying feature.
-// Paid users are effectively uncapped here; free users get the published tier.
+// Batch-run daily budget for batch tools. The per-batch file count is always
+// MAX_FILES (flat 20, same for all plans) — only the number of runs/day differs.
 
-import { useEffect, useState } from "react";
-import { getSubscriptionSnapshot, type SubscriptionPlan } from "@/lib/subscription-runtime";
-
-// ── Per-batch FILE cap (published tier-config "batch" row) ───────────────────
-// free 3 / pro 50. The effective cap a tool applies is
-// min(PLAN_BATCH_FILE_CAP[plan], that tool's own technical MAX_FILES) — so the
-// AI / cost-heavy batches keep their smaller per-tool ceilings.
-export const PLAN_BATCH_FILE_CAP: Record<SubscriptionPlan, number> = {
-  FREE: 3,
-  PRO: 50,
-};
-
-// Resolves the current plan's per-batch file cap. Starts at the FREE cap and lifts
-// once the (server-authoritative) subscription snapshot loads, so a paid user is
-// not briefly capped low on first paint.
-export function usePlanBatchFileCap(): number {
-  const [cap, setCap] = useState<number>(PLAN_BATCH_FILE_CAP.FREE);
-  useEffect(() => {
-    let active = true;
-    getSubscriptionSnapshot()
-      .then((snap) => {
-        if (active) setCap(PLAN_BATCH_FILE_CAP[snap.record.plan] ?? PLAN_BATCH_FILE_CAP.FREE);
-      })
-      .catch(() => {
-        /* keep the FREE cap on any error */
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-  return cap;
-}
+import { getSubscriptionSnapshot } from "@/lib/subscription-runtime";
 
 // ── Free daily BATCH-RUN nudge ───────────────────────────────────────────────
 // Free users get a soft 3-runs/day budget across all batch tools, counted in

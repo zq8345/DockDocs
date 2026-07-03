@@ -68,6 +68,8 @@ export function BatchFileCard({
   failLabel = "failed",
   removeLabel = "Remove",
   onRemove,
+  orderBadge,
+  subtitle,
 }: {
   file: File;
   status: string;
@@ -77,6 +79,10 @@ export function BatchFileCard({
   failLabel?: string;
   removeLabel?: string;
   onRemove?: () => void;
+  /** Optional sequence badge shown top-left on the thumbnail (e.g. merge order). */
+  orderBadge?: React.ReactNode;
+  /** Secondary line below the filename. Defaults to formatted file size. */
+  subtitle?: string;
 }) {
   const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
   const ext = file.name.split(".").pop() ?? "";
@@ -92,8 +98,11 @@ export function BatchFileCard({
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
       {/* Square thumbnail — aspect-ratio 1:1; contain keeps true aspect ratio, neutral bg fills padding */}
-      <div className="aspect-square w-full overflow-hidden bg-[color:var(--surface-subtle)]">
+      <div className="relative aspect-square w-full overflow-hidden bg-[color:var(--surface-subtle)]">
         {isPdf ? <PdfGridThumb file={file} /> : <OfficeGridThumb ext={ext} />}
+        {orderBadge && (
+          <div className="absolute left-1.5 top-1.5">{orderBadge}</div>
+        )}
       </div>
 
       {/* File info — stacked below thumbnail, never overlaid */}
@@ -101,7 +110,7 @@ export function BatchFileCard({
         <p className="truncate text-[11px] font-medium text-[color:var(--foreground)]" title={file.name}>
           {file.name}
         </p>
-        <p className="mt-0.5 text-[10px] text-[color:var(--faint)]">{formatBytes(file.size)}</p>
+        <p className="mt-0.5 text-[10px] text-[color:var(--faint)]">{subtitle ?? formatBytes(file.size)}</p>
         {statusBadge && <div className="mt-1.5">{statusBadge}</div>}
       </div>
 

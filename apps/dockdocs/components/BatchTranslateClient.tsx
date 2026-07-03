@@ -13,7 +13,7 @@ import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workfl
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
-import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
@@ -22,7 +22,7 @@ type Locale = RouteLocale;
 type Status = "queued" | "done" | "error";
 type Item = { id: string; name: string; file: File; status: Status; translation?: string; msg?: string };
 
-const MAX_FILES = 10; // AI translation has a per-call cost — keep batches modest
+const MAX_FILES = 20;
 const MAX_CHARS = 14_000;
 
 const LANGS: Array<{ code: string; en: string; zh: string }> = [
@@ -409,7 +409,7 @@ export function BatchTranslateClient({ locale = "en", embedded = false }: { loca
   const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
-  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
+  const maxFiles = MAX_FILES;
   const [items, setItems] = useState<Item[]>([]);
   const [target, setTarget] = useState(locale === "zh" ? "en" : "zh");
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");

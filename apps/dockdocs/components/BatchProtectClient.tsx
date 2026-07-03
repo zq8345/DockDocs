@@ -9,7 +9,7 @@ import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workfl
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { BatchFileCard } from "@/components/BatchFileCard";
-import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
@@ -17,7 +17,7 @@ import { LAYOUT } from "@/lib/layout-constants";
 type Locale = RouteLocale;
 type Item = { id: string; name: string; file: File; status: "queued" | "done" | "error"; blob?: Blob; msg?: string };
 
-const MAX_FILES = 30;
+const MAX_FILES = 20;
 const PW_OK = /^[A-Za-z0-9_]{4,32}$/;
 
 const _en = {
@@ -315,7 +315,7 @@ export function BatchProtectClient({ locale = "en", embedded = false }: { locale
   const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
-  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
+  const maxFiles = MAX_FILES;
   const [items, setItems] = useState<Item[]>([]);
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);

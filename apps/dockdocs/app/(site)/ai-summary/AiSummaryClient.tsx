@@ -12,7 +12,6 @@ import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import type { AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
-import { usePlanBatchFileCap } from "@/lib/batch-limits";
 
 type SummaryData = {
   executiveSummary: string;
@@ -249,7 +248,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
   const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
 
-  const fileCap = usePlanBatchFileCap();
+  const fileCap = 20;
   const [cards, setCards] = useState<FileCard[]>([]);
   const [processing, setProcessing] = useState(false);
   const [limitHit, setLimitHit] = useState<number | null>(null);

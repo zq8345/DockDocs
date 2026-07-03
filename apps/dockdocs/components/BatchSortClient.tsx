@@ -10,7 +10,7 @@ import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workfl
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { authHeader } from "@/lib/supabase";
-import { usePlanBatchFileCap, checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
+import { checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { checkUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { deepHant } from "@/lib/zh-hant";
@@ -20,7 +20,7 @@ import { LAYOUT } from "@/lib/layout-constants";
 type Locale = RouteLocale;
 type Item = { id: string; name: string; file: File; text: string; status: "queued" | "done" | "error"; category?: string; tags?: string[]; msg?: string };
 
-const MAX_FILES = 30;
+const MAX_FILES = 20;
 
 const STR_en = {
   title: "Classify PDFs",
@@ -288,7 +288,7 @@ export function BatchSortClient({ locale = "en", embedded = false }: { locale?: 
   const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
-  const maxFiles = Math.min(MAX_FILES, usePlanBatchFileCap());
+  const maxFiles = MAX_FILES;
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
