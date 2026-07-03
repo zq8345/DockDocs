@@ -161,13 +161,16 @@ export async function runCloudConvert({
   }
   uploadForm.append("file", file, file.name || "source");
 
-  // Slow-tick the progress bar from 20 → 40 while the upload is in flight so
-  // the bar keeps moving on large files. Clears on success or error.
-  let uploadTick = 20;
+  // Asymptotically creep 20 → ~44 while the upload is in flight — the same
+  // time-based curve the convert-poll leg uses below — so progress keeps moving
+  // on slow (e.g. cross-border) uploads and NEVER freezes at a fixed percent.
+  // Stays under 45 to hand off cleanly to the convert leg. Clears on success/error.
+  const uploadStart = Date.now();
   const uploadTicker = setInterval(() => {
-    uploadTick = Math.min(uploadTick + 2, 40);
-    emitProgress(onProgress, uploadTick, 1, msgUploading(locale));
-  }, 2000);
+    const elapsed = Date.now() - uploadStart;
+    const pct = 20 + Math.round(24 * (1 - Math.exp(-elapsed / 12000))); // 20 → ~44
+    emitProgress(onProgress, pct, 1, msgUploading(locale));
+  }, 500);
   let uploadRes: Response;
   try {
     uploadRes = await fetch(upload.url, { method: "POST", body: uploadForm, signal });
