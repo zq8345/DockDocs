@@ -82,7 +82,7 @@ export class BillingError extends Error {
 const prefix = "dockdocs:subscription";
 const legacyBillingPrefix = "dockdocs:billing";
 const anonymousUserId = "anonymous";
-const developmentProAccountEmails = (process.env.NEXT_PUBLIC_DEV_PRO_EMAILS ?? "")
+const developmentProAccountEmails = (process.env.DEV_PRO_EMAILS ?? "")
   .split(",")
   .map((entry) => entry.trim().toLowerCase())
   .filter(Boolean);

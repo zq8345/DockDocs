@@ -16,12 +16,12 @@ declare const Netlify: {
 };
 
 // Server-side PRO comp list: emails here are treated as PRO regardless of any
-// Blobs subscription record. Used to (a) test the paid path before Creem is live
-// and (b) comp specific testers/friends. Reuses NEXT_PUBLIC_DEV_PRO_EMAILS so the
-// same accounts that are Pro in the client UI are Pro server-side too.
+// Blobs subscription record. Set DEV_PRO_EMAILS (or DOCKDOCS_PRO_EMAILS) in
+// Netlify env. The NEXT_PUBLIC_ variant was removed — that prefix leaks the
+// email list into every client bundle (browser network tab).
 const PRO_EMAIL_ALLOWLIST = (
   Netlify.env.get("DOCKDOCS_PRO_EMAILS") ||
-  Netlify.env.get("NEXT_PUBLIC_DEV_PRO_EMAILS") ||
+  Netlify.env.get("DEV_PRO_EMAILS") ||
   ""
 )
   .split(",")

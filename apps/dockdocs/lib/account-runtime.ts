@@ -32,7 +32,7 @@ export type SavedChatRecord = {
 const storagePrefix = "dockdocs:account";
 export const anonymousAccountId = "anonymous";
 const maxSavedChats = 50;
-const developmentProAccountEmails = (process.env.NEXT_PUBLIC_DEV_PRO_EMAILS ?? "")
+const developmentProAccountEmails = (process.env.DEV_PRO_EMAILS ?? "")
   .split(",")
   .map((entry) => entry.trim().toLowerCase())
   .filter(Boolean);
