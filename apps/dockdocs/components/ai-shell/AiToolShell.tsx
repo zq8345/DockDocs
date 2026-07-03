@@ -142,6 +142,7 @@ export function AiToolShell({
   mode,
   status,
   docIntake,
+  docPanel,
   contextBar,
   actionRegion,
   resultRegion,
@@ -152,6 +153,13 @@ export function AiToolShell({
   status: AiShellStatus;
   /** Upload / paste intake. Hidden by the consumer once a doc is loaded if desired. */
   docIntake?: React.ReactNode;
+  /**
+   * 布局 v2: the left document column (DocPreviewPanel). When present, the
+   * shell renders the two-column skeleton — left = document preview card(s),
+   * right = context bar + action/result — shared by BOTH modes. At <md the
+   * panel's own top-bar variant renders above the interaction column.
+   */
+  docPanel?: React.ReactNode;
   /** File name + status + re-pick — persistent on every non-idle state. */
   contextBar?: React.ReactNode;
   /** mode="oneshot": preset action button(s). mode="conversational": question input. */
@@ -162,22 +170,37 @@ export function AiToolShell({
   explainer?: React.ReactNode;
   relatedTools?: React.ReactNode;
 }) {
+  {/* Conversational reads top-down: transcript first, input below it (a chat
+      composer sits under the messages). Oneshot acts first: button above
+      the artifact it produces. */}
+  const interaction =
+    mode === "conversational" ? (
+      <>
+        {resultRegion}
+        {actionRegion}
+      </>
+    ) : (
+      <>
+        {actionRegion}
+        {resultRegion}
+      </>
+    );
+
   return (
     <div data-ai-shell-mode={mode} data-ai-shell-status={status} className="contents">
       {docIntake}
-      {contextBar}
-      {/* Conversational reads top-down: transcript first, input below it (a chat
-          composer sits under the messages). Oneshot acts first: button above
-          the artifact it produces. */}
-      {mode === "conversational" ? (
-        <>
-          {resultRegion}
-          {actionRegion}
-        </>
+      {docPanel ? (
+        <div className="mt-6 md:grid md:grid-cols-[280px_minmax(0,1fr)] md:items-start md:gap-6">
+          <div className="md:sticky md:top-4">{docPanel}</div>
+          <div className="mt-4 min-w-0 md:mt-0">
+            {contextBar}
+            {interaction}
+          </div>
+        </div>
       ) : (
         <>
-          {actionRegion}
-          {resultRegion}
+          {contextBar}
+          {interaction}
         </>
       )}
       {explainer}
