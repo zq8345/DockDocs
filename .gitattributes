@@ -1,0 +1,7 @@
+# Binary assets — disable text/EOL normalization so git never mangles or truncates them.
+# 2026-07-03: chi_sim.traineddata.gz shipped TRUNCATED (17.7MB vs 20.2MB) — its DEFLATE
+# stream was cut short, so tesseract.js's pako threw "invalid code length" and Chinese OCR
+# froze at 26%. Root cause: .gz not marked binary. These rules keep such assets byte-exact.
+*.gz binary
+*.wasm binary
+*.traineddata binary
