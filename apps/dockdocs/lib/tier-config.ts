@@ -3,7 +3,7 @@
 // + netlify/functions/_shared/feature-gate.ts. This file is DISPLAY-ONLY; the numbers
 // here MUST stay in sync with the enforced limits in usage-limits.ts.
 
-export type Tier = "free" | "plus" | "pro";
+export type Tier = "free" | "pro";
 
 export type TierValue = {
   en: string;
@@ -72,7 +72,6 @@ export const TIER_CATEGORIES: TierCategory[] = [
     ],
     limits: {
       free: { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限", de: "Unbegrenzt", ko: "무제한" },
-      plus: { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限", de: "Unbegrenzt", ko: "무제한" },
       pro:  { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限", de: "Unbegrenzt", ko: "무제한" },
     },
   },
@@ -104,8 +103,7 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "html-to-pdf",     en: "HTML to PDF",       zh: "HTML 转 PDF",     es: "HTML a PDF",     pt: "HTML para PDF",     fr: "HTML en PDF",     ja: "HTML を PDF に変換",        de: "HTML zu PDF", ko: "HTML을 PDF로 변환" },
     ],
     limits: {
-      free: { en: "Forward unlimited · PDF→Office 15/day", zh: "正向转换无限 · PDF→Office 15/天", es: "Directa ilimitada · PDF→Office 15/día", pt: "Direta ilimitada · PDF→Office 15/dia", fr: "Directe illimitée · PDF→Office 15/jour", ja: "順方向は無制限 · PDF→Office は15/日", de: "Vorwärts unbegrenzt · PDF→Office 15/Tag", ko: "정방향 무제한 · PDF→Office 15/일", internal: "forward (Office→PDF/html/pdfa) = convertFree 60/day fair-use ≈ unlimited; reverse PDF→Office + protect = convert 15/day (paid CloudConvert cap)" },
-      plus: { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限", de: "Unbegrenzt", ko: "무제한" },
+      free: { en: "10/day", zh: "10次/天", es: "10/día", pt: "10/dia", fr: "10/jour", ja: "10 回/日", de: "10 / Tag", ko: "10 / 일" },
       pro:  { en: "Unlimited", zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限", de: "Unbegrenzt", ko: "무제한" },
     },
   },
@@ -142,15 +140,6 @@ export const TIER_CATEGORIES: TierCategory[] = [
         ja: "≤ 3 ファイル/バッチ · 3 バッチ/日",
         de: "≤ 3 Dateien/Stapel · 3 Stapel/Tag", ko: "≤ 3파일/배치 · 3배치/일",
       },
-      plus: {
-        en: "≤ 20 files/batch · unlimited batches",
-        zh: "≤ 20文件/批 · 不限次",
-        es: "≤ 20 archivos/lote · lotes ilimitados",
-        pt: "≤ 20 arquivos/lote · lotes ilimitados",
-        fr: "≤ 20 fichiers/lot · lots illimités",
-        ja: "≤ 20 ファイル/バッチ · バッチ無制限",
-        de: "≤ 20 Dateien/Stapel · unbegrenzte Stapel", ko: "≤ 20파일/배치 · 배치 무제한",
-      },
       pro:  {
         en: "≤ 50 files/batch · unlimited batches",
         zh: "≤ 50文件/批 · 不限次",
@@ -183,7 +172,6 @@ export const TIER_CATEGORIES: TierCategory[] = [
     ],
     limits: {
       free: { en: "10 / day",   zh: "10次/天",  es: "10/día",  pt: "10/dia",  fr: "10/jour", ja: "10 回/日", de: "10 / Tag", ko: "10 / 일" },
-      plus: { en: "200 / day",  zh: "200次/天", es: "200/día", pt: "200/dia", fr: "200/jour", ja: "200 回/日", de: "200 / Tag", ko: "200 / 일" },
       pro:  { en: "Unlimited",  zh: "无限",     es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限", de: "Unbegrenzt", ko: "무제한" },
     },
   },
@@ -210,7 +198,6 @@ export const TIER_CATEGORIES: TierCategory[] = [
     ],
     limits: {
       free: { en: "3 / day",    zh: "3次/天",  es: "3/día",   pt: "3/dia",   fr: "3/jour", ja: "3 回/日", de: "3 / Tag", ko: "3 / 일" },
-      plus: { en: "500 / month", zh: "500次/月", es: "500/mes", pt: "500/mês", fr: "500/mois", ja: "500 回/月", de: "500 / Monat", ko: "500 / 월" },
       pro:  { en: "Unlimited",  zh: "无限", es: "Ilimitado", pt: "Ilimitado", fr: "Illimité", ja: "無制限", de: "Unbegrenzt", ko: "무제한", internal: "~5 000/mo soft cap" },
     },
   },
@@ -271,7 +258,6 @@ export const TIER_CATEGORIES: TierCategory[] = [
     ],
     limits: {
       free: { en: "—", zh: "—", es: "—", pt: "—", fr: "—", ja: "—", de: "—", ko: "—" },
-      plus: { en: "—", zh: "—", es: "—", pt: "—", fr: "—", ja: "—", de: "—", ko: "—" },
       pro:  { en: "✓ Pro only", zh: "✓ 仅 Pro", es: "✓ Solo Pro", pt: "✓ Só Pro", fr: "✓ Pro uniquement", ja: "✓ Pro 限定", de: "✓ Nur Pro", ko: "✓ Pro 전용" },
     },
   },
@@ -291,14 +277,13 @@ export const TIER_CATEGORIES: TierCategory[] = [
     features: [
       { en: "Legal & contracts",          zh: "法律 / 合同",  es: "Legal y contratos",          pt: "Jurídico e contratos",       fr: "Juridique et contrats",        ja: "法務・契約",         de: "Recht & Verträge", ko: "법률 / 계약",            status: "live", href: "/for/legal" },
       { en: "Finance & tax",              zh: "财务 / 税务",  es: "Finanzas e impuestos",       pt: "Finanças e impostos",        fr: "Finance et fiscalité",         ja: "財務・税務",         de: "Finanzen & Steuern", ko: "재무 / 세무",          status: "live", href: "/for/finance" },
-      { en: "Research & academia",        zh: "科研 / 学术",  es: "Investigación y academia",   pt: "Pesquisa e academia",        fr: "Recherche et académique",      ja: "研究・学術",         de: "Forschung & Wissenschaft", ko: "연구 / 학술",    status: "live", href: "/for/research" },
+      { en: "Research & academia",        zh: "科研 / 学术",  es: "Investigación y academia",   pt: "Pesquisa y academia",        fr: "Recherche et académique",      ja: "研究・学術",         de: "Forschung & Wissenschaft", ko: "연구 / 학술",    status: "live", href: "/for/research" },
       { en: "Banking & finance",          zh: "金融 / 投行",  es: "Banca y finanzas",           pt: "Banco e finanças",           fr: "Banque et finance",            ja: "銀行・金融",         de: "Banken & Finanzwesen", ko: "금융 / 투자은행",        status: "coming" },
       { en: "Architecture & engineering", zh: "建筑 / 工程",  es: "Arquitectura e ingeniería",  pt: "Arquitetura e engenharia",   fr: "Architecture et ingénierie",   ja: "建築・エンジニアリング", de: "Architektur & Ingenieurwesen", ko: "건축 / 엔지니어링", status: "coming" },
-      { en: "Healthcare & medical",       zh: "医疗 / 健康",  es: "Salud y medicina",           pt: "Saúde e medicina",           fr: "Santé et médecine",            ja: "医療・ヘルスケア",   de: "Gesundheit & Medizin", ko: "의료 / 헬스케어",        status: "coming" },
+      { en: "Healthcare & medical",       zh: "医疗 / 健康",  es: "Salud y medicina",           pt: "Saúde y medicina",           fr: "Santé et médecine",            ja: "医療・ヘルスケア",   de: "Gesundheit & Medizin", ko: "의료 / 헬스케어",        status: "coming" },
     ],
     limits: {
       free: { en: "1 taste",                  zh: "1次尝鲜", es: "1 de prueba", pt: "1 de teste", fr: "1 à l'essai", ja: "1 回お試し", de: "1 zum Testen", ko: "1회 체험" },
-      plus: { en: "20 / month",               zh: "20次/月", es: "20/mes", pt: "20/mês", fr: "20/mois", ja: "20 回/月", de: "20 / Monat", ko: "20 / 월" },
       pro:  { en: "Unlimited · all verticals", zh: "无限 · 全部垂直", es: "Ilimitado · todos los sectores", pt: "Ilimitado · todos os setores", fr: "Illimité · tous les secteurs", ja: "無制限 · 全業種", de: "Unbegrenzt · alle Branchen", ko: "무제한 · 전체 업종" },
     },
   },
@@ -327,13 +312,13 @@ export const TIER_CATEGORIES: TierCategory[] = [
         status: "live",
       },
       {
-        en: "Unlimited batch, AI & verticals (Plus is capped)",
-        zh: "无限批量/AI/垂直（Plus 有限额）",
-        es: "Lotes, IA y sectores ilimitados (Plus tiene límite)",
-        pt: "Lotes, IA e setores ilimitados (Plus tem limite)",
-        fr: "Lots, IA et secteurs illimités (Plus est limité)",
-        ja: "バッチ・AI・業種別が無制限（Plus は上限あり）",
-        de: "Unbegrenzte Stapel, KI & Branchen (Plus ist gedeckelt)", ko: "무제한 일괄 처리·AI·업종 (Plus는 상한 있음)",
+        en: "Unlimited batch, AI & verticals",
+        zh: "无限批量/AI/垂直",
+        es: "Lotes, IA y sectores ilimitados",
+        pt: "Lotes, IA e setores ilimitados",
+        fr: "Lots, IA et secteurs illimités",
+        ja: "バッチ・AI・業種別が無制限",
+        de: "Unbegrenzte Stapel, KI & Branchen", ko: "무제한 일괄 처리·AI·업종",
         status: "live",
       },
       {
@@ -369,7 +354,6 @@ export const TIER_CATEGORIES: TierCategory[] = [
     ],
     limits: {
       free: { en: "—", zh: "—", es: "—", pt: "—", fr: "—", ja: "—", de: "—", ko: "—" },
-      plus: { en: "—", zh: "—", es: "—", pt: "—", fr: "—", ja: "—", de: "—", ko: "—" },
       pro:  { en: "✓", zh: "✓", es: "✓", pt: "✓", fr: "✓", ja: "✓", de: "✓", ko: "✓" },
     },
   },

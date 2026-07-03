@@ -107,11 +107,11 @@ export function batchLimitMessage(locale: string): string {
     case "zh":
       return `已达免费每日批量上限（每天 ${FREE_DAILY_BATCH_RUNS} 批）。升级 Pro 可不限次——到「账户」页升级。`;
     case "es":
-      return `Alcanzaste el límite diario gratuito de lotes (${FREE_DAILY_BATCH_RUNS}/día). Mejora a Plus/Pro para lotes ilimitados.`;
+      return `Alcanzaste el límite diario gratuito de lotes (${FREE_DAILY_BATCH_RUNS}/día). Mejora a Pro para lotes ilimitados.`;
     case "pt":
-      return `Você atingiu o limite diário gratuito de lotes (${FREE_DAILY_BATCH_RUNS}/dia). Faça upgrade para Plus/Pro para lotes ilimitados.`;
+      return `Você atingiu o limite diário gratuito de lotes (${FREE_DAILY_BATCH_RUNS}/dia). Faça upgrade para Pro para lotes ilimitados.`;
     case "fr":
-      return `Vous avez atteint la limite quotidienne gratuite de lots (${FREE_DAILY_BATCH_RUNS}/jour). Passez à Plus/Pro pour des lots illimités.`;
+      return `Vous avez atteint la limite quotidienne gratuite de lots (${FREE_DAILY_BATCH_RUNS}/jour). Passez à Pro pour des lots illimités.`;
     default:
       return `You've reached the free daily batch limit (${FREE_DAILY_BATCH_RUNS}/day). Upgrade to Pro for unlimited batches.`;
   }

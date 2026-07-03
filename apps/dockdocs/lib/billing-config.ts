@@ -12,7 +12,7 @@ export function isBillingInterval(value: unknown): value is BillingInterval {
 
 export type BillingPlanConfig = {
   plan: SubscriptionPlan;
-  name: "Free" | "Plus" | "Pro";
+  name: "Free" | "Pro";
   price: string;
   description: string;
   checkoutEnabled: boolean;

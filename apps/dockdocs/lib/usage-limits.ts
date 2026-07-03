@@ -101,14 +101,10 @@ export const featureLimits: Record<
     analyzer: { limit: 10, period: "day" },
     contractAnalyzer: { limit: 3, period: "day" },
     compare: { limit: 3, period: "day" },
-    // UI shows "Unlimited" for conversions (Joe 2026-06-29). Backend retains a
-    // monthly fair-use soft cap: high enough that no real user ever hits it, low
-    // enough to stop scripted abuse. pdf-to-ppt still uses CloudConvert (real cost)
-    // until self-hosted migration (task #25) is done; cap absorbs the short-term
-    // cost exposure while keeping the honest "unlimited" promise to users.
-    convert: { limit: 1000, period: "month" },
-    // Forward $0 self-hosted conversions (Gotenberg) — high fair-use monthly bucket.
-    convertFree: { limit: 5000, period: "month" },
+    // UI shows "10/day" for conversions (Joe 2026-07-03). Flat daily cap across
+    // both CloudConvert (convert) and Gotenberg (convertFree) directions.
+    convert: { limit: 10, period: "day" },
+    convertFree: { limit: 10, period: "day" },
   },
   PRO: {
     // ai-standard = Unlimited (fair use): a high fair-use ceiling that bounds only
