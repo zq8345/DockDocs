@@ -424,10 +424,14 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
         <BatchUploadBox locale={locale} onFiles={addFiles} busy={busy} busyLabel={t.rendering} embedded={embedded} valueZone="client" />
       ) : (
         <WorkArea
-          left={<p className="text-[15px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, totalPages)}</p>}
+          left={
+            <>
+              <p className="text-[15px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, totalPages)}</p>
+              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
+            </>
+          }
           right={
             <>
-              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               <button type="button" onClick={merge} disabled={working || items.length < 2} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
                 {working ? t.working : t.merge}
               </button>
