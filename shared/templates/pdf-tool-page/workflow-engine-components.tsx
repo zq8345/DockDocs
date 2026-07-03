@@ -606,6 +606,49 @@ export function CircularProgress({
 }
 
 // ---------------------------------------------------------------------------
+// OCR live text — streamed, read-only, auto-scrolling panel shown during OCR
+// processing so the user watches recognized text appear page by page.
+// ---------------------------------------------------------------------------
+export function OcrLiveText({
+  text,
+  locale,
+}: {
+  text: string;
+  locale: TemplateLocale | undefined;
+}) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Keep the newest text in view as pages stream in. Runs only when the text
+  // grows (once per page), so this is cheap even for long documents.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) {
+      el.scrollTop = el.scrollHeight;
+    }
+  }, [text]);
+
+  return (
+    <div className="mx-auto mt-5 w-full max-w-[560px] text-left">
+      <div className="mb-1.5 flex items-center gap-2">
+        <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[color:var(--accent)]" aria-hidden="true" />
+        <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
+          {tr(locale, "Recognized so far", "已识别文本", "Texto reconocido", "Texto reconhecido", "Texte reconnu", "認識済みテキスト", "Bisher erkannt")}
+        </span>
+      </div>
+      <div
+        ref={scrollRef}
+        aria-live="polite"
+        className="h-40 w-full overflow-y-auto rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3"
+      >
+        <pre className="whitespace-pre-wrap break-words font-mono text-[12px] leading-5 text-[color:var(--foreground)]">
+          {text}
+        </pre>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Result state — download ready
 // ---------------------------------------------------------------------------
 export function WorkflowResultState({

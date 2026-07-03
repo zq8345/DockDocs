@@ -11,6 +11,7 @@ import {
 } from "./pdf-runtime";
 import {
   CircularProgress,
+  OcrLiveText,
   ReadyWorkflowState,
   WorkflowActionButton,
   WorkflowProgress,
@@ -86,6 +87,9 @@ export function PdfWorkflowEngine({
   const [ocrLanguage, setOcrLanguage] = useState<OcrLanguage>(() => localeToOcrLang(loc));
   const [copied, setCopied] = useState(false);
   const [progressDetail, setProgressDetail] = useState("");
+  // OCR streaming: recognized text accumulated so far, shown live in the
+  // processing state (OCR only) so long scans visibly produce output page by page.
+  const [partialOcrText, setPartialOcrText] = useState("");
   const [runtimeArtifact, setRuntimeArtifact] =
     useState<PdfRuntimeArtifact | null>(null);
 
@@ -174,6 +178,7 @@ export function PdfWorkflowEngine({
     setProgress(0);
     setStepIndex(0);
     setProgressDetail("");
+    setPartialOcrText("");
     setStatus("processing");
 
     const runId = processingRunRef.current + 1;
@@ -186,6 +191,7 @@ export function PdfWorkflowEngine({
       nextProgress: number,
       nextStepIndex?: number,
       detail?: string,
+      partialText?: string,
     ) => {
       if (processingRunRef.current !== runId) {
         return;
@@ -201,6 +207,11 @@ export function PdfWorkflowEngine({
           ),
       );
       setProgressDetail(detail ?? "");
+      // Only advance the streamed text — never clear it mid-run (most progress
+      // ticks carry no partialText; keep the last accumulated value on screen).
+      if (partialText !== undefined) {
+        setPartialOcrText(partialText);
+      }
     };
 
     try {
@@ -217,7 +228,8 @@ export function PdfWorkflowEngine({
             progress: nextProgress,
             stepIndex: nextStepIndex,
             detail,
-          }) => applyProgress(nextProgress, nextStepIndex, detail),
+            partialText,
+          }) => applyProgress(nextProgress, nextStepIndex, detail, partialText),
         });
 
         if (processingRunRef.current !== runId || controller.signal.aborted) {
@@ -303,6 +315,7 @@ export function PdfWorkflowEngine({
     setProgress(0);
     setStepIndex(0);
     setProgressDetail("");
+    setPartialOcrText("");
     setError("");
     setIsDragging(false);
     setCopied(false);
@@ -469,14 +482,19 @@ export function PdfWorkflowEngine({
             ) : null}
 
             {status === "processing" && RING_SLUGS.has(config.slug) ? (
-              <CircularProgress
-                bare
-                progress={progress}
-                title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
-                description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，处理时间可能稍长", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります", " · große Datei – kann etwas dauern") : spec.processLabel}
-                onCancel={resetWorkflow}
-                cancelLabel={tr("Cancel", "取消", "Cancelar", "Cancelar", "Annuler", "キャンセル", "Abbrechen")}
-              />
+              <>
+                <CircularProgress
+                  bare
+                  progress={progress}
+                  title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
+                  description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，处理时间可能稍长", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります", " · große Datei – kann etwas dauern") : spec.processLabel}
+                  onCancel={resetWorkflow}
+                  cancelLabel={tr("Cancel", "取消", "Cancelar", "Cancelar", "Annuler", "キャンセル", "Abbrechen")}
+                />
+                {config.slug === "ocr-pdf" && partialOcrText ? (
+                  <OcrLiveText text={partialOcrText} locale={loc} />
+                ) : null}
+              </>
             ) : status === "processing" ? (
               <WorkflowProgress
                 bare

@@ -61,6 +61,10 @@ export type PdfRuntimeProgress = {
   progress: number;
   stepIndex?: number;
   detail?: string;
+  // OCR streaming: the accumulated recognized text so far (all pages completed
+  // up to this point). Lets the processing UI show text appearing page-by-page
+  // instead of dumping everything at the end. Only OCR emits this.
+  partialText?: string;
 };
 
 export type PdfRuntimeArtifact = {

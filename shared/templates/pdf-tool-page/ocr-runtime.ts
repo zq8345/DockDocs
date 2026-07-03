@@ -237,6 +237,9 @@ export async function runOcrPdfFirstPage({
           rendered.cleanup();
         }
 
+        // Stream the accumulated text so far to the UI so the user watches text
+        // appear page-by-page instead of waiting for the final dump. Cheap: the
+        // combine is over an already-in-memory array, only once per page.
         emitProgress(
           onProgress,
           pageProgressBase + pageProgressSize * 0.95,
@@ -250,6 +253,7 @@ export async function runOcrPdfFirstPage({
             `Page ${pageNumber} reconnue.`,
             `${pageNumber} ページ目を認識しました。`,
           ),
+          combinePageText(recognizedPages),
         );
       }
 
@@ -492,11 +496,13 @@ function emitProgress(
   progress: number,
   stepIndex: number,
   detail?: string,
+  partialText?: string,
 ) {
   onProgress?.({
     progress: Math.max(0, Math.min(100, progress)),
     stepIndex,
     detail,
+    partialText,
   });
 }
 
