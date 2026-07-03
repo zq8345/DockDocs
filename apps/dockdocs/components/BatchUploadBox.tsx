@@ -68,6 +68,33 @@ const STR = {
   },
 };
 
+// Recursively collect File objects from a FileSystemEntry (file or directory).
+// readEntries batches at most 100 entries per call — loop until empty.
+async function traverseEntry(entry: FileSystemEntry): Promise<File[]> {
+  if (entry.isFile) {
+    return new Promise<File[]>((resolve) => {
+      (entry as FileSystemFileEntry).file(
+        (f) => resolve([f]),
+        () => resolve([]),
+      );
+    });
+  }
+  if (entry.isDirectory) {
+    const reader = (entry as FileSystemDirectoryEntry).createReader();
+    const all: FileSystemEntry[] = [];
+    await new Promise<void>((resolve) => {
+      const read = () =>
+        reader.readEntries(
+          (batch) => { if (batch.length) { all.push(...batch); read(); } else resolve(); },
+          () => resolve(),
+        );
+      read();
+    });
+    return (await Promise.all(all.map(traverseEntry))).flat();
+  }
+  return [];
+}
+
 // Shared upload box for all batch-processing tools. Supports file + folder
 // picking and drag-and-drop. Defaults to PDF-only; pass `accept`/`extensions`
 // (plus optional `chooseLabel`/`hint`/`privacyLabel`) to accept other file types
@@ -104,6 +131,9 @@ export function BatchUploadBox({
   const [dragging, setDragging] = useState(false);
   const [rejected, setRejected] = useState<string | null>(null);
   const rejectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [folderSupported] = useState<boolean>(
+    () => typeof window !== "undefined" && "webkitdirectory" in HTMLInputElement.prototype,
+  );
 
   const take = (list: FileList | null, suppressRejected = false) => {
     const matched = matchFiles(list, extensions);
@@ -127,7 +157,37 @@ export function BatchUploadBox({
       onClick={() => fileRef.current?.click()}
       onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
       onDragLeave={(e) => { if (e.currentTarget === e.target) setDragging(false); }}
-      onDrop={(e) => { e.preventDefault(); setDragging(false); take(e.dataTransfer.files, false); }}
+      onDrop={(e) => {
+        e.preventDefault();
+        setDragging(false);
+        const fallbackFiles = e.dataTransfer.files;
+        const hasEntryApi =
+          typeof DataTransferItem !== "undefined" &&
+          "webkitGetAsEntry" in DataTransferItem.prototype;
+        if (hasEntryApi && e.dataTransfer.items?.length) {
+          const entries = Array.from(e.dataTransfer.items)
+            .map((item) => item.webkitGetAsEntry?.() ?? null)
+            .filter((entry): entry is FileSystemEntry => Boolean(entry));
+          if (entries.length) {
+            void Promise.all(entries.map(traverseEntry)).then((arrays) => {
+              const allFiles = arrays.flat();
+              if (!allFiles.length) { take(fallbackFiles, false); return; }
+              const matched = allFiles.filter((f) =>
+                extensions.some((ext) => f.name.toLowerCase().endsWith(ext)),
+              );
+              const skipped = allFiles.length - matched.length;
+              if (skipped > 0) {
+                setRejected(t.rejected(skipped, extensions.join(" / ")));
+                if (rejectTimer.current) clearTimeout(rejectTimer.current);
+                rejectTimer.current = setTimeout(() => setRejected(null), 4000);
+              }
+              if (matched.length) onFiles(matched);
+            });
+            return;
+          }
+        }
+        take(fallbackFiles, false);
+      }}
     >
       {busy ? (
         <div className="flex flex-col items-center justify-center gap-3 py-1">
@@ -143,10 +203,12 @@ export function BatchUploadBox({
             {chooseLabel ?? t.choose}
           </button>
           <p className="mt-3 text-sm text-[color:var(--muted)]">{t.note}</p>
-          <button type="button" onClick={(e) => { e.stopPropagation(); folderRef.current?.click(); }} className="mt-1.5 inline-flex items-center gap-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:text-[color:var(--accent)]">
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"><path d="M2 4.5A1.5 1.5 0 0 1 3.5 3h3L8 4.5h4.5A1.5 1.5 0 0 1 14 6v5.5A1.5 1.5 0 0 1 12.5 13h-9A1.5 1.5 0 0 1 2 11.5z" /></svg>
-            {t.folder}
-          </button>
+          {folderSupported && (
+            <button type="button" onClick={(e) => { e.stopPropagation(); folderRef.current?.click(); }} className="mt-1.5 inline-flex items-center gap-1.5 text-[13px] font-medium text-[color:var(--muted)] transition hover:text-[color:var(--accent)]">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"><path d="M2 4.5A1.5 1.5 0 0 1 3.5 3h3L8 4.5h4.5A1.5 1.5 0 0 1 14 6v5.5A1.5 1.5 0 0 1 12.5 13h-9A1.5 1.5 0 0 1 2 11.5z" /></svg>
+              {t.folder}
+            </button>
+          )}
           <div className="mt-1 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-[color:var(--faint)]">
             <span>{hint ?? (locale === "zh" ? "支持 PDF" : locale === "zh-Hant" ? toHant("支持 PDF") : locale === "es" ? "Compatible con PDF" : locale === "pt" ? "Compatível com PDF" : locale === "fr" ? "Compatible PDF" : locale === "ja" ? "PDF対応" : locale === "de" ? "PDF wird unterstützt" : locale === "ko" ? "PDF 지원" : "Supports PDF")}</span>
             {privacyLabel !== null && (
@@ -173,14 +235,17 @@ export function BatchUploadBox({
         className="hidden"
         onChange={(e) => { take(e.target.files); e.currentTarget.value = ""; }}
       />
-      <input
-        ref={folderRef}
-        type="file"
-        multiple
-        className="hidden"
-        {...({ webkitdirectory: "", directory: "" } as Record<string, string>)}
-        onChange={(e) => { take(e.target.files, true); e.currentTarget.value = ""; }}
-      />
+      {folderSupported && (
+        <input
+          ref={folderRef}
+          type="file"
+          multiple
+          className="hidden"
+          onClick={(e) => e.stopPropagation()}
+          {...({ webkitdirectory: "", directory: "" } as Record<string, string>)}
+          onChange={(e) => { take(e.target.files, true); e.currentTarget.value = ""; }}
+        />
+      )}
     </div>
     {embedded && valueZone && <WorkspaceValueZone type={valueZone} locale={locale} />}
     </>

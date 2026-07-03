@@ -231,7 +231,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
         })),
       ].slice(0, maxFiles),
     );
-  }, []);
+  }, [maxFiles]);
 
   const reset = () => {
     setItems([]);
