@@ -80,6 +80,7 @@ const COMPARE_DOCS: Bridge = {
 const BRIDGES: Record<string, Bridge> = {
   "compress-pdf": EXTRACT_TO_EXCEL,
   "word-to-pdf": BATCH_WORD,
+  "pdf-to-word": COMPARE_DOCS,
   "merge-pdf": COMPARE_DOCS,
   "delete-page": CHAT_WITH_PDF,
   "rotate-page": CHAT_WITH_PDF,

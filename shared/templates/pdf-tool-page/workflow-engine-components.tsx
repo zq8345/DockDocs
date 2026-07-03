@@ -677,10 +677,10 @@ export function WorkflowResultState({
   const locale = (config.locale ?? "en") as TemplateLocale;
 
   return (
-    <div className={bare ? "overflow-hidden" : "mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--success-line)] bg-[color:var(--success-surface)]"}>
+    <div className={bare ? "overflow-hidden" : "mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]"}>
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-[color:var(--success-line)] px-5 py-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[color:var(--success)] text-white text-sm">✓</div>
+      <div className="flex items-center gap-3 border-b border-[color:var(--line)] px-5 py-4">
+        <div className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[color:var(--accent)] text-[color:var(--on-accent)] text-[10px] font-bold">✓</div>
         <div>
           <p className="text-sm font-semibold text-[color:var(--foreground)]">{result.title}</p>
           <p className="text-xs text-[color:var(--muted)]">{result.description}</p>
@@ -689,10 +689,10 @@ export function WorkflowResultState({
 
       {/* Stats grid */}
       {result.rows.length > 0 && (
-        <div className="grid grid-cols-2 divide-x divide-y divide-[color:var(--success-line)] border-b border-[color:var(--success-line)] sm:grid-cols-4">
+        <div className="grid grid-cols-2 divide-x divide-y divide-[color:var(--line)] border-b border-[color:var(--line)] sm:grid-cols-4">
           {result.rows.slice(0, 4).map(([label, value]) => (
             <div key={label} className="px-4 py-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[color:var(--success)]">{label}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[color:var(--muted)]">{label}</p>
               <p className="mt-0.5 truncate text-sm font-semibold text-[color:var(--foreground)]">{value}</p>
             </div>
           ))}
@@ -701,7 +701,7 @@ export function WorkflowResultState({
 
       {/* Preview */}
       {result.preview && (
-        <div className="border-b border-[color:var(--success-line)] px-5 py-3">
+        <div className="border-b border-[color:var(--line)] px-5 py-3">
           <ResultPreview type={result.preview} text={result.previewText} blob={result.previewBlob} />
         </div>
       )}
@@ -709,11 +709,11 @@ export function WorkflowResultState({
       {/* Actions */}
       <div className="flex flex-col gap-2 px-5 py-4 sm:flex-row">
         {onCopy ? (
-          <PrimaryButton onClick={onCopy} className="flex-1">
+          <PrimaryButton onClick={onCopy}>
             {copied ? tr(locale, "Copied ✓", "已复制", "Copiado ✓", "Copiado ✓", "Copié ✓", "コピーしました ✓", "Kopiert ✓") : primaryLabel}
           </PrimaryButton>
         ) : (
-          <PrimaryButton onClick={onPrimary} className="flex-1">
+          <PrimaryButton onClick={onPrimary}>
             ↓ {primaryLabel}
           </PrimaryButton>
         )}
@@ -725,7 +725,7 @@ export function WorkflowResultState({
 
       {/* Post-result conversion bridge — honest next step; nothing renders if none */}
       {hasToolBridge(config.slug) && (
-        <div className="border-t border-[color:var(--success-line)] px-5 py-4">
+        <div className="border-t border-[color:var(--line)] px-5 py-4">
           <ToolBridge slug={config.slug} locale={config.locale ?? "en"} useLocalePrefix={(config.locale ?? "en") !== "en"} />
         </div>
       )}
@@ -754,7 +754,7 @@ function PdfResultPreview({ blob }: { blob?: Blob }) {
   }, [blob]);
   if (!url) return null;
   return (
-    <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)]">
+    <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={url}
@@ -774,7 +774,7 @@ export function ResultPreview({ type, text, blob }: { type: WorkflowResult["prev
     // Output is an Office file (pdf→word/excel/ppt) — show the same colored type
     // badge (W/X/P) the upload preview uses, so input and output stay consistent.
     return (
-      <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)]">
+      <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)]">
         <OfficeFallback name={text ?? ""} />
       </div>
     );
@@ -785,7 +785,7 @@ export function ResultPreview({ type, text, blob }: { type: WorkflowResult["prev
         readOnly
         rows={3}
         value={text ?? ocrSampleText}
-        className="w-full resize-none rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] p-3 text-xs leading-5 text-[color:var(--foreground)]"
+        className="w-full resize-none rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] p-3 text-xs leading-5 text-[color:var(--foreground)]"
       />
     );
   }
@@ -793,7 +793,7 @@ export function ResultPreview({ type, text, blob }: { type: WorkflowResult["prev
     return (
       <div className="flex gap-2">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="flex h-10 flex-1 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] text-xs font-semibold text-[color:var(--foreground)]">
+          <div key={i} className="flex h-10 flex-1 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] text-xs font-semibold text-[color:var(--foreground)]">
             p.{i}
           </div>
         ))}
@@ -802,7 +802,7 @@ export function ResultPreview({ type, text, blob }: { type: WorkflowResult["prev
   }
   if (type === "ranges") {
     return (
-      <div className="rounded-[var(--radius-sm)] border border-[color:var(--success-line)] bg-[color:var(--surface)] px-3 py-2 text-xs font-semibold text-[color:var(--foreground)]">
+      <div className="rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2 text-xs font-semibold text-[color:var(--foreground)]">
         {text ?? "page-1.pdf"}
       </div>
     );

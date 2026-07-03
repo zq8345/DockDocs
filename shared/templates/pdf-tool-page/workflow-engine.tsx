@@ -1367,6 +1367,8 @@ function getWorkflowResult(
           [tr("Saved", "已节省", "Ahorrado", "Economizado", "Économisé", "削減", "Eingespart"), saved != null ? `${saved}%` : "—"],
           [L.output, outputName],
         ],
+        preview: artifact?.blob ? "pdf" : undefined,
+        previewBlob: artifact?.blob,
       };
     }
     case "ocr-pdf":
