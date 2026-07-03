@@ -546,6 +546,37 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
           for (const line of lines) handleLine(line);
         }
         if (buffer) handleLine(buffer);
+
+        // Stream ended in an error event (or produced nothing): fall back ONCE
+        // to the plain JSON request before surfacing anything — the same
+        // stream→JSON degradation ai-workspace's runtime does. The JSON path is
+        // a fresh provider run with its own repair chain, so a single flaky
+        // streaming attempt never becomes a red box (兜底原则: the user only
+        // sees an error when every path is exhausted). Gate errors are not
+        // retried — they're an answer, not a failure.
+        const streamFailed = !payload || (payload as ChatPayload).ok !== true;
+        const isGateHit = (payload as ChatPayload | null)?.code === "UPGRADE_REQUIRED";
+        if (streamFailed && !isGateHit && !controller.signal.aborted) {
+          setStreamingAnswer("");
+          const retry = await fetch("/api/ai-chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", ...auth },
+            body: JSON.stringify({
+              context: documentText,
+              question: userQuestion,
+              history,
+              sourceName: fileName,
+              locale,
+            }),
+            signal: controller.signal,
+          });
+          payload = (await retry.json().catch(() => null)) as ChatPayload | null;
+          if (retry.status === 402 || payload?.code === "UPGRADE_REQUIRED") {
+            setLimitHit(typeof payload?.limit === "number" ? payload.limit : gate.limit);
+            setMessages((current) => current.slice(0, -1));
+            return;
+          }
+        }
       } else {
         payload = (await response.json().catch(() => null)) as ChatPayload | null;
       }
