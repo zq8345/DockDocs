@@ -81,6 +81,7 @@ export function PageCanvas({
   pageLabel,
   editPlaceholder,
   removeLabel,
+  showLabel = true,
 }: {
   page: PageInfo;
   elements: EditorElement[];
@@ -110,6 +111,8 @@ export function PageCanvas({
   editPlaceholder: string;
   /** Localized label for the element delete button (aria/tooltip). */
   removeLabel: string;
+  /** Single-page view hides the caption (the rail already shows numbers). */
+  showLabel?: boolean;
 }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [bitmap, setBitmap] = useState<string | null>(null);
@@ -336,7 +339,7 @@ export function PageCanvas({
           </svg>
         )}
       </div>
-      <p className="mt-1 text-center text-[11.5px] text-[color:var(--muted)]">{pageLabel}</p>
+      {showLabel && <p className="mt-1 text-center text-[11.5px] text-[color:var(--muted)]">{pageLabel}</p>}
     </div>
   );
 }

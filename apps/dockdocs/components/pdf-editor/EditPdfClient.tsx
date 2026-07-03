@@ -499,7 +499,6 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   // pdf.js document proxy, kept alive for lazy page rasters until reset.
   const docRef = useRef<{ getPage: (n: number) => Promise<unknown>; destroy: () => Promise<void> } | null>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
-  const visiblePages = useRef<Set<number>>(new Set());
   // Serialize page rasters — parallel render() calls on one doc balloon memory.
   const renderChain = useRef<Promise<unknown>>(Promise.resolve());
 
@@ -510,7 +509,6 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     for (const d of extraJsDocs.current.values()) d.destroy().catch(() => {});
     extraJsDocs.current.clear();
     extraSourcesRef.current = {};
-    visiblePages.current.clear();
     setError(null);
     setInkMode(false);
     setRedactMode(false);
@@ -609,23 +607,31 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     return job;
   }, []);
 
-  const onVisibility = useCallback((pageIndex: number, visible: boolean) => {
-    if (visible) visiblePages.current.add(pageIndex);
-    else visiblePages.current.delete(pageIndex);
-    // Topmost visible page drives the thumbnail-rail highlight (React bails
-    // out when the value is unchanged, so scroll churn is cheap).
-    if (visiblePages.current.size) setCurrentPage(Math.min(...visiblePages.current));
-  }, []);
+  // Single-page view (Joe 2026-07-04): the canvas shows ONE page — the rail
+  // navigates, the canvas never scrolls. onVisibility stays a no-op prop for
+  // PageCanvas's lazy-raster observer.
+  const onVisibility = useCallback(() => {}, []);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const jumpToPage = useCallback((idx: number) => {
-    scrollRef.current
-      ?.querySelector(`[data-page-frame="${idx}"]`)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, []);
+  const currentPageRef = useRef(0);
+  currentPageRef.current = currentPage;
+  const jumpToPage = useCallback((idx: number) => setCurrentPage(idx), []);
+  const targetPage = () => currentPageRef.current;
 
-  const targetPage = () =>
-    visiblePages.current.size ? Math.min(...visiblePages.current) : 0;
+  // Page ops can shrink the list — keep the shown page in range.
+  useEffect(() => {
+    if (currentPage > pages.length - 1) setCurrentPage(Math.max(0, pages.length - 1));
+  }, [pages.length, currentPage]);
+
+  // DECISION: wheel-over-canvas pages through the document (the old
+  // continuous scroll's muscle memory, kept as a shortcut per dispatch).
+  const wheelLock = useRef(0);
+  const onCanvasWheel = useCallback((e: React.WheelEvent) => {
+    const now = Date.now();
+    if (now - wheelLock.current < 180) return;
+    wheelLock.current = now;
+    if (e.deltaY > 0) setCurrentPage((c) => Math.min(pagesRef.current.length - 1, c + 1));
+    else if (e.deltaY < 0) setCurrentPage((c) => Math.max(0, c - 1));
+  }, []);
 
   // z is advisory — the reducer's "add" reassigns it against current state,
   // so stale closures (concurrent image loads) can't collide.
@@ -765,6 +771,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       at: at + 1,
       refs: [{ src: null, rotate: 0, wPt: nb?.wPt ?? 612, hPt: nb?.hPt ?? 792 }],
     });
+    setCurrentPage(at + 1);
   }, []);
 
   const insertPdfAfter = useCallback(async (at: number, file: File) => {
@@ -782,6 +789,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       extraSourcesRef.current[id] = bytes;
       extraJsDocs.current.set(id, doc as unknown as { getPage: (n: number) => Promise<unknown>; destroy: () => Promise<void> });
       dispatch({ type: "insertPages", at: at + 1, refs });
+      setCurrentPage(at + 1);
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
     }
@@ -1051,31 +1059,8 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
-        <div className="flex gap-3" style={{ height: embedded ? "calc(100dvh - 13rem)" : "calc(100dvh - 10.5rem)", minHeight: 480 }}>
-          {/* Left: page-thumbnail navigation (own scroll; hidden on mobile) */}
-          <ThumbRail
-            pages={pages}
-            pageKeys={state.pageList.map(pageKeyOf)}
-            currentPage={currentPage}
-            onJump={jumpToPage}
-            renderBitmap={renderBitmap}
-            labels={{
-              aria: t.thumbsAria,
-              insertBlank: t.insertBlank,
-              insertPdf: t.insertPdf,
-              rotatePage: t.rotatePage,
-              deletePage: t.deletePage,
-              pageLabel: t.page,
-            }}
-            onInsertBlank={insertBlankAfter}
-            onInsertPdf={(at) => { insertPdfAtRef.current = at; pageInsertInputRef.current?.click(); }}
-            onRotatePage={(i) => dispatch({ type: "rotatePage", at: i })}
-            onDeletePage={(i) => dispatch({ type: "removePage", at: i })}
-            onMovePage={(from, to) => dispatch({ type: "movePage", from, to })}
-          />
-
-          {/* Right: toolbar pinned at top, canvas scrolls beneath it */}
-          <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex flex-col" style={{ height: embedded ? "calc(100dvh - 13rem)" : "calc(100dvh - 10.5rem)", minHeight: 480 }}>
+          {/* Toolbar spans the full editor width (leftmost edge included) */}
           <div className="rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="min-w-0">
@@ -1212,35 +1197,70 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
             }}
           />
 
-          <div ref={scrollRef} className="isolate mt-3 min-h-0 flex-1 overflow-y-auto">
-            <div ref={viewerRef} className="mx-auto w-full max-w-3xl space-y-4 pb-6">
-              {pages.map((pg) => (
-                <PageCanvas
-                  key={pageKeyOf(state.pageList[pg.index], pg.index)}
-                  page={pg}
-                  elements={state.elements.filter((el) => elementPages(el, pages.length).includes(pg.index))}
-                  selectedId={state.selectedId}
-                  editingId={state.editingId}
-                  dispatch={dispatch}
-                  renderBitmap={renderBitmap}
-                  onVisibility={onVisibility}
-                  onAddTextAt={addText}
-                  inkMode={inkMode}
-                  inkStyle={{ color: DEFAULT_INK_COLOR, strokeWidthPt: DEFAULT_STROKE_WIDTH_PT }}
-                  onInkStroke={onInkStroke}
-                  redactMode={redactMode}
-                  onRedactRect={onRedactRect}
-                  onRedactTap={onRedactTap}
-                  whiteoutMode={whiteoutMode}
-                  onWhiteoutRect={onWhiteoutRect}
-                  onWhiteoutTap={onWhiteoutTap}
-                  pageLabel={t.page(pg.index + 1)}
-                  editPlaceholder={t.placeholder}
-                  removeLabel={t.remove}
-                />
-              ))}
+          <div className="mt-3 flex min-h-0 flex-1 gap-3">
+            {/* Left: page rail — top aligned with the canvas top, own scroll */}
+            <ThumbRail
+              pages={pages}
+              pageKeys={state.pageList.map(pageKeyOf)}
+              currentPage={currentPage}
+              onJump={jumpToPage}
+              renderBitmap={renderBitmap}
+              labels={{
+                aria: t.thumbsAria,
+                insertBlank: t.insertBlank,
+                insertPdf: t.insertPdf,
+                rotatePage: t.rotatePage,
+                deletePage: t.deletePage,
+                pageLabel: t.page,
+              }}
+              onInsertBlank={insertBlankAfter}
+              onInsertPdf={(at) => { insertPdfAtRef.current = at; pageInsertInputRef.current?.click(); }}
+              onRotatePage={(i) => dispatch({ type: "rotatePage", at: i })}
+              onDeletePage={(i) => dispatch({ type: "removePage", at: i })}
+              onMovePage={(from, to) => dispatch({ type: "movePage", from, to })}
+            />
+            {/* Right: SINGLE-page canvas, contained (never scrolls) — the rail
+                navigates; wheel over the canvas pages through as a shortcut. */}
+            <div
+              ref={viewerRef}
+              onWheel={onCanvasWheel}
+              className="isolate flex min-w-0 flex-1 items-start justify-center overflow-hidden"
+            >
+              {pages[currentPage] && state.pageList[currentPage] && (
+                <div
+                  className="h-full"
+                  style={{
+                    aspectRatio: `${pages[currentPage].wPt} / ${pages[currentPage].hPt}`,
+                    maxWidth: "100%",
+                  }}
+                >
+                  <PageCanvas
+                    key={pageKeyOf(state.pageList[currentPage], currentPage)}
+                    page={pages[currentPage]}
+                    elements={state.elements.filter((el) => elementPages(el, pages.length).includes(currentPage))}
+                    selectedId={state.selectedId}
+                    editingId={state.editingId}
+                    dispatch={dispatch}
+                    renderBitmap={renderBitmap}
+                    onVisibility={onVisibility}
+                    onAddTextAt={addText}
+                    inkMode={inkMode}
+                    inkStyle={{ color: DEFAULT_INK_COLOR, strokeWidthPt: DEFAULT_STROKE_WIDTH_PT }}
+                    onInkStroke={onInkStroke}
+                    redactMode={redactMode}
+                    onRedactRect={onRedactRect}
+                    onRedactTap={onRedactTap}
+                    whiteoutMode={whiteoutMode}
+                    onWhiteoutRect={onWhiteoutRect}
+                    onWhiteoutTap={onWhiteoutTap}
+                    pageLabel={t.page(currentPage + 1)}
+                    editPlaceholder={t.placeholder}
+                    removeLabel={t.remove}
+                    showLabel={false}
+                  />
+                </div>
+              )}
             </div>
-          </div>
           </div>
         </div>
       )}
