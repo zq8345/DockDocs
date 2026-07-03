@@ -17,6 +17,7 @@ import {
   FONT_STACK,
   LINE_HEIGHT,
   RASTER_SCALE,
+  REDACT_OUTPUT_SCALE,
   hexToRgb01,
   measureTextBlock,
   placeOnPage,
@@ -38,14 +39,81 @@ export async function bakePdf(
   const pdf = await PDFDocument.load(srcBytes);
   const helv = await pdf.embedFont(StandardFonts.Helvetica);
   const helvBold = await pdf.embedFont(StandardFonts.HelveticaBold);
-  const pdfPages = pdf.getPages();
+  let pdfPages = pdf.getPages();
 
   const sorted = [...elements].sort((a, b) => a.z - b.z);
-  let done = 0;
+  // ── Destructive pass first: every page carrying a redaction is re-rendered
+  // as a full-page raster with opaque black over each box (the text
+  // underneath is destroyed by rasterization — the RedactPdfClient
+  // guarantee). Overlay elements are then drawn ON TOP of the replaced page,
+  // whose /Rotate is 0 and CropBox starts at 0, so their placement math is
+  // untouched.
+  const redactByPage = new Map<number, EditorElement[]>();
   for (const el of sorted) {
-    onProgress?.(done++, sorted.length);
+    if (el.type !== "redact") continue;
+    const list = redactByPage.get(el.page) ?? [];
+    list.push(el);
+    redactByPage.set(el.page, list);
+  }
+  const total = sorted.length + redactByPage.size;
+  let done = 0;
+  if (redactByPage.size) {
+    const pdfjs = await import("pdfjs-dist");
+    pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+    // getDocument transfers the buffer — hand it a copy.
+    const srcDoc = await pdfjs.getDocument({ data: new Uint8Array(srcBytes.slice(0)) }).promise;
+    try {
+      for (const pi of [...redactByPage.keys()].sort((a, b) => a - b)) {
+        onProgress?.(done++, total);
+        await new Promise((r) => setTimeout(r, 0));
+        const old = pdfPages[pi];
+        if (!old) continue;
+        const jsPage = await srcDoc.getPage(pi + 1);
+        const viewport = jsPage.getViewport({ scale: REDACT_OUTPUT_SCALE });
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        const ctx = canvas.getContext("2d", { alpha: false });
+        if (!ctx) continue;
+        await jsPage.render({ canvas, canvasContext: ctx, viewport }).promise;
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = "source-over";
+        ctx.fillStyle = "#000000";
+        for (const r of redactByPage.get(pi)!) {
+          ctx.fillRect(
+            Math.floor(r.x * canvas.width),
+            Math.floor(r.y * canvas.height),
+            Math.ceil(r.w * canvas.width),
+            Math.ceil(r.h * canvas.height),
+          );
+        }
+        ctx.restore();
+        const blob: Blob = await new Promise((res, rej) =>
+          canvas.toBlob((bl) => (bl ? res(bl) : rej(new Error("encode failed"))), "image/jpeg", 0.9),
+        );
+        canvas.width = 0;
+        canvas.height = 0;
+        const img = await pdf.embedJpg(await blob.arrayBuffer());
+        // Replacement page uses the VIEW size (viewport at scale 1) — /Rotate
+        // is baked into the raster, so the new page is upright.
+        const vw = viewport.width / REDACT_OUTPUT_SCALE;
+        const vh = viewport.height / REDACT_OUTPUT_SCALE;
+        pdf.removePage(pi);
+        const np = pdf.insertPage(pi, [vw, vh]);
+        np.drawImage(img, { x: 0, y: 0, width: vw, height: vh });
+      }
+    } finally {
+      try { srcDoc.destroy(); } catch { /* ignore */ }
+    }
+    pdfPages = pdf.getPages();
+  }
+  for (const el of sorted) {
+    onProgress?.(done++, total);
     // Yield to the event loop so the progress paint lands between elements.
     await new Promise((r) => setTimeout(r, 0));
+    // Redactions were burned into the page raster in the destructive pass.
+    if (el.type === "redact") continue;
 
     // Watermarks repeat across a page range — rasterize/embed ONCE, draw on
     // every page in range (an embedded image can be drawn many times).
@@ -193,7 +261,7 @@ export async function bakePdf(
       }
     }
   }
-  onProgress?.(sorted.length, sorted.length);
+  onProgress?.(total, total);
 
   return pdf.save();
 }

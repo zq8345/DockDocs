@@ -6,7 +6,7 @@
 // module that converts between spaces (screen ↔ normalized ↔ PDF pt) — never
 // convert inline in a component.
 
-export type ElementType = "text" | "image" | "signature" | "watermark" | "shape" | "highlight" | "ink";
+export type ElementType = "text" | "image" | "signature" | "watermark" | "redact" | "shape" | "highlight" | "ink";
 
 export type BaseElement = {
   id: string;
@@ -69,6 +69,14 @@ export type WatermarkElement = BaseElement & {
   pageTo: number;
 };
 
+/** True redaction box. At bake, every page carrying one is DESTRUCTIVELY
+ *  rasterized (full-page image with opaque black painted over each box) so
+ *  the text underneath is destroyed, not covered — the RedactPdfClient
+ *  guarantee, generalized. Overlay elements are drawn on top afterwards. */
+export type RedactElement = BaseElement & {
+  type: "redact";
+};
+
 export type ShapeElement = BaseElement & {
   type: "shape"; // rectangle (A1)
   /** null = no fill. */
@@ -98,6 +106,7 @@ export type EditorElement =
   | ImageElement
   | SignatureElement
   | WatermarkElement
+  | RedactElement
   | ShapeElement
   | HighlightElement
   | InkElement;

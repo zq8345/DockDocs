@@ -78,6 +78,9 @@ const STR_EN = {
   addWatermark: "Watermark",
   wmDefault: "CONFIDENTIAL",
   pageRange: "Pages",
+  addRedact: "Redact",
+  redactHint: "Redact mode — drag to black out an area, or click a word to box it. Press Esc to exit.",
+  redactBakeNote: "Pages with redactions are flattened to images on download, so the covered text is truly destroyed.",
 };
 
 const STR = {
@@ -124,6 +127,9 @@ const STR = {
     addWatermark: "水印",
     wmDefault: "机密",
     pageRange: "页范围",
+    addRedact: "涂黑",
+    redactHint: "涂黑模式——拖动框住一块区域,或点击某个词自动框住。按 Esc 退出。",
+    redactBakeNote: "含涂黑的页面在下载时会整页转为图片,被盖住的文字被真正销毁。",
   },
   es: {
     title: "Editar PDF",
@@ -167,6 +173,9 @@ const STR = {
     addWatermark: "Marca de agua",
     wmDefault: "CONFIDENCIAL",
     pageRange: "Páginas",
+    addRedact: "Censurar",
+    redactHint: "Modo censura: arrastra para tachar un área, o haz clic en una palabra para enmarcarla. Pulsa Esc para salir.",
+    redactBakeNote: "Las páginas con censuras se aplanan como imágenes al descargar, así el texto cubierto se destruye de verdad.",
   },
   pt: {
     title: "Editar PDF",
@@ -210,6 +219,9 @@ const STR = {
     addWatermark: "Marca d'água",
     wmDefault: "CONFIDENCIAL",
     pageRange: "Páginas",
+    addRedact: "Redigir",
+    redactHint: "Modo de redação — arraste para ocultar uma área, ou clique em uma palavra para enquadrá-la. Pressione Esc para sair.",
+    redactBakeNote: "Páginas com redações são achatadas como imagens ao baixar, então o texto coberto é realmente destruído.",
   },
   fr: {
     title: "Modifier un PDF",
@@ -253,6 +265,9 @@ const STR = {
     addWatermark: "Filigrane",
     wmDefault: "CONFIDENTIEL",
     pageRange: "Pages",
+    addRedact: "Caviarder",
+    redactHint: "Mode caviardage — faites glisser pour noircir une zone, ou cliquez sur un mot pour l'encadrer. Appuyez sur Échap pour quitter.",
+    redactBakeNote: "Les pages caviardées sont aplaties en images au téléchargement : le texte masqué est réellement détruit.",
   },
   ja: {
     title: "PDFを編集",
@@ -296,6 +311,9 @@ const STR = {
     addWatermark: "透かし",
     wmDefault: "社外秘",
     pageRange: "ページ範囲",
+    addRedact: "黒塗り",
+    redactHint: "黒塗りモード——ドラッグで範囲を黒塗り、または単語をクリックで自動枠。Escで終了。",
+    redactBakeNote: "黒塗りを含むページはダウンロード時に画像化され、隠された文字は完全に破棄されます。",
   },
   de: {
     title: "PDF bearbeiten",
@@ -339,6 +357,9 @@ const STR = {
     addWatermark: "Wasserzeichen",
     wmDefault: "VERTRAULICH",
     pageRange: "Seiten",
+    addRedact: "Schwärzen",
+    redactHint: "Schwärzungsmodus – ziehen Sie, um einen Bereich zu schwärzen, oder klicken Sie auf ein Wort. Esc zum Beenden.",
+    redactBakeNote: "Seiten mit Schwärzungen werden beim Download zu Bildern reduziert – der verdeckte Text wird wirklich zerstört.",
   },
   ko: {
     title: "PDF 편집",
@@ -382,6 +403,9 @@ const STR = {
     addWatermark: "워터마크",
     wmDefault: "대외비",
     pageRange: "페이지 범위",
+    addRedact: "가리기",
+    redactHint: "가리기 모드 — 드래그해 영역을 가리거나, 단어를 클릭해 자동으로 상자를 만드세요. Esc로 종료합니다.",
+    redactBakeNote: "가림이 있는 페이지는 다운로드 시 이미지로 평탄화되어, 가려진 텍스트가 완전히 삭제됩니다.",
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -393,6 +417,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const [pages, setPages] = useState<PageInfo[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [inkMode, setInkMode] = useState(false);
+  const [redactMode, setRedactMode] = useState(false);
   const [signOpen, setSignOpen] = useState(false);
   const [bakeDone, setBakeDone] = useState<{ done: number; total: number } | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -607,6 +632,71 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     dispatch({ type: "add", el });
   }, [pages, t]);
 
+  const onRedactRect = useCallback((pageIndex: number, rect: { x: number; y: number; w: number; h: number }) => {
+    if (rect.w < 0.002 || rect.h < 0.002) return;
+    const el: EditorElement = {
+      id: crypto.randomUUID(),
+      type: "redact",
+      page: pageIndex,
+      ...rect,
+      rotation: 0,
+      z: 0, // reassigned by the reducer
+    };
+    dispatch({ type: "add", el });
+  }, []);
+
+  // Tap in redact mode: find the text run under the point, estimate the word's
+  // horizontal span by character share (generalizes RedactPdfClient's
+  // Util.transform box math to click-to-box), add a padded redact box.
+  const onRedactTap = useCallback(async (pageIndex: number, nx: number, ny: number) => {
+    const doc = docRef.current;
+    const info = pages[pageIndex];
+    if (!doc || !info) return;
+    try {
+      const pdfjs = await import("pdfjs-dist");
+      const page = (await doc.getPage(pageIndex + 1)) as {
+        getViewport: (o: { scale: number }) => { transform: number[]; width: number; height: number };
+        getTextContent: () => Promise<{ items: Array<{ str?: string; width?: number; height?: number; transform?: number[] }> }>;
+      };
+      const vp = page.getViewport({ scale: 1 });
+      const tc = await page.getTextContent();
+      const px = nx * vp.width;
+      const py = ny * vp.height;
+      for (const it of tc.items) {
+        if (typeof it.str !== "string" || !it.str.trim()) continue;
+        const dm = pdfjs.Util.transform(vp.transform, it.transform ?? [1, 0, 0, 1, 0, 0]);
+        const sx = Math.hypot(dm[0], dm[1]);
+        const sy = Math.hypot(dm[2], dm[3]);
+        const w = (it.width ?? 0) * sx;
+        const h = (it.height ?? 0) * sy;
+        const x0 = dm[4];
+        const yTop = dm[5] - h;
+        if (px < x0 || px > x0 + w || py < yTop || py > yTop + h) continue;
+        // Word span by character share within the run.
+        const str = it.str;
+        const rel = (px - x0) / Math.max(w, 1e-6);
+        let ws = 0;
+        let we = str.length;
+        const hitIdx = Math.min(str.length - 1, Math.max(0, Math.floor(rel * str.length)));
+        if (str[hitIdx] !== " ") {
+          ws = str.lastIndexOf(" ", hitIdx) + 1;
+          const nextSpace = str.indexOf(" ", hitIdx);
+          we = nextSpace === -1 ? str.length : nextSpace;
+        }
+        const pad = h * 0.22;
+        const bx = x0 + (ws / str.length) * w - pad;
+        const bw = ((we - ws) / str.length) * w + 2 * pad;
+        onRedactRect(pageIndex, {
+          x: Math.max(0, bx / vp.width),
+          y: Math.max(0, (yTop - pad) / vp.height),
+          w: Math.min(1, bw / vp.width),
+          h: Math.min(1, (h + 2 * pad) / vp.height),
+        });
+        return;
+      }
+    } catch { /* text layer optional — tap on scanned pages is a no-op */ }
+  }, [pages, onRedactRect]);
+
   const addSignature = useCallback((src: string, imgRatio: number) => {
     const pageIndex = targetPage();
     const page = pages[pageIndex];
@@ -651,11 +741,14 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   pagesRef.current = pages;
   const inkModeRef = useRef(inkMode);
   inkModeRef.current = inkMode;
+  const redactModeRef = useRef(redactMode);
+  redactModeRef.current = redactMode;
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const s = stateRef.current;
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "TEXTAREA" || tag === "INPUT" || s.editingId) return;
+      if (e.key === "Escape" && redactModeRef.current) { setRedactMode(false); return; }
       if (e.key === "Escape" && inkModeRef.current) { setInkMode(false); return; }
       const mod = e.ctrlKey || e.metaKey;
       if (mod && e.key.toLowerCase() === "z" && !e.shiftKey) { e.preventDefault(); dispatch({ type: "undo" }); return; }
@@ -795,7 +888,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 </button>
                 <button
                   type="button"
-                  onClick={() => setInkMode((v) => !v)}
+                  onClick={() => { setInkMode((v) => !v); setRedactMode(false); }}
                   aria-pressed={inkMode}
                   className={
                     inkMode
@@ -804,6 +897,18 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   }
                 >
                   {t.draw}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setRedactMode((v) => !v); setInkMode(false); setSignOpen(false); }}
+                  aria-pressed={redactMode}
+                  className={
+                    redactMode
+                      ? "rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
+                      : toolBtn
+                  }
+                >
+                  {t.addRedact}
                 </button>
                 <span className="h-5 w-px bg-[color:var(--line)]" aria-hidden="true" />
                 <button type="button" onClick={download} disabled={phase === "working" || state.elements.length === 0}
@@ -828,7 +933,12 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               <PropertyPanel el={selected} pages={pages} dispatch={dispatch} t={t} />
             )}
           </div>
-          <p className="mt-2 shrink-0 text-[12px] text-[color:var(--faint)]">{inkMode ? t.drawHint : t.hint}</p>
+          <p className="mt-2 shrink-0 text-[12px] text-[color:var(--faint)]">
+            {redactMode ? t.redactHint : inkMode ? t.drawHint : t.hint}
+            {state.elements.some((el) => el.type === "redact") && (
+              <span className="ml-2 text-[#fbbf24]">{t.redactBakeNote}</span>
+            )}
+          </p>
 
           <input
             ref={imageInputRef}
@@ -858,6 +968,9 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   inkMode={inkMode}
                   inkStyle={{ color: DEFAULT_INK_COLOR, strokeWidthPt: DEFAULT_STROKE_WIDTH_PT }}
                   onInkStroke={onInkStroke}
+                  redactMode={redactMode}
+                  onRedactRect={onRedactRect}
+                  onRedactTap={onRedactTap}
                   pageLabel={t.page(pg.index + 1)}
                   editPlaceholder={t.placeholder}
                   removeLabel={t.remove}

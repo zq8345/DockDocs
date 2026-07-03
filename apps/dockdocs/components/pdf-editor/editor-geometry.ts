@@ -34,6 +34,10 @@ export const BASELINE = 0.99;
 /** Supersampling factor (device px per pt) when rasterizing non-Latin text. */
 export const RASTER_SCALE = 4;
 
+/** Full-page raster scale for destructive redaction bake (~158 DPI — the
+ *  RedactPdfClient OUTPUT_SCALE, kept identical so output quality matches). */
+export const REDACT_OUTPUT_SCALE = 2.2;
+
 export const MIN_SIZE_PT = 6;
 export const MAX_SIZE_PT = 144;
 

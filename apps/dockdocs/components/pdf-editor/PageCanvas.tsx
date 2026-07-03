@@ -72,6 +72,9 @@ export function PageCanvas({
   inkMode,
   inkStyle,
   onInkStroke,
+  redactMode,
+  onRedactRect,
+  onRedactTap,
   pageLabel,
   editPlaceholder,
   removeLabel,
@@ -90,6 +93,11 @@ export function PageCanvas({
   inkStyle: InkStyle;
   /** Completed freehand stroke in page fractions. */
   onInkStroke: (pageIndex: number, points: Array<[number, number]>) => void;
+  redactMode: boolean;
+  /** Completed redact drag in page fractions. */
+  onRedactRect: (pageIndex: number, rect: { x: number; y: number; w: number; h: number }) => void;
+  /** Click (no drag) in redact mode — word auto-boxing upstream. */
+  onRedactTap: (pageIndex: number, x: number, y: number) => void;
   pageLabel: string;
   editPlaceholder: string;
   /** Localized label for the element delete button (aria/tooltip). */
@@ -100,6 +108,8 @@ export function PageCanvas({
   const requested = useRef(false);
   const [stroke, setStroke] = useState<Array<[number, number]> | null>(null);
   const strokeRef = useRef<Array<[number, number]> | null>(null);
+  const [redactDraft, setRedactDraft] = useState<{ x0: number; y0: number; x1: number; y1: number } | null>(null);
+  const redactRef = useRef<{ x0: number; y0: number; x1: number; y1: number } | null>(null);
 
   // Lazy raster with release-on-exit: render as the page approaches the
   // viewport, drop the bitmap once it scrolls far away — long documents keep
@@ -152,13 +162,20 @@ export function PageCanvas({
   // reaching the frame is blank page / bitmap. Skipped while another element
   // is in edit mode — its blur must resolve first (one edit at a time).
   const onBgDoubleClick = (e: React.MouseEvent) => {
-    if (inkMode || editingId !== null) return;
+    if (inkMode || redactMode || editingId !== null) return;
     const p = framePoint(e);
     onAddTextAt(page.index, p.x, p.y);
   };
 
-  // ── Ink drawing (freehand) ──
+  // ── Mode gestures on the frame: ink (freehand) / redact (drag-box or tap) ──
   const onFramePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (redactMode) {
+      e.currentTarget.setPointerCapture(e.pointerId);
+      const p = framePoint(e);
+      redactRef.current = { x0: p.x, y0: p.y, x1: p.x, y1: p.y };
+      setRedactDraft(redactRef.current);
+      return;
+    }
     if (!inkMode) {
       if (e.target === e.currentTarget) dispatch({ type: "select", id: null });
       return;
@@ -169,12 +186,29 @@ export function PageCanvas({
     setStroke(strokeRef.current);
   };
   const onFramePointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (redactMode && redactRef.current) {
+      const p = framePoint(e);
+      redactRef.current = { ...redactRef.current, x1: p.x, y1: p.y };
+      setRedactDraft(redactRef.current);
+      return;
+    }
     if (!inkMode || !strokeRef.current) return;
     const p = framePoint(e);
     strokeRef.current = [...strokeRef.current, [p.x, p.y]];
     setStroke(strokeRef.current);
   };
   const onFramePointerUp = () => {
+    if (redactMode && redactRef.current) {
+      const d = redactRef.current;
+      redactRef.current = null;
+      setRedactDraft(null);
+      const w = Math.abs(d.x1 - d.x0);
+      const h = Math.abs(d.y1 - d.y0);
+      // A near-zero drag is a TAP → word auto-boxing upstream.
+      if (w < 0.005 && h < 0.005) onRedactTap(page.index, d.x0, d.y0);
+      else onRedactRect(page.index, { x: Math.min(d.x0, d.x1), y: Math.min(d.y0, d.y1), w, h });
+      return;
+    }
     if (!inkMode || !strokeRef.current) return;
     const pts = strokeRef.current;
     strokeRef.current = null;
@@ -191,8 +225,8 @@ export function PageCanvas({
         style={{
           paddingBottom: `${page.ratio * 100}%`,
           containerType: "inline-size",
-          touchAction: inkMode ? "none" : undefined,
-          cursor: inkMode ? "crosshair" : undefined,
+          touchAction: inkMode || redactMode ? "none" : undefined,
+          cursor: inkMode || redactMode ? "crosshair" : undefined,
         }}
         onPointerDown={onFramePointerDown}
         onPointerMove={onFramePointerMove}
@@ -219,12 +253,25 @@ export function PageCanvas({
             page={page}
             selected={selectedId === el.id}
             editing={editingId === el.id}
-            interactive={!inkMode}
+            interactive={!inkMode && !redactMode}
             dispatch={dispatch}
             placeholder={editPlaceholder}
             removeLabel={removeLabel}
           />
         ))}
+        {redactDraft && (
+          <div
+            className="pointer-events-none absolute"
+            style={{
+              left: `${Math.min(redactDraft.x0, redactDraft.x1) * 100}%`,
+              top: `${Math.min(redactDraft.y0, redactDraft.y1) * 100}%`,
+              width: `${Math.abs(redactDraft.x1 - redactDraft.x0) * 100}%`,
+              height: `${Math.abs(redactDraft.y1 - redactDraft.y0) * 100}%`,
+              background: "rgba(0,0,0,0.6)",
+              outline: "1.5px dashed rgba(251,191,36,0.9)",
+            }}
+          />
+        )}
         {stroke && stroke.length > 1 && (
           <svg
             className="pointer-events-none absolute inset-0 h-full w-full"
@@ -553,6 +600,13 @@ function ElementContent({
         <div
           className="pointer-events-none h-full w-full"
           style={{ background: el.color, opacity: el.opacity, mixBlendMode: "multiply" }}
+        />
+      );
+    case "redact":
+      return (
+        <div
+          className="pointer-events-none h-full w-full"
+          style={{ background: "rgba(0,0,0,0.82)", outline: "1.5px solid rgba(251,191,36,0.9)" }}
         />
       );
     case "ink": {
