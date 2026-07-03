@@ -707,7 +707,7 @@ export function WorkflowResultState({
       )}
 
       {/* Actions */}
-      <div className="flex flex-col gap-2 px-5 py-4 sm:flex-row">
+      <div className="flex flex-col items-center gap-2 px-5 py-4 sm:flex-row sm:justify-center">
         {onCopy ? (
           <PrimaryButton onClick={onCopy}>
             {copied ? tr(locale, "Copied ✓", "已复制", "Copiado ✓", "Copiado ✓", "Copié ✓", "コピーしました ✓", "Kopiert ✓") : primaryLabel}
