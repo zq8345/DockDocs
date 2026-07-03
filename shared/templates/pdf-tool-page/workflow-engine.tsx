@@ -785,7 +785,7 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
           "変換バックエンドで DOCX ファイルを準備しています。",
           "Eine DOCX-Datei wird über das Konvertierungs-Backend vorbereitet.",
         ),
-        resultLabel: tr("Download .docx", "下载 .docx", "Descargar .docx", "Baixar .docx", "Télécharger le .docx", ".docx をダウンロード", ".docx herunterladen"),
+        resultLabel: tr("Download DOCX", "下载 DOCX", "Descargar DOCX", "Baixar DOCX", "Télécharger le DOCX", "DOCX をダウンロード", "DOCX herunterladen", "DOCX 다운로드"),
         outputFileName: "dockdocs-converted.docx",
         steps: [
           tr("Checking PDF file...", "检查 PDF 文件...", "Comprobando el archivo PDF...", "Verificando o arquivo PDF...", "Vérification du fichier PDF...", "PDF ファイルを確認中...", "PDF-Datei wird geprüft..."),
@@ -930,7 +930,7 @@ function getWorkflowSpec(config: PdfToolPageConfig): WorkflowSpec {
         ...base,
         maxFileSize: 100 * mb, maxTotalSize: 100 * mb,
         processLabel: tr("Extracting tables from PDF and converting to Excel.", "正在从 PDF 提取表格并转换为 Excel。", "Extrayendo tablas del PDF y convirtiéndolas a Excel.", "Extraindo tabelas do PDF e convertendo para Excel.", "Extraction des tableaux du PDF et conversion en Excel.", "PDF から表を抽出して Excel に変換しています。", "Tabellen werden aus dem PDF extrahiert und in Excel konvertiert."),
-        resultLabel: tr("Download Excel", "下载 Excel", "Descargar Excel", "Baixar Excel", "Télécharger Excel", "Excel をダウンロード", "Excel herunterladen"),
+        resultLabel: tr("Download XLSX", "下载 XLSX", "Descargar XLSX", "Baixar XLSX", "Télécharger le XLSX", "XLSX をダウンロード", "XLSX herunterladen", "XLSX 다운로드"),
         outputFileName: "dockdocs-converted.xlsx",
         steps: [
           S.uploadPdf,
@@ -1294,6 +1294,22 @@ function getWorkflowResult(
     ? artifact.blob.size
     : totalSize;
   const outputName = artifact?.fileName ?? getWorkflowSpec(config).outputFileName;
+  // Meta-line page fragments (preview-card family standard "12p"). Office
+  // outputs have no true output page count — show the SOURCE page count,
+  // labeled as such; omit entirely when unknown (never fabricated).
+  const outPages = artifact?.pageCount != null ? `${artifact.pageCount}p` : undefined;
+  const srcPages = artifact?.pageCount != null
+    ? tr(
+        `${artifact.pageCount}p (source)`,
+        `源 ${artifact.pageCount} 页`,
+        `${artifact.pageCount} págs. (original)`,
+        `${artifact.pageCount} págs. (original)`,
+        `${artifact.pageCount} p. (source)`,
+        `元 ${artifact.pageCount}ページ`,
+        `${artifact.pageCount} S. (Quelle)`,
+        `원본 ${artifact.pageCount}페이지`,
+      )
+    : undefined;
 
   // Common row labels reused across results.
   const L = {
@@ -1374,6 +1390,9 @@ function getWorkflowResult(
         ],
         preview: artifact?.blob ? "pdf" : undefined,
         previewBlob: artifact?.blob,
+        outputName,
+        outputSize: formatBytes(outputSize),
+        outputPages: outPages,
       };
     }
     case "ocr-pdf":
@@ -1396,31 +1415,25 @@ function getWorkflowResult(
         preview: "text",
       };
     case "pdf-to-word":
+      // Banner copy matches the generic conversion case below (one structure
+      // across all converters; this case only exists for its richer rows).
       return {
-        title: tr("Word document generated", "Word 文档已生成", "Documento de Word generado", "Documento do Word gerado", "Document Word généré", "Word 文書を生成しました", "Word-Dokument erstellt"),
-        description: tr(
-          "PDF content exported as a DOCX file, ready for editing.",
-          "PDF 内容已导出为 DOCX 文件，可在线编辑。",
-          "Contenido del PDF exportado como un archivo DOCX, listo para editar.",
-          "Conteúdo do PDF exportado como um arquivo DOCX, pronto para edição.",
-          "Contenu du PDF exporté en fichier DOCX, prêt à être modifié.",
-          "PDF の内容を DOCX ファイルとしてエクスポートしました。編集できます。",
-          "PDF-Inhalt als DOCX-Datei exportiert, bereit zur Bearbeitung.",
-        ),
+        title: tr("Conversion complete", "转换完成", "Conversión completada", "Conversão concluída", "Conversion terminée", "変換が完了しました", "Konvertierung abgeschlossen"),
+        description: tr("File converted, ready to download.", "文件已转换，可下载。", "Archivo convertido, listo para descargar.", "Arquivo convertido, pronto para baixar.", "Fichier converti, prêt à télécharger.", "ファイルを変換しました。ダウンロードできます。", "Datei konvertiert, bereit zum Download."),
         rows: [
           [L.input, files[0]?.file.name ?? "—"],
           [L.pages, artifact?.pageCount != null ? String(artifact.pageCount) : "—"],
           [L.outputSize, formatBytes(outputSize)],
           [L.output, outputName],
         ],
-        // Output is a DOCX — show the same blue "W" badge the upload preview uses.
+        // Office output: preview the INPUT PDF's first page (same content,
+        // honestly renderable) with a corner W tag — see OfficeResultPreview.
         preview: artifact ? "office" : undefined,
         previewText: artifact ? outputName : undefined,
-        // Feed the FilePreviewLayout name/meta line (the generic conversion case
-        // below always sets these; pdf-to-word's dedicated case missed them, so
-        // its result card showed the badge with no filename/size).
+        previewBlob: artifact ? files[0]?.file : undefined,
         outputName,
         outputSize: formatBytes(outputSize),
+        outputPages: srcPages,
       };
     case "jpg-to-pdf":
     case "png-to-pdf":
@@ -1598,9 +1611,9 @@ function getWorkflowResult(
           [L.outputSize, formatBytes(outputSize)],
           [L.output, outputName],
         ],
-        // Output visual: PDF output → first-page thumbnail; Office output
-        // (pdf-to-ppt→pptx, pdf-to-excel→xlsx) → the same colored type badge the
-        // upload preview uses, so input and output previews stay consistent.
+        // Output visual: PDF output → OUTPUT first-page thumbnail; Office
+        // output (pdf-to-ppt→pptx, pdf-to-excel→xlsx) → INPUT PDF first page
+        // with a corner type tag (OfficeResultPreview) — same content, honest.
         preview: !artifact
           ? undefined
           : outputName.toLowerCase().endsWith(".pdf")
@@ -1608,10 +1621,17 @@ function getWorkflowResult(
           : /\.(docx?|pptx?|xlsx?|odt|odp|ods|rtf)$/i.test(outputName)
           ? "office"
           : undefined,
-        previewBlob: artifact && outputName.toLowerCase().endsWith(".pdf") ? artifact.blob : undefined,
+        previewBlob: !artifact
+          ? undefined
+          : outputName.toLowerCase().endsWith(".pdf")
+          ? artifact.blob
+          : /\.(docx?|pptx?|xlsx?|odt|odp|ods|rtf)$/i.test(outputName)
+          ? files[0]?.file
+          : undefined,
         previewText: artifact && /\.(docx?|pptx?|xlsx?|odt|odp|ods|rtf)$/i.test(outputName) ? outputName : undefined,
         outputName,
         outputSize: formatBytes(outputSize),
+        outputPages: outputName.toLowerCase().endsWith(".pdf") ? outPages : srcPages,
       };
     default:
       return {

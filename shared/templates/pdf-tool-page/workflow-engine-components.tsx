@@ -5,7 +5,7 @@ import type { PdfToolPageConfig } from "./index";
 import type { PdfRuntimeArtifact } from "./pdf-runtime";
 import { ToolBridge, hasToolBridge } from "./ToolBridge";
 import { toHant as ccTr } from "./zh-hant";
-import { DocPreview, renderPdfFirstPageDataUrl, OfficeFallback, FilePreviewLayout } from "./doc-preview";
+import { DocPreview, renderPdfFirstPageDataUrl, FilePreviewLayout, officeTypeOf } from "./doc-preview";
 
 // Visual preview of an uploaded file: first-page thumbnail for PDFs, the image
 // itself for images. Falls back to a small type badge while rendering / on error.
@@ -123,9 +123,15 @@ export type WorkflowResult = {
   rows: Array<[string, string]>;
   preview?: "text" | "document" | "image-order" | "ranges" | "pdf" | "office";
   previewText?: string;
+  /** pdf preview → the OUTPUT blob; office preview → the INPUT PDF File
+   *  (its first page is the honest, same-content preview for the converted
+   *  docx/xlsx/pptx, which browsers can't render). */
   previewBlob?: Blob;
   outputName?: string;
   outputSize?: string;
+  /** Localized page fragment for the meta line (e.g. "12p" or "源 12 页").
+   *  Omitted when the true value isn't available — never fabricated. */
+  outputPages?: string;
 };
 
 export type UploadedFile = { id: string; file: File };
@@ -669,6 +675,25 @@ function PdfResultImgOnly({ blob }: { blob?: Blob }) {
   );
 }
 
+// Office-output result preview: the INPUT PDF's first page (the converted
+// docx/xlsx/pptx carries the same content, and browsers can't render office
+// files) with a small format tag in the corner — honest preview, replaces the
+// old oversized empty W/X/P frame (Joe 2026-07-03 spec).
+function OfficeResultPreview({ blob, name }: { blob?: Blob; name: string }) {
+  const { color, label } = officeTypeOf(name);
+  return (
+    <div className="relative min-h-[120px] min-w-[160px]">
+      <PdfResultImgOnly blob={blob} />
+      <span
+        className="absolute bottom-2 right-2 flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] text-[15px] font-bold text-white shadow-[0_1px_4px_rgba(0,0,0,0.35)]"
+        style={{ backgroundColor: color }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Result state — download ready
 // ---------------------------------------------------------------------------
@@ -716,10 +741,10 @@ export function WorkflowResultState({
             previewContent={
               result.preview === "pdf"
                 ? <PdfResultImgOnly blob={result.previewBlob} />
-                : <OfficeFallback name={result.outputName ?? result.previewText ?? ""} />
+                : <OfficeResultPreview blob={result.previewBlob} name={result.outputName ?? result.previewText ?? ""} />
             }
             name={result.outputName ?? ""}
-            meta={result.outputSize ?? ""}
+            meta={[result.outputSize, result.outputPages].filter(Boolean).join(" · ")}
           />
         </div>
 
