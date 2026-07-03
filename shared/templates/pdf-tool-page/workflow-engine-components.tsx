@@ -505,8 +505,8 @@ export function WorkflowProgress({
   onCancel?: () => void;
   cancelLabel?: string;
   bare?: boolean;
-  // Prototype flag (word-to-pdf only): hides the spinner and adds a pulse
-  // shimmer on the progress bar fill so the bar signals "alive" instead.
+  // Prototype flag: hides the spinner and adds a sweep shimmer on the progress
+  // bar fill so the bar signals "alive" instead. Active on 4 tool prototypes.
   noSpinner?: boolean;
 }) {
   return (
@@ -534,7 +534,9 @@ export function WorkflowProgress({
             style={{ width: `${progress}%` }}
           >
             {noSpinner && animated && (
-              <div className="absolute inset-0 animate-pulse rounded-full bg-white/25" />
+              <div className="absolute inset-0 overflow-hidden rounded-full">
+                <div className="absolute inset-y-0 left-0 w-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              </div>
             )}
           </div>
         </div>
