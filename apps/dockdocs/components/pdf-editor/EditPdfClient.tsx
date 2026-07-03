@@ -295,6 +295,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const [pages, setPages] = useState<PageInfo[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [inkMode, setInkMode] = useState(false);
+  const [bakeDone, setBakeDone] = useState<{ done: number; total: number } | null>(null);
   const [state, dispatch] = useReducer(editorReducer, initialEditorState);
 
   const fileRef = useRef<File | null>(null);
@@ -534,8 +535,11 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     if (!file || state.elements.length === 0) return;
     setPhase("working");
     setError(null);
+    setBakeDone({ done: 0, total: state.elements.length });
     try {
-      const bytes = await bakePdf(await file.arrayBuffer(), pages, state.elements);
+      const bytes = await bakePdf(await file.arrayBuffer(), pages, state.elements, (done, total) =>
+        setBakeDone({ done, total }),
+      );
       const blob = new Blob([bytes as unknown as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -548,6 +552,8 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("ready");
+    } finally {
+      setBakeDone(null);
     }
   }, [pages, state.elements, t, locale]);
 
@@ -616,7 +622,11 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 <span className="h-5 w-px bg-[color:var(--line)]" aria-hidden="true" />
                 <button type="button" onClick={download} disabled={phase === "working" || state.elements.length === 0}
                   className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
-                  {phase === "working" ? t.working : t.download}
+                  {phase === "working"
+                    ? bakeDone && bakeDone.total > 1
+                      ? `${t.working} ${Math.min(bakeDone.done + 1, bakeDone.total)}/${bakeDone.total}`
+                      : t.working
+                    : t.download}
                 </button>
               </div>
             </div>
