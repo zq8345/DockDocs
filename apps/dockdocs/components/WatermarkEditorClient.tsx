@@ -10,6 +10,7 @@ import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { LAYOUT } from "@/lib/layout-constants";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
 type Locale = RouteLocale;
 // AuthoredLocale (= RouteLocale minus zh-Hant) and AuthoredCopy now come from the
@@ -368,6 +369,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
   const [from, setFrom] = useState(1);
   const [to, setTo] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
   const [pageWpt, setPageWpt] = useState(0);
   const [dispW, setDispW] = useState(0);
   const [pageAR, setPageAR] = useState(1); // width/height; > 1 = landscape
@@ -378,7 +380,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
   const previewImgRef = useRef<HTMLImageElement | null>(null);
 
   const reset = () => {
-    setPhase("idle"); setFileName(""); setPreview(""); setNumPages(0);
+    setDone(false); setPhase("idle"); setFileName(""); setPreview(""); setNumPages(0);
     setImgPreview(""); setError(null); mainRef.current = null; imgRef.current = null;
   };
 
@@ -526,6 +528,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
       a.click();
       URL.revokeObjectURL(url);
       trackToolRun("watermark-pdf");
+      setDone(true);
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
@@ -650,6 +653,7 @@ export function WatermarkEditorClient({ locale = "en", embedded = false }: { loc
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {done && <div className="mt-6"><ToolBridge slug="watermark-pdf" locale={locale} useLocalePrefix={locale !== "en"} /></div>}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="watermark-pdf" locale={locale} />}
     </div>

@@ -9,6 +9,7 @@ import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
 type Locale = RouteLocale;
 type PosKey = "tl" | "tc" | "tr" | "ml" | "c" | "mr" | "bl" | "bc" | "br";
@@ -341,6 +342,7 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const [pos, setPos] = useState<PosKey>("br");
   const [size, setSize] = useState(28); // % of page width
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
 
   const fileRef = useRef<File | null>(null);
   const padRef = useRef<HTMLCanvasElement>(null);
@@ -444,6 +446,7 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       link.href = url; link.download = (fileName.replace(/\.pdf$/i, "") || "document") + "-signed.pdf"; link.click();
       URL.revokeObjectURL(url);
       trackToolRun("sign-pdf");
+      setDone(true);
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, baseLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
@@ -466,7 +469,7 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <p className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
-                <button type="button" aria-label={t.reset} onClick={() => { setPhase("idle"); setFileName(""); setPreview(""); setSig(""); setTyped(""); fileRef.current = null; }}
+                <button type="button" aria-label={t.reset} onClick={() => { setDone(false); setPhase("idle"); setFileName(""); setPreview(""); setSig(""); setTyped(""); fileRef.current = null; }}
                   className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
                   <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
                     <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -540,6 +543,7 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {done && <div className="mt-6"><ToolBridge slug="sign-pdf" locale={locale} useLocalePrefix={locale !== "en"} /></div>}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="sign-pdf" locale={locale} />}
     </div>

@@ -10,6 +10,7 @@ import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
 import type { AuthoredLocale, AuthoredCopy, RouteLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
 type Locale = RouteLocale;
 type Fmt = "jpg" | "png";
@@ -381,9 +382,10 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [format, setFormat] = useState<Fmt>(defaultFormat);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
   const fileRef = useRef<File | null>(null);
 
-  const reset = () => { setPhase("idle"); setFileName(""); setPages([]); setSelected(new Set()); setError(null); fileRef.current = null; };
+  const reset = () => { setDone(false); setPhase("idle"); setFileName(""); setPages([]); setSelected(new Set()); setError(null); fileRef.current = null; };
 
   const onFile = useCallback(async (file: File) => {
     if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
@@ -454,6 +456,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
       a.href = url; a.download = outName; a.click();
       URL.revokeObjectURL(url);
       trackToolRun("pdf-to-image");
+      setDone(true);
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
@@ -528,6 +531,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {done && <div className="mt-6"><ToolBridge slug="pdf-to-image" locale={locale} useLocalePrefix={locale !== "en"} /></div>}
 
       {content && (
         <div className="mt-14 space-y-12">

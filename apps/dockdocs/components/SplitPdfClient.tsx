@@ -10,6 +10,7 @@ import { deepHant, toHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
 import type { RouteLocale, AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
 type Locale = RouteLocale;
 type Pg = { idx: number; thumb: string };
@@ -347,9 +348,10 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
   const [splits, setSplits] = useState<Set<number>>(new Set()); // split AFTER this page index
   const [everyN, setEveryN] = useState(2);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
   const fileRef = useRef<File | null>(null);
 
-  const reset = () => { setPhase("idle"); setFileName(""); setPages([]); setSplits(new Set()); setError(null); fileRef.current = null; };
+  const reset = () => { setDone(false); setPhase("idle"); setFileName(""); setPages([]); setSplits(new Set()); setError(null); fileRef.current = null; };
 
   const onFile = useCallback(async (file: File) => {
     if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
@@ -427,6 +429,7 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
       URL.revokeObjectURL(url);
       setPhase("ready");
       trackToolRun("split-pdf");
+      setDone(true);
     } catch (e) {
       setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
@@ -517,6 +520,7 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {done && <div className="mt-6"><ToolBridge slug="split-pdf" locale={locale} useLocalePrefix={locale !== "en"} /></div>}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="split-pdf" locale={locale} />}
     </div>

@@ -75,6 +75,58 @@ const COMPARE_DOCS: Bridge = {
   },
 };
 
+const BATCH_PPT: Bridge = {
+  targetHref: "/batch-ppt-to-pdf",
+  label: { en: "Batch PPT to PDF", zh: "批量 PPT 转 PDF", es: "PPT a PDF por lotes", pt: "PPT para PDF em lote", fr: "PPT vers PDF par lot", ja: "PPT を PDF に一括変換" },
+  pitch: {
+    en: "Got a whole folder? Convert many PowerPoint files to PDF in one batch.",
+    zh: "有一整个文件夹？一次把多个 PowerPoint 文件转成 PDF。",
+    es: "¿Tienes una carpeta entera? Convierte muchos archivos de PowerPoint a PDF en un lote.",
+    pt: "Tem uma pasta inteira? Converta muitos arquivos do PowerPoint em PDF de uma vez.",
+    fr: "Tout un dossier ? Convertissez plusieurs présentations en PDF en un seul lot.",
+    ja: "フォルダごとまとめて？複数の PowerPoint ファイルを一括で PDF に変換できます。",
+  },
+};
+
+const BATCH_EXCEL_TO_PDF: Bridge = {
+  targetHref: "/batch-excel-to-pdf",
+  label: { en: "Batch Excel to PDF", zh: "批量 Excel 转 PDF", es: "Excel a PDF por lotes", pt: "Excel para PDF em lote", fr: "Excel vers PDF par lot", ja: "Excel を PDF に一括変換" },
+  pitch: {
+    en: "Got a whole folder? Convert many Excel files to PDF in one batch.",
+    zh: "有一整个文件夹？一次把多个 Excel 文件转成 PDF。",
+    es: "¿Tienes una carpeta entera? Convierte muchos archivos de Excel a PDF en un lote.",
+    pt: "Tem uma pasta inteira? Converta muitos arquivos do Excel em PDF de uma vez.",
+    fr: "Tout un dossier ? Convertissez plusieurs feuilles de calcul en PDF en un seul lot.",
+    ja: "フォルダごとまとめて？複数の Excel ファイルを一括で PDF に変換できます。",
+  },
+};
+
+const BATCH_PDF_TO_EXCEL: Bridge = {
+  targetHref: "/batch-pdf-to-excel",
+  label: { en: "Batch PDF to Excel", zh: "批量 PDF 转 Excel", es: "PDF a Excel por lotes", pt: "PDF para Excel em lote", fr: "PDF vers Excel par lot", ja: "PDF を Excel に一括変換" },
+  pitch: {
+    en: "Got multiple PDFs with tables? Convert them all to Excel in one go.",
+    zh: "有多个含表格的 PDF？一次全部转成 Excel。",
+    es: "¿Tienes varios PDF con tablas? Conviértelos todos a Excel de una vez.",
+    pt: "Tem vários PDF com tabelas? Converta todos para Excel de uma vez.",
+    fr: "Plusieurs PDF avec des tableaux ? Convertissez-les tous en Excel en une fois.",
+    ja: "表が入った PDF が複数ありますか？まとめて Excel に変換できます。",
+  },
+};
+
+const UNLOCK_PDF: Bridge = {
+  targetHref: "/unlock-pdf",
+  label: { en: "Unlock PDF", zh: "解锁 PDF", es: "Desbloquear PDF", pt: "Desbloquear PDF", fr: "Déverrouiller le PDF", ja: "PDF のロック解除" },
+  pitch: {
+    en: "Restricted the wrong file? Remove restrictions and unlock editing, printing, and copying.",
+    zh: "锁错文件了？移除限制，解锁编辑、打印和复制权限。",
+    es: "¿Restringiste el archivo equivocado? Elimina restricciones y desbloquea edición, impresión y copia.",
+    pt: "Restringiu o arquivo errado? Remova as restrições e desbloqueie edição, impressão e cópia.",
+    fr: "Mauvais fichier verrouillé ? Supprimez les restrictions et déverrouillez l'édition, l'impression et la copie.",
+    ja: "間違ったファイルを保護してしまいましたか？制限を解除して編集・印刷・コピーを可能にします。",
+  },
+};
+
 // Source tool slug → the next-step bridge. Several page-edit + OCR tools share the
 // Chat bridge; first batch covers the highest-intent jumps.
 const BRIDGES: Record<string, Bridge> = {
@@ -115,6 +167,18 @@ const BRIDGES: Record<string, Bridge> = {
   "batch-protect-pdf": CHAT_WITH_PDF,
   "batch-sort": CHAT_WITH_PDF,
   "batch-translate": CHAT_WITH_PDF,
+  // Conversion tools — previously missing
+  "pdf-to-markdown": CHAT_WITH_PDF,
+  "html-to-pdf": CHAT_WITH_PDF,
+  "pdf-to-ppt": CHAT_WITH_PDF,
+  "pdf-to-pdfa": CHAT_WITH_PDF,
+  "ppt-to-pdf": BATCH_PPT,
+  "excel-to-pdf": BATCH_EXCEL_TO_PDF,
+  "pdf-to-excel": BATCH_PDF_TO_EXCEL,
+  "protect-pdf": UNLOCK_PDF,
+  "unlock-pdf": CHAT_WITH_PDF,
+  "pdf-to-text": CHAT_WITH_PDF,
+  "pdf-to-html": CHAT_WITH_PDF,
 };
 
 const NEXT_LABEL: Record<BridgeLocale, string> = {
