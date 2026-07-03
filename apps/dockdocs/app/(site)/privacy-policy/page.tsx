@@ -56,10 +56,9 @@ export default function PrivacyPolicyPage() {
           Word/Excel/PowerPoint/HTML &rarr; PDF, PDF &rarr;
           Word/Excel/PowerPoint, and PDF/A conversion upload your file to
           CloudConvert (CloudConvert GmbH, Germany) for processing. Files are
-          transferred over TLS, processed, and automatically deleted by
-          CloudConvert according to their retention policy (typically within 24
-          hours). We do not keep a copy of your file on our own servers at any
-          point.
+          transferred over TLS, processed, and deleted from the conversion
+          service right after your download completes. We do not keep a copy of
+          your file on our own servers at any point.
         </p>
         <p className="leading-7 text-[color:var(--muted)]">
           <strong className="text-[color:var(--foreground)]">
@@ -141,7 +140,7 @@ export default function PrivacyPolicyPage() {
                 <td className="py-2 pr-6">CloudConvert GmbH</td>
                 <td className="py-2 pr-6">File conversion (8 tools)</td>
                 <td className="py-2">
-                  The file you convert (auto-deleted after processing)
+                  The file you convert (deleted after your download completes)
                 </td>
               </tr>
               <tr className="border-b border-[color:var(--line)]">

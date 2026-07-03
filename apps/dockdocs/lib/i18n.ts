@@ -785,7 +785,7 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
             {
               title: "Conversion tools",
               description:
-                "Eight tools (Word/Excel/PowerPoint/HTML → PDF; PDF → Word/Excel/PowerPoint; PDF/A) upload your file to CloudConvert (Germany) via TLS. Files are automatically deleted after processing, typically within 24 hours.",
+                "Eight tools (Word/Excel/PowerPoint/HTML → PDF; PDF → Word/Excel/PowerPoint; PDF/A) upload your file to CloudConvert (Germany) via TLS. Files are deleted from the conversion service right after your download completes.",
             },
             {
               title: "AI tools",
@@ -1130,7 +1130,7 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
             {
               title: "変換ツール",
               description:
-                "Word/Excel/PowerPoint/HTML→PDF、PDF→Word/Excel/PowerPoint、PDF/A の8ツールは、TLS通信でドイツのCloudConvertにファイルをアップロードします。ファイルは処理後に自動削除され、通常24時間以内に消去されます。",
+                "Word/Excel/PowerPoint/HTML→PDF、PDF→Word/Excel/PowerPoint、PDF/A の8ツールは、TLS通信でドイツのCloudConvertにファイルをアップロードします。ファイルはダウンロード完了直後に変換サービスから削除されます。",
             },
             {
               title: "AIツール",
@@ -1461,7 +1461,7 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
             {
               title: "转换工具",
               description:
-                "Word/Excel/PowerPoint/HTML→PDF、PDF→Word/Excel/PowerPoint 及 PDF/A 共 8 个工具会通过 TLS 将文件上传至德国 CloudConvert 处理。文件处理后由 CloudConvert 自动删除，通常在 24 小时内。",
+                "Word/Excel/PowerPoint/HTML→PDF、PDF→Word/Excel/PowerPoint 及 PDF/A 共 8 个工具会通过 TLS 将文件上传至德国 CloudConvert 处理。文件在您下载完成后立即从转换服务中删除。",
             },
             {
               title: "AI 工具",
@@ -1802,7 +1802,7 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
             {
               title: "Herramientas de conversión",
               description:
-                "Ocho herramientas (Word/Excel/PowerPoint/HTML→PDF; PDF→Word/Excel/PowerPoint; PDF/A) suben su archivo a CloudConvert (Alemania) mediante TLS. Los archivos son eliminados automáticamente por CloudConvert tras el procesamiento, normalmente en 24 horas.",
+                "Ocho herramientas (Word/Excel/PowerPoint/HTML→PDF; PDF→Word/Excel/PowerPoint; PDF/A) suben su archivo a CloudConvert (Alemania) mediante TLS. Los archivos se eliminan del servicio de conversión justo después de que se complete su descarga.",
             },
             {
               title: "Herramientas de IA",
@@ -2147,7 +2147,7 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
             {
               title: "Ferramentas de conversão",
               description:
-                "Oito ferramentas (Word/Excel/PowerPoint/HTML→PDF; PDF→Word/Excel/PowerPoint; PDF/A) enviam seu arquivo ao CloudConvert (Alemanha) via TLS. Os arquivos são excluídos automaticamente pelo CloudConvert após o processamento, normalmente em até 24 horas.",
+                "Oito ferramentas (Word/Excel/PowerPoint/HTML→PDF; PDF→Word/Excel/PowerPoint; PDF/A) enviam seu arquivo ao CloudConvert (Alemanha) via TLS. Os arquivos são excluídos do serviço de conversão assim que seu download é concluído.",
             },
             {
               title: "Ferramentas de IA",
@@ -2497,7 +2497,7 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
             {
               title: "Outils de conversion",
               description:
-                "Huit outils (Word/Excel/PowerPoint/HTML→PDF ; PDF→Word/Excel/PowerPoint ; PDF/A) téléversent votre fichier vers CloudConvert (Allemagne) via TLS. Les fichiers sont automatiquement supprimés par CloudConvert après traitement, généralement sous 24 heures.",
+                "Huit outils (Word/Excel/PowerPoint/HTML→PDF ; PDF→Word/Excel/PowerPoint ; PDF/A) téléversent votre fichier vers CloudConvert (Allemagne) via TLS. Les fichiers sont supprimés du service de conversion dès que votre téléchargement est terminé.",
             },
             {
               title: "Outils IA",
@@ -2847,7 +2847,7 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
             {
               title: "Konvertierungs-Tools",
               description:
-                "Acht Tools (Word/Excel/PowerPoint/HTML→PDF; PDF→Word/Excel/PowerPoint; PDF/A) übertragen Ihre Datei per TLS an CloudConvert (Deutschland) zur Verarbeitung. Dateien werden von CloudConvert nach der Verarbeitung automatisch gelöscht, in der Regel innerhalb von 24 Stunden.",
+                "Acht Tools (Word/Excel/PowerPoint/HTML→PDF; PDF→Word/Excel/PowerPoint; PDF/A) übertragen Ihre Datei per TLS an CloudConvert (Deutschland) zur Verarbeitung. Dateien werden vom Konvertierungsdienst gelöscht, sobald Ihr Download abgeschlossen ist.",
             },
             {
               title: "KI-Tools",
@@ -3192,7 +3192,7 @@ export const infoPages: Record<"en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | 
             {
               title: "변환 도구",
               description:
-                "Word/Excel/PowerPoint/HTML→PDF, PDF→Word/Excel/PowerPoint, PDF/A 등 8개 도구는 파일을 TLS를 통해 독일의 CloudConvert에 전송합니다. 파일은 처리 후 CloudConvert에 의해 자동 삭제되며, 일반적으로 24시간 이내에 삭제됩니다.",
+                "Word/Excel/PowerPoint/HTML→PDF, PDF→Word/Excel/PowerPoint, PDF/A 등 8개 도구는 파일을 TLS를 통해 독일의 CloudConvert에 전송합니다. 파일은 다운로드가 완료되는 즉시 변환 서비스에서 삭제됩니다.",
             },
             {
               title: "AI 도구",
