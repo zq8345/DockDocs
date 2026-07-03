@@ -4,6 +4,8 @@ import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { PageCard } from "@/components/PageCard";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
@@ -371,6 +373,7 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
   const [pages, setPages] = useState<Pg[]>([]);
   const [removed, setRemoved] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const fileRef = useRef<File | null>(null);
   const dragFrom = useRef<number | null>(null);
 
@@ -441,13 +444,17 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
     if (!file || pages.length === 0) return;
     setPhase("working");
     setError(null);
+    setProgress(5);
     try {
       const { PDFDocument } = await import("pdf-lib");
       const src = await PDFDocument.load(await file.arrayBuffer());
+      setProgress(30);
       const out = await PDFDocument.create();
       const copied = await out.copyPages(src, pages.map((p) => p.idx));
       copied.forEach((p) => out.addPage(p));
+      setProgress(75);
       const bytes = await out.save();
+      setProgress(95);
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -456,6 +463,7 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
       a.click();
       URL.revokeObjectURL(url);
       trackToolRun("reorder-pages");
+      setProgress(100);
       setDone(true);
       setPhase("ready");
     } catch (e) {
@@ -496,10 +504,20 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
           </div>
           <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-5 flex flex-wrap justify-center gap-4">
+          {phase === "working" && (
+            <div className="mx-auto mt-6 max-w-[200px]">
+              <CircularProgress bare progress={progress} title={t.working} />
+            </div>
+          )}
+
+          <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
             {pages.map((p, pos) => (
-              <div
+              <PageCard
                 key={p.idx}
+                src={p.thumb}
+                alt={pageLabel(locale, p.idx + 1)}
+                pageLabel={pageLabel(locale, p.idx + 1)}
+                className="cursor-grab transition hover:border-[color:var(--line-strong)] active:cursor-grabbing"
                 draggable
                 onDragStart={() => (dragFrom.current = pos)}
                 onDragEnd={() => (dragFrom.current = null)}
@@ -509,9 +527,7 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
                   if (dragFrom.current != null) move(dragFrom.current, pos);
                   dragFrom.current = null;
                 }}
-                className="group flex w-fit cursor-grab flex-col items-center rounded-[var(--radius)] p-1.5 transition active:cursor-grabbing"
-              >
-                <div className="relative overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] transition group-hover:border-[color:var(--accent)]">
+                topRight={
                   <button
                     type="button"
                     onClick={() => remove(pos)}
@@ -520,15 +536,8 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
                   >
                     ✕
                   </button>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.thumb} alt={pageLabel(locale, p.idx + 1)}
-                    style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
-                    className="h-auto w-auto max-w-full" />
-                </div>
-                <span className="mt-1 block text-center text-[11px] text-[color:var(--muted)]">
-                  {pageLabel(locale, p.idx + 1)}
-                </span>
-              </div>
+                }
+              />
             ))}
           </div>
         </>

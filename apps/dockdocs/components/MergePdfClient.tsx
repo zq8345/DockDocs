@@ -1,6 +1,7 @@
 ﻿"use client";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { BatchFileCard } from "@/components/BatchFileCard";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
@@ -316,6 +317,7 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [working, setWorking] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -383,21 +385,24 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
 
   const merge = useCallback(async () => {
     if (items.length < 2) { setError(t.needTwo); return; }
-    setWorking(true); setError(null);
+    setWorking(true); setError(null); setProgress(5);
     try {
       const { PDFDocument } = await import("pdf-lib");
       const out = await PDFDocument.create();
-      for (const it of items) {
-        const doc = await PDFDocument.load(await it.file.arrayBuffer());
+      for (let i = 0; i < items.length; i++) {
+        const doc = await PDFDocument.load(await items[i].file.arrayBuffer());
         const copied = await out.copyPages(doc, doc.getPageIndices());
         copied.forEach((p) => out.addPage(p));
+        setProgress(5 + Math.round(((i + 1) / items.length) * 75));
       }
       const bytes = await out.save();
+      setProgress(95);
       const blob = new Blob([bytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url; a.download = "dockdocs-merged.pdf"; a.click();
       URL.revokeObjectURL(url);
+      setProgress(100);
       setDone(true);
       trackToolRun("merge-pdf");
     } catch (e) {
@@ -437,6 +442,12 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
           </div>
           <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
+          {working && (
+            <div className="mx-auto mt-6 max-w-[200px]">
+              <CircularProgress bare progress={progress} title={t.working} />
+            </div>
+          )}
+
           <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
             {items.map((it, pos) => (
               <div
@@ -466,7 +477,7 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
               type="button"
               onClick={() => inputRef.current?.click()}
               aria-label={t.add}
-              className="flex min-h-[180px] flex-col items-center justify-center gap-1.5 rounded-[var(--radius)] border-2 border-dashed border-[color:var(--line)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+              className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[var(--radius)] border-2 border-dashed border-[color:var(--line)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
             >
               <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                 <path d="M12 5v14M5 12h14" />

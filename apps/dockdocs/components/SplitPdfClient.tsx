@@ -5,6 +5,8 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { PageCard } from "@/components/PageCard";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
@@ -15,7 +17,8 @@ import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 type Locale = RouteLocale;
 type Pg = { idx: number; thumb: string };
 
-const SEG_TINTS = ["", "bg-[rgba(62,207,142,0.06)]", "bg-[rgba(52,211,153,0.07)]", "bg-[rgba(251,191,36,0.08)]", "bg-[rgba(96,165,250,0.07)]"];
+// Segment tint values applied to the PageCard thumbnail frame (inline style).
+const SEG_TINTS = ["", "rgba(62,207,142,0.06)", "rgba(52,211,153,0.07)", "rgba(251,191,36,0.08)", "rgba(96,165,250,0.07)"];
 
 const _en = {
   title: "Split PDF",
@@ -348,6 +351,7 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
   const [splits, setSplits] = useState<Set<number>>(new Set()); // split AFTER this page index
   const [everyN, setEveryN] = useState(2);
   const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
   const fileRef = useRef<File | null>(null);
 
@@ -403,10 +407,11 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
     const file = fileRef.current;
     if (!file) return;
     if (splits.size === 0) { setError(t.needSplit); return; }
-    setPhase("working"); setError(null);
+    setPhase("working"); setError(null); setProgress(5);
     try {
       const { PDFDocument } = await import("pdf-lib");
       const src = await PDFDocument.load(await file.arrayBuffer());
+      setProgress(20);
       // build segments: arrays of page indices
       const segments: number[][] = [[]];
       pages.forEach((p, pos) => {
@@ -420,13 +425,16 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
         const copied = await out.copyPages(src, segments[s]);
         copied.forEach((p) => out.addPage(p));
         zipFiles.push({ name: `${base}-part-${s + 1}.pdf`, data: await out.save() });
+        setProgress(20 + Math.round(((s + 1) / segments.length) * 70));
       }
       const zipBytes = createZipArchive(zipFiles);
+      setProgress(95);
       const blob = new Blob([zipBytes as BlobPart], { type: "application/zip" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url; a.download = `${base}-split.zip`; a.click();
       URL.revokeObjectURL(url);
+      setProgress(100);
       setPhase("ready");
       trackToolRun("split-pdf");
       setDone(true);
@@ -474,11 +482,18 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
           </div>
           <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-5 flex flex-wrap items-center gap-4">
+          {phase === "working" && (
+            <div className="mx-auto mt-6 max-w-[200px]">
+              <CircularProgress bare progress={progress} title={t.working} />
+            </div>
+          )}
+
+          <div className="mt-5 flex flex-wrap items-center gap-3">
             {pages.map((p, pos) => {
               const seg = segOf(pos);
               const isLast = pos === pages.length - 1;
               const splitHere = splits.has(pos);
+              const tint = SEG_TINTS[seg % SEG_TINTS.length];
               const pageLabelMap: Record<AuthoredLocale, string> = {
                 en: `Page ${p.idx + 1}`,
                 zh: `第 ${p.idx + 1} 页`,
@@ -492,16 +507,18 @@ export function SplitPdfClient({ locale = "en", embedded = false }: { locale?: L
               const pageLabel = locale === "zh-Hant" ? toHant(pageLabelMap.zh) : locale === "ko" ? `${p.idx + 1}페이지` : pageLabelMap[al];
               return (
                 <div key={p.idx} className="flex items-center">
-                  <div className={`flex w-fit flex-col items-center rounded-[var(--radius)] p-1.5 ${SEG_TINTS[seg % SEG_TINTS.length]}`}>
-                    <span className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-[color:var(--accent-strong)]">{t.fileN(seg + 1)}</span>
-                    <div className="relative overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={p.thumb} alt={`page ${p.idx + 1}`}
-                        style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
-                        className="h-auto w-auto max-w-full" />
-                    </div>
-                    <span className="mt-1 block text-center text-[11px] text-[color:var(--muted)]">{pageLabel}</span>
-                  </div>
+                  <PageCard
+                    src={p.thumb}
+                    alt={`page ${p.idx + 1}`}
+                    pageLabel={pageLabel}
+                    className="w-[150px]"
+                    frameStyle={tint ? { backgroundColor: tint } : undefined}
+                    badge={
+                      <span className="rounded-[var(--radius-sm)] bg-[color:var(--surface)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-[color:var(--accent-strong)]">
+                        {t.fileN(seg + 1)}
+                      </span>
+                    }
+                  />
                   {!isLast && (
                     <button
                       type="button"

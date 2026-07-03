@@ -5,6 +5,7 @@ import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-ru
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { PageCard } from "@/components/PageCard";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
@@ -506,24 +507,20 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
           {/* Hint: outside toolbar, small caption */}
           <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-5 flex flex-wrap gap-4 justify-center">
+          <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
             {pages.map((p) => {
               const on = selected.has(p.idx);
               return (
-                <button key={p.idx} type="button" onClick={() => toggle(p.idx)} className={`group flex w-fit flex-col items-center rounded-[var(--radius)] p-1.5 transition ${on ? "bg-[color:var(--soft-accent)]" : "opacity-60 hover:opacity-100"}`}>
-                  {/* aspect-box: border frames only the image, label is outside */}
-                  <div className={`relative overflow-hidden rounded-[var(--radius-sm)] border ${on ? "border-[color:var(--accent)]" : "border-[color:var(--line)]"}`}>
-                    {on && <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--accent)] text-[11px] font-bold text-white">✓</span>}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={p.thumb}
-                      alt={`page ${p.idx + 1}`}
-                      style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
-                      className="h-auto w-auto max-w-full"
-                    />
-                  </div>
-                  <span className="mt-1 block text-center text-[11px] text-[color:var(--muted)]">{t.pageLabel(p.idx + 1)}</span>
-                </button>
+                <PageCard
+                  key={p.idx}
+                  src={p.thumb}
+                  alt={`page ${p.idx + 1}`}
+                  pageLabel={t.pageLabel(p.idx + 1)}
+                  selected={on}
+                  dim={!on}
+                  imgClassName={on ? undefined : "transition group-hover:opacity-100"}
+                  onSelect={() => toggle(p.idx)}
+                />
               );
             })}
           </div>
