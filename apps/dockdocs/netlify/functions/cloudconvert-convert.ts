@@ -1,4 +1,5 @@
 import type { Context } from "@netlify/functions";
+import { getStore } from "@netlify/blobs";
 import { enforceFeatureGate } from "./_shared/feature-gate";
 
 declare const Netlify: {
@@ -34,6 +35,32 @@ function cloudConvertFailMessage(status: number): string {
 }
 
 const ALLOWED_ORIGIN = /^https:\/\/([a-z0-9-]+\.)*(dockdocs\.app|netlify\.app)$/i;
+
+// Global daily circuit breaker: at most 200 CloudConvert jobs/day across all users.
+// Uses Netlify Blobs with an eventual-consistent read-modify-write (same approach as
+// usage-store.ts). Slight over-count on concurrent bursts is acceptable; under-count
+// would falsely block users. Returns 503 when the daily cap is exceeded.
+const CC_GLOBAL_DAILY_LIMIT = 200;
+
+async function readGlobalDailyCC(today: string): Promise<number> {
+  try {
+    const store = getStore({ name: "dockdocs-usage", consistency: "strong" });
+    const rec = await store.get(`global/cc-daily/${today}.json`, { type: "json" }) as { count?: number } | null;
+    return typeof rec?.count === "number" ? rec.count : 0;
+  } catch {
+    return 0; // no Blobs env (local/dev) — skip cap
+  }
+}
+
+async function incrementGlobalDailyCC(today: string): Promise<void> {
+  try {
+    const store = getStore({ name: "dockdocs-usage", consistency: "strong" });
+    const key = `global/cc-daily/${today}.json`;
+    const rec = await store.get(key, { type: "json" }) as { count?: number } | null;
+    const next = (typeof rec?.count === "number" ? rec.count : 0) + 1;
+    await store.setJSON(key, { count: next, updatedAt: new Date().toISOString() });
+  } catch { /* best-effort */ }
+}
 
 // Best-effort per-IP sliding-window limiter (per warm instance) to bound CloudConvert credit abuse.
 const rlHits = new Map<string, number[]>();
@@ -150,6 +177,17 @@ export default async (req: Request, _context: Context) => {
     return json({ ok: false, code: "RATE_LIMITED", message: "Too many conversions — please wait a minute and try again." }, 429);
   }
 
+  // ── Global daily circuit breaker: ≤200 CloudConvert jobs/day across ALL users ──
+  const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD" UTC
+  const globalDailyCount = await readGlobalDailyCC(today);
+  if (globalDailyCount >= CC_GLOBAL_DAILY_LIMIT) {
+    return json({
+      ok: false,
+      code: "SERVICE_LIMIT",
+      message: "Daily conversion capacity reached. Please try again tomorrow.",
+    }, 503);
+  }
+
   // Per-plan daily/monthly cap (by Supabase user via Bearer token, or anon by IP) —
   // the authoritative bound on CloudConvert credit burn that replaces the old
   // best-effort in-memory daily counter. Only the costly CREATE path is gated;
@@ -230,6 +268,7 @@ export default async (req: Request, _context: Context) => {
     }
 
     await gate.commit();
+    incrementGlobalDailyCC(today).catch(() => {});
     return json({
       ok: true,
       jobId: job.data.id,
