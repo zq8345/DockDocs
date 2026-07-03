@@ -3,6 +3,7 @@ import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
+import { WorkArea } from "@/components/WorkArea";
 
 import { useCallback, useRef, useState } from "react";
 import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
@@ -27,7 +28,7 @@ const _en = {
     drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
     pw: "Password", pwPlaceholder: "Password to open the files", show: "Show", hide: "Hide",
     pwRule: "4–32 characters: letters, digits, underscore (_).",
-    run: "Encrypt all", running: "Encrypting", download: "Download ZIP", reset: "Start over", remove: "Remove",
+    run: "Encrypt all", running: "Encrypting", download: "Download ZIP", reset: "Clear files", remove: "Remove",
     files: (n: number, max: number) => `${n} / ${max} files`, done: "encrypted", failed: "failed",
     needFile: "Add at least one PDF.", needPw: "Enter a valid password (4–32: letters, digits, underscore).",
     note: "Each PDF will require this password to open. Already-encrypted PDFs are skipped. Everything stays on your device.",
@@ -42,7 +43,7 @@ const STR = {
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹",
     pw: "密码", pwPlaceholder: "打开文件所需的密码", show: "显示", hide: "隐藏",
     pwRule: "4–32 位：字母、数字、下划线(_)。",
-    run: "全部加密", running: "加密中", download: "下载 ZIP", reset: "重新开始", remove: "移除",
+    run: "全部加密", running: "加密中", download: "下载 ZIP", reset: "清空文件", remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`, done: "已加密", failed: "失败",
     needFile: "至少添加一份 PDF。", needPw: "请输入有效密码(4–32 位：字母、数字、下划线)。",
     note: "每份 PDF 都将需要此密码才能打开。已加密的 PDF 会被跳过。全部在你的设备上完成。",
@@ -54,7 +55,7 @@ const STR = {
     drop: "Arrastra y suelta los PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
     pw: "Contraseña", pwPlaceholder: "Contraseña para abrir los archivos", show: "Mostrar", hide: "Ocultar",
     pwRule: "De 4 a 32 caracteres: letras, dígitos y guion bajo (_).",
-    run: "Cifrar todo", running: "Cifrando", download: "Descargar ZIP", reset: "Empezar de nuevo", remove: "Quitar",
+    run: "Cifrar todo", running: "Cifrando", download: "Descargar ZIP", reset: "Borrar archivos", remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`, done: "cifrado", failed: "error",
     needFile: "Agrega al menos un PDF.", needPw: "Ingresa una contraseña válida (de 4 a 32: letras, dígitos y guion bajo).",
     note: "Cada PDF requerirá esta contraseña para abrirse. Los PDF que ya están cifrados se omiten. Todo permanece en tu dispositivo.",
@@ -66,7 +67,7 @@ const STR = {
     drop: "Arraste e solte os PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta",
     pw: "Senha", pwPlaceholder: "Senha para abrir os arquivos", show: "Mostrar", hide: "Ocultar",
     pwRule: "De 4 a 32 caracteres: letras, dígitos e sublinhado (_).",
-    run: "Criptografar tudo", running: "Criptografando", download: "Baixar ZIP", reset: "Recomeçar", remove: "Remover",
+    run: "Criptografar tudo", running: "Criptografando", download: "Baixar ZIP", reset: "Limpar arquivos", remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`, done: "criptografado", failed: "erro",
     needFile: "Adicione pelo menos um PDF.", needPw: "Insira uma senha válida (4 a 32: letras, dígitos e sublinhado).",
     note: "Cada PDF exigirá esta senha para ser aberto. PDFs já criptografados são ignorados. Tudo permanece no seu dispositivo.",
@@ -78,7 +79,7 @@ const STR = {
     drop: "Faites glisser vos PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
     pw: "Mot de passe", pwPlaceholder: "Mot de passe pour ouvrir les fichiers", show: "Afficher", hide: "Masquer",
     pwRule: "De 4 à 32 caractères : lettres, chiffres et trait de soulignement (_).",
-    run: "Tout chiffrer", running: "Chiffrement en cours", download: "Télécharger le ZIP", reset: "Recommencer", remove: "Retirer",
+    run: "Tout chiffrer", running: "Chiffrement en cours", download: "Télécharger le ZIP", reset: "Vider la liste", remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`, done: "chiffré", failed: "échec",
     needFile: "Ajoutez au moins un PDF.", needPw: "Saisissez un mot de passe valide (4 à 32 : lettres, chiffres et trait de soulignement).",
     note: "Chaque PDF nécessitera ce mot de passe pour être ouvert. Les PDF déjà chiffrés sont ignorés. Tout reste sur votre appareil.",
@@ -90,7 +91,7 @@ const STR = {
     drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
     pw: "パスワード", pwPlaceholder: "ファイルを開くためのパスワード", show: "表示", hide: "非表示",
     pwRule: "4～32文字：英字、数字、アンダースコア（_）。",
-    run: "すべて暗号化", running: "暗号化中", download: "ZIPをダウンロード", reset: "最初からやり直す", remove: "削除",
+    run: "すべて暗号化", running: "暗号化中", download: "ZIPをダウンロード", reset: "ファイルをクリア", remove: "削除",
     files: (n: number, max: number) => `${n} / ${max}件`, done: "暗号化済み", failed: "失敗",
     needFile: "PDFを少なくとも1つ追加してください。", needPw: "有効なパスワードを入力してください（4～32：英字、数字、アンダースコア）。",
     note: "各PDFを開くにはこのパスワードが必要になります。すでに暗号化されたPDFはスキップされます。すべてデバイス内で完結します。",
@@ -102,7 +103,7 @@ const STR = {
     drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
     pw: "Passwort", pwPlaceholder: "Passwort zum Öffnen der Dateien", show: "Anzeigen", hide: "Verbergen",
     pwRule: "4–32 Zeichen: Buchstaben, Ziffern, Unterstrich (_).",
-    run: "Alle verschlüsseln", running: "Wird verschlüsselt", download: "ZIP herunterladen", reset: "Neu beginnen", remove: "Entfernen",
+    run: "Alle verschlüsseln", running: "Wird verschlüsselt", download: "ZIP herunterladen", reset: "Liste leeren", remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`, done: "verschlüsselt", failed: "fehlgeschlagen",
     needFile: "Fügen Sie mindestens ein PDF hinzu.", needPw: "Geben Sie ein gültiges Passwort ein (4–32: Buchstaben, Ziffern, Unterstrich).",
     note: "Jedes PDF benötigt dieses Passwort zum Öffnen. Bereits verschlüsselte PDFs werden übersprungen. Die Verarbeitung erfolgt auf Ihrem Gerät.",
@@ -114,7 +115,7 @@ const STR = {
     drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
     pw: "비밀번호", pwPlaceholder: "파일을 열 비밀번호", show: "표시", hide: "숨기기",
     pwRule: "4~32자: 영문, 숫자, 밑줄(_).",
-    run: "전체 암호화", running: "암호화 중", download: "ZIP 다운로드", reset: "다시 시작", remove: "제거",
+    run: "전체 암호화", running: "암호화 중", download: "ZIP 다운로드", reset: "파일 비우기", remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개`, done: "암호화됨", failed: "실패",
     needFile: "PDF를 최소 한 개 추가하세요.", needPw: "유효한 비밀번호를 입력하세요(4~32자: 영문, 숫자, 밑줄).",
     note: "각 PDF를 열려면 이 비밀번호가 필요합니다. 이미 암호화된 PDF는 건너뜁니다. 모든 작업은 기기에서 처리됩니다.",
@@ -402,34 +403,38 @@ export function BatchProtectClient({ locale = "en", embedded = false }: { locale
       {items.length === 0 ? (
         <BatchUploadBox locale={locale} onFiles={addFiles} embedded={embedded} valueZone="client" />
       ) : (
-        <>
-          <div className="mt-6 flex flex-wrap items-end justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <label className="block text-[12.5px] font-medium text-[color:var(--muted)]">{t.pw}</label>
-              <div className="mt-1 flex items-center gap-2">
-                <input
-                  type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
-                  placeholder={t.pwPlaceholder} maxLength={32}
-                  className="h-10 w-full max-w-xs rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-[14px] text-[color:var(--foreground)]"
-                />
-                <button type="button" onClick={() => setShowPw((v) => !v)} className="h-10 rounded-[var(--radius)] border border-[color:var(--line)] px-3 text-[12.5px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{showPw ? t.hide : t.show}</button>
-              </div>
-              <p className="mt-1 text-[11.5px] text-[color:var(--faint)]">{t.pwRule}</p>
-            </div>
-            <div className="flex shrink-0 items-center gap-2">
+        <WorkArea
+          left={
+            <>
               <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
-              {items.length < maxFiles && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <input
+                    type={showPw ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)}
+                    placeholder={t.pwPlaceholder} maxLength={32}
+                    aria-label={t.pw}
+                    className="h-9 w-full max-w-xs rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-3 text-[13.5px] text-[color:var(--foreground)]"
+                  />
+                  <button type="button" onClick={() => setShowPw((v) => !v)} className="h-9 rounded-[var(--radius)] border border-[color:var(--line)] px-3 text-[12.5px] font-medium text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{showPw ? t.hide : t.show}</button>
+                </div>
+                <p className="mt-1 text-[11.5px] text-[color:var(--faint)]">{t.pwRule}</p>
+              </div>
+            </>
+          }
+          right={
+            <>
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" && doneCount > 0 ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}</button>
               ) : (
                 <button type="button" onClick={run} disabled={phase === "running"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "running" ? t.running : t.run}</button>
               )}
-            </div>
-          </div>
-
+            </>
+          }
+          footer={t.note}
+        >
           {phase === "running" && (
-            <div className="mx-auto mt-6 max-w-[200px]">
+            <div className="mx-auto mb-4 max-w-[200px]">
               <CircularProgress
                 bare
                 progress={items.length > 0 ? (progress / items.length) * 100 : 0}
@@ -439,7 +444,7 @@ export function BatchProtectClient({ locale = "en", embedded = false }: { locale
             </div>
           )}
 
-          <div className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
             {items.map((it) => (
               <BatchFileCard
                 key={it.id}
@@ -465,8 +470,7 @@ export function BatchProtectClient({ locale = "en", embedded = false }: { locale
               </button>
             )}
           </div>
-          <p className="mt-3 text-[12px] text-[color:var(--faint)]">{t.note}</p>
-        </>
+        </WorkArea>
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}

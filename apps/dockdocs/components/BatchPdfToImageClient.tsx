@@ -3,6 +3,7 @@ import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
+import { WorkArea } from "@/components/WorkArea";
 import { BatchFileCard } from "@/components/BatchFileCard";
 
 import { useCallback, useRef, useState } from "react";
@@ -27,7 +28,7 @@ const _en = {
   title: "Batch PDF to image",
   subtitle: "Drop a whole folder of PDFs and turn every page into a JPG or PNG — all rendered in your browser and packaged into one ZIP. Nothing is uploaded.",
   drop: "Drag & drop PDFs (or a folder) here, or click to choose", choose: "Choose PDFs", folder: "Choose folder",
-  format: "Format", run: "Convert all", running: "Converting", download: "Download ZIP", reset: "Start over", remove: "Remove",
+  format: "Format", run: "Convert all", running: "Converting", download: "Download ZIP", reset: "Clear files", remove: "Remove",
   files: (n: number, max: number) => `${n} / ${max} files`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "failed",
   need: "Add at least one PDF.", err: "Something went wrong: ",
   note: "Every page of every PDF becomes an image (rendered at 2×). Large batches take a moment — everything stays on your device.",
@@ -39,7 +40,7 @@ const STR = {
     title: "批量 PDF 转图片",
     subtitle: "拖入整个 PDF 文件夹，把每一页都转成 JPG 或 PNG——全部在浏览器中渲染并打包成一个 ZIP。不上传任何文件。",
     drop: "把 PDF(或整个文件夹)拖到这里，或点击选择", choose: "选择 PDF", folder: "选择文件夹",
-    format: "格式", run: "全部转换", running: "转换中", download: "下载 ZIP", reset: "重新开始", remove: "移除",
+    format: "格式", run: "全部转换", running: "转换中", download: "下载 ZIP", reset: "清空文件", remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`, pages: (n: number) => `${n} 页`, failed: "失败",
     need: "至少添加一份 PDF。", err: "出错了：",
     note: "每份 PDF 的每一页都会转成一张图片(2× 渲染)。文件多时稍慢——全部在你的设备上完成。",
@@ -48,7 +49,7 @@ const STR = {
     title: "PDF a imagen por lotes",
     subtitle: "Suelta una carpeta entera de PDF y convierte cada página en JPG o PNG: todo se procesa en tu navegador y se empaqueta en un solo ZIP. No se sube nada.",
     drop: "Arrastra y suelta PDF (o una carpeta) aquí, o haz clic para elegir", choose: "Elegir PDF", folder: "Elegir carpeta",
-    format: "Formato", run: "Convertir todo", running: "Convirtiendo", download: "Descargar ZIP", reset: "Empezar de nuevo", remove: "Quitar",
+    format: "Formato", run: "Convertir todo", running: "Convirtiendo", download: "Descargar ZIP", reset: "Borrar archivos", remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`, pages: (n: number) => `${n} página${n === 1 ? "" : "s"}`, failed: "falló",
     need: "Agrega al menos un PDF.", err: "Algo salió mal: ",
     note: "Cada página de cada PDF se convierte en una imagen (procesada a 2×). Los lotes grandes tardan un momento: todo permanece en tu dispositivo.",
@@ -57,7 +58,7 @@ const STR = {
     title: "PDF para imagem em lote",
     subtitle: "Solte uma pasta inteira de PDFs e converta cada página em JPG ou PNG: tudo é processado no seu navegador e empacotado em um único ZIP. Nada é enviado.",
     drop: "Arraste e solte PDFs (ou uma pasta) aqui, ou clique para escolher", choose: "Escolher PDFs", folder: "Escolher pasta",
-    format: "Formato", run: "Converter tudo", running: "Convertendo", download: "Baixar ZIP", reset: "Recomeçar", remove: "Remover",
+    format: "Formato", run: "Converter tudo", running: "Convertendo", download: "Baixar ZIP", reset: "Limpar arquivos", remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`, pages: (n: number) => `${n} página${n === 1 ? "" : "s"}`, failed: "falhou",
     need: "Adicione pelo menos um PDF.", err: "Algo deu errado: ",
     note: "Cada página de cada PDF vira uma imagem (renderizada a 2×). Lotes grandes demoram um momento — tudo permanece no seu dispositivo.",
@@ -66,7 +67,7 @@ const STR = {
     title: "PDF en images en lot",
     subtitle: "Déposez un dossier entier de PDF et convertissez chaque page en JPG ou PNG — tout est traité dans votre navigateur et regroupé dans un seul ZIP. Rien n'est téléversé.",
     drop: "Faites glisser des PDF (ou un dossier) ici, ou cliquez pour choisir", choose: "Choisir des PDF", folder: "Choisir un dossier",
-    format: "Format", run: "Tout convertir", running: "Conversion en cours", download: "Télécharger le ZIP", reset: "Recommencer", remove: "Retirer",
+    format: "Format", run: "Tout convertir", running: "Conversion en cours", download: "Télécharger le ZIP", reset: "Vider la liste", remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichier${n === 1 ? "" : "s"}`, pages: (n: number) => `${n} page${n === 1 ? "" : "s"}`, failed: "échec",
     need: "Ajoutez au moins un PDF.", err: "Une erreur est survenue : ",
     note: "Chaque page de chaque PDF est convertie en image (rendue à 2×). Les grands lots prennent un moment — tout reste sur votre appareil.",
@@ -75,7 +76,7 @@ const STR = {
     title: "一括PDFを画像に",
     subtitle: "PDFのフォルダごとドロップして、すべてのページをJPGまたはPNGに変換——すべてブラウザ内でレンダリングされ、1つのZIPにまとめられます。アップロードは一切ありません。",
     drop: "PDF（またはフォルダ）をここにドラッグ＆ドロップ、またはクリックして選択", choose: "PDFを選択", folder: "フォルダを選択",
-    format: "形式", run: "すべて変換", running: "変換中", download: "ZIPをダウンロード", reset: "最初からやり直す", remove: "削除",
+    format: "形式", run: "すべて変換", running: "変換中", download: "ZIPをダウンロード", reset: "ファイルをクリア", remove: "削除",
     files: (n: number, max: number) => `${n} / ${max}件`, pages: (n: number) => `${n}ページ`, failed: "失敗",
     need: "PDFを少なくとも1つ追加してください。", err: "問題が発生しました: ",
     note: "各PDFのすべてのページが画像になります（2×でレンダリング）。大量のバッチは少し時間がかかります——すべてデバイス内で完結します。",
@@ -84,7 +85,7 @@ const STR = {
     title: "PDF zu Bild im Stapel",
     subtitle: "Legen Sie einen ganzen Ordner mit PDFs ab und wandeln Sie jede Seite in ein JPG oder PNG um – alles wird in Ihrem Browser gerendert und in einem einzigen ZIP gebündelt. Die meisten Tools laufen direkt in Ihrem Browser.",
     drop: "PDFs (oder einen Ordner) hierher ziehen und ablegen oder zum Auswählen klicken", choose: "PDFs auswählen", folder: "Ordner auswählen",
-    format: "Format", run: "Alle umwandeln", running: "Wird umgewandelt", download: "ZIP herunterladen", reset: "Neu beginnen", remove: "Entfernen",
+    format: "Format", run: "Alle umwandeln", running: "Wird umgewandelt", download: "ZIP herunterladen", reset: "Liste leeren", remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`, pages: (n: number) => `${n} Seite${n === 1 ? "" : "n"}`, failed: "fehlgeschlagen",
     need: "Fügen Sie mindestens ein PDF hinzu.", err: "Etwas ist schiefgelaufen: ",
     note: "Jede Seite jedes PDFs wird zu einem Bild (mit 2× gerendert). Große Stapel dauern einen Moment – die Verarbeitung erfolgt auf Ihrem Gerät.",
@@ -93,7 +94,7 @@ const STR = {
     title: "일괄 PDF를 이미지로",
     subtitle: "PDF 폴더 전체를 끌어다 놓고 모든 페이지를 JPG 또는 PNG로 변환하세요 — 모두 브라우저에서 렌더링되어 하나의 ZIP으로 묶입니다. 아무것도 업로드되지 않습니다.",
     drop: "PDF(또는 폴더)를 여기로 끌어다 놓거나 클릭해 선택하세요", choose: "PDF 선택", folder: "폴더 선택",
-    format: "형식", run: "전체 변환", running: "변환 중", download: "ZIP 다운로드", reset: "다시 시작", remove: "제거",
+    format: "형식", run: "전체 변환", running: "변환 중", download: "ZIP 다운로드", reset: "파일 비우기", remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개`, pages: (n: number) => `${n}페이지`, failed: "실패",
     need: "PDF를 최소 한 개 추가하세요.", err: "문제가 발생했습니다: ",
     note: "모든 PDF의 모든 페이지가 이미지로 변환됩니다(2×로 렌더링). 대량 배치는 잠시 걸립니다 — 모든 작업은 기기에서 처리됩니다.",
@@ -370,29 +371,31 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
       {items.length === 0 ? (
         <BatchUploadBox locale={locale} onFiles={addFiles} embedded={embedded} valueZone="client" />
       ) : (
-        <>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-3">
+        <WorkArea
+          left={
+            <>
               <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
               <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
                 {(["jpg", "png"] as const).map((f) => (
                   <button key={f} type="button" onClick={() => setFormat(f)} className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-[12.5px] font-semibold uppercase transition ${format === f ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>{f}</button>
                 ))}
               </div>
-            </div>
-            <div className="flex shrink-0 gap-2">
-              {items.length < maxFiles && phase !== "running" && <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>}
+            </>
+          }
+          right={
+            <>
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}{totalPages > 0 ? ` · ${t.pages(totalPages)}` : ""}</button>
               ) : (
                 <button type="button" onClick={run} disabled={phase === "running"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "running" ? t.running : t.run}</button>
               )}
-            </div>
-          </div>
-
+            </>
+          }
+          footer={t.note}
+        >
           {phase === "running" && (
-            <div className="mx-auto mt-6 max-w-[200px]">
+            <div className="mx-auto mb-4 max-w-[200px]">
               <CircularProgress
                 bare
                 progress={items.length > 0 ? (progress / items.length) * 100 : 0}
@@ -402,7 +405,7 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
             </div>
           )}
 
-          <div className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
             {items.map((it) => (
               <BatchFileCard
                 key={it.id}
@@ -433,8 +436,7 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
               </button>
             )}
           </div>
-          <p className="mt-3 text-[12px] text-[color:var(--faint)]">{t.note}</p>
-        </>
+        </WorkArea>
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
