@@ -6,7 +6,7 @@
 // module that converts between spaces (screen ↔ normalized ↔ PDF pt) — never
 // convert inline in a component.
 
-export type ElementType = "text" | "image" | "signature" | "watermark" | "pagenum" | "redact" | "shape" | "highlight" | "ink";
+export type ElementType = "text" | "image" | "signature" | "watermark" | "pagenum" | "redact" | "whiteout" | "shape" | "highlight" | "ink";
 
 export type BaseElement = {
   id: string;
@@ -92,6 +92,15 @@ export function expandPageTemplate(el: PageNumberElement, pageIndex: number): st
     .replaceAll("{total}", String(to - from + 1));
 }
 
+/** Whiteout patch for cover-and-retype ("遮盖替换" — honest naming: it
+ *  COVERS the original text with a background-sampled solid box, it does not
+ *  edit it; the original stays underneath). Bakes as a vector rectangle
+ *  (non-destructive), usually paired with a TextElement typed on top. */
+export type WhiteoutElement = BaseElement & {
+  type: "whiteout";
+  color: string;
+};
+
 /** True redaction box. At bake, every page carrying one is DESTRUCTIVELY
  *  rasterized (full-page image with opaque black painted over each box) so
  *  the text underneath is destroyed, not covered — the RedactPdfClient
@@ -131,6 +140,7 @@ export type EditorElement =
   | WatermarkElement
   | PageNumberElement
   | RedactElement
+  | WhiteoutElement
   | ShapeElement
   | HighlightElement
   | InkElement;

@@ -326,6 +326,18 @@ export async function bakePdf(
         });
         break;
       }
+      case "whiteout": {
+        const [r, g, b] = hexToRgb01(el.color);
+        page.drawRectangle({
+          x: placement.x,
+          y: placement.y,
+          width: placement.w,
+          height: placement.h,
+          rotate,
+          color: rgb(r, g, b),
+        });
+        break;
+      }
       case "highlight": {
         const [r, g, b] = hexToRgb01(el.color);
         page.drawRectangle({

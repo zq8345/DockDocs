@@ -87,6 +87,8 @@ const STR_EN = {
   insertPdf: "Insert PDF",
   rotatePage: "Rotate page",
   deletePage: "Delete page",
+  addWhiteout: "Cover & retype",
+  whiteoutHint: "Cover-and-retype: click a word to cover it and type over it, or drag to place a covering patch. The original text is covered (it remains underneath), not edited. Esc to exit.",
 };
 
 const STR = {
@@ -142,6 +144,8 @@ const STR = {
     insertPdf: "插入 PDF",
     rotatePage: "旋转页面",
     deletePage: "删除页面",
+    addWhiteout: "遮盖替换",
+    whiteoutHint: "遮盖替换模式——点击某个词,用底色方块盖住并在上面输入新文字;或拖动放置遮盖块。原文字只是被盖住(仍在下层),并非被编辑。按 Esc 退出。",
   },
   es: {
     title: "Editar PDF",
@@ -194,6 +198,8 @@ const STR = {
     insertPdf: "Insertar PDF",
     rotatePage: "Girar página",
     deletePage: "Eliminar página",
+    addWhiteout: "Cubrir y reescribir",
+    whiteoutHint: "Cubrir y reescribir: haz clic en una palabra para cubrirla y escribir encima, o arrastra para colocar un parche. El texto original queda cubierto (sigue debajo), no se edita. Esc para salir.",
   },
   pt: {
     title: "Editar PDF",
@@ -246,6 +252,8 @@ const STR = {
     insertPdf: "Inserir PDF",
     rotatePage: "Girar página",
     deletePage: "Excluir página",
+    addWhiteout: "Cobrir e reescrever",
+    whiteoutHint: "Cobrir e reescrever: clique em uma palavra para cobri-la e digitar por cima, ou arraste para colocar um remendo. O texto original fica coberto (continua por baixo), nao e editado. Esc para sair.",
   },
   fr: {
     title: "Modifier un PDF",
@@ -298,6 +306,8 @@ const STR = {
     insertPdf: "Insérer un PDF",
     rotatePage: "Pivoter la page",
     deletePage: "Supprimer la page",
+    addWhiteout: "Masquer et réécrire",
+    whiteoutHint: "Masquer et réécrire : cliquez sur un mot pour le couvrir et taper par-dessus, ou faites glisser pour placer un cache. Le texte original est couvert (il reste en dessous), pas modifié. Échap pour quitter.",
   },
   ja: {
     title: "PDFを編集",
@@ -350,6 +360,8 @@ const STR = {
     insertPdf: "PDFを挿入",
     rotatePage: "ページを回転",
     deletePage: "ページを削除",
+    addWhiteout: "上書き置換",
+    whiteoutHint: "上書き置換モード——単語をクリックすると下地色のパッチで覆い、その上に入力できます。ドラッグでパッチを配置。元の文字は覆われるだけで(下に残ります)、編集はされません。Escで終了。",
   },
   de: {
     title: "PDF bearbeiten",
@@ -402,6 +414,8 @@ const STR = {
     insertPdf: "PDF einfügen",
     rotatePage: "Seite drehen",
     deletePage: "Seite löschen",
+    addWhiteout: "Abdecken & neu tippen",
+    whiteoutHint: "Abdecken & neu tippen: Klicken Sie auf ein Wort, um es abzudecken und darüber zu tippen, oder ziehen Sie einen Deckflicken auf. Der Originaltext wird abgedeckt (bleibt darunter), nicht bearbeitet. Esc zum Beenden.",
   },
   ko: {
     title: "PDF 편집",
@@ -454,6 +468,8 @@ const STR = {
     insertPdf: "PDF 삽입",
     rotatePage: "페이지 회전",
     deletePage: "페이지 삭제",
+    addWhiteout: "덮고 다시 입력",
+    whiteoutHint: "덮고 다시 입력 — 단어를 클릭하면 바탕색 패치로 덮고 위에 입력할 수 있습니다. 드래그로 패치를 배치하세요. 원본 텍스트는 편집되는 것이 아니라 덮일 뿐이며 아래에 남아 있습니다. Esc로 종료.",
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -465,6 +481,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const [error, setError] = useState<string | null>(null);
   const [inkMode, setInkMode] = useState(false);
   const [redactMode, setRedactMode] = useState(false);
+  const [whiteoutMode, setWhiteoutMode] = useState(false);
   const [signOpen, setSignOpen] = useState(false);
   const [bakeDone, setBakeDone] = useState<{ done: number; total: number } | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -783,20 +800,24 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     dispatch({ type: "add", el });
   }, []);
 
-  // Tap in redact mode: find the text run under the point, estimate the word's
-  // horizontal span by character share (generalizes RedactPdfClient's
-  // Util.transform box math to click-to-box), add a padded redact box.
-  const onRedactTap = useCallback(async (pageIndex: number, nx: number, ny: number) => {
-    const doc = docRef.current;
-    const info = pages[pageIndex];
-    if (!doc || !info) return;
+  // Locate the WORD under a normalized point: find the text run via
+  // pdfjs Util.transform, estimate the word's span by character share
+  // (generalizes RedactPdfClient's box math to click-to-box). Returns a
+  // normalized box + the glyph height in pt, or null (scanned page / miss).
+  const locateWordAt = useCallback(async (pageIndex: number, nx: number, ny: number): Promise<{ x: number; y: number; w: number; h: number; glyphHPt: number } | null> => {
+    const ref = stateRef.current.pageList[pageIndex];
+    if (!ref?.src) return null;
+    const doc = ref.src.doc === "main" ? docRef.current : extraJsDocs.current.get(ref.src.doc);
+    if (!doc) return null;
     try {
       const pdfjs = await import("pdfjs-dist");
-      const page = (await doc.getPage(pageIndex + 1)) as {
-        getViewport: (o: { scale: number }) => { transform: number[]; width: number; height: number };
+      const page = (await doc.getPage(ref.src.page + 1)) as {
+        rotate?: number;
+        getViewport: (o: { scale: number; rotation?: number }) => { transform: number[]; width: number; height: number };
         getTextContent: () => Promise<{ items: Array<{ str?: string; width?: number; height?: number; transform?: number[] }> }>;
       };
-      const vp = page.getViewport({ scale: 1 });
+      const rotation = (((page.rotate ?? 0) + ref.rotate) % 360 + 360) % 360;
+      const vp = page.getViewport({ scale: 1, rotation });
       const tc = await page.getTextContent();
       const px = nx * vp.width;
       const py = ny * vp.height;
@@ -810,7 +831,6 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
         const x0 = dm[4];
         const yTop = dm[5] - h;
         if (px < x0 || px > x0 + w || py < yTop || py > yTop + h) continue;
-        // Word span by character share within the run.
         const str = it.str;
         const rel = (px - x0) / Math.max(w, 1e-6);
         let ws = 0;
@@ -821,19 +841,81 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
           const nextSpace = str.indexOf(" ", hitIdx);
           we = nextSpace === -1 ? str.length : nextSpace;
         }
-        const pad = h * 0.22;
-        const bx = x0 + (ws / str.length) * w - pad;
-        const bw = ((we - ws) / str.length) * w + 2 * pad;
-        onRedactRect(pageIndex, {
-          x: Math.max(0, bx / vp.width),
-          y: Math.max(0, (yTop - pad) / vp.height),
-          w: Math.min(1, bw / vp.width),
-          h: Math.min(1, (h + 2 * pad) / vp.height),
-        });
-        return;
+        const bx = x0 + (ws / str.length) * w;
+        const bw = ((we - ws) / str.length) * w;
+        return {
+          x: bx / vp.width,
+          y: yTop / vp.height,
+          w: bw / vp.width,
+          h: h / vp.height,
+          glyphHPt: h,
+        };
       }
-    } catch { /* text layer optional — tap on scanned pages is a no-op */ }
-  }, [pages, onRedactRect]);
+    } catch { /* text layer optional */ }
+    return null;
+  }, []);
+
+  const onRedactTap = useCallback(async (pageIndex: number, nx: number, ny: number) => {
+    const word = await locateWordAt(pageIndex, nx, ny);
+    const info = pages[pageIndex];
+    if (!word || !info) return;
+    const padX = (word.glyphHPt * 0.22) / info.wPt;
+    const padY = (word.glyphHPt * 0.22) / info.hPt;
+    onRedactRect(pageIndex, {
+      x: Math.max(0, word.x - padX),
+      y: Math.max(0, word.y - padY),
+      w: Math.min(1, word.w + 2 * padX),
+      h: Math.min(1, word.h + 2 * padY),
+    });
+  }, [locateWordAt, pages, onRedactRect]);
+
+  const onWhiteoutRect = useCallback((pageIndex: number, rect: { x: number; y: number; w: number; h: number }, color: string) => {
+    if (rect.w < 0.002 || rect.h < 0.002) return;
+    const el: EditorElement = {
+      id: crypto.randomUUID(),
+      type: "whiteout",
+      page: pageIndex,
+      ...rect,
+      rotation: 0,
+      z: 0, // reassigned by the reducer
+      color,
+    };
+    dispatch({ type: "add", el });
+  }, []);
+
+  // Cover-and-retype: patch over the word, then a focused text box on top.
+  const onWhiteoutTap = useCallback(async (pageIndex: number, nx: number, ny: number, color: string) => {
+    const word = await locateWordAt(pageIndex, nx, ny);
+    const info = pages[pageIndex];
+    if (!word || !info) return;
+    const padX = (word.glyphHPt * 0.15) / info.wPt;
+    const padY = (word.glyphHPt * 0.15) / info.hPt;
+    onWhiteoutRect(pageIndex, {
+      x: Math.max(0, word.x - padX),
+      y: Math.max(0, word.y - padY),
+      w: Math.min(1, word.w + 2 * padX),
+      h: Math.min(1, word.h + 2 * padY),
+    }, color);
+    const sizePt = Math.max(MIN_SIZE_PT, Math.round(word.glyphHPt * 0.8));
+    const sized = sizeTextElement({ text: "", sizePt, bold: false }, info);
+    const textEl: EditorElement = {
+      id: crypto.randomUUID(),
+      type: "text",
+      page: pageIndex,
+      x: word.x,
+      y: word.y,
+      w: sized.w,
+      h: sized.h,
+      rotation: 0,
+      z: 0, // reassigned by the reducer
+      text: "",
+      sizePt,
+      color: DEFAULT_TEXT_COLOR,
+      bold: false,
+    };
+    dispatch({ type: "add", el: textEl });
+    dispatch({ type: "edit", id: textEl.id });
+  }, [locateWordAt, pages, onWhiteoutRect]);
 
   const addSignature = useCallback((src: string, imgRatio: number) => {
     const pageIndex = targetPage();
@@ -877,12 +959,15 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   inkModeRef.current = inkMode;
   const redactModeRef = useRef(redactMode);
   redactModeRef.current = redactMode;
+  const whiteoutModeRef = useRef(whiteoutMode);
+  whiteoutModeRef.current = whiteoutMode;
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const s = stateRef.current;
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "TEXTAREA" || tag === "INPUT" || s.editingId) return;
       if (e.key === "Escape" && redactModeRef.current) { setRedactMode(false); return; }
+      if (e.key === "Escape" && whiteoutModeRef.current) { setWhiteoutMode(false); return; }
       if (e.key === "Escape" && inkModeRef.current) { setInkMode(false); return; }
       const mod = e.ctrlKey || e.metaKey;
       if (mod && e.key.toLowerCase() === "z" && !e.shiftKey) { e.preventDefault(); dispatch({ type: "undo" }); return; }
@@ -1040,7 +1125,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setInkMode((v) => !v); setRedactMode(false); }}
+                  onClick={() => { setInkMode((v) => !v); setRedactMode(false); setWhiteoutMode(false); }}
                   aria-pressed={inkMode}
                   className={
                     inkMode
@@ -1052,7 +1137,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setRedactMode((v) => !v); setInkMode(false); setSignOpen(false); }}
+                  onClick={() => { setRedactMode((v) => !v); setInkMode(false); setWhiteoutMode(false); setSignOpen(false); }}
                   aria-pressed={redactMode}
                   className={
                     redactMode
@@ -1061,6 +1146,18 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   }
                 >
                   {t.addRedact}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setWhiteoutMode((v) => !v); setInkMode(false); setRedactMode(false); setSignOpen(false); }}
+                  aria-pressed={whiteoutMode}
+                  className={
+                    whiteoutMode
+                      ? "rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
+                      : toolBtn
+                  }
+                >
+                  {t.addWhiteout}
                 </button>
                 <span className="h-5 w-px bg-[color:var(--line)]" aria-hidden="true" />
                 <button type="button" onClick={download} disabled={phase === "working" || state.elements.length === 0}
@@ -1081,12 +1178,12 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 onCancel={() => setSignOpen(false)}
               />
             )}
-            {selected && !inkMode && !signOpen && (
+            {selected && !inkMode && !redactMode && !whiteoutMode && !signOpen && (
               <PropertyPanel el={selected} pages={pages} dispatch={dispatch} t={t} />
             )}
           </div>
           <p className="mt-2 shrink-0 text-[12px] text-[color:var(--faint)]">
-            {redactMode ? t.redactHint : inkMode ? t.drawHint : t.hint}
+            {whiteoutMode ? t.whiteoutHint : redactMode ? t.redactHint : inkMode ? t.drawHint : t.hint}
             {state.elements.some((el) => el.type === "redact") && (
               <span className="ml-2 text-[#fbbf24]">{t.redactBakeNote}</span>
             )}
@@ -1134,6 +1231,9 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   redactMode={redactMode}
                   onRedactRect={onRedactRect}
                   onRedactTap={onRedactTap}
+                  whiteoutMode={whiteoutMode}
+                  onWhiteoutRect={onWhiteoutRect}
+                  onWhiteoutTap={onWhiteoutTap}
                   pageLabel={t.page(pg.index + 1)}
                   editPlaceholder={t.placeholder}
                   removeLabel={t.remove}
@@ -1298,6 +1398,13 @@ function PropertyPanel({
             />
           </label>
         </>
+      )}
+
+      {el.type === "whiteout" && (
+        <label className={label}>
+          {t.color}
+          <input type="color" value={el.color} onFocus={snap} onChange={(e) => patch({ color: e.target.value } as Partial<EditorElement>)} className={colorInput} />
+        </label>
       )}
 
       {el.type === "watermark" && (

@@ -75,6 +75,9 @@ export function PageCanvas({
   redactMode,
   onRedactRect,
   onRedactTap,
+  whiteoutMode,
+  onWhiteoutRect,
+  onWhiteoutTap,
   pageLabel,
   editPlaceholder,
   removeLabel,
@@ -98,6 +101,11 @@ export function PageCanvas({
   onRedactRect: (pageIndex: number, rect: { x: number; y: number; w: number; h: number }) => void;
   /** Click (no drag) in redact mode — word auto-boxing upstream. */
   onRedactTap: (pageIndex: number, x: number, y: number) => void;
+  whiteoutMode: boolean;
+  /** Completed whiteout drag; color sampled from the page ground. */
+  onWhiteoutRect: (pageIndex: number, rect: { x: number; y: number; w: number; h: number }, color: string) => void;
+  /** Click in whiteout mode — cover-and-retype upstream. */
+  onWhiteoutTap: (pageIndex: number, x: number, y: number, color: string) => void;
   pageLabel: string;
   editPlaceholder: string;
   /** Localized label for the element delete button (aria/tooltip). */
@@ -162,14 +170,45 @@ export function PageCanvas({
   // reaching the frame is blank page / bitmap. Skipped while another element
   // is in edit mode — its blur must resolve first (one edit at a time).
   const onBgDoubleClick = (e: React.MouseEvent) => {
-    if (inkMode || redactMode || editingId !== null) return;
+    if (inkMode || redactMode || whiteoutMode || editingId !== null) return;
     const p = framePoint(e);
     onAddTextAt(page.index, p.x, p.y);
   };
 
-  // ── Mode gestures on the frame: ink (freehand) / redact (drag-box or tap) ──
+  // Sample the page ground color near a point (a little ABOVE it — the point
+  // itself is usually ink). Dark or missing sample falls back to white.
+  const sampleBg = (nx: number, ny: number): Promise<string> =>
+    new Promise((resolve) => {
+      if (!bitmap) return resolve("#ffffff");
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const c = document.createElement("canvas");
+          c.width = 1;
+          c.height = 1;
+          const ctx = c.getContext("2d");
+          if (!ctx) return resolve("#ffffff");
+          const sx = Math.max(0, Math.min(img.width - 3, nx * img.width - 1));
+          const sy = Math.max(0, Math.min(img.height - 3, (ny - 0.02) * img.height - 1));
+          ctx.drawImage(img, sx, sy, 3, 3, 0, 0, 1, 1);
+          const d = ctx.getImageData(0, 0, 1, 1).data;
+          const lum = (0.299 * d[0] + 0.587 * d[1] + 0.114 * d[2]) / 255;
+          if (lum < 0.35) return resolve("#ffffff");
+          const hex = (v: number) => v.toString(16).padStart(2, "0");
+          resolve(`#${hex(d[0])}${hex(d[1])}${hex(d[2])}`);
+        } catch {
+          resolve("#ffffff");
+        }
+      };
+      img.onerror = () => resolve("#ffffff");
+      img.src = bitmap;
+    });
+
+  // ── Mode gestures on the frame: ink (freehand) / box modes (redact &
+  // whiteout: drag-box or tap) ──
+  const boxMode = redactMode || whiteoutMode;
   const onFramePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (redactMode) {
+    if (boxMode) {
       e.currentTarget.setPointerCapture(e.pointerId);
       const p = framePoint(e);
       redactRef.current = { x0: p.x, y0: p.y, x1: p.x, y1: p.y };
@@ -186,7 +225,7 @@ export function PageCanvas({
     setStroke(strokeRef.current);
   };
   const onFramePointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (redactMode && redactRef.current) {
+    if (boxMode && redactRef.current) {
       const p = framePoint(e);
       redactRef.current = { ...redactRef.current, x1: p.x, y1: p.y };
       setRedactDraft(redactRef.current);
@@ -198,15 +237,23 @@ export function PageCanvas({
     setStroke(strokeRef.current);
   };
   const onFramePointerUp = () => {
-    if (redactMode && redactRef.current) {
+    if (boxMode && redactRef.current) {
       const d = redactRef.current;
       redactRef.current = null;
       setRedactDraft(null);
       const w = Math.abs(d.x1 - d.x0);
       const h = Math.abs(d.y1 - d.y0);
-      // A near-zero drag is a TAP → word auto-boxing upstream.
-      if (w < 0.005 && h < 0.005) onRedactTap(page.index, d.x0, d.y0);
-      else onRedactRect(page.index, { x: Math.min(d.x0, d.x1), y: Math.min(d.y0, d.y1), w, h });
+      const tap = w < 0.005 && h < 0.005;
+      const rect = { x: Math.min(d.x0, d.x1), y: Math.min(d.y0, d.y1), w, h };
+      if (redactMode) {
+        if (tap) onRedactTap(page.index, d.x0, d.y0);
+        else onRedactRect(page.index, rect);
+      } else {
+        void sampleBg(d.x0, Math.min(d.y0, d.y1)).then((color) => {
+          if (tap) onWhiteoutTap(page.index, d.x0, d.y0, color);
+          else onWhiteoutRect(page.index, rect, color);
+        });
+      }
       return;
     }
     if (!inkMode || !strokeRef.current) return;
@@ -225,8 +272,8 @@ export function PageCanvas({
         style={{
           paddingBottom: `${page.ratio * 100}%`,
           containerType: "inline-size",
-          touchAction: inkMode || redactMode ? "none" : undefined,
-          cursor: inkMode || redactMode ? "crosshair" : undefined,
+          touchAction: inkMode || redactMode || whiteoutMode ? "none" : undefined,
+          cursor: inkMode || redactMode || whiteoutMode ? "crosshair" : undefined,
         }}
         onPointerDown={onFramePointerDown}
         onPointerMove={onFramePointerMove}
@@ -253,7 +300,7 @@ export function PageCanvas({
             page={page}
             selected={selectedId === el.id}
             editing={editingId === el.id}
-            interactive={!inkMode && !redactMode}
+            interactive={!inkMode && !redactMode && !whiteoutMode}
             dispatch={dispatch}
             placeholder={editPlaceholder}
             removeLabel={removeLabel}
@@ -267,8 +314,8 @@ export function PageCanvas({
               top: `${Math.min(redactDraft.y0, redactDraft.y1) * 100}%`,
               width: `${Math.abs(redactDraft.x1 - redactDraft.x0) * 100}%`,
               height: `${Math.abs(redactDraft.y1 - redactDraft.y0) * 100}%`,
-              background: "rgba(0,0,0,0.6)",
-              outline: "1.5px dashed rgba(251,191,36,0.9)",
+              background: whiteoutMode ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.6)",
+              outline: whiteoutMode ? "1.5px dashed rgba(62,207,142,0.9)" : "1.5px dashed rgba(251,191,36,0.9)",
             }}
           />
         )}
@@ -604,6 +651,8 @@ function ElementContent({
           style={{ background: el.color, opacity: el.opacity, mixBlendMode: "multiply" }}
         />
       );
+    case "whiteout":
+      return <div className="pointer-events-none h-full w-full" style={{ background: el.color }} />;
     case "redact":
       return (
         <div
