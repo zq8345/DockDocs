@@ -161,10 +161,18 @@ export async function runCloudConvert({
   }
   uploadForm.append("file", file, file.name || "source");
 
+  // Slow-tick the progress bar from 20 → 40 while the upload is in flight so
+  // the bar keeps moving on large files. Clears on success or error.
+  let uploadTick = 20;
+  const uploadTicker = setInterval(() => {
+    uploadTick = Math.min(uploadTick + 2, 40);
+    emitProgress(onProgress, uploadTick, 1, msgUploading(locale));
+  }, 2000);
   let uploadRes: Response;
   try {
     uploadRes = await fetch(upload.url, { method: "POST", body: uploadForm, signal });
   } catch (err) {
+    clearInterval(uploadTicker);
     if (err instanceof Error && err.name === "AbortError") throw err;
     throw new Error(
       tr(
@@ -179,6 +187,7 @@ export async function runCloudConvert({
       ),
     );
   }
+  clearInterval(uploadTicker);
   if (!uploadRes.ok && uploadRes.status !== 204) {
     throw new Error(
       tr(
