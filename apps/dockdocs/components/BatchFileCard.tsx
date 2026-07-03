@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { formatBytes } from "@/lib/files";
+import { ThumbCard } from "./ThumbCard";
 
 function PdfGridThumb({ file, onPageCount }: { file: File; onPageCount?: (n: number) => void }) {
   const [url, setUrl] = useState<string | null>(null);
@@ -101,41 +102,36 @@ export function BatchFileCard({
   );
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
-      {/* Square thumbnail — aspect-ratio 1:1; contain keeps true aspect ratio, neutral bg fills padding */}
-      <div className="relative aspect-square w-full overflow-hidden bg-[color:var(--surface-subtle)]">
-        {isPdf ? <PdfGridThumb file={file} onPageCount={setPdfPageCount} /> : <OfficeGridThumb ext={ext} />}
-        {orderBadge && (
-          <div className="absolute left-1.5 top-1.5">{orderBadge}</div>
-        )}
-      </div>
-
-      {/* File info — stacked below thumbnail, never overlaid */}
-      <div className="flex flex-1 flex-col px-2.5 py-2">
-        <p className="truncate text-[11px] font-medium text-[color:var(--foreground)]" title={file.name}>
-          {file.name}
-        </p>
-        <p className="mt-0.5 text-[10px] text-[color:var(--faint)]">
-          {subtitle ?? (isPdf && pdfPageCount != null
-            ? `${formatBytes(file.size)} · ${pdfPageCount} ${pagesLabel}`
-            : formatBytes(file.size))}
-        </p>
-        {statusBadge && <div className="mt-1.5">{statusBadge}</div>}
-      </div>
-
-      {/* × remove button — top-right corner */}
-      {onRemove && (
-        <button
-          type="button"
-          onClick={onRemove}
-          aria-label={removeLabel}
-          className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-0 shadow-sm transition group-hover:opacity-100 hover:text-[#f87171]"
-        >
-          <svg viewBox="0 0 10 10" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-            <path d="M1 1l8 8M9 1L1 9" />
-          </svg>
-        </button>
-      )}
-    </div>
+    <ThumbCard
+      thumb={isPdf ? <PdfGridThumb file={file} onPageCount={setPdfPageCount} /> : <OfficeGridThumb ext={ext} />}
+      topLeft={orderBadge}
+      label={
+        <>
+          <p className="truncate text-[11px] font-medium text-[color:var(--foreground)]" title={file.name}>
+            {file.name}
+          </p>
+          <p className="mt-0.5 text-[10px] text-[color:var(--faint)]">
+            {subtitle ?? (isPdf && pdfPageCount != null
+              ? `${formatBytes(file.size)} · ${pdfPageCount} ${pagesLabel}`
+              : formatBytes(file.size))}
+          </p>
+          {statusBadge && <div className="mt-1.5">{statusBadge}</div>}
+        </>
+      }
+      topRight={
+        onRemove && (
+          <button
+            type="button"
+            onClick={onRemove}
+            aria-label={removeLabel}
+            className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-0 shadow-sm transition group-hover:opacity-100 hover:text-[#f87171]"
+          >
+            <svg viewBox="0 0 10 10" className="h-2.5 w-2.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <path d="M1 1l8 8M9 1L1 9" />
+            </svg>
+          </button>
+        )
+      }
+    />
   );
 }
