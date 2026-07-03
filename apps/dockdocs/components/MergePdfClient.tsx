@@ -1,10 +1,12 @@
 ﻿"use client";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
+import { BatchFileCard } from "@/components/BatchFileCard";
 
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
+import { formatBytes } from "@/lib/files";
 
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
@@ -39,7 +41,7 @@ const STR: AuthoredCopy<{
     needTwo: "Add at least 2 PDFs to merge.", err: "Something went wrong: ", remove: "Remove",
   },
   zh: {
-    title: "批量 PDF 合并",
+    title: "PDF 合并",
     subtitle: "添加 PDF，拖成你想要的顺序，合并成一个——合并前先看清每个文件，而不是合完才发现顺序错了。",
     drop: "把多个 PDF 拖到这里，或点击选择",
     choose: "选择 PDF", add: "继续添加", rendering: "正在读取文件…",
@@ -435,7 +437,7 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
           </div>
           <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
 
-          <div className="mt-5 flex flex-wrap justify-center gap-4">
+          <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
             {items.map((it, pos) => (
               <div
                 key={it.id}
@@ -444,28 +446,32 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
                 onDragEnd={() => (dragFrom.current = null)}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => { e.preventDefault(); if (dragFrom.current != null) move(dragFrom.current, pos); dragFrom.current = null; }}
-                className="group flex w-fit cursor-grab flex-col items-center rounded-[var(--radius)] p-1.5 transition active:cursor-grabbing"
+                className="cursor-grab active:cursor-grabbing"
               >
-                <div className="relative overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] transition group-hover:border-[color:var(--accent)]">
-                  <span className="absolute left-1.5 top-1.5 z-10 flex h-5 min-w-5 items-center justify-center rounded-full bg-[color:var(--accent)] px-1 text-[11px] font-bold text-white">{pos + 1}</span>
-                  <button type="button" onClick={() => remove(it.id)} className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-[color:var(--surface-subtle)] text-[10px] text-[color:var(--muted)] opacity-0 transition group-hover:opacity-100 hover:bg-[#f87171] hover:text-white" aria-label={t.remove}>✕</button>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={it.thumb} alt={it.name}
-                    style={{ maxHeight: "180px", maxWidth: "180px", display: "block" }}
-                    className="h-auto w-auto max-w-full" />
-                </div>
-                <span className="mt-1 block max-w-[120px] truncate text-center text-[11px] font-medium text-[color:var(--foreground)]" title={it.name}>{it.name}</span>
-                <span className="block text-center text-[10px] text-[color:var(--muted)]">{t.pagesLabel(it.pages)}</span>
+                <BatchFileCard
+                  file={it.file}
+                  status="idle"
+                  orderBadge={
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[color:var(--accent)] px-1 text-[11px] font-bold text-white">
+                      {pos + 1}
+                    </span>
+                  }
+                  subtitle={`${formatBytes(it.file.size)} · ${t.pagesLabel(it.pages)}`}
+                  removeLabel={t.remove}
+                  onRemove={() => remove(it.id)}
+                />
               </div>
             ))}
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="flex h-[180px] w-[115px] flex-col items-center justify-center gap-2 rounded-[var(--radius)] border border-dashed border-[color:var(--line)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
               aria-label={t.add}
+              className="flex min-h-[180px] flex-col items-center justify-center gap-1.5 rounded-[var(--radius)] border-2 border-dashed border-[color:var(--line)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
             >
-              <span className="text-[30px] font-light leading-none">+</span>
-              <span className="text-[12.5px] font-medium">{busy ? t.rendering : t.add}</span>
+              <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              <span className="text-[11px]">{busy ? t.rendering : t.add}</span>
             </button>
           </div>
         </>
