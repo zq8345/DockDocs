@@ -33,9 +33,44 @@ export type TextElement = BaseElement & {
   bold: boolean;
 };
 
-// The A1 skeleton ships text only; image/shape/highlight/ink slot into this
-// union without touching the store, the interactive layer or the bake loop.
-export type EditorElement = TextElement;
+export type ImageElement = BaseElement & {
+  type: "image";
+  /** data URL (file never leaves the device). */
+  src: string;
+  mime: "image/png" | "image/jpeg";
+  opacity: number;
+};
+
+export type ShapeElement = BaseElement & {
+  type: "shape"; // rectangle (A1)
+  /** null = no fill. */
+  fill: string | null;
+  stroke: string | null;
+  strokeWidthPt: number;
+  opacity: number;
+};
+
+export type HighlightElement = BaseElement & {
+  type: "highlight";
+  color: string;
+  /** Rendered with multiply blend on screen AND in the bake. */
+  opacity: number;
+};
+
+export type InkElement = BaseElement & {
+  type: "ink";
+  /** Stroke points normalized to the element box (0–1 each axis). */
+  points: Array<[number, number]>;
+  color: string;
+  strokeWidthPt: number;
+};
+
+export type EditorElement =
+  | TextElement
+  | ImageElement
+  | ShapeElement
+  | HighlightElement
+  | InkElement;
 
 export type PageInfo = {
   /** 0-based. */

@@ -39,6 +39,43 @@ export const MAX_SIZE_PT = 144;
 
 export const DEFAULT_SIZE_PT = 16;
 export const DEFAULT_TEXT_COLOR = "#111827";
+export const DEFAULT_SHAPE_STROKE = "#ef4444";
+export const DEFAULT_STROKE_WIDTH_PT = 2;
+export const DEFAULT_HIGHLIGHT_COLOR = "#fde047";
+export const DEFAULT_HIGHLIGHT_OPACITY = 0.45;
+export const HIGHLIGHT_PRESETS = ["#fde047", "#86efac", "#f9a8d4"] as const;
+export const DEFAULT_INK_COLOR = "#ef4444";
+/** Minimum element edge in pt (free resize clamp). */
+export const MIN_EDGE_PT = 8;
+
+/** cqw length for a pt-denominated size (border widths, stroke previews). */
+export const ptToCqw = (pt: number, page: PageInfo) => `${(pt / page.wPt) * 100}cqw`;
+
+/**
+ * Bounding box (page-normalized) of an ink stroke drawn in page fractions,
+ * padded by half the stroke width, plus the points re-normalized to that box.
+ */
+export function inkBounds(
+  pagePoints: Array<[number, number]>,
+  strokeWidthPt: number,
+  page: PageInfo,
+): { x: number; y: number; w: number; h: number; points: Array<[number, number]> } {
+  let minX = 1, minY = 1, maxX = 0, maxY = 0;
+  for (const [px, py] of pagePoints) {
+    minX = Math.min(minX, px); minY = Math.min(minY, py);
+    maxX = Math.max(maxX, px); maxY = Math.max(maxY, py);
+  }
+  const padX = strokeWidthPt / 2 / page.wPt;
+  const padY = strokeWidthPt / 2 / page.hPt;
+  minX = Math.max(0, minX - padX); minY = Math.max(0, minY - padY);
+  maxX = Math.min(1, maxX + padX); maxY = Math.min(1, maxY + padY);
+  const w = Math.max(maxX - minX, 1e-4);
+  const h = Math.max(maxY - minY, 1e-4);
+  return {
+    x: minX, y: minY, w, h,
+    points: pagePoints.map(([px, py]) => [(px - minX) / w, (py - minY) / h]),
+  };
+}
 
 /** font-size in container-query units so text tracks the page frame width. */
 export const fontSizeCqw = (sizePt: number, page: PageInfo) =>
@@ -112,6 +149,33 @@ export type PdfPlacement = {
   /** Counter-clockwise degrees to pass to pdf-lib's rotate. */
   rotateDeg: number;
 };
+
+/**
+ * Compose an element's own screen rotation (degrees, clockwise on screen,
+ * about the element CENTER — matching CSS `transform: rotate()`) onto a page
+ * placement. The view→PDF map contains one y-mirror, so a screen-clockwise θ
+ * is −θ in PDF's counter-clockwise convention, for every page /Rotate.
+ * pdf-lib rotates about the anchor (bottom-left), so the anchor is re-derived
+ * from a rotation about the element's mapped center:
+ *   C  = A + R(ψ)·(w/2, h/2)         (ψ = page placement rotation)
+ *   A' = C + R(−θ)·(A − C),  rotate' = ψ − θ
+ */
+export function withElementRotation(p: PdfPlacement, thetaCwDeg: number): PdfPlacement {
+  if (!thetaCwDeg) return p;
+  const psi = (p.rotateDeg * Math.PI) / 180;
+  const cx = p.x + (Math.cos(psi) * p.w) / 2 - (Math.sin(psi) * p.h) / 2;
+  const cy = p.y + (Math.sin(psi) * p.w) / 2 + (Math.cos(psi) * p.h) / 2;
+  const phi = (-thetaCwDeg * Math.PI) / 180;
+  const dx = p.x - cx;
+  const dy = p.y - cy;
+  return {
+    x: cx + Math.cos(phi) * dx - Math.sin(phi) * dy,
+    y: cy + Math.sin(phi) * dx + Math.cos(phi) * dy,
+    w: p.w,
+    h: p.h,
+    rotateDeg: p.rotateDeg - thetaCwDeg,
+  };
+}
 
 export function placeOnPage(
   rect: { x: number; y: number; w: number; h: number },
