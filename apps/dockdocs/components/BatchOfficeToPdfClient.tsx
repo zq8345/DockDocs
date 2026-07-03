@@ -4,7 +4,8 @@ import { ToolFaq } from "@/components/ToolFaq";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
 
 import { useCallback, useRef, useState } from "react";
-import { Spinner } from "@/components/Spinner";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { runCloudConvert } from "../../../shared/templates/pdf-tool-page/cloudconvert-runtime";
 import type { CloudLocale } from "../../../shared/templates/pdf-tool-page/cloudconvert-runtime";
@@ -372,10 +373,21 @@ export function BatchOfficeToPdfClient({ locale = "en", source, embedded = false
               {phase === "done" && doneCount > 0 ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}</button>
               ) : (
-                <button type="button" onClick={run} disabled={phase === "running"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "running" ? (<><Spinner /> {t.running} {progress}/{items.length}</>) : t.run}</button>
+                <button type="button" onClick={run} disabled={phase === "running"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "running" ? t.running : t.run}</button>
               )}
             </div>
           </div>
+
+          {phase === "running" && (
+            <div className="mx-auto mt-6 max-w-[200px]">
+              <CircularProgress
+                bare
+                progress={items.length > 0 ? (progress / items.length) * 100 : 0}
+                title={t.running}
+                description={`${progress} / ${items.length}`}
+              />
+            </div>
+          )}
 
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {items.map((it) => (
@@ -403,6 +415,11 @@ export function BatchOfficeToPdfClient({ locale = "en", source, embedded = false
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {phase === "done" && !embedded && (
+        <div className="mt-6">
+          <ToolBridge slug={source ? `batch-${source}-to-pdf` : "batch-word-to-pdf"} locale={locale} useLocalePrefix={locale !== "en"} />
+        </div>
+      )}
       {!embedded && <ToolFaq tool={source ? `batch-${source}-to-pdf` : "batch-office-to-pdf"} locale={childLocale} />}
     </div>
   );

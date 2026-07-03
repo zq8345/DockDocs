@@ -6,7 +6,8 @@ import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { BatchFileCard } from "@/components/BatchFileCard";
 
 import { useCallback, useRef, useState } from "react";
-import { Spinner } from "@/components/Spinner";
+import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
@@ -384,10 +385,21 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
               {phase === "done" ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}{totalPages > 0 ? ` · ${t.pages(totalPages)}` : ""}</button>
               ) : (
-                <button type="button" onClick={run} disabled={phase === "running"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "running" ? (<><Spinner /> {t.running} {progress}/{items.length}</>) : t.run}</button>
+                <button type="button" onClick={run} disabled={phase === "running"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "running" ? t.running : t.run}</button>
               )}
             </div>
           </div>
+
+          {phase === "running" && (
+            <div className="mx-auto mt-6 max-w-[200px]">
+              <CircularProgress
+                bare
+                progress={items.length > 0 ? (progress / items.length) * 100 : 0}
+                title={t.running}
+                description={`${progress} / ${items.length}`}
+              />
+            </div>
+          )}
 
           <div className="mt-4 grid gap-2">
             {items.map((it) => (
@@ -413,6 +425,11 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {phase === "done" && !embedded && (
+        <div className="mt-6">
+          <ToolBridge slug="batch-pdf-to-image" locale={locale} useLocalePrefix={locale !== "en"} />
+        </div>
+      )}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="batch-pdf-to-image" locale={locale} />}
     </div>

@@ -79,6 +79,7 @@ const COMPARE_DOCS: Bridge = {
 // Chat bridge; first batch covers the highest-intent jumps.
 const BRIDGES: Record<string, Bridge> = {
   "compress-pdf": EXTRACT_TO_EXCEL,
+  "batch-compress": EXTRACT_TO_EXCEL,
   "word-to-pdf": BATCH_WORD,
   "pdf-to-word": COMPARE_DOCS,
   "merge-pdf": COMPARE_DOCS,
@@ -88,6 +89,12 @@ const BRIDGES: Record<string, Bridge> = {
   "add-page": CHAT_WITH_PDF,
   "ocr": CHAT_WITH_PDF,
   "ocr-pdf": CHAT_WITH_PDF,
+  "batch-pdf-to-image": CHAT_WITH_PDF,
+  "batch-word-to-pdf": CHAT_WITH_PDF,
+  "batch-ppt-to-pdf": CHAT_WITH_PDF,
+  "batch-excel-to-pdf": CHAT_WITH_PDF,
+  "batch-pdf-to-word": COMPARE_DOCS,
+  "batch-pdf-to-excel": COMPARE_DOCS,
 };
 
 const NEXT_LABEL: Record<BridgeLocale, string> = {

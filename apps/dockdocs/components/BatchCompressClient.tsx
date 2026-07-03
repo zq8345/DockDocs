@@ -8,6 +8,7 @@ import { BatchFileCard } from "@/components/BatchFileCard";
 import { useCallback, useRef, useState } from "react";
 import { runPdfRuntime, createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
 import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
@@ -457,6 +458,11 @@ export function BatchCompressClient({ locale = "en", embedded = false }: { local
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {phase === "done" && !embedded && (
+        <div className="mt-6">
+          <ToolBridge slug="batch-compress" locale={locale} useLocalePrefix={locale !== "en"} />
+        </div>
+      )}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="batch-compress" locale={locale} />}
     </div>
