@@ -7,6 +7,7 @@ import { isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { trackToolRun } from "@/lib/track";
 import { dropzoneShell } from "@/components/design";
@@ -1826,6 +1827,7 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
             </div>
           );
         })()}
+      {!embedded && <ToolBridge slug="compare" locale={locale} useLocalePrefix={locale !== "en"} />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="compare" locale={locale} />}
     </Wrapper>

@@ -3,6 +3,7 @@
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -647,6 +648,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
           />
         </div>
       )}
+      <ToolBridge slug="translate-pdf" locale={locale} useLocalePrefix={locale !== "en"} />
       <ToolSections locale={locale} content={sec} />
       <ToolFaq tool="translate-pdf" locale={locale} />
     </div>

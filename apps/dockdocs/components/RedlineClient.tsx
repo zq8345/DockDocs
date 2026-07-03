@@ -5,6 +5,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
 import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
@@ -570,6 +571,7 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {!embedded && <ToolBridge slug="redline" locale={locale} useLocalePrefix={locale !== "en"} />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="redline" locale={locale} />}
     </div>

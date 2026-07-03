@@ -3,6 +3,7 @@
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
@@ -702,6 +703,7 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
         </div>
       )}
 
+      {!embedded && <ToolBridge slug="lease-redflag" locale={locale} useLocalePrefix={locale !== "en"} />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="lease-redflag" locale={childLocale} />}
     </div>

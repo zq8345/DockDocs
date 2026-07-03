@@ -3,6 +3,7 @@
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -760,6 +761,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
       {/* Privacy notice */}
       <p className="mt-8 text-[12px] text-[color:var(--faint)]">{t.privacy}</p>
 
+      {!embedded && <ToolBridge slug="govbid-matrix" locale={locale} useLocalePrefix={locale !== "en"} />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="govbid-matrix" locale={childLocale} />}
     </Wrapper>

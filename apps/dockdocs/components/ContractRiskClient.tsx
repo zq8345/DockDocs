@@ -2,6 +2,7 @@
 
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { GroundingNote, groundingFaq } from "@/components/GroundingNote";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 import { UploadDropzone } from "@/components/UploadDropzone";
@@ -1220,6 +1221,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         </div>
       )}
 
+      {!embedded && <ToolBridge slug="contract-risk" locale={locale} useLocalePrefix={locale !== "en"} />}
       {!embedded && <GroundingNote variant="contract" locale={locale} />}
       {!embedded && <RelatedPdfTools locale={locale} exclude="/contract-risk" />}
       {!embedded && <ToolSections locale={locale} content={sec} />}

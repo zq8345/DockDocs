@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
@@ -580,6 +581,7 @@ export function ExtractExcelClient({ locale = "en", embedded = false }: { locale
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
+      {!embedded && <ToolBridge slug="extract-to-excel" locale={locale} useLocalePrefix={locale !== "en"} />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="extract-to-excel" locale={locale} />}
     </div>

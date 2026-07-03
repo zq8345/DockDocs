@@ -12,6 +12,7 @@ import { LAYOUT } from "@/lib/layout-constants";
 import { dropzoneVisual } from "@/components/design";
 import type { AuthoredLocale } from "@/lib/i18n";
 import { LegalWorkspaceBanner } from "@/components/LegalWorkspaceBanner";
+import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
 type ChangeCard = {
   category: string;
@@ -520,6 +521,7 @@ export function ContractReviewClient() {
           <p className="pt-2 text-[11px] text-[color:var(--faint)]">{T(s.disclaimer)}</p>
         </div>
       )}
+      <ToolBridge slug="contract-review" locale={locale} useLocalePrefix={locale !== "en"} />
     </div>
   );
 }
