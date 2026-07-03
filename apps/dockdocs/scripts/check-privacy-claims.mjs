@@ -230,6 +230,32 @@ if (aesNums.size > 1) {
   errors.push(`[E/aes]    inconsistent AES bit-length across copy — ${[...aesNums.entries()].map(([n, loc]) => `AES-${n} (${loc})`).join(", ")}. The engine locks AES-256 (AESV3); use that one number everywhere.`);
 }
 
+// ── CHECK F: "deleted from the conversion service" copy must be backed by real DELETE ──
+// Added 2026-07-02: copy in AboutPage, DownloadPage, FAQs now claims files are
+// "deleted from the conversion service right after your download completes".
+// That is honest ONLY if cloudconvert-convert.ts actually sends a DELETE request.
+// If the claim exists but the code lacks the delete branch, this guard fires.
+const DELETED_CLAIM_RE = [
+  /deleted\s+from\s+the\s+conversion\s+service/i,
+  /下载完成后即从转换服务中删除/,
+  /borrado\s+del\s+servicio\s+de\s+conversi[oó]n/i,
+  /exclu[íi]do\s+do\s+servi[çc]o\s+de\s+convers[aã]o/i,
+  /supprim[ée]\s+du\s+service\s+de\s+conversion/i,
+  /ダウンロード完了後に変換サービスから削除/,
+  /Konvertierungsdienst\s+gelöscht/i,
+  /변환\s+서비스에서\s+삭제/,
+];
+const netlifyFn = rd(join(APP, "netlify", "functions", "cloudconvert-convert.ts"));
+const hasDeleteAction = /action\s*===\s*["']delete["']/.test(netlifyFn);
+const deleteCopySurfaces = [
+  tools, page, rd(join(APP, "components", "AboutPage.tsx")),
+  rd(join(APP, "components", "DownloadPage.tsx")), rd(join(APP, "app", "page.tsx")),
+];
+const hasDeleteClaim = DELETED_CLAIM_RE.some((re) => deleteCopySurfaces.some((src) => re.test(src)));
+if (hasDeleteClaim && !hasDeleteAction) {
+  errors.push(`[F/delete] Copy claims files are "deleted from the conversion service" after download, but cloudconvert-convert.ts does NOT contain a delete action branch (action === "delete"). Either add the DELETE logic (see cloudconvert-runtime.ts fire-and-forget) or remove the deletion claim from all copy surfaces.`);
+}
+
 // ── report ──────────────────────────────────────────────────────────────────
 console.log("");
 console.log("════════════════════════════════════════════════════════════════════");

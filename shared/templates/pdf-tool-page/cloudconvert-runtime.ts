@@ -283,6 +283,7 @@ export async function runCloudConvert({
   const blob = new Blob([fileBytes], { type: outputMime });
 
   emitProgress(onProgress, 100, 3);
+  void postJson(API, { action: "delete", jobId }, undefined, locale).catch(() => {});
 
   return {
     fileName: outputFileName,

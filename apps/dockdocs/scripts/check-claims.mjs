@@ -111,6 +111,12 @@ const BANNED = [
   // "sourced answer(s)" is a citation claim — scopable (chat cites only when locatable)
   { re: /sourced\s+answers?/i, why: 'en "sourced answer(s)" — scope it (chat cites only when locatable)', scopable: true },
 
+  // — summary + blanket citation promise (AI Summary is citePartial, not citeYes) —
+  // Catches "AI Summary with citations" / "summary that always cites" without a scope qualifier.
+  // OK: "summary...shows sources when it can locate them" — covered by SCOPE_MARKERS.
+  { re: /\bsummar\w+\b[^.!?\n]{0,80}\b(with\s+citations?|always\s+cites?|cites?\s+every)/i, why: 'en "summary…with citations / always cites" — AI Summary is citePartial; scope it', scopable: true },
+  { re: /摘要[^。！？\n]{0,40}(每(条|项|个)|必ず|すべて)[^。！？\n]{0,20}(引用|出处|出典)/, why: 'zh/ja "摘要/要約…毎条/必ず…引用" — AI Summary は citePartial', scopable: true },
+
   // — compare-recommend = citeNo: the recommendation has NO single source to cite,
   //   so a "sourced recommendation" is HARD-banned (use "backed by the numbers /
   //   基于并排数据 / based on the side-by-side data") —

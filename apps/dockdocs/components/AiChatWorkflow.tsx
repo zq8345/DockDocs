@@ -18,6 +18,7 @@ import {
   getUsageQuota,
   promptTemplates,
   readFeatureFlags,
+  writeFeatureFlags,
   recordChatCompletion,
   type UsageQuota,
   type WorkspaceFeatureFlags,
@@ -84,6 +85,7 @@ const copy = {
     privacyTitle: "Privacy behavior",
     privacy:
       "The original PDF file is never sent to the AI provider. Only the extracted text and your question are sent, and only after you start the chat.",
+    savedChatsLabel: "Save conversations in My Chats",
     idle: "Upload a PDF or paste OCR text, then ask a question.",
     ready: "Ready to ask.",
     working: "Asking the document...",
@@ -131,6 +133,7 @@ const copy = {
     privacyTitle: "隐私处理方式",
     privacy:
       "原始 PDF 文件不会发送给 AI 服务。只有在你开始提问后，才会发送提取的文本和你的问题。",
+    savedChatsLabel: "在「我的对话」中保存对话",
     idle: "上传 PDF 或粘贴 OCR 文本，然后提出问题。",
     ready: "已准备提问。",
     working: "正在询问文档...",
@@ -180,6 +183,7 @@ const copy = {
     privacyTitle: "Comportamiento de privacidad",
     privacy:
       "El archivo PDF original nunca se envía al proveedor de IA. Solo se envían el texto extraído y tu pregunta, y únicamente después de que inicias el chat.",
+    savedChatsLabel: "Guardar conversaciones en Mis Chats",
     idle: "Sube un PDF o pega texto de OCR y haz una pregunta.",
     ready: "Listo para preguntar.",
     working: "Consultando el documento...",
@@ -229,6 +233,7 @@ const copy = {
     privacyTitle: "Comportamento de privacidade",
     privacy:
       "O arquivo PDF original nunca é enviado ao provedor de IA. Apenas o texto extraído e sua pergunta são enviados, e somente depois que você inicia o chat.",
+    savedChatsLabel: "Salvar conversas em Meus Chats",
     idle: "Envie um PDF ou cole texto de OCR e faça uma pergunta.",
     ready: "Pronto para perguntar.",
     working: "Consultando o documento...",
@@ -278,6 +283,7 @@ const copy = {
     privacyTitle: "Comportement en matière de confidentialité",
     privacy:
       "Le fichier PDF original n'est jamais envoyé au fournisseur d'IA. Seuls le texte extrait et votre question sont envoyés, et uniquement après le lancement de la conversation.",
+    savedChatsLabel: "Enregistrer les conversations dans Mes chats",
     idle: "Importez un PDF ou collez du texte OCR, puis posez une question.",
     ready: "Prêt à poser une question.",
     working: "Interrogation du document...",
@@ -327,6 +333,7 @@ const copy = {
     privacyTitle: "プライバシーの取り扱い",
     privacy:
       "元の PDF ファイルが AI プロバイダーに送信されることはありません。送信されるのは抽出したテキストと質問のみで、チャットを開始した後にのみ送信されます。",
+    savedChatsLabel: "マイチャットに会話を保存",
     idle: "PDF をアップロードするか OCR テキストを貼り付けてから質問してください。",
     ready: "質問の準備ができました。",
     working: "文書に問い合わせています...",
@@ -376,6 +383,7 @@ const copy = {
     privacyTitle: "Umgang mit dem Datenschutz",
     privacy:
       "Die originale PDF-Datei wird niemals an den KI-Anbieter gesendet. Es werden nur der extrahierte Text und Ihre Frage gesendet, und das erst, nachdem Sie den Chat gestartet haben.",
+    savedChatsLabel: "Gespräche in Meine Chats speichern",
     idle: "Laden Sie ein PDF hoch oder fügen Sie OCR-Text ein und stellen Sie dann eine Frage.",
     ready: "Bereit für Ihre Frage.",
     working: "Das Dokument wird abgefragt ...",
@@ -425,6 +433,7 @@ const copy = {
     privacyTitle: "개인정보 처리 방식",
     privacy:
       "원본 PDF 파일은 AI 제공업체로 전송되지 않습니다. 추출한 텍스트와 질문만, 그리고 채팅을 시작한 후에만 전송됩니다.",
+    savedChatsLabel: "내 채팅에 대화 저장",
     idle: "PDF를 업로드하거나 OCR 텍스트를 붙여넣은 다음 질문하세요.",
     ready: "질문할 준비가 되었습니다.",
     working: "문서에 질문하는 중...",
@@ -1105,6 +1114,24 @@ export function AiChatWorkflow({
         <div className="mt-8 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5">
           <h3 className="font-semibold text-[color:var(--foreground)]">{t.privacyTitle}</h3>
           <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">{t.privacy}</p>
+          <div className="mt-4 flex items-center justify-between">
+            <p className="text-sm text-[color:var(--muted)]">{t.savedChatsLabel}</p>
+            <button
+              type="button"
+              onClick={() => {
+                const next = { ...featureFlags, savedChats: !featureFlags.savedChats };
+                setFeatureFlags(next);
+                writeFeatureFlags(next);
+              }}
+              className={`relative h-5 w-9 rounded-full transition-colors ${
+                featureFlags.savedChats ? "bg-[color:var(--accent)]" : "bg-[color:var(--line-strong)]"
+              }`}
+            >
+              <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
+                featureFlags.savedChats ? "translate-x-4" : "translate-x-0.5"
+              }`} />
+            </button>
+          </div>
         </div>
       </div>
     </section>

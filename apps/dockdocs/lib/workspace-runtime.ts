@@ -421,7 +421,7 @@ function upsertSession(identityId: string, input: ChatPersistenceInput) {
     turns,
     references: input.result.references,
     usage: input.result.usage,
-    contextText: input.contextText.slice(0, maxStoredContextCharacters),
+    contextText: identityId === "anonymous" ? "" : input.contextText.slice(0, maxStoredContextCharacters),
   };
 
   const next = [session, ...sessions.filter((item) => item.id !== session.id)].slice(

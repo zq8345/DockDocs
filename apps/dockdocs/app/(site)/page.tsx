@@ -94,7 +94,7 @@ const homeSchema = {
           name: "Are my PDF files safe on DockDocs?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Yes — and you can verify it. Most PDF tools (compress, merge, split, page edits) run entirely in your browser; you can open your browser's Network tab and confirm no file upload happens. For AI features and a few server-side conversions, only the text needed is sent, files are deleted after your session, and DockDocs does not use them to train its own models. DockDocs never sells or shares your documents.",
+            text: "Yes — and you can verify it. Most PDF tools (compress, merge, split, page edits) run entirely in your browser; you can open your browser's Network tab and confirm no file upload happens. For AI features and a few server-side conversions, only the text needed is sent, files are deleted from the conversion service right after your download completes, and DockDocs does not use them to train its own models. DockDocs never sells or shares your documents.",
           },
         },
         {
@@ -126,7 +126,7 @@ const homeSchema = {
           name: "What makes DockDocs different from other PDF tools and from a general AI chatbot?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Two things a general AI chatbot can't offer: privacy you can verify and answers you can trust. Most DockDocs tools run in your browser, so sensitive files never leave your device (check the Network tab). And its document AI shows the exact source passage behind its answers and extractions, and flags what it can't trace, so you can verify what it tells you. It's built for the documents you can't paste into a general chatbot — contracts, financials, research — not just generic PDF editing.",
+            text: "Two things a general AI chatbot can't offer: privacy you can verify and answers you can trust. Most DockDocs tools run in your browser, so sensitive files never leave your device (check the Network tab). And its document AI shows the exact source passage behind its answers when it can locate it, and flags what it can't trace, so you can verify what it tells you. It's built for the documents you can't paste into a general chatbot — contracts, financials, research — not just generic PDF editing.",
           },
         },
       ],

@@ -130,6 +130,18 @@ export default async (req: Request, _context: Context) => {
     }
   }
 
+  // ── DELETE: clean up the job right after the client downloads (fire-and-forget) ──
+  if (body.action === "delete") {
+    const jobId = body.jobId?.trim();
+    if (jobId) {
+      await fetch(`${CLOUDCONVERT_API}/jobs/${jobId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${apiKey}` },
+      }).catch(() => {});
+    }
+    return json({ ok: true });
+  }
+
   // Rate-limit only the costly CREATE path (status polling stays exempt so live jobs can poll).
   // Per-minute burst guard + a per-day cap to bound CloudConvert credit abuse by scrapers.
   // (Forward office/html/pdfa now go to the $0 self-hosted box; CloudConvert here serves

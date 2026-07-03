@@ -61,7 +61,7 @@ const page = {
         {
           title: "DockDocs doesn't store it",
           description:
-            "The extracted text and the conversation are processed for your request and not retained on DockDocs servers. (If you explicitly save a chat with My Chats, that's your own saved copy — opt-in, not automatic.)",
+            "The extracted text and the conversation are processed for your request and not retained on DockDocs servers or any cloud. If you explicitly save a chat with My Chats, that data is stored in your browser's own localStorage — on your device, not a server, and deletable from your browser at any time.",
         },
         {
           title: "The honest caveat",
@@ -88,7 +88,7 @@ const page = {
         {
           title: "Nothing retained by DockDocs",
           description:
-            "The request is processed and not stored on DockDocs servers. Saving a conversation is opt-in (My Chats), never automatic.",
+            "The request is processed and not stored on DockDocs servers. Saving a conversation is opt-in (My Chats) — stored in your browser's localStorage, on your device, not any server.",
         },
         {
           title: "Traceable answers, scoped honestly",
@@ -107,7 +107,7 @@ const page = {
     {
       question: "Does DockDocs store my document or conversation?",
       answer:
-        "The AI request is processed and not retained on DockDocs servers. The one exception is opt-in: if you explicitly save a chat with the My Chats feature, that's your own saved copy — it never happens automatically.",
+        "The AI request is processed and not retained on DockDocs servers. The one exception is opt-in: if you explicitly save a chat with My Chats, it goes into your browser's own localStorage — on your device, not a server, and removable from your browser at any time.",
     },
     {
       question: "Can AI answer without sending any data at all?",
