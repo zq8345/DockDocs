@@ -2265,7 +2265,8 @@ function LocalizedChatWithPdf({ locale }: { locale: ClientLocale }) {
   return (
     <main className="bg-[color:var(--surface)]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <div className={`mx-auto ${LAYOUT.content} px-5 pb-12 pt-12 sm:px-6 sm:pt-16`}>
+      {/* 布局 v2: AI workspace pages run at the WorkArea width (appShell). */}
+      <div className={`mx-auto ${LAYOUT.appShell} px-5 pb-12 pt-12 sm:px-6 sm:pt-16`}>
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href={localizedPath(locale, "")} className="transition hover:text-[color:var(--foreground)]">DockDocs</a>
           <span>/</span>

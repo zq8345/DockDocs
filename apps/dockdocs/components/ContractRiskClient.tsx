@@ -5,7 +5,7 @@ import { ToolSections, type ToolSectionsContent } from "@/components/ToolSection
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { groundingFaq } from "@/components/GroundingNote";
 import { AiToolShell, type AiShellStatus } from "@/components/ai-shell/AiToolShell";
-import { DocContextBar } from "@/components/ai-shell/DocContextBar";
+import { DocPreviewPanel } from "@/components/ai-shell/DocPreviewPanel";
 import { StreamingProgressBar } from "@/components/ai-shell/StreamingOutput";
 import { CitationChip } from "@/components/ai-shell/GroundedAnswer";
 import { GroundedExplainer } from "@/components/ai-shell/GroundedExplainer";
@@ -21,9 +21,8 @@ import { appendWorkHistory } from "@/lib/work-history";
 import { TrialCta } from "@/components/TrialCta";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
-import { DocPreview } from "../../../shared/templates/pdf-tool-page/doc-preview";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLegalSession, type LegalRisk } from "@/lib/legal-session";
 import { LegalWorkspaceBanner } from "@/components/LegalWorkspaceBanner";
 
@@ -617,6 +616,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const [progressStep, setProgressStep] = useState<string>("");
   const [analyzeProgress, setAnalyzeProgress] = useState(0);
   const [previewRisks, setPreviewRisks] = useState<Risk[]>([]);
+  const repickRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const s = legalCtx?.session;
@@ -995,7 +995,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   };
 
   return (
-    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : `mx-auto ${LAYOUT.content} px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20`}>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : `mx-auto ${LAYOUT.appShell} px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20`}>
       {!embedded && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />}
       {!embedded && (
         <>
@@ -1048,28 +1048,39 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
             />
           ) : null
         }
-        contextBar={
+        docPanel={
           phase !== "idle" && phase !== "extracting" ? (
-            <DocContextBar
-              fileName={fileName || t.choose}
-              meta={pages ? `${pages}p` : undefined}
-              statusLabel={phase === "analyzing" ? t.analyzing : undefined}
-              onReset={reset}
-              resetLabel={t.remove}
-              disabled={phase === "analyzing"}
-            />
+            <>
+              <DocPreviewPanel
+                docs={[
+                  {
+                    name: fileName || t.choose,
+                    meta: [
+                      file && Math.round((file.size / 1024 / 1024) * 100) / 100 > 0
+                        ? `${Math.round((file.size / 1024 / 1024) * 100) / 100} MB`
+                        : "",
+                      pages ? `${pages}p` : "",
+                    ].filter(Boolean).join(" · ") || undefined,
+                    thumbUrl: pageDataUrls[0] ?? null,
+                  },
+                ]}
+                onRepick={() => repickRef.current?.click()}
+                repickLabel={t.choose}
+                disabled={phase === "analyzing"}
+              />
+              <input ref={repickRef} type="file" accept="application/pdf,.pdf" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) void onFile(f); e.currentTarget.value = ""; }} />
+            </>
           ) : null
         }
         actionRegion={
           phase !== "idle" && phase !== "extracting" ? (
-            <div className={`${card} ${embedded ? "mt-3" : "mt-4"} p-5`}>
-              {file && <DocPreview file={file} max={480} onRemove={reset} removeLabel={t.remove} />}
-              <div className="mt-5 flex justify-center">
-                <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
-                  {phase === "analyzing" ? t.analyzing : t.analyze}
-                </button>
-              </div>
-              <p className="mt-3 text-center text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
+            /* v2 toolbar row: the analyze action sits top-right of the
+               interaction column; the big preview lives in the left panel. */
+            <div className={`${card} ${embedded ? "mt-3" : "mt-4"} flex flex-wrap items-center justify-between gap-3 px-4 py-3`}>
+              <p className="min-w-0 flex-1 text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
+              <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 shrink-0 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
+                {phase === "analyzing" ? t.analyzing : t.analyze}
+              </button>
             </div>
           ) : null
         }
@@ -1141,19 +1152,11 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       )}
 
       {risks && (
-        <div className={`mt-6 ${pageDataUrls.length > 0 ? "lg:grid lg:grid-cols-[200px_1fr] lg:gap-6 lg:items-start" : ""}`}>
-          {/* Left column: page previews strip (only shown when we have thumbnails) */}
-          {pageDataUrls.length > 0 && (
-            <div className="hidden lg:flex lg:flex-col lg:gap-1.5 lg:overflow-y-auto lg:max-h-[calc(100vh-160px)] lg:sticky lg:top-4">
-              {pageDataUrls.map((url, idx) => (
-                <div key={idx} className="rounded border border-[color:var(--line)] overflow-hidden bg-[color:var(--surface)]">
-                  <img src={url} alt={`Page ${idx + 1}`} className="w-full block" />
-                  <p className="text-center text-[9px] text-[color:var(--faint)] py-0.5 font-medium">{idx + 1}</p>
-                </div>
-              ))}
-            </div>
-          )}
-          {/* Right column: risk findings */}
+        /* v2: the document visual lives in the shell's left DocPreviewPanel, so
+           the old in-result page-strip column is retired — the risk list owns
+           the interaction column ("find in source" jumps stay in the source
+           details view below). */
+        <div className="mt-6">
           <div>
           <div className="mb-3 flex items-center justify-between gap-3">
             <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.result(risks.length)}</span>
