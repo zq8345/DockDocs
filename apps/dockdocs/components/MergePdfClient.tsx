@@ -1,5 +1,6 @@
 ﻿"use client";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
+import { WorkArea } from "@/components/WorkArea";
 import { BatchFileCard } from "@/components/BatchFileCard";
 import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 
@@ -38,7 +39,7 @@ const STR: AuthoredCopy<{
     hint: "Drag to reorder. They'll be merged top-to-bottom, left-to-right.",
     files: (n: number, p: number) => `${n} file${n === 1 ? "" : "s"} · ${p} pages total`,
     pagesLabel: (n: number) => `${n} page${n === 1 ? "" : "s"}`,
-    merge: "Merge & download", working: "Merging…", reset: "Start over",
+    merge: "Merge & download", working: "Merging…", reset: "Clear files",
     needTwo: "Add at least 2 PDFs to merge.", err: "Something went wrong: ", remove: "Remove",
   },
   zh: {
@@ -49,7 +50,7 @@ const STR: AuthoredCopy<{
     hint: "拖动调整顺序，按从上到下、从左到右合并。",
     files: (n: number, p: number) => `${n} 个文件 · 共 ${p} 页`,
     pagesLabel: (n: number) => `${n} 页`,
-    merge: "合并并下载", working: "正在合并…", reset: "重新开始",
+    merge: "合并并下载", working: "正在合并…", reset: "清空文件",
     needTwo: "至少添加 2 个 PDF 才能合并。", err: "出错了：", remove: "移除",
   },
   es: {
@@ -60,7 +61,7 @@ const STR: AuthoredCopy<{
     hint: "Arrastra para reordenar. Se unirán de arriba abajo y de izquierda a derecha.",
     files: (n: number, p: number) => `${n} archivo${n === 1 ? "" : "s"} · ${p} páginas en total`,
     pagesLabel: (n: number) => `${n} página${n === 1 ? "" : "s"}`,
-    merge: "Unir y descargar", working: "Uniendo…", reset: "Empezar de nuevo",
+    merge: "Unir y descargar", working: "Uniendo…", reset: "Borrar archivos",
     needTwo: "Agrega al menos 2 PDF para unirlos.", err: "Algo salió mal: ", remove: "Quitar",
   },
   pt: {
@@ -71,7 +72,7 @@ const STR: AuthoredCopy<{
     hint: "Arraste para reordenar. Serão unidos de cima para baixo e da esquerda para a direita.",
     files: (n: number, p: number) => `${n} arquivo${n === 1 ? "" : "s"} · ${p} páginas no total`,
     pagesLabel: (n: number) => `${n} página${n === 1 ? "" : "s"}`,
-    merge: "Unir e baixar", working: "Unindo…", reset: "Recomeçar",
+    merge: "Unir e baixar", working: "Unindo…", reset: "Limpar arquivos",
     needTwo: "Adicione pelo menos 2 PDFs para uni-los.", err: "Algo deu errado: ", remove: "Remover",
   },
   fr: {
@@ -82,7 +83,7 @@ const STR: AuthoredCopy<{
     hint: "Faites glisser pour réorganiser. Les fichiers seront fusionnés de haut en bas et de gauche à droite.",
     files: (n: number, p: number) => `${n} fichier${n === 1 ? "" : "s"} · ${p} page${p === 1 ? "" : "s"} au total`,
     pagesLabel: (n: number) => `${n} page${n === 1 ? "" : "s"}`,
-    merge: "Fusionner et télécharger", working: "Fusion en cours…", reset: "Recommencer",
+    merge: "Fusionner et télécharger", working: "Fusion en cours…", reset: "Vider la liste",
     needTwo: "Ajoutez au moins 2 PDF pour les fusionner.", err: "Une erreur est survenue : ", remove: "Retirer",
   },
   ja: {
@@ -93,7 +94,7 @@ const STR: AuthoredCopy<{
     hint: "ドラッグして並べ替え。上から下、左から右の順に結合されます。",
     files: (n: number, p: number) => `${n}個のファイル · 合計${p}ページ`,
     pagesLabel: (n: number) => `${n}ページ`,
-    merge: "結合してダウンロード", working: "結合中…", reset: "最初からやり直す",
+    merge: "結合してダウンロード", working: "結合中…", reset: "ファイルをクリア",
     needTwo: "結合するには少なくとも2つのPDFを追加してください。", err: "問題が発生しました: ", remove: "削除",
   },
   de: {
@@ -104,7 +105,7 @@ const STR: AuthoredCopy<{
     hint: "Zum Umordnen ziehen. Sie werden von oben nach unten und von links nach rechts zusammengefügt.",
     files: (n: number, p: number) => `${n} Datei${n === 1 ? "" : "en"} · ${p} Seiten insgesamt`,
     pagesLabel: (n: number) => `${n} Seite${n === 1 ? "" : "n"}`,
-    merge: "Zusammenfügen & herunterladen", working: "Wird zusammengefügt…", reset: "Von vorn beginnen",
+    merge: "Zusammenfügen & herunterladen", working: "Wird zusammengefügt…", reset: "Liste leeren",
     needTwo: "Fügen Sie mindestens 2 PDFs zum Zusammenfügen hinzu.", err: "Etwas ist schiefgelaufen: ", remove: "Entfernen",
   },
   ko: {
@@ -115,7 +116,7 @@ const STR: AuthoredCopy<{
     hint: "드래그해서 순서를 바꾸세요. 위에서 아래로, 왼쪽에서 오른쪽 순으로 병합됩니다.",
     files: (n: number, p: number) => `${n}개 파일 · 총 ${p}페이지`,
     pagesLabel: (n: number) => `${n}페이지`,
-    merge: "병합하고 다운로드", working: "병합 중…", reset: "다시 시작",
+    merge: "병합하고 다운로드", working: "병합 중…", reset: "파일 비우기",
     needTwo: "병합하려면 PDF를 2개 이상 추가하세요.", err: "문제가 발생했습니다: ", remove: "제거",
   },
 };
@@ -422,33 +423,25 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
       {items.length === 0 ? (
         <BatchUploadBox locale={locale} onFiles={addFiles} busy={busy} busyLabel={t.rendering} embedded={embedded} valueZone="client" />
       ) : (
-        <>
-          {/* Toolbar v2: card bar */}
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <p className="text-[15px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, totalPages)}</p>
-                <button type="button" onClick={reset} aria-label={t.reset}
-                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
-                  <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-                    <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <button type="button" onClick={merge} disabled={working || items.length < 2} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
-              {working ? t.working : t.merge}
-            </button>
-          </div>
-          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
-
+        <WorkArea
+          left={<p className="text-[15px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, totalPages)}</p>}
+          right={
+            <>
+              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
+              <button type="button" onClick={merge} disabled={working || items.length < 2} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+                {working ? t.working : t.merge}
+              </button>
+            </>
+          }
+          footer={t.hint}
+        >
           {working && (
-            <div className="mx-auto mt-6 max-w-[200px]">
+            <div className="mx-auto mb-4 max-w-[200px]">
               <CircularProgress bare progress={progress} title={t.working} />
             </div>
           )}
 
-          <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
             {items.map((it, pos) => (
               <div
                 key={it.id}
@@ -485,7 +478,7 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
               <span className="text-[11px]">{busy ? t.rendering : t.add}</span>
             </button>
           </div>
-        </>
+        </WorkArea>
       )}
 
       {done && (
