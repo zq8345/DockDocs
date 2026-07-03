@@ -36,9 +36,10 @@ export async function renderPdfFirstPageDataUrl(source: File | Blob): Promise<st
   }
 }
 
-// Office type badge (W/X/P). Fixed 240×180 (w×h) per Joe 2026-07-02 — office files
-// can't render a real first page client-side, so the badge uses one landscape
-// card size everywhere (upload preview + conversion result preview).
+// Office type badge (W/X/P). Office files can't render a real first page
+// client-side, so one landscape badge size is used everywhere (upload preview
+// + conversion result preview). 160×120 per Joe 2026-07-03 — the earlier
+// 240×180 read as an oversized empty frame next to the filename/size line.
 export function OfficeFallback({ name }: { name: string }) {
   const ext = name.split(".").pop()?.toLowerCase() ?? "";
   const [color, label]: [string, string] =
@@ -48,8 +49,8 @@ export function OfficeFallback({ name }: { name: string }) {
     ["#8a8a8a", (ext.slice(0, 3) || "?").toUpperCase()];
   return (
     <div
-      style={{ width: "240px", height: "180px", color, backgroundColor: `${color}18` }}
-      className="flex items-center justify-center text-[64px] font-bold"
+      style={{ width: "160px", height: "120px", color, backgroundColor: `${color}18` }}
+      className="flex items-center justify-center text-[40px] font-bold"
     >
       {label}
     </div>

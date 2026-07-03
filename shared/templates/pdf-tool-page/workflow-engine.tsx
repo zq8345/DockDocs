@@ -1416,6 +1416,11 @@ function getWorkflowResult(
         // Output is a DOCX — show the same blue "W" badge the upload preview uses.
         preview: artifact ? "office" : undefined,
         previewText: artifact ? outputName : undefined,
+        // Feed the FilePreviewLayout name/meta line (the generic conversion case
+        // below always sets these; pdf-to-word's dedicated case missed them, so
+        // its result card showed the badge with no filename/size).
+        outputName,
+        outputSize: formatBytes(outputSize),
       };
     case "jpg-to-pdf":
     case "png-to-pdf":
