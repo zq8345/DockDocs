@@ -389,7 +389,7 @@ export function PdfWorkflowEngine({
           ? "cursor-pointer border-2 border-dashed border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
           : "cursor-pointer border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
         : status === "result"
-          ? "border border-[color:var(--success-line)] bg-[color:var(--success-surface)]"
+          ? "border border-[color:var(--line)] bg-[color:var(--surface)]"
           : status === "error"
             ? "border border-[color:var(--error-line)] bg-[color:var(--error-surface)]"
             : "border border-[color:var(--line)] bg-[color:var(--surface)]";
