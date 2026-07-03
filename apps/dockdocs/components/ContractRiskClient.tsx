@@ -5,7 +5,8 @@ import { ToolSections, type ToolSectionsContent } from "@/components/ToolSection
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { groundingFaq } from "@/components/GroundingNote";
 import { AiToolShell, type AiShellStatus } from "@/components/ai-shell/AiToolShell";
-import { DocPreviewPanel } from "@/components/ai-shell/DocPreviewPanel";
+import { DocContextBar } from "@/components/ai-shell/DocContextBar";
+import { PageRail } from "@/components/ai-shell/PageRail";
 import { StreamingProgressBar } from "@/components/ai-shell/StreamingOutput";
 import { CitationChip } from "@/components/ai-shell/GroundedAnswer";
 import { GroundedExplainer } from "@/components/ai-shell/GroundedExplainer";
@@ -1048,47 +1049,47 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
             />
           ) : null
         }
+        docPanelMode="page-rail"
         docPanel={
-          phase !== "idle" && phase !== "extracting" ? (
-            <>
-              <DocPreviewPanel
-                docs={[
-                  {
-                    name: fileName || t.choose,
-                    meta: [
-                      file && Math.round((file.size / 1024 / 1024) * 100) / 100 > 0
-                        ? `${Math.round((file.size / 1024 / 1024) * 100) / 100} MB`
-                        : "",
-                      pages ? `${pages}p` : "",
-                    ].filter(Boolean).join(" · ") || undefined,
-                    thumbUrl: pageDataUrls[0] ?? null,
-                  },
-                ]}
-                onRepick={() => repickRef.current?.click()}
-                repickLabel={t.choose}
-                disabled={phase === "analyzing"}
-              />
-              <input ref={repickRef} type="file" accept="application/pdf,.pdf" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) void onFile(f); e.currentTarget.value = ""; }} />
-            </>
+          phase !== "idle" && phase !== "extracting" && pageDataUrls.length > 0 ? (
+            <PageRail pages={pageDataUrls} />
           ) : null
         }
-        actionRegion={
+        contextBar={
           phase !== "idle" && phase !== "extracting" ? (
-            /* v2 toolbar row: the analyze action sits top-right of the
-               interaction column; the big preview lives in the left panel. */
-            <div className={`${card} ${embedded ? "mt-3" : "mt-4"} flex flex-wrap items-center justify-between gap-3 px-4 py-3`}>
-              <p className="min-w-0 flex-1 text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
-              <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 shrink-0 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
-                {phase === "analyzing" ? t.analyzing : t.analyze}
-              </button>
-            </div>
+            /* WorkArea toolbar order (Joe-confirmed on contract-review): left =
+               file info + clear, right = the primary CTA. */
+            <>
+              <DocContextBar
+                fileName={fileName || t.choose}
+                meta={[
+                  file && Math.round((file.size / 1024 / 1024) * 100) / 100 > 0
+                    ? `${Math.round((file.size / 1024 / 1024) * 100) / 100} MB`
+                    : "",
+                  pages ? `${pages}p` : "",
+                ].filter(Boolean).join(" · ") || undefined}
+                statusLabel={phase === "analyzing" ? t.analyzing : undefined}
+                onRepick={() => repickRef.current?.click()}
+                repickLabel={t.choose}
+                onReset={reset}
+                resetLabel={t.remove}
+                disabled={phase === "analyzing"}
+                actions={
+                  <button type="button" onClick={onAnalyze} disabled={phase === "analyzing"} className="inline-flex h-10 shrink-0 items-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-[14px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
+                    {phase === "analyzing" ? t.analyzing : t.analyze}
+                  </button>
+                }
+              />
+              <input ref={repickRef} type="file" accept="application/pdf,.pdf" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) void onFile(f); e.currentTarget.value = ""; }} />
+              <p className="mt-2 text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
+            </>
           ) : null
         }
         resultRegion={
           <>
 
       {error && (
-        <div role="alert" className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">
+        <div role="alert" className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">
           <span>{error}</span>
           {phase === "ready" && (
             <button type="button" onClick={onAnalyze} className="shrink-0 rounded border border-[rgba(248,113,113,0.4)] px-3 py-1 text-[12px] font-semibold transition hover:bg-[rgba(248,113,113,0.1)]">
@@ -1101,7 +1102,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
 
       {phase === "analyzing" && (
-        <div className="mt-6" aria-busy="true">
+        <div aria-busy="true">
           <div className="mx-auto max-w-sm">
             <StreamingProgressBar progress={analyzeProgress} step={progressStep} />
           </div>
@@ -1152,11 +1153,12 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       )}
 
       {risks && (
-        /* v2: the document visual lives in the shell's left DocPreviewPanel, so
-           the old in-result page-strip column is retired — the risk list owns
-           the interaction column ("find in source" jumps stay in the source
-           details view below). */
-        <div className="mt-6">
+        /* v2 (Joe 红笔): the readable page rail owns the LEFT half of the
+           workspace (shell page-rail column); the risk list owns this right
+           half, starting at the same top edge ("find in source" jumps stay in
+           the source details view below; page-level rail locate lands with the
+           citation wiring). */
+        <div>
           <div>
           <div className="mb-3 flex items-center justify-between gap-3">
             <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{t.result(risks.length)}</span>

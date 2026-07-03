@@ -143,6 +143,7 @@ export function AiToolShell({
   status,
   docIntake,
   docPanel,
+  docPanelMode = "preview-card",
   contextBar,
   actionRegion,
   resultRegion,
@@ -154,12 +155,21 @@ export function AiToolShell({
   /** Upload / paste intake. Hidden by the consumer once a doc is loaded if desired. */
   docIntake?: React.ReactNode;
   /**
-   * 布局 v2: the left document column (DocPreviewPanel). When present, the
-   * shell renders the two-column skeleton — left = document preview card(s),
-   * right = context bar + action/result — shared by BOTH modes. At <md the
-   * panel's own top-bar variant renders above the interaction column.
+   * 布局 v2: the left document column. When present, the shell renders the
+   * two-column skeleton shared by BOTH modes. At <md the panel's own compact
+   * variant renders above the interaction column.
    */
   docPanel?: React.ReactNode;
+  /**
+   * Left-column flavor (Joe 定稿):
+   * - "preview-card" (对话类 chat/summary): 280px column — first-page card +
+   *   name·size·pages + re-pick; context bar and action/result on the right.
+   * - "page-rail" (审查类 contract-risk/lease/govbid/review): the 50/50
+   *   side-by-side workspace — full-width toolbar (contextBar+actionRegion)
+   *   on top, then readable page thumbnails (independent scroll) left,
+   *   findings right, both starting at the same top edge.
+   */
+  docPanelMode?: "preview-card" | "page-rail";
   /** File name + status + re-pick — persistent on every non-idle state. */
   contextBar?: React.ReactNode;
   /** mode="oneshot": preset action button(s). mode="conversational": question input. */
@@ -187,9 +197,20 @@ export function AiToolShell({
     );
 
   return (
-    <div data-ai-shell-mode={mode} data-ai-shell-status={status} className="contents">
+    <div data-ai-shell-mode={mode} data-ai-shell-status={status} data-ai-shell-panel={docPanel ? docPanelMode : undefined} className="contents">
       {docIntake}
-      {docPanel ? (
+      {docPanel && docPanelMode === "page-rail" ? (
+        <>
+          {/* WorkArea toolbar order: file info / clear on the left, primary CTA
+              on the right — full width, above the 50/50 split. */}
+          {contextBar}
+          {actionRegion}
+          <div className="mt-4 md:grid md:grid-cols-2 md:items-start md:gap-6">
+            <div className="md:sticky md:top-4 md:max-h-[calc(100vh-2rem)] md:overflow-y-auto">{docPanel}</div>
+            <div className="mt-4 min-w-0 md:mt-0">{resultRegion}</div>
+          </div>
+        </>
+      ) : docPanel ? (
         <div className="mt-6 md:grid md:grid-cols-[280px_minmax(0,1fr)] md:items-start md:gap-6">
           <div className="md:sticky md:top-4">{docPanel}</div>
           <div className="mt-4 min-w-0 md:mt-0">
