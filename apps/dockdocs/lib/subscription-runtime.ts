@@ -145,6 +145,14 @@ export async function createBillingCheckoutSession(
     }),
   });
   const payload = await readBillingResponse(response);
+
+  // 409 USE_UPGRADE or ALREADY_SUBSCRIBED → user already has a paid plan.
+  // Send them to /account to manage their subscription rather than showing an error.
+  if (response.status === 409) {
+    if (typeof window !== "undefined") window.location.assign("/account");
+    return "";
+  }
+
   if (!response.ok || !payload?.ok || !payload.url) {
     throw new BillingError(payload?.message || "Checkout is not available.", {
       code: payload?.code,
