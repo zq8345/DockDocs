@@ -11,7 +11,7 @@
 //     Rotated pages also take this path so one well-tested transform
 //     (placeOnPage) covers all four /Rotate cases.
 
-import type { EditorElement, InkElement, PageInfo, TextElement } from "./editor-types";
+import { elementPages, type EditorElement, type InkElement, type PageInfo } from "./editor-types";
 import {
   BASELINE,
   FONT_STACK,
@@ -46,6 +46,37 @@ export async function bakePdf(
     onProgress?.(done++, sorted.length);
     // Yield to the event loop so the progress paint lands between elements.
     await new Promise((r) => setTimeout(r, 0));
+
+    // Watermarks repeat across a page range — rasterize/embed ONCE, draw on
+    // every page in range (an embedded image can be drawn many times).
+    if (el.type === "watermark") {
+      let img = null;
+      if (el.mode === "image" && el.src) {
+        const bytes = await (await fetch(el.src)).arrayBuffer();
+        img = el.mime === "image/jpeg" ? await pdf.embedJpg(bytes) : await pdf.embedPng(bytes);
+      } else if (el.mode === "text" && el.text.trim()) {
+        const png = await rasterTextPng({ text: el.text, sizePt: el.sizePt, bold: false, color: el.color });
+        if (png) img = await pdf.embedPng(png);
+      }
+      if (!img) continue;
+      for (const pi of elementPages(el, pdfPages.length)) {
+        const page = pdfPages[pi];
+        if (!page) continue;
+        const box = page.getCropBox();
+        const rot = ((page.getRotation().angle % 360) + 360) % 360;
+        const placement = withElementRotation(placeOnPage(el, rot, box), el.rotation);
+        page.drawImage(img, {
+          x: placement.x,
+          y: placement.y,
+          width: placement.w,
+          height: placement.h,
+          rotate: degrees(placement.rotateDeg),
+          opacity: el.opacity,
+        });
+      }
+      continue;
+    }
+
     const page = pdfPages[el.page];
     const info = pages[el.page];
     if (!page || !info) continue;
@@ -181,7 +212,7 @@ function isWinAnsiEncodable(
 
 // Rasterize a text block to a transparent PNG at RASTER_SCALE px/pt, using the
 // same font stack + line metrics as the DOM preview and measureTextBlock.
-async function rasterTextPng(el: TextElement): Promise<ArrayBuffer | null> {
+async function rasterTextPng(el: { text: string; sizePt: number; bold: boolean; color: string }): Promise<ArrayBuffer | null> {
   const { wPt, hPt, lines } = measureTextBlock(el.text, el.sizePt, el.bold);
   const scale = Math.min(
     RASTER_SCALE,

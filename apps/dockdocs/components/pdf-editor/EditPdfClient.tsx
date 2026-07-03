@@ -12,7 +12,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { deepHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
-import type { EditorElement, PageInfo, TextElement } from "./editor-types";
+import { elementPages, type EditorElement, type PageInfo, type TextElement } from "./editor-types";
 import { editorReducer, initialEditorState } from "./editor-store";
 import {
   DEFAULT_HIGHLIGHT_COLOR,
@@ -75,6 +75,9 @@ const STR_EN = {
   signApply: "Place on page",
   signClear: "Clear",
   cancel: "Cancel",
+  addWatermark: "Watermark",
+  wmDefault: "CONFIDENTIAL",
+  pageRange: "Pages",
 };
 
 const STR = {
@@ -118,6 +121,9 @@ const STR = {
     signApply: "放入页面",
     signClear: "清除",
     cancel: "取消",
+    addWatermark: "水印",
+    wmDefault: "机密",
+    pageRange: "页范围",
   },
   es: {
     title: "Editar PDF",
@@ -158,6 +164,9 @@ const STR = {
     signApply: "Colocar en la página",
     signClear: "Borrar",
     cancel: "Cancelar",
+    addWatermark: "Marca de agua",
+    wmDefault: "CONFIDENCIAL",
+    pageRange: "Páginas",
   },
   pt: {
     title: "Editar PDF",
@@ -198,6 +207,9 @@ const STR = {
     signApply: "Colocar na página",
     signClear: "Limpar",
     cancel: "Cancelar",
+    addWatermark: "Marca d'água",
+    wmDefault: "CONFIDENCIAL",
+    pageRange: "Páginas",
   },
   fr: {
     title: "Modifier un PDF",
@@ -238,6 +250,9 @@ const STR = {
     signApply: "Placer sur la page",
     signClear: "Effacer",
     cancel: "Annuler",
+    addWatermark: "Filigrane",
+    wmDefault: "CONFIDENTIEL",
+    pageRange: "Pages",
   },
   ja: {
     title: "PDFを編集",
@@ -278,6 +293,9 @@ const STR = {
     signApply: "ページに配置",
     signClear: "クリア",
     cancel: "キャンセル",
+    addWatermark: "透かし",
+    wmDefault: "社外秘",
+    pageRange: "ページ範囲",
   },
   de: {
     title: "PDF bearbeiten",
@@ -318,6 +336,9 @@ const STR = {
     signApply: "Auf Seite platzieren",
     signClear: "Löschen",
     cancel: "Abbrechen",
+    addWatermark: "Wasserzeichen",
+    wmDefault: "VERTRAULICH",
+    pageRange: "Seiten",
   },
   ko: {
     title: "PDF 편집",
@@ -358,6 +379,9 @@ const STR = {
     signApply: "페이지에 배치",
     signClear: "지우기",
     cancel: "취소",
+    addWatermark: "워터마크",
+    wmDefault: "대외비",
+    pageRange: "페이지 범위",
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -562,6 +586,27 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     reader.readAsDataURL(file);
   }, [pages]);
 
+  const addWatermark = useCallback(() => {
+    const pageIndex = targetPage();
+    const page = pages[pageIndex];
+    if (!page) return;
+    const seed = { text: t.wmDefault, sizePt: 36, bold: false };
+    const { w, h } = sizeTextElement(seed, page);
+    const el: EditorElement = {
+      ...baseEl(pageIndex, w, h, 0.5, 0.5),
+      type: "watermark",
+      mode: "text",
+      text: t.wmDefault,
+      sizePt: 36,
+      color: "#9ca3af",
+      opacity: 0.35,
+      rotation: -45, // reads bottom-left → top-right, the classic diagonal
+      pageFrom: 0,
+      pageTo: pages.length - 1,
+    };
+    dispatch({ type: "add", el });
+  }, [pages, t]);
+
   const addSignature = useCallback((src: string, imgRatio: number) => {
     const pageIndex = targetPage();
     const page = pages[pageIndex];
@@ -735,6 +780,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 <button type="button" onClick={() => imageInputRef.current?.click()} className={toolBtn}>{t.addImage}</button>
                 <button type="button" onClick={addShape} className={toolBtn}>{t.addBox}</button>
                 <button type="button" onClick={addHighlight} className={toolBtn}>{t.addHighlight}</button>
+                <button type="button" onClick={addWatermark} className={toolBtn}>{t.addWatermark}</button>
                 <button
                   type="button"
                   onClick={() => setSignOpen((v) => !v)}
@@ -802,7 +848,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 <PageCanvas
                   key={pg.index}
                   page={pg}
-                  elements={state.elements.filter((el) => el.page === pg.index)}
+                  elements={state.elements.filter((el) => elementPages(el, pages.length).includes(pg.index))}
                   selectedId={state.selectedId}
                   editingId={state.editingId}
                   dispatch={dispatch}
@@ -903,6 +949,74 @@ function PropertyPanel({
           {t.opacity}
           <input type="range" min={0.1} max={1} step={0.05} value={el.opacity} onPointerDown={snap} onChange={(e) => patch({ opacity: Number(e.target.value) })} className="w-28 accent-[color:var(--accent)]" />
         </label>
+      )}
+
+      {el.type === "watermark" && (
+        <>
+          {el.mode === "text" && (
+            <>
+              <input
+                type="text"
+                value={el.text}
+                onFocus={snap}
+                onChange={(e) => {
+                  const text = e.target.value;
+                  const page = pages[el.page];
+                  const sized = page ? sizeTextElement({ text, sizePt: el.sizePt, bold: false }, page) : null;
+                  patch(sized ? { text, w: sized.w, h: sized.h } : { text });
+                }}
+                className={`${numInput} w-40`}
+              />
+              <label className={label}>
+                {t.size}
+                <input
+                  type="number"
+                  min={MIN_SIZE_PT}
+                  max={MAX_SIZE_PT}
+                  value={Math.round(el.sizePt)}
+                  onFocus={snap}
+                  onChange={(e) => {
+                    const sizePt = Math.min(MAX_SIZE_PT, Math.max(MIN_SIZE_PT, Number(e.target.value) || MIN_SIZE_PT));
+                    const page = pages[el.page];
+                    const sized = page ? sizeTextElement({ text: el.text, sizePt, bold: false }, page) : null;
+                    patch(sized ? { sizePt, w: sized.w, h: sized.h } : { sizePt });
+                  }}
+                  className={numInput}
+                />
+              </label>
+              <label className={label}>
+                {t.color}
+                <input type="color" value={el.color} onFocus={snap} onChange={(e) => patch({ color: e.target.value })} className={colorInput} />
+              </label>
+            </>
+          )}
+          <label className={label}>
+            {t.opacity}
+            <input type="range" min={0.05} max={1} step={0.05} value={el.opacity} onPointerDown={snap} onChange={(e) => patch({ opacity: Number(e.target.value) })} className="w-28 accent-[color:var(--accent)]" />
+          </label>
+          <label className={label}>
+            {t.pageRange}
+            <input
+              type="number"
+              min={1}
+              max={pages.length}
+              value={Math.min(el.pageFrom, el.pageTo) + 1}
+              onFocus={snap}
+              onChange={(e) => patch({ pageFrom: Math.min(pages.length, Math.max(1, Number(e.target.value) || 1)) - 1 })}
+              className={`${numInput} w-14`}
+            />
+            <span className="text-[color:var(--faint)]">–</span>
+            <input
+              type="number"
+              min={1}
+              max={pages.length}
+              value={Math.max(el.pageFrom, el.pageTo) + 1}
+              onFocus={snap}
+              onChange={(e) => patch({ pageTo: Math.min(pages.length, Math.max(1, Number(e.target.value) || pages.length)) - 1 })}
+              className={`${numInput} w-14`}
+            />
+          </label>
+        </>
       )}
 
       {el.type === "shape" && (

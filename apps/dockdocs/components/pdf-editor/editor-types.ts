@@ -6,7 +6,7 @@
 // module that converts between spaces (screen ↔ normalized ↔ PDF pt) — never
 // convert inline in a component.
 
-export type ElementType = "text" | "image" | "signature" | "shape" | "highlight" | "ink";
+export type ElementType = "text" | "image" | "signature" | "watermark" | "shape" | "highlight" | "ink";
 
 export type BaseElement = {
   id: string;
@@ -50,6 +50,25 @@ export type SignatureElement = BaseElement & {
   opacity: number;
 };
 
+/** Repeating watermark. Unlike every other element it applies to a PAGE
+ *  RANGE: the same normalized rect/rotation is rendered and baked on every
+ *  page in [pageFrom, pageTo] (0-based, inclusive); `page` is the anchor the
+ *  element was created on. Text mode rasterizes at bake (rotation ≈ always
+ *  set); image mode reuses the image pipeline per page. */
+export type WatermarkElement = BaseElement & {
+  type: "watermark";
+  mode: "text" | "image";
+  text: string;
+  /** image mode: PNG/JPEG data URL. */
+  src?: string;
+  mime?: "image/png" | "image/jpeg";
+  sizePt: number;
+  color: string;
+  opacity: number;
+  pageFrom: number;
+  pageTo: number;
+};
+
 export type ShapeElement = BaseElement & {
   type: "shape"; // rectangle (A1)
   /** null = no fill. */
@@ -78,9 +97,20 @@ export type EditorElement =
   | TextElement
   | ImageElement
   | SignatureElement
+  | WatermarkElement
   | ShapeElement
   | HighlightElement
   | InkElement;
+
+/** Pages an element renders/bakes on (watermarks span a range). */
+export function elementPages(el: EditorElement, pageCount: number): number[] {
+  if (el.type !== "watermark") return [el.page];
+  const from = Math.max(0, Math.min(el.pageFrom, el.pageTo));
+  const to = Math.min(pageCount - 1, Math.max(el.pageFrom, el.pageTo));
+  const out: number[] = [];
+  for (let i = from; i <= to; i++) out.push(i);
+  return out;
+}
 
 export type PageInfo = {
   /** 0-based. */

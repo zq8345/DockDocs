@@ -268,14 +268,15 @@ function resizePatch(
   let w: number, h: number;
   const extra: Record<string, number> = {};
 
-  if (el.type === "text") {
+  const textLike = el.type === "text" || (el.type === "watermark" && el.mode === "text");
+  if (textLike) {
     const f = corner ? Math.max(fx, fy) : handle === "n" || handle === "s" ? fy : fx;
     const sizePt = clamp(startSizePt * f, MIN_SIZE_PT, MAX_SIZE_PT);
-    const sized = sizeTextElement({ text: el.text, sizePt, bold: el.bold }, page);
+    const sized = sizeTextElement({ text: el.text, sizePt, bold: el.type === "text" && el.bold }, page);
     w = sized.w;
     h = sized.h;
     extra.sizePt = sizePt;
-  } else if ((el.type === "image" || el.type === "signature") && corner) {
+  } else if ((el.type === "image" || el.type === "signature" || el.type === "watermark") && corner) {
     const f = Math.max(fx, fy, minW / start.w, minH / start.h);
     w = start.w * f;
     h = start.h * f;
@@ -337,7 +338,7 @@ function ElementView({
       startClientX: e.clientX,
       startClientY: e.clientY,
       startRect: { x: el.x, y: el.y, w: el.w, h: el.h },
-      startSizePt: el.type === "text" ? el.sizePt : 0,
+      startSizePt: el.type === "text" || el.type === "watermark" ? el.sizePt : 0,
       startRotation: el.rotation,
       centerPx,
       startPointerAngle: Math.atan2(e.clientY - centerPx.y, e.clientX - centerPx.x),
@@ -515,6 +516,26 @@ function ElementContent({
           className="pointer-events-none h-full w-full"
           style={{ opacity: el.opacity }}
         />
+      );
+    case "watermark":
+      return el.mode === "image" && el.src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={el.src} alt="" draggable={false} className="pointer-events-none h-full w-full" style={{ opacity: el.opacity }} />
+      ) : (
+        <div
+          className="pointer-events-none"
+          style={{
+            fontSize: fontSizeCqw(el.sizePt, page),
+            lineHeight: LINE_HEIGHT,
+            fontFamily: FONT_STACK,
+            fontWeight: 400,
+            color: el.color,
+            opacity: el.opacity,
+            whiteSpace: "pre",
+          }}
+        >
+          {el.text}
+        </div>
       );
     case "shape":
       return (
