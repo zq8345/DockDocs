@@ -55,7 +55,10 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-6 flex flex-col gap-3 border-t border-[color:var(--line)] pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[11px] text-[color:var(--faint)]">
+          {/* suppressHydrationWarning: the year is the ONLY client-clock-derived text
+              node in the shell — a browser with a mis-set clock would otherwise fail
+              hydration (React #418) on every page. */}
+          <p suppressHydrationWarning className="text-[11px] text-[color:var(--faint)]">
             &copy; {new Date().getFullYear()} DockDocs. {locale === "zh" ? "版权所有。" : locale === "zh-Hant" ? deepHant("版权所有。") : locale === "es" ? "Todos los derechos reservados." : locale === "pt" ? "Todos os direitos reservados." : locale === "fr" ? "Tous droits réservés." : locale === "ja" ? "無断転載を禁じます。" : locale === "de" ? "Alle Rechte vorbehalten." : locale === "ko" ? "모든 권리 보유." : "All rights reserved."}
           </p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] text-[color:var(--faint)]">
