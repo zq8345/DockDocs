@@ -31,6 +31,7 @@ import {
 import { bakePdf } from "./bake-engine";
 import { PageCanvas } from "./PageCanvas";
 import { ThumbRail } from "./ThumbRail";
+import { SignaturePanel } from "./SignaturePanel";
 
 type Locale = RouteLocale;
 
@@ -67,6 +68,13 @@ const STR_EN = {
   opacity: "Opacity",
   remove: "Remove",
   thumbsAria: "Page navigation",
+  sign: "Sign",
+  signDraw: "Draw",
+  signType: "Type",
+  signTypePlaceholder: "Type your name…",
+  signApply: "Place on page",
+  signClear: "Clear",
+  cancel: "Cancel",
 };
 
 const STR = {
@@ -103,6 +111,13 @@ const STR = {
     opacity: "不透明度",
     remove: "删除",
     thumbsAria: "页面导航",
+    sign: "签名",
+    signDraw: "手写",
+    signType: "打字",
+    signTypePlaceholder: "输入你的姓名…",
+    signApply: "放入页面",
+    signClear: "清除",
+    cancel: "取消",
   },
   es: {
     title: "Editar PDF",
@@ -136,6 +151,13 @@ const STR = {
     opacity: "Opacidad",
     remove: "Eliminar",
     thumbsAria: "Navegación de páginas",
+    sign: "Firmar",
+    signDraw: "Dibujar",
+    signType: "Escribir",
+    signTypePlaceholder: "Escribe tu nombre…",
+    signApply: "Colocar en la página",
+    signClear: "Borrar",
+    cancel: "Cancelar",
   },
   pt: {
     title: "Editar PDF",
@@ -169,6 +191,13 @@ const STR = {
     opacity: "Opacidade",
     remove: "Remover",
     thumbsAria: "Navegação de páginas",
+    sign: "Assinar",
+    signDraw: "Desenhar",
+    signType: "Digitar",
+    signTypePlaceholder: "Digite seu nome…",
+    signApply: "Colocar na página",
+    signClear: "Limpar",
+    cancel: "Cancelar",
   },
   fr: {
     title: "Modifier un PDF",
@@ -202,6 +231,13 @@ const STR = {
     opacity: "Opacité",
     remove: "Supprimer",
     thumbsAria: "Navigation des pages",
+    sign: "Signer",
+    signDraw: "Dessiner",
+    signType: "Saisir",
+    signTypePlaceholder: "Saisissez votre nom…",
+    signApply: "Placer sur la page",
+    signClear: "Effacer",
+    cancel: "Annuler",
   },
   ja: {
     title: "PDFを編集",
@@ -235,6 +271,13 @@ const STR = {
     opacity: "不透明度",
     remove: "削除",
     thumbsAria: "ページナビゲーション",
+    sign: "署名",
+    signDraw: "手書き",
+    signType: "入力",
+    signTypePlaceholder: "名前を入力…",
+    signApply: "ページに配置",
+    signClear: "クリア",
+    cancel: "キャンセル",
   },
   de: {
     title: "PDF bearbeiten",
@@ -268,6 +311,13 @@ const STR = {
     opacity: "Deckkraft",
     remove: "Entfernen",
     thumbsAria: "Seitennavigation",
+    sign: "Signieren",
+    signDraw: "Zeichnen",
+    signType: "Tippen",
+    signTypePlaceholder: "Namen eingeben…",
+    signApply: "Auf Seite platzieren",
+    signClear: "Löschen",
+    cancel: "Abbrechen",
   },
   ko: {
     title: "PDF 편집",
@@ -301,6 +351,13 @@ const STR = {
     opacity: "불투명도",
     remove: "삭제",
     thumbsAria: "페이지 탐색",
+    sign: "서명",
+    signDraw: "그리기",
+    signType: "입력",
+    signTypePlaceholder: "이름을 입력하세요…",
+    signApply: "페이지에 배치",
+    signClear: "지우기",
+    cancel: "취소",
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -312,6 +369,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const [pages, setPages] = useState<PageInfo[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [inkMode, setInkMode] = useState(false);
+  const [signOpen, setSignOpen] = useState(false);
   const [bakeDone, setBakeDone] = useState<{ done: number; total: number } | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [state, dispatch] = useReducer(editorReducer, initialEditorState);
@@ -504,6 +562,22 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     reader.readAsDataURL(file);
   }, [pages]);
 
+  const addSignature = useCallback((src: string, imgRatio: number) => {
+    const pageIndex = targetPage();
+    const page = pages[pageIndex];
+    if (!page) return;
+    const w = 0.25;
+    const h = Math.min((w * imgRatio * page.wPt) / page.hPt, 0.9);
+    const el: EditorElement = {
+      ...baseEl(pageIndex, w, h),
+      type: "signature",
+      src,
+      opacity: 1,
+    };
+    dispatch({ type: "add", el });
+    setSignOpen(false);
+  }, [pages]);
+
   const onInkStroke = useCallback((pageIndex: number, points: Array<[number, number]>) => {
     const page = pages[pageIndex];
     if (!page) return;
@@ -663,6 +737,18 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 <button type="button" onClick={addHighlight} className={toolBtn}>{t.addHighlight}</button>
                 <button
                   type="button"
+                  onClick={() => setSignOpen((v) => !v)}
+                  aria-pressed={signOpen}
+                  className={
+                    signOpen
+                      ? "rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
+                      : toolBtn
+                  }
+                >
+                  {t.sign}
+                </button>
+                <button
+                  type="button"
                   onClick={() => setInkMode((v) => !v)}
                   aria-pressed={inkMode}
                   className={
@@ -685,7 +771,14 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               </div>
             </div>
 
-            {selected && !inkMode && (
+            {signOpen && (
+              <SignaturePanel
+                t={{ draw: t.signDraw, type: t.signType, typePlaceholder: t.signTypePlaceholder, clear: t.signClear, apply: t.signApply, cancel: t.cancel }}
+                onApply={addSignature}
+                onCancel={() => setSignOpen(false)}
+              />
+            )}
+            {selected && !inkMode && !signOpen && (
               <PropertyPanel el={selected} pages={pages} dispatch={dispatch} t={t} />
             )}
           </div>
@@ -805,7 +898,7 @@ function PropertyPanel({
         </>
       )}
 
-      {el.type === "image" && (
+      {(el.type === "image" || el.type === "signature") && (
         <label className={label}>
           {t.opacity}
           <input type="range" min={0.1} max={1} step={0.05} value={el.opacity} onPointerDown={snap} onChange={(e) => patch({ opacity: Number(e.target.value) })} className="w-28 accent-[color:var(--accent)]" />

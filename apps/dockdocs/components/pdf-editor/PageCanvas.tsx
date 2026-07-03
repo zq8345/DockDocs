@@ -275,7 +275,7 @@ function resizePatch(
     w = sized.w;
     h = sized.h;
     extra.sizePt = sizePt;
-  } else if (el.type === "image" && corner) {
+  } else if ((el.type === "image" || el.type === "signature") && corner) {
     const f = Math.max(fx, fy, minW / start.w, minH / start.h);
     w = start.w * f;
     h = start.h * f;
@@ -504,6 +504,7 @@ function ElementContent({
       return (
         <TextContent el={el} page={page} editing={editing} dispatch={dispatch} placeholder={placeholder} />
       );
+    case "signature":
     case "image":
       return (
         // eslint-disable-next-line @next/next/no-img-element

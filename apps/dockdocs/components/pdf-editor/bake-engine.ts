@@ -85,9 +85,12 @@ export async function bakePdf(
         }
         break;
       }
+      case "signature":
       case "image": {
         const bytes = await (await fetch(el.src)).arrayBuffer();
-        const img = el.mime === "image/png" ? await pdf.embedPng(bytes) : await pdf.embedJpg(bytes);
+        const img = el.type === "image" && el.mime === "image/jpeg"
+          ? await pdf.embedJpg(bytes)
+          : await pdf.embedPng(bytes); // signatures are always PNG (transparent ink)
         page.drawImage(img, {
           x: placement.x,
           y: placement.y,

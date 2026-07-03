@@ -6,7 +6,7 @@
 // module that converts between spaces (screen ↔ normalized ↔ PDF pt) — never
 // convert inline in a component.
 
-export type ElementType = "text" | "image" | "shape" | "highlight" | "ink";
+export type ElementType = "text" | "image" | "signature" | "shape" | "highlight" | "ink";
 
 export type BaseElement = {
   id: string;
@@ -41,6 +41,15 @@ export type ImageElement = BaseElement & {
   opacity: number;
 };
 
+/** Hand-drawn or typed signature, rasterized to a PNG data URL (the proven
+ *  SignPdfClient pad/type→canvas path). Renders and bakes like an image;
+ *  its own type keeps the panel UX and future per-signature features clean. */
+export type SignatureElement = BaseElement & {
+  type: "signature";
+  src: string; // PNG data URL
+  opacity: number;
+};
+
 export type ShapeElement = BaseElement & {
   type: "shape"; // rectangle (A1)
   /** null = no fill. */
@@ -68,6 +77,7 @@ export type InkElement = BaseElement & {
 export type EditorElement =
   | TextElement
   | ImageElement
+  | SignatureElement
   | ShapeElement
   | HighlightElement
   | InkElement;
