@@ -589,7 +589,7 @@ export function AboutPage({ locale = "en" }: { locale?: Locale }) {
       <section>
         <div className={shell}>
           <p className={eyebrow}>{c.heroEyebrow}</p>
-          <h1 className="mt-4 max-w-[18ch] text-[40px] font-medium leading-[1.05] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[60px] lg:text-[80px] lg:leading-[1.02] lg:tracking-[-0.04em]">
+          <h1 className="mt-4 max-w-[18ch] text-[40px] font-normal leading-[1.05] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[60px] lg:text-[80px] lg:leading-[1.02] lg:tracking-[-0.04em]">
             {c.heroPre}<span className="text-[color:var(--accent)]">{c.heroAccent}</span>
           </h1>
           <p className={sub}>{c.heroSub}</p>

@@ -330,7 +330,7 @@ export function AccountClient({ locale = "en" }: { locale?: AccountLocale }) {
   const header = (
     <div className="text-center">
       <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--faint)]">{t.eyebrow}</p>
-      <h1 className="mt-3 text-[22px] font-medium tracking-[-0.012em]">{view === "signed-in" ? t.headSignedIn : t.headSignedOut}</h1>
+      <h1 className="mt-3 text-[22px] font-normal tracking-[-0.012em]">{view === "signed-in" ? t.headSignedIn : t.headSignedOut}</h1>
       <p className="mt-2 text-[13px] leading-relaxed text-[color:var(--muted)]">{view === "signed-in" ? t.subSignedIn : t.subSignedOut}</p>
     </div>
   );

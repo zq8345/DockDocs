@@ -784,7 +784,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       {/* Hero — left-aligned, matching Home / About design baseline */}
       <div>
         <p className={eyebrowCls(zh)}>{zh ? h("// 定价") : locale === "es" ? "// Precios" : locale === "pt" ? "// Preços" : locale === "fr" ? "// Tarifs" : locale === "ja" ? "// 料金" : locale === "de" ? "// Preise" : locale === "ko" ? "// 요금제" : "// Pricing"}</p>
-        <h1 className="mt-4 max-w-[28ch] text-[40px] font-medium leading-[1.05] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[60px]">
+        <h1 className="mt-4 max-w-[28ch] text-[40px] font-normal leading-[1.05] tracking-[-0.035em] text-[color:var(--foreground)] sm:text-[60px]">
           {c.title}
         </h1>
         <p className="mt-5 max-w-2xl text-[16px] leading-[1.6] text-[color:var(--muted)]">
