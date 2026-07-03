@@ -62,19 +62,21 @@ export const featureAliases: Record<string, UsageFeature> = {
   "compare-docs": "compare",
   // Conversion meters. NOTE: server enforcement is by the literal feature key the 3
   // endpoints pass to enforceFeatureGate — these aliases drive client/doc consistency,
-  // not the server gate. Option-C split: forward $0 self-hosted-Gotenberg routes →
-  // "convertFree" (high fair-use, no real cost); paid CloudConvert routes (reverse
-  // pdf→Office, >5MB fallback) keep the low "convert".
+  // not the server gate.
+  // ⚠️ Self-hosted Gotenberg box is PARKED (SELF_HOSTED_CONVERT_ENABLED=false). ALL
+  // conversions (forward and reverse) currently route through CloudConvert and cost $.
+  // "convertFree" is kept as a separate quota bucket with a higher daily free cap for
+  // when the self-hosted box is re-enabled; today both conversion directions cost $.
   convert: "convert",
   convertFree: "convertFree",
-  "word-to-pdf": "convertFree",   // forward · $0 gotenberg
-  "ppt-to-pdf": "convertFree",    // forward · $0 gotenberg
-  "excel-to-pdf": "convertFree",  // forward · $0 gotenberg
-  "html-to-pdf": "convertFree",   // forward · $0 gotenberg
-  "pdf-to-pdfa": "convertFree",   // forward · $0 gotenberg pdfengines
-  "pdf-to-word": "convert",       // reverse ($, OSS box + CC fallback)
-  "pdf-to-excel": "convert",      // reverse ($, OSS box + CC fallback)
-  "pdf-to-ppt": "convert",        // reverse ($, CloudConvert only)
+  "word-to-pdf": "convertFree",   // forward (Gotenberg parked → CloudConvert)
+  "ppt-to-pdf": "convertFree",    // forward (Gotenberg parked → CloudConvert)
+  "excel-to-pdf": "convertFree",  // forward (Gotenberg parked → CloudConvert)
+  "html-to-pdf": "convertFree",   // forward (Gotenberg parked → CloudConvert)
+  "pdf-to-pdfa": "convertFree",   // forward (Gotenberg parked → CloudConvert)
+  "pdf-to-word": "convert",       // reverse (CloudConvert)
+  "pdf-to-excel": "convert",      // reverse (CloudConvert)
+  "pdf-to-ppt": "convert",        // reverse (CloudConvert)
   // ⚠️ protect-pdf is CLIENT-SIDE (@cantoo/pdf-lib pdfDoc.encrypt; pdf-runtime.ts:204/898,
   // git 683c139). The encryption never hits a server, so this alias NEVER fires the gate —
   // it's vestigial (kept for map completeness). It is NOT a CloudConvert route. (This stale
@@ -101,8 +103,8 @@ export const featureLimits: Record<
     analyzer: { limit: 10, period: "day" },
     contractAnalyzer: { limit: 3, period: "day" },
     compare: { limit: 3, period: "day" },
-    // UI shows "10/day" for conversions (Joe 2026-07-03). Flat daily cap across
-    // both CloudConvert (convert) and Gotenberg (convertFree) directions.
+    // UI shows "10/day" for conversions (Joe 2026-07-03). Both directions use
+    // CloudConvert while Gotenberg is parked; 10/day cap applies to each bucket.
     convert: { limit: 10, period: "day" },
     convertFree: { limit: 10, period: "day" },
   },

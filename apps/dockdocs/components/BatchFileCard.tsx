@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { formatBytes } from "@/lib/files";
 
-function PdfGridThumb({ file }: { file: File }) {
+function PdfGridThumb({ file, onPageCount }: { file: File; onPageCount?: (n: number) => void }) {
   const [url, setUrl] = useState<string | null>(null);
   useEffect(() => {
     let cancelled = false;
@@ -12,6 +12,7 @@ function PdfGridThumb({ file }: { file: File }) {
         const pdfjs = await import("pdfjs-dist");
         pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
         const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+        if (!cancelled) onPageCount?.(doc.numPages);
         const page = await doc.getPage(1);
         const viewport = page.getViewport({ scale: 0.4 });
         const canvas = document.createElement("canvas");
@@ -86,6 +87,7 @@ export function BatchFileCard({
 }) {
   const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
   const ext = file.name.split(".").pop() ?? "";
+  const [pdfPageCount, setPdfPageCount] = useState<number | null>(null);
 
   const statusBadge = statusNode ?? (
     status === "done" ? (
@@ -99,7 +101,7 @@ export function BatchFileCard({
     <div className="group relative flex flex-col overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
       {/* Square thumbnail — aspect-ratio 1:1; contain keeps true aspect ratio, neutral bg fills padding */}
       <div className="relative aspect-square w-full overflow-hidden bg-[color:var(--surface-subtle)]">
-        {isPdf ? <PdfGridThumb file={file} /> : <OfficeGridThumb ext={ext} />}
+        {isPdf ? <PdfGridThumb file={file} onPageCount={setPdfPageCount} /> : <OfficeGridThumb ext={ext} />}
         {orderBadge && (
           <div className="absolute left-1.5 top-1.5">{orderBadge}</div>
         )}
@@ -110,7 +112,11 @@ export function BatchFileCard({
         <p className="truncate text-[11px] font-medium text-[color:var(--foreground)]" title={file.name}>
           {file.name}
         </p>
-        <p className="mt-0.5 text-[10px] text-[color:var(--faint)]">{subtitle ?? formatBytes(file.size)}</p>
+        <p className="mt-0.5 text-[10px] text-[color:var(--faint)]">
+          {subtitle ?? (isPdf && pdfPageCount != null
+            ? `${formatBytes(file.size)} · ${pdfPageCount}p`
+            : formatBytes(file.size))}
+        </p>
         {statusBadge && <div className="mt-1.5">{statusBadge}</div>}
       </div>
 

@@ -468,7 +468,7 @@ export const runtimeCopy = {
     pricing: {
       metadataTitle: "Pricing",
       metadataDescription:
-        "DockDocs Free, Plus, and Pro pricing UI for AI document platform workflows.",
+        "DockDocs Free and Pro pricing — AI document platform plans.",
       eyebrow: "Pricing",
       title: "Plans for an AI document workspace.",
       description:
@@ -1008,7 +1008,7 @@ export const runtimeCopy = {
     },
     pricing: {
       metadataTitle: "价格",
-      metadataDescription: "DockDocs Free、Plus 和 Pro 的 AI 文档平台价格界面。",
+      metadataDescription: "DockDocs Free 和 Pro 的 AI 文档平台价格界面。",
       eyebrow: "价格",
       title: "面向 AI 文档工作区的方案。",
       description: "从免费开始。当 PDF 对话、摘要、OCR、转换和团队复核需要更高额度时再升级。",
@@ -1605,7 +1605,7 @@ export const runtimeCopy = {
     pricing: {
       metadataTitle: "Precios",
       metadataDescription:
-        "Interfaz de precios Free, Plus y Pro de DockDocs para flujos de trabajo de plataforma de documentos con IA.",
+        "Interfaz de precios Free y Pro de DockDocs para flujos de trabajo de plataforma de documentos con IA.",
       eyebrow: "Precios",
       title: "Planes para un espacio de trabajo de documentos con IA.",
       description:
@@ -2210,7 +2210,7 @@ export const runtimeCopy = {
     pricing: {
       metadataTitle: "Preços",
       metadataDescription:
-        "Interface de preços Grátis, Plus e Pro do DockDocs para fluxos de trabalho de plataforma de documentos com IA.",
+        "Interface de preços Grátis e Pro do DockDocs para fluxos de trabalho de plataforma de documentos com IA.",
       eyebrow: "Preços",
       title: "Planos para um espaço de trabalho de documentos com IA.",
       description:
@@ -2815,7 +2815,7 @@ export const runtimeCopy = {
     pricing: {
       metadataTitle: "Tarifs",
       metadataDescription:
-        "Interface de tarification Gratuit, Plus et Pro de DockDocs pour les flux de travail de la plateforme de documents IA.",
+        "Interface de tarification Gratuit et Pro de DockDocs pour les flux de travail de la plateforme de documents IA.",
       eyebrow: "Tarifs",
       title: "Des plans pour un espace de travail de documents IA.",
       description:
@@ -3420,7 +3420,7 @@ export const runtimeCopy = {
     pricing: {
       metadataTitle: "Preise",
       metadataDescription:
-        "DockDocs Gratis-, Plus- und Pro-Preisoberfläche für Workflows der KI-Dokumentenplattform.",
+        "DockDocs Gratis- und Pro-Preisoberfläche für Workflows der KI-Dokumentenplattform.",
       eyebrow: "Preise",
       title: "Tarife für einen KI-Dokumenten-Arbeitsbereich.",
       description:
@@ -4110,7 +4110,7 @@ const runtimeCopyJa = {
   pricing: {
     metadataTitle: "料金",
     metadataDescription:
-      "AI ドキュメントプラットフォームのワークフロー向け DockDocs の Free・Plus・Pro 料金 UI。",
+      "AI ドキュメントプラットフォームのワークフロー向け DockDocs の Free・Pro 料金 UI。",
     eyebrow: "料金",
     title: "AI ドキュメントワークスペースのためのプラン。",
     description:
@@ -4591,7 +4591,7 @@ const runtimeCopyKo = {
   },
   pricing: {
     metadataTitle: "요금제",
-    metadataDescription: "AI 문서 플랫폼 워크플로를 위한 DockDocs Free, Plus, Pro 요금 UI.",
+    metadataDescription: "AI 문서 플랫폼 워크플로를 위한 DockDocs Free, Pro 요금 UI.",
     eyebrow: "요금제",
     title: "AI 문서 작업 공간을 위한 플랜.",
     description: "무료로 시작하고, 문서 채팅, 요약, OCR, 변환 및 팀 검토에 더 높은 한도가 필요할 때 업그레이드하세요.",
