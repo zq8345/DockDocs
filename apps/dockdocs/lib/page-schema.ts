@@ -5,13 +5,18 @@
 const SITE = "https://dockdocs.app";
 const baseFor = (locale: string) => (locale === "en" ? SITE : `${SITE}/${locale}`);
 
-// North-star home FAQ (machine layer) — the two questions that carry the
-// positioning: "is the AI making it up?" (answered with source-traceability)
-// and "how is this different from a general chatbot?". Native per locale.
+// Home FAQ (machine layer). EN carries the full 7-question set (single source —
+// app/(site)/page.tsx imports homeSchema("en") so this is the only EN copy to edit).
+// Other locales carry the two positioning questions (traceability + differentiation).
 const HOME_FAQ: Record<string, { q: string; a: string }[]> = {
   en: [
+    { q: "What is DockDocs?", a: "DockDocs is a private, verifiable document-AI platform. Chat with and summarize your documents; when the AI answers, it shows the exact source passage behind what it finds when it can locate it so you can check it instead of trusting a black box — and flags what it can't trace. It also includes ~50 PDF tools, most of which run in your browser — no installs, and for those, files never leave your device." },
+    { q: "Is DockDocs free to use?", a: "Yes. DockDocs core PDF tools — compress, merge, split, convert, OCR, and more — are completely free. No account required for most tools. Plus plan ($9/month) adds AI features like Chat with PDF and AI Summarization." },
+    { q: "Are my PDF files safe on DockDocs?", a: "Yes — and you can verify it. Most PDF tools (compress, merge, split, page edits) run entirely in your browser; you can open your browser's Network tab and confirm no file upload happens. For AI features and a few server-side conversions, only the text needed is sent, files are deleted from the conversion service right after your download completes, and DockDocs does not use them to train its own models. DockDocs never sells or shares your documents." },
+    { q: "What PDF tools does DockDocs offer?", a: "DockDocs offers ~50 PDF tools: Compress PDF, Merge PDF, Split PDF, PDF to Word, Word to PDF, JPG to PDF, PDF to JPG, OCR PDF, Chat with PDF, AI Summary, Protect PDF, Unlock PDF, Sign PDF, and more." },
+    { q: "How does DockDocs AI Chat with PDF work?", a: "Upload a PDF and ask questions in natural language. DockDocs AI reads the document and answers from its contents — and answers show the exact source passage they came from when it can locate it so you can click to the original and verify them, and when something can't be traced, it says so instead of inventing a source. It works with contracts, reports, research papers, manuals, and any text-based PDF." },
     { q: "How do I know the AI isn't making it up?", a: "When the AI answers or extracts, it points back to the exact source passage in your own document so you can click to the original and check it yourself — you never have to take the AI's word for it. When a claim can't be grounded in your file, DockDocs flags it rather than presenting it as fact. This source-traceability is the core difference from a general chatbot." },
-    { q: "What makes DockDocs different from other PDF tools and from a general AI chatbot?", a: "Two things a general AI chatbot can't offer: privacy you can verify and answers you can trust. Most DockDocs tools run in your browser, so sensitive files never leave your device. And its document AI shows the exact source passage behind its answers, and flags what it can't trace, so you can verify what it tells you. It's built for the documents you can't paste into a general chatbot — contracts, financials, research." },
+    { q: "What makes DockDocs different from other PDF tools and from a general AI chatbot?", a: "Two things a general AI chatbot can't offer: privacy you can verify and answers you can trust. Most DockDocs tools run in your browser, so sensitive files never leave your device (check the Network tab). And its document AI shows the exact source passage behind its answers when it can locate it, and flags what it can't trace, so you can verify what it tells you. It's built for the documents you can't paste into a general chatbot — contracts, financials, research — not just generic PDF editing." },
   ],
   zh: [
     { q: "我怎么知道 AI 不是在瞎编？", a: "AI 回答或抽取时，会指回你文档中确切的原文段落，你可以点开原文自己核对——无需盲信 AI。当某个说法无法在你的文件中找到依据时，DockDocs 会标记出来，而不是当作事实呈现。这种可溯源正是它与通用聊天机器人的核心区别。" },
@@ -102,8 +107,27 @@ const PRICING_CRUMB: Record<string, string> = {
   "zh-Hant": "定價",
 };
 
+const HOME_TOOLS = [
+  { name: "Compress PDF", url: `${SITE}/compress-pdf/` },
+  { name: "Merge PDF", url: `${SITE}/merge-pdf/` },
+  { name: "Split PDF", url: `${SITE}/split-pdf/` },
+  { name: "PDF to Word", url: `${SITE}/pdf-to-word/` },
+  { name: "Word to PDF", url: `${SITE}/word-to-pdf/` },
+  { name: "OCR PDF", url: `${SITE}/ocr-pdf/` },
+  { name: "Chat with PDF", url: `${SITE}/chat-with-pdf/` },
+  { name: "AI Summary", url: `${SITE}/ai-summary/` },
+  { name: "JPG to PDF", url: `${SITE}/jpg-to-pdf/` },
+  { name: "PDF to JPG", url: `${SITE}/pdf-to-jpg/` },
+  { name: "Protect PDF", url: `${SITE}/protect-pdf/` },
+  { name: "Sign PDF", url: `${SITE}/sign-pdf/` },
+  { name: "Unlock PDF", url: `${SITE}/unlock-pdf/` },
+];
+
 export function homeSchema(locale: string = "en") {
-  // Organization + WebSite + FAQPage all localized per homepage (catch-all renders homeSchema(locale)).
+  // Organization + WebSite + WebPage + FAQPage + ItemList, all locale-aware.
+  // EN root (app/(site)/page.tsx) imports homeSchema("en") — single source of truth.
+  // Other locales use homeSchema(locale) via the catch-all route.
+  const base = baseFor(locale);
   const faq = HOME_FAQ[locale] ?? HOME_FAQ.en;
   return {
     "@context": "https://schema.org",
@@ -129,13 +153,28 @@ export function homeSchema(locale: string = "en") {
         publisher: { "@id": `${SITE}#org` },
       },
       {
+        "@type": "WebPage",
+        "@id": `${base}#webpage`,
+        url: base,
+        name: locale === "en" ? "DockDocs — Private, Verifiable Document AI & PDF Tools" : "DockDocs",
+        description: ORG_DESC[locale] ?? ORG_DESC.en,
+        isPartOf: { "@id": `${SITE}#website` },
+        about: { "@id": `${SITE}#org` },
+      },
+      {
         "@type": "FAQPage",
-        "@id": `${baseFor(locale)}/#home-faq`,
+        "@id": `${base}/#home-faq`,
         mainEntity: faq.map((f) => ({
           "@type": "Question",
           name: f.q,
           acceptedAnswer: { "@type": "Answer", text: f.a },
         })),
+      },
+      {
+        "@type": "ItemList",
+        "@id": `${SITE}#tools`,
+        name: "DockDocs PDF Tools",
+        itemListElement: HOME_TOOLS.map((t, i) => ({ "@type": "ListItem", position: i + 1, name: t.name, url: t.url })),
       },
     ],
   };
