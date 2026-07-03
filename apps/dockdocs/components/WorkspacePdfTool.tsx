@@ -8,6 +8,7 @@ import { PdfToolPageEmbedded } from "../../../shared/templates/pdf-tool-page";
 import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 
 // Specialized clients — page-editing tools
+import { EditPdfClient } from "@/components/pdf-editor/EditPdfClient";
 import { MergePdfClient } from "@/components/MergePdfClient";
 import { SplitPdfClient } from "@/components/SplitPdfClient";
 import { DeletePagesClient } from "@/components/DeletePagesClient";
@@ -60,6 +61,7 @@ const CLOUD_CONVERT_ENGINE_SLUGS = new Set<string>([
 // Tools with specialized client UIs — mirror official catch-all exactly (props included).
 const CUSTOM_RENDERERS: Record<string, (loc: L) => ReactNode> = {
   // Page-editing tools (moved from engine: official site uses dedicated clients)
+  "edit-pdf":           (loc) => <EditPdfClient locale={loc} embedded />,
   "merge-pdf":          (loc) => <MergePdfClient locale={loc} embedded />,
   "split-pdf":          (loc) => <SplitPdfClient locale={loc} embedded />,
   "delete-page":        (loc) => <DeletePagesClient locale={loc} embedded />,

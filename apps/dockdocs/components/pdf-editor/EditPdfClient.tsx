@@ -603,17 +603,19 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
 
   // Editing states trade the hero header for editor real estate — the shell
   // is viewport-fixed with its own scroll regions (thumbnail rail + canvas).
+  // Embedded (workspace main area): idle keeps the standard max-w-3xl upload
+  // column; editing goes full-width — the editor-app layout needs the room.
   const editing = phase === "ready" || phase === "working";
 
   return (
-    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 sm:px-6 ${editing ? "pb-6 pt-6" : "pb-16 pt-12 sm:pb-20 sm:pt-16"}`}>
+    <div className={embedded ? (editing ? "w-full px-2 pb-6 pt-2" : "mx-auto w-full max-w-3xl px-8 pb-10 pt-4") : `mx-auto ${LAYOUT.content} px-5 sm:px-6 ${editing ? "pb-6 pt-6" : "pb-16 pt-12 sm:pb-20 sm:pt-16"}`}>
       {!embedded && !editing && <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>}
       {!editing && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>}
 
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
-        <div className="flex gap-3" style={{ height: "calc(100dvh - 10.5rem)", minHeight: 480 }}>
+        <div className="flex gap-3" style={{ height: embedded ? "calc(100dvh - 13rem)" : "calc(100dvh - 10.5rem)", minHeight: 480 }}>
           {/* Left: page-thumbnail navigation (own scroll; hidden on mobile) */}
           <ThumbRail
             pages={pages}
