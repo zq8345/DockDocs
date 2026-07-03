@@ -495,6 +495,7 @@ export function WorkflowProgress({
   onCancel,
   cancelLabel,
   bare = false,
+  noSpinner = false,
 }: {
   title: string;
   description: string;
@@ -504,9 +505,24 @@ export function WorkflowProgress({
   onCancel?: () => void;
   cancelLabel?: string;
   bare?: boolean;
+  // Prototype flag (word-to-pdf only): hides the spinner and adds a pulse
+  // shimmer on the progress bar fill so the bar signals "alive" instead.
+  noSpinner?: boolean;
 }) {
   return (
     <div className={bare ? "text-center" : "mt-4 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 text-center"}>
+      {!noSpinner && (
+        <div className="mx-auto flex h-14 w-14 items-center justify-center">
+          {animated ? (
+            <svg className="h-10 w-10 animate-spin text-[color:var(--accent)]" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+              <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          ) : (
+            <div className="h-10 w-10 rounded-full bg-[color:var(--soft-accent)]" />
+          )}
+        </div>
+      )}
       <h3 className="mt-4 text-lg font-semibold text-[color:var(--foreground)]">{title}</h3>
       <p className="mt-1.5 text-sm text-[color:var(--muted)]">{description}</p>
 
@@ -514,9 +530,13 @@ export function WorkflowProgress({
       <div className="mx-auto mt-5 max-w-xs">
         <div className="h-1.5 overflow-hidden rounded-full bg-[color:var(--line)]">
           <div
-            className="h-full rounded-full bg-[color:var(--accent)] transition-all duration-300"
+            className="relative h-full rounded-full bg-[color:var(--accent)] transition-all duration-300"
             style={{ width: `${progress}%` }}
-          />
+          >
+            {noSpinner && animated && (
+              <div className="absolute inset-0 animate-pulse rounded-full bg-white/25" />
+            )}
+          </div>
         </div>
         <p className="mt-2 text-xs font-semibold text-[color:var(--muted)]">{Math.round(progress)}%</p>
       </div>
