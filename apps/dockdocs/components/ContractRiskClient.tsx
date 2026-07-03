@@ -866,6 +866,27 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
           for (const line of lines) handleLine(line);
         }
         if (buffer) handleLine(buffer);
+
+        // Fall back ONCE to the plain JSON path (the pre-streaming flow that
+        // has carried this tool in production) when the stream either DIED
+        // without a terminal event (idle-reaped connection, proxy cut,
+        // function crash mid-stream) or ended in an error event (probabilistic
+        // upstream failure — the retry is a fresh provider round). Previews
+        // are cleared; the retry's merged result is authoritative. Quota hits
+        // are an answer, not a failure — never retried.
+        const terminal = data as ({ type?: string; code?: string } & Record<string, unknown>) | null;
+        const streamDied = terminal === null;
+        const streamErrored = terminal?.type === "error" && terminal?.code !== "UPGRADE_REQUIRED";
+        if (streamDied || streamErrored) {
+          setPreviewRisks([]);
+          setAnalyzeProgress(0);
+          const retry = await fetch("/api/contract-risk", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", ...auth },
+            body: JSON.stringify({ text, locale }),
+          });
+          data = await retry.json().catch(() => null);
+        }
       } else {
         // null on JSON parse failure (HTML 500 from Netlify crash) — distinguish from {}
         data = await res.json().catch(() => null);

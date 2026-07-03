@@ -175,6 +175,19 @@ function streamContractRisk({
       const send = (event: Record<string, unknown>) => {
         controller.enqueue(encoder.encode(`${JSON.stringify(event)}\n`));
       };
+      // Heartbeat: the gap between "start" and a chunk finishing is a full
+      // provider call — 10-60s of ZERO bytes — and the proxy reaps idle
+      // streams well inside that window (observed live: ~14s of silence
+      // killed the stream, the result event never arrived, the client showed
+      // "server error"). Ping every 4s so the pipe never looks idle; clients
+      // ignore unknown event types by design.
+      const heartbeat = setInterval(() => {
+        try {
+          send({ type: "ping" });
+        } catch {
+          clearInterval(heartbeat);
+        }
+      }, 4000);
       try {
         const chunkRanges = chunkRangesFor(text, MAX_CHARS, OVERLAP_CHARS);
         const cap = Math.min(coverageChunkCap(gate?.plan ?? "FREE"), MAX_ANALYZE_CHUNKS);
@@ -220,6 +233,7 @@ function streamContractRisk({
         console.error("[contract-risk] stream error:", msg);
         send({ type: "error", ok: false, code: "INTERNAL_ERROR", message: "Analysis failed — please try again." });
       } finally {
+        clearInterval(heartbeat);
         controller.close();
       }
     },

@@ -409,6 +409,19 @@ function streamAiChatResponse({
         streamController.enqueue(encoder.encode(`${JSON.stringify(payload)}\n`));
       };
 
+      // Heartbeat: provider TTFB (and especially the silent repair retry after
+      // an invalid first output) can leave the pipe byte-less long enough for
+      // the proxy to reap the idle stream (observed on contract-risk: ~14s of
+      // silence killed the stream mid-run). Ping every 4s; clients ignore
+      // unknown event types by design.
+      const heartbeat = setInterval(() => {
+        try {
+          send({ type: "ping" });
+        } catch {
+          clearInterval(heartbeat);
+        }
+      }, 4000);
+
       try {
         const providerResult = await generateProviderAnswerStream({
           provider,
@@ -510,6 +523,7 @@ function streamAiChatResponse({
           },
         });
       } finally {
+        clearInterval(heartbeat);
         clearTimeout(timeout);
         streamController.close();
       }
