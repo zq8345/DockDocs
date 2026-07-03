@@ -5,6 +5,7 @@ import { TrialCta } from "@/components/TrialCta";
 import { useEffect, useRef, useState } from "react";
 import { deepHant } from "@/lib/zh-hant";
 import { AiDocUpload } from "@/components/AiDocUpload";
+import { StreamingProgressBar } from "@/components/ai-shell/StreamingOutput";
 import {
   askAiAboutPdf,
   type AiChatHistoryTurn,
@@ -937,19 +938,7 @@ export function AiChatWorkflow({
               ) : null}
             </div>
 
-            {isWorking ? (
-              <div className="mt-4">
-                <div className="h-2 overflow-hidden rounded-full bg-[color:var(--line)]">
-                  <div
-                    className="h-full rounded-full bg-[color:var(--foreground)] transition-all"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <p className="mt-3 text-sm font-medium text-[color:var(--muted)]">
-                  {progressStep}
-                </p>
-              </div>
-            ) : null}
+            {isWorking ? <StreamingProgressBar progress={progress} step={progressStep} /> : null}
 
             {error ? (
               <div
