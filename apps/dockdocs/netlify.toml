@@ -5,7 +5,10 @@
     # Allow JSON-LD inline scripts (dangerouslySetInnerHTML in Next page.tsx files)
     # and the Umami analytics snippet (analytics.dockdocs.app).
     # 'unsafe-inline' is required for JSON-LD; tighten to nonces when Next supports it.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://analytics.dockdocs.app https://www.googletagmanager.com https://clarity.ms; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'"
+    # script-src: ONLY self + inline (JSON-LD) + our self-hosted umami. We use no
+    # third-party trackers (GTM/Clarity/GA) — the privacy policy says so; the CSP
+    # must not whitelist trackers we don't use.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://analytics.dockdocs.app; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
 
