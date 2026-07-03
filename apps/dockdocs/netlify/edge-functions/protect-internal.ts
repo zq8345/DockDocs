@@ -28,6 +28,28 @@ function isProtectedPath(pathname: string): boolean {
   );
 }
 
+// Constant-time string comparison to prevent timing-based credential enumeration.
+// Compares full byte sequences even when lengths differ to avoid short-circuit leaks.
+function timingSafeEqual(a: string, b: string): boolean {
+  const enc = new TextEncoder();
+  const aB = enc.encode(a);
+  const bB = enc.encode(b);
+  const len = Math.max(aB.length, bB.length);
+  let result = aB.length ^ bB.length; // flags length mismatch without early return
+  for (let i = 0; i < len; i++) {
+    result |= (aB[i] ?? 0) ^ (bB[i] ?? 0);
+  }
+  return result === 0;
+}
+
+const CHALLENGE = new Response("Authentication required.", {
+  status: 401,
+  headers: {
+    "WWW-Authenticate": 'Basic realm="DockDocs Internal", charset="UTF-8"',
+    "Cache-Control": "no-store",
+  },
+});
+
 export default async (request: Request, context: EdgeContext): Promise<Response> => {
   const pathname = new URL(request.url).pathname;
 
@@ -41,24 +63,17 @@ export default async (request: Request, context: EdgeContext): Promise<Response>
   const user = Deno.env.get("MC_USER");
   const pass = Deno.env.get("MC_PASS");
 
-  // If credentials aren't configured, do NOT lock the whole route — just pass
-  // through. (The internal dashboard simply won't be password-protected until
-  // MC_USER/MC_PASS are set. Better than risking a site-wide lockout.)
+  // FAIL CLOSED: unconfigured credentials → 401, not pass-through.
+  // An unconfigured env is a deployment error, not a reason to expose internal data.
   if (!user || !pass) {
-    return context.next();
+    return CHALLENGE;
   }
 
   const expected = "Basic " + btoa(`${user}:${pass}`);
   const got = request.headers.get("authorization") || "";
 
-  if (got !== expected) {
-    return new Response("Authentication required.", {
-      status: 401,
-      headers: {
-        "WWW-Authenticate": 'Basic realm="DockDocs Internal", charset="UTF-8"',
-        "Cache-Control": "no-store",
-      },
-    });
+  if (!timingSafeEqual(got, expected)) {
+    return CHALLENGE;
   }
 
   return context.next();
