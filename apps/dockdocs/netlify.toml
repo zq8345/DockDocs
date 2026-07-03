@@ -5,10 +5,12 @@
     # Allow JSON-LD inline scripts (dangerouslySetInnerHTML in Next page.tsx files)
     # and the Umami analytics snippet (analytics.dockdocs.app).
     # 'unsafe-inline' is required for JSON-LD; tighten to nonces when Next supports it.
-    # script-src: ONLY self + inline (JSON-LD) + our self-hosted umami. We use no
-    # third-party trackers (GTM/Clarity/GA) — the privacy policy says so; the CSP
-    # must not whitelist trackers we don't use.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://analytics.dockdocs.app; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'"
+    # script-src: self + inline (JSON-LD) + self-hosted umami. No 3rd-party trackers.
+    # 'wasm-unsafe-eval' is REQUIRED for our client-side WebAssembly (tesseract OCR
+    # core, pdf.js) — Chrome blocks WASM instantiation without it, which froze the
+    # OCR tool at model-load (2026-07-03). worker-src self+blob covers the OCR/pdf.js
+    # web workers. These are the minimal grants a WASM+worker client app needs.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://analytics.dockdocs.app; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
 
