@@ -128,7 +128,7 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "batch-word-to-pdf",   en: "Batch Word to PDF",         zh: "批量 Word 转 PDF", es: "Word a PDF por lotes",         pt: "Word para PDF em lote",           fr: "Word en PDF par lots",    ja: "Word を PDF に一括変換",  de: "Stapel: Word zu PDF", ko: "Word 일괄 PDF 변환" },
       { slug: "batch-excel-to-pdf",  en: "Batch Excel to PDF",        zh: "批量 Excel 转 PDF", es: "Excel a PDF por lotes",       pt: "Excel para PDF em lote",          fr: "Excel en PDF par lots",   ja: "Excel を PDF に一括変換", de: "Stapel: Excel zu PDF", ko: "Excel 일괄 PDF 변환" },
       { slug: "batch-ppt-to-pdf",    en: "Batch PPT to PDF",          zh: "批量 PPT 转 PDF", es: "PPT a PDF por lotes",           pt: "PPT para PDF em lote",            fr: "PPT en PDF par lots",     ja: "PPT を PDF に一括変換",   de: "Stapel: PPT zu PDF", ko: "PPT 일괄 PDF 변환" },
-      { slug: "batch-translate",     en: "Batch Translate",           zh: "批量翻译",        es: "Traducir por lotes",            pt: "Traduzir em lote",                fr: "Traduction par lots",     ja: "一括翻訳",                de: "Stapel-Übersetzung", ko: "일괄 번역" },
+      { slug: "batch-translate",     en: "Translate Documents",       zh: "文档翻译",        es: "Traducir Documentos",           pt: "Traduzir Documentos",             fr: "Traduire des documents",  ja: "文書翻訳",                de: "Dokumente übersetzen", ko: "문서 번역" },
     ],
     limits: {
       free: {

@@ -117,7 +117,7 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
     },
   },
   "batch-translate": {
-    title: { en: "Batch translate PDFs — FAQ", zh: "批量翻译 PDF 常见问题", es: "Traducir PDF por lotes — preguntas frecuentes" },
+    title: { en: "Translate Documents — FAQ", zh: "文档翻译常见问题", es: "Traducir Documentos — preguntas frecuentes" },
     items: {
       en: [
         { q: "How do I translate several PDFs at once?", a: "Drop your PDFs onto the page — or a whole folder — pick the target language, then click Translate all. Each PDF is read in your browser, its text is translated one by one, and you download them all as a single ZIP of .txt files." },
@@ -1033,7 +1033,7 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
     ],
   },
   "batch-translate": {
-    title: "Traduzir PDFs em lote — perguntas frequentes",
+    title: "Traduzir Documentos — perguntas frequentes",
     items: [
       { q: "Como traduzo vários PDFs de uma vez?", a: "Solte seus PDFs na página — ou uma pasta inteira — escolha o idioma de destino e clique em Traduzir tudo. Cada PDF é lido no seu navegador, o texto é traduzido um por um, e você baixa tudo como um único ZIP de arquivos .txt." },
       { q: "Para quais idiomas posso traduzir?", a: "13 idiomas, incluindo inglês, chinês simplificado e tradicional, espanhol, francês, alemão, japonês, coreano, português, italiano, russo, árabe e hindi. Todo o lote é traduzido para o idioma que você escolher." },
@@ -1408,7 +1408,7 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
     ],
   },
   "batch-translate": {
-    title: "Traduire des PDF par lot — foire aux questions",
+    title: "Traduire des documents — foire aux questions",
     items: [
       { q: "Comment traduire plusieurs PDF à la fois ?", a: "Déposez vos PDF sur la page — ou un dossier entier — choisissez la langue cible, puis cliquez sur Tout traduire. Chaque PDF est lu dans votre navigateur, son texte est traduit un par un, et vous les téléchargez tous dans un seul ZIP de fichiers .txt." },
       { q: "Dans quelles langues puis-je traduire ?", a: "13 langues, dont l'anglais, le chinois simplifié et traditionnel, l'espagnol, le français, l'allemand, le japonais, le coréen, le portugais, l'italien, le russe, l'arabe et le hindi. L'ensemble du lot est traduit dans la langue que vous choisissez." },
@@ -1989,7 +1989,7 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
     ],
   },
   "batch-translate": {
-    title: "PDF一括翻訳 — よくある質問",
+    title: "文書翻訳 — よくある質問",
     items: [
       { q: "複数のPDFを一度に翻訳するには？", a: "PDFをページにドロップ——フォルダ全体でも可——して、翻訳先の言語を選び、「すべて翻訳」をクリックします。各PDFはブラウザ内で読み取られ、テキストが1つずつ翻訳され、すべてを.txtファイルの1つのZIPとしてダウンロードできます。" },
       { q: "どの言語に翻訳できますか？", a: "英語、簡体字・繁体字中国語、スペイン語、フランス語、ドイツ語、日本語、韓国語、ポルトガル語、イタリア語、ロシア語、アラビア語、ヒンディー語を含む13言語です。バッチ全体が、選んだ1つの言語に翻訳されます。" },
@@ -2156,7 +2156,7 @@ const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: stri
     ],
   },
   "batch-translate": {
-    title: "PDFs im Stapel übersetzen — Häufige Fragen",
+    title: "Dokumente übersetzen — Häufige Fragen",
     items: [
       { q: "Wie übersetze ich mehrere PDFs auf einmal?", a: "Ziehen Sie Ihre PDFs auf die Seite — oder einen ganzen Ordner —, wählen Sie die Zielsprache und klicken Sie auf „Alle übersetzen“. Jedes PDF wird in Ihrem Browser gelesen, sein Text wird nacheinander übersetzt, und Sie laden alle als ein einziges ZIP mit .txt-Dateien herunter." },
       { q: "In welche Sprachen kann ich übersetzen?", a: "13 Sprachen, darunter Englisch, vereinfachtes und traditionelles Chinesisch, Spanisch, Französisch, Deutsch, Japanisch, Koreanisch, Portugiesisch, Italienisch, Russisch, Arabisch und Hindi. Der gesamte Stapel wird in die eine von Ihnen gewählte Sprache übersetzt." },
@@ -2531,7 +2531,7 @@ const FAQS_KO: Record<string, { title: string; items: Array<{ q: string; a: stri
     ],
   },
   "batch-translate": {
-    title: "PDF 일괄 번역 — 자주 묻는 질문",
+    title: "문서 번역 — 자주 묻는 질문",
     items: [
       { q: "여러 PDF를 한 번에 번역하려면 어떻게 하나요?", a: "PDF를 — 또는 폴더 전체를 — 페이지에 끌어다 놓고, 대상 언어를 선택한 뒤 「모두 번역」을 클릭하세요. 각 PDF는 브라우저 안에서 읽히고 그 텍스트가 차례로 번역되며, 모든 결과를 .txt 파일이 담긴 하나의 ZIP으로 내려받습니다." },
       { q: "어떤 언어로 번역할 수 있나요?", a: "영어, 중국어 간체와 번체, 스페인어, 프랑스어, 독일어, 일본어, 한국어, 포르투갈어, 이탈리아어, 러시아어, 아랍어, 힌디어를 포함한 13개 언어입니다. 묶음 전체가 선택한 하나의 언어로 번역됩니다." },

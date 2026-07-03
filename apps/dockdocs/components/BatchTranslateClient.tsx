@@ -52,7 +52,7 @@ function localLangName(code: string, inLocale: string): string {
 }
 
 const _en = {
-  title: "Batch Translate PDFs",
+  title: "Translate Documents",
   subtitle:
     "Translate a whole folder of PDFs into one language in a single run — the text of each is translated and packaged into a single ZIP of .txt files.",
   target: "Translate to",
@@ -74,7 +74,7 @@ const _en = {
 const STR = {
   en: _en,
   zh: {
-    title: "批量翻译 PDF",
+    title: "文档翻译",
     subtitle:
       "一次把整个文件夹的 PDF 翻译成同一种语言——每份的文字被翻译并打包成一个 .txt 文件的 ZIP。",
     target: "翻译成",
@@ -93,7 +93,7 @@ const STR = {
     err: "出错了：",
   },
   es: {
-    title: "Traducir PDF por lotes",
+    title: "Traducir Documentos",
     subtitle:
       "Traduce una carpeta entera de PDF a un idioma de una sola vez: el texto de cada uno se traduce y se empaqueta en un solo ZIP de archivos .txt.",
     target: "Traducir a",
@@ -112,7 +112,7 @@ const STR = {
     err: "Algo salió mal: ",
   },
   pt: {
-    title: "Traduzir PDFs em lote",
+    title: "Traduzir Documentos",
     subtitle:
       "Traduza uma pasta inteira de PDFs para um idioma em uma única execução — o texto de cada um é traduzido e empacotado em um único ZIP de arquivos .txt.",
     target: "Traduzir para",
@@ -131,7 +131,7 @@ const STR = {
     err: "Algo deu errado: ",
   },
   fr: {
-    title: "Traduire des PDF en lot",
+    title: "Traduire des documents",
     subtitle:
       "Traduisez un dossier entier de PDF dans une seule langue en une seule fois — le texte de chacun est traduit et regroupé dans un seul fichier ZIP de fichiers .txt.",
     target: "Traduire en",
@@ -150,7 +150,7 @@ const STR = {
     err: "Une erreur s'est produite : ",
   },
   ja: {
-    title: "PDF を一括翻訳",
+    title: "文書翻訳",
     subtitle:
       "フォルダ内の PDF すべてを 1 回の実行で同じ言語に翻訳——各ファイルのテキストが翻訳され、.txt ファイルの 1 つの ZIP にまとめられます。",
     target: "翻訳先",
@@ -169,7 +169,7 @@ const STR = {
     err: "問題が発生しました: ",
   },
   de: {
-    title: "PDFs stapelweise übersetzen",
+    title: "Dokumente übersetzen",
     subtitle:
       "Übersetzen Sie einen ganzen Ordner mit PDFs in einem Durchlauf in eine Sprache — der Text jedes Dokuments wird übersetzt und in einem einzigen ZIP aus .txt-Dateien gebündelt.",
     target: "Übersetzen nach",
@@ -188,7 +188,7 @@ const STR = {
     err: "Etwas ist schiefgelaufen: ",
   },
   ko: {
-    title: "PDF 일괄 번역",
+    title: "문서 번역",
     subtitle:
       "폴더 안의 PDF를 한 번에 한 가지 언어로 번역하세요. 각 파일의 텍스트가 번역되어 .txt 파일들이 담긴 하나의 ZIP으로 묶입니다.",
     target: "번역할 언어",

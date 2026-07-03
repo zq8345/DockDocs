@@ -563,50 +563,50 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
   },
   "batch-translate": {
     en: {
-      name: "DockDocs Batch Translate PDFs",
-      crumb: "Batch Translate PDFs",
+      name: "DockDocs Translate Documents",
+      crumb: "Translate Documents",
       description:
         "Translate a whole folder of PDFs into one language in a single run — each document's text is translated and packaged into a ZIP of .txt files.",
     },
     zh: {
-      name: "DockDocs 批量翻译 PDF",
-      crumb: "批量翻译 PDF",
+      name: "DockDocs 文档翻译",
+      crumb: "文档翻译",
       description:
         "把整个文件夹的 PDF 一次性翻译成一种语言，每份的文字翻译后打包成 .txt 的 ZIP。",
     },
     es: {
-      name: "DockDocs Traducir PDFs en lote",
-      crumb: "Traducir PDFs en lote",
+      name: "DockDocs Traducir Documentos",
+      crumb: "Traducir Documentos",
       description:
         "Traduce una carpeta entera de PDFs a un idioma de una vez — el texto de cada documento traducido y empaquetado en un ZIP de archivos .txt.",
     },
     pt: {
-      name: "DockDocs Traduzir PDFs em lote",
-      crumb: "Traduzir PDFs em lote",
+      name: "DockDocs Traduzir Documentos",
+      crumb: "Traduzir Documentos",
       description:
         "Traduza uma pasta inteira de PDFs para um idioma de uma vez — o texto de cada documento traduzido e empacotado em um ZIP de arquivos .txt.",
     },
     fr: {
-      name: "DockDocs Traduire des PDF en lot",
-      crumb: "Traduire des PDF en lot",
+      name: "DockDocs Traduire des documents",
+      crumb: "Traduire des documents",
       description:
         "Traduisez un dossier entier de PDFs dans une langue en une seule fois — le texte de chaque document traduit et empaqueté dans un ZIP de fichiers .txt.",
     },
     ja: {
-      name: "DockDocs PDF一括翻訳",
-      crumb: "PDF一括翻訳",
+      name: "DockDocs 文書翻訳",
+      crumb: "文書翻訳",
       description:
         "フォルダ全体のPDFを一度に1つの言語に翻訳—各ドキュメントのテキストを翻訳して.txtのZIPにまとめます。",
     },
     de: {
-      name: "DockDocs PDFs stapelweise übersetzen",
-      crumb: "PDFs stapelweise übersetzen",
+      name: "DockDocs Dokumente übersetzen",
+      crumb: "Dokumente übersetzen",
       description:
         "Übersetzen Sie einen ganzen Ordner mit PDFs in einem Durchgang in eine Sprache – der Text jedes Dokuments wird übersetzt und als ZIP mit .txt-Dateien verpackt.",
     },
     ko: {
-      name: "DockDocs PDF 일괄 번역",
-      crumb: "PDF 일괄 번역",
+      name: "DockDocs 문서 번역",
+      crumb: "문서 번역",
       description:
         "PDF 폴더 전체를 한 번에 한 언어로 번역 — 각 문서의 텍스트를 번역해 .txt 파일의 ZIP으로 패키징합니다.",
     },

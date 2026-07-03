@@ -745,14 +745,14 @@ const CUSTOM_TOOL_COPY: Record<string, {
   },
   "batch-translate": {
     title: {
-      zh: "批量 PDF 翻译 — 整批翻译打包 ZIP",
-      es: "Traducir PDF por lotes — Traducir una carpeta entera gratis",
-      pt: "Traduzir PDF em lote — Traduzir uma pasta inteira grátis",
-      fr: "Traduction PDF par lots — Traduire un dossier entier",
-      ja: "PDF を一括翻訳 — フォルダごとまとめて翻訳",
-      de: "PDFs stapelweise übersetzen — einen ganzen Ordner kostenlos übersetzen",
-      ko: "PDF 일괄 번역 — 폴더 전체 무료 번역",
-      en: "Batch PDF Translate — Translate a Whole Folder Free",
+      zh: "文档翻译 — 整批翻译打包 ZIP",
+      es: "Traducir Documentos — Traducir una carpeta entera gratis",
+      pt: "Traduzir Documentos — Traduzir uma pasta inteira grátis",
+      fr: "Traduire des documents — Traduire un dossier entier",
+      ja: "文書翻訳 — フォルダごとまとめて翻訳",
+      de: "Dokumente übersetzen — einen ganzen Ordner kostenlos übersetzen",
+      ko: "문서 번역 — 폴더 전체 무료 번역",
+      en: "Translate Documents — Translate a Whole Folder of PDFs Free",
     },
     description: {
       zh: "把整个文件夹的 PDF 一次性翻译成一种语言，每份的文字翻译后打包成 .txt 的 ZIP。",
@@ -1487,12 +1487,12 @@ async function generateMetadataInner({
   if (slug === "batch-translate") {
     return {
       title: m(
-        "Batch PDF Translate — Translate a Whole Folder Free",
-        "批量 PDF 翻译 — 整批翻译打包 ZIP",
-        "Traducir PDF por lotes — Traduce una carpeta entera gratis",
-        "Traduzir PDF em lote — Traduza uma pasta inteira grátis",
-        "Traduction PDF par lots — Traduisez un dossier entier gratuitement",
-        "PDF を一括翻訳 — フォルダ全体を無料で翻訳",
+        "Translate Documents — Translate a Whole Folder of PDFs Free",
+        "文档翻译 — 整批翻译打包 ZIP",
+        "Traducir Documentos — Traduce una carpeta entera gratis",
+        "Traduzir Documentos — Traduza uma pasta inteira grátis",
+        "Traduire des documents — Traduisez un dossier entier gratuitement",
+        "文書翻訳 — フォルダ全体を無料で翻訳",
       ),
       description: m(
         "Translate a whole folder of PDFs into one language at once — each document's text translated and packaged into a ZIP of .txt files.",
