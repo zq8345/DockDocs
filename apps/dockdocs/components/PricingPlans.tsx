@@ -596,7 +596,7 @@ const COMPARE_CATS: {
 
 export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
   const [period, setPeriod] = useState<"monthly" | "annual" | "lifetime">("annual"); // default annual per pricing spec
-  const [openCat, setOpenCat] = useState<string | null>(null);
+  const [openCats, setOpenCats] = useState<Set<string>>(new Set());
 
   const [billingLoading, setBillingLoading] = useState("");
   const [billingError, setBillingError] = useState("");
@@ -928,7 +928,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
             </thead>
             <tbody>
               {COMPARE_CATS.flatMap((cat) => {
-                const isOpen = openCat === cat.id;
+                const isOpen = openCats.has(cat.id);
                 const navLoc = locale as "en" | "zh" | "zh-Hant" | "es" | "pt" | "fr" | "ja" | "de" | "ko";
                 const t8 = (hant ? "zh" : locale) as L8;
                 const chrome = navCopy[navLoc] ?? navCopy.en;
@@ -942,7 +942,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
                 return [
                   <tr
                     key={`cat-${cat.id}`}
-                    onClick={() => setOpenCat(isOpen ? null : cat.id)}
+                    onClick={() => setOpenCats(prev => { const next = new Set(prev); isOpen ? next.delete(cat.id) : next.add(cat.id); return next; })}
                     className="cursor-pointer transition-colors hover:bg-[color:var(--surface-subtle)]"
                   >
                     <td className="border-b border-[color:var(--line)] px-4 py-3">

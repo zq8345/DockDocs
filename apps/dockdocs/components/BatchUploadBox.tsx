@@ -243,7 +243,7 @@ export function BatchUploadBox({
           className="hidden"
           onClick={(e) => e.stopPropagation()}
           {...({ webkitdirectory: "", directory: "" } as Record<string, string>)}
-          onChange={(e) => { take(e.target.files, true); e.currentTarget.value = ""; }}
+          onChange={(e) => { take(e.target.files, false); e.currentTarget.value = ""; }}
         />
       )}
     </div>
