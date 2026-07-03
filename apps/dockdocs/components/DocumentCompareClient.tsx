@@ -1109,7 +1109,6 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
       const res = await runOcrPdfFirstPage({
         file: doc.file,
         outputFileName: doc.name,
-        pageRanges: "1-3",
         language: locale === "zh" || locale === "zh-Hant" ? "chi_sim" : "eng",
         // OCR progress strings exist for 6 locales + zh-Hant only; de/ko have no engine
         // copy, so collapse de/ko→"en" (intended English fallback, same as page.tsx).

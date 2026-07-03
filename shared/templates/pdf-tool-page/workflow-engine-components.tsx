@@ -207,11 +207,7 @@ export function ReadyWorkflowState({
   files,
   totalSize,
   pageRanges,
-  ocrLanguage,
-  ocrConfirmed,
   onPageRangesChange,
-  onOcrLanguageChange,
-  onOcrConfirmedChange,
   onRemoveFile,
   onMoveFile,
   onStart,
@@ -222,11 +218,7 @@ export function ReadyWorkflowState({
   files: UploadedFile[];
   totalSize: number;
   pageRanges: string;
-  ocrLanguage: OcrLanguage;
-  ocrConfirmed: boolean;
   onPageRangesChange: (v: string) => void;
-  onOcrLanguageChange: (v: OcrLanguage) => void;
-  onOcrConfirmedChange: (v: boolean) => void;
   onRemoveFile: (id: string) => void;
   onMoveFile: (index: number, direction: -1 | 1) => void;
   onStart: () => void;
@@ -236,7 +228,7 @@ export function ReadyWorkflowState({
   const locale = (config.locale ?? "en") as TemplateLocale;
   const reorderable = config.slug === "merge-pdf" || config.slug === "jpg-to-pdf" || config.slug === "png-to-pdf";
   const previewFile = files[0];
-  const hasOptions = ["split-pdf", "ocr-pdf", "delete-page", "rotate-page", "reorder-pages", "add-page", "protect-pdf", "watermark-pdf", "unlock-pdf", "pdf-to-jpg", "pdf-to-png", "pdf-to-markdown", "pdf-to-text", "pdf-to-html", "compress-pdf"].includes(config.slug);
+  const hasOptions = ["split-pdf", "delete-page", "rotate-page", "reorder-pages", "add-page", "protect-pdf", "watermark-pdf", "unlock-pdf", "pdf-to-jpg", "pdf-to-png", "pdf-to-markdown", "pdf-to-text", "pdf-to-html", "compress-pdf"].includes(config.slug);
 
   const inputCls =
     "mt-2 h-11 w-full rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 text-sm font-medium text-[color:var(--foreground)] outline-none transition focus:border-[color:var(--accent)]";
@@ -309,24 +301,17 @@ export function ReadyWorkflowState({
 
       <div className={bigPreview && hasOptions ? "w-full space-y-3 self-center sm:w-1/2" : bigPreview ? "contents" : "space-y-3"}>
       {/* Tool-specific options */}
-      {(config.slug === "split-pdf" || config.slug === "ocr-pdf") && (
+      {config.slug === "split-pdf" && (
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">
-            {config.slug === "ocr-pdf"
-              ? tr(locale, "OCR page ranges", "OCR 页面范围", "Rangos de páginas OCR", "Intervalos de páginas OCR", "Plages de pages OCR", "OCR ページ範囲", "OCR-Seitenbereiche")
-              : tr(locale, "Page ranges", "页面范围", "Rangos de páginas", "Intervalos de páginas", "Plages de pages", "ページ範囲", "Seitenbereiche")}
+            {tr(locale, "Page ranges", "页面范围", "Rangos de páginas", "Intervalos de páginas", "Plages de pages", "ページ範囲", "Seitenbereiche")}
           </span>
           <input
             value={pageRanges}
             onChange={(e) => onPageRangesChange(e.target.value)}
-            placeholder={config.slug === "ocr-pdf" ? "1, 1-3, 1,3" : "1-4, 12-18"}
+            placeholder="1-4, 12-18"
             className={inputCls}
           />
-          {config.slug === "ocr-pdf" && (
-            <p className="mt-1.5 text-xs text-[color:var(--muted)]">
-              {tr(locale, "Browser-side OCR processes up to 3 pages at a time.", "浏览器端 OCR 一次最多处理 3 页。", "El OCR en el navegador procesa hasta 3 páginas a la vez.", "O OCR no navegador processa até 3 páginas por vez.", "L'OCR côté navigateur traite jusqu'à 3 pages à la fois.", "ブラウザ側 OCR は一度に最大 3 ページまで処理します。", "Das OCR im Browser verarbeitet bis zu 3 Seiten gleichzeitig.")}
-            </p>
-          )}
         </label>
       )}
 
@@ -401,22 +386,6 @@ export function ReadyWorkflowState({
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "Page range (optional)", "页面范围（可选）", "Rango de páginas (opcional)", "Intervalo de páginas (opcional)", "Plage de pages (facultatif)", "ページ範囲（任意）", "Seitenbereich (optional)")}</span>
           <input value={pageRanges} onChange={(e) => onPageRangesChange(e.target.value)} placeholder={tr(locale, "Blank = all pages", "留空 = 全部页面", "Vacío = todas las páginas", "Vazio = todas as páginas", "Vide = toutes les pages", "空欄 = 全ページ", "Leer = alle Seiten")} className={inputCls} />
         </label>
-      )}
-
-      {config.slug === "ocr-pdf" && (
-        <>
-          <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[color:var(--muted)]">{tr(locale, "OCR language", "OCR 语言", "Idioma de OCR", "Idioma do OCR", "Langue OCR", "OCR 言語", "OCR-Sprache")}</span>
-            <select value={ocrLanguage} onChange={(e) => onOcrLanguageChange(e.target.value as OcrLanguage)} className={inputCls}>
-              <option value="eng">{tr(locale, "English", "英语", "Inglés", "Inglês", "Anglais", "英語", "Englisch")}</option>
-              <option value="chi_sim">{tr(locale, "Chinese (Simplified)", "中文（简体）", "Chino (simplificado)", "Chinês (simplificado)", "Chinois (simplifié)", "中国語（簡体字）", "Chinesisch (vereinfacht)")}</option>
-            </select>
-          </label>
-          <label className="flex cursor-pointer items-start gap-3 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-3 text-sm leading-6 text-[color:var(--muted)]">
-            <input type="checkbox" checked={ocrConfirmed} onChange={(e) => onOcrConfirmedChange(e.target.checked)} className="mt-0.5 h-4 w-4 accent-[color:var(--accent)]" />
-            <span>{tr(locale, "I confirm this is a scanned or image-based PDF that needs OCR text extraction.", "我确认这是扫描件或图片型 PDF，需要 OCR 提取文字。", "Confirmo que es un PDF escaneado o basado en imágenes que necesita extracción de texto por OCR.", "Confirmo que este é um PDF digitalizado ou baseado em imagens que precisa de extração de texto por OCR.", "Je confirme qu'il s'agit d'un PDF numérisé ou basé sur des images nécessitant une extraction de texte par OCR.", "これがスキャンまたは画像ベースの PDF で、OCR によるテキスト抽出が必要であることを確認します。", "Ich bestätige, dass dies ein gescanntes oder bildbasiertes PDF ist, das eine OCR-Textextraktion benötigt.")}</span>
-          </label>
-        </>
       )}
 
       {config.slug === "compress-pdf" && (() => {

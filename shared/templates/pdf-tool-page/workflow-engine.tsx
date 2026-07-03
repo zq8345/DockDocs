@@ -45,6 +45,13 @@ function normalizeLocale(value: unknown): L {
     : "en";
 }
 
+// OCR language auto-derives from the page locale — no user selection. Chinese
+// sites default to the Simplified-Chinese model; every other locale to English.
+// (Fixes the old bug where the Chinese site hard-coded English OCR.)
+function localeToOcrLang(loc: L): OcrLanguage {
+  return loc === "zh" || loc === "zh-Hant" ? "chi_sim" : "eng";
+}
+
 function makeTr(loc: L) {
   // ko: a callsite may supply an 8th Korean argument; where it doesn't, ko falls back
   // to the English arg (most of the ~124 tr() callsites are not widened). ko is a valid
@@ -74,8 +81,9 @@ export function PdfWorkflowEngine({
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [pageRanges, setPageRanges] = useState("");
-  const [ocrLanguage, setOcrLanguage] = useState<OcrLanguage>("eng");
-  const [ocrConfirmed, setOcrConfirmed] = useState(false);
+  // OCR language is auto-derived from the site locale (no user select). Kept in
+  // state so a locale change re-derives it; never set by user input.
+  const [ocrLanguage, setOcrLanguage] = useState<OcrLanguage>(() => localeToOcrLang(loc));
   const [copied, setCopied] = useState(false);
   const [progressDetail, setProgressDetail] = useState("");
   const [runtimeArtifact, setRuntimeArtifact] =
@@ -145,10 +153,7 @@ export function PdfWorkflowEngine({
       return;
     }
 
-    if (
-      (config.slug === "split-pdf" || config.slug === "ocr-pdf") &&
-      !isValidPageRange(pageRanges)
-    ) {
+    if (config.slug === "split-pdf" && !isValidPageRange(pageRanges)) {
       setError(
         tr(
           "Enter a valid page range, such as 1-4, 12-18.",
@@ -158,22 +163,6 @@ export function PdfWorkflowEngine({
           "Saisissez une plage de pages valide, par exemple 1-4, 12-18.",
           "1-4、12-18 のような有効なページ範囲を入力してください。",
           "Geben Sie einen gültigen Seitenbereich ein, z. B. 1-4, 12-18.",
-        ),
-      );
-      setStatus("error");
-      return;
-    }
-
-    if (config.slug === "ocr-pdf" && !ocrConfirmed) {
-      setError(
-        tr(
-          "Confirm this is a scanned or image-based PDF before OCR.",
-          "请确认这是扫描件或图片型 PDF。",
-          "Confirma que se trata de un PDF escaneado o basado en imágenes antes del OCR.",
-          "Confirme que este é um PDF digitalizado ou baseado em imagens antes do OCR.",
-          "Avant l'OCR, confirmez qu'il s'agit d'un PDF numérisé ou basé sur des images.",
-          "OCR の前に、これがスキャンまたは画像ベースの PDF であることを確認してください。",
-          "Bestätigen Sie vor dem OCR, dass dies ein gescanntes oder bildbasiertes PDF ist.",
         ),
       );
       setStatus("error");
@@ -318,8 +307,7 @@ export function PdfWorkflowEngine({
     setIsDragging(false);
     setCopied(false);
     setRuntimeArtifact(null);
-    setOcrConfirmed(false);
-    setOcrLanguage("eng");
+    setOcrLanguage(localeToOcrLang(loc));
     setPageRanges("");
     if (inputRef.current) {
       inputRef.current.value = "";
@@ -473,11 +461,7 @@ export function PdfWorkflowEngine({
                 files={files}
                 totalSize={totalSize}
                 pageRanges={pageRanges}
-                ocrLanguage={ocrLanguage}
-                ocrConfirmed={ocrConfirmed}
                 onPageRangesChange={setPageRanges}
-                onOcrLanguageChange={setOcrLanguage}
-                onOcrConfirmedChange={setOcrConfirmed}
                 onRemoveFile={removeFile}
                 onMoveFile={moveFile}
                 onStart={startProcessing}
@@ -637,11 +621,7 @@ export function PdfWorkflowEngine({
           files={files}
           totalSize={totalSize}
           pageRanges={pageRanges}
-          ocrLanguage={ocrLanguage}
-          ocrConfirmed={ocrConfirmed}
           onPageRangesChange={setPageRanges}
-          onOcrLanguageChange={setOcrLanguage}
-          onOcrConfirmedChange={setOcrConfirmed}
           onRemoveFile={removeFile}
           onMoveFile={moveFile}
           onStart={startProcessing}

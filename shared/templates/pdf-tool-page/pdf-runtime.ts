@@ -161,7 +161,6 @@ export async function runPdfRuntime({
     return runOcrPdfFirstPage({
       file: files[0],
       outputFileName,
-      pageRanges,
       language: ocrLanguage,
       // OCR locale: de passes through toEngineLocale but makeRuntimeTr already falls de→en for strings.
       // Cast to the 7-locale OcrLocale since OCR engine was not authored for de.

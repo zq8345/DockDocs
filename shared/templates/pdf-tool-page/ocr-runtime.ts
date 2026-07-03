@@ -37,7 +37,6 @@ function tr(
 type OcrRuntimeInput = {
   file: File;
   outputFileName: string;
-  pageRanges: string;
   language: OcrLanguage;
   locale: OcrLocale;
   signal?: AbortSignal;
@@ -69,6 +68,9 @@ type PdfJsPage = {
     canvasContext: CanvasRenderingContext2D;
     viewport: { width: number; height: number };
   }) => { promise: Promise<void> };
+  getTextContent: () => Promise<{
+    items: Array<{ str?: string; transform?: number[] }>;
+  }>;
   cleanup?: () => void;
 };
 
@@ -79,7 +81,10 @@ type RenderedPage = {
 
 const maxOcrPdfSize = 25 * 1024 * 1024;
 const maxRenderPixels = 4_000_000;
-const maxOcrPages = 3;
+// A PDF counts as having a real, extractable text layer when its pages carry at
+// least this many characters. Scanned/image-only PDFs yield ~0 characters, so
+// this cleanly separates the fast text-extraction path from the OCR path.
+const minTextLayerChars = 24;
 
 const localOcrAssets = {
   pdfWorker: "/ocr/pdfjs/pdf.worker.mjs",
@@ -96,7 +101,6 @@ const languageLabels: Record<OcrLanguage, string> = {
 export async function runOcrPdfFirstPage({
   file,
   outputFileName,
-  pageRanges,
   language,
   locale,
   signal,
@@ -122,19 +126,40 @@ export async function runOcrPdfFirstPage({
   const pdf = await loadPdfDocument(file, locale, signal);
 
   try {
-    const pages = parseOcrPageRanges(pageRanges, pdf.numPages, locale);
+    // ── Fast path: if the PDF already carries a real text layer (a born-digital
+    // PDF, not a scan), extract that text directly. It's near-instant, exact, and
+    // needs no OCR model download. Only true scans/image PDFs fall through to OCR. ──
+    emitProgress(onProgress, 8, 0, tr(locale, "Checking for a text layer...", "正在检测文本层...", "Comprobando la capa de texto...", "Verificando a camada de texto...", "Vérification de la couche de texte...", "テキストレイヤーを確認中..."));
+    const textLayer = await extractTextLayer(pdf, signal);
+    if (textLayer && textLayer.length >= minTextLayerChars) {
+      emitProgress(onProgress, 100, 3, tr(locale, "Text extracted.", "文字提取完成。", "Texto extraído.", "Texto extraído.", "Texte extrait.", "テキストを抽出しました。"));
+      const blob = new Blob([textLayer], { type: "text/plain;charset=utf-8" });
+      return {
+        fileName: outputFileName,
+        blob,
+        outputType: "text",
+        pageCount: pdf.numPages,
+        fileCount: 1,
+        text: textLayer,
+        processedPages: pdf.numPages,
+        ocrLanguage: language,
+      };
+    }
+
+    // ── OCR path: no usable text layer ⇒ this is a scan/image PDF. OCR every page. ──
+    const pages = Array.from({ length: pdf.numPages }, (_, i) => i + 1);
     emitProgress(
       onProgress,
       16,
       0,
       tr(
         locale,
-        `${pages.length} page${pages.length === 1 ? "" : "s"} selected. Loading OCR worker...`,
-        `已选择 ${pages.length} 页，正在加载 OCR 引擎...`,
-        `${pages.length} página${pages.length === 1 ? "" : "s"} seleccionada${pages.length === 1 ? "" : "s"}. Cargando el motor OCR...`,
-        `${pages.length} página${pages.length === 1 ? "" : "s"} selecionada${pages.length === 1 ? "" : "s"}. Carregando o mecanismo OCR...`,
-        `${pages.length} page${pages.length === 1 ? "" : "s"} sélectionnée${pages.length === 1 ? "" : "s"}. Chargement du moteur OCR...`,
-        `${pages.length} ページを選択しました。OCR エンジンを読み込み中...`,
+        `${pages.length} page${pages.length === 1 ? "" : "s"} to recognize. Loading OCR engine...`,
+        `共 ${pages.length} 页待识别，正在加载 OCR 引擎...`,
+        `${pages.length} página${pages.length === 1 ? "" : "s"} por reconocer. Cargando el motor OCR...`,
+        `${pages.length} página${pages.length === 1 ? "" : "s"} para reconhecer. Carregando o mecanismo OCR...`,
+        `${pages.length} page${pages.length === 1 ? "" : "s"} à reconnaître. Chargement du moteur OCR...`,
+        `認識するページは ${pages.length} 件です。OCR エンジンを読み込み中...`,
       ),
     );
 
@@ -384,73 +409,45 @@ async function recognizeCanvas(
   };
 }
 
-function parseOcrPageRanges(
-  value: string,
-  pageCount: number,
-  locale: OcrLocale,
-) {
-  const clean = value.trim() || "1";
-  const pageNumbers: number[] = [];
+// Reads any existing (born-digital) text layer across every page, laid out
+// top-to-bottom by the same row-grouping heuristic used by the pdf-to-text tool.
+// Returns the combined text, or "" if the PDF has no meaningful text layer
+// (a true scan/image PDF), in which case the caller falls through to OCR.
+async function extractTextLayer(
+  pdf: PdfJsDocument,
+  signal?: AbortSignal,
+): Promise<string> {
+  const sections: string[] = [];
 
-  for (const part of clean.split(",").map((item) => item.trim()).filter(Boolean)) {
-    const [rawStart, rawEnd] = part.split("-").map((item) => Number(item.trim()));
-    const start = rawStart;
-    const end = rawEnd || rawStart;
-
-    if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start) {
-      throw new Error(
-        tr(
-          locale,
-          `Invalid OCR page range: ${part}`,
-          `OCR 页面范围无效：${part}`,
-          `Rango de páginas OCR no válido: ${part}`,
-          `Intervalo de páginas OCR inválido: ${part}`,
-          `Plage de pages OCR non valide : ${part}`,
-          `OCR ページ範囲が無効です: ${part}`,
-        ),
-      );
-    }
-
-    if (end > pageCount) {
-      throw new Error(
-        tr(
-          locale,
-          `OCR page range ${part} is outside this PDF. The file has ${pageCount} pages.`,
-          `OCR 页面范围 ${part} 超出文档页数。当前 PDF 共 ${pageCount} 页。`,
-          `El rango de páginas OCR ${part} está fuera de este PDF. El archivo tiene ${pageCount} páginas.`,
-          `O intervalo de páginas OCR ${part} está fora deste PDF. O arquivo tem ${pageCount} páginas.`,
-          `La plage de pages OCR ${part} dépasse ce PDF. Le fichier compte ${pageCount} pages.`,
-          `OCR ページ範囲 ${part} はこの PDF の範囲外です。このファイルは ${pageCount} ページです。`,
-        ),
-      );
-    }
-
-    for (let page = start; page <= end; page += 1) {
-      if (!pageNumbers.includes(page)) {
-        pageNumbers.push(page);
+  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+    throwIfAborted(signal);
+    const page = await pdf.getPage(pageNumber);
+    try {
+      const textContent = await page.getTextContent();
+      const lineMap = new Map<number, string[]>();
+      for (const item of textContent.items) {
+        if (typeof item.str !== "string" || !item.transform) {
+          continue;
+        }
+        const y = Math.round(item.transform[5]);
+        if (!lineMap.has(y)) {
+          lineMap.set(y, []);
+        }
+        lineMap.get(y)!.push(item.str);
       }
+      const sortedYs = [...lineMap.keys()].sort((a, b) => b - a);
+      const pageLines = sortedYs
+        .map((y) => lineMap.get(y)!.join(" ").trim())
+        .filter(Boolean);
+      if (pageLines.length > 0) {
+        sections.push(`--- Page ${pageNumber} ---\n${pageLines.join("\n")}`);
+      }
+    } finally {
+      page.cleanup?.();
     }
   }
 
-  if (!pageNumbers.length) {
-    throw new Error(tr(locale, "Enter an OCR page range.", "请输入 OCR 页面范围。", "Introduce un rango de páginas OCR.", "Insira um intervalo de páginas OCR.", "Saisissez une plage de pages OCR.", "OCR ページ範囲を入力してください。"));
-  }
-
-  if (pageNumbers.length > maxOcrPages) {
-    throw new Error(
-      tr(
-        locale,
-        `OCR currently processes up to ${maxOcrPages} pages at a time. Choose a smaller range.`,
-        `OCR 当前一次最多处理 ${maxOcrPages} 页。请缩小页面范围。`,
-        `El OCR procesa actualmente hasta ${maxOcrPages} páginas a la vez. Elige un rango más pequeño.`,
-        `O OCR processa atualmente até ${maxOcrPages} páginas por vez. Escolha um intervalo menor.`,
-        `L'OCR traite actuellement jusqu'à ${maxOcrPages} pages à la fois. Choisissez une plage plus petite.`,
-        `OCR は現在一度に最大 ${maxOcrPages} ページまで処理します。より小さい範囲を選択してください。`,
-      ),
-    );
-  }
-
-  return pageNumbers;
+  return sections.join("\n\n").trim();
 }
 
 function combinePageText(
