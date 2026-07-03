@@ -99,6 +99,50 @@ const NEXT_LABEL: Record<BridgeLocale, string> = {
   ja: "次のステップ",
 };
 
+// Bridge icons — 16×16 box, stroke-width 1.5, currentColor.
+// Matches the Header ☰ menu icon style (Joe, 2026-06-25).
+function BridgeIcon({ href }: { href: string }) {
+  const p = {
+    viewBox: "0 0 16 16",
+    fill: "none" as const,
+    stroke: "currentColor" as const,
+    strokeWidth: 1.5,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    className: "h-4 w-4 shrink-0",
+  };
+  if (href === "/extract-to-excel") return (
+    <svg {...p}>
+      <rect x="2" y="2" width="12" height="12" rx="1.5"/>
+      <path d="M2 6h12M2 10h12M6 2v12"/>
+    </svg>
+  );
+  if (href === "/compare") return (
+    <svg {...p}>
+      <rect x="1.5" y="3" width="5.5" height="10" rx="1"/>
+      <rect x="9" y="3" width="5.5" height="10" rx="1"/>
+      <path d="M7.25 8h1.5"/>
+    </svg>
+  );
+  if (href === "/batch-word-to-pdf") return (
+    <svg {...p}>
+      <rect x="4" y="1.5" width="8.5" height="11" rx="1.5"/>
+      <rect x="2" y="3.5" width="8.5" height="11" rx="1.5"/>
+    </svg>
+  );
+  if (href === "/chat-with-pdf") return (
+    <svg {...p}>
+      <path d="M13.5 2.5h-11A1 1 0 0 0 1.5 3.5v7a1 1 0 0 0 1 1H5l2.5 2.5L10 11.5h2.5a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1z"/>
+    </svg>
+  );
+  return (
+    <svg {...p}>
+      <rect x="1.5" y="1.5" width="13" height="13" rx="2"/>
+      <path d="M5 8h6M9 5.5l2.5 2.5L9 10.5"/>
+    </svg>
+  );
+}
+
 // True if this slug has a next-step bridge — lets mount points skip the wrapper
 // entirely (no empty padded box) when there is nothing to show.
 export function hasToolBridge(slug: string): boolean {
@@ -122,19 +166,34 @@ export function ToolBridge({
   return (
     <a
       href={href}
-      className="group flex items-start justify-between gap-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-4 py-3 transition hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
+      className="group flex items-center gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-3 transition-colors hover:border-[color:var(--line-strong)] hover:bg-[color:var(--surface-subtle)]"
     >
-      <div className="min-w-0">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[color:var(--accent-strong)]">
+      {/* Tool icon box */}
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-raised)] text-[color:var(--muted)]">
+        <BridgeIcon href={bridge.targetHref} />
+      </div>
+
+      {/* Text block */}
+      <div className="min-w-0 flex-1">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[color:var(--faint)]">
           {bridgeStr(NEXT_LABEL, locale)}
         </p>
-        <p className="mt-1 text-[13px] leading-snug text-[color:var(--muted)]">
+        <p className="text-[13px] font-semibold leading-snug text-[color:var(--foreground)]">
+          {bridgeStr(bridge.label, locale)}
+        </p>
+        <p className="mt-0.5 text-xs leading-snug text-[color:var(--muted)]">
           {bridgeStr(bridge.pitch, locale)}
         </p>
       </div>
-      <span className="mt-0.5 shrink-0 whitespace-nowrap text-[13px] font-semibold text-[color:var(--foreground)] transition group-hover:translate-x-0.5">
-        {bridgeStr(bridge.label, locale)} →
-      </span>
+
+      {/* Arrow */}
+      <svg
+        viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"
+        strokeLinecap="round" strokeLinejoin="round"
+        className="h-4 w-4 shrink-0 text-[color:var(--faint)] transition-transform group-hover:translate-x-0.5"
+      >
+        <path d="M3 8h10M9 4.5l3.5 3.5L9 11.5"/>
+      </svg>
     </a>
   );
 }

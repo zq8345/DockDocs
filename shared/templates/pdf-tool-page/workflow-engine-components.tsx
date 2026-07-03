@@ -687,10 +687,10 @@ export function WorkflowResultState({
         </div>
       </div>
 
-      {/* Stats grid */}
-      {result.rows.length > 0 && (
+      {/* Stats grid — rows with "—" value are omitted (unknown/unavailable data) */}
+      {result.rows.filter(([, v]) => v !== "—").length > 0 && (
         <div className="grid grid-cols-2 divide-x divide-y divide-[color:var(--line)] border-b border-[color:var(--line)] sm:grid-cols-4">
-          {result.rows.slice(0, 4).map(([label, value]) => (
+          {result.rows.filter(([, v]) => v !== "—").slice(0, 4).map(([label, value]) => (
             <div key={label} className="px-4 py-3">
               <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[color:var(--muted)]">{label}</p>
               <p className="mt-0.5 truncate text-sm font-semibold text-[color:var(--foreground)]">{value}</p>
@@ -718,9 +718,14 @@ export function WorkflowResultState({
           </PrimaryButton>
         )}
         {secondaryLabel && onSecondary ? (
-          <OutlineButton onClick={onSecondary} className="flex-1">{secondaryLabel}</OutlineButton>
+          <OutlineButton onClick={onSecondary}>{secondaryLabel}</OutlineButton>
         ) : null}
-        <OutlineButton onClick={onReset}>{tr(locale, "Start over", "重新开始", "Empezar de nuevo", "Recomeçar", "Recommencer", "やり直す", "Neu starten")}</OutlineButton>
+        <button
+          onClick={onReset}
+          className="text-sm text-[color:var(--muted)] transition hover:text-[color:var(--foreground)]"
+        >
+          {tr(locale, "Start over", "重新开始", "Empezar de nuevo", "Recomeçar", "Recommencer", "やり直す", "Neu starten")}
+        </button>
       </div>
 
       {/* Post-result conversion bridge — honest next step; nothing renders if none */}
@@ -766,18 +771,38 @@ function PdfResultPreview({ blob }: { blob?: Blob }) {
   );
 }
 
+// Compact office result card — used in result state when the output is a .docx/.xlsx/.pptx.
+// The large 240×180 OfficeFallback badge suits the upload preview (DocPreview context) but
+// is visually empty in the result card; a compact info row better signals "file ready".
+function OfficeResultCard({ name }: { name: string }) {
+  const ext = name.split(".").pop()?.toLowerCase() ?? "";
+  const [color, label, typeName] =
+    ["doc", "docx", "odt", "rtf"].includes(ext) ? ["#2b7cd3", "W", "Word Document"] :
+    ["xls", "xlsx", "ods"].includes(ext) ? ["#217346", "X", "Excel Spreadsheet"] :
+    ["ppt", "pptx", "odp"].includes(ext) ? ["#d24726", "P", "PowerPoint Presentation"] :
+    ["#8a8a8a", (ext.slice(0, 3) || "?").toUpperCase(), ext.toUpperCase() + " File"];
+  return (
+    <div className="flex items-center gap-3 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
+      <div
+        style={{ backgroundColor: `${color}18`, color }}
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] text-[20px] font-bold"
+      >
+        {label}
+      </div>
+      <div className="min-w-0">
+        <p className="truncate text-[13px] font-semibold text-[color:var(--foreground)]">{name || typeName}</p>
+        <p className="text-xs text-[color:var(--muted)]">{typeName}</p>
+      </div>
+    </div>
+  );
+}
+
 export function ResultPreview({ type, text, blob }: { type: WorkflowResult["preview"]; text?: string; blob?: Blob }) {
   if (type === "pdf") {
     return <PdfResultPreview blob={blob} />;
   }
   if (type === "office") {
-    // Output is an Office file (pdf→word/excel/ppt) — show the same colored type
-    // badge (W/X/P) the upload preview uses, so input and output stay consistent.
-    return (
-      <div className="mx-auto w-fit overflow-hidden rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)]">
-        <OfficeFallback name={text ?? ""} />
-      </div>
-    );
+    return <OfficeResultCard name={text ?? ""} />;
   }
   if (type === "text") {
     return (

@@ -38,7 +38,12 @@ type L = "en" | "zh" | "es" | "pt" | "fr" | "ja" | "de" | "ko" | "zh-Hant";
 
 const SUPPORTED_LOCALES = ["en", "zh", "es", "pt", "fr", "ja", "de", "ko", "zh-Hant"] as const;
 
-const RING_SLUGS = new Set(["word-to-pdf", "pdf-to-word", "ocr-pdf", "compress-pdf", "batch-compress"]);
+const RING_SLUGS = new Set([
+  "compress-pdf", "pdf-to-word", "ocr-pdf", "pdf-to-markdown",
+  "word-to-pdf", "html-to-pdf", "pdf-to-ppt", "pdf-to-pdfa",
+  "ppt-to-pdf", "excel-to-pdf", "pdf-to-excel", "protect-pdf",
+  "unlock-pdf", "pdf-to-text", "pdf-to-html",
+]);
 
 function normalizeLocale(value: unknown): L {
   return (SUPPORTED_LOCALES as readonly string[]).includes(value as string)
