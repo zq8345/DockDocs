@@ -27,7 +27,7 @@ function PdfGridThumb({ file }: { file: File }) {
 
   if (!url) {
     return (
-      <div className="flex h-24 w-full items-center justify-center text-[11px] font-bold text-[color:var(--accent-strong)]">
+      <div className="flex h-full w-full items-center justify-center text-[11px] font-bold text-[color:var(--accent-strong)]">
         PDF
       </div>
     );
@@ -37,8 +37,7 @@ function PdfGridThumb({ file }: { file: File }) {
     <img
       src={url}
       alt=""
-      className="block w-full rounded-sm object-contain"
-      style={{ maxHeight: "140px" }}
+      className="h-full w-full object-contain"
     />
   );
 }
@@ -52,7 +51,7 @@ function OfficeGridThumb({ ext }: { ext: string }) {
     ["#8a8a8a", (e.slice(0, 3) || "?").toUpperCase()];
   return (
     <div
-      className="flex h-24 w-full items-center justify-center text-[22px] font-bold"
+      className="flex h-full w-full items-center justify-center text-[22px] font-bold"
       style={{ color, backgroundColor: `${color}18` }}
     >
       {label}
@@ -92,20 +91,18 @@ export function BatchFileCard({
 
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
-      {/* Thumbnail */}
-      <div className="flex min-h-[96px] items-center justify-center overflow-hidden bg-[color:var(--surface-subtle)]">
+      {/* Square thumbnail — aspect-ratio 1:1; contain keeps true aspect ratio, neutral bg fills padding */}
+      <div className="aspect-square w-full overflow-hidden bg-[color:var(--surface-subtle)]">
         {isPdf ? <PdfGridThumb file={file} /> : <OfficeGridThumb ext={ext} />}
       </div>
 
-      {/* File info */}
-      <div className="px-2 pb-2 pt-1.5">
-        <p className="truncate text-[11px] font-semibold text-[color:var(--foreground)]" title={file.name}>
+      {/* File info — stacked below thumbnail, never overlaid */}
+      <div className="flex flex-1 flex-col px-2.5 py-2">
+        <p className="truncate text-[11px] font-medium text-[color:var(--foreground)]" title={file.name}>
           {file.name}
         </p>
-        <div className="mt-0.5 flex items-center justify-between">
-          <span className="text-[10px] text-[color:var(--faint)]">{formatBytes(file.size)}</span>
-          {statusBadge}
-        </div>
+        <p className="mt-0.5 text-[10px] text-[color:var(--faint)]">{formatBytes(file.size)}</p>
+        {statusBadge && <div className="mt-1.5">{statusBadge}</div>}
       </div>
 
       {/* × remove button — top-right corner */}
