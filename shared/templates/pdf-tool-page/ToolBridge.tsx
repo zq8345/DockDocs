@@ -95,6 +95,26 @@ const BRIDGES: Record<string, Bridge> = {
   "batch-excel-to-pdf": CHAT_WITH_PDF,
   "batch-pdf-to-word": COMPARE_DOCS,
   "batch-pdf-to-excel": COMPARE_DOCS,
+  // Phase 2 — interactive + results tools
+  "crop-pdf": CHAT_WITH_PDF,
+  "split-pdf": CHAT_WITH_PDF,
+  "sign-pdf": CHAT_WITH_PDF,
+  "redact-pdf": CHAT_WITH_PDF,
+  "page-numbers": CHAT_WITH_PDF,
+  "watermark-pdf": CHAT_WITH_PDF,
+  "pdf-to-image": CHAT_WITH_PDF,
+  "images-to-pdf": CHAT_WITH_PDF,
+  "extract-to-excel": CHAT_WITH_PDF,
+  "translate-pdf": CHAT_WITH_PDF,
+  "redline": CHAT_WITH_PDF,
+  "compare": CHAT_WITH_PDF,
+  "contract-review": CHAT_WITH_PDF,
+  "contract-risk": CHAT_WITH_PDF,
+  "govbid-matrix": CHAT_WITH_PDF,
+  "lease-redflag": CHAT_WITH_PDF,
+  "batch-protect-pdf": CHAT_WITH_PDF,
+  "batch-sort": CHAT_WITH_PDF,
+  "batch-translate": CHAT_WITH_PDF,
 };
 
 const NEXT_LABEL: Record<BridgeLocale, string> = {
