@@ -2,6 +2,7 @@
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { BatchUploadBox } from "@/components/BatchUploadBox";
+import { WorkArea } from "@/components/WorkArea";
 
 import { useCallback, useRef, useState } from "react";
 import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
@@ -42,7 +43,7 @@ const _en = {
   run: "Convert all",
   running: "Converting",
   download: "Download ZIP",
-  reset: "Start over",
+  reset: "Clear files",
   remove: "Remove",
   files: (n: number, max: number) => `${n} / ${max} files`,
   done: "done",
@@ -62,7 +63,7 @@ const STR = {
     run: "全部转换",
     running: "转换中",
     download: "下载 ZIP",
-    reset: "重新开始",
+    reset: "清空文件",
     remove: "移除",
     files: (n: number, max: number) => `${n} / ${max} 份`,
     done: "完成",
@@ -79,7 +80,7 @@ const STR = {
     run: "Convertir todo",
     running: "Convirtiendo",
     download: "Descargar ZIP",
-    reset: "Empezar de nuevo",
+    reset: "Borrar archivos",
     remove: "Quitar",
     files: (n: number, max: number) => `${n} / ${max} archivos`,
     done: "listo",
@@ -96,7 +97,7 @@ const STR = {
     run: "Converter tudo",
     running: "Convertendo",
     download: "Baixar ZIP",
-    reset: "Recomeçar",
+    reset: "Limpar arquivos",
     remove: "Remover",
     files: (n: number, max: number) => `${n} / ${max} arquivos`,
     done: "pronto",
@@ -113,7 +114,7 @@ const STR = {
     run: "Tout convertir",
     running: "Conversion en cours",
     download: "Télécharger le ZIP",
-    reset: "Recommencer",
+    reset: "Vider la liste",
     remove: "Retirer",
     files: (n: number, max: number) => `${n} / ${max} fichiers`,
     done: "terminé",
@@ -130,7 +131,7 @@ const STR = {
     run: "すべて変換",
     running: "変換中",
     download: "ZIPをダウンロード",
-    reset: "最初からやり直す",
+    reset: "ファイルをクリア",
     remove: "削除",
     files: (n: number, max: number) => `${n} / ${max} ファイル`,
     done: "完了",
@@ -147,7 +148,7 @@ const STR = {
     run: "Alle konvertieren",
     running: "Wird konvertiert",
     download: "ZIP herunterladen",
-    reset: "Neu beginnen",
+    reset: "Liste leeren",
     remove: "Entfernen",
     files: (n: number, max: number) => `${n} / ${max} Dateien`,
     done: "fertig",
@@ -164,7 +165,7 @@ const STR = {
     run: "전체 변환",
     running: "변환 중",
     download: "ZIP 다운로드",
-    reset: "다시 시작",
+    reset: "파일 비우기",
     remove: "제거",
     files: (n: number, max: number) => `${n} / ${max}개 파일`,
     done: "완료",
@@ -362,24 +363,22 @@ export function BatchOfficeToPdfClient({ locale = "en", source, embedded = false
           valueZone="server"
         />
       ) : (
-        <>
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-            <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
-            <div className="flex shrink-0 gap-2">
-              {items.length < maxFiles && (
-                <button type="button" onClick={() => inputRef.current?.click()} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">+</button>
-              )}
+        <WorkArea
+          left={<p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>}
+          right={
+            <>
               <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" && doneCount > 0 ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}</button>
               ) : (
                 <button type="button" onClick={run} disabled={phase === "running"} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">{phase === "running" ? t.running : t.run}</button>
               )}
-            </div>
-          </div>
-
+            </>
+          }
+          footer={t.note}
+        >
           {phase === "running" && (
-            <div className="mx-auto mt-6 max-w-[200px]">
+            <div className="mx-auto mb-4 max-w-[200px]">
               <CircularProgress
                 bare
                 progress={items.length > 0 ? (progress / items.length) * 100 : 0}
@@ -389,7 +388,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source, embedded = false
             </div>
           )}
 
-          <div className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-3">
             {items.map((it) => (
               <BatchFileCard
                 key={it.id}
@@ -421,8 +420,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source, embedded = false
               </button>
             )}
           </div>
-          <p className="mt-3 text-[12px] text-[color:var(--faint)]">{t.note}</p>
-        </>
+        </WorkArea>
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}

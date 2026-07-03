@@ -30,6 +30,7 @@ import {
 } from "./editor-geometry";
 import { bakePdf } from "./bake-engine";
 import { PageCanvas } from "./PageCanvas";
+import { ThumbRail } from "./ThumbRail";
 
 type Locale = RouteLocale;
 
@@ -65,6 +66,7 @@ const STR_EN = {
   width: "Width",
   opacity: "Opacity",
   remove: "Remove",
+  thumbsAria: "Page navigation",
 };
 
 const STR = {
@@ -100,6 +102,7 @@ const STR = {
     width: "粗细",
     opacity: "不透明度",
     remove: "删除",
+    thumbsAria: "页面导航",
   },
   es: {
     title: "Editar PDF",
@@ -132,6 +135,7 @@ const STR = {
     width: "Grosor",
     opacity: "Opacidad",
     remove: "Eliminar",
+    thumbsAria: "Navegación de páginas",
   },
   pt: {
     title: "Editar PDF",
@@ -164,6 +168,7 @@ const STR = {
     width: "Espessura",
     opacity: "Opacidade",
     remove: "Remover",
+    thumbsAria: "Navegação de páginas",
   },
   fr: {
     title: "Modifier un PDF",
@@ -196,6 +201,7 @@ const STR = {
     width: "Épaisseur",
     opacity: "Opacité",
     remove: "Supprimer",
+    thumbsAria: "Navigation des pages",
   },
   ja: {
     title: "PDFを編集",
@@ -228,6 +234,7 @@ const STR = {
     width: "太さ",
     opacity: "不透明度",
     remove: "削除",
+    thumbsAria: "ページナビゲーション",
   },
   de: {
     title: "PDF bearbeiten",
@@ -260,6 +267,7 @@ const STR = {
     width: "Stärke",
     opacity: "Deckkraft",
     remove: "Entfernen",
+    thumbsAria: "Seitennavigation",
   },
   ko: {
     title: "PDF 편집",
@@ -292,6 +300,7 @@ const STR = {
     width: "굵기",
     opacity: "불투명도",
     remove: "삭제",
+    thumbsAria: "페이지 탐색",
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -304,6 +313,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const [error, setError] = useState<string | null>(null);
   const [inkMode, setInkMode] = useState(false);
   const [bakeDone, setBakeDone] = useState<{ done: number; total: number } | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
   const [state, dispatch] = useReducer(editorReducer, initialEditorState);
 
   const fileRef = useRef<File | null>(null);
@@ -362,7 +372,8 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   }, [t, locale]);
 
   // Lazy per-page raster at the frame's real width (no display-scale constant).
-  const renderBitmap = useCallback((pageIndex: number): Promise<string | null> => {
+  // targetWidth (CSS px) overrides for thumbnails, which render well below 1×.
+  const renderBitmap = useCallback((pageIndex: number, targetWidth?: number): Promise<string | null> => {
     const job = renderChain.current.then(async () => {
       const doc = docRef.current;
       if (!doc) return null;
@@ -371,8 +382,8 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
         render: (o: unknown) => { promise: Promise<void> };
       };
       const base = page.getViewport({ scale: 1 });
-      const containerW = viewerRef.current?.clientWidth ?? 800;
-      const scale = Math.min(3, Math.max(1, (containerW * (window.devicePixelRatio || 1)) / base.width));
+      const containerW = targetWidth ?? viewerRef.current?.clientWidth ?? 800;
+      const scale = Math.min(3, Math.max(targetWidth ? 0.05 : 1, (containerW * (window.devicePixelRatio || 1)) / base.width));
       const viewport = page.getViewport({ scale });
       const canvas = document.createElement("canvas");
       canvas.width = Math.ceil(viewport.width);
@@ -392,6 +403,16 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const onVisibility = useCallback((pageIndex: number, visible: boolean) => {
     if (visible) visiblePages.current.add(pageIndex);
     else visiblePages.current.delete(pageIndex);
+    // Topmost visible page drives the thumbnail-rail highlight (React bails
+    // out when the value is unchanged, so scroll churn is cheap).
+    if (visiblePages.current.size) setCurrentPage(Math.min(...visiblePages.current));
+  }, []);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const jumpToPage = useCallback((idx: number) => {
+    scrollRef.current
+      ?.querySelector(`[data-page-frame="${idx}"]`)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   const targetPage = () =>
@@ -580,17 +601,32 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const toolBtn =
     "rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]";
 
+  // Editing states trade the hero header for editor real estate — the shell
+  // is viewport-fixed with its own scroll regions (thumbnail rail + canvas).
+  const editing = phase === "ready" || phase === "working";
+
   return (
-    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 pb-16 sm:px-6 sm:pb-20 pt-12 sm:pt-16`}>
-      {!embedded && <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>}
-      <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 sm:px-6 ${editing ? "pb-6 pt-6" : "pb-16 pt-12 sm:pb-20 sm:pt-16"}`}>
+      {!embedded && !editing && <h1 className="text-[30px] font-normal leading-[1.1] tracking-[-0.025em] text-[color:var(--foreground)] sm:text-[40px]">{t.title}</h1>}
+      {!editing && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>}
 
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
-        <>
-          {/* Toolbar — sticky so it stays reachable while scrolling long docs */}
-          <div className="sticky top-2 z-30 mt-6 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
+        <div className="flex gap-3" style={{ height: "calc(100dvh - 10.5rem)", minHeight: 480 }}>
+          {/* Left: page-thumbnail navigation (own scroll; hidden on mobile) */}
+          <ThumbRail
+            pages={pages}
+            currentPage={currentPage}
+            onJump={jumpToPage}
+            renderBitmap={renderBitmap}
+            pageLabel={t.page}
+            ariaLabel={t.thumbsAria}
+          />
+
+          {/* Right: toolbar pinned at top, canvas scrolls beneath it */}
+          <div className="flex min-w-0 flex-1 flex-col">
+          <div className="rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
@@ -651,7 +687,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               <PropertyPanel el={selected} pages={pages} dispatch={dispatch} t={t} />
             )}
           </div>
-          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{inkMode ? t.drawHint : t.hint}</p>
+          <p className="mt-2 shrink-0 text-[12px] text-[color:var(--faint)]">{inkMode ? t.drawHint : t.hint}</p>
 
           <input
             ref={imageInputRef}
@@ -665,28 +701,31 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
             }}
           />
 
-          <div ref={viewerRef} className="mx-auto mt-5 w-full max-w-3xl space-y-4">
-            {pages.map((pg) => (
-              <PageCanvas
-                key={pg.index}
-                page={pg}
-                elements={state.elements.filter((el) => el.page === pg.index)}
-                selectedId={state.selectedId}
-                editingId={state.editingId}
-                dispatch={dispatch}
-                renderBitmap={renderBitmap}
-                onVisibility={onVisibility}
-                onAddTextAt={addText}
-                inkMode={inkMode}
-                inkStyle={{ color: DEFAULT_INK_COLOR, strokeWidthPt: DEFAULT_STROKE_WIDTH_PT }}
-                onInkStroke={onInkStroke}
-                pageLabel={t.page(pg.index + 1)}
-                editPlaceholder={t.placeholder}
-                removeLabel={t.remove}
-              />
-            ))}
+          <div ref={scrollRef} className="isolate mt-3 min-h-0 flex-1 overflow-y-auto">
+            <div ref={viewerRef} className="mx-auto w-full max-w-3xl space-y-4 pb-6">
+              {pages.map((pg) => (
+                <PageCanvas
+                  key={pg.index}
+                  page={pg}
+                  elements={state.elements.filter((el) => el.page === pg.index)}
+                  selectedId={state.selectedId}
+                  editingId={state.editingId}
+                  dispatch={dispatch}
+                  renderBitmap={renderBitmap}
+                  onVisibility={onVisibility}
+                  onAddTextAt={addText}
+                  inkMode={inkMode}
+                  inkStyle={{ color: DEFAULT_INK_COLOR, strokeWidthPt: DEFAULT_STROKE_WIDTH_PT }}
+                  onInkStroke={onInkStroke}
+                  pageLabel={t.page(pg.index + 1)}
+                  editPlaceholder={t.placeholder}
+                  removeLabel={t.remove}
+                />
+              ))}
+            </div>
           </div>
-        </>
+          </div>
+        </div>
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}

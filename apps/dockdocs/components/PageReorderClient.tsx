@@ -4,6 +4,7 @@ import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { WorkArea } from "@/components/WorkArea";
 import { PageCard } from "@/components/PageCard";
 import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
@@ -480,9 +481,8 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
-        <>
-          {/* Toolbar v2: card bar */}
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
+        <WorkArea
+          left={
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <p className="truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
@@ -498,19 +498,22 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
                 {removed > 0 && <span className="ml-1 font-medium text-[color:var(--accent)]">· {t.removed(removed)}</span>}
               </p>
             </div>
+          }
+          right={
             <button type="button" onClick={apply} disabled={phase === "working"} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-60">
               {phase === "working" ? t.working : t.apply}
             </button>
-          </div>
-          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
+          }
+          footer={t.hint}
+        >
 
           {phase === "working" && (
-            <div className="mx-auto mt-6 max-w-[200px]">
+            <div className="mx-auto mb-4 max-w-[200px]">
               <CircularProgress bare progress={progress} title={t.working} />
             </div>
           )}
 
-          <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
             {pages.map((p, pos) => (
               <PageCard
                 key={p.idx}
@@ -540,7 +543,7 @@ export function PageReorderClient({ locale = "en", embedded = false }: { locale?
               />
             ))}
           </div>
-        </>
+        </WorkArea>
       )}
 
       {error && (

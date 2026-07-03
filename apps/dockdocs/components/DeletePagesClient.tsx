@@ -4,6 +4,7 @@ import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { UploadDropzone } from "@/components/UploadDropzone";
+import { WorkArea } from "@/components/WorkArea";
 import { PageCard } from "@/components/PageCard";
 import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
@@ -383,9 +384,8 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={childLocale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
-        <>
-          {/* Toolbar v2: card bar */}
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
+        <WorkArea
+          left={
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <p className="truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>
@@ -400,19 +400,22 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
                 {pages.length}p{fileRef.current ? ` · ${(fileRef.current.size / 1024 / 1024).toFixed(2)} MB` : ""} · <span className="font-medium text-[color:var(--accent)]">{t.status(marked.size, pages.length - marked.size)}</span>
               </p>
             </div>
+          }
+          right={
             <button type="button" onClick={apply} disabled={phase === "working" || marked.size === 0} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
               {phase === "working" ? t.working : t.apply}
             </button>
-          </div>
-          <p className="mt-2 text-[12px] text-[color:var(--faint)]">{t.hint}</p>
+          }
+          footer={t.hint}
+        >
 
           {phase === "working" && (
-            <div className="mx-auto mt-6 max-w-[200px]">
+            <div className="mx-auto mb-4 max-w-[200px]">
               <CircularProgress bare progress={progress} title={t.working} />
             </div>
           )}
 
-          <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3">
             {pages.map((p) => {
               const isMarked = marked.has(p.idx);
               const n = p.idx + 1;
@@ -443,7 +446,7 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
               );
             })}
           </div>
-        </>
+        </WorkArea>
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}

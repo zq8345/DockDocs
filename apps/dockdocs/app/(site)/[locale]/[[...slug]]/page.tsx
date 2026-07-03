@@ -39,6 +39,7 @@ import { ImagesToPdfClient } from "@/components/ImagesToPdfClient";
 import { MyChatsClient } from "@/components/MyChatsClient";
 import { CropPdfClient } from "@/components/CropPdfClient";
 import { RedactPdfClient } from "@/components/RedactPdfClient";
+import { EditPdfClient } from "@/components/pdf-editor/EditPdfClient";
 import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
 import { BatchProtectClient } from "@/components/BatchProtectClient";
 import { BatchSortClient } from "@/components/BatchSortClient";
@@ -279,9 +280,8 @@ function toBlogLocale(locale: RouteLocale): BlogLocale {
 }
 
 // 这些工具尚未实现(原本会下载空文件)，改为"即将推出"占位，en 主路径见各自 app/<slug>/page.tsx。
-const COMING_SOON_TOOLS: Record<string, { en: string; zh: string; ko: string }> = {
-  "edit-pdf": { en: "Edit PDF", zh: "编辑 PDF", ko: "PDF 편집" },
-};
+// (edit-pdf 于 2026-07-03 上线真编辑器后移出；机制保留给未来占位工具。)
+const COMING_SOON_TOOLS: Record<string, { en: string; zh: string; ko: string }> = {};
 
 type PageParams = {
   locale: string;
@@ -1025,6 +1025,16 @@ async function generateMetadataInner({
   const slug = normalizeSlug(rawSlug);
   if (slug === null) {
     return {};
+  }
+
+  // edit-pdf soft-launch: full tool metadata but noindex in EVERY locale until
+  // the orchestrator flips indexing after 测试窗 sign-off. Single early-return
+  // so the ja branch and the generic toolSlugs branch below can't re-index it.
+  if (slug === "edit-pdf") {
+    return {
+      ...createPdfToolMetadata(getLocalizedToolConfig(rawLocale, "edit-pdf")),
+      robots: { index: false, follow: true },
+    };
   }
 
   // Every tool slug — template AND custom-client — has native ja copy in jaTools.
@@ -1899,6 +1909,10 @@ export default async function LocalizedRoute({
   }
   if (slug === "sign-pdf") {
     return <>{toolJsonLd}<SignPdfClient locale={clientLocale} /></>;
+  }
+
+  if (slug === "edit-pdf") {
+    return <>{toolJsonLd}<EditPdfClient locale={clientLocale} /></>;
   }
 
   if (slug === "redline") {

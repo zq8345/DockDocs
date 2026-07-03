@@ -1,18 +1,21 @@
-import type { Metadata } from "next";
+import {
+  createPdfToolMetadata,
+  ToolJsonLd,
+} from "../../../../../shared/templates/pdf-tool-page";
+import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { EditPdfClient } from "@/components/pdf-editor/EditPdfClient";
+import { withVisibleFaq } from "@/lib/single-source-faq";
 
-// Phase A1 overlay editor (was the ComingSoonTool placeholder). Stays noindex
-// until launch review; the launch commit also removes the COMING_SOON_TOOLS
-// special-case in the [locale] catch-all and switches this page to the
-// createPdfToolMetadata/ToolJsonLd template (localized-tools already carries
-// the full edit-pdf config in all locales).
-export const metadata: Metadata = {
-  title: "Edit PDF — DockDocs",
-  description: "Add text anywhere on a PDF and download the result — in your browser, your file never leaves your device.",
-  alternates: { canonical: "/edit-pdf/" },
+const config = getLocalizedToolConfig("en", "edit-pdf");
+
+// Soft-launch: full tool metadata/JSON-LD but noindex until the orchestrator
+// flips indexing after 测试窗 sign-off (the [locale] variants are noindexed by
+// the same rule in the catch-all's generateMetadata).
+export const metadata = {
+  ...createPdfToolMetadata(config),
   robots: { index: false, follow: true },
 };
 
 export default function EditPdfPage() {
-  return <EditPdfClient locale="en" />;
+  return <><ToolJsonLd config={withVisibleFaq(config, "edit-pdf")} /><EditPdfClient locale="en" /></>;
 }
