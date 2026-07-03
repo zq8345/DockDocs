@@ -491,7 +491,7 @@ const STR = {
     tplDims: "Merkmale",
     tplDropHere: "PDFs ablegen, um erneut auszuführen",
     retry: "Erneut versuchen",
-    pageOne: "1페이지",
+    pageOne: "Seite 1",
   },
   ko: {
     badge: "비교 엔진",

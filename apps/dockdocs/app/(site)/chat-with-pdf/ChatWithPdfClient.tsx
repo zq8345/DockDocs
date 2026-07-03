@@ -545,7 +545,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
                 {pageCount
                   ? copy.pageIndexed.replace("{pages}", String(pageCount)).replace("{plural}", pageCount === 1 ? "" : "s")
                   : sourceStats}
-                {providerReference.provider ? ` · ${providerReference.provider}` : ""}
+
               </p>
             </div>
             <label className="shrink-0 cursor-pointer rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-1.5 text-xs font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]">
@@ -687,7 +687,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
         </div>
       ) : null}
     </section>
-    {!embedded && <GroundingNote variant="chat" locale={locale} />}
+    <GroundingNote variant="chat" locale={locale} />
     {!embedded && <RelatedPdfTools locale={locale} exclude="/chat-with-pdf" />}
     {!embedded && <ToolSections locale={locale} content={sec} />}
     </>

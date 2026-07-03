@@ -1007,7 +1007,7 @@ export function AiChatWorkflow({
           {result || streamingAnswer ? (
             <div className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)] p-5">
               {result ? (
-                <dl className="grid gap-3 text-sm sm:grid-cols-3">
+                <dl className="grid gap-3 text-sm sm:grid-cols-2">
                   <div>
                     <dt className="font-semibold text-[color:var(--muted)]">{t.source}</dt>
                     <dd className="mt-1 break-words font-semibold text-[color:var(--foreground)]">
@@ -1018,13 +1018,6 @@ export function AiChatWorkflow({
                     <dt className="font-semibold text-[color:var(--muted)]">{t.context}</dt>
                     <dd className="mt-1 font-semibold text-[color:var(--foreground)]">
                       {result.contextCharacters}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="font-semibold text-[color:var(--muted)]">{t.provider}</dt>
-                    <dd className="mt-1 break-words font-semibold text-[color:var(--foreground)]">
-                      {[result.provider, result.model].filter(Boolean).join(" / ") ||
-                        "AI"}
                     </dd>
                   </div>
                 </dl>

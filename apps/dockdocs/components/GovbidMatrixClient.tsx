@@ -33,7 +33,6 @@ const MAX_CHARS = 60_000;
 
 const STR_EN = {
   title: "Government Bid Compliance Matrix",
-  eyebrow: "PRO · Single-doc AI",
   subtitle: "Upload an RFP or solicitation — get every 'shall/must' requirement extracted into a numbered compliance matrix with section references.",
   upload: "Drop your solicitation PDF here",
   analyze: "Extract Requirements",
@@ -48,20 +47,17 @@ const STR_EN = {
   colSection: "Section",
   colRequirement: "Requirement",
   colType: "Type",
-  colQuote: "Source text",
   downloadCsv: "Download CSV",
   found: (n: number) => `${n} requirement${n === 1 ? "" : "s"} found`,
   filterAll: "All",
   filterMandatory: "Mandatory only",
   filterAdvisory: "Advisory only",
-  noQuote: "Quote unverifiable",
 };
 
 const STR: AuthoredCopy<typeof STR_EN> = {
   en: STR_EN,
   zh: {
     title: "政府标书合规矩阵",
-    eyebrow: "PRO · 单文档 AI",
     subtitle: "上传 RFP 或招标文件——自动提取每条「shall/must」合规要求，生成带条款编号的合规矩阵。",
     upload: "把招标 PDF 拖到这里",
     analyze: "提取合规要求",
@@ -76,17 +72,14 @@ const STR: AuthoredCopy<typeof STR_EN> = {
     colSection: "条款",
     colRequirement: "合规要求",
     colType: "类型",
-    colQuote: "原文引用",
     downloadCsv: "下载 CSV",
     found: (n: number) => `找到 ${n} 条合规要求`,
     filterAll: "全部",
     filterMandatory: "仅强制",
     filterAdvisory: "仅建议",
-    noQuote: "引用未验证",
   },
   es: {
     title: "Matriz de cumplimiento para licitaciones públicas",
-    eyebrow: "PRO · IA un solo doc",
     subtitle: "Sube un RFP o pliego de condiciones — extrae cada requisito 'shall/must' en una matriz numerada con referencias de sección.",
     upload: "Suelta tu PDF de licitación aquí",
     analyze: "Extraer requisitos",
@@ -101,17 +94,14 @@ const STR: AuthoredCopy<typeof STR_EN> = {
     colSection: "Sección",
     colRequirement: "Requisito",
     colType: "Tipo",
-    colQuote: "Texto fuente",
     downloadCsv: "Descargar CSV",
     found: (n: number) => `${n} requisito${n === 1 ? "" : "s"} encontrado${n === 1 ? "" : "s"}`,
     filterAll: "Todos",
     filterMandatory: "Solo obligatorios",
     filterAdvisory: "Solo recomendados",
-    noQuote: "Cita no verificada",
   },
   pt: {
     title: "Matriz de conformidade para licitações públicas",
-    eyebrow: "PRO · IA doc único",
     subtitle: "Envie um RFP ou edital — extraia cada requisito 'shall/must' em uma matriz numerada com referências de seção.",
     upload: "Solte seu PDF de licitação aqui",
     analyze: "Extrair requisitos",
@@ -126,17 +116,14 @@ const STR: AuthoredCopy<typeof STR_EN> = {
     colSection: "Seção",
     colRequirement: "Requisito",
     colType: "Tipo",
-    colQuote: "Texto fonte",
     downloadCsv: "Baixar CSV",
     found: (n: number) => `${n} requisito${n === 1 ? "" : "s"} encontrado${n === 1 ? "" : "s"}`,
     filterAll: "Todos",
     filterMandatory: "Somente obrigatórios",
     filterAdvisory: "Somente recomendados",
-    noQuote: "Citação não verificável",
   },
   fr: {
     title: "Matrice de conformité pour appels d'offres publics",
-    eyebrow: "PRO · IA document unique",
     subtitle: "Importez un appel d'offres ou un cahier des charges — extrayez chaque exigence « shall/must » dans une matrice numérotée avec références de section.",
     upload: "Déposez votre PDF d'appel d'offres ici",
     analyze: "Extraire les exigences",
@@ -151,17 +138,14 @@ const STR: AuthoredCopy<typeof STR_EN> = {
     colSection: "Section",
     colRequirement: "Exigence",
     colType: "Type",
-    colQuote: "Texte source",
     downloadCsv: "Télécharger CSV",
     found: (n: number) => `${n} exigence${n === 1 ? "" : "s"} trouvée${n === 1 ? "" : "s"}`,
     filterAll: "Toutes",
     filterMandatory: "Obligatoires uniquement",
     filterAdvisory: "Recommandées uniquement",
-    noQuote: "Citation non vérifiable",
   },
   ja: {
     title: "入札コンプライアンス・マトリクス",
-    eyebrow: "PRO · 単一文書AI",
     subtitle: "RFPや入札公告をアップロードすると、すべての「~しなければならない（shall/must）」要件を、セクション参照つきの番号付きコンプライアンス・マトリクスに抽出します。",
     upload: "入札公告のPDFをここにドロップ",
     analyze: "要件を抽出",
@@ -176,18 +160,15 @@ const STR: AuthoredCopy<typeof STR_EN> = {
     colSection: "セクション",
     colRequirement: "要件",
     colType: "種別",
-    colQuote: "出典テキスト",
     downloadCsv: "CSVをダウンロード",
     found: (n: number) => `${n}件の要件が見つかりました`,
     filterAll: "すべて",
     filterMandatory: "必須のみ",
     filterAdvisory: "任意のみ",
-    noQuote: "引用を確認できません",
   },
   de: {
     title: "Compliance-Matrix für Ausschreibungen",
-    eyebrow: "PRO · Einzeldokument-KI",
-    subtitle: "Laden Sie eine Ausschreibung oder ein Leistungsverzeichnis hoch – jede „shall/must“-Anforderung wird in eine nummerierte Compliance-Matrix mit Klauselverweisen extrahiert.",
+    subtitle: "Laden Sie eine Ausschreibung oder ein Leistungsverzeichnis hoch – jede „shall/must”-Anforderung wird in eine nummerierte Compliance-Matrix mit Klauselverweisen extrahiert.",
     upload: "Ziehen Sie Ihr Ausschreibungs-PDF hierher",
     analyze: "Anforderungen extrahieren",
     analyzing: "Ausschreibung wird analysiert…",
@@ -201,17 +182,14 @@ const STR: AuthoredCopy<typeof STR_EN> = {
     colSection: "Klausel",
     colRequirement: "Anforderung",
     colType: "Art",
-    colQuote: "Quelltext",
     downloadCsv: "CSV herunterladen",
     found: (n: number) => `${n} Anforderung${n === 1 ? "" : "en"} gefunden`,
     filterAll: "Alle",
     filterMandatory: "Nur verbindliche",
     filterAdvisory: "Nur empfohlene",
-    noQuote: "Zitat nicht überprüfbar",
   },
   ko: {
     title: "정부 입찰 컴플라이언스 매트릭스",
-    eyebrow: "PRO · 단일 문서 AI",
     subtitle: "RFP나 입찰 공고를 업로드하면 모든 'shall/must' 요건을 조항 참조가 붙은 번호 매긴 컴플라이언스 매트릭스로 추출합니다.",
     upload: "입찰 공고 PDF를 여기에 놓으세요",
     analyze: "요건 추출",
@@ -226,18 +204,16 @@ const STR: AuthoredCopy<typeof STR_EN> = {
     colSection: "조항",
     colRequirement: "요건",
     colType: "유형",
-    colQuote: "출처 텍스트",
     downloadCsv: "CSV 다운로드",
     found: (n: number) => `요건 ${n}개 발견`,
     filterAll: "전체",
     filterMandatory: "필수만",
     filterAdvisory: "권고만",
-    noQuote: "인용 확인 불가",
   },
 };
 
 function exportCsv(requirements: Requirement[], t: typeof STR_EN) {
-  const header = [t.colId, t.colSection, t.colType, t.colRequirement, t.colQuote].join(",");
+  const header = [t.colId, t.colSection, t.colType, t.colRequirement, "Source text"].join(",");
   const rows = requirements.map((r) =>
     [r.id, r.section, r.type, r.requirement, r.quote ?? ""]
       .map((v) => `"${String(v).replace(/"/g, '""')}"`)
@@ -603,8 +579,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
     <Wrapper className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4" : `mx-auto ${LAYOUT.content} px-5 py-12`}>
       {!embedded && (
         <>
-          <p className="font-mono text-[12px] uppercase tracking-[0.08em] text-[color:var(--faint)]">{t.eyebrow}</p>
-          <h1 className="mt-2 text-[32px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[40px]">
+          <h1 className="text-[32px] font-normal leading-[1.15] tracking-[-0.02em] text-[color:var(--foreground)] sm:text-[40px]">
             {t.title}
           </h1>
           <p className="mt-3 text-[16px] leading-[1.6] text-[color:var(--muted)]">{t.subtitle}</p>

@@ -19,8 +19,6 @@ type SummaryData = {
   actionItems: string[];
   suggestedNextSteps?: string[];
   nextSteps?: string[];
-  provider?: string;
-  model?: string;
 };
 
 type CardStatus = "pending" | "extracting" | "summarizing" | "done" | "error";
@@ -32,6 +30,7 @@ type FileCard = {
   summary: SummaryData | null;
   error: string;
   expanded: boolean;
+  progress?: number;
 };
 
 const maxPages = 20;
@@ -307,6 +306,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
         const page = await pdf.getPage(p);
         const content = await page.getTextContent();
         pages.push(content.items.map((item) => (item as { str?: string }).str ?? "").filter(Boolean).join(" "));
+        updateCard(id, { progress: Math.round(12 + (p / pageCount) * 56) });
       }
       const text = pages.join("\n\n").slice(0, maxCharacters);
       if (!text.trim()) {
@@ -505,7 +505,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
         </div>
       ) : null}
 
-      {!embedded && <GroundingNote variant="summary" locale={locale} />}
+      <GroundingNote variant="summary" locale={locale} />
       {!embedded && <RelatedPdfTools locale={locale} exclude="/ai-summary" />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
     </section>
@@ -528,7 +528,7 @@ function SummaryCard({
 
   const statusLabel =
     card.status === "pending" ? (zh ? h("等待中…") : ja ? "待機中…" : es ? "En espera…" : pt ? "Aguardando…" : fr ? "En attente…" : de ? "Warte…" : ko ? "대기 중…" : "Pending…") :
-    card.status === "extracting" ? (zh ? h("正在读取 PDF…") : ja ? "PDF を読み取り中…" : es ? "Leyendo el PDF…" : pt ? "Lendo o PDF…" : fr ? "Lecture du PDF…" : de ? "PDF wird gelesen…" : ko ? "PDF를 읽는 중…" : "Reading PDF…") :
+    card.status === "extracting" ? (zh ? h("正在读取 PDF…") : ja ? "PDF を読み取り中…" : es ? "Leyendo el PDF…" : pt ? "Lendo o PDF…" : fr ? "Lecture du PDF…" : de ? "PDF wird gelesen…" : ko ? "PDF를 읽는 중…" : "Reading PDF…") + (card.progress !== undefined ? ` ${card.progress}%` : "") :
     card.status === "summarizing" ? (zh ? h("AI 正在生成摘要…") : ja ? "AI が要約を作成中…" : es ? "La IA está resumiendo…" : pt ? "A IA está resumindo…" : fr ? "L'IA résume…" : de ? "Die KI fasst zusammen…" : ko ? "AI가 요약하는 중…" : "AI is summarizing…") :
     card.status === "done" ? (zh ? h("摘要已生成") : ja ? "要約を生成しました" : es ? "Resumen generado" : pt ? "Resumo gerado" : fr ? "Résumé généré" : de ? "Zusammenfassung erstellt" : ko ? "요약이 생성되었습니다" : "Summary generated") :
     card.error || (zh ? h("处理失败") : ja ? "処理に失敗しました" : es ? "Error al procesar" : pt ? "Falha ao processar" : fr ? "Échec du traitement" : de ? "Verarbeitung fehlgeschlagen" : ko ? "처리 실패" : "Processing failed");

@@ -986,6 +986,9 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
 
       {phase === "analyzing" && (
         <div className="mt-6" aria-busy="true">
+          {progressStep && (
+            <p className="mb-3 text-center text-xs text-[color:var(--muted)]">{progressStep}</p>
+          )}
           <div className="space-y-3">
             {[0, 1, 2].map((i) => (
               <div key={i} className="animate-pulse rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-4">
@@ -1222,7 +1225,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       )}
 
       {!embedded && <ToolBridge slug="contract-risk" locale={locale} useLocalePrefix={locale !== "en"} />}
-      {!embedded && <GroundingNote variant="contract" locale={locale} />}
+      <GroundingNote variant="contract" locale={locale} />
       {!embedded && <RelatedPdfTools locale={locale} exclude="/contract-risk" />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="contract-risk" locale={locale} />}

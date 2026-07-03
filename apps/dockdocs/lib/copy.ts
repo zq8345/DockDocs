@@ -166,20 +166,13 @@ export const runtimeCopy = {
       },
     },
     chat: {
-      heroEyebrow: "Chat with PDF MVP",
       heroTitle: "Ask grounded questions about a PDF.",
       heroDescription:
         "Upload a text-based PDF, review the extracted source status, and ask focused questions inside a document-first AI workspace.",
       primaryCta: "Open chat",
       secondaryCta: "Compress PDF",
-      metrics: [
-        { value: "12", label: "Page cap" },
-        { value: "40k", label: "Text cap" },
-        { value: "Live", label: "AI call" },
-      ],
       workspaceLabel: "DockDocs Workspace",
       workspaceTitle: "Chat with PDF",
-      mvp: "MVP",
       document: "Document",
       choosePdf: "Choose PDF",
       uploadHelp: "Text is extracted locally before a provider request is made.",
@@ -281,7 +274,7 @@ export const runtimeCopy = {
         {
           question: "Does it support scanned PDFs?",
           answer:
-            "This MVP reads selectable PDF text. Scanned PDFs require OCR before chat can answer against their content.",
+            "DockDocs reads selectable PDF text. Scanned PDFs require OCR before chat can answer against their content.",
         },
         {
           question: "Is it static export compatible?",
@@ -494,7 +487,7 @@ export const runtimeCopy = {
           href: "/chat-with-pdf/",
           recommended: false,
           highlights: [
-            "Chat with PDF MVP",
+            "Chat with PDF",
             "AI Summary preview",
             "OCR, Compress, and PDF to Word entry points",
             "Workspace dashboard shell",
@@ -769,20 +762,13 @@ export const runtimeCopy = {
       },
     },
     chat: {
-      heroEyebrow: "PDF 对话 MVP",
       heroTitle: "围绕 PDF 提出有来源的问题。",
       heroDescription:
         "上传可选择文字的 PDF，查看来源提取状态，并在文档优先的 AI 工作区中提出聚焦问题。",
       primaryCta: "打开对话",
       secondaryCta: "压缩 PDF",
-      metrics: [
-        { value: "12", label: "页数上限" },
-        { value: "40k", label: "文字上限" },
-        { value: "实时", label: "AI 调用" },
-      ],
       workspaceLabel: "DockDocs 工作区",
       workspaceTitle: "PDF 对话",
-      mvp: "MVP",
       document: "文档",
       choosePdf: "选择 PDF",
       uploadHelp: "文字会先在浏览器本地提取，然后再请求 AI provider。",
@@ -1303,20 +1289,13 @@ export const runtimeCopy = {
       },
     },
     chat: {
-      heroEyebrow: "Chat con PDF MVP",
       heroTitle: "Haz preguntas fundamentadas sobre un PDF.",
       heroDescription:
         "Sube un PDF con texto seleccionable, revisa el estado de extracción de la fuente y haz preguntas concretas en un espacio de trabajo de IA centrado en el documento.",
       primaryCta: "Abrir chat",
       secondaryCta: "Comprimir PDF",
-      metrics: [
-        { value: "12", label: "Límite de páginas" },
-        { value: "40k", label: "Límite de texto" },
-        { value: "En vivo", label: "Llamada IA" },
-      ],
       workspaceLabel: "Espacio de trabajo DockDocs",
       workspaceTitle: "Chat con PDF",
-      mvp: "MVP",
       document: "Documento",
       choosePdf: "Elegir PDF",
       uploadHelp: "El texto se extrae localmente antes de realizar la solicitud al proveedor.",
@@ -1908,20 +1887,13 @@ export const runtimeCopy = {
       },
     },
     chat: {
-      heroEyebrow: "Chat com PDF MVP",
       heroTitle: "Faça perguntas embasadas sobre um PDF.",
       heroDescription:
         "Envie um PDF com texto selecionável, verifique o estado de extração da fonte e faça perguntas concretas em um espaço de trabalho de IA centrado no documento.",
       primaryCta: "Abrir chat",
       secondaryCta: "Comprimir PDF",
-      metrics: [
-        { value: "12", label: "Limite de páginas" },
-        { value: "40k", label: "Limite de texto" },
-        { value: "Ao vivo", label: "Chamada IA" },
-      ],
       workspaceLabel: "Espaço de trabalho DockDocs",
       workspaceTitle: "Chat com PDF",
-      mvp: "MVP",
       document: "Documento",
       choosePdf: "Escolher PDF",
       uploadHelp: "O texto é extraído localmente antes de enviar a solicitação ao provedor.",
@@ -2513,20 +2485,13 @@ export const runtimeCopy = {
       },
     },
     chat: {
-      heroEyebrow: "Chat avec PDF",
       heroTitle: "Posez des questions fondées sur un PDF.",
       heroDescription:
         "Envoyez un PDF avec du texte sélectionnable, vérifiez l'état d'extraction de la source et posez des questions précises dans un espace de travail IA centré sur le document.",
       primaryCta: "Ouvrir le chat",
       secondaryCta: "Compresser un PDF",
-      metrics: [
-        { value: "12", label: "Limite de pages" },
-        { value: "40k", label: "Limite de texte" },
-        { value: "En direct", label: "Appel IA" },
-      ],
       workspaceLabel: "Espace de travail DockDocs",
       workspaceTitle: "Chat avec PDF",
-      mvp: "MVP",
       document: "Document",
       choosePdf: "Choisir un PDF",
       uploadHelp: "Le texte est extrait localement avant l'envoi de la requête au fournisseur.",
@@ -3118,20 +3083,13 @@ export const runtimeCopy = {
       },
     },
     chat: {
-      heroEyebrow: "Chat mit PDF (MVP)",
       heroTitle: "Stellen Sie fundierte Fragen zu einem PDF.",
       heroDescription:
         "Laden Sie ein textbasiertes PDF hoch, prüfen Sie den Status des extrahierten Quelltexts und stellen Sie gezielte Fragen in einem dokumentenorientierten KI-Arbeitsbereich.",
       primaryCta: "Chat öffnen",
       secondaryCta: "PDF komprimieren",
-      metrics: [
-        { value: "12", label: "Seitenlimit" },
-        { value: "40k", label: "Textlimit" },
-        { value: "Live", label: "KI-Aufruf" },
-      ],
       workspaceLabel: "DockDocs Arbeitsbereich",
       workspaceTitle: "Chat mit PDF",
-      mvp: "MVP",
       document: "Dokument",
       choosePdf: "PDF auswählen",
       uploadHelp: "Der Text wird lokal extrahiert, bevor eine Anfrage an den Anbieter gesendet wird.",
@@ -3808,20 +3766,13 @@ const runtimeCopyJa = {
     },
   },
   chat: {
-    heroEyebrow: "PDFと対話 MVP",
     heroTitle: "PDFについて根拠に基づいた質問ができます。",
     heroDescription:
       "テキストベースのPDFをアップロードし、抽出された出典の状態を確認してから、文書中心のAIワークスペースで的を絞った質問をしましょう。",
     primaryCta: "チャットを開く",
     secondaryCta: "PDFを圧縮",
-    metrics: [
-      { value: "12", label: "ページ上限" },
-      { value: "40k", label: "テキスト上限" },
-      { value: "Live", label: "AI呼び出し" },
-    ],
     workspaceLabel: "DockDocs ワークスペース",
     workspaceTitle: "PDFと対話",
-    mvp: "MVP",
     document: "文書",
     choosePdf: "PDFを選択",
     uploadHelp: "プロバイダーへのリクエスト前に、テキストはローカルで抽出されます。",
@@ -4319,20 +4270,13 @@ const runtimeCopyKo = {
     },
   },
   chat: {
-    heroEyebrow: "PDF 채팅 MVP",
     heroTitle: "PDF에 대한 근거 있는 질문을 하세요.",
     heroDescription:
       "텍스트 기반 PDF를 업로드하고, 추출된 소스 상태를 확인하며, 문서 중심 AI 작업 공간에서 집중적인 질문을 하세요.",
     primaryCta: "채팅 열기",
     secondaryCta: "PDF 압축",
-    metrics: [
-      { value: "12", label: "페이지 한도" },
-      { value: "40k", label: "텍스트 한도" },
-      { value: "실시간", label: "AI 호출" },
-    ],
     workspaceLabel: "DockDocs 작업 공간",
     workspaceTitle: "PDF와 채팅",
-    mvp: "MVP",
     document: "문서",
     choosePdf: "PDF 선택",
     uploadHelp: "텍스트는 공급자 요청 전에 로컬에서 추출됩니다.",

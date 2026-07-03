@@ -129,7 +129,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Hohes Risiko", medium: "Mittel", low: "Niedrig" },
     dir: { added: "Hinzugefügt", removed: "Entfernt", modified: "Geändert" },
     pairsCapped: "Die Analyse umfasst bis zu 40 Änderungen.",
-    backBtn: "← Zurück", resetBtn: "↩ Zurücksetzen", genericError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.", pageOne: "1페이지",
+    backBtn: "← Zurück", resetBtn: "↩ Zurücksetzen", genericError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.", pageOne: "Seite 1",
   },
   ko: {
     title: "계약서 버전 비교", sub: "계약서의 두 버전을 업로드하여 변경된 내용을 확인하고 AI로 각 변경의 의미를 파악하세요.",
