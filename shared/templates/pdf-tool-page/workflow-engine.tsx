@@ -479,7 +479,7 @@ export function PdfWorkflowEngine({
               <WorkflowProgress
                 bare
                 title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
-                description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，转换可能需要稍久", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります", " · große Datei – kann etwas dauern") : spec.processLabel}
+                description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，处理时间可能稍长", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります", " · große Datei – kann etwas dauern") : spec.processLabel}
                 progress={progress}
                 statusText={tr("Processing", "处理中", "Procesando", "Processando", "Traitement", "処理中", "Wird verarbeitet")}
                 animated
@@ -628,7 +628,7 @@ export function PdfWorkflowEngine({
       {status === "processing" ? (
         <WorkflowProgress
           title={progressDetail || spec.steps[stepIndex] || spec.processLabel}
-          description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，转换可能需要稍久", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります", " · große Datei – kann etwas dauern") : spec.processLabel}
+          description={totalSize > 8 * 1024 * 1024 ? spec.processLabel + tr(" · large file — may take a bit", " · 大文件，处理时间可能稍长", " · archivo grande — puede tardar un poco", " · arquivo grande — pode demorar um pouco", " · fichier volumineux — cela peut prendre un peu de temps", " · 大きなファイル — 少し時間がかかる場合があります", " · große Datei – kann etwas dauern") : spec.processLabel}
           progress={progress}
           statusText={tr("Processing", "处理中", "Procesando", "Processando", "Traitement", "処理中", "Wird verarbeitet")}
           animated
