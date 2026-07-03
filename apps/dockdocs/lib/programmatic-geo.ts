@@ -2668,7 +2668,9 @@ export function programmaticGeoAlternates(
   slug: string,
 ) {
   return {
-    en: absoluteUrl(programmaticGeoPath(surface, slug, "en")),
+    // en canonical is the non-prefixed path; /en/* 301s → strip the prefix to avoid
+    // Google discarding an hreflang that points to a redirect.
+    en: absoluteUrl(programmaticGeoPath(surface, slug)),
     zh: absoluteUrl(programmaticGeoPath(surface, slug, "zh")),
     "x-default": absoluteUrl(programmaticGeoPath(surface, slug)),
   };

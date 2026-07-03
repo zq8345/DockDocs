@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl, indexableRoutes, isJaNativeRoute } from "@/shared/seo/routes";
+import { absoluteUrl, isBlogNativeLocale, indexableRoutes, isJaNativeRoute } from "@/shared/seo/routes";
 import { routeLocales, geoPageSlugs } from "@/lib/i18n";
 import { getProgrammaticGeoPageSeeds, programmaticGeoPath, isIndexableGeoSlug } from "@/lib/programmatic-geo";
 import { blogArticleSlugs, blogArticlePath } from "@/lib/blog";
@@ -52,6 +52,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       // ko: geo hub pages (resources/guides/ai-pdf-guides) have no authored ko copy
       // and fall back to English — thin duplicate, exclude from ko sitemap.
       if (locale === "ko" && (geoPageSlugs as readonly string[]).includes(route.slug)) continue;
+      // Non-native blog locales: blog index falls back to English — exclude from sitemap
+      // so Google doesn't index thin duplicate /es/blog/, /de/blog/, etc. (isBlogNativeLocale
+      // covers en/zh; ja/zh-Hant are already filtered by the isJaNativeRoute gate above.)
+      if (!isBlogNativeLocale(locale) && route.slug === "blog") continue;
       routes.push({
         // zh-Hant emitted lowercase (/zh-hant/) to match Netlify's case-insensitive
         // serving — a /zh-Hant/ sitemap URL would 301-redirect. No-op for other locales.

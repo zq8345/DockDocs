@@ -2598,7 +2598,9 @@ export function blogArticleUrl(slug: BlogArticleSlug | string, locale?: Locale) 
 
 export function blogArticleAlternates(slug: BlogArticleSlug | string) {
   return {
-    en: blogArticleUrl(slug, "en"),
+    // en canonical is the non-prefixed /blog/<slug>/; /en/* 301s → use root path
+    // to avoid Google discarding an hreflang that points to a redirect.
+    en: blogArticleUrl(slug),
     zh: blogArticleUrl(slug, "zh"),
     "x-default": blogArticleUrl(slug),
   };

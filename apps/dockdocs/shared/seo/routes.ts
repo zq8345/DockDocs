@@ -30,6 +30,14 @@ export function isJaNativeRoute(slug: string): boolean {
   return false;
 }
 
+// Blog index and articles are authored natively only in en (canonical) and zh
+// (translated). All other locales (es/pt/fr/de/ko/ja/zh-Hant) render an English
+// fallback — noindex those and exclude them from the sitemap. Single source of
+// truth shared by the catch-all noindex gate and sitemap.ts filtering.
+export function isBlogNativeLocale(locale: string): boolean {
+  return locale === "en" || locale === "zh";
+}
+
 export const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://dockdocs.app";
 

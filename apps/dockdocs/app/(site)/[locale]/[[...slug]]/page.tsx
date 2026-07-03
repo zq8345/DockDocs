@@ -90,7 +90,7 @@ import { getRuntimeCopy } from "@/lib/copy";
 import { toHant, deepHant } from "@/lib/zh-hant";
 import { homeSchema, aboutSchema, pricingSchema, webPageSchema } from "@/lib/page-schema";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
-import { isJaNativeRoute } from "@/shared/seo/routes";
+import { isBlogNativeLocale, isJaNativeRoute } from "@/shared/seo/routes";
 import { ExtraToolJsonLd, EXTRA_TOOL_SLUGS, type Loc as ExtraToolLoc } from "@/lib/extra-tool-schema";
 import { getFaqItems } from "@/components/ToolFaq";
 import { groundingFaq } from "@/components/GroundingNote";
@@ -389,6 +389,14 @@ export async function generateMetadata(args: {
   if (locale === "ko") {
     const s = normalizeSlug(rawSlug);
     if (s !== null && (geoPageSlugs as readonly string[]).includes(s)) {
+      return { ...meta, robots: { index: false, follow: true } };
+    }
+  }
+  // es/pt/fr/de/ko (and ja/zh-Hant via the gate above): blog index pages fall back
+  // to English — noindex to avoid thin duplicate content in non-native blog locales.
+  if (!isBlogNativeLocale(locale)) {
+    const s = normalizeSlug(rawSlug);
+    if (s === "blog") {
       return { ...meta, robots: { index: false, follow: true } };
     }
   }
