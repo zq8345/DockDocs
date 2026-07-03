@@ -19,6 +19,14 @@ declare const Netlify: {
 // Blobs subscription record. Set DEV_PRO_EMAILS (or DOCKDOCS_PRO_EMAILS) in
 // Netlify env. The NEXT_PUBLIC_ variant was removed — that prefix leaks the
 // email list into every client bundle (browser network tab).
+// Internal-testing bypass: signed-in users whose email EXACTLY matches an entry
+// skip the per-day/month limits entirely (real-device testing must not burn a
+// day per 10 conversions). Anonymous callers can never match — no email, no bypass.
+const ADMIN_BYPASS_EMAILS = (Netlify.env.get("ADMIN_BYPASS_EMAILS") || "")
+  .split(",")
+  .map((entry) => entry.trim().toLowerCase())
+  .filter(Boolean);
+
 const PRO_EMAIL_ALLOWLIST = (
   Netlify.env.get("DOCKDOCS_PRO_EMAILS") ||
   Netlify.env.get("DEV_PRO_EMAILS") ||
@@ -71,6 +79,19 @@ export async function enforceFeatureGate(
     const user = await readBillingUser(req);
     if (user) {
       subjectId = `user:${user.id}`;
+      if (user.email && ADMIN_BYPASS_EMAILS.includes(user.email.toLowerCase())) {
+        // Unlimited, uncounted: commit is a no-op so internal runs never touch
+        // the usage store or the paywall-hit tally.
+        return {
+          ok: true,
+          plan: "PRO",
+          feature,
+          used: 0,
+          limit: Number.MAX_SAFE_INTEGER,
+          subjectId,
+          commit: async () => {},
+        };
+      }
       if (user.email && PRO_EMAIL_ALLOWLIST.includes(user.email.toLowerCase())) {
         plan = "PRO";
       } else {

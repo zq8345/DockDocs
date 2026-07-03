@@ -85,6 +85,8 @@ export function PdfWorkflowEngine({
   const [progress, setProgress] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
   const [error, setError] = useState("");
+  // Quota-hit flag: the error state renders an upgrade CTA instead of "Review".
+  const [upgradeRequired, setUpgradeRequired] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [pageRanges, setPageRanges] = useState("");
   // OCR language is auto-derived from the site locale (no user select). Kept in
@@ -274,6 +276,7 @@ export function PdfWorkflowEngine({
       }
 
       setError(getPdfRuntimeErrorMessage(processingError, loc));
+      setUpgradeRequired(processingError instanceof Error && processingError.name === "UpgradeRequiredError");
       setStatus("error");
     } finally {
       if (processingRunRef.current === runId) {
@@ -322,6 +325,7 @@ export function PdfWorkflowEngine({
     setProgressDetail("");
     setPartialOcrText("");
     setError("");
+    setUpgradeRequired(false);
     setIsDragging(false);
     setCopied(false);
     setRuntimeArtifact(null);
@@ -532,7 +536,8 @@ export function PdfWorkflowEngine({
               <WorkflowErrorState
                 bare
                 message={error}
-                onRetry={() => { setError(""); setStatus(files.length ? "ready" : "idle"); }}
+                upgradeHref={upgradeRequired ? (loc === "en" ? "/pricing/" : `/${loc}/pricing/`) : undefined}
+                onRetry={() => { setError(""); setUpgradeRequired(false); setStatus(files.length ? "ready" : "idle"); }}
                 onReset={resetWorkflow}
                 locale={loc}
               />

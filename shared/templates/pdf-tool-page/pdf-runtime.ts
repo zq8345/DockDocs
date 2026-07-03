@@ -250,6 +250,13 @@ export function getPdfRuntimeErrorMessage(error: unknown, locale: RuntimeLocale)
   const tr = makeRuntimeTr(locale);
   const message = error instanceof Error ? error.message : String(error);
 
+  // Quota errors arrive already localized from the cloud runtime — pass them
+  // through verbatim. Remapping "upgrade needed" into the generic "review the
+  // files" line misreports a paywall as a broken file (honesty + conversion loss).
+  if (error instanceof Error && error.name === "UpgradeRequiredError") {
+    return message;
+  }
+
   if (message === "aborted") {
     return tr(
       "Processing was cancelled.",

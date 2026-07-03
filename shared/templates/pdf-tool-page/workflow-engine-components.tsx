@@ -916,12 +916,16 @@ export function WorkflowErrorState({
   onReset,
   locale,
   bare = false,
+  upgradeHref,
 }: {
   message: string;
   onRetry: () => void;
   onReset: () => void;
   locale: TemplateLocale;
   bare?: boolean;
+  /** Set when the error is a plan-limit hit: swaps "Review" for an upgrade CTA
+      (a quota message with only "review your files" actions reads as a broken file). */
+  upgradeHref?: string;
 }) {
   return (
     <div className={bare ? "" : "mt-4 rounded-[var(--radius-lg)] border border-[color:var(--error-line)] bg-[color:var(--error-surface)] p-5"}>
@@ -929,13 +933,24 @@ export function WorkflowErrorState({
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--error)] text-sm text-white">!</span>
         <div>
           <p className="text-sm font-semibold text-[color:var(--foreground)]">
-            {tr(locale, "Cannot continue", "无法继续", "No se puede continuar", "Não é possível continuar", "Impossible de continuer", "続行できません", "Kann nicht fortfahren")}
+            {upgradeHref
+              ? tr(locale, "Daily limit reached", "今日额度已用完", "Límite diario alcanzado", "Limite diário atingido", "Limite quotidienne atteinte", "本日の上限に達しました", "Tageslimit erreicht")
+              : tr(locale, "Cannot continue", "无法继续", "No se puede continuar", "Não é possível continuar", "Impossible de continuer", "続行できません", "Kann nicht fortfahren")}
           </p>
           <p className="mt-1 text-sm leading-6 text-[color:var(--error)]">{message}</p>
         </div>
       </div>
       <div className="mt-4 flex gap-2">
-        <OutlineButton onClick={onRetry} className="flex-1">{tr(locale, "Review", "返回检查", "Revisar", "Revisar", "Vérifier", "確認に戻る", "Prüfen")}</OutlineButton>
+        {upgradeHref ? (
+          <a
+            href={upgradeHref}
+            className="inline-flex h-11 flex-1 items-center justify-center rounded-[var(--radius)] bg-[color:var(--accent)] px-6 text-sm font-semibold text-white transition hover:opacity-90"
+          >
+            {tr(locale, "Upgrade to Pro", "升级 Pro", "Pasar a Pro", "Fazer upgrade para o Pro", "Passer à Pro", "Pro にアップグレード", "Auf Pro upgraden")}
+          </a>
+        ) : (
+          <OutlineButton onClick={onRetry} className="flex-1">{tr(locale, "Review", "返回检查", "Revisar", "Revisar", "Vérifier", "確認に戻る", "Prüfen")}</OutlineButton>
+        )}
         <OutlineButton onClick={onReset} className="flex-1">{tr(locale, "Start over", "重新开始", "Empezar de nuevo", "Recomeçar", "Recommencer", "やり直す", "Neu starten")}</OutlineButton>
       </div>
     </div>

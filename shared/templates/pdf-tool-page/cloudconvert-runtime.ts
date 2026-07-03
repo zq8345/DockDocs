@@ -143,7 +143,14 @@ export async function runCloudConvert({
   const created = await createRes.json().catch(() => ({}));
 
   if (!createRes.ok || !created.ok) {
-    throw new Error(mapCreateError(createRes.status, created, locale));
+    const createError = new Error(mapCreateError(createRes.status, created, locale));
+    // Daily-quota hit is an UPSELL moment, not a broken file: mark it so the
+    // engine renders the real message + upgrade CTA and NEVER remaps it into
+    // the generic "review the files and try again" line.
+    if (createRes.status === 402 || created.code === "UPGRADE_REQUIRED") {
+      createError.name = "UpgradeRequiredError";
+    }
+    throw createError;
   }
 
   const { jobId, upload } = created as {
@@ -589,9 +596,22 @@ function msgDownloadFailed(locale: CloudLocale): string {
 
 function mapCreateError(
   httpStatus: number,
-  body: { code?: string; message?: string },
+  body: { code?: string; message?: string; limit?: number },
   locale: CloudLocale,
 ): string {
+  if (httpStatus === 402 || body.code === "UPGRADE_REQUIRED") {
+    const limit = typeof body.limit === "number" && body.limit > 0 ? body.limit : 10;
+    return tr(
+      locale,
+      `Today's free conversions are used up (${limit}/day). They reset tomorrow — or upgrade to Pro for unlimited conversions.`,
+      `今日免费转换额度已用完（每天 ${limit} 次），明天自动重置——或升级 Pro 不限量。`,
+      `Has agotado las conversiones gratis de hoy (${limit}/día). Se restablecen mañana — o pasa a Pro para conversiones ilimitadas.`,
+      `As conversões grátis de hoje acabaram (${limit}/dia). Elas voltam amanhã — ou faça upgrade para o Pro e converta sem limites.`,
+      `Vos conversions gratuites du jour sont épuisées (${limit}/jour). Elles se réinitialisent demain — ou passez à Pro pour des conversions illimitées.`,
+      `本日の無料変換枠（1 日 ${limit} 回）を使い切りました。明日リセットされます — または Pro にアップグレードすると無制限になります。`,
+      `Die kostenlosen Konvertierungen für heute sind aufgebraucht (${limit}/Tag). Morgen werden sie zurückgesetzt — oder upgraden Sie auf Pro für unbegrenzte Konvertierungen.`,
+    );
+  }
   if (httpStatus === 503 || body.code === "NOT_CONFIGURED") {
     return tr(
       locale,
