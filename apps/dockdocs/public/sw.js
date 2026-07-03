@@ -19,12 +19,15 @@ const OFFLINE_URL = "/offline/";
 const IS_DEV = self.location.hostname === "localhost" || self.location.hostname === "127.0.0.1";
 
 self.addEventListener("install", (event) => {
+  // Do NOT call self.skipWaiting() here. Doing so would immediately activate the
+  // new SW and trigger clients.claim(), reloading any open tab — including one with
+  // an in-progress file conversion. The SKIP_WAITING message handler below lets the
+  // page defer the handoff until the user navigates away naturally.
   event.waitUntil(
     caches
       .open(PAGES_CACHE)
       // Resilient: a missing/failed offline page must not abort the whole SW install.
-      .then((cache) => cache.add(OFFLINE_URL).catch(() => {}))
-      .then(() => self.skipWaiting()),
+      .then((cache) => cache.add(OFFLINE_URL).catch(() => {})),
   );
 });
 

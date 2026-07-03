@@ -25,14 +25,19 @@ export function PwaRuntime() {
       });
 
       navigator.serviceWorker.register("/sw.js").then((reg) => {
-        // When a new SW installs alongside an active one, tell it to skip
-        // the waiting phase and take over immediately so open tabs update.
+        // When a new SW installs alongside an active one, defer the handoff
+        // until the user navigates away (pagehide). Sending SKIP_WAITING
+        // immediately would reload the tab mid-conversion, losing the user's work.
         reg.addEventListener("updatefound", () => {
           const newSw = reg.installing;
           if (!newSw) return;
           newSw.addEventListener("statechange", () => {
             if (newSw.state === "installed" && navigator.serviceWorker.controller) {
-              newSw.postMessage("SKIP_WAITING");
+              window.addEventListener(
+                "pagehide",
+                () => newSw.postMessage("SKIP_WAITING"),
+                { once: true },
+              );
             }
           });
         });
