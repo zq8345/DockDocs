@@ -407,6 +407,11 @@ export function BatchProtectClient({ locale = "en", embedded = false }: { locale
           left={
             <>
               <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
+              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
+            </>
+          }
+          right={
+            <>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <input
@@ -419,11 +424,6 @@ export function BatchProtectClient({ locale = "en", embedded = false }: { locale
                 </div>
                 <p className="mt-1 text-[11.5px] text-[color:var(--faint)]">{t.pwRule}</p>
               </div>
-            </>
-          }
-          right={
-            <>
-              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" && doneCount > 0 ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}</button>
               ) : (

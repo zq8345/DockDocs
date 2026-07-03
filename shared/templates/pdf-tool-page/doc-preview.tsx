@@ -36,17 +36,24 @@ export async function renderPdfFirstPageDataUrl(source: File | Blob): Promise<st
   }
 }
 
-// Office type badge (W/X/P). Office files can't render a real first page
-// client-side, so one landscape badge size is used everywhere (upload preview
-// + conversion result preview). 160×120 per Joe 2026-07-03 — the earlier
-// 240×180 read as an oversized empty frame next to the filename/size line.
-export function OfficeFallback({ name }: { name: string }) {
+// Office type detection (W/X/P) — single source for the upload-state badge
+// and the result-state corner tag.
+export function officeTypeOf(name: string): { color: string; label: string } {
   const ext = name.split(".").pop()?.toLowerCase() ?? "";
   const [color, label]: [string, string] =
     ["doc", "docx", "odt", "rtf"].includes(ext) ? ["#2b7cd3", "W"] :
     ["xls", "xlsx", "ods"].includes(ext) ? ["#217346", "X"] :
     ["ppt", "pptx", "odp"].includes(ext) ? ["#d24726", "P"] :
     ["#8a8a8a", (ext.slice(0, 3) || "?").toUpperCase()];
+  return { color, label };
+}
+
+// Office type badge. UPLOAD-state fallback only (an office INPUT file has no
+// renderable first page). Result-state previews render the input PDF's first
+// page with a small corner tag instead (workflow-engine-components), so this
+// large frame no longer appears on result cards. 160×120 per Joe 2026-07-03.
+export function OfficeFallback({ name }: { name: string }) {
+  const { color, label } = officeTypeOf(name);
   return (
     <div
       style={{ width: "160px", height: "120px", color, backgroundColor: `${color}18` }}

@@ -12,6 +12,7 @@ import { LAYOUT } from "@/lib/layout-constants";
 import { dropzoneVisual } from "@/components/design";
 import type { AuthoredLocale } from "@/lib/i18n";
 import { LegalWorkspaceBanner } from "@/components/LegalWorkspaceBanner";
+import { WorkArea } from "@/components/WorkArea";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 
 type ChangeCard = {
@@ -38,7 +39,7 @@ const STR: Record<AuthoredLocale, {
   exportBtn: string; noDiffs: string; tipLabel: string; disclaimer: string;
   additions: string; deletions: string;
   sev: Record<string, string>; dir: Record<string, string>; pairsCapped: string;
-  backBtn: string; resetBtn: string; genericError: string; pageOne: string;
+  backBtn: string; resetBtn: string; clearFiles: string; genericError: string; pageOne: string;
 }> = {
   en: {
     title: "Contract Review", sub: "Upload two versions of a contract to see what changed — then get an AI explanation of each change and why it matters.",
@@ -51,7 +52,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "High Risk", medium: "Medium", low: "Low" },
     dir: { added: "Added", removed: "Removed", modified: "Modified" },
     pairsCapped: "Analysis covers the first 40 changes.",
-    backBtn: "← Back", resetBtn: "↩ Reset", genericError: "Something went wrong. Please try again.", pageOne: "Page 1",
+    backBtn: "← Back", resetBtn: "↩ Reset", clearFiles: "Clear files", genericError: "Something went wrong. Please try again.", pageOne: "Page 1",
   },
   zh: {
     title: "合同版本对比", sub: "上传合同的两个版本，查看改动内容——并获取 AI 对每条改动及其影响的解析。",
@@ -64,7 +65,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "高风险", medium: "中等", low: "低" },
     dir: { added: "新增", removed: "删除", modified: "修改" },
     pairsCapped: "分析涵盖最多 40 处改动。",
-    backBtn: "← 返回", resetBtn: "↩ 重置", genericError: "操作失败，请重试。", pageOne: "第 1 页",
+    backBtn: "← 返回", resetBtn: "↩ 重置", clearFiles: "清空文件", genericError: "操作失败，请重试。", pageOne: "第 1 页",
   },
   es: {
     title: "Revisión de contratos", sub: "Sube dos versiones de un contrato para ver qué cambió — luego obtén una explicación de IA de cada cambio.",
@@ -77,7 +78,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Alto riesgo", medium: "Medio", low: "Bajo" },
     dir: { added: "Añadido", removed: "Eliminado", modified: "Modificado" },
     pairsCapped: "El análisis cubre hasta 40 cambios.",
-    backBtn: "← Volver", resetBtn: "↩ Restablecer", genericError: "Algo salió mal. Inténtalo de nuevo.", pageOne: "Página 1",
+    backBtn: "← Volver", resetBtn: "↩ Restablecer", clearFiles: "Borrar archivos", genericError: "Algo salió mal. Inténtalo de nuevo.", pageOne: "Página 1",
   },
   pt: {
     title: "Revisão de contratos", sub: "Carregue duas versões de um contrato para ver o que mudou — e obtenha uma explicação de IA para cada alteração.",
@@ -90,7 +91,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Alto risco", medium: "Médio", low: "Baixo" },
     dir: { added: "Adicionado", removed: "Removido", modified: "Modificado" },
     pairsCapped: "A análise cobre até 40 alterações.",
-    backBtn: "← Voltar", resetBtn: "↩ Redefinir", genericError: "Algo deu errado. Tente novamente.", pageOne: "Página 1",
+    backBtn: "← Voltar", resetBtn: "↩ Redefinir", clearFiles: "Limpar arquivos", genericError: "Algo deu errado. Tente novamente.", pageOne: "Página 1",
   },
   fr: {
     title: "Révision de contrats", sub: "Téléchargez deux versions d'un contrat pour voir ce qui a changé — puis obtenez une explication IA de chaque modification.",
@@ -103,7 +104,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Risque élevé", medium: "Moyen", low: "Faible" },
     dir: { added: "Ajouté", removed: "Supprimé", modified: "Modifié" },
     pairsCapped: "L'analyse couvre jusqu'à 40 modifications.",
-    backBtn: "← Retour", resetBtn: "↩ Réinitialiser", genericError: "Une erreur est survenue. Veuillez réessayer.", pageOne: "Page 1",
+    backBtn: "← Retour", resetBtn: "↩ Réinitialiser", clearFiles: "Vider la liste", genericError: "Une erreur est survenue. Veuillez réessayer.", pageOne: "Page 1",
   },
   ja: {
     title: "契約書バージョン比較", sub: "契約書の2つのバージョンをアップロードして変更点を確認し、各変更の影響をAIで解説します。",
@@ -116,7 +117,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "高リスク", medium: "中程度", low: "低" },
     dir: { added: "追加", removed: "削除", modified: "変更" },
     pairsCapped: "最大40件の変更を分析します。",
-    backBtn: "← 戻る", resetBtn: "↩ リセット", genericError: "エラーが発生しました。もう一度お試しください。", pageOne: "1ページ目",
+    backBtn: "← 戻る", resetBtn: "↩ リセット", clearFiles: "ファイルをクリア", genericError: "エラーが発生しました。もう一度お試しください。", pageOne: "1ページ目",
   },
   de: {
     title: "Vertragsversionsvergleich", sub: "Laden Sie zwei Vertragsversionen hoch, um Änderungen zu sehen — und erhalten Sie KI-Erklärungen zu jeder Änderung.",
@@ -129,7 +130,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "Hohes Risiko", medium: "Mittel", low: "Niedrig" },
     dir: { added: "Hinzugefügt", removed: "Entfernt", modified: "Geändert" },
     pairsCapped: "Die Analyse umfasst bis zu 40 Änderungen.",
-    backBtn: "← Zurück", resetBtn: "↩ Zurücksetzen", genericError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.", pageOne: "Seite 1",
+    backBtn: "← Zurück", resetBtn: "↩ Zurücksetzen", clearFiles: "Liste leeren", genericError: "Etwas ist schiefgelaufen. Bitte erneut versuchen.", pageOne: "Seite 1",
   },
   ko: {
     title: "계약서 버전 비교", sub: "계약서의 두 버전을 업로드하여 변경된 내용을 확인하고 AI로 각 변경의 의미를 파악하세요.",
@@ -142,7 +143,7 @@ const STR: Record<AuthoredLocale, {
     sev: { high: "고위험", medium: "중간", low: "낮음" },
     dir: { added: "추가됨", removed: "삭제됨", modified: "변경됨" },
     pairsCapped: "최대 40개 변경 사항을 분석합니다.",
-    backBtn: "← 뒤로", resetBtn: "↩ 초기화", genericError: "오류가 발생했습니다. 다시 시도해 주세요.", pageOne: "1페이지",
+    backBtn: "← 뒤로", resetBtn: "↩ 초기화", clearFiles: "파일 비우기", genericError: "오류가 발생했습니다. 다시 시도해 주세요.", pageOne: "1페이지",
   },
 };
 
@@ -175,14 +176,16 @@ function FileSlot({
   inputRef: React.RefObject<HTMLInputElement | null>; disabled?: boolean; altThumb?: string;
 }) {
   const [thumb, setThumb] = useState<string | null>(null);
+  const [pages, setPages] = useState<number | null>(null);
   useEffect(() => {
-    if (!file) { setThumb(null); return; }
+    if (!file) { setThumb(null); setPages(null); return; }
     let cancelled = false;
     (async () => {
       try {
         const pdfjs = await import("pdfjs-dist");
         pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
         const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+        if (!cancelled) setPages(doc.numPages);
         const page = await doc.getPage(1);
         const vp = page.getViewport({ scale: 0.4 });
         const canvas = document.createElement("canvas");
@@ -215,14 +218,21 @@ function FileSlot({
         onChange={(e) => { const f = e.target.files?.[0]; if (f) onFile(f); }}
       />
       {file ? (
-        <div className="flex items-start gap-3 text-left" onClick={(e) => e.stopPropagation()}>
-          {thumb && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={thumb} alt={altThumb ?? "Page 1"} className="block shrink-0 rounded border border-[color:var(--line)] object-contain" style={{ maxHeight: "180px", maxWidth: "180px" }} />
-          )}
-          <div className="min-w-0">
-            <p className="truncate text-[13px] font-medium text-[color:var(--foreground)]">{file.name}</p>
-            <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+        /* Preview-card standard: square contain frame on a neutral ground,
+           name · size · pages stacked BELOW the image (was a small thumb
+           with text beside it). Clicking still swaps the file. */
+        <div className="flex w-full flex-col items-center gap-2">
+          <div className="flex aspect-square w-full max-w-[220px] items-center justify-center overflow-hidden rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
+            {thumb && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={thumb} alt={altThumb ?? "Page 1"} className="max-h-full max-w-full object-contain" />
+            )}
+          </div>
+          <div className="min-w-0 text-center">
+            <p className="max-w-[220px] truncate text-[13px] font-medium text-[color:var(--foreground)]">{file.name}</p>
+            <p className="mt-0.5 text-[11px] text-[color:var(--faint)]">
+              {(file.size / 1024 / 1024).toFixed(2)} MB{pages != null ? ` · ${pages}p` : ""}
+            </p>
           </div>
         </div>
       ) : (
@@ -360,18 +370,43 @@ export function ContractReviewClient() {
 
       <LegalWorkspaceBanner />
 
-      {/* Upload row */}
+      {/* Upload work area — revised slot standard: clear-files by the count
+          side (left), primary CTA on the right. Analysis/result regions below
+          are untouched (AI-shell batch owns those). */}
       {phase === "idle" && (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <p className="mb-2 text-[12px] font-semibold text-[color:var(--muted)]">{T(s.v1)}</p>
-            <FileSlot label={T(s.drop)} file={fileA} onFile={setFileA} dragging={dragA} {...makeDragHandlers("a")} inputRef={refA} altThumb={T(s.pageOne)} />
+        <WorkArea
+          left={
+            <button
+              type="button"
+              onClick={() => { setFileA(null); setFileB(null); setError(""); }}
+              disabled={!fileA && !fileB}
+              className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)] disabled:opacity-35 disabled:hover:border-[color:var(--line)]"
+            >
+              {T(s.clearFiles)}
+            </button>
+          }
+          right={
+            <button
+              type="button"
+              disabled={!ready}
+              onClick={handleCompare}
+              className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-[color:var(--on-accent)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {T(s.compareBtn)}
+            </button>
+          }
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <p className="mb-2 text-[12px] font-semibold text-[color:var(--muted)]">{T(s.v1)}</p>
+              <FileSlot label={T(s.drop)} file={fileA} onFile={setFileA} dragging={dragA} {...makeDragHandlers("a")} inputRef={refA} altThumb={T(s.pageOne)} />
+            </div>
+            <div>
+              <p className="mb-2 text-[12px] font-semibold text-[color:var(--muted)]">{T(s.v2)}</p>
+              <FileSlot label={T(s.drop)} file={fileB} onFile={setFileB} dragging={dragB} {...makeDragHandlers("b")} inputRef={refB} altThumb={T(s.pageOne)} />
+            </div>
           </div>
-          <div>
-            <p className="mb-2 text-[12px] font-semibold text-[color:var(--muted)]">{T(s.v2)}</p>
-            <FileSlot label={T(s.drop)} file={fileB} onFile={setFileB} dragging={dragB} {...makeDragHandlers("b")} inputRef={refB} altThumb={T(s.pageOne)} />
-          </div>
-        </div>
+        </WorkArea>
       )}
 
       {/* Show file names + reset in non-idle phases */}
@@ -392,17 +427,6 @@ export function ContractReviewClient() {
             </button>
           )}
         </div>
-      )}
-
-      {/* Compare button */}
-      {phase === "idle" && (
-        <button
-          disabled={!ready}
-          onClick={handleCompare}
-          className="mt-6 rounded-lg bg-[color:var(--accent)] px-5 py-2.5 text-[14px] font-medium text-[color:var(--on-accent)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          {T(s.compareBtn)}
-        </button>
       )}
 
       {/* Comparing spinner */}

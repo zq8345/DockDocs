@@ -416,16 +416,16 @@ export function BatchCompressClient({ locale = "en", embedded = false }: { local
           left={
             <>
               <p className="text-[14px] font-semibold text-[color:var(--foreground)]">{t.files(items.length, maxFiles)}</p>
+              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
+            </>
+          }
+          right={
+            <>
               <div className="inline-flex rounded-[var(--radius)] border border-[color:var(--line)] p-0.5">
                 {levels.map((lv) => (
                   <button key={lv} type="button" onClick={() => setLevel(lv)} className={`rounded-[var(--radius-sm)] px-3 py-1.5 text-[12.5px] font-medium transition ${level === lv ? "bg-[color:var(--accent)] text-white" : "text-[color:var(--muted)]"}`}>{t[lv]}</button>
                 ))}
               </div>
-            </>
-          }
-          right={
-            <>
-              <button type="button" onClick={reset} className="rounded-[var(--radius)] border border-[color:var(--line)] px-4 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]">{t.reset}</button>
               {phase === "done" ? (
                 <button type="button" onClick={download} className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90">{t.download}{totalSaved > 0 ? ` · ${t.totalSaved(totalSaved)}` : ""}</button>
               ) : (
