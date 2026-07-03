@@ -102,7 +102,7 @@ const homeSchema = {
           name: "What PDF tools does DockDocs offer?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "DockDocs offers ~50 PDF tools: Compress PDF, Merge PDF, Split PDF, PDF to Word, Word to PDF, JPG to PDF, PDF to JPG, OCR PDF, Chat with PDF, AI Summary, Protect PDF, Unlock PDF, Sign PDF, Edit PDF, Translate PDF, and more.",
+            text: "DockDocs offers ~50 PDF tools: Compress PDF, Merge PDF, Split PDF, PDF to Word, Word to PDF, JPG to PDF, PDF to JPG, OCR PDF, Chat with PDF, AI Summary, Protect PDF, Unlock PDF, Sign PDF, and more.",
           },
         },
         {
@@ -148,9 +148,7 @@ const homeSchema = {
         { "@type": "ListItem", position: 10, name: "PDF to JPG", url: `${siteUrl}/pdf-to-jpg/` },
         { "@type": "ListItem", position: 11, name: "Protect PDF", url: `${siteUrl}/protect-pdf/` },
         { "@type": "ListItem", position: 12, name: "Sign PDF", url: `${siteUrl}/sign-pdf/` },
-        { "@type": "ListItem", position: 13, name: "Edit PDF", url: `${siteUrl}/edit-pdf/` },
-        { "@type": "ListItem", position: 14, name: "Translate PDF", url: `${siteUrl}/translate-pdf/` },
-        { "@type": "ListItem", position: 15, name: "Unlock PDF", url: `${siteUrl}/unlock-pdf/` },
+        { "@type": "ListItem", position: 13, name: "Unlock PDF", url: `${siteUrl}/unlock-pdf/` },
       ],
     },
   ],

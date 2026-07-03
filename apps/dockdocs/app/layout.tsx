@@ -57,7 +57,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
               var lang = (navigator.language || '').toLowerCase();
               var path = window.location.pathname;
               var seg = path.split('/').filter(Boolean)[0];
-              var hasPrefix = ['en','zh','ja','ko','es','fr','de','pt','it','ru','ar','hi'].includes(seg);
+              var hasPrefix = ['en','zh','zh-hant','ja','ko','es','fr','de','pt','it','ru','ar','hi'].includes(seg);
               // Standalone English-only routes (GEO pages + the PWA offline fallback) have no
               // /zh/<slug> variant — redirecting them would 404 (and /offline would loop while
               // offline). Single source: standaloneRoutes in lib/standalone-routes.ts.
