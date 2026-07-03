@@ -402,7 +402,7 @@ export function BatchPdfToOfficeClient({ locale = "en", target, embedded = false
               <button
                 type="button"
                 onClick={() => inputRef.current?.click()}
-                className="flex aspect-square flex-col items-center justify-center gap-1.5 rounded-[var(--radius)] border-2 border-dashed border-[color:var(--line)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+                className="flex min-h-[240px] flex-col items-center justify-center gap-1.5 rounded-[var(--radius)] border-2 border-dashed border-[color:var(--line)] text-[color:var(--muted)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
               >
                 <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                   <path d="M12 5v14M5 12h14" />
