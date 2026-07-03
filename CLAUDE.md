@@ -25,7 +25,7 @@
 - max-w-6xl on all pages, centered layout
 - No sidebar nav, top nav only with hover dropdowns (group-hover + pt-2 bridge)
 - Language switcher uses useRouter().push() — SPA navigation, no page reload
-- 12 UI languages (en/zh/ja/ko/es/fr/de/pt/it/ru/ar/hi), only en/zh have full content
+- 9 routed locales (en/zh/zh-Hant/ja/ko/es/fr/de/pt); en/zh full content, es/pt/fr/ja/de native tool+marketing copy, zh-Hant OpenCC-derived, ko foundation-phase. it/ru/ar/hi are DEAD labels in lib/i18n.ts (no routes, not in switcher) pending cleanup — never claim "12 languages" anywhere user-facing.
 - Consolidated ☰ menu items each carry a consistent outline icon (16px, stroke 1.5, currentColor — Joe 2026-06-25); the category nav hover-dropdowns stay icon-free. RelatedTools cross-links ARE standard and wanted: `relatedTools`/`readingLinks` sections (AI clients) + IndexingLinks/articleLinks (tool template) cross-link contextually, and `geo-qa-check` REQUIRES `relatedTools` per page. (Joe 2026-06-29: contextual cross-linking is necessary for SEO/navigation — NOT avoided; this corrects the earlier stale "no cross-links" note.)
 
 ## Tool Pages
@@ -50,25 +50,37 @@
 - MSYS paths like /c/Users/... work in bash, NEVER use in write_file
 
 ## Multi-window collaboration (CRITICAL — read before any git op)
-Joe runs several Claude windows in PARALLEL on this SAME repo + working tree at once. **Collaboration model = shared working tree + discipline (CONFIRMED 2026-06-17 — this is the model in use; do NOT assume git-worktree isolation).**
+Joe runs several Claude windows in PARALLEL on this SAME repo + working tree at once. **Collaboration model = shared working tree + discipline (do NOT assume git-worktree isolation).**
 
-> **⭐ LEAN MODEL (Joe, 2026-06-17 — supersedes any "5-minute patrol / keep all windows busy" approach):** Run **总调度 (1 cockpit) + AT MOST 2 execution windows running CONCURRENTLY — never more.** **⭐ SHIFT MODEL v2 (Joe 2026-06-18 — divide by CONFIRMATION-NEED, NOT by window):** DAY (attended) = work that needs Joe's confirmation (payment/gating, features, brand·privacy·claims copy, new-locale quality, strategic decisions, + 总调度 reviews/merges the night's output). NIGHT (unattended) = ONLY pre-vetted confirmation-FREE work: audits/analysis/research (read-only → deliverable packages), mechanical low-risk (refactor / tests / technical-SEO / 补译 of already-approved strings / perf), data/monitoring. **Groom the night-queue during the DAY; empty queue → NO night shift (never manufacture busywork).** Tasks carry `shift`(day/night) + `cadence`(continuous/phased/temporary) in the backlog → the console renders the live 排班表 (任务中心). (Supersedes the old by-window "DAY=功能+测试 / NIGHT=多语言+SEO" baseline — windows are a resource not an obligation; flex active count by real work per bucket. See [[dockdocs-nightshift-v2]].)** So at most **2 writers** touch the shared tree at once (day: 1 writer 功能 + read-only 测试; night: 2 writers 多语言+SEO). **控制台 (separate dock-console repo) = ON-DEMAND**, not a standing/patrolled window. **Ad-hoc/临时任务 from Joe take PRIORITY over the standing plan** — when one is inserted, do it first, then revert to the baseline shifts. (Today's console upgrade + the GEO low-quality-content emergency were such inserts; they temporarily pulled SEO/控制台 into daytime — NOT the norm.) **NO timer-based window patrol.** Coordination is **EVENT-DRIVEN**: an execution window reports done → 总调度 reviews + pushes; Joe sets priorities. For verification/research, 总调度 self-`curl`s the static-export HTML or spawns a SINGLE agent — NEVER a wide parallel agent fan-out (a 6-wide fan-out tripped server-side rate-limiting / 风控 on 2026-06-17). Rationale: fewer concurrent windows/agents = no request bursts = no throttle, far less babysitting.
-- **总调度 (orchestration)** — planning, scheduling, fuzzy tasks, and integration arbiter (owns conflict calls on shared files).
-- **功能开发 (features)** — new features / PRO-exclusive tools.
-- **SEO-GEO** — SEO/GEO optimization (JSON-LD, sitemap, metadata). **Night-shift lane** (paired with 多语言).
-- **多语言 (locales)** — adding/maintaining locales + language polish. **Night-shift lane** (paired with SEO-GEO at night).
-- **控制台** — works in a SEPARATE repo (dock-console) → zero conflict with this repo. **ON-DEMAND** (open when console/metrics work is needed; not a standing/patrolled window).
-- **测试验收** — read-only browser testing → zero write conflict. **DAY-shift verifier** (pairs with 功能 in the day); 总调度 can also self-curl the static-export HTML for quick string/metadata checks.
+> **⭐ 8-WINDOW CHARTER (Joe, 2026-07-03 — supersedes the older 6-window/LEAN wording; the operational rules below it remain in force):**
 
-The first four share ONE working tree, so another window's UNCOMMITTED edits show up in your `git status`. Hard rules every window MUST follow:
+**The 8 windows and their mandates:**
+1. **总调度 (cockpit)** — 战略思考、市场/技术调研、任务拆解、成果验收(核代码不核报告)、集成与推送闸。**派发完立即把窗口空出来**;绝不做长同步编码。
+2. **客户端** (was "Desktop") — Windows/macOS/iOS/Android 客户端。**ON-DEMAND 待命**:排期在 ZetaOffice 之后(PWA 覆盖近期),没派单不自找活。
+3. **开发** (was "功能开发") — 功能开发、bug 修复、技术问题。
+4. **多语言** — 多语言覆盖与修复、locale 质量。
+5. **运营** (was "SEO-GEO") — **SEO/GEO + 分发/增长执行**(目录提交、社区、MCP、外链渠道):排名与转化是一体的,分发是 Joe 的 #1 焦虑,归这个窗。
+6. **控制台** — SEPARATE repo (dock-console),数据驱动决策。**ON-DEMAND** + **每周一数据巡检**:拉 umami/GSC → 总调度出周报 → Joe 调排期(没有节奏,"数据驱动"就是空话)。
+7. **测试** — 内部测试与验收:持续、上线前后、真机、按验收清单。**只读**。
+8. **独立审计** — 第三方视角全局审计:**里程碑触发**(大项目完成后/大架构变动前),对抗式、不信内部报告。**只读**。⚠️ 其产出必须经总调度**逐条对代码核实后才派活**——2026-07-02 的 45 条审计有 4 条误报/6 条夸大(根因:漏查 postbuild scripts/ 与 netlify/edge-functions/ 两层缓解面);逐条核实是流程本体,不是不信任。
+
+**写权限三档(钉死):**
+- **写窗**(开发/多语言/运营):共享树纪律;白天低风险直推、高风险/对外内容 worktree 等审;**开工第一步必须 `git fetch` 并以最新 origin/master 为基线,报告注明基线 hash**(2026-07-02 两次旧基线事故)。**需要分支时必须用独立 worktree(EnterWorktree)——⚠️绝对禁止在共享树上 `git switch`/`checkout` 切分支:共享一个工作树,你一切,其它窗口全被拽到你的分支上作业(2026-07-03 开发窗被拽进 blog-batch3-fix 实证)。低风险小改动直接在共享树 master 上做即可,不必开分支。**
+- **只读窗**(测试/独立审计):绝不做任何 git 写操作。
+- **独立 repo 窗**(客户端/控制台):零冲突,自管。
+- **总调度 = 唯一集成闸**:审、cherry-pick、推;push-gate 永远是物理独立的一步。
+
+**并发上限:总调度 + 同时最多 2~3 个执行窗。** 8 窗是编制不是义务——窗口是资源,没活就空着,绝不造活(宁缺毋滥同样适用于任务)。**Ad-hoc/临时任务 from Joe take PRIORITY** — do it first, then revert. **NO timer-based patrol** — coordination is EVENT-DRIVEN: 执行窗报完工 → 总调度审+推;Joe 定优先级。日/夜班按"是否需要 Joe 确认"划分(夜班=commit-local 静默,见 Operating modes)。For verification/research, 总调度 self-`curl`s or spawns a SINGLE agent — NEVER a wide parallel fan-out (6-wide tripped 风控 2026-06-17).
+
+总调度+开发/多语言/运营 share ONE working tree, so another window's UNCOMMITTED edits show up in your `git status`. Hard rules every window MUST follow:
 - **Only `git add <your specific files>`** — NEVER `git add -A` / `git commit -a` / `git add .` (you'd commit another window's half-finished work).
 - **Finish a small change fast → `git pull --rebase` → rebuild → commit.** Never hoard uncommitted edits; a clean tree is what keeps the other windows unblocked (highest-leverage rule). **Whether you then PUSH depends on mode + risk — see "Operating modes" below** (day low-risk = commit + push; high-risk + ALL night work = commit-local only, 总调度 reviews & merges).
 - **NEVER `git reset --hard` / `git restore .` / `git checkout -- .` / `git clean`** — they destroy other windows' uncommitted work. The ONLY safe discard is `git restore apps/dockdocs/tsconfig.tsbuildinfo` (build cache).
 - A green build may include another window's in-flight edits (shared tree); your COMMIT is still clean as long as you staged only your own files.
-- **Shared hot files** — `lib/i18n.ts`, `components/Header.tsx`, `components/ToolFaq.tsx`, `components/Footer.tsx`, `app/[locale]/[[...slug]]/page.tsx`: 功能开发 owns tool-registration edits; 多语言 owns locale/copy/localized-tools edits. Before editing a shared file outside your lane, check in via the 总调度 window.
+- **Shared hot files** — `lib/i18n.ts`, `components/Header.tsx`, `components/ToolFaq.tsx`, `components/Footer.tsx`, `app/[locale]/[[...slug]]/page.tsx`: 开发 owns tool-registration edits; 多语言 owns locale/copy/localized-tools edits. Before editing a shared file outside your lane, check in via the 总调度 window. ⚠️ Type-coupled changes (e.g. removing a routeSlug + its routes.ts/tier-config references) MUST land in ONE atomic commit by ONE window — splitting them across windows breaks the shared tree's tsc for everyone (2026-07-02 incident).
 - Netlify cancels superseded deploys when two windows push close together — harmless; the final master HEAD always deploys. Never force-push to "fix" it.
 - **Concurrent builds corrupt the shared `.next`.** All four windows share one `apps/dockdocs/.next`. Two `npm run build` running at once make the later one fail at "Collecting build traces" with `ENOENT …/*.nft.json` — this is NOT a code error. Fix: just re-run the build (do NOT `rm -rf .next`). Best: don't build at the same moment as another window.
-- **Task source per lane** (each window pulls its OWN lane's work from the shared backlog at `C:\Users\47203\Documents\dockdocs-backlog.json`): 功能开发 → `feat-*` / `vert-*` / `nf-*` / `batch-*` build tasks; SEO-GEO → `seo-*` / sitemap / JSON-LD / metadata; 多语言 → locale / copy / i18n tasks; 控制台 → the dock-console repo; 测试验收 → verify `status: review` items and report bugs. 总调度 plans, assigns, and arbitrates. Before grabbing a task outside your lane, check via the 总调度 window — and before building a NEW tool, search other sessions / the backlog so two windows don't build the same thing (e.g. contract-risk was almost duplicated as contract-risk-check).
+- **Task source per lane** (each window pulls its OWN lane's work from the shared backlog at `C:\Users\47203\Documents\dockdocs-backlog.json`): 开发 → `feat-*` / `vert-*` / `nf-*` / `batch-*` build tasks; 运营 → `seo-*` / sitemap / JSON-LD / metadata / 分发渠道; 多语言 → locale / copy / i18n tasks; 控制台 → the dock-console repo; 测试 → verify `status: review` items and report bugs. 总调度 plans, assigns, and arbitrates. Before grabbing a task outside your lane, check via the 总调度 window — and before building a NEW tool, search other sessions / the backlog so two windows don't build the same thing (e.g. contract-risk was almost duplicated as contract-risk-check).
 
 ### Operating modes (day vs night) — governs PUSH & REPORTING
 Two modes; pick by whether Joe is at the window + the change's risk. (Added 2026-06-17 to resolve the day-vs-night contradiction that caused the popup storm + the "push immediately vs commit-local" clash.)
