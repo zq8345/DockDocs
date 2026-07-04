@@ -73,5 +73,11 @@
 # 2026-07-02 hardening deploy clobbered it → analytics TLS was down ~2 days
 # (fixed 2026-07-04). Repo file = the only source of truth.
 analytics.dockdocs.app {
+	# Keep the analytics dashboard out of Google. robots.txt must ALLOW crawling
+	# (status-only respond = empty 200 = allow-all) so crawlers can actually SEE
+	# the X-Robots-Tag — umami's own robots.txt Disallow made Google index the
+	# bare URL anyway (GSC "indexed though blocked by robots.txt", 2026-06-30).
+	header X-Robots-Tag "noindex, nofollow"
+	respond /robots.txt 200
 	reverse_proxy umami:3000
 }
