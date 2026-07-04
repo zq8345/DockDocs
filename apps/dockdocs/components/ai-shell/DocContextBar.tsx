@@ -20,6 +20,7 @@ export function DocContextBar({
   resetLabel,
   actions,
   disabled = false,
+  bare = false,
 }: {
   fileName: string;
   /** Secondary line, consumer-formatted (e.g. "12 p · 2.4 MB"). */
@@ -35,9 +36,14 @@ export function DocContextBar({
   /** Tool-specific extra actions (right side). */
   actions?: React.ReactNode;
   disabled?: boolean;
+  /** Panel-header mode: no own chrome (border/rounding/bg/margins) — the
+      surrounding container (e.g. the page-rail panel head) provides it. */
+  bare?: boolean;
 }) {
   return (
-    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
+    <div className={bare
+      ? "flex flex-wrap items-center justify-between gap-3"
+      : "mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3"}>
       <div className="min-w-0">
         <div className="flex items-center gap-2">
           <p className="truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileName}</p>

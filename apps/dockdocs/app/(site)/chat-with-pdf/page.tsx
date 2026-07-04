@@ -82,8 +82,9 @@ export default function ChatWithPdfPage() {
   return (
     <main className="bg-[color:var(--surface)]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA) }} />
-      {/* 布局 v2: AI workspace pages run at the WorkArea width (appShell). */}
-      <div className={`mx-auto ${LAYOUT.appShell} px-5 pb-12 pt-12 sm:px-6 sm:pt-16`}>
+      {/* Joe 裁定 2026-07-04: ALL tool pages share one width — LAYOUT.content;
+          the v2 two-column layout lives inside it. */}
+      <div className={`mx-auto ${LAYOUT.content} px-5 pb-12 pt-12 sm:px-6 sm:pt-16`}>
         {/* Breadcrumb */}
         <div className="mb-6 flex items-center gap-2 text-xs text-[color:var(--muted)]">
           <a href="/" className="transition hover:text-[color:var(--foreground)]">DockDocs</a>

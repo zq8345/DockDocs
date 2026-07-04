@@ -200,16 +200,32 @@ export function AiToolShell({
     <div data-ai-shell-mode={mode} data-ai-shell-status={status} data-ai-shell-panel={docPanel ? docPanelMode : undefined} className="contents">
       {docIntake}
       {docPanel && docPanelMode === "page-rail" ? (
-        <>
-          {/* WorkArea toolbar order: file info / clear on the left, primary CTA
-              on the right — full width, above the 50/50 split. */}
-          {contextBar}
+        /* One WorkArea panel, not floating pieces (Joe): toolbar = panel head
+           (file info / clear left, primary CTA right), preview/results = panel
+           body. ready = centered preview column; working/result = 50/50.
+           NOTE: no overflow-hidden on the panel — it would kill the rail's
+           sticky positioning. */
+        <div className="mt-4 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]">
+          {contextBar ? (
+            <div className="border-b border-[color:var(--line)] px-4 py-3">{contextBar}</div>
+          ) : null}
           {actionRegion}
-          <div className="mt-4 md:grid md:grid-cols-2 md:items-start md:gap-6">
-            <div className="md:sticky md:top-4 md:max-h-[calc(100vh-2rem)] md:overflow-y-auto">{docPanel}</div>
-            <div className="mt-4 min-w-0 md:mt-0">{resultRegion}</div>
+          <div className="p-4 sm:p-5">
+            {status === "ready" ? (
+              <>
+                <div className="mx-auto max-w-xl">{docPanel}</div>
+                {resultRegion}
+              </>
+            ) : (
+              /* Natural flow on BOTH halves — no inner scroll boxes (Joe:
+                 小滚动区滚长文档太痛苦); unequal column heights are expected. */
+              <div className="md:grid md:grid-cols-2 md:items-start md:gap-6">
+                <div className="min-w-0">{docPanel}</div>
+                <div className="mt-4 min-w-0 md:mt-0">{resultRegion}</div>
+              </div>
+            )}
           </div>
-        </>
+        </div>
       ) : docPanel ? (
         <div className="mt-6 md:grid md:grid-cols-[280px_minmax(0,1fr)] md:items-start md:gap-6">
           <div className="md:sticky md:top-4">{docPanel}</div>

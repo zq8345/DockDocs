@@ -442,17 +442,21 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
       );
 
       // First-page thumbnail for the v2 left preview panel — non-critical,
-      // the panel falls back to a PDF badge if rendering fails.
+      // the panel falls back to a PDF badge if rendering fails. Rendered at
+      // the card's display size × devicePixelRatio (预览必须真实可读), never a
+      // fixed low scale stretched up.
       try {
         const firstPage = await pdf.getPage(1);
-        const viewport = firstPage.getViewport({ scale: 0.5 });
+        const baseViewport = firstPage.getViewport({ scale: 1 });
+        const targetWidth = 280 * Math.min(window.devicePixelRatio || 1, 2);
+        const viewport = firstPage.getViewport({ scale: Math.min(targetWidth / baseViewport.width, 2.5) });
         const canvas = document.createElement("canvas");
         canvas.width = viewport.width;
         canvas.height = viewport.height;
         const ctx = canvas.getContext("2d");
         if (ctx) {
           await firstPage.render({ canvas, canvasContext: ctx, viewport }).promise;
-          setDocThumb(canvas.toDataURL("image/jpeg", 0.7));
+          setDocThumb(canvas.toDataURL("image/jpeg", 0.72));
         }
       } catch {
         /* keep badge fallback */

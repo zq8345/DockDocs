@@ -607,7 +607,6 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const [pages, setPages] = useState(0);
   const [risks, setRisks] = useState<Risk[] | null>(null);
   const [coverage, setCoverage] = useState<Coverage | null>(null);
-  const [flashIdx, setFlashIdx] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [limitHit, setLimitHit] = useState<number | null>(null);
   const [contractType, setContractType] = useState<ContractTypeInfo | null>(null);
@@ -617,7 +616,9 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const [progressStep, setProgressStep] = useState<string>("");
   const [analyzeProgress, setAnalyzeProgress] = useState(0);
   const [previewRisks, setPreviewRisks] = useState<Risk[]>([]);
+  const [flashIdx, setFlashIdx] = useState<number | null>(null);
   const repickRef = useRef<HTMLInputElement | null>(null);
+  const thumbRunRef = useRef(0);
 
   useEffect(() => {
     const s = legalCtx?.session;
@@ -679,6 +680,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   }, []);
 
   const reset = () => {
+    thumbRunRef.current += 1; // stop any in-flight progressive thumbnail run
     setPhase("idle");
     setFileName("");
     setText("");
@@ -745,6 +747,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const onFile = useCallback(
     async (file: File) => {
       if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
+      thumbRunRef.current += 1; // invalidate any previous progressive render
       setError(null);
       setRisks(null);
       setLimitHit(null);
@@ -757,44 +760,58 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
         const data = new Uint8Array(await file.arrayBuffer());
         const doc = await pdfjs.getDocument({ data }).promise;
-        let out = "";
+        let assembled = "";
         for (let i = 1; i <= doc.numPages; i++) {
           const page = await doc.getPage(i);
           const content = await page.getTextContent();
-          out += content.items.map((it) => ("str" in it ? it.str : "")).join(" ") + "\n\n";
+          const pageText = content.items
+            .map((it) => ("str" in it ? it.str : ""))
+            .join(" ")
+            .replace(/[ \t]+/g, " ")
+            .trim();
+          assembled += pageText + "\n\n";
         }
-        const trimmed = out.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
+        const trimmed = assembled.trim();
         setPages(doc.numPages);
 
-        // Render page thumbnails (up to 20 pages) for the two-column results view.
-        const pageLimit = Math.min(doc.numPages, 20);
-        const urls: string[] = [];
-        for (let i = 1; i <= pageLimit; i++) {
-          try {
-            const pg = await doc.getPage(i);
-            const vp = pg.getViewport({ scale: 0.35 });
-            const canvas = document.createElement("canvas");
-            canvas.width = vp.width;
-            canvas.height = vp.height;
-            const ctx = canvas.getContext("2d");
-            if (ctx) {
-              await pg.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
-              urls.push(canvas.toDataURL("image/jpeg", 0.65));
-            }
-          } catch { /* individual page render failure is non-fatal */ }
-        }
-        if (urls.length > 0) {
-          setPageDataUrls(urls);
-        }
-
-        try { doc.destroy(); } catch { /* ignore */ }
         if (!trimmed) {
+          try { doc.destroy(); } catch { /* ignore */ }
           setError(t.noText);
           setPhase("idle");
           return;
         }
         setText(trimmed);
         setPhase("ready");
+
+        // Page thumbnails render PROGRESSIVELY in the background (up to 60
+        // pages) — ready state is never blocked on rasterizing a long
+        // document, images appear in the rail one by one. Rendered at the
+        // ACTUAL display size × devicePixelRatio (预览必须真实可读), capped
+        // at 2.5× to bound memory. A re-pick invalidates the run via the ref.
+        const runId = ++thumbRunRef.current;
+        void (async () => {
+          const pageLimit = Math.min(doc.numPages, 60);
+          for (let i = 1; i <= pageLimit; i++) {
+            if (thumbRunRef.current !== runId) break;
+            try {
+              const pg = await doc.getPage(i);
+              const baseViewport = pg.getViewport({ scale: 1 });
+              const targetWidth = 620 * Math.min(window.devicePixelRatio || 1, 2);
+              const vp = pg.getViewport({ scale: Math.min(targetWidth / baseViewport.width, 2.5) });
+              const canvas = document.createElement("canvas");
+              canvas.width = vp.width;
+              canvas.height = vp.height;
+              const ctx = canvas.getContext("2d");
+              if (ctx) {
+                await pg.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
+                if (thumbRunRef.current !== runId) break;
+                const url = canvas.toDataURL("image/jpeg", 0.72);
+                setPageDataUrls((prev) => [...prev, url]);
+              }
+            } catch { /* individual page render failure is non-fatal */ }
+          }
+          try { doc.destroy(); } catch { /* ignore */ }
+        })();
       } catch (e) {
         setError(encryptedPdfMessage(e, childLocale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
         setPhase("idle");
@@ -996,7 +1013,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   };
 
   return (
-    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : `mx-auto ${LAYOUT.appShell} px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20`}>
+    <div className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : `mx-auto ${LAYOUT.content} px-5 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20`}>
       {!embedded && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />}
       {!embedded && (
         <>
@@ -1052,7 +1069,10 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         docPanelMode="page-rail"
         docPanel={
           phase !== "idle" && phase !== "extracting" && pageDataUrls.length > 0 ? (
-            <PageRail pages={pageDataUrls} />
+            <PageRail
+              pages={pageDataUrls}
+              pageLabel={(n) => t.approxPage(n).replace(/^≈\s*/, "")}
+            />
           ) : null
         }
         contextBar={
@@ -1061,6 +1081,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
                file info + clear, right = the primary CTA. */
             <>
               <DocContextBar
+                bare
                 fileName={fileName || t.choose}
                 meta={[
                   file && Math.round((file.size / 1024 / 1024) * 100) / 100 > 0
@@ -1081,7 +1102,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
                 }
               />
               <input ref={repickRef} type="file" accept="application/pdf,.pdf" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) void onFile(f); e.currentTarget.value = ""; }} />
-              <p className="mt-2 text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
+              <p className="mt-1.5 text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
             </>
           ) : null
         }
