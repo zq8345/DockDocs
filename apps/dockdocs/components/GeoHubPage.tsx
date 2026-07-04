@@ -169,7 +169,7 @@ export function GeoHubPage({
   const canonicalPath = useLocalePrefix
     ? localizedPath(locale, hub.slug)
     : `/${hub.slug}/`;
-  const schema = createGeoHubSchema(hub, locale, canonicalPath);
+  const schema = createGeoHubSchema(hub, locale, canonicalPath, useLocalePrefix);
 
   return (
     <main className="bg-[color:var(--surface)] text-[color:var(--foreground)]">
@@ -382,6 +382,7 @@ function createGeoHubSchema(
   hub: GeoHubData,
   locale: GeoLocaleInput,
   canonicalPath: string,
+  useLocalePrefix: boolean,
 ) {
   const pageUrl = absoluteUrl(canonicalPath);
   const itemList = hub.groups.flatMap((group) => group.links);
@@ -410,7 +411,9 @@ function createGeoHubSchema(
           "@type": "ListItem",
           position: index + 1,
           name: item.label,
-          url: absoluteUrl(item.href),
+          // Same treatment as the visible cards — schema URLs must match the
+          // locale the page actually links to.
+          url: absoluteUrl(localizedHref(item.href, locale, useLocalePrefix)),
         })),
       },
       {

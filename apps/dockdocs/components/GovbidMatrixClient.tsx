@@ -623,7 +623,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
       </div>
 
       {/* Limit hit */}
-      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
 
       {/* Error */}
       {error && (

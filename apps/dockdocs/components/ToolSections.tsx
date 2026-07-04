@@ -6,6 +6,7 @@
 // reading-link cards). Eyebrows + "Continue" are built-in 5-lang (zh-Hant derived)
 // to stay consistent. Single source so ~40 custom tools align without re-drift.
 import { toHant } from "@/lib/zh-hant";
+import { localizedDataHref } from "@/lib/localized-href";
 import type { RouteLocale, AuthoredCopy } from "@/lib/i18n";
 
 type Loc = RouteLocale;
@@ -92,7 +93,9 @@ export function ToolSections({ locale = "en", content }: { locale?: Loc; content
           {c.readingLinks.map((link) => (
             <a
               key={link.href}
-              href={link.href}
+              // The 26 custom clients' readingLinks data writes bare English
+              // paths in every locale variant — localize at the render point.
+              href={localizedDataHref(locale, link.href)}
               className="group rounded-[var(--radius)] border border-[color:var(--line)] bg-black/20 p-5 transition hover:-translate-y-0.5 hover:border-[color:var(--foreground)]"
             >
               <h3 className="font-normal text-[color:var(--foreground)]">{link.label}</h3>

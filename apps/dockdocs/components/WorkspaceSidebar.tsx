@@ -5,6 +5,7 @@ import { BrandMark } from "@/components/BrandMark";
 import { headerStructure, navCopy, navItemLabels } from "@/lib/header-nav";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { routeLocales, localeLabels, isRouteLocale } from "@/lib/i18n";
+import { localizedDataHref } from "@/lib/localized-href";
 import { getUser, onAuthChange, type AuthUser } from "@/lib/auth";
 import { getSubscriptionSnapshot } from "@/lib/subscription-runtime";
 
@@ -253,7 +254,7 @@ export function WorkspaceSidebar({
                             <span>{label}</span>
                           </button>
                         ) : (
-                          <a href={item.slug} className={subItemCls(isActive, false)}>
+                          <a href={localizedDataHref(locale, item.slug)} className={subItemCls(isActive, false)}>
                             <span>{label}</span>
                           </a>
                         )}
@@ -396,7 +397,7 @@ export function WorkspaceSidebar({
                           ) : (
                             <div key={item.key} className="relative">
                               <NavItemBar isActive={isActive} />
-                              <a href={item.slug} className={subItemCls(isActive, soon)}>
+                              <a href={localizedDataHref(locale, item.slug)} className={subItemCls(isActive, soon)}>
                                 <span>{label}</span>
                                 {soon && <SoonBadge />}
                               </a>

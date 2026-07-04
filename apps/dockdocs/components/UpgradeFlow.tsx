@@ -10,6 +10,7 @@ import {
 import { billingErrorCopy, type MembershipLocale } from "@/lib/membership-ui";
 import type { PaidSubscriptionPlan, BillingInterval } from "@/lib/billing-config";
 import { deepHant, toHant } from "@/lib/zh-hant";
+import { localizedPath } from "@/lib/i18n";
 import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
 
 type ConfirmState = { plan: PaidSubscriptionPlan; interval: BillingInterval; quote: UpgradeQuote };
@@ -42,7 +43,7 @@ export function useUpgradeFlow(locale: MembershipLocale): UpgradeFlow {
     console.error("[billing] upgrade failed:", code ?? "(no code)", "—", message);
     // Only a genuine auth failure should bounce to sign-in.
     if (e?.status === 401 || code === "UNAUTHORIZED" || code === "UNAUTHENTICATED") {
-      if (wsNav) { wsNav("/workspace-account"); } else if (typeof window !== "undefined") { window.location.href = "/account"; }
+      if (wsNav) { wsNav("/workspace-account"); } else if (typeof window !== "undefined") { window.location.href = localizedPath(locale, "account"); }
       return;
     }
     setError(billingErrorCopy(code, message, locale));

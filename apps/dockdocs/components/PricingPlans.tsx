@@ -651,7 +651,7 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
 
     // Genuine not-signed-in → send to sign in.
     if (e?.status === 401 || code === "UNAUTHORIZED" || code === "UNAUTHENTICATED") {
-      if (wsNav) { wsNav("/workspace-account"); } else if (typeof window !== "undefined") { window.location.href = "/account"; }
+      if (wsNav) { wsNav("/workspace-account"); } else if (typeof window !== "undefined") { window.location.href = localizedPath(locale as RouteLocale, "account"); }
       return;
     }
     // The change isn't an in-place upgrade (e.g. a downgrade) → open the portal.
@@ -696,11 +696,11 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
     try {
       const result = await startBillingTrial();
       if (result.ok || result.code === "ALREADY_PAID") {
-        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = "/account";
+        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = localizedPath(locale as RouteLocale, "account");
         return;
       }
       if (result.code === "UNAUTHENTICATED") {
-        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = "/account";
+        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = localizedPath(locale as RouteLocale, "account");
         return;
       }
       // TRIAL_USED — user already trialed; fall through to paid checkout.
@@ -721,11 +721,11 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
       if (pricingCtaKind === "upgrade") { await upgrade.beginUpgrade("PRO", inv); return; }
       const result = await startBillingTrial();
       if (result.ok || result.code === "ALREADY_PAID") {
-        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = "/account";
+        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = localizedPath(locale as RouteLocale, "account");
         return;
       }
       if (result.code === "UNAUTHENTICATED") {
-        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = "/account";
+        if (wsNav) wsNav("/workspace-account"); else if (typeof window !== "undefined") window.location.href = localizedPath(locale as RouteLocale, "account");
         return;
       }
       await createBillingCheckoutSession("PRO", inv);
@@ -975,20 +975,20 @@ export function PricingPlans({ locale = "en" }: { locale?: Locale }) {
         </div>
         <p className="mt-3 px-4 text-[11.5px] text-[color:var(--faint)]">
           {zh
-            ? <>{h("* 无限套餐遵循合理使用政策，仅用于防止异常滥用。")}<a href="/terms/" className="underline hover:text-[color:var(--muted)]">{h("查看条款")}</a></>
+            ? <>{h("* 无限套餐遵循合理使用政策，仅用于防止异常滥用。")}<a href={localizedPath(locale as RouteLocale, "terms")} className="underline hover:text-[color:var(--muted)]">{h("查看条款")}</a></>
             : locale === "es"
-            ? <>* Los planes ilimitados están sujetos a nuestra <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Política de Uso Razonable</a> para evitar abusos.</>
+            ? <>* Los planes ilimitados están sujetos a nuestra <a href={localizedPath(locale as RouteLocale, "terms")} className="underline hover:text-[color:var(--muted)]">Política de Uso Razonable</a> para evitar abusos.</>
             : locale === "pt"
-            ? <>* Os planos ilimitados estão sujeitos à nossa <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Política de Uso Justo</a> para evitar abusos.</>
+            ? <>* Os planos ilimitados estão sujeitos à nossa <a href={localizedPath(locale as RouteLocale, "terms")} className="underline hover:text-[color:var(--muted)]">Política de Uso Justo</a> para evitar abusos.</>
             : locale === "fr"
-            ? <>* Les forfaits illimités sont soumis à notre <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Politique d'utilisation équitable</a> afin de prévenir les abus.</>
+            ? <>* Les forfaits illimités sont soumis à notre <a href={localizedPath(locale as RouteLocale, "terms")} className="underline hover:text-[color:var(--muted)]">Politique d'utilisation équitable</a> afin de prévenir les abus.</>
             : locale === "ja"
-            ? <>* 無制限プランは、不正利用を防ぐための<a href="/terms/" className="underline hover:text-[color:var(--muted)]">フェアユースポリシー</a>が適用されます。</>
+            ? <>* 無制限プランは、不正利用を防ぐための<a href={localizedPath(locale as RouteLocale, "terms")} className="underline hover:text-[color:var(--muted)]">フェアユースポリシー</a>が適用されます。</>
             : locale === "de"
-            ? <>* Unbegrenzte Tarife unterliegen unserer <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair-Use-Richtlinie</a>, um Missbrauch zu verhindern.</>
+            ? <>* Unbegrenzte Tarife unterliegen unserer <a href={localizedPath(locale as RouteLocale, "terms")} className="underline hover:text-[color:var(--muted)]">Fair-Use-Richtlinie</a>, um Missbrauch zu verhindern.</>
             : locale === "ko"
-            ? <>* 무제한 요금제는 악용을 방지하기 위해 <a href="/terms/" className="underline hover:text-[color:var(--muted)]">공정 이용 정책</a>이 적용됩니다.</>
-            : <>* Unlimited plans are subject to our <a href="/terms/" className="underline hover:text-[color:var(--muted)]">Fair Use Policy</a> to prevent abuse.</>
+            ? <>* 무제한 요금제는 악용을 방지하기 위해 <a href={localizedPath(locale as RouteLocale, "terms")} className="underline hover:text-[color:var(--muted)]">공정 이용 정책</a>이 적용됩니다.</>
+            : <>* Unlimited plans are subject to our <a href={localizedPath(locale as RouteLocale, "terms")} className="underline hover:text-[color:var(--muted)]">Fair Use Policy</a> to prevent abuse.</>
           }
         </p>
       </div>

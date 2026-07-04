@@ -634,7 +634,7 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
         </div>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
 
       {phase === "analyzing" && (
         <div className="mt-6 space-y-3" aria-busy="true">

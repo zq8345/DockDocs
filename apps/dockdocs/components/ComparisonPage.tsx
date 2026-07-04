@@ -111,6 +111,7 @@ export function ComparisonPage(props: ComparisonPageProps) {
                 {props.primaryCta.label}
               </a>
               <a
+                // bare-ok: ComparisonPage is an en-only surface and /safe-to-upload-pdf is an en-only standalone GEO page (no locale variants exist)
                 href="/safe-to-upload-pdf"
                 className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-5 text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--line-strong)] hover:text-[color:var(--foreground)]"
               >

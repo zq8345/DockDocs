@@ -1120,7 +1120,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         </div>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
 
       {phase === "analyzing" && (
         <div aria-busy="true">

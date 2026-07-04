@@ -869,7 +869,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
 
               {limitHit !== null ? (
                 <div className="mt-4">
-                  <UpgradePrompt locale={locale === "zh" ? "zh" : locale === "zh-Hant" ? "zh-Hant" : locale === "es" ? "es" : locale === "pt" ? "pt" : "en"} limit={limitHit} />
+                  <UpgradePrompt locale={locale} limit={limitHit} />
                 </div>
               ) : null}
             </div>

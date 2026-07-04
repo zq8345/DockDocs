@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthChange, signInWithGoogle } from "@/lib/auth";
 import { getSubscriptionSnapshot, startBillingTrial } from "@/lib/subscription-runtime";
-import type { AuthoredLocale } from "@/lib/i18n";
+import { defaultLocale, localizedPath, type AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 
 export type TrialCtaVariant = "hero" | "tool-pro" | "tool-free";
@@ -296,11 +296,17 @@ export function TrialCta(props: TrialCtaProps) {
     };
   }, []);
 
+  // The workspace family is deliberately locale-less; entering through the
+  // /[locale]/workspace shim is what persists the visitor's locale (a bare
+  // /workspace redirect would land a first-time non-en user in English).
+  const rawLocale = (props.locale ?? "en").toLowerCase();
+  const workspaceHref = rawLocale === defaultLocale ? "/workspace" : `/${rawLocale}/workspace`;
+
   const handleCta = async () => {
     if (ctaLoading) return;
 
     if (!signedIn) {
-      signInWithGoogle("/workspace").catch(() => {});
+      signInWithGoogle(workspaceHref).catch(() => {});
       return;
     }
 
@@ -319,7 +325,7 @@ export function TrialCta(props: TrialCtaProps) {
     // "trialed and expired" — see billing-start-trial.ts). Route them to pricing
     // instead of silently dropping them in a plain Free workspace after promising
     // 7 days of Pro.
-    router.push(started ? "/workspace" : "/pricing");
+    router.push(started ? workspaceHref : localizedPath(props.locale ?? "en", "pricing"));
   };
 
   if (!subLoaded || shouldHide) return null;

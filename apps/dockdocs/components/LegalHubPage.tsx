@@ -419,7 +419,9 @@ export function LegalHubPage({
           "@type": "ListItem",
           position: index + 1,
           name: card.label,
-          url: absoluteUrl(`/${card.slug}/`),
+          // Same locale source as the breadcrumb below — the ItemList must
+          // point at this locale's pages, not the English ones.
+          url: absoluteUrl(useLocalePrefix ? `/${locale}/${card.slug}/` : `/${card.slug}/`),
         })),
       },
       {

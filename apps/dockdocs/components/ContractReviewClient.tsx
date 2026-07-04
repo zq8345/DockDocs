@@ -353,7 +353,7 @@ export function ContractReviewClient() {
   if (showUpgrade) return (
     <div className={`mx-auto ${LAYOUT.content} px-5 py-12 sm:px-6 lg:px-8`}>
       <button onClick={() => setShowUpgrade(false)} className="mb-4 text-[13px] text-[color:var(--muted)] hover:text-[color:var(--foreground)]">{T(s.backBtn)}</button>
-      <UpgradePrompt locale={locale === "ko" ? "en" : locale} limit={upgradeLimit} />
+      <UpgradePrompt locale={locale} limit={upgradeLimit} />
     </div>
   );
 

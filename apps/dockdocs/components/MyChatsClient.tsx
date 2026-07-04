@@ -16,6 +16,7 @@ import {
 } from "@/lib/subscription-runtime";
 import { StatusBadge } from "@/components/ui/Status";
 import { useWorkspaceNav } from "@/components/WorkspaceNavContext";
+import { localizedPath } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 import {
   deleteSavedSession,
@@ -499,7 +500,7 @@ export function MyChatsClient({ locale = "en" }: { locale?: Locale }) {
 
   function handleRestoreSession(session: SavedWorkspaceSession) {
     queueSessionRestore(session);
-    if (wsNav) { wsNav("/chat-with-pdf"); } else { window.location.href = "/ai-workspace/#chat-with-pdf"; }
+    if (wsNav) { wsNav("/chat-with-pdf"); } else { window.location.href = `${localizedPath(locale, "ai-workspace")}#chat-with-pdf`; }
   }
 
   const planName = subscription?.displayName ?? "Free";
@@ -609,7 +610,7 @@ export function MyChatsClient({ locale = "en" }: { locale?: Locale }) {
                     </button>
                   ) : (
                     <a
-                      href="/ai-workspace/#chat-with-pdf"
+                      href={`${localizedPath(locale, "ai-workspace")}#chat-with-pdf`}
                       className="mt-5 inline-flex min-h-11 items-center rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white"
                     >
                       {t.openChat}

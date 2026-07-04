@@ -12,6 +12,7 @@ import {
 } from "@/lib/auth";
 import { usePathname } from "next/navigation";
 import { getRuntimeCopy, localeFromPathname } from "@/lib/copy";
+import { localizedPath } from "@/lib/i18n";
 import { StatusBadge } from "@/components/ui/Status";
 import {
   getSubscriptionSnapshot,
@@ -101,7 +102,7 @@ export function UserAccountControls() {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <a href="/my-chats" className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--foreground)] transition hover:bg-black/5 active:scale-[0.99]">
+          <a href={localizedPath(locale, "my-chats")} className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--foreground)] transition hover:bg-black/5 active:scale-[0.99]">
             {copy.myChats}
           </a>
           <button type="button" onClick={handleLogout} className="inline-flex min-h-11 items-center rounded-[var(--radius-sm)] border border-[color:var(--line)] px-3 py-2 font-semibold text-[color:var(--muted)] transition hover:bg-black/5 hover:text-[color:var(--foreground)] active:scale-[0.99]">

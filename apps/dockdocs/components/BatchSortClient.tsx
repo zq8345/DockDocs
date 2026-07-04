@@ -474,7 +474,7 @@ export function BatchSortClient({ locale = "en", embedded = false }: { locale?: 
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
       {phase === "done" && !embedded && (
         <div className="mt-6">
           <ToolBridge slug="batch-sort" locale={locale} useLocalePrefix={locale !== "en"} />
