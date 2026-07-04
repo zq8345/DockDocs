@@ -42,7 +42,6 @@ import { RedactPdfClient } from "@/components/RedactPdfClient";
 import { EditPdfClient } from "@/components/pdf-editor/EditPdfClient";
 import { BatchPdfToImageClient } from "@/components/BatchPdfToImageClient";
 import { BatchProtectClient } from "@/components/BatchProtectClient";
-import { BatchSortClient } from "@/components/BatchSortClient";
 import { ExtractExcelClient } from "@/components/ExtractExcelClient";
 import { RedlineClient } from "@/components/RedlineClient";
 import { QuizClient } from "@/components/QuizClient";
@@ -609,28 +608,6 @@ const CUSTOM_TOOL_COPY: Record<string, {
       de: "Legen Sie ein Passwort fest und verschlüsseln Sie einen ganzen PDF-Ordner auf einmal, in einer ZIP zusammengefasst. Vollständig in Ihrem Browser; Ihre Dateien verlassen Ihr Gerät nie.",
       ko: "하나의 비밀번호를 설정하고 PDF 폴더 전체를 한 번에 암호화합니다. 하나의 ZIP으로 패키징. 브라우저에서 처리.",
       en: "Set one password and encrypt a whole folder of PDFs at once, packaged into one ZIP. Entirely in your browser; your files never leave your device.",
-    },
-  },
-  "batch-sort": {
-    title: {
-      zh: "批量分类归档 PDF — AI 把杂乱文件分到文件夹",
-      es: "Clasificar PDFs en lote — Organizador de archivos con IA gratis",
-      pt: "Classificar PDFs em lote — Organizador de arquivos com IA grátis",
-      fr: "Trier des PDF en lot — Organiseur de fichiers par IA",
-      ja: "PDF一括並べ替え — AIでフォルダへ自動分類",
-      de: "PDFs stapelweise in Ordner sortieren — KI-Dateiorganizer, kostenlos",
-      ko: "PDF를 폴더로 일괄 정렬 — AI 파일 정리기 무료",
-      en: "Batch Sort PDFs into Folders — AI File Organizer Free",
-    },
-    description: {
-      zh: "拖入一堆杂乱 PDF,AI 给每份分类并分到一个 ZIP 里的不同文件夹，全部在浏览器中完成，文件不外泄。",
-      es: "Arrastra un montón de PDFs desordenados — la IA etiqueta cada uno y los organiza en carpetas dentro de un ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
-      pt: "Arraste uma pilha de PDFs desorganizados — a IA etiqueta cada um e os organiza em pastas dentro de um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
-      fr: "Déposez une pile de PDFs en vrac — l'IA étiquette chacun et les trie dans des dossiers à l'intérieur d'un ZIP. Entièrement dans votre navigateur.",
-      ja: "雑多なPDFをドロップ—AIが各ファイルをラベル付けしてZIP内のフォルダに整理。すべてブラウザ内で完結。",
-      de: "Ziehen Sie einen wilden Stapel PDFs hinein — die KI beschriftet jede Datei und sortiert sie in Ordner innerhalb einer ZIP. Vollständig in Ihrem Browser; Ihre Dateien verlassen Ihr Gerät nie.",
-      ko: "뒤섞인 PDF 파일들을 드롭합니다 — AI가 각 파일에 레이블을 붙이고 하나의 ZIP 내 폴더로 정렬합니다. 브라우저에서 처리.",
-      en: "Drop a messy pile of PDFs — AI labels each and sorts them into folders inside one ZIP. Entirely in your browser; your files never leave your device.",
     },
   },
   "batch-pdf-to-word": {
@@ -1344,31 +1321,6 @@ async function generateMetadataInner({
   }
 
 
-  if (slug === "batch-sort") {
-    return {
-      title: m(
-        "Batch Sort PDFs into Folders — AI File Organizer Free",
-        "批量分类归档 PDF — AI 把杂乱文件分到文件夹",
-        "Clasificar PDF en carpetas por lote — Organizador de archivos con IA gratis",
-        "Classificar PDFs em pastas por lote — Organizador de arquivos com IA grátis",
-        "Trier des PDF dans des dossiers par lot — Organisateur de fichiers IA gratuit",
-        "PDFをフォルダに一括仕分け — AIファイル整理ツール（無料）",
-      ),
-      description: m(
-        "Drop a messy pile of PDFs — AI labels each and sorts them into folders inside one ZIP. Entirely in your browser; your files never leave your device.",
-        "拖入一堆杂乱 PDF,AI 给每份分类并分到一个 ZIP 里的不同文件夹，全部在浏览器中完成，文件不外泄。",
-        "Arrastra un montón desordenado de PDF: la IA etiqueta cada uno y los clasifica en carpetas dentro de un único ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
-        "Arraste uma pilha desorganizada de PDFs: a IA rotula cada um e os classifica em pastas dentro de um único ZIP. Tudo no seu navegador; seus arquivos nunca saem do seu dispositivo.",
-        "Déposez un tas de PDF en désordre : l'IA étiquette chacun et les trie dans des dossiers au sein d'un seul ZIP. Entièrement dans votre navigateur ; vos fichiers ne quittent jamais votre appareil.",
-        "雑多なPDFをまとめてドロップすると、AIが各ファイルを分類し、1つのZIP内のフォルダに仕分けます。すべてブラウザ内で完結し、ファイルが端末から出ることはありません。",
-      ),
-      alternates: {
-        canonical: localizedPath(rawLocale, "batch-sort"),
-        languages: languageAlternates("batch-sort"),
-      },
-    };
-  }
-
   if (slug === "batch-pdf-to-word") {
     return {
       title: m(
@@ -1939,10 +1891,6 @@ export default async function LocalizedRoute({
     return <BatchProtectClient locale={clientLocale} />;
   }
 
-
-  if (slug === "batch-sort") {
-    return <>{extraJsonLd}<BatchSortClient locale={clientLocale} /></>;
-  }
 
   if (slug === "batch-pdf-to-word") {
     return <BatchPdfToOfficeClient locale={clientLocale} target="word" />;

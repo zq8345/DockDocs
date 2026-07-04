@@ -1,4 +1,4 @@
-import { siteUrl } from "@/lib/i18n";
+﻿import { siteUrl } from "@/lib/i18n";
 import { deepHant } from "@/lib/zh-hant";
 import { getToolFaqItems } from "@/components/ToolFaq";
 
@@ -459,56 +459,6 @@ const EXTRA_TOOL_LABELS: Record<string, Partial<Record<Loc, Label>>> = {
       crumb: "PDF 플래시카드",
       description:
         "교재 챕터, 강의 노트, 매뉴얼을 AI로 플래시카드 문답으로 변환 — 문제와 답은 모두 내 문서에서만 추출됩니다.",
-    },
-  },
-  "batch-sort": {
-    en: {
-      name: "DockDocs Batch Sort PDFs",
-      crumb: "Batch Sort PDFs",
-      description:
-        "Drop a messy pile of PDFs — AI labels each (invoice, contract, resume…) and sorts them into folders inside one ZIP. The text is read in your browser; only that text is sent to the AI to sort — your file itself isn't uploaded.",
-    },
-    zh: {
-      name: "DockDocs 批量分类归档",
-      crumb: "批量分类归档",
-      description:
-        "拖入一堆杂乱 PDF,AI 给每份分类并分到一个 ZIP 里的不同文件夹，全部在浏览器中完成，文件不外泄。",
-    },
-    es: {
-      name: "DockDocs Clasificar PDFs en lote",
-      crumb: "Clasificar PDFs en lote",
-      description:
-        "Arrastra un montón de PDFs desordenados — la IA etiqueta cada uno y los organiza en carpetas dentro de un ZIP. Todo en tu navegador; tus archivos nunca salen de tu dispositivo.",
-    },
-    pt: {
-      name: "DockDocs Classificar PDFs em lote",
-      crumb: "Classificar PDFs em lote",
-      description:
-        "Arraste uma pilha de PDFs desorganizados — a IA etiqueta cada um e os organiza em pastas dentro de um ZIP. Tudo no seu navegador; seus arquivos nunca saem do dispositivo.",
-    },
-    fr: {
-      name: "DockDocs Trier des PDF en lot",
-      crumb: "Trier des PDF en lot",
-      description:
-        "Déposez une pile de PDFs en vrac — l'IA étiquette chacun et les trie dans des dossiers à l'intérieur d'un ZIP. Entièrement dans votre navigateur.",
-    },
-    ja: {
-      name: "DockDocs PDF一括並べ替え",
-      crumb: "PDF一括並べ替え",
-      description:
-        "雑多なPDFをドロップ—AIが各ファイルをラベル付けしてZIP内のフォルダに整理。すべてブラウザ内で完結。",
-    },
-    de: {
-      name: "DockDocs PDFs stapelweise sortieren",
-      crumb: "PDFs stapelweise sortieren",
-      description:
-        "Legen Sie einen ungeordneten Stapel PDFs ab – die KI beschriftet jedes (Rechnung, Vertrag, Lebenslauf …) und sortiert sie in Ordner innerhalb einer ZIP-Datei. Alles im Browser.",
-    },
-    ko: {
-      name: "DockDocs PDF 일괄 분류",
-      crumb: "PDF 일괄 분류",
-      description:
-        "정리되지 않은 PDF 더미를 끌어다 놓으면 AI가 각 파일을 분류해(청구서, 계약서, 이력서…) ZIP 파일 내 폴더에 정리해 줍니다. 모두 브라우저에서 처리됩니다.",
     },
   },
   "batch-compress": {

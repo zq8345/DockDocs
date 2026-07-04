@@ -7,7 +7,41 @@
 /ocr /ocr-pdf 301!
 /:lng/ocr /:lng/ocr-pdf 301!
 
-/classify /batch-sort 301
+# /classify was a 301 alias of /batch-sort; both retired 2026-07-04 (Joe: engine
+# returns later as a workspace "asset filing" feature — page gone for good).
+/classify /410 410!
+/batch-sort /410 410!
+/zh/batch-sort /410 410!
+/zh-Hant/batch-sort /410 410!
+/es/batch-sort /410 410!
+/pt/batch-sort /410 410!
+/fr/batch-sort /410 410!
+/ja/batch-sort /410 410!
+/de/batch-sort /410 410!
+/ko/batch-sort /410 410!
+/workspace/batch-sort /410 410!
+
+# GSC still lists the suffix-less forms as 404s (the real slugs were
+# batch-split-merge / batch-rotate-pdf, already 410 below) — declare these
+# gone too so the crawler drops them faster than a 404 would.
+/batch-split /410 410!
+/zh/batch-split /410 410!
+/zh-Hant/batch-split /410 410!
+/es/batch-split /410 410!
+/pt/batch-split /410 410!
+/fr/batch-split /410 410!
+/ja/batch-split /410 410!
+/de/batch-split /410 410!
+/ko/batch-split /410 410!
+/batch-rotate /410 410!
+/zh/batch-rotate /410 410!
+/zh-Hant/batch-rotate /410 410!
+/es/batch-rotate /410 410!
+/pt/batch-rotate /410 410!
+/fr/batch-rotate /410 410!
+/ja/batch-rotate /410 410!
+/de/batch-rotate /410 410!
+/ko/batch-rotate /410 410!
 
 # url-to-pdf TOOL retired (CloudConvert capture-website: uploaded the URL, couldn't
 # reach pages behind a login, failed on JS-heavy / Cloudflare-protected sites). The

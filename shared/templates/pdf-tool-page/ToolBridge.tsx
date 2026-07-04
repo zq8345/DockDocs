@@ -165,7 +165,6 @@ const BRIDGES: Record<string, Bridge> = {
   "govbid-matrix": CHAT_WITH_PDF,
   "lease-redflag": CHAT_WITH_PDF,
   "batch-protect-pdf": CHAT_WITH_PDF,
-  "batch-sort": CHAT_WITH_PDF,
   "batch-translate": CHAT_WITH_PDF,
   // Conversion tools — previously missing
   "pdf-to-markdown": CHAT_WITH_PDF,

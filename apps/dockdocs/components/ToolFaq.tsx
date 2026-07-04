@@ -414,35 +414,6 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
       ],
     },
   },
-      "batch-sort": {
-    title: { en: "Classify PDFs — FAQ", zh: "PDF 智能分类常见问题", es: "Clasificar PDF — preguntas frecuentes" },
-    items: {
-      en: [
-        { q: "How do I use it?", a: "Drag and drop your PDFs — or a whole folder — onto the page, or click \"Choose PDFs\" / \"Choose folder\". Press \"Sort all\" and the AI labels each file with a category (invoice, contract, resume, report and so on). When it finishes, click \"Download sorted ZIP\" to get one ZIP with your files grouped into category folders. You can sort up to 30 files at a time." },
-        { q: "Are my files uploaded to a server?", a: "No — your actual PDF files never leave your device. Each PDF is read right in your browser to pull out its text, and only that extracted text is sent to our AI service to decide the category. The files themselves stay local, and the final ZIP is built in your browser from your originals." },
-        { q: "Does it work on scanned PDFs or photos of documents?", a: "Not directly. A scanned or image-only PDF has no text layer, so there's nothing to read — those files come back marked \"no text\" and land in an \"Uncategorized\" folder. Run them through OCR first (our \"OCR PDF\" tool adds a text layer), then sort them here." },
-        { q: "Do I need an internet connection?", a: "Yes. The text is extracted on your device, but the actual classification is done by our AI service online, so you need to be connected. The text extraction and the final ZIP packaging happen locally; only the category decision needs the internet." },
-        { q: "What do I get back, and are my original files changed?", a: "You get a single ZIP named dockdocs-sorted.zip with one subfolder per category, and your original PDFs placed inside — untouched and unmodified. If two files would end up with the same name in the same folder, we add a \"-1\", \"-2\" suffix so nothing gets overwritten." },
-        { q: "How accurate are the categories?", a: "The categories are AI-suggested from each document's text, so they're a strong starting point but worth a quick check — especially for unusual documents. To keep it fast, the AI reads only the first 6 pages of each PDF, which is plenty for most files but can miss the point on a document whose type only becomes clear later on." },
-      ],
-      zh: [
-        { q: "怎么使用？", a: "把 PDF——或者整个文件夹——拖到页面上，或点击「选择 PDF」/「选择文件夹」。点「全部分类」，AI 会给每份文件打上类别(发票、合同、简历、报告等)。完成后点「下载归档 ZIP」，得到一个把文件按类别分到不同文件夹的 ZIP。一次最多处理 30 份文件。" },
-        { q: "我的文件会被上传到服务器吗？", a: "不会——你的 PDF 文件本身始终不离开你的设备。每份 PDF 都在浏览器里读取并提取出文字，只有提取出来的文字才会发送到我们的 AI 服务去判断类别。文件本身留在本地，最终的 ZIP 也是在你的浏览器里用你的原文件打包生成的。" },
-        { q: "扫描件或拍照的文档能用吗？", a: "不能直接用。扫描件或纯图片 PDF 没有文字层——没有文字可读，这类文件会被标记为「无文字」并归入「未分类」文件夹。请先做 OCR(我们的「PDF OCR」工具会加上文字层)，再回到这里分类。" },
-        { q: "需要联网吗？", a: "需要。文字是在你的设备上提取的，但真正的分类由我们在线的 AI 服务完成，所以必须联网。文字提取和最终的 ZIP 打包都在本地进行——只有类别判断这一步需要联网。" },
-        { q: "我会拿到什么？原文件会被改动吗？", a: "你会拿到一个名为 dockdocs-sorted.zip 的 ZIP，里面每个类别一个子文件夹，你的原 PDF 原封不动地放在里面——不修改、不改名。如果同一文件夹里有两份文件会重名，我们会自动加上「-1」「-2」后缀，确保不会互相覆盖。" },
-        { q: "分类准不准？", a: "类别由 AI 从每份文档的文字推断而来，是很好的起点，但建议快速核对一下——尤其是不常见的文档。为了保证速度，AI 只读取每份 PDF 的前 6 页，对大多数文件足够了，但如果某份文档要到后面才能看出类型，可能会判断偏差。" },
-      ],
-      es: [
-        { q: "¿Cómo se usa?", a: "Arrastra y suelta tus PDF —o una carpeta entera— en la página, o haz clic en «Elegir PDF» / «Elegir carpeta». Pulsa «Clasificar todo» y la IA etiqueta cada archivo con una categoría (factura, contrato, currículum, informe, etc.). Al terminar, haz clic en «Descargar ZIP clasificado» para obtener un ZIP con tus archivos agrupados en carpetas por categoría. Puedes clasificar hasta 30 archivos a la vez." },
-        { q: "¿Mis archivos se suben a un servidor?", a: "No: tus archivos PDF reales jamás salen de tu dispositivo. Cada PDF se lee directamente en tu navegador para extraer su texto, y solo ese texto extraído se envía a nuestro servicio de IA para decidir la categoría. Los archivos en sí permanecen locales, y el ZIP final se genera en tu navegador a partir de tus originales." },
-        { q: "¿Funciona con PDF escaneados o fotos de documentos?", a: "No directamente. Un PDF escaneado o de solo imagen no tiene capa de texto, así que no hay nada que leer: esos archivos vuelven marcados como «sin texto» y van a parar a una carpeta «Sin clasificar». Pásalos primero por OCR (nuestra herramienta «OCR PDF» añade una capa de texto) y luego clasifícalos aquí." },
-        { q: "¿Necesito conexión a internet?", a: "Sí. El texto se extrae en tu dispositivo, pero la clasificación en sí la realiza nuestro servicio de IA en línea, así que necesitas estar conectado. La extracción de texto y el empaquetado final del ZIP ocurren localmente; solo la decisión de categoría necesita internet." },
-        { q: "¿Qué recibo de vuelta y se modifican mis archivos originales?", a: "Recibes un único ZIP llamado dockdocs-sorted.zip con una subcarpeta por categoría y tus PDF originales colocados dentro, intactos y sin modificar. Si dos archivos acabaran con el mismo nombre en la misma carpeta, añadimos un sufijo «-1», «-2» para que nada se sobrescriba." },
-        { q: "¿Qué tan precisas son las categorías?", a: "Las categorías las sugiere la IA a partir del texto de cada documento, así que son un buen punto de partida pero conviene revisarlas rápidamente, sobre todo en documentos poco habituales. Para que sea rápido, la IA lee solo las primeras 6 páginas de cada PDF, lo cual basta para la mayoría de archivos, pero puede errar el tema en un documento cuyo tipo solo queda claro más adelante." },
-      ],
-    },
-  },
   "flashcards": {
     title: { en: "PDF Flashcards — FAQ", zh: "PDF 抽认卡常见问题", es: "Tarjetas de estudio de PDF — preguntas frecuentes" },
     items: {
@@ -1151,17 +1122,6 @@ const FAQS_PT: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "É realmente gratuito? Tem marca d'água ou exige cadastro?", a: "Sim, completamente gratuito, sem cadastro e sem marca d'água. Os PDFs criptografados são byte a byte seus originais mais a senha — o DockDocs não adiciona nada a eles." },
     ],
   },
-      "batch-sort": {
-    title: "Classificar PDFs — perguntas frequentes",
-    items: [
-      { q: "Como usar?", a: "Arraste e solte seus PDFs — ou uma pasta inteira — na página, ou clique em «Escolher PDFs» / «Escolher pasta». Pressione «Classificar tudo» e a IA rotula cada arquivo com uma categoria (fatura, contrato, currículo, relatório, etc.). Quando terminar, clique em «Baixar ZIP classificado» para obter um ZIP com seus arquivos agrupados em pastas de categoria. Você pode classificar até 30 arquivos de uma vez." },
-      { q: "Meus arquivos são enviados a um servidor?", a: "Não — seus arquivos PDF reais nunca saem do seu dispositivo. Cada PDF é lido diretamente no seu navegador para extrair o texto e apenas esse texto extraído é enviado ao nosso serviço de IA para decidir a categoria. Os arquivos em si permanecem locais, e o ZIP final é gerado no seu navegador a partir dos seus originais." },
-      { q: "Funciona com PDFs digitalizados ou fotos de documentos?", a: "Não diretamente. Um PDF digitalizado ou somente de imagem não tem camada de texto, então não há nada para ler — esses arquivos voltam marcados como «sem texto» e ficam em uma pasta «Não classificado». Execute-os primeiro pelo OCR (nossa ferramenta «OCR PDF» adiciona uma camada de texto) e depois classifique-os aqui." },
-      { q: "Preciso de conexão à internet?", a: "Sim. O texto é extraído no seu dispositivo, mas a classificação real é feita pelo nosso serviço de IA online, então você precisa estar conectado. A extração de texto e o empacotamento final do ZIP acontecem localmente; apenas a decisão de categoria precisa da internet." },
-      { q: "O que recebo de volta e meus arquivos originais são alterados?", a: "Você recebe um único ZIP chamado dockdocs-sorted.zip com uma subpasta por categoria e seus PDFs originais colocados dentro — intactos e sem modificação. Se dois arquivos ficassem com o mesmo nome na mesma pasta, adicionamos um sufixo «-1», «-2» para que nada seja sobrescrito." },
-      { q: "Quão precisas são as categorias?", a: "As categorias são sugeridas pela IA a partir do texto de cada documento, então são um bom ponto de partida, mas vale uma verificação rápida — especialmente para documentos incomuns. Para ser rápido, a IA lê apenas as primeiras 6 páginas de cada PDF, o que é suficiente para a maioria dos arquivos, mas pode errar o tipo em um documento cujo tipo só fica claro mais adiante." },
-    ],
-  },
   "flashcards": {
     title: "Cartões de estudo de PDF — perguntas frequentes",
     items: [
@@ -1524,17 +1484,6 @@ const FAQS_FR: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Y a-t-il des règles pour le mot de passe ou des limites sur le nombre de fichiers ?", a: "Le mot de passe doit comporter entre 4 et 32 caractères en utilisant uniquement des lettres, des chiffres et le tiret bas (_) — cela garantit sa compatibilité avec tous les lecteurs PDF. Vous pouvez chiffrer jusqu'à 30 fichiers par lot ; pour plus, relancez simplement l'outil. Il n'y a pas de limite de taille stricte, mais comme tout s'exécute dans votre navigateur, les très grands travaux ralentissent sur les appareils avec peu de mémoire." },
       { q: "Que se passe-t-il avec un PDF déjà protégé par mot de passe ?", a: "Il est ignoré. L'outil ne peut pas reverrouiller un fichier qu'il ne peut pas ouvrir, donc tout PDF déjà protégé est exclu du ZIP plutôt que de faire échouer l'ensemble du lot. Déchiffrez-le d'abord (avec le mot de passe d'origine) si vous souhaitez le rechiffrer ici." },
       { q: "Est-ce vraiment gratuit ? Y a-t-il un filigrane ou une inscription requise ?", a: "Oui, entièrement gratuit, sans inscription et sans filigrane. Les PDF chiffrés sont octet par octet vos originaux plus le mot de passe — DockDocs n'y ajoute rien." },
-    ],
-  },
-      "batch-sort": {
-    title: "Classer des PDF — foire aux questions",
-    items: [
-      { q: "Comment l'utiliser ?", a: "Faites glisser et déposez vos PDF — ou un dossier entier — sur la page, ou cliquez sur « Choisir des PDF » / « Choisir un dossier ». Appuyez sur « Tout classer » et l'IA étiquette chaque fichier avec une catégorie (facture, contrat, CV, rapport, etc.). Une fois terminé, cliquez sur « Télécharger le ZIP classé » pour obtenir un ZIP avec vos fichiers regroupés dans des dossiers par catégorie. Vous pouvez classer jusqu'à 30 fichiers à la fois." },
-      { q: "Mes fichiers sont-ils envoyés à un serveur ?", a: "Non — vos fichiers PDF réels ne quittent jamais votre appareil. Chaque PDF est lu directement dans votre navigateur pour en extraire le texte, et seul ce texte extrait est envoyé à notre service IA pour décider de la catégorie. Les fichiers eux-mêmes restent locaux, et le ZIP final est généré dans votre navigateur à partir de vos originaux." },
-      { q: "Fonctionne-t-il avec des PDF scannés ou des photos de documents ?", a: "Pas directement. Un PDF scanné ou uniquement composé d'images n'a pas de couche de texte, donc il n'y a rien à lire — ces fichiers reviennent marqués « aucun texte » et se retrouvent dans un dossier « Non classé ». Passez-les d'abord par l'OCR (notre outil « OCR PDF » ajoute une couche de texte), puis classez-les ici." },
-      { q: "Ai-je besoin d'une connexion internet ?", a: "Oui. Le texte est extrait sur votre appareil, mais la classification proprement dite est effectuée par notre service IA en ligne, vous devez donc être connecté. L'extraction de texte et l'emballage final du ZIP se font localement ; seule la décision de catégorie nécessite internet." },
-      { q: "Que reçois-je et mes fichiers originaux sont-ils modifiés ?", a: "Vous recevez un seul ZIP nommé dockdocs-sorted.zip avec un sous-dossier par catégorie et vos PDF originaux placés à l'intérieur — intacts et non modifiés. Si deux fichiers se retrouvaient avec le même nom dans le même dossier, nous ajoutons un suffixe « -1 », « -2 » pour qu'aucun ne soit écrasé." },
-      { q: "Quelle est la précision des catégories ?", a: "Les catégories sont suggérées par l'IA à partir du texte de chaque document, donc elles constituent un bon point de départ mais méritent une vérification rapide — surtout pour les documents inhabituels. Pour aller vite, l'IA ne lit que les 6 premières pages de chaque PDF, ce qui est suffisant pour la plupart des fichiers, mais peut manquer le type d'un document dont le sujet n'est clair que plus loin." },
     ],
   },
   "flashcards": {
@@ -2107,17 +2056,6 @@ const FAQS_JA: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "本当に無料ですか？透かしや登録はありますか？", a: "はい、完全無料で、登録も透かしもありません。暗号化されたPDFはバイト単位であなたの元ファイルにパスワードを加えたものです——DockDocsは何も追加しません。" },
     ],
   },
-      "batch-sort": {
-    title: "PDF分類 — よくある質問",
-    items: [
-      { q: "どのように使いますか？", a: "PDF——またはフォルダ全体——をページにドラッグ＆ドロップするか、「PDFを選択」/「フォルダを選択」をクリックします。「すべて分類」を押すと、AIが各ファイルにカテゴリー（請求書、契約書、履歴書、報告書など）のラベルを付けます。完了したら「分類済みZIPをダウンロード」をクリックして、ファイルがカテゴリーフォルダにまとめられた1つのZIPを取得します。一度に最大30ファイルまで分類できます。" },
-      { q: "ファイルはサーバーにアップロードされますか？", a: "いいえ——実際のPDFファイルがデバイスから出ることはありません。各PDFはブラウザ内でテキストを取り出すために読み取られ、その抽出テキストのみがカテゴリーを判定するために当社のAIサービスに送られます。ファイル自体はローカルに留まり、最終的なZIPはあなたの元ファイルからブラウザ内で作られます。" },
-      { q: "スキャンPDFや文書の写真でも動作しますか？", a: "直接にはできません。スキャンや画像のみのPDFにはテキスト層がないため、読み取るものがありません——それらのファイルは「テキストなし」と印が付いて返り、「未分類」フォルダに入ります。先にOCRをかけ（当社の「OCR PDF」ツールがテキスト層を追加します）、それからここで分類してください。" },
-      { q: "インターネット接続は必要ですか？", a: "はい。テキストはデバイス上で抽出されますが、実際の分類は当社のAIサービスがオンラインで行うため、接続が必要です。テキスト抽出と最終的なZIPのパッケージングはローカルで行われ、カテゴリーの判定だけがインターネットを必要とします。" },
-      { q: "何が得られますか？元ファイルは変更されますか？", a: "カテゴリーごとに1つのサブフォルダを持つ dockdocs-sorted.zip という1つのZIPが得られ、あなたの元のPDFがその中に——手を加えず変更せずに——配置されます。同じフォルダ内で2つのファイルが同じ名前になってしまう場合、「-1」「-2」の接尾辞を付け、何も上書きされないようにします。" },
-      { q: "カテゴリーはどのくらい正確ですか？", a: "カテゴリーは各文書のテキストからAIが提案したものなので、強力な出発点ではありますが、特に珍しい文書ではざっと確認する価値があります。速度を保つため、AIは各PDFの最初の6ページのみを読みます。これはほとんどのファイルには十分ですが、種類が後になって初めて明らかになる文書では的を外すことがあります。" },
-    ],
-  },
 };
 
 const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: string }> }> = {
@@ -2272,17 +2210,6 @@ const FAQS_DE: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "Gibt es Regeln für das Passwort oder Grenzen für die Anzahl der Dateien?", a: "Das Passwort muss 4–32 Zeichen lang sein und darf nur Buchstaben, Ziffern und den Unterstrich (_) enthalten — das hält es sicher anwendbar über jeden PDF-Reader hinweg. Sie können bis zu 30 Dateien pro Stapel verschlüsseln; für mehr führen Sie das Tool einfach erneut aus. Es gibt keine feste Größengrenze, aber da alles in Ihrem Browser läuft, gehen sehr große Aufträge auf Geräten mit wenig Arbeitsspeicher langsamer." },
       { q: "Was passiert mit einem PDF, das bereits passwortgeschützt ist?", a: "Es wird übersprungen. Das Tool kann eine Datei, die es nicht öffnen kann, nicht erneut sperren, daher wird jedes PDF, das bereits ein Passwort hat, aus dem ZIP ausgelassen, statt den gesamten Stapel scheitern zu lassen. Entschlüsseln Sie es zuerst (mit dem ursprünglichen Passwort), wenn Sie es hier erneut verschlüsseln möchten." },
       { q: "Ist es wirklich kostenlos? Wasserzeichen oder Anmeldung?", a: "Ja, vollständig kostenlos, ohne Anmeldung und ohne Wasserzeichen. Die verschlüsselten PDFs sind Byte für Byte Ihre Originale plus das Passwort — DockDocs fügt ihnen nichts hinzu." },
-    ],
-  },
-      "batch-sort": {
-    title: "PDFs klassifizieren — Häufige Fragen",
-    items: [
-      { q: "Wie verwende ich es?", a: "Ziehen Sie Ihre PDFs — oder einen ganzen Ordner — per Drag-and-drop auf die Seite oder klicken Sie auf „PDFs wählen“ / „Ordner wählen“. Drücken Sie auf „Alle sortieren“, und die KI versieht jede Datei mit einer Kategorie (Rechnung, Vertrag, Lebenslauf, Bericht und so weiter). Wenn es fertig ist, klicken Sie auf „Sortiertes ZIP herunterladen“, um ein ZIP zu erhalten, in dem Ihre Dateien in Kategorieordner gruppiert sind. Sie können bis zu 30 Dateien auf einmal sortieren." },
-      { q: "Werden meine Dateien auf einen Server hochgeladen?", a: "Nein — Ihre eigentlichen PDF-Dateien verlassen Ihr Gerät nie. Jedes PDF wird direkt in Ihrem Browser gelesen, um seinen Text herauszuziehen, und nur dieser extrahierte Text wird an unseren KI-Dienst gesendet, um die Kategorie zu bestimmen. Die Dateien selbst bleiben lokal, und das endgültige ZIP wird in Ihrem Browser aus Ihren Originalen erstellt." },
-      { q: "Funktioniert es bei gescannten PDFs oder Fotos von Dokumenten?", a: "Nicht direkt. Ein gescanntes oder reines Bild-PDF hat keine Textebene, es gibt also nichts zu lesen — diese Dateien kommen mit dem Vermerk „kein Text“ zurück und landen in einem Ordner „Nicht kategorisiert“. Führen Sie sie zuerst durch OCR (unser Tool „OCR-PDF“ fügt eine Textebene hinzu) und sortieren Sie sie dann hier." },
-      { q: "Brauche ich eine Internetverbindung?", a: "Ja. Der Text wird auf Ihrem Gerät extrahiert, aber die eigentliche Klassifizierung übernimmt unser KI-Dienst online, Sie müssen also verbunden sein. Die Textextraktion und das endgültige ZIP-Packen geschehen lokal; nur die Kategorieentscheidung benötigt das Internet." },
-      { q: "Was erhalte ich zurück, und werden meine Originaldateien verändert?", a: "Sie erhalten eine ZIP-Datei mit dem Namen dockdocs-sorted.zip mit einem Unterordner pro Kategorie und Ihren darin abgelegten Original-PDFs — unangetastet und unverändert. Würden zwei Dateien im selben Ordner denselben Namen erhalten, fügen wir ein Suffix „-1“, „-2“ hinzu, sodass nichts überschrieben wird." },
-      { q: "Wie genau sind die Kategorien?", a: "Die Kategorien werden von der KI aus dem Text jedes Dokuments vorgeschlagen, sie sind also ein starker Ausgangspunkt, aber eine kurze Prüfung wert — besonders bei ungewöhnlichen Dokumenten. Um es schnell zu halten, liest die KI nur die ersten 6 Seiten jedes PDFs, was für die meisten Dateien reichlich ist, aber bei einem Dokument, dessen Typ sich erst später zeigt, danebenliegen kann." },
     ],
   },
   "flashcards": {
@@ -2647,17 +2574,6 @@ const FAQS_KO: Record<string, { title: string; items: Array<{ q: string; a: stri
       { q: "암호 규칙이나 파일 개수 제한이 있나요?", a: "암호는 4~32자여야 하며 문자, 숫자, 밑줄(_)만 포함할 수 있습니다 — 이는 어떤 PDF 리더에서도 안정적으로 작동하도록 유지합니다. 묶음당 최대 30개 파일을 암호화할 수 있으며, 더 많으면 도구를 다시 실행하면 됩니다. 고정된 크기 제한은 없지만, 모든 작업이 브라우저 안에서 실행되므로 메모리가 적은 기기에서는 매우 큰 작업이 더 느리게 진행됩니다." },
       { q: "이미 암호로 보호된 PDF는 어떻게 되나요?", a: "건너뜁니다. 도구는 열 수 없는 파일을 다시 잠글 수 없으므로, 이미 암호가 있는 PDF는 전체 묶음을 실패시키는 대신 ZIP에서 제외됩니다. 여기서 다시 암호화하려면 먼저 (원래 암호로) 복호화하세요." },
       { q: "정말 무료인가요? 워터마크나 가입이 있나요?", a: "네, 완전 무료이며 가입도, 워터마크도 없습니다. 암호화된 PDF는 바이트 단위로 귀하의 원본에 암호가 더해진 것입니다 — DockDocs는 거기에 어떤 것도 추가하지 않습니다." },
-    ],
-  },
-      "batch-sort": {
-    title: "PDF 분류 — 자주 묻는 질문",
-    items: [
-      { q: "어떻게 사용하나요?", a: "PDF를 — 또는 폴더 전체를 — 페이지에 끌어다 놓거나 「PDF 선택」 / 「폴더 선택」을 클릭하세요. 「모두 분류」를 누르면 AI가 각 파일에 카테고리(청구서, 계약서, 이력서, 보고서 등)를 붙입니다. 완료되면 「분류된 ZIP 내려받기」를 클릭해 파일이 카테고리 폴더로 묶인 ZIP을 받습니다. 한 번에 최대 30개 파일을 분류할 수 있습니다." },
-      { q: "제 파일이 서버에 업로드되나요?", a: "아니요 — 실제 PDF 파일은 기기를 절대 벗어나지 않습니다. 각 PDF는 텍스트를 뽑아내기 위해 브라우저 안에서 직접 읽히고, 그렇게 추출된 텍스트만 카테고리를 정하기 위해 저희 AI 서비스로 전송됩니다. 파일 자체는 로컬에 남고, 최종 ZIP은 귀하의 원본으로 브라우저 안에서 만들어집니다." },
-      { q: "스캔한 PDF나 문서 사진에도 작동하나요?", a: "직접적으로는 안 됩니다. 스캔본이나 순수 이미지 PDF는 텍스트 레이어가 없어 읽을 것이 없습니다 — 이런 파일은 「텍스트 없음」 표시와 함께 돌아와 「미분류」 폴더에 들어갑니다. 먼저 OCR을 거친 뒤(저희 「OCR PDF」 도구가 텍스트 레이어를 추가합니다) 여기서 분류하세요." },
-      { q: "인터넷 연결이 필요한가요?", a: "네. 텍스트는 귀하의 기기에서 추출되지만 실제 분류는 저희 AI 서비스가 온라인으로 수행하므로 연결되어 있어야 합니다. 텍스트 추출과 최종 ZIP 압축은 로컬에서 이루어지며, 카테고리 결정만 인터넷이 필요합니다." },
-      { q: "무엇을 받게 되며 원본 파일이 변경되나요?", a: "카테고리별 하위 폴더와 그 안에 든 원본 PDF로 구성된 dockdocs-sorted.zip이라는 ZIP 파일을 받습니다 — 손대지 않고 변경되지 않은 그대로입니다. 같은 폴더 안에서 두 파일이 같은 이름을 갖게 되면 「-1」, 「-2」 접미사를 붙여 어떤 것도 덮어쓰이지 않도록 합니다." },
-      { q: "카테고리는 얼마나 정확한가요?", a: "카테고리는 AI가 각 문서의 텍스트에서 제안하므로 든든한 출발점이지만, 특히 특이한 문서에서는 잠깐 확인할 가치가 있습니다. 빠르게 유지하기 위해 AI는 각 PDF의 처음 6페이지만 읽으며, 이는 대부분의 파일에 충분하지만 유형이 뒤에서야 드러나는 문서에서는 빗나갈 수 있습니다." },
     ],
   },
   "flashcards": {
