@@ -102,7 +102,6 @@ export const routeSlugs = [
   "batch-excel-to-pdf",
   "batch-ppt-to-pdf",
   "batch-translate",
-  "batch-sort",
   "workspace",
   "pricing",
   "account",

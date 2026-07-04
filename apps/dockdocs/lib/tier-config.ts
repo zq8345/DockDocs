@@ -168,7 +168,6 @@ export const TIER_CATEGORIES: TierCategory[] = [
       { slug: "chat-with-pdf", en: "Chat with PDF",         zh: "PDF 问答",     es: "Chatear con PDF",       pt: "Chat com PDF",          fr: "Chat avec PDF",        ja: "PDFと対話",         de: "Mit PDF chatten", ko: "PDF와 대화" },
       { slug: "ai-summary",    en: "AI Summary",            zh: "PDF 摘要提取", es: "Resumen de PDF",        pt: "Resumo de PDF",         fr: "Résumé PDF",           ja: "AI 要約",           de: "KI-Zusammenfassung", ko: "AI 요약" },
       { slug: "translate-pdf", en: "Translate PDF",         zh: "PDF 翻译",     es: "Traducir PDF",          pt: "Traduzir PDF",          fr: "Traduire PDF",         ja: "PDF 翻訳",          de: "PDF übersetzen", ko: "PDF 번역" },
-      { slug: "batch-sort",    en: "Auto-Classify PDFs",    zh: "PDF 智能分类", es: "Clasificar PDF",        pt: "Classificar PDF",       fr: "Classer PDF",          ja: "PDF 自動分類",      de: "PDFs automatisch klassifizieren", ko: "PDF 자동 분류" },
     ],
     limits: {
       free: { en: "10 / day",   zh: "10次/天",  es: "10/día",  pt: "10/dia",  fr: "10/jour", ja: "10 回/日", de: "10 / Tag", ko: "10 / 일" },

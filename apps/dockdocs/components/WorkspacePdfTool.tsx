@@ -32,7 +32,6 @@ import { BatchProtectClient } from "@/components/BatchProtectClient";
 import { BatchPdfToOfficeClient } from "@/components/BatchPdfToOfficeClient";
 import { BatchOfficeToPdfClient } from "@/components/BatchOfficeToPdfClient";
 import { BatchTranslateClient } from "@/components/BatchTranslateClient";
-import { BatchSortClient } from "@/components/BatchSortClient";
 
 type L = RouteLocale;
 
@@ -88,7 +87,6 @@ const CUSTOM_RENDERERS: Record<string, (loc: L) => ReactNode> = {
   "batch-excel-to-pdf": (loc) => <BatchOfficeToPdfClient locale={loc} source="excel" embedded />,
   "batch-ppt-to-pdf":   (loc) => <BatchOfficeToPdfClient locale={loc} source="ppt" embedded />,
   "batch-translate":    (loc) => <BatchTranslateClient locale={loc} embedded />,
-  "batch-sort":         (loc) => <BatchSortClient locale={loc} embedded />,
 };
 
 const FALLBACK_LABEL: Partial<Record<L, [string, string]>> = {
