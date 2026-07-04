@@ -120,25 +120,19 @@ export default async (req: Request, _context: Context) => {
     return gate.response;
   }
 
-  const provider = getProvider();
-  if (!provider.apiUrl || !provider.apiKey || !provider.model) {
+  const chain = getProviderChain();
+  if (chain.length === 0) {
     return json(
       {
         ok: false,
         code: "AI_CHAT_PROVIDER_NOT_CONFIGURED",
         message:
-          "Chat with PDF provider is not configured yet. Set DOCKDOCS_AI_SUMMARY_API_URL, DOCKDOCS_AI_SUMMARY_API_KEY, and DOCKDOCS_AI_SUMMARY_MODEL to enable real answers.",
+          "Chat with PDF provider is not configured yet. Set DOCKDOCS_AI_SUMMARY_API_URL, DOCKDOCS_AI_SUMMARY_API_KEY, and DOCKDOCS_AI_SUMMARY_MODEL (or OPENROUTER_API_KEY / OPENAI_API_KEY) to enable real answers.",
         httpStatus: 503,
       },
       200,
     );
   }
-
-  const resolvedProvider: ProviderConfig = {
-    apiUrl: provider.apiUrl,
-    apiKey: provider.apiKey,
-    model: provider.model,
-  };
 
   let payload: AiChatPayload;
   try {
@@ -213,7 +207,7 @@ export default async (req: Request, _context: Context) => {
   if (payload.stream) {
     await gate.commit();
     return streamAiChatResponse({
-      provider: resolvedProvider,
+      chain,
       context: selectedContext.context,
       question,
       history,
@@ -226,14 +220,36 @@ export default async (req: Request, _context: Context) => {
   const timeout = setTimeout(() => controller.abort(), 55_000);
 
   try {
-    const providerResult = await generateProviderAnswer({
-      provider: resolvedProvider,
-      context: selectedContext.context,
-      question,
-      history,
-      locale,
-      signal: controller.signal,
-    });
+    // Walk the failover chain: advance on a THROW (HTTP/network error) AND on
+    // an unusable 200 (parse/verification failure) — the shared 55s budget
+    // covers the whole chain, and broken outputs fail fast.
+    let providerResult: Awaited<ReturnType<typeof generateProviderAnswer>> | null = null;
+    let modelUsed = chain[0].model;
+    let lastThrow: unknown = null;
+    for (const entry of chain) {
+      if (controller.signal.aborted) break;
+      try {
+        const attempt = await generateProviderAnswer({
+          provider: entry,
+          context: selectedContext.context,
+          question,
+          history,
+          locale,
+          signal: controller.signal,
+        });
+        providerResult = attempt;
+        modelUsed = entry.model;
+        if (!isProviderFailure(attempt)) break;
+        console.warn(`[ai-chat] model ${entry.model} produced unusable output — trying next in chain`);
+      } catch (chainError) {
+        lastThrow = chainError;
+        if (controller.signal.aborted) break;
+        console.warn(`[ai-chat] model ${entry.model} failed — ${chainError instanceof Error ? chainError.message.slice(0, 120) : String(chainError)}`);
+      }
+    }
+    if (providerResult === null) {
+      throw lastThrow ?? new Error("All models in the failover chain failed.");
+    }
 
     if (isProviderFailure(providerResult)) {
       return json(
@@ -275,7 +291,7 @@ export default async (req: Request, _context: Context) => {
         result: {
           ...providerResult.result,
           provider: "configured-ai-provider",
-          model: provider.model,
+          model: modelUsed,
         },
         usage: providerResult.usage,
         diagnostics: {
@@ -345,12 +361,48 @@ export const config: Config = {
   method: ["POST"],
 };
 
-function getProvider() {
-  return {
-    apiUrl: Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_URL")?.trim(),
-    apiKey: Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_KEY")?.trim(),
-    model: Netlify.env.get("DOCKDOCS_AI_SUMMARY_MODEL")?.trim(),
-  };
+// Ordered failover chain (AI 端点无限兜底铁律, Joe 2026-07-01): the existing
+// DOCKDOCS_AI_SUMMARY_* provider keeps the primary slot (production-proven
+// deepseek-chat behavior unchanged), then the SAME fallbacks contract-risk
+// runs in production — OpenRouter mistral-medium-3-5 → mistral-large-2512 →
+// direct OpenAI gpt-4o-mini. All three fallback ids verified against the live
+// OpenRouter /api/v1/models catalog on 2026-07-04 (the 3.5-dot lesson).
+// Unlike an HTTP-only failover, ai-chat advances the chain ALSO when a model
+// returns 200 but its output fails parsing/verbatim-reference verification —
+// that "four broken outputs in a row" mode is exactly what this closes.
+function getProviderChain(): ProviderConfig[] {
+  const chain: ProviderConfig[] = [];
+
+  const primaryUrl = Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_URL")?.trim();
+  const primaryKey = Netlify.env.get("DOCKDOCS_AI_SUMMARY_API_KEY")?.trim();
+  const primaryModel = Netlify.env.get("DOCKDOCS_AI_SUMMARY_MODEL")?.trim();
+  if (primaryUrl && primaryKey && primaryModel) {
+    chain.push({ apiUrl: primaryUrl, apiKey: primaryKey, model: primaryModel });
+  }
+
+  const openRouterKey = Netlify.env.get("OPENROUTER_API_KEY")?.trim();
+  if (openRouterKey) {
+    const base = (Netlify.env.get("OPENROUTER_BASE_URL") || "https://openrouter.ai/api/v1").trim().replace(/\/+$/, "");
+    const apiUrl = /\/(chat\/)?completions$/.test(base) ? base : `${base}/chat/completions`;
+    for (const model of ["mistralai/mistral-medium-3-5", "mistralai/mistral-large-2512"]) {
+      chain.push({ apiUrl, apiKey: openRouterKey, model });
+    }
+  }
+
+  const openAiKey = Netlify.env.get("OPENAI_API_KEY")?.trim();
+  if (openAiKey) {
+    const base = (Netlify.env.get("OPENAI_BASE_URL") || "https://api.openai.com/v1").trim().replace(/\/+$/, "");
+    chain.push({
+      apiUrl: /\/(chat\/)?completions$/.test(base) ? base : `${base}/chat/completions`,
+      apiKey: openAiKey,
+      model: Netlify.env.get("OPENAI_MODEL")?.trim() || "gpt-4o-mini",
+    });
+  }
+
+  // De-dup (an env override could repeat a fallback entry).
+  return chain.filter(
+    (entry, index) => chain.findIndex((other) => other.apiUrl === entry.apiUrl && other.model === entry.model) === index,
+  );
 }
 
 function normalizeHistory(history: AiChatHistoryTurn[] | undefined) {
@@ -387,14 +439,14 @@ function isProviderFailure(
 }
 
 function streamAiChatResponse({
-  provider,
+  chain,
   context,
   question,
   history,
   locale,
   truncated,
 }: {
-  provider: ProviderConfig;
+  chain: ProviderConfig[];
   context: string;
   question: string;
   history: NormalizedHistoryTurn[];
@@ -425,15 +477,51 @@ function streamAiChatResponse({
       }, 4000);
 
       try {
-        const providerResult = await generateProviderAnswerStream({
-          provider,
-          context,
-          question,
-          history,
-          locale,
-          signal: controller.signal,
-          onAnswerDelta: (text) => send({ type: "delta", text }),
-        });
+        // Primary model streams token deltas live. If it throws OR returns an
+        // unusable output, the REST of the chain runs silently (non-stream) in
+        // the same response — the final "result" event's answer replaces any
+        // partial streamed text on the client, so no protocol change is
+        // needed. Only when every model fails does the user see an error.
+        const [primary, ...fallbacks] = chain;
+        let providerResult: Awaited<ReturnType<typeof generateProviderAnswer>>;
+        let modelUsed = primary.model;
+        try {
+          providerResult = await generateProviderAnswerStream({
+            provider: primary,
+            context,
+            question,
+            history,
+            locale,
+            signal: controller.signal,
+            onAnswerDelta: (text) => send({ type: "delta", text }),
+          });
+        } catch (primaryError) {
+          if (controller.signal.aborted) throw primaryError;
+          console.warn(`[ai-chat] stream model ${primary.model} failed — ${primaryError instanceof Error ? primaryError.message.slice(0, 120) : String(primaryError)}`);
+          providerResult = { failureReason: "provider_error", attempts: 1 };
+        }
+        if (isProviderFailure(providerResult)) {
+          for (const entry of fallbacks) {
+            if (controller.signal.aborted) break;
+            console.warn(`[ai-chat] failover: trying ${entry.model} after ${modelUsed} produced unusable output`);
+            try {
+              const attempt = await generateProviderAnswer({
+                provider: entry,
+                context,
+                question,
+                history,
+                locale,
+                signal: controller.signal,
+              });
+              providerResult = attempt;
+              modelUsed = entry.model;
+              if (!isProviderFailure(attempt)) break;
+            } catch (fallbackError) {
+              if (controller.signal.aborted) break;
+              console.warn(`[ai-chat] model ${entry.model} failed — ${fallbackError instanceof Error ? fallbackError.message.slice(0, 120) : String(fallbackError)}`);
+            }
+          }
+        }
 
         if (isProviderFailure(providerResult)) {
           send({
@@ -471,7 +559,7 @@ function streamAiChatResponse({
           result: {
             ...providerResult.result,
             provider: "configured-ai-provider",
-            model: provider.model,
+            model: modelUsed,
           },
           usage: providerResult.usage,
           diagnostics: {
