@@ -8,7 +8,7 @@ import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { authHeader } from "@/lib/supabase";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { AiToolShell, type AiShellStatus } from "@/components/ai-shell/AiToolShell";
-import { DocContextBar } from "@/components/ai-shell/DocContextBar";
+import { DocPreviewPanel } from "@/components/ai-shell/DocPreviewPanel";
 import { StreamingProgressBar } from "@/components/ai-shell/StreamingOutput";
 import { CitationChip } from "@/components/ai-shell/GroundedAnswer";
 import { GroundedExplainer } from "@/components/ai-shell/GroundedExplainer";
@@ -314,6 +314,8 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
   const [dragging, setDragging] = useState(false);
   const [streamingAnswer, setStreamingAnswer] = useState("");
   const [extractProgress, setExtractProgress] = useState(0);
+  const [docThumb, setDocThumb] = useState<string | null>(null);
+  const [fileSizeMb, setFileSizeMb] = useState(0);
   const [expandedCitations, setExpandedCitations] = useState<Record<string, boolean>>({});
   const abortRef = useRef<AbortController | null>(null);
   const repickRef = useRef<HTMLInputElement | null>(null);
@@ -368,6 +370,8 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
     setMessages([]);
     setDocumentText("");
     setPageCount(0);
+    setDocThumb(null);
+    setFileSizeMb(0);
 
     if (!file) {
       setFileName("");
@@ -390,6 +394,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
     }
 
     setFileName(file.name);
+    setFileSizeMb(Math.round((file.size / 1024 / 1024) * 100) / 100);
     setIsExtracting(true);
     setExtractProgress(5);
     setStatus(copy.readingStatus);
@@ -435,6 +440,23 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
           .replace("{pages}", String(pageCount))
           .replace("{plural}", pageCount === 1 ? "" : "s"),
       );
+
+      // First-page thumbnail for the v2 left preview panel — non-critical,
+      // the panel falls back to a PDF badge if rendering fails.
+      try {
+        const firstPage = await pdf.getPage(1);
+        const viewport = firstPage.getViewport({ scale: 0.5 });
+        const canvas = document.createElement("canvas");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          await firstPage.render({ canvas, canvasContext: ctx, viewport }).promise;
+          setDocThumb(canvas.toDataURL("image/jpeg", 0.7));
+        }
+      } catch {
+        /* keep badge fallback */
+      }
     } catch (caughtError) {
       const message =
         caughtError instanceof Error ? caughtError.message : copy.extractionFailedError;
@@ -651,7 +673,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
       id="workspace"
       aria-label={copy.workspaceTitle}
       data-testid="chat-workspace"
-      className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : `mx-auto ${LAYOUT.content}`}
+      className={embedded ? "mx-auto w-full max-w-3xl px-8 pb-10 pt-4 flex flex-col" : "w-full"}
     >
       {embedded && <p className="mt-4 text-[16px] leading-[1.6] text-[color:var(--muted)]">{copy.heroTitle}</p>}
       <AiToolShell
@@ -705,28 +727,28 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
             ) : null}
           </>
         }
-        contextBar={
+        docPanel={
           activeDoc ? (
-            <div className="mx-auto max-w-3xl">
-              <DocContextBar
-                fileName={activeDocumentName}
-                meta={pageCount
-                  ? copy.pageIndexed.replace("{pages}", String(pageCount)).replace("{plural}", pageCount === 1 ? "" : "s")
-                  : sourceStats}
-                statusLabel={isAsking ? shellCopy.working : undefined}
+            <>
+              <DocPreviewPanel
+                docs={[
+                  {
+                    name: activeDocumentName,
+                    meta: `${fileSizeMb ? `${fileSizeMb} MB` : ""}${fileSizeMb && pageCount ? " · " : ""}${pageCount ? `${pageCount}p` : ""}` || undefined,
+                    thumbUrl: docThumb,
+                  },
+                ]}
                 onRepick={() => repickRef.current?.click()}
                 repickLabel={copy.choosePdf}
-                onReset={() => void processFile(undefined)}
-                resetLabel={shellCopy.reset}
                 disabled={isAsking}
               />
               <input ref={repickRef} type="file" accept="application/pdf,.pdf" className="sr-only" onChange={handleFileChange} />
-            </div>
+            </>
           ) : null
         }
         resultRegion={
           activeDoc ? (
-            <div className="mx-auto mt-4 max-w-3xl">
+            <div className="mt-4 md:mt-0">
 
           {/* Conversation */}
           <div
@@ -842,7 +864,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
         }
         actionRegion={
           activeDoc ? (
-            <div className="mx-auto mt-4 max-w-3xl">
+            <div className="mt-4">
               {/* Input */}
               <form onSubmit={askQuestion} className="rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)] p-2">
                 <div className="flex items-end gap-2">
