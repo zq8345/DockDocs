@@ -20,7 +20,7 @@
  * top-level states — that's what collapses 11 bespoke phase enums into one.
  */
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type AiShellStatus = "idle" | "ready" | "working" | "result" | "error";
 export type AiShellMode = "oneshot" | "conversational";
@@ -138,6 +138,39 @@ export function useAiToolRun<TResult>(): AiToolRun<TResult> {
   };
 }
 
+/**
+ * The conversational transcript viewport: scrolls internally and follows new
+ * content (streamed tokens / new bubbles) whenever the reader is already at
+ * the bottom — scrolling up to re-read an earlier answer is never hijacked.
+ */
+function ConversationViewport({ children }: { children: React.ReactNode }) {
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const stickRef = useRef(true);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      stickRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    const observer = new MutationObserver(() => {
+      if (stickRef.current) el.scrollTop = el.scrollHeight;
+    });
+    observer.observe(el, { childList: true, subtree: true, characterData: true });
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      observer.disconnect();
+    };
+  }, []);
+
+  return (
+    <div ref={scrollRef} data-conversation-viewport className="min-h-0 flex-1 overflow-y-auto">
+      {children}
+    </div>
+  );
+}
+
 export function AiToolShell({
   mode,
   status,
@@ -180,15 +213,21 @@ export function AiToolShell({
   explainer?: React.ReactNode;
   relatedTools?: React.ReactNode;
 }) {
-  {/* Conversational reads top-down: transcript first, input below it (a chat
-      composer sits under the messages). Oneshot acts first: button above
-      the artifact it produces. */}
+  {/* Conversational reads top-down: transcript first, composer below it —
+      and it's a LOOP, so the column is viewport-capped (70dvh, floor 28rem):
+      the transcript scrolls inside ConversationViewport while the composer
+      stays pinned at the bottom, always reachable however long the thread
+      gets. Oneshot is a one-way read (button → artifact) and keeps natural
+      page flow — that asymmetry is the definitional difference between the
+      two modes, so it lives here in the shell, not in each consumer. */}
   const interaction =
     mode === "conversational" ? (
-      <>
-        {resultRegion}
-        {actionRegion}
-      </>
+      resultRegion || actionRegion ? (
+        <div className="flex max-h-[max(28rem,70dvh)] flex-col">
+          <ConversationViewport>{resultRegion}</ConversationViewport>
+          <div className="shrink-0">{actionRegion}</div>
+        </div>
+      ) : null
     ) : (
       <>
         {actionRegion}
