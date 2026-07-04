@@ -71,6 +71,7 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
     title: { en: "Contract Risk Check — FAQ", zh: "合同风险体检常见问题", es: "Revisión de riesgos del contrato — preguntas frecuentes" },
     items: {
       en: [
+        { q: "How do I spot risky clauses in a contract?", a: "Upload your contract as a PDF and DockDocs scans it for seven common risk areas: auto-renewal traps, one-sided termination rights, uncapped liability, penalties and late fees, hidden costs, overbroad non-compete, and missing standard protections. Each risky clause is flagged red, amber, or green with a direct quote from your document and a plain-language explanation of what to ask before signing. For scanned contracts, run OCR first to add a text layer." },
         { q: "What does it check for?", a: "It scans your contract for clauses worth a second look — auto-renewal, one-sided termination or change, uncapped/unlimited liability, penalties and late fees, payment traps and hidden costs, overbroad non-compete, and missing standard protections (like no liability cap). Each finding is flagged red (high), amber (medium), or green (low), quoted from your contract, with a plain-language reason and what to ask before signing." },
         { q: "Is this legal advice?", a: "No. It's an automated review to help a non-lawyer spot clauses that deserve attention — it is not legal advice and not a substitute for a lawyer. For anything important or high-value, have a qualified attorney review it. Flagging nothing is not a guarantee the contract is safe." },
         { q: "Does it make up clauses or quotes?", a: "Every quote is verified against your actual contract text — if the AI returns a quote we can't find in your document, we drop it rather than show a fabricated citation. Missing-clause risks are shown without a quote and labelled as such. The AI can still miss things, so always read the full contract." },
@@ -78,6 +79,7 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
         { q: "Which contracts work best?", a: "Text-based PDFs (born-digital). Scanned contracts have no selectable text — run OCR first. It works in English, Chinese, Spanish and more; quotes stay in the contract's original language." },
       ],
       zh: [
+        { q: "如何识别合同中的风险条款?", a: "上传 PDF 格式的合同，DockDocs 会扫描七类常见风险点：自动续约陷阱、单方解约权、无上限责任、违约金和滞纳金、隐藏费用、过宽竞业限制，以及缺失的标准保护。每条风险条款会被标成红/黄/绿，并附上合同原文引用和白话解释，告诉你签字前该问什么。扫描版合同请先做 OCR 加文字层。" },
         { q: "它检查哪些东西?", a: "它会扫描合同里值得多看一眼的条款——自动续约、单方解约或单方变更、无上限/无限责任、违约金和滞纳金、付款陷阱和隐藏费用、过宽的竞业限制,以及缺失的标准保护(比如没有责任上限)。每条都标成 红(高)/黄(中)/绿(低),引用你合同的原文,配白话理由和签字前该问什么。" },
         { q: "这是法律意见吗?", a: "不是。这是帮非律师发现值得注意条款的自动审查,不构成法律意见,也不能替代律师。重要或金额大的合同,请让有资质的律师审。没标出问题不代表合同一定安全。" },
         { q: "它会编造条款或原文吗?", a: "每一条原文引用都会和你的合同实际文字核对——如果 AI 给出的引用在你文档里找不到,我们会丢弃它,而不是显示伪造的出处。缺失类风险不带引用并明确标注。AI 仍可能漏看,所以请完整阅读合同。" },
@@ -85,6 +87,7 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
         { q: "哪类合同效果最好?", a: "文字版 PDF(电子原生)。扫描件没有可选文字,请先做 OCR。支持中文、英文、西班牙语等;原文引用保持合同的原始语言。" },
       ],
       es: [
+        { q: "¿Cómo identifico las cláusulas de riesgo en un contrato?", a: "Sube tu contrato como PDF y DockDocs lo analiza en busca de siete áreas de riesgo comunes: renovación automática, terminación unilateral, responsabilidad ilimitada, penalidades y cargos por mora, costos ocultos, no competencia excesiva, y protecciones estándar faltantes. Cada cláusula de riesgo se marca en rojo, ámbar o verde con una cita directa de tu documento y una explicación en lenguaje llano. Para contratos escaneados, ejecuta OCR primero." },
         { q: "¿Qué revisa?", a: "Escanea tu contrato en busca de cláusulas que merecen una segunda mirada: renovación automática, terminación o cambio unilateral, responsabilidad ilimitada/sin tope, penalizaciones y recargos, trampas de pago y costos ocultos, no competencia excesiva y protecciones estándar ausentes (como la falta de tope de responsabilidad). Cada hallazgo se marca en rojo (alto), ámbar (medio) o verde (bajo), citado de tu contrato, con una razón en lenguaje claro y qué preguntar antes de firmar." },
         { q: "¿Es asesoramiento legal?", a: "No. Es una revisión automatizada para ayudar a un no abogado a detectar cláusulas que merecen atención; no es asesoramiento legal ni sustituye a un abogado. Para algo importante o de alto valor, que lo revise un abogado calificado. No marcar nada no garantiza que el contrato sea seguro." },
         { q: "¿Inventa cláusulas o citas?", a: "Cada cita se verifica contra el texto real de tu contrato: si la IA devuelve una cita que no encontramos en tu documento, la descartamos en lugar de mostrar una cita inventada. Los riesgos por cláusula ausente se muestran sin cita y se etiquetan como tales. La IA aún puede pasar cosas por alto, así que lee siempre el contrato completo." },
@@ -175,6 +178,7 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
     title: { en: "Batch Word to PDF — FAQ", zh: "批量 Word 转 PDF 常见问题", es: "Word a PDF por lotes — preguntas frecuentes" },
     items: {
       en: [
+        { q: "Can I convert .doc files or Google Docs exports in bulk?", a: "Yes. Both .doc (older format) and .docx (modern format) are supported. If your files are from Google Docs, export them first: in Google Docs go to File → Download → Microsoft Word (.docx), then drop the downloaded files here. You can mix .doc and .docx in the same batch." },
         { q: "How do I convert several Word files to PDF at once?", a: "Drop your Word files onto the page — or a whole folder — then click Convert all. Each .doc or .docx is converted to PDF one by one, and when they finish you click Download ZIP to get them all in a single archive." },
         { q: "Which Word formats are supported?", a: "Both modern .docx and legacy .doc, plus OpenDocument text (.odt) and .rtf. For mixed batches of Word, PowerPoint and Excel together, use the general Office to PDF tool instead." },
         { q: "Will the PDF look exactly like the original?", a: "Conversion uses LibreOffice — the same engine behind our single-file Word to PDF tool. For typical documents the result is faithful, but unusual fonts, macros, or very complex layouts can shift slightly, so check anything formatting-sensitive." },
@@ -182,6 +186,7 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
         { q: "Are my files uploaded, and is it free?", a: "It's free with no account. Office conversion runs on our own server, so each file is sent there, converted to PDF, and returned — it is not stored or kept afterwards." },
       ],
       zh: [
+        { q: "能批量转换 .doc 文件或 Google Docs 导出的文件吗？", a: "可以。批量转换器同时支持旧版 .doc 和新版 .docx 格式。如果文件来自 Google Docs，请先导出：在 Google Docs 里点「文件」→「下载」→「Microsoft Word(.docx)」，然后把下载的文件拖到这里转换。.doc 和 .docx 可以混在同一批。" },
         { q: "怎么一次把多个 Word 文件转成 PDF？", a: "把 Word 文件拖到页面上——也可以直接拖入整个文件夹——再点「全部转换」。每个 .doc 或 .docx 逐个转成 PDF，完成后点「下载 ZIP」打包一起拿回。" },
         { q: "支持哪些 Word 格式？", a: "新版 .docx 和旧版 .doc 都支持，另外还有 OpenDocument 文本(.odt)和 .rtf。如果要把 Word、PowerPoint、Excel 混在一批，请改用通用的「Office 转 PDF」工具。" },
         { q: "转出的 PDF 会和原件一模一样吗？", a: "转换使用 LibreOffice——和我们单文件「Word 转 PDF」工具相同的引擎。常规文档结果忠实，但特殊字体、宏或非常复杂的排版可能略有偏移，对格式敏感的文件请检查一下。" },
@@ -189,6 +194,7 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
         { q: "文件会被上传吗？免费吗？", a: "免费、无需注册。Office 转换在我们自己的服务器上完成，所以每个文件会被发送到服务器转成 PDF 后返回——转换后不会保存或留存。" },
       ],
       es: [
+        { q: "¿Puedo convertir archivos .doc o exportaciones de Google Docs en lote?", a: "Sí. El convertidor por lotes admite tanto el formato antiguo .doc como el moderno .docx. Si tus archivos son de Google Docs, expórtalos primero: en Google Docs ve a Archivo → Descargar → Microsoft Word (.docx) y luego arrastra los archivos descargados aquí. Puedes mezclar .doc y .docx en el mismo lote." },
         { q: "¿Cómo convierto varios archivos de Word a PDF a la vez?", a: "Arrastra tus archivos de Word a la página (o una carpeta entera) y haz clic en Convertir todo. Cada .doc o .docx se convierte a PDF uno por uno y, al terminar, pulsa Descargar ZIP para obtenerlos todos en un solo archivo." },
         { q: "¿Qué formatos de Word se admiten?", a: "Tanto el moderno .docx como el antiguo .doc, además de OpenDocument de texto (.odt) y .rtf. Para lotes mixtos de Word, PowerPoint y Excel juntos, usa la herramienta general de Office a PDF." },
         { q: "¿El PDF quedará exactamente igual que el original?", a: "La conversión usa LibreOffice, el mismo motor de nuestra herramienta de un solo archivo Word a PDF. Para documentos típicos el resultado es fiel, pero fuentes poco comunes, macros o diseños muy complejos pueden variar un poco; revisa lo que sea sensible al formato." },
