@@ -1,7 +1,7 @@
 "use client";
 
 import { trackToolRun } from "@/lib/track";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { toHant, deepHant } from "@/lib/zh-hant";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
@@ -319,7 +319,15 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
   const [expandedCitations, setExpandedCitations] = useState<Record<string, boolean>>({});
   const abortRef = useRef<AbortController | null>(null);
   const repickRef = useRef<HTMLInputElement | null>(null);
+  const conversationEndRef = useRef<HTMLDivElement | null>(null);
   const shellCopy = resolveAiToolCopy(CHAT_SHELL_COPY, locale);
+
+  // A submitted question always jumps the transcript to the newest exchange,
+  // even when the reader had scrolled up (the shell viewport only follows
+  // content while already at the bottom).
+  useEffect(() => {
+    conversationEndRef.current?.scrollIntoView({ block: "nearest" });
+  }, [messages.length]);
 
   const canAsk = useMemo(
     () => documentText.trim().length > 0 && question.trim().length > 0 && !isAsking,
@@ -857,6 +865,7 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
               </div>
             ) : null}
           </div>
+          <div ref={conversationEndRef} aria-hidden="true" />
 
               {limitHit !== null ? (
                 <div className="mt-4">
