@@ -6,7 +6,6 @@ import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workfl
 
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
-import { Spinner } from "@/components/Spinner";
 import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 import { formatBytes } from "@/lib/files";
 
