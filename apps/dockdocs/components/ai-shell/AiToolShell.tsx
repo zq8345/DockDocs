@@ -217,8 +217,10 @@ export function AiToolShell({
                 {resultRegion}
               </>
             ) : (
+              /* Natural flow on BOTH halves — no inner scroll boxes (Joe:
+                 小滚动区滚长文档太痛苦); unequal column heights are expected. */
               <div className="md:grid md:grid-cols-2 md:items-start md:gap-6">
-                <div className="md:sticky md:top-4 md:max-h-[calc(100vh-2rem)] md:overflow-y-auto">{docPanel}</div>
+                <div className="min-w-0">{docPanel}</div>
                 <div className="mt-4 min-w-0 md:mt-0">{resultRegion}</div>
               </div>
             )}
