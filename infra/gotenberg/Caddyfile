@@ -63,3 +63,15 @@
 		}
 	}
 }
+
+# Umami analytics (analytics.dockdocs.app → umami container, attached to the
+# shared gotenberg_edge network with alias "umami"). PUBLIC — no key gate:
+# script.js + /api/send must be reachable from every visitor's browser; the
+# dashboard has its own login.
+# ⚠️ This block MUST live in THIS repo file: the box mounts it into the caddy
+# container. It once existed only as an uncommitted edit on the box, and the
+# 2026-07-02 hardening deploy clobbered it → analytics TLS was down ~2 days
+# (fixed 2026-07-04). Repo file = the only source of truth.
+analytics.dockdocs.app {
+	reverse_proxy umami:3000
+}
