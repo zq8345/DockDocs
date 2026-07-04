@@ -1067,9 +1067,9 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
-        <div className="flex flex-col" style={{ height: embedded ? "calc(100dvh - 13rem)" : "calc(100dvh - 10.5rem)", minHeight: 480 }}>
-          {/* Toolbar spans the full editor width (leftmost edge included) */}
-          <div className="rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
+        <div className="flex flex-col overflow-hidden rounded-[12px] border border-[color:var(--line)]" style={{ height: embedded ? "calc(100dvh - 13rem)" : "calc(100dvh - 10.5rem)", minHeight: 480 }}>
+          {/* Container HEAD: the constant toolbar (WorkArea panel language) */}
+          <div className="shrink-0 border-b border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
             {/* Row 1 (constant): file info left, undo/redo + download right.
                 No flex-wrap — a long filename truncates instead of reflowing
                 the toolbar (hover shows the full name). */}
@@ -1188,12 +1188,6 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               </div>
             )}
           </div>
-          <p className="mt-2 shrink-0 text-[12px] text-[color:var(--faint)]">
-            {whiteoutMode ? t.whiteoutHint : redactMode ? t.redactHint : inkMode ? t.drawHint : t.hint}
-            {state.elements.some((el) => el.type === "redact") && (
-              <span className="ml-2 text-[#fbbf24]">{t.redactBakeNote}</span>
-            )}
-          </p>
 
           <input
             ref={imageInputRef}
@@ -1218,7 +1212,8 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
             }}
           />
 
-          <div className="mt-3 flex min-h-0 flex-1 gap-3">
+          {/* Container BODY: rail + single-page canvas */}
+          <div className="flex min-h-0 flex-1 gap-3 p-3">
             {/* Left: page rail — top aligned with the canvas top, own scroll */}
             <ThumbRail
               pages={pages}
@@ -1282,6 +1277,13 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 </div>
               )}
             </div>
+          </div>
+          {/* Container FOOTER: mode hint + redact raster warning */}
+          <div className="shrink-0 border-t border-[color:var(--line)] px-4 py-2 text-[12px] text-[color:var(--faint)]">
+            {whiteoutMode ? t.whiteoutHint : redactMode ? t.redactHint : inkMode ? t.drawHint : t.hint}
+            {state.elements.some((el) => el.type === "redact") && (
+              <span className="ml-2 text-[#fbbf24]">{t.redactBakeNote}</span>
+            )}
           </div>
         </div>
       )}
