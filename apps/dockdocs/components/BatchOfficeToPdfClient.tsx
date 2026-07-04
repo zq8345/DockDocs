@@ -50,6 +50,7 @@ const _en = {
   failed: "failed",
   need: "Add at least one Office file.",
   hint: "Word, PowerPoint, Excel",
+  choose: "Choose Office files",
   note: "Files are converted to PDF and returned — they are not stored. All popular Office formats are supported.",
   err: "Something went wrong: ",
 };
@@ -70,6 +71,7 @@ const STR = {
     failed: "失败",
     need: "至少添加一个 Office 文件。",
     hint: "Word、PowerPoint、Excel",
+    choose: "选择 Office 文件",
     note: "文件转换成 PDF 后返回，不会被保存。支持所有主流 Office 格式。",
     err: "出错了：",
   },
@@ -87,6 +89,7 @@ const STR = {
     failed: "falló",
     need: "Agrega al menos un archivo de Office.",
     hint: "Word, PowerPoint, Excel",
+    choose: "Elegir archivos de Office",
     note: "Los archivos se convierten a PDF y se devuelven — no se almacenan. Se admiten todos los formatos de Office más habituales.",
     err: "Algo salió mal: ",
   },
@@ -104,6 +107,7 @@ const STR = {
     failed: "falhou",
     need: "Adicione pelo menos um arquivo do Office.",
     hint: "Word, PowerPoint, Excel",
+    choose: "Escolher arquivos do Office",
     note: "Os arquivos são convertidos para PDF e devolvidos — não são armazenados. Todos os formatos de Office mais comuns são suportados.",
     err: "Algo deu errado: ",
   },
@@ -121,6 +125,7 @@ const STR = {
     failed: "échec",
     need: "Ajoutez au moins un fichier Office.",
     hint: "Word, PowerPoint, Excel",
+    choose: "Choisir des fichiers Office",
     note: "Les fichiers sont convertis en PDF et renvoyés — ils ne sont pas conservés. Tous les formats Office courants sont pris en charge.",
     err: "Une erreur s'est produite : ",
   },
@@ -138,6 +143,7 @@ const STR = {
     failed: "失敗",
     need: "Officeファイルを1つ以上追加してください。",
     hint: "Word、PowerPoint、Excel",
+    choose: "Officeファイルを選択",
     note: "ファイルはPDFに変換後に返却されます。保存はされません。主要なOfficeフォーマットすべてに対応しています。",
     err: "問題が発生しました: ",
   },
@@ -155,6 +161,7 @@ const STR = {
     failed: "fehlgeschlagen",
     need: "Fügen Sie mindestens eine Office-Datei hinzu.",
     hint: "Word, PowerPoint, Excel",
+    choose: "Office-Dateien auswählen",
     note: "Die Dateien werden zu PDF konvertiert und zurückgegeben – sie werden nicht gespeichert. Alle gängigen Office-Formate werden unterstützt.",
     err: "Etwas ist schiefgelaufen: ",
   },
@@ -172,6 +179,7 @@ const STR = {
     failed: "실패",
     need: "Office 파일을 하나 이상 추가해 주세요.",
     hint: "Word, PowerPoint, Excel",
+    choose: "Office 파일 선택",
     note: "파일은 PDF로 변환되어 반환되며, 저장되지 않습니다. 모든 주요 Office 형식을 지원합니다.",
     err: "문제가 발생했습니다: ",
   },
@@ -185,37 +193,39 @@ const SRC: Record<Source, { ext: string[]; route: "word-to-pdf" | "excel-to-pdf"
   ppt: { ext: [".ppt", ".pptx", ".odp"], route: "ppt-to-pdf", accept: ".ppt,.pptx,.odp,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" },
 };
 
-// Per-source heading/subtitle/hint (native) for the split single-format pages.
-const PS: Record<Source, Record<CopyLocale, { title: string; subtitle: string; hint: string }>> = {
+// Per-source heading/subtitle/hint/choose (native) for the split single-format pages.
+// `choose` is the upload-button label — it must follow the ACCEPTED type (Joe/测试窗:
+// the batch trio said "选择 PDF" while accepting Word/Excel/PPT).
+const PS: Record<Source, Record<CopyLocale, { title: string; subtitle: string; hint: string; choose: string }>> = {
   word: {
-    en: { title: "Batch Word to PDF", subtitle: "Convert a whole folder of Word documents to PDF in one go — each is converted and packaged into a single ZIP.", hint: "Word documents" },
-    zh: { title: "批量 Word 转 PDF", subtitle: "把整个文件夹的 Word 文档一次性全部转成 PDF，打包成一个 ZIP。", hint: "Word 文档" },
-    es: { title: "Word a PDF por lotes", subtitle: "Convierte una carpeta entera de documentos Word a PDF de una vez: cada uno se convierte y se empaqueta en un solo ZIP.", hint: "Documentos Word" },
-    pt: { title: "Word para PDF em lote", subtitle: "Converta uma pasta inteira de documentos Word para PDF de uma vez: cada um é convertido e empacotado em um único ZIP.", hint: "Documentos Word" },
-    fr: { title: "Word en PDF par lots", subtitle: "Convertissez un dossier entier de documents Word en PDF en une seule fois — chaque fichier est converti et regroupé dans un seul ZIP.", hint: "Documents Word" },
-    ja: { title: "WordをPDFに一括変換", subtitle: "フォルダ内のWord文書をまとめてPDFに変換し、1つのZIPにまとめます。", hint: "Word文書" },
-    de: { title: "Word stapelweise zu PDF", subtitle: "Konvertieren Sie einen ganzen Ordner mit Word-Dokumenten in einem Durchgang zu PDF – jede Datei wird konvertiert und in einem einzigen ZIP gebündelt.", hint: "Word-Dokumente" },
-    ko: { title: "Word를 PDF로 일괄 변환", subtitle: "폴더 안의 Word 문서를 한 번에 PDF로 변환하여 하나의 ZIP으로 묶습니다.", hint: "Word 문서" },
+    en: { title: "Batch Word to PDF", subtitle: "Convert a whole folder of Word documents to PDF in one go — each is converted and packaged into a single ZIP.", hint: "Word documents", choose: "Choose Word files" },
+    zh: { title: "批量 Word 转 PDF", subtitle: "把整个文件夹的 Word 文档一次性全部转成 PDF，打包成一个 ZIP。", hint: "Word 文档", choose: "选择 Word 文件" },
+    es: { title: "Word a PDF por lotes", subtitle: "Convierte una carpeta entera de documentos Word a PDF de una vez: cada uno se convierte y se empaqueta en un solo ZIP.", hint: "Documentos Word", choose: "Elegir archivos Word" },
+    pt: { title: "Word para PDF em lote", subtitle: "Converta uma pasta inteira de documentos Word para PDF de uma vez: cada um é convertido e empacotado em um único ZIP.", hint: "Documentos Word", choose: "Escolher arquivos Word" },
+    fr: { title: "Word en PDF par lots", subtitle: "Convertissez un dossier entier de documents Word en PDF en une seule fois — chaque fichier est converti et regroupé dans un seul ZIP.", hint: "Documents Word", choose: "Choisir des fichiers Word" },
+    ja: { title: "WordをPDFに一括変換", subtitle: "フォルダ内のWord文書をまとめてPDFに変換し、1つのZIPにまとめます。", hint: "Word文書", choose: "Wordファイルを選択" },
+    de: { title: "Word stapelweise zu PDF", subtitle: "Konvertieren Sie einen ganzen Ordner mit Word-Dokumenten in einem Durchgang zu PDF – jede Datei wird konvertiert und in einem einzigen ZIP gebündelt.", hint: "Word-Dokumente", choose: "Word-Dateien auswählen" },
+    ko: { title: "Word를 PDF로 일괄 변환", subtitle: "폴더 안의 Word 문서를 한 번에 PDF로 변환하여 하나의 ZIP으로 묶습니다.", hint: "Word 문서", choose: "Word 파일 선택" },
   },
   excel: {
-    en: { title: "Batch Excel to PDF", subtitle: "Convert a whole folder of Excel spreadsheets to PDF in one go — each is converted and packaged into a single ZIP.", hint: "Excel spreadsheets" },
-    zh: { title: "批量 Excel 转 PDF", subtitle: "把整个文件夹的 Excel 表格一次性全部转成 PDF，打包成一个 ZIP。", hint: "Excel 表格" },
-    es: { title: "Excel a PDF por lotes", subtitle: "Convierte una carpeta entera de hojas de cálculo Excel a PDF de una vez: cada una se convierte y se empaqueta en un solo ZIP.", hint: "Hojas de cálculo Excel" },
-    pt: { title: "Excel para PDF em lote", subtitle: "Converta uma pasta inteira de planilhas Excel para PDF de uma vez: cada uma é convertida e empacotada em um único ZIP.", hint: "Planilhas Excel" },
-    fr: { title: "Excel en PDF par lots", subtitle: "Convertissez un dossier entier de feuilles de calcul Excel en PDF en une seule fois — chaque fichier est converti et regroupé dans un seul ZIP.", hint: "Feuilles de calcul Excel" },
-    ja: { title: "ExcelをPDFに一括変換", subtitle: "フォルダ内のExcelスプレッドシートをまとめてPDFに変換し、1つのZIPにまとめます。", hint: "Excelスプレッドシート" },
-    de: { title: "Excel stapelweise zu PDF", subtitle: "Konvertieren Sie einen ganzen Ordner mit Excel-Tabellen in einem Durchgang zu PDF – jede Datei wird konvertiert und in einem einzigen ZIP gebündelt.", hint: "Excel-Tabellen" },
-    ko: { title: "Excel을 PDF로 일괄 변환", subtitle: "폴더 안의 Excel 스프레드시트를 한 번에 PDF로 변환하여 하나의 ZIP으로 묶습니다.", hint: "Excel 스프레드시트" },
+    en: { title: "Batch Excel to PDF", subtitle: "Convert a whole folder of Excel spreadsheets to PDF in one go — each is converted and packaged into a single ZIP.", hint: "Excel spreadsheets", choose: "Choose Excel files" },
+    zh: { title: "批量 Excel 转 PDF", subtitle: "把整个文件夹的 Excel 表格一次性全部转成 PDF，打包成一个 ZIP。", hint: "Excel 表格", choose: "选择 Excel 文件" },
+    es: { title: "Excel a PDF por lotes", subtitle: "Convierte una carpeta entera de hojas de cálculo Excel a PDF de una vez: cada una se convierte y se empaqueta en un solo ZIP.", hint: "Hojas de cálculo Excel", choose: "Elegir archivos Excel" },
+    pt: { title: "Excel para PDF em lote", subtitle: "Converta uma pasta inteira de planilhas Excel para PDF de uma vez: cada uma é convertida e empacotada em um único ZIP.", hint: "Planilhas Excel", choose: "Escolher arquivos Excel" },
+    fr: { title: "Excel en PDF par lots", subtitle: "Convertissez un dossier entier de feuilles de calcul Excel en PDF en une seule fois — chaque fichier est converti et regroupé dans un seul ZIP.", hint: "Feuilles de calcul Excel", choose: "Choisir des fichiers Excel" },
+    ja: { title: "ExcelをPDFに一括変換", subtitle: "フォルダ内のExcelスプレッドシートをまとめてPDFに変換し、1つのZIPにまとめます。", hint: "Excelスプレッドシート", choose: "Excelファイルを選択" },
+    de: { title: "Excel stapelweise zu PDF", subtitle: "Konvertieren Sie einen ganzen Ordner mit Excel-Tabellen in einem Durchgang zu PDF – jede Datei wird konvertiert und in einem einzigen ZIP gebündelt.", hint: "Excel-Tabellen", choose: "Excel-Dateien auswählen" },
+    ko: { title: "Excel을 PDF로 일괄 변환", subtitle: "폴더 안의 Excel 스프레드시트를 한 번에 PDF로 변환하여 하나의 ZIP으로 묶습니다.", hint: "Excel 스프레드시트", choose: "Excel 파일 선택" },
   },
   ppt: {
-    en: { title: "Batch PPT to PDF", subtitle: "Convert a whole folder of PowerPoint presentations to PDF in one go — each is converted and packaged into a single ZIP.", hint: "PowerPoint slides" },
-    zh: { title: "批量 PPT 转 PDF", subtitle: "把整个文件夹的 PowerPoint 演示文稿一次性全部转成 PDF，打包成一个 ZIP。", hint: "PowerPoint 演示文稿" },
-    es: { title: "PPT a PDF por lotes", subtitle: "Convierte una carpeta entera de presentaciones de PowerPoint a PDF de una vez: cada una se convierte y se empaqueta en un solo ZIP.", hint: "Presentaciones PowerPoint" },
-    pt: { title: "PPT para PDF em lote", subtitle: "Converta uma pasta inteira de apresentações do PowerPoint para PDF de uma vez: cada uma é convertida e empacotada em um único ZIP.", hint: "Apresentações PowerPoint" },
-    fr: { title: "PPT en PDF par lots", subtitle: "Convertissez un dossier entier de présentations PowerPoint en PDF en une seule fois — chaque fichier est converti et regroupé dans un seul ZIP.", hint: "Présentations PowerPoint" },
-    ja: { title: "PowerPointをPDFに一括変換", subtitle: "フォルダ内のPowerPointプレゼンテーションをまとめてPDFに変換し、1つのZIPにまとめます。", hint: "PowerPointスライド" },
-    de: { title: "PPT stapelweise zu PDF", subtitle: "Konvertieren Sie einen ganzen Ordner mit PowerPoint-Präsentationen in einem Durchgang zu PDF – jede Datei wird konvertiert und in einem einzigen ZIP gebündelt.", hint: "PowerPoint-Folien" },
-    ko: { title: "PPT를 PDF로 일괄 변환", subtitle: "폴더 안의 PowerPoint 프레젠테이션을 한 번에 PDF로 변환하여 하나의 ZIP으로 묶습니다.", hint: "PowerPoint 슬라이드" },
+    en: { title: "Batch PPT to PDF", subtitle: "Convert a whole folder of PowerPoint presentations to PDF in one go — each is converted and packaged into a single ZIP.", hint: "PowerPoint slides", choose: "Choose PowerPoint files" },
+    zh: { title: "批量 PPT 转 PDF", subtitle: "把整个文件夹的 PowerPoint 演示文稿一次性全部转成 PDF，打包成一个 ZIP。", hint: "PowerPoint 演示文稿", choose: "选择 PowerPoint 文件" },
+    es: { title: "PPT a PDF por lotes", subtitle: "Convierte una carpeta entera de presentaciones de PowerPoint a PDF de una vez: cada una se convierte y se empaqueta en un solo ZIP.", hint: "Presentaciones PowerPoint", choose: "Elegir archivos PowerPoint" },
+    pt: { title: "PPT para PDF em lote", subtitle: "Converta uma pasta inteira de apresentações do PowerPoint para PDF de uma vez: cada uma é convertida e empacotada em um único ZIP.", hint: "Apresentações PowerPoint", choose: "Escolher arquivos PowerPoint" },
+    fr: { title: "PPT en PDF par lots", subtitle: "Convertissez un dossier entier de présentations PowerPoint en PDF en une seule fois — chaque fichier est converti et regroupé dans un seul ZIP.", hint: "Présentations PowerPoint", choose: "Choisir des fichiers PowerPoint" },
+    ja: { title: "PowerPointをPDFに一括変換", subtitle: "フォルダ内のPowerPointプレゼンテーションをまとめてPDFに変換し、1つのZIPにまとめます。", hint: "PowerPointスライド", choose: "PowerPointファイルを選択" },
+    de: { title: "PPT stapelweise zu PDF", subtitle: "Konvertieren Sie einen ganzen Ordner mit PowerPoint-Präsentationen in einem Durchgang zu PDF – jede Datei wird konvertiert und in einem einzigen ZIP gebündelt.", hint: "PowerPoint-Folien", choose: "PowerPoint-Dateien auswählen" },
+    ko: { title: "PPT를 PDF로 일괄 변환", subtitle: "폴더 안의 PowerPoint 프레젠테이션을 한 번에 PDF로 변환하여 하나의 ZIP으로 묶습니다.", hint: "PowerPoint 슬라이드", choose: "PowerPoint 파일 선택" },
   },
 };
 
@@ -230,7 +240,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source, embedded = false
   const maxFiles = MAX_FILES;
   const head = source
     ? (locale === "zh-Hant" ? deepHant(PS[source].zh) : PS[source][al])
-    : { title: t.title, subtitle: t.subtitle, hint: t.hint };
+    : { title: t.title, subtitle: t.subtitle, hint: t.hint, choose: t.choose };
   const exts = source ? SRC[source].ext : OFFICE_EXT;
   const accept = source ? SRC[source].accept : ACCEPT;
   const [items, setItems] = useState<Item[]>([]);
@@ -358,6 +368,7 @@ export function BatchOfficeToPdfClient({ locale = "en", source, embedded = false
           accept={accept}
           extensions={exts}
           hint={head.hint}
+          chooseLabel={head.choose}
           privacyLabel={null}
           embedded={embedded}
           valueZone="server"
