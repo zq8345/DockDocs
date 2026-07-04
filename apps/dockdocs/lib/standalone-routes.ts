@@ -51,4 +51,5 @@ export const standaloneRoutes = [
   "ai-contract-risk-for-legal-teams",
   "ai-document-workspace",
   "upgrade",
+  "how-to-redline-a-contract",
 ] as const;
