@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 // FAQ — 真实能力、与实现相符；可被 AI 引擎引用的清晰事实块
 const FAQ = [
   {
-    question: "How do I chat with a PDF?",
+    question: "How do I chat with a PDF or document?",
     answer:
       "Upload your PDF, then type a question about its content. The AI reads the document and answers using what is actually in the file — for example asking for a deadline, a clause, a figure, or a summary of a section.",
   },
