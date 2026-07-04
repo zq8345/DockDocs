@@ -6,7 +6,7 @@
 // module that converts between spaces (screen ↔ normalized ↔ PDF pt) — never
 // convert inline in a component.
 
-export type ElementType = "text" | "image" | "shape" | "highlight" | "ink";
+export type ElementType = "text" | "image" | "signature" | "watermark" | "pagenum" | "redact" | "whiteout" | "shape" | "highlight" | "ink";
 
 export type BaseElement = {
   id: string;
@@ -41,6 +41,74 @@ export type ImageElement = BaseElement & {
   opacity: number;
 };
 
+/** Hand-drawn or typed signature, rasterized to a PNG data URL (the proven
+ *  SignPdfClient pad/type→canvas path). Renders and bakes like an image;
+ *  its own type keeps the panel UX and future per-signature features clean. */
+export type SignatureElement = BaseElement & {
+  type: "signature";
+  src: string; // PNG data URL
+  opacity: number;
+};
+
+/** Repeating watermark. Unlike every other element it applies to a PAGE
+ *  RANGE: the same normalized rect/rotation is rendered and baked on every
+ *  page in [pageFrom, pageTo] (0-based, inclusive); `page` is the anchor the
+ *  element was created on. Text mode rasterizes at bake (rotation ≈ always
+ *  set); image mode reuses the image pipeline per page. */
+export type WatermarkElement = BaseElement & {
+  type: "watermark";
+  mode: "text" | "image";
+  text: string;
+  /** image mode: PNG/JPEG data URL. */
+  src?: string;
+  mime?: "image/png" | "image/jpeg";
+  sizePt: number;
+  color: string;
+  opacity: number;
+  pageFrom: number;
+  pageTo: number;
+};
+
+/** Page-number stamp repeating across [pageFrom, pageTo]. The template's
+ *  {page} expands to startAt + offset-within-range and {total} to the range
+ *  length — classic "Page X of Y" when the range is the whole document.
+ *  Same rect on every page (PageNumbersClient anchoring generalized to free
+ *  placement). */
+export type PageNumberElement = BaseElement & {
+  type: "pagenum";
+  template: string;
+  startAt: number;
+  sizePt: number;
+  color: string;
+  pageFrom: number;
+  pageTo: number;
+};
+
+export function expandPageTemplate(el: PageNumberElement, pageIndex: number): string {
+  const from = Math.min(el.pageFrom, el.pageTo);
+  const to = Math.max(el.pageFrom, el.pageTo);
+  return el.template
+    .replaceAll("{page}", String(el.startAt + (pageIndex - from)))
+    .replaceAll("{total}", String(to - from + 1));
+}
+
+/** Whiteout patch for cover-and-retype ("遮盖替换" — honest naming: it
+ *  COVERS the original text with a background-sampled solid box, it does not
+ *  edit it; the original stays underneath). Bakes as a vector rectangle
+ *  (non-destructive), usually paired with a TextElement typed on top. */
+export type WhiteoutElement = BaseElement & {
+  type: "whiteout";
+  color: string;
+};
+
+/** True redaction box. At bake, every page carrying one is DESTRUCTIVELY
+ *  rasterized (full-page image with opaque black painted over each box) so
+ *  the text underneath is destroyed, not covered — the RedactPdfClient
+ *  guarantee, generalized. Overlay elements are drawn on top afterwards. */
+export type RedactElement = BaseElement & {
+  type: "redact";
+};
+
 export type ShapeElement = BaseElement & {
   type: "shape"; // rectangle (A1)
   /** null = no fill. */
@@ -68,9 +136,24 @@ export type InkElement = BaseElement & {
 export type EditorElement =
   | TextElement
   | ImageElement
+  | SignatureElement
+  | WatermarkElement
+  | PageNumberElement
+  | RedactElement
+  | WhiteoutElement
   | ShapeElement
   | HighlightElement
   | InkElement;
+
+/** Pages an element renders/bakes on (watermarks and page numbers span a range). */
+export function elementPages(el: EditorElement, pageCount: number): number[] {
+  if (el.type !== "watermark" && el.type !== "pagenum") return [el.page];
+  const from = Math.max(0, Math.min(el.pageFrom, el.pageTo));
+  const to = Math.min(pageCount - 1, Math.max(el.pageFrom, el.pageTo));
+  const out: number[] = [];
+  for (let i = from; i <= to; i++) out.push(i);
+  return out;
+}
 
 export type PageInfo = {
   /** 0-based. */
@@ -81,3 +164,29 @@ export type PageInfo = {
   /** hPt / wPt — reserves layout space before the lazy raster arrives. */
   ratio: number;
 };
+
+/** One entry in the editable page list (page management: insert/delete/
+ *  rotate/reorder — the InsertPdfClient copyPages engine generalized).
+ *  `src: null` is a blank page. `rotate` is the user's extra view rotation
+ *  (CW degrees, on top of the source page's own /Rotate). wPt/hPt are the
+ *  CURRENT view size (rotation already applied). */
+export type PageRef = {
+  src: { doc: "main" | string; page: number } | null;
+  rotate: 0 | 90 | 180 | 270;
+  wPt: number;
+  hPt: number;
+};
+
+export const pageInfoOf = (ref: PageRef, index: number): PageInfo => ({
+  index,
+  wPt: ref.wPt,
+  hPt: ref.hPt,
+  ratio: ref.hPt / ref.wPt,
+});
+
+/** Rotate a normalized view rect (top-left origin) by 90° CW — used when the
+ *  USER rotates a page so its elements visually follow. Derivation: point
+ *  (x,y) → (1−y, x); a rect's new top-left is its old bottom-left mapped. */
+export function rotateRectCW(r: { x: number; y: number; w: number; h: number }): { x: number; y: number; w: number; h: number } {
+  return { x: 1 - r.y - r.h, y: r.x, w: r.h, h: r.w };
+}

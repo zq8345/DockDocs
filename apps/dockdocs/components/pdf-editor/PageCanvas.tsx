@@ -17,7 +17,7 @@ import {
   type Dispatch,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import type { EditorElement, PageInfo, TextElement } from "./editor-types";
+import { expandPageTemplate, type EditorElement, type PageInfo, type TextElement } from "./editor-types";
 import type { EditorAction } from "./editor-store";
 import {
   FONT_STACK,
@@ -72,9 +72,16 @@ export function PageCanvas({
   inkMode,
   inkStyle,
   onInkStroke,
+  redactMode,
+  onRedactRect,
+  onRedactTap,
+  whiteoutMode,
+  onWhiteoutRect,
+  onWhiteoutTap,
   pageLabel,
   editPlaceholder,
   removeLabel,
+  showLabel = true,
 }: {
   page: PageInfo;
   elements: EditorElement[];
@@ -90,16 +97,30 @@ export function PageCanvas({
   inkStyle: InkStyle;
   /** Completed freehand stroke in page fractions. */
   onInkStroke: (pageIndex: number, points: Array<[number, number]>) => void;
+  redactMode: boolean;
+  /** Completed redact drag in page fractions. */
+  onRedactRect: (pageIndex: number, rect: { x: number; y: number; w: number; h: number }) => void;
+  /** Click (no drag) in redact mode — word auto-boxing upstream. */
+  onRedactTap: (pageIndex: number, x: number, y: number) => void;
+  whiteoutMode: boolean;
+  /** Completed whiteout drag; color sampled from the page ground. */
+  onWhiteoutRect: (pageIndex: number, rect: { x: number; y: number; w: number; h: number }, color: string) => void;
+  /** Click in whiteout mode — cover-and-retype upstream. */
+  onWhiteoutTap: (pageIndex: number, x: number, y: number, color: string) => void;
   pageLabel: string;
   editPlaceholder: string;
   /** Localized label for the element delete button (aria/tooltip). */
   removeLabel: string;
+  /** Single-page view hides the caption (the rail already shows numbers). */
+  showLabel?: boolean;
 }) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [bitmap, setBitmap] = useState<string | null>(null);
   const requested = useRef(false);
   const [stroke, setStroke] = useState<Array<[number, number]> | null>(null);
   const strokeRef = useRef<Array<[number, number]> | null>(null);
+  const [redactDraft, setRedactDraft] = useState<{ x0: number; y0: number; x1: number; y1: number } | null>(null);
+  const redactRef = useRef<{ x0: number; y0: number; x1: number; y1: number } | null>(null);
 
   // Lazy raster with release-on-exit: render as the page approaches the
   // viewport, drop the bitmap once it scrolls far away — long documents keep
@@ -152,13 +173,51 @@ export function PageCanvas({
   // reaching the frame is blank page / bitmap. Skipped while another element
   // is in edit mode — its blur must resolve first (one edit at a time).
   const onBgDoubleClick = (e: React.MouseEvent) => {
-    if (inkMode || editingId !== null) return;
+    if (inkMode || redactMode || whiteoutMode || editingId !== null) return;
     const p = framePoint(e);
     onAddTextAt(page.index, p.x, p.y);
   };
 
-  // ── Ink drawing (freehand) ──
+  // Sample the page ground color near a point (a little ABOVE it — the point
+  // itself is usually ink). Dark or missing sample falls back to white.
+  const sampleBg = (nx: number, ny: number): Promise<string> =>
+    new Promise((resolve) => {
+      if (!bitmap) return resolve("#ffffff");
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const c = document.createElement("canvas");
+          c.width = 1;
+          c.height = 1;
+          const ctx = c.getContext("2d");
+          if (!ctx) return resolve("#ffffff");
+          const sx = Math.max(0, Math.min(img.width - 3, nx * img.width - 1));
+          const sy = Math.max(0, Math.min(img.height - 3, (ny - 0.02) * img.height - 1));
+          ctx.drawImage(img, sx, sy, 3, 3, 0, 0, 1, 1);
+          const d = ctx.getImageData(0, 0, 1, 1).data;
+          const lum = (0.299 * d[0] + 0.587 * d[1] + 0.114 * d[2]) / 255;
+          if (lum < 0.35) return resolve("#ffffff");
+          const hex = (v: number) => v.toString(16).padStart(2, "0");
+          resolve(`#${hex(d[0])}${hex(d[1])}${hex(d[2])}`);
+        } catch {
+          resolve("#ffffff");
+        }
+      };
+      img.onerror = () => resolve("#ffffff");
+      img.src = bitmap;
+    });
+
+  // ── Mode gestures on the frame: ink (freehand) / box modes (redact &
+  // whiteout: drag-box or tap) ──
+  const boxMode = redactMode || whiteoutMode;
   const onFramePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (boxMode) {
+      e.currentTarget.setPointerCapture(e.pointerId);
+      const p = framePoint(e);
+      redactRef.current = { x0: p.x, y0: p.y, x1: p.x, y1: p.y };
+      setRedactDraft(redactRef.current);
+      return;
+    }
     if (!inkMode) {
       if (e.target === e.currentTarget) dispatch({ type: "select", id: null });
       return;
@@ -169,12 +228,37 @@ export function PageCanvas({
     setStroke(strokeRef.current);
   };
   const onFramePointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (boxMode && redactRef.current) {
+      const p = framePoint(e);
+      redactRef.current = { ...redactRef.current, x1: p.x, y1: p.y };
+      setRedactDraft(redactRef.current);
+      return;
+    }
     if (!inkMode || !strokeRef.current) return;
     const p = framePoint(e);
     strokeRef.current = [...strokeRef.current, [p.x, p.y]];
     setStroke(strokeRef.current);
   };
   const onFramePointerUp = () => {
+    if (boxMode && redactRef.current) {
+      const d = redactRef.current;
+      redactRef.current = null;
+      setRedactDraft(null);
+      const w = Math.abs(d.x1 - d.x0);
+      const h = Math.abs(d.y1 - d.y0);
+      const tap = w < 0.005 && h < 0.005;
+      const rect = { x: Math.min(d.x0, d.x1), y: Math.min(d.y0, d.y1), w, h };
+      if (redactMode) {
+        if (tap) onRedactTap(page.index, d.x0, d.y0);
+        else onRedactRect(page.index, rect);
+      } else {
+        void sampleBg(d.x0, Math.min(d.y0, d.y1)).then((color) => {
+          if (tap) onWhiteoutTap(page.index, d.x0, d.y0, color);
+          else onWhiteoutRect(page.index, rect, color);
+        });
+      }
+      return;
+    }
     if (!inkMode || !strokeRef.current) return;
     const pts = strokeRef.current;
     strokeRef.current = null;
@@ -191,8 +275,8 @@ export function PageCanvas({
         style={{
           paddingBottom: `${page.ratio * 100}%`,
           containerType: "inline-size",
-          touchAction: inkMode ? "none" : undefined,
-          cursor: inkMode ? "crosshair" : undefined,
+          touchAction: inkMode || redactMode || whiteoutMode ? "none" : undefined,
+          cursor: inkMode || redactMode || whiteoutMode ? "crosshair" : undefined,
         }}
         onPointerDown={onFramePointerDown}
         onPointerMove={onFramePointerMove}
@@ -219,12 +303,25 @@ export function PageCanvas({
             page={page}
             selected={selectedId === el.id}
             editing={editingId === el.id}
-            interactive={!inkMode}
+            interactive={!inkMode && !redactMode && !whiteoutMode}
             dispatch={dispatch}
             placeholder={editPlaceholder}
             removeLabel={removeLabel}
           />
         ))}
+        {redactDraft && (
+          <div
+            className="pointer-events-none absolute"
+            style={{
+              left: `${Math.min(redactDraft.x0, redactDraft.x1) * 100}%`,
+              top: `${Math.min(redactDraft.y0, redactDraft.y1) * 100}%`,
+              width: `${Math.abs(redactDraft.x1 - redactDraft.x0) * 100}%`,
+              height: `${Math.abs(redactDraft.y1 - redactDraft.y0) * 100}%`,
+              background: whiteoutMode ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.6)",
+              outline: whiteoutMode ? "1.5px dashed rgba(62,207,142,0.9)" : "1.5px dashed rgba(251,191,36,0.9)",
+            }}
+          />
+        )}
         {stroke && stroke.length > 1 && (
           <svg
             className="pointer-events-none absolute inset-0 h-full w-full"
@@ -242,7 +339,7 @@ export function PageCanvas({
           </svg>
         )}
       </div>
-      <p className="mt-1 text-center text-[11.5px] text-[color:var(--muted)]">{pageLabel}</p>
+      {showLabel && <p className="mt-1 text-center text-[11.5px] text-[color:var(--muted)]">{pageLabel}</p>}
     </div>
   );
 }
@@ -268,14 +365,17 @@ function resizePatch(
   let w: number, h: number;
   const extra: Record<string, number> = {};
 
-  if (el.type === "text") {
+  const textLike = el.type === "text" || (el.type === "watermark" && el.mode === "text") || el.type === "pagenum";
+  if (textLike) {
     const f = corner ? Math.max(fx, fy) : handle === "n" || handle === "s" ? fy : fx;
     const sizePt = clamp(startSizePt * f, MIN_SIZE_PT, MAX_SIZE_PT);
-    const sized = sizeTextElement({ text: el.text, sizePt, bold: el.bold }, page);
+    // Page numbers measure their WIDEST expansion so the frame fits every page.
+    const text = el.type === "pagenum" ? expandPageTemplate(el, Math.max(el.pageFrom, el.pageTo)) : el.text;
+    const sized = sizeTextElement({ text, sizePt, bold: el.type === "text" && el.bold }, page);
     w = sized.w;
     h = sized.h;
     extra.sizePt = sizePt;
-  } else if (el.type === "image" && corner) {
+  } else if ((el.type === "image" || el.type === "signature" || el.type === "watermark") && corner) {
     const f = Math.max(fx, fy, minW / start.w, minH / start.h);
     w = start.w * f;
     h = start.h * f;
@@ -337,7 +437,7 @@ function ElementView({
       startClientX: e.clientX,
       startClientY: e.clientY,
       startRect: { x: el.x, y: el.y, w: el.w, h: el.h },
-      startSizePt: el.type === "text" ? el.sizePt : 0,
+      startSizePt: el.type === "text" || el.type === "watermark" || el.type === "pagenum" ? el.sizePt : 0,
       startRotation: el.rotation,
       centerPx,
       startPointerAngle: Math.atan2(e.clientY - centerPx.y, e.clientX - centerPx.x),
@@ -504,6 +604,7 @@ function ElementContent({
       return (
         <TextContent el={el} page={page} editing={editing} dispatch={dispatch} placeholder={placeholder} />
       );
+    case "signature":
     case "image":
       return (
         // eslint-disable-next-line @next/next/no-img-element
@@ -514,6 +615,26 @@ function ElementContent({
           className="pointer-events-none h-full w-full"
           style={{ opacity: el.opacity }}
         />
+      );
+    case "watermark":
+      return el.mode === "image" && el.src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={el.src} alt="" draggable={false} className="pointer-events-none h-full w-full" style={{ opacity: el.opacity }} />
+      ) : (
+        <div
+          className="pointer-events-none"
+          style={{
+            fontSize: fontSizeCqw(el.sizePt, page),
+            lineHeight: LINE_HEIGHT,
+            fontFamily: FONT_STACK,
+            fontWeight: 400,
+            color: el.color,
+            opacity: el.opacity,
+            whiteSpace: "pre",
+          }}
+        >
+          {el.text}
+        </div>
       );
     case "shape":
       return (
@@ -532,6 +653,31 @@ function ElementContent({
           className="pointer-events-none h-full w-full"
           style={{ background: el.color, opacity: el.opacity, mixBlendMode: "multiply" }}
         />
+      );
+    case "whiteout":
+      return <div className="pointer-events-none h-full w-full" style={{ background: el.color }} />;
+    case "redact":
+      return (
+        <div
+          className="pointer-events-none h-full w-full"
+          style={{ background: "rgba(0,0,0,0.82)", outline: "1.5px solid rgba(251,191,36,0.9)" }}
+        />
+      );
+    case "pagenum":
+      return (
+        <div
+          className="pointer-events-none"
+          style={{
+            fontSize: fontSizeCqw(el.sizePt, page),
+            lineHeight: LINE_HEIGHT,
+            fontFamily: FONT_STACK,
+            fontWeight: 400,
+            color: el.color,
+            whiteSpace: "pre",
+          }}
+        >
+          {expandPageTemplate(el, page.index)}
+        </div>
       );
     case "ink": {
       const w = el.w * page.wPt;

@@ -6,13 +6,13 @@
 // draws on top of the original document.
 
 import { trackToolRun } from "@/lib/track";
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { encryptedPdfMessage } from "@/lib/pdf-errors";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { deepHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
-import type { EditorElement, PageInfo, TextElement } from "./editor-types";
+import { elementPages, pageInfoOf, type EditorElement, type PageInfo, type PageRef, type TextElement } from "./editor-types";
 import { editorReducer, initialEditorState } from "./editor-store";
 import {
   DEFAULT_HIGHLIGHT_COLOR,
@@ -31,6 +31,7 @@ import {
 import { bakePdf } from "./bake-engine";
 import { PageCanvas } from "./PageCanvas";
 import { ThumbRail } from "./ThumbRail";
+import { SignaturePanel } from "./SignaturePanel";
 
 type Locale = RouteLocale;
 
@@ -67,6 +68,27 @@ const STR_EN = {
   opacity: "Opacity",
   remove: "Remove",
   thumbsAria: "Page navigation",
+  sign: "Sign",
+  signDraw: "Draw",
+  signType: "Type",
+  signTypePlaceholder: "Type your name…",
+  signApply: "Place on page",
+  signClear: "Clear",
+  cancel: "Cancel",
+  addWatermark: "Watermark",
+  wmDefault: "CONFIDENTIAL",
+  pageRange: "Pages",
+  addRedact: "Redact",
+  redactHint: "Redact mode — drag to black out an area, or click a word to box it. Press Esc to exit.",
+  redactBakeNote: "Pages with redactions are flattened to images on download, so the covered text is truly destroyed.",
+  addPageNum: "Page numbers",
+  startAt: "Start at",
+  insertBlank: "Blank page",
+  insertPdf: "Insert PDF",
+  rotatePage: "Rotate page",
+  deletePage: "Delete page",
+  addWhiteout: "Cover & retype",
+  whiteoutHint: "Cover-and-retype: click a word to cover it and type over it, or drag to place a covering patch. The original text is covered (it remains underneath), not edited. Esc to exit.",
 };
 
 const STR = {
@@ -103,6 +125,27 @@ const STR = {
     opacity: "不透明度",
     remove: "删除",
     thumbsAria: "页面导航",
+    sign: "签名",
+    signDraw: "手写",
+    signType: "打字",
+    signTypePlaceholder: "输入你的姓名…",
+    signApply: "放入页面",
+    signClear: "清除",
+    cancel: "取消",
+    addWatermark: "水印",
+    wmDefault: "机密",
+    pageRange: "页范围",
+    addRedact: "涂黑",
+    redactHint: "涂黑模式——拖动框住一块区域,或点击某个词自动框住。按 Esc 退出。",
+    redactBakeNote: "含涂黑的页面在下载时会整页转为图片,被盖住的文字被真正销毁。",
+    addPageNum: "页码",
+    startAt: "起始页码",
+    insertBlank: "空白页",
+    insertPdf: "插入 PDF",
+    rotatePage: "旋转页面",
+    deletePage: "删除页面",
+    addWhiteout: "遮盖替换",
+    whiteoutHint: "遮盖替换模式——点击某个词,用底色方块盖住并在上面输入新文字;或拖动放置遮盖块。原文字只是被盖住(仍在下层),并非被编辑。按 Esc 退出。",
   },
   es: {
     title: "Editar PDF",
@@ -136,6 +179,27 @@ const STR = {
     opacity: "Opacidad",
     remove: "Eliminar",
     thumbsAria: "Navegación de páginas",
+    sign: "Firmar",
+    signDraw: "Dibujar",
+    signType: "Escribir",
+    signTypePlaceholder: "Escribe tu nombre…",
+    signApply: "Colocar en la página",
+    signClear: "Borrar",
+    cancel: "Cancelar",
+    addWatermark: "Marca de agua",
+    wmDefault: "CONFIDENCIAL",
+    pageRange: "Páginas",
+    addRedact: "Censurar",
+    redactHint: "Modo censura: arrastra para tachar un área, o haz clic en una palabra para enmarcarla. Pulsa Esc para salir.",
+    redactBakeNote: "Las páginas con censuras se aplanan como imágenes al descargar, así el texto cubierto se destruye de verdad.",
+    addPageNum: "Números de página",
+    startAt: "Empezar en",
+    insertBlank: "Página en blanco",
+    insertPdf: "Insertar PDF",
+    rotatePage: "Girar página",
+    deletePage: "Eliminar página",
+    addWhiteout: "Cubrir y reescribir",
+    whiteoutHint: "Cubrir y reescribir: haz clic en una palabra para cubrirla y escribir encima, o arrastra para colocar un parche. El texto original queda cubierto (sigue debajo), no se edita. Esc para salir.",
   },
   pt: {
     title: "Editar PDF",
@@ -169,6 +233,27 @@ const STR = {
     opacity: "Opacidade",
     remove: "Remover",
     thumbsAria: "Navegação de páginas",
+    sign: "Assinar",
+    signDraw: "Desenhar",
+    signType: "Digitar",
+    signTypePlaceholder: "Digite seu nome…",
+    signApply: "Colocar na página",
+    signClear: "Limpar",
+    cancel: "Cancelar",
+    addWatermark: "Marca d'água",
+    wmDefault: "CONFIDENCIAL",
+    pageRange: "Páginas",
+    addRedact: "Redigir",
+    redactHint: "Modo de redação — arraste para ocultar uma área, ou clique em uma palavra para enquadrá-la. Pressione Esc para sair.",
+    redactBakeNote: "Páginas com redações são achatadas como imagens ao baixar, então o texto coberto é realmente destruído.",
+    addPageNum: "Números de página",
+    startAt: "Começar em",
+    insertBlank: "Página em branco",
+    insertPdf: "Inserir PDF",
+    rotatePage: "Girar página",
+    deletePage: "Excluir página",
+    addWhiteout: "Cobrir e reescrever",
+    whiteoutHint: "Cobrir e reescrever: clique em uma palavra para cobri-la e digitar por cima, ou arraste para colocar um remendo. O texto original fica coberto (continua por baixo), nao e editado. Esc para sair.",
   },
   fr: {
     title: "Modifier un PDF",
@@ -202,6 +287,27 @@ const STR = {
     opacity: "Opacité",
     remove: "Supprimer",
     thumbsAria: "Navigation des pages",
+    sign: "Signer",
+    signDraw: "Dessiner",
+    signType: "Saisir",
+    signTypePlaceholder: "Saisissez votre nom…",
+    signApply: "Placer sur la page",
+    signClear: "Effacer",
+    cancel: "Annuler",
+    addWatermark: "Filigrane",
+    wmDefault: "CONFIDENTIEL",
+    pageRange: "Pages",
+    addRedact: "Caviarder",
+    redactHint: "Mode caviardage — faites glisser pour noircir une zone, ou cliquez sur un mot pour l'encadrer. Appuyez sur Échap pour quitter.",
+    redactBakeNote: "Les pages caviardées sont aplaties en images au téléchargement : le texte masqué est réellement détruit.",
+    addPageNum: "Numéros de page",
+    startAt: "Commencer à",
+    insertBlank: "Page vierge",
+    insertPdf: "Insérer un PDF",
+    rotatePage: "Pivoter la page",
+    deletePage: "Supprimer la page",
+    addWhiteout: "Masquer et réécrire",
+    whiteoutHint: "Masquer et réécrire : cliquez sur un mot pour le couvrir et taper par-dessus, ou faites glisser pour placer un cache. Le texte original est couvert (il reste en dessous), pas modifié. Échap pour quitter.",
   },
   ja: {
     title: "PDFを編集",
@@ -235,6 +341,27 @@ const STR = {
     opacity: "不透明度",
     remove: "削除",
     thumbsAria: "ページナビゲーション",
+    sign: "署名",
+    signDraw: "手書き",
+    signType: "入力",
+    signTypePlaceholder: "名前を入力…",
+    signApply: "ページに配置",
+    signClear: "クリア",
+    cancel: "キャンセル",
+    addWatermark: "透かし",
+    wmDefault: "社外秘",
+    pageRange: "ページ範囲",
+    addRedact: "黒塗り",
+    redactHint: "黒塗りモード——ドラッグで範囲を黒塗り、または単語をクリックで自動枠。Escで終了。",
+    redactBakeNote: "黒塗りを含むページはダウンロード時に画像化され、隠された文字は完全に破棄されます。",
+    addPageNum: "ページ番号",
+    startAt: "開始番号",
+    insertBlank: "白紙ページ",
+    insertPdf: "PDFを挿入",
+    rotatePage: "ページを回転",
+    deletePage: "ページを削除",
+    addWhiteout: "上書き置換",
+    whiteoutHint: "上書き置換モード——単語をクリックすると下地色のパッチで覆い、その上に入力できます。ドラッグでパッチを配置。元の文字は覆われるだけで(下に残ります)、編集はされません。Escで終了。",
   },
   de: {
     title: "PDF bearbeiten",
@@ -268,6 +395,27 @@ const STR = {
     opacity: "Deckkraft",
     remove: "Entfernen",
     thumbsAria: "Seitennavigation",
+    sign: "Signieren",
+    signDraw: "Zeichnen",
+    signType: "Tippen",
+    signTypePlaceholder: "Namen eingeben…",
+    signApply: "Auf Seite platzieren",
+    signClear: "Löschen",
+    cancel: "Abbrechen",
+    addWatermark: "Wasserzeichen",
+    wmDefault: "VERTRAULICH",
+    pageRange: "Seiten",
+    addRedact: "Schwärzen",
+    redactHint: "Schwärzungsmodus – ziehen Sie, um einen Bereich zu schwärzen, oder klicken Sie auf ein Wort. Esc zum Beenden.",
+    redactBakeNote: "Seiten mit Schwärzungen werden beim Download zu Bildern reduziert – der verdeckte Text wird wirklich zerstört.",
+    addPageNum: "Seitenzahlen",
+    startAt: "Beginnen bei",
+    insertBlank: "Leere Seite",
+    insertPdf: "PDF einfügen",
+    rotatePage: "Seite drehen",
+    deletePage: "Seite löschen",
+    addWhiteout: "Abdecken & neu tippen",
+    whiteoutHint: "Abdecken & neu tippen: Klicken Sie auf ein Wort, um es abzudecken und darüber zu tippen, oder ziehen Sie einen Deckflicken auf. Der Originaltext wird abgedeckt (bleibt darunter), nicht bearbeitet. Esc zum Beenden.",
   },
   ko: {
     title: "PDF 편집",
@@ -301,6 +449,27 @@ const STR = {
     opacity: "불투명도",
     remove: "삭제",
     thumbsAria: "페이지 탐색",
+    sign: "서명",
+    signDraw: "그리기",
+    signType: "입력",
+    signTypePlaceholder: "이름을 입력하세요…",
+    signApply: "페이지에 배치",
+    signClear: "지우기",
+    cancel: "취소",
+    addWatermark: "워터마크",
+    wmDefault: "대외비",
+    pageRange: "페이지 범위",
+    addRedact: "가리기",
+    redactHint: "가리기 모드 — 드래그해 영역을 가리거나, 단어를 클릭해 자동으로 상자를 만드세요. Esc로 종료합니다.",
+    redactBakeNote: "가림이 있는 페이지는 다운로드 시 이미지로 평탄화되어, 가려진 텍스트가 완전히 삭제됩니다.",
+    addPageNum: "페이지 번호",
+    startAt: "시작 번호",
+    insertBlank: "빈 페이지",
+    insertPdf: "PDF 삽입",
+    rotatePage: "페이지 회전",
+    deletePage: "페이지 삭제",
+    addWhiteout: "덮고 다시 입력",
+    whiteoutHint: "덮고 다시 입력 — 단어를 클릭하면 바탕색 패치로 덮고 위에 입력할 수 있습니다. 드래그로 패치를 배치하세요. 원본 텍스트는 편집되는 것이 아니라 덮일 뿐이며 아래에 남아 있습니다. Esc로 종료.",
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -309,19 +478,27 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
 
   const [phase, setPhase] = useState<"idle" | "rendering" | "ready" | "working">("idle");
-  const [pages, setPages] = useState<PageInfo[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [inkMode, setInkMode] = useState(false);
+  const [redactMode, setRedactMode] = useState(false);
+  const [whiteoutMode, setWhiteoutMode] = useState(false);
+  const [signOpen, setSignOpen] = useState(false);
   const [bakeDone, setBakeDone] = useState<{ done: number; total: number } | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [state, dispatch] = useReducer(editorReducer, initialEditorState);
+  // Page infos derive from the editable page list (page management source).
+  const pages = useMemo(() => state.pageList.map(pageInfoOf), [state.pageList]);
 
   const fileRef = useRef<File | null>(null);
+  // Inserted-PDF sources: bytes for the bake, pdf.js docs for rasters.
+  const extraSourcesRef = useRef<Record<string, ArrayBuffer>>({});
+  const extraJsDocs = useRef<Map<string, { getPage: (n: number) => Promise<unknown>; destroy: () => Promise<void> }>>(new Map());
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const pageInsertInputRef = useRef<HTMLInputElement>(null);
+  const insertPdfAtRef = useRef(0);
   // pdf.js document proxy, kept alive for lazy page rasters until reset.
   const docRef = useRef<{ getPage: (n: number) => Promise<unknown>; destroy: () => Promise<void> } | null>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
-  const visiblePages = useRef<Set<number>>(new Set());
   // Serialize page rasters — parallel render() calls on one doc balloon memory.
   const renderChain = useRef<Promise<unknown>>(Promise.resolve());
 
@@ -329,10 +506,12 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     docRef.current?.destroy().catch(() => {});
     docRef.current = null;
     fileRef.current = null;
-    visiblePages.current.clear();
-    setPages([]);
+    for (const d of extraJsDocs.current.values()) d.destroy().catch(() => {});
+    extraJsDocs.current.clear();
+    extraSourcesRef.current = {};
     setError(null);
     setInkMode(false);
+    setRedactMode(false);
     setPhase("idle");
     dispatch({ type: "reset" });
   }, []);
@@ -340,12 +519,13 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   useEffect(() => () => { docRef.current?.destroy().catch(() => {}); }, []);
 
   // Unsaved-work guard (A1 persistence decision: warn on close, no autosave).
+  const dirty = state.elements.length > 0 || state.past.length > 0;
   useEffect(() => {
-    if (state.elements.length === 0) return;
+    if (!dirty) return;
     const warn = (e: BeforeUnloadEvent) => { e.preventDefault(); };
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
-  }, [state.elements.length > 0]);
+  }, [dirty]);
 
   const onFile = useCallback(async (file: File) => {
     if (!file || (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf"))) return;
@@ -356,14 +536,14 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       const pdfjs = await import("pdfjs-dist");
       pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
       const doc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
-      const infos: PageInfo[] = [];
+      const refs: PageRef[] = [];
       for (let i = 1; i <= doc.numPages; i++) {
         const page = await doc.getPage(i);
         const vp = page.getViewport({ scale: 1 });
-        infos.push({ index: i - 1, wPt: vp.width, hPt: vp.height, ratio: vp.height / vp.width });
+        refs.push({ src: { doc: "main", page: i - 1 }, rotate: 0, wPt: vp.width, hPt: vp.height });
       }
       docRef.current = doc as unknown as typeof docRef.current;
-      setPages(infos);
+      dispatch({ type: "setPages", pageList: refs });
       setPhase("ready");
     } catch (e) {
       setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
@@ -371,52 +551,87 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     }
   }, [t, locale]);
 
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const pagesRef = useRef(pages);
+  pagesRef.current = pages;
+
   // Lazy per-page raster at the frame's real width (no display-scale constant).
   // targetWidth (CSS px) overrides for thumbnails, which render well below 1×.
   const renderBitmap = useCallback((pageIndex: number, targetWidth?: number): Promise<string | null> => {
     const job = renderChain.current.then(async () => {
-      const doc = docRef.current;
+      const ref = stateRef.current.pageList[pageIndex];
+      if (!ref) return null;
+      const containerW = targetWidth ?? viewerRef.current?.clientWidth ?? 800;
+      const dpr = window.devicePixelRatio || 1;
+      const finish = (canvas: HTMLCanvasElement) => {
+        const url = canvas.toDataURL("image/jpeg", 0.85);
+        canvas.width = 0;
+        canvas.height = 0;
+        return url;
+      };
+      if (!ref.src) {
+        // Blank page — plain white ground.
+        const scale = Math.min(3, Math.max(targetWidth ? 0.05 : 1, (containerW * dpr) / ref.wPt));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(ref.wPt * scale);
+        canvas.height = Math.ceil(ref.hPt * scale);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return null;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        return finish(canvas);
+      }
+      const doc = ref.src.doc === "main" ? docRef.current : extraJsDocs.current.get(ref.src.doc);
       if (!doc) return null;
-      const page = (await doc.getPage(pageIndex + 1)) as {
-        getViewport: (o: { scale: number }) => { width: number; height: number };
+      const page = (await doc.getPage(ref.src.page + 1)) as {
+        rotate?: number;
+        getViewport: (o: { scale: number; rotation?: number }) => { width: number; height: number };
         render: (o: unknown) => { promise: Promise<void> };
       };
-      const base = page.getViewport({ scale: 1 });
-      const containerW = targetWidth ?? viewerRef.current?.clientWidth ?? 800;
-      const scale = Math.min(3, Math.max(targetWidth ? 0.05 : 1, (containerW * (window.devicePixelRatio || 1)) / base.width));
-      const viewport = page.getViewport({ scale });
+      // pdf.js viewport rotation is ABSOLUTE — compose the source page's own
+      // /Rotate with the user's extra page rotation.
+      const rotation = (((page.rotate ?? 0) + ref.rotate) % 360 + 360) % 360;
+      const base = page.getViewport({ scale: 1, rotation });
+      const scale = Math.min(3, Math.max(targetWidth ? 0.05 : 1, (containerW * dpr) / base.width));
+      const viewport = page.getViewport({ scale, rotation });
       const canvas = document.createElement("canvas");
       canvas.width = Math.ceil(viewport.width);
       canvas.height = Math.ceil(viewport.height);
       const ctx = canvas.getContext("2d");
       if (!ctx) return null;
       await page.render({ canvas, canvasContext: ctx, viewport }).promise;
-      const url = canvas.toDataURL("image/jpeg", 0.85);
-      canvas.width = 0;
-      canvas.height = 0;
-      return url;
+      return finish(canvas);
     }).catch(() => null);
     renderChain.current = job;
     return job;
   }, []);
 
-  const onVisibility = useCallback((pageIndex: number, visible: boolean) => {
-    if (visible) visiblePages.current.add(pageIndex);
-    else visiblePages.current.delete(pageIndex);
-    // Topmost visible page drives the thumbnail-rail highlight (React bails
-    // out when the value is unchanged, so scroll churn is cheap).
-    if (visiblePages.current.size) setCurrentPage(Math.min(...visiblePages.current));
-  }, []);
+  // Single-page view (Joe 2026-07-04): the canvas shows ONE page — the rail
+  // navigates, the canvas never scrolls. onVisibility stays a no-op prop for
+  // PageCanvas's lazy-raster observer.
+  const onVisibility = useCallback(() => {}, []);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const jumpToPage = useCallback((idx: number) => {
-    scrollRef.current
-      ?.querySelector(`[data-page-frame="${idx}"]`)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, []);
+  const currentPageRef = useRef(0);
+  currentPageRef.current = currentPage;
+  const jumpToPage = useCallback((idx: number) => setCurrentPage(idx), []);
+  const targetPage = () => currentPageRef.current;
 
-  const targetPage = () =>
-    visiblePages.current.size ? Math.min(...visiblePages.current) : 0;
+  // Page ops can shrink the list — keep the shown page in range.
+  useEffect(() => {
+    if (currentPage > pages.length - 1) setCurrentPage(Math.max(0, pages.length - 1));
+  }, [pages.length, currentPage]);
+
+  // DECISION: wheel-over-canvas pages through the document (the old
+  // continuous scroll's muscle memory, kept as a shortcut per dispatch).
+  const wheelLock = useRef(0);
+  const onCanvasWheel = useCallback((e: React.WheelEvent) => {
+    const now = Date.now();
+    if (now - wheelLock.current < 180) return;
+    wheelLock.current = now;
+    if (e.deltaY > 0) setCurrentPage((c) => Math.min(pagesRef.current.length - 1, c + 1));
+    else if (e.deltaY < 0) setCurrentPage((c) => Math.max(0, c - 1));
+  }, []);
 
   // z is advisory — the reducer's "add" reassigns it against current state,
   // so stale closures (concurrent image loads) can't collide.
@@ -504,6 +719,228 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     reader.readAsDataURL(file);
   }, [pages]);
 
+  const addWatermark = useCallback(() => {
+    const pageIndex = targetPage();
+    const page = pages[pageIndex];
+    if (!page) return;
+    const seed = { text: t.wmDefault, sizePt: 36, bold: false };
+    const { w, h } = sizeTextElement(seed, page);
+    const el: EditorElement = {
+      ...baseEl(pageIndex, w, h, 0.5, 0.5),
+      type: "watermark",
+      mode: "text",
+      text: t.wmDefault,
+      sizePt: 36,
+      color: "#9ca3af",
+      opacity: 0.35,
+      rotation: -45, // reads bottom-left → top-right, the classic diagonal
+      pageFrom: 0,
+      pageTo: pages.length - 1,
+    };
+    dispatch({ type: "add", el });
+  }, [pages, t]);
+
+  const addPageNum = useCallback(() => {
+    const pageIndex = targetPage();
+    const page = pages[pageIndex];
+    if (!page) return;
+    const template = "{page} / {total}";
+    const widest = template.replaceAll("{page}", String(pages.length)).replaceAll("{total}", String(pages.length));
+    const { w, h } = sizeTextElement({ text: widest, sizePt: 11, bold: false }, page);
+    const el: EditorElement = {
+      ...baseEl(pageIndex, w, h, 0.5, 0.955),
+      type: "pagenum",
+      template,
+      startAt: 1,
+      sizePt: 11,
+      color: "#374151",
+      pageFrom: 0,
+      pageTo: pages.length - 1,
+    };
+    dispatch({ type: "add", el });
+  }, [pages]);
+
+  // ── page management (ThumbRail actions) ──
+  const pageKeyOf = (ref: PageRef, i: number) =>
+    `${i}:${ref.src ? `${ref.src.doc}/${ref.src.page}` : "blank"}:${ref.rotate}`;
+
+  const insertBlankAfter = useCallback((at: number) => {
+    const nb = stateRef.current.pageList[at];
+    dispatch({
+      type: "insertPages",
+      at: at + 1,
+      refs: [{ src: null, rotate: 0, wPt: nb?.wPt ?? 612, hPt: nb?.hPt ?? 792 }],
+    });
+    setCurrentPage(at + 1);
+  }, []);
+
+  const insertPdfAfter = useCallback(async (at: number, file: File) => {
+    try {
+      const bytes = await file.arrayBuffer();
+      const id = crypto.randomUUID();
+      const pdfjs = await import("pdfjs-dist");
+      pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+      const doc = await pdfjs.getDocument({ data: new Uint8Array(bytes.slice(0)) }).promise;
+      const refs: PageRef[] = [];
+      for (let i = 1; i <= doc.numPages; i++) {
+        const vp = (await doc.getPage(i)).getViewport({ scale: 1 });
+        refs.push({ src: { doc: id, page: i - 1 }, rotate: 0, wPt: vp.width, hPt: vp.height });
+      }
+      extraSourcesRef.current[id] = bytes;
+      extraJsDocs.current.set(id, doc as unknown as { getPage: (n: number) => Promise<unknown>; destroy: () => Promise<void> });
+      dispatch({ type: "insertPages", at: at + 1, refs });
+      setCurrentPage(at + 1);
+    } catch (e) {
+      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+    }
+  }, [t, locale]);
+
+  const onRedactRect = useCallback((pageIndex: number, rect: { x: number; y: number; w: number; h: number }) => {
+    if (rect.w < 0.002 || rect.h < 0.002) return;
+    const el: EditorElement = {
+      id: crypto.randomUUID(),
+      type: "redact",
+      page: pageIndex,
+      ...rect,
+      rotation: 0,
+      z: 0, // reassigned by the reducer
+    };
+    dispatch({ type: "add", el });
+  }, []);
+
+  // Locate the WORD under a normalized point: find the text run via
+  // pdfjs Util.transform, estimate the word's span by character share
+  // (generalizes RedactPdfClient's box math to click-to-box). Returns a
+  // normalized box + the glyph height in pt, or null (scanned page / miss).
+  const locateWordAt = useCallback(async (pageIndex: number, nx: number, ny: number): Promise<{ x: number; y: number; w: number; h: number; glyphHPt: number } | null> => {
+    const ref = stateRef.current.pageList[pageIndex];
+    if (!ref?.src) return null;
+    const doc = ref.src.doc === "main" ? docRef.current : extraJsDocs.current.get(ref.src.doc);
+    if (!doc) return null;
+    try {
+      const pdfjs = await import("pdfjs-dist");
+      const page = (await doc.getPage(ref.src.page + 1)) as {
+        rotate?: number;
+        getViewport: (o: { scale: number; rotation?: number }) => { transform: number[]; width: number; height: number };
+        getTextContent: () => Promise<{ items: Array<{ str?: string; width?: number; height?: number; transform?: number[] }> }>;
+      };
+      const rotation = (((page.rotate ?? 0) + ref.rotate) % 360 + 360) % 360;
+      const vp = page.getViewport({ scale: 1, rotation });
+      const tc = await page.getTextContent();
+      const px = nx * vp.width;
+      const py = ny * vp.height;
+      for (const it of tc.items) {
+        if (typeof it.str !== "string" || !it.str.trim()) continue;
+        const dm = pdfjs.Util.transform(vp.transform, it.transform ?? [1, 0, 0, 1, 0, 0]);
+        const sx = Math.hypot(dm[0], dm[1]);
+        const sy = Math.hypot(dm[2], dm[3]);
+        const w = (it.width ?? 0) * sx;
+        const h = (it.height ?? 0) * sy;
+        const x0 = dm[4];
+        const yTop = dm[5] - h;
+        if (px < x0 || px > x0 + w || py < yTop || py > yTop + h) continue;
+        const str = it.str;
+        const rel = (px - x0) / Math.max(w, 1e-6);
+        let ws = 0;
+        let we = str.length;
+        const hitIdx = Math.min(str.length - 1, Math.max(0, Math.floor(rel * str.length)));
+        if (str[hitIdx] !== " ") {
+          ws = str.lastIndexOf(" ", hitIdx) + 1;
+          const nextSpace = str.indexOf(" ", hitIdx);
+          we = nextSpace === -1 ? str.length : nextSpace;
+        }
+        const bx = x0 + (ws / str.length) * w;
+        const bw = ((we - ws) / str.length) * w;
+        return {
+          x: bx / vp.width,
+          y: yTop / vp.height,
+          w: bw / vp.width,
+          h: h / vp.height,
+          glyphHPt: h,
+        };
+      }
+    } catch { /* text layer optional */ }
+    return null;
+  }, []);
+
+  const onRedactTap = useCallback(async (pageIndex: number, nx: number, ny: number) => {
+    const word = await locateWordAt(pageIndex, nx, ny);
+    const info = pages[pageIndex];
+    if (!word || !info) return;
+    const padX = (word.glyphHPt * 0.22) / info.wPt;
+    const padY = (word.glyphHPt * 0.22) / info.hPt;
+    onRedactRect(pageIndex, {
+      x: Math.max(0, word.x - padX),
+      y: Math.max(0, word.y - padY),
+      w: Math.min(1, word.w + 2 * padX),
+      h: Math.min(1, word.h + 2 * padY),
+    });
+  }, [locateWordAt, pages, onRedactRect]);
+
+  const onWhiteoutRect = useCallback((pageIndex: number, rect: { x: number; y: number; w: number; h: number }, color: string) => {
+    if (rect.w < 0.002 || rect.h < 0.002) return;
+    const el: EditorElement = {
+      id: crypto.randomUUID(),
+      type: "whiteout",
+      page: pageIndex,
+      ...rect,
+      rotation: 0,
+      z: 0, // reassigned by the reducer
+      color,
+    };
+    dispatch({ type: "add", el });
+  }, []);
+
+  // Cover-and-retype: patch over the word, then a focused text box on top.
+  const onWhiteoutTap = useCallback(async (pageIndex: number, nx: number, ny: number, color: string) => {
+    const word = await locateWordAt(pageIndex, nx, ny);
+    const info = pages[pageIndex];
+    if (!word || !info) return;
+    const padX = (word.glyphHPt * 0.15) / info.wPt;
+    const padY = (word.glyphHPt * 0.15) / info.hPt;
+    onWhiteoutRect(pageIndex, {
+      x: Math.max(0, word.x - padX),
+      y: Math.max(0, word.y - padY),
+      w: Math.min(1, word.w + 2 * padX),
+      h: Math.min(1, word.h + 2 * padY),
+    }, color);
+    const sizePt = Math.max(MIN_SIZE_PT, Math.round(word.glyphHPt * 0.8));
+    const sized = sizeTextElement({ text: "", sizePt, bold: false }, info);
+    const textEl: EditorElement = {
+      id: crypto.randomUUID(),
+      type: "text",
+      page: pageIndex,
+      x: word.x,
+      y: word.y,
+      w: sized.w,
+      h: sized.h,
+      rotation: 0,
+      z: 0, // reassigned by the reducer
+      text: "",
+      sizePt,
+      color: DEFAULT_TEXT_COLOR,
+      bold: false,
+    };
+    dispatch({ type: "add", el: textEl });
+    dispatch({ type: "edit", id: textEl.id });
+  }, [locateWordAt, pages, onWhiteoutRect]);
+
+  const addSignature = useCallback((src: string, imgRatio: number) => {
+    const pageIndex = targetPage();
+    const page = pages[pageIndex];
+    if (!page) return;
+    const w = 0.25;
+    const h = Math.min((w * imgRatio * page.wPt) / page.hPt, 0.9);
+    const el: EditorElement = {
+      ...baseEl(pageIndex, w, h),
+      type: "signature",
+      src,
+      opacity: 1,
+    };
+    dispatch({ type: "add", el });
+    setSignOpen(false);
+  }, [pages]);
+
   const onInkStroke = useCallback((pageIndex: number, points: Array<[number, number]>) => {
     const page = pages[pageIndex];
     if (!page) return;
@@ -526,17 +963,19 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   }, [pages]);
 
   // Keyboard: delete / nudge / undo / redo (skipped while typing in the box).
-  const stateRef = useRef(state);
-  stateRef.current = state;
-  const pagesRef = useRef(pages);
-  pagesRef.current = pages;
   const inkModeRef = useRef(inkMode);
   inkModeRef.current = inkMode;
+  const redactModeRef = useRef(redactMode);
+  redactModeRef.current = redactMode;
+  const whiteoutModeRef = useRef(whiteoutMode);
+  whiteoutModeRef.current = whiteoutMode;
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const s = stateRef.current;
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "TEXTAREA" || tag === "INPUT" || s.editingId) return;
+      if (e.key === "Escape" && redactModeRef.current) { setRedactMode(false); return; }
+      if (e.key === "Escape" && whiteoutModeRef.current) { setWhiteoutMode(false); return; }
       if (e.key === "Escape" && inkModeRef.current) { setInkMode(false); return; }
       const mod = e.ctrlKey || e.metaKey;
       if (mod && e.key.toLowerCase() === "z" && !e.shiftKey) { e.preventDefault(); dispatch({ type: "undo" }); return; }
@@ -574,8 +1013,13 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     setError(null);
     setBakeDone({ done: 0, total: state.elements.length });
     try {
-      const bytes = await bakePdf(await file.arrayBuffer(), pages, state.elements, (done, total) =>
-        setBakeDone({ done, total }),
+      const bytes = await bakePdf(
+        await file.arrayBuffer(),
+        pages,
+        state.elements,
+        (done, total) => setBakeDone({ done, total }),
+        state.pageList,
+        extraSourcesRef.current,
       );
       const blob = new Blob([bytes as unknown as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
@@ -592,7 +1036,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
     } finally {
       setBakeDone(null);
     }
-  }, [pages, state.elements, t, locale]);
+  }, [pages, state.elements, state.pageList, t, locale]);
 
   const selected = state.elements.find((el) => el.id === state.selectedId) ?? null;
 
@@ -615,19 +1059,8 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
-        <div className="flex gap-3" style={{ height: embedded ? "calc(100dvh - 13rem)" : "calc(100dvh - 10.5rem)", minHeight: 480 }}>
-          {/* Left: page-thumbnail navigation (own scroll; hidden on mobile) */}
-          <ThumbRail
-            pages={pages}
-            currentPage={currentPage}
-            onJump={jumpToPage}
-            renderBitmap={renderBitmap}
-            pageLabel={t.page}
-            ariaLabel={t.thumbsAria}
-          />
-
-          {/* Right: toolbar pinned at top, canvas scrolls beneath it */}
-          <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex flex-col" style={{ height: embedded ? "calc(100dvh - 13rem)" : "calc(100dvh - 10.5rem)", minHeight: 480 }}>
+          {/* Toolbar spans the full editor width (leftmost edge included) */}
           <div className="rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="min-w-0">
@@ -661,9 +1094,23 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 <button type="button" onClick={() => imageInputRef.current?.click()} className={toolBtn}>{t.addImage}</button>
                 <button type="button" onClick={addShape} className={toolBtn}>{t.addBox}</button>
                 <button type="button" onClick={addHighlight} className={toolBtn}>{t.addHighlight}</button>
+                <button type="button" onClick={addWatermark} className={toolBtn}>{t.addWatermark}</button>
+                <button type="button" onClick={addPageNum} className={toolBtn}>{t.addPageNum}</button>
                 <button
                   type="button"
-                  onClick={() => setInkMode((v) => !v)}
+                  onClick={() => setSignOpen((v) => !v)}
+                  aria-pressed={signOpen}
+                  className={
+                    signOpen
+                      ? "rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
+                      : toolBtn
+                  }
+                >
+                  {t.sign}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setInkMode((v) => !v); setRedactMode(false); setWhiteoutMode(false); }}
                   aria-pressed={inkMode}
                   className={
                     inkMode
@@ -672,6 +1119,30 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   }
                 >
                   {t.draw}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setRedactMode((v) => !v); setInkMode(false); setWhiteoutMode(false); setSignOpen(false); }}
+                  aria-pressed={redactMode}
+                  className={
+                    redactMode
+                      ? "rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
+                      : toolBtn
+                  }
+                >
+                  {t.addRedact}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setWhiteoutMode((v) => !v); setInkMode(false); setRedactMode(false); setSignOpen(false); }}
+                  aria-pressed={whiteoutMode}
+                  className={
+                    whiteoutMode
+                      ? "rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
+                      : toolBtn
+                  }
+                >
+                  {t.addWhiteout}
                 </button>
                 <span className="h-5 w-px bg-[color:var(--line)]" aria-hidden="true" />
                 <button type="button" onClick={download} disabled={phase === "working" || state.elements.length === 0}
@@ -685,11 +1156,23 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               </div>
             </div>
 
-            {selected && !inkMode && (
+            {signOpen && (
+              <SignaturePanel
+                t={{ draw: t.signDraw, type: t.signType, typePlaceholder: t.signTypePlaceholder, clear: t.signClear, apply: t.signApply, cancel: t.cancel }}
+                onApply={addSignature}
+                onCancel={() => setSignOpen(false)}
+              />
+            )}
+            {selected && !inkMode && !redactMode && !whiteoutMode && !signOpen && (
               <PropertyPanel el={selected} pages={pages} dispatch={dispatch} t={t} />
             )}
           </div>
-          <p className="mt-2 shrink-0 text-[12px] text-[color:var(--faint)]">{inkMode ? t.drawHint : t.hint}</p>
+          <p className="mt-2 shrink-0 text-[12px] text-[color:var(--faint)]">
+            {whiteoutMode ? t.whiteoutHint : redactMode ? t.redactHint : inkMode ? t.drawHint : t.hint}
+            {state.elements.some((el) => el.type === "redact") && (
+              <span className="ml-2 text-[#fbbf24]">{t.redactBakeNote}</span>
+            )}
+          </p>
 
           <input
             ref={imageInputRef}
@@ -702,30 +1185,82 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               e.target.value = "";
             }}
           />
+          <input
+            ref={pageInsertInputRef}
+            type="file"
+            accept="application/pdf,.pdf"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) void insertPdfAfter(insertPdfAtRef.current, f);
+              e.target.value = "";
+            }}
+          />
 
-          <div ref={scrollRef} className="isolate mt-3 min-h-0 flex-1 overflow-y-auto">
-            <div ref={viewerRef} className="mx-auto w-full max-w-3xl space-y-4 pb-6">
-              {pages.map((pg) => (
-                <PageCanvas
-                  key={pg.index}
-                  page={pg}
-                  elements={state.elements.filter((el) => el.page === pg.index)}
-                  selectedId={state.selectedId}
-                  editingId={state.editingId}
-                  dispatch={dispatch}
-                  renderBitmap={renderBitmap}
-                  onVisibility={onVisibility}
-                  onAddTextAt={addText}
-                  inkMode={inkMode}
-                  inkStyle={{ color: DEFAULT_INK_COLOR, strokeWidthPt: DEFAULT_STROKE_WIDTH_PT }}
-                  onInkStroke={onInkStroke}
-                  pageLabel={t.page(pg.index + 1)}
-                  editPlaceholder={t.placeholder}
-                  removeLabel={t.remove}
-                />
-              ))}
+          <div className="mt-3 flex min-h-0 flex-1 gap-3">
+            {/* Left: page rail — top aligned with the canvas top, own scroll */}
+            <ThumbRail
+              pages={pages}
+              pageKeys={state.pageList.map(pageKeyOf)}
+              currentPage={currentPage}
+              onJump={jumpToPage}
+              renderBitmap={renderBitmap}
+              labels={{
+                aria: t.thumbsAria,
+                insertBlank: t.insertBlank,
+                insertPdf: t.insertPdf,
+                rotatePage: t.rotatePage,
+                deletePage: t.deletePage,
+                pageLabel: t.page,
+              }}
+              onInsertBlank={insertBlankAfter}
+              onInsertPdf={(at) => { insertPdfAtRef.current = at; pageInsertInputRef.current?.click(); }}
+              onRotatePage={(i) => dispatch({ type: "rotatePage", at: i })}
+              onDeletePage={(i) => dispatch({ type: "removePage", at: i })}
+              onMovePage={(from, to) => dispatch({ type: "movePage", from, to })}
+            />
+            {/* Right: SINGLE-page canvas, contained (never scrolls) — the rail
+                navigates; wheel over the canvas pages through as a shortcut. */}
+            <div
+              ref={viewerRef}
+              onWheel={onCanvasWheel}
+              className="isolate flex min-w-0 flex-1 items-start justify-center overflow-hidden"
+            >
+              {pages[currentPage] && state.pageList[currentPage] && (
+                <div
+                  className="h-full"
+                  style={{
+                    aspectRatio: `${pages[currentPage].wPt} / ${pages[currentPage].hPt}`,
+                    maxWidth: "100%",
+                  }}
+                >
+                  <PageCanvas
+                    key={pageKeyOf(state.pageList[currentPage], currentPage)}
+                    page={pages[currentPage]}
+                    elements={state.elements.filter((el) => elementPages(el, pages.length).includes(currentPage))}
+                    selectedId={state.selectedId}
+                    editingId={state.editingId}
+                    dispatch={dispatch}
+                    renderBitmap={renderBitmap}
+                    onVisibility={onVisibility}
+                    onAddTextAt={addText}
+                    inkMode={inkMode}
+                    inkStyle={{ color: DEFAULT_INK_COLOR, strokeWidthPt: DEFAULT_STROKE_WIDTH_PT }}
+                    onInkStroke={onInkStroke}
+                    redactMode={redactMode}
+                    onRedactRect={onRedactRect}
+                    onRedactTap={onRedactTap}
+                    whiteoutMode={whiteoutMode}
+                    onWhiteoutRect={onWhiteoutRect}
+                    onWhiteoutTap={onWhiteoutTap}
+                    pageLabel={t.page(currentPage + 1)}
+                    editPlaceholder={t.placeholder}
+                    removeLabel={t.remove}
+                    showLabel={false}
+                  />
+                </div>
+              )}
             </div>
-          </div>
           </div>
         </div>
       )}
@@ -805,11 +1340,159 @@ function PropertyPanel({
         </>
       )}
 
-      {el.type === "image" && (
+      {(el.type === "image" || el.type === "signature") && (
         <label className={label}>
           {t.opacity}
           <input type="range" min={0.1} max={1} step={0.05} value={el.opacity} onPointerDown={snap} onChange={(e) => patch({ opacity: Number(e.target.value) })} className="w-28 accent-[color:var(--accent)]" />
         </label>
+      )}
+
+      {el.type === "pagenum" && (
+        <>
+          <input
+            type="text"
+            value={el.template}
+            onFocus={snap}
+            onChange={(e) => {
+              const template = e.target.value;
+              const page = pages[el.page];
+              const widest = template
+                .replaceAll("{page}", String(el.startAt + Math.abs(el.pageTo - el.pageFrom)))
+                .replaceAll("{total}", String(Math.abs(el.pageTo - el.pageFrom) + 1));
+              const sized = page ? sizeTextElement({ text: widest, sizePt: el.sizePt, bold: false }, page) : null;
+              patch(sized ? ({ template, w: sized.w, h: sized.h } as Partial<EditorElement>) : ({ template } as Partial<EditorElement>));
+            }}
+            className={`${numInput} w-36 font-mono`}
+            title="{page} {total}"
+          />
+          <label className={label}>
+            {t.startAt}
+            <input
+              type="number"
+              min={1}
+              value={el.startAt}
+              onFocus={snap}
+              onChange={(e) => patch({ startAt: Math.max(1, Number(e.target.value) || 1) } as Partial<EditorElement>)}
+              className={`${numInput} w-14`}
+            />
+          </label>
+          <label className={label}>
+            {t.size}
+            <input
+              type="number"
+              min={MIN_SIZE_PT}
+              max={MAX_SIZE_PT}
+              value={Math.round(el.sizePt)}
+              onFocus={snap}
+              onChange={(e) => {
+                const sizePt = Math.min(MAX_SIZE_PT, Math.max(MIN_SIZE_PT, Number(e.target.value) || MIN_SIZE_PT));
+                patch({ sizePt } as Partial<EditorElement>);
+              }}
+              className={numInput}
+            />
+          </label>
+          <label className={label}>
+            {t.color}
+            <input type="color" value={el.color} onFocus={snap} onChange={(e) => patch({ color: e.target.value } as Partial<EditorElement>)} className={colorInput} />
+          </label>
+          <label className={label}>
+            {t.pageRange}
+            <input
+              type="number"
+              min={1}
+              max={pages.length}
+              value={Math.min(el.pageFrom, el.pageTo) + 1}
+              onFocus={snap}
+              onChange={(e) => patch({ pageFrom: Math.min(pages.length, Math.max(1, Number(e.target.value) || 1)) - 1 } as Partial<EditorElement>)}
+              className={`${numInput} w-14`}
+            />
+            <span className="text-[color:var(--faint)]">–</span>
+            <input
+              type="number"
+              min={1}
+              max={pages.length}
+              value={Math.max(el.pageFrom, el.pageTo) + 1}
+              onFocus={snap}
+              onChange={(e) => patch({ pageTo: Math.min(pages.length, Math.max(1, Number(e.target.value) || pages.length)) - 1 } as Partial<EditorElement>)}
+              className={`${numInput} w-14`}
+            />
+          </label>
+        </>
+      )}
+
+      {el.type === "whiteout" && (
+        <label className={label}>
+          {t.color}
+          <input type="color" value={el.color} onFocus={snap} onChange={(e) => patch({ color: e.target.value } as Partial<EditorElement>)} className={colorInput} />
+        </label>
+      )}
+
+      {el.type === "watermark" && (
+        <>
+          {el.mode === "text" && (
+            <>
+              <input
+                type="text"
+                value={el.text}
+                onFocus={snap}
+                onChange={(e) => {
+                  const text = e.target.value;
+                  const page = pages[el.page];
+                  const sized = page ? sizeTextElement({ text, sizePt: el.sizePt, bold: false }, page) : null;
+                  patch(sized ? { text, w: sized.w, h: sized.h } : { text });
+                }}
+                className={`${numInput} w-40`}
+              />
+              <label className={label}>
+                {t.size}
+                <input
+                  type="number"
+                  min={MIN_SIZE_PT}
+                  max={MAX_SIZE_PT}
+                  value={Math.round(el.sizePt)}
+                  onFocus={snap}
+                  onChange={(e) => {
+                    const sizePt = Math.min(MAX_SIZE_PT, Math.max(MIN_SIZE_PT, Number(e.target.value) || MIN_SIZE_PT));
+                    const page = pages[el.page];
+                    const sized = page ? sizeTextElement({ text: el.text, sizePt, bold: false }, page) : null;
+                    patch(sized ? { sizePt, w: sized.w, h: sized.h } : { sizePt });
+                  }}
+                  className={numInput}
+                />
+              </label>
+              <label className={label}>
+                {t.color}
+                <input type="color" value={el.color} onFocus={snap} onChange={(e) => patch({ color: e.target.value })} className={colorInput} />
+              </label>
+            </>
+          )}
+          <label className={label}>
+            {t.opacity}
+            <input type="range" min={0.05} max={1} step={0.05} value={el.opacity} onPointerDown={snap} onChange={(e) => patch({ opacity: Number(e.target.value) })} className="w-28 accent-[color:var(--accent)]" />
+          </label>
+          <label className={label}>
+            {t.pageRange}
+            <input
+              type="number"
+              min={1}
+              max={pages.length}
+              value={Math.min(el.pageFrom, el.pageTo) + 1}
+              onFocus={snap}
+              onChange={(e) => patch({ pageFrom: Math.min(pages.length, Math.max(1, Number(e.target.value) || 1)) - 1 })}
+              className={`${numInput} w-14`}
+            />
+            <span className="text-[color:var(--faint)]">–</span>
+            <input
+              type="number"
+              min={1}
+              max={pages.length}
+              value={Math.max(el.pageFrom, el.pageTo) + 1}
+              onFocus={snap}
+              onChange={(e) => patch({ pageTo: Math.min(pages.length, Math.max(1, Number(e.target.value) || pages.length)) - 1 })}
+              className={`${numInput} w-14`}
+            />
+          </label>
+        </>
       )}
 
       {el.type === "shape" && (
