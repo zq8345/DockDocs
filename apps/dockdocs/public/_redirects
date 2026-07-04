@@ -21,6 +21,18 @@
 /ko/batch-sort /410 410!
 /workspace/batch-sort /410 410!
 
+# text-to-pdf retired 2026-06 (80e775a, off-focus tool) but never got 410 rules —
+# GSC still lists it as 404. Declare it gone (总调度 GSC 明细核对 2026-07-04).
+/text-to-pdf /410 410!
+/zh/text-to-pdf /410 410!
+/zh-Hant/text-to-pdf /410 410!
+/es/text-to-pdf /410 410!
+/pt/text-to-pdf /410 410!
+/fr/text-to-pdf /410 410!
+/ja/text-to-pdf /410 410!
+/de/text-to-pdf /410 410!
+/ko/text-to-pdf /410 410!
+
 # GSC still lists the suffix-less forms as 404s (the real slugs were
 # batch-split-merge / batch-rotate-pdf, already 410 below) — declare these
 # gone too so the crawler drops them faster than a 404 would.
