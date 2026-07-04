@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { deepHant } from "@/lib/zh-hant";
-import type { AuthoredLocale } from "@/lib/i18n";
+import { localizedPath, type AuthoredLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
 
 // Non-standard browser API: exists at runtime in Chrome/Edge.
@@ -517,7 +517,7 @@ export function DownloadPage({ locale: localeProp }: { locale?: Locale } = {}) {
         <p className="text-[12px] leading-relaxed text-[color:var(--muted)]">
           <span className="font-semibold text-[color:var(--foreground)]">{t.privacyHeading}: </span>
           {t.privacyNote}{" "}
-          <a href="/privacy-policy" className="text-[color:var(--accent)] hover:underline">{t.privacyLink}</a>
+          <a href={localizedPath(locale, "privacy-policy")} className="text-[color:var(--accent)] hover:underline">{t.privacyLink}</a>
         </p>
       </div>
 

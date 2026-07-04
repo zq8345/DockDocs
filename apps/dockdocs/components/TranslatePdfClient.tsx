@@ -615,7 +615,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
         </div>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
 
       {/* Result */}
       {result && (

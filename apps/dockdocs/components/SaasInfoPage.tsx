@@ -4,6 +4,7 @@ import {
   type InfoPageData,
   type Locale,
 } from "@/lib/i18n";
+import { localizedDataHref } from "@/lib/localized-href";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import { LAYOUT } from "@/lib/layout-constants";
 
@@ -196,22 +197,25 @@ export function SaasInfoPage({
         <section className="border-b border-[color:var(--line)] bg-[color:var(--surface)]">
           <div className="mx-auto max-w-3xl px-5 py-12 sm:px-6">
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--accent)]">
-              Related reading
+              {zh ? zhT("相关阅读") : fr ? "Lectures associées" : ja ? "関連記事" : es ? "Lecturas relacionadas" : pt ? "Leituras relacionadas" : de ? "Verwandte Artikel" : ko ? "관련 읽을거리" : "Related reading"}
             </p>
             <h2 className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
-              More guides on this topic
+              {zh ? zhT("这个主题的更多指南") : fr ? "Plus de guides sur ce sujet" : ja ? "このテーマのガイドをもっと見る" : es ? "Más guías sobre este tema" : pt ? "Mais guias sobre este tema" : de ? "Weitere Anleitungen zu diesem Thema" : ko ? "이 주제에 대한 더 많은 가이드" : "More guides on this topic"}
             </h2>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               {page.readingLinks.map((link) => (
                 <a
                   key={link.href}
-                  href={link.href}
+                  // readingLinks mix routed slugs with /guides/<article> pages
+                  // that only exist for en/zh — localizedDataHref collapses the
+                  // latter instead of minting 404 locale prefixes.
+                  href={useLocalePrefix ? localizedDataHref(locale, link.href) : link.href}
                   className="group rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] p-5 transition hover:border-[color:var(--line-strong)]"
                 >
                   <h3 className="text-[15px] font-semibold text-[color:var(--foreground)]">{link.label}</h3>
                   <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">{link.description}</p>
                   <span className="mt-4 inline-block text-sm font-medium text-[color:var(--accent)] transition group-hover:translate-x-0.5">
-                    Read guide →
+                    {zh ? zhT("阅读指南 →") : fr ? "Lire le guide →" : ja ? "ガイドを読む →" : es ? "Leer la guía →" : pt ? "Ler o guia →" : de ? "Anleitung lesen →" : ko ? "가이드 읽기 →" : "Read guide →"}
                   </span>
                 </a>
               ))}

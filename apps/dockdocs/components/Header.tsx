@@ -509,10 +509,12 @@ export function Header() {
                 </div>
               </div>
 
-              {/* Workbench quick link — mobile */}
+              {/* Workbench quick link — mobile. Same lh() form as the desktop
+                  link: the /[locale]/workspace shim persists the locale; a
+                  bare /workspace (modifier-click / new tab) would drop it. */}
               <div className="mb-4">
                 <a
-                  href="/workspace"
+                  href={lh("/workspace", locale)}
                   onClick={(e) => { if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); navTo("/workspace"); setMobileOpen(false); }}
                   className="block w-full rounded-[var(--radius)] border border-[color:var(--accent)] bg-[color:var(--surface)] px-4 py-3 text-center text-[14px] font-semibold text-[color:var(--accent)] transition hover:border-[color:var(--accent-strong)]"
                 >

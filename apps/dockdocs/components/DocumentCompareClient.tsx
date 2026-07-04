@@ -1578,7 +1578,7 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
         </div>
       )}
 
-      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
 
       {okDocs.length >= 1 && (
         <section id="ask" className="mt-10">

@@ -449,7 +449,7 @@ export function QuizClient({ locale = "en", embedded = false }: { locale?: Local
       )}
 
       {error && <div className="mt-4 rounded-[var(--radius)] border border-[rgba(248,113,113,0.3)] bg-[rgba(248,113,113,0.08)] px-4 py-3 text-[13.5px] text-[#f87171]">{error}</div>}
-      {limitHit !== null && <UpgradePrompt locale={childLocale === "ko" ? "en" : childLocale} limit={limitHit} />}
+      {limitHit !== null && <UpgradePrompt locale={childLocale} limit={limitHit} />}
       {!embedded && <ToolSections locale={locale} content={sec} />}
       {!embedded && <ToolFaq tool="flashcards" locale={locale} />}
     </div>

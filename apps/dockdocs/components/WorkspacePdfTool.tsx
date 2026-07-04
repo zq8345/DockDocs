@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import type { RuntimeLocale } from "@/lib/copy";
 import type { RouteLocale, ToolSlug } from "@/lib/i18n";
+import { localizedDataHref } from "@/lib/localized-href";
 import { getLocalizedToolConfig } from "@/lib/localized-tools";
 import { PdfToolPageEmbedded } from "../../../shared/templates/pdf-tool-page";
 import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
@@ -128,7 +129,7 @@ export function WorkspacePdfTool({ slug, locale = "en" }: { slug: string; locale
     <div className="flex min-h-[360px] flex-col items-center justify-center gap-4 text-center">
       <p className="text-[14px] text-[color:var(--muted)]">{msg}</p>
       <a
-        href={`/${slug}/`}
+        href={localizedDataHref(locale, `/${slug}/`)}
         className="inline-flex h-10 items-center rounded-[var(--radius)] border border-[color:var(--line)] px-5 text-[14px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]"
       >
         {link}
