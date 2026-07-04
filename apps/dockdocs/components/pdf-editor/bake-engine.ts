@@ -28,6 +28,25 @@ import {
 // Keep raster bitmaps sane for huge text blocks (canvas hard-fails past ~8k).
 const MAX_RASTER_DIM = 4096;
 
+// Decode a data: URL to bytes WITHOUT fetch(). Production CSP is
+// `connect-src 'self' https:` — no `data:` — so fetch("data:image/…") is
+// blocked and surfaced as the user-facing "Failed to fetch" (P0 2026-07-04,
+// /zh/edit-pdf download with an image element). Element sources are always
+// data URLs we created ourselves (FileReader / canvas.toDataURL), so a
+// synchronous base64 decode is the whole job — zero network, CSP-immune.
+function dataUrlToBytes(dataUrl: string): ArrayBuffer {
+  const comma = dataUrl.indexOf(",");
+  if (!dataUrl.startsWith("data:") || comma === -1) {
+    throw new Error("invalid element image source");
+  }
+  const meta = dataUrl.slice(0, comma);
+  const payload = dataUrl.slice(comma + 1);
+  const bin = meta.includes(";base64") ? atob(payload) : decodeURIComponent(payload);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes.buffer;
+}
+
 export async function bakePdf(
   srcBytes: ArrayBuffer,
   pages: PageInfo[],
@@ -191,7 +210,7 @@ export async function bakePdf(
     if (el.type === "watermark") {
       let img = null;
       if (el.mode === "image" && el.src) {
-        const bytes = await (await fetch(el.src)).arrayBuffer();
+        const bytes = dataUrlToBytes(el.src);
         img = el.mime === "image/jpeg" ? await pdf.embedJpg(bytes) : await pdf.embedPng(bytes);
       } else if (el.mode === "text" && el.text.trim()) {
         const png = await rasterTextPng({ text: el.text, sizePt: el.sizePt, bold: false, color: el.color });
@@ -294,7 +313,7 @@ export async function bakePdf(
       }
       case "signature":
       case "image": {
-        const bytes = await (await fetch(el.src)).arrayBuffer();
+        const bytes = dataUrlToBytes(el.src);
         const img = el.type === "image" && el.mime === "image/jpeg"
           ? await pdf.embedJpg(bytes)
           : await pdf.embedPng(bytes); // signatures are always PNG (transparent ink)
