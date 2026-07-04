@@ -772,14 +772,20 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         for (let i = 1; i <= pageLimit; i++) {
           try {
             const pg = await doc.getPage(i);
-            const vp = pg.getViewport({ scale: 0.35 });
+            // Render at the ACTUAL display size × devicePixelRatio, never a
+            // fixed low scale stretched up (预览必须真实可读): the page-rail
+            // column shows these at ~620 CSS px wide, so the bitmap must be
+            // that wide in PHYSICAL pixels. Capped at 2.5× to bound memory.
+            const baseViewport = pg.getViewport({ scale: 1 });
+            const targetWidth = 620 * Math.min(window.devicePixelRatio || 1, 2);
+            const vp = pg.getViewport({ scale: Math.min(targetWidth / baseViewport.width, 2.5) });
             const canvas = document.createElement("canvas");
             canvas.width = vp.width;
             canvas.height = vp.height;
             const ctx = canvas.getContext("2d");
             if (ctx) {
               await pg.render({ canvas, canvasContext: ctx, viewport: vp }).promise;
-              urls.push(canvas.toDataURL("image/jpeg", 0.65));
+              urls.push(canvas.toDataURL("image/jpeg", 0.72));
             }
           } catch { /* individual page render failure is non-fatal */ }
         }
@@ -1061,6 +1067,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
                file info + clear, right = the primary CTA. */
             <>
               <DocContextBar
+                bare
                 fileName={fileName || t.choose}
                 meta={[
                   file && Math.round((file.size / 1024 / 1024) * 100) / 100 > 0
@@ -1081,7 +1088,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
                 }
               />
               <input ref={repickRef} type="file" accept="application/pdf,.pdf" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) void onFile(f); e.currentTarget.value = ""; }} />
-              <p className="mt-2 text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
+              <p className="mt-1.5 text-[11.5px] text-[color:var(--faint)]">{t.privacy}</p>
             </>
           ) : null
         }
