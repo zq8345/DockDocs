@@ -8,6 +8,7 @@ import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { authHeader } from "@/lib/supabase";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { AiToolShell, type AiShellStatus } from "@/components/ai-shell/AiToolShell";
+import { DocContextBar } from "@/components/ai-shell/DocContextBar";
 import { DocPreviewPanel } from "@/components/ai-shell/DocPreviewPanel";
 import { StreamingProgressBar } from "@/components/ai-shell/StreamingOutput";
 import { CitationChip } from "@/components/ai-shell/GroundedAnswer";
@@ -739,6 +740,22 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
             ) : null}
           </>
         }
+        contextBar={
+          activeDoc ? (
+            /* A-2: panel head — file identity + re-pick live here (bare mode:
+               the shell's container provides the chrome). The re-pick button
+               moved up from under the preview card. */
+            <DocContextBar
+              bare
+              fileName={activeDocumentName}
+              meta={`${fileSizeMb ? `${fileSizeMb} MB` : ""}${fileSizeMb && pageCount ? " · " : ""}${pageCount ? `${pageCount}p` : ""}` || undefined}
+              statusLabel={isAsking ? copy.asking : undefined}
+              onRepick={() => repickRef.current?.click()}
+              repickLabel={copy.choosePdf}
+              disabled={isAsking}
+            />
+          ) : null
+        }
         docPanel={
           activeDoc ? (
             <>
@@ -750,9 +767,6 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
                     thumbUrl: docThumb,
                   },
                 ]}
-                onRepick={() => repickRef.current?.click()}
-                repickLabel={copy.choosePdf}
-                disabled={isAsking}
               />
               <input ref={repickRef} type="file" accept="application/pdf,.pdf" className="sr-only" onChange={handleFileChange} />
             </>

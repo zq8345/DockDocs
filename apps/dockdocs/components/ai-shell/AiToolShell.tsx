@@ -265,6 +265,23 @@ export function AiToolShell({
             )}
           </div>
         </div>
+      ) : docPanel && mode === "conversational" ? (
+        /* A-2 (Joe): the chat workspace reads as ONE panel, not floating
+           pieces — same container language as the page-rail branch and
+           WorkArea: contextBar (DocContextBar bare) = panel head with the
+           file info + re-pick; body = preview column + conversation column.
+           The 70dvh interaction cap lives inside; the page stays the only
+           outer scroller. Oneshot preview-card (ai-summary) keeps the open
+           two-column flow below. */
+        <div className="mt-6 rounded-[var(--radius-lg)] border border-[color:var(--line)] bg-[color:var(--surface)]">
+          {contextBar ? (
+            <div className="border-b border-[color:var(--line)] px-4 py-3">{contextBar}</div>
+          ) : null}
+          <div className="p-4 sm:p-5 md:grid md:grid-cols-[280px_minmax(0,1fr)] md:items-start md:gap-6">
+            <div className="min-w-0">{docPanel}</div>
+            <div className="mt-4 min-w-0 md:mt-0">{interaction}</div>
+          </div>
+        </div>
       ) : docPanel ? (
         <div className="mt-6 md:grid md:grid-cols-[280px_minmax(0,1fr)] md:items-start md:gap-6">
           <div className="md:sticky md:top-4">{docPanel}</div>
