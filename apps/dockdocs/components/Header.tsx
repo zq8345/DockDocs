@@ -248,7 +248,10 @@ export function Header() {
 
   const trigger =
     "flex items-center gap-1 rounded-[var(--radius-sm)] px-3 py-2 text-[15px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--accent)] cursor-pointer";
-  const activeCls = "border-b-2 border-[color:var(--accent)] !text-white";
+  // Theme-aware active state: --foreground is near-white on dark and near-black
+  // on light. A hardcoded text-white turned the active item invisible in light
+  // mode (white-on-white — Joe's screenshot, 2026-07-04).
+  const activeCls = "border-b-2 border-[color:var(--accent)] !text-[color:var(--foreground)]";
   const isActive = (href: string) => currentSlug(pathname) === href.replace(/^\//, "");
   const itemCls =
     "block w-full whitespace-nowrap rounded-[var(--radius-sm)] px-2.5 py-1.5 text-left text-[14.5px] font-medium text-[color:var(--muted)] transition hover:bg-[color:var(--surface-subtle)] hover:text-[color:var(--foreground)]";
