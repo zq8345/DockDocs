@@ -616,8 +616,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const [progressStep, setProgressStep] = useState<string>("");
   const [analyzeProgress, setAnalyzeProgress] = useState(0);
   const [previewRisks, setPreviewRisks] = useState<Risk[]>([]);
-  const [pageStarts, setPageStarts] = useState<number[]>([]);
-  const [activeRailPage, setActiveRailPage] = useState<number | null>(null);
+  const [flashIdx, setFlashIdx] = useState<number | null>(null);
   const repickRef = useRef<HTMLInputElement | null>(null);
   const thumbRunRef = useRef(0);
 
@@ -648,23 +647,37 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
     [risks, text],
   );
 
-  // "Find in source" jumps to the finding's PAGE in the left rail and flashes
-  // it (the old bottom source-text view is gone — the rail + in-card quote
-  // cover it). Page = last pageStarts entry ≤ the quote's char offset.
-  const findInSource = useCallback((i: number) => {
-    const loc = locations[i];
-    if (!loc || pageStarts.length === 0) return;
-    let pageN = 1;
-    for (let p = 0; p < pageStarts.length; p++) {
-      if (pageStarts[p] <= loc.start) pageN = p + 1;
-      else break;
+  // Source-text view with located quotes highlighted, so a flagged clause can be
+  // scrolled to and read in context.
+  const sourceSegments = useMemo(() => {
+    if (!text || !risks || risks.length === 0) return null;
+    const ranges = locations
+      .map((loc, i) => (loc ? { start: loc.start, end: loc.end, i } : null))
+      .filter((x): x is { start: number; end: number; i: number } => x !== null)
+      .sort((a, b) => a.start - b.start);
+    const segs: Array<{ text: string; mark: number | null }> = [];
+    let pos = 0;
+    let lastEnd = -1;
+    for (const r of ranges) {
+      if (r.start < lastEnd) continue; // skip overlapping matches
+      if (r.start > pos) segs.push({ text: text.slice(pos, r.start), mark: null });
+      segs.push({ text: text.slice(r.start, r.end), mark: r.i });
+      pos = r.end;
+      lastEnd = r.end;
     }
-    const el = document.getElementById(`rail-page-${pageN}`);
+    if (pos < text.length) segs.push({ text: text.slice(pos), mark: null });
+    return segs;
+  }, [text, risks, locations]);
+
+  const findInSource = useCallback((i: number) => {
+    const el = document.getElementById(`cq-${i}`);
     if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-    setActiveRailPage(pageN);
-    window.setTimeout(() => setActiveRailPage((cur) => (cur === pageN ? null : cur)), 2200);
-  }, [locations, pageStarts]);
+    const details = el.closest("details");
+    if (details && !details.open) details.open = true;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    setFlashIdx(i);
+    window.setTimeout(() => setFlashIdx((cur) => (cur === i ? null : cur)), 1600);
+  }, []);
 
   const reset = () => {
     thumbRunRef.current += 1; // stop any in-flight progressive thumbnail run
@@ -680,8 +693,6 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
     setTypeSpecificItems([]);
     setFile(null);
     setPageDataUrls([]);
-    setPageStarts([]);
-    setActiveRailPage(null);
     setProgressStep("");
   };
 
@@ -742,8 +753,6 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
       setLimitHit(null);
       setFile(file);
       setPageDataUrls([]);
-      setPageStarts([]);
-      setActiveRailPage(null);
       setFileName(file.name);
       setPhase("extracting");
       try {
@@ -751,10 +760,6 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
         pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
         const data = new Uint8Array(await file.arrayBuffer());
         const doc = await pdfjs.getDocument({ data }).promise;
-        // Normalize PER PAGE and record each page's start offset in the final
-        // text, so a located quote (char offset) maps to its page — the
-        // "find in source" jump targets the page-rail image, not a text view.
-        const starts: number[] = [];
         let assembled = "";
         for (let i = 1; i <= doc.numPages; i++) {
           const page = await doc.getPage(i);
@@ -764,12 +769,10 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
             .join(" ")
             .replace(/[ \t]+/g, " ")
             .trim();
-          starts.push(assembled.length);
           assembled += pageText + "\n\n";
         }
         const trimmed = assembled.trim();
         setPages(doc.numPages);
-        setPageStarts(starts);
 
         if (!trimmed) {
           try { doc.destroy(); } catch { /* ignore */ }
@@ -1069,7 +1072,6 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
             <PageRail
               pages={pageDataUrls}
               pageLabel={(n) => t.approxPage(n).replace(/^≈\s*/, "")}
-              activePage={activeRailPage}
             />
           ) : null
         }
@@ -1349,9 +1351,33 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
             ⚖️ {t.disclaimer}
           </p>
 
-          {/* v2 精修: the bottom source-text panel is gone — the readable page
-              rail + each card's verbatim quote cover it; "find in source" now
-              jumps to (and flashes) the finding's page image in the rail. */}
+          {text && sourceSegments && (
+            <details className="mt-4 rounded-[var(--radius)] border border-[color:var(--line)] bg-[color:var(--surface)]">
+              <summary className="cursor-pointer list-none px-4 py-3 text-[13px] font-semibold text-[color:var(--foreground)]">
+                {t.sourceTitle}
+              </summary>
+              <div className="max-h-[28rem] overflow-auto whitespace-pre-wrap border-t border-[color:var(--line)] px-4 py-3 text-[12.5px] leading-relaxed text-[color:var(--muted)]">
+                {sourceSegments.map((seg, idx) =>
+                  seg.mark === null ? (
+                    <span key={idx}>{seg.text}</span>
+                  ) : (
+                    <mark
+                      key={idx}
+                      id={`cq-${seg.mark}`}
+                      className="rounded px-0.5"
+                      style={{
+                        backgroundColor: flashIdx === seg.mark ? "rgba(52,211,153,0.55)" : "rgba(52,211,153,0.18)",
+                        color: "var(--foreground)",
+                        transition: "background-color 0.4s ease",
+                      }}
+                    >
+                      {seg.text}
+                    </mark>
+                  ),
+                )}
+              </div>
+            </details>
+          )}
           </div>{/* end right column */}
         </div>
       )}
