@@ -26,7 +26,7 @@ const aboutSchema = {
         "DockDocs is a privacy-first AI document platform with ~50 PDF tools including compress, merge, split, convert, OCR, AI chat, and AI summarization. Built for teams, students, and professionals worldwide.",
       foundingDate: "2024",
       slogan: "Read any document. Verify every answer.",
-      sameAs: ["https://github.com/zq8345/dock-ai-ecosystem"],
+      sameAs: ["https://github.com/zq8345/DockDocs"],
     },
     {
       "@type": "AboutPage",

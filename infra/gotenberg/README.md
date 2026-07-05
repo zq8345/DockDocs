@@ -18,8 +18,8 @@
    ```
 4. **拿到这套配置**(在 VPS 上):
    ```bash
-   git clone https://github.com/zq8345/dock-ai-ecosystem.git
-   cd dock-ai-ecosystem/infra/gotenberg
+   git clone https://github.com/zq8345/DockDocs.git
+   cd DockDocs/infra/gotenberg
    cp .env.example .env
    nano .env          # 填 GOTENBERG_DOMAIN;GOTENBERG_SECRET 用下面命令生成
    openssl rand -hex 32   # 复制输出，粘到 .env 的 GOTENBERG_SECRET

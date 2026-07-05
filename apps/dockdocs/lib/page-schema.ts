@@ -141,7 +141,7 @@ export function homeSchema(locale: string = "en") {
         description: ORG_DESC[locale] ?? ORG_DESC.en,
         slogan: SLOGAN[locale] ?? SLOGAN.en,
         foundingDate: "2024",
-        sameAs: ["https://github.com/zq8345/dock-ai-ecosystem"],
+        sameAs: ["https://github.com/zq8345/DockDocs"],
       },
       {
         "@type": "WebSite",
@@ -185,7 +185,7 @@ export function aboutSchema(locale: string) {
   return {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Organization", "@id": `${SITE}#org`, name: "DockDocs", url: SITE, logo: { "@type": "ImageObject", url: `${SITE}/icon-512.png`, width: 512, height: 512 }, slogan: SLOGAN[locale] ?? SLOGAN.en, sameAs: ["https://github.com/zq8345/dock-ai-ecosystem"] },
+      { "@type": "Organization", "@id": `${SITE}#org`, name: "DockDocs", url: SITE, logo: { "@type": "ImageObject", url: `${SITE}/icon-512.png`, width: 512, height: 512 }, slogan: SLOGAN[locale] ?? SLOGAN.en, sameAs: ["https://github.com/zq8345/DockDocs"] },
       {
         "@type": "AboutPage",
         "@id": `${url}#webpage`,
