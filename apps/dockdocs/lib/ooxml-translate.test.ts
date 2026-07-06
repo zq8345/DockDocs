@@ -12,6 +12,7 @@ import {
   rezipArchive,
   extractDocxTexts,
   replaceDocxTexts,
+  planDocxParagraphs,
   translateDocx,
   unescapeXml,
   escapeXml,
@@ -124,8 +125,13 @@ test("unzip inflates DEFLATE (method 8) members via DecompressionStream", async 
   assert.equal(new TextDecoder().decode(entries.get("word/document.xml")), DOCUMENT_XML);
 });
 
-test("unzip rejects garbage bytes", async () => {
-  await assert.rejects(() => unzipArchive(new TextEncoder().encode("<html>not a zip</html>")));
+test("unzip rejects garbage bytes with a file-type-neutral message", async () => {
+  // "Invalid file structure." (not "PDF") so pdf-errors' corrupt-file mapper
+  // gives a .docx user a sensible notice without a misleading PDF reference.
+  await assert.rejects(
+    () => unzipArchive(new TextEncoder().encode("<html>not a zip</html>")),
+    /Invalid file structure/,
+  );
 });
 
 // ── XML text layer ───────────────────────────────────────────────────────────
@@ -164,9 +170,128 @@ test("unescape/escape are inverse for document text", () => {
   assert.equal(escapeXml("A & B <C>"), "A &amp; B &lt;C&gt;");
 });
 
+// ── paragraph merge (G2): sentences split across runs ───────────────────────
+
+test("planDocxParagraphs merges runs per paragraph, in order", () => {
+  const plan = planDocxParagraphs(DOCUMENT_XML);
+  assert.deepEqual(plan.paragraphs, [
+    "Payment is due within 30 days", // two runs (plain + bold) = ONE unit
+    " Fees & charges <net> ",        // preserve-space run + empty run
+  ]);
+});
+
+test("apply puts the whole translation in the first run and empties the rest", () => {
+  const plan = planDocxParagraphs(DOCUMENT_XML);
+  const out = plan.apply(["付款期限为 30 天", null]);
+  // first run of paragraph 1 carries everything…
+  assert.ok(out.includes(">付款期限为 30 天</w:t>"));
+  // …the bold second run is emptied but its element + formatting survive
+  assert.ok(/<w:rPr><w:b\/><\/w:rPr><w:t xml:space="preserve"><\/w:t>/.test(out));
+  // paragraph 2 (null) fully untouched, including its escapes
+  assert.ok(out.includes(" Fees &amp; charges &lt;net&gt; "));
+  assert.equal((out.match(/<w:t\b/g) ?? []).length, 4);
+});
+
+test("apply rejects a paragraph-count mismatch", () => {
+  const plan = planDocxParagraphs(DOCUMENT_XML);
+  assert.throws(() => plan.apply(["only one"]), /paragraphs/);
+});
+
+test("hyperlink runs merge into their paragraph; link element survives", () => {
+  const xml = `<w:document xmlns:w="w"><w:body><w:p><w:r><w:t>See </w:t></w:r><w:hyperlink r:id="rId9"><w:r><w:rPr><w:u/></w:rPr><w:t>the appendix</w:t></w:r></w:hyperlink><w:r><w:t> for details.</w:t></w:r></w:p></w:body></w:document>`;
+  const plan = planDocxParagraphs(xml);
+  assert.deepEqual(plan.paragraphs, ["See the appendix for details."]);
+  const out = plan.apply(["详情见附录。"]);
+  assert.ok(out.includes(">详情见附录。</w:t>"));
+  assert.ok(out.includes('<w:hyperlink r:id="rId9">')); // link element intact
+});
+
+test("table-cell paragraphs are separate units", () => {
+  const xml = `<w:document xmlns:w="w"><w:body><w:tbl><w:tr><w:tc><w:p><w:r><w:t>Cell A</w:t></w:r></w:p></w:tc><w:tc><w:p><w:r><w:t>Cell B</w:t></w:r></w:p></w:tc></w:tr></w:tbl><w:p><w:r><w:t>After table</w:t></w:r></w:p></w:body></w:document>`;
+  const plan = planDocxParagraphs(xml);
+  assert.deepEqual(plan.paragraphs, ["Cell A", "Cell B", "After table"]);
+});
+
+test("run-level <w:br/> elements survive the refill", () => {
+  const xml = `<w:document xmlns:w="w"><w:body><w:p><w:r><w:t>Line one</w:t></w:r><w:r><w:br/><w:t>Line two</w:t></w:r></w:p></w:body></w:document>`;
+  const plan = planDocxParagraphs(xml);
+  assert.deepEqual(plan.paragraphs, ["Line oneLine two"]);
+  const out = plan.apply(["第一行第二行"]);
+  assert.ok(out.includes("<w:br/>"));
+});
+
+test("a stray <w:t> outside any <w:p> never shifts the mapping", () => {
+  const xml = `<w:document xmlns:w="w"><w:body><w:t>stray</w:t><w:p><w:r><w:t>Real paragraph</w:t></w:r></w:p></w:body></w:document>`;
+  const plan = planDocxParagraphs(xml);
+  assert.deepEqual(plan.paragraphs, ["Real paragraph"]);
+  const out = plan.apply(["真正的段落"]);
+  assert.ok(out.includes(">stray</w:t>")); // untouched
+  assert.ok(out.includes(">真正的段落</w:t>"));
+});
+
+// ── CJK (the primary use case: Chinese contract .docx) ───────────────────────
+
+test("CJK: no-space Chinese runs merge into one whole-sentence unit", () => {
+  // Chinese has no inter-word spaces; a sentence Word split across a plain +
+  // bold run must NOT be joined with a space or translated fragment-by-fragment.
+  const xml = `<w:document xmlns:w="w"><w:body><w:p><w:r><w:t>本合同</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t>自签署之日起生效</w:t></w:r></w:p></w:body></w:document>`;
+  const plan = planDocxParagraphs(xml);
+  assert.deepEqual(plan.paragraphs, ["本合同自签署之日起生效"]);
+  const out = plan.apply(["This contract takes effect upon signing"]);
+  assert.ok(out.includes(">This contract takes effect upon signing</w:t>"));
+  assert.ok(/<w:rPr><w:b\/><\/w:rPr><w:t xml:space="preserve"><\/w:t>/.test(out)); // bold run emptied, kept
+});
+
+test("CJK: mixed Chinese+Latin paragraph merges in order", () => {
+  const xml = `<w:document xmlns:w="w"><w:body><w:p><w:r><w:t>付款方式：</w:t></w:r><w:r><w:t>Net 30 days</w:t></w:r><w:r><w:t>。</w:t></w:r></w:p></w:body></w:document>`;
+  const plan = planDocxParagraphs(xml);
+  assert.deepEqual(plan.paragraphs, ["付款方式：Net 30 days。"]);
+});
+
+test("CJK: full docx round trip, Chinese source → target, other parts intact", async () => {
+  const zhDoc = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:p><w:r><w:t>甲方与</w:t></w:r><w:r><w:rPr><w:b/></w:rPr><w:t>乙方</w:t></w:r><w:r><w:t>达成如下协议。</w:t></w:r></w:p><w:sectPr/></w:body></w:document>`;
+  const fixture = createZipArchive([
+    { name: "[Content_Types].xml", data: CONTENT_TYPES },
+    { name: "_rels/.rels", data: RELS },
+    { name: "word/document.xml", data: zhDoc },
+  ]);
+  const seen: string[] = [];
+  const out = await translateDocx(fixture, async (texts) => {
+    seen.push(...texts);
+    return texts.map(() => "Party A and Party B agree as follows.");
+  });
+  assert.deepEqual(seen, ["甲方与乙方达成如下协议。"]); // one merged unit, no spaces injected
+  const xml = new TextDecoder().decode((await unzipArchive(out)).get("word/document.xml"));
+  assert.ok(xml.includes(">Party A and Party B agree as follows.</w:t>"));
+  assert.ok(xml.includes("<w:b/>"));
+});
+
+// ── field-code / bookmark-only paragraphs (no <w:t> to translate) ────────────
+
+test("bookmark-only paragraph is skipped, does not shift later paragraphs", () => {
+  const xml = `<w:document xmlns:w="w"><w:body><w:p><w:bookmarkStart w:id="0" w:name="ref1"/><w:bookmarkEnd w:id="0"/></w:p><w:p><w:r><w:t>Real text</w:t></w:r></w:p></w:body></w:document>`;
+  const plan = planDocxParagraphs(xml);
+  assert.deepEqual(plan.paragraphs, ["Real text"]); // empty paragraph produced no unit
+  const out = plan.apply(["实际文本"]);
+  assert.ok(out.includes(">实际文本</w:t>"));
+  assert.ok(out.includes('<w:bookmarkStart w:id="0" w:name="ref1"/>')); // bookmark intact
+});
+
+test("field-code paragraph (instrText, no <w:t>) is skipped", () => {
+  // A PAGE field: fldChar begin / instrText / fldChar end — instrText is NOT
+  // <w:t>, so the paragraph has no translatable unit and passes through.
+  const xml = `<w:document xmlns:w="w"><w:body><w:p><w:r><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText>PAGE</w:instrText></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r></w:p><w:p><w:r><w:t>Chapter one</w:t></w:r></w:p></w:body></w:document>`;
+  const plan = planDocxParagraphs(xml);
+  assert.deepEqual(plan.paragraphs, ["Chapter one"]);
+  const out = plan.apply(["第一章"]);
+  assert.ok(out.includes("<w:instrText>PAGE</w:instrText>")); // field instruction untouched
+  assert.ok(out.includes(">第一章</w:t>"));
+});
+
 // ── end-to-end ──────────────────────────────────────────────────────────────
 
-test("translateDocx: full round trip swaps text, leaves other parts intact, skips blanks", async () => {
+test("translateDocx: paragraph-level round trip, other parts intact, blanks skipped", async () => {
   const fixture = buildFixtureDocx();
   const seen: string[] = [];
   const out = await translateDocx(fixture, async (texts) => {
@@ -174,14 +299,14 @@ test("translateDocx: full round trip swaps text, leaves other parts intact, skip
     return texts.map((t) => `[译]${t}`);
   });
 
-  // whitespace-only / empty runs never reach the translator
-  assert.deepEqual(seen, ["Payment is due within ", "30 days", " Fees & charges <net> "]);
+  // translator sees WHOLE paragraphs (runs merged), not fragments
+  assert.deepEqual(seen, ["Payment is due within 30 days", " Fees & charges <net> "]);
 
   const entries = await unzipArchive(out);
   const xml = new TextDecoder().decode(entries.get("word/document.xml"));
-  assert.ok(xml.includes("[译]Payment is due within "));
-  assert.ok(xml.includes("[译]30 days"));
+  assert.ok(xml.includes("[译]Payment is due within 30 days"));
   assert.ok(xml.includes("[译] Fees &amp; charges &lt;net&gt; "));
+  assert.ok(xml.includes("<w:b/>")); // formatting elements survive
   // untouched parts byte-identical
   assert.equal(new TextDecoder().decode(entries.get("[Content_Types].xml")), CONTENT_TYPES);
   assert.equal(new TextDecoder().decode(entries.get("_rels/.rels")), RELS);

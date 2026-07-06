@@ -36,10 +36,12 @@ export function isEmptyPdfError(e: unknown): boolean {
 }
 
 /**
- * True if the bytes aren't a readable PDF: truncated, garbage-with-a-.pdf-name,
- * forged structure. Covers pdf.js InvalidPDFException ("Invalid PDF structure"),
- * its deeper chokes on forged dictionaries ("Invalid argument for stringToBytes",
- * "bad XRef"…), and pdf-lib parse failures.
+ * True if the bytes aren't a readable document: truncated, garbage-with-the-
+ * right-extension, forged structure. Covers pdf.js InvalidPDFException ("Invalid
+ * PDF structure"), its deeper chokes on forged dictionaries ("Invalid argument
+ * for stringToBytes", "bad XRef"…), pdf-lib parse failures, AND the OOXML
+ * translator's file-type-neutral "Invalid file structure." (lib/ooxml-translate
+ * throws it for a corrupt .docx/.pptx/.xlsx ZIP — "PDF" would mislead there).
  */
 export function isCorruptPdfError(e: unknown): boolean {
   if (!e) return false;
@@ -48,6 +50,7 @@ export function isCorruptPdfError(e: unknown): boolean {
   return (
     name === "InvalidPDFException" ||
     msg.includes("invalid pdf structure") ||
+    msg.includes("invalid file structure") ||
     msg.includes("stringtobytes") ||
     msg.includes("bad xref") ||
     msg.includes("failed to parse pdf") ||

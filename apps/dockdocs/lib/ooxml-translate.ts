@@ -45,7 +45,7 @@ export async function unzipArchive(bytes: Uint8Array): Promise<Map<string, Uint8
   for (let i = bytes.length - 22; i >= scanFloor; i--) {
     if (view.getUint32(i, true) === EOCD_SIG) { eocd = i; break; }
   }
-  if (eocd < 0) throw new Error("Invalid PDF structure."); // reuse the corrupt-file wording family
+  if (eocd < 0) throw new Error("Invalid file structure."); // pdf-errors corrupt-file family (file-type-neutral)
   const entryCount = view.getUint16(eocd + 10, true);
   const centralOffset = view.getUint32(eocd + 16, true);
 
@@ -53,7 +53,7 @@ export async function unzipArchive(bytes: Uint8Array): Promise<Map<string, Uint8
   const decoder = new TextDecoder();
   let p = centralOffset;
   for (let i = 0; i < entryCount; i++) {
-    if (view.getUint32(p, true) !== CENTRAL_SIG) throw new Error("Invalid PDF structure.");
+    if (view.getUint32(p, true) !== CENTRAL_SIG) throw new Error("Invalid file structure.");
     const method = view.getUint16(p + 10, true);
     const compSize = view.getUint32(p + 20, true);
     const nameLen = view.getUint16(p + 28, true);
@@ -64,7 +64,7 @@ export async function unzipArchive(bytes: Uint8Array): Promise<Map<string, Uint8
 
     // The LOCAL header's name/extra lengths can differ from the central copy —
     // the data offset must be computed from the local record.
-    if (view.getUint32(localOffset, true) !== LOCAL_SIG) throw new Error("Invalid PDF structure.");
+    if (view.getUint32(localOffset, true) !== LOCAL_SIG) throw new Error("Invalid file structure.");
     const localNameLen = view.getUint16(localOffset + 26, true);
     const localExtraLen = view.getUint16(localOffset + 28, true);
     const dataStart = localOffset + 30 + localNameLen + localExtraLen;
@@ -135,20 +135,104 @@ export function replaceDocxTexts(documentXml: string, translations: Array<string
   });
 }
 
-// ── High-level: translate one .docx ─────────────────────────────────────────
+// ── Paragraph merge (G2): sentences split across runs ───────────────────────
 
-/** True for runs worth sending to the translator (skip whitespace/empty). */
+/** True for text worth sending to the translator (skip whitespace/empty). */
 export function isTranslatableText(text: string): boolean {
   return text.trim().length > 0;
 }
 
+// A <w:p> never nests inside another <w:p> (OOXML forbids it), so a lazy
+// block match is safe even for paragraphs inside table cells. Self-closing
+// <w:p/> (empty paragraphs) carry no <w:t> and are deliberately not matched.
+const W_P = /<w:p\b[^>]*>[\s\S]*?<\/w:p>/g;
+
+export type ParagraphPlan = {
+  /** Merged human text of each paragraph, in document order. */
+  paragraphs: string[];
+  /**
+   * Write one translation per paragraph back into the XML. The whole
+   * translated paragraph lands in the paragraph's FIRST non-empty run (keeping
+   * that run's formatting); the remaining runs are emptied. Word can't split a
+   * translated sentence back across the original run boundaries — different
+   * languages reorder words — so in-paragraph format changes (a bolded half-
+   * sentence) collapse to the first run's format. That's the honest trade-off
+   * the tool copy states. Run ELEMENTS all survive (bold marks, hyperlinks,
+   * breaks, tabs keep the layout); only their text moves.
+   * `null` keeps a paragraph untouched.
+   */
+  apply(translations: Array<string | null | undefined>): string;
+};
+
+/**
+ * Split document.xml into translation units of one PARAGRAPH each: all <w:t>
+ * runs inside a <w:p> merge into one string, so the translator always sees
+ * whole sentences (a sentence Word split across five runs — bold spans,
+ * hyperlinks, spell-check artifacts — would be garbage translated run by run).
+ */
+export function planDocxParagraphs(documentXml: string): ParagraphPlan {
+  // Assign every global <w:t> slot (the order replaceDocxTexts consumes) to
+  // its paragraph BY CHARACTER OFFSET — never by counting, so a stray <w:t>
+  // outside any <w:p> can't shift the mapping for everything after it (it
+  // simply belongs to no paragraph and stays untouched).
+  const runOffsets: number[] = [];
+  const runTexts: string[] = [];
+  for (const m of documentXml.matchAll(W_T)) {
+    runOffsets.push(m.index);
+    runTexts.push(unescapeXml(m[2]));
+  }
+  const totalSlots = runOffsets.length;
+
+  // Both lists are in document order, so one forward cursor covers all slots.
+  const paragraphRanges: Array<{ firstSlot: number; slotCount: number; text: string }> = [];
+  let cursor = 0;
+  for (const p of documentXml.matchAll(W_P)) {
+    const start = p.index;
+    const end = start + p[0].length;
+    while (cursor < totalSlots && runOffsets[cursor] < start) cursor++; // stray runs before this <w:p>: untouched
+    const firstSlot = cursor;
+    while (cursor < totalSlots && runOffsets[cursor] < end) cursor++;
+    const slotCount = cursor - firstSlot;
+    if (slotCount > 0) {
+      paragraphRanges.push({
+        firstSlot,
+        slotCount,
+        text: runTexts.slice(firstSlot, firstSlot + slotCount).join(""),
+      });
+    }
+  }
+
+  return {
+    paragraphs: paragraphRanges.map((p) => p.text),
+    apply(translations) {
+      if (translations.length !== paragraphRanges.length) {
+        throw new Error(`Translator returned ${translations.length} paragraphs for ${paragraphRanges.length} inputs.`);
+      }
+      const slots: Array<string | null> = Array.from({ length: totalSlots }, () => null);
+      paragraphRanges.forEach((range, i) => {
+        const next = translations[i];
+        if (next === null || next === undefined) return;
+        // First run carries the whole translation; the rest go empty.
+        slots[range.firstSlot] = next;
+        for (let s = range.firstSlot + 1; s < range.firstSlot + range.slotCount; s++) {
+          slots[s] = "";
+        }
+      });
+      return replaceDocxTexts(documentXml, slots);
+    },
+  };
+}
+
+// ── High-level: translate one .docx ─────────────────────────────────────────
+
 export type TranslateBatch = (texts: string[]) => Promise<string[]>;
 
 /**
- * Translate a .docx in place: unzip → swap <w:t> text via `translateBatch` →
- * repack. Only the text strings are handed to the callback — the caller owns
- * the API transport (and its streaming/chunking); this module never touches
- * the network. Non-translatable runs (pure whitespace) pass through verbatim.
+ * Translate a .docx in place: unzip → merge each paragraph's runs into one
+ * sentence-complete unit → `translateBatch` → refill → repack. Only the text
+ * strings are handed to the callback — the caller owns the API transport (and
+ * its streaming/chunking); this module never touches the network. Paragraphs
+ * with no translatable text (empty/whitespace) pass through verbatim.
  * Returns the rebuilt .docx bytes.
  */
 export async function translateDocx(bytes: Uint8Array, translateBatch: TranslateBatch): Promise<Uint8Array> {
@@ -158,10 +242,10 @@ export async function translateDocx(bytes: Uint8Array, translateBatch: Translate
   if (!docXmlBytes) throw new Error("Not a Word document (word/document.xml missing).");
   const documentXml = new TextDecoder().decode(docXmlBytes);
 
-  const texts = extractDocxTexts(documentXml);
+  const plan = planDocxParagraphs(documentXml);
   const jobIndices: number[] = [];
   const jobTexts: string[] = [];
-  texts.forEach((text, i) => {
+  plan.paragraphs.forEach((text, i) => {
     if (isTranslatableText(text)) {
       jobIndices.push(i);
       jobTexts.push(text);
@@ -173,10 +257,9 @@ export async function translateDocx(bytes: Uint8Array, translateBatch: Translate
     throw new Error(`Translator returned ${translated.length} segments for ${jobTexts.length} inputs.`);
   }
 
-  const slots: Array<string | null> = texts.map(() => null);
-  jobIndices.forEach((slot, k) => { slots[slot] = translated[k]; });
+  const paragraphSlots: Array<string | null> = plan.paragraphs.map(() => null);
+  jobIndices.forEach((slot, k) => { paragraphSlots[slot] = translated[k]; });
 
-  const newXml = replaceDocxTexts(documentXml, slots);
-  entries.set(docPath, new TextEncoder().encode(newXml));
+  entries.set(docPath, new TextEncoder().encode(plan.apply(paragraphSlots)));
   return rezipArchive(entries);
 }
