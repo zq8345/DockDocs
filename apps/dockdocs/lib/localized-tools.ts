@@ -633,6 +633,10 @@ const enTools: Record<ToolSlug, ToolCopy> = {
     faqTitle: "PDF to Markdown questions",
     faq: [
       { question: "How do I convert PDF to Markdown?", answer: "Upload a PDF and download the extracted Markdown file." },
+      { question: "What does the Markdown output look like?", answer: "Each PDF page becomes a section with a ## heading (e.g. ## Page 1). Text is extracted as paragraphs below that heading. The result is a clean .md file you can open in any Markdown editor, paste into Notion or Obsidian, or feed into an LLM pipeline." },
+      { question: "What happens to images and tables?", answer: "Images are not included — the tool extracts text only. Tables are converted to plain text as they appear in the PDF's text layer; columns may run together depending on how the PDF encodes them. The content is usable but table formatting may need manual cleanup." },
+      { question: "Does it work for scanned PDFs?", answer: "Scanned PDFs contain images of text, not machine-readable text, so they produce little or no Markdown output. Run OCR first to add a text layer — you can use the OCR PDF tool on DockDocs — then convert the result here." },
+      { question: "Can I use this to prepare PDFs for AI or LLM ingestion?", answer: "Yes. Markdown is a common input format for RAG pipelines and LLM document ingestion. Upload the PDF, download the .md, and feed it to your AI pipeline. The page-structured output (## Page 1, ## Page 2) makes it easy to track source page references." },
       { question: "Is my PDF sent to a server?", answer: "No. All conversion happens in your browser." },
     ],
     cta: { eyebrow: "PDF to Markdown", title: "Extract PDF content as structured Markdown.", description: "Convert PDFs to Markdown in your browser.", buttonLabel: "Convert PDF now" },
@@ -1672,7 +1676,14 @@ const zhTools: Record<ToolSlug, LocalizedToolCopy> = {
     workflowDescription: "常见用途：将 PDF 内容导入 wiki 和文档系统。",
     steps: ["上传纯文本 PDF。", "可选输入页面范围。", "下载 Markdown 文件。"],
     cta: { eyebrow: "PDF 转 Markdown", title: "将 PDF 内容提取为结构化 Markdown。", description: "完全在浏览器中将 PDF 转换为 Markdown。", buttonLabel: "立即转换" },
-    faq: [{ question: "如何将 PDF 转为 Markdown？", answer: "上传 PDF，下载提取的 Markdown 文件。" }, { question: "我的 PDF 会发送到服务器吗？", answer: "不会，所有转换在浏览器本地完成。" }],
+    faq: [
+      { question: "如何将 PDF 转为 Markdown？", answer: "上传 PDF，下载提取的 Markdown 文件。" },
+      { question: "转出来的 Markdown 长什么样？", answer: "每个 PDF 页面变为一个 ## 标题章节（例如 ## Page 1），文字以段落形式排列在标题下方。生成的 .md 文件可以在任何 Markdown 编辑器中打开，也可以直接粘贴到 Notion、Obsidian，或接入 LLM 流水线使用。" },
+      { question: "图片和表格怎么处理？", answer: "图片不会包含在输出中，工具只提取文字。表格会以 PDF 文字层的原始顺序转为纯文本，列内容可能排在同一行（取决于 PDF 编码方式）。内容可用，但表格格式可能需要手动整理。" },
+      { question: "扫描版 PDF 可以用吗？", answer: "扫描件里保存的是图片而非可识别的文字，直接上传几乎没有输出。请先用 OCR 工具给扫描件加上文字层——DockDocs 的 OCR PDF 工具可以在浏览器里完成——然后再到这里转换。" },
+      { question: "可以用来给 AI / LLM 准备输入数据吗？", answer: "可以，这正是该工具的核心用途之一。Markdown 是 RAG 流水线和 LLM 文档摄入的常见输入格式。上传 PDF、下载 .md，直接接入你的 AI 工程流。按页结构的输出（## Page 1、## Page 2）方便追溯原文出处。" },
+      { question: "我的 PDF 会发送到服务器吗？", answer: "不会，所有转换在浏览器本地完成。" },
+    ],
   },
   "png-to-pdf": {
     title: "在线免费 PNG 转 PDF | DockDocs",
