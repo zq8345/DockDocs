@@ -52,4 +52,5 @@ export const standaloneRoutes = [
   "ai-document-workspace",
   "upgrade",
   "how-to-redline-a-contract",
+  "service-agreement-red-flags",
 ] as const;
