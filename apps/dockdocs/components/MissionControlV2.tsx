@@ -279,7 +279,7 @@ export function MissionControlV2() {
             { label: "网站首页", href: "https://dockdocs.app" },
             { label: "Search Console", href: "https://search.google.com/search-console" },
             { label: "Netlify", href: "https://app.netlify.com" },
-            { label: "GitHub", href: "https://github.com/zq8345/dock-ai-ecosystem" },
+            { label: "GitHub", href: "https://github.com/zq8345/DockDocs" },
             { label: "阿里云 ECS", href: "https://ecs.console.aliyun.com" },
           ].map((l) => (
             <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer"

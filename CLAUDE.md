@@ -3,9 +3,9 @@
 
 ## Project
 - DockDocs: Next.js PDF tools monorepo at C:\Users\47203\Documents\Dock
-- GitHub: zq8345/dock-ai-ecosystem (master branch)
+- GitHub: zq8345/DockDocs (master branch; repo renamed 2026-07-05, old URL 301s)
 - Deploy: Netlify → dockdocs.app
-- Package manager: npm workspaces (root: dock-ai-ecosystem)
+- Package manager: npm workspaces (single monorepo root package)
 
 ## Architecture
 - Next.js 15.5 with static export (output: "export")
