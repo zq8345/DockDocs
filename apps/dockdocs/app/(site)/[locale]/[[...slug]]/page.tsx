@@ -1661,7 +1661,10 @@ async function generateMetadataInner({
   }
 
   if (slug === "ai-workspace") {
-    const copy = aiCopy[rawLocale as keyof typeof aiCopy] ?? aiCopy.en;
+    const copy =
+      rawLocale === "zh-Hant"
+        ? { title: toHant(aiCopy.zh.title), description: toHant(aiCopy.zh.description) }
+        : (aiCopy[rawLocale as keyof typeof aiCopy] ?? aiCopy.en);
     return createLocalizedMetadata(
       rawLocale,
       "ai-workspace",
@@ -1671,30 +1674,36 @@ async function generateMetadataInner({
   }
 
   if (slug === "download") {
-    return createLocalizedMetadata(
-      rawLocale,
-      "download",
-      m(
-        "Download DockDocs — Install the PDF Tool Web App",
-        "下载 DockDocs — 安装 PDF 工具网页应用",
-        "Descargar DockDocs — Instala la app web de herramientas PDF",
-        "Baixar DockDocs — Instale o app web de ferramentas PDF",
-        "Télécharger DockDocs — Installez l'app web d'outils PDF",
-        "DockDocs をダウンロード — PDF ツール Web アプリをインストール",
-      ),
-      m(
-        "Install DockDocs as a web app for one-click access on Windows, Mac, iOS, or Android. No app store needed — install directly from your browser.",
-        "将 DockDocs 安装到设备，一键快速启动——支持 Windows、Mac、iOS、Android，无需应用商店。",
-        "Instala DockDocs como app web con acceso de un clic en Windows, Mac, iOS o Android. Sin tienda de apps.",
-        "Instale o DockDocs como app web para acesso com um clique no Windows, Mac, iOS ou Android. Sem loja de apps.",
-        "Installez DockDocs comme app web pour un accès en un clic sur Windows, Mac, iOS ou Android. Sans boutique d'apps.",
-        "DockDocs をウェブアプリとしてインストール。Windows・Mac・iOS・Android でワンクリックアクセス。アプリストア不要。",
-      ),
-    );
+    const dlTitles: Record<RouteLocale, string> = {
+      en: "Download DockDocs — Install the PDF Tool Web App",
+      zh: "下载 DockDocs — 安装 PDF 工具网页应用",
+      "zh-Hant": toHant("下载 DockDocs — 安装 PDF 工具网页应用"),
+      es: "Descargar DockDocs — Instala la app web de herramientas PDF",
+      pt: "Baixar DockDocs — Instale o app web de ferramentas PDF",
+      fr: "Télécharger DockDocs — Installez l'app web d'outils PDF",
+      ja: "DockDocs をダウンロード — PDF ツール Web アプリをインストール",
+      de: "DockDocs herunterladen — Web-App für PDF-Tools installieren",
+      ko: "DockDocs 다운로드 — PDF 도구 웹 앱 설치",
+    };
+    const dlDescs: Record<RouteLocale, string> = {
+      en: "Install DockDocs as a web app for one-click access on Windows, Mac, iOS, or Android. No app store needed — install directly from your browser.",
+      zh: "将 DockDocs 安装到设备，一键快速启动——支持 Windows、Mac、iOS、Android，无需应用商店。",
+      "zh-Hant": toHant("将 DockDocs 安装到设备，一键快速启动——支持 Windows、Mac、iOS、Android，无需应用商店。"),
+      es: "Instala DockDocs como app web con acceso de un clic en Windows, Mac, iOS o Android. Sin tienda de apps.",
+      pt: "Instale o DockDocs como app web para acesso com um clique no Windows, Mac, iOS ou Android. Sem loja de apps.",
+      fr: "Installez DockDocs comme app web pour un accès en un clic sur Windows, Mac, iOS ou Android. Sans boutique d'apps.",
+      ja: "DockDocs をウェブアプリとしてインストール。Windows・Mac・iOS・Android でワンクリックアクセス。アプリストア不要。",
+      de: "DockDocs als Web-App auf Windows, Mac, iOS oder Android installieren — ein Klick genügt. Kein App-Store nötig, direkt im Browser installieren.",
+      ko: "Windows, Mac, iOS 또는 Android에서 한 번의 클릭으로 DockDocs를 웹 앱으로 설치하세요. 앱 스토어 없이 브라우저에서 바로 설치할 수 있습니다.",
+    };
+    return createLocalizedMetadata(rawLocale, "download", dlTitles[rawLocale], dlDescs[rawLocale]);
   }
 
   if (slug === "sitemap") {
-    const copy = sitemapCopy[rawLocale as keyof typeof sitemapCopy] ?? sitemapCopy.en;
+    const copy =
+      rawLocale === "zh-Hant"
+        ? { title: toHant(sitemapCopy.zh.title), description: toHant(sitemapCopy.zh.description) }
+        : (sitemapCopy[rawLocale as keyof typeof sitemapCopy] ?? sitemapCopy.en);
     return createLocalizedMetadata(
       rawLocale,
       "sitemap",
@@ -1703,7 +1712,10 @@ async function generateMetadataInner({
     );
   }
 
-  const copy = homeCopy[rawLocale as keyof typeof homeCopy] ?? homeCopy.en;
+  const copy =
+    rawLocale === "zh-Hant"
+      ? { title: toHant(homeCopy.zh.title), description: toHant(homeCopy.zh.description) }
+      : (homeCopy[rawLocale as keyof typeof homeCopy] ?? homeCopy.en);
   return createLocalizedMetadata(rawLocale, "", copy.title, copy.description);
 }
 
