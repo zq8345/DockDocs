@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 // /edit-pdf — Phase A1 overlay editor.
 // Everything runs in the browser; the file never leaves the device — that is
@@ -7,7 +7,7 @@
 
 import { trackToolRun } from "@/lib/track";
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { deepHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredCopy, AuthoredLocale } from "@/lib/i18n";
@@ -554,7 +554,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       dispatch({ type: "setPages", pageList: refs });
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(pdfParseErrorMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("idle");
     }
   }, [t, locale]);
@@ -799,7 +799,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       dispatch({ type: "insertPages", at: at + 1, refs });
       setCurrentPage(at + 1);
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(pdfParseErrorMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
     }
   }, [t, locale]);
 
@@ -1039,7 +1039,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       trackToolRun("edit-pdf");
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(pdfParseErrorMessage(e, locale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("ready");
     } finally {
       setBakeDone(null);

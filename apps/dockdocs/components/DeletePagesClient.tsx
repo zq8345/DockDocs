@@ -7,7 +7,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { WorkArea } from "@/components/WorkArea";
 import { PageCard } from "@/components/PageCard";
 import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 
 import { useCallback, useRef, useState } from "react";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
@@ -331,7 +331,7 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
       try { doc.destroy(); } catch { /* ignore */ }
       setPages(out); setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
   }, [t, locale, childLocale]);
 
@@ -372,7 +372,7 @@ export function DeletePagesClient({ locale = "en", embedded = false }: { locale?
       setDone(true);
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
   }, [marked, pages, fileName, t, locale, childLocale]);
 

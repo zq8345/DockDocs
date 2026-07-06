@@ -6,7 +6,7 @@ import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workfl
 
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
-import { encryptedPdfMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage, isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
 import { formatBytes } from "@/lib/files";
 
 import { useCallback, useRef, useState } from "react";
@@ -406,7 +406,7 @@ export function MergePdfClient({ locale = "en", embedded = false }: { locale?: L
       setDone(true);
       trackToolRun("merge-pdf");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
     } finally {
       setWorking(false);
     }

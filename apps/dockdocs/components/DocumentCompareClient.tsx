@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type DragEvent } from "react";
 import { loadTemplates, saveTemplate, deleteTemplate, type FlowTemplate } from "@/lib/flow-templates";
 import { loadRunsForTemplate, saveRun, relativeTime, type FlowRun } from "@/lib/flow-runs";
-import { isEncryptedPdfError, encryptedPdfNotice } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
@@ -1081,7 +1081,7 @@ export function DocumentCompareClient({ locale = "en", embedded = false }: { loc
       try { doc.destroy(); } catch { /* ignore */ }
       return { id, name: file.name, pages: numPages, chars: trimmed.length, text: trimmed, status: trimmed.length > 0 ? "ok" : "empty", file, thumbnailUrl, thumbRatio };
     } catch (e) {
-      const msg = isEncryptedPdfError(e) ? encryptedPdfNotice(childLocale) : e instanceof Error ? e.message : String(e);
+      const msg = pdfParseErrorMessage(e, childLocale) ?? (e instanceof Error ? e.message : String(e));
       return { id, name: file.name, pages: 0, chars: 0, text: "", status: "error", error: msg, file };
     }
   }, [childLocale]);

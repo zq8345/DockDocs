@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { trackToolRun } from "@/lib/track";
 import { useCallback, useRef, useState } from "react";
@@ -6,7 +6,7 @@ import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
 import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 import { dropzoneVisual } from "@/components/design";
@@ -429,7 +429,7 @@ export function RedlineClient({ locale = "en", embedded = false }: { locale?: Lo
       setPhase("done");
       trackToolRun("redline");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("idle");
     }
   }, [a, b, t, childLocale]);

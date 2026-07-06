@@ -2,7 +2,7 @@
 
 import { trackToolRun } from "@/lib/track";
 import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
@@ -484,7 +484,7 @@ export function RedactPdfClient({ locale = "en", embedded = false }: { locale?: 
       setAutoMsg(auto.length ? t.autoFound(auto.length) : t.autoNone);
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("idle");
     }
   }, [t, childLocale]);
@@ -564,7 +564,7 @@ export function RedactPdfClient({ locale = "en", embedded = false }: { locale?: 
       trackToolRun("redact-pdf");
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e))));
       setPhase("ready");
     }
   }, [boxes, t, childLocale]);

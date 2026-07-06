@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { UploadDropzone } from "@/components/UploadDropzone";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
@@ -421,7 +421,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   // zh-Hant rendered from zh via OpenCC; child components (UpgradePrompt /
-  // ToolFaq / encryptedPdfMessage) lack zh-Hant in their union → map to "zh".
+  // ToolFaq / pdfParseErrorMessage) lack zh-Hant in their union → map to "zh".
   // ko has no engine/runtime copy yet → English (foundation phase); zh-Hant preserved.
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
   const legalCtx = useLegalSession();
@@ -516,7 +516,7 @@ export function GovbidMatrixClient({ locale = "en", embedded = false }: { locale
           ko: "PDF를 읽을 수 없습니다",
         };
         const readErr = locale === "zh-Hant" ? toHant(READ_ERR.zh) : READ_ERR[al];
-        const msg = encryptedPdfMessage(e, childLocale) ?? readErr;
+        const msg = pdfParseErrorMessage(e, childLocale) ?? readErr;
         setError(msg);
         setPhase("ready");
         return;

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
@@ -6,7 +6,7 @@ import { ToolSections, type ToolSectionsContent } from "@/components/ToolSection
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
@@ -457,7 +457,7 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
   // zh-Hant rendered from zh via OpenCC; child components (UploadDropzone /
-  // UpgradePrompt / ToolFaq / encryptedPdfMessage) lack zh-Hant in their union,
+  // UpgradePrompt / ToolFaq / pdfParseErrorMessage) lack zh-Hant in their union,
   // so map it to "zh" for those props.
   // ko has no engine/runtime copy yet → English (foundation phase); zh-Hant preserved.
   const childLocale = locale; // shared widgets accept zh-Hant (Traditional derived via OpenCC)
@@ -525,7 +525,7 @@ export function LeaseRedflagClient({ locale = "en", embedded = false }: { locale
         setText(trimmed);
         setPhase("ready");
       } catch (e) {
-        setError(encryptedPdfMessage(e, childLocale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
+        setError(pdfParseErrorMessage(e, childLocale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
         setPhase("idle");
       }
     },

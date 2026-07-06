@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toHant, deepHant } from "@/lib/zh-hant";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { trackToolRun } from "@/lib/track";
 import { dropzoneShell } from "@/components/design";
@@ -339,7 +340,7 @@ export function AiSummaryClient({ locale = "en", embedded = false }: { locale?: 
       await markUsage(gate, "summary");
       return true;
     } catch (err) {
-      updateCard(id, { status: "error", error: err instanceof Error ? err.message : zh ? h("处理失败。") : ja ? "処理に失敗しました。" : es ? "Error al procesar." : pt ? "Falha ao processar." : fr ? "Échec du traitement." : de ? "Verarbeitung fehlgeschlagen." : ko ? "처리에 실패했습니다." : "Processing failed." });
+      updateCard(id, { status: "error", error: pdfParseErrorMessage(err, locale) ?? (err instanceof Error ? err.message : zh ? h("处理失败。") : ja ? "処理に失敗しました。" : es ? "Error al procesar." : pt ? "Falha ao processar." : fr ? "Échec du traitement." : de ? "Verarbeitung fehlgeschlagen." : ko ? "처리에 실패했습니다." : "Processing failed.") });
       return true;
     }
   }

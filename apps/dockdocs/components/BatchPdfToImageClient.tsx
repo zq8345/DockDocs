@@ -10,7 +10,7 @@ import { useCallback, useRef, useState } from "react";
 import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { createZipArchive } from "../../../shared/templates/pdf-tool-page/pdf-runtime";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { checkAndRecordBatchRun, batchLimitMessage } from "@/lib/batch-limits";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale } from "@/lib/i18n";
@@ -339,7 +339,7 @@ export function BatchPdfToImageClient({ locale = "en", embedded = false }: { loc
         try { doc.destroy(); } catch { /* ignore */ }
         updated[i] = { ...it, status: "done", pages: images.length, images };
       } catch (e) {
-        updated[i] = { ...it, status: "error", msg: encryptedPdfMessage(e, locale === "ko" ? "en" : locale) ?? (e instanceof Error ? e.message : String(e)) };
+        updated[i] = { ...it, status: "error", msg: pdfParseErrorMessage(e, locale === "ko" ? "en" : locale) ?? (e instanceof Error ? e.message : String(e)) };
       }
       setItems([...updated]);
     }

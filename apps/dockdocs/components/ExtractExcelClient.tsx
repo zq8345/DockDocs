@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { deepHant } from "@/lib/zh-hant";
 import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
@@ -398,7 +398,7 @@ export function ExtractExcelClient({ locale = "en", embedded = false }: { locale
         }
       }
       setDocs((prev) => [...prev, ...added].slice(0, 8));
-      if (encrypted) setError(encryptedPdfMessage({ name: "PasswordException" }, childLocale) ?? t.err);
+      if (encrypted) setError(pdfParseErrorMessage({ name: "PasswordException" }, childLocale) ?? t.err);
     } finally {
       setBusy(false);
     }

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { getRuntimeCopy, type RuntimeLocale } from "@/lib/copy";
 import { toHant, deepHant } from "@/lib/zh-hant";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { AiToolShell, type AiShellStatus } from "@/components/ai-shell/AiToolShell";
@@ -472,7 +473,8 @@ export function ChatWithPdfClient({ locale = "en", embedded = false }: { locale?
       }
     } catch (caughtError) {
       const message =
-        caughtError instanceof Error ? caughtError.message : copy.extractionFailedError;
+        pdfParseErrorMessage(caughtError, locale) ??
+        (caughtError instanceof Error ? caughtError.message : copy.extractionFailedError);
       setStatus(copy.extractionFailedStatus);
       setError(message);
     } finally {
