@@ -181,6 +181,11 @@ const page = {
         "Tracked changes is a feature in word processors that records each edit as you make it. Redlining refers more broadly to any markup showing proposed changes — it can mean tracked changes in Word, or the output of comparing two finished documents (as happens with PDFs). In everyday contract practice, people use the terms interchangeably. The key distinction is that tracked changes is built into the editing workflow; PDF redlining is a retrospective comparison of two already-complete versions.",
     },
     {
+      question: "What's the difference between redlining and redacting a document?",
+      answer:
+        "Redlining and redacting are opposite operations that are easy to confuse. Redlining marks proposed changes during negotiation — additions highlighted, deletions struck through — so both parties see exactly what's changing and can respond. Redacting permanently removes sensitive text before sharing a document, blacking out names, dollar amounts, or confidential clauses so the recipient sees only what you intend to disclose. If you're negotiating a contract, you redline. If you need to share a document but hide some of its content first, you redact. DockDocs has tools for both: compare and mark up PDF versions at the redline comparison tool, or black out sensitive text with the Redact PDF tool before sharing.",
+    },
+    {
       question: "Do I need to send both a redlined version and a clean version?",
       answer:
         "In professional contract practice, yes. Sending both is standard: the redlined version shows your counterparty exactly what you've proposed, while the clean version lets them read the contract without markup to understand how it reads if your changes are accepted. It's also common to include a short cover note summarizing the key issues. Some parties return only the redlined version; the clean copy is a courtesy that speeds up negotiation.",

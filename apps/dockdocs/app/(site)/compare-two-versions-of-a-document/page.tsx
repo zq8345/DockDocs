@@ -147,6 +147,43 @@ const page = {
       ],
     },
     {
+      title: "What this comparison tool detects — and what it doesn't",
+      description:
+        "DockDocs extracts the text layer from each PDF and runs a sentence-by-sentence diff. Here is precisely what that means in practice, so you know what to trust and what to verify separately.",
+      items: [
+        {
+          title: "Detects: added text",
+          description:
+            "Any sentence, clause, paragraph, or section present in the revised version but absent in the original appears highlighted in green. A new sub-clause inserted mid-paragraph, an added condition, or an entirely new section — all appear as insertions.",
+        },
+        {
+          title: "Detects: deleted text",
+          description:
+            "Any sentence, clause, or section present in the original but absent in the revised version appears struck through in red. Removed obligations, dropped paragraphs, and deleted sections all appear as deletions.",
+        },
+        {
+          title: "Detects: reworded sentences",
+          description:
+            "A sentence that changed appears as one deletion (the original wording) immediately followed by one addition (the revised wording). A payment term changed from '30 days' to '90 days', a liability cap adjusted, a defined term narrowed — each shows as the old sentence removed and the revised sentence added. The changed words are not individually highlighted; the whole sentence is marked.",
+        },
+        {
+          title: "Does not detect: formatting and visual changes",
+          description:
+            "Font size, bold, italic, margins, line spacing, and visual layout are not part of the text comparison. A clause reduced to fine print, a section reformatted to appear less prominent, or a table restructured around the same text — these look textually identical, so no difference is flagged. If your concern is format-level manipulation, supplement automated comparison with visual review.",
+        },
+        {
+          title: "Does not detect: image and figure changes",
+          description:
+            "Images, diagrams, charts, and embedded attachments are not part of the text layer. An image swapped for a different version, a signature block added, or a diagram modified produces no diff output. Only the text content of the document is compared.",
+        },
+        {
+          title: "Does not detect: scanned PDFs without a text layer",
+          description:
+            "PDFs created by scanning physical documents contain images of text, not machine-readable text. Without a selectable text layer there is nothing to extract or compare — the tool reports no content. Run OCR first to add a text layer, then compare the result. To check whether your PDF has selectable text: open it in a PDF viewer and try to click and drag to select text. If it selects, there is a text layer.",
+        },
+      ],
+    },
+    {
       title: "Choosing the right method for your situation",
       description:
         "The right comparison method depends on the document type, format, stakes, and how the document arrived.",

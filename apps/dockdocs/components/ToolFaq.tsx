@@ -950,6 +950,7 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
         { q: "How large can the documents be?", a: "The whole comparison runs in your browser, so it's tuned for documents up to a few thousand sentences (it caps at 2,500 sentences per file). Very long contracts or books may be truncated or run slowly." },
         { q: "Is it free?", a: "Yes — comparing versions is completely free, with no sign-up and no limit on the number of comparisons." },
         { q: "Can I compare two versions of a contract — will it show every change?", a: "Yes. Upload the earlier version and the revised version, and DockDocs shows a full redline of the contract text — added clauses highlighted in green, removed text struck through in red, sentence by sentence. It shows all textual changes; for scanned contracts without a text layer, run OCR first to make the text readable." },
+        { q: "What's the difference between redlining and redacting?", a: "Redlining and redacting are opposite operations. Redlining marks proposed changes during negotiation — additions highlighted, deletions struck through — so both parties see exactly what's changing. Redacting permanently removes sensitive text before sharing a document, blacking out names, amounts, or confidential clauses so the recipient sees only what you intend to disclose. If you're negotiating, you redline. If you're sharing but need to hide information first, you redact. DockDocs has both: this tool compares PDF versions and shows what changed; the Redact PDF tool blacks out sensitive text before sharing." },
       ],
       zh: [
         { q: "如何用红线标注对比合同或对比两份 PDF 版本？", a: "上传原始版(v1)和修订版(v2)两个 PDF，点「对比版本」。DockDocs 会对齐文本，生成一个标注视图——新增文字用绿色高亮，删除文字用红色加删除线。这正是合同谈判和法律文件审查中用于追踪版本改动的红线视图。" },
@@ -959,6 +960,7 @@ const FAQS: Record<string, { title: { en: string; zh: string; es: string }; item
         { q: "文档可以多大？", a: "整个对比都在浏览器里运行，因此适合最多几千句的文档(每个文件上限 2500 句)。特别长的合同或书籍可能被截断或变慢。" },
         { q: "是免费的吗？", a: "免费——版本对比完全免费，无需注册，对比次数也不限。" },
         { q: "能对比合同的两个版本吗——会显示所有改动吗？", a: "可以。上传旧版和修订版，DockDocs 会生成完整的合同文字红线标注——新增条款用绿色高亮，删除文字用红色删除线，逐句对比。所有文字改动都会显示；对于没有文字层的扫描合同，请先做 OCR 提取文字。" },
+        { q: "红线标注（Redline）和涂黑删改（Redact）有什么区别？", a: "两个操作方向相反，经常被混淆。红线标注是在谈判中标出拟修改内容——新增文字高亮显示，删除文字加删除线——让对方看清改了什么并做出回应。涂黑删改则是在分享文件前永久遮盖敏感信息，如姓名、金额或保密条款，让收件人只看到你希望公开的内容。谈判用红线标注，分享前要隐藏信息则用涂黑删改。DockDocs 两项功能均支持：当前工具用于对比 PDF 版本并标注改动；Redact PDF 工具用于在分享前涂黑敏感内容。" },
       ],
       es: [
         { q: "¿Cómo marco con líneas rojas un contrato o comparo dos versiones de un PDF?", a: "Sube el PDF original (v1) y el revisado (v2), luego haz clic en «Comparar versiones». DockDocs alinea el texto y muestra una vista marcada: el texto añadido resaltado en verde y el texto eliminado tachado en rojo. Es la misma vista de redline que se usa en la negociación de contratos y la revisión de documentos legales para ver qué cambió entre versiones." },
