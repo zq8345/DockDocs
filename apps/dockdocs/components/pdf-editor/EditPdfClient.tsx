@@ -89,6 +89,7 @@ const STR_EN = {
   deletePage: "Delete page",
   addWhiteout: "Cover & retype",
   whiteoutHint: "Cover-and-retype: click a word to cover it and type over it, or drag to place a covering patch. The original text is covered (it remains underneath), not edited. Esc to exit.",
+  selectHint: "Select an element to edit its properties",
 };
 
 const STR = {
@@ -146,6 +147,7 @@ const STR = {
     deletePage: "删除页面",
     addWhiteout: "遮盖替换",
     whiteoutHint: "遮盖替换模式——点击某个词,用底色方块盖住并在上面输入新文字;或拖动放置遮盖块。原文字只是被盖住(仍在下层),并非被编辑。按 Esc 退出。",
+    selectHint: "选中元素以编辑属性",
   },
   es: {
     title: "Editar PDF",
@@ -200,6 +202,7 @@ const STR = {
     deletePage: "Eliminar página",
     addWhiteout: "Cubrir y reescribir",
     whiteoutHint: "Cubrir y reescribir: haz clic en una palabra para cubrirla y escribir encima, o arrastra para colocar un parche. El texto original queda cubierto (sigue debajo), no se edita. Esc para salir.",
+    selectHint: "Selecciona un elemento para editar sus propiedades",
   },
   pt: {
     title: "Editar PDF",
@@ -253,7 +256,8 @@ const STR = {
     rotatePage: "Girar página",
     deletePage: "Excluir página",
     addWhiteout: "Cobrir e reescrever",
-    whiteoutHint: "Cobrir e reescrever: clique em uma palavra para cobri-la e digitar por cima, ou arraste para colocar um remendo. O texto original fica coberto (continua por baixo), nao e editado. Esc para sair.",
+    whiteoutHint: "Cobrir e reescrever: clique em uma palavra para cobri-la e digitar por cima, ou arraste para colocar um remendo. O texto original fica coberto (continua por baixo), não é editado. Esc para sair.",
+    selectHint: "Selecione um elemento para editar suas propriedades",
   },
   fr: {
     title: "Modifier un PDF",
@@ -308,6 +312,7 @@ const STR = {
     deletePage: "Supprimer la page",
     addWhiteout: "Masquer et réécrire",
     whiteoutHint: "Masquer et réécrire : cliquez sur un mot pour le couvrir et taper par-dessus, ou faites glisser pour placer un cache. Le texte original est couvert (il reste en dessous), pas modifié. Échap pour quitter.",
+    selectHint: "Sélectionnez un élément pour modifier ses propriétés",
   },
   ja: {
     title: "PDFを編集",
@@ -362,6 +367,7 @@ const STR = {
     deletePage: "ページを削除",
     addWhiteout: "上書き置換",
     whiteoutHint: "上書き置換モード——単語をクリックすると下地色のパッチで覆い、その上に入力できます。ドラッグでパッチを配置。元の文字は覆われるだけで(下に残ります)、編集はされません。Escで終了。",
+    selectHint: "要素を選択するとプロパティを編集できます",
   },
   de: {
     title: "PDF bearbeiten",
@@ -416,6 +422,7 @@ const STR = {
     deletePage: "Seite löschen",
     addWhiteout: "Abdecken & neu tippen",
     whiteoutHint: "Abdecken & neu tippen: Klicken Sie auf ein Wort, um es abzudecken und darüber zu tippen, oder ziehen Sie einen Deckflicken auf. Der Originaltext wird abgedeckt (bleibt darunter), nicht bearbeitet. Esc zum Beenden.",
+    selectHint: "Element auswählen, um Eigenschaften zu bearbeiten",
   },
   ko: {
     title: "PDF 편집",
@@ -470,6 +477,7 @@ const STR = {
     deletePage: "페이지 삭제",
     addWhiteout: "덮고 다시 입력",
     whiteoutHint: "덮고 다시 입력 — 단어를 클릭하면 바탕색 패치로 덮고 위에 입력할 수 있습니다. 드래그로 패치를 배치하세요. 원본 텍스트는 편집되는 것이 아니라 덮일 뿐이며 아래에 남아 있습니다. Esc로 종료.",
+    selectHint: "요소를 선택하면 속성을 편집할 수 있습니다",
   },
 } satisfies AuthoredCopy<typeof STR_EN>;
 
@@ -1043,7 +1051,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   const iconBtn =
     "flex h-8 w-8 items-center justify-center rounded-[var(--radius)] border border-[color:var(--line)] text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)] disabled:opacity-35 disabled:hover:border-[color:var(--line)]";
   const toolBtn =
-    "rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]";
+    "shrink-0 whitespace-nowrap rounded-[var(--radius)] border border-[color:var(--line)] px-3 py-2 text-[13px] font-medium text-[color:var(--foreground)] transition hover:border-[color:var(--line-strong)]";
 
   // Editing states trade the hero header for editor real estate — the shell
   // is viewport-fixed with its own scroll regions (thumbnail rail + canvas).
@@ -1059,13 +1067,16 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       {phase === "idle" || phase === "rendering" ? (
         <UploadDropzone locale={locale} buttonLabel={t.choose} busy={phase === "rendering"} busyLabel={t.rendering} onFile={onFile} constrained={embedded} valueZone="client" />
       ) : (
-        <div className="flex flex-col" style={{ height: embedded ? "calc(100dvh - 13rem)" : "calc(100dvh - 10.5rem)", minHeight: 480 }}>
-          {/* Toolbar spans the full editor width (leftmost edge included) */}
-          <div className="rounded-[12px] border border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-col overflow-hidden rounded-[12px] border border-[color:var(--line)]" style={{ height: embedded ? "calc(100dvh - 13rem)" : "calc(100dvh - 10.5rem)", minHeight: 480 }}>
+          {/* Container HEAD: the constant toolbar (WorkArea panel language) */}
+          <div className="shrink-0 border-b border-[color:var(--line)] bg-[color:var(--surface-raised)] px-4 py-3">
+            {/* Row 1 (constant): file info left, undo/redo + download right.
+                No flex-wrap — a long filename truncates instead of reflowing
+                the toolbar (hover shows the full name). */}
+            <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileRef.current?.name ?? ""}</p>
+                  <p title={fileRef.current?.name ?? ""} className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--foreground)]">{fileRef.current?.name ?? ""}</p>
                   <button type="button" aria-label={t.reset} onClick={reset}
                     className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[color:var(--surface)] text-[color:var(--muted)] opacity-80 transition hover:opacity-100 hover:text-[color:var(--error)]">
                     <svg width="8" height="8" viewBox="0 0 10 10" fill="none" aria-hidden="true">
@@ -1078,7 +1089,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   {fileRef.current && <> · {pages.length}p · {(fileRef.current.size / 1024 / 1024).toFixed(2)} MB</>}
                 </p>
               </div>
-              <div className="flex shrink-0 flex-wrap items-center gap-2">
+              <div className="flex shrink-0 items-center gap-2">
                 <button type="button" aria-label={t.undo} title={t.undo} onClick={() => dispatch({ type: "undo" })} disabled={state.past.length === 0 || phase === "working"} className={iconBtn}>
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M6 3L2.5 6.5 6 10M3 6.5h7a3.5 3.5 0 010 7H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -1090,6 +1101,20 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   </svg>
                 </button>
                 <span className="h-5 w-px bg-[color:var(--line)]" aria-hidden="true" />
+                <button type="button" onClick={download} disabled={phase === "working" || state.elements.length === 0}
+                  className="shrink-0 rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+                  {phase === "working"
+                    ? bakeDone && bakeDone.total > 1
+                      ? `${t.working} ${Math.min(bakeDone.done + 1, bakeDone.total)}/${bakeDone.total}`
+                      : t.working
+                    : t.download}
+                </button>
+              </div>
+            </div>
+
+            {/* Row 2 (constant): tool buttons — single line, scrolls sideways
+                when narrow instead of wrapping. */}
+            <div className="mt-2.5 flex items-center gap-2 overflow-x-auto">
                 <button type="button" onClick={() => addText(targetPage())} className={toolBtn}>{t.addText}</button>
                 <button type="button" onClick={() => imageInputRef.current?.click()} className={toolBtn}>{t.addImage}</button>
                 <button type="button" onClick={addShape} className={toolBtn}>{t.addBox}</button>
@@ -1102,7 +1127,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   aria-pressed={signOpen}
                   className={
                     signOpen
-                      ? "rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
+                      ? "shrink-0 whitespace-nowrap rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
                       : toolBtn
                   }
                 >
@@ -1114,7 +1139,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   aria-pressed={inkMode}
                   className={
                     inkMode
-                      ? "rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
+                      ? "shrink-0 whitespace-nowrap rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
                       : toolBtn
                   }
                 >
@@ -1126,7 +1151,7 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   aria-pressed={redactMode}
                   className={
                     redactMode
-                      ? "rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
+                      ? "shrink-0 whitespace-nowrap rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
                       : toolBtn
                   }
                 >
@@ -1138,22 +1163,12 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                   aria-pressed={whiteoutMode}
                   className={
                     whiteoutMode
-                      ? "rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
+                      ? "shrink-0 whitespace-nowrap rounded-[var(--radius)] border border-[color:var(--accent)] bg-[rgba(62,207,142,0.12)] px-3 py-2 text-[13px] font-medium text-[color:var(--accent)]"
                       : toolBtn
                   }
                 >
                   {t.addWhiteout}
                 </button>
-                <span className="h-5 w-px bg-[color:var(--line)]" aria-hidden="true" />
-                <button type="button" onClick={download} disabled={phase === "working" || state.elements.length === 0}
-                  className="rounded-[var(--radius)] bg-[color:var(--accent)] px-5 py-2 text-[13px] font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
-                  {phase === "working"
-                    ? bakeDone && bakeDone.total > 1
-                      ? `${t.working} ${Math.min(bakeDone.done + 1, bakeDone.total)}/${bakeDone.total}`
-                      : t.working
-                    : t.download}
-                </button>
-              </div>
             </div>
 
             {signOpen && (
@@ -1163,16 +1178,16 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
                 onCancel={() => setSignOpen(false)}
               />
             )}
-            {selected && !inkMode && !redactMode && !whiteoutMode && !signOpen && (
-              <PropertyPanel el={selected} pages={pages} dispatch={dispatch} t={t} />
+            {!signOpen && (
+              <div className="mt-2.5 flex min-h-[42px] items-center gap-x-5 overflow-x-auto whitespace-nowrap border-t border-[color:var(--line)] pt-2.5">
+                {selected && !inkMode && !redactMode && !whiteoutMode ? (
+                  <PropertyPanel el={selected} pages={pages} dispatch={dispatch} t={t} />
+                ) : (
+                  <span className="text-[12px] text-[color:var(--faint)]">{t.selectHint}</span>
+                )}
+              </div>
             )}
           </div>
-          <p className="mt-2 shrink-0 text-[12px] text-[color:var(--faint)]">
-            {whiteoutMode ? t.whiteoutHint : redactMode ? t.redactHint : inkMode ? t.drawHint : t.hint}
-            {state.elements.some((el) => el.type === "redact") && (
-              <span className="ml-2 text-[#fbbf24]">{t.redactBakeNote}</span>
-            )}
-          </p>
 
           <input
             ref={imageInputRef}
@@ -1197,7 +1212,8 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
             }}
           />
 
-          <div className="mt-3 flex min-h-0 flex-1 gap-3">
+          {/* Container BODY: rail + single-page canvas */}
+          <div className="flex min-h-0 flex-1 gap-3 p-3">
             {/* Left: page rail — top aligned with the canvas top, own scroll */}
             <ThumbRail
               pages={pages}
@@ -1262,6 +1278,13 @@ export function EditPdfClient({ locale = "en", embedded = false }: { locale?: Lo
               )}
             </div>
           </div>
+          {/* Container FOOTER: mode hint + redact raster warning */}
+          <div className="shrink-0 border-t border-[color:var(--line)] px-4 py-2 text-[12px] text-[color:var(--faint)]">
+            {whiteoutMode ? t.whiteoutHint : redactMode ? t.redactHint : inkMode ? t.drawHint : t.hint}
+            {state.elements.some((el) => el.type === "redact") && (
+              <span className="ml-2 text-[#fbbf24]">{t.redactBakeNote}</span>
+            )}
+          </div>
         </div>
       )}
 
@@ -1299,7 +1322,7 @@ function PropertyPanel({
     `h-7 w-14 rounded-[var(--radius-sm)] border border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-1.5 text-[12.5px] text-[color:var(--foreground)] ${focusRing}`;
 
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[color:var(--line)] pt-3">
+    <div className="flex items-center gap-x-5 whitespace-nowrap">
       {el.type === "text" && (
         <>
           <label className={label}>
