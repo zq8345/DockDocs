@@ -7,7 +7,7 @@ import { ToolSections, type ToolSectionsContent } from "@/components/ToolSection
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { WorkArea } from "@/components/WorkArea";
 import { PageCard } from "@/components/PageCard";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
 import { trackToolRun } from "@/lib/track";
 import type { AuthoredLocale, AuthoredCopy, RouteLocale } from "@/lib/i18n";
@@ -411,7 +411,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
       setSelected(new Set(out.map((p) => p.idx)));
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
   }, [t, childLocale]);
 
@@ -461,7 +461,7 @@ export function PdfToImageClient({ locale = "en", defaultFormat = "jpg", variant
       setDone(true);
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
   }, [selected, pages, format, fileName, t, childLocale]);
 

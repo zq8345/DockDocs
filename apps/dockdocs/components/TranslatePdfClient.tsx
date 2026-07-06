@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
 import { ToolBridge } from "../../../shared/templates/pdf-tool-page/ToolBridge";
 import { UploadDropzone } from "@/components/UploadDropzone";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
@@ -488,7 +488,7 @@ export function TranslatePdfClient({ locale = "en" }: { locale?: Locale }) {
         try { doc.destroy(); } catch { /* ignore */ }
         setPhase("ready");
       } catch (e) {
-        setError(encryptedPdfMessage(e, childLocale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
+        setError(pdfParseErrorMessage(e, childLocale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
         setPhase("idle");
       }
     },

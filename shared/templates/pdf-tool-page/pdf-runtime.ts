@@ -279,6 +279,37 @@ export function getPdfRuntimeErrorMessage(error: unknown, locale: RuntimeLocale)
     );
   }
 
+  // pdf.js InvalidPDFException wording for a 0-byte upload. MUST stay above the
+  // /pages|PDF/ pass-through below, which would otherwise return the raw
+  // English developer string ("The PDF file is empty, i.e. its size is zero
+  // bytes.") untranslated — 夜测 RH-01. Same messages as apps/dockdocs/lib/
+  // pdf-errors.ts (shared/ can't import apps/lib — keep the pair in step).
+  if (/empty/i.test(message) && /zero bytes|pdf/i.test(message)) {
+    return tr(
+      "This file is empty (0 bytes), so there's nothing to read. Re-export the PDF, or choose a different file.",
+      "这个文件是空的（0 字节），没有内容可读取。请重新导出 PDF，或选择另一个文件。",
+      "Este archivo está vacío (0 bytes) y no hay nada que leer. Vuelve a exportar el PDF o elige otro archivo.",
+      "Este arquivo está vazio (0 bytes) e não há nada para ler. Exporte o PDF novamente ou escolha outro arquivo.",
+      "Ce fichier est vide (0 octet), il n'y a rien à lire. Exportez à nouveau le PDF ou choisissez un autre fichier.",
+      "このファイルは空（0 バイト）のため、読み取れる内容がありません。PDF を書き出し直すか、別のファイルを選んでください。",
+    );
+  }
+
+  // Corrupt / truncated / not-actually-a-PDF: pdf.js "Invalid PDF structure",
+  // its deeper chokes on forged dictionaries ("Invalid argument for
+  // stringToBytes", "bad XRef"), pdf-lib parse failures. Also above the
+  // pass-through for the same reason.
+  if (/invalid pdf structure|stringtobytes|bad xref|failed to parse pdf|no pdf header found/i.test(message)) {
+    return tr(
+      "This file couldn't be read — it may be damaged, incompletely downloaded, or not actually a PDF. Re-export or re-download it and try again.",
+      "无法读取这个文件——它可能已损坏、下载不完整，或者并不是真正的 PDF。请重新导出或下载后再试。",
+      "No se pudo leer este archivo: puede estar dañado, incompleto o no ser realmente un PDF. Vuelve a exportarlo o descargarlo e inténtalo de nuevo.",
+      "Não foi possível ler este arquivo — ele pode estar corrompido, incompleto ou não ser realmente um PDF. Exporte-o ou baixe-o novamente e tente outra vez.",
+      "Impossible de lire ce fichier : il est peut-être endommagé, incomplet, ou ce n'est pas vraiment un PDF. Exportez-le ou téléchargez-le à nouveau, puis réessayez.",
+      "このファイルを読み取れませんでした。破損している、ダウンロードが不完全、または実際には PDF ではない可能性があります。書き出し直すか再ダウンロードしてからお試しください。",
+    );
+  }
+
   if (/page range|range|page/i.test(message)) {
     // Range/page errors are thrown already localized — pass through unchanged.
     return message;

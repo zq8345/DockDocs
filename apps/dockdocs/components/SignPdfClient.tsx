@@ -6,7 +6,7 @@ import { UploadDropzone } from "@/components/UploadDropzone";
 import { CircularProgress } from "../../../shared/templates/pdf-tool-page/workflow-engine-components";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { deepHant, toHant } from "@/lib/zh-hant";
 import type { RouteLocale, AuthoredLocale, AuthoredCopy } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
@@ -369,7 +369,7 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, baseLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(pdfParseErrorMessage(e, baseLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
   }, [t, locale]);
 
@@ -456,7 +456,7 @@ export function SignPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       setDone(true);
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, baseLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(pdfParseErrorMessage(e, baseLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
   }, [sig, pos, size, page, fileName, t, locale]);
 

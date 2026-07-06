@@ -6,7 +6,7 @@ import { BatchUploadBox } from "@/components/BatchUploadBox";
 import { WorkArea } from "@/components/WorkArea";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 
 import { useCallback, useRef, useState } from "react";
@@ -493,7 +493,7 @@ export function BatchTranslateClient({ locale = "en", embedded = false }: { loca
           updated[i] = { ...it, status: "error", msg: data?.message || t.failed };
         }
       } catch (e) {
-        updated[i] = { ...it, status: "error", msg: encryptedPdfMessage(e, childLocale) ?? (e instanceof Error ? e.message : String(e)) };
+        updated[i] = { ...it, status: "error", msg: pdfParseErrorMessage(e, childLocale) ?? (e instanceof Error ? e.message : String(e)) };
       }
       setItems([...updated]);
     }

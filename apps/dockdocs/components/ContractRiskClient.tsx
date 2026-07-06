@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
@@ -12,7 +12,7 @@ import { CitationChip } from "@/components/ai-shell/GroundedAnswer";
 import { GroundedExplainer } from "@/components/ai-shell/GroundedExplainer";
 import { RelatedPdfTools } from "@/components/RelatedPdfTools";
 import { UploadDropzone } from "@/components/UploadDropzone";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { authHeader } from "@/lib/supabase";
@@ -597,7 +597,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
   const al: AuthoredLocale = locale === "zh-Hant" ? "en" : locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : SECTIONS[al];
-  // Shared widgets (UploadDropzone / UpgradePrompt / encryptedPdfMessage) accept zh-Hant
+  // Shared widgets (UploadDropzone / UpgradePrompt / pdfParseErrorMessage) accept zh-Hant
   // (Traditional derived via OpenCC) but not ko, so collapse only ko → en for those props.
   const childLocale = locale;
   const legalCtx = useLegalSession();
@@ -810,7 +810,7 @@ export function ContractRiskClient({ locale = "en", embedded = false }: { locale
           try { doc.destroy(); } catch { /* ignore */ }
         })();
       } catch (e) {
-        setError(encryptedPdfMessage(e, childLocale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
+        setError(pdfParseErrorMessage(e, childLocale) ?? ((e instanceof Error ? e.message : String(e)) || "Could not read PDF."));
         setPhase("idle");
       }
     },

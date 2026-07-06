@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { trackToolRun } from "@/lib/track";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
@@ -7,7 +7,7 @@ import { WorkspaceValueZone } from "@/components/WorkspaceValueZone";
 
 import { useCallback, useRef, useState } from "react";
 import { Spinner } from "@/components/Spinner";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
@@ -352,7 +352,7 @@ export function QuizClient({ locale = "en", embedded = false }: { locale?: Local
       if (!trimmed) { setError(t.noText); setPhase("idle"); return; }
       setText(trimmed); setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
   }, [t, childLocale]);
 

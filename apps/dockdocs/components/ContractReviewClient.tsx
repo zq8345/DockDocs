@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { UpgradePrompt } from "@/components/ui/UpgradePrompt";
 import { checkUsage, markUsage } from "@/lib/usage-gate";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { authHeader } from "@/lib/supabase";
 import { trackToolRun } from "@/lib/track";
 import { deepHant } from "@/lib/zh-hant";
@@ -279,7 +280,7 @@ export function ContractReviewClient() {
       setOps(result);
       setPhase("diff-ready");
     } catch (e) {
-      setError(e instanceof Error ? e.message : s.genericError);
+      setError(pdfParseErrorMessage(e, locale) ?? (e instanceof Error ? e.message : s.genericError));
       setPhase("idle");
     }
   }

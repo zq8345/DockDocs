@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from "react";
 import { UploadDropzone } from "@/components/UploadDropzone";
 import { ToolFaq } from "@/components/ToolFaq";
 import { ToolSections, type ToolSectionsContent } from "@/components/ToolSections";
-import { encryptedPdfMessage } from "@/lib/pdf-errors";
+import { pdfParseErrorMessage } from "@/lib/pdf-errors";
 import { deepHant } from "@/lib/zh-hant";
 import type { RouteLocale } from "@/lib/i18n";
 import { LAYOUT } from "@/lib/layout-constants";
@@ -290,7 +290,7 @@ export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Lo
   // ko has no authored copy yet → English (foundation phase). Mirrors zh-Hant special-casing.
   // zh-Hant takes the deepHant branch below; collapsing it here too keeps `al` a plain AuthoredLocale.
   const al: AuthoredLocale = locale === "ko" || locale === "zh-Hant" ? "en" : locale;
-  // UploadDropzone / encryptedPdfMessage accept zh-Hant but not ko, so collapse only ko for those.
+  // UploadDropzone / pdfParseErrorMessage accept zh-Hant but not ko, so collapse only ko for those.
   const childLocale = locale;
   const t = locale === "zh-Hant" ? deepHant(STR.zh) : locale === "ko" ? STR_KO : STR[al];
   const sec: ToolSectionsContent = locale === "zh-Hant" ? deepHant(SECTIONS.zh) : locale === "ko" ? SECTIONS_KO : SECTIONS[al];
@@ -322,7 +322,7 @@ export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       try { doc.destroy(); } catch { /* ignore */ }
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("idle");
     }
   }, [t, locale]);
 
@@ -354,7 +354,7 @@ export function CropPdfClient({ locale = "en", embedded = false }: { locale?: Lo
       trackToolRun("crop-pdf");
       setPhase("ready");
     } catch (e) {
-      setError(encryptedPdfMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
+      setError(pdfParseErrorMessage(e, childLocale) ?? (t.err + (e instanceof Error ? e.message : String(e)))); setPhase("ready");
     }
   }, [edges, fileName, t, locale]);
 
