@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/BrandMark";
-import { defaultLocale, routeLocaleFromSegment } from "@/lib/i18n";
+import { defaultLocale, routeLocaleFromSegment, routeLocales, localeLabels, localizedPath, normalizeSlug, splitPathname } from "@/lib/i18n";
 import { deepHant } from "@/lib/zh-hant";
 import { getFooterCols } from "@/lib/footer-nav";
 import { LAYOUT } from "@/lib/layout-constants";
@@ -18,6 +18,11 @@ function href(path: string, locale: string) {
 export function Footer() {
   const pathname = usePathname();
   const locale = l(pathname);
+  // Current page's registered route slug (locale prefix stripped, validated
+  // against routeSlugs). Non-null only for pages that have locale siblings —
+  // blog posts / guides / standalone en-only pages return null and skip the row.
+  const currentSlug = normalizeSlug(splitPathname(pathname ?? "/").slug);
+  const languageLabel = locale === "zh" ? "语言" : locale === "zh-Hant" ? deepHant("语言") : locale === "es" ? "Idioma" : locale === "pt" ? "Idioma" : locale === "fr" ? "Langue" : locale === "ja" ? "言語" : locale === "de" ? "Sprache" : locale === "ko" ? "언어" : "Language";
 
   return (
     <footer className="border-t border-[color:var(--line)] bg-[color:var(--background)]">
@@ -52,6 +57,39 @@ export function Footer() {
             </div>
           ))}
         </div>
+
+        {/* Locale sibling links — crawlable <a> bridge between language variants.
+            The header language switcher renders as JS <button>s gated behind
+            langOpen, so it never reaches the static HTML; this always-rendered row
+            gives Googlebot a real internal link from every indexed page to its
+            /es/, /de/, … siblings (feeds crawl budget/authority to the localized
+            tool pages that are otherwise only discoverable via hreflang). Only
+            shown on registered routeSlugs, which are the pages that have siblings. */}
+        {currentSlug !== null && (
+          <nav
+            aria-label={languageLabel}
+            className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-[color:var(--line)] pt-4 text-[11px] text-[color:var(--faint)]"
+          >
+            <span className="font-semibold uppercase tracking-[0.14em]">
+              {languageLabel}
+            </span>
+            {routeLocales.map((loc) =>
+              loc === locale ? (
+                <span key={loc} aria-current="true" className="font-medium text-[color:var(--muted)]">
+                  {localeLabels[loc as keyof typeof localeLabels]}
+                </span>
+              ) : (
+                <a
+                  key={loc}
+                  href={localizedPath(loc, currentSlug)}
+                  className="transition hover:text-[color:var(--muted)]"
+                >
+                  {localeLabels[loc as keyof typeof localeLabels]}
+                </a>
+              ),
+            )}
+          </nav>
+        )}
 
         {/* Bottom bar */}
         <div className="mt-6 flex flex-col gap-3 border-t border-[color:var(--line)] pt-4 sm:flex-row sm:items-center sm:justify-between">
