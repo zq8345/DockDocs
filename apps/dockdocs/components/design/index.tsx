@@ -25,7 +25,7 @@ export const dropzoneVisual = (active = false) =>
   `rounded-[var(--radius-xl)] border-2 border-dashed transition ${
     active
       ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
-      : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
+      : "border-[color:var(--line)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
   }`;
 
 // dropzoneShell = dropzoneVisual + the full-dropzone layout (flex column,
