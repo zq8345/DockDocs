@@ -14,9 +14,10 @@
 :root {
   color-scheme: dark;
 
-  /* Background surfaces — Supabase warm near-black, small luminance steps */
-  --background: #171717;
-  --surface: #1c1c1c;
+  /* Background surfaces — deep near-black page (Joe 2026-07-06: pushed darker
+     for higher card-vs-page contrast); surfaces sit well above it so cards pop */
+  --background: #0a0a0a;
+  --surface: #1a1a1a;
   --surface-subtle: #212121;
   --surface-raised: #272727;
 
@@ -26,7 +27,7 @@
   --faint: #8f8f8f;
 
   /* Borders — depth comes from these hairlines (Supabase relies on borders, not shadows) */
-  --line: rgba(255, 255, 255, 0.09);
+  --line: rgba(255, 255, 255, 0.11);
   --line-strong: rgba(255, 255, 255, 0.14);
   --line-subtle: rgba(255, 255, 255, 0.055);
 

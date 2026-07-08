@@ -1,6 +1,6 @@
 // About page — a trust-conversion page, not a feature list. It argues, by
 // architecture, that your files never reach a server. Same design family as
-// the homepage (components/Home.tsx): flat #171717, weight-400 headings, mono
+// the homepage (components/Home.tsx): flat #0a0a0a, weight-400 headings, mono
 // --faint eyebrows. v2: uniform LEFT-aligned sections, one substantial figure
 // per section wrapped in the shared <Figure> depth treatment, the file-flow
 // diagram rebuilt as the star, and a "Don't trust us — press F12" proof section.

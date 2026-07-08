@@ -333,7 +333,7 @@ function Icon({ i }: { i: number }) {
   );
 }
 
-// ── mini-visuals (border-only on flat #171717) ──
+// ── mini-visuals (border-only on flat #0a0a0a) ──
 function MiniThumbs() {
   return (
     <div className="flex items-end gap-2">

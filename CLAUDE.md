@@ -11,7 +11,7 @@
 - Next.js 15.5 with static export (output: "export")
 - Monorepo: apps/dockdocs (main), shared/templates/pdf-tool-page (shared tool template)
 - TypeScript strict mode, zero errors required before push
-- Dark-first Supabase-inspired design system: green #3ecf8e accent on warm near-black #171717 (NOT indigo — rebranded 2026-06); max-w-6xl
+- Dark-first Supabase-inspired design system: green #3ecf8e accent on warm near-black #0a0a0a (NOT indigo — rebranded 2026-06); max-w-6xl
 
 ## Key Commands
 - Build: `cd apps/dockdocs && npm run build`
@@ -20,7 +20,7 @@
 - NEVER push without a successful local build
 
 ## Design Rules
-- Supabase-style: brand accent is green --accent #3ecf8e on flat warm near-black --background #171717; depth via 1px --line borders (hover --line-strong), NOT shadows; green only on CTAs/links/small accents; green buttons use dark --on-accent text (a global CSS rule flips text-white). Headings weight 400 (hierarchy by size); mono --faint eyebrows. Marketing pages (homepage = components/Home.tsx, About = components/AboutPage.tsx) are flat #171717 with section dividers ONLY under the header and above the footer.
+- Supabase-style: brand accent is green --accent #3ecf8e on flat warm near-black --background #0a0a0a; depth via 1px --line borders (hover --line-strong), NOT shadows; green only on CTAs/links/small accents; green buttons use dark --on-accent text (a global CSS rule flips text-white). Headings weight 400 (hierarchy by size); mono --faint eyebrows. Marketing pages (homepage = components/Home.tsx, About = components/AboutPage.tsx) are flat #0a0a0a with section dividers ONLY under the header and above the footer.
 - Dark-first, CSS custom properties (--background, --surface, --accent, --line, --muted, --faint, --on-accent)
 - max-w-6xl on all pages, centered layout
 - No sidebar nav, top nav only with hover dropdowns (group-hover + pt-2 bridge)
@@ -61,7 +61,7 @@ Joe runs several Claude windows in PARALLEL on this SAME repo + working tree at 
 4. **多语言** — 多语言覆盖与修复、locale 质量。
 5. **运营** (was "SEO-GEO") — **SEO/GEO + 分发/增长执行**(目录提交、社区、MCP、外链渠道):排名与转化是一体的,分发是 Joe 的 #1 焦虑,归这个窗。
 6. **控制台** — SEPARATE repo (dock-console),数据驱动决策。**ON-DEMAND** + **每周一数据巡检**:拉 umami/GSC → 总调度出周报 → Joe 调排期(没有节奏,"数据驱动"就是空话)。
-7. **测试** — 内部测试与验收:**常驻不闲着**(无 handoff 时按覆盖矩阵主动巡航:工具页 5 态 / 营销页 / 工作台 / 各 locale)。**验收三层标准(Joe 2026-07-03 升级——"能不能用"只是地板,不是终点)**:①**能不能用**(功能正确 + 控制台零报错/零 CSP 违规 · 地板)→②**好不好用**(流程直觉、步骤不冗、不让用户填/选可推断项、状态清晰、文案严谨)→③**好不好看**(on-brand:暗底 #171717+绿 #3ecf8e 点缀、--line 描边、字重 400/500、布局/间距/一致性、响应式+暗色——用 `dockdocs-design-review` 技能评**渲染像素**)。**输出 = 优先级问题清单**(现象+截图+层级 0/1/2+严重度+一句建议),**不报"通过/PASS"**;报**总调度**(triage 进主线),不直接弹 Joe。真机、上线前后。**只读**。
+7. **测试** — 内部测试与验收:**常驻不闲着**(无 handoff 时按覆盖矩阵主动巡航:工具页 5 态 / 营销页 / 工作台 / 各 locale)。**验收三层标准(Joe 2026-07-03 升级——"能不能用"只是地板,不是终点)**:①**能不能用**(功能正确 + 控制台零报错/零 CSP 违规 · 地板)→②**好不好用**(流程直觉、步骤不冗、不让用户填/选可推断项、状态清晰、文案严谨)→③**好不好看**(on-brand:暗底 #0a0a0a+绿 #3ecf8e 点缀、--line 描边、字重 400/500、布局/间距/一致性、响应式+暗色——用 `dockdocs-design-review` 技能评**渲染像素**)。**输出 = 优先级问题清单**(现象+截图+层级 0/1/2+严重度+一句建议),**不报"通过/PASS"**;报**总调度**(triage 进主线),不直接弹 Joe。真机、上线前后。**只读**。
 8. **独立审计** — 第三方视角全局审计:**里程碑触发**(大项目完成后/大架构变动前),对抗式、不信内部报告。**只读**。⚠️ 其产出必须经总调度**逐条对代码核实后才派活**——2026-07-02 的 45 条审计有 4 条误报/6 条夸大(根因:漏查 postbuild scripts/ 与 netlify/edge-functions/ 两层缓解面);逐条核实是流程本体,不是不信任。
 
 **写权限三档(钉死):**

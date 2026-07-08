@@ -649,7 +649,7 @@ function HeroSection({ config }: { config: PdfToolPageConfig }) {
           <div className="mt-8 flex flex-wrap gap-3">
             <ButtonLink
               href="#upload"
-              className="shadow-[0_10px_24px_rgba(23,23,23,0.16)]"
+              className="shadow-[0_10px_24px_rgba(10,10,10,0.16)]"
             >
               {config.primaryActionLabel}
             </ButtonLink>
