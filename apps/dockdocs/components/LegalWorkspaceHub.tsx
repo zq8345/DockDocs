@@ -475,7 +475,7 @@ export function LegalWorkspaceHub({ locale = "en" }: { locale?: RuntimeLocale })
       {!hasFile ? (
         <div className="mb-8">
           <label
-            className="flex flex-col items-center justify-center gap-2 rounded-[var(--radius-lg)] border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] px-6 py-10 cursor-pointer hover:border-[color:var(--accent)] transition-colors"
+            className="flex flex-col items-center justify-center gap-2 rounded-[var(--radius-lg)] border-2 border-dashed border-[color:var(--line)] px-6 py-10 cursor-pointer hover:border-[color:var(--accent)] transition-colors"
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) void onFile(f); }}
           >

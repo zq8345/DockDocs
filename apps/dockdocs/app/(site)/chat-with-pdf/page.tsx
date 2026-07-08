@@ -80,7 +80,7 @@ const SCHEMA = {
 
 export default function ChatWithPdfPage() {
   return (
-    <main className="bg-[color:var(--surface)]">
+    <main className="bg-[color:var(--background)]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA) }} />
       {/* Joe 裁定 2026-07-04: ALL tool pages share one width — LAYOUT.content;
           the v2 two-column layout lives inside it. */}

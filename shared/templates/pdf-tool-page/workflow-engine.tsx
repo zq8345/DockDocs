@@ -396,7 +396,7 @@ export function PdfWorkflowEngine({
       status === "idle"
         ? dragging
           ? "cursor-pointer border-2 border-dashed border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
-          : "cursor-pointer border-2 border-dashed border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
+          : "cursor-pointer border-2 border-dashed border-[color:var(--line)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
         : status === "result"
           ? "border border-[color:var(--line)] bg-[color:var(--surface)]"
           : status === "error"
@@ -578,7 +578,7 @@ export function PdfWorkflowEngine({
         className={`relative flex cursor-pointer flex-col items-center justify-center rounded-[var(--radius-xl)] border-2 border-dashed px-6 py-14 text-center transition ${
           isDragging
             ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]"
-            : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
+            : "border-[color:var(--line)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"
         }`}
       >
         {/* Upload icon */}

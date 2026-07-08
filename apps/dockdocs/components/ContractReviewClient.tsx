@@ -204,7 +204,7 @@ function FileSlot({
     <div
       role="button"
       tabIndex={0}
-      className={`relative flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center transition ${dragging ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]" : "border-[color:var(--line)] bg-[color:var(--surface-subtle)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"} ${disabled ? "pointer-events-none opacity-50" : ""}`}
+      className={`relative flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center transition ${dragging ? "border-[color:var(--accent)] bg-[color:var(--soft-accent)]" : "border-[color:var(--line)] hover:border-[color:var(--accent)] hover:bg-[color:var(--soft-accent)]"} ${disabled ? "pointer-events-none opacity-50" : ""}`}
       onClick={() => inputRef.current?.click()}
       onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && inputRef.current?.click()}
       onDragOver={onDragOver}

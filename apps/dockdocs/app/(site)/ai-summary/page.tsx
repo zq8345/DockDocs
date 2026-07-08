@@ -109,7 +109,7 @@ const aiSummarySchema = {
 
 export default function AiSummaryPage() {
   return (
-    <main className="bg-[color:var(--surface)]">
+    <main className="bg-[color:var(--background)]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aiSummarySchema) }}
