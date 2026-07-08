@@ -79,10 +79,13 @@
 html.light {
   color-scheme: light;
 
-  --background: #ffffff;
-  --surface: #f6f7f8;
-  --surface-subtle: #eef0f3;
-  --surface-raised: #f0f1f3;
+  /* Light mode mirrors the dark elevation model (Joe 2026-07-06): the page is a
+     soft off-white and cards sit on pure white ABOVE it, so cards pop the same
+     way they do in dark. Subtle/raised stay light-grey tint fills. */
+  --background: #fafafa;
+  --surface: #ffffff;
+  --surface-subtle: #f1f3f5;
+  --surface-raised: #ffffff;
 
   --foreground: #0d1117;
   --muted: #374151;
