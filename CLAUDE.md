@@ -2,7 +2,7 @@
 # Auto-loaded by Claude Code on every session
 
 ## Project
-- DockDocs: Next.js PDF tools monorepo at C:\Users\47203\Documents\Dock
+- DockDocs: Next.js PDF tools monorepo at C:\开发\dockdocs (relocated 2026-07-09 from Documents\Dock; research docs at C:\开发\dockdocs文件)
 - GitHub: zq8345/DockDocs (master branch; repo renamed 2026-07-05, old URL 301s)
 - Deploy: Netlify → dockdocs.app
 - Package manager: npm workspaces (single monorepo root package)
