@@ -45,8 +45,8 @@
 - **Pre-push hook (installed 2026-06-15, auto-enforced):** `.git/hooks/pre-push` runs `tsc --noEmit` and BLOCKS the push if type-check fails — broken commits can no longer reach Netlify. Shared `.git` → covers all 4 working-tree windows. If your push is blocked, fix the TS errors shown (shared tree: the error may come from another window's uncommitted work). Emergency bypass only: `git push --no-verify`.
 - NEVER claim code is "ready" without passing build
 - Do NOT involve DeepSeek in any work / cross-review (dropped 2026-06-12 per Joe).
-- Use C:\Users\47203\Documents\Dock\apps\dockdocs\... for file tools
-- Terminal: use /c/Users/47203/Documents/Dock
+- Use C:\开发\dockdocs\apps\dockdocs\... for file tools
+- Terminal: use /c/开发/dockdocs
 - MSYS paths like /c/Users/... work in bash, NEVER use in write_file
 
 ## Multi-window collaboration (CRITICAL — read before any git op)
